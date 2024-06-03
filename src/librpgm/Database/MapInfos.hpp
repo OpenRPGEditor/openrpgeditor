@@ -16,7 +16,9 @@ class MapInfos {
     double scrollY;
   };
 
-  std::vector<MapInfo> m_mapinfos;
   static MapInfos load(std::string_view filepath);
   bool serialize(std::string_view filename);
+  std::vector<MapInfo> m_mapinfos;
+
 };
+

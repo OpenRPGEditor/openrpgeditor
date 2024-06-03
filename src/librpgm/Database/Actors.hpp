@@ -1,5 +1,8 @@
 #pragma once
 
+
+#include "Database/Trait.hpp"
+
 #include <string>
 #include <array>
 #include <vector>
@@ -9,12 +12,7 @@
 
 class Actor {
 public:
-  struct Trait {
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Trait, code, dataId, value);
-    int code;
-    int dataId;
-    int value;
-  };
+
   NLOHMANN_DEFINE_TYPE_INTRUSIVE(Actor, id, battlerName, characterIndex, characterName, classId, equips, faceIndex,
                                  faceName, traits, maxLevel, name, nickname, note, profile);
   int id = 0;

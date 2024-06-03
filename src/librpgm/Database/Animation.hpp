@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Database/RPGEnums.hpp"
+
 #include <string>
 #include <vector>
 #include <optional>
@@ -9,18 +11,6 @@ class Animation {
 public:
   friend void to_json(nlohmann::json& json, const Animation& animation);
   friend void from_json(const nlohmann::json& json, Animation& animation);
-  enum class FlashScope {
-    None,
-    Target,
-    Screen,
-  };
-
-  enum class Position {
-    Head,
-    Center,
-    Feet,
-    Screen,
-  };
 
   struct Color {
     friend void to_json(nlohmann::json& json, const Color& color);
@@ -29,17 +19,6 @@ public:
     int g;
     int b;
     int intensity;
-  };
-  enum class Mirror {
-    No,
-    Yes,
-  };
-
-  enum class Blend {
-    Normal,
-    Additive,
-    Multiply,
-    Screen,
   };
 
   struct FramePart {
@@ -82,15 +61,13 @@ public:
     std::optional<SoundEffect> se;
   };
 
-  Animation();
-
-  int id;
-  int animation1Hue;
+  int id = 0;
+  int animation1Hue = 0;
   std::string animation1Name;
-  int animation2Hue;
+  int animation2Hue = 0;
   std::string animation2Name;
   std::vector<Frame> frames;
   std::string name;
-  Position position;
+  Position position = Position::Head;
   std::vector<Timing> timings;
 };

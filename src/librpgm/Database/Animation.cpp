@@ -18,7 +18,7 @@ void from_json(const nlohmann::json& j, std::optional<T>& opt) {
   if (j.is_null()) {
     opt = std::nullopt;
   } else {
-    opt = j.template get<T>();
+    opt = j.get<T>();
   }
 }
 
@@ -78,9 +78,9 @@ void from_json(const nlohmann::json& j, Animation::FramePart& part) {
   part.y = parameters[2];
   part.scale = parameters[3];
   part.rotation = parameters[4];
-  part.mirror = static_cast<Animation::Mirror>(parameters[5]);
+  part.mirror = static_cast<Mirror>(parameters[5]);
   part.opacity = parameters[6];
-  part.blend = static_cast<Animation::Blend>(parameters[7]);
+  part.blend = static_cast<Blend>(parameters[7]);
 }
 
 void to_json(nlohmann::json& j, const Animation::Frame& frame) {
@@ -131,12 +131,3 @@ void from_json(const nlohmann::json& j, Animation& animation) {
   j.at("position").get_to(animation.position);
   j.at("timings").get_to(animation.timings);
 }
-
-Animation::Animation()
-: id(0)
-, animation1Hue(0)
-, animation1Name("")
-, animation2Hue(0)
-, animation2Name("")
-, name("")
-, position(Position::Head) {}

@@ -1,0 +1,10 @@
+#include <string>
+
+#include "Settings/Project.hpp"
+
+namespace App {
+
+const char COMPANY_NAMESPACE[] = "@PROJECT_COMPANY_NAMESPACE@";
+const char APP_NAME[] = "@CMAKE_PROJECT_NAME@";
+
+}  // namespace App

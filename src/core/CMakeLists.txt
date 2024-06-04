@@ -31,10 +31,8 @@ target_compile_features(${NAME} PRIVATE cxx_std_20)
 target_link_libraries(
         ${NAME}
         PRIVATE project_warnings
-        PUBLIC fmt::fmt-header-only
-        spdlog
+        PUBLIC fmt::fmt-header-only spdlog::spdlog_header_only
         SDL2::SDL2
-        SDL2_image::SDL2_image
         imgui
         ImGuiFileDialog
         magic_enum

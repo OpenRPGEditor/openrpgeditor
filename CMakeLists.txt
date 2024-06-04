@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.22)
 
 include(cmake/AppleBuild.cmake)
 
-set(CXX_STANDARD 23)
-set(C_STANDARD 23)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_C_STANDARD 23)
 
 project(
   RPGMakerReplacementProject

@@ -3,6 +3,11 @@ if (NOT imgui_POPULATED)
   FetchContent_Populate(imgui)
 endif ()
 
+project(imgui LANGUAGES CXX C)
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_C_STANDARD 23)
+
 add_library(imgui STATIC
   ${imgui_SOURCE_DIR}/imgui.cpp ${imgui_SOURCE_DIR}/imgui.h
   ${imgui_SOURCE_DIR}/imconfig.h ${imgui_SOURCE_DIR}/imgui_demo.cpp

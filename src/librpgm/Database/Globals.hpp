@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <optional>
 
 #define MAGIC_ENUM_RANGE_MIN -4096
 #define MAGIC_ENUM_RANGE_MAX 4096

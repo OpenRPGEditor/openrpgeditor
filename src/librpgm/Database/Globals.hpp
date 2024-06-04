@@ -273,7 +273,7 @@ static inline std::string DecodeEnumName(E e) {
   return DecodeEnumName(magic_enum::enum_name(e));
 }
 
-#include <nlohmann/json.hpp>
+#include "nlohmann/json.hpp"
 // helper boiler plates for json parsing
 namespace nlohmann {
 template <class T>

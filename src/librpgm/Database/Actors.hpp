@@ -7,7 +7,7 @@
 #include <vector>
 #include <string_view>
 
-#include <nlohmann/json.hpp>
+#include "nlohmann/json.hpp"
 
 class Actor {
 public:

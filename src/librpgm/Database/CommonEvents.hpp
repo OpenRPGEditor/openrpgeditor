@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Database/RPGEnums.hpp"
+#include "Database/Globals.hpp"
 
 #include <nlohmann/json.hpp>
 #include <unordered_set>

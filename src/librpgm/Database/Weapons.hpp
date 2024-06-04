@@ -1,14 +1,13 @@
 #pragma once
 
-#include "Database/RPGEnums.hpp"
+#include "Database/Globals.hpp"
 #include "Database/Trait.hpp"
 #include <nlohmann/json.hpp>
 
 #include <string_view>
 
 struct Weapon {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Weapon, id, animationId, description, etypeId, traits, iconIndex, name, note,
-                                 params);
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Weapon, id, animationId, description, etypeId, traits, iconIndex, name, note, params);
   int id;
   int animationId;
   std::string description;

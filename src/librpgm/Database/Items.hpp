@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Database/RPGEnums.hpp"
+#include "Database/Globals.hpp"
 #include "Database/Damage.hpp"
 #include "Database/Effect.hpp"
 
@@ -9,8 +9,9 @@
 
 class Item {
 public:
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Item, id, animationId, consumable, damage, description, effects, hitType, iconIndex,
-                                 itypeId, name, note, occasion, price, scope, speed, successRate, tpGain);
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Item, id, animationId, consumable, damage, description, effects, hitType,
+                                              iconIndex, itypeId, name, note, occasion, price, scope, speed,
+                                              successRate, tpGain);
   int id;
   int animationId;
   bool consumable;
@@ -35,7 +36,6 @@ class Items {
 public:
   static Items load(std::string_view filename);
   void serialize(std::string_view filename);
-
 
   std::vector<Item> m_items;
 };

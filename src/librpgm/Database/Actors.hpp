@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "Database/Trait.hpp"
 
 #include <string>
@@ -12,9 +11,8 @@
 
 class Actor {
 public:
-
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Actor, id, battlerName, characterIndex, characterName, classId, equips, faceIndex,
-                                 faceName, traits, maxLevel, name, nickname, note, profile);
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Actor, id, battlerName, characterIndex, characterName, classId, equips,
+                                              faceIndex, faceName, traits, maxLevel, name, nickname, note, profile);
   int id = 0;
   std::string battlerName;
   int characterIndex = 0;

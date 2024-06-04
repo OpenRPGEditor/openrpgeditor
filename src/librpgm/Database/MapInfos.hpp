@@ -6,7 +6,7 @@
 
 class MapInfos {
   struct MapInfo {
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(MapInfo, expanded, id, name, order, parentId, scrollX, scrollY);
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(MapInfo, expanded, id, name, order, parentId, scrollX, scrollY);
     bool expanded;
     int id;
     std::string name;
@@ -19,6 +19,4 @@ class MapInfos {
   static MapInfos load(std::string_view filepath);
   bool serialize(std::string_view filename);
   std::vector<MapInfo> m_mapinfos;
-
 };
-

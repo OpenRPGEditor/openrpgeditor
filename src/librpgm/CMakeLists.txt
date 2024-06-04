@@ -20,19 +20,22 @@ add_library(
         Database/Animations.hpp Database/Animations.cpp Database/Animation.hpp Database/Animation.cpp
         Database/Tilesets.hpp Database/Tilesets.cpp
         Database/CommonEvents.hpp Database/CommonEvents.cpp
+        Database/Messages.hpp Database/Messages.cpp
+        Database/Terms.hpp Database/Terms.cpp
         Database/System.hpp Database/System.cpp
         Database/Types.hpp Database/Types.cpp
-        Database/Terms.hpp Database/Terms.cpp
         Database/MapInfos.hpp Database/MapInfos.cpp
-        Database/RPGEnums.hpp
-
-        # Runtime classes
-        Runtime/Map.hpp Runtime/Map.cpp
+        Database/Globals.hpp Database/Globals.cpp
+        Database/Vehicle.hpp Database/Vehicle.cpp
+        Database/Audio.hpp Database/Audio.cpp
+        Database/Map.hpp Database/Map.cpp
+        Database/Battler.hpp Database/Battler.cpp
 
 
         # Editor Classes
         Runtime/Project.hpp Runtime/Project.cpp
         Runtime/DatabaseEditor.cpp Runtime/DatabaseEditor.hpp
+
 )
 
 target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

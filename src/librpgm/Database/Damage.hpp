@@ -1,11 +1,11 @@
 #pragma once
-#include "Database/RPGEnums.hpp"
+#include "Database/Globals.hpp"
 
 #include <nlohmann/json.hpp>
 #include <string>
 
 struct Damage {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Damage, critical, elementId, formula, type, variance);
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Damage, critical, elementId, formula, type, variance);
 
   bool critical;
   int elementId;

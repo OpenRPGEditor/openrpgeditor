@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Database/RPGEnums.hpp"
+#include "Database/Globals.hpp"
 #include "Database/Trait.hpp"
 
 #include <nlohmann/json.hpp>
@@ -9,8 +9,8 @@
 
 class Enemy {
 public:
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Enemy, id, actions, battlerHue, battlerName, dropItems, exp, traits, gold, name, note,
-                                 params);
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Enemy, id, actions, battlerHue, battlerName, dropItems, exp, traits, gold,
+                                              name, note, params);
   struct Action {
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Action, conditionParam1, conditionParam2, conditionType, rating, skillId);
     int conditionParam1;

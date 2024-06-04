@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Database/RPGEnums.hpp"
+#include "Database/Globals.hpp"
 #include "Database/Damage.hpp"
 #include "Database/Effect.hpp"
 
@@ -8,13 +8,11 @@
 #include <nlohmann/json.hpp>
 
 class Skill {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Skill, id, animationId, damage, description, effects, iconIndex, message1, message2,
-                                 mpCost, name, note, occasion, repeats, requiredWtypeId1, requiredWtypeId2, scope,
-                                 speed, stypeId, successRate, tpCost, tpGain);
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Skill, id, animationId, damage, description, effects, iconIndex, message1,
+                                              message2, mpCost, name, note, occasion, repeats, requiredWtypeId1,
+                                              requiredWtypeId2, scope, speed, stypeId, successRate, tpCost, tpGain);
 
 public:
-
-
   int id;
   int animationId;
   Damage damage;

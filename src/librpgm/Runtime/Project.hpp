@@ -18,6 +18,7 @@
 #include "Database/CommonEvents.hpp"
 #include "Database/System.hpp"
 #include "Database/Types.hpp"
+#include "Database/Terms.hpp"
 #include "Database/MapInfos.hpp"
 
 class Project {
@@ -50,13 +51,12 @@ private:
   Weapons m_weapons;
   Armors m_armors;
   Enemies m_enemies;
-  // Troops m_troops;
-  // States m_states;
+  Troops m_troops;
+  States m_states;
   Animations m_animations;
   Tilesets m_tilesets;
-  // CommonEvents m_commonEvents;
-  // System m_system;
-  // Types m_types;
-  // Terms m_terms;
+  CommonEvents m_commonEvents;
+  System m_system;
+  Types m_types;
   MapInfos m_mapInfos;
 };

@@ -9,7 +9,7 @@
 #include <array>
 
 struct Learning {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Learning, level, note, skillId);
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Learning, level, note, skillId);
 
   int level{};
   std::string note;
@@ -17,9 +17,9 @@ struct Learning {
 };
 
 struct Class {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Class, id, expParams, traits, learnings, name, note, params);
-  int id;
-  std::array<int, 4> expParams; // Base, Extra, Acceleration A, Acceleration B
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Class, id, expParams, traits, learnings, name, note, params);
+  int id{};
+  std::array<int, 4> expParams{}; // Base, Extra, Acceleration A, Acceleration B
   std::vector<Trait> traits;
   std::vector<Learning> learnings;
   std::string name;

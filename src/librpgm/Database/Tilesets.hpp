@@ -8,7 +8,7 @@
 
 class Tileset {
 public:
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Tileset, id, flags, mode, name, note, tilesetNames);
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Tileset, id, flags, mode, name, note, tilesetNames);
 
   enum class Mode {
     World,

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Database/RPGEnums.hpp"
+#include "Database/Globals.hpp"
+#include "Database/Audio.hpp"
 
 #include <string>
 #include <vector>
@@ -9,12 +10,9 @@
 
 class Animation {
 public:
-  friend void to_json(nlohmann::json& json, const Animation& animation);
-  friend void from_json(const nlohmann::json& json, Animation& animation);
-
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Animation, id, animation1Hue, animation1Name, animation2Hue,
+                                              animation2Name, frames, name, position, timings);
   struct Color {
-    friend void to_json(nlohmann::json& json, const Color& color);
-    friend void from_json(const nlohmann::json& json, Color& color);
     int r;
     int g;
     int b;
@@ -22,8 +20,6 @@ public:
   };
 
   struct FramePart {
-    friend void to_json(nlohmann::json& json, const FramePart& frame);
-    friend void from_json(const nlohmann::json& json, FramePart& frame);
     int pattern;
     int x;
     int y;
@@ -34,31 +30,13 @@ public:
     Blend blend;
   };
 
-  struct Frame {
-    friend void to_json(nlohmann::json& json, const Frame& frame);
-    friend void from_json(const nlohmann::json& json, Frame& frame);
-
-    std::vector<FramePart> frameParts;
-  };
-
-  struct SoundEffect {
-    friend void to_json(nlohmann::json& json, const SoundEffect& frame);
-    friend void from_json(const nlohmann::json& json, SoundEffect& frame);
-    SoundEffect() : name(""), pan(0), pitch(0), volume(0) {}
-    std::string name; // base name of the file (without extension) in audio/se
-    int pan;
-    int pitch;
-    int volume;
-  };
-
   struct Timing {
-    friend void to_json(nlohmann::json& json, const Timing& timing);
-    friend void from_json(const nlohmann::json& json, Timing& timing);
-    Color flashColor;
-    int flashDuration;
-    FlashScope flashScope;
-    int frame;
-    std::optional<SoundEffect> se;
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Timing, flashColor, flashDuration, flashScope, frame, se);
+    std::array<int, 4> flashColor{};
+    int flashDuration{};
+    FlashScope flashScope = FlashScope{};
+    int frame{};
+    std::optional<Audio> se{};
   };
 
   int id = 0;
@@ -66,7 +44,7 @@ public:
   std::string animation1Name;
   int animation2Hue = 0;
   std::string animation2Name;
-  std::vector<Frame> frames;
+  std::vector<std::vector<std::array<int, 8>>> frames;
   std::string name;
   Position position = Position::Head;
   std::vector<Timing> timings;

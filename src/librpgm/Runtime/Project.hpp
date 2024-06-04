@@ -17,8 +17,6 @@
 #include "Database/Tilesets.hpp"
 #include "Database/CommonEvents.hpp"
 #include "Database/System.hpp"
-#include "Database/Types.hpp"
-#include "Database/Terms.hpp"
 #include "Database/MapInfos.hpp"
 
 class Project {
@@ -57,6 +55,5 @@ private:
   Tilesets m_tilesets;
   CommonEvents m_commonEvents;
   System m_system;
-  Types m_types;
   MapInfos m_mapInfos;
 };

@@ -23,13 +23,14 @@ add_library(
         Database/Messages.hpp Database/Messages.cpp
         Database/Terms.hpp Database/Terms.cpp
         Database/System.hpp Database/System.cpp
-        Database/Types.hpp Database/Types.cpp
         Database/MapInfos.hpp Database/MapInfos.cpp
         Database/Globals.hpp Database/Globals.cpp
         Database/Vehicle.hpp Database/Vehicle.cpp
         Database/Audio.hpp Database/Audio.cpp
-        Database/Map.hpp Database/Map.cpp
+        Database/Event.hpp Database/Event.cpp
+        Database/EventPage.hpp Database/EventPage.cpp
         Database/Battler.hpp Database/Battler.cpp
+        Database/Map.hpp Database/Map.cpp
 
 
         # Editor Classes

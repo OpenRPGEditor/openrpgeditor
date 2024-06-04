@@ -9,7 +9,7 @@
 
 class System {
 public:
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(System, airship, armorTypes, attackMotions, battleBgm, attackMotions, battleback1Name,
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(System, airship, armorTypes, attackMotions, battleBgm, attackMotions, battleback1Name,
                                  battleback2Name, battlerHue, battlerName, boat, currencyUnit, defeatMe, editMapId,
                                  elements, equipTypes, gameTitle, gameoverMe, locale, magicSkills, menuCommands,
                                  optDisplayTp, optDrawTitle, optExtraExp, optFloorDeath, optFollowers, optSideView,
@@ -28,38 +28,38 @@ public:
   Audio battleBgm;
   std::string battleback1Name;
   std::string battleback2Name;
-  int battlerHue;
+  int battlerHue{};
   std::string battlerName;
   Vehicle boat;
   std::string currencyUnit;
   Audio defeatMe;
-  int editMapId;
+  int editMapId{};
   std::vector<std::string> elements;
   std::vector<std::string> equipTypes;
   std::string gameTitle;
   Audio gameoverMe;
   std::string locale;
   std::vector<int> magicSkills;
-  std::array<bool, 6> menuCommands; // Item, Skill, Equip, Status, Formation, Save;
-  bool optDisplayTp;
-  bool optDrawTitle;
-  bool optExtraExp;
-  bool optFloorDeath;
-  bool optFollowers;
-  bool optSideView;
-  bool optSlipDeath;
-  bool optTransparent;
+  std::array<bool, 6> menuCommands{}; // Item, Skill, Equip, Status, Formation, Save;
+  bool optDisplayTp{};
+  bool optDrawTitle{};
+  bool optExtraExp{};
+  bool optFloorDeath{};
+  bool optFollowers{};
+  bool optSideView{};
+  bool optSlipDeath{};
+  bool optTransparent{};
   std::vector<int> partyMembers;
   Vehicle ship;
   std::vector<std::string> skillTypes;
   std::vector<Audio> sounds;
-  int startMapId;
-  int startX;
-  int startY;
+  int startMapId{};
+  int startX{};
+  int startY{};
   std::vector<std::string> switches;
   Terms terms;
   std::vector<Battler> testBattlers;
-  int testTroopId;
+  int testTroopId{};
   std::string title1Name;
   std::string title2Name;
   Audio titleBgm;

@@ -2,6 +2,8 @@
 
 #include "Database/Globals.hpp"
 #include "Database/Audio.hpp"
+#include "Database/Event.hpp"
+
 #include <string>
 #include "nlohmann/json.hpp"
 
@@ -10,7 +12,7 @@ public:
   NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Map, autoPlayBgm, autoPlayBgs, battleBack1Name, battleBack2Name, bgm, bgs,
                                  disableDashing, displayName, encounters, encounterStep, note, parallaxLoopX,
                                  parallaxLoopY, parallaxName, parallaxShow, parallaxSx, parallaxSy, scrollType,
-                                 specifyBattleBack, tilesetId, width, height, data /*, events */)
+                                 specifyBattleBack, tilesetId, width, height, data, events)
   struct Encounter {
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Encounter, regionSet, troopId, weight);
     std::array<int, 3> regionSet{};
@@ -40,7 +42,7 @@ public:
   int width{};
   int height{};
   std::vector<int> data;
-  // TODO: std::vector<Event> events;
+  std::vector<std::optional<Event>> events;
 
   static Map load(std::string_view filepath);
   bool serialize(std::string_view filepath);

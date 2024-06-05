@@ -29,6 +29,7 @@ add_library(
         Database/EventPage.hpp Database/EventPage.cpp
         Database/Battler.hpp Database/Battler.cpp
         Database/Map.hpp Database/Map.cpp
+        Database/CommandParser.hpp Database/CommandParser.cpp
 
         # Editor Classes
         Runtime/DatabaseEditor.cpp Runtime/DatabaseEditor.hpp

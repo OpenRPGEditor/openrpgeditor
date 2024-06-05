@@ -100,6 +100,7 @@ enum class DamageType : int {
 };
 
 enum class EventCode : int {
+  Event_Dummy = 0, // The ◆ character
   Show_Text = 101,
   Next_Text = 401, // RPGMV will continue appending text until it has consumed all 401 commands
 
@@ -117,7 +118,7 @@ enum class EventCode : int {
 
   Conditional_Branch = 111,
   Else = 411,
-
+  End = 412,
   Loop = 112,
   Break_Loop = 113,
 
@@ -149,7 +150,8 @@ enum class EventCode : int {
   Set_Event_Location = 203,
   Scroll_Map = 204,
   Set_Movement_Route = 205,
-  Movement_Route_Step = 505, // The RPG Maker doesn't explicity check this, but the movement type inside
+  Movement_Route_Step = 505, // This is only used to display the event parameters in the event editor, this has no
+                             // bearing on the actual value, however they do need to be kept in sync
 
   Get_On_Off_Vehicle = 206,
   Change_Transparency = 211,
@@ -272,6 +274,23 @@ enum class ScrollType {
   Loop_Vertically,
   LoopHorizontally,
   Loop_Both,
+};
+
+enum class TextBackground {
+  Window,
+  Dim,
+  Transparent,
+};
+
+enum class TextWindowPosition {
+  Top,
+  Bottom,
+  Middle,
+};
+enum class ChoiceWindowPosition {
+  Left,
+  Middle,
+  Right
 };
 
 std::string DecodeEnumName(std::string_view str);

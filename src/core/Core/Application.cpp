@@ -130,6 +130,9 @@ ExitStatus App::Application::run() {
       // Rendering
       ImGui::Render();
 
+      ImGui::EndFrame();
+      ImGui::UpdatePlatformWindows();
+
       SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 100, 100, 100, 255);
       SDL_RenderClear(m_window->getNativeRenderer());
       ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), m_window->getNativeRenderer());

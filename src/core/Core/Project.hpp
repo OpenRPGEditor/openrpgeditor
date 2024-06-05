@@ -113,5 +113,6 @@ private:
   std::optional<ResourceManager> m_resourceManager;
   std::optional<Map> m_map;
   int m_selectedMapId = -1;
+  float m_mapScale = 1.f;
   MapRenderer m_mapRenderer;
 };

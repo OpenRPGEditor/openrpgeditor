@@ -120,6 +120,7 @@ enum class EventCode : int {
   Else = 411,
   End = 412,
   Loop = 112,
+  Repeat_Above = 413,
   Break_Loop = 113,
 
   Exit_Event_Processing = 115,

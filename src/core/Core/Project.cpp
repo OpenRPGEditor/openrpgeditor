@@ -378,10 +378,67 @@ void Project::drawMapTree() {
   ImGui::End();
 }
 
+inline int Align(int value, int size) { return (value - (value % size)); }
+
 void Project::drawMapEditor() {
-  if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
-    if (m_map) {
-      ImGui::Text("MAP");
+  if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_NoScrollbar)) {
+    ImGui::SliderFloat("Scale", &m_mapScale, 0.5, 4.0);
+    if (ImGui::BeginChild("##mapregion")) {
+      if (m_map) {
+        Texture tilesetTxtr =
+            m_resourceManager->loadTilesetImage(m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[0]);
+        ImGui::Image(tilesetTxtr.get(), ImVec2{tilesetTxtr.width() * m_mapScale, tilesetTxtr.height() * m_mapScale});
+        ImGuiWindow* win = ImGui::GetCurrentWindow();
+
+        for (int y = 0; y <= tilesetTxtr.height() * m_mapScale; y += 48 * m_mapScale) {
+          win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)},
+                                 win->ContentRegionRect.Min +
+                                     ImVec2{tilesetTxtr.width() * m_mapScale, static_cast<float>(y)},
+                                 0x7fa0a0a0, m_mapScale);
+        }
+
+        for (int x = 0; x <= tilesetTxtr.width() * m_mapScale; x += 48 * m_mapScale) {
+          win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), 0.f},
+                                 win->ContentRegionRect.Min +
+                                     ImVec2{static_cast<float>(x), tilesetTxtr.height() * m_mapScale},
+                                 0x7fa0a0a0, m_mapScale);
+        }
+
+        ImVec2 cursorPos = ImGui::GetIO().MousePos;
+
+        cursorPos -= win->ContentRegionRect.Min;
+
+        if (!(cursorPos.x < 0 || cursorPos.y < 0 ||
+              cursorPos.x > (tilesetTxtr.width() * m_mapScale) + (48 * m_mapScale) ||
+              cursorPos.y > (tilesetTxtr.height() * m_mapScale) + (48 * m_mapScale))) {
+          if (cursorPos.x < 0) {
+            cursorPos.x = 0;
+          }
+          if (cursorPos.x > (tilesetTxtr.width() * m_mapScale) - (48 * m_mapScale)) {
+            cursorPos.x = (tilesetTxtr.width() * m_mapScale) - (48 * m_mapScale);
+          }
+
+          if (cursorPos.y < 0) {
+            cursorPos.y = 0;
+          }
+
+          if (cursorPos.y > (tilesetTxtr.height() * m_mapScale) - (48 * m_mapScale)) {
+            cursorPos.y = (tilesetTxtr.height() * m_mapScale) - (48 * m_mapScale);
+          }
+          cursorPos.x = Align(cursorPos.x, 48 * m_mapScale);
+          cursorPos.y = Align(cursorPos.y, 48 * m_mapScale);
+
+          cursorPos += win->ContentRegionRect.Min;
+
+          win->DrawList->AddRect(cursorPos + (ImVec2{0.f, 0.f} * m_mapScale), cursorPos + (ImVec2{48, 48} * m_mapScale),
+                                 0xFFFFFFFF, 0.f, 0, 2.f * m_mapScale);
+          win->DrawList->AddRect(cursorPos + (ImVec2{-2.f, -2.f} * m_mapScale), cursorPos + (ImVec2{50, 50} * m_mapScale),
+                                 0xFF000000, 0.f, 0, 2.f * m_mapScale);
+          win->DrawList->AddRect(cursorPos + (ImVec2{2.f, 2.f} * m_mapScale), cursorPos + (ImVec2{46, 46} * m_mapScale),
+                                 0xFF000000, 0.f, 0, 2.f * m_mapScale);
+              }
+      }
+      ImGui::EndChild();
     }
   }
   ImGui::End();

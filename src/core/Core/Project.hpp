@@ -109,6 +109,6 @@ private:
   DrawTool m_drawTool = DrawTool::Pencil;
 
   std::optional<ResourceManager> m_resourceManager;
-  Map m_map;
+  std::optional<Map> m_map;
   MapRenderer m_mapRenderer;
 };

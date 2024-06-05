@@ -6,6 +6,7 @@
 #include <vector>
 
 class Event {
+public:
   NLOHMANN_DEFINE_TYPE_INTRUSIVE(Event, id, name, note, pages, x, y);
   int id;
   std::string name;

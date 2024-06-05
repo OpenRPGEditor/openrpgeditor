@@ -67,11 +67,12 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   m_commonEvents = CommonEvents::load(m_basePath + "/data/CommonEvents.json");
   APP_INFO("Loading System...");
   m_system = System::load(m_basePath + "/data/System.json");
+  m_mapInfos = MapInfos::load(m_basePath + "/data/MapInfos.json");
   APP_INFO("Loaded project!");
   m_resourceManager.emplace(m_basePath);
 
   m_map = m_resourceManager->loadMap(22);
-  m_mapRenderer.setMap(&m_map, &m_tilesets.m_tilesets[m_map.tilesetId]);
+  m_mapRenderer.setMap(&m_map.value(), &m_tilesets.m_tilesets[m_map->tilesetId]);
   return true;
 }
 
@@ -117,6 +118,7 @@ void Project::setupDocking() {
     ImGui::DockBuilderDockWindow("Tilesets", dock1);
     ImGui::DockBuilderDockWindow("Maps", dock2);
     ImGui::DockBuilderDockWindow("Map Editor", dock3);
+    ImGui::DockBuilderGetNode(dock3)->SetLocalFlags(ImGuiDockNodeFlags_NoUndocking | ImGuiDockNodeFlags_NoTabBar);
 
     // 7. We're done setting up our docking configuration:
     ImGui::DockBuilderFinish(mainWindowGroup);
@@ -283,14 +285,51 @@ void Project::drawTilesets() {
 }
 
 void Project::drawEventList() {
-  if (ImGui::Begin("Events")) {}
+  char eventNameBuf[4096]{};
+  if (ImGui::Begin("Events")) {
+    if (m_map) {
+      for (const auto& event : m_map->events) {
+        if (event) {
+          sprintf(eventNameBuf, "%s (%i, %i)", event->name.c_str(), event->x, event->y);
+          ImGui::Selectable(eventNameBuf);
+        }
+      }
+    }
+  }
   ImGui::End();
 }
+
+void recursiveBuildTree(MapInfos::MapInfo& in) {
+  ImGui::PushID(&in);
+
+  if (ImGui::TreeNodeEx(in.name.c_str(), in.expanded ? ImGuiTreeNodeFlags_DefaultOpen : 0)) {
+    for (auto& mapInfo : in.m_children) {
+      recursiveBuildTree(*mapInfo);
+    }
+    ImGui::TreePop();
+  }
+  ImGui::PopID();
+}
+
 void Project::drawMapTree() {
-  if (ImGui::Begin("Maps")) {}
+  if (ImGui::Begin("Maps")) {
+    if (!m_mapInfos.m_mapinfos.empty()) {
+      ImGui::PushID(&m_mapInfos.m_mapinfos[0]);
+      if (ImGui::TreeNodeEx(m_system.gameTitle.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+        for (auto& mapInfo : m_mapInfos.m_mapinfos[0].m_children) {
+          recursiveBuildTree(*mapInfo);
+        }
+        ImGui::TreePop();
+      }
+      ImGui::PopID();
+    }
+  }
   ImGui::End();
 }
+
 void Project::drawMapEditor() {
-  if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_HorizontalScrollbar)) {}
+  if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
+    ImGui::Text("MAP");
+  }
   ImGui::End();
 }

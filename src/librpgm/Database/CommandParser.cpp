@@ -83,5 +83,6 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& dat
     }
     ++index;
   }
+
   return ret;
 }

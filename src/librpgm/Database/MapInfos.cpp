@@ -9,6 +9,7 @@ MapInfos MapInfos::load(std::string_view filename) {
   json data = json::parse(file);
   MapInfos mapinfos;
   mapinfos.m_mapinfos.reserve(data.size());
+  mapinfos.m_mapinfos.emplace_back();
 
   for (const auto& [_, value] : data.items()) {
     if (value == nullptr) {
@@ -18,6 +19,7 @@ MapInfos MapInfos::load(std::string_view filename) {
     MapInfo& mapinfo = mapinfos.m_mapinfos.emplace_back();
     value.get_to(mapinfo);
   }
+  mapinfos.buildTree();
   return mapinfos;
 }
 
@@ -27,6 +29,9 @@ bool MapInfos::serialize(std::string_view filename) {
   std::ofstream file(filename.data());
   json data{nullptr};
 
+  /* Erase the dummy entry */;
+  m_mapinfos.erase(m_mapinfos.begin());
+
   for (const MapInfo& mapinfo : m_mapinfos) {
     data.push_back(mapinfo);
   }
@@ -34,4 +39,25 @@ bool MapInfos::serialize(std::string_view filename) {
   file << data;
 
   return true;
+}
+
+void recursiveSort(MapInfos::MapInfo& in) {
+  std::sort(in.m_children.begin(), in.m_children.end(), [](const MapInfos::MapInfo* a, const MapInfos::MapInfo* b) {
+    return a->order < b->order;
+  });
+
+  for (auto& mapInfo : in.m_children) {
+    recursiveSort(*mapInfo);
+  }
+}
+
+void MapInfos::buildTree() {
+  for (auto& mapInfo : m_mapinfos) {
+    if (mapInfo.id == 0) {
+      continue;
+    }
+    m_mapinfos[mapInfo.parentId].m_children.push_back(&mapInfo);
+  }
+
+  recursiveSort(m_mapinfos[0]);
 }

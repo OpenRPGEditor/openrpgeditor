@@ -10,6 +10,13 @@
 void MapRenderer::setMap(const Map* map, const Tileset* tileset) {
   m_map = map;
   m_tileset = tileset;
+
+  if (m_map == nullptr || m_tileset == nullptr) {
+    SDL_DestroyTexture(m_lowerTexture);
+    SDL_DestroyTexture(m_upperTexture);
+    return;
+  }
+
   for (int i = 0; i < m_tilesetTextures.size(); ++i) {
     if (!m_tileset->tilesetNames[i].empty()) {
       m_tilesetTextures[i] = ResourceManager::instance()->loadTilesetImage(m_tileset->tilesetNames[i]);

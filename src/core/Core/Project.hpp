@@ -79,8 +79,10 @@ private:
   void drawFileDialog();
   void drawTilesets();
   void drawEventList();
+  void doMapSelection(MapInfos::MapInfo& in);
   void drawMapTree();
   void drawMapEditor();
+  void recursiveDrawTree(MapInfos::MapInfo& in);
 
   bool m_isValid = false;
   bool m_isLoaded = false;
@@ -110,5 +112,6 @@ private:
 
   std::optional<ResourceManager> m_resourceManager;
   std::optional<Map> m_map;
+  int m_selectedMapId = -1;
   MapRenderer m_mapRenderer;
 };

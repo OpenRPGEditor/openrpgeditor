@@ -17,6 +17,7 @@
 #include <algorithm>
 
 using namespace std::literals::string_view_literals;
+static SDL_Cursor* waitCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAITARROW);
 
 constexpr std::array KnownRPGMVVersions = {
     "RPGMV 1.6.1"sv,
@@ -68,11 +69,10 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   APP_INFO("Loading System...");
   m_system = System::load(m_basePath + "/data/System.json");
   m_mapInfos = MapInfos::load(m_basePath + "/data/MapInfos.json");
+  m_mapInfos.m_mapinfos[0].expanded = true;
+  m_mapInfos.m_mapinfos[0].name = m_system.gameTitle;
   APP_INFO("Loaded project!");
   m_resourceManager.emplace(m_basePath);
-
-  m_map = m_resourceManager->loadMap(22);
-  m_mapRenderer.setMap(&m_map.value(), &m_tilesets.m_tilesets[m_map->tilesetId]);
   return true;
 }
 
@@ -139,6 +139,7 @@ void Project::draw() {
   }
 
   drawMapTree();
+  ImGui::ShowDemoWindow();
 }
 
 void Project::drawMenu() {
@@ -263,6 +264,9 @@ void Project::drawTilesets() {
   if (ImGui::Begin("Tilesets")) {
     if (ImGui::BeginTabBar("##tileset")) {
       if (ImGui::BeginTabItem("A", nullptr)) {
+        if (m_map) {
+          ImGui::DebugTextEncoding(m_tilesets.m_tilesets[m_map->tilesetId].name.c_str());
+        }
         ImGui::EndTabItem();
       }
       if (ImGui::BeginTabItem("B", nullptr)) {
@@ -299,14 +303,42 @@ void Project::drawEventList() {
   ImGui::End();
 }
 
-void recursiveBuildTree(MapInfos::MapInfo& in) {
+void Project::doMapSelection(MapInfos::MapInfo& in) {
+  if (in.id == 0) {
+    m_map.reset();
+    m_selectedMapId = 0;
+    m_mapRenderer.setMap(nullptr, nullptr);
+    return;
+  }
+  SDL_SetCursor(waitCursor);
+  m_selectedMapId = in.id;
+  m_map = m_resourceManager->loadMap(in.id);
+  SDL_SetCursor(SDL_GetDefaultCursor());
+}
+
+void Project::recursiveDrawTree(MapInfos::MapInfo& in) {
   ImGui::PushID(&in);
 
-  if (ImGui::TreeNodeEx(in.name.c_str(), in.expanded ? ImGuiTreeNodeFlags_DefaultOpen : 0)) {
+  if (ImGui::TreeNodeEx(&in,
+                        (in.expanded ? ImGuiTreeNodeFlags_DefaultOpen : 0) |
+                            (m_selectedMapId == in.id ? ImGuiTreeNodeFlags_Selected : 0) |
+                            (in.m_children.empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
+                            ImGuiTreeNodeFlags_OpenOnDoubleClick,
+                        "%s", in.name.c_str())) {
+    if (ImGui::IsItemClicked(ImGuiMouseButton_Left) && m_selectedMapId != in.id) {
+      doMapSelection(in);
+    }
+
     for (auto& mapInfo : in.m_children) {
-      recursiveBuildTree(*mapInfo);
+      recursiveDrawTree(*mapInfo);
     }
     ImGui::TreePop();
+  } else if (ImGui::IsItemClicked(ImGuiMouseButton_Left) && m_selectedMapId != in.id && in.id != 0) {
+    doMapSelection(in);
+  }
+
+  if (ImGui::IsItemToggledOpen()) {
+    in.expanded ^= 1;
   }
   ImGui::PopID();
 }
@@ -314,14 +346,7 @@ void recursiveBuildTree(MapInfos::MapInfo& in) {
 void Project::drawMapTree() {
   if (ImGui::Begin("Maps")) {
     if (!m_mapInfos.m_mapinfos.empty()) {
-      ImGui::PushID(&m_mapInfos.m_mapinfos[0]);
-      if (ImGui::TreeNodeEx(m_system.gameTitle.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
-        for (auto& mapInfo : m_mapInfos.m_mapinfos[0].m_children) {
-          recursiveBuildTree(*mapInfo);
-        }
-        ImGui::TreePop();
-      }
-      ImGui::PopID();
+      recursiveDrawTree(m_mapInfos.m_mapinfos[0]);
     }
   }
   ImGui::End();
@@ -329,7 +354,9 @@ void Project::drawMapTree() {
 
 void Project::drawMapEditor() {
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
-    ImGui::Text("MAP");
+    if (m_map) {
+      ImGui::Text("MAP");
+    }
   }
   ImGui::End();
 }

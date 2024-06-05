@@ -72,12 +72,15 @@ ExitStatus App::Application::run() {
   io.IniFilename = imgui_ini_filename.c_str();
 
   // ImGUI font
+
   const float font_scaling_factor{DPIHandler::get_scale()};
   const float font_size{18.0F * font_scaling_factor};
-  const std::string font_path{Resources::font_path("Manrope.ttf").generic_string()};
+  const std::string font_path{Resources::font_path("NotoSansJP-SemiBold.ttf").generic_string()};
 
-  io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size);
-  io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size);
+  io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, nullptr, io.Fonts->GetGlyphRangesJapanese());
+  io.FontDefault =
+      io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, nullptr, io.Fonts->GetGlyphRangesJapanese());
+  io.Fonts->Build();
   DPIHandler::set_global_font_scaling(&io);
 
   // Setup Platform/Renderer backends

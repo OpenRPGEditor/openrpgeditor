@@ -1,5 +1,5 @@
 # Assets for all platforms
-set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/Manrope.ttf)
+set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/NotoSansJP-SemiBold.ttf)
 
 # Platform specific static assets
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")

@@ -4,8 +4,6 @@ include(${PROJECT_SOURCE_DIR}/cmake/StaticAnalyzers.cmake)
 
 add_library(
         ${NAME} STATIC
-        # Image Loader
-        stb_image.h image_loader.h image_loader.c
         # RPGMV Classes
         Database/Trait.hpp Database/Trait.hpp
         Database/Actors.hpp Database/Actors.cpp
@@ -32,9 +30,7 @@ add_library(
         Database/Battler.hpp Database/Battler.cpp
         Database/Map.hpp Database/Map.cpp
 
-
         # Editor Classes
-        Runtime/Project.hpp Runtime/Project.cpp
         Runtime/DatabaseEditor.cpp Runtime/DatabaseEditor.hpp
 
 )

@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 17)
 
 project(
-  RPGMakerReplacementProject
+  OpenRPGMaker
   DESCRIPTION "A drop-in replacement for RPG Maker MV."
   VERSION 1.0.0
   LANGUAGES CXX C)

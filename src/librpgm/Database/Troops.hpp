@@ -4,7 +4,8 @@
 
 #include "nlohmann/json.hpp"
 
-class Troops {
+struct Troop {
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Troop, id, members);
 
   struct Member {
     int enemyId = 0;
@@ -15,4 +16,13 @@ class Troops {
   };
   int id;
   std::vector<Member> members;
+};
+
+class Troops {
+public:
+  static Troops load(std::string_view filepath);
+
+  bool serialize(std::string_view filename);
+
+  std::vector<Troop> m_troops;
 };

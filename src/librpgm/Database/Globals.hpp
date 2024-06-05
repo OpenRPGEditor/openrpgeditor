@@ -267,6 +267,13 @@ enum class StateRestriction {
   Cannot_move,
 };
 
+enum class ScrollType {
+  No_Loop,
+  Loop_Vertically,
+  LoopHorizontally,
+  Loop_Both,
+};
+
 std::string DecodeEnumName(std::string_view str);
 
 template <typename E>
@@ -276,8 +283,9 @@ static inline std::string DecodeEnumName(E e) {
 
 #include "nlohmann/json.hpp"
 // helper boiler plates for json parsing
+
 namespace nlohmann {
-template <class T>
+template <typename T>
 void to_json(json& j, const std::optional<T>& opt) {
   if (opt) {
     j = *opt;
@@ -286,7 +294,7 @@ void to_json(json& j, const std::optional<T>& opt) {
   }
 }
 
-template <class T>
+template <typename T>
 void from_json(const json& j, std::optional<T>& opt) {
   if (j.is_null()) {
     opt = std::nullopt;

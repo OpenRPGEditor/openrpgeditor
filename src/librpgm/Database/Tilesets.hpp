@@ -16,8 +16,17 @@ public:
   };
 
   enum Flags {
+    None = 0,
+    Unk1 = 1 << 0,
+    Unk2 = 1 << 2,
+    Unk3 = 1 << 3,
     HigherTile = 1 << 4,
+    Unk5 = 1 << 5,
+    Unk6 = 1 << 6,
     IsA2Tile = 1 << 7,
+    Unk8 = 1 << 8,
+    Unk9 = 1 << 9,
+    Unk10 = 1 << 10,
   };
 
   Tileset();

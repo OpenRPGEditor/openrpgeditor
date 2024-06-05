@@ -24,7 +24,8 @@ public:
 
 class CommonEvents {
 public:
-  CommonEvents();
+  static CommonEvents load(std::string_view filepath);
+  bool serialize(std::string_view filename);
 
   std::vector<CommonEvent> m_events;
 };

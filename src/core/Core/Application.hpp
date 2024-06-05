@@ -7,7 +7,7 @@
 
 #include "Core/Window.hpp"
 
-#include "Runtime/Project.hpp"
+#include "Core/Project.hpp"
 
 #include <optional>
 
@@ -35,14 +35,16 @@ public:
   void on_shown();
   void on_close();
 
+  const std::unique_ptr<Window>& getWindow() const { return m_window; }
 private:
   ExitStatus m_exitStatus{ExitStatus::Success};
   std::unique_ptr<Window> m_window{nullptr};
 
   bool m_running{true};
   bool m_minimized{false};
-
-  std::optional<Project> m_project;
+  Project m_project;
 };
+
+extern Application* APP;
 
 } // namespace App

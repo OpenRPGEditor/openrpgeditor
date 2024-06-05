@@ -22,8 +22,8 @@ class Window {
   Window& operator=(Window other) = delete;
   Window& operator=(Window&& other) = delete;
 
-  [[nodiscard]] SDL_Window* get_native_window() const;
-  [[nodiscard]] SDL_Renderer* get_native_renderer() const;
+  [[nodiscard]] SDL_Window* getNativeWindow() const;
+  [[nodiscard]] SDL_Renderer* getNativeRenderer() const;
 
 
   void setTitle(std::string_view title) {

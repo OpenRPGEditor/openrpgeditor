@@ -14,12 +14,10 @@
 #include "Core/Resources.hpp"
 #include "Core/Window.hpp"
 #include "Settings/Project.hpp"
-#include "Database/Actors.hpp"
-#include "ImGuiFileDialog.h"
+
 #include <iostream>
 namespace App {
-
-static Actors actors;
+Application* APP = nullptr;
 Application::Application(const std::string& title) {
   APP_PROFILE_FUNCTION();
 
@@ -35,6 +33,7 @@ Application::Application(const std::string& title) {
   }
 
   m_window = std::make_unique<Window>(Window::Settings{title});
+  APP = this;
 }
 
 Application::~Application() {
@@ -59,8 +58,8 @@ ExitStatus App::Application::run() {
   ImGui::CreateContext();
   ImGuiIO& io{ImGui::GetIO()};
 
-  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable |
-                    ImGuiConfigFlags_ViewportsEnable;
+  io.ConfigFlags |=
+      ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable;
 
   const char* conf_path = SDL_GetPrefPath(COMPANY_NAMESPACE, APP_NAME);
   const std::string user_config_path{conf_path};
@@ -82,10 +81,9 @@ ExitStatus App::Application::run() {
   DPIHandler::set_global_font_scaling(&io);
 
   // Setup Platform/Renderer backends
-  ImGui_ImplSDL2_InitForSDLRenderer(m_window->get_native_window(), m_window->get_native_renderer());
-  ImGui_ImplSDLRenderer2_Init(m_window->get_native_renderer());
+  ImGui_ImplSDL2_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
+  ImGui_ImplSDLRenderer2_Init(m_window->getNativeRenderer());
   SDL_GL_SetSwapInterval(0);
-
 
   m_running = true;
   uint32_t a = SDL_GetTicks();
@@ -95,8 +93,8 @@ ExitStatus App::Application::run() {
     APP_PROFILE_SCOPE("MainLoop");
     delta = SDL_GetTicks() - a;
 
-    if (delta >= 1000.0/60.0) {
-      m_window->setTitle("fps: " + std::to_string(1000.0 / delta));
+    if (delta >= 1000.0 / 60.0) {
+      // m_window->setTitle("fps: " + std::to_string(1000.0 / delta));
       a = SDL_GetTicks();
 
       SDL_Event event{};
@@ -109,18 +107,17 @@ ExitStatus App::Application::run() {
           stop();
         }
 
-        if (event.type == SDL_WINDOWEVENT &&
-            event.window.windowID == SDL_GetWindowID(m_window->get_native_window())) {
+        if (event.type == SDL_WINDOWEVENT && event.window.windowID == SDL_GetWindowID(m_window->getNativeWindow())) {
           on_event(event.window);
-            }
+        }
       }
 
       // Start the Dear ImGui frame
       ImGui_ImplSDLRenderer2_NewFrame();
       ImGui_ImplSDL2_NewFrame();
 
-      //FIXME: Fixup monitors
-      // Currently crashes for some reason, copying MainPos and MainSize is recommended by the assert, so here we are
+      // FIXME: Fixup monitors
+      //  Currently crashes for some reason, copying MainPos and MainSize is recommended by the assert, so here we are
       for (ImGuiPlatformMonitor& mon : ImGui::GetPlatformIO().Monitors) {
         mon.WorkPos = mon.MainPos;
         mon.WorkSize = mon.MainSize;
@@ -128,74 +125,15 @@ ExitStatus App::Application::run() {
 
       ImGui::NewFrame();
 
-      if (!m_minimized) {
-        ImGui::DockSpaceOverViewport();
-
-        if (ImGui::BeginMainMenuBar()) {
-          if (ImGui::BeginMenu("File")) {
-            if (ImGui::MenuItem("New Project...", "Ctrl+N")) {
-              // TODO: Implement project creation
-            }
-            if (ImGui::MenuItem("Open Project...", "Ctrl+O")) {
-              IGFD::FileDialogConfig config;
-              config.path = ".";
-              ImGuiFileDialog::Instance()->OpenDialog("OpenProjectDlg", "Select a Project to Open", ".rpgproject", config);
-            }
-            if (ImGui::MenuItem("Close Project...")) {
-              // TODO: Implement project closing
-            }
-            if (ImGui::MenuItem("Save Project...", "Ctlr+S")) {
-              // TODO: Implement project saving
-            }
-            ImGui::Separator();
-            if (ImGui::MenuItem("Deployment...")) {
-              // TODO: Implement game deployment
-            }
-            /*
-            if (ImGui::MenuItem("Steam Management")) {
-              // TODO: Debate on implementing this, it may not be wise, or worthwhile
-            }
-            */
-            ImGui::Separator();
-            if (ImGui::MenuItem("Exit", "Ctrl+Q")) {
-              stop();
-            }
-            ImGui::EndMenu();
-          }
-
-          ImGui::EndMainMenuBar();
-        }
-      }
-
-      // First check if we have a pending project request
-      if (ImGuiFileDialog::Instance()->Display("OpenProjectDlg", ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking, ImVec2(300, 300))) {
-        if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
-          std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-          std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-          Project project = Project::load(filePathName, filePath);
-          if (project.isLoaded() && project.isValid()) {
-            m_project.emplace(std::move(project));
-          }
-          // action
-        }
-
-        // close
-        ImGuiFileDialog::Instance()->Close();
-      }
-
-      if (m_project && m_project->isValid()) {
-        m_project->draw();
-      } else if (m_project) {
-        m_project.reset();
-      }
+      m_project.draw();
 
       // Rendering
       ImGui::Render();
 
-      SDL_SetRenderDrawColor(m_window->get_native_renderer(), 100, 100, 100, 255);
-      SDL_RenderClear(m_window->get_native_renderer());
-      ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), m_window->get_native_renderer());
-      SDL_RenderPresent(m_window->get_native_renderer());
+      SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 100, 100, 100, 255);
+      SDL_RenderClear(m_window->getNativeRenderer());
+      ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), m_window->getNativeRenderer());
+      SDL_RenderPresent(m_window->getNativeRenderer());
     }
   }
 
@@ -212,15 +150,15 @@ void Application::on_event(const SDL_WindowEvent& event) {
   APP_PROFILE_FUNCTION();
 
   switch (event.event) {
-    case SDL_WINDOWEVENT_CLOSE:
-      return on_close();
-    case SDL_WINDOWEVENT_MINIMIZED:
-      return on_minimize();
-    case SDL_WINDOWEVENT_SHOWN:
-      return on_shown();
-    default:
-      // Do nothing otherwise
-      return;
+  case SDL_WINDOWEVENT_CLOSE:
+    return on_close();
+  case SDL_WINDOWEVENT_MINIMIZED:
+    return on_minimize();
+  case SDL_WINDOWEVENT_SHOWN:
+    return on_shown();
+  default:
+    // Do nothing otherwise
+    return;
   }
 }
 
@@ -242,4 +180,4 @@ void Application::on_close() {
   stop();
 }
 
-}  // namespace App
+} // namespace App

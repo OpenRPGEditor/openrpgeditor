@@ -4,13 +4,16 @@ include(${PROJECT_SOURCE_DIR}/cmake/StaticAnalyzers.cmake)
 
 add_library(
         ${NAME} STATIC
-        Core/Log.cpp
-        Core/Log.hpp
+        Core/Log.hpp Core/Log.cpp
         Core/Debug/Instrumentor.hpp
-        Core/Application.cpp
-        Core/Application.hpp
-        Core/Window.cpp
-        Core/Window.hpp
+        Core/Application.hpp Core/Application.cpp
+        Core/Window.hpp Core/Window.cpp
+        Core/Project.hpp Core/Project.cpp
+        Core/stb_image.h Core/image_loader.h Core/image_loader.c
+        Core/ResourceManager.hpp Core/ResourceManager.cpp
+        Core/Texture.hpp Core/Texture.cpp
+        Core/ImGuiUtils.hpp Core/ImGuiUtils.cpp
+        Core/MapRenderer.hpp Core/MapRenderer.cpp
         Core/Resources.hpp
         Core/DPIHandler.hpp)
 

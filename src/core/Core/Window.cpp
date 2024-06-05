@@ -45,13 +45,13 @@ Window::~Window() {
   SDL_DestroyWindow(m_window);
 }
 
-SDL_Window* Window::get_native_window() const {
+SDL_Window* Window::getNativeWindow() const {
   APP_PROFILE_FUNCTION();
 
   return m_window;
 }
 
-SDL_Renderer* Window::get_native_renderer() const {
+SDL_Renderer* Window::getNativeRenderer() const {
   APP_PROFILE_FUNCTION();
 
   return m_renderer;

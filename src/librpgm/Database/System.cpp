@@ -6,7 +6,6 @@ System System::load(std::string_view filepath) {
   std::ifstream file(filepath.data());
   nlohmann::json data = nlohmann::json::parse(file);
   System ret = data.get<System>();
-  /* These have to be explicitly loaded */
   data["hasEncryptedImages"].get_to(ret.hasEncryptedImages);
   data["hasEncryptedAudio"].get_to(ret.hasEncryptedAudio);
   data["encryptionKey"].get_to(ret.encryptionKey);

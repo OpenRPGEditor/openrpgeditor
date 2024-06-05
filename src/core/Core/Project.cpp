@@ -20,6 +20,7 @@ using namespace std::literals::string_view_literals;
 static SDL_Cursor* waitCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAITARROW);
 
 constexpr std::array KnownRPGMVVersions = {
+    //"RPGMV 1.0.0"sv,
     "RPGMV 1.6.1"sv,
     "RPGMV 1.6.2"sv,
     "RPGMV 1.6.3"sv,
@@ -95,6 +96,11 @@ bool Project::close(bool save) {
   m_tilesets = {};
   m_commonEvents = {};
   m_system = {};
+  m_mapInfos = {};
+
+  m_map.reset();
+  m_resourceManager.reset();
+  m_selectedMapId = -1;
 
   return true;
 }
@@ -139,7 +145,6 @@ void Project::draw() {
   }
 
   drawMapTree();
-  ImGui::ShowDemoWindow();
 }
 
 void Project::drawMenu() {
@@ -154,7 +159,7 @@ void Project::drawMenu() {
         ImGuiFileDialog::Instance()->OpenDialog("OpenProjectDlg", "Select a Project to Open", ".rpgproject", config);
       }
       if (ImGui::MenuItem("Close Project...")) {
-        // TODO: Implement project closing
+        close();
       }
       if (ImGui::MenuItem("Save Project...", "Ctlr+S")) {
         // TODO: Implement project saving
@@ -265,20 +270,41 @@ void Project::drawTilesets() {
     if (ImGui::BeginTabBar("##tileset")) {
       if (ImGui::BeginTabItem("A", nullptr)) {
         if (m_map) {
-          ImGui::DebugTextEncoding(m_tilesets.m_tilesets[m_map->tilesetId].name.c_str());
+          Texture tilesetTxtr =
+              m_resourceManager->loadTilesetImage(m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[0]);
+          ImGui::Image(tilesetTxtr.get(),
+                       ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
         }
         ImGui::EndTabItem();
       }
-      if (ImGui::BeginTabItem("B", nullptr)) {
-
-        ImGui::EndTabItem();
+      if (m_map && !m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[5].empty()) {
+        if (ImGui::BeginTabItem("B", nullptr)) {
+          Texture tilesetTxtr =
+              m_resourceManager->loadTilesetImage(m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[5]);
+          ImGui::Image(tilesetTxtr.get(),
+                       ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
+          ImGui::EndTabItem();
+        }
       }
-      if (ImGui::BeginTabItem("C", nullptr)) {
-        ImGui::EndTabItem();
+      if (m_map && !m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[6].empty()) {
+        if (ImGui::BeginTabItem("C", nullptr)) {
+          Texture tilesetTxtr =
+              m_resourceManager->loadTilesetImage(m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[6]);
+          ImGui::Image(tilesetTxtr.get(),
+                       ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
+          ImGui::EndTabItem();
+        }
       }
-      if (ImGui::BeginTabItem("D", nullptr)) {
-        ImGui::EndTabItem();
+      if (m_map && !m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[7].empty()) {
+        if (ImGui::BeginTabItem("D", nullptr)) {
+          Texture tilesetTxtr =
+              m_resourceManager->loadTilesetImage(m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[7]);
+          ImGui::Image(tilesetTxtr.get(),
+                       ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
+          ImGui::EndTabItem();
+        }
       }
+      // TODO: This needs to be either generated or made from scratch.
       if (ImGui::BeginTabItem("R", nullptr)) {
         ImGui::EndTabItem();
       }

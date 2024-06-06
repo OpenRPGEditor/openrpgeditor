@@ -119,7 +119,7 @@ void Project::setupDocking() {
     ImGuiID dock1 = ImGui::DockBuilderSplitNode(mainWindowGroup, ImGuiDir_Left, 0.25f, nullptr, &mainWindowGroup);
     ImGuiID dock2 = ImGui::DockBuilderSplitNode(dock1, ImGuiDir_Down, 0.5f, nullptr, &dock1);
     ImGuiID dock3 = ImGui::DockBuilderSplitNode(mainWindowGroup, ImGuiDir_Right, 0.5f, nullptr, &mainWindowGroup);
-    ImGuiID dock4 = ImGui::DockBuilderSplitNode(dock3, ImGuiDir_Up, 0.175f, nullptr, &dock3);
+    ImGuiID dock4 = ImGui::DockBuilderSplitNode(dock3, ImGuiDir_Right, 0.175f, nullptr, &dock3);
     // 6. Add windows to each docking space:
     ImGui::DockBuilderDockWindow("Events", dock1);
     ImGui::DockBuilderDockWindow("Tilesets", dock1);
@@ -127,8 +127,6 @@ void Project::setupDocking() {
     ImGui::DockBuilderDockWindow("Map Editor", dock3);
     ImGui::DockBuilderDockWindow("Map Properties", dock4);
     ImGui::DockBuilderGetNode(dock3)->SetLocalFlags(ImGuiDockNodeFlags_NoUndocking | ImGuiDockNodeFlags_NoTabBar);
-    ImGui::DockBuilderGetNode(dock4)->SetLocalFlags(ImGuiDockNodeFlags_HiddenTabBar);
-
     // 7. We're done setting up our docking configuration:
     ImGui::DockBuilderFinish(mainWindowGroup);
   }
@@ -148,6 +146,12 @@ void Project::draw() {
   }
 
   drawMapTree();
+  if (m_showDemoWindow) {
+    ImGui::ShowDemoWindow(&m_showDemoWindow);
+  }
+  if (m_showAboutWindow) {
+    ImGui::ShowAboutWindow(&m_showAboutWindow);
+  }
 }
 
 void Project::drawMenu() {
@@ -246,6 +250,15 @@ void Project::drawMenu() {
       if (ImGui::MenuItem("Actual Size", "Ctrl+0")) {
         // TODO: Implement
       }
+      ImGui::EndMenu();
+    }
+
+    if (ImGui::BeginMenu("Help")) {
+      if (ImGui::MenuItem("Contents", "F1")) {}
+      if (ImGui::MenuItem("Tutorials...")) {}
+      ImGui::Separator();
+      if (ImGui::MenuItem("About", nullptr, &m_showAboutWindow)) {}
+      if (ImGui::MenuItem("Show Demo", nullptr, &m_showDemoWindow)) {}
       ImGui::EndMenu();
     }
 
@@ -354,7 +367,7 @@ void Project::recursiveDrawTree(MapInfos::MapInfo& in) {
                             (in.m_children.empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
                             ImGuiTreeNodeFlags_OpenOnDoubleClick,
                         "%s", in.name.c_str())) {
-    if (ImGui::IsItemClicked(ImGuiMouseButton_Left) && m_selectedMapId != in.id) {
+    if ((ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemFocused()) && m_selectedMapId != in.id) {
       doMapSelection(in);
     }
 
@@ -362,7 +375,8 @@ void Project::recursiveDrawTree(MapInfos::MapInfo& in) {
       recursiveDrawTree(*mapInfo);
     }
     ImGui::TreePop();
-  } else if (ImGui::IsItemClicked(ImGuiMouseButton_Left) && m_selectedMapId != in.id && in.id != 0) {
+  } else if ((ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemFocused()) && m_selectedMapId != in.id &&
+             in.id != 0) {
     doMapSelection(in);
   }
 
@@ -385,6 +399,8 @@ inline int Align(int value, int size) { return (value - (value % size)); }
 
 void Project::drawMapEditor() {
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
+    ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionMax().y - 70.f), ImGuiChildFlags_Border,
+                      ImGuiWindowFlags_HorizontalScrollbar);
     if (m_map) {
       Texture tilesetTxtr =
           m_resourceManager->loadTilesetImage(m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[0]);
@@ -439,10 +455,88 @@ void Project::drawMapEditor() {
                                0xFF000000, 0.f, 0, 2.f * m_mapScale);
       }
     }
-  }
-  ImGui::End();
-  if (ImGui::Begin("Map Properties")) {
+    ImGui::EndChild();
     ImGui::DragFloat("Scale", &m_mapScale, 0.25, 0.5, 4.0);
   }
   ImGui::End();
+  if (m_map) {
+    if (ImGui::Begin("Map Properties")) {
+      char buf[4096]{};
+
+      ImGui::BeginGroup();
+      ImGui::SeparatorText("General Settings");
+      {
+        ImGui::BeginGroup();
+        {
+          ImGui::Text("Name");
+          ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2));
+          strncpy(buf, m_mapInfos.m_mapinfos[m_selectedMapId].name.c_str(), 4096);
+          if (ImGui::InputText("##map_name", buf, 4096)) {
+            m_mapInfos.m_mapinfos[m_selectedMapId].name = buf;
+          }
+        }
+        ImGui::EndGroup();
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+        {
+          ImVec2 cursorPos = ImGui::GetCursorPos();
+          // Move back up a couple couple pixels
+          cursorPos.y -= 4.f;
+          ImGui::SetCursorPos(cursorPos);
+          ImGui::Text("Display Name");
+          ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
+          strncpy(buf, m_map->displayName.c_str(), 4096);
+          if (ImGui::InputText("##map_display_name", buf, 4096)) {
+            m_map->displayName = buf;
+          }
+        }
+        ImGui::EndGroup();
+        ImGui::BeginGroup();
+        {
+          ImGui::Text("Tileset");
+          ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2));
+          strncpy(buf, m_mapInfos.m_mapinfos[m_selectedMapId].name.c_str(), 4096);
+          std::string text = m_tilesets.m_tilesets[m_map->tilesetId].name.empty()
+                                 ? "Choose a Tileset..."
+                                 : m_tilesets.m_tilesets[m_map->tilesetId].name;
+          ImGui::PushID("##map_tileset_button");
+          if (ImGui::Button(text.c_str())) {
+
+          }
+          ImGui::PopID();
+        }
+        ImGui::EndGroup();
+        ImGui::BeginGroup();
+        {
+          ImVec2 cursorPos = ImGui::GetCursorPos();
+          // Move back up a couple couple pixels
+          ImGui::SetCursorPos(cursorPos);
+          ImGui::Text("Width");
+          ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 3));
+          strncpy(buf, m_map->displayName.c_str(), 4096);
+          if (ImGui::DragInt("##map_width", &m_map->width, 0, 0, 256)) {
+            m_map->displayName = buf;
+          }
+        }
+        ImGui::EndGroup();
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+        {
+          ImVec2 cursorPos = ImGui::GetCursorPos();
+          // Move back up a couple couple pixels
+          cursorPos.y -= 4.f;
+          ImGui::SetCursorPos(cursorPos);
+          ImGui::Text("Height");
+          ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 3) - 15);
+          strncpy(buf, m_map->displayName.c_str(), 4096);
+          if (ImGui::DragInt("##map_height", &m_map->height, 0, 0, 256)) {
+            m_map->displayName = buf;
+          }
+        }
+        ImGui::EndGroup();
+      }
+      ImGui::EndGroup();
+    }
+    ImGui::End();
+  }
 }

@@ -115,4 +115,7 @@ private:
   int m_selectedMapId = -1;
   float m_mapScale = 1.f;
   MapRenderer m_mapRenderer;
+
+  bool m_showDemoWindow{};
+  bool m_showAboutWindow{};
 };

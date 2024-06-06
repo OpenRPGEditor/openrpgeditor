@@ -57,4 +57,44 @@ SDL_Renderer* Window::getNativeRenderer() const {
   return m_renderer;
 }
 
+int Window::getWidth() const {
+  int width{};
+  SDL_GetWindowSize(m_window, &width, nullptr);
+  return width;
+}
+
+int Window::getHeight() const {
+  int height{};
+  SDL_GetWindowSize(m_window, nullptr, &height);
+  return height;
+}
+
+void Window::setWindowSize(int width, int height) {
+  SDL_SetWindowSize(m_window, width, height);
+}
+
+int Window::getPositionX() const {
+  int x {};
+  SDL_GetWindowPosition(m_window, &x, nullptr);
+  return x;
+}
+int Window::getPositionY() const {
+  int y{};
+  SDL_GetWindowPosition(m_window, nullptr, &y);
+  return y;
+}
+
+void Window::setWindowPosition(int x, int y) {
+  SDL_DisplayMode dm;
+  SDL_GetCurrentDisplayMode(0, &dm);
+  if (x < 0 || x + getWidth() > dm.w) {
+    x = SDL_WINDOWPOS_CENTERED;
+  }
+  if (y < 0 || y + getHeight() > dm.h) {
+    y = SDL_WINDOWPOS_CENTERED;
+  }
+
+  SDL_SetWindowPosition(m_window, x, y);
+}
+
 }  // namespace App

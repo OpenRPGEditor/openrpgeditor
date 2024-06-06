@@ -46,6 +46,25 @@ Application::~Application() {
   SDL_Quit();
 }
 
+static void* PlatformWindow_ReadOpen(ImGuiContext*, ImGuiSettingsHandler*, const char* name) {
+  return (void*)"Window";
+}
+
+static void PlatformWindow_ReadLine(ImGuiContext*, ImGuiSettingsHandler*, void* entry, const char* line) {
+  int x, y;
+  if (sscanf(line, "WindowSize=%i,%i", &x, &y) == 2) {
+    APP->getWindow()->setWindowSize(x, y);
+  } else if (sscanf(line, "WindowPosition=%i,%i", &x, &y) == 2) {
+    APP->getWindow()->setWindowPosition(x, y);
+  }
+}
+
+static void PlatformWindow_WriteAll(ImGuiContext* ctx, ImGuiSettingsHandler* handler, ImGuiTextBuffer* buf) {
+  buf->appendf("[PlatformWindow][Window]\n");
+  buf->appendf("WindowSize=%i,%i\n", App::APP->getWindow()->getWidth(), APP->getWindow()->getHeight());
+  buf->appendf("WindowPosition=%i,%i\n", App::APP->getWindow()->getPositionX(), APP->getWindow()->getPositionY());
+}
+
 ExitStatus App::Application::run() {
   APP_PROFILE_FUNCTION();
 
@@ -58,12 +77,22 @@ ExitStatus App::Application::run() {
   ImGui::CreateContext();
   ImGuiIO& io{ImGui::GetIO()};
 
-  io.ConfigFlags |=
-      ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable;
+  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable |
+                    ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_NavEnableGamepad |
+                    ImGuiConfigFlags_DpiEnableScaleFonts | ImGuiConfigFlags_DpiEnableScaleViewports;
 
   const char* conf_path = SDL_GetPrefPath(COMPANY_NAMESPACE, APP_NAME);
   const std::string user_config_path{conf_path};
   SDL_free((void*)conf_path);
+
+  // Add .ini handle for UserData type
+  ImGuiSettingsHandler platform_handler;
+  platform_handler.TypeName = "PlatformWindow";
+  platform_handler.TypeHash = ImHashStr("PlatformWindow");
+  platform_handler.ReadOpenFn = PlatformWindow_ReadOpen;
+  platform_handler.ReadLineFn = PlatformWindow_ReadLine;
+  platform_handler.WriteAllFn = PlatformWindow_WriteAll;
+  ImGui::AddSettingsHandler(&platform_handler);
 
   APP_DEBUG("User config path: {}", user_config_path);
 
@@ -73,19 +102,22 @@ ExitStatus App::Application::run() {
 
   // ImGUI font
 
-  const float font_scaling_factor{DPIHandler::get_scale()};
-  const float font_size{18.0F * font_scaling_factor};
+  const float font_size{18.0F};
   const std::string font_path{Resources::font_path("NotoSansJP-SemiBold.ttf").generic_string()};
 
-  io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, nullptr, io.Fonts->GetGlyphRangesJapanese());
-  io.FontDefault =
-      io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, nullptr, io.Fonts->GetGlyphRangesJapanese());
+  ImVector<ImWchar> ranges;
+  ImFontGlyphRangesBuilder builder;
+  builder.AddRanges(io.Fonts->GetGlyphRangesJapanese());
+  builder.AddRanges(io.Fonts->GetGlyphRangesChineseFull());
+  builder.BuildRanges(&ranges);
+  io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, nullptr, ranges.Data);
+  io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, nullptr, ranges.Data);
   io.Fonts->Build();
   DPIHandler::set_global_font_scaling(&io);
 
   auto& style = ImGui::GetStyle();
   style = {}; // Reset sizes
-  style.WindowPadding = ImVec2(15, 15);
+  style.WindowPadding = ImVec2(4, 4);
   style.WindowRounding = 5.0f;
   style.FrameBorderSize = 1.f;
   style.FramePadding = ImVec2(5, 5);
@@ -93,7 +125,7 @@ ExitStatus App::Application::run() {
   style.ItemSpacing = ImVec2(12, 8);
   style.ItemInnerSpacing = ImVec2(8, 6);
   style.IndentSpacing = 25.0f;
-  style.ScrollbarSize = 15.0f;
+  style.ScrollbarSize = 30.0f;
   style.ScrollbarRounding = 9.0f;
   style.GrabMinSize = 5.0f;
   style.GrabRounding = 3.0f;
@@ -101,6 +133,8 @@ ExitStatus App::Application::run() {
   style.PopupRounding = 7.0;
   style.TabBorderSize = 1.f;
   style.TabRounding = 3.f;
+  style.DockingSeparatorSize = 6.f;
+  style.CellPadding = {1.f, 3.8f};
 
   auto* colors = style.Colors;
   colors[ImGuiCol_Text] = ImVec4(0.95f, 0.96f, 0.98f, 1.00f);
@@ -151,8 +185,8 @@ ExitStatus App::Application::run() {
   colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
   colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
   colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
-  style.ScaleAllSizes(font_scaling_factor);
-  // Setup Platform/Renderer backends
+  // style.ScaleAllSizes(font_scaling_factor);
+  //  Setup Platform/Renderer backends
   ImGui_ImplSDL2_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
   ImGui_ImplSDLRenderer2_Init(m_window->getNativeRenderer());
   SDL_GL_SetSwapInterval(0);

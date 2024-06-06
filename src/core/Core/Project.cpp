@@ -525,7 +525,7 @@ void Project::drawMapEditor() {
         ImGui::SeparatorText("General Settings");
         ImGui::BeginGroup();
         {
-          ImGui::Text("Name");
+          ImGui::Text("Name - ID: %.03i", m_selectedMapId);
           ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
           strncpy(buf, m_mapInfos.m_mapinfos[m_selectedMapId].name.c_str(), 4096);
           if (ImGui::InputText("##map_name", buf, 4096)) {
@@ -692,82 +692,82 @@ void Project::drawMapEditor() {
       {
         for (int z = 0; z < 6; ++z) {
           int tileCellIndex = (z * m_map->height + m_tileCellY) * m_map->width + m_tileCellX;
-          if (tileCellIndex > m_map->data.size()) {
-            continue;
-          }
-          int tileId = m_map->data[tileCellIndex];
+          if (tileCellIndex < m_map->data.size()) {
+            int tileId = m_map->data[tileCellIndex];
 
-          if (tileId >= 0 && tileId < MapRenderer::TILE_ID_C && !tileset->tilesetNames[5].empty()) {
-            Texture bTexture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[5]);
-            int tileX = (tileId / (bTexture.width() / 48)) * 48;
-            int tileY = (tileId % (bTexture.width() / 48)) * 48;
+            if (tileId >= 0 && tileId < MapRenderer::TILE_ID_C && !tileset->tilesetNames[5].empty()) {
+              Texture bTexture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[5]);
+              int tileX = (tileId / (bTexture.width() / 48)) * 48;
+              int tileY = (tileId % (bTexture.width() / 48)) * 48;
 
-            ImGui::Image(bTexture.get(), ImVec2{48, 48},
-                         ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / bTexture.width(),
-                         ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
-                             bTexture.height());
-          }
+              ImGui::Image(bTexture.get(), ImVec2{48, 48},
+                           ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / bTexture.width(),
+                           ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
+                               bTexture.height());
+            }
 
-          if (tileId >= MapRenderer::TILE_ID_C && tileId < MapRenderer::TILE_ID_D &&
-              !tileset->tilesetNames[6].empty()) {
-            int tileIndex = tileId - MapRenderer::TILE_ID_C;
-            Texture cTexture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[6]);
-            int tileX = (tileIndex / (cTexture.width() / 48)) * 48;
-            int tileY = (tileIndex % (cTexture.width() / 48)) * 48;
+            if (tileId >= MapRenderer::TILE_ID_C && tileId < MapRenderer::TILE_ID_D &&
+                !tileset->tilesetNames[6].empty()) {
+              int tileIndex = tileId - MapRenderer::TILE_ID_C;
+              Texture cTexture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[6]);
+              int tileX = (tileIndex / (cTexture.width() / 48)) * 48;
+              int tileY = (tileIndex % (cTexture.width() / 48)) * 48;
 
-            ImGui::Image(cTexture.get(), ImVec2{48, 48},
-                         ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / cTexture.width(),
-                         ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
-                             cTexture.height());
-          }
+              ImGui::Image(cTexture.get(), ImVec2{48, 48},
+                           ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / cTexture.width(),
+                           ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
+                               cTexture.height());
+                }
 
-          if (tileId >= MapRenderer::TILE_ID_D && tileId < MapRenderer::TILE_ID_E &&
-              !tileset->tilesetNames[7].empty()) {
-            int tileIndex = tileId - MapRenderer::TILE_ID_D;
-            Texture dTexture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[7]);
-            int tileX = (tileIndex / (dTexture.width() / 48)) * 48;
-            int tileY = (tileIndex % (dTexture.width() / 48)) * 48;
+            if (tileId >= MapRenderer::TILE_ID_D && tileId < MapRenderer::TILE_ID_E &&
+                !tileset->tilesetNames[7].empty()) {
+              int tileIndex = tileId - MapRenderer::TILE_ID_D;
+              Texture dTexture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[7]);
+              int tileX = (tileIndex / (dTexture.width() / 48)) * 48;
+              int tileY = (tileIndex % (dTexture.width() / 48)) * 48;
 
-            ImGui::Image(dTexture.get(), ImVec2{48, 48},
-                         ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / dTexture.width(),
-                         ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
-                             dTexture.height());
-          }
+              ImGui::Image(dTexture.get(), ImVec2{48, 48},
+                           ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / dTexture.width(),
+                           ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
+                               dTexture.height());
+                }
 
-          if (MapRenderer::isTileA1(tileId) && !tileset->tilesetNames[0].empty()) {
-            int tileIndex = tileId - MapRenderer::TILE_ID_A1;
-            Texture a1Texture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[0]);
-            int tileX = (tileIndex / (a1Texture.width() / 48)) * 48;
-            int tileY = (tileIndex % (a1Texture.width() / 48)) * 48;
+            if (MapRenderer::isTileA1(tileId) && !tileset->tilesetNames[0].empty()) {
+              int tileIndex = tileId - MapRenderer::TILE_ID_A1;
+              Texture a1Texture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[0]);
+              int tileX = (tileIndex / (a1Texture.width() / 48)) * 48;
+              int tileY = (tileIndex % (a1Texture.width() / 48)) * 48;
 
-            ImGui::Image(a1Texture.get(), ImVec2{48, 48},
-                         ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / a1Texture.width(),
-                         ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
-                             a1Texture.height());
-          }
+              ImGui::Image(a1Texture.get(), ImVec2{48, 48},
+                           ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / a1Texture.width(),
+                           ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
+                               a1Texture.height());
+            }
 
-          if (MapRenderer::isTileA2(tileId) && !tileset->tilesetNames[1].empty()) {
-            int tileIndex = tileId - MapRenderer::TILE_ID_A2;
-            Texture a2Texture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[1]);
-            int tileX = (tileIndex / (a2Texture.width() / 48)) * 48;
-            int tileY = (tileIndex % (a2Texture.width() / 48)) * 48;
+            if (MapRenderer::isTileA2(tileId) && !tileset->tilesetNames[1].empty()) {
+              int tileIndex = tileId - MapRenderer::TILE_ID_A2;
+              Texture a2Texture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[1]);
+              assert(a2Texture.width() > 0);
+              int tileX = (tileIndex / (a2Texture.width() / 48)) * 48;
+              int tileY = (tileIndex % (a2Texture.width() / 48)) * 48;
 
-            ImGui::Image(a2Texture.get(), ImVec2{48, 48},
-                         ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / a2Texture.width(),
-                         ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
-                             a2Texture.height());
-          }
+              ImGui::Image(a2Texture.get(), ImVec2{48, 48},
+                           ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / a2Texture.width(),
+                           ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
+                               a2Texture.height());
+            }
 
-          if (MapRenderer::isTileA3(tileId) && !tileset->tilesetNames[2].empty()) {
-            int tileIndex = tileId - MapRenderer::TILE_ID_A3;
-            Texture a3Texture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[2]);
-            int tileX = (tileIndex / (a3Texture.width() / 48)) * 48;
-            int tileY = (tileIndex % (a3Texture.width() / 48)) * 48;
+            if (MapRenderer::isTileA3(tileId) && !tileset->tilesetNames[2].empty()) {
+              int tileIndex = tileId - MapRenderer::TILE_ID_A3;
+              Texture a3Texture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[2]);
+              int tileX = (tileIndex / (a3Texture.width() / 48)) * 48;
+              int tileY = (tileIndex % (a3Texture.width() / 48)) * 48;
 
-            ImGui::Image(a3Texture.get(), ImVec2{48, 48},
-                         ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / a3Texture.width(),
-                         ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
-                             a3Texture.height());
+              ImGui::Image(a3Texture.get(), ImVec2{48, 48},
+                           ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / a3Texture.width(),
+                           ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
+                               a3Texture.height());
+            }
           }
         }
       }

@@ -126,7 +126,8 @@ void Project::setupDocking() {
     ImGui::DockBuilderDockWindow("Maps", dock2);
     ImGui::DockBuilderDockWindow("Map Editor", dock3);
     ImGui::DockBuilderDockWindow("Map Properties", dock4);
-    ImGui::DockBuilderGetNode(dock3)->SetLocalFlags(ImGuiDockNodeFlags_NoUndocking | ImGuiDockNodeFlags_NoTabBar);
+    ImGui::DockBuilderGetNode(dock3)->SetLocalFlags(static_cast<int>(ImGuiDockNodeFlags_NoUndocking) |
+                                                    static_cast<int>(ImGuiDockNodeFlags_NoTabBar));
     // 7. We're done setting up our docking configuration:
     ImGui::DockBuilderFinish(mainWindowGroup);
   }
@@ -355,6 +356,17 @@ void Project::doMapSelection(MapInfos::MapInfo& in) {
   SDL_SetCursor(waitCursor);
   m_selectedMapId = in.id;
   m_map = m_resourceManager->loadMap(in.id);
+  printf("%zu bytes, %i w %i h\n", m_map->data.size(), m_map->width, m_map->height);
+  for (int z = 0; z < 6; z++) {
+    printf("-----------------Map Layer %.4i-----------------\n", z);
+    for (int y = 0; y < m_map->height; y++) {
+      for (int x = 0; x < m_map->width; x++) {
+        int tileId = (z * m_map->height + y) * m_map->width + x;
+        printf("%.4i ", m_map->data[tileId]);
+      }
+      printf("\n");
+    }
+  }
   SDL_SetCursor(SDL_GetDefaultCursor());
 }
 
@@ -500,9 +512,7 @@ void Project::drawMapEditor() {
                                  ? "Choose a Tileset..."
                                  : m_tilesets.m_tilesets[m_map->tilesetId].name;
           ImGui::PushID("##map_tileset_button");
-          if (ImGui::Button(text.c_str())) {
-
-          }
+          if (ImGui::Button(text.c_str())) {}
           ImGui::PopID();
         }
         ImGui::EndGroup();

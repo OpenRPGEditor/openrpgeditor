@@ -7,9 +7,11 @@
 #include <cmath>
 #include "Database/Map.hpp"
 
-void MapRenderer::setMap(const Map* map, const Tileset* tileset) {
+void MapRenderer::setMap(const Map* map, const Tileset* tileset, int tileWidth, int tileHeight) {
   m_map = map;
   m_tileset = tileset;
+  m_tileWidth = tileWidth;
+  m_tileHeight = tileHeight;
 
   if (m_map == nullptr || m_tileset == nullptr) {
     SDL_DestroyTexture(m_lowerTexture);
@@ -44,7 +46,9 @@ void MapRenderer::setMap(const Map* map, const Tileset* tileset) {
   }
 }
 
-void MapRenderer::update(int mouseX, int mouseY) { draw(); }
+void MapRenderer::update(int mouseX, int mouseY) {
+  draw();
+}
 
 int MapRenderer::tileId(const int x, const int y, const int z) const {
 
@@ -80,23 +84,19 @@ bool MapRenderer::isPassable(const int x, const int y, const int d) const {
 }
 
 void MapRenderer::draw() {
-  SDL_Texture* oldTarget = SDL_GetRenderTarget(App::APP->getWindow()->getNativeRenderer());
-
-#if 0
-    int tileCount = (m_tilesetTextures[i].width() / tileWidth) * (m_testTexture.height() / tileHeight);
-
-    SDL_SetRenderTarget(App::APP->getWindow()->getNativeRenderer(), m_mapTestTexture);
-    SDL_SetRenderDrawColor(App::APP->getWindow()->getNativeRenderer(), 255, 0, 255, 255);
-    SDL_RenderClear(App::APP->getWindow()->getNativeRenderer());
-    int tileCellX = (tileIndex / (m_testTexture.width() / tileWidth)) * tileWidth;
-    int tileCellY = (tileIndex % (m_testTexture.width() / tileWidth)) * tileHeight;
-    SDL_Rect tileRect{x, y, tileWidth, tileHeight};
-    SDL_Rect tileSrcRect{tileCellX, tileCellY, tileWidth, tileHeight};
-
-
-    SDL_RenderCopy(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_testTexture.get()),
-                   &tileSrcRect, &tileRect);
-#endif
-
-  SDL_SetRenderTarget(App::APP->getWindow()->getNativeRenderer(), oldTarget);
+  //SDL_Texture* oldTarget = SDL_GetRenderTarget(App::APP->getWindow()->getNativeRenderer());
+  //   SDL_SetRenderTarget(App::APP->getWindow()->getNativeRenderer(), m_lowerTexture);
+  //   SDL_SetRenderDrawColor(App::APP->getWindow()->getNativeRenderer(), 255, 0, 255, 255);
+  //   SDL_RenderClear(App::APP->getWindow()->getNativeRenderer());
+  //   int tileCellX = (tileIndex / (m_testTexture.width() / m_tileWidth)) * tileWidth;
+  //   int tileCellY = (tileIndex % (m_testTexture.width() / m_tileWidth)) * tileHeight;
+  //   SDL_Rect tileRect{x, y, tileWidth, tileHeight};
+  //   SDL_Rect tileSrcRect{tileCellX, tileCellY, tileWidth, tileHeight};
+  //
+  //
+  //
+  //   SDL_RenderCopy(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_testTexture.get()),
+  //                  &tileSrcRect, &tileRect);
+  //
+  // SDL_SetRenderTarget(App::APP->getWindow()->getNativeRenderer(), oldTarget);
 }

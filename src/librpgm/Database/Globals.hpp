@@ -273,7 +273,7 @@ enum class StateRestriction {
 enum class ScrollType {
   No_Loop,
   Loop_Vertically,
-  LoopHorizontally,
+  Loop_Horizontally,
   Loop_Both,
 };
 

@@ -74,6 +74,8 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   m_mapInfos.m_mapinfos[0].name = m_system.gameTitle;
   APP_INFO("Loaded project!");
   m_resourceManager.emplace(m_basePath);
+  // Load the previously loaded map
+  doMapSelection(m_mapInfos.m_mapinfos[m_system.editMapId]);
   return true;
 }
 
@@ -259,6 +261,7 @@ void Project::drawMenu() {
       if (ImGui::MenuItem("Tutorials...")) {}
       ImGui::Separator();
       if (ImGui::MenuItem("About", nullptr, &m_showAboutWindow)) {}
+      if (ImGui::MenuItem("Show Tile Debugger", nullptr, &m_showTileDebug)) {}
       if (ImGui::MenuItem("Show Demo", nullptr, &m_showDemoWindow)) {}
       ImGui::EndMenu();
     }
@@ -288,34 +291,34 @@ void Project::drawTilesets() {
       if (ImGui::BeginTabItem("A", nullptr)) {
         if (m_map) {
           Texture tilesetTxtr =
-              m_resourceManager->loadTilesetImage(m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[0]);
+              m_resourceManager->loadTilesetImage(m_tilesets.tileset(m_map->tilesetId)->tilesetNames[0]);
           ImGui::Image(tilesetTxtr.get(),
                        ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
         }
         ImGui::EndTabItem();
       }
-      if (m_map && !m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[5].empty()) {
+      if (m_map && !m_tilesets.tileset(m_map->tilesetId)->tilesetNames[5].empty()) {
         if (ImGui::BeginTabItem("B", nullptr)) {
           Texture tilesetTxtr =
-              m_resourceManager->loadTilesetImage(m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[5]);
+              m_resourceManager->loadTilesetImage(m_tilesets.tileset(m_map->tilesetId)->tilesetNames[5]);
           ImGui::Image(tilesetTxtr.get(),
                        ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
           ImGui::EndTabItem();
         }
       }
-      if (m_map && !m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[6].empty()) {
+      if (m_map && !m_tilesets.tileset(m_map->tilesetId)->tilesetNames[6].empty()) {
         if (ImGui::BeginTabItem("C", nullptr)) {
           Texture tilesetTxtr =
-              m_resourceManager->loadTilesetImage(m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[6]);
+              m_resourceManager->loadTilesetImage(m_tilesets.tileset(m_map->tilesetId)->tilesetNames[6]);
           ImGui::Image(tilesetTxtr.get(),
                        ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
           ImGui::EndTabItem();
         }
       }
-      if (m_map && !m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[7].empty()) {
+      if (m_map && !m_tilesets.tileset(m_map->tilesetId)->tilesetNames[7].empty()) {
         if (ImGui::BeginTabItem("D", nullptr)) {
           Texture tilesetTxtr =
-              m_resourceManager->loadTilesetImage(m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[7]);
+              m_resourceManager->loadTilesetImage(m_tilesets.tileset(m_map->tilesetId)->tilesetNames[7]);
           ImGui::Image(tilesetTxtr.get(),
                        ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
           ImGui::EndTabItem();
@@ -356,13 +359,17 @@ void Project::doMapSelection(MapInfos::MapInfo& in) {
   SDL_SetCursor(waitCursor);
   m_selectedMapId = in.id;
   m_map = m_resourceManager->loadMap(in.id);
+  m_mapRenderer.setMap(&*m_map, m_tilesets.tileset(m_map->tilesetId));
+  m_initialScrollX = m_mapInfos.m_mapinfos[m_selectedMapId].scrollX;
+  m_initialScrollY = m_mapInfos.m_mapinfos[m_selectedMapId].scrollX;
+
   printf("%zu bytes, %i w %i h\n", m_map->data.size(), m_map->width, m_map->height);
   for (int z = 0; z < 6; z++) {
     printf("-----------------Map Layer %.4i-----------------\n", z);
     for (int y = 0; y < m_map->height; y++) {
       for (int x = 0; x < m_map->width; x++) {
         int tileId = (z * m_map->height + y) * m_map->width + x;
-        printf("%.4i ", m_map->data[tileId]);
+        printf("0x%.04x ", m_tilesets.tileset(m_map->tilesetId)->flags[m_map->data[tileId]]);
       }
       printf("\n");
     }
@@ -407,81 +414,119 @@ void Project::drawMapTree() {
   ImGui::End();
 }
 
-inline int Align(int value, int size) { return (value - (value % size)); }
+inline int roundUp(int numToRound, int multiple) {
+  if (multiple == 0)
+    return numToRound;
+
+  int remainder = numToRound % multiple;
+  if (remainder == 0)
+    return numToRound;
+
+  return numToRound + multiple - remainder;
+}
+
+inline int alignCoord(int value, int size) { return roundUp(value - (value % size), size); }
 
 void Project::drawMapEditor() {
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionMax().y - 70.f), ImGuiChildFlags_Border,
                       ImGuiWindowFlags_HorizontalScrollbar);
     if (m_map) {
-      Texture tilesetTxtr =
-          m_resourceManager->loadTilesetImage(m_tilesets.m_tilesets[m_map->tilesetId].tilesetNames[0]);
-      ImGui::Image(tilesetTxtr.get(), ImVec2{tilesetTxtr.width() * m_mapScale, tilesetTxtr.height() * m_mapScale});
+      if (m_initialScrollX != 0.0 || m_initialScrollY != 0.0) {
+        m_mapScale = std::min((m_map->width * 48) / m_initialScrollX, (m_map->height * 48) / m_initialScrollY);
+        ImGui::SetScrollX(m_initialScrollX);
+        ImGui::SetScrollY(m_initialScrollY);
+        m_initialScrollX = m_initialScrollY = 0.0;
+      }
+
+      if (ImGui::IsMouseKey(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
+        m_mapScale += ImGui::GetIO().MouseWheel * 0.5f;
+        m_mapScale = std::clamp(m_mapScale, 0.5f, 4.f);
+      }
+
+      // HACK: For testing, either change to a random texture, add a Map509 to parallaxes, or bug
+      // Phil to implement tilemap rendering lmao
+      Texture tilesetTxtr = m_resourceManager->loadParallaxImage("Map509");
+      ImGui::Image(tilesetTxtr.get(), ImVec2{(m_map->width * 48) * m_mapScale, (m_map->height * 48) * m_mapScale});
       ImGuiWindow* win = ImGui::GetCurrentWindow();
 
-      for (int y = 0; y <= tilesetTxtr.height() * m_mapScale; y += 48 * m_mapScale) {
+      for (int y = 0; y <= (m_map->height * 48) * m_mapScale; y += 48 * m_mapScale) {
         win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)},
                                win->ContentRegionRect.Min +
-                                   ImVec2{tilesetTxtr.width() * m_mapScale, static_cast<float>(y)},
-                               0x7fa0a0a0, m_mapScale);
+                                   ImVec2{(m_map->width * 48) * m_mapScale, static_cast<float>(y)},
+                               0x7f0a0a0a, 1.f);
       }
 
-      for (int x = 0; x <= tilesetTxtr.width() * m_mapScale; x += 48 * m_mapScale) {
+      for (int x = 0; x <= (m_map->width * 48) * m_mapScale; x += 48 * m_mapScale) {
         win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), 0.f},
                                win->ContentRegionRect.Min +
-                                   ImVec2{static_cast<float>(x), tilesetTxtr.height() * m_mapScale},
-                               0x7fa0a0a0, m_mapScale);
+                                   ImVec2{static_cast<float>(x), (m_map->height * 48) * m_mapScale},
+                               0x7f0a0a0a, 1.f);
       }
 
-      ImVec2 cursorPos = ImGui::GetIO().MousePos;
+      if (ImGui::IsWindowHovered()) {
+        ImVec2 cursorPos = ImGui::GetIO().MousePos;
 
-      cursorPos -= win->ContentRegionRect.Min;
+        cursorPos -= win->ContentRegionRect.Min;
 
-      if (!(cursorPos.x < 0 || cursorPos.y < 0 ||
-            cursorPos.x > (tilesetTxtr.width() * m_mapScale) + (48 * m_mapScale) ||
-            cursorPos.y > (tilesetTxtr.height() * m_mapScale) + (48 * m_mapScale))) {
-        if (cursorPos.x < 0) {
-          cursorPos.x = 0;
+        if (!(cursorPos.x < 0 || cursorPos.y < 0 || cursorPos.x >= ((m_map->width * 48) * m_mapScale) ||
+              cursorPos.y >= ((m_map->height * 48) * m_mapScale))) {
+          if (cursorPos.x < 0) {
+            cursorPos.x = 0;
+          }
+          if (cursorPos.x >= ((m_map->width * 48) * m_mapScale)) {
+            cursorPos.x = ((m_map->width * 48) * m_mapScale);
+          }
+
+          if (cursorPos.y < 0) {
+            cursorPos.y = 0;
+          }
+
+          if (cursorPos.y >= ((m_map->height * 48) * m_mapScale)) {
+            cursorPos.y = ((m_map->height * 48) * m_mapScale);
+          }
+          cursorPos.x =
+              static_cast<float>(alignCoord(static_cast<int>(cursorPos.x), static_cast<int>(48.f * m_mapScale)));
+          cursorPos.y =
+              static_cast<float>(alignCoord(static_cast<int>(cursorPos.y), static_cast<int>(48.f * m_mapScale)));
+
+          m_tileCellX = (static_cast<int>(cursorPos.x) + 1) / static_cast<int>(48.f * m_mapScale);
+          m_tileCellY = (static_cast<int>(cursorPos.y) + 1) / static_cast<int>(48.f * m_mapScale);
+          m_tileId = ((0 * m_map->height) + m_tileCellY) * m_map->width + m_tileCellX;
+
+          cursorPos += win->ContentRegionRect.Min;
+
+          float thickness = 4.f - m_mapScale;
+          if (thickness < 2.f) {
+            thickness = 2.f;
+          }
+          win->DrawList->AddRect(cursorPos + (ImVec2{1.f, 1.f} * m_mapScale), cursorPos + (ImVec2{47, 47} * m_mapScale),
+                                 0xFF000000, 0.f, 0, thickness);
+          win->DrawList->AddRect(cursorPos + (ImVec2{-1.f, -1.f} * m_mapScale),
+                                 cursorPos + (ImVec2{49, 49} * m_mapScale), 0xFF000000, 0.f, 0, thickness);
+          win->DrawList->AddRect(cursorPos + (ImVec2{0.f, 0.f} * m_mapScale), cursorPos + (ImVec2{48, 48} * m_mapScale),
+                                 0xFFFFFFFF, 0.f, 0, thickness);
         }
-        if (cursorPos.x > (tilesetTxtr.width() * m_mapScale) - (48 * m_mapScale)) {
-          cursorPos.x = (tilesetTxtr.width() * m_mapScale) - (48 * m_mapScale);
-        }
-
-        if (cursorPos.y < 0) {
-          cursorPos.y = 0;
-        }
-
-        if (cursorPos.y > (tilesetTxtr.height() * m_mapScale) - (48 * m_mapScale)) {
-          cursorPos.y = (tilesetTxtr.height() * m_mapScale) - (48 * m_mapScale);
-        }
-        cursorPos.x = Align(cursorPos.x, 48 * m_mapScale);
-        cursorPos.y = Align(cursorPos.y, 48 * m_mapScale);
-
-        cursorPos += win->ContentRegionRect.Min;
-
-        win->DrawList->AddRect(cursorPos + (ImVec2{0.f, 0.f} * m_mapScale), cursorPos + (ImVec2{48, 48} * m_mapScale),
-                               0xFFFFFFFF, 0.f, 0, 2.f * m_mapScale);
-        win->DrawList->AddRect(cursorPos + (ImVec2{-2.f, -2.f} * m_mapScale), cursorPos + (ImVec2{50, 50} * m_mapScale),
-                               0xFF000000, 0.f, 0, 2.f * m_mapScale);
-        win->DrawList->AddRect(cursorPos + (ImVec2{2.f, 2.f} * m_mapScale), cursorPos + (ImVec2{46, 46} * m_mapScale),
-                               0xFF000000, 0.f, 0, 2.f * m_mapScale);
       }
     }
     ImGui::EndChild();
-    ImGui::DragFloat("Scale", &m_mapScale, 0.25, 0.5, 4.0);
+    ImGui::Text("Scale:");
+    ImGui::SameLine();
+    ImGui::DragFloat("##map_scale", &m_mapScale, 0.25, 0.5, 4.0);
+    ImGui::SameLine();
+    ImGui::Text("Tile %i, (%i, %i)", m_tileId, m_tileCellX, m_tileCellY);
   }
   ImGui::End();
-  if (m_map) {
-    if (ImGui::Begin("Map Properties")) {
-      char buf[4096]{};
-
-      ImGui::BeginGroup();
-      ImGui::SeparatorText("General Settings");
+  if (ImGui::Begin("Map Properties")) {
+    char buf[4096]{};
+    if (m_map) {
+      ImGui::BeginGroupPanel();
       {
+        ImGui::SeparatorText("General Settings");
         ImGui::BeginGroup();
         {
           ImGui::Text("Name");
-          ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2));
+          ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
           strncpy(buf, m_mapInfos.m_mapinfos[m_selectedMapId].name.c_str(), 4096);
           if (ImGui::InputText("##map_name", buf, 4096)) {
             m_mapInfos.m_mapinfos[m_selectedMapId].name = buf;
@@ -506,23 +551,24 @@ void Project::drawMapEditor() {
         ImGui::BeginGroup();
         {
           ImGui::Text("Tileset");
-          ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2));
           strncpy(buf, m_mapInfos.m_mapinfos[m_selectedMapId].name.c_str(), 4096);
-          std::string text = m_tilesets.m_tilesets[m_map->tilesetId].name.empty()
-                                 ? "Choose a Tileset..."
-                                 : m_tilesets.m_tilesets[m_map->tilesetId].name;
+          std::string text = m_tilesets.tileset(m_map->tilesetId)->name.empty()
+                                 ? "##map_tileset_button_empty"
+                                 : m_tilesets.tileset(m_map->tilesetId)->name;
           ImGui::PushID("##map_tileset_button");
-          if (ImGui::Button(text.c_str())) {}
+          if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 2 - 15, 0})) {}
           ImGui::PopID();
         }
         ImGui::EndGroup();
+        ImGui::SameLine();
         ImGui::BeginGroup();
         {
           ImVec2 cursorPos = ImGui::GetCursorPos();
           // Move back up a couple couple pixels
+          cursorPos.y -= 4.f;
           ImGui::SetCursorPos(cursorPos);
           ImGui::Text("Width");
-          ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 3));
+          ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - 15);
           strncpy(buf, m_map->displayName.c_str(), 4096);
           if (ImGui::DragInt("##map_width", &m_map->width, 0, 0, 256)) {
             m_map->displayName = buf;
@@ -537,13 +583,193 @@ void Project::drawMapEditor() {
           cursorPos.y -= 4.f;
           ImGui::SetCursorPos(cursorPos);
           ImGui::Text("Height");
-          ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 3) - 15);
+          ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - 15);
           strncpy(buf, m_map->displayName.c_str(), 4096);
           if (ImGui::DragInt("##map_height", &m_map->height, 0, 0, 256)) {
             m_map->displayName = buf;
           }
         }
         ImGui::EndGroup();
+        ImGui::BeginGroup();
+        {
+          ImVec2 cursorPos = ImGui::GetCursorPos();
+          // Move back up a couple couple pixels
+          ImGui::SetCursorPos(cursorPos);
+          ImGui::Text("Scroll Type");
+          ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
+          strncpy(buf, m_map->displayName.c_str(), 4096);
+          if (ImGui::BeginCombo("##map_scroll_type",
+                                DecodeEnumName(magic_enum::enum_name(m_map->scrollType)).c_str())) {
+            for (const auto& e : magic_enum::enum_values<ScrollType>()) {
+              if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(e)).c_str(), e == m_map->scrollType)) {
+                m_map->scrollType = e;
+              }
+              if (e == m_map->scrollType) {
+                ImGui::SetItemDefaultFocus();
+              }
+            }
+            ImGui::EndCombo();
+          }
+        }
+        ImGui::EndGroup();
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+        {
+          ImVec2 cursorPos = ImGui::GetCursorPos();
+          // Move back up a couple couple pixels
+          cursorPos.y -= 4.f;
+          ImGui::SetCursorPos(cursorPos);
+          ImGui::Text("Enc. Steps");
+          ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
+          strncpy(buf, m_map->displayName.c_str(), 4096);
+          if (ImGui::DragInt("##map_enc_steps", &m_map->encounterStep, 0, 0, 999)) {
+            m_map->displayName = buf;
+          }
+        }
+        ImGui::EndGroup();
+      }
+      ImGui::Separator();
+      {
+        ImGui::BeginGroup();
+        {
+          if (ImGui::Checkbox("Autoplay BGM", &m_map->autoPlayBgm)) {}
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !m_map->autoPlayBgm);
+          {
+            ImGui::PushID("##map_bgm_button");
+            ImGui::SetNextItemWidth((ImGui::GetWindowContentRegionMax().x / 2) - 30);
+            std::string text = m_map->bgm.name.empty() ? "##map_bgm_button_empty" : m_map->bgm.name;
+            if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetWindowContentRegionMax().x / 2) - 15, 0})) {}
+            ImGui::PopID();
+          }
+          ImGui::PopItemFlag();
+        }
+        ImGui::EndGroup();
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+        {
+          if (ImGui::Checkbox("Autoplay BGS", &m_map->autoPlayBgs)) {}
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !m_map->autoPlayBgs);
+          {
+            ImGui::PushID("##map_bgs_button");
+            std::string text = m_map->bgs.name.empty() ? "##map_bgs_button_empty" : m_map->bgs.name;
+            if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetWindowContentRegionMax().x / 2) - 15, 0})) {}
+            ImGui::PopID();
+          }
+          ImGui::PopItemFlag();
+        }
+        ImGui::EndGroup();
+      }
+      ImGui::EndGroupPanel();
+    }
+  }
+  ImGui::End();
+
+  if (m_map) {
+    const Tileset* tileset = m_tilesets.tileset(m_map->tilesetId);
+    if (ImGui::Begin("Tile Debugger")) {
+      ImGui::BeginGroup();
+      {
+        for (int z = 0; z < 6; ++z) {
+          int tileCellIndex = (z * m_map->height + m_tileCellY) * m_map->width + m_tileCellX;
+          if (tileCellIndex > m_map->data.size()) {
+            continue;
+          }
+          ImGui::Text("Tile %i, layer %i, cell {%i, %i}, absolute {%i, %i}", tileCellIndex, z, m_tileCellX, m_tileCellY,
+                      m_tileCellX * 48, m_tileCellY * 48);
+          int tileId = m_map->data[tileCellIndex];
+          int flags = tileset->flags[tileId];
+          ImGui::Text(
+              "Tile ID %i, Flags 0x%04X, IsAutoTile %i, IsA1Tile %i, IsA2Tile %i, IsA3Tile %i, IsA4Tile %i, IsA5Tile "
+              "%i",
+              tileId, flags, MapRenderer::isAutoTile(tileId), MapRenderer::isTileA1(tileId),
+              MapRenderer::isTileA2(tileId), MapRenderer::isTileA3(tileId), MapRenderer::isTileA4(tileId),
+              MapRenderer::isTileA5(tileId));
+        }
+      }
+      ImGui::EndGroup();
+
+      ImGui::BeginGroup();
+      {
+        for (int z = 0; z < 6; ++z) {
+          int tileCellIndex = (z * m_map->height + m_tileCellY) * m_map->width + m_tileCellX;
+          if (tileCellIndex > m_map->data.size()) {
+            continue;
+          }
+          int tileId = m_map->data[tileCellIndex];
+
+          if (tileId >= 0 && tileId < MapRenderer::TILE_ID_C && !tileset->tilesetNames[5].empty()) {
+            Texture bTexture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[5]);
+            int tileX = (tileId / (bTexture.width() / 48)) * 48;
+            int tileY = (tileId % (bTexture.width() / 48)) * 48;
+
+            ImGui::Image(bTexture.get(), ImVec2{48, 48},
+                         ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / bTexture.width(),
+                         ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
+                             bTexture.height());
+          }
+
+          if (tileId >= MapRenderer::TILE_ID_C && tileId < MapRenderer::TILE_ID_D &&
+              !tileset->tilesetNames[6].empty()) {
+            int tileIndex = tileId - MapRenderer::TILE_ID_C;
+            Texture cTexture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[6]);
+            int tileX = (tileIndex / (cTexture.width() / 48)) * 48;
+            int tileY = (tileIndex % (cTexture.width() / 48)) * 48;
+
+            ImGui::Image(cTexture.get(), ImVec2{48, 48},
+                         ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / cTexture.width(),
+                         ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
+                             cTexture.height());
+          }
+
+          if (tileId >= MapRenderer::TILE_ID_D && tileId < MapRenderer::TILE_ID_E &&
+              !tileset->tilesetNames[7].empty()) {
+            int tileIndex = tileId - MapRenderer::TILE_ID_D;
+            Texture dTexture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[7]);
+            int tileX = (tileIndex / (dTexture.width() / 48)) * 48;
+            int tileY = (tileIndex % (dTexture.width() / 48)) * 48;
+
+            ImGui::Image(dTexture.get(), ImVec2{48, 48},
+                         ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / dTexture.width(),
+                         ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
+                             dTexture.height());
+          }
+
+          if (MapRenderer::isTileA1(tileId) && !tileset->tilesetNames[0].empty()) {
+            int tileIndex = tileId - MapRenderer::TILE_ID_A1;
+            Texture a1Texture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[0]);
+            int tileX = (tileIndex / (a1Texture.width() / 48)) * 48;
+            int tileY = (tileIndex % (a1Texture.width() / 48)) * 48;
+
+            ImGui::Image(a1Texture.get(), ImVec2{48, 48},
+                         ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / a1Texture.width(),
+                         ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
+                             a1Texture.height());
+          }
+
+          if (MapRenderer::isTileA2(tileId) && !tileset->tilesetNames[1].empty()) {
+            int tileIndex = tileId - MapRenderer::TILE_ID_A2;
+            Texture a2Texture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[1]);
+            int tileX = (tileIndex / (a2Texture.width() / 48)) * 48;
+            int tileY = (tileIndex % (a2Texture.width() / 48)) * 48;
+
+            ImGui::Image(a2Texture.get(), ImVec2{48, 48},
+                         ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / a2Texture.width(),
+                         ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
+                             a2Texture.height());
+          }
+
+          if (MapRenderer::isTileA3(tileId) && !tileset->tilesetNames[2].empty()) {
+            int tileIndex = tileId - MapRenderer::TILE_ID_A3;
+            Texture a3Texture = m_resourceManager->loadTilesetImage(tileset->tilesetNames[2]);
+            int tileX = (tileIndex / (a3Texture.width() / 48)) * 48;
+            int tileY = (tileIndex % (a3Texture.width() / 48)) * 48;
+
+            ImGui::Image(a3Texture.get(), ImVec2{48, 48},
+                         ImVec2{static_cast<float>(tileX), static_cast<float>(tileY)} / a3Texture.width(),
+                         ImVec2{(static_cast<float>(tileX) + 48.f), (static_cast<float>(tileY) + 48.f)} /
+                             a3Texture.height());
+          }
+        }
       }
       ImGui::EndGroup();
     }

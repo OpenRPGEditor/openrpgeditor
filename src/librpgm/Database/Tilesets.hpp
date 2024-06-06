@@ -44,6 +44,19 @@ public:
   static Tilesets load(std::string_view filepath);
   bool serialize(std::string_view filepath);
 
-  // private:
+  Tileset* tileset(int id) {
+    if (id <= 0 || id > m_tilesets.size()) {
+      return nullptr;
+    }
+    return &m_tilesets[id - 1];
+  }
+
+  const Tileset* tileset(int id) const {
+    if (id <= 0 || id > m_tilesets.size()) {
+      return nullptr;
+    }
+    return &m_tilesets[id - 1];
+  }
+private:
   std::vector<Tileset> m_tilesets;
 };

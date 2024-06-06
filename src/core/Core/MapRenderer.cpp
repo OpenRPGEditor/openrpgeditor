@@ -40,10 +40,6 @@ void MapRenderer::setMap(const Map* map, const Tileset* tileset, int tileWidth, 
   m_upperTexture = SDL_CreateTexture(App::APP->getWindow()->getNativeRenderer(), SDL_PIXELFORMAT_RGBA8888,
                                      SDL_TEXTUREACCESS_TARGET, map->width * 48, map->height * 48);
   SDL_SetTextureBlendMode(m_upperTexture, SDL_BLENDMODE_BLEND);
-
-  for (const auto& tile : m_map->data) {
-    printf("%.04X -> %.04x\n", tile, m_tileset->flags[tile]);
-  }
 }
 
 void MapRenderer::update(int mouseX, int mouseY) {

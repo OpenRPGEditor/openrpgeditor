@@ -114,8 +114,14 @@ private:
   std::optional<Map> m_map;
   int m_selectedMapId = -1;
   float m_mapScale = 1.f;
+  double m_initialScrollX = 0.0;
+  double m_initialScrollY = 0.0;
+  int m_tileCellX{};
+  int m_tileCellY{};
+  int m_tileId{};
   MapRenderer m_mapRenderer;
 
   bool m_showDemoWindow{};
   bool m_showAboutWindow{};
+  bool m_showTileDebug{true};
 };

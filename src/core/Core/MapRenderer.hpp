@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include "Core/Texture.hpp"
+#include "Database/Map.hpp"
 
 #include "Database/Tilesets.hpp"
 
@@ -132,6 +133,10 @@ public:
   }
   [[nodiscard]] static bool isWallTypeAutotile(int tileId) { return isRoofTile(tileId) || isWallSideTile(tileId); }
   [[nodiscard]] static bool isWaterfallTypeAutotile(int tileId) { return isWaterfallTile(tileId); }
+
+  [[nodiscard]] int tileIdFromCoords(int x, int y, int z) {
+    return (z * m_map->width + y) * m_map->width + x;
+  }
 
 private:
   void draw();

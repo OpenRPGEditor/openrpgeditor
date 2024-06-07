@@ -700,6 +700,86 @@ void Project::drawMapEditor() {
           ImGui::PopItemFlag();
         }
         ImGui::EndGroup();
+        ImGui::BeginGroup();
+        {
+          if (ImGui::Checkbox("Battleback", &m_map->specifyBattleBack)) {}
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !m_map->specifyBattleBack);
+          {
+            ImGui::PushID("##map_battleback_button");
+            // TODO: Combine battleBack1Name and battleBack2Name
+            std::string text = m_map->bgs.name.empty() ? "##map_battleback_button_empty" : m_map->battleBack1Name;
+            if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetWindowContentRegionMax().x / 2) - 15, 0})) {}
+            ImGui::PopID();
+          }
+          ImGui::PopItemFlag();
+        }
+        ImGui::EndGroup();
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+        {
+          if (ImGui::Checkbox("Disable Dashing", &m_map->disableDashing)) {}
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !m_map->disableDashing);
+          ImGui::PopItemFlag();
+        }
+        ImGui::EndGroup();
+      }
+      ImGui::Separator();
+      {
+        ImGui::BeginGroup();
+        {
+            ImGui::Text("Parallax Background");
+            ImGui::PushID("##map_parallax_button");
+            std::string text = m_map->bgs.name.empty() ? "##map_parallax_button_empty" : m_map->parallaxName;
+            if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetWindowContentRegionMax().x / 2) - 15, 0})) {}
+            ImGui::PopID();
+        }
+        ImGui::EndGroup();
+        ImGui::BeginGroup();
+        {
+          if (ImGui::Checkbox("Loop Horizontally", &m_map->parallaxLoopX)) {}
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !m_map->parallaxLoopX);
+          {
+            ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
+            if (ImGui::DragInt("##map_parallax_Sx", &m_map->parallaxSx, 0, 0, 999)) {}
+          }
+          ImGui::PopItemFlag();
+        }
+        ImGui::EndGroup();
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+        {
+          if (ImGui::Checkbox("Loop Vertically", &m_map->parallaxLoopY)) {}
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !m_map->parallaxLoopY);
+          {
+            ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
+            if (ImGui::DragInt("##map_parallax_Sy", &m_map->parallaxSy, 0, 0, 999)) {}
+          }
+          ImGui::PopItemFlag();
+        }
+        ImGui::EndGroup();
+        ImGui::BeginGroup();
+        {
+          if (ImGui::Checkbox("Show in Editor", &m_map->parallaxShow)) {}
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !m_map->parallaxShow);
+          ImGui::PopItemFlag();
+        }
+        ImGui::EndGroup();
+        ImGui::BeginGroup();
+        {
+          ImVec2 cursorPos = ImGui::GetCursorPos();
+          ImGuiInputTextFlags flags = ImGuiInputTextFlags_CtrlEnterForNewLine;
+          // Move back up a couple couple pixels
+          cursorPos.y -= 4.f;
+          ImGui::SetCursorPos(cursorPos);
+          ImGui::Text("Note");
+
+          strncpy(buf, m_map->note.c_str(), 4096);
+          if (ImGui::InputTextMultiline("##map_note", buf, 2048, ImVec2(ImGui::GetContentRegionMax().x - 15, 400), flags)) {
+            m_map->note = buf;
+          }
+        }
+        ImGui::Dummy(ImVec2(0.0f, 15.0f));
+        ImGui::EndGroup();
       }
       ImGui::EndGroupPanel();
     }

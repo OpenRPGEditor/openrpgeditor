@@ -634,6 +634,14 @@ struct MovementChangeImageCommand : IEventCommand {
   std::string image;
   int character;
 };
+
+struct MovementChangeOpacityCommand : IEventCommand {
+  ~MovementChangeOpacityCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Opacity; }
+
+  int opacity;
+};
+
 struct MovementChangeBlendModeCommand : IEventCommand {
   ~MovementChangeBlendModeCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Blend_Mode; }

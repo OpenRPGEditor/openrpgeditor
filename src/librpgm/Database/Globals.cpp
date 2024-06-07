@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 
-
 static void ReplaceStr(std::string& str, const std::string& oldStr, const std::string& newStr) {
   std::string::size_type pos = 0u;
   while ((pos = str.find(oldStr, pos)) != std::string::npos) {
@@ -29,9 +28,11 @@ std::string DecodeEnumName(std::string_view str) {
   ReplaceStr(result, "bo_", "[");
   ReplaceStr(result, "_bc", "]");
   ReplaceStr(result, "_pe_", ".");
+  ReplaceStr(result, "_del_", "\0");
+  ReplaceStr(result, "_deg", "°");
 
   /* Add new encodings *before* this or it will clobber them */
   ReplaceStr(result, "_", " ");
+  result.shrink_to_fit();
   return result;
 }
-

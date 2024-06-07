@@ -19,12 +19,14 @@
  * bo_ -> [
  * _bc -> ]
  * _pe_ -> .
+ * _del_ -> useful placeholder for name collisions inserts a null and truncats the strings
+ * _deg -> °
  *
  * After the special characters have been decoded and inserted any remaining
  * underscores are replaced with spaces
  */
 
-enum class FacingDirection : int {
+enum class Direction : int {
   Retain = 0,
   Down = 2,
   Left = 4,
@@ -336,6 +338,7 @@ enum class EventCode : int {
   Show_Animation = 212,
   Show_Balloon_Icon = 213,
   Erase_Event = 214,
+  // Left off here
   Change_Player_Followers = 216,
   Gather_Followers = 217,
   Fade_Out_Screen = 221,
@@ -405,6 +408,53 @@ enum class EventCode : int {
   Script = 355,
   Next_Script = 655, // RPGMV will keep appending text to the script until it consumes all of them
   Plugin_Command = 356,
+
+  // MovementRoute commands
+  Move_Down = 1,
+  Move_Left = 2,
+  Move_Right = 3,
+  Move_Up = 4,
+  Move_Lower_Left = 5,
+  Move_Lower_Right = 6,
+  Move_Upper_Left = 7,
+  Move_Upper_Right = 8,
+  Move_at_Random = 9,
+  Move_toward_Player = 10,
+  Move_away_from_Player = 11,
+  _1_Step_Forward = 12,
+  _1_Step_Backward = 13,
+  Jump = 14,
+  Wait_del_ = 15,
+  Turn_Down = 16,
+  Turn_Left = 17,
+  Turn_Right = 18,
+  Turn_Up = 19,
+  Turn_90_deg_Right = 20,
+  Turn_90_deg_Left = 21,
+  Turn_180_deg = 22,
+  Turn_90_deg_Left_or_Right = 23,
+  Turn_at_Random = 24,
+  Turn_toward_Player = 25,
+  Turn_away_from_Player = 26,
+  Switch_ON = 27,
+  Switch_OFF = 28,
+  Speed = 29,
+  Frequency = 30,
+  Walking_Animation_ON = 31,
+  Walking_Animation_OFF = 32,
+  Stepping_Animation_ON = 33,
+  Stepping_Animation_OFF = 34,
+  Direction_Fix_ON = 35,
+  Direction_Fix_OFF = 36,
+  Through_ON = 37,
+  Through_OFF = 38,
+  Transparent_ON = 39,
+  Transparent_OFF = 40,
+  Change_Image = 41,
+  Change_Opacity = 42,
+  Change_Blend_Mode = 43,
+  Play_SE_de_Movement = 44,
+  Script_de_Movement = 45,
 };
 
 enum class QuantityChangeOp {
@@ -519,10 +569,7 @@ enum class EventTriggerType {
   Parallel,
 };
 
-enum class TimerControl {
-  Start,
-  Stop
-};
+enum class TimerControl { Start, Stop };
 std::string DecodeEnumName(std::string_view str);
 
 template <typename E>

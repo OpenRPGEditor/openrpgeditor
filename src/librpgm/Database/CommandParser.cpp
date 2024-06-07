@@ -30,7 +30,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       while (nextEventCommand() == EventCode::Next_Text) {
         ++index;
         NextTextCommand* tmp = text->text.emplace_back(new NextTextCommand()).get();
-        parser[index].at("indent").get_to(text->indent);
+        parser[index].at("indent").get_to(tmp->indent);
         currentCommand()["parameters"][0].get_to(tmp->text);
       }
       break;
@@ -72,17 +72,17 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
     }
     case EventCode::When_Cancel: {
       WhenCancelCommand* canceled = dynamic_cast<WhenCancelCommand*>(ret.emplace_back(new WhenCancelCommand()).get());
-      parser[index]["indent"].get_to(canceled->indent);
+      parser[index].at("indent").get_to(canceled->indent);
       break;
     }
     case EventCode::Input_Number: {
       InputNumberCommand* input = dynamic_cast<InputNumberCommand*>(ret.emplace_back(new InputNumberCommand()).get());
-      parser[index]["indent"].get_to(input->indent);
+      parser[index].at("indent").get_to(input->indent);
       break;
     }
     case EventCode::Select_Item: {
       InputNumberCommand* input = dynamic_cast<InputNumberCommand*>(ret.emplace_back(new InputNumberCommand()).get());
-      parser[index]["indent"].get_to(input->indent);
+      parser[index].at("indent").get_to(input->indent);
       break;
     }
     case EventCode::Show_Scrolling_Text: {
@@ -106,7 +106,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       while (nextEventCommand() == EventCode::Next_Comment) {
         ++index;
         NextCommentCommand* tmp = text->text.emplace_back(new NextCommentCommand()).get();
-        parser[index].at("indent").get_to(text->indent);
+        parser[index].at("indent").get_to(tmp->indent);
         currentCommand()["parameters"][0].get_to(tmp->text);
       }
       break;
@@ -443,8 +443,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Set_Event_Location: {
-      SetVehicleLocationCommand* transfer =
-          dynamic_cast<SetVehicleLocationCommand*>(ret.emplace_back(new SetVehicleLocationCommand()).get());
+      SetEventLocationCommand* transfer =
+          dynamic_cast<SetEventLocationCommand*>(ret.emplace_back(new SetEventLocationCommand()).get());
       parser[index].at("indent").get_to(transfer->indent);
       parameters[0].get_to(transfer->mode);
       parameters[1].get_to(transfer->mapId);
@@ -452,9 +452,342 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       parameters[3].get_to(transfer->y);
       break;
     }
+    case EventCode::Scroll_Map: {
+      ScrollMapCommand* scroll = dynamic_cast<ScrollMapCommand*>(ret.emplace_back(new ScrollMapCommand()).get());
+      parser[index].at("indent").get_to(scroll->indent);
+      parameters[0].get_to(scroll->direction);
+      parameters[1].get_to(scroll->distance);
+      parameters[2].get_to(scroll->speed);
+      break;
+    }
+    case EventCode::Set_Movement_Route: {
+      SetMovementRouteCommand* route =
+          dynamic_cast<SetMovementRouteCommand*>(ret.emplace_back(new SetMovementRouteCommand()).get());
+      parser[index].at("indent").get_to(route->indent);
+      parameters[0].get_to(route->character);
+      parameters[1].get_to(route->route);
+      while (nextEventCommand() == EventCode::Movement_Route_Step) {
+        ++index;
+        MovementRouteStepCommand* tmp =
+            dynamic_cast<MovementRouteStepCommand*>(route->editNodes.emplace_back(new MovementRouteStepCommand()).get());
+        parser[index].at("indent").get_to(tmp->indent);
+        CommandParser p;
+        tmp->step = p.parse(currentCommand()["parameters"])[0];
+      }
+      break;
+    }
+
+    case EventCode::Get_On_Off_Vehicle: {
+      GetOnOffVehicleCommand* step =
+          dynamic_cast<GetOnOffVehicleCommand*>(ret.emplace_back(new GetOnOffVehicleCommand()).get());
+      parser[index].at("indent").get_to(step->indent);
+      break;
+    }
+    case EventCode::Change_Transparency: {
+      ChangeTransparencyCommand* step =
+          dynamic_cast<ChangeTransparencyCommand*>(ret.emplace_back(new ChangeTransparencyCommand()).get());
+      parser[index].at("indent").get_to(step->indent);
+      parameters[0].get_to(step->transparency);
+      break;
+    }
+    case EventCode::Show_Animation: {
+      ShowAnimationCommand* step =
+          dynamic_cast<ShowAnimationCommand*>(ret.emplace_back(new ShowAnimationCommand()).get());
+      parser[index].at("indent").get_to(step->indent);
+      parameters[0].get_to(step->character);
+      parameters[1].get_to(step->animation);
+      parameters[2].get_to(step->waitForCompletion);
+      break;
+    }
+    case EventCode::Erase_Event: {
+      EraseEventCommand* step = dynamic_cast<EraseEventCommand*>(ret.emplace_back(new EraseEventCommand()).get());
+      parser[index].at("indent").get_to(step->indent);
+      break;
+    }
     case EventCode::End: {
-      ElseCommand* end = dynamic_cast<ElseCommand*>(ret.emplace_back(new ElseCommand()).get());
+      EndCommand* end = dynamic_cast<EndCommand*>(ret.emplace_back(new EndCommand()).get());
       parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+      // MovementRoute commands
+    case EventCode::Move_Down: {
+      {
+        MovementMoveDownCommand* end =
+            dynamic_cast<MovementMoveDownCommand*>(ret.emplace_back(new MovementMoveDownCommand()).get());
+        parser[index].at("indent").get_to(end->indent);
+        break;
+      }
+    case EventCode::Move_Left: {
+      MovementMoveLeftCommand* end =
+          dynamic_cast<MovementMoveLeftCommand*>(ret.emplace_back(new MovementMoveLeftCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Move_Right: {
+      MovementMoveRightCommand* end =
+          dynamic_cast<MovementMoveRightCommand*>(ret.emplace_back(new MovementMoveRightCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Move_Up: {
+      MovementMoveUpCommand* end =
+          dynamic_cast<MovementMoveUpCommand*>(ret.emplace_back(new MovementMoveUpCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Move_Lower_Left: {
+      MovementMoveLowerLeftommand* end =
+          dynamic_cast<MovementMoveLowerLeftommand*>(ret.emplace_back(new MovementMoveLowerLeftommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Move_Lower_Right: {
+      MovementMoveLowerRightCommand* end =
+          dynamic_cast<MovementMoveLowerRightCommand*>(ret.emplace_back(new MovementMoveLowerRightCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Move_Upper_Left: {
+      MovementMoveUpperLeftCommand* end =
+          dynamic_cast<MovementMoveUpperLeftCommand*>(ret.emplace_back(new MovementMoveUpperLeftCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Move_Upper_Right: {
+      MovementMoveUpperRightCommand* end =
+          dynamic_cast<MovementMoveUpperRightCommand*>(ret.emplace_back(new MovementMoveUpperRightCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Move_at_Random: {
+      MovementMoveAtRandomCommand* end =
+          dynamic_cast<MovementMoveAtRandomCommand*>(ret.emplace_back(new MovementMoveAtRandomCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Move_toward_Player: {
+      MovementMoveTowardPlayerCommand* end =
+          dynamic_cast<MovementMoveTowardPlayerCommand*>(ret.emplace_back(new MovementMoveTowardPlayerCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Move_away_from_Player: {
+      MovementMoveAwayFromPlayerCommand* end = dynamic_cast<MovementMoveAwayFromPlayerCommand*>(
+          ret.emplace_back(new MovementMoveAwayFromPlayerCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::_1_Step_Forward: {
+      MovementMove1StepFowardCommand* end =
+          dynamic_cast<MovementMove1StepFowardCommand*>(ret.emplace_back(new MovementMove1StepFowardCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::_1_Step_Backward: {
+      MovementMove1StepBackwardCommand* end = dynamic_cast<MovementMove1StepBackwardCommand*>(
+          ret.emplace_back(new MovementMove1StepBackwardCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Jump: {
+      MovementJumpCommand* end =
+          dynamic_cast<MovementJumpCommand*>(ret.emplace_back(new MovementMove1StepBackwardCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      parameters[0].get_to(end->x);
+      parameters[0].get_to(end->y);
+      break;
+    }
+    case EventCode::Wait_del_: {
+      MovementWaitCommand* end = dynamic_cast<MovementWaitCommand*>(ret.emplace_back(new MovementJumpCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      parameters[0].get_to(end->duration);
+      break;
+    }
+    case EventCode::Turn_Down: {
+      MovementTurnDownCommand* end =
+          dynamic_cast<MovementTurnDownCommand*>(ret.emplace_back(new MovementTurnDownCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Turn_Left: {
+      MovementTurnLeftCommand* end =
+          dynamic_cast<MovementTurnLeftCommand*>(ret.emplace_back(new MovementTurnLeftCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Turn_Right: {
+      MovementTurnRightCommand* end =
+          dynamic_cast<MovementTurnRightCommand*>(ret.emplace_back(new MovementTurnRightCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Turn_Up: {
+      MovementTurnUpCommand* end =
+          dynamic_cast<MovementTurnUpCommand*>(ret.emplace_back(new MovementTurnUpCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Turn_90_deg_Right: {
+      MovementTurn90DegRightCommand* end =
+          dynamic_cast<MovementTurn90DegRightCommand*>(ret.emplace_back(new MovementTurn90DegRightCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Turn_90_deg_Left: {
+      MovementTurn90DegLeftCommand* end =
+          dynamic_cast<MovementTurn90DegLeftCommand*>(ret.emplace_back(new MovementTurn90DegLeftCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Turn_180_deg: {
+      MovementTurn180DegCommand* end =
+          dynamic_cast<MovementTurn180DegCommand*>(ret.emplace_back(new MovementTurn180DegCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Turn_90_deg_Left_or_Right: {
+      MovementTurn90DegLeftOrRightCommand* end = dynamic_cast<MovementTurn90DegLeftOrRightCommand*>(
+          ret.emplace_back(new MovementTurn90DegLeftOrRightCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Turn_at_Random: {
+      MovementTurnAtRandomCommand* end =
+          dynamic_cast<MovementTurnAtRandomCommand*>(ret.emplace_back(new MovementTurnAtRandomCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Turn_toward_Player: {
+      MovementTurnTowardPlayerCommand* end =
+          dynamic_cast<MovementTurnTowardPlayerCommand*>(ret.emplace_back(new MovementTurnTowardPlayerCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Turn_away_from_Player: {
+      MovementAwayFromPlayerCommand* end =
+          dynamic_cast<MovementAwayFromPlayerCommand*>(ret.emplace_back(new MovementAwayFromPlayerCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Switch_ON: {
+      MovementSwitchONCommand* end =
+          dynamic_cast<MovementSwitchONCommand*>(ret.emplace_back(new MovementSwitchONCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      parameters[0].get_to(end->id);
+      break;
+    }
+    case EventCode::Switch_OFF: {
+      MovementSwitchOFFCommand* end =
+          dynamic_cast<MovementSwitchOFFCommand*>(ret.emplace_back(new MovementSwitchOFFCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      parameters[0].get_to(end->id);
+      break;
+    }
+    case EventCode::Speed: {
+      MovementSpeedCommand* end =
+          dynamic_cast<MovementSpeedCommand*>(ret.emplace_back(new MovementSpeedCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      parameters[0].get_to(end->speed);
+      break;
+    }
+    case EventCode::Frequency: {
+      MovementFrequencyCommand* end =
+          dynamic_cast<MovementFrequencyCommand*>(ret.emplace_back(new MovementFrequencyCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      parameters[0].get_to(end->frequency);
+      break;
+    }
+    case EventCode::Walking_Animation_ON: {
+      MovementWalkingAnimationONCommand* end = dynamic_cast<MovementWalkingAnimationONCommand*>(
+          ret.emplace_back(new MovementWalkingAnimationONCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Walking_Animation_OFF: {
+      MovementWalkingAnimationOFFCommand* end = dynamic_cast<MovementWalkingAnimationOFFCommand*>(
+          ret.emplace_back(new MovementWalkingAnimationOFFCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Stepping_Animation_ON: {
+      MovementSteppingAnimationONCommand* end = dynamic_cast<MovementSteppingAnimationONCommand*>(
+          ret.emplace_back(new MovementSteppingAnimationONCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Stepping_Animation_OFF: {
+      MovementSteppingAnimationOFFCommand* end = dynamic_cast<MovementSteppingAnimationOFFCommand*>(
+          ret.emplace_back(new MovementSteppingAnimationOFFCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Direction_Fix_ON: {
+      MovementDirectionFixONCommand* end =
+          dynamic_cast<MovementDirectionFixONCommand*>(ret.emplace_back(new MovementDirectionFixONCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Direction_Fix_OFF: {
+      MovementDirectionFixOFFCommand* end =
+          dynamic_cast<MovementDirectionFixOFFCommand*>(ret.emplace_back(new MovementDirectionFixOFFCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Through_ON: {
+      MovementThroughONCommand* end =
+          dynamic_cast<MovementThroughONCommand*>(ret.emplace_back(new MovementThroughONCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Through_OFF: {
+      MovementThroughOFFCommand* end =
+          dynamic_cast<MovementThroughOFFCommand*>(ret.emplace_back(new MovementThroughOFFCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Transparent_ON: {
+      MovementTransparentONCommand* end =
+          dynamic_cast<MovementTransparentONCommand*>(ret.emplace_back(new MovementTransparentONCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Transparent_OFF: {
+      MovementTransparentOFFCommand* end =
+          dynamic_cast<MovementTransparentOFFCommand*>(ret.emplace_back(new MovementTransparentOFFCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Change_Image: {
+      MovementChangeImageCommand* end =
+          dynamic_cast<MovementChangeImageCommand*>(ret.emplace_back(new MovementChangeImageCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      parameters[0].get_to(end->image);
+      parameters[1].get_to(end->character);
+      break;
+    }
+    case EventCode::Change_Opacity: {
+      MovementTransparentOFFCommand* end =
+          dynamic_cast<MovementTransparentOFFCommand*>(ret.emplace_back(new ElseCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
+    case EventCode::Change_Blend_Mode: {
+      MovementChangeBlendModeCommand* end =
+          dynamic_cast<MovementChangeBlendModeCommand*>(ret.emplace_back(new ElseCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      parameters[0].get_to(end->mode);
+      break;
+    }
+    case EventCode::Play_SE_de_Movement: {
+      MovementPlaySECommand* end = dynamic_cast<MovementPlaySECommand*>(ret.emplace_back(new ElseCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      parameters[0].get_to(end->se);
+      break;
+    }
+    case EventCode::Script_de_Movement: {
+      MovementScriptCommand* end = dynamic_cast<MovementScriptCommand*>(ret.emplace_back(new ElseCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      parameters[0].get_to(end->script);
       break;
     }
     default:
@@ -462,7 +795,9 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       // std::endl;
       break;
     }
-    ++index;
+      ++index;
+    }
+    return ret;
   }
-  return ret;
-}
+
+  void CommandParser::serialize(nlohmann::json & data, const std::vector<std::shared_ptr<IEventCommand>>& list) {}

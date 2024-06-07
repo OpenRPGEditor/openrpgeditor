@@ -1,7 +1,20 @@
 #include "EventPage.hpp"
 
 void to_json(nlohmann::json& json, const EventPage& eventPage) {
-
+  json["conditions"] = eventPage.conditions;
+  json["directionFix"] = eventPage.directionFix;
+  json["image"] = eventPage.image;
+  CommandParser cmdParser;
+  cmdParser.serialize(json["list"], eventPage.list);
+  json["moveFrequency"] = eventPage.moveFrequency;
+  json["moveRoute"] = eventPage.moveRoute;
+  json["moveSpeed"] = eventPage.moveSpeed;
+  json["moveType"] = eventPage.moveType;
+  json["priorityType"] = eventPage.priorityType;
+  json["stepAnime"] = eventPage.stepAnime;
+  json["through"] = eventPage.through;
+  json["trigger"] = eventPage.trigger;
+  json["walkAnime"] = eventPage.walkAnime;
 }
 
 void from_json(const nlohmann::json& json, EventPage& eventPage) {
@@ -11,7 +24,7 @@ void from_json(const nlohmann::json& json, EventPage& eventPage) {
   CommandParser cmdParser;
   eventPage.list = cmdParser.parse(json["list"]);
   json["moveFrequency"].get_to(eventPage.moveFrequency);
-  //json["moveRoute"].get_to(event.moveRoute);
+  json["moveRoute"].get_to(eventPage.moveRoute);
   json["moveSpeed"].get_to(eventPage.moveSpeed);
   json["moveType"].get_to(eventPage.moveType);
   json["priorityType"].get_to(eventPage.priorityType);

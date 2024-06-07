@@ -3,6 +3,7 @@
 #include "Database/Globals.hpp"
 #include "Database/EventPage.hpp"
 #include "Database/CommandParser.hpp"
+#include "Database/MovementRoute.hpp"
 
 #include <string>
 #include <vector>
@@ -46,7 +47,7 @@ struct EventPage {
   EventImage image;
   std::vector<std::shared_ptr<IEventCommand>> list;
   MovementFrequency moveFrequency{};
-  // MovementRoute moveRoute;
+  MovementRoute moveRoute;
   MovementSpeed moveSpeed{};
   MoveType moveType{};
   EventPriority priorityType{};

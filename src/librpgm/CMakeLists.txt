@@ -33,6 +33,7 @@ add_library(
 
         # Editor Classes
         Runtime/DatabaseEditor.cpp Runtime/DatabaseEditor.hpp
+        Database/MovementRoute.cpp
 
 )
 

@@ -1,12 +1,13 @@
 #pragma once
 #include "Database/Globals.hpp"
 #include "Database/Audio.hpp"
+#include "Database/MovementRoute.hpp"
 #include "nlohmann/json.hpp"
 
 #include <memory>
 
 struct IEventCommand {
-  int indent;
+  std::optional<int> indent{};
   virtual ~IEventCommand() = default;
   [[nodiscard]] virtual EventCode code() const = 0;
 };
@@ -133,7 +134,7 @@ struct ConditionalBranchCommand : IEventCommand {
     } enemy;
     struct {
       int id;
-      FacingDirection facing;
+      Direction facing;
     } character;
     struct {
       int id;
@@ -372,7 +373,6 @@ struct SetVehicleLocationCommand : IEventCommand {
   int x;
   int y;
 };
-
 struct SetEventLocationCommand : IEventCommand {
   ~SetEventLocationCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Set_Event_Location; }
@@ -380,9 +380,55 @@ struct SetEventLocationCommand : IEventCommand {
   int mapId;
   int x;
   int y;
-  FacingDirection direction;
+  Direction direction;
 };
 
+struct ScrollMapCommand : IEventCommand {
+  ~ScrollMapCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Scroll_Map; }
+  Direction direction;
+  int distance;
+  MovementSpeed speed;
+};
+
+struct SetMovementRouteCommand : IEventCommand {
+  ~SetMovementRouteCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Set_Movement_Route; }
+  int character;
+  MovementRoute route;
+  std::vector<std::shared_ptr<IEventCommand>> editNodes;
+};
+
+struct MovementRouteStepCommand : IEventCommand {
+  ~MovementRouteStepCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Movement_Route_Step; }
+  int character;
+  std::shared_ptr<IEventCommand> step;
+};
+
+struct GetOnOffVehicleCommand : IEventCommand {
+  ~GetOnOffVehicleCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Get_On_Off_Vehicle; }
+};
+
+struct ChangeTransparencyCommand : IEventCommand {
+  ~ChangeTransparencyCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Transparency; }
+  int transparency;
+};
+
+struct ShowAnimationCommand : IEventCommand {
+  ~ShowAnimationCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Show_Animation; }
+  int character;
+  int animation;
+  bool waitForCompletion;
+};
+
+struct EraseEventCommand : IEventCommand {
+  ~EraseEventCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Erase_Event; }
+};
 struct PlaySECommand : IEventCommand {
   ~PlaySECommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_SE; }
@@ -393,6 +439,221 @@ struct EndCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::End; }
 };
 
+// START MOVEMENTROUTE
+
+struct MovementMoveDownCommand : IEventCommand {
+  ~MovementMoveDownCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Move_Down; }
+};
+
+struct MovementMoveLeftCommand : IEventCommand {
+  ~MovementMoveLeftCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Move_Left; }
+};
+
+struct MovementMoveRightCommand : IEventCommand {
+  ~MovementMoveRightCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Move_Right; }
+};
+
+struct MovementMoveUpCommand : IEventCommand {
+  ~MovementMoveUpCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Move_Up; }
+};
+
+struct MovementMoveLowerLeftommand : IEventCommand {
+  ~MovementMoveLowerLeftommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Move_Lower_Left; }
+};
+struct MovementMoveLowerRightCommand : IEventCommand {
+  ~MovementMoveLowerRightCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Move_Lower_Right; }
+};
+struct MovementMoveUpperLeftCommand : IEventCommand {
+  ~MovementMoveUpperLeftCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Move_Upper_Left; }
+};
+struct MovementMoveUpperRightCommand : IEventCommand {
+  ~MovementMoveUpperRightCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Move_Upper_Right; }
+};
+struct MovementMoveAtRandomCommand : IEventCommand {
+  ~MovementMoveAtRandomCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Move_at_Random; }
+};
+struct MovementMoveTowardPlayerCommand : IEventCommand {
+  ~MovementMoveTowardPlayerCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Move_toward_Player; }
+};
+struct MovementMoveAwayFromPlayerCommand : IEventCommand {
+  ~MovementMoveAwayFromPlayerCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Move_away_from_Player; }
+};
+struct MovementMove1StepFowardCommand : IEventCommand {
+  ~MovementMove1StepFowardCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::_1_Step_Forward; }
+};
+struct MovementMove1StepBackwardCommand : IEventCommand {
+  ~MovementMove1StepBackwardCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::_1_Step_Backward; }
+};
+struct MovementJumpCommand : IEventCommand {
+  ~MovementJumpCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Jump; }
+  int x;
+  int y;
+};
+struct MovementWaitCommand : IEventCommand {
+  ~MovementWaitCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Wait_del_; }
+  int duration;
+};
+
+struct MovementTurnDownCommand : IEventCommand {
+  ~MovementTurnDownCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Turn_Down; }
+};
+
+struct MovementTurnLeftCommand : IEventCommand {
+  ~MovementTurnLeftCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Turn_Left; }
+};
+struct MovementTurnRightCommand : IEventCommand {
+  ~MovementTurnRightCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Turn_Right; }
+};
+struct MovementTurnUpCommand : IEventCommand {
+  ~MovementTurnUpCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Turn_Up; }
+};
+struct MovementTurn90DegRightCommand : IEventCommand {
+  ~MovementTurn90DegRightCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Turn_90_deg_Left; }
+};
+struct MovementTurn90DegLeftCommand : IEventCommand {
+  ~MovementTurn90DegLeftCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Turn_90_deg_Right 0; }
+};
+
+struct MovementTurn180DegCommand : IEventCommand {
+  ~MovementTurn180DegCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Turn_180_deg; }
+};
+struct MovementTurn90DegLeftOrRightCommand : IEventCommand {
+  ~MovementTurn90DegLeftOrRightCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Turn_90_deg_Left_or_Right; }
+};
+struct MovementTurnAtRandomCommand : IEventCommand {
+  ~MovementTurnAtRandomCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Turn_at_Random; }
+};
+struct MovementTurnTowardPlayerCommand : IEventCommand {
+  ~MovementTurnTowardPlayerCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Turn_toward_Player; }
+};
+
+struct MovementAwayFromPlayerCommand : IEventCommand {
+  ~MovementAwayFromPlayerCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Turn_away_from_Player; }
+};
+struct MovementSwitchONCommand : IEventCommand {
+  ~MovementSwitchONCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Switch_ON; }
+  int id;
+};
+
+struct MovementSwitchOFFCommand : IEventCommand {
+  ~MovementSwitchOFFCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Switch_OFF; }
+  int id;
+};
+
+struct MovementSpeedCommand : IEventCommand {
+  ~MovementSpeedCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Speed; }
+  int speed;
+};
+
+struct MovementFrequencyCommand : IEventCommand {
+  ~MovementFrequencyCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Frequency; }
+  int frequency
+};
+
+struct MovementWalkingAnimationONCommand : IEventCommand {
+  ~MovementWalkingAnimationONCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Frequency; }
+};
+
+struct MovementWalkingAnimationOFFCommand : IEventCommand {
+  ~MovementWalkingAnimationOFFCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Frequency; }
+};
+
+struct MovementSteppingAnimationONCommand : IEventCommand {
+  ~MovementSteppingAnimationONCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Frequency; }
+};
+
+struct MovementSteppingAnimationOFFCommand : IEventCommand {
+  ~MovementSteppingAnimationOFFCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Frequency; }
+};
+struct MovementDirectionFixONCommand : IEventCommand {
+  ~MovementDirectionFixONCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Direction_Fix_ON; }
+};
+
+struct MovementDirectionFixOFFCommand : IEventCommand {
+  ~MovementDirectionFixOFFCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Direction_Fix_OFF; }
+};
+
+struct MovementThroughONCommand : IEventCommand {
+  ~MovementThroughONCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Through_ON; }
+};
+struct MovementThroughOFFCommand : IEventCommand {
+  ~MovementThroughOFFCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Through_OFF; }
+};
+
+struct MovementTransparentONCommand : IEventCommand {
+  ~MovementTransparentONCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Transparent_ON; }
+};
+
+struct MovementTransparentOFFCommand : IEventCommand {
+  ~MovementTransparentOFFCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Transparent_OFF; }
+};
+struct MovementChangeImageCommand : IEventCommand {
+  ~MovementChangeImageCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Image; }
+
+  std::string image;
+  int character;
+};
+struct MovementChangeBlendModeCommand : IEventCommand {
+  ~MovementChangeBlendModeCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Blend_Mode; }
+
+  Blend mode;
+};
+
+struct MovementPlaySECommand : IEventCommand {
+  ~MovementPlaySECommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Play_SE_de_Movement; }
+  Audio se;
+};
+
+struct MovementScriptCommand : IEventCommand {
+  ~MovementScriptCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Script_de_Movement; }
+  std::string script;
+};
+
+// END MOVEMENTROUTE
 struct CommandParser {
   nlohmann::json parser;
   int index = 0;

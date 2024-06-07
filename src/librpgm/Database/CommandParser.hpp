@@ -1,6 +1,6 @@
 #pragma once
 #include "Database/Globals.hpp"
-
+#include "Database/Audio.hpp"
 #include "nlohmann/json.hpp"
 
 #include <memory>
@@ -96,9 +96,10 @@ struct CommentCommand : IEventCommand {
 };
 
 struct ConditionalBranchCommand : IEventCommand {
+  ConditionalBranchCommand() {}
   ~ConditionalBranchCommand() override {}
   [[nodiscard]] EventCode code() const override { return EventCode::Comment; }
-  ConditionType type;
+  ConditionType type{};
   union {
     struct {
       int switchIdx;
@@ -114,8 +115,7 @@ struct ConditionalBranchCommand : IEventCommand {
       };
     } variable;
     struct {
-      int id; // A, B, C, D
-      bool checkIfOn;
+      SwitchControl checkIfOn;
     } selfSwitch;
     struct {
       TimerComparisonType comparison;
@@ -124,10 +124,7 @@ struct ConditionalBranchCommand : IEventCommand {
     struct {
       int id;
       ActorConditionType type;
-      union {
-        std::string name;
-        int checkId;
-      };
+      int checkId;
     } actor;
     struct {
       int id;
@@ -153,9 +150,12 @@ struct ConditionalBranchCommand : IEventCommand {
       int equipId;
       bool includeEquipment;
     } equip;
-    Button button;
-    std::string script;
+    int raw{};
   };
+  std::string button;
+  std::string selfSw; // A, B, C, D
+  std::string name;
+  std::string script;
 };
 
 struct ElseCommand : IEventCommand {
@@ -210,12 +210,13 @@ struct ControlSwitches : IEventCommand {
 };
 
 struct ControlVariables : IEventCommand {
-  ~ControlVariables() override {};
+  ControlVariables() {}
+  ~ControlVariables() override{};
   [[nodiscard]] EventCode code() const override { return EventCode::Control_Variables; }
-  int start;
-  int end;
-  VariableControlOperation operation;
-  VariableControlOperand operand;
+  int start{};
+  int end{};
+  VariableControlOperation operation{};
+  VariableControlOperand operand{};
   union {
     int constant;
     int variable;
@@ -234,15 +235,16 @@ struct ControlVariables : IEventCommand {
       };
       int value;
     } gameData;
-    std::string script;
+    int raw{};
   };
+  std::string script{};
 };
 
 struct ControlSelfSwitch : IEventCommand {
   ~ControlSelfSwitch() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Control_Self_Switch; }
 
-  int selfSw; // A, B, C, D
+  std::string selfSw; // A, B, C, D
   SwitchControl turnOff;
 };
 
@@ -251,6 +253,134 @@ struct ControlTimer : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Control_Self_Switch; }
   TimerControl control;
   int seconds;
+};
+
+struct ChangeGoldCommmand : IEventCommand {
+  ~ChangeGoldCommmand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Gold; }
+  QuantityChangeOp operation;
+  QuantityChangeSource operandSource;
+  int operand;
+};
+
+struct ChangeItemsCommmand : IEventCommand {
+  ~ChangeItemsCommmand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Items; }
+  int item;
+  QuantityChangeOp operation;
+  QuantityChangeSource operandSource;
+  int operand;
+};
+
+struct ChangeWeaponsCommmand : IEventCommand {
+  ~ChangeWeaponsCommmand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Weapons; }
+  int item;
+  QuantityChangeOp operation;
+  QuantityChangeSource operandSource;
+  int operand;
+  bool includeEquipment;
+};
+
+struct ChangeArmorsCommmand : IEventCommand {
+  ~ChangeArmorsCommmand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Armors; }
+  int item;
+  QuantityChangeOp operation;
+  QuantityChangeSource operandSource;
+  int operand;
+  bool includeEquipment;
+};
+
+struct ChangePartyMemberCommand : IEventCommand {
+  ~ChangePartyMemberCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Party_Member; }
+  int member;
+  PartyMemberOperation operation;
+  bool initialize;
+};
+struct ChangeBattleBGMCommand : IEventCommand {
+  ~ChangeBattleBGMCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Battle_BGM; }
+  Audio bgm;
+};
+
+struct ChangeVictoryMECommand : IEventCommand {
+  ~ChangeVictoryMECommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Victory_ME; }
+  Audio me;
+};
+
+struct ChangeSaveAccessCommand : IEventCommand {
+  ~ChangeSaveAccessCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Save_Access; }
+  AccessMode access;
+};
+
+struct ChangeMenuAccessCommand : IEventCommand {
+  ~ChangeMenuAccessCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Menu_Access; }
+  AccessMode access;
+};
+
+struct ChangeEncounterDisableCommand : IEventCommand {
+  ~ChangeEncounterDisableCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Encounter_Disable; }
+  AccessMode access;
+};
+
+struct ChangeFormationAccessCommand : IEventCommand {
+  ~ChangeFormationAccessCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Formation_Access; }
+  AccessMode access;
+};
+
+struct ChangeWindowColorCommand : IEventCommand {
+  ~ChangeWindowColorCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Window_Color; }
+  int r;
+  int g;
+  int b;
+};
+
+struct ChangeDefeatMECommand : IEventCommand {
+  ~ChangeDefeatMECommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Defeat_ME; }
+  Audio me;
+};
+
+struct ChangeVehicleMECommand : IEventCommand {
+  ~ChangeVehicleMECommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Vechicle_BGM; }
+  Audio me;
+};
+
+struct TransferPlayerCommand : IEventCommand {
+  ~TransferPlayerCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Transfer_Player; }
+  TransferMode mode;
+  int mapId;
+  int x;
+  int y;
+};
+
+struct SetVehicleLocationCommand : IEventCommand {
+  ~SetVehicleLocationCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Set_Vehicle_Location; }
+  TransferMode mode;
+  int mapId;
+  int x;
+  int y;
+};
+
+struct SetEventLocationCommand : IEventCommand {
+  ~SetEventLocationCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Set_Event_Location; }
+  TransferMode mode;
+  int mapId;
+  int x;
+  int y;
+  FacingDirection direction;
 };
 
 struct PlaySECommand : IEventCommand {

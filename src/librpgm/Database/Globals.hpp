@@ -18,17 +18,18 @@
  * _pc -> )
  * bo_ -> [
  * _bc -> ]
- * p_ -> .
+ * _pe_ -> .
  *
  * After the special characters have been decoded and inserted any remaining
  * underscores are replaced with spaces
  */
 
 enum class FacingDirection : int {
-  Down,
-  Left,
-  Right,
-  Up,
+  Retain = 0,
+  Down = 2,
+  Left = 4,
+  Right = 6,
+  Up = 8,
 };
 
 enum class Button : int {
@@ -216,8 +217,8 @@ enum class ActorDataSource {
   Max_MP,
   Attack,
   Defense,
-  M_p_Attack,
-  M_p_Defense,
+  M__pe_Attack,
+  M__pe_Defense,
   Agility,
   Luck
 };
@@ -229,8 +230,8 @@ enum class EnemyDataSource {
   Max_MP,
   Attack,
   Defense,
-  M_p_Attack,
-  M_p_Defense,
+  M__pe_Attack,
+  M__pe_Defense,
   Agility,
   Luck,
 };
@@ -254,6 +255,22 @@ enum class OtherDataSource {
   Battle_Count,
   Win_Count,
   Escape_Count,
+};
+
+enum class PartyMemberOperation {
+  Add,
+  Remove,
+};
+
+enum class AccessMode {
+  Disable,
+  Enable,
+};
+
+enum class TransferMode {
+  Direct,
+  Variable_Designation,
+  Exchange_With_Another_Event,
 };
 
 enum class EventCode : int {
@@ -291,12 +308,13 @@ enum class EventCode : int {
   Control_Self_Switch = 123,
   Control_Timer = 124,
 
-  // STOPPED HERE! V
+  Change_Gold = 125,
   Change_Items = 126,
   Change_Weapons = 127,
   Change_Armors = 128,
   Change_Party_Member = 129,
-  Change_Victory_ME = 130,
+  Change_Battle_BGM = 132,
+  Change_Victory_ME = 133,
   Change_Save_Access = 134,
   Change_Menu_Access = 135,
   Change_Encounter_Disable = 136,
@@ -353,7 +371,6 @@ enum class EventCode : int {
   If_Lose = 603,
   Shop_Processing = 302,
   Shop_Processing_Good = 605, // RPGMV will push this into the shop's item stack
-
   Name_Input_Processing = 303,
   Change_HP = 311,
   Change_MP = 312,
@@ -388,6 +405,16 @@ enum class EventCode : int {
   Script = 355,
   Next_Script = 655, // RPGMV will keep appending text to the script until it consumes all of them
   Plugin_Command = 356,
+};
+
+enum class QuantityChangeOp {
+  Increase,
+  Decrease,
+};
+
+enum class QuantityChangeSource {
+  Constant,
+  Variable,
 };
 
 enum class ActionCondition {

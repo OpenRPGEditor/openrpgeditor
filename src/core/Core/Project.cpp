@@ -27,6 +27,7 @@ constexpr std::array KnownRPGMVVersions = {
 };
 
 bool Project::load(std::string_view filePath, std::string_view basePath) {
+  SDL_SetCursor(waitCursor);
   std::string version;
   std::ifstream file(filePath.data());
   std::getline(file, version);
@@ -37,6 +38,7 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   m_isValid = it != KnownRPGMVVersions.end();
   if (!m_isValid) {
     APP_ERROR("Invalid project version {}", version);
+    SDL_SetCursor(SDL_GetDefaultCursor());
     return false;
   }
   APP_INFO("Got project for {}", version);
@@ -75,6 +77,7 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   APP_INFO("Loaded project!");
   m_resourceManager.emplace(m_basePath);
   // Load the previously loaded map
+  SDL_SetCursor(SDL_GetDefaultCursor());
   doMapSelection(m_mapInfos.m_mapinfos[m_system.editMapId]);
   return true;
 }
@@ -292,8 +295,10 @@ void Project::drawTilesets() {
         if (m_map) {
           Texture tilesetTxtr =
               m_resourceManager->loadTilesetImage(m_tilesets.tileset(m_map->tilesetId)->tilesetNames[0]);
-          ImGui::Image(tilesetTxtr.get(),
-                       ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
+          if (tilesetTxtr) {
+            ImGui::Image(tilesetTxtr.get(),
+                         ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
+          }
         }
         ImGui::EndTabItem();
       }
@@ -301,8 +306,10 @@ void Project::drawTilesets() {
         if (ImGui::BeginTabItem("B", nullptr)) {
           Texture tilesetTxtr =
               m_resourceManager->loadTilesetImage(m_tilesets.tileset(m_map->tilesetId)->tilesetNames[5]);
-          ImGui::Image(tilesetTxtr.get(),
-                       ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
+          if (tilesetTxtr) {
+            ImGui::Image(tilesetTxtr.get(),
+                         ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
+          }
           ImGui::EndTabItem();
         }
       }
@@ -310,8 +317,10 @@ void Project::drawTilesets() {
         if (ImGui::BeginTabItem("C", nullptr)) {
           Texture tilesetTxtr =
               m_resourceManager->loadTilesetImage(m_tilesets.tileset(m_map->tilesetId)->tilesetNames[6]);
-          ImGui::Image(tilesetTxtr.get(),
-                       ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
+          if (tilesetTxtr) {
+            ImGui::Image(tilesetTxtr.get(),
+                         ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
+          }
           ImGui::EndTabItem();
         }
       }
@@ -319,8 +328,10 @@ void Project::drawTilesets() {
         if (ImGui::BeginTabItem("D", nullptr)) {
           Texture tilesetTxtr =
               m_resourceManager->loadTilesetImage(m_tilesets.tileset(m_map->tilesetId)->tilesetNames[7]);
-          ImGui::Image(tilesetTxtr.get(),
-                       ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
+          if (tilesetTxtr) {
+            ImGui::Image(tilesetTxtr.get(),
+                         ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
+          }
           ImGui::EndTabItem();
         }
       }
@@ -431,28 +442,37 @@ inline int alignCoord(int value, int size) { return roundUp(value - (value % siz
 
 void Project::drawMapEditor() {
   static float timer = 0.5f;
+  if (timer <= 0.f) {
+    timer = 0.5f;
+  }
+  timer -= (1 / 60.f);
+
+  // Keep mapScale to a quarter step
+
+  if (m_map && (m_initialScrollX != 0.0 || m_initialScrollY != 0.0)) {
+    m_mapScale = std::min((m_map->width * 48) / m_initialScrollX, (m_map->height * 48) / m_initialScrollY);
+    ImGui::SetScrollX(m_initialScrollX);
+    ImGui::SetScrollY(m_initialScrollY);
+    m_initialScrollX = m_initialScrollY = 0.0;
+  }
+
+  if (ImGui::IsMouseKey(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
+    m_mapScale += ImGui::GetIO().MouseWheel * 0.25f;
+  }
+  m_mapScale = (floorf((m_mapScale * 2.f) + .25f) / 2.f);
+  m_mapScale = std::clamp(m_mapScale, .25f, 4.f);
+
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionMax().y - 70.f), ImGuiChildFlags_Border,
                       ImGuiWindowFlags_HorizontalScrollbar);
     if (m_map) {
       m_mapRenderer.update();
-      if (m_initialScrollX != 0.0 || m_initialScrollY != 0.0) {
-        m_mapScale = std::min((m_map->width * 48) / m_initialScrollX, (m_map->height * 48) / m_initialScrollY);
-        ImGui::SetScrollX(m_initialScrollX);
-        ImGui::SetScrollY(m_initialScrollY);
-        m_initialScrollX = m_initialScrollY = 0.0;
-      }
 
-      if (ImGui::IsMouseKey(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
-        m_mapScale += ImGui::GetIO().MouseWheel * 0.25f;
-      }
-
-      // Keep mapScale to a half step
-      m_mapScale = (floorf((m_mapScale * 2.f) + .25f) / 2.f);
-      m_mapScale = std::clamp(m_mapScale, .25f, 4.f);
       ImGuiWindow* win = ImGui::GetCurrentWindow();
+      Texture dummyTex = m_resourceManager->loadParallaxImage("Map509");
       ImGui::Dummy(ImVec2{m_map->width * (48 * m_mapScale), m_map->height * (48 * m_mapScale)});
-      win->DrawList->AddImage(m_mapRenderer.getLowerBitmap(), win->ContentRegionRect.Min,
+
+      win->DrawList->AddImage(dummyTex.get(), win->ContentRegionRect.Min,
                               win->ContentRegionRect.Min +
                                   ImVec2{(m_map->width * 48) * m_mapScale, (m_map->height * 48) * m_mapScale});
 
@@ -479,18 +499,22 @@ void Project::drawMapEditor() {
           float eventS = 48 * m_mapScale;
           ImVec2 evMin = ImVec2{eventX, eventY};
           ImVec2 evMax = ImVec2{(eventX + eventS), (eventY + eventS)};
-          win->DrawList->AddRectFilled(evMin, evMax, 0x7f000000);
-          win->DrawList->AddRect(evMin, evMax, 0xFF000000, 0, 0, 5.f);
-          win->DrawList->AddRect(evMin, evMax, 0xFFFFFFFF, 0, 0, 3.f);
+          win->DrawList->AddRectFilled(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0x7f000000);
+          win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0xFF000000, 0, 0, 5.f);
+          win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0xFFFFFFFF, 0, 0, 3.f);
 
-          if (!event->pages[0].image.characterName.empty() && event->pages[0].image.tileId == 0 &&
-              event->pages[0].image.direction != 0 && event->pages[0].image.pattern != 0) {
+          if (!event->pages[0].image.characterName.empty() && event->pages[0].image.tileId == 0) {
+            if (event->pages[0].stepAnime) {
+              event->pages[0].image.pattern =
+                  std::clamp<int>(std::abs(std::remainder(ImGui::GetTime() * 8, 3 * 2)), 0, 3);
+            }
+
             // TODO: This is still wrong
             Texture tex = m_resourceManager->loadCharacterImage(event->pages[0].image.characterName);
-            constexpr int CharacterAtlasWidth = 216;
-            constexpr int CharacterAtlasHeight = 384;
-            constexpr int CharacterSpriteWidth = 72;
-            constexpr int CharacterSpriteHeight = 96;
+            const int CharacterSpriteWidth = tex.width() / 12;
+            const int CharacterSpriteHeight = tex.height() / 8;
+            const int CharacterAtlasWidth = tex.width() / 4;
+            const int CharacterAtlasHeight = tex.height() / 2;
 
             const float charX = static_cast<float>(
                 (event->pages[0].image.characterIndex % (tex.width() / CharacterAtlasWidth)) * CharacterAtlasWidth);
@@ -500,12 +524,18 @@ void Project::drawMapEditor() {
             const float directionOffset =
                 ((static_cast<float>(event->pages[0].image.direction - 2) / 2) * CharacterSpriteHeight);
 
-            float x1 = ((charX + patternOffset) + 16) / static_cast<float>(tex.width());
-            float y1 = ((charY + directionOffset) + 24) / static_cast<float>(tex.height());
-            float x2 = (((charX + patternOffset) + CharacterSpriteWidth) - 16) / static_cast<float>(tex.width());
-            float y2 = (((charY + directionOffset) + CharacterSpriteHeight) - 32) / static_cast<float>(tex.height());
+            float x1 = ((charX + patternOffset) /*+ (CharacterSpriteWidth / 5)*/);
+            float y1 = ((charY + directionOffset) /*+ (CharacterSpriteHeight / 4) */);
+            float x2 = (((charX + patternOffset) + CharacterSpriteWidth) /*- (CharacterSpriteWidth / 5) */);
+            float y2 = (((charY + directionOffset) + CharacterSpriteHeight) /*- (CharacterSpriteHeight / 4) */);
 
-            win->DrawList->AddImage(tex.get(), evMin, evMax, ImVec2{x1, y1}, ImVec2{x2, y2});
+            evMin.x -= ((static_cast<float>(CharacterSpriteWidth) - 48.f) / 2.f) * m_mapScale;
+            evMax.x += ((static_cast<float>(CharacterSpriteWidth) - 48.f) / 2.f) * m_mapScale;
+            evMin.y -= (static_cast<float>(CharacterSpriteHeight) - 48.f) * m_mapScale;
+            win->DrawList->AddImage(
+                tex.get(), evMin, evMax,
+                ImVec2{x1 / static_cast<float>(tex.width()), y1 / static_cast<float>(tex.height())},
+                ImVec2{x2 / static_cast<float>(tex.width()), y2 / static_cast<float>(tex.height())});
           }
         }
       }
@@ -554,7 +584,7 @@ void Project::drawMapEditor() {
     ImGui::EndChild();
     ImGui::Text("Scale:");
     ImGui::SameLine();
-    ImGui::DragFloat("##map_scale", &m_mapScale, 0.25, 0.5, 4.0);
+    ImGui::SliderFloat("##map_scale", &m_mapScale, 0.25f, 4.f);
     ImGui::SameLine();
     ImGui::Text("Tile %i, (%i, %i)", m_tileId, m_tileCellX, m_tileCellY);
   }
@@ -727,11 +757,11 @@ void Project::drawMapEditor() {
       {
         ImGui::BeginGroup();
         {
-            ImGui::Text("Parallax Background");
-            ImGui::PushID("##map_parallax_button");
-            std::string text = m_map->bgs.name.empty() ? "##map_parallax_button_empty" : m_map->parallaxName;
-            if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetWindowContentRegionMax().x / 2) - 15, 0})) {}
-            ImGui::PopID();
+          ImGui::Text("Parallax Background");
+          ImGui::PushID("##map_parallax_button");
+          std::string text = m_map->bgs.name.empty() ? "##map_parallax_button_empty" : m_map->parallaxName;
+          if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetWindowContentRegionMax().x / 2) - 15, 0})) {}
+          ImGui::PopID();
         }
         ImGui::EndGroup();
         ImGui::BeginGroup();
@@ -774,7 +804,8 @@ void Project::drawMapEditor() {
           ImGui::Text("Note");
 
           strncpy(buf, m_map->note.c_str(), 4096);
-          if (ImGui::InputTextMultiline("##map_note", buf, 2048, ImVec2(ImGui::GetContentRegionMax().x - 15, 400), flags)) {
+          if (ImGui::InputTextMultiline("##map_note", buf, 2048, ImVec2(ImGui::GetContentRegionMax().x - 15, 400),
+                                        flags)) {
             m_map->note = buf;
           }
         }

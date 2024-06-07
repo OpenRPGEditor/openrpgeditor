@@ -7,7 +7,7 @@
 #include "Core/Log.hpp"
 
 int main() {
-  try {
+  //try {
     APP_PROFILE_BEGIN_SESSION_WITH_FILE("App", "profile.json");
 
     {
@@ -17,9 +17,9 @@ int main() {
     }
 
     APP_PROFILE_END_SESSION();
-  } catch (std::exception& e) {
-    APP_ERROR("Main process terminated with: {}", e.what());
-  }
+  // } catch (std::exception& e) {
+  //   APP_ERROR("Main process terminated with: {}", e.what());
+  // }
 
   return 0;
 }

@@ -13,35 +13,35 @@ struct EventCondition {
   NLOHMANN_DEFINE_TYPE_INTRUSIVE(EventCondition, actorId, actorValid, itemId, itemValid, selfSwitchCh, selfSwitchValid,
                                  switch1Id, switch1Valid, switch2Id, switch2Valid, variableId, variableValid,
                                  variableValue);
-  int actorId;
-  bool actorValid;
-  int itemId;
-  bool itemValid;
+  int actorId{};
+  bool actorValid{};
+  int itemId{};
+  bool itemValid{};
   std::string selfSwitchCh;
-  bool selfSwitchValid;
-  int switch1Id;
-  bool switch1Valid;
-  int switch2Id;
-  bool switch2Valid;
-  int variableId;
-  bool variableValid;
-  int variableValue;
+  bool selfSwitchValid{};
+  int switch1Id{};
+  bool switch1Valid{};
+  int switch2Id{};
+  bool switch2Valid{};
+  int variableId{};
+  bool variableValid{};
+  int variableValue{};
 };
 
 struct EventImage {
   NLOHMANN_DEFINE_TYPE_INTRUSIVE(EventImage, tileId, characterName, direction, pattern, characterIndex);
-  int tileId;
+  int tileId{};
   std::string characterName;
-  int direction;
-  int pattern;
-  int characterIndex;
+  int direction{};
+  int pattern{};
+  int characterIndex{};
 };
 
 struct EventPage {
   friend void to_json(nlohmann::json& json, const EventPage& eventPage);
   friend void from_json(const nlohmann::json& json, EventPage& eventPage);
 
-  EventCondition conditions;
+  EventCondition conditions{};
   bool directionFix{};
   EventImage image;
   std::vector<std::shared_ptr<IEventCommand>> list;
@@ -50,8 +50,8 @@ struct EventPage {
   MovementSpeed moveSpeed{};
   MoveType moveType{};
   EventPriority priorityType{};
-  bool stepAnime{};
+  bool stepAnime = false;
   bool through{};
   EventTriggerType trigger{};
-  bool walkAnime{};
+  bool walkAnime = false;
 };

@@ -59,18 +59,7 @@ public:
 
   void setMap(const Map* map, const Tileset* tilest, int tileWidth = 48, int tileHeight = 48);
 
-  void invalidate(int tileIndex) {
-    if (tileIndex < 0 || tileIndex >= m_invalidTiles.size()) {
-      return;
-    }
-
-    m_invalidTiles[tileIndex] = true;
-  }
-
-  bool isInvalid() {
-    return std::any_of(m_invalidTiles.begin(), m_invalidTiles.end(), [](const bool v) { return v; });
-  }
-  void update(int mouseX, int mouseY);
+  void update();
 
   int tileId(int x, int y, int z) const;
   bool isOverworld() const { return m_tileset && m_tileset->mode == Tileset::Mode::World; }
@@ -134,19 +123,73 @@ public:
   [[nodiscard]] static bool isWallTypeAutotile(int tileId) { return isRoofTile(tileId) || isWallSideTile(tileId); }
   [[nodiscard]] static bool isWaterfallTypeAutotile(int tileId) { return isWaterfallTile(tileId); }
 
-  [[nodiscard]] int tileIdFromCoords(int x, int y, int z) {
-    return (z * m_map->width + y) * m_map->width + x;
+  [[nodiscard]] int tileIdFromCoords(int x, int y, int z) { return (z * m_map->width + y) * m_map->width + x; }
+
+  [[nodiscard]] bool isHigherTile(int tileId) { return m_tileset->flags[tileId] & 0x10; }
+
+  [[nodiscard]] bool isTableTile(int tileId) { return isTileA2(tileId) && m_tileset->flags[tileId] & 0x80; }
+
+  [[nodiscard]] bool isOverpassPosition(int mx, int my) { return false; }
+
+  /* TODO: These are nightmares taken from the original javascript, these needs to be rewritten so it's not a
+   * monstrosity */
+#if 0
+  std::vector<int>& readLastTiles(int i, int x, int y) {
+    if (i < m_lastTiles.size()) {
+      if (y < m_lastTiles[i].size()) {
+        if (x < m_lastTiles[i][y].size()) {
+          return m_lastTiles[i][y][x];
+        }
+        m_lastTiles[i][y].emplace_back();
+        return m_lastTiles[i][y][x];
+      }
+      return m_lastTiles[i].emplace_back().emplace_back();
+    }
+    return m_lastTiles.emplace_back().emplace_back().emplace_back();
   }
 
+  void writeLastTiles(int i, int x, int y, const std::vector<int>& tiles) {
+    return;
+    if (i < m_lastTiles.size()) {
+      if (y < m_lastTiles[i].size()) {
+        if (x < m_lastTiles[i][y].size()) {
+          m_lastTiles[i][y][x] = tiles;
+        } else {
+          m_lastTiles[i][y].push_back(tiles);
+        }
+      } else {
+        m_lastTiles[i].emplace_back().emplace_back(tiles);
+      }
+    } else {
+      m_lastTiles.emplace_back().emplace_back().emplace_back(tiles);
+    }
+  }
+
+#endif
+  SDL_Texture* getLowerBitmap() const {return m_lowerBitmap; }
+  SDL_Texture* getUpperBitmap() const { return m_upperBitmap; }
+
 private:
-  void draw();
+  bool m_frameUpdated = true;
+  void drawTile(SDL_Texture* bitmap, int tileId, int dx, int dy);
+  void drawAutoTile(SDL_Texture* bitmap, int tileId, int dx, int dy);
+  void drawNormalTile(SDL_Texture* bitmap, int tileId, int dx, int dy);
+  void beginBlit(SDL_Texture* source);
+  void blitImage(SDL_Texture* bitmap, int sx, int sy, int sw, int sh, int dx, int dy, int dw,
+                 int dh);
+  void endBlit();
+  void clearRect(SDL_Texture* clr, int x, int y, int w, int h);
+
   const Map* m_map = nullptr;
   const Tileset* m_tileset = nullptr;
   std::array<Texture, 9> m_tilesetTextures;
   bool m_isValid = false;
   int m_tileWidth;
   int m_tileHeight;
-  SDL_Texture* m_lowerTexture = nullptr;
-  SDL_Texture* m_upperTexture = nullptr;
-  std::vector<bool> m_invalidTiles;
+  SDL_Texture* m_lowerBitmap = nullptr;
+  SDL_Texture* m_upperBitmap = nullptr;
+  SDL_Texture* m_oldTarget = nullptr;
+  std::vector<int> m_lowerTiles;
+  std::vector<int> m_upperTiles;
+  std::vector<std::vector<std::vector<std::vector<int>>>> m_lastTiles;
 };

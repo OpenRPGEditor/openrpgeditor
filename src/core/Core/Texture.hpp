@@ -24,6 +24,8 @@ public:
   [[nodiscard]] int width() const { return m_width; }
   [[nodiscard]] int height() const { return m_height; }
 
+  explicit operator bool() const { return m_texture != nullptr; }
+
 private:
   explicit Texture(std::string_view filename);
   void* m_texture{};

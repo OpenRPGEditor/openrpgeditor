@@ -42,7 +42,16 @@ struct EventPage {
   friend void from_json(const nlohmann::json& json, EventPage& eventPage);
 
   EventCondition conditions;
-  bool directionFix;
+  bool directionFix{};
   EventImage image;
   std::vector<std::shared_ptr<IEventCommand>> list;
+  MovementFrequency moveFrequency{};
+  // MovementRoute moveRoute;
+  MovementSpeed moveSpeed{};
+  MoveType moveType{};
+  EventPriority priorityType{};
+  bool stepAnime{};
+  bool through{};
+  EventTriggerType trigger{};
+  bool walkAnime{};
 };

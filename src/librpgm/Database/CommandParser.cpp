@@ -11,7 +11,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& dat
     EventCode code = EventCode::Event_Dummy;
 
     parser[index].at("code").get_to(code);
-    std::cout << "Processing: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")" << std::endl;
+    //std::cout << "Processing: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")" << std::endl;
     switch(code) {
     case EventCode::Event_Dummy: {
       EventDummy* text = dynamic_cast<EventDummy*>(ret.emplace_back(new EventDummy()).get());
@@ -78,7 +78,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& dat
       break;
     }
     default:
-      std::cout << "Unhandled command: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")" << std::endl;
+      //std::cout << "Unhandled command: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")" << std::endl;
       break;
     }
     ++index;

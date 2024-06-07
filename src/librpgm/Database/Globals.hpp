@@ -291,9 +291,47 @@ enum class TextWindowPosition {
 enum class ChoiceWindowPosition {
   Left,
   Middle,
-  Right
+  Right,
 };
 
+enum class MovementSpeed {
+  x8_Slower,
+  x4_Slower,
+  x2_Slower,
+  Normal,
+  x2_Faster,
+  x4_Faster,
+  x8_Faster,
+};
+
+enum class MoveType {
+  Fixed,
+  Random,
+  Approach,
+  Custom,
+};
+
+enum class MovementFrequency {
+  Lowest,
+  Lower,
+  Normal,
+  Higher,
+  Highest,
+};
+
+enum class EventPriority {
+  Below_character,
+  Same_as_characters,
+  Above_characters,
+};
+
+enum class EventTriggerType {
+  Action_Button,
+  Player_Touch,
+  Event_Touch,
+  Autorun,
+  Parallel,
+};
 std::string DecodeEnumName(std::string_view str);
 
 template <typename E>

@@ -532,7 +532,7 @@ struct MovementTurn90DegRightCommand : IEventCommand {
 };
 struct MovementTurn90DegLeftCommand : IEventCommand {
   ~MovementTurn90DegLeftCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Turn_90_deg_Right 0; }
+  [[nodiscard]] EventCode code() const override { return EventCode::Turn_90_deg_Right; }
 };
 
 struct MovementTurn180DegCommand : IEventCommand {
@@ -577,7 +577,7 @@ struct MovementSpeedCommand : IEventCommand {
 struct MovementFrequencyCommand : IEventCommand {
   ~MovementFrequencyCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Frequency; }
-  int frequency
+  int frequency;
 };
 
 struct MovementWalkingAnimationONCommand : IEventCommand {

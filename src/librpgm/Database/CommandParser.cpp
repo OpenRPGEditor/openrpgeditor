@@ -468,8 +468,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       parameters[1].get_to(route->route);
       while (nextEventCommand() == EventCode::Movement_Route_Step) {
         ++index;
-        MovementRouteStepCommand* tmp =
-            dynamic_cast<MovementRouteStepCommand*>(route->editNodes.emplace_back(new MovementRouteStepCommand()).get());
+        MovementRouteStepCommand* tmp = dynamic_cast<MovementRouteStepCommand*>(
+            route->editNodes.emplace_back(new MovementRouteStepCommand()).get());
         parser[index].at("indent").get_to(tmp->indent);
         CommandParser p;
         tmp->step = p.parse(currentCommand()["parameters"])[0];
@@ -511,12 +511,11 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
     }
       // MovementRoute commands
     case EventCode::Move_Down: {
-      {
-        MovementMoveDownCommand* end =
-            dynamic_cast<MovementMoveDownCommand*>(ret.emplace_back(new MovementMoveDownCommand()).get());
-        parser[index].at("indent").get_to(end->indent);
-        break;
-      }
+      MovementMoveDownCommand* end =
+          dynamic_cast<MovementMoveDownCommand*>(ret.emplace_back(new MovementMoveDownCommand()).get());
+      parser[index].at("indent").get_to(end->indent);
+      break;
+    }
     case EventCode::Move_Left: {
       MovementMoveLeftCommand* end =
           dynamic_cast<MovementMoveLeftCommand*>(ret.emplace_back(new MovementMoveLeftCommand()).get());
@@ -795,9 +794,9 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       // std::endl;
       break;
     }
-      ++index;
-    }
-    return ret;
+    ++index;
   }
+  return ret;
+}
 
-  void CommandParser::serialize(nlohmann::json & data, const std::vector<std::shared_ptr<IEventCommand>>& list) {}
+void CommandParser::serialize(nlohmann::json& data, const std::vector<std::shared_ptr<IEventCommand>>& list) {}

@@ -37,5 +37,26 @@ public:
   static Items load(std::string_view filename);
   void serialize(std::string_view filename);
 
+
+  [[nodiscard]] Item* item(int id) {
+    for (auto& item : m_items) {
+      if (item.id == id) {
+        return &item;
+      }
+    }
+    return nullptr;
+  }
+
+  [[nodiscard]] const Item* item(int id) const {
+    for (const auto& set : m_items) {
+      if (set.id == id) {
+        return &set;
+      }
+    }
+
+    return nullptr;
+  }
+
+private:
   std::vector<Item> m_items;
 };

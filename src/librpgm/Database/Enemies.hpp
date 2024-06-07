@@ -44,5 +44,26 @@ class Enemies {
 public:
   static Enemies load(std::string_view filepath);
   bool serialize(std::string_view filename);
+
+  [[nodiscard]] Enemy* enemy(int id) {
+    for (auto& item : m_enemies) {
+      if (item.id == id) {
+        return &item;
+      }
+    }
+    return nullptr;
+  }
+
+  [[nodiscard]] const Enemy* enemy(int id) const {
+    for (const auto& set : m_enemies) {
+      if (set.id == id) {
+        return &set;
+      }
+    }
+
+    return nullptr;
+  }
+
+private:
   std::vector<Enemy> m_enemies;
 };

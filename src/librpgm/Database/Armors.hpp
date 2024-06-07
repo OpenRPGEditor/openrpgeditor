@@ -25,5 +25,25 @@ class Armors {
 public:
   static Armors load(std::string_view filepath);
   bool serialize(std::string_view filename);
+
+  [[nodiscard]] Armor* armor(int id) {
+    for (auto& item : m_armors) {
+      if (item.id == id) {
+        return &item;
+      }
+    }
+    return nullptr;
+  }
+
+  [[nodiscard]] const Armor* armor(int id) const {
+    for (const auto& set : m_armors) {
+      if (set.id == id) {
+        return &set;
+      }
+    }
+
+    return nullptr;
+  }
+private:
   std::vector<Armor> m_armors;
 };

@@ -41,5 +41,25 @@ class States {
 public:
   static States load(std::string_view filepath);
   bool serialize(std::string_view filename);
+
+  [[nodiscard]] State* state(int id) {
+    for (auto& item : m_states) {
+      if (item.id == id) {
+        return &item;
+      }
+    }
+    return nullptr;
+  }
+
+  [[nodiscard]] const State* state(int id) const {
+    for (const auto& set : m_states) {
+      if (set.id == id) {
+        return &set;
+      }
+    }
+
+    return nullptr;
+  }
+private:
   std::vector<State> m_states;
 };

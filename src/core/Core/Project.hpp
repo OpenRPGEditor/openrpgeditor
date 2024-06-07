@@ -79,10 +79,10 @@ private:
   void drawFileDialog();
   void drawTilesets();
   void drawEventList();
-  void doMapSelection(MapInfos::MapInfo& in);
+  void doMapSelection(MapInfo& in);
   void drawMapTree();
   void drawMapEditor();
-  void recursiveDrawTree(MapInfos::MapInfo& in);
+  void recursiveDrawTree(MapInfo& in);
 
   bool m_isValid = false;
   bool m_isLoaded = false;

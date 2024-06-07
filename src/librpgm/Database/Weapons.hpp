@@ -25,5 +25,25 @@ class Weapons {
 public:
   static Weapons load(std::string_view filepath);
   bool serialize(std::string_view filename);
+
+  [[nodiscard]] Weapon* weapon(int id) {
+    for (auto& item : m_weapons) {
+      if (item.id == id) {
+        return &item;
+      }
+    }
+    return nullptr;
+  }
+
+  [[nodiscard]] const Weapon* weapon(int id) const {
+    for (const auto& set : m_weapons) {
+      if (set.id == id) {
+        return &set;
+      }
+    }
+
+    return nullptr;
+  }
+private:
   std::vector<Weapon> m_weapons;
 };

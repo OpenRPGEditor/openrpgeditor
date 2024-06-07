@@ -40,5 +40,26 @@ class Skills {
 public:
   static Skills load(std::string_view filepath);
   bool serialize(std::string_view filename);
+
+  [[nodiscard]] Skill* skill(int id) {
+    for (auto& item : m_skills) {
+      if (item.id == id) {
+        return &item;
+      }
+    }
+    return nullptr;
+  }
+
+  [[nodiscard]] const Skill* skill(int id) const {
+    for (const auto& set : m_skills) {
+      if (set.id == id) {
+        return &set;
+      }
+    }
+
+    return nullptr;
+  }
+
+private:
   std::vector<Skill> m_skills;
 };

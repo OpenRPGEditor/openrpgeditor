@@ -72,13 +72,17 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   APP_INFO("Loading System...");
   m_system = System::load(m_basePath + "/data/System.json");
   m_mapInfos = MapInfos::load(m_basePath + "/data/MapInfos.json");
-  m_mapInfos.m_mapinfos[0].expanded = true;
-  m_mapInfos.m_mapinfos[0].name = m_system.gameTitle;
+  MapInfo* info = m_mapInfos.map(0);
+  info->expanded = true;
+  info->name = m_system.gameTitle;
   APP_INFO("Loaded project!");
   m_resourceManager.emplace(m_basePath);
   // Load the previously loaded map
   SDL_SetCursor(SDL_GetDefaultCursor());
-  doMapSelection(m_mapInfos.m_mapinfos[m_system.editMapId]);
+  MapInfo* m = m_mapInfos.map(m_system.editMapId);
+  if (m != nullptr) {
+    doMapSelection(*m);
+  }
   return true;
 }
 
@@ -360,19 +364,22 @@ void Project::drawEventList() {
   ImGui::End();
 }
 
-void Project::doMapSelection(MapInfos::MapInfo& in) {
+void Project::doMapSelection(MapInfo& in) {
   if (in.id == 0) {
     m_map.reset();
     m_selectedMapId = 0;
-    //m_mapRenderer.setMap(nullptr, nullptr);
+    // m_mapRenderer.setMap(nullptr, nullptr);
     return;
   }
   SDL_SetCursor(waitCursor);
   m_selectedMapId = in.id;
   m_map = m_resourceManager->loadMap(in.id);
-  //m_mapRenderer.setMap(&*m_map, m_tilesets.tileset(m_map->tilesetId));
-  m_initialScrollX = m_mapInfos.m_mapinfos[m_selectedMapId].scrollX;
-  m_initialScrollY = m_mapInfos.m_mapinfos[m_selectedMapId].scrollX;
+  // m_mapRenderer.setMap(&*m_map, m_tilesets.tileset(m_map->tilesetId));
+  MapInfo* m = m_mapInfos.map(m_selectedMapId);
+  if (m != nullptr) {
+    m_initialScrollX = m->scrollX;
+    m_initialScrollY = m->scrollX;
+  }
 
 #if 0
   printf("%zu bytes, %i w %i h\n", m_map->data.size(), m_map->width, m_map->height);
@@ -390,20 +397,20 @@ void Project::doMapSelection(MapInfos::MapInfo& in) {
   SDL_SetCursor(SDL_GetDefaultCursor());
 }
 
-void Project::recursiveDrawTree(MapInfos::MapInfo& in) {
+void Project::recursiveDrawTree(MapInfo& in) {
   ImGui::PushID(&in);
 
   if (ImGui::TreeNodeEx(&in,
                         (in.expanded ? ImGuiTreeNodeFlags_DefaultOpen : 0) |
                             (m_selectedMapId == in.id ? ImGuiTreeNodeFlags_Selected : 0) |
-                            (in.m_children.empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
+                            (in.children().empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
                             ImGuiTreeNodeFlags_OpenOnDoubleClick,
                         "%s", in.name.c_str())) {
     if ((ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemFocused()) && m_selectedMapId != in.id) {
       doMapSelection(in);
     }
 
-    for (auto& mapInfo : in.m_children) {
+    for (auto& mapInfo : in.children()) {
       recursiveDrawTree(*mapInfo);
     }
     ImGui::TreePop();
@@ -420,8 +427,8 @@ void Project::recursiveDrawTree(MapInfos::MapInfo& in) {
 
 void Project::drawMapTree() {
   if (ImGui::Begin("Maps")) {
-    if (!m_mapInfos.m_mapinfos.empty()) {
-      recursiveDrawTree(m_mapInfos.m_mapinfos[0]);
+    if (!m_mapInfos.empty()) {
+      recursiveDrawTree(m_mapInfos.root());
     }
   }
   ImGui::End();
@@ -466,7 +473,7 @@ void Project::drawMapEditor() {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionMax().y - 70.f), ImGuiChildFlags_Border,
                       ImGuiWindowFlags_HorizontalScrollbar);
     if (m_map) {
-      //m_mapRenderer.update();
+      // m_mapRenderer.update();
 
       ImGuiWindow* win = ImGui::GetCurrentWindow();
       Texture dummyTex = m_resourceManager->loadParallaxImage("Map509");
@@ -599,9 +606,10 @@ void Project::drawMapEditor() {
         {
           ImGui::Text("Name - ID: %.03i", m_selectedMapId);
           ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
-          strncpy(buf, m_mapInfos.m_mapinfos[m_selectedMapId].name.c_str(), 4096);
+          MapInfo* mapInfo = m_mapInfos.map(m_selectedMapId);
+          strncpy(buf, mapInfo->name.c_str(), 4096);
           if (ImGui::InputText("##map_name", buf, 4096)) {
-            m_mapInfos.m_mapinfos[m_selectedMapId].name = buf;
+            mapInfo->name = buf;
           }
         }
         ImGui::EndGroup();
@@ -623,7 +631,7 @@ void Project::drawMapEditor() {
         ImGui::BeginGroup();
         {
           ImGui::Text("Tileset");
-          strncpy(buf, m_mapInfos.m_mapinfos[m_selectedMapId].name.c_str(), 4096);
+          strncpy(buf, m_mapInfos.map(m_selectedMapId)->name.c_str(), 4096);
           std::string text = m_tilesets.tileset(m_map->tilesetId)->name.empty()
                                  ? "##map_tileset_button_empty"
                                  : m_tilesets.tileset(m_map->tilesetId)->name;
@@ -828,8 +836,8 @@ void Project::drawMapEditor() {
             if (tileCellIndex > m_map->data.size()) {
               continue;
             }
-            ImGui::Text("Tile %i, layer %i, cell {%i, %i}, absolute {%i, %i}", tileCellIndex, z, m_tileCellX, m_tileCellY,
-                        m_tileCellX * 48, m_tileCellY * 48);
+            ImGui::Text("Tile %i, layer %i, cell {%i, %i}, absolute {%i, %i}", tileCellIndex, z, m_tileCellX,
+                        m_tileCellY, m_tileCellX * 48, m_tileCellY * 48);
             int tileId = m_map->data[tileCellIndex];
             if (tileId >= tileset->flags.size()) {
               continue;

@@ -21,5 +21,25 @@ public:
   static CommonEvents load(std::string_view filepath);
   bool serialize(std::string_view filename);
 
+  [[nodiscard]] CommonEvent* event(int id) {
+    for (auto& item : m_events) {
+      if (item.id == id) {
+        return &item;
+      }
+    }
+    return nullptr;
+  }
+
+  [[nodiscard]] const CommonEvent* event(int id) const {
+    for (const auto& set : m_events) {
+      if (set.id == id) {
+        return &set;
+      }
+    }
+
+    return nullptr;
+  }
+
+private:
   std::vector<CommonEvent> m_events;
 };

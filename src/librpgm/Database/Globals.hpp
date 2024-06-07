@@ -18,15 +18,35 @@
  * _pc -> )
  * bo_ -> [
  * _bc -> ]
+ * p_ -> .
  *
  * After the special characters have been decoded and inserted any remaining
  * underscores are replaced with spaces
  */
 
+enum class FacingDirection : int {
+  Down,
+  Left,
+  Right,
+  Up,
+};
+
+enum class Button : int {
+  OK,
+  Cancel,
+  Shift,
+  Down,
+  Left,
+  Right,
+  Up,
+  Pageup,
+  Pagedown,
+};
+
 enum class HitType : int {
-  CertainHit,
-  PhysicalAttack,
-  MagicalAttack,
+  Certain_Hit,
+  Physical_Attack,
+  Magical_Attack,
 };
 
 enum class Occasion : int {
@@ -99,6 +119,143 @@ enum class DamageType : int {
   MP_Drain,
 };
 
+enum class TimerComparisonType : int { Less_than_or_Equal_to, Greater_than_or_Equal_to };
+
+enum class ConditionType : int {
+  Switch,
+  Variable,
+  Self_Switch,
+  Timer,
+  Actor,
+  Enemy,
+  Character,
+  Gold,
+  Item,
+  Weapon,
+  Armor,
+  Button,
+  Script,
+  Vehicle,
+};
+
+enum class ActorConditionType : int {
+  In_The_Party,
+  Name,
+  Class,
+  Skill,
+  Weapon,
+  Armor,
+  State,
+};
+
+enum class EnemyConditionType : int {
+  Appeared,
+  State,
+};
+
+enum class VariableComparisonSource : int {
+  Constant,
+  Variable,
+};
+
+enum class VariableComparisonType : int {
+  Equal_To,
+  Greater_than_or_Equal_to,
+  Less_than_or_Equal_to,
+  Greater_than,
+  Less_than,
+  Not_Equal_to
+};
+
+enum class GoldComaprisonType : int {
+  Equal_To,
+  Greater_than_or_Equal_to,
+  Less_than_or_Equal_to,
+  Less_than,
+};
+
+enum class SwitchControl : int {
+  ON,
+  OFF,
+};
+
+enum class VariableControlOperation {
+  Set,
+  Add,
+  Sub,
+  Mul,
+  Div,
+  Mod,
+};
+
+enum class VariableControlOperand {
+  Constant,
+  Variable,
+  Random,
+  Game_Data,
+  Script,
+};
+
+enum class GameDataSource {
+  Item,
+  Weapon,
+  Armor,
+  Actor,
+  Enemy,
+  Character,
+  Party,
+  Other,
+};
+
+enum class ActorDataSource {
+  Level,
+  EXP,
+  HP,
+  MP,
+  Max_HP,
+  Max_MP,
+  Attack,
+  Defense,
+  M_p_Attack,
+  M_p_Defense,
+  Agility,
+  Luck
+};
+
+enum class EnemyDataSource {
+  HP,
+  MP,
+  Max_HP,
+  Max_MP,
+  Attack,
+  Defense,
+  M_p_Attack,
+  M_p_Defense,
+  Agility,
+  Luck,
+};
+
+enum class CharacterDataSource {
+  Map_X,
+  Map_Y,
+  Direction,
+  Screen_X,
+  Screen_Y,
+};
+
+enum class OtherDataSource {
+  Map_ID,
+  Party_Members,
+  Gold,
+  Steps,
+  Play_Time,
+  Timer,
+  Save_Count,
+  Battle_Count,
+  Win_Count,
+  Escape_Count,
+};
+
 enum class EventCode : int {
   Event_Dummy = 0, // The ◆ character
   Show_Text = 101,
@@ -126,6 +283,7 @@ enum class EventCode : int {
   Exit_Event_Processing = 115,
 
   Common_Event = 117,
+  Label = 118,
   Jump_To_Label = 119,
 
   Control_Switches = 121,
@@ -133,6 +291,7 @@ enum class EventCode : int {
   Control_Self_Switch = 123,
   Control_Timer = 124,
 
+  // STOPPED HERE! V
   Change_Items = 126,
   Change_Weapons = 127,
   Change_Armors = 128,
@@ -331,6 +490,11 @@ enum class EventTriggerType {
   Event_Touch,
   Autorun,
   Parallel,
+};
+
+enum class TimerControl {
+  Start,
+  Stop
 };
 std::string DecodeEnumName(std::string_view str);
 

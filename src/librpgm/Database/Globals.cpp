@@ -28,6 +28,7 @@ std::string DecodeEnumName(std::string_view str) {
   ReplaceStr(result, "_pc", ")");
   ReplaceStr(result, "bo_", "[");
   ReplaceStr(result, "_bc", "]");
+  ReplaceStr(result, "p_", ".");
 
   /* Add new encodings *before* this or it will clobber them */
   ReplaceStr(result, "_", " ");

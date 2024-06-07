@@ -119,7 +119,7 @@ private:
   int m_tileCellX{};
   int m_tileCellY{};
   int m_tileId{};
-  MapRenderer m_mapRenderer;
+  //MapRenderer m_mapRenderer;
 
   bool m_showDemoWindow{};
   bool m_showAboutWindow{};

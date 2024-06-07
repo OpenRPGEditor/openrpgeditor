@@ -364,13 +364,13 @@ void Project::doMapSelection(MapInfos::MapInfo& in) {
   if (in.id == 0) {
     m_map.reset();
     m_selectedMapId = 0;
-    m_mapRenderer.setMap(nullptr, nullptr);
+    //m_mapRenderer.setMap(nullptr, nullptr);
     return;
   }
   SDL_SetCursor(waitCursor);
   m_selectedMapId = in.id;
   m_map = m_resourceManager->loadMap(in.id);
-  m_mapRenderer.setMap(&*m_map, m_tilesets.tileset(m_map->tilesetId));
+  //m_mapRenderer.setMap(&*m_map, m_tilesets.tileset(m_map->tilesetId));
   m_initialScrollX = m_mapInfos.m_mapinfos[m_selectedMapId].scrollX;
   m_initialScrollY = m_mapInfos.m_mapinfos[m_selectedMapId].scrollX;
 
@@ -466,7 +466,7 @@ void Project::drawMapEditor() {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionMax().y - 70.f), ImGuiChildFlags_Border,
                       ImGuiWindowFlags_HorizontalScrollbar);
     if (m_map) {
-      m_mapRenderer.update();
+      //m_mapRenderer.update();
 
       ImGuiWindow* win = ImGui::GetCurrentWindow();
       Texture dummyTex = m_resourceManager->loadParallaxImage("Map509");
@@ -577,9 +577,9 @@ void Project::drawMapEditor() {
                                  0xFFFFFFFF, 0.f, 0, 3.f);
         }
       }
-      win->DrawList->AddImage(m_mapRenderer.getUpperBitmap(), win->ContentRegionRect.Min,
-                              win->ContentRegionRect.Min +
-                                  ImVec2{(m_map->width * 48) * m_mapScale, (m_map->height * 48) * m_mapScale});
+      // win->DrawList->AddImage(m_mapRenderer.getUpperBitmap(), win->ContentRegionRect.Min,
+      //                         win->ContentRegionRect.Min +
+      //                             ImVec2{(m_map->width * 48) * m_mapScale, (m_map->height * 48) * m_mapScale});
     }
     ImGui::EndChild();
     ImGui::Text("Scale:");
@@ -819,57 +819,67 @@ void Project::drawMapEditor() {
 
   if (m_map) {
     const Tileset* tileset = m_tilesets.tileset(m_map->tilesetId);
-    if (ImGui::Begin("Tile Debugger")) {
-      ImGui::BeginGroup();
-      {
-        for (int z = 0; z < 6; ++z) {
-          int tileCellIndex = (z * m_map->height + m_tileCellY) * m_map->width + m_tileCellX;
-          if (tileCellIndex > m_map->data.size()) {
-            continue;
-          }
-          ImGui::Text("Tile %i, layer %i, cell {%i, %i}, absolute {%i, %i}", tileCellIndex, z, m_tileCellX, m_tileCellY,
-                      m_tileCellX * 48, m_tileCellY * 48);
-          int tileId = m_map->data[tileCellIndex];
-          int flags = tileset->flags[tileId];
-          ImGui::Text(
-              "Tile ID %i, Flags 0x%04X, IsAutoTile %i, IsA1Tile %i, IsA2Tile %i, IsA3Tile %i, IsA4Tile %i, IsA5Tile "
-              "%i",
-              tileId, flags, MapRenderer::isAutoTile(tileId), MapRenderer::isTileA1(tileId),
-              MapRenderer::isTileA2(tileId), MapRenderer::isTileA3(tileId), MapRenderer::isTileA4(tileId),
-              MapRenderer::isTileA5(tileId));
-        }
-      }
-      ImGui::EndGroup();
-
-      ImGui::BeginGroup();
-      {
-        for (int z = 0; z < 6; ++z) {
-          int tileCellIndex = (z * m_map->height + m_tileCellY) * m_map->width + m_tileCellX;
-          if (tileCellIndex < m_map->data.size()) {
-            int tileId = m_map->data[tileCellIndex];
-            if (MapRenderer::isAutoTile(tileId)) {
+    if (tileset && !tileset->name.empty() && !tileset->flags.empty()) {
+      if (ImGui::Begin("Tile Debugger")) {
+        ImGui::BeginGroup();
+        {
+          for (int z = 0; z < 6; ++z) {
+            int tileCellIndex = (z * m_map->height + m_tileCellY) * m_map->width + m_tileCellX;
+            if (tileCellIndex > m_map->data.size()) {
               continue;
             }
-
-            int setNumber = 0;
-            if (MapRenderer::isTileA5(tileId)) {
-              setNumber = 4;
-            } else {
-              setNumber = 5 + floor(tileId / 256);
+            ImGui::Text("Tile %i, layer %i, cell {%i, %i}, absolute {%i, %i}", tileCellIndex, z, m_tileCellX, m_tileCellY,
+                        m_tileCellX * 48, m_tileCellY * 48);
+            int tileId = m_map->data[tileCellIndex];
+            if (tileId >= tileset->flags.size()) {
+              continue;
             }
-
-            int w = 48;
-            int h = 48;
-            int sx = (static_cast<int>(floor(tileId / 128)) % 2 * 8 + tileId % 8) * 2;
-            int sy = (static_cast<int>(floor(tileId % 128 / 8)) % 16) * h;
-            Texture tex = m_resourceManager->loadTilesetImage(tileset->tilesetNames[setNumber]);
-            ImGui::Image(tex.get(), ImVec2{48, 48},
-                         {static_cast<float>(sx) / tex.width(), static_cast<float>(sy) / tex.height()},
-                         {static_cast<float>(sx + w) / tex.width(), static_cast<float>(sy + h) / tex.height()});
+            int flags = tileset->flags[tileId];
+            ImGui::Text(
+                "Tile ID %i, Flags 0x%04X, IsAutoTile %i, IsA1Tile %i, IsA2Tile %i, IsA3Tile %i, IsA4Tile %i, IsA5Tile "
+                "%i",
+                tileId, flags, MapRenderer::isAutoTile(tileId), MapRenderer::isTileA1(tileId),
+                MapRenderer::isTileA2(tileId), MapRenderer::isTileA3(tileId), MapRenderer::isTileA4(tileId),
+                MapRenderer::isTileA5(tileId));
           }
         }
+        ImGui::EndGroup();
+        ImGui::BeginGroup();
+        {
+          for (int z = 0; z < 6; ++z) {
+            int tileCellIndex = (z * m_map->height + m_tileCellY) * m_map->width + m_tileCellX;
+            if (tileCellIndex < m_map->data.size()) {
+              int tileId = m_map->data[tileCellIndex];
+              if (MapRenderer::isAutoTile(tileId)) {
+                continue;
+              }
+
+              int setNumber = 0;
+              if (MapRenderer::isTileA5(tileId)) {
+                setNumber = 4;
+              } else {
+                setNumber = 5 + floor(tileId / 256);
+              }
+
+              int w = 48;
+              int h = 48;
+              int sx = (static_cast<int>(floor(tileId / 128)) % 2 * 8 + tileId % 8) * 2;
+              int sy = (static_cast<int>(floor(tileId % 128 / 8)) % 16) * h;
+              if (tileset->tilesetNames[setNumber].empty()) {
+                continue;
+              }
+
+              Texture tex = m_resourceManager->loadTilesetImage(tileset->tilesetNames[setNumber]);
+              if (tex) {
+                ImGui::Image(tex.get(), ImVec2{48, 48},
+                             {static_cast<float>(sx) / tex.width(), static_cast<float>(sy) / tex.height()},
+                             {static_cast<float>(sx + w) / tex.width(), static_cast<float>(sy + h) / tex.height()});
+              }
+            }
+          }
+        }
+        ImGui::EndGroup();
       }
-      ImGui::EndGroup();
     }
     ImGui::End();
   }

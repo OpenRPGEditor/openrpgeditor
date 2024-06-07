@@ -1,25 +1,19 @@
 #pragma once
 
+#include "Database/CommandParser.hpp"
 #include "Database/Globals.hpp"
 
 #include <nlohmann/json.hpp>
 
+struct CommonEvent {
+  friend void to_json(nlohmann::json& to, const CommonEvent& event);
+  friend void from_json(const nlohmann::json& to, CommonEvent& event);
 
-class Command {
-public:
-  EventCode code() const { return m_code; }
-  int indent() const { return m_indent; }
-
-  // private:
-  EventCode m_code;
-  int m_indent;
-};
-
-class CommonEvent {
-public:
-  std::string name;
   int id;
-  std::vector<Command> commands;
+  std::vector<std::shared_ptr<IEventCommand>> commands;
+  std::string name;
+  int switchId;
+  CommonEventTriggerType trigger;
 };
 
 class CommonEvents {

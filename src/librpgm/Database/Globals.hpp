@@ -569,6 +569,12 @@ enum class EventTriggerType {
   Parallel,
 };
 
+enum CommonEventTriggerType {
+  None,
+  Autorun,
+  Parallel,
+};
+
 enum class TimerControl { Start, Stop };
 std::string DecodeEnumName(std::string_view str);
 

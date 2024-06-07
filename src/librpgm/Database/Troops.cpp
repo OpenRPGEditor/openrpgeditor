@@ -26,8 +26,8 @@ bool Troops::serialize(std::string_view filepath) { // TODO: Temporary file for 
   std::ofstream file(filepath.data());
   json data{nullptr};
 
-  for (const Troop& tileset : m_troops) {
-    data.push_back(tileset);
+  for (const Troop& troop : m_troops) {
+    data.push_back(troop);
   }
 
   file << data;

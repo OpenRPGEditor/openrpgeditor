@@ -12,6 +12,15 @@ struct IEventCommand {
   [[nodiscard]] virtual EventCode code() const = 0;
 };
 
+struct UnhandledEventCommand : IEventCommand {
+  ~UnhandledEventCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return m_code; }
+
+  std::optional<int> indent{};
+  EventCode m_code{};
+  nlohmann::json data;
+};
+
 struct EventDummy : IEventCommand {
   ~EventDummy() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Event_Dummy; }

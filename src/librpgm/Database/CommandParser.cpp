@@ -403,9 +403,10 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ChangeWindowColorCommand* formation =
           dynamic_cast<ChangeWindowColorCommand*>(ret.emplace_back(new ChangeWindowColorCommand()).get());
       formation->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(formation->r);
-      parameters[1].get_to(formation->g);
-      parameters[2].get_to(formation->b);
+      auto colors = parameters[0];
+      colors[0].get_to(formation->r);
+      colors[1].get_to(formation->g);
+      colors[2].get_to(formation->b);
       break;
     }
     case EventCode::Change_Defeat_ME: {

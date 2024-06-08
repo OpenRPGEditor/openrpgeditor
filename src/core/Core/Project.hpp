@@ -118,6 +118,7 @@ private:
   float m_mapScale = 1.f;
   double m_initialScrollX = 0.0;
   double m_initialScrollY = 0.0;
+  bool m_initialScrollSet = false;
   int m_tileCellX{};
   int m_tileCellY{};
   int m_tileId{};

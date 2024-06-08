@@ -414,6 +414,7 @@ void Project::doMapSelection(MapInfo& in) {
   if (m != nullptr) {
     m_initialScrollX = m->scrollX;
     m_initialScrollY = m->scrollX;
+    m_initialScrollSet = true;
   }
 
 #if 0
@@ -562,7 +563,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
     {
       // TODO: Moves the map position in directory
     }
-    
+
     cursorPos = ImGui::GetCursorPos();
     // Move back up a couple couple pixels
     cursorPos.y -= 4.f;
@@ -612,11 +613,16 @@ void Project::drawMapEditor() {
 
   // Keep mapScale to a quarter step
 
-  if (m_map && (m_initialScrollX != 0.0 || m_initialScrollY != 0.0)) {
-    m_mapScale = std::min((m_map->width * 48) / m_initialScrollX, (m_map->height * 48) / m_initialScrollY);
-    ImGui::SetScrollX(m_initialScrollX);
-    ImGui::SetScrollY(m_initialScrollY);
-    m_initialScrollX = m_initialScrollY = 0.0;
+  if (m_map) {
+    //    m_mapScale = std::min((m_map->width * 48) / m_initialScrollX, (m_map->height * 48) / m_initialScrollY);
+    if (m_initialScrollSet) {
+      ImGui::SetScrollX(m_initialScrollX);
+      ImGui::SetScrollY(m_initialScrollY);
+      m_initialScrollX = m_initialScrollY = 0.0;
+      m_initialScrollSet = false;
+    }
+    m_mapInfos.map(m_selectedMapId)->scrollX = ImGui::GetScrollX();
+    m_mapInfos.map(m_selectedMapId)->scrollY = ImGui::GetScrollY();
   }
 
   if (ImGui::IsMouseKey(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
@@ -738,7 +744,7 @@ void Project::drawMapEditor() {
                                  0xFF000000, 0.f, 0, 5.f);
           win->DrawList->AddRect(cursorPos + (ImVec2{0.f, 0.f} * m_mapScale), cursorPos + (ImVec2{48, 48} * m_mapScale),
                                  0xFFFFFFFF, 0.f, 0, 3.f);
-              }
+        }
       }
       // win->DrawList->AddImage(m_mapRenderer.getUpperBitmap(), win->ContentRegionRect.Min,
       //                         win->ContentRegionRect.Min +
@@ -845,7 +851,7 @@ void Project::drawMapEditor() {
               }
             }
             ImGui::EndCombo();
-                                }
+          }
         }
         ImGui::EndGroup();
         ImGui::SameLine();
@@ -971,7 +977,7 @@ void Project::drawMapEditor() {
           if (ImGui::InputTextMultiline("##map_note", buf, 2048, ImVec2(ImGui::GetContentRegionMax().x - 15, 400),
                                         flags)) {
             m_map->note = buf;
-                                        }
+          }
         }
         ImGui::Dummy(ImVec2(0.0f, 15.0f));
         ImGui::EndGroup();

@@ -44,8 +44,6 @@ public:
   static Actors load(std::string_view filename);
   bool serialize(std::string_view filename);
 
-  void draw();
-
   [[nodiscard]] Actor* actor(int id) {
     for (auto& item : m_actors) {
       if (item.id == id) {
@@ -66,6 +64,7 @@ public:
   }
 
 private:
+  friend class DBActorsTab;
   std::vector<Actor> m_actors;
   std::optional<Actor> m_selectedActor;
   bool m_isOpen;

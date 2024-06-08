@@ -2,84 +2,6 @@
 
 #include "imgui.h"
 
-void DBActorsTab::draw() {
-  ImGui::BeginChild("#orpg_actors_tab");
-  ImGui::Text("Actors");
-  ImGui::EndChild();
-}
-
-void DBClassesTab::draw() {
-  ImGui::BeginChild("#orpg_classes_tab");
-  ImGui::Text("Classes");
-  ImGui::EndChild();
-}
-
-void DBSkillsTab::draw() {
-  ImGui::BeginChild("#orpg_classes_tab");
-  ImGui::Text("Skills");
-  ImGui::EndChild();
-}
-
-void DBItemsTab::draw() {
-  ImGui::BeginChild("#orpg_classes_tab");
-  ImGui::Text("Items");
-  ImGui::EndChild();
-}
-
-void DBWeaponsTab::draw() {
-  ImGui::BeginChild("#orpg_classes_tab");
-  ImGui::Text("Weapons");
-  ImGui::EndChild();
-}
-
-void DBArmorsTab::draw() {
-  ImGui::BeginChild("#orpg_classes_tab");
-  ImGui::Text("Armors");
-  ImGui::EndChild();
-}
-
-void DBEnemiesTab::draw() {
-  ImGui::BeginChild("#orpg_classes_tab");
-  ImGui::Text("Enemies");
-  ImGui::EndChild();
-}
-
-void DBTroopsTab::draw() {
-  ImGui::BeginChild("#orpg_classes_tab");
-  ImGui::Text("Troops");
-  ImGui::EndChild();
-}
-
-void DBStatesTab::draw() {
-  ImGui::BeginChild("#orpg_classes_tab");
-  ImGui::Text("States");
-  ImGui::EndChild();
-}
-
-void DBAnimationsTab::draw() {
-  ImGui::BeginChild("#orpg_classes_tab");
-  ImGui::Text("Animations");
-  ImGui::EndChild();
-}
-
-void DBTilesetsTab::draw() {
-  ImGui::BeginChild("#orpg_classes_tab");
-  ImGui::Text("Tilesets");
-  ImGui::EndChild();
-}
-
-void DBCommonEventsTab::draw() {
-  ImGui::BeginChild("#orpg_classes_tab");
-  ImGui::Text("CommonEvents");
-  ImGui::EndChild();
-}
-
-void DBSystemTab::draw() {
-  ImGui::BeginChild("#orpg_classes_tab");
-  ImGui::Text("System");
-  ImGui::EndChild();
-}
-
 void DatabaseEditor::draw() {
   if (!m_isOpen) {
     return;
@@ -90,6 +12,7 @@ void DatabaseEditor::draw() {
     ImGui::SetNextItemWidth(100.f);
     ImGui::PushID("##orpg_database_editor_tab_buttons");
     ImGui::BeginGroup();
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 100);
     if (ImGui::Selectable("Actors", m_currentTab == &m_actors)) {
       m_currentTab = &m_actors;
     }
@@ -132,15 +55,9 @@ void DatabaseEditor::draw() {
     ImGui::EndGroup();
     ImGui::PopID();
     ImGui::SameLine();
-    ImGui::PushID("##orpg_database_editor_tab_contents");
-    ImGui::BeginGroup();
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x);
     if (m_currentTab) {
       m_currentTab->draw();
     }
-    ImGui::EndGroup();
-    ImGui::PopID();
   }
 
   ImGui::End();

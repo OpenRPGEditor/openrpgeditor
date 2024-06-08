@@ -30,11 +30,9 @@ add_library(
         Database/Battler.hpp Database/Battler.cpp
         Database/Map.hpp Database/Map.cpp
         Database/CommandParser.hpp Database/CommandParser.cpp
+        Database/MovementRoute.hpp Database/MovementRoute.cpp
 
         # Editor Classes
-        Runtime/DatabaseEditor.cpp Runtime/DatabaseEditor.hpp
-        Database/MovementRoute.cpp
-
 )
 
 target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)

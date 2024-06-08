@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Runtime/DatabaseEditor.hpp"
+#include "DatabaseEditor.hpp"
 #include <string_view>
 #include <string>
 #include "Core/ResourceManager.hpp"
@@ -106,6 +106,8 @@ private:
   CommonEvents m_commonEvents{};
   System m_system{};
   MapInfos m_mapInfos{};
+
+  std::optional<DatabaseEditor> m_databaseEditor;
 
   EditMode m_editMode = EditMode::Map;
   DrawTool m_drawTool = DrawTool::Pencil;

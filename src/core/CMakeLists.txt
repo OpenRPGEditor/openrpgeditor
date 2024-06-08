@@ -14,6 +14,7 @@ add_library(
         Core/Texture.hpp Core/Texture.cpp
         Core/ImGuiUtils.hpp Core/ImGuiUtils.cpp
         Core/MapRenderer.hpp Core/MapRenderer.cpp
+        Core/DatabaseEditor.cpp Core/DatabaseEditor.hpp
         Core/Resources.hpp
         Core/DPIHandler.hpp)
 

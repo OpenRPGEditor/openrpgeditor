@@ -46,4 +46,20 @@ public:
 
   static Map load(std::string_view filepath);
   bool serialize(std::string_view filepath);
+
+  [[nodiscard]] std::vector<std::optional<Event>> getSortedBy() const {
+    std::vector<std::optional<Event>> ret = events;
+    std::sort(ret.begin(), ret.end(), [](const std::optional<Event>& a, const std::optional<Event>& b) {
+      if (!a || !b) {
+        return false;
+      }
+      if (a->y != b->y) {
+        return a->y < b->y;
+      }
+      return a->id < b->id;
+    });
+    return std::move(ret);
+  }
+
+private:
 };

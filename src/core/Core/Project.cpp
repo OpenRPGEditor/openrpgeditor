@@ -1,7 +1,7 @@
-#include "Project.hpp"
+#include "Core/Project.hpp"
 
 #include "ImGuiFileDialog.h"
-#include "ResourceManager.hpp"
+#include "Core/ResourceManager.hpp"
 
 #include "Core/Log.hpp"
 #include "Core/Application.hpp"
@@ -72,6 +72,8 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   APP_INFO("Loading System...");
   m_system = System::load(m_basePath + "/data/System.json");
   m_mapInfos = MapInfos::load(m_basePath + "/data/MapInfos.json");
+  m_databaseEditor.emplace(m_actors, m_classes, m_skills, m_items, m_weapons, m_armors, m_enemies, m_troops, m_states,
+                           m_animations, m_tilesets, m_commonEvents, m_system);
   MapInfo* info = m_mapInfos.map(0);
   info->expanded = true;
   info->name = m_system.gameTitle;
@@ -92,6 +94,7 @@ bool Project::close(bool save) {
   }
 
   /* Default initialize all of these */
+  m_databaseEditor.reset();
   m_actors = {};
   m_classes = {};
   m_skills = {};
@@ -144,6 +147,9 @@ void Project::setupDocking() {
 }
 
 void Project::draw() {
+  if (m_databaseEditor) {
+    m_databaseEditor->draw();
+  }
   drawMenu();
   drawFileDialog();
   setupDocking();
@@ -239,7 +245,6 @@ void Project::drawMenu() {
       }
       ImGui::EndMenu();
     }
-
     if (ImGui::BeginMenu("Draw")) {
       for (auto v : magic_enum::enum_values<DrawTool>()) {
         if (ImGui::MenuItem(DecodeEnumName(magic_enum::enum_name(v)).data(), nullptr, drawTool() == v,
@@ -259,6 +264,36 @@ void Project::drawMenu() {
       }
       if (ImGui::MenuItem("Actual Size", "Ctrl+0")) {
         // TODO: Implement
+      }
+      ImGui::EndMenu();
+    }
+
+    if (ImGui::BeginMenu("Tools")) {
+      if (ImGui::MenuItem("Database", "F9", false, m_databaseEditor != std::nullopt)) {
+        m_databaseEditor->open();
+      }
+      ImGui::EndMenu();
+    }
+    if (ImGui::BeginMenu("Game")) {
+      if (ImGui::MenuItem("Play Test", "Ctrl+R", false, m_databaseEditor != std::nullopt)) {
+        // TODO: Implement
+      }
+      ImGui::Separator();
+      if (ImGui::MenuItem("Open Folder", nullptr, false, m_databaseEditor != std::nullopt)) {
+        /* is there a better way to do this? */
+#if _APPLE__
+        char buff[4096]{};
+        snprintf(buff, 4096, "explorer %s", m_basePath.c_str());
+#elif _WIN32_
+        char buff[4096]{};
+        snprintf(buff, 4096, "open %s", m_basePath.c_str());
+#else
+        char buff[4096]{};
+        snprintf(buff, 4096, "xdg-open %s", m_basePath.c_str());
+#endif
+        if (strlen(buff) > 0) {
+          system(buff);
+        }
       }
       ImGui::EndMenu();
     }
@@ -473,6 +508,7 @@ void Project::drawMapEditor() {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionMax().y - 70.f), ImGuiChildFlags_Border,
                       ImGuiWindowFlags_HorizontalScrollbar);
     if (m_map) {
+      auto events = m_map->getSortedBy();
       // m_mapRenderer.update();
 
       ImGuiWindow* win = ImGui::GetCurrentWindow();
@@ -496,8 +532,7 @@ void Project::drawMapEditor() {
                                    ImVec2{static_cast<float>(x), (m_map->height * 48) * m_mapScale},
                                0x7f0a0a0a, 3.f);
       }
-
-      for (auto& event : m_map->events) {
+      for (auto& event : events) {
         if (event) {
           auto eventX = static_cast<float>(event->x * 48) * m_mapScale;
           auto eventY = static_cast<float>(event->y * 48) * m_mapScale;
@@ -582,7 +617,7 @@ void Project::drawMapEditor() {
                                  0xFF000000, 0.f, 0, 5.f);
           win->DrawList->AddRect(cursorPos + (ImVec2{0.f, 0.f} * m_mapScale), cursorPos + (ImVec2{48, 48} * m_mapScale),
                                  0xFFFFFFFF, 0.f, 0, 3.f);
-        }
+              }
       }
       // win->DrawList->AddImage(m_mapRenderer.getUpperBitmap(), win->ContentRegionRect.Min,
       //                         win->ContentRegionRect.Min +
@@ -689,7 +724,7 @@ void Project::drawMapEditor() {
               }
             }
             ImGui::EndCombo();
-          }
+                                }
         }
         ImGui::EndGroup();
         ImGui::SameLine();
@@ -815,7 +850,7 @@ void Project::drawMapEditor() {
           if (ImGui::InputTextMultiline("##map_note", buf, 2048, ImVec2(ImGui::GetContentRegionMax().x - 15, 400),
                                         flags)) {
             m_map->note = buf;
-          }
+                                        }
         }
         ImGui::Dummy(ImVec2(0.0f, 15.0f));
         ImGui::EndGroup();

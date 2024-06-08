@@ -313,9 +313,9 @@ void Project::drawMenu() {
 }
 void Project::drawFileDialog() {
   // First check if we have a pending project request
-  if (ImGuiFileDialog::Instance()->Display("OpenProjectDlg",
-                                           ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_Modal,
-                                           ImVec2(600, 600))) {
+  if (ImGuiFileDialog::Instance()->Display(
+          "OpenProjectDlg", ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_Modal,
+          ImVec2(600, 600))) {
     if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
       std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
       std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
@@ -602,18 +602,6 @@ void Project::drawMapEditor() {
 
   // Keep mapScale to a quarter step
 
-  if (m_map) {
-    //    m_mapScale = std::min((m_map->width * 48) / m_initialScrollX, (m_map->height * 48) / m_initialScrollY);
-    if (m_initialScrollSet) {
-      ImGui::SetScrollX(m_initialScrollX);
-      ImGui::SetScrollY(m_initialScrollY);
-      m_initialScrollX = m_initialScrollY = 0.0;
-      m_initialScrollSet = false;
-    }
-    m_mapInfos.map(m_selectedMapId)->scrollX = ImGui::GetScrollX();
-    m_mapInfos.map(m_selectedMapId)->scrollY = ImGui::GetScrollY();
-  }
-
   if (ImGui::IsMouseKey(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
     m_mapScale += ImGui::GetIO().MouseWheel * 0.25f;
   }
@@ -624,6 +612,15 @@ void Project::drawMapEditor() {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionMax().y - 70.f), ImGuiChildFlags_Border,
                       ImGuiWindowFlags_HorizontalScrollbar);
     if (m_map) {
+      if (m_initialScrollSet) {
+        // m_mapScale = std::min((m_map->width * 48) / m_initialScrollX, (m_map->height * 48) / m_initialScrollY);
+        ImGui::SetScrollX(m_initialScrollX);
+        ImGui::SetScrollY(m_initialScrollY);
+        m_initialScrollX = m_initialScrollY = 0.0;
+        m_initialScrollSet = false;
+      }
+      m_mapInfos.map(m_selectedMapId)->scrollX = ImGui::GetScrollX();
+      m_mapInfos.map(m_selectedMapId)->scrollY = ImGui::GetScrollY();
       auto events = m_map->getSortedBy();
       // m_mapRenderer.update();
 
@@ -662,9 +659,17 @@ void Project::drawMapEditor() {
           win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0xFFFFFFFF, 0, 0, 3.f);
 
           if (!event->pages[0].image.characterName.empty() && event->pages[0].image.tileId == 0) {
-            if (event->pages[0].stepAnime) {
+            if (event->pages[0].stepAnime ||
+                (event->pages[0].walkAnime && event->pages[0].moveType != MoveType::Fixed)) {
               event->pages[0].image.pattern =
                   std::clamp<int>(std::abs(std::remainder(ImGui::GetTime() * 8, 3 * 2)), 0, 3);
+              if ((event->pages[0].walkAnime && event->pages[0].moveType != MoveType::Fixed)) {
+                event->pages[0].image.direction +=
+                    std::clamp<int>(std::abs(std::remainder(ImGui::GetTime() * 2, 1 * 2)), 0, 1) * 2;
+                if (event->pages[0].image.direction > 8) {
+                  event->pages[0].image.direction = 2;
+                }
+              }
             }
 
             // TODO: This is still wrong

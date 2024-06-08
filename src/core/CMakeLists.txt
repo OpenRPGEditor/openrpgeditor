@@ -28,6 +28,9 @@ add_library(
         Core/DatabaseEditor/DBTilesetsTab.hpp Core/DatabaseEditor/DBTilesetsTab.cpp
         Core/DatabaseEditor/DBCommonEventsTab.hpp Core/DatabaseEditor/DBCommonEventsTab.cpp
         Core/DatabaseEditor/DBSystemTab.hpp Core/DatabaseEditor/DBSystemTab.cpp
+        Core/CheckboardTexture.hpp Core/CheckboardTexture.cpp
+        Core/CharacterSheet.hpp Core/CharacterSheet.cpp
+
         Core/Resources.hpp
         Core/DPIHandler.hpp)
 

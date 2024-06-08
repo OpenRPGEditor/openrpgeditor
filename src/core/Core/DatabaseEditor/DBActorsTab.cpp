@@ -11,6 +11,10 @@ DBActorsTab::DBActorsTab(Actors& actors, DatabaseEditor* parent) : IDBEditorTab(
 }
 
 void DBActorsTab::draw() {
+  if (m_selectedActor != nullptr && !m_charaterSheet) {
+    m_charaterSheet.emplace(m_selectedActor->characterName);
+  }
+
   ImGui::BeginChild("##orpg_actors_editor");
   {
     ImGui::BeginChild("##orpg_actors_editor_actors", ImVec2{300.f, 0});
@@ -28,6 +32,7 @@ void DBActorsTab::draw() {
               ImGui::PushID(id.c_str());
               if (ImGui::Selectable(actor.name.empty() ? id.c_str() : actor.name.c_str(), &actor == m_selectedActor)) {
                 m_selectedActor = &actor;
+                m_charaterSheet.emplace(m_selectedActor->characterName);
               }
               ImGui::PopID();
             }
@@ -125,23 +130,37 @@ void DBActorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Face:");
-              ImGui::Dummy(ImVec2{96, 96});
+              ImGui::ImageButton("##orpg_actors_face_image", m_buttonBack.get(), ImVec2{160, 160});
             }
             ImGui::EndGroup();
             ImGui::SameLine();
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
+            // ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2;
             ImGui::BeginGroup();
             {
               ImGui::Text("Character:");
-              ImGui::Dummy(ImVec2{96, 96});
+              ImGui::ImageButton("##orpg_actors_character_image", m_buttonBack.get(), ImVec2{160, 160});
+              if (m_charaterSheet) {
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() +
+                                     ((160 / 2) - (static_cast<float>((m_charaterSheet->characterWidth()) * 2) / 2)));
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() -
+                                     ((108) + (static_cast<float>((m_charaterSheet->characterHeight()) * 2) / 2)));
+                auto rect = m_charaterSheet->getRectForCharacter(m_selectedActor->characterIndex, 1);
+                ImVec2 uv0{rect.uv0.u, rect.uv0.v};
+                ImVec2 uv1{rect.uv1.u, rect.uv1.v};
+                ImGui::Image(m_charaterSheet->texture().get(),
+                             ImVec2{static_cast<float>(m_charaterSheet->characterWidth()) * 2,
+                                    static_cast<float>(m_charaterSheet->characterHeight()) * 2},
+                             uv0, uv1);
+              }
             }
             ImGui::EndGroup();
             ImGui::SameLine();
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
+            // ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2);
             ImGui::BeginGroup();
             {
               ImGui::Text("[SV] Battler:");
-              ImGui::Dummy(ImVec2{96, 96});
+              ImGui::ImageButton("##orpg_actors_battler_image", m_buttonBack.get(), ImVec2{160, 160});
+              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 128);
             }
             ImGui::EndGroup();
           }

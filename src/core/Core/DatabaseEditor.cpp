@@ -81,7 +81,7 @@ void DBSystemTab::draw() {
 }
 
 void DatabaseEditor::draw() {
-  if (m_isOpen) {
+  if (!m_isOpen) {
     return;
   }
 

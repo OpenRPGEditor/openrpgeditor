@@ -453,6 +453,127 @@ void Project::recursiveDrawTree(MapInfo& in) {
              in.id != 0) {
     doMapSelection(in);
   }
+  else if ((ImGui::IsMouseReleased(ImGuiMouseButton_Right) && m_selectedMapId != in.id)) {
+      ImGui::OpenPopup("maps_popup");
+  }
+  if (ImGui::BeginPopup("maps_popup", ImGuiWindowFlags_Popup))
+  {
+    if (ImGui::Button("New...", ImVec2(200.0f, 0.0f)))
+    {
+      // TODO: Add new map to directory based on current location. Maybe add it as a subdirectory of the current parent?
+    }
+
+    ImVec2 cursorPos = ImGui::GetCursorPos();
+    // Move back up a couple couple pixels
+    cursorPos.y -= 4.f;
+    ImGui::SetCursorPos(cursorPos);
+
+    if (ImGui::Button("Load...", ImVec2(200.0f, 0.0f)))
+    {
+      // TODO: Inserts a map from templates?
+    }
+
+    cursorPos = ImGui::GetCursorPos();
+    // Move back up a couple couple pixels
+    cursorPos.y -= 4.f;
+    ImGui::SetCursorPos(cursorPos);
+
+    ImGui::Separator();
+
+    cursorPos = ImGui::GetCursorPos();
+    // Move back up a couple couple pixels
+    cursorPos.y -= 4.f;
+    ImGui::SetCursorPos(cursorPos);
+
+    if (ImGui::Button("Copy", ImVec2(200.0f, 0.0f)))
+    {
+      // TODO: Map -> Clipboard
+    }
+
+    cursorPos = ImGui::GetCursorPos();
+    // Move back up a couple couple pixels
+    cursorPos.y -= 4.f;
+    ImGui::SetCursorPos(cursorPos);
+
+    if (ImGui::Button("Paste", ImVec2(200.0f, 0.0f)))
+    {
+      // TODO: Clipboard -> Map inserted
+    }
+
+    cursorPos = ImGui::GetCursorPos();
+    // Move back up a couple couple pixels
+    cursorPos.y -= 4.f;
+    ImGui::SetCursorPos(cursorPos);
+
+    if (ImGui::Button("Delete", ImVec2(200.0f, 0.0f)))
+    {
+      // TODO: Deletes a map
+    }
+
+    cursorPos = ImGui::GetCursorPos();
+    // Move back up a couple couple pixels
+    cursorPos.y -= 4.f;
+    ImGui::SetCursorPos(cursorPos);
+
+    ImGui::Separator();
+
+    cursorPos = ImGui::GetCursorPos();
+    // Move back up a couple couple pixels
+    cursorPos.y -= 4.f;
+    ImGui::SetCursorPos(cursorPos);
+
+    if (ImGui::Button("Find...", ImVec2(200.0f, 0.0f)))
+    {
+      // TODO: Finds a map based on a string input
+    }
+
+    cursorPos = ImGui::GetCursorPos();
+    // Move back up a couple couple pixels
+    cursorPos.y -= 4.f;
+    ImGui::SetCursorPos(cursorPos);
+
+    if (ImGui::Button("Find Next", ImVec2(200.0f, 0.0f)))
+    {
+      // TODO: FInds the next map result based on a string input
+    }
+
+    cursorPos = ImGui::GetCursorPos();
+    // Move back up a couple couple pixels
+    cursorPos.y -= 4.f;
+    ImGui::SetCursorPos(cursorPos);
+
+    if (ImGui::Button("Find Previous", ImVec2(200.0f, 0.0f)))
+    {
+      // TODO: FInds the previous map result based on a string input
+    }
+    cursorPos = ImGui::GetCursorPos();
+    // Move back up a couple couple pixels
+    cursorPos.y -= 4.f;
+    ImGui::SetCursorPos(cursorPos);
+
+    ImGui::Separator();
+
+    cursorPos = ImGui::GetCursorPos();
+    // Move back up a couple couple pixels
+    cursorPos.y -= 4.f;
+    ImGui::SetCursorPos(cursorPos);
+
+    if (ImGui::Button("Shift...", ImVec2(200.0f, 0.0f)))
+    {
+      // TODO: Moves the map position in directory
+    }
+    
+    cursorPos = ImGui::GetCursorPos();
+    // Move back up a couple couple pixels
+    cursorPos.y -= 4.f;
+    ImGui::SetCursorPos(cursorPos);
+
+    if (ImGui::Button("Generate Dungeon...", ImVec2(200.0f, 0.0f)))
+    {
+      // ???
+    }
+    ImGui::EndPopup();
+  }
 
   if (ImGui::IsItemToggledOpen()) {
     in.expanded ^= 1;

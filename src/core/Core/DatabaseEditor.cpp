@@ -80,7 +80,11 @@ void DBSystemTab::draw() {
   ImGui::EndChild();
 }
 
-bool DatabaseEditor::draw() {
+void DatabaseEditor::draw() {
+  if (m_isOpen) {
+    return;
+  }
+
   ImGui::PushID("##orpg_database_editor");
   if (ImGui::Begin("Database", &m_isOpen)) {
     ImGui::SetNextItemWidth(100.f);
@@ -142,7 +146,6 @@ bool DatabaseEditor::draw() {
   ImGui::End();
   ImGui::PopID();
 
-  return m_isOpen;
 }
 
 

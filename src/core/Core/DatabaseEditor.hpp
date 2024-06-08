@@ -154,10 +154,9 @@ struct DatabaseEditor {
     m_currentTab = &m_actors;
   }
 
-  bool draw();
+  void draw();
 
   void open() { m_isOpen = true; }
-
 private:
   DBActorsTab m_actors;
   DBClassesTab m_classes;

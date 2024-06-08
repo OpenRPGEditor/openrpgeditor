@@ -1,7 +1,7 @@
-#include "Core/CheckboardTexture.hpp"
+#include "Core/CheckerboardTexture.hpp"
 #include "Core/Application.hpp"
 
-CheckboardTexture::CheckboardTexture(int width, int height, CellSizes cellSize, uint8_t evenColor, uint8_t oddColor)
+CheckerboardTexture::CheckerboardTexture(int width, int height, CellSizes cellSize, uint8_t evenColor, uint8_t oddColor)
 : m_width(width), m_height(height) {
   uint8_t colors[2]{oddColor, evenColor};
   uint8_t* data = (uint8_t*)malloc((width * height) * 4);

@@ -7,10 +7,10 @@ enum class CellSizes : uint8_t {
   _32 = (1 << 5),
   _64 = (1 << 6),
 };
-struct CheckboardTexture {
+struct CheckerboardTexture {
 
-  CheckboardTexture() = default;
-  CheckboardTexture(int width, int height, CellSizes cellSize = CellSizes::_64, uint8_t evenColor = 255,
+  CheckerboardTexture() = default;
+  CheckerboardTexture(int width, int height, CellSizes cellSize = CellSizes::_64, uint8_t evenColor = 255,
                     uint8_t oddColor = 127);
 
   void* get() const { return m_texture; }

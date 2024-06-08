@@ -1,6 +1,6 @@
 #pragma once
 #include "Core/CharacterSheet.hpp"
-#include "Core/CheckboardTexture.hpp"
+#include "Core/CheckerboardTexture.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include <optional>
 
@@ -19,6 +19,6 @@ private:
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
-  CheckboardTexture m_buttonBack{128, 128, CellSizes::_64, 255, 200};
+  CheckerboardTexture m_buttonBack{128, 128, CellSizes::_64, 255, 200};
   std::optional<CharacterSheet> m_charaterSheet;
 };

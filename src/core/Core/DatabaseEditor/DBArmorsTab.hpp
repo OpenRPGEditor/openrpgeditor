@@ -4,7 +4,7 @@
 struct Armors;
 struct DBArmorsTab : IDBEditorTab {
   DBArmorsTab() = delete;
-  explicit DBArmorsTab(Armors& armors) : m_armors(armors) {}
+  explicit DBArmorsTab(Armors& armors, DatabaseEditor* parent) : IDBEditorTab(parent), m_armors(armors) {}
   void draw() override;
 
 private:

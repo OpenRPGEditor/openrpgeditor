@@ -4,9 +4,10 @@
 struct Classes;
 struct DBClassesTab : IDBEditorTab {
   DBClassesTab() = delete;
-  explicit DBClassesTab(Classes& classes) : m_classes(classes) {}
+  explicit DBClassesTab(Classes& classes, DatabaseEditor* parent) : IDBEditorTab(parent), m_classes(classes) {}
   void draw() override;
 
+  const Classes& classes() const { return m_classes; }
 private:
   Classes& m_classes;
 };

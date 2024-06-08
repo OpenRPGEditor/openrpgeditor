@@ -6,7 +6,7 @@
 struct System;
 struct DBSystemTab : IDBEditorTab {
   DBSystemTab() = delete;
-  explicit DBSystemTab(System& system) : m_system(system) {}
+  explicit DBSystemTab(System& system, DatabaseEditor* parent) : IDBEditorTab(parent), m_system(system) {}
   void draw() override;
 
 private:

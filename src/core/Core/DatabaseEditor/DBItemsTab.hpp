@@ -4,7 +4,7 @@
 struct Items;
 struct DBItemsTab : IDBEditorTab {
   DBItemsTab() = delete;
-  explicit DBItemsTab(Items& items) : m_items(items) {}
+  explicit DBItemsTab(Items& items, DatabaseEditor* parent) : IDBEditorTab(parent), m_items(items) {}
   void draw() override;
 
 private:

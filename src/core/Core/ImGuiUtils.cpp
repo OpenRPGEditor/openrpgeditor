@@ -82,4 +82,20 @@ void EndGroupPanel() {
 
   EndGroup();
 }
+
+bool LabelOverLineEdit(const char* id, const char* label, char* string, int len, float width) {
+  BeginGroup();
+  {
+    Text("%s", label);
+    char name[len];
+    strncpy(name, string, len);
+    ImGui::SetNextItemWidth(width);
+    if (InputText(id, name, len, ImGuiInputTextFlags_EnterReturnsTrue)) {
+      strncpy(string, name, len);
+      return true;
+    }
+  }
+  EndGroup();
+  return false;
+}
 } // namespace ImGui

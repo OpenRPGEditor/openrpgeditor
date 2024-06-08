@@ -4,7 +4,7 @@
 struct States;
 struct DBStatesTab : IDBEditorTab {
   DBStatesTab() = delete;
-  explicit DBStatesTab(States& system) : m_states(system) {}
+  explicit DBStatesTab(States& system, DatabaseEditor* parent) : IDBEditorTab(parent), m_states(system) {}
   void draw() override;
 
 private:

@@ -12,7 +12,8 @@
 class Actor {
 public:
   NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Actor, id, battlerName, characterIndex, characterName, classId, equips,
-                                              faceIndex, faceName, traits, maxLevel, name, nickname, note, profile);
+                                              faceIndex, faceName, traits, initialLevel, maxLevel, name, nickname, note,
+                                              profile);
   int id = 0;
   std::string battlerName;
   int characterIndex = 0;
@@ -22,6 +23,7 @@ public:
   int faceIndex = 0;
   std::string faceName;
   std::vector<Trait> traits;
+  int initialLevel = 1;
   int maxLevel = 99;
   std::string name;
   std::string nickname;

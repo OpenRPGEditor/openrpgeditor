@@ -8,7 +8,7 @@
 struct Troops;
 struct DBTroopsTab : IDBEditorTab {
   DBTroopsTab() = delete;
-  explicit DBTroopsTab(Troops& troops) : m_troops(troops) {}
+  explicit DBTroopsTab(Troops& troops, DatabaseEditor* parent) : IDBEditorTab(parent), m_troops(troops) {}
   void draw() override;
 
 private:

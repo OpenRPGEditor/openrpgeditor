@@ -32,7 +32,7 @@ public:
   static Classes load(std::string_view filename);
   void serialize(std::string_view filename);
 
-  [[nodiscard]] Class* event(int id) {
+  [[nodiscard]] Class* classType(int id) {
     for (auto& item : m_classes) {
       if (item.id == id) {
         return &item;
@@ -41,7 +41,7 @@ public:
     return nullptr;
   }
 
-  [[nodiscard]] const Class* event(int id) const {
+  [[nodiscard]] const Class* classType(int id) const {
     for (const auto& set : m_classes) {
       if (set.id == id) {
         return &set;
@@ -51,6 +51,8 @@ public:
     return nullptr;
   }
 
+  const std::vector<Class>& classes() const { return m_classes; }
+  std::vector<Class>& classes() { return m_classes; }
 private:
   std::vector<Class> m_classes;
 };

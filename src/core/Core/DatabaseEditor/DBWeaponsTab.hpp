@@ -4,7 +4,7 @@
 struct Weapons;
 struct DBWeaponsTab : IDBEditorTab {
   DBWeaponsTab() = delete;
-  explicit DBWeaponsTab(Weapons& system) : m_weapons(system) {}
+  explicit DBWeaponsTab(Weapons& system, DatabaseEditor* parent) : IDBEditorTab(parent), m_weapons(system) {}
   void draw() override;
 
 private:

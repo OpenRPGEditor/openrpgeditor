@@ -4,7 +4,7 @@
 struct Enemies;
 struct DBEnemiesTab : IDBEditorTab {
   DBEnemiesTab() = delete;
-  explicit DBEnemiesTab(Enemies& enemies) : m_enemies(enemies) {}
+  explicit DBEnemiesTab(Enemies& enemies, DatabaseEditor* parent) : IDBEditorTab(parent), m_enemies(enemies) {}
   void draw() override;
 
 private:

@@ -4,7 +4,7 @@
 struct CommonEvents;
 struct DBCommonEventsTab : IDBEditorTab {
   DBCommonEventsTab() = delete;
-  explicit DBCommonEventsTab(CommonEvents& events) : m_events(events) {}
+  explicit DBCommonEventsTab(CommonEvents& events, DatabaseEditor* parent) : IDBEditorTab(parent), m_events(events) {}
   void draw() override;
 
 private:

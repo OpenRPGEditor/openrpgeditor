@@ -4,7 +4,7 @@
 struct Skills;
 struct DBSkillsTab : IDBEditorTab {
   DBSkillsTab() = delete;
-  explicit DBSkillsTab(Skills& system) : m_skills(system) {}
+  explicit DBSkillsTab(Skills& system, DatabaseEditor* parent) : IDBEditorTab(parent), m_skills(system) {}
   void draw() override;
 
 private:

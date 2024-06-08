@@ -14,31 +14,34 @@
 #include "Core/DatabaseEditor/DBTilesetsTab.hpp"
 #include "Core/DatabaseEditor/DBCommonEventsTab.hpp"
 #include "Core/DatabaseEditor/DBSystemTab.hpp"
+#include "Database/Classes.hpp"
 
 struct DatabaseEditor {
   DatabaseEditor() = delete;
   explicit DatabaseEditor(Actors& actors, Classes& classes, Skills& skills, Items& items, Weapons& weapons,
                           Armors& armors, Enemies& enemies, Troops& troops, States& states, Animations& animations,
                           Tilesets& tilesets, CommonEvents& commonEvents, System& system)
-  : m_actors(actors)
-  , m_classes(classes)
-  , m_skills(skills)
-  , m_items(items)
-  , m_weapons(weapons)
-  , m_armors(armors)
-  , m_enemies(enemies)
-  , m_troops(troops)
-  , m_states(states)
-  , m_animations(animations)
-  , m_tilesets(tilesets)
-  , m_commonEvents(commonEvents)
-  , m_system(system) {
+  : m_actors(actors, this)
+  , m_classes(classes, this)
+  , m_skills(skills, this)
+  , m_items(items, this)
+  , m_weapons(weapons, this)
+  , m_armors(armors, this)
+  , m_enemies(enemies, this)
+  , m_troops(troops, this)
+  , m_states(states, this)
+  , m_animations(animations, this)
+  , m_tilesets(tilesets, this)
+  , m_commonEvents(commonEvents, this)
+  , m_system(system, this) {
     m_currentTab = &m_actors;
   }
 
   void draw();
 
   void open() { m_isOpen = true; }
+
+  [[nodiscard]] const Classes& classes() const { return m_classes.classes(); }
 private:
   DBActorsTab m_actors;
   DBClassesTab m_classes;

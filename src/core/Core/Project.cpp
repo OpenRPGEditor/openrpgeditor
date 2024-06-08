@@ -313,8 +313,9 @@ void Project::drawMenu() {
 }
 void Project::drawFileDialog() {
   // First check if we have a pending project request
-  if (ImGuiFileDialog::Instance()->Display("OpenProjectDlg", ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking,
-                                           ImVec2(300, 300))) {
+  if (ImGuiFileDialog::Instance()->Display("OpenProjectDlg",
+                                           ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_Modal,
+                                           ImVec2(600, 600))) {
     if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
       std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
       std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
@@ -453,14 +454,11 @@ void Project::recursiveDrawTree(MapInfo& in) {
   } else if ((ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemFocused()) && m_selectedMapId != in.id &&
              in.id != 0) {
     doMapSelection(in);
+  } else if ((ImGui::IsMouseReleased(ImGuiMouseButton_Right) && m_selectedMapId != in.id)) {
+    ImGui::OpenPopup("maps_popup");
   }
-  else if ((ImGui::IsMouseReleased(ImGuiMouseButton_Right) && m_selectedMapId != in.id)) {
-      ImGui::OpenPopup("maps_popup");
-  }
-  if (ImGui::BeginPopup("maps_popup", ImGuiWindowFlags_Popup))
-  {
-    if (ImGui::Button("New...", ImVec2(200.0f, 0.0f)))
-    {
+  if (ImGui::BeginPopup("maps_popup", ImGuiWindowFlags_Popup)) {
+    if (ImGui::Button("New...", ImVec2(200.0f, 0.0f))) {
       // TODO: Add new map to directory based on current location. Maybe add it as a subdirectory of the current parent?
     }
 
@@ -469,8 +467,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
     cursorPos.y -= 4.f;
     ImGui::SetCursorPos(cursorPos);
 
-    if (ImGui::Button("Load...", ImVec2(200.0f, 0.0f)))
-    {
+    if (ImGui::Button("Load...", ImVec2(200.0f, 0.0f))) {
       // TODO: Inserts a map from templates?
     }
 
@@ -486,8 +483,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
     cursorPos.y -= 4.f;
     ImGui::SetCursorPos(cursorPos);
 
-    if (ImGui::Button("Copy", ImVec2(200.0f, 0.0f)))
-    {
+    if (ImGui::Button("Copy", ImVec2(200.0f, 0.0f))) {
       // TODO: Map -> Clipboard
     }
 
@@ -496,8 +492,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
     cursorPos.y -= 4.f;
     ImGui::SetCursorPos(cursorPos);
 
-    if (ImGui::Button("Paste", ImVec2(200.0f, 0.0f)))
-    {
+    if (ImGui::Button("Paste", ImVec2(200.0f, 0.0f))) {
       // TODO: Clipboard -> Map inserted
     }
 
@@ -506,8 +501,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
     cursorPos.y -= 4.f;
     ImGui::SetCursorPos(cursorPos);
 
-    if (ImGui::Button("Delete", ImVec2(200.0f, 0.0f)))
-    {
+    if (ImGui::Button("Delete", ImVec2(200.0f, 0.0f))) {
       // TODO: Deletes a map
     }
 
@@ -523,8 +517,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
     cursorPos.y -= 4.f;
     ImGui::SetCursorPos(cursorPos);
 
-    if (ImGui::Button("Find...", ImVec2(200.0f, 0.0f)))
-    {
+    if (ImGui::Button("Find...", ImVec2(200.0f, 0.0f))) {
       // TODO: Finds a map based on a string input
     }
 
@@ -533,8 +526,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
     cursorPos.y -= 4.f;
     ImGui::SetCursorPos(cursorPos);
 
-    if (ImGui::Button("Find Next", ImVec2(200.0f, 0.0f)))
-    {
+    if (ImGui::Button("Find Next", ImVec2(200.0f, 0.0f))) {
       // TODO: FInds the next map result based on a string input
     }
 
@@ -543,8 +535,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
     cursorPos.y -= 4.f;
     ImGui::SetCursorPos(cursorPos);
 
-    if (ImGui::Button("Find Previous", ImVec2(200.0f, 0.0f)))
-    {
+    if (ImGui::Button("Find Previous", ImVec2(200.0f, 0.0f))) {
       // TODO: FInds the previous map result based on a string input
     }
     cursorPos = ImGui::GetCursorPos();
@@ -559,8 +550,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
     cursorPos.y -= 4.f;
     ImGui::SetCursorPos(cursorPos);
 
-    if (ImGui::Button("Shift...", ImVec2(200.0f, 0.0f)))
-    {
+    if (ImGui::Button("Shift...", ImVec2(200.0f, 0.0f))) {
       // TODO: Moves the map position in directory
     }
 
@@ -569,8 +559,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
     cursorPos.y -= 4.f;
     ImGui::SetCursorPos(cursorPos);
 
-    if (ImGui::Button("Generate Dungeon...", ImVec2(200.0f, 0.0f)))
-    {
+    if (ImGui::Button("Generate Dungeon...", ImVec2(200.0f, 0.0f))) {
       // ???
     }
     ImGui::EndPopup();

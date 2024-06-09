@@ -454,7 +454,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
 
   if (ImGui::BeginPopupContextWindow()) {
     // Ensure we have the right clicked map selected
-    if (m_selectedMapId != in.id && !ImGui::IsItemActivated()) {
+    if (m_selectedMapId != in.id && ImGui::IsItemHovered() ) {
       doMapSelection(in);
     }
     if (ImGui::Button("New...", ImVec2(200.0f, 0.0f))) {

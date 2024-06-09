@@ -46,9 +46,7 @@ Application::~Application() {
   SDL_Quit();
 }
 
-static void* PlatformWindow_ReadOpen(ImGuiContext*, ImGuiSettingsHandler*, const char* name) {
-  return (void*)"Window";
-}
+static void* PlatformWindow_ReadOpen(ImGuiContext*, ImGuiSettingsHandler*, const char* name) { return (void*)"Window"; }
 
 static void PlatformWindow_ReadLine(ImGuiContext*, ImGuiSettingsHandler*, void* entry, const char* line) {
   int x, y;
@@ -107,6 +105,17 @@ ExitStatus App::Application::run() {
 
   ImVector<ImWchar> ranges;
   ImFontGlyphRangesBuilder builder;
+  /* clang-format off */
+  static const ImWchar specialChar[] = {
+      0x1F40, 0x2327,
+      0x2328, 0x270F,
+      0x2710, 0x2AF7,
+      0x2AF8, 0x2EDF,
+      0x2EE0, 0x32C7,
+      0x32C8, 0x36AF,
+      0,
+  };
+  /* clang-format on */
   builder.AddRanges(io.Fonts->GetGlyphRangesDefault());
   builder.AddRanges(io.Fonts->GetGlyphRangesGreek());
   builder.AddRanges(io.Fonts->GetGlyphRangesThai());
@@ -115,6 +124,7 @@ ExitStatus App::Application::run() {
   builder.AddRanges(io.Fonts->GetGlyphRangesJapanese());
   builder.AddRanges(io.Fonts->GetGlyphRangesChineseFull());
   builder.AddRanges(io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+  builder.AddRanges(specialChar);
   builder.BuildRanges(&ranges);
   io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, nullptr, ranges.Data);
   io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, nullptr, ranges.Data);

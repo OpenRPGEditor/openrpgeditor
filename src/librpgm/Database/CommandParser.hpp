@@ -10,6 +10,9 @@ struct IEventCommand {
   std::optional<int> indent{};
   virtual ~IEventCommand() = default;
   [[nodiscard]] virtual EventCode code() const = 0;
+  [[nodiscard]] virtual std::string stringRep() const {
+    return std::string(indent ? *indent * 4 : 0, ' ') + DecodeEnumName(code());
+  }
 };
 
 struct UnhandledEventCommand : IEventCommand {
@@ -24,6 +27,7 @@ struct UnhandledEventCommand : IEventCommand {
 struct EventDummy : IEventCommand {
   ~EventDummy() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Event_Dummy; }
+  [[nodiscard]] std::string stringRep() const override { return std::string(indent ? *indent * 4 : 0, ' ') + "◇"; }
 };
 
 struct NextTextCommand : IEventCommand {
@@ -107,13 +111,26 @@ struct NextCommentCommand : IEventCommand {
 struct CommentCommand : IEventCommand {
   ~CommentCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Comment; }
-  std::vector<std::shared_ptr<NextCommentCommand>> text;
+  std::string text;
+  std::vector<std::shared_ptr<NextCommentCommand>> nextComments;
+  [[nodiscard]] std::string stringRep() const override {
+    std::string ret = std::string(indent ? *indent : 0, '\t') + "◇Comment: " + text;
+    for (const auto& t : nextComments) {
+      if (!ret.empty()) {
+        ret += "\n";
+      }
+      ret += std::string(indent ? *indent : 0, '\t') + " :" + std::string(((t->indent ? *t->indent : 0) + 1), '\t') +
+             " : " + t->text;
+    }
+
+    return ret;
+  }
 };
 
 struct ConditionalBranchCommand : IEventCommand {
   ConditionalBranchCommand() {}
   ~ConditionalBranchCommand() override {}
-  [[nodiscard]] EventCode code() const override { return EventCode::Comment; }
+  [[nodiscard]] EventCode code() const override { return EventCode::Conditional_Branch; }
   ConditionType type{};
   union {
     struct {
@@ -443,7 +460,6 @@ struct EraseEventCommand : IEventCommand {
   ~EraseEventCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Erase_Event; }
 };
-
 
 struct ScriptCommand : IEventCommand {
   ~ScriptCommand() override = default;

@@ -104,7 +104,9 @@ ExitStatus App::Application::run() {
   const std::string font_path{Resources::font_path("NotoSans-SemiBold.ttf").generic_string()};
   const std::string font_path_math{Resources::font_path("JetBrainsMono-SemiBold.ttf").generic_string()};
   const std::string font_path_jp{Resources::font_path("NotoSansJP-SemiBold.ttf").generic_string()};
+  const std::string font_path_jp_mono{Resources::font_path("RelaxedTypingMonoJP-Medium.ttf").generic_string()};
   const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-SemiBold.ttf").generic_string()};
+  const std::string font_path_mono{Resources::font_path("NotoSansMono-SemiBold.ttf").generic_string()};
 
   static const ImWchar specialChar[] = {
       /* clang-format off */
@@ -116,6 +118,7 @@ ExitStatus App::Application::run() {
       0x1F40, 0x2327,
       0x1F40, 0x2327,
       0x2328, 0x270F,
+      0x2710, 0x2AF7,
       0x2AF8, 0x2EDF,
       0x2EE0, 0x32C7,
       0x32C8, 0x36AF,
@@ -135,20 +138,18 @@ ExitStatus App::Application::run() {
   builder.AddRanges(io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
   builder.AddRanges(specialChar);
   builder.BuildRanges(&ranges);
-  io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size);
+  m_mainFont = io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size);
   io.Fonts->Build();
 
   ImFontConfig config;
   config.MergeMode = true;
-  ImWchar mathRange[]{
-      0x2710,
-      0x2AF7,
-      0,
-  };
-  io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_jp.c_str(), font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_math.c_str(), font_size, &config, mathRange);
+  m_sinhalaFont = io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
+  m_jpFont = io.Fonts->AddFontFromFileTTF(font_path_jp.c_str(), font_size, &config, ranges.Data);
+  m_mathFont = io.Fonts->AddFontFromFileTTF(font_path_math.c_str(), font_size, &config, ranges.Data);
+  m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_mono.c_str(), font_size, nullptr, ranges.Data);
   io.Fonts->Build();
+
+  io.FontDefault = m_mainFont;
 
   DPIHandler::set_global_font_scaling(&io);
 

@@ -108,10 +108,11 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
     case EventCode::Comment: {
       CommentCommand* text = dynamic_cast<CommentCommand*>(ret.emplace_back(new CommentCommand()).get());
       text->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(text->text);
       while (nextEventCommand() == EventCode::Next_Comment) {
         ++index;
-        NextCommentCommand* tmp = text->text.emplace_back(new NextCommentCommand()).get();
-        text->indent = parser[index].value("indent", std::optional<int>{});
+        NextCommentCommand* tmp = text->nextComments.emplace_back(new NextCommentCommand()).get();
+        tmp->indent = parser[index].value("indent", std::optional<int>{});
         currentCommand()["parameters"][0].get_to(tmp->text);
       }
       break;

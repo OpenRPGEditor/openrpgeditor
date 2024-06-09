@@ -2,6 +2,7 @@
 #include "Database/CommonEvents.hpp"
 
 #include "imgui.h"
+#include "Core/Application.hpp"
 #include "Core/DatabaseEditor.hpp"
 #include "Core/ImGuiUtils.hpp"
 #include "Database/System.hpp"
@@ -114,18 +115,13 @@ void DBCommonEventsTab::draw() {
               ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
               ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x - 16);
               static int item_current_idx = 0; // Here we store our selection data as an index.
-
               // Custom size: use all width, 5 items tall
               if (ImGui::BeginListBox("##commonevent_code_contents",
                                       ImVec2(0, ImGui::GetContentRegionAvail().y - 16))) {
-                for (int n = 0; n < m_selectedCommonEvent->commands.size() - 1; n++) {
+                for (int n = 0; n < m_selectedCommonEvent->commands.size(); n++) {
                   const bool is_selected = (item_current_idx == n);
-                  int indent = 0;
-                  if (m_selectedCommonEvent->commands[n]->indent)
-                    indent = m_selectedCommonEvent->commands[n]->indent.value();
 
-                  std::string indentPad = std::string(indent * 4, ' ');
-                  indentPad += DecodeEnumName(m_selectedCommonEvent->commands[n]->code()).c_str();
+                  std::string indentPad = m_selectedCommonEvent->commands[n]->stringRep();
 
                   if (ImGui::Selectable(indentPad.c_str(), is_selected))
                     item_current_idx = n;

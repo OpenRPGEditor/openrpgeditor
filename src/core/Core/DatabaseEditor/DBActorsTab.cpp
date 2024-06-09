@@ -34,7 +34,8 @@ void DBActorsTab::draw() {
 
               char name[4096];
               snprintf(name, 4096, "%04i %s", actor.id, actor.name.c_str());
-              if (ImGui::Selectable(name, &actor == m_selectedActor)) {
+              if (ImGui::Selectable(name, &actor == m_selectedActor)||
+                  (ImGui::IsItemFocused() && m_selectedActor != &actor)) {
                 m_selectedActor = &actor;
                 m_charaterSheet.emplace(m_selectedActor->characterName);
               }
@@ -239,9 +240,8 @@ void DBActorsTab::draw() {
         ImGui::SameLine();
         ImGui::BeginChild("##orpg_actors_actor_panel_right");
         {
-          auto traits = m_selectedActor->traits;
-          auto dbEditor = m_parent;
-          TraitsEditor(traits, dbEditor);
+          m_traitsEditor.draw(m_selectedActor->traits, m_parent);
+
           ImGui::BeginGroup();
           {
             ImGui::SeparatorText("Note:");

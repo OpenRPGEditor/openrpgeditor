@@ -29,7 +29,7 @@
  */
 
 /* May be something else so this is prelim */
-enum class DebuffRateSource {
+enum class ParameterSource {
   Max_HP,
   Max_MP,
   Attack,
@@ -40,6 +40,69 @@ enum class DebuffRateSource {
   Luck,
 };
 
+enum class DebuffSource {
+  Max_HP,
+  Max_MP,
+  Attack,
+  Defense,
+  M_pe_Attack,
+  M_pe_Defense,
+  Agility,
+  Luck,
+};
+
+enum class EXParameterSource {
+  Hit_Rate,
+  Evasion_Rate,
+  CriticalvRate,
+  Critical_Evasion,
+  Magic_Evasion,
+  Magic_Reflection,
+  Counter_Attack,
+  HP_Regeneration,
+  MP_Regeneration,
+  TP_Regeneration
+};
+
+enum class SPParameterSource {
+  Target_Rate,
+  Guard_Effect,
+  Recovery_Effect,
+  Pharmacology,
+  MP_Cost_Rate,
+  TP_Charge_Rate,
+  Physical_Damage,
+  Magical_Damage,
+  Floor_Damage,
+  Experience,
+};
+enum class SlotType {
+  Normal,
+  Dual_Wield,
+};
+
+enum class SpecialFlag {
+  Auto_Battle,
+  Guard,
+  Substitute,
+  Preserve_TP,
+};
+
+enum class CollapseEffect {
+  Normal,
+  Boss,
+  Instant,
+  No_Disappear,
+};
+
+enum class PartyAbility {
+  Encounter_Half,
+  Encounter_None,
+  Cancel_Surprise,
+  Raise_Preemptive,
+  Gold_Double,
+  Drop_Item_Double,
+};
 enum class TraitCode {
   Element_Rate = 11,
   Debuff_Rate = 12,

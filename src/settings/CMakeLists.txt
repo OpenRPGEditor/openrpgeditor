@@ -1,6 +1,6 @@
 set(NAME "Settings")
 
-include(${PROJECT_SOURCE_DIR}/cmake/StaticAnalyzers.cmake)
+#include(${PROJECT_SOURCE_DIR}/cmake/StaticAnalyzers.cmake)
 
 configure_file(Settings/Project.cpp.in Settings/Project.cpp @ONLY)
 

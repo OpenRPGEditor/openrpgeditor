@@ -122,6 +122,7 @@ private:
   int m_tileCellX{};
   int m_tileCellY{};
   int m_tileId{};
+  Texture m_dummyTex;
   //MapRenderer m_mapRenderer;
 
   bool m_showDemoWindow{};

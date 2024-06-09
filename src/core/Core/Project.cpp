@@ -75,12 +75,14 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   m_mapInfos = MapInfos::load(m_basePath + "/data/MapInfos.json");
   m_databaseEditor.emplace(m_actors, m_classes, m_skills, m_items, m_weapons, m_armors, m_enemies, m_troops, m_states,
                            m_animations, m_tilesets, m_commonEvents, m_system);
+
   MapInfo* info = m_mapInfos.map(0);
   info->expanded = true;
   info->name = m_system.gameTitle;
   APP_INFO("Loaded project!");
   m_resourceManager.emplace(m_basePath);
   // Load the previously loaded map
+  //m_dummyTex = m_resourceManager->loadParallaxImage("Map509");
   SDL_SetCursor(SDL_GetDefaultCursor());
   MapInfo* m = m_mapInfos.map(m_system.editMapId);
   if (m != nullptr) {
@@ -685,12 +687,12 @@ void Project::drawMapEditor() {
       // m_mapRenderer.update();
 
       ImGuiWindow* win = ImGui::GetCurrentWindow();
-      Texture dummyTex = m_resourceManager->loadParallaxImage("Map509");
       ImGui::Dummy(ImVec2{m_map->width * (48 * m_mapScale), m_map->height * (48 * m_mapScale)});
-
-      win->DrawList->AddImage(dummyTex.get(), win->ContentRegionRect.Min,
-                              win->ContentRegionRect.Min +
-                                  ImVec2{(m_map->width * 48) * m_mapScale, (m_map->height * 48) * m_mapScale});
+      if (m_dummyTex) {
+        win->DrawList->AddImage(m_dummyTex.get(), win->ContentRegionRect.Min,
+                                win->ContentRegionRect.Min +
+                                    ImVec2{(m_map->width * 48) * m_mapScale, (m_map->height * 48) * m_mapScale});
+      }
 
       for (int y = 0; y <= (m_map->height * 48) * m_mapScale; y += 48 * m_mapScale) {
         win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)},

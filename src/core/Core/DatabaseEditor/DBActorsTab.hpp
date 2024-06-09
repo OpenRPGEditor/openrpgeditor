@@ -2,6 +2,7 @@
 #include "Core/CharacterSheet.hpp"
 #include "Core/CheckerboardTexture.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include "Core/CommonUI/TraitsEditor.hpp"
 #include "Database/Trait.hpp"
 
 #include <optional>
@@ -27,4 +28,5 @@ private:
   int m_chosenEquip = 0;
   CheckerboardTexture m_buttonBack{128, 128, CellSizes::_64, 255, 200};
   std::optional<CharacterSheet> m_charaterSheet;
+  TraitsEditor m_traitsEditor;
 };

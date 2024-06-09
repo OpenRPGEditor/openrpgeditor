@@ -5,4 +5,9 @@
 
 struct DatabaseEditor;
 
-void TraitsEditor(std::vector<Trait>& traits, DatabaseEditor* dbEditor);
+struct TraitsEditor {
+  void draw(std::vector<Trait>& traits, DatabaseEditor* dbEditor);
+
+private:
+  Trait* m_selectedTrait = nullptr;
+};

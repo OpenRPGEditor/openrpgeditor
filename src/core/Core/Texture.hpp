@@ -28,7 +28,7 @@ public:
 
 private:
   explicit Texture(std::string_view filename);
-  void* m_texture{};
+  void* m_texture = nullptr;
   int m_width{};
   int m_height{};
 };

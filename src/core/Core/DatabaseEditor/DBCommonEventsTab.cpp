@@ -6,7 +6,8 @@
 #include "Core/ImGuiUtils.hpp"
 #include "Database/System.hpp"
 
-DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor* parent) : IDBEditorTab(parent), m_events(commonEvents) {
+DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor* parent)
+: IDBEditorTab(parent), m_events(commonEvents) {
   m_selectedCommonEvent = &m_events.m_events[1];
   m_maxCommonEvents = m_events.m_events.size() - 1;
 }
@@ -19,7 +20,8 @@ void DBCommonEventsTab::draw() {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Common Events");
-        ImGui::BeginChild("##orpg_commonevents_editor_commonevent_list", ImVec2{0, ImGui::GetContentRegionMax().y - 96});
+        ImGui::BeginChild("##orpg_commonevents_editor_commonevent_list",
+                          ImVec2{0, ImGui::GetContentRegionMax().y - 96});
         {
           ImGui::BeginGroup();
           {
@@ -27,7 +29,8 @@ void DBCommonEventsTab::draw() {
               CommonEvent& commonEvent = m_events.m_events[i];
               std::string id = "##orpg_commonevent_editor_unnamed_commonevent_" + std::to_string(commonEvent.id);
               ImGui::PushID(id.c_str());
-              if (ImGui::Selectable(commonEvent.name.empty() ? id.c_str() : commonEvent.name.c_str(), &commonEvent == m_selectedCommonEvent)) {
+              if (ImGui::Selectable(commonEvent.name.empty() ? id.c_str() : commonEvent.name.c_str(),
+                                    &commonEvent == m_selectedCommonEvent)) {
                 m_selectedCommonEvent = &commonEvent;
               }
               ImGui::PopID();
@@ -37,7 +40,7 @@ void DBCommonEventsTab::draw() {
         }
         ImGui::EndChild();
 
-        ImGui::Text("Max Common Events %zu",m_events.m_events.size() - 1);
+        ImGui::Text("Max Common Events %zu", m_events.m_events.size() - 1);
         ImGui::SameLine();
         if (ImGui::Button("Change Max")) {
           m_changeIntDialogOpen = true;
@@ -50,26 +53,25 @@ void DBCommonEventsTab::draw() {
     ImGui::BeginChild("##orpg_commonevents_editor_commonevents_commonevent_properties");
     {
       if (m_selectedCommonEvent) {
-        ImGui::BeginChild("##orpg_commonevents_commonevent_panel_left", ImVec2{ImGui::GetContentRegionMax().x / 2, 0.f});
+        ImGui::BeginChild("##orpg_commonevents_commonevent_panel", ImVec2{ImGui::GetContentRegionMax().x, 0.f});
         {
           ImGui::BeginGroup();
           {
             ImGui::SeparatorText("General Settings");
             char name[4096];
             strncpy(name, m_selectedCommonEvent->name.c_str(), 4096);
-            if (ImGui::LabelOverLineEdit("##orpg_commonevents_editor_commonevents_commonevent_name", "Name:", name, 4096,
-                                         (ImGui::GetContentRegionMax().x / 2) - 16)) {
+            if (ImGui::LabelOverLineEdit("##orpg_commonevents_editor_commonevents_commonevent_name", "Name:", name,
+                                         4096, ((ImGui::GetContentRegionMax().x / 2) / 2) - 16)) {
               m_selectedCommonEvent->name = name;
             }
             ImGui::SameLine();
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
-            ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 16);
-
             ImGui::BeginGroup();
             {
               ImGui::Text("Trigger:");
               char buf[4096];
               strncpy(buf, DecodeEnumName(m_selectedCommonEvent->trigger).c_str(), 4096);
+              ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - 16);
               if (ImGui::BeginCombo("##orpg_commonevents_editor_trigger_combo", buf)) {
                 for (const auto& e : magic_enum::enum_values<CommonEventTriggerType>()) {
                   strncpy(buf, DecodeEnumName(e).c_str(), 4096);
@@ -84,18 +86,18 @@ void DBCommonEventsTab::draw() {
 
             ImGui::SameLine();
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
-            ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x - 16));
-
             ImGui::BeginGroup();
             {
               ImGui::Text("Switch:");
-              //snprintf(buf, 4096, "%04i %s", m_selectedCommonEvent->switchId, m_parent->switches(m_selectedCommonEvent->switchId));
-              //strncpy(buf, m_mapInfos.map(m_selectedCommonEvent.id)->name.c_str(), 4096);
+              // snprintf(buf, 4096, "%04i %s", m_selectedCommonEvent->switchId,
+              // m_parent->switches(m_selectedCommonEvent->switchId)); strncpy(buf,
+              // m_mapInfos.map(m_selectedCommonEvent.id)->name.c_str(), 4096);
               std::string text = m_selectedCommonEvent->switchId > 0
                                      ? "##commonevent_switch_empty"
                                      : m_parent->switches(m_selectedCommonEvent->switchId);
               ImGui::PushID("##commonevent_button");
-              if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 2 - 15, 0})) {
+              ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) / 2 - 16);
+              if (ImGui::Button(text.c_str(), ImVec2{((ImGui::GetWindowContentRegionMax().x / 2) / 2) - 15, 0})) {
                 // Open Menu to select switch
               }
               ImGui::PopID();

@@ -41,5 +41,7 @@ public:
   }
 
 private:
+  friend class DBCommonEventsTab;
   std::vector<CommonEvent> m_events;
+  std::optional<CommonEvent> m_selectedCommonEvent;
 };

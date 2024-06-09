@@ -42,6 +42,8 @@ struct DatabaseEditor {
   void open() { m_isOpen = true; }
 
   [[nodiscard]] const Classes& classes() const { return m_classes.classes(); }
+  [[nodiscard]] const std::string variables(int id) const { return m_system.variable(id); }
+  [[nodiscard]] const std::string  switches(int id) const { return m_system.switche(id); }
 private:
   DBActorsTab m_actors;
   DBClassesTab m_classes;

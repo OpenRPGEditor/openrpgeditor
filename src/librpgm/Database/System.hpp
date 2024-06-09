@@ -76,4 +76,10 @@ public:
 
   static System load(std::string_view filepath);
   bool serialize(std::string_view filename);
+
+  const std::string variable(int id) const { return variables[id]; }
+  const std::string switche(int id) const { return switches[id]; }
+
+private:
+  std::vector<System> m_system;
 };

@@ -34,7 +34,7 @@ void DBActorsTab::draw() {
 
               char name[4096];
               snprintf(name, 4096, "%04i %s", actor.id, actor.name.c_str());
-              if (ImGui::Selectable(name, &actor == m_selectedActor)||
+              if (ImGui::Selectable(name, &actor == m_selectedActor) ||
                   (ImGui::IsItemFocused() && m_selectedActor != &actor)) {
                 m_selectedActor = &actor;
                 m_charaterSheet.emplace(m_selectedActor->characterName);
@@ -144,7 +144,7 @@ void DBActorsTab::draw() {
             {
               ImGui::Text("Character:");
               ImGui::ImageButton("##orpg_actors_character_image", m_buttonBack.get(), ImVec2{160, 160});
-              if (m_charaterSheet) {
+              if (m_charaterSheet && m_charaterSheet->texture()) {
                 ImGui::SetCursorPosX(ImGui::GetCursorPosX() +
                                      ((160 / 2) - (static_cast<float>((m_charaterSheet->characterWidth()) * 2) / 2)));
                 ImGui::SetCursorPosY(ImGui::GetCursorPosY() -

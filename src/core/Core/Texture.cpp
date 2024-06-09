@@ -27,14 +27,10 @@ Texture::Texture(std::string_view filename) {
   //   free(data);
   // }
 
-  SDL_Texture* tmp;
-  LoadTextureFromFile(filename.data(), &tmp, &m_width, &m_height, App::APP->getWindow()->getNativeRenderer());
-  if (tmp == nullptr) {
-    // m_texture = errorTex;
-    // m_width = 128;
-    // m_height = 128;
+  SDL_Texture* tmp = nullptr;
+  if (LoadTextureFromFile(filename.data(), &tmp, &m_width, &m_height, App::APP->getWindow()->getNativeRenderer())) {
     m_texture = tmp;
   } else {
-    m_texture = tmp;
+    m_texture = nullptr;
   }
 }

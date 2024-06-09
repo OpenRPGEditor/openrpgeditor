@@ -25,7 +25,7 @@ void DBCommonEventsTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            for (int i = 1; i < m_events.m_events.size(); ++i) {
+            for (int i = 0; i < m_events.m_events.size() - 1; ++i) {
               CommonEvent& commonEvent = m_events.m_events[i];
               std::string id = "##orpg_commonevent_editor_unnamed_commonevent_" + std::to_string(commonEvent.id);
               ImGui::PushID(id.c_str());
@@ -92,15 +92,44 @@ void DBCommonEventsTab::draw() {
               // snprintf(buf, 4096, "%04i %s", m_selectedCommonEvent->switchId,
               // m_parent->switches(m_selectedCommonEvent->switchId)); strncpy(buf,
               // m_mapInfos.map(m_selectedCommonEvent.id)->name.c_str(), 4096);
-              std::string text = m_selectedCommonEvent->switchId > 0
-                                     ? "##commonevent_switch_empty"
-                                     : m_parent->switches(m_selectedCommonEvent->switchId);
+              bool isSwitchEnabled = m_selectedCommonEvent->trigger == CommonEventTriggerType::None;
+              std::string text =
+                  isSwitchEnabled ? "##commonevent_switch_empty" : m_parent->switches(m_selectedCommonEvent->switchId);
               ImGui::PushID("##commonevent_button");
               ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) / 2 - 16);
+              ImGui::BeginDisabled(isSwitchEnabled);
               if (ImGui::Button(text.c_str(), ImVec2{((ImGui::GetWindowContentRegionMax().x / 2) / 2) - 15, 0})) {
                 // Open Menu to select switch
               }
               ImGui::PopID();
+              ImGui::EndDisabled();
+            }
+            ImGui::EndGroup();
+            ImGui::BeginGroup();
+            {
+              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
+              ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x - 16);
+              static int item_current_idx = 0; // Here we store our selection data as an index.
+
+              // Custom size: use all width, 5 items tall
+              if (ImGui::BeginListBox("Contents", ImVec2(0, ImGui::GetContentRegionMax().y - 16))) {
+                for (int n = 0; n < m_selectedCommonEvent->commands.size() - 1; n++) {
+                  const bool is_selected = (item_current_idx == n);
+                  int indent = 0;
+                  if (m_selectedCommonEvent->commands[n]->indent)
+                    indent = m_selectedCommonEvent->commands[n]->indent.value();
+
+                  std::string indentPad = std::string(indent * 4, ' ');
+                  indentPad += DecodeEnumName(m_selectedCommonEvent->commands[n]->code()).c_str();
+                  if (ImGui::Selectable(indentPad.c_str(), is_selected))
+                    item_current_idx = n;
+
+                  // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                  if (is_selected)
+                    ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndListBox();
+              }
             }
             ImGui::EndGroup();
           }

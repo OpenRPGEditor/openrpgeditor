@@ -18,14 +18,14 @@ public:
   std::string battlerName;
   int characterIndex = 0;
   std::string characterName;
-  int classId = 0;
+  int classId = 1;
   std::vector<int> equips;
   int faceIndex = 0;
   std::string faceName;
   std::vector<Trait> traits;
   int initialLevel = 1;
   int maxLevel = 99;
-  std::string name;
+  std::string name{"NewActor"};
   std::string nickname;
   std::string note;
   std::string profile;
@@ -64,6 +64,25 @@ public:
 
     return nullptr;
   }
+
+  void resize(int newSize) {
+    if (hasTestActor()) {
+      ++newSize;
+    }
+    int oldSize = m_actors.size();
+    m_actors.resize(newSize);
+    if (newSize > oldSize) {
+      for (int i = oldSize; i < m_actors.size(); ++i) {
+        m_actors[i].id = i;
+      }
+    }
+  }
+
+  bool hasTestActor() const {
+    return std::find_if(m_actors.begin(), m_actors.end(), [](const auto& act) { return act.id == 0; }) !=
+           m_actors.end();
+  }
+  int count() const { return hasTestActor() ? m_actors.size() - 1 : m_actors.size(); }
 
 private:
   friend class DBActorsTab;

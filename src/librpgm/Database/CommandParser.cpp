@@ -147,12 +147,12 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
         parameters[1].get_to(cond->actor.id);
         parameters[2].get_to(cond->actor.type);
         switch (cond->actor.type) {
+        case ActorConditionType::Name:
         case ActorConditionType::In_The_Party:
           if (parameters[3].is_string()) {
             parameters[3].get_to(cond->name);
           }
           break;
-        case ActorConditionType::Name:
         case ActorConditionType::Class:
         case ActorConditionType::Skill:
         case ActorConditionType::Weapon:

@@ -20,7 +20,7 @@ using namespace std::literals::string_view_literals;
 static SDL_Cursor* waitCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAITARROW);
 
 constexpr std::array KnownRPGMVVersions = {
-    //"RPGMV 1.0.0"sv,
+    "RPGMV 1.0.0"sv,
     "RPGMV 1.6.1"sv,
     "RPGMV 1.6.2"sv,
     "RPGMV 1.6.3"sv,
@@ -465,14 +465,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
     }
     ImGui::EndDragDropTarget();
   }
-
-  if (open) {
-    for (auto& mapInfo : in.children()) {
-      recursiveDrawTree(*mapInfo);
-    }
-  }
-
-  if (ImGui::BeginPopupContextWindow()) {
+ if (ImGui::BeginPopupContextWindow()) {
     // Ensure we have the right clicked map selected
     if (m_selectedMapId != in.id && ImGui::IsItemHovered()) {
       doMapSelection(in);
@@ -583,6 +576,12 @@ void Project::recursiveDrawTree(MapInfo& in) {
     }
     ImGui::EndPopup();
   }
+  if (open) {
+    for (auto& mapInfo : in.children()) {
+      recursiveDrawTree(*mapInfo);
+    }
+  }
+
 
   if (ImGui::IsItemToggledOpen()) {
     in.expanded ^= 1;

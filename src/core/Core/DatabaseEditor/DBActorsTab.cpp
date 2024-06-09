@@ -6,8 +6,8 @@
 #include "Core/ImGuiUtils.hpp"
 
 DBActorsTab::DBActorsTab(Actors& actors, DatabaseEditor* parent) : IDBEditorTab(parent), m_actors(actors) {
-  m_selectedActor = &m_actors.m_actors[1];
-  m_maxActors = m_actors.m_actors.size() - 1;
+  m_selectedActor = m_actors.actor(1);
+  m_maxActors = m_actors.count();
 }
 
 void DBActorsTab::draw() {
@@ -22,29 +22,32 @@ void DBActorsTab::draw() {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Actors");
-        ImGui::BeginChild("##orpg_actors_editor_actor_list", ImVec2{0, ImGui::GetContentRegionMax().y - 96});
+        ImGui::BeginChild("##orpg_actors_editor_actor_list", ImVec2{0, ImGui::GetContentRegionMax().y - 160});
         {
           ImGui::BeginGroup();
           {
-            for (int i = 1; i < m_actors.m_actors.size(); ++i) {
-              Actor& actor = m_actors.m_actors[i];
-              std::string id = "##orpg_actor_editor_unnamed_actor_" + std::to_string(actor.id);
-              ImGui::PushID(id.c_str());
-              if (ImGui::Selectable(actor.name.empty() ? id.c_str() : actor.name.c_str(), &actor == m_selectedActor)) {
+            for (auto& actor : m_actors.m_actors) {
+              if (actor.id == 0) {
+                continue;
+              }
+
+              char name[4096];
+              snprintf(name, 4096, "%04i %s", actor.id, actor.name.c_str());
+              if (ImGui::Selectable(name, &actor == m_selectedActor)) {
                 m_selectedActor = &actor;
                 m_charaterSheet.emplace(m_selectedActor->characterName);
               }
-              ImGui::PopID();
             }
           }
           ImGui::EndGroup();
         }
         ImGui::EndChild();
-
-        ImGui::Text("Max Actors %zu", m_actors.m_actors.size() - 1);
-        ImGui::SameLine();
-        if (ImGui::Button("Change Max")) {
+        char str[4096];
+        snprintf(str, 4096, "Max Actors %i", m_maxActors);
+        ImGui::SeparatorText(str);
+        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
           m_changeIntDialogOpen = true;
+          m_editMaxActors = m_maxActors;
         }
       }
       ImGui::EndGroup();
@@ -179,7 +182,27 @@ void DBActorsTab::draw() {
           ImGui::BeginGroup();
           {
             ImGui::SeparatorText("Traits");
-            ImGui::Dummy(ImVec2{100, 1000});
+            if (ImGui::BeginTable("##orpg_actors_actor_traits", 2,
+                                  ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchProp |
+                                      ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY |
+                                      ImGuiTableFlags_ScrollY,
+                                  ImVec2{ImGui::GetContentRegionMax().x - 15, ImGui::GetContentRegionMax().y - 600})) {
+              ImGui::TableSetupColumn("Type");
+              ImGui::TableSetupColumn("Content");
+              ImGui::TableHeadersRow();
+
+              for (auto& trait : m_selectedActor->traits) {
+                ImGui::PushID(&trait);
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("%i", trait.code);
+                ImGui::TableSetColumnIndex(1);
+                ImGui::Text("%f", trait.value);
+                ImGui::PopID();
+              }
+
+              ImGui::EndTable();
+            }
           }
           ImGui::EndGroup();
           ImGui::BeginGroup();
@@ -187,8 +210,9 @@ void DBActorsTab::draw() {
             ImGui::SeparatorText("Note:");
             char note[8192];
             strncpy(note, m_selectedActor->note.c_str(), IM_ARRAYSIZE(note));
-            if (ImGui::InputTextMultiline("##orpg_actors_note", note, IM_ARRAYSIZE(note),
-                                          ImVec2{ImGui::GetContentRegionMax().x - 16, 0})) {
+            if (ImGui::InputTextMultiline(
+                    "##orpg_actors_note", note, IM_ARRAYSIZE(note),
+                    ImVec2{ImGui::GetContentRegionMax().x - 16, ImGui::GetContentRegionAvail().y - 16})) {
               m_selectedActor->note = note;
             }
           }
@@ -201,6 +225,7 @@ void DBActorsTab::draw() {
   }
   ImGui::EndChild();
 
+  ImGui::SetNextWindowPos(ImGui::GetPlatformIO().Viewports[0]->Size / 2);
   if (m_changeIntDialogOpen) {
     if (ImGui::Begin("Change Max Actors", &m_changeIntDialogOpen,
                      ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_Modal |
@@ -208,7 +233,7 @@ void DBActorsTab::draw() {
       ImGui::Text(
           "Specify an amount to resize the actor list to\n"
           "This cannot be undone!");
-      ImGui::InputInt("##value_input", &m_maxActors);
+      ImGui::InputInt("##value_input", &m_editMaxActors);
       ImGui::SameLine();
       if (ImGui::Button("Accept")) {
         m_changeConfirmDialogOpen = true;
@@ -220,19 +245,25 @@ void DBActorsTab::draw() {
     }
     ImGui::End();
 
-    ImGui::SetNextWindowPos(ImGui::GetWindowSize() / 2);
+    ImGui::SetNextWindowPos(ImGui::GetPlatformIO().Viewports[0]->Size / 2);
     if (m_changeConfirmDialogOpen) {
       if (ImGui::Begin("Confirm Change", &m_changeConfirmDialogOpen,
                        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoSavedSettings |
                            ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
         ImGui::Text("Are you sure?");
         if (ImGui::Button("Yes")) {
-          m_actors.m_actors.resize(m_maxActors + 1);
+          int tmpId = m_selectedActor->id;
+          m_maxActors = m_editMaxActors;
+          m_actors.resize(m_maxActors);
+          m_selectedActor = m_actors.actor(tmpId);
           m_changeIntDialogOpen = false;
+          m_changeConfirmDialogOpen = false;
         }
         ImGui::SameLine();
         if (ImGui::Button("Cancel")) {
+          m_editMaxActors = m_maxActors;
           m_changeIntDialogOpen = false;
+          m_changeConfirmDialogOpen = false;
         }
       }
       ImGui::End();

@@ -107,8 +107,14 @@ ExitStatus App::Application::run() {
 
   ImVector<ImWchar> ranges;
   ImFontGlyphRangesBuilder builder;
+  builder.AddRanges(io.Fonts->GetGlyphRangesDefault());
+  builder.AddRanges(io.Fonts->GetGlyphRangesGreek());
+  builder.AddRanges(io.Fonts->GetGlyphRangesThai());
+  builder.AddRanges(io.Fonts->GetGlyphRangesCyrillic());
+  builder.AddRanges(io.Fonts->GetGlyphRangesKorean());
   builder.AddRanges(io.Fonts->GetGlyphRangesJapanese());
   builder.AddRanges(io.Fonts->GetGlyphRangesChineseFull());
+  builder.AddRanges(io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
   builder.BuildRanges(&ranges);
   io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, nullptr, ranges.Data);
   io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, nullptr, ranges.Data);

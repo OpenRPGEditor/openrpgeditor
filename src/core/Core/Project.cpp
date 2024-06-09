@@ -436,28 +436,27 @@ void Project::doMapSelection(MapInfo& in) {
 
 void Project::recursiveDrawTree(MapInfo& in) {
   ImGui::PushID(&in);
+  bool open = ImGui::TreeNodeEx(&in,
+                                (in.expanded ? ImGuiTreeNodeFlags_DefaultOpen : 0) |
+                                    (m_selectedMapId == in.id ? ImGuiTreeNodeFlags_Selected : 0) |
+                                    (in.children().empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
+                                    ImGuiTreeNodeFlags_OpenOnDoubleClick,
+                                "%s", in.name.c_str());
+  if ((ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemFocused()) && m_selectedMapId != in.id) {
+    doMapSelection(in);
+  }
 
-  if (ImGui::TreeNodeEx(&in,
-                        (in.expanded ? ImGuiTreeNodeFlags_DefaultOpen : 0) |
-                            (m_selectedMapId == in.id ? ImGuiTreeNodeFlags_Selected : 0) |
-                            (in.children().empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
-                            ImGuiTreeNodeFlags_OpenOnDoubleClick,
-                        "%s", in.name.c_str())) {
-    if ((ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemFocused()) && m_selectedMapId != in.id) {
-      doMapSelection(in);
-    }
-
+  if (open) {
     for (auto& mapInfo : in.children()) {
       recursiveDrawTree(*mapInfo);
     }
-    ImGui::TreePop();
-  } else if ((ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemFocused()) && m_selectedMapId != in.id &&
-             in.id != 0) {
-    doMapSelection(in);
-  } else if ((ImGui::IsMouseReleased(ImGuiMouseButton_Right) && m_selectedMapId != in.id)) {
-    ImGui::OpenPopup("maps_popup");
   }
-  if (ImGui::BeginPopup("maps_popup", ImGuiWindowFlags_Popup)) {
+
+  if (ImGui::BeginPopupContextWindow()) {
+    // Ensure we have the right clicked map selected
+    if (m_selectedMapId != in.id && !ImGui::IsItemActivated()) {
+      doMapSelection(in);
+    }
     if (ImGui::Button("New...", ImVec2(200.0f, 0.0f))) {
       // TODO: Add new map to directory based on current location. Maybe add it as a subdirectory of the current parent?
     }
@@ -565,8 +564,29 @@ void Project::recursiveDrawTree(MapInfo& in) {
     ImGui::EndPopup();
   }
 
+  /*
+  if (ImGui::BeginDragDropTarget()) {
+    const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("##orpg_dnd_mapinfo");
+    if (payload) {
+      MapInfo* src = static_cast<MapInfo*>(payload->Data);
+      if (src->id != in.id) {
+        src->parentId = in.id;
+        m_mapTreeStale = true;
+      }
+    }
+    ImGui::EndDragDropTarget();
+  }
+
+  if (ImGui::BeginDragDropSource()) {
+    ImGui::SetDragDropPayload("##orpg_dnd_mapinfo", &in, sizeof(MapInfo));
+    ImGui::EndDragDropSource();
+  }
+*/
   if (ImGui::IsItemToggledOpen()) {
     in.expanded ^= 1;
+  }
+  if (open) {
+    ImGui::TreePop();
   }
   ImGui::PopID();
 }
@@ -578,6 +598,11 @@ void Project::drawMapTree() {
     }
   }
   ImGui::End();
+
+  if (m_mapTreeStale) {
+    m_mapInfos.buildTree(true);
+    m_mapTreeStale = false;
+  }
 }
 
 inline int roundUp(int numToRound, int multiple) {

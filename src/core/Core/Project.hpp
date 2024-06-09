@@ -127,4 +127,5 @@ private:
   bool m_showDemoWindow{};
   bool m_showAboutWindow{};
   bool m_showTileDebug{true};
+  bool m_mapTreeStale{};
 };

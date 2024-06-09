@@ -50,7 +50,12 @@ void recursiveSort(MapInfo& in) {
   }
 }
 
-void MapInfos::buildTree() {
+void MapInfos::buildTree(bool reset) {
+  if (reset) {
+    for (auto& mapInfo : m_mapinfos) {
+      mapInfo.m_children.clear();
+    }
+  }
   for (auto& mapInfo : m_mapinfos) {
     if (mapInfo.id == 0) {
       continue;

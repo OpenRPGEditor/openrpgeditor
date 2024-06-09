@@ -43,11 +43,17 @@ FetchContent_Declare(json GIT_REPOSITORY "https://github.com/nlohmann/json.git")
 
 FetchContent_Declare(magic_enum
         GIT_REPOSITORY "https://github.com/Neargye/magic_enum.git")
+
+FetchContent_Declare(liblcf
+        GIT_REPOSITORY "https://github.com/EasyRPG/liblcf.git"
+        GIT_TAG "0.8"
+)
 # Settings
 
 # For SDL2 to be able to override options
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
+set(LIBLCF_WITH_ICU OFF)
 set(DOCTEST_NO_INSTALL ON)
 set(FMT_INSTALL OFF)
 set(FMT_STATIC ON)
@@ -71,7 +77,9 @@ FetchContent_MakeAvailable(
         SDL2_image
         spdlog
         json
-        magic_enum)
+        magic_enum
+        liblcf
+)
 
 
 target_include_directories(ImGuiFileDialog PRIVATE ${imgui_SOURCE_DIR})

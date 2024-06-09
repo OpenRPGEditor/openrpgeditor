@@ -38,4 +38,4 @@ add_library(
 target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)
 target_compile_features(${NAME} PRIVATE cxx_std_20)
 target_link_libraries(${NAME} PRIVATE project_warnings magic_enum imgui ImGuiFileDialog
-        SDL2::SDL2 nlohmann_json::nlohmann_json fmt::fmt-header-only spdlog::spdlog_header_only)
+        SDL2::SDL2 nlohmann_json::nlohmann_json fmt::fmt-header-only spdlog::spdlog_header_only lcf)

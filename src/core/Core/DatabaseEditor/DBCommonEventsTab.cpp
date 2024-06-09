@@ -114,6 +114,7 @@ void DBCommonEventsTab::draw() {
               ImGui::Text("Content:");
               ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
               ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x - 16);
+              ImGui::PushFont(App::APP->getMonoFont());
               static int item_current_idx = 0; // Here we store our selection data as an index.
               // Custom size: use all width, 5 items tall
               if (ImGui::BeginListBox("##commonevent_code_contents",
@@ -132,6 +133,7 @@ void DBCommonEventsTab::draw() {
                 }
                 ImGui::EndListBox();
               }
+              ImGui::PopFont();
             }
             ImGui::EndGroup();
           }

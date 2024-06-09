@@ -89,7 +89,7 @@ ExitStatus App::Application::run() {
   const std::string font_path_jp{Resources::font_path("NotoSansJP-SemiBold.ttf").generic_string()};
   const std::string font_path_jp_mono{Resources::font_path("RelaxedTypingMonoJP-Medium.ttf").generic_string()};
   const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-SemiBold.ttf").generic_string()};
-  const std::string font_path_mono{Resources::font_path("NotoSansMono-SemiBold.ttf").generic_string()};
+  const std::string font_path_mono{Resources::font_path("KurintoMono-NarBd.ttf").generic_string()};
 
   static const ImWchar specialChar[] = {
       /* clang-format off */

@@ -86,9 +86,13 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   if (m != nullptr) {
     doMapSelection(*m);
   }
-  if (std::find(Settings::instance()->mru.begin(), Settings::instance()->mru.end(), filePath.data()) ==
-      Settings::instance()->mru.end()) {
-    Settings::instance()->mru.push_back(filePath.data());
+  auto fileIt = std::find_if(Settings::instance()->mru.begin(), Settings::instance()->mru.end(),
+                             [&filePath](const auto& t) { return t.first == filePath.data(); });
+  if (fileIt == Settings::instance()->mru.end()) {
+    Settings::instance()->mru.emplace_front(filePath.data(), m_system.gameTitle);
+  } else {
+    Settings::instance()->mru.erase(fileIt);
+    Settings::instance()->mru.emplace_front(filePath.data(), m_system.gameTitle);
   }
   return true;
 }
@@ -176,6 +180,7 @@ void Project::draw() {
 }
 
 void Project::drawMenu() {
+  std::string loadFilepath;
   if (ImGui::BeginMainMenuBar()) {
     if (ImGui::BeginMenu("File")) {
       if (ImGui::MenuItem("New Project...", "Ctrl+N")) {
@@ -183,7 +188,7 @@ void Project::drawMenu() {
       }
       if (ImGui::MenuItem("Open Project...", "Ctrl+O")) {
         IGFD::FileDialogConfig config;
-        config.path = ".";
+        config.path = Settings::instance()->lastDirectory.empty() ? "." : Settings::instance()->lastDirectory;
         ImGuiFileDialog::Instance()->OpenDialog("OpenProjectDlg", "Select a Project to Open", ".rpgproject", config);
       }
       if (ImGui::MenuItem("Close Project...")) {
@@ -193,16 +198,21 @@ void Project::drawMenu() {
         // TODO: Implement project saving
       }
       ImGui::Separator();
-      if (ImGui::BeginMenu("Recent Projects")) {
-        if (ImGui::MenuItem("Clear", nullptr, false, !Settings::instance()->mru.empty())) {
+      if (ImGui::BeginMenu("Recent Projects", !Settings::instance()->mru.empty())) {
+        if (ImGui::MenuItem("Clear")) {
           Settings::instance()->mru.clear();
         }
         if (!Settings::instance()->mru.empty()) {
           ImGui::Separator();
         }
         for (const auto& s : Settings::instance()->mru) {
-          if (ImGui::MenuItem(s.c_str())) {
-            load(s, std::filesystem::absolute(s).remove_filename().c_str());
+          ImGui::PushID(s.first.c_str());
+          if (ImGui::MenuItem(s.second.c_str())) {
+            loadFilepath = s.first;
+          }
+          ImGui::PopID();
+          if (ImGui::IsItemHovered()) {
+            ImGui::Text("%s", s.first.c_str());
           }
         }
         ImGui::EndMenu();
@@ -330,6 +340,10 @@ void Project::drawMenu() {
 
     ImGui::EndMainMenuBar();
   }
+
+  if (!loadFilepath.empty()) {
+    load(loadFilepath, std::filesystem::absolute(loadFilepath).remove_filename().generic_string());
+  }
 }
 void Project::drawFileDialog() {
   // First check if we have a pending project request
@@ -339,6 +353,7 @@ void Project::drawFileDialog() {
     if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
       std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
       std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+      Settings::instance()->lastDirectory = filePath;
       load(filePathName, filePath);
       // action
     }

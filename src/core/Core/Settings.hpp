@@ -3,6 +3,8 @@
 #include "Database/Globals.hpp"
 #include "nlohmann/json.hpp"
 
+#include <deque>
+
 struct Settings {
   NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Settings, window, mru, lastDirectory);
   struct WindowRect {
@@ -18,7 +20,7 @@ struct Settings {
   bool load(std::string_view path);
   void serialize(std::string_view path);
   WindowRect window{};
-  std::vector<std::string> mru;
+  std::deque<std::pair<std::string, std::string>> mru;
   std::string lastDirectory;
 
   [[nodiscard]] static Settings* instance() { return m_instance; }

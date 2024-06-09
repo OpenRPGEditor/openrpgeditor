@@ -435,15 +435,35 @@ void Project::doMapSelection(MapInfo& in) {
 }
 
 void Project::recursiveDrawTree(MapInfo& in) {
-  ImGui::PushID(&in);
-  bool open = ImGui::TreeNodeEx(&in,
+  std::string id = ("#orpg_map_" + std::to_string(in.id) + in.name);
+  bool open = ImGui::TreeNodeEx(id.c_str(),
                                 (in.expanded ? ImGuiTreeNodeFlags_DefaultOpen : 0) |
-                                    (m_selectedMapId == in.id ? ImGuiTreeNodeFlags_Selected : 0) |
                                     (in.children().empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
-                                    ImGuiTreeNodeFlags_OpenOnDoubleClick,
+                                    (m_selectedMapId == in.id ? ImGuiTreeNodeFlags_Selected : 0),
                                 "%s", in.name.c_str());
   if ((ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemFocused()) && m_selectedMapId != in.id) {
     doMapSelection(in);
+  }
+
+  if (ImGui::BeginDragDropSource()) {
+    if (in.id != 0) {
+      auto payload = m_mapInfos.map(in.id);
+      ImGui::SetDragDropPayload("##orpg_dnd_mapinfo", payload, sizeof(payload));
+      ImGui::Text(payload->name.c_str());
+    }
+    ImGui::EndDragDropSource();
+  }
+
+  if (ImGui::BeginDragDropTarget()) {
+    const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("##orpg_dnd_mapinfo");
+    if (payload) {
+      MapInfo* src = static_cast<MapInfo*>(payload->Data);
+      if (src) {
+        m_mapInfos.map(src->id)->parentId = in.id;
+        m_mapTreeStale = true;
+      }
+    }
+    ImGui::EndDragDropTarget();
   }
 
   if (open) {
@@ -454,7 +474,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
 
   if (ImGui::BeginPopupContextWindow()) {
     // Ensure we have the right clicked map selected
-    if (m_selectedMapId != in.id && ImGui::IsItemHovered() ) {
+    if (m_selectedMapId != in.id && ImGui::IsItemHovered()) {
       doMapSelection(in);
     }
     if (ImGui::Button("New...", ImVec2(200.0f, 0.0f))) {
@@ -564,31 +584,12 @@ void Project::recursiveDrawTree(MapInfo& in) {
     ImGui::EndPopup();
   }
 
-  /*
-  if (ImGui::BeginDragDropTarget()) {
-    const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("##orpg_dnd_mapinfo");
-    if (payload) {
-      MapInfo* src = static_cast<MapInfo*>(payload->Data);
-      if (src->id != in.id) {
-        src->parentId = in.id;
-        m_mapTreeStale = true;
-      }
-    }
-    ImGui::EndDragDropTarget();
-  }
-
-  if (ImGui::BeginDragDropSource()) {
-    ImGui::SetDragDropPayload("##orpg_dnd_mapinfo", &in, sizeof(MapInfo));
-    ImGui::EndDragDropSource();
-  }
-*/
   if (ImGui::IsItemToggledOpen()) {
     in.expanded ^= 1;
   }
   if (open) {
     ImGui::TreePop();
   }
-  ImGui::PopID();
 }
 
 void Project::drawMapTree() {

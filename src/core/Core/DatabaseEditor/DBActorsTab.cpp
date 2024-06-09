@@ -4,6 +4,7 @@
 #include "imgui.h"
 #include "Core/DatabaseEditor.hpp"
 #include "Core/ImGuiUtils.hpp"
+#include "Core/CommonUI/TraitsEditor.hpp"
 
 DBActorsTab::DBActorsTab(Actors& actors, DatabaseEditor* parent) : IDBEditorTab(parent), m_actors(actors) {
   m_selectedActor = m_actors.actor(1);
@@ -174,7 +175,7 @@ void DBActorsTab::draw() {
             if (ImGui::BeginTable("##orpg_actors_actor_init_equip", 2,
                                   ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchProp |
                                       ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY |
-                                      ImGuiTableFlags_ScrollY | ImGuiTableFlags_HighlightHoveredColumn,
+                                      ImGuiTableFlags_ScrollY,
                                   ImVec2{ImGui::GetContentRegionMax().x - 15, ImGui::GetContentRegionAvail().y - 16})) {
 
               ImGui::TableSetupColumn("Type");
@@ -238,46 +239,9 @@ void DBActorsTab::draw() {
         ImGui::SameLine();
         ImGui::BeginChild("##orpg_actors_actor_panel_right");
         {
-          ImGui::BeginGroup();
-          {
-            ImGui::SeparatorText("Traits");
-            if (ImGui::BeginTable("##orpg_actors_actor_traits", 2,
-                                  ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchProp |
-                                      ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY |
-                                      ImGuiTableFlags_ScrollY | ImGuiTableFlags_HighlightHoveredColumn,
-                                  ImVec2{ImGui::GetContentRegionMax().x - 15, ImGui::GetContentRegionMax().y - 600})) {
-              ImGui::TableSetupColumn("Type");
-              ImGui::TableSetupColumn("Content");
-              ImGui::TableHeadersRow();
-
-              for (auto& trait : m_selectedActor->traits) {
-                ImGui::PushID(&trait);
-                ImGui::TableNextRow();
-                if (ImGui::TableNextColumn()) {
-                  char str[4096];
-                  snprintf(str, 4096, "%i\n", trait.code);
-                  ImGui::Selectable(str, false,
-                                    ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowOverlap);
-                }
-
-                if (ImGui::TableNextColumn()) {
-                  ImGui::Text("%f", trait.value);
-                }
-
-                ImGui::PopID();
-              }
-
-              /* Dummy entry for adding new traits */
-              ImGui::PushID("##actors_trait_dummy");
-              ImGui::TableNextRow();
-              if (ImGui::TableNextColumn()) {
-                ImGui::Selectable("", false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowOverlap);
-              }
-              ImGui::PopID();
-              ImGui::EndTable();
-            }
-          }
-          ImGui::EndGroup();
+          auto traits = m_selectedActor->traits;
+          auto dbEditor = m_parent;
+          TraitsEditor(traits, dbEditor);
           ImGui::BeginGroup();
           {
             ImGui::SeparatorText("Note:");
@@ -354,7 +318,7 @@ void DBActorsTab::draw() {
         auto cls = m_parent->classes().classType(m_selectedActor->classId);
         if (cls && !cls->traits.empty()) {
           auto it = std::find_if(cls->traits.begin(), cls->traits.end(), [](const auto& c) {
-            return c.code == 51; // Weapon
+            return c.code == TraitCode::Equip_Weapon; // Weapon
           });
           if (it != cls->traits.end()) {
             for (const auto& weapon : weapons) {
@@ -392,7 +356,7 @@ void DBActorsTab::draw() {
         auto cls = m_parent->classes().classType(m_selectedActor->classId);
         if (cls && !cls->traits.empty()) {
           auto it = std::find_if(cls->traits.begin(), cls->traits.end(), [](const auto& c) {
-            return c.code == 52; // Armor
+            return c.code == TraitCode::Equip_Armor; // Armor
           });
           if (it != cls->traits.end()) {
             for (const auto& armor : armors) {

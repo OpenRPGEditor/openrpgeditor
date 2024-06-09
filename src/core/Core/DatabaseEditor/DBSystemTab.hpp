@@ -8,6 +8,8 @@ struct DBSystemTab : IDBEditorTab {
   explicit DBSystemTab(System& system, DatabaseEditor* parent) : IDBEditorTab(parent), m_system(system) {}
   void draw() override;
 
+  [[nodiscard]] std::string& element(int id) { return m_system.elements[id]; }
+  [[nodiscard]] const std::string& element(int id) const { return m_system.elements[id]; }
   [[nodiscard]] std::string& variable(int id) { return m_system.variables[id]; }
   [[nodiscard]] const std::string& variable(int id) const { return m_system.variables[id]; }
   [[nodiscard]] std::string& switche(int id) { return m_system.switches[id]; }

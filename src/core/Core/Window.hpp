@@ -33,6 +33,7 @@ public:
   [[nodiscard]] int getPositionX() const;
   [[nodiscard]] int getPositionY() const;
   void setWindowPosition(int x, int y);
+  void setMaximized();
 
 private:
   SDL_Window* m_window{nullptr};

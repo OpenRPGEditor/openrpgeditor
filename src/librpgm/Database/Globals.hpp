@@ -21,11 +21,51 @@
  * _pe_ -> .
  * _del_ -> useful placeholder for name collisions inserts a null and truncats the strings
  * _deg -> °
+ * _da_ -> -
+ * _pl_ -> +
  *
  * After the special characters have been decoded and inserted any remaining
  * underscores are replaced with spaces
  */
 
+/* May be something else so this is prelim */
+enum class DebuffRateSource {
+  Max_HP,
+  Max_MP,
+  Attack,
+  Defense,
+  M_pe_Attack,
+  M_pe_Defense,
+  Agility,
+  Luck,
+};
+
+enum class TraitCode {
+  Element_Rate = 11,
+  Debuff_Rate = 12,
+  State_Rate = 13,
+  State_Resist = 14,
+  Parameter = 21,
+  Ex_da_Parameter = 22,
+  Sp_da_Parameter = 23,
+  Attack_Element = 31,
+  Attack_State = 32,
+  Attack_Speed = 33,
+  Attack_Times__pl_ = 34,
+  Add_Skill_Type = 41,
+  Seal_Skill_Type = 42,
+  Add_Skill = 43,
+  Seal_Skill = 44,
+  Equip_Weapon = 51,
+  Equip_Armor = 52,
+  Lock_Equip = 53,
+  Seal_Equip = 54,
+  Slot_Type = 55,
+  Action_Times__pl_ = 61,
+  Special_Flag = 62,
+  Collapse_Effect = 63,
+  Party_Ability = 64,
+};
 enum class Direction : int {
   Retain = 0,
   Down = 2,

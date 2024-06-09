@@ -30,9 +30,11 @@ add_library(
         Core/DatabaseEditor/DBSystemTab.hpp Core/DatabaseEditor/DBSystemTab.cpp
         Core/CheckerboardTexture.hpp Core/CheckerboardTexture.cpp
         Core/CharacterSheet.hpp Core/CharacterSheet.cpp
-
+        Core/Settings.hpp Core/Settings.cpp
+        Core/CommonUI/TraitsEditor.hpp Core/CommonUI/TraitsEditor.cpp
         Core/Resources.hpp
-        Core/DPIHandler.hpp)
+        Core/DPIHandler.hpp
+        )
 
 # Define set of OS specific files to include
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")

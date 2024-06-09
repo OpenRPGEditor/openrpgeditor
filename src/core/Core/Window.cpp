@@ -69,6 +69,10 @@ int Window::getHeight() const {
   return height;
 }
 
+void Window::setMaximized() {
+  SDL_MaximizeWindow(m_window);
+}
+
 void Window::setWindowSize(int width, int height) {
   SDL_SetWindowSize(m_window, width, height);
 }

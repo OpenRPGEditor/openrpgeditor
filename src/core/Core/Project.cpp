@@ -1,6 +1,7 @@
 #include "Core/Project.hpp"
 
 #include "ImGuiFileDialog.h"
+#include "Settings.hpp"
 #include "Core/ResourceManager.hpp"
 
 #include "Core/Log.hpp"
@@ -84,6 +85,10 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   MapInfo* m = m_mapInfos.map(m_system.editMapId);
   if (m != nullptr) {
     doMapSelection(*m);
+  }
+  if (std::find(Settings::instance()->mru.begin(), Settings::instance()->mru.end(), filePath.data()) ==
+      Settings::instance()->mru.end()) {
+    Settings::instance()->mru.push_back(filePath.data());
   }
   return true;
 }
@@ -186,6 +191,21 @@ void Project::drawMenu() {
       }
       if (ImGui::MenuItem("Save Project...", "Ctlr+S")) {
         // TODO: Implement project saving
+      }
+      ImGui::Separator();
+      if (ImGui::BeginMenu("Recent Projects")) {
+        if (ImGui::MenuItem("Clear", nullptr, false, !Settings::instance()->mru.empty())) {
+          Settings::instance()->mru.clear();
+        }
+        if (!Settings::instance()->mru.empty()) {
+          ImGui::Separator();
+        }
+        for (const auto& s : Settings::instance()->mru) {
+          if (ImGui::MenuItem(s.c_str())) {
+            load(s, std::filesystem::absolute(s).remove_filename().c_str());
+          }
+        }
+        ImGui::EndMenu();
       }
       ImGui::Separator();
       if (ImGui::MenuItem("Deployment...")) {
@@ -450,7 +470,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
     if (in.id != 0) {
       auto payload = m_mapInfos.map(in.id);
       ImGui::SetDragDropPayload("##orpg_dnd_mapinfo", payload, sizeof(payload));
-      ImGui::Text(payload->name.c_str());
+      ImGui::Text("%s", payload->name.c_str());
     }
     ImGui::EndDragDropSource();
   }

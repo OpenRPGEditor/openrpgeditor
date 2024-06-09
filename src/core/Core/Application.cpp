@@ -13,6 +13,7 @@
 #include "Core/Log.hpp"
 #include "Core/Resources.hpp"
 #include "Core/Window.hpp"
+#include "Core/Settings.hpp"
 #include "Settings/Project.hpp"
 
 #include <iostream>
@@ -46,23 +47,6 @@ Application::~Application() {
   SDL_Quit();
 }
 
-static void* PlatformWindow_ReadOpen(ImGuiContext*, ImGuiSettingsHandler*, const char* name) { return (void*)"Window"; }
-
-static void PlatformWindow_ReadLine(ImGuiContext*, ImGuiSettingsHandler*, void* entry, const char* line) {
-  int x, y;
-  if (sscanf(line, "WindowSize=%i,%i", &x, &y) == 2) {
-    APP->getWindow()->setWindowSize(x, y);
-  } else if (sscanf(line, "WindowPosition=%i,%i", &x, &y) == 2) {
-    APP->getWindow()->setWindowPosition(x, y);
-  }
-}
-
-static void PlatformWindow_WriteAll(ImGuiContext* ctx, ImGuiSettingsHandler* handler, ImGuiTextBuffer* buf) {
-  buf->appendf("[PlatformWindow][Window]\n");
-  buf->appendf("WindowSize=%i,%i\n", App::APP->getWindow()->getWidth(), APP->getWindow()->getHeight());
-  buf->appendf("WindowPosition=%i,%i\n", App::APP->getWindow()->getPositionX(), APP->getWindow()->getPositionY());
-}
-
 ExitStatus App::Application::run() {
   APP_PROFILE_FUNCTION();
 
@@ -83,15 +67,14 @@ ExitStatus App::Application::run() {
   const std::string user_config_path{conf_path};
   SDL_free((void*)conf_path);
 
-  // Add .ini handle for UserData type
-  ImGuiSettingsHandler platform_handler;
-  platform_handler.TypeName = "PlatformWindow";
-  platform_handler.TypeHash = ImHashStr("PlatformWindow");
-  platform_handler.ReadOpenFn = PlatformWindow_ReadOpen;
-  platform_handler.ReadLineFn = PlatformWindow_ReadLine;
-  platform_handler.WriteAllFn = PlatformWindow_WriteAll;
-  ImGui::AddSettingsHandler(&platform_handler);
-
+  Settings settings;
+  if (settings.load(user_config_path + "config.json")) {
+    m_window->setWindowPosition(settings.window.x, settings.window.y);
+    m_window->setWindowSize(settings.window.w, settings.window.h);
+    if (settings.window.maximized) {
+      m_window->setMaximized();
+    }
+  }
   APP_DEBUG("User config path: {}", user_config_path);
 
   // Absolute imgui.ini path to preserve settings independent of app location.
@@ -284,6 +267,7 @@ ExitStatus App::Application::run() {
     }
   }
 
+  Settings::instance()->serialize(user_config_path + "config.json");
   return m_exitStatus;
 }
 
@@ -303,6 +287,24 @@ void Application::on_event(const SDL_WindowEvent& event) {
     return on_minimize();
   case SDL_WINDOWEVENT_SHOWN:
     return on_shown();
+  case SDL_WINDOWEVENT_RESIZED: {
+    if (!(SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED)) {
+      Settings::instance()->window.w = event.data1;
+      Settings::instance()->window.h = event.data2;
+    }
+    break;
+  }
+  case SDL_WINDOWEVENT_MOVED: {
+    if (!(SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED)) {
+      Settings::instance()->window.x = event.data1;
+      Settings::instance()->window.y = event.data2;
+    }
+    break;
+  }
+  case SDL_WINDOWEVENT_MAXIMIZED: {
+    Settings::instance()->window.maximized = SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED;
+    break;
+  }
   default:
     // Do nothing otherwise
     return;

@@ -2,6 +2,8 @@
 #include "Core/CharacterSheet.hpp"
 #include "Core/CheckerboardTexture.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include "Database/Trait.hpp"
+
 #include <optional>
 
 struct Actors;

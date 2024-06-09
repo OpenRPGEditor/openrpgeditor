@@ -41,28 +41,43 @@ struct DatabaseEditor {
 
   void open() { m_isOpen = true; }
 
+  [[nodiscard]] std::string& element(int id)  { return m_system.element(id); }
+  [[nodiscard]] const std::string& element(int id) const { return m_system.element(id); }
+
+  [[nodiscard]] State* state(int id) { return m_states.state(id); }
+  [[nodiscard]] const State* state(int id) const { return m_states.state(id); }
+
+  [[nodiscard]] Classes& classes()  { return m_classes.classes(); }
   [[nodiscard]] const Classes& classes() const { return m_classes.classes(); }
+
+  [[nodiscard]] std::string variables(int id)  { return m_system.variable(id); }
   [[nodiscard]] const std::string variables(int id) const { return m_system.variable(id); }
+
   [[nodiscard]] std::string& switches(int id) { return m_system.switche(id); }
   [[nodiscard]] const std::string& switches(int id) const { return m_system.switche(id); }
 
   [[nodiscard]] std::vector<std::string>& equipTypes() { return m_system.equipTypes(); }
   [[nodiscard]] const std::vector<std::string>& equipTypes() const { return m_system.equipTypes(); }
+
   [[nodiscard]] std::string& equipType(int id) { return m_system.equipType(id); }
   [[nodiscard]] const std::string& equipType(int id) const { return m_system.equipType(id); }
 
   [[nodiscard]] const std::optional<std::string>& basic(int id) const { return m_system.basic(id); }
+
   [[nodiscard]] const std::optional<std::string>& command(int id) const { return m_system.command(id); }
+
   [[nodiscard]] Messages& messages() { return m_system.messages(); }
   [[nodiscard]] const Messages& messages() const { return m_system.messages(); }
 
   [[nodiscard]] std::vector<Weapon>& weapons() { return m_weapons.weapons(); }
   [[nodiscard]] const std::vector<Weapon>& weapons() const { return m_weapons.weapons(); }
+  \
   [[nodiscard]] Weapon* weapon(int id) { return m_weapons.weapon(id); }
   [[nodiscard]] const Weapon* weapon(int id) const { return m_weapons.weapon(id); }
 
   [[nodiscard]] std::vector<Armor>& armors() { return m_armors.armors(); }
   [[nodiscard]] const std::vector<Armor>& armors() const { return m_armors.armors(); }
+
   [[nodiscard]] Armor* armor(int id) { return m_armors.armor(id); }
   [[nodiscard]] const Armor* armor(int id) const { return m_armors.armor(id); }
 

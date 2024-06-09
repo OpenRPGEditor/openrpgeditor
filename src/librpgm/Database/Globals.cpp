@@ -33,6 +33,8 @@ std::string DecodeEnumName(std::string_view str) {
   ReplaceStr(result, "_pe_", ".");
   ReplaceStr(result, "_del_", "\0");
   ReplaceStr(result, "_deg", "°");
+  ReplaceStr(result, "_da_", "-");
+  ReplaceStr(result, "_pl_", "+");
 
   /* Add new encodings *before* this or it will clobber them */
   ReplaceStr(result, "_", " ");

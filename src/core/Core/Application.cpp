@@ -102,8 +102,9 @@ ExitStatus App::Application::run() {
 
   const float font_size{18.0F};
   const std::string font_path{Resources::font_path("NotoSans-SemiBold.ttf").generic_string()};
+  const std::string font_path_math{Resources::font_path("JetBrainsMono-SemiBold.ttf").generic_string()};
   const std::string font_path_jp{Resources::font_path("NotoSansJP-SemiBold.ttf").generic_string()};
-  const std::string font_sinhala_path{Resources::font_path("NotoSansSinhala-SemiBold.ttf").generic_string()};
+  const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-SemiBold.ttf").generic_string()};
 
   static const ImWchar specialChar[] = {
       /* clang-format off */
@@ -115,7 +116,6 @@ ExitStatus App::Application::run() {
       0x1F40, 0x2327,
       0x1F40, 0x2327,
       0x2328, 0x270F,
-      0x2710, 0x2AF7,
       0x2AF8, 0x2EDF,
       0x2EE0, 0x32C7,
       0x32C8, 0x36AF,
@@ -140,8 +140,14 @@ ExitStatus App::Application::run() {
 
   ImFontConfig config;
   config.MergeMode = true;
-  io.Fonts->AddFontFromFileTTF(font_sinhala_path.c_str(), font_size, &config, ranges.Data);
+  ImWchar mathRange[]{
+      0x2710,
+      0x2AF7,
+      0,
+  };
+  io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
   io.Fonts->AddFontFromFileTTF(font_path_jp.c_str(), font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_math.c_str(), font_size, &config, mathRange);
   io.Fonts->Build();
 
   DPIHandler::set_global_font_scaling(&io);

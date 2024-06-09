@@ -7,7 +7,8 @@
 #include <string_view>
 
 struct Weapon {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Weapon, id, animationId, description, etypeId, traits, iconIndex, name, note, params);
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Weapon, id, animationId, description, etypeId, traits, iconIndex, name, note, params,
+                                 price, wtypeId);
   int id;
   int animationId;
   std::string description;
@@ -26,6 +27,8 @@ public:
   static Weapons load(std::string_view filepath);
   bool serialize(std::string_view filename);
 
+  std::vector<Weapon>& weapons() { return m_weapons; }
+  const std::vector<Weapon>& weapons() const { return m_weapons; }
   [[nodiscard]] Weapon* weapon(int id) {
     for (auto& item : m_weapons) {
       if (item.id == id) {
@@ -44,6 +47,7 @@ public:
 
     return nullptr;
   }
+
 private:
   std::vector<Weapon> m_weapons;
 };

@@ -30,7 +30,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       while (nextEventCommand() == EventCode::Next_Text) {
         ++index;
         NextTextCommand* tmp = text->text.emplace_back(new NextTextCommand()).get();
-        text->indent = parser[index].value("indent", std::optional<int>{});
+        tmp->indent = parser[index].value("indent", std::optional<int>{});
         currentCommand()["parameters"][0].get_to(tmp->text);
       }
       break;
@@ -75,6 +75,11 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       canceled->indent = parser[index].value("indent", std::optional<int>{});
       break;
     }
+    case EventCode::End_de_ShowChoices: {
+      ShowChoicesEndCommand* canceled = dynamic_cast<ShowChoicesEndCommand*>(ret.emplace_back(new ShowChoicesEndCommand()).get());
+      canceled->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
     case EventCode::Input_Number: {
       InputNumberCommand* input = dynamic_cast<InputNumberCommand*>(ret.emplace_back(new InputNumberCommand()).get());
       input->indent = parser[index].value("indent", std::optional<int>{});
@@ -95,7 +100,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       while (nextEventCommand() == EventCode::Next_Scrolling_Text) {
         ++index;
         NextScrollingTextCommand* tmp = text->text.emplace_back(new NextScrollingTextCommand()).get();
-        text->indent = parser[index].value("indent", std::optional<int>{});
+        tmp->indent = parser[index].value("indent", std::optional<int>{});
         currentCommand()["parameters"][0].get_to(tmp->text);
       }
       break;
@@ -505,11 +510,26 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       step->indent = parser[index].value("indent", std::optional<int>{});
       break;
     }
+    case EventCode::Script: {
+      ScriptCommand* end = dynamic_cast<ScriptCommand*>(ret.emplace_back(new ScriptCommand()).get());
+      end->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(end->script);
+      while (nextEventCommand() == EventCode::Next_Script) {
+        ++index;
+        NextScriptCommand* tmp =
+            dynamic_cast<NextScriptCommand*>(end->moreScript.emplace_back(new NextScriptCommand()).get());
+        tmp->indent = parser[index].value("indent", std::optional<int>{});
+        currentCommand()["parameters"][0].get_to(tmp->script);
+      }
+
+      break;
+    }
     case EventCode::End: {
       EndCommand* end = dynamic_cast<EndCommand*>(ret.emplace_back(new EndCommand()).get());
       end->indent = parser[index].value("indent", std::optional<int>{});
       break;
     }
+
       // MovementRoute commands
     case EventCode::Move_Down: {
       MovementMoveDownCommand* end =
@@ -795,6 +815,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
     default:
       UnhandledEventCommand* end =
           dynamic_cast<UnhandledEventCommand*>(ret.emplace_back(new UnhandledEventCommand()).get());
+      end->indent = parser[index].value("indent", std::optional<int>{});
       end->m_code = code;
       end->data = parser[index];
       // std::cout << "Unhandled command: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")" <<

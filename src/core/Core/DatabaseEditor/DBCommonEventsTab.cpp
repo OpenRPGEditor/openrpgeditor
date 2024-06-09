@@ -15,13 +15,13 @@ DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor*
 void DBCommonEventsTab::draw() {
   ImGui::BeginChild("##orpg_commonevents_editor");
   {
-    ImGui::BeginChild("##orpg_commonevents_editor_commonevents", ImVec2{300.f, 0});
+    ImGui::BeginChild("##orpg_commonevents_editor_commonevents", ImVec2{400.f, 0});
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Common Events");
         ImGui::BeginChild("##orpg_commonevents_editor_commonevent_list",
-                          ImVec2{0, ImGui::GetContentRegionMax().y - 96});
+                          ImVec2{0, ImGui::GetContentRegionMax().y - 160});
         {
           ImGui::BeginGroup();
           {
@@ -29,8 +29,10 @@ void DBCommonEventsTab::draw() {
               CommonEvent& commonEvent = m_events.m_events[i];
               std::string id = "##orpg_commonevent_editor_unnamed_commonevent_" + std::to_string(commonEvent.id);
               ImGui::PushID(id.c_str());
-              if (ImGui::Selectable(commonEvent.name.empty() ? id.c_str() : commonEvent.name.c_str(),
-                                    &commonEvent == m_selectedCommonEvent)) {
+              char name[4096];
+              snprintf(name, 4096, "%04i %s", commonEvent.id, commonEvent.name.c_str());
+              if (ImGui::Selectable(name, &commonEvent == m_selectedCommonEvent) ||
+                  (ImGui::IsItemFocused() && m_selectedCommonEvent != &commonEvent)) {
                 m_selectedCommonEvent = &commonEvent;
               }
               ImGui::PopID();
@@ -40,9 +42,10 @@ void DBCommonEventsTab::draw() {
         }
         ImGui::EndChild();
 
-        ImGui::Text("Max Common Events %zu", m_events.m_events.size() - 1);
-        ImGui::SameLine();
-        if (ImGui::Button("Change Max")) {
+        char str[4096];
+        snprintf(str, 4096, "Max Common Events %zu", m_events.m_events.size() - 1);
+        ImGui::SeparatorText(str);
+        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
           m_changeIntDialogOpen = true;
         }
       }
@@ -107,12 +110,14 @@ void DBCommonEventsTab::draw() {
             ImGui::EndGroup();
             ImGui::BeginGroup();
             {
+              ImGui::Text("Content:");
               ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
               ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x - 16);
               static int item_current_idx = 0; // Here we store our selection data as an index.
 
               // Custom size: use all width, 5 items tall
-              if (ImGui::BeginListBox("Contents", ImVec2(0, ImGui::GetContentRegionMax().y - 16))) {
+              if (ImGui::BeginListBox("##commonevent_code_contents",
+                                      ImVec2(0, ImGui::GetContentRegionAvail().y - 16))) {
                 for (int n = 0; n < m_selectedCommonEvent->commands.size() - 1; n++) {
                   const bool is_selected = (item_current_idx == n);
                   int indent = 0;
@@ -121,6 +126,7 @@ void DBCommonEventsTab::draw() {
 
                   std::string indentPad = std::string(indent * 4, ' ');
                   indentPad += DecodeEnumName(m_selectedCommonEvent->commands[n]->code()).c_str();
+
                   if (ImGui::Selectable(indentPad.c_str(), is_selected))
                     item_current_idx = n;
 
@@ -168,12 +174,16 @@ void DBCommonEventsTab::draw() {
                            ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
         ImGui::Text("Are you sure?");
         if (ImGui::Button("Yes")) {
+          int tmpId = m_selectedCommonEvent->id;
           m_events.m_events.resize(m_maxCommonEvents + 1);
+          m_selectedCommonEvent = m_events.event(tmpId);
           m_changeIntDialogOpen = false;
+          m_changeConfirmDialogOpen = false;
         }
         ImGui::SameLine();
         if (ImGui::Button("Cancel")) {
           m_changeIntDialogOpen = false;
+          m_changeConfirmDialogOpen = false;
         }
       }
       ImGui::End();

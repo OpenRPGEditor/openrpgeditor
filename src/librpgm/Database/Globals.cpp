@@ -15,6 +15,9 @@ static void ReplaceStr(std::string& str, const std::string& oldStr, const std::s
   }
 }
 std::string DecodeEnumName(std::string_view str) {
+  if (str.size() <= 0) {
+    return "UNKOWN_ENUM";
+  }
   std::string result = str.data();
   // Remove the leading underscore if it exists
   if (result.front() == '_')

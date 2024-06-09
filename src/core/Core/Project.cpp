@@ -439,7 +439,8 @@ void Project::recursiveDrawTree(MapInfo& in) {
   bool open = ImGui::TreeNodeEx(id.c_str(),
                                 (in.expanded ? ImGuiTreeNodeFlags_DefaultOpen : 0) |
                                     (in.children().empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
-                                    (m_selectedMapId == in.id ? ImGuiTreeNodeFlags_Selected : 0),
+                                    (m_selectedMapId == in.id ? ImGuiTreeNodeFlags_Selected : 0) |
+                                    ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick,
                                 "%s", in.name.c_str());
   if ((ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemFocused()) && m_selectedMapId != in.id) {
     doMapSelection(in);
@@ -465,7 +466,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
     }
     ImGui::EndDragDropTarget();
   }
- if (ImGui::BeginPopupContextWindow()) {
+  if (ImGui::BeginPopupContextWindow()) {
     // Ensure we have the right clicked map selected
     if (m_selectedMapId != in.id && ImGui::IsItemHovered()) {
       doMapSelection(in);
@@ -581,7 +582,6 @@ void Project::recursiveDrawTree(MapInfo& in) {
       recursiveDrawTree(*mapInfo);
     }
   }
-
 
   if (ImGui::IsItemToggledOpen()) {
     in.expanded ^= 1;

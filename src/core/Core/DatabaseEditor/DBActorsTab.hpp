@@ -20,6 +20,9 @@ private:
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
+  bool m_showEquipEdit = false;
+  int m_selectedEquip = 0;
+  int m_chosenEquip = 0;
   CheckerboardTexture m_buttonBack{128, 128, CellSizes::_64, 255, 200};
   std::optional<CharacterSheet> m_charaterSheet;
 };

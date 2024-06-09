@@ -67,6 +67,11 @@ struct WhenCancelCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::When_Cancel; }
 };
 
+struct ShowChoicesEndCommand : IEventCommand {
+  ~ShowChoicesEndCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::End_de_ShowChoices; }
+};
+
 struct InputNumberCommand : IEventCommand {
   ~InputNumberCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Input_Number; }
@@ -438,6 +443,21 @@ struct EraseEventCommand : IEventCommand {
   ~EraseEventCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Erase_Event; }
 };
+
+
+struct ScriptCommand : IEventCommand {
+  ~ScriptCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Script; }
+  std::string script;
+  std::vector<std::shared_ptr<IEventCommand>> moreScript;
+};
+
+struct NextScriptCommand : IEventCommand {
+  ~NextScriptCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Next_Script; }
+  std::string script;
+};
+
 struct PlaySECommand : IEventCommand {
   ~PlaySECommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_SE; }

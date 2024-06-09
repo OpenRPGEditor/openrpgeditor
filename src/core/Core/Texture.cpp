@@ -20,10 +20,10 @@ Texture::Texture(std::string_view filename) {
     SDL_Renderer* renderer = App::APP->getWindow()->getNativeRenderer();
 
     SDL_Surface* surface =
-        SDL_CreateRGBSurfaceWithFormatFrom((void*)data, 128, 128, 32, 4 * 128, SDL_PIXELFORMAT_RGBA8888);
+        SDL_CreateRGBSurfaceWithFormatFrom((void*)data, 128, 128, 32, 4 * 128, SDL_PIXELFORMAT_ARGB8888);
 
     errorTex = SDL_CreateTextureFromSurface(renderer, surface);
-
+    SDL_FreeSurface(surface);
     free(data);
   }
 

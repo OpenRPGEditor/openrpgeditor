@@ -26,6 +26,9 @@ public:
   static Armors load(std::string_view filepath);
   bool serialize(std::string_view filename);
 
+  [[nodiscard]] std::vector<Armor>& armors() { return m_armors; }
+  [[nodiscard]] const std::vector<Armor>& armors() const { return m_armors; }
+
   [[nodiscard]] Armor* armor(int id) {
     for (auto& item : m_armors) {
       if (item.id == id) {
@@ -44,6 +47,7 @@ public:
 
     return nullptr;
   }
+
 private:
   std::vector<Armor> m_armors;
 };

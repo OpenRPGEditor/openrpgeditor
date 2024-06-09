@@ -77,8 +77,12 @@ public:
   static System load(std::string_view filepath);
   bool serialize(std::string_view filename);
 
-  const std::string variable(int id) const { return variables[id]; }
-  const std::string switche(int id) const { return switches[id]; }
+  std::string& variable(int id) { return variables[id]; }
+  const std::string& variable(int id) const { return variables[id]; }
+  std::string& switche(int id) { return switches[id]; }
+  const std::string& switche(int id) const { return switches[id]; }
+  std::string& equipType(int id) { return equipTypes[id]; }
+  const std::string& equipType(int id) const { return equipTypes[id]; }
 
 private:
   std::vector<System> m_system;

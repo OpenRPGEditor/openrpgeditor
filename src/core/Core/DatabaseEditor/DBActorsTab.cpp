@@ -17,7 +17,7 @@ void DBActorsTab::draw() {
 
   ImGui::BeginChild("##orpg_actors_editor");
   {
-    ImGui::BeginChild("##orpg_actors_editor_actors", ImVec2{300.f, 0});
+    ImGui::BeginChild("##orpg_actors_editor_actors", ImVec2{400.f, 0});
     {
       ImGui::BeginGroup();
       {
@@ -171,7 +171,66 @@ void DBActorsTab::draw() {
           ImGui::BeginGroup();
           {
             ImGui::SeparatorText("Initial Equipment");
-            ImGui::Dummy({100, 100});
+            if (ImGui::BeginTable("##orpg_actors_actor_init_equip", 2,
+                                  ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchProp |
+                                      ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY |
+                                      ImGuiTableFlags_ScrollY | ImGuiTableFlags_HighlightHoveredColumn,
+                                  ImVec2{ImGui::GetContentRegionMax().x - 15, ImGui::GetContentRegionAvail().y - 16})) {
+
+              ImGui::TableSetupColumn("Type");
+              ImGui::TableSetupColumn("Equipment Item");
+              ImGui::TableHeadersRow();
+              /* Weapon */
+              ImGui::TableNextRow();
+              if (ImGui::TableNextColumn()) {
+                if (ImGui::Selectable(m_parent->equipType(1).c_str(), false,
+                                      ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
+                  if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                    m_showEquipEdit = true;
+                    m_selectedEquip = 0;
+                    m_chosenEquip =
+                        m_selectedEquip < m_selectedActor->equips.size() ? m_selectedActor->equips[m_selectedEquip] : 0;
+                  }
+                }
+              }
+              if (ImGui::TableNextColumn()) {
+                std::string label;
+                if (!m_selectedActor->equips.empty()) {
+                  auto weapon = m_parent->weapon(m_selectedActor->equips[0]);
+                  label = weapon ? weapon->name : "None";
+                } else {
+                  label = "None";
+                }
+                ImGui::Text("%s", label.c_str());
+              }
+              for (int i = 2; i < m_parent->equipTypes().size(); ++i) {
+                ImGui::TableNextRow();
+                if (ImGui::TableNextColumn()) {
+                  if (ImGui::Selectable(m_parent->equipType(i).c_str(), false,
+                                        ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
+                    if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                      m_showEquipEdit = true;
+                      m_selectedEquip = i - 1;
+                      m_chosenEquip = m_selectedEquip < m_selectedActor->equips.size()
+                                          ? m_selectedActor->equips[m_selectedEquip]
+                                          : 0;
+                    }
+                  }
+                }
+                if (ImGui::TableNextColumn()) {
+                  std::string label;
+                  const int armorId = i - 1;
+                  if (armorId < m_selectedActor->equips.size()) {
+                    auto armor = m_parent->armor(m_selectedActor->equips[armorId]);
+                    label = armor ? armor->name : "None";
+                  } else {
+                    label = "None";
+                  }
+                  ImGui::Text("%s", label.c_str());
+                }
+              }
+              ImGui::EndTable();
+            }
           }
           ImGui::EndGroup();
         }
@@ -185,7 +244,7 @@ void DBActorsTab::draw() {
             if (ImGui::BeginTable("##orpg_actors_actor_traits", 2,
                                   ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchProp |
                                       ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY |
-                                      ImGuiTableFlags_ScrollY,
+                                      ImGuiTableFlags_ScrollY | ImGuiTableFlags_HighlightHoveredColumn,
                                   ImVec2{ImGui::GetContentRegionMax().x - 15, ImGui::GetContentRegionMax().y - 600})) {
               ImGui::TableSetupColumn("Type");
               ImGui::TableSetupColumn("Content");
@@ -194,13 +253,27 @@ void DBActorsTab::draw() {
               for (auto& trait : m_selectedActor->traits) {
                 ImGui::PushID(&trait);
                 ImGui::TableNextRow();
-                ImGui::TableSetColumnIndex(0);
-                ImGui::Text("%i", trait.code);
-                ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%f", trait.value);
+                if (ImGui::TableNextColumn()) {
+                  char str[4096];
+                  snprintf(str, 4096, "%i\n", trait.code);
+                  ImGui::Selectable(str, false,
+                                    ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowOverlap);
+                }
+
+                if (ImGui::TableNextColumn()) {
+                  ImGui::Text("%f", trait.value);
+                }
+
                 ImGui::PopID();
               }
 
+              /* Dummy entry for adding new traits */
+              ImGui::PushID("##actors_trait_dummy");
+              ImGui::TableNextRow();
+              if (ImGui::TableNextColumn()) {
+                ImGui::Selectable("", false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowOverlap);
+              }
+              ImGui::PopID();
               ImGui::EndTable();
             }
           }
@@ -225,7 +298,6 @@ void DBActorsTab::draw() {
   }
   ImGui::EndChild();
 
-  ImGui::SetNextWindowPos(ImGui::GetPlatformIO().Viewports[0]->Size / 2);
   if (m_changeIntDialogOpen) {
     if (ImGui::Begin("Change Max Actors", &m_changeIntDialogOpen,
                      ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_Modal |
@@ -245,7 +317,6 @@ void DBActorsTab::draw() {
     }
     ImGui::End();
 
-    ImGui::SetNextWindowPos(ImGui::GetPlatformIO().Viewports[0]->Size / 2);
     if (m_changeConfirmDialogOpen) {
       if (ImGui::Begin("Confirm Change", &m_changeConfirmDialogOpen,
                        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoSavedSettings |
@@ -269,4 +340,104 @@ void DBActorsTab::draw() {
       ImGui::End();
     }
   }
+
+  // The following code needs filtering from classes to properly display their combobox contents
+#if 1
+  if (m_showEquipEdit) {
+    if (ImGui::Begin("Select Equipment...", &m_showEquipEdit,
+                     ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_Modal |
+                         ImGuiWindowFlags_NoCollapse)) {
+      if (m_selectedEquip == 0) {
+        ImGui::Text("Weapon:");
+        const std::vector<Weapon>& weapons = m_parent->weapons();
+        std::vector<Weapon> filtered;
+        auto cls = m_parent->classes().classType(m_selectedActor->classId);
+        if (cls && !cls->traits.empty()) {
+          auto it = std::find_if(cls->traits.begin(), cls->traits.end(), [](const auto& c) {
+            return c.code == 51; // Weapon
+          });
+          if (it != cls->traits.end()) {
+            for (const auto& weapon : weapons) {
+              if (weapon.wtypeId == it->dataId) {
+                filtered.push_back(weapon);
+              }
+            }
+          }
+        }
+        std::string label;
+        if (!m_selectedActor->equips.empty()) {
+          auto weapon = m_parent->weapon(m_chosenEquip);
+          label = weapon ? weapon->name : "None";
+        } else {
+          label = "None";
+        }
+
+        if (ImGui::BeginCombo("##orpg_weapon_selection", label.c_str())) {
+          if (ImGui::Selectable("None", m_chosenEquip == 0)) {
+            m_chosenEquip = 0;
+          }
+
+          for (auto w : filtered) {
+            std::string label = w.name.empty() ? "##orpg_weapon_name_invalid_" + std::to_string(w.id) : w.name;
+            if (ImGui::Selectable(label.c_str(), m_chosenEquip == w.id)) {
+              m_chosenEquip = w.id;
+            }
+          }
+          ImGui::EndCombo();
+        }
+      } else {
+        ImGui::Text("Armor:");
+        std::vector<Armor> filtered;
+        const std::vector<Armor>& armors = m_parent->armors();
+        auto cls = m_parent->classes().classType(m_selectedActor->classId);
+        if (cls && !cls->traits.empty()) {
+          auto it = std::find_if(cls->traits.begin(), cls->traits.end(), [](const auto& c) {
+            return c.code == 52; // Armor
+          });
+          if (it != cls->traits.end()) {
+            for (const auto& armor : armors) {
+              if (armor.atypeId == it->dataId && armor.etypeId == m_selectedEquip + 1) {
+                filtered.push_back(armor);
+              }
+            }
+          }
+        }
+        std::string label;
+        if (!m_selectedActor->equips.empty()) {
+          auto armor = m_parent->armor(m_chosenEquip);
+          label = armor ? armor->name : "None";
+        } else {
+          label = "None";
+        }
+
+        if (ImGui::BeginCombo("##orpg_armor_selection", label.c_str())) {
+          if (ImGui::Selectable("None", m_chosenEquip == 0)) {
+            m_chosenEquip = 0;
+          }
+
+          for (auto a : filtered) {
+            std::string label = a.name.empty() ? "##orpg_armor_name_invalid_" + std::to_string(a.id) : a.name;
+            if (ImGui::Selectable(label.c_str(), m_chosenEquip == a.id)) {
+              m_chosenEquip = a.id;
+            }
+          }
+          ImGui::EndCombo();
+        }
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("OK")) {
+        m_showEquipEdit = false;
+        if (m_selectedEquip >= m_selectedActor->equips.size()) {
+          m_selectedActor->equips.resize(m_selectedEquip + 1);
+        }
+        m_selectedActor->equips[m_selectedEquip] = m_chosenEquip;
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("Cancel")) {
+        m_showEquipEdit = false;
+      }
+      ImGui::End();
+    }
+  }
+#endif
 }

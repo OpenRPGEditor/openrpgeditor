@@ -283,6 +283,7 @@ enum class EventCode : int {
   Show_Choices = 102,
   When_Selected = 402, // Each choice gets a branch as defined here
   When_Cancel = 403,   // Player cancelled their selection
+  End_de_ShowChoices = 404,
 
   Input_Number = 103,
   Select_Item = 104,

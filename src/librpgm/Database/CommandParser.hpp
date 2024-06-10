@@ -29,7 +29,9 @@ struct UnhandledEventCommand : IEventCommand {
 struct EventDummy : IEventCommand {
   ~EventDummy() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Event_Dummy; }
-  [[nodiscard]] std::string stringRep() const override { return std::string(indent ? *indent * 4 : 0, ' ') + "◇"; }
+  [[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + "&push-color=0,255,0;◇&pop-color;";
+  }
 };
 
 struct NextTextCommand : IEventCommand {
@@ -194,10 +196,14 @@ struct ConditionalBranchCommand : IEventCommand {
   [[nodiscard]] virtual std::string stringRep() const {
     std::string strBuild;
     if (type == ConditionType::Variable) {
-       return std::string(indent ? *indent * 4 : 0, ' ') + "◇If " + "var:" + std::to_string(variable.id) + " " + DecodeEnumName(variable.comparison) + " " + (variable.source == VariableComparisonSource::Constant ? std::to_string(variable.constant) : "var:" + std::to_string(variable.otherId));
+      return std::string(indent ? *indent * 4 : 0, ' ') + "&push-color=255,255,0;◇If&pop-color; " +
+             "var:" + std::to_string(variable.id) + " " + DecodeEnumName(variable.comparison) + " " +
+             (variable.source == VariableComparisonSource::Constant ? std::to_string(variable.constant)
+                                                                    : "var:" + std::to_string(variable.otherId));
     }
     if (type == ConditionType::Switch) {
-      return std::string(indent ? *indent * 4 : 0, ' ') + "◇If " + "sw(" + std::to_string(globalSwitch.switchIdx) + ") is " + (globalSwitch.checkIfOn == 0 ? "OFF" : "ON");
+      return std::string(indent ? *indent * 4 : 0, ' ') + "◇If " + "sw(" + std::to_string(globalSwitch.switchIdx) +
+             ") is " + (globalSwitch.checkIfOn == 0 ? "OFF" : "ON");
     }
     return std::string(indent ? *indent * 4 : 0, ' ') + "◇ Condition TBD ";
   }
@@ -206,9 +212,7 @@ struct ConditionalBranchCommand : IEventCommand {
 struct ElseCommand : IEventCommand {
   ~ElseCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Else; }
-  [[nodiscard]] virtual std::string stringRep() const {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ":Else";
-  }
+  [[nodiscard]] virtual std::string stringRep() const { return std::string(indent ? *indent * 4 : 0, ' ') + ":Else"; }
 };
 
 struct LoopCommand : IEventCommand {

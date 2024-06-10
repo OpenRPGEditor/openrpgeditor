@@ -3,6 +3,7 @@
 
 #include "imgui.h"
 #include "imgui_internal.h"
+#include "Core/DPIHandler.hpp"
 
 void TraitsEditor::draw(std::vector<Trait>& traits, DatabaseEditor* dbEditor) {
   ImGui::BeginGroup();
@@ -157,7 +158,7 @@ void TraitsEditor::drawPopup(std::vector<Trait>& traits, DatabaseEditor* dbEdito
     return;
   }
 
-  ImGui::SetNextWindowSize(ImVec2{680, 580} * ImGui::GetIO().FontGlobalScale);
+  ImGui::SetNextWindowSize(ImVec2{680, 550} * App::DPIHandler::get_scale());
   if (ImGui::BeginPopupModal("Traits Edit", nullptr,
                              ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
     if (!m_isNewEntry) {
@@ -177,7 +178,7 @@ void TraitsEditor::drawPopup(std::vector<Trait>& traits, DatabaseEditor* dbEdito
               }
             }
             ImGui::EndGroup();
-            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * ImGui::GetIO().FontGlobalScale));
+            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_scale()));
             ImGui::BeginGroup();
             {
               if (m_selectedTrait->code != TraitCode::Element_Rate) {
@@ -217,7 +218,7 @@ void TraitsEditor::drawPopup(std::vector<Trait>& traits, DatabaseEditor* dbEdito
               m_selectedTrait->code = TraitCode::Debuff_Rate;
             }
             ImGui::EndGroup();
-            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * ImGui::GetIO().FontGlobalScale));
+            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_scale()));
             ImGui::BeginGroup();
             {
               if (m_selectedTrait->code != TraitCode::Debuff_Rate) {
@@ -247,7 +248,7 @@ void TraitsEditor::drawPopup(std::vector<Trait>& traits, DatabaseEditor* dbEdito
               m_selectedTrait->code = TraitCode::State_Rate;
             }
             ImGui::EndGroup();
-            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * ImGui::GetIO().FontGlobalScale));
+            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_scale()));
             ImGui::BeginGroup();
             {
               if (m_selectedTrait->code != TraitCode::State_Rate) {
@@ -277,7 +278,7 @@ void TraitsEditor::drawPopup(std::vector<Trait>& traits, DatabaseEditor* dbEdito
               m_selectedTrait->code = TraitCode::State_Resist;
             }
             ImGui::EndGroup();
-            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * ImGui::GetIO().FontGlobalScale));
+            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_scale()));
             ImGui::BeginGroup();
             {
               if (m_selectedTrait->code != TraitCode::State_Resist) {

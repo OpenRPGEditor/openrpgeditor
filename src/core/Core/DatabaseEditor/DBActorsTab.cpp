@@ -2,9 +2,11 @@
 #include "Database/Actors.hpp"
 
 #include "imgui.h"
+#include "Core/DPIHandler.hpp"
 #include "Core/DatabaseEditor.hpp"
 #include "Core/ImGuiUtils.hpp"
 #include "Core/CommonUI/TraitsEditor.hpp"
+#include "Core/ImGuiParsedText.hpp"
 
 DBActorsTab::DBActorsTab(Actors& actors, DatabaseEditor* parent) : IDBEditorTab(parent), m_actors(actors) {
   m_selectedActor = m_actors.actor(1);
@@ -18,12 +20,13 @@ void DBActorsTab::draw() {
 
   ImGui::BeginChild("##orpg_actors_editor");
   {
-    ImGui::BeginChild("##orpg_actors_editor_actors", ImVec2{400.f, 0});
+    ImGui::BeginChild("##orpg_actors_editor_actors", ImVec2{400.f, 0} * App::DPIHandler::get_scale());
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Actors");
-        ImGui::BeginChild("##orpg_actors_editor_actor_list", ImVec2{0, ImGui::GetContentRegionMax().y - 160});
+        ImGui::BeginChild("##orpg_actors_editor_actor_list",
+                          ImVec2{0, ImGui::GetContentRegionMax().y - (108 * App::DPIHandler::get_scale())});
         {
           ImGui::BeginGroup();
           {
@@ -47,7 +50,8 @@ void DBActorsTab::draw() {
         char str[4096];
         snprintf(str, 4096, "Max Actors %i", m_maxActors);
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
+        if (ImGui::Button("Change Max",
+                          ImVec2{ImGui::GetContentRegionMax().x - (8 * App::DPIHandler::get_scale()), 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxActors = m_maxActors;
         }
@@ -249,7 +253,8 @@ void DBActorsTab::draw() {
             strncpy(note, m_selectedActor->note.c_str(), IM_ARRAYSIZE(note));
             if (ImGui::InputTextMultiline(
                     "##orpg_actors_note", note, IM_ARRAYSIZE(note),
-                    ImVec2{ImGui::GetContentRegionMax().x - 16, ImGui::GetContentRegionAvail().y - 16})) {
+                    ImVec2{ImGui::GetContentRegionMax().x - (16 * ImGui::GetIO().FontGlobalScale),
+                           ImGui::GetContentRegionAvail().y - (16 * ImGui::GetIO().FontGlobalScale)})) {
               m_selectedActor->note = note;
             }
           }

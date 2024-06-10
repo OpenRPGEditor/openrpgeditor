@@ -3,10 +3,12 @@
 
 #include "imgui.h"
 #include "Core/Application.hpp"
+#include "Core/DPIHandler.hpp"
 #include "Core/DatabaseEditor.hpp"
 #include "Core/ImGuiUtils.hpp"
 #include "Database/System.hpp"
 
+#include <Core/ImGuiParsedText.hpp>
 #include <Core/Utils.hpp>
 
 DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor* parent)
@@ -18,13 +20,13 @@ DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor*
 void DBCommonEventsTab::draw() {
   ImGui::BeginChild("##orpg_commonevents_editor");
   {
-    ImGui::BeginChild("##orpg_commonevents_editor_commonevents", ImVec2{400.f, 0});
+    ImGui::BeginChild("##orpg_commonevents_editor_commonevents", ImVec2{400.f, 0} * App::DPIHandler::get_scale());
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Common Events");
         ImGui::BeginChild("##orpg_commonevents_editor_commonevent_list",
-                          ImVec2{0, ImGui::GetContentRegionMax().y - 160});
+                          ImVec2{0, ImGui::GetContentRegionMax().y - (108 * App::DPIHandler::get_scale())});
         {
           ImGui::BeginGroup();
           {
@@ -48,7 +50,8 @@ void DBCommonEventsTab::draw() {
         char str[4096];
         snprintf(str, 4096, "Max Common Events %zu", m_events.m_events.size() - 1);
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
+        if (ImGui::Button("Change Max",
+                          ImVec2{ImGui::GetContentRegionMax().x - (8 * App::DPIHandler::get_scale()), 0})) {
           m_changeIntDialogOpen = true;
         }
       }
@@ -66,18 +69,19 @@ void DBCommonEventsTab::draw() {
             ImGui::SeparatorText("General Settings");
             char name[4096];
             strncpy(name, m_selectedCommonEvent->name.c_str(), 4096);
-            if (ImGui::LabelOverLineEdit("##orpg_commonevents_editor_commonevents_commonevent_name", "Name:", name,
-                                         4096, ((ImGui::GetContentRegionMax().x / 2) / 2) - 16)) {
+            if (ImGui::LabelOverLineEdit(
+                    "##orpg_commonevents_editor_commonevents_commonevent_name", "Name:", name, 4096,
+                    ((ImGui::GetContentRegionMax().x / 2) / 2) - (16 * App::DPIHandler::get_scale()))) {
               m_selectedCommonEvent->name = name;
             }
             ImGui::SameLine();
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - (4 * App::DPIHandler::get_scale()));
             ImGui::BeginGroup();
             {
               ImGui::Text("Trigger:");
               char buf[4096];
               strncpy(buf, DecodeEnumName(m_selectedCommonEvent->trigger).c_str(), 4096);
-              ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - 16);
+              ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - (16 * App::DPIHandler::get_scale()));
               if (ImGui::BeginCombo("##orpg_commonevents_editor_trigger_combo", buf)) {
                 for (const auto& e : magic_enum::enum_values<CommonEventTriggerType>()) {
                   strncpy(buf, DecodeEnumName(e).c_str(), 4096);
@@ -91,7 +95,7 @@ void DBCommonEventsTab::draw() {
             ImGui::EndGroup();
 
             ImGui::SameLine();
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - (4 * App::DPIHandler::get_scale()));
             ImGui::BeginGroup();
             {
               ImGui::Text("Switch:");
@@ -102,9 +106,11 @@ void DBCommonEventsTab::draw() {
               std::string text =
                   isSwitchEnabled ? "##commonevent_switch_empty" : m_parent->switches(m_selectedCommonEvent->switchId);
               ImGui::PushID("##commonevent_button");
-              ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) / 2 - 16);
+              ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) / 2 - (16 * App::DPIHandler::get_scale()));
               ImGui::BeginDisabled(isSwitchEnabled);
-              if (ImGui::Button(text.c_str(), ImVec2{((ImGui::GetWindowContentRegionMax().x / 2) / 2) - 15, 0})) {
+              if (ImGui::Button(text.c_str(), ImVec2{((ImGui::GetWindowContentRegionMax().x / 2) / 2) -
+                                                         (15 * App::DPIHandler::get_scale()),
+                                                     0})) {
                 // Open Menu to select switch
               }
               ImGui::PopID();
@@ -114,8 +120,8 @@ void DBCommonEventsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Content:");
-              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
-              ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x - 16);
+              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - (4 * App::DPIHandler::get_scale()));
+              ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x - (16 * App::DPIHandler::get_scale()));
               ImGui::PushFont(App::APP->getMonoFont());
               static int item_current_idx = 0; // Here we store our selection data as an index.
               // Custom size: use all width, 5 items tall
@@ -125,12 +131,24 @@ void DBCommonEventsTab::draw() {
                   const bool is_selected = (item_current_idx == n);
                   std::string indentPad = m_selectedCommonEvent->commands[n]->stringRep();
                   if (m_selectedCommonEvent->commands[n]->code() == EventCode::Common_Event) {
-                    CommonEventCommand* cec = dynamic_cast<CommonEventCommand*>(m_selectedCommonEvent->commands[n].get());
+                    CommonEventCommand* cec =
+                        dynamic_cast<CommonEventCommand*>(m_selectedCommonEvent->commands[n].get());
                     indentPad += m_events.m_events[cec->event].name.c_str();
                   }
 
-                  if (ImGui::Selectable(indentPad.c_str(), is_selected))
+                  // ImGui::PushStyleColor(ImGuiCol_Text, m_selectedCommonEvent->commands[n]->color());
+                  auto oldCursor = ImGui::GetCursorPos();
+                  if (ImGui::Selectable("##common_event_selectable", is_selected, 0, ImVec2{0, ImGui::CalcTextSize(indentPad.c_str()).y}))
                     item_current_idx = n;
+                  ImGui::SetCursorPos(oldCursor);
+                  /* Nexus: TextParsed takes the syntax of `&<token>[=value];` where value is optional and token is
+                   * required.
+                   * Currently there are only 3 tokens, push-color, pop-color, and color, push and pop allow you to
+                   * control which blocks of text get color, color applies to the whole string
+                   * if a token is unsupported it won't get processed and will show up in the resulting text
+                   */
+                  ImGui::TextParsed("&push-color=255,255,255;%s&pop-color;", indentPad.c_str());
+                  // ImGui::PopStyleColor();
 
                   // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
                   if (is_selected)
@@ -152,11 +170,11 @@ void DBCommonEventsTab::draw() {
   ImGui::EndChild();
 
   if (m_changeIntDialogOpen) {
-    if (ImGui::Begin("Change Max Actors", &m_changeIntDialogOpen,
+    if (ImGui::Begin("Change Max Common Events", &m_changeIntDialogOpen,
                      ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_Modal |
                          ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
       ImGui::Text(
-          "Specify an amount to resize the actor list to\n"
+          "Specify an amount to resize the common event list to\n"
           "This cannot be undone!");
       ImGui::InputInt("##value_input", &m_maxCommonEvents);
       ImGui::SameLine();

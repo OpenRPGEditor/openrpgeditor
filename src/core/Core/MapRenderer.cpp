@@ -80,9 +80,11 @@ void MapRenderer::setMap(const Map* map, const Tileset* tileset, int tileWidth, 
   m_tileWidth = tileWidth;
   m_tileHeight = tileHeight;
   m_lastTiles.clear();
-  for (int i = 0; i < m_tilesetTextures.size(); ++i) {
-    if (!m_tileset->tilesetNames[i].empty()) {
-      m_tilesetTextures[i] = ResourceManager::instance()->loadTilesetImage(m_tileset->tilesetNames[i]);
+  if (m_map && m_tileset) {
+    for (int i = 0; i < m_tilesetTextures.size(); ++i) {
+      if (!m_tileset->tilesetNames[i].empty()) {
+        m_tilesetTextures[i] = ResourceManager::instance()->loadTilesetImage(m_tileset->tilesetNames[i]);
+      }
     }
   }
 

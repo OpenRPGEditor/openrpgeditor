@@ -32,9 +32,11 @@ add_library(
         Core/CharacterSheet.hpp Core/CharacterSheet.cpp
         Core/Settings.hpp Core/Settings.cpp
         Core/CommonUI/TraitsEditor.hpp Core/CommonUI/TraitsEditor.cpp
+        Core/ImGuiParsedText.hpp Core/ImGuiParsedText.cpp
+        Core/TextParser.hpp Core/TextParser.cpp
         Core/Resources.hpp
         Core/DPIHandler.hpp
-        )
+)
 
 # Define set of OS specific files to include
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")

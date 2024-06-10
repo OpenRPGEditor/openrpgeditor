@@ -84,13 +84,15 @@ ExitStatus App::Application::run() {
   // ImGUI font
 
   const float font_scaling_factor{DPIHandler::get_scale()};
-  const float font_size{14.0F * font_scaling_factor};
+  const float font_size{12.0F * font_scaling_factor};
+  const float mono_font_size{8.0F * font_scaling_factor};
   const std::string font_path{Resources::font_path("NotoSans-SemiBold.ttf").generic_string()};
   const std::string font_path_math{Resources::font_path("JetBrainsMono-SemiBold.ttf").generic_string()};
   const std::string font_path_jp{Resources::font_path("NotoSansJP-SemiBold.ttf").generic_string()};
   const std::string font_path_jp_mono{Resources::font_path("RelaxedTypingMonoJP-Medium.ttf").generic_string()};
   const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-SemiBold.ttf").generic_string()};
-  const std::string font_path_mono{Resources::font_path("KurintoMono-NarBd.ttf").generic_string()};
+  const std::string font_path_kurinoto_mono{Resources::font_path("KurintoMono-NarBd.ttf").generic_string()};
+  const std::string font_path_firple_mono{Resources::font_path("Firple-Bold.ttf").generic_string()};
 
   static const ImWchar specialChar[] = {
       /* clang-format off */
@@ -130,18 +132,17 @@ ExitStatus App::Application::run() {
   m_sinhalaFont = io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
   m_jpFont = io.Fonts->AddFontFromFileTTF(font_path_jp.c_str(), font_size, &config, ranges.Data);
   m_mathFont = io.Fonts->AddFontFromFileTTF(font_path_math.c_str(), font_size, &config, ranges.Data);
-  m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_mono.c_str(), font_size, nullptr, ranges.Data);
+  io.Fonts->Build();
+  io.Fonts->AddFontFromFileTTF(font_path_kurinoto_mono.c_str(), mono_font_size, &config, ranges.Data);
+  m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_firple_mono.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->Build();
 
   io.FontDefault = m_mainFont;
 
-  DPIHandler::set_global_font_scaling(&io);
-
   auto& style = ImGui::GetStyle();
-  style = {}; // Reset sizes
-  style.WindowPadding = ImVec2(4, 4);
-  style.WindowRounding = 2.5f;
-  style.FrameBorderSize = 1.f;
+  style.WindowPadding = ImVec2(12, 12);
+  style.WindowRounding = 6.f;
+  style.FrameBorderSize = 4.f;
   style.FramePadding = ImVec2(4, 4);
   style.FrameRounding = 2.0f;
   style.ItemSpacing = ImVec2(6, 4);
@@ -150,13 +151,15 @@ ExitStatus App::Application::run() {
   style.ScrollbarSize = 15.0f;
   style.ScrollbarRounding = 9.0f;
   style.GrabMinSize = 5.0f;
-  style.GrabRounding = 3.0f;
+  style.GrabRounding = 4.0f;
   style.PopupBorderSize = 1.f;
   style.PopupRounding = 7.0;
   style.TabBorderSize = 1.f;
-  style.TabRounding = 1.5f;
-  style.DockingSeparatorSize = 3.f;
+  style.TabRounding = 6.5f;
+  style.DockingSeparatorSize = 6.f;
   style.CellPadding = {1.f, 3.8f};
+  style.PopupBorderSize = 8.f;
+  style.ScaleAllSizes(font_scaling_factor);
 
   auto* colors = style.Colors;
   colors[ImGuiCol_Text] = ImVec4(0.95f, 0.96f, 0.98f, 1.00f);
@@ -197,17 +200,23 @@ ExitStatus App::Application::run() {
   colors[ImGuiCol_TabActive] = ImVec4(0.20f, 0.25f, 0.29f, 1.00f);
   colors[ImGuiCol_TabUnfocused] = ImVec4(0.11f, 0.15f, 0.17f, 1.00f);
   colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.11f, 0.15f, 0.17f, 1.00f);
+  colors[ImGuiCol_DockingPreview] = ImVec4(0.26f, 0.59f, 0.98f, 0.70f);
+  colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
   colors[ImGuiCol_PlotLines] = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
   colors[ImGuiCol_PlotLinesHovered] = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
   colors[ImGuiCol_PlotHistogram] = ImVec4(0.06f, 0.53f, 0.98f, 1.00f);
   colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.28f, 0.56f, 1.00f, 1.00f);
+  colors[ImGuiCol_TableHeaderBg] = ImVec4(0.19f, 0.19f, 0.20f, 1.00f);
+  colors[ImGuiCol_TableBorderStrong] = ImVec4(0.31f, 0.31f, 0.35f, 1.00f);
+  colors[ImGuiCol_TableBorderLight] = ImVec4(0.23f, 0.23f, 0.25f, 1.00f);
+  colors[ImGuiCol_TableRowBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+  colors[ImGuiCol_TableRowBgAlt] = ImVec4(1.00f, 1.00f, 1.00f, 0.06f);
   colors[ImGuiCol_TextSelectedBg] = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
   colors[ImGuiCol_DragDropTarget] = ImVec4(1.00f, 1.00f, 0.00f, 0.90f);
   colors[ImGuiCol_NavHighlight] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
   colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
   colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
   colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
-  style.ScaleAllSizes(font_scaling_factor);
   //  Setup Platform/Renderer backends
   ImGui_ImplSDL2_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
   ImGui_ImplSDLRenderer2_Init(m_window->getNativeRenderer());

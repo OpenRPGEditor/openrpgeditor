@@ -7,6 +7,8 @@
 #include "Core/ImGuiUtils.hpp"
 #include "Database/System.hpp"
 
+#include <Core/Utils.hpp>
+
 DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor* parent)
 : IDBEditorTab(parent), m_events(commonEvents) {
   m_selectedCommonEvent = &m_events.m_events[1];
@@ -121,8 +123,11 @@ void DBCommonEventsTab::draw() {
                                       ImVec2(0, ImGui::GetContentRegionAvail().y - 16))) {
                 for (int n = 0; n < m_selectedCommonEvent->commands.size(); n++) {
                   const bool is_selected = (item_current_idx == n);
-
                   std::string indentPad = m_selectedCommonEvent->commands[n]->stringRep();
+                  if (m_selectedCommonEvent->commands[n]->code() == EventCode::Common_Event) {
+                    CommonEventCommand* cec = dynamic_cast<CommonEventCommand*>(m_selectedCommonEvent->commands[n].get());
+                    indentPad += m_events.m_events[cec->event].name.c_str();
+                  }
 
                   if (ImGui::Selectable(indentPad.c_str(), is_selected))
                     item_current_idx = n;

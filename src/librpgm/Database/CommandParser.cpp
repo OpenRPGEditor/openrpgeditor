@@ -819,6 +819,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       end->indent = parser[index].value("indent", std::optional<int>{});
       end->m_code = code;
       end->data = parser[index];
+      end->indent = parser[index].value("indent", std::optional<int>{});
       // std::cout << "Unhandled command: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")" <<
       // std::endl;
       break;

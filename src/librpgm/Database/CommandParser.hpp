@@ -3,6 +3,8 @@
 #include "Database/Audio.hpp"
 #include "Database/MovementRoute.hpp"
 #include "nlohmann/json.hpp"
+#include "Database/System.hpp"
+#include "Database/CommonEvents.hpp"
 
 #include <memory>
 
@@ -188,11 +190,25 @@ struct ConditionalBranchCommand : IEventCommand {
   std::string selfSw; // A, B, C, D
   std::string name;
   std::string script;
+
+  [[nodiscard]] virtual std::string stringRep() const {
+    std::string strBuild;
+    if (type == ConditionType::Variable) {
+       return std::string(indent ? *indent * 4 : 0, ' ') + "◇If " + "var:" + std::to_string(variable.id) + " " + DecodeEnumName(variable.comparison) + " " + (variable.source == VariableComparisonSource::Constant ? std::to_string(variable.constant) : "var:" + std::to_string(variable.otherId));
+    }
+    if (type == ConditionType::Switch) {
+      return std::string(indent ? *indent * 4 : 0, ' ') + "◇If " + "sw(" + std::to_string(globalSwitch.switchIdx) + ") is " + (globalSwitch.checkIfOn == 0 ? "OFF" : "ON");
+    }
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇ Condition TBD ";
+  }
 };
 
 struct ElseCommand : IEventCommand {
   ~ElseCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Else; }
+  [[nodiscard]] virtual std::string stringRep() const {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ":Else";
+  }
 };
 
 struct LoopCommand : IEventCommand {
@@ -208,29 +224,44 @@ struct RepeatAboveCommand : IEventCommand {
 struct BreakLoopCommand : IEventCommand {
   ~BreakLoopCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Break_Loop; }
+  [[nodiscard]] virtual std::string stringRep() const {
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Break Loop";
+  }
 };
-
 struct ExitEventProecessingCommand : IEventCommand {
   ~ExitEventProecessingCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Exit_Event_Processing; }
+  [[nodiscard]] virtual std::string stringRep() const {
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Exit Event Processing";
+  }
 };
 
 struct CommonEventCommand : IEventCommand {
   ~CommonEventCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Common_Event; }
   int event;
+
+  [[nodiscard]] virtual std::string stringRep() const {
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Common Event: ";
+  }
 };
 
 struct LabelCommand : IEventCommand {
   ~LabelCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Label; }
   std::string label;
+  [[nodiscard]] virtual std::string stringRep() const {
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Label: " + label;
+  }
 };
 
 struct JumpToLabelCommand : IEventCommand {
   ~JumpToLabelCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Jump_To_Label; }
   std::string label;
+  [[nodiscard]] virtual std::string stringRep() const {
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Jump to Label: " + label;
+  }
 };
 
 struct ControlSwitches : IEventCommand {
@@ -293,6 +324,13 @@ struct ChangeGoldCommmand : IEventCommand {
   QuantityChangeOp operation;
   QuantityChangeSource operandSource;
   int operand;
+  [[nodiscard]] virtual std::string stringRep() const {
+    if (operandSource == QuantityChangeSource::Constant)
+      return std::string(indent ? *indent * 4 : 0, ' ') +
+             "◇Change Gold: " + (operation == QuantityChangeOp::Increase ? "+ " : "- ") + std::to_string(operand);
+    return std::string(indent ? *indent * 4 : 0, ' ') +
+           "◇Change Gold: " + (operation == QuantityChangeOp::Increase ? "+ " : "- "); // Add variable name at the end
+  }
 };
 
 struct ChangeItemsCommmand : IEventCommand {

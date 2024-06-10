@@ -13,6 +13,7 @@ class Tileset;
 struct SDL_Texture;
 
 struct TileRect {
+  int tileId;
   int setNum;
   int u;
   int v;

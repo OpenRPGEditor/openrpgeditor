@@ -217,11 +217,11 @@ void MapRenderer::drawAutoTile(std::vector<TileRect>& layer, int tileId, int dx,
 
       int sx2 = (bx * 2 + qsx2) * w1;
       int sy2 = (by * 2 + qsy2) * h1;
-      layer.emplace_back(setNumber, sx2, sy2, dx1, dy1, w1, h1, animX, animY);
+      layer.emplace_back(tileId, setNumber, sx2, sy2, dx1, dy1, w1, h1, animX, animY);
       dy1 += h1 / 2;
-      layer.emplace_back(setNumber, sx1, sy1, dx1, dy1 + h1 / 2, w1, h1 / 2, animX, animY);
+      layer.emplace_back(tileId, setNumber, sx1, sy1, dx1, dy1 + h1 / 2, w1, h1 / 2, animX, animY);
     } else {
-      layer.emplace_back(setNumber, sx1, sy1, dx1, dy1, w1, h1, animX, animY);
+      layer.emplace_back(tileId, setNumber, sx1, sy1, dx1, dy1, w1, h1, animX, animY);
     }
   }
 }
@@ -240,7 +240,7 @@ void MapRenderer::drawNormalTile(std::vector<TileRect>& layer, int tileId, int d
   int sx = ((int)floor(tileId / 128) % 2 * 8 + tileId % 8) * w;
   int sy = ((int)floor(tileId % 256 / 8) % 16) * h;
 
-  layer.emplace_back(setNumber, sx, sy, dx, dy, w, h);
+  layer.emplace_back(tileId, setNumber, sx, sy, dx, dy, w, h);
 }
 
 void MapRenderer::beginBlit(SDL_Texture* bitmap) {

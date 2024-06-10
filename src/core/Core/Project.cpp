@@ -703,7 +703,7 @@ void Project::drawMapEditor() {
         for (int y = 0; y < m_map->height; y++) {
           for (int x = 0; x < m_map->width; x++) {
             for (int i = 0; i < 10; ++i) {
-              int tileId = m_mapRenderer.tileId(x, y, 0);
+              int tileId = m_mapRenderer.tileId(x, y, i);
               if (m_mapRenderer.isHigherTile(tileId)) {
                 m_mapRenderer.getTileRect(m_upperLayer, m_mapRenderer.tileId(x, y, i), x * 48, y * 48);
               } else {
@@ -725,9 +725,56 @@ void Project::drawMapEditor() {
         const float v0 = tile.v / tex.height();
         const float v1 = (tile.v + tile.tileHeight) / tex.height();
         // win->DrawList->AddImage(tex.get(), ImVec2{x0, y0}, ImVec2{x1, y1}, ImVec2{u0, v0}, ImVec2{u1, v1});
+        int color = 0xFFAAAAAA;
+        if (MapRenderer::isGroundTile(tile.tileId)) {
+          color = 0xFF00AA00;
+        }
+        if (MapRenderer::isWaterTile(tile.tileId)) {
+          color = 0xFFAA0000;
+        }
+        if (MapRenderer::isShadowingTile(tile.tileId)) {
+          color = 0xFF7A7A7A;
+        }
+        if (MapRenderer::isWallTile(tile.tileId)) {
+          color = 0xFF3A3A3A;
+        }
         win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale),
-                               win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), 0xFFAAAAAA);
+                               win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), color);
       }
+      for (auto tile : m_upperLayer) {
+        const auto& tex = m_mapRenderer.m_tilesetTextures[tile.setNum];
+        const float x0 = tile.x;
+        const float x1 = tile.x + tile.tileWidth;
+        const float y0 = tile.y;
+        const float y1 = tile.y + tile.tileHeight;
+        const float u0 = tile.u / tex.width();
+        const float u1 = (tile.u + tile.tileWidth) / tex.width();
+        const float v0 = tile.v / tex.height();
+        const float v1 = (tile.v + tile.tileHeight) / tex.height();
+        int color = 0xFFAA00AA;
+        if (MapRenderer::isGroundTile(tile.tileId)) {
+          color = 0xFF00AA00;
+        }
+        if (MapRenderer::isWaterTile(tile.tileId)) {
+          color = 0xFFAA0000;
+        }
+        if (MapRenderer::isShadowingTile(tile.tileId)) {
+          color = 0xFF7A7A7A;
+        }
+        if (MapRenderer::isWallTile(tile.tileId)) {
+          color = 0xFF3A3A3A;
+        }
+        // win->DrawList->AddImage(tex.get(), ImVec2{x0, y0}, ImVec2{x1, y1}, ImVec2{u0, v0}, ImVec2{u1, v1});
+        win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale),
+                               win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), color);
+        // win->DrawList->AddRect(
+        //     win->ContentRegionRect.Min + (ImVec2{static_cast<float>(tile.x), static_cast<float>(tile.y)} *
+        //     m_mapScale), win->ContentRegionRect.Min +
+        //         (ImVec2{static_cast<float>(tile.x + tile.tileWidth), static_cast<float>(tile.y + tile.tileHeight)} *
+        //          m_mapScale),
+        //     0xFFFFFFFF);
+      }
+
 #if 0
       for (int y = 0; y <= (m_map->height * 48) * m_mapScale; y += 48 * m_mapScale) {
         win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)},
@@ -792,26 +839,7 @@ void Project::drawMapEditor() {
           }
         }
       }
-      for (auto tile : m_upperLayer) {
-        const auto& tex = m_mapRenderer.m_tilesetTextures[tile.setNum];
-        const float x0 = tile.x;
-        const float x1 = tile.x + tile.tileWidth;
-        const float y0 = tile.y;
-        const float y1 = tile.y + tile.tileHeight;
-        const float u0 = tile.u / tex.width();
-        const float u1 = (tile.u + tile.tileWidth) / tex.width();
-        const float v0 = tile.v / tex.height();
-        const float v1 = (tile.v + tile.tileHeight) / tex.height();
-        // win->DrawList->AddImage(tex.get(), ImVec2{x0, y0}, ImVec2{x1, y1}, ImVec2{u0, v0}, ImVec2{u1, v1});
-        win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale),
-                               win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), 0xFFAA00AA);
-        // win->DrawList->AddRect(
-        //     win->ContentRegionRect.Min + (ImVec2{static_cast<float>(tile.x), static_cast<float>(tile.y)} *
-        //     m_mapScale), win->ContentRegionRect.Min +
-        //         (ImVec2{static_cast<float>(tile.x + tile.tileWidth), static_cast<float>(tile.y + tile.tileHeight)} *
-        //          m_mapScale),
-        //     0xFFFFFFFF);
-      }
+
       if (ImGui::IsWindowHovered()) {
         ImVec2 cursorPos = ImGui::GetIO().MousePos;
 

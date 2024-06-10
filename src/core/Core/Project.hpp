@@ -123,7 +123,9 @@ private:
   int m_tileCellY{};
   int m_tileId{};
   Texture m_dummyTex;
-  //MapRenderer m_mapRenderer;
+  MapRenderer m_mapRenderer;
+  std::vector<TileRect> m_lowerLayer;
+  std::vector<TileRect> m_upperLayer;
 
   bool m_showDemoWindow{};
   bool m_showAboutWindow{};

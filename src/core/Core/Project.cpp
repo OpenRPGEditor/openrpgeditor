@@ -82,8 +82,10 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   APP_INFO("Loaded project!");
   m_resourceManager.emplace(m_basePath);
   // Load the previously loaded map
-  //m_dummyTex = m_resourceManager->loadParallaxImage("Map509");
+  // m_dummyTex = m_resourceManager->loadParallaxImage("Map509");
   SDL_SetCursor(SDL_GetDefaultCursor());
+  m_lowerLayer.clear();
+  m_upperLayer.clear();
   MapInfo* m = m_mapInfos.map(m_system.editMapId);
   if (m != nullptr) {
     doMapSelection(*m);
@@ -441,13 +443,19 @@ void Project::doMapSelection(MapInfo& in) {
   if (in.id == 0) {
     m_map.reset();
     m_selectedMapId = 0;
-    // m_mapRenderer.setMap(nullptr, nullptr);
+    m_mapRenderer.setMap(nullptr, nullptr);
+    m_lowerLayer.clear();
+    m_upperLayer.clear();
+
     return;
   }
   SDL_SetCursor(waitCursor);
   m_selectedMapId = in.id;
   m_map = m_resourceManager->loadMap(in.id);
-  // m_mapRenderer.setMap(&*m_map, m_tilesets.tileset(m_map->tilesetId));
+  m_mapRenderer.setMap(&*m_map, m_tilesets.tileset(m_map->tilesetId));
+  m_lowerLayer.clear();
+  m_upperLayer.clear();
+
   MapInfo* m = m_mapInfos.map(m_selectedMapId);
   if (m != nullptr) {
     m_initialScrollX = m->scrollX;
@@ -629,7 +637,7 @@ void Project::recursiveDrawTree(MapInfo& in) {
 }
 
 void Project::drawMapTree() {
-  if (ImGui::Begin("Maps")) {
+  if (ImGui::Begin("Maps", nullptr, ImGuiWindowFlags_AlwaysHorizontalScrollbar)) {
     if (!m_mapInfos.empty()) {
       recursiveDrawTree(m_mapInfos.root());
     }
@@ -671,7 +679,7 @@ void Project::drawMapEditor() {
   m_mapScale = std::clamp(m_mapScale, .25f, 4.f);
 
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
-    ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionMax().y - 70.f), ImGuiChildFlags_Border,
+    ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionMax().y - 90.f), ImGuiChildFlags_Border,
                       ImGuiWindowFlags_HorizontalScrollbar);
     if (m_map) {
       if (m_initialScrollSet) {
@@ -685,15 +693,42 @@ void Project::drawMapEditor() {
       m_mapInfos.map(m_selectedMapId)->scrollY = ImGui::GetScrollY();
       auto events = m_map->getSortedBy();
       // m_mapRenderer.update();
+      const Tileset* tileset = m_tilesets.tileset(m_map->tilesetId);
 
       ImGuiWindow* win = ImGui::GetCurrentWindow();
       ImGui::Dummy(ImVec2{m_map->width * (48 * m_mapScale), m_map->height * (48 * m_mapScale)});
-      if (m_dummyTex) {
-        win->DrawList->AddImage(m_dummyTex.get(), win->ContentRegionRect.Min,
-                                win->ContentRegionRect.Min +
-                                    ImVec2{(m_map->width * 48) * m_mapScale, (m_map->height * 48) * m_mapScale});
+      if (m_lowerLayer.empty()) {
+        m_lowerLayer.clear();
+        m_upperLayer.clear();
+        for (int y = 0; y < m_map->height; y++) {
+          for (int x = 0; x < m_map->width; x++) {
+            for (int i = 0; i < 10; ++i) {
+              int tileId = m_mapRenderer.tileId(x, y, 0);
+              if (m_mapRenderer.isHigherTile(tileId)) {
+                m_mapRenderer.getTileRect(m_upperLayer, m_mapRenderer.tileId(x, y, i), x * 48, y * 48);
+              } else {
+                m_mapRenderer.getTileRect(m_lowerLayer, m_mapRenderer.tileId(x, y, i), x * 48, y * 48);
+              }
+            }
+          }
+        }
       }
 
+      for (auto tile : m_lowerLayer) {
+        const auto& tex = m_mapRenderer.m_tilesetTextures[tile.setNum];
+        const float x0 = tile.x;
+        const float x1 = tile.x + tile.tileWidth;
+        const float y0 = tile.y;
+        const float y1 = tile.y + tile.tileHeight;
+        const float u0 = tile.u / tex.width();
+        const float u1 = (tile.u + tile.tileWidth) / tex.width();
+        const float v0 = tile.v / tex.height();
+        const float v1 = (tile.v + tile.tileHeight) / tex.height();
+        // win->DrawList->AddImage(tex.get(), ImVec2{x0, y0}, ImVec2{x1, y1}, ImVec2{u0, v0}, ImVec2{u1, v1});
+        win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale),
+                               win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), 0xFFAAAAAA);
+      }
+#if 0
       for (int y = 0; y <= (m_map->height * 48) * m_mapScale; y += 48 * m_mapScale) {
         win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)},
                                win->ContentRegionRect.Min +
@@ -707,6 +742,7 @@ void Project::drawMapEditor() {
                                    ImVec2{static_cast<float>(x), (m_map->height * 48) * m_mapScale},
                                0x7f0a0a0a, 3.f);
       }
+#endif
       for (auto& event : events) {
         if (event) {
           auto eventX = static_cast<float>(event->x * 48) * m_mapScale;
@@ -721,17 +757,9 @@ void Project::drawMapEditor() {
           win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0xFFFFFFFF, 0, 0, 3.f);
 
           if (!event->pages[0].image.characterName.empty() && event->pages[0].image.tileId == 0) {
-            if (event->pages[0].stepAnime ||
-                (event->pages[0].walkAnime && event->pages[0].moveType != MoveType::Fixed)) {
+            if (event->pages[0].stepAnime) {
               event->pages[0].image.pattern =
                   std::clamp<int>(std::abs(std::remainder(ImGui::GetTime() * 8, 3 * 2)), 0, 3);
-              if ((event->pages[0].walkAnime && event->pages[0].moveType != MoveType::Fixed)) {
-                event->pages[0].image.direction +=
-                    std::clamp<int>(std::abs(std::remainder(ImGui::GetTime() * 2, 1 * 2)), 0, 1) * 2;
-                if (event->pages[0].image.direction > 8) {
-                  event->pages[0].image.direction = 2;
-                }
-              }
             }
 
             // TODO: This is still wrong
@@ -763,6 +791,26 @@ void Project::drawMapEditor() {
                 ImVec2{x2 / static_cast<float>(tex.width()), y2 / static_cast<float>(tex.height())});
           }
         }
+      }
+      for (auto tile : m_upperLayer) {
+        const auto& tex = m_mapRenderer.m_tilesetTextures[tile.setNum];
+        const float x0 = tile.x;
+        const float x1 = tile.x + tile.tileWidth;
+        const float y0 = tile.y;
+        const float y1 = tile.y + tile.tileHeight;
+        const float u0 = tile.u / tex.width();
+        const float u1 = (tile.u + tile.tileWidth) / tex.width();
+        const float v0 = tile.v / tex.height();
+        const float v1 = (tile.v + tile.tileHeight) / tex.height();
+        // win->DrawList->AddImage(tex.get(), ImVec2{x0, y0}, ImVec2{x1, y1}, ImVec2{u0, v0}, ImVec2{u1, v1});
+        win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale),
+                               win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), 0xFFAA00AA);
+        // win->DrawList->AddRect(
+        //     win->ContentRegionRect.Min + (ImVec2{static_cast<float>(tile.x), static_cast<float>(tile.y)} *
+        //     m_mapScale), win->ContentRegionRect.Min +
+        //         (ImVec2{static_cast<float>(tile.x + tile.tileWidth), static_cast<float>(tile.y + tile.tileHeight)} *
+        //          m_mapScale),
+        //     0xFFFFFFFF);
       }
       if (ImGui::IsWindowHovered()) {
         ImVec2 cursorPos = ImGui::GetIO().MousePos;
@@ -1070,41 +1118,30 @@ void Project::drawMapEditor() {
           }
         }
         ImGui::EndGroup();
-        ImGui::BeginGroup();
-        {
-          for (int z = 0; z < 6; ++z) {
-            int tileCellIndex = (z * m_map->height + m_tileCellY) * m_map->width + m_tileCellX;
-            if (tileCellIndex < m_map->data.size()) {
-              int tileId = m_map->data[tileCellIndex];
-              if (MapRenderer::isAutoTile(tileId)) {
-                continue;
-              }
-
-              int setNumber = 0;
-              if (MapRenderer::isTileA5(tileId)) {
-                setNumber = 4;
-              } else {
-                setNumber = 5 + floor(tileId / 256);
-              }
-
-              int w = 48;
-              int h = 48;
-              int sx = (static_cast<int>(floor(tileId / 128)) % 2 * 8 + tileId % 8) * 2;
-              int sy = (static_cast<int>(floor(tileId % 128 / 8)) % 16) * h;
-              if (tileset->tilesetNames[setNumber].empty()) {
-                continue;
-              }
-
-              Texture tex = m_resourceManager->loadTilesetImage(tileset->tilesetNames[setNumber]);
-              if (tex) {
-                ImGui::Image(tex.get(), ImVec2{48, 48},
-                             {static_cast<float>(sx) / tex.width(), static_cast<float>(sy) / tex.height()},
-                             {static_cast<float>(sx + w) / tex.width(), static_cast<float>(sy + h) / tex.height()});
-              }
-            }
-          }
-        }
-        ImGui::EndGroup();
+        // ImGui::BeginGroup();
+        // {
+        //   ImGuiWindow* win = ImGui::GetCurrentWindow();
+        //   for (int z = 0; z < 6; ++z) {
+        //     int tileId = m_mapRenderer.tileId(m_tileCellX, m_tileCellY, z);
+        //     if (MapRenderer::isAutoTile(tileId)) {
+        //       auto tileRects = m_mapRenderer.getTileRect(tileId, m_tileCellX, m_tileCellY);
+        //
+        //       for (auto tile : tileRects) {
+        //         Texture tex = m_resourceManager->loadTilesetImage(tileset->tilesetNames[tile.setNum]);
+        //         if (tex) {
+        //           win->DrawList->AddImage(
+        //               tex.get(), win->ContentRegionRect.Min + ImVec2{tile.x * tile.tileWidth, tile.y *
+        //               tile.tileHeight}, win->ContentRegionRect.Min + ImVec2{(tile.x * tile.tileWidth) +
+        //               tile.tileWidth,
+        //                                                   (tile.y * tile.tileHeight) + tile.tileHeight},
+        //               {tile.u / tex.width(), tile.v / tex.height()},
+        //               {(tile.u + tile.tileWidth) / tex.width(), (tile.v + tile.tileHeight) / tex.height()});
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
+        // ImGui::EndGroup();
       }
     }
     ImGui::End();

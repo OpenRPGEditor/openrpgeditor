@@ -11,6 +11,11 @@ struct DBSystemTab : IDBEditorTab {
   [[nodiscard]] std::string& element(int id) { return m_system.elements[id]; }
   [[nodiscard]] const std::string& element(int id) const { return m_system.elements[id]; }
 
+  [[nodiscard]] std::vector<std::string>& elements() { return m_system.elements; }
+  [[nodiscard]] const std::vector<std::string>& elements() const { return m_system.elements; }
+
+  [[nodiscard]] size_t elementsCount() const { return m_system.elements.size(); }
+
   [[nodiscard]] std::string& variable(int id) { return m_system.variables[id]; }
   [[nodiscard]] const std::string& variable(int id) const { return m_system.variables[id]; }
 

@@ -44,6 +44,12 @@ struct DatabaseEditor {
   [[nodiscard]] std::string& element(int id) { return m_system.element(id); }
   [[nodiscard]] const std::string& element(int id) const { return m_system.element(id); }
 
+  [[nodiscard]] std::vector<std::string>& elements(int id) { return m_system.elements(); }
+  [[nodiscard]] const std::vector<std::string>& elements(int id) const { return m_system.elements(); }
+
+  [[nodiscard]] size_t elementsCount() const { return m_system.elementsCount(); }
+
+
   [[nodiscard]] State* state(int id) { return m_states.state(id); }
   [[nodiscard]] const State* state(int id) const { return m_states.state(id); }
 

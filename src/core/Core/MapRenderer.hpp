@@ -12,40 +12,29 @@ class Map;
 class Tileset;
 struct SDL_Texture;
 
-constexpr int FloorAutoTileTable[48][4][2]{
-    {{2, 4}, {1, 4}, {2, 3}, {1, 3}}, {{2, 0}, {1, 4}, {2, 3}, {1, 3}}, {{2, 4}, {3, 0}, {2, 3}, {1, 3}},
-    {{2, 0}, {3, 0}, {2, 3}, {1, 3}}, {{2, 4}, {1, 4}, {2, 3}, {3, 1}}, {{2, 0}, {1, 4}, {2, 3}, {3, 1}},
-    {{2, 4}, {3, 0}, {2, 3}, {3, 1}}, {{2, 0}, {3, 0}, {2, 3}, {3, 1}}, {{2, 4}, {1, 4}, {2, 1}, {1, 3}},
-    {{2, 0}, {1, 4}, {2, 1}, {1, 3}}, {{2, 4}, {3, 0}, {2, 1}, {1, 3}}, {{2, 0}, {3, 0}, {2, 1}, {1, 3}},
-    {{2, 4}, {1, 4}, {2, 1}, {3, 1}}, {{2, 0}, {1, 4}, {2, 1}, {3, 1}}, {{2, 4}, {3, 0}, {2, 1}, {3, 1}},
-    {{2, 0}, {3, 0}, {2, 1}, {3, 1}}, {{0, 4}, {1, 4}, {0, 3}, {1, 3}}, {{0, 4}, {3, 0}, {0, 3}, {1, 3}},
-    {{0, 4}, {1, 4}, {0, 3}, {3, 1}}, {{0, 4}, {3, 0}, {0, 3}, {3, 1}}, {{2, 2}, {1, 2}, {2, 3}, {1, 3}},
-    {{2, 2}, {1, 2}, {2, 3}, {3, 1}}, {{2, 2}, {1, 2}, {2, 1}, {1, 3}}, {{2, 2}, {1, 2}, {2, 1}, {3, 1}},
-    {{2, 4}, {3, 4}, {2, 3}, {3, 3}}, {{2, 4}, {3, 4}, {2, 1}, {3, 3}}, {{2, 0}, {3, 4}, {2, 3}, {3, 3}},
-    {{2, 0}, {3, 4}, {2, 1}, {3, 3}}, {{2, 4}, {1, 4}, {2, 5}, {1, 5}}, {{2, 0}, {1, 4}, {2, 5}, {1, 5}},
-    {{2, 4}, {3, 0}, {2, 5}, {1, 5}}, {{2, 0}, {3, 0}, {2, 5}, {1, 5}}, {{0, 4}, {3, 4}, {0, 3}, {3, 3}},
-    {{2, 2}, {1, 2}, {2, 5}, {1, 5}}, {{0, 2}, {1, 2}, {0, 3}, {1, 3}}, {{0, 2}, {1, 2}, {0, 3}, {3, 1}},
-    {{2, 2}, {3, 2}, {2, 3}, {3, 3}}, {{2, 2}, {3, 2}, {2, 1}, {3, 3}}, {{2, 4}, {3, 4}, {2, 5}, {3, 5}},
-    {{2, 0}, {3, 4}, {2, 5}, {3, 5}}, {{0, 4}, {1, 4}, {0, 5}, {1, 5}}, {{0, 4}, {3, 0}, {0, 5}, {1, 5}},
-    {{0, 2}, {3, 2}, {0, 3}, {3, 3}}, {{0, 2}, {1, 2}, {0, 5}, {1, 5}}, {{0, 4}, {3, 4}, {0, 5}, {3, 5}},
-    {{2, 2}, {3, 2}, {2, 5}, {3, 5}}, {{0, 2}, {3, 2}, {0, 5}, {3, 5}}, {{0, 0}, {1, 0}, {0, 1}, {1, 1}},
+struct TileRect {
+  int setNum;
+  int u;
+  int v;
+  int x;
+  int y;
+  int tileWidth;
+  int tileHeight;
+  int animX;
+  int animY;
 };
-
-constexpr int WallAutoTileTable[16][4][2]{
-    {{2, 2}, {1, 2}, {2, 1}, {1, 1}}, {{0, 2}, {1, 2}, {0, 1}, {1, 1}}, {{2, 0}, {1, 0}, {2, 1}, {1, 1}},
-    {{0, 0}, {1, 0}, {0, 1}, {1, 1}}, {{2, 2}, {3, 2}, {2, 1}, {3, 1}}, {{0, 2}, {3, 2}, {0, 1}, {3, 1}},
-    {{2, 0}, {3, 0}, {2, 1}, {3, 1}}, {{0, 0}, {3, 0}, {0, 1}, {3, 1}}, {{2, 2}, {1, 2}, {2, 3}, {1, 3}},
-    {{0, 2}, {1, 2}, {0, 3}, {1, 3}}, {{2, 0}, {1, 0}, {2, 3}, {1, 3}}, {{0, 0}, {1, 0}, {0, 3}, {1, 3}},
-    {{2, 2}, {3, 2}, {2, 3}, {3, 3}}, {{0, 2}, {3, 2}, {0, 3}, {3, 3}}, {{2, 0}, {3, 0}, {2, 3}, {3, 3}},
-    {{0, 0}, {3, 0}, {0, 3}, {3, 3}}};
-
-constexpr int WaterfallAutoTileTable[4][4][2]{{{2, 0}, {1, 0}, {2, 1}, {1, 1}},
-                                              {{0, 0}, {1, 0}, {0, 1}, {1, 1}},
-                                              {{2, 0}, {3, 0}, {2, 1}, {3, 1}},
-                                              {{0, 0}, {3, 0}, {0, 1}, {3, 1}}};
 
 class MapRenderer {
 public:
+  // struct MapLayer {
+  //   SDL_Texture* bitmap;
+  //
+  //   std::vector<TileRect> rects;
+  //   void addRect(float u, float v, float x, float y, int tileWidth, int tileHeight) {
+  //     rects.push_back({u, v, x, y, tileWidth, tileHeight});
+  //   }
+  // };
+
   static constexpr int TILE_ID_B = 0;
   static constexpr int TILE_ID_C = 256;
   static constexpr int TILE_ID_D = 512;
@@ -57,6 +46,7 @@ public:
   static constexpr int TILE_ID_A4 = 5888;
   static constexpr int TILE_ID_MAX = 8192;
 
+  MapRenderer();
   void setMap(const Map* map, const Tileset* tilest, int tileWidth = 48, int tileHeight = 48);
 
   void update();
@@ -166,26 +156,28 @@ public:
   }
 
 #endif
-  SDL_Texture* getLowerBitmap() const {return m_lowerBitmap; }
+  SDL_Texture* getLowerBitmap() const { return m_lowerBitmap; }
   SDL_Texture* getUpperBitmap() const { return m_upperBitmap; }
+
+
+  void getTileRect(std::vector<TileRect>& layer, int tileId, int dx, int dy);
+  std::array<Texture, 9> m_tilesetTextures;
 
 private:
   bool m_frameUpdated = true;
-  void drawTile(SDL_Texture* bitmap, int tileId, int dx, int dy);
-  void drawAutoTile(SDL_Texture* bitmap, int tileId, int dx, int dy);
-  void drawNormalTile(SDL_Texture* bitmap, int tileId, int dx, int dy);
+  void drawTile(std::vector<TileRect>& bitmap, int tileId, int dx, int dy);
+  void drawAutoTile(std::vector<TileRect>& layer, int tileId, int dx, int dy);
+  void drawNormalTile(std::vector<TileRect>& layer, int tileId, int dx, int dy) const;
   void beginBlit(SDL_Texture* source);
-  void blitImage(SDL_Texture* bitmap, int sx, int sy, int sw, int sh, int dx, int dy, int dw,
-                 int dh);
+  void blitImage(SDL_Texture* bitmap, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh);
   void endBlit();
   void clearRect(SDL_Texture* clr, int x, int y, int w, int h);
 
   const Map* m_map = nullptr;
   const Tileset* m_tileset = nullptr;
-  std::array<Texture, 9> m_tilesetTextures;
   bool m_isValid = false;
-  int m_tileWidth;
-  int m_tileHeight;
+  int m_tileWidth{48};
+  int m_tileHeight{48};
   SDL_Texture* m_lowerBitmap = nullptr;
   SDL_Texture* m_upperBitmap = nullptr;
   SDL_Texture* m_oldTarget = nullptr;

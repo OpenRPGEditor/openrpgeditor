@@ -33,7 +33,7 @@ void DPIHandler::set_render_scale([[maybe_unused]] SDL_Renderer* renderer) {
 
 void DPIHandler::set_global_font_scaling([[maybe_unused]] ImGuiIO* io) {
   APP_PROFILE_FUNCTION();
-  // do nothing
+  //io->FontGlobalScale = get_scale();
 }
 
 }  // namespace App

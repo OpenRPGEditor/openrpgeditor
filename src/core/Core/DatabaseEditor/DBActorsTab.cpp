@@ -305,8 +305,6 @@ void DBActorsTab::draw() {
     }
   }
 
-  // The following code needs filtering from classes to properly display their combobox contents
-#if 1
   if (m_showEquipEdit) {
     if (ImGui::Begin("Select Equipment...", &m_showEquipEdit,
                      ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_Modal |
@@ -403,5 +401,4 @@ void DBActorsTab::draw() {
       ImGui::End();
     }
   }
-#endif
 }

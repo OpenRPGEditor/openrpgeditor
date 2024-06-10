@@ -1,7 +1,6 @@
 #include "Window.hpp"
 
 #include <SDL2/SDL.h>
-
 #include "Core/DPIHandler.hpp"
 #include "Core/Debug/Instrumentor.hpp"
 #include "Core/Log.hpp"
@@ -89,15 +88,6 @@ int Window::getPositionY() const {
 }
 
 void Window::setWindowPosition(int x, int y) {
-  SDL_DisplayMode dm;
-  SDL_GetCurrentDisplayMode(0, &dm);
-  if (x < 0 || x + getWidth() > dm.w) {
-    x = SDL_WINDOWPOS_CENTERED;
-  }
-  if (y < 0 || y + getHeight() > dm.h) {
-    y = SDL_WINDOWPOS_CENTERED;
-  }
-
   SDL_SetWindowPosition(m_window, x, y);
 }
 

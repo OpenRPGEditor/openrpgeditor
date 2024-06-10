@@ -29,4 +29,5 @@ private:
   CheckerboardTexture m_buttonBack{128, 128, CellSizes::_64, 255, 200};
   std::optional<CharacterSheet> m_charaterSheet;
   TraitsEditor m_traitsEditor;
+
 };

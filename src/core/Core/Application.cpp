@@ -69,8 +69,8 @@ ExitStatus App::Application::run() {
 
   Settings settings;
   if (settings.load(user_config_path + "config.json")) {
-    m_window->setWindowPosition(settings.window.x, settings.window.y);
     m_window->setWindowSize(settings.window.w, settings.window.h);
+    m_window->setWindowPosition(settings.window.x, settings.window.y);
     if (settings.window.maximized) {
       m_window->setMaximized();
     }
@@ -83,7 +83,8 @@ ExitStatus App::Application::run() {
 
   // ImGUI font
 
-  const float font_size{18.0F};
+  const float font_scaling_factor{DPIHandler::get_scale()};
+  const float font_size{14.0F * font_scaling_factor};
   const std::string font_path{Resources::font_path("NotoSans-SemiBold.ttf").generic_string()};
   const std::string font_path_math{Resources::font_path("JetBrainsMono-SemiBold.ttf").generic_string()};
   const std::string font_path_jp{Resources::font_path("NotoSansJP-SemiBold.ttf").generic_string()};
@@ -139,22 +140,22 @@ ExitStatus App::Application::run() {
   auto& style = ImGui::GetStyle();
   style = {}; // Reset sizes
   style.WindowPadding = ImVec2(4, 4);
-  style.WindowRounding = 5.0f;
+  style.WindowRounding = 2.5f;
   style.FrameBorderSize = 1.f;
-  style.FramePadding = ImVec2(5, 5);
-  style.FrameRounding = 4.0f;
-  style.ItemSpacing = ImVec2(12, 8);
-  style.ItemInnerSpacing = ImVec2(8, 6);
-  style.IndentSpacing = 25.0f;
-  style.ScrollbarSize = 30.0f;
+  style.FramePadding = ImVec2(4, 4);
+  style.FrameRounding = 2.0f;
+  style.ItemSpacing = ImVec2(6, 4);
+  style.ItemInnerSpacing = ImVec2(4, 3);
+  style.IndentSpacing = 12.5f;
+  style.ScrollbarSize = 15.0f;
   style.ScrollbarRounding = 9.0f;
   style.GrabMinSize = 5.0f;
   style.GrabRounding = 3.0f;
   style.PopupBorderSize = 1.f;
   style.PopupRounding = 7.0;
   style.TabBorderSize = 1.f;
-  style.TabRounding = 3.f;
-  style.DockingSeparatorSize = 6.f;
+  style.TabRounding = 1.5f;
+  style.DockingSeparatorSize = 3.f;
   style.CellPadding = {1.f, 3.8f};
 
   auto* colors = style.Colors;
@@ -206,7 +207,7 @@ ExitStatus App::Application::run() {
   colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
   colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
   colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
-  // style.ScaleAllSizes(font_scaling_factor);
+  style.ScaleAllSizes(font_scaling_factor);
   //  Setup Platform/Renderer backends
   ImGui_ImplSDL2_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
   ImGui_ImplSDLRenderer2_Init(m_window->getNativeRenderer());
@@ -292,13 +293,13 @@ void Application::on_event(const SDL_WindowEvent& event) {
       Settings::instance()->window.w = event.data1;
       Settings::instance()->window.h = event.data2;
     }
+    Settings::instance()->window.maximized = SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED;
     break;
   }
   case SDL_WINDOWEVENT_MOVED: {
-    if (!(SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED)) {
-      Settings::instance()->window.x = event.data1;
-      Settings::instance()->window.y = event.data2;
-    }
+    Settings::instance()->window.x = event.data1;
+    Settings::instance()->window.y = event.data2;
+    Settings::instance()->window.maximized = SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED;
     break;
   }
   case SDL_WINDOWEVENT_MAXIMIZED: {

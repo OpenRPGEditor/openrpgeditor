@@ -2,11 +2,9 @@
 
 #include "ImGuiFileDialog.h"
 #include "Settings.hpp"
-#include "Core/ResourceManager.hpp"
 
 #include "Core/Log.hpp"
 #include "Core/Application.hpp"
-#include "Core/ImGuiUtils.hpp"
 #include "Core/Utils.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"

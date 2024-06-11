@@ -61,5 +61,16 @@ public:
     return std::move(ret);
   }
 
+  Event* event(int id) {
+    auto it = std::find_if(events.begin(), events.end(), [&id](const auto& ev) {
+      return ev && ev->id == id;
+    });
+
+    if (it != events.end()) {
+      return &it->value();
+    }
+    return nullptr;
+  }
+
 private:
 };

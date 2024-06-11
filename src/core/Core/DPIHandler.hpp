@@ -20,6 +20,8 @@ class DPIHandler {
 
   static void set_render_scale(SDL_Renderer* renderer);
   static void set_global_font_scaling(ImGuiIO* io);
+
+  static float scale_value(float v) { return v * get_scale(); }
 };
 
 }  // namespace App

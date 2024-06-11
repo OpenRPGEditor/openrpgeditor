@@ -178,8 +178,7 @@ void DBActorsTab::draw() {
           {
             ImGui::SeparatorText("Initial Equipment");
             if (ImGui::BeginTable("##orpg_actors_actor_init_equip", 2,
-                                  ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchProp |
-                                      ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY |
+                                  ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY |
                                       ImGuiTableFlags_ScrollY,
                                   ImVec2{ImGui::GetContentRegionMax().x - 15, ImGui::GetContentRegionAvail().y - 16})) {
 

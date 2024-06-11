@@ -9,8 +9,7 @@
 #include <string_view>
 #include <string>
 #include "Core/ResourceManager.hpp"
-#include "Core/MapRenderer.hpp"
-#include "Core/Texture.hpp"
+#include "Core/EventEditor.hpp"
 
 #include "Database/Actors.hpp"
 #include "Database/Classes.hpp"
@@ -77,6 +76,9 @@ public:
     // TODO: Fully implement
     m_editMode = EditMode::Event;
   }
+
+  CommonEvent* commentEvent(int id) { return m_commonEvents.event(id); }
+  const CommonEvent* commentEvent(int id) const { return m_commonEvents.event(id); }
 
   void setDrawTool(DrawTool tool) { m_drawTool = tool; }
   DrawTool drawTool() const { return m_drawTool; }

@@ -13,6 +13,7 @@ void MapEditor::setMap(Map* map, MapInfo* info) {
     m_mapRenderer.setMap(map, m_parent->tileset(map->tilesetId));
   }
 
+  m_eventEditors.clear();
   m_map = map;
   m_mapInfo = info;
   m_lowerLayer.clear();
@@ -33,6 +34,8 @@ inline int roundUp(int numToRound, int multiple) {
 inline int alignCoord(int value, int size) { return roundUp(value - (value % size), size); }
 
 void MapEditor::draw() {
+  std::erase_if(m_eventEditors, [](EventEditor& editor) { return !editor.draw(); });
+
   static float timer = 0.5f;
   if (timer <= 0.f) {
     timer = 0.5f;
@@ -60,7 +63,7 @@ void MapEditor::draw() {
       }
       m_mapInfo->scrollX = ImGui::GetScrollX();
       m_mapInfo->scrollY = ImGui::GetScrollY();
-      auto events = m_map->getSortedBy();
+      auto sortedEvents = m_map->getSortedBy();
       // m_mapRenderer.update();
       const Tileset* tileset = m_parent->tileset(m_map->tilesetId);
 
@@ -160,55 +163,6 @@ void MapEditor::draw() {
                                0x7f0a0a0a, 3.f);
       }
 #endif
-      for (auto& event : events) {
-        if (event) {
-          auto eventX = static_cast<float>(event->x * 48) * m_mapScale;
-          auto eventY = static_cast<float>(event->y * 48) * m_mapScale;
-          eventX += win->ContentRegionRect.Min.x;
-          eventY += win->ContentRegionRect.Min.y;
-          float eventS = 48 * m_mapScale;
-          ImVec2 evMin = ImVec2{eventX, eventY};
-          ImVec2 evMax = ImVec2{(eventX + eventS), (eventY + eventS)};
-          win->DrawList->AddRectFilled(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0x7f000000);
-          win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0xFF000000, 0, 0, 5.f);
-          win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0xFFFFFFFF, 0, 0, 3.f);
-
-          if (!event->pages[0].image.characterName.empty() && event->pages[0].image.tileId == 0) {
-            if (event->pages[0].stepAnime) {
-              event->pages[0].image.pattern =
-                  std::clamp<int>(std::abs(std::remainder(ImGui::GetTime() * 8, 3 * 2)), 0, 3);
-            }
-
-            // TODO: This is still wrong
-            Texture tex = ResourceManager::instance()->loadCharacterImage(event->pages[0].image.characterName);
-            const int CharacterSpriteWidth = tex.width() / 12;
-            const int CharacterSpriteHeight = tex.height() / 8;
-            const int CharacterAtlasWidth = tex.width() / 4;
-            const int CharacterAtlasHeight = tex.height() / 2;
-
-            const float charX = static_cast<float>(
-                (event->pages[0].image.characterIndex % (tex.width() / CharacterAtlasWidth)) * CharacterAtlasWidth);
-            const float charY = static_cast<float>(
-                (event->pages[0].image.characterIndex / (tex.width() / CharacterAtlasWidth)) * CharacterAtlasHeight);
-            const float patternOffset = static_cast<float>(event->pages[0].image.pattern * CharacterSpriteWidth);
-            const float directionOffset =
-                ((static_cast<float>(event->pages[0].image.direction - 2) / 2) * CharacterSpriteHeight);
-
-            float x1 = ((charX + patternOffset) /*+ (CharacterSpriteWidth / 5)*/);
-            float y1 = ((charY + directionOffset) /*+ (CharacterSpriteHeight / 4) */);
-            float x2 = (((charX + patternOffset) + CharacterSpriteWidth) /*- (CharacterSpriteWidth / 5) */);
-            float y2 = (((charY + directionOffset) + CharacterSpriteHeight) /*- (CharacterSpriteHeight / 4) */);
-
-            evMin.x -= ((static_cast<float>(CharacterSpriteWidth) - 48.f) / 2.f) * m_mapScale;
-            evMax.x += ((static_cast<float>(CharacterSpriteWidth) - 48.f) / 2.f) * m_mapScale;
-            evMin.y -= (static_cast<float>(CharacterSpriteHeight) - 48.f) * m_mapScale;
-            win->DrawList->AddImage(
-                tex.get(), evMin, evMax,
-                ImVec2{x1 / static_cast<float>(tex.width()), y1 / static_cast<float>(tex.height())},
-                ImVec2{x2 / static_cast<float>(tex.width()), y2 / static_cast<float>(tex.height())});
-          }
-        }
-      }
 
       if (ImGui::IsWindowHovered()) {
         ImVec2 cursorPos = ImGui::GetIO().MousePos;
@@ -251,6 +205,74 @@ void MapEditor::draw() {
       // win->DrawList->AddImage(m_mapRenderer.getUpperBitmap(), win->ContentRegionRect.Min,
       //                         win->ContentRegionRect.Min +
       //                             ImVec2{(m_map->width * 48) * m_mapScale, (m_map->height * 48) * m_mapScale});
+
+      for (auto& event : sortedEvents) {
+        if (event) {
+          ImGui::BeginGroup();
+          {
+            auto eventX = static_cast<float>(event->x * 48) * m_mapScale;
+            auto eventY = static_cast<float>(event->y * 48) * m_mapScale;
+            eventX += win->ContentRegionRect.Min.x;
+            eventY += win->ContentRegionRect.Min.y;
+            float eventS = 48 * m_mapScale;
+            ImVec2 evMin = ImVec2{eventX, eventY};
+            ImVec2 evMax = ImVec2{(eventX + eventS), (eventY + eventS)};
+            win->DrawList->AddRectFilled(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0x7f000000);
+            win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0xFF000000, 0, 0, 5.f);
+            win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0xFFFFFFFF, 0, 0, 3.f);
+
+            if (!event->pages[0].image.characterName.empty() && event->pages[0].image.tileId == 0) {
+              if (event->pages[0].stepAnime) {
+                event->pages[0].image.pattern =
+                    std::clamp<int>(std::abs(std::remainder(ImGui::GetTime() * 8, 3 * 2)), 0, 3);
+              }
+
+              // TODO: This is still wrong
+              Texture tex = ResourceManager::instance()->loadCharacterImage(event->pages[0].image.characterName);
+              const int CharacterSpriteWidth = tex.width() / 12;
+              const int CharacterSpriteHeight = tex.height() / 8;
+              const int CharacterAtlasWidth = tex.width() / 4;
+              const int CharacterAtlasHeight = tex.height() / 2;
+
+              const float charX = static_cast<float>(
+                  (event->pages[0].image.characterIndex % (tex.width() / CharacterAtlasWidth)) * CharacterAtlasWidth);
+              const float charY = static_cast<float>(
+                  (event->pages[0].image.characterIndex / (tex.width() / CharacterAtlasWidth)) * CharacterAtlasHeight);
+              const float patternOffset = static_cast<float>(event->pages[0].image.pattern * CharacterSpriteWidth);
+              const float directionOffset =
+                  ((static_cast<float>(event->pages[0].image.direction - 2) / 2) * CharacterSpriteHeight);
+
+              float x1 = ((charX + patternOffset) /*+ (CharacterSpriteWidth / 5)*/);
+              float y1 = ((charY + directionOffset) /*+ (CharacterSpriteHeight / 4) */);
+              float x2 = (((charX + patternOffset) + CharacterSpriteWidth) /*- (CharacterSpriteWidth / 5) */);
+              float y2 = (((charY + directionOffset) + CharacterSpriteHeight) /*- (CharacterSpriteHeight / 4) */);
+
+              evMin.x -= ((static_cast<float>(CharacterSpriteWidth) - 48.f) / 2.f) * m_mapScale;
+              evMax.x += ((static_cast<float>(CharacterSpriteWidth) - 48.f) / 2.f) * m_mapScale;
+              evMin.y -= (static_cast<float>(CharacterSpriteHeight) - 48.f) * m_mapScale;
+              win->DrawList->AddImage(
+                  tex.get(), evMin, evMax,
+                  ImVec2{x1 / static_cast<float>(tex.width()), y1 / static_cast<float>(tex.height())},
+                  ImVec2{x2 / static_cast<float>(tex.width()), y2 / static_cast<float>(tex.height())});
+
+            }
+            /* Check if event is selected */
+            if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+              if (m_tileCellX == event->x && m_tileCellY == event->y && event) {
+
+                auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(), [&event](const EventEditor& editor) {
+                  return event && editor.event()->id == event->id;
+                });
+                if (it == m_eventEditors.end()) {
+                  printf("Event selected!");
+                  m_eventEditors.emplace_back(m_parent, m_map->event(event->id));
+                }
+              }
+            }
+            ImGui::EndGroup();
+          }
+        }
+      }
     }
     ImGui::EndChild();
     ImGui::Text("Scale:");

@@ -18,6 +18,8 @@ add_library(
         Core/MapListView.hpp Core/MapListView.cpp
         Core/EventListView.hpp Core/EventListView.cpp
         Core/MapEditor.hpp Core/MapEditor.cpp
+        Core/EventEditor.cpp Core/EventEditor.cpp
+        Core/EventEditor/EVPage.hpp Core/EventEditor/EVPage.cpp
         Core/DatabaseEditor.cpp Core/DatabaseEditor.hpp
         Core/DatabaseEditor/DBActorsTab.hpp Core/DatabaseEditor/DBActorsTab.cpp
         Core/DatabaseEditor/DBClassesTab.hpp Core/DatabaseEditor/DBClassesTab.cpp

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "MapRenderer.hpp"
+#include "Core/MapRenderer.hpp"
+#include "Core/EventEditor.hpp"
 
 struct Project;
 struct Map;
@@ -31,4 +32,5 @@ private:
   MapRenderer m_mapRenderer;
   std::vector<TileRect> m_lowerLayer;
   std::vector<TileRect> m_upperLayer;
+  std::vector<EventEditor> m_eventEditors;
 };

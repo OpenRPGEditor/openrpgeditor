@@ -205,7 +205,7 @@ struct ConditionalBranchCommand : IEventCommand {
       return std::string(indent ? *indent * 4 : 0, ' ') + "◇If " + "sw(" + std::to_string(globalSwitch.switchIdx) +
              ") is " + (globalSwitch.checkIfOn == 0 ? "OFF" : "ON");
     }
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇ Condition TBD ";
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇ &push-color=255,0,255;Condition&pop-color; &push-color=0,255,0;TBD&pop-color;";
   }
 };
 

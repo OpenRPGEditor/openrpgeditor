@@ -697,6 +697,7 @@ void Project::drawMapEditor() {
 
       ImGuiWindow* win = ImGui::GetCurrentWindow();
       ImGui::Dummy(ImVec2{m_map->width * (48 * m_mapScale), m_map->height * (48 * m_mapScale)});
+#if 0
       if (m_lowerLayer.empty()) {
         m_lowerLayer.clear();
         m_upperLayer.clear();
@@ -774,7 +775,7 @@ void Project::drawMapEditor() {
         //          m_mapScale),
         //     0xFFFFFFFF);
       }
-
+#endif
 #if 0
       for (int y = 0; y <= (m_map->height * 48) * m_mapScale; y += 48 * m_mapScale) {
         win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)},

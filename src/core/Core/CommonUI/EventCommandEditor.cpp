@@ -16,8 +16,10 @@ void EventCommandEditor::draw() {
     ImGui::PushFont(App::APP->getMonoFont());
     static int item_current_idx = 0; // Here we store our selection data as an index.
     // Custom size: use all width, 5 items tall
-    if (ImGui::BeginListBox("##commonevent_code_contents", ImVec2(0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)))) {
-      if (ImGui::BeginChild("##orpg_commonevents_editor_commonevent_list", {}, 0, ImGuiWindowFlags_HorizontalScrollbar)) {
+    if (ImGui::BeginListBox("##commonevent_code_contents",
+                            ImVec2(0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)))) {
+      ImGui::BeginChild("##orpg_commonevents_editor_commonevent_list", {}, 0, ImGuiWindowFlags_HorizontalScrollbar);
+      {
         if (m_commands) {
           for (int n = 0; n < m_commands->size(); n++) {
             const bool is_selected = (item_current_idx == n);
@@ -57,8 +59,8 @@ void EventCommandEditor::draw() {
               ImGui::SetItemDefaultFocus();
           }
         }
-        ImGui::EndChild();
       }
+      ImGui::EndChild();
       ImGui::EndListBox();
     }
     ImGui::PopFont();

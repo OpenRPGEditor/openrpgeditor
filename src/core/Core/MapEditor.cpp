@@ -257,20 +257,19 @@ void MapEditor::draw() {
 
             }
             /* Check if event is selected */
-            if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+            if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered()) {
               if (m_tileCellX == event->x && m_tileCellY == event->y && event) {
 
                 auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(), [&event](const EventEditor& editor) {
                   return event && editor.event()->id == event->id;
                 });
                 if (it == m_eventEditors.end()) {
-                  printf("Event selected!");
                   m_eventEditors.emplace_back(m_parent, m_map->event(event->id));
                 }
               }
             }
-            ImGui::EndGroup();
           }
+          ImGui::EndGroup();
         }
       }
     }
@@ -565,4 +564,8 @@ void MapEditor::draw() {
     }
     ImGui::End();
   }
+
+  // if (ImGui::BeginPopupContextWindow()) {
+  //   if (ImGui::BeginPopupContextItem(""))
+  // }
 }

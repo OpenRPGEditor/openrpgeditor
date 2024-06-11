@@ -75,7 +75,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       canceled->indent = parser[index].value("indent", std::optional<int>{});
       break;
     }
-    case EventCode::End_de_ShowChoices: {
+    case EventCode::End_del_ShowChoices: {
       ShowChoicesEndCommand* canceled = dynamic_cast<ShowChoicesEndCommand*>(ret.emplace_back(new ShowChoicesEndCommand()).get());
       canceled->indent = parser[index].value("indent", std::optional<int>{});
       break;
@@ -799,14 +799,14 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       parameters[0].get_to(end->mode);
       break;
     }
-    case EventCode::Play_SE_de_Movement: {
+    case EventCode::Play_SE_del_Movement: {
       MovementPlaySECommand* end =
           dynamic_cast<MovementPlaySECommand*>(ret.emplace_back(new MovementPlaySECommand()).get());
       end->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(end->se);
       break;
     }
-    case EventCode::Script_de_Movement: {
+    case EventCode::Script_del_Movement: {
       MovementScriptCommand* end =
           dynamic_cast<MovementScriptCommand*>(ret.emplace_back(new MovementScriptCommand()).get());
       end->indent = parser[index].value("indent", std::optional<int>{});

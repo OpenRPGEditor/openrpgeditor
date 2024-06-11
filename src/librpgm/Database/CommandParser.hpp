@@ -78,7 +78,7 @@ struct WhenCancelCommand : IEventCommand {
 
 struct ShowChoicesEndCommand : IEventCommand {
   ~ShowChoicesEndCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::End_de_ShowChoices; }
+  [[nodiscard]] EventCode code() const override { return EventCode::End_del_ShowChoices; }
 };
 
 struct InputNumberCommand : IEventCommand {
@@ -752,13 +752,13 @@ struct MovementChangeBlendModeCommand : IEventCommand {
 
 struct MovementPlaySECommand : IEventCommand {
   ~MovementPlaySECommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Play_SE_de_Movement; }
+  [[nodiscard]] EventCode code() const override { return EventCode::Play_SE_del_Movement; }
   Audio se;
 };
 
 struct MovementScriptCommand : IEventCommand {
   ~MovementScriptCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Script_de_Movement; }
+  [[nodiscard]] EventCode code() const override { return EventCode::Script_del_Movement; }
   std::string script;
 };
 

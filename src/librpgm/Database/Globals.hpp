@@ -386,7 +386,7 @@ enum class EventCode : int {
   Show_Choices = 102,
   When_Selected = 402, // Each choice gets a branch as defined here
   When_Cancel = 403,   // Player cancelled their selection
-  End_de_ShowChoices = 404,
+  End_del_ShowChoices = 404,
 
   Input_Number = 103,
   Select_Item = 104,
@@ -557,8 +557,8 @@ enum class EventCode : int {
   Change_Image = 41,
   Change_Opacity = 42,
   Change_Blend_Mode = 43,
-  Play_SE_de_Movement = 44,
-  Script_de_Movement = 45,
+  Play_SE_del_Movement = 44,
+  Script_del_Movement = 45,
 };
 
 enum class QuantityChangeOp {

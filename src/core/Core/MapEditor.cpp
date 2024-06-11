@@ -210,6 +210,8 @@ void MapEditor::draw() {
         if (event) {
           ImGui::BeginGroup();
           {
+            bool isHovered = event->x == m_tileCellX && event->y == m_tileCellY;
+
             auto eventX = static_cast<float>(event->x * 48) * m_mapScale;
             auto eventY = static_cast<float>(event->y * 48) * m_mapScale;
             eventX += win->ContentRegionRect.Min.x;
@@ -218,8 +220,10 @@ void MapEditor::draw() {
             ImVec2 evMin = ImVec2{eventX, eventY};
             ImVec2 evMax = ImVec2{(eventX + eventS), (eventY + eventS)};
             win->DrawList->AddRectFilled(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0x7f000000);
-            win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0xFF000000, 0, 0, 5.f);
-            win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0xFFFFFFFF, 0, 0, 3.f);
+            win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f},
+                                   isHovered ? 0xFFFFFF00 : 0xFF000000, 0, 0, 5.f);
+            win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f},
+                                   isHovered ? 0xFF00FFFF : 0xFFFFFFFF, 0, 0, 3.f);
 
             if (!event->pages[0].image.characterName.empty() && event->pages[0].image.tileId == 0) {
               if (event->pages[0].stepAnime) {
@@ -254,19 +258,42 @@ void MapEditor::draw() {
                   tex.get(), evMin, evMax,
                   ImVec2{x1 / static_cast<float>(tex.width()), y1 / static_cast<float>(tex.height())},
                   ImVec2{x2 / static_cast<float>(tex.width()), y2 / static_cast<float>(tex.height())});
-
             }
             /* Check if event is selected */
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered()) {
               if (m_tileCellX == event->x && m_tileCellY == event->y && event) {
 
-                auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(), [&event](const EventEditor& editor) {
-                  return event && editor.event()->id == event->id;
-                });
+                auto it =
+                    std::find_if(m_eventEditors.begin(), m_eventEditors.end(), [&event](const EventEditor& editor) {
+                      return event && editor.event()->id == event->id;
+                    });
                 if (it == m_eventEditors.end()) {
                   m_eventEditors.emplace_back(m_parent, m_map->event(event->id));
                 }
               }
+            } else if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered()) {
+              if (isHovered && m_selectedEvent == nullptr) {
+                m_selectedEvent = m_map->event(event->id);
+              }
+              if (m_selectedEvent != nullptr) {
+                /* For now we'll prevent events from occupying the same tile */
+                /* TODO(phil): Implement some way to sort through events on the same tile */
+                int oldX = m_selectedEvent->x;
+                int oldY = m_selectedEvent->y;
+                auto it = std::find_if(m_map->events.begin(), m_map->events.end(), [&](const std::optional<Event>& e) {
+                  return e->x == m_tileCellX && e->y == m_tileCellY && &e.value() != m_selectedEvent;
+                });
+
+                m_selectedEvent->x = m_tileCellX;
+                m_selectedEvent->y = m_tileCellY;
+
+                if (it != m_map->events.end()) {
+                  m_selectedEvent->x = oldX;
+                  m_selectedEvent->y = oldY;
+                }
+              }
+            } else if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
+              m_selectedEvent = nullptr;
             }
           }
           ImGui::EndGroup();

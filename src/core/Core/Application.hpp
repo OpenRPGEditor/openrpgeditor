@@ -31,10 +31,10 @@ public:
   ExitStatus run();
   void stop();
 
-  void on_event(const SDL_WindowEvent& event);
-  void on_minimize();
-  void on_shown();
-  void on_close();
+  void onEvent(const SDL_WindowEvent& event);
+  void onMinimize();
+  void onShown();
+  void onClose();
 
   const std::unique_ptr<Window>& getWindow() const { return m_window; }
 

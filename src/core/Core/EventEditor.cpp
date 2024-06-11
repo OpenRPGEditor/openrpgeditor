@@ -26,6 +26,7 @@ void EventEditor::fixupPages() {
 bool EventEditor::draw() {
   if (m_event) {
     std::string title = std::format("Event {} - ID {}", m_event->name, m_event->id);
+    ImGui::SetNextWindowSize(ImVec2{640, 480} * App::DPIHandler::get_scale(), ImGuiCond_Once);
     if (ImGui::Begin(title.c_str(), &m_isOpen)) {
       ImGui::BeginGroup();
       {

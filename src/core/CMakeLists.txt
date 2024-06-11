@@ -13,7 +13,11 @@ add_library(
         Core/ResourceManager.hpp Core/ResourceManager.cpp
         Core/Texture.hpp Core/Texture.cpp
         Core/ImGuiUtils.hpp Core/ImGuiUtils.cpp
+        Core/TilesetPicker.hpp Core/TilesetPicker.cpp
         Core/MapRenderer.hpp Core/MapRenderer.cpp
+        Core/MapListView.hpp Core/MapListView.cpp
+        Core/EventListView.hpp Core/EventListView.cpp
+        Core/MapEditor.hpp Core/MapEditor.cpp
         Core/DatabaseEditor.cpp Core/DatabaseEditor.hpp
         Core/DatabaseEditor/DBActorsTab.hpp Core/DatabaseEditor/DBActorsTab.cpp
         Core/DatabaseEditor/DBClassesTab.hpp Core/DatabaseEditor/DBClassesTab.cpp

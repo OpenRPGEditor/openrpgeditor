@@ -1,6 +1,11 @@
 #pragma once
 
 #include "DatabaseEditor.hpp"
+#include "EventListView.hpp"
+#include "MapEditor.hpp"
+#include "MapListView.hpp"
+#include "TilesetPicker.hpp"
+
 #include <string_view>
 #include <string>
 #include "Core/ResourceManager.hpp"
@@ -37,6 +42,8 @@ enum class DrawTool {
 
 class Project {
 public:
+  Project() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this) {}
+
   bool load(std::string_view filePath, std::string_view basePath);
   bool close(bool save = false);
   void setupDocking();
@@ -74,16 +81,36 @@ public:
   void setDrawTool(DrawTool tool) { m_drawTool = tool; }
   DrawTool drawTool() const { return m_drawTool; }
 
+  MapInfo* currentMapInfo() { return m_mapListView.currentMapInfo(); }
+  const MapInfo* currentMapInfo() const { return m_mapListView.currentMapInfo(); }
+
+  Tileset* tileset(int id) { return m_tilesets.tileset(id); }
+  const Tileset* tileset(int id) const { return m_tilesets.tileset(id); }
+
+  void setMap(MapInfo& in);
+
+  Map* currentMap() {
+    if (m_map) {
+      return &m_map.value();
+    }
+    return nullptr;
+  }
+
+  const Map* currentMap() const {
+    if (m_map) {
+      return &m_map.value();
+    }
+    return nullptr;
+  }
+
 private:
   void drawMenu();
   void drawFileDialog();
-  void drawTilesets();
-  void drawEventList();
-  void doMapSelection(MapInfo& in);
-  void drawMapTree();
-  void drawMapEditor();
-  void recursiveDrawTree(MapInfo& in);
 
+  MapListView m_mapListView;
+  MapEditor m_mapEditor;
+  EventListView m_eventListView;
+  TilesetPicker m_tilesetPicker;
   bool m_isValid = false;
   bool m_isLoaded = false;
   bool m_isModified = false;
@@ -114,21 +141,8 @@ private:
 
   std::optional<ResourceManager> m_resourceManager;
   std::optional<Map> m_map;
-  int m_selectedMapId = -1;
-  float m_mapScale = 1.f;
-  double m_initialScrollX = 0.0;
-  double m_initialScrollY = 0.0;
-  bool m_initialScrollSet = false;
-  int m_tileCellX{};
-  int m_tileCellY{};
-  int m_tileId{};
-  Texture m_dummyTex;
-  MapRenderer m_mapRenderer;
-  std::vector<TileRect> m_lowerLayer;
-  std::vector<TileRect> m_upperLayer;
 
   bool m_showDemoWindow{};
   bool m_showAboutWindow{};
   bool m_showTileDebug{true};
-  bool m_mapTreeStale{false};
 };

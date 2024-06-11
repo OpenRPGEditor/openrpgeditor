@@ -44,10 +44,10 @@ FetchContent_Declare(json GIT_REPOSITORY "https://github.com/nlohmann/json.git")
 FetchContent_Declare(magic_enum
         GIT_REPOSITORY "https://github.com/Neargye/magic_enum.git")
 
-FetchContent_Declare(liblcf
-        GIT_REPOSITORY "https://github.com/EasyRPG/liblcf.git"
-        GIT_TAG "0.8"
-)
+#FetchContent_Declare(liblcf
+#        GIT_REPOSITORY "https://github.com/EasyRPG/liblcf.git"
+#        GIT_TAG "0.8"
+#)
 # Settings
 
 # For SDL2 to be able to override options
@@ -78,7 +78,7 @@ FetchContent_MakeAvailable(
         spdlog
         json
         magic_enum
-        liblcf
+        #liblcf
 )
 
 

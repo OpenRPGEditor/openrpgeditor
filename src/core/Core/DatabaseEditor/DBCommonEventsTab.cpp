@@ -10,6 +10,7 @@
 
 #include <Core/ImGuiParsedText.hpp>
 #include <Core/Utils.hpp>
+#include <string>
 
 DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor* parent)
 : IDBEditorTab(parent), m_events(commonEvents) {
@@ -134,6 +135,19 @@ void DBCommonEventsTab::draw() {
                     CommonEventCommand* cec =
                         dynamic_cast<CommonEventCommand*>(m_selectedCommonEvent->commands[n].get());
                     indentPad += m_events.m_events[cec->event].name.c_str();
+                  }
+                  else if (m_selectedCommonEvent->commands[n]->code() == EventCode::Conditional_Branch) {
+                    ConditionalBranchCommand* cb =
+                        dynamic_cast<ConditionalBranchCommand*>(m_selectedCommonEvent->commands[n].get());
+                    if (cb->type == ConditionType::Variable) {
+                      indentPad.replace(indentPad.find("{"), 2, m_parent->variables(cb->variable.id).c_str());
+                      if (cb->variable.source == VariableComparisonSource::Variable) {
+                        indentPad.replace(indentPad.find("{"), 2, m_parent->variables(cb->variable.otherId).c_str());
+                      }
+                    }
+                    else if (cb->type == ConditionType::Switch) {
+                      indentPad.replace(indentPad.find("{"), 2, m_parent->switches(cb->globalSwitch.switchIdx).c_str());
+                    }
                   }
 
                   // ImGui::PushStyleColor(ImGuiCol_Text, m_selectedCommonEvent->commands[n]->color());

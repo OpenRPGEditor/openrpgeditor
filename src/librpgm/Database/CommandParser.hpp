@@ -8,6 +8,7 @@
 
 #include <memory>
 
+struct NextScriptCommand;
 struct IEventCommand {
   std::optional<int> indent{};
   virtual ~IEventCommand() = default;
@@ -197,13 +198,13 @@ struct ConditionalBranchCommand : IEventCommand {
     std::string strBuild;
     if (type == ConditionType::Variable) {
       return std::string(indent ? *indent * 4 : 0, ' ') + "&push-color=255,255,0;◇If&pop-color; " +
-             "var:" + std::to_string(variable.id) + " " + DecodeEnumName(variable.comparison) + " " +
+             "{} " + DecodeEnumName(variable.comparison) + " " +
              (variable.source == VariableComparisonSource::Constant ? std::to_string(variable.constant)
-                                                                    : "var:" + std::to_string(variable.otherId));
+                                                                    : "{}");
     }
     if (type == ConditionType::Switch) {
-      return std::string(indent ? *indent * 4 : 0, ' ') + "◇If " + "sw(" + std::to_string(globalSwitch.switchIdx) +
-             ") is " + (globalSwitch.checkIfOn == 0 ? "OFF" : "ON");
+      return std::string(indent ? *indent * 4 : 0, ' ') + "◇If " + "{}" +
+             " is " + (globalSwitch.checkIfOn == 0 ? "OFF" : "ON");
     }
     return std::string(indent ? *indent * 4 : 0, ' ') + "◇ &push-color=255,0,255;Condition&pop-color; &push-color=0,255,0;TBD&pop-color;";
   }
@@ -503,18 +504,31 @@ struct EraseEventCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Erase_Event; }
 };
 
-struct ScriptCommand : IEventCommand {
-  ~ScriptCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Script; }
-  std::string script;
-  std::vector<std::shared_ptr<IEventCommand>> moreScript;
-};
-
 struct NextScriptCommand : IEventCommand {
   ~NextScriptCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Next_Script; }
   std::string script;
 };
+
+struct ScriptCommand : IEventCommand {
+  ~ScriptCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Script; }
+  std::string script;
+  std::vector<std::shared_ptr<NextScriptCommand>> moreScript;
+  [[nodiscard]] std::string stringRep() const override {
+    std::string ret = std::string(indent ? *indent : 0, '\t') + "◇Script: " + script;
+    for (const auto& t : moreScript) {
+      if (!ret.empty()) {
+        ret += "\n";
+      }
+      ret += std::string(indent ? *indent : 0, '\t') + " :" + std::string(((t->indent ? *t->indent : 0) + 1), '\t') +
+             " : " + t->script;
+    }
+
+    return ret;
+  }
+};
+
 
 struct PlaySECommand : IEventCommand {
   ~PlaySECommand() override = default;

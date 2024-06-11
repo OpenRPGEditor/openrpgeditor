@@ -9,7 +9,7 @@ struct Project;
 struct Event;
 struct EventEditor {
   EventEditor(Project* parent, Event* event);
-
+  void fixupPages();
 
   bool draw();
 
@@ -23,6 +23,6 @@ private:
   Project* m_parent = nullptr;
   Event* m_event = nullptr;
   std::vector<EVPage> m_pages;
-  EVPage* m_selectedPage = nullptr;
+  int m_selectedPage = 0;
   bool m_isOpen = true;
 };

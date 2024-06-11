@@ -134,6 +134,7 @@ ExitStatus App::Application::run() {
   m_mathFont = io.Fonts->AddFontFromFileTTF(font_path_math.c_str(), font_size, &config, ranges.Data);
   io.Fonts->Build();
   io.Fonts->AddFontFromFileTTF(font_path_kurinoto_mono.c_str(), mono_font_size, nullptr, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_jp_mono.c_str(), mono_font_size, nullptr, ranges.Data);
   m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_firple_mono.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->Build();
 

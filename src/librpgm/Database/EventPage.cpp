@@ -15,6 +15,9 @@ void to_json(nlohmann::json& json, const EventPage& eventPage) {
   json["through"] = eventPage.through;
   json["trigger"] = eventPage.trigger;
   json["walkAnime"] = eventPage.walkAnime;
+  if (!eventPage.name.empty()) {
+    json["name"] = eventPage.name;
+  }
 }
 
 void from_json(const nlohmann::json& json, EventPage& eventPage) {
@@ -32,4 +35,7 @@ void from_json(const nlohmann::json& json, EventPage& eventPage) {
   json["through"].get_to(eventPage.through);
   json["trigger"].get_to(eventPage.trigger);
   json["walkAnime"].get_to(eventPage.walkAnime);
+  if (json.count("name") != 0) {
+    json["name"].get_to(eventPage.name);
+  }
 }

@@ -83,19 +83,23 @@ void EndGroupPanel() {
   EndGroup();
 }
 
-bool LabelOverLineEdit(const char* id, const char* label, char* string, int len, float width) {
+bool LabelOverLineEdit(const char* id, const char* label, char* string, int len, float width, const char* tooltip) {
   BeginGroup();
+  bool ret = false;
   {
     Text("%s", label);
     char name[len];
     strncpy(name, string, len);
-    ImGui::SetNextItemWidth(width);
+    SetNextItemWidth(width);
     if (InputText(id, name, len, ImGuiInputTextFlags_EnterReturnsTrue)) {
       strncpy(string, name, len);
-      return true;
+      ret = true;
+    }
+    if (tooltip != nullptr) {
+      SetItemTooltip("%s", tooltip);
     }
   }
   EndGroup();
-  return false;
+  return ret;
 }
 } // namespace ImGui

@@ -71,8 +71,8 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   APP_INFO("Loading System...");
   m_system = System::load(m_basePath + "/data/System.json");
   m_mapInfos = MapInfos::load(m_basePath + "/data/MapInfos.json");
-  m_databaseEditor.emplace(m_actors, m_classes, m_skills, m_items, m_weapons, m_armors, m_enemies, m_troops, m_states,
-                           m_animations, m_tilesets, m_commonEvents, m_system);
+  m_databaseEditor.emplace(this, m_actors, m_classes, m_skills, m_items, m_weapons, m_armors, m_enemies, m_troops,
+                           m_states, m_animations, m_tilesets, m_commonEvents, m_system);
 
   MapInfo* info = m_mapInfos.map(0);
   info->expanded = true;

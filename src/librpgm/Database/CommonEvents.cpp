@@ -27,12 +27,7 @@ CommonEvents CommonEvents::load(std::string_view filepath) {
   commonEvents.m_events.reserve(data.size());
 
   for (const auto& [_, value] : data.items()) {
-    if (value == nullptr) {
-      continue;
-    }
-
-    CommonEvent& tileset = commonEvents.m_events.emplace_back();
-    value.get_to(tileset);
+    value.get_to(commonEvents.m_events.emplace_back());
   }
   return commonEvents;
 }
@@ -43,7 +38,7 @@ bool CommonEvents::serialize(std::string_view filename) {
   std::ofstream file(filename.data());
   json data{nullptr};
 
-  for (const CommonEvent& event : m_events) {
+  for (const auto& event : m_events) {
     data.push_back(event);
   }
 

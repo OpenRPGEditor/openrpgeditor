@@ -20,7 +20,7 @@ void DBActorsTab::draw() {
 
   ImGui::BeginChild("##orpg_actors_editor");
   {
-    ImGui::BeginChild("##orpg_actors_editor_actors", ImVec2{400.f, 0} * App::DPIHandler::get_scale());
+    ImGui::BeginChild("##orpg_actors_editor_actors", ImVec2{250.f, 0} * App::DPIHandler::get_scale(), 0, ImGuiWindowFlags_HorizontalScrollbar);
     {
       ImGui::BeginGroup();
       {

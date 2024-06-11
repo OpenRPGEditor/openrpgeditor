@@ -13,15 +13,16 @@
 #include <string>
 
 DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor* parent)
-: IDBEditorTab(parent), m_events(commonEvents) {
-  m_selectedCommonEvent = &m_events.m_events[1];
+: IDBEditorTab(parent), m_events(commonEvents), m_commandEditor(parent->project()) {
+  m_selectedCommonEvent = &m_events.m_events[1].value();
   m_maxCommonEvents = m_events.m_events.size() - 1;
+  m_commandEditor.setCommands(&m_selectedCommonEvent->commands);
 }
 
 void DBCommonEventsTab::draw() {
   ImGui::BeginChild("##orpg_commonevents_editor");
   {
-    ImGui::BeginChild("##orpg_commonevents_editor_commonevents", ImVec2{400.f, 0} * App::DPIHandler::get_scale());
+    ImGui::BeginChild("##orpg_commonevents_editor_commonevents", ImVec2{250.f, 0} * App::DPIHandler::get_scale(), 0, ImGuiWindowFlags_HorizontalScrollbar);
     {
       ImGui::BeginGroup();
       {
@@ -32,7 +33,11 @@ void DBCommonEventsTab::draw() {
           ImGui::BeginGroup();
           {
             for (int i = 0; i < m_events.m_events.size() - 1; ++i) {
-              CommonEvent& commonEvent = m_events.m_events[i];
+              if (! m_events.m_events[i]) {
+                continue;
+              }
+
+              CommonEvent& commonEvent = m_events.m_events[i].value();
               std::string id = "##orpg_commonevent_editor_unnamed_commonevent_" + std::to_string(commonEvent.id);
               ImGui::PushID(id.c_str());
               char name[4096];
@@ -40,6 +45,7 @@ void DBCommonEventsTab::draw() {
               if (ImGui::Selectable(name, &commonEvent == m_selectedCommonEvent) ||
                   (ImGui::IsItemFocused() && m_selectedCommonEvent != &commonEvent)) {
                 m_selectedCommonEvent = &commonEvent;
+                m_commandEditor.setCommands(&m_selectedCommonEvent->commands);
               }
               ImGui::PopID();
             }
@@ -118,61 +124,7 @@ void DBCommonEventsTab::draw() {
               ImGui::EndDisabled();
             }
             ImGui::EndGroup();
-            ImGui::BeginGroup();
-            {
-              ImGui::Text("Content:");
-              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - (4 * App::DPIHandler::get_scale()));
-              ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x - (16 * App::DPIHandler::get_scale()));
-              ImGui::PushFont(App::APP->getMonoFont());
-              static int item_current_idx = 0; // Here we store our selection data as an index.
-              // Custom size: use all width, 5 items tall
-              if (ImGui::BeginListBox("##commonevent_code_contents",
-                                      ImVec2(0, ImGui::GetContentRegionAvail().y - 16))) {
-                for (int n = 0; n < m_selectedCommonEvent->commands.size(); n++) {
-                  const bool is_selected = (item_current_idx == n);
-                  std::string indentPad = m_selectedCommonEvent->commands[n]->stringRep();
-                  if (m_selectedCommonEvent->commands[n]->code() == EventCode::Common_Event) {
-                    CommonEventCommand* cec =
-                        dynamic_cast<CommonEventCommand*>(m_selectedCommonEvent->commands[n].get());
-                    indentPad += m_events.m_events[cec->event].name.c_str();
-                  }
-                  else if (m_selectedCommonEvent->commands[n]->code() == EventCode::Conditional_Branch) {
-                    ConditionalBranchCommand* cb =
-                        dynamic_cast<ConditionalBranchCommand*>(m_selectedCommonEvent->commands[n].get());
-                    if (cb->type == ConditionType::Variable) {
-                      indentPad.replace(indentPad.find("{"), 2, m_parent->variables(cb->variable.id).c_str());
-                      if (cb->variable.source == VariableComparisonSource::Variable) {
-                        indentPad.replace(indentPad.find("{"), 2, m_parent->variables(cb->variable.otherId).c_str());
-                      }
-                    }
-                    else if (cb->type == ConditionType::Switch) {
-                      indentPad.replace(indentPad.find("{"), 2, m_parent->switches(cb->globalSwitch.switchIdx).c_str());
-                    }
-                  }
-
-                  // ImGui::PushStyleColor(ImGuiCol_Text, m_selectedCommonEvent->commands[n]->color());
-                  auto oldCursor = ImGui::GetCursorPos();
-                  if (ImGui::Selectable("##common_event_selectable", is_selected, 0, ImVec2{0, ImGui::CalcTextSize(indentPad.c_str()).y}))
-                    item_current_idx = n;
-                  ImGui::SetCursorPos(oldCursor);
-                  /* Nexus: TextParsed takes the syntax of `&<token>[=value];` where value is optional and token is
-                   * required.
-                   * Currently there are only 3 tokens, push-color, pop-color, and color, push and pop allow you to
-                   * control which blocks of text get color, color applies to the whole string
-                   * if a token is unsupported it won't get processed and will show up in the resulting text
-                   */
-                  ImGui::TextParsed("&push-color=255,255,255;%s&pop-color;", indentPad.c_str());
-                  // ImGui::PopStyleColor();
-
-                  // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-                  if (is_selected)
-                    ImGui::SetItemDefaultFocus();
-                }
-                ImGui::EndListBox();
-              }
-              ImGui::PopFont();
-            }
-            ImGui::EndGroup();
+            m_commandEditor.draw();
           }
           ImGui::EndGroup();
         }
@@ -212,6 +164,7 @@ void DBCommonEventsTab::draw() {
           int tmpId = m_selectedCommonEvent->id;
           m_events.m_events.resize(m_maxCommonEvents + 1);
           m_selectedCommonEvent = m_events.event(tmpId);
+          m_commandEditor.setCommands(&m_selectedCommonEvent->commands);
           m_changeIntDialogOpen = false;
           m_changeConfirmDialogOpen = false;
         }

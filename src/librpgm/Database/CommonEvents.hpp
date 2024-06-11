@@ -23,8 +23,8 @@ public:
 
   [[nodiscard]] CommonEvent* event(int id) {
     for (auto& item : m_events) {
-      if (item.id == id) {
-        return &item;
+      if (item->id == id) {
+        return &item.value();
       }
     }
     return nullptr;
@@ -32,8 +32,8 @@ public:
 
   [[nodiscard]] const CommonEvent* event(int id) const {
     for (const auto& set : m_events) {
-      if (set.id == id) {
-        return &set;
+      if (set->id == id) {
+        return &set.value();
       }
     }
 
@@ -42,6 +42,6 @@ public:
 
 private:
   friend class DBCommonEventsTab;
-  std::vector<CommonEvent> m_events;
+  std::vector<std::optional<CommonEvent>> m_events;
   std::optional<CommonEvent> m_selectedCommonEvent;
 };

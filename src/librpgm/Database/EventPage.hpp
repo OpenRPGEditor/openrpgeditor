@@ -55,4 +55,7 @@ struct EventPage {
   bool through{};
   EventTriggerType trigger{};
   bool walkAnime = false;
+
+  /* OpenRPGMaker Additions */
+  std::string name;
 };

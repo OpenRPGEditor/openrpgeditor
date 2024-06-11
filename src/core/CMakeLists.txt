@@ -34,10 +34,12 @@ add_library(
         Core/DatabaseEditor/DBTilesetsTab.hpp Core/DatabaseEditor/DBTilesetsTab.cpp
         Core/DatabaseEditor/DBCommonEventsTab.hpp Core/DatabaseEditor/DBCommonEventsTab.cpp
         Core/DatabaseEditor/DBSystemTab.hpp Core/DatabaseEditor/DBSystemTab.cpp
+        Core/CommonUI/TraitsEditor.hpp Core/CommonUI/TraitsEditor.cpp
+        Core/CommonUI/EventCommandEditor.hpp Core/CommonUI/EventCommandEditor.cpp
+
         Core/CheckerboardTexture.hpp Core/CheckerboardTexture.cpp
         Core/CharacterSheet.hpp Core/CharacterSheet.cpp
         Core/Settings.hpp Core/Settings.cpp
-        Core/CommonUI/TraitsEditor.hpp Core/CommonUI/TraitsEditor.cpp
         Core/ImGuiParsedText.hpp Core/ImGuiParsedText.cpp
         Core/TextParser.hpp Core/TextParser.cpp
         Core/Resources.hpp

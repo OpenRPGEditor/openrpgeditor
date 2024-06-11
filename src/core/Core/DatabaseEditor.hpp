@@ -16,12 +16,14 @@
 #include "Core/DatabaseEditor/DBSystemTab.hpp"
 #include "Database/Classes.hpp"
 
+struct Project;
 struct DatabaseEditor {
   DatabaseEditor() = delete;
-  explicit DatabaseEditor(Actors& actors, Classes& classes, Skills& skills, Items& items, Weapons& weapons,
-                          Armors& armors, Enemies& enemies, Troops& troops, States& states, Animations& animations,
-                          Tilesets& tilesets, CommonEvents& commonEvents, System& system)
-  : m_actors(actors, this)
+  explicit DatabaseEditor(Project* parent, Actors& actors, Classes& classes, Skills& skills, Items& items,
+                          Weapons& weapons, Armors& armors, Enemies& enemies, Troops& troops, States& states,
+                          Animations& animations, Tilesets& tilesets, CommonEvents& commonEvents, System& system)
+  : m_parent(parent)
+  , m_actors(actors, this)
   , m_classes(classes, this)
   , m_skills(skills, this)
   , m_items(items, this)
@@ -48,7 +50,6 @@ struct DatabaseEditor {
   [[nodiscard]] const std::vector<std::string>& elements(int id) const { return m_system.elements(); }
 
   [[nodiscard]] size_t elementsCount() const { return m_system.elementsCount(); }
-
 
   [[nodiscard]] State* state(int id) { return m_states.state(id); }
   [[nodiscard]] const State* state(int id) const { return m_states.state(id); }
@@ -99,11 +100,14 @@ struct DatabaseEditor {
   [[nodiscard]] std::string& weaponType(int id) { return m_system.weaponType(id); }
   [[nodiscard]] const std::string& weaponType(int id) const { return m_system.weaponType(id); }
 
-
   [[nodiscard]] Skill* skill(int id) { return m_skills.skill(id); }
   [[nodiscard]] const Skill* skill(int id) const { return m_skills.skill(id); }
 
+  Project* project() { return m_parent; }
+  const Project* project() const { return m_parent; }
+
 private:
+  Project* m_parent;
   DBActorsTab m_actors;
   DBClassesTab m_classes;
   DBSkillsTab m_skills;

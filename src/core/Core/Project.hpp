@@ -77,6 +77,12 @@ public:
     m_editMode = EditMode::Event;
   }
 
+  std::string variable(int id) { return m_system.variable(id); }
+  const std::string variable(int id) const { return m_system.variable(id); }
+
+  std::string switche(int id) { return m_system.switche(id); }
+  const std::string switche(int id) const { return m_system.switche(id); }
+
   CommonEvent* commentEvent(int id) { return m_commonEvents.event(id); }
   const CommonEvent* commentEvent(int id) const { return m_commonEvents.event(id); }
 

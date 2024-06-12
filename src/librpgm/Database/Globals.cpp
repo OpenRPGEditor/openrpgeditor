@@ -19,9 +19,6 @@ std::string DecodeEnumName(std::string_view str) {
     return "UNKOWN_ENUM";
   }
   std::string result = str.data();
-  // Remove the leading underscore if it exists
-  if (result.front() == '_')
-    result.erase(0, 1);
 
   /* NOTE: If you add any new encodings make sure
    * to notate them in the comment at the beginning
@@ -31,13 +28,22 @@ std::string DecodeEnumName(std::string_view str) {
   ReplaceStr(result, "bo_", "[");
   ReplaceStr(result, "_bc", "]");
   ReplaceStr(result, "_pe_", ".");
-  ReplaceStr(result, "_del_", "\0");
+  result = result.substr(0, result.find("_del_"));
   ReplaceStr(result, "_deg", "°");
-  ReplaceStr(result, "_da_", "-");
-  ReplaceStr(result, "_pl_", "+");
+  ReplaceStr(result, "_da_", "-=");
+  ReplaceStr(result, "_set_", "=");
+  ReplaceStr(result, "_pl_", "+=");
+  ReplaceStr(result, "_mul_", "*=");
+  ReplaceStr(result, "_mod_", "%=");
+  ReplaceStr(result, "_div_", "/=");
+
+  // Remove the leading underscore if it exists
+  if (result.front() == '_')
+    result.erase(0, 1);
 
   /* Add new encodings *before* this or it will clobber them */
   ReplaceStr(result, "_", " ");
+
   result.shrink_to_fit();
   return result;
 }

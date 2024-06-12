@@ -286,12 +286,12 @@ enum class SwitchControl : int {
 };
 
 enum class VariableControlOperation {
-  Set,
-  Add,
-  Sub,
-  Mul,
-  Div,
-  Mod,
+  _set__del_Set,
+  _pl__del_Add,
+  _da__del_Sub,
+  _mul__del_Mul,
+  _div__del_Div,
+  _mod__del_Mod,
 };
 
 enum class VariableControlOperand {
@@ -386,7 +386,7 @@ enum class EventCode : int {
   Show_Choices = 102,
   When_Selected = 402, // Each choice gets a branch as defined here
   When_Cancel = 403,   // Player cancelled their selection
-  End_del_ShowChoices = 404,
+  End_de_ShowChoices = 404,
 
   Input_Number = 103,
   Select_Item = 104,
@@ -557,8 +557,8 @@ enum class EventCode : int {
   Change_Image = 41,
   Change_Opacity = 42,
   Change_Blend_Mode = 43,
-  Play_SE_del_Movement = 44,
-  Script_del_Movement = 45,
+  Play_SE_de_Movement = 44,
+  Script_de_Movement = 45,
 };
 
 enum class QuantityChangeOp {
@@ -681,6 +681,11 @@ enum CommonEventTriggerType {
 
 enum class TimerControl { Start, Stop };
 std::string DecodeEnumName(std::string_view str);
+
+enum Color {
+  Gray,
+  Default
+};
 
 template <typename E>
 static inline std::string DecodeEnumName(E e) {

@@ -61,11 +61,10 @@ std::tuple<bool, bool> EVPage::draw( bool canDelete, int index) {
     }
     ImGui::EndGroup();
     ImGui::SameLine();
-    ImGui::BeginChild("##orpg_event_page_commands");
-    {
+    if (ImGui::BeginChild("##orpg_event_page_commands")) {
       m_commandEditor.draw();
+      ImGui::EndChild();
     }
-    ImGui::EndChild();
     ImGui::EndTabItem();
   }
 

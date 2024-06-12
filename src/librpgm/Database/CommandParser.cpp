@@ -75,7 +75,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       canceled->indent = parser[index].value("indent", std::optional<int>{});
       break;
     }
-    case EventCode::End_del_ShowChoices: {
+    case EventCode::End_de_ShowChoices: {
       ShowChoicesEndCommand* canceled = dynamic_cast<ShowChoicesEndCommand*>(ret.emplace_back(new ShowChoicesEndCommand()).get());
       canceled->indent = parser[index].value("indent", std::optional<int>{});
       break;
@@ -279,7 +279,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       parameters[3].get_to(variable->operand);
       switch (variable->operand) {
       case VariableControlOperand::Constant:
-        parameters[2].get_to(variable->constant);
+        parameters[4].get_to(variable->constant);
         break;
       case VariableControlOperand::Variable:
         parameters[4].get_to(variable->variable);
@@ -523,6 +523,69 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
         currentCommand()["parameters"][0].get_to(tmp->script);
       }
 
+      break;
+    }
+    case EventCode::Play_SE: {
+      PlaySECommand* se = dynamic_cast<PlaySECommand*>(ret.emplace_back(new PlaySECommand()).get());
+      se->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(se->audio);
+      break;
+    }
+    case EventCode::Play_ME: {
+      PlayMECommand* me = dynamic_cast<PlayMECommand*>(ret.emplace_back(new PlayMECommand()).get());
+      me->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(me->audio);
+      break;
+    }
+    case EventCode::Play_BGS: {
+      PlayBGSCommand* me = dynamic_cast<PlayBGSCommand*>(ret.emplace_back(new PlayBGSCommand()).get());
+      me->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(me->audio);
+      break;
+    }
+    case EventCode::Play_BGM: {
+      PlayBGMCommand* me = dynamic_cast<PlayBGMCommand*>(ret.emplace_back(new PlayBGMCommand()).get());
+      me->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(me->audio);
+      break;
+    }
+    case EventCode::Play_Move: {
+      PlayMovieCommand* mov = dynamic_cast<PlayMovieCommand*>(ret.emplace_back(new PlayMovieCommand()).get());
+      mov->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(mov->name);
+      break;
+    }
+    case EventCode::Stop_SE: {
+      StopSECommand* se = dynamic_cast<StopSECommand*>(ret.emplace_back(new StopSECommand()).get());
+      se->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
+    case EventCode::Resume_BGM: {
+      ResumeBGMCommand* se = dynamic_cast<ResumeBGMCommand*>(ret.emplace_back(new ResumeBGMCommand()).get());
+      se->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
+    case EventCode::Save_BGM: {
+      SaveBGMCommand* se = dynamic_cast<SaveBGMCommand*>(ret.emplace_back(new SaveBGMCommand()).get());
+      se->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
+    case EventCode::Fade_Out_BGM: {
+      FadeoutBGM* mov = dynamic_cast<FadeoutBGM*>(ret.emplace_back(new FadeoutBGM()).get());
+      mov->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(mov->duration);
+      break;
+    }
+    case EventCode::Fade_Out_BGS: {
+      FadeoutBGS* mov = dynamic_cast<FadeoutBGS*>(ret.emplace_back(new FadeoutBGS()).get());
+      mov->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(mov->duration);
+      break;
+    }
+    case EventCode::Wait: {
+      WaitCommand* wait = dynamic_cast<WaitCommand*>(ret.emplace_back(new WaitCommand()).get());
+      wait->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(wait->duration);
       break;
     }
     case EventCode::End: {
@@ -799,14 +862,14 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       parameters[0].get_to(end->mode);
       break;
     }
-    case EventCode::Play_SE_del_Movement: {
+    case EventCode::Play_SE_de_Movement: {
       MovementPlaySECommand* end =
           dynamic_cast<MovementPlaySECommand*>(ret.emplace_back(new MovementPlaySECommand()).get());
       end->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(end->se);
       break;
     }
-    case EventCode::Script_del_Movement: {
+    case EventCode::Script_de_Movement: {
       MovementScriptCommand* end =
           dynamic_cast<MovementScriptCommand*>(ret.emplace_back(new MovementScriptCommand()).get());
       end->indent = parser[index].value("indent", std::optional<int>{});

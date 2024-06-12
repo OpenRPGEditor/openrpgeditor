@@ -133,9 +133,9 @@ ExitStatus App::Application::run() {
   m_jpFont = io.Fonts->AddFontFromFileTTF(font_path_jp.c_str(), font_size, &config, ranges.Data);
   m_mathFont = io.Fonts->AddFontFromFileTTF(font_path_math.c_str(), font_size, &config, ranges.Data);
   io.Fonts->Build();
-  m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_kurinoto_mono.c_str(), mono_font_size, nullptr, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_jp_mono.c_str(), mono_font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_firple_mono.c_str(), mono_font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_kurinoto_mono.c_str(), mono_font_size, nullptr, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_jp_mono.c_str(), mono_font_size, nullptr, ranges.Data);
+  m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_firple_mono.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->Build();
 
   io.FontDefault = m_mainFont;
@@ -246,7 +246,7 @@ ExitStatus App::Application::run() {
         }
 
         if (event.type == SDL_WINDOWEVENT && event.window.windowID == SDL_GetWindowID(m_window->getNativeWindow())) {
-          onEvent(event.window);
+          on_event(event.window);
         }
       }
 
@@ -288,16 +288,16 @@ void Application::stop() {
   m_running = false;
 }
 
-void Application::onEvent(const SDL_WindowEvent& event) {
+void Application::on_event(const SDL_WindowEvent& event) {
   APP_PROFILE_FUNCTION();
 
   switch (event.event) {
   case SDL_WINDOWEVENT_CLOSE:
-    return onClose();
+    return on_close();
   case SDL_WINDOWEVENT_MINIMIZED:
-    return onMinimize();
+    return on_minimize();
   case SDL_WINDOWEVENT_SHOWN:
-    return onShown();
+    return on_shown();
   case SDL_WINDOWEVENT_RESIZED: {
     if (!(SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED)) {
       Settings::instance()->window.w = event.data1;
@@ -322,19 +322,19 @@ void Application::onEvent(const SDL_WindowEvent& event) {
   }
 }
 
-void Application::onMinimize() {
+void Application::on_minimize() {
   APP_PROFILE_FUNCTION();
 
   m_minimized = true;
 }
 
-void Application::onShown() {
+void Application::on_shown() {
   APP_PROFILE_FUNCTION();
 
   m_minimized = false;
 }
 
-void Application::onClose() {
+void Application::on_close() {
   APP_PROFILE_FUNCTION();
 
   stop();

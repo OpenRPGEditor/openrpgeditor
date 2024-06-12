@@ -82,8 +82,17 @@ public:
 
   std::string switche(int id) { return m_system.switche(id); }
   const std::string switche(int id) const { return m_system.switche(id); }
-
   CommonEvent* commentEvent(int id) { return m_commonEvents.event(id); }
+  Actor* actor(int id) { return m_actors.actor(id); }
+  Event* event(int id) { return m_map->event(id); }
+  Class* actorClass(int id) { return m_classes.classType(id); }
+  const char* vehicle(int id) { return id == 0 ? "Boat" : id == 1 ? "Ship" : "Airship"; }
+  Enemy* enemy(int id) { return m_enemies.enemy(id); }
+  Skill* skill(int id) { return m_skills.skill(id); }
+  Weapon* weapon(int id) { return m_weapons.weapon(id); }
+  Armor* armor(int id) { return m_armors.armor(id); }
+  Item* item(int id) { return m_items.item(id); }
+  State* state(int id) { return m_states.state(id); }
   const CommonEvent* commentEvent(int id) const { return m_commonEvents.event(id); }
 
   void setDrawTool(DrawTool tool) { m_drawTool = tool; }

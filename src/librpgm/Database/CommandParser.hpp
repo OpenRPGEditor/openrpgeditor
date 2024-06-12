@@ -137,58 +137,55 @@ struct ConditionalBranchCommand : IEventCommand {
   ~ConditionalBranchCommand() override {}
   [[nodiscard]] EventCode code() const override { return EventCode::Conditional_Branch; }
   ConditionType type{};
-  union {
-    struct {
-      int switchIdx;
-      int checkIfOn;
-    } globalSwitch;
-    struct {
-      int id;
-      VariableComparisonSource source;
-      VariableComparisonType comparison;
-      union {
-        int constant;
-        int otherId;
-      };
-    } variable;
-    struct {
-      SwitchControl checkIfOn;
-    } selfSwitch;
-    struct {
-      TimerComparisonType comparison;
-      int sec;
-    } timer;
-    struct {
-      int id;
-      ActorConditionType type;
-      int checkId;
-    } actor;
-    struct {
-      int id;
-      EnemyConditionType type;
-      int stateId; // For "State" condition
-    } enemy;
-    struct {
-      int id;
-      Direction facing;
-    } character;
-    struct {
-      int id;
-    } vehicle;
-    struct {
-      GoldComaprisonType type;
-      int value;
-    } gold;
-    struct {
-      int id;
-    } item;
-    /* For Weapon and Armor conditions */
-    struct {
-      int equipId;
-      bool includeEquipment;
-    } equip;
-    int raw{};
-  };
+  struct {
+    int switchIdx;
+    int checkIfOn;
+  } globalSwitch;
+  struct {
+    int id;
+    VariableComparisonSource source;
+    VariableComparisonType comparison;
+    union {
+      int constant;
+      int otherId;
+    };
+  } variable;
+  struct {
+    SwitchControl checkIfOn;
+  } selfSwitch;
+  struct {
+    TimerComparisonType comparison;
+    int sec;
+  } timer;
+  struct {
+    int id;
+    ActorConditionType type;
+    int checkId;
+  } actor;
+  struct {
+    int id;
+    EnemyConditionType type;
+    int stateId; // For "State" condition
+  } enemy;
+  struct {
+    int id;
+    Direction facing;
+  } character;
+  struct {
+    int id;
+  } vehicle;
+  struct {
+    GoldComaprisonType type;
+    int value;
+  } gold;
+  struct {
+    int id;
+  } item;
+  /* For Weapon and Armor conditions */
+  struct {
+    int equipId;
+    bool includeEquipment;
+  } equip;
   std::string button;
   std::string selfSw; // A, B, C, D
   std::string name;
@@ -198,99 +195,97 @@ struct ConditionalBranchCommand : IEventCommand {
     std::string strBuild;
     if (type == ConditionType::Variable) {
       std::string test = ColorFormatter::getColorCode(DecodeEnumName(code()));
-      return std::string(indent ? *indent * 4 : 0, ' ') + "&push-color=255,255,0;◇If&pop-color; " +
-             "{} " + DecodeEnumName(variable.comparison) + " " +
-             (variable.source == VariableComparisonSource::Constant ? std::to_string(variable.constant)
-                                                                    : "{}");
+      return std::string(indent ? *indent * 4 : 0, ' ') + "&push-color=255,255,0;◇If&pop-color; " + "{} " +
+             DecodeEnumName(variable.comparison) + " " +
+             (variable.source == VariableComparisonSource::Constant ? std::to_string(variable.constant) : "{}");
     }
     if (type == ConditionType::Switch) {
-      return std::string(indent ? *indent * 4 : 0, ' ') + "◇If " + "{}" +
-             " is " + (globalSwitch.checkIfOn == 0 ? "OFF" : "ON");
+      return std::string(indent ? *indent * 4 : 0, ' ') + "◇If " + "{}" + " is " +
+             (globalSwitch.checkIfOn == 0 ? "OFF" : "ON");
     }
     if (type == ConditionType::Self_Switch) {
-      return std::string(indent ? *indent * 4 : 0, ' ') + "◇If Self Switch " + "{}" +
-             " is " + (selfSwitch.checkIfOn == SwitchControl::OFF ? "OFF" : "ON");
+      return std::string(indent ? *indent * 4 : 0, ' ') + "◇If Self Switch " + "{}" + " is " +
+             (selfSwitch.checkIfOn == SwitchControl::OFF ? "OFF" : "ON");
     }
     if (type == ConditionType::Timer) {
       std::string min;
       std::string sec;
 
       if (timer.sec > 59) {
-        min = std::to_string(timer.sec/60);
+        min = std::to_string(timer.sec / 60);
         sec = std::to_string(timer.sec % 60);
-      }
-      else {
+      } else {
         min = "0";
         sec = std::to_string(timer.sec);
       }
-      return std::string(indent ? *indent * 4 : 0, ' ') +
-      ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If Timer" + ColorFormatter::popColor() + " " + DecodeEnumName(timer.comparison) + " " +
-             min + " min " + sec + " sec";
+      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+             "◇If Timer" + ColorFormatter::popColor() + " " + DecodeEnumName(timer.comparison) + " " + min + " min " +
+             sec + " sec";
     }
     if (type == ConditionType::Actor) {
       if (actor.type == ActorConditionType::Name) {
-        return std::string(indent ? *indent * 4 : 0, ' ') +
-        ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If Name of {} is []" + ColorFormatter::popColor();
-      }
-      else if (actor.type == ActorConditionType::Class) {
-        return std::string(indent ? *indent * 4 : 0, ' ') +
-        ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If Class of {} is []" + ColorFormatter::popColor();
-      }
-      else if (actor.type == ActorConditionType::Skill) {
-        return std::string(indent ? *indent * 4 : 0, ' ') +
-        ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If {} has learned []" + ColorFormatter::popColor();
-      }
-      else if (actor.type == ActorConditionType::Weapon || actor.type == ActorConditionType::Armor) {
-        return std::string(indent ? *indent * 4 : 0, ' ') +
-        ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If {} has equipped []" + ColorFormatter::popColor();
-      }
-      else if (actor.type == ActorConditionType::State) {
-        return std::string(indent ? *indent * 4 : 0, ' ') +
-        ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If {} is affected by []" + ColorFormatter::popColor();
-      }
-      else {
-        return std::string(indent ? *indent * 4 : 0, ' ') +
-        ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If {} is in party" + ColorFormatter::popColor();
+        return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+               "◇If Name of {} is []" + ColorFormatter::popColor();
+      } else if (actor.type == ActorConditionType::Class) {
+        return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+               "◇If Class of {} is []" + ColorFormatter::popColor();
+      } else if (actor.type == ActorConditionType::Skill) {
+        return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+               "◇If {} has learned []" + ColorFormatter::popColor();
+      } else if (actor.type == ActorConditionType::Weapon || actor.type == ActorConditionType::Armor) {
+        return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+               "◇If {} has equipped []" + ColorFormatter::popColor();
+      } else if (actor.type == ActorConditionType::State) {
+        return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+               "◇If {} is affected by []" + ColorFormatter::popColor();
+      } else {
+        return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+               "◇If {} is in party" + ColorFormatter::popColor();
       }
     }
     if (type == ConditionType::Enemy) {
       if (enemy.type == EnemyConditionType::State) {
-        return std::string(indent ? *indent * 4 : 0, ' ') +
-        ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If {} is affected by []" + ColorFormatter::popColor();
+        return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+               "◇If {} is affected by []" + ColorFormatter::popColor();
       }
-      return std::string(indent ? *indent * 4 : 0, ' ') +
-      ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If {} is appeared" + ColorFormatter::popColor();
+      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+             "◇If {} is appeared" + ColorFormatter::popColor();
     }
     if (type == ConditionType::Character) {
-      std::string direction = character.facing == Direction::Up ? "Up" : character.facing == Direction::Down ? "Down" : character.facing == Direction::Left ? "Left" : "Right";
-      return std::string(indent ? *indent * 4 : 0, ' ') +
-      ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If {} is facing " + direction + ColorFormatter::popColor();
+      std::string direction = character.facing == Direction::Up     ? "Up"
+                              : character.facing == Direction::Down ? "Down"
+                              : character.facing == Direction::Left ? "Left"
+                                                                    : "Right";
+      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+             "◇If {} is facing " + direction + ColorFormatter::popColor();
     }
     if (type == ConditionType::Vehicle) {
-      return std::string(indent ? *indent * 4 : 0, ' ') +
-      ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If {} is driven" + ColorFormatter::popColor();
+      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+             "◇If {} is driven" + ColorFormatter::popColor();
     }
     if (type == ConditionType::Gold) {
-      return std::string(indent ? *indent * 4 : 0, ' ') +
-      ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If Gold" + " " + DecodeEnumName(gold.type);
+      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+             "◇If Gold" + " " + DecodeEnumName<GoldComaprisonType>(gold.type) + " {}";
     }
     if (type == ConditionType::Item) {
-      return std::string(indent ? *indent * 4 : 0, ' ') +
-      ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If Party has {}" + ColorFormatter::popColor();
+      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+             "◇If Party has {}" + ColorFormatter::popColor();
     }
     if (type == ConditionType::Weapon || type == ConditionType::Armor) {
-      return std::string(indent ? *indent * 4 : 0, ' ') +
-      ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If Party has {}" + ColorFormatter::popColor() + ColorFormatter::getColor(Color::Gray) + " (Include Equipment)" + ColorFormatter::popColor();
+      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+             "◇If Party has {}" + ColorFormatter::popColor() + ColorFormatter::getColor(Color::Gray) +
+             " (Include Equipment)" + ColorFormatter::popColor();
     }
     if (type == ConditionType::Button) {
-      return std::string(indent ? *indent * 4 : 0, ' ') +
-      ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If Button [" + "{}" + "] is pressed down" + ColorFormatter::popColor();
+      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+             "◇If Button [" + "{}" + "] is pressed down" + ColorFormatter::popColor();
     }
     if (type == ConditionType::Script) {
-      return std::string(indent ? *indent * 4 : 0, ' ') +
-      ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇If Script : " + ColorFormatter::popColor();
+      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+             "◇If Script : " + ColorFormatter::popColor();
     }
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇ &push-color=255,0,255;Condition&pop-color; &push-color=0,255,0;TBD&pop-color;";
+    return std::string(indent ? *indent * 4 : 0, ' ') +
+           "◇ &push-color=255,0,255;Condition&pop-color; &push-color=0,255,0;TBD&pop-color;";
   }
 };
 
@@ -303,9 +298,7 @@ struct ElseCommand : IEventCommand {
 struct LoopCommand : IEventCommand {
   ~LoopCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Loop; }
-  [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Loop";
-  }
+  [[nodiscard]] std::string stringRep() const override { return std::string(indent ? *indent * 4 : 0, ' ') + "◇Loop"; }
 };
 
 struct RepeatAboveCommand : IEventCommand {
@@ -368,12 +361,13 @@ struct ControlSwitches : IEventCommand {
 
   [[nodiscard]] std::string stringRep() const override {
     if (start != end) {
-      return std::string(indent ? *indent * 4 : 0, ' ') +
-      ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇Control Switches : #" + std::format("{:04}", start) + ".." + std::format("{:04}", end) + " = " + (turnOff == SwitchControl::ON ? "ON" : "OFF") + ColorFormatter::popColor();
-    }
-    else {
-      return std::string(indent ? *indent * 4 : 0, ' ') +
-            ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇Control Switches : #" + std::format("{:04}", start) + " {}" + " = " + (turnOff == SwitchControl::ON ? "ON" : "OFF") + ColorFormatter::popColor();
+      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+             "◇Control Switches : #" + std::format("{:04}", start) + ".." + std::format("{:04}", end) + " = " +
+             (turnOff == SwitchControl::ON ? "ON" : "OFF") + ColorFormatter::popColor();
+    } else {
+      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+             "◇Control Switches : #" + std::format("{:04}", start) + " {}" + " = " +
+             (turnOff == SwitchControl::ON ? "ON" : "OFF") + ColorFormatter::popColor();
     }
   }
 };
@@ -410,35 +404,32 @@ struct ControlVariables : IEventCommand {
   [[nodiscard]] std::string stringRep() const override {
     std::string strBuild;
     if (start != end) {
-      strBuild = std::string(indent ? *indent * 4 : 0, ' ') +
-      ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇Control Variables : #" + std::format("{:04}", start) + "..#" + std::format("{:04}", end) + " " + DecodeEnumName(operation) + " ";
-    }
-    else {
-      strBuild = std::string(indent ? *indent * 4 : 0, ' ') +
-            ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇Control Variables : #" + std::format("{:04}", start) + " {} " + DecodeEnumName(operation) + " ";
+      strBuild = std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+                 "◇Control Variables : #" + std::format("{:04}", start) + "..#" + std::format("{:04}", end) + " " +
+                 DecodeEnumName(operation) + " ";
+    } else {
+      strBuild = std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) +
+                 "◇Control Variables : #" + std::format("{:04}", start) + " {} " + DecodeEnumName(operation) + " ";
     }
 
     if (operand == VariableControlOperand::Random) {
       strBuild += "Random " + std::to_string(random.min) + ".." + std::to_string(random.max);
-    }
-    else if (operand == VariableControlOperand::Variable) {
+    } else if (operand == VariableControlOperand::Variable) {
       strBuild += std::format("{:04}", variable) + " {}";
-    }
-    else if (operand == VariableControlOperand::Game_Data) {
+    } else if (operand == VariableControlOperand::Game_Data) {
       if (gameData.source == GameDataSource::Character) {
-        strBuild += DecodeEnumName(static_cast<CharacterDataSource>(gameData.value)) + " of " + (gameData.rawSource == -1 ? "Player" : gameData.rawSource == 0 ? "This Event" : "{}");
-      }
-      else if (gameData.source == GameDataSource::Party) {
+        strBuild += DecodeEnumName(static_cast<CharacterDataSource>(gameData.value)) + " of " +
+                    (gameData.rawSource == -1  ? "Player"
+                     : gameData.rawSource == 0 ? "This Event"
+                                               : "{}");
+      } else if (gameData.source == GameDataSource::Party) {
         strBuild += "Actor ID of the party member #" + std::to_string(gameData.rawSource);
-      }
-      else if (gameData.source == GameDataSource::Other) {
+      } else if (gameData.source == GameDataSource::Other) {
         strBuild += DecodeEnumName(static_cast<OtherDataSource>(gameData.value));
-      }
-      else {
+      } else {
         strBuild += "The number of {}";
       }
-    }
-    else {
+    } else {
       if (operand == VariableControlOperand::Script)
         strBuild += script;
       else
@@ -673,19 +664,17 @@ struct WaitCommand : IEventCommand {
   ~WaitCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Wait; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') +
-           "◇Wait : " + std::to_string(duration) + " frames";
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Wait : " + std::to_string(duration) + " frames";
   }
 };
-
 
 struct PlaySECommand : IEventCommand {
   ~PlaySECommand() override = default;
   Audio audio;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_SE; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') +
-           "◇Play SE : " + (audio.name == "" ? "None" : audio.name) + " " + std::format("({}, {}, {})", audio.volume, audio.pitch, audio.pan);
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Play SE : " + (audio.name == "" ? "None" : audio.name) + " " +
+           std::format("({}, {}, {})", audio.volume, audio.pitch, audio.pan);
   }
 };
 struct PlayMECommand : IEventCommand {
@@ -693,8 +682,8 @@ struct PlayMECommand : IEventCommand {
   Audio audio;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_ME; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') +
-           "◇Play ME : " + (audio.name == "" ? "None" : audio.name) + " " + std::format("({}, {}, {})", audio.volume, audio.pitch, audio.pan);
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Play ME : " + (audio.name == "" ? "None" : audio.name) + " " +
+           std::format("({}, {}, {})", audio.volume, audio.pitch, audio.pan);
   }
 };
 struct PlayBGSCommand : IEventCommand {
@@ -702,8 +691,8 @@ struct PlayBGSCommand : IEventCommand {
   Audio audio;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_BGS; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') +
-           "◇Play BGS : " + (audio.name == "" ? "None" : audio.name) + " " + std::format("({}, {}, {})", audio.volume, audio.pitch, audio.pan);
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Play BGS : " + (audio.name == "" ? "None" : audio.name) +
+           " " + std::format("({}, {}, {})", audio.volume, audio.pitch, audio.pan);
   }
 };
 struct PlayBGMCommand : IEventCommand {
@@ -711,8 +700,8 @@ struct PlayBGMCommand : IEventCommand {
   Audio audio;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_BGM; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') +
-           "◇Play BGM : " + (audio.name == "" ? "None" : audio.name) + " " + std::format("({}, {}, {})", audio.volume, audio.pitch, audio.pan);
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Play BGM : " + (audio.name == "" ? "None" : audio.name) +
+           " " + std::format("({}, {}, {})", audio.volume, audio.pitch, audio.pan);
   }
 };
 struct PlayMovieCommand : IEventCommand {
@@ -720,24 +709,21 @@ struct PlayMovieCommand : IEventCommand {
   std::string name;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_Move; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') +
-           "◇Play Movie : " + (name == "" ? "None" : name);
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Play Movie : " + (name == "" ? "None" : name);
   }
 };
 struct SaveBGMCommand : IEventCommand {
   ~SaveBGMCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Save_BGM; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') +
-           "◇Save BGM";
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Save BGM";
   }
 };
 struct ResumeBGMCommand : IEventCommand {
   ~ResumeBGMCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Resume_BGM; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') +
-           "◇Resume BGM";
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Resume BGM";
   }
 };
 struct FadeoutBGM : IEventCommand {
@@ -745,8 +731,7 @@ struct FadeoutBGM : IEventCommand {
   int duration;
   [[nodiscard]] EventCode code() const override { return EventCode::Fade_Out_BGM; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') +
-           "◇Fadeout BGM :" + std::to_string(duration) + " seconds";
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Fadeout BGM :" + std::to_string(duration) + " seconds";
   }
 };
 struct FadeoutBGS : IEventCommand {
@@ -754,26 +739,21 @@ struct FadeoutBGS : IEventCommand {
   int duration;
   [[nodiscard]] EventCode code() const override { return EventCode::Fade_Out_BGS; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') +
-           "◇Fadeout BGS :" + std::to_string(duration) + " seconds";
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Fadeout BGS :" + std::to_string(duration) + " seconds";
   }
 };
 struct StopSECommand : IEventCommand {
   ~StopSECommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Stop_SE; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') +
-           "◇Stop SE";
+    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Stop SE";
   }
 };
 
 struct EndCommand : IEventCommand {
   ~EndCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::End; }
-  [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') +
-           ":End";
-  }
+  [[nodiscard]] std::string stringRep() const override { return std::string(indent ? *indent * 4 : 0, ' ') + ":End"; }
 };
 
 // START MOVEMENTROUTE

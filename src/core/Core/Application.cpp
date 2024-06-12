@@ -85,7 +85,7 @@ ExitStatus App::Application::run() {
 
   const float font_scaling_factor{DPIHandler::get_scale()};
   const float font_size{12.0F * font_scaling_factor};
-  const float mono_font_size{14.0F * font_scaling_factor};
+  const float mono_font_size{12.0F * font_scaling_factor};
   const std::string font_path{Resources::font_path("NotoSans-SemiBold.ttf").generic_string()};
   const std::string font_path_math{Resources::font_path("JetBrainsMono-SemiBold.ttf").generic_string()};
   const std::string font_path_jp{Resources::font_path("NotoSansJP-SemiBold.ttf").generic_string()};
@@ -133,9 +133,9 @@ ExitStatus App::Application::run() {
   m_jpFont = io.Fonts->AddFontFromFileTTF(font_path_jp.c_str(), font_size, &config, ranges.Data);
   m_mathFont = io.Fonts->AddFontFromFileTTF(font_path_math.c_str(), font_size, &config, ranges.Data);
   io.Fonts->Build();
-  io.Fonts->AddFontFromFileTTF(font_path_kurinoto_mono.c_str(), mono_font_size, nullptr, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_jp_mono.c_str(), mono_font_size, nullptr, ranges.Data);
-  m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_firple_mono.c_str(), mono_font_size, &config, ranges.Data);
+  m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_firple_mono.c_str(), mono_font_size, nullptr, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_jp_mono.c_str(), mono_font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_kurinoto_mono.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->Build();
 
   io.FontDefault = m_mainFont;

@@ -3,8 +3,8 @@
 #include <string>
 #include <optional>
 
-#define MAGIC_ENUM_RANGE_MIN -4096
-#define MAGIC_ENUM_RANGE_MAX 4096
+#define MAGIC_ENUM_RANGE_MIN (-4096)
+#define MAGIC_ENUM_RANGE_MAX (4096)
 #include <magic_enum.hpp>
 
 /* DO NOT MODIFY ENUM NAMES
@@ -265,19 +265,19 @@ enum class VariableComparisonSource : int {
 };
 
 enum class VariableComparisonType : int {
-  Equal_To,
-  Greater_than_or_Equal_to,
-  Less_than_or_Equal_to,
-  Greater_than,
-  Less_than,
-  Not_Equal_to
+  _set__set__del_Equal_To,
+  _gt__set__del_Greater_than_or_Equal_to,
+  _set__set__del_Less_than_or_Equal_to,
+  _gt__del_Greater_than,
+  _lt__del_Less_than,
+  _not__del_Not_Equal_to
 };
 
 enum class GoldComaprisonType : int {
-  Equal_To,
-  Greater_than_or_Equal_to,
-  Less_than_or_Equal_to,
-  Less_than,
+  _set__set__del_Equal_To,
+  _gt__set__del_Greater_than_or_Equal_to,
+  _lt__set__del_Less_than_or_Equal_to,
+  _lt__del_Less_than,
 };
 
 enum class SwitchControl : int {

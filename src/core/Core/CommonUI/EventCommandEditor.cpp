@@ -7,6 +7,12 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
+void insertValue(std::string& indentPad, const std::string& val, const std::string& delim) {
+  auto pos = indentPad.find(delim);
+  if (pos != std::string::npos) {
+    indentPad.replace(pos, 2, val);
+  }
+}
 void EventCommandEditor::draw() {
   ImGui::BeginGroup();
   {
@@ -33,44 +39,44 @@ void EventCommandEditor::draw() {
 
               if (cb->type == ConditionType::Variable) {
                 // Constant and variable sources
-                indentPad.replace(indentPad.find("{"), 2, m_project->variable(cb->variable.id).c_str());
+                insertValue(indentPad, m_project->variable(cb->variable.id).c_str(), "{");
                 if (cb->variable.source == VariableComparisonSource::Variable) {
-                  indentPad.replace(indentPad.find("{"), 2, m_project->variable(cb->variable.otherId).c_str());
+                  insertValue(indentPad, m_project->variable(cb->variable.otherId).c_str(), "{");
                 }
               } else if (cb->type == ConditionType::Switch) {
-                indentPad.replace(indentPad.find("{"), 2, m_project->switche(cb->globalSwitch.switchIdx).c_str());
+                insertValue(indentPad, m_project->switche(cb->globalSwitch.switchIdx).c_str(), "{");
               }
               else if (cb->type == ConditionType::Self_Switch) {
-                indentPad.replace(indentPad.find("{"), 2, cb->selfSw);
+                insertValue(indentPad, cb->selfSw, "{");
               }
               else if (cb->type == ConditionType::Actor) {
-                indentPad.replace(indentPad.find("{"), 2, m_project->actor(cb->actor.id)->name);
+                insertValue(indentPad, m_project->actor(cb->actor.id)->name, "{");
                 if (cb->actor.type != ActorConditionType::In_The_Party) {
                   ActorConditionType actorCondition = cb->actor.type;
                   if (actorCondition == ActorConditionType::Class) {
-                    indentPad.replace(indentPad.find("["), 2, m_project->actorClass(cb->actor.checkId)->name);
+                    insertValue(indentPad, m_project->actorClass(cb->actor.checkId)->name, "[");
                   }
                   else if (actorCondition == ActorConditionType::Skill) {
-                    indentPad.replace(indentPad.find("["), 2, m_project->skill(cb->actor.checkId)->name);
+                    insertValue(indentPad, m_project->skill(cb->actor.checkId)->name, "[");
                   }
                   else if (actorCondition == ActorConditionType::Weapon) {
-                    indentPad.replace(indentPad.find("["), 2, m_project->weapon(cb->actor.checkId)->name);
+                    insertValue(indentPad, m_project->weapon(cb->actor.checkId)->name, "[");
                   }
                   else if (actorCondition == ActorConditionType::Armor) {
-                    indentPad.replace(indentPad.find("["), 2, m_project->armor(cb->actor.checkId)->name);
+                    insertValue(indentPad, m_project->armor(cb->actor.checkId)->name, "{");
                   }
                   else if (actorCondition == ActorConditionType::State) {
-                    indentPad.replace(indentPad.find("["), 2, m_project->state(cb->actor.checkId)->name);
+                    insertValue(indentPad, m_project->state(cb->actor.checkId)->name, "{");
                   }
                   else {
-                    indentPad.replace(indentPad.find("["), 2, cb->name);
+                    insertValue(indentPad, cb->name, "{");
                   }
                 }
               }
               else if (cb->type == ConditionType::Enemy) {
-                indentPad.replace(indentPad.find("{"), 2, m_project->enemy(cb->enemy.id)->name);
+                insertValue(indentPad, m_project->enemy(cb->enemy.id)->name, "{");
                 if (cb->enemy.type != EnemyConditionType::Appeared) {
-                  indentPad.replace(indentPad.find("["), 2, m_project->state(cb->enemy.stateId)->name);
+                  insertValue(indentPad, m_project->state(cb->enemy.stateId)->name, "{");
                 }
               }
               else if (cb->type == ConditionType::Character) {
@@ -81,25 +87,25 @@ void EventCommandEditor::draw() {
                 else {
                   characterName = m_project->event(cb->character.id)->name;
                 }
-                indentPad.replace(indentPad.find("{"), 2, characterName);
+                insertValue(indentPad, characterName, "{");
               }
               else if (cb->type == ConditionType::Vehicle) {
-                indentPad.replace(indentPad.find("{"), 2, m_project->vehicle(cb->vehicle.id));
+                insertValue(indentPad, m_project->vehicle(cb->vehicle.id), "{");
               }
               else if (cb->type == ConditionType::Gold) {
-                indentPad.replace(indentPad.find("{"), 2, std::to_string(cb->gold.value));
+                insertValue(indentPad, std::to_string(cb->gold.value), "{");
               }
               else if (cb->type == ConditionType::Item) {
-                indentPad.replace(indentPad.find("{"), 2, m_project->item(cb->item.id)->name);
+                insertValue(indentPad, m_project->item(cb->item.id)->name, "{");
               }
               else if (cb->type == ConditionType::Weapon) {
-                indentPad.replace(indentPad.find("{"), 2, m_project->weapon(cb->item.id)->name);
+                insertValue(indentPad, m_project->weapon(cb->item.id)->name, "{");
               }
               else if (cb->type == ConditionType::Armor) {
-                indentPad.replace(indentPad.find("{"), 2, m_project->armor(cb->item.id)->name);
+                insertValue(indentPad, m_project->armor(cb->item.id)->name, "{");
               }
               else if (cb->type == ConditionType::Button) {
-                indentPad.replace(indentPad.find("{"), 2, cb->button);
+                insertValue(indentPad, cb->button, "{");
               }
               else if (cb->type == ConditionType::Script) {
                 indentPad += cb->script;
@@ -108,39 +114,39 @@ void EventCommandEditor::draw() {
             else if (m_commands->at(n)->code() == EventCode::Control_Switches) {
               ControlSwitches* cs = dynamic_cast<ControlSwitches*>(m_commands->at(n).get());
               if (cs->start == cs->end) {
-                indentPad.replace(indentPad.find("{"), 2, m_project->switche(cs->start));
+                insertValue(indentPad, m_project->switche(cs->start), "{");
               }
             }
             else if (m_commands->at(n)->code() == EventCode::Control_Variables) {
               ControlVariables* cv = dynamic_cast<ControlVariables*>(m_commands->at(n).get());
 
               if (cv->start == cv->end) {
-                indentPad.replace(indentPad.find("{"), 2, m_project->variable(cv->start));
+                insertValue(indentPad, m_project->variable(cv->start), "{");
                 if (cv->operand == VariableControlOperand::Variable) {
-                  indentPad.replace(indentPad.find("{"), 2, m_project->variable(cv->variable));
+                  insertValue(indentPad, m_project->variable(cv->variable), "{");
                 }
                 else if (cv->operand == VariableControlOperand::Game_Data) {
                   if (cv->gameData.source == GameDataSource::Actor) {
-                    indentPad.replace(indentPad.find("{"), 2, m_project->actor(cv->gameData.rawSource)->name);
+                    insertValue(indentPad, m_project->actor(cv->gameData.rawSource)->name, "{");
                   }
                   else if (cv->gameData.source == GameDataSource::Armor) {
-                    indentPad.replace(indentPad.find("{"), 2, m_project->armor(cv->gameData.rawSource)->name);
+                    insertValue(indentPad, m_project->armor(cv->gameData.rawSource)->name, "{");
 
                   }
                   else if (cv->gameData.source == GameDataSource::Character) {
-                    indentPad.replace(indentPad.find("{"), 2, m_project->event(cv->gameData.rawSource)->name);
+                    insertValue(indentPad, m_project->event(cv->gameData.rawSource)->name, "{");
 
                   }
                   else if (cv->gameData.source == GameDataSource::Enemy) {
-                    indentPad.replace(indentPad.find("{"), 2, m_project->enemy(cv->gameData.rawSource)->name);
+                    insertValue(indentPad, m_project->enemy(cv->gameData.rawSource)->name, "{");
 
                   }
                   else if (cv->gameData.source == GameDataSource::Item) {
-                    indentPad.replace(indentPad.find("{"), 2, m_project->item(cv->gameData.rawSource)->name);
+                    insertValue(indentPad, m_project->item(cv->gameData.rawSource)->name, "{");
 
                   }
                   else if (cv->gameData.source == GameDataSource::Weapon) {
-                    indentPad.replace(indentPad.find("{"), 2, m_project->weapon(cv->gameData.rawSource)->name);
+                    insertValue(indentPad, m_project->weapon(cv->gameData.rawSource)->name, "{");
                   }
                 }
               }

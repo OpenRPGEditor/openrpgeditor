@@ -188,8 +188,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
         break;
       }
       case ConditionType::Gold: {
-        parameters[1].get_to(cond->gold.type);
-        parameters[2].get_to(cond->gold.value);
+        parameters[1].get_to(cond->gold.value);
+        parameters[2].get_to(cond->gold.type);
         break;
       }
       case ConditionType::Item: {

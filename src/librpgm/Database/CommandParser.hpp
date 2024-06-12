@@ -445,6 +445,10 @@ struct ControlSelfSwitch : IEventCommand {
 
   std::string selfSw; // A, B, C, D
   SwitchControl turnOff;
+  [[nodiscard]] virtual std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') +
+           ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇Control Self Switch : " + selfSw + " is " + DecodeEnumName(turnOff) + ColorFormatter::popColor();
+  }
 };
 
 struct ControlTimer : IEventCommand {
@@ -452,6 +456,21 @@ struct ControlTimer : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Control_Self_Switch; }
   TimerControl control;
   int seconds;
+  [[nodiscard]] virtual std::string stringRep() const override {
+    std::string min;
+    std::string sec;
+
+    if (seconds > 59) {
+      min = std::to_string(seconds / 60);
+      sec = std::to_string(seconds % 60);
+    } else {
+      min = "0";
+      sec = std::to_string(seconds);
+    }
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + "◇Control Timer : " + DecodeEnumName(control) + ", " + min + " min " +
+           sec + " sec" + ColorFormatter::popColor();
+  }
 };
 
 struct ChangeGoldCommmand : IEventCommand {
@@ -476,6 +495,10 @@ struct ChangeItemsCommmand : IEventCommand {
   QuantityChangeOp operation;
   QuantityChangeSource operandSource;
   int operand;
+  [[nodiscard]] virtual std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + "◇Change Items : {} " + DecodeEnumName(operation) + (operandSource == QuantityChangeSource::Constant ? std::to_string(operand) : " []") + ColorFormatter::popColor();
+  }
 };
 
 struct ChangeWeaponsCommmand : IEventCommand {
@@ -486,6 +509,10 @@ struct ChangeWeaponsCommmand : IEventCommand {
   QuantityChangeSource operandSource;
   int operand;
   bool includeEquipment;
+  [[nodiscard]] virtual std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + "◇Change Weapons : {} " + DecodeEnumName(operation) + (operandSource == QuantityChangeSource::Constant ? std::to_string(operand) : " [] ") + ColorFormatter::popColor() + (includeEquipment == true ? ColorFormatter::getColor(Color::Gray) + "(Include Equipment)" : "");
+  }
 };
 
 struct ChangeArmorsCommmand : IEventCommand {
@@ -496,6 +523,10 @@ struct ChangeArmorsCommmand : IEventCommand {
   QuantityChangeSource operandSource;
   int operand;
   bool includeEquipment;
+  [[nodiscard]] virtual std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + "◇Change Armors : {} " + DecodeEnumName(operation) + (operandSource == QuantityChangeSource::Constant ? std::to_string(operand) : " [] ") + ColorFormatter::popColor() + (includeEquipment == true ? ColorFormatter::getColor(Color::Gray) + "(Include Equipment)" : "");
+  }
 };
 
 struct ChangePartyMemberCommand : IEventCommand {
@@ -504,6 +535,10 @@ struct ChangePartyMemberCommand : IEventCommand {
   int member;
   PartyMemberOperation operation;
   bool initialize;
+  [[nodiscard]] virtual std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + "◇Change Party Member : " + DecodeEnumName(operation) + " {} " + ColorFormatter::popColor() + (initialize == true ? ColorFormatter::getColor(Color::Gray) + "(Initialize)" : "");
+  }
 };
 struct ChangeBattleBGMCommand : IEventCommand {
   ~ChangeBattleBGMCommand() override = default;

@@ -127,6 +127,28 @@ void EventCommandEditor::draw() {
                 }
               }
             }
+            else if (m_commands->at(n)->code() == EventCode::Change_Armors) {
+              ChangeArmorsCommmand* ca = dynamic_cast<ChangeArmorsCommmand*>(m_commands->at(n).get());
+              insertValue(indentPad, m_project->armor(ca->item)->name, "{");
+              if (ca->operandSource == QuantityChangeSource::Variable)
+                insertValue(indentPad, m_project->armor(ca->item)->name, "[");
+            }
+            else if (m_commands->at(n)->code() == EventCode::Change_Weapons) {
+              ChangeWeaponsCommmand* cw = dynamic_cast<ChangeWeaponsCommmand*>(m_commands->at(n).get());
+              insertValue(indentPad, m_project->weapon(cw->item)->name, "{");
+              if (cw->operandSource == QuantityChangeSource::Variable)
+                insertValue(indentPad, m_project->weapon(cw->item)->name, "[");
+            }
+            else if (m_commands->at(n)->code() == EventCode::Change_Items) {
+              ChangeItemsCommmand* ci = dynamic_cast<ChangeItemsCommmand*>(m_commands->at(n).get());
+              insertValue(indentPad, m_project->item(ci->item)->name, "{");
+              if (ci->operandSource == QuantityChangeSource::Variable)
+                insertValue(indentPad, m_project->item(ci->item)->name, "[");
+            }
+            else if (m_commands->at(n)->code() == EventCode::Change_Party_Member) {
+              ChangePartyMemberCommand* cm = dynamic_cast<ChangePartyMemberCommand*>(m_commands->at(n).get());
+              insertValue(indentPad, m_project->actor(cm->member)->name, "{");
+            }
 
             // ImGui::PushStyleColor(ImGuiCol_Text, m_selectedCommonEvent->commands->at(n)->color());
             auto oldCursor = ImGui::GetCursorPos();

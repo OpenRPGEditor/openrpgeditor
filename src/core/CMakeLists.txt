@@ -14,10 +14,15 @@ add_library(
         Core/Texture.hpp Core/Texture.cpp
         Core/ImGuiUtils.hpp Core/ImGuiUtils.cpp
         Core/TilesetPicker.hpp Core/TilesetPicker.cpp
-        Core/MapRenderer.hpp Core/MapRenderer.cpp
+
         Core/MapListView.hpp Core/MapListView.cpp
         Core/EventListView.hpp Core/EventListView.cpp
+
         Core/MapEditor.hpp Core/MapEditor.cpp
+        Core/MapEditor/MapEvent.hpp Core/MapEditor/MapEvent.cpp
+        Core/MapEditor/MapCursor.hpp Core/MapEditor/MapCursor.cpp
+        Core/MapEditor/MapRenderer.hpp Core/MapEditor/MapRenderer.cpp
+
         Core/EventEditor.cpp Core/EventEditor.cpp
         Core/EventEditor/EVPage.hpp Core/EventEditor/EVPage.cpp
         Core/DatabaseEditor.cpp Core/DatabaseEditor.hpp

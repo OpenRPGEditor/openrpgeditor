@@ -16,8 +16,8 @@ public:
                                               optExtraExp, optFloorDeath, optFollowers, optSideView, optSlipDeath,
                                               optTransparent, partyMembers, ship, skillTypes, sounds, startMapId,
                                               startX, startY, switches, terms, testBattlers, testTroopId, title1Name,
-                                              title2Name, titleBgm, variables, versionId, victoryMe, weaponTypes,
-                                              windowTone);
+                                              title2Name, titleBgm, variables, tileSize, versionId, victoryMe,
+                                              weaponTypes, windowTone);
   struct Motion {
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Motion, type, weaponImageId);
     int type = 0;
@@ -66,6 +66,7 @@ public:
   std::string title2Name;
   Audio titleBgm;
   std::vector<std::string> variables;
+  int tileSize{48};
   uint32_t versionId = 0;
   Audio victoryMe;
   std::vector<std::string> weaponTypes;

@@ -1,4 +1,4 @@
-#include "Core/MapRenderer.hpp"
+#include "MapRenderer.hpp"
 
 #include "SDL2/SDL.h"
 #include "Core/Application.hpp"
@@ -276,6 +276,9 @@ void MapRenderer::clearRect(SDL_Texture* clr, int x, int y, int w, int h) {
 }
 
 int MapRenderer::tileId(const int x, const int y, const int z) const {
+  if (!m_map) {
+    return 0;
+  }
 
   int idx = (z * m_map->height + y) * m_map->width + x;
   if (idx < m_map->data.size()) {

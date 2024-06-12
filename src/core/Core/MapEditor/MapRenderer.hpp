@@ -3,10 +3,10 @@
 #include <vector>
 #include <algorithm>
 
-#include "Core/Texture.hpp"
-#include "Database/Map.hpp"
+#include "../Texture.hpp"
+#include "../../../librpgm/Database/Map.hpp"
 
-#include "Database/Tilesets.hpp"
+#include "../../../librpgm/Database/Tilesets.hpp"
 
 class Map;
 class Tileset;

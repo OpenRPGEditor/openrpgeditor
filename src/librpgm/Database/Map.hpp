@@ -12,7 +12,7 @@ public:
   NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Map, autoPlayBgm, autoPlayBgs, battleBack1Name, battleBack2Name, bgm, bgs,
                                  disableDashing, displayName, encounters, encounterStep, note, parallaxLoopX,
                                  parallaxLoopY, parallaxName, parallaxShow, parallaxSx, parallaxSy, scrollType,
-                                 specifyBattleBack, tilesetId, width, height, data, events)
+                                 specifyBattleBack, tilesetId, width, height, data, events);
   struct Encounter {
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Encounter, regionSet, troopId, weight);
     std::array<int, 3> regionSet{};
@@ -41,13 +41,14 @@ public:
   int tilesetId{};
   int width{};
   int height{};
+
   std::vector<int> data;
   std::vector<std::optional<Event>> events;
 
   static Map load(std::string_view filepath);
   bool serialize(std::string_view filepath);
 
-  [[nodiscard]] std::vector<std::optional<Event>> getSortedBy() const {
+  [[nodiscard]] std::vector<std::optional<Event>> getSorted() const {
     std::vector<std::optional<Event>> ret = events;
     std::sort(ret.begin(), ret.end(), [](const std::optional<Event>& a, const std::optional<Event>& b) {
       if (!a || !b) {

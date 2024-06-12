@@ -351,7 +351,7 @@ void Project::drawMenu() {
         snprintf(buff, 4096, "xdg-open %s", m_basePath.c_str());
 #endif
         if (strlen(buff) > 0) {
-          system(buff);
+          ::system(buff);
         }
       }
       ImGui::EndMenu();

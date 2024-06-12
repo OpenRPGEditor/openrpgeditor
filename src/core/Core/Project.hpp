@@ -129,6 +129,9 @@ public:
     m_redoStack.clear();
   }
 
+  System& system() { return m_system; }
+  const System& system() const { return m_system; }
+
 private:
   void drawMenu();
   void drawFileDialog();

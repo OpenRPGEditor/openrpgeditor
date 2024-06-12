@@ -96,6 +96,7 @@ public:
   Armor* armor(int id) { return m_armors.armor(id); }
   Item* item(int id) { return m_items.item(id); }
   State* state(int id) { return m_states.state(id); }
+  Animation* animation(int id) { return m_animations.animation(id); }
 
   void setDrawTool(DrawTool tool) { m_drawTool = tool; }
   DrawTool drawTool() const { return m_drawTool; }

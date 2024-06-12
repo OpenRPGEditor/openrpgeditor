@@ -424,8 +424,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Change_Vechicle_BGM: {
-      ChangeVehicleMECommand* bgm =
-          dynamic_cast<ChangeVehicleMECommand*>(ret.emplace_back(new ChangeVehicleMECommand()).get());
+      ChangeVehicleBGMCommand* bgm =
+          dynamic_cast<ChangeVehicleBGMCommand*>(ret.emplace_back(new ChangeVehicleBGMCommand()).get());
       bgm->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(bgm->me);
       break;

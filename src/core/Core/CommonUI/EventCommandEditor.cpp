@@ -149,6 +149,10 @@ void EventCommandEditor::draw() {
               ChangePartyMemberCommand* cm = dynamic_cast<ChangePartyMemberCommand*>(m_commands->at(n).get());
               insertValue(indentPad, m_project->actor(cm->member)->name, "{");
             }
+            else if (m_commands->at(n)->code() == EventCode::Show_Animation) {
+              ShowAnimationCommand* sac = dynamic_cast<ShowAnimationCommand*>(m_commands->at(n).get());
+              insertValue(indentPad, m_project->animation(sac->animation)->name, "{");
+            }
 
             // ImGui::PushStyleColor(ImGuiCol_Text, m_selectedCommonEvent->commands->at(n)->color());
             auto oldCursor = ImGui::GetCursorPos();

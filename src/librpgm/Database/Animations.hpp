@@ -11,6 +11,9 @@ public:
   static Animations load(std::string_view filename);
   void serialize(std::string_view filename);
 
+  std::vector<Animation>& animations() { return m_animations; }
+  const std::vector<Animation>& animations() const { return m_animations; }
+
   [[nodiscard]] Animation* animation(int id) {
     for (auto& item : m_animations) {
       if (item.id == id) {

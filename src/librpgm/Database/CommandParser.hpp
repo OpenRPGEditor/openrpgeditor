@@ -544,36 +544,60 @@ struct ChangeBattleBGMCommand : IEventCommand {
   ~ChangeBattleBGMCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Battle_BGM; }
   Audio bgm;
+  [[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇Change Battle BGM : " + (bgm.name == "" ? "None" : bgm.name) +
+           " " + std::format("({}, {}, {})", bgm.volume, bgm.pitch, bgm.pan) + ColorFormatter::popColor();
+  }
 };
 
 struct ChangeVictoryMECommand : IEventCommand {
   ~ChangeVictoryMECommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Victory_ME; }
   Audio me;
+  [[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇Change Victory ME : " + (me.name == "" ? "None" : me.name) +
+           " " + std::format("({}, {}, {})", me.volume, me.pitch, me.pan) + ColorFormatter::popColor();
+  }
 };
 
 struct ChangeSaveAccessCommand : IEventCommand {
   ~ChangeSaveAccessCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Save_Access; }
   AccessMode access;
+  [[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + "◇Change Save Access : " + DecodeEnumName(access) + ColorFormatter::popColor();
+  }
 };
 
 struct ChangeMenuAccessCommand : IEventCommand {
   ~ChangeMenuAccessCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Menu_Access; }
   AccessMode access;
+  [[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + "◇Change Menu Access : " + DecodeEnumName(access) + ColorFormatter::popColor();
+  }
 };
 
 struct ChangeEncounterDisableCommand : IEventCommand {
   ~ChangeEncounterDisableCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Encounter_Disable; }
   AccessMode access;
+  [[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + "◇Change Encounter : " + DecodeEnumName(access) + ColorFormatter::popColor();
+  }
 };
 
 struct ChangeFormationAccessCommand : IEventCommand {
   ~ChangeFormationAccessCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Formation_Access; }
   AccessMode access;
+  [[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + "◇Change Formation Access : " + DecodeEnumName(access) + ColorFormatter::popColor();
+  }
 };
 
 struct ChangeWindowColorCommand : IEventCommand {
@@ -582,27 +606,54 @@ struct ChangeWindowColorCommand : IEventCommand {
   int r;
   int g;
   int b;
+  [[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + "◇Change Window Color : " + std::format("({}, {}, {})", r, g, b) + ColorFormatter::popColor();
+  }
 };
 
 struct ChangeDefeatMECommand : IEventCommand {
   ~ChangeDefeatMECommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Defeat_ME; }
   Audio me;
+  [[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇Change Defeat ME : " + (me.name == "" ? "None" : me.name) +
+           " " + std::format("({}, {}, {})", me.volume, me.pitch, me.pan) + ColorFormatter::popColor();
+  }
 };
 
-struct ChangeVehicleMECommand : IEventCommand {
-  ~ChangeVehicleMECommand() override = default;
+struct ChangeVehicleBGMCommand : IEventCommand {
+  ~ChangeVehicleBGMCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Vechicle_BGM; }
   Audio me;
+  // TODO: Missing parameter? Vehicle?
+  [[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code())) + "◇Change Vehicle BGM : " + (me.name == "" ? "None" : me.name) +
+           " " + std::format("({}, {}, {})", me.volume, me.pitch, me.pan) + ColorFormatter::popColor();
+  }
 };
 
 struct TransferPlayerCommand : IEventCommand {
   ~TransferPlayerCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Transfer_Player; }
+  // TODO: Missing fade/direction codes
   TransferMode mode;
   int mapId;
   int x;
   int y;
+  /*
+  [[nodiscard]] std::string stringRep() const override {
+    if (mode == TransferMode::Variable_Designation) {
+
+    }
+    else if (mode == TransferMode::Exchange_With_Another_Event) {
+
+    }
+    else {
+      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+      + "◇Transfer Player : {}
+    }
+  }*/
 };
 
 struct SetVehicleLocationCommand : IEventCommand {
@@ -629,6 +680,10 @@ struct ScrollMapCommand : IEventCommand {
   Direction direction;
   int distance;
   MovementSpeed speed;
+  [[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + std::format("◇Scroll Map : {}, {}, {}", DecodeEnumName(direction), distance, DecodeEnumName(speed)) + ColorFormatter::popColor();
+  }
 };
 
 struct SetMovementRouteCommand : IEventCommand {
@@ -637,6 +692,33 @@ struct SetMovementRouteCommand : IEventCommand {
   int character;
   MovementRoute route;
   std::vector<std::shared_ptr<IEventCommand>> editNodes;
+  // TODO: EventCommandEditor
+  [[nodiscard]] std::string stringRep() const override {
+
+    std::string characterName = character == -1 ? "Player" : character == 0 ? "This Event" : "{}";
+    std::string stringSuffix = "(";
+    stringSuffix += route.repeat == true ? "Repeat" : "";
+    stringSuffix += route.skippable == true ? ", Skip" : "";
+    stringSuffix += route.wait == true ? ", Wait" : "";
+    stringSuffix += ")";
+
+    std::string moveRoute = std::string(indent ? *indent * 4 : 0, ' ') +
+                            ColorFormatter::getColorCode(DecodeEnumName(code())) +
+                            "◇Set Movement Route : " + characterName + ColorFormatter::popColor() +
+                            ColorFormatter::getColor(Color::Gray) + stringSuffix + ColorFormatter::popColor();
+
+    /*for (const auto& t : route.list) {
+      if (!moveRoute.empty()) {
+        moveRoute += "\n";
+      }
+      moveRoute += std::string(indent ? *indent : 0, '\t') + " :" + std::string(((t->indent ? *t->indent : 0) + 1), '\t') +
+             " : " + t->script;
+    }*/
+
+    return moveRoute;
+
+  }
+
 };
 
 struct MovementRouteStepCommand : IEventCommand {
@@ -649,12 +731,20 @@ struct MovementRouteStepCommand : IEventCommand {
 struct GetOnOffVehicleCommand : IEventCommand {
   ~GetOnOffVehicleCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Get_On_Off_Vehicle; }
+  [[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + "◇Get on/off Vehicle" + ColorFormatter::popColor();
+  }
 };
 
 struct ChangeTransparencyCommand : IEventCommand {
   ~ChangeTransparencyCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Transparency; }
   int transparency;
+  [[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + "◇Change Transparency : " + (transparency == 0 ? "Disable" : "Enable") + ColorFormatter::popColor();
+  }
 };
 
 struct ShowAnimationCommand : IEventCommand {
@@ -663,11 +753,19 @@ struct ShowAnimationCommand : IEventCommand {
   int character;
   int animation;
   bool waitForCompletion;
+  [[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + "◇Show Animation : " + (character == -1 ? "Player" : character == 0 ? "This  Event" : "{}, ")+ ColorFormatter::popColor()
+    + (waitForCompletion == true ? ColorFormatter::getColor(Color::Gray) + "(Wait)" + ColorFormatter::popColor() : "");
+  }
 };
 
 struct EraseEventCommand : IEventCommand {
   ~EraseEventCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Erase_Event; }
+  [[nodiscard]] EventCode code() const override { return EventCode::Erase_Event; }[[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + "◇Erase Event" + ColorFormatter::popColor();
+  }
 };
 
 struct NextScriptCommand : IEventCommand {

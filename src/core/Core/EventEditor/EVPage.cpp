@@ -17,7 +17,7 @@ EVPage::EVPage(EventEditor* parent, EventPage* page)
   m_commandEditor.setCommands(&m_page->list);
 }
 
-std::tuple<bool, bool> EVPage::draw( bool canDelete, int index) {
+std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
   bool open = true;
   bool* p_open = canDelete ? &open : nullptr;
   std::string title = m_page->name.empty() ? std::format("Page {}", std::to_string(index + 1)) : m_page->name;
@@ -61,10 +61,9 @@ std::tuple<bool, bool> EVPage::draw( bool canDelete, int index) {
     }
     ImGui::EndGroup();
     ImGui::SameLine();
-    if (ImGui::BeginChild("##orpg_event_page_commands")) {
-      m_commandEditor.draw();
-      ImGui::EndChild();
-    }
+    ImGui::BeginChild("##orpg_event_page_commands");
+    { m_commandEditor.draw(); }
+    ImGui::EndChild();
     ImGui::EndTabItem();
   }
 

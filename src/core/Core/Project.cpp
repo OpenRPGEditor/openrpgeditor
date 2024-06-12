@@ -26,6 +26,8 @@ constexpr std::array KnownRPGMVVersions = {
 };
 
 bool Project::load(std::string_view filePath, std::string_view basePath) {
+  m_undoStack.clear();
+  m_redoStack.clear();
   SDL_SetCursor(waitCursor);
   std::string version;
   std::ifstream file(filePath.data());
@@ -104,6 +106,9 @@ bool Project::close(bool save) {
   if (save) {
     // TODO: Implement when safe to do so
   }
+
+  m_undoStack.clear();
+  m_redoStack.clear();
 
   /* Default initialize all of these */
   m_databaseEditor.reset();
@@ -216,7 +221,7 @@ void Project::drawMenu() {
           }
           ImGui::PopID();
           if (ImGui::IsItemHovered()) {
-            ImGui::Text("%s", s.first.c_str());
+            ImGui::SetTooltip("%s", s.first.c_str());
           }
         }
         ImGui::EndMenu();
@@ -241,8 +246,28 @@ void Project::drawMenu() {
      * so we have to do that ourselves
      */
     if (ImGui::BeginMenu("Edit")) {
-      if (ImGui::MenuItem("Undo", "Ctrl+Z")) {
-        // TODO: Implement undo/redo stack
+      if (ImGui::MenuItem("Undo", "Ctrl+Z", false, m_undoStack.hasCommands())) {
+        auto cmd = m_undoStack.pop();
+        if (cmd) {
+          cmd->undo();
+          cmd->setIsRedo(true);
+          m_redoStack.push(cmd);
+        }
+      }
+      if (ImGui::IsItemHovered() && m_undoStack.hasCommands()) {
+        ImGui::SetTooltip("%s", m_undoStack.top()->description().c_str());
+      }
+
+      if (ImGui::MenuItem("Redo", "Ctrl+Shift+Z", false, m_redoStack.hasCommands())) {
+        auto cmd = m_redoStack.pop();
+        if (cmd) {
+          cmd->undo();
+          cmd->setIsRedo(false);
+          m_undoStack.push(cmd);
+        }
+      }
+      if (ImGui::IsItemHovered() && m_redoStack.hasCommands()) {
+        ImGui::SetTooltip("%s", m_redoStack.top()->description().c_str());
       }
       ImGui::Separator();
       if (ImGui::MenuItem("Cut", "Ctrl+X")) {

@@ -36,6 +36,7 @@ add_library(
         Core/DatabaseEditor/DBSystemTab.hpp Core/DatabaseEditor/DBSystemTab.cpp
         Core/CommonUI/TraitsEditor.hpp Core/CommonUI/TraitsEditor.cpp
         Core/CommonUI/EventCommandEditor.hpp Core/CommonUI/EventCommandEditor.cpp
+        Core/UndoStack.hpp Core/UndoStack.cpp
 
         Core/CheckerboardTexture.hpp Core/CheckerboardTexture.cpp
         Core/CharacterSheet.hpp Core/CharacterSheet.cpp

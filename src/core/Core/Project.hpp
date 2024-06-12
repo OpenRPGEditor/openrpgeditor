@@ -5,6 +5,7 @@
 #include "MapEditor.hpp"
 #include "MapListView.hpp"
 #include "TilesetPicker.hpp"
+#include "UndoStack.hpp"
 
 #include <string_view>
 #include <string>
@@ -120,6 +121,12 @@ public:
     return nullptr;
   }
 
+  void addUndo(const std::weak_ptr<IUndoCommand>& cmd) {
+    m_undoStack.push(cmd);
+    /* Clear the redo stack since adding a new undo command invalidates the redo state */
+    m_redoStack.clear();
+  }
+
 private:
   void drawMenu();
   void drawFileDialog();
@@ -128,6 +135,8 @@ private:
   MapEditor m_mapEditor;
   EventListView m_eventListView;
   TilesetPicker m_tilesetPicker;
+  UndoStack m_undoStack;
+  UndoStack m_redoStack;
   bool m_isValid = false;
   bool m_isLoaded = false;
   bool m_isModified = false;

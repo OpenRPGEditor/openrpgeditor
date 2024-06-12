@@ -327,9 +327,9 @@ void TraitsEditor::drawPopup(std::vector<Trait>& traits, DatabaseEditor* dbEdito
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
-      if (!m_isNewEntry) {
+      if (!m_isNewEntry && m_selectedTrait) {
         // Restore values to their unmodified state;
-        (*m_selectedTrait) = m_tempTrait;
+        *m_selectedTrait = m_tempTrait;
       }
       m_isNewEntry = false;
       m_selectedTrait = nullptr;

@@ -33,4 +33,7 @@ private:
   std::vector<TileRect> m_lowerLayer;
   std::vector<TileRect> m_upperLayer;
   std::vector<EventEditor> m_eventEditors;
+  Event* m_selectedEvent = nullptr;
+  int m_selectedEventX = -1;
+  int m_selectedEventY = -1;
 };

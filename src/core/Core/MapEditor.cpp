@@ -6,6 +6,43 @@
 #include "imgui_internal.h"
 #include "imgui.h"
 
+#include <format>
+
+struct EventMoveUndoCommand : IUndoCommand {
+  EventMoveUndoCommand() = delete;
+  EventMoveUndoCommand(Event* event, int x, int y) : m_event(event), m_x(x), m_y(y) {}
+  int type() const override { return -1; }
+
+  bool undo() override {
+    if (m_event) {
+      std::swap(m_event->x, m_x);
+      std::swap(m_event->y, m_y);
+      return true;
+    }
+
+    return false;
+  }
+
+  std::string description() override {
+    if (!m_event) {
+      return "Invalid move command!";
+    }
+    if (!m_isRedo) {
+      return std::format("Move {} from {},{} to {},{}",
+                         m_event->name.empty() ? std::to_string(m_event->id) : m_event->name, m_x, m_y, m_event->x,
+                         m_event->y);
+    }
+    return std::format("Move {} from {},{} to {},{}",
+                       m_event->name.empty() ? std::to_string(m_event->id) : m_event->name, m_event->x, m_event->y, m_x,
+                       m_y);
+  }
+
+private:
+  Event* m_event = nullptr;
+  int m_x = -1;
+  int m_y = -1;
+};
+
 void MapEditor::setMap(Map* map, MapInfo* info) {
   if (map == nullptr) {
     m_mapRenderer.setMap(nullptr, nullptr);
@@ -254,20 +291,56 @@ void MapEditor::draw() {
                   tex.get(), evMin, evMax,
                   ImVec2{x1 / static_cast<float>(tex.width()), y1 / static_cast<float>(tex.height())},
                   ImVec2{x2 / static_cast<float>(tex.width()), y2 / static_cast<float>(tex.height())});
-
             }
+            bool isHovered = event->x == m_tileCellX && event->y == m_tileCellY;
             /* Check if event is selected */
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-              if (m_tileCellX == event->x && m_tileCellY == event->y && event) {
+              if (isHovered && event) {
 
-                auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(), [&event](const EventEditor& editor) {
-                  return event && editor.event()->id == event->id;
-                });
+                auto it =
+                    std::find_if(m_eventEditors.begin(), m_eventEditors.end(), [&event](const EventEditor& editor) {
+                      return event && editor.event()->id == event->id;
+                    });
                 if (it == m_eventEditors.end()) {
                   printf("Event selected!");
                   m_eventEditors.emplace_back(m_parent, m_map->event(event->id));
                 }
               }
+            } else if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered()) {
+              if (isHovered && m_selectedEvent == nullptr) {
+                m_selectedEvent = m_map->event(event->id);
+                if (m_selectedEvent != nullptr) {
+                  m_selectedEventX = m_selectedEvent->x;
+                  m_selectedEventY = m_selectedEvent->y;
+                }
+              }
+              if (m_selectedEvent != nullptr) {
+                /* For now we'll prevent events from occupying the same tile */
+                /* TODO(phil): Implement some way to sort through events on the same tile */
+                int oldX = m_selectedEvent->x;
+                int oldY = m_selectedEvent->y;
+                auto it = std::find_if(m_map->events.begin(), m_map->events.end(), [&](const std::optional<Event>& e) {
+                  return e->x == m_tileCellX && e->y == m_tileCellY && &e.value() != m_selectedEvent;
+                });
+
+                m_selectedEvent->x = m_tileCellX;
+                m_selectedEvent->y = m_tileCellY;
+
+                if (it != m_map->events.end()) {
+                  m_selectedEvent->x = oldX;
+                  m_selectedEvent->y = oldY;
+                }
+              }
+            } else if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
+              /* If we have a selected actor and it's no longer in it's original location, push it onto the undo stack
+               * as an operation
+               */
+              if (m_selectedEvent != nullptr &&
+                  (m_selectedEvent->x != m_selectedEventX || m_selectedEvent->y != m_selectedEventY)) {
+                m_parent->addUndo(
+                    std::make_shared<EventMoveUndoCommand>(m_selectedEvent, m_selectedEventX, m_selectedEventY));
+              }
+              m_selectedEvent = nullptr;
             }
             ImGui::EndGroup();
           }
@@ -510,6 +583,7 @@ void MapEditor::draw() {
   }
   ImGui::End();
 
+#if 0
   if (m_map) {
     const Tileset* tileset = m_parent->tileset(m_map->tilesetId);
     if (tileset && !tileset->name.empty() && !tileset->flags.empty()) {
@@ -565,4 +639,9 @@ void MapEditor::draw() {
     }
     ImGui::End();
   }
+
+#endif
+  // if (ImGui::BeginPopupContextWindow()) {
+  //   if (ImGui::BeginPopupContextItem(""))
+  // }
 }

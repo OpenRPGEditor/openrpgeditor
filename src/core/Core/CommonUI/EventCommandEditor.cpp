@@ -26,7 +26,7 @@ void EventCommandEditor::draw() {
             if (m_commands->at(n)->code() == EventCode::Common_Event) {
               // Common Event + (name)
               CommonEventCommand* cec = dynamic_cast<CommonEventCommand*>(m_commands->at(n).get());
-              indentPad += m_project->commentEvent(cec->event)->name.c_str();
+              indentPad += m_project->commonEvent(cec->event)->name.c_str();
             }
             else if (m_commands->at(n)->code() == EventCode::Conditional_Branch) {
               ConditionalBranchCommand* cb = dynamic_cast<ConditionalBranchCommand*>(m_commands->at(n).get());

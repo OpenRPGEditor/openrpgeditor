@@ -246,7 +246,7 @@ ExitStatus App::Application::run() {
         }
 
         if (event.type == SDL_WINDOWEVENT && event.window.windowID == SDL_GetWindowID(m_window->getNativeWindow())) {
-          on_event(event.window);
+          onEvent(event.window);
         }
       }
 
@@ -288,16 +288,16 @@ void Application::stop() {
   m_running = false;
 }
 
-void Application::on_event(const SDL_WindowEvent& event) {
+void Application::onEvent(const SDL_WindowEvent& event) {
   APP_PROFILE_FUNCTION();
 
   switch (event.event) {
   case SDL_WINDOWEVENT_CLOSE:
-    return on_close();
+    return onClose();
   case SDL_WINDOWEVENT_MINIMIZED:
-    return on_minimize();
+    return onMinimize();
   case SDL_WINDOWEVENT_SHOWN:
-    return on_shown();
+    return onShown();
   case SDL_WINDOWEVENT_RESIZED: {
     if (!(SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED)) {
       Settings::instance()->window.w = event.data1;
@@ -322,19 +322,19 @@ void Application::on_event(const SDL_WindowEvent& event) {
   }
 }
 
-void Application::on_minimize() {
+void Application::onMinimize() {
   APP_PROFILE_FUNCTION();
 
   m_minimized = true;
 }
 
-void Application::on_shown() {
+void Application::onShown() {
   APP_PROFILE_FUNCTION();
 
   m_minimized = false;
 }
 
-void Application::on_close() {
+void Application::onClose() {
   APP_PROFILE_FUNCTION();
 
   stop();

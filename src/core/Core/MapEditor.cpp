@@ -247,6 +247,7 @@ void MapEditor::draw() {
         if (event) {
           ImGui::BeginGroup();
           {
+            bool isHovered = event->x == m_tileCellX && event->y == m_tileCellY;
             auto eventX = static_cast<float>(event->x * 48) * m_mapScale;
             auto eventY = static_cast<float>(event->y * 48) * m_mapScale;
             eventX += win->ContentRegionRect.Min.x;
@@ -255,8 +256,10 @@ void MapEditor::draw() {
             ImVec2 evMin = ImVec2{eventX, eventY};
             ImVec2 evMax = ImVec2{(eventX + eventS), (eventY + eventS)};
             win->DrawList->AddRectFilled(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0x7f000000);
-            win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0xFF000000, 0, 0, 5.f);
-            win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, 0xFFFFFFFF, 0, 0, 3.f);
+            win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f},
+                                   isHovered ? 0xFFFFFF00 : 0xFF000000, 0, 0, 5.f);
+            win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f},
+                                   isHovered ? 0xFF00FFFF : 0xFFFFFFFF, 0, 0, 3.f);
 
             if (!event->pages[0].image.characterName.empty() && event->pages[0].image.tileId == 0) {
               if (event->pages[0].stepAnime) {
@@ -292,7 +295,6 @@ void MapEditor::draw() {
                   ImVec2{x1 / static_cast<float>(tex.width()), y1 / static_cast<float>(tex.height())},
                   ImVec2{x2 / static_cast<float>(tex.width()), y2 / static_cast<float>(tex.height())});
             }
-            bool isHovered = event->x == m_tileCellX && event->y == m_tileCellY;
             /* Check if event is selected */
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
               if (isHovered && event) {

@@ -42,12 +42,12 @@ void MapCursor::update(float mapScale, int mapWidth, int mapHeight, int tileSize
     if (cursorPos.y >= (mapHeight * tileSizef) * mapScale) {
       cursorPos.y = ((mapHeight * tileSizef) * mapScale);
     }
-    cursorPos.x = static_cast<float>(alignCoord(static_cast<int>(cursorPos.x), static_cast<int>(48.f * mapScale)));
-    cursorPos.y = static_cast<float>(alignCoord(static_cast<int>(cursorPos.y), static_cast<int>(48.f * mapScale)));
+    cursorPos.x = static_cast<float>(alignCoord(static_cast<int>(cursorPos.x), static_cast<int>(tileSizef * mapScale)));
+    cursorPos.y = static_cast<float>(alignCoord(static_cast<int>(cursorPos.y), static_cast<int>(tileSizef * mapScale)));
 
 
-    m_tileX = (static_cast<int>(cursorPos.x) + 1) / static_cast<int>(48.f * mapScale);
-    m_tileY = (static_cast<int>(cursorPos.y) + 1) / static_cast<int>(48.f * mapScale);
+    m_tileX = (static_cast<int>(cursorPos.x) + 1) / static_cast<int>(tileSizef * mapScale);
+    m_tileY = (static_cast<int>(cursorPos.y) + 1) / static_cast<int>(tileSizef * mapScale);
 
     m_cursorPos = cursorPos + win->ContentRegionRect.Min;
     m_visible = true;

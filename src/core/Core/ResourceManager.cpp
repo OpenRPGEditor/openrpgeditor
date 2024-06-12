@@ -44,9 +44,9 @@ Map ResourceManager::loadMap(int mapId) {
   sprintf(pathBuf, "%sMap%.03i.json", m_dataPath.c_str(), mapId);
   APP_DEBUG("Loading map {}", pathBuf);
   Map ret{};
-  //try {
-    ret = Map::load(pathBuf);
-    APP_DEBUG("Map Loaded");
+  // try {
+  ret = Map::load(pathBuf);
+  APP_DEBUG("Map Loaded");
   //} catch (const std::exception& e) { APP_DEBUG("Map Failed To Load! Got exception {}", e.what()); }
 
   return ret;
@@ -58,9 +58,7 @@ Texture ResourceManager::loadTexture(std::string_view path) {
   }
 
   const Texture ret(path);
-  if (ret.m_texture) {
-    m_loadedTextures[path.data()] = ret;
-  }
+  m_loadedTextures[path.data()] = ret;
   return ret;
 }
 

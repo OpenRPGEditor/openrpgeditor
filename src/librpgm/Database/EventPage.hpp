@@ -33,7 +33,7 @@ struct EventImage {
   NLOHMANN_DEFINE_TYPE_INTRUSIVE(EventImage, tileId, characterName, direction, pattern, characterIndex);
   int tileId{};
   std::string characterName;
-  int direction{};
+  Direction direction{};
   int pattern{};
   int characterIndex{};
 };

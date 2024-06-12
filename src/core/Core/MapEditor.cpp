@@ -136,8 +136,8 @@ void MapEditor::draw() {
   m_mapScale = std::clamp(m_mapScale, .25f, 4.f);
 
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
-    ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionMax().y - 90.f), ImGuiChildFlags_Border,
-                      ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(90.f)),
+                      ImGuiChildFlags_Border, ImGuiWindowFlags_HorizontalScrollbar);
 
     if (m_map) {
       ImGuiWindow* win = ImGui::GetCurrentWindow();

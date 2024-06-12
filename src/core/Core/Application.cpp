@@ -108,6 +108,7 @@ ExitStatus App::Application::run() {
       0x2AF8, 0x2EDF,
       0x2EE0, 0x32C7,
       0x32C8, 0x36AF,
+      0xDEA8, 0xE28F,
       0
       /* clang-format on */
   };
@@ -136,6 +137,7 @@ ExitStatus App::Application::run() {
   m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_firple_mono.c_str(), mono_font_size, nullptr, ranges.Data);
   io.Fonts->AddFontFromFileTTF(font_path_jp_mono.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->AddFontFromFileTTF(font_path_kurinoto_mono.c_str(), mono_font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_math.c_str(), font_size, &config, ranges.Data);
   io.Fonts->Build();
 
   io.FontDefault = m_mainFont;

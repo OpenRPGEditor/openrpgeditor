@@ -139,7 +139,7 @@ struct ConditionalBranchCommand : IEventCommand {
   ConditionType type{};
   struct {
     int switchIdx;
-    int checkIfOn;
+    SwitchControl checkIfOn;
   } globalSwitch;
   struct {
     int id;
@@ -201,7 +201,7 @@ struct ConditionalBranchCommand : IEventCommand {
     }
     if (type == ConditionType::Switch) {
       return std::string(indent ? *indent * 4 : 0, ' ') + "◇If " + "{}" + " is " +
-             (globalSwitch.checkIfOn == 0 ? "OFF" : "ON");
+             (globalSwitch.checkIfOn == SwitchControl::OFF ? "OFF" : "ON");
     }
     if (type == ConditionType::Self_Switch) {
       return std::string(indent ? *indent * 4 : 0, ' ') + "◇If Self Switch " + "{}" + " is " +

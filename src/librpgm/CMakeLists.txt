@@ -29,6 +29,7 @@ add_library(
         Database/EventPage.hpp Database/EventPage.cpp
         Database/Battler.hpp Database/Battler.cpp
         Database/Map.hpp Database/Map.cpp
+        Database/ColorFormatter.hpp Database/ColorFormatter.cpp
         Database/CommandParser.hpp Database/CommandParser.cpp
         Database/MovementRoute.hpp Database/MovementRoute.cpp
 )

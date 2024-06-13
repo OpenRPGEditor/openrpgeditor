@@ -427,7 +427,8 @@ void Project::handleKeyboardShortcuts() {
 
   /* Edit Menu */
   if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      ImGui::IsKeyReleased(ImGuiKey_Z)) {
+      !(ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) &&
+      ImGui::IsKeyPressed(ImGuiKey_Z)) {
     handleUndo();
   }
   if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
@@ -490,7 +491,7 @@ void Project::handleKeyboardShortcuts() {
     m_mapEditor.scale(-0.25f);
   }
   if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      (ImGui::IsKeyPressed(ImGuiKey_Keypad0) || ImGui::IsKeyPressedts(ImGuiKey_0))) {
+      (ImGui::IsKeyPressed(ImGuiKey_Keypad0) || ImGui::IsKeyPressed(ImGuiKey_0))) {
     m_mapEditor.setScale(1.f);
   }
 

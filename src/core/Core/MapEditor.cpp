@@ -136,9 +136,7 @@ void MapEditor::drawGrid(ImGuiWindow* win) {
                            0x7f0a0a0a, 3.f);
   }
 }
-float roundToNearestQuarter(float num) {
-  return (num * 4) / 4;
-}
+float roundToNearestQuarter(float num) { return (num * 4) / 4; }
 
 void MapEditor::draw() {
   std::erase_if(m_eventEditors, [](EventEditor& editor) { return !editor.draw(); });
@@ -185,21 +183,17 @@ void MapEditor::draw() {
           continue;
         }
         auto realEvent = m_map->event(event->id);
-        ImGui::BeginGroup();
-        {
-          if (m_selectedEvent == realEvent && !m_hasScrolled) {
-            ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) +
-                              (((event->x * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.x / 2)));
-            ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) +
-                              (((event->y * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.y / 2)));
-            m_hasScrolled = true;
-          }
-          bool isHovered = event->x == tileCellX() && event->y == tileCellY();
-          MapEvent mapEvent(this, &event.value());
-          mapEvent.draw(m_mapScale, isHovered, m_selectedEvent == realEvent, win);
-          handleEventMouseInteraction(event, isHovered);
+        if (m_selectedEvent == realEvent && !m_hasScrolled) {
+          ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) +
+                            (((event->x * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.x / 2)));
+          ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) +
+                            (((event->y * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.y / 2)));
+          m_hasScrolled = true;
         }
-        ImGui::EndGroup();
+        bool isHovered = event->x == tileCellX() && event->y == tileCellY();
+        MapEvent mapEvent(this, &event.value());
+        mapEvent.draw(m_mapScale, isHovered, m_selectedEvent == realEvent, win);
+        handleEventMouseInteraction(event, isHovered);
       }
     }
     ImGui::EndChild();

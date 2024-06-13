@@ -15,14 +15,14 @@ struct SDL_Texture;
 struct TileRect {
   int tileId;
   int setNum;
-  int u;
-  int v;
-  int x;
-  int y;
+  float u;
+  float v;
+  float x;
+  float y;
   int tileWidth;
   int tileHeight;
-  int animX;
-  int animY;
+  float animX;
+  float animY;
 };
 
 class MapRenderer {
@@ -85,6 +85,10 @@ public:
   [[nodiscard]] static bool isTileA3(int tileId) { return tileId >= TILE_ID_A3 && tileId < TILE_ID_A4; }
   [[nodiscard]] static bool isTileA4(int tileId) { return tileId >= TILE_ID_A4 && tileId < TILE_ID_MAX; }
   [[nodiscard]] static bool isTileA5(int tileId) { return tileId >= TILE_ID_A5 && tileId < TILE_ID_A1; }
+  [[nodiscard]] static bool isTileB(int tileId) { return tileId >= TILE_ID_B && tileId < TILE_ID_C; }
+  [[nodiscard]] static bool isTileC(int tileId) { return tileId >= TILE_ID_C && tileId < TILE_ID_D; }
+  [[nodiscard]] static bool isTileD(int tileId) { return tileId >= TILE_ID_D && tileId < TILE_ID_E; }
+  [[nodiscard]] static bool isTileE(int tileId) { return tileId >= TILE_ID_E && tileId < TILE_ID_A5; }
   [[nodiscard]] static bool isWaterTile(int tileId) {
     if (isTileA1(tileId)) {
       return !(tileId >= TILE_ID_A1 + 96 && tileId < TILE_ID_A1 + 192);
@@ -159,7 +163,6 @@ public:
 #endif
   SDL_Texture* getLowerBitmap() const { return m_lowerBitmap; }
   SDL_Texture* getUpperBitmap() const { return m_upperBitmap; }
-
 
   void getTileRect(std::vector<TileRect>& layer, int tileId, int dx, int dy);
   std::array<Texture, 9> m_tilesetTextures;

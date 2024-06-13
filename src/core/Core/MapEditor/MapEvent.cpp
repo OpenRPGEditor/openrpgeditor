@@ -4,6 +4,7 @@
 
 #include "Core/Texture.hpp"
 #include "Core/ResourceManager.hpp"
+#include "Core/Project.hpp"
 
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -98,5 +99,38 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlph
       win->DrawList->AddImage(tex.get(), evMin, evMax, ImVec2{rect.uv0.u, rect.uv0.v}, ImVec2{rect.uv1.u, rect.uv1.v},
                               imageColor);
     }
+  } else if (m_parent->map() && m_event->pages[0].image.tileId) {
+    int tileId = m_event->pages[0].image.tileId;
+    auto tileset = m_parent->project()->tileset(m_parent->map()->tilesetId);
+    if (!tileset) {
+      return;
+    }
+    int setId;
+    if (MapRenderer::isTileA5(tileId)) {
+      setId = 4;
+    } else {
+      setId = 5 + floor(tileId / 256);
+    }
+
+    auto tex = ResourceManager::instance()->loadTilesetImage(tileset->tilesetNames[setId]);
+    if (!tex) {
+      return;
+    }
+
+    float tileU0 = (fmod(floor(tileId / 256), 2) * 8 + (tileId % 8)) * m_parent->tileSize();
+    float tileV0 = fmod(floor(tileId % 256 / 8), 16) * m_parent->tileSize();
+    float tileU1 = tileU0 + static_cast<float>(m_parent->tileSize());
+    float tileV1 = tileV0 + static_cast<float>(m_parent->tileSize());
+    if (m_parent->prisonMode()) {
+      evMin += ImVec2{3.f, 3.f};
+      evMax -= ImVec2{3.f, 3.f};
+    }
+
+    tileU0 /= static_cast<float>(tex.width());
+    tileV0 /= static_cast<float>(tex.height());
+    tileU1 /= static_cast<float>(tex.width());
+    tileV1 /= static_cast<float>(tex.height());
+
+    win->DrawList->AddImage(tex.get(), evMin, evMax, ImVec2{tileU0, tileV0}, ImVec2{tileU1, tileV1}, imageColor);
   }
 }

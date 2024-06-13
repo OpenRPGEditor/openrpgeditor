@@ -239,8 +239,8 @@ void MapRenderer::drawNormalTile(std::vector<TileRect>& layer, int tileId, int d
 
   int w = m_tileWidth;
   int h = m_tileHeight;
-  int sx = ((int)floor(tileId / 128) % 2 * 8 + tileId % 8) * w;
-  int sy = ((int)floor(tileId % 256 / 8) % 16) * h;
+  float sx = (fmod(floor(tileId / 256), 2) * 8 + (tileId % 8)) * w;
+  float sy = fmod(floor(tileId % 256 / 8), 16) * h;
 
   layer.emplace_back(tileId, setNumber, sx, sy, dx, dy, w, h);
 }

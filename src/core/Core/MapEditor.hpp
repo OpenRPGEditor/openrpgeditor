@@ -62,6 +62,12 @@ struct MapEditor {
   void togglePrisonMode() { m_prisonMode ^= 1; }
   void setPrisonMode(const bool prisonMode) { m_prisonMode = prisonMode; }
 
+  Map* map() { return m_map; }
+  const Map* map() const { return m_map; }
+
+  Project* project() { return m_parent; }
+  const Project* project() const { return m_parent; }
+
 private:
   void drawMapProperties();
   void drawGrid(ImGuiWindow* win);

@@ -302,6 +302,10 @@ void Project::drawMenu() {
       if (ImGui::MenuItem("Event", "F6", editMode() == EditMode::Event)) {
         enterEventEditMode();
       }
+      ImGui::Separator();
+      if (ImGui::MenuItem("Events Within Tile", nullptr, m_mapEditor.prisonMode())) {
+        m_mapEditor.togglePrisonMode();
+      }
       ImGui::EndMenu();
     }
     if (ImGui::BeginMenu("Draw")) {

@@ -48,6 +48,10 @@ struct MapEditor {
     }
   }
 
+  bool prisonMode() const { return m_prisonMode; }
+  void togglePrisonMode() { m_prisonMode ^= 1; }
+  void setPrisonMode(const bool prisonMode) { m_prisonMode = prisonMode; }
+
 private:
   Project* m_parent;
   Map* m_map = nullptr;
@@ -67,6 +71,7 @@ private:
   Event* m_movingEvent = nullptr;
   Event* m_selectedEvent = nullptr;
   bool m_hasScrolled = true;
+  bool m_prisonMode{true};
 
   int m_movingEventX = -1;
   int m_movingEventY = -1;

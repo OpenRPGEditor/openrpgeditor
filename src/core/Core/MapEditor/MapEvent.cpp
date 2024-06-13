@@ -34,12 +34,12 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, ImGuiWindow* 
     borderCol &= 0xFFFFFF00;
     borderCol |= r;
     bgColor &= 0xFFFFFF00;
-    bgColor |= r; //(r << 16) | (r << 8) | (r << 0);
+    bgColor |= r;
     imageColor = (0xFF << 24) | (r << 16) | (r << 8) | (r << 0);
   }
 
-  auto eventX = static_cast<float>(m_event->x * 48) * mapScale;
-  auto eventY = static_cast<float>(m_event->y * 48) * mapScale;
+  auto eventX = static_cast<float>(m_event->x * m_parent->tileSize()) * mapScale;
+  auto eventY = static_cast<float>(m_event->y * m_parent->tileSize()) * mapScale;
   eventX += win->ContentRegionRect.Min.x;
   eventY += win->ContentRegionRect.Min.y;
   float eventS = m_parent->tileSize() * mapScale;
@@ -53,15 +53,38 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, ImGuiWindow* 
     if (m_event->pages[0].stepAnime) {
       m_pattern = std::clamp<int>(std::abs(std::remainder(ImGui::GetTime() * 8, 3 * 2)), 0, 3);
     }
+    if (!m_parent->prisonMode()) {
+      Texture tex = m_characterSheet.texture();
+      CharacterRect rect = m_characterSheet.getRectForCharacter(m_event->pages[0].image.characterIndex, m_pattern,
+                                                                m_event->pages[0].image.direction);
 
-    Texture tex = m_characterSheet.texture();
-    CharacterRect rect = m_characterSheet.getRectForCharacter(m_event->pages[0].image.characterIndex, m_pattern,
-                                                              m_event->pages[0].image.direction);
+      evMin.x -= ((static_cast<float>(m_characterSheet.characterWidth()) - m_parent->tileSize()) / 2.f) * mapScale;
+      evMax.x += ((static_cast<float>(m_characterSheet.characterWidth()) - m_parent->tileSize()) / 2.f) * mapScale;
+      evMin.y -= (static_cast<float>(m_characterSheet.characterHeight()) - m_parent->tileSize()) * mapScale;
+      win->DrawList->AddImage(tex.get(), evMin, evMax, ImVec2{rect.uv0.u, rect.uv0.v}, ImVec2{rect.uv1.u, rect.uv1.v},
+                              imageColor);
+    } else {
+      Texture tex = m_characterSheet.texture();
+      CharacterRect rect = m_characterSheet.getRectForCharacter(
+          m_event->pages[0].image.characterIndex, m_event->pages[0].image.pattern, m_event->pages[0].image.direction);
 
-    evMin.x -= ((static_cast<float>(m_characterSheet.characterWidth()) - m_parent->tileSize()) / 2.f) * mapScale;
-    evMax.x += ((static_cast<float>(m_characterSheet.characterWidth()) - m_parent->tileSize()) / 2.f) * mapScale;
-    evMin.y -= (static_cast<float>(m_characterSheet.characterHeight()) - m_parent->tileSize()) * mapScale;
-    win->DrawList->AddImage(tex.get(), evMin, evMax, ImVec2{rect.uv0.u, rect.uv0.v}, ImVec2{rect.uv1.u, rect.uv1.v},
-                            imageColor);
+      if (!m_characterSheet.isSingleCharacter()) {
+        rect.uv0.u *= tex.width();
+        rect.uv0.v *= tex.height();
+        rect.uv1.u *= tex.width();
+        rect.uv1.v *= tex.height();
+        rect.uv0.u += 16;
+        rect.uv1.u -= 16;
+        rect.uv0.v += 24;
+        rect.uv1.v -= 32;
+        rect.uv0.u /= tex.width();
+        rect.uv0.v /= tex.height();
+        rect.uv1.u /= tex.width();
+        rect.uv1.v /= tex.height();
+      }
+      evMin += ImVec2{3.f, 3.f};
+      evMax -= ImVec2{3.f, 3.f};
+      win->DrawList->AddImage(tex.get(), evMin, evMax, ImVec2{rect.uv0.u, rect.uv0.v}, ImVec2{rect.uv1.u, rect.uv1.v});
+    }
   }
 }

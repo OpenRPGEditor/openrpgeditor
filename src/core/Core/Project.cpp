@@ -156,7 +156,8 @@ void Project::setupDocking() {
     ImGui::DockBuilderDockWindow("Map Editor", dock3);
     ImGui::DockBuilderDockWindow("Map Properties", dock4);
     ImGui::DockBuilderGetNode(dock3)->SetLocalFlags(static_cast<int>(ImGuiDockNodeFlags_NoUndocking) |
-                                                    static_cast<int>(ImGuiDockNodeFlags_NoTabBar));
+                                                    static_cast<int>(ImGuiDockNodeFlags_NoTabBar) |
+                                                    static_cast<int>(ImGuiDockNodeFlags_NoDocking));
     // 7. We're done setting up our docking configuration:
     ImGui::DockBuilderFinish(mainWindowGroup);
   }

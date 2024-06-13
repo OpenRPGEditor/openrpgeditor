@@ -174,7 +174,7 @@ private:
 
   std::optional<DatabaseEditor> m_databaseEditor;
 
-  EditMode m_editMode = EditMode::Map;
+  EditMode m_editMode = EditMode::Event;
   DrawTool m_drawTool = DrawTool::Pencil;
 
   std::optional<ResourceManager> m_resourceManager;

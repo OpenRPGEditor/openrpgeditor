@@ -8,7 +8,7 @@ struct MapEvent {
   MapEvent() = delete;
   MapEvent(MapEditor* parent, Event* event);
 
-  void draw(float mapScale, bool isHovered, ImGuiWindow* win);
+  void draw(float mapScale, bool isHovered, bool selected, ImGuiWindow* win);
 
 private:
   MapEditor* m_parent;

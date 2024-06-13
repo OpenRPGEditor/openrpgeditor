@@ -62,9 +62,20 @@ void MapEditor::setMap(Map* map, MapInfo* info) {
 int MapEditor::tileSize() { return m_parent->system().tileSize; }
 
 void MapEditor::handleEventMouseInteraction(std::optional<Event>& event, bool isHovered) {
+  if (!event) {
+    return;
+  }
+
+  if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+    if (isHovered) {
+      m_selectedEvent = m_map->event(event->id);
+      m_movingEvent = nullptr;
+    }
+  }
+
   /* Check if event is selected */
   if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-    if (isHovered && event) {
+    if (isHovered) {
 
       auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(),
                              [&event](const EventEditor& editor) { return event && editor.event()->id == event->id; });
@@ -74,39 +85,39 @@ void MapEditor::handleEventMouseInteraction(std::optional<Event>& event, bool is
       }
     }
   } else if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered()) {
-    if (isHovered && m_selectedEvent == nullptr) {
-      m_selectedEvent = m_map->event(event->id);
-      if (m_selectedEvent != nullptr) {
-        m_selectedEventX = m_selectedEvent->x;
-        m_selectedEventY = m_selectedEvent->y;
+    if (isHovered && m_movingEvent == nullptr) {
+      m_movingEvent = m_map->event(event->id);
+      if (m_movingEvent != nullptr) {
+        m_movingEventX = m_movingEvent->x;
+        m_movingEventY = m_movingEvent->y;
       }
     }
-    if (m_selectedEvent != nullptr) {
+    if (m_movingEvent != nullptr) {
       /* For now we'll prevent events from occupying the same tile */
       /* TODO(phil): Implement some way to sort through events on the same tile */
-      int oldX = m_selectedEvent->x;
-      int oldY = m_selectedEvent->y;
+      int oldX = m_movingEvent->x;
+      int oldY = m_movingEvent->y;
       auto it = std::find_if(m_map->events.begin(), m_map->events.end(), [&](const std::optional<Event>& e) {
-        return e->x == tileCellX() && e->y == tileCellY() && &e.value() != m_selectedEvent;
+        return e->x == tileCellX() && e->y == tileCellY() && &e.value() != m_movingEvent;
       });
 
-      m_selectedEvent->x = tileCellX();
-      m_selectedEvent->y = tileCellY();
+      m_movingEvent->x = tileCellX();
+      m_movingEvent->y = tileCellY();
 
       if (it != m_map->events.end()) {
-        m_selectedEvent->x = oldX;
-        m_selectedEvent->y = oldY;
+        m_movingEvent->x = oldX;
+        m_movingEvent->y = oldY;
       }
     }
   } else if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
     /* If we have a selected actor and it's no longer in it's original location, push it onto the undo stack
      * as an operation
      */
-    if (m_selectedEvent != nullptr &&
-        (m_selectedEvent->x != m_selectedEventX || m_selectedEvent->y != m_selectedEventY)) {
-      m_parent->addUndo(std::make_shared<EventMoveUndoCommand>(m_selectedEvent, m_selectedEventX, m_selectedEventY));
+    if (m_movingEvent != nullptr &&
+        (m_movingEvent->x != m_movingEventX || m_movingEvent->y != m_movingEventY)) {
+      m_parent->addUndo(std::make_shared<EventMoveUndoCommand>(m_movingEvent, m_movingEventX, m_movingEventY));
     }
-    m_selectedEvent = nullptr;
+    m_movingEvent = nullptr;
   }
 }
 
@@ -129,7 +140,7 @@ void MapEditor::draw() {
   std::erase_if(m_eventEditors, [](EventEditor& editor) { return !editor.draw(); });
 
   // Keep mapScale to a quarter step
-  if (ImGui::IsMouseKey(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
+  if (ImGui::IsKeyDown(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
     m_mapScale += ImGui::GetIO().MouseWheel * 0.5f;
   }
   m_mapScale = (floorf((m_mapScale * 2.f) + .25f) / 2.f);
@@ -173,7 +184,7 @@ void MapEditor::draw() {
         {
           bool isHovered = event->x == tileCellX() && event->y == tileCellY();
           MapEvent mapEvent(this, &event.value());
-          mapEvent.draw(m_mapScale, isHovered, win);
+          mapEvent.draw(m_mapScale, isHovered, m_selectedEvent == m_map->event(event->id), win);
           handleEventMouseInteraction(event, isHovered);
           ImGui::EndGroup();
         }

@@ -132,6 +132,9 @@ public:
   System& system() { return m_system; }
   const System& system() const { return m_system; }
 
+  MapEditor* mapEditor() { return &m_mapEditor; }
+  const MapEditor* mapEditor() const { return &m_mapEditor; }
+
 private:
   void drawMenu();
   void drawFileDialog();

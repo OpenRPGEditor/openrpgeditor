@@ -11,10 +11,15 @@ void EventListView::draw() {
   if (ImGui::Begin("Events")) {
     Map* map = m_parent->currentMap();
     if (map) {
-      for (const auto& event : map->events) {
+      for (auto& event : map->events) {
         if (event) {
           sprintf(eventNameBuf, "%s (%i, %i)", event->name.c_str(), event->x, event->y);
-          ImGui::Selectable(eventNameBuf);
+          if (ImGui::Selectable(eventNameBuf, m_parent->mapEditor()->selectedEvent() == &*event)) {
+            m_parent->mapEditor()->setSelectedEvent(&*event);
+          }
+          if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && ImGui::IsItemActivated()) {
+            m_parent->mapEditor()->addEventEditor(EventEditor(m_parent, &event.value()));
+          }
         }
       }
     }

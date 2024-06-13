@@ -27,6 +27,22 @@ struct MapEditor {
   int tileCellY() { return m_tileCursor.tileY(); }
   int tileSize();
 
+  Event* selectedEvent() { return m_selectedEvent; }
+  const Event* selectedEvent() const { return m_selectedEvent; }
+  void setSelectedEvent(Event* event) { m_selectedEvent = event; }
+
+  Event* movingEvent() { return m_movingEvent; }
+  const Event* movingEvent() const { return m_movingEvent; }
+  void setMovingEvent(Event* event) { m_movingEvent = event; }
+
+  void addEventEditor(const EventEditor& editor) {
+    auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(),
+                           [editor](const EventEditor& ed) { return editor.event()->id == ed.event()->id; });
+    if (it == m_eventEditors.end()) {
+      m_eventEditors.push_back(editor);
+    }
+  }
+
 private:
   Project* m_parent;
   Map* m_map = nullptr;
@@ -43,8 +59,9 @@ private:
   std::vector<TileRect> m_lowerLayer;
   std::vector<TileRect> m_upperLayer;
   std::vector<EventEditor> m_eventEditors;
+  Event* m_movingEvent = nullptr;
   Event* m_selectedEvent = nullptr;
 
-  int m_selectedEventX = -1;
-  int m_selectedEventY = -1;
+  int m_movingEventX = -1;
+  int m_movingEventY = -1;
 };

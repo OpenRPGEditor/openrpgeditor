@@ -10,9 +10,10 @@
 class Map {
 public:
   NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Map, autoPlayBgm, autoPlayBgs, battleBack1Name, battleBack2Name, bgm, bgs,
-                                 disableDashing, displayName, encounters, encounterStep, note, parallaxLoopX,
-                                 parallaxLoopY, parallaxName, parallaxShow, parallaxSx, parallaxSy, scrollType,
-                                 specifyBattleBack, tilesetId, width, height, data, events);
+                                              disableDashing, displayName, encounters, encounterStep, note,
+                                              parallaxLoopX, parallaxLoopY, parallaxName, parallaxShow, parallaxSx,
+                                              parallaxSy, scrollType, specifyBattleBack, tilesetId, width, height, data,
+                                              events);
   struct Encounter {
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Encounter, regionSet, troopId, weight);
     std::array<int, 3> regionSet{};
@@ -63,13 +64,21 @@ public:
   }
 
   Event* event(int id) {
-    auto it = std::find_if(events.begin(), events.end(), [&id](const auto& ev) {
-      return ev && ev->id == id;
-    });
+    auto it = std::find_if(events.begin(), events.end(), [&id](const auto& ev) { return ev && ev->id == id; });
 
     if (it != events.end()) {
       return &it->value();
     }
+    return nullptr;
+  }
+
+  Event* eventAt(int x, int y) {
+    auto it =
+        std::find_if(events.begin(), events.end(), [&x, &y](const auto& ev) { return ev && ev->x == x && ev->y == y; });
+    if (it != events.end()) {
+      return &it->value();
+    }
+
     return nullptr;
   }
 

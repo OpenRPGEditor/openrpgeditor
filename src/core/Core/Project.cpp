@@ -363,12 +363,12 @@ void Project::drawMenu() {
       ImGui::Separator();
       if (ImGui::MenuItem("Open Folder", nullptr, false, m_databaseEditor != std::nullopt)) {
         /* is there a better way to do this? */
-#if _APPLE__
-        char buff[4096]{};
-        snprintf(buff, 4096, "explorer %s", m_basePath.c_str());
-#elif _WIN32_
+#if __APPLE__
         char buff[4096]{};
         snprintf(buff, 4096, "open %s", m_basePath.c_str());
+#elif _WIN32
+        char buff[4096]{};
+        snprintf(buff, 4096, "explorer %s", m_basePath.c_str());
 #else
         char buff[4096]{};
         snprintf(buff, 4096, "xdg-open %s", m_basePath.c_str());

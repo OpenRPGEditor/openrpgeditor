@@ -61,66 +61,6 @@ void MapEditor::setMap(Map* map, MapInfo* info) {
 
 int MapEditor::tileSize() { return m_parent->system().tileSize; }
 
-void MapEditor::handleEventMouseInteraction(std::optional<Event>& event, bool isHovered) {
-  if (!event) {
-    return;
-  }
-
-  if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-    if (isHovered) {
-      m_selectedEvent = m_map->event(event->id);
-      m_movingEvent = nullptr;
-      m_hasScrolled = true;
-    }
-  }
-
-  /* Check if event is selected */
-  if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-    if (isHovered) {
-
-      auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(),
-                             [&event](const EventEditor& editor) { return event && editor.event()->id == event->id; });
-      if (it == m_eventEditors.end()) {
-        printf("Event selected!");
-        m_eventEditors.emplace_back(m_parent, m_map->event(event->id));
-      }
-    }
-  } else if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered()) {
-    if (isHovered && m_movingEvent == nullptr) {
-      m_movingEvent = m_map->event(event->id);
-      if (m_movingEvent != nullptr) {
-        m_movingEventX = m_movingEvent->x;
-        m_movingEventY = m_movingEvent->y;
-      }
-    }
-    if (m_movingEvent != nullptr) {
-      /* For now we'll prevent events from occupying the same tile */
-      /* TODO(phil): Implement some way to sort through events on the same tile */
-      int oldX = m_movingEvent->x;
-      int oldY = m_movingEvent->y;
-      auto it = std::find_if(m_map->events.begin(), m_map->events.end(), [&](const std::optional<Event>& e) {
-        return e->x == tileCellX() && e->y == tileCellY() && &e.value() != m_movingEvent;
-      });
-
-      m_movingEvent->x = tileCellX();
-      m_movingEvent->y = tileCellY();
-
-      if (it != m_map->events.end()) {
-        m_movingEvent->x = oldX;
-        m_movingEvent->y = oldY;
-      }
-    }
-  } else if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
-    /* If we have a selected actor and it's no longer in it's original location, push it onto the undo stack
-     * as an operation
-     */
-    if (m_movingEvent != nullptr && (m_movingEvent->x != m_movingEventX || m_movingEvent->y != m_movingEventY)) {
-      m_parent->addUndo(std::make_shared<EventMoveUndoCommand>(m_movingEvent, m_movingEventX, m_movingEventY));
-    }
-    m_movingEvent = nullptr;
-  }
-}
-
 void MapEditor::drawGrid(ImGuiWindow* win) {
   for (int y = 0; y <= (m_map->height * tileSize()) * m_mapScale; y += tileSize() * m_mapScale) {
     win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)},
@@ -138,6 +78,84 @@ void MapEditor::drawGrid(ImGuiWindow* win) {
 }
 float roundToNearestQuarter(float num) { return (num * 4) / 4; }
 
+void MapEditor::handleMouseInput(ImGuiWindow* win) {
+  if (ImGui::IsWindowHovered() && m_parent->editMode() == EditMode::Map) {
+    m_tileCursor.update(m_mapScale, m_map->width, m_map->height, m_parent->system().tileSize, win);
+  } else if (ImGui::IsWindowHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left) &&
+             (m_parent->editMode() == EditMode::Event || m_movingEvent)) {
+    m_tileCursor.update(m_mapScale, m_map->width, m_map->height, m_parent->system().tileSize, win);
+    if (m_movingEvent) {
+      m_movingEvent->x = m_tileCursor.tileX();
+      m_movingEvent->y = m_tileCursor.tileY();
+    }
+  }
+
+  if (m_selectedEvent && !m_movingEvent && m_selectedEvent->x != m_tileCursor.tileX() &&
+      m_selectedEvent->y != m_tileCursor.tileY()) {
+    m_selectedEvent = nullptr;
+  }
+
+  if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && m_parent->editMode() == EditMode::Event &&
+      (m_movingEvent || m_selectedEvent)) {
+    auto event = m_map->eventAt(m_tileCursor.tileX(), m_tileCursor.tileY());
+    if (event == nullptr) {
+      m_movingEvent = nullptr;
+      m_selectedEvent = nullptr;
+    } else {
+      m_selectedEvent = event;
+    }
+    m_hasScrolled = true;
+  }
+
+  if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered() &&
+      m_parent->editMode() == EditMode::Event && m_movingEvent == nullptr) {
+    m_selectedEvent = m_map->eventAt(m_tileCursor.tileX(), m_tileCursor.tileY());
+    m_movingEvent = m_selectedEvent;
+    if (m_movingEvent) {
+      m_movingEventX = m_movingEvent->x;
+      m_movingEventY = m_movingEvent->y;
+    }
+    m_hasScrolled = true;
+  }
+
+  if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered() &&
+      m_parent->editMode() == EditMode::Event && m_movingEvent != nullptr) {
+    /* For now we'll prevent events from occupying the same tile */
+    /* TODO(phil): Implement some way to sort through events on the same tile */
+    int oldX = m_movingEvent->x;
+    int oldY = m_movingEvent->y;
+    auto it = std::find_if(m_map->events.begin(), m_map->events.end(), [&](const std::optional<Event>& e) {
+      return e->x == tileCellX() && e->y == tileCellY() && &e.value() != m_movingEvent;
+    });
+
+    m_movingEvent->x = tileCellX();
+    m_movingEvent->y = tileCellY();
+
+    if (it != m_map->events.end()) {
+      m_movingEvent->x = oldX;
+      m_movingEvent->y = oldY;
+    }
+  }
+
+  if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && m_selectedEvent &&
+      m_parent->editMode() == EditMode::Event) {
+    auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(),
+                           [&](const EventEditor& editor) { return editor.event()->id == m_selectedEvent->id; });
+    if (it == m_eventEditors.end()) {
+      m_eventEditors.emplace_back(m_parent, m_selectedEvent);
+    }
+  }
+
+  if (ImGui::IsMouseReleased(ImGuiMouseButton_Left) && m_parent->editMode() == EditMode::Event) {
+    /* If we have a selected actor and it's no longer in it's original location, push it onto the undo stack
+     * as an operation
+     */
+    if (m_movingEvent != nullptr && (m_movingEvent->x != m_movingEventX || m_movingEvent->y != m_movingEventY)) {
+      m_parent->addUndo(std::make_shared<EventMoveUndoCommand>(m_movingEvent, m_movingEventX, m_movingEventY));
+    }
+    m_movingEvent = nullptr;
+  }
+}
 void MapEditor::draw() {
   std::erase_if(m_eventEditors, [](EventEditor& editor) { return !editor.draw(); });
 
@@ -166,14 +184,12 @@ void MapEditor::draw() {
       m_mapInfo->scrollX = ImGui::GetScrollX();
       m_mapInfo->scrollY = ImGui::GetScrollY();
 
-      if (ImGui::IsWindowHovered()) {
-        m_tileCursor.update(m_mapScale, m_map->width, m_map->height, m_parent->system().tileSize, win);
-      }
+      handleMouseInput(win);
 
       ImGui::Dummy(ImVec2{m_map->width * (m_parent->system().tileSize * m_mapScale),
                           m_map->height * (m_parent->system().tileSize * m_mapScale)});
 
-      if (ImGui::IsWindowHovered()) {
+      if (ImGui::IsWindowHovered() || m_parent->editMode() == EditMode::Event) {
         m_tileCursor.draw(win);
       }
 
@@ -192,8 +208,8 @@ void MapEditor::draw() {
         }
         bool isHovered = event->x == tileCellX() && event->y == tileCellY();
         MapEvent mapEvent(this, &event.value());
-        mapEvent.draw(m_mapScale, isHovered, m_selectedEvent == realEvent, win);
-        handleEventMouseInteraction(event, isHovered);
+        mapEvent.draw(m_mapScale, isHovered, m_selectedEvent == realEvent,
+                      m_parent->editMode() != EditMode::Event, win);
       }
     }
     ImGui::EndChild();
@@ -201,8 +217,18 @@ void MapEditor::draw() {
     ImGui::SameLine();
     ImGui::SliderFloat("##map_scale", &m_mapScale, 0.25f, 4.f);
     ImGui::SameLine();
-    ImGui::Text("Tile %i, (%i, %i)", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0),
-                m_tileCursor.tileX(), m_tileCursor.tileY());
+    std::string fmt =
+        std::format("Tile {}, ({}, {})", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0),
+                    m_tileCursor.tileX(), m_tileCursor.tileY());
+    if (m_map) {
+      auto ev = std::find_if(m_map->events.begin(), m_map->events.end(), [&](const std::optional<Event>& e) {
+        return e && m_tileCursor.tileX() == e->x && m_tileCursor.tileY() == e->y;
+      });
+      if (ev != m_map->events.end()) {
+        fmt += std::format(" {} ({:03})", (*ev)->name, (*ev)->id);
+      }
+    }
+    ImGui::Text("%s", fmt.c_str());
   }
   ImGui::End();
   drawMapProperties();

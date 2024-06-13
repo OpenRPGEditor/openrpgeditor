@@ -11,9 +11,6 @@ struct Map;
 struct MapInfo;
 struct MapEditor {
   MapEditor(Project* parent) : m_parent(parent), m_tileCursor(this) {}
-  void handleEventMouseInteraction(std::optional<Event>& event, bool isHovered);
-  void drawMapProperties();
-  void drawGrid(ImGuiWindow* win);
   void draw();
 
   void setMap(Map* map, MapInfo* info);
@@ -55,6 +52,9 @@ struct MapEditor {
   void setPrisonMode(const bool prisonMode) { m_prisonMode = prisonMode; }
 
 private:
+  void drawMapProperties();
+  void drawGrid(ImGuiWindow* win);
+  void handleMouseInput(ImGuiWindow* win);
   Project* m_parent;
   Map* m_map = nullptr;
   MapInfo* m_mapInfo = nullptr;

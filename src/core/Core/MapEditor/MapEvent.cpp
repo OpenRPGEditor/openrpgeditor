@@ -19,7 +19,7 @@ double oscillate(const double minValue, const double maxValue, const double peri
   return minValue + phase * rangeDelta;
 }
 
-void MapEvent::draw(float mapScale, bool isHovered, bool selected, ImGuiWindow* win) {
+void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlpha, ImGuiWindow* win) {
   constexpr ImU32 NormalOutlineCol = 0xFF000000;
   constexpr ImU32 NormalBorderCol = 0xFFFFFFFF;
   constexpr ImU32 HoveredOutlineCol = 0xFFFFFF00;
@@ -36,6 +36,17 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, ImGuiWindow* 
     bgColor &= 0xFFFFFF00;
     bgColor |= r;
     imageColor = (0xFF << 24) | (r << 16) | (r << 8) | (r << 0);
+  }
+
+  if (halfAlpha) {
+    outlineCol &= 0x00FFFFFF;
+    outlineCol |= (127 << 24);
+    borderCol &= 0x00FFFFFF;
+    borderCol |= (127 << 24);
+    bgColor &= 0x00FFFFFF;
+    bgColor |= (63 << 24);
+    imageColor &= 0x00FFFFFF;
+    imageColor |= (127 << 24);
   }
 
   auto eventX = static_cast<float>(m_event->x * m_parent->tileSize()) * mapScale;

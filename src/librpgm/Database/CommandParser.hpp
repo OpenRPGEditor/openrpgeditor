@@ -692,14 +692,13 @@ struct SetMovementRouteCommand : IEventCommand {
   int character;
   MovementRoute route;
   std::vector<std::shared_ptr<IEventCommand>> editNodes;
-  // TODO: EventCommandEditor
   [[nodiscard]] std::string stringRep() const override {
 
     std::string characterName = character == -1 ? "Player" : character == 0 ? "This Event" : "{}";
     std::string stringSuffix = "(";
     stringSuffix += route.repeat == true ? "Repeat" : "";
-    stringSuffix += route.skippable == true ? "Skip" : "";
-    stringSuffix += route.wait == true ? "Wait" : "";
+    stringSuffix += route.skippable == true ?  (route.repeat == true ? ", Skip" : "Skip") : "";
+    stringSuffix += route.wait == true ? ", Wait" : "";
     stringSuffix += ")";
 
     std::string moveRoute = std::string(indent ? *indent * 4 : 0, ' ') +
@@ -950,11 +949,19 @@ struct MovementJumpCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Jump; }
   int x;
   int y;
+  [[nodiscard]] std::string stringRep() const override {
+    return ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + std::string(indent ? *indent * 4 : 0, ' ') + std::format("◇Jump {}, {}", x, y) + ColorFormatter::popColor();
+  }
 };
 struct MovementWaitCommand : IEventCommand {
   ~MovementWaitCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Wait_del_; }
   int duration;
+  [[nodiscard]] std::string stringRep() const override {
+    return ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Wait " + std::to_string(duration) + " frames" + ColorFormatter::popColor();
+  }
 };
 
 struct MovementTurnDownCommand : IEventCommand {
@@ -1008,24 +1015,40 @@ struct MovementSwitchONCommand : IEventCommand {
   ~MovementSwitchONCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Switch_ON; }
   int id;
+  [[nodiscard]] std::string stringRep() const override {
+    return ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Switch " + std::format("{:04}", id) + " ON" + ColorFormatter::popColor();
+  }
 };
 
 struct MovementSwitchOFFCommand : IEventCommand {
   ~MovementSwitchOFFCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Switch_OFF; }
   int id;
+  [[nodiscard]] std::string stringRep() const override {
+    return ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Switch " + std::format("{:04}", id) + " OFF" + ColorFormatter::popColor();
+  }
 };
 
 struct MovementSpeedCommand : IEventCommand {
   ~MovementSpeedCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Speed; }
   int speed;
+  [[nodiscard]] std::string stringRep() const override {
+    return ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Speed : " + std::to_string(speed) + ColorFormatter::popColor();
+  }
 };
 
 struct MovementFrequencyCommand : IEventCommand {
   ~MovementFrequencyCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Frequency; }
   int frequency;
+  [[nodiscard]] std::string stringRep() const override {
+    return ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Frequency " + std::to_string(frequency) + ColorFormatter::popColor();
+  }
 };
 
 struct MovementWalkingAnimationONCommand : IEventCommand {
@@ -1081,6 +1104,10 @@ struct MovementChangeImageCommand : IEventCommand {
 
   std::string image;
   int character;
+  [[nodiscard]] std::string stringRep() const override {
+    return ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Image : " + image + " (" +  std::to_string(character) + ")" + ColorFormatter::popColor();
+  }
 };
 
 struct MovementChangeOpacityCommand : IEventCommand {
@@ -1088,6 +1115,10 @@ struct MovementChangeOpacityCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Opacity; }
 
   int opacity;
+  [[nodiscard]] std::string stringRep() const override {
+    return ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Opacity : " + std::to_string(opacity) + ColorFormatter::popColor();
+  }
 };
 
 struct MovementChangeBlendModeCommand : IEventCommand {
@@ -1095,18 +1126,31 @@ struct MovementChangeBlendModeCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Blend_Mode; }
 
   Blend mode;
+  [[nodiscard]] std::string stringRep() const override {
+    return ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Blend Mode : " + DecodeEnumName(mode) + ColorFormatter::popColor();
+  }
 };
 
 struct MovementPlaySECommand : IEventCommand {
   ~MovementPlaySECommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_SE_del_Movement; }
   Audio se;
+  [[nodiscard]] std::string stringRep() const override {
+    return ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + std::string(indent ? *indent * 4 : 0, ' ') + "◇SE : " + (se.name == "" ? "None" : se.name) + " "
+    + std::format("({}, {}, {})", se.volume, se.pitch, se.pan) + ColorFormatter::popColor();
+  }
 };
 
 struct MovementScriptCommand : IEventCommand {
   ~MovementScriptCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Script_del_Movement; }
   std::string script;
+  [[nodiscard]] std::string stringRep() const override {
+    return ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Script : " + script + ColorFormatter::popColor();
+  }
 };
 
 // END MOVEMENTROUTE

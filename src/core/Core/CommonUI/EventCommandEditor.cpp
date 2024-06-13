@@ -153,6 +153,12 @@ void EventCommandEditor::draw() {
               ShowAnimationCommand* sac = dynamic_cast<ShowAnimationCommand*>(m_commands->at(n).get());
               insertValue(indentPad, m_project->animation(sac->animation)->name, "{");
             }
+            else if (m_commands->at(n)->code() == EventCode::Set_Movement_Route) {
+              if (indentPad.find("{") > 0) {
+                SetMovementRouteCommand* smr = dynamic_cast<SetMovementRouteCommand*>(m_commands->at(n).get());
+                insertValue(indentPad, m_project->event(smr->character)->name, "{");
+              }
+            }
 
             // ImGui::PushStyleColor(ImGuiCol_Text, m_selectedCommonEvent->commands->at(n)->color());
             auto oldCursor = ImGui::GetCursorPos();

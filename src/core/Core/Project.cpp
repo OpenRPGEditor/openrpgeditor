@@ -188,6 +188,37 @@ void Project::draw() {
   }
 }
 
+void Project::handleOpenFile() {
+  IGFD::FileDialogConfig config;
+  config.path = Settings::instance()->lastDirectory.empty() ? "." : Settings::instance()->lastDirectory;
+  ImGuiFileDialog::Instance()->OpenDialog("OpenProjectDlg", "Select a Project to Open", ".rpgproject", config);
+}
+
+void Project::handleUndo() {
+  if (!m_undoStack.hasCommands()) {
+    return;
+  }
+
+  auto cmd = m_undoStack.pop();
+  if (cmd) {
+    cmd->undo();
+    cmd->setIsRedo(true);
+    m_redoStack.push(cmd);
+  }
+}
+
+void Project::handleRedo() {
+  if (!m_redoStack.hasCommands()) {
+    return;
+  }
+
+  auto cmd = m_redoStack.pop();
+  if (cmd) {
+    cmd->undo();
+    cmd->setIsRedo(false);
+    m_undoStack.push(cmd);
+  }
+}
 void Project::drawMenu() {
   std::string loadFilepath;
   if (ImGui::BeginMainMenuBar()) {
@@ -196,9 +227,7 @@ void Project::drawMenu() {
         // TODO: Implement project creation
       }
       if (ImGui::MenuItem("Open Project...", "Ctrl+O")) {
-        IGFD::FileDialogConfig config;
-        config.path = Settings::instance()->lastDirectory.empty() ? "." : Settings::instance()->lastDirectory;
-        ImGuiFileDialog::Instance()->OpenDialog("OpenProjectDlg", "Select a Project to Open", ".rpgproject", config);
+        handleOpenFile();
       }
       if (ImGui::MenuItem("Close Project...")) {
         close();
@@ -247,24 +276,14 @@ void Project::drawMenu() {
      */
     if (ImGui::BeginMenu("Edit")) {
       if (ImGui::MenuItem("Undo", "Ctrl+Z", false, m_undoStack.hasCommands())) {
-        auto cmd = m_undoStack.pop();
-        if (cmd) {
-          cmd->undo();
-          cmd->setIsRedo(true);
-          m_redoStack.push(cmd);
-        }
+        handleUndo();
       }
       if (ImGui::IsItemHovered() && m_undoStack.hasCommands()) {
         ImGui::SetTooltip("%s", m_undoStack.top()->description().c_str());
       }
 
       if (ImGui::MenuItem("Redo", "Ctrl+Shift+Z", false, m_redoStack.hasCommands())) {
-        auto cmd = m_redoStack.pop();
-        if (cmd) {
-          cmd->undo();
-          cmd->setIsRedo(false);
-          m_undoStack.push(cmd);
-        }
+        handleRedo();
       }
       if (ImGui::IsItemHovered() && m_redoStack.hasCommands()) {
         ImGui::SetTooltip("%s", m_redoStack.top()->description().c_str());
@@ -286,10 +305,10 @@ void Project::drawMenu() {
       if (ImGui::MenuItem("Find", "Ctrl+F")) {
         // TODO: Implement
       }
-      if (ImGui::MenuItem("Find Next", "Ctrl+G")) {
+      if (ImGui::MenuItem("Find Next", "F3")) {
         // TODO: Implement
       }
-      if (ImGui::MenuItem("Find Previous", "Ctrl+Shift+G")) {
+      if (ImGui::MenuItem("Find Previous", "Shift+F3")) {
         // TODO: Implement
       }
       ImGui::EndMenu();
@@ -303,7 +322,7 @@ void Project::drawMenu() {
         enterEventEditMode();
       }
       ImGui::Separator();
-      if (ImGui::MenuItem("Events Within Tile", nullptr, m_mapEditor.prisonMode())) {
+      if (ImGui::MenuItem("Events Within Tile", "F7", m_mapEditor.prisonMode())) {
         m_mapEditor.togglePrisonMode();
       }
       ImGui::EndMenu();
@@ -320,13 +339,13 @@ void Project::drawMenu() {
 
     if (ImGui::BeginMenu("Scale")) {
       if (ImGui::MenuItem("Zoom In", "Ctrl++")) {
-        // TODO: Implement
+        m_mapEditor.scale(0.25f);
       }
       if (ImGui::MenuItem("Zoom Out", "Ctrl+-")) {
-        // TODO: Implement
+        m_mapEditor.scale(-0.25f);
       }
       if (ImGui::MenuItem("Actual Size", "Ctrl+0")) {
-        // TODO: Implement
+        m_mapEditor.setScale(1.f);
       }
       ImGui::EndMenu();
     }
@@ -377,7 +396,121 @@ void Project::drawMenu() {
   if (!loadFilepath.empty()) {
     load(loadFilepath, std::filesystem::absolute(loadFilepath).remove_filename().generic_string());
   }
+  handleKeyboardShortcuts();
 }
+
+void Project::handleKeyboardShortcuts() {
+  /* File Menu */
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
+      ImGui::IsKeyPressed(ImGuiKey_N)) {
+    // TODO: implement new project creation
+  }
+
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
+      ImGui::IsKeyPressed(ImGuiKey_O)) {
+    handleOpenFile();
+  }
+
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
+      ImGui::IsKeyPressed(ImGuiKey_S)) {
+    // TODO: implement saving
+  }
+
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
+      ImGui::IsKeyReleased(ImGuiKey_O)) {
+    handleOpenFile();
+  }
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
+      ImGui::IsKeyPressed(ImGuiKey_Q)) {
+    App::APP->stop();
+  }
+
+  /* Edit Menu */
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
+      ImGui::IsKeyReleased(ImGuiKey_Z)) {
+    handleUndo();
+  }
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
+      (ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) &&
+      ImGui::IsKeyPressed(ImGuiKey_Z)) {
+    handleRedo();
+  }
+  /* TODO Clipboard */
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
+      ImGui::IsKeyPressed(ImGuiKey_X)) {
+    // TODO: Implement clipboard cut
+  }
+
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
+      ImGui::IsKeyPressed(ImGuiKey_C)) {
+    // TODO: Implement clipboard copy
+  }
+
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
+      ImGui::IsKeyPressed(ImGuiKey_V)) {
+    // TODO: Implement clipboard paste
+  }
+
+  if (ImGui::IsKeyReleased(ImGuiKey_Delete)) {
+    // TODO: Implement Delete
+  }
+
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
+      ImGui::IsKeyPressed(ImGuiKey_F)) {
+    // TODO: Implement Find
+  }
+  if (ImGui::IsKeyPressed(ImGuiKey_F3)) {
+    // TODO: Implement Find Next
+  }
+
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) &&
+      ImGui::IsKeyPressed(ImGuiKey_F3)) {
+    // TODO: Implement Find Previous
+  }
+
+  /* Mode */
+  if (ImGui::IsKeyPressed(ImGuiKey_F5)) {
+    enterMapEditMode();
+  }
+
+  if (ImGui::IsKeyPressed(ImGuiKey_F6)) {
+    enterEventEditMode();
+  }
+  if (ImGui::IsKeyPressed(ImGuiKey_F7)) {
+    m_mapEditor.togglePrisonMode();
+  }
+
+  /* Scale */
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
+      (ImGui::IsKeyPressed(ImGuiKey_Equal) || ImGui::IsKeyPressed(ImGuiKey_KeypadAdd))) {
+    m_mapEditor.scale(0.25f);
+  }
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
+      (ImGui::IsKeyPressed(ImGuiKey_Minus) || ImGui::IsKeyPressed(ImGuiKey_KeypadSubtract))) {
+    m_mapEditor.scale(-0.25f);
+  }
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
+      (ImGui::IsKeyPressed(ImGuiKey_Keypad0) || ImGui::IsKeyPressedts(ImGuiKey_0))) {
+    m_mapEditor.setScale(1.f);
+  }
+
+  /* Tools */
+  if (ImGui::IsKeyReleased(ImGuiKey_F9)) {
+    m_databaseEditor->open();
+  }
+  // TODO: Add missing tools
+  /* Game */
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) &&
+      ImGui::IsKeyPressed(ImGuiKey_R)) {
+    // TODO: Implement Play Test
+  }
+
+  /* Help */
+  if (ImGui::IsKeyPressed(ImGuiKey_F1)) {
+    // TODO: Help
+  }
+}
+
 void Project::drawFileDialog() {
   // First check if we have a pending project request
   if (ImGuiFileDialog::Instance()->Display(

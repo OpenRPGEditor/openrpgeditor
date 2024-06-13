@@ -23,6 +23,8 @@ struct MapEditor {
     m_upperLayer.clear();
   }
 
+  void scale(float scale) { m_mapScale += scale; }
+  void setScale(float scale) { m_mapScale = scale; }
   int tileCellX() { return m_tileCursor.tileX(); }
   int tileCellY() { return m_tileCursor.tileY(); }
   int tileSize();

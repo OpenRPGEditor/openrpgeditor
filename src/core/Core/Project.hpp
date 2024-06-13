@@ -57,6 +57,9 @@ public:
   [[nodiscard]] bool modified() { return m_isModified; }
 
   void draw();
+  void handleOpenFile();
+  void handleUndo();
+  void handleRedo();
 
   EditMode editMode() const { return m_editMode; }
 
@@ -138,6 +141,7 @@ public:
 private:
   void drawMenu();
   void drawFileDialog();
+  void handleKeyboardShortcuts();
 
   MapListView m_mapListView;
   MapEditor m_mapEditor;

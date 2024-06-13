@@ -136,6 +136,10 @@ void MapEditor::drawGrid(ImGuiWindow* win) {
                            0x7f0a0a0a, 3.f);
   }
 }
+float roundToNearestQuarter(float num) {
+  return (num * 4) / 4;
+}
+
 void MapEditor::draw() {
   std::erase_if(m_eventEditors, [](EventEditor& editor) { return !editor.draw(); });
 
@@ -143,7 +147,7 @@ void MapEditor::draw() {
   if (ImGui::IsKeyDown(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
     m_mapScale += ImGui::GetIO().MouseWheel * 0.5f;
   }
-  m_mapScale = (floorf((m_mapScale * 2.f) + .25f) / 2.f);
+  m_mapScale = roundToNearestQuarter(m_mapScale);
   m_mapScale = std::clamp(m_mapScale, .25f, 4.f);
 
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {

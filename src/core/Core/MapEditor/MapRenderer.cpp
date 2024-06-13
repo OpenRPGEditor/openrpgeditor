@@ -56,7 +56,6 @@ static std::vector<std::array<std::array<int, 2>, 4>> WaterfallTileTable;
 
 static bool tileTablesInitialized = false;
 MapRenderer::MapRenderer() {
-#if 1
   if (!tileTablesInitialized) {
     for (auto& v : FloorAutoTileTableRaw) {
       FloorTileTable.push_back(v);
@@ -71,7 +70,6 @@ MapRenderer::MapRenderer() {
 
     tileTablesInitialized = true;
   }
-#endif
 }
 
 void MapRenderer::setMap(const Map* map, const Tileset* tileset, int tileWidth, int tileHeight) {
@@ -79,48 +77,45 @@ void MapRenderer::setMap(const Map* map, const Tileset* tileset, int tileWidth, 
   m_tileset = tileset;
   m_tileWidth = tileWidth;
   m_tileHeight = tileHeight;
-  m_lastTiles.clear();
+  m_upperLayer.tileLayers.clear();
+  m_lowerLayer.tileLayers.clear();
+
   if (m_map && m_tileset) {
-    for (int i = 0; i < m_tilesetTextures.size(); ++i) {
-      if (!m_tileset->tilesetNames[i].empty()) {
-        m_tilesetTextures[i] = ResourceManager::instance()->loadTilesetImage(m_tileset->tilesetNames[i]);
-      }
+    for (int i = 0; i < 9; ++i) {
+      auto tex = ResourceManager::instance()->loadTilesetImage(m_tileset->tilesetNames[i]);
+      m_lowerLayer.tileLayers.emplace_back(tex);
+      m_upperLayer.tileLayers.emplace_back(tex);
     }
   }
-
-#if 0
-  if (m_map == nullptr || m_tileset == nullptr) {
-    SDL_DestroyTexture(m_lowerBitmap);
-    SDL_DestroyTexture(m_upperBitmap);
-    return;
-  }
-
-
-  if (m_lowerBitmap) {
-    SDL_DestroyTexture(m_lowerBitmap);
-  }
-
-  if (m_upperBitmap) {
-    SDL_DestroyTexture(m_upperBitmap);
-  }
-  m_lowerBitmap = SDL_CreateTexture(App::APP->getWindow()->getNativeRenderer(), SDL_PIXELFORMAT_RGBA8888,
-                                    SDL_TEXTUREACCESS_TARGET, map->width * 48, map->height * 48);
-  SDL_SetTextureBlendMode(m_lowerBitmap, SDL_BLENDMODE_BLEND);
-
-  m_upperBitmap = SDL_CreateTexture(App::APP->getWindow()->getNativeRenderer(), SDL_PIXELFORMAT_RGBA8888,
-                                    SDL_TEXTUREACCESS_TARGET, map->width * 48, map->height * 48);
-  SDL_SetTextureBlendMode(m_upperBitmap, SDL_BLENDMODE_BLEND);
-#endif
 }
 
 void MapRenderer::update() {
   if (!m_map || !m_tileset) {
     return;
   }
+  for (int i = 0; i < 9; ++i) {
+    m_lowerLayer.tileLayers[i].rects.clear();
+    m_lowerLayer.tileLayers[i].rects.reserve(m_map->width * m_map->height);
+    m_upperLayer.tileLayers[i].rects.clear();
+    m_upperLayer.tileLayers[i].rects.reserve(m_map->width * m_map->height);
+  }
+
+  for (int y = 0; y < m_map->height; ++y) {
+    for (int x = 0; x < m_map->width; ++x) {
+      for (int z = 0; z < 10; ++z) {
+        if (isHigherTile(tileId(x, y, z))) {
+          drawTile(m_upperLayer, tileId(x, y, z), x * m_tileWidth, y * m_tileHeight);
+        } else {
+          drawTile(m_lowerLayer, tileId(x, y, z), x * m_tileWidth, y * m_tileHeight);
+        }
+      }
+    }
+  }
 }
 
-void MapRenderer::getTileRect(std::vector<TileRect>& layer, int tileId, int dx, int dy) {
+void MapRenderer::drawTile(MapLayer& layer, int tileId, int dx, int dy) {
   if (isVisibleTile(tileId)) {
+    assert(tileId != 0);
     if (isAutoTile(tileId)) {
       drawAutoTile(layer, tileId, dx, dy);
     } else {
@@ -129,28 +124,18 @@ void MapRenderer::getTileRect(std::vector<TileRect>& layer, int tileId, int dx, 
   }
 }
 
-void MapRenderer::drawTile(std::vector<TileRect>& layer, int tileId, int dx, int dy) {
-  if (isVisibleTile(tileId)) {
-    if (isAutoTile(tileId)) {
-      drawAutoTile(layer, tileId, dx, dy);
-    } else {
-      drawNormalTile(layer, tileId, dx, dy);
-    }
-  }
-}
-
-void MapRenderer::drawAutoTile(std::vector<TileRect>& layer, int tileId, int dx, int dy) {
+void MapRenderer::drawAutoTile(MapLayer& layer, int tileId, int dx, int dy) {
   auto autoTileTable = FloorTileTable;
   int kind = getAutoTileKind(tileId);
   int shape = getAutoTileShape(tileId);
-  int tx = kind % 8;
-  int ty = floor(kind / 8);
-  int bx = 0;
-  int by = 0;
+  float tx = kind % 8;
+  float ty = floor(kind / 8);
+  float bx = 0;
+  float by = 0;
   int setNumber = 0;
   bool isTable = false;
-  int animX = 0;
-  int animY = 0;
+  float animX = 0;
+  float animY = 0;
 
   if (isTileA1(tileId)) {
     setNumber = 0;
@@ -168,7 +153,7 @@ void MapRenderer::drawAutoTile(std::vector<TileRect>& layer, int tileId, int dx,
       by = 3;
     } else {
       bx = floor(tx / 4) * 8;
-      by = ty * 6 + static_cast<int>(floor(tx / 2)) % 2 * 3;
+      by = ty * 6 + fmod(floor(tx / 2), 2) * 3;
       if ((kind % 2) == 0) {
         animX = 2;
       } else {
@@ -190,8 +175,8 @@ void MapRenderer::drawAutoTile(std::vector<TileRect>& layer, int tileId, int dx,
   } else if (isTileA4(tileId)) {
     setNumber = 3;
     bx = tx * 2;
-    by = floor((ty - 10) * 2.5 + (ty % 2 == 1 ? 0.5f : 0));
-    if ((ty % 2) == 1) {
+    by = floor((ty - 10) * 2.5 + (fmod(ty, 2) == 1 ? 0.5f : 0));
+    if (fmod(ty, 2) == 1) {
       autoTileTable = WallTileTable;
     }
   }
@@ -204,54 +189,48 @@ void MapRenderer::drawAutoTile(std::vector<TileRect>& layer, int tileId, int dx,
     int qsx = table[i][0];
     int qsy = table[i][1];
 
-    int sx1 = (bx * 2 + qsx) * w1;
-    int sy1 = (by * 2 + qsy) * h1;
-    int dx1 = dx + (i % 2) * w1;
-    int dy1 = dy + static_cast<int>(floor(i / 2)) * h1;
+    float sx1 = (bx * 2 + qsx) * w1;
+    float sy1 = (by * 2 + qsy) * h1;
+    float dx1 = dx + (i % 2) * w1;
+    float dy1 = dy + static_cast<int>(floor(i / 2)) * h1;
     if (isTable && (qsy == 1 || qsy == 5)) {
-      int qsx2 = qsx;
-      int qsy2 = 3;
+      float qsx2 = qsx;
+      float qsy2 = 3;
       if (qsy == 1) {
         //          static const int tbl[4] {0, 3, 2, 1};
         //          qsx2 = tbl[qsx];
-        qsx2 = (4 - qsx) % 4;
+        qsx2 = fmod(4 - qsx, 4);
       }
 
       int sx2 = (bx * 2 + qsx2) * w1;
       int sy2 = (by * 2 + qsy2) * h1;
-      layer.emplace_back(tileId, setNumber, sx2, sy2, dx1, dy1, w1, h1, animX, animY);
+      layer.addRect(setNumber, tileId, sx2, sy2, dx1, dy1, w1, h1, animX, animY);
       dy1 += h1 / 2;
-      layer.emplace_back(tileId, setNumber, sx1, sy1, dx1, dy1 + h1 / 2, w1, h1 / 2, animX, animY);
+      layer.addRect(setNumber, tileId, sx1, sy1, dx1, dy1 + h1 / 2, w1, h1 / 2, animX, animY);
     } else {
-      layer.emplace_back(tileId, setNumber, sx1, sy1, dx1, dy1, w1, h1, animX, animY);
+      layer.addRect(setNumber, tileId, sx1, sy1, dx1, dy1, w1, h1, animX, animY);
     }
   }
 }
 
-void MapRenderer::drawNormalTile(std::vector<TileRect>& layer, int tileId, int dx, int dy) const {
+void MapRenderer::drawNormalTile(MapLayer& layer, int tileId, int dx, int dy) const {
   int setNumber = 0;
 
   if (isTileA5(tileId)) {
     setNumber = 4;
   } else {
-    setNumber = 5 + floor(tileId / 256);
+    setNumber = 5 + static_cast<int>(floor(tileId / 256));
   }
 
   int w = m_tileWidth;
   int h = m_tileHeight;
-  float sx = (fmod(floor(tileId / 256), 2) * 8 + (tileId % 8)) * w;
-  float sy = fmod(floor(tileId % 256 / 8), 16) * h;
+  float sx = (fmod(floor(tileId / 128), 2) * 8 + (tileId % 8)) * m_tileWidth;
+  float sy = fmod(floor(tileId % 256 / 8), 16) * m_tileHeight;
 
-  layer.emplace_back(tileId, setNumber, sx, sy, dx, dy, w, h);
+  layer.addRect(setNumber, tileId, sx, sy, dx, dy, w, h);
 }
 
-void MapRenderer::beginBlit(SDL_Texture* bitmap) {
-  SDL_Renderer* renderer = App::APP->getWindow()->getNativeRenderer();
-  m_oldTarget = SDL_GetRenderTarget(renderer);
-  SDL_SetRenderTarget(renderer, bitmap);
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-  SDL_RenderClear(renderer);
-}
+void MapRenderer::beginBlit(SDL_Texture* bitmap) {}
 
 void MapRenderer::blitImage(SDL_Texture* source, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh) {
 
@@ -261,19 +240,9 @@ void MapRenderer::blitImage(SDL_Texture* source, int sx, int sy, int sw, int sh,
   SDL_RenderCopy(renderer, source, &srect, &drect);
 }
 
-void MapRenderer::endBlit() {
-  SDL_SetRenderTarget(App::APP->getWindow()->getNativeRenderer(), m_oldTarget);
-  m_oldTarget = nullptr;
-}
+void MapRenderer::endBlit() {}
 
-void MapRenderer::clearRect(SDL_Texture* clr, int x, int y, int w, int h) {
-  SDL_Renderer* renderer = App::APP->getWindow()->getNativeRenderer();
-  SDL_Texture* oldTarget = SDL_GetRenderTarget(renderer);
-  SDL_SetRenderTarget(renderer, clr);
-  SDL_Rect rect{x, y, w, h};
-  SDL_RenderFillRect(renderer, &rect);
-  SDL_SetRenderTarget(renderer, oldTarget);
-}
+void MapRenderer::clearRect(SDL_Texture* clr, int x, int y, int w, int h) {}
 
 int MapRenderer::tileId(const int x, const int y, const int z) const {
   if (!m_map) {

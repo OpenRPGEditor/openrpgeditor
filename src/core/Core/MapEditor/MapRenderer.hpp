@@ -14,7 +14,6 @@ struct SDL_Texture;
 
 struct TileRect {
   int tileId;
-  int setNum;
   float u;
   float v;
   float x;
@@ -27,14 +26,18 @@ struct TileRect {
 
 class MapRenderer {
 public:
-  // struct MapLayer {
-  //   SDL_Texture* bitmap;
-  //
-  //   std::vector<TileRect> rects;
-  //   void addRect(float u, float v, float x, float y, int tileWidth, int tileHeight) {
-  //     rects.push_back({u, v, x, y, tileWidth, tileHeight});
-  //   }
-  // };
+  struct TileLayer {
+    Texture tex;
+    std::vector<TileRect> rects;
+  };
+
+  struct MapLayer {
+    std::vector<TileLayer> tileLayers;
+    void addRect(int setId, int tileId, float u, float v, float x, float y, int tileWidth, int tileHeight,
+                 float animX = 0.f, float animY = 0.f) {
+      tileLayers[setId].rects.push_back({tileId, u, v, x, y, tileWidth, tileHeight, animX, animY});
+    }
+  };
 
   static constexpr int TILE_ID_B = 0;
   static constexpr int TILE_ID_C = 256;
@@ -126,52 +129,13 @@ public:
 
   [[nodiscard]] bool isOverpassPosition(int mx, int my) { return false; }
 
-  /* TODO: These are nightmares taken from the original javascript, these needs to be rewritten so it's not a
-   * monstrosity */
-#if 0
-  std::vector<int>& readLastTiles(int i, int x, int y) {
-    if (i < m_lastTiles.size()) {
-      if (y < m_lastTiles[i].size()) {
-        if (x < m_lastTiles[i][y].size()) {
-          return m_lastTiles[i][y][x];
-        }
-        m_lastTiles[i][y].emplace_back();
-        return m_lastTiles[i][y][x];
-      }
-      return m_lastTiles[i].emplace_back().emplace_back();
-    }
-    return m_lastTiles.emplace_back().emplace_back().emplace_back();
-  }
-
-  void writeLastTiles(int i, int x, int y, const std::vector<int>& tiles) {
-    return;
-    if (i < m_lastTiles.size()) {
-      if (y < m_lastTiles[i].size()) {
-        if (x < m_lastTiles[i][y].size()) {
-          m_lastTiles[i][y][x] = tiles;
-        } else {
-          m_lastTiles[i][y].push_back(tiles);
-        }
-      } else {
-        m_lastTiles[i].emplace_back().emplace_back(tiles);
-      }
-    } else {
-      m_lastTiles.emplace_back().emplace_back().emplace_back(tiles);
-    }
-  }
-
-#endif
-  SDL_Texture* getLowerBitmap() const { return m_lowerBitmap; }
-  SDL_Texture* getUpperBitmap() const { return m_upperBitmap; }
-
-  void getTileRect(std::vector<TileRect>& layer, int tileId, int dx, int dy);
-  std::array<Texture, 9> m_tilesetTextures;
-
+  MapLayer m_lowerLayer;
+  MapLayer m_upperLayer;
 private:
   bool m_frameUpdated = true;
-  void drawTile(std::vector<TileRect>& bitmap, int tileId, int dx, int dy);
-  void drawAutoTile(std::vector<TileRect>& layer, int tileId, int dx, int dy);
-  void drawNormalTile(std::vector<TileRect>& layer, int tileId, int dx, int dy) const;
+  void drawTile(MapLayer& layer, int tileId, int dx, int dy);
+  void drawAutoTile(MapLayer& layer, int tileId, int dx, int dy);
+  void drawNormalTile(MapLayer& layer, int tileId, int dx, int dy) const;
   void beginBlit(SDL_Texture* source);
   void blitImage(SDL_Texture* bitmap, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh);
   void endBlit();
@@ -182,10 +146,5 @@ private:
   bool m_isValid = false;
   int m_tileWidth{48};
   int m_tileHeight{48};
-  SDL_Texture* m_lowerBitmap = nullptr;
-  SDL_Texture* m_upperBitmap = nullptr;
-  SDL_Texture* m_oldTarget = nullptr;
-  std::vector<int> m_lowerTiles;
-  std::vector<int> m_upperTiles;
-  std::vector<std::vector<std::vector<std::vector<int>>>> m_lastTiles;
+
 };

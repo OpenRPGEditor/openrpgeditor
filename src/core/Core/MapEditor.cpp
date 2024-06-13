@@ -236,6 +236,46 @@ void MapEditor::draw() {
       m_mapInfo->scrollX = ImGui::GetScrollX();
       m_mapInfo->scrollY = ImGui::GetScrollY();
 
+      m_mapRenderer.update();
+
+      for (const MapRenderer::TileLayer& tLayer : m_mapRenderer.m_lowerLayer.tileLayers) {
+        if (!tLayer.tex) {
+          continue;
+        }
+        for (const TileRect& tile : tLayer.rects) {
+          const float x0 = tile.x;
+          const float x1 = tile.x + tile.tileWidth;
+          const float y0 = tile.y;
+          const float y1 = tile.y + tile.tileHeight;
+          const float u0 = tile.u / tLayer.tex.width();
+          const float u1 = (tile.u + tile.tileWidth) / tLayer.tex.width();
+          const float v0 = tile.v / tLayer.tex.height();
+          const float v1 = (tile.v + tile.tileHeight) / tLayer.tex.height();
+          win->DrawList->AddImage(tLayer.tex.get(), win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale),
+                                  win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), ImVec2{u0, v0},
+                                  ImVec2{u1, v1});
+        }
+      }
+
+      for (const MapRenderer::TileLayer& tLayer : m_mapRenderer.m_upperLayer.tileLayers) {
+        if (!tLayer.tex) {
+          continue;
+        }
+        for (const TileRect& tile : tLayer.rects) {
+          const float x0 = tile.x;
+          const float x1 = tile.x + tile.tileWidth;
+          const float y0 = tile.y;
+          const float y1 = tile.y + tile.tileHeight;
+          const float u0 = tile.u / tLayer.tex.width();
+          const float u1 = (tile.u + tile.tileWidth) / tLayer.tex.width();
+          const float v0 = tile.v / tLayer.tex.height();
+          const float v1 = (tile.v + tile.tileHeight) / tLayer.tex.height();
+          win->DrawList->AddImage(tLayer.tex.get(), win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale),
+                                  win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), ImVec2{u0, v0},
+                                  ImVec2{u1, v1});
+        }
+      }
+
       if (ImGui::IsWindowHovered() || m_parent->editMode() == EditMode::Event) {
         m_tileCursor.draw(win);
       }

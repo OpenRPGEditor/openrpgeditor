@@ -117,7 +117,7 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlph
       return;
     }
 
-    float tileU0 = (fmod(floor(tileId / 256), 2) * 8 + (tileId % 8)) * m_parent->tileSize();
+    float tileU0 = (fmod(floor(tileId / 128), 2) * 8 + (tileId % 8)) * m_parent->tileSize();
     float tileV0 = fmod(floor(tileId % 256 / 8), 16) * m_parent->tileSize();
     float tileU1 = tileU0 + static_cast<float>(m_parent->tileSize());
     float tileV1 = tileV0 + static_cast<float>(m_parent->tileSize());

@@ -698,8 +698,8 @@ struct SetMovementRouteCommand : IEventCommand {
     std::string characterName = character == -1 ? "Player" : character == 0 ? "This Event" : "{}";
     std::string stringSuffix = "(";
     stringSuffix += route.repeat == true ? "Repeat" : "";
-    stringSuffix += route.skippable == true ? ", Skip" : "";
-    stringSuffix += route.wait == true ? ", Wait" : "";
+    stringSuffix += route.skippable == true ? "Skip" : "";
+    stringSuffix += route.wait == true ? "Wait" : "";
     stringSuffix += ")";
 
     std::string moveRoute = std::string(indent ? *indent * 4 : 0, ' ') +
@@ -707,14 +707,12 @@ struct SetMovementRouteCommand : IEventCommand {
                             "◇Set Movement Route : " + characterName + ColorFormatter::popColor() +
                             ColorFormatter::getColor(Color::Gray) + stringSuffix + ColorFormatter::popColor();
 
-    /*for (const auto& t : route.list) {
-      if (!moveRoute.empty()) {
-        moveRoute += "\n";
+    for (const auto& t : route.list) {
+      if (t->code() != EventCode::Event_Dummy) {
+        moveRoute += "\n" + std::string(indent ? *indent : 0, '\t') + " :" + std::string(((t->indent ? *t->indent : 0) + 1), '\t') +
+               " : " + t->stringRep();
       }
-      moveRoute += std::string(indent ? *indent : 0, '\t') + " :" + std::string(((t->indent ? *t->indent : 0) + 1), '\t') +
-             " : " + t->script;
-    }*/
-
+    }
     return moveRoute;
 
   }

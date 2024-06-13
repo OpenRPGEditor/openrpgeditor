@@ -102,13 +102,58 @@ void MapRenderer::update() {
 
   for (int y = 0; y < m_map->height; ++y) {
     for (int x = 0; x < m_map->width; ++x) {
-      for (int z = 0; z < 10; ++z) {
-        if (isHigherTile(tileId(x, y, z))) {
-          drawTile(m_upperLayer, tileId(x, y, z), x * m_tileWidth, y * m_tileHeight);
-        } else {
-          drawTile(m_lowerLayer, tileId(x, y, z), x * m_tileWidth, y * m_tileHeight);
-        }
-      }
+      paintTiles(0, 0, x, y);
+    }
+  }
+}
+
+void MapRenderer::paintTiles(int startX, int startY, int x, int y) {
+  int mx = startX + x;
+  int my = startY + y;
+  int dx = x * m_tileWidth;
+  int dy = y * m_tileHeight;
+
+  int tileId0 = tileId(mx, my, 0);
+  int tileId1 = tileId(mx, my, 1);
+  int tileId2 = tileId(mx, my, 2);
+  int tileId3 = tileId(mx, my, 3);
+  int shadowBits = tileId(mx, my, 4);
+  int upperTileId1 = tileId(mx, my - 1, 4);
+
+  if (isHigherTile(tileId0)) {
+    drawTile(m_upperLayer, tileId0, dx, dy);
+  } else {
+    drawTile(m_lowerLayer, tileId0, dx, dy);
+  }
+
+  if (isHigherTile(tileId1)) {
+    drawTile(m_upperLayer, tileId1, dx, dy);
+  } else {
+    drawTile(m_lowerLayer, tileId1, dx, dy);
+  }
+
+  // drawShadow(m_lowerTiles, shadowBits, dx, dy);
+
+  if (isTableTile(upperTileId1) && !isTableTile(tileId1)) {
+    if (!isShadowingTile(tileId0)) {
+      drawTableEdge(m_lowerLayer, upperTileId1, dx, dy);
+    }
+  }
+
+  if (isOverpassPosition(mx, my)) {
+    drawTile(m_upperLayer, tileId2, dx, dy);
+    drawTile(m_upperLayer, tileId3, dx, dy);
+  } else {
+    if (isHigherTile(tileId2)) {
+      drawTile(m_upperLayer, tileId2, dx, dy);
+    } else {
+      drawTile(m_lowerLayer, tileId2, dx, dy);
+    }
+
+    if (isHigherTile(tileId3)) {
+      drawTile(m_upperLayer, tileId3, dx, dy);
+    } else {
+      drawTile(m_lowerLayer, tileId3, dx, dy);
     }
   }
 }
@@ -213,7 +258,7 @@ void MapRenderer::drawAutoTile(MapLayer& layer, int tileId, int dx, int dy) {
   }
 }
 
-void MapRenderer::drawNormalTile(MapLayer& layer, int tileId, int dx, int dy) const {
+void MapRenderer::drawNormalTile(MapLayer& layer, int tileId, int dx, int dy) {
   int setNumber = 0;
 
   if (isTileA5(tileId)) {
@@ -228,6 +273,36 @@ void MapRenderer::drawNormalTile(MapLayer& layer, int tileId, int dx, int dy) co
   float sy = fmod(floor(tileId % 256 / 8), 16) * m_tileHeight;
 
   layer.addRect(setNumber, tileId, sx, sy, dx, dy, w, h);
+}
+
+void MapRenderer::drawTableEdge(MapLayer& layer, int tileId, int dx, int dy) {
+  if (!isTileA2(tileId)) {
+    return;
+  }
+
+  printf("Drawing table edge tile %i\n", tileId);
+  auto& autotileTable = FloorTileTable;
+  int kind = getAutoTileKind(tileId);
+  int shape = getAutoTileShape(tileId);
+
+  float tx = kind % 8;
+  float ty = floor(kind / 8);
+  int setNumber = 1;
+  float bx = tx * 2;
+  float by = (ty - 2) * 3;
+  auto table = autotileTable[shape];
+  int w1 = m_tileWidth / 2;
+  int h1 = m_tileHeight / 2;
+
+  for (int i = 0; i < 2; i++) {
+    float qsx = table[2 + i][0];
+    float qsy = table[2 + i][1];
+    float sx1 = (bx * 2 + qsx) * w1;
+    float sy1 = (by * 2 + qsy) * h1 + (h1 / 2);
+    float dx1 = dx + (i % 2) * w1;
+    float dy1 = dy + floor(i / 2) * h1;
+    layer.addRect(setNumber, tileId, sx1, sy1, dx1, dy1, w1, h1 / 2);
+  }
 }
 
 void MapRenderer::beginBlit(SDL_Texture* bitmap) {}

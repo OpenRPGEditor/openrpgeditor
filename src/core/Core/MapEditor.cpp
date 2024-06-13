@@ -76,9 +76,29 @@ void MapEditor::drawGrid(ImGuiWindow* win) {
                            0x7f0a0a0a, 3.f);
   }
 }
-float roundToNearestQuarter(float num) { return (num * 4) / 4; }
+float roundToNearestQuarter(float num) { return static_cast<float>(static_cast<int>(num * 4)) / 4; }
 
+void MapEditor::handleEventDrag() {
+  if (m_movingEvent) {
+    /* For now we'll prevent events from occupying the same tile */
+    /* TODO(phil): Implement some way to sort through events on the same tile */
+    int oldX = m_movingEvent->x;
+    int oldY = m_movingEvent->y;
+
+    auto it = std::find_if(m_map->events.begin(), m_map->events.end(), [&](const std::optional<Event>& e) {
+      return e && e->x == tileCellX() && e->y == tileCellY() && &e.value() != m_movingEvent;
+    });
+
+    m_movingEvent->x = m_tileCursor.tileX();
+    m_movingEvent->y = m_tileCursor.tileY();
+    if (it != m_map->events.end()) {
+      m_movingEvent->x = oldX;
+      m_movingEvent->y = oldY;
+    }
+  }
+}
 void MapEditor::handleMouseInput(ImGuiWindow* win) {
+
   if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow) || ImGui::IsKeyPressed(ImGuiKey_RightArrow) ||
       ImGui::IsKeyPressed(ImGuiKey_UpArrow) || ImGui::IsKeyPressed(ImGuiKey_DownArrow)) {
     m_tileCursor.setKeyboardMode();
@@ -91,17 +111,11 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
   } else if (ImGui::IsWindowHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left) &&
              (m_parent->editMode() == EditMode::Event || m_movingEvent)) {
     m_tileCursor.update(m_mapScale, m_map->width, m_map->height, m_parent->system().tileSize, win);
-    if (m_movingEvent) {
-      m_movingEvent->x = m_tileCursor.tileX();
-      m_movingEvent->y = m_tileCursor.tileY();
-    }
+    handleEventDrag();
     m_scaleChanged = false;
   } else if (m_scaleChanged || m_tileCursor.mode() == MapCursorMode::Keyboard) {
     m_tileCursor.update(m_mapScale, m_map->width, m_map->height, m_parent->system().tileSize, win);
-    if (m_movingEvent) {
-      m_movingEvent->x = m_tileCursor.tileX();
-      m_movingEvent->y = m_tileCursor.tileY();
-    }
+    handleEventDrag();
     m_scaleChanged = false;
   }
 
@@ -148,27 +162,6 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
       m_movingEventY = m_movingEvent->y;
     }
     m_hasScrolled = true;
-  }
-
-  if (((ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered()) ||
-       (m_tileCursor.mode() == MapCursorMode::Keyboard && (ImGui::IsKeyReleased(ImGuiKey_LeftShift)) ||
-        ImGui::IsKeyReleased(ImGuiKey_RightShift))) &&
-      m_parent->editMode() == EditMode::Event && m_movingEvent != nullptr) {
-    /* For now we'll prevent events from occupying the same tile */
-    /* TODO(phil): Implement some way to sort through events on the same tile */
-    int oldX = m_movingEvent->x;
-    int oldY = m_movingEvent->y;
-    auto it = std::find_if(m_map->events.begin(), m_map->events.end(), [&](const std::optional<Event>& e) {
-      return e->x == tileCellX() && e->y == tileCellY() && &e.value() != m_movingEvent;
-    });
-
-    m_movingEvent->x = tileCellX();
-    m_movingEvent->y = tileCellY();
-
-    if (it != m_map->events.end()) {
-      m_movingEvent->x = oldX;
-      m_movingEvent->y = oldY;
-    }
   }
 
   if (((ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) || ImGui::IsKeyPressed(ImGuiKey_Enter) ||

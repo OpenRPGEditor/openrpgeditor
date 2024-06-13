@@ -22,7 +22,6 @@ struct UnhandledEventCommand : IEventCommand {
   ~UnhandledEventCommand() override = default;
   [[nodiscard]] EventCode code() const override { return m_code; }
 
-  std::optional<int> indent{};
   EventCode m_code{};
   nlohmann::json data;
 };

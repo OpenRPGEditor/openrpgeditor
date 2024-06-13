@@ -71,6 +71,7 @@ struct MapEditor {
 private:
   void drawMapProperties();
   void drawGrid(ImGuiWindow* win);
+  void handleEventDrag();
   void handleMouseInput(ImGuiWindow* win);
   Project* m_parent;
   Map* m_map = nullptr;

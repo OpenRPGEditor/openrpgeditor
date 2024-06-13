@@ -29,7 +29,12 @@ struct MapEditor {
 
   Event* selectedEvent() { return m_selectedEvent; }
   const Event* selectedEvent() const { return m_selectedEvent; }
-  void setSelectedEvent(Event* event) { m_selectedEvent = event; }
+  void setSelectedEvent(Event* event) {
+    m_selectedEvent = event;
+    m_hasScrolled = false;
+  }
+
+  bool scrolledToEvent() const { return m_hasScrolled; }
 
   Event* movingEvent() { return m_movingEvent; }
   const Event* movingEvent() const { return m_movingEvent; }
@@ -61,6 +66,7 @@ private:
   std::vector<EventEditor> m_eventEditors;
   Event* m_movingEvent = nullptr;
   Event* m_selectedEvent = nullptr;
+  bool m_hasScrolled = true;
 
   int m_movingEventX = -1;
   int m_movingEventY = -1;

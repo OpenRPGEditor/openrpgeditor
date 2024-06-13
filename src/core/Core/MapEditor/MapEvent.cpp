@@ -28,11 +28,14 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, ImGuiWindow* 
   ImU32 outlineCol = isHovered ? HoveredOutlineCol : NormalOutlineCol;
   ImU32 borderCol = isHovered ? HoveredBorderCol : NormalBorderCol;
   ImU32 bgColor = 0x7f000000;
+  ImU32 imageColor = 0xFFFFFFFF;
   if (selected) {
     ImU8 r = oscillate(0.5, 1.0, 2.0, ImGui::GetTime()) * 255;
     borderCol &= 0xFFFFFF00;
     borderCol |= r;
-    bgColor |= r;//(r << 16) | (r << 8) | (r << 0);
+    bgColor &= 0xFFFFFF00;
+    bgColor |= r; //(r << 16) | (r << 8) | (r << 0);
+    imageColor = (0xFF << 24) | (r << 16) | (r << 8) | (r << 0);
   }
 
   auto eventX = static_cast<float>(m_event->x * 48) * mapScale;
@@ -59,6 +62,6 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, ImGuiWindow* 
     evMax.x += ((static_cast<float>(m_characterSheet.characterWidth()) - m_parent->tileSize()) / 2.f) * mapScale;
     evMin.y -= (static_cast<float>(m_characterSheet.characterHeight()) - m_parent->tileSize()) * mapScale;
     win->DrawList->AddImage(tex.get(), evMin, evMax, ImVec2{rect.uv0.u, rect.uv0.v}, ImVec2{rect.uv1.u, rect.uv1.v},
-                            selected ? borderCol : 0xFFFFFFFF);
+                            imageColor);
   }
 }

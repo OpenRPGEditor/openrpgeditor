@@ -70,6 +70,7 @@ void MapEditor::handleEventMouseInteraction(std::optional<Event>& event, bool is
     if (isHovered) {
       m_selectedEvent = m_map->event(event->id);
       m_movingEvent = nullptr;
+      m_hasScrolled = true;
     }
   }
 
@@ -113,8 +114,7 @@ void MapEditor::handleEventMouseInteraction(std::optional<Event>& event, bool is
     /* If we have a selected actor and it's no longer in it's original location, push it onto the undo stack
      * as an operation
      */
-    if (m_movingEvent != nullptr &&
-        (m_movingEvent->x != m_movingEventX || m_movingEvent->y != m_movingEventY)) {
+    if (m_movingEvent != nullptr && (m_movingEvent->x != m_movingEventX || m_movingEvent->y != m_movingEventY)) {
       m_parent->addUndo(std::make_shared<EventMoveUndoCommand>(m_movingEvent, m_movingEventX, m_movingEventY));
     }
     m_movingEvent = nullptr;
@@ -180,14 +180,22 @@ void MapEditor::draw() {
         if (!event) {
           continue;
         }
+        auto realEvent = m_map->event(event->id);
         ImGui::BeginGroup();
         {
+          if (m_selectedEvent == realEvent && !m_hasScrolled) {
+            ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) +
+                              (((event->x * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.x / 2)));
+            ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) +
+                              (((event->y * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.y / 2)));
+            m_hasScrolled = true;
+          }
           bool isHovered = event->x == tileCellX() && event->y == tileCellY();
           MapEvent mapEvent(this, &event.value());
-          mapEvent.draw(m_mapScale, isHovered, m_selectedEvent == m_map->event(event->id), win);
+          mapEvent.draw(m_mapScale, isHovered, m_selectedEvent == realEvent, win);
           handleEventMouseInteraction(event, isHovered);
-          ImGui::EndGroup();
         }
+        ImGui::EndGroup();
       }
     }
     ImGui::EndChild();

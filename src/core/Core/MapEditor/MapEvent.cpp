@@ -84,7 +84,8 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, ImGuiWindow* 
       }
       evMin += ImVec2{3.f, 3.f};
       evMax -= ImVec2{3.f, 3.f};
-      win->DrawList->AddImage(tex.get(), evMin, evMax, ImVec2{rect.uv0.u, rect.uv0.v}, ImVec2{rect.uv1.u, rect.uv1.v});
+      win->DrawList->AddImage(tex.get(), evMin, evMax, ImVec2{rect.uv0.u, rect.uv0.v}, ImVec2{rect.uv1.u, rect.uv1.v},
+                              imageColor);
     }
   }
 }

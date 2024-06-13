@@ -20,16 +20,27 @@ struct MapEditor {
     m_upperLayer.clear();
   }
 
-  void scale(float scale) { m_mapScale += scale; }
-  void setScale(float scale) { m_mapScale = scale; }
-  int tileCellX() { return m_tileCursor.tileX(); }
-  int tileCellY() { return m_tileCursor.tileY(); }
+  void scale(float scale) {
+    m_mapScale += scale;
+    m_scaleChanged = true;
+  }
+  void setScale(float scale) {
+    if (scale != m_mapScale) {
+      m_scaleChanged = true;
+    }
+    m_mapScale = scale;
+  }
+  int tileCellX() const { return m_tileCursor.tileX(); }
+  int tileCellY() const { return m_tileCursor.tileY(); }
   int tileSize();
 
   Event* selectedEvent() { return m_selectedEvent; }
   const Event* selectedEvent() const { return m_selectedEvent; }
   void setSelectedEvent(Event* event) {
     m_selectedEvent = event;
+    if (event) {
+      m_tileCursor.setPosition(event->x, event->y);
+    }
     m_hasScrolled = false;
   }
 
@@ -59,6 +70,7 @@ private:
   Map* m_map = nullptr;
   MapInfo* m_mapInfo = nullptr;
   float m_mapScale = 1.f;
+  bool m_scaleChanged = false;
   double m_initialScrollX = 0.0;
   double m_initialScrollY = 0.0;
   bool m_initialScrollSet = false;

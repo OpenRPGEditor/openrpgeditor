@@ -79,11 +79,43 @@ void MapEditor::drawGrid(ImGuiWindow* win) {
 float roundToNearestQuarter(float num) { return (num * 4) / 4; }
 
 void MapEditor::handleMouseInput(ImGuiWindow* win) {
+  if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow) || ImGui::IsKeyPressed(ImGuiKey_RightArrow) ||
+      ImGui::IsKeyPressed(ImGuiKey_UpArrow) || ImGui::IsKeyPressed(ImGuiKey_DownArrow)) {
+    m_tileCursor.setKeyboardMode();
+  } else if (std::fabs(ImGui::GetIO().MouseDelta.x) > 0.5f || std::fabs(ImGui::GetIO().MouseDelta.y) > 0.5f) {
+    m_tileCursor.setMouseMode();
+  }
+
   if (ImGui::IsWindowHovered() && m_parent->editMode() == EditMode::Map) {
     m_tileCursor.update(m_mapScale, m_map->width, m_map->height, m_parent->system().tileSize, win);
   } else if (ImGui::IsWindowHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left) &&
              (m_parent->editMode() == EditMode::Event || m_movingEvent)) {
     m_tileCursor.update(m_mapScale, m_map->width, m_map->height, m_parent->system().tileSize, win);
+    if (m_movingEvent) {
+      m_movingEvent->x = m_tileCursor.tileX();
+      m_movingEvent->y = m_tileCursor.tileY();
+    }
+    m_scaleChanged = false;
+  } else if (m_scaleChanged || m_tileCursor.mode() == MapCursorMode::Keyboard) {
+    m_tileCursor.update(m_mapScale, m_map->width, m_map->height, m_parent->system().tileSize, win);
+    if (m_movingEvent) {
+      m_movingEvent->x = m_tileCursor.tileX();
+      m_movingEvent->y = m_tileCursor.tileY();
+    }
+    m_scaleChanged = false;
+  }
+
+  if (m_parent->editMode() == EditMode::Event && m_tileCursor.mode() == MapCursorMode::Keyboard &&
+      (ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) &&
+      (!m_movingEvent || !m_selectedEvent)) {
+    m_selectedEvent = m_map->eventAt(m_tileCursor.tileX(), m_tileCursor.tileY());
+    m_movingEvent = m_selectedEvent;
+    if (m_movingEvent) {
+      m_movingEventX = m_movingEvent->x;
+      m_movingEventY = m_movingEvent->y;
+    }
+  } else if (m_parent->editMode() == EditMode::Event && m_tileCursor.mode() == MapCursorMode::Keyboard &&
+             (ImGui::IsKeyReleased(ImGuiKey_LeftShift) || ImGui::IsKeyReleased(ImGuiKey_RightShift))) {
     if (m_movingEvent) {
       m_movingEvent->x = m_tileCursor.tileX();
       m_movingEvent->y = m_tileCursor.tileY();
@@ -95,8 +127,8 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     m_selectedEvent = nullptr;
   }
 
-  if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && m_parent->editMode() == EditMode::Event &&
-      (m_movingEvent || m_selectedEvent)) {
+  if ((ImGui::IsMouseClicked(ImGuiMouseButton_Left) && m_parent->editMode() == EditMode::Event &&
+       (m_movingEvent || m_selectedEvent))) {
     auto event = m_map->eventAt(m_tileCursor.tileX(), m_tileCursor.tileY());
     if (event == nullptr) {
       m_movingEvent = nullptr;
@@ -118,7 +150,9 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     m_hasScrolled = true;
   }
 
-  if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered() &&
+  if (((ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered()) ||
+       (m_tileCursor.mode() == MapCursorMode::Keyboard && (ImGui::IsKeyReleased(ImGuiKey_LeftShift)) ||
+        ImGui::IsKeyReleased(ImGuiKey_RightShift))) &&
       m_parent->editMode() == EditMode::Event && m_movingEvent != nullptr) {
     /* For now we'll prevent events from occupying the same tile */
     /* TODO(phil): Implement some way to sort through events on the same tile */
@@ -137,7 +171,9 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     }
   }
 
-  if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && m_selectedEvent &&
+  if (((ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) || ImGui::IsKeyPressed(ImGuiKey_Enter) ||
+        ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)) &&
+       m_selectedEvent) &&
       m_parent->editMode() == EditMode::Event) {
     auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(),
                            [&](const EventEditor& editor) { return editor.event()->id == m_selectedEvent->id; });
@@ -146,7 +182,10 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     }
   }
 
-  if (ImGui::IsMouseReleased(ImGuiMouseButton_Left) && m_parent->editMode() == EditMode::Event) {
+  if (((m_tileCursor.mode() == MapCursorMode::Keyboard && (ImGui::IsKeyReleased(ImGuiKey_LeftShift)) ||
+        ImGui::IsKeyReleased(ImGuiKey_RightShift)) ||
+       ImGui::IsMouseReleased(ImGuiMouseButton_Left)) &&
+      m_parent->editMode() == EditMode::Event) {
     /* If we have a selected actor and it's no longer in it's original location, push it onto the undo stack
      * as an operation
      */
@@ -157,21 +196,31 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
   }
 }
 void MapEditor::draw() {
-  std::erase_if(m_eventEditors, [](EventEditor& editor) { return !editor.draw(); });
-
   // Keep mapScale to a quarter step
   if (ImGui::IsKeyDown(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
-    m_mapScale += ImGui::GetIO().MouseWheel * 0.5f;
+    m_mapScale += ImGui::GetIO().MouseWheel * 0.25f;
+    m_scaleChanged = true;
   }
+
   m_mapScale = roundToNearestQuarter(m_mapScale);
   m_mapScale = std::clamp(m_mapScale, .25f, 4.f);
 
+  std::erase_if(m_eventEditors, [](EventEditor& editor) { return !editor.draw(); });
+
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(45.f)),
-                      ImGuiChildFlags_Border, ImGuiWindowFlags_HorizontalScrollbar);
+                      ImGuiChildFlags_Border, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
 
     if (m_map) {
+      ImGui::Dummy(ImVec2{m_map->width * (m_parent->system().tileSize * m_mapScale),
+                          m_map->height * (m_parent->system().tileSize * m_mapScale)});
+
       ImGuiWindow* win = ImGui::GetCurrentWindow();
+      handleMouseInput(win);
+
+      if (m_tileCursor.mode() == MapCursorMode::Keyboard && !ImGui::IsWindowFocused()) {
+        ImGui::FocusWindow(win, ImGuiFocusRequestFlags_UnlessBelowModal | ImGuiFocusRequestFlags_RestoreFocusedChild);
+      }
       drawGrid(win);
 
       if (m_initialScrollSet) {
@@ -181,13 +230,11 @@ void MapEditor::draw() {
         m_initialScrollSet = false;
       }
 
+      if (ImGui::GetScrollX() != m_mapInfo->scrollX || ImGui::GetScrollY() != m_mapInfo->scrollY) {
+        m_tileCursor.setVisible(false);
+      }
       m_mapInfo->scrollX = ImGui::GetScrollX();
       m_mapInfo->scrollY = ImGui::GetScrollY();
-
-      handleMouseInput(win);
-
-      ImGui::Dummy(ImVec2{m_map->width * (m_parent->system().tileSize * m_mapScale),
-                          m_map->height * (m_parent->system().tileSize * m_mapScale)});
 
       if (ImGui::IsWindowHovered() || m_parent->editMode() == EditMode::Event) {
         m_tileCursor.draw(win);
@@ -208,8 +255,8 @@ void MapEditor::draw() {
         }
         bool isHovered = event->x == tileCellX() && event->y == tileCellY();
         MapEvent mapEvent(this, &event.value());
-        mapEvent.draw(m_mapScale, isHovered, m_selectedEvent == realEvent,
-                      m_parent->editMode() != EditMode::Event, win);
+        mapEvent.draw(m_mapScale, isHovered, m_selectedEvent == realEvent, m_parent->editMode() != EditMode::Event,
+                      win);
       }
     }
     ImGui::EndChild();

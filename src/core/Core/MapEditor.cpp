@@ -164,14 +164,21 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     m_hasScrolled = true;
   }
 
-  if (((ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) || ImGui::IsKeyPressed(ImGuiKey_Enter) ||
-        ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)) &&
-       m_selectedEvent) &&
+  if ((ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) || ImGui::IsKeyPressed(ImGuiKey_Enter) ||
+       ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)) &&
       m_parent->editMode() == EditMode::Event) {
-    auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(),
-                           [&](const EventEditor& editor) { return editor.event()->id == m_selectedEvent->id; });
-    if (it == m_eventEditors.end()) {
-      m_eventEditors.emplace_back(m_parent, m_selectedEvent);
+
+    if (m_selectedEvent != nullptr) {
+      auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(),
+                             [&](const EventEditor& editor) { return editor.event()->id == m_selectedEvent->id; });
+      if (it == m_eventEditors.end()) {
+        m_eventEditors.emplace_back(m_parent, m_selectedEvent);
+      }
+    } else if (m_eventEditors.empty() && ImGui::IsWindowFocused()) {
+      auto ev = m_map->createNewEvent();
+      ev->x = tileCellX();
+      ev->y = tileCellY();
+      m_eventEditors.emplace_back(m_parent, ev);
     }
   }
 

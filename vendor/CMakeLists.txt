@@ -44,6 +44,10 @@ FetchContent_Declare(json GIT_REPOSITORY "https://github.com/nlohmann/json.git")
 FetchContent_Declare(magic_enum
         GIT_REPOSITORY "https://github.com/Neargye/magic_enum.git")
 
+#FetchCOntent_Declare(curl
+#        GIT_REPOSITORY "https://github.com/curl/curl.git"
+#        GIT_TAG tiny-curl-8_4_0
+#)
 #FetchContent_Declare(liblcf
 #        GIT_REPOSITORY "https://github.com/EasyRPG/liblcf.git"
 #        GIT_TAG "0.8"
@@ -53,6 +57,9 @@ FetchContent_Declare(magic_enum
 # For SDL2 to be able to override options
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
+set(BUILD_STATIC_LIBRARIES ON)
+set(BUILD_SHARED_LIBRARIES OFF)
+set(BUILD_CURL_EXE OFF)
 set(LIBLCF_WITH_ICU OFF)
 set(DOCTEST_NO_INSTALL ON)
 set(FMT_INSTALL OFF)
@@ -78,6 +85,7 @@ FetchContent_MakeAvailable(
         spdlog
         json
         magic_enum
+        #curl
         #liblcf
 )
 

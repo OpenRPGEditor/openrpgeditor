@@ -14,17 +14,17 @@ struct EventCondition {
   NLOHMANN_DEFINE_TYPE_INTRUSIVE(EventCondition, actorId, actorValid, itemId, itemValid, selfSwitchCh, selfSwitchValid,
                                  switch1Id, switch1Valid, switch2Id, switch2Valid, variableId, variableValid,
                                  variableValue);
-  int actorId{};
+  int actorId{1};
   bool actorValid{};
-  int itemId{};
+  int itemId{1};
   bool itemValid{};
   std::string selfSwitchCh = "A";
   bool selfSwitchValid{};
-  int switch1Id{};
+  int switch1Id{1};
   bool switch1Valid{};
-  int switch2Id{};
+  int switch2Id{1};
   bool switch2Valid{};
-  int variableId{};
+  int variableId{1};
   bool variableValid{};
   int variableValue{};
 };
@@ -46,15 +46,15 @@ struct EventPage {
   bool directionFix{};
   EventImage image;
   std::vector<std::shared_ptr<IEventCommand>> list;
-  MovementFrequency moveFrequency{};
-  MovementRoute moveRoute;
-  MovementSpeed moveSpeed{};
-  MoveType moveType{};
+  MovementFrequency moveFrequency{MovementFrequency::Normal};
+  MovementRoute moveRoute {};
+  MovementSpeed moveSpeed{MovementSpeed::Normal};
+  MoveType moveType{MoveType::Fixed};
   EventPriority priorityType{};
   bool stepAnime = false;
   bool through{};
   EventTriggerType trigger{};
-  bool walkAnime = false;
+  bool walkAnime = true;
 
   /* OpenRPGMaker Additions */
   std::string name;

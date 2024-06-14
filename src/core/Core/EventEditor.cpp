@@ -20,6 +20,7 @@ EventEditor::EventEditor(Project* parent, Event* event) : m_parent(parent), m_ev
 void EventEditor::fixupPages() {
   for (int i = 0; i < m_event->pages.size(); ++i) {
     m_pages[i].setPage(&m_event->pages[i]);
+    m_pages[i].setParent(this);
   }
 }
 
@@ -81,6 +82,8 @@ bool EventEditor::draw() {
         int idx = 0;
         int erasedIdx = idx;
         bool erased = std::erase_if(m_pages, [&](EVPage& page) {
+          page.setParent(this);
+
           auto [del, selected] = page.draw(m_pages.size() > 1, idx);
           if (del) {
             erasedIdx = idx;

@@ -19,6 +19,8 @@ struct EVPage {
     m_commandEditor.setCommands(&m_page->list);
   }
 
+  void setParent(EventEditor* parent) { m_parent = parent; }
+
 private:
   EventEditor* m_parent;
   EventPage* m_page;

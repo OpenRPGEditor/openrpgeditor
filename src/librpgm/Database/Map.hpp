@@ -82,5 +82,27 @@ public:
     return nullptr;
   }
 
+  Event* createNewEvent() {
+    auto it = std::find_if(events.begin() + 1, events.end(), [](const auto& ev) { return !ev; });
+    Event* ret;
+    if (it != events.end()) {
+      (*it) = Event();
+      (*it)->id = it - events.begin();
+      ret = &it->value();
+    } else {
+      ret = &events.emplace_back(Event()).value();
+      ret->id = events.size() - 1;
+    }
+    ret->name = std::format("EV{:03}", events.back()->id);
+    ret->pages.emplace_back();
+    ret->pages.back().list.emplace_back(new EventDummy());
+    ret->pages.back().list.back()->indent = 0;
+    return ret;
+  }
+
+  void deleteEvent(int id) {
+    std::erase_if(events, [&id](const auto& ev) { return ev && ev->id == id; });
+  }
+
 private:
 };

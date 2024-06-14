@@ -639,13 +639,12 @@ enum class ChoiceWindowPosition {
 };
 
 enum class MovementSpeed {
-  x8_Slower,
+  x8_Slower=1,
   x4_Slower,
   x2_Slower,
   Normal,
   x2_Faster,
   x4_Faster,
-  x8_Faster,
 };
 
 enum class VehicleType {
@@ -662,7 +661,7 @@ enum class MoveType {
 };
 
 enum class MovementFrequency {
-  Lowest,
+  Lowest=1,
   Lower,
   Normal,
   Higher,

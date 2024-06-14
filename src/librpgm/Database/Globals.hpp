@@ -382,6 +382,17 @@ enum class Fade {
   Black,
   White,
 };
+
+enum class PictureOrigin {
+  Upper_Left,
+  Center,
+};
+
+enum class PictureDesignationSource {
+  Direct_designation,
+  Designation_with_variables,
+};
+
 enum class EventCode : int {
   Event_Dummy = 0, // The ◆ character
   Show_Text = 101,
@@ -470,7 +481,7 @@ enum class EventCode : int {
   Play_ME = 249,
   Play_SE = 250,
   Stop_SE = 251,
-  Play_Move = 261,
+  Play_Movie = 261,
   Change_Map_Name_Display = 281,
   Change_Tile_Set = 282,
   Change_Battle_Back = 283,
@@ -639,7 +650,7 @@ enum class ChoiceWindowPosition {
 };
 
 enum class MovementSpeed {
-  x8_Slower=1,
+  x8_Slower = 1,
   x4_Slower,
   x2_Slower,
   Normal,
@@ -661,7 +672,7 @@ enum class MoveType {
 };
 
 enum class MovementFrequency {
-  Lowest=1,
+  Lowest = 1,
   Lower,
   Normal,
   Higher,
@@ -691,10 +702,7 @@ enum CommonEventTriggerType {
 enum class TimerControl { Start, Stop };
 std::string DecodeEnumName(std::string_view str);
 
-enum Color {
-  Gray,
-  Default
-};
+enum Color { Gray, Default };
 
 template <typename E>
 static inline std::string DecodeEnumName(E e) {

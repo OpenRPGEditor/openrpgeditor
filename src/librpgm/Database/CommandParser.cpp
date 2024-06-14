@@ -22,7 +22,6 @@ using json = nlohmann::json;
  *
  */
 
-
 std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _json) {
   std::vector<std::shared_ptr<IEventCommand>> ret;
   parser = _json;
@@ -535,17 +534,155 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       parameters[2].get_to(step->waitForCompletion);
       break;
     }
+    case EventCode::Show_Balloon_Icon: {
+      ShowBalloonIconCommand* icon =
+          dynamic_cast<ShowBalloonIconCommand*>(ret.emplace_back(new ShowBalloonIconCommand()).get());
+      icon->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(icon->id);
+      parameters[1].get_to(icon->index);
+      parameters[2].get_to(icon->waitForCompletion);
+      break;
+    }
     case EventCode::Erase_Event: {
       EraseEventCommand* step = dynamic_cast<EraseEventCommand*>(ret.emplace_back(new EraseEventCommand()).get());
       step->indent = parser[index].value("indent", std::optional<int>{});
       break;
     }
+      /* Change_Player_Followers */
+      /* Gather_Followers */
+      /* Fade_Out_Screen */
+      /* Fade_In_Screen */
+      /* Tint_Screen */
+      /* Flash_Screen */
+      /* Shake_Screen */
+    case EventCode::Wait: {
+      WaitCommand* wait = dynamic_cast<WaitCommand*>(ret.emplace_back(new WaitCommand()).get());
+      wait->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(wait->duration);
+      break;
+    }
+    case EventCode::Show_Picture: {
+      ShowPictureCommand* pic = dynamic_cast<ShowPictureCommand*>(ret.emplace_back(new ShowPictureCommand()).get());
+      pic->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(pic->number);
+      parameters[1].get_to(pic->imageName);
+      parameters[2].get_to(pic->origin);
+      parameters[3].get_to(pic->type);
+      parameters[4].get_to(pic->value1);
+      parameters[5].get_to(pic->value2);
+      parameters[6].get_to(pic->zoomX);
+      parameters[7].get_to(pic->zoomY);
+      parameters[8].get_to(pic->opacityValue);
+      parameters[9].get_to(pic->blendMode);
+      break;
+    }
+      /* Move_Picture */
+      /* Rotate_Picture */
+      /* Tint_Picture */
     case EventCode::Erase_Picture: {
       ErasePictureCommand* pic = dynamic_cast<ErasePictureCommand*>(ret.emplace_back(new ErasePictureCommand()).get());
       pic->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(pic->picture);
       break;
     }
+      /* Set_Weather_Effect */
+    case EventCode::Play_BGM: {
+      PlayBGMCommand* me = dynamic_cast<PlayBGMCommand*>(ret.emplace_back(new PlayBGMCommand()).get());
+      me->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(me->audio);
+      break;
+    }
+    case EventCode::Fade_Out_BGM: {
+      FadeoutBGM* mov = dynamic_cast<FadeoutBGM*>(ret.emplace_back(new FadeoutBGM()).get());
+      mov->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(mov->duration);
+      break;
+    }
+    case EventCode::Save_BGM: {
+      SaveBGMCommand* se = dynamic_cast<SaveBGMCommand*>(ret.emplace_back(new SaveBGMCommand()).get());
+      se->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
+    case EventCode::Resume_BGM: {
+      ResumeBGMCommand* se = dynamic_cast<ResumeBGMCommand*>(ret.emplace_back(new ResumeBGMCommand()).get());
+      se->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
+    case EventCode::Play_BGS: {
+      PlayBGSCommand* me = dynamic_cast<PlayBGSCommand*>(ret.emplace_back(new PlayBGSCommand()).get());
+      me->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(me->audio);
+      break;
+    }
+    case EventCode::Fade_Out_BGS: {
+      FadeoutBGS* mov = dynamic_cast<FadeoutBGS*>(ret.emplace_back(new FadeoutBGS()).get());
+      mov->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(mov->duration);
+      break;
+    }
+    case EventCode::Play_ME: {
+      PlayMECommand* me = dynamic_cast<PlayMECommand*>(ret.emplace_back(new PlayMECommand()).get());
+      me->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(me->audio);
+      break;
+    }
+    case EventCode::Play_SE: {
+      PlaySECommand* se = dynamic_cast<PlaySECommand*>(ret.emplace_back(new PlaySECommand()).get());
+      se->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(se->audio);
+      break;
+    }
+    case EventCode::Stop_SE: {
+      StopSECommand* se = dynamic_cast<StopSECommand*>(ret.emplace_back(new StopSECommand()).get());
+      se->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
+    case EventCode::Play_Movie: {
+      PlayMovieCommand* mov = dynamic_cast<PlayMovieCommand*>(ret.emplace_back(new PlayMovieCommand()).get());
+      mov->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(mov->name);
+      break;
+    }
+      /* Change_Map_Display_Name */
+      /* Change_Tile_Set */
+      /* Change_Battle_Back */
+      /* Get_Location_Info */
+      /* Battle_Processing */
+      /* If_Win */
+      /* If_Escape */
+      /* If_Lose */
+      /* Shop_Processing */
+      /* Shop_Processing_Good (goes in Shop_Processing) */
+      /* Name_Input_Processing */
+      /* Change_HP */
+      /* Change_MP */
+      /* Change_State */
+      /* Recover_All */
+      /* Change_EXP */
+      /* Change_Level */
+      /* Change_Parameter */
+      /* Change_Skill */
+      /* Change_Equipment */
+      /* Change_Class */
+      /* Change_Actor_Images */
+      /* Change_Vechicle Image */
+      /* Change_Nickname */
+      /* Change_Profile */
+      /* Change_TP */
+      /* Change_Enemy_HP */
+      /* Change_Enemy_MP */
+      /* Change_Enemy_State */
+      /* Enemy_Recover_All */
+      /* Enemy_Appear */
+      /* Enemy_Transform */
+      /* Show_Battle_Animation */
+      /* Force_Action */
+      /* Abort_Battle */
+      /* Change_Enemy_TP */
+      /* Open_Menu_Screen */
+      /* Open_Save_Screen */
+      /* Game_Over */
+      /* Return_To_Title_Screen */
     case EventCode::Script: {
       ScriptCommand* end = dynamic_cast<ScriptCommand*>(ret.emplace_back(new ScriptCommand()).get());
       end->indent = parser[index].value("indent", std::optional<int>{});
@@ -557,72 +694,9 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
         tmp->indent = parser[index].value("indent", std::optional<int>{});
         currentCommand()["parameters"][0].get_to(tmp->script);
       }
-
       break;
     }
-    case EventCode::Play_SE: {
-      PlaySECommand* se = dynamic_cast<PlaySECommand*>(ret.emplace_back(new PlaySECommand()).get());
-      se->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(se->audio);
-      break;
-    }
-    case EventCode::Play_ME: {
-      PlayMECommand* me = dynamic_cast<PlayMECommand*>(ret.emplace_back(new PlayMECommand()).get());
-      me->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(me->audio);
-      break;
-    }
-    case EventCode::Play_BGS: {
-      PlayBGSCommand* me = dynamic_cast<PlayBGSCommand*>(ret.emplace_back(new PlayBGSCommand()).get());
-      me->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(me->audio);
-      break;
-    }
-    case EventCode::Play_BGM: {
-      PlayBGMCommand* me = dynamic_cast<PlayBGMCommand*>(ret.emplace_back(new PlayBGMCommand()).get());
-      me->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(me->audio);
-      break;
-    }
-    case EventCode::Play_Move: {
-      PlayMovieCommand* mov = dynamic_cast<PlayMovieCommand*>(ret.emplace_back(new PlayMovieCommand()).get());
-      mov->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(mov->name);
-      break;
-    }
-    case EventCode::Stop_SE: {
-      StopSECommand* se = dynamic_cast<StopSECommand*>(ret.emplace_back(new StopSECommand()).get());
-      se->indent = parser[index].value("indent", std::optional<int>{});
-      break;
-    }
-    case EventCode::Resume_BGM: {
-      ResumeBGMCommand* se = dynamic_cast<ResumeBGMCommand*>(ret.emplace_back(new ResumeBGMCommand()).get());
-      se->indent = parser[index].value("indent", std::optional<int>{});
-      break;
-    }
-    case EventCode::Save_BGM: {
-      SaveBGMCommand* se = dynamic_cast<SaveBGMCommand*>(ret.emplace_back(new SaveBGMCommand()).get());
-      se->indent = parser[index].value("indent", std::optional<int>{});
-      break;
-    }
-    case EventCode::Fade_Out_BGM: {
-      FadeoutBGM* mov = dynamic_cast<FadeoutBGM*>(ret.emplace_back(new FadeoutBGM()).get());
-      mov->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(mov->duration);
-      break;
-    }
-    case EventCode::Fade_Out_BGS: {
-      FadeoutBGS* mov = dynamic_cast<FadeoutBGS*>(ret.emplace_back(new FadeoutBGS()).get());
-      mov->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(mov->duration);
-      break;
-    }
-    case EventCode::Wait: {
-      WaitCommand* wait = dynamic_cast<WaitCommand*>(ret.emplace_back(new WaitCommand()).get());
-      wait->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(wait->duration);
-      break;
-    }
+      /* Plugin_Command */
     case EventCode::End: {
       EndCommand* end = dynamic_cast<EndCommand*>(ret.emplace_back(new EndCommand()).get());
       end->indent = parser[index].value("indent", std::optional<int>{});

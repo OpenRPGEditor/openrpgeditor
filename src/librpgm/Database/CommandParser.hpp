@@ -831,6 +831,14 @@ struct ShowAnimationCommand : IEventCommand {
   }
 };
 
+struct ShowBalloonIconCommand : IEventCommand {
+  ~ShowBalloonIconCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Show_Balloon_Icon; }
+  int id;
+  int index;
+  bool waitForCompletion;
+};
+
 struct EraseEventCommand : IEventCommand {
   ~EraseEventCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Erase_Event; }[[nodiscard]] std::string stringRep() const override {
@@ -911,7 +919,7 @@ struct PlayBGMCommand : IEventCommand {
 struct PlayMovieCommand : IEventCommand {
   ~PlayMovieCommand() override = default;
   std::string name;
-  [[nodiscard]] EventCode code() const override { return EventCode::Play_Move; }
+  [[nodiscard]] EventCode code() const override { return EventCode::Play_Movie; }
   [[nodiscard]] std::string stringRep() const override {
     return std::string(indent ? *indent * 4 : 0, ' ') + "◇Play Movie : " + (name == "" ? "None" : name);
   }
@@ -952,6 +960,21 @@ struct StopSECommand : IEventCommand {
   [[nodiscard]] std::string stringRep() const override {
     return std::string(indent ? *indent * 4 : 0, ' ') + "◇Stop SE";
   }
+};
+
+struct ShowPictureCommand : IEventCommand {
+  ~ShowPictureCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Show_Picture; }
+  int number;
+  std::string imageName;
+  PictureOrigin origin;
+  PictureDesignationSource type;
+  int value1; // direct X value or indirect from global variables
+  int value2; // direct Y value or indirect from global variables
+  int zoomX;
+  int zoomY;
+  int opacityValue;
+  Blend blendMode;
 };
 
 struct EndCommand : IEventCommand {

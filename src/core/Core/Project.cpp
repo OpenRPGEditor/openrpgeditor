@@ -355,6 +355,12 @@ void Project::drawMenu() {
       if (ImGui::MenuItem("Database", "F9", false, m_databaseEditor != std::nullopt)) {
         m_databaseEditor->open();
       }
+
+      /* Add tools above this */
+      ImGui::Separator();
+      if (ImGui::MenuItem("Reset Window Layout")) {
+        ImGui::ClearIniSettings();
+      }
       ImGui::EndMenu();
     }
     if (ImGui::BeginMenu("Game")) {

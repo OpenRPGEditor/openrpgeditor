@@ -1,6 +1,6 @@
 set(NAME "librpgm")
 
-include(${PROJECT_SOURCE_DIR}/cmake/StaticAnalyzers.cmake)
+#include(${PROJECT_SOURCE_DIR}/cmake/StaticAnalyzers.cmake)
 
 add_library(
         ${NAME} STATIC

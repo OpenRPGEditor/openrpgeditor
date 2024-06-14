@@ -18,7 +18,7 @@ struct EventCondition {
   bool actorValid{};
   int itemId{};
   bool itemValid{};
-  std::string selfSwitchCh;
+  std::string selfSwitchCh = "A";
   bool selfSwitchValid{};
   int switch1Id{};
   bool switch1Valid{};

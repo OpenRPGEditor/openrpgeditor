@@ -3,6 +3,10 @@
 #include "Core/ResourceManager.hpp"
 
 CharacterSheet::CharacterSheet(std::string_view sheetName) {
+  if (sheetName.empty()) {
+    return;
+  }
+
   for (auto c : sheetName) {
     if (c == '$') {
       m_isSingleCharacter = true;

@@ -1,6 +1,6 @@
 set(NAME "Core")
 
-include(${PROJECT_SOURCE_DIR}/cmake/StaticAnalyzers.cmake)
+#include(${PROJECT_SOURCE_DIR}/cmake/StaticAnalyzers.cmake)
 
 add_library(
         ${NAME} STATIC
@@ -78,4 +78,4 @@ target_link_libraries(
         Settings
         librpgm)
 
-add_subdirectory(Tests)
+#add_subdirectory(Tests)

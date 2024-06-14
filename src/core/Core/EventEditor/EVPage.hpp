@@ -1,5 +1,7 @@
 #pragma once
 #include "Core/CommonUI/EventCommandEditor.hpp"
+#include "Core/CharacterSheet.hpp"
+
 #include "Database/EventPage.hpp"
 
 struct EventEditor;
@@ -21,4 +23,5 @@ private:
   EventEditor* m_parent;
   EventPage* m_page;
   EventCommandEditor m_commandEditor;
+  CharacterSheet m_characterSheet;
 };

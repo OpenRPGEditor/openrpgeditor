@@ -7,8 +7,6 @@
 #include "Core/Debug/Instrumentor.hpp"
 #include "Core/Log.hpp"
 
-#include "curl/curl.h"
-
 static std::string buff;
 static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
   return fwrite(contents, size, nmemb, (FILE*)userp);

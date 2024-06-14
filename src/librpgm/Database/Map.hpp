@@ -93,7 +93,7 @@ public:
       ret = &events.emplace_back(Event()).value();
       ret->id = events.size() - 1;
     }
-    ret->name = std::format("EV{:03}", events.back()->id);
+    ret->name = std::format("EV{:03}", ret->id);
     ret->pages.emplace_back();
     ret->pages.back().list.emplace_back(new EventDummy());
     ret->pages.back().list.back()->indent = 0;

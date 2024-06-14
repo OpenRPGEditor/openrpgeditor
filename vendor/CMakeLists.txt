@@ -91,4 +91,4 @@ FetchContent_MakeAvailable(
 
 
 target_include_directories(ImGuiFileDialog PRIVATE ${imgui_SOURCE_DIR})
-target_compile_options(ImGuiFileDialog PRIVATE "-Wno-deprecated-enum-enum-conversion")
+#target_compile_options(ImGuiFileDialog PRIVATE "-Wno-deprecated-enum-enum-conversion")

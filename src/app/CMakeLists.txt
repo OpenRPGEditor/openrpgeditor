@@ -1,6 +1,6 @@
 set(NAME "OpenRPGMaker")
 
-include(${PROJECT_SOURCE_DIR}/cmake/StaticAnalyzers.cmake)
+#include(${PROJECT_SOURCE_DIR}/cmake/StaticAnalyzers.cmake)
 
 add_executable(${NAME} WIN32 MACOSX_BUNDLE App/Main.cpp)
 

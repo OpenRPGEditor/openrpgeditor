@@ -88,7 +88,7 @@ bool LabelOverLineEdit(const char* id, const char* label, char* string, int len,
   bool ret = false;
   {
     Text("%s", label);
-    char name[len];
+    char* name = (char*)malloc(len);
     strncpy(name, string, len);
     SetNextItemWidth(width);
     if (InputText(id, name, len, ImGuiInputTextFlags_EnterReturnsTrue)) {
@@ -98,6 +98,7 @@ bool LabelOverLineEdit(const char* id, const char* label, char* string, int len,
     if (tooltip != nullptr) {
       SetItemTooltip("%s", tooltip);
     }
+    free(name);
   }
   EndGroup();
   return ret;

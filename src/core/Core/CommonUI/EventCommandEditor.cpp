@@ -159,6 +159,44 @@ void EventCommandEditor::draw() {
                 insertValue(indentPad, m_project->event(smr->character)->name, "{");
               }
             }
+            else if (m_commands->at(n)->code() == EventCode::Transfer_Player) {
+              TransferPlayerCommand* tpc = dynamic_cast<TransferPlayerCommand*>(m_commands->at(n).get());
+              if (tpc->mode == TransferMode::Variable_Designation) {
+                insertValue(indentPad, m_project->map(tpc->mapId)->name, "[");
+                insertValue(indentPad, m_project->variable(tpc->x), "[");
+                insertValue(indentPad, m_project->variable(tpc->y), "[");
+              }
+              else {
+                insertValue(indentPad, std::format("{:04}", tpc->mapId) + m_project->map(tpc->mapId)->name, "{");
+              }
+            }
+            else if (m_commands->at(n)->code() == EventCode::Set_Event_Location) {
+              SetEventLocationCommand* sel = dynamic_cast<SetEventLocationCommand*>(m_commands->at(n).get());
+
+              if (sel->event > 0)
+                insertValue(indentPad, m_project->event(sel->event)->name, "{");
+
+              if (sel->mode == TransferMode::Variable_Designation) {
+                  insertValue(indentPad, m_project->variable(sel->x), "[");
+                  insertValue(indentPad, m_project->variable(sel->y), "[");
+              }
+              else if (sel->mode == TransferMode::Exchange_With_Another_Event) {
+                if (sel->x > 0)
+                  insertValue(indentPad, m_project->event(sel->event)->name, "<");
+              }
+            }
+            else if (m_commands->at(n)->code() == EventCode::Set_Vehicle_Location) {
+              SetVehicleLocationCommand* svl = dynamic_cast<SetVehicleLocationCommand*>(m_commands->at(n).get());
+
+              if (svl->mode == TransferMode::Variable_Designation) {
+                insertValue(indentPad, m_project->map(svl->mapId)->name, "[");
+                insertValue(indentPad, m_project->variable(svl->x), "[");
+                insertValue(indentPad, m_project->variable(svl->y), "[");
+              }
+              else {
+                insertValue(indentPad, std::format("{:04}", svl->mapId) + m_project->map(svl->mapId)->name, "{");
+              }
+            }
 
             // ImGui::PushStyleColor(ImGuiCol_Text, m_selectedCommonEvent->commands->at(n)->color());
             auto oldCursor = ImGui::GetCursorPos();

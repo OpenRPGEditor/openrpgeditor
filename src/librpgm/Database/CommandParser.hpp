@@ -7,7 +7,6 @@
 
 #include <format>
 #include <memory>
-
 struct NextScriptCommand;
 struct IEventCommand {
   std::optional<int> indent{};
@@ -50,6 +49,8 @@ struct ShowTextCommand : IEventCommand {
   TextWindowPosition position;
 
   std::vector<std::shared_ptr<NextTextCommand>> text;
+
+  // TODO
 };
 
 struct ShowChoiceCommand : IEventCommand {
@@ -60,6 +61,8 @@ struct ShowChoiceCommand : IEventCommand {
   std::vector<std::string> choices;
   int cancelType;
   int defaultType;
+
+  // TODO
 };
 
 struct WhenSelectedCommand : IEventCommand {
@@ -68,26 +71,36 @@ struct WhenSelectedCommand : IEventCommand {
 
   int param1;
   std::string choice;
+
+  // TODO
 };
 
 struct WhenCancelCommand : IEventCommand {
   ~WhenCancelCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::When_Cancel; }
+
+  // TODO
 };
 
 struct ShowChoicesEndCommand : IEventCommand {
   ~ShowChoicesEndCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::End_del_ShowChoices; }
+
+  // TODO
 };
 
 struct InputNumberCommand : IEventCommand {
   ~InputNumberCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Input_Number; }
+
+  // TODO
 };
 
 struct SelectItemCommand : IEventCommand {
   ~SelectItemCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Select_Item; }
+
+  // TODO
 };
 
 struct NextScrollingTextCommand : IEventCommand {
@@ -104,6 +117,8 @@ struct ShowScrollTextCommand : IEventCommand {
   int speed;
   bool noFast;
   std::vector<std::shared_ptr<NextScrollingTextCommand>> text;
+
+  // TODO
 };
 
 struct NextCommentCommand : IEventCommand {
@@ -635,42 +650,80 @@ struct ChangeVehicleBGMCommand : IEventCommand {
 struct TransferPlayerCommand : IEventCommand {
   ~TransferPlayerCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Transfer_Player; }
-  // TODO: Missing fade/direction codes
-  TransferMode mode;
-  int mapId;
-  int x;
-  int y;
-  /*
-  [[nodiscard]] std::string stringRep() const override {
-    if (mode == TransferMode::Variable_Designation) {
-
-    }
-    else if (mode == TransferMode::Exchange_With_Another_Event) {
-
-    }
-    else {
-      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
-      + "◇Transfer Player : {}
-    }
-  }*/
-};
-
-struct SetVehicleLocationCommand : IEventCommand {
-  ~SetVehicleLocationCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Set_Vehicle_Location; }
-  TransferMode mode;
-  int mapId;
-  int x;
-  int y;
-};
-struct SetEventLocationCommand : IEventCommand {
-  ~SetEventLocationCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Set_Event_Location; }
   TransferMode mode;
   int mapId;
   int x;
   int y;
   Direction direction;
+  Fade fade;
+
+  [[nodiscard]] std::string stringRep() const override {
+    std::string suffix = ColorFormatter::getColor(Gray) + (direction != Direction::Retain ? "(Direction: " + DecodeEnumName(direction) : "");
+    suffix += (direction != Direction::Retain ? fade != Fade::Black ? ", Fade: " + DecodeEnumName(fade) + ")" : "(Fade: " + DecodeEnumName(fade) + ")" : "") + ColorFormatter::popColor();
+
+    if (mode == TransferMode::Variable_Designation) {
+      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+      + "◇Transfer Player : {[]} ({[]},{[]})" + suffix;
+    }
+    else {
+      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+      + "◇Transfer Player : {}" + std::format("({}, {})", x, y) + suffix;
+    }
+  }
+};
+
+struct SetVehicleLocationCommand : IEventCommand {
+  ~SetVehicleLocationCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Set_Vehicle_Location; }
+  VehicleType vehicle;
+  TransferMode mode;
+  int mapId;
+  int x;
+  int y;
+
+  [[nodiscard]] std::string stringRep() const override {
+    std::string prefix = std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+      + "◇Set Vehicle Location : " + DecodeEnumName(vehicle) + ",";
+    std::string suffix = ColorFormatter::popColor();
+
+    if (mode == TransferMode::Variable_Designation) {
+      return prefix + ", {[]} ({[]},{[]}) " + suffix;
+    }
+    return prefix + " {}" + std::format("({}, {})", x, y) + suffix;
+  }
+};
+struct SetEventLocationCommand : IEventCommand {
+  ~SetEventLocationCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Set_Event_Location; }
+  TransferMode mode;
+  int event;
+  int x;
+  int y;
+  Direction direction;
+
+  [[nodiscard]] std::string stringRep() const override {
+    std::string prefix = std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+      + "◇Set Event Location : " + (event > 0 ? "{}" : "This Event");
+    std::string suffix = "(Direction : " + DecodeEnumName(direction) + " )" + ColorFormatter::popColor();
+
+    if (mode == TransferMode::Variable_Designation) {
+      return prefix + ", ([],[])" + suffix;
+    }
+    if (mode == TransferMode::Exchange_With_Another_Event) {
+      return prefix + ", Exchange with " + (event > 0 ? "<>" : "This Event") + suffix;
+    }
+    return  prefix + std::format(", ({}, {})", x, y) + suffix;
+  }
+};
+
+struct ErasePictureCommand : IEventCommand {
+  ~ErasePictureCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Erase_Picture; }
+  int picture;
+  [[nodiscard]] std::string stringRep() const override {
+    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
+    + "Erase Picture : " + std::to_string(picture) + ColorFormatter::popColor();
+  }
 };
 
 struct ScrollMapCommand : IEventCommand {
@@ -697,7 +750,7 @@ struct SetMovementRouteCommand : IEventCommand {
     std::string stringSuffix = "(";
     stringSuffix += route.repeat == true ? "Repeat" : "";
     stringSuffix += route.skippable == true ?  (route.repeat == true ? ", Skip" : "Skip") : "";
-    stringSuffix += route.wait == true ? ", Wait" : "";
+    stringSuffix += route.wait == true ? ((route.repeat == true || route.skippable == true) ? ", Wait" : "") : "Wait";
     stringSuffix += ")";
 
     std::string moveRoute = std::string(indent ? *indent * 4 : 0, ' ') +
@@ -722,6 +775,8 @@ struct MovementRouteStepCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Movement_Route_Step; }
   int character;
   std::shared_ptr<IEventCommand> step;
+
+  // TODO
 };
 
 struct GetOnOffVehicleCommand : IEventCommand {
@@ -1156,6 +1211,8 @@ struct MovementScriptCommand : IEventCommand {
 struct CommandParser {
   nlohmann::json parser;
   int index = 0;
+  const std::string diamond = "\u25c6";
+  const std::string colon = "\uff1a";
 
   std::vector<std::shared_ptr<IEventCommand>> parse(const nlohmann::json& data);
   void serialize(nlohmann::json& data, const std::vector<std::shared_ptr<IEventCommand>>& list);
@@ -1166,5 +1223,20 @@ struct CommandParser {
     return ret;
   }
 
+  std::string symbol(std::shared_ptr<IEventCommand> data) {
+    return static_cast<int>(data->code()) < 400 ? diamond : colon;
+  }
+ std::string indentText(std::shared_ptr<IEventCommand> data) {
+    std::string text = "";
+    for(int i = 0; i < data->indent; ++i) {
+      text += "  ";
+    }
+    return text;
+  }
+
   nlohmann::json currentCommand() { return parser[index]; }
+
+  struct symbol;
+  struct indentText;
+  struct create;
 };

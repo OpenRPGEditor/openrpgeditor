@@ -377,7 +377,11 @@ enum class TransferMode {
   Variable_Designation,
   Exchange_With_Another_Event,
 };
-
+enum class Fade {
+  None,
+  Black,
+  White,
+};
 enum class EventCode : int {
   Event_Dummy = 0, // The ◆ character
   Show_Text = 101,
@@ -642,6 +646,12 @@ enum class MovementSpeed {
   x2_Faster,
   x4_Faster,
   x8_Faster,
+};
+
+enum class VehicleType {
+  Boat,
+  Ship,
+  Airship,
 };
 
 enum class MoveType {

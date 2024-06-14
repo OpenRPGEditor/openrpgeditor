@@ -3,6 +3,26 @@
 
 using json = nlohmann::json;
 
+/*
+*function make(data) {
+        return indentText(data) + symbolText(data) + commandText(data);
+    }
+
+    function indentText(data) {
+        var text = "";
+        for (var i = 0; i < data.indent; i++) {
+            text += "  ";
+        }
+        return text;
+    }
+
+    function symbolText(data) {
+        return data.code < 400 ? diamond : colon;
+    }
+ *
+ */
+
+
 std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _json) {
   std::vector<std::shared_ptr<IEventCommand>> ret;
   parser = _json;
@@ -438,13 +458,16 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       parameters[1].get_to(transfer->mapId);
       parameters[2].get_to(transfer->x);
       parameters[3].get_to(transfer->y);
+      parameters[4].get_to(transfer->direction);
+      parameters[5].get_to(transfer->fade);
       break;
     }
     case EventCode::Set_Vehicle_Location: {
       SetVehicleLocationCommand* transfer =
           dynamic_cast<SetVehicleLocationCommand*>(ret.emplace_back(new SetVehicleLocationCommand()).get());
       transfer->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(transfer->mode);
+      parameters[0].get_to(transfer->vehicle);
+      parameters[1].get_to(transfer->mode);
       parameters[1].get_to(transfer->mapId);
       parameters[2].get_to(transfer->x);
       parameters[3].get_to(transfer->y);
@@ -454,9 +477,9 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       SetEventLocationCommand* transfer =
           dynamic_cast<SetEventLocationCommand*>(ret.emplace_back(new SetEventLocationCommand()).get());
       transfer->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(transfer->mode);
-      parameters[1].get_to(transfer->mapId);
-      parameters[2].get_to(transfer->x);
+      parameters[0].get_to(transfer->event);
+      parameters[1].get_to(transfer->mode);
+      parameters[2].get_to(transfer->x); // Stores event designation ID
       parameters[3].get_to(transfer->y);
       break;
     }
@@ -510,6 +533,12 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
     case EventCode::Erase_Event: {
       EraseEventCommand* step = dynamic_cast<EraseEventCommand*>(ret.emplace_back(new EraseEventCommand()).get());
       step->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
+    case EventCode::Erase_Picture: {
+      ErasePictureCommand* pic = dynamic_cast<ErasePictureCommand*>(ret.emplace_back(new ErasePictureCommand()).get());
+      pic->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(pic->picture);
       break;
     }
     case EventCode::Script: {

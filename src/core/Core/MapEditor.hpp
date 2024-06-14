@@ -73,6 +73,8 @@ private:
   void drawGrid(ImGuiWindow* win);
   void handleEventDrag();
   void handleMouseInput(ImGuiWindow* win);
+  void renderLayerTex(ImGuiWindow* win, const MapRenderer::TileLayer& tLayer);
+  void renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer);
   Project* m_parent;
   Map* m_map = nullptr;
   MapInfo* m_mapInfo = nullptr;

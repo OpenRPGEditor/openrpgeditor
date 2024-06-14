@@ -20,13 +20,14 @@ void DBActorsTab::draw() {
 
   ImGui::BeginChild("##orpg_actors_editor");
   {
-    ImGui::BeginChild("##orpg_actors_editor_actors", ImVec2{250.f, 0} * App::DPIHandler::get_scale(), 0, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("##orpg_actors_editor_actors", ImVec2{250.f, 0} * App::DPIHandler::get_scale(), 0,
+                      ImGuiWindowFlags_HorizontalScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Actors");
         ImGui::BeginChild("##orpg_actors_editor_actor_list",
-                          ImVec2{0, ImGui::GetContentRegionMax().y - (108 * App::DPIHandler::get_scale())});
+                          ImVec2{0, ImGui::GetContentRegionMax().y - (App::DPIHandler::scale_value(108))});
         {
           ImGui::BeginGroup();
           {
@@ -51,7 +52,7 @@ void DBActorsTab::draw() {
         snprintf(str, 4096, "Max Actors %i", m_maxActors);
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max",
-                          ImVec2{ImGui::GetContentRegionMax().x - (8 * App::DPIHandler::get_scale()), 0})) {
+                          ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxActors = m_maxActors;
         }
@@ -71,14 +72,14 @@ void DBActorsTab::draw() {
             char name[4096];
             strncpy(name, m_selectedActor->name.c_str(), 4096);
             if (ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_name", "Name:", name, 4096,
-                                         (ImGui::GetContentRegionMax().x / 2) - 16)) {
+                                         (ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(16))) {
               m_selectedActor->name = name;
             }
             ImGui::SameLine();
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
             strncpy(name, m_selectedActor->nickname.c_str(), 4096);
             if (ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_nickname", "Nickname:", name, 4096,
-                                         (ImGui::GetContentRegionMax().x / 2) - 16)) {
+                                         (ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(16))) {
               m_selectedActor->nickname = name;
             }
             ImGui::BeginGroup();
@@ -105,7 +106,7 @@ void DBActorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Initial Level:");
-              ImGui::SetNextItemWidth((ImGui::GetCursorPosX() / 2) - 16);
+              ImGui::SetNextItemWidth((ImGui::GetCursorPosX() / 2) - App::DPIHandler::scale_value(16));
               ImGui::InputInt("##orpg_actors_initial_level_edit", &m_selectedActor->initialLevel);
               m_selectedActor->initialLevel = std::clamp(m_selectedActor->initialLevel, 1, 99);
             }
@@ -115,7 +116,7 @@ void DBActorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Max Level:");
-              ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - 16);
+              ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - App::DPIHandler::scale_value(16));
               ImGui::InputInt("##orpg_actors_max_level_edit", &m_selectedActor->maxLevel);
               m_selectedActor->maxLevel = std::clamp(m_selectedActor->maxLevel, 1, 99);
             }
@@ -125,8 +126,9 @@ void DBActorsTab::draw() {
               ImGui::Text("Profile:");
               char profile[8192];
               strncpy(profile, m_selectedActor->profile.c_str(), IM_ARRAYSIZE(profile));
-              if (ImGui::InputTextMultiline("##orpg_actors_profile", profile, IM_ARRAYSIZE(profile),
-                                            ImVec2{ImGui::GetContentRegionMax().x - 16, 0})) {
+              if (ImGui::InputTextMultiline(
+                      "##orpg_actors_profile", profile, IM_ARRAYSIZE(profile),
+                      ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(16), 0})) {
                 m_selectedActor->profile = profile;
               }
             }
@@ -139,7 +141,8 @@ void DBActorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Face:");
-              ImGui::ImageButton("##orpg_actors_face_image", m_buttonBack.get(), ImVec2{160, 160});
+              ImGui::ImageButton("##orpg_actors_face_image", m_buttonBack.get(),
+                                 ImVec2{164, 164} * App::DPIHandler::get_scale());
             }
             ImGui::EndGroup();
             ImGui::SameLine();
@@ -147,18 +150,19 @@ void DBActorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Character:");
-              ImGui::ImageButton("##orpg_actors_character_image", m_buttonBack.get(), ImVec2{160, 160});
+              auto cursorPos = ImGui::GetCursorPos();
+              ImGui::ImageButton("##orpg_actors_character_image", m_buttonBack.get(),
+                                 ImVec2{164, 164} * App::DPIHandler::get_scale());
               if (m_charaterSheet && m_charaterSheet->texture()) {
-                ImGui::SetCursorPosX(ImGui::GetCursorPosX() +
-                                     ((160 / 2) - (static_cast<float>((m_charaterSheet->characterWidth()) * 2) / 2)));
-                ImGui::SetCursorPosY(ImGui::GetCursorPosY() -
-                                     ((108) + (static_cast<float>((m_charaterSheet->characterHeight()) * 2) / 2)));
+                ImGui::SetCursorPos(cursorPos + ImVec2{16, m_charaterSheet->characterHeight() == 96 ? -24 : -16} *
+                                                    App::DPIHandler::get_scale());
                 auto rect = m_charaterSheet->getRectForCharacter(m_selectedActor->characterIndex, 1);
                 ImVec2 uv0{rect.uv0.u, rect.uv0.v};
                 ImVec2 uv1{rect.uv1.u, rect.uv1.v};
                 ImGui::Image(m_charaterSheet->texture().get(),
-                             ImVec2{static_cast<float>(m_charaterSheet->characterWidth()) * 2,
-                                    static_cast<float>(m_charaterSheet->characterHeight()) * 2},
+                             ImVec2{static_cast<float>(m_charaterSheet->characterWidth() * 2),
+                                    static_cast<float>(m_charaterSheet->characterHeight() * 2)} *
+                                 App::DPIHandler::get_scale(),
                              uv0, uv1);
               }
             }
@@ -168,8 +172,9 @@ void DBActorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("[SV] Battler:");
-              ImGui::ImageButton("##orpg_actors_battler_image", m_buttonBack.get(), ImVec2{160, 160});
-              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 128);
+              ImGui::ImageButton("##orpg_actors_battler_image", m_buttonBack.get(),
+                                 ImVec2{164, 164} * App::DPIHandler::get_scale());
+              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - App::DPIHandler::scale_value(128));
             }
             ImGui::EndGroup();
           }
@@ -180,7 +185,8 @@ void DBActorsTab::draw() {
             if (ImGui::BeginTable("##orpg_actors_actor_init_equip", 2,
                                   ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY |
                                       ImGuiTableFlags_ScrollY,
-                                  ImVec2{ImGui::GetContentRegionMax().x - 15, ImGui::GetContentRegionAvail().y - 16})) {
+                                  ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(15),
+                                         ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
 
               ImGui::TableSetupColumn("Type");
               ImGui::TableSetupColumn("Equipment Item");
@@ -252,8 +258,8 @@ void DBActorsTab::draw() {
             strncpy(note, m_selectedActor->note.c_str(), IM_ARRAYSIZE(note));
             if (ImGui::InputTextMultiline(
                     "##orpg_actors_note", note, IM_ARRAYSIZE(note),
-                    ImVec2{ImGui::GetContentRegionMax().x - (16 * ImGui::GetIO().FontGlobalScale),
-                           ImGui::GetContentRegionAvail().y - (16 * ImGui::GetIO().FontGlobalScale)})) {
+                    ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(16),
+                           ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
               m_selectedActor->note = note;
             }
           }

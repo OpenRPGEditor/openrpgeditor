@@ -195,6 +195,35 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     m_movingEvent = nullptr;
   }
 }
+void MapEditor::renderLayerTex(ImGuiWindow* win, const MapRenderer::TileLayer& tLayer) {
+  if (!tLayer.tex) {
+    return;
+  }
+
+  for (const TileRect& tile : tLayer.rects) {
+    const float x0 = tile.x;
+    const float x1 = tile.x + tile.tileWidth;
+    const float y0 = tile.y;
+    const float y1 = tile.y + tile.tileHeight;
+    const float u0 = tile.u / tLayer.tex.width();
+    const float u1 = (tile.u + tile.tileWidth) / tLayer.tex.width();
+    const float v0 = tile.v / tLayer.tex.height();
+    const float v1 = (tile.v + tile.tileHeight) / tLayer.tex.height();
+    win->DrawList->AddImage(tLayer.tex.get(), win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale),
+                            win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), ImVec2{u0, v0}, ImVec2{u1, v1});
+  }
+}
+void MapEditor::renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer) {
+  renderLayerTex(win, layer.tileLayers[0]); // A1
+  renderLayerTex(win, layer.tileLayers[1]); // A2
+  renderLayerTex(win, layer.tileLayers[2]); // A3
+  renderLayerTex(win, layer.tileLayers[3]); // A4
+  renderLayerTex(win, layer.tileLayers[4]); // A5
+  renderLayerTex(win, layer.tileLayers[5]); // B
+  renderLayerTex(win, layer.tileLayers[8]); // E
+  renderLayerTex(win, layer.tileLayers[7]); // D
+  renderLayerTex(win, layer.tileLayers[6]); // C
+}
 void MapEditor::draw() {
   // Keep mapScale to a quarter step
   if (ImGui::IsKeyDown(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
@@ -238,43 +267,8 @@ void MapEditor::draw() {
 
       m_mapRenderer.update();
 
-      for (const MapRenderer::TileLayer& tLayer : m_mapRenderer.m_lowerLayer.tileLayers) {
-        if (!tLayer.tex) {
-          continue;
-        }
-        for (const TileRect& tile : tLayer.rects) {
-          const float x0 = tile.x;
-          const float x1 = tile.x + tile.tileWidth;
-          const float y0 = tile.y;
-          const float y1 = tile.y + tile.tileHeight;
-          const float u0 = tile.u / tLayer.tex.width();
-          const float u1 = (tile.u + tile.tileWidth) / tLayer.tex.width();
-          const float v0 = tile.v / tLayer.tex.height();
-          const float v1 = (tile.v + tile.tileHeight) / tLayer.tex.height();
-          win->DrawList->AddImage(tLayer.tex.get(), win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale),
-                                  win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), ImVec2{u0, v0},
-                                  ImVec2{u1, v1});
-        }
-      }
-
-      for (const MapRenderer::TileLayer& tLayer : m_mapRenderer.m_upperLayer.tileLayers) {
-        if (!tLayer.tex) {
-          continue;
-        }
-        for (const TileRect& tile : tLayer.rects) {
-          const float x0 = tile.x;
-          const float x1 = tile.x + tile.tileWidth;
-          const float y0 = tile.y;
-          const float y1 = tile.y + tile.tileHeight;
-          const float u0 = tile.u / tLayer.tex.width();
-          const float u1 = (tile.u + tile.tileWidth) / tLayer.tex.width();
-          const float v0 = tile.v / tLayer.tex.height();
-          const float v1 = (tile.v + tile.tileHeight) / tLayer.tex.height();
-          win->DrawList->AddImage(tLayer.tex.get(), win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale),
-                                  win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), ImVec2{u0, v0},
-                                  ImVec2{u1, v1});
-        }
-      }
+      renderLayer(win, m_mapRenderer.m_lowerLayer);
+      renderLayer(win, m_mapRenderer.m_upperLayer);
 
       if (ImGui::IsWindowHovered() || m_parent->editMode() == EditMode::Event) {
         m_tileCursor.draw(win);

@@ -104,11 +104,15 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
     case EventCode::Input_Number: {
       InputNumberCommand* input = dynamic_cast<InputNumberCommand*>(ret.emplace_back(new InputNumberCommand()).get());
       input->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(input->variable);
+      parameters[1].get_to(input->digits);
       break;
     }
     case EventCode::Select_Item: {
-      InputNumberCommand* input = dynamic_cast<InputNumberCommand*>(ret.emplace_back(new InputNumberCommand()).get());
-      input->indent = parser[index].value("indent", std::optional<int>{});
+      SelectItemCommand* itemSelect = dynamic_cast<SelectItemCommand*>(ret.emplace_back(new SelectItemCommand()).get());
+      itemSelect->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(itemSelect->item);
+      parameters[1].get_to(itemSelect->type);
       break;
     }
     case EventCode::Show_Scrolling_Text: {
@@ -447,7 +451,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ChangeVehicleBGMCommand* bgm =
           dynamic_cast<ChangeVehicleBGMCommand*>(ret.emplace_back(new ChangeVehicleBGMCommand()).get());
       bgm->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(bgm->me);
+      parameters[0].get_to(bgm->vehicle);
+      parameters[1].get_to(bgm->me);
       break;
     }
     case EventCode::Transfer_Player: {

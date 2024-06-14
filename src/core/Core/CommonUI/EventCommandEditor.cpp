@@ -197,6 +197,14 @@ void EventCommandEditor::draw() {
                 insertValue(indentPad, std::format("{:04}", svl->mapId) + m_project->map(svl->mapId)->name, "{");
               }
             }
+            else if (m_commands->at(n)->code() == EventCode::Select_Item) {
+              SelectItemCommand* sic = dynamic_cast<SelectItemCommand*>(m_commands->at(n).get());
+              insertValue(indentPad, m_project->item(sic->item)->name, "{");
+            }
+            else if (m_commands->at(n)->code() == EventCode::Input_Number) {
+              InputNumberCommand* inc = dynamic_cast<InputNumberCommand*>(m_commands->at(n).get());
+              insertValue(indentPad, m_project->variable(inc->variable), "{");
+            }
 
             // ImGui::PushStyleColor(ImGuiCol_Text, m_selectedCommonEvent->commands->at(n)->color());
             auto oldCursor = ImGui::GetCursorPos();

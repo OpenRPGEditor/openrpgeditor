@@ -47,10 +47,23 @@ struct ShowTextCommand : IEventCommand {
   int faceIndex;
   TextBackground background;
   TextWindowPosition position;
-
+  std::string textLine;
   std::vector<std::shared_ptr<NextTextCommand>> text;
 
-  // TODO
+
+  [[nodiscard]] std::string stringRep() const override {
+    std::string ret = std::string(indent ? *indent : 0, '\t') + "◇Text : " + faceImage == "" ? "None," : faceImage
+    + std::format("({})", faceIndex) + ", " + DecodeEnumName(background) + ", " + DecodeEnumName(position);
+
+    for (const auto& t : text) {
+      if (!ret.empty()) {
+        ret += "\n";
+      }
+      ret += std::string(indent ? *indent : 0, '\t') + " :" + std::string(((t->indent ? *t->indent : 0) + 1), '\t') +
+             " : " + t->text;
+    }
+    return ret;
+  }
 };
 
 struct ShowChoiceCommand : IEventCommand {
@@ -59,15 +72,19 @@ struct ShowChoiceCommand : IEventCommand {
   TextBackground background;
   ChoiceWindowPosition positionType;
   std::vector<std::string> choices;
-  int cancelType;
-  int defaultType;
+  int cancelType; // < 0 == disallow/branch
+  int defaultType; // -1 is none
 
   [[nodiscard]] std::string stringRep() const override {
+    std::string suffix = ColorFormatter::getColor(Gray) + " (" + DecodeEnumName(background) + ", " + DecodeEnumName(positionType);
+    suffix += defaultType < 0 ? "-," : "#" + std::to_string(defaultType) + ",";
+    suffix += cancelType < 0 ? "-," : "#" + std::to_string(defaultType) + ")" + ColorFormatter::popColor();
+
+    std::string choiceList = std::accumulate(std::next(choices.begin()), choices.end(), *choices.begin(),
+                         [](const std::string& a, const std::string& b){ return a + ", " + b; });
+
     return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
-    + "◇Show Choices : " + std::accumulate(choices.begin(), choices.end(), std::string{})
-
-
-      + ColorFormatter::popColor();
+    + "◇Show Choices : " + ColorFormatter::popColor() + choiceList + suffix;
   }
 };
 
@@ -139,7 +156,18 @@ struct ShowScrollTextCommand : IEventCommand {
   bool noFast;
   std::vector<std::shared_ptr<NextScrollingTextCommand>> text;
 
-  // TODO
+  [[nodiscard]] std::string stringRep() const override {
+    std::string ret = std::string(indent ? *indent : 0, '\t') + "◇Text(S) : Speed " + std::to_string(speed) + (noFast == true ? ", No Fast Forward" : "");
+
+    for (const auto& t : text) {
+      if (!ret.empty()) {
+        ret += "\n";
+      }
+      ret += std::string(indent ? *indent : 0, '\t') + " :" + std::string(((t->indent ? *t->indent : 0) + 1), '\t') +
+             " : " + t->text;
+    }
+    return ret;
+  }
 };
 
 struct NextCommentCommand : IEventCommand {
@@ -162,7 +190,6 @@ struct CommentCommand : IEventCommand {
       ret += std::string(indent ? *indent : 0, '\t') + " :" + std::string(((t->indent ? *t->indent : 0) + 1), '\t') +
              " : " + t->text;
     }
-
     return ret;
   }
 };

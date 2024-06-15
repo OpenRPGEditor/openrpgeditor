@@ -103,6 +103,7 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
     Settings::instance()->mru.erase(fileIt);
     Settings::instance()->mru.emplace_front(filePath.data(), m_system.gameTitle);
   }
+  m_isLoaded = true;
   return true;
 }
 
@@ -134,6 +135,7 @@ bool Project::close(bool save) {
   m_map.reset();
   m_resourceManager.reset();
   m_mapListView.reset();
+  m_isLoaded = false;
 
   return true;
 }

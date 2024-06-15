@@ -40,6 +40,7 @@ add_library(
         Core/DatabaseEditor/DBCommonEventsTab.hpp Core/DatabaseEditor/DBCommonEventsTab.cpp
         Core/DatabaseEditor/DBSystemTab.hpp Core/DatabaseEditor/DBSystemTab.cpp
         Core/CommonUI/TraitsEditor.hpp Core/CommonUI/TraitsEditor.cpp
+        Core/CommonUI/ObjectPicker.hpp Core/CommonUI/ObjectPicker.inl
         Core/CommonUI/EventCommandEditor.hpp Core/CommonUI/EventCommandEditor.cpp
         Core/UndoStack.hpp Core/UndoStack.cpp
 

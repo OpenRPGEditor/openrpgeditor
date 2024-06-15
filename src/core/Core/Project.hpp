@@ -6,6 +6,7 @@
 #include "MapListView.hpp"
 #include "TilesetPicker.hpp"
 #include "UndoStack.hpp"
+#include "CommonUI/ObjectPicker.hpp"
 
 #include <string_view>
 #include <string>

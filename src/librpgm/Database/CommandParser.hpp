@@ -52,7 +52,7 @@ struct ShowTextCommand : IEventCommand {
 
 
   [[nodiscard]] std::string stringRep() const override {
-    std::string ret = std::string(indent ? *indent : 0, '\t') + "◇Text : " + (faceImage == "" ? "None," : faceImage
+    std::string ret = std::string(indent ? *indent : 0, '\t') + "◇Text : " + (faceImage == "" ? "None, " : faceImage
     + std::format("({}), ", faceIndex)) + DecodeEnumName(background) + ", " + DecodeEnumName(position);
 
     for (const auto& t : text) {

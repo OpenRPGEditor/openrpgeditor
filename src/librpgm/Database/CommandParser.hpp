@@ -53,7 +53,7 @@ struct ShowTextCommand : IEventCommand {
 
   [[nodiscard]] std::string stringRep() const override {
     std::string ret = std::string(indent ? *indent : 0, '\t') + "◇Text : " + (faceImage == "" ? "None," : faceImage
-    + std::format("({})", faceIndex)) + ", " + DecodeEnumName(background) + ", " + DecodeEnumName(position);
+    + std::format("({}), ", faceIndex)) + DecodeEnumName(background) + ", " + DecodeEnumName(position);
 
     for (const auto& t : text) {
       if (!ret.empty()) {
@@ -1264,7 +1264,7 @@ struct ChangeActorImageCommand : IEventCommand {
   [[nodiscard]] std::string stringRep() const override {
     return "";
   }
-};[{"code":322,"indent":0,"parameters":[1,"01_walking_b_01b",6,"nanakofaces",0,""]}]
+};//[{"code":322,"indent":0,"parameters":[1,"01_walking_b_01b",6,"nanakofaces",0,""]}]
 
 struct ChangeProfileCommand : IEventCommand {
   ~ChangeProfileCommand() override = default;

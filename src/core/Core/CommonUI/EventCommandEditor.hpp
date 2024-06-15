@@ -11,8 +11,10 @@ struct EventCommandEditor {
 
   void setCommands(std::vector<std::shared_ptr<IEventCommand>>* commands) {
     m_commands = commands;
+    m_selectedCommand = 0;
   }
 private:
   Project* m_project = nullptr;
+  int m_selectedCommand = 0;
   std::vector<std::shared_ptr<IEventCommand>>* m_commands = nullptr;
 };

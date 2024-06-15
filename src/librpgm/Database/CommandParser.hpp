@@ -52,8 +52,8 @@ struct ShowTextCommand : IEventCommand {
 
 
   [[nodiscard]] std::string stringRep() const override {
-    std::string ret = std::string(indent ? *indent : 0, '\t') + "◇Text : " + faceImage == "" ? "None," : faceImage
-    + std::format("({})", faceIndex) + ", " + DecodeEnumName(background) + ", " + DecodeEnumName(position);
+    std::string ret = std::string(indent ? *indent : 0, '\t') + "◇Text : " + (faceImage == "" ? "None," : faceImage
+    + std::format("({})", faceIndex)) + ", " + DecodeEnumName(background) + ", " + DecodeEnumName(position);
 
     for (const auto& t : text) {
       if (!ret.empty()) {
@@ -784,6 +784,509 @@ struct ScrollMapCommand : IEventCommand {
   [[nodiscard]] std::string stringRep() const override {
     return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(DecodeEnumName(code()))
     + std::format("◇Scroll Map : {}, {}, {}", DecodeEnumName(direction), distance, DecodeEnumName(speed)) + ColorFormatter::popColor();
+  }
+};
+
+/* Start new commands here */
+struct ChangeMapNameDisplayCommand : IEventCommand {
+  ~ChangeMapNameDisplayCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Map_Name_Display; }
+  bool checkIfOn;
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct ChangeTileSetCommand : IEventCommand {
+  ~ChangeTileSetCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Tile_Set; }
+  int tileset;
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct ChangeBattlebackCommand : IEventCommand {
+  ~ChangeBattlebackCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Battle_Back; }
+  std::string battleBack1Name;
+  std::string battleBack2Name;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct GetLocationInfoCommand : IEventCommand {
+  ~GetLocationInfoCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Get_Location_Info; }
+  int variable;
+  TileType type;
+  LocationSource source;
+  int x;
+  int y;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct BattleProcessingCommand : IEventCommand {
+  ~BattleProcessingCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Battle_Processing; }
+  BattleProcessType type;
+  int id; // troop id if type == 0; variable id if type == 2
+  bool canEscape;
+  bool canLose;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct IfWinCommand : IEventCommand {
+  ~IfWinCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::If_Win; }
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+struct IfEscapeCommand : IEventCommand {
+  ~IfEscapeCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::If_Escape; }
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct IfLoseCommand : IEventCommand {
+  ~IfLoseCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::If_Lose; }
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct ShopProcessingGoodCommand : IEventCommand {
+  ~ShopProcessingGoodCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Shop_Processing; }
+
+  ShopType type;
+  int id;
+  PriceType priceType;
+  int price;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct ShopProcessingCommand : IEventCommand {
+  ~ShopProcessingCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Shop_Processing; }
+
+  ShopType type;
+  int id;
+  PriceType priceType;
+  int price;
+  bool purchaseOnly;
+  std::vector<std::shared_ptr<ShopProcessingGoodCommand>> goods;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct NameInputCommand : IEventCommand {
+  ~NameInputCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Name_Input_Processing; }
+
+  int actorId;
+  int numChar;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct ChangeHPCommand : IEventCommand {
+  ~ChangeHPCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_HP; }
+
+  ActorComparisonSource comparison;
+  int value;
+  QuantityChangeOp quantityOp;
+  QuantityChangeSource quantitySource;
+  int quantity;
+  bool allowKnockout;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct ChangeMPCommand : IEventCommand {
+  ~ChangeMPCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_MP; }
+
+  ActorComparisonSource comparison;
+  int value;
+  QuantityChangeOp quantityOp;
+  QuantityChangeSource quantitySource;
+  int quantity;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+
+struct ChangeTPCommand : IEventCommand {
+  ~ChangeTPCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_TP; }
+
+  ActorComparisonSource comparison;
+  int value;
+  QuantityChangeOp quantityOp;
+  QuantityChangeSource quantitySource;
+  int quantity;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+
+struct ChangeEXPCommand : IEventCommand {
+  ~ChangeEXPCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_EXP; }
+
+  ActorComparisonSource comparison;
+  int value;
+  QuantityChangeOp quantityOp;
+  QuantityChangeSource quantitySource;
+  int quantity;
+  bool showLevelUp;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+
+struct ChangeLevelCommand : IEventCommand {
+  ~ChangeLevelCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Level; }
+
+  ActorComparisonSource comparison;
+  int value;
+  QuantityChangeOp quantityOp;
+  QuantityChangeSource quantitySource;
+  int quantity;
+  bool showLevelUp;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+
+struct ChangeParameterCommand : IEventCommand {
+  ~ChangeParameterCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Parameter; }
+
+  ActorComparisonSource comparison;
+  int value;
+  ParameterSource param;
+  QuantityChangeOp quantityOp;
+  QuantityChangeSource quantitySource;
+  int quantity;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct RecoverAllCommand : IEventCommand {
+  ~RecoverAllCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Recover_All; }
+
+  ActorComparisonSource comparison;
+  int value;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+
+struct ChangeNameCommand : IEventCommand {
+  ~ChangeNameCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Name; }
+
+  int actor;
+  std::string name;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+
+struct ChangeClassCommand : IEventCommand {
+  ~ChangeClassCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Class; }
+
+  int actor;
+  int classId;
+  bool saveLevel;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+
+struct ChangeStateCommand : IEventCommand {
+  ~ChangeStateCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_State; }
+
+  ActorComparisonSource comparison;
+  int value;
+  PartyMemberOperation stateOp;
+  int state;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+
+struct ChangeSkillCommand : IEventCommand {
+  ~ChangeSkillCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Skill; }
+
+  ActorComparisonSource comparison;
+  int value;
+  SkillOperation skillOp;
+  int skill;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+
+struct ChangeEquipmentCommand : IEventCommand {
+  ~ChangeEquipmentCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Equipment; }
+
+  int actorId;
+  int equipType;
+  int equipment;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct GameOverCommand : IEventCommand {
+  ~GameOverCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Game_Over; }
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct ReturnToTitleCommand : IEventCommand {
+  ~ReturnToTitleCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Return_To_Title_Screen; }
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct OpenMenuCommand : IEventCommand {
+  ~OpenMenuCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Open_Menu_Screen; }
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct OpenSaveCommand : IEventCommand {
+  ~OpenSaveCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Open_Save_Screen; }
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct AbortBattleCommand : IEventCommand {
+  ~AbortBattleCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Abort_Battle; }
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct EnemyRecoverAllCommand : IEventCommand {
+  ~EnemyRecoverAllCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Enemy_Recover_All; }
+  int troop;
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct EnemyAppearCommand : IEventCommand {
+  ~EnemyAppearCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Enemy_Appear; }
+  int enemy;
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct EnemyTransformCommand : IEventCommand {
+  ~EnemyTransformCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Enemy_Transform; }
+  int enemy;
+  int transform;
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct ChangeEnemyHPCommand : IEventCommand {
+  ~ChangeEnemyHPCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Enemy_HP; }
+  int enemy;
+  QuantityChangeOp enemyOp;
+  QuantityChangeSource quantitySource;
+  int quantity;
+  bool allowKnockOut;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct ChangeEnemyMPCommand : IEventCommand {
+  ~ChangeEnemyMPCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Enemy_MP; }
+  int enemy;
+  QuantityChangeOp enemyOp;
+  QuantityChangeSource quantitySource;
+  int quantity;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct ChangeEnemyTPCommand : IEventCommand {
+  ~ChangeEnemyTPCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Enemy_TP; }
+  int enemy;
+  QuantityChangeOp enemyOp;
+  QuantityChangeSource quantitySource;
+  int quantity;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+struct ChangeEnemyStateCommand : IEventCommand {
+  ~ChangeEnemyStateCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Enemy_TP; }
+  int enemy;
+  PartyMemberOperation enemyOp;
+  int state;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct ForceActionCommand : IEventCommand {
+  ~ForceActionCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Force_Action; }
+
+  SubjectComparisonSource sourceComparison;
+  int source;
+  int skill;
+  int target;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct ShowBattleAnimCommand : IEventCommand {
+  ~ShowBattleAnimCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Show_Battle_Animation; }
+
+  int enemy; // equals 0 if bool is true
+  int animation;
+  bool targetAllEnemies;
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct ChangeVehicleImageCommand : IEventCommand {
+  ~ChangeVehicleImageCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Vehicle_Image; }
+
+  VehicleType vehicle; // equals 0 if bool is true
+  std::string picture;
+  int pictureIndex;
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct ChangeActorImageCommand : IEventCommand {
+  ~ChangeActorImageCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Actor_Images; }
+
+  int actor;
+  std::string charPicture;
+  int charIndex;
+  std::string facePicture;
+  int faceIndex;
+  std::string battlerPicture;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};[{"code":322,"indent":0,"parameters":[1,"01_walking_b_01b",6,"nanakofaces",0,""]}]
+
+struct ChangeProfileCommand : IEventCommand {
+  ~ChangeProfileCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Profile; }
+
+  int actor;
+  std::string profile;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
+  }
+};
+
+struct ChangeNickCommand : IEventCommand {
+  ~ChangeNickCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Nickname; }
+
+  int actor;
+  std::string nick;
+
+  [[nodiscard]] std::string stringRep() const override {
+    return "";
   }
 };
 

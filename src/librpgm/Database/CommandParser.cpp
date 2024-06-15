@@ -643,46 +643,377 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       parameters[0].get_to(mov->name);
       break;
     }
+      /* Start of new commands */
       /* Change_Map_Display_Name */
+    case EventCode::Change_Map_Name_Display: {
+      ChangeMapNameDisplayCommand* disp = dynamic_cast<ChangeMapNameDisplayCommand*>(ret.emplace_back(new ChangeMapNameDisplayCommand()).get());
+      disp->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(disp->checkIfOn);
+      break;
+    }
       /* Change_Tile_Set */
+    case EventCode::Change_Tile_Set: {
+      ChangeTileSetCommand* ts = dynamic_cast<ChangeTileSetCommand*>(ret.emplace_back(new ChangeTileSetCommand()).get());
+      ts->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(ts->tileset);
+      break;
+    }
       /* Change_Battle_Back */
+    case EventCode::Change_Battle_Back: {
+      ChangeBattlebackCommand* bbk = dynamic_cast<ChangeBattlebackCommand*>(ret.emplace_back(new ChangeBattlebackCommand()).get());
+      bbk->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(bbk->battleBack1Name);
+      parameters[1].get_to(bbk->battleBack2Name);
+      break;
+    }
       /* Get_Location_Info */
+    case EventCode::Get_Location_Info: {
+      GetLocationInfoCommand* loc = dynamic_cast<GetLocationInfoCommand*>(ret.emplace_back(new GetLocationInfoCommand()).get());
+      loc->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(loc->variable);
+      parameters[1].get_to(loc->type);
+      parameters[2].get_to(loc->source);
+      parameters[3].get_to(loc->x);
+      parameters[4].get_to(loc->y);
+      break;
+    }
       /* Battle_Processing */
+    case EventCode::Battle_Processing: {
+      BattleProcessingCommand* bprocess = dynamic_cast<BattleProcessingCommand*>(ret.emplace_back(new BattleProcessingCommand()).get());
+      bprocess->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(bprocess->type);
+      parameters[1].get_to(bprocess->id);
+      parameters[2].get_to(bprocess->canEscape);
+      parameters[3].get_to(bprocess->canLose);
+      break;
+    }
       /* If_Win */
+    case EventCode::If_Win: {
+      IfWinCommand* win = dynamic_cast<IfWinCommand*>(ret.emplace_back(new IfWinCommand()).get());
+      win->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
       /* If_Escape */
+    case EventCode::If_Escape: {
+      IfEscapeCommand* escape = dynamic_cast<IfEscapeCommand*>(ret.emplace_back(new IfEscapeCommand()).get());
+      escape->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
       /* If_Lose */
+    case EventCode::If_Lose: {
+      IfLoseCommand* lose = dynamic_cast<IfLoseCommand*>(ret.emplace_back(new IfLoseCommand()).get());
+      lose->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
       /* Shop_Processing */
+    case EventCode::Shop_Processing: {
+      ShopProcessingCommand* shop = dynamic_cast<ShopProcessingCommand*>(ret.emplace_back(new ShopProcessingCommand()).get());
+      shop->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(shop->type);
+      parameters[1].get_to(shop->id);
+      parameters[2].get_to(shop->priceType);
+      parameters[3].get_to(shop->price);
+      parameters[4].get_to(shop->purchaseOnly);
+      break;
+    }
       /* Shop_Processing_Good (goes in Shop_Processing) */
+    case EventCode::Shop_Processing_Good: {
+      ShopProcessingGoodCommand* shop = dynamic_cast<ShopProcessingGoodCommand*>(ret.emplace_back(new ShopProcessingGoodCommand()).get());
+      shop->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(shop->type);
+      parameters[1].get_to(shop->id);
+      parameters[2].get_to(shop->priceType);
+      parameters[3].get_to(shop->price);
+      break;
+    }
       /* Name_Input_Processing */
+
+    case EventCode::Name_Input_Processing: {
+      NameInputCommand* shop = dynamic_cast<NameInputCommand*>(ret.emplace_back(new NameInputCommand()).get());
+      shop->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(shop->actorId);
+      parameters[1].get_to(shop->numChar);
+      break;
+    }
+
       /* Change_HP */
+    case EventCode::Change_HP: {
+      ChangeHPCommand* hp = dynamic_cast<ChangeHPCommand*>(ret.emplace_back(new ChangeHPCommand()).get());
+      hp->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(hp->comparison);
+      parameters[1].get_to(hp->value);
+      parameters[2].get_to(hp->quantityOp);
+      parameters[3].get_to(hp->quantitySource);
+      parameters[4].get_to(hp->quantity);
+      parameters[5].get_to(hp->allowKnockout);
+      break;
+    }
+
       /* Change_MP */
-      /* Change_State */
-      /* Recover_All */
-      /* Change_EXP */
-      /* Change_Level */
-      /* Change_Parameter */
-      /* Change_Skill */
-      /* Change_Equipment */
-      /* Change_Class */
-      /* Change_Actor_Images */
-      /* Change_Vechicle Image */
-      /* Change_Nickname */
-      /* Change_Profile */
+    case EventCode::Change_MP: {
+      ChangeMPCommand* mp = dynamic_cast<ChangeMPCommand*>(ret.emplace_back(new ChangeMPCommand()).get());
+      mp->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(mp->comparison);
+      parameters[1].get_to(mp->value);
+      parameters[2].get_to(mp->quantityOp);
+      parameters[3].get_to(mp->quantitySource);
+      parameters[4].get_to(mp->quantity);
+      break;
+    }
+
       /* Change_TP */
-      /* Change_Enemy_HP */
-      /* Change_Enemy_MP */
-      /* Change_Enemy_State */
-      /* Enemy_Recover_All */
-      /* Enemy_Appear */
-      /* Enemy_Transform */
-      /* Show_Battle_Animation */
-      /* Force_Action */
-      /* Abort_Battle */
-      /* Change_Enemy_TP */
-      /* Open_Menu_Screen */
-      /* Open_Save_Screen */
+    case EventCode::Change_TP: {
+      ChangeTPCommand* tp = dynamic_cast<ChangeTPCommand*>(ret.emplace_back(new ChangeTPCommand()).get());
+      tp->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(tp->comparison);
+      parameters[1].get_to(tp->value);
+      parameters[2].get_to(tp->quantityOp);
+      parameters[3].get_to(tp->quantitySource);
+      parameters[4].get_to(tp->quantity);
+      break;
+    }
+      /* Change_EXP */
+    case EventCode::Change_EXP: {
+      ChangeEXPCommand* xp = dynamic_cast<ChangeEXPCommand*>(ret.emplace_back(new ChangeEXPCommand()).get());
+      xp->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(xp->comparison);
+      parameters[1].get_to(xp->value);
+      parameters[2].get_to(xp->quantityOp);
+      parameters[3].get_to(xp->quantitySource);
+      parameters[4].get_to(xp->quantity);
+      parameters[5].get_to(xp->showLevelUp);
+      break;
+    }
+
+      /* Change_Level */
+    case EventCode::Change_Level: {
+      ChangeLevelCommand* lv = dynamic_cast<ChangeLevelCommand*>(ret.emplace_back(new ChangeLevelCommand()).get());
+      lv->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(lv->comparison);
+      parameters[1].get_to(lv->value);
+      parameters[2].get_to(lv->quantityOp);
+      parameters[3].get_to(lv->quantitySource);
+      parameters[4].get_to(lv->quantity);
+      parameters[5].get_to(lv->showLevelUp);
+      break;
+    }
+      /* Change_Parameter */
+    case EventCode::Change_Parameter: {
+      ChangeParameterCommand* param = dynamic_cast<ChangeParameterCommand*>(ret.emplace_back(new ChangeParameterCommand()).get());
+      param->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(param->comparison);
+      parameters[1].get_to(param->value);
+      parameters[2].get_to(param->param);
+      parameters[3].get_to(param->quantityOp);
+      parameters[4].get_to(param->quantitySource);
+      parameters[5].get_to(param->quantity);
+      break;
+    }
+      /* Recover_All */
+    case EventCode::Recover_All: {
+      RecoverAllCommand* ra = dynamic_cast<RecoverAllCommand*>(ret.emplace_back(new RecoverAllCommand()).get());
+      ra->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(ra->comparison);
+      parameters[1].get_to(ra->value);
+      break;
+    }
+      /* Change_Name */
+    case EventCode::Change_Name: {
+      ChangeNameCommand* name = dynamic_cast<ChangeNameCommand*>(ret.emplace_back(new ChangeNameCommand()).get());
+      name->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(name->actor);
+      parameters[1].get_to(name->name);
+      break;
+    }
+      /* Change_Class */
+
+    case EventCode::Change_Class: {
+      ChangeClassCommand* cc = dynamic_cast<ChangeClassCommand*>(ret.emplace_back(new ChangeClassCommand()).get());
+      cc->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(cc->actor);
+      parameters[1].get_to(cc->classId);
+      parameters[2].get_to(cc->saveLevel);
+      break;
+    }
+
+      /* Change_State */
+
+    case EventCode::Change_State: {
+      ChangeStateCommand* state = dynamic_cast<ChangeStateCommand*>(ret.emplace_back(new ChangeStateCommand()).get());
+      state->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(state->comparison);
+      parameters[1].get_to(state->value);
+      parameters[2].get_to(state->stateOp);
+      parameters[3].get_to(state->state);
+      break;
+    }
+      /* Change_Skill */
+    case EventCode::Change_Skill: {
+      ChangeSkillCommand* skill = dynamic_cast<ChangeSkillCommand*>(ret.emplace_back(new ChangeSkillCommand()).get());
+      skill->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(skill->comparison);
+      parameters[1].get_to(skill->value);
+      parameters[2].get_to(skill->skillOp);
+      parameters[3].get_to(skill->skill);
+      break;
+    }
+      /* Change_Equipment */
+    case EventCode::Change_Equipment: {
+      ChangeEquipmentCommand* eq = dynamic_cast<ChangeEquipmentCommand*>(ret.emplace_back(new ChangeEquipmentCommand()).get());
+      eq->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(eq->actorId);
+      parameters[1].get_to(eq->equipType);
+      parameters[2].get_to(eq->equipment);
+      break;
+    }
+      /* Change_Profile */
+    case EventCode::Change_Profile: {
+      ChangeProfileCommand* profile = dynamic_cast<ChangeProfileCommand*>(ret.emplace_back(new ChangeProfileCommand()).get());
+      profile->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(profile->actor);
+      parameters[1].get_to(profile->profile);
+      break;
+    }
+      /* Change_Nickname */
+    case EventCode::Change_Nickname: {
+      ChangeNickCommand* nick = dynamic_cast<ChangeNickCommand*>(ret.emplace_back(new ChangeNickCommand()).get());
+      nick->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(nick->actor);
+      parameters[1].get_to(nick->nick);
+      break;
+    }
       /* Game_Over */
+    case EventCode::Game_Over: {
+      GameOverCommand* game = dynamic_cast<GameOverCommand*>(ret.emplace_back(new GameOverCommand()).get());
+      game->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
       /* Return_To_Title_Screen */
+    case EventCode::Return_To_Title_Screen: {
+      ReturnToTitleCommand* game = dynamic_cast<ReturnToTitleCommand*>(ret.emplace_back(new ReturnToTitleCommand()).get());
+      game->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
+      /* Open_Menu_Screen */
+    case EventCode::Open_Menu_Screen: {
+      OpenMenuCommand* open = dynamic_cast<OpenMenuCommand*>(ret.emplace_back(new OpenMenuCommand()).get());
+      open->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
+      /* Open_Save_Screen */
+    case EventCode::Open_Save_Screen: {
+      OpenSaveCommand* open = dynamic_cast<OpenSaveCommand*>(ret.emplace_back(new OpenSaveCommand()).get());
+      open->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
+      /* Abort_Battle */
+    case EventCode::Abort_Battle: {
+      AbortBattleCommand* game = dynamic_cast<AbortBattleCommand*>(ret.emplace_back(new AbortBattleCommand()).get());
+      game->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
+      /* Enemy_Recover_All */
+    case EventCode::Enemy_Recover_All: {
+      EnemyRecoverAllCommand* enemy = dynamic_cast<EnemyRecoverAllCommand*>(ret.emplace_back(new EnemyRecoverAllCommand()).get());
+      enemy->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(enemy->troop);
+      break;
+    }
+      /* Enemy_Appear */
+    case EventCode::Enemy_Appear: {
+      EnemyAppearCommand* enemy = dynamic_cast<EnemyAppearCommand*>(ret.emplace_back(new EnemyAppearCommand()).get());
+      enemy->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(enemy->enemy);
+      break;
+    }
+      /* Enemy_Transform */
+    case EventCode::Enemy_Transform: {
+      EnemyTransformCommand* enemy = dynamic_cast<EnemyTransformCommand*>(ret.emplace_back(new EnemyTransformCommand()).get());
+      enemy->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(enemy->enemy);
+      parameters[1].get_to(enemy->transform);
+      break;
+    }
+      /* Change_Enemy_HP */
+    case EventCode::Change_Enemy_HP: {
+      ChangeEnemyHPCommand* enemyParam = dynamic_cast<ChangeEnemyHPCommand*>(ret.emplace_back(new ChangeEnemyHPCommand()).get());
+      enemyParam->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(enemyParam->enemy);
+      parameters[1].get_to(enemyParam->enemyOp);
+      parameters[2].get_to(enemyParam->quantitySource);
+      parameters[3].get_to(enemyParam->quantity);
+      parameters[4].get_to(enemyParam->allowKnockOut);
+      break;
+    }
+      /* Change_Enemy_MP */
+    case EventCode::Change_Enemy_MP: {
+      ChangeEnemyMPCommand* enemyParam = dynamic_cast<ChangeEnemyMPCommand*>(ret.emplace_back(new ChangeEnemyMPCommand()).get());
+      enemyParam->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(enemyParam->enemy);
+      parameters[1].get_to(enemyParam->enemyOp);
+      parameters[2].get_to(enemyParam->quantitySource);
+      parameters[3].get_to(enemyParam->quantity);
+      break;
+    }
+      /* Change_Enemy_TP */
+    case EventCode::Change_Enemy_TP: {
+      ChangeEnemyTPCommand* enemyParam = dynamic_cast<ChangeEnemyTPCommand*>(ret.emplace_back(new ChangeEnemyTPCommand()).get());
+      enemyParam->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(enemyParam->enemy);
+      parameters[1].get_to(enemyParam->enemyOp);
+      parameters[2].get_to(enemyParam->quantitySource);
+      parameters[3].get_to(enemyParam->quantity);
+      break;
+    }
+      /* Change_Enemy_State */
+    case EventCode::Change_Enemy_State: {
+      ChangeEnemyStateCommand* enemyParam = dynamic_cast<ChangeEnemyStateCommand*>(ret.emplace_back(new ChangeEnemyStateCommand()).get());
+      enemyParam->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(enemyParam->enemy);
+      parameters[1].get_to(enemyParam->enemyOp);
+      parameters[2].get_to(enemyParam->state);
+      break;
+    }
+      /* Force_Action */
+    case EventCode::Force_Action: {
+      ForceActionCommand* action = dynamic_cast<ForceActionCommand*>(ret.emplace_back(new ForceActionCommand()).get());
+      action->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(action->sourceComparison);
+      parameters[1].get_to(action->source);
+      parameters[2].get_to(action->skill);
+      parameters[3].get_to(action->target);
+      break;
+    }
+      /* Show_Battle_Animation */
+    case EventCode::Show_Battle_Animation: {
+      ShowBattleAnimCommand* battleAnim = dynamic_cast<ShowBattleAnimCommand*>(ret.emplace_back(new ShowBattleAnimCommand()).get());
+      battleAnim->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(battleAnim->enemy);
+      parameters[1].get_to(battleAnim->animation);
+      parameters[2].get_to(battleAnim->targetAllEnemies);
+      break;
+    }
+      /* Change_Vehicle_Image */
+    case EventCode::Change_Vehicle_Image: {
+      ChangeVehicleImageCommand* vehicle = dynamic_cast<ChangeVehicleImageCommand*>(ret.emplace_back(new ChangeVehicleImageCommand()).get());
+      vehicle->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(vehicle->vehicle);
+      parameters[1].get_to(vehicle->picture);
+      parameters[2].get_to(vehicle->pictureIndex);
+      break;
+    }
+      /* Change_Actor_Images */
+    case EventCode::Change_Actor_Images: {
+      ChangeActorImageCommand* vehicle = dynamic_cast<ChangeActorImageCommand*>(ret.emplace_back(new ChangeActorImageCommand()).get());
+      vehicle->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(vehicle->actor);
+      parameters[1].get_to(vehicle->charPicture);
+      parameters[2].get_to(vehicle->charIndex);
+      parameters[3].get_to(vehicle->facePicture);
+      parameters[4].get_to(vehicle->faceIndex);
+      parameters[5].get_to(vehicle->battlerPicture);
+      break;
+    }
     case EventCode::Script: {
       ScriptCommand* end = dynamic_cast<ScriptCommand*>(ret.emplace_back(new ScriptCommand()).get());
       end->indent = parser[index].value("indent", std::optional<int>{});

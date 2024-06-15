@@ -264,6 +264,16 @@ enum class VariableComparisonSource : int {
   Variable,
 };
 
+enum class ActorComparisonSource : int {
+  Fixed,
+  Variable,
+};
+
+enum class SubjectComparisonSource : int {
+  Enemy,
+  Actor,
+};
+
 enum class VariableComparisonType : int {
   _set__set__del_Equal_To,
   _gt__set__del_Greater_than_or_Equal_to,
@@ -365,6 +375,11 @@ enum class OtherDataSource {
 enum class PartyMemberOperation {
   Add,
   Remove,
+};
+
+enum class SkillOperation {
+  Learn,
+  Forget,
 };
 
 enum class AccessMode {
@@ -586,6 +601,17 @@ enum class QuantityChangeSource {
   Variable,
 };
 
+enum class ShopType {
+  Item,
+  Weapon,
+  Armor,
+};
+
+enum class PriceType {
+  Standard,
+  Specific,
+};
+
 enum class ActionCondition {
   Always,
   Turn,
@@ -677,6 +703,27 @@ enum class MovementFrequency {
   Normal,
   Higher,
   Highest,
+};
+
+enum class TileType {
+  Terrain_Tag,
+  Event_ID,
+  Tile_ID_Layer_1,
+  Tile_ID_Layer_2,
+  Tile_ID_Layer_3,
+  Tile_ID_Layer_4,
+  Region_ID,
+};
+
+enum class LocationSource {
+  Direct_designation,
+  Designation_with_variables,
+};
+
+enum class BattleProcessType {
+  Direct_designation,
+  Designation_with_variables,
+  Same_as_random_encounter,
 };
 
 enum class EventPriority {

@@ -775,6 +775,78 @@ struct ErasePictureCommand : IEventCommand {
   }
 };
 
+struct MovePictureCommand : IEventCommand {
+  ~MovePictureCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Move_Picture; }
+  int picture;
+  PictureOrigin origin;
+  TransferMode pictureLocation;
+  int x;
+  int y;
+  int duration;
+  int width;
+  int height;
+  int opacity;
+  Blend blendMode;
+  bool waitForCompletion;
+
+  [[nodiscard]] std::string stringRep() const override {
+    // TODO
+      return "";
+  }
+};
+
+struct RotatePictureCommand : IEventCommand {
+  ~RotatePictureCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Rotate_Picture; }
+  int picture;
+  int rotation;
+
+  [[nodiscard]] std::string stringRep() const override {
+    // TODO
+    return "";
+  }
+};
+
+struct TintPictureCommand : IEventCommand {
+  ~TintPictureCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Tint_Picture; }
+  int picture;
+  ColorTone colors;
+  int duration;
+  bool waitForCompletion;
+
+  [[nodiscard]] std::string stringRep() const override {
+    // TODO
+    return "";
+  }
+};
+
+struct SetWeatherEffectCommand : IEventCommand {
+  ~SetWeatherEffectCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Set_Weather_Effect; }
+  WeatherEffect effect;
+  int power;
+  int duration;
+  bool waitForCompletion;
+
+  [[nodiscard]] std::string stringRep() const override {
+    // TODO
+    return "";
+  }
+};
+
+struct PluginCommand : IEventCommand {
+  ~PluginCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Plugin_Command; }
+  std::string command;
+
+  [[nodiscard]] std::string stringRep() const override {
+    // TODO
+    return "";
+  }
+};
+
 struct ScrollMapCommand : IEventCommand {
   ~ScrollMapCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Scroll_Map; }
@@ -787,12 +859,12 @@ struct ScrollMapCommand : IEventCommand {
   }
 };
 
-/* Start new commands here */
 struct ChangeMapNameDisplayCommand : IEventCommand {
   ~ChangeMapNameDisplayCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Map_Name_Display; }
   bool checkIfOn;
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -802,6 +874,7 @@ struct ChangeTileSetCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Tile_Set; }
   int tileset;
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -813,6 +886,7 @@ struct ChangeBattlebackCommand : IEventCommand {
   std::string battleBack2Name;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -827,6 +901,7 @@ struct GetLocationInfoCommand : IEventCommand {
   int y;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -840,6 +915,7 @@ struct BattleProcessingCommand : IEventCommand {
   bool canLose;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -849,6 +925,7 @@ struct IfWinCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::If_Win; }
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -857,6 +934,7 @@ struct IfEscapeCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::If_Escape; }
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -866,6 +944,7 @@ struct IfLoseCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::If_Lose; }
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -880,6 +959,7 @@ struct ShopProcessingGoodCommand : IEventCommand {
   int price;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -896,6 +976,7 @@ struct ShopProcessingCommand : IEventCommand {
   std::vector<std::shared_ptr<ShopProcessingGoodCommand>> goods;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -908,6 +989,7 @@ struct NameInputCommand : IEventCommand {
   int numChar;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -924,6 +1006,7 @@ struct ChangeHPCommand : IEventCommand {
   bool allowKnockout;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -939,6 +1022,7 @@ struct ChangeMPCommand : IEventCommand {
   int quantity;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -955,6 +1039,7 @@ struct ChangeTPCommand : IEventCommand {
   int quantity;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -972,6 +1057,7 @@ struct ChangeEXPCommand : IEventCommand {
   bool showLevelUp;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -989,6 +1075,7 @@ struct ChangeLevelCommand : IEventCommand {
   bool showLevelUp;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1006,6 +1093,7 @@ struct ChangeParameterCommand : IEventCommand {
   int quantity;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1018,6 +1106,7 @@ struct RecoverAllCommand : IEventCommand {
   int value;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1031,6 +1120,7 @@ struct ChangeNameCommand : IEventCommand {
   std::string name;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1045,6 +1135,7 @@ struct ChangeClassCommand : IEventCommand {
   bool saveLevel;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1060,6 +1151,7 @@ struct ChangeStateCommand : IEventCommand {
   int state;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1075,6 +1167,7 @@ struct ChangeSkillCommand : IEventCommand {
   int skill;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1089,6 +1182,7 @@ struct ChangeEquipmentCommand : IEventCommand {
   int equipment;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1097,6 +1191,7 @@ struct GameOverCommand : IEventCommand {
   ~GameOverCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Game_Over; }
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1105,6 +1200,7 @@ struct ReturnToTitleCommand : IEventCommand {
   ~ReturnToTitleCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Return_To_Title_Screen; }
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1113,6 +1209,7 @@ struct OpenMenuCommand : IEventCommand {
   ~OpenMenuCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Open_Menu_Screen; }
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1121,6 +1218,7 @@ struct OpenSaveCommand : IEventCommand {
   ~OpenSaveCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Open_Save_Screen; }
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1129,6 +1227,7 @@ struct AbortBattleCommand : IEventCommand {
   ~AbortBattleCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Abort_Battle; }
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1138,6 +1237,7 @@ struct EnemyRecoverAllCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Enemy_Recover_All; }
   int troop;
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1147,6 +1247,7 @@ struct EnemyAppearCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Enemy_Appear; }
   int enemy;
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1157,6 +1258,7 @@ struct EnemyTransformCommand : IEventCommand {
   int enemy;
   int transform;
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1171,6 +1273,7 @@ struct ChangeEnemyHPCommand : IEventCommand {
   bool allowKnockOut;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1184,6 +1287,7 @@ struct ChangeEnemyMPCommand : IEventCommand {
   int quantity;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1197,6 +1301,7 @@ struct ChangeEnemyTPCommand : IEventCommand {
   int quantity;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1208,6 +1313,7 @@ struct ChangeEnemyStateCommand : IEventCommand {
   int state;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1222,6 +1328,7 @@ struct ForceActionCommand : IEventCommand {
   int target;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1234,6 +1341,7 @@ struct ShowBattleAnimCommand : IEventCommand {
   int animation;
   bool targetAllEnemies;
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1246,6 +1354,7 @@ struct ChangeVehicleImageCommand : IEventCommand {
   std::string picture;
   int pictureIndex;
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1262,9 +1371,10 @@ struct ChangeActorImageCommand : IEventCommand {
   std::string battlerPicture;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
-};//[{"code":322,"indent":0,"parameters":[1,"01_walking_b_01b",6,"nanakofaces",0,""]}]
+};
 
 struct ChangeProfileCommand : IEventCommand {
   ~ChangeProfileCommand() override = default;
@@ -1274,6 +1384,7 @@ struct ChangeProfileCommand : IEventCommand {
   std::string profile;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
@@ -1286,10 +1397,89 @@ struct ChangeNickCommand : IEventCommand {
   std::string nick;
 
   [[nodiscard]] std::string stringRep() const override {
+    // TODO
     return "";
   }
 };
 
+struct ChangePlayerFollowersCommand : IEventCommand {
+  ~ChangePlayerFollowersCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Player_Followers; }
+
+  bool followersEnabled;
+
+  [[nodiscard]] std::string stringRep() const override {
+    // TODO
+    return "";
+  }
+};
+
+struct GatherFollowersCommand : IEventCommand {
+  ~GatherFollowersCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Gather_Followers; }
+
+  [[nodiscard]] std::string stringRep() const override {
+    // TODO
+    return "";
+  }
+};
+
+struct FadeOutScreenCommand : IEventCommand {
+  ~FadeOutScreenCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Fade_Out_Screen; }
+
+  [[nodiscard]] std::string stringRep() const override {
+    // TODO
+    return "";
+  }
+};
+
+struct FadeInScreenCommand : IEventCommand {
+  ~FadeInScreenCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Fade_In_Screen; }
+
+  [[nodiscard]] std::string stringRep() const override {
+    // TODO
+    return "";
+  }
+};
+
+struct TintScreenCommand : IEventCommand {
+  ~TintScreenCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Tint_Screen; }
+  ColorTone colors;
+  int duration;
+  bool waitForCompletion;
+  [[nodiscard]] std::string stringRep() const override {
+    // TODO
+    return "";
+  }
+};
+
+struct FlashScreenCommand : IEventCommand {
+  ~FlashScreenCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Flash_Screen; }
+  ColorTone colors;
+  int duration;
+  bool waitForCompletion;
+  [[nodiscard]] std::string stringRep() const override {
+    // TODO
+    return "";
+  }
+};
+
+struct ShakeScreenCommand : IEventCommand {
+  ~ShakeScreenCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Shake_Screen; }
+  int power;
+  int speed;
+  int duration;
+  bool waitForCompletion;
+  [[nodiscard]] std::string stringRep() const override {
+    // TODO
+    return "";
+  }
+};
 struct SetMovementRouteCommand : IEventCommand {
   ~SetMovementRouteCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Set_Movement_Route; }

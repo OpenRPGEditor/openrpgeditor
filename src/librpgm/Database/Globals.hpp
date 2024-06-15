@@ -377,6 +377,13 @@ enum class PartyMemberOperation {
   Remove,
 };
 
+enum class ColorTone {
+  red,
+  green,
+  blue,
+  gray,
+};
+
 enum class SkillOperation {
   Learn,
   Forget,
@@ -402,6 +409,14 @@ enum class PictureOrigin {
   Upper_Left,
   Center,
 };
+
+enum class WeatherEffect {
+  None,
+  Rain,
+  Storm,
+  Snow,
+};
+
 
 enum class PictureDesignationSource {
   Direct_designation,

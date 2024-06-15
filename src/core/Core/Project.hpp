@@ -11,6 +11,7 @@
 #include <string_view>
 #include <string>
 #include "Core/ResourceManager.hpp"
+#include "Core/CommonUI/TextEditor.hpp"
 #include "Core/EventEditor.hpp"
 
 #include "Database/Actors.hpp"

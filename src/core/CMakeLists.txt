@@ -51,6 +51,8 @@ add_library(
         Core/TextParser.hpp Core/TextParser.cpp
         Core/Resources.hpp
         Core/DPIHandler.hpp
+        Core/CommonUI/TextEditor.hpp
+        Core/CommonUI/TextEditor.cpp
 )
 
 # Define set of OS specific files to include

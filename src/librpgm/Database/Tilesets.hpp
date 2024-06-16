@@ -37,6 +37,16 @@ public:
   std::string name;
   std::string note;
   std::array<std::string, 9> tilesetNames;
+
+  /*!
+   * @name m_isValid
+   * @details
+   * Indicates that this is an actual valid entry and not a dummy
+   *
+   * When making a new entry make sure to set this to true or it won't be
+   * serialized.
+   */
+  bool m_isValid{false};
 };
 
 class Tilesets {
@@ -46,7 +56,7 @@ public:
 
   [[nodiscard]] Tileset* tileset(int id) {
     for (auto& item : m_tilesets) {
-      if (item.id == id) {
+      if (item.id == id && item.m_isValid) {
         return &item;
       }
     }
@@ -55,7 +65,7 @@ public:
 
   [[nodiscard]] const Tileset* tileset(int id) const {
     for (const auto& set : m_tilesets) {
-      if (set.id == id) {
+      if (set.id == id && item.m_isValid) {
         return &set;
       }
     }

@@ -12,13 +12,16 @@ Tilesets Tilesets::load(std::string_view filename) {
   Tilesets tilesets;
   tilesets.m_tilesets.reserve(data.size());
 
+  int i = 0;
   for (const auto& [_, value] : data.items()) {
-    if (value == nullptr) {
-      continue;
-    }
-
     Tileset& tileset = tilesets.m_tilesets.emplace_back();
-    value.get_to(tileset);
+    tileset.m_isValid = value != nullptr;
+    if (tileset.m_isValid) {
+      value.get_to(tileset);
+    } else {
+      tileset.id = i;
+    }
+    ++i;
   }
   return tilesets;
 }
@@ -27,10 +30,14 @@ bool Tilesets::serialize(std::string_view filename) {
   // TODO: Temporary file for atomic writes
 
   std::ofstream file(filename.data());
-  json data{nullptr};
+  json data;
 
   for (const Tileset& tileset : m_tilesets) {
-    data.push_back(tileset);
+    if (tileset.m_isValid) {
+      data.push_back(tileset);
+    } else {
+      data.push_back(nullptr);
+    }
   }
 
   file << data;

@@ -36,7 +36,7 @@ public:
 
   [[nodiscard]] Troop* troop(int id) {
     for (auto& item : m_troops) {
-      if (item.id == id) {
+      if (item.id == id  && item.m_isValid) {
         return &item;
       }
     }
@@ -45,7 +45,7 @@ public:
 
   [[nodiscard]] const Troop* troop(int id) const {
     for (const auto& set : m_troops) {
-      if (set.id == id) {
+      if (set.id == id && set.m_isValid) {
         return &set;
       }
     }

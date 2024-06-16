@@ -35,18 +35,18 @@ public:
   bool serialize(std::string_view filename);
 
   [[nodiscard]] Troop* troop(int id) {
-    for (auto& item : m_troops) {
-      if (item.id == id  && item.m_isValid) {
-        return &item;
+    for (auto& troop : m_troops) {
+      if (troop.id == id  && troop.m_isValid) {
+        return &troop;
       }
     }
     return nullptr;
   }
 
   [[nodiscard]] const Troop* troop(int id) const {
-    for (const auto& set : m_troops) {
-      if (set.id == id && set.m_isValid) {
-        return &set;
+    for (const auto& troop : m_troops) {
+      if (troop.id == id  && troop.m_isValid) {
+        return &troop;
       }
     }
 

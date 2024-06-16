@@ -51,18 +51,18 @@ public:
   bool serialize(std::string_view filename);
 
   [[nodiscard]] Skill* skill(int id) {
-    for (auto& item : m_skills) {
-      if (item.id == id) {
-        return &item;
+    for (auto& skill : m_skills) {
+      if (skill.id == id && skill.m_isValid) {
+        return &skill;
       }
     }
     return nullptr;
   }
 
   [[nodiscard]] const Skill* skill(int id) const {
-    for (const auto& set : m_skills) {
-      if (set.id == id) {
-        return &set;
+    for (const auto& skill : m_skills) {
+      if (skill.id == id && skill.m_isValid) {
+        return &skill;
       }
     }
 

@@ -39,18 +39,18 @@ public:
   std::vector<Weapon>& weapons() { return m_weapons; }
   const std::vector<Weapon>& weapons() const { return m_weapons; }
   [[nodiscard]] Weapon* weapon(int id) {
-    for (auto& item : m_weapons) {
-      if (item.id == id && item.m_isValid) {
-        return &item;
+    for (auto& weapon : m_weapons) {
+      if (weapon.id == id && weapon.m_isValid) {
+        return &weapon;
       }
     }
     return nullptr;
   }
 
   [[nodiscard]] const Weapon* weapon(int id) const {
-    for (const auto& set : m_weapons) {
-      if (set.id == id && set.m_isValid) {
-        return &set;
+    for (const auto& weapon : m_weapons) {
+      if (weapon.id == id && weapon.m_isValid) {
+        return &weapon;
       }
     }
 

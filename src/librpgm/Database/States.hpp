@@ -52,18 +52,18 @@ public:
   bool serialize(std::string_view filename);
 
   [[nodiscard]] State* state(int id) {
-    for (auto& item : m_states) {
-      if (item.id == id) {
-        return &item;
+    for (auto& state : m_states) {
+      if (state.id == id && state.m_isValid) {
+        return &state;
       }
     }
     return nullptr;
   }
 
   [[nodiscard]] const State* state(int id) const {
-    for (const auto& set : m_states) {
-      if (set.id == id) {
-        return &set;
+    for (auto& state : m_states) {
+      if (state.id == id && state.m_isValid) {
+        return &state;
       }
     }
 

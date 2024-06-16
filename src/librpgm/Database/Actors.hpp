@@ -47,18 +47,18 @@ public:
   bool serialize(std::string_view filename);
 
   [[nodiscard]] Actor* actor(int id) {
-    for (auto& item : m_actors) {
-      if (item.id == id) {
-        return &item;
+    for (auto& actor : m_actors) {
+      if (actor.id == id && actor.m_isValid) {
+        return &actor;
       }
     }
     return nullptr;
   }
 
   [[nodiscard]] const Actor* actor(int id) const {
-    for (const auto& set : m_actors) {
-      if (set.id == id) {
-        return &set;
+    for (const auto& actor : m_actors) {
+      if (actor.id == id && actor.m_isValid) {
+        return &actor;
       }
     }
 

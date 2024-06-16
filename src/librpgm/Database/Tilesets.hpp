@@ -64,9 +64,9 @@ public:
   }
 
   [[nodiscard]] const Tileset* tileset(int id) const {
-    for (const auto& set : m_tilesets) {
-      if (set.id == id && item.m_isValid) {
-        return &set;
+    for (const auto& item : m_tilesets) {
+      if (item.id == id && item.m_isValid) {
+        return &item;
       }
     }
 

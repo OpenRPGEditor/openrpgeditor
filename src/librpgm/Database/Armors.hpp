@@ -39,18 +39,18 @@ public:
   [[nodiscard]] const std::vector<Armor>& armors() const { return m_armors; }
 
   [[nodiscard]] Armor* armor(int id) {
-    for (auto& item : m_armors) {
-      if (item.id == id) {
-        return &item;
+    for (auto& armor : m_armors) {
+      if (armor.id == id && armor.m_isValid) {
+        return &armor;
       }
     }
     return nullptr;
   }
 
   [[nodiscard]] const Armor* armor(int id) const {
-    for (const auto& set : m_armors) {
-      if (set.id == id) {
-        return &set;
+    for (const auto& armor : m_armors) {
+      if (armor.id == id && armor.m_isValid) {
+        return &armor;
       }
     }
 

@@ -54,18 +54,18 @@ public:
   bool serialize(std::string_view filename);
 
   [[nodiscard]] Enemy* enemy(int id) {
-    for (auto& item : m_enemies) {
-      if (item.id == id) {
-        return &item;
+    for (auto& enemy : m_enemies) {
+      if (enemy.id == id && enemy.m_isValid) {
+        return &enemy;
       }
     }
     return nullptr;
   }
 
   [[nodiscard]] const Enemy* enemy(int id) const {
-    for (const auto& set : m_enemies) {
-      if (set.id == id) {
-        return &set;
+    for (const auto& enemy : m_enemies) {
+      if (enemy.id == id && enemy.m_isValid) {
+        return &enemy;
       }
     }
 

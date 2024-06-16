@@ -48,7 +48,7 @@ public:
 
   [[nodiscard]] Item* item(int id) {
     for (auto& item : m_items) {
-      if (item.id == id) {
+      if (item.id == id && item.m_isValid) {
         return &item;
       }
     }
@@ -56,9 +56,9 @@ public:
   }
 
   [[nodiscard]] const Item* item(int id) const {
-    for (const auto& set : m_items) {
-      if (set.id == id) {
-        return &set;
+    for (const auto& item : m_items) {
+      if (item.id == id && item.m_isValid) {
+        return &item;
       }
     }
 

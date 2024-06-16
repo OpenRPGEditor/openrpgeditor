@@ -42,18 +42,18 @@ public:
   void serialize(std::string_view filename);
 
   [[nodiscard]] Class* classType(int id) {
-    for (auto& item : m_classes) {
-      if (item.id == id) {
-        return &item;
+    for (auto& cls : m_classes) {
+      if (cls.id == id && cls.m_isValid) {
+        return &cls;
       }
     }
     return nullptr;
   }
 
   [[nodiscard]] const Class* classType(int id) const {
-    for (const auto& set : m_classes) {
-      if (set.id == id) {
-        return &set;
+    for (const auto& cls : m_classes) {
+      if (cls.id == id && cls.m_isValid) {
+        return &cls;
       }
     }
 

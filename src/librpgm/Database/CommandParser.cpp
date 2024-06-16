@@ -572,7 +572,13 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
     case EventCode::Tint_Screen: {
       TintScreenCommand* screen = dynamic_cast<TintScreenCommand*>(ret.emplace_back(new TintScreenCommand()).get());
       screen->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(screen->colors);
+      auto colors = parameters[0];
+
+      colors[0].get_to(screen->colors.r);
+      colors[1].get_to(screen->colors.g);
+      colors[2].get_to(screen->colors.b);
+      colors[3].get_to(screen->colors.gray);
+
       parameters[1].get_to(screen->duration);
       parameters[2].get_to(screen->waitForCompletion);
       break;
@@ -580,7 +586,13 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
     case EventCode::Flash_Screen: {
       FlashScreenCommand* screen = dynamic_cast<FlashScreenCommand*>(ret.emplace_back(new FlashScreenCommand()).get());
       screen->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(screen->colors);
+      auto colors = parameters[0];
+
+      colors[0].get_to(screen->colors.r);
+      colors[1].get_to(screen->colors.g);
+      colors[2].get_to(screen->colors.b);
+      colors[3].get_to(screen->colors.intensity);
+
       parameters[1].get_to(screen->duration);
       parameters[2].get_to(screen->waitForCompletion);
       break;
@@ -619,15 +631,17 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       MovePictureCommand* pic = dynamic_cast<MovePictureCommand*>(ret.emplace_back(new MovePictureCommand()).get());
       pic->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(pic->picture);
-      parameters[1].get_to(pic->origin);
-      parameters[2].get_to(pic->pictureLocation);
-      parameters[3].get_to(pic->x);
-      parameters[4].get_to(pic->y);
-      parameters[5].get_to(pic->duration);
+      // param[1] is not used
+      parameters[2].get_to(pic->origin);
+      parameters[3].get_to(pic->pictureLocation);
+      parameters[4].get_to(pic->x);
+      parameters[5].get_to(pic->y);
       parameters[6].get_to(pic->width);
-      parameters[7].get_to(pic->opacity);
-      parameters[8].get_to(pic->blendMode);
-      parameters[9].get_to(pic->waitForCompletion);
+      parameters[7].get_to(pic->height);
+      parameters[8].get_to(pic->opacity);
+      parameters[9].get_to(pic->blendMode);
+      parameters[10].get_to(pic->duration);
+      parameters[11].get_to(pic->waitForCompletion);
       break;
     }
     case EventCode::Rotate_Picture: {
@@ -641,7 +655,14 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       TintPictureCommand* pic = dynamic_cast<TintPictureCommand*>(ret.emplace_back(new TintPictureCommand()).get());
       pic->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(pic->picture);
-      parameters[1].get_to(pic->colors);
+
+      auto colors = parameters[1];
+
+      colors[0].get_to(pic->colors.r);
+      colors[1].get_to(pic->colors.g);
+      colors[2].get_to(pic->colors.b);
+      colors[3].get_to(pic->colors.gray);
+
       parameters[2].get_to(pic->duration);
       parameters[3].get_to(pic->waitForCompletion);
       break;

@@ -18,19 +18,20 @@ void EventCommandEditor::draw() {
   ImGui::BeginGroup();
   {
     ImGui::Text("Content:");
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - App::DPIHandler::scale_value(4));
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - App::DPIHandler::scale_value(16));
     ImGui::PushFont(App::APP->getMonoFont());
-    // Custom size: use all width, 5 items tall
-    if (ImGui::BeginChild("##commonevent_code_contents",
-                          ImVec2(0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)),
-                          ImGuiChildFlags_FrameStyle, ImGuiWindowFlags_HorizontalScrollbar)) {
+
+    if (ImGui::BeginTable("##commonevent_code_contents", 2,
+                          ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY |
+                              ImGuiTableFlags_ScrollY,
+                          ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
+
+      ImGui::TableSetupColumn("Selectable", 0, 0.03f);
+      ImGui::TableSetupColumn("Text");
 
       if (m_commands) {
         for (int n = 0; n < m_commands->size(); n++) {
           const bool isSelected = (m_selectedCommand == n);
           std::string indentPad = m_commands->at(n)->stringRep();
-
           if (m_commands->at(n)->code() == EventCode::Common_Event) {
             // Common Event + (name)
             CommonEventCommand* cec = dynamic_cast<CommonEventCommand*>(m_commands->at(n).get());
@@ -420,21 +421,24 @@ void EventCommandEditor::draw() {
             ChangeNickCommand* val = dynamic_cast<ChangeNickCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->actor(val->actor)->name, "{");
           }
-          // ImGui::PushStyleColor(ImGuiCol_Text, m_selectedCommonEvent->commands->at(n)->color());
-          auto oldCursor = ImGui::GetCursorPos();
-          if (ImGui::SelectableWithBorder(std::format("##common_event_selectable_{}", n).c_str(), isSelected,
-                                ImGuiSelectableFlags_AllowOverlap,
-                                ImVec2{0, ImGui::CalcTextSize(indentPad.c_str()).y})) {
-            m_selectedCommand = n;
+          ImGui::TableNextRow();
+          if (ImGui::TableNextColumn()) {
+            if (ImGui::SelectableWithBorder(std::to_string(n + 1).c_str(), isSelected,
+                                  ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns,
+                                  ImVec2(0, ImGui::CalcTextSize(indentPad.c_str()).y))) {
+              m_selectedCommand = n;
+              }
           }
-          ImGui::SetCursorPos(oldCursor);
+          if (ImGui::TableNextColumn()) {
+            ImGui::TextParsed("&push-color=255,255,255;%s&pop-color;", indentPad.c_str());
+          }
+          //ImGui::SetCursorPos(oldCursor);
           /* Nexus: TextParsed takes the syntax of `&<token>[=value];` where value is optional and token is
            * required.
            * Currently there are only 3 tokens, push-color, pop-color, and color, push and pop allow you to
            * control which blocks of text get color, color applies to the whole string
            * if a token is unsupported it won't get processed and will show up in the resulting text
            */
-          ImGui::TextParsed("&push-color=255,255,255;%s&pop-color;", indentPad.c_str());
           // ImGui::PopStyleColor();
 
           // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
@@ -442,12 +446,12 @@ void EventCommandEditor::draw() {
             ImGui::SetItemDefaultFocus();
           if (n < m_commands->size()) {
             // Add padding so we don't slightly overlap with the next item
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + App::DPIHandler::scale_value(4));
+            //ImGui::SetCursorPosY(ImGui::GetCursorPosY() + App::DPIHandler::scale_value(4));
           }
         }
       }
+    ImGui::EndTable();
     }
-    ImGui::EndChild();
     ImGui::PopFont();
   }
   ImGui::EndGroup();

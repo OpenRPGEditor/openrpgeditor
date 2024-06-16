@@ -36,7 +36,7 @@ bool CommonEvents::serialize(std::string_view filename) {
   // TODO: Temporary file for atomic writes
 
   std::ofstream file(filename.data());
-  json data{nullptr};
+  json data;
 
   for (const auto& event : m_events) {
     data.push_back(event);

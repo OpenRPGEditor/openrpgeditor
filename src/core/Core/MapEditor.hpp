@@ -40,8 +40,8 @@ struct MapEditor {
     m_selectedEvent = event;
     if (event) {
       m_tileCursor.setPosition(event->x, event->y);
+      m_hasScrolled = false;
     }
-    m_hasScrolled = false;
   }
 
   bool scrolledToEvent() const { return m_hasScrolled; }
@@ -75,6 +75,7 @@ private:
   void handleMouseInput(ImGuiWindow* win);
   void renderLayerTex(ImGuiWindow* win, const MapRenderer::TileLayer& tLayer);
   void renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer);
+  void handleKeyboardShortcuts();
   Project* m_parent;
   Map* m_map = nullptr;
   MapInfo* m_mapInfo = nullptr;

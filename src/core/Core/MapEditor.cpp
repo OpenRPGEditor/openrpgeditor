@@ -195,6 +195,18 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     m_movingEvent = nullptr;
   }
 }
+
+void MapEditor::handleKeyboardShortcuts() {
+  /* General */
+  return;
+  if (ImGui::IsKeyPressed(ImGuiKey_Delete) || ImGui::IsKeyPressed(ImGuiKey_Backspace)) {
+    // TODO: Undo command
+    if (ImGui::IsWindowFocused() && selectedEvent()) {
+      m_map->deleteEvent(selectedEvent()->id);
+      setSelectedEvent(nullptr);
+    }
+  }
+}
 void MapEditor::renderLayerTex(ImGuiWindow* win, const MapRenderer::TileLayer& tLayer) {
   if (!tLayer.tex) {
     return;
@@ -237,7 +249,7 @@ void MapEditor::draw() {
   std::erase_if(m_eventEditors, [](EventEditor& editor) { return !editor.draw(); });
 
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
-    ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(45.f)),
+    ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(45.f)),
                       ImGuiChildFlags_Border, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
 
     if (m_map) {
@@ -360,7 +372,7 @@ void MapEditor::drawMapProperties() {
                                  : m_parent->tileset(m_map->tilesetId)->name;
           ImGui::PushID("##map_tileset_button");
           if (ImGui::Button(text.c_str(),
-                            ImVec2{ImGui::GetWindowContentRegionMax().x / 2 - App::DPIHandler::scale_value(15), 0})) {}
+                            ImVec2{ImGui::GetContentRegionMax().x / 2 - App::DPIHandler::scale_value(15), 0})) {}
           ImGui::PopID();
         }
         ImGui::EndGroup();
@@ -440,11 +452,10 @@ void MapEditor::drawMapProperties() {
           ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !m_map->autoPlayBgm);
           {
             ImGui::PushID("##map_bgm_button");
-            ImGui::SetNextItemWidth((ImGui::GetWindowContentRegionMax().x / 2) - 30);
+            ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 30);
             std::string text = m_map->bgm.name.empty() ? "##map_bgm_button_empty" : m_map->bgm.name;
-            if (ImGui::Button(
-                    text.c_str(),
-                    ImVec2{(ImGui::GetWindowContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
+            if (ImGui::Button(text.c_str(),
+                              ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
             ImGui::PopID();
           }
           ImGui::PopItemFlag();
@@ -458,9 +469,8 @@ void MapEditor::drawMapProperties() {
           {
             ImGui::PushID("##map_bgs_button");
             std::string text = m_map->bgs.name.empty() ? "##map_bgs_button_empty" : m_map->bgs.name;
-            if (ImGui::Button(
-                    text.c_str(),
-                    ImVec2{(ImGui::GetWindowContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
+            if (ImGui::Button(text.c_str(),
+                              ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
             ImGui::PopID();
           }
           ImGui::PopItemFlag();
@@ -474,9 +484,8 @@ void MapEditor::drawMapProperties() {
             ImGui::PushID("##map_battleback_button");
             // TODO: Combine battleBack1Name and battleBack2Name
             std::string text = m_map->bgs.name.empty() ? "##map_battleback_button_empty" : m_map->battleBack1Name;
-            if (ImGui::Button(
-                    text.c_str(),
-                    ImVec2{(ImGui::GetWindowContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
+            if (ImGui::Button(text.c_str(),
+                              ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
             ImGui::PopID();
           }
           ImGui::PopItemFlag();
@@ -499,8 +508,7 @@ void MapEditor::drawMapProperties() {
           ImGui::PushID("##map_parallax_button");
           std::string text = m_map->bgs.name.empty() ? "##map_parallax_button_empty" : m_map->parallaxName;
           if (ImGui::Button(text.c_str(),
-                            ImVec2{(ImGui::GetWindowContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {
-          }
+                            ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
           ImGui::PopID();
         }
         ImGui::EndGroup();

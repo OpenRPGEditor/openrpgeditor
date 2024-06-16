@@ -101,7 +101,10 @@ public:
   }
 
   void deleteEvent(int id) {
-    std::erase_if(events, [&id](const auto& ev) { return ev && ev->id == id; });
+    auto it = std::find_if(events.begin(), events.end(), [&id](const auto& ev) { return ev && ev->id == id; });
+    if (it != events.end()) {
+      (*it).reset();
+    }
   }
 
 private:

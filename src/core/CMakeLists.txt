@@ -39,9 +39,12 @@ add_library(
         Core/DatabaseEditor/DBTilesetsTab.hpp Core/DatabaseEditor/DBTilesetsTab.cpp
         Core/DatabaseEditor/DBCommonEventsTab.hpp Core/DatabaseEditor/DBCommonEventsTab.cpp
         Core/DatabaseEditor/DBSystemTab.hpp Core/DatabaseEditor/DBSystemTab.cpp
+
         Core/CommonUI/TraitsEditor.hpp Core/CommonUI/TraitsEditor.cpp
         Core/CommonUI/ObjectPicker.hpp Core/CommonUI/ObjectPicker.inl
+        Core/CommonUI/VariableSwitchPicker.hpp Core/CommonUI/VariableSwitchPicker.cpp
         Core/CommonUI/EventCommandEditor.hpp Core/CommonUI/EventCommandEditor.cpp
+        Core/CommonUI/TextEditor.hpp Core/CommonUI/TextEditor.cpp
         Core/UndoStack.hpp Core/UndoStack.cpp
 
         Core/CheckerboardTexture.hpp Core/CheckerboardTexture.cpp
@@ -51,8 +54,6 @@ add_library(
         Core/TextParser.hpp Core/TextParser.cpp
         Core/Resources.hpp
         Core/DPIHandler.hpp
-        Core/CommonUI/TextEditor.hpp
-        Core/CommonUI/TextEditor.cpp
 )
 
 # Define set of OS specific files to include

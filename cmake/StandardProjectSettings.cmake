@@ -16,7 +16,7 @@ else ()
 endif ()
 
 # Generate compile_commands.json to make it easier to work with clang based tools
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS OFF)
 
 option(DEACTIVATE_LOGGING "Disable logging" OFF)
 if (DEACTIVATE_LOGGING)

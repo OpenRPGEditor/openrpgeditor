@@ -5,7 +5,7 @@
 #include "nlohmann/json.hpp"
 
 struct Troop {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Troop, id, members);
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Troop, id, members, name);
 
   struct Member {
     int enemyId = 0;
@@ -15,6 +15,7 @@ struct Troop {
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Member, enemyId, x, y, hidden);
   };
   int id;
+  std::string name;
   std::vector<Member> members;
 };
 

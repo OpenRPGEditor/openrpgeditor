@@ -102,7 +102,9 @@ public:
   Item* item(int id) { return m_items.item(id); }
   State* state(int id) { return m_states.state(id); }
   MapInfo* map(int id) { return m_mapInfos.map(id); }
+  std::string equipType(int id) { return m_system.equipTypes.at(id); }
   Animation* animation(int id) { return m_animations.animation(id); }
+  Tileset* tileset(int id) { return m_tilesets.tileset(id); }
 
   void setDrawTool(DrawTool tool) { m_drawTool = tool; }
   DrawTool drawTool() const { return m_drawTool; }
@@ -110,7 +112,7 @@ public:
   MapInfo* currentMapInfo() { return m_mapListView.currentMapInfo(); }
   const MapInfo* currentMapInfo() const { return m_mapListView.currentMapInfo(); }
 
-  Tileset* tileset(int id) { return m_tilesets.tileset(id); }
+  Troop* troop(int id) { return m_troops.troop(id); }
   const Tileset* tileset(int id) const { return m_tilesets.tileset(id); }
 
   void setMap(MapInfo& in);

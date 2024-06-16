@@ -190,8 +190,236 @@ void EventCommandEditor::draw() {
           } else if (m_commands->at(n)->code() == EventCode::Input_Number) {
             InputNumberCommand* inc = dynamic_cast<InputNumberCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->variable(inc->variable), "{");
+          } else if (m_commands->at(n)->code() == EventCode::Change_Tile_Set) {
+            ChangeTileSetCommand* val = dynamic_cast<ChangeTileSetCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->tileset(val->tileset)->name, "{");
+          } else if (m_commands->at(n)->code() == EventCode::Get_Location_Info) {
+            GetLocationInfoCommand* val = dynamic_cast<GetLocationInfoCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->variable(val->variable), "{");
+            if (val->source == LocationSource::Designation_with_variables) {
+              insertValue(indentPad, m_project->variable(val->x), "[");
+              insertValue(indentPad, m_project->variable(val->y), "[");
+            }
+          } else if (m_commands->at(n)->code() == EventCode::Battle_Processing) {
+            BattleProcessingCommand* val = dynamic_cast<BattleProcessingCommand*>(m_commands->at(n).get());
+            if (val->type == BattleProcessType::Designation_with_variables) {
+              insertValue(indentPad, m_project->variable(val->id), "[");
+            }
+            else if (val->type == BattleProcessType::Direct_designation) {
+              insertValue(indentPad, m_project->troop(val->id)->name, "{");
+            }
+          } else if (m_commands->at(n)->code() == EventCode::Shop_Processing_Good) {
+            ShopProcessingGoodCommand* val = dynamic_cast<ShopProcessingGoodCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->item(val->id)->name, "{");
+          } else if (m_commands->at(n)->code() == EventCode::Shop_Processing) {
+            ShopProcessingCommand* val = dynamic_cast<ShopProcessingCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->item(val->id)->name, "{");
+          } else if (m_commands->at(n)->code() == EventCode::Name_Input_Processing) {
+            NameInputCommand* val = dynamic_cast<NameInputCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->actor(val->actorId)->name, "{");
+          } else if (m_commands->at(n)->code() == EventCode::Change_HP) {
+            ChangeHPCommand* val = dynamic_cast<ChangeHPCommand*>(m_commands->at(n).get());
+            // Fixed vs Variable
+            if (val->comparison == ActorComparisonSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
+            }
+            else {
+              insertValue(indentPad, m_project->actor(val->value)->name, "{");
+            }
+            // Constant vs Variable
+            if (val->quantitySource == QuantityChangeSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "[");
+            }
+          } else if (m_commands->at(n)->code() == EventCode::Change_MP) {
+            ChangeMPCommand* val = dynamic_cast<ChangeMPCommand*>(m_commands->at(n).get());
+            // Fixed vs Variable
+            if (val->comparison == ActorComparisonSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
+            }
+            else {
+              insertValue(indentPad, m_project->actor(val->value)->name, "{");
+            }
+            // Constant vs Variable
+            if (val->quantitySource == QuantityChangeSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "[");
+            }
           }
+          else if (m_commands->at(n)->code() == EventCode::Change_TP) {
+            ChangeTPCommand* val = dynamic_cast<ChangeTPCommand*>(m_commands->at(n).get());
+            // Fixed vs Variable
+            if (val->comparison == ActorComparisonSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
+            }
+            else {
+              insertValue(indentPad, m_project->actor(val->value)->name, "{");
+            }
+            // Constant vs Variable
+            if (val->quantitySource == QuantityChangeSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "[");
+            }
+          } else if (m_commands->at(n)->code() == EventCode::Change_EXP) {
+            ChangeEXPCommand* val = dynamic_cast<ChangeEXPCommand*>(m_commands->at(n).get());
+            // Fixed vs Variable
+            if (val->comparison == ActorComparisonSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
+            }
+            else {
+              insertValue(indentPad, m_project->actor(val->value)->name, "{");
+            }
+            // Constant vs Variable
+            if (val->quantitySource == QuantityChangeSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "[");
+            }
+          } else if (m_commands->at(n)->code() == EventCode::Change_Level) {
+            ChangeLevelCommand* val = dynamic_cast<ChangeLevelCommand*>(m_commands->at(n).get());
+            // Fixed vs Variable
+            if (val->comparison == ActorComparisonSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
+            }
+            else {
+              insertValue(indentPad, m_project->actor(val->value)->name, "{");
+            }
+            // Constant vs Variable
+            if (val->quantitySource == QuantityChangeSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "[");
+            }
+          } else if (m_commands->at(n)->code() == EventCode::Change_Parameter) {
+            ChangeParameterCommand* val = dynamic_cast<ChangeParameterCommand*>(m_commands->at(n).get());
+            // Fixed vs Variable
+            if (val->comparison == ActorComparisonSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
+            }
+            else {
+              insertValue(indentPad, m_project->actor(val->value)->name, "{");
+            }
+            // Constant vs Variable
+            if (val->quantitySource == QuantityChangeSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "[");
+            }
+          } else if (m_commands->at(n)->code() == EventCode::Recover_All) {
+            RecoverAllCommand* val = dynamic_cast<RecoverAllCommand*>(m_commands->at(n).get());
+            // Fixed vs Variable
+            if (val->comparison == ActorComparisonSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->value) + "}", "{");
+            }
+            else {
+              insertValue(indentPad, m_project->actor(val->value)->name, "{");
+            }
+          } else if (m_commands->at(n)->code() == EventCode::Change_Name) {
+            ChangeNameCommand* val = dynamic_cast<ChangeNameCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->actor(val->actor)->name, "{");
+          } else if (m_commands->at(n)->code() == EventCode::Change_Class) {
+            ChangeClassCommand* val = dynamic_cast<ChangeClassCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->actor(val->actor)->name, "{");
+            insertValue(indentPad, m_project->actorClass(val->classId)->name, "{");
+          } else if (m_commands->at(n)->code() == EventCode::Change_State) {
+            ChangeStateCommand* val = dynamic_cast<ChangeStateCommand*>(m_commands->at(n).get());
+            // Fixed vs Variable
+            if (val->comparison == ActorComparisonSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->value) + "}", "{");
+            }
+            else {
+              insertValue(indentPad, m_project->actor(val->value)->name, "{");
+            }
+            insertValue(indentPad, m_project->state(val->state)->name, "{");
+          } else if (m_commands->at(n)->code() == EventCode::Change_Skill) {
+            ChangeSkillCommand* val = dynamic_cast<ChangeSkillCommand*>(m_commands->at(n).get());
+            // Fixed vs Variable
+            if (val->comparison == ActorComparisonSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->value) + "}", "{");
+            }
+            else {
+              insertValue(indentPad, m_project->actor(val->value)->name, "{");
+            }
+            insertValue(indentPad, m_project->skill(val->skill)->name, "{");
+          }
+          else if (m_commands->at(n)->code() == EventCode::Change_Equipment) {
+            ChangeEquipmentCommand* val = dynamic_cast<ChangeEquipmentCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->actor(val->actorId)->name, "{");
+            insertValue(indentPad, m_project->equipType(val->equipType), "{");
+            if (val->equipment > 0) {
+              // TODO: We need to obtain the equipment correctly based on equipment type
+              //insertValue(indentPad, m_project->equipment(val->equipment)->name, "{");
+            }
+          }
+          else if (m_commands->at(n)->code() == EventCode::Enemy_Recover_All) {
+            EnemyRecoverAllCommand* val = dynamic_cast<EnemyRecoverAllCommand*>(m_commands->at(n).get());
+            if (val->troop > 0) {
+              insertValue(indentPad, m_project->troop(val->troop)->name, "{");
+            }
+          }
+          else if (m_commands->at(n)->code() == EventCode::Enemy_Appear) {
+            EnemyAppearCommand* val = dynamic_cast<EnemyAppearCommand*>(m_commands->at(n).get());
+              insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
+          }
+          else if (m_commands->at(n)->code() == EventCode::Enemy_Transform) {
+            EnemyTransformCommand* val = dynamic_cast<EnemyTransformCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
+            insertValue(indentPad, m_project->enemy(val->transform)->name, "{");
+          }
+          else if (m_commands->at(n)->code() == EventCode::Change_Enemy_HP) {
+            ChangeEnemyHPCommand* val = dynamic_cast<ChangeEnemyHPCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
 
+            // Constant vs Variable
+            if (val->quantitySource == QuantityChangeSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "[");
+            }
+          }
+          else if (m_commands->at(n)->code() == EventCode::Change_Enemy_MP) {
+            ChangeEnemyMPCommand* val = dynamic_cast<ChangeEnemyMPCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
+
+            // Constant vs Variable
+            if (val->quantitySource == QuantityChangeSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "[");
+            }
+          }
+          else if (m_commands->at(n)->code() == EventCode::Change_Enemy_TP) {
+            ChangeEnemyTPCommand* val = dynamic_cast<ChangeEnemyTPCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
+
+            // Constant vs Variable
+            if (val->quantitySource == QuantityChangeSource::Variable) {
+              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "[");
+            }
+          }
+          else if (m_commands->at(n)->code() == EventCode::Change_Enemy_TP) {
+            ChangeEnemyStateCommand* val = dynamic_cast<ChangeEnemyStateCommand*>(m_commands->at(n).get());
+            if (val->enemy > 0)
+              insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
+
+            insertValue(indentPad, m_project->state(val->state)->name, "{");
+          }
+          else if (m_commands->at(n)->code() == EventCode::Force_Action) {
+            ForceActionCommand* val = dynamic_cast<ForceActionCommand*>(m_commands->at(n).get());
+            if (val->sourceComparison == SubjectComparisonSource::Actor) {
+              insertValue(indentPad, m_project->actor(val->source)->name, "{");
+            }
+            else {
+              insertValue(indentPad, m_project->troop(val->source)->name, "{");
+            }
+            insertValue(indentPad, m_project->skill(val->skill)->name, "{");
+          }
+          else if (m_commands->at(n)->code() == EventCode::Show_Battle_Animation) {
+            ShowBattleAnimCommand* val = dynamic_cast<ShowBattleAnimCommand*>(m_commands->at(n).get());
+             if (val->enemy > 0) {
+               insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
+             }
+             insertValue(indentPad, m_project->animation(val->animation)->name, "{");
+          }
+          else if (m_commands->at(n)->code() == EventCode::Change_Actor_Images) {
+            ChangeActorImageCommand* val = dynamic_cast<ChangeActorImageCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->actor(val->actor)->name, "{");
+          }
+          else if (m_commands->at(n)->code() == EventCode::Change_Profile) {
+            ChangeProfileCommand* val = dynamic_cast<ChangeProfileCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->actor(val->actor)->name, "{");
+          }
+          else if (m_commands->at(n)->code() == EventCode::Change_Nickname) {
+            ChangeNickCommand* val = dynamic_cast<ChangeNickCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->actor(val->actor)->name, "{");
+          }
           // ImGui::PushStyleColor(ImGuiCol_Text, m_selectedCommonEvent->commands->at(n)->color());
           auto oldCursor = ImGui::GetCursorPos();
           if (ImGui::SelectableWithBorder(std::format("##common_event_selectable_{}", n).c_str(), isSelected,

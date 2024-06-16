@@ -14,15 +14,16 @@
 
 DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor* parent)
 : IDBEditorTab(parent), m_events(commonEvents), m_commandEditor(parent->project()) {
-  m_selectedCommonEvent = &m_events.m_events[1].value();
-  m_maxCommonEvents = m_events.m_events.size() - 1;
+  m_selectedCommonEvent = m_events.event(1);
+  m_maxCommonEvents = m_events.count();
   m_commandEditor.setCommands(&m_selectedCommonEvent->commands);
 }
 
 void DBCommonEventsTab::draw() {
   ImGui::BeginChild("##orpg_commonevents_editor");
   {
-    ImGui::BeginChild("##orpg_commonevents_editor_commonevents", ImVec2{250.f, 0} * App::DPIHandler::get_scale(), 0, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("##orpg_commonevents_editor_commonevents", ImVec2{250.f, 0} * App::DPIHandler::get_scale(), 0,
+                      ImGuiWindowFlags_HorizontalScrollbar);
     {
       ImGui::BeginGroup();
       {
@@ -32,12 +33,12 @@ void DBCommonEventsTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            for (int i = 0; i < m_events.m_events.size() - 1; ++i) {
-              if (! m_events.m_events[i]) {
+            for (auto& event : m_events.events()) {
+              if (!event) {
                 continue;
               }
 
-              CommonEvent& commonEvent = m_events.m_events[i].value();
+              CommonEvent& commonEvent = event.value();
               std::string id = "##orpg_commonevent_editor_unnamed_commonevent_" + std::to_string(commonEvent.id);
               ImGui::PushID(id.c_str());
               char name[4096];
@@ -55,7 +56,7 @@ void DBCommonEventsTab::draw() {
         ImGui::EndChild();
 
         char str[4096];
-        snprintf(str, 4096, "Max Common Events %zu", m_events.m_events.size() - 1);
+        snprintf(str, 4096, "Max Common Events %zu", m_events.count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max",
                           ImVec2{ImGui::GetContentRegionMax().x - (8 * App::DPIHandler::get_scale()), 0})) {
@@ -162,7 +163,7 @@ void DBCommonEventsTab::draw() {
         ImGui::Text("Are you sure?");
         if (ImGui::Button("Yes")) {
           int tmpId = m_selectedCommonEvent->id;
-          m_events.m_events.resize(m_maxCommonEvents + 1);
+          m_events.resize(m_maxCommonEvents);
           m_selectedCommonEvent = m_events.event(tmpId);
           m_commandEditor.setCommands(&m_selectedCommonEvent->commands);
           m_changeIntDialogOpen = false;

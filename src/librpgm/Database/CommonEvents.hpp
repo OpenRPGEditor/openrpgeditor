@@ -9,10 +9,10 @@ struct CommonEvent {
   friend void to_json(nlohmann::json& to, const CommonEvent& event);
   friend void from_json(const nlohmann::json& to, CommonEvent& event);
 
-  int id;
+  int id{};
   std::vector<std::shared_ptr<IEventCommand>> commands;
-  std::string name;
-  int switchId;
+  std::string name{};
+  int switchId{};
   CommonEventTriggerType trigger;
 };
 
@@ -21,27 +21,42 @@ public:
   static CommonEvents load(std::string_view filepath);
   bool serialize(std::string_view filename);
 
+  std::vector<std::optional<CommonEvent>>& events() { return m_events; }
+  const std::vector<std::optional<CommonEvent>>& events() const { return m_events; }
+
   [[nodiscard]] CommonEvent* event(int id) {
-    for (auto& item : m_events) {
-      if (item->id == id) {
-        return &item.value();
+    for (auto& event : m_events) {
+      if (event && event->id == id) {
+        return &event.value();
       }
     }
     return nullptr;
   }
 
   [[nodiscard]] const CommonEvent* event(int id) const {
-    for (const auto& set : m_events) {
-      if (set->id == id) {
-        return &set.value();
+    for (const auto& event : m_events) {
+      if (event && event->id == id) {
+        return &event.value();
       }
     }
 
     return nullptr;
   }
 
+  int count() const { return m_events.size() - 1; }
+
+  void resize(int newSize) {
+    ++newSize;
+    int oldSize = m_events.size();
+    m_events.resize(newSize);
+    if (newSize > oldSize) {
+      for (int i = oldSize; i < m_events.size(); ++i) {
+        m_events[i] = CommonEvent();
+        m_events[i]->commands.emplace_back(new EventDummy());
+        m_events[i]->id = i;
+      }
+    }
+  }
 private:
-  friend class DBCommonEventsTab;
   std::vector<std::optional<CommonEvent>> m_events;
-  std::optional<CommonEvent> m_selectedCommonEvent;
 };

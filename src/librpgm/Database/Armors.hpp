@@ -19,6 +19,15 @@ struct Armor {
   std::string note;
   std::array<int, 8> params{}; // Attack, Defance, M.Attack, M.Defence, Agility, Luck, Max HP, Max MP
   int price{};
+
+  /*!
+   * @name m_isValid
+   * @details
+   * Indicates that this is an actual valid entry and not a dummy
+   * When making a new entry make sure to set this to true or it won't be
+   * serialized.
+   */
+  bool m_isValid{false};
 };
 
 class Armors {

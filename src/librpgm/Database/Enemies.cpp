@@ -10,13 +10,16 @@ Enemies Enemies::load(std::string_view filename) {
   Enemies enemies;
   enemies.m_enemies.reserve(data.size());
 
+  int i = 0;
   for (const auto& [_, value] : data.items()) {
-    if (value == nullptr) {
-      continue;
-    }
-
     Enemy& enemy = enemies.m_enemies.emplace_back();
-    value.get_to(enemy);
+    enemy.m_isValid = value != nullptr;
+    if (enemy.m_isValid) {
+      value.get_to(enemy);
+    } else {
+      enemy.id = i;
+    }
+    ++i;
   }
   return enemies;
 }
@@ -25,10 +28,14 @@ bool Enemies::serialize(std::string_view filename) {
   // TODO: Temporary file for atomic writes
 
   std::ofstream file(filename.data());
-  json data{nullptr};
+  json data;
 
   for (const Enemy& armor : m_enemies) {
-    data.push_back(armor);
+    if (armor.m_isValid) {
+      data.push_back(armor);
+    } else {
+      data.push_back(nullptr);
+    }
   }
 
   file << data;

@@ -25,6 +25,15 @@ struct Class {
   std::string name;
   std::string note;
   std::array<std::vector<int>, 8> params;
+
+  /*!
+   * @name m_isValid
+   * @details
+   * Indicates that this is an actual valid entry and not a dummy
+   * When making a new entry make sure to set this to true or it won't be
+   * serialized.
+   */
+  bool m_isValid{false};
 };
 
 class Classes {
@@ -53,6 +62,20 @@ public:
 
   const std::vector<Class>& classes() const { return m_classes; }
   std::vector<Class>& classes() { return m_classes; }
+
+  int count() { return m_classes.size() - 1; }
+
+  void resize(int newSize) {
+    ++newSize;
+    int oldSize = m_classes.size();
+    m_classes.resize(newSize);
+    if (newSize > oldSize) {
+      for (int i = oldSize; i < m_classes.size(); ++i) {
+        m_classes[i].id = i;
+      }
+    }
+  }
+
 private:
   std::vector<Class> m_classes;
 };

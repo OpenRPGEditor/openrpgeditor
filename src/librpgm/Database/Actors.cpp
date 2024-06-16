@@ -6,21 +6,22 @@
 
 using json = nlohmann::json;
 
-Actors::Actors() : m_isOpen(true) {}
-
 Actors Actors::load(std::string_view filename) {
   std::ifstream file(filename.data());
   json data = json::parse(file);
   Actors actors;
   actors.m_actors.reserve(data.size());
 
+  int i = 0;
   for (const auto& [_, value] : data.items()) {
-    if (value == nullptr) {
-      continue;
-    }
-
     Actor& actor = actors.m_actors.emplace_back();
-    value.get_to(actor);
+    actor.m_isValid = value != nullptr;
+    if (actor.m_isValid) {
+      value.get_to(actor);
+    } else {
+      actor.id = i;
+    }
+    ++i;
   }
   return actors;
 }
@@ -30,7 +31,11 @@ bool Actors::serialize(std::string_view filename) {
   json data;
 
   for (const Actor& actor : m_actors) {
-    data.push_back(actor);
+    if (actor.m_isValid) {
+      data.push_back(actor);
+    } else {
+      data.push_back(nullptr);
+    }
   }
 
   file << data;

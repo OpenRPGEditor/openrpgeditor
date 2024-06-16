@@ -25,24 +25,24 @@ public:
   std::vector<Trait> traits;
   int initialLevel = 1;
   int maxLevel = 99;
-  std::string name{"NewActor"};
+  std::string name;
   std::string nickname;
   std::string note;
   std::string profile;
 
-  void draw();
-
-  void setSelected(bool selected) { m_selected = selected; }
-  bool selected() const { return m_selected; }
-
-private:
-  bool m_selected = false;
+  /*!
+   * @name m_isValid
+   * @details
+   * Indicates that this is an actual valid entry and not a dummy
+   *
+   * When making a new entry make sure to set this to true or it won't be
+   * serialized.
+   */
+  bool m_isValid{false};
 };
 
 class Actors {
 public:
-  Actors();
-
   static Actors load(std::string_view filename);
   bool serialize(std::string_view filename);
 
@@ -82,11 +82,9 @@ public:
     return std::find_if(m_actors.begin(), m_actors.end(), [](const auto& act) { return act.id == 0; }) !=
            m_actors.end();
   }
-  int count() const { return hasTestActor() ? m_actors.size() - 1 : m_actors.size(); }
+  int count() const { return m_actors.size() - 1; }
 
 private:
   friend class DBActorsTab;
   std::vector<Actor> m_actors;
-  std::optional<Actor> m_selectedActor;
-  bool m_isOpen;
 };

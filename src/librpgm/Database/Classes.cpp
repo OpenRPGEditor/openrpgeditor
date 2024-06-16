@@ -10,24 +10,30 @@ Classes Classes::load(std::string_view filename) {
   Classes classes;
   classes.m_classes.reserve(data.size());
 
+  int i = 0;
   for (const auto& [_, value] : data.items()) {
-    if (value == nullptr) {
-      continue;
-    }
-
     Class& cls = classes.m_classes.emplace_back();
-    value.get_to(cls);
+    cls.m_isValid = value != nullptr;
+    if (cls.m_isValid) {
+      value.get_to(cls);
+    } else {
+      cls.id = i;
+    }
+    ++i;
   }
   return classes;
 }
 
 void Classes::serialize(std::string_view filename) {
   std::ofstream file(filename.data());
-  json data{nullptr};
-  std::setprecision(2);
+  json data;
 
-  for (const Class& cls : m_classes) {
-    data.push_back(cls);
+  for (const auto& cls : m_classes) {
+    if (cls.m_isValid) {
+      data.push_back(cls);
+    } else {
+      data.push_back(nullptr);
+    }
   }
 
   file << data.dump(4);

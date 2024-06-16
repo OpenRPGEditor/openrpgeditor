@@ -10,13 +10,16 @@ Skills Skills::load(std::string_view filename) {
   Skills skills;
   skills.m_skills.reserve(data.size());
 
+  int i = 0;
   for (const auto& [_, value] : data.items()) {
-    if (value == nullptr) {
-      continue;
-    }
-
     Skill& skill = skills.m_skills.emplace_back();
-    value.get_to(skill);
+    skill.m_isValid = value != nullptr;
+    if (skill.m_isValid) {
+      value.get_to(skill);
+    } else {
+      skill.id = i;
+    }
+    ++i;
   }
   return skills;
 }
@@ -28,7 +31,11 @@ bool Skills::serialize(std::string_view filename) {
   json data{nullptr};
 
   for (const Skill& skill : m_skills) {
-    data.push_back(skill);
+    if (skill.m_isValid) {
+      data.push_back(skill);
+    } else {
+      data.push_back(nullptr);
+    }
   }
 
   file << data;

@@ -10,13 +10,16 @@ Troops Troops::load(std::string_view filepath) {
   Troops troops;
   troops.m_troops.reserve(data.size());
 
+  int i = 0;
   for (const auto& [_, value] : data.items()) {
-    if (value == nullptr) {
-      continue;
-    }
-
     Troop& tileset = troops.m_troops.emplace_back();
-    value.get_to(tileset);
+    tileset.m_isValid = value != nullptr;
+    if (tileset.m_isValid) {
+      value.get_to(tileset);
+    } else {
+      tileset.id = i;
+    }
+    ++i;
   }
   return troops;
 }

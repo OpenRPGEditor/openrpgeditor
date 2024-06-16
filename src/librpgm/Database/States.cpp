@@ -10,13 +10,16 @@ States States::load(std::string_view filename) {
   States states;
   states.m_states.reserve(data.size());
 
+  int i = 0;
   for (const auto& [_, value] : data.items()) {
-    if (value == nullptr) {
-      continue;
-    }
-
     State& state = states.m_states.emplace_back();
-    value.get_to(state);
+    state.m_isValid = value != nullptr;
+    if (state.m_isValid) {
+      value.get_to(state);
+    } else {
+      state.id = i;
+    }
+    ++i;
   }
   return states;
 }
@@ -25,10 +28,14 @@ bool States::serialize(std::string_view filename) {
   // TODO: Temporary file for atomic writes
 
   std::ofstream file(filename.data());
-  json data{nullptr};
+  json data;
 
   for (const State& state : m_states) {
-    data.push_back(state);
+    if (state.m_isValid) {
+      data.push_back(state);
+    } else {
+      data.push_back(nullptr);
+    }
   }
 
   file << data;

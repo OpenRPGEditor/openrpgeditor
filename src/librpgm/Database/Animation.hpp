@@ -10,8 +10,8 @@
 
 class Animation {
 public:
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Animation, id, animation1Hue, animation1Name, animation2Hue,
-                                              animation2Name, frames, name, position, timings);
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Animation, id, animation1Hue, animation1Name, animation2Hue, animation2Name, frames,
+                                 name, position, timings);
   struct Color {
     int r;
     int g;
@@ -48,4 +48,13 @@ public:
   std::string name;
   Position position = Position::Head;
   std::vector<Timing> timings;
+
+  /*!
+   * @name m_isValid
+   * @details
+   * Indicates that this is an actual valid entry and not a dummy
+   * When making a new entry make sure to set this to true or it won't be
+   * serialized.
+   */
+  bool m_isValid{false};
 };

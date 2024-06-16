@@ -10,13 +10,16 @@ Armors Armors::load(std::string_view filename) {
   Armors armors;
   armors.m_armors.reserve(data.size());
 
+  int i = 0;
   for (const auto& [_, value] : data.items()) {
-    if (value == nullptr) {
-      continue;
-    }
-
     Armor& armor = armors.m_armors.emplace_back();
-    value.get_to(armor);
+    armor.m_isValid = value != nullptr;
+    if (armor.m_isValid) {
+      value.get_to(armor);
+    } else {
+      armor.id = i;
+    }
+    ++i;
   }
   return armors;
 }
@@ -25,10 +28,14 @@ bool Armors::serialize(std::string_view filename) {
   // TODO: Temporary file for atomic writes
 
   std::ofstream file(filename.data());
-  json data{nullptr};
+  json data;
 
   for (const Armor& armor : m_armors) {
-    data.push_back(armor);
+    if (armor.m_isValid) {
+      data.push_back(armor);
+    } else {
+      data.push_back(nullptr);
+    }
   }
 
   file << data;

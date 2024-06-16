@@ -17,6 +17,15 @@ struct Troop {
   int id;
   std::string name;
   std::vector<Member> members;
+
+  /*!
+   * @name m_isValid
+   * @details
+   * Indicates that this is an actual valid entry and not a dummy
+   * When making a new entry make sure to set this to true or it won't be
+   * serialized.
+   */
+  bool m_isValid{false};
 };
 
 class Troops {

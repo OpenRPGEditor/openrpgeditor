@@ -30,13 +30,21 @@ public:
   int speed;
   int successRate;
   int tpGain;
+
+  /*!
+   * @name m_isValid
+   * @details
+   * Indicates that this is an actual valid entry and not a dummy
+   * When making a new entry make sure to set this to true or it won't be
+   * serialized.
+   */
+  bool m_isValid{false};
 };
 
 class Items {
 public:
   static Items load(std::string_view filename);
   void serialize(std::string_view filename);
-
 
   [[nodiscard]] Item* item(int id) {
     for (auto& item : m_items) {

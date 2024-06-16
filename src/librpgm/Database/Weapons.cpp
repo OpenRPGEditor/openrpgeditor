@@ -10,13 +10,16 @@ Weapons Weapons::load(std::string_view filename) {
   Weapons weapons;
   weapons.m_weapons.reserve(data.size());
 
+  int i = 0;
   for (const auto& [_, value] : data.items()) {
-    if (value == nullptr) {
-      continue;
-    }
-
     Weapon& weapon = weapons.m_weapons.emplace_back();
-    value.get_to(weapon);
+    weapon.m_isValid = value != nullptr;
+    if (weapon.m_isValid) {
+      value.get_to(weapon);
+    } else {
+      weapon.id = i;
+    }
+    ++i;
   }
   return weapons;
 }

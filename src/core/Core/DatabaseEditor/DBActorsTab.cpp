@@ -95,6 +95,7 @@ void DBActorsTab::draw() {
                   snprintf(buf, 4096, "%04i %s", c.id, c.name.c_str());
                   if (ImGui::Selectable(buf, c.id == m_selectedActor->classId)) {
                     m_selectedActor->classId = c.id;
+                    m_selectedActor->m_isValid = true;
                   }
                 }
                 ImGui::EndCombo();
@@ -109,6 +110,7 @@ void DBActorsTab::draw() {
               ImGui::SetNextItemWidth((ImGui::GetCursorPosX() / 2) - App::DPIHandler::scale_value(16));
               ImGui::InputInt("##orpg_actors_initial_level_edit", &m_selectedActor->initialLevel);
               m_selectedActor->initialLevel = std::clamp(m_selectedActor->initialLevel, 1, 99);
+              m_selectedActor->m_isValid = true;
             }
             ImGui::EndGroup();
             ImGui::SameLine();
@@ -119,6 +121,7 @@ void DBActorsTab::draw() {
               ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - App::DPIHandler::scale_value(16));
               ImGui::InputInt("##orpg_actors_max_level_edit", &m_selectedActor->maxLevel);
               m_selectedActor->maxLevel = std::clamp(m_selectedActor->maxLevel, 1, 99);
+              m_selectedActor->m_isValid = true;
             }
             ImGui::EndGroup();
             ImGui::BeginGroup();
@@ -130,6 +133,7 @@ void DBActorsTab::draw() {
                       "##orpg_actors_profile", profile, IM_ARRAYSIZE(profile),
                       ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(16), 0})) {
                 m_selectedActor->profile = profile;
+                m_selectedActor->m_isValid = true;
               }
             }
             ImGui::EndGroup();
@@ -154,7 +158,7 @@ void DBActorsTab::draw() {
               ImGui::ImageButton("##orpg_actors_character_image", m_buttonBack.get(),
                                  ImVec2{164, 164} * App::DPIHandler::get_scale());
               if (m_charaterSheet && m_charaterSheet->texture()) {
-                ImGui::SetCursorPos(cursorPos + ImVec2{16, m_charaterSheet->characterHeight() == 96 ? -24 : -16} *
+                ImGui::SetCursorPos(cursorPos + ImVec2{16, m_charaterSheet->characterHeight() == 96 ? -24.f : -16.f} *
                                                     App::DPIHandler::get_scale());
                 auto rect = m_charaterSheet->getRectForCharacter(m_selectedActor->characterIndex, 1);
                 ImVec2 uv0{rect.uv0.u, rect.uv0.v};
@@ -403,6 +407,7 @@ void DBActorsTab::draw() {
           m_selectedActor->equips.resize(m_selectedEquip + 1);
         }
         m_selectedActor->equips[m_selectedEquip] = m_chosenEquip;
+        m_selectedActor->m_isValid = true;
       }
       ImGui::SameLine();
       if (ImGui::Button("Cancel")) {

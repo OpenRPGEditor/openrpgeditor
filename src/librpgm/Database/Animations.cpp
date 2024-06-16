@@ -12,23 +12,30 @@ Animations Animations::load(std::string_view filename) {
   Animations animations;
   animations.m_animations.reserve(data.size());
 
+  int i = 0;
   for (const auto& [_, value] : data.items()) {
-    if (value == nullptr) {
-      continue;
-    }
-
     Animation& animation = animations.m_animations.emplace_back();
-    value.get_to(animation);
+    animation.m_isValid = value != nullptr;
+    if (animation.m_isValid) {
+      value.get_to(animation);
+    } else {
+      animation.id = i;
+    }
+    ++i;
   }
   return animations;
 }
 
 void Animations::serialize(std::string_view filename) {
   std::ofstream file(filename.data());
-  json data{nullptr};
+  json data;
 
   for (const Animation& animation : m_animations) {
-    data.push_back(animation);
+    if (animation.m_isValid) {
+      data.push_back(animation);
+    } else {
+      data.push_back(nullptr);
+    }
   }
 
   file << data;

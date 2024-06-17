@@ -22,6 +22,7 @@ constexpr std::string_view deeppink    = "&push-color=0xff,0x14,0x93;"sv;
 constexpr std::string_view dodgerblue  = "&push-color=0x1e,0x90,0xff;"sv;
 constexpr std::string_view darkviolet  = "&push-color=0x94,0x00,0xd3;"sv;
 constexpr std::string_view gray        = "&push-color=0x80,0x80,0x80;"sv;
+constexpr std::string_view green       = "&push-color=0x00,0x80,0x00;"sv;
 // clang-format on
 
 static std::map<EventCode, std::string_view> CommandColors{
@@ -36,6 +37,8 @@ static std::map<EventCode, std::string_view> CommandColors{
   {EventCode::Select_Item,              indigo},
   {EventCode::Show_Scrolling_Text,      indigo},
   {EventCode::Next_Scrolling_Text,      indigo},
+  {EventCode::Comment,                  green},
+  {EventCode::Next_Comment,             green},
   {EventCode::Conditional_Branch,       blue},
   {EventCode::Else,                     blue},
   {EventCode::End,                      blue},

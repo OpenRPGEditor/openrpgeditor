@@ -397,6 +397,9 @@ void EventCommandEditor::draw() {
           } else if (m_commands->at(n)->code() == EventCode::Change_Nickname) {
             ChangeNickCommand* val = dynamic_cast<ChangeNickCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->actor(val->actor)->name, "{");
+          } else if (m_commands->at(n)->code() == EventCode::Show_Balloon_Icon) {
+            ShowBalloonIconCommand* val = dynamic_cast<ShowBalloonIconCommand*>(m_commands->at(n).get());
+            insertValue(indentPad, m_project->event(val->id)->name, "{");
           }
           ImGui::TableNextRow();
           if (ImGui::TableNextColumn()) {

@@ -6,6 +6,8 @@
 #include "misc/cpp/imgui_stdlib.h"
 #include "imgui.h"
 
+#include <algorithm>
+
 static bool ContainsCaseInsensitive(std::string_view str, std::string_view val) {
   return std::search(str.begin(), str.end(), val.begin(), val.end(),
                      [](char ch1, char ch2) { return std::toupper(ch1) == std::toupper(ch2); }) != str.end();

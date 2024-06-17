@@ -11,7 +11,8 @@ struct NextScriptCommand;
 struct IEventCommand {
   std::optional<int> indent{};
   const std::string diamond = "\u25c6";
-  const std::string colon = "\uff1a";
+  //const std::string colon = "\uff1a";
+  const std::string colon = ":";
   virtual ~IEventCommand() = default;
   [[nodiscard]] virtual EventCode code() const = 0;
   [[nodiscard]] virtual std::string stringRep() const {
@@ -72,7 +73,7 @@ struct ShowTextCommand : IEventCommand {
       if (!ret.empty()) {
         ret += "\n";
       }
-      ret += colon + indentText(indent) + colon + ColorFormatter::getColorCode(code()) + t->text;
+      ret += indentText(indent) + colon + indentText(indent) + colon + ColorFormatter::getColorCode(code()) + t->text;
     }
     return ret;
   }
@@ -807,7 +808,7 @@ struct MovePictureCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Move_Picture; }
   int picture;
   PictureOrigin origin;
-  TransferMode pictureLocation;
+  PictureDesignationSource pictureLocation;
   int x;
   int y;
   int width;
@@ -820,7 +821,7 @@ struct MovePictureCommand : IEventCommand {
   [[nodiscard]] std::string stringRep() const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Move Picture : " +
-        std::format("#{}, {}, ({},{}), ({}%, {}%), {}, {}, {} frames",
+        std::format("#{}, {} ({},{}), ({}%, {}%), {}, {}, {} frames",
           picture, DecodeEnumName(origin), DecodeEnumName(pictureLocation), x, y, width, height, opacity, DecodeEnumName(blendMode), duration)
     + (waitForCompletion == true ? ColorFormatter::getColor(Gray) + " (Wait)" + ColorFormatter::popColor() : "");
   }
@@ -1646,6 +1647,11 @@ struct ShowBalloonIconCommand : IEventCommand {
   int index;
   bool waitForCompletion;
   // TODO:
+  [[nodiscard]] std::string stringRep() const override {
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+      + "Show Balloon Icon :" + (id > 0 ? " {}, " : id == -2 ? " Player, " : " This Event, ")
+      + (waitForCompletion == true ? ColorFormatter::getColor(Gray) + " (Wait)" + ColorFormatter::popColor() : "");
+  }
 };
 
 struct EraseEventCommand : IEventCommand {
@@ -1796,7 +1802,14 @@ struct ShowPictureCommand : IEventCommand {
   int zoomY;
   int opacityValue;
   Blend blendMode;
-  // TODO:
+
+  [[nodiscard]] std::string stringRep() const override {
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Show Picture : " +
+        std::format("#{}, {}, {} ({},{}), ({}%, {}%), {}, {}, {} frames",
+          number, imageName, DecodeEnumName(origin), DecodeEnumName(type), value1, value2, zoomX, zoomY, opacityValue, DecodeEnumName(blendMode))
+    + ColorFormatter::popColor();
+  }
 };
 
 struct EndCommand : IEventCommand {

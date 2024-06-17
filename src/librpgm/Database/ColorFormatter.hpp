@@ -6,7 +6,7 @@
 #include <string>
 
 struct ColorFormatter {
-  static std::string getColorCode(std::string command);
+  static std::string getColorCode(EventCode command);
   static std::string popColor();
   static std::string getColor(Color preset);
 };

@@ -49,16 +49,16 @@ bool ParseColor(const char* s, ImU32* col, int* skipChars) {
       std::vector<std::string> values = split(value, ",");
       Color color;
       if (values.size() >= 1) {
-        color.r = std::stoi(values[0]);
+        color.r = std::stoi(values[0], nullptr, 0);
       }
       if (values.size() >= 2) {
-        color.g = std::stoi(values[1]);
+        color.g = std::stoi(values[1], nullptr, 0);
       }
       if (values.size() >= 3) {
-        color.b = std::stoi(values[2]);
+        color.b = std::stoi(values[2], nullptr, 0);
       }
       if (values.size() >= 4) {
-        color.a = std::stoi(values[3]);
+        color.a = std::stoi(values[3], nullptr, 0);
       }
 
       *col = *(int*)(&color.r);
@@ -75,16 +75,16 @@ bool ParseColor(const char* s, ImU32* col, int* skipChars) {
       std::vector<std::string> values = split(value, ",");
       Color color;
       if (values.size() >= 0) {
-        color.r = std::stoi(values[0]);
+        color.r = std::stoi(values[0], nullptr, 0);
       }
       if (values.size() >= 1) {
-        color.g = std::stoi(values[1]);
+        color.g = std::stoi(values[1], nullptr, 0);
       }
       if (values.size() >= 2) {
-        color.b = std::stoi(values[2]);
+        color.b = std::stoi(values[2], nullptr, 0);
       }
       if (values.size() >= 3) {
-        color.a = std::stoi(values[3]);
+        color.a = std::stoi(values[3], nullptr, 0);
       }
 
       *col = *(int*)(&color.r);
@@ -96,5 +96,16 @@ bool ParseColor(const char* s, ImU32* col, int* skipChars) {
     }
   }
   return false;
+}
+
+ImU32 ParseGetCurrentColor() {
+  if (colors.empty()) {
+    Color col;
+    *((int*)(&col.r)) = GetColorU32(ImGuiCol_Text);
+    colors.push(col);
+  }
+
+  Color color = colors.top();
+  return *(int*)(&color.r);
 }
 } // namespace ImGui

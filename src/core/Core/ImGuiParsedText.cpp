@@ -290,7 +290,7 @@ void RenderParsedText(ImVec2 pos, const char* text, const char* text_end, bool h
   }
 
   if (text != text_display_end) {
-    ImDrawList_AddAnsiText(window->DrawList, g.Font, g.FontSize, pos, GetColorU32(ImGuiCol_Text), text,
+    ImDrawList_AddAnsiText(window->DrawList, g.Font, g.FontSize, pos, ParseGetCurrentColor(), text,
                            text_display_end);
     if (g.LogEnabled)
       LogRenderedText(&pos, text, text_display_end);

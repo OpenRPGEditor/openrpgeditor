@@ -521,6 +521,7 @@ enum class EventCode : int {
   If_Win = 601,
   If_Escape = 602,
   If_Lose = 603,
+  End_del_Battle_Processing = 604,
   Shop_Processing = 302,
   Shop_Processing_Good = 605, // RPGMV will push this into the shop's item stack
   Name_Input_Processing = 303,

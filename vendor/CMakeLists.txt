@@ -44,7 +44,7 @@ FetchContent_Declare(json GIT_REPOSITORY "https://github.com/nlohmann/json.git")
 FetchContent_Declare(magic_enum
         GIT_REPOSITORY "https://github.com/Neargye/magic_enum.git")
 
-#FetchCOntent_Declare(curl
+#FetchContent_Declare(curl
 #        GIT_REPOSITORY "https://github.com/curl/curl.git"
 #        GIT_TAG tiny-curl-8_4_0
 #)
@@ -91,4 +91,5 @@ FetchContent_MakeAvailable(
 
 
 target_include_directories(ImGuiFileDialog PRIVATE ${imgui_SOURCE_DIR})
+#target_compile_definitions(ImGuiFileDialog PRIVATE USE_THUMBNAILS DONT_DEFINE_AGAIN__STB_IMAGE_IMPLEMENTATION)
 #target_compile_options(ImGuiFileDialog PRIVATE "-Wno-deprecated-enum-enum-conversion")

@@ -62,14 +62,14 @@ void MapEditor::setMap(Map* map, MapInfo* info) {
 int MapEditor::tileSize() { return m_parent->system().tileSize; }
 
 void MapEditor::drawGrid(ImGuiWindow* win) {
-  for (int y = 0; y <= (m_map->height * tileSize()) * m_mapScale; y += tileSize() * m_mapScale) {
+  for (int y = tileSize(); y < (m_map->height * tileSize()) * m_mapScale; y += tileSize() * m_mapScale) {
     win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)},
                            win->ContentRegionRect.Min +
                                ImVec2{(m_map->width * tileSize()) * m_mapScale, static_cast<float>(y)},
                            0x7f0a0a0a, 3.f);
   }
 
-  for (int x = 0; x <= (m_map->width * tileSize()) * m_mapScale; x += tileSize() * m_mapScale) {
+  for (int x = tileSize(); x < (m_map->width * tileSize()) * m_mapScale; x += tileSize() * m_mapScale) {
     win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), 0.f},
                            win->ContentRegionRect.Min +
                                ImVec2{static_cast<float>(x), (m_map->height * tileSize()) * m_mapScale},
@@ -262,7 +262,6 @@ void MapEditor::draw() {
       if (m_tileCursor.mode() == MapCursorMode::Keyboard && !ImGui::IsWindowFocused()) {
         ImGui::FocusWindow(win, ImGuiFocusRequestFlags_UnlessBelowModal | ImGuiFocusRequestFlags_RestoreFocusedChild);
       }
-      drawGrid(win);
 
       if (m_initialScrollSet) {
         ImGui::SetScrollX(m_initialScrollX);
@@ -286,6 +285,7 @@ void MapEditor::draw() {
         m_tileCursor.draw(win);
       }
 
+      drawGrid(win);
       auto sortedEvents = m_map->getSorted();
       for (auto& event : sortedEvents) {
         if (!event) {

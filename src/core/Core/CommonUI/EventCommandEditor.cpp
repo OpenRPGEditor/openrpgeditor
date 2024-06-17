@@ -21,12 +21,14 @@ void EventCommandEditor::draw() {
     ImGui::PushFont(App::APP->getMonoFont());
 
     if (ImGui::BeginTable("##commonevent_code_contents", 2,
-                          ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY |
+                          ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                               ImGuiTableFlags_ScrollY,
                           ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
 
-      ImGui::TableSetupColumn("Selectable", 0, 0.03f);
+      ImGui::TableSetupColumn("Selectable", ImGuiTableFlags_SizingFixedFit);
+      ImGui::TableSetupScrollFreeze(1, 0);
       ImGui::TableSetupColumn("Text");
+      const int totalPadding = static_cast<int>(std::floor(std::log10(m_commands->size())));
 
       if (m_commands) {
         for (int n = 0; n < m_commands->size(); n++) {
@@ -205,8 +207,7 @@ void EventCommandEditor::draw() {
             BattleProcessingCommand* val = dynamic_cast<BattleProcessingCommand*>(m_commands->at(n).get());
             if (val->type == BattleProcessType::Designation_with_variables) {
               insertValue(indentPad, m_project->variable(val->id), "[");
-            }
-            else if (val->type == BattleProcessType::Direct_designation) {
+            } else if (val->type == BattleProcessType::Direct_designation) {
               insertValue(indentPad, m_project->troop(val->id)->name, "{");
             }
           } else if (m_commands->at(n)->code() == EventCode::Shop_Processing_Good) {
@@ -223,8 +224,7 @@ void EventCommandEditor::draw() {
             // Fixed vs Variable
             if (val->comparison == ActorComparisonSource::Variable) {
               insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
-            }
-            else {
+            } else {
               insertValue(indentPad, m_project->actor(val->value)->name, "{");
             }
             // Constant vs Variable
@@ -236,22 +236,19 @@ void EventCommandEditor::draw() {
             // Fixed vs Variable
             if (val->comparison == ActorComparisonSource::Variable) {
               insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
-            }
-            else {
+            } else {
               insertValue(indentPad, m_project->actor(val->value)->name, "{");
             }
             // Constant vs Variable
             if (val->quantitySource == QuantityChangeSource::Variable) {
               insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "[");
             }
-          }
-          else if (m_commands->at(n)->code() == EventCode::Change_TP) {
+          } else if (m_commands->at(n)->code() == EventCode::Change_TP) {
             ChangeTPCommand* val = dynamic_cast<ChangeTPCommand*>(m_commands->at(n).get());
             // Fixed vs Variable
             if (val->comparison == ActorComparisonSource::Variable) {
               insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
-            }
-            else {
+            } else {
               insertValue(indentPad, m_project->actor(val->value)->name, "{");
             }
             // Constant vs Variable
@@ -263,8 +260,7 @@ void EventCommandEditor::draw() {
             // Fixed vs Variable
             if (val->comparison == ActorComparisonSource::Variable) {
               insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
-            }
-            else {
+            } else {
               insertValue(indentPad, m_project->actor(val->value)->name, "{");
             }
             // Constant vs Variable
@@ -276,8 +272,7 @@ void EventCommandEditor::draw() {
             // Fixed vs Variable
             if (val->comparison == ActorComparisonSource::Variable) {
               insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
-            }
-            else {
+            } else {
               insertValue(indentPad, m_project->actor(val->value)->name, "{");
             }
             // Constant vs Variable
@@ -289,8 +284,7 @@ void EventCommandEditor::draw() {
             // Fixed vs Variable
             if (val->comparison == ActorComparisonSource::Variable) {
               insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
-            }
-            else {
+            } else {
               insertValue(indentPad, m_project->actor(val->value)->name, "{");
             }
             // Constant vs Variable
@@ -302,8 +296,7 @@ void EventCommandEditor::draw() {
             // Fixed vs Variable
             if (val->comparison == ActorComparisonSource::Variable) {
               insertValue(indentPad, "{" + m_project->variable(val->value) + "}", "{");
-            }
-            else {
+            } else {
               insertValue(indentPad, m_project->actor(val->value)->name, "{");
             }
           } else if (m_commands->at(n)->code() == EventCode::Change_Name) {
@@ -318,8 +311,7 @@ void EventCommandEditor::draw() {
             // Fixed vs Variable
             if (val->comparison == ActorComparisonSource::Variable) {
               insertValue(indentPad, "{" + m_project->variable(val->value) + "}", "{");
-            }
-            else {
+            } else {
               insertValue(indentPad, m_project->actor(val->value)->name, "{");
             }
             insertValue(indentPad, m_project->state(val->state)->name, "{");
@@ -328,37 +320,31 @@ void EventCommandEditor::draw() {
             // Fixed vs Variable
             if (val->comparison == ActorComparisonSource::Variable) {
               insertValue(indentPad, "{" + m_project->variable(val->value) + "}", "{");
-            }
-            else {
+            } else {
               insertValue(indentPad, m_project->actor(val->value)->name, "{");
             }
             insertValue(indentPad, m_project->skill(val->skill)->name, "{");
-          }
-          else if (m_commands->at(n)->code() == EventCode::Change_Equipment) {
+          } else if (m_commands->at(n)->code() == EventCode::Change_Equipment) {
             ChangeEquipmentCommand* val = dynamic_cast<ChangeEquipmentCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->actor(val->actorId)->name, "{");
             insertValue(indentPad, m_project->equipType(val->equipType), "{");
             if (val->equipment > 0) {
               // TODO: We need to obtain the equipment correctly based on equipment type
-              //insertValue(indentPad, m_project->equipment(val->equipment)->name, "{");
+              // insertValue(indentPad, m_project->equipment(val->equipment)->name, "{");
             }
-          }
-          else if (m_commands->at(n)->code() == EventCode::Enemy_Recover_All) {
+          } else if (m_commands->at(n)->code() == EventCode::Enemy_Recover_All) {
             EnemyRecoverAllCommand* val = dynamic_cast<EnemyRecoverAllCommand*>(m_commands->at(n).get());
             if (val->troop > 0) {
               insertValue(indentPad, m_project->troop(val->troop)->name, "{");
             }
-          }
-          else if (m_commands->at(n)->code() == EventCode::Enemy_Appear) {
+          } else if (m_commands->at(n)->code() == EventCode::Enemy_Appear) {
             EnemyAppearCommand* val = dynamic_cast<EnemyAppearCommand*>(m_commands->at(n).get());
-              insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
-          }
-          else if (m_commands->at(n)->code() == EventCode::Enemy_Transform) {
+            insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
+          } else if (m_commands->at(n)->code() == EventCode::Enemy_Transform) {
             EnemyTransformCommand* val = dynamic_cast<EnemyTransformCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
             insertValue(indentPad, m_project->enemy(val->transform)->name, "{");
-          }
-          else if (m_commands->at(n)->code() == EventCode::Change_Enemy_HP) {
+          } else if (m_commands->at(n)->code() == EventCode::Change_Enemy_HP) {
             ChangeEnemyHPCommand* val = dynamic_cast<ChangeEnemyHPCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
 
@@ -366,8 +352,7 @@ void EventCommandEditor::draw() {
             if (val->quantitySource == QuantityChangeSource::Variable) {
               insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "[");
             }
-          }
-          else if (m_commands->at(n)->code() == EventCode::Change_Enemy_MP) {
+          } else if (m_commands->at(n)->code() == EventCode::Change_Enemy_MP) {
             ChangeEnemyMPCommand* val = dynamic_cast<ChangeEnemyMPCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
 
@@ -375,8 +360,7 @@ void EventCommandEditor::draw() {
             if (val->quantitySource == QuantityChangeSource::Variable) {
               insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "[");
             }
-          }
-          else if (m_commands->at(n)->code() == EventCode::Change_Enemy_TP) {
+          } else if (m_commands->at(n)->code() == EventCode::Change_Enemy_TP) {
             ChangeEnemyTPCommand* val = dynamic_cast<ChangeEnemyTPCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
 
@@ -384,73 +368,56 @@ void EventCommandEditor::draw() {
             if (val->quantitySource == QuantityChangeSource::Variable) {
               insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "[");
             }
-          }
-          else if (m_commands->at(n)->code() == EventCode::Change_Enemy_TP) {
+          } else if (m_commands->at(n)->code() == EventCode::Change_Enemy_TP) {
             ChangeEnemyStateCommand* val = dynamic_cast<ChangeEnemyStateCommand*>(m_commands->at(n).get());
             if (val->enemy > 0)
               insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
 
             insertValue(indentPad, m_project->state(val->state)->name, "{");
-          }
-          else if (m_commands->at(n)->code() == EventCode::Force_Action) {
+          } else if (m_commands->at(n)->code() == EventCode::Force_Action) {
             ForceActionCommand* val = dynamic_cast<ForceActionCommand*>(m_commands->at(n).get());
             if (val->sourceComparison == SubjectComparisonSource::Actor) {
               insertValue(indentPad, m_project->actor(val->source)->name, "{");
-            }
-            else {
+            } else {
               insertValue(indentPad, m_project->troop(val->source)->name, "{");
             }
             insertValue(indentPad, m_project->skill(val->skill)->name, "{");
-          }
-          else if (m_commands->at(n)->code() == EventCode::Show_Battle_Animation) {
+          } else if (m_commands->at(n)->code() == EventCode::Show_Battle_Animation) {
             ShowBattleAnimCommand* val = dynamic_cast<ShowBattleAnimCommand*>(m_commands->at(n).get());
-             if (val->enemy > 0) {
-               insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
-             }
-             insertValue(indentPad, m_project->animation(val->animation)->name, "{");
-          }
-          else if (m_commands->at(n)->code() == EventCode::Change_Actor_Images) {
+            if (val->enemy > 0) {
+              insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
+            }
+            insertValue(indentPad, m_project->animation(val->animation)->name, "{");
+          } else if (m_commands->at(n)->code() == EventCode::Change_Actor_Images) {
             ChangeActorImageCommand* val = dynamic_cast<ChangeActorImageCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->actor(val->actor)->name, "{");
-          }
-          else if (m_commands->at(n)->code() == EventCode::Change_Profile) {
+          } else if (m_commands->at(n)->code() == EventCode::Change_Profile) {
             ChangeProfileCommand* val = dynamic_cast<ChangeProfileCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->actor(val->actor)->name, "{");
-          }
-          else if (m_commands->at(n)->code() == EventCode::Change_Nickname) {
+          } else if (m_commands->at(n)->code() == EventCode::Change_Nickname) {
             ChangeNickCommand* val = dynamic_cast<ChangeNickCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->actor(val->actor)->name, "{");
           }
           ImGui::TableNextRow();
           if (ImGui::TableNextColumn()) {
-            if (ImGui::SelectableWithBorder(std::to_string(n + 1).c_str(), isSelected,
-                                  ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns,
-                                  ImVec2(0, ImGui::CalcTextSize(indentPad.c_str()).y))) {
+            const int step = n + 1;
+            const int stepPadding = (totalPadding - static_cast<int>(std::floor(std::log10(step)))) + 1;
+            if (ImGui::SelectableWithBorder((std::string(stepPadding, ' ') + std::to_string(step) + " ").c_str(),
+                                            isSelected,
+                                            ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns,
+                                            ImVec2(0, ImGui::CalcTextSize(indentPad.c_str()).y))) {
               m_selectedCommand = n;
-              }
+            }
           }
           if (ImGui::TableNextColumn()) {
             ImGui::TextParsed("&push-color=255,255,255;%s&pop-color;", indentPad.c_str());
           }
-          //ImGui::SetCursorPos(oldCursor);
-          /* Nexus: TextParsed takes the syntax of `&<token>[=value];` where value is optional and token is
-           * required.
-           * Currently there are only 3 tokens, push-color, pop-color, and color, push and pop allow you to
-           * control which blocks of text get color, color applies to the whole string
-           * if a token is unsupported it won't get processed and will show up in the resulting text
-           */
-          // ImGui::PopStyleColor();
 
-          // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
           if (isSelected)
             ImGui::SetItemDefaultFocus();
-          if (n < m_commands->size()) {
-            // Add padding so we don't slightly overlap with the next item
-            //ImGui::SetCursorPosY(ImGui::GetCursorPosY() + App::DPIHandler::scale_value(4));
-          }
         }
       }
-    ImGui::EndTable();
+      ImGui::EndTable();
     }
     ImGui::PopFont();
   }

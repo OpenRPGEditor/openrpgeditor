@@ -153,7 +153,7 @@ ExitStatus App::Application::run() {
   style.IndentSpacing = 12.5f;
   style.ScrollbarSize = 15.0f;
   style.ScrollbarRounding = 9.0f;
-  style.GrabMinSize = 5.0f;
+  style.GrabMinSize = 9.0f;
   style.GrabRounding = 4.0f;
   style.PopupBorderSize = 1.f;
   style.PopupRounding = 7.0;

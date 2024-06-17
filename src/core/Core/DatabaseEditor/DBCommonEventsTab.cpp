@@ -56,7 +56,7 @@ void DBCommonEventsTab::draw() {
         ImGui::EndChild();
 
         char str[4096];
-        snprintf(str, 4096, "Max Common Events %zu", m_events.count());
+        snprintf(str, 4096, "Max Common Events %i", m_events.count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max",
                           ImVec2{ImGui::GetContentRegionMax().x - (8 * App::DPIHandler::get_scale()), 0})) {

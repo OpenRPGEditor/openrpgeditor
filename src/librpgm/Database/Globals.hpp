@@ -290,7 +290,7 @@ enum class GoldComaprisonType : int {
   _lt__del_Less_than,
 };
 
-enum class SwitchControl : int {
+enum class ValueControl : int {
   ON,
   OFF,
 };

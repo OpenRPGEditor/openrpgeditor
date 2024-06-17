@@ -10,10 +10,22 @@
 struct NextScriptCommand;
 struct IEventCommand {
   std::optional<int> indent{};
+  const std::string diamond = "\u25c6";
+  const std::string colon = "\uff1a";
   virtual ~IEventCommand() = default;
   [[nodiscard]] virtual EventCode code() const = 0;
   [[nodiscard]] virtual std::string stringRep() const {
     return std::string(indent ? *indent * 4 : 0, ' ') + DecodeEnumName(code());
+  }
+  virtual std::string symbol(EventCode code) const {
+    return static_cast<int>(code) < 400 ? diamond : colon;
+  }
+  virtual std::string indentText(std::optional<int> indent) const {
+    std::string text = "";
+    for(int i = 0; i < indent; ++i) {
+      text += "  ";
+    }
+    return text;
   }
 };
 
@@ -29,7 +41,7 @@ struct EventDummy : IEventCommand {
   ~EventDummy() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Event_Dummy; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "&push-color=0,255,0;◇&pop-color;";
+    return indentText(indent) + ColorFormatter::getColorCode(code()) + symbol(code()) + ColorFormatter::popColor();
   }
 };
 
@@ -52,15 +64,15 @@ struct ShowTextCommand : IEventCommand {
 
 
   [[nodiscard]] std::string stringRep() const override {
-    std::string ret = std::string(indent ? *indent : 0, '\t') + ColorFormatter::getColorCode(code()) + "◇Text : " + ColorFormatter::popColor() +
+    std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Text : " + ColorFormatter::popColor() +
       (faceImage == "" ? "None, " : faceImage + std::format("({}), ", faceIndex)) + DecodeEnumName(background) + ", " + DecodeEnumName(position);
 
     for (const auto& t : text) {
       if (!ret.empty()) {
         ret += "\n";
       }
-      ret += ColorFormatter::getColorCode(t->code())  + std::string(indent ? *indent : 0, '\t') + " :" +
-        std::string(((t->indent ? *t->indent : 0) + 1), '\t') + " : " + ColorFormatter::popColor() + t->text;
+      ret += colon + indentText(indent) + colon + ColorFormatter::getColorCode(code()) + t->text;
     }
     return ret;
   }
@@ -83,8 +95,8 @@ struct ShowChoiceCommand : IEventCommand {
     std::string choiceList = std::accumulate(std::next(choices.begin()), choices.end(), *choices.begin(),
                          [](const std::string& a, const std::string& b){ return a + ", " + b; });
 
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Show Choices : " + ColorFormatter::popColor() + choiceList + suffix;
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + " " + ColorFormatter::popColor() + choiceList + suffix;
   }
 };
 
@@ -96,8 +108,8 @@ struct WhenSelectedCommand : IEventCommand {
   std::string choice;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + ": When " + choice + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + " When " + choice + ColorFormatter::popColor();
   }
 };
 
@@ -105,8 +117,8 @@ struct WhenCancelCommand : IEventCommand {
   ~WhenCancelCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::When_Cancel; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + ": When Cancel" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + " When Cancel" + ColorFormatter::popColor();
   }
 };
 
@@ -114,8 +126,8 @@ struct ShowChoicesEndCommand : IEventCommand {
   ~ShowChoicesEndCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::End_del_ShowChoices; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + ": End" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + " End" + ColorFormatter::popColor();
   }
 };
 
@@ -125,8 +137,8 @@ struct InputNumberCommand : IEventCommand {
   int variable;
   int digits;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Select Item : {}, " + (digits > 1 ? " digits" : " digit") + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Select Item : {}, " + (digits > 1 ? " digits" : " digit") + ColorFormatter::popColor();
   }
 };
 
@@ -136,8 +148,8 @@ struct SelectItemCommand : IEventCommand {
   int item;
   ItemType type;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Select Item : {}, " + DecodeEnumName(type) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Select Item : {}, " + DecodeEnumName(type) + ColorFormatter::popColor();
   }
 };
 
@@ -160,6 +172,7 @@ struct ShowScrollTextCommand : IEventCommand {
     std::string ret = std::string(indent ? *indent : 0, '\t') + "◇Text(S) : Speed " + std::to_string(speed) + (noFast == true ? ", No Fast Forward" : "");
 
     for (const auto& t : text) {
+      // TODO: How do we do this indent?
       if (!ret.empty()) {
         ret += "\n";
       }
@@ -182,6 +195,7 @@ struct CommentCommand : IEventCommand {
   std::string text;
   std::vector<std::shared_ptr<NextCommentCommand>> nextComments;
   [[nodiscard]] std::string stringRep() const override {
+    // TODO: How do we do this indent?
     std::string ret = std::string(indent ? *indent : 0, '\t') + "◇Comment: " + text;
     for (const auto& t : nextComments) {
       if (!ret.empty()) {
@@ -201,7 +215,7 @@ struct ConditionalBranchCommand : IEventCommand {
   ConditionType type{};
   struct {
     int switchIdx;
-    SwitchControl checkIfOn;
+    ValueControl checkIfOn;
   } globalSwitch;
   struct {
     int id;
@@ -213,7 +227,7 @@ struct ConditionalBranchCommand : IEventCommand {
     };
   } variable;
   struct {
-    SwitchControl checkIfOn;
+    ValueControl checkIfOn;
   } selfSwitch;
   struct {
     TimerComparisonType comparison;
@@ -257,17 +271,19 @@ struct ConditionalBranchCommand : IEventCommand {
     std::string strBuild;
     if (type == ConditionType::Variable) {
       std::string test = ColorFormatter::getColorCode(code());
-      return std::string(indent ? *indent * 4 : 0, ' ') + "&push-color=255,255,0;◇If&pop-color; " + "{} " +
-             DecodeEnumName(variable.comparison) + " " +
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "If {} " + DecodeEnumName(variable.comparison) + " " +
              (variable.source == VariableComparisonSource::Constant ? std::to_string(variable.constant) : "{}");
     }
     if (type == ConditionType::Switch) {
-      return std::string(indent ? *indent * 4 : 0, ' ') + "◇If " + "{}" + " is " +
-             (globalSwitch.checkIfOn == SwitchControl::OFF ? "OFF" : "ON");
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "If " + "{}" + " is " +
+             (globalSwitch.checkIfOn == ValueControl::OFF ? "OFF" : "ON");
     }
     if (type == ConditionType::Self_Switch) {
-      return std::string(indent ? *indent * 4 : 0, ' ') + "◇If Self Switch " + "{}" + " is " +
-             (selfSwitch.checkIfOn == SwitchControl::OFF ? "OFF" : "ON");
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "If Self Switch " + "{}" + " is " +
+             (selfSwitch.checkIfOn == ValueControl::OFF ? "OFF" : "ON");
     }
     if (type == ConditionType::Timer) {
       std::string min;
@@ -280,71 +296,68 @@ struct ConditionalBranchCommand : IEventCommand {
         min = "0";
         sec = std::to_string(timer.sec);
       }
-      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-             "◇If Timer" + ColorFormatter::popColor() + " " + DecodeEnumName(timer.comparison) + " " + min + " min " +
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "If Timer" + ColorFormatter::popColor() + " " + DecodeEnumName(timer.comparison) + " " + min + " min " +
              sec + " sec";
     }
     if (type == ConditionType::Actor) {
       if (actor.type == ActorConditionType::Name) {
-        return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-               "◇If Name of {} is []" + ColorFormatter::popColor();
+        return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "If Name of {} is []" + ColorFormatter::popColor();
       } else if (actor.type == ActorConditionType::Class) {
-        return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-               "◇If Class of {} is []" + ColorFormatter::popColor();
+        return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "If Class of {} is []" + ColorFormatter::popColor();
       } else if (actor.type == ActorConditionType::Skill) {
-        return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-               "◇If {} has learned []" + ColorFormatter::popColor();
+        return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "If {} has learned []" + ColorFormatter::popColor();
       } else if (actor.type == ActorConditionType::Weapon || actor.type == ActorConditionType::Armor) {
-        return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-               "◇If {} has equipped []" + ColorFormatter::popColor();
+        return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "If {} has equipped []" + ColorFormatter::popColor();
       } else if (actor.type == ActorConditionType::State) {
-        return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-               "◇If {} is affected by []" + ColorFormatter::popColor();
+        return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "If {} is affected by []" + ColorFormatter::popColor();
       } else {
-        return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-               "◇If {} is in party" + ColorFormatter::popColor();
+        return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "If {} is in party" + ColorFormatter::popColor();
       }
     }
     if (type == ConditionType::Enemy) {
       if (enemy.type == EnemyConditionType::State) {
-        return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-               "◇If {} is affected by []" + ColorFormatter::popColor();
+        return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+     + "If {} is affected by []" + ColorFormatter::popColor();
       }
-      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-             "◇If {} is appeared" + ColorFormatter::popColor();
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "If {} is appeared" + ColorFormatter::popColor();
     }
     if (type == ConditionType::Character) {
-      std::string direction = character.facing == Direction::Up     ? "Up"
-                              : character.facing == Direction::Down ? "Down"
-                              : character.facing == Direction::Left ? "Left"
-                                                                    : "Right";
-      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-             "◇If {} is facing " + direction + ColorFormatter::popColor();
+
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+             + "If {} is facing " + DecodeEnumName(character.facing) + ColorFormatter::popColor();
     }
     if (type == ConditionType::Vehicle) {
-      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-             "◇If {} is driven" + ColorFormatter::popColor();
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+              + "If {} is driven" + ColorFormatter::popColor();
     }
     if (type == ConditionType::Gold) {
-      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-             "◇If Gold" + " " + DecodeEnumName<GoldComaprisonType>(gold.type) + " {}";
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+               + "If Gold" + " " + DecodeEnumName<GoldComaprisonType>(gold.type) + " {}";
     }
     if (type == ConditionType::Item) {
-      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-             "◇If Party has {}" + ColorFormatter::popColor();
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+              + "If Party has {}" + ColorFormatter::popColor();
     }
     if (type == ConditionType::Weapon || type == ConditionType::Armor) {
-      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-             "◇If Party has {}" + ColorFormatter::popColor() + ColorFormatter::getColor(Color::Gray) +
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+              + "If Party has {}" + ColorFormatter::popColor() + ColorFormatter::getColor(Color::Gray) +
              " (Include Equipment)" + ColorFormatter::popColor();
     }
     if (type == ConditionType::Button) {
-      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-             "◇If Button [" + "{}" + "] is pressed down" + ColorFormatter::popColor();
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+             + "If Button [" + "{}" + "] is pressed down" + ColorFormatter::popColor();
     }
     if (type == ConditionType::Script) {
-      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-             "◇If Script : " + ColorFormatter::popColor();
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+             + "If Script : " + ColorFormatter::popColor();
     }
     return std::string(indent ? *indent * 4 : 0, ' ') +
            "◇ &push-color=255,0,255;Condition&pop-color; &push-color=0,255,0;TBD&pop-color;";
@@ -354,20 +367,25 @@ struct ConditionalBranchCommand : IEventCommand {
 struct ElseCommand : IEventCommand {
   ~ElseCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Else; }
-  [[nodiscard]] std::string stringRep() const override { return std::string(indent ? *indent * 4 : 0, ' ') + ":Else"; }
+  [[nodiscard]] std::string stringRep() const override {
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Else"; }
 };
 
 struct LoopCommand : IEventCommand {
   ~LoopCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Loop; }
-  [[nodiscard]] std::string stringRep() const override { return std::string(indent ? *indent * 4 : 0, ' ') + "◇Loop"; }
+  [[nodiscard]] std::string stringRep() const override {
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Loop"; }
 };
 
 struct RepeatAboveCommand : IEventCommand {
   ~RepeatAboveCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Repeat_Above; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ":Repeat Above";
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Repeat Above";
   }
 };
 
@@ -375,14 +393,16 @@ struct BreakLoopCommand : IEventCommand {
   ~BreakLoopCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Break_Loop; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Break Loop";
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Break Loop";
   }
 };
 struct ExitEventProecessingCommand : IEventCommand {
   ~ExitEventProecessingCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Exit_Event_Processing; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Exit Event Processing";
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Exit Event Processing";
   }
 };
 
@@ -392,7 +412,8 @@ struct CommonEventCommand : IEventCommand {
   int event;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Common Event: ";
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Common Event: ";
   }
 };
 
@@ -401,7 +422,8 @@ struct LabelCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Label; }
   std::string label;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Label: " + label;
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Label: " + label;
   }
 };
 
@@ -410,7 +432,8 @@ struct JumpToLabelCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Jump_To_Label; }
   std::string label;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Jump to Label: " + label;
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Jump to Label: " + label;
   }
 };
 
@@ -419,17 +442,17 @@ struct ControlSwitches : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Control_Switches; }
   int start;
   int end;
-  SwitchControl turnOff;
+  ValueControl turnOff;
 
   [[nodiscard]] std::string stringRep() const override {
     if (start != end) {
-      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-             "◇Control Switches : #" + std::format("{:04}", start) + ".." + std::format("{:04}", end) + " = " +
-             (turnOff == SwitchControl::ON ? "ON" : "OFF") + ColorFormatter::popColor();
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Control Switches : #" + std::format("{:04}", start) + ".." + std::format("{:04}", end) + " = " +
+             (turnOff == ValueControl::ON ? "ON" : "OFF") + ColorFormatter::popColor();
     } else {
-      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-             "◇Control Switches : #" + std::format("{:04}", start) + " {}" + " = " +
-             (turnOff == SwitchControl::ON ? "ON" : "OFF") + ColorFormatter::popColor();
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Control Switches : #" + std::format("{:04}", start) + " {}" + " = " +
+             (turnOff == ValueControl::ON ? "ON" : "OFF") + ColorFormatter::popColor();
     }
   }
 };
@@ -466,12 +489,12 @@ struct ControlVariables : IEventCommand {
   [[nodiscard]] std::string stringRep() const override {
     std::string strBuild;
     if (start != end) {
-      strBuild = std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-                 "◇Control Variables : #" + std::format("{:04}", start) + "..#" + std::format("{:04}", end) + " " +
+      strBuild = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Control Variables : #" + std::format("{:04}", start) + "..#" + std::format("{:04}", end) + " " +
                  DecodeEnumName(operation) + " ";
     } else {
-      strBuild = std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) +
-                 "◇Control Variables : #" + std::format("{:04}", start) + " {} " + DecodeEnumName(operation) + " ";
+      strBuild = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Control Variables : #" + std::format("{:04}", start) + " {} " + DecodeEnumName(operation) + " ";
     }
 
     if (operand == VariableControlOperand::Random) {
@@ -506,10 +529,10 @@ struct ControlSelfSwitch : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Control_Self_Switch; }
 
   std::string selfSw; // A, B, C, D
-  SwitchControl turnOff;
+  ValueControl turnOff;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') +
-           ColorFormatter::getColorCode(code()) + "◇Control Self Switch : " + selfSw + " is " + DecodeEnumName(turnOff) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Control Self Switch : " + selfSw + " is " + DecodeEnumName(turnOff) + ColorFormatter::popColor();
   }
 };
 
@@ -529,8 +552,8 @@ struct ControlTimer : IEventCommand {
       min = "0";
       sec = std::to_string(seconds);
     }
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Control Timer : " + DecodeEnumName(control) + ", " + min + " min " +
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Control Timer : " + DecodeEnumName(control) + ", " + min + " min " +
            sec + " sec" + ColorFormatter::popColor();
   }
 };
@@ -543,10 +566,11 @@ struct ChangeGoldCommmand : IEventCommand {
   int operand;
   [[nodiscard]] std::string stringRep() const override {
     if (operandSource == QuantityChangeSource::Constant)
-      return std::string(indent ? *indent * 4 : 0, ' ') +
-             "◇Change Gold: " + (operation == QuantityChangeOp::Increase ? "+ " : "- ") + std::to_string(operand);
-    return std::string(indent ? *indent * 4 : 0, ' ') +
-           "◇Change Gold: " + (operation == QuantityChangeOp::Increase ? "+ " : "- "); // Add variable name at the end
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Gold: " + (operation == QuantityChangeOp::Increase ? "+ " : "- ") + std::to_string(operand);
+
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Gold: " + (operation == QuantityChangeOp::Increase ? "+ " : "- "); // Add variable name at the end
   }
 };
 
@@ -558,8 +582,8 @@ struct ChangeItemsCommmand : IEventCommand {
   QuantityChangeSource operandSource;
   int operand;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Change Items : {} " + DecodeEnumName(operation) + (operandSource == QuantityChangeSource::Constant ? std::to_string(operand) : " []") + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Items : {} " + DecodeEnumName(operation) + (operandSource == QuantityChangeSource::Constant ? std::to_string(operand) : " []") + ColorFormatter::popColor();
   }
 };
 
@@ -572,8 +596,8 @@ struct ChangeWeaponsCommmand : IEventCommand {
   int operand;
   bool includeEquipment;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Change Weapons : {} " + DecodeEnumName(operation) + (operandSource == QuantityChangeSource::Constant ? std::to_string(operand) : " [] ") + ColorFormatter::popColor() + (includeEquipment == true ? ColorFormatter::getColor(Color::Gray) + "(Include Equipment)" : "");
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Weapons : {} " + DecodeEnumName(operation) + (operandSource == QuantityChangeSource::Constant ? std::to_string(operand) : " [] ") + ColorFormatter::popColor() + (includeEquipment == true ? ColorFormatter::getColor(Color::Gray) + "(Include Equipment)" : "");
   }
 };
 
@@ -586,8 +610,8 @@ struct ChangeArmorsCommmand : IEventCommand {
   int operand;
   bool includeEquipment;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Change Armors : {} " + DecodeEnumName(operation) + (operandSource == QuantityChangeSource::Constant ? std::to_string(operand) : " [] ") + ColorFormatter::popColor() + (includeEquipment == true ? ColorFormatter::getColor(Color::Gray) + "(Include Equipment)" : "");
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Armors : {} " + DecodeEnumName(operation) + (operandSource == QuantityChangeSource::Constant ? std::to_string(operand) : " [] ") + ColorFormatter::popColor() + (includeEquipment == true ? ColorFormatter::getColor(Color::Gray) + "(Include Equipment)" : "");
   }
 };
 
@@ -598,8 +622,8 @@ struct ChangePartyMemberCommand : IEventCommand {
   PartyMemberOperation operation;
   bool initialize;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Change Party Member : " + DecodeEnumName(operation) + " {} " + ColorFormatter::popColor() + (initialize == true ? ColorFormatter::getColor(Color::Gray) + "(Initialize)" : "");
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Party Member : " + DecodeEnumName(operation) + " {} " + ColorFormatter::popColor() + (initialize == true ? ColorFormatter::getColor(Color::Gray) + "(Initialize)" : "");
   }
 };
 struct ChangeBattleBGMCommand : IEventCommand {
@@ -607,7 +631,8 @@ struct ChangeBattleBGMCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Battle_BGM; }
   Audio bgm;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) + "◇Change Battle BGM : " + (bgm.name == "" ? "None" : bgm.name) +
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Battle BGM : " + (bgm.name == "" ? "None" : bgm.name) +
            " " + std::format("({}, {}, {})", bgm.volume, bgm.pitch, bgm.pan) + ColorFormatter::popColor();
   }
 };
@@ -617,7 +642,8 @@ struct ChangeVictoryMECommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Victory_ME; }
   Audio me;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) + "◇Change Victory ME : " + (me.name == "" ? "None" : me.name) +
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Victory ME : " + (me.name == "" ? "None" : me.name) +
            " " + std::format("({}, {}, {})", me.volume, me.pitch, me.pan) + ColorFormatter::popColor();
   }
 };
@@ -627,8 +653,8 @@ struct ChangeSaveAccessCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Save_Access; }
   AccessMode access;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Change Save Access : " + DecodeEnumName(access) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Save Access : " + DecodeEnumName(access) + ColorFormatter::popColor();
   }
 };
 
@@ -637,8 +663,8 @@ struct ChangeMenuAccessCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Menu_Access; }
   AccessMode access;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Change Menu Access : " + DecodeEnumName(access) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Menu Access : " + DecodeEnumName(access) + ColorFormatter::popColor();
   }
 };
 
@@ -647,8 +673,8 @@ struct ChangeEncounterDisableCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Encounter_Disable; }
   AccessMode access;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Change Encounter : " + DecodeEnumName(access) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Encounter : " + DecodeEnumName(access) + ColorFormatter::popColor();
   }
 };
 
@@ -657,8 +683,8 @@ struct ChangeFormationAccessCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Formation_Access; }
   AccessMode access;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Change Formation Access : " + DecodeEnumName(access) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Formation Access : " + DecodeEnumName(access) + ColorFormatter::popColor();
   }
 };
 
@@ -669,8 +695,8 @@ struct ChangeWindowColorCommand : IEventCommand {
   int g;
   int b;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Change Window Color : " + std::format("({}, {}, {})", r, g, b) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Window Color : " + std::format("({}, {}, {})", r, g, b) + ColorFormatter::popColor();
   }
 };
 
@@ -679,7 +705,8 @@ struct ChangeDefeatMECommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Defeat_ME; }
   Audio me;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code()) + "◇Change Defeat ME : " + (me.name == "" ? "None" : me.name) +
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Defeat ME : " + (me.name == "" ? "None" : me.name) +
            " " + std::format("({}, {}, {})", me.volume, me.pitch, me.pan) + ColorFormatter::popColor();
   }
 };
@@ -690,8 +717,8 @@ struct ChangeVehicleBGMCommand : IEventCommand {
   VehicleType vehicle;
   Audio me;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Change Vehicle BGM : " + DecodeEnumName(vehicle) + ", " + (me.name == "" ? "None" : me.name) +
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Vehicle BGM : " + DecodeEnumName(vehicle) + ", " + (me.name == "" ? "None" : me.name) +
            " " + std::format("({}, {}, {})", me.volume, me.pitch, me.pan) + ColorFormatter::popColor();
   }
 };
@@ -711,12 +738,12 @@ struct TransferPlayerCommand : IEventCommand {
     suffix += (direction != Direction::Retain ? fade != Fade::Black ? ", Fade: " + DecodeEnumName(fade) + ")" : "(Fade: " + DecodeEnumName(fade) + ")" : "") + ColorFormatter::popColor();
 
     if (mode == TransferMode::Variable_Designation) {
-      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Transfer Player : {[]} ({[]},{[]})" + suffix;
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Transfer Player : {[]} ({[]},{[]})" + suffix;
     }
     else {
-      return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Transfer Player : {}" + std::format("({}, {})", x, y) + suffix;
+      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Transfer Player : {}" + std::format("({}, {})", x, y) + suffix;
     }
   }
 };
@@ -731,8 +758,8 @@ struct SetVehicleLocationCommand : IEventCommand {
   int y;
 
   [[nodiscard]] std::string stringRep() const override {
-    std::string prefix = std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Set Vehicle Location : " + DecodeEnumName(vehicle) + ",";
+    std::string prefix = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Set Vehicle Location : " + DecodeEnumName(vehicle) + ",";
     std::string suffix = ColorFormatter::popColor();
 
     if (mode == TransferMode::Variable_Designation) {
@@ -751,8 +778,8 @@ struct SetEventLocationCommand : IEventCommand {
   Direction direction;
 
   [[nodiscard]] std::string stringRep() const override {
-    std::string prefix = std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Set Event Location : " + (event > 0 ? "{}" : "This Event");
+    std::string prefix = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Set Event Location : " + (event > 0 ? "{}" : "This Event");
     std::string suffix = "(Direction : " + DecodeEnumName(direction) + " )" + ColorFormatter::popColor();
 
     if (mode == TransferMode::Variable_Designation) {
@@ -770,8 +797,8 @@ struct ErasePictureCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Erase_Picture; }
   int picture;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Erase Picture : " + std::to_string(picture) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Erase Picture : " + std::to_string(picture) + ColorFormatter::popColor();
   }
 };
 
@@ -791,8 +818,8 @@ struct MovePictureCommand : IEventCommand {
   bool waitForCompletion;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Move Picture : " +
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Move Picture : " +
         std::format("#{}, {}, ({},{}), ({}%, {}%), {}, {}, {} frames",
           picture, DecodeEnumName(origin), DecodeEnumName(pictureLocation), x, y, width, height, opacity, DecodeEnumName(blendMode), duration)
     + (waitForCompletion == true ? ColorFormatter::getColor(Gray) + " (Wait)" + ColorFormatter::popColor() : "");
@@ -806,8 +833,8 @@ struct RotatePictureCommand : IEventCommand {
   int rotation;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Rotate Picture : #" + std::to_string(picture) + ", " + std::to_string(rotation) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Rotate Picture : #" + std::to_string(picture) + ", " + std::to_string(rotation) + ColorFormatter::popColor();
   }
 };
 
@@ -827,8 +854,8 @@ struct TintPictureCommand : IEventCommand {
   bool waitForCompletion;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Tint Picture : " +
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Tint Picture : " +
         std::format("#{}, ({},{},{},{}), {} frames",
           picture, colors.r, colors.g, colors.b, colors.gray, duration)
     + (waitForCompletion == true ? ColorFormatter::getColor(Gray) + " (Wait)" + ColorFormatter::popColor() : "");
@@ -844,8 +871,8 @@ struct SetWeatherEffectCommand : IEventCommand {
   bool waitForCompletion;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Set Weather Effect : " + DecodeEnumName(effect) + ", " + std::to_string(duration) + " + frames"
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Set Weather Effect : " + DecodeEnumName(effect) + ", " + std::to_string(duration) + " + frames"
     + (waitForCompletion == true ? ColorFormatter::getColor(Gray) + " (Wait)" + ColorFormatter::popColor() : "");
   }
 };
@@ -856,8 +883,8 @@ struct PluginCommand : IEventCommand {
   std::string command;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-       + "◇Plugin Command : " + command + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Plugin Command : " + command + ColorFormatter::popColor();
   }
 };
 
@@ -868,18 +895,18 @@ struct ScrollMapCommand : IEventCommand {
   int distance;
   MovementSpeed speed;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + std::format("◇Scroll Map : {}, {}, {}", DecodeEnumName(direction), distance, DecodeEnumName(speed)) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + std::format("Scroll Map : {}, {}, {}", DecodeEnumName(direction), distance, DecodeEnumName(speed)) + ColorFormatter::popColor();
   }
 };
 
 struct ChangeMapNameDisplayCommand : IEventCommand {
   ~ChangeMapNameDisplayCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Map_Name_Display; }
-  bool checkIfOn;
+  ValueControl checkIfOn;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-       + "◇Change Map Name Display : " + (checkIfOn == true ? "ON" : "OFF") + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Map Name Display : " + (checkIfOn == ValueControl::ON ? "ON" : "OFF") + ColorFormatter::popColor();
   }
 };
 
@@ -888,8 +915,8 @@ struct ChangeTileSetCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Tile_Set; }
   int tileset;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-         + "◇Change Tileset : {}" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Tileset : {}" + ColorFormatter::popColor();
   }
 };
 
@@ -900,8 +927,8 @@ struct ChangeBattlebackCommand : IEventCommand {
   std::string battleBack2Name;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-         + "◇Change Battle Back : "
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Battle Back : "
     + battleBack1Name + (battleBack2Name == "" ? "" : " & " + battleBack2Name) + ColorFormatter::popColor();
   }
 };
@@ -916,8 +943,8 @@ struct GetLocationInfoCommand : IEventCommand {
   int y;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-         + "◇Get Location Info : {}, " + DecodeEnumName(type) +
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Get Location Info : {}, " + DecodeEnumName(type) +
            (source == LocationSource::Designation_with_variables ? "({[]},{[]})" : std::format("({},{})", x, y))
     + ColorFormatter::popColor();
   }
@@ -932,8 +959,8 @@ struct BattleProcessingCommand : IEventCommand {
   bool canLose;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-         + "◇Battle Processing : "
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Battle Processing : "
     + (type == BattleProcessType::Direct_designation ? "{}" : type == BattleProcessType::Designation_with_variables ? "{[]}" : "Same as Random Encounter")
     + ColorFormatter::popColor();
   }
@@ -944,8 +971,8 @@ struct IfWinCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::If_Win; }
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + ": If Win" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + " If Win" + ColorFormatter::popColor();
   }
 };
 struct IfEscapeCommand : IEventCommand {
@@ -953,8 +980,8 @@ struct IfEscapeCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::If_Escape; }
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + ": If Escape" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + " If Escape" + ColorFormatter::popColor();
   }
 };
 
@@ -963,8 +990,8 @@ struct IfLoseCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::If_Lose; }
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + ": If Lose" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + " If Lose" + ColorFormatter::popColor();
   }
 };
 
@@ -978,8 +1005,8 @@ struct ShopProcessingGoodCommand : IEventCommand {
   int price;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + ": {}" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + " {}" + ColorFormatter::popColor();
   }
 };
 
@@ -995,8 +1022,8 @@ struct ShopProcessingCommand : IEventCommand {
   std::vector<std::shared_ptr<ShopProcessingGoodCommand>> goods;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Shop Processing : {}" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Shop Processing : {}" + ColorFormatter::popColor();
   }
 };
 
@@ -1008,8 +1035,8 @@ struct NameInputCommand : IEventCommand {
   int numChar;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Name Input Processing : {}, " + std::to_string(numChar) + (numChar > 1 ? " character" : " characters" + ColorFormatter::popColor());
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Name Input Processing : {}, " + std::to_string(numChar) + (numChar > 1 ? " character" : " characters" + ColorFormatter::popColor());
   }
 };
 
@@ -1025,8 +1052,8 @@ struct ChangeHPCommand : IEventCommand {
   bool allowKnockout;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change HP : {}, " + DecodeEnumName(quantityOp) + (quantitySource == QuantityChangeSource::Variable ? " [] " : std::to_string(quantity))
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change HP : {}, " + DecodeEnumName(quantityOp) + (quantitySource == QuantityChangeSource::Variable ? " [] " : std::to_string(quantity))
     + (allowKnockout == true ? ColorFormatter::getColor(Gray) + " (Allow Knockout)" + ColorFormatter::popColor() : "");
   }
 };
@@ -1042,8 +1069,8 @@ struct ChangeMPCommand : IEventCommand {
   int quantity;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change MP : {}, " + DecodeEnumName(quantityOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity)) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change MP : {}, " + DecodeEnumName(quantityOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity)) + ColorFormatter::popColor();
   }
 };
 
@@ -1059,8 +1086,8 @@ struct ChangeTPCommand : IEventCommand {
   int quantity;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change TP : {}, " + DecodeEnumName(quantityOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity)) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change TP : {}, " + DecodeEnumName(quantityOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity)) + ColorFormatter::popColor();
   }
 };
 
@@ -1077,8 +1104,8 @@ struct ChangeEXPCommand : IEventCommand {
   bool showLevelUp;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change EXP : {}, " + DecodeEnumName(quantityOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity))
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change EXP : {}, " + DecodeEnumName(quantityOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity))
     + (showLevelUp == true ? ColorFormatter::getColor(Gray) + " (Show Level Up)" + ColorFormatter::popColor() : "");
   }
 };
@@ -1096,8 +1123,8 @@ struct ChangeLevelCommand : IEventCommand {
   bool showLevelUp;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change Level : {}, " + DecodeEnumName(quantityOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity))
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Level : {}, " + DecodeEnumName(quantityOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity))
     + (showLevelUp == true ? ColorFormatter::getColor(Gray) + " (Show Level Up)" + ColorFormatter::popColor() : "");
   }
 };
@@ -1115,8 +1142,8 @@ struct ChangeParameterCommand : IEventCommand {
   int quantity;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change Parameter : {}, " + DecodeEnumName(param) + " " + DecodeEnumName(quantityOp)
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Parameter : {}, " + DecodeEnumName(param) + " " + DecodeEnumName(quantityOp)
       + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity)) + ColorFormatter::popColor();
   }
 };
@@ -1129,8 +1156,8 @@ struct RecoverAllCommand : IEventCommand {
   int value;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Recover All : {}" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Recover All : {}" + ColorFormatter::popColor();
   }
 };
 
@@ -1143,8 +1170,8 @@ struct ChangeNameCommand : IEventCommand {
   std::string name;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change Name : {}, " + name + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Name : {}, " + name + ColorFormatter::popColor();
   }
 };
 
@@ -1158,8 +1185,8 @@ struct ChangeClassCommand : IEventCommand {
   bool saveLevel;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change Class : {}, {}" + (saveLevel == true ? ColorFormatter::getColor(Gray) + " (Save Level)" + ColorFormatter::popColor() : "");
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Class : {}, {}" + (saveLevel == true ? ColorFormatter::getColor(Gray) + " (Save Level)" + ColorFormatter::popColor() : "");
   }
 };
 
@@ -1174,8 +1201,8 @@ struct ChangeStateCommand : IEventCommand {
   int state;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change State : {}, " + DecodeEnumName(stateOp) + " {}" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change State : {}, " + DecodeEnumName(stateOp) + " {}" + ColorFormatter::popColor();
   }
 };
 
@@ -1190,8 +1217,8 @@ struct ChangeSkillCommand : IEventCommand {
   int skill;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change Skill : {}, " + DecodeEnumName(skillOp) + " {}" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Skill : {}, " + DecodeEnumName(skillOp) + " {}" + ColorFormatter::popColor();
   }
 };
 
@@ -1205,8 +1232,8 @@ struct ChangeEquipmentCommand : IEventCommand {
   int equipment;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change Equipment : {}, {} = " + (equipment > 0 ? "{}" : "None") + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Equipment : {}, {} = " + (equipment > 0 ? "{}" : "None") + ColorFormatter::popColor();
   }
 };
 
@@ -1214,8 +1241,8 @@ struct GameOverCommand : IEventCommand {
   ~GameOverCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Game_Over; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Game Over" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Game Over" + ColorFormatter::popColor();
   }
 };
 
@@ -1223,8 +1250,8 @@ struct ReturnToTitleCommand : IEventCommand {
   ~ReturnToTitleCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Return_To_Title_Screen; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Return To Title Screen" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Return To Title Screen" + ColorFormatter::popColor();
   }
 };
 
@@ -1232,8 +1259,8 @@ struct OpenMenuCommand : IEventCommand {
   ~OpenMenuCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Open_Menu_Screen; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Open Menu Screen" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Open Menu Screen" + ColorFormatter::popColor();
   }
 };
 
@@ -1241,8 +1268,8 @@ struct OpenSaveCommand : IEventCommand {
   ~OpenSaveCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Open_Save_Screen; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Open Save Screen" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Open Save Screen" + ColorFormatter::popColor();
   }
 };
 
@@ -1250,8 +1277,8 @@ struct AbortBattleCommand : IEventCommand {
   ~AbortBattleCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Abort_Battle; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Abort Battle" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Abort Battle" + ColorFormatter::popColor();
   }
 };
 
@@ -1260,8 +1287,8 @@ struct EnemyRecoverAllCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Enemy_Recover_All; }
   int troop;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Enemy Recover All : " + (troop > 0 ? "#" + std::to_string(troop) + " {}" : "Entire Troop") + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Enemy Recover All : " + (troop > 0 ? "#" + std::to_string(troop) + " {}" : "Entire Troop") + ColorFormatter::popColor();
   }
 };
 
@@ -1270,8 +1297,8 @@ struct EnemyAppearCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Enemy_Appear; }
   int enemy;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Enemy Appear : #" + std::to_string(enemy) + " {}" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Enemy Appear : #" + std::to_string(enemy) + " {}" + ColorFormatter::popColor();
   }
 };
 
@@ -1281,8 +1308,8 @@ struct EnemyTransformCommand : IEventCommand {
   int enemy;
   int transform;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Enemy Transform : #" + std::to_string(enemy) + " {}, {}" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Enemy Transform : #" + std::to_string(enemy) + " {}, {}" + ColorFormatter::popColor();
   }
 };
 
@@ -1296,8 +1323,8 @@ struct ChangeEnemyHPCommand : IEventCommand {
   bool allowKnockOut;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change Enemy HP : " + (enemy > 0 ? "#" + std::to_string(enemy) + " {}, " : "Entire Troop, ") + DecodeEnumName(enemyOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity))
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Enemy HP : " + (enemy > 0 ? "#" + std::to_string(enemy) + " {}, " : "Entire Troop, ") + DecodeEnumName(enemyOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity))
     + " " + (allowKnockOut == true ? ColorFormatter::getColor(Gray) + " (Allow Knockout)" + ColorFormatter::popColor() : "");
   }
 };
@@ -1311,8 +1338,8 @@ struct ChangeEnemyMPCommand : IEventCommand {
   int quantity;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change Enemy MP : " + (enemy > 0 ? "#" + std::to_string(enemy) + " {}, " : "Entire Troop, ") + DecodeEnumName(enemyOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity))
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Enemy MP : " + (enemy > 0 ? "#" + std::to_string(enemy) + " {}, " : "Entire Troop, ") + DecodeEnumName(enemyOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity))
     + " " + ColorFormatter::popColor();
   }
 };
@@ -1326,8 +1353,8 @@ struct ChangeEnemyTPCommand : IEventCommand {
   int quantity;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change Enemy TP : " + (enemy > 0 ? "#" + std::to_string(enemy) + " {}, " : "Entire Troop, ") + DecodeEnumName(enemyOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity))
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Enemy TP : " + (enemy > 0 ? "#" + std::to_string(enemy) + " {}, " : "Entire Troop, ") + DecodeEnumName(enemyOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity))
     + " " + ColorFormatter::popColor();
   }
 };
@@ -1339,8 +1366,8 @@ struct ChangeEnemyStateCommand : IEventCommand {
   int state;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change Enemy State : " + (enemy > 0 ? "#" + std::to_string(enemy) + " {}, " : "Entire Troop, ") + DecodeEnumName(enemyOp) + "{} "
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Enemy State : " + (enemy > 0 ? "#" + std::to_string(enemy) + " {}, " : "Entire Troop, ") + DecodeEnumName(enemyOp) + "{} "
       + ColorFormatter::popColor();
   }
 };
@@ -1355,8 +1382,8 @@ struct ForceActionCommand : IEventCommand {
   int target;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Force Action : "
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Force Action : "
       + (sourceComparison == SubjectComparisonSource::Enemy ? ("#" + std::to_string(source) + " {},") : "{},")
       + " {},"
       + (target == -2 ? "Last Target" : target == -1 ? "Random" : "Index " + std::to_string(target))
@@ -1372,8 +1399,8 @@ struct ShowBattleAnimCommand : IEventCommand {
   int animation;
   bool targetAllEnemies;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Show Battle Animation : "
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Show Battle Animation : "
       + (targetAllEnemies == true ? "Entire Troop, {}" : "#" + std::to_string(enemy) + " {}, {}")
       + ColorFormatter::popColor();
   }
@@ -1387,8 +1414,8 @@ struct ChangeVehicleImageCommand : IEventCommand {
   std::string picture;
   int pictureIndex;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change Vehicle Image : " + DecodeEnumName(vehicle) + ", " + picture + std::format("({})", pictureIndex)
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Vehicle Image : " + DecodeEnumName(vehicle) + ", " + picture + std::format("({})", pictureIndex)
       + ColorFormatter::popColor();
   }
 };
@@ -1409,8 +1436,8 @@ struct ChangeActorImageCommand : IEventCommand {
     std::string faceString = facePicture == "" ? "None, " : facePicture + std::format("({})", faceIndex) + " ";
     std::string battlerString = battlerPicture == "" ? "None" : facePicture;
 
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change Actor Images : {}, " + charPicture + facePicture + battlerPicture
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Actor Images : {}, " + charPicture + facePicture + battlerPicture
       + ColorFormatter::popColor();
   }
 };
@@ -1423,8 +1450,8 @@ struct ChangeProfileCommand : IEventCommand {
   std::string profile;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change Profile : {}, " + profile
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Profile : {}, " + profile
       + ColorFormatter::popColor();
   }
 };
@@ -1437,8 +1464,8 @@ struct ChangeNickCommand : IEventCommand {
   std::string nick;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change Nickname : {}, " + nick
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Nickname : {}, " + nick
       + ColorFormatter::popColor();
   }
 };
@@ -1450,8 +1477,8 @@ struct ChangePlayerFollowersCommand : IEventCommand {
   bool followersEnabled;
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Change Player Followers : " + (followersEnabled == true ? "ON" : "OFF")
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Player Followers : " + (followersEnabled == true ? "ON" : "OFF")
       + ColorFormatter::popColor();
   }
 };
@@ -1461,8 +1488,8 @@ struct GatherFollowersCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Gather_Followers; }
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Gather Followers"
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Gather Followers"
       + ColorFormatter::popColor();
   }
 };
@@ -1472,8 +1499,8 @@ struct FadeOutScreenCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Fade_Out_Screen; }
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Fadeout Screen"
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Fadeout Screen"
       + ColorFormatter::popColor();
   }
 };
@@ -1483,8 +1510,8 @@ struct FadeInScreenCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Fade_In_Screen; }
 
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Fadein Screen"
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Fadein Screen"
       + ColorFormatter::popColor();
   }
 };
@@ -1501,8 +1528,8 @@ struct TintScreenCommand : IEventCommand {
   int duration;
   bool waitForCompletion;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Tint Screen : " +
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Tint Screen : " +
         std::format("({},{},{},{}), {} frames",
           colors.r, colors.g, colors.b, colors.gray, duration)
     + (waitForCompletion == true ? ColorFormatter::getColor(Gray) + " (Wait)" + ColorFormatter::popColor() : "");
@@ -1521,8 +1548,8 @@ struct FlashScreenCommand : IEventCommand {
   int duration;
   bool waitForCompletion;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Flash Screen : " +
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Flash Screen : " +
         std::format("({},{},{},{}), {} frames",
           colors.r, colors.g, colors.b, colors.intensity, duration)
     + (waitForCompletion == true ? ColorFormatter::getColor(Gray) + " (Wait)" + ColorFormatter::popColor() : "");
@@ -1537,8 +1564,8 @@ struct ShakeScreenCommand : IEventCommand {
   int duration;
   bool waitForCompletion;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-      + "◇Shake Screen : " + std::format("{}, {}, {} frames", power, speed, duration)
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Shake Screen : " + std::format("{}, {}, {} frames", power, speed, duration)
     + (waitForCompletion == true ? ColorFormatter::getColor(Gray) + " (Wait)" + ColorFormatter::popColor() : "");
   }
 };
@@ -1557,9 +1584,8 @@ struct SetMovementRouteCommand : IEventCommand {
     stringSuffix += route.wait == true ? ((route.repeat == true || route.skippable == true) ? ", Wait" : "") : "Wait";
     stringSuffix += ")";
 
-    std::string moveRoute = std::string(indent ? *indent * 4 : 0, ' ') +
-                            ColorFormatter::getColorCode(code()) +
-                            "◇Set Movement Route : " + characterName + ColorFormatter::popColor() +
+    std::string moveRoute = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Set Movement Route : " + characterName + ColorFormatter::popColor() +
                             ColorFormatter::getColor(Color::Gray) + stringSuffix + ColorFormatter::popColor();
 
     for (const auto& t : route.list) {
@@ -1585,8 +1611,8 @@ struct GetOnOffVehicleCommand : IEventCommand {
   ~GetOnOffVehicleCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Get_On_Off_Vehicle; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Get on/off Vehicle" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Get on/off Vehicle" + ColorFormatter::popColor();
   }
 };
 
@@ -1595,8 +1621,8 @@ struct ChangeTransparencyCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Transparency; }
   int transparency;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Change Transparency : " + (transparency == 0 ? "Disable" : "Enable") + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Change Transparency : " + (transparency == 0 ? "Disable" : "Enable") + ColorFormatter::popColor();
   }
 };
 
@@ -1607,8 +1633,8 @@ struct ShowAnimationCommand : IEventCommand {
   int animation;
   bool waitForCompletion;
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Show Animation : " + (character == -1 ? "Player" : character == 0 ? "This  Event" : "{}, ")+ ColorFormatter::popColor()
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Show Animation : " + (character == -1 ? "Player" : character == 0 ? "This  Event" : "{}, ")+ ColorFormatter::popColor()
     + (waitForCompletion == true ? ColorFormatter::getColor(Color::Gray) + "(Wait)" + ColorFormatter::popColor() : "");
   }
 };
@@ -1619,13 +1645,14 @@ struct ShowBalloonIconCommand : IEventCommand {
   int id;
   int index;
   bool waitForCompletion;
+  // TODO:
 };
 
 struct EraseEventCommand : IEventCommand {
   ~EraseEventCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Erase_Event; }[[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + ColorFormatter::getColorCode(code())
-    + "◇Erase Event" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Erase Event" + ColorFormatter::popColor();
   }
 };
 
@@ -1643,6 +1670,7 @@ struct ScriptCommand : IEventCommand {
   [[nodiscard]] std::string stringRep() const override {
     std::string ret = std::string(indent ? *indent : 0, '\t') + "◇Script: " + script;
     for (const auto& t : moreScript) {
+      // TODO: How do we do this
       if (!ret.empty()) {
         ret += "\n";
       }
@@ -1658,7 +1686,8 @@ struct WaitCommand : IEventCommand {
   ~WaitCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Wait; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Wait : " + std::to_string(duration) + " frames";
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Wait : " + std::to_string(duration) + " frames";
   }
 };
 
@@ -1667,7 +1696,8 @@ struct PlaySECommand : IEventCommand {
   Audio audio;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_SE; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Play SE : " + (audio.name == "" ? "None" : audio.name) + " " +
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Play SE : " + (audio.name == "" ? "None" : audio.name) + " " +
            std::format("({}, {}, {})", audio.volume, audio.pitch, audio.pan);
   }
 };
@@ -1676,7 +1706,8 @@ struct PlayMECommand : IEventCommand {
   Audio audio;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_ME; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Play ME : " + (audio.name == "" ? "None" : audio.name) + " " +
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Play ME : " + (audio.name == "" ? "None" : audio.name) + " " +
            std::format("({}, {}, {})", audio.volume, audio.pitch, audio.pan);
   }
 };
@@ -1685,7 +1716,8 @@ struct PlayBGSCommand : IEventCommand {
   Audio audio;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_BGS; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Play BGS : " + (audio.name == "" ? "None" : audio.name) +
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Play BGS : " + (audio.name == "" ? "None" : audio.name) +
            " " + std::format("({}, {}, {})", audio.volume, audio.pitch, audio.pan);
   }
 };
@@ -1694,7 +1726,8 @@ struct PlayBGMCommand : IEventCommand {
   Audio audio;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_BGM; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Play BGM : " + (audio.name == "" ? "None" : audio.name) +
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Play BGM : " + (audio.name == "" ? "None" : audio.name) +
            " " + std::format("({}, {}, {})", audio.volume, audio.pitch, audio.pan);
   }
 };
@@ -1703,21 +1736,24 @@ struct PlayMovieCommand : IEventCommand {
   std::string name;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_Movie; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Play Movie : " + (name == "" ? "None" : name);
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Play Movie : " + (name == "" ? "None" : name);
   }
 };
 struct SaveBGMCommand : IEventCommand {
   ~SaveBGMCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Save_BGM; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Save BGM";
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Save BGM";
   }
 };
 struct ResumeBGMCommand : IEventCommand {
   ~ResumeBGMCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Resume_BGM; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Resume BGM";
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Resume BGM";
   }
 };
 struct FadeoutBGM : IEventCommand {
@@ -1725,7 +1761,8 @@ struct FadeoutBGM : IEventCommand {
   int duration;
   [[nodiscard]] EventCode code() const override { return EventCode::Fade_Out_BGM; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Fadeout BGM :" + std::to_string(duration) + " seconds";
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Fadeout BGM :" + std::to_string(duration) + " seconds";
   }
 };
 struct FadeoutBGS : IEventCommand {
@@ -1733,14 +1770,16 @@ struct FadeoutBGS : IEventCommand {
   int duration;
   [[nodiscard]] EventCode code() const override { return EventCode::Fade_Out_BGS; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Fadeout BGS :" + std::to_string(duration) + " seconds";
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Fadeout BGS :" + std::to_string(duration) + " seconds";
   }
 };
 struct StopSECommand : IEventCommand {
   ~StopSECommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Stop_SE; }
   [[nodiscard]] std::string stringRep() const override {
-    return std::string(indent ? *indent * 4 : 0, ' ') + "◇Stop SE";
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Stop SE";
   }
 };
 
@@ -1757,12 +1796,14 @@ struct ShowPictureCommand : IEventCommand {
   int zoomY;
   int opacityValue;
   Blend blendMode;
+  // TODO:
 };
 
 struct EndCommand : IEventCommand {
   ~EndCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::End; }
-  [[nodiscard]] std::string stringRep() const override { return std::string(indent ? *indent * 4 : 0, ' ') + ":End"; }
+  [[nodiscard]] std::string stringRep() const override { return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "End"; }
 };
 
 // START MOVEMENTROUTE
@@ -1829,8 +1870,8 @@ struct MovementJumpCommand : IEventCommand {
   int x;
   int y;
   [[nodiscard]] std::string stringRep() const override {
-    return ColorFormatter::getColorCode(code())
-    + std::string(indent ? *indent * 4 : 0, ' ') + std::format("◇Jump {}, {}", x, y) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + std::format("◇Jump {}, {}", x, y) + ColorFormatter::popColor();
   }
 };
 struct MovementWaitCommand : IEventCommand {
@@ -1838,8 +1879,8 @@ struct MovementWaitCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Wait_del_; }
   int duration;
   [[nodiscard]] std::string stringRep() const override {
-    return ColorFormatter::getColorCode(code())
-    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Wait " + std::to_string(duration) + " frames" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Wait " + std::to_string(duration) + " frames" + ColorFormatter::popColor();
   }
 };
 
@@ -1895,8 +1936,8 @@ struct MovementSwitchONCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Switch_ON; }
   int id;
   [[nodiscard]] std::string stringRep() const override {
-    return ColorFormatter::getColorCode(code())
-    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Switch " + std::format("{:04}", id) + " ON" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Switch " + std::format("{:04}", id) + " ON" + ColorFormatter::popColor();
   }
 };
 
@@ -1905,8 +1946,8 @@ struct MovementSwitchOFFCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Switch_OFF; }
   int id;
   [[nodiscard]] std::string stringRep() const override {
-    return ColorFormatter::getColorCode(code())
-    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Switch " + std::format("{:04}", id) + " OFF" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Switch " + std::format("{:04}", id) + " OFF" + ColorFormatter::popColor();
   }
 };
 
@@ -1915,8 +1956,8 @@ struct MovementSpeedCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Speed; }
   int speed;
   [[nodiscard]] std::string stringRep() const override {
-    return ColorFormatter::getColorCode(code())
-    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Speed : " + std::to_string(speed) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Speed : " + std::to_string(speed) + ColorFormatter::popColor();
   }
 };
 
@@ -1925,8 +1966,8 @@ struct MovementFrequencyCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Frequency; }
   int frequency;
   [[nodiscard]] std::string stringRep() const override {
-    return ColorFormatter::getColorCode(code())
-    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Frequency " + std::to_string(frequency) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Frequency " + std::to_string(frequency) + ColorFormatter::popColor();
   }
 };
 
@@ -1984,8 +2025,8 @@ struct MovementChangeImageCommand : IEventCommand {
   std::string image;
   int character;
   [[nodiscard]] std::string stringRep() const override {
-    return ColorFormatter::getColorCode(code())
-    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Image : " + image + " (" +  std::to_string(character) + ")" + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Image : " + image + " (" +  std::to_string(character) + ")" + ColorFormatter::popColor();
   }
 };
 
@@ -1995,8 +2036,8 @@ struct MovementChangeOpacityCommand : IEventCommand {
 
   int opacity;
   [[nodiscard]] std::string stringRep() const override {
-    return ColorFormatter::getColorCode(code())
-    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Opacity : " + std::to_string(opacity) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Opacity : " + std::to_string(opacity) + ColorFormatter::popColor();
   }
 };
 
@@ -2006,8 +2047,8 @@ struct MovementChangeBlendModeCommand : IEventCommand {
 
   Blend mode;
   [[nodiscard]] std::string stringRep() const override {
-    return ColorFormatter::getColorCode(code())
-    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Blend Mode : " + DecodeEnumName(mode) + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Blend Mode : " + DecodeEnumName(mode) + ColorFormatter::popColor();
   }
 };
 
@@ -2016,8 +2057,8 @@ struct MovementPlaySECommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Play_SE_del_Movement; }
   Audio se;
   [[nodiscard]] std::string stringRep() const override {
-    return ColorFormatter::getColorCode(code())
-    + std::string(indent ? *indent * 4 : 0, ' ') + "◇SE : " + (se.name == "" ? "None" : se.name) + " "
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "SE : " + (se.name == "" ? "None" : se.name) + " "
     + std::format("({}, {}, {})", se.volume, se.pitch, se.pan) + ColorFormatter::popColor();
   }
 };
@@ -2027,8 +2068,8 @@ struct MovementScriptCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Script_del_Movement; }
   std::string script;
   [[nodiscard]] std::string stringRep() const override {
-    return ColorFormatter::getColorCode(code())
-    + std::string(indent ? *indent * 4 : 0, ' ') + "◇Script : " + script + ColorFormatter::popColor();
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+    + "Script : " + script + ColorFormatter::popColor();
   }
 };
 
@@ -2036,8 +2077,6 @@ struct MovementScriptCommand : IEventCommand {
 struct CommandParser {
   nlohmann::json parser;
   int index = 0;
-  const std::string diamond = "\u25c6";
-  const std::string colon = "\uff1a";
 
   std::vector<std::shared_ptr<IEventCommand>> parse(const nlohmann::json& data);
   void serialize(nlohmann::json& data, const std::vector<std::shared_ptr<IEventCommand>>& list);
@@ -2047,21 +2086,7 @@ struct CommandParser {
     parser[index + 1].at("code").get_to(ret);
     return ret;
   }
-
-  std::string symbol(std::shared_ptr<IEventCommand> data) {
-    return static_cast<int>(data->code()) < 400 ? diamond : colon;
-  }
- std::string indentText(std::shared_ptr<IEventCommand> data) {
-    std::string text = "";
-    for(int i = 0; i < data->indent; ++i) {
-      text += "  ";
-    }
-    return text;
-  }
-
   nlohmann::json currentCommand() { return parser[index]; }
 
-  struct symbol;
-  struct indentText;
   struct create;
 };

@@ -1,4 +1,4 @@
-set(NAME "OpenRPGMaker")
+set(NAME "OpenRPGEditor")
 
 #include(${PROJECT_SOURCE_DIR}/cmake/StaticAnalyzers.cmake)
 

@@ -12,7 +12,7 @@ int main() {
   // APP_PROFILE_BEGIN_SESSION_WITH_FILE("App", "profile.json");
 
   {
-    App::Application app{"OpenRPGMaker"};
+    App::Application app{"OpenRPGEditor"};
     app.run();
   }
 

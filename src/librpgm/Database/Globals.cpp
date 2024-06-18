@@ -29,6 +29,8 @@ std::string DecodeEnumName(std::string_view str) {
   ReplaceStr(result, "_bc", "]");
   ReplaceStr(result, "_pe_", ".");
   result = result.substr(0, result.find("_del_"));
+  ReplaceStr(result, "_plu_", "+");
+  ReplaceStr(result, "_daa_", "-");
   ReplaceStr(result, "_deg", "°");
   ReplaceStr(result, "_da_", "-=");
   ReplaceStr(result, "_set_", "=");

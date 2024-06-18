@@ -223,7 +223,7 @@ void EventCommandEditor::draw() {
             ChangeHPCommand* val = dynamic_cast<ChangeHPCommand*>(m_commands->at(n).get());
             // Fixed vs Variable
             if (val->comparison == ActorComparisonSource::Variable) {
-              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
+              insertValue(indentPad, "{" + m_project->variable(val->value) + "}", "{");
             } else {
               insertValue(indentPad, m_project->actor(val->value)->name, "{");
             }
@@ -235,7 +235,7 @@ void EventCommandEditor::draw() {
             ChangeMPCommand* val = dynamic_cast<ChangeMPCommand*>(m_commands->at(n).get());
             // Fixed vs Variable
             if (val->comparison == ActorComparisonSource::Variable) {
-              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
+              insertValue(indentPad, "{" + m_project->variable(val->value) + "}", "{");
             } else {
               insertValue(indentPad, m_project->actor(val->value)->name, "{");
             }
@@ -247,7 +247,7 @@ void EventCommandEditor::draw() {
             ChangeTPCommand* val = dynamic_cast<ChangeTPCommand*>(m_commands->at(n).get());
             // Fixed vs Variable
             if (val->comparison == ActorComparisonSource::Variable) {
-              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
+              insertValue(indentPad, "{" + m_project->variable(val->value) + "}", "{");
             } else {
               insertValue(indentPad, m_project->actor(val->value)->name, "{");
             }
@@ -271,7 +271,7 @@ void EventCommandEditor::draw() {
             ChangeLevelCommand* val = dynamic_cast<ChangeLevelCommand*>(m_commands->at(n).get());
             // Fixed vs Variable
             if (val->comparison == ActorComparisonSource::Variable) {
-              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
+              insertValue(indentPad, "{" + m_project->variable(val->value) + "}", "{");
             } else {
               insertValue(indentPad, m_project->actor(val->value)->name, "{");
             }
@@ -283,7 +283,7 @@ void EventCommandEditor::draw() {
             ChangeParameterCommand* val = dynamic_cast<ChangeParameterCommand*>(m_commands->at(n).get());
             // Fixed vs Variable
             if (val->comparison == ActorComparisonSource::Variable) {
-              insertValue(indentPad, "{" + m_project->variable(val->quantity) + "}", "{");
+              insertValue(indentPad, "{" + m_project->variable(val->value) + "}", "{");
             } else {
               insertValue(indentPad, m_project->actor(val->value)->name, "{");
             }
@@ -323,7 +323,7 @@ void EventCommandEditor::draw() {
             } else {
               insertValue(indentPad, m_project->actor(val->value)->name, "{");
             }
-            insertValue(indentPad, m_project->skill(val->skill)->name, "{");
+            insertValue(indentPad, m_project->skill(val->skill)->name, "[");
           } else if (m_commands->at(n)->code() == EventCode::Change_Equipment) {
             ChangeEquipmentCommand* val = dynamic_cast<ChangeEquipmentCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->actor(val->actorId)->name, "{");
@@ -407,8 +407,15 @@ void EventCommandEditor::draw() {
             const int stepPadding = (totalPadding - static_cast<int>(std::floor(std::log10(step)))) + 1;
             if (ImGui::SelectableWithBorder((std::string(stepPadding, ' ') + std::to_string(step) + " ").c_str(),
                                             isSelected,
-                                            ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns,
+                                            ImGuiSelectableFlags_AllowOverlap
+                                            | ImGuiSelectableFlags_SpanAllColumns
+                                            | ImGuiSelectableFlags_AllowDoubleClick,
                                             ImVec2(0, ImGui::CalcTextSize(indentPad.c_str()).y))) {
+              if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                //m_selectedCommand = &trait;
+                m_isNewEntry = false;
+                ImGui::OpenPopup("Command Edit");
+              }
               m_selectedCommand = n;
             }
           }
@@ -420,6 +427,7 @@ void EventCommandEditor::draw() {
             ImGui::SetItemDefaultFocus();
         }
       }
+      drawPopup(m_commands->at(m_selectedCommand));
       ImGui::EndTable();
     }
     ImGui::PopFont();

@@ -3,25 +3,6 @@
 
 using json = nlohmann::json;
 
-/*
-*function make(data) {
-        return indentText(data) + symbolText(data) + commandText(data);
-    }
-
-    function indentText(data) {
-        var text = "";
-        for (var i = 0; i < data.indent; i++) {
-            text += "  ";
-        }
-        return text;
-    }
-
-    function symbolText(data) {
-        return data.code < 400 ? diamond : colon;
-    }
- *
- */
-
 std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _json) {
   std::vector<std::shared_ptr<IEventCommand>> ret;
   parser = _json;

@@ -14,7 +14,9 @@ struct EventCommandEditor {
     m_selectedCommand = 0;
   }
 private:
+  void drawPopup(std::shared_ptr<IEventCommand> command);
   Project* m_project = nullptr;
+  bool m_isNewEntry{false};
   int m_selectedCommand = 0;
   std::vector<std::shared_ptr<IEventCommand>>* m_commands = nullptr;
 };

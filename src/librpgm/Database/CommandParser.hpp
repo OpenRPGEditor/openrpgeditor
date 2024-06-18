@@ -11,8 +11,7 @@ struct NextScriptCommand;
 struct IEventCommand {
   std::optional<int> indent{};
   const std::string diamond = "\u25c6";
-  //const std::string colon = "\uff1a";
-  const std::string colon = ":";
+  const std::string colon = "\uff1a";
   virtual ~IEventCommand() = default;
   [[nodiscard]] virtual EventCode code() const = 0;
   [[nodiscard]] virtual std::string stringRep() const {
@@ -66,14 +65,14 @@ struct ShowTextCommand : IEventCommand {
 
   [[nodiscard]] std::string stringRep() const override {
     std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Text : " + ColorFormatter::popColor() +
+    + "Text " + colon + ColorFormatter::popColor() +
       (faceImage == "" ? "None, " : faceImage + std::format("({}), ", faceIndex)) + DecodeEnumName(background) + ", " + DecodeEnumName(position);
 
     for (const auto& t : text) {
       if (!ret.empty()) {
         ret += "\n";
       }
-      ret += indentText(indent) + colon + indentText(indent) + colon + ColorFormatter::getColorCode(code()) + t->text;
+      ret += indentText(indent) + colon + indentText(1) + indentText(1) + colon + ColorFormatter::getColorCode(code()) + t->text;
     }
     return ret;
   }
@@ -170,15 +169,14 @@ struct ShowScrollTextCommand : IEventCommand {
   std::vector<std::shared_ptr<NextScrollingTextCommand>> text;
 
   [[nodiscard]] std::string stringRep() const override {
-    std::string ret = std::string(indent ? *indent : 0, '\t') + "◇Text(S) : Speed " + std::to_string(speed) + (noFast == true ? ", No Fast Forward" : "");
+    std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+  + "Text(S) " + colon + " Speed " + std::to_string(speed) + (noFast == true ? ", No Fast Forward" : "");
 
     for (const auto& t : text) {
-      // TODO: How do we do this indent?
       if (!ret.empty()) {
         ret += "\n";
       }
-      ret += std::string(indent ? *indent : 0, '\t') + " :" + std::string(((t->indent ? *t->indent : 0) + 1), '\t') +
-             " : " + t->text;
+      ret += indentText(indent) + colon + indentText(1) + indentText(1) + colon + ColorFormatter::getColorCode(code()) + t->text;
     }
     return ret;
   }
@@ -196,15 +194,14 @@ struct CommentCommand : IEventCommand {
   std::string text;
   std::vector<std::shared_ptr<NextCommentCommand>> nextComments;
   [[nodiscard]] std::string stringRep() const override {
-    // TODO: How do we do this indent?
-    std::string ret = std::string(indent ? *indent : 0, '\t') + "◇Comment: " + text;
+    std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+  + "Comment" + colon + text;
     for (const auto& t : nextComments) {
       if (!ret.empty()) {
         ret += "\n";
       }
-      ret += std::string(indent ? *indent : 0, '\t') + " :" + std::string(((t->indent ? *t->indent : 0) + 1), '\t') +
-             " : " + t->text;
-    }
+      ret += indentText(indent) + colon + indentText(2) + indentText(1) + colon + ColorFormatter::getColorCode(code()) + t->text;
+  }
     return ret;
   }
 };
@@ -568,10 +565,10 @@ struct ChangeGoldCommmand : IEventCommand {
   [[nodiscard]] std::string stringRep() const override {
     if (operandSource == QuantityChangeSource::Constant)
       return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change Gold: " + (operation == QuantityChangeOp::Increase ? "+ " : "- ") + std::to_string(operand);
+    + "Change Gold: " + (operation == QuantityChangeOp::_plu__del_Increase ? "+ " : "- ") + std::to_string(operand);
 
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change Gold: " + (operation == QuantityChangeOp::Increase ? "+ " : "- "); // Add variable name at the end
+    + "Change Gold: " + (operation == QuantityChangeOp::_plu__del_Increase ? "+ " : "- "); // Add variable name at the end
   }
 };
 
@@ -1219,7 +1216,7 @@ struct ChangeSkillCommand : IEventCommand {
 
   [[nodiscard]] std::string stringRep() const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change Skill : {}, " + DecodeEnumName(skillOp) + " {}" + ColorFormatter::popColor();
+    + "Change Skill : {}, " + DecodeEnumName(skillOp) + " []" + ColorFormatter::popColor();
   }
 };
 
@@ -1646,7 +1643,6 @@ struct ShowBalloonIconCommand : IEventCommand {
   int id;
   int index;
   bool waitForCompletion;
-  // TODO:
   [[nodiscard]] std::string stringRep() const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
       + "Show Balloon Icon :" + (id > 0 ? " {}, " : id == -2 ? " Player, " : " This Event, ")
@@ -1674,15 +1670,14 @@ struct ScriptCommand : IEventCommand {
   std::string script;
   std::vector<std::shared_ptr<NextScriptCommand>> moreScript;
   [[nodiscard]] std::string stringRep() const override {
-    std::string ret = std::string(indent ? *indent : 0, '\t') + "◇Script: " + script;
+    std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
+  + "Script " + colon  + script;
     for (const auto& t : moreScript) {
-      // TODO: How do we do this
       if (!ret.empty()) {
         ret += "\n";
       }
-      ret += std::string(indent ? *indent : 0, '\t') + " :" + std::string(((t->indent ? *t->indent : 0) + 1), '\t') +
-             " : " + t->script;
-    }
+      ret += indentText(indent) + colon + indentText(1) + indentText(1) + colon + ColorFormatter::getColorCode(code()) + t->script;
+  }
 
     return ret;
   }

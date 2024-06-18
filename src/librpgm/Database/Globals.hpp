@@ -608,8 +608,8 @@ enum class EventCode : int {
 };
 
 enum class QuantityChangeOp {
-  Increase,
-  Decrease,
+   _plu__del_Increase,
+   _daa__del_Decrease,
 };
 
 enum class QuantityChangeSource {

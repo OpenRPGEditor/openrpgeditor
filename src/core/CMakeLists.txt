@@ -80,6 +80,8 @@ target_link_libraries(
         magic_enum
         nlohmann_json::nlohmann_json
         Settings
-        librpgm)
+        librpgm
+        freetype
+)
 
 #add_subdirectory(Tests)

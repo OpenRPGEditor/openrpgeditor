@@ -44,6 +44,11 @@ FetchContent_Declare(json GIT_REPOSITORY "https://github.com/nlohmann/json.git")
 FetchContent_Declare(magic_enum
         GIT_REPOSITORY "https://github.com/Neargye/magic_enum.git")
 
+FetchContent_Declare(freetype2
+        GIT_REPOSITORY "https://git.savannah.gnu.org/git/freetype/freetype2.git"
+        GIT_TAG 2.6.5
+)
+
 #FetchContent_Declare(curl
 #        GIT_REPOSITORY "https://github.com/curl/curl.git"
 #        GIT_TAG tiny-curl-8_4_0
@@ -78,6 +83,7 @@ add_subdirectory(imgui-setup)
 FetchContent_MakeAvailable(
         doctest
         fmt
+        freetype2
         imgui
         ImGuiFileDialog
         SDL2

@@ -93,36 +93,17 @@ ExitStatus App::Application::run() {
   const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-SemiBold.ttf").generic_string()};
   const std::string font_path_kurinoto_mono{Resources::font_path("KurintoMono-NarBd.ttf").generic_string()};
   const std::string font_path_firple_mono{Resources::font_path("Firple-Bold.ttf").generic_string()};
+  const std::string font_source_code_pro{Resources::font_path("SourceCodePro-Bold.otf").generic_string()};
 
   static const ImWchar specialChar[] = {
       /* clang-format off */
-      0x0BB8, 0x0F9F,
-      0x0FA0, 0x1387,
-      0x1338, 0x176F,
-      0x1770, 0x1B57,
-      0x1B58, 0x1F3F,
-      0x1F40, 0x2327,
-      0x1F40, 0x2327,
-      0x2328, 0x270F,
-      0x2710, 0x2AF7,
-      0x2AF8, 0x2EDF,
-      0x2EE0, 0x32C7,
-      0x32C8, 0x36AF,
-      0xDEA8, 0xE28F,
+      0x0001, 0xFFFF,
       0
       /* clang-format on */
   };
 
   ImVector<ImWchar> ranges;
   ImFontGlyphRangesBuilder builder;
-  builder.AddRanges(io.Fonts->GetGlyphRangesDefault());
-  builder.AddRanges(io.Fonts->GetGlyphRangesGreek());
-  builder.AddRanges(io.Fonts->GetGlyphRangesThai());
-  builder.AddRanges(io.Fonts->GetGlyphRangesCyrillic());
-  builder.AddRanges(io.Fonts->GetGlyphRangesKorean());
-  builder.AddRanges(io.Fonts->GetGlyphRangesJapanese());
-  builder.AddRanges(io.Fonts->GetGlyphRangesChineseFull());
-  builder.AddRanges(io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
   builder.AddRanges(specialChar);
   builder.BuildRanges(&ranges);
   m_mainFont = io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, nullptr, ranges.Data);
@@ -133,11 +114,13 @@ ExitStatus App::Application::run() {
   m_sinhalaFont = io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
   m_jpFont = io.Fonts->AddFontFromFileTTF(font_path_jp.c_str(), font_size, &config, ranges.Data);
   m_mathFont = io.Fonts->AddFontFromFileTTF(font_path_math.c_str(), font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_source_code_pro.c_str(), font_size, &config, ranges.Data);
   io.Fonts->Build();
-  m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_firple_mono.c_str(), mono_font_size, nullptr, ranges.Data);
+  m_monoFont = io.Fonts->AddFontFromFileTTF(font_source_code_pro.c_str(), mono_font_size, nullptr, ranges.Data);
   io.Fonts->AddFontFromFileTTF(font_path_jp_mono.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->AddFontFromFileTTF(font_path_kurinoto_mono.c_str(), mono_font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_math.c_str(), font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_math.c_str(), mono_font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_firple_mono.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->Build();
 
   io.FontDefault = m_mainFont;

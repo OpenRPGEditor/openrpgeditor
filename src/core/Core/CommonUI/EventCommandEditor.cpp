@@ -407,14 +407,13 @@ void EventCommandEditor::draw() {
             const int stepPadding = (totalPadding - static_cast<int>(std::floor(std::log10(step)))) + 1;
             if (ImGui::SelectableWithBorder((std::string(stepPadding, ' ') + std::to_string(step) + " ").c_str(),
                                             isSelected,
-                                            ImGuiSelectableFlags_AllowOverlap
-                                            | ImGuiSelectableFlags_SpanAllColumns
-                                            | ImGuiSelectableFlags_AllowDoubleClick,
+                                            ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
+                                                ImGuiSelectableFlags_AllowDoubleClick,
                                             ImVec2(0, ImGui::CalcTextSize(indentPad.c_str()).y))) {
               if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                //m_selectedCommand = &trait;
+                m_selectedCommand = n;
                 m_isNewEntry = false;
-                ImGui::OpenPopup("Command Edit");
+                ImGui::OpenPopup("Command Window");
               }
               m_selectedCommand = n;
             }
@@ -433,4 +432,86 @@ void EventCommandEditor::draw() {
     ImGui::PopFont();
   }
   ImGui::EndGroup();
+}
+
+void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
+  if (m_selectedCommand == 0) {
+    return;
+  }
+
+  ImGui::SetNextWindowSize(ImVec2{680, 550} * App::DPIHandler::get_scale());
+  if (ImGui::BeginPopupModal("Command Window", nullptr,
+                             ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
+    if (!m_isNewEntry) {
+      // We're not a new entry so copy our values so we can restore them if we cancel
+      // m_tempTrait = *m_selectedTrait;
+    }
+    ImGui::BeginGroup();
+    {
+      if (ImGui::BeginTabBar("##orpg_command_window")) {
+        if (ImGui::BeginTabItem("Message")) {
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Game Progression")) {
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Flow")) {
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Party")) {
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Actor")) {
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Movement")) {
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Character")) {
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Picture")) {
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Screen")) {
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Audio")) {
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Scene Control")) {
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Map")) {
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Battle")) {
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("System Settings")) {
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Advanced")) {
+          ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
+      }
+      if (ImGui::BeginTabBar("##orpg_command_window2")) {
+      ImGui::EndTabBar();
+      }
+    }
+    ImGui::EndGroup();
+    if (ImGui::Button("OK")) {
+      m_isNewEntry = false;
+      m_selectedCommand = 0;
+      ImGui::CloseCurrentPopup();
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Cancel")) {
+      m_isNewEntry = false;
+      m_selectedCommand = 0;
+      ImGui::CloseCurrentPopup();
+    }
+    ImGui::EndPopup();
+  }
 }

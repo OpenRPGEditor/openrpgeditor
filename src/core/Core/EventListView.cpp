@@ -19,12 +19,16 @@ void EventListView::draw() {
             m_parent->mapEditor()->setSelectedEvent(&*event);
             selectedHere = true;
           }
+
           if (m_parent->mapEditor()->selectedEvent() == &event.value() && !selectedHere &&
               !m_parent->mapEditor()->scrolledToEvent()) {
             ImGui::SetScrollHereY();
           }
-          if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && ImGui::IsItemActivated()) {
-            m_parent->mapEditor()->addEventEditor(EventEditor(m_parent, &event.value()));
+
+          if (ImGui::IsWindowFocused()) {
+            if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && ImGui::IsItemActivated()) {
+              m_parent->mapEditor()->addEventEditor(EventEditor(m_parent, &event.value()));
+            }
           }
         }
       }

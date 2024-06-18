@@ -76,15 +76,12 @@ set(SPDLOG_FMT_EXTERNAL ON)
 set(SPDLOG_BUILD_SHARED OFF)
 set(SPDLOG_ENABLE_PCH ON)
 
-add_subdirectory(imgui-setup)
-
 # Populate
 
 FetchContent_MakeAvailable(
         doctest
         fmt
         freetype2
-        imgui
         ImGuiFileDialog
         SDL2
         SDL2_image
@@ -95,7 +92,11 @@ FetchContent_MakeAvailable(
         #liblcf
 )
 
+add_subdirectory(imgui-setup)
 
+FetchContent_MakeAvailable(
+        imgui
+)
 target_include_directories(ImGuiFileDialog PRIVATE ${imgui_SOURCE_DIR})
 #target_compile_definitions(ImGuiFileDialog PRIVATE USE_THUMBNAILS DONT_DEFINE_AGAIN__STB_IMAGE_IMPLEMENTATION)
 #target_compile_options(ImGuiFileDialog PRIVATE "-Wno-deprecated-enum-enum-conversion")

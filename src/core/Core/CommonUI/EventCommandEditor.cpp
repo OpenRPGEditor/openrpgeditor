@@ -449,49 +449,256 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
     ImGui::BeginGroup();
     {
       if (ImGui::BeginTabBar("##orpg_command_window")) {
-        if (ImGui::BeginTabItem("Message")) {
-          ImGui::EndTabItem();
-        }
-        if (ImGui::BeginTabItem("Game Progression")) {
-          ImGui::EndTabItem();
-        }
-        if (ImGui::BeginTabItem("Flow")) {
-          ImGui::EndTabItem();
-        }
-        if (ImGui::BeginTabItem("Party")) {
-          ImGui::EndTabItem();
-        }
+        ImVec2 size = ImVec2{(ImGui::GetContentRegionAvail().x / 2) /2 - App::DPIHandler::scale_value(15), 0};
         if (ImGui::BeginTabItem("Actor")) {
-          ImGui::EndTabItem();
-        }
-        if (ImGui::BeginTabItem("Movement")) {
-          ImGui::EndTabItem();
-        }
-        if (ImGui::BeginTabItem("Character")) {
-          ImGui::EndTabItem();
-        }
-        if (ImGui::BeginTabItem("Picture")) {
-          ImGui::EndTabItem();
-        }
-        if (ImGui::BeginTabItem("Screen")) {
+          if (ImGui::Button("Change HP...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Change Gold...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Change Enemy HP...", size)) {
+          }
+          if (ImGui::Button("Change MP...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Change Items...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Change Enemy MP...", size)) {
+          }
+          if (ImGui::Button("Change TP...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Change Weapons...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Change Enemy TP...", size)) {
+          }
+          if (ImGui::Button("Change State...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Change Armors...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Change Enemy State...", size)) {
+          }
+          if (ImGui::Button("Recover All...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Change Party Member...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Enemy Recover All...", size)) {
+          }
+          if (ImGui::Button("Change EXP...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Change Nickname...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Enemy Appear...", size)) {
+          }
+          if (ImGui::Button("Change Level...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Change Profile...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Enemy Transform...", size)) {
+          }
+          if (ImGui::Button("Change Parameter...", size)) {
+          }
+          if (ImGui::Button("Change Skill...", size)) {
+          }
+          if (ImGui::Button("Change Equipment", size)) {
+          }
+          if (ImGui::Button("Change Name...", size)) {
+          }
+          if (ImGui::Button("Change Class...", size)) {
+          }
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Audio")) {
+          if (ImGui::Button("Play BGM...", size)) {
+          }
+          if (ImGui::Button("Play BGS...", size)) {
+          }
+          if (ImGui::Button("Play SE...", size)) {
+          }
+          if (ImGui::Button("Play ME...", size)) {
+          }
+          if (ImGui::Button("Play Movie...", size)) {
+          }
+          if (ImGui::Button("Save BGM", size)) {
+          }
+          if (ImGui::Button("Replay BGM", size)) {
+          }
+          if (ImGui::Button("Stop SE", size)) {
+          }
+          if (ImGui::Button("Fadeout BGM...", size)) {
+          }
+          if (ImGui::Button("Fadeout BGS...", size)) {
+          }
           ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Scene Control")) {
+        if (ImGui::BeginTabItem("Flow")) {
+          if (ImGui::Button("Conditional Branch...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Control Switches...", size)) {
+          }
+          if (ImGui::Button("Loop", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Control Variables...", size)) {
+          }
+          if (ImGui::Button("Break Loop", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Control Self Switch...", size)) {
+          }
+          if (ImGui::Button("Common Event...", size)) {
+          }
+          ImGui::SameLine();
+          if (ImGui::Button("Control Timer...", size)) {
+          }
+          if (ImGui::Button("Label...", size)) {
+          }
+          if (ImGui::Button("Jump to Label...", size)) {
+          }
+          if (ImGui::Button("Comment...", size)) {
+          }
+          if (ImGui::Button("Exit Event Processing", size)) {
+          }
+          if (ImGui::Button("Erase Event", size)) {
+          }
+          if (ImGui::Button("Transfer Player...", size)) {
+          }
+          if (ImGui::Button("Set Vehicle Location...", size)) {
+          }
+          if (ImGui::Button("Set Event Location...", size)) {
+          }
           ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Map")) {
+        if (ImGui::BeginTabItem("Scene")) {
+          if (ImGui::Button("Show Text...", size)) {
+          }
+          if (ImGui::Button("Show Choices...", size)) {
+          }
+          if (ImGui::Button("Show Scrolling Text...", size)) {
+          }
+          if (ImGui::Button("Input Number...", size)) {
+          }
+          if (ImGui::Button("Select Item...", size)) {
+          }
+          if (ImGui::Button("Show Animation...", size)) {
+          }
+          if (ImGui::Button("Show Battle Animation...", size)) {
+          }
+          if (ImGui::Button("Show Balloon Icon...", size)) {
+          }
+          if (ImGui::Button("Set Movement Route...", size)) {
+          }
+          if (ImGui::Button("Shop Processing...", size)) {
+          }
+          if (ImGui::Button("Battle Processing...", size)) {
+          }
+          if (ImGui::Button("Name Input Processing...", size)) {
+          }
+          if (ImGui::Button("Change Transparency...", size)) {
+          }
+          if (ImGui::Button("Abort Battle", size)) {
+          }
+          if (ImGui::Button("Force Action...", size)) {
+          }
+          if (ImGui::Button("Gather Followers", size)) {
+          }
+          if (ImGui::Button("Get on/off Vehicle", size)) {
+          }
           ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Battle")) {
+        if (ImGui::BeginTabItem("Screen")) {
+          if (ImGui::Button("Show Picture...", size)) {
+          }
+          if (ImGui::Button("Move Picture...", size)) {
+          }
+          if (ImGui::Button("Rotate Picture...", size)) {
+          }
+          if (ImGui::Button("Tint Picture...", size)) {
+          }
+          if (ImGui::Button("Erase Picture...", size)) {
+          }
+          if (ImGui::Button("Erase Picture...", size)) {
+          }
+          if (ImGui::Button("Tint Screen...", size)) {
+          }
+          if (ImGui::Button("Flash Screen...", size)) {
+          }
+          if (ImGui::Button("Shake Screen...", size)) {
+          }
+          if (ImGui::Button("Fadeout Screen...", size)) {
+          }
+          if (ImGui::Button("Fadein Screen...", size)) {
+          }
+          if (ImGui::Button("Set Weather Effect...", size)) {
+          }
+          if (ImGui::Button("Scroll Map...", size)) {
+          }
           ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("System Settings")) {
+        if (ImGui::BeginTabItem("System")) {
+          if (ImGui::Button("Open Menu Screen", size)) {
+          }
+          if (ImGui::Button("Open Save Screen", size)) {
+          }
+          if (ImGui::Button("Change Menu Access...", size)) {
+          }
+          if (ImGui::Button("Change Save Access...", size)) {
+          }
+          if (ImGui::Button("Change Map Display Name...", size)) {
+          }
+          if (ImGui::Button("Change Tileset...", size)) {
+          }
+          if (ImGui::Button("Change Battle Back...", size)) {
+          }
+          if (ImGui::Button("Change Player Followers...", size)) {
+          }
+          if (ImGui::Button("Change Formation Access...", size)) {
+          }
+          if (ImGui::Button("Change Encounter...", size)) {
+          }
+          if (ImGui::Button("Change Parallax...", size)) {
+          }
+          if (ImGui::Button("Change Vehicle Image...", size)) {
+          }
+          if (ImGui::Button("Change Actor Images...", size)) {
+          }
+          if (ImGui::Button("Change Window Color...", size)) {
+          }
+          if (ImGui::Button("Get Location Info...", size)) {
+          }
+          if (ImGui::Button("Change Battle BGM...", size)) {
+          }
+          if (ImGui::Button("Change Vehicle BGM...", size)) {
+          }
+          if (ImGui::Button("Change Victory ME...", size)) {
+          }
+          if (ImGui::Button("Change Defeat ME...", size)) {
+          }
+          if (ImGui::Button("Game Over", size)) {
+          }
+          if (ImGui::Button("Return To Title Screen", size)) {
+          }
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Advanced")) {
+          if (ImGui::Button("Wait...", size)) {
+          }
+          if (ImGui::Button("Script...", size)) {
+          }
+          if (ImGui::Button("Plugin Command...", size)) {
+          }
           ImGui::EndTabItem();
         }
         ImGui::EndTabBar();

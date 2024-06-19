@@ -545,105 +545,126 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
         if (ImGui::BeginTabItem("Flow")) {
           if (ImGui::Button("Conditional Branch...", size)) {
           }
-          ImGui::SameLine();
+          ImGui::SameLine(); // Second Column
           if (ImGui::Button("Control Switches...", size)) {
+          }
+          ImGui::SameLine(); // Third Column
+          if (ImGui::Button("Wait...", size)) {
           }
           if (ImGui::Button("Loop", size)) {
           }
-          ImGui::SameLine();
+          ImGui::SameLine(); // Second Column
           if (ImGui::Button("Control Variables...", size)) {
+          }
+          ImGui::SameLine(); // Third Column
+          if (ImGui::Button("Erase Event", size)) {
           }
           if (ImGui::Button("Break Loop", size)) {
           }
-          ImGui::SameLine();
+          ImGui::SameLine(); // Second Column
           if (ImGui::Button("Control Self Switch...", size)) {
+          }
+          ImGui::SameLine(); // Third Column
+          if (ImGui::Button("Exit Event Processing", size)) {
           }
           if (ImGui::Button("Common Event...", size)) {
           }
-          ImGui::SameLine();
+          ImGui::SameLine(); // Second Column
           if (ImGui::Button("Control Timer...", size)) {
           }
           if (ImGui::Button("Label...", size)) {
           }
+          ImGui::SameLine(); // Second Column
+          if (ImGui::Button("Transfer Player...", size)) {
+          }
           if (ImGui::Button("Jump to Label...", size)) {
+          }
+          ImGui::SameLine(); // Second Column
+          if (ImGui::Button("Set Event Location...", size)) {
           }
           if (ImGui::Button("Comment...", size)) {
           }
-          if (ImGui::Button("Exit Event Processing", size)) {
-          }
-          if (ImGui::Button("Erase Event", size)) {
-          }
-          if (ImGui::Button("Transfer Player...", size)) {
-          }
+          ImGui::SameLine(); // Second Column
           if (ImGui::Button("Set Vehicle Location...", size)) {
-          }
-          if (ImGui::Button("Set Event Location...", size)) {
           }
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Scene")) {
           if (ImGui::Button("Show Text...", size)) {
           }
+          ImGui::SameLine(); // Second Column
+          if (ImGui::Button("Show Animation...", size)) {
+          }
+          ImGui::SameLine(); // Third Column
+          if (ImGui::Button("Change Transparency...", size)) {
+          }
           if (ImGui::Button("Show Choices...", size)) {
+          }
+          ImGui::SameLine(); // Second Column
+          if (ImGui::Button("Show Battle Animation...", size)) {
+          }
+          ImGui::SameLine(); // Third Column
+          if (ImGui::Button("Get on/off Vehicle", size)) {
           }
           if (ImGui::Button("Show Scrolling Text...", size)) {
           }
+          ImGui::SameLine(); // Second Column
+          if (ImGui::Button("Show Balloon Icon...", size)) {
+          }
+          ImGui::SameLine(); // Third Column
+          if (ImGui::Button("Abort Battle", size)) {
+          }
           if (ImGui::Button("Input Number...", size)) {
+          }
+          ImGui::SameLine(); // Second Column
+          if (ImGui::Button("Shop Processing...", size)) {
+          }
+          ImGui::SameLine(); // Third Column
+          if (ImGui::Button("Gather Followers", size)) {
           }
           if (ImGui::Button("Select Item...", size)) {
           }
-          if (ImGui::Button("Show Animation...", size)) {
-          }
-          if (ImGui::Button("Show Battle Animation...", size)) {
-          }
-          if (ImGui::Button("Show Balloon Icon...", size)) {
+          ImGui::SameLine(); // Second Column
+          if (ImGui::Button("Battle Processing...", size)) {
           }
           if (ImGui::Button("Set Movement Route...", size)) {
           }
-          if (ImGui::Button("Shop Processing...", size)) {
-          }
-          if (ImGui::Button("Battle Processing...", size)) {
-          }
+          ImGui::SameLine(); // Second Column
           if (ImGui::Button("Name Input Processing...", size)) {
-          }
-          if (ImGui::Button("Change Transparency...", size)) {
-          }
-          if (ImGui::Button("Abort Battle", size)) {
-          }
-          if (ImGui::Button("Force Action...", size)) {
-          }
-          if (ImGui::Button("Gather Followers", size)) {
-          }
-          if (ImGui::Button("Get on/off Vehicle", size)) {
           }
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Screen")) {
           if (ImGui::Button("Show Picture...", size)) {
           }
+          ImGui::SameLine(); // Second column
+          if (ImGui::Button("Tint Screen...", size)) {
+          }
+          ImGui::SameLine(); // Third column
+          if (ImGui::Button("Set Weather Effect...", size)) {
+          }
           if (ImGui::Button("Move Picture...", size)) {
+          }
+          ImGui::SameLine(); // Second column
+          if (ImGui::Button("Flash Screen...", size)) {
+          }
+          ImGui::SameLine(); // Third column
+          if (ImGui::Button("Scroll Map...", size)) {
           }
           if (ImGui::Button("Rotate Picture...", size)) {
           }
-          if (ImGui::Button("Tint Picture...", size)) {
-          }
-          if (ImGui::Button("Erase Picture...", size)) {
-          }
-          if (ImGui::Button("Erase Picture...", size)) {
-          }
-          if (ImGui::Button("Tint Screen...", size)) {
-          }
-          if (ImGui::Button("Flash Screen...", size)) {
-          }
+          ImGui::SameLine(); // Second column
           if (ImGui::Button("Shake Screen...", size)) {
           }
+          if (ImGui::Button("Tint Picture...", size)) {
+          }
+          ImGui::SameLine(); // Second column
           if (ImGui::Button("Fadeout Screen...", size)) {
           }
+          if (ImGui::Button("Erase Picture...", size)) {
+          }
+          ImGui::SameLine(); // Second column
           if (ImGui::Button("Fadein Screen...", size)) {
-          }
-          if (ImGui::Button("Set Weather Effect...", size)) {
-          }
-          if (ImGui::Button("Scroll Map...", size)) {
           }
           ImGui::EndTabItem();
         }
@@ -690,21 +711,12 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           }
           if (ImGui::Button("Return To Title Screen", size)) {
           }
-          ImGui::EndTabItem();
-        }
-        if (ImGui::BeginTabItem("Advanced")) {
-          if (ImGui::Button("Wait...", size)) {
-          }
           if (ImGui::Button("Script...", size)) {
           }
-          if (ImGui::Button("Plugin Command...", size)) {
-          }
+          if (ImGui::Button("Plugin Command...", size))
           ImGui::EndTabItem();
         }
         ImGui::EndTabBar();
-      }
-      if (ImGui::BeginTabBar("##orpg_command_window2")) {
-      ImGui::EndTabBar();
       }
     }
     ImGui::EndGroup();

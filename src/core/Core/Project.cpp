@@ -13,6 +13,8 @@
 #include <shellapi.h>
 #endif
 
+#include "implot.h"
+
 #include <fstream>
 
 #include <array>

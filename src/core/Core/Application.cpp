@@ -5,6 +5,7 @@
 #include <backends/imgui_impl_sdlrenderer2.h>
 #include <imgui.h>
 #include <imgui_internal.h>
+#include <implot.h>
 #include <memory>
 #include <string>
 
@@ -14,6 +15,7 @@
 #include "Core/Resources.hpp"
 #include "Core/Window.hpp"
 #include "Core/Settings.hpp"
+#include "Database/RPGEquations.hpp"
 #include "Settings/Project.hpp"
 
 #include <iostream>
@@ -42,6 +44,7 @@ Application::~Application() {
 
   ImGui_ImplSDLRenderer2_Shutdown();
   ImGui_ImplSDL2_Shutdown();
+  ImPlot::DestroyContext();
   ImGui::DestroyContext();
 
   SDL_Quit();
@@ -57,6 +60,7 @@ ExitStatus App::Application::run() {
   // Setup Dear ImGui context
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
+  ImPlot::CreateContext();
   ImGuiIO& io{ImGui::GetIO()};
 
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable |

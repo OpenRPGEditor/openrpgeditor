@@ -32,6 +32,7 @@ add_library(
         Database/ColorFormatter.hpp Database/ColorFormatter.cpp
         Database/CommandParser.hpp Database/CommandParser.cpp
         Database/MovementRoute.hpp Database/MovementRoute.cpp
+        Database/RPGEquations.hpp Database/RPGEquations.cpp
 )
 
 target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)

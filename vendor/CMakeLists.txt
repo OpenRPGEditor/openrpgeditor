@@ -25,6 +25,12 @@ FetchContent_Declare(
 )
 
 FetchContent_Declare(
+        implot
+        GIT_REPOSITORY "https://github.com/epezent/implot.git"
+        GIT_TAG v0.16
+)
+
+FetchContent_Declare(
         SDL2
         GIT_REPOSITORY "https://github.com/libsdl-org/SDL.git"
         GIT_TAG release-2.30.3)
@@ -97,6 +103,7 @@ add_subdirectory(imgui-setup)
 FetchContent_MakeAvailable(
         imgui
 )
+
 target_include_directories(ImGuiFileDialog PRIVATE ${imgui_SOURCE_DIR})
 #target_compile_definitions(ImGuiFileDialog PRIVATE USE_THUMBNAILS DONT_DEFINE_AGAIN__STB_IMAGE_IMPLEMENTATION)
 #target_compile_options(ImGuiFileDialog PRIVATE "-Wno-deprecated-enum-enum-conversion")

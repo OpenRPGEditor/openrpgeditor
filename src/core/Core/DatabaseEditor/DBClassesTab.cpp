@@ -46,12 +46,12 @@ void DBClassesTab::drawExperienceGraph(ExperienceGraphMode mode) const {
     const std::string_view color = mode == ExperienceGraphMode::Total ? red : green;
     for (int i = 0; i < 20; ++i) {
       std::string labelText = std::format(
-          "L:{:2}: {}{:7}&pop-color; L:{:2}: {}{:7}&pop-color; L:{:2}: {}{:7}&pop-color; L:{:2}: {}{:7}&pop-color;",
+          "L{:2}: {}{:7}&pop-color; L{:2}: {}{:7}&pop-color; L{:2}: {}{:7}&pop-color; L{:2}: {}{:7}&pop-color;",
           levels[i + 0], color, array[i + 0], levels[i + 20], color, array[i + 20], levels[i + 40], color,
           array[i + 40], levels[i + 60], color, array[i + 60]);
 
       if (i < maxLoops) {
-        labelText += std::format(" L:{:2}: {}{:7}&pop-color;", levels[i + 80], color, array[i + 80]);
+        labelText += std::format(" L{:2}: {}{:7}&pop-color;", levels[i + 80], color, array[i + 80]);
       }
       ImGui::TextParsed("%s", labelText.c_str());
     }
@@ -72,10 +72,11 @@ void DBClassesTab::drawExperienceGraph(ExperienceGraphMode mode) const {
 }
 
 void DBClassesTab::drawExpPopup() {
-  ImGui::SetNextWindowSize(ImVec2{720, 864} * App::DPIHandler::get_scale(), ImGuiCond_Once);
+  ImGui::SetNextWindowSize(ImVec2{720, 878} * App::DPIHandler::get_scale(), ImGuiCond_Once);
   if (ImGui::BeginPopupModal("EXP Curve##curve_dialog", nullptr,
                              ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings |
-                                 ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
+                                 ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+                                 ImGuiWindowFlags_NoScrollbar)) {
     if (ImGui::BeginTabBar("##exp_graph_tabbar")) {
       if (ImGui::BeginTabItem("To Next Level")) {
         drawExperienceGraph(ExperienceGraphMode::Next);
@@ -87,34 +88,43 @@ void DBClassesTab::drawExpPopup() {
       }
       ImGui::EndTabBar();
     }
+    float cursorY = ImGui::GetCursorPosY();
     ImGui::BeginGroup();
     {
-      ImGui::Text("Base Value:");
-      ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2);
-      ImGui::DragInt("##exp_base_value_drag", &m_expWorkValues[0], 1.f, 10, 50);
+      ImGui::BeginGroup();
+      {
+        ImGui::Text("Base Value:");
+        ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - ImGui::GetStyle().FramePadding.x);
+        ImGui::SliderInt("##exp_base_value_drag", &m_expWorkValues[0], 10, 50);
+      }
+      ImGui::EndGroup();
+      ImGui::BeginGroup();
+      {
+        ImGui::Text("Acceleration A:");
+        ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - ImGui::GetStyle().FramePadding.x);
+        ImGui::SliderInt("##exp_accel_a_value_drag", &m_expWorkValues[2], 10, 50);
+      }
+      ImGui::EndGroup();
     }
     ImGui::EndGroup();
     ImGui::SameLine();
+    ImGui::SetCursorPosY(cursorY - App::DPIHandler::scale_value(4));
     ImGui::BeginGroup();
     {
-      ImGui::Text("Extra Value:");
-      ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2);
-      ImGui::DragInt("##exp_extra_value_drag", &m_expWorkValues[1], 1.f, 0, 40);
-    }
-    ImGui::EndGroup();
-    ImGui::BeginGroup();
-    {
-      ImGui::Text("Acceleration A:");
-      ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2);
-      ImGui::DragInt("##exp_accel_a_value_drag", &m_expWorkValues[2], 1.f, 10, 50);
-    }
-    ImGui::EndGroup();
-    ImGui::SameLine();
-    ImGui::BeginGroup();
-    {
-      ImGui::Text("Acceleration B:");
-      ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2);
-      ImGui::DragInt("##exp_accel_b_value_drag", &m_expWorkValues[3], 1.f, 10, 50);
+      ImGui::BeginGroup();
+      {
+        ImGui::Text("Extra Value:");
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x);
+        ImGui::SliderInt("##exp_extra_value_drag", &m_expWorkValues[1], 0, 40);
+      }
+      ImGui::EndGroup();
+      ImGui::BeginGroup();
+      {
+        ImGui::Text("Acceleration B:");
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x);
+        ImGui::SliderInt("##exp_accel_b_value_drag", &m_expWorkValues[3], 10, 50);
+      }
+      ImGui::EndGroup();
     }
     ImGui::EndGroup();
     ImGui::Separator();
@@ -198,7 +208,6 @@ void DBClassesTab::draw() {
               snprintf(curvePreview, 4096, "[%i, %i, %i, %i]##exp_curve_button", m_selectedClass->expParams[0],
                        m_selectedClass->expParams[1], m_selectedClass->expParams[2], m_selectedClass->expParams[3]);
               if (ImGui::Button(curvePreview)) {
-                printf("Button pressed!\n");
                 ImGui::OpenPopup("EXP Curve##curve_dialog");
                 m_expWorkValues = m_selectedClass->expParams;
               }

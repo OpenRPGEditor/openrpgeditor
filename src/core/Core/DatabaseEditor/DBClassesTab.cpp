@@ -60,7 +60,9 @@ void DBClassesTab::drawExperienceGraph(ExperienceGraphMode mode) const {
 
   if (ImPlot::BeginPlot("EXP Curve", ImVec2{-1, 0}, ImPlotFlags_CanvasOnly)) {
     ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
-    ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
+    ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
+    ImPlot::SetupAxesLimits(0, mode == ExperienceGraphMode::Next ? 98 : 99, 0,
+                            mode == ExperienceGraphMode::Next ? 180000 : 7800000, ImPlotCond_Always);
     if (mode == ExperienceGraphMode::Next) {
       ImPlot::PlotShaded("##Next", levels.data(), nextExp.data(), 98);
     } else {

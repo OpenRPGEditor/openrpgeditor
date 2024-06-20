@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CheckerboardTexture.hpp"
 #include "Core/MapEditor/MapRenderer.hpp"
 #include "Core/MapEditor/MapEvent.hpp"
 
@@ -10,7 +11,7 @@ struct Project;
 struct Map;
 struct MapInfo;
 struct MapEditor {
-  MapEditor(Project* parent) : m_parent(parent), m_tileCursor(this) {}
+  MapEditor(Project* parent) : m_parent(parent), m_tileCursor(this){}
   void draw();
 
   void setMap(Map* map, MapInfo* info);
@@ -68,6 +69,8 @@ struct MapEditor {
   Project* project() { return m_parent; }
   const Project* project() const { return m_parent; }
 
+  float zoom() const { return m_mapScale; }
+
 private:
   void drawMapProperties();
   void drawGrid(ImGuiWindow* win);
@@ -92,6 +95,7 @@ private:
   std::vector<TileRect> m_lowerLayer;
   std::vector<TileRect> m_upperLayer;
   std::vector<EventEditor> m_eventEditors;
+  CheckerboardTexture m_checkeredBack;
   Event* m_movingEvent = nullptr;
   Event* m_selectedEvent = nullptr;
   bool m_hasScrolled = true;

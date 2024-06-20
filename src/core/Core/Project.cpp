@@ -349,13 +349,13 @@ void Project::drawMenu() {
     }
 
     if (ImGui::BeginMenu("Scale")) {
-      if (ImGui::MenuItem("Zoom In", "Ctrl++")) {
+      if (ImGui::MenuItem("Zoom In", "Ctrl++", false, m_mapEditor.zoom() > 0.25f)) {
         m_mapEditor.scale(0.25f);
       }
-      if (ImGui::MenuItem("Zoom Out", "Ctrl+-")) {
+      if (ImGui::MenuItem("Zoom Out", "Ctrl+-", false, m_mapEditor.zoom() < 4.f)) {
         m_mapEditor.scale(-0.25f);
       }
-      if (ImGui::MenuItem("Actual Size", "Ctrl+0")) {
+      if (ImGui::MenuItem("Actual Size", "Ctrl+0", false, m_mapEditor.zoom() != 1.f)) {
         m_mapEditor.setScale(1.f);
       }
       ImGui::EndMenu();

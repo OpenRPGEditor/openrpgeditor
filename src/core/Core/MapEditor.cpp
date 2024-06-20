@@ -237,6 +237,9 @@ void MapEditor::renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer
   renderLayerTex(win, layer.tileLayers[6]); // C
 }
 void MapEditor::draw() {
+  if (!m_checkeredBack) {
+    m_checkeredBack = CheckerboardTexture(8192 * 2, 8192 * 2);
+  }
   // Keep mapScale to a quarter step
   if (ImGui::IsKeyDown(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
     m_mapScale += ImGui::GetIO().MouseWheel * 0.25f;
@@ -249,8 +252,17 @@ void MapEditor::draw() {
   std::erase_if(m_eventEditors, [](EventEditor& editor) { return !editor.draw(); });
 
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
+    auto region = ImGui::GetContentRegionAvail();
+    float u1 = std::clamp(region.x / (8192 * 2), 0.f, 1.f);
+    float v1 = std::clamp(region.y / (8192 * 2), 0.f, 1.f);
+    auto cursor = ImGui::GetCursorPos();
+    if (m_map) {
+      ImGui::Image(m_checkeredBack.get(), ImVec2{region.x, region.y}, ImVec2{0, 0}, ImVec2{u1, v1});
+    }
+    ImGui::SetCursorPos(cursor);
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(45.f)),
-                      ImGuiChildFlags_Border, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
+                      ImGuiChildFlags_Border,
+                      ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBackground);
 
     if (m_map) {
       ImGui::Dummy(ImVec2{m_map->width * (m_parent->system().tileSize * m_mapScale),
@@ -314,22 +326,26 @@ void MapEditor::draw() {
       }
     }
     ImGui::EndChild();
-    ImGui::Text("Scale:");
-    ImGui::SameLine();
-    ImGui::SliderFloat("##map_scale", &m_mapScale, 0.25f, 4.f);
-    ImGui::SameLine();
-    std::string fmt =
-        std::format("Tile {}, ({}, {})", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0),
-                    m_tileCursor.tileX(), m_tileCursor.tileY());
-    if (m_map) {
-      auto ev = std::find_if(m_map->events.begin(), m_map->events.end(), [&](const std::optional<Event>& e) {
-        return e && m_tileCursor.tileX() == e->x && m_tileCursor.tileY() == e->y;
-      });
-      if (ev != m_map->events.end()) {
-        fmt += std::format(" {} ({:03})", (*ev)->name, (*ev)->id);
+    ImGui::BeginChild("##map_editor_bottom_panel");
+    {
+      ImGui::Text("Scale:");
+      ImGui::SameLine();
+      ImGui::SliderFloat("##map_scale", &m_mapScale, 0.25f, 4.f);
+      ImGui::SameLine();
+      std::string fmt =
+          std::format("Tile {}, ({}, {})", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0),
+                      m_tileCursor.tileX(), m_tileCursor.tileY());
+      if (m_map) {
+        auto ev = std::find_if(m_map->events.begin(), m_map->events.end(), [&](const std::optional<Event>& e) {
+          return e && m_tileCursor.tileX() == e->x && m_tileCursor.tileY() == e->y;
+        });
+        if (ev != m_map->events.end()) {
+          fmt += std::format(" {} ({:03})", (*ev)->name, (*ev)->id);
+        }
       }
+      ImGui::Text("%s", fmt.c_str());
     }
-    ImGui::Text("%s", fmt.c_str());
+    ImGui::EndChild();
   }
   ImGui::End();
   drawMapProperties();

@@ -11,6 +11,8 @@
 #include <format>
 #include <imgui.h>
 
+constexpr ImVec2 ParameterGraphSize{128, 128};
+
 DBClassesTab::DBClassesTab(Classes& classes, DatabaseEditor* parent) : IDBEditorTab(parent), m_classes(classes) {
   m_selectedClass = m_classes.classType(1);
   m_maxClasses = m_classes.count();
@@ -215,6 +217,113 @@ void DBClassesTab::draw() {
               }
             }
             ImGui::EndGroup();
+          }
+          ImGui::EndGroup();
+          ImGui::BeginGroup();
+          {
+            ImGui::SeparatorText("Parameter Curves");
+            if (ImPlot::BeginPlot("Max HP", ParameterGraphSize * App::DPIHandler::get_scale(),
+                                  ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
+                                      ImPlotFlags_NoMouseText)) {
+              ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
+              ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
+              ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 9999.f, ImPlotCond_Always);
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                printf("Max HP double clicked\n");
+              }
+              ImPlot::PlotShaded("##MaxHP", m_selectedClass->params[0].data(), m_selectedClass->params[0].size());
+              ImPlot::EndPlot();
+            }
+            ImGui::SameLine();
+            if (ImPlot::BeginPlot("Max MP", ParameterGraphSize * App::DPIHandler::get_scale(),
+                                  ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
+                                      ImPlotFlags_NoMouseText)) {
+              ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
+              ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
+              ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 9999.f, ImPlotCond_Always);
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                printf("Max MP double clicked\n");
+              }
+              ImPlot::PlotShaded("##MaxMP", m_selectedClass->params[1].data(), m_selectedClass->params[1].size());
+              ImPlot::EndPlot();
+            }
+            ImGui::SameLine();
+            if (ImPlot::BeginPlot("Attack", ParameterGraphSize * App::DPIHandler::get_scale(),
+                                  ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
+                                      ImPlotFlags_NoMouseText)) {
+              ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
+              ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
+              ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                printf("Attack double clicked\n");
+              }
+              ImPlot::PlotShaded("##Attack", m_selectedClass->params[2].data(), m_selectedClass->params[2].size());
+              ImPlot::EndPlot();
+            }
+            ImGui::SameLine();
+            if (ImPlot::BeginPlot("Defense", ParameterGraphSize * App::DPIHandler::get_scale(),
+                                  ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
+                                      ImPlotFlags_NoMouseText)) {
+              ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
+              ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
+              ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                printf("Defense double clicked\n");
+              }
+              ImPlot::PlotShaded("##Defense", m_selectedClass->params[3].data(), m_selectedClass->params[3].size());
+              ImPlot::EndPlot();
+            }
+            if (ImPlot::BeginPlot("M.Attack", ParameterGraphSize * App::DPIHandler::get_scale(),
+                                  ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
+                                      ImPlotFlags_NoMouseText)) {
+              ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
+              ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
+              ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                printf("M.Attack double clicked\n");
+              }
+              ImPlot::PlotShaded("##M.Attack", m_selectedClass->params[4].data(), m_selectedClass->params[4].size());
+              ImPlot::EndPlot();
+            }
+            ImGui::SameLine();
+            if (ImPlot::BeginPlot("M.Defense", ParameterGraphSize * App::DPIHandler::get_scale(),
+                                  ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
+                                      ImPlotFlags_NoMouseText)) {
+              ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
+              ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
+              ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                printf("M.Defense double clicked\n");
+              }
+              ImPlot::PlotShaded("##M.Defense", m_selectedClass->params[5].data(), m_selectedClass->params[5].size());
+              ImPlot::EndPlot();
+            }
+            ImGui::SameLine();
+            if (ImPlot::BeginPlot("Agility", ParameterGraphSize * App::DPIHandler::get_scale(),
+                                  ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
+                                      ImPlotFlags_NoMouseText)) {
+              ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
+              ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
+              ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                printf("Agility double clicked\n");
+              }
+              ImPlot::PlotShaded("##Agility", m_selectedClass->params[6].data(), m_selectedClass->params[6].size());
+              ImPlot::EndPlot();
+            }
+            ImGui::SameLine();
+            if (ImPlot::BeginPlot("Luck", ParameterGraphSize * App::DPIHandler::get_scale(),
+                                  ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
+                                      ImPlotFlags_NoMouseText)) {
+              ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
+              ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
+              ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                printf("Luck double clicked\n");
+              }
+              ImPlot::PlotShaded("##Luck", m_selectedClass->params[7].data(), m_selectedClass->params[7].size());
+              ImPlot::EndPlot();
+            }
           }
           ImGui::EndGroup();
         }

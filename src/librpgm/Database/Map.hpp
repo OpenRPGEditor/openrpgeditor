@@ -55,10 +55,7 @@ public:
       if (!a || !b) {
         return false;
       }
-      if (a->y != b->y) {
-        return a->y < b->y;
-      }
-      return a->id < b->id;
+      return a->y < b->y;
     });
     return std::move(ret);
   }

@@ -24,7 +24,7 @@ struct Class {
   std::vector<Learning> learnings;
   std::string name;
   std::string note;
-  std::array<std::vector<int>, 8> params;
+  std::array<std::array<int, 99>, 8> params;
 
   /*!
    * @name m_isValid

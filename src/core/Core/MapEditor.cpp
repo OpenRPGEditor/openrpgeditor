@@ -62,14 +62,14 @@ void MapEditor::setMap(Map* map, MapInfo* info) {
 int MapEditor::tileSize() { return m_parent->system().tileSize; }
 
 void MapEditor::drawGrid(ImGuiWindow* win) {
-  for (int y = tileSize(); y < (m_map->height * tileSize()) * m_mapScale; y += tileSize() * m_mapScale) {
+  for (int y = tileSize() * m_mapScale; y < (m_map->height * tileSize()) * m_mapScale; y += tileSize() * m_mapScale) {
     win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)},
                            win->ContentRegionRect.Min +
                                ImVec2{(m_map->width * tileSize()) * m_mapScale, static_cast<float>(y)},
                            0x7f0a0a0a, 3.f);
   }
 
-  for (int x = tileSize(); x < (m_map->width * tileSize()) * m_mapScale; x += tileSize() * m_mapScale) {
+  for (int x = tileSize() * m_mapScale; x < (m_map->width * tileSize()) * m_mapScale; x += tileSize() * m_mapScale) {
     win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), 0.f},
                            win->ContentRegionRect.Min +
                                ImVec2{static_cast<float>(x), (m_map->height * tileSize()) * m_mapScale},
@@ -279,13 +279,17 @@ void MapEditor::draw() {
       m_mapRenderer.update();
 
       renderLayer(win, m_mapRenderer.m_lowerLayer);
-      renderLayer(win, m_mapRenderer.m_upperLayer);
+      if (m_prisonMode) {
+        renderLayer(win, m_mapRenderer.m_upperLayer);
+      }
 
+      if (m_prisonMode) {
+        drawGrid(win);
+      }
       if (ImGui::IsWindowHovered() || m_parent->editMode() == EditMode::Event) {
         m_tileCursor.draw(win);
       }
 
-      drawGrid(win);
       auto sortedEvents = m_map->getSorted();
       for (auto& event : sortedEvents) {
         if (!event) {
@@ -303,6 +307,10 @@ void MapEditor::draw() {
         MapEvent mapEvent(this, &event.value());
         mapEvent.draw(m_mapScale, isHovered, m_selectedEvent == realEvent, m_parent->editMode() != EditMode::Event,
                       win);
+      }
+
+      if (!m_prisonMode) {
+        renderLayer(win, m_mapRenderer.m_upperLayer);
       }
     }
     ImGui::EndChild();

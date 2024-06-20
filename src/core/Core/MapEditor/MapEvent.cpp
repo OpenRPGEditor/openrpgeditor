@@ -57,9 +57,13 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlph
   float eventS = m_parent->tileSize() * mapScale;
   ImVec2 evMin = ImVec2{eventX, eventY};
   ImVec2 evMax = ImVec2{(eventX + eventS), (eventY + eventS)};
-  win->DrawList->AddRectFilled(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, bgColor);
-  win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, outlineCol, 0, 0, 5.f);
-  win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, borderCol, 0, 0, 3.f);
+  if (m_parent->prisonMode() ||
+      (((m_event->pages[0].image.characterName.empty() || !m_characterSheet) && m_event->pages[0].image.tileId == 0) &&
+       !m_parent->prisonMode())) {
+    win->DrawList->AddRectFilled(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, bgColor);
+    win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, outlineCol, 0, 0, 5.f);
+    win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, borderCol, 0, 0, 3.f);
+  }
 
   if (!m_event->pages[0].image.characterName.empty() && m_event->pages[0].image.tileId == 0 && m_characterSheet) {
     if (m_event->pages[0].stepAnime) {

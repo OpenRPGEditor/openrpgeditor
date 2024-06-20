@@ -330,8 +330,11 @@ void Project::drawMenu() {
         enterEventEditMode();
       }
       ImGui::Separator();
-      if (ImGui::MenuItem("Events Within Tile", "F7", m_mapEditor.prisonMode())) {
+      if (ImGui::MenuItem("Game Preview", "F7", m_mapEditor.prisonMode())) {
         m_mapEditor.togglePrisonMode();
+      }
+      if (ImGui::IsItemHovered()) {
+        ImGui::SetTooltip("Toggles event borders, layer render order, and animations");
       }
       ImGui::EndMenu();
     }

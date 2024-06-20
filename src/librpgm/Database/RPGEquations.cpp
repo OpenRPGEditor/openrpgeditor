@@ -23,8 +23,8 @@ void generateParameters(const int value1, const int value2, const int growth, st
 }
 
 void quickGenerateParameters(int rank, int paramId, int maxValue, std::array<int, 99>& parameters) {
-  int value1 = 200 + rank * 100 + random() * 100;
-  int value2 = 4000 + rank * 1000 + random() * 1000;
+  int value1 = 200 + rank * 100 + rand() * 100;
+  int value2 = 4000 + rank * 1000 + rand() * 1000;
 
   value1 *= maxValue / 10000;
   value2 *= maxValue / 10000;

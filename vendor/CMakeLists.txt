@@ -87,13 +87,13 @@ set(SPDLOG_ENABLE_PCH ON)
 FetchContent_MakeAvailable(
         doctest
         fmt
-        freetype2
         ImGuiFileDialog
         SDL2
         SDL2_image
         spdlog
         json
         magic_enum
+        freetype2
         #curl
         #liblcf
 )

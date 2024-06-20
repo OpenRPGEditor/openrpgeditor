@@ -74,6 +74,7 @@ target_link_libraries(
         ${NAME}
         PRIVATE project_warnings
         PUBLIC fmt::fmt-header-only spdlog::spdlog_header_only
+        freetype
         SDL2::SDL2
         imgui
         ImGuiFileDialog
@@ -81,7 +82,6 @@ target_link_libraries(
         nlohmann_json::nlohmann_json
         Settings
         librpgm
-        freetype
 )
 
 #add_subdirectory(Tests)

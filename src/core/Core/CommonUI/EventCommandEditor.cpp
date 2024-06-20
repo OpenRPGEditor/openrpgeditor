@@ -671,66 +671,76 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
         if (ImGui::BeginTabItem("System")) {
           if (ImGui::Button("Open Menu Screen", size)) {
           }
+          ImGui::SameLine(); // Second column
+          if (ImGui::Button("Change Battle BGM...", size)) {
+          }
+          ImGui::SameLine(); // Third column
+          if (ImGui::Button("Script...", size)) {
+          }
           if (ImGui::Button("Open Save Screen", size)) {
+          }
+          ImGui::SameLine(); // Second column
+          if (ImGui::Button("Change Vehicle BGM...", size)) {
+          }
+          ImGui::SameLine(); // Third column
+          if (ImGui::Button("Plugin Command...", size)) {
+
           }
           if (ImGui::Button("Change Menu Access...", size)) {
           }
+          ImGui::SameLine(); // Second column
+          if (ImGui::Button("Change Victory ME...", size)) {
+          }
+          ImGui::SameLine(); // Third column
+          if (ImGui::Button("Game Over", size)) {
+          }
           if (ImGui::Button("Change Save Access...", size)) {
+          }
+          ImGui::SameLine(); // Second column
+          if (ImGui::Button("Change Defeat ME...", size)) {
+          }
+          ImGui::SameLine(); // Third column
+          if (ImGui::Button("Return To Title Screen", size)) {
           }
           if (ImGui::Button("Change Map Display Name...", size)) {
           }
+          ImGui::SameLine(); // Second column
+          if (ImGui::Button("Change Parallax...", size)) {
+          }
           if (ImGui::Button("Change Tileset...", size)) {
+          }
+          ImGui::SameLine(); // Second column
+          if (ImGui::Button("Change Actor Images...", size)) {
           }
           if (ImGui::Button("Change Battle Back...", size)) {
           }
+          ImGui::SameLine(); // Second column
+          if (ImGui::Button("Change Vehicle Image...", size)) {
+          }
           if (ImGui::Button("Change Player Followers...", size)) {
+          }
+          ImGui::SameLine(); // Second column
+          if (ImGui::Button("Change Window Color...", size)) {
           }
           if (ImGui::Button("Change Formation Access...", size)) {
           }
+          ImGui::SameLine(); // Second column
           if (ImGui::Button("Change Encounter...", size)) {
           }
-          if (ImGui::Button("Change Parallax...", size)) {
-          }
-          if (ImGui::Button("Change Vehicle Image...", size)) {
-          }
-          if (ImGui::Button("Change Actor Images...", size)) {
-          }
-          if (ImGui::Button("Change Window Color...", size)) {
-          }
-          if (ImGui::Button("Get Location Info...", size)) {
-          }
-          if (ImGui::Button("Change Battle BGM...", size)) {
-          }
-          if (ImGui::Button("Change Vehicle BGM...", size)) {
-          }
-          if (ImGui::Button("Change Victory ME...", size)) {
-          }
-          if (ImGui::Button("Change Defeat ME...", size)) {
-          }
-          if (ImGui::Button("Game Over", size)) {
-          }
-          if (ImGui::Button("Return To Title Screen", size)) {
-          }
-          if (ImGui::Button("Script...", size)) {
-          }
-          if (ImGui::Button("Plugin Command...", size))
           ImGui::EndTabItem();
         }
         ImGui::EndTabBar();
       }
     }
     ImGui::EndGroup();
-    if (ImGui::Button("OK")) {
+
+
+    if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))) {
       m_isNewEntry = false;
       m_selectedCommand = 0;
       ImGui::CloseCurrentPopup();
     }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      m_isNewEntry = false;
-      m_selectedCommand = 0;
-      ImGui::CloseCurrentPopup();
-    }
+    
     ImGui::EndPopup();
   }
 }

@@ -54,6 +54,9 @@ add_library(
         Core/TextParser.hpp Core/TextParser.cpp
         Core/Resources.hpp
         Core/DPIHandler.hpp
+        Core/EventCommands/IDialogController.hpp
+        Core/EventCommands/Dialog_ControlSwitches.cpp
+        Core/EventCommands/Dialog_ControlSwitches.hpp
 )
 
 # Define set of OS specific files to include
@@ -74,7 +77,6 @@ target_link_libraries(
         ${NAME}
         PRIVATE project_warnings
         PUBLIC fmt::fmt-header-only spdlog::spdlog_header_only
-        freetype
         SDL2::SDL2
         imgui
         ImGuiFileDialog
@@ -82,6 +84,8 @@ target_link_libraries(
         nlohmann_json::nlohmann_json
         Settings
         librpgm
+        freetype
+        z
 )
 
 #add_subdirectory(Tests)

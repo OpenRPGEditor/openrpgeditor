@@ -7,6 +7,8 @@
 
 #include "imgui.h"
 #include "imgui_internal.h"
+#include "Core/EventCommands/Dialog_ControlSwitches.hpp"
+#include "Core/EventCommands/IDialogController.hpp"
 
 void insertValue(std::string& indentPad, const std::string& val, const std::string& delim) {
   auto pos = indentPad.find(delim);
@@ -426,7 +428,8 @@ void EventCommandEditor::draw() {
             ImGui::SetItemDefaultFocus();
         }
       }
-      drawPopup(m_commands->at(m_selectedCommand));
+      drawPopup(m_commands->at(m_selectedCommand), commandDialog);
+
       ImGui::EndTable();
     }
     ImGui::PopFont();
@@ -434,24 +437,34 @@ void EventCommandEditor::draw() {
   ImGui::EndGroup();
 }
 
-void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
+void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command, IDialogController* commandDialog) {
   if (m_selectedCommand == 0) {
     return;
   }
+
+  if (commandDialog)
+    commandDialog->draw();
 
   ImGui::SetNextWindowSize(ImVec2{680, 550} * App::DPIHandler::get_scale());
   if (ImGui::BeginPopupModal("Command Window", nullptr,
                              ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
     if (!m_isNewEntry) {
       // We're not a new entry so copy our values so we can restore them if we cancel
-      // m_tempTrait = *m_selectedTrait;
+      // m_tempTrait = s*m_selectedTrait;
     }
     ImGui::BeginGroup();
     {
+
       if (ImGui::BeginTabBar("##orpg_command_window")) {
+
+
+        
         ImVec2 size = ImVec2{(ImGui::GetContentRegionAvail().x / 2) /2 - App::DPIHandler::scale_value(15), 0};
+
         if (ImGui::BeginTabItem("Actor")) {
           if (ImGui::Button("Change HP...", size)) {
+            commandDialog = new Dialog_ControlSwitches("controlSwitch");
+            commandDialog->SetOpen(true);
           }
           ImGui::SameLine();
           if (ImGui::Button("Change Gold...", size)) {
@@ -547,6 +560,8 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Control Switches...", size)) {
+            Dialog_ControlSwitches* test = nullptr;
+            test->draw();
           }
           ImGui::SameLine(); // Third Column
           if (ImGui::Button("Wait...", size)) {
@@ -740,7 +755,8 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
       m_selectedCommand = 0;
       ImGui::CloseCurrentPopup();
     }
-    
+
     ImGui::EndPopup();
-  }
+  } // End of "Command Window" Popup
+
 }

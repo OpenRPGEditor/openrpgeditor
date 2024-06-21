@@ -89,14 +89,14 @@ struct ShowChoiceCommand : IEventCommand {
 
   [[nodiscard]] std::string stringRep() const override {
     std::string suffix = ColorFormatter::getColor(Gray) + " (" + DecodeEnumName(background) + ", " + DecodeEnumName(positionType);
-    suffix += defaultType < 0 ? "-," : "#" + std::to_string(defaultType) + ",";
-    suffix += cancelType < 0 ? "-," : "#" + std::to_string(defaultType) + ")" + ColorFormatter::popColor();
+    suffix += (defaultType < 0 ? ", -," : ", #") + std::to_string(defaultType) + ",";
+    suffix += (cancelType < 0 ? ", -," : ", #") + std::to_string(defaultType) + ")" + ColorFormatter::popColor();
 
     std::string choiceList = std::accumulate(std::next(choices.begin()), choices.end(), *choices.begin(),
                          [](const std::string& a, const std::string& b){ return a + ", " + b; });
 
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + " " + ColorFormatter::popColor() + choiceList + suffix;
+    + "Show Choices" + colon + choiceList + suffix;
   }
 };
 

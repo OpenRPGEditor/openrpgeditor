@@ -428,7 +428,7 @@ void EventCommandEditor::draw() {
             ImGui::SetItemDefaultFocus();
         }
       }
-      drawPopup(m_commands->at(m_selectedCommand), commandDialog);
+      drawPopup(m_commands->at(m_selectedCommand));
 
       ImGui::EndTable();
     }
@@ -437,7 +437,7 @@ void EventCommandEditor::draw() {
   ImGui::EndGroup();
 }
 
-void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command, IDialogController* commandDialog) {
+void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
   if (m_selectedCommand == 0) {
     return;
   }
@@ -463,7 +463,7 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command, IDial
 
         if (ImGui::BeginTabItem("Actor")) {
           if (ImGui::Button("Change HP...", size)) {
-            commandDialog = new Dialog_ControlSwitches("controlSwitch");
+            commandDialog = new Dialog_ControlSwitches("Control Switches");
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine();

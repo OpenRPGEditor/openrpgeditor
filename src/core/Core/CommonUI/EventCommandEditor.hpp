@@ -16,7 +16,7 @@ struct EventCommandEditor {
     m_selectedCommand = 0;
   }
 private:
-  void drawPopup(std::shared_ptr<IEventCommand> command, IDialogController* controller);
+  void drawPopup(std::shared_ptr<IEventCommand> command);
   Project* m_project = nullptr;
   bool m_isNewEntry{false};
   int m_selectedCommand = 0;

@@ -36,12 +36,12 @@ void TraitsEditor::draw(std::vector<Trait>& traits, DatabaseEditor* dbEditor) {
             ImGui::Text("%s * %i%%", dbEditor->element(trait.dataId).c_str(), static_cast<int>(trait.value) * 100);
             break;
 
-          case TraitCode::Ex_da_Parameter: {
+          case TraitCode::Ex_daa_Parameter: {
             ImGui::Text("%s + %i%%", DecodeEnumName(static_cast<EXParameterSource>(trait.dataId)).c_str(),
                         static_cast<int>(trait.value) * 100);
             break;
           }
-          case TraitCode::Sp_da_Parameter:
+          case TraitCode::Sp_daa_Parameter:
             ImGui::Text("%s * %i%%", DecodeEnumName(static_cast<SPParameterSource>(trait.dataId)).c_str(),
                         static_cast<int>(trait.value) * 100);
             break;

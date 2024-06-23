@@ -228,9 +228,7 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 9999.f, ImPlotCond_Always);
-              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                printf("Max HP double clicked\n");
-              }
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
               ImPlot::PlotShaded("##MaxHP", m_selectedClass->params[0].data(), m_selectedClass->params[0].size());
               ImPlot::EndPlot();
             }
@@ -241,9 +239,7 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 9999.f, ImPlotCond_Always);
-              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                printf("Max MP double clicked\n");
-              }
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
               ImPlot::PlotShaded("##MaxMP", m_selectedClass->params[1].data(), m_selectedClass->params[1].size());
               ImPlot::EndPlot();
             }
@@ -254,9 +250,7 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
-              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                printf("Attack double clicked\n");
-              }
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
               ImPlot::PlotShaded("##Attack", m_selectedClass->params[2].data(), m_selectedClass->params[2].size());
               ImPlot::EndPlot();
             }
@@ -267,9 +261,7 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
-              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                printf("Defense double clicked\n");
-              }
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
               ImPlot::PlotShaded("##Defense", m_selectedClass->params[3].data(), m_selectedClass->params[3].size());
               ImPlot::EndPlot();
             }
@@ -279,9 +271,7 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
-              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                printf("M.Attack double clicked\n");
-              }
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
               ImPlot::PlotShaded("##M.Attack", m_selectedClass->params[4].data(), m_selectedClass->params[4].size());
               ImPlot::EndPlot();
             }
@@ -292,9 +282,7 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
-              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                printf("M.Defense double clicked\n");
-              }
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
               ImPlot::PlotShaded("##M.Defense", m_selectedClass->params[5].data(), m_selectedClass->params[5].size());
               ImPlot::EndPlot();
             }
@@ -305,9 +293,7 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
-              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                printf("Agility double clicked\n");
-              }
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
               ImPlot::PlotShaded("##Agility", m_selectedClass->params[6].data(), m_selectedClass->params[6].size());
               ImPlot::EndPlot();
             }
@@ -318,16 +304,67 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
-              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                printf("Luck double clicked\n");
-              }
+              if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
               ImPlot::PlotShaded("##Luck", m_selectedClass->params[7].data(), m_selectedClass->params[7].size());
               ImPlot::EndPlot();
             }
           }
           ImGui::EndGroup();
+          ImGui::BeginGroup();
+          {
+            ImGui::SeparatorText("Skills to Learn");
+            if (ImGui::BeginTable("##orpg_class_skills_list", 3,
+                                  ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY)) {
+              ImGui::TableSetupColumn("Level", ImGuiTableFlags_SizingFixedFit, 0.3);
+              ImGui::TableSetupColumn("Skill");
+              ImGui::TableSetupColumn("Note");
+              ImGui::TableHeadersRow();
+
+              for (auto& learning : m_selectedClass->learnings) {
+                auto skill = m_parent->skill(learning.skillId);
+                if (!skill) {
+                  continue;
+                }
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                if (ImGui::Selectable(std::format("Lv {:3}", learning.level).c_str(), false,
+                                      ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
+                  if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                    // open learning skill modal
+                  }
+                }
+                ImGui::TableNextColumn();
+                ImGui::Text(skill->name.c_str());
+                ImGui::TableNextColumn();
+                ImGui::Text(learning.note.c_str());
+              }
+
+              ImGui::EndTable();
+            }
+          }
+          ImGui::EndGroup();
         }
         drawExpPopup();
+        ImGui::EndChild();
+        ImGui::SameLine();
+        ImGui::BeginChild("##orpg_classes_class_panel_right");
+        {
+          m_traitsEditor.draw(m_selectedClass->traits, m_parent);
+
+          ImGui::BeginGroup();
+          {
+            ImGui::SeparatorText("Note:");
+            char note[8192];
+            strncpy(note, m_selectedClass->note.c_str(), IM_ARRAYSIZE(note));
+            if (ImGui::InputTextMultiline(
+                    "##orpg_classes_note", note, IM_ARRAYSIZE(note),
+                    ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(16),
+                           ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
+              m_selectedClass->note = note;
+            }
+          }
+          ImGui::EndGroup();
+        }
         ImGui::EndChild();
       }
     }

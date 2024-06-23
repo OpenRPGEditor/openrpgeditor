@@ -80,7 +80,7 @@ struct ShowTextCommand : IEventCommand {
 
 struct ShowChoiceCommand : IEventCommand {
   ~ShowChoiceCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Show_Text; }
+  [[nodiscard]] EventCode code() const override { return EventCode::Show_Choices; }
   TextBackground background;
   ChoiceWindowPosition positionType;
   std::vector<std::string> choices;

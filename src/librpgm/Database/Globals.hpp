@@ -21,7 +21,7 @@
  * _pe_ -> .
  * _del_ -> useful placeholder for name collisions inserts a null and truncats the strings
  * _deg -> °
- * _da_ -> -
+ * _daa_ -> -
  * _pl_ -> +
  *
  * After the special characters have been decoded and inserted any remaining
@@ -54,7 +54,7 @@ enum class DebuffSource {
 enum class EXParameterSource {
   Hit_Rate,
   Evasion_Rate,
-  CriticalvRate,
+  Critical_Rate,
   Critical_Evasion,
   Magic_Evasion,
   Magic_Reflection,
@@ -109,8 +109,8 @@ enum class TraitCode {
   State_Rate = 13,
   State_Resist = 14,
   Parameter = 21,
-  Ex_da_Parameter = 22,
-  Sp_da_Parameter = 23,
+  Ex_daa_Parameter = 22,
+  Sp_daa_Parameter = 23,
   Attack_Element = 31,
   Attack_State = 32,
   Attack_Speed = 33,

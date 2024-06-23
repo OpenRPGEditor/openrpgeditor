@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include "Core/CommonUI/TraitsEditor.hpp"
 
 #include <array>
 
@@ -29,6 +30,6 @@ private:
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
   bool m_showEquipEdit = false;
-
+  TraitsEditor m_traitsEditor;
   std::array<int, 4> m_expWorkValues;
 };

@@ -88,8 +88,8 @@ ExitStatus App::Application::run() {
   // ImGUI font
 
   const float font_scaling_factor{DPIHandler::get_scale()};
-  const float font_size{12.0F * font_scaling_factor};
-  const float mono_font_size{12.0F * font_scaling_factor};
+  const float font_size{settings.fontSize * font_scaling_factor};
+  const float mono_font_size{settings.monoFontSize * font_scaling_factor};
   const std::string font_path{Resources::font_path("NotoSans-SemiBold.ttf").generic_string()};
   const std::string font_path_math{Resources::font_path("JetBrainsMono-SemiBold.ttf").generic_string()};
   const std::string font_path_jp{Resources::font_path("NotoSansJP-SemiBold.ttf").generic_string()};

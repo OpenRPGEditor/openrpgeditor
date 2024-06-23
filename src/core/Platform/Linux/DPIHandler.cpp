@@ -5,17 +5,18 @@
 
 #include "Core/Debug/Instrumentor.hpp"
 #include "Core/Window.hpp"
+#include "Core/Application.hpp"
+#include "Core/Settings.hpp"
 
 namespace App {
 
 float DPIHandler::get_scale() {
   APP_PROFILE_FUNCTION();
 
-  constexpr int display_index{0};
-  const float default_dpi{96.0F};
+  float default_dpi = Settings::instance()->dpi;
   float dpi{default_dpi};
 
-  SDL_GetDisplayDPI(display_index, nullptr, &dpi, nullptr);
+  SDL_GetDisplayDPI(SDL_GetWindowDisplayIndex(APP->getWindow()->getNativeWindow()), nullptr, &dpi, nullptr);
 
   return dpi / default_dpi;
 }
@@ -33,7 +34,7 @@ void DPIHandler::set_render_scale([[maybe_unused]] SDL_Renderer* renderer) {
 
 void DPIHandler::set_global_font_scaling([[maybe_unused]] ImGuiIO* io) {
   APP_PROFILE_FUNCTION();
-  //io->FontGlobalScale = get_scale();
+  // io->FontGlobalScale = get_scale();
 }
 
-}  // namespace App
+} // namespace App

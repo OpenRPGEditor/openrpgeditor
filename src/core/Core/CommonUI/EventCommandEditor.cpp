@@ -8,6 +8,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "Core/EventCommands/Dialog_ControlSwitches.hpp"
+#include "Core/EventCommands/Dialog_ControlVariables.hpp"
 #include "Core/EventCommands/IDialogController.hpp"
 
 void insertValue(std::string& indentPad, const std::string& val, const std::string& delim) {
@@ -442,9 +443,6 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
     return;
   }
 
-  if (commandDialog)
-    commandDialog->draw();
-
   ImGui::SetNextWindowSize(ImVec2{680, 550} * App::DPIHandler::get_scale());
   if (ImGui::BeginPopupModal("Command Window", nullptr,
                              ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
@@ -457,14 +455,13 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
 
       if (ImGui::BeginTabBar("##orpg_command_window")) {
 
-
+        if (commandDialog)
+          commandDialog->draw();
         
         ImVec2 size = ImVec2{(ImGui::GetContentRegionAvail().x / 2) /2 - App::DPIHandler::scale_value(15), 0};
 
         if (ImGui::BeginTabItem("Actor")) {
           if (ImGui::Button("Change HP...", size)) {
-            commandDialog = new Dialog_ControlSwitches("Control Switches");
-            commandDialog->SetOpen(true);
           }
           ImGui::SameLine();
           if (ImGui::Button("Change Gold...", size)) {
@@ -560,8 +557,8 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Control Switches...", size)) {
-            Dialog_ControlSwitches* test = nullptr;
-            test->draw();
+            commandDialog = new Dialog_ControlSwitches("Control Switches", m_project);
+            commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third Column
           if (ImGui::Button("Wait...", size)) {
@@ -570,6 +567,8 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Control Variables...", size)) {
+            commandDialog = new Dialog_ControlVariables("Control Variables", m_project);
+            commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third Column
           if (ImGui::Button("Erase Event", size)) {

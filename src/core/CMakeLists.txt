@@ -59,6 +59,8 @@ add_library(
         Core/EventCommands/Dialog_ControlSwitches.hpp
         Core/EventCommands/Dialog_ControlVariables.cpp
         Core/EventCommands/Dialog_ControlVariables.hpp
+        Core/EventCommands/Dialog_GameData.cpp
+        Core/EventCommands/Dialog_GameData.hpp
 )
 
 # Define set of OS specific files to include

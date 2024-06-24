@@ -1,11 +1,10 @@
-
-#include "Dialog_ControlSwitches.hpp"
+#include "Dialog_GameData.hpp"
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"
 #include "Core/Project.hpp"
 
-void Dialog_ControlSwitches::draw() {
+void Dialog_GameData::draw() {
 
   if (IsOpen()) {
     ImGui::OpenPopup(m_name);
@@ -18,8 +17,8 @@ void Dialog_ControlSwitches::draw() {
     if (picker) {
       auto [closed, confirmed]  = picker->draw();
       if (confirmed) {
-        command->start = picker->selection();
-        command->end = picker->selection();
+        command.start = picker->selection();
+        command.end = picker->selection();
         picker.reset();
       }
     }
@@ -33,7 +32,7 @@ void Dialog_ControlSwitches::draw() {
 
     bool isSwitchEnabled = switchType == 1;
     std::string text =
-        isSwitchEnabled ? "##commonevent_switch_empty" : (command->start == 0 ? "" : std::format("{:04} ", command->start) + m_project->switche(command->start));
+        isSwitchEnabled ? "##commonevent_switch_empty" : (command.start == 0 ? "" : std::format("{:04} ", command.start) + m_project->switche(command.start));
     ImGui::PushID("##controlswitch_id");
     ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 50) - (16 * App::DPIHandler::get_scale()));
     ImGui::BeginDisabled(isSwitchEnabled);
@@ -71,14 +70,14 @@ void Dialog_ControlSwitches::draw() {
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 75, ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {
       if (isSwitchEnabled) {
-        command->start = switchId;
-        command->end = switchId;
+        command.start = switchId;
+        command.end = switchId;
       }
       else {
-        command->start = rand1;
-        command->end = rand2;
+        command.start = rand1;
+        command.end = rand2;
       }
-      command->turnOff = static_cast<ValueControl>(operationBool);
+      command.turnOff = static_cast<ValueControl>(operationBool);
 
       // Insert command into m_commands?
       ImGui::CloseCurrentPopup();

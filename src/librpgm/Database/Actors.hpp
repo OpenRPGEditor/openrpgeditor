@@ -84,6 +84,10 @@ public:
   }
   int count() const { return m_actors.size() - 1; }
 
+
+  std::vector<Actor>& actorList() { return m_actors; }
+  const std::vector<Actor>& actorList() const { return m_actors; }
+
 private:
   friend class DBActorsTab;
   std::vector<Actor> m_actors;

@@ -57,6 +57,8 @@ public:
     return nullptr;
   }
 
+  std::vector<Weapon>& weaponList() { return m_weapons; }
+  const std::vector<Weapon>& weaponList() const { return m_weapons; }
 private:
   std::vector<Weapon> m_weapons;
 };

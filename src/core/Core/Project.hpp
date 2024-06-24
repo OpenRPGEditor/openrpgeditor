@@ -143,6 +143,24 @@ public:
   MapEditor* mapEditor() { return &m_mapEditor; }
   const MapEditor* mapEditor() const { return &m_mapEditor; }
 
+  Items& items() { return m_items; }
+  const Items& items() const { return m_items; }
+
+  Armors& armors() { return m_armors; }
+  const Armors& armors() const { return m_armors; }
+
+  Weapons& weapons() { return m_weapons; }
+  const Weapons& weapons() const { return m_weapons; }
+
+  Actors& actors() { return m_actors; }
+  const Actors& actors() const { return m_actors; }
+
+  Troops& troops() { return m_troops; }
+  const Troops& troops() const { return m_troops; }
+
+  std::vector<std::optional<Event>> events() { return m_map->events; }
+  std::vector<std::optional<Event>> events() const { return m_map->events; }
+
 private:
   void drawMenu();
   void drawFileDialog();

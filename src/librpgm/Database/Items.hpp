@@ -64,6 +64,8 @@ public:
 
     return nullptr;
   }
+  std::vector<Item>& itemList() { return m_items; }
+  const std::vector<Item>& itemList() const { return m_items; }
 
 private:
   std::vector<Item> m_items;

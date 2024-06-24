@@ -57,6 +57,8 @@ public:
     return nullptr;
   }
 
+  std::vector<Armor>& armorList() { return m_armors; }
+  const std::vector<Armor>& armorList() const { return m_armors; }
 private:
   std::vector<Armor> m_armors;
 };

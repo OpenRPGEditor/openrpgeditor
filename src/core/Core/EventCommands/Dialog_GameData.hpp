@@ -9,7 +9,7 @@
 struct Project;
 struct Dialog_GameData : IDialogController {
   Dialog_GameData() = delete;
-  explicit Dialog_GameData(const char* name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_GameData(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
     command.emplace();
   }
   void draw() override;

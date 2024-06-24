@@ -5,7 +5,7 @@
 struct Project;
 struct Dialog_ControlVariables : IDialogController {
   Dialog_ControlVariables() = delete;
-  explicit Dialog_ControlVariables(const char* name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_ControlVariables(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
     command.emplace();
     command->start = 0;
     command->end = 0;

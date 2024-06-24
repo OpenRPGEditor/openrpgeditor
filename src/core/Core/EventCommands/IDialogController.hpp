@@ -1,7 +1,8 @@
 #pragma once
+#include <string>
 
 struct IDialogController {
-  explicit IDialogController(const char* name) : m_open(false), m_name(name) {}
+  explicit IDialogController(const std::string& name) : m_open(false), m_name(name) {}
   virtual ~IDialogController() = default;
   virtual void draw() = 0;
   bool IsOpen() const { return m_open; }
@@ -9,5 +10,5 @@ struct IDialogController {
 
 protected:
   bool m_open;
-  const char* m_name;
+  std::string m_name;
 };

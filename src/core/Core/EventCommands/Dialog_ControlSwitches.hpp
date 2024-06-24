@@ -5,7 +5,7 @@
 struct Project;
 struct Dialog_ControlSwitches : IDialogController {
   Dialog_ControlSwitches() = delete;
-  explicit Dialog_ControlSwitches(const char* name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_ControlSwitches(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
     command->start = 0;
     command->end = 0;
   }

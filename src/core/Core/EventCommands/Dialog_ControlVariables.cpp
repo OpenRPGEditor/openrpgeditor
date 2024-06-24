@@ -8,13 +8,13 @@
 void Dialog_ControlVariables::draw() {
 
   if (IsOpen()) {
-    ImGui::OpenPopup(m_name);
+    ImGui::OpenPopup(m_name.c_str());
     //SetOpen(false);
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{350, 340} * App::DPIHandler::get_scale());
-  if (ImGui::BeginPopupModal(m_name, &m_open, ImGuiWindowFlags_NoScrollbar)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar)) {
     if (picker) {
       auto [closed, confirmed]  = picker->draw();
       if (confirmed) {

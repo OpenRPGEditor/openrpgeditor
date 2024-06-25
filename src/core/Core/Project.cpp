@@ -135,6 +135,7 @@ bool Project::close(bool save) {
   m_mapInfos = {};
 
   m_map.reset();
+  m_mapEditor.setMap(nullptr, nullptr);
   m_resourceManager.reset();
   m_mapListView.reset();
   m_isLoaded = false;

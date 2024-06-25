@@ -107,3 +107,19 @@
   }
 
 #endif
+
+#if 0
+  if (m_map) {
+    printf("%zu bytes, %i w %i h\n", m_map->data.size(), m_map->width, m_map->height);
+    for (int z = 0; z < 6; z++) {
+      printf("-----------------Map Layer %.4i-----------------\n", z);
+      for (int y = 0; y < m_map->height; y++) {
+        for (int x = 0; x < m_map->width; x++) {
+          int tileId = (z * m_map->height + y) * m_map->width + x;
+          printf("%.4X ", m_map->data[tileId]);
+        }
+        printf("\n");
+      }
+    }
+  }
+#endif

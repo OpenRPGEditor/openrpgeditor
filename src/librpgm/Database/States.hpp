@@ -70,6 +70,11 @@ public:
     return nullptr;
   }
 
+  [[nodiscard]] int count() const { return m_states.size() - 1; }
+
+  [[nodiscard]] std::vector<State>& states() { return m_states; }
+  [[nodiscard]] const std::vector<State>& states() const { return m_states; }
+
 private:
   std::vector<State> m_states;
 };

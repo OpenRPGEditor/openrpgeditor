@@ -15,6 +15,9 @@ constexpr ImVec2 ParameterGraphSize{128, 128};
 
 DBClassesTab::DBClassesTab(Classes& classes, DatabaseEditor* parent) : IDBEditorTab(parent), m_classes(classes) {
   m_selectedClass = m_classes.classType(1);
+  if (m_selectedClass) {
+    m_traitsEditor.setTraits(&m_selectedClass->traits);
+  }
   m_maxClasses = m_classes.count();
 }
 
@@ -171,6 +174,7 @@ void DBClassesTab::draw() {
               if (ImGui::Selectable(name, &class_ == m_selectedClass) ||
                   (ImGui::IsItemFocused() && m_selectedClass != &class_)) {
                 m_selectedClass = &class_;
+                m_traitsEditor.setTraits(&m_selectedClass->traits);
               }
             }
           }
@@ -225,6 +229,7 @@ void DBClassesTab::draw() {
             if (ImPlot::BeginPlot("Max HP", ParameterGraphSize * App::DPIHandler::get_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
+              ImPlot::SetNextFillStyle(ImVec4{.81f, .5f, .37f, 1.f});
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 9999.f, ImPlotCond_Always);
@@ -236,6 +241,8 @@ void DBClassesTab::draw() {
             if (ImPlot::BeginPlot("Max MP", ParameterGraphSize * App::DPIHandler::get_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
+
+              ImPlot::SetNextFillStyle(ImVec4{.31f, .5f, .87f, 1.f});
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 9999.f, ImPlotCond_Always);
@@ -247,6 +254,7 @@ void DBClassesTab::draw() {
             if (ImPlot::BeginPlot("Attack", ParameterGraphSize * App::DPIHandler::get_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
+              ImPlot::SetNextFillStyle(ImVec4{.75f, .25f, .37f, 1.f});
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
@@ -258,6 +266,7 @@ void DBClassesTab::draw() {
             if (ImPlot::BeginPlot("Defense", ParameterGraphSize * App::DPIHandler::get_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
+              ImPlot::SetNextFillStyle(ImVec4{.56f, .69f, .37f, 1.f});
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
@@ -268,6 +277,7 @@ void DBClassesTab::draw() {
             if (ImPlot::BeginPlot("M.Attack", ParameterGraphSize * App::DPIHandler::get_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
+              ImPlot::SetNextFillStyle(ImVec4{.75f, .31f, .69f, 1.f});
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
@@ -279,6 +289,7 @@ void DBClassesTab::draw() {
             if (ImPlot::BeginPlot("M.Defense", ParameterGraphSize * App::DPIHandler::get_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
+              ImPlot::SetNextFillStyle(ImVec4{.25f, .62f, .25f, 1.f});
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
@@ -290,6 +301,7 @@ void DBClassesTab::draw() {
             if (ImPlot::BeginPlot("Agility", ParameterGraphSize * App::DPIHandler::get_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
+              ImPlot::SetNextFillStyle(ImVec4{.31f, .69f, .87f, 1.f});
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
@@ -301,6 +313,7 @@ void DBClassesTab::draw() {
             if (ImPlot::BeginPlot("Luck", ParameterGraphSize * App::DPIHandler::get_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
+              ImPlot::SetNextFillStyle(ImVec4{.81f, .69f, .25f, 1.f});
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
@@ -314,8 +327,9 @@ void DBClassesTab::draw() {
           {
             ImGui::SeparatorText("Skills to Learn");
             if (ImGui::BeginTable("##orpg_class_skills_list", 3,
-                                  ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY)) {
-              ImGui::TableSetupColumn("Level", ImGuiTableFlags_SizingFixedFit, 0.3);
+                                  ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit |
+                                      ImGuiTableFlags_ScrollY)) {
+              ImGui::TableSetupColumn("Level");
               ImGui::TableSetupColumn("Skill");
               ImGui::TableSetupColumn("Note");
               ImGui::TableHeadersRow();
@@ -339,6 +353,20 @@ void DBClassesTab::draw() {
                 ImGui::Text(learning.note.c_str());
               }
 
+              ImGui::TableNextRow();
+              if (ImGui::TableNextColumn()) {
+                if (ImGui::Selectable("##classes_editor_learning_dummy", false,
+                                      ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
+                  if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                    // m_tempTrait = Trait();
+                    // m_isNewEntry = true;
+                    // m_updateTab = true;
+                    // m_tempTraitAssigned = false;
+                    // m_selectedTrait = &m_tempTrait;
+                    // ImGui::OpenPopup(TraitsEditorPopupId.data());
+                  }
+                }
+              }
               ImGui::EndTable();
             }
           }
@@ -349,7 +377,7 @@ void DBClassesTab::draw() {
         ImGui::SameLine();
         ImGui::BeginChild("##orpg_classes_class_panel_right");
         {
-          m_traitsEditor.draw(m_selectedClass->traits, m_parent);
+          m_traitsEditor.draw(m_parent);
 
           ImGui::BeginGroup();
           {

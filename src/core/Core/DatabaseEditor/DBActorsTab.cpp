@@ -10,6 +10,9 @@
 
 DBActorsTab::DBActorsTab(Actors& actors, DatabaseEditor* parent) : IDBEditorTab(parent), m_actors(actors) {
   m_selectedActor = m_actors.actor(1);
+  if (m_selectedActor) {
+    m_traitsEditor.setTraits(&m_selectedActor->traits);
+  }
   m_maxActors = m_actors.count();
 }
 
@@ -42,6 +45,7 @@ void DBActorsTab::draw() {
                   (ImGui::IsItemFocused() && m_selectedActor != &actor)) {
                 m_selectedActor = &actor;
                 m_charaterSheet.emplace(m_selectedActor->characterName);
+                m_traitsEditor.setTraits(&m_selectedActor->traits);
               }
             }
           }
@@ -187,8 +191,8 @@ void DBActorsTab::draw() {
           {
             ImGui::SeparatorText("Initial Equipment");
             if (ImGui::BeginTable("##orpg_actors_actor_init_equip", 2,
-                                  ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY |
-                                      ImGuiTableFlags_ScrollY,
+                                  ImGuiTableFlags_Borders | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg |
+                                      ImGuiTableFlags_ScrollY | ImGuiTableFlags_ScrollY,
                                   ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(15),
                                          ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
 
@@ -198,7 +202,8 @@ void DBActorsTab::draw() {
               /* Weapon */
               ImGui::TableNextRow();
               if (ImGui::TableNextColumn()) {
-                if (ImGui::Selectable(m_parent->equipType(1).c_str(), false,
+                auto equip = m_parent->equipType(1);
+                if (ImGui::Selectable(equip ? equip->c_str() : "##actors_editor_actor_equip", false,
                                       ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
                   if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
                     m_showEquipEdit = true;
@@ -221,7 +226,7 @@ void DBActorsTab::draw() {
               for (int i = 2; i < m_parent->equipTypes().size(); ++i) {
                 ImGui::TableNextRow();
                 if (ImGui::TableNextColumn()) {
-                  if (ImGui::Selectable(m_parent->equipType(i).c_str(), false,
+                  if (ImGui::Selectable(m_parent->equipType(i)->c_str(), false,
                                         ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
                     if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
                       m_showEquipEdit = true;
@@ -253,7 +258,7 @@ void DBActorsTab::draw() {
         ImGui::SameLine();
         ImGui::BeginChild("##orpg_actors_actor_panel_right");
         {
-          m_traitsEditor.draw(m_selectedActor->traits, m_parent);
+          m_traitsEditor.draw(m_parent);
 
           ImGui::BeginGroup();
           {

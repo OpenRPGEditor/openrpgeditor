@@ -10,6 +10,9 @@ struct DBStatesTab : IDBEditorTab {
   [[nodiscard]] State* state(int id) { return m_states.state(id); }
   [[nodiscard]] const State* state(int id) const { return m_states.state(id); }
 
+  [[nodiscard]] States& states() { return m_states; }
+  [[nodiscard]] const States& states() const { return m_states; }
+
 private:
   States& m_states;
 };

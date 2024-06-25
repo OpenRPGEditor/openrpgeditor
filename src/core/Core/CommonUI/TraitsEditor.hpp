@@ -6,11 +6,16 @@
 struct DatabaseEditor;
 
 struct TraitsEditor {
-  void draw(std::vector<Trait>& traits, DatabaseEditor* dbEditor);
+  void setTraits(std::vector<Trait>* traits) { m_traits = traits; }
+  void draw(DatabaseEditor* dbEditor);
 
 private:
-  void drawPopup(std::vector<Trait>& traits, DatabaseEditor* dbEditor);
+  void drawPopup(DatabaseEditor* dbEditor);
+  std::vector<Trait>* m_traits = nullptr;
   Trait* m_selectedTrait = nullptr;
+  bool m_updateTab{false};
   bool m_isNewEntry{false};
+  bool m_tempTraitAssigned{false};
   Trait m_tempTrait;
+  Trait* m_deletingTrait = nullptr;
 };

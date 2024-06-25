@@ -78,18 +78,79 @@ public:
   static System load(std::string_view filepath);
   bool serialize(std::string_view filename);
 
-  std::string& variable(int id) { return variables[id]; }
-  const std::string& variable(int id) const { return variables[id]; }
+  [[nodiscard]] std::string& variable(const int id) { return variables[id]; }
+  [[nodiscard]] const std::string& variable(const int id) const { return variables[id]; }
 
-  std::string& switche(int id) { return switches[id]; }
-  const std::string& switche(int id) const { return switches[id]; }
+  [[nodiscard]] std::string& switche(const int id) { return switches[id]; }
+  [[nodiscard]] const std::string& switche(const int id) const { return switches[id]; }
 
-  std::string& skillType(int id) { return skillTypes[id]; }
-  const std::string& skillType(int id) const { return skillTypes[id]; }
+  [[nodiscard]] std::string* element(const int id) {
+    if (id < 0 || id >= elements.size()) {
+      return nullptr;
+    }
+    return &elements[id];
+  }
 
-  std::string& equipType(int id) { return equipTypes[id]; }
-  const std::string& equipType(int id) const { return equipTypes[id]; }
+  [[nodiscard]] const std::string* element(const int id) const {
+    if (id < 0 || id >= elements.size()) {
+      return nullptr;
+    }
+    return &elements[id];
+  }
 
-private:
-  std::vector<System> m_system;
+  [[nodiscard]] std::string* skillType(const int id) {
+    if (id < 0 || id >= skillTypes.size()) {
+      return nullptr;
+    }
+    return &skillTypes[id];
+  }
+
+  [[nodiscard]] const std::string* skillType(const int id) const {
+    if (id < 0 || id >= skillTypes.size()) {
+      return nullptr;
+    }
+    return &skillTypes[id];
+  }
+
+  [[nodiscard]] std::string* equipType(const int id) {
+    if (id < 0 || id >= equipTypes.size()) {
+      return nullptr;
+    }
+    return &equipTypes[id];
+  }
+
+  [[nodiscard]] const std::string* equipType(const int id) const {
+    if (id < 0 || id >= equipTypes.size()) {
+      return nullptr;
+    }
+    return &equipTypes[id];
+  }
+
+  [[nodiscard]] std::string* armorType(const int id) {
+    if (id < 0 || id >= armorTypes.size()) {
+      return nullptr;
+    }
+    return &armorTypes[id];
+  }
+
+  [[nodiscard]] const std::string* armorType(int id) const {
+    if (id < 0 || id >= armorTypes.size()) {
+      return nullptr;
+    }
+    return &armorTypes[id];
+  }
+
+  [[nodiscard]] std::string* weaponType(const int id) {
+    if (id < 0 || id >= weaponTypes.size()) {
+      return nullptr;
+    }
+    return &weaponTypes[id];
+  }
+
+  [[nodiscard]] const std::string* weaponType(const int id) const {
+    if (id < 0 || id >= weaponTypes.size()) {
+      return nullptr;
+    }
+    return &weaponTypes[id];
+  }
 };

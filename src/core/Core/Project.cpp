@@ -32,8 +32,7 @@ constexpr std::array KnownRPGMVVersions = {
 };
 
 bool Project::load(std::string_view filePath, std::string_view basePath) {
-  m_undoStack.clear();
-  m_redoStack.clear();
+  close();
   SDL_SetCursor(waitCursor);
   std::string version;
   std::ifstream file(filePath.data());

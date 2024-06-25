@@ -19,15 +19,21 @@ private:
   int d_source;
   int d_raw_source = 1;
   int d_value = 0;
-  static constexpr auto ActorSourceNames = magic_enum::enum_names<ActorDataSource>();
-  static constexpr auto EnemySourceNames = magic_enum::enum_names<EnemyDataSource>();
-  static constexpr auto CharacterSourceNames = magic_enum::enum_names<CharacterDataSource>();
-  static constexpr auto OtherSourceNames = magic_enum::enum_names<OtherDataSource>();
-  std::string current_actorSource;
-  std::string current_enemySource;
-  int current_otherSource;
-  int current_partySource = 1;
+
+   static constexpr auto ActorData = magic_enum::enum_values<ActorDataSource>();
+   static constexpr auto EnemyData = magic_enum::enum_values<EnemyDataSource>();
+   static constexpr auto CharacterData = magic_enum::enum_values<CharacterDataSource>();
+   static constexpr auto OtherSource = magic_enum::enum_values<OtherDataSource>();
+
+  int current_otherSource = 0;
+  int current_partySource = 0;
   int current_characterSource = 0;
+  int current_enemySource = 0;
+
+  int current_actorDataSource = 0;;
+  int current_enemyDataSource = 0;;
+  int current_characterDataSource = 0;
+
   std::optional<ControlVariables> command;
   std::optional<ObjectPicker<Item>> i_picker;
   std::optional<ObjectPicker<Actor>> a_picker;

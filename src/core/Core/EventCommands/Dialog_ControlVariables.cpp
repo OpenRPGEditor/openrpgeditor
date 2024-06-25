@@ -1,5 +1,7 @@
 
 #include "Dialog_ControlVariables.hpp"
+
+#include "Dialog_GameData.hpp"
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"
@@ -28,6 +30,10 @@ void Dialog_ControlVariables::draw() {
         picker.reset();
       }
     }
+
+    if (gameDataDialog)
+      gameDataDialog->draw();
+
     ImGui::SeparatorText("Variable");
     static int switchType = 0;
     ImGui::RadioButton("Single", &switchType, 0); // Specific Switch
@@ -135,8 +141,9 @@ void Dialog_ControlVariables::draw() {
     if (ImGui::Button(text.c_str(), ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) -
                                                (15 * App::DPIHandler::get_scale()),
                                            0})) {
-      // Open Menu to select switch
-      // TODO
+
+      gameDataDialog = new Dialog_GameData("Game Data", m_project);
+      gameDataDialog->SetOpen(true);
     }
     ImGui::PopID();
     ImGui::PopItemWidth();

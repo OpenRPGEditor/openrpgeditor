@@ -11,7 +11,7 @@ void Dialog_GameData::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{300, 200} * App::DPIHandler::get_scale());
+  ImGui::SetNextWindowSize(ImVec2{500, 300} * App::DPIHandler::get_scale());
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
 
     ImGui::SeparatorText("Game Data");
@@ -36,7 +36,7 @@ void Dialog_GameData::draw() {
     ImGui::Text("(Possession Count)");
 
     // Weapon Selection
-    ImGui::RadioButton("Weapon", &d_source, 0);
+    ImGui::RadioButton("Weapon", &d_source, 1);
     ImGui::SameLine();
     text = d_source != 1 ? "##gamedata_weapon_empty"
                          : std::format("{:04} ", d_raw_source) + m_project->weapon(d_raw_source)->name;
@@ -52,7 +52,7 @@ void Dialog_GameData::draw() {
     ImGui::Text("(Possession Count)");
 
     // Armor Selection
-    ImGui::RadioButton("Armor", &d_source, 0);
+    ImGui::RadioButton("Armor", &d_source, 2);
     ImGui::SameLine();
     text = d_source != 2 ? "##gamedata_armor_empty"
                          : std::format("{:04} ", d_raw_source) + m_project->armor(d_raw_source)->name;
@@ -68,7 +68,7 @@ void Dialog_GameData::draw() {
     ImGui::Text("(Possession Count)");
 
     // Actor Selection
-    ImGui::RadioButton("Actor", &d_source, 0);
+    ImGui::RadioButton("Actor", &d_source, 3);
     ImGui::SameLine();
     text = d_source != 3 ? "##gamedata_actor_empty"
                          : std::format("{:04} ", d_raw_source) + m_project->actor(d_raw_source)->name;
@@ -78,26 +78,27 @@ void Dialog_GameData::draw() {
                       ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_scale()), 0})) {
       a_picker = ObjectPicker<Actor>("Actors"sv, m_project->actors().actorList(), 0);
     }
+    ImGui::EndDisabled();
     ImGui::PopID();
     ImGui::SameLine();
+    ImGui::BeginDisabled(d_source != 3);
     if (ImGui::BeginCombo("##gamedata_actor_combo", "")) {
-      for (auto dataSource : ActorSourceNames) {
-        bool is_selected = (current_actorSource == dataSource);
-        if (ImGui::Selectable(dataSource.data(), is_selected))
-          current_actorSource = dataSource;
+      for (auto dataSource : ActorData) {
+        bool is_selected = (current_actorDataSource == static_cast<int>(dataSource));
+        if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected))
+          current_actorDataSource = static_cast<int>(dataSource);
         if (is_selected)
           ImGui::SetItemDefaultFocus();
       }
-    }
     ImGui::EndCombo();
+    }
     ImGui::EndDisabled();
 
     // Enemy Selection
-    ImGui::RadioButton("Enemy", &d_source, 0);
+    ImGui::RadioButton("Enemy", &d_source, 4);
     ImGui::SameLine();
-    ImGui::PushID("##gamedata_enemy_id");
     ImGui::BeginDisabled(d_source != 4);
-#if 0 // This needs to be re-written
+
     if (ImGui::BeginCombo("##gamedata_enemy", "")) {
       for (auto dataSource : m_project->troops().troopList()) {
         bool is_selected = (current_enemySource == dataSource.id);
@@ -106,30 +107,29 @@ void Dialog_GameData::draw() {
         if (is_selected)
           ImGui::SetItemDefaultFocus();
       }
-    }
     ImGui::EndCombo();
-#endif
-
-    ImGui::PopID();
+    }
+    ImGui::EndDisabled();
+    
     ImGui::SameLine();
+    ImGui::BeginDisabled(d_source != 4);
     if (ImGui::BeginCombo("##gamedata_enemy_combo", "")) {
-      for (auto dataSource : EnemySourceNames) {
-        bool is_selected = (current_enemySource == dataSource);
-        if (ImGui::Selectable(dataSource.data(), is_selected))
-          current_enemySource = dataSource;
+      for (auto dataSource : EnemyData) {
+        bool is_selected = (current_enemyDataSource == static_cast<int>(dataSource));
+        if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected))
+          current_enemySource = static_cast<int>(dataSource);
         if (is_selected)
           ImGui::SetItemDefaultFocus();
       }
-    }
     ImGui::EndCombo();
+    }
     ImGui::EndDisabled();
 
     // Character Selection
-    ImGui::RadioButton("Character", &d_source, 0);
+    ImGui::RadioButton("Character", &d_source, 5);
     ImGui::SameLine();
-    ImGui::PushID("##gamedata_character_id");
-    ImGui::BeginDisabled(d_source != 5);
 
+    ImGui::BeginDisabled(d_source != 5);
     if (ImGui::BeginCombo("##gamedata_character", "")) {
       for (auto& dataSource : m_project->events()) {
         bool is_selected = (current_characterSource == dataSource->id);
@@ -138,33 +138,30 @@ void Dialog_GameData::draw() {
         if (is_selected)
           ImGui::SetItemDefaultFocus();
       }
-    }
     ImGui::EndCombo();
+    }
+    ImGui::EndDisabled();
 
-    ImGui::PopID();
     ImGui::SameLine();
-    /* TODO: Rethink this */
+
+    ImGui::BeginDisabled(d_source != 5);
     if (ImGui::BeginCombo("##gamedata_character_combo", "")) {
-      for (auto dataSource : CharacterSourceNames) {
-        bool is_selected =
-            (static_cast<CharacterDataSource>(current_characterSource) ==
-             magic_enum::enum_cast<CharacterDataSource>(dataSource.data(), magic_enum::case_insensitive).value());
-        if (ImGui::Selectable(dataSource.data(), is_selected))
-          current_characterSource = static_cast<int>(
-              magic_enum::enum_cast<CharacterDataSource>(dataSource.data(), magic_enum::case_insensitive).value());
+      for (auto dataSource : CharacterData) {
+        bool is_selected = current_characterDataSource == static_cast<int>(dataSource);
+        if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected))
+          current_characterSource = static_cast<int>(dataSource);
         if (is_selected)
           ImGui::SetItemDefaultFocus();
       }
-    }
     ImGui::EndCombo();
+    }
     ImGui::EndDisabled();
 
     // Party Selection
-    ImGui::RadioButton("Party", &d_source, 0);
+    ImGui::RadioButton("Party", &d_source, 6);
     ImGui::SameLine();
-    ImGui::PushID("##gamedata_party_id");
-    ImGui::BeginDisabled(d_source != 6);
 
+    ImGui::BeginDisabled(d_source != 6);
     if (ImGui::BeginCombo("##gamedata_party", "")) {
       for (int n = 0; n < 9; n++) {
         bool is_selected = (current_partySource == n);
@@ -173,32 +170,30 @@ void Dialog_GameData::draw() {
         if (is_selected)
           ImGui::SetItemDefaultFocus();
       }
-    }
-    ImGui::PopID();
     ImGui::EndCombo();
+    }
     ImGui::EndDisabled();
     ImGui::SameLine();
     ImGui::Text("(Actor ID)");
 
     // Other Selection
-    ImGui::RadioButton("Other", &d_source, 0);
+    ImGui::RadioButton("Other", &d_source, 7);
     ImGui::SameLine();
-    ImGui::PushID("##gamedata_other_id");
+
     ImGui::BeginDisabled(d_source != 7);
-#if 0 // Rewrite this
     if (ImGui::BeginCombo("##gamedata_other", "")) {
-      for (auto dataSource : OtherSourceNames) {
-        bool is_selected = (current_enemySource == dataSource);
-        if (ImGui::Selectable(dataSource.data(), is_selected))
-          current_otherSource = dataSource;
-        if (is_selected)
-          ImGui::SetItemDefaultFocus();
+      for (auto dataSource : OtherSource) {
+        bool is_selected = (current_otherSource == static_cast<int>(dataSource));
+        if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected, 0,
+        ImVec2(ImGui::GetWindowContentRegionMax().x / 2 - (15 * App::DPIHandler::get_scale()), 0))) {
+          current_otherSource = static_cast<int>(dataSource);
+          if (is_selected)
+            ImGui::SetItemDefaultFocus();
+        }
       }
-    }
     ImGui::EndCombo();
-#endif
+    }
     ImGui::EndDisabled();
-    ImGui::PopID();
 
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 75, ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {

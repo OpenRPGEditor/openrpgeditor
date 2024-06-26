@@ -16,7 +16,7 @@ struct Dialog_GameData : IDialogController {
 
   Project* m_project = nullptr;
 private:
-  int d_source;
+  int d_source = 0;
   int d_raw_source = 1;
   int d_value = 0;
 
@@ -30,8 +30,8 @@ private:
   int current_characterSource = 0;
   int current_enemySource = 0;
 
-  int current_actorDataSource = 0;;
-  int current_enemyDataSource = 0;;
+  int current_actorDataSource = 0;
+  int current_enemyDataSource = 0;
   int current_characterDataSource = 0;
 
   std::optional<ControlVariables> command;

@@ -10,7 +10,7 @@ void Dialog_GameData::draw() {
     // SetOpen(false);
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.f));
   ImGui::SetNextWindowSize(ImVec2{500, 300} * App::DPIHandler::get_scale());
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
 
@@ -75,20 +75,26 @@ void Dialog_GameData::draw() {
     ImGui::PushID("##gamedata_actor_id");
     ImGui::BeginDisabled(d_source != 3);
     if (ImGui::Button(text.c_str(),
-                      ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_scale()), 0})) {
+                      ImVec2{((ImGui::GetWindowContentRegionMax().x / 4 + 50)) - (15 * App::DPIHandler::get_scale()), 0})) {
       a_picker = ObjectPicker<Actor>("Actors"sv, m_project->actors().actorList(), 0);
     }
     ImGui::EndDisabled();
     ImGui::PopID();
     ImGui::SameLine();
     ImGui::BeginDisabled(d_source != 3);
+    ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 4 + 50);
     if (ImGui::BeginCombo("##gamedata_actor_combo", "")) {
       for (auto dataSource : ActorData) {
         bool is_selected = (current_actorDataSource == static_cast<int>(dataSource));
-        if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected))
+
+
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0.5f, 0.f));
+        if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected)) {
           current_actorDataSource = static_cast<int>(dataSource);
-        if (is_selected)
-          ImGui::SetItemDefaultFocus();
+          if (is_selected)
+            ImGui::SetItemDefaultFocus();
+        }
+        ImGui::PopStyleVar();
       }
     ImGui::EndCombo();
     }
@@ -99,27 +105,35 @@ void Dialog_GameData::draw() {
     ImGui::SameLine();
     ImGui::BeginDisabled(d_source != 4);
 
+    ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 4 + 50);
     if (ImGui::BeginCombo("##gamedata_enemy", "")) {
       for (auto dataSource : m_project->troops().troopList()) {
         bool is_selected = (current_enemySource == dataSource.id);
-        if (ImGui::Selectable(("#" + std::to_string(dataSource.id) + dataSource.name).c_str(), is_selected))
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0.5f, 0.f));
+        if (ImGui::Selectable(("#" + std::to_string(dataSource.id) + dataSource.name).c_str(), is_selected)) {
           current_enemySource = dataSource.id;
-        if (is_selected)
-          ImGui::SetItemDefaultFocus();
+          if (is_selected)
+            ImGui::SetItemDefaultFocus();
+        }
+        ImGui::PopStyleVar();
       }
     ImGui::EndCombo();
     }
     ImGui::EndDisabled();
-    
+
     ImGui::SameLine();
     ImGui::BeginDisabled(d_source != 4);
+    ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 4 + 50);
     if (ImGui::BeginCombo("##gamedata_enemy_combo", "")) {
       for (auto dataSource : EnemyData) {
         bool is_selected = (current_enemyDataSource == static_cast<int>(dataSource));
-        if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected))
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0.5f, 0.f));
+        if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected)) {
           current_enemySource = static_cast<int>(dataSource);
-        if (is_selected)
-          ImGui::SetItemDefaultFocus();
+          if (is_selected)
+            ImGui::SetItemDefaultFocus();
+        }
+        ImGui::PopStyleVar();
       }
     ImGui::EndCombo();
     }
@@ -130,13 +144,17 @@ void Dialog_GameData::draw() {
     ImGui::SameLine();
 
     ImGui::BeginDisabled(d_source != 5);
+    ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 4 + 50);
     if (ImGui::BeginCombo("##gamedata_character", "")) {
       for (auto& dataSource : m_project->events()) {
         bool is_selected = (current_characterSource == dataSource->id);
-        if (ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected))
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0.5f, 0.f));
+        if (ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
           current_characterSource = dataSource->id;
-        if (is_selected)
-          ImGui::SetItemDefaultFocus();
+          if (is_selected)
+            ImGui::SetItemDefaultFocus();
+        }
+        ImGui::PopStyleVar();
       }
     ImGui::EndCombo();
     }
@@ -145,13 +163,17 @@ void Dialog_GameData::draw() {
     ImGui::SameLine();
 
     ImGui::BeginDisabled(d_source != 5);
+    ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 4 + 50);
     if (ImGui::BeginCombo("##gamedata_character_combo", "")) {
       for (auto dataSource : CharacterData) {
         bool is_selected = current_characterDataSource == static_cast<int>(dataSource);
-        if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected))
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(3.0f, 0.f));
+        if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected)) {
           current_characterSource = static_cast<int>(dataSource);
-        if (is_selected)
-          ImGui::SetItemDefaultFocus();
+          if (is_selected)
+            ImGui::SetItemDefaultFocus();
+        }
+        ImGui::PopStyleVar();
       }
     ImGui::EndCombo();
     }
@@ -162,13 +184,17 @@ void Dialog_GameData::draw() {
     ImGui::SameLine();
 
     ImGui::BeginDisabled(d_source != 6);
+    ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 2);
     if (ImGui::BeginCombo("##gamedata_party", "")) {
       for (int n = 0; n < 9; n++) {
         bool is_selected = (current_partySource == n);
-        if (ImGui::Selectable(("Member #" + std::to_string(n)).c_str(), is_selected))
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0.5f, 0.f));
+        if (ImGui::Selectable(("Member #" + std::to_string(n)).c_str(), is_selected)) {
           current_partySource = n;
-        if (is_selected)
-          ImGui::SetItemDefaultFocus();
+          if (is_selected)
+            ImGui::SetItemDefaultFocus();
+        }
+        ImGui::PopStyleVar();
       }
     ImGui::EndCombo();
     }
@@ -181,15 +207,17 @@ void Dialog_GameData::draw() {
     ImGui::SameLine();
 
     ImGui::BeginDisabled(d_source != 7);
+    ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 2);
     if (ImGui::BeginCombo("##gamedata_other", "")) {
       for (auto dataSource : OtherSource) {
         bool is_selected = (current_otherSource == static_cast<int>(dataSource));
-        if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected, 0,
-        ImVec2(ImGui::GetWindowContentRegionMax().x / 2 - (15 * App::DPIHandler::get_scale()), 0))) {
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0.5f, 0.f));
+        if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected)) {
           current_otherSource = static_cast<int>(dataSource);
           if (is_selected)
             ImGui::SetItemDefaultFocus();
         }
+        ImGui::PopStyleVar();
       }
     ImGui::EndCombo();
     }

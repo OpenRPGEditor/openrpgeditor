@@ -1,18 +1,19 @@
 #pragma once
+#include "Dialog_GameData.hpp"
 #include "IDialogController.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/CommandParser.hpp"
 struct Project;
 struct Dialog_ControlVariables : IDialogController {
   Dialog_ControlVariables() = delete;
-  explicit Dialog_ControlVariables(const std::string& name, Project* project) : IDialogController(name), m_project(project), gameDataDialog(nullptr) {
+  explicit Dialog_ControlVariables(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
     command.emplace();
     command->start = 0;
     command->end = 0;
     command->random.min = 0;
     command->random.max = 0;
   }
-  void draw() override;
+  std::tuple<bool, bool>  draw() override;
   Project* m_project = nullptr;
 private:
   int d_start = 0;
@@ -27,5 +28,5 @@ private:
   std::optional<VariableSwitchPicker> picker;
   std::tuple<bool, bool> result;
   bool singleRequest = false;
-  IDialogController* gameDataDialog;
+  std::optional<Dialog_GameData> gameDataDialog;
 };

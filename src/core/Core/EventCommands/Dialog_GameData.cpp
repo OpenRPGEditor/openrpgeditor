@@ -3,7 +3,7 @@
 #include "Core/DPIHandler.hpp"
 #include "Core/Project.hpp"
 using namespace std::string_view_literals;
-void Dialog_GameData::draw() {
+std::tuple<bool, bool> Dialog_GameData::draw() {
 
   if (IsOpen()) {
     ImGui::OpenPopup(m_name.c_str());
@@ -13,6 +13,31 @@ void Dialog_GameData::draw() {
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.f));
   ImGui::SetNextWindowSize(ImVec2{610, 380} * App::DPIHandler::get_ui_scale(),ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
+
+    if (a_picker) {
+      auto [closed, confirmed] = a_picker->draw();
+      if (confirmed)
+        d_actor_source = a_picker->selection();
+      a_picker.reset();
+    }
+    if (ar_picker) {
+      auto [closed, confirmed] = ar_picker->draw();
+      if (confirmed)
+        d_armor_source = ar_picker->selection();
+      ar_picker.reset();
+    }
+    if (w_picker) {
+      auto [closed, confirmed] = w_picker->draw();
+      if (confirmed)
+        d_weapon_source = w_picker->selection();
+      w_picker.reset();
+    }
+    if (i_picker) {
+      auto [closed, confirmed] = i_picker->draw();
+      if (confirmed)
+        d_item_source = i_picker->selection();
+      i_picker.reset();
+    }
 
     ImGui::SeparatorText("Game Data");
 
@@ -227,6 +252,49 @@ void Dialog_GameData::draw() {
 
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(100) - ImGui::GetStyle().FramePadding.x, ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {
+      command->gameData.source = static_cast<GameDataSource>(d_source);
+      switch (d_source) {
+      case 0: // Item
+        command->gameData.rawSource = d_item_source;
+        break;
+      case 1:
+        command->gameData.rawSource = d_weapon_source;
+        break;
+      case 2:
+        command->gameData.rawSource = d_armor_source;
+        break;
+      case 3:
+        command->gameData.rawSource = d_actor_source;
+        break;
+      case 4:
+        command->gameData.rawSource = current_enemySource;
+        break;
+      case 5:
+        command->gameData.rawSource = current_characterSource;
+        break;
+      case 6:
+        command->gameData.rawSource = current_partySource;
+        break;
+      case 7:
+        command->gameData.rawSource = current_otherSource;
+        break;
+      default:
+        command->gameData.rawSource = 0;
+        break;
+      }
+      switch (command->gameData.rawSource) {
+      case 3:
+        command->gameData.value = current_actorDataSource;
+        break;
+      case 4:
+        command->gameData.value = current_enemyDataSource;
+        break;
+      case 5:
+        command->gameData.value = current_characterDataSource;
+        break;
+      default:
+        command->gameData.value = 0;
+      }
       ImGui::CloseCurrentPopup();
       SetOpen(false);
     }
@@ -236,4 +304,5 @@ void Dialog_GameData::draw() {
     }
     ImGui::EndPopup();
   }
+  return std::make_tuple(!m_open, m_confirmed);
 }

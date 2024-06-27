@@ -5,7 +5,7 @@
 #include "Core/Log.hpp"
 #include "Core/Project.hpp"
 
-void Dialog_ControlSwitches::draw() {
+std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
 
   if (IsOpen()) {
     ImGui::OpenPopup(m_name.c_str());
@@ -91,4 +91,5 @@ void Dialog_ControlSwitches::draw() {
     }
     ImGui::EndPopup();
   }
+  return std::make_tuple(!m_open, m_confirmed);
 }

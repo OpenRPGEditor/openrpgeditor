@@ -7,7 +7,7 @@
 #include "Core/Log.hpp"
 #include "Core/Project.hpp"
 
-void Dialog_ControlVariables::draw() {
+std::tuple<bool, bool> Dialog_ControlVariables::draw() {
 
   if (IsOpen()) {
     ImGui::OpenPopup(m_name.c_str());
@@ -30,8 +30,15 @@ void Dialog_ControlVariables::draw() {
       }
     }
 
-    if (gameDataDialog)
-      gameDataDialog->draw();
+    if (gameDataDialog) {
+      auto [closed, confirmed] = gameDataDialog->draw();
+      if (confirmed) {
+        command->gameData.source = gameDataDialog->getCommandData()->gameData.source;
+        command->gameData.rawSource = gameDataDialog->getCommandData()->gameData.rawSource;
+        command->gameData.value = gameDataDialog->getCommandData()->gameData.value;
+        gameDataDialog.reset();
+      }
+    }
 
     ImGui::SeparatorText("Variable");
     static int switchType = 0;
@@ -137,7 +144,7 @@ void Dialog_ControlVariables::draw() {
             text.c_str(),
             ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
 
-      gameDataDialog = new Dialog_GameData("Game Data", m_project);
+      gameDataDialog.emplace("Game Data", m_project);
       gameDataDialog->SetOpen(true);
     }
     ImGui::PopID();
@@ -183,4 +190,5 @@ void Dialog_ControlVariables::draw() {
     }
     ImGui::EndPopup();
   }
+  return std::make_tuple(!m_open, m_confirmed);
 }

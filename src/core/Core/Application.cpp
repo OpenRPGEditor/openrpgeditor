@@ -89,8 +89,8 @@ ExitStatus App::Application::run() {
 
   const float font_size{settings.fontSize * DPIHandler::get_ui_scale()};
   const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
-  const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf")};
-  const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf")};
+  const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf").generic_string()};
+  const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf").generic_string()};
 
   static const ImWchar specialChar[] = {
       /* clang-format off */

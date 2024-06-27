@@ -9,7 +9,7 @@ struct Dialog_ControlSwitches : IDialogController {
     command->start = 0;
     command->end = 0;
   }
-  void draw() override;
+  std::tuple<bool, bool>  draw() override;
 
   Project* m_project = nullptr;
 private:

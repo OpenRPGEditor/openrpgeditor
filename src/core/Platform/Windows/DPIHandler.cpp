@@ -8,7 +8,7 @@
 
 namespace App {
 
-float DPIHandler::get_scale() {
+float DPIHandler::get_ui_scale() {
   APP_PROFILE_FUNCTION();
 
   constexpr int display_index{0};
@@ -23,7 +23,7 @@ float DPIHandler::get_scale() {
 WindowSize DPIHandler::get_dpi_aware_window_size(const Window::Settings& settings) {
   APP_PROFILE_FUNCTION();
 
-  const float scale{DPIHandler::get_scale()};
+  const float scale{DPIHandler::get_ui_scale()};
   const int width{static_cast<int>(static_cast<float>(settings.width) * scale)};
   const int height{static_cast<int>(static_cast<float>(settings.height) * scale)};
   return {width, height};

@@ -22,7 +22,7 @@ VariableSwitchPicker::VariableSwitchPicker(const std::string_view objectType, st
 
 std::tuple<bool, bool> VariableSwitchPicker::draw() {
   std::string title = std::format("{} Selection##{}", m_objectType, reinterpret_cast<uintptr_t>(this));
-  ImGui::SetNextWindowSize(ImVec2{720, 640} * App::DPIHandler::get_scale(), ImGuiCond_Once);
+  ImGui::SetNextWindowSize(ImVec2{720, 640} * App::DPIHandler::get_ui_scale(), ImGuiCond_Once);
   if (ImGui::Begin(title.c_str(), &m_open,
                    ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::Text("Filter");

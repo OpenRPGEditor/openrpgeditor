@@ -41,7 +41,6 @@ void DBClassesTab::drawExperienceGraph(ExperienceGraphMode mode) const {
     }
   }
 
-  ImGui::PushFont(App::APP->getMonoFont());
   ImGui::BeginGroup();
   {
     const auto& array = mode == ExperienceGraphMode::Total ? totalExp : nextExp;
@@ -75,11 +74,10 @@ void DBClassesTab::drawExperienceGraph(ExperienceGraphMode mode) const {
     }
     ImPlot::EndPlot();
   }
-  ImGui::PopFont();
 }
 
 void DBClassesTab::drawExpPopup() {
-  ImGui::SetNextWindowSize(ImVec2{720, 878} * App::DPIHandler::get_scale(), ImGuiCond_Once);
+  ImGui::SetNextWindowSize(ImVec2{720, 878} * App::DPIHandler::get_ui_scale(), ImGuiCond_Once);
   if (ImGui::BeginPopupModal("EXP Curve##curve_dialog", nullptr,
                              ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings |
                                  ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
@@ -153,7 +151,7 @@ void DBClassesTab::drawExpPopup() {
 void DBClassesTab::draw() {
   ImGui::BeginChild("#orpg_classes_editor");
   {
-    ImGui::BeginChild("##orpg_classes_editor_classes", ImVec2{250.f, 0} * App::DPIHandler::get_scale(), 0,
+    ImGui::BeginChild("##orpg_classes_editor_classes", ImVec2{250.f, 0} * App::DPIHandler::get_ui_scale(), 0,
                       ImGuiWindowFlags_HorizontalScrollbar);
     {
       ImGui::BeginGroup();
@@ -226,7 +224,7 @@ void DBClassesTab::draw() {
           ImGui::BeginGroup();
           {
             ImGui::SeparatorText("Parameter Curves");
-            if (ImPlot::BeginPlot("Max HP", ParameterGraphSize * App::DPIHandler::get_scale(),
+            if (ImPlot::BeginPlot("Max HP", ParameterGraphSize * App::DPIHandler::get_ui_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
               ImPlot::SetNextFillStyle(ImVec4{.81f, .5f, .37f, 1.f});
@@ -238,7 +236,7 @@ void DBClassesTab::draw() {
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
-            if (ImPlot::BeginPlot("Max MP", ParameterGraphSize * App::DPIHandler::get_scale(),
+            if (ImPlot::BeginPlot("Max MP", ParameterGraphSize * App::DPIHandler::get_ui_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
 
@@ -251,7 +249,7 @@ void DBClassesTab::draw() {
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
-            if (ImPlot::BeginPlot("Attack", ParameterGraphSize * App::DPIHandler::get_scale(),
+            if (ImPlot::BeginPlot("Attack", ParameterGraphSize * App::DPIHandler::get_ui_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
               ImPlot::SetNextFillStyle(ImVec4{.75f, .25f, .37f, 1.f});
@@ -263,7 +261,7 @@ void DBClassesTab::draw() {
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
-            if (ImPlot::BeginPlot("Defense", ParameterGraphSize * App::DPIHandler::get_scale(),
+            if (ImPlot::BeginPlot("Defense", ParameterGraphSize * App::DPIHandler::get_ui_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
               ImPlot::SetNextFillStyle(ImVec4{.56f, .69f, .37f, 1.f});
@@ -274,7 +272,7 @@ void DBClassesTab::draw() {
               ImPlot::PlotShaded("##Defense", m_selectedClass->params[3].data(), m_selectedClass->params[3].size());
               ImPlot::EndPlot();
             }
-            if (ImPlot::BeginPlot("M.Attack", ParameterGraphSize * App::DPIHandler::get_scale(),
+            if (ImPlot::BeginPlot("M.Attack", ParameterGraphSize * App::DPIHandler::get_ui_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
               ImPlot::SetNextFillStyle(ImVec4{.75f, .31f, .69f, 1.f});
@@ -286,7 +284,7 @@ void DBClassesTab::draw() {
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
-            if (ImPlot::BeginPlot("M.Defense", ParameterGraphSize * App::DPIHandler::get_scale(),
+            if (ImPlot::BeginPlot("M.Defense", ParameterGraphSize * App::DPIHandler::get_ui_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
               ImPlot::SetNextFillStyle(ImVec4{.25f, .62f, .25f, 1.f});
@@ -298,7 +296,7 @@ void DBClassesTab::draw() {
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
-            if (ImPlot::BeginPlot("Agility", ParameterGraphSize * App::DPIHandler::get_scale(),
+            if (ImPlot::BeginPlot("Agility", ParameterGraphSize * App::DPIHandler::get_ui_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
               ImPlot::SetNextFillStyle(ImVec4{.31f, .69f, .87f, 1.f});
@@ -310,7 +308,7 @@ void DBClassesTab::draw() {
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
-            if (ImPlot::BeginPlot("Luck", ParameterGraphSize * App::DPIHandler::get_scale(),
+            if (ImPlot::BeginPlot("Luck", ParameterGraphSize * App::DPIHandler::get_ui_scale(),
                                   ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect |
                                       ImPlotFlags_NoMouseText)) {
               ImPlot::SetNextFillStyle(ImVec4{.81f, .69f, .25f, 1.f});

@@ -161,7 +161,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Image");
-        ImGui::Dummy(ImVec2{104, 128} * App::DPIHandler::get_scale());
+        ImGui::Dummy(ImVec2{104, 128} * App::DPIHandler::get_ui_scale());
       }
       ImGui::EndGroup();
       ImGui::SameLine();

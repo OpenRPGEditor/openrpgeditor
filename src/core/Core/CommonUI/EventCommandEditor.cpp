@@ -21,7 +21,6 @@ void EventCommandEditor::draw() {
   ImGui::BeginGroup();
   {
     ImGui::Text("Content:");
-    ImGui::PushFont(App::APP->getMonoFont());
 
     if (ImGui::BeginTable("##commonevent_code_contents", 2,
                           ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
@@ -433,7 +432,6 @@ void EventCommandEditor::draw() {
 
       ImGui::EndTable();
     }
-    ImGui::PopFont();
   }
   ImGui::EndGroup();
 }
@@ -444,7 +442,6 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
   }
 
   ImGui::SetNextWindowSize(ImVec2{680, 550} * App::DPIHandler::get_scale(), ImGuiCond_Once);
-  ImGui::PushFont(App::APP->getMainFont());
   if (ImGui::BeginPopupModal("Command Window", nullptr,
                              ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
     if (!m_isNewEntry) {
@@ -458,8 +455,8 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
 
         if (commandDialog)
           commandDialog->draw();
-        
-        ImVec2 size = ImVec2{(ImGui::GetContentRegionAvail().x / 2) /2 - App::DPIHandler::scale_value(15), 0};
+
+        ImVec2 size = ImVec2{((ImGui::GetContentRegionAvail().x / 2) / 2) - App::DPIHandler::scale_value(15), 0};
 
         if (ImGui::BeginTabItem("Actor")) {
           if (ImGui::Button("Change HP...", size)) {
@@ -758,5 +755,4 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
 
     ImGui::EndPopup();
   } // End of "Command Window" Popup
-  ImGui::PopFont();
 }

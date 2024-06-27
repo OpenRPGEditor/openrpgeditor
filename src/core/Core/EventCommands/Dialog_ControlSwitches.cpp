@@ -13,7 +13,7 @@ void Dialog_ControlSwitches::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{300, 200} * App::DPIHandler::get_scale());
+  ImGui::SetNextWindowSize(ImVec2{300, 200} * App::DPIHandler::get_ui_scale());
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
     if (picker) {
       auto [closed, confirmed]  = picker->draw();
@@ -35,11 +35,11 @@ void Dialog_ControlSwitches::draw() {
     std::string text =
         isSwitchEnabled ? "##commonevent_switch_empty" : (command->start == 0 ? "" : std::format("{:04} ", command->start) + m_project->switche(command->start));
     ImGui::PushID("##controlswitch_id");
-    ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 50) - (16 * App::DPIHandler::get_scale()));
+    ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 50) - (16 * App::DPIHandler::get_ui_scale()));
     ImGui::BeginDisabled(isSwitchEnabled);
     static int switchId = 0;
     if (ImGui::Button(text.c_str(), ImVec2{((ImGui::GetWindowContentRegionMax().x - 75)) -
-                                               (15 * App::DPIHandler::get_scale()),
+                                               (15 * App::DPIHandler::get_ui_scale()),
                                            0})) {
       picker.emplace("Switches", m_project->system().switches);
     }

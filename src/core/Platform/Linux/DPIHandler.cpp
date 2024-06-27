@@ -10,9 +10,13 @@
 
 namespace App {
 
-float DPIHandler::get_scale() {
+float DPIHandler::get_ui_scale() {
   APP_PROFILE_FUNCTION();
 
+  return Settings::instance()->uiScale;
+}
+
+float DPIHandler::get_font_scale() {
   float default_dpi = Settings::instance()->dpi;
   float dpi{default_dpi};
 

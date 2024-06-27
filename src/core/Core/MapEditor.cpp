@@ -57,9 +57,23 @@ void MapEditor::setMap(Map* map, MapInfo* info) {
   m_mapInfo = info;
   m_lowerLayer.clear();
   m_upperLayer.clear();
+
+  if (m_map && m_map->parallaxShow && !m_map->parallaxName.empty()) {
+    m_parallaxTexture = ResourceManager::instance()->loadParallaxImage(m_map->parallaxName);
+  }
 }
 
 int MapEditor::tileSize() { return m_parent->system().tileSize; }
+
+void MapEditor::drawParallax(ImGuiWindow* win) {
+  if (!m_parallaxTexture) {
+    return;
+  }
+  // TODO: Proper parallax implementation
+  win->DrawList->AddImage(m_parallaxTexture.get(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
+                          win->ContentRegionRect.Min + ImVec2{static_cast<float>(m_parallaxTexture.width()),
+                                                              static_cast<float>(m_parallaxTexture.height())});
+}
 
 void MapEditor::drawGrid(ImGuiWindow* win) {
   for (int y = tileSize() * m_mapScale; y < (m_map->height * tileSize()) * m_mapScale; y += tileSize() * m_mapScale) {
@@ -289,6 +303,8 @@ void MapEditor::draw() {
       m_mapInfo->scrollY = ImGui::GetScrollY();
 
       m_mapRenderer.update();
+
+      drawParallax(win);
 
       renderLayer(win, m_mapRenderer.m_lowerLayer);
       if (m_prisonMode) {
@@ -530,7 +546,7 @@ void MapEditor::drawMapProperties() {
         {
           ImGui::Text("Parallax Background");
           ImGui::PushID("##map_parallax_button");
-          std::string text = m_map->bgs.name.empty() ? "##map_parallax_button_empty" : m_map->parallaxName;
+          std::string text = m_map->parallaxName.empty() ? "##map_parallax_button_empty" : m_map->parallaxName;
           if (ImGui::Button(text.c_str(),
                             ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
           ImGui::PopID();

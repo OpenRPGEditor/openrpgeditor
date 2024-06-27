@@ -13,7 +13,6 @@ bool Settings::load(std::string_view path) {
       parser.at("lastDirectory").get_to(lastDirectory);
       parser.at("uiScale").get_to(uiScale);
       parser.at("fontSize").get_to(fontSize);
-      parser.at("monoFontSize").get_to(monoFontSize);
       parser.at("dpi").get_to(dpi);
       return true;
     }
@@ -32,7 +31,6 @@ void Settings::serialize(std::string_view path) {
         {"lastDirectory", lastDirectory}, //
         {"uiScale", uiScale},             //
         {"fontSize", fontSize},           //
-        {"monoFontSize", monoFontSize},   //
         {"dpi", dpi}                      //
     };
     f << parser.dump(4);

@@ -23,7 +23,7 @@ void DBActorsTab::draw() {
 
   ImGui::BeginChild("##orpg_actors_editor");
   {
-    ImGui::BeginChild("##orpg_actors_editor_actors", ImVec2{250.f, 0} * App::DPIHandler::get_scale(), 0,
+    ImGui::BeginChild("##orpg_actors_editor_actors", ImVec2{250.f, 0} * App::DPIHandler::get_ui_scale(), 0,
                       ImGuiWindowFlags_HorizontalScrollbar);
     {
       ImGui::BeginGroup();
@@ -150,7 +150,7 @@ void DBActorsTab::draw() {
             {
               ImGui::Text("Face:");
               ImGui::ImageButton("##orpg_actors_face_image", m_buttonBack.get(),
-                                 ImVec2{164, 164} * App::DPIHandler::get_scale());
+                                 ImVec2{164, 164} * App::DPIHandler::get_ui_scale());
             }
             ImGui::EndGroup();
             ImGui::SameLine();
@@ -160,17 +160,17 @@ void DBActorsTab::draw() {
               ImGui::Text("Character:");
               auto cursorPos = ImGui::GetCursorPos();
               ImGui::ImageButton("##orpg_actors_character_image", m_buttonBack.get(),
-                                 ImVec2{164, 164} * App::DPIHandler::get_scale());
+                                 ImVec2{164, 164} * App::DPIHandler::get_ui_scale());
               if (m_charaterSheet && m_charaterSheet->texture()) {
                 ImGui::SetCursorPos(cursorPos + ImVec2{16, m_charaterSheet->characterHeight() == 96 ? -24.f : -16.f} *
-                                                    App::DPIHandler::get_scale());
+                                                    App::DPIHandler::get_ui_scale());
                 auto rect = m_charaterSheet->getRectForCharacter(m_selectedActor->characterIndex, 1);
                 ImVec2 uv0{rect.uv0.u, rect.uv0.v};
                 ImVec2 uv1{rect.uv1.u, rect.uv1.v};
                 ImGui::Image(m_charaterSheet->texture().get(),
                              ImVec2{static_cast<float>(m_charaterSheet->characterWidth() * 2),
                                     static_cast<float>(m_charaterSheet->characterHeight() * 2)} *
-                                 App::DPIHandler::get_scale(),
+                                 App::DPIHandler::get_ui_scale(),
                              uv0, uv1);
               }
             }
@@ -181,7 +181,7 @@ void DBActorsTab::draw() {
             {
               ImGui::Text("[SV] Battler:");
               ImGui::ImageButton("##orpg_actors_battler_image", m_buttonBack.get(),
-                                 ImVec2{164, 164} * App::DPIHandler::get_scale());
+                                 ImVec2{164, 164} * App::DPIHandler::get_ui_scale());
               ImGui::SetCursorPosY(ImGui::GetCursorPosY() - App::DPIHandler::scale_value(128));
             }
             ImGui::EndGroup();

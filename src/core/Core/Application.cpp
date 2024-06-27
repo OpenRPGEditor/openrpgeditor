@@ -87,17 +87,10 @@ ExitStatus App::Application::run() {
 
   // ImGUI font
 
-  const float font_scaling_factor{DPIHandler::get_scale()};
-  const float font_size{settings.fontSize * font_scaling_factor};
-  const float mono_font_size{settings.monoFontSize * font_scaling_factor};
-  const std::string font_path{Resources::font_path("NotoSans-SemiBold.ttf").generic_string()};
-  const std::string font_path_math{Resources::font_path("JetBrainsMono-SemiBold.ttf").generic_string()};
-  const std::string font_path_jp{Resources::font_path("NotoSansJP-SemiBold.ttf").generic_string()};
-  const std::string font_path_jp_mono{Resources::font_path("RelaxedTypingMonoJP-Medium.ttf").generic_string()};
-  const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-SemiBold.ttf").generic_string()};
-  const std::string font_path_kurinoto_mono{Resources::font_path("KurintoMono-NarBd.ttf").generic_string()};
-  const std::string font_path_firple_mono{Resources::font_path("Firple-Bold.ttf").generic_string()};
-  const std::string font_source_code_pro{Resources::font_path("SourceCodePro-Bold.otf").generic_string()};
+  const float font_size{settings.fontSize * DPIHandler::get_ui_scale()};
+  const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
+  const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf")};
+  const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf")};
 
   static const ImWchar specialChar[] = {
       /* clang-format off */
@@ -115,41 +108,23 @@ ExitStatus App::Application::run() {
 
   ImFontConfig config;
   config.MergeMode = true;
-  m_sinhalaFont = io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
-  m_jpFont = io.Fonts->AddFontFromFileTTF(font_path_jp.c_str(), font_size, &config, ranges.Data);
-  m_mathFont = io.Fonts->AddFontFromFileTTF(font_path_math.c_str(), font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_source_code_pro.c_str(), font_size, &config, ranges.Data);
+  config.OversampleH = config.OversampleV = 1;
+  config.PixelSnapH = true;
+  io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), font_size, &config, ranges.Data);
   io.Fonts->Build();
-  m_monoFont = io.Fonts->AddFontFromFileTTF(font_source_code_pro.c_str(), mono_font_size, nullptr, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_jp_mono.c_str(), mono_font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_kurinoto_mono.c_str(), mono_font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_math.c_str(), mono_font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_firple_mono.c_str(), mono_font_size, &config, ranges.Data);
-  io.Fonts->Build();
-
-  io.FontDefault = m_mainFont;
 
   auto& style = ImGui::GetStyle();
-  style.WindowPadding = ImVec2(12, 12);
   style.WindowRounding = 6.f;
-  style.FrameBorderSize = 4.f;
-  style.FramePadding = ImVec2(4, 4);
   style.FrameRounding = 2.0f;
-  style.ItemSpacing = ImVec2(6, 4);
-  style.ItemInnerSpacing = ImVec2(4, 3);
-  style.IndentSpacing = 12.5f;
-  style.ScrollbarSize = 15.0f;
-  style.ScrollbarRounding = 9.0f;
+  style.ScrollbarSize = 18.f;
   style.GrabMinSize = 9.0f;
   style.GrabRounding = 4.0f;
-  style.PopupBorderSize = 1.f;
   style.PopupRounding = 7.0;
   style.TabBorderSize = 1.f;
   style.TabRounding = 6.5f;
   style.DockingSeparatorSize = 6.f;
-  style.CellPadding = {1.f, 3.8f};
-  style.PopupBorderSize = 8.f;
-  style.ScaleAllSizes(font_scaling_factor);
+  style.ScaleAllSizes(DPIHandler::get_ui_scale());
 
   auto* colors = style.Colors;
   colors[ImGuiCol_Text] = ImVec4(0.95f, 0.96f, 0.98f, 1.00f);

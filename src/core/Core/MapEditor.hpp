@@ -73,6 +73,7 @@ struct MapEditor {
 
 private:
   void drawMapProperties();
+  void drawParallax(ImGuiWindow* win);
   void drawGrid(ImGuiWindow* win);
   void handleEventDrag();
   void handleMouseInput(ImGuiWindow* win);
@@ -90,7 +91,7 @@ private:
   MapCursor m_tileCursor;
 
   int m_tileId{};
-  Texture m_dummyTex;
+  Texture m_parallaxTexture;
   MapRenderer m_mapRenderer;
   std::vector<TileRect> m_lowerLayer;
   std::vector<TileRect> m_upperLayer;

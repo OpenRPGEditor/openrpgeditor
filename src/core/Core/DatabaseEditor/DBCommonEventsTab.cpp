@@ -22,14 +22,14 @@ DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor*
 void DBCommonEventsTab::draw() {
   ImGui::BeginChild("##orpg_commonevents_editor");
   {
-    ImGui::BeginChild("##orpg_commonevents_editor_commonevents", ImVec2{250.f, 0} * App::DPIHandler::get_scale(), 0,
+    ImGui::BeginChild("##orpg_commonevents_editor_commonevents", ImVec2{250.f, 0} * App::DPIHandler::get_ui_scale(), 0,
                       ImGuiWindowFlags_HorizontalScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Common Events");
         ImGui::BeginChild("##orpg_commonevents_editor_commonevent_list",
-                          ImVec2{0, ImGui::GetContentRegionMax().y - (108 * App::DPIHandler::get_scale())});
+                          ImVec2{0, ImGui::GetContentRegionMax().y - (108 * App::DPIHandler::get_ui_scale())});
         {
           ImGui::BeginGroup();
           {
@@ -59,7 +59,7 @@ void DBCommonEventsTab::draw() {
         snprintf(str, 4096, "Max Common Events %i", m_events.count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max",
-                          ImVec2{ImGui::GetContentRegionMax().x - (8 * App::DPIHandler::get_scale()), 0})) {
+                          ImVec2{ImGui::GetContentRegionMax().x - (8 * App::DPIHandler::get_ui_scale()), 0})) {
           m_changeIntDialogOpen = true;
         }
       }
@@ -79,17 +79,17 @@ void DBCommonEventsTab::draw() {
             strncpy(name, m_selectedCommonEvent->name.c_str(), 4096);
             if (ImGui::LabelOverLineEdit(
                     "##orpg_commonevents_editor_commonevents_commonevent_name", "Name:", name, 4096,
-                    ((ImGui::GetContentRegionMax().x / 2) / 2) - (16 * App::DPIHandler::get_scale()))) {
+                    ((ImGui::GetContentRegionMax().x / 2) / 2) - (16 * App::DPIHandler::get_ui_scale()))) {
               m_selectedCommonEvent->name = name;
             }
             ImGui::SameLine();
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - (4 * App::DPIHandler::get_scale()));
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - (4 * App::DPIHandler::get_ui_scale()));
             ImGui::BeginGroup();
             {
               ImGui::Text("Trigger:");
               char buf[4096];
               strncpy(buf, DecodeEnumName(m_selectedCommonEvent->trigger).c_str(), 4096);
-              ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - (16 * App::DPIHandler::get_scale()));
+              ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - (16 * App::DPIHandler::get_ui_scale()));
               if (ImGui::BeginCombo("##orpg_commonevents_editor_trigger_combo", buf)) {
                 for (const auto& e : magic_enum::enum_values<CommonEventTriggerType>()) {
                   strncpy(buf, DecodeEnumName(e).c_str(), 4096);
@@ -103,7 +103,7 @@ void DBCommonEventsTab::draw() {
             ImGui::EndGroup();
 
             ImGui::SameLine();
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - (4 * App::DPIHandler::get_scale()));
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - (4 * App::DPIHandler::get_ui_scale()));
             ImGui::BeginGroup();
             {
               ImGui::Text("Switch:");
@@ -114,10 +114,10 @@ void DBCommonEventsTab::draw() {
               std::string text =
                   isSwitchEnabled ? "##commonevent_switch_empty" : m_parent->switches(m_selectedCommonEvent->switchId);
               ImGui::PushID("##commonevent_button");
-              ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) / 2 - (16 * App::DPIHandler::get_scale()));
+              ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) / 2 - (16 * App::DPIHandler::get_ui_scale()));
               ImGui::BeginDisabled(isSwitchEnabled);
               if (ImGui::Button(text.c_str(), ImVec2{((ImGui::GetWindowContentRegionMax().x / 2) / 2) -
-                                                         (15 * App::DPIHandler::get_scale()),
+                                                         (15 * App::DPIHandler::get_ui_scale()),
                                                      0})) {
                 // Open Menu to select switch
               }

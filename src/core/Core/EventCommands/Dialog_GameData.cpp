@@ -11,7 +11,7 @@ void Dialog_GameData::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.f));
-  ImGui::SetNextWindowSize(ImVec2{500, 300} * App::DPIHandler::get_scale());
+  ImGui::SetNextWindowSize(ImVec2{500, 300} * App::DPIHandler::get_ui_scale());
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
 
     ImGui::SeparatorText("Game Data");
@@ -24,10 +24,10 @@ void Dialog_GameData::draw() {
             ? "##gamedata_item_empty"
             : (d_raw_source == 0 ? "" : std::format("{:04} ", d_raw_source) + m_project->item(d_raw_source)->name);
     ImGui::PushID("##gamedata_item_id");
-    ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 50) - (16 * App::DPIHandler::get_scale()));
+    ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 50) - (16 * App::DPIHandler::get_ui_scale()));
     ImGui::BeginDisabled(d_source != 0);
     if (ImGui::Button(text.c_str(),
-                      ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_scale()), 0})) {
+                      ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
       i_picker = ObjectPicker<Item>("Items"sv, m_project->items().itemList(), 0);
     }
     ImGui::PopID();
@@ -43,7 +43,7 @@ void Dialog_GameData::draw() {
     ImGui::PushID("##gamedata_weapon_id");
     ImGui::BeginDisabled(d_source != 1);
     if (ImGui::Button(text.c_str(),
-                      ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_scale()), 0})) {
+                      ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
       w_picker = ObjectPicker<Weapon>("Weapons"sv, m_project->weapons().weaponList(), 0);
     }
     ImGui::PopID();
@@ -59,7 +59,7 @@ void Dialog_GameData::draw() {
     ImGui::PushID("##gamedata_armor_id");
     ImGui::BeginDisabled(d_source != 2);
     if (ImGui::Button(text.c_str(),
-                      ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_scale()), 0})) {
+                      ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
       ar_picker = ObjectPicker<Armor>("Armors"sv, m_project->armors().armorList(), 0);
     }
     ImGui::PopID();
@@ -75,7 +75,7 @@ void Dialog_GameData::draw() {
     ImGui::PushID("##gamedata_actor_id");
     ImGui::BeginDisabled(d_source != 3);
     if (ImGui::Button(text.c_str(),
-                      ImVec2{((ImGui::GetWindowContentRegionMax().x / 4 + 50)) - (15 * App::DPIHandler::get_scale()), 0})) {
+                      ImVec2{((ImGui::GetWindowContentRegionMax().x / 4 + 50)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
       a_picker = ObjectPicker<Actor>("Actors"sv, m_project->actors().actorList(), 0);
     }
     ImGui::EndDisabled();

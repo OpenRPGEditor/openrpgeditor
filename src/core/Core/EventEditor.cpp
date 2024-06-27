@@ -27,7 +27,7 @@ void EventEditor::fixupPages() {
 bool EventEditor::draw() {
   if (m_event) {
     std::string title = std::format("Event {} - ID {}", m_event->name, m_event->id);
-    ImGui::SetNextWindowSize(ImVec2{640, 480} * App::DPIHandler::get_scale(), ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2{640, 480} * App::DPIHandler::get_ui_scale(), ImGuiCond_Once);
     if (ImGui::Begin(title.c_str(), &m_isOpen)) {
       ImGui::BeginGroup();
       {
@@ -35,14 +35,14 @@ bool EventEditor::draw() {
         float oldY = ImGui::GetCursorPosY();
         strncpy(tmpName, m_event->name.c_str(), 4096);
         if (ImGui::LabelOverLineEdit("##orpg_event_editor_event_name", "Name:", tmpName, 4096,
-                                     (200 * App::DPIHandler::get_scale()))) {
+                                     (200 * App::DPIHandler::get_ui_scale()))) {
           m_event->name = tmpName;
         }
         ImGui::SameLine();
         ImGui::SetCursorPosY(oldY - App::DPIHandler::scale_value(4));
         strncpy(tmpName, m_event->note.c_str(), 4096);
         if (ImGui::LabelOverLineEdit("##orpg_event_editor_event_note", "Note:", tmpName, 4096,
-                                     (200 * App::DPIHandler::get_scale()))) {
+                                     (200 * App::DPIHandler::get_ui_scale()))) {
           m_event->note = tmpName;
         }
       }

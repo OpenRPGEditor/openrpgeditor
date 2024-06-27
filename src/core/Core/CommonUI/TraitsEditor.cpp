@@ -202,7 +202,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
     return;
   }
 
-  ImGui::SetNextWindowSize(ImVec2{680, 550} * App::DPIHandler::get_scale());
+  ImGui::SetNextWindowSize(ImVec2{680, 550} * App::DPIHandler::get_ui_scale());
   if (ImGui::BeginPopupModal(TraitsEditorPopupId.data(), nullptr,
                              ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
     if (!m_isNewEntry && !m_tempTraitAssigned) {
@@ -231,7 +231,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
               }
             }
             ImGui::EndGroup();
-            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_scale()));
+            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
             ImGui::BeginGroup();
             {
               ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Element_Rate);
@@ -269,7 +269,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
               m_selectedTrait->code = TraitCode::Debuff_Rate;
             }
             ImGui::EndGroup();
-            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_scale()));
+            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
             ImGui::BeginGroup();
             {
               ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Debuff_Rate);
@@ -307,7 +307,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
               m_selectedTrait->code = TraitCode::State_Rate;
             }
             ImGui::EndGroup();
-            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_scale()));
+            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
             ImGui::BeginGroup();
             {
               ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::State_Rate);
@@ -350,7 +350,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
               m_selectedTrait->code = TraitCode::State_Resist;
             }
             ImGui::EndGroup();
-            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_scale()));
+            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
             ImGui::BeginGroup();
             {
               ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::State_Resist);
@@ -392,7 +392,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             m_selectedTrait->code = TraitCode::Parameter;
           }
           ImGui::EndGroup();
-          ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_scale()));
+          ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
           ImGui::BeginGroup();
           {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Parameter);
@@ -426,7 +426,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             m_selectedTrait->code = TraitCode::Ex_daa_Parameter;
           }
           ImGui::EndGroup();
-          ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_scale()));
+          ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
           ImGui::BeginGroup();
           {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Ex_daa_Parameter);
@@ -461,7 +461,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             m_selectedTrait->code = TraitCode::Sp_daa_Parameter;
           }
           ImGui::EndGroup();
-          ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_scale()));
+          ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
           ImGui::BeginGroup();
           {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Sp_daa_Parameter);
@@ -503,7 +503,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             m_selectedTrait->code = TraitCode::Attack_Element;
           }
           ImGui::EndGroup();
-          ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_scale()));
+          ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
           ImGui::BeginGroup();
           {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Attack_Element);

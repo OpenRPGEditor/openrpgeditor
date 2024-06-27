@@ -117,7 +117,7 @@ ExitStatus App::Application::run() {
   auto& style = ImGui::GetStyle();
   style.WindowRounding = 6.f;
   style.FrameRounding = 2.0f;
-  style.ScrollbarSize = 18.f;
+  //style.ScrollbarSize = 18.f;
   style.GrabMinSize = 9.0f;
   style.GrabRounding = 4.0f;
   style.PopupRounding = 7.0;
@@ -125,6 +125,8 @@ ExitStatus App::Application::run() {
   style.TabRounding = 6.5f;
   style.DockingSeparatorSize = 6.f;
   style.ScaleAllSizes(DPIHandler::get_ui_scale());
+  style.ScrollbarSize = 18.f;
+
 
   auto* colors = style.Colors;
   colors[ImGuiCol_Text] = ImVec4(0.95f, 0.96f, 0.98f, 1.00f);

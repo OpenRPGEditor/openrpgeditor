@@ -11,20 +11,19 @@ void Dialog_ControlVariables::draw() {
 
   if (IsOpen()) {
     ImGui::OpenPopup(m_name.c_str());
-    //SetOpen(false);
+    // SetOpen(false);
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{350, 340} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{450, 440} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar)) {
     if (picker) {
-      auto [closed, confirmed]  = picker->draw();
+      auto [closed, confirmed] = picker->draw();
       if (confirmed) {
         if (singleRequest) {
           d_start = picker->selection();
           d_end = picker->selection();
-        }
-        else {
+        } else {
           d_variable = picker->selection();
         }
         picker.reset();
@@ -40,15 +39,15 @@ void Dialog_ControlVariables::draw() {
     ImGui::SameLine();
 
     bool isSwitchEnabled = switchType == 1;
-    std::string text =
-        isSwitchEnabled ? "##commonevent_switch_empty" : (d_start == 0 ? "" : std::format("{:04} ", d_start) + m_project->variable(d_start));
+    std::string text = isSwitchEnabled
+                           ? "##commonevent_switch_empty"
+                           : (d_start == 0 ? "" : std::format("{:04} ", d_start) + m_project->variable(d_start));
     ImGui::PushID("##controlswitch_id");
     ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 75) - (16 * App::DPIHandler::get_ui_scale()));
     ImGui::BeginDisabled(isSwitchEnabled);
     static int variableId = 0;
-    if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetWindowContentRegionMax().x - 100) -
-                                               15 * App::DPIHandler::get_ui_scale(),
-                                           0})) {
+    if (ImGui::Button(text.c_str(),
+                      ImVec2{(ImGui::GetWindowContentRegionMax().x - 100) - 15 * App::DPIHandler::get_ui_scale(), 0})) {
       singleRequest = true;
       picker.emplace("Variables", m_project->system().variables);
     }
@@ -60,8 +59,6 @@ void Dialog_ControlVariables::draw() {
     static int rand2 = 0;
     static int operation = 0;
     static int operand = 0;
-
-
 
     ImGui::RadioButton("Range", &switchType, 1); // Range of Switches
     ImGui::SameLine();
@@ -104,12 +101,11 @@ void Dialog_ControlVariables::draw() {
     ImGui::SameLine();
     ImGui::BeginDisabled(operand != 1);
     ImGui::PushItemWidth(100);
-    text =
-        operand != 1 ? "##commonevent_switch_empty" : (d_variable == 0 ? "" : std::format("{:04} ", d_variable) + m_project->variable(d_variable));
+    text = operand != 1 ? "##commonevent_switch_empty"
+                        : (d_variable == 0 ? "" : std::format("{:04} ", d_variable) + m_project->variable(d_variable));
     ImGui::PushID("##controlvariable_id2");
-    if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetWindowContentRegionMax().x - 75) -
-                                               15 * App::DPIHandler::get_ui_scale(),
-                                           0})) {
+    if (ImGui::Button(text.c_str(),
+                      ImVec2{(ImGui::GetWindowContentRegionMax().x - 75) - 15 * App::DPIHandler::get_ui_scale(), 0})) {
       singleRequest = false;
       picker.emplace("Variables", m_project->system().variables);
     }
@@ -135,12 +131,11 @@ void Dialog_ControlVariables::draw() {
     ImGui::SameLine();
     ImGui::BeginDisabled(operand != 3);
     ImGui::PushItemWidth(100);
-    text =
-        operand != 3 ? "##commonevent_switch_empty" : ""; //m_parent->switches(m_selectedCommonEvent->switchId);
+    text = operand != 3 ? "##commonevent_switch_empty" : ""; // m_parent->switches(m_selectedCommonEvent->switchId);
     ImGui::PushID("##controlvariable_gamedata");
-    if (ImGui::Button(text.c_str(), ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) -
-                                               (15 * App::DPIHandler::get_ui_scale()),
-                                           0})) {
+    if (ImGui::Button(
+            text.c_str(),
+            ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
 
       gameDataDialog = new Dialog_GameData("Game Data", m_project);
       gameDataDialog->SetOpen(true);
@@ -160,14 +155,14 @@ void Dialog_ControlVariables::draw() {
     ImGui::PopItemWidth();
     ImGui::EndDisabled();
 
-
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 75, ImGui::GetCursorPosY()));
+    ImGui::SetCursorPos(
+        ImVec2(ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(100) - ImGui::GetStyle().FramePadding.x,
+               ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {
       if (isSwitchEnabled) {
         command->start = variableId;
         command->end = variableId;
-      }
-      else {
+      } else {
         command->start = rand1;
         command->end = rand2;
       }

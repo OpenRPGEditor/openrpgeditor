@@ -11,7 +11,7 @@ void Dialog_GameData::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.f));
-  ImGui::SetNextWindowSize(ImVec2{500, 300} * App::DPIHandler::get_ui_scale());
+  ImGui::SetNextWindowSize(ImVec2{610, 380} * App::DPIHandler::get_ui_scale(),ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
 
     ImGui::SeparatorText("Game Data");
@@ -225,7 +225,7 @@ void Dialog_GameData::draw() {
     }
     ImGui::EndDisabled();
 
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 75, ImGui::GetCursorPosY()));
+    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(100) - ImGui::GetStyle().FramePadding.x, ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {
       ImGui::CloseCurrentPopup();
       SetOpen(false);

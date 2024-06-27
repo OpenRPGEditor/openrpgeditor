@@ -443,7 +443,8 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
     return;
   }
 
-  ImGui::SetNextWindowSize(ImVec2{680, 550} * App::DPIHandler::get_scale());
+  ImGui::SetNextWindowSize(ImVec2{680, 550} * App::DPIHandler::get_scale(), ImGuiCond_Once);
+  ImGui::PushFont(App::APP->getMainFont());
   if (ImGui::BeginPopupModal("Command Window", nullptr,
                              ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
     if (!m_isNewEntry) {
@@ -757,5 +758,5 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
 
     ImGui::EndPopup();
   } // End of "Command Window" Popup
-
+  ImGui::PopFont();
 }

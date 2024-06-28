@@ -417,7 +417,6 @@ enum class WeatherEffect {
   Snow,
 };
 
-
 enum class PictureDesignationSource {
   Direct_designation,
   Designation_with_variables,
@@ -513,7 +512,7 @@ enum class EventCode : int {
   Stop_SE = 251,
   Play_Movie = 261,
   Change_Map_Name_Display = 281,
-  Change_Tile_Set = 282,
+  Change_Tileset = 282,
   Change_Battle_Back = 283,
   Change_Parallax = 284,
   Get_Location_Info = 285,
@@ -608,8 +607,8 @@ enum class EventCode : int {
 };
 
 enum class QuantityChangeOp {
-   _plu__del_Increase,
-   _daa__del_Decrease,
+  _plu__del_Increase,
+  _daa__del_Decrease,
 };
 
 enum class QuantityChangeSource {
@@ -765,7 +764,10 @@ enum CommonEventTriggerType {
 enum class TimerControl { Start, Stop };
 std::string DecodeEnumName(std::string_view str);
 
-enum Color { Gray, Default };
+enum class Color {
+  Gray,
+  Default,
+};
 
 template <typename E>
 static inline std::string DecodeEnumName(E e) {
@@ -794,3 +796,8 @@ void from_json(const json& j, std::optional<T>& opt) {
   }
 }
 } // namespace nlohmann
+
+/* Helper function to set dirty state */
+template <typename T>
+void setDirty(const T& a, const T& b, bool& dirty) {
+  dirty |= a != b; }

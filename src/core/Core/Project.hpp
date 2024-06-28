@@ -14,19 +14,7 @@
 #include "Core/CommonUI/TextEditor.hpp"
 #include "Core/EventEditor.hpp"
 
-#include "Database/Actors.hpp"
-#include "Database/Classes.hpp"
-#include "Database/Skills.hpp"
-#include "Database/Items.hpp"
-#include "Database/Weapons.hpp"
-#include "Database/Armors.hpp"
-#include "Database/Enemies.hpp"
-#include "Database/Troops.hpp"
-#include "Database/States.hpp"
-#include "Database/Animations.hpp"
-#include "Database/Tilesets.hpp"
-#include "Database/CommonEvents.hpp"
-#include "Database/System.hpp"
+#include "Database/Database.hpp"
 #include "Database/MapInfos.hpp"
 
 enum class EditMode {
@@ -83,28 +71,28 @@ public:
     m_editMode = EditMode::Event;
   }
 
-  std::string variable(int id) { return m_system.variable(id); }
-  const std::string variable(int id) const { return m_system.variable(id); }
+  std::string variable(int id) { return m_database.system.variable(id); }
+  const std::string variable(int id) const { return m_database.system.variable(id); }
 
-  std::string switche(int id) { return m_system.switche(id); }
-  const std::string switche(int id) const { return m_system.switche(id); }
-  CommonEvent* commonEvent(int id) { return m_commonEvents.event(id); }
-  const CommonEvent* commonEvent(int id) const { return m_commonEvents.event(id); }
+  std::string switche(int id) { return m_database.system.switche(id); }
+  const std::string switche(int id) const { return m_database.system.switche(id); }
+  CommonEvent* commonEvent(int id) { return m_database.commonEvents.event(id); }
+  const CommonEvent* commonEvent(int id) const { return m_database.commonEvents.event(id); }
 
-  Actor* actor(int id) { return m_actors.actor(id); }
+  Actor* actor(int id) { return m_database.actors.actor(id); }
   Event* event(int id) { return m_map->event(id); }
-  Class* actorClass(int id) { return m_classes.classType(id); }
+  Class* actorClass(int id) { return m_database.classes.classType(id); }
   const char* vehicle(int id) { return id == 0 ? "Boat" : id == 1 ? "Ship" : "Airship"; }
-  Enemy* enemy(int id) { return m_enemies.enemy(id); }
-  Skill* skill(int id) { return m_skills.skill(id); }
-  Weapon* weapon(int id) { return m_weapons.weapon(id); }
-  Armor* armor(int id) { return m_armors.armor(id); }
-  Item* item(int id) { return m_items.item(id); }
-  State* state(int id) { return m_states.state(id); }
-  MapInfo* map(int id) { return m_mapInfos.map(id); }
-  std::string equipType(int id) { return m_system.equipTypes.at(id); }
-  Animation* animation(int id) { return m_animations.animation(id); }
-  Tileset* tileset(int id) { return m_tilesets.tileset(id); }
+  Enemy* enemy(int id) { return m_database.enemies.enemy(id); }
+  Skill* skill(int id) { return m_database.skills.skill(id); }
+  Weapon* weapon(int id) { return m_database.weapons.weapon(id); }
+  Armor* armor(int id) { return m_database.armors.armor(id); }
+  Item* item(int id) { return m_database.items.item(id); }
+  State* state(int id) { return m_database.states.state(id); }
+  MapInfo* map(int id) { return m_database.mapInfos.map(id); }
+  std::string equipType(int id) { return m_database.system.equipTypes.at(id); }
+  Animation* animation(int id) { return m_database.animations.animation(id); }
+  Tileset* tileset(int id) { return m_database.tilesets.tileset(id); }
 
   void setDrawTool(DrawTool tool) { m_drawTool = tool; }
   DrawTool drawTool() const { return m_drawTool; }
@@ -112,8 +100,8 @@ public:
   MapInfo* currentMapInfo() { return m_mapListView.currentMapInfo(); }
   const MapInfo* currentMapInfo() const { return m_mapListView.currentMapInfo(); }
 
-  Troop* troop(int id) { return m_troops.troop(id); }
-  const Tileset* tileset(int id) const { return m_tilesets.tileset(id); }
+  Troop* troop(int id) { return m_database.troops.troop(id); }
+  const Tileset* tileset(int id) const { return m_database.tilesets.tileset(id); }
 
   void setMap(MapInfo& in);
 
@@ -137,26 +125,26 @@ public:
     m_redoStack.clear();
   }
 
-  System& system() { return m_system; }
-  const System& system() const { return m_system; }
+  System& system() { return m_database.system; }
+  const System& system() const { return m_database.system; }
 
   MapEditor* mapEditor() { return &m_mapEditor; }
   const MapEditor* mapEditor() const { return &m_mapEditor; }
 
-  Items& items() { return m_items; }
-  const Items& items() const { return m_items; }
+  Items& items() { return m_database.items; }
+  const Items& items() const { return m_database.items; }
 
-  Armors& armors() { return m_armors; }
-  const Armors& armors() const { return m_armors; }
+  Armors& armors() { return m_database.armors; }
+  const Armors& armors() const { return m_database.armors; }
 
-  Weapons& weapons() { return m_weapons; }
-  const Weapons& weapons() const { return m_weapons; }
+  Weapons& weapons() { return m_database.weapons; }
+  const Weapons& weapons() const { return m_database.weapons; }
 
-  Actors& actors() { return m_actors; }
-  const Actors& actors() const { return m_actors; }
+  Actors& actors() { return m_database.actors; }
+  const Actors& actors() const { return m_database.actors; }
 
-  Troops& troops() { return m_troops; }
-  const Troops& troops() const { return m_troops; }
+  Troops& troops() { return m_database.troops; }
+  const Troops& troops() const { return m_database.troops; }
 
   std::vector<std::optional<Event>> events() { return m_map->events; }
   std::vector<std::optional<Event>> events() const { return m_map->events; }
@@ -180,20 +168,7 @@ private:
   std::string m_projectFilePath;
   std::string m_basePath;
 
-  Actors m_actors{};
-  Classes m_classes{};
-  Skills m_skills{};
-  Items m_items{};
-  Weapons m_weapons{};
-  Armors m_armors{};
-  Enemies m_enemies{};
-  Troops m_troops{};
-  States m_states{};
-  Animations m_animations{};
-  Tilesets m_tilesets{};
-  CommonEvents m_commonEvents{};
-  System m_system{};
-  MapInfos m_mapInfos{};
+  Database m_database;
 
   std::optional<DatabaseEditor> m_databaseEditor;
 

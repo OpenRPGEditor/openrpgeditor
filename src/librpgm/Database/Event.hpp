@@ -14,4 +14,14 @@ public:
   std::vector<EventPage> pages{};
   int x{};
   int y{};
+
+  bool isDirty() const {
+    m_isDirty |= std::any_of(pages.begin(), pages.end(), [](const auto& page) {
+      return page.isDirty();
+    });
+
+    return m_isDirty;
+  }
+
+  mutable bool m_isDirty{false};
 };

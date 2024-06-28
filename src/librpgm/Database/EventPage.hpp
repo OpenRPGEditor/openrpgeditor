@@ -27,6 +27,9 @@ struct EventCondition {
   int variableId{1};
   bool variableValid{};
   int variableValue{};
+
+  [[nodiscard]] bool isDirty() const { return m_isDirty; }
+  bool m_isDirty{false};
 };
 
 struct EventImage {
@@ -36,6 +39,9 @@ struct EventImage {
   Direction direction{};
   int pattern{};
   int characterIndex{};
+
+  [[nodiscard]] bool isDirty() const { return m_isDirty; }
+  bool m_isDirty{false};
 };
 
 struct EventPage {
@@ -47,7 +53,7 @@ struct EventPage {
   EventImage image;
   std::vector<std::shared_ptr<IEventCommand>> list;
   MovementFrequency moveFrequency{MovementFrequency::Normal};
-  MovementRoute moveRoute {};
+  MovementRoute moveRoute{};
   MovementSpeed moveSpeed{MovementSpeed::Normal};
   MoveType moveType{MoveType::Fixed};
   EventPriority priorityType{};
@@ -58,4 +64,15 @@ struct EventPage {
 
   /* OpenRPGMaker Additions */
   std::string name;
+
+  [[nodiscard]] bool isDirty() const {
+    m_isDirty |= std::any_of(list.begin(), list.end(), [](const auto& cmd) { return cmd && cmd->isDirty(); });
+
+    m_isDirty |= conditions.isDirty();
+    m_isDirty |= image.isDirty();
+    m_isDirty |= moveRoute.isDirty();
+
+    return m_isDirty;
+  }
+  mutable bool m_isDirty{false};
 };

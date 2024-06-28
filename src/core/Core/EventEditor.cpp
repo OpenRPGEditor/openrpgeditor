@@ -4,6 +4,7 @@
 #include "ImGuiUtils.hpp"
 #include "Database/Event.hpp"
 #include "Database/EventPage.hpp"
+#include "Database/EventCommands/EventDummy.hpp"
 
 #include <format>
 #include <string>

@@ -385,6 +385,7 @@ void MapEditor::drawMapProperties() {
           strncpy(buf, m_mapInfo->name.c_str(), 4096);
           if (ImGui::InputText("##map_name", buf, 4096)) {
             m_mapInfo->name = buf;
+            m_map->m_isDirty;
           }
         }
         ImGui::EndGroup();
@@ -400,6 +401,7 @@ void MapEditor::drawMapProperties() {
           strncpy(buf, m_map->displayName.c_str(), 4096);
           if (ImGui::InputText("##map_display_name", buf, 4096)) {
             m_map->displayName = buf;
+            m_map->m_isDirty = true;
           }
         }
         ImGui::EndGroup();
@@ -425,9 +427,9 @@ void MapEditor::drawMapProperties() {
           ImGui::SetCursorPos(cursorPos);
           ImGui::Text("Width");
           ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - App::DPIHandler::scale_value(15));
-          strncpy(buf, m_map->displayName.c_str(), 4096);
+          int width = m_map->width;
           if (ImGui::DragInt("##map_width", &m_map->width, 0, 0, 256)) {
-            m_map->displayName = buf;
+            setDirty(m_map->width, width, m_map->m_isDirty);
           }
         }
         ImGui::EndGroup();
@@ -440,9 +442,9 @@ void MapEditor::drawMapProperties() {
           ImGui::SetCursorPos(cursorPos);
           ImGui::Text("Height");
           ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - App::DPIHandler::scale_value(15));
-          strncpy(buf, m_map->displayName.c_str(), 4096);
+          int height = m_map->height;
           if (ImGui::DragInt("##map_height", &m_map->height, 0, 0, 256)) {
-            m_map->displayName = buf;
+            setDirty(m_map->height, height, m_map->m_isDirty);
           }
         }
         ImGui::EndGroup();
@@ -453,7 +455,6 @@ void MapEditor::drawMapProperties() {
           ImGui::SetCursorPos(cursorPos);
           ImGui::Text("Scroll Type");
           ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15));
-          strncpy(buf, m_map->displayName.c_str(), 4096);
           if (ImGui::BeginCombo("##map_scroll_type",
                                 DecodeEnumName(magic_enum::enum_name(m_map->scrollType)).c_str())) {
             for (const auto& e : magic_enum::enum_values<ScrollType>()) {
@@ -477,9 +478,7 @@ void MapEditor::drawMapProperties() {
           ImGui::SetCursorPos(cursorPos);
           ImGui::Text("Enc. Steps");
           ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15));
-          strncpy(buf, m_map->displayName.c_str(), 4096);
           if (ImGui::DragInt("##map_enc_steps", &m_map->encounterStep, 0, 0, 999)) {
-            m_map->displayName = buf;
           }
         }
         ImGui::EndGroup();

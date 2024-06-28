@@ -1,7 +1,8 @@
 #pragma once
 #include "IDialogController.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
-#include "Database/CommandParser.hpp"
+#include "Database/EventCommands/ControlSwitches.hpp"
+
 struct Project;
 struct Dialog_ControlSwitches : IDialogController {
   Dialog_ControlSwitches() = delete;

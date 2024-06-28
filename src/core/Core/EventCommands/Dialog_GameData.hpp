@@ -4,9 +4,10 @@
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/Actors.hpp"
-#include "Database/CommandParser.hpp"
 #include "Database/Enemies.hpp"
 #include "Database/Items.hpp"
+#include "Database/EventCommands/ControlVariables.hpp"
+
 struct Project;
 struct Dialog_GameData : IDialogController {
   Dialog_GameData() = delete;

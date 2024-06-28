@@ -11,6 +11,50 @@
 #include "Core/EventCommands/Dialog_ControlVariables.hpp"
 #include "Core/EventCommands/IDialogController.hpp"
 
+#include "Database/EventCommands/BattleProcessing.hpp"
+#include "Database/EventCommands/ChangeActorImage.hpp"
+#include "Database/EventCommands/ChangeArmors.hpp"
+#include "Database/EventCommands/ChangeClass.hpp"
+#include "Database/EventCommands/ChangeEXP.hpp"
+#include "Database/EventCommands/ChangeEnemyHP.hpp"
+#include "Database/EventCommands/ChangeEnemyMP.hpp"
+#include "Database/EventCommands/ChangeEnemyState.hpp"
+#include "Database/EventCommands/ChangeEnemyTP.hpp"
+#include "Database/EventCommands/ChangeEquipment.hpp"
+#include "Database/EventCommands/ChangeHP.hpp"
+#include "Database/EventCommands/ChangeItems.hpp"
+#include "Database/EventCommands/ChangeLevel.hpp"
+#include "Database/EventCommands/ChangeMP.hpp"
+#include "Database/EventCommands/ChangeName.hpp"
+#include "Database/EventCommands/ChangeNickname.hpp"
+#include "Database/EventCommands/ChangeParameter.hpp"
+#include "Database/EventCommands/ChangePartyMember.hpp"
+#include "Database/EventCommands/ChangeProfile.hpp"
+#include "Database/EventCommands/ChangeSkill.hpp"
+#include "Database/EventCommands/ChangeState.hpp"
+#include "Database/EventCommands/ChangeTP.hpp"
+#include "Database/EventCommands/ChangeTileset.hpp"
+#include "Database/EventCommands/ChangeWeapons.hpp"
+#include "Database/EventCommands/CommonEvent.hpp"
+#include "Database/EventCommands/ConditionalBranch.hpp"
+#include "Database/EventCommands/EnemyAppear.hpp"
+#include "Database/EventCommands/EnemyRecoverAll.hpp"
+#include "Database/EventCommands/EnemyTransform.hpp"
+#include "Database/EventCommands/ForceAction.hpp"
+#include "Database/EventCommands/GetLocationInfo.hpp"
+#include "Database/EventCommands/InputNumber.hpp"
+#include "Database/EventCommands/NameInput.hpp"
+#include "Database/EventCommands/RecoverAll.hpp"
+#include "Database/EventCommands/SelectItem.hpp"
+#include "Database/EventCommands/SetEventLocation.hpp"
+#include "Database/EventCommands/SetMovementRoute.hpp"
+#include "Database/EventCommands/SetVehicleLocation.hpp"
+#include "Database/EventCommands/ShopProcessing.hpp"
+#include "Database/EventCommands/ShowAnimation.hpp"
+#include "Database/EventCommands/ShowBalloonIcon.hpp"
+#include "Database/EventCommands/ShowBattleAnimation.hpp"
+#include "Database/EventCommands/TransferPlayer.hpp"
+
 void insertValue(std::string& indentPad, const std::string& val, const std::string& delim) {
   auto pos = indentPad.find(delim);
   if (pos != std::string::npos) {
@@ -195,8 +239,8 @@ void EventCommandEditor::draw() {
           } else if (m_commands->at(n)->code() == EventCode::Input_Number) {
             InputNumberCommand* inc = dynamic_cast<InputNumberCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->variable(inc->variable), "{");
-          } else if (m_commands->at(n)->code() == EventCode::Change_Tile_Set) {
-            ChangeTileSetCommand* val = dynamic_cast<ChangeTileSetCommand*>(m_commands->at(n).get());
+          } else if (m_commands->at(n)->code() == EventCode::Change_Tileset) {
+            ChangeTilesetCommand* val = dynamic_cast<ChangeTilesetCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->tileset(val->tileset)->name, "{");
           } else if (m_commands->at(n)->code() == EventCode::Get_Location_Info) {
             GetLocationInfoCommand* val = dynamic_cast<GetLocationInfoCommand*>(m_commands->at(n).get());
@@ -385,7 +429,7 @@ void EventCommandEditor::draw() {
             }
             insertValue(indentPad, m_project->skill(val->skill)->name, "{");
           } else if (m_commands->at(n)->code() == EventCode::Show_Battle_Animation) {
-            ShowBattleAnimCommand* val = dynamic_cast<ShowBattleAnimCommand*>(m_commands->at(n).get());
+            ShowBattleAnimationCommand* val = dynamic_cast<ShowBattleAnimationCommand*>(m_commands->at(n).get());
             if (val->enemy > 0) {
               insertValue(indentPad, m_project->troop(val->enemy)->name, "{");
             }
@@ -397,7 +441,7 @@ void EventCommandEditor::draw() {
             ChangeProfileCommand* val = dynamic_cast<ChangeProfileCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->actor(val->actor)->name, "{");
           } else if (m_commands->at(n)->code() == EventCode::Change_Nickname) {
-            ChangeNickCommand* val = dynamic_cast<ChangeNickCommand*>(m_commands->at(n).get());
+            ChangeNicknameCommand* val = dynamic_cast<ChangeNicknameCommand*>(m_commands->at(n).get());
             insertValue(indentPad, m_project->actor(val->actor)->name, "{");
           } else if (m_commands->at(n)->code() == EventCode::Show_Balloon_Icon) {
             ShowBalloonIconCommand* val = dynamic_cast<ShowBalloonIconCommand*>(m_commands->at(n).get());

@@ -12,4 +12,14 @@ struct MovementRoute {
   bool repeat;
   bool skippable;
   bool wait;
+
+  [[nodiscard]] bool isDirty() const {
+    m_isDirty |= std::any_of(list.begin(), list.end(),[](const auto& cmd) {
+      return cmd && cmd->isDirty();
+    });
+
+    return m_isDirty;
+  }
+
+  mutable bool m_isDirty{false};
 };

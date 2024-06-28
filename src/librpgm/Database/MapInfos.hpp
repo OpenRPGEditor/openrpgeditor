@@ -57,6 +57,9 @@ public:
   const MapInfo& root() const { return m_mapinfos[0]; }
 
   void buildTree(bool reset = false);
+
+  std::vector<MapInfo>& mapInfos() { return m_mapinfos; }
+  const std::vector<MapInfo>& mapInfos() const {return m_mapinfos; }
 private:
   std::vector<MapInfo> m_mapinfos;
 

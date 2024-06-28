@@ -2,6 +2,7 @@
 
 #include "Database/CommandParser.hpp"
 #include "Database/Globals.hpp"
+#include "EventCommands/EventDummy.hpp"
 
 #include <nlohmann/json.hpp>
 

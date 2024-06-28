@@ -101,7 +101,7 @@ static std::map<EventCode, std::string_view> CommandColors{
   {EventCode::Play_SE,                  teal},
   {EventCode::Play_Movie,               teal},
   {EventCode::Change_Map_Name_Display,  deeppink},
-  {EventCode::Change_Tile_Set,          deeppink},
+  {EventCode::Change_Tileset,          deeppink},
   {EventCode::Change_Battle_Back,       deeppink},
   {EventCode::Change_Parallax,          deeppink},
   {EventCode::Get_Location_Info,        deeppink},
@@ -171,7 +171,7 @@ std::string ColorFormatter::popColor() {
  * @return Input: Color enum, returns an ImGui formatted string based off the enum.
  */
 std::string ColorFormatter::getColor(Color preset) {
-  if (preset == Gray)
+  if (preset == Color::Gray)
     return gray.data();
 
   return "&push-color=255,255,0;";

@@ -1157,7 +1157,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       parameters[0].get_to(end->y);
       break;
     }
-    case EventCode::Wait_del_: {
+    case EventCode::Wait_del_Movement: {
       MovementWaitCommand* end = dynamic_cast<MovementWaitCommand*>(ret.emplace_back(new MovementWaitCommand()).get());
       end->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(end->duration);

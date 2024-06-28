@@ -573,7 +573,7 @@ enum class EventCode : int {
   _1_Step_Forward = 12,
   _1_Step_Backward = 13,
   Jump = 14,
-  Wait_del_ = 15,
+  Wait_del_Movement = 15,
   Turn_Down = 16,
   Turn_Left = 17,
   Turn_Right = 18,

@@ -6,5 +6,5 @@
 
 struct MovementWaitCommand : WaitCommand {
   ~MovementWaitCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Wait_del_; }
+  [[nodiscard]] EventCode code() const override { return EventCode::Wait_del_Movement; }
 };

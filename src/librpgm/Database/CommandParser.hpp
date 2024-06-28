@@ -14,6 +14,4 @@ struct CommandParser {
     return ret;
   }
   nlohmann::json currentCommand() { return parser[index]; }
-
-  struct create;
 };

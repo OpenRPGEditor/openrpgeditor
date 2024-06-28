@@ -138,7 +138,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     ImGui::SameLine();
     ImGui::BeginDisabled(operand != 3);
     ImGui::PushItemWidth(100);
-    text = operand != 3 ? "##commonevent_switch_empty" : ""; // m_parent->switches(m_selectedCommonEvent->switchId);
+    text = operand != 3 ? "##commonevent_switch_empty" : gameDataDialog.has_value() ? gameDataDialog->getUIString() : "";
     ImGui::PushID("##controlvariable_gamedata");
     if (ImGui::Button(
             text.c_str(),

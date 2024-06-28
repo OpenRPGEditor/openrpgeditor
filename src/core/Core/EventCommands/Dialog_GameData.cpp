@@ -16,27 +16,31 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
 
     if (a_picker) {
       auto [closed, confirmed] = a_picker->draw();
-      if (confirmed)
+      if (confirmed) {
         d_actor_source = a_picker->selection();
-      a_picker.reset();
+        a_picker.reset();
+      }
     }
     if (ar_picker) {
       auto [closed, confirmed] = ar_picker->draw();
-      if (confirmed)
+      if (confirmed) {
         d_armor_source = ar_picker->selection();
-      ar_picker.reset();
+        ar_picker.reset();
+      }
     }
     if (w_picker) {
       auto [closed, confirmed] = w_picker->draw();
-      if (confirmed)
+      if (confirmed) {
         d_weapon_source = w_picker->selection();
-      w_picker.reset();
+        w_picker.reset();
+      }
     }
     if (i_picker) {
       auto [closed, confirmed] = i_picker->draw();
-      if (confirmed)
+      if (confirmed) {
         d_item_source = i_picker->selection();
-      i_picker.reset();
+        i_picker.reset();
+      }
     }
 
     ImGui::SeparatorText("Game Data");
@@ -45,9 +49,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
     ImGui::RadioButton("Item", &d_source, 0);
     ImGui::SameLine();
     std::string text =
-        d_source != 0
-            ? "##gamedata_item_empty"
-            : (d_raw_source == 0 ? "" : std::format("{:04} ", d_raw_source) + m_project->item(d_raw_source)->name);
+        d_source != 0 ? "##gamedata_item_empty" : std::format("{:04} ", d_item_source) + m_project->item(d_item_source)->name;
     ImGui::PushID("##gamedata_item_id");
     ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 50) - (16 * App::DPIHandler::get_ui_scale()));
     ImGui::BeginDisabled(d_source != 0);
@@ -64,7 +66,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
     ImGui::RadioButton("Weapon", &d_source, 1);
     ImGui::SameLine();
     text = d_source != 1 ? "##gamedata_weapon_empty"
-                         : std::format("{:04} ", d_raw_source) + m_project->weapon(d_raw_source)->name;
+                         : std::format("{:04} ", d_weapon_source) + m_project->weapon(d_weapon_source)->name;
     ImGui::PushID("##gamedata_weapon_id");
     ImGui::BeginDisabled(d_source != 1);
     if (ImGui::Button(text.c_str(),
@@ -80,7 +82,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
     ImGui::RadioButton("Armor", &d_source, 2);
     ImGui::SameLine();
     text = d_source != 2 ? "##gamedata_armor_empty"
-                         : std::format("{:04} ", d_raw_source) + m_project->armor(d_raw_source)->name;
+                         : std::format("{:04} ", d_armor_source) + m_project->armor(d_armor_source)->name;
     ImGui::PushID("##gamedata_armor_id");
     ImGui::BeginDisabled(d_source != 2);
     if (ImGui::Button(text.c_str(),
@@ -96,7 +98,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
     ImGui::RadioButton("Actor", &d_source, 3);
     ImGui::SameLine();
     text = d_source != 3 ? "##gamedata_actor_empty"
-                         : std::format("{:04} ", d_raw_source) + m_project->actor(d_raw_source)->name;
+                         : std::format("{:04} ", d_actor_source) + m_project->actor(d_actor_source)->name;
     ImGui::PushID("##gamedata_actor_id");
     ImGui::BeginDisabled(d_source != 3);
     if (ImGui::Button(text.c_str(),
@@ -165,7 +167,8 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
 
     ImGui::BeginDisabled(d_source != 5);
     ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 4 + 50);
-    if (ImGui::BeginCombo("##gamedata_character", d_source != 5 ? "" : ("EV" + std::format("{:03} ", m_project->events().at(current_characterSource)->id)).c_str())) {
+    if (ImGui::BeginCombo("##gamedata_character",
+      d_source != 5 ? "" : current_characterSource == 0 ? "Player" : current_characterSource == 1 ? "This Event" : ("EV" + std::format("{:03} ", m_project->events().at(current_characterSource)->id)).c_str())) {
 
       if (ImGui::Selectable("Player", current_characterSource == 0)) {
         current_characterSource = 0;
@@ -182,9 +185,9 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
         if (!dataSource.has_value())
           continue;
 
-        bool is_selected = (current_characterSource == dataSource->id + 1);
+        bool is_selected = (current_characterSource == dataSource->id);
         if (ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
-          current_characterSource = dataSource->id + 1;
+          current_characterSource = dataSource->id;
           if (is_selected)
             ImGui::SetItemDefaultFocus();
         }
@@ -252,6 +255,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
 
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(100) - ImGui::GetStyle().FramePadding.x, ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {
+      m_confirmed = true;
       command->gameData.source = static_cast<GameDataSource>(d_source);
       switch (d_source) {
       case 0: // Item

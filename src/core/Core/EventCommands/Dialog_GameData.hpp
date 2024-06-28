@@ -1,5 +1,6 @@
 #pragma once
 #include "IDialogController.hpp"
+#include "Core/Project.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/Actors.hpp"
@@ -15,17 +16,45 @@ struct Dialog_GameData : IDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::optional<ControlVariables> getCommandData() { return command; }
-  bool confirmed;
+  std::string_view getUIString() {
+
+    if (!m_confirmed)
+      return "";
+
+    if (command->gameData.source == GameDataSource::Item
+      || command->gameData.source == GameDataSource::Weapon
+      || command->gameData.source == GameDataSource::Armor) {
+      return "The number of " + m_project->item(command->gameData.rawSource)->name;
+    }
+    if (command->gameData.source == GameDataSource::Actor) {
+      return std::string(magic_enum::enum_name(static_cast<ActorDataSource>(command->gameData.value)).data()) + " of " + m_project->actor(command->gameData.rawSource)->name;
+
+    }
+    if (command->gameData.source == GameDataSource::Enemy) {
+      return std::string(magic_enum::enum_name(static_cast<EnemyDataSource>(command->gameData.value)).data()) + " of " + m_project->actor(command->gameData.rawSource)->name;
+    }
+    if (command->gameData.source == GameDataSource::Character) {
+      return std::string(magic_enum::enum_name(static_cast<CharacterDataSource>(command->gameData.value)).data()) + " of " + m_project->actor(command->gameData.rawSource)->name;
+    }
+    if (command->gameData.source == GameDataSource::Party) {
+      return "Actor ID of the party member #" + std::to_string(command->gameData.rawSource);
+    }
+    if (command->gameData.source == GameDataSource::Other) {
+      return std::string(magic_enum::enum_name(static_cast<OtherDataSource>(command->gameData.value)).data());
+    }
+  }
   Project* m_project = nullptr;
 private:
+  bool m_confirmed{false};
+
   int d_source = 0;
   int d_raw_source = 1; // Final value
   int d_value = 0;
 
-  int d_weapon_source = 0;
-  int d_armor_source = 0;
-  int d_item_source = 0;
-  int d_actor_source = 0;
+  int d_weapon_source = 1;
+  int d_armor_source = 1;
+  int d_item_source = 1;
+  int d_actor_source = 1;
 
   static constexpr auto ActorData = magic_enum::enum_values<ActorDataSource>();
   static constexpr auto EnemyData = magic_enum::enum_values<EnemyDataSource>();

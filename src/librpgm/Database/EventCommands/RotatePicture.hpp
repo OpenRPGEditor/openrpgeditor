@@ -8,7 +8,7 @@ struct RotatePictureCommand : IEventCommand {
   int picture;
   int rotation;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Rotate Picture : #" + std::to_string(picture) + ", " + std::to_string(rotation) + ColorFormatter::popColor();
   }

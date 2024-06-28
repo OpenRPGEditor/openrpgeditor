@@ -8,7 +8,7 @@ struct ScrollMapCommand : IEventCommand {
   Direction direction;
   int distance;
   MovementSpeed speed;
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + std::format("Scroll Map : {}, {}, {}", DecodeEnumName(direction), distance, DecodeEnumName(speed)) + ColorFormatter::popColor();
   }

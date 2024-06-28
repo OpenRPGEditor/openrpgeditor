@@ -7,7 +7,7 @@ struct MovementJumpCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Jump; }
   int x;
   int y;
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + std::format("◇Jump {}, {}", x, y) + ColorFormatter::popColor();
   }

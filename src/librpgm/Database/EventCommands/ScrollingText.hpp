@@ -16,7 +16,7 @@ struct ShowScrollTextCommand : IEventCommand {
   bool noFast;
   std::vector<std::shared_ptr<NextScrollingTextCommand>> text;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
   + "Text(S) " + colon.data() + " Speed " + std::to_string(speed) + (noFast == true ? ", No Fast Forward" : "");
 

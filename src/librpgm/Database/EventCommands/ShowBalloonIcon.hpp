@@ -8,7 +8,7 @@ struct ShowBalloonIconCommand : IEventCommand {
   int id;
   int index;
   bool waitForCompletion;
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
       + "Show Balloon Icon :" + (id > 0 ? " {}, " : id == -2 ? " Player, " : " This Event, ")
       + (waitForCompletion == true ? ColorFormatter::getColor(Color::Gray) + " (Wait)" + ColorFormatter::popColor() : "");

@@ -10,7 +10,7 @@ struct ShowChoiceCommand : IEventCommand {
   int cancelType; // < 0 == disallow/branch
   int defaultType; // -1 is none
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     std::string suffix = ColorFormatter::getColor(Color::Gray) + " (" + DecodeEnumName(background) + ", " + DecodeEnumName(positionType);
     suffix += (defaultType < 0 ? ", -," : ", #") + std::to_string(defaultType) + ",";
     suffix += (cancelType < 0 ? ", -," : ", #") + std::to_string(defaultType) + ")" + ColorFormatter::popColor();
@@ -30,7 +30,7 @@ struct WhenSelectedCommand : IEventCommand {
   int param1;
   std::string choice;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + " When " + choice + ColorFormatter::popColor();
   }
@@ -39,7 +39,7 @@ struct WhenSelectedCommand : IEventCommand {
 struct WhenCancelCommand : IEventCommand {
   ~WhenCancelCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::When_Cancel; }
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + " When Cancel" + ColorFormatter::popColor();
   }
@@ -48,7 +48,7 @@ struct WhenCancelCommand : IEventCommand {
 struct ShowChoicesEndCommand : IEventCommand {
   ~ShowChoicesEndCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::End_del_ShowChoices; }
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + " End" + ColorFormatter::popColor();
   }

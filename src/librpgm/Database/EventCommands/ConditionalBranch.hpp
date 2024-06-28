@@ -59,7 +59,7 @@ struct ConditionalBranchCommand : IEventCommand {
   std::string name;
   std::string script;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     std::string strBuild;
     if (type == ConditionType::Variable) {
       std::string test = ColorFormatter::getColorCode(code());
@@ -159,7 +159,7 @@ struct ConditionalBranchCommand : IEventCommand {
 struct ElseCommand : IEventCommand {
   ~ElseCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Else; }
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Else"; }
 };

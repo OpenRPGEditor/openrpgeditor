@@ -4,6 +4,7 @@
 #include "nlohmann/json.hpp"
 
 
+struct Database;
 struct IEventCommand {
   std::optional<int> indent{};
   mutable bool m_isDirty{false};
@@ -13,7 +14,7 @@ struct IEventCommand {
   virtual ~IEventCommand() = default;
   [[nodiscard]] virtual EventCode code() const = 0;
   [[nodiscard]] virtual bool isDirty() const { return m_isDirty; };
-  [[nodiscard]] virtual std::string stringRep() const {
+  [[nodiscard]] virtual std::string stringRep(const Database& db) const {
     return std::string(indent ? *indent * 4 : 0, ' ') + DecodeEnumName(code());
   }
   virtual std::string symbol(EventCode code) const {

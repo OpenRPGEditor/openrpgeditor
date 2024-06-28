@@ -31,7 +31,7 @@ struct ControlVariables : IEventCommand {
     int raw{};
   };
   std::string script{};
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     std::string strBuild;
     if (start != end) {
       strBuild = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())

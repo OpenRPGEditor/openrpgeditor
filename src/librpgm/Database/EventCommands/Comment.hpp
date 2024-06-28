@@ -12,7 +12,7 @@ struct CommentCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Comment; }
   std::string text;
   std::vector<std::shared_ptr<NextCommentCommand>> nextComments;
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
   + "Comment" + colon.data() + text;
     for (const auto& t : nextComments) {

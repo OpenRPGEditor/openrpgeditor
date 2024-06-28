@@ -9,7 +9,7 @@ struct RecoverAllCommand : IEventCommand {
   ActorComparisonSource comparison;
   int value;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Recover All : {}" + ColorFormatter::popColor();
   }

@@ -13,7 +13,7 @@ struct ChangeActorImageCommand : IEventCommand {
   int faceIndex;
   std::string battlerPicture;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     std::string charString = charPicture == "" ? "None, " : charPicture + std::format("({})", charIndex) + " ";
     std::string faceString = facePicture == "" ? "None, " : facePicture + std::format("({})", faceIndex) + " ";
     std::string battlerString = battlerPicture == "" ? "None" : facePicture;

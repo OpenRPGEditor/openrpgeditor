@@ -4,7 +4,8 @@
 
 struct EraseEventCommand : IEventCommand {
   ~EraseEventCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Erase_Event; }[[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] EventCode code() const override { return EventCode::Erase_Event; }
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Erase Event" + ColorFormatter::popColor();
   }

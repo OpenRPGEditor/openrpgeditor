@@ -9,7 +9,7 @@ struct ControlSwitches : IEventCommand {
   int end;
   ValueControl turnOff;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     if (start != end) {
       return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Control Switches : #" + std::format("{:04}", start) + ".." + std::format("{:04}", end) + " = " +

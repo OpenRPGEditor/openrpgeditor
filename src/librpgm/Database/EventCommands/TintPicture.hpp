@@ -17,7 +17,7 @@ struct TintPictureCommand : IEventCommand {
   int duration;
   bool waitForCompletion;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Tint Picture : " +
         std::format("#{}, ({},{},{},{}), {} frames",

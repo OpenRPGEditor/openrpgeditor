@@ -6,7 +6,7 @@ struct MovementFrequencyCommand : IEventCommand {
   ~MovementFrequencyCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Frequency; }
   int frequency;
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Frequency " + std::to_string(frequency) + ColorFormatter::popColor();
   }

@@ -5,7 +5,7 @@ struct JumpToLabelCommand : IEventCommand {
   ~JumpToLabelCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Jump_To_Label; }
   std::string label;
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Jump to Label: " + label;
   }

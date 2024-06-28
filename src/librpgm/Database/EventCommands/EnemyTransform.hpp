@@ -7,7 +7,7 @@ struct EnemyTransformCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Enemy_Transform; }
   int enemy;
   int transform;
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Enemy Transform : #" + std::to_string(enemy) + " {}, {}" + ColorFormatter::popColor();
   }

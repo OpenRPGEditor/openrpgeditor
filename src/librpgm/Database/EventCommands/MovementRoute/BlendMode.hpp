@@ -7,7 +7,7 @@ struct MovementChangeBlendModeCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Blend_Mode; }
 
   Blend mode;
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Blend Mode : " + DecodeEnumName(mode) + ColorFormatter::popColor();
   }

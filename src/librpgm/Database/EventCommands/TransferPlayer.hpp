@@ -12,7 +12,7 @@ struct TransferPlayerCommand : IEventCommand {
   Direction direction;
   Fade fade;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     std::string suffix = ColorFormatter::getColor(Color::Gray) + (direction != Direction::Retain ? "(Direction: " + DecodeEnumName(direction) : "");
     suffix += (direction != Direction::Retain ? fade != Fade::Black ? ", Fade: " + DecodeEnumName(fade) + ")" : "(Fade: " + DecodeEnumName(fade) + ")" : "") + ColorFormatter::popColor();
 

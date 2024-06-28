@@ -79,7 +79,7 @@ void EventCommandEditor::draw() {
       if (m_commands) {
         for (int n = 0; n < m_commands->size(); n++) {
           const bool isSelected = (m_selectedCommand == n);
-          std::string indentPad = m_commands->at(n)->stringRep();
+          std::string indentPad = m_commands->at(n)->stringRep(m_project->database());
           if (m_commands->at(n)->code() == EventCode::Common_Event) {
             // Common Event + (name)
             CommonEventCommand* cec = dynamic_cast<CommonEventCommand*>(m_commands->at(n).get());

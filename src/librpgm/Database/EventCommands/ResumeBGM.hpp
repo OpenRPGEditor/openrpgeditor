@@ -5,7 +5,7 @@
 struct ResumeBGMCommand : IEventCommand {
   ~ResumeBGMCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Resume_BGM; }
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Resume BGM";
   }

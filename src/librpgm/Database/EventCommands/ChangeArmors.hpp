@@ -9,7 +9,7 @@ struct ChangeArmorsCommmand : IEventCommand {
   QuantityChangeSource operandSource;
   int operand;
   bool includeEquipment;
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Change Armors : {} " + DecodeEnumName(operation) + (operandSource == QuantityChangeSource::Constant ? std::to_string(operand) : " [] ") + ColorFormatter::popColor() + (includeEquipment == true ? ColorFormatter::getColor(Color::Gray) + "(Include Equipment)" : "");
   }

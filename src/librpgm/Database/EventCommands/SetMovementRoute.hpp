@@ -9,7 +9,7 @@ struct SetMovementRouteCommand : IEventCommand {
   int character;
   MovementRoute route;
   std::vector<std::shared_ptr<IEventCommand>> editNodes;
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
 
     std::string characterName = character == -1 ? "Player" : character == 0 ? "This Event" : "{}";
     std::string stringSuffix = "(";
@@ -25,7 +25,7 @@ struct SetMovementRouteCommand : IEventCommand {
     for (const auto& t : route.list) {
       if (t->code() != EventCode::Event_Dummy) {
         moveRoute += "\n" + std::string(indent ? *indent : 0, '\t') + " :" + std::string(((t->indent ? *t->indent : 0) + 1), '\t') +
-               " : " + t->stringRep();
+               " : " + t->stringRep(db);
       }
     }
     return moveRoute;

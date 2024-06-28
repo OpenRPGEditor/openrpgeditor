@@ -9,7 +9,7 @@ struct NameInputCommand : IEventCommand {
   int actorId;
   int numChar;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Name Input Processing : {}, " + std::to_string(numChar) + (numChar > 1 ? " character" : " characters" + ColorFormatter::popColor());
   }

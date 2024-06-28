@@ -9,7 +9,7 @@ struct ChangeEnemyStateCommand : IEventCommand {
   PartyMemberOperation enemyOp;
   int state;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Change Enemy State : " + (enemy > 0 ? "#" + std::to_string(enemy) + " {}, " : "Entire Troop, ") + DecodeEnumName(enemyOp) + "{} "
       + ColorFormatter::popColor();

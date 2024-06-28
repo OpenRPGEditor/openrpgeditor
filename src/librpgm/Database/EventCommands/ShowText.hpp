@@ -20,7 +20,7 @@ struct ShowTextCommand : IEventCommand {
   std::vector<std::shared_ptr<NextTextCommand>> text;
 
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Text " + colon.data() + ColorFormatter::popColor() +
       (faceImage == "" ? "None, " : faceImage + std::format("({}), ", faceIndex)) + DecodeEnumName(background) + ", " + DecodeEnumName(position);

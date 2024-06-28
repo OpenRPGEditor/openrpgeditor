@@ -6,7 +6,7 @@ struct ControlTimer : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Control_Self_Switch; }
   TimerControl control;
   int seconds;
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     std::string min;
     std::string sec;
 

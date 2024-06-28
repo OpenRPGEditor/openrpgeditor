@@ -10,7 +10,7 @@ struct ChangeEquipmentCommand : IEventCommand {
   int equipType;
   int equipment;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Change Equipment : {}, {} = " + (equipment > 0 ? "{}" : "None") + ColorFormatter::popColor();
   }

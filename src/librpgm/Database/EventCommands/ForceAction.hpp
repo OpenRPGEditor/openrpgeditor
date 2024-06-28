@@ -11,7 +11,7 @@ struct ForceActionCommand : IEventCommand {
   int skill;
   int target;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Force Action : "
       + (sourceComparison == SubjectComparisonSource::Enemy ? ("#" + std::to_string(source) + " {},") : "{},")

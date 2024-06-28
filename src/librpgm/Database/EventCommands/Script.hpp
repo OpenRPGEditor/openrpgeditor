@@ -13,7 +13,7 @@ struct ScriptCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Script; }
   std::string script;
   std::vector<std::shared_ptr<NextScriptCommand>> moreScript;
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
   + "Script " + colon.data()  + script;
     for (const auto& t : moreScript) {

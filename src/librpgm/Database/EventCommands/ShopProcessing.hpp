@@ -11,7 +11,7 @@ struct ShopProcessingGoodCommand : IEventCommand {
   PriceType priceType;
   int price;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + " {}" + ColorFormatter::popColor();
   }
@@ -28,7 +28,7 @@ struct ShopProcessingCommand : IEventCommand {
   bool purchaseOnly;
   std::vector<std::shared_ptr<ShopProcessingGoodCommand>> goods;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Shop Processing : {}" + ColorFormatter::popColor();
   }

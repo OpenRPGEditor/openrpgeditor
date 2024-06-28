@@ -8,7 +8,7 @@ struct ChangeBattlebackCommand : IEventCommand {
   std::string battleBack1Name;
   std::string battleBack2Name;
 
-  [[nodiscard]] std::string stringRep() const override {
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Change Battle Back : "
     + battleBack1Name + (battleBack2Name == "" ? "" : " & " + battleBack2Name) + ColorFormatter::popColor();

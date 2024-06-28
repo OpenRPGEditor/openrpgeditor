@@ -149,6 +149,9 @@ public:
   std::vector<std::optional<Event>> events() { return m_map->events; }
   std::vector<std::optional<Event>> events() const { return m_map->events; }
 
+  Database& database() { return m_database; }
+  const Database& database() const { return m_database; }
+
 private:
   void drawMenu();
   void drawFileDialog();

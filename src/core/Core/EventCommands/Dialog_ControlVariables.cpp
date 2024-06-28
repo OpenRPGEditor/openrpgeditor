@@ -36,7 +36,6 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
         command->gameData.source = gameDataDialog->getCommandData()->gameData.source;
         command->gameData.rawSource = gameDataDialog->getCommandData()->gameData.rawSource;
         command->gameData.value = gameDataDialog->getCommandData()->gameData.value;
-        gameDataDialog.reset();
       }
     }
 
@@ -143,8 +142,9 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     if (ImGui::Button(
             text.c_str(),
             ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+      if (!gameDataDialog)
+        gameDataDialog.emplace("Game Data", m_project);
 
-      gameDataDialog.emplace("Game Data", m_project);
       gameDataDialog->SetOpen(true);
     }
     ImGui::PopID();

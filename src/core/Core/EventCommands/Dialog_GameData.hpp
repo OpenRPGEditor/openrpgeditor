@@ -16,25 +16,29 @@ struct Dialog_GameData : IDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::optional<ControlVariables> getCommandData() { return command; }
-  std::string_view getUIString() {
+  std::string getUIString() {
 
     if (!m_confirmed)
       return "";
 
-    if (command->gameData.source == GameDataSource::Item
-      || command->gameData.source == GameDataSource::Weapon
-      || command->gameData.source == GameDataSource::Armor) {
-      return "The number of " + m_project->item(command->gameData.rawSource)->name;
+    if (command->gameData.source == GameDataSource::Item) {
+      return std::string("The number of " + formatString(m_project->item(command->gameData.rawSource)->name, command->gameData.rawSource));
+    }
+    if (command->gameData.source == GameDataSource::Weapon) {
+      return std::string("The number of " + formatString(m_project->weapon(command->gameData.rawSource)->name, command->gameData.rawSource));
+    }
+    if (command->gameData.source == GameDataSource::Armor) {
+      return std::string("The number of " + formatString(m_project->armor(command->gameData.rawSource)->name, command->gameData.rawSource));
     }
     if (command->gameData.source == GameDataSource::Actor) {
-      return std::string(magic_enum::enum_name(static_cast<ActorDataSource>(command->gameData.value)).data()) + " of " + m_project->actor(command->gameData.rawSource)->name;
-
+      return std::string(magic_enum::enum_name(static_cast<ActorDataSource>(command->gameData.value)).data()) + " of " + formatString(m_project->actor(command->gameData.rawSource)->name, command->gameData.rawSource);
     }
     if (command->gameData.source == GameDataSource::Enemy) {
-      return std::string(magic_enum::enum_name(static_cast<EnemyDataSource>(command->gameData.value)).data()) + " of " + m_project->actor(command->gameData.rawSource)->name;
+      return std::string(magic_enum::enum_name(static_cast<EnemyDataSource>(command->gameData.value)).data()) + " of " + formatString(m_project->enemy(command->gameData.rawSource)->name, command->gameData.rawSource);
     }
     if (command->gameData.source == GameDataSource::Character) {
-      return std::string(magic_enum::enum_name(static_cast<CharacterDataSource>(command->gameData.value)).data()) + " of " + m_project->actor(command->gameData.rawSource)->name;
+      std::string str = command->gameData.rawSource == -1 ? "Player" : command->gameData.rawSource == 0 ? "This Event" : m_project->event(command->gameData.rawSource)->name;
+      return std::string(magic_enum::enum_name(static_cast<CharacterDataSource>(command->gameData.value)).data()) + " of " + formatString(str, command->gameData.rawSource);
     }
     if (command->gameData.source == GameDataSource::Party) {
       return "Actor ID of the party member #" + std::to_string(command->gameData.rawSource);
@@ -42,6 +46,7 @@ struct Dialog_GameData : IDialogController {
     if (command->gameData.source == GameDataSource::Other) {
       return std::string(magic_enum::enum_name(static_cast<OtherDataSource>(command->gameData.value)).data());
     }
+    return "";
   }
   Project* m_project = nullptr;
 private:
@@ -76,4 +81,13 @@ private:
   std::optional<ObjectPicker<Armor>> ar_picker;
   std::optional<ObjectPicker<Weapon>> w_picker;
   std::tuple<bool, bool> result;
+
+  static std::string formatString(std::string str, int source) {
+    if (str == "") {
+      return std::format("#{:04} ", source);
+    }
+    else {
+      return str;
+    }
+  }
 };

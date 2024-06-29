@@ -376,12 +376,12 @@ void Project::drawMenu() {
         /* is there a better way to do this? */
 #if __APPLE__
         char buff[4096]{};
-        snprintf(buff, 4096, "open \"%s\"", m_basePath.c_str());
+        snprintf(buff, 4096, "open \"%s\"", m_database->basePath.c_str());
         if (strlen(buff) > 0) {
           ::system(buff);
         }
 #elif _WIN32
-        ShellExecute(NULL, "open", m_basePath.c_str(), NULL, NULL, SW_SHOWDEFAULT);
+        ShellExecute(NULL, "open", m_database->basePath.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 #else
         char buff[4096]{};
         snprintf(buff, 4096, "xdg-open \"%s\"", m_database->basePath.c_str());

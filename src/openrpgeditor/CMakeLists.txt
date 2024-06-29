@@ -4,9 +4,7 @@ set(NAME "OpenRPGEditor")
 
 configure_file(App/ProjectInfo.cpp.in App/ProjectInfo.cpp @ONLY)
 
-add_executable(${NAME} WIN32 MACOSX_BUNDLE
-        App/Main.cpp
-        App/ProjectInfo.hpp App/ProjectInfo.cpp
+add_library(orecore STATIC
         Core/Log.hpp Core/Log.cpp
         Core/Debug/Instrumentor.hpp
         Core/Application.hpp Core/Application.cpp
@@ -67,18 +65,40 @@ add_executable(${NAME} WIN32 MACOSX_BUNDLE
         Core/EventCommands/Dialog_CommonEvent.cpp
         Core/EventCommands/Dialog_CommonEvent.hpp
 )
+target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_features(orecore PRIVATE cxx_std_20)
+target_link_libraries(
+        orecore
+        PRIVATE project_warnings
+        PUBLIC fmt::fmt-header-only spdlog::spdlog_header_only
+        SDL2::SDL2
+        imgui
+        nfd
+        magic_enum
+        nlohmann_json::nlohmann_json
+        librpgm
+        freetype
+        z
+)
 
 # Define set of OS specific files to include
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    target_sources(${NAME} PRIVATE Platform/Windows/Resources.cpp
+    target_sources(orecore PRIVATE Platform/Windows/Resources.cpp
             Platform/Windows/DPIHandler.cpp)
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    target_sources(${NAME} PRIVATE Platform/Mac/Resources.cpp
+    target_sources(orecore PRIVATE Platform/Mac/Resources.cpp
             Platform/Mac/DPIHandler.cpp)
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    target_sources(${NAME} PRIVATE Platform/Linux/Resources.cpp
+    target_sources(orecore PRIVATE Platform/Linux/Resources.cpp
             Platform/Linux/DPIHandler.cpp)
 endif ()
+
+add_executable(${NAME} WIN32 MACOSX_BUNDLE
+        App/Main.cpp
+        App/ProjectInfo.hpp App/ProjectInfo.cpp
+)
+
+
 
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/AppAssets.cmake)
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/Packaging.cmake)
@@ -90,6 +110,7 @@ target_link_libraries(
         ${NAME}
         PRIVATE project_warnings
         PUBLIC fmt::fmt-header-only spdlog::spdlog_header_only
+        orecore
         SDL2::SDL2
         imgui
         nfd

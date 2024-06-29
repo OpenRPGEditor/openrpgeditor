@@ -1,13 +1,8 @@
 # Assets for all platforms
-set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/NotoSans-SemiBold.ttf.ttf)
-set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/JetBrainsMono-SemiBold.ttf)
-set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/NotoSansJP-SemiBold.ttf)
-set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/RelaxedTypingMonoJP-Medium.ttf)
-set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/NotoSansSinhala-SemiBold.ttf.ttf)
-set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/KurintoMono-NarBdm.ttf)
-set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/Firple-Bold.ttf)
-
-
+set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/MPLUSRounded1c-Medium.ttf)
+set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/NotoSansSinhala-Medium.ttf)
+set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/JetBrainsMono-Medium.ttf)
+set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/mplus-1m-medium.ttf)
 
 # Platform specific static assets
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")

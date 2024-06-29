@@ -77,6 +77,7 @@ void EventCommandEditor::draw() {
       const int totalPadding = static_cast<int>(std::floor(std::log10(m_commands->size())));
 
       if (m_commands) {
+        ImGui::PushFont(App::APP->getMonoFont());
         for (int n = 0; n < m_commands->size(); n++) {
           const bool isSelected = (m_selectedCommand == n);
           std::string indentPad = m_commands->at(n)->stringRep(m_project->database());
@@ -471,6 +472,7 @@ void EventCommandEditor::draw() {
           if (isSelected)
             ImGui::SetItemDefaultFocus();
         }
+        ImGui::PopFont();
       }
       drawPopup(m_commands->at(m_selectedCommand));
 

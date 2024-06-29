@@ -92,6 +92,7 @@ ExitStatus App::Application::run() {
   const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
   const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf").generic_string()};
   const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf").generic_string()};
+  const std::string font_path_mono{Resources::font_path("mplus-1m-medium.ttf").generic_string()};
 
   static const ImWchar specialChar[] = {
       /* clang-format off */
@@ -110,8 +111,13 @@ ExitStatus App::Application::run() {
   config.PixelSnapH = true;
   config.FontBuilderFlags |= ImGuiFreeTypeBuilderFlags_ForceAutoHint | ImGuiFreeTypeBuilderFlags_LoadColor;
   m_mainFont = io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, &config, ranges.Data);
+  config.MergeMode = true;
+  io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), font_size, &config, ranges.Data);
   io.Fonts->Build();
 
+  config.MergeMode = false;
+  m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_mono.c_str(), font_size, &config, ranges.Data);
   config.MergeMode = true;
   io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
   io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), font_size, &config, ranges.Data);

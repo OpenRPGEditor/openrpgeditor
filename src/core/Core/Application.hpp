@@ -39,6 +39,7 @@ public:
   const std::unique_ptr<Window>& getWindow() const { return m_window; }
 
   [[nodiscard]] ImFont* getMainFont() const { return m_mainFont; }
+  [[nodiscard]] ImFont* getMonoFont() const { return m_monoFont; }
 
 private:
   ExitStatus m_exitStatus{ExitStatus::Success};
@@ -48,6 +49,7 @@ private:
   bool m_minimized{false};
   Project m_project;
   ImFont* m_mainFont{};
+  ImFont* m_monoFont{};
 };
 
 extern Application* APP;

@@ -267,23 +267,22 @@ void MapEditor::draw() {
   std::erase_if(m_eventEditors, [](EventEditor& editor) { return !editor.draw(); });
 
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
-    auto region = ImGui::GetContentRegionAvail();
-    float u1 = std::clamp((region.x - ImGui::GetStyle().FramePadding.x) / (8192 * 2), 0.f, 1.f);
-    float v1 = std::clamp((region.y - ImGui::GetStyle().FramePadding.y) / (8192 * 2), 0.f, 1.f);
-    auto cursor = ImGui::GetCursorPos();
-    if (map()) {
-      ImGui::Image(m_checkeredBack.get(), ImVec2{region.x, region.y}, ImVec2{0, 0}, ImVec2{u1, v1});
-    }
-    ImGui::SetCursorPos(cursor);
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(45.f)),
-                      ImGuiChildFlags_Border,
-                      ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoBackground);
-
+                      0, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
+    ImGui::SetScrollX(m_tileCursor.alignCoord(ImGui::GetScrollX()));
+    ImGui::SetScrollY(m_tileCursor.alignCoord(ImGui::GetScrollY()));
     if (map()) {
-      ImGui::Dummy(ImVec2{map()->width * (m_parent->system().tileSize * m_mapScale),
-                          map()->height * (m_parent->system().tileSize * m_mapScale)});
-
       ImGuiWindow* win = ImGui::GetCurrentWindow();
+      win->ScrollTargetEdgeSnapDist
+      ImGui::Dummy(ImVec2{(map()->width + 1) * (m_parent->system().tileSize * m_mapScale),
+                          (map()->height + 1) * (m_parent->system().tileSize * m_mapScale)});
+
+      auto region = win->ClipRect.Max;
+      float u1 = std::clamp(region.x / (8192 * 2), 0.f, 1.f);
+      float v1 = std::clamp(region.y / (8192 * 2), 0.f, 1.f);
+      win->DrawList->AddImage(m_checkeredBack.get(), win->ClipRect.Min + ImVec2{0, 0},
+                              win->ClipRect.Min + ImVec2{region.x, region.y}, ImVec2{0, 0}, ImVec2{u1, v1});
+
       handleMouseInput(win);
 
       if (m_tileCursor.mode() == MapCursorMode::Keyboard && !ImGui::IsWindowFocused()) {
@@ -343,7 +342,7 @@ void MapEditor::draw() {
       }
     }
     ImGui::EndChild();
-    ImGui::BeginChild("##map_editor_bottom_panel");
+    ImGui::BeginChild("##map_editor_bottom_panel", ImVec2{}, 0, ImGuiWindowFlags_NoBackground);
     {
       ImGui::Text("Scale:");
       ImGui::SameLine();

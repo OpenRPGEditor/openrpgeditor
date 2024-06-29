@@ -1,4 +1,7 @@
-#include "MapInfos.hpp"
+#include "Database/MapInfos.hpp"
+
+#include "Database/Database.hpp"
+#include "Database/Map.hpp"
 
 #include <fstream>
 
@@ -18,6 +21,7 @@ MapInfos MapInfos::load(std::string_view filename) {
 
     MapInfo& mapinfo = mapinfos.m_mapinfos.emplace_back();
     value.get_to(mapinfo);
+    mapinfo.m_map = std::make_unique<Map>(Database::Instance->loadMap(mapinfo.id));
   }
   mapinfos.buildTree();
   return mapinfos;

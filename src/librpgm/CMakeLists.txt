@@ -295,6 +295,8 @@ add_library(
         Database/EventCommands/MovementRoute/Script.hpp
         Database/EventCommands.hpp
         Database/EventCommands/MovementRoute.hpp
+
+        Database/Log.hpp Database/Log.cpp
 )
 
 target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)

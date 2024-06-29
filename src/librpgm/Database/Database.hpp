@@ -14,8 +14,20 @@
 #include "Database/CommonEvents.hpp"
 #include "Database/System.hpp"
 #include "Database/MapInfos.hpp"
+#include "Database/Map.hpp"
 
 struct Database {
+  Database() {
+    Instance = this;
+  }
+  ~Database() {
+    Instance = nullptr;
+  }
+  Database(Database&) =delete;
+  Database(Database&&) =delete;
+  Database& operator=(Database&)=delete;
+  Database& operator=(Database&&)=delete;
+
   Actors actors{};
   Classes classes{};
   Skills skills{};
@@ -29,5 +41,12 @@ struct Database {
   Tilesets tilesets{};
   CommonEvents commonEvents{};
   System system{};
-  MapInfos mapInfos;
+  MapInfos mapInfos{};
+  std::string projectVersion; // As stored in the .rpgproject file
+  std::string projectFilePath;
+  std::string basePath;
+
+  Map loadMap(int mapId);
+
+  static Database* Instance;
 };

@@ -40,7 +40,7 @@ public:
 
   [[nodiscard]] bool isLoaded() const { return m_isLoaded; }
   [[nodiscard]] bool isValid() const { return m_isValid; }
-  [[nodiscard]] const std::string& version() const { return m_projectVersion; }
+  [[nodiscard]] const std::string& version() const { return m_database->projectVersion; }
 
   // Files will inform Project of that they've been modified via a callback,
   // this keeps things simple and avoids delegate overhead
@@ -71,28 +71,28 @@ public:
     m_editMode = EditMode::Event;
   }
 
-  std::string variable(int id) { return m_database.system.variable(id); }
-  const std::string variable(int id) const { return m_database.system.variable(id); }
+  std::string variable(int id) { return m_database->system.variable(id); }
+  const std::string variable(int id) const { return m_database->system.variable(id); }
 
-  std::string switche(int id) { return m_database.system.switche(id); }
-  const std::string switche(int id) const { return m_database.system.switche(id); }
-  CommonEvent* commonEvent(int id) { return m_database.commonEvents.event(id); }
-  const CommonEvent* commonEvent(int id) const { return m_database.commonEvents.event(id); }
+  std::string switche(int id) { return m_database->system.switche(id); }
+  const std::string switche(int id) const { return m_database->system.switche(id); }
+  CommonEvent* commonEvent(int id) { return m_database->commonEvents.event(id); }
+  const CommonEvent* commonEvent(int id) const { return m_database->commonEvents.event(id); }
 
-  Actor* actor(int id) { return m_database.actors.actor(id); }
-  Event* event(int id) { return m_map->event(id); }
-  Class* actorClass(int id) { return m_database.classes.classType(id); }
+  Actor* actor(int id) { return m_database->actors.actor(id); }
+  Event* event(int id) { return m_mapEditor.map()->event(id); }
+  Class* actorClass(int id) { return m_database->classes.classType(id); }
   const char* vehicle(int id) { return id == 0 ? "Boat" : id == 1 ? "Ship" : "Airship"; }
-  Enemy* enemy(int id) { return m_database.enemies.enemy(id); }
-  Skill* skill(int id) { return m_database.skills.skill(id); }
-  Weapon* weapon(int id) { return m_database.weapons.weapon(id); }
-  Armor* armor(int id) { return m_database.armors.armor(id); }
-  Item* item(int id) { return m_database.items.item(id); }
-  State* state(int id) { return m_database.states.state(id); }
-  MapInfo* map(int id) { return m_database.mapInfos.map(id); }
-  std::string equipType(int id) { return m_database.system.equipTypes.at(id); }
-  Animation* animation(int id) { return m_database.animations.animation(id); }
-  Tileset* tileset(int id) { return m_database.tilesets.tileset(id); }
+  Enemy* enemy(int id) { return m_database->enemies.enemy(id); }
+  Skill* skill(int id) { return m_database->skills.skill(id); }
+  Weapon* weapon(int id) { return m_database->weapons.weapon(id); }
+  Armor* armor(int id) { return m_database->armors.armor(id); }
+  Item* item(int id) { return m_database->items.item(id); }
+  State* state(int id) { return m_database->states.state(id); }
+  MapInfo* map(int id) { return m_database->mapInfos.map(id); }
+  std::string equipType(int id) { return m_database->system.equipTypes.at(id); }
+  Animation* animation(int id) { return m_database->animations.animation(id); }
+  Tileset* tileset(int id) { return m_database->tilesets.tileset(id); }
 
   void setDrawTool(DrawTool tool) { m_drawTool = tool; }
   DrawTool drawTool() const { return m_drawTool; }
@@ -100,24 +100,14 @@ public:
   MapInfo* currentMapInfo() { return m_mapListView.currentMapInfo(); }
   const MapInfo* currentMapInfo() const { return m_mapListView.currentMapInfo(); }
 
-  Troop* troop(int id) { return m_database.troops.troop(id); }
-  const Tileset* tileset(int id) const { return m_database.tilesets.tileset(id); }
+  Troop* troop(int id) { return m_database->troops.troop(id); }
+  const Tileset* tileset(int id) const { return m_database->tilesets.tileset(id); }
 
   void setMap(MapInfo& in);
 
-  Map* currentMap() {
-    if (m_map) {
-      return &m_map.value();
-    }
-    return nullptr;
-  }
+  Map* currentMap() { return m_mapEditor.map(); }
 
-  const Map* currentMap() const {
-    if (m_map) {
-      return &m_map.value();
-    }
-    return nullptr;
-  }
+  const Map* currentMap() const { return m_mapEditor.map(); }
 
   void addUndo(const std::weak_ptr<IUndoCommand>& cmd) {
     m_undoStack.push(cmd);
@@ -125,32 +115,32 @@ public:
     m_redoStack.clear();
   }
 
-  System& system() { return m_database.system; }
-  const System& system() const { return m_database.system; }
+  System& system() { return m_database->system; }
+  const System& system() const { return m_database->system; }
 
   MapEditor* mapEditor() { return &m_mapEditor; }
   const MapEditor* mapEditor() const { return &m_mapEditor; }
 
-  Items& items() { return m_database.items; }
-  const Items& items() const { return m_database.items; }
+  Items& items() { return m_database->items; }
+  const Items& items() const { return m_database->items; }
 
-  Armors& armors() { return m_database.armors; }
-  const Armors& armors() const { return m_database.armors; }
+  Armors& armors() { return m_database->armors; }
+  const Armors& armors() const { return m_database->armors; }
 
-  Weapons& weapons() { return m_database.weapons; }
-  const Weapons& weapons() const { return m_database.weapons; }
+  Weapons& weapons() { return m_database->weapons; }
+  const Weapons& weapons() const { return m_database->weapons; }
 
-  Actors& actors() { return m_database.actors; }
-  const Actors& actors() const { return m_database.actors; }
+  Actors& actors() { return m_database->actors; }
+  const Actors& actors() const { return m_database->actors; }
 
-  Troops& troops() { return m_database.troops; }
-  const Troops& troops() const { return m_database.troops; }
+  Troops& troops() { return m_database->troops; }
+  const Troops& troops() const { return m_database->troops; }
 
-  std::vector<std::optional<Event>> events() { return m_map->events; }
-  std::vector<std::optional<Event>> events() const { return m_map->events; }
+  std::vector<std::optional<Event>> events() { return currentMap()->events; }
+  std::vector<std::optional<Event>> events() const { return currentMap()->events; }
 
-  Database& database() { return m_database; }
-  const Database& database() const { return m_database; }
+  Database& database() { return m_database.value(); }
+  const Database& database() const { return m_database.value(); }
 
 private:
   void drawMenu();
@@ -167,11 +157,7 @@ private:
   bool m_isLoaded = false;
   bool m_isModified = false;
 
-  std::string m_projectVersion; // As stored in the .rpgproject file
-  std::string m_projectFilePath;
-  std::string m_basePath;
-
-  Database m_database;
+  std::optional<Database> m_database;
 
   std::optional<DatabaseEditor> m_databaseEditor;
 
@@ -179,7 +165,6 @@ private:
   DrawTool m_drawTool = DrawTool::Pencil;
 
   std::optional<ResourceManager> m_resourceManager;
-  std::optional<Map> m_map;
 
   bool m_showDemoWindow{};
   bool m_showAboutWindow{};

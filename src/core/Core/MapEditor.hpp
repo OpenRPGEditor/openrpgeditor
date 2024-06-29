@@ -5,16 +5,17 @@
 #include "Core/MapEditor/MapEvent.hpp"
 
 #include "Core/EventEditor.hpp"
+#include "Database/MapInfos.hpp"
 #include "MapEditor/MapCursor.hpp"
 
 struct Project;
 struct Map;
 struct MapInfo;
 struct MapEditor {
-  MapEditor(Project* parent) : m_parent(parent), m_tileCursor(this){}
+  MapEditor(Project* parent) : m_parent(parent), m_tileCursor(this) {}
   void draw();
 
-  void setMap(Map* map, MapInfo* info);
+  void setMap(MapInfo* info);
 
   void clearLayers() {
     m_lowerLayer.clear();
@@ -63,8 +64,8 @@ struct MapEditor {
   void togglePrisonMode() { m_prisonMode ^= 1; }
   void setPrisonMode(const bool prisonMode) { m_prisonMode = prisonMode; }
 
-  Map* map() { return m_map; }
-  const Map* map() const { return m_map; }
+  Map* map() { return m_mapInfo ? m_mapInfo->map() : nullptr; }
+  const Map* map() const { return m_mapInfo ? m_mapInfo->map() : nullptr; }
 
   Project* project() { return m_parent; }
   const Project* project() const { return m_parent; }
@@ -81,7 +82,6 @@ private:
   void renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer);
   void handleKeyboardShortcuts();
   Project* m_parent;
-  Map* m_map = nullptr;
   MapInfo* m_mapInfo = nullptr;
   float m_mapScale = 1.f;
   bool m_scaleChanged = false;

@@ -1,4 +1,5 @@
 #pragma once
+#include "Database/Log.hpp"
 
 #include <string>
 #include <optional>

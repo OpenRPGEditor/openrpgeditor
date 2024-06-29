@@ -3,6 +3,7 @@
 #include "nlohmann/json.hpp"
 
 #include <string>
+struct Map;
 struct MapInfo {
   NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(MapInfo, expanded, id, name, order, parentId, scrollX, scrollY);
   bool expanded;
@@ -15,11 +16,15 @@ struct MapInfo {
 
   std::vector<MapInfo*>& children() { return m_children; }
   const std::vector<MapInfo*>& children() const { return m_children; }
-private:
 
+  Map* map() { return m_map.get(); }
+  const Map* map() const { return m_map.get(); }
+
+private:
   friend void recursiveSort(MapInfo& in);
   friend class MapInfos;
   std::vector<MapInfo*> m_children;
+  std::unique_ptr<Map> m_map;
 };
 
 class MapInfos {
@@ -59,8 +64,8 @@ public:
   void buildTree(bool reset = false);
 
   std::vector<MapInfo>& mapInfos() { return m_mapinfos; }
-  const std::vector<MapInfo>& mapInfos() const {return m_mapinfos; }
+  const std::vector<MapInfo>& mapInfos() const { return m_mapinfos; }
+
 private:
   std::vector<MapInfo> m_mapinfos;
-
 };

@@ -48,53 +48,54 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
     return false;
   }
   APP_INFO("Got project for {}", version);
-  m_projectVersion = version;
-  m_basePath = basePath;
-  m_projectFilePath = filePath;
-  APP_INFO("Loading Actor definitions...");
-  m_database.actors = Actors::load(m_basePath + "/data/Actors.json");
-  APP_INFO("Loading Class definitions...");
-  m_database.classes = Classes::load(m_basePath + "/data/Classes.json");
-  APP_INFO("Loading Skill definitions...");
-  m_database.skills = Skills::load(m_basePath + "/data/Skills.json");
-  APP_INFO("Loading Item definitions...");
-  m_database.items = Items::load(m_basePath + "/data/Items.json");
-  APP_INFO("Loading Weapon definitions...");
-  m_database.weapons = Weapons::load(m_basePath + "/data/Weapons.json");
-  APP_INFO("Loading Armor definitions...");
-  m_database.armors = Armors::load(m_basePath + "/data/Armors.json");
-  APP_INFO("Loading Enemy definitions...");
-  m_database.enemies = Enemies::load(m_basePath + "/data/Enemies.json");
-  APP_INFO("Loading Troop definitions...");
-  m_database.troops = Troops::load(m_basePath + "/data/Troops.json");
-  APP_INFO("Loading State definitions...");
-  m_database.states = States::load(m_basePath + "/data/States.json");
-  APP_INFO("Loading Animation definitions...");
-  m_database.animations = Animations::load(m_basePath + "/data/Animations.json");
-  APP_INFO("Loading Tileset definitions...");
-  m_database.tilesets = Tilesets::load(m_basePath + "/data/Tilesets.json");
-  APP_INFO("Loading CommonEvent definitions...");
-  m_database.commonEvents = CommonEvents::load(m_basePath + "/data/CommonEvents.json");
-  APP_INFO("Loading System...");
-  m_database.system = System::load(m_basePath + "/data/System.json");
-  m_database.mapInfos = MapInfos::load(m_basePath + "/data/MapInfos.json");
-  m_databaseEditor.emplace(this, m_database.actors, m_database.classes, m_database.skills, m_database.items,
-                           m_database.weapons, m_database.armors, m_database.enemies, m_database.troops,
-                           m_database.states, m_database.animations, m_database.tilesets, m_database.commonEvents,
-                           m_database.system);
+  m_database.emplace();
 
-  MapInfo* info = m_database.mapInfos.map(0);
+  m_database->projectVersion = version;
+  m_database->basePath = basePath;
+  m_database->projectFilePath = filePath;
+  APP_INFO("Loading Actor definitions...");
+  m_database->actors = Actors::load(m_database->basePath + "/data/Actors.json");
+  APP_INFO("Loading Class definitions...");
+  m_database->classes = Classes::load(m_database->basePath + "/data/Classes.json");
+  APP_INFO("Loading Skill definitions...");
+  m_database->skills = Skills::load(m_database->basePath + "/data/Skills.json");
+  APP_INFO("Loading Item definitions...");
+  m_database->items = Items::load(m_database->basePath + "/data/Items.json");
+  APP_INFO("Loading Weapon definitions...");
+  m_database->weapons = Weapons::load(m_database->basePath + "/data/Weapons.json");
+  APP_INFO("Loading Armor definitions...");
+  m_database->armors = Armors::load(m_database->basePath + "/data/Armors.json");
+  APP_INFO("Loading Enemy definitions...");
+  m_database->enemies = Enemies::load(m_database->basePath + "/data/Enemies.json");
+  APP_INFO("Loading Troop definitions...");
+  m_database->troops = Troops::load(m_database->basePath + "/data/Troops.json");
+  APP_INFO("Loading State definitions...");
+  m_database->states = States::load(m_database->basePath + "/data/States.json");
+  APP_INFO("Loading Animation definitions...");
+  m_database->animations = Animations::load(m_database->basePath + "/data/Animations.json");
+  APP_INFO("Loading Tileset definitions...");
+  m_database->tilesets = Tilesets::load(m_database->basePath + "/data/Tilesets.json");
+  APP_INFO("Loading CommonEvent definitions...");
+  m_database->commonEvents = CommonEvents::load(m_database->basePath + "/data/CommonEvents.json");
+  APP_INFO("Loading System...");
+  m_database->system = System::load(m_database->basePath + "/data/System.json");
+  m_database->mapInfos = MapInfos::load(m_database->basePath + "/data/MapInfos.json");
+  m_databaseEditor.emplace(this, m_database->actors, m_database->classes, m_database->skills, m_database->items,
+                           m_database->weapons, m_database->armors, m_database->enemies, m_database->troops,
+                           m_database->states, m_database->animations, m_database->tilesets, m_database->commonEvents,
+                           m_database->system);
+
+  MapInfo* info = m_database->mapInfos.map(0);
   info->expanded = true;
-  info->name = m_database.system.gameTitle;
+  info->name = m_database->system.gameTitle;
   APP_INFO("Loaded project!");
-  m_resourceManager.emplace(m_basePath);
+  m_resourceManager.emplace(m_database->basePath);
   // Load the previously loaded map
-  // m_dummyTex = m_resourceManager->loadParallaxImage("Map509");
   SDL_SetCursor(SDL_GetDefaultCursor());
   m_mapEditor.clearLayers();
-  m_mapListView.setMapInfos(&m_database.mapInfos);
+  m_mapListView.setMapInfos(&m_database->mapInfos);
 
-  MapInfo* m = m_database.mapInfos.map(m_database.system.editMapId);
+  MapInfo* m = m_database->mapInfos.map(m_database->system.editMapId);
   if (m != nullptr) {
     setMap(*m);
   }
@@ -102,10 +103,10 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   auto fileIt = std::find_if(Settings::instance()->mru.begin(), Settings::instance()->mru.end(),
                              [&filePath](const auto& t) { return t.first == filePath.data(); });
   if (fileIt == Settings::instance()->mru.end()) {
-    Settings::instance()->mru.emplace_front(filePath.data(), m_database.system.gameTitle);
+    Settings::instance()->mru.emplace_front(filePath.data(), m_database->system.gameTitle);
   } else {
     Settings::instance()->mru.erase(fileIt);
-    Settings::instance()->mru.emplace_front(filePath.data(), m_database.system.gameTitle);
+    Settings::instance()->mru.emplace_front(filePath.data(), m_database->system.gameTitle);
   }
   m_isLoaded = true;
   return true;
@@ -121,10 +122,9 @@ bool Project::close(bool save) {
 
   /* Default initialize all of these */
   m_databaseEditor.reset();
-  m_database = {};
+  m_database.reset();
 
-  m_map.reset();
-  m_mapEditor.setMap(nullptr, nullptr);
+  m_mapEditor.setMap(nullptr);
   m_resourceManager.reset();
   m_mapListView.reset();
   m_isLoaded = false;
@@ -380,7 +380,7 @@ void Project::drawMenu() {
         ShellExecute(NULL, "open", m_basePath.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 #else
         char buff[4096]{};
-        snprintf(buff, 4096, "xdg-open \"%s\"", m_basePath.c_str());
+        snprintf(buff, 4096, "xdg-open \"%s\"", m_database->basePath.c_str());
         if (strlen(buff) > 0) {
           ::system(buff);
         }
@@ -540,20 +540,18 @@ void Project::drawFileDialog() {
 }
 void Project::setMap(MapInfo& in) {
   if (in.id == 0) {
-    m_map.reset();
     m_mapListView.setCurrentMapId(0);
-    m_mapEditor.setMap(nullptr, nullptr);
+    m_mapEditor.setMap(nullptr);
     return;
   }
 
   SDL_SetCursor(waitCursor);
   m_mapListView.setCurrentMapId(in.id);
-  m_map = m_resourceManager->loadMap(in.id);
-  if (m_map) {
-    m_mapEditor.setMap(&m_map.value(), &in);
-    m_map->serialize("Test.json");
+  if (m_mapListView.currentMapInfo()) {
+    m_mapEditor.setMap(&in);
+    in.map()->serialize("Test.json");
   } else {
-    m_mapEditor.setMap(nullptr, nullptr);
+    m_mapEditor.setMap(nullptr);
   }
 
   // if (m_map) {

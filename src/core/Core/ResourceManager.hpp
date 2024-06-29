@@ -17,8 +17,6 @@ public:
   explicit ResourceManager(std::string_view basePath);
   ~ResourceManager();
 
-  Map loadMap(int mapId);
-
   Texture loadImage(std::string_view path);
   Texture loadAnimationImage(std::string_view path);
   Texture loadBattlebacks1Image(std::string_view path);

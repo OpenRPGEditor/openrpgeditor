@@ -72,9 +72,9 @@ std::tuple<bool, bool> ObjectPicker<T>::draw() {
 
         /* ID */
         if (ImGui::TableNextColumn()) {
-          std::string id = std::format("{:04}", value->id);
-          if (ImGui::Selectable(id.c_str(), m_selection == value->id, ImGuiSelectableFlags_SpanAllColumns)) {
-            m_selection = value->id;
+          std::string id = std::format("{:04}", getId(*value));
+          if (ImGui::Selectable(id.c_str(), m_selection == getId(*value), ImGuiSelectableFlags_SpanAllColumns)) {
+            m_selection = getId(*value);
           }
         }
         /* Name */

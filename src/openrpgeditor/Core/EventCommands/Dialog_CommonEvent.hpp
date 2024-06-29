@@ -10,7 +10,7 @@ struct Project;
 struct Dialog_CommonEvent : IDialogController {
   Dialog_CommonEvent() = delete;
   explicit Dialog_CommonEvent(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-      ce_picker = ObjectPicker<std::optional<CommonEvent>>("Common Events"sv, m_project->database().commonEvents.events(), 0);
+      ce_picker = ObjectPicker("Common Events"sv, m_project->database().commonEvents.events(), 0);
   }
   std::tuple<bool, bool>  draw() override;
 

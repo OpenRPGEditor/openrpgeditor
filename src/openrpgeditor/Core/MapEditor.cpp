@@ -268,8 +268,8 @@ void MapEditor::draw() {
 
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
     auto region = ImGui::GetContentRegionAvail();
-    float u1 = std::clamp(region.x / (8192 * 2), 0.f, 1.f);
-    float v1 = std::clamp(region.y / (8192 * 2), 0.f, 1.f);
+    float u1 = std::clamp((region.x - ImGui::GetStyle().FramePadding.x) / (8192 * 2), 0.f, 1.f);
+    float v1 = std::clamp((region.y - ImGui::GetStyle().FramePadding.y) / (8192 * 2), 0.f, 1.f);
     auto cursor = ImGui::GetCursorPos();
     if (map()) {
       ImGui::Image(m_checkeredBack.get(), ImVec2{region.x, region.y}, ImVec2{0, 0}, ImVec2{u1, v1});

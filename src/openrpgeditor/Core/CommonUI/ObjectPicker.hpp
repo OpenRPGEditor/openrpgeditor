@@ -32,8 +32,4 @@ private:
   std::string m_filter;
 };
 
-struct ObjectPickerList {
-  ObjectPickerList(int groupCount);
-};
-
 #include "ObjectPicker.inl"

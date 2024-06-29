@@ -51,4 +51,8 @@ struct MovementRouteStepCommand : IEventCommand {
                               code == EventCode::Wait_del_Movement || code == EventCode::Script_del_Movement;
     step->serialize(out.emplace_back(), step->code() != EventCode::Event_Dummy, doParameters);
   }
+
+  [[nodiscard]] std::string stringRep(const Database& db) const override {
+    return step->stringRep(db);
+  }
 };

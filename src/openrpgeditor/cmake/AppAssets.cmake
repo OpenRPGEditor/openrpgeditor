@@ -6,16 +6,16 @@ set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/mplus-1m-medium.
 
 # Platform specific static assets
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-  target_sources(${NAME} PUBLIC
-    ${SHARED_STATIC_ASSETS}
-    ${PROJECT_SOURCE_DIR}/src/assets/icons/icon.ico
-    ${PROJECT_SOURCE_DIR}/src/app/Manifests/app.rc
-    ${PROJECT_SOURCE_DIR}/src/app/Manifests/App.manifest)
+    target_sources(${NAME} PUBLIC
+            ${SHARED_STATIC_ASSETS}
+            ${PROJECT_SOURCE_DIR}/src/assets/icons/icon.ico
+            ${PROJECT_SOURCE_DIR}/src/openrpgeditor/Manifests/app.rc
+            ${PROJECT_SOURCE_DIR}/src/openrpgeditor/Manifests/App.manifest)
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  set(MACOSX_STATIC_ASSETS
-    ${SHARED_STATIC_ASSETS}
-    ${PROJECT_SOURCE_DIR}/src/assets/icons/icon.icns)
-  target_sources(${NAME} PUBLIC ${MACOSX_STATIC_ASSETS})
+    set(MACOSX_STATIC_ASSETS
+            ${SHARED_STATIC_ASSETS}
+            ${PROJECT_SOURCE_DIR}/src/assets/icons/icon.icns)
+    target_sources(${NAME} PUBLIC ${MACOSX_STATIC_ASSETS})
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  target_sources(${NAME} PRIVATE ${SHARED_STATIC_ASSETS})
+    target_sources(${NAME} PRIVATE ${SHARED_STATIC_ASSETS})
 endif ()

@@ -1,6 +1,5 @@
 #include "Core/Project.hpp"
 
-#include "ImGuiFileDialog.h"
 #include "Settings.hpp"
 
 #include "Core/Log.hpp"
@@ -13,7 +12,7 @@
 #include <shellapi.h>
 #endif
 
-#include "implot.h"
+#include "nfd.h"
 
 #include <fstream>
 
@@ -166,7 +165,6 @@ void Project::draw() {
     m_databaseEditor->draw();
   }
   drawMenu();
-  drawFileDialog();
   setupDocking();
   m_mapEditor.draw();
 
@@ -187,9 +185,15 @@ void Project::draw() {
 }
 
 void Project::handleOpenFile() {
-  IGFD::FileDialogConfig config;
-  config.path = Settings::instance()->lastDirectory.empty() ? "." : Settings::instance()->lastDirectory;
-  ImGuiFileDialog::Instance()->OpenDialog("OpenProjectDlg", "Select a Project to Open", ".rpgproject", config);
+  nfdu8char_t* outPath;
+  nfdu8filteritem_t filters = {"RPG Maker Projects", "rpgproject,rmmzproject"};
+  auto result = NFD_OpenDialogU8(&outPath, &filters, 1, Settings::instance()->lastDirectory.empty() ? "." : Settings::instance()->lastDirectory.c_str());
+  if (result == NFD_OKAY) {
+    std::filesystem::path path{outPath};
+    Settings::instance()->lastDirectory = absolute(path).remove_filename().generic_string();
+    load(absolute(path).generic_string(), Settings::instance()->lastDirectory);
+    NFD_FreePathU8(outPath);
+  }
 }
 
 void Project::handleUndo() {
@@ -521,23 +525,6 @@ void Project::handleKeyboardShortcuts() {
   }
 }
 
-void Project::drawFileDialog() {
-  // First check if we have a pending project request
-  if (ImGuiFileDialog::Instance()->Display(
-          "OpenProjectDlg", ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_Modal,
-          ImVec2(600, 600))) {
-    if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
-      std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-      std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-      Settings::instance()->lastDirectory = filePath;
-      load(filePathName, filePath);
-      // action
-    }
-
-    // close
-    ImGuiFileDialog::Instance()->Close();
-  }
-}
 void Project::setMap(MapInfo& in) {
   if (in.id == 0) {
     m_mapListView.setCurrentMapId(0);

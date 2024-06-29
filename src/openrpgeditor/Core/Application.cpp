@@ -1,5 +1,7 @@
 #include "Application.hpp"
 
+#include <nfd.h>
+
 #include <SDL2/SDL.h>
 #include <backends/imgui_impl_sdl2.h>
 #include <backends/imgui_impl_sdlrenderer2.h>
@@ -16,7 +18,7 @@
 #include "Core/Window.hpp"
 #include "Core/Settings.hpp"
 #include "Database/RPGEquations.hpp"
-#include "Settings/Project.hpp"
+#include "App/ProjectInfo.hpp"
 #include "misc/freetype/imgui_freetype.h"
 
 #include <iostream>
@@ -53,6 +55,7 @@ Application::~Application() {
 
 ExitStatus App::Application::run() {
   APP_PROFILE_FUNCTION();
+  NFD_Init();
 
   if (m_exitStatus == ExitStatus::Failure) {
     return m_exitStatus;
@@ -255,6 +258,7 @@ ExitStatus App::Application::run() {
   }
 
   Settings::instance()->serialize(user_config_path + "config.json");
+  NFD_Quit();
   return m_exitStatus;
 }
 

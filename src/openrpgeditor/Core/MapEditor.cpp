@@ -1,6 +1,6 @@
 #include "Core/MapEditor.hpp"
 
-#include "DPIHandler.hpp"
+#include "Core/DPIHandler.hpp"
 #include "Core/Project.hpp"
 
 #include "ImGuiUtils.hpp"

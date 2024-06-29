@@ -18,10 +18,16 @@ FetchContent_Declare(
         GIT_TAG 222dd775fc72229675757f90d887ec57a291dc0e # Branch: docking
 )
 
+#FetchContent_Declare(
+#        ImGuiFileDialog
+#        GIT_REPOSITORY "https://github.com/aiekick/ImGuiFileDialog.git"
+#        GIT_TAG v0.6.7
+#)
+
 FetchContent_Declare(
-        ImGuiFileDialog
-        GIT_REPOSITORY "https://github.com/aiekick/ImGuiFileDialog.git"
-        GIT_TAG v0.6.7
+        nfd
+        GIT_REPOSITORY "https://github.com/btzy/nativefiledialog-extended.git"
+        GIT_TAG v1.2.0
 )
 
 FetchContent_Declare(
@@ -87,7 +93,7 @@ set(SPDLOG_ENABLE_PCH ON)
 FetchContent_MakeAvailable(
         doctest
         fmt
-        ImGuiFileDialog
+        nfd
         SDL2
         SDL2_image
         spdlog
@@ -104,6 +110,6 @@ FetchContent_MakeAvailable(
         imgui
 )
 
-target_include_directories(ImGuiFileDialog PRIVATE ${imgui_SOURCE_DIR})
+#target_include_directories(ImGuiFileDialog PRIVATE ${imgui_SOURCE_DIR})
 #target_compile_definitions(ImGuiFileDialog PRIVATE USE_THUMBNAILS DONT_DEFINE_AGAIN__STB_IMAGE_IMPLEMENTATION)
 #target_compile_options(ImGuiFileDialog PRIVATE "-Wno-deprecated-enum-enum-conversion")

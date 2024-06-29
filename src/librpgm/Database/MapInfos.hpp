@@ -34,8 +34,8 @@ public:
 
   [[nodiscard]] MapInfo* map(int id) {
     for (auto& item : m_mapinfos) {
-      if (item.id == id) {
-        return &item;
+      if (item->id == id) {
+        return &item.value();
       }
     }
     return nullptr;
@@ -43,8 +43,8 @@ public:
 
   [[nodiscard]] const MapInfo* map(int id) const {
     for (const auto& set : m_mapinfos) {
-      if (set.id == id) {
-        return &set;
+      if (set->id == id) {
+        return &set.value();
       }
     }
 
@@ -58,14 +58,14 @@ public:
     return m_mapinfos.empty() || m_mapinfos.size() == 1;
   }
 
-  MapInfo& root() { return m_mapinfos[0]; }
-  const MapInfo& root() const { return m_mapinfos[0]; }
+  MapInfo& root() { return m_mapinfos[0].value(); }
+  const MapInfo& root() const { return m_mapinfos[0].value(); }
 
   void buildTree(bool reset = false);
 
-  std::vector<MapInfo>& mapInfos() { return m_mapinfos; }
-  const std::vector<MapInfo>& mapInfos() const { return m_mapinfos; }
+  std::vector<std::optional<MapInfo>>& mapInfos() { return m_mapinfos; }
+  const std::vector<std::optional<MapInfo>>& mapInfos() const { return m_mapinfos; }
 
 private:
-  std::vector<MapInfo> m_mapinfos;
+  std::vector<std::optional<MapInfo>> m_mapinfos;
 };

@@ -144,7 +144,6 @@ public:
 
 private:
   void drawMenu();
-  void drawFileDialog();
   void handleKeyboardShortcuts();
 
   MapListView m_mapListView;

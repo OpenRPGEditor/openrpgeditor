@@ -1,9 +1,12 @@
-set(NAME "Core")
+set(NAME "OpenRPGEditor")
 
 #include(${PROJECT_SOURCE_DIR}/cmake/StaticAnalyzers.cmake)
 
-add_library(
-        ${NAME} STATIC
+configure_file(App/ProjectInfo.cpp.in App/ProjectInfo.cpp @ONLY)
+
+add_executable(${NAME} WIN32 MACOSX_BUNDLE
+        App/Main.cpp
+        App/ProjectInfo.hpp App/ProjectInfo.cpp
         Core/Log.hpp Core/Log.cpp
         Core/Debug/Instrumentor.hpp
         Core/Application.hpp Core/Application.cpp
@@ -77,6 +80,10 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
             Platform/Linux/DPIHandler.cpp)
 endif ()
 
+include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/AppAssets.cmake)
+include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/Packaging.cmake)
+
+
 target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_features(${NAME} PRIVATE cxx_std_20)
 target_link_libraries(
@@ -85,13 +92,16 @@ target_link_libraries(
         PUBLIC fmt::fmt-header-only spdlog::spdlog_header_only
         SDL2::SDL2
         imgui
-        ImGuiFileDialog
+        nfd
         magic_enum
         nlohmann_json::nlohmann_json
-        Settings
         librpgm
         freetype
         z
 )
 
-#add_subdirectory(Tests)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebugInfo")
+    add_compile_definitions(
+            ZLIB_DEBUG
+    )
+endif ()

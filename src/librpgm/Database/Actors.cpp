@@ -2,8 +2,6 @@
 
 #include <fstream>
 
-#include <imgui.h>
-
 using json = nlohmann::json;
 
 Actors Actors::load(std::string_view filename) {

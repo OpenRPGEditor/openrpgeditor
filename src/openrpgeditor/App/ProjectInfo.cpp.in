@@ -1,6 +1,6 @@
 #include <string>
 
-#include "Settings/Project.hpp"
+#include "App/ProjectInfo.hpp"
 
 namespace App {
 

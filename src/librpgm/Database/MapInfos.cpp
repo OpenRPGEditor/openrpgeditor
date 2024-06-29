@@ -12,17 +12,16 @@ MapInfos MapInfos::load(std::string_view filename) {
   json data = json::parse(file);
   MapInfos mapinfos;
   mapinfos.m_mapinfos.reserve(data.size());
-  mapinfos.m_mapinfos.emplace_back();
 
   for (const auto& [_, value] : data.items()) {
-    if (value == nullptr) {
-      continue;
-    }
-
-    MapInfo& mapinfo = mapinfos.m_mapinfos.emplace_back();
+    auto& mapinfo = mapinfos.m_mapinfos.emplace_back();
     value.get_to(mapinfo);
-    mapinfo.m_map = std::make_unique<Map>(Database::Instance->loadMap(mapinfo.id));
+    if (mapinfo && mapinfo->id != 0) {
+      mapinfo->m_map = std::make_unique<Map>(Database::Instance->loadMap(mapinfo->id));
+    }
   }
+  mapinfos.m_mapinfos[0].emplace();
+  mapinfos.m_mapinfos.shrink_to_fit();
   mapinfos.buildTree();
   return mapinfos;
 }
@@ -36,7 +35,7 @@ bool MapInfos::serialize(std::string_view filename) {
   /* Erase the dummy entry */;
   m_mapinfos.erase(m_mapinfos.begin());
 
-  for (const MapInfo& mapinfo : m_mapinfos) {
+  for (const auto& mapinfo : m_mapinfos) {
     data.push_back(mapinfo);
   }
 
@@ -57,15 +56,17 @@ void recursiveSort(MapInfo& in) {
 void MapInfos::buildTree(bool reset) {
   if (reset) {
     for (auto& mapInfo : m_mapinfos) {
-      mapInfo.m_children.clear();
+      mapInfo->m_children.clear();
     }
   }
   for (auto& mapInfo : m_mapinfos) {
-    if (mapInfo.id == 0) {
+    if (!mapInfo || mapInfo->id == 0) {
       continue;
     }
-    m_mapinfos[mapInfo.parentId].m_children.push_back(&mapInfo);
+    if (mapInfo->parentId >= 0 && mapInfo->parentId < m_mapinfos.size()) {
+      m_mapinfos[mapInfo->parentId]->m_children.push_back(&mapInfo.value());
+    }
   }
 
-  recursiveSort(m_mapinfos[0]);
+  recursiveSort(root());
 }

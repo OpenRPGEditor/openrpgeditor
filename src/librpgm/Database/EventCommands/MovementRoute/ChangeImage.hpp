@@ -8,6 +8,12 @@ struct MovementChangeImageCommand : IEventCommand {
 
   std::string image;
   int character;
+
+  void serializeParameters(nlohmann::json& out) override {
+    out.push_back(image);
+    out.push_back(character);
+  }
+
   [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Image : " + image + " (" +  std::to_string(character) + ")" + ColorFormatter::popColor();

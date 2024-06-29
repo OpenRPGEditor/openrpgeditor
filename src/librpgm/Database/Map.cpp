@@ -12,10 +12,13 @@ Map Map::load(std::string_view filepath) {
 }
 
 bool Map::serialize(std::string_view filepath) {
-#if 0
   std::ofstream file(filepath.data());
-  nlohmann::json data = *this;
-  file << data;
-#endif
+
+  if (file.is_open()) {
+    nlohmann::json data = *this;
+    file << data.dump(4);
+    return true;
+  }
+
   return false;
 }

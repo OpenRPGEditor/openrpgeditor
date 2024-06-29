@@ -551,6 +551,7 @@ void Project::setMap(MapInfo& in) {
   m_map = m_resourceManager->loadMap(in.id);
   if (m_map) {
     m_mapEditor.setMap(&m_map.value(), &in);
+    m_map->serialize("Test.json");
   } else {
     m_mapEditor.setMap(nullptr, nullptr);
   }

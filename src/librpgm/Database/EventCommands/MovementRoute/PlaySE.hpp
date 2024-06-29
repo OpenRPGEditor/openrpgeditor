@@ -7,6 +7,11 @@ struct MovementPlaySECommand : IEventCommand {
   ~MovementPlaySECommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_SE_del_Movement; }
   Audio se;
+
+  void serializeParameters(nlohmann::json& out) override {
+    out.push_back(se);
+  }
+
   [[nodiscard]] std::string stringRep(const Database& db) const override {
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "SE : " + (se.name == "" ? "None" : se.name) + " "

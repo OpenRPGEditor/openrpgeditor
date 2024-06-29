@@ -4,8 +4,7 @@ void to_json(nlohmann::json& json, const EventPage& eventPage) {
   json["conditions"] = eventPage.conditions;
   json["directionFix"] = eventPage.directionFix;
   json["image"] = eventPage.image;
-  CommandParser cmdParser;
-  cmdParser.serialize(json["list"], eventPage.list);
+  CommandParser::serialize(json["list"], eventPage.list);
   json["moveFrequency"] = eventPage.moveFrequency;
   json["moveRoute"] = eventPage.moveRoute;
   json["moveSpeed"] = eventPage.moveSpeed;

@@ -533,18 +533,21 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Change_Player_Followers: {
-      ChangePlayerFollowersCommand* changefollow = dynamic_cast<ChangePlayerFollowersCommand*>(ret.emplace_back(new ChangePlayerFollowersCommand()).get());
+      ChangePlayerFollowersCommand* changefollow =
+          dynamic_cast<ChangePlayerFollowersCommand*>(ret.emplace_back(new ChangePlayerFollowersCommand()).get());
       changefollow->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(changefollow->followersEnabled);
       break;
     }
     case EventCode::Gather_Followers: {
-      GatherFollowersCommand* step = dynamic_cast<GatherFollowersCommand*>(ret.emplace_back(new GatherFollowersCommand()).get());
+      GatherFollowersCommand* step =
+          dynamic_cast<GatherFollowersCommand*>(ret.emplace_back(new GatherFollowersCommand()).get());
       step->indent = parser[index].value("indent", std::optional<int>{});
       break;
     }
     case EventCode::Fade_Out_Screen: {
-      FadeoutScreenCommand* step = dynamic_cast<FadeoutScreenCommand*>(ret.emplace_back(new FadeoutScreenCommand()).get());
+      FadeoutScreenCommand* step =
+          dynamic_cast<FadeoutScreenCommand*>(ret.emplace_back(new FadeoutScreenCommand()).get());
       step->indent = parser[index].value("indent", std::optional<int>{});
       break;
     }
@@ -629,7 +632,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Rotate_Picture: {
-      RotatePictureCommand* pic = dynamic_cast<RotatePictureCommand*>(ret.emplace_back(new RotatePictureCommand()).get());
+      RotatePictureCommand* pic =
+          dynamic_cast<RotatePictureCommand*>(ret.emplace_back(new RotatePictureCommand()).get());
       pic->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(pic->picture);
       parameters[1].get_to(pic->rotation);
@@ -652,7 +656,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Set_Weather_Effect: {
-      SetWeatherEffectCommand* pic = dynamic_cast<SetWeatherEffectCommand*>(ret.emplace_back(new SetWeatherEffectCommand()).get());
+      SetWeatherEffectCommand* pic =
+          dynamic_cast<SetWeatherEffectCommand*>(ret.emplace_back(new SetWeatherEffectCommand()).get());
       pic->indent = parser[index].value("indent", std::optional<int>{});
       std::string effect;
       parameters[0].get_to(effect);
@@ -726,26 +731,30 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Change_Map_Name_Display: {
-      ChangeMapNameDisplayCommand* disp = dynamic_cast<ChangeMapNameDisplayCommand*>(ret.emplace_back(new ChangeMapNameDisplayCommand()).get());
+      ChangeMapNameDisplayCommand* disp =
+          dynamic_cast<ChangeMapNameDisplayCommand*>(ret.emplace_back(new ChangeMapNameDisplayCommand()).get());
       disp->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(disp->checkIfOn);
       break;
     }
     case EventCode::Change_Tileset: {
-      ChangeTilesetCommand* ts = dynamic_cast<ChangeTilesetCommand*>(ret.emplace_back(new ChangeTilesetCommand()).get());
+      ChangeTilesetCommand* ts =
+          dynamic_cast<ChangeTilesetCommand*>(ret.emplace_back(new ChangeTilesetCommand()).get());
       ts->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(ts->tileset);
       break;
     }
     case EventCode::Change_Battle_Back: {
-      ChangeBattlebackCommand* bbk = dynamic_cast<ChangeBattlebackCommand*>(ret.emplace_back(new ChangeBattlebackCommand()).get());
+      ChangeBattlebackCommand* bbk =
+          dynamic_cast<ChangeBattlebackCommand*>(ret.emplace_back(new ChangeBattlebackCommand()).get());
       bbk->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(bbk->battleBack1Name);
       parameters[1].get_to(bbk->battleBack2Name);
       break;
     }
     case EventCode::Get_Location_Info: {
-      GetLocationInfoCommand* loc = dynamic_cast<GetLocationInfoCommand*>(ret.emplace_back(new GetLocationInfoCommand()).get());
+      GetLocationInfoCommand* loc =
+          dynamic_cast<GetLocationInfoCommand*>(ret.emplace_back(new GetLocationInfoCommand()).get());
       loc->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(loc->variable);
       parameters[1].get_to(loc->type);
@@ -755,7 +764,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Battle_Processing: {
-      BattleProcessingCommand* bprocess = dynamic_cast<BattleProcessingCommand*>(ret.emplace_back(new BattleProcessingCommand()).get());
+      BattleProcessingCommand* bprocess =
+          dynamic_cast<BattleProcessingCommand*>(ret.emplace_back(new BattleProcessingCommand()).get());
       bprocess->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(bprocess->type);
       parameters[1].get_to(bprocess->id);
@@ -779,7 +789,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Shop_Processing: {
-      ShopProcessingCommand* shop = dynamic_cast<ShopProcessingCommand*>(ret.emplace_back(new ShopProcessingCommand()).get());
+      ShopProcessingCommand* shop =
+          dynamic_cast<ShopProcessingCommand*>(ret.emplace_back(new ShopProcessingCommand()).get());
       shop->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(shop->type);
       parameters[1].get_to(shop->id);
@@ -789,7 +800,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Shop_Processing_Good: {
-      ShopProcessingGoodCommand* shop = dynamic_cast<ShopProcessingGoodCommand*>(ret.emplace_back(new ShopProcessingGoodCommand()).get());
+      ShopProcessingGoodCommand* shop =
+          dynamic_cast<ShopProcessingGoodCommand*>(ret.emplace_back(new ShopProcessingGoodCommand()).get());
       shop->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(shop->type);
       parameters[1].get_to(shop->id);
@@ -858,7 +870,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Change_Parameter: {
-      ChangeParameterCommand* param = dynamic_cast<ChangeParameterCommand*>(ret.emplace_back(new ChangeParameterCommand()).get());
+      ChangeParameterCommand* param =
+          dynamic_cast<ChangeParameterCommand*>(ret.emplace_back(new ChangeParameterCommand()).get());
       param->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(param->comparison);
       parameters[1].get_to(param->value);
@@ -909,7 +922,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Change_Equipment: {
-      ChangeEquipmentCommand* eq = dynamic_cast<ChangeEquipmentCommand*>(ret.emplace_back(new ChangeEquipmentCommand()).get());
+      ChangeEquipmentCommand* eq =
+          dynamic_cast<ChangeEquipmentCommand*>(ret.emplace_back(new ChangeEquipmentCommand()).get());
       eq->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(eq->actorId);
       parameters[1].get_to(eq->equipType);
@@ -917,14 +931,16 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Change_Profile: {
-      ChangeProfileCommand* profile = dynamic_cast<ChangeProfileCommand*>(ret.emplace_back(new ChangeProfileCommand()).get());
+      ChangeProfileCommand* profile =
+          dynamic_cast<ChangeProfileCommand*>(ret.emplace_back(new ChangeProfileCommand()).get());
       profile->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(profile->actor);
       parameters[1].get_to(profile->profile);
       break;
     }
     case EventCode::Change_Nickname: {
-      ChangeNicknameCommand* nick = dynamic_cast<ChangeNicknameCommand*>(ret.emplace_back(new ChangeNicknameCommand()).get());
+      ChangeNicknameCommand* nick =
+          dynamic_cast<ChangeNicknameCommand*>(ret.emplace_back(new ChangeNicknameCommand()).get());
       nick->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(nick->actor);
       parameters[1].get_to(nick->nick);
@@ -936,7 +952,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Return_To_Title_Screen: {
-      ReturnToTitleCommand* game = dynamic_cast<ReturnToTitleCommand*>(ret.emplace_back(new ReturnToTitleCommand()).get());
+      ReturnToTitleCommand* game =
+          dynamic_cast<ReturnToTitleCommand*>(ret.emplace_back(new ReturnToTitleCommand()).get());
       game->indent = parser[index].value("indent", std::optional<int>{});
       break;
     }
@@ -956,7 +973,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Enemy_Recover_All: {
-      EnemyRecoverAllCommand* enemy = dynamic_cast<EnemyRecoverAllCommand*>(ret.emplace_back(new EnemyRecoverAllCommand()).get());
+      EnemyRecoverAllCommand* enemy =
+          dynamic_cast<EnemyRecoverAllCommand*>(ret.emplace_back(new EnemyRecoverAllCommand()).get());
       enemy->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(enemy->troop);
       break;
@@ -968,14 +986,16 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Enemy_Transform: {
-      EnemyTransformCommand* enemy = dynamic_cast<EnemyTransformCommand*>(ret.emplace_back(new EnemyTransformCommand()).get());
+      EnemyTransformCommand* enemy =
+          dynamic_cast<EnemyTransformCommand*>(ret.emplace_back(new EnemyTransformCommand()).get());
       enemy->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(enemy->enemy);
       parameters[1].get_to(enemy->transform);
       break;
     }
     case EventCode::Change_Enemy_HP: {
-      ChangeEnemyHPCommand* enemyParam = dynamic_cast<ChangeEnemyHPCommand*>(ret.emplace_back(new ChangeEnemyHPCommand()).get());
+      ChangeEnemyHPCommand* enemyParam =
+          dynamic_cast<ChangeEnemyHPCommand*>(ret.emplace_back(new ChangeEnemyHPCommand()).get());
       enemyParam->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(enemyParam->enemy);
       parameters[1].get_to(enemyParam->enemyOp);
@@ -985,7 +1005,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Change_Enemy_MP: {
-      ChangeEnemyMPCommand* enemyParam = dynamic_cast<ChangeEnemyMPCommand*>(ret.emplace_back(new ChangeEnemyMPCommand()).get());
+      ChangeEnemyMPCommand* enemyParam =
+          dynamic_cast<ChangeEnemyMPCommand*>(ret.emplace_back(new ChangeEnemyMPCommand()).get());
       enemyParam->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(enemyParam->enemy);
       parameters[1].get_to(enemyParam->enemyOp);
@@ -994,7 +1015,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Change_Enemy_TP: {
-      ChangeEnemyTPCommand* enemyParam = dynamic_cast<ChangeEnemyTPCommand*>(ret.emplace_back(new ChangeEnemyTPCommand()).get());
+      ChangeEnemyTPCommand* enemyParam =
+          dynamic_cast<ChangeEnemyTPCommand*>(ret.emplace_back(new ChangeEnemyTPCommand()).get());
       enemyParam->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(enemyParam->enemy);
       parameters[1].get_to(enemyParam->enemyOp);
@@ -1003,7 +1025,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Change_Enemy_State: {
-      ChangeEnemyStateCommand* enemyParam = dynamic_cast<ChangeEnemyStateCommand*>(ret.emplace_back(new ChangeEnemyStateCommand()).get());
+      ChangeEnemyStateCommand* enemyParam =
+          dynamic_cast<ChangeEnemyStateCommand*>(ret.emplace_back(new ChangeEnemyStateCommand()).get());
       enemyParam->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(enemyParam->enemy);
       parameters[1].get_to(enemyParam->enemyOp);
@@ -1020,7 +1043,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Show_Battle_Animation: {
-      ShowBattleAnimationCommand* battleAnim = dynamic_cast<ShowBattleAnimationCommand*>(ret.emplace_back(new ShowBattleAnimationCommand()).get());
+      ShowBattleAnimationCommand* battleAnim =
+          dynamic_cast<ShowBattleAnimationCommand*>(ret.emplace_back(new ShowBattleAnimationCommand()).get());
       battleAnim->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(battleAnim->enemy);
       parameters[1].get_to(battleAnim->animation);
@@ -1028,7 +1052,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Change_Vehicle_Image: {
-      ChangeVehicleImageCommand* vehicle = dynamic_cast<ChangeVehicleImageCommand*>(ret.emplace_back(new ChangeVehicleImageCommand()).get());
+      ChangeVehicleImageCommand* vehicle =
+          dynamic_cast<ChangeVehicleImageCommand*>(ret.emplace_back(new ChangeVehicleImageCommand()).get());
       vehicle->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(vehicle->vehicle);
       parameters[1].get_to(vehicle->picture);
@@ -1036,7 +1061,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Change_Actor_Images: {
-      ChangeActorImageCommand* vehicle = dynamic_cast<ChangeActorImageCommand*>(ret.emplace_back(new ChangeActorImageCommand()).get());
+      ChangeActorImageCommand* vehicle =
+          dynamic_cast<ChangeActorImageCommand*>(ret.emplace_back(new ChangeActorImageCommand()).get());
       vehicle->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(vehicle->actor);
       parameters[1].get_to(vehicle->charPicture);
@@ -1154,7 +1180,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       MovementJumpCommand* end = dynamic_cast<MovementJumpCommand*>(ret.emplace_back(new MovementJumpCommand()).get());
       end->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(end->x);
-      parameters[0].get_to(end->y);
+      parameters[1].get_to(end->y);
       break;
     }
     case EventCode::Wait_del_Movement: {
@@ -1369,4 +1395,76 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
   return ret;
 }
 
-void CommandParser::serialize(nlohmann::json& data, const std::vector<std::shared_ptr<IEventCommand>>& list) {}
+void CommandParser::serialize(nlohmann::json& data, const std::vector<std::shared_ptr<IEventCommand>>& list,
+                              bool movementRoute) {
+  for (const auto& cmd : list) {
+    if (!cmd) {
+      continue;
+    }
+    const auto code = cmd->code();
+    bool doParameters = true;
+    if ((code >= EventCode::Move_Down && code <= EventCode::Script_del_Movement) || movementRoute) {
+      doParameters =
+          code == EventCode::Jump || code == EventCode::Change_Blend_Mode || code == EventCode::Change_Image ||
+          code == EventCode::Change_Opacity || code == EventCode::Frequency || code == EventCode::Speed ||
+          code == EventCode::Play_SE_del_Movement || code == EventCode::Wait_del_Movement ||
+          code == EventCode::Script_del_Movement || code == EventCode::Switch_ON || code == EventCode::Switch_OFF;
+    }
+    cmd->serialize(data.emplace_back(), movementRoute ? code != EventCode::Event_Dummy : true, doParameters);
+
+    switch (code) {
+    case EventCode::Show_Scrolling_Text: {
+      auto text = dynamic_cast<ShowScrollTextCommand*>(cmd.get());
+      for (const auto& next : text->text) {
+        if (!next) {
+          continue;
+        }
+        next->serialize(data.emplace_back());
+      }
+      break;
+    }
+    case EventCode::Show_Text: {
+      auto text = dynamic_cast<ShowTextCommand*>(cmd.get());
+      for (const auto& next : text->text) {
+        if (!next) {
+          continue;
+        }
+        next->serialize(data.emplace_back());
+      }
+      break;
+    }
+    case EventCode::Comment: {
+      auto text = dynamic_cast<CommentCommand*>(cmd.get());
+      for (const auto& next : text->nextComments) {
+        if (!next) {
+          continue;
+        }
+        next->serialize(data.emplace_back());
+      }
+      break;
+    }
+    case EventCode::Script: {
+      auto text = dynamic_cast<ScriptCommand*>(cmd.get());
+      for (const auto& next : text->moreScript) {
+        if (!next) {
+          continue;
+        }
+        next->serialize(data.emplace_back());
+      }
+      break;
+    }
+    case EventCode::Set_Movement_Route: {
+      auto route = dynamic_cast<SetMovementRouteCommand*>(cmd.get());
+      for (const auto& next : route->editNodes) {
+        if (!next) {
+          continue;
+        }
+        next->serialize(data.emplace_back());
+      }
+      break;
+    }
+    default:
+      break;
+    }
+  }
+}

@@ -5,6 +5,9 @@
 struct NextTextCommand : IEventCommand {
   ~NextTextCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Next_Text; }
+  void serializeParameters(nlohmann::json& out) override {
+    out.push_back(text);
+  }
 
   std::string text;
 };
@@ -12,14 +15,6 @@ struct NextTextCommand : IEventCommand {
 struct ShowTextCommand : IEventCommand {
   ~ShowTextCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Text; }
-  std::string faceImage;
-  int faceIndex;
-  TextBackground background;
-  TextWindowPosition position;
-  std::string textLine;
-  std::vector<std::shared_ptr<NextTextCommand>> text;
-
-
   [[nodiscard]] std::string stringRep(const Database& db) const override {
     std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
     + "Text " + colon.data() + ColorFormatter::popColor() +
@@ -33,4 +28,18 @@ struct ShowTextCommand : IEventCommand {
     }
     return ret;
   }
+
+  void serializeParameters(nlohmann::json& out) override {
+    out.push_back(faceImage);
+    out.push_back(faceIndex);
+    out.push_back(background);
+    out.push_back(position);
+  }
+
+  std::string faceImage;
+  int faceIndex;
+  TextBackground background;
+  TextWindowPosition position;
+  std::string textLine;
+  std::vector<std::shared_ptr<NextTextCommand>> text;
 };

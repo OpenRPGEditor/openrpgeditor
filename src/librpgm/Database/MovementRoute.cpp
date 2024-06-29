@@ -2,8 +2,7 @@
 #include "Database/CommandParser.hpp"
 
 void to_json(nlohmann::json& json, const MovementRoute& route) {
-  CommandParser parser;
-  parser.serialize(json["list"], route.list);
+  CommandParser::serialize(json["list"], route.list, true);
   json["repeat"] = route.repeat;
   json["skippable"] = route.skippable;
   json["wait"] = route.wait;

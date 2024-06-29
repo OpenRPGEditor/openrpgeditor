@@ -117,6 +117,7 @@ target_link_libraries(
         magic_enum
         nlohmann_json::nlohmann_json
         librpgm
+        librpgmeventcmds
         freetype
         z
 )

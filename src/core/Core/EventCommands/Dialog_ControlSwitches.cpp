@@ -18,8 +18,8 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     if (picker) {
       auto [closed, confirmed]  = picker->draw();
       if (confirmed) {
-        command->start = picker->selection();
-        command->end = picker->selection();
+        d_start = picker->selection();
+        d_end = picker->selection();
         picker.reset();
       }
     }
@@ -33,11 +33,10 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
 
     bool isSwitchEnabled = switchType == 1;
     std::string text =
-        isSwitchEnabled ? "##commonevent_switch_empty" : (command->start == 0 ? "" : std::format("{:04} ", command->start) + m_project->switche(command->start));
+        isSwitchEnabled ? "##commonevent_switch_empty" : (d_start == 0 ? "" : std::format("{:04} ", d_start) + m_project->switche(command->start));
     ImGui::PushID("##controlswitch_id");
     ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 50) - (16 * App::DPIHandler::get_ui_scale()));
     ImGui::BeginDisabled(isSwitchEnabled);
-    static int switchId = 0;
     if (ImGui::Button(text.c_str(), ImVec2{((ImGui::GetWindowContentRegionMax().x - 75)) -
                                                (15 * App::DPIHandler::get_ui_scale()),
                                            0})) {
@@ -47,18 +46,16 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     ImGui::EndDisabled();
 
     bool isRangeEnabled = switchType == 0;
-    static int rand1 = 0;
-    static int rand2 = 1;
 
     ImGui::RadioButton("Range", &switchType, 1); // Range of Switches
     ImGui::SameLine();
     ImGui::BeginDisabled(isRangeEnabled);
     ImGui::PushItemWidth(50);
-    ImGui::InputInt("##controlswitch_range1", &rand1, 0);
+    ImGui::InputInt("##controlswitch_range1", &d_rand_1, 0);
     ImGui::SameLine();
     ImGui::Text("~");
     ImGui::SameLine();
-    ImGui::InputInt("##controlswitch_range2", &rand2, 0);
+    ImGui::InputInt("##controlswitch_range2", &d_rand_2, 0);
     ImGui::PopItemWidth();
     ImGui::EndDisabled();
 
@@ -71,12 +68,12 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 75, ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {
       if (isSwitchEnabled) {
-        command->start = switchId;
-        command->end = switchId;
+        command->start = d_start;
+        command->end = d_end;
       }
       else {
-        command->start = rand1;
-        command->end = rand2;
+        command->start = d_rand_1;
+        command->end = d_rand_2;
       }
       command->turnOff = static_cast<ValueControl>(operationBool);
 
@@ -86,7 +83,6 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
-      APP_DEBUG(std::to_string(ImGui::GetContentRegionMax().x) +  ", " + std::to_string(ImGui::GetContentRegionMax().y));ImGui::CloseCurrentPopup();
       SetOpen(false);
     }
     ImGui::EndPopup();

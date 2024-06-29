@@ -16,10 +16,10 @@ struct Dialog_ControlVariables : IDialogController {
   std::tuple<bool, bool>  draw() override;
   Project* m_project = nullptr;
 private:
-  int d_start = 0;
-  int d_end = 0;
+  int d_start = 1;
+  int d_end = 1;
   int d_constant = 0;
-  int d_variable = 0;
+  int d_variable = 1;
   int d_rand_1 = 0;
   int d_rand_2 = 0;
   std::string script = "";

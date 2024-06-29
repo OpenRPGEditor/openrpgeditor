@@ -131,14 +131,16 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
 
     ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 4 + 50);
     if (ImGui::BeginCombo("##gamedata_enemy", d_source != 4 ? "" : ("#"
-      + std::to_string(m_project->troops().troopList().at(current_enemySource).id + 1)
+      + std::to_string(m_project->troops().troopList().at(current_enemySource).id)
       + m_project->troops().troopList().at(current_enemySource).name).c_str())) {
       for (auto dataSource : m_project->troops().troopList()) {
-        bool is_selected = (current_enemySource == dataSource.id);
-        if (ImGui::Selectable(("#" + std::to_string(dataSource.id + 1) + dataSource.name).c_str(), is_selected)) {
-          current_enemySource = dataSource.id;
-          if (is_selected)
-            ImGui::SetItemDefaultFocus();
+        if (dataSource.m_isValid) {
+          bool is_selected = (current_enemySource == dataSource.id);
+          if (ImGui::Selectable(("#" + std::to_string(dataSource.id) + dataSource.name).c_str(), is_selected)) {
+            current_enemySource = dataSource.id;
+            if (is_selected)
+              ImGui::SetItemDefaultFocus();
+          }
         }
       }
     ImGui::EndCombo();
@@ -204,7 +206,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       for (auto dataSource : CharacterData) {
         bool is_selected = current_characterDataSource == static_cast<int>(dataSource);
         if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected)) {
-          current_characterSource = static_cast<int>(dataSource);
+          current_characterDataSource = static_cast<int>(dataSource);
           if (is_selected)
             ImGui::SetItemDefaultFocus();
         }
@@ -219,10 +221,10 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
 
     ImGui::BeginDisabled(d_source != 6);
     ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 2);
-    if (ImGui::BeginCombo("##gamedata_party", d_source != 6 ? "" : ("Member #" + std::to_string(current_partySource + 1)).c_str())) {
+    if (ImGui::BeginCombo("##gamedata_party", d_source != 6 ? "" : ("Member #" + std::to_string(current_partySource)).c_str())) {
       for (int n = 1; n < 10; n++) {
         bool is_selected = (current_partySource == n);
-        if (ImGui::Selectable(("Member #" + std::to_string(n + 1)).c_str(), is_selected)) {
+        if (ImGui::Selectable(("Member #" + std::to_string(n)).c_str(), is_selected)) {
           current_partySource = n;
           if (is_selected)
             ImGui::SetItemDefaultFocus();
@@ -269,12 +271,15 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
         break;
       case 3:
         command->gameData.rawSource = d_actor_source;
+        command->gameData.value = current_actorDataSource;
         break;
       case 4:
         command->gameData.rawSource = current_enemySource;
+        command->gameData.value = current_enemyDataSource;
         break;
       case 5:
         command->gameData.rawSource = current_characterSource;
+        command->gameData.value = current_characterDataSource;
         break;
       case 6:
         command->gameData.rawSource = current_partySource;
@@ -284,20 +289,8 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
         break;
       default:
         command->gameData.rawSource = 0;
-        break;
-      }
-      switch (command->gameData.rawSource) {
-      case 3:
-        command->gameData.value = current_actorDataSource;
-        break;
-      case 4:
-        command->gameData.value = current_enemyDataSource;
-        break;
-      case 5:
-        command->gameData.value = current_characterDataSource;
-        break;
-      default:
         command->gameData.value = 0;
+        break;
       }
       ImGui::CloseCurrentPopup();
       SetOpen(false);

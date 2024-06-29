@@ -155,7 +155,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     ImGui::RadioButton("Script", &operand, 4);
     ImGui::SameLine();
     ImGui::BeginDisabled(operand != 4);
-    ImGui::PushItemWidth(100);
+    ImGui::PushItemWidth(200);
     if (ImGui::InputText("##controlvariables_script", &script)) {
       command->script = script;
     }
@@ -179,6 +179,10 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
       command->variable = d_variable;
       command->random.min = d_rand_1;
       command->random.max = d_rand_2;
+
+      if (gameDataDialog)
+        command->gameData = gameDataDialog->getCommandData()->gameData;
+      
       // Insert command into m_commands?
       ImGui::CloseCurrentPopup();
       SetOpen(false);

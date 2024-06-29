@@ -13,6 +13,7 @@ struct Dialog_GameData : IDialogController {
   Dialog_GameData() = delete;
   explicit Dialog_GameData(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
     command.emplace();
+    command->gameData.value = 0;
   }
   std::tuple<bool, bool> draw() override;
 
@@ -35,17 +36,17 @@ struct Dialog_GameData : IDialogController {
       return std::string(magic_enum::enum_name(static_cast<ActorDataSource>(command->gameData.value)).data()) + " of " + formatString(m_project->actor(command->gameData.rawSource)->name, command->gameData.rawSource);
     }
     if (command->gameData.source == GameDataSource::Enemy) {
-      return std::string(magic_enum::enum_name(static_cast<EnemyDataSource>(command->gameData.value)).data()) + " of " + formatString(m_project->enemy(command->gameData.rawSource)->name, command->gameData.rawSource);
+      return std::string(magic_enum::enum_name(static_cast<EnemyDataSource>(command->gameData.value)).data()) + " of " + formatString(m_project->troop(command->gameData.rawSource)->name, command->gameData.rawSource);
     }
     if (command->gameData.source == GameDataSource::Character) {
-      std::string str = command->gameData.rawSource == -1 ? "Player" : command->gameData.rawSource == 0 ? "This Event" : m_project->event(command->gameData.rawSource)->name;
+      std::string str = command->gameData.rawSource == 0 ? "Player" : command->gameData.rawSource == 1 ? "This Event" : m_project->event(command->gameData.rawSource)->name;
       return std::string(magic_enum::enum_name(static_cast<CharacterDataSource>(command->gameData.value)).data()) + " of " + formatString(str, command->gameData.rawSource);
     }
     if (command->gameData.source == GameDataSource::Party) {
       return "Actor ID of the party member #" + std::to_string(command->gameData.rawSource);
     }
     if (command->gameData.source == GameDataSource::Other) {
-      return std::string(magic_enum::enum_name(static_cast<OtherDataSource>(command->gameData.value)).data());
+      return std::string(magic_enum::enum_name(static_cast<OtherDataSource>(command->gameData.rawSource)).data());
     }
     return "";
   }
@@ -68,9 +69,9 @@ private:
   static constexpr auto OtherSource = magic_enum::enum_values<OtherDataSource>();
 
   int current_otherSource = 0;
-  int current_partySource = 0;
+  int current_partySource = 1;
   int current_characterSource = 0;
-  int current_enemySource = 0;
+  int current_enemySource = 1;
 
   int current_actorDataSource = 0;
   int current_enemyDataSource = 0;

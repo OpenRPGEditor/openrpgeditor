@@ -17,6 +17,7 @@
 #include "Core/Settings.hpp"
 #include "Database/RPGEquations.hpp"
 #include "Settings/Project.hpp"
+#include "misc/freetype/imgui_freetype.h"
 
 #include <iostream>
 namespace App {
@@ -103,13 +104,15 @@ ExitStatus App::Application::run() {
   ImFontGlyphRangesBuilder builder;
   builder.AddRanges(specialChar);
   builder.BuildRanges(&ranges);
-  m_mainFont = io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, nullptr, ranges.Data);
-  io.Fonts->Build();
-
   ImFontConfig config;
-  config.MergeMode = true;
+  config.MergeMode = false;
   config.OversampleH = config.OversampleV = 1;
   config.PixelSnapH = true;
+  config.FontBuilderFlags |= ImGuiFreeTypeBuilderFlags_ForceAutoHint | ImGuiFreeTypeBuilderFlags_LoadColor;
+  m_mainFont = io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, &config, ranges.Data);
+  io.Fonts->Build();
+
+  config.MergeMode = true;
   io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
   io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), font_size, &config, ranges.Data);
   io.Fonts->Build();

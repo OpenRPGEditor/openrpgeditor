@@ -60,6 +60,8 @@ void MapEditor::setMap(Map* map, MapInfo* info) {
 
   if (m_map && m_map->parallaxShow && !m_map->parallaxName.empty()) {
     m_parallaxTexture = ResourceManager::instance()->loadParallaxImage(m_map->parallaxName);
+  } else {
+    m_parallaxTexture = Texture();
   }
 }
 

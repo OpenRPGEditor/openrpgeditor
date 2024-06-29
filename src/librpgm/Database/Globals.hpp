@@ -557,7 +557,9 @@ enum class EventCode : int {
   Return_To_Title_Screen = 354,
   Script = 355,
   Next_Script = 655, // RPGMV will keep appending text to the script until it consumes all of them
-  Plugin_Command = 356,
+  PluginMV_Command = 356,
+  PluginMZ_Command = 357,
+  Next_PluginMZ_Command = 657,
 
   // MovementRoute commands
   Move_Down = 1,

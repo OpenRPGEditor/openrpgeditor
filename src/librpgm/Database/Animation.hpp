@@ -10,8 +10,8 @@
 
 class Animation {
 public:
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Animation, id, animation1Hue, animation1Name, animation2Hue, animation2Name, frames,
-                                 name, position, timings);
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Animation, id, animation1Hue, animation1Name, animation2Hue,
+                                              animation2Name, frames, name, position, timings);
   struct Color {
     int r;
     int g;

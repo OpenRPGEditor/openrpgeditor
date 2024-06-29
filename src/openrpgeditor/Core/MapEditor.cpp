@@ -72,8 +72,8 @@ void MapEditor::drawParallax(ImGuiWindow* win) {
   }
   // TODO: Proper parallax implementation
   win->DrawList->AddImage(m_parallaxTexture.get(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
-                          win->ContentRegionRect.Min + ImVec2{static_cast<float>(m_parallaxTexture.width()),
-                                                              static_cast<float>(m_parallaxTexture.height())});
+                          win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_parallaxTexture.width()),
+                                                              static_cast<float>(m_parallaxTexture.height())} * m_mapScale));
 }
 
 void MapEditor::drawGrid(ImGuiWindow* win) {

@@ -752,6 +752,16 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       parameters[1].get_to(bbk->battleBack2Name);
       break;
     }
+    case EventCode::Change_Parallax: {
+      ChangeParallaxCommand* parallax = dynamic_cast<ChangeParallaxCommand*>(ret.emplace_back(new ChangeParallaxCommand()).get());
+      parallax->indent = parser[index].value("indent", std::optional<int>{});
+      parameters[0].get_to(parallax->image);
+      parameters[1].get_to(parallax->loopHorizontally);
+      parameters[2].get_to(parallax->loopVertically);
+      parameters[3].get_to(parallax->scrollX);
+      parameters[4].get_to(parallax->scrollY);
+      break;
+    }
     case EventCode::Get_Location_Info: {
       GetLocationInfoCommand* loc =
           dynamic_cast<GetLocationInfoCommand*>(ret.emplace_back(new GetLocationInfoCommand()).get());
@@ -1085,8 +1095,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       }
       break;
     }
-    case EventCode::Plugin_Command: {
-      PluginCommand* vehicle = dynamic_cast<PluginCommand*>(ret.emplace_back(new PluginCommand()).get());
+    case EventCode::PluginMV_Command: {
+      PluginCommandMV* vehicle = dynamic_cast<PluginCommandMV*>(ret.emplace_back(new PluginCommandMV()).get());
       vehicle->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(vehicle->command);
       break;
@@ -1379,16 +1389,16 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       parameters[0].get_to(end->script);
       break;
     }
-    default:
-      UnhandledEventCommand* end =
-          dynamic_cast<UnhandledEventCommand*>(ret.emplace_back(new UnhandledEventCommand()).get());
-      end->indent = parser[index].value("indent", std::optional<int>{});
-      end->m_code = code;
-      end->data = parser[index];
-      end->indent = parser[index].value("indent", std::optional<int>{});
-      // std::cout << "Unhandled command: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")" <<
-      // std::endl;
-      break;
+    // default:
+    //   UnhandledEventCommand* end =
+    //       dynamic_cast<UnhandledEventCommand*>(ret.emplace_back(new UnhandledEventCommand()).get());
+    //   end->indent = parser[index].value("indent", std::optional<int>{});
+    //   end->m_code = code;
+    //   end->data = parser[index];
+    //   end->indent = parser[index].value("indent", std::optional<int>{});
+    //   std::cout << "Unhandled command: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")" <<
+    //   std::endl;
+    //   break;
     }
     ++index;
   }

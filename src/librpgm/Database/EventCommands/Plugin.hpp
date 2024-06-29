@@ -2,9 +2,9 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct PluginCommand : IEventCommand {
-  ~PluginCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Plugin_Command; }
+struct PluginCommandMV : IEventCommand {
+  ~PluginCommandMV() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::PluginMV_Command; }
   std::string command;
 
   [[nodiscard]] std::string stringRep(const Database& db) const override {

@@ -22,13 +22,15 @@
 
 using namespace std::literals::string_view_literals;
 static SDL_Cursor* waitCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAITARROW);
-
+// clang-format off
 constexpr std::array KnownRPGMVVersions = {
     "RPGMV 1.0.0"sv,
     "RPGMV 1.6.1"sv,
     "RPGMV 1.6.2"sv,
     "RPGMV 1.6.3"sv,
+    "RPGMZ 1.8.0"sv,
 };
+// clang-format on
 
 bool Project::load(std::string_view filePath, std::string_view basePath) {
   close();
@@ -78,6 +80,9 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   m_database->commonEvents = CommonEvents::load(m_database->basePath + "/data/CommonEvents.json");
   APP_INFO("Loading System...");
   m_database->system = System::load(m_database->basePath + "/data/System.json");
+  APP_INFO("Loading Plugins...");
+  m_database->plugins = Plugins::load(m_database->basePath + "js/plugins.js");
+  APP_INFO("Loading MapInfos...");
   m_database->mapInfos = MapInfos::load(m_database->basePath + "/data/MapInfos.json");
   m_databaseEditor.emplace(this, m_database->actors, m_database->classes, m_database->skills, m_database->items,
                            m_database->weapons, m_database->armors, m_database->enemies, m_database->troops,
@@ -187,7 +192,9 @@ void Project::draw() {
 void Project::handleOpenFile() {
   nfdu8char_t* outPath;
   nfdu8filteritem_t filters = {"RPG Maker Projects", "rpgproject,rmmzproject"};
-  auto result = NFD_OpenDialogU8(&outPath, &filters, 1, Settings::instance()->lastDirectory.empty() ? "." : Settings::instance()->lastDirectory.c_str());
+  auto result =
+      NFD_OpenDialogU8(&outPath, &filters, 1,
+                       Settings::instance()->lastDirectory.empty() ? "." : Settings::instance()->lastDirectory.c_str());
   if (result == NFD_OKAY) {
     std::filesystem::path path{outPath};
     Settings::instance()->lastDirectory = absolute(path).remove_filename().generic_string();

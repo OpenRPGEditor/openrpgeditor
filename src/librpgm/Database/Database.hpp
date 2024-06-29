@@ -15,6 +15,7 @@
 #include "Database/System.hpp"
 #include "Database/MapInfos.hpp"
 #include "Database/Map.hpp"
+#include "Database/Plugins.hpp"
 
 struct Database {
   Database() {
@@ -41,6 +42,7 @@ struct Database {
   Tilesets tilesets{};
   CommonEvents commonEvents{};
   System system{};
+  Plugins plugins{};
   MapInfos mapInfos{};
   std::string projectVersion; // As stored in the .rpgproject file
   std::string projectFilePath;

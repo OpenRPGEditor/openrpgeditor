@@ -144,7 +144,9 @@ static std::map<EventCode, std::string_view> CommandColors{
   {EventCode::Return_To_Title_Screen,   dodgerblue},
   {EventCode::Script,                   indigo},
   {EventCode::Next_Script,              indigo},
-  {EventCode::Plugin_Command,           indigo},
+  {EventCode::PluginMV_Command,         indigo},
+  {EventCode::PluginMZ_Command,         indigo},
+  {EventCode::Next_PluginMZ_Command,    indigo},
     // clang-format on
 };
 /**

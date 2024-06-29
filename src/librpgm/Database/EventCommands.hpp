@@ -7,6 +7,7 @@
 #include "Database/EventCommands/ChangeArmors.hpp"
 #include "Database/EventCommands/ChangeBattleBGM.hpp"
 #include "Database/EventCommands/ChangeBattleback.hpp"
+#include "Database/EventCommands/ChangeParallax.hpp"
 #include "Database/EventCommands/ChangeClass.hpp"
 #include "Database/EventCommands/ChangeDefeatME.hpp"
 #include "Database/EventCommands/ChangeEXP.hpp"

@@ -33,6 +33,8 @@ add_library(
         Database/RPGEquations.hpp Database/RPGEquations.cpp
         Database/Database.hpp Database/Database.cpp
         Database/Log.hpp Database/Log.cpp
+        Database/Plugins.cpp
+        Database/Plugins.hpp
 )
 
 add_library(
@@ -86,6 +88,7 @@ add_library(
         Database/EventCommands/ChangeMapDisplayName.hpp Database/EventCommands/ChangeMapDisplayName.cpp
         Database/EventCommands/ChangeTileset.hpp Database/EventCommands/ChangeTileset.cpp
         Database/EventCommands/ChangeBattleback.hpp Database/EventCommands/ChangeBattleback.cpp
+        Database/EventCommands/ChangeParallax.hpp Database/EventCommands/ChangeParallax.cpp
         Database/EventCommands/GetLocationInfo.hpp Database/EventCommands/GetLocationInfo.cpp
         Database/EventCommands/BattleProcessing.hpp Database/EventCommands/BattleProcessing.cpp
         Database/EventCommands/ShopProcessing.hpp Database/EventCommands/ShopProcessing.cpp
@@ -194,6 +197,8 @@ add_library(
         Database/EventCommands/MovementRoute/Script.hpp Database/EventCommands/MovementRoute/Script.cpp
         Database/EventCommands.hpp
         Database/EventCommands/MovementRoute.hpp
+        Database/EventCommands/ChangeParallax.cpp
+        Database/EventCommands/ChangeParallax.hpp
 )
 
 target_include_directories(librpgm PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)

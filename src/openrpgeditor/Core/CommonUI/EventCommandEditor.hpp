@@ -20,6 +20,6 @@ private:
   Project* m_project = nullptr;
   bool m_isNewEntry{false};
   int m_selectedCommand = 0;
-  std::unique_ptr<IDialogController> commandDialog;
+  std::shared_ptr<IDialogController> commandDialog;
   std::vector<std::shared_ptr<IEventCommand>>* m_commands = nullptr;
 };

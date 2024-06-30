@@ -609,7 +609,7 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Control Switches...", size)) {
-            commandDialog = std::make_unique<Dialog_ControlSwitches>("Control Switches", m_project);
+            commandDialog = std::make_shared<Dialog_ControlSwitches>("Control Switches", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third Column
@@ -619,7 +619,7 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Control Variables...", size)) {
-            commandDialog = std::make_unique<Dialog_ControlVariables>("Control Variables", m_project);
+            commandDialog = std::make_shared<Dialog_ControlVariables>("Control Variables", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third Column
@@ -634,7 +634,7 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           if (ImGui::Button("Exit Event Processing", size)) {
           }
           if (ImGui::Button("Common Event...", size)) {
-            commandDialog = std::make_unique<Dialog_CommonEvent>("Common Event", m_project);
+            commandDialog = std::make_shared<Dialog_CommonEvent>("Common Event", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column

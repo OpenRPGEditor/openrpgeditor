@@ -11,6 +11,7 @@
 #include "Core/EventCommands/Dialog_CommonEvent.hpp"
 #include "Core/EventCommands/Dialog_ControlSwitches.hpp"
 #include "Core/EventCommands/Dialog_ControlVariables.hpp"
+#include "Core/EventCommands/Dialog_Script.hpp"
 #include "Core/EventCommands/IDialogController.hpp"
 
 #include "Database/EventCommands/BattleProcessing.hpp"
@@ -47,6 +48,7 @@
 #include "Database/EventCommands/InputNumber.hpp"
 #include "Database/EventCommands/NameInput.hpp"
 #include "Database/EventCommands/RecoverAll.hpp"
+#include "Database/EventCommands/Script.hpp"
 #include "Database/EventCommands/SelectItem.hpp"
 #include "Database/EventCommands/SetEventLocation.hpp"
 #include "Database/EventCommands/SetMovementRoute.hpp"
@@ -57,6 +59,8 @@
 #include "Database/EventCommands/ShowBattleAnimation.hpp"
 #include "Database/EventCommands/TransferPlayer.hpp"
 
+#include <iostream>
+#include <vector>
 void insertValue(std::string& indentPad, const std::string& val, const std::string& delim) {
   auto pos = indentPad.find(delim);
   if (pos != std::string::npos) {
@@ -501,14 +505,6 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
 
       if (ImGui::BeginTabBar("##orpg_command_window")) {
 
-        if (commandDialog) {
-          auto [closed, confirmed] = commandDialog->draw();
-          if (confirmed) {
-            m_commands->insert(m_commands->begin() + 1, commandDialog->getCommand());
-            ImGui::CloseCurrentPopup();
-            commandDialog.reset();
-          }
-        }
 
         ImVec2 size = ImVec2{((ImGui::GetContentRegionAvail().x / 2) / 2) - App::DPIHandler::scale_value(15), 0};
 
@@ -744,6 +740,8 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           }
           ImGui::SameLine(); // Third column
           if (ImGui::Button("Script...", size)) {
+            commandDialog = std::make_shared<Dialog_Script>("Script", m_project);
+            commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Open Save Screen", size)) {
           }
@@ -797,6 +795,20 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           }
           ImGui::EndTabItem();
         }
+
+        if (commandDialog) {
+          auto [closed, confirmed] = commandDialog->draw();
+          if (confirmed) {
+            auto m_select = m_commands->begin() + m_selectedCommand;
+            m_select = m_commands->insert(m_select, commandDialog->getCommand());
+            if (commandDialog->IsNextFunc()) {
+
+            }
+            commandDialog.reset();
+            ImGui::CloseCurrentPopup();
+          }
+        }
+
         ImGui::EndTabBar();
       }
     }

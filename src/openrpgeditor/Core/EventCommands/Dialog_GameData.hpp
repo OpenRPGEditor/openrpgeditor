@@ -2,9 +2,7 @@
 #include "IDialogController.hpp"
 #include "Core/Project.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
-#include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/Actors.hpp"
-#include "Database/Enemies.hpp"
 #include "Database/Items.hpp"
 #include "Database/EventCommands/ControlVariables.hpp"
 

@@ -92,9 +92,11 @@ ExitStatus App::Application::run() {
   // ImGUI font
 
   const float font_size{settings.fontSize * DPIHandler::get_ui_scale()};
+  const float mono_font_size{settings.monoFontSize * DPIHandler::get_ui_scale()};
   const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
   const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf").generic_string()};
   const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf").generic_string()};
+  const std::string font_path_awesome{Resources::font_path("Font Awesome 6 Free-Solid-900.otf").generic_string()};
   const std::string font_path_mono{Resources::font_path("mplus-1m-medium.ttf").generic_string()};
 
   static const ImWchar specialChar[] = {
@@ -116,14 +118,16 @@ ExitStatus App::Application::run() {
   m_mainFont = io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, &config, ranges.Data);
   config.MergeMode = true;
   io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), font_size, &config, ranges.Data);
   io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), font_size, &config, ranges.Data);
   io.Fonts->Build();
 
   config.MergeMode = false;
-  m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_mono.c_str(), font_size, &config, ranges.Data);
+  m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_mono.c_str(), mono_font_size, &config, ranges.Data);
   config.MergeMode = true;
-  io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), mono_font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), mono_font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->Build();
 
   auto& style = ImGui::GetStyle();

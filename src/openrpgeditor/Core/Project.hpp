@@ -144,8 +144,8 @@ public:
 
 private:
   void drawMenu();
+  void drawToolbar();
   void handleKeyboardShortcuts();
-
   MapListView m_mapListView;
   MapEditor m_mapEditor;
   EventListView m_eventListView;
@@ -168,4 +168,7 @@ private:
   bool m_showDemoWindow{};
   bool m_showAboutWindow{};
   bool m_showTileDebug{true};
+
+  float m_menuBarHeight{};
+  float m_toolbarSize = 32;
 };

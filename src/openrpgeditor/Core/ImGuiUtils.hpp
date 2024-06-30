@@ -7,5 +7,7 @@ bool LabelOverLineEdit(const char* id, const char* label, char* string, int len,
                        const char* tooltip = nullptr);
 
 /* Copy of ImGui::Selectable with borders enabled */
-bool SelectableWithBorder(const char* label, bool selected = false, ImGuiSelectableFlags flags = 0, const ImVec2& size = ImVec2(0, 0));;
+bool SelectableWithBorder(const char* label, bool selected = false, ImGuiSelectableFlags flags = 0, const ImVec2& size = ImVec2(0, 0));
+
+void ActionTooltip(const char* action, const char* fmt, ...);
 } // namespace ImGui

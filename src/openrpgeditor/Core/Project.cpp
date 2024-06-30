@@ -7,11 +7,13 @@
 #include "Core/Utils.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
+#include "IconsFontAwesome6.h"
 
 #if _WIN32
 #include <shellapi.h>
 #endif
 
+#include "ImGuiUtils.hpp"
 #include "nfd.h"
 
 #include <fstream>
@@ -137,7 +139,24 @@ bool Project::close(bool save) {
 }
 
 void Project::setupDocking() {
+  ImGuiViewport* viewport = ImGui::GetMainViewport();
+  ImGui::SetNextWindowPos(viewport->Pos + ImVec2(0, m_toolbarSize));
+  ImGui::SetNextWindowSize(viewport->Size - ImVec2(0, m_toolbarSize));
+  ImGui::SetNextWindowViewport(viewport->ID);
+  ImGuiWindowFlags window_flags = 0 | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking |
+                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
+                                  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+                                  ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+  ImGui::Begin("Master DockSpace", nullptr, window_flags);
   ImGuiID mainWindowGroup = ImGui::GetID("MainWindowGroup");
+
+  // Save off menu bar height for later.
+  m_menuBarHeight = ImGui::GetCurrentWindow()->MenuBarHeight;
+
   if (ImGui::DockBuilderGetNode(mainWindowGroup) == nullptr) {
     ImVec2 workPos = ImGui::GetMainViewport()->WorkPos;
     ImVec2 workSize = ImGui::GetMainViewport()->WorkSize;
@@ -162,15 +181,133 @@ void Project::setupDocking() {
     // 7. We're done setting up our docking configuration:
     ImGui::DockBuilderFinish(mainWindowGroup);
   }
-  ImGui::DockSpaceOverViewport(ImGui::GetID("MainWindowGroup"));
+  ImGui::DockSpace(ImGui::GetID("MainWindowGroup"));
+  ImGui::End();
+  ImGui::PopStyleVar(3);
+}
+
+void Project::drawToolbar() {
+  const ImVec2 ButtonSize = ImVec2{32, 32} * App::DPIHandler::get_ui_scale();
+  ImGuiViewport* viewport = ImGui::GetMainViewport();
+  ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + m_menuBarHeight));
+  ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, m_toolbarSize));
+  ImGui::SetNextWindowViewport(viewport->ID);
+
+  ImGuiWindowFlags window_flags = 0 | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar |
+                                  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar |
+                                  ImGuiWindowFlags_NoSavedSettings;
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+  ImGui::Begin("##ore_toolbar", nullptr, window_flags);
+  ImGui::PopStyleVar();
+
+  ImGui::Button(ICON_FA_FILE, ButtonSize);
+  if (ImGui::IsItemHovered()) {
+    ImGui::ActionTooltip("New Project", "Creates a new project.");
+  }
+  ImGui::SameLine();
+  if (ImGui::Button(ICON_FA_FOLDER_OPEN, ButtonSize)) {
+    handleOpenFile();
+  }
+  if (ImGui::IsItemHovered()) {
+    ImGui::ActionTooltip("Open Project", "Opens an existing project.");
+  }
+  ImGui::SameLine();
+  ImGui::Button(ICON_FA_FLOPPY_DISK, ButtonSize);
+  ImGui::SameLine();
+  if (ImGui::IsItemHovered()) {
+    ImGui::ActionTooltip("Save Project", "Saves the project.");
+  }
+  ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+  ImGui::SameLine();
+  if (ImGui::Button(ICON_FA_SCISSORS, ButtonSize)) {}
+  ImGui::SameLine();
+  if (ImGui::Button(ICON_FA_COPY, ButtonSize)) {}
+  ImGui::SameLine();
+  if (ImGui::Button(ICON_FA_PASTE, ButtonSize)) {}
+  ImGui::SameLine();
+  ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+  ImGui::SameLine();
+  ImGui::BeginDisabled(!m_undoStack.hasCommands());
+  {
+    if (ImGui::Button(ICON_FA_ARROW_ROTATE_LEFT, ButtonSize)) {
+      handleUndo();
+    }
+  }
+  ImGui::EndDisabled();
+  ImGui::SameLine();
+  ImGui::BeginDisabled(!m_redoStack.hasCommands());
+  {
+    if (ImGui::Button(ICON_FA_ARROW_ROTATE_RIGHT, ButtonSize)) {
+      handleRedo();
+    }
+  }
+  ImGui::EndDisabled();
+  ImGui::SameLine();
+  ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+  ImGui::SameLine();
+  ImGui::BeginDisabled(m_editMode == EditMode::Map);
+  {
+    if (ImGui::Button("Map Mode")) {
+      enterMapEditMode();
+    }
+  }
+  ImGui::EndDisabled();
+  ImGui::SameLine();
+  ImGui::BeginDisabled(m_editMode == EditMode::Event);
+  {
+    if (ImGui::Button("Event Mode")) {
+      enterEventEditMode();
+    }
+  }
+  ImGui::EndDisabled();
+  ImGui::SameLine();
+  ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+  ImGui::SameLine();
+  ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Pencil);
+  {
+    if (ImGui::Button(ICON_FA_PENCIL, ButtonSize)) {
+      setDrawTool(DrawTool::Pencil);
+    }
+  }
+  ImGui::EndDisabled();
+  ImGui::SameLine();
+  ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Rectangle);
+  {
+    if (ImGui::Button(ICON_FA_SQUARE, ButtonSize)) {
+      setDrawTool(DrawTool::Rectangle);
+    }
+  }
+  ImGui::EndDisabled();
+  ImGui::SameLine();
+  ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Flood_Fill);
+  {
+    if (ImGui::Button(ICON_FA_BUCKET, ButtonSize)) {
+      setDrawTool(DrawTool::Flood_Fill);
+    }
+  }
+  ImGui::EndDisabled();
+  ImGui::SameLine();
+  ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Shadow_Pen);
+  {
+    if (ImGui::Button(ICON_FA_PEN, ButtonSize)) {
+      setDrawTool(DrawTool::Shadow_Pen);
+    }
+  }
+  if (ImGui::IsItemHovered()) {
+    ImGui::ActionTooltip("Shadow Pen","Adds or removes shadows of walls");
+  }
+  ImGui::EndDisabled();
+  ImGui::End();
 }
 
 void Project::draw() {
+  m_toolbarSize = App::DPIHandler::scale_value(Settings::instance()->fontSize + 32);
   if (m_databaseEditor) {
     m_databaseEditor->draw();
   }
   drawMenu();
   setupDocking();
+  drawToolbar();
   m_mapEditor.draw();
 
   if (m_editMode == EditMode::Map) {
@@ -232,21 +369,21 @@ void Project::drawMenu() {
   std::string loadFilepath;
   if (ImGui::BeginMainMenuBar()) {
     if (ImGui::BeginMenu("File")) {
-      if (ImGui::MenuItem("New Project...", "Ctrl+N")) {
+      if (ImGui::MenuItem(ICON_FA_FILE "  New Project...", "Ctrl+N")) {
         // TODO: Implement project creation
       }
-      if (ImGui::MenuItem("Open Project...", "Ctrl+O")) {
+      if (ImGui::MenuItem(ICON_FA_FOLDER " Open Project...", "Ctrl+O")) {
         handleOpenFile();
       }
-      if (ImGui::MenuItem("Close Project...")) {
+      if (ImGui::MenuItem(ICON_FA_FOLDER_CLOSED " Close Project...")) {
         close();
       }
-      if (ImGui::MenuItem("Save Project...", "Ctlr+S")) {
+      if (ImGui::MenuItem(ICON_FA_FLOPPY_DISK " Save Project...", "Ctlr+S")) {
         // TODO: Implement project saving
       }
       ImGui::Separator();
       if (ImGui::BeginMenu("Recent Projects", !Settings::instance()->mru.empty())) {
-        if (ImGui::MenuItem("Clear")) {
+        if (ImGui::MenuItem(ICON_FA_BRUSH " Clear")) {
           Settings::instance()->mru.clear();
         }
         if (!Settings::instance()->mru.empty()) {
@@ -265,7 +402,7 @@ void Project::drawMenu() {
         ImGui::EndMenu();
       }
       ImGui::Separator();
-      if (ImGui::MenuItem("Deployment...")) {
+      if (ImGui::MenuItem(ICON_FA_BOXES_PACKING " Deployment...")) {
         // TODO: Implement game deployment
       }
       /*
@@ -274,7 +411,7 @@ void Project::drawMenu() {
       }
       */
       ImGui::Separator();
-      if (ImGui::MenuItem("Exit", "Ctrl+Q")) {
+      if (ImGui::MenuItem(ICON_FA_DOOR_CLOSED "  Exit", "Ctrl+Q")) {
         App::APP->stop();
       }
       ImGui::EndMenu();

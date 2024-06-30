@@ -24,6 +24,7 @@ struct Settings {
   std::string lastDirectory;
   float uiScale{1.0};
   float fontSize{12.f};
+  float monoFontSize{10.f};
   float dpi{96.f};
 
   [[nodiscard]] static Settings* instance() { return m_instance; }

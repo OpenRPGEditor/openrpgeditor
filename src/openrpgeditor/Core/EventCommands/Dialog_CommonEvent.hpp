@@ -3,6 +3,7 @@
 #include "Core/Project.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/CommonEvents.hpp"
+#include "Database/EventCommands/CommonEvent.hpp"
 
 using namespace std::string_view_literals;
 
@@ -14,11 +15,14 @@ struct Dialog_CommonEvent : IDialogController {
   }
   std::tuple<bool, bool>  draw() override;
 
-  std::optional<CommonEvent> getCommandData() { return command; }
+  std::shared_ptr<IEventCommand> getCommand() override {
+    return std::make_shared<CommonEventCommand>(command.value());
+  };
+
   Project* m_project = nullptr;
 private:
-  int d_common_id = 1;
-  std::optional<CommonEvent> command;
+  bool m_confirmed{false};
+  std::optional<CommonEventCommand> command;
   std::optional<ObjectPicker<std::optional<CommonEvent>>> ce_picker;
   std::tuple<bool, bool> result;
 };

@@ -273,6 +273,7 @@ void MapEditor::draw() {
     ImGui::SetScrollY(m_tileCursor.alignCoord(ImGui::GetScrollY()));
     if (map()) {
       ImGuiWindow* win = ImGui::GetCurrentWindow();
+      win->ScrollTargetEdgeSnapDist;
       ImGui::Dummy(ImVec2{(map()->width + 1) * (m_parent->system().tileSize * m_mapScale),
                           (map()->height + 1) * (m_parent->system().tileSize * m_mapScale)});
 

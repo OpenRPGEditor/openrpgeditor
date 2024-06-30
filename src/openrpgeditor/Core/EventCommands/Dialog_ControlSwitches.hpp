@@ -10,6 +10,11 @@ struct Dialog_ControlSwitches : IDialogController {
   std::tuple<bool, bool>  draw() override;
 
   Project* m_project = nullptr;
+
+  std::shared_ptr<IEventCommand> getCommand() override {
+    return std::make_shared<ControlSwitches>(command.value());
+  };
+
 private:
   int d_start = 1;
   int d_end = 1;

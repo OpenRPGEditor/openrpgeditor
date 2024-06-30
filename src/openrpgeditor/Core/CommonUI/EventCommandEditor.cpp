@@ -7,6 +7,8 @@
 
 #include "imgui.h"
 #include "imgui_internal.h"
+#include "Core/Log.hpp"
+#include "Core/EventCommands/Dialog_CommonEvent.hpp"
 #include "Core/EventCommands/Dialog_ControlSwitches.hpp"
 #include "Core/EventCommands/Dialog_ControlVariables.hpp"
 #include "Core/EventCommands/IDialogController.hpp"
@@ -499,8 +501,14 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
 
       if (ImGui::BeginTabBar("##orpg_command_window")) {
 
-        if (commandDialog)
-          commandDialog->draw();
+        if (commandDialog) {
+          auto [closed, confirmed] = commandDialog->draw();
+          if (confirmed) {
+            m_commands->insert(m_commands->begin() + 1, commandDialog->getCommand());
+            ImGui::CloseCurrentPopup();
+            commandDialog.reset();
+          }
+        }
 
         ImVec2 size = ImVec2{((ImGui::GetContentRegionAvail().x / 2) / 2) - App::DPIHandler::scale_value(15), 0};
 
@@ -601,7 +609,7 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Control Switches...", size)) {
-            commandDialog = new Dialog_ControlSwitches("Control Switches", m_project);
+            commandDialog = std::make_unique<Dialog_ControlSwitches>("Control Switches", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third Column
@@ -611,7 +619,7 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Control Variables...", size)) {
-            commandDialog = new Dialog_ControlVariables("Control Variables", m_project);
+            commandDialog = std::make_unique<Dialog_ControlVariables>("Control Variables", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third Column
@@ -626,6 +634,8 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           if (ImGui::Button("Exit Event Processing", size)) {
           }
           if (ImGui::Button("Common Event...", size)) {
+            commandDialog = std::make_unique<Dialog_CommonEvent>("Common Event", m_project);
+            commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Control Timer...", size)) {

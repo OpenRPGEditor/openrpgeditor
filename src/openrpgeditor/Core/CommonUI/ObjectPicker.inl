@@ -42,6 +42,9 @@ std::tuple<bool, bool> ObjectPicker<T>::draw() {
 
       std::vector<T*> sortedList;
       for (T& value : *m_list) {
+        if (getId(value) == 0) {
+          continue;
+        }
         if (!m_filter.empty()) {
           if (ContainsCaseInsensitive(getName(value), m_filter) ||
               ContainsCaseInsensitive(std::to_string(getId(value)), m_filter)) {

@@ -15,6 +15,11 @@ struct Dialog_ControlVariables : IDialogController {
   }
   std::tuple<bool, bool>  draw() override;
   Project* m_project = nullptr;
+
+  std::shared_ptr<IEventCommand> getCommand() override {
+    return std::make_shared<ControlVariables>(command.value());
+  };
+
 private:
   int d_start = 1;
   int d_end = 1;

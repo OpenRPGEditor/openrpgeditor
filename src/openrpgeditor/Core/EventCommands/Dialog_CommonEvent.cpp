@@ -4,21 +4,24 @@
 #include "Core/Log.hpp"
 #include "Core/Project.hpp"
 
-template<>
+template <>
 inline int ObjectPicker<std::optional<CommonEvent>>::getId(const std::optional<CommonEvent>& value) {
-  return value->id;
+  return value ? value->id : 0;
 }
 
-template<>
+static const std::string InvalidCommonEvent = "Invalid Common Event";
+template <>
 inline const std::string& ObjectPicker<std::optional<CommonEvent>>::getName(const std::optional<CommonEvent>& value) {
-  return value->name;
+  return value ? value->name : InvalidCommonEvent;
 }
 
 std::tuple<bool, bool> Dialog_CommonEvent::draw() {
   if (ce_picker) {
     auto [closed, confirmed] = ce_picker->draw();
     if (confirmed) {
-      d_common_id = ce_picker->selection();
+      m_open = closed;
+      m_confirmed = confirmed;
+      command->event = ce_picker->selection();
       ce_picker.reset();
     }
   }

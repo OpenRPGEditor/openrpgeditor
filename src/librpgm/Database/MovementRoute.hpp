@@ -2,6 +2,7 @@
 
 #include "nlohmann/json.hpp"
 #include <memory>
+#include <Database/EventCommands/IEventCommand.hpp>
 
 struct IEventCommand;
 struct MovementRoute {

@@ -52,6 +52,9 @@ void DatabaseEditor::draw() {
     if (ImGui::Selectable("System", m_currentTab == &m_system)) {
       m_currentTab = &m_system;
     }
+    if (ImGui::Selectable("Exported Constants", m_currentTab == &m_gameConstants)) {
+      m_currentTab = &m_gameConstants;
+    }
     ImGui::EndGroup();
     ImGui::PopID();
     ImGui::SameLine();

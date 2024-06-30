@@ -84,12 +84,15 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   m_database->system = System::load(m_database->basePath + "/data/System.json");
   APP_INFO("Loading Plugins...");
   m_database->plugins = Plugins::load(m_database->basePath + "js/plugins.js");
+  APP_INFO("Loading GameConstants");
+  m_database->gameConstants = GameConstants::load(m_database->basePath + "/data/Constants.json");
+  m_database->gameConstants.serialize(m_database->basePath + "/data/Constants.json");
   APP_INFO("Loading MapInfos...");
   m_database->mapInfos = MapInfos::load(m_database->basePath + "/data/MapInfos.json");
   m_databaseEditor.emplace(this, m_database->actors, m_database->classes, m_database->skills, m_database->items,
                            m_database->weapons, m_database->armors, m_database->enemies, m_database->troops,
                            m_database->states, m_database->animations, m_database->tilesets, m_database->commonEvents,
-                           m_database->system);
+                           m_database->system, m_database->gameConstants);
 
   MapInfo* info = m_database->mapInfos.map(0);
   info->expanded = true;
@@ -118,9 +121,15 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   return true;
 }
 
-bool Project::close(bool save) {
-  if (save) {
+bool Project::close(bool promptSave) {
+  if (promptSave) {
     // TODO: Implement when safe to do so
+    if (m_database) {
+      m_database->gameConstants.serialize(m_database->basePath + "/data/Constants.json");
+      if (m_database->gameConstants.generateJS) {
+        m_database->gameConstants.generateConstantsJS(m_database->basePath + "/js/Constants.js");
+      }
+    }
   }
 
   m_undoStack.clear();
@@ -294,7 +303,7 @@ void Project::drawToolbar() {
     }
   }
   if (ImGui::IsItemHovered()) {
-    ImGui::ActionTooltip("Shadow Pen","Adds or removes shadows of walls");
+    ImGui::ActionTooltip("Shadow Pen", "Adds or removes shadows of walls");
   }
   ImGui::EndDisabled();
   ImGui::End();

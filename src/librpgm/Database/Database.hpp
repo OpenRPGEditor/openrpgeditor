@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameConstants.hpp"
 #include "Database/Actors.hpp"
 #include "Database/Classes.hpp"
 #include "Database/Skills.hpp"
@@ -44,6 +45,7 @@ struct Database {
   System system{};
   Plugins plugins{};
   MapInfos mapInfos{};
+  GameConstants gameConstants{};
   std::string projectVersion; // As stored in the .rpgproject file
   std::string projectFilePath;
   std::string basePath;

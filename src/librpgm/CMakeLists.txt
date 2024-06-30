@@ -35,6 +35,8 @@ add_library(
         Database/Log.hpp Database/Log.cpp
         Database/Plugins.cpp
         Database/Plugins.hpp
+        Database/GameConstants.cpp
+        Database/GameConstants.hpp
 )
 
 add_library(

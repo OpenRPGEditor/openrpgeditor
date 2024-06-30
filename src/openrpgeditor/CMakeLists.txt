@@ -66,6 +66,8 @@ add_library(orecore STATIC
         Core/EventCommands/Dialog_CommonEvent.hpp
         Core/EventCommands/Dialog_Script.cpp
         Core/EventCommands/Dialog_Script.hpp
+        Core/DatabaseEditor/DBGameConstantsTab.cpp
+        Core/DatabaseEditor/DBGameConstantsTab.hpp
 )
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_features(orecore PRIVATE cxx_std_20)

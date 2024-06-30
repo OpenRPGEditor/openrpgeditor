@@ -35,7 +35,7 @@ public:
   Project() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this) {}
 
   bool load(std::string_view filePath, std::string_view basePath);
-  bool close(bool save = false);
+  bool close(bool promptSave = false);
   void setupDocking();
 
   [[nodiscard]] bool isLoaded() const { return m_isLoaded; }

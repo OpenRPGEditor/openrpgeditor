@@ -320,7 +320,7 @@ void Application::onShown() {
 
 void Application::onClose() {
   APP_PROFILE_FUNCTION();
-
+  m_project.close(true);
   stop();
 }
 

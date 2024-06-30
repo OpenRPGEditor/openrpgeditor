@@ -15,13 +15,15 @@
 #include "Core/DatabaseEditor/DBCommonEventsTab.hpp"
 #include "Core/DatabaseEditor/DBSystemTab.hpp"
 #include "Database/Classes.hpp"
+#include "DatabaseEditor/DBGameConstantsTab.hpp"
 
 struct Project;
 struct DatabaseEditor {
   DatabaseEditor() = delete;
   explicit DatabaseEditor(Project* parent, Actors& actors, Classes& classes, Skills& skills, Items& items,
                           Weapons& weapons, Armors& armors, Enemies& enemies, Troops& troops, States& states,
-                          Animations& animations, Tilesets& tilesets, CommonEvents& commonEvents, System& system)
+                          Animations& animations, Tilesets& tilesets, CommonEvents& commonEvents, System& system,
+                          GameConstants& constants)
   : m_parent(parent)
   , m_actors(actors, this)
   , m_classes(classes, this)
@@ -35,7 +37,8 @@ struct DatabaseEditor {
   , m_animations(animations, this)
   , m_tilesets(tilesets, this)
   , m_commonEvents(commonEvents, this)
-  , m_system(system, this) {
+  , m_system(system, this)
+  , m_gameConstants(constants, this) {
     m_currentTab = &m_actors;
   }
 
@@ -124,6 +127,7 @@ private:
   DBTilesetsTab m_tilesets;
   DBCommonEventsTab m_commonEvents;
   DBSystemTab m_system;
+  DBGameConstantsTab m_gameConstants;
   IDBEditorTab* m_currentTab;
   bool m_isOpen{};
 };

@@ -84,20 +84,25 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlph
       CharacterRect rect = m_characterSheet.getRectForCharacter(
           m_event->pages[0].image.characterIndex, m_event->pages[0].image.pattern, m_event->pages[0].image.direction);
 
-      if (!m_characterSheet.isSingleCharacter()) {
+
+      if (m_characterSheet.characterWidth() == 72) {
         rect.uv0.u *= tex.width();
-        rect.uv0.v *= tex.height();
         rect.uv1.u *= tex.width();
-        rect.uv1.v *= tex.height();
         rect.uv0.u += 16;
         rect.uv1.u -= 16;
+        rect.uv0.u /= tex.width();
+        rect.uv1.u /= tex.width();
+      }
+
+      if (m_characterSheet.characterHeight() == 96) {
+        rect.uv0.v *= tex.height();
+        rect.uv1.v *= tex.height();
         rect.uv0.v += 24;
         rect.uv1.v -= 32;
-        rect.uv0.u /= tex.width();
         rect.uv0.v /= tex.height();
-        rect.uv1.u /= tex.width();
         rect.uv1.v /= tex.height();
       }
+
       evMin += ImVec2{3.f, 3.f};
       evMax -= ImVec2{3.f, 3.f};
       win->DrawList->AddImage(tex.get(), evMin, evMax, ImVec2{rect.uv0.u, rect.uv0.v}, ImVec2{rect.uv1.u, rect.uv1.v},

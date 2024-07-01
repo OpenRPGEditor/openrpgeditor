@@ -60,7 +60,10 @@ FetchContent_Declare(freetype2
         GIT_REPOSITORY "https://git.savannah.gnu.org/git/freetype/freetype2.git"
         GIT_TAG 2.6.5
 )
-
+FetchContent_Declare(
+        SDL2_mixer
+        GIT_REPOSITORY "https://github.com/libsdl-org/SDL_Mixer.git"
+        GIT_TAG release-2.8.0)
 #FetchContent_Declare(curl
 #        GIT_REPOSITORY "https://github.com/curl/curl.git"
 #        GIT_TAG tiny-curl-8_4_0
@@ -87,6 +90,10 @@ set(BUILD_SHARED_LIBS OFF)
 set(SPDLOG_FMT_EXTERNAL ON)
 set(SPDLOG_BUILD_SHARED OFF)
 set(SPDLOG_ENABLE_PCH ON)
+set(SDL2MIXER_MOD OFF)
+set(SDL2MIXER_MIDI OFF)
+set(SDL2MIXER_OPUS OFF)
+set(SDL2MIXER_WAVPACK OFF)
 
 # Populate
 
@@ -96,6 +103,7 @@ FetchContent_MakeAvailable(
         nfd
         SDL2
         SDL2_image
+        SDL2_mixer
         spdlog
         json
         magic_enum

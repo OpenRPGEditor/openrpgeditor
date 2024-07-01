@@ -12,5 +12,5 @@ struct Audio {
   std::string name; // base name of the file (without extension) in audio/se
   int pan = 0;
   int pitch = 100;
-  int volume = 90;
+  int volume = 100;
 };

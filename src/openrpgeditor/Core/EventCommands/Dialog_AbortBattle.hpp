@@ -11,7 +11,7 @@ struct Dialog_AbortBattle : IDialogController {
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<AbortBattleCommand()); };
+  std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<AbortBattleCommand>(); };
   Project* m_project = nullptr;
 
 private:

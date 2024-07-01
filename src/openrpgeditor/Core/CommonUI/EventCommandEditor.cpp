@@ -26,6 +26,7 @@
 #include "Core/EventCommands/Dialog_Loop.hpp"
 #include "Core/EventCommands/Dialog_OpenMenuScreen.hpp"
 #include "Core/EventCommands/Dialog_OpenSaveScreen.hpp"
+#include "Core/EventCommands/Dialog_PlayBGM.hpp"
 #include "Core/EventCommands/Dialog_ReplayBGM.hpp"
 #include "Core/EventCommands/Dialog_ReturnToTitle.hpp"
 #include "Core/EventCommands/Dialog_SaveBGM.hpp"
@@ -507,9 +508,9 @@ void EventCommandEditor::draw() {
 }
 
 void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
-  if (m_selectedCommand == 0) {
-    return;
-  }
+  //if (m_selectedCommand == 0) {
+  //  return;
+  //}
 
   ImGui::SetNextWindowSize(ImVec2{680, 550} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal("Command Window", nullptr,
@@ -597,12 +598,18 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
         }
         if (ImGui::BeginTabItem("Audio")) {
           if (ImGui::Button("Play BGM...", size)) {
+            commandDialog = std::make_shared<Dialog_PlayBGM>("Play BGM", m_project);
+            commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Play BGS...", size)) {
+            //commandDialog = std::make_shared<Dialog_PlayBGS>("Play BGS", m_project);
           }
           if (ImGui::Button("Play SE...", size)) {
+            //commandDialog = std::make_shared<Dialog_PlaySE>("Play SE", m_project);
           }
           if (ImGui::Button("Play ME...", size)) {
+            //commandDialog = std::make_shared<Dialog_PlayME>("Play ME", m_project);
+            //commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Play Movie...", size)) {
           }
@@ -768,6 +775,8 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           }
           ImGui::SameLine(); // Second column
           if (ImGui::Button("Change Battle BGM...", size)) {
+            //commandDialog = std::make_shared<Dialog_ChangeBattleBGM>("Change Battle BGM", m_project);
+            //commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third column
           if (ImGui::Button("Script...", size)) {
@@ -779,6 +788,8 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           }
           ImGui::SameLine(); // Second column
           if (ImGui::Button("Change Vehicle BGM...", size)) {
+            //commandDialog = std::make_shared<Dialog_ChangeVehicleBGM>("Change Vehicle BGM", m_project);
+            //commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third column
           if (ImGui::Button("Plugin Command...", size)) {
@@ -790,6 +801,8 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           }
           ImGui::SameLine(); // Second column
           if (ImGui::Button("Change Victory ME...", size)) {
+            //commandDialog = std::make_shared<Dialog_ChangeVictoryME>("Change Victory ME", m_project);
+            //commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third column
           if (ImGui::Button("Game Over", size)) {
@@ -801,6 +814,8 @@ void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
           }
           ImGui::SameLine(); // Second column
           if (ImGui::Button("Change Defeat ME...", size)) {
+              //commandDialog = std::make_shared<Dialog_ChangeDefeatME>("Change Defeat ME", m_project);
+              //commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third column
           if (ImGui::Button("Return To Title Screen", size)) {

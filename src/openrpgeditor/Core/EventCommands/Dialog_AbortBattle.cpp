@@ -1,6 +1,6 @@
-#include "Dialog_SaveBGM.hpp"
+#include "Dialog_AbortBattle.hpp"
 #include <tuple>
 
-std::tuple<bool, bool> Dialog_SaveBGM::draw() {
+std::tuple<bool, bool> Dialog_AbortBattle::draw() {
   return std::make_tuple(!m_open, m_confirmed);
 }

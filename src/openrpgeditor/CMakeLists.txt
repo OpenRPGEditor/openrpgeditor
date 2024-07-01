@@ -107,8 +107,10 @@ add_library(orecore STATIC
         Core/EventCommands/Dialog_OpenMenuScreen.cpp
         Core/EventCommands/Dialog_OpenMenuScreen.hpp
         Core/ImGuiNotify.hpp
+        Core/EventCommands/Dialog_PlayBGM.cpp
+        Core/EventCommands/Dialog_PlayBGM.hpp
 )
-target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SDL2_mixer_SOURCE_DIR}/include)
 target_compile_features(orecore PRIVATE cxx_std_20)
 target_link_libraries(
         orecore
@@ -122,6 +124,7 @@ target_link_libraries(
         librpgm
         freetype
         z
+        SDL2_mixer
 )
 
 # Define set of OS specific files to include
@@ -147,7 +150,7 @@ include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/AppAssets.cmake)
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/Packaging.cmake)
 
 
-target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SDL2_mixer_SOURCE_DIR}/include)
 target_compile_features(${NAME} PRIVATE cxx_std_20)
 target_link_libraries(
         ${NAME}
@@ -163,7 +166,9 @@ target_link_libraries(
         librpgmeventcmds
         freetype
         z
+        SDL2_mixer
 )
+message(${SDL2_mixer_SOURCE_DIR})
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebugInfo")
     add_compile_definitions(

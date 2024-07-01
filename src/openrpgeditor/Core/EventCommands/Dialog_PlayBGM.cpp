@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/ImGuiUtils.hpp"
+#include "Core/Log.hpp"
 #include "Core/Project.hpp"
 using namespace std::string_view_literals;
 std::tuple<bool, bool> Dialog_PlayBGM::draw() {
@@ -32,7 +33,9 @@ std::tuple<bool, bool> Dialog_PlayBGM::draw() {
                                           ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
                                               ImGuiSelectableFlags_AllowDoubleClick)) {
           if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-            // TODO: Play Sound
+            APP_INFO("Clicked play");
+            playAudio((Database::Instance->basePath + "audio/bgm/" + m_audios.at(m_selected) + ".ogg").c_str());
+            APP_INFO("Playing music");
           }
           m_selected = n;
           if (isSelected)

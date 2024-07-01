@@ -21,12 +21,12 @@ struct Dialog_ControlVariables : IDialogController {
   };
 
 private:
-  int d_start = 1;
-  int d_end = 1;
-  int d_constant = 0;
-  int d_variable = 1;
-  int d_rand_1 = 0;
-  int d_rand_2 = 0;
+  int m_start = 1;
+  int m_end = 1;
+  int m_constant = 0;
+  int m_variable = 1;
+  int m_rand_1 = 0;
+  int m_rand_2 = 0;
   std::string script = "";
 
   std::optional<ControlVariables> command;

@@ -40,5 +40,4 @@ struct IEventCommand {
     }
     return text;
   }
-  virtual void setNextString(const std::string& str) {}
 };

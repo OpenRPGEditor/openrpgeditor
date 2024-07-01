@@ -1,10 +1,10 @@
-#include "Dialog_Script.hpp"
+#include "Dialog_Comment.hpp"
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"
 
-std::tuple<bool, bool> Dialog_Script::draw() {
+std::tuple<bool, bool> Dialog_Comment::draw() {
   if (IsOpen()) {
     ImGui::OpenPopup(m_name.c_str());
     // SetOpen(false);
@@ -15,25 +15,25 @@ std::tuple<bool, bool> Dialog_Script::draw() {
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar)) {
 
     static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
-    if (ImGui::InputTextMultiline("##source", script, IM_ARRAYSIZE(script), ImVec2(ImGui::GetContentRegionMax().x - 50, ImGui::GetContentRegionMax().y - 50), flags))
+    if (ImGui::InputTextMultiline("##source", script, IM_ARRAYSIZE(script), ImVec2(ImGui::GetContentRegionMax().x - 25, ImGui::GetContentRegionMax().y - 50), flags))
     {
 
     }
     if (ImGui::Button("OK")) {
-      std::vector<std::string> scripts = splitString(script, '\n');
-      if (scripts.size() > 1)
+      std::vector<std::string> texts = splitString(script, '\n');
+      if (texts.size() > 1)
         m_isNext = true;
 
-      command->script = scripts.front();
+      command->text = texts.front();
       APP_DEBUG(command->script);
       if (m_isNext) {
-        command->moreScript.clear();
-        command->moreScript.reserve(scripts.size());
-        for (auto str = std::next(scripts.begin()); str != scripts.end(); ++str) {
-          command->moreScript.emplace_back(std::make_shared<NextScriptCommand>())->script = *str;
+        command->nextComments.clear();
+        command->nextComments.reserve(texts.size());
+        for (auto str = std::next(texts.begin()); str != texts.end(); ++str) {
+          command->nextComments.emplace_back(std::make_shared<NextCommentCommand>())->text = *str;
           APP_DEBUG(command->moreScript.back()->script);
         }
-        command->moreScript.shrink_to_fit();
+        command->nextComments.shrink_to_fit();
       }
       ImGui::CloseCurrentPopup();
       SetOpen(false);

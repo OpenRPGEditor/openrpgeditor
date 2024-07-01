@@ -68,6 +68,44 @@ add_library(orecore STATIC
         Core/EventCommands/Dialog_Script.hpp
         Core/DatabaseEditor/DBGameConstantsTab.cpp
         Core/DatabaseEditor/DBGameConstantsTab.hpp
+        Core/EventCommands/Dialog_Comment.cpp
+        Core/EventCommands/Dialog_Comment.hpp
+        Core/EventCommands/Dialog_ChangeEncounter.cpp
+        Core/EventCommands/Dialog_ChangeEncounter.hpp
+        Core/EventCommands/Dialog_ChangeSaveAccess.cpp
+        Core/EventCommands/Dialog_ChangeSaveAccess.hpp
+        Core/EventCommands/Dialog_ChangeMenuAccess.cpp
+        Core/EventCommands/Dialog_ChangeMenuAccess.hpp
+        Core/EventCommands/Dialog_ChangeFormationAccess.cpp
+        Core/EventCommands/Dialog_ChangeFormationAccess.hpp
+        Core/EventCommands/Dialog_GameOver.hpp
+        Core/EventCommands/Dialog_OpenSaveScreen.hpp
+        Core/EventCommands/Dialog_GameOver.cpp
+        Core/EventCommands/Dialog_OpenSaveScreen.cpp
+        Core/EventCommands/Dialog_ReturnToTitle.cpp
+        Core/EventCommands/Dialog_ReturnToTitle.hpp
+        Core/EventCommands/Dialog_SaveBGM.cpp
+        Core/EventCommands/Dialog_SaveBGM.hpp
+        Core/EventCommands/Dialog_ReplayBGM.cpp
+        Core/EventCommands/Dialog_ReplayBGM.hpp
+        Core/EventCommands/Dialog_StopSE.cpp
+        Core/EventCommands/Dialog_StopSE.hpp
+        Core/EventCommands/Dialog_Loop.cpp
+        Core/EventCommands/Dialog_Loop.hpp
+        Core/EventCommands/Dialog_EraseEvent.cpp
+        Core/EventCommands/Dialog_EraseEvent.hpp
+        Core/EventCommands/Dialog_BreakLoop.cpp
+        Core/EventCommands/Dialog_BreakLoop.hpp
+        Core/EventCommands/Dialog_ExitEventProcessing.cpp
+        Core/EventCommands/Dialog_ExitEventProcessing.hpp
+        Core/EventCommands/Dialog_GetOnOffVehicle.cpp
+        Core/EventCommands/Dialog_GetOnOffVehicle.hpp
+        Core/EventCommands/Dialog_AbortBattle.cpp
+        Core/EventCommands/Dialog_AbortBattle.hpp
+        Core/EventCommands/Dialog_GatherFollowers.cpp
+        Core/EventCommands/Dialog_GatherFollowers.hpp
+        Core/EventCommands/Dialog_OpenMenuScreen.cpp
+        Core/EventCommands/Dialog_OpenMenuScreen.hpp
 )
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_features(orecore PRIVATE cxx_std_20)

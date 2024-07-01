@@ -18,8 +18,8 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     if (picker) {
       auto [closed, confirmed]  = picker->draw();
       if (confirmed) {
-        d_start = picker->selection();
-        d_end = picker->selection();
+        n_start = picker->selection();
+        m_end = picker->selection();
         picker.reset();
       }
     }
@@ -33,7 +33,7 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
 
     bool isSwitchEnabled = switchType == 1;
     std::string text =
-        isSwitchEnabled ? "##commonevent_switch_empty" : (d_start == 0 ? "" : std::format("{:04} ", d_start) + m_project->switche(command->start));
+        isSwitchEnabled ? "##commonevent_switch_empty" : (n_start == 0 ? "" : std::format("{:04} ", n_start) + m_project->switche(command->start));
     ImGui::PushID("##controlswitch_id");
     ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 50) - (16 * App::DPIHandler::get_ui_scale()));
     ImGui::BeginDisabled(isSwitchEnabled);
@@ -51,11 +51,11 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     ImGui::SameLine();
     ImGui::BeginDisabled(isRangeEnabled);
     ImGui::PushItemWidth(50);
-    ImGui::InputInt("##controlswitch_range1", &d_rand_1, 0);
+    ImGui::InputInt("##controlswitch_range1", &m_rand_1, 0);
     ImGui::SameLine();
     ImGui::Text("~");
     ImGui::SameLine();
-    ImGui::InputInt("##controlswitch_range2", &d_rand_2, 0);
+    ImGui::InputInt("##controlswitch_range2", &m_rand_2, 0);
     ImGui::PopItemWidth();
     ImGui::EndDisabled();
 
@@ -68,12 +68,12 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 75, ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {
       if (isSwitchEnabled) {
-        command->start = d_start;
-        command->end = d_end;
+        command->start = n_start;
+        command->end = m_end;
       }
       else {
-        command->start = d_rand_1;
-        command->end = d_rand_2;
+        command->start = m_rand_1;
+        command->end = m_rand_2;
       }
       command->turnOff = static_cast<ValueControl>(operationBool);
 

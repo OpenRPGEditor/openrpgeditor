@@ -5,7 +5,6 @@
 struct NextScriptCommand : IEventCommand {
   ~NextScriptCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Next_Script; }
-  void setNextString(const std::string& str) override { script = str; }
   std::string script;
 };
 

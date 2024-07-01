@@ -1,22 +1,22 @@
 #pragma once
 #include "IDialogController.hpp"
-#include "Database/EventCommands/Script.hpp"
+#include "Database/EventCommands/Comment.hpp"
 
 struct Project;
-struct Dialog_Script : IDialogController {
-  Dialog_Script() = delete;
-  explicit Dialog_Script(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+struct Dialog_Comment : IDialogController {
+  Dialog_Comment() = delete;
+  explicit Dialog_Comment(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
     command.emplace();
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<ScriptCommand>(command.value()); };
+  std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<CommentCommand>(command.value()); };
   Project* m_project = nullptr;
 
 private:
   char script[4096] = "";
   bool m_confirmed{false};
-  std::optional<ScriptCommand> command;
+  std::optional<CommentCommand> command;
   std::tuple<bool, bool> result;
 
   std::vector<std::string> splitString(const std::string& str, char delimiter) {
@@ -31,5 +31,4 @@ private:
     }
     return tokens;
   }
-
 };

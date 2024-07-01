@@ -53,14 +53,14 @@ struct Dialog_GameData : IDialogController {
 private:
   bool m_confirmed{false};
 
-  int d_source = 0;
-  int d_raw_source = 1; // Final value
-  int d_value = 0;
+  int m_source = 0;
+  int m_raw_source = 1; // Final value
+  int m_value = 0;
 
-  int d_weapon_source = 1;
-  int d_armor_source = 1;
-  int d_item_source = 1;
-  int d_actor_source = 1;
+  int m_weapon_source = 1;
+  int m_armor_source = 1;
+  int m_item_source = 1;
+  int m_actor_source = 1;
 
   static constexpr auto ActorData = magic_enum::enum_values<ActorDataSource>();
   static constexpr auto EnemyData = magic_enum::enum_values<EnemyDataSource>();

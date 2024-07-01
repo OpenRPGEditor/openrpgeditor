@@ -1,7 +1,5 @@
 #pragma once
 #include "Database/EventCommands/IEventCommand.hpp"
-
-#include <optional>
 #include <string>
 
 struct IDialogController {
@@ -12,12 +10,12 @@ struct IDialogController {
   bool IsConfirmed() const { return m_confirmed; }
   bool IsNextFunc() const { return m_isNext; }
   void SetOpen(bool open) { m_open = open; }
+  void SetNext(bool open) { m_isNext = open; }
   virtual std::shared_ptr<IEventCommand> getCommand() { return nullptr; }
-  virtual std::shared_ptr<std::vector<std::optional<IEventCommand>>> getNextCommands() { return std::shared_ptr<std::vector<std::optional<IEventCommand>>>(); }
 
 protected:
-  bool m_isNext{false};
   bool m_confirmed{false};
   bool m_open;
+  bool m_isNext{false};
   std::string m_name;
 };

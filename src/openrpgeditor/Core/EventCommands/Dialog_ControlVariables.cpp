@@ -21,10 +21,10 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
       auto [closed, confirmed] = picker->draw();
       if (confirmed) {
         if (singleRequest) {
-          d_start = picker->selection();
-          d_end = picker->selection();
+          m_start = picker->selection();
+          m_end = picker->selection();
         } else {
-          d_variable = picker->selection();
+          m_variable = picker->selection();
         }
         picker.reset();
       }
@@ -47,7 +47,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     bool isSwitchEnabled = switchType == 1;
     std::string text = isSwitchEnabled
                            ? "##commonevent_switch_empty"
-                           : (d_start == 0 ? "" : std::format("{:04} ", d_start) + m_project->variable(d_start));
+                           : (m_start == 0 ? "" : std::format("{:04} ", m_start) + m_project->variable(m_start));
     ImGui::PushID("##controlswitch_id");
     ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 75) - (16 * App::DPIHandler::get_ui_scale()));
     ImGui::BeginDisabled(isSwitchEnabled);
@@ -98,7 +98,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     ImGui::SameLine();
     ImGui::BeginDisabled(operand != 0);
     ImGui::PushItemWidth(100);
-    ImGui::InputInt("##controlvariables_constant", &d_constant, 0);
+    ImGui::InputInt("##controlvariables_constant", &m_constant, 0);
     ImGui::PopItemWidth();
     ImGui::EndDisabled();
 
@@ -108,7 +108,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     ImGui::BeginDisabled(operand != 1);
     ImGui::PushItemWidth(100);
     text = operand != 1 ? "##commonevent_switch_empty"
-                        : (d_variable == 0 ? "" : std::format("{:04} ", d_variable) + m_project->variable(d_variable));
+                        : (m_variable == 0 ? "" : std::format("{:04} ", m_variable) + m_project->variable(m_variable));
     ImGui::PushID("##controlvariable_id2");
     if (ImGui::Button(text.c_str(),
                       ImVec2{(ImGui::GetWindowContentRegionMax().x - 75) - 15 * App::DPIHandler::get_ui_scale(), 0})) {
@@ -124,11 +124,11 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     ImGui::SameLine();
     ImGui::BeginDisabled(operand != 2);
     ImGui::PushItemWidth(100);
-    ImGui::InputInt("##controlvariables_range1", &d_rand_1, 0);
+    ImGui::InputInt("##controlvariables_range1", &m_rand_1, 0);
     ImGui::SameLine();
     ImGui::Text("~");
     ImGui::SameLine();
-    ImGui::InputInt("##controlvariables_range2", &d_rand_2, 0);
+    ImGui::InputInt("##controlvariables_range2", &m_rand_2, 0);
     ImGui::PopItemWidth();
     ImGui::EndDisabled();
 
@@ -175,10 +175,10 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
       }
       command->operation = static_cast<VariableControlOperation>(operation);
       command->operand = static_cast<VariableControlOperand>(operand);
-      command->constant = d_constant;
-      command->variable = d_variable;
-      command->random.min = d_rand_1;
-      command->random.max = d_rand_2;
+      command->constant = m_constant;
+      command->variable = m_variable;
+      command->random.min = m_rand_1;
+      command->random.max = m_rand_2;
 
       if (gameDataDialog)
         command->gameData = gameDataDialog->getCommandData()->gameData;

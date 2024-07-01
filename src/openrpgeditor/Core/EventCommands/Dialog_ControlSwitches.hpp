@@ -16,10 +16,10 @@ struct Dialog_ControlSwitches : IDialogController {
   };
 
 private:
-  int d_start = 1;
-  int d_end = 1;
-  int d_rand_1 = 0;
-  int d_rand_2 = 0;
+  int n_start = 1;
+  int m_end = 1;
+  int m_rand_1 = 0;
+  int m_rand_2 = 0;
 
   std::optional<ControlSwitches> command;
   std::optional<VariableSwitchPicker> picker;

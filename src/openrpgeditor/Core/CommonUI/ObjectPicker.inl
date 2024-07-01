@@ -26,7 +26,8 @@ std::tuple<bool, bool> ObjectPicker<T>::draw() {
     if (ImGui::BeginTable("Objects", 2,
                           ImGuiTableFlags_Resizable | ImGuiTableFlags_Sortable | ImGuiTableFlags_BordersOuter |
                               ImGuiTableFlags_BordersV | ImGuiTableFlags_ScrollY,
-                          ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32)})) {
+                              ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                                                      ImGui::GetStyle().FramePadding.y})) {
 
       ImGui::TableSetupColumn("ID",
                               ImGuiTableColumnFlags_PreferSortAscending | ImGuiTableColumnFlags_DefaultSort |
@@ -76,8 +77,13 @@ std::tuple<bool, bool> ObjectPicker<T>::draw() {
         /* ID */
         if (ImGui::TableNextColumn()) {
           std::string id = std::format("{:04}", getId(*value));
-          if (ImGui::Selectable(id.c_str(), m_selection == getId(*value), ImGuiSelectableFlags_SpanAllColumns)) {
+          if (ImGui::Selectable(id.c_str(), m_selection == getId(*value),
+                                ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
             m_selection = getId(*value);
+            if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+              m_open = false;
+              m_confirmed = true;
+            }
           }
         }
         /* Name */

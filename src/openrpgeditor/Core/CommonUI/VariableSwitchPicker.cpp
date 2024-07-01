@@ -36,7 +36,8 @@ std::tuple<bool, bool> VariableSwitchPicker::draw() {
     if (ImGui::BeginTable("Objects", 2,
                           ImGuiTableFlags_Resizable | ImGuiTableFlags_Sortable | ImGuiTableFlags_BordersOuter |
                               ImGuiTableFlags_BordersV | ImGuiTableFlags_ScrollY,
-                          ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32)})) {
+                          ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                        ImGui::GetStyle().FramePadding.y})) {
 
       ImGui::TableSetupColumn("ID",
                               ImGuiTableColumnFlags_PreferSortAscending | ImGuiTableColumnFlags_DefaultSort |
@@ -82,8 +83,13 @@ std::tuple<bool, bool> VariableSwitchPicker::draw() {
         /* ID */
         if (ImGui::TableNextColumn()) {
           std::string idStr = std::format("{:04}", id);
-          if (ImGui::Selectable(idStr.c_str(), m_selection == id, ImGuiSelectableFlags_SpanAllColumns)) {
+          if (ImGui::Selectable(idStr.c_str(), m_selection == id,
+                                ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
             m_selection = id;
+            if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+              m_open = false;
+              m_confirmed = true;
+            }
           }
         }
         /* Name */

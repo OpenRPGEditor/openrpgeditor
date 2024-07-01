@@ -100,7 +100,6 @@ void EventCommandEditor::draw() {
       ImGui::TableSetupScrollFreeze(1, 0);
       ImGui::TableSetupColumn("Text");
       const int totalPadding = static_cast<int>(std::floor(std::log10(m_commands->size())));
-
       if (m_commands) {
         ImGui::PushFont(App::APP->getMonoFont());
         for (int n = 0; n < m_commands->size(); n++) {
@@ -491,7 +490,7 @@ void EventCommandEditor::draw() {
             }
           }
           if (ImGui::TableNextColumn()) {
-            ImGui::TextParsed("&push-color=255,255,255;%s&pop-color;", indentPad.c_str());
+            ImGui::TextParsed("&push-color=0,0,0;%s&pop-color;", indentPad.c_str());
           }
 
           if (isSelected)

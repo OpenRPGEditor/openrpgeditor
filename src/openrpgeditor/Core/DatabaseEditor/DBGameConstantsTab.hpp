@@ -18,4 +18,5 @@ private:
   int m_selectedSwitch = -1;
   int m_selectedVariable = -1;
   std::optional<std::string> m_currentAlias;
+  bool m_openPopup = false;
 };

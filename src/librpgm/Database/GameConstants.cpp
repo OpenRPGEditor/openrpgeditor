@@ -1,4 +1,7 @@
 #include "Database/GameConstants.hpp"
+
+#include "Database/Database.hpp"
+
 #include <fstream>
 #include <format>
 
@@ -20,13 +23,12 @@ bool GameConstants::serialize(const std::string_view path) {
   try {
     if (file.is_open()) {
       const nlohmann::json data = *this;
-      file << data;
+      file << data.dump(4);
       return true;
     }
   } catch (...) {}
   return false;
 }
-
 
 bool GameConstants::generateConstantsJS(std::string_view path) {
   std::ofstream file(path.data());
@@ -38,11 +40,33 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
   file << "// DO NOT MODIFY!\n";
   file << "// -----------------VARIABLES-----------------\n";
   for (const auto& [id, alias] : variables) {
+    file << std::format("\n// @name VAR_{}\n// @description Exported Variable \"{}\" ({})\n// @readonly\n", alias,
+                        Database::Instance->system.variables[id], id);
     file << std::format("const VAR_{} = {};\n", alias, id);
   }
   file << "// -----------------SWITCHES------------------\n";
   for (const auto& [id, alias] : switches) {
+    file << std::format("\n// @name SW_{}\n// @description Exported Switch \"{}\" ({})\n// @readonly\n", alias,
+                        Database::Instance->system.switches[id], id);
     file << std::format("const SW_{} = {};\n", alias, id);
   }
   return true;
+}
+
+bool GameConstants::isValidName(Type type, int id, const std::string& constant) {
+  if (constant.empty()) {
+    return false;
+  }
+  switch (type) {
+  case Type::Variable:
+    return std::find_if(variables.begin(), variables.end(), [&constant, id](const auto& v) {
+             return v.first != id && v.second == constant;
+           }) == variables.end();
+  case Type::Switch:
+    return std::find_if(switches.begin(), switches.end(), [&constant, id](const auto& v) {
+             return v.first != id && v.second == constant;
+           }) == switches.end();
+  }
+
+  return false;
 }

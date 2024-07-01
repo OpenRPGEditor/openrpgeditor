@@ -13,6 +13,7 @@
 #include <shellapi.h>
 #endif
 
+#include "ImGuiNotify.hpp"
 #include "ImGuiUtils.hpp"
 #include "nfd.h"
 
@@ -333,6 +334,7 @@ void Project::draw() {
   if (m_showAboutWindow) {
     ImGui::ShowAboutWindow(&m_showAboutWindow);
   }
+  ImGui::RenderNotifications();
 }
 
 void Project::handleOpenFile() {

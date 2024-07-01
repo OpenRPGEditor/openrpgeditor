@@ -106,6 +106,7 @@ add_library(orecore STATIC
         Core/EventCommands/Dialog_GatherFollowers.hpp
         Core/EventCommands/Dialog_OpenMenuScreen.cpp
         Core/EventCommands/Dialog_OpenMenuScreen.hpp
+        Core/ImGuiNotify.hpp
 )
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_features(orecore PRIVATE cxx_std_20)

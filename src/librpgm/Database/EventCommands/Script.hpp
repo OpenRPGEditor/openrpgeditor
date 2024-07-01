@@ -14,13 +14,14 @@ struct ScriptCommand : IEventCommand {
   std::string script;
   std::vector<std::shared_ptr<NextScriptCommand>> moreScript;
   [[nodiscard]] std::string stringRep(const Database& db) const override {
-    std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-  + "Script " + colon.data()  + script;
+    std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Script " +
+                      colon.data() + ColorFormatter::popColor() + script;
     for (const auto& t : moreScript) {
       if (!ret.empty()) {
         ret += "\n";
       }
-      ret += indentText(indent) + colon.data() + indentText(1) + indentText(1) + colon.data() + ColorFormatter::getColorCode(code()) + t->script;
+      ret += ColorFormatter::getColorCode(t->code()) + indentText(indent) + symbol(t->code()) + "       " +
+             colon.data() + ColorFormatter::popColor() + t->script;
     }
 
     return ret;

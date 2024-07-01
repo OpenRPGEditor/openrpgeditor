@@ -1,15 +1,19 @@
-//
-// Created by antidote on 6/7/24.
-//
-
 #pragma once
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include "Database/Troops.hpp"
+
 
 struct Troops;
 struct DBTroopsTab : IDBEditorTab {
   DBTroopsTab() = delete;
   explicit DBTroopsTab(Troops& troops, DatabaseEditor* parent) : IDBEditorTab(parent), m_troops(troops) {}
   void draw() override;
+
+  [[nodiscard]] std::vector<Troop>& troops() { return m_troops.troops(); }
+  [[nodiscard]] const std::vector<Troop>& troops() const { return m_troops.troops(); }
+
+  [[nodiscard]] Troop* troop(int id) { return m_troops.troop(id); }
+  [[nodiscard]] const Troop* troop(int id) const { return m_troops.troop(id); }
 
 private:
   Troops& m_troops;

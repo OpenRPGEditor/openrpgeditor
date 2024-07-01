@@ -491,7 +491,7 @@ void EventCommandEditor::draw() {
             }
           }
           if (ImGui::TableNextColumn()) {
-            ImGui::TextParsed("&push-color=0,0,0;%s&pop-color;", indentPad.c_str());
+            ImGui::TextParsed("&push-color=255,255,255;%s&pop-color;", indentPad.c_str());
           }
 
           if (isSelected)
@@ -499,18 +499,17 @@ void EventCommandEditor::draw() {
         }
         ImGui::PopFont();
       }
-      drawPopup(m_commands->at(m_selectedCommand));
-
+      drawPopup();
       ImGui::EndTable();
     }
   }
   ImGui::EndGroup();
 }
 
-void EventCommandEditor::drawPopup(std::shared_ptr<IEventCommand> command) {
-  //if (m_selectedCommand == 0) {
-  //  return;
-  //}
+void EventCommandEditor::drawPopup() {
+  if (m_selectedCommand < 0) {
+    return;
+  }
 
   ImGui::SetNextWindowSize(ImVec2{680, 550} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal("Command Window", nullptr,

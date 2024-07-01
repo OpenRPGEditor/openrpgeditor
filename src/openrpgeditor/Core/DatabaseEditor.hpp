@@ -60,8 +60,17 @@ struct DatabaseEditor {
   [[nodiscard]] States& states() { return m_states.states(); }
   [[nodiscard]] const States& states() const { return m_states.states(); }
 
+  [[nodiscard]] Actors& actors() { return m_actors.actors(); }
+  [[nodiscard]] const Actors& actors() const { return m_actors.actors(); }
+
+  [[nodiscard]] Actor* actor(int id) { return m_actors.actor(id); }
+  [[nodiscard]] const Actor* actor(int id) const { return m_actors.actor(id); }
+
   [[nodiscard]] Classes& classes() { return m_classes.classes(); }
   [[nodiscard]] const Classes& classes() const { return m_classes.classes(); }
+
+  [[nodiscard]] Class* classType(int id) { return m_classes.classType(id); }
+  [[nodiscard]] const Class* classType(int id) const { return m_classes.classType(id); }
 
   [[nodiscard]] std::string variables(int id) { return m_system.variable(id); }
   [[nodiscard]] const std::string variables(int id) const { return m_system.variable(id); }
@@ -88,6 +97,18 @@ struct DatabaseEditor {
   [[nodiscard]] Messages& messages() { return m_system.messages(); }
   [[nodiscard]] const Messages& messages() const { return m_system.messages(); }
 
+  [[nodiscard]] std::vector<Skill>& skills() { return m_skills.skills(); }
+  [[nodiscard]] const std::vector<Skill>& skills() const { return m_skills.skills(); }
+
+  [[nodiscard]] Skill* skill(int id) { return m_skills.skill(id); }
+  [[nodiscard]] const Skill* skill(int id) const { return m_skills.skill(id); }
+
+  [[nodiscard]] std::vector<Item>& items() { return m_items.items(); }
+  [[nodiscard]] const std::vector<Item>& items() const { return m_items.items(); }
+
+  [[nodiscard]] Item* item(int id) { return m_items.item(id); }
+  [[nodiscard]] const Item* item(int id) const { return m_items.item(id); }
+
   [[nodiscard]] std::vector<Weapon>& weapons() { return m_weapons.weapons(); }
   [[nodiscard]] const std::vector<Weapon>& weapons() const { return m_weapons.weapons(); }
 
@@ -100,14 +121,42 @@ struct DatabaseEditor {
   [[nodiscard]] Armor* armor(int id) { return m_armors.armor(id); }
   [[nodiscard]] const Armor* armor(int id) const { return m_armors.armor(id); }
 
+  [[nodiscard]] std::vector<Enemy>& enemies() { return m_enemies.enemies(); }
+  [[nodiscard]] const std::vector<Enemy>& enemies() const { return m_enemies.enemies(); }
+
+  [[nodiscard]] Enemy* enemy(int id) { return m_enemies.enemy(id); }
+  [[nodiscard]] const Enemy* enemy(int id) const { return m_enemies.enemy(id); }
+
+  [[nodiscard]] std::vector<Troop>& troops() { return m_troops.troops(); }
+  [[nodiscard]] const std::vector<Troop>& troops() const { return m_troops.troops(); }
+
+  [[nodiscard]] Troop* troop(int id) { return m_troops.troop(id); }
+  [[nodiscard]] const Troop* troop(int id) const { return m_troops.troop(id); }
+
+  [[nodiscard]] std::vector<Animation>& animations() { return m_animations.animations(); }
+  [[nodiscard]] const std::vector<Animation>& animations() const { return m_animations.animations(); }
+
+  [[nodiscard]] Animation* animation(int id) { return m_animations.animation(id); }
+  [[nodiscard]] const Animation* animation(int id) const { return m_animations.animation(id); }
+
+  [[nodiscard]] std::vector<Tileset>& tilesets() { return m_tilesets.tilesets(); }
+  [[nodiscard]] const std::vector<Tileset>& tilesets() const { return m_tilesets.tilesets(); }
+
+  [[nodiscard]] Tileset* tileset(int id) { return m_tilesets.tileset(id); }
+  [[nodiscard]] const Tileset* tileset(int id) const { return m_tilesets.tileset(id); }
+
+  [[nodiscard]] std::vector<std::optional<CommonEvent>>& commonEvents() { return m_commonEvents.events(); }
+  [[nodiscard]] const std::vector<std::optional<CommonEvent>>& commonEvents() const { return m_commonEvents.events(); }
+
+  [[nodiscard]] CommonEvent* commonEvent(int id) { return m_commonEvents.event(id); }
+  [[nodiscard]] const CommonEvent* commonEvent(int id) const { return m_commonEvents.event(id); }
+
   [[nodiscard]] std::string* armorType(int id) { return m_system.armorType(id); }
   [[nodiscard]] const std::string* armorType(int id) const { return m_system.armorType(id); }
 
   [[nodiscard]] std::string* weaponType(int id) { return m_system.weaponType(id); }
   [[nodiscard]] const std::string* weaponType(int id) const { return m_system.weaponType(id); }
 
-  [[nodiscard]] Skill* skill(int id) { return m_skills.skill(id); }
-  [[nodiscard]] const Skill* skill(int id) const { return m_skills.skill(id); }
 
   Project* project() { return m_parent; }
   const Project* project() const { return m_parent; }

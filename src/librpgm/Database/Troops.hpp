@@ -52,8 +52,8 @@ public:
 
     return nullptr;
   }
-  std::vector<Troop>& troopList() { return m_troops; }
-  const std::vector<Troop>& troopList() const { return m_troops; }
+  std::vector<Troop>& troops() { return m_troops; }
+  const std::vector<Troop>& troops() const { return m_troops; }
 private:
   std::vector<Troop> m_troops;
 };

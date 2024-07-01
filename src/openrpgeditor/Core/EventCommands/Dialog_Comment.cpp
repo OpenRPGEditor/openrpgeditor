@@ -25,13 +25,11 @@ std::tuple<bool, bool> Dialog_Comment::draw() {
         m_isNext = true;
 
       command->text = texts.front();
-      APP_DEBUG(command->script);
       if (m_isNext) {
         command->nextComments.clear();
         command->nextComments.reserve(texts.size());
         for (auto str = std::next(texts.begin()); str != texts.end(); ++str) {
           command->nextComments.emplace_back(std::make_shared<NextCommentCommand>())->text = *str;
-          APP_DEBUG(command->moreScript.back()->script);
         }
         command->nextComments.shrink_to_fit();
       }

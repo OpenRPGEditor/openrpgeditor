@@ -1,11 +1,10 @@
 #pragma once
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/CommonUI/TraitsEditor.hpp"
+#include "Database/Classes.hpp"
 
 #include <array>
 
-struct Classes;
-struct Class;
 struct DBClassesTab : IDBEditorTab {
   enum class ExperienceGraphMode {
     Total,
@@ -18,6 +17,9 @@ struct DBClassesTab : IDBEditorTab {
 
   Classes& classes() { return m_classes; }
   const Classes& classes() const { return m_classes; }
+
+  Class* classType(int id) { return m_classes.classType(id); }
+  const Class* classType(int id) const { return m_classes.classType(id); }
 
 private:
   void drawExperienceGraph(ExperienceGraphMode mode) const;

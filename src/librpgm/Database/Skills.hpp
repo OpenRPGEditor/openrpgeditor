@@ -69,6 +69,9 @@ public:
     return nullptr;
   }
 
+  std::vector<Skill>& skills() { return m_skills; }
+  const std::vector<Skill>& skills() const { return m_skills; }
+
 private:
   std::vector<Skill> m_skills;
 };

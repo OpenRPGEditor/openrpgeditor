@@ -3,17 +3,22 @@
 #include "Core/CheckerboardTexture.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/CommonUI/TraitsEditor.hpp"
+#include "Database/Actors.hpp"
 #include "Database/Trait.hpp"
 
 #include <optional>
-
-struct Actors;
-struct Actor;
 
 struct DBActorsTab : IDBEditorTab {
   DBActorsTab() = delete;
   explicit DBActorsTab(Actors& actors, DatabaseEditor* parent);
   void draw() override;
+
+
+  Actors& actors() { return m_actors; }
+  const Actors& actors() const { return m_actors; }
+
+  Actor* actor(int id) { return m_actors.actor(id); }
+  const Actor* actor(int id) const { return m_actors.actor(id); }
 
 private:
   Actors& m_actors;

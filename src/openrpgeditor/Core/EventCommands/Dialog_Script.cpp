@@ -1,6 +1,8 @@
 #include "Dialog_Script.hpp"
 #include <tuple>
 #include "imgui.h"
+#include "Core/Application.hpp"
+#include "misc/cpp/imgui_stdlib.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"
 
@@ -15,11 +17,13 @@ std::tuple<bool, bool> Dialog_Script::draw() {
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar)) {
 
     static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
-    if (ImGui::InputTextMultiline("##source", script, IM_ARRAYSIZE(script), ImVec2(ImGui::GetContentRegionMax().x - 50, ImGui::GetContentRegionMax().y - 50), flags))
-    {
-
-    }
+    ImGui::PushFont(App::APP->getMonoFont());
+    m_textEditor.Render("##no_title", ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x,
+                                             ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                                 ImGui::GetStyle().FramePadding.y});
+    ImGui::PopFont();
     if (ImGui::Button("OK")) {
+      auto script = m_textEditor.GetText();
       std::vector<std::string> scripts = splitString(script, '\n');
       if (scripts.size() > 1)
         m_isNext = true;

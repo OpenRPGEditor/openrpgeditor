@@ -55,7 +55,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
     ImGui::BeginDisabled(m_source != 0);
     if (ImGui::Button(text.c_str(),
                       ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      i_picker = ObjectPicker<Item>("Items"sv, m_project->items().itemList(), 0);
+      i_picker = ObjectPicker<Item>("Items"sv, m_project->items().items(), 0);
     }
     ImGui::PopID();
     ImGui::EndDisabled();
@@ -131,9 +131,9 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
 
     ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 4 + 50);
     if (ImGui::BeginCombo("##gamedata_enemy", m_source != 4 ? "" : ("#"
-      + std::to_string(m_project->troops().troopList().at(current_enemySource).id)
-      + m_project->troops().troopList().at(current_enemySource).name).c_str())) {
-      for (auto dataSource : m_project->troops().troopList()) {
+      + std::to_string(m_project->troops().troops().at(current_enemySource).id)
+      + m_project->troops().troops().at(current_enemySource).name).c_str())) {
+      for (auto dataSource : m_project->troops().troops()) {
         if (dataSource.m_isValid) {
           bool is_selected = (current_enemySource == dataSource.id);
           if (ImGui::Selectable(("#" + std::to_string(dataSource.id) + dataSource.name).c_str(), is_selected)) {

@@ -10,8 +10,7 @@ void DatabaseEditor::draw() {
   ImGui::PushID("##orpg_database_editor");
   if (ImGui::Begin("Database", &m_isOpen)) {
     ImGui::SetNextItemWidth(100.f);
-    ImGui::PushID("##orpg_database_editor_tab_buttons");
-    ImGui::BeginGroup();
+    ImGui::BeginChild("##orpg_database_editor_tab_buttons", ImVec2{App::DPIHandler::scale_value(200), 0}, 0, ImGuiWindowFlags_NoBackground);
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 100);
     if (ImGui::Selectable("Actors", m_currentTab == &m_actors)) {
       m_currentTab = &m_actors;
@@ -55,8 +54,7 @@ void DatabaseEditor::draw() {
     if (ImGui::Selectable("Exported Constants", m_currentTab == &m_gameConstants)) {
       m_currentTab = &m_gameConstants;
     }
-    ImGui::EndGroup();
-    ImGui::PopID();
+    ImGui::EndChild();
     ImGui::SameLine();
     if (m_currentTab) {
       m_currentTab->draw();

@@ -87,7 +87,6 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   m_database->plugins = Plugins::load(m_database->basePath + "js/plugins.js");
   APP_INFO("Loading GameConstants");
   m_database->gameConstants = GameConstants::load(m_database->basePath + "/data/Constants.json");
-  m_database->gameConstants.serialize(m_database->basePath + "/data/Constants.json");
   APP_INFO("Loading MapInfos...");
   m_database->mapInfos = MapInfos::load(m_database->basePath + "/data/MapInfos.json");
   m_databaseEditor.emplace(this, m_database->actors, m_database->classes, m_database->skills, m_database->items,

@@ -1,11 +1,13 @@
 #pragma once
 #include "IDialogController.hpp"
+#include "Core/CommonUI/TextEditor.hpp"
 #include "Database/EventCommands/Script.hpp"
 
 struct Project;
 struct Dialog_Script : IDialogController {
   Dialog_Script() = delete;
   explicit Dialog_Script(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+    m_textEditor.SetLanguageDefinition(TextEditor::LanguageDefinition::Javascript());
     command.emplace();
   }
   std::tuple<bool, bool> draw() override;
@@ -14,7 +16,7 @@ struct Dialog_Script : IDialogController {
   Project* m_project = nullptr;
 
 private:
-  char script[4096] = "";
+  TextEditor m_textEditor;
   bool m_confirmed{false};
   std::optional<ScriptCommand> command;
   std::tuple<bool, bool> result;

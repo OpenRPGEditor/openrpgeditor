@@ -31,6 +31,12 @@ FetchContent_Declare(
 )
 
 FetchContent_Declare(
+        clip
+        GIT_REPOSITORY "https://github.com/dacap/clip.git"
+        GIT_TAG v1.9
+)
+
+FetchContent_Declare(
         implot
         GIT_REPOSITORY "https://github.com/epezent/implot.git"
         GIT_TAG v0.16
@@ -40,6 +46,11 @@ FetchContent_Declare(
         SDL2
         GIT_REPOSITORY "https://github.com/libsdl-org/SDL.git"
         GIT_TAG release-2.30.3)
+
+FetchContent_Declare(
+        SDL2_mixer
+        GIT_REPOSITORY "https://github.com/libsdl-org/SDL_Mixer.git"
+        GIT_TAG release-2.8.0)
 
 FetchContent_Declare(
         SDL2_image
@@ -60,10 +71,7 @@ FetchContent_Declare(freetype2
         GIT_REPOSITORY "https://git.savannah.gnu.org/git/freetype/freetype2.git"
         GIT_TAG 2.6.5
 )
-FetchContent_Declare(
-        SDL2_mixer
-        GIT_REPOSITORY "https://github.com/libsdl-org/SDL_Mixer.git"
-        GIT_TAG release-2.8.0)
+
 #FetchContent_Declare(curl
 #        GIT_REPOSITORY "https://github.com/curl/curl.git"
 #        GIT_TAG tiny-curl-8_4_0
@@ -108,6 +116,7 @@ FetchContent_MakeAvailable(
         json
         magic_enum
         freetype2
+        clip
         #curl
         #liblcf
 )
@@ -117,6 +126,10 @@ add_subdirectory(imgui-setup)
 FetchContent_MakeAvailable(
         imgui
 )
+
+message(${clip_SOURCE_DIR})
+
+set(CLIP_INCLUDES ${clip_SOURCE_DIR} PARENT_SCOPE)
 
 #target_include_directories(ImGuiFileDialog PRIVATE ${imgui_SOURCE_DIR})
 #target_compile_definitions(ImGuiFileDialog PRIVATE USE_THUMBNAILS DONT_DEFINE_AGAIN__STB_IMAGE_IMPLEMENTATION)

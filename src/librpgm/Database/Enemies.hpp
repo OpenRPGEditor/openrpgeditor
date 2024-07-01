@@ -72,6 +72,9 @@ public:
     return nullptr;
   }
 
+  [[nodiscard]] std::vector<Enemy>& enemies() { return m_enemies; }
+  [[nodiscard]] const std::vector<Enemy>& enemies() const { return m_enemies; }
+
 private:
   std::vector<Enemy> m_enemies;
 };

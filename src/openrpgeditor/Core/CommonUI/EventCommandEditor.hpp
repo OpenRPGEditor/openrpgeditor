@@ -13,13 +13,13 @@ struct EventCommandEditor {
 
   void setCommands(std::vector<std::shared_ptr<IEventCommand>>* commands) {
     m_commands = commands;
-    m_selectedCommand = 0;
+    m_selectedCommand = -1;
   }
 private:
-  void drawPopup(std::shared_ptr<IEventCommand> command);
+  void drawPopup();
   Project* m_project = nullptr;
   bool m_isNewEntry{false};
-  int m_selectedCommand = 0;
+  int m_selectedCommand = -1;
   std::shared_ptr<IDialogController> commandDialog;
   std::vector<std::shared_ptr<IEventCommand>>* m_commands = nullptr;
 };

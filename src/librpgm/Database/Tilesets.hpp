@@ -73,6 +73,9 @@ public:
     return nullptr;
   }
 
+  [[nodiscard]] std::vector<Tileset>& tilesets() { return m_tilesets; }
+  [[nodiscard]] const std::vector<Tileset>& tilesets() const { return m_tilesets; }
+
 private:
   std::vector<Tileset> m_tilesets;
 };

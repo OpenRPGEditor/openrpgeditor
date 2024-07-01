@@ -7,16 +7,94 @@
 #include "Core/DatabaseEditor.hpp"
 #include "Core/Project.hpp"
 #include "Database/GameConstants.hpp"
-void DBGameConstantsTab::drawVariableAliasModal() {
-  if (m_selectedVariable != -1 &&
-      ImGui::BeginPopupModal("##var_alias_edit", nullptr,
-                             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-    if (!m_currentAlias) {
-      m_currentAlias = m_constants->variables[m_selectedVariable];
+
+template <>
+inline int ObjectPicker<std::optional<CommonEvent>>::getId(const std::optional<CommonEvent>& value) {
+  return value ? value->id : 0;
+}
+
+static const std::string InvalidCommonEvent = "Invalid Common Event";
+template <>
+inline const std::string& ObjectPicker<std::optional<CommonEvent>>::getName(const std::optional<CommonEvent>& value) {
+  return value ? value->name : InvalidCommonEvent;
+}
+
+void DBGameConstantsTab::drawAliasModal(const GameConstants::Type type) {
+  if (m_selection != -1 &&
+      ImGui::BeginPopupModal("##alias_edit", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    std::map<int, std::string>* map;
+    std::string name;
+    switch (type) {
+    case GameConstants::Type::Switch:
+      map = &m_constants->switches;
+      name = m_parent->switches(m_selection);
+      break;
+    case GameConstants::Type::Variable:
+      map = &m_constants->variables;
+      name = m_parent->variables(m_selection);
+      break;
+    case GameConstants::Type::Actor:
+      map = &m_constants->actors;
+      name = m_parent->actor(m_selection)->name;
+      break;
+    case GameConstants::Type::Class:
+      map = &m_constants->classes;
+      name = m_parent->classType(m_selection)->name;
+      break;
+    case GameConstants::Type::Skill:
+      map = &m_constants->skills;
+      name = m_parent->skill(m_selection)->name;
+      break;
+    case GameConstants::Type::Item:
+      map = &m_constants->items;
+      name = m_parent->item(m_selection)->name;
+      break;
+    case GameConstants::Type::Weapon:
+      map = &m_constants->weapons;
+      name = m_parent->weapon(m_selection)->name;
+      break;
+    case GameConstants::Type::Armor:
+      map = &m_constants->armors;
+      name = m_parent->armor(m_selection)->name;
+      break;
+    case GameConstants::Type::Enemy:
+      map = &m_constants->enemies;
+      name = m_parent->enemy(m_selection)->name;
+      break;
+    case GameConstants::Type::Troop:
+      map = &m_constants->troops;
+      name = m_parent->troop(m_selection)->name;
+      break;
+    case GameConstants::Type::State:
+      map = &m_constants->states;
+      name = m_parent->state(m_selection)->name;
+      break;
+    case GameConstants::Type::Animation:
+      map = &m_constants->animations;
+      name = m_parent->animation(m_selection)->name;
+      break;
+    case GameConstants::Type::Tileset:
+      map = &m_constants->tilesets;
+      name = m_parent->tileset(m_selection)->name;
+      break;
+    case GameConstants::Type::CommonEvent:
+      map = &m_constants->commonEvents;
+      name = m_parent->commonEvent(m_selection)->name;
+      break;
+    case GameConstants::Type::Map:
+      map = &m_constants->maps;
+      name = Database::Instance->mapInfos.map(m_selection)->name;
+      break;
+    default:
+      return;
     }
+
+    if (!m_currentAlias) {
+      m_currentAlias = (*map)[m_selection];
+    }
+
     ImGui::Text("Alias:");
-    const bool isValid =
-        m_constants->isValidName(GameConstants::Type::Variable, m_selectedVariable, m_currentAlias.value());
+    const bool isValid = m_constants->isValidName(type, m_selection, m_currentAlias.value());
     if (!isValid) {
       ImGui::SameLine();
       ImGui::Text(" Selected alias is invalid!");
@@ -24,12 +102,12 @@ void DBGameConstantsTab::drawVariableAliasModal() {
     } else {
       ImGui::PushStyleColor(ImGuiCol_FrameBg, 0xFF007F00);
     }
-    ImGui::Text("%s", m_parent->variables(m_selectedVariable).c_str());
+    ImGui::Text("%s", name.c_str());
     ImGui::InputText("##alias_input", &m_currentAlias.value());
     ImGui::PopStyleColor();
     ImGui::BeginDisabled(!isValid);
     if (ImGui::Button("OK")) {
-      m_constants->variables[m_selectedVariable] = *m_currentAlias;
+      (*map)[m_selection] = *m_currentAlias;
       m_currentAlias.reset();
       ImGui::CloseCurrentPopup();
     }
@@ -43,41 +121,50 @@ void DBGameConstantsTab::drawVariableAliasModal() {
   }
 }
 
-void DBGameConstantsTab::drawSwitchAliasModal() {
-  if (m_selectedSwitch != -1 && ImGui::BeginPopupModal("##switch_alias_edit", nullptr,
-                                                       ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-    if (!m_currentAlias) {
-      m_currentAlias = m_constants->switches[m_selectedSwitch];
-    }
-    ImGui::Text("Alias:");
-    const bool isValid =
-        m_constants->isValidName(GameConstants::Type::Switch, m_selectedSwitch, m_currentAlias.value());
-    if (!isValid) {
-      ImGui::SameLine();
-      ImGui::Text(" Selected alias is invalid!");
-      ImGui::PushStyleColor(ImGuiCol_FrameBg, 0xFF0000FF);
-    } else {
-      ImGui::PushStyleColor(ImGuiCol_FrameBg, 0xFF007F00);
-    }
-    ImGui::Text("%s", m_parent->switches(m_selectedSwitch).c_str());
-    ImGui::InputText("##alias_input", &m_currentAlias.value());
-    ImGui::PopStyleColor();
-
-    ImGui::BeginDisabled(!isValid);
-    if (ImGui::Button("OK")) {
-      m_constants->switches[m_selectedSwitch] = *m_currentAlias;
-      m_currentAlias.reset();
-      ImGui::CloseCurrentPopup();
-    }
-    ImGui::EndDisabled();
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      m_currentAlias.reset();
-      ImGui::CloseCurrentPopup();
-    }
-    ImGui::EndPopup();
-  }
+void DBGameConstantsTab::setupTableHeaders() {
+  ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed);
+  ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed);
+  ImGui::TableSetupColumn("Alias", ImGuiTableColumnFlags_WidthStretch);
+  ImGui::TableSetupColumn("##delete", ImGuiTableColumnFlags_WidthFixed);
+  ImGui::TableSetupScrollFreeze(4, 1);
+  ImGui::TableHeadersRow();
 }
+
+bool DBGameConstantsTab::drawSelectable(int id, bool selected) {
+  ImGui::TableNextRow();
+  ImGui::TableNextColumn();
+  if (ImGui::Selectable(std::format("{:04}", id).c_str(), selected,
+                        ImGuiSelectableFlags_AllowDoubleClick | ImGuiSelectableFlags_SpanAllColumns |
+                            ImGuiSelectableFlags_AllowOverlap)) {
+    if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+      m_openPopup = true;
+    }
+    return true;
+  }
+  if (ImGui::IsItemFocused()) {
+    return true;
+  }
+  return false;
+}
+
+void DBGameConstantsTab::drawNameAndAliasColumns(const std::string& name, const std::string& alias) {
+  ImGui::TableNextColumn();
+  ImGui::Text("%s", name.c_str());
+  ImGui::TableNextColumn();
+  ImGui::Text("%s", alias.c_str());
+}
+bool DBGameConstantsTab::drawDeleteButton(int id) {
+  ImGui::TableNextColumn();
+  if (ImGui::Selectable((std::string(ICON_FA_DELETE_LEFT) + std::format("##delete_btn{}", id)).c_str(), false,
+                        ImGuiSelectableFlags_AllowOverlap)) {
+    return true;
+  }
+  if (ImGui::IsItemHovered()) {
+    ImGui::SetTooltip("Delete constant export");
+  }
+  return false;
+}
+
 void DBGameConstantsTab::draw() {
   ImGui::BeginChild("#orpg_constants_tab");
   ImGui::SeparatorText("Exported Constants");
@@ -106,55 +193,37 @@ void DBGameConstantsTab::draw() {
                                 ImGuiTableFlags_ScrollY,
                             ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
                                           ImGui::GetStyle().FramePadding.y})) {
-        ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Alias", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("##delete", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupScrollFreeze(4, 1);
-        ImGui::TableHeadersRow();
-
-        for (auto& [id, alias] : m_constants->variables) {
-          ImGui::TableNextRow();
-          ImGui::TableNextColumn();
-          if (ImGui::Selectable(std::format("{:04}", id).c_str(), m_selectedVariable == id,
-                                ImGuiSelectableFlags_AllowDoubleClick | ImGuiSelectableFlags_SpanAllColumns |ImGuiSelectableFlags_AllowOverlap)) {
-            if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-              m_openPopup = true;
-            }
-            m_selectedVariable = id;
+        setupTableHeaders();
+        for (auto it = m_constants->variables.begin(); it != m_constants->variables.end();) {
+          auto id = it->first;
+          auto alias = it->second;
+          if (drawSelectable(id, m_selection == id)) {
+            m_selection = id;
           }
-          if (ImGui::IsItemFocused()) {
-            m_selectedVariable = id;
-          }
-          ImGui::TableNextColumn();
-          ImGui::Text("%s", m_parent->variables(id).c_str());
-          ImGui::TableNextColumn();
-          ImGui::Text("%s", alias.c_str());
-          ImGui::TableNextColumn();
-          if (ImGui::Selectable(ICON_FA_DELETE_LEFT, false, ImGuiSelectableFlags_AllowOverlap)) {
-            m_constants->variables.erase(id);
-          }
-          if (ImGui::IsItemHovered()) {
-            ImGui::SetTooltip("Delete constant export");
+          drawNameAndAliasColumns(m_parent->variables(id), alias);
+          if (drawDeleteButton(id)) {
+            it = m_constants->variables.erase(it);
+          } else {
+            ++it;
           }
         }
-
         ImGui::EndTable();
       }
+
       if (ImGui::Button("Add")) {
-        m_picker.emplace("Variables", m_parent->project()->system().variables);
+        m_switchVariblePicker.emplace("Variables", m_parent->project()->system().variables);
       }
 
-      if (m_picker) {
-        const auto [closed, confirmed] = m_picker->draw();
+      if (m_switchVariblePicker) {
+        const auto [closed, confirmed] = m_switchVariblePicker->draw();
         if (closed) {
-          const int selection = m_picker->selection();
+          const int selection = m_switchVariblePicker->selection();
           if (confirmed && !m_constants->variables.contains(selection)) {
             m_constants->variables[selection] = std::format("VARIABLE_{:04}", selection);
-            m_selectedVariable = selection;
+            m_selection = selection;
             m_openPopup = true;
           }
-          m_picker.reset();
+          m_switchVariblePicker.reset();
         }
       }
 
@@ -163,9 +232,9 @@ void DBGameConstantsTab::draw() {
         m_openPopup = false;
       }
 
-      drawVariableAliasModal();
-      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selectedVariable != -1) {
-        m_constants->variables.erase(m_selectedVariable);
+      drawAliasModal(GameConstants::Type::Variable);
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selection != -1) {
+        m_constants->variables.erase(m_selection);
       }
 
       ImGui::EndTabItem();
@@ -177,67 +246,364 @@ void DBGameConstantsTab::draw() {
                                 ImGuiTableFlags_ScrollY,
                             ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
                                           ImGui::GetStyle().FramePadding.y})) {
-        ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Alias", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("##delete", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupScrollFreeze(4, 1);
-        ImGui::TableHeadersRow();
-
-        for (auto& [id, alias] : m_constants->switches) {
-          ImGui::TableNextRow();
-          ImGui::TableNextColumn();
-          if (ImGui::Selectable(std::format("{:04}", id).c_str(), m_selectedSwitch == id,
-                                ImGuiSelectableFlags_AllowDoubleClick | ImGuiSelectableFlags_SpanAllColumns)) {
-            if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-              m_openPopup = true;
-            }
-            m_selectedSwitch = id;
+        setupTableHeaders();
+        for (auto it = m_constants->switches.begin(); it != m_constants->switches.end();) {
+          auto id = it->first;
+          auto alias = it->second;
+          if (drawSelectable(id, m_selection == id)) {
+            m_selection = id;
           }
-          if (ImGui::IsItemFocused()) {
-            m_selectedVariable = id;
+          drawNameAndAliasColumns(m_parent->switches(id), alias);
+          if (drawDeleteButton(id)) {
+            it = m_constants->switches.erase(it);
+          } else {
+            ++it;
           }
-          ImGui::TableNextColumn();
-          ImGui::Text("%s", m_parent->switches(id).c_str());
-          ImGui::TableNextColumn();
-          ImGui::Text("%s", alias.c_str());
-          ImGui::TableNextColumn();
-          if (ImGui::Selectable(ICON_FA_DELETE_LEFT, false, ImGuiSelectableFlags_AllowOverlap)) {
-            m_constants->switches.erase(id);
+        }
+        ImGui::EndTable();
+      }
+      if (ImGui::Button("Add")) {
+        m_switchVariblePicker.emplace("Switches", m_parent->project()->system().variables);
+      }
+      if (m_switchVariblePicker) {
+        const auto [closed, confirmed] = m_switchVariblePicker->draw();
+        if (closed) {
+          const int selection = m_switchVariblePicker->selection();
+          if (confirmed && !m_constants->switches.contains(selection)) {
+            m_constants->switches[selection] = std::format("SWITCH_{:04}", selection);
+            m_selection = selection;
+            m_openPopup = true;
           }
-          if (ImGui::IsItemHovered()) {
-            ImGui::SetTooltip("Delete constant export");
+          m_switchVariblePicker.reset();
+        }
+      }
+      if (m_openPopup) {
+        ImGui::OpenPopup("##switch_alias_edit");
+        m_openPopup = false;
+      }
+      drawAliasModal(GameConstants::Type::Switch);
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selection != -1) {
+        m_constants->switches.erase(m_selection);
+      }
+      ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem("Actors")) {
+      ImGui::Text("When exported to Constants.js all actors will be prefixed with ACT_");
+      if (ImGui::BeginTable("##ore_actors_constants_table", 4,
+                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
+                                ImGuiTableFlags_ScrollY,
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                          ImGui::GetStyle().FramePadding.y})) {
+        setupTableHeaders();
+        for (auto it = m_constants->actors.begin(); it != m_constants->actors.end();) {
+          auto id = it->first;
+          auto alias = it->second;
+          if (drawSelectable(id, m_selection == id)) {
+            m_selection = id;
+          }
+          drawNameAndAliasColumns(m_parent->actor(id)->name, alias);
+          if (drawDeleteButton(id)) {
+            m_constants->actors.erase(id);
+          } else {
+            ++it;
+          }
+        }
+        ImGui::EndTable();
+      }
+      if (ImGui::Button("Add")) {
+        m_actorsPicker.emplace("Actors", m_parent->project()->actors().actorList(), m_selection);
+      }
+      if (m_actorsPicker) {
+        const auto [closed, confirmed] = m_actorsPicker->draw();
+        if (closed) {
+          const int selection = m_actorsPicker->selection();
+          if (confirmed && !m_constants->actors.contains(selection)) {
+            m_constants->actors[selection] = std::format("ACTOR_{:04}", selection);
+            m_selection = selection;
+            m_openPopup = true;
+          }
+          m_actorsPicker.reset();
+        }
+      }
+      if (m_openPopup) {
+        ImGui::OpenPopup("##alias_edit");
+        m_openPopup = false;
+      }
+      drawAliasModal(GameConstants::Type::Actor);
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selection != -1) {
+        m_constants->actors.erase(m_selection);
+      }
+      ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem("Classes")) {
+      ImGui::Text("When exported to Constants.js all classes will be prefixed with CLS_");
+      if (ImGui::BeginTable("##ore_classes_constants_table", 4,
+                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
+                                ImGuiTableFlags_ScrollY,
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                          ImGui::GetStyle().FramePadding.y})) {
+        setupTableHeaders();
+        for (auto it = m_constants->classes.begin(); it != m_constants->classes.end();) {
+          auto id = it->first;
+          auto alias = it->second;
+          if (drawSelectable(id, m_selection == id)) {
+            m_selection = id;
+          }
+          drawNameAndAliasColumns(m_parent->classType(id)->name, alias);
+          if (drawDeleteButton(id)) {
+            it = m_constants->classes.erase(it);
+          } else {
+            ++it;
           }
         }
         ImGui::EndTable();
       }
 
       if (ImGui::Button("Add")) {
-        m_picker.emplace("Variables", m_parent->project()->system().variables);
+        m_classesPicker.emplace("Classes", m_parent->classes().classes(), m_selection);
       }
-      if (m_picker) {
-        const auto [closed, confirmed] = m_picker->draw();
+      if (m_classesPicker) {
+        const auto [closed, confirmed] = m_classesPicker->draw();
         if (closed) {
-          const int selection = m_picker->selection();
-          if (confirmed && !m_constants->switches.contains(selection)) {
-            m_constants->switches[selection] = std::format("SWITCH_{:04}", selection);
-            m_selectedSwitch = selection;
-              m_openPopup = true;
+          const int selection = m_classesPicker->selection();
+          if (confirmed && !m_constants->classes.contains(selection)) {
+            m_constants->classes[selection] = std::format("CLASS_{:04}", selection);
+            m_selection = selection;
+            m_openPopup = true;
           }
-          m_picker.reset();
+          m_classesPicker.reset();
         }
       }
 
       if (m_openPopup) {
-        ImGui::OpenPopup("##var_alias_edit");
+        ImGui::OpenPopup("##alias_edit");
         m_openPopup = false;
       }
-
-      drawSwitchAliasModal();
-
-      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selectedSwitch != -1) {
-        m_constants->switches.erase(m_selectedSwitch);
+      drawAliasModal(GameConstants::Type::Class);
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selection != -1) {
+        m_constants->classes.erase(m_selection);
       }
+      ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem("Skills")) {
+      ImGui::Text("When exported to Constants.js all skills will be prefixed with SKL_");
+      if (ImGui::BeginTable("##ore_skills_constants_table", 4,
+                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
+                                ImGuiTableFlags_ScrollY,
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                          ImGui::GetStyle().FramePadding.y})) {
+        setupTableHeaders();
+        for (auto it = m_constants->skills.begin(); it != m_constants->skills.end();) {
+          auto id = it->first;
+          auto alias = it->second;
+          if (drawSelectable(id, m_selection == id)) {
+            m_selection = id;
+          }
+          drawNameAndAliasColumns(m_parent->skill(id)->name, alias);
+          if (drawDeleteButton(id)) {
+            it = m_constants->skills.erase(it);
+          } else {
+            ++it;
+          }
+        }
+        ImGui::EndTable();
+      }
+
+      if (ImGui::Button("Add")) {
+        m_skillsPicker.emplace("Skills", m_parent->skills(), m_selection);
+      }
+      if (m_skillsPicker) {
+        const auto [closed, confirmed] = m_skillsPicker->draw();
+        if (closed) {
+          const int selection = m_skillsPicker->selection();
+          if (confirmed && !m_constants->skills.contains(selection)) {
+            m_constants->skills[selection] = std::format("SKILL_{:04}", selection);
+            m_selection = selection;
+            m_openPopup = true;
+          }
+          m_skillsPicker.reset();
+        }
+      }
+
+      if (m_openPopup) {
+        ImGui::OpenPopup("##alias_edit");
+        m_openPopup = false;
+      }
+      drawAliasModal(GameConstants::Type::Skill);
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selection != -1) {
+        m_constants->skills.erase(m_selection);
+      }
+      ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem("Items")) {
+      ImGui::Text("When exported to Constants.js all items will be prefixed with ITM_");
+      if (ImGui::BeginTable("##ore_items_constants_table", 4,
+                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
+                                ImGuiTableFlags_ScrollY,
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                          ImGui::GetStyle().FramePadding.y})) {
+        setupTableHeaders();
+        for (auto it = m_constants->items.begin(); it != m_constants->items.end();) {
+          auto id = it->first;
+          auto alias = it->second;
+          if (drawSelectable(id, m_selection == id)) {
+            m_selection = id;
+          }
+          drawNameAndAliasColumns(m_parent->item(id)->name, alias);
+          if (drawDeleteButton(id)) {
+            it = m_constants->items.erase(it);
+          } else {
+            ++it;
+          }
+        }
+        ImGui::EndTable();
+      }
+
+      if (ImGui::Button("Add")) {
+        m_itemsPicker.emplace("Items", m_parent->items(), m_selection);
+      }
+      if (m_itemsPicker) {
+        const auto [closed, confirmed] = m_itemsPicker->draw();
+        if (closed) {
+          const int selection = m_itemsPicker->selection();
+          if (confirmed && !m_constants->items.contains(selection)) {
+            m_constants->items[selection] = std::format("ITEM_{:04}", selection);
+            m_selection = selection;
+            m_openPopup = true;
+          }
+          m_itemsPicker.reset();
+        }
+      }
+
+      if (m_openPopup) {
+        ImGui::OpenPopup("##alias_edit");
+        m_openPopup = false;
+      }
+      drawAliasModal(GameConstants::Type::Item);
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selection != -1) {
+        m_constants->items.erase(m_selection);
+      }
+      ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem("Weapons")) {
+      ImGui::Text("When exported to Constants.js all weapons will be prefixed with WPN_");
+      if (ImGui::BeginTable("##ore_weapons_constants_table", 4,
+                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
+                                ImGuiTableFlags_ScrollY,
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                          ImGui::GetStyle().FramePadding.y})) {
+        setupTableHeaders();
+        for (auto it = m_constants->weapons.begin(); it != m_constants->weapons.end();) {
+          auto id = it->first;
+          auto alias = it->second;
+          if (drawSelectable(id, m_selection == id)) {
+            m_selection = id;
+          }
+          drawNameAndAliasColumns(m_parent->weapon(id)->name, alias);
+          if (drawDeleteButton(id)) {
+            it = m_constants->weapons.erase(it);
+          } else {
+            ++it;
+          }
+        }
+        ImGui::EndTable();
+      }
+
+      if (ImGui::Button("Add")) {
+        m_weaponsPicker.emplace("Weapons", m_parent->weapons(), m_selection);
+      }
+      if (m_weaponsPicker) {
+        const auto [closed, confirmed] = m_weaponsPicker->draw();
+        if (closed) {
+          const int selection = m_weaponsPicker->selection();
+          if (confirmed && !m_constants->weapons.contains(selection)) {
+            m_constants->weapons[selection] = std::format("WEAPON_{:04}", selection);
+            m_selection = selection;
+            m_openPopup = true;
+          }
+          m_weaponsPicker.reset();
+        }
+      }
+
+      if (m_openPopup) {
+        ImGui::OpenPopup("##alias_edit");
+        m_openPopup = false;
+      }
+      drawAliasModal(GameConstants::Type::Weapon);
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selection != -1) {
+        m_constants->weapons.erase(m_selection);
+      }
+      ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem("Armors")) {
+      ImGui::Text("When exported to Constants.js all armors will be prefixed with ARM_");
+      if (ImGui::BeginTable("##ore_armors_constants_table", 4,
+                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
+                                ImGuiTableFlags_ScrollY,
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                          ImGui::GetStyle().FramePadding.y})) {
+        setupTableHeaders();
+        for (auto it = m_constants->armors.begin(); it != m_constants->armors.end();) {
+          auto id = it->first;
+          auto alias = it->second;
+          if (drawSelectable(id, m_selection == id)) {
+            m_selection = id;
+          }
+          drawNameAndAliasColumns(m_parent->armor(id)->name, alias);
+          if (drawDeleteButton(id)) {
+            it = m_constants->armors.erase(it);
+          } else {
+            ++it;
+          }
+        }
+        ImGui::EndTable();
+                                          }
+
+      if (ImGui::Button("Add")) {
+        m_armorsPicker.emplace("Armors", m_parent->armors(), m_selection);
+      }
+      if (m_armorsPicker) {
+        const auto [closed, confirmed] = m_armorsPicker->draw();
+        if (closed) {
+          const int selection = m_armorsPicker->selection();
+          if (confirmed && !m_constants->armors.contains(selection)) {
+            m_constants->armors[selection] = std::format("ARMOR_{:04}", selection);
+            m_selection = selection;
+            m_openPopup = true;
+          }
+          m_armorsPicker.reset();
+        }
+      }
+
+      if (m_openPopup) {
+        ImGui::OpenPopup("##alias_edit");
+        m_openPopup = false;
+      }
+      drawAliasModal(GameConstants::Type::Armor);
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selection != -1) {
+        m_constants->armors.erase(m_selection);
+      }
+      ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem("Enemies")) {
+      ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem("Troops")) {
+      ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem("States")) {
+      ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem("Animations")) {
+      ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem("Tilesets")) {
+      ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem("Common Events")) {
+      ImGui::EndTabItem();
+    }
+    if (ImGui::BeginTabItem("Maps")) {
       ImGui::EndTabItem();
     }
     ImGui::EndTabBar();

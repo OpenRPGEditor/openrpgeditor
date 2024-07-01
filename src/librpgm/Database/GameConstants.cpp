@@ -110,6 +110,20 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
                         trp->name, id);
     file << std::format("const TRP_{} = {};\n", alias, id);
   }
+  file << "\n// ------------------STATES-------------------\n";
+  for (const auto& [id, alias] : states) {
+    auto sta = Database::Instance->states.state(id);
+    file << std::format("\n// @name STA_{}\n// @description Exported State \"{}\" ({})\n// @readonly\n", alias,
+                        sta->name, id);
+    file << std::format("const STA_{} = {};\n", alias, id);
+  }
+  file << "\n// -----------------ANIMATIONS------------------\n";
+  for (const auto& [id, alias] : animations) {
+    auto tls = Database::Instance->animations.animation(id);
+    file << std::format("\n// @name ANM_{}\n// @description Exported Animation \"{}\" ({})\n// @readonly\n", alias,
+                        tls->name, id);
+    file << std::format("const ANM_{} = {};\n", alias, id);
+  }
   file << "\n// -----------------TILESETS------------------\n";
   for (const auto& [id, alias] : tilesets) {
     auto tls = Database::Instance->tilesets.tileset(id);
@@ -121,9 +135,9 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
   file << "\n// ---------------COMMON EVENTS---------------\n";
   for (const auto& [id, alias] : commonEvents) {
     auto ce = Database::Instance->commonEvents.event(id);
-    file << std::format("\n// @name CE_{}\n// @description Exported Common Event \"{}\" ({})\n// @readonly\n", alias,
+    file << std::format("\n// @name MN_{}\n// @description Exported Common Event \"{}\" ({})\n// @readonly\n", alias,
                         ce->name, id);
-    file << std::format("const CE_{} = {};\n", alias, id);
+    file << std::format("const CMN_{} = {};\n", alias, id);
   }
 
   file << "\n// -------------------MAPS--------------------\n";

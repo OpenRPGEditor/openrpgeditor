@@ -11,6 +11,13 @@ struct Class;
 struct Skill;
 struct Item;
 struct Weapon;
+struct Enemy;
+struct Troop;
+struct State;
+struct Animation;
+struct Tileset;
+struct CommonEvent;
+struct MapInfo;
 struct GameConstants;
 struct DBGameConstantsTab : IDBEditorTab {
   explicit DBGameConstantsTab(GameConstants& constants, DatabaseEditor* parent)
@@ -33,7 +40,13 @@ private:
   std::optional<ObjectPicker<Item>> m_itemsPicker;
   std::optional<ObjectPicker<Weapon>> m_weaponsPicker;
   std::optional<ObjectPicker<Armor>> m_armorsPicker;
-  std::optional<ObjectPicker<Armor>> m_enemiesPicker;
+  std::optional<ObjectPicker<Enemy>> m_enemiesPicker;
+  std::optional<ObjectPicker<Troop>> m_troopsPicker;
+  std::optional<ObjectPicker<State>> m_statesPicker;
+  std::optional<ObjectPicker<Animation>> m_animationPicker;
+  std::optional<ObjectPicker<Tileset>> m_tilesetPicker;
+  std::optional<ObjectPicker<std::optional<CommonEvent>>> m_commonEventPicker;
+  std::optional<ObjectPicker<std::optional<MapInfo>>> m_mapsPicker;
 
   int m_selection = -1;
   std::optional<std::string> m_currentAlias;

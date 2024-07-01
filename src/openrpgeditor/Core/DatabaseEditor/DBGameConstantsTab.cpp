@@ -19,6 +19,17 @@ inline const std::string& ObjectPicker<std::optional<CommonEvent>>::getName(cons
   return value ? value->name : InvalidCommonEvent;
 }
 
+template <>
+inline int ObjectPicker<std::optional<MapInfo>>::getId(const std::optional<MapInfo>& value) {
+  return value ? value->id : 0;
+}
+
+static const std::string InvalidMap = "Invalid Map";
+template <>
+inline const std::string& ObjectPicker<std::optional<MapInfo>>::getName(const std::optional<MapInfo>& value) {
+  return value ? value->name : InvalidMap;
+}
+
 void DBGameConstantsTab::drawAliasModal(const GameConstants::Type type) {
   if (m_selection != -1 &&
       ImGui::BeginPopupModal("##alias_edit", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
@@ -187,7 +198,7 @@ void DBGameConstantsTab::draw() {
   }
   if (ImGui::BeginTabBar("##ore_constants_tabbar")) {
     if (ImGui::BeginTabItem("Variables")) {
-      ImGui::Text("When exported to Constants.js all variables will be prefixed with VAR_");
+      ImGui::Text("When exported to Constants.js all Variables will be prefixed with VAR_");
       if (ImGui::BeginTable("##ore_variable_constants_table", 4,
                             ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                                 ImGuiTableFlags_ScrollY,
@@ -240,7 +251,7 @@ void DBGameConstantsTab::draw() {
       ImGui::EndTabItem();
     }
     if (ImGui::BeginTabItem("Switches")) {
-      ImGui::Text("When exported to Constants.js all switches will be prefixed with SW_");
+      ImGui::Text("When exported to Constants.js all Switches will be prefixed with SW_");
       if (ImGui::BeginTable("##ore_switch_constants_table", 4,
                             ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                                 ImGuiTableFlags_ScrollY,
@@ -288,7 +299,7 @@ void DBGameConstantsTab::draw() {
       ImGui::EndTabItem();
     }
     if (ImGui::BeginTabItem("Actors")) {
-      ImGui::Text("When exported to Constants.js all actors will be prefixed with ACT_");
+      ImGui::Text("When exported to Constants.js all Actors will be prefixed with ACT_");
       if (ImGui::BeginTable("##ore_actors_constants_table", 4,
                             ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                                 ImGuiTableFlags_ScrollY,
@@ -336,7 +347,7 @@ void DBGameConstantsTab::draw() {
       ImGui::EndTabItem();
     }
     if (ImGui::BeginTabItem("Classes")) {
-      ImGui::Text("When exported to Constants.js all classes will be prefixed with CLS_");
+      ImGui::Text("When exported to Constants.js all Classes will be prefixed with CLS_");
       if (ImGui::BeginTable("##ore_classes_constants_table", 4,
                             ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                                 ImGuiTableFlags_ScrollY,
@@ -386,7 +397,7 @@ void DBGameConstantsTab::draw() {
       ImGui::EndTabItem();
     }
     if (ImGui::BeginTabItem("Skills")) {
-      ImGui::Text("When exported to Constants.js all skills will be prefixed with SKL_");
+      ImGui::Text("When exported to Constants.js all Skills will be prefixed with SKL_");
       if (ImGui::BeginTable("##ore_skills_constants_table", 4,
                             ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                                 ImGuiTableFlags_ScrollY,
@@ -436,7 +447,7 @@ void DBGameConstantsTab::draw() {
       ImGui::EndTabItem();
     }
     if (ImGui::BeginTabItem("Items")) {
-      ImGui::Text("When exported to Constants.js all items will be prefixed with ITM_");
+      ImGui::Text("When exported to Constants.js all Items will be prefixed with ITM_");
       if (ImGui::BeginTable("##ore_items_constants_table", 4,
                             ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                                 ImGuiTableFlags_ScrollY,
@@ -486,7 +497,7 @@ void DBGameConstantsTab::draw() {
       ImGui::EndTabItem();
     }
     if (ImGui::BeginTabItem("Weapons")) {
-      ImGui::Text("When exported to Constants.js all weapons will be prefixed with WPN_");
+      ImGui::Text("When exported to Constants.js all Weapons will be prefixed with WPN_");
       if (ImGui::BeginTable("##ore_weapons_constants_table", 4,
                             ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                                 ImGuiTableFlags_ScrollY,
@@ -536,7 +547,7 @@ void DBGameConstantsTab::draw() {
       ImGui::EndTabItem();
     }
     if (ImGui::BeginTabItem("Armors")) {
-      ImGui::Text("When exported to Constants.js all armors will be prefixed with ARM_");
+      ImGui::Text("When exported to Constants.js all Armors will be prefixed with ARM_");
       if (ImGui::BeginTable("##ore_armors_constants_table", 4,
                             ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                                 ImGuiTableFlags_ScrollY,
@@ -557,7 +568,7 @@ void DBGameConstantsTab::draw() {
           }
         }
         ImGui::EndTable();
-                                          }
+      }
 
       if (ImGui::Button("Add")) {
         m_armorsPicker.emplace("Armors", m_parent->armors(), m_selection);
@@ -586,24 +597,353 @@ void DBGameConstantsTab::draw() {
       ImGui::EndTabItem();
     }
     if (ImGui::BeginTabItem("Enemies")) {
+      ImGui::Text("When exported to Constants.js all Enemies will be prefixed with ENM_");
+      if (ImGui::BeginTable("##ore_enemies_constants_table", 4,
+                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
+                                ImGuiTableFlags_ScrollY,
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                          ImGui::GetStyle().FramePadding.y})) {
+        setupTableHeaders();
+        for (auto it = m_constants->enemies.begin(); it != m_constants->enemies.end();) {
+          auto id = it->first;
+          auto alias = it->second;
+          if (drawSelectable(id, m_selection == id)) {
+            m_selection = id;
+          }
+          drawNameAndAliasColumns(m_parent->enemy(id)->name, alias);
+          if (drawDeleteButton(id)) {
+            it = m_constants->enemies.erase(it);
+          } else {
+            ++it;
+          }
+        }
+        ImGui::EndTable();
+      }
+
+      if (ImGui::Button("Add")) {
+        m_enemiesPicker.emplace("Enemies", m_parent->enemies(), m_selection);
+      }
+      if (m_enemiesPicker) {
+        const auto [closed, confirmed] = m_enemiesPicker->draw();
+        if (closed) {
+          const int selection = m_enemiesPicker->selection();
+          if (confirmed && !m_constants->enemies.contains(selection)) {
+            m_constants->enemies[selection] = std::format("ENEMY_{:04}", selection);
+            m_selection = selection;
+            m_openPopup = true;
+          }
+          m_enemiesPicker.reset();
+        }
+      }
+
+      if (m_openPopup) {
+        ImGui::OpenPopup("##alias_edit");
+        m_openPopup = false;
+      }
+      drawAliasModal(GameConstants::Type::Enemy);
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selection != -1) {
+        m_constants->enemies.erase(m_selection);
+      }
       ImGui::EndTabItem();
     }
     if (ImGui::BeginTabItem("Troops")) {
+      ImGui::Text("When exported to Constants.js all Troops will be prefixed with TRP_");
+      if (ImGui::BeginTable("##ore_troops_constants_table", 4,
+                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
+                                ImGuiTableFlags_ScrollY,
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                          ImGui::GetStyle().FramePadding.y})) {
+        setupTableHeaders();
+        for (auto it = m_constants->troops.begin(); it != m_constants->troops.end();) {
+          auto id = it->first;
+          auto alias = it->second;
+          if (drawSelectable(id, m_selection == id)) {
+            m_selection = id;
+          }
+          drawNameAndAliasColumns(m_parent->troop(id)->name, alias);
+          if (drawDeleteButton(id)) {
+            it = m_constants->troops.erase(it);
+          } else {
+            ++it;
+          }
+        }
+        ImGui::EndTable();
+      }
+
+      if (ImGui::Button("Add")) {
+        m_troopsPicker.emplace("Troops", m_parent->troops(), m_selection);
+      }
+      if (m_troopsPicker) {
+        const auto [closed, confirmed] = m_troopsPicker->draw();
+        if (closed) {
+          const int selection = m_troopsPicker->selection();
+          if (confirmed && !m_constants->troops.contains(selection)) {
+            m_constants->troops[selection] = std::format("TROOP_{:04}", selection);
+            m_selection = selection;
+            m_openPopup = true;
+          }
+          m_troopsPicker.reset();
+        }
+      }
+
+      if (m_openPopup) {
+        ImGui::OpenPopup("##alias_edit");
+        m_openPopup = false;
+      }
+      drawAliasModal(GameConstants::Type::Troop);
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selection != -1) {
+        m_constants->troops.erase(m_selection);
+      }
       ImGui::EndTabItem();
     }
     if (ImGui::BeginTabItem("States")) {
+      ImGui::Text("When exported to Constants.js all States will be prefixed with STA_");
+      if (ImGui::BeginTable("##ore_troops_constants_table", 4,
+                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
+                                ImGuiTableFlags_ScrollY,
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                          ImGui::GetStyle().FramePadding.y})) {
+        setupTableHeaders();
+        for (auto it = m_constants->states.begin(); it != m_constants->states.end();) {
+          auto id = it->first;
+          auto alias = it->second;
+          if (drawSelectable(id, m_selection == id)) {
+            m_selection = id;
+          }
+          drawNameAndAliasColumns(m_parent->state(id)->name, alias);
+          if (drawDeleteButton(id)) {
+            it = m_constants->states.erase(it);
+          } else {
+            ++it;
+          }
+        }
+        ImGui::EndTable();
+      }
+
+      if (ImGui::Button("Add")) {
+        m_statesPicker.emplace("States", m_parent->states().states(), m_selection);
+      }
+      if (m_statesPicker) {
+        const auto [closed, confirmed] = m_statesPicker->draw();
+        if (closed) {
+          const int selection = m_statesPicker->selection();
+          if (confirmed && !m_constants->states.contains(selection)) {
+            m_constants->states[selection] = std::format("STATE_{:04}", selection);
+            m_selection = selection;
+            m_openPopup = true;
+          }
+          m_statesPicker.reset();
+        }
+      }
+
+      if (m_openPopup) {
+        ImGui::OpenPopup("##alias_edit");
+        m_openPopup = false;
+      }
+      drawAliasModal(GameConstants::Type::State);
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selection != -1) {
+        m_constants->states.erase(m_selection);
+      }
       ImGui::EndTabItem();
     }
     if (ImGui::BeginTabItem("Animations")) {
+      ImGui::Text("When exported to Constants.js all Animations will be prefixed with ANM_");
+      if (ImGui::BeginTable("##ore_troops_constants_table", 4,
+                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
+                                ImGuiTableFlags_ScrollY,
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                          ImGui::GetStyle().FramePadding.y})) {
+        setupTableHeaders();
+        for (auto it = m_constants->animations.begin(); it != m_constants->animations.end();) {
+          auto id = it->first;
+          auto alias = it->second;
+          if (drawSelectable(id, m_selection == id)) {
+            m_selection = id;
+          }
+          drawNameAndAliasColumns(m_parent->animation(id)->name, alias);
+          if (drawDeleteButton(id)) {
+            it = m_constants->animations.erase(it);
+          } else {
+            ++it;
+          }
+        }
+        ImGui::EndTable();
+      }
+
+      if (ImGui::Button("Add")) {
+        m_animationPicker.emplace("Animations", m_parent->animations(), m_selection);
+      }
+      if (m_animationPicker) {
+        const auto [closed, confirmed] = m_animationPicker->draw();
+        if (closed) {
+          const int selection = m_animationPicker->selection();
+          if (confirmed && !m_constants->animations.contains(selection)) {
+            m_constants->animations[selection] = std::format("ANIMATION_{:04}", selection);
+            m_selection = selection;
+            m_openPopup = true;
+          }
+          m_animationPicker.reset();
+        }
+      }
+
+      if (m_openPopup) {
+        ImGui::OpenPopup("##alias_edit");
+        m_openPopup = false;
+      }
+      drawAliasModal(GameConstants::Type::Animation);
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selection != -1) {
+        m_constants->animations.erase(m_selection);
+      }
       ImGui::EndTabItem();
     }
     if (ImGui::BeginTabItem("Tilesets")) {
+      ImGui::Text("When exported to Constants.js all Tilesets will be prefixed with TLS_");
+      if (ImGui::BeginTable("##ore_troops_constants_table", 4,
+                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
+                                ImGuiTableFlags_ScrollY,
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                          ImGui::GetStyle().FramePadding.y})) {
+        setupTableHeaders();
+        for (auto it = m_constants->tilesets.begin(); it != m_constants->tilesets.end();) {
+          auto id = it->first;
+          auto alias = it->second;
+          if (drawSelectable(id, m_selection == id)) {
+            m_selection = id;
+          }
+          drawNameAndAliasColumns(m_parent->tileset(id)->name, alias);
+          if (drawDeleteButton(id)) {
+            it = m_constants->tilesets.erase(it);
+          } else {
+            ++it;
+          }
+        }
+        ImGui::EndTable();
+      }
+
+      if (ImGui::Button("Add")) {
+        m_tilesetPicker.emplace("Tilesets", m_parent->tilesets(), m_selection);
+      }
+      if (m_tilesetPicker) {
+        const auto [closed, confirmed] = m_tilesetPicker->draw();
+        if (closed) {
+          const int selection = m_tilesetPicker->selection();
+          if (confirmed && !m_constants->tilesets.contains(selection)) {
+            m_constants->tilesets[selection] = std::format("TILESET_{:04}", selection);
+            m_selection = selection;
+            m_openPopup = true;
+          }
+          m_tilesetPicker.reset();
+        }
+      }
+
+      if (m_openPopup) {
+        ImGui::OpenPopup("##alias_edit");
+        m_openPopup = false;
+      }
+      drawAliasModal(GameConstants::Type::Tileset);
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selection != -1) {
+        m_constants->tilesets.erase(m_selection);
+      }
       ImGui::EndTabItem();
     }
     if (ImGui::BeginTabItem("Common Events")) {
+      ImGui::Text("When exported to Constants.js all Common Events will be prefixed with CMN_");
+      if (ImGui::BeginTable("##ore_troops_constants_table", 4,
+                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
+                                ImGuiTableFlags_ScrollY,
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                          ImGui::GetStyle().FramePadding.y})) {
+        setupTableHeaders();
+        for (auto it = m_constants->commonEvents.begin(); it != m_constants->commonEvents.end();) {
+          auto id = it->first;
+          auto alias = it->second;
+          if (drawSelectable(id, m_selection == id)) {
+            m_selection = id;
+          }
+          drawNameAndAliasColumns(m_parent->commonEvent(id)->name, alias);
+          if (drawDeleteButton(id)) {
+            it = m_constants->commonEvents.erase(it);
+          } else {
+            ++it;
+          }
+        }
+        ImGui::EndTable();
+      }
+
+      if (ImGui::Button("Add")) {
+        m_commonEventPicker.emplace("Common Events", m_parent->commonEvents(), m_selection);
+      }
+      if (m_commonEventPicker) {
+        const auto [closed, confirmed] = m_commonEventPicker->draw();
+        if (closed) {
+          const int selection = m_commonEventPicker->selection();
+          if (confirmed && !m_constants->commonEvents.contains(selection)) {
+            m_constants->commonEvents[selection] = std::format("COMMON_EVENT_{:04}", selection);
+            m_selection = selection;
+            m_openPopup = true;
+          }
+          m_commonEventPicker.reset();
+        }
+      }
+
+      if (m_openPopup) {
+        ImGui::OpenPopup("##alias_edit");
+        m_openPopup = false;
+      }
+      drawAliasModal(GameConstants::Type::CommonEvent);
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selection != -1) {
+        m_constants->commonEvents.erase(m_selection);
+      }
       ImGui::EndTabItem();
     }
     if (ImGui::BeginTabItem("Maps")) {
+      ImGui::Text("When exported to Constants.js all Maps will be prefixed with MAP_");
+      if (ImGui::BeginTable("##ore_troops_constants_table", 4,
+                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
+                                ImGuiTableFlags_ScrollY,
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
+                                          ImGui::GetStyle().FramePadding.y})) {
+        setupTableHeaders();
+        for (auto it = m_constants->maps.begin(); it != m_constants->maps.end();) {
+          auto id = it->first;
+          auto alias = it->second;
+          if (drawSelectable(id, m_selection == id)) {
+            m_selection = id;
+          }
+          drawNameAndAliasColumns(Database::Instance->mapInfos.map(id)->name, alias);
+          if (drawDeleteButton(id)) {
+            it = m_constants->maps.erase(it);
+          } else {
+            ++it;
+          }
+        }
+        ImGui::EndTable();
+      }
+
+      if (ImGui::Button("Add")) {
+        m_mapsPicker.emplace("Maps", Database::Instance->mapInfos.mapInfos(), m_selection);
+      }
+      if (m_mapsPicker) {
+        const auto [closed, confirmed] = m_mapsPicker->draw();
+        if (closed) {
+          const int selection = m_mapsPicker->selection();
+          if (confirmed && !m_constants->maps.contains(selection)) {
+            m_constants->maps[selection] = std::format("MAP_{:03}", selection);
+            m_selection = selection;
+            m_openPopup = true;
+          }
+          m_mapsPicker.reset();
+        }
+      }
+
+      if (m_openPopup) {
+        ImGui::OpenPopup("##alias_edit");
+        m_openPopup = false;
+      }
+      drawAliasModal(GameConstants::Type::Map);
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selection != -1) {
+        m_constants->maps.erase(m_selection);
+      }
       ImGui::EndTabItem();
     }
     ImGui::EndTabBar();

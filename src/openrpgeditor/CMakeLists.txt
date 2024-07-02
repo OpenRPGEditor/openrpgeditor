@@ -111,14 +111,13 @@ add_library(orecore STATIC
         Core/EventCommands/Dialog_PlayBGM.hpp
 )
 
-target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SDL2_mixer_SOURCE_DIR}/include  ${CLIP_INCLUDES})
+target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})
 target_compile_features(orecore PRIVATE cxx_std_20)
 target_link_libraries(
         orecore
         PRIVATE project_warnings
         PUBLIC fmt::fmt-header-only spdlog::spdlog_header_only
         SDL2::SDL2
-        SDL2_mixer
         imgui
         nfd
         magic_enum
@@ -127,6 +126,7 @@ target_link_libraries(
         freetype
         z
         clip
+        sfml-audio
 )
 
 # Define set of OS specific files to include
@@ -151,7 +151,7 @@ add_executable(${NAME} WIN32 MACOSX_BUNDLE
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/AppAssets.cmake)
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/Packaging.cmake)
 
-target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SDL2_mixer_SOURCE_DIR}/include ${CLIP_INCLUDES})
+target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${CLIP_INCLUDES})
 target_compile_features(${NAME} PRIVATE cxx_std_20)
 target_link_libraries(
         ${NAME}
@@ -159,7 +159,6 @@ target_link_libraries(
         PUBLIC fmt::fmt-header-only spdlog::spdlog_header_only
         orecore
         SDL2::SDL2
-        SDL2_mixer
         imgui
         nfd
         magic_enum
@@ -168,8 +167,8 @@ target_link_libraries(
         librpgmeventcmds
         freetype
         z
+        sfml-audio
 )
-message(${SDL2_mixer_SOURCE_DIR})
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebugInfo")
     add_compile_definitions(

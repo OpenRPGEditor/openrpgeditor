@@ -48,11 +48,6 @@ FetchContent_Declare(
         GIT_TAG release-2.30.3)
 
 FetchContent_Declare(
-        SDL2_mixer
-        GIT_REPOSITORY "https://github.com/libsdl-org/SDL_Mixer.git"
-        GIT_TAG release-2.8.0)
-
-FetchContent_Declare(
         SDL2_image
         GIT_REPOSITORY "https://github.com/Antidote/SDL_image.git"
         GIT_TAG xcf-fix)
@@ -68,9 +63,14 @@ FetchContent_Declare(magic_enum
         GIT_REPOSITORY "https://github.com/Neargye/magic_enum.git")
 
 FetchContent_Declare(freetype2
-        GIT_REPOSITORY "https://git.savannah.gnu.org/git/freetype/freetype2.git"
+        GIT_REPOSITORY "https://github.com/freetype/freetype"
         GIT_TAG 2.6.5
 )
+
+FetchContent_Declare(
+        SFML
+        GIT_REPOSITORY https://github.com/SFML/SFML.git
+        GIT_TAG 2.6.1)
 
 #FetchContent_Declare(curl
 #        GIT_REPOSITORY "https://github.com/curl/curl.git"
@@ -98,10 +98,6 @@ set(BUILD_SHARED_LIBS OFF)
 set(SPDLOG_FMT_EXTERNAL ON)
 set(SPDLOG_BUILD_SHARED OFF)
 set(SPDLOG_ENABLE_PCH ON)
-set(SDL2MIXER_MOD OFF)
-set(SDL2MIXER_MIDI OFF)
-set(SDL2MIXER_OPUS OFF)
-set(SDL2MIXER_WAVPACK OFF)
 
 # Populate
 
@@ -111,7 +107,6 @@ FetchContent_MakeAvailable(
         nfd
         SDL2
         SDL2_image
-        SDL2_mixer
         spdlog
         json
         magic_enum
@@ -119,6 +114,7 @@ FetchContent_MakeAvailable(
         clip
         #curl
         #liblcf
+        SFML
 )
 
 add_subdirectory(imgui-setup)
@@ -127,9 +123,6 @@ FetchContent_MakeAvailable(
         imgui
 )
 
-message(${clip_SOURCE_DIR})
-
-set(CLIP_INCLUDES ${clip_SOURCE_DIR} PARENT_SCOPE)
 
 #target_include_directories(ImGuiFileDialog PRIVATE ${imgui_SOURCE_DIR})
 #target_compile_definitions(ImGuiFileDialog PRIVATE USE_THUMBNAILS DONT_DEFINE_AGAIN__STB_IMAGE_IMPLEMENTATION)

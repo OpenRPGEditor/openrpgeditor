@@ -20,6 +20,7 @@
 #include "Database/RPGEquations.hpp"
 #include "App/ProjectInfo.hpp"
 #include "misc/freetype/imgui_freetype.h"
+#include "SFML/Audio.hpp"
 
 #include <iostream>
 namespace App {
@@ -37,7 +38,6 @@ Application::Application(const std::string& title) {
     APP_ERROR("Error: %s\n", SDL_GetError());
     m_exitStatus = ExitStatus::Failure;
   }
-
   m_window = std::make_unique<Window>(Window::Settings{title});
   APP = this;
 }

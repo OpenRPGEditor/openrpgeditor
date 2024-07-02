@@ -15,8 +15,16 @@ add_custom_command(TARGET ${NAME} POST_BUILD
         $<TARGET_FILE:SDL2::SDL2>
         $<TARGET_FILE_DIR:${NAME}>)
 
-# For distribution:
 install(FILES $<TARGET_FILE:SDL2::SDL2> DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+# For distribution:
+# Copy OpenAL DLL to output directory
+add_custom_command(TARGET ${NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${SFML_SOURCE_DIR}/extlibs/bin/x64/openal32.dll
+        $<TARGET_FILE_DIR:${NAME}>
+)
+install(FILES  ${SFML_SOURCE_DIR}/extlibs/bin/x64/openal32.dll DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Copy assets into app bundle
 # For development:

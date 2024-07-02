@@ -946,6 +946,7 @@ void DBGameConstantsTab::draw() {
       }
       ImGui::EndTabItem();
     }
+    m_基本セット;
     ImGui::EndTabBar();
   }
   ImGui::EndChild();

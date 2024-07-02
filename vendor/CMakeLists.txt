@@ -14,8 +14,8 @@ FetchContent_Declare(
 
 FetchContent_Declare(
         imgui
-        GIT_REPOSITORY "https://github.com/ocornut/imgui.git"
-        GIT_TAG 222dd775fc72229675757f90d887ec57a291dc0e # Branch: docking
+        GIT_REPOSITORY "https://github.com/Antidote/imgui.git"
+        GIT_TAG docking-layout # Branch: docking
 )
 
 #FetchContent_Declare(

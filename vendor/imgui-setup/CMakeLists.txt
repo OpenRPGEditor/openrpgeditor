@@ -26,7 +26,8 @@ add_library(imgui STATIC
         ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.h ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp
         ${imgui_SOURCE_DIR}/misc/freetype/imgui_freetype.h ${imgui_SOURCE_DIR}/misc/freetype/imgui_freetype.cpp
         ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.h ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp
-        imgui_impl_sdlrenderer2.h imgui_impl_sdlrenderer2.cpp)
+        imgui_impl_sdlrenderer2.h imgui_impl_sdlrenderer2.cpp
+)
 
 target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR} ${implot_SOURCE_DIR} "${freetype2_SOURCE_DIR}/include")
 target_compile_features(imgui PRIVATE cxx_std_20)

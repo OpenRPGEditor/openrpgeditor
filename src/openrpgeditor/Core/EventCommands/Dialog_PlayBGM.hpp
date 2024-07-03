@@ -12,34 +12,27 @@ struct Project;
 struct Dialog_PlayBGM : IDialogController {
   Dialog_PlayBGM() = delete;
   explicit Dialog_PlayBGM(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-    try {
-    auto files = getFileNames(Database::Instance->basePath + "audio/bgm/" );
-    for (const auto& file : files) {
-      m_audios.push_back(file);
-    }
-  } catch (const std::filesystem::filesystem_error& e) {
-    std::cerr << "Error accessing directory: " << e.what() << std::endl;
-  }
-    //setVolume(m_volume);
-    //setPitch(m_pitch);
-    //setPanning(m_pan);
-    sf::Listener::setPosition(0.f, 0.f, 0.f);  // Set listener position
-    APP_INFO(std::to_string(sound.getVolume()));
-    APP_INFO(std::to_string(sound.getPitch()));
-    APP_INFO(std::to_string(sound.getPosition().x) + " " + std::to_string(sound.getPosition().y));
-
     command.emplace();
+    m_audio = Audio();
+    try {
+      auto files = getFileNames(Database::Instance->basePath + "audio/bgm/");
+      for (const auto& file : files) {
+        m_audios.push_back(file);
+      }
+    } catch (const std::filesystem::filesystem_error& e) {
+      std::cerr << "Error accessing directory: " << e.what() << std::endl;
+    }
+    m_audio.name = m_audios.at(m_selected);
   }
   std::tuple<bool, bool> draw() override;
   std::optional<PlayBGMCommand> getCommandData() { return command; }
   Project* m_project = nullptr;
+
 private:
   bool m_confirmed{false};
 
   int m_selected = 0;
-  int m_volume = 100;
-  int m_pitch = 100;
-  int m_pan = 0;
+  Audio m_audio;
 
   sf::SoundBuffer buffer;
   sf::Sound sound;
@@ -70,7 +63,8 @@ private:
       // error loading file
       return false;
     }
-    sound.setRelativeToListener(false); // Ensure sound is not relative to listener
+    sf::Listener::setPosition(0.f, 0.f, 0.f); // Set listener position
+    sound.setRelativeToListener(true);        // Ensure sound is not relative to listener
     sound.setBuffer(buffer);
     sound.play();
     return true;
@@ -79,18 +73,24 @@ private:
     sound.setVolume(volume); // 0% to 100%
   }
   void setPanning(int value) {
-    if (value > 0) { // To the right
-      sound.setPosition(0.0f, static_cast<float>(value), 0.0f);
+    // TODO -- how can we pan this thing
+    /*
+    *(-1,0,0)' is to the left of the listener
+    (1,0,0)' is to the right of the listener
+    (0,0,1)' is in front of the listener
+    (0,0,-1)' is behind the listener
+    */
+    if (value > 0) {
+      // To the right (+)
+      // sound.setPosition(sf::Vector3f{ static_cast<float>(value), 0.f, 0.f});
+      sound.setPosition(sf::Vector3f(static_cast<float>(value) / 100.f, 0, 0));
+    } else { // To the left (-)
+      sound.setPosition(sf::Vector3f(static_cast<float>(value) / 100.f, 0, 0));
     }
-    else { // To the left
-      sound.setPosition(static_cast<float>(value), 0.0f, 0.0f);
-    }
-    APP_INFO(std::to_string(sound.getPosition().x) + " " + std::to_string(sound.getPosition().y));
+    APP_INFO("Listener: " + std::to_string(sf::Listener::getPosition().x) + " " +
+             std::to_string(sf::Listener::getPosition().y));
+    APP_INFO("Sound: " + std::to_string(sound.getPosition().x) + " " + std::to_string(sound.getPosition().y));
   }
-  bool setPitch(int value) {
-    sound.setPitch(0.5f);
-  }
-  void stopAudio() {
-    sound.stop();
-  }
+  void setPitch(int value) { sound.setPitch(value / 100.f); }
+  void stopAudio() { sound.stop(); }
 };

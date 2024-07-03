@@ -23,7 +23,6 @@ std::tuple<bool, bool> Dialog_PlayBGM::draw() {
 
       ImGui::TableSetupScrollFreeze(1, 0);
       ImGui::TableSetupColumn("File");
-      const int totalPadding = static_cast<int>(std::floor(std::log10(m_audios.size())));
       ImGui::TableNextRow();
       for (int n = 0; n < m_audios.size(); n++) {
         ImGui::TableNextColumn();
@@ -55,34 +54,36 @@ std::tuple<bool, bool> Dialog_PlayBGM::draw() {
     ImGui::SeparatorText("Volume");
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 65 - App::DPIHandler::scale_value(16)));
     ImGui::SetNextItemWidth(100);
-    if (ImGui::DragInt("##playbgm_volume", &m_volume, 0.5f, 0, 100)) {
-      setVolume(m_volume);
+    if (ImGui::DragInt("##playbgm_audio.volume", &m_audio.volume, 0.5f, 0, 100)) {
+      setVolume(m_audio.volume);
     }
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 85 - App::DPIHandler::scale_value(16)));
     ImGui::SeparatorText("Pitch");
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 105 - App::DPIHandler::scale_value(16)));
     ImGui::SetNextItemWidth(100);
-    if (ImGui::DragInt("##playbgm_pitch", &m_pitch, 0.5f, 0, 100)) {
-      setPitch(m_pitch);
+    if (ImGui::DragInt("##playbgm_audio.pitch", &m_audio.pitch, 0.5f, 0, 100)) {
+      setPitch(m_audio.pitch);
     }
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 125 - App::DPIHandler::scale_value(16)));
     ImGui::SeparatorText("Pan");
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 145 - App::DPIHandler::scale_value(16)));
     ImGui::SetNextItemWidth(100);
-    if (ImGui::DragInt("##playbgm_pan", &m_pan, 0.5f, -100, 100)) {
-      setPanning(m_pan);
+    if (ImGui::DragInt("##playbgm_audio.pan", &m_audio.pan, 0.5f, -100, 100)) {
+      setPanning(m_audio.pan);
     }
   }
 
   ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 80, ImGui::GetContentRegionMax().y - 20));
   if (ImGui::Button("OK")) {
-    command->audio.name = m_audios.at(m_selected);
-    command->audio.volume = m_volume;
-    command->audio.pitch = m_pitch;
-    command->audio.pan = m_pan;
     m_confirmed = true;
+    command->audio = m_audio;
+    APP_INFO(command->stringRep(m_project->database()));
     ImGui::CloseCurrentPopup();
     SetOpen(false);
+    //command->audio.name = m_audios.at(m_selected);
+    //command->audio->volume = m_audio.volume;
+    //command->audio->pitch = m_audio.pitch;
+    //command->audio->pan = m_audio.pan;
   }
   ImGui::SameLine();
   if (ImGui::Button("Cancel")) {

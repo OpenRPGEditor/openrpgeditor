@@ -105,6 +105,12 @@ void EventCommandEditor::draw() {
         ImGui::PushFont(App::APP->getMonoFont());
         for (int n = 0; n < m_commands->size(); n++) {
           const bool isSelected = (m_selectedCommand == n);
+          if (m_commands->at(n) == nullptr) {
+            APP_INFO("Null pointer on " + std::to_string(n));
+          }
+          else {
+            APP_INFO(DecodeEnumName(m_commands->at(n)->code()));
+          }
           std::string indentPad = m_commands->at(n)->stringRep(m_project->database());
           if (m_commands->at(n)->code() == EventCode::Common_Event) {
             // Common Event + (name)
@@ -855,9 +861,11 @@ void EventCommandEditor::drawPopup() {
         if (commandDialog) {
           auto [closed, confirmed] = commandDialog->draw();
           if (confirmed) {
-            APP_DEBUG("Inserting command...");
+            APP_INFO("Inserting command...");
             auto m_select = m_commands->begin() + m_selectedCommand;
+            APP_INFO("m_select assignment...");
             m_select = m_commands->insert(m_select, commandDialog->getCommand());
+            APP_INFO("reset");
             commandDialog.reset();
             ImGui::CloseCurrentPopup();
           }

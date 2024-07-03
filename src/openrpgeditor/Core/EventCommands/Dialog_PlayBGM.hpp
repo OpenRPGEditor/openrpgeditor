@@ -26,6 +26,8 @@ struct Dialog_PlayBGM : IDialogController {
   }
   std::tuple<bool, bool> draw() override;
   std::optional<PlayBGMCommand> getCommandData() { return command; }
+  [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() { return std::make_shared<PlayBGMCommand>(command.value()); }
+
   Project* m_project = nullptr;
 
 private:

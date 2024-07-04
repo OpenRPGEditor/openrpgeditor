@@ -3,15 +3,16 @@
 #include "Core/Log.hpp"
 #include "Core/Project.hpp"
 #include "Core/Settings.hpp"
-#include "Database/EventCommands/PlayBGM.hpp"
+#include "Database/EventCommands/ChangeBattleBGM.hpp"
+
 #include <SFML/Audio.hpp>
 #include <iostream>
 
 namespace fs = std::filesystem;
 struct Project;
-struct Dialog_PlayBGM : IDialogController {
-  Dialog_PlayBGM() = delete;
-  explicit Dialog_PlayBGM(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+struct Dialog_ChangeBattleBGM : IDialogController {
+  Dialog_ChangeBattleBGM() = delete;
+  explicit Dialog_ChangeBattleBGM(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
     command.emplace();
     m_audio = Audio();
     try {
@@ -25,7 +26,7 @@ struct Dialog_PlayBGM : IDialogController {
     m_audio.name = m_audios.at(m_selected);
   }
   std::tuple<bool, bool> draw() override;
-  [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<PlayBGMCommand>(command.value()); }
+  [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<ChangeBattleBGMCommand>(command.value()); }
 
   Project* m_project = nullptr;
 
@@ -38,7 +39,7 @@ private:
   sf::SoundBuffer buffer;
   sf::Sound sound;
 
-  std::optional<PlayBGMCommand> command;
+  std::optional<ChangeBattleBGMCommand> command;
   std::tuple<bool, bool> result;
   std::vector<std::string> m_audios;
   std::vector<std::string> getFileNames(const std::string& directoryPath) {

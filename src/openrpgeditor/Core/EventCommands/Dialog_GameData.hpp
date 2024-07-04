@@ -15,7 +15,7 @@ struct Dialog_GameData : IDialogController {
   }
   std::tuple<bool, bool> draw() override;
 
-  std::optional<ControlVariables> getCommandData() { return command; }
+  std::optional<ControlVariables> getData() { return command; }
 
   std::string getUIString() {
 

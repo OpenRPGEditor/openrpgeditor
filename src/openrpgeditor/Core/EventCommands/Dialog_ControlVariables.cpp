@@ -33,9 +33,9 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     if (gameDataDialog) {
       auto [closed, confirmed] = gameDataDialog->draw();
       if (confirmed) {
-        command->gameData.source = gameDataDialog->getCommandData()->gameData.source;
-        command->gameData.rawSource = gameDataDialog->getCommandData()->gameData.rawSource;
-        command->gameData.value = gameDataDialog->getCommandData()->gameData.value;
+        command->gameData.source = gameDataDialog->getData()->gameData.source;
+        command->gameData.rawSource = gameDataDialog->getData()->gameData.rawSource;
+        command->gameData.value = gameDataDialog->getData()->gameData.value;
       }
     }
 
@@ -181,7 +181,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
       command->random.max = m_rand_2;
 
       if (gameDataDialog)
-        command->gameData = gameDataDialog->getCommandData()->gameData;
+        command->gameData = gameDataDialog->getData()->gameData;
       
       // Insert command into m_commands?
       ImGui::CloseCurrentPopup();

@@ -1,11 +1,11 @@
-#include "Dialog_PlayBGM.hpp"
+#include "Dialog_ChangeBattleBGM.hpp"
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/ImGuiUtils.hpp"
 #include "Core/Log.hpp"
 #include "Core/Project.hpp"
 using namespace std::string_view_literals;
-std::tuple<bool, bool> Dialog_PlayBGM::draw() {
+std::tuple<bool, bool> Dialog_ChangeBattleBGM::draw() {
 
   if (IsOpen()) {
     ImGui::OpenPopup(m_name.c_str());
@@ -55,21 +55,21 @@ std::tuple<bool, bool> Dialog_PlayBGM::draw() {
     ImGui::SeparatorText("Volume");
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 65 - App::DPIHandler::scale_value(16)));
     ImGui::SetNextItemWidth(100);
-    if (ImGui::DragInt("##playbgm_audio.volume", &m_audio.volume, 0.5f, 0, 100)) {
+    if (ImGui::DragInt("##changebbgm_audio.volume", &m_audio.volume, 0.5f, 0, 100)) {
       setVolume(m_audio.volume);
     }
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 85 - App::DPIHandler::scale_value(16)));
     ImGui::SeparatorText("Pitch");
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 105 - App::DPIHandler::scale_value(16)));
     ImGui::SetNextItemWidth(100);
-    if (ImGui::DragInt("##playbgm_audio.pitch", &m_audio.pitch, 0.5f, 0, 100)) {
+    if (ImGui::DragInt("##changebbgm_audio.pitch", &m_audio.pitch, 0.5f, 0, 100)) {
       setPitch(m_audio.pitch);
     }
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 125 - App::DPIHandler::scale_value(16)));
     ImGui::SeparatorText("Pan");
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 145 - App::DPIHandler::scale_value(16)));
     ImGui::SetNextItemWidth(100);
-    if (ImGui::DragInt("##playbgm_audio.pan", &m_audio.pan, 0.5f, -100, 100)) {
+    if (ImGui::DragInt("##changebbgm_audio.pan", &m_audio.pan, 0.5f, -100, 100)) {
       setPanning(m_audio.pan);
     }
   }
@@ -77,7 +77,7 @@ std::tuple<bool, bool> Dialog_PlayBGM::draw() {
   ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 80, ImGui::GetContentRegionMax().y - 20));
   if (ImGui::Button("OK")) {
     m_confirmed = true;
-    command->audio = m_audio;
+    command->bgm = m_audio;
     APP_INFO(command->stringRep(m_project->database()));
     ImGui::CloseCurrentPopup();
     SetOpen(false);

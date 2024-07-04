@@ -1,11 +1,11 @@
-#include "Dialog_PlayBGM.hpp"
+#include "Dialog_PlayME.hpp"
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/ImGuiUtils.hpp"
 #include "Core/Log.hpp"
 #include "Core/Project.hpp"
 using namespace std::string_view_literals;
-std::tuple<bool, bool> Dialog_PlayBGM::draw() {
+std::tuple<bool, bool> Dialog_PlayME::draw() {
 
   if (IsOpen()) {
     ImGui::OpenPopup(m_name.c_str());

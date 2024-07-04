@@ -109,6 +109,24 @@ add_library(orecore STATIC
         Core/ImGuiNotify.hpp
         Core/EventCommands/Dialog_PlayBGM.cpp
         Core/EventCommands/Dialog_PlayBGM.hpp
+        Core/EventCommands/Dialog_ChangeBattleBGM.cpp
+        Core/EventCommands/Dialog_ChangeBattleBGM.hpp
+        Core/EventCommands/Dialog_ChangeVehicleBGM.cpp
+        Core/EventCommands/Dialog_ChangeVehicleBGM.hpp
+        Core/EventCommands/Dialog_ChangeVictoryME.cpp
+        Core/EventCommands/Dialog_ChangeVictoryME.hpp
+        Core/EventCommands/Dialog_ChangeDefeatME.cpp
+        Core/EventCommands/Dialog_ChangeDefeatME.hpp
+        Core/EventCommands/Dialog_PlayBGS.cpp
+        Core/EventCommands/Dialog_PlayBGS.hpp
+        Core/EventCommands/Dialog_PlaySE.cpp
+        Core/EventCommands/Dialog_PlaySE.hpp
+        Core/EventCommands/Dialog_PlayME.cpp
+        Core/EventCommands/Dialog_PlayME.hpp
+        Core/EventCommands/Dialog_ChangeBattleBack.cpp
+        Core/EventCommands/Dialog_ChangeBattleBack.hpp
+        Core/EventCommands/Dialog_ChangeWindowColor.cpp
+        Core/EventCommands/Dialog_ChangeWindowColor.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})

@@ -1,11 +1,11 @@
-#include "Dialog_PlayBGM.hpp"
+#include "Dialog_ChangeVehicleBGM.hpp"
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/ImGuiUtils.hpp"
 #include "Core/Log.hpp"
 #include "Core/Project.hpp"
 using namespace std::string_view_literals;
-std::tuple<bool, bool> Dialog_PlayBGM::draw() {
+std::tuple<bool, bool> Dialog_ChangeVehicleBGM::draw() {
 
   if (IsOpen()) {
     ImGui::OpenPopup(m_name.c_str());
@@ -77,7 +77,7 @@ std::tuple<bool, bool> Dialog_PlayBGM::draw() {
   ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 80, ImGui::GetContentRegionMax().y - 20));
   if (ImGui::Button("OK")) {
     m_confirmed = true;
-    command->audio = m_audio;
+    command->me = m_audio;
     APP_INFO(command->stringRep(m_project->database()));
     ImGui::CloseCurrentPopup();
     SetOpen(false);

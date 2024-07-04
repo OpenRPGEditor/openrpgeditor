@@ -51,7 +51,7 @@ set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Maintainer Name")
 
 # Define how to install and uninstall start menu entries on Windows
 set(CPACK_NSIS_CREATE_ICONS_EXTRA
-  "CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${CMAKE_PROJECT_NAME}.lnk' '$INSTDIR\\\\bin\\\\App.exe'")
+  "CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${CMAKE_PROJECT_NAME}.lnk' '$INSTDIR\\\\bin\\\\OpenRPGEditor.exe'")
 set(CPACK_NSIS_DELETE_ICONS_EXTRA
   "Delete '$SMPROGRAMS\\\\$START_MENU\\\\${CMAKE_PROJECT_NAME}.lnk'")
 

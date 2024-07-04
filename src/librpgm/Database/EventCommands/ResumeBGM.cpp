@@ -1,5 +1,5 @@
-//
-// Created by antidote on 6/28/24.
-//
+#include "Database/EventCommands/ResumeBGM.hpp"
 
-#include "ResumeBGM.hpp"
+std::string ResumeBGMCommand::stringRep(const Database& db) const {
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Resume BGM";
+}

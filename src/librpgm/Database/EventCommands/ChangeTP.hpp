@@ -12,8 +12,5 @@ struct ChangeTPCommand : IEventCommand {
   QuantityChangeSource quantitySource;
   int quantity;
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change TP : {}, " + DecodeEnumName(quantityOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity)) + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

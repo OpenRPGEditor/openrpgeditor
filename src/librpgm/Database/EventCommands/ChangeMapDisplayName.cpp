@@ -1,5 +1,6 @@
-//
-// Created by antidote on 6/28/24.
-//
+#include "Database/EventCommands/ChangeMapDisplayName.hpp"
 
-#include "ChangeMapDisplayName.hpp"
+std::string ChangeMapNameDisplayCommand::stringRep(const Database& db) const {
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Map Name Display" +
+         colon.data() + DecodeEnumName(checkIfOn) + ColorFormatter::popColor();
+}

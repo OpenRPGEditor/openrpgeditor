@@ -9,9 +9,5 @@ struct ShakeScreenCommand : IEventCommand {
   int speed;
   int duration;
   bool waitForCompletion;
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Shake Screen : " + std::format("{}, {}, {} frames", power, speed, duration)
-    + (waitForCompletion == true ? ColorFormatter::getColor(Color::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

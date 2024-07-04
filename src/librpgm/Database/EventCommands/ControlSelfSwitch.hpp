@@ -7,8 +7,5 @@ struct ControlSelfSwitch : IEventCommand {
 
   std::string selfSw; // A, B, C, D
   ValueControl turnOff;
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Control Self Switch : " + selfSw + " is " + DecodeEnumName(turnOff) + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

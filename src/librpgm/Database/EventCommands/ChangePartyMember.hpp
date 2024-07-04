@@ -7,8 +7,5 @@ struct ChangePartyMemberCommand : IEventCommand {
   int member;
   PartyMemberOperation operation;
   bool initialize;
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change Party Member : " + DecodeEnumName(operation) + " {} " + ColorFormatter::popColor() + (initialize == true ? ColorFormatter::getColor(Color::Gray) + "(Initialize)" : "");
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

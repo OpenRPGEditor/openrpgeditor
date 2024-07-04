@@ -15,19 +15,7 @@ struct NextTextCommand : IEventCommand {
 struct ShowTextCommand : IEventCommand {
   ~ShowTextCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Text; }
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Text " + colon.data() + ColorFormatter::popColor() +
-      (faceImage == "" ? "None, " : faceImage + std::format("({}), ", faceIndex)) + DecodeEnumName(background) + ", " + DecodeEnumName(position);
-
-    for (const auto& t : text) {
-      if (!ret.empty()) {
-        ret += "\n";
-      }
-      ret += indentText(indent) + colon.data() + indentText(1) + indentText(1) + colon.data() + ColorFormatter::getColorCode(code()) + t->text;
-    }
-    return ret;
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   void serializeParameters(nlohmann::json& out) override {
     out.push_back(faceImage);

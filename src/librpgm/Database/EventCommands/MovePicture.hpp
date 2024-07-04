@@ -17,11 +17,5 @@ struct MovePictureCommand : IEventCommand {
   int duration;
   bool waitForCompletion;
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Move Picture : " +
-        std::format("#{}, {} ({},{}), ({}%, {}%), {}, {}, {} frames",
-          picture, DecodeEnumName(origin), DecodeEnumName(pictureLocation), x, y, width, height, opacity, DecodeEnumName(blendMode), duration)
-    + (waitForCompletion == true ? ColorFormatter::getColor(Color::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

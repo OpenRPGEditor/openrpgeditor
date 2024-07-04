@@ -13,9 +13,5 @@ struct ChangeEXPCommand : IEventCommand {
   int quantity;
   bool showLevelUp;
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change EXP : {}, " + DecodeEnumName(quantityOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity))
-    + (showLevelUp == true ? ColorFormatter::getColor(Color::Gray) + " (Show Level Up)" + ColorFormatter::popColor() : "");
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

@@ -11,10 +11,5 @@ struct GetLocationInfoCommand : IEventCommand {
   int x;
   int y;
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Get Location Info : {}, " + DecodeEnumName(type) +
-           (source == LocationSource::Designation_with_variables ? "({[]},{[]})" : std::format("({},{})", x, y))
-    + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

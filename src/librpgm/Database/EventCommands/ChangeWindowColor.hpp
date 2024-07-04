@@ -8,8 +8,5 @@ struct ChangeWindowColorCommand : IEventCommand {
   int r;
   int g;
   int b;
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change Window Color : " + std::format("({}, {}, {})", r, g, b) + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

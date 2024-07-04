@@ -22,8 +22,10 @@
  * _pe_ -> .
  * _del_ -> useful placeholder for name collisions inserts a null and truncats the strings
  * _deg -> °
+ * _da_ -> -=
  * _daa_ -> -
- * _pl_ -> +
+ * _pl_ -> +=
+ * _plu_ -> +
  *
  * After the special characters have been decoded and inserted any remaining
  * underscores are replaced with spaces
@@ -115,7 +117,7 @@ enum class TraitCode {
   Attack_Element = 31,
   Attack_State = 32,
   Attack_Speed = 33,
-  Attack_Times__pl_ = 34,
+  Attack_Times__plu_ = 34,
   Add_Skill_Type = 41,
   Seal_Skill_Type = 42,
   Add_Skill = 43,
@@ -125,11 +127,12 @@ enum class TraitCode {
   Lock_Equip = 53,
   Seal_Equip = 54,
   Slot_Type = 55,
-  Action_Times__pl_ = 61,
+  Action_Times__plu_ = 61,
   Special_Flag = 62,
   Collapse_Effect = 63,
   Party_Ability = 64,
 };
+
 enum class Direction : int {
   Retain = 0,
   Down = 2,
@@ -185,7 +188,7 @@ enum class AutoRemovalTiming {
 };
 
 enum class ItemType {
-  Regular_Item,
+  Regular_Item = 1,
   Key_Item,
   Hidden_Item_A,
   Hidden_Item_B,
@@ -226,7 +229,10 @@ enum class DamageType : int {
   MP_Drain,
 };
 
-enum class TimerComparisonType : int { Less_than_or_Equal_to, Greater_than_or_Equal_to };
+enum class TimerComparisonType : int {
+  _gteq__del_Greater_than_or_Equal_to,
+  _lteq__del_Less_than_or_Equal_to,
+};
 
 enum class ConditionType : int {
   Switch,
@@ -276,18 +282,17 @@ enum class SubjectComparisonSource : int {
 };
 
 enum class VariableComparisonType : int {
-  _set__set__del_Equal_To,
-  _gt__set__del_Greater_than_or_Equal_to,
-  _set__set__del_Less_than_or_Equal_to,
+  _set__del_Equal_To,
+  _gteq__del_Greater_than_or_Equal_to,
+  _lteq__del_Less_than_or_Equal_to,
   _gt__del_Greater_than,
   _lt__del_Less_than,
-  _not__del_Not_Equal_to
+  _not_set__del_Not_Equal_to
 };
 
-enum class GoldComaprisonType : int {
-  _set__set__del_Equal_To,
-  _gt__set__del_Greater_than_or_Equal_to,
-  _lt__set__del_Less_than_or_Equal_to,
+enum class GoldComparisonType : int {
+  _gteq__del_Greater_than_or_Equal_to,
+  _lteq__del_Less_than_or_Equal_to,
   _lt__del_Less_than,
 };
 
@@ -333,8 +338,8 @@ enum class ActorDataSource {
   Max_MP,
   Attack,
   Defense,
-  M__pe_Attack,
-  M__pe_Defense,
+  M_pe_Attack,
+  M_pe_Defense,
   Agility,
   Luck
 };
@@ -374,20 +379,20 @@ enum class OtherDataSource {
 };
 
 enum class PartyMemberOperation {
-  Add,
-  Remove,
+  _plu__del_Add,
+  _daa__del_Remove,
 };
 
 enum class ColorTone {
-  red,
-  green,
-  blue,
-  gray,
+  Red,
+  Green,
+  Blue,
+  Gray,
 };
 
 enum class SkillOperation {
-  Learn,
-  Forget,
+  _plu__del_Learn,
+  _daa__del_Forget,
 };
 
 enum class AccessMode {
@@ -401,9 +406,28 @@ enum class TransferMode {
   Exchange_With_Another_Event,
 };
 enum class Fade {
-  None,
   Black,
   White,
+  None,
+};
+
+enum class BalloonIcon {
+  None,
+  Exclamation,
+  Question,
+  Music_Note,
+  Heart,
+  Anger,
+  Sweat,
+  Cobweb,
+  Silence,
+  Light_Bulb,
+  Zzz,
+  User_daa_defined_1,
+  User_daa_defined_2,
+  User_daa_defined_3,
+  User_daa_defined_4,
+  User_daa_defined_5,
 };
 
 enum class PictureOrigin {
@@ -490,8 +514,8 @@ enum class EventCode : int {
   // Left off here
   Change_Player_Followers = 216,
   Gather_Followers = 217,
-  Fade_Out_Screen = 221,
-  Fade_In_Screen = 222,
+  Fadeout_Screen = 221,
+  Fadein_Screen = 222,
   Tint_Screen = 223,
   Flash_Screen = 224,
   Shake_Screen = 225,
@@ -503,11 +527,11 @@ enum class EventCode : int {
   Erase_Picture = 235,
   Set_Weather_Effect = 236,
   Play_BGM = 241,
-  Fade_Out_BGM = 242,
+  Fadeout_BGM = 242,
   Save_BGM = 243,
   Resume_BGM = 244,
   Play_BGS = 245,
-  Fade_Out_BGS = 246,
+  Fadeout_BGS = 246,
   Play_ME = 249,
   Play_SE = 250,
   Stop_SE = 251,
@@ -765,18 +789,23 @@ enum CommonEventTriggerType {
 };
 
 enum class TimerControl { Start, Stop };
-std::string DecodeEnumName(std::string_view str);
-
 enum class Color {
   Gray,
   Default,
 };
 
+void ReplaceStr(std::string& str, const std::string& oldStr, const std::string& newStr);
+std::string DecodeEnumName(std::string_view str);
 template <typename E>
 static inline std::string DecodeEnumName(E e) {
   return DecodeEnumName(magic_enum::enum_name(e));
 }
 
+std::string UndectorateEnumName(std::string_view str);
+template <typename E>
+static inline std::string UndectorateEnumName(E e) {
+  return UndectorateEnumName(magic_enum::enum_name(e));
+}
 #include "nlohmann/json.hpp"
 // helper boiler plates for json parsing
 
@@ -803,4 +832,7 @@ void from_json(const json& j, std::optional<T>& opt) {
 /* Helper function to set dirty state */
 template <typename T>
 void setDirty(const T& a, const T& b, bool& dirty) {
-  dirty |= a != b; }
+  dirty |= a != b;
+}
+
+std::vector<std::string> splitString(const std::string& str, char delimiter);

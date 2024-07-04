@@ -10,9 +10,5 @@ struct SetWeatherEffectCommand : IEventCommand {
   int duration;
   bool waitForCompletion;
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Set Weather Effect : " + DecodeEnumName(effect) + ", " + std::to_string(duration) + " + frames"
-    + (waitForCompletion == true ? ColorFormatter::getColor(Color::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

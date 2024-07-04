@@ -1,5 +1,6 @@
-//
-// Created by antidote on 6/28/24.
-//
+#include "Database/EventCommands/ChangePlayerFollowers.hpp"
 
-#include "ChangePlayerFollowers.hpp"
+std::string ChangePlayerFollowersCommand::stringRep(const Database& db) const {
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Player Followers" +
+         colon.data() + DecodeEnumName(followersEnabled) + ColorFormatter::popColor();
+}

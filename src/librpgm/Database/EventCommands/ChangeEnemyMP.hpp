@@ -9,9 +9,5 @@ struct ChangeEnemyMPCommand : IEventCommand {
   QuantityChangeSource quantitySource;
   int quantity;
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change Enemy MP : " + (enemy > 0 ? "#" + std::to_string(enemy) + " {}, " : "Entire Troop, ") + DecodeEnumName(enemyOp) + (quantitySource == QuantityChangeSource::Variable ? " {} " : std::to_string(quantity))
-    + " " + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

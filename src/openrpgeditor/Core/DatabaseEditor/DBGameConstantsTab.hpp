@@ -51,5 +51,4 @@ private:
   int m_selection = -1;
   std::optional<std::string> m_currentAlias;
   bool m_openPopup = false;
-  bool m_基本セット = true;
 };

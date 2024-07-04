@@ -1,5 +1,6 @@
-//
-// Created by antidote on 6/28/24.
-//
+#include "Database/EventCommands/GetOnOffVehicle.hpp"
 
-#include "GetOnOffVehicle.hpp"
+std::string GetOnOffVehicleCommand::stringRep(const Database& db) const {
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Get on/off Vehicle" +
+         ColorFormatter::popColor();
+}

@@ -1,8 +1,8 @@
 #pragma once
-#include "Database/EventCommands/IEventCommand.hpp"
+#include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementChangeBlendModeCommand : IEventCommand {
+struct MovementChangeBlendModeCommand : IMovementRouteStep {
   ~MovementChangeBlendModeCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Blend_Mode; }
 
@@ -10,10 +10,5 @@ struct MovementChangeBlendModeCommand : IEventCommand {
 
   void serializeParameters(nlohmann::json& out) override {
     out.push_back(mode);
-  }
-
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Blend Mode : " + DecodeEnumName(mode) + ColorFormatter::popColor();
   }
 };

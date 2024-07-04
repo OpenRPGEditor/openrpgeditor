@@ -2,7 +2,7 @@
 set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/MPLUSRounded1c-Medium.ttf)
 set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/NotoSansSinhala-Medium.ttf)
 set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/JetBrainsMono-Medium.ttf)
-set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/mplus-1m-medium.ttf)
+set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/mplus-1m-regular.ttf)
 
 # Platform specific static assets
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")

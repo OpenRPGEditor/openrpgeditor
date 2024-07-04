@@ -16,7 +16,7 @@ struct IEventCommand {
   [[nodiscard]] virtual bool isDirty() const { return m_isDirty; }
   virtual void serializeParameters(nlohmann::json& out) {}
 
-  void serialize(nlohmann::json& out, const bool doIndent=true, const bool doParameters = true) {
+  void serialize(nlohmann::json& out, const bool doIndent = true, const bool doParameters = true) {
     out["code"] = code();
     if (doIndent) {
       out["indent"] = indent;
@@ -28,7 +28,8 @@ struct IEventCommand {
   }
 
   [[nodiscard]] virtual std::string stringRep(const Database& db) const {
-    return std::string(indent ? *indent * 4 : 0, ' ') + DecodeEnumName(code());
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + DecodeEnumName(code()) +
+           ColorFormatter::popColor();
   }
   virtual std::string symbol(EventCode code) const {
     return static_cast<int>(code) < 400 ? diamond.data() : colon.data();

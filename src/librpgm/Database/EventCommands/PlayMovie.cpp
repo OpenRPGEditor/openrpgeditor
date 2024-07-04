@@ -1,5 +1,6 @@
-//
-// Created by antidote on 6/28/24.
-//
+#include "Database/EventCommands/PlayMovie.hpp"
 
-#include "PlayMovie.hpp"
+std::string PlayMovieCommand::stringRep(const Database& db) const {
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Play Movie" + colon.data() +
+         (name == "" ? "None" : name) + ColorFormatter::popColor();
+}

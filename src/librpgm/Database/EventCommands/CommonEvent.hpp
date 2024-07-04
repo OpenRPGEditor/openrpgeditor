@@ -6,8 +6,5 @@ struct CommonEventCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Common_Event; }
   int event;
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Common Event: ";
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

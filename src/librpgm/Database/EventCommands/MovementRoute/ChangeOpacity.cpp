@@ -1,5 +1,5 @@
-//
-// Created by antidote on 6/28/24.
-//
+#include "Database/EventCommands/MovementRoute/ChangeOpacity.hpp"
 
-#include "ChangeOpacity.hpp"
+std::string MovementChangeOpacityCommand::stringRep(const Database& db) const {
+  return whiteDiamond.data() + std::string("Opacity") + colon.data() + std::to_string(opacity);
+}

@@ -9,9 +9,5 @@ struct ChangeProfileCommand : IEventCommand {
   int actor;
   std::string profile;
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change Profile : {}, " + profile
-      + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

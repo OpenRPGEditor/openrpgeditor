@@ -1,8 +1,8 @@
 #pragma once
-#include "Database/EventCommands/IEventCommand.hpp"
+#include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementTurn90DegLeftCommand : IEventCommand {
+struct MovementTurn90DegLeftCommand : IMovementRouteStep {
   ~MovementTurn90DegLeftCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Turn_90_deg_Right; }
 };

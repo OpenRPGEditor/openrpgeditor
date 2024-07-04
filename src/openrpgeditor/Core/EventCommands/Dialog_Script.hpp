@@ -20,18 +20,4 @@ private:
   bool m_confirmed{false};
   std::optional<ScriptCommand> command;
   std::tuple<bool, bool> result;
-
-  std::vector<std::string> splitString(const std::string& str, char delimiter) {
-    std::vector<std::string> tokens;
-    std::istringstream ss(str);
-    std::string token;
-
-    int index = 0;
-    while (std::getline(ss, token, delimiter)) {
-      index++;
-      tokens.push_back(token);
-    }
-    return tokens;
-  }
-
 };

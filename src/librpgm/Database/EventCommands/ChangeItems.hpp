@@ -8,9 +8,6 @@ struct ChangeItemsCommmand : IEventCommand {
   QuantityChangeOp operation;
   QuantityChangeSource operandSource;
   int operand;
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change Items : {} " + DecodeEnumName(operation) + (operandSource == QuantityChangeSource::Constant ? std::to_string(operand) : " []") + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };
 

@@ -11,8 +11,5 @@ struct WaitCommand : IEventCommand {
     out.push_back(duration);
   }
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Wait : " + std::to_string(duration) + " frames";
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

@@ -1,19 +1,14 @@
 #pragma once
-#include "Database/EventCommands/IEventCommand.hpp"
+#include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementChangeOpacityCommand : IEventCommand {
+struct MovementChangeOpacityCommand : IMovementRouteStep {
   ~MovementChangeOpacityCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Opacity; }
 
   int opacity;
 
-  void serializeParameters(nlohmann::json& out) override {
-    out.push_back(opacity);
-  }
+  void serializeParameters(nlohmann::json& out) override { out.push_back(opacity); }
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Opacity : " + std::to_string(opacity) + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

@@ -18,6 +18,22 @@ struct Troop {
   std::string name;
   std::vector<Member> members;
 
+  Member* member(int index) {
+    if (index < 0 || index > members.size()) {
+      return nullptr;
+    }
+
+    return &members[index];
+  }
+
+  const Member* member(int index) const {
+    if (index < 0 || index > members.size()) {
+      return nullptr;
+    }
+
+    return &members[index];
+  }
+
   /*!
    * @name m_isValid
    * @details

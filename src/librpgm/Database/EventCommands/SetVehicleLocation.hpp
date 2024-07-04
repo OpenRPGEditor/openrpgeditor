@@ -11,14 +11,5 @@ struct SetVehicleLocationCommand : IEventCommand {
   int x;
   int y;
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    std::string prefix = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Set Vehicle Location : " + DecodeEnumName(vehicle) + ",";
-    std::string suffix = ColorFormatter::popColor();
-
-    if (mode == TransferMode::Variable_Designation) {
-      return prefix + ", {[]} ({[]},{[]}) " + suffix;
-    }
-    return prefix + " {}" + std::format("({}, {})", x, y) + suffix;
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

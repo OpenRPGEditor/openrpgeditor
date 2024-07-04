@@ -691,8 +691,10 @@ void Project::setMap(MapInfo& in) {
   if (m_mapListView.currentMapInfo()) {
     m_mapEditor.setMap(&in);
     in.map()->serialize("Test.json");
+    m_database->mapInfos.setCurrentMap(&in);
   } else {
     m_mapEditor.setMap(nullptr);
+    m_database->mapInfos.setCurrentMap(nullptr);
   }
 
   // if (m_map) {

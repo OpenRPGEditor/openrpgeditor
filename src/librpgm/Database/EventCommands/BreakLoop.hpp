@@ -4,8 +4,4 @@
 struct BreakLoopCommand : IEventCommand {
   ~BreakLoopCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Break_Loop; }
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Break Loop";
-  }
 };

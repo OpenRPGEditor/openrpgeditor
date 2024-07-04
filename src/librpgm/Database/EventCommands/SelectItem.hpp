@@ -6,8 +6,5 @@ struct SelectItemCommand : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Select_Item; }
   int item;
   ItemType type;
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Select Item : {}, " + DecodeEnumName(type) + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

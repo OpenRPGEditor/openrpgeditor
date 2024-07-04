@@ -11,8 +11,5 @@ struct ChangeStateCommand : IEventCommand {
   PartyMemberOperation stateOp;
   int state;
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change State : {}, " + DecodeEnumName(stateOp) + " {}" + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

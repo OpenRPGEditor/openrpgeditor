@@ -10,8 +10,5 @@ struct ChangeClassCommand : IEventCommand {
   int classId;
   bool saveLevel;
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change Class : {}, {}" + (saveLevel == true ? ColorFormatter::getColor(Color::Gray) + " (Save Level)" + ColorFormatter::popColor() : "");
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

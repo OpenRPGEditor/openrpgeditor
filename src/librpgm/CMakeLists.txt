@@ -39,6 +39,10 @@ add_library(
         Database/GameConstants.hpp
 )
 
+target_include_directories(librpgm PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)
+target_compile_features(librpgm PRIVATE cxx_std_20)
+target_link_libraries(librpgm PRIVATE project_warnings magic_enum nlohmann_json::nlohmann_json fmt::fmt-header-only spdlog::spdlog_header_only)
+
 add_library(
         librpgmeventcmds STATIC
         Database/CommandParser.hpp Database/CommandParser.cpp
@@ -152,6 +156,16 @@ add_library(
         Database/EventCommands/StopSE.hpp Database/EventCommands/StopSE.cpp
         Database/EventCommands/ShowPicture.hpp Database/EventCommands/ShowPicture.cpp
         Database/EventCommands/End.hpp Database/EventCommands/End.cpp
+        Database/EventCommands.hpp
+        Database/EventCommands/ChangeParallax.cpp
+        Database/EventCommands/ChangeParallax.hpp
+)
+
+target_include_directories(librpgmeventcmds PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)
+target_compile_features(librpgmeventcmds PRIVATE cxx_std_20)
+target_link_libraries(librpgmeventcmds PRIVATE librpgm project_warnings magic_enum nlohmann_json::nlohmann_json fmt::fmt-header-only spdlog::spdlog_header_only)
+
+add_library(librpgmmovementroutecmds STATIC
         Database/EventCommands/MovementRoute/MoveDown.hpp Database/EventCommands/MovementRoute/MoveDown.cpp
         Database/EventCommands/MovementRoute/MoveRight.hpp Database/EventCommands/MovementRoute/MoveRight.cpp
         Database/EventCommands/MovementRoute/MoveUp.hpp Database/EventCommands/MovementRoute/MoveUp.cpp
@@ -197,16 +211,11 @@ add_library(
         Database/EventCommands/MovementRoute/BlendMode.hpp Database/EventCommands/MovementRoute/BlendMode.cpp
         Database/EventCommands/MovementRoute/PlaySE.hpp Database/EventCommands/MovementRoute/PlaySE.cpp
         Database/EventCommands/MovementRoute/Script.hpp Database/EventCommands/MovementRoute/Script.cpp
-        Database/EventCommands.hpp
+        Database/EventCommands/MovementRoute/IMovementRouteStep.hpp
         Database/EventCommands/MovementRoute.hpp
-        Database/EventCommands/ChangeParallax.cpp
-        Database/EventCommands/ChangeParallax.hpp
 )
 
-target_include_directories(librpgm PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)
-target_compile_features(librpgm PRIVATE cxx_std_20)
-target_link_libraries(librpgm PRIVATE project_warnings magic_enum nlohmann_json::nlohmann_json fmt::fmt-header-only spdlog::spdlog_header_only)
+target_include_directories(librpgmmovementroutecmds PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)
+target_compile_features(librpgmmovementroutecmds PRIVATE cxx_std_20)
+target_link_libraries(librpgmmovementroutecmds PRIVATE librpgm project_warnings magic_enum nlohmann_json::nlohmann_json fmt::fmt-header-only spdlog::spdlog_header_only)
 
-target_include_directories(librpgmeventcmds PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)
-target_compile_features(librpgmeventcmds PRIVATE cxx_std_20)
-target_link_libraries(librpgmeventcmds PRIVATE librpgm project_warnings magic_enum nlohmann_json::nlohmann_json fmt::fmt-header-only spdlog::spdlog_header_only)

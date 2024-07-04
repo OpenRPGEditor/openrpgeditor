@@ -1,17 +1,12 @@
 #pragma once
-#include "Database/EventCommands/IEventCommand.hpp"
+#include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementSwitchOFFCommand : IEventCommand {
+struct MovementSwitchOFFCommand : IMovementRouteStep {
   ~MovementSwitchOFFCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Switch_OFF; }
   int id;
 
-  void serializeParameters(nlohmann::json& out) override {
-    out.push_back(id);
-  }
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Switch " + std::format("{:04}", id) + " OFF" + ColorFormatter::popColor();
-  }
+  void serializeParameters(nlohmann::json& out) override { out.push_back(id); }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

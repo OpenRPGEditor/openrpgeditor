@@ -1,5 +1,6 @@
-//
-// Created by antidote on 6/28/24.
-//
+#include "Database/EventCommands/MovementRoute/PlaySE.hpp"
+#include "Database/Database.hpp"
 
-#include "PlaySE.hpp"
+std::string MovementPlaySECommand::stringRep(const Database& db) const {
+  return whiteDiamond.data() + std::string("SE") + colon.data() + db.audioText(se);
+}

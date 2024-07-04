@@ -20,21 +20,5 @@ struct ChangeParallaxCommand : IEventCommand {
   int scrollX;
   int scrollY;
 
-  std::string stringRep(const Database& db) const override {
-    auto rep = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + colon.data() + " " + image +
-           ColorFormatter::popColor();
-    if (loopHorizontally || loopVertically) {
-      rep += ColorFormatter::getColor(Color::Gray) + " (";
-
-      if (loopHorizontally) {
-        rep += "Loop Horizontally, ";
-      }
-      if (loopVertically) {
-        rep += "Loop Vertically";
-      }
-      rep += ")" + ColorFormatter::popColor();
-    }
-
-    return rep;
-  }
+  std::string stringRep(const Database& db) const override;
 };

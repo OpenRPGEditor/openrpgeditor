@@ -1,5 +1,8 @@
-//
-// Created by antidote on 6/28/24.
-//
+#include "Database/EventCommands/ScrollMap.hpp"
 
-#include "ScrollMap.hpp"
+std::string ScrollMapCommand::stringRep(const Database& db) const {
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) +
+         std::format("Scroll Map{}{}, {}, {}", colon.data(), DecodeEnumName(direction), distance,
+                     DecodeEnumName(speed)) +
+         ColorFormatter::popColor();
+}

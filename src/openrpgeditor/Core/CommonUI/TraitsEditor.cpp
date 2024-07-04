@@ -103,7 +103,7 @@ void TraitsEditor::draw(DatabaseEditor* dbEditor) {
             break;
           }
           case TraitCode::Attack_Speed:
-          case TraitCode::Attack_Times__pl_:
+          case TraitCode::Attack_Times__plu_:
             ImGui::Text("%g", trait.value);
             break;
           case TraitCode::Add_Skill_Type:
@@ -149,7 +149,7 @@ void TraitsEditor::draw(DatabaseEditor* dbEditor) {
           case TraitCode::Slot_Type:
             ImGui::Text("%s", DecodeEnumName(static_cast<SlotType>(trait.dataId)).c_str());
             break;
-          case TraitCode::Action_Times__pl_:
+          case TraitCode::Action_Times__plu_:
             ImGui::Text("%i%%", static_cast<int>(trait.value) * 100);
             break;
           case TraitCode::Special_Flag:
@@ -491,7 +491,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
         }
         if (ImGui::BeginTabItem("Attack", nullptr,
                                 m_selectedTrait->code >= TraitCode::Attack_Element &&
-                                        m_selectedTrait->code <= TraitCode::Attack_Times__pl_ && m_updateTab
+                                        m_selectedTrait->code <= TraitCode::Attack_Times__plu_ && m_updateTab
                                     ? ImGuiTabItemFlags_SetSelected
                                     : 0)) {
           ImGui::BeginGroup();
@@ -540,7 +540,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Other", nullptr,
-                                m_selectedTrait->code >= TraitCode::Action_Times__pl_ &&
+                                m_selectedTrait->code >= TraitCode::Action_Times__plu_ &&
                                         m_selectedTrait->code <= TraitCode::Party_Ability && m_updateTab
                                     ? ImGuiTabItemFlags_SetSelected
                                     : 0)) {

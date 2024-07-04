@@ -23,11 +23,12 @@ constexpr std::string_view dodgerblue  = "&push-color=0x1e,0x90,0xff;"sv;
 constexpr std::string_view darkviolet  = "&push-color=0x94,0x00,0xd3;"sv;
 constexpr std::string_view gray        = "&push-color=0x80,0x80,0x80;"sv;
 constexpr std::string_view green       = "&push-color=0x00,0x80,0x00;"sv;
+constexpr std::string_view white       = "&push-color=0xFF,0xFF,0xFF;"sv;
 // clang-format on
 
 static std::map<EventCode, std::string_view> CommandColors{
     // clang-format off
-  {EventCode::Event_Dummy,              indigo},
+  {EventCode::Event_Dummy,              white},
   {EventCode::Show_Text,                indigo},
   {EventCode::Next_Text,                indigo},
   {EventCode::Show_Choices,             indigo},
@@ -81,8 +82,8 @@ static std::map<EventCode, std::string_view> CommandColors{
   {EventCode::Show_Animation,           maroon},
   {EventCode::Show_Balloon_Icon,        maroon},
   {EventCode::Erase_Event,              maroon},
-  {EventCode::Fade_Out_Screen,          olive},
-  {EventCode::Fade_In_Screen,           olive},
+  {EventCode::Fadeout_Screen,          olive},
+  {EventCode::Fadein_Screen,           olive},
   {EventCode::Tint_Screen,              olive},
   {EventCode::Flash_Screen,             olive},
   {EventCode::Shake_Screen,             olive},
@@ -94,14 +95,14 @@ static std::map<EventCode, std::string_view> CommandColors{
   {EventCode::Erase_Picture,            purple},
   {EventCode::Set_Weather_Effect,       olive},
   {EventCode::Play_BGM,                 teal},
-  {EventCode::Fade_Out_BGM,             teal},
+  {EventCode::Fadeout_BGM,             teal},
   {EventCode::Save_BGM,                 teal},
   {EventCode::Resume_BGM,               teal},
   {EventCode::Play_BGS,                 teal},
   {EventCode::Play_SE,                  teal},
   {EventCode::Play_Movie,               teal},
   {EventCode::Change_Map_Name_Display,  deeppink},
-  {EventCode::Change_Tileset,          deeppink},
+  {EventCode::Change_Tileset,           deeppink},
   {EventCode::Change_Battle_Back,       deeppink},
   {EventCode::Change_Parallax,          deeppink},
   {EventCode::Get_Location_Info,        deeppink},
@@ -109,7 +110,7 @@ static std::map<EventCode, std::string_view> CommandColors{
   {EventCode::If_Win,                   dodgerblue},
   {EventCode::If_Escape,                dodgerblue},
   {EventCode::If_Lose,                  dodgerblue},
-  {EventCode::End,                      dodgerblue},
+  {EventCode::End_del_Battle_Processing,dodgerblue},
   {EventCode::Shop_Processing,          dodgerblue},
   {EventCode::Shop_Processing_Good,     dodgerblue},
   {EventCode::Name_Input_Processing,    dodgerblue},

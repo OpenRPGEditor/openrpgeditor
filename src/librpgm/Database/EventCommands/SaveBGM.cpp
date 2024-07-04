@@ -1,5 +1,5 @@
-//
-// Created by antidote on 6/28/24.
-//
+#include "Database/EventCommands/SaveBGM.hpp"
 
-#include "SaveBGM.hpp"
+std::string SaveBGMCommand::stringRep(const Database& db) const {
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Save BGM";
+}

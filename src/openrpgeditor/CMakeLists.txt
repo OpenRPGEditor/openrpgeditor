@@ -183,6 +183,7 @@ target_link_libraries(
         nlohmann_json::nlohmann_json
         librpgm
         librpgmeventcmds
+        librpgmmovementroutecmds
         freetype
         z
         sfml-audio

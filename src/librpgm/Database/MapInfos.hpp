@@ -1,9 +1,9 @@
 #pragma once
 
 #include "nlohmann/json.hpp"
-
+#include "Database/Map.hpp"
 #include <string>
-struct Map;
+
 struct MapInfo {
   NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(MapInfo, expanded, id, name, order, parentId, scrollX, scrollY);
   bool expanded;
@@ -19,6 +19,9 @@ struct MapInfo {
 
   Map* map() { return m_map.get(); }
   const Map* map() const { return m_map.get(); }
+
+  Event* event(int id) { return m_map->event(id); }
+  const Event* event(int id) const { return m_map->event(id); }
 
 private:
   friend void recursiveSort(MapInfo& in);
@@ -66,6 +69,11 @@ public:
   std::vector<std::optional<MapInfo>>& mapInfos() { return m_mapinfos; }
   const std::vector<std::optional<MapInfo>>& mapInfos() const { return m_mapinfos; }
 
+  void setCurrentMap(MapInfo* map) { m_currentMap = map; }
+  MapInfo* currentMap() { return m_currentMap; }
+  const MapInfo* currentMap() const { return m_currentMap; }
+
 private:
   std::vector<std::optional<MapInfo>> m_mapinfos;
+  MapInfo* m_currentMap = nullptr;
 };

@@ -13,13 +13,5 @@ struct ChangeActorImageCommand : IEventCommand {
   int faceIndex;
   std::string battlerPicture;
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    std::string charString = charPicture == "" ? "None, " : charPicture + std::format("({})", charIndex) + " ";
-    std::string faceString = facePicture == "" ? "None, " : facePicture + std::format("({})", faceIndex) + " ";
-    std::string battlerString = battlerPicture == "" ? "None" : facePicture;
-
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change Actor Images : {}, " + charPicture + facePicture + battlerPicture
-      + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

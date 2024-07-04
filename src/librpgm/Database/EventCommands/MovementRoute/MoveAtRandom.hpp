@@ -1,8 +1,8 @@
 #pragma once
-#include "Database/EventCommands/IEventCommand.hpp"
+#include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementMoveAtRandomCommand : IEventCommand {
+struct MovementMoveAtRandomCommand : IMovementRouteStep {
   ~MovementMoveAtRandomCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Move_at_Random; }
 };

@@ -9,10 +9,5 @@ struct ShowBattleAnimationCommand : IEventCommand {
   int enemy; // equals 0 if bool is true
   int animation;
   bool targetAllEnemies;
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Show Battle Animation : "
-      + (targetAllEnemies == true ? "Entire Troop, {}" : "#" + std::to_string(enemy) + " {}, {}")
-      + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

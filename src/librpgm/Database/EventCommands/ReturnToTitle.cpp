@@ -1,5 +1,6 @@
-//
-// Created by antidote on 6/28/24.
-//
+#include "Database/EventCommands/ReturnToTitle.hpp"
 
-#include "ReturnToTitle.hpp"
+std::string ReturnToTitleCommand::stringRep(const Database& db) const {
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Return To Title Screen" +
+         ColorFormatter::popColor();
+}

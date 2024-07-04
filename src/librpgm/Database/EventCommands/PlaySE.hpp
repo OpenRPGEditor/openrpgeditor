@@ -1,15 +1,12 @@
 #pragma once
-#include "Database/EventCommands/IEventCommand.hpp"
+#include "MovementRoute/IMovementRouteStep.hpp"
 #include "Database/Audio.hpp"
+
 #include <format>
 
-struct PlaySECommand : IEventCommand {
+struct PlaySECommand : IMovementRouteStep {
   ~PlaySECommand() override = default;
   Audio audio;
-  [[nodiscard]] EventCode code() const override { return EventCode::Play_SE; }
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Play SE : " + (audio.name == "" ? "None" : audio.name) + " " +
-           std::format("({}, {}, {})", audio.volume, audio.pitch, audio.pan);
-  }
+  [[nodiscard]] EventCode code() const override { return EventCode::Play_SE_del_Movement; }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

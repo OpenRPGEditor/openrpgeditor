@@ -1,8 +1,8 @@
 #pragma once
-#include "Database/EventCommands/IEventCommand.hpp"
+#include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementJumpCommand : IEventCommand {
+struct MovementJumpCommand : IMovementRouteStep {
   ~MovementJumpCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Jump; }
   int x;
@@ -12,8 +12,5 @@ struct MovementJumpCommand : IEventCommand {
     out.push_back(x);
     out.push_back(y);
   }
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + std::format("◇Jump {}, {}", x, y) + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

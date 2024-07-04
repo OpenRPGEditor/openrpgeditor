@@ -1,18 +1,13 @@
 #pragma once
-#include "Database/EventCommands/IEventCommand.hpp"
+#include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementSpeedCommand : IEventCommand {
+struct MovementSpeedCommand : IMovementRouteStep {
   ~MovementSpeedCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Speed; }
   int speed;
 
-  void serializeParameters(nlohmann::json& out) override {
-    out.push_back(speed);
-  }
+  void serializeParameters(nlohmann::json& out) override { out.push_back(speed); }
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Speed : " + std::to_string(speed) + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

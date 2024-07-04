@@ -239,7 +239,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (m_openPopup) {
-        ImGui::OpenPopup("##var_alias_edit");
+        ImGui::OpenPopup("##alias_edit");
         m_openPopup = false;
       }
 
@@ -274,7 +274,7 @@ void DBGameConstantsTab::draw() {
         ImGui::EndTable();
       }
       if (ImGui::Button("Add")) {
-        m_switchVariblePicker.emplace("Switches", m_parent->project()->system().variables);
+        m_switchVariblePicker.emplace("Switches", m_parent->project()->system().switches);
       }
       if (m_switchVariblePicker) {
         const auto [closed, confirmed] = m_switchVariblePicker->draw();
@@ -289,7 +289,7 @@ void DBGameConstantsTab::draw() {
         }
       }
       if (m_openPopup) {
-        ImGui::OpenPopup("##switch_alias_edit");
+        ImGui::OpenPopup("##alias_edit");
         m_openPopup = false;
       }
       drawAliasModal(GameConstants::Type::Switch);
@@ -946,7 +946,6 @@ void DBGameConstantsTab::draw() {
       }
       ImGui::EndTabItem();
     }
-    m_基本セット;
     ImGui::EndTabBar();
   }
   ImGui::EndChild();

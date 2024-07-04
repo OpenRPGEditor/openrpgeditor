@@ -5,8 +5,4 @@
 struct OpenSaveCommand : IEventCommand {
   ~OpenSaveCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Open_Save_Screen; }
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Open Save Screen" + ColorFormatter::popColor();
-  }
 };

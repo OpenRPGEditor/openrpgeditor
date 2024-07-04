@@ -55,7 +55,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       }
 
       if (parameters.size() > 4) {
-        parameters[3].get_to(choice->background);
+        parameters[4].get_to(choice->background);
       } else {
         choice->background = TextBackground::Window;
       }
@@ -189,9 +189,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       }
       case ConditionType::Character: {
         parameters[1].get_to(cond->character.id);
-        if (cond->character.id > 0) {
-          parameters[2].get_to(cond->character.facing);
-        }
+        parameters[2].get_to(cond->character.facing);
         break;
       }
       case ConditionType::Gold: {
@@ -210,7 +208,9 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
         break;
       }
       case ConditionType::Button: {
-        parameters[1].get_to(cond->button);
+        std::string button;
+        parameters[1].get_to(button);
+        cond->button = magic_enum::enum_cast<Button>(button, magic_enum::case_insensitive).value_or(Button::OK);
         break;
       }
       case ConditionType::Script: {
@@ -298,8 +298,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
         break;
       case VariableControlOperand::Game_Data:
         parameters[4].get_to(variable->gameData.source);
-        parameters[5].get_to(variable->gameData.rawSource);
-        parameters[6].get_to(variable->gameData.value);
+        parameters[5].get_to(variable->gameData.value);
+        parameters[6].get_to(variable->gameData.rawSource);
         break;
       case VariableControlOperand::Script:
         parameters[4].get_to(variable->script);
@@ -456,9 +456,9 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       transfer->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(transfer->vehicle);
       parameters[1].get_to(transfer->mode);
-      parameters[1].get_to(transfer->mapId);
-      parameters[2].get_to(transfer->x);
-      parameters[3].get_to(transfer->y);
+      parameters[2].get_to(transfer->mapId);
+      parameters[3].get_to(transfer->x);
+      parameters[4].get_to(transfer->y);
       break;
     }
     case EventCode::Set_Event_Location: {
@@ -545,13 +545,13 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       step->indent = parser[index].value("indent", std::optional<int>{});
       break;
     }
-    case EventCode::Fade_Out_Screen: {
+    case EventCode::Fadeout_Screen: {
       FadeoutScreenCommand* step =
           dynamic_cast<FadeoutScreenCommand*>(ret.emplace_back(new FadeoutScreenCommand()).get());
       step->indent = parser[index].value("indent", std::optional<int>{});
       break;
     }
-    case EventCode::Fade_In_Screen: {
+    case EventCode::Fadein_Screen: {
       FadeinScreenCommand* step = dynamic_cast<FadeinScreenCommand*>(ret.emplace_back(new FadeinScreenCommand()).get());
       step->indent = parser[index].value("indent", std::optional<int>{});
       break;
@@ -679,7 +679,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       parameters[0].get_to(me->audio);
       break;
     }
-    case EventCode::Fade_Out_BGM: {
+    case EventCode::Fadeout_BGM: {
       FadeoutBGM* mov = dynamic_cast<FadeoutBGM*>(ret.emplace_back(new FadeoutBGM()).get());
       mov->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(mov->duration);
@@ -701,7 +701,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       parameters[0].get_to(me->audio);
       break;
     }
-    case EventCode::Fade_Out_BGS: {
+    case EventCode::Fadeout_BGS: {
       FadeoutBGS* mov = dynamic_cast<FadeoutBGS*>(ret.emplace_back(new FadeoutBGS()).get());
       mov->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(mov->duration);
@@ -753,7 +753,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Change_Parallax: {
-      ChangeParallaxCommand* parallax = dynamic_cast<ChangeParallaxCommand*>(ret.emplace_back(new ChangeParallaxCommand()).get());
+      ChangeParallaxCommand* parallax =
+          dynamic_cast<ChangeParallaxCommand*>(ret.emplace_back(new ChangeParallaxCommand()).get());
       parallax->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(parallax->image);
       parameters[1].get_to(parallax->loopHorizontally);
@@ -798,6 +799,12 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       lose->indent = parser[index].value("indent", std::optional<int>{});
       break;
     }
+    case EventCode::End_del_Battle_Processing: {
+      EndBattleProcessingCommand* end =
+          dynamic_cast<EndBattleProcessingCommand*>(ret.emplace_back(new EndBattleProcessingCommand()).get());
+      end->indent = parser[index].value("indent", std::optional<int>{});
+      break;
+    }
     case EventCode::Shop_Processing: {
       ShopProcessingCommand* shop =
           dynamic_cast<ShopProcessingCommand*>(ret.emplace_back(new ShopProcessingCommand()).get());
@@ -807,23 +814,25 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       parameters[2].get_to(shop->priceType);
       parameters[3].get_to(shop->price);
       parameters[4].get_to(shop->purchaseOnly);
-      break;
-    }
-    case EventCode::Shop_Processing_Good: {
-      ShopProcessingGoodCommand* shop =
-          dynamic_cast<ShopProcessingGoodCommand*>(ret.emplace_back(new ShopProcessingGoodCommand()).get());
-      shop->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(shop->type);
-      parameters[1].get_to(shop->id);
-      parameters[2].get_to(shop->priceType);
-      parameters[3].get_to(shop->price);
+
+      while (nextEventCommand() == EventCode::Shop_Processing_Good) {
+        ++index;
+        ShopProcessingGoodCommand* good =
+            dynamic_cast<ShopProcessingGoodCommand*>(shop->goods.emplace_back(new ShopProcessingGoodCommand()).get());
+        good->indent = parser[index].value("indent", std::optional<int>{});
+        auto params = currentCommand()["parameters"];
+        params[0].get_to(good->type);
+        params[1].get_to(good->id);
+        params[2].get_to(good->priceType);
+        params[3].get_to(good->price);
+      }
       break;
     }
     case EventCode::Name_Input_Processing: {
       NameInputCommand* shop = dynamic_cast<NameInputCommand*>(ret.emplace_back(new NameInputCommand()).get());
       shop->indent = parser[index].value("indent", std::optional<int>{});
       parameters[0].get_to(shop->actorId);
-      parameters[1].get_to(shop->numChar);
+      parameters[1].get_to(shop->maxChar);
       break;
     }
     case EventCode::Change_HP: {
@@ -1389,16 +1398,16 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       parameters[0].get_to(end->script);
       break;
     }
-    // default:
-    //   UnhandledEventCommand* end =
-    //       dynamic_cast<UnhandledEventCommand*>(ret.emplace_back(new UnhandledEventCommand()).get());
-    //   end->indent = parser[index].value("indent", std::optional<int>{});
-    //   end->m_code = code;
-    //   end->data = parser[index];
-    //   end->indent = parser[index].value("indent", std::optional<int>{});
-    //   std::cout << "Unhandled command: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")" <<
-    //   std::endl;
-    //   break;
+    default:
+      UnhandledEventCommand* end =
+          dynamic_cast<UnhandledEventCommand*>(ret.emplace_back(new UnhandledEventCommand()).get());
+      end->indent = parser[index].value("indent", std::optional<int>{});
+      end->m_code = code;
+      end->data = parser[index];
+      end->indent = parser[index].value("indent", std::optional<int>{});
+      std::cout << "Unhandled command: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")"
+                << std::endl;
+      break;
     }
     ++index;
   }

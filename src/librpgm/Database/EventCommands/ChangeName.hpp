@@ -9,8 +9,5 @@ struct ChangeNameCommand : IEventCommand {
   int actor;
   std::string name;
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change Name : {}, " + name + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

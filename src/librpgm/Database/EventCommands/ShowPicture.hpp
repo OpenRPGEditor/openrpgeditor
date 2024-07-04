@@ -16,11 +16,5 @@ struct ShowPictureCommand : IEventCommand {
   int opacityValue;
   Blend blendMode;
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Show Picture : " +
-        std::format("#{}, {}, {} ({},{}), ({}%, {}%), {}, {}, {} frames",
-          number, imageName, DecodeEnumName(origin), DecodeEnumName(type), value1, value2, zoomX, zoomY, opacityValue, DecodeEnumName(blendMode))
-    + ColorFormatter::popColor();
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

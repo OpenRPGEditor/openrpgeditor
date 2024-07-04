@@ -7,12 +7,5 @@ struct ChangeGoldCommmand : IEventCommand {
   QuantityChangeOp operation;
   QuantityChangeSource operandSource;
   int operand;
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    if (operandSource == QuantityChangeSource::Constant)
-      return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change Gold: " + (operation == QuantityChangeOp::_plu__del_Increase ? "+ " : "- ") + std::to_string(operand);
-
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code())
-    + "Change Gold: " + (operation == QuantityChangeOp::_plu__del_Increase ? "+ " : "- "); // Add variable name at the end
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

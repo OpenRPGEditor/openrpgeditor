@@ -113,7 +113,6 @@ void EventCommandEditor::draw() {
         for (int n = 0; n < m_commands->size(); n++) {
           const bool isSelected = (m_selectedCommand == n);
           std::string indentPad = m_commands->at(n)->stringRep(m_project->database());
-          trim(indentPad);
           auto str = splitString(indentPad, '\n');
           float height = 0.f;
           for (int i = 0; i < str.size(); ++i) {

@@ -4,5 +4,5 @@
 
 struct MovementSteppingAnimationONCommand : IMovementRouteStep {
   ~MovementSteppingAnimationONCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Frequency; }
+  [[nodiscard]] EventCode code() const override { return EventCode::Stepping_Animation_ON; }
 };

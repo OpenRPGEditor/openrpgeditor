@@ -9,15 +9,15 @@ std::string ChangeParallaxCommand::stringRep(const Database& db) const {
     rep += ColorFormatter::getColor(Color::Gray);
 
     if (loopHorizontally) {
-      rep += "Loop Horizontally";
+      rep += "(Loop Horizontally)";
     }
     if (loopVertically) {
       if (loopHorizontally) {
         rep += ", ";
       }
-      rep += "Loop Vertically";
+      rep += "(Loop Vertically)";
     }
-    rep = db.parentheses(rep) + ColorFormatter::popColor();
+    rep = rep + ColorFormatter::popColor();
   }
 
   return rep;

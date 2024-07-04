@@ -4,5 +4,5 @@
 
 struct MovementWalkingAnimationOFFCommand : IMovementRouteStep {
   ~MovementWalkingAnimationOFFCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Frequency; }
+  [[nodiscard]] EventCode code() const override { return EventCode::Walking_Animation_OFF; }
 };

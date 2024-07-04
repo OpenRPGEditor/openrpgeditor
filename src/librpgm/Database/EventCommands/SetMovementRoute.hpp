@@ -1,22 +1,7 @@
 #pragma once
-#include "Database/EventCommands/IEventCommand.hpp"
+#include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include "Database/MovementRoute.hpp"
 #include <format>
-
-struct SetMovementRouteCommand : IEventCommand {
-  ~SetMovementRouteCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Set_Movement_Route; }
-  int character;
-  MovementRoute route;
-  std::vector<std::shared_ptr<IEventCommand>> editNodes;
-
-  void serializeParameters(nlohmann::json& out) override {
-    out.push_back(character);
-    out.push_back(route);
-  }
-
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
-};
 
 struct MovementRouteStepCommand : IEventCommand {
   ~MovementRouteStepCommand() override = default;
@@ -35,4 +20,20 @@ struct MovementRouteStepCommand : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db) const override {
     return step->stringRep(db);
   }
+};
+
+
+struct SetMovementRouteCommand : IEventCommand {
+  ~SetMovementRouteCommand() override = default;
+  [[nodiscard]] EventCode code() const override { return EventCode::Set_Movement_Route; }
+  int character;
+  MovementRoute route;
+  std::vector<std::shared_ptr<MovementRouteStepCommand>> editNodes;
+
+  void serializeParameters(nlohmann::json& out) override {
+    out.push_back(character);
+    out.push_back(route);
+  }
+
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

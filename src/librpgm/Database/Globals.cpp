@@ -104,5 +104,29 @@ std::vector<std::string> splitString(const std::string& str, char delimiter) {
     index++;
     tokens.push_back(token);
   }
+
   return tokens;
+}
+
+std::string& trim(std::string& s) {
+  // Find first non whitespace char in StrToTrim
+  std::string::size_type first = s.find_first_not_of(' ');
+
+  // Check whether something went wrong?
+  if (first == std::string::npos) {
+    first = 0;
+  }
+
+  // Find last non whitespace char from StrToTrim
+  std::string::size_type last = s.find_last_not_of(' ');
+
+  // If something didn't go wrong, Last will be recomputed to get real length of substring
+  if (last != std::string::npos) {
+    last = (last + 1) - first;
+  }
+
+  // Copy such a string to TrimmedString
+  s = s.substr(first, last);
+
+  return s;
 }

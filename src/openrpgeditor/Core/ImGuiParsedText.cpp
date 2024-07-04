@@ -326,7 +326,7 @@ void TextParsedUnformatted(const char* text, const char* text_end) {
   const ImVec2 text_pos(window->DC.CursorPos.x, window->DC.CursorPos.y + window->DC.CurrLineTextBaseOffset);
   const float wrap_pos_x = window->DC.TextWrapPos;
   const bool wrap_enabled = wrap_pos_x >= 0.0f;
-  if (text_end - text > 2000 && !wrap_enabled) {
+  if (text_end - text > 1000 && !wrap_enabled) {
     // Long text!
     // Perform manual coarse clipping to optimize for long multi-line text
     // - From this point we will only compute the width of lines that are visible. Optimization only available

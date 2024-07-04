@@ -836,3 +836,4 @@ void setDirty(const T& a, const T& b, bool& dirty) {
 }
 
 std::vector<std::string> splitString(const std::string& str, char delimiter);
+std::string& trim(std::string& s);

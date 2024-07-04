@@ -5,7 +5,7 @@
 std::string BattleProcessingCommand::stringRep(const Database& db) const {
   std::string enemy;
   if (type == BattleProcessType::Direct_designation) {
-    enemy = db.enemyNameOrId(id);
+    enemy = db.troopNameOrId(id);
   } else if (type == BattleProcessType::Designation_with_variables) {
     enemy = std::format("{{{}}}", db.variableNameOrId(id));
   } else {

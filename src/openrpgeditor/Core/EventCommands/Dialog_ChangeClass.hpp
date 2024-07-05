@@ -9,18 +9,17 @@ struct Project;
 struct Dialog_ChangeClass : IDialogController {
   Dialog_ChangeClass() = delete;
   explicit Dialog_ChangeClass(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-    command = new ChangeClassCommand();
+    command.reset(new ChangeClassCommand());
     m_actor = command->actor;
     m_class = command->classId;
     m_saveLevel = command->saveLevel;
   }
   std::tuple<bool, bool> draw() override;
 
-  IEventCommand* getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return command; };
   Project* m_project = nullptr;
 
 private:
-
   int m_actor;
   int m_class;
   bool m_saveLevel;
@@ -28,6 +27,6 @@ private:
   bool m_confirmed{false};
   std::optional<ObjectPicker<Actor>> actor_picker;
   std::optional<ObjectPicker<Class>> class_picker;
-  ChangeClassCommand* command;
+  std::shared_ptr<ChangeClassCommand> command;
   std::tuple<bool, bool> result;
 };

@@ -12,7 +12,7 @@ struct Project;
 struct Dialog_PlayME : IDialogController {
   Dialog_PlayME() = delete;
   explicit Dialog_PlayME(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-  command = new PlayMECommand();
+    command.reset(new PlayMECommand());
     m_audio = command->audio;
     try {
       auto files = getFileNames(Database::Instance->basePath + "audio/me/");
@@ -25,7 +25,7 @@ struct Dialog_PlayME : IDialogController {
     m_audio.name = "";
   }
   std::tuple<bool, bool> draw() override;
-  [[nodiscard]] IEventCommand* getCommand() override { return command; }
+  [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return command; }
 
   Project* m_project = nullptr;
 
@@ -38,14 +38,15 @@ private:
   sf::SoundBuffer buffer;
   sf::Sound sound;
 
-  PlayMECommand* command;
+  std::shared_ptr<PlayMECommand> command;
   std::tuple<bool, bool> result;
   std::vector<std::string> m_audios;
   std::vector<std::string> getFileNames(const std::string& directoryPath) {
     std::vector<std::string> fileNames;
 
     for (const auto& entry : fs::directory_iterator(directoryPath)) {
-      if (entry.path().extension() != ".ogg") continue;
+      if (entry.path().extension() != ".ogg")
+        continue;
 
       std::string filename = entry.path().filename().string();
       size_t lastDotPos = filename.find_last_of(".");

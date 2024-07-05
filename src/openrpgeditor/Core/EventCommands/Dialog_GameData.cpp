@@ -258,38 +258,38 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(100) - ImGui::GetStyle().FramePadding.x, ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {
       m_confirmed = true;
-      command->gameData.type = static_cast<GameDataType>(m_type);
+      command.gameData.type = static_cast<GameDataType>(m_type);
       switch (m_type) {
       case 0: // Item
-        command->gameData.rawSource = m_item_source;
+        command.gameData.rawSource = m_item_source;
         break;
       case 1:
-        command->gameData.rawSource = m_weapon_source;
+        command.gameData.rawSource = m_weapon_source;
         break;
       case 2:
-        command->gameData.rawSource = m_armor_source;
+        command.gameData.rawSource = m_armor_source;
         break;
       case 3:
-        command->gameData.rawSource = m_actor_source;
-        command->gameData.value = current_actorDataSource;
+        command.gameData.rawSource = m_actor_source;
+        command.gameData.value = current_actorDataSource;
         break;
       case 4:
-        command->gameData.rawSource = current_enemySource;
-        command->gameData.value = current_enemyDataSource;
+        command.gameData.rawSource = current_enemySource;
+        command.gameData.value = current_enemyDataSource;
         break;
       case 5:
-        command->gameData.rawSource = current_characterSource;
-        command->gameData.value = current_characterDataSource;
+        command.gameData.rawSource = current_characterSource;
+        command.gameData.value = current_characterDataSource;
         break;
       case 6:
-        command->gameData.rawSource = current_partySource;
+        command.gameData.rawSource = current_partySource;
         break;
       case 7:
-        command->gameData.rawSource = current_otherSource;
+        command.gameData.rawSource = current_otherSource;
         break;
       default:
-        command->gameData.rawSource = 0;
-        command->gameData.value = 0;
+        command.gameData.rawSource = 0;
+        command.gameData.value = 0;
         break;
       }
       ImGui::CloseCurrentPopup();

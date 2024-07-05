@@ -9,7 +9,7 @@ struct ChangeNameCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Name; }
 
   int actor = 1;
-  std::string name = "";
+  std::string name;
 
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

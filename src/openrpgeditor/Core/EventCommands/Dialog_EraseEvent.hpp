@@ -6,16 +6,16 @@ struct Project;
 struct Dialog_EraseEvent : IDialogController {
   Dialog_EraseEvent() = delete;
   explicit Dialog_EraseEvent(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-command = new EraseEventCommand();
+    command.reset(new EraseEventCommand());
     m_open = true;
   }
   std::tuple<bool, bool> draw() override;
 
-  IEventCommand* getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return command; };
   Project* m_project = nullptr;
 
 private:
   bool m_confirmed{true};
-  EraseEventCommand* command;
+  std::shared_ptr<EraseEventCommand> command;
   std::tuple<bool, bool> result;
 };

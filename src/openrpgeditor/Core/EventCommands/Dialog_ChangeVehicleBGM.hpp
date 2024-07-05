@@ -11,8 +11,9 @@ namespace fs = std::filesystem;
 struct Project;
 struct Dialog_ChangeVehicleBGM : IDialogController {
   Dialog_ChangeVehicleBGM() = delete;
-  explicit Dialog_ChangeVehicleBGM(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-  command = new ChangeVehicleBGMCommand();
+  explicit Dialog_ChangeVehicleBGM(const std::string& name, Project* project)
+  : IDialogController(name), m_project(project) {
+    command.reset(new ChangeVehicleBGMCommand());
     m_audio = command->me;
     try {
       auto files = getFileNames(Database::Instance->basePath + "audio/bgm/");
@@ -25,7 +26,7 @@ struct Dialog_ChangeVehicleBGM : IDialogController {
     m_audio.name = m_audios.at(m_selected);
   }
   std::tuple<bool, bool> draw() override;
-  [[nodiscard]] IEventCommand* getCommand() override { return command; }
+  [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return command; }
 
   Project* m_project = nullptr;
 
@@ -38,7 +39,7 @@ private:
   sf::SoundBuffer buffer;
   sf::Sound sound;
 
-  ChangeVehicleBGMCommand* command;
+  std::shared_ptr<ChangeVehicleBGMCommand> command;
   std::tuple<bool, bool> result;
   std::vector<std::string> m_audios;
   std::vector<std::string> getFileNames(const std::string& directoryPath) {

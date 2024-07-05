@@ -8,15 +8,16 @@
 struct Project;
 struct Dialog_ChangePartyMember : IDialogController {
   Dialog_ChangePartyMember() = delete;
-  explicit Dialog_ChangePartyMember(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-command = new ChangePartyMemberCommand();
+  explicit Dialog_ChangePartyMember(const std::string& name, Project* project)
+  : IDialogController(name), m_project(project) {
+    command.reset(new ChangePartyMemberCommand());
     m_actor = command->member;
     m_operation = static_cast<int>(command->operation);
     m_isInit = command->initialize;
   }
   std::tuple<bool, bool> draw() override;
 
-  IEventCommand* getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return command; };
   Project* m_project = nullptr;
 
 private:
@@ -26,6 +27,6 @@ private:
 
   bool m_confirmed{false};
   std::optional<ObjectPicker<Actor>> actor_picker;
-ChangePartyMemberCommand* command;
+  std::shared_ptr<ChangePartyMemberCommand> command;
   std::tuple<bool, bool> result;
 };

@@ -6,16 +6,15 @@ struct Project;
 struct Dialog_GameOver : IDialogController {
   Dialog_GameOver() = delete;
   explicit Dialog_GameOver(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-command = new GameOverCommand();
+    command.reset(new GameOverCommand());
     m_open = true;
   }
   std::tuple<bool, bool> draw() override;
-
-  IEventCommand* getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return command; };
   Project* m_project = nullptr;
 
 private:
   bool m_confirmed{true};
-GameOverCommand* command;
+  std::shared_ptr<GameOverCommand> command;
   std::tuple<bool, bool> result;
 };

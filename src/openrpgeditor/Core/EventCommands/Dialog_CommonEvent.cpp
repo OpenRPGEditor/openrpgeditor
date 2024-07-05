@@ -16,13 +16,13 @@ inline const std::string& ObjectPicker<std::optional<CommonEvent>>::getName(cons
 }
 
 std::tuple<bool, bool> Dialog_CommonEvent::draw() {
-  if (ce_picker) {
-    auto [closed, confirmed] = ce_picker->draw();
+  if (m_picker) {
+    auto [closed, confirmed] = m_picker->draw();
     if (confirmed) {
       m_open = closed;
       m_confirmed = confirmed;
-      command->event = ce_picker->selection();
-      ce_picker.reset();
+      command->event = m_picker->selection();
+      m_picker.reset();
     }
   }
   return std::make_tuple(!m_open, m_confirmed);

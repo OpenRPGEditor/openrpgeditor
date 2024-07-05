@@ -12,7 +12,7 @@ struct Project;
 struct Dialog_PlayMovie : IDialogController {
   Dialog_PlayMovie() = delete;
   explicit Dialog_PlayMovie(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-  command = new PlayMovieCommand();
+    command.reset(new PlayMovieCommand());
     m_movie = command->name;
     try {
       auto files = getFileNames(Database::Instance->basePath + "movies/");
@@ -25,10 +25,9 @@ struct Dialog_PlayMovie : IDialogController {
     m_movie = "";
   }
   std::tuple<bool, bool> draw() override;
-  [[nodiscard]] IEventCommand* getCommand() override { return command; }
+  [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return command; }
 
   Project* m_project = nullptr;
-
 
 private:
   bool m_confirmed{false};
@@ -36,7 +35,7 @@ private:
   int m_selected = 0;
   std::string m_movie;
 
-  PlayMovieCommand* command;
+  std::shared_ptr<PlayMovieCommand> command;
   std::tuple<bool, bool> result;
   std::vector<std::string> m_movies;
   std::vector<std::string> getFileNames(const std::string& directoryPath) {

@@ -10,20 +10,20 @@
 struct Project;
 struct Dialog_EnemyRecoverAll : IDialogController {
   Dialog_EnemyRecoverAll() = delete;
-  explicit Dialog_EnemyRecoverAll(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-command = new EnemyRecoverAllCommand();
+  explicit Dialog_EnemyRecoverAll(const std::string& name, Project* project)
+  : IDialogController(name), m_project(project) {
+    command.reset(new EnemyRecoverAllCommand());
     m_troop_selection = command->troop;
   }
   std::tuple<bool, bool> draw() override;
 
-  IEventCommand* getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return command; };
   Project* m_project = nullptr;
 
 private:
-
   int m_troop_selection = 0;
 
   bool m_confirmed{false};
-EnemyRecoverAllCommand* command;
+  std::shared_ptr<EnemyRecoverAllCommand> command;
   std::tuple<bool, bool> result;
 };

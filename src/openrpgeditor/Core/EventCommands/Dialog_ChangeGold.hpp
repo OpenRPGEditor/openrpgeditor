@@ -7,7 +7,7 @@ struct Project;
 struct Dialog_ChangeGold : IDialogController {
   Dialog_ChangeGold() = delete;
   explicit Dialog_ChangeGold(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-command = new ChangeGoldCommand();
+    command.reset(new ChangeGoldCommand());
     m_operation = static_cast<int>(command->operation);
     m_operandSource = static_cast<int>(command->operandSource);
     m_constant = command->operand;
@@ -15,7 +15,7 @@ command = new ChangeGoldCommand();
   }
   std::tuple<bool, bool> draw() override;
 
-  IEventCommand* getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return command; };
   Project* m_project = nullptr;
 
 private:
@@ -27,6 +27,6 @@ private:
 
   bool m_confirmed{false};
   std::optional<VariableSwitchPicker> picker;
-ChangeGoldCommand* command;
+  std::shared_ptr<ChangeGoldCommand> command;
   std::tuple<bool, bool> result;
 };

@@ -7,7 +7,7 @@ struct Project;
 struct Dialog_ControlVariables : IDialogController {
   Dialog_ControlVariables() = delete;
   explicit Dialog_ControlVariables(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-    command.emplace();
+command = new ControlVariables();
     command->start = 0;
     command->end = 0;
     command->random.min = 0;
@@ -16,8 +16,8 @@ struct Dialog_ControlVariables : IDialogController {
   std::tuple<bool, bool>  draw() override;
   Project* m_project = nullptr;
 
-  std::shared_ptr<IEventCommand> getCommand() override {
-    return std::make_shared<ControlVariables>(command.value());
+  IEventCommand* getCommand() override {
+    return command;
   };
 
 private:
@@ -29,7 +29,7 @@ private:
   int m_rand_2 = 0;
   std::string script = "";
 
-  std::optional<ControlVariables> command;
+  ControlVariables* command;
   std::optional<VariableSwitchPicker> picker;
   std::tuple<bool, bool> result;
   bool singleRequest = false;

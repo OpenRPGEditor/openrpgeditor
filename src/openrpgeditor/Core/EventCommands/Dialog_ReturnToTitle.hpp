@@ -6,16 +6,15 @@ struct Project;
 struct Dialog_ReturnToTitle : IDialogController {
   Dialog_ReturnToTitle() = delete;
   explicit Dialog_ReturnToTitle(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+command = new ReturnToTitleCommand();
     m_open = true;
-    command.emplace();
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<ReturnToTitleCommand>(command.value()); };
+  IEventCommand* getCommand() override { return command; };
   Project* m_project = nullptr;
 
 private:
-  bool m_confirmed{true};
-  std::optional<ReturnToTitleCommand> command;
+ReturnToTitleCommand* command;
   std::tuple<bool, bool> result;
 };

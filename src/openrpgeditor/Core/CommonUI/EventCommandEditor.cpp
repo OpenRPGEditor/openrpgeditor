@@ -11,6 +11,7 @@
 #include "Core/EventCommands/Dialog_AbortBattle.hpp"
 #include "Core/EventCommands/Dialog_BreakLoop.hpp"
 #include "Core/EventCommands/Dialog_ChangeBattleBGM.hpp"
+#include "Core/EventCommands/Dialog_ChangeClass.hpp"
 #include "Core/EventCommands/Dialog_ChangeDefeatME.hpp"
 #include "Core/EventCommands/Dialog_ChangeEncounter.hpp"
 #include "Core/EventCommands/Dialog_ChangeEnemyState.hpp"
@@ -18,6 +19,7 @@
 #include "Core/EventCommands/Dialog_ChangeFormationAccess.hpp"
 #include "Core/EventCommands/Dialog_ChangeGold.hpp"
 #include "Core/EventCommands/Dialog_ChangeMenuAccess.hpp"
+#include "Core/EventCommands/Dialog_ChangeName.hpp"
 #include "Core/EventCommands/Dialog_ChangeNickname.hpp"
 #include "Core/EventCommands/Dialog_ChangePartyMember.hpp"
 #include "Core/EventCommands/Dialog_ChangeProfile.hpp"
@@ -37,19 +39,25 @@
 #include "Core/EventCommands/Dialog_GameOver.hpp"
 #include "Core/EventCommands/Dialog_GatherFollowers.hpp"
 #include "Core/EventCommands/Dialog_GetOnOffVehicle.hpp"
+#include "Core/EventCommands/Dialog_JumpToLabel.hpp"
+#include "Core/EventCommands/Dialog_Label.hpp"
 #include "Core/EventCommands/Dialog_Loop.hpp"
 #include "Core/EventCommands/Dialog_OpenMenuScreen.hpp"
 #include "Core/EventCommands/Dialog_OpenSaveScreen.hpp"
 #include "Core/EventCommands/Dialog_PlayBGM.hpp"
 #include "Core/EventCommands/Dialog_PlayBGS.hpp"
 #include "Core/EventCommands/Dialog_PlayME.hpp"
+#include "Core/EventCommands/Dialog_PlayMovie.hpp"
 #include "Core/EventCommands/Dialog_PlaySE.hpp"
 #include "Core/EventCommands/Dialog_RecoverAll.hpp"
 #include "Core/EventCommands/Dialog_ReplayBGM.hpp"
 #include "Core/EventCommands/Dialog_ReturnToTitle.hpp"
 #include "Core/EventCommands/Dialog_SaveBGM.hpp"
 #include "Core/EventCommands/Dialog_Script.hpp"
+#include "Core/EventCommands/Dialog_ShowAnimation.hpp"
 #include "Core/EventCommands/Dialog_StopSE.hpp"
+#include "Core/EventCommands/Dialog_TimerControl.hpp"
+#include "Core/EventCommands/Dialog_Wait.hpp"
 #include "Core/EventCommands/IDialogController.hpp"
 
 #include "Database/EventCommands/BattleProcessing.hpp"
@@ -256,13 +264,11 @@ void EventCommandEditor::drawPopup() {
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Change Name...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ChangeName>("Change Name", m_project);
+            commandDialog = std::make_shared<Dialog_ChangeName>("Change Name", m_project);
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Change Class...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ChangeClass>("Change Class", m_project);
+            commandDialog = std::make_shared<Dialog_ChangeClass>("Change Class", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::EndTabItem();
@@ -285,8 +291,7 @@ void EventCommandEditor::drawPopup() {
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Play Movie...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_PlayMovie>("Play Movie", m_project);
+            commandDialog = std::make_shared<Dialog_PlayMovie>("Play Movie", m_project);
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Save BGM", size)) {
@@ -311,8 +316,7 @@ void EventCommandEditor::drawPopup() {
           }
           ImGui::SameLine(); // Third Column
           if (ImGui::Button("Wait...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_Wait>("Wait", m_project);
+            commandDialog = std::make_shared<Dialog_Wait>("Wait", m_project);
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Loop", size)) {
@@ -342,20 +346,17 @@ void EventCommandEditor::drawPopup() {
           }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Control Timer...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_TimerControl>("Control Timer", m_project);
+            commandDialog = std::make_shared<Dialog_TimerControl>("Control Timer", m_project);
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Label...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_Label>("Label", m_project);
+            commandDialog = std::make_shared<Dialog_Label>("Label", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Transfer Player...", size)) {}
           if (ImGui::Button("Jump to Label...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_Label>("Jump to Label", m_project);
+            commandDialog = std::make_shared<Dialog_JumpToLabel>("Jump to Label", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column
@@ -372,8 +373,7 @@ void EventCommandEditor::drawPopup() {
           if (ImGui::Button("Show Text...", size)) {}
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Show Animation...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ShowAnimation>("Show Animation", m_project);
+            commandDialog = std::make_shared<Dialog_ShowAnimation>("Show Animation", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third Column
@@ -550,7 +550,7 @@ void EventCommandEditor::drawPopup() {
           auto [closed, confirmed] = commandDialog->draw();
           if (confirmed) {
             auto m_select = m_commands->begin() + m_selectedCommand;
-            m_select = m_commands->insert(m_select, commandDialog->getCommand());
+            m_select = m_commands->insert(m_select, std::make_shared<IEventCommand>(commandDialog->getCommand()));
             commandDialog.reset();
             ImGui::CloseCurrentPopup();
           }

@@ -11,7 +11,7 @@ struct IDialogController {
   bool IsNextFunc() const { return m_isNext; }
   void SetOpen(bool open) { m_open = open; }
   void SetNext(bool open) { m_isNext = open; }
-  virtual std::shared_ptr<IEventCommand> getCommand() { return nullptr; }
+  virtual IEventCommand* getCommand() { return nullptr; }
 
 protected:
   bool m_confirmed{false};

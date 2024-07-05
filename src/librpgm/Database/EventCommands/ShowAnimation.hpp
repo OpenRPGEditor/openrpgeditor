@@ -12,8 +12,8 @@ struct ShowAnimationCommand final : IEventCommand {
   }
   ~ShowAnimationCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Animation; }
-  int character;
-  int animation;
-  bool waitForCompletion;
+  int character = -1;
+  int animation = 1;
+  bool waitForCompletion = false;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

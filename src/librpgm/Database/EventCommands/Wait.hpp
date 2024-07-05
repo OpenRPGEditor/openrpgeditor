@@ -13,5 +13,5 @@ struct WaitCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) override { out.push_back(duration); }
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  int duration;
+  int duration = 1;
 };

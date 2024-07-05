@@ -23,7 +23,7 @@ struct CommentCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Comment; }
   void addText(NextCommentCommand* n) { nextComments.emplace_back(n); }
 
-  std::string text;
+  std::string text = "";
   std::vector<std::shared_ptr<NextCommentCommand>> nextComments;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

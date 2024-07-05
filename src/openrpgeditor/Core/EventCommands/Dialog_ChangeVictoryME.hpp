@@ -12,8 +12,8 @@ struct Project;
 struct Dialog_ChangeVictoryME : IDialogController {
   Dialog_ChangeVictoryME() = delete;
   explicit Dialog_ChangeVictoryME(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-    command.emplace();
-    m_audio = Audio();
+  command = new ChangeVictoryMECommand();
+    m_audio = command->me;
     try {
       auto files = getFileNames(Database::Instance->basePath + "audio/me/");
       for (const auto& file : files) {
@@ -25,7 +25,7 @@ struct Dialog_ChangeVictoryME : IDialogController {
     m_audio.name = m_audios.at(m_selected);
   }
   std::tuple<bool, bool> draw() override;
-  [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<ChangeVictoryMECommand>(command.value()); }
+  [[nodiscard]] IEventCommand* getCommand() override { return command; }
 
   Project* m_project = nullptr;
 
@@ -38,7 +38,7 @@ private:
   sf::SoundBuffer buffer;
   sf::Sound sound;
 
-  std::optional<ChangeVictoryMECommand> command;
+  ChangeVictoryMECommand* command;
   std::tuple<bool, bool> result;
   std::vector<std::string> m_audios;
   std::vector<std::string> getFileNames(const std::string& directoryPath) {

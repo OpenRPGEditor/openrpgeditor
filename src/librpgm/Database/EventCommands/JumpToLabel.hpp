@@ -9,6 +9,6 @@ struct JumpToLabelCommand final : IEventCommand {
   }
   ~JumpToLabelCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Jump_To_Label; }
-  std::string label;
+  std::string label = "";
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

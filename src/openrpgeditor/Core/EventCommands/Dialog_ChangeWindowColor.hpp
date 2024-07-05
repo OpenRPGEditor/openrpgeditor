@@ -6,19 +6,22 @@ struct Project;
 struct Dialog_ChangeWindowColor : IDialogController {
   Dialog_ChangeWindowColor() = delete;
   explicit Dialog_ChangeWindowColor(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-    command.emplace();
+command = new ChangeWindowColorCommand();
+    red = command->r;
+    green = command->g;
+    blue = command->b;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<ChangeWindowColorCommand>(command.value()); };
+  IEventCommand* getCommand() override { return command; };
   Project* m_project = nullptr;
 
 private:
-  int red = 255;
-  int green = 255;
-  int blue = 255;
+  int red;
+  int green;
+  int blue;
 
   bool m_confirmed{false};
-  std::optional<ChangeWindowColorCommand> command;
+ChangeWindowColorCommand* command;
   std::tuple<bool, bool> result;
 };

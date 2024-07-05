@@ -12,8 +12,8 @@ struct Project;
 struct Dialog_PlayBGM : IDialogController {
   Dialog_PlayBGM() = delete;
   explicit Dialog_PlayBGM(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-    command.emplace();
-    m_audio = Audio();
+  command = new PlayBGMCommand();
+    m_audio = command->audio;
     try {
       auto files = getFileNames(Database::Instance->basePath + "audio/bgm/");
       for (const auto& file : files) {
@@ -22,10 +22,10 @@ struct Dialog_PlayBGM : IDialogController {
     } catch (const std::filesystem::filesystem_error& e) {
       std::cerr << "Error accessing directory: " << e.what() << std::endl;
     }
-    m_audio.name = m_audios.at(m_selected);
+    m_audio.name = "";
   }
   std::tuple<bool, bool> draw() override;
-  [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<PlayBGMCommand>(command.value()); }
+  [[nodiscard]] IEventCommand* getCommand() override { return command; }
 
   Project* m_project = nullptr;
 
@@ -38,13 +38,15 @@ private:
   sf::SoundBuffer buffer;
   sf::Sound sound;
 
-  std::optional<PlayBGMCommand> command;
+  PlayBGMCommand* command;
   std::tuple<bool, bool> result;
   std::vector<std::string> m_audios;
   std::vector<std::string> getFileNames(const std::string& directoryPath) {
     std::vector<std::string> fileNames;
 
     for (const auto& entry : fs::directory_iterator(directoryPath)) {
+      if (entry.path().extension() != ".ogg") continue;
+
       std::string filename = entry.path().filename().string();
       size_t lastDotPos = filename.find_last_of(".");
       if (lastDotPos != std::string::npos) {

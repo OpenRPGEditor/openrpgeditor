@@ -9,6 +9,6 @@ struct ChangeFormationAccessCommand final : IEventCommand {
   }
   ~ChangeFormationAccessCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Formation_Access; }
-  AccessMode access;
+  AccessMode access = AccessMode::Disable;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

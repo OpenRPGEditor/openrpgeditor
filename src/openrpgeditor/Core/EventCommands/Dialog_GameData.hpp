@@ -10,12 +10,12 @@ struct Project;
 struct Dialog_GameData : IDialogController {
   Dialog_GameData() = delete;
   explicit Dialog_GameData(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-    command.emplace();
+command = new ControlVariables();
     command->gameData.value = 0;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::optional<ControlVariables> getData() { return command; }
+  ControlVariables* getData() { return command; }
 
   std::string getUIString() {
 
@@ -76,7 +76,7 @@ private:
   int current_enemyDataSource = 0;
   int current_characterDataSource = 0;
 
-  std::optional<ControlVariables> command;
+  ControlVariables* command;
   std::optional<ObjectPicker<Item>> i_picker;
   std::optional<ObjectPicker<Actor>> a_picker;
   std::optional<ObjectPicker<Armor>> ar_picker;

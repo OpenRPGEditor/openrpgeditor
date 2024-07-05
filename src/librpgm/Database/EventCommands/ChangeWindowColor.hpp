@@ -13,8 +13,8 @@ struct ChangeWindowColorCommand final : IEventCommand {
   }
   ~ChangeWindowColorCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Window_Color; }
-  int r;
-  int g;
-  int b;
+  int r = 255;
+  int g = 255;
+  int b = 255;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

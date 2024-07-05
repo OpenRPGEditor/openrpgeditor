@@ -12,9 +12,9 @@ struct ControlSwitches : IEventCommand {
   }
   ~ControlSwitches() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Control_Switches; }
-  int start;
-  int end;
-  ValueControl turnOff;
+  int start = 1;
+  int end = 1;
+  ValueControl turnOff = ValueControl::ON;
 
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

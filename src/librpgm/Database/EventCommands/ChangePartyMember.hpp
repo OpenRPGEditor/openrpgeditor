@@ -11,8 +11,8 @@ struct ChangePartyMemberCommand final : IEventCommand {
   }
   ~ChangePartyMemberCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Party_Member; }
-  int member;
-  PartyMemberOperation operation;
-  bool initialize;
+  int member = 1;
+  PartyMemberOperation operation = PartyMemberOperation::_plu__del_Add;
+  bool initialize = false;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

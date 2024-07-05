@@ -9,6 +9,6 @@ struct ChangeEncounterDisableCommand final : IEventCommand {
   }
   ~ChangeEncounterDisableCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Encounter_Disable; }
-  AccessMode access;
+  AccessMode access = AccessMode::Disable;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

@@ -9,20 +9,23 @@ struct Project;
 struct Dialog_ChangeEquipment : IDialogController {
   Dialog_ChangeEquipment() = delete;
   explicit Dialog_ChangeEquipment(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-    command.emplace();
+command = new ChangeEquipmentCommand();
+    m_actor = command->actorId;
+    m_equipmentType = command->equipType;
+    m_equipmentItem = command->equipment;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<ChangeEquipmentCommand>(command.value()); };
+  IEventCommand* getCommand() override { return command; };
   Project* m_project = nullptr;
 
 private:
-  int m_equipmentType = 1;
-  int m_equipmentItem = 0;
-  int m_actor = 1;
+  int m_equipmentType;
+  int m_equipmentItem;
+  int m_actor;
 
   bool m_confirmed{false};
-  std::optional<ChangeEquipmentCommand> command;
+ChangeEquipmentCommand* command;
   std::optional<ObjectPicker<Actor>> actor_picker;
   std::tuple<bool, bool> result;
 };

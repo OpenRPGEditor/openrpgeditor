@@ -8,20 +8,23 @@ struct Project;
 struct Dialog_ChangeEnemyState : IDialogController {
   Dialog_ChangeEnemyState() = delete;
   explicit Dialog_ChangeEnemyState(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-    command.emplace();
+command = new ChangeEnemyStateCommand();
+    m_troop_selection = command->enemy;
+    m_operation = static_cast<int>(command->enemyOp);
+    m_state = command->state;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<ChangeEnemyStateCommand>(command.value()); };
+  IEventCommand* getCommand() override { return command; };
   Project* m_project = nullptr;
 
 private:
-  int m_troop_selection = 0;
-  int m_operation = 0; // Party Member Operation
-  int m_state = 1;
+  int m_troop_selection;
+  int m_operation; // Party Member Operation
+  int m_state;
 
   bool m_confirmed{false};
   std::optional<ObjectPicker<State>> state_picker;
-  std::optional<ChangeEnemyStateCommand> command;
+ChangeEnemyStateCommand* command;
   std::tuple<bool, bool> result;
 };

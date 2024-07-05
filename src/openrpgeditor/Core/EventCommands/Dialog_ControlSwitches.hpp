@@ -6,22 +6,28 @@
 struct Project;
 struct Dialog_ControlSwitches : IDialogController {
   Dialog_ControlSwitches() = delete;
-  explicit Dialog_ControlSwitches(const std::string& name, Project* project) : IDialogController(name), m_project(project) {}
+  explicit Dialog_ControlSwitches(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+    command = new ControlSwitches();
+    m_start = command->start;
+    m_end = command->end;
+    isDisabled = static_cast<int>(command->turnOff);
+  }
   std::tuple<bool, bool>  draw() override;
 
   Project* m_project = nullptr;
 
-  std::shared_ptr<IEventCommand> getCommand() override {
-    return std::make_shared<ControlSwitches>(command.value());
+  IEventCommand* getCommand() override {
+    return command;
   };
 
 private:
-  int n_start = 1;
-  int m_end = 1;
+  int m_start;
+  int m_end;
   int m_rand_1 = 0;
   int m_rand_2 = 0;
+  int isDisabled;
 
-  std::optional<ControlSwitches> command;
+  ControlSwitches* command;
   std::optional<VariableSwitchPicker> picker;
   std::tuple<bool, bool> result;
 };

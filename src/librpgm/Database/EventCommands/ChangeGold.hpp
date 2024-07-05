@@ -11,8 +11,8 @@ struct ChangeGoldCommand final : IEventCommand {
   }
   ~ChangeGoldCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Gold; }
-  QuantityChangeOp operation;
-  QuantityChangeSource operandSource;
-  int operand;
+  QuantityChangeOp operation = QuantityChangeOp::_plu__del_Increase;
+  QuantityChangeSource operandSource = QuantityChangeSource::Constant;
+  int operand = 1;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

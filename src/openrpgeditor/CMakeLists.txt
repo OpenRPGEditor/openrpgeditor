@@ -147,6 +147,22 @@ add_library(orecore STATIC
         Core/EventCommands/Dialog_EnemyTransform.hpp
         Core/EventCommands/Dialog_ChangeEquipment.cpp
         Core/EventCommands/Dialog_ChangeEquipment.hpp
+        Core/EventCommands/Dialog_ChangeName.cpp
+        Core/EventCommands/Dialog_ChangeName.hpp
+        Core/EventCommands/Dialog_ChangeClass.cpp
+        Core/EventCommands/Dialog_ChangeClass.hpp
+        Core/EventCommands/Dialog_PlayMovie.cpp
+        Core/EventCommands/Dialog_PlayMovie.hpp
+        Core/EventCommands/Dialog_Wait.cpp
+        Core/EventCommands/Dialog_Wait.hpp
+        Core/EventCommands/Dialog_TimerControl.cpp
+        Core/EventCommands/Dialog_TimerControl.hpp
+        Core/EventCommands/Dialog_Label.cpp
+        Core/EventCommands/Dialog_Label.hpp
+        Core/EventCommands/Dialog_JumpToLabel.cpp
+        Core/EventCommands/Dialog_JumpToLabel.hpp
+        Core/EventCommands/Dialog_ShowAnimation.cpp
+        Core/EventCommands/Dialog_ShowAnimation.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})

@@ -8,11 +8,13 @@ struct Project;
 struct Dialog_EnemyTransform : IDialogController {
   Dialog_EnemyTransform() = delete;
   explicit Dialog_EnemyTransform(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
-    command.emplace();
+command = new EnemyTransformCommand();
+    m_troop_selection = command->enemy;
+    m_enemy = command->transform;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<EnemyTransformCommand>(command.value()); };
+  IEventCommand* getCommand() override { return command; };
   Project* m_project = nullptr;
 
 private:
@@ -20,7 +22,7 @@ private:
   int m_enemy = 1;
 
   bool m_confirmed{false};
-  std::optional<EnemyTransformCommand> command;
+EnemyTransformCommand* command;
   std::optional<ObjectPicker<Enemy>> enemy_picker;
   std::tuple<bool, bool> result;
 };

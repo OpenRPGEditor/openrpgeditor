@@ -6,17 +6,16 @@ struct Project;
 struct Dialog_ReplayBGM : IDialogController {
   Dialog_ReplayBGM() = delete;
   explicit Dialog_ReplayBGM(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+command = new ResumeBGMCommand();
     m_open = true;
-    command.emplace();
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<ResumeBGMCommand>(command.value()); };
+  IEventCommand* getCommand() override { return command; };
   Project* m_project = nullptr;
 
 private:
-  int isDisabled = 0;
   bool m_confirmed{true};
-  std::optional<ResumeBGMCommand> command;
+ResumeBGMCommand* command;
   std::tuple<bool, bool> result;
 };

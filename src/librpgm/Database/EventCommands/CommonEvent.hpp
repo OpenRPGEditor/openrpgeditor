@@ -10,7 +10,7 @@ struct CommonEventCommand final : IEventCommand {
 
   ~CommonEventCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Common_Event; }
-  int event;
+  int event = 1;
 
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

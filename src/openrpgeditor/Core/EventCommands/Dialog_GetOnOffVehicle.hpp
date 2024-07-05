@@ -6,17 +6,16 @@ struct Project;
 struct Dialog_GetOnOffVehicle : IDialogController {
   Dialog_GetOnOffVehicle() = delete;
   explicit Dialog_GetOnOffVehicle(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+command = new GetOnOffVehicleCommand();
     m_open = true;
-    command.emplace();
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<GetOnOffVehicleCommand>(command.value()); };
+  IEventCommand* getCommand() override { return command; };
   Project* m_project = nullptr;
 
 private:
-  int isDisabled = 0;
   bool m_confirmed{true};
-  std::optional<GetOnOffVehicleCommand> command;
+GetOnOffVehicleCommand* command;
   std::tuple<bool, bool> result;
 };

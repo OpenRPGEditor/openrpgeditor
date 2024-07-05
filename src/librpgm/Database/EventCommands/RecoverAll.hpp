@@ -9,8 +9,8 @@ struct RecoverAllCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Recover_All; }
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  ActorComparisonSource comparison;
-  int value;
+  ActorComparisonSource comparison = ActorComparisonSource::Fixed;
+  int value = 1;
 
 };
 

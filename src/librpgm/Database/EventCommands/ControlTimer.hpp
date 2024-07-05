@@ -6,7 +6,7 @@ struct ControlTimerCommand : IEventCommand {
   explicit ControlTimerCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~ControlTimerCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Control_Timer; }
-  TimerControl control;
-  int seconds;
+  TimerControl control = TimerControl::Start;
+  int seconds = 0;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

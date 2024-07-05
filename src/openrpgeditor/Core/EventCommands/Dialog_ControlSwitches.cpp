@@ -18,7 +18,7 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     if (picker) {
       auto [closed, confirmed]  = picker->draw();
       if (confirmed) {
-        n_start = picker->selection();
+        m_start = picker->selection();
         m_end = picker->selection();
         picker.reset();
       }
@@ -33,7 +33,7 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
 
     bool isSwitchEnabled = switchType == 1;
     std::string text =
-        isSwitchEnabled ? "##commonevent_switch_empty" : (n_start == 0 ? "" : std::format("{:04} ", n_start) + m_project->switche(command->start));
+        isSwitchEnabled ? "##commonevent_switch_empty" : (m_start == 0 ? "" : std::format("{:04} ", m_start) + m_project->switche(command->start));
     ImGui::PushID("##controlswitch_id");
     ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 50) - (16 * App::DPIHandler::get_ui_scale()));
     ImGui::BeginDisabled(isSwitchEnabled);
@@ -68,7 +68,7 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 75, ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {
       if (isSwitchEnabled) {
-        command->start = n_start;
+        command->start = m_start;
         command->end = m_end;
       }
       else {

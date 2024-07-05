@@ -185,7 +185,6 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
       if (gameDataDialog)
         command->gameData = gameDataDialog->getData()->gameData;
 
-      // Insert command into m_commands?
       ImGui::CloseCurrentPopup();
       SetOpen(false);
     }

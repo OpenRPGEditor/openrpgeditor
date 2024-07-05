@@ -127,6 +127,26 @@ add_library(orecore STATIC
         Core/EventCommands/Dialog_ChangeBattleBack.hpp
         Core/EventCommands/Dialog_ChangeWindowColor.cpp
         Core/EventCommands/Dialog_ChangeWindowColor.hpp
+        Core/EventCommands/Dialog_ChangeGold.cpp
+        Core/EventCommands/Dialog_ChangeGold.hpp
+        Core/EventCommands/Dialog_ChangeEnemyState.cpp
+        Core/EventCommands/Dialog_ChangeEnemyState.hpp
+        Core/EventCommands/Dialog_RecoverAll.cpp
+        Core/EventCommands/Dialog_RecoverAll.hpp
+        Core/EventCommands/Dialog_ChangePartyMember.cpp
+        Core/EventCommands/Dialog_ChangePartyMember.hpp
+        Core/EventCommands/Dialog_EnemyRecoverAll.cpp
+        Core/EventCommands/Dialog_EnemyRecoverAll.hpp
+        Core/EventCommands/Dialog_ChangeNickname.cpp
+        Core/EventCommands/Dialog_ChangeNickname.hpp
+        Core/EventCommands/Dialog_EnemyAppear.cpp
+        Core/EventCommands/Dialog_EnemyAppear.hpp
+        Core/EventCommands/Dialog_ChangeProfile.cpp
+        Core/EventCommands/Dialog_ChangeProfile.hpp
+        Core/EventCommands/Dialog_EnemyTransform.cpp
+        Core/EventCommands/Dialog_EnemyTransform.hpp
+        Core/EventCommands/Dialog_ChangeEquipment.cpp
+        Core/EventCommands/Dialog_ChangeEquipment.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})

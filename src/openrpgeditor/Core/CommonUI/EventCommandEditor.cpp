@@ -13,8 +13,14 @@
 #include "Core/EventCommands/Dialog_ChangeBattleBGM.hpp"
 #include "Core/EventCommands/Dialog_ChangeDefeatME.hpp"
 #include "Core/EventCommands/Dialog_ChangeEncounter.hpp"
+#include "Core/EventCommands/Dialog_ChangeEnemyState.hpp"
+#include "Core/EventCommands/Dialog_ChangeEquipment.hpp"
 #include "Core/EventCommands/Dialog_ChangeFormationAccess.hpp"
+#include "Core/EventCommands/Dialog_ChangeGold.hpp"
 #include "Core/EventCommands/Dialog_ChangeMenuAccess.hpp"
+#include "Core/EventCommands/Dialog_ChangeNickname.hpp"
+#include "Core/EventCommands/Dialog_ChangePartyMember.hpp"
+#include "Core/EventCommands/Dialog_ChangeProfile.hpp"
 #include "Core/EventCommands/Dialog_ChangeSaveAccess.hpp"
 #include "Core/EventCommands/Dialog_ChangeVehicleBGM.hpp"
 #include "Core/EventCommands/Dialog_ChangeVictoryME.hpp"
@@ -23,6 +29,9 @@
 #include "Core/EventCommands/Dialog_ControlSwitches.hpp"
 #include "Core/EventCommands/Dialog_ControlVariables.hpp"
 #include "Core/EventCommands/Dialog_Comment.hpp"
+#include "Core/EventCommands/Dialog_EnemyAppear.hpp"
+#include "Core/EventCommands/Dialog_EnemyRecoverAll.hpp"
+#include "Core/EventCommands/Dialog_EnemyTransform.hpp"
 #include "Core/EventCommands/Dialog_EraseEvent.hpp"
 #include "Core/EventCommands/Dialog_ExitEventProcessing.hpp"
 #include "Core/EventCommands/Dialog_GameOver.hpp"
@@ -35,6 +44,7 @@
 #include "Core/EventCommands/Dialog_PlayBGS.hpp"
 #include "Core/EventCommands/Dialog_PlayME.hpp"
 #include "Core/EventCommands/Dialog_PlaySE.hpp"
+#include "Core/EventCommands/Dialog_RecoverAll.hpp"
 #include "Core/EventCommands/Dialog_ReplayBGM.hpp"
 #include "Core/EventCommands/Dialog_ReturnToTitle.hpp"
 #include "Core/EventCommands/Dialog_SaveBGM.hpp"
@@ -180,8 +190,7 @@ void EventCommandEditor::drawPopup() {
           if (ImGui::Button("Change HP...", size)) {}
           ImGui::SameLine();
           if (ImGui::Button("Change Gold...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ChangeGold>("Change Gold", m_project);
+            commandDialog = std::make_shared<Dialog_ChangeGold>("Change Gold", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine();
@@ -201,58 +210,49 @@ void EventCommandEditor::drawPopup() {
           if (ImGui::Button("Change Armors...", size)) {}
           ImGui::SameLine();
           if (ImGui::Button("Change Enemy State...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ChangeEnemyState>("Change Enemy State", m_project);
+            commandDialog = std::make_shared<Dialog_ChangeEnemyState>("Change Enemy State", m_project);
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Recover All...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_RecoverAll>("Recover All", m_project);
+            commandDialog = std::make_shared<Dialog_RecoverAll>("Recover All", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine();
           if (ImGui::Button("Change Party Member...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ChangePartyMember>("Change Party Member", m_project);
+            commandDialog = std::make_shared<Dialog_ChangePartyMember>("Change Party Member", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine();
           if (ImGui::Button("Enemy Recover All...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_EnemyRecoverAll>("Enemy Recover All", m_project);
+            commandDialog = std::make_shared<Dialog_EnemyRecoverAll>("Enemy Recover All", m_project);
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Change EXP...", size)) {}
           ImGui::SameLine();
           if (ImGui::Button("Change Nickname...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ChangeNickname>("Change Nickname", m_project);
+            commandDialog = std::make_shared<Dialog_ChangeNickname>("Change Nickname", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine();
           if (ImGui::Button("Enemy Appear...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_EnemyAppear>("Enemy Appear", m_project);
+            commandDialog = std::make_shared<Dialog_EnemyAppear>("Enemy Appear", m_project);
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Change Level...", size)) {}
           ImGui::SameLine();
           if (ImGui::Button("Change Profile...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ChangeProfile>("Change Profile", m_project);
+            commandDialog = std::make_shared<Dialog_ChangeProfile>("Change Profile", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine();
           if (ImGui::Button("Enemy Transform...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_EnemyTransform>("Enemy Transform", m_project);
+            commandDialog = std::make_shared<Dialog_EnemyTransform>("Enemy Transform", m_project);
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Change Parameter...", size)) {}
           if (ImGui::Button("Change Skill...", size)) {}
           if (ImGui::Button("Change Equipment...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ChangeEquipment>("Change Equipment", m_project);
+            commandDialog = std::make_shared<Dialog_ChangeEquipment>("Change Equipment", m_project);
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Change Name...", size)) {

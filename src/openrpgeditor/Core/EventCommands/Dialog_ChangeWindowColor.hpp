@@ -1,6 +1,5 @@
 #pragma once
 #include "IDialogController.hpp"
-#include "Database/EventCommands/ChangeBattleback.hpp"
 #include "Database/EventCommands/ChangeWindowColor.hpp"
 
 struct Project;

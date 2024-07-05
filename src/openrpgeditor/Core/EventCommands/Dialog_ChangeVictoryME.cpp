@@ -54,21 +54,21 @@ std::tuple<bool, bool> Dialog_ChangeVictoryME::draw() {
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 45 - App::DPIHandler::scale_value(16)));
     ImGui::SeparatorText("Volume");
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 65 - App::DPIHandler::scale_value(16)));
-    ImGui::SetNextItemWidth(100);
+    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
     if (ImGui::DragInt("##playbgm_audio.volume", &m_audio.volume, 0.5f, 0, 100)) {
       setVolume(m_audio.volume);
     }
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 85 - App::DPIHandler::scale_value(16)));
     ImGui::SeparatorText("Pitch");
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 105 - App::DPIHandler::scale_value(16)));
-    ImGui::SetNextItemWidth(100);
+    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
     if (ImGui::DragInt("##playbgm_audio.pitch", &m_audio.pitch, 0.5f, 0, 100)) {
       setPitch(m_audio.pitch);
     }
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 125 - App::DPIHandler::scale_value(16)));
     ImGui::SeparatorText("Pan");
     ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 145 - App::DPIHandler::scale_value(16)));
-    ImGui::SetNextItemWidth(100);
+    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
     if (ImGui::DragInt("##playbgm_audio.pan", &m_audio.pan, 0.5f, -100, 100)) {
       setPanning(m_audio.pan);
     }

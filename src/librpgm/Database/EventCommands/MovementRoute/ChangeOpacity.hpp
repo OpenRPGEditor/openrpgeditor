@@ -3,12 +3,12 @@
 #include <format>
 
 struct MovementChangeOpacityCommand final : IMovementRouteStep {
+  MovementChangeOpacityCommand() = default;
+  explicit MovementChangeOpacityCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~MovementChangeOpacityCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Opacity; }
+  void serializeParameters(nlohmann::json& out) override;
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   int opacity;
-
-  void serializeParameters(nlohmann::json& out) override { out.push_back(opacity); }
-
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

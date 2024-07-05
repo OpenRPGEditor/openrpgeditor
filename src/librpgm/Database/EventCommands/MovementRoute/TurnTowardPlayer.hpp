@@ -3,6 +3,9 @@
 #include <format>
 
 struct MovementTurnTowardPlayerCommand final : IMovementRouteStep {
+  MovementTurnTowardPlayerCommand() = default;
+  explicit MovementTurnTowardPlayerCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  : IMovementRouteStep(indent, parameters) {}
   ~MovementTurnTowardPlayerCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Turn_toward_Player; }
 };

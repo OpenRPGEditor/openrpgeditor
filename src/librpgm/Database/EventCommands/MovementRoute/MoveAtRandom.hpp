@@ -3,6 +3,9 @@
 #include <format>
 
 struct MovementMoveAtRandomCommand final : IMovementRouteStep {
+  MovementMoveAtRandomCommand() = default;
+  explicit MovementMoveAtRandomCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  : IMovementRouteStep(indent, parameters) {}
   ~MovementMoveAtRandomCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Move_at_Random; }
 };

@@ -3,6 +3,8 @@
 #include <format>
 
 struct ChangeParameterCommand final : IEventCommand {
+  ChangeParameterCommand() = default;
+  explicit ChangeParameterCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~ChangeParameterCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Parameter; }
 

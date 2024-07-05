@@ -3,6 +3,8 @@
 #include <format>
 
 struct ChangeMPCommand final : IEventCommand {
+  ChangeMPCommand() = default;
+  explicit ChangeMPCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~ChangeMPCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_MP; }
 

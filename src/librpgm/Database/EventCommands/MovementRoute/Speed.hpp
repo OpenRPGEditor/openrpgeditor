@@ -3,11 +3,12 @@
 #include <format>
 
 struct MovementSpeedCommand final : IMovementRouteStep {
+  MovementSpeedCommand() = default;
+  explicit MovementSpeedCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~MovementSpeedCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Speed; }
-  int speed;
-
   void serializeParameters(nlohmann::json& out) override { out.push_back(speed); }
-
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+
+  int speed;
 };

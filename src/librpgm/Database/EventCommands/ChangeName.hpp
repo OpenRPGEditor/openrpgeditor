@@ -3,6 +3,8 @@
 #include <format>
 
 struct ChangeNameCommand final : IEventCommand {
+  ChangeNameCommand() = default;
+  explicit ChangeNameCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~ChangeNameCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Name; }
 

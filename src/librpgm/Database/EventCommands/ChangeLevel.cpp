@@ -2,6 +2,16 @@
 
 #include "Database/Database.hpp"
 
+ChangeLevelCommand::ChangeLevelCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(comparison);
+  parameters[1].get_to(value);
+  parameters[2].get_to(quantityOp);
+  parameters[3].get_to(quantitySource);
+  parameters[4].get_to(quantity);
+  parameters[5].get_to(showLevelUp);
+}
+
 std::string ChangeLevelCommand::stringRep(const Database& db) const {
   std::string actName;
   if (comparison == ActorComparisonSource::Fixed) {

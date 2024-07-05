@@ -3,10 +3,12 @@
 #include <format>
 
 struct MovementScriptCommand final : IMovementRouteStep {
+  MovementScriptCommand() = default;
+  explicit MovementScriptCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~MovementScriptCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Script_del_Movement; }
-  std::string script;
-  void serializeParameters(nlohmann::json& out) override { out.push_back(script); }
-
+  void serializeParameters(nlohmann::json& out) override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+
+  std::string script;
 };

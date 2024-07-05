@@ -3,6 +3,9 @@
 #include <format>
 
 struct OpenSaveCommand final : IEventCommand {
+  OpenSaveCommand() = default;
+  explicit OpenSaveCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  : IEventCommand(indent, parameters) {}
   ~OpenSaveCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Open_Save_Screen; }
 };

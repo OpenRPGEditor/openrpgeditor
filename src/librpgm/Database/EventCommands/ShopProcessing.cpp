@@ -1,6 +1,13 @@
 #include "Database/EventCommands/ShopProcessing.hpp"
-
 #include "Database/Database.hpp"
+
+ShopProcessingGoodCommand::ShopProcessingGoodCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(type);
+  parameters[1].get_to(id);
+  parameters[2].get_to(priceType);
+  parameters[3].get_to(price);
+}
 
 std::string ShopProcessingGoodCommand::stringRep(const Database& db) const {
   std::string good;
@@ -17,6 +24,15 @@ std::string ShopProcessingGoodCommand::stringRep(const Database& db) const {
   }
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "               " + colon.data() +
          good + ColorFormatter::popColor();
+}
+
+ShopProcessingCommand::ShopProcessingCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(type);
+  parameters[1].get_to(id);
+  parameters[2].get_to(priceType);
+  parameters[3].get_to(price);
+  parameters[4].get_to(purchaseOnly);
 }
 
 std::string ShopProcessingCommand::stringRep(const Database& db) const {

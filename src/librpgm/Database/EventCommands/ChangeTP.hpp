@@ -3,6 +3,8 @@
 #include <format>
 
 struct ChangeTPCommand final : IEventCommand {
+  ChangeTPCommand() = default;
+  explicit ChangeTPCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~ChangeTPCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_TP; }
 

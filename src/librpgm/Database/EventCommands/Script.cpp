@@ -1,8 +1,9 @@
-//
-// Created by antidote on 6/28/24.
-//
+#include "Database/EventCommands/Script.hpp"
 
-#include "Script.hpp"
+ScriptCommand::ScriptCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(script);
+}
 
 std::string ScriptCommand::stringRep(const Database& db) const {
   const auto name = UndectorateEnumName(code());

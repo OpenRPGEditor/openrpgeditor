@@ -2,6 +2,14 @@
 
 #include "Database/Database.hpp"
 
+ChangeEnemyTPCommand::ChangeEnemyTPCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(enemy);
+  parameters[1].get_to(enemyOp);
+  parameters[2].get_to(quantitySource);
+  parameters[3].get_to(quantity);
+}
+
 std::string ChangeEnemyTPCommand::stringRep(const Database& db) const {
   std::string enemyStr;
   if (enemy < 0) {

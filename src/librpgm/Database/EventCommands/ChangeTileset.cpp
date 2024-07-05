@@ -1,6 +1,10 @@
 #include "Database/EventCommands/ChangeTileset.hpp"
-
 #include "Database/Database.hpp"
+
+ChangeTilesetCommand::ChangeTilesetCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(tileset);
+}
 
 std::string ChangeTilesetCommand::stringRep(const Database& db) const {
   const auto tilesetName = db.tilesetNameOrId(tileset);

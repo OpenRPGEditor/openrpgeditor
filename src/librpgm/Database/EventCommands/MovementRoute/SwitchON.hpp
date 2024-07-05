@@ -4,6 +4,8 @@
 #include <format>
 
 struct MovementSwitchONCommand final : IMovementRouteStep {
+  MovementSwitchONCommand() = default;
+  explicit MovementSwitchONCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~MovementSwitchONCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Switch_ON; }
   int id;

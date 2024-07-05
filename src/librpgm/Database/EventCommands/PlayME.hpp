@@ -4,6 +4,8 @@
 #include <format>
 
 struct PlayMECommand final : IEventCommand {
+  PlayMECommand() = default;
+  explicit PlayMECommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~PlayMECommand() override = default;
   Audio audio;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_ME; }

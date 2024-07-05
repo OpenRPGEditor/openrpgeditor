@@ -1,6 +1,14 @@
 #include "Database/EventCommands/ChangeSkill.hpp"
 #include "Database/Database.hpp"
 
+ChangeSkillCommand::ChangeSkillCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(comparison);
+  parameters[1].get_to(value);
+  parameters[2].get_to(skillOp);
+  parameters[3].get_to(skill);
+}
+
 std::string ChangeSkillCommand::stringRep(const Database& db) const {
   std::string actorName;
   if (comparison == ActorComparisonSource::Variable) {

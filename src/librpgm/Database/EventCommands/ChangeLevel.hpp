@@ -3,6 +3,8 @@
 #include <format>
 
 struct ChangeLevelCommand final : IEventCommand {
+  ChangeLevelCommand() = default;
+  explicit ChangeLevelCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~ChangeLevelCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Level; }
 

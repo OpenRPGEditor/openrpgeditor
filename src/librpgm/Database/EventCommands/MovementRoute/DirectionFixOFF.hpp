@@ -3,6 +3,9 @@
 #include <format>
 
 struct MovementDirectionFixOFFCommand final : IMovementRouteStep {
+  MovementDirectionFixOFFCommand() = default;
+  explicit MovementDirectionFixOFFCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  : IMovementRouteStep(indent, parameters) {}
   ~MovementDirectionFixOFFCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Direction_Fix_OFF; }
 };

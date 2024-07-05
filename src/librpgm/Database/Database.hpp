@@ -215,6 +215,9 @@ struct Database {
   }
 
   std::string troopMemberName(const int id, const int index) const {
+    if (index < 0) {
+      return "Entire Troop";
+    }
     const auto object = troops.troop(id);
     const auto member = object ? object->member(index) : nullptr;
     return member ? enemyName(member->enemyId) : InvalidDataName.data();

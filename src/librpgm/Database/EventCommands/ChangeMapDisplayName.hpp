@@ -3,6 +3,8 @@
 #include <format>
 
 struct ChangeMapNameDisplayCommand final : IEventCommand {
+  ChangeMapNameDisplayCommand() = default;
+  explicit ChangeMapNameDisplayCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~ChangeMapNameDisplayCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Map_Name_Display; }
   ValueControl checkIfOn;

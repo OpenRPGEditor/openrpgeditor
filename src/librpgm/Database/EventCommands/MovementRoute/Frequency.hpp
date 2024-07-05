@@ -3,9 +3,12 @@
 #include <format>
 
 struct MovementFrequencyCommand final : IMovementRouteStep {
+  MovementFrequencyCommand() = default;
+  explicit MovementFrequencyCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~MovementFrequencyCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Frequency; }
-  int frequency;
   void serializeParameters(nlohmann::json& out) override { out.push_back(frequency); }
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+
+  int frequency;
 };

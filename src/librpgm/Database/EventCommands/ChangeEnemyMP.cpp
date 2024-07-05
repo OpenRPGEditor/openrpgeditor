@@ -1,6 +1,14 @@
 #include "Database/EventCommands/ChangeEnemyMP.hpp"
 #include "Database/Database.hpp"
 
+ChangeEnemyMPCommand::ChangeEnemyMPCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(enemy);
+  parameters[1].get_to(enemyOp);
+  parameters[2].get_to(quantitySource);
+  parameters[3].get_to(quantity);
+}
+
 std::string ChangeEnemyMPCommand::stringRep(const Database& db) const {
   std::string enemyStr;
   if (enemy < 0) {

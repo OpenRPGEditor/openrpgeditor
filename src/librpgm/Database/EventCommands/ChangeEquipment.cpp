@@ -1,6 +1,12 @@
 #include "Database/EventCommands/ChangeEquipment.hpp"
-
 #include "Database/Database.hpp"
+
+ChangeEquipmentCommand::ChangeEquipmentCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(actorId);
+  parameters[1].get_to(equipType);
+  parameters[2].get_to(equipment);
+}
 
 std::string ChangeEquipmentCommand::stringRep(const Database& db) const {
   const auto actorName = db.actorNameOrId(actorId);

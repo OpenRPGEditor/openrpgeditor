@@ -2,6 +2,16 @@
 
 #include "Database/Database.hpp"
 
+ChangeParameterCommand::ChangeParameterCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(comparison);
+  parameters[1].get_to(value);
+  parameters[2].get_to(param);
+  parameters[3].get_to(quantityOp);
+  parameters[4].get_to(quantitySource);
+  parameters[5].get_to(quantity);
+}
+
 std::string ChangeParameterCommand::stringRep(const Database& db) const {
   std::string actorName;
   if (comparison == ActorComparisonSource::Fixed) {

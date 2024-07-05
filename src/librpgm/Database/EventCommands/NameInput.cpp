@@ -2,10 +2,14 @@
 
 #include "Database/Database.hpp"
 
-std::string NameInputCommand::stringRep(const Database& db) const {
-  const auto act = db.actors.actor(actorId);
+NameInputCommand::NameInputCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(actorId);
+  parameters[1].get_to(maxChar);
+}
 
+std::string NameInputCommand::stringRep(const Database& db) const {
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Name Input Processing" +
-         colon.data() + act->name + ", " + std::to_string(maxChar) + (maxChar > 1 ? " characters" : " character") +
-         ColorFormatter::popColor();
+         colon.data() + db.actorNameOrId(actorId) + ", " + std::to_string(maxChar) +
+         (maxChar > 1 ? " characters" : " character") + ColorFormatter::popColor();
 }

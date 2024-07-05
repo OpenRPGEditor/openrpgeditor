@@ -3,6 +3,9 @@
 #include <format>
 
 struct MovementMoveUpCommand final : IMovementRouteStep {
+  MovementMoveUpCommand() = default;
+  explicit MovementMoveUpCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  : IMovementRouteStep(indent, parameters) {}
   ~MovementMoveUpCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Move_Up; }
 };

@@ -3,6 +3,8 @@
 #include <format>
 
 struct ChangeBattlebackCommand final : IEventCommand {
+  ChangeBattlebackCommand() = default;
+  explicit ChangeBattlebackCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~ChangeBattlebackCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Battle_Back; }
   std::string battleBack1Name;

@@ -3,13 +3,15 @@
 #include <format>
 
 struct ForceActionCommand final : IEventCommand {
+  ForceActionCommand() = default;
+  explicit ForceActionCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~ForceActionCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Force_Action; }
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   SubjectComparisonSource sourceComparison;
   int source;
   int skill;
   int target;
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

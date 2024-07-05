@@ -2,6 +2,15 @@
 
 #include "Database/Database.hpp"
 
+ChangeTPCommand::ChangeTPCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(comparison);
+  parameters[1].get_to(value);
+  parameters[2].get_to(quantityOp);
+  parameters[3].get_to(quantitySource);
+  parameters[4].get_to(quantity);
+}
+
 std::string ChangeTPCommand::stringRep(const Database& db) const {
   std::string actorName;
   if (comparison == ActorComparisonSource::Fixed) {

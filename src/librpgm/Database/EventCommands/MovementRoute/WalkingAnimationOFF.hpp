@@ -3,6 +3,9 @@
 #include <format>
 
 struct MovementWalkingAnimationOFFCommand final : IMovementRouteStep {
+  MovementWalkingAnimationOFFCommand() = default;
+  explicit MovementWalkingAnimationOFFCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  : IMovementRouteStep(indent, parameters) {}
   ~MovementWalkingAnimationOFFCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Walking_Animation_OFF; }
 };

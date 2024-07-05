@@ -3,6 +3,8 @@
 #include <format>
 
 struct PlayMovieCommand final : IEventCommand {
+  PlayMovieCommand() = default;
+  explicit PlayMovieCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~PlayMovieCommand() override = default;
   std::string name;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_Movie; }

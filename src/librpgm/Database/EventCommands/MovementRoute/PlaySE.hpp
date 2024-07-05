@@ -1,16 +1,14 @@
 #pragma once
 #include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include "Database/Audio.hpp"
-#include "Database/Database.hpp"
-
 #include <format>
 
 struct MovementPlaySECommand final : IMovementRouteStep {
+  MovementPlaySECommand() = default;
+  explicit MovementPlaySECommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~MovementPlaySECommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_SE_del_Movement; }
-  Audio se;
-
-  void serializeParameters(nlohmann::json& out) override { out.push_back(se); }
-
+  void serializeParameters(nlohmann::json& out) override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  Audio se;
 };

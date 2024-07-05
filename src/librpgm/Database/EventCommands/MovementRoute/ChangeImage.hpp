@@ -4,16 +4,14 @@
 #include <format>
 
 struct MovementChangeImageCommand final : IMovementRouteStep {
+  MovementChangeImageCommand() = default;
+  explicit MovementChangeImageCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~MovementChangeImageCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Image; }
+  void serializeParameters(nlohmann::json& out) override;
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
+
 
   std::string image;
   int character;
-
-  void serializeParameters(nlohmann::json& out) override {
-    out.push_back(image);
-    out.push_back(character);
-  }
-
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

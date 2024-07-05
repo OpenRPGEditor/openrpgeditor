@@ -2,7 +2,9 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ShakeScreenCommand : IEventCommand {
+struct ShakeScreenCommand final : IEventCommand {
+  ShakeScreenCommand() = default;
+  explicit ShakeScreenCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~ShakeScreenCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Shake_Screen; }
   int power;

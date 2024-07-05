@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-std::string ChangeGoldCommmand::stringRep(const Database& db) const {
+std::string ChangeGoldCommand::stringRep(const Database& db) const {
   if (operandSource == QuantityChangeSource::Constant)
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Gold" + colon.data() +
            DecodeEnumName(operation) + std::to_string(operand) + ColorFormatter::popColor();

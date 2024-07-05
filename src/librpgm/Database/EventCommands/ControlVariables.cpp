@@ -1,17 +1,47 @@
 #include "Database/EventCommands/ControlVariables.hpp"
 #include "Database/Database.hpp"
 
+ControlVariables::ControlVariables(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(start);
+  parameters[1].get_to(end);
+  parameters[2].get_to(operation);
+  parameters[3].get_to(operand);
+  switch (operand) {
+  case VariableControlOperand::Constant:
+    parameters[4].get_to(constant);
+    break;
+  case VariableControlOperand::Variable:
+    parameters[4].get_to(variable);
+    break;
+  case VariableControlOperand::Random:
+    parameters[4].get_to(random.min);
+    parameters[5].get_to(random.max);
+    break;
+  case VariableControlOperand::Game_Data:
+    parameters[4].get_to(gameData.type);
+    parameters[5].get_to(gameData.value);
+    parameters[6].get_to(gameData.rawSource);
+    break;
+  case VariableControlOperand::Script:
+    parameters[4].get_to(script);
+    break;
+  }
+}
+
 std::string ControlVariables::variableFormat(const std::string& text) const {
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + DecodeEnumName(code()) +
          colon.data() + text + ColorFormatter::popColor();
 }
 
 std::string ControlVariables::stringRep(const Database& db) const {
+  static constexpr std::string_view numberOf("{} The number of {}");
+  static constexpr std::string_view AOfB("{} {} of {}");
   std::string varText;
   if (start != end) {
     varText = std::format("#{:04}..#{:04} {}", start, end, DecodeEnumName(operation));
   } else {
-    varText = std::format("#{:04} {} {}", start, db.system.variable(start), DecodeEnumName(operation));
+    varText = std::format("#{} {}", db.variableNameAndId(start), DecodeEnumName(operation));
   }
 
   switch (operand) {
@@ -21,39 +51,34 @@ std::string ControlVariables::stringRep(const Database& db) const {
     return variableFormat(std::format("{} Random {}..{}", varText, random.min, random.max));
   }
   case VariableControlOperand::Variable: {
-    return variableFormat(std::format("{} #{:04} {}", varText, variable, db.system.variable(variable)));
+    return variableFormat(std::format("{} ", varText, variable, db.system.variable(variable)));
   }
   case VariableControlOperand::Game_Data: {
-    switch (gameData.source) {
-    case GameDataSource::Item: {
-      return variableFormat(std::format("{} The number of {}", varText, db.itemNameOrId(gameData.value)));
+    switch (gameData.type) {
+    case GameDataType::Item: {
+      return variableFormat(std::format(numberOf, varText, db.itemNameOrId(gameData.value)));
     }
-    case GameDataSource::Weapon: {
-      return variableFormat(std::format("{} The number of {}", varText, db.weaponNameOrId(gameData.value)));
+    case GameDataType::Weapon: {
+      return variableFormat(std::format(numberOf, varText, db.weaponNameOrId(gameData.value)));
     }
-    case GameDataSource::Armor: {
-      return variableFormat(std::format("{} The number of {}", varText, db.armorNameOrId(gameData.value)));
+    case GameDataType::Armor: {
+      return variableFormat(std::format(numberOf, varText, db.armorNameOrId(gameData.value)));
     }
-    case GameDataSource::Actor: {
+    case GameDataType::Actor: {
       return variableFormat(
-          std::format("{} {} of {}", varText, DecodeEnumName(gameData.actorSource), db.actorNameOrId(gameData.value)));
+          std::format(AOfB, varText, DecodeEnumName(gameData.actorSource), db.actorNameOrId(gameData.value)));
     }
-    case GameDataSource::Enemy: {
-      return variableFormat(std::format("{} {} of #{}", varText, DecodeEnumName(gameData.enemySource), gameData.value + 1));
+    case GameDataType::Enemy: {
+      return variableFormat(std::format(AOfB, varText, DecodeEnumName(gameData.enemySource), gameData.value + 1));
     }
-    case GameDataSource::Character: {
-      const auto map = db.mapInfos.currentMap();
-      const auto ev = map->event(gameData.value);
-      std::string name = gameData.value == -1      ? "Player"
-                         : gameData.value == 0     ? "This Event"
-                         : ev && !ev->name.empty() ? ev->name
-                                                   : std::format("#{:03}", gameData.value);
-      return variableFormat(std::format("{} {} of {}", varText, DecodeEnumName(gameData.characterSource), name));
+    case GameDataType::Character: {
+      return variableFormat(
+          std::format(AOfB, varText, DecodeEnumName(gameData.characterSource), db.eventNameOrId(gameData.value)));
     }
-    case GameDataSource::Party: {
+    case GameDataType::Party: {
       return variableFormat(std::format("{} Actor ID of the party member #{}", varText, gameData.value + 1));
     }
-    case GameDataSource::Other: {
+    case GameDataType::Other: {
       return variableFormat(std::format("{} {}", varText, DecodeEnumName(gameData.otherSource)));
     }
     }

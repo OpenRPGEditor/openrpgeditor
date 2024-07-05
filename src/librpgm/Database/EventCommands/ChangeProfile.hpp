@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ChangeProfileCommand : IEventCommand {
+struct ChangeProfileCommand final : IEventCommand {
   ~ChangeProfileCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Profile; }
 

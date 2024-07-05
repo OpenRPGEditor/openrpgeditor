@@ -11,7 +11,7 @@ struct Dialog_ChangeGold : IDialogController {
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<ChangeGoldCommmand>(command.value()); };
+  std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<ChangeGoldCommand>(command.value()); };
   Project* m_project = nullptr;
 
 private:
@@ -23,6 +23,6 @@ private:
 
   bool m_confirmed{false};
   std::optional<VariableSwitchPicker> picker;
-  std::optional<ChangeGoldCommmand> command;
+  std::optional<ChangeGoldCommand> command;
   std::tuple<bool, bool> result;
 };

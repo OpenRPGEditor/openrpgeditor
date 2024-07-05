@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ChangeMapNameDisplayCommand : IEventCommand {
+struct ChangeMapNameDisplayCommand final : IEventCommand {
   ~ChangeMapNameDisplayCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Map_Name_Display; }
   ValueControl checkIfOn;

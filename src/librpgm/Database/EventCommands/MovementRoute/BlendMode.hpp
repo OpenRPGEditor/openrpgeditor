@@ -2,7 +2,7 @@
 #include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementChangeBlendModeCommand : IMovementRouteStep {
+struct MovementChangeBlendModeCommand final : IMovementRouteStep {
   ~MovementChangeBlendModeCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Blend_Mode; }
 

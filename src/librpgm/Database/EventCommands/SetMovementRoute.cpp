@@ -1,7 +1,12 @@
 #include "Database/EventCommands/SetMovementRoute.hpp"
+#include "Database/CommandParser.hpp"
 #include "Database/Database.hpp"
 
-#include <iostream>
+MovementRouteStepCommand::MovementRouteStepCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  CommandParser p;
+  step = p.parse(parameters)[0];
+}
 
 std::string SetMovementRouteCommand::stringRep(const Database& db) const {
   const auto name = DecodeEnumName(code());

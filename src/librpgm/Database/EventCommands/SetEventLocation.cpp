@@ -1,6 +1,14 @@
 #include "Database/EventCommands/SetEventLocation.hpp"
 #include "Database/Database.hpp"
 
+SetEventLocationCommand::SetEventLocationCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(event);
+  parameters[1].get_to(mode);
+  parameters[2].get_to(x); // Stores event designation ID
+  parameters[3].get_to(y);
+}
+
 std::string SetEventLocationCommand::stringRep(const Database& db) const {
   const auto map = db.mapInfos.currentMap();
   const auto ev = map ? map->event(event) : nullptr;

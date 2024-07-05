@@ -3,7 +3,9 @@
 #include "Database/MovementRoute.hpp"
 #include <format>
 
-struct MovementRouteStepCommand : IEventCommand {
+struct MovementRouteStepCommand final : IEventCommand {
+  MovementRouteStepCommand() = default;
+  explicit MovementRouteStepCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~MovementRouteStepCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Movement_Route_Step; }
   std::shared_ptr<IEventCommand> step;
@@ -17,23 +19,25 @@ struct MovementRouteStepCommand : IEventCommand {
     step->serialize(out.emplace_back(), step->code() != EventCode::Event_Dummy, doParameters);
   }
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override {
-    return step->stringRep(db);
-  }
+  [[nodiscard]] std::string stringRep(const Database& db) const override { return step->stringRep(db); }
 };
 
-
-struct SetMovementRouteCommand : IEventCommand {
+struct SetMovementRouteCommand final : IEventCommand {
+  SetMovementRouteCommand() = default;
+  explicit SetMovementRouteCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  : IEventCommand(indent, parameters) {
+    parameters[0].get_to(character);
+    parameters[1].get_to(route);
+  }
   ~SetMovementRouteCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Set_Movement_Route; }
-  int character;
-  MovementRoute route;
-  std::vector<std::shared_ptr<MovementRouteStepCommand>> editNodes;
-
   void serializeParameters(nlohmann::json& out) override {
     out.push_back(character);
     out.push_back(route);
   }
-
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  void addStep(MovementRouteStepCommand* step) { editNodes.emplace_back(step); }
+  int character;
+  MovementRoute route;
+  std::vector<std::shared_ptr<MovementRouteStepCommand>> editNodes;
 };

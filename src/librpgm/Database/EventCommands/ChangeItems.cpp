@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-std::string ChangeItemsCommmand::stringRep(const Database& db) const {
+std::string ChangeItemsCommand::stringRep(const Database& db) const {
   std::string itemName = db.itemNameOrId(item);
   std::string operandStr;
   if (operandSource == QuantityChangeSource::Constant) {

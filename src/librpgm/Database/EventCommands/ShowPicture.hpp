@@ -2,7 +2,9 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ShowPictureCommand : IEventCommand {
+struct ShowPictureCommand final : IEventCommand {
+  ShowPictureCommand() = default;
+  explicit ShowPictureCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~ShowPictureCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Picture; }
   int number;

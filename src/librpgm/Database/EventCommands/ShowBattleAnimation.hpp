@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ShowBattleAnimationCommand : IEventCommand {
+struct ShowBattleAnimationCommand final : IEventCommand {
   ~ShowBattleAnimationCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Battle_Animation; }
 

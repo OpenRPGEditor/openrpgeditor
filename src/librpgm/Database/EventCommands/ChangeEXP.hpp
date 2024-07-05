@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ChangeEXPCommand : IEventCommand {
+struct ChangeEXPCommand final : IEventCommand {
   ~ChangeEXPCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_EXP; }
 

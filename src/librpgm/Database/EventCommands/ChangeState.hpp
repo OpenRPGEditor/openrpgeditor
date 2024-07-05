@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ChangeStateCommand : IEventCommand {
+struct ChangeStateCommand final : IEventCommand {
   ~ChangeStateCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_State; }
 

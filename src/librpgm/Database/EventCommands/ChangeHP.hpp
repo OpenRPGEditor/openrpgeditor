@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ChangeHPCommand : IEventCommand {
+struct ChangeHPCommand final : IEventCommand {
   ~ChangeHPCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_HP; }
 

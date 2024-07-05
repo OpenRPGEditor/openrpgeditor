@@ -1,6 +1,15 @@
 #include "Database/EventCommands/SetVehicleLocation.hpp"
 #include "Database/Database.hpp"
 
+SetVehicleLocationCommand::SetVehicleLocationCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(vehicle);
+  parameters[1].get_to(mode);
+  parameters[2].get_to(mapId);
+  parameters[3].get_to(x);
+  parameters[4].get_to(y);
+}
+
 std::string SetVehicleLocationCommand::stringRep(const Database& db) const {
   const auto prefix = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) +
                       "Set Vehicle Location" + colon.data() + DecodeEnumName(vehicle) + ",";

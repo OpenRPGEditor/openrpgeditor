@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ShopProcessingGoodCommand : IEventCommand {
+struct ShopProcessingGoodCommand final : IEventCommand {
   ~ShopProcessingGoodCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Shop_Processing_Good; }
 
@@ -14,7 +14,7 @@ struct ShopProcessingGoodCommand : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };
 
-struct ShopProcessingCommand : IEventCommand {
+struct ShopProcessingCommand final : IEventCommand {
   ~ShopProcessingCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Shop_Processing; }
 

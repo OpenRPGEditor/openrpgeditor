@@ -3,7 +3,7 @@
 #include "Database/Audio.hpp"
 #include <format>
 
-struct PlayMECommand : IEventCommand {
+struct PlayMECommand final : IEventCommand {
   ~PlayMECommand() override = default;
   Audio audio;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_ME; }

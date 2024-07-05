@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct EnemyRecoverAllCommand : IEventCommand {
+struct EnemyRecoverAllCommand final : IEventCommand {
   ~EnemyRecoverAllCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Enemy_Recover_All; }
   int troop;

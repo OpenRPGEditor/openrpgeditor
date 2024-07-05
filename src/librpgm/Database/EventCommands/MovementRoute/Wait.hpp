@@ -3,7 +3,7 @@
 
 #include <format>
 
-struct MovementWaitCommand : IMovementRouteStep {
+struct MovementWaitCommand final : IMovementRouteStep {
   int duration;
   ~MovementWaitCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Wait_del_Movement; }

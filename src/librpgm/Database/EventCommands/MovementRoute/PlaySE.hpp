@@ -5,7 +5,7 @@
 
 #include <format>
 
-struct MovementPlaySECommand : IMovementRouteStep {
+struct MovementPlaySECommand final : IMovementRouteStep {
   ~MovementPlaySECommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_SE_del_Movement; }
   Audio se;

@@ -2,6 +2,16 @@
 
 #include "Database/Database.hpp"
 
+TransferPlayerCommand::TransferPlayerCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(mode);
+  parameters[1].get_to(mapId);
+  parameters[2].get_to(x);
+  parameters[3].get_to(y);
+  parameters[4].get_to(direction);
+  parameters[5].get_to(fade);
+}
+
 std::string TransferPlayerCommand::stringRep(const Database& db) const {
   std::string suffix;
 

@@ -2,7 +2,7 @@
 #include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementSwitchOFFCommand : IMovementRouteStep {
+struct MovementSwitchOFFCommand final : IMovementRouteStep {
   ~MovementSwitchOFFCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Switch_OFF; }
   int id;

@@ -1,7 +1,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ChangeEnemyMPCommand : IEventCommand {
+struct ChangeEnemyMPCommand final : IEventCommand {
   ~ChangeEnemyMPCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Enemy_MP; }
   int enemy;

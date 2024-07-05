@@ -1,7 +1,9 @@
 #pragma once
 #include "Database/EventCommands/IEventCommand.hpp"
 
-struct ConditionalBranchCommand : IEventCommand {
+struct ConditionalBranchCommand final : IEventCommand {
+  ConditionalBranchCommand() = default;
+  explicit ConditionalBranchCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~ConditionalBranchCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Conditional_Branch; }
   ConditionType type{};
@@ -63,7 +65,10 @@ struct ConditionalBranchCommand : IEventCommand {
   [[nodiscard]] std::string conditionalFormat(const std::string& text) const;
 };
 
-struct ElseCommand : IEventCommand {
+struct ElseCommand final : IEventCommand {
+  ElseCommand() = default;
+  explicit ElseCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  : IEventCommand(indent, parameters) {}
   ~ElseCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Else; }
 };

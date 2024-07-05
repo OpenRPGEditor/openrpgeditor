@@ -2,13 +2,13 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct NextScriptCommand : IEventCommand {
+struct NextScriptCommand final : IEventCommand {
   ~NextScriptCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Next_Script; }
   std::string script;
 };
 
-struct ScriptCommand : IEventCommand {
+struct ScriptCommand final : IEventCommand {
   ~ScriptCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Script; }
   std::string script;

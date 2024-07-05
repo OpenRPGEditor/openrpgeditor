@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct NameInputCommand : IEventCommand {
+struct NameInputCommand final : IEventCommand {
   ~NameInputCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Name_Input_Processing; }
 

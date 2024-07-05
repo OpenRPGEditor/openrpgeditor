@@ -2,7 +2,7 @@
 #include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementDirectionFixOFFCommand : IMovementRouteStep {
+struct MovementDirectionFixOFFCommand final : IMovementRouteStep {
   ~MovementDirectionFixOFFCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Direction_Fix_OFF; }
 };

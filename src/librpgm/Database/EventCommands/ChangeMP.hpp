@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ChangeMPCommand : IEventCommand {
+struct ChangeMPCommand final : IEventCommand {
   ~ChangeMPCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_MP; }
 

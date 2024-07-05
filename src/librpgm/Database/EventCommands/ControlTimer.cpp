@@ -1,6 +1,14 @@
 #include "Database/EventCommands/ControlTimer.hpp"
 
-std::string ControlTimer::stringRep(const Database& db) const {
+ControlTimerCommand::ControlTimerCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(control);
+  if (control == TimerControl::Start) {
+    parameters[1].get_to(seconds);
+  }
+}
+
+std::string ControlTimerCommand::stringRep(const Database& db) const {
   std::string min;
   std::string sec;
 

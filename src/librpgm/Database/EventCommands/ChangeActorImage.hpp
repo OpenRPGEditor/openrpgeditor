@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ChangeActorImageCommand : IEventCommand {
+struct ChangeActorImageCommand final : IEventCommand {
   ~ChangeActorImageCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Actor_Images; }
 

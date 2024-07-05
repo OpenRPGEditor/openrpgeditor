@@ -2,7 +2,9 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct SetVehicleLocationCommand : IEventCommand {
+struct SetVehicleLocationCommand final : IEventCommand {
+  SetVehicleLocationCommand() = default;
+  explicit SetVehicleLocationCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~SetVehicleLocationCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Set_Vehicle_Location; }
   VehicleType vehicle;

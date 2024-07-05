@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ForceActionCommand : IEventCommand {
+struct ForceActionCommand final : IEventCommand {
   ~ForceActionCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Force_Action; }
 

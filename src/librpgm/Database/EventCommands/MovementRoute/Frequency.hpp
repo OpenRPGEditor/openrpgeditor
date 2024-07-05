@@ -2,7 +2,7 @@
 #include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementFrequencyCommand : IMovementRouteStep {
+struct MovementFrequencyCommand final : IMovementRouteStep {
   ~MovementFrequencyCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Frequency; }
   int frequency;

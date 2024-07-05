@@ -1,5 +1,16 @@
 #include "Database/EventCommands/ScrollingText.hpp"
 
+NextScrollingTextCommand::NextScrollingTextCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(text);
+}
+
+ShowScrollTextCommand::ShowScrollTextCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(speed);
+  parameters[1].get_to(noFast);
+}
+
 std::string ShowScrollTextCommand::stringRep(const Database& db) const {
   static constexpr std::string_view name = "Text(S)";
   std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + name.data() +

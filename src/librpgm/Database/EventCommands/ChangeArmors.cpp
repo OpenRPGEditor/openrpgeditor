@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-std::string ChangeArmorsCommmand::stringRep(const Database& db) const {
+std::string ChangeArmorsCommand::stringRep(const Database& db) const {
   const auto armorName = db.armorNameOrId(item);
   std::string oper;
   if (operandSource == QuantityChangeSource::Variable) {

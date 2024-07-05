@@ -2,7 +2,9 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct SetWeatherEffectCommand : IEventCommand {
+struct SetWeatherEffectCommand final : IEventCommand {
+  SetWeatherEffectCommand() = default;
+  explicit SetWeatherEffectCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~SetWeatherEffectCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Set_Weather_Effect; }
   WeatherEffect effect;

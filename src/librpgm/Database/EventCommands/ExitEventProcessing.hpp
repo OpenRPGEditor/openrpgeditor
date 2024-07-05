@@ -1,7 +1,10 @@
 #pragma once
 #include "Database/EventCommands/IEventCommand.hpp"
 
-struct ExitEventProecessingCommand : IEventCommand {
-  ~ExitEventProecessingCommand() override = default;
+struct ExitEventProcessingCommand final : IEventCommand {
+  ExitEventProcessingCommand() = default;
+  explicit ExitEventProcessingCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  : IEventCommand(indent, parameters) {}
+  ~ExitEventProcessingCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Exit_Event_Processing; }
 };

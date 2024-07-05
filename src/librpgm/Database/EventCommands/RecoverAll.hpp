@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct RecoverAllCommand : IEventCommand {
+struct RecoverAllCommand final : IEventCommand {
   ~RecoverAllCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Recover_All; }
 

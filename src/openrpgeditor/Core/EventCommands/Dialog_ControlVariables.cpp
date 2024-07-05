@@ -33,7 +33,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     if (gameDataDialog) {
       auto [closed, confirmed] = gameDataDialog->draw();
       if (confirmed) {
-        command->gameData.source = gameDataDialog->getData()->gameData.source;
+        command->gameData.type = gameDataDialog->getData()->gameData.type;
         command->gameData.rawSource = gameDataDialog->getData()->gameData.rawSource;
         command->gameData.value = gameDataDialog->getData()->gameData.value;
       }
@@ -137,7 +137,9 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     ImGui::SameLine();
     ImGui::BeginDisabled(operand != 3);
     ImGui::PushItemWidth(100);
-    text = operand != 3 ? "##commonevent_switch_empty" : gameDataDialog.has_value() ? gameDataDialog->getUIString() : "";
+    text = operand != 3                 ? "##commonevent_switch_empty"
+           : gameDataDialog.has_value() ? gameDataDialog->getUIString()
+                                        : "";
     ImGui::PushID("##controlvariable_gamedata");
     if (ImGui::Button(
             text.c_str(),
@@ -182,7 +184,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
 
       if (gameDataDialog)
         command->gameData = gameDataDialog->getData()->gameData;
-      
+
       // Insert command into m_commands?
       ImGui::CloseCurrentPopup();
       SetOpen(false);

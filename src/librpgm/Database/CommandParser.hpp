@@ -15,5 +15,5 @@ struct CommandParser {
     parser[index + 1].at("code").get_to(ret);
     return ret;
   }
-  nlohmann::json currentCommand() { return parser[index]; }
+  nlohmann::json& currentCommand() { return parser[index]; }
 };

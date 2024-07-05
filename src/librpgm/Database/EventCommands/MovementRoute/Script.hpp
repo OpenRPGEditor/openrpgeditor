@@ -2,7 +2,7 @@
 #include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementScriptCommand : IMovementRouteStep {
+struct MovementScriptCommand final : IMovementRouteStep {
   ~MovementScriptCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Script_del_Movement; }
   std::string script;

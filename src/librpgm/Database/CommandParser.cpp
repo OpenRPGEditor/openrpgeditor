@@ -13,700 +13,245 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
   while (index < parser.size()) {
     EventCode code = EventCode::Event_Dummy;
 
-    parser[index].at("code").get_to(code);
-    json parameters = parser[index].value("parameters", json{});
+    currentCommand().at("code").get_to(code);
+    auto indent = currentCommand().value("indent", std::optional<int>{});
+    auto parameters = currentCommand().value("parameters", nlohmann::json{});
     // std::cout << "Processing: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")" << std::endl;
     switch (code) {
-    case EventCode::Event_Dummy: {
-      EventDummy* text = dynamic_cast<EventDummy*>(ret.emplace_back(new EventDummy()).get());
-      text->indent = parser[index].value("indent", std::optional<int>{});
+    case EventCode::Event_Dummy:
+      ret.emplace_back(new EventDummy(indent, parameters));
       break;
-    }
     case EventCode::Show_Text: {
-      ShowTextCommand* text = dynamic_cast<ShowTextCommand*>(ret.emplace_back(new ShowTextCommand()).get());
-      text->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(text->faceImage);
-      parameters[1].get_to(text->faceIndex);
-      parameters[2].get_to(text->background);
-      parameters[3].get_to(text->position);
-
+      auto text = dynamic_cast<ShowTextCommand*>(ret.emplace_back(new ShowTextCommand(indent, parameters)).get());
       while (nextEventCommand() == EventCode::Next_Text) {
         ++index;
-        NextTextCommand* tmp = text->text.emplace_back(new NextTextCommand()).get();
-        tmp->indent = parser[index].value("indent", std::optional<int>{});
-        currentCommand()["parameters"][0].get_to(tmp->text);
+        auto nextIndent = currentCommand().value("indent", std::optional<int>{});
+        auto nextParameters = currentCommand().value("parameters", nlohmann::json{});
+        text->addText(new NextTextCommand(nextIndent, nextParameters));
       }
       break;
     }
-    case EventCode::Show_Choices: {
-      ShowChoiceCommand* choice = dynamic_cast<ShowChoiceCommand*>(ret.emplace_back(new ShowChoiceCommand()).get());
-      choice->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(choice->choices);
-      parameters[1].get_to(choice->cancelType);
-      if (parameters.size() > 2) {
-        parameters[2].get_to(choice->defaultType);
-      } else {
-        choice->defaultType = 0;
-      }
-      if (parameters.size() > 3) {
-        parameters[3].get_to(choice->positionType);
-      } else {
-        choice->positionType = ChoiceWindowPosition::Right;
-      }
+    case EventCode::Show_Choices:
+      ret.emplace_back(new ShowChoiceCommand(indent, parameters));
+      break;
 
-      if (parameters.size() > 4) {
-        parameters[4].get_to(choice->background);
-      } else {
-        choice->background = TextBackground::Window;
-      }
-
-      if (choice->cancelType >= choice->choices.size()) {
-        choice->cancelType = -2;
-      }
+    case EventCode::When_Selected:
+      ret.emplace_back(new WhenSelectedCommand(indent, parameters));
       break;
-    }
-    case EventCode::When_Selected: {
-      WhenSelectedCommand* selected =
-          dynamic_cast<WhenSelectedCommand*>(ret.emplace_back(new WhenSelectedCommand()).get());
-      selected->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(selected->param1);
-      parameters[1].get_to(selected->choice);
+    case EventCode::When_Cancel:
+      ret.emplace_back(new WhenCancelCommand(indent, parameters));
       break;
-    }
-    case EventCode::When_Cancel: {
-      WhenCancelCommand* canceled = dynamic_cast<WhenCancelCommand*>(ret.emplace_back(new WhenCancelCommand()).get());
-      canceled->indent = parser[index].value("indent", std::optional<int>{});
+    case EventCode::End_del_ShowChoices:
+      ret.emplace_back(new ShowChoicesEndCommand(indent, parameters));
       break;
-    }
-    case EventCode::End_del_ShowChoices: {
-      ShowChoicesEndCommand* canceled =
-          dynamic_cast<ShowChoicesEndCommand*>(ret.emplace_back(new ShowChoicesEndCommand()).get());
-      canceled->indent = parser[index].value("indent", std::optional<int>{});
+    case EventCode::Input_Number:
+      ret.emplace_back(new InputNumberCommand(indent, parameters));
       break;
-    }
-    case EventCode::Input_Number: {
-      InputNumberCommand* input = dynamic_cast<InputNumberCommand*>(ret.emplace_back(new InputNumberCommand()).get());
-      input->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(input->variable);
-      parameters[1].get_to(input->digits);
+    case EventCode::Select_Item:
+      ret.emplace_back(new SelectItemCommand(indent, parameters));
       break;
-    }
-    case EventCode::Select_Item: {
-      SelectItemCommand* itemSelect = dynamic_cast<SelectItemCommand*>(ret.emplace_back(new SelectItemCommand()).get());
-      itemSelect->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(itemSelect->item);
-      parameters[1].get_to(itemSelect->type);
-      break;
-    }
     case EventCode::Show_Scrolling_Text: {
-      ShowScrollTextCommand* text =
-          dynamic_cast<ShowScrollTextCommand*>(ret.emplace_back(new ShowScrollTextCommand()).get());
-      text->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(text->speed);
-      parameters[1].get_to(text->noFast);
-
+      auto text =
+          dynamic_cast<ShowScrollTextCommand*>(ret.emplace_back(new ShowScrollTextCommand(indent, parameters)).get());
       while (nextEventCommand() == EventCode::Next_Scrolling_Text) {
         ++index;
-        NextScrollingTextCommand* tmp = text->text.emplace_back(new NextScrollingTextCommand()).get();
-        tmp->indent = parser[index].value("indent", std::optional<int>{});
-        currentCommand()["parameters"][0].get_to(tmp->text);
+        auto nextIndent = currentCommand().value("indent", std::optional<int>{});
+        auto nextParameters = currentCommand().value("parameters", nlohmann::json{});
+        text->addText(new NextScrollingTextCommand(nextIndent, nextParameters));
       }
       break;
     }
     case EventCode::Comment: {
-      CommentCommand* text = dynamic_cast<CommentCommand*>(ret.emplace_back(new CommentCommand()).get());
-      text->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(text->text);
+      auto text = dynamic_cast<CommentCommand*>(ret.emplace_back(new CommentCommand(indent, parameters)).get());
       while (nextEventCommand() == EventCode::Next_Comment) {
         ++index;
-        NextCommentCommand* tmp = text->nextComments.emplace_back(new NextCommentCommand()).get();
-        tmp->indent = parser[index].value("indent", std::optional<int>{});
-        currentCommand()["parameters"][0].get_to(tmp->text);
+        auto nextIndent = currentCommand().value("indent", std::optional<int>{});
+        auto nextParameters = currentCommand().value("parameters", nlohmann::json{});
+        text->addText(new NextCommentCommand(nextIndent, nextParameters));
       }
       break;
     }
-    case EventCode::Conditional_Branch: {
-      ConditionalBranchCommand* cond =
-          dynamic_cast<ConditionalBranchCommand*>(ret.emplace_back(new ConditionalBranchCommand()).get());
-      cond->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(cond->type);
-      switch (cond->type) {
-      case ConditionType::Switch: {
-        parameters[1].get_to(cond->globalSwitch.switchIdx);
-        parameters[2].get_to(cond->globalSwitch.checkIfOn);
-        break;
-      }
-      case ConditionType::Variable: {
-        parameters[1].get_to(cond->variable.id);
-        parameters[2].get_to(cond->variable.source);
-        if (cond->variable.source == VariableComparisonSource::Constant) {
-          parameters[3].get_to(cond->variable.constant);
-        } else {
-          parameters[3].get_to(cond->variable.otherId);
-        }
-        parameters[4].get_to(cond->variable.comparison);
-        break;
-      }
-      case ConditionType::Self_Switch: {
-        parameters[1].get_to(cond->selfSw);
-        parameters[2].get_to(cond->selfSwitch.checkIfOn);
-        break;
-      }
-      case ConditionType::Timer: {
-        parameters[1].get_to(cond->timer.comparison);
-        parameters[2].get_to(cond->timer.sec);
-        break;
-      }
-      case ConditionType::Actor: {
-        parameters[1].get_to(cond->actor.id);
-        parameters[2].get_to(cond->actor.type);
-        switch (cond->actor.type) {
-        case ActorConditionType::Name:
-        case ActorConditionType::In_The_Party:
-          if (parameters[3].is_string()) {
-            parameters[3].get_to(cond->name);
-          }
-          break;
-        case ActorConditionType::Class:
-        case ActorConditionType::Skill:
-        case ActorConditionType::Weapon:
-        case ActorConditionType::Armor:
-        case ActorConditionType::State:
-          parameters[3].get_to(cond->actor.checkId);
-          break;
-        default:
-          break;
-        }
-        break;
-      }
-      case ConditionType::Enemy: {
-        parameters[1].get_to(cond->enemy.id);
-        parameters[2].get_to(cond->enemy.type);
-        if (cond->enemy.type == EnemyConditionType::State) {
-          parameters[3].get_to(cond->enemy.stateId);
-        }
-        break;
-      }
-      case ConditionType::Character: {
-        parameters[1].get_to(cond->character.id);
-        parameters[2].get_to(cond->character.facing);
-        break;
-      }
-      case ConditionType::Gold: {
-        parameters[1].get_to(cond->gold.value);
-        parameters[2].get_to(cond->gold.type);
-        break;
-      }
-      case ConditionType::Item: {
-        parameters[1].get_to(cond->item.id);
-        break;
-      }
-      case ConditionType::Weapon:
-      case ConditionType::Armor: {
-        parameters[1].get_to(cond->equip.equipId);
-        parameters[2].get_to(cond->equip.includeEquipment);
-        break;
-      }
-      case ConditionType::Button: {
-        std::string button;
-        parameters[1].get_to(button);
-        cond->button = magic_enum::enum_cast<Button>(button, magic_enum::case_insensitive).value_or(Button::OK);
-        break;
-      }
-      case ConditionType::Script: {
-        parameters[1].get_to(cond->script);
-        break;
-      }
-      case ConditionType::Vehicle: {
-        parameters[1].get_to(cond->vehicle.id);
-        break;
-      }
-      default:
-        break;
-      }
+    case EventCode::Conditional_Branch:
+      ret.emplace_back(new ConditionalBranchCommand(indent, parameters));
       break;
-    }
-    case EventCode::Else: {
-      ElseCommand* c_else = dynamic_cast<ElseCommand*>(ret.emplace_back(new ElseCommand()).get());
-      c_else->indent = parser[index].value("indent", std::optional<int>{});
+    case EventCode::Else:
+      ret.emplace_back(new ElseCommand(indent, parameters));
       break;
-    }
-    case EventCode::Loop: {
-      LoopCommand* loop = dynamic_cast<LoopCommand*>(ret.emplace_back(new LoopCommand()).get());
-      loop->indent = parser[index].value("indent", std::optional<int>{});
+    case EventCode::Loop:
+      ret.emplace_back(new LoopCommand(indent, parameters));
       break;
-    }
-    case EventCode::Repeat_Above: {
-      RepeatAboveCommand* repeat = dynamic_cast<RepeatAboveCommand*>(ret.emplace_back(new RepeatAboveCommand()).get());
-      repeat->indent = parser[index].value("indent", std::optional<int>{});
+    case EventCode::Repeat_Above:
+      ret.emplace_back(new RepeatAboveCommand(indent, parameters));
       break;
-    }
-    case EventCode::Break_Loop: {
-      BreakLoopCommand* break_loop = dynamic_cast<BreakLoopCommand*>(ret.emplace_back(new BreakLoopCommand()).get());
-      break_loop->indent = parser[index].value("indent", std::optional<int>{});
+    case EventCode::Break_Loop:
+      ret.emplace_back(new BreakLoopCommand(indent, parameters));
       break;
-    }
-    case EventCode::Exit_Event_Processing: {
-      ExitEventProecessingCommand* exit =
-          dynamic_cast<ExitEventProecessingCommand*>(ret.emplace_back(new ExitEventProecessingCommand()).get());
-      exit->indent = parser[index].value("indent", std::optional<int>{});
+    case EventCode::Exit_Event_Processing:
+      ret.emplace_back(new ExitEventProcessingCommand(indent, parameters));
       break;
-    }
-    case EventCode::Common_Event: {
-      CommonEventCommand* event = dynamic_cast<CommonEventCommand*>(ret.emplace_back(new CommonEventCommand()).get());
-      event->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(event->event);
+    case EventCode::Common_Event:
+      ret.emplace_back(new CommonEventCommand(indent, parameters));
       break;
-    }
-    case EventCode::Label: {
-      LabelCommand* label = dynamic_cast<LabelCommand*>(ret.emplace_back(new LabelCommand()).get());
-      label->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(label->label);
+    case EventCode::Label:
+      ret.emplace_back(new LabelCommand(indent, parameters));
       break;
-    }
-    case EventCode::Jump_To_Label: {
-      JumpToLabelCommand* label = dynamic_cast<JumpToLabelCommand*>(ret.emplace_back(new JumpToLabelCommand()).get());
-      label->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(label->label);
+    case EventCode::Jump_To_Label:
+      ret.emplace_back(new JumpToLabelCommand(indent, parameters));
       break;
-    }
-    case EventCode::Control_Switches: {
-      ControlSwitches* c_switches = dynamic_cast<ControlSwitches*>(ret.emplace_back(new ControlSwitches()).get());
-      c_switches->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(c_switches->start);
-      parameters[1].get_to(c_switches->end);
-      parameters[2].get_to(c_switches->turnOff); // It's inverted because why the fuck not
+    case EventCode::Control_Switches:
+      ret.emplace_back(new ControlSwitches(indent, parameters));
       break;
-    }
-    case EventCode::Control_Variables: {
-      ControlVariables* variable = dynamic_cast<ControlVariables*>(ret.emplace_back(new ControlVariables()).get());
-      variable->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(variable->start);
-      parameters[1].get_to(variable->end);
-      parameters[2].get_to(variable->operation);
-      parameters[3].get_to(variable->operand);
-      switch (variable->operand) {
-      case VariableControlOperand::Constant:
-        parameters[4].get_to(variable->constant);
-        break;
-      case VariableControlOperand::Variable:
-        parameters[4].get_to(variable->variable);
-        break;
-      case VariableControlOperand::Random:
-        parameters[4].get_to(variable->random.min);
-        parameters[5].get_to(variable->random.max);
-        break;
-      case VariableControlOperand::Game_Data:
-        parameters[4].get_to(variable->gameData.source);
-        parameters[5].get_to(variable->gameData.value);
-        parameters[6].get_to(variable->gameData.rawSource);
-        break;
-      case VariableControlOperand::Script:
-        parameters[4].get_to(variable->script);
-        break;
-      }
+    case EventCode::Control_Variables:
+      ret.emplace_back(new ControlVariables(indent, parameters));
       break;
-    }
-    case EventCode::Control_Self_Switch: {
-      ControlSelfSwitch* selfSw = dynamic_cast<ControlSelfSwitch*>(ret.emplace_back(new ControlSelfSwitch()).get());
-      selfSw->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(selfSw->selfSw);
-      parameters[1].get_to(selfSw->turnOff);
+    case EventCode::Control_Self_Switch:
+      ret.emplace_back(new ControlSelfSwitchCommand(indent, parameters));
       break;
-    }
-    case EventCode::Control_Timer: {
-      ControlTimer* timer = dynamic_cast<ControlTimer*>(ret.emplace_back(new ControlTimer()).get());
-      timer->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(timer->control);
-      if (timer->control == TimerControl::Start) {
-        parameters[1].get_to(timer->seconds);
-      }
+    case EventCode::Control_Timer:
+      ret.emplace_back(new ControlTimerCommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Gold: {
-      ChangeGoldCommmand* gold = dynamic_cast<ChangeGoldCommmand*>(ret.emplace_back(new ChangeGoldCommmand()).get());
-      gold->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(gold->operation);
-      parameters[1].get_to(gold->operandSource);
-      parameters[2].get_to(gold->operand);
+    case EventCode::Change_Gold:
+      ret.emplace_back(new ChangeGoldCommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Items: {
-      ChangeItemsCommmand* item = dynamic_cast<ChangeItemsCommmand*>(ret.emplace_back(new ChangeItemsCommmand()).get());
-      item->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(item->item);
-      parameters[1].get_to(item->operation);
-      parameters[2].get_to(item->operandSource);
-      parameters[3].get_to(item->operand);
+    case EventCode::Change_Items:
+      ret.emplace_back(new ChangeItemsCommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Weapons: {
-      ChangeWeaponsCommmand* item =
-          dynamic_cast<ChangeWeaponsCommmand*>(ret.emplace_back(new ChangeWeaponsCommmand()).get());
-      item->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(item->item);
-      parameters[1].get_to(item->operation);
-      parameters[2].get_to(item->operandSource);
-      parameters[3].get_to(item->operand);
-      parameters[4].get_to(item->includeEquipment);
+    case EventCode::Change_Weapons:
+      ret.emplace_back(new ChangeWeaponsCommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Armors: {
-      ChangeArmorsCommmand* item =
-          dynamic_cast<ChangeArmorsCommmand*>(ret.emplace_back(new ChangeArmorsCommmand()).get());
-      item->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(item->item);
-      parameters[1].get_to(item->operation);
-      parameters[2].get_to(item->operandSource);
-      parameters[3].get_to(item->operand);
-      parameters[4].get_to(item->includeEquipment);
+    case EventCode::Change_Armors:
+      ret.emplace_back(new ChangeArmorsCommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Party_Member: {
-      ChangePartyMemberCommand* member =
-          dynamic_cast<ChangePartyMemberCommand*>(ret.emplace_back(new ChangePartyMemberCommand()).get());
-      member->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(member->member);
-      parameters[1].get_to(member->operation);
-      parameters[2].get_to(member->initialize);
+    case EventCode::Change_Party_Member:
+      ret.emplace_back(new ChangePartyMemberCommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Battle_BGM: {
-      ChangeBattleBGMCommand* bgm =
-          dynamic_cast<ChangeBattleBGMCommand*>(ret.emplace_back(new ChangeBattleBGMCommand()).get());
-      bgm->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(bgm->bgm);
+    case EventCode::Change_Battle_BGM:
+      ret.emplace_back(new ChangeBattleBGMCommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Victory_ME: {
-      ChangeVictoryMECommand* bgm =
-          dynamic_cast<ChangeVictoryMECommand*>(ret.emplace_back(new ChangeVictoryMECommand()).get());
-      bgm->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(bgm->me);
+    case EventCode::Change_Victory_ME:
+      ret.emplace_back(new ChangeVictoryMECommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Save_Access: {
-      ChangeSaveAccessCommand* save =
-          dynamic_cast<ChangeSaveAccessCommand*>(ret.emplace_back(new ChangeSaveAccessCommand()).get());
-      save->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(save->access);
+    case EventCode::Change_Save_Access:
+      ret.emplace_back(new ChangeSaveAccessCommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Menu_Access: {
-      ChangeMenuAccessCommand* menu =
-          dynamic_cast<ChangeMenuAccessCommand*>(ret.emplace_back(new ChangeMenuAccessCommand()).get());
-      menu->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(menu->access);
+    case EventCode::Change_Menu_Access:
+      ret.emplace_back(new ChangeMenuAccessCommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Encounter_Disable: {
-      ChangeEncounterDisableCommand* encounter =
-          dynamic_cast<ChangeEncounterDisableCommand*>(ret.emplace_back(new ChangeEncounterDisableCommand()).get());
-      encounter->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(encounter->access);
+    case EventCode::Change_Encounter_Disable:
+      ret.emplace_back(new ChangeEncounterDisableCommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Formation_Access: {
-      ChangeFormationAccessCommand* formation =
-          dynamic_cast<ChangeFormationAccessCommand*>(ret.emplace_back(new ChangeFormationAccessCommand()).get());
-      formation->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(formation->access);
+    case EventCode::Change_Formation_Access:
+      ret.emplace_back(new ChangeFormationAccessCommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Window_Color: {
-      ChangeWindowColorCommand* formation =
-          dynamic_cast<ChangeWindowColorCommand*>(ret.emplace_back(new ChangeWindowColorCommand()).get());
-      formation->indent = parser[index].value("indent", std::optional<int>{});
-      auto colors = parameters[0];
-      colors[0].get_to(formation->r);
-      colors[1].get_to(formation->g);
-      colors[2].get_to(formation->b);
+    case EventCode::Change_Window_Color:
+      ret.emplace_back(new ChangeWindowColorCommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Defeat_ME: {
-      ChangeDefeatMECommand* bgm =
-          dynamic_cast<ChangeDefeatMECommand*>(ret.emplace_back(new ChangeDefeatMECommand()).get());
-      bgm->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(bgm->me);
+    case EventCode::Change_Defeat_ME:
+      ret.emplace_back(new ChangeDefeatMECommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Vechicle_BGM: {
-      ChangeVehicleBGMCommand* bgm =
-          dynamic_cast<ChangeVehicleBGMCommand*>(ret.emplace_back(new ChangeVehicleBGMCommand()).get());
-      bgm->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(bgm->vehicle);
-      parameters[1].get_to(bgm->me);
+    case EventCode::Change_Vechicle_BGM:
+      ret.emplace_back(new ChangeVehicleBGMCommand(indent, parameters));
       break;
-    }
-    case EventCode::Transfer_Player: {
-      TransferPlayerCommand* transfer =
-          dynamic_cast<TransferPlayerCommand*>(ret.emplace_back(new TransferPlayerCommand()).get());
-      transfer->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(transfer->mode);
-      parameters[1].get_to(transfer->mapId);
-      parameters[2].get_to(transfer->x);
-      parameters[3].get_to(transfer->y);
-      parameters[4].get_to(transfer->direction);
-      parameters[5].get_to(transfer->fade);
+    case EventCode::Transfer_Player:
+      ret.emplace_back(new TransferPlayerCommand(indent, parameters));
       break;
-    }
-    case EventCode::Set_Vehicle_Location: {
-      SetVehicleLocationCommand* transfer =
-          dynamic_cast<SetVehicleLocationCommand*>(ret.emplace_back(new SetVehicleLocationCommand()).get());
-      transfer->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(transfer->vehicle);
-      parameters[1].get_to(transfer->mode);
-      parameters[2].get_to(transfer->mapId);
-      parameters[3].get_to(transfer->x);
-      parameters[4].get_to(transfer->y);
+    case EventCode::Set_Vehicle_Location:
+      ret.emplace_back(new SetVehicleLocationCommand(indent, parameters));
       break;
-    }
-    case EventCode::Set_Event_Location: {
-      SetEventLocationCommand* transfer =
-          dynamic_cast<SetEventLocationCommand*>(ret.emplace_back(new SetEventLocationCommand()).get());
-      transfer->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(transfer->event);
-      parameters[1].get_to(transfer->mode);
-      parameters[2].get_to(transfer->x); // Stores event designation ID
-      parameters[3].get_to(transfer->y);
+    case EventCode::Set_Event_Location:
+      ret.emplace_back(new SetEventLocationCommand(indent, parameters));
       break;
-    }
-    case EventCode::Scroll_Map: {
-      ScrollMapCommand* scroll = dynamic_cast<ScrollMapCommand*>(ret.emplace_back(new ScrollMapCommand()).get());
-      scroll->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(scroll->direction);
-      parameters[1].get_to(scroll->distance);
-      parameters[2].get_to(scroll->speed);
+    case EventCode::Scroll_Map:
+      ret.emplace_back(new ScrollMapCommand(indent, parameters));
       break;
-    }
     case EventCode::Set_Movement_Route: {
-      SetMovementRouteCommand* route =
-          dynamic_cast<SetMovementRouteCommand*>(ret.emplace_back(new SetMovementRouteCommand()).get());
+      auto route = dynamic_cast<SetMovementRouteCommand*>(
+          ret.emplace_back(new SetMovementRouteCommand(indent, parameters)).get());
       route->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(route->character);
-      parameters[1].get_to(route->route);
       while (nextEventCommand() == EventCode::Movement_Route_Step) {
         ++index;
-        MovementRouteStepCommand* tmp = dynamic_cast<MovementRouteStepCommand*>(
-            route->editNodes.emplace_back(new MovementRouteStepCommand()).get());
-        tmp->indent = parser[index].value("indent", std::optional<int>{});
-        CommandParser p;
-        tmp->step = p.parse(currentCommand()["parameters"])[0];
+        auto nextIndent = currentCommand().value("indent", std::optional<int>{});
+        auto nextParameters = currentCommand().value("parameters", nlohmann::json{});
+        route->addStep(new MovementRouteStepCommand(nextIndent, nextParameters));
       }
       break;
     }
-
-    case EventCode::Get_On_Off_Vehicle: {
-      GetOnOffVehicleCommand* step =
-          dynamic_cast<GetOnOffVehicleCommand*>(ret.emplace_back(new GetOnOffVehicleCommand()).get());
-      step->indent = parser[index].value("indent", std::optional<int>{});
+    case EventCode::Get_On_Off_Vehicle:
+      ret.emplace_back(new GetOnOffVehicleCommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Transparency: {
-      ChangeTransparencyCommand* step =
-          dynamic_cast<ChangeTransparencyCommand*>(ret.emplace_back(new ChangeTransparencyCommand()).get());
-      step->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(step->transparency);
+    case EventCode::Change_Transparency:
+      ret.emplace_back(new ChangeTransparencyCommand(indent, parameters));
       break;
-    }
     case EventCode::Show_Animation: {
-      ShowAnimationCommand* step =
-          dynamic_cast<ShowAnimationCommand*>(ret.emplace_back(new ShowAnimationCommand()).get());
-      step->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(step->character);
-      parameters[1].get_to(step->animation);
-      parameters[2].get_to(step->waitForCompletion);
+      ret.emplace_back(new ShowAnimationCommand(indent, parameters));
       break;
     }
-    case EventCode::Show_Balloon_Icon: {
-      ShowBalloonIconCommand* icon =
-          dynamic_cast<ShowBalloonIconCommand*>(ret.emplace_back(new ShowBalloonIconCommand()).get());
-      icon->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(icon->id);
-      parameters[1].get_to(icon->index);
-      parameters[2].get_to(icon->waitForCompletion);
+    case EventCode::Show_Balloon_Icon:
+      ret.emplace_back(new ShowBalloonIconCommand(indent, parameters));
       break;
-    }
-    case EventCode::Erase_Event: {
-      EraseEventCommand* step = dynamic_cast<EraseEventCommand*>(ret.emplace_back(new EraseEventCommand()).get());
-      step->indent = parser[index].value("indent", std::optional<int>{});
+    case EventCode::Erase_Event:
+      ret.emplace_back(new EraseEventCommand(indent, parameters));
       break;
-    }
-    case EventCode::Change_Player_Followers: {
-      ChangePlayerFollowersCommand* changefollow =
-          dynamic_cast<ChangePlayerFollowersCommand*>(ret.emplace_back(new ChangePlayerFollowersCommand()).get());
-      changefollow->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(changefollow->followersEnabled);
+    case EventCode::Change_Player_Followers:
+      ret.emplace_back(new ChangePlayerFollowersCommand(indent, parameters));
       break;
-    }
-    case EventCode::Gather_Followers: {
-      GatherFollowersCommand* step =
-          dynamic_cast<GatherFollowersCommand*>(ret.emplace_back(new GatherFollowersCommand()).get());
-      step->indent = parser[index].value("indent", std::optional<int>{});
+    case EventCode::Gather_Followers:
+      ret.emplace_back(new GatherFollowersCommand(indent, parameters));
       break;
-    }
-    case EventCode::Fadeout_Screen: {
-      FadeoutScreenCommand* step =
-          dynamic_cast<FadeoutScreenCommand*>(ret.emplace_back(new FadeoutScreenCommand()).get());
-      step->indent = parser[index].value("indent", std::optional<int>{});
+    case EventCode::Fadeout_Screen:
+      ret.emplace_back(new FadeoutScreenCommand(indent, parameters));
       break;
-    }
-    case EventCode::Fadein_Screen: {
-      FadeinScreenCommand* step = dynamic_cast<FadeinScreenCommand*>(ret.emplace_back(new FadeinScreenCommand()).get());
-      step->indent = parser[index].value("indent", std::optional<int>{});
+    case EventCode::Fadein_Screen:
+      ret.emplace_back(new FadeinScreenCommand(indent, parameters));
       break;
-    }
-    case EventCode::Tint_Screen: {
-      TintScreenCommand* screen = dynamic_cast<TintScreenCommand*>(ret.emplace_back(new TintScreenCommand()).get());
-      screen->indent = parser[index].value("indent", std::optional<int>{});
-      auto colors = parameters[0];
-
-      colors[0].get_to(screen->colors.r);
-      colors[1].get_to(screen->colors.g);
-      colors[2].get_to(screen->colors.b);
-      colors[3].get_to(screen->colors.gray);
-
-      parameters[1].get_to(screen->duration);
-      parameters[2].get_to(screen->waitForCompletion);
+    case EventCode::Tint_Screen:
+      ret.emplace_back(new TintScreenCommand(indent, parameters));
       break;
-    }
-    case EventCode::Flash_Screen: {
-      FlashScreenCommand* screen = dynamic_cast<FlashScreenCommand*>(ret.emplace_back(new FlashScreenCommand()).get());
-      screen->indent = parser[index].value("indent", std::optional<int>{});
-      auto colors = parameters[0];
-
-      colors[0].get_to(screen->colors.r);
-      colors[1].get_to(screen->colors.g);
-      colors[2].get_to(screen->colors.b);
-      colors[3].get_to(screen->colors.intensity);
-
-      parameters[1].get_to(screen->duration);
-      parameters[2].get_to(screen->waitForCompletion);
+    case EventCode::Flash_Screen:
+      ret.emplace_back(new FlashScreenCommand(indent, parameters));
       break;
-    }
-    case EventCode::Shake_Screen: {
-      ShakeScreenCommand* screen = dynamic_cast<ShakeScreenCommand*>(ret.emplace_back(new ShakeScreenCommand()).get());
-      screen->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(screen->power);
-      parameters[1].get_to(screen->speed);
-      parameters[2].get_to(screen->duration);
-      parameters[3].get_to(screen->waitForCompletion);
+    case EventCode::Shake_Screen:
+      ret.emplace_back(new ShakeScreenCommand(indent, parameters));
       break;
-    }
-    case EventCode::Wait: {
-      WaitCommand* wait = dynamic_cast<WaitCommand*>(ret.emplace_back(new WaitCommand()).get());
-      wait->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(wait->duration);
+    case EventCode::Wait:
+      ret.emplace_back(new WaitCommand(indent, parameters));
       break;
-    }
-    case EventCode::Show_Picture: {
-      ShowPictureCommand* pic = dynamic_cast<ShowPictureCommand*>(ret.emplace_back(new ShowPictureCommand()).get());
-      pic->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(pic->number);
-      parameters[1].get_to(pic->imageName);
-      parameters[2].get_to(pic->origin);
-      parameters[3].get_to(pic->type);
-      parameters[4].get_to(pic->value1);
-      parameters[5].get_to(pic->value2);
-      parameters[6].get_to(pic->zoomX);
-      parameters[7].get_to(pic->zoomY);
-      parameters[8].get_to(pic->opacityValue);
-      parameters[9].get_to(pic->blendMode);
+    case EventCode::Show_Picture:
+      ret.emplace_back(new ShowPictureCommand(indent, parameters));
       break;
-    }
-    case EventCode::Move_Picture: {
-      MovePictureCommand* pic = dynamic_cast<MovePictureCommand*>(ret.emplace_back(new MovePictureCommand()).get());
-      pic->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(pic->picture);
-      // param[1] is not used
-      parameters[2].get_to(pic->origin);
-      parameters[3].get_to(pic->pictureLocation);
-      parameters[4].get_to(pic->x);
-      parameters[5].get_to(pic->y);
-      parameters[6].get_to(pic->width);
-      parameters[7].get_to(pic->height);
-      parameters[8].get_to(pic->opacity);
-      parameters[9].get_to(pic->blendMode);
-      parameters[10].get_to(pic->duration);
-      parameters[11].get_to(pic->waitForCompletion);
+    case EventCode::Move_Picture:
+      ret.emplace_back(new MovePictureCommand(indent, parameters));
       break;
-    }
-    case EventCode::Rotate_Picture: {
-      RotatePictureCommand* pic =
-          dynamic_cast<RotatePictureCommand*>(ret.emplace_back(new RotatePictureCommand()).get());
-      pic->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(pic->picture);
-      parameters[1].get_to(pic->rotation);
+    case EventCode::Rotate_Picture:
+      ret.emplace_back(new RotatePictureCommand(indent, parameters));
       break;
-    }
-    case EventCode::Tint_Picture: {
-      TintPictureCommand* pic = dynamic_cast<TintPictureCommand*>(ret.emplace_back(new TintPictureCommand()).get());
-      pic->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(pic->picture);
-
-      auto colors = parameters[1];
-
-      colors[0].get_to(pic->colors.r);
-      colors[1].get_to(pic->colors.g);
-      colors[2].get_to(pic->colors.b);
-      colors[3].get_to(pic->colors.gray);
-
-      parameters[2].get_to(pic->duration);
-      parameters[3].get_to(pic->waitForCompletion);
+    case EventCode::Tint_Picture:
+      ret.emplace_back(new TintPictureCommand(indent, parameters));
       break;
-    }
-    case EventCode::Set_Weather_Effect: {
-      SetWeatherEffectCommand* pic =
-          dynamic_cast<SetWeatherEffectCommand*>(ret.emplace_back(new SetWeatherEffectCommand()).get());
-      pic->indent = parser[index].value("indent", std::optional<int>{});
-      std::string effect;
-      parameters[0].get_to(effect);
-      pic->effect = magic_enum::enum_cast<WeatherEffect>(effect, magic_enum::case_insensitive).value();
-      parameters[1].get_to(pic->power);
-      parameters[2].get_to(pic->duration);
-      parameters[3].get_to(pic->waitForCompletion);
+    case EventCode::Set_Weather_Effect:
+      ret.emplace_back(new SetWeatherEffectCommand(indent, parameters));
       break;
-    }
-    case EventCode::Erase_Picture: {
-      ErasePictureCommand* pic = dynamic_cast<ErasePictureCommand*>(ret.emplace_back(new ErasePictureCommand()).get());
-      pic->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(pic->picture);
+    case EventCode::Erase_Picture:
+      ret.emplace_back(new ErasePictureCommand(indent, parameters));
       break;
-    }
-    case EventCode::Play_BGM: {
-      PlayBGMCommand* me = dynamic_cast<PlayBGMCommand*>(ret.emplace_back(new PlayBGMCommand()).get());
-      me->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(me->audio);
+    case EventCode::Play_BGM:
+      ret.emplace_back(new PlayBGMCommand(indent, parameters));
       break;
-    }
-    case EventCode::Fadeout_BGM: {
-      FadeoutBGM* mov = dynamic_cast<FadeoutBGM*>(ret.emplace_back(new FadeoutBGM()).get());
-      mov->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(mov->duration);
+    case EventCode::Fadeout_BGM:
+      ret.emplace_back(new FadeoutBGM(indent, parameters));
       break;
-    }
-    case EventCode::Save_BGM: {
-      SaveBGMCommand* se = dynamic_cast<SaveBGMCommand*>(ret.emplace_back(new SaveBGMCommand()).get());
-      se->indent = parser[index].value("indent", std::optional<int>{});
+    case EventCode::Save_BGM:
+      ret.emplace_back(new SaveBGMCommand(indent, parameters));
       break;
-    }
-    case EventCode::Resume_BGM: {
-      ResumeBGMCommand* se = dynamic_cast<ResumeBGMCommand*>(ret.emplace_back(new ResumeBGMCommand()).get());
-      se->indent = parser[index].value("indent", std::optional<int>{});
+    case EventCode::Resume_BGM:
+      ret.emplace_back(new ResumeBGMCommand(indent, parameters));
       break;
-    }
-    case EventCode::Play_BGS: {
-      PlayBGSCommand* me = dynamic_cast<PlayBGSCommand*>(ret.emplace_back(new PlayBGSCommand()).get());
-      me->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(me->audio);
+    case EventCode::Play_BGS:
+      ret.emplace_back(new PlayBGSCommand(indent, parameters));
       break;
-    }
-    case EventCode::Fadeout_BGS: {
-      FadeoutBGS* mov = dynamic_cast<FadeoutBGS*>(ret.emplace_back(new FadeoutBGS()).get());
-      mov->indent = parser[index].value("indent", std::optional<int>{});
-      parameters[0].get_to(mov->duration);
+    case EventCode::Fadeout_BGS:
+      ret.emplace_back(new FadeoutBGS(indent, parameters));
       break;
-    }
     case EventCode::Play_ME: {
       PlayMECommand* me = dynamic_cast<PlayMECommand*>(ret.emplace_back(new PlayMECommand()).get());
       me->indent = parser[index].value("indent", std::optional<int>{});

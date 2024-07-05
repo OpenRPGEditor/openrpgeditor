@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct GetLocationInfoCommand : IEventCommand {
+struct GetLocationInfoCommand final : IEventCommand {
   ~GetLocationInfoCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Get_Location_Info; }
   int variable;

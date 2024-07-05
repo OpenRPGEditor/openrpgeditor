@@ -2,7 +2,7 @@
 #include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementMoveLowerLeftCommand : IMovementRouteStep {
+struct MovementMoveLowerLeftCommand final : IMovementRouteStep {
   ~MovementMoveLowerLeftCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Move_Lower_Left; }
 };

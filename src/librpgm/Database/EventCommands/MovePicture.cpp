@@ -1,6 +1,21 @@
 #include "Database/EventCommands/MovePicture.hpp"
-
 #include "Database/Database.hpp"
+
+MovePictureCommand::MovePictureCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(picture);
+  // param[1] is not used
+  parameters[2].get_to(origin);
+  parameters[3].get_to(pictureLocation);
+  parameters[4].get_to(x);
+  parameters[5].get_to(y);
+  parameters[6].get_to(width);
+  parameters[7].get_to(height);
+  parameters[8].get_to(opacity);
+  parameters[9].get_to(blendMode);
+  parameters[10].get_to(duration);
+  parameters[11].get_to(waitForCompletion);
+}
 
 std::string MovePictureCommand::stringRep(const Database& db) const {
   if (pictureLocation == PictureDesignationSource::Designation_with_variables) {

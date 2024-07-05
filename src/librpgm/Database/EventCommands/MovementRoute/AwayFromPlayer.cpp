@@ -1,5 +1,1 @@
-//
-// Created by antidote on 6/28/24.
-//
-
-#include "AwayFromPlayer.hpp"
+#include "Database/EventCommands/MovementRoute/AwayFromPlayer.hpp"

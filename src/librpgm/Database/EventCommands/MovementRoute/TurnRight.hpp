@@ -2,7 +2,7 @@
 #include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementTurnRightCommand : IMovementRouteStep {
+struct MovementTurnRightCommand final : IMovementRouteStep {
   ~MovementTurnRightCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Turn_Right; }
 };

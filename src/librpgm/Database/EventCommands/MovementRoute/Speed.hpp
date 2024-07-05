@@ -2,7 +2,7 @@
 #include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementSpeedCommand : IMovementRouteStep {
+struct MovementSpeedCommand final : IMovementRouteStep {
   ~MovementSpeedCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Speed; }
   int speed;

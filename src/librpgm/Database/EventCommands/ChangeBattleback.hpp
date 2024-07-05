@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ChangeBattlebackCommand : IEventCommand {
+struct ChangeBattlebackCommand final : IEventCommand {
   ~ChangeBattlebackCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Battle_Back; }
   std::string battleBack1Name;

@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ChangeTPCommand : IEventCommand {
+struct ChangeTPCommand final : IEventCommand {
   ~ChangeTPCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_TP; }
 

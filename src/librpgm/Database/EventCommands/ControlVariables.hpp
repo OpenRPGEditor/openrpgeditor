@@ -3,7 +3,8 @@
 #include <format>
 
 struct ControlVariables : IEventCommand {
-  ControlVariables() {}
+  ControlVariables() = default;
+  explicit ControlVariables(const std::optional<int>& indent, nlohmann::json& parameters);
   ~ControlVariables() override{};
   [[nodiscard]] EventCode code() const override { return EventCode::Control_Variables; }
   int start{};
@@ -18,7 +19,7 @@ struct ControlVariables : IEventCommand {
       int max;
     } random;
     struct {
-      GameDataSource source;
+      GameDataType type;
       int value;
       union {
         ActorDataSource actorSource;

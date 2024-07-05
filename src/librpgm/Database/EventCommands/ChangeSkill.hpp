@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ChangeSkillCommand : IEventCommand {
+struct ChangeSkillCommand final : IEventCommand {
   ~ChangeSkillCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Skill; }
 

@@ -318,7 +318,7 @@ enum class VariableControlOperand {
   Script,
 };
 
-enum class GameDataSource {
+enum class GameDataType {
   Item,
   Weapon,
   Armor,
@@ -788,7 +788,11 @@ enum CommonEventTriggerType {
   Parallel,
 };
 
-enum class TimerControl { Start, Stop };
+enum class TimerControl {
+  Start,
+  Stop,
+};
+
 enum class Color {
   Gray,
   Default,

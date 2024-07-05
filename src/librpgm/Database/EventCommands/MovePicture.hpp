@@ -2,7 +2,9 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct MovePictureCommand : IEventCommand {
+struct MovePictureCommand final : IEventCommand {
+  MovePictureCommand() = default;
+  explicit MovePictureCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~MovePictureCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Move_Picture; }
   int picture;

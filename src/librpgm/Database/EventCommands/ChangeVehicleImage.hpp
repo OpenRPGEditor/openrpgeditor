@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ChangeVehicleImageCommand : IEventCommand {
+struct ChangeVehicleImageCommand final : IEventCommand {
   ~ChangeVehicleImageCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Vehicle_Image; }
 

@@ -101,126 +101,131 @@ struct Database {
     return "None";
   }
 
-  std::string actorName(int id) const {
+  std::string eventName(const int id) const {
+    const auto map = mapInfos.currentMap();
+    const auto object = map ? map->event(id) : nullptr;
+    return object ? object->name : InvalidDataName.data();
+  }
+  std::string actorName(const int id) const {
     const auto object = actors.actor(id);
     return object ? object->name : InvalidDataName.data();
   }
 
-  std::string className(int id) const {
+  std::string className(const int id) const {
     const auto object = classes.classType(id);
     return object ? object->name : InvalidDataName.data();
   }
 
-  std::string skillName(int id) const {
+  std::string skillName(const int id) const {
     const auto object = skills.skill(id);
     return object ? object->name : InvalidDataName.data();
   }
 
-  std::string itemName(int id) const {
+  std::string itemName(const int id) const {
     const auto object = items.item(id);
     return object ? object->name : InvalidDataName.data();
   }
 
-  std::string weaponName(int id) const {
+  std::string weaponName(const int id) const {
     const auto object = weapons.weapon(id);
     return object ? object->name : InvalidDataName.data();
   }
-  std::string armorName(int id) const {
+  std::string armorName(const int id) const {
     const auto object = armors.armor(id);
     return object ? object->name : InvalidDataName.data();
   }
 
-  std::string enemyName(int id) const {
+  std::string enemyName(const int id) const {
     const auto object = enemies.enemy(id);
     return object ? object->name : InvalidDataName.data();
   }
 
-  std::string troopName(int id) const {
+  std::string troopName(const int id) const {
     const auto object = troops.troop(id);
     return object ? object->name : InvalidDataName.data();
   }
 
-  std::string stateName(int id) const {
+  std::string stateName(const int id) const {
     const auto object = states.state(id);
     return object ? object->name : InvalidDataName.data();
   }
 
-  std::string animationName(int id) const {
+  std::string animationName(const int id) const {
     const auto object = animations.animation(id);
     return object ? object->name : InvalidDataName.data();
   }
 
-  std::string tilesetName(int id) const {
+  std::string tilesetName(const int id) const {
     const auto object = tilesets.tileset(id);
     return object ? object->name : InvalidDataName.data();
   }
 
-  std::string commonEventName(int id) const {
+  std::string commonEventName(const int id) const {
     const auto object = commonEvents.event(id);
     return object ? object->name : InvalidDataName.data();
   }
 
-  std::string switchName(int id) const {
+  std::string switchName(const int id) const {
     if (id < 0 || id >= system.switches.size()) {
       return InvalidDataName.data();
     }
     return system.switche(id);
   }
 
-  std::string variableName(int id) const {
+  std::string variableName(const int id) const {
     if (id < 0 || id >= system.variables.size()) {
       return InvalidDataName.data();
     }
     return system.variable(id);
   }
 
-  std::string elementName(int id) const {
+  std::string elementName(const int id) const {
     if (id < 0 || id >= system.elements.size()) {
       return InvalidDataName.data();
     }
     return *system.element(id);
   }
 
-  std::string skillTypeName(int id) const {
+  std::string skillTypeName(const int id) const {
     if (id < 0 || id >= system.skillTypes.size()) {
       return InvalidDataName.data();
     }
     return *system.skillType(id);
   }
 
-  std::string weaponTypeName(int id) const {
+  std::string weaponTypeName(const int id) const {
     if (id < 0 || id >= system.weaponTypes.size()) {
       return InvalidDataName.data();
     }
     return *system.weaponType(id);
   }
 
-  std::string armorTypeName(int id) const {
+  std::string armorTypeName(const int id) const {
     if (id < 0 || id >= system.armorTypes.size()) {
       return InvalidDataName.data();
     }
     return *system.armorType(id);
   }
 
-  std::string equipTypeName(int id) const {
+  std::string equipTypeName(const int id) const {
     if (id < 0 || id >= system.equipTypes.size()) {
       return InvalidDataName.data();
     }
     return *system.equipType(id);
   }
 
-  std::string troopMemberName(int id, int index) const {
+  std::string troopMemberName(const int id, const int index) const {
     const auto object = troops.troop(id);
     const auto member = object ? object->member(index) : nullptr;
     return member ? enemyName(member->enemyId) : InvalidDataName.data();
   }
 
-  std::string mapName(int id) const {
+  std::string mapName(const int id) const {
     const auto map = mapInfos.map(id);
     return map ? map->name : InvalidDataName.data();
   }
 
-  static std::string makeIdText(int id, int numDigits) {
+  static std::string makeIdText(const int id, const int numDigits) {
     std::string ret = std::to_string(id);
     int digits = std::clamp<int>(numDigits - ret.length(), 0, 4);
     return std::string(digits, '0') + ret;
@@ -241,6 +246,15 @@ struct Database {
     return "#" + makeIdText(id, numDigits);
   }
 
+  std::string eventNameOrId(const int id) const {
+    if (id == -1) {
+      return "Player";
+    }
+    if (id == 0) {
+      return "This Event";
+    }
+    return nameOrId(eventName(id), id, 3);
+  }
   std::string actorNameOrId(const int id) const { return nameOrId(actorName(id), id); }
   std::string classNameOrId(const int id) const { return nameOrId(className(id), id); }
   std::string skillNameOrId(const int id) const { return nameOrId(skillName(id), id); }
@@ -248,17 +262,23 @@ struct Database {
   std::string weaponNameOrId(const int id) const { return nameOrId(weaponName(id), id); }
   std::string armorNameOrId(const int id) const { return nameOrId(armorName(id), id); }
   std::string enemyNameOrId(const int id) const { return nameOrId(enemyName(id), id); }
-  std::string troopNameOrId(const int id) const { return nameOrId(troopName(id), id); }
+  std::string troopNameOrId(const int id) const {
+    if (id == -1) {
+      return "Entire Troop";
+    }
+    return nameOrId(troopName(id), id);
+  }
   std::string stateNameOrId(const int id) const { return nameOrId(stateName(id), id); }
   std::string animationNameOrId(const int id) const { return nameOrId(animationName(id), id); }
   std::string tilesetNameOrId(const int id) const { return nameOrId(tilesetName(id), id); }
   std::string commonEventNameOrId(const int id) const { return nameOrId(commonEventName(id), id); }
   std::string switchNameOrId(const int id) const { return nameOrId(switchName(id), id); }
   std::string variableNameOrId(const int id) const { return nameOrId(variableName(id), id); }
+  std::string variableNameAndId(const int id) const { return nameAndId(variableName(id), id); }
   std::string mapNameOrId(const int id) const { return nameOrId(mapName(id), id); }
 
   std::pair<Actor*, Class*> featureObjects(const int actorId) const {
-    auto actor = actors.actor(actorId);
+    const auto actor = actors.actor(actorId);
     if (!actor) {
       return {};
     }
@@ -267,13 +287,13 @@ struct Database {
   }
 
   std::vector<Trait*> allTraits(const int actorId) const {
-    const auto features = featureObjects(actorId);
-    if (features.first == nullptr) {
+    const auto [act, _] = featureObjects(actorId);
+    if (act == nullptr) {
       return {};
     }
     std::vector<Trait*> ret;
-    ret.reserve(features.first->traits.size());
-    for (auto& trait : features.first->traits) {
+    ret.reserve(act->traits.size());
+    for (auto& trait : act->traits) {
       ret.push_back(&trait);
     }
 
@@ -306,27 +326,25 @@ struct Database {
     return ret;
   }
 
-  bool isEquipWeaponTypeOk(int actorId, int wTypeId) const {
+  bool isEquipWeaponTypeOk(const int actorId, const int wTypeId) const {
     auto traits = traitsSet(actorId, TraitCode::Equip_Weapon);
-    return std::find_if(traits.begin(), traits.end(), [&wTypeId](const auto& id) { return id == wTypeId; }) !=
-           traits.end();
+    return std::ranges::find_if(traits, [&wTypeId](const auto& id) { return id == wTypeId; }) != traits.end();
   }
 
-  bool isEquipArmorTypeOk(int actorId, int aTypeId) const {
+  bool isEquipArmorTypeOk(const int actorId, const int aTypeId) const {
     auto traits = traitsSet(actorId, TraitCode::Equip_Armor);
-    return std::find_if(traits.begin(), traits.end(), [&aTypeId](const auto& id) { return id == aTypeId; }) !=
-           traits.end();
+    return std::ranges::find_if(traits, [&aTypeId](const auto& id) { return id == aTypeId; }) != traits.end();
   }
-  bool isEquipTypeSealed(int actorId, int aTypeId) const {
+
+  bool isEquipTypeSealed(const int actorId, const int aTypeId) const {
     auto traits = traitsSet(actorId, TraitCode::Seal_Equip);
-    return std::find_if(traits.begin(), traits.end(), [&aTypeId](const auto& id) { return id == aTypeId; }) !=
-           traits.end();
+    return std::ranges::find_if(traits, [&aTypeId](const auto& id) { return id == aTypeId; }) != traits.end();
   }
 
   int slotType(const int actorId) const {
 
     if (const std::vector<int> set = traitsSet(actorId, TraitCode::Slot_Type); set.size() > 0) {
-      return *std::max_element(set.begin(), set.end());
+      return *std::ranges::max_element(set);
     }
     return 0;
   }

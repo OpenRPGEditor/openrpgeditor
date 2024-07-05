@@ -3,7 +3,7 @@
 #include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementChangeImageCommand : IMovementRouteStep {
+struct MovementChangeImageCommand final : IMovementRouteStep {
   ~MovementChangeImageCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Image; }
 

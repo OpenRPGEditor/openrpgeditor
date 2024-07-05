@@ -2,7 +2,9 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ScrollMapCommand : IEventCommand {
+struct ScrollMapCommand final : IEventCommand {
+  ScrollMapCommand() = default;
+  explicit ScrollMapCommand(const std::optional<int>& indent, nlohmann::json& parameters);
   ~ScrollMapCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Scroll_Map; }
   Direction direction;

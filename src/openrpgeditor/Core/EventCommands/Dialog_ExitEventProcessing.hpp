@@ -11,12 +11,12 @@ struct Dialog_ExitEventProcessing : IDialogController {
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<ExitEventProecessingCommand>(command.value()); };
+  std::shared_ptr<IEventCommand> getCommand() override { return std::make_shared<ExitEventProcessingCommand>(command.value()); };
   Project* m_project = nullptr;
 
 private:
   int isDisabled = 0;
   bool m_confirmed{true};
-  std::optional<ExitEventProecessingCommand> command;
+  std::optional<ExitEventProcessingCommand> command;
   std::tuple<bool, bool> result;
 };

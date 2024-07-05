@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct EnemyTransformCommand : IEventCommand {
+struct EnemyTransformCommand final : IEventCommand {
   ~EnemyTransformCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Enemy_Transform; }
   int enemy;

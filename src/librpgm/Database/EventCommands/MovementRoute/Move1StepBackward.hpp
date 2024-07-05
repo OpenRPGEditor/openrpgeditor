@@ -2,7 +2,7 @@
 #include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementMove1StepBackwardCommand : IMovementRouteStep {
+struct MovementMove1StepBackwardCommand final : IMovementRouteStep {
   ~MovementMove1StepBackwardCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::_1_Step_Backward; }
 };

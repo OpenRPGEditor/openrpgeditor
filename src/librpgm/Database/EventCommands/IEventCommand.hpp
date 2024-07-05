@@ -11,6 +11,10 @@ struct IEventCommand {
   static constexpr std::string_view diamond = "\u25c6";
   static constexpr std::string_view colon = "\uff1a";
 
+  IEventCommand() = default;
+  explicit IEventCommand(const std::optional<int>& _indent, [[maybe_unused]] nlohmann::json& parameters)
+  : indent(_indent) {}
+
   virtual ~IEventCommand() = default;
   [[nodiscard]] virtual EventCode code() const = 0;
   [[nodiscard]] virtual bool isDirty() const { return m_isDirty; }

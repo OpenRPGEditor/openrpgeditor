@@ -2,7 +2,7 @@
 
 #include "Database/EventCommands/IEventCommand.hpp"
 
-struct ChangeParallaxCommand : IEventCommand {
+struct ChangeParallaxCommand final : IEventCommand {
   ~ChangeParallaxCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Parallax; }
 

@@ -2,7 +2,7 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
-struct ChangeNicknameCommand : IEventCommand {
+struct ChangeNicknameCommand final : IEventCommand {
   ~ChangeNicknameCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Nickname; }
 

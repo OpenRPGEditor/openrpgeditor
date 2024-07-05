@@ -2,7 +2,7 @@
 #include "Database/EventCommands/MovementRoute/IMovementRouteStep.hpp"
 #include <format>
 
-struct MovementChangeOpacityCommand : IMovementRouteStep {
+struct MovementChangeOpacityCommand final : IMovementRouteStep {
   ~MovementChangeOpacityCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Opacity; }
 

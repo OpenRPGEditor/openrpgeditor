@@ -1,0 +1,26 @@
+#pragma once
+#include "IDialogController.hpp"
+#include "Core/CommonUI/ObjectPicker.hpp"
+#include "Database/Actors.hpp"
+#include "Database/EventCommands/ChangeNickname.hpp"
+#include "Database/EventCommands/Wait.hpp"
+
+struct Project;
+struct Dialog_Wait : IDialogController {
+  Dialog_Wait() = delete;
+  explicit Dialog_Wait(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+command = new WaitCommand();
+    m_waitDuration = command->duration;
+  }
+  std::tuple<bool, bool> draw() override;
+
+  IEventCommand* getCommand() override { return command; };
+  Project* m_project = nullptr;
+
+private:
+
+  int m_waitDuration;
+  bool m_confirmed{false};
+  WaitCommand* command;
+  std::tuple<bool, bool> result;
+};

@@ -549,8 +549,8 @@ void EventCommandEditor::drawPopup() {
         if (commandDialog) {
           auto [closed, confirmed] = commandDialog->draw();
           if (confirmed) {
-            auto m_select = m_commands->insert(m_commands->begin() + m_selectedCommand, commandDialog->getCommand());
-            m_selectedCommand = m_commands->begin() - m_select;
+            auto select = m_commands->insert(m_commands->begin() + m_selectedCommand, commandDialog->getCommand());
+            m_selectedCommand = select - m_commands->begin();
             commandDialog.reset();
             ImGui::CloseCurrentPopup();
           }

@@ -210,14 +210,14 @@ void Project::drawToolbar() {
   ImGui::PopStyleVar();
 
   ImGui::Button(ICON_FA_FILE, ButtonSize);
-  if (ImGui::IsItemHovered()) {
+  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
     ImGui::ActionTooltip("New Project", "Creates a new project.");
   }
   ImGui::SameLine();
   if (ImGui::Button(ICON_FA_FOLDER_OPEN, ButtonSize)) {
     handleOpenFile();
   }
-  if (ImGui::IsItemHovered()) {
+  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
     ImGui::ActionTooltip("Open Project", "Opens an existing project.");
   }
   ImGui::SameLine();
@@ -256,19 +256,32 @@ void Project::drawToolbar() {
   ImGui::SameLine();
   ImGui::BeginDisabled(m_editMode == EditMode::Map);
   {
-    if (ImGui::Button("Map Mode")) {
+    if (ImGui::Button(ICON_FA_CHESS_BOARD, ButtonSize)) {
       enterMapEditMode();
     }
+  }
+  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+    ImGui::ActionTooltip("Map", "Switch to Map Edit mode.");
   }
   ImGui::EndDisabled();
   ImGui::SameLine();
   ImGui::BeginDisabled(m_editMode == EditMode::Event);
   {
-    if (ImGui::Button("Event Mode")) {
+    if (ImGui::Button(ICON_FA_CHESS_PAWN, ButtonSize)) {
       enterEventEditMode();
     }
   }
+  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+    ImGui::ActionTooltip("Event", "Switch to Event Edit mode.");
+  }
   ImGui::EndDisabled();
+  ImGui::SameLine();
+  if (ImGui::Button(!m_mapEditor.prisonMode() ? ICON_FA_EYE : ICON_FA_EYE_SLASH, ButtonSize)) {
+    m_mapEditor.setPrisonMode(!m_mapEditor.prisonMode());
+  }
+  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+    ImGui::ActionTooltip("Game Preview", "Toggles Game Preview mode.");
+  }
   ImGui::SameLine();
   ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
   ImGui::SameLine();
@@ -302,7 +315,7 @@ void Project::drawToolbar() {
       setDrawTool(DrawTool::Shadow_Pen);
     }
   }
-  if (ImGui::IsItemHovered()) {
+  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
     ImGui::ActionTooltip("Shadow Pen", "Adds or removes shadows of walls");
   }
   ImGui::EndDisabled();
@@ -478,7 +491,7 @@ void Project::drawMenu() {
         enterEventEditMode();
       }
       ImGui::Separator();
-      if (ImGui::MenuItem("Game Preview", "F7", m_mapEditor.prisonMode())) {
+      if (ImGui::MenuItem("Game Preview", "F7", !m_mapEditor.prisonMode())) {
         m_mapEditor.togglePrisonMode();
       }
       if (ImGui::IsItemHovered()) {

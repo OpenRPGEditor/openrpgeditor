@@ -113,6 +113,9 @@ void MapEditor::handleEventDrag() {
   }
 }
 void MapEditor::handleMouseInput(ImGuiWindow* win) {
+  if (!ImGui::IsWindowFocused()) {
+    return;
+  }
 
   if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow) || ImGui::IsKeyPressed(ImGuiKey_RightArrow) ||
       ImGui::IsKeyPressed(ImGuiKey_UpArrow) || ImGui::IsKeyPressed(ImGuiKey_DownArrow)) {

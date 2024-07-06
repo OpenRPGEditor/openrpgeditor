@@ -5,6 +5,7 @@ include(cmake/AppleBuild.cmake)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 17)
 
+add_definitions(-DJSON_DIAGNOSTICS=1)
 project(
   OpenRPGEditor
   DESCRIPTION "A drop-in replacement for RPG Maker MV."

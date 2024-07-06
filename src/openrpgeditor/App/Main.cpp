@@ -11,12 +11,12 @@
 // This is needed due to freetype's gzip not defining these
 #include <stdlib.h>
 #include "zlib.h"
-#  ifndef verbose
-#    define verbose 0
-#  endif
+#ifndef verbose
+#define verbose 0
+#endif
 extern "C" int z_verbose = verbose;
 
-extern "C" void z_error(char *m) {
+extern "C" void z_error(char* m) {
   fprintf(stderr, "%s\n", m);
   exit(1);
 }
@@ -24,18 +24,17 @@ extern "C" void z_error(char *m) {
 #endif
 
 int main() {
-  // try {
-  // APP_PROFILE_BEGIN_SESSION_WITH_FILE("App", "profile.json");
 
-  {
-    App::Application app{"OpenRPGEditor"};
-    app.run();
-  }
+  try {
+    // APP_PROFILE_BEGIN_SESSION_WITH_FILE("App", "profile.json");
 
-  // APP_PROFILE_END_SESSION();
-  //  } catch (std::exception& e) {
-  //    APP_ERROR("Main process terminated with: {}", e.what());
-  //  }
+    {
+      App::Application app{"OpenRPGEditor"};
+      app.run();
+    }
+
+    // APP_PROFILE_END_SESSION();
+  } catch (std::exception& e) { APP_ERROR("Main process terminated with: {}", e.what()); }
 
   return 0;
 }

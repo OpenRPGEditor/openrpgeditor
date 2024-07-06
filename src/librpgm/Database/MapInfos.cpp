@@ -17,7 +17,9 @@ MapInfos MapInfos::load(std::string_view filename) {
     auto& mapinfo = mapinfos.m_mapinfos.emplace_back();
     value.get_to(mapinfo);
     if (mapinfo && mapinfo->id != 0) {
-      mapinfo->m_map = std::make_unique<Map>(Database::Instance->loadMap(mapinfo->id));
+      if (auto map = Database::Instance->loadMap(mapinfo->id); map.m_isValid) {
+        mapinfo->m_map = std::make_unique<Map>(map);
+      }
     }
   }
   mapinfos.m_mapinfos[0].emplace();
@@ -32,11 +34,8 @@ bool MapInfos::serialize(std::string_view filename) {
   std::ofstream file(filename.data());
   json data{nullptr};
 
-  /* Erase the dummy entry */;
-  m_mapinfos.erase(m_mapinfos.begin());
-
-  for (const auto& mapinfo : m_mapinfos) {
-    data.push_back(mapinfo);
+  for (int i = 1; i < m_mapinfos.size(); ++i) {
+    data.push_back(m_mapinfos[i]);
   }
 
   file << data;

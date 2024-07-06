@@ -46,7 +46,7 @@ target_link_libraries(librpgm PRIVATE project_warnings magic_enum nlohmann_json:
 add_library(
         librpgmeventcmds STATIC
         Database/CommandParser.hpp Database/CommandParser.cpp
-        Database/EventCommands/IEventCommand.hpp
+        Database/EventCommands/IEventCommand.hpp Database/EventCommands/IEventCommand.cpp
         Database/EventCommands/UnhandledEvent.hpp Database/EventCommands/UnhandledEvent.cpp
         Database/EventCommands/EventDummy.hpp Database/EventCommands/EventDummy.cpp
         Database/EventCommands/ShowText.hpp Database/EventCommands/ShowText.cpp

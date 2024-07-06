@@ -1,7 +1,7 @@
 #include "Database/EventCommands/MovePicture.hpp"
 #include "Database/Database.hpp"
 
-MovePictureCommand::MovePictureCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+MovePictureCommand::MovePictureCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(picture);
   // param[1] is not used
@@ -15,6 +15,21 @@ MovePictureCommand::MovePictureCommand(const std::optional<int>& indent, nlohman
   parameters[9].get_to(blendMode);
   parameters[10].get_to(duration);
   parameters[11].get_to(waitForCompletion);
+}
+
+void MovePictureCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(picture);
+  out.push_back(0); // param[1] is not used
+  out.push_back(origin);
+  out.push_back(pictureLocation);
+  out.push_back(x);
+  out.push_back(y);
+  out.push_back(width);
+  out.push_back(height);
+  out.push_back(opacity);
+  out.push_back(blendMode);
+  out.push_back(duration);
+  out.push_back(waitForCompletion);
 }
 
 std::string MovePictureCommand::stringRep(const Database& db) const {

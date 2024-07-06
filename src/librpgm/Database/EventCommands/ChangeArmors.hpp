@@ -3,20 +3,15 @@
 
 struct ChangeArmorsCommand final : IEventCommand {
   ChangeArmorsCommand() = default;
-  explicit ChangeArmorsCommand(const std::optional<int>& indent, nlohmann::json& parameters)
-  : IEventCommand(indent, parameters) {
-    parameters[0].get_to(item);
-    parameters[1].get_to(operation);
-    parameters[2].get_to(operandSource);
-    parameters[3].get_to(operand);
-    parameters[4].get_to(includeEquipment);
-  }
+  explicit ChangeArmorsCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
   ~ChangeArmorsCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Armors; }
+  void serializeParameters(nlohmann::json& out) const override;
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
+
   int item;
   QuantityChangeOp operation;
   QuantityChangeSource operandSource;
   int operand;
   bool includeEquipment;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

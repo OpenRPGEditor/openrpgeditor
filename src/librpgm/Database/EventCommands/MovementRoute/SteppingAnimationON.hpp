@@ -4,7 +4,7 @@
 
 struct MovementSteppingAnimationONCommand final : IMovementRouteStep {
   MovementSteppingAnimationONCommand() = default;
-  explicit MovementSteppingAnimationONCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  explicit MovementSteppingAnimationONCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
   : IMovementRouteStep(indent, parameters) {}
   ~MovementSteppingAnimationONCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Stepping_Animation_ON; }

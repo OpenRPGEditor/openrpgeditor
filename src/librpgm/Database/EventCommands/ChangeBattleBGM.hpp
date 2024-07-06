@@ -5,12 +5,11 @@
 
 struct ChangeBattleBGMCommand final : IEventCommand {
   ChangeBattleBGMCommand() = default;
-  explicit ChangeBattleBGMCommand(const std::optional<int>& indent, nlohmann::json& parameters)
-  : IEventCommand(indent, parameters) {
-    parameters[0].get_to(bgm);
-  }
+  explicit ChangeBattleBGMCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
   ~ChangeBattleBGMCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Battle_BGM; }
-  Audio bgm;
+  void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+
+  Audio bgm;
 };

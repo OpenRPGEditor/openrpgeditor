@@ -2,17 +2,25 @@
 
 #include "Database/Database.hpp"
 
+ShowAnimationCommand::ShowAnimationCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(character);
+  parameters[1].get_to(animation);
+  parameters[2].get_to(waitForCompletion);
+}
+
+void ShowAnimationCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(character);
+  out.push_back(animation);
+  out.push_back(waitForCompletion);
+}
+
 std::string ShowAnimationCommand::stringRep(const Database& db) const {
-  const auto map = db.mapInfos.currentMap();
-  const auto ev = map ? map->event(character) : nullptr;
-  const auto evName = ev && !ev->name.empty() ? ev->name : std::format("#{:03}", character);
+  const auto evName = db.eventNameOrId(character);
   const auto animName = db.animationNameOrId(animation);
 
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Show Animation" + colon.data() +
-         (character == -1  ? "Player"
-          : character == 0 ? "This  Event"
-                           : evName) +
-         ", " + animName + " " + ColorFormatter::popColor() +
+         evName + ", " + animName + " " + ColorFormatter::popColor() +
          (waitForCompletion == true ? ColorFormatter::getColor(Color::Gray) + "(Wait)" + ColorFormatter::popColor()
                                     : "");
 }

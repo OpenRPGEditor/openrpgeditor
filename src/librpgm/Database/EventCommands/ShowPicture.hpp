@@ -4,9 +4,12 @@
 
 struct ShowPictureCommand final : IEventCommand {
   ShowPictureCommand() = default;
-  explicit ShowPictureCommand(const std::optional<int>& indent, nlohmann::json& parameters);
+  explicit ShowPictureCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
   ~ShowPictureCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Picture; }
+  void serializeParameters(nlohmann::json& out) const override;
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
+
   int number;
   std::string imageName;
   PictureOrigin origin;
@@ -17,6 +20,4 @@ struct ShowPictureCommand final : IEventCommand {
   int zoomY;
   int opacityValue;
   Blend blendMode;
-
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

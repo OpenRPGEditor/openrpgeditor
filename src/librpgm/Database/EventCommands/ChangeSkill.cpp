@@ -1,12 +1,19 @@
 #include "Database/EventCommands/ChangeSkill.hpp"
 #include "Database/Database.hpp"
 
-ChangeSkillCommand::ChangeSkillCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+ChangeSkillCommand::ChangeSkillCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(comparison);
   parameters[1].get_to(value);
   parameters[2].get_to(skillOp);
   parameters[3].get_to(skill);
+}
+
+void ChangeSkillCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(comparison);
+  out.push_back(value);
+  out.push_back(skillOp);
+  out.push_back(skill);
 }
 
 std::string ChangeSkillCommand::stringRep(const Database& db) const {

@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangeParallaxCommand::ChangeParallaxCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+ChangeParallaxCommand::ChangeParallaxCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(image);
   parameters[1].get_to(loopHorizontally);
@@ -11,7 +11,7 @@ ChangeParallaxCommand::ChangeParallaxCommand(const std::optional<int>& indent, n
   parameters[4].get_to(scrollY);
 }
 
-void ChangeParallaxCommand::serializeParameters(nlohmann::json& out) {
+void ChangeParallaxCommand::serializeParameters(nlohmann::json& out) const {
   out.push_back(image);
   out.push_back(loopHorizontally);
   out.push_back(loopVertically);

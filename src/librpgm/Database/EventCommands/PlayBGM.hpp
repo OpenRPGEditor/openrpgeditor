@@ -5,9 +5,11 @@
 
 struct PlayBGMCommand final : IEventCommand {
   PlayBGMCommand() = default;
-  explicit PlayBGMCommand(const std::optional<int>& indent, nlohmann::json& parameters);
+  explicit PlayBGMCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
   ~PlayBGMCommand() override = default;
-  Audio audio;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_BGM; }
+  void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+
+  Audio audio;
 };

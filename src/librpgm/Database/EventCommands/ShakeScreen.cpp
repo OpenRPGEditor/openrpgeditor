@@ -1,11 +1,18 @@
 #include "Database/EventCommands/ShakeScreen.hpp"
 
-ShakeScreenCommand::ShakeScreenCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+ShakeScreenCommand::ShakeScreenCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(power);
   parameters[1].get_to(speed);
   parameters[2].get_to(duration);
   parameters[3].get_to(waitForCompletion);
+}
+
+void ShakeScreenCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(power);
+  out.push_back(speed);
+  out.push_back(duration);
+  out.push_back(waitForCompletion);
 }
 
 std::string ShakeScreenCommand::stringRep(const Database& db) const {

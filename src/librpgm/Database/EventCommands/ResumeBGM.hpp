@@ -3,7 +3,7 @@
 
 struct ResumeBGMCommand final : IEventCommand {
   ResumeBGMCommand() = default;
-  explicit ResumeBGMCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  explicit ResumeBGMCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
   : IEventCommand(indent, parameters) {}
   ~ResumeBGMCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Resume_BGM; }

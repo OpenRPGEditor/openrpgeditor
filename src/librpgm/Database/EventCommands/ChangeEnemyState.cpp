@@ -2,11 +2,17 @@
 
 #include "Database/Database.hpp"
 
-ChangeEnemyStateCommand::ChangeEnemyStateCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+ChangeEnemyStateCommand::ChangeEnemyStateCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(enemy);
   parameters[1].get_to(enemyOp);
   parameters[2].get_to(state);
+}
+
+void ChangeEnemyStateCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(enemy);
+  out.push_back(enemyOp);
+  out.push_back(state);
 }
 
 std::string ChangeEnemyStateCommand::stringRep(const Database& db) const {

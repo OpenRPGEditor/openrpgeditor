@@ -13,8 +13,8 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
   while (index < parser.size()) {
     EventCode code = EventCode::Event_Dummy;
     currentCommand().at("code").get_to(code);
-    auto indent = currentCommand().value("indent", std::optional<int>{});
-    auto parameters = currentCommand().value("parameters", nlohmann::json{});
+    const auto indent = currentCommand().value("indent", std::optional<int>{});
+    const auto parameters = currentCommand().value("parameters", nlohmann::json());
     // std::cout << "Processing: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")" << std::endl;
     switch (code) {
     case EventCode::Event_Dummy:

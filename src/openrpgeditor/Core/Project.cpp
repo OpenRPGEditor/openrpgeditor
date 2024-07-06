@@ -690,7 +690,7 @@ void Project::setMap(MapInfo& in) {
   m_mapListView.setCurrentMapId(in.id);
   if (m_mapListView.currentMapInfo()) {
     m_mapEditor.setMap(&in);
-    in.map()->serialize("Test.json");
+    in.map()->serialize("Map001.json");
     m_database->mapInfos.setCurrentMap(&in);
   } else {
     m_mapEditor.setMap(nullptr);

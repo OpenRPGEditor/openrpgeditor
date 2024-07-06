@@ -4,7 +4,7 @@
 
 struct GetOnOffVehicleCommand final : IEventCommand {
   GetOnOffVehicleCommand() = default;
-  explicit GetOnOffVehicleCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  explicit GetOnOffVehicleCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
   : IEventCommand(indent, parameters) {}
   ~GetOnOffVehicleCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Get_On_Off_Vehicle; }

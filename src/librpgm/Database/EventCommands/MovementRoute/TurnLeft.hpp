@@ -4,7 +4,7 @@
 
 struct MovementTurnLeftCommand final : IMovementRouteStep {
   MovementTurnLeftCommand() = default;
-  explicit MovementTurnLeftCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  explicit MovementTurnLeftCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
   : IMovementRouteStep(indent, parameters) {}
   ~MovementTurnLeftCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Turn_Left; }

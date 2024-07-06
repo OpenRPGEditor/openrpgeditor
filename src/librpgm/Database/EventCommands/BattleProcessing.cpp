@@ -2,12 +2,19 @@
 
 #include "Database/Database.hpp"
 
-BattleProcessingCommand::BattleProcessingCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+BattleProcessingCommand::BattleProcessingCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(type);
   parameters[1].get_to(id);
   parameters[2].get_to(canEscape);
   parameters[3].get_to(canLose);
+}
+
+void BattleProcessingCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(type);
+  out.push_back(id);
+  out.push_back(canEscape);
+  out.push_back(canLose);
 }
 
 std::string BattleProcessingCommand::stringRep(const Database& db) const {

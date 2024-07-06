@@ -77,7 +77,7 @@ std::tuple<bool, bool> Dialog_ChangeVehicleBGM::draw() {
   ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 80, ImGui::GetContentRegionMax().y - 20));
   if (ImGui::Button("OK")) {
     m_confirmed = true;
-    command->me = m_audio;
+    command->bgm = m_audio;
     APP_INFO(command->stringRep(m_project->database()));
     ImGui::CloseCurrentPopup();
     SetOpen(false);

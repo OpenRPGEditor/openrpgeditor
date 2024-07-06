@@ -174,8 +174,13 @@ std::string ColorFormatter::popColor() {
  * @return Input: Color enum, returns an ImGui formatted string based off the enum.
  */
 std::string ColorFormatter::getColor(Color preset) {
-  if (preset == Color::Gray)
+  switch (preset) {
+  case Color::Gray:
     return gray.data();
-
-  return "&push-color=255,255,0;";
+  case Color::Red:
+    return red.data();
+  case Color::Default:
+  default:
+    return "&push-color=255,255,0;";
+  }
 }

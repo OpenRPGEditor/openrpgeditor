@@ -794,6 +794,7 @@ enum class TimerControl {
 
 enum class Color {
   Gray,
+  Red,
   Default,
 };
 

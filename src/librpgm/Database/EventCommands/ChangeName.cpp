@@ -1,10 +1,15 @@
 #include "Database/EventCommands/ChangeName.hpp"
 #include "Database/Database.hpp"
 
-ChangeNameCommand::ChangeNameCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+ChangeNameCommand::ChangeNameCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(actor);
   parameters[1].get_to(name);
+}
+
+void ChangeNameCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(actor);
+  out.push_back(name);
 }
 
 std::string ChangeNameCommand::stringRep(const Database& db) const {

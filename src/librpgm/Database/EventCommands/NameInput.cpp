@@ -2,10 +2,15 @@
 
 #include "Database/Database.hpp"
 
-NameInputCommand::NameInputCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+NameInputCommand::NameInputCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(actorId);
   parameters[1].get_to(maxChar);
+}
+
+void NameInputCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(actorId);
+  out.push_back(maxChar);
 }
 
 std::string NameInputCommand::stringRep(const Database& db) const {

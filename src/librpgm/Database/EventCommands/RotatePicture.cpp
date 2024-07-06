@@ -1,9 +1,14 @@
 #include "Database/EventCommands/RotatePicture.hpp"
 
-RotatePictureCommand::RotatePictureCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+RotatePictureCommand::RotatePictureCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(picture);
   parameters[1].get_to(rotation);
+}
+
+void RotatePictureCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(picture);
+  out.push_back(rotation);
 }
 
 std::string RotatePictureCommand::stringRep(const Database& db) const {

@@ -2,6 +2,23 @@
 
 #include "Database/Database.hpp"
 
+ChangeArmorsCommand::ChangeArmorsCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(item);
+  parameters[1].get_to(operation);
+  parameters[2].get_to(operandSource);
+  parameters[3].get_to(operand);
+  parameters[4].get_to(includeEquipment);
+}
+
+void ChangeArmorsCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(item);
+  out.push_back(operand);
+  out.push_back(operandSource);
+  out.push_back(operand);
+  out.push_back(includeEquipment);
+}
+
 std::string ChangeArmorsCommand::stringRep(const Database& db) const {
   const auto armorName = db.armorNameOrId(item);
   std::string oper;

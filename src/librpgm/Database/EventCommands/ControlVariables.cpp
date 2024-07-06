@@ -1,7 +1,7 @@
 #include "Database/EventCommands/ControlVariables.hpp"
 #include "Database/Database.hpp"
 
-ControlVariables::ControlVariables(const std::optional<int>& indent, nlohmann::json& parameters)
+ControlVariables::ControlVariables(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(start);
   parameters[1].get_to(end);
@@ -25,6 +25,33 @@ ControlVariables::ControlVariables(const std::optional<int>& indent, nlohmann::j
     break;
   case VariableControlOperand::Script:
     parameters[4].get_to(script);
+    break;
+  }
+}
+
+void ControlVariables::serializeParameters(nlohmann::json& out) const {
+  out.push_back(start);
+  out.push_back(end);
+  out.push_back(operation);
+  out.push_back(operand);
+  switch (operand) {
+  case VariableControlOperand::Constant:
+    out.push_back(constant);
+    break;
+  case VariableControlOperand::Variable:
+    out.push_back(variable);
+    break;
+  case VariableControlOperand::Random:
+    out.push_back(random.min);
+    out.push_back(random.max);
+    break;
+  case VariableControlOperand::Game_Data:
+    out.push_back(gameData.type);
+    out.push_back(gameData.value);
+    out.push_back(gameData.rawSource);
+    break;
+  case VariableControlOperand::Script:
+    out.push_back(script);
     break;
   }
 }

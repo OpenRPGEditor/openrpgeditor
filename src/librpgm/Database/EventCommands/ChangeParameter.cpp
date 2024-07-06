@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangeParameterCommand::ChangeParameterCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+ChangeParameterCommand::ChangeParameterCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(comparison);
   parameters[1].get_to(value);
@@ -10,6 +10,15 @@ ChangeParameterCommand::ChangeParameterCommand(const std::optional<int>& indent,
   parameters[3].get_to(quantityOp);
   parameters[4].get_to(quantitySource);
   parameters[5].get_to(quantity);
+}
+
+void ChangeParameterCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(comparison);
+  out.push_back(value);
+  out.push_back(param);
+  out.push_back(quantityOp);
+  out.push_back(quantitySource);
+  out.push_back(quantity);
 }
 
 std::string ChangeParameterCommand::stringRep(const Database& db) const {

@@ -2,11 +2,17 @@
 
 #include "Database/Database.hpp"
 
-ChangeVehicleImageCommand::ChangeVehicleImageCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+ChangeVehicleImageCommand::ChangeVehicleImageCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(vehicle);
   parameters[1].get_to(picture);
   parameters[2].get_to(pictureIndex);
+}
+
+void ChangeVehicleImageCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(vehicle);
+  out.push_back(picture);
+  out.push_back(pictureIndex);
 }
 
 std::string ChangeVehicleImageCommand::stringRep(const Database& db) const {

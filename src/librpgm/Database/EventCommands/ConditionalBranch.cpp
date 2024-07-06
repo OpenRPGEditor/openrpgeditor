@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ConditionalBranchCommand::ConditionalBranchCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+ConditionalBranchCommand::ConditionalBranchCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(type);
   switch (type) {
@@ -94,6 +94,104 @@ ConditionalBranchCommand::ConditionalBranchCommand(const std::optional<int>& ind
   }
   case ConditionType::Vehicle: {
     parameters[1].get_to(vehicle.id);
+    break;
+  }
+  default:
+    break;
+  }
+}
+
+void ConditionalBranchCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(type);
+  switch (type) {
+  case ConditionType::Switch: {
+    out.push_back(globalSwitch.switchIdx);
+    out.push_back(globalSwitch.checkIfOn);
+    break;
+  }
+  case ConditionType::Variable: {
+    out.push_back(variable.id);
+    out.push_back(variable.source);
+    if (variable.source == VariableComparisonSource::Constant) {
+      out.push_back(variable.constant);
+    } else {
+      out.push_back(variable.otherId);
+    }
+    out.push_back(variable.comparison);
+    break;
+  }
+  case ConditionType::Self_Switch: {
+    out.push_back(selfSw);
+    out.push_back(selfSwitch.checkIfOn);
+    break;
+  }
+  case ConditionType::Timer: {
+    out.push_back(timer.comparison);
+    out.push_back(timer.sec);
+    break;
+  }
+  case ConditionType::Actor: {
+    out.push_back(actor.id);
+    out.push_back(actor.type);
+    switch (actor.type) {
+    case ActorConditionType::Name:
+    case ActorConditionType::In_The_Party:
+      if (!name.empty()) {
+        out.push_back(name);
+      }
+      break;
+    case ActorConditionType::Class:
+    case ActorConditionType::Skill:
+    case ActorConditionType::Weapon:
+    case ActorConditionType::Armor:
+    case ActorConditionType::State:
+      out.push_back(actor.checkId);
+      break;
+    default:
+      break;
+    }
+    break;
+  }
+  case ConditionType::Enemy: {
+    out.push_back(enemy.id);
+    out.push_back(enemy.type);
+    if (enemy.type == EnemyConditionType::State) {
+      out.push_back(enemy.stateId);
+    }
+    break;
+  }
+  case ConditionType::Character: {
+    out.push_back(character.id);
+    out.push_back(character.facing);
+    break;
+  }
+  case ConditionType::Gold: {
+    out.push_back(gold.value);
+    out.push_back(gold.type);
+    break;
+  }
+  case ConditionType::Item: {
+    out.push_back(item.id);
+    break;
+  }
+  case ConditionType::Weapon:
+  case ConditionType::Armor: {
+    out.push_back(equip.equipId);
+    out.push_back(equip.includeEquipment);
+    break;
+  }
+  case ConditionType::Button: {
+    std::string buttonText = magic_enum::enum_name(button).data();
+    std::ranges::transform(buttonText, buttonText.begin(), [](const char c) { return std::tolower(c); });
+    out.push_back(buttonText);
+    break;
+  }
+  case ConditionType::Script: {
+    out.push_back(script);
+    break;
+  }
+  case ConditionType::Vehicle: {
+    out.push_back(vehicle.id);
     break;
   }
   default:

@@ -4,9 +4,12 @@
 
 struct MovePictureCommand final : IEventCommand {
   MovePictureCommand() = default;
-  explicit MovePictureCommand(const std::optional<int>& indent, nlohmann::json& parameters);
+  explicit MovePictureCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
   ~MovePictureCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Move_Picture; }
+  void serializeParameters(nlohmann::json& out) const override;
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
+
   int picture;
   PictureOrigin origin;
   PictureDesignationSource pictureLocation;
@@ -18,6 +21,4 @@ struct MovePictureCommand final : IEventCommand {
   Blend blendMode;
   int duration;
   bool waitForCompletion;
-
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

@@ -3,12 +3,10 @@
 
 struct ChangeEncounterDisableCommand final : IEventCommand {
   ChangeEncounterDisableCommand() = default;
-  explicit ChangeEncounterDisableCommand(const std::optional<int>& indent, nlohmann::json& parameters)
-  : IEventCommand(indent, parameters) {
-    parameters[0].get_to(access);
-  }
+  explicit ChangeEncounterDisableCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
   ~ChangeEncounterDisableCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Encounter_Disable; }
-  AccessMode access = AccessMode::Disable;
+  void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  AccessMode access = AccessMode::Disable;
 };

@@ -2,12 +2,19 @@
 
 #include "Database/Database.hpp"
 
-ChangeStateCommand::ChangeStateCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+ChangeStateCommand::ChangeStateCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(comparison);
   parameters[1].get_to(value);
   parameters[2].get_to(stateOp);
   parameters[3].get_to(state);
+}
+
+void ChangeStateCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(comparison);
+  out.push_back(value);
+  out.push_back(stateOp);
+  out.push_back(state);
 }
 
 std::string ChangeStateCommand::stringRep(const Database& db) const {

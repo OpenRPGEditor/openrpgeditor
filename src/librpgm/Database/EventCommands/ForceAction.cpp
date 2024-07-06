@@ -2,13 +2,21 @@
 
 #include "Database/Database.hpp"
 
-ForceActionCommand::ForceActionCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+ForceActionCommand::ForceActionCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(sourceComparison);
   parameters[1].get_to(source);
   parameters[2].get_to(skill);
   parameters[3].get_to(target);
 }
+
+void ForceActionCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(sourceComparison);
+  out.push_back(source);
+  out.push_back(skill);
+  out.push_back(target);
+}
+
 
 std::string ForceActionCommand::stringRep(const Database& db) const {
   const std::string targetString = target == -2   ? "Last Target"

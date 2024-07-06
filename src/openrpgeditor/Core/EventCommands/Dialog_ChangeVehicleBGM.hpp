@@ -14,7 +14,7 @@ struct Dialog_ChangeVehicleBGM : IDialogController {
   explicit Dialog_ChangeVehicleBGM(const std::string& name, Project* project)
   : IDialogController(name), m_project(project) {
     command.reset(new ChangeVehicleBGMCommand());
-    m_audio = command->me;
+    m_audio = command->bgm;
     try {
       auto files = getFileNames(Database::Instance->basePath + "audio/bgm/");
       for (const auto& file : files) {

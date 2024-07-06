@@ -4,7 +4,7 @@
 
 struct AbortBattleCommand final : IEventCommand {
   AbortBattleCommand() = default;
-  explicit AbortBattleCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  explicit AbortBattleCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
   : IEventCommand(indent, parameters) {}
   ~AbortBattleCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Abort_Battle; }

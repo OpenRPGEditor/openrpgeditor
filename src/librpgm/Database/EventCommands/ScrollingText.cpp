@@ -1,14 +1,23 @@
 #include "Database/EventCommands/ScrollingText.hpp"
 
-NextScrollingTextCommand::NextScrollingTextCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+NextScrollingTextCommand::NextScrollingTextCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(text);
 }
 
-ShowScrollTextCommand::ShowScrollTextCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+void NextScrollingTextCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(text);
+}
+
+ShowScrollTextCommand::ShowScrollTextCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(speed);
   parameters[1].get_to(noFast);
+}
+
+void ShowScrollTextCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(speed);
+  out.push_back(noFast);
 }
 
 std::string ShowScrollTextCommand::stringRep(const Database& db) const {

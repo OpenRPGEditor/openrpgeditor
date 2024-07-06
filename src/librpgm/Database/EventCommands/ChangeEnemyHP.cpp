@@ -1,13 +1,21 @@
 #include "Database/EventCommands/ChangeEnemyHP.hpp"
 #include "Database/Database.hpp"
 
-ChangeEnemyHPCommand::ChangeEnemyHPCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+ChangeEnemyHPCommand::ChangeEnemyHPCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(enemy);
   parameters[1].get_to(enemyOp);
   parameters[2].get_to(quantitySource);
   parameters[3].get_to(quantity);
   parameters[4].get_to(allowKnockOut);
+}
+
+void ChangeEnemyHPCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(enemy);
+  out.push_back(enemyOp);
+  out.push_back(quantitySource);
+  out.push_back(quantity);
+  out.push_back(allowKnockOut);
 }
 
 std::string ChangeEnemyHPCommand::stringRep(const Database& db) const {

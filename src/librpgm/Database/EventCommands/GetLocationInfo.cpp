@@ -1,7 +1,7 @@
 #include "Database/EventCommands/GetLocationInfo.hpp"
 #include "Database/Database.hpp"
 
-GetLocationInfoCommand::GetLocationInfoCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+GetLocationInfoCommand::GetLocationInfoCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(variable);
   parameters[1].get_to(type);
@@ -9,6 +9,15 @@ GetLocationInfoCommand::GetLocationInfoCommand(const std::optional<int>& indent,
   parameters[3].get_to(x);
   parameters[4].get_to(y);
 }
+
+void GetLocationInfoCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(variable);
+  out.push_back(type);
+  out.push_back(source);
+  out.push_back(x);
+  out.push_back(y);
+}
+
 
 std::string GetLocationInfoCommand::stringRep(const Database& db) const {
   std::string var = db.system.variable(variable);

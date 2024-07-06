@@ -2,6 +2,17 @@
 
 #include "Database/Database.hpp"
 
+InputNumberCommand::InputNumberCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters[0].get_to(variable);
+  parameters[1].get_to(digits);
+}
+
+void InputNumberCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(variable);
+  out.push_back(digits);
+}
+
 std::string InputNumberCommand::stringRep(const Database& db) const {
   auto var = db.system.variable(variable);
   var = var.empty() ? std::format("#{:04}", variable) : var;

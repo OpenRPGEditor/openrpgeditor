@@ -5,12 +5,11 @@
 
 struct ChangeDefeatMECommand final : IEventCommand {
   ChangeDefeatMECommand() = default;
-  explicit ChangeDefeatMECommand(const std::optional<int>& indent, nlohmann::json& parameters)
-  : IEventCommand(indent, parameters) {
-    parameters[0].get_to(me);
-  }
+  explicit ChangeDefeatMECommand(const std::optional<int>& indent, const nlohmann::json& parameters);
   ~ChangeDefeatMECommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Defeat_ME; }
-  Audio me;
+  void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+
+  Audio me;
 };

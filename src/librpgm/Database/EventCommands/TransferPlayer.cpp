@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-TransferPlayerCommand::TransferPlayerCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+TransferPlayerCommand::TransferPlayerCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(mode);
   parameters[1].get_to(mapId);
@@ -10,6 +10,15 @@ TransferPlayerCommand::TransferPlayerCommand(const std::optional<int>& indent, n
   parameters[3].get_to(y);
   parameters[4].get_to(direction);
   parameters[5].get_to(fade);
+}
+
+void TransferPlayerCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(mode);
+  out.push_back(mapId);
+  out.push_back(x);
+  out.push_back(y);
+  out.push_back(direction);
+  out.push_back(fade);
 }
 
 std::string TransferPlayerCommand::stringRep(const Database& db) const {

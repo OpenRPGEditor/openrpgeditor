@@ -1,7 +1,7 @@
 #include "Database/EventCommands/ShopProcessing.hpp"
 #include "Database/Database.hpp"
 
-ShopProcessingGoodCommand::ShopProcessingGoodCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+ShopProcessingGoodCommand::ShopProcessingGoodCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(type);
   parameters[1].get_to(id);
@@ -9,24 +9,31 @@ ShopProcessingGoodCommand::ShopProcessingGoodCommand(const std::optional<int>& i
   parameters[3].get_to(price);
 }
 
+void ShopProcessingGoodCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(type);
+  out.push_back(id);
+  out.push_back(priceType);
+  out.push_back(price);
+}
+
 std::string ShopProcessingGoodCommand::stringRep(const Database& db) const {
   std::string good;
   switch (type) {
   case ShopType::Item:
-    good = db.items.item(id)->name;
+    good = db.itemName(id);
     break;
   case ShopType::Armor:
-    good = db.armors.armor(id)->name;
+    good = db.armorNameOrId(id);
     break;
   case ShopType::Weapon:
-    good = db.weapons.weapon(id)->name;
+    good = db.weaponNameOrId(id);
     break;
   }
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "               " + colon.data() +
          good + ColorFormatter::popColor();
 }
 
-ShopProcessingCommand::ShopProcessingCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+ShopProcessingCommand::ShopProcessingCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(type);
   parameters[1].get_to(id);
@@ -35,17 +42,25 @@ ShopProcessingCommand::ShopProcessingCommand(const std::optional<int>& indent, n
   parameters[4].get_to(purchaseOnly);
 }
 
+void ShopProcessingCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(type);
+  out.push_back(id);
+  out.push_back(priceType);
+  out.push_back(price);
+  out.push_back(purchaseOnly);
+}
+
 std::string ShopProcessingCommand::stringRep(const Database& db) const {
   std::string good;
   switch (type) {
   case ShopType::Item:
-    good = db.items.item(id)->name;
+    good = db.itemName(id);
     break;
   case ShopType::Armor:
-    good = db.armors.armor(id)->name;
+    good = db.armorNameOrId(id);
     break;
   case ShopType::Weapon:
-    good = db.weapons.weapon(id)->name;
+    good = db.weaponNameOrId(id);
     break;
   }
   std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Shop Processing" +

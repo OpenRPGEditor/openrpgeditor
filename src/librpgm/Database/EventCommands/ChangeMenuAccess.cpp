@@ -1,8 +1,12 @@
 #include "Database/EventCommands/ChangeMenuAccess.hpp"
 
-ChangeMenuAccessCommand::ChangeMenuAccessCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+ChangeMenuAccessCommand::ChangeMenuAccessCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(access);
+}
+
+void ChangeMenuAccessCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(access);
 }
 
 std::string ChangeMenuAccessCommand::stringRep(const Database& db) const {

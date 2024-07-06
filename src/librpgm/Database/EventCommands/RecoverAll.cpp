@@ -1,16 +1,21 @@
 #include "Database/EventCommands/RecoverAll.hpp"
 #include "Database/Database.hpp"
 
-RecoverAllCommand::RecoverAllCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+RecoverAllCommand::RecoverAllCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(comparison);
   parameters[1].get_to(value);
 }
 
+void RecoverAllCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(comparison);
+  out.push_back(value);
+}
+
 std::string RecoverAllCommand::stringRep(const Database& db) const {
-  std::string source = comparison == ActorComparisonSource::Fixed
-                           ? value == 0 ? "Entire Party" : db.actors.actor(value)->name
-                           : "{" + db.system.variable(value) + "}";
+  const std::string source = comparison == ActorComparisonSource::Fixed
+                                 ? value == 0 ? "Entire Party" : db.actorNameOrId(value)
+                                 : "{" + db.system.variable(value) + "}";
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Recover All" + colon.data() +
          source + ColorFormatter::popColor();
 }

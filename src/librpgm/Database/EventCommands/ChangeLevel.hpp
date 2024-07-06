@@ -4,9 +4,11 @@
 
 struct ChangeLevelCommand final : IEventCommand {
   ChangeLevelCommand() = default;
-  explicit ChangeLevelCommand(const std::optional<int>& indent, nlohmann::json& parameters);
+  explicit ChangeLevelCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
   ~ChangeLevelCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Level; }
+  void serializeParameters(nlohmann::json& out) const override;
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   ActorComparisonSource comparison;
   int value;
@@ -14,6 +16,4 @@ struct ChangeLevelCommand final : IEventCommand {
   QuantityChangeSource quantitySource;
   int quantity;
   bool showLevelUp;
-
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

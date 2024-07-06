@@ -1,12 +1,19 @@
 #include "Database/EventCommands/SetEventLocation.hpp"
 #include "Database/Database.hpp"
 
-SetEventLocationCommand::SetEventLocationCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+SetEventLocationCommand::SetEventLocationCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(event);
   parameters[1].get_to(mode);
   parameters[2].get_to(x); // Stores event designation ID
   parameters[3].get_to(y);
+}
+
+void SetEventLocationCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(event);
+  out.push_back(mode);
+  out.push_back(x); // Stores event designation ID
+  out.push_back(y);
 }
 
 std::string SetEventLocationCommand::stringRep(const Database& db) const {

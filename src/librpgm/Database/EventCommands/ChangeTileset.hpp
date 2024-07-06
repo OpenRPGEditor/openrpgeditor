@@ -4,9 +4,11 @@
 
 struct ChangeTilesetCommand final : IEventCommand {
   ChangeTilesetCommand() = default;
-  explicit ChangeTilesetCommand(const std::optional<int>& indent, nlohmann::json& parameters);
+  explicit ChangeTilesetCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
   ~ChangeTilesetCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Tileset; }
-  int tileset;
+  void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+
+  int tileset;
 };

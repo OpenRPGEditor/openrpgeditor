@@ -3,7 +3,7 @@
 
 struct ExitEventProcessingCommand final : IEventCommand {
   ExitEventProcessingCommand() = default;
-  explicit ExitEventProcessingCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  explicit ExitEventProcessingCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
   : IEventCommand(indent, parameters) {}
   ~ExitEventProcessingCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Exit_Event_Processing; }

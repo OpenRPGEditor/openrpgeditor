@@ -2,10 +2,15 @@
 
 #include "Database/Database.hpp"
 
-ChangeBattlebackCommand::ChangeBattlebackCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+ChangeBattlebackCommand::ChangeBattlebackCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   parameters[0].get_to(battleBack1Name);
   parameters[1].get_to(battleBack2Name);
+}
+
+void ChangeBattlebackCommand::serializeParameters(nlohmann::json& out) const {
+  out.push_back(battleBack1Name);
+  out.push_back(battleBack2Name);
 }
 
 std::string ChangeBattlebackCommand::stringRep(const Database& db) const {

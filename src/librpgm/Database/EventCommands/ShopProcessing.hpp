@@ -4,29 +4,28 @@
 
 struct ShopProcessingGoodCommand final : IEventCommand {
   ShopProcessingGoodCommand() = default;
-  explicit ShopProcessingGoodCommand(const std::optional<int>& indent, nlohmann::json& parameters);
+  explicit ShopProcessingGoodCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
 
   ~ShopProcessingGoodCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Shop_Processing_Good; }
+  void serializeParameters(nlohmann::json& out) const override;
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   ShopType type;
   int id;
   PriceType priceType;
   int price;
-
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
 };
 
 struct ShopProcessingCommand final : IEventCommand {
   ShopProcessingCommand() = default;
-  explicit ShopProcessingCommand(const std::optional<int>& indent, nlohmann::json& parameters);
+  explicit ShopProcessingCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
 
   ~ShopProcessingCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Shop_Processing; }
+  void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
-  void addGood(ShopProcessingGoodCommand* good) {
-    goods.emplace_back(good);
-  }
+  void addGood(ShopProcessingGoodCommand* good) { goods.emplace_back(good); }
 
   ShopType type{};
   int id{};

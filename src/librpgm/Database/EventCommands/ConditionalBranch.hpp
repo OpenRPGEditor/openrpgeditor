@@ -3,9 +3,13 @@
 
 struct ConditionalBranchCommand final : IEventCommand {
   ConditionalBranchCommand() = default;
-  explicit ConditionalBranchCommand(const std::optional<int>& indent, nlohmann::json& parameters);
+  explicit ConditionalBranchCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
   ~ConditionalBranchCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Conditional_Branch; }
+  void serializeParameters(nlohmann::json& out) const override;
+  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string conditionalFormat(const std::string& text) const;
+
   ConditionType type{};
   struct {
     int switchIdx{};
@@ -60,14 +64,11 @@ struct ConditionalBranchCommand final : IEventCommand {
   std::string selfSw; // A, B, C, D
   std::string name;
   std::string script;
-
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
-  [[nodiscard]] std::string conditionalFormat(const std::string& text) const;
 };
 
 struct ElseCommand final : IEventCommand {
   ElseCommand() = default;
-  explicit ElseCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  explicit ElseCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
   : IEventCommand(indent, parameters) {}
   ~ElseCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Else; }

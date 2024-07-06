@@ -4,7 +4,7 @@
 
 struct MovementThroughOFFCommand final : IMovementRouteStep {
   MovementThroughOFFCommand() = default;
-  explicit MovementThroughOFFCommand(const std::optional<int>& indent, nlohmann::json& parameters)
+  explicit MovementThroughOFFCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
   : IMovementRouteStep(indent, parameters) {}
   ~MovementThroughOFFCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Through_OFF; }

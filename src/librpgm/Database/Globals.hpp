@@ -188,7 +188,7 @@ enum class AutoRemovalTiming {
 };
 
 enum class ItemType {
-  Regular_Item = 1,
+  Regular_Item,
   Key_Item,
   Hidden_Item_A,
   Hidden_Item_B,
@@ -412,7 +412,6 @@ enum class Fade {
 };
 
 enum class BalloonIcon {
-  None,
   Exclamation,
   Question,
   Music_Note,

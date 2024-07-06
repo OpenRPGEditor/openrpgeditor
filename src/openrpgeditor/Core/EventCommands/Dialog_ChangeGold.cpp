@@ -45,7 +45,7 @@ std::tuple<bool, bool> Dialog_ChangeGold::draw() {
 
       ImGui::BeginDisabled(m_operandSource != 1);
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
-      std::string text = m_operandSource != 1 ? "##commonevent_switch_empty" : Database::Instance->variableName(m_variable);
+      std::string text = m_operandSource != 1 ? "##commonevent_switch_empty" : Database::Instance->variableNameOrId(m_variable);
       ImGui::PushID("##controlvariable_gamedata");
       if (ImGui::Button(
               text.c_str(),

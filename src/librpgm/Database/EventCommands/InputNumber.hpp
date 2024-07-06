@@ -11,7 +11,7 @@ struct InputNumberCommand final : IEventCommand {
 
   ~InputNumberCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Input_Number; }
-  int variable;
-  int digits;
+  int variable = 1;
+  int digits = 1;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

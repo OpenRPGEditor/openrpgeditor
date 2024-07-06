@@ -163,6 +163,14 @@ add_library(orecore STATIC
         Core/EventCommands/Dialog_JumpToLabel.hpp
         Core/EventCommands/Dialog_ShowAnimation.cpp
         Core/EventCommands/Dialog_ShowAnimation.hpp
+        Core/EventCommands/Dialog_ShowBattleAnimation.cpp
+        Core/EventCommands/Dialog_ShowBattleAnimation.hpp
+        Core/EventCommands/Dialog_ShowBalloonIcon.cpp
+        Core/EventCommands/Dialog_ShowBalloonIcon.hpp
+        Core/EventCommands/Dialog_InputNumber.cpp
+        Core/EventCommands/Dialog_InputNumber.hpp
+        Core/EventCommands/Dialog_SelectItem.cpp
+        Core/EventCommands/Dialog_SelectItem.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})

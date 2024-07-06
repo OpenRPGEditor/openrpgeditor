@@ -39,6 +39,7 @@
 #include "Core/EventCommands/Dialog_GameOver.hpp"
 #include "Core/EventCommands/Dialog_GatherFollowers.hpp"
 #include "Core/EventCommands/Dialog_GetOnOffVehicle.hpp"
+#include "Core/EventCommands/Dialog_InputNumber.hpp"
 #include "Core/EventCommands/Dialog_JumpToLabel.hpp"
 #include "Core/EventCommands/Dialog_Label.hpp"
 #include "Core/EventCommands/Dialog_Loop.hpp"
@@ -54,7 +55,10 @@
 #include "Core/EventCommands/Dialog_ReturnToTitle.hpp"
 #include "Core/EventCommands/Dialog_SaveBGM.hpp"
 #include "Core/EventCommands/Dialog_Script.hpp"
+#include "Core/EventCommands/Dialog_SelectItem.hpp"
 #include "Core/EventCommands/Dialog_ShowAnimation.hpp"
+#include "Core/EventCommands/Dialog_ShowBalloonIcon.hpp"
+#include "Core/EventCommands/Dialog_ShowBattleAnimation.hpp"
 #include "Core/EventCommands/Dialog_StopSE.hpp"
 #include "Core/EventCommands/Dialog_TimerControl.hpp"
 #include "Core/EventCommands/Dialog_Wait.hpp"
@@ -381,8 +385,7 @@ void EventCommandEditor::drawPopup() {
           if (ImGui::Button("Show Choices...", size)) {}
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Show Battle Animation...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ShowBattleAnimation>("Show Battle Animation", m_project);
+            commandDialog = std::make_shared<Dialog_ShowBattleAnimation>("Show Battle Animation", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third Column
@@ -392,8 +395,7 @@ void EventCommandEditor::drawPopup() {
           if (ImGui::Button("Show Scrolling Text...", size)) {}
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Show Balloon Icon...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ShowBalloonIcon>("Show Balloon Icon", m_project);
+            commandDialog = std::make_shared<Dialog_ShowBalloonIcon>("Show Balloon Icon", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third Column
@@ -401,8 +403,7 @@ void EventCommandEditor::drawPopup() {
             commandDialog = std::make_shared<Dialog_AbortBattle>("Abort Battle", m_project);
           }
           if (ImGui::Button("Input Number...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_InputNumber>("Input Number", m_project);
+            commandDialog = std::make_shared<Dialog_InputNumber>("Input Number", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column
@@ -412,8 +413,7 @@ void EventCommandEditor::drawPopup() {
             commandDialog = std::make_shared<Dialog_GatherFollowers>("Gather Followers", m_project);
           }
           if (ImGui::Button("Select Item...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_SelectItem>("Select Item", m_project);
+            commandDialog = std::make_shared<Dialog_SelectItem>("Select Item", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column

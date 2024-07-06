@@ -6,7 +6,7 @@ struct SelectItemCommand final : IEventCommand {
   explicit SelectItemCommand(const std::optional<int>& _indent, nlohmann::json& parameters);
   ~SelectItemCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Select_Item; }
-  int item{};
-  ItemType type{};
+  int item = 1;
+  ItemType type = ItemType::Key_Item;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

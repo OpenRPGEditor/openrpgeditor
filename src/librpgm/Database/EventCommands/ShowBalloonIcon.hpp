@@ -12,8 +12,8 @@ struct ShowBalloonIconCommand final : IEventCommand {
   }
   ~ShowBalloonIconCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Balloon_Icon; }
-  int id;
-  BalloonIcon index;
-  bool waitForCompletion;
+  int id = -1;
+  BalloonIcon index = BalloonIcon::Exclamation;
+  bool waitForCompletion = false;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 };

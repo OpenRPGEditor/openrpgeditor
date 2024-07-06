@@ -9,7 +9,7 @@ struct ShowBattleAnimationCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Battle_Animation; }
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  int enemy; // equals 0 if bool is true
-  int animation;
-  bool targetAllEnemies;
+  int enemy = 1; // equals 0 if bool is true
+  int animation = 1;
+  bool targetAllEnemies = false;
 };

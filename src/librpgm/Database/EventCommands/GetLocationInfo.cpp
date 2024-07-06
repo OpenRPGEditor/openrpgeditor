@@ -3,11 +3,11 @@
 
 GetLocationInfoCommand::GetLocationInfoCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(variable);
-  parameters[1].get_to(type);
-  parameters[2].get_to(source);
-  parameters[3].get_to(x);
-  parameters[4].get_to(y);
+  parameters.at(0).get_to(variable);
+  parameters.at(1).get_to(type);
+  parameters.at(2).get_to(source);
+  parameters.at(3).get_to(x);
+  parameters.at(4).get_to(y);
 }
 
 void GetLocationInfoCommand::serializeParameters(nlohmann::json& out) const {

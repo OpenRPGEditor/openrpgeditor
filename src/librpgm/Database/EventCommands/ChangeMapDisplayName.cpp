@@ -2,7 +2,7 @@
 
 ChangeMapNameDisplayCommand::ChangeMapNameDisplayCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(checkIfOn);
+  parameters.at(0).get_to(checkIfOn);
 }
 
 void ChangeMapNameDisplayCommand::serializeParameters(nlohmann::json& out) const {

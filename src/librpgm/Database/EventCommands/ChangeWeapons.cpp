@@ -4,11 +4,11 @@
 
 ChangeWeaponsCommand::ChangeWeaponsCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(item);
-  parameters[1].get_to(operation);
-  parameters[2].get_to(operandSource);
-  parameters[3].get_to(operand);
-  parameters[4].get_to(includeEquipment);
+  parameters.at(0).get_to(item);
+  parameters.at(1).get_to(operation);
+  parameters.at(2).get_to(operandSource);
+  parameters.at(3).get_to(operand);
+  parameters.at(4).get_to(includeEquipment);
 }
 
 void ChangeWeaponsCommand::serializeParameters(nlohmann::json& out) const {

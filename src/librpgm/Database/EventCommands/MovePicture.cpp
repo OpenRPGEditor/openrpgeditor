@@ -3,18 +3,18 @@
 
 MovePictureCommand::MovePictureCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(picture);
+  parameters.at(0).get_to(picture);
   // param[1] is not used
-  parameters[2].get_to(origin);
-  parameters[3].get_to(pictureLocation);
-  parameters[4].get_to(x);
-  parameters[5].get_to(y);
-  parameters[6].get_to(width);
-  parameters[7].get_to(height);
-  parameters[8].get_to(opacity);
-  parameters[9].get_to(blendMode);
-  parameters[10].get_to(duration);
-  parameters[11].get_to(waitForCompletion);
+  parameters.at(2).get_to(origin);
+  parameters.at(3).get_to(pictureLocation);
+  parameters.at(4).get_to(x);
+  parameters.at(5).get_to(y);
+  parameters.at(6).get_to(width);
+  parameters.at(7).get_to(height);
+  parameters.at(8).get_to(opacity);
+  parameters.at(9).get_to(blendMode);
+  parameters.at(10).get_to(duration);
+  parameters.at(11).get_to(waitForCompletion);
 }
 
 void MovePictureCommand::serializeParameters(nlohmann::json& out) const {

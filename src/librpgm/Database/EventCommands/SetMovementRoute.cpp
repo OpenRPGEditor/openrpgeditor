@@ -20,8 +20,8 @@ void MovementRouteStepCommand::serializeParameters(nlohmann::json& out) const {
 
 SetMovementRouteCommand::SetMovementRouteCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(character);
-  parameters[1].get_to(route);
+  parameters.at(0).get_to(character);
+  parameters.at(1).get_to(route);
 }
 
 void SetMovementRouteCommand::serializeParameters(nlohmann::json& out) const {

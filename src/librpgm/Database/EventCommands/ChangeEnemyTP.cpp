@@ -4,10 +4,10 @@
 
 ChangeEnemyTPCommand::ChangeEnemyTPCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(enemy);
-  parameters[1].get_to(enemyOp);
-  parameters[2].get_to(quantitySource);
-  parameters[3].get_to(quantity);
+  parameters.at(0).get_to(enemy);
+  parameters.at(1).get_to(enemyOp);
+  parameters.at(2).get_to(quantitySource);
+  parameters.at(3).get_to(quantity);
 }
 
 void ChangeEnemyTPCommand::serializeParameters(nlohmann::json& out) const {

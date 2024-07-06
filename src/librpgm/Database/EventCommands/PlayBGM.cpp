@@ -4,7 +4,7 @@
 
 PlayBGMCommand::PlayBGMCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(audio);
+  parameters.at(0).get_to(audio);
 }
 
 void PlayBGMCommand::serializeParameters(nlohmann::json& out) const { out.push_back(audio); }

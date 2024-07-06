@@ -4,12 +4,12 @@
 
 ChangeParameterCommand::ChangeParameterCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(comparison);
-  parameters[1].get_to(value);
-  parameters[2].get_to(param);
-  parameters[3].get_to(quantityOp);
-  parameters[4].get_to(quantitySource);
-  parameters[5].get_to(quantity);
+  parameters.at(0).get_to(comparison);
+  parameters.at(1).get_to(value);
+  parameters.at(2).get_to(param);
+  parameters.at(3).get_to(quantityOp);
+  parameters.at(4).get_to(quantitySource);
+  parameters.at(5).get_to(quantity);
 }
 
 void ChangeParameterCommand::serializeParameters(nlohmann::json& out) const {

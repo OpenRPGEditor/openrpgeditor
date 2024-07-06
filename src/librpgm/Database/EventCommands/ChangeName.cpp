@@ -3,8 +3,8 @@
 
 ChangeNameCommand::ChangeNameCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(actor);
-  parameters[1].get_to(name);
+  parameters.at(0).get_to(actor);
+  parameters.at(1).get_to(name);
 }
 
 void ChangeNameCommand::serializeParameters(nlohmann::json& out) const {

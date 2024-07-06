@@ -4,8 +4,8 @@
 
 SelectItemCommand::SelectItemCommand(const std::optional<int>& _indent, const nlohmann::json& parameters)
 : IEventCommand(_indent, parameters) {
-  parameters[0].get_to(item);
-  parameters[1].get_to(type);
+  parameters.at(0).get_to(item);
+  parameters.at(1).get_to(type);
 }
 
 void SelectItemCommand::serializeParameters(nlohmann::json& out) const {

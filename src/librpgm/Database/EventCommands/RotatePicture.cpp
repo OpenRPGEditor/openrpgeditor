@@ -2,8 +2,8 @@
 
 RotatePictureCommand::RotatePictureCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(picture);
-  parameters[1].get_to(rotation);
+  parameters.at(0).get_to(picture);
+  parameters.at(1).get_to(rotation);
 }
 
 void RotatePictureCommand::serializeParameters(nlohmann::json& out) const {

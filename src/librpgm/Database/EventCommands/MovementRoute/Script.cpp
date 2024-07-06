@@ -2,7 +2,7 @@
 
 MovementScriptCommand::MovementScriptCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IMovementRouteStep(indent, parameters) {
-  parameters[0].get_to(script);
+  parameters.at(0).get_to(script);
 }
 
 void MovementScriptCommand::serializeParameters(nlohmann::json& out) const { out.push_back(script); }

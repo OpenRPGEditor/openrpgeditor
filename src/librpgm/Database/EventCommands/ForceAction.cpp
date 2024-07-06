@@ -4,10 +4,10 @@
 
 ForceActionCommand::ForceActionCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(sourceComparison);
-  parameters[1].get_to(source);
-  parameters[2].get_to(skill);
-  parameters[3].get_to(target);
+  parameters.at(0).get_to(sourceComparison);
+  parameters.at(1).get_to(source);
+  parameters.at(2).get_to(skill);
+  parameters.at(3).get_to(target);
 }
 
 void ForceActionCommand::serializeParameters(nlohmann::json& out) const {

@@ -3,7 +3,7 @@
 
 MovementPlaySECommand::MovementPlaySECommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IMovementRouteStep(indent, parameters) {
-  parameters[0].get_to(se);
+  parameters.at(0).get_to(se);
 }
 
 void MovementPlaySECommand::serializeParameters(nlohmann::json& out) const { out.push_back(se); }

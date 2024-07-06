@@ -2,15 +2,15 @@
 
 FlashScreenCommand::FlashScreenCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  auto colorValue = parameters[0];
+  auto colorValue = parameters.at(0);
 
   colorValue[0].get_to(color.r);
   colorValue[1].get_to(color.g);
   colorValue[2].get_to(color.b);
   colorValue[3].get_to(color.intensity);
 
-  parameters[1].get_to(duration);
-  parameters[2].get_to(waitForCompletion);
+  parameters.at(1).get_to(duration);
+  parameters.at(2).get_to(waitForCompletion);
 }
 
 void FlashScreenCommand::serializeParameters(nlohmann::json& out) const {

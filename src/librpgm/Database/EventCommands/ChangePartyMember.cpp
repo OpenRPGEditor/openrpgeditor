@@ -4,9 +4,9 @@
 
 ChangePartyMemberCommand::ChangePartyMemberCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(member);
-  parameters[1].get_to(operation);
-  parameters[2].get_to(initialize);
+  parameters.at(0).get_to(member);
+  parameters.at(1).get_to(operation);
+  parameters.at(2).get_to(initialize);
 }
 
 void ChangePartyMemberCommand::serializeParameters(nlohmann::json& out) const {

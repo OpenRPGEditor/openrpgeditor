@@ -3,8 +3,8 @@
 
 ChangeProfileCommand::ChangeProfileCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(actor);
-  parameters[1].get_to(profile);
+  parameters.at(0).get_to(actor);
+  parameters.at(1).get_to(profile);
 }
 
 void ChangeProfileCommand::serializeParameters(nlohmann::json& out) const {

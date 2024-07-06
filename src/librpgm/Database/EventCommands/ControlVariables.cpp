@@ -3,28 +3,28 @@
 
 ControlVariables::ControlVariables(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(start);
-  parameters[1].get_to(end);
-  parameters[2].get_to(operation);
-  parameters[3].get_to(operand);
+  parameters.at(0).get_to(start);
+  parameters.at(1).get_to(end);
+  parameters.at(2).get_to(operation);
+  parameters.at(3).get_to(operand);
   switch (operand) {
   case VariableControlOperand::Constant:
-    parameters[4].get_to(constant);
+    parameters.at(4).get_to(constant);
     break;
   case VariableControlOperand::Variable:
-    parameters[4].get_to(variable);
+    parameters.at(4).get_to(variable);
     break;
   case VariableControlOperand::Random:
-    parameters[4].get_to(random.min);
-    parameters[5].get_to(random.max);
+    parameters.at(4).get_to(random.min);
+    parameters.at(5).get_to(random.max);
     break;
   case VariableControlOperand::Game_Data:
-    parameters[4].get_to(gameData.type);
-    parameters[5].get_to(gameData.value);
-    parameters[6].get_to(gameData.rawSource);
+    parameters.at(4).get_to(gameData.type);
+    parameters.at(5).get_to(gameData.value);
+    parameters.at(6).get_to(gameData.rawSource);
     break;
   case VariableControlOperand::Script:
-    parameters[4].get_to(script);
+    parameters.at(4).get_to(script);
     break;
   }
 }

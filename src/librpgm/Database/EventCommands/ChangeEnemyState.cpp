@@ -4,9 +4,9 @@
 
 ChangeEnemyStateCommand::ChangeEnemyStateCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(enemy);
-  parameters[1].get_to(enemyOp);
-  parameters[2].get_to(state);
+  parameters.at(0).get_to(enemy);
+  parameters.at(1).get_to(enemyOp);
+  parameters.at(2).get_to(state);
 }
 
 void ChangeEnemyStateCommand::serializeParameters(nlohmann::json& out) const {

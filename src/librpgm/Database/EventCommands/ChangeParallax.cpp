@@ -4,11 +4,11 @@
 
 ChangeParallaxCommand::ChangeParallaxCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(image);
-  parameters[1].get_to(loopHorizontally);
-  parameters[2].get_to(loopVertically);
-  parameters[3].get_to(scrollX);
-  parameters[4].get_to(scrollY);
+  parameters.at(0).get_to(image);
+  parameters.at(1).get_to(loopHorizontally);
+  parameters.at(2).get_to(loopVertically);
+  parameters.at(3).get_to(scrollX);
+  parameters.at(4).get_to(scrollY);
 }
 
 void ChangeParallaxCommand::serializeParameters(nlohmann::json& out) const {

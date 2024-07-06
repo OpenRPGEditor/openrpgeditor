@@ -4,7 +4,7 @@
 
 ChangeBattleBGMCommand::ChangeBattleBGMCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(bgm);
+  parameters.at(0).get_to(bgm);
 }
 
 void ChangeBattleBGMCommand::serializeParameters(nlohmann::json& out) const {

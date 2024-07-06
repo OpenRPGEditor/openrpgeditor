@@ -2,7 +2,7 @@
 
 EnemyAppearCommand::EnemyAppearCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(enemy);
+  parameters.at(0).get_to(enemy);
 }
 
 void EnemyAppearCommand::serializeParameters(nlohmann::json& out) const { out.push_back(enemy); }

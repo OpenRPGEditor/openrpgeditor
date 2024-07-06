@@ -4,8 +4,8 @@
 
 ChangeBattlebackCommand::ChangeBattlebackCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(battleBack1Name);
-  parameters[1].get_to(battleBack2Name);
+  parameters.at(0).get_to(battleBack1Name);
+  parameters.at(1).get_to(battleBack2Name);
 }
 
 void ChangeBattlebackCommand::serializeParameters(nlohmann::json& out) const {

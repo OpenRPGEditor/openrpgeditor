@@ -4,42 +4,42 @@
 
 ConditionalBranchCommand::ConditionalBranchCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(type);
+  parameters.at(0).get_to(type);
   switch (type) {
   case ConditionType::Switch: {
-    parameters[1].get_to(globalSwitch.switchIdx);
-    parameters[2].get_to(globalSwitch.checkIfOn);
+    parameters.at(1).get_to(globalSwitch.switchIdx);
+    parameters.at(2).get_to(globalSwitch.checkIfOn);
     break;
   }
   case ConditionType::Variable: {
-    parameters[1].get_to(variable.id);
-    parameters[2].get_to(variable.source);
+    parameters.at(1).get_to(variable.id);
+    parameters.at(2).get_to(variable.source);
     if (variable.source == VariableComparisonSource::Constant) {
-      parameters[3].get_to(variable.constant);
+      parameters.at(3).get_to(variable.constant);
     } else {
-      parameters[3].get_to(variable.otherId);
+      parameters.at(3).get_to(variable.otherId);
     }
-    parameters[4].get_to(variable.comparison);
+    parameters.at(4).get_to(variable.comparison);
     break;
   }
   case ConditionType::Self_Switch: {
-    parameters[1].get_to(selfSw);
-    parameters[2].get_to(selfSwitch.checkIfOn);
+    parameters.at(1).get_to(selfSw);
+    parameters.at(2).get_to(selfSwitch.checkIfOn);
     break;
   }
   case ConditionType::Timer: {
-    parameters[1].get_to(timer.comparison);
-    parameters[2].get_to(timer.sec);
+    parameters.at(1).get_to(timer.comparison);
+    parameters.at(2).get_to(timer.sec);
     break;
   }
   case ConditionType::Actor: {
-    parameters[1].get_to(actor.id);
-    parameters[2].get_to(actor.type);
+    parameters.at(1).get_to(actor.id);
+    parameters.at(2).get_to(actor.type);
     switch (actor.type) {
     case ActorConditionType::Name:
     case ActorConditionType::In_The_Party:
-      if (parameters[3].is_string()) {
-        parameters[3].get_to(name);
+      if (parameters.size() > 3 && parameters.at(3).is_string()) {
+        parameters.at(3).get_to(name);
       }
       break;
     case ActorConditionType::Class:
@@ -47,7 +47,7 @@ ConditionalBranchCommand::ConditionalBranchCommand(const std::optional<int>& ind
     case ActorConditionType::Weapon:
     case ActorConditionType::Armor:
     case ActorConditionType::State:
-      parameters[3].get_to(actor.checkId);
+      parameters.at(3).get_to(actor.checkId);
       break;
     default:
       break;
@@ -55,45 +55,45 @@ ConditionalBranchCommand::ConditionalBranchCommand(const std::optional<int>& ind
     break;
   }
   case ConditionType::Enemy: {
-    parameters[1].get_to(enemy.id);
-    parameters[2].get_to(enemy.type);
+    parameters.at(1).get_to(enemy.id);
+    parameters.at(2).get_to(enemy.type);
     if (enemy.type == EnemyConditionType::State) {
-      parameters[3].get_to(enemy.stateId);
+      parameters.at(3).get_to(enemy.stateId);
     }
     break;
   }
   case ConditionType::Character: {
-    parameters[1].get_to(character.id);
-    parameters[2].get_to(character.facing);
+    parameters.at(1).get_to(character.id);
+    parameters.at(2).get_to(character.facing);
     break;
   }
   case ConditionType::Gold: {
-    parameters[1].get_to(gold.value);
-    parameters[2].get_to(gold.type);
+    parameters.at(1).get_to(gold.value);
+    parameters.at(2).get_to(gold.type);
     break;
   }
   case ConditionType::Item: {
-    parameters[1].get_to(item.id);
+    parameters.at(1).get_to(item.id);
     break;
   }
   case ConditionType::Weapon:
   case ConditionType::Armor: {
-    parameters[1].get_to(equip.equipId);
-    parameters[2].get_to(equip.includeEquipment);
+    parameters.at(1).get_to(equip.equipId);
+    parameters.at(2).get_to(equip.includeEquipment);
     break;
   }
   case ConditionType::Button: {
     std::string buttonText;
-    parameters[1].get_to(buttonText);
+    parameters.at(1).get_to(buttonText);
     button = magic_enum::enum_cast<Button>(buttonText, magic_enum::case_insensitive).value_or(Button::OK);
     break;
   }
   case ConditionType::Script: {
-    parameters[1].get_to(script);
+    parameters.at(1).get_to(script);
     break;
   }
   case ConditionType::Vehicle: {
-    parameters[1].get_to(vehicle.id);
+    parameters.at(1).get_to(vehicle.id);
     break;
   }
   default:

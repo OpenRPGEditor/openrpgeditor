@@ -3,7 +3,7 @@
 ChangeFormationAccessCommand::ChangeFormationAccessCommand(const std::optional<int>& indent,
                                                            const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(access);
+  parameters.at(0).get_to(access);
 }
 
 void ChangeFormationAccessCommand::serializeParameters(nlohmann::json& out) const {

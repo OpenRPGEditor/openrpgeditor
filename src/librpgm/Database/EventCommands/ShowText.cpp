@@ -4,17 +4,17 @@
 
 NextTextCommand::NextTextCommand(const std::optional<int>& _indent, const nlohmann::json& parameters)
 : IEventCommand(_indent, parameters) {
-  parameters[0].get_to(text);
+  parameters.at(0).get_to(text);
 }
 
 void NextTextCommand::serializeParameters(nlohmann::json& out) const { out.push_back(text); }
 
 ShowTextCommand::ShowTextCommand(const std::optional<int>& _indent, const nlohmann::json& parameters)
 : IEventCommand(_indent, parameters) {
-  parameters[0].get_to(faceImage);
-  parameters[1].get_to(faceIndex);
-  parameters[2].get_to(background);
-  parameters[3].get_to(position);
+  parameters.at(0).get_to(faceImage);
+  parameters.at(1).get_to(faceIndex);
+  parameters.at(2).get_to(background);
+  parameters.at(3).get_to(position);
 }
 
 void ShowTextCommand::serializeParameters(nlohmann::json& out) const {

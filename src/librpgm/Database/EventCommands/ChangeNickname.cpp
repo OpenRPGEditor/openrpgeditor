@@ -3,8 +3,8 @@
 
 ChangeNicknameCommand::ChangeNicknameCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(actor);
-  parameters[1].get_to(nick);
+  parameters.at(0).get_to(actor);
+  parameters.at(1).get_to(nick);
 }
 
 void ChangeNicknameCommand::serializeParameters(nlohmann::json& out) const {

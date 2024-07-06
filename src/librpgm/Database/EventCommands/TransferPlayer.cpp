@@ -4,12 +4,12 @@
 
 TransferPlayerCommand::TransferPlayerCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(mode);
-  parameters[1].get_to(mapId);
-  parameters[2].get_to(x);
-  parameters[3].get_to(y);
-  parameters[4].get_to(direction);
-  parameters[5].get_to(fade);
+  parameters.at(0).get_to(mode);
+  parameters.at(1).get_to(mapId);
+  parameters.at(2).get_to(x);
+  parameters.at(3).get_to(y);
+  parameters.at(4).get_to(direction);
+  parameters.at(5).get_to(fade);
 }
 
 void TransferPlayerCommand::serializeParameters(nlohmann::json& out) const {

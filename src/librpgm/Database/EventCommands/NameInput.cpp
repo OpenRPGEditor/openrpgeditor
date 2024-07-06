@@ -4,8 +4,8 @@
 
 NameInputCommand::NameInputCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(actorId);
-  parameters[1].get_to(maxChar);
+  parameters.at(0).get_to(actorId);
+  parameters.at(1).get_to(maxChar);
 }
 
 void NameInputCommand::serializeParameters(nlohmann::json& out) const {

@@ -4,7 +4,7 @@
 
 CommonEventCommand::CommonEventCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(event);
+  parameters.at(0).get_to(event);
 }
 
 void CommonEventCommand::serializeParameters(nlohmann::json& out) const {

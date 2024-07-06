@@ -2,9 +2,9 @@
 
 ScrollMapCommand::ScrollMapCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(direction);
-  parameters[1].get_to(distance);
-  parameters[2].get_to(speed);
+  parameters.at(0).get_to(direction);
+  parameters.at(1).get_to(distance);
+  parameters.at(2).get_to(speed);
 }
 
 void ScrollMapCommand::serializeParameters(nlohmann::json& out) const {

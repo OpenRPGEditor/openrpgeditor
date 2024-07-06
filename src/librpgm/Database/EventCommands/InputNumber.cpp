@@ -4,8 +4,8 @@
 
 InputNumberCommand::InputNumberCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(variable);
-  parameters[1].get_to(digits);
+  parameters.at(0).get_to(variable);
+  parameters.at(1).get_to(digits);
 }
 
 void InputNumberCommand::serializeParameters(nlohmann::json& out) const {

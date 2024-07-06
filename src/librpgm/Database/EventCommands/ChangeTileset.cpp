@@ -3,7 +3,7 @@
 
 ChangeTilesetCommand::ChangeTilesetCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(tileset);
+  parameters.at(0).get_to(tileset);
 }
 
 void ChangeTilesetCommand::serializeParameters(nlohmann::json& out) const { out.push_back(tileset); }

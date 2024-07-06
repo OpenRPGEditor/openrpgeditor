@@ -2,16 +2,16 @@
 
 ShowPictureCommand::ShowPictureCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(number);
-  parameters[1].get_to(imageName);
-  parameters[2].get_to(origin);
-  parameters[3].get_to(type);
-  parameters[4].get_to(value1);
-  parameters[5].get_to(value2);
-  parameters[6].get_to(zoomX);
-  parameters[7].get_to(zoomY);
-  parameters[8].get_to(opacityValue);
-  parameters[9].get_to(blendMode);
+  parameters.at(0).get_to(number);
+  parameters.at(1).get_to(imageName);
+  parameters.at(2).get_to(origin);
+  parameters.at(3).get_to(type);
+  parameters.at(4).get_to(value1);
+  parameters.at(5).get_to(value2);
+  parameters.at(6).get_to(zoomX);
+  parameters.at(7).get_to(zoomY);
+  parameters.at(8).get_to(opacityValue);
+  parameters.at(9).get_to(blendMode);
 }
 
 void ShowPictureCommand::serializeParameters(nlohmann::json& out) const {

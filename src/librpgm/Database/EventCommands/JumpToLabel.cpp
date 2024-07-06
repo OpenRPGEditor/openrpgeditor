@@ -2,7 +2,7 @@
 
 JumpToLabelCommand::JumpToLabelCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(label);
+  parameters.at(0).get_to(label);
 }
 
 void JumpToLabelCommand::serializeParameters(nlohmann::json& out) const { out.push_back(label); }

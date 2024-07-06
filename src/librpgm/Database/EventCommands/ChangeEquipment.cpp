@@ -3,9 +3,9 @@
 
 ChangeEquipmentCommand::ChangeEquipmentCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(actorId);
-  parameters[1].get_to(equipType);
-  parameters[2].get_to(equipment);
+  parameters.at(0).get_to(actorId);
+  parameters.at(1).get_to(equipType);
+  parameters.at(2).get_to(equipment);
 }
 
 void ChangeEquipmentCommand::serializeParameters(nlohmann::json& out) const {

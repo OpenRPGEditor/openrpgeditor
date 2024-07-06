@@ -3,11 +3,11 @@
 SetWeatherEffectCommand::SetWeatherEffectCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
   std::string eff;
-  parameters[0].get_to(eff);
+  parameters.at(0).get_to(eff);
   effect = magic_enum::enum_cast<WeatherEffect>(eff, magic_enum::case_insensitive).value();
-  parameters[1].get_to(power);
-  parameters[2].get_to(duration);
-  parameters[3].get_to(waitForCompletion);
+  parameters.at(1).get_to(power);
+  parameters.at(2).get_to(duration);
+  parameters.at(3).get_to(waitForCompletion);
 }
 
 void SetWeatherEffectCommand::serializeParameters(nlohmann::json& out) const {

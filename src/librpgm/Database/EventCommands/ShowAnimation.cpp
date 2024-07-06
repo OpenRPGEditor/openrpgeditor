@@ -4,9 +4,9 @@
 
 ShowAnimationCommand::ShowAnimationCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(character);
-  parameters[1].get_to(animation);
-  parameters[2].get_to(waitForCompletion);
+  parameters.at(0).get_to(character);
+  parameters.at(1).get_to(animation);
+  parameters.at(2).get_to(waitForCompletion);
 }
 
 void ShowAnimationCommand::serializeParameters(nlohmann::json& out) const {

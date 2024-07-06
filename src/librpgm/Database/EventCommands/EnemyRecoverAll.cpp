@@ -4,7 +4,7 @@
 
 EnemyRecoverAllCommand::EnemyRecoverAllCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(troop);
+  parameters.at(0).get_to(troop);
 }
 
 void EnemyRecoverAllCommand::serializeParameters(nlohmann::json& out) const { out.push_back(troop); }

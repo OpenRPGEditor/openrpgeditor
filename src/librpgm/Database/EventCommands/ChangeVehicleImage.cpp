@@ -4,9 +4,9 @@
 
 ChangeVehicleImageCommand::ChangeVehicleImageCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(vehicle);
-  parameters[1].get_to(picture);
-  parameters[2].get_to(pictureIndex);
+  parameters.at(0).get_to(vehicle);
+  parameters.at(1).get_to(picture);
+  parameters.at(2).get_to(pictureIndex);
 }
 
 void ChangeVehicleImageCommand::serializeParameters(nlohmann::json& out) const {

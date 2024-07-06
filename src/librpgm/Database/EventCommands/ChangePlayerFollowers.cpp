@@ -3,7 +3,7 @@
 ChangePlayerFollowersCommand::ChangePlayerFollowersCommand(const std::optional<int>& indent,
                                                            const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(followersEnabled);
+  parameters.at(0).get_to(followersEnabled);
 }
 
 void ChangePlayerFollowersCommand::serializeParameters(nlohmann::json& out) const { out.push_back(followersEnabled); }

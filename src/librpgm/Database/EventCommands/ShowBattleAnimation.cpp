@@ -4,9 +4,9 @@
 ShowBattleAnimationCommand::ShowBattleAnimationCommand(const std::optional<int>& indent,
                                                        const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(enemy);
-  parameters[1].get_to(animation);
-  parameters[2].get_to(targetAllEnemies);
+  parameters.at(0).get_to(enemy);
+  parameters.at(1).get_to(animation);
+  parameters.at(2).get_to(targetAllEnemies);
 }
 
 void ShowBattleAnimationCommand::serializeParameters(nlohmann::json& out) const {

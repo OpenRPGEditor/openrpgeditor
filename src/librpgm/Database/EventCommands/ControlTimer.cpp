@@ -2,9 +2,9 @@
 
 ControlTimerCommand::ControlTimerCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(control);
+  parameters.at(0).get_to(control);
   if (control == TimerControl::Start) {
-    parameters[1].get_to(seconds);
+    parameters.at(1).get_to(seconds);
   }
 }
 

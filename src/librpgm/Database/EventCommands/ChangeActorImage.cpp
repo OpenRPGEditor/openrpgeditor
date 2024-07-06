@@ -3,12 +3,12 @@
 
 ChangeActorImageCommand::ChangeActorImageCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(actor);
-  parameters[1].get_to(charPicture);
-  parameters[2].get_to(charIndex);
-  parameters[3].get_to(facePicture);
-  parameters[4].get_to(faceIndex);
-  parameters[5].get_to(battlerPicture);
+  parameters.at(0).get_to(actor);
+  parameters.at(1).get_to(charPicture);
+  parameters.at(2).get_to(charIndex);
+  parameters.at(3).get_to(facePicture);
+  parameters.at(4).get_to(faceIndex);
+  parameters.at(5).get_to(battlerPicture);
 }
 
 void ChangeActorImageCommand::serializeParameters(nlohmann::json& out) const {

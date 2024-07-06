@@ -3,10 +3,10 @@
 
 ShopProcessingGoodCommand::ShopProcessingGoodCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(type);
-  parameters[1].get_to(id);
-  parameters[2].get_to(priceType);
-  parameters[3].get_to(price);
+  parameters.at(0).get_to(type);
+  parameters.at(1).get_to(id);
+  parameters.at(2).get_to(priceType);
+  parameters.at(3).get_to(price);
 }
 
 void ShopProcessingGoodCommand::serializeParameters(nlohmann::json& out) const {
@@ -35,11 +35,11 @@ std::string ShopProcessingGoodCommand::stringRep(const Database& db) const {
 
 ShopProcessingCommand::ShopProcessingCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(type);
-  parameters[1].get_to(id);
-  parameters[2].get_to(priceType);
-  parameters[3].get_to(price);
-  parameters[4].get_to(purchaseOnly);
+  parameters.at(0).get_to(type);
+  parameters.at(1).get_to(id);
+  parameters.at(2).get_to(priceType);
+  parameters.at(3).get_to(price);
+  parameters.at(4).get_to(purchaseOnly);
 }
 
 void ShopProcessingCommand::serializeParameters(nlohmann::json& out) const {

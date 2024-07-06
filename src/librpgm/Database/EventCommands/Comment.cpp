@@ -2,14 +2,14 @@
 
 NextCommentCommand::NextCommentCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(text);
+  parameters.at(0).get_to(text);
 }
 
 void NextCommentCommand::serializeParameters(nlohmann::json& out) const { out.push_back(text); }
 
 CommentCommand::CommentCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(text);
+  parameters.at(0).get_to(text);
 }
 
 void CommentCommand::serializeParameters(nlohmann::json& out) const { out.push_back(text); }

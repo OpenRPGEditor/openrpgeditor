@@ -3,11 +3,11 @@
 
 SetVehicleLocationCommand::SetVehicleLocationCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(vehicle);
-  parameters[1].get_to(mode);
-  parameters[2].get_to(mapId);
-  parameters[3].get_to(x);
-  parameters[4].get_to(y);
+  parameters.at(0).get_to(vehicle);
+  parameters.at(1).get_to(mode);
+  parameters.at(2).get_to(mapId);
+  parameters.at(3).get_to(x);
+  parameters.at(4).get_to(y);
 }
 
 void SetVehicleLocationCommand::serializeParameters(nlohmann::json& out) const {

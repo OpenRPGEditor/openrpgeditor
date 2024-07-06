@@ -2,8 +2,8 @@
 
 ControlSelfSwitchCommand::ControlSelfSwitchCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(selfSw);
-  parameters[1].get_to(turnOff);
+  parameters.at(0).get_to(selfSw);
+  parameters.at(1).get_to(turnOff);
 }
 
 void ControlSelfSwitchCommand::serializeParameters(nlohmann::json& out) const {

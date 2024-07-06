@@ -2,14 +2,14 @@
 
 TintPictureCommand::TintPictureCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(picture);
-  auto colorValues = parameters[1];
+  parameters.at(0).get_to(picture);
+  auto colorValues = parameters.at(1);
   colorValues[0].get_to(color.r);
   colorValues[1].get_to(color.g);
   colorValues[2].get_to(color.b);
   colorValues[3].get_to(color.gray);
-  parameters[2].get_to(duration);
-  parameters[3].get_to(waitForCompletion);
+  parameters.at(2).get_to(duration);
+  parameters.at(3).get_to(waitForCompletion);
 }
 
 void TintPictureCommand::serializeParameters(nlohmann::json& out) const {

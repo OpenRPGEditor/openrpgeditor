@@ -4,9 +4,9 @@
 
 ChangeClassCommand::ChangeClassCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(actor);
-  parameters[1].get_to(classId);
-  parameters[2].get_to(saveLevel);
+  parameters.at(0).get_to(actor);
+  parameters.at(1).get_to(classId);
+  parameters.at(2).get_to(saveLevel);
 }
 
 void ChangeClassCommand::serializeParameters(nlohmann::json& out) const {

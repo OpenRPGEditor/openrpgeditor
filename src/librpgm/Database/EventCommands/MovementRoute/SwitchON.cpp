@@ -2,7 +2,7 @@
 
 MovementSwitchONCommand::MovementSwitchONCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IMovementRouteStep(indent, parameters) {
-  parameters[0].get_to(id);
+  parameters.at(0).get_to(id);
 }
 
 void MovementSwitchONCommand::serializeParameters(nlohmann::json& out) const { out.push_back(id); }

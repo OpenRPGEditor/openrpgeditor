@@ -2,7 +2,7 @@
 
 MovementWaitCommand::MovementWaitCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IMovementRouteStep(indent, parameters) {
-  parameters[0].get_to(duration);
+  parameters.at(0).get_to(duration);
 }
 
 void MovementWaitCommand::serializeParameters(nlohmann::json& out) const { out.push_back(duration); }

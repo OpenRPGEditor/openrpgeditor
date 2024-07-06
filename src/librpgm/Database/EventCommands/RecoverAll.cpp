@@ -3,8 +3,8 @@
 
 RecoverAllCommand::RecoverAllCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(comparison);
-  parameters[1].get_to(value);
+  parameters.at(0).get_to(comparison);
+  parameters.at(1).get_to(value);
 }
 
 void RecoverAllCommand::serializeParameters(nlohmann::json& out) const {

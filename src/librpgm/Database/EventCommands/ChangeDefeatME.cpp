@@ -4,7 +4,7 @@
 
 ChangeDefeatMECommand::ChangeDefeatMECommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(me);
+  parameters.at(0).get_to(me);
 }
 
 void ChangeDefeatMECommand::serializeParameters(nlohmann::json& out) const {

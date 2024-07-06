@@ -2,8 +2,8 @@
 
 ChangeVehicleBGMCommand::ChangeVehicleBGMCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(vehicle);
-  parameters[1].get_to(bgm);
+  parameters.at(0).get_to(vehicle);
+  parameters.at(1).get_to(bgm);
 }
 
 void ChangeVehicleBGMCommand::serializeParameters(nlohmann::json& out) const {

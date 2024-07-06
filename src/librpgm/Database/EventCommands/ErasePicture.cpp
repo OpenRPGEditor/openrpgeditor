@@ -2,7 +2,7 @@
 
 ErasePictureCommand::ErasePictureCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(picture);
+  parameters.at(0).get_to(picture);
 }
 
 void ErasePictureCommand::serializeParameters(nlohmann::json& out) const { out.push_back(picture); }

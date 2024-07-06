@@ -2,8 +2,8 @@
 
 MovementJumpCommand::MovementJumpCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IMovementRouteStep(indent, parameters) {
-  parameters[0].get_to(x);
-  parameters[1].get_to(y);
+  parameters.at(0).get_to(x);
+  parameters.at(1).get_to(y);
 }
 
 void MovementJumpCommand::serializeParameters(nlohmann::json& out) const {

@@ -3,10 +3,10 @@
 
 ChangeSkillCommand::ChangeSkillCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters[0].get_to(comparison);
-  parameters[1].get_to(value);
-  parameters[2].get_to(skillOp);
-  parameters[3].get_to(skill);
+  parameters.at(0).get_to(comparison);
+  parameters.at(1).get_to(value);
+  parameters.at(2).get_to(skillOp);
+  parameters.at(3).get_to(skill);
 }
 
 void ChangeSkillCommand::serializeParameters(nlohmann::json& out) const {

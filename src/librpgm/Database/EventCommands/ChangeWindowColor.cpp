@@ -2,7 +2,7 @@
 
 ChangeWindowColorCommand::ChangeWindowColorCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
 : IEventCommand(indent, parameters) {
-  auto colors = parameters[0];
+  auto colors = parameters.at(0);
   colors[0].get_to(r);
   colors[1].get_to(g);
   colors[2].get_to(b);

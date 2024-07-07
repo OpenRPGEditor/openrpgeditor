@@ -18,12 +18,16 @@
 #include "Core/EventCommands/Dialog_ChangeEquipment.hpp"
 #include "Core/EventCommands/Dialog_ChangeFormationAccess.hpp"
 #include "Core/EventCommands/Dialog_ChangeGold.hpp"
+#include "Core/EventCommands/Dialog_ChangeMapDisplayName.hpp"
 #include "Core/EventCommands/Dialog_ChangeMenuAccess.hpp"
 #include "Core/EventCommands/Dialog_ChangeName.hpp"
 #include "Core/EventCommands/Dialog_ChangeNickname.hpp"
 #include "Core/EventCommands/Dialog_ChangePartyMember.hpp"
+#include "Core/EventCommands/Dialog_ChangePlayerFollowers.hpp"
 #include "Core/EventCommands/Dialog_ChangeProfile.hpp"
 #include "Core/EventCommands/Dialog_ChangeSaveAccess.hpp"
+#include "Core/EventCommands/Dialog_ChangeTileset.hpp"
+#include "Core/EventCommands/Dialog_ChangeTransparency.hpp"
 #include "Core/EventCommands/Dialog_ChangeVehicleBGM.hpp"
 #include "Core/EventCommands/Dialog_ChangeVictoryME.hpp"
 #include "Core/EventCommands/Dialog_ChangeWindowColor.hpp"
@@ -31,11 +35,18 @@
 #include "Core/EventCommands/Dialog_ControlSwitches.hpp"
 #include "Core/EventCommands/Dialog_ControlVariables.hpp"
 #include "Core/EventCommands/Dialog_Comment.hpp"
+#include "Core/EventCommands/Dialog_ControlSelfSwitch.hpp"
 #include "Core/EventCommands/Dialog_EnemyAppear.hpp"
 #include "Core/EventCommands/Dialog_EnemyRecoverAll.hpp"
 #include "Core/EventCommands/Dialog_EnemyTransform.hpp"
 #include "Core/EventCommands/Dialog_EraseEvent.hpp"
+#include "Core/EventCommands/Dialog_ErasePicture.hpp"
 #include "Core/EventCommands/Dialog_ExitEventProcessing.hpp"
+#include "Core/EventCommands/Dialog_FadeinScreen.hpp"
+#include "Core/EventCommands/Dialog_FadeoutBGM.hpp"
+#include "Core/EventCommands/Dialog_FadeoutBGS.hpp"
+#include "Core/EventCommands/Dialog_FadeoutScreen.hpp"
+#include "Core/EventCommands/Dialog_FlashScreen.hpp"
 #include "Core/EventCommands/Dialog_GameOver.hpp"
 #include "Core/EventCommands/Dialog_GatherFollowers.hpp"
 #include "Core/EventCommands/Dialog_GetOnOffVehicle.hpp"
@@ -43,6 +54,7 @@
 #include "Core/EventCommands/Dialog_JumpToLabel.hpp"
 #include "Core/EventCommands/Dialog_Label.hpp"
 #include "Core/EventCommands/Dialog_Loop.hpp"
+#include "Core/EventCommands/Dialog_NameInputProcessing.hpp"
 #include "Core/EventCommands/Dialog_OpenMenuScreen.hpp"
 #include "Core/EventCommands/Dialog_OpenSaveScreen.hpp"
 #include "Core/EventCommands/Dialog_PlayBGM.hpp"
@@ -53,14 +65,20 @@
 #include "Core/EventCommands/Dialog_RecoverAll.hpp"
 #include "Core/EventCommands/Dialog_ReplayBGM.hpp"
 #include "Core/EventCommands/Dialog_ReturnToTitle.hpp"
+#include "Core/EventCommands/Dialog_RotatePicture.hpp"
 #include "Core/EventCommands/Dialog_SaveBGM.hpp"
 #include "Core/EventCommands/Dialog_Script.hpp"
+#include "Core/EventCommands/Dialog_ScrollMap.hpp"
 #include "Core/EventCommands/Dialog_SelectItem.hpp"
+#include "Core/EventCommands/Dialog_SetWeatherEffect.hpp"
+#include "Core/EventCommands/Dialog_ShakeScreen.hpp"
 #include "Core/EventCommands/Dialog_ShowAnimation.hpp"
 #include "Core/EventCommands/Dialog_ShowBalloonIcon.hpp"
 #include "Core/EventCommands/Dialog_ShowBattleAnimation.hpp"
 #include "Core/EventCommands/Dialog_StopSE.hpp"
 #include "Core/EventCommands/Dialog_TimerControl.hpp"
+#include "Core/EventCommands/Dialog_TintPicture.hpp"
+#include "Core/EventCommands/Dialog_TintScreen.hpp"
 #include "Core/EventCommands/Dialog_Wait.hpp"
 #include "Core/EventCommands/IDialogController.hpp"
 
@@ -199,27 +217,66 @@ void EventCommandEditor::drawPopup() {
         ImVec2 size = ImVec2{((ImGui::GetContentRegionAvail().x / 2) / 2) - App::DPIHandler::scale_value(15), 0};
 
         if (ImGui::BeginTabItem("Actor")) {
-          if (ImGui::Button("Change HP...", size)) {}
+          if (ImGui::Button("Change HP...", size)) {
+            //commandDialog = std::make_shared<Dialog_ChangeHP>("Change HP", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine();
           if (ImGui::Button("Change Gold...", size)) {
             commandDialog = std::make_shared<Dialog_ChangeGold>("Change Gold", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine();
-          if (ImGui::Button("Change Enemy HP...", size)) {}
-          if (ImGui::Button("Change MP...", size)) {}
+          if (ImGui::Button("Change Enemy HP...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeEnemyHP>("Change Enemy HP", m_project);
+            commandDialog->SetOpen(true);
+          }
+          if (ImGui::Button("Change MP...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeMP>("Change MP", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine();
-          if (ImGui::Button("Change Items...", size)) {}
+          if (ImGui::Button("Change Items...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeItem>("Change Item", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine();
-          if (ImGui::Button("Change Enemy MP...", size)) {}
-          if (ImGui::Button("Change TP...", size)) {}
+          if (ImGui::Button("Change Enemy MP...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeEnemyMP>("Change Enemy MP", m_project);
+            commandDialog->SetOpen(true);
+          }
+          if (ImGui::Button("Change TP...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeTP>("Change TP", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine();
-          if (ImGui::Button("Change Weapons...", size)) {}
+          if (ImGui::Button("Change Weapons...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeWeapon>("Change Weapon", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine();
-          if (ImGui::Button("Change Enemy TP...", size)) {}
-          if (ImGui::Button("Change State...", size)) {}
+          if (ImGui::Button("Change Enemy TP...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeEnemyTP>("Change Enemy TP", m_project);
+            commandDialog->SetOpen(true);
+          }
+          if (ImGui::Button("Change State...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeState>("Change State", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine();
-          if (ImGui::Button("Change Armors...", size)) {}
+          if (ImGui::Button("Change Armors...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeArmor>("Change Armor", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine();
           if (ImGui::Button("Change Enemy State...", size)) {
             commandDialog = std::make_shared<Dialog_ChangeEnemyState>("Change Enemy State", m_project);
@@ -239,7 +296,11 @@ void EventCommandEditor::drawPopup() {
             commandDialog = std::make_shared<Dialog_EnemyRecoverAll>("Enemy Recover All", m_project);
             commandDialog->SetOpen(true);
           }
-          if (ImGui::Button("Change EXP...", size)) {}
+          if (ImGui::Button("Change EXP...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeEXP>("Change EXP", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine();
           if (ImGui::Button("Change Nickname...", size)) {
             commandDialog = std::make_shared<Dialog_ChangeNickname>("Change Nickname", m_project);
@@ -250,7 +311,11 @@ void EventCommandEditor::drawPopup() {
             commandDialog = std::make_shared<Dialog_EnemyAppear>("Enemy Appear", m_project);
             commandDialog->SetOpen(true);
           }
-          if (ImGui::Button("Change Level...", size)) {}
+          if (ImGui::Button("Change Level...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeLevel>("Change Level", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine();
           if (ImGui::Button("Change Profile...", size)) {
             commandDialog = std::make_shared<Dialog_ChangeProfile>("Change Profile", m_project);
@@ -261,8 +326,16 @@ void EventCommandEditor::drawPopup() {
             commandDialog = std::make_shared<Dialog_EnemyTransform>("Enemy Transform", m_project);
             commandDialog->SetOpen(true);
           }
-          if (ImGui::Button("Change Parameter...", size)) {}
-          if (ImGui::Button("Change Skill...", size)) {}
+          if (ImGui::Button("Change Parameter...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeParameter>("Change Parameter", m_project);
+            commandDialog->SetOpen(true);
+          }
+          if (ImGui::Button("Change Skill...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeSkill>("Change Skill", m_project);
+            commandDialog->SetOpen(true);
+          }
           if (ImGui::Button("Change Equipment...", size)) {
             commandDialog = std::make_shared<Dialog_ChangeEquipment>("Change Equipment", m_project);
             commandDialog->SetOpen(true);
@@ -307,12 +380,22 @@ void EventCommandEditor::drawPopup() {
           if (ImGui::Button("Stop SE", size)) {
             commandDialog = std::make_shared<Dialog_StopSE>("Stop SE", m_project);
           }
-          if (ImGui::Button("Fadeout BGM...", size)) {}
-          if (ImGui::Button("Fadeout BGS...", size)) {}
+          if (ImGui::Button("Fadeout BGM...", size)) {
+            commandDialog = std::make_shared<Dialog_FadeoutBGM>("Fadeout BGM", m_project);
+            commandDialog->SetOpen(true);
+          }
+          if (ImGui::Button("Fadeout BGS...", size)) {
+            commandDialog = std::make_shared<Dialog_FadeoutBGS>("Fadeout BGS", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Flow")) {
-          if (ImGui::Button("Conditional Branch...", size)) {}
+          if (ImGui::Button("Conditional Branch...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ConditionalBranch>("Conditional Branch", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Control Switches...", size)) {
             commandDialog = std::make_shared<Dialog_ControlSwitches>("Control Switches", m_project);
@@ -339,7 +422,10 @@ void EventCommandEditor::drawPopup() {
             commandDialog = std::make_shared<Dialog_BreakLoop>("Break Loop", m_project);
           }
           ImGui::SameLine(); // Second Column
-          if (ImGui::Button("Control Self Switch...", size)) {}
+          if (ImGui::Button("Control Self Switch...", size)) {
+            commandDialog = std::make_shared<Dialog_ControlSelfSwitch>("Control Self Switch", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine(); // Third Column
           if (ImGui::Button("Exit Event Processing", size)) {
             commandDialog = std::make_shared<Dialog_ExitEventProcessing>("Exit Event Processing", m_project);
@@ -358,31 +444,54 @@ void EventCommandEditor::drawPopup() {
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column
-          if (ImGui::Button("Transfer Player...", size)) {}
+          if (ImGui::Button("Transfer Player...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_TransferPlayer>("Transfer Player", m_project);
+            commandDialog->SetOpen(true);
+          }
           if (ImGui::Button("Jump to Label...", size)) {
             commandDialog = std::make_shared<Dialog_JumpToLabel>("Jump to Label", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column
-          if (ImGui::Button("Set Event Location...", size)) {}
+          if (ImGui::Button("Set Event Location...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_SetEventLocation>("Set Event Location", m_project);
+            commandDialog->SetOpen(true);
+          }
           if (ImGui::Button("Comment...", size)) {
             commandDialog = std::make_shared<Dialog_Comment>("Comment", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column
-          if (ImGui::Button("Set Vehicle Location...", size)) {}
+          if (ImGui::Button("Set Vehicle Location...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_SetVehicleLocation>("Set Vehicle Location", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Scene")) {
-          if (ImGui::Button("Show Text...", size)) {}
+          if (ImGui::Button("Show Text...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ShowText>("Show Text", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Show Animation...", size)) {
             commandDialog = std::make_shared<Dialog_ShowAnimation>("Show Animation", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third Column
-          if (ImGui::Button("Change Transparency...", size)) {}
-          if (ImGui::Button("Show Choices...", size)) {}
+          if (ImGui::Button("Change Transparency...", size)) {
+            commandDialog = std::make_shared<Dialog_ChangeTransparency>("Change Transparency", m_project);
+            commandDialog->SetOpen(true);
+          }
+          if (ImGui::Button("Show Choices...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ShowChoices>("Show Choices", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Show Battle Animation...", size)) {
             commandDialog = std::make_shared<Dialog_ShowBattleAnimation>("Show Battle Animation", m_project);
@@ -392,7 +501,11 @@ void EventCommandEditor::drawPopup() {
           if (ImGui::Button("Get on/off Vehicle", size)) {
             commandDialog = std::make_shared<Dialog_GetOnOffVehicle>("Get on/off Vehicle", m_project);
           }
-          if (ImGui::Button("Show Scrolling Text...", size)) {}
+          if (ImGui::Button("Show Scrolling Text...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ShowScrollingText>("Show Scrolling Text", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Show Balloon Icon...", size)) {
             commandDialog = std::make_shared<Dialog_ShowBalloonIcon>("Show Balloon Icon", m_project);
@@ -407,7 +520,11 @@ void EventCommandEditor::drawPopup() {
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column
-          if (ImGui::Button("Shop Processing...", size)) {}
+          if (ImGui::Button("Shop Processing...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ShopProcessing>("Shop Processing", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine(); // Third Column
           if (ImGui::Button("Gather Followers", size)) {
             commandDialog = std::make_shared<Dialog_GatherFollowers>("Gather Followers", m_project);
@@ -417,48 +534,78 @@ void EventCommandEditor::drawPopup() {
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column
-          if (ImGui::Button("Battle Processing...", size)) {}
-          if (ImGui::Button("Set Movement Route...", size)) {}
+          if (ImGui::Button("Battle Processing...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_BattleProcessing>("Battle Processing", m_project);
+            commandDialog->SetOpen(true);
+          }
+          if (ImGui::Button("Set Movement Route...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_SetMovementRoute>("Set Movement Route", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Name Input Processing...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_NameInputProcessing>("Name Input Processing", m_project);
+            commandDialog = std::make_shared<Dialog_NameInputProcessing>("Name Input Processing", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Screen")) {
-          if (ImGui::Button("Show Picture...", size)) {}
+          if (ImGui::Button("Show Picture...", size)) {
+            commandDialog = std::make_shared<Dialog_ShowPicture>("Show Picture", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine(); // Second column
-          if (ImGui::Button("Tint Screen...", size)) {}
+          if (ImGui::Button("Tint Screen...", size)) {
+            commandDialog = std::make_shared<Dialog_TintScreen>("Tint Screen", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine(); // Third column
-          if (ImGui::Button("Set Weather Effect...", size)) {}
-          if (ImGui::Button("Move Picture...", size)) {}
+          if (ImGui::Button("Set Weather Effect...", size)) {
+            commandDialog = std::make_shared<Dialog_SetWeatherEffect>("Set Weather Effect", m_project);
+            commandDialog->SetOpen(true);
+          }
+          if (ImGui::Button("Move Picture...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_MovePicture>("Move Picture", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine(); // Second column
-          if (ImGui::Button("Flash Screen...", size)) {}
+          if (ImGui::Button("Flash Screen...", size)) {
+            commandDialog = std::make_shared<Dialog_FlashScreen>("Flash Screen", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine(); // Third column
           if (ImGui::Button("Scroll Map...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ScrollMap>("Scroll Map", m_project);
+            commandDialog = std::make_shared<Dialog_ScrollMap>("Scroll Map", m_project);
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Rotate Picture...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_RotatePicture>("Rotate Picture", m_project);
+            commandDialog = std::make_shared<Dialog_RotatePicture>("Rotate Picture", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second column
-          if (ImGui::Button("Shake Screen...", size)) {}
-          if (ImGui::Button("Tint Picture...", size)) {}
+          if (ImGui::Button("Shake Screen...", size)) {
+            commandDialog = std::make_shared<Dialog_ShakeScreen>("Shake Screen", m_project);
+            commandDialog->SetOpen(true);
+          }
+          if (ImGui::Button("Tint Picture...", size)) {
+            commandDialog = std::make_shared<Dialog_TintPicture>("Tint Picture", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine(); // Second column
-          if (ImGui::Button("Fadeout Screen...", size)) {}
+          if (ImGui::Button("Fadeout Screen...", size)) {
+            commandDialog = std::make_shared<Dialog_FadeoutScreen>("Fadeout Screen", m_project);
+          }
           if (ImGui::Button("Erase Picture...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ErasePicture>("Erase Picture", m_project);
+            commandDialog = std::make_shared<Dialog_ErasePicture>("Erase Picture", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second column
-          if (ImGui::Button("Fadein Screen...", size)) {}
+          if (ImGui::Button("Fadein Screen...", size)) {
+            commandDialog = std::make_shared<Dialog_FadeinScreen>("Fadein Screen", m_project);
+          }
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("System")) {
@@ -484,7 +631,11 @@ void EventCommandEditor::drawPopup() {
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third column
-          if (ImGui::Button("Plugin Command...", size)) {}
+          if (ImGui::Button("Plugin Command...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangePluginCommand>("Change Plugin Command", m_project);
+            commandDialog->SetOpen(true);
+          }
           if (ImGui::Button("Change Menu Access...", size)) {
             commandDialog = std::make_shared<Dialog_ChangeMenuAccess>("Change Menu Access", m_project);
             commandDialog->SetOpen(true);
@@ -511,24 +662,41 @@ void EventCommandEditor::drawPopup() {
           if (ImGui::Button("Return To Title Screen", size)) {
             commandDialog = std::make_shared<Dialog_ReturnToTitle>("Return To Title Screen", m_project);
           }
-          if (ImGui::Button("Change Map Display Name...", size)) {}
-          ImGui::SameLine(); // Second column
-          if (ImGui::Button("Change Parallax...", size)) {}
-          if (ImGui::Button("Change Tileset...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ChangeTileset>("Change Tileset", m_project);
+          if (ImGui::Button("Change Map Display Name...", size)) {
+            commandDialog = std::make_shared<Dialog_ChangeMapDisplayName>("Change Map Display Name", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second column
-          if (ImGui::Button("Change Actor Images...", size)) {}
+          if (ImGui::Button("Change Parallax...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeParallax>("Change Parallax", m_project);
+            commandDialog->SetOpen(true);
+          }
+          if (ImGui::Button("Change Tileset...", size)) {
+            commandDialog = std::make_shared<Dialog_ChangeTileset>("Change Tileset", m_project);
+            commandDialog->SetOpen(true);
+          }
+          ImGui::SameLine(); // Second column
+          if (ImGui::Button("Change Actor Images...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeActorImages>("Change Actor Images", m_project);
+            commandDialog->SetOpen(true);
+          }
           if (ImGui::Button("Change Battle Back...", size)) {
             // TODO : We need a specific image picker for this one (double images w/ preview)
             // commandDialog = std::make_shared<Dialog_ChangeBattleBack>("Change Battle Back", m_project);
             // commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second column
-          if (ImGui::Button("Change Vehicle Image...", size)) {}
-          if (ImGui::Button("Change Player Followers...", size)) {}
+          if (ImGui::Button("Change Vehicle Image...", size)) {
+            // TODO
+            //commandDialog = std::make_shared<Dialog_ChangeVehicleImage>("Change Vehicle Image", m_project);
+            commandDialog->SetOpen(true);
+          }
+          if (ImGui::Button("Change Player Followers...", size)) {
+            commandDialog = std::make_shared<Dialog_ChangePlayerFollowers>("Change Player Followers", m_project);
+            commandDialog->SetOpen(true);
+          }
           ImGui::SameLine(); // Second column
           if (ImGui::Button("Change Window Color...", size)) {
             commandDialog = std::make_shared<Dialog_ChangeWindowColor>("Change Window Color", m_project);

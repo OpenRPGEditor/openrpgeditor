@@ -1,35 +1,31 @@
-#include "Dialog_Wait.hpp"
+#include "Dialog_ErasePicture.hpp"
 
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/Project.hpp"
-#include "Database/Database.hpp"
 
-std::tuple<bool, bool> Dialog_Wait::draw() {
+std::tuple<bool, bool> Dialog_ErasePicture::draw() {
   if (IsOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{241, 92} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{131, 93} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
 
-    ImGui::SeparatorText("Duration");
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
-    if (ImGui::InputInt("##wait_input", &m_waitDuration)) {
-      if (m_waitDuration < 1)
-        m_waitDuration = 1;
-      if (m_waitDuration > 999)
-        m_waitDuration = 999;
+    ImGui::SeparatorText("Picture Number");
+    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(110));
+    if (ImGui::InputInt("##erasepicture_id", &m_picture)) {
+      if (m_picture > 999) {
+        m_picture = 999;
+      } else if (m_picture < 1)
+        m_picture = 1;
     }
-    ImGui::SameLine();
-    ImGui::Text("frames 1/60 sec");
-
 
     if (ImGui::Button("OK")) {
       m_confirmed = true;
-      command->duration = m_waitDuration;
+      command->picture = m_picture;
       ImGui::CloseCurrentPopup();
       SetOpen(false);
     }

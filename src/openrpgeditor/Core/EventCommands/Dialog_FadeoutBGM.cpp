@@ -1,12 +1,11 @@
-#include "Dialog_Wait.hpp"
+#include "Dialog_FadeoutBGM.hpp"
 
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/Project.hpp"
-#include "Database/Database.hpp"
 
-std::tuple<bool, bool> Dialog_Wait::draw() {
+std::tuple<bool, bool> Dialog_FadeoutBGM::draw() {
   if (IsOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
@@ -17,19 +16,19 @@ std::tuple<bool, bool> Dialog_Wait::draw() {
 
     ImGui::SeparatorText("Duration");
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
-    if (ImGui::InputInt("##wait_input", &m_waitDuration)) {
-      if (m_waitDuration < 1)
-        m_waitDuration = 1;
-      if (m_waitDuration > 999)
-        m_waitDuration = 999;
-    }
+    ImGui::InputInt("##fadeoutbgm_input", &m_duration);
     ImGui::SameLine();
-    ImGui::Text("frames 1/60 sec");
+    ImGui::Text("seconds");
 
 
     if (ImGui::Button("OK")) {
+      if (m_duration < 1)
+        m_duration = 1;
+      if (m_duration > 999)
+        m_duration = 999;
+
       m_confirmed = true;
-      command->duration = m_waitDuration;
+      command->duration = m_duration;
       ImGui::CloseCurrentPopup();
       SetOpen(false);
     }

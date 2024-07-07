@@ -10,16 +10,16 @@ struct TintPictureCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  int picture;
+  int picture{1};
 
   struct {
-    int r;
-    int g;
-    int b;
-    int gray;
+    int r{0};
+    int g{0};
+    int b{0};
+    int gray{0};
   } color;
 
-  int duration;
-  bool waitForCompletion;
+  int duration{60};
+  bool waitForCompletion{true};
 
 };

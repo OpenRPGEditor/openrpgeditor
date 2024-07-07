@@ -171,6 +171,44 @@ add_library(orecore STATIC
         Core/EventCommands/Dialog_InputNumber.hpp
         Core/EventCommands/Dialog_SelectItem.cpp
         Core/EventCommands/Dialog_SelectItem.hpp
+        Core/EventCommands/Dialog_NameInputProcessing.cpp
+        Core/EventCommands/Dialog_NameInputProcessing.hpp
+        Core/EventCommands/Dialog_ScrollMap.cpp
+        Core/EventCommands/Dialog_ScrollMap.hpp
+        Core/EventCommands/Dialog_RotatePicture.cpp
+        Core/EventCommands/Dialog_RotatePicture.hpp
+        Core/EventCommands/Dialog_ErasePicture.cpp
+        Core/EventCommands/Dialog_ErasePicture.hpp
+        Core/EventCommands/Dialog_ChangeTileset.cpp
+        Core/EventCommands/Dialog_ChangeTileset.hpp
+        Core/EventCommands/Dialog_FadeoutBGM.cpp
+        Core/EventCommands/Dialog_FadeoutBGM.hpp
+        Core/EventCommands/Dialog_FadeoutBGS.cpp
+        Core/EventCommands/Dialog_FadeoutBGS.hpp
+        Core/EventCommands/Dialog_ControlSelfSwitch.cpp
+        Core/EventCommands/Dialog_ControlSelfSwitch.hpp
+        Core/EventCommands/Dialog_ChangeTransparency.cpp
+        Core/EventCommands/Dialog_ChangeTransparency.hpp
+        Core/EventCommands/Dialog_TintScreen.cpp
+        Core/EventCommands/Dialog_TintScreen.hpp
+        Core/EventCommands/Dialog_SetWeatherEffect.cpp
+        Core/EventCommands/Dialog_SetWeatherEffect.hpp
+        Core/EventCommands/Dialog_FlashScreen.cpp
+        Core/EventCommands/Dialog_FlashScreen.hpp
+        Core/EventCommands/Dialog_ShakeScreen.cpp
+        Core/EventCommands/Dialog_ShakeScreen.hpp
+        Core/EventCommands/Dialog_TintPicture.cpp
+        Core/EventCommands/Dialog_TintPicture.hpp
+        Core/EventCommands/Dialog_FadeinScreen.cpp
+        Core/EventCommands/Dialog_FadeinScreen.hpp
+        Core/EventCommands/Dialog_FadeoutScreen.cpp
+        Core/EventCommands/Dialog_FadeoutScreen.hpp
+        Core/EventCommands/Dialog_ChangeMapDisplayName.cpp
+        Core/EventCommands/Dialog_ChangeMapDisplayName.hpp
+        Core/EventCommands/Dialog_ChangePlayerFollowers.cpp
+        Core/EventCommands/Dialog_ChangePlayerFollowers.hpp
+        Core/EventCommands/Dialog_ShowPicture.cpp
+        Core/EventCommands/Dialog_ShowPicture.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})

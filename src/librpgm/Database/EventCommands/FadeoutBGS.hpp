@@ -9,5 +9,5 @@ struct FadeoutBGS : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Fadeout_BGS; }
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
-  int duration;
+  int duration{10};
 };

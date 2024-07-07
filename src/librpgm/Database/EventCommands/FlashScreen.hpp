@@ -11,11 +11,11 @@ struct FlashScreenCommand final : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   struct {
-    int r;
-    int g;
-    int b;
-    int intensity;
+    int r{255};
+    int g{255};
+    int b{255};
+    int intensity{170};
   } color;
-  int duration;
-  bool waitForCompletion;
+  int duration{60};
+  bool waitForCompletion{true};
 };

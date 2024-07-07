@@ -10,6 +10,6 @@ struct NameInputCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  int actorId{};
+  int actorId{1};
   int maxChar{8};
 };

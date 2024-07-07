@@ -10,5 +10,5 @@ struct ChangePlayerFollowersCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  ValueControl followersEnabled;
+  ValueControl followersEnabled = ValueControl::ON;
 };

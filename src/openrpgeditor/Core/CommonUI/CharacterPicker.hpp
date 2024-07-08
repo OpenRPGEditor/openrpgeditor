@@ -19,13 +19,16 @@ struct CharacterPicker : IDialogController {
   [[nodiscard]] int selectedPattern() const { return m_pattern; }
   [[nodiscard]] Direction selectedDirection() const { return m_direction; }
   [[nodiscard]] int character() const { return m_characterIndex; }
-  [[nodiscard]] std::string_view selectedSheet() const { return m_characterSheetName; }
+  [[nodiscard]] std::string selectedSheet() const {
+    return m_selectedSheet >= 0 ? m_characterSheets[m_selectedSheet] : "";
+  }
+
+  void setCharacterInfo(std::string_view sheetName, int character, int pattern, Direction direction);
 
 private:
   std::optional<CharacterSheet> m_characterSheet;
   std::vector<std::string> m_characterSheets;
   PickerMode m_pickerMode;
-  std::string m_characterSheetName;
   int m_characterIndex{0};
   CheckerboardTexture m_checkerboardTexture{};
   int m_selectedSheet{-1};

@@ -11,6 +11,10 @@ struct IDialogController {
   virtual bool IsOpen() const { return m_open; }
   virtual bool IsConfirmed() const { return m_confirmed; }
   virtual void SetOpen(const bool open) { m_open = open; }
+  virtual void Accept() {
+    m_open = false;
+    m_confirmed = false;
+  }
 
 protected:
   bool m_confirmed{false};

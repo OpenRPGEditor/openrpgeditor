@@ -114,6 +114,8 @@ void MapEditor::handleEventDrag() {
 }
 void MapEditor::handleMouseInput(ImGuiWindow* win) {
   if (!ImGui::IsWindowFocused()) {
+    m_selectedEvent = nullptr;
+    m_movingEvent = nullptr;
     return;
   }
 

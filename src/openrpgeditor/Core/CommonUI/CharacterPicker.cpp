@@ -20,34 +20,66 @@ int alignCoord(int value, int size) { return roundUp(value - (value % (static_ca
 
 CharacterPicker::CharacterPicker(const PickerMode mode, const std::string_view sheetName, const int character,
                                  const int pattern, const Direction direction)
-: IDialogController("Character")
+: IDialogController("Select an Image##character_picker")
 , m_pickerMode(mode)
-, m_characterSheetName(sheetName)
 , m_characterIndex(character)
 , m_checkerboardTexture(864, 768)
 , m_pattern(pattern)
 , m_direction(direction) {
   m_characterSheets = ResourceManager::instance()->getDirectoryContents("img/characters/", ".png");
+  setCharacterInfo(sheetName, character, pattern, direction);
+}
+
+void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const int character, const int pattern,
+                                       const Direction direction) {
+  m_characterSheet.emplace(sheetName);
+  m_characterIndex = character;
+  m_pattern = pattern;
+  m_direction = direction;
   if (!sheetName.empty()) {
+    bool found = false;
     for (int i = 0; i < m_characterSheets.size(); ++i) {
       if (!m_characterSheets[i].compare(sheetName)) {
+        found = true;
         m_selectedSheet = i;
-        m_selectionX =
-            (m_characterSheet->characterAtlasWidth() * character) + (m_characterSheet->characterWidth() * pattern);
-        m_selectionY = (m_characterSheet->characterAtlasHeight() * character) +
-                       (m_characterSheet->characterHeight() * ((static_cast<int>(direction) - 2) / 2));
         break;
       }
     }
+    if (!found) {
+      m_selectedSheet = -1;
+      return;
+    }
+
+    const float charX = static_cast<float>(
+        (character % (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) *
+        m_characterSheet->characterAtlasWidth());
+    const float charY = static_cast<float>(
+        (character / (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) *
+        m_characterSheet->characterAtlasHeight());
+
+    if (m_pickerMode == PickerMode::PatternAndDirection) {
+      m_selectionX = charX + (pattern * m_characterSheet->characterWidth());
+      m_selectionY = charY + (((static_cast<int>(m_direction) - 2) / 2) * m_characterSheet->characterHeight());
+    } else {
+      m_selectionX = charX;
+      m_selectionY = charY;
+    }
+    // m_selectionX =
+    //     std::clamp(m_selectionX, 0, m_characterSheet->texture().width() - m_characterSheet->characterWidth());
+    // m_selectionY =
+    //     std::clamp(m_selectionY, 0, m_characterSheet->texture().height() - m_characterSheet->characterHeight());
+  } else {
+    m_selectedSheet = -1;
   }
 }
 
 std::tuple<bool, bool> CharacterPicker::draw() {
-  if (IsOpen()) {
+  if (IsOpen() && !ImGui::IsPopupOpen(m_name.c_str())) {
     ImGui::OpenPopup(m_name.c_str());
   }
+
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{894, 768} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
                              ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
@@ -72,7 +104,6 @@ std::tuple<bool, bool> CharacterPicker::draw() {
                                   ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
               if (m_selectedSheet != i) {
                 m_characterSheet.emplace(sheet);
-                m_selectedSheet = i;
                 if (m_pickerMode == PickerMode::Character) {
                   m_selectionWidth = m_characterSheet->characterAtlasWidth();
                   m_selectionHeight = m_characterSheet->characterAtlasHeight();
@@ -83,6 +114,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
                 m_selectionX = 0;
                 m_selectionY = 0;
               }
+              m_selectedSheet = i;
             }
             if (ImGui::IsItemHovered()) {
               ImGui::SetTooltip("%s", sheet.c_str());
@@ -129,9 +161,6 @@ std::tuple<bool, bool> CharacterPicker::draw() {
 
             m_characterIndex =
                 (y * (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) + x;
-            std::cout << " x: " << x << " y: " << y << " pattern: " << m_pattern
-                      << " direction: " << magic_enum::enum_name<Direction>(m_direction)
-                      << " character: " << m_characterIndex << std::endl;
           }
         }
         if (m_characterSheet) {

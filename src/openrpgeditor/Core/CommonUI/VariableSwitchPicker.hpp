@@ -7,6 +7,7 @@ struct VariableSwitchPicker {
   VariableSwitchPicker(const std::string_view objectType, std::vector<std::string>& values);
 
   int selection() const { return m_selection; }
+  void setSelection(const int selection) { m_selection = selection; }
 
   std::tuple<bool, bool> draw();
 

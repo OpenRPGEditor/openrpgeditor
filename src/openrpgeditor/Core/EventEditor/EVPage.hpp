@@ -1,6 +1,8 @@
 #pragma once
 #include "Core/CommonUI/EventCommandEditor.hpp"
 #include "Core/CharacterSheet.hpp"
+#include "Core/CommonUI/CharacterPicker.hpp"
+#include "Core/CommonUI/VariableSwitchPicker.hpp"
 
 #include "Database/EventPage.hpp"
 
@@ -22,8 +24,17 @@ struct EVPage {
   void setParent(EventEditor* parent) { m_parent = parent; }
 
 private:
+  enum VariableSwitchSelection {
+    Variable,
+    Switch1,
+    Switch2,
+  };
   EventEditor* m_parent;
   EventPage* m_page;
   EventCommandEditor m_commandEditor;
   CharacterSheet m_characterSheet;
+  CheckerboardTexture m_buttonBack{80, 102, CellSizes::_64, 255, 200};
+  VariableSwitchSelection m_variableSwitchSelection{Variable};
+  std::optional<VariableSwitchPicker> m_variableSwitchPicker;
+  CharacterPicker m_characterPicker{CharacterPicker::PickerMode::PatternAndDirection};
 };

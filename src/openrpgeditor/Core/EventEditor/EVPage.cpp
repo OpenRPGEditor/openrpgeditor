@@ -47,11 +47,13 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
           ImGui::BeginDisabled(!m_page->conditions.switch1Valid);
           ImGui::PushID("##event_page_switch1_selection_button");
           std::string label = m_page->conditions.switch1Valid
-                                  ? m_parent->project()->switche(m_page->conditions.switch1Id)
+                                  ? Database::Instance->switchNameOrId(m_page->conditions.switch1Id)
                                   : "##event_page_switch1_selection_button_text";
           if (ImGui::Button(label.c_str(),
                             ImVec2{ImGui::GetContentRegionAvail().x - App::DPIHandler::scale_value(15), 0})) {
-            // TODO: Implement switch selection window;
+            m_variableSwitchSelection = Switch1;
+            m_variableSwitchPicker.emplace("Switch", m_parent->project()->system().switches);
+            m_variableSwitchPicker->setSelection(m_page->conditions.switch1Id);
           }
           ImGui::PopID();
           ImGui::EndDisabled();
@@ -67,11 +69,13 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
           ImGui::BeginDisabled(!m_page->conditions.switch2Valid);
           ImGui::PushID("##event_page_switch2_selection_button");
           std::string label = m_page->conditions.switch2Valid
-                                  ? m_parent->project()->switche(m_page->conditions.switch2Id)
+                                  ? Database::Instance->switchNameOrId(m_page->conditions.switch2Id)
                                   : "##event_page_switch2_selection_button_text";
           if (ImGui::Button(label.c_str(),
                             ImVec2{ImGui::GetContentRegionAvail().x - App::DPIHandler::scale_value(15), 0})) {
-            // TODO: Implement switch selection window;
+            m_variableSwitchSelection = Switch2;
+            m_variableSwitchPicker.emplace("Switch", m_parent->project()->system().switches);
+            m_variableSwitchPicker->setSelection(m_page->conditions.switch2Id);
           }
           ImGui::PopID();
           ImGui::EndDisabled();
@@ -89,11 +93,13 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
           {
             ImGui::PushID("##event_page_variable_selection_button");
             std::string label = m_page->conditions.variableValid
-                                    ? m_parent->project()->variable(m_page->conditions.variableId)
+                                    ? Database::Instance->variableNameOrId(m_page->conditions.variableId)
                                     : "##event_page_variable_selection_button_text";
             if (ImGui::Button(label.c_str(),
                               ImVec2{ImGui::GetContentRegionAvail().x - App::DPIHandler::scale_value(15), 0})) {
-              // TODO: Implement switch selection window;
+              m_variableSwitchSelection = Variable;
+              m_variableSwitchPicker.emplace("Variable", m_parent->project()->system().variables);
+              m_variableSwitchPicker->setSelection(m_page->conditions.variableId);
             }
             ImGui::PopID();
             ImGui::Text("≥");
@@ -161,7 +167,29 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Image");
-        ImGui::Dummy(ImVec2{104, 128} * App::DPIHandler::get_ui_scale());
+        auto cursorPos = ImGui::GetCursorPos();
+        if (ImGui::ImageButton("##event_image", m_buttonBack.get(),
+                               ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
+          m_characterPicker.setCharacterInfo(m_page->image.characterName, m_page->image.characterIndex,
+                                             m_page->image.pattern, m_page->image.direction);
+          m_characterPicker.SetOpen(true);
+        }
+        if (m_characterSheet.texture()) {
+          if (m_characterSheet.characterWidth() < 72 || m_characterSheet.characterHeight() < 96) {
+            ImGui::SetCursorPos(
+                cursorPos + (ImVec2{m_characterSheet.characterWidth() / 2.f, m_characterSheet.characterHeight() / 2.f} *
+                             App::DPIHandler::get_ui_scale()));
+          } else {
+            ImGui::SetCursorPos(cursorPos);
+          }
+          const auto [uv0, uv1] = m_characterSheet.getRectForCharacter(m_page->image.characterIndex,
+                                                                       m_page->image.pattern, m_page->image.direction);
+          ImGui::Image(m_characterSheet.texture().get(),
+                       ImVec2{static_cast<float>(m_characterSheet.characterWidth()),
+                              static_cast<float>(m_characterSheet.characterHeight())} *
+                           App::DPIHandler::get_ui_scale(),
+                       ImVec2{uv0.u, uv0.v}, ImVec2{uv1.u, uv1.v});
+        }
       }
       ImGui::EndGroup();
       ImGui::SameLine();
@@ -277,6 +305,38 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
     ImGui::EndTabItem();
   }
 
+  if (const auto [closed, confirmed] = m_characterPicker.draw(); closed) {
+    if (confirmed) {
+      m_characterPicker.Accept();
+      m_page->image.characterIndex = m_characterPicker.character();
+      const auto tmpName = m_characterPicker.selectedSheet();
+      m_page->image.pattern = m_characterPicker.selectedPattern();
+      m_page->image.direction = m_characterPicker.selectedDirection();
+      if (m_page->image.characterName.compare(tmpName) != 0) {
+        m_page->image.characterName = tmpName;
+        m_characterSheet = CharacterSheet(m_page->image.characterName);
+      }
+    }
+  }
+
+  if (m_variableSwitchPicker) {
+    if (auto [closed, confirmed] = m_variableSwitchPicker->draw(); closed) {
+      if (confirmed) {
+        switch (m_variableSwitchSelection) {
+        case Switch1:
+          m_page->conditions.switch1Id = m_variableSwitchPicker->selection();
+          break;
+        case Switch2:
+          m_page->conditions.switch2Id = m_variableSwitchPicker->selection();
+          break;
+        case Variable:
+          m_page->conditions.variableId = m_variableSwitchPicker->selection();
+          break;
+        }
+      }
+      m_variableSwitchPicker.reset();
+    }
+  }
   open ^= 1;
   return std::make_tuple(open, selected);
 }

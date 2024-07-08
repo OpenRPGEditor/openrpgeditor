@@ -1,11 +1,11 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ResumeBGM.hpp"
 
 struct Project;
-struct Dialog_ReplayBGM : IDialogController {
+struct Dialog_ReplayBGM : IEventDialogController {
   Dialog_ReplayBGM() = delete;
-  explicit Dialog_ReplayBGM(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_ReplayBGM(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new ResumeBGMCommand());
     m_open = true;
   }

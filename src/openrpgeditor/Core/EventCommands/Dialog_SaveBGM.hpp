@@ -1,11 +1,11 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/SaveBGM.hpp"
 
 struct Project;
-struct Dialog_SaveBGM : IDialogController {
+struct Dialog_SaveBGM : IEventDialogController {
   Dialog_SaveBGM() = delete;
-  explicit Dialog_SaveBGM(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_SaveBGM(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new SaveBGMCommand());
     m_open = true;
   }

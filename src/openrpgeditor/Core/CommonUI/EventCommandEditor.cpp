@@ -81,7 +81,7 @@
 #include "Core/EventCommands/Dialog_TintPicture.hpp"
 #include "Core/EventCommands/Dialog_TintScreen.hpp"
 #include "Core/EventCommands/Dialog_Wait.hpp"
-#include "Core/EventCommands/IDialogController.hpp"
+#include "../EventCommands/IEventDialogController.hpp"
 
 #include "Database/EventCommands/BattleProcessing.hpp"
 #include "Database/EventCommands/ChangeActorImage.hpp"

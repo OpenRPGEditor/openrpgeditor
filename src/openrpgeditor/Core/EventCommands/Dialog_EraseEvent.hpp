@@ -1,11 +1,11 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/EraseEvent.hpp"
 
 struct Project;
-struct Dialog_EraseEvent : IDialogController {
+struct Dialog_EraseEvent : IEventDialogController {
   Dialog_EraseEvent() = delete;
-  explicit Dialog_EraseEvent(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_EraseEvent(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new EraseEventCommand());
     m_open = true;
   }

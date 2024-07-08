@@ -55,7 +55,7 @@ add_library(orecore STATIC
         Core/TextParser.hpp Core/TextParser.cpp
         Core/Resources.hpp
         Core/DPIHandler.hpp
-        Core/EventCommands/IDialogController.hpp
+        Core/EventCommands/IEventDialogController.hpp
         Core/EventCommands/Dialog_ControlSwitches.cpp
         Core/EventCommands/Dialog_ControlSwitches.hpp
         Core/EventCommands/Dialog_ControlVariables.cpp
@@ -209,6 +209,8 @@ add_library(orecore STATIC
         Core/EventCommands/Dialog_ChangePlayerFollowers.hpp
         Core/EventCommands/Dialog_ShowPicture.cpp
         Core/EventCommands/Dialog_ShowPicture.hpp
+        Core/CommonUI/CharacterPicker.cpp
+        Core/CommonUI/CharacterPicker.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})

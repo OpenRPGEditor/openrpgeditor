@@ -1,11 +1,11 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ShakeScreen.hpp"
 
 struct Project;
-struct Dialog_ShakeScreen : IDialogController {
+struct Dialog_ShakeScreen : IEventDialogController {
   Dialog_ShakeScreen() = delete;
-  explicit Dialog_ShakeScreen(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_ShakeScreen(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new ShakeScreenCommand());
     m_power = command->power;
     m_speed = command->speed;

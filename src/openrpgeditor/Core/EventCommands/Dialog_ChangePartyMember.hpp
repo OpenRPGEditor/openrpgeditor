@@ -1,15 +1,15 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Actors.hpp"
 #include "Database/States.hpp"
 #include "Database/EventCommands/ChangePartyMember.hpp"
 
 struct Project;
-struct Dialog_ChangePartyMember : IDialogController {
+struct Dialog_ChangePartyMember : IEventDialogController {
   Dialog_ChangePartyMember() = delete;
   explicit Dialog_ChangePartyMember(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ChangePartyMemberCommand());
     m_actor = command->member;
     m_operation = static_cast<int>(command->operation);

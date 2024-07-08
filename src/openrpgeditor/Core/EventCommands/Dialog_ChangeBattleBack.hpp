@@ -1,12 +1,12 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeBattleback.hpp"
 
 struct Project;
-struct Dialog_ChangeBattleBack : IDialogController {
+struct Dialog_ChangeBattleBack : IEventDialogController {
   Dialog_ChangeBattleBack() = delete;
   explicit Dialog_ChangeBattleBack(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ChangeBattlebackCommand());
   }
   std::tuple<bool, bool> draw() override;

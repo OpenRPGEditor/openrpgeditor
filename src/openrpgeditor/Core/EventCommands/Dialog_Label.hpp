@@ -1,12 +1,12 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/EventCommands/Label.hpp"
 
 struct Project;
-struct Dialog_Label : IDialogController {
+struct Dialog_Label : IEventDialogController {
   Dialog_Label() = delete;
-  explicit Dialog_Label(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_Label(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new LabelCommand());
     m_label = command->label;
   }

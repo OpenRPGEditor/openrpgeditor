@@ -1,12 +1,12 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangePlayerFollowers.hpp"
 
 struct Project;
-struct Dialog_ChangePlayerFollowers : IDialogController {
+struct Dialog_ChangePlayerFollowers : IEventDialogController {
   Dialog_ChangePlayerFollowers() = delete;
   explicit Dialog_ChangePlayerFollowers(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ChangePlayerFollowersCommand());
     m_checkIfOn = static_cast<int>(command->followersEnabled);
   }

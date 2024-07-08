@@ -1,5 +1,5 @@
 #pragma once
-#include "Core/EventCommands/IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/Log.hpp"
 #include "Core/Project.hpp"
 #include "Core/Settings.hpp"
@@ -9,10 +9,10 @@
 #include <iostream>
 
 struct Project;
-struct Dialog_ChangeBattleBGM : IDialogController {
+struct Dialog_ChangeBattleBGM : IEventDialogController {
   Dialog_ChangeBattleBGM() = delete;
   explicit Dialog_ChangeBattleBGM(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ChangeBattleBGMCommand());
     m_audio = command->bgm;
     try {

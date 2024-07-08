@@ -1,14 +1,14 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/ChangeNickname.hpp"
 #include "Database/EventCommands/Wait.hpp"
 
 struct Project;
-struct Dialog_Wait : IDialogController {
+struct Dialog_Wait : IEventDialogController {
   Dialog_Wait() = delete;
-  explicit Dialog_Wait(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_Wait(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new WaitCommand());
     m_waitDuration = command->duration;
   }

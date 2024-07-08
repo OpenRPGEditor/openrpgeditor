@@ -1,11 +1,11 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/AbortBattle.hpp"
 
 struct Project;
-struct Dialog_AbortBattle : IDialogController {
+struct Dialog_AbortBattle : IEventDialogController {
   Dialog_AbortBattle() = delete;
-  explicit Dialog_AbortBattle(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_AbortBattle(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new AbortBattleCommand());
     m_open = true;
   }

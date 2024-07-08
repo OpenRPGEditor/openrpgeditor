@@ -1,11 +1,11 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ScrollMap.hpp"
 
 struct Project;
-struct Dialog_ScrollMap : IDialogController {
+struct Dialog_ScrollMap : IEventDialogController {
   Dialog_ScrollMap() = delete;
-  explicit Dialog_ScrollMap(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_ScrollMap(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new ScrollMapCommand());
 
     m_direction = static_cast<int>(command->direction);

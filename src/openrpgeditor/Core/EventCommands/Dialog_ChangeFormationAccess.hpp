@@ -1,12 +1,12 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeFormationAccess.hpp"
 
 struct Project;
-struct Dialog_ChangeFormationAccess : IDialogController {
+struct Dialog_ChangeFormationAccess : IEventDialogController {
   Dialog_ChangeFormationAccess() = delete;
   explicit Dialog_ChangeFormationAccess(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ChangeFormationAccessCommand());
     isDisabled = static_cast<int>(command->access);
   }

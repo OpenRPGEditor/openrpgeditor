@@ -1,12 +1,12 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/TextEditor.hpp"
 #include "Database/EventCommands/Script.hpp"
 
 struct Project;
-struct Dialog_Script : IDialogController {
+struct Dialog_Script : IEventDialogController {
   Dialog_Script() = delete;
-  explicit Dialog_Script(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_Script(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new ScriptCommand());
     m_Text = command->script;
     m_textEditor.SetLanguageDefinition(TextEditor::LanguageDefinition::Javascript());

@@ -1,14 +1,14 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Actors.hpp"
 #include "Database/Classes.hpp"
 #include "Database/EventCommands/ChangeClass.hpp"
 
 struct Project;
-struct Dialog_ChangeClass : IDialogController {
+struct Dialog_ChangeClass : IEventDialogController {
   Dialog_ChangeClass() = delete;
-  explicit Dialog_ChangeClass(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_ChangeClass(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new ChangeClassCommand());
     m_actor = command->actor;
     m_class = command->classId;

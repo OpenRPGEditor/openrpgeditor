@@ -2,9 +2,9 @@
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <string>
 
-struct IDialogController {
-  explicit IDialogController(const std::string& name) : m_open(false), m_name(name) {}
-  virtual ~IDialogController() = default;
+struct IEventDialogController {
+  explicit IEventDialogController(const std::string& name) : m_open(false), m_name(name) {}
+  virtual ~IEventDialogController() = default;
   virtual std::tuple<bool, bool> draw() = 0;
   bool IsOpen() const { return m_open; }
   bool IsConfirmed() const { return m_confirmed; }

@@ -1,12 +1,12 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/OpenMenu.hpp"
 
 struct Project;
-struct Dialog_OpenMenuScreen : IDialogController {
+struct Dialog_OpenMenuScreen : IEventDialogController {
   Dialog_OpenMenuScreen() = delete;
   explicit Dialog_OpenMenuScreen(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new OpenMenuCommand());
     m_open = true;
   }

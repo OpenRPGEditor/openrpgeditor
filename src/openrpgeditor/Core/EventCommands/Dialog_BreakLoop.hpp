@@ -1,11 +1,11 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/BreakLoop.hpp"
 
 struct Project;
-struct Dialog_BreakLoop : IDialogController {
+struct Dialog_BreakLoop : IEventDialogController {
   Dialog_BreakLoop() = delete;
-  explicit Dialog_BreakLoop(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_BreakLoop(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new BreakLoopCommand());
     m_open = true;
   }

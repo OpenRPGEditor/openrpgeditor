@@ -1,12 +1,12 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeEncounterDisable.hpp"
 
 struct Project;
-struct Dialog_ChangeEncounter : IDialogController {
+struct Dialog_ChangeEncounter : IEventDialogController {
   Dialog_ChangeEncounter() = delete;
   explicit Dialog_ChangeEncounter(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ChangeEncounterDisableCommand());
     isDisabled = static_cast<int>(command->access);
   }

@@ -1,11 +1,11 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/FadeinScreen.hpp"
 
 struct Project;
-struct Dialog_FadeinScreen : IDialogController {
+struct Dialog_FadeinScreen : IEventDialogController {
   Dialog_FadeinScreen() = delete;
-  explicit Dialog_FadeinScreen(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_FadeinScreen(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new FadeinScreenCommand());
     m_open = true;
   }

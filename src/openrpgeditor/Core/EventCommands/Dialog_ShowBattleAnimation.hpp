@@ -1,15 +1,15 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Actors.hpp"
 #include "Database/Animation.hpp"
 #include "Database/EventCommands/ShowBattleAnimation.hpp"
 
 struct Project;
-struct Dialog_ShowBattleAnimation : IDialogController {
+struct Dialog_ShowBattleAnimation : IEventDialogController {
   Dialog_ShowBattleAnimation() = delete;
   explicit Dialog_ShowBattleAnimation(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ShowBattleAnimationCommand());
     m_enemy = command->enemy;
     m_animation = command->animation;

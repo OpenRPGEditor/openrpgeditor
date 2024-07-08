@@ -1,11 +1,11 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/Comment.hpp"
 
 struct Project;
-struct Dialog_Comment : IDialogController {
+struct Dialog_Comment : IEventDialogController {
   Dialog_Comment() = delete;
-  explicit Dialog_Comment(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_Comment(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new CommentCommand());
     // script = command->text;
     //  TODO

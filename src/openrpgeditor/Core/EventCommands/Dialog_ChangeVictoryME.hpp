@@ -1,5 +1,5 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/Log.hpp"
 #include "Core/Project.hpp"
 #include "Core/Settings.hpp"
@@ -9,10 +9,10 @@
 
 namespace fs = std::filesystem;
 struct Project;
-struct Dialog_ChangeVictoryME : IDialogController {
+struct Dialog_ChangeVictoryME : IEventDialogController {
   Dialog_ChangeVictoryME() = delete;
   explicit Dialog_ChangeVictoryME(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ChangeVictoryMECommand());
     m_audio = command->me;
     try {

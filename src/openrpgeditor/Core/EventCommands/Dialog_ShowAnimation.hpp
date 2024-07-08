@@ -1,5 +1,5 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Actors.hpp"
 #include "Database/Animation.hpp"
@@ -8,10 +8,10 @@
 #include "Database/EventCommands/ShowAnimation.hpp"
 
 struct Project;
-struct Dialog_ShowAnimation : IDialogController {
+struct Dialog_ShowAnimation : IEventDialogController {
   Dialog_ShowAnimation() = delete;
   explicit Dialog_ShowAnimation(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ShowAnimationCommand());
     m_character = command->character;
     m_animation = command->animation;

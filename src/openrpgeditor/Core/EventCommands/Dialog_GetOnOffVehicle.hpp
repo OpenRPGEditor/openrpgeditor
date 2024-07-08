@@ -1,12 +1,12 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/GetOnOffVehicle.hpp"
 
 struct Project;
-struct Dialog_GetOnOffVehicle : IDialogController {
+struct Dialog_GetOnOffVehicle : IEventDialogController {
   Dialog_GetOnOffVehicle() = delete;
   explicit Dialog_GetOnOffVehicle(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new GetOnOffVehicleCommand());
     m_open = true;
   }

@@ -1,12 +1,12 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ShowBalloonIcon.hpp"
 
 struct Project;
-struct Dialog_ShowBalloonIcon : IDialogController {
+struct Dialog_ShowBalloonIcon : IEventDialogController {
   Dialog_ShowBalloonIcon() = delete;
   explicit Dialog_ShowBalloonIcon(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ShowBalloonIconCommand());
     m_character = command->id;
     m_balloonIndex = static_cast<int>(command->index);

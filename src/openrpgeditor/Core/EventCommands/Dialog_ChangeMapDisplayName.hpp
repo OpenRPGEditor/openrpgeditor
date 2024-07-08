@@ -1,12 +1,12 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeMapDisplayName.hpp"
 
 struct Project;
-struct Dialog_ChangeMapDisplayName : IDialogController {
+struct Dialog_ChangeMapDisplayName : IEventDialogController {
   Dialog_ChangeMapDisplayName() = delete;
   explicit Dialog_ChangeMapDisplayName(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ChangeMapNameDisplayCommand());
     m_checkIfOn = static_cast<int>(command->checkIfOn);
   }

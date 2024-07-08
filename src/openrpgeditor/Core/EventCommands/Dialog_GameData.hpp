@@ -1,5 +1,5 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/Project.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Actors.hpp"
@@ -7,9 +7,9 @@
 #include "Database/EventCommands/ControlVariables.hpp"
 
 struct Project;
-struct Dialog_GameData : IDialogController {
+struct Dialog_GameData : IEventDialogController {
   Dialog_GameData() = delete;
-  explicit Dialog_GameData(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_GameData(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.gameData.value = 0;
   }
   std::tuple<bool, bool> draw() override;

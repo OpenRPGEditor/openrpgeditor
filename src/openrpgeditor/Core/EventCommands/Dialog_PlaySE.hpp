@@ -1,5 +1,5 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/Log.hpp"
 #include "Core/Project.hpp"
 #include "Core/Settings.hpp"
@@ -9,9 +9,9 @@
 
 namespace fs = std::filesystem;
 struct Project;
-struct Dialog_PlaySE : IDialogController {
+struct Dialog_PlaySE : IEventDialogController {
   Dialog_PlaySE() = delete;
-  explicit Dialog_PlaySE(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_PlaySE(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new PlaySECommand());
     m_audio = command->audio;
     try {

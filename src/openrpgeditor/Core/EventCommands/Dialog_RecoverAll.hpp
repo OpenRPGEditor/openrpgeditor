@@ -1,5 +1,5 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/Actors.hpp"
@@ -7,9 +7,9 @@
 #include "Database/EventCommands/RecoverAll.hpp"
 
 struct Project;
-struct Dialog_RecoverAll : IDialogController {
+struct Dialog_RecoverAll : IEventDialogController {
   Dialog_RecoverAll() = delete;
-  explicit Dialog_RecoverAll(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_RecoverAll(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new RecoverAllCommand());
     m_actor = command->value;
     m_variable = command->value;

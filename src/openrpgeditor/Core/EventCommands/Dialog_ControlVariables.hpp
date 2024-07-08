@@ -1,13 +1,13 @@
 #pragma once
 #include "Dialog_GameData.hpp"
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/CommandParser.hpp"
 struct Project;
-struct Dialog_ControlVariables : IDialogController {
+struct Dialog_ControlVariables : IEventDialogController {
   Dialog_ControlVariables() = delete;
   explicit Dialog_ControlVariables(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ControlVariables());
     command->start = 0;
     command->end = 0;

@@ -1,11 +1,11 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/GameOver.hpp"
 
 struct Project;
-struct Dialog_GameOver : IDialogController {
+struct Dialog_GameOver : IEventDialogController {
   Dialog_GameOver() = delete;
-  explicit Dialog_GameOver(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_GameOver(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new GameOverCommand());
     m_open = true;
   }

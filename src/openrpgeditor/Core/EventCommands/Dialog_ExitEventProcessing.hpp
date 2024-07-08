@@ -1,12 +1,12 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ExitEventProcessing.hpp"
 
 struct Project;
-struct Dialog_ExitEventProcessing : IDialogController {
+struct Dialog_ExitEventProcessing : IEventDialogController {
   Dialog_ExitEventProcessing() = delete;
   explicit Dialog_ExitEventProcessing(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ExitEventProcessingCommand());
     m_open = true;
   }

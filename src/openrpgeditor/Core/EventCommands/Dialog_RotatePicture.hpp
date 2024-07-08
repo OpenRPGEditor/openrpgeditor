@@ -1,11 +1,11 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/RotatePicture.hpp"
 
 struct Project;
-struct Dialog_RotatePicture : IDialogController {
+struct Dialog_RotatePicture : IEventDialogController {
   Dialog_RotatePicture() = delete;
-  explicit Dialog_RotatePicture(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_RotatePicture(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new RotatePictureCommand());
     m_picture = command->picture;
     m_rotation = command->rotation;

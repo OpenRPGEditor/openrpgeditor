@@ -1,13 +1,13 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/NameInput.hpp"
 
 struct Project;
-struct Dialog_NameInputProcessing : IDialogController {
+struct Dialog_NameInputProcessing : IEventDialogController {
   Dialog_NameInputProcessing() = delete;
-  explicit Dialog_NameInputProcessing(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_NameInputProcessing(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new NameInputCommand());
     m_actor = command->actorId;
     m_maxChar = command->maxChar;

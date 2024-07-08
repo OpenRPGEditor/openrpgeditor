@@ -1,14 +1,14 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Enemies.hpp"
 #include "Database/EventCommands/EnemyTransform.hpp"
 
 struct Project;
-struct Dialog_EnemyTransform : IDialogController {
+struct Dialog_EnemyTransform : IEventDialogController {
   Dialog_EnemyTransform() = delete;
   explicit Dialog_EnemyTransform(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new EnemyTransformCommand());
     m_troop_selection = command->enemy;
     m_enemy = command->transform;

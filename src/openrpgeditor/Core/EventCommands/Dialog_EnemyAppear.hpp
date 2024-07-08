@@ -1,14 +1,14 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/ChangeGold.hpp"
 #include "Database/EventCommands/EnemyAppear.hpp"
 
 struct Project;
-struct Dialog_EnemyAppear : IDialogController {
+struct Dialog_EnemyAppear : IEventDialogController {
   Dialog_EnemyAppear() = delete;
-  explicit Dialog_EnemyAppear(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_EnemyAppear(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new EnemyAppearCommand());
     m_troop_selection = command->enemy;
   }

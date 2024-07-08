@@ -1,11 +1,11 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/SetWeatherEffect.hpp"
 
 struct Project;
-struct Dialog_SetWeatherEffect : IDialogController {
+struct Dialog_SetWeatherEffect : IEventDialogController {
   Dialog_SetWeatherEffect() = delete;
-  explicit Dialog_SetWeatherEffect(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_SetWeatherEffect(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new SetWeatherEffectCommand());
     m_effect = static_cast<int>(command->effect);
     m_power = command->power;

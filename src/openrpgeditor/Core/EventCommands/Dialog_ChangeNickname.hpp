@@ -1,14 +1,14 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/ChangeNickname.hpp"
 
 struct Project;
-struct Dialog_ChangeNickname : IDialogController {
+struct Dialog_ChangeNickname : IEventDialogController {
   Dialog_ChangeNickname() = delete;
   explicit Dialog_ChangeNickname(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ChangeNicknameCommand());
     m_actor = command->actor;
     m_nickname = command->nick;

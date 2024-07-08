@@ -1,13 +1,13 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/FadeoutBGM.hpp"
 
 struct Project;
-struct Dialog_FadeoutBGM : IDialogController {
+struct Dialog_FadeoutBGM : IEventDialogController {
   Dialog_FadeoutBGM() = delete;
-  explicit Dialog_FadeoutBGM(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_FadeoutBGM(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new FadeoutBGM());
     m_duration = command->duration;
   }

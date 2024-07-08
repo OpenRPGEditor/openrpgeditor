@@ -1,11 +1,11 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/TintPicture.hpp"
 
 struct Project;
-struct Dialog_TintPicture : IDialogController {
+struct Dialog_TintPicture : IEventDialogController {
   Dialog_TintPicture() = delete;
-  explicit Dialog_TintPicture(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_TintPicture(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new TintPictureCommand());
     m_picture = command->picture;
     r = command->color.r;

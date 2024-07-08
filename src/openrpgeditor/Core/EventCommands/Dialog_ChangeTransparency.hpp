@@ -1,12 +1,12 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeTransparency.hpp"
 
 struct Project;
-struct Dialog_ChangeTransparency : IDialogController {
+struct Dialog_ChangeTransparency : IEventDialogController {
   Dialog_ChangeTransparency() = delete;
   explicit Dialog_ChangeTransparency(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ChangeTransparencyCommand());
     isDisabled = static_cast<int>(command->transparency);
   }

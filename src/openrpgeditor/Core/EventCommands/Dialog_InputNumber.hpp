@@ -1,12 +1,12 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/EventCommands/InputNumber.hpp"
 
 struct Project;
-struct Dialog_InputNumber : IDialogController {
+struct Dialog_InputNumber : IEventDialogController {
   Dialog_InputNumber() = delete;
-  explicit Dialog_InputNumber(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_InputNumber(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new InputNumberCommand());
     m_variable = command->variable;
     m_digits = command->digits;

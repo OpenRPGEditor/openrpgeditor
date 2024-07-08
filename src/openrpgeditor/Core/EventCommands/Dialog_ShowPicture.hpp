@@ -1,11 +1,11 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ShowPicture.hpp"
 
 struct Project;
-struct Dialog_ShowPicture : IDialogController {
+struct Dialog_ShowPicture : IEventDialogController {
   Dialog_ShowPicture() = delete;
-  explicit Dialog_ShowPicture(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_ShowPicture(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new ShowPictureCommand());
     m_number = command->number;
     m_imageName = command->imageName;

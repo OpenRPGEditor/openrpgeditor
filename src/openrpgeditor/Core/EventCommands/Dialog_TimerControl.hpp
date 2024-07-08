@@ -1,14 +1,14 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/ChangeNickname.hpp"
 #include "Database/EventCommands/ControlTimer.hpp"
 
 struct Project;
-struct Dialog_TimerControl : IDialogController {
+struct Dialog_TimerControl : IEventDialogController {
   Dialog_TimerControl() = delete;
   explicit Dialog_TimerControl(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new ControlTimerCommand());
     m_operation = static_cast<int>(command->control);
     m_second = command->seconds;

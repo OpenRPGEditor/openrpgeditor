@@ -1,12 +1,12 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/EventCommands/ChangeGold.hpp"
 
 struct Project;
-struct Dialog_ChangeGold : IDialogController {
+struct Dialog_ChangeGold : IEventDialogController {
   Dialog_ChangeGold() = delete;
-  explicit Dialog_ChangeGold(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_ChangeGold(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new ChangeGoldCommand());
     m_operation = static_cast<int>(command->operation);
     m_operandSource = static_cast<int>(command->operandSource);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/EventCommands/IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 
 #include <memory>
 #include <vector>
@@ -20,6 +20,6 @@ private:
   Project* m_project = nullptr;
   bool m_isNewEntry{false};
   int m_selectedCommand = -1;
-  std::shared_ptr<IDialogController> commandDialog;
+  std::shared_ptr<IEventDialogController> commandDialog;
   std::vector<std::shared_ptr<IEventCommand>>* m_commands = nullptr;
 };

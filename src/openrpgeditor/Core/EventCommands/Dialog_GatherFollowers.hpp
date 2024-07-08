@@ -1,12 +1,12 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/GatherFollowers.hpp"
 
 struct Project;
-struct Dialog_GatherFollowers : IDialogController {
+struct Dialog_GatherFollowers : IEventDialogController {
   Dialog_GatherFollowers() = delete;
   explicit Dialog_GatherFollowers(const std::string& name, Project* project)
-  : IDialogController(name), m_project(project) {
+  : IEventDialogController(name), m_project(project) {
     command.reset(new GatherFollowersCommand());
     m_open = true;
   }

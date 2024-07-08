@@ -69,6 +69,7 @@
 #include "Core/EventCommands/Dialog_SaveBGM.hpp"
 #include "Core/EventCommands/Dialog_Script.hpp"
 #include "Core/EventCommands/Dialog_ScrollMap.hpp"
+#include "Core/EventCommands/Dialog_ShowPicture.hpp"
 #include "Core/EventCommands/Dialog_SelectItem.hpp"
 #include "Core/EventCommands/Dialog_SetWeatherEffect.hpp"
 #include "Core/EventCommands/Dialog_ShakeScreen.hpp"
@@ -143,6 +144,11 @@ void EventCommandEditor::draw() {
                           ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                               ImGuiTableFlags_ScrollY,
                           ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
+      ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.37f, 0.37f, 0.37f, 0.43f));
+      ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.37f, 0.37f, 0.37f, 0.78f));
+      ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.37f, 0.37f, 0.37f, 0.68f));
+      ImGui::PushStyleColor(ImGuiCol_TableRowBg, ImVec4(0.03f, 0.21f, 0.26f, 1.00f));
+      ImGui::PushStyleColor(ImGuiCol_TableRowBgAlt, ImVec4(0.04f, 0.16f, 0.19f, 1.00f));
 
       ImGui::TableSetupColumn("Selectable", ImGuiTableFlags_SizingFixedFit);
       ImGui::TableSetupScrollFreeze(1, 0);
@@ -190,6 +196,7 @@ void EventCommandEditor::draw() {
         }
         ImGui::PopFont();
       }
+      ImGui::PopStyleColor(5);
       drawPopup();
       ImGui::EndTable();
     }

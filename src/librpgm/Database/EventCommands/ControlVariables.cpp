@@ -78,7 +78,7 @@ std::string ControlVariables::stringRep(const Database& db) const {
     return variableFormat(std::format("{} Random {}..{}", varText, random.min, random.max));
   }
   case VariableControlOperand::Variable: {
-    return variableFormat(std::format("{} ", varText, variable, db.system.variable(variable)));
+    return variableFormat(std::format("{} {}", varText, db.variableNameOrId(variable)));
   }
   case VariableControlOperand::Game_Data: {
     switch (gameData.type) {

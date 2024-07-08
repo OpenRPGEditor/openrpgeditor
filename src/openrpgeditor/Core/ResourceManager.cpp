@@ -1,31 +1,35 @@
 #include "Core/ResourceManager.hpp"
+
+#include "SFML/Audio/SoundBuffer.hpp"
 #include "Core/Log.hpp"
 #include "Core/Utils.hpp"
 #include "SDL2/SDL.h"
 #include <exception>
+namespace fs = std::filesystem;
 
 ResourceManager* ResourceManager::m_instance = nullptr;
 ResourceManager::ResourceManager(std::string_view basePath)
-: m_dataPath(std::string(basePath.data()) + "/data/")
-, m_audioPath(std::string(basePath.data()) + "/audio/")
-, m_bgmPath(std::string(basePath.data()) + "/audio/bgm/")
-, m_bgsPath(std::string(basePath.data()) + "/audio/bgs/")
-, m_sePath(std::string(basePath.data()) + "/audio/se/")
-, m_imgPath(std::string(basePath.data()) + "/img/")
-, m_animationsPath(std::string(basePath.data()) + "/img/animations/")
-, m_battlebacks1Path(std::string(basePath.data()) + "/img/battlebacks1/")
-, m_battlebacks2Path(std::string(basePath.data()) + "/img/battlebacks2/")
-, m_charactersPath(std::string(basePath.data()) + "/img/characters/")
-, m_enemiesPath(std::string(basePath.data()) + "/img/enemies/")
-, m_facesPath(std::string(basePath.data()) + "/img/faces/")
-, m_parallaxesPath(std::string(basePath.data()) + "/img/parallaxes/")
-, m_picturesPath(std::string(basePath.data()) + "/img/pictures/")
-, m_sv_actorsPath(std::string(basePath.data()) + "/img/sv_actors/")
-, m_sv_enemiesPath(std::string(basePath.data()) + "/img/sv_enemies/")
-, m_systemPath(std::string(basePath.data()) + "/img/system/")
-, m_tilesetsPath(std::string(basePath.data()) + "/img/tilesets/")
-, m_titles1Path(std::string(basePath.data()) + "/img/titles1/")
-, m_titles2Path(std::string(basePath.data()) + "/img/titles2/") {
+: m_basePath(basePath)
+, m_dataPath(std::string(basePath.data()) + "data/")
+, m_audioPath(std::string(basePath.data()) + "audio/")
+, m_bgmPath(std::string(basePath.data()) + "audio/bgm/")
+, m_bgsPath(std::string(basePath.data()) + "audio/bgs/")
+, m_sePath(std::string(basePath.data()) + "audio/se/")
+, m_imgPath(std::string(basePath.data()) + "img/")
+, m_animationsPath(std::string(basePath.data()) + "img/animations/")
+, m_battlebacks1Path(std::string(basePath.data()) + "img/battlebacks1/")
+, m_battlebacks2Path(std::string(basePath.data()) + "img/battlebacks2/")
+, m_charactersPath(std::string(basePath.data()) + "img/characters/")
+, m_enemiesPath(std::string(basePath.data()) + "img/enemies/")
+, m_facesPath(std::string(basePath.data()) + "img/faces/")
+, m_parallaxesPath(std::string(basePath.data()) + "img/parallaxes/")
+, m_picturesPath(std::string(basePath.data()) + "img/pictures/")
+, m_sv_actorsPath(std::string(basePath.data()) + "img/sv_actors/")
+, m_sv_enemiesPath(std::string(basePath.data()) + "img/sv_enemies/")
+, m_systemPath(std::string(basePath.data()) + "img/system/")
+, m_tilesetsPath(std::string(basePath.data()) + "img/tilesets/")
+, m_titles1Path(std::string(basePath.data()) + "img/titles1/")
+, m_titles2Path(std::string(basePath.data()) + "img/titles2/") {
   m_instance = this;
 }
 
@@ -37,9 +41,35 @@ ResourceManager::~ResourceManager() {
     SDL_DestroyTexture(static_cast<SDL_Texture*>(texture.m_texture));
   }
   m_loadedTextures.clear();
+  m_loadedSound.clear();
 }
 
-Texture ResourceManager::loadTexture(std::string_view path) {
+sf::SoundBuffer& ResourceManager::loadSound(const std::string_view path) {
+  if (m_loadedSound.contains(path.data())) {
+    return m_loadedSound[path.data()];
+  }
+
+  sf::SoundBuffer buffer;
+  buffer.loadFromFile(path.data());
+  m_loadedSound[path.data()] = buffer;
+  return m_loadedSound[path.data()];
+}
+sf::SoundBuffer& ResourceManager::loadBGM(const std::string_view path) {
+  std::string fullpath = m_bgmPath + path.data() + ".ogg";
+  return loadSound(fullpath);
+}
+
+sf::SoundBuffer& ResourceManager::loadBGS(const std::string_view path) {
+  std::string fullpath = m_bgsPath + path.data() + ".ogg";
+  return loadSound(fullpath);
+}
+
+sf::SoundBuffer& ResourceManager::loadSE(const std::string_view path) {
+  std::string fullpath = m_sePath + path.data() + ".ogg";
+  return loadSound(fullpath);
+}
+
+Texture ResourceManager::loadTexture(const std::string_view path) {
   if (m_loadedTextures.contains(path.data())) {
     return m_loadedTextures[path.data()];
   }
@@ -49,27 +79,27 @@ Texture ResourceManager::loadTexture(std::string_view path) {
   return ret;
 }
 
-Texture ResourceManager::loadImage(std::string_view path) {
+Texture ResourceManager::loadImage(const std::string_view path) {
   std::string fullpath = m_imgPath + path.data() + ".png";
   return loadTexture(fullpath);
 }
 
-Texture ResourceManager::loadAnimationImage(std::string_view path) {
+Texture ResourceManager::loadAnimationImage(const std::string_view path) {
   std::string fullpath = m_animationsPath + path.data() + ".png";
   return loadTexture(fullpath);
 }
 
-Texture ResourceManager::loadBattlebacks1Image(std::string_view path) {
+Texture ResourceManager::loadBattlebacks1Image(const std::string_view path) {
   std::string fullpath = m_battlebacks1Path + path.data() + ".png";
   return loadTexture(fullpath);
 }
 
-Texture ResourceManager::loadBattlebacks2Image(std::string_view path) {
+Texture ResourceManager::loadBattlebacks2Image(const std::string_view path) {
   std::string fullpath = m_battlebacks2Path + path.data() + ".png";
   return loadTexture(fullpath);
 }
 
-Texture ResourceManager::loadCharacterImage(std::string_view path) {
+Texture ResourceManager::loadCharacterImage(const std::string_view path) {
   std::string fullpath = m_charactersPath + path.data() + ".png";
   return loadTexture(fullpath);
 }
@@ -119,4 +149,17 @@ Texture ResourceManager::loadTitle1Image(std::string_view path) {
 Texture ResourceManager::loadTitle2Image(std::string_view path) {
   std::string fullpath = m_titles2Path + path.data() + ".png";
   return loadTexture(fullpath);
+}
+
+std::vector<std::string> ResourceManager::getDirectoryContents(const std::string& directoryPath,
+                                                               const std::string_view filter) const {
+  std::vector<std::string> fileNames;
+  for (const auto& entry : fs::directory_iterator(m_basePath + directoryPath)) {
+    if (!filter.empty() && entry.path().extension().compare(filter) != 0) {
+      continue;
+    }
+
+    fileNames.push_back(entry.path().filename().replace_extension().generic_string());
+  }
+  return fileNames;
 }

@@ -34,27 +34,22 @@ std::tuple<bool, bool> Dialog_ChangeClass::draw() {
 
     // Actor Button
     ImGui::PushID("##change_class_actor");
-    if (ImGui::Button(
-            Database::Instance->actorName(m_actor).c_str(),
-            ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
-      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::Instance->actors.actorList(), 0);
-            }
+    if (ImGui::Button(Database::Instance->actorName(m_actor).c_str(), ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
+      actor_picker = ObjectPicker("Actor"sv, Database::Instance->actors.actorList(), 0);
+    }
     ImGui::PopID();
 
     ImGui::SeparatorText("Class");
 
     // Actor Button
     ImGui::PushID("##change_class_classid");
-    if (ImGui::Button(
-            Database::Instance->className(m_class).c_str(),
-            ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
+    if (ImGui::Button(Database::Instance->className(m_class).c_str(), ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
       class_picker = ObjectPicker<Class>("Class"sv, Database::Instance->classes.classes(), 0);
-            }
+    }
     ImGui::PopID();
 
     // saveLevel checkbox
     ImGui::Checkbox("Save Level", &m_saveLevel);
-
 
     if (ImGui::Button("OK")) {
       m_confirmed = true;

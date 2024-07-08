@@ -1,5 +1,5 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IDialogController.hpp"
 #include "Core/Log.hpp"
 #include "Core/Project.hpp"
 #include "Core/Settings.hpp"
@@ -8,7 +8,6 @@
 #include <SFML/Audio.hpp>
 #include <iostream>
 
-namespace fs = std::filesystem;
 struct Project;
 struct Dialog_ChangeBattleBGM : IDialogController {
   Dialog_ChangeBattleBGM() = delete;
@@ -17,7 +16,7 @@ struct Dialog_ChangeBattleBGM : IDialogController {
     command.reset(new ChangeBattleBGMCommand());
     m_audio = command->bgm;
     try {
-      auto files = getFileNames(Database::Instance->basePath + "audio/bgm/");
+      auto files = ResourceManager::instance()->getDirectoryContents("audio/bgm/", ".ogg");
       for (const auto& file : files) {
         m_audios.push_back(file);
       }
@@ -37,39 +36,18 @@ private:
   int m_selected = 0;
   Audio m_audio;
 
-  sf::SoundBuffer buffer;
   sf::Sound sound;
 
   std::shared_ptr<ChangeBattleBGMCommand> command;
   std::tuple<bool, bool> result;
   std::vector<std::string> m_audios;
-  std::vector<std::string> getFileNames(const std::string& directoryPath) {
-    std::vector<std::string> fileNames;
 
-    for (const auto& entry : fs::directory_iterator(directoryPath)) {
-      std::string filename = entry.path().filename().string();
-      size_t lastDotPos = filename.find_last_of(".");
-      if (lastDotPos != std::string::npos) {
-        std::string str = filename.substr(0, lastDotPos);
-        fileNames.push_back(str);
-      } else {
-        fileNames.push_back(filename);
-      }
-    }
-    return fileNames;
-  }
-
-  bool playAudio(const char* path) {
-    // Load and play music
-    APP_INFO(path);
-    if (!buffer.loadFromFile(path)) {
-      // error loading file
-      return false;
-    }
-    sf::Listener::setPosition(0.f, 0.f, 0.f); // Set listener position
-    sound.setRelativeToListener(true);        // Ensure sound is not relative to listener
-    sound.setBuffer(buffer);
+  bool playAudio(const std::string& path) {
+    sound = sf::Sound(ResourceManager::instance()->loadBGM(path));
     sound.play();
+    setVolume(m_audio.volume);
+    setPanning(m_audio.pan);
+    setPitch(m_audio.pitch);
     return true;
   }
   void setVolume(int volume) {

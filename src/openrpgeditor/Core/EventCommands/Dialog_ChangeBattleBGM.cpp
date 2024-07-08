@@ -12,14 +12,14 @@ std::tuple<bool, bool> Dialog_ChangeBattleBGM::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.f));
-  ImGui::SetNextWindowSize(ImVec2{610, 380} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{400, 360} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
     // Audio List
-    ImVec2 tablePos = ImGui::GetCursorPos();
     if (ImGui::BeginTable("##bgm_audio_contents", 1,
                           ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                               ImGuiTableFlags_ScrollY,
-                          ImVec2{(ImGui::GetContentRegionMax().x / 2)+ 175, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
+                          ImVec2{(ImGui::GetContentRegionMax().x / 2) + App::DPIHandler::scale_value(75),
+                                 ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y})) {
 
       ImGui::TableSetupScrollFreeze(1, 0);
       ImGui::TableSetupColumn("File");
@@ -27,12 +27,14 @@ std::tuple<bool, bool> Dialog_ChangeBattleBGM::draw() {
       for (int n = 0; n < m_audios.size(); n++) {
         ImGui::TableNextColumn();
         const bool isSelected = (m_selected == n);
-        if (ImGui::SelectableWithBorder(m_audios.at(n).c_str(),
-                                          isSelected,
-                                          ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
-                                              ImGuiSelectableFlags_AllowDoubleClick)) {
+        if (ImGui::SelectableWithBorder(m_audios.at(n).c_str(), isSelected,
+                                        ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
+                                            ImGuiSelectableFlags_AllowDoubleClick)) {
           if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-            playAudio((Database::Instance->basePath + "audio/bgm/" + m_audios.at(m_selected) + ".ogg").c_str());
+            playAudio(m_audios.at(m_selected));
+          }
+          if (n != m_selected) {
+            sound.stop();
           }
           m_selected = n;
           m_audio.name = m_audios.at(m_selected);
@@ -42,50 +44,54 @@ std::tuple<bool, bool> Dialog_ChangeBattleBGM::draw() {
       }
       ImGui::EndTable();
     }
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 5 - App::DPIHandler::scale_value(16)));
-    if (ImGui::Button("Play", ImVec2(100, 0))) {
-            playAudio((Database::Instance->basePath + "audio/bgm/" + m_audios.at(m_selected) + ".ogg").c_str());
-    }
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 25 - App::DPIHandler::scale_value(16)));
-    if (ImGui::Button("Stop", ImVec2(100, 0))) {
-            stopAudio();
-    }
+    ImGui::SameLine();
+    ImGui::BeginGroup();
+    {
+      if (ImGui::Button("Play", ImVec2(100, 0) * App::DPIHandler::get_ui_scale())) {
+        playAudio(m_audios.at(m_selected));
+      }
+      if (ImGui::Button("Stop", ImVec2(100, 0) * App::DPIHandler::get_ui_scale())) {
+        stopAudio();
+      }
 
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 45 - App::DPIHandler::scale_value(16)));
-    ImGui::SeparatorText("Volume");
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 65 - App::DPIHandler::scale_value(16)));
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
-    if (ImGui::DragInt("##changebbgm_audio.volume", &m_audio.volume, 0.5f, 0, 100)) {
-      setVolume(m_audio.volume);
+      ImGui::SeparatorText("Volume");
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      if (ImGui::DragInt("##changebbgm_audio.volume", &m_audio.volume, 0.5f, 0, 100)) {
+        setVolume(m_audio.volume);
+      }
+      ImGui::SeparatorText("Pitch");
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      if (ImGui::DragInt("##changebbgm_audio.pitch", &m_audio.pitch, 0.5f, 0, 100)) {
+        setPitch(m_audio.pitch);
+      }
+      ImGui::SeparatorText("Pan");
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      if (ImGui::DragInt("##changebbgm_audio.pan", &m_audio.pan, 0.5f, -100, 100)) {
+        setPanning(m_audio.pan);
+      }
     }
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 85 - App::DPIHandler::scale_value(16)));
-    ImGui::SeparatorText("Pitch");
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 105 - App::DPIHandler::scale_value(16)));
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
-    if (ImGui::DragInt("##changebbgm_audio.pitch", &m_audio.pitch, 0.5f, 0, 100)) {
-      setPitch(m_audio.pitch);
+    ImGui::EndGroup();
+    ImGui::BeginGroup();
+    {
+      ImGui::SetCursorPos(ImVec2(
+          (ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(90)) - ImGui::GetStyle().FramePadding.x,
+          (ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(30)) - ImGui::GetStyle().FramePadding.y));
+      if (ImGui::Button("OK")) {
+        m_confirmed = true;
+        command->bgm = m_audio;
+        APP_INFO(command->stringRep(m_project->database()));
+        ImGui::CloseCurrentPopup();
+        sound.stop();
+        SetOpen(false);
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("Cancel")) {
+        sound.stop();
+        SetOpen(false);
+      }
     }
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 125 - App::DPIHandler::scale_value(16)));
-    ImGui::SeparatorText("Pan");
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 145 - App::DPIHandler::scale_value(16)));
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
-    if (ImGui::DragInt("##changebbgm_audio.pan", &m_audio.pan, 0.5f, -100, 100)) {
-      setPanning(m_audio.pan);
-    }
+    ImGui::EndGroup();
+    ImGui::EndPopup();
   }
-
-  ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 80, ImGui::GetContentRegionMax().y - 20));
-  if (ImGui::Button("OK")) {
-    m_confirmed = true;
-    command->bgm = m_audio;
-    APP_INFO(command->stringRep(m_project->database()));
-    ImGui::CloseCurrentPopup();
-    SetOpen(false);
-  }
-  ImGui::SameLine();
-  if (ImGui::Button("Cancel")) {
-    SetOpen(false);
-  }
-  ImGui::EndPopup();
   return std::make_tuple(!m_open, m_confirmed);
 }

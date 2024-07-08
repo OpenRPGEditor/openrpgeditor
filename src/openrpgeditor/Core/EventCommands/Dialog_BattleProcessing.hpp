@@ -1,14 +1,15 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/BattleProcessing.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Troops.hpp"
 
 struct Project;
-struct Dialog_BattleProcessing : IDialogController {
+struct Dialog_BattleProcessing : IEventDialogController {
   Dialog_BattleProcessing() = delete;
-  explicit Dialog_BattleProcessing(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_BattleProcessing(const std::string& name, Project* project)
+  : IEventDialogController(name), m_project(project) {
     command.reset(new BattleProcessingCommand());
     m_type = static_cast<int>(command->type);
     m_id = command->id;

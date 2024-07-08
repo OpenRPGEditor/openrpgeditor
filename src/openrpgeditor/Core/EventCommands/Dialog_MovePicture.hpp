@@ -1,13 +1,13 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ShowPicture.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/EventCommands/MovePicture.hpp"
 
 struct Project;
-struct Dialog_MovePicture : IDialogController {
+struct Dialog_MovePicture : IEventDialogController {
   Dialog_MovePicture() = delete;
-  explicit Dialog_MovePicture(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_MovePicture(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new MovePictureCommand());
     m_number = command->picture;
     m_origin = static_cast<int>(command->origin);

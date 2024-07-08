@@ -1,11 +1,11 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeParallax.hpp"
 
 struct Project;
-struct Dialog_ChangeParallax : IDialogController {
+struct Dialog_ChangeParallax : IEventDialogController {
   Dialog_ChangeParallax() = delete;
-  explicit Dialog_ChangeParallax(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_ChangeParallax(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new ChangeParallaxCommand());
     m_image = command->image;
     m_loopHorizontally = command->loopHorizontally;

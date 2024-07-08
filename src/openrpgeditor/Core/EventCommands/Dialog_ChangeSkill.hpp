@@ -1,5 +1,5 @@
 #pragma once
-#include "IDialogController.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/EventCommands/ChangeSkill.hpp"
@@ -7,9 +7,9 @@
 #include "Database/Actors.hpp"
 
 struct Project;
-struct Dialog_ChangeSkill : IDialogController {
+struct Dialog_ChangeSkill : IEventDialogController {
   Dialog_ChangeSkill() = delete;
-  explicit Dialog_ChangeSkill(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+  explicit Dialog_ChangeSkill(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
     command.reset(new ChangeSkillCommand());
     m_comparison = static_cast<int>(command->comparison);
     m_value = command->value;

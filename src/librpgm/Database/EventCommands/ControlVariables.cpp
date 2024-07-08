@@ -68,7 +68,7 @@ std::string ControlVariables::stringRep(const Database& db) const {
   if (start != end) {
     varText = std::format("#{:04}..#{:04} {}", start, end, DecodeEnumName(operation));
   } else {
-    varText = std::format("#{} {}", db.variableNameAndId(start), DecodeEnumName(operation));
+    varText = std::format("{} {}", db.variableNameAndId(start), DecodeEnumName(operation));
   }
 
   switch (operand) {

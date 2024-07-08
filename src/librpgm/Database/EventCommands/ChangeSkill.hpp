@@ -10,8 +10,8 @@ struct ChangeSkillCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  ActorComparisonSource comparison;
-  int value;
-  SkillOperation skillOp;
-  int skill;
+  ActorComparisonSource comparison = ActorComparisonSource::Fixed;
+  int value{1};
+  SkillOperation skillOp = SkillOperation::_plu__del_Learn;
+  int skill{1};
 };

@@ -30,7 +30,7 @@ std::string ChangeSkillCommand::stringRep(const Database& db) const {
     }
   }
 
-  const auto sk = db.states.state(skill);
+  const auto sk = db.skills.skill(skill);
   std::string skillName = sk && !sk->name.empty() ? sk->name : std::format("{{#{:04}}}", skill);
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Skill" + colon.data() +
          actorName + ", " + DecodeEnumName(skillOp) + " " + skillName + ColorFormatter::popColor();

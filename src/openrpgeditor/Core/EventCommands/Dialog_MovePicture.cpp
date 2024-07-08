@@ -1,19 +1,18 @@
-#include "Dialog_ShowPicture.hpp"
+#include "Dialog_MovePicture.hpp"
 
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Log.hpp"
 #include "Core/Project.hpp"
 #include "Database/Database.hpp"
 
-std::tuple<bool, bool> Dialog_ShowPicture::draw() {
+std::tuple<bool, bool> Dialog_MovePicture::draw() {
   if (IsOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{400, 305} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{400, 347} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
 
     if (picker) {
@@ -33,7 +32,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
     {
       ImGui::Text("Number:");
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
-      if (ImGui::InputInt("##showpicture_id", &m_number, 1, 100)) {
+      if (ImGui::InputInt("##movepicture_id", &m_number, 1, 100)) {
         if (m_number < 1)
           m_number = 1;
         if (m_number > 999)
@@ -41,24 +40,11 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
       }
       ImGui::EndGroup();
     }
-    ImGui::SameLine();
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3.f);
-    ImGui::BeginGroup();
-    {
-      // Actor Button
-      ImGui::Text("Image:");
-      ImGui::PushID("##showpicture_image_selection");
-      if (ImGui::Button("", ImVec2{(App::DPIHandler::scale_value(300)), 0})) {
-        // TODO: Image Picker
-      }
-      ImGui::PopID();
-      ImGui::EndGroup();
-    }
     ImVec2 cursorPos = ImGui::GetCursorPos();
     ImGui::SeparatorText("Position and Scale");
     ImGui::Text("Origin:");
     ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
-    if (ImGui::BeginCombo("##showpicture_origin",
+    if (ImGui::BeginCombo("##movepicture_origin",
                           DecodeEnumName(magic_enum::enum_value<PictureOrigin>(m_origin)).c_str())) {
       for (auto& origin : magic_enum::enum_values<PictureOrigin>()) {
         bool is_selected = m_origin == magic_enum::enum_index(origin).value();
@@ -84,9 +70,9 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
     {
       ImGui::BeginDisabled(m_type != 0);
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
-      ImGui::InputInt("##showpicture_directdesig_x", &m_constant1, 1, 100);
+      ImGui::InputInt("##movepicture_directdesig_x", &m_constant1, 1, 100);
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
-      ImGui::InputInt("##showpicture_directdesig_y", &m_constant2, 1, 100);
+      ImGui::InputInt("##movepicture_directdesig_y", &m_constant2, 1, 100);
       ImGui::EndDisabled();
       ImGui::EndGroup();
     }
@@ -103,7 +89,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
     ImGui::BeginGroup();
     {
       ImGui::BeginDisabled(m_type != 1);
-      ImGui::PushID("##showpicture_vardesig_x");
+      ImGui::PushID("##movepicture_vardesig_x");
       if (ImGui::Button(
               m_type == 1 ? Database::Instance->variableNameOrId(m_value1).c_str() : "",
               ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
@@ -111,7 +97,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
         picker.emplace("Variables", m_project->system().variables);
       }
       ImGui::PopID();
-      ImGui::PushID("##showpicture_vardesig_y");
+      ImGui::PushID("##movepicture_vardesig_y");
       if (ImGui::Button(
               m_type == 1 ? Database::Instance->variableNameOrId(m_value2).c_str() : "",
               ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
@@ -120,24 +106,43 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
       }
       ImGui::PopID();
       ImGui::EndDisabled();
+      ImGui::EndGroup();
+    }
+    ImGui::BeginGroup(); {
+      ImGui::SeparatorText("Duration");
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      if (ImGui::InputInt("##movepicture_duration", &m_duration)) {
+        if (m_duration < 1)
+          m_duration = 1;
+        if (m_duration > 999)
+          m_duration = 999;
+      }
+      ImGui::SameLine();
+      ImGui::Text("frames 1/60 sec");
+      ImGui::SameLine();
+      ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 80.f);
+      ImGui::Checkbox("Wait for Completion", &m_waitForCompletion);
+
+
       if (ImGui::Button("OK")) {
         m_confirmed = true;
-        command->number = m_number;
-        command->imageName = m_imageName;
+        command->picture = m_number;
         command->origin = static_cast<PictureOrigin>(m_origin);
-        command->type = static_cast<PictureDesignationSource>(m_type);
-        if (command->type == PictureDesignationSource::Direct_designation) {
-          command->value1 = m_constant1;
-          command->value2 = m_constant2;
+        command->pictureLocation = static_cast<PictureDesignationSource>(m_type);
+        if (command->pictureLocation == PictureDesignationSource::Direct_designation) {
+          command->x = m_constant1;
+          command->y = m_constant2;
         }
         else {
-          command->value1 = m_value1;
-          command->value2 = m_value2;
+          command->x = m_value1;
+          command->y = m_value2;
         }
-        command->zoomX = m_zoomX;
-        command->zoomY = m_zoomY;
-        command->opacityValue = m_opacityValue;
+        command->width = m_zoomX;
+        command->height = m_zoomY;
+        command->opacity = m_opacityValue;
         command->blendMode = static_cast<Blend>(m_blendMode);
+        command->duration = m_duration;
+        command->waitForCompletion = m_waitForCompletion;
         ImGui::CloseCurrentPopup();
         SetOpen(false);
       }
@@ -146,25 +151,26 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
         ImGui::CloseCurrentPopup();
         SetOpen(false);
       }
-
       ImGui::EndGroup();
     }
+    //ImGui::SetCursorPosX(cursorPos.x);
+
     // Set Cursor
     ImGui::SetCursorPos(ImVec2(cursorPos.x + 235, cursorPos.y));
     ImGui::BeginGroup();
     {
       ImGui::SeparatorText("");
-      ImGui::Text("Width %");
+      ImGui::Text("Width %%");
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
-      if (ImGui::InputInt("##showpicture_width", &m_zoomX, 1, 100)) {
+      if (ImGui::InputInt("##movepicture_width", &m_zoomX, 1, 100)) {
         if (m_zoomX < -2000)
           m_zoomX = -2000;
         if (m_zoomX > 2000)
           m_zoomX = 2000;
       }
-      ImGui::Text("Height %");
+      ImGui::Text("Height %%");
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
-      if (ImGui::InputInt("##showpicture_height", &m_zoomY, 1, 100)) {
+      if (ImGui::InputInt("##movepicture_height", &m_zoomY, 1, 100)) {
         if (m_zoomY < -2000)
           m_zoomY = -2000;
         if (m_zoomY > 2000)
@@ -173,14 +179,14 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
       ImGui::SeparatorText("Blend");
       ImGui::Text("Opacity:");
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
-      if (ImGui::InputInt("##showpicture_opacity", &m_opacityValue, 1, 100)) {
+      if (ImGui::InputInt("##movepicture_opacity", &m_opacityValue, 1, 100)) {
         if (m_opacityValue < 0)
           m_opacityValue = -0;
         if (m_opacityValue > 255)
           m_opacityValue = 255;
       }
       ImGui::PushItemWidth((App::DPIHandler::scale_value(75)));
-      if (ImGui::BeginCombo("##showpicture_blendmode",
+      if (ImGui::BeginCombo("##movepicture_blendmode",
                             DecodeEnumName(magic_enum::enum_value<Blend>(m_blendMode)).c_str())) {
         for (auto& blend : magic_enum::enum_values<Blend>()) {
           bool is_selected = m_blendMode == magic_enum::enum_index(blend).value();
@@ -192,6 +198,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
         }
         ImGui::EndCombo();
       }
+
     }
     ImGui::EndPopup();
   }

@@ -10,10 +10,10 @@ struct BattleProcessingCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  BattleProcessType type;
-  int id; // troop id if type == 0; variable id if type == 2
-  bool canEscape;
-  bool canLose;
+  BattleProcessType type = BattleProcessType::Direct_designation;
+  int id{1}; // troop id if type == 0; variable id if type == 2
+  bool canEscape{false};
+  bool canLose{false};
 };
 
 struct IfWinCommand final : IEventCommand {

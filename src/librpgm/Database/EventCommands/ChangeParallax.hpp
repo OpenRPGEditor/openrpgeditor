@@ -10,10 +10,10 @@ struct ChangeParallaxCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
 
   std::string image;
-  bool loopHorizontally;
-  bool loopVertically;
-  int scrollX;
-  int scrollY;
+  bool loopHorizontally{false};
+  bool loopVertically{false};
+  int scrollX{0};
+  int scrollY{0};
 
   std::string stringRep(const Database& db) const override;
 };

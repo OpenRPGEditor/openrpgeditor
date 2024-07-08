@@ -10,14 +10,14 @@ struct ShowPictureCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  int number;
+  int number{1};
   std::string imageName;
-  PictureOrigin origin;
-  PictureDesignationSource type;
-  int value1; // direct X value or indirect from global variables
-  int value2; // direct Y value or indirect from global variables
-  int zoomX;
-  int zoomY;
-  int opacityValue;
-  Blend blendMode;
+  PictureOrigin origin = PictureOrigin::Upper_Left;
+  PictureDesignationSource type = PictureDesignationSource::Direct_designation;
+  int value1{1}; // direct X value or indirect from global variables
+  int value2{1}; // direct Y value or indirect from global variables
+  int zoomX{100};
+  int zoomY{100};
+  int opacityValue{255};
+  Blend blendMode = Blend::Normal;
 };

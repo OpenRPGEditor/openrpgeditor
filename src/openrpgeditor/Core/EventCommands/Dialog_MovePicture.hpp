@@ -1,23 +1,25 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
+#include "IDialogController.hpp"
 #include "Database/EventCommands/ShowPicture.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
+#include "Database/EventCommands/MovePicture.hpp"
 
 struct Project;
-struct Dialog_ShowPicture : IEventDialogController {
-  Dialog_ShowPicture() = delete;
-  explicit Dialog_ShowPicture(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ShowPictureCommand());
-    m_number = command->number;
-    m_imageName = command->imageName;
+struct Dialog_MovePicture : IDialogController {
+  Dialog_MovePicture() = delete;
+  explicit Dialog_MovePicture(const std::string& name, Project* project) : IDialogController(name), m_project(project) {
+    command.reset(new MovePictureCommand());
+    m_number = command->picture;
     m_origin = static_cast<int>(command->origin);
-    m_type = static_cast<int>(command->type);
-    m_value1 = command->value1;
-    m_value2 = command->value2;
-    m_zoomX = command->zoomX;
-    m_zoomY = command->zoomY;
-    m_opacityValue = command->opacityValue;
+    m_type = static_cast<int>(command->pictureLocation);
+    m_value1 = command->x;
+    m_value2 = command->y;
+    m_zoomX = command->width;
+    m_zoomY = command->height;
+    m_opacityValue = command->opacity;
     m_blendMode = static_cast<int>(command->blendMode);
+    m_duration = command->duration;
+    m_waitForCompletion = command->waitForCompletion;
   }
   std::tuple<bool, bool> draw() override;
 
@@ -26,7 +28,6 @@ struct Dialog_ShowPicture : IEventDialogController {
 
 private:
   int m_number;
-  std::string m_imageName;
   int m_origin;
   int m_type;
   int m_value1; // direct X value or indirect from global variables
@@ -35,6 +36,8 @@ private:
   int m_zoomY;
   int m_opacityValue;
   int m_blendMode;
+  int m_duration;
+  bool m_waitForCompletion;
 
   bool xOrY{false};
   int m_constant1{0};
@@ -42,6 +45,6 @@ private:
 
   bool m_confirmed{false};
   std::optional<VariableSwitchPicker> picker;
-  std::shared_ptr<ShowPictureCommand> command;
+  std::shared_ptr<MovePictureCommand> command;
   std::tuple<bool, bool> result;
 };

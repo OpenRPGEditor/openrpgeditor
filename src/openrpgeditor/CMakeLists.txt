@@ -221,6 +221,7 @@ add_library(orecore STATIC
         Core/EventCommands/Dialog_ChangeSkill.hpp
         Core/EventCommands/Dialog_ChangeHP.cpp
         Core/EventCommands/Dialog_ChangeHP.hpp
+        Core/CommonUI/IDialogController.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})

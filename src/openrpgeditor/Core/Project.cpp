@@ -351,12 +351,12 @@ void Project::draw() {
 
 void Project::handleOpenFile() {
   nfdu8char_t* outPath;
-  nfdu8filteritem_t filters = {"RPG Maker Projects", "rpgproject,rmmzproject"};
-  auto result =
+  constexpr nfdu8filteritem_t filters = {"RPG Maker Projects", "rpgproject,rmmzproject"};
+  const auto result =
       NFD_OpenDialogU8(&outPath, &filters, 1,
                        Settings::instance()->lastDirectory.empty() ? "." : Settings::instance()->lastDirectory.c_str());
   if (result == NFD_OKAY) {
-    std::filesystem::path path{outPath};
+    const std::filesystem::path path{outPath};
     Settings::instance()->lastDirectory = absolute(path).remove_filename().generic_string();
     load(absolute(path).generic_string(), Settings::instance()->lastDirectory);
     NFD_FreePathU8(outPath);

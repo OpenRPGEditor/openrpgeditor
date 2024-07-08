@@ -7,13 +7,18 @@ CharacterSheet::CharacterSheet(std::string_view sheetName) {
     return;
   }
 
+  int count = 0;
   for (auto c : sheetName) {
+    if (count >= 2) {
+      break;
+    }
+
     if (c == '$') {
       m_isSingleCharacter = true;
+      ++count;
     } else if (c == '!') {
       m_noShift6_noHalfTransInBush = true;
-    } else {
-      break;
+      ++count;
     }
   }
 

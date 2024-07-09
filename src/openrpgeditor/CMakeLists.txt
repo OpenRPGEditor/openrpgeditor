@@ -252,6 +252,8 @@ add_library(orecore STATIC
         Core/EventCommands/Dialog_SetEventLocation.hpp
         Core/EventCommands/Dialog_SetVehicleLocation.cpp
         Core/EventCommands/Dialog_SetVehicleLocation.hpp
+        Core/EventCommands/Dialog_SetMovementRoute.cpp
+        Core/EventCommands/Dialog_SetMovementRoute.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})

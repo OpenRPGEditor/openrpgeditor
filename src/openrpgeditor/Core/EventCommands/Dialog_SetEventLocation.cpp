@@ -30,7 +30,28 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
         picker.reset();
       }
     }
+    ImGui::SeparatorText("Event");
+    ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
+    if (ImGui::BeginCombo("##setevloc_character", Database::Instance->eventNameOrId(m_event).c_str())) {
 
+      if (ImGui::Selectable("This Event", m_event == 0)) {
+        m_event = 0;
+        ImGui::SetItemDefaultFocus();
+      }
+
+      for (auto& dataSource : m_project->events()) {
+        if (!dataSource.has_value())
+          continue;
+
+        bool is_selected = (m_event == dataSource->id);
+        if (ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
+          m_event = dataSource->id;
+          if (is_selected)
+            ImGui::SetItemDefaultFocus();
+        }
+      }
+      ImGui::EndCombo();
+    }
 
 
     ImGui::SeparatorText("Location");

@@ -24,7 +24,7 @@ struct SetMovementRouteCommand final : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   void addStep(MovementRouteStepCommand* step) { editNodes.emplace_back(step); }
 
-  int character;
+  int character{0};
   MovementRoute route;
   std::vector<std::shared_ptr<MovementRouteStepCommand>> editNodes;
 };

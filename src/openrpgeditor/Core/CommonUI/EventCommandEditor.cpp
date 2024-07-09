@@ -146,6 +146,7 @@
 #include "Core/EventCommands/Dialog_TransferPlayer.hpp"
 #include "Core/EventCommands/Dialog_SetEventLocation.hpp"
 #include "Core/EventCommands/Dialog_SetVehicleLocation.hpp"
+#include "Core/EventCommands/Dialog_SetMovementRoute.hpp"
 
 #include <iostream>
 #include <vector>
@@ -563,8 +564,7 @@ void EventCommandEditor::drawPopup() {
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Set Movement Route...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_SetMovementRoute>("Set Movement Route", m_project);
+            commandDialog = std::make_shared<Dialog_SetMovementRoute>("Set Movement Route", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column

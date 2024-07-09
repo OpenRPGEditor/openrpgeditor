@@ -10,11 +10,11 @@ struct ChangeParameterCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  ActorComparisonSource comparison;
-  int value;
-  ParameterSource param;
-  QuantityChangeOp quantityOp;
-  QuantityChangeSource quantitySource;
-  int quantity;
+  ActorComparisonSource comparison = ActorComparisonSource::Fixed;
+  int value{1};
+  ParameterSource param = ParameterSource::Max_HP;
+  QuantityChangeOp quantityOp = QuantityChangeOp::_plu__del_Increase;
+  QuantityChangeSource quantitySource = QuantityChangeSource::Constant;
+  int quantity{1};
 
 };

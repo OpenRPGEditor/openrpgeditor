@@ -1,4 +1,4 @@
-#include "Dialog_ChangeHP.hpp"
+#include "Dialog_ChangeEXP.hpp"
 
 #include <tuple>
 #include "imgui.h"
@@ -6,7 +6,7 @@
 #include "Core/Project.hpp"
 #include "Database/Database.hpp"
 
-std::tuple<bool, bool> Dialog_ChangeHP::draw() {
+std::tuple<bool, bool> Dialog_ChangeEXP::draw() {
   if (IsOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
@@ -107,7 +107,9 @@ std::tuple<bool, bool> Dialog_ChangeHP::draw() {
 
       ImGui::EndGroup();
     }
-    ImGui::Checkbox("Allow Knockout", &m_allowKnockout);
+    ImGui::BeginDisabled(m_quantityOp == 1);
+    ImGui::Checkbox("Show Level Up", &m_showLevelUp);
+    ImGui::EndDisabled();
 
     if (ImGui::Button("OK")) {
       m_confirmed = true;
@@ -115,17 +117,17 @@ std::tuple<bool, bool> Dialog_ChangeHP::draw() {
       command->comparison = static_cast<ActorComparisonSource>(m_comparison);
       command->quantityOp = static_cast<QuantityChangeOp>(m_quantityOp);
       command->quantitySource = static_cast<QuantityChangeSource>(m_quantitySource);
-      command->allowKnockout = m_allowKnockout;
+      command->showLevelUp = m_showLevelUp;
 
-        if (command->comparison == ActorComparisonSource::Variable)
-          command->value = m_value_var;
-        else
-          command->value = m_value;
+      if (command->comparison == ActorComparisonSource::Variable)
+        command->value = m_value_var;
+      else
+        command->value = m_value;
 
-        if (command->quantitySource == QuantityChangeSource::Variable)
-          command->quantity = m_quantity_var;
-        else
-          command->quantity = m_quantity;
+      if (command->quantitySource == QuantityChangeSource::Variable)
+        command->quantity = m_quantity_var;
+      else
+        command->quantity = m_quantity;
 
       ImGui::CloseCurrentPopup();
       SetOpen(false);

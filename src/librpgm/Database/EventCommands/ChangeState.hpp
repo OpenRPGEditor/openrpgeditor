@@ -10,8 +10,8 @@ struct ChangeStateCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  ActorComparisonSource comparison;
-  int value;
-  PartyMemberOperation stateOp;
-  int state;
+  ActorComparisonSource comparison = ActorComparisonSource::Fixed;
+  int value{1};
+  PartyMemberOperation stateOp = PartyMemberOperation::_plu__del_Add;
+  int state{1};
 };

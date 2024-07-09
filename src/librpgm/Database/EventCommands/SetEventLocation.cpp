@@ -7,6 +7,7 @@ SetEventLocationCommand::SetEventLocationCommand(const std::optional<int>& inden
   parameters.at(1).get_to(mode);
   parameters.at(2).get_to(x); // Stores event designation ID
   parameters.at(3).get_to(y);
+  parameters.at(4).get_to(direction);
 }
 
 void SetEventLocationCommand::serializeParameters(nlohmann::json& out) const {
@@ -14,6 +15,7 @@ void SetEventLocationCommand::serializeParameters(nlohmann::json& out) const {
   out.push_back(mode);
   out.push_back(x); // Stores event designation ID
   out.push_back(y);
+  out.push_back(direction);
 }
 
 std::string SetEventLocationCommand::stringRep(const Database& db) const {
@@ -33,7 +35,7 @@ std::string SetEventLocationCommand::stringRep(const Database& db) const {
   }
 
   if (mode == TransferMode::Exchange_With_Another_Event) {
-    return prefix + ", Exchange with " + (event > 0 ? evName : "This Event") + suffix;
+    return prefix + ", Exchange with " + (x > 0 ? Database::Instance->eventNameOrId(x).c_str() : "This Event") + suffix;
   }
 
   return prefix + std::format(", ({}, {})", x, y) + suffix;

@@ -9,8 +9,8 @@ struct ChangeItemsCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  int item;
-  QuantityChangeOp operation;
-  QuantityChangeSource operandSource;
-  int operand;
+  int item{1};
+  QuantityChangeOp operation = QuantityChangeOp::_plu__del_Increase;
+  QuantityChangeSource operandSource = QuantityChangeSource::Constant;
+  int operand{1};
 };

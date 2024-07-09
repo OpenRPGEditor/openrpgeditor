@@ -1,5 +1,6 @@
 #pragma once
 #include "Database/EventCommands/IEventCommand.hpp"
+#include "Database/Database.hpp"
 #include <format>
 
 struct SetVehicleLocationCommand final : IEventCommand {
@@ -10,9 +11,9 @@ struct SetVehicleLocationCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  VehicleType vehicle;
-  TransferMode mode;
-  int mapId;
-  int x;
-  int y;
+  VehicleType vehicle = VehicleType::Boat;
+  TransferMode mode = TransferMode::Direct;
+  int mapId = Database::Instance->mapInfos.currentMap() != nullptr ? Database::Instance->mapInfos.currentMap()->id : 1;
+  int x{0};
+  int y{0};
 };

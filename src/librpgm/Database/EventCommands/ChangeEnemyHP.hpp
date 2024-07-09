@@ -10,9 +10,9 @@ struct ChangeEnemyHPCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  int enemy;
-  QuantityChangeOp enemyOp;
-  QuantityChangeSource quantitySource;
-  int quantity;
-  bool allowKnockOut;
+  int enemy{-1};
+  QuantityChangeOp enemyOp = QuantityChangeOp::_plu__del_Increase;
+  QuantityChangeSource quantitySource = QuantityChangeSource::Constant;
+  int quantity{1};
+  bool allowKnockOut{false};
 };

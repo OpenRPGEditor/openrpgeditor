@@ -1,3 +1,4 @@
+#pragma once
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
@@ -9,8 +10,8 @@ struct ChangeEnemyMPCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  int enemy;
-  QuantityChangeOp enemyOp;
-  QuantityChangeSource quantitySource;
-  int quantity;
+  int enemy{-1};
+  QuantityChangeOp enemyOp = QuantityChangeOp::_plu__del_Increase;
+  QuantityChangeSource quantitySource = QuantityChangeSource::Constant;
+  int quantity{1};
 };

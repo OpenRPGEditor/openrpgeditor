@@ -38,7 +38,7 @@ std::string ChangeHPCommand::stringRep(const Database& db) const {
   if (quantitySource == QuantityChangeSource::Constant) {
     quantityStr = std::to_string(quantity);
   } else {
-    actName = std::format("{{{}}}", db.variableNameOrId(quantity));
+    quantityStr = std::format("{{{}}}", db.variableNameOrId(quantity));
   }
 
   std::string suffix;

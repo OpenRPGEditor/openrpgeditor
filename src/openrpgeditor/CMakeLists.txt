@@ -222,6 +222,36 @@ add_library(orecore STATIC
         Core/EventCommands/Dialog_ChangeHP.cpp
         Core/EventCommands/Dialog_ChangeHP.hpp
         Core/CommonUI/IDialogController.hpp
+        Core/EventCommands/Dialog_ChangeEnemyHP.cpp
+        Core/EventCommands/Dialog_ChangeEnemyHP.hpp
+        Core/EventCommands/Dialog_ChangeMP.cpp
+        Core/EventCommands/Dialog_ChangeMP.hpp
+        Core/EventCommands/Dialog_ChangeEnemyMP.cpp
+        Core/EventCommands/Dialog_ChangeEnemyMP.hpp
+        Core/EventCommands/Dialog_ChangeTP.cpp
+        Core/EventCommands/Dialog_ChangeTP.hpp
+        Core/EventCommands/Dialog_ChangeEnemyTP.cpp
+        Core/EventCommands/Dialog_ChangeEnemyTP.hpp
+        Core/EventCommands/Dialog_ChangeEXP.cpp
+        Core/EventCommands/Dialog_ChangeEXP.hpp
+        Core/EventCommands/Dialog_ChangeArmors.cpp
+        Core/EventCommands/Dialog_ChangeArmors.hpp
+        Core/EventCommands/Dialog_ChangeWeapons.cpp
+        Core/EventCommands/Dialog_ChangeWeapons.hpp
+        Core/EventCommands/Dialog_ChangeItems.cpp
+        Core/EventCommands/Dialog_ChangeItems.hpp
+        Core/EventCommands/Dialog_ChangeState.cpp
+        Core/EventCommands/Dialog_ChangeState.hpp
+        Core/EventCommands/Dialog_ChangeLevel.cpp
+        Core/EventCommands/Dialog_ChangeLevel.hpp
+        Core/EventCommands/Dialog_ChangeParameter.cpp
+        Core/EventCommands/Dialog_ChangeParameter.hpp
+        Core/EventCommands/Dialog_TransferPlayer.cpp
+        Core/EventCommands/Dialog_TransferPlayer.hpp
+        Core/EventCommands/Dialog_SetEventLocation.cpp
+        Core/EventCommands/Dialog_SetEventLocation.hpp
+        Core/EventCommands/Dialog_SetVehicleLocation.cpp
+        Core/EventCommands/Dialog_SetVehicleLocation.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})

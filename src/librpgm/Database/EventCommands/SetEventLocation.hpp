@@ -10,9 +10,9 @@ struct SetEventLocationCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  TransferMode mode;
-  int event;
-  int x;
-  int y;
-  Direction direction;
+  TransferMode mode = TransferMode::Direct;
+  int event{0};
+  int x{0};
+  int y{0};
+  Direction direction = Direction::Retain;
 };

@@ -7,5 +7,5 @@ struct MovementTurn90DegRightCommand final : IMovementRouteStep {
   explicit MovementTurn90DegRightCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
   : IMovementRouteStep(indent, parameters) {}
   ~MovementTurn90DegRightCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Turn_90_deg_Left; }
+  [[nodiscard]] EventCode code() const override { return EventCode::Turn_90_deg_Right; }
 };

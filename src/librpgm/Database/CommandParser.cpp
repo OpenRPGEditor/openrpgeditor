@@ -446,7 +446,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ret.emplace_back(new MovementMoveAwayFromPlayerCommand(indent, parameters));
       break;
     case EventCode::_1_Step_Forward:
-      ret.emplace_back(new MovementMove1StepFowardCommand(indent, parameters));
+      ret.emplace_back(new MovementMove1StepForwardCommand(indent, parameters));
       break;
     case EventCode::_1_Step_Backward:
       ret.emplace_back(new MovementMove1StepBackwardCommand(indent, parameters));
@@ -488,7 +488,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ret.emplace_back(new MovementTurnTowardPlayerCommand(indent, parameters));
       break;
     case EventCode::Turn_away_from_Player:
-      ret.emplace_back(new MovementAwayFromPlayerCommand(indent, parameters));
+      ret.emplace_back(new MovementTurnAwayFromPlayerCommand(indent, parameters));
       break;
     case EventCode::Switch_ON:
       ret.emplace_back(new MovementSwitchONCommand(indent, parameters));

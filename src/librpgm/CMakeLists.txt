@@ -188,10 +188,10 @@ add_library(librpgmmovementroutecmds STATIC
         Database/EventCommands/MovementRoute/Turn90DegRight.hpp Database/EventCommands/MovementRoute/Turn90DegRight.cpp
         Database/EventCommands/MovementRoute/Turn90DegLeft.hpp Database/EventCommands/MovementRoute/Turn90DegLeft.cpp
         Database/EventCommands/MovementRoute/Turn180Deg.hpp Database/EventCommands/MovementRoute/Turn180Deg.cpp
-        Database/EventCommands/MovementRoute/Turn180DegLeftOrRight.hpp Database/EventCommands/MovementRoute/Turn180DegLeftOrRight.cpp
+        "Database/EventCommands/MovementRoute/Turn90DegLeftOrRight.hpp" "Database/EventCommands/MovementRoute/Turn90DegLeftOrRight.cpp"
         Database/EventCommands/MovementRoute/TurnAtRandom.hpp Database/EventCommands/MovementRoute/TurnAtRandom.cpp
         Database/EventCommands/MovementRoute/TurnTowardPlayer.hpp Database/EventCommands/MovementRoute/TurnTowardPlayer.cpp
-        Database/EventCommands/MovementRoute/AwayFromPlayer.hpp Database/EventCommands/MovementRoute/AwayFromPlayer.cpp
+        Database/EventCommands/MovementRoute/TurnAwayFromPlayer.hpp Database/EventCommands/MovementRoute/TurnAwayFromPlayer.cpp
         Database/EventCommands/MovementRoute/SwitchON.hpp Database/EventCommands/MovementRoute/SwitchON.cpp
         Database/EventCommands/MovementRoute/SwitchOFF.hpp Database/EventCommands/MovementRoute/SwitchOFF.cpp
         Database/EventCommands/MovementRoute/Speed.hpp Database/EventCommands/MovementRoute/Speed.cpp

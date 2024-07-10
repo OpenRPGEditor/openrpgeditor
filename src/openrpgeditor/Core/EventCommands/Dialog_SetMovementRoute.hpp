@@ -33,6 +33,7 @@ private:
 
   bool m_confirmed{false};
   std::shared_ptr<SetMovementRouteCommand> command;
+  std::shared_ptr<IEventDialogController> movementRouteDialog;
   std::optional<VariableSwitchPicker> picker;
   std::tuple<bool, bool> result;
 };

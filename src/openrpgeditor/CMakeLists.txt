@@ -293,6 +293,20 @@ endif ()
 add_executable(${NAME} WIN32 MACOSX_BUNDLE
         App/Main.cpp
         App/ProjectInfo.hpp App/ProjectInfo.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementScript.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementScript.hpp
+        Core/EventCommands/MovementRoute/DIalog_MovementJump.cpp
+        Core/EventCommands/MovementRoute/DIalog_MovementJump.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementWait.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementWait.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementSwitchON.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementSwitchON.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementSwitchOFF.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementSwitchOFF.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.hpp
 )
 
 

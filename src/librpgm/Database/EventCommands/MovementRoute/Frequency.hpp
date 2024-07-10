@@ -10,5 +10,5 @@ struct MovementFrequencyCommand final : IMovementRouteStep {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  int frequency;
+  int frequency{2};
 };

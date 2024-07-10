@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Database/EventCommands/MovementRoute/AwayFromPlayer.hpp"
+#include "Database/EventCommands/MovementRoute/TurnAwayFromPlayer.hpp"
 #include "Database/EventCommands/MovementRoute/BlendMode.hpp"
 #include "Database/EventCommands/MovementRoute/ChangeImage.hpp"
 #include "Database/EventCommands/MovementRoute/ChangeOpacity.hpp"
@@ -33,7 +33,7 @@
 #include "Database/EventCommands/MovementRoute/TransparentOFF.hpp"
 #include "Database/EventCommands/MovementRoute/TransparentON.hpp"
 #include "Database/EventCommands/MovementRoute/Turn180Deg.hpp"
-#include "Database/EventCommands/MovementRoute/Turn180DegLeftOrRight.hpp"
+#include "Database/EventCommands/MovementRoute/Turn90DegLeftOrRight.hpp"
 #include "Database/EventCommands/MovementRoute/Turn90DegLeft.hpp"
 #include "Database/EventCommands/MovementRoute/Turn90DegRight.hpp"
 #include "Database/EventCommands/MovementRoute/TurnAtRandom.hpp"

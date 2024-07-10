@@ -8,5 +8,5 @@ MovementScriptCommand::MovementScriptCommand(const std::optional<int>& indent, c
 void MovementScriptCommand::serializeParameters(nlohmann::json& out) const { out.push_back(script); }
 
 std::string MovementScriptCommand::stringRep(const Database& db) const {
-  return whiteDiamond.data() + DecodeEnumName(code()) + colon.data() + script;
+  return symbol(code()) + DecodeEnumName(code()) + colon.data() + script;
 }

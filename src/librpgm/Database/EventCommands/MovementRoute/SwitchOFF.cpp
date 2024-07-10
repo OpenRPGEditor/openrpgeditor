@@ -9,5 +9,5 @@ MovementSwitchOFFCommand::MovementSwitchOFFCommand(const std::optional<int>& ind
 void MovementSwitchOFFCommand::serializeParameters(nlohmann::json& out) const { out.push_back(id); }
 
 std::string MovementSwitchOFFCommand::stringRep(const Database& db) const {
-  return whiteDiamond.data() + DecodeEnumName(code()) + colon.data() + std::format("{:04}", id);
+  return symbol(code()) + DecodeEnumName(code()) + colon.data() + std::format("{:04}", id);
 }

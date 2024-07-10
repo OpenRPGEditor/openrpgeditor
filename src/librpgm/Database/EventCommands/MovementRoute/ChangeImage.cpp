@@ -12,6 +12,6 @@ void MovementChangeImageCommand::serializeParameters(nlohmann::json& out) const 
 }
 
 std::string MovementChangeImageCommand::stringRep(const Database& db) const {
-  return whiteDiamond.data() + std::string("Image") + colon.data() + db.imageText(image) + " " +
+  return symbol(code()) + std::string("Image") + colon.data() + db.imageText(image) + " " +
          db.parentheses(std::to_string(character));
 }

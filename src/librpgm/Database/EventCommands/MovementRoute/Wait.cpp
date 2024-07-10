@@ -8,5 +8,5 @@ MovementWaitCommand::MovementWaitCommand(const std::optional<int>& indent, const
 void MovementWaitCommand::serializeParameters(nlohmann::json& out) const { out.push_back(duration); }
 
 std::string MovementWaitCommand::stringRep(const Database& db) const {
-  return whiteDiamond.data() + std::string("Wait") + colon.data() + std::to_string(duration) + " frames";
+  return symbol(code()) + std::string("Wait") + colon.data() + std::to_string(duration) + " frames";
 }

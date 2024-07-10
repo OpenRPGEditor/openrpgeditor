@@ -21,6 +21,13 @@ struct MovementRoute {
 
     return m_isDirty;
   }
+  void addCommand(const std::shared_ptr<IEventCommand>& command, int position) {
+
+    auto select = list.insert(list.begin() + position, command);
+    //m_selectedCommand = select - list->begin();
+
+    //list.push_back(command);
+  }
 
   mutable bool m_isDirty{false};
 };

@@ -6,6 +6,7 @@
 #include "Core/Project.hpp"
 #include "Database/Database.hpp"
 #include "Core/ImGuiUtils.hpp"
+#include "Database/EventCommands/MovementRoute/MoveDown.hpp"
 
 std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
   if (IsOpen()) {
@@ -13,7 +14,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{1134, 532} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{818, 395} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
     // Character Selection
     ImVec2 cursorPos = ImGui::GetCursorPos();
@@ -48,30 +49,23 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
                           ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                               ImGuiTableFlags_ScrollY,
                           ImVec2{App::DPIHandler::scale_value(160),
-                                 ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(100)})) {
+                                 ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(110)})) {
 
       ImGui::TableSetupScrollFreeze(1, 0);
       ImGui::TableSetupColumn("File");
       ImGui::TableNextRow();
       ImGui::TableNextColumn();
 
-      if (ImGui::SelectableWithBorder("None", m_selected == 0,
-                                      ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
-                                          ImGuiSelectableFlags_AllowDoubleClick)) {
-        if (m_selected == 0)
-          ImGui::SetItemDefaultFocus();
-      }
-      for (int n = 0; n < m_editNodes.size(); n++) {
+      for (int n = 0; n < m_route.list.size(); n++) {
         ImGui::TableNextColumn();
         const bool isSelected = (m_selected == n + 1);
-        if (ImGui::SelectableWithBorder(m_editNodes.at(n)->step->stringRep(m_project->database()).c_str(), isSelected,
+        if (ImGui::SelectableWithBorder(m_route.list.at(n)->stringRep(m_project->database()).c_str(), isSelected,
                                         ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
                                             ImGuiSelectableFlags_AllowDoubleClick)) {
           if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
             // Edit node
           }
           m_selected = n + 1;
-          // m_audio.name = m_audios.at(m_selected - 1);
           if (isSelected)
             ImGui::SetItemDefaultFocus();
         }
@@ -82,22 +76,114 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     ImGui::Checkbox("Repeat Movements", &m_route.repeat);
     ImGui::Checkbox("Skip If Cannot Move", &m_route.skippable);
     ImGui::Checkbox("Wait for Completion", &m_route.wait);
-    ImGui::SetCursorPos(ImVec2{cursorPos.x+180, cursorPos.y});
+    ImGui::SetCursorPos(ImVec2{cursorPos.x+App::DPIHandler::scale_value(180), cursorPos.y - App::DPIHandler::scale_value(10)});
     ImGui::SeparatorText("Movement Commands");
-    ImGui::SetCursorPos(ImVec2{cursorPos.x+180, cursorPos.y+40});
+    ImGui::SetCursorPos(ImVec2{cursorPos.x+App::DPIHandler::scale_value(180), cursorPos.y + App::DPIHandler::scale_value(10)});
     ImGui::BeginGroup(); {
-      if (ImGui::Button("Move Down")) {
+      if (ImGui::Button("Move Down", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+        m_route.addCommand(std::make_shared<MovementMoveDownCommand>(), m_selected);
       }
-      if (ImGui::Button("Move Left")) {
+      if (ImGui::Button("Move Left", ImVec2{App::DPIHandler::scale_value(200), 0})) {
       }
-      if (ImGui::Button("Move Right")) {
+      if (ImGui::Button("Move Right", ImVec2{App::DPIHandler::scale_value(200), 0})) {
       }
-      if (ImGui::Button("Move Up")) {
+      if (ImGui::Button("Move Up", ImVec2{App::DPIHandler::scale_value(200), 0})) {
       }
+      if (ImGui::Button("Move Lower Left", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Move Lower Right", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Move Upper Left", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Move Upper Right", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Move at Random", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Move toward Player", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Move away from Player", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("1 Step Forward", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("1 Step Backward", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Jump...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Wait...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      ImGui::EndGroup();
+    }
+    ImGui::SameLine();
+    ImGui::BeginGroup(); {
+      if (ImGui::Button("Turn Down", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Turn Left", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Turn Right", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Turn Up", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Turn 90° Right", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Turn 90° Left", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Turn 180°", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Turn 90° Right or Left", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Turn at Random", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Turn toward Player", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Turn away from Player", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Switch ON...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Switch OFF...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Change Speed...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Change Frequency...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      ImGui::EndGroup();
+    }
+    ImGui::SameLine();
+    ImGui::BeginGroup(); {
+      if (ImGui::Button("Walking Animation ON", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Walking Animation OFF", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Stepping Animation ON", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Stepping Animation OFF", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Direction Fix ON", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Direction Fix OFF", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Through ON", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Through OFF", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Transparent ON", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Transparent OFF", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Change Image...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Change Opacity...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Change Blend Mode...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Play SE...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      if (ImGui::Button("Script...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
+      }
+      ImGui::EndGroup();
     }
     //if (m_editNodes.empty())
    //   m_editNodes.push_back(std::make_shared<MovementRouteStepCommand>());
-    ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x - 300);
+    ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(80), ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(20)});
     if (ImGui::Button("OK")) {
       m_confirmed = true;
       ImGui::CloseCurrentPopup();

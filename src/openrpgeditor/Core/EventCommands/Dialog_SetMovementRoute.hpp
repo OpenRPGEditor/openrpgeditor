@@ -3,6 +3,8 @@
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/EventCommands/SetEventLocation.hpp"
 #include "Database/EventCommands/SetMovementRoute.hpp"
+#include "Database/EventCommands/EventDummy.hpp"
+#include "Database/EventCommands/MovementRoute/Frequency.hpp"
 
 struct Project;
 struct Dialog_SetMovementRoute : IEventDialogController {
@@ -12,6 +14,10 @@ struct Dialog_SetMovementRoute : IEventDialogController {
      m_character = command->character;
      m_route = command->route;
      m_editNodes = command->editNodes;
+     if (m_route.list.empty())
+     {
+       m_route.addCommand(std::make_shared<EventDummy>(), 0);
+     }
   }
   std::tuple<bool, bool> draw() override;
 

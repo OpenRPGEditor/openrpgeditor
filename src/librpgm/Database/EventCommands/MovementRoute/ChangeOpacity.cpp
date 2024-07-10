@@ -9,5 +9,5 @@ MovementChangeOpacityCommand::MovementChangeOpacityCommand(const std::optional<i
 void MovementChangeOpacityCommand::serializeParameters(nlohmann::json& out) const { out.push_back(opacity); }
 
 std::string MovementChangeOpacityCommand::stringRep(const Database& db) const {
-  return whiteDiamond.data() + std::string("Opacity") + colon.data() + std::to_string(opacity);
+  return symbol(code()) + std::string("Opacity") + colon.data() + std::to_string(opacity);
 }

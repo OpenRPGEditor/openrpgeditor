@@ -1,6 +1,8 @@
 #pragma once
 #include "Core/CharacterSheet.hpp"
 #include "Core/CheckerboardTexture.hpp"
+#include "Core/FaceSheet.hpp"
+#include "Core/SideViewBattlerSheet.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/CommonUI/TraitsEditor.hpp"
 #include "Database/Actors.hpp"
@@ -31,8 +33,10 @@ private:
   bool m_showEquipEdit = false;
   int m_selectedEquip = 0;
   int m_chosenEquip = 0;
-  CheckerboardTexture m_buttonBack{128, 128, CellSizes::_64, 255, 200};
-  std::optional<CharacterSheet> m_charaterSheet;
+  CheckerboardTexture m_buttonBack{144, 144, CellSizes::_32, 220, 255};
+  std::optional<FaceSheet> m_faceSheet;
+  std::optional<CharacterSheet> m_characterSheet;
+  std::optional<SideViewBattlerSheet> m_battlerSheet;
   TraitsEditor m_traitsEditor;
 
 };

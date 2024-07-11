@@ -62,6 +62,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{818, 395} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
+
     // Character Selection
     ImVec2 cursorPos = ImGui::GetCursorPos();
     ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));

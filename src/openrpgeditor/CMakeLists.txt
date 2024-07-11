@@ -254,6 +254,26 @@ add_library(orecore STATIC
         Core/EventCommands/Dialog_SetVehicleLocation.hpp
         Core/EventCommands/Dialog_SetMovementRoute.cpp
         Core/EventCommands/Dialog_SetMovementRoute.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementScript.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementScript.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementJump.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementJump.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementWait.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementWait.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementSwitchON.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementSwitchON.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementSwitchOFF.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementSwitchOFF.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeOpacity.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeOpacity.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeBlendMode.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeBlendMode.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeImage.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeImage.hpp
         Core/SideViewBattlerSheet.cpp
         Core/SideViewBattlerSheet.hpp
         Core/FaceSheet.cpp
@@ -293,26 +313,6 @@ endif ()
 add_executable(${NAME} WIN32 MACOSX_BUNDLE
         App/Main.cpp
         App/ProjectInfo.hpp App/ProjectInfo.cpp
-        Core/EventCommands/MovementRoute/Dialog_MovementScript.cpp
-        Core/EventCommands/MovementRoute/Dialog_MovementScript.hpp
-        Core/EventCommands/MovementRoute/DIalog_MovementJump.cpp
-        Core/EventCommands/MovementRoute/DIalog_MovementJump.hpp
-        Core/EventCommands/MovementRoute/Dialog_MovementWait.cpp
-        Core/EventCommands/MovementRoute/Dialog_MovementWait.hpp
-        Core/EventCommands/MovementRoute/Dialog_MovementSwitchON.cpp
-        Core/EventCommands/MovementRoute/Dialog_MovementSwitchON.hpp
-        Core/EventCommands/MovementRoute/Dialog_MovementSwitchOFF.cpp
-        Core/EventCommands/MovementRoute/Dialog_MovementSwitchOFF.hpp
-        Core/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.cpp
-        Core/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.hpp
-        Core/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.cpp
-        Core/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.hpp
-        Core/EventCommands/MovementRoute/Dialog_MovementChangeOpacity.cpp
-        Core/EventCommands/MovementRoute/Dialog_MovementChangeOpacity.hpp
-        Core/EventCommands/MovementRoute/Dialog_MovementChangeBlendMode.cpp
-        Core/EventCommands/MovementRoute/Dialog_MovementChangeBlendMode.hpp
-        Core/EventCommands/MovementRoute/Dialog_MovementChangeImage.cpp
-        Core/EventCommands/MovementRoute/Dialog_MovementChangeImage.hpp
 )
 
 

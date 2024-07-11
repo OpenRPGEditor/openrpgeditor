@@ -34,6 +34,8 @@ struct MapEditor {
   }
   int tileCellX() const { return m_tileCursor.tileX(); }
   int tileCellY() const { return m_tileCursor.tileY(); }
+  int tileAbsoluteX() const { return m_tileCursor.absoluteX(); }
+  int tileAbsoluteY() const { return m_tileCursor.absoluteY(); }
   int tileSize();
 
   Event* selectedEvent() { return m_selectedEvent; }
@@ -59,6 +61,9 @@ struct MapEditor {
       m_eventEditors.push_back(editor);
     }
   }
+
+  MapRenderer& mapRenderer() { return m_mapRenderer; }
+  const MapRenderer& mapRenderer() const { return m_mapRenderer; }
 
   bool prisonMode() const { return m_prisonMode; }
   void togglePrisonMode() { m_prisonMode ^= 1; }

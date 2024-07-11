@@ -3,10 +3,10 @@
 #include <vector>
 #include <algorithm>
 
-#include "../Texture.hpp"
-#include "../../../librpgm/Database/Map.hpp"
+#include "Core/Texture.hpp"
+#include "Database/Map.hpp"
 
-#include "../../../librpgm/Database/Tilesets.hpp"
+#include "Database/Tilesets.hpp"
 
 class Map;
 class Tileset;
@@ -20,6 +20,7 @@ struct TileRect {
   float y;
   int tileWidth;
   int tileHeight;
+  int tileSheet;
   float animX;
   float animY;
 };
@@ -35,7 +36,7 @@ public:
     std::vector<TileLayer> tileLayers;
     void addRect(int setId, int tileId, float u, float v, float x, float y, int tileWidth, int tileHeight,
                  float animX = 0.f, float animY = 0.f) {
-      tileLayers[setId].rects.push_back({tileId, u, v, x, y, tileWidth, tileHeight, animX, animY});
+      tileLayers[setId].rects.push_back({tileId, u, v, x, y, tileWidth, tileHeight, setId, animX, animY});
     }
   };
 
@@ -131,14 +132,17 @@ public:
 
   void paintTiles(int startX, int startY, int x, int y);
 
-  MapLayer m_lowerLayer;
-  MapLayer m_upperLayer;
+  const Tileset* tileset() const { return m_tileset; }
+
+  std::array<MapLayer, 6> m_lowerLayers;
+  std::array<MapLayer, 6> m_upperLayers;
+
 private:
   bool m_frameUpdated = true;
   void drawTile(MapLayer& layer, int tileId, int dx, int dy);
   void drawAutoTile(MapLayer& layer, int tileId, int dx, int dy);
-  void drawNormalTile(MapLayer& layer, int tileId, int dx, int dy);
-  void drawTableEdge(MapLayer& layer, int tileId, int dx, int dy);
+  void drawNormalTile(MapLayer& layer, int tileId, int dx, int dy) const;
+  void drawTableEdge(MapLayer& layer, int tileId, int dx, int dy) const;
   void beginBlit(SDL_Texture* source);
   void blitImage(SDL_Texture* bitmap, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh);
   void endBlit();
@@ -149,5 +153,4 @@ private:
   bool m_isValid = false;
   int m_tileWidth{48};
   int m_tileHeight{48};
-
 };

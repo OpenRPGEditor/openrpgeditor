@@ -77,14 +77,18 @@ void MapRenderer::setMap(const Map* map, const Tileset* tileset, int tileWidth, 
   m_tileset = tileset;
   m_tileWidth = tileWidth;
   m_tileHeight = tileHeight;
-  m_upperLayer.tileLayers.clear();
-  m_lowerLayer.tileLayers.clear();
+  for (int z = 0; z < 6; ++z) {
+    m_upperLayers[z].tileLayers.clear();
+    m_lowerLayers[z].tileLayers.clear();
+  }
 
   if (m_map && m_tileset) {
-    for (int i = 0; i < 9; ++i) {
-      auto tex = ResourceManager::instance()->loadTilesetImage(m_tileset->tilesetNames[i]);
-      m_lowerLayer.tileLayers.emplace_back(tex);
-      m_upperLayer.tileLayers.emplace_back(tex);
+    for (int z = 0; z < 6; ++z) {
+      for (int i = 0; i < 9; ++i) {
+        auto tex = ResourceManager::instance()->loadTilesetImage(m_tileset->tilesetNames[i]);
+        m_lowerLayers[z].tileLayers.emplace_back(tex);
+        m_upperLayers[z].tileLayers.emplace_back(tex);
+      }
     }
   }
 }
@@ -93,11 +97,13 @@ void MapRenderer::update() {
   if (!m_map || !m_tileset) {
     return;
   }
-  for (int i = 0; i < 9; ++i) {
-    m_lowerLayer.tileLayers[i].rects.clear();
-    m_lowerLayer.tileLayers[i].rects.reserve(m_map->width * m_map->height);
-    m_upperLayer.tileLayers[i].rects.clear();
-    m_upperLayer.tileLayers[i].rects.reserve(m_map->width * m_map->height);
+  for (int z = 0; z < 6; ++z) {
+    for (int i = 0; i < 9; ++i) {
+      m_lowerLayers[z].tileLayers[i].rects.clear();
+      m_lowerLayers[z].tileLayers[i].rects.reserve(m_map->width * m_map->height);
+      m_upperLayers[z].tileLayers[i].rects.clear();
+      m_upperLayers[z].tileLayers[i].rects.reserve(m_map->width * m_map->height);
+    }
   }
 
   for (int y = 0; y < m_map->height; ++y) {
@@ -121,39 +127,39 @@ void MapRenderer::paintTiles(int startX, int startY, int x, int y) {
   int upperTileId1 = tileId(mx, my - 1, 4);
 
   if (isHigherTile(tileId0)) {
-    drawTile(m_upperLayer, tileId0, dx, dy);
+    drawTile(m_upperLayers[0], tileId0, dx, dy);
   } else {
-    drawTile(m_lowerLayer, tileId0, dx, dy);
+    drawTile(m_lowerLayers[0], tileId0, dx, dy);
   }
 
   if (isHigherTile(tileId1)) {
-    drawTile(m_upperLayer, tileId1, dx, dy);
+    drawTile(m_upperLayers[1], tileId1, dx, dy);
   } else {
-    drawTile(m_lowerLayer, tileId1, dx, dy);
+    drawTile(m_lowerLayers[1], tileId1, dx, dy);
   }
 
-  // drawShadow(m_lowerTiles, shadowBits, dx, dy);
+  // drawShadow(m_lowerTiles[4], shadowBits, dx, dy);
 
   if (isTableTile(upperTileId1) && !isTableTile(tileId1)) {
     if (!isShadowingTile(tileId0)) {
-      drawTableEdge(m_lowerLayer, upperTileId1, dx, dy);
+      drawTableEdge(m_lowerLayers[4], upperTileId1, dx, dy);
     }
   }
 
   if (isOverpassPosition(mx, my)) {
-    drawTile(m_upperLayer, tileId2, dx, dy);
-    drawTile(m_upperLayer, tileId3, dx, dy);
+    drawTile(m_upperLayers[2], tileId2, dx, dy);
+    drawTile(m_upperLayers[3], tileId3, dx, dy);
   } else {
     if (isHigherTile(tileId2)) {
-      drawTile(m_upperLayer, tileId2, dx, dy);
+      drawTile(m_upperLayers[2], tileId2, dx, dy);
     } else {
-      drawTile(m_lowerLayer, tileId2, dx, dy);
+      drawTile(m_lowerLayers[2], tileId2, dx, dy);
     }
 
     if (isHigherTile(tileId3)) {
-      drawTile(m_upperLayer, tileId3, dx, dy);
+      drawTile(m_upperLayers[3], tileId3, dx, dy);
     } else {
-      drawTile(m_lowerLayer, tileId3, dx, dy);
+      drawTile(m_lowerLayers[3], tileId3, dx, dy);
     }
   }
 }
@@ -169,12 +175,12 @@ void MapRenderer::drawTile(MapLayer& layer, int tileId, int dx, int dy) {
   }
 }
 
-void MapRenderer::drawAutoTile(MapLayer& layer, int tileId, int dx, int dy) {
+void MapRenderer::drawAutoTile(MapLayer& layer, const int tileId, const int dx, const int dy) {
   auto autoTileTable = FloorTileTable;
-  int kind = getAutoTileKind(tileId);
-  int shape = getAutoTileShape(tileId);
-  float tx = kind % 8;
-  float ty = floor(kind / 8);
+  const int kind = getAutoTileKind(tileId);
+  const int shape = getAutoTileShape(tileId);
+  const float tx = kind % 8;
+  const float ty = floor(kind / 8);
   float bx = 0;
   float by = 0;
   int setNumber = 0;
@@ -227,28 +233,28 @@ void MapRenderer::drawAutoTile(MapLayer& layer, int tileId, int dx, int dy) {
   }
 
   const auto& table = autoTileTable[shape];
-  int w1 = m_tileWidth / 2;
-  int h1 = m_tileHeight / 2;
+  const int w1 = m_tileWidth / 2;
+  const int h1 = m_tileHeight / 2;
 
   for (int i = 0; i < 4; i++) {
-    int qsx = table[i][0];
-    int qsy = table[i][1];
+    const int qsx = table[i][0];
+    const int qsy = table[i][1];
 
-    float sx1 = (bx * 2 + qsx) * w1;
-    float sy1 = (by * 2 + qsy) * h1;
-    float dx1 = dx + (i % 2) * w1;
+    const float sx1 = (bx * 2 + qsx) * w1;
+    const float sy1 = (by * 2 + qsy) * h1;
+    const float dx1 = dx + (i % 2) * w1;
     float dy1 = dy + static_cast<int>(floor(i / 2)) * h1;
     if (isTable && (qsy == 1 || qsy == 5)) {
       float qsx2 = qsx;
-      float qsy2 = 3;
+      constexpr float qsy2 = 3;
       if (qsy == 1) {
         //          static const int tbl[4] {0, 3, 2, 1};
         //          qsx2 = tbl[qsx];
         qsx2 = fmod(4 - qsx, 4);
       }
 
-      int sx2 = (bx * 2 + qsx2) * w1;
-      int sy2 = (by * 2 + qsy2) * h1;
+      const int sx2 = (bx * 2 + qsx2) * w1;
+      const int sy2 = (by * 2 + qsy2) * h1;
       layer.addRect(setNumber, tileId, sx2, sy2, dx1, dy1, w1, h1, animX, animY);
       dy1 += h1 / 2;
       layer.addRect(setNumber, tileId, sx1, sy1, dx1, dy1 + h1 / 2, w1, h1 / 2, animX, animY);
@@ -258,7 +264,7 @@ void MapRenderer::drawAutoTile(MapLayer& layer, int tileId, int dx, int dy) {
   }
 }
 
-void MapRenderer::drawNormalTile(MapLayer& layer, int tileId, int dx, int dy) {
+void MapRenderer::drawNormalTile(MapLayer& layer, const int tileId, const int dx, const int dy) const {
   int setNumber = 0;
 
   if (isTileA5(tileId)) {
@@ -275,7 +281,7 @@ void MapRenderer::drawNormalTile(MapLayer& layer, int tileId, int dx, int dy) {
   layer.addRect(setNumber, tileId, sx, sy, dx, dy, w, h);
 }
 
-void MapRenderer::drawTableEdge(MapLayer& layer, int tileId, int dx, int dy) {
+void MapRenderer::drawTableEdge(MapLayer& layer, const int tileId, const int dx, const int dy) const {
   if (!isTileA2(tileId)) {
     return;
   }

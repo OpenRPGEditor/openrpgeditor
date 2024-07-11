@@ -119,6 +119,10 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     return;
   }
 
+  // if (map()) {
+  //   map()->data[(tileCellY() * map()->width) + tileCellX()] = 2086;
+  // }
+
   if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow) || ImGui::IsKeyPressed(ImGuiKey_RightArrow) ||
       ImGui::IsKeyPressed(ImGuiKey_UpArrow) || ImGui::IsKeyPressed(ImGuiKey_DownArrow)) {
     m_tileCursor.setKeyboardMode();
@@ -252,9 +256,9 @@ void MapEditor::renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer
   renderLayerTex(win, layer.tileLayers[3]); // A4
   renderLayerTex(win, layer.tileLayers[4]); // A5
   renderLayerTex(win, layer.tileLayers[5]); // B
-  renderLayerTex(win, layer.tileLayers[8]); // E
-  renderLayerTex(win, layer.tileLayers[7]); // D
   renderLayerTex(win, layer.tileLayers[6]); // C
+  renderLayerTex(win, layer.tileLayers[7]); // D
+  renderLayerTex(win, layer.tileLayers[8]); // E
 }
 void MapEditor::draw() {
   if (!m_checkeredBack) {
@@ -311,9 +315,11 @@ void MapEditor::draw() {
 
       drawParallax(win);
 
-      renderLayer(win, m_mapRenderer.m_lowerLayer);
-      if (m_prisonMode) {
-        renderLayer(win, m_mapRenderer.m_upperLayer);
+      for (int z = 0; z < 6; ++z) {
+        renderLayer(win, m_mapRenderer.m_lowerLayers[z]);
+        if (m_prisonMode) {
+          renderLayer(win, m_mapRenderer.m_upperLayers[z]);
+        }
       }
 
       if (m_prisonMode) {
@@ -343,7 +349,9 @@ void MapEditor::draw() {
       }
 
       if (!m_prisonMode) {
-        renderLayer(win, m_mapRenderer.m_upperLayer);
+        for (int z = 0; z < 6; z++) {
+          renderLayer(win, m_mapRenderer.m_upperLayers[z]);
+        }
       }
     }
     ImGui::EndChild();
@@ -390,7 +398,7 @@ void MapEditor::drawMapProperties() {
           strncpy(buf, m_mapInfo->name.c_str(), 4096);
           if (ImGui::InputText("##map_name", buf, 4096)) {
             m_mapInfo->name = buf;
-            map()->m_isDirty;
+            map()->m_isDirty = true;
           }
         }
         ImGui::EndGroup();

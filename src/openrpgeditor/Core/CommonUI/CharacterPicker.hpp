@@ -23,7 +23,7 @@ struct CharacterPicker : IDialogController {
     return m_selectedSheet >= 0 ? m_characterSheets[m_selectedSheet] : "";
   }
 
-  void setCharacterInfo(std::string_view sheetName, int character, int pattern, Direction direction);
+  void setCharacterInfo(std::string_view sheetName, int character = 0, int pattern = 0, Direction direction = Direction::Down);
 
 private:
   std::optional<CharacterSheet> m_characterSheet;

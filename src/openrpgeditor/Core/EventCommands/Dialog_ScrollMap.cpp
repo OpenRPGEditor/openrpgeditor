@@ -44,8 +44,7 @@ std::tuple<bool, bool> Dialog_ScrollMap::draw() {
     ImGui::SeparatorText("Speed");
     ImGui::PushItemWidth(App::DPIHandler::scale_value(180));
 
-    auto moveSpeed = magic_enum::enum_cast<MovementSpeed>(m_speed);
-    if (ImGui::BeginCombo("##scrollmap_speed", DecodeEnumName(magic_enum::enum_name(moveSpeed.value())).c_str())) {
+    if (ImGui::BeginCombo("##scrollmap_speed", DecodeEnumName(static_cast<MovementSpeed>(m_speed)).c_str())) {
       for (auto& speed : magic_enum::enum_values<MovementSpeed>()) {
 
         bool is_selected = m_speed == magic_enum::enum_integer(speed);

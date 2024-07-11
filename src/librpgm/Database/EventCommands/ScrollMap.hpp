@@ -10,7 +10,7 @@ struct ScrollMapCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  Direction direction;
-  int distance;
-  MovementSpeed speed;
+  Direction direction = Direction::Down;
+  int distance{1};
+  MovementSpeed speed = MovementSpeed::Normal;
 };

@@ -13,5 +13,5 @@ struct MovementChangeImageCommand final : IMovementRouteStep {
 
 
   std::string image;
-  int character;
+  int character{0};
 };

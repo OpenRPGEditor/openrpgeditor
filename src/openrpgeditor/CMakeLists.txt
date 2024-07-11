@@ -307,6 +307,12 @@ add_executable(${NAME} WIN32 MACOSX_BUNDLE
         Core/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.hpp
         Core/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.cpp
         Core/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeOpacity.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeOpacity.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeBlendMode.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeBlendMode.hpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeImage.cpp
+        Core/EventCommands/MovementRoute/Dialog_MovementChangeImage.hpp
 )
 
 

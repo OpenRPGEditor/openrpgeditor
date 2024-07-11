@@ -156,7 +156,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
         command->x = m_x;
         command->y = m_y;
       }
-      command->direction = static_cast<Direction>(m_direction);
+      command->direction = static_cast<Direction>((m_direction * 2) + 2);
 
       ImGui::CloseCurrentPopup();
       SetOpen(false);

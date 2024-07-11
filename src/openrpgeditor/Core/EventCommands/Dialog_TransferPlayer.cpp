@@ -139,7 +139,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
         command->x = m_x;
         command->y = m_y;
       }
-      command->direction = static_cast<Direction>(m_direction);
+      command->direction = static_cast<Direction>((m_direction * 2) + 2);
       command->fade = static_cast<Fade>(m_fade);
 
       ImGui::CloseCurrentPopup();

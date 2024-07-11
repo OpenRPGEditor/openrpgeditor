@@ -49,6 +49,10 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementSwitchOFF.hpp"
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.hpp"
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementChangeOpacity.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementChangeBlendMode.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementChangeImage.hpp"
+#include "Dialog_PlaySE.hpp"
 
 std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
   if (IsOpen()) {
@@ -125,43 +129,43 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     ImGui::SetCursorPos(ImVec2{cursorPos.x+App::DPIHandler::scale_value(180), cursorPos.y + App::DPIHandler::scale_value(10)});
     ImGui::BeginGroup(); {
       if (ImGui::Button("Move Down", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementMoveDownCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementMoveDownCommand>(), m_selected);
       }
       if (ImGui::Button("Move Left", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementMoveLeftCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementMoveLeftCommand>(), m_selected);
       }
       if (ImGui::Button("Move Right", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementMoveRightCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementMoveRightCommand>(), m_selected);
       }
       if (ImGui::Button("Move Up", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementMoveUpCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementMoveUpCommand>(), m_selected);
       }
       if (ImGui::Button("Move Lower Left", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementMoveLowerLeftCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementMoveLowerLeftCommand>(), m_selected);
       }
       if (ImGui::Button("Move Lower Right", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementMoveLowerRightCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementMoveLowerRightCommand>(), m_selected);
       }
       if (ImGui::Button("Move Upper Left", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementMoveUpperLeftCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementMoveUpperLeftCommand>(), m_selected);
       }
       if (ImGui::Button("Move Upper Right", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementMoveUpperRightCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementMoveUpperRightCommand>(), m_selected);
       }
       if (ImGui::Button("Move at Random", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementMoveAtRandomCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementMoveAtRandomCommand>(), m_selected);
       }
       if (ImGui::Button("Move toward Player", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementMoveTowardPlayerCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementMoveTowardPlayerCommand>(), m_selected);
       }
       if (ImGui::Button("Move away from Player", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementMoveAwayFromPlayerCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementMoveAwayFromPlayerCommand>(), m_selected);
       }
       if (ImGui::Button("1 Step Forward", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementMove1StepForwardCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementMove1StepForwardCommand>(), m_selected);
       }
       if (ImGui::Button("1 Step Backward", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementMove1StepBackwardCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementMove1StepBackwardCommand>(), m_selected);
       }
       if (ImGui::Button("Jump...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         movementRouteDialog = std::make_shared<Dialog_MovementJump>("Jump", m_project);
@@ -176,37 +180,37 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     ImGui::SameLine();
     ImGui::BeginGroup(); {
       if (ImGui::Button("Turn Down", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementTurnDownCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementTurnDownCommand>(), m_selected);
       }
       if (ImGui::Button("Turn Left", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementTurnLeftCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementTurnLeftCommand>(), m_selected);
       }
       if (ImGui::Button("Turn Right", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementTurnRightCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementTurnRightCommand>(), m_selected);
       }
       if (ImGui::Button("Turn Up", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementTurnUpCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementTurnUpCommand>(), m_selected);
       }
       if (ImGui::Button("Turn 90° Right", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementTurn90DegRightCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementTurn90DegRightCommand>(), m_selected);
       }
       if (ImGui::Button("Turn 90° Left", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementTurn90DegLeftCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementTurn90DegLeftCommand>(), m_selected);
       }
       if (ImGui::Button("Turn 180°", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementTurn180DegCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementTurn180DegCommand>(), m_selected);
       }
       if (ImGui::Button("Turn 90° Right or Left", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementTurn90DegLeftOrRightCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementTurn90DegLeftOrRightCommand>(), m_selected);
       }
       if (ImGui::Button("Turn at Random", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementTurnAtRandomCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementTurnAtRandomCommand>(), m_selected);
       }
       if (ImGui::Button("Turn toward Player", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementTurnTowardPlayerCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementTurnTowardPlayerCommand>(), m_selected);
       }
       if (ImGui::Button("Turn away from Player", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementTurnAwayFromPlayerCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementTurnAwayFromPlayerCommand>(), m_selected);
       }
       if (ImGui::Button("Switch ON...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         movementRouteDialog = std::make_shared<Dialog_MovementSwitchON>("Script", m_project);
@@ -229,49 +233,49 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     ImGui::SameLine();
     ImGui::BeginGroup(); {
       if (ImGui::Button("Walking Animation ON", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementWalkingAnimationONCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementWalkingAnimationONCommand>(), m_selected);
       }
       if (ImGui::Button("Walking Animation OFF", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementWalkingAnimationOFFCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementWalkingAnimationOFFCommand>(), m_selected);
       }
       if (ImGui::Button("Stepping Animation ON", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementSteppingAnimationONCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementSteppingAnimationONCommand>(), m_selected);
       }
       if (ImGui::Button("Stepping Animation OFF", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementSteppingAnimationOFFCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementSteppingAnimationOFFCommand>(), m_selected);
       }
       if (ImGui::Button("Direction Fix ON", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementDirectionFixONCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementDirectionFixONCommand>(), m_selected);
       }
       if (ImGui::Button("Direction Fix OFF", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementDirectionFixOFFCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementDirectionFixOFFCommand>(), m_selected);
       }
       if (ImGui::Button("Through ON", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementThroughONCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementThroughONCommand>(), m_selected);
       }
       if (ImGui::Button("Through OFF", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementThroughOFFCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementThroughOFFCommand>(), m_selected);
       }
       if (ImGui::Button("Transparent ON", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementTransparentONCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementTransparentONCommand>(), m_selected);
       }
       if (ImGui::Button("Transparent OFF", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        m_route.addCommand(std::make_shared<MovementTransparentOFFCommand>(), m_selected);
+        m_selected = m_route.addCommand(std::make_shared<MovementTransparentOFFCommand>(), m_selected);
       }
       if (ImGui::Button("Change Image...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        //movementRouteDialog = std::make_shared<Dialog_MovementChangeImage>("Script", m_project);
+        movementRouteDialog = std::make_shared<Dialog_MovementChangeImage>("Image", m_project);
         movementRouteDialog->SetOpen(true);
       }
       if (ImGui::Button("Change Opacity...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        //movementRouteDialog = std::make_shared<Dialog_MovementChangeOpacity>("Script", m_project);
+        movementRouteDialog = std::make_shared<Dialog_MovementChangeOpacity>("Opacity", m_project);
         movementRouteDialog->SetOpen(true);
       }
       if (ImGui::Button("Change Blend Mode...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        //movementRouteDialog = std::make_shared<Dialog_MovementChangeBlendMode>("Script", m_project);
+        movementRouteDialog = std::make_shared<Dialog_MovementChangeBlendMode>("Blend", m_project);
         movementRouteDialog->SetOpen(true);
       }
       if (ImGui::Button("Play SE...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        //movementRouteDialog = std::make_shared<Dialog_MovementPlaySE>("Script", m_project);
+        movementRouteDialog = std::make_shared<Dialog_PlaySE>("Play SE", m_project);
         movementRouteDialog->SetOpen(true);
       }
       if (ImGui::Button("Script...", ImVec2{App::DPIHandler::scale_value(200), 0})) {

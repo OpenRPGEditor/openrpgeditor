@@ -740,10 +740,10 @@ enum class MoveType {
 
 enum class MovementFrequency {
   Lowest = 1,
-  Lower,
-  Normal,
-  Higher,
-  Highest,
+  Lower = 2,
+  Normal = 3,
+  Higher = 4,
+  Highest = 5,
 };
 
 enum class TileType {

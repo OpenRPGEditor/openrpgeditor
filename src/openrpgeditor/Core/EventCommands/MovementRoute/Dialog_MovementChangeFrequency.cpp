@@ -4,7 +4,6 @@
 #include "Core/Application.hpp"
 #include "Core/DPIHandler.hpp"
 
-// TODO: Fix frequency index and the direction enums
 std::tuple<bool, bool> Dialog_MovementChangeFrequency::draw() {
   if (IsOpen()) {
     ImGui::OpenPopup(m_name.c_str());
@@ -16,11 +15,11 @@ std::tuple<bool, bool> Dialog_MovementChangeFrequency::draw() {
 
     ImGui::SeparatorText("Frequency");
     ImGui::PushItemWidth((App::DPIHandler::scale_value(100)));
-    if (ImGui::BeginCombo("##movement_frequency_selection", DecodeEnumName(magic_enum::enum_value<MovementFrequency>(m_frequency)).c_str())) {
+    if (ImGui::BeginCombo("##movement_frequency_selection", DecodeEnumName(static_cast<MovementFrequency>(m_frequency)).c_str())) {
       for (auto& freq : magic_enum::enum_values<MovementFrequency>()) {
-        bool is_selected = m_frequency == magic_enum::enum_index(freq).value();
+        bool is_selected = m_frequency == static_cast<int>(freq);
         if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(freq)).c_str(), is_selected)) {
-          m_frequency = magic_enum::enum_index(freq).value();
+          m_frequency = static_cast<int>(freq);
           if (is_selected)
             ImGui::SetItemDefaultFocus();
         }

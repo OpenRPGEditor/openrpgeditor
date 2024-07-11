@@ -7,7 +7,7 @@
 #include <cmath>
 #include "Database/Map.hpp"
 
-constexpr std::array<std::array<std::array<int, 2>, 4>, 48> FloorAutoTileTableRaw{{
+constexpr std::array<std::array<std::array<int, 2>, 4>, 48> FloorAutoTileTable{{
     {{{2, 4}, {1, 4}, {2, 3}, {1, 3}}}, {{{2, 0}, {1, 4}, {2, 3}, {1, 3}}}, {{{2, 4}, {3, 0}, {2, 3}, {1, 3}}},
     {{{2, 0}, {3, 0}, {2, 3}, {1, 3}}}, {{{2, 4}, {1, 4}, {2, 3}, {3, 1}}}, {{{2, 0}, {1, 4}, {2, 3}, {3, 1}}},
     {{{2, 4}, {3, 0}, {2, 3}, {3, 1}}}, {{{2, 0}, {3, 0}, {2, 3}, {3, 1}}}, {{{2, 4}, {1, 4}, {2, 1}, {1, 3}}},
@@ -26,7 +26,7 @@ constexpr std::array<std::array<std::array<int, 2>, 4>, 48> FloorAutoTileTableRa
     {{{2, 2}, {3, 2}, {2, 5}, {3, 5}}}, {{{0, 2}, {3, 2}, {0, 5}, {3, 5}}}, {{{0, 0}, {1, 0}, {0, 1}, {1, 1}}},
 }};
 
-constexpr std::array<std::array<std::array<int, 2>, 4>, 16> WallAutoTileTableRaw{{{{{2, 2}, {1, 2}, {2, 1}, {1, 1}}},
+constexpr std::array<std::array<std::array<int, 2>, 4>, 48> WallAutoTileTable{{{{{2, 2}, {1, 2}, {2, 1}, {1, 1}}},
                                                                                   {{{0, 2}, {1, 2}, {0, 1}, {1, 1}}},
                                                                                   {{{2, 0}, {1, 0}, {2, 1}, {1, 1}}},
                                                                                   {{{0, 0}, {1, 0}, {0, 1}, {1, 1}}},
@@ -43,33 +43,15 @@ constexpr std::array<std::array<std::array<int, 2>, 4>, 16> WallAutoTileTableRaw
                                                                                   {{{2, 0}, {3, 0}, {2, 3}, {3, 3}}},
                                                                                   {{{0, 0}, {3, 0}, {0, 3}, {3, 3}}}}};
 
-constexpr std::array<std::array<std::array<int, 2>, 4>, 4> WaterfallAutoTileTableRaw{{
+constexpr std::array<std::array<std::array<int, 2>, 4>, 48> WaterfallAutoTileTable{{
     {{{2, 0}, {1, 0}, {2, 1}, {1, 1}}},
     {{{0, 0}, {1, 0}, {0, 1}, {1, 1}}},
     {{{2, 0}, {3, 0}, {2, 1}, {3, 1}}},
     {{{0, 0}, {3, 0}, {0, 1}, {3, 1}}},
 }};
 
-static std::vector<std::array<std::array<int, 2>, 4>> FloorTileTable;
-static std::vector<std::array<std::array<int, 2>, 4>> WallTileTable;
-static std::vector<std::array<std::array<int, 2>, 4>> WaterfallTileTable;
-
 static bool tileTablesInitialized = false;
 MapRenderer::MapRenderer() {
-  if (!tileTablesInitialized) {
-    for (auto& v : FloorAutoTileTableRaw) {
-      FloorTileTable.push_back(v);
-    }
-    for (auto& v : WallAutoTileTableRaw) {
-      WallTileTable.push_back(v);
-    }
-
-    for (auto& v : WaterfallAutoTileTableRaw) {
-      WaterfallTileTable.push_back(v);
-    }
-
-    tileTablesInitialized = true;
-  }
 }
 
 void MapRenderer::setMap(const Map* map, const Tileset* tileset, int tileWidth, int tileHeight) {
@@ -176,7 +158,7 @@ void MapRenderer::drawTile(MapLayer& layer, int tileId, int dx, int dy) {
 }
 
 void MapRenderer::drawAutoTile(MapLayer& layer, const int tileId, const int dx, const int dy) {
-  auto autoTileTable = FloorTileTable;
+  auto autoTileTable = FloorAutoTileTable;
   const int kind = getAutoTileKind(tileId);
   const int shape = getAutoTileShape(tileId);
   const float tx = kind % 8;
@@ -209,7 +191,7 @@ void MapRenderer::drawAutoTile(MapLayer& layer, const int tileId, const int dx, 
         animX = 2;
       } else {
         bx += 6;
-        autoTileTable = WaterfallTileTable;
+        autoTileTable = WaterfallAutoTileTable;
         animY = 1;
       }
     }
@@ -222,13 +204,13 @@ void MapRenderer::drawAutoTile(MapLayer& layer, const int tileId, const int dx, 
     setNumber = 2;
     bx = tx * 2;
     by = (ty - 6) * 2;
-    autoTileTable = WallTileTable;
+    autoTileTable = WallAutoTileTable;
   } else if (isTileA4(tileId)) {
     setNumber = 3;
     bx = tx * 2;
     by = floor((ty - 10) * 2.5 + (fmod(ty, 2) == 1 ? 0.5f : 0));
     if (fmod(ty, 2) == 1) {
-      autoTileTable = WallTileTable;
+      autoTileTable = WallAutoTileTable;
     }
   }
 
@@ -286,27 +268,26 @@ void MapRenderer::drawTableEdge(MapLayer& layer, const int tileId, const int dx,
     return;
   }
 
-  printf("Drawing table edge tile %i\n", tileId);
-  auto& autotileTable = FloorTileTable;
-  int kind = getAutoTileKind(tileId);
-  int shape = getAutoTileShape(tileId);
+  auto& autotileTable = FloorAutoTileTable;
+  const int kind = getAutoTileKind(tileId);
+  const int shape = getAutoTileShape(tileId);
 
-  float tx = kind % 8;
-  float ty = floor(kind / 8);
+  const float tx = kind % 8;
+  const float ty = floor(kind / 8);
   int setNumber = 1;
-  float bx = tx * 2;
+  const float bx = tx * 2;
   float by = (ty - 2) * 3;
-  auto table = autotileTable[shape];
-  int w1 = m_tileWidth / 2;
-  int h1 = m_tileHeight / 2;
+  const auto table = autotileTable[shape];
+  const int w1 = m_tileWidth / 2;
+  const int h1 = m_tileHeight / 2;
 
   for (int i = 0; i < 2; i++) {
-    float qsx = table[2 + i][0];
-    float qsy = table[2 + i][1];
-    float sx1 = (bx * 2 + qsx) * w1;
-    float sy1 = (by * 2 + qsy) * h1 + (h1 / 2);
-    float dx1 = dx + (i % 2) * w1;
-    float dy1 = dy + floor(i / 2) * h1;
+    const float qsx = table[2 + i][0];
+    const float qsy = table[2 + i][1];
+    const float sx1 = (bx * 2 + qsx) * w1;
+    const float sy1 = (by * 2 + qsy) * h1 + (h1 / 2);
+    const float dx1 = dx + (i % 2) * w1;
+    const float dy1 = dy + floor(i / 2) * h1;
     layer.addRect(setNumber, tileId, sx1, sy1, dx1, dy1, w1, h1 / 2);
   }
 }

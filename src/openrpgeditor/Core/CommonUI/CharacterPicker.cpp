@@ -60,9 +60,13 @@ void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const i
     if (m_pickerMode == PickerMode::PatternAndDirection) {
       m_selectionX = charX + (pattern * m_characterSheet->characterWidth());
       m_selectionY = charY + (((static_cast<int>(m_direction) - 2) / 2) * m_characterSheet->characterHeight());
+      m_selectionWidth = m_characterSheet->characterWidth();
+      m_selectionHeight = m_characterSheet->characterHeight();
     } else {
       m_selectionX = charX;
       m_selectionY = charY;
+      m_selectionWidth = m_characterSheet->characterAtlasWidth();
+      m_selectionHeight = m_characterSheet->characterAtlasHeight();
     }
     // m_selectionX =
     //     std::clamp(m_selectionX, 0, m_characterSheet->texture().width() - m_characterSheet->characterWidth());
@@ -74,12 +78,12 @@ void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const i
 }
 
 std::tuple<bool, bool> CharacterPicker::draw() {
-  if (IsOpen() && !ImGui::IsPopupOpen(m_name.c_str())) {
+  if (IsOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{894, 768} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
                              ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {

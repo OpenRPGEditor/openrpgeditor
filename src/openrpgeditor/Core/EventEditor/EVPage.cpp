@@ -302,41 +302,41 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
     ImGui::BeginChild("##orpg_event_page_commands");
     { m_commandEditor.draw(); }
     ImGui::EndChild();
+    if (const auto [closed, confirmed] = m_characterPicker.draw(); closed) {
+      if (confirmed) {
+        m_characterPicker.Accept();
+        m_page->image.characterIndex = m_characterPicker.character();
+        const auto tmpName = m_characterPicker.selectedSheet();
+        m_page->image.pattern = m_characterPicker.selectedPattern();
+        m_page->image.direction = m_characterPicker.selectedDirection();
+        if (m_page->image.characterName.compare(tmpName) != 0) {
+          m_page->image.characterName = tmpName;
+          m_characterSheet = CharacterSheet(m_page->image.characterName);
+        }
+      }
+    }
+
+    if (m_variableSwitchPicker) {
+      if (auto [closed, confirmed] = m_variableSwitchPicker->draw(); closed) {
+        if (confirmed) {
+          switch (m_variableSwitchSelection) {
+          case Switch1:
+            m_page->conditions.switch1Id = m_variableSwitchPicker->selection();
+            break;
+          case Switch2:
+            m_page->conditions.switch2Id = m_variableSwitchPicker->selection();
+            break;
+          case Variable:
+            m_page->conditions.variableId = m_variableSwitchPicker->selection();
+            break;
+          }
+        }
+        m_variableSwitchPicker.reset();
+      }
+    }
     ImGui::EndTabItem();
   }
 
-  if (const auto [closed, confirmed] = m_characterPicker.draw(); closed) {
-    if (confirmed) {
-      m_characterPicker.Accept();
-      m_page->image.characterIndex = m_characterPicker.character();
-      const auto tmpName = m_characterPicker.selectedSheet();
-      m_page->image.pattern = m_characterPicker.selectedPattern();
-      m_page->image.direction = m_characterPicker.selectedDirection();
-      if (m_page->image.characterName.compare(tmpName) != 0) {
-        m_page->image.characterName = tmpName;
-        m_characterSheet = CharacterSheet(m_page->image.characterName);
-      }
-    }
-  }
-
-  if (m_variableSwitchPicker) {
-    if (auto [closed, confirmed] = m_variableSwitchPicker->draw(); closed) {
-      if (confirmed) {
-        switch (m_variableSwitchSelection) {
-        case Switch1:
-          m_page->conditions.switch1Id = m_variableSwitchPicker->selection();
-          break;
-        case Switch2:
-          m_page->conditions.switch2Id = m_variableSwitchPicker->selection();
-          break;
-        case Variable:
-          m_page->conditions.variableId = m_variableSwitchPicker->selection();
-          break;
-        }
-      }
-      m_variableSwitchPicker.reset();
-    }
-  }
   open ^= 1;
   return std::make_tuple(open, selected);
 }

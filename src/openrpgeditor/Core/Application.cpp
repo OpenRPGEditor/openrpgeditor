@@ -53,7 +53,7 @@ Application::~Application() {
   SDL_Quit();
 }
 
-ExitStatus App::Application::run() {
+ExitStatus Application::run() {
   APP_PROFILE_FUNCTION();
   NFD_Init();
 

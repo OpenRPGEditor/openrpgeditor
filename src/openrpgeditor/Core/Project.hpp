@@ -48,6 +48,7 @@ public:
   [[nodiscard]] bool modified() { return m_isModified; }
 
   void draw();
+  void drawTileInfo(MapRenderer::MapLayer& mapLayer);
   void handleOpenFile();
   void handleUndo();
   void handleRedo();
@@ -146,6 +147,7 @@ public:
 private:
   void drawMenu();
   void drawToolbar();
+  void drawTileDebugger();
   void handleKeyboardShortcuts();
   MapListView m_mapListView;
   MapEditor m_mapEditor;
@@ -168,7 +170,7 @@ private:
 
   bool m_showDemoWindow{};
   bool m_showAboutWindow{};
-  bool m_showTileDebug{true};
+  bool m_showTileDebug{false};
 
   float m_menuBarHeight{};
   float m_toolbarSize = 32;

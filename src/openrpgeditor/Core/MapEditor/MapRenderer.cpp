@@ -77,14 +77,18 @@ void MapRenderer::setMap(const Map* map, const Tileset* tileset, int tileWidth, 
   m_tileset = tileset;
   m_tileWidth = tileWidth;
   m_tileHeight = tileHeight;
-  m_upperLayer.tileLayers.clear();
-  m_lowerLayer.tileLayers.clear();
+  for (int z = 0; z < 6; ++z) {
+    m_upperLayers[z].tileLayers.clear();
+    m_lowerLayers[z].tileLayers.clear();
+  }
 
   if (m_map && m_tileset) {
-    for (int i = 0; i < 9; ++i) {
-      auto tex = ResourceManager::instance()->loadTilesetImage(m_tileset->tilesetNames[i]);
-      m_lowerLayer.tileLayers.emplace_back(tex);
-      m_upperLayer.tileLayers.emplace_back(tex);
+    for (int z = 0; z < 6; ++z) {
+      for (int i = 0; i < 9; ++i) {
+        auto tex = ResourceManager::instance()->loadTilesetImage(m_tileset->tilesetNames[i]);
+        m_lowerLayers[z].tileLayers.emplace_back(tex);
+        m_upperLayers[z].tileLayers.emplace_back(tex);
+      }
     }
   }
 }
@@ -93,11 +97,13 @@ void MapRenderer::update() {
   if (!m_map || !m_tileset) {
     return;
   }
-  for (int i = 0; i < 9; ++i) {
-    m_lowerLayer.tileLayers[i].rects.clear();
-    m_lowerLayer.tileLayers[i].rects.reserve(m_map->width * m_map->height);
-    m_upperLayer.tileLayers[i].rects.clear();
-    m_upperLayer.tileLayers[i].rects.reserve(m_map->width * m_map->height);
+  for (int z = 0; z < 6; ++z) {
+    for (int i = 0; i < 9; ++i) {
+      m_lowerLayers[z].tileLayers[i].rects.clear();
+      m_lowerLayers[z].tileLayers[i].rects.reserve(m_map->width * m_map->height);
+      m_upperLayers[z].tileLayers[i].rects.clear();
+      m_upperLayers[z].tileLayers[i].rects.reserve(m_map->width * m_map->height);
+    }
   }
 
   for (int y = 0; y < m_map->height; ++y) {
@@ -121,39 +127,39 @@ void MapRenderer::paintTiles(int startX, int startY, int x, int y) {
   int upperTileId1 = tileId(mx, my - 1, 4);
 
   if (isHigherTile(tileId0)) {
-    drawTile(m_upperLayer, tileId0, dx, dy);
+    drawTile(m_upperLayers[0], tileId0, dx, dy);
   } else {
-    drawTile(m_lowerLayer, tileId0, dx, dy);
+    drawTile(m_lowerLayers[0], tileId0, dx, dy);
   }
 
   if (isHigherTile(tileId1)) {
-    drawTile(m_upperLayer, tileId1, dx, dy);
+    drawTile(m_upperLayers[0], tileId1, dx, dy);
   } else {
-    drawTile(m_lowerLayer, tileId1, dx, dy);
+    drawTile(m_lowerLayers[0], tileId1, dx, dy);
   }
 
-  // drawShadow(m_lowerTiles, shadowBits, dx, dy);
+  // drawShadow(m_lowerTiles[4], shadowBits, dx, dy);
 
   if (isTableTile(upperTileId1) && !isTableTile(tileId1)) {
     if (!isShadowingTile(tileId0)) {
-      drawTableEdge(m_lowerLayer, upperTileId1, dx, dy);
+      drawTableEdge(m_lowerLayers[4], upperTileId1, dx, dy);
     }
   }
 
   if (isOverpassPosition(mx, my)) {
-    drawTile(m_upperLayer, tileId2, dx, dy);
-    drawTile(m_upperLayer, tileId3, dx, dy);
+    drawTile(m_upperLayers[2], tileId2, dx, dy);
+    drawTile(m_lowerLayers[3], tileId3, dx, dy);
   } else {
     if (isHigherTile(tileId2)) {
-      drawTile(m_upperLayer, tileId2, dx, dy);
+      drawTile(m_upperLayers[2], tileId2, dx, dy);
     } else {
-      drawTile(m_lowerLayer, tileId2, dx, dy);
+      drawTile(m_lowerLayers[2], tileId2, dx, dy);
     }
 
     if (isHigherTile(tileId3)) {
-      drawTile(m_upperLayer, tileId3, dx, dy);
+      drawTile(m_upperLayers[3], tileId3, dx, dy);
     } else {
-      drawTile(m_lowerLayer, tileId3, dx, dy);
+      drawTile(m_lowerLayers[3], tileId3, dx, dy);
     }
   }
 }

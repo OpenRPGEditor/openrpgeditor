@@ -350,7 +350,7 @@ void Project::draw() {
   ImGui::RenderNotifications();
 }
 
-void Project::drawTileInfo(MapRenderer::MapLayer& mapLayer) {
+void Project::drawTileInfo(MapRenderer::MapLayer& mapLayer, int z) {
   static constexpr std::array LayerNames{"A1"sv, "A2"sv, "A3"sv, "A4"sv, "A5"sv, "B"sv, "C"sv, "D"sv, "E"sv};
   for (const auto& layer : mapLayer.tileLayers) {
     for (const auto& tile : layer.rects) {
@@ -369,15 +369,21 @@ void Project::drawTileInfo(MapRenderer::MapLayer& mapLayer) {
                      {static_cast<float>(m_mapEditor.tileSize()), static_cast<float>(m_mapEditor.tileSize())},
                      ImVec2{u0, v0}, ImVec2{u1, v1});
         std::string info =
-            std::format("Sheet: {} ({}), ID: {}, x: {}, y: {},  width: {}, height: {}, u: {}, v: {}",
+            std::format("Sheet: {} ({}), ID: {}, x: {}, y: {}, z: {},  width: {}, height: {}, u: {}, v: {}",
                         m_mapEditor.mapRenderer().tileset()->tilesetNames[tile.tileSheet], LayerNames[tile.tileSheet],
-                        tile.tileId, tile.x, tile.y, tile.tileWidth, tile.tileHeight, tile.u, tile.v);
+                        tile.tileId, tile.x, tile.y, z, tile.tileWidth, tile.tileHeight, tile.u, tile.v);
         if (MapRenderer::isAutoTile(tile.tileId)) {
-          info += std::format("AutoTile\nWaterTile: {}, WaterfallTile: {}, GroundTile",
+          info += std::format(
+              "\n"
+              "AutoTile Shape: {}, Kind: {}\n"
+              "WaterTile: {}, WaterfallTile: {}, GroundTile {}, RoofTile: {}, ShadowingTile: {},\n"
+              "WallSide: {}, WallTop: {}, FloorTypeAutoTile: {}, WallTypeAutoTile: {}\n",
+              MapRenderer::getAutoTileShape(tile.tileId), MapRenderer::getAutoTileKind(tile.tileId),
               MapRenderer::isWaterTile(tile.tileId), MapRenderer::isWaterfallTile(tile.tileId),
-              MapRenderer::isGroundTile(tile.tileId), MapRenderer::isShadowingTile(tile.tileId),
-              MapRenderer::isWallTopTile(tile.tileId), MapRenderer::isWallSideTile(tile.tileId),
-              MapRenderer::isFloorTypeAutotile(tile.tileId), MapRenderer::isWallTypeAutotile(tile.tileId));
+              MapRenderer::isGroundTile(tile.tileId), MapRenderer::isRoofTile(tile.tileId),
+              MapRenderer::isShadowingTile(tile.tileId), MapRenderer::isWallTopTile(tile.tileId),
+              MapRenderer::isWallSideTile(tile.tileId), MapRenderer::isFloorTypeAutotile(tile.tileId),
+              MapRenderer::isWallTypeAutotile(tile.tileId));
         }
         ImGui::Text(info.c_str());
       }
@@ -394,13 +400,13 @@ void Project::drawTileDebugger() {
     if (ImGui::BeginTabBar("##tiledebugger")) {
       if (ImGui::BeginTabItem("Lower")) {
         for (int z = 0; z < 6; ++z) {
-          drawTileInfo(m_mapEditor.mapRenderer().m_lowerLayers[z]);
+          drawTileInfo(m_mapEditor.mapRenderer().m_lowerLayers[z], z);
         }
         ImGui::EndTabItem();
       }
       if (ImGui::BeginTabItem("Upper")) {
         for (int z = 0; z < 6; ++z) {
-          drawTileInfo(m_mapEditor.mapRenderer().m_upperLayers[z]);
+          drawTileInfo(m_mapEditor.mapRenderer().m_upperLayers[z], z);
         }
         ImGui::EndTabItem();
       }

@@ -141,8 +141,8 @@ private:
   bool m_frameUpdated = true;
   void drawTile(MapLayer& layer, int tileId, int dx, int dy);
   void drawAutoTile(MapLayer& layer, int tileId, int dx, int dy);
-  void drawNormalTile(MapLayer& layer, int tileId, int dx, int dy);
-  void drawTableEdge(MapLayer& layer, int tileId, int dx, int dy);
+  void drawNormalTile(MapLayer& layer, int tileId, int dx, int dy) const;
+  void drawTableEdge(MapLayer& layer, int tileId, int dx, int dy) const;
   void beginBlit(SDL_Texture* source);
   void blitImage(SDL_Texture* bitmap, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh);
   void endBlit();

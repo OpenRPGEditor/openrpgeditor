@@ -48,7 +48,7 @@ public:
   [[nodiscard]] bool modified() { return m_isModified; }
 
   void draw();
-  void drawTileInfo(MapRenderer::MapLayer& mapLayer);
+  void drawTileInfo(MapRenderer::MapLayer& mapLayer, int z);
   void handleOpenFile();
   void handleUndo();
   void handleRedo();

@@ -398,7 +398,7 @@ void MapEditor::drawMapProperties() {
           strncpy(buf, m_mapInfo->name.c_str(), 4096);
           if (ImGui::InputText("##map_name", buf, 4096)) {
             m_mapInfo->name = buf;
-            map()->m_isDirty;
+            map()->m_isDirty = true;
           }
         }
         ImGui::EndGroup();

@@ -278,6 +278,10 @@ add_library(orecore STATIC
         Core/SideViewBattlerSheet.hpp
         Core/FaceSheet.cpp
         Core/FaceSheet.hpp
+        Core/EventCommands/Dialog_ChangeVehicleImage.cpp
+        Core/EventCommands/Dialog_ChangeVehicleImage.hpp
+        Core/EventCommands/Dialog_ChangeActorImages.cpp
+        Core/EventCommands/Dialog_ChangeActorImages.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})

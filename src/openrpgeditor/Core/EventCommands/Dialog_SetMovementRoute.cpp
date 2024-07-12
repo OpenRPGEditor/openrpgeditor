@@ -288,6 +288,12 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(80), ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(20)});
     if (ImGui::Button("OK")) {
       m_confirmed = true;
+      command->character = m_character;
+      command->route = m_route;
+      for (const auto& cmd : m_route.list) {
+        command->editNodes.push_back(std::make_shared<MovementRouteStepCommand>());
+        command->editNodes.back()->step = cmd;
+      }
       ImGui::CloseCurrentPopup();
       SetOpen(false);
     }

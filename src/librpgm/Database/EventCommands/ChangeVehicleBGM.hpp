@@ -10,6 +10,6 @@ struct ChangeVehicleBGMCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  VehicleType vehicle;
+  VehicleType vehicle = VehicleType::Boat;
   Audio bgm;
 };

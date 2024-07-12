@@ -14,6 +14,7 @@ struct Dialog_ChangeVehicleBGM : IEventDialogController {
   explicit Dialog_ChangeVehicleBGM(const std::string& name, Project* project)
   : IEventDialogController(name), m_project(project) {
     command.reset(new ChangeVehicleBGMCommand());
+    m_vehicle = static_cast<int>(command->vehicle);
     m_audio = command->bgm;
     try {
       auto files = getFileNames(Database::Instance->basePath + "audio/bgm/");
@@ -33,8 +34,9 @@ struct Dialog_ChangeVehicleBGM : IEventDialogController {
 private:
   bool m_confirmed{false};
 
-  int m_selected = 0;
+  int m_selected{0};
   Audio m_audio;
+  int m_vehicle;
 
   sf::SoundBuffer buffer;
   sf::Sound sound;

@@ -147,6 +147,8 @@
 #include "Core/EventCommands/Dialog_SetEventLocation.hpp"
 #include "Core/EventCommands/Dialog_SetVehicleLocation.hpp"
 #include "Core/EventCommands/Dialog_SetMovementRoute.hpp"
+#include "Core/EventCommands/Dialog_ChangeVehicleImage.hpp"
+#include "Core/EventCommands/Dialog_ChangeActorImages.hpp"
 
 #include <iostream>
 #include <vector>
@@ -700,8 +702,7 @@ void EventCommandEditor::drawPopup() {
           }
           ImGui::SameLine(); // Second column
           if (ImGui::Button("Change Actor Images...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ChangeActorImages>("Change Actor Images", m_project);
+            commandDialog = std::make_shared<Dialog_ChangeActorImages>("Change Actor Images", m_project);
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Change Battle Back...", size)) {
@@ -711,8 +712,7 @@ void EventCommandEditor::drawPopup() {
           }
           ImGui::SameLine(); // Second column
           if (ImGui::Button("Change Vehicle Image...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ChangeVehicleImage>("Change Vehicle Image", m_project);
+            commandDialog = std::make_shared<Dialog_ChangeVehicleImage>("Change Vehicle Image", m_project);
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Change Player Followers...", size)) {

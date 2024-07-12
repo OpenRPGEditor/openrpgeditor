@@ -42,32 +42,49 @@ std::tuple<bool, bool> Dialog_ChangeVehicleBGM::draw() {
       }
       ImGui::EndTable();
     }
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 5 - App::DPIHandler::scale_value(16)));
+    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 20 - App::DPIHandler::scale_value(16)));
+    ImGui::BeginGroup();{
+      ImGui::Text("Vehicle:");
+      ImGui::PushItemWidth((App::DPIHandler::scale_value(100)));
+      if (ImGui::BeginCombo("##vehicle_location_selection", DecodeEnumName(magic_enum::enum_value<VehicleType>(m_vehicle)).c_str())) {
+        for (auto& vehicle : magic_enum::enum_values<VehicleType>()) {
+          bool is_selected = m_vehicle == magic_enum::enum_index(vehicle).value();
+          if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(vehicle)).c_str(), is_selected)) {
+            m_vehicle = magic_enum::enum_index(vehicle).value();
+            if (is_selected)
+              ImGui::SetItemDefaultFocus();
+          }
+        }
+        ImGui::EndCombo();
+      }
+      ImGui::EndGroup();
+    }
+    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 65 - App::DPIHandler::scale_value(16)));
     if (ImGui::Button("Play", ImVec2(100, 0))) {
             playAudio((Database::Instance->basePath + "audio/bgm/" + m_audios.at(m_selected) + ".ogg").c_str());
     }
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 25 - App::DPIHandler::scale_value(16)));
+    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 85 - App::DPIHandler::scale_value(16)));
     if (ImGui::Button("Stop", ImVec2(100, 0))) {
             stopAudio();
     }
 
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 45 - App::DPIHandler::scale_value(16)));
+    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 105 - App::DPIHandler::scale_value(16)));
     ImGui::SeparatorText("Volume");
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 65 - App::DPIHandler::scale_value(16)));
+    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 125 - App::DPIHandler::scale_value(16)));
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
     if (ImGui::DragInt("##playbgm_audio.volume", &m_audio.volume, 0.5f, 0, 100)) {
       setVolume(m_audio.volume);
     }
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 85 - App::DPIHandler::scale_value(16)));
+    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 145 - App::DPIHandler::scale_value(16)));
     ImGui::SeparatorText("Pitch");
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 105 - App::DPIHandler::scale_value(16)));
+    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 165 - App::DPIHandler::scale_value(16)));
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
     if (ImGui::DragInt("##playbgm_audio.pitch", &m_audio.pitch, 0.5f, 0, 100)) {
       setPitch(m_audio.pitch);
     }
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 125 - App::DPIHandler::scale_value(16)));
+    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 185 - App::DPIHandler::scale_value(16)));
     ImGui::SeparatorText("Pan");
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 145 - App::DPIHandler::scale_value(16)));
+    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100, tablePos.y + 205 - App::DPIHandler::scale_value(16)));
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
     if (ImGui::DragInt("##playbgm_audio.pan", &m_audio.pan, 0.5f, -100, 100)) {
       setPanning(m_audio.pan);
@@ -78,6 +95,7 @@ std::tuple<bool, bool> Dialog_ChangeVehicleBGM::draw() {
   if (ImGui::Button("OK")) {
     m_confirmed = true;
     command->bgm = m_audio;
+    command->vehicle = static_cast<VehicleType>(m_vehicle);
     APP_INFO(command->stringRep(m_project->database()));
     ImGui::CloseCurrentPopup();
     SetOpen(false);

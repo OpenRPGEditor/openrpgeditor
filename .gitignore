@@ -1,6 +1,7 @@
 # Application build output
 build/
 distribution/
+**/share/
 
 # Created by CPack when executing tests.
 Testing/
@@ -37,6 +38,7 @@ CMakeFiles/
 *.vcxproj
 *.filters
 *.sln
+*.user
 
 CMakeCache.txt
 CPackConfig.cmake

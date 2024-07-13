@@ -87,17 +87,20 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
           m_characterPicker.setCharacterInfo(m_facePicture, m_charIndex);
           m_characterPicker.SetOpen(true);
         }
-        //ImGui::ImageButton("##orpg_actors_character_image", m_buttonBack.get(), buttonSize);
-        if (m_characterSheet && m_characterSheet->texture()) {
-          const auto characterRect =
-              ImVec2{std::ceil(static_cast<float>(m_characterSheet->characterWidth() * 2)),
-                     std::ceil(static_cast<float>(m_characterSheet->characterHeight() * 2))} *
-              App::DPIHandler::get_ui_scale();
-          ImGui::SetCursorPos((cursorPos + buttonCenter) - (characterRect / 2));
-          const auto rect = m_characterSheet->getRectForCharacter(m_charIndex, 1);
-          ImVec2 uv0{rect.uv0.u, rect.uv0.v};
-          ImVec2 uv1{rect.uv1.u, rect.uv1.v};
-          ImGui::Image(m_characterSheet->texture().get(), characterRect, uv0, uv1);
+        if (m_characterSheet->texture()) {
+          if (m_characterSheet->characterWidth() < 72 || m_characterSheet->characterHeight() < 96) {
+            ImGui::SetCursorPos(
+                cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f, m_characterSheet->characterHeight() / 2.f} *
+                             App::DPIHandler::get_ui_scale()));
+          } else {
+            ImGui::SetCursorPos(cursorPos);
+          }
+          const auto [uv0, uv1] = m_characterSheet->getRectForCharacter(m_charIndex);
+          ImGui::Image(m_characterSheet->texture().get(),
+                       ImVec2{static_cast<float>(m_characterSheet->characterWidth()),
+                              static_cast<float>(m_characterSheet->characterHeight())} *
+                           App::DPIHandler::get_ui_scale(),
+                       ImVec2{uv0.u, uv0.v}, ImVec2{uv1.u, uv1.v});
         }
       }
       ImGui::EndGroup();

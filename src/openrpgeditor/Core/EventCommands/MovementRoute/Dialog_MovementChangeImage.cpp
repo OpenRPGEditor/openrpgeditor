@@ -34,7 +34,6 @@ std::tuple<bool, bool> Dialog_MovementChangeImage::draw() {
             m_characterPicker.SetOpen(true);
           }
           if (m_characterSheet->texture()) {
-            APP_INFO("Drawing texture...");
             if (m_characterSheet->characterWidth() < 72 || m_characterSheet->characterHeight() < 96) {
               ImGui::SetCursorPos(
                   cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f, m_characterSheet->characterHeight() / 2.f} *

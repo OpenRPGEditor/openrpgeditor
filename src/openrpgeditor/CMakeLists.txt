@@ -302,6 +302,10 @@ add_library(
         Core/EventCommands/Dialog_Wait.cpp
         Core/EventCommands/Dialog_Wait.hpp
         Core/EventCommands/IEventDialogController.hpp
+        Core/EventCommands/Dialog_ShowText.cpp
+        Core/EventCommands/Dialog_ShowText.hpp
+        Core/EventCommands/Dialog_ChangePluginCommand.cpp
+        Core/EventCommands/Dialog_ChangePluginCommand.hpp
 
 
         Core/EventCommands/MovementRoute/Dialog_MovementChangeBlendMode.cpp

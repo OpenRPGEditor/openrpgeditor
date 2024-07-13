@@ -13,6 +13,7 @@ struct NextTextCommand final : IEventCommand {
 };
 
 struct ShowTextCommand final : IEventCommand {
+  ShowTextCommand() = default;
   ShowTextCommand(const std::optional<int>& _indent, const nlohmann::json& parameters);
   ~ShowTextCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Text; }
@@ -21,9 +22,9 @@ struct ShowTextCommand final : IEventCommand {
   void addText(NextTextCommand* nextText) { text.emplace_back(nextText); }
 
   std::string faceImage;
-  int faceIndex;
-  TextBackground background;
-  TextWindowPosition position;
+  int faceIndex{0};
+  TextBackground background = TextBackground::Window;
+  TextWindowPosition position = TextWindowPosition::Bottom;
   std::string textLine;
   std::vector<std::shared_ptr<NextTextCommand>> text;
 };

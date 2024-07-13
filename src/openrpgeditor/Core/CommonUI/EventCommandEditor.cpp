@@ -149,6 +149,8 @@
 #include "Core/EventCommands/Dialog_SetMovementRoute.hpp"
 #include "Core/EventCommands/Dialog_ChangeVehicleImage.hpp"
 #include "Core/EventCommands/Dialog_ChangeActorImages.hpp"
+#include "Core/EventCommands/Dialog_ChangePluginCommand.hpp"
+#include "Core/EventCommands/Dialog_ShowText.hpp"
 
 #include <iostream>
 #include <vector>
@@ -500,8 +502,7 @@ void EventCommandEditor::drawPopup() {
         }
         if (ImGui::BeginTabItem("Scene")) {
           if (ImGui::Button("Show Text...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ShowText>("Show Text", m_project);
+            commandDialog = std::make_shared<Dialog_ShowText>("Show Text", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column
@@ -656,8 +657,7 @@ void EventCommandEditor::drawPopup() {
           }
           ImGui::SameLine(); // Third column
           if (ImGui::Button("Plugin Command...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ChangePluginCommand>("Change Plugin Command", m_project);
+            commandDialog = std::make_shared<Dialog_ChangePluginCommand>("Change Plugin Command", m_project);
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Change Menu Access...", size)) {

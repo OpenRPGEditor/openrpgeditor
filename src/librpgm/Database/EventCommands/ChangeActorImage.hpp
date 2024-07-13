@@ -10,7 +10,7 @@ struct ChangeActorImageCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  int actor;
+  int actor{1};
   std::string charPicture;
   int charIndex;
   std::string facePicture;

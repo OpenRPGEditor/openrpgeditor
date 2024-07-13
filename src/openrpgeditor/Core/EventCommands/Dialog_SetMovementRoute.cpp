@@ -291,8 +291,10 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
       command->character = m_character;
       command->route = m_route;
       for (const auto& cmd : m_route.list) {
-        command->editNodes.push_back(std::make_shared<MovementRouteStepCommand>());
-        command->editNodes.back()->step = cmd;
+        if (cmd->code() != EventCode::Event_Dummy) {
+          command->editNodes.push_back(std::make_shared<MovementRouteStepCommand>());
+          command->editNodes.back()->step = cmd;
+        }
       }
       ImGui::CloseCurrentPopup();
       SetOpen(false);

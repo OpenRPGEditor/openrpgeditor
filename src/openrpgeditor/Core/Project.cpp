@@ -419,9 +419,10 @@ void Project::drawTileDebugger() {
 void Project::handleOpenFile() {
   nfdu8char_t* outPath;
   constexpr nfdu8filteritem_t filters = {"RPG Maker Projects", "rpgproject,rmmzproject"};
-  const auto result =
-      NFD_OpenDialogU8(&outPath, &filters, 1,
-                       Settings::instance()->lastDirectory.empty() ? "." : Settings::instance()->lastDirectory.c_str());
+  const std::string directory = Settings::instance()->lastDirectory.empty()
+                                    ? std::filesystem::current_path().generic_string()
+                                                                            : Settings::instance()->lastDirectory;
+  const auto result = NFD_OpenDialogU8(&outPath, &filters, 1, directory.c_str());
   if (result == NFD_OKAY) {
     const std::filesystem::path path{outPath};
     Settings::instance()->lastDirectory = absolute(path).remove_filename().generic_string();

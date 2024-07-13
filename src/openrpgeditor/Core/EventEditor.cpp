@@ -12,12 +12,6 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-EventEditor::EventEditor(Project* parent, Event* event) : m_parent(parent), m_event(event) {
-  for (auto& page : event->pages) {
-    m_pages.emplace_back(this, &page);
-  }
-}
-
 void EventEditor::fixupPages() {
   for (int i = 0; i < m_event->pages.size(); ++i) {
     m_pages[i].setPage(&m_event->pages[i]);

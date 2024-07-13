@@ -10,7 +10,6 @@
 #if defined(_WIN32) && defined(ZLIB_DEBUG)
 // This is needed due to freetype's gzip not defining these
 #include <stdlib.h>
-#include "zlib.h"
 #ifndef verbose
 #define verbose 0
 #endif

@@ -1,4 +1,5 @@
 #include "Core/EventListView.hpp"
+#include "Core/EventEditor.hpp"
 
 #include "Database/Map.hpp"
 
@@ -20,7 +21,8 @@ void EventListView::draw() {
             m_parent->mapEditor()->setSelectedEvent(&*event);
             selectedHere = true;
             if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-              m_parent->mapEditor()->addEventEditor(EventEditor(m_parent, &event.value()));
+              auto ev = EventEditor(m_parent, &event.value());
+              m_parent->mapEditor()->addEventEditor(ev);
             }
           }
 

@@ -1,14 +1,18 @@
 #pragma once
 
 #include "Core/EventEditor/EVPage.hpp"
+#include "Database/Event.hpp"
 
 #include <vector>
 
 struct Project;
 
-struct Event;
 struct EventEditor {
-  EventEditor(Project* parent, Event* event);
+  EventEditor(Project* parent, Event* event) : m_parent(parent), m_event(event) {
+    for (auto& page : event->pages) {
+      m_pages.emplace_back(this, &page);
+    }
+  }
   void fixupPages();
 
   bool draw();

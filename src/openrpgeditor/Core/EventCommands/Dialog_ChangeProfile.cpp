@@ -13,7 +13,9 @@ std::tuple<bool, bool> Dialog_ChangeProfile::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{300, 220} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+                                 ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (actor_picker) {
       auto [closed, confirmed] = actor_picker->draw();
@@ -27,17 +29,15 @@ std::tuple<bool, bool> Dialog_ChangeProfile::draw() {
 
     // Actor Button
     ImGui::PushID("##nickname_selection_actor");
-    if (ImGui::Button(
-            Database::Instance->actorName(m_actor).c_str(),
-            ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
+    if (ImGui::Button(Database::Instance->actorName(m_actor).c_str(), ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
       actor_picker = ObjectPicker<Actor>("Actor"sv, Database::Instance->actors.actorList(), 0);
-            }
+    }
     ImGui::PopID();
 
     ImGui::SeparatorText("Profile");
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(280));
-    ImGui::InputTextMultiline("##profile_input", &m_profile, ImVec2{App::DPIHandler::scale_value(280), App::DPIHandler::scale_value(100)});
-
+    ImGui::InputTextMultiline("##profile_input", &m_profile,
+                              ImVec2{App::DPIHandler::scale_value(280), App::DPIHandler::scale_value(100)});
 
     if (ImGui::Button("OK")) {
       m_confirmed = true;

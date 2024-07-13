@@ -13,7 +13,9 @@ std::tuple<bool, bool> Dialog_ChangeArmors::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{254, 225} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+                                 ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (picker) {
       auto [closed, confirmed] = picker->draw();
@@ -34,9 +36,7 @@ std::tuple<bool, bool> Dialog_ChangeArmors::draw() {
     // Section 1 Armor
     ImGui::SeparatorText("Armor");
     ImGui::PushID("##changearmors_item");
-    if (ImGui::Button(
-            Database::Instance->armorNameOrId(m_item).c_str(),
-            {(App::DPIHandler::scale_value(160)), 0})) {
+    if (ImGui::Button(Database::Instance->armorNameOrId(m_item).c_str(), {(App::DPIHandler::scale_value(160)), 0})) {
       armor_picker = ObjectPicker<Armor>("Armor"sv, Database::Instance->armors.armorList(), 0);
     }
     ImGui::PopID();
@@ -49,13 +49,15 @@ std::tuple<bool, bool> Dialog_ChangeArmors::draw() {
 
     // Section 3 (Operand: Constant/Variable)
     ImGui::SeparatorText("Operand");
-    ImGui::BeginGroup(); {
+    ImGui::BeginGroup();
+    {
       ImGui::RadioButton("Constant", &m_operandSource, 0);
       ImGui::RadioButton("Variable", &m_operandSource, 1);
       ImGui::EndGroup();
     }
     ImGui::SameLine();
-    ImGui::BeginGroup(); {
+    ImGui::BeginGroup();
+    {
       ImGui::BeginDisabled(m_operandSource != 0);
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
       if (ImGui::InputInt("##changeenemyhp_constant", &m_quantity)) {
@@ -68,9 +70,8 @@ std::tuple<bool, bool> Dialog_ChangeArmors::draw() {
 
       ImGui::BeginDisabled(m_operandSource != 1);
       ImGui::PushID("##changeenemyhp_quant_var");
-      if (ImGui::Button(
-              m_operandSource == 1 ? Database::Instance->variableNameAndId(m_quantity_var).c_str() : "",
-              ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
+      if (ImGui::Button(m_operandSource == 1 ? Database::Instance->variableNameAndId(m_quantity_var).c_str() : "",
+                        ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
         picker.emplace("Variables", m_project->system().variables);
       }
       ImGui::PopID();

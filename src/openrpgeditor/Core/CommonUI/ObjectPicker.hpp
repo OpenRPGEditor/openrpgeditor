@@ -12,16 +12,16 @@
  */
 template <typename T>
 struct ObjectPicker {
-  ObjectPicker(std::string_view objectType, std::vector<T>& list, const int initialSelection)
+  ObjectPicker(const std::string_view objectType, std::vector<T>& list, const int initialSelection)
   : m_objectType(objectType), m_list(&list), m_selection(initialSelection) {}
 
   std::tuple<bool, bool> draw();
 
   int selection() const { return m_selection; }
 
-  int getId(const T& value) { return value.id; }
+  static int getId(const T& value) { return value.id; }
 
-  const std::string& getName(const T& value) { return value.name; }
+  static const std::string& getName(const T& value) { return value.name; }
 
 private:
   std::string m_objectType;

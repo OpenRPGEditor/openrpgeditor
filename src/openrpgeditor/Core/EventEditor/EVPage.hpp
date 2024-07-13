@@ -2,12 +2,15 @@
 #include "Core/CommonUI/EventCommandEditor.hpp"
 #include "Core/CharacterSheet.hpp"
 #include "Core/CommonUI/CharacterPicker.hpp"
+#include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 
 #include "Database/EventPage.hpp"
 
 struct EventEditor;
 struct EventPage;
+struct Actor;
+struct Item;
 struct EVPage {
   EVPage(EventEditor* parent, EventPage* page);
 
@@ -36,5 +39,7 @@ private:
   CheckerboardTexture m_buttonBack{80, 102, CellSizes::_64, 255, 200};
   VariableSwitchSelection m_variableSwitchSelection{Variable};
   std::optional<VariableSwitchPicker> m_variableSwitchPicker;
+  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::optional<ObjectPicker<Item>> m_itemPicker;
   CharacterPicker m_characterPicker{CharacterPicker::PickerMode::PatternAndDirection};
 };

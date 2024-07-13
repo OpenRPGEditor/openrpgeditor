@@ -11,7 +11,9 @@ std::tuple<bool, bool> Dialog_ChangeBattleBack::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{248, 100} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+                                 ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Menu");
 
@@ -20,7 +22,7 @@ std::tuple<bool, bool> Dialog_ChangeBattleBack::draw() {
     ImGui::RadioButton("ON", &isDisabled, 1);
 
     if (ImGui::Button("OK")) {
-      //command->access = isDisabled == 0 ? AccessMode::Disable : AccessMode::Enable;
+      // command->access = isDisabled == 0 ? AccessMode::Disable : AccessMode::Enable;
       ImGui::CloseCurrentPopup();
       SetOpen(false);
       m_confirmed = true;

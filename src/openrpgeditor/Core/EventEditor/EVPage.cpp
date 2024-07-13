@@ -1,15 +1,14 @@
 #include "Core/EventEditor/EVPage.hpp"
 #include "Core/EventEditor.hpp"
 #include "Core/Project.hpp"
+#include "Core/DPIHandler.hpp"
+#include "Core/ImGuiUtils.hpp"
 
 #include <string>
 #include <format>
 
 #include "imgui.h"
-#include "Core/Application.hpp"
-#include "Core/DPIHandler.hpp"
-#include "Core/ImGuiParsedText.hpp"
-#include "Core/ImGuiUtils.hpp"
+
 #include "Database/EventPage.hpp"
 
 EVPage::EVPage(EventEditor* parent, EventPage* page)

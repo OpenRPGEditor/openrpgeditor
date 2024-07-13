@@ -92,16 +92,16 @@ ExitStatus Application::run() {
   io.IniFilename = imgui_ini_filename.c_str();
 
   // ImGUI font
-
-  const float font_size{settings.fontSize * DPIHandler::get_ui_scale()};
-  const float mono_font_size{settings.monoFontSize * DPIHandler::get_ui_scale()};
+  const float fontScale = DPIHandler::get_ui_scale() * 2;
+  const float font_size{settings.fontSize * fontScale};
+  const float mono_font_size{settings.monoFontSize * fontScale};
   const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
   const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf").generic_string()};
   const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf").generic_string()};
   const std::string font_path_awesome{Resources::font_path("Font Awesome 6 Free-Solid-900.otf").generic_string()};
   const std::string font_path_mono{Resources::font_path("mplus-1m-regular.ttf").generic_string()};
 
-  static const ImWchar specialChar[] = {
+  static constexpr ImWchar specialChar[] = {
       /* clang-format off */
       0x0001, 0xFFFF,
       0
@@ -129,6 +129,7 @@ ExitStatus Application::run() {
   io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->Build();
+  io.FontGlobalScale = 1.f / fontScale;
 
   auto& style = ImGui::GetStyle();
   style.WindowRounding = 6.f;

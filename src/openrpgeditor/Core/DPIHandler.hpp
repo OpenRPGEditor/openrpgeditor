@@ -15,7 +15,6 @@ struct WindowSize {
 class DPIHandler {
  public:
   [[nodiscard]] static float get_ui_scale();
-  [[nodiscard]] static float get_font_scale();
   [[nodiscard]] static WindowSize get_dpi_aware_window_size(const Window::Settings& settings);
 
   static void set_render_scale(SDL_Renderer* renderer);

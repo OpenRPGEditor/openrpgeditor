@@ -13,8 +13,7 @@ bool Settings::load(std::string_view path) {
       parser.at("lastDirectory").get_to(lastDirectory);
       parser.at("uiScale").get_to(uiScale);
       parser.at("fontSize").get_to(fontSize);
-      parser.at("monoFontSize").get_to(fontSize);
-      parser.at("dpi").get_to(dpi);
+      parser.at("monoFontSize").get_to(monoFontSize);
       return true;
     }
   } catch (...) {
@@ -24,16 +23,14 @@ bool Settings::load(std::string_view path) {
 }
 
 void Settings::serialize(std::string_view path) {
-  std::ofstream f(path.data());
-  if (f.is_open()) {
-    nlohmann::json parser{
+  if (std::ofstream f(path.data()); f.is_open()) {
+    const nlohmann::json parser{
         {"window", window},               //
         {"mru", mru},                     //
         {"lastDirectory", lastDirectory}, //
         {"uiScale", uiScale},             //
         {"fontSize", fontSize},           //
-      {"monoFontSize", monoFontSize},     //
-        {"dpi", dpi}                      //
+        {"monoFontSize", monoFontSize},   //
     };
     f << parser.dump(4);
   }

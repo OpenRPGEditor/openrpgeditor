@@ -16,15 +16,6 @@ float DPIHandler::get_ui_scale() {
   return Settings::instance()->uiScale;
 }
 
-float DPIHandler::get_font_scale() {
-  float default_dpi = Settings::instance()->dpi;
-  float dpi{default_dpi};
-
-  SDL_GetDisplayDPI(SDL_GetWindowDisplayIndex(APP->getWindow()->getNativeWindow()), nullptr, &dpi, nullptr);
-
-  return dpi / default_dpi;
-}
-
 WindowSize DPIHandler::get_dpi_aware_window_size(const Window::Settings& settings) {
   APP_PROFILE_FUNCTION();
 

@@ -739,8 +739,17 @@ void EventCommandEditor::drawPopup() {
         if (commandDialog) {
           auto [closed, confirmed] = commandDialog->draw();
           if (confirmed) {
-            auto select = m_commands->insert(m_commands->begin() + m_selectedCommand, commandDialog->getCommand());
-            m_selectedCommand = select - m_commands->begin();
+            std::vector<std::shared_ptr<IEventCommand>> cmds = commandDialog->getBatchCommands();
+            if (cmds.empty()) {
+              auto select = m_commands->insert(m_commands->begin() + m_selectedCommand, commandDialog->getCommand());
+              m_selectedCommand = select - m_commands->begin();
+            }
+            else {
+              for (auto cmd : cmds) {
+                auto selection = m_commands->insert(m_commands->begin() + m_selectedCommand, cmd);
+                m_selectedCommand = (selection + 1) - m_commands->begin();
+              }
+            }
             commandDialog.reset();
             ImGui::CloseCurrentPopup();
           }

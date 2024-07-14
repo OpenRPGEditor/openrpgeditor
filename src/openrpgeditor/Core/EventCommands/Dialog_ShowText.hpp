@@ -5,6 +5,7 @@
 #include "Core/CheckerboardTexture.hpp"
 #include "Core/CommonUI/CharacterPicker.hpp"
 #include "Core/FaceSheet.hpp"
+#include "Core/Log.hpp"
 
 struct Project;
 struct Dialog_ShowText : IEventDialogController {
@@ -21,6 +22,13 @@ struct Dialog_ShowText : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::vector<std::shared_ptr<IEventCommand>> getBatchCommands() override {
+    for (auto& commands : moreCommands) {
+      std::shared_ptr<IEventCommand> sharedCommand = commands;
+      eventCommands.push_back(sharedCommand);
+    }
+    return eventCommands;
+  };
   Project* m_project = nullptr;
 
 private:
@@ -29,12 +37,15 @@ private:
   int m_background;
   int m_position;
   std::string m_textLine;
+  int textIndex{0};
 
   bool m_batchEntry{false};
   CheckerboardTexture m_buttonBack{80, 102, CellSizes::_64, 255, 200};
   CharacterPicker m_characterPicker{CharacterPicker::PickerMode::Character};
 
   std::optional<FaceSheet> m_faceSheet;
+  std::vector<std::shared_ptr<ShowTextCommand>> moreCommands;
+  std::vector<std::shared_ptr<IEventCommand>> eventCommands;
 
   bool m_confirmed{false};
   std::shared_ptr<ShowTextCommand> command;

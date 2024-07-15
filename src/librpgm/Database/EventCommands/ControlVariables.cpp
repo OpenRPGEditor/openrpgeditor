@@ -83,27 +83,27 @@ std::string ControlVariables::stringRep(const Database& db) const {
   case VariableControlOperand::Game_Data: {
     switch (gameData.type) {
     case GameDataType::Item: {
-      return variableFormat(std::format(numberOf, varText, db.itemNameOrId(gameData.value)));
+      return variableFormat(std::format(numberOf, varText, db.itemNameOrId(gameData.rawSource)));
     }
     case GameDataType::Weapon: {
-      return variableFormat(std::format(numberOf, varText, db.weaponNameOrId(gameData.value)));
+      return variableFormat(std::format(numberOf, varText, db.weaponNameOrId(gameData.rawSource)));
     }
     case GameDataType::Armor: {
-      return variableFormat(std::format(numberOf, varText, db.armorNameOrId(gameData.value)));
+      return variableFormat(std::format(numberOf, varText, db.armorNameOrId(gameData.rawSource)));
     }
     case GameDataType::Actor: {
       return variableFormat(
-          std::format(AOfB, varText, DecodeEnumName(gameData.actorSource), db.actorNameOrId(gameData.value)));
+          std::format(AOfB, varText, DecodeEnumName(static_cast<ActorDataSource>(gameData.value)), db.actorNameOrId(gameData.rawSource)));
     }
     case GameDataType::Enemy: {
-      return variableFormat(std::format(AOfB, varText, DecodeEnumName(gameData.enemySource), gameData.value + 1));
+      return variableFormat(std::format(AOfB, varText, DecodeEnumName(static_cast<EnemyDataSource>(gameData.value)), gameData.rawSource));
     }
     case GameDataType::Character: {
       return variableFormat(
-          std::format(AOfB, varText, DecodeEnumName(gameData.characterSource), db.eventNameOrId(gameData.value)));
+          std::format(AOfB, varText, DecodeEnumName(static_cast<CharacterDataSource>(gameData.value)), db.eventNameOrId(gameData.rawSource)));
     }
     case GameDataType::Party: {
-      return variableFormat(std::format("{} Actor ID of the party member #{}", varText, gameData.value + 1));
+      return variableFormat(std::format("{} Actor ID of the party member #{}", varText, gameData.rawSource));
     }
     case GameDataType::Other: {
       return variableFormat(std::format("{} {}", varText, DecodeEnumName(gameData.otherSource)));

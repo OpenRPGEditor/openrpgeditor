@@ -33,158 +33,165 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     if (gameDataDialog) {
       auto [closed, confirmed] = gameDataDialog->draw();
       if (confirmed) {
-        command->gameData.type = gameDataDialog->getData().gameData.type;
-        command->gameData.rawSource = gameDataDialog->getData().gameData.rawSource;
-        command->gameData.value = gameDataDialog->getData().gameData.value;
+        m_gameData_type = static_cast<int>(gameDataDialog->getData().gameData.type);
+        m_gameData_rawSource = gameDataDialog->getData().gameData.rawSource;
+        m_gameData_value = gameDataDialog->getData().gameData.value;
       }
     }
 
     ImGui::SeparatorText("Variable");
-    static int switchType = 0;
-    ImGui::RadioButton("Single", &switchType, 0); // Specific Switch
-    ImGui::SameLine();
-
-    bool isSwitchEnabled = switchType == 1;
-    std::string text = isSwitchEnabled
-                           ? "##commonevent_switch_empty"
-                           : (m_start == 0 ? "" : std::format("{:04} ", m_start) + m_project->variable(m_start));
-    ImGui::PushID("##controlswitch_id");
-    ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 75) - (16 * App::DPIHandler::get_ui_scale()));
-    ImGui::BeginDisabled(isSwitchEnabled);
-    static int variableId = 0;
-    if (ImGui::Button(text.c_str(),
-                      ImVec2{(ImGui::GetWindowContentRegionMax().x - 100) - 15 * App::DPIHandler::get_ui_scale(), 0})) {
-      singleRequest = true;
-      picker.emplace("Variables", m_project->system().variables);
+    ImGui::BeginGroup();
+    {
+      ImGui::RadioButton("Single", &m_operation_var, 0); // Specific Switch
+      ImGui::RadioButton("Range", &m_operation_var, 1);  // Range of Switches
+      ImGui::EndGroup();
     }
-    ImGui::PopID();
-    ImGui::EndDisabled();
-
-    bool isRangeEnabled = switchType == 0;
-    static int rand1 = 0;
-    static int rand2 = 0;
-    static int operation = 0;
-    static int operand = 0;
-
-    ImGui::RadioButton("Range", &switchType, 1); // Range of Switches
     ImGui::SameLine();
+    ImGui::BeginGroup();
+    {
+      std::string text = m_operation_var != 0
+                             ? "##commonevent_switch_empty"
+                             : (m_start == 0 ? "" : std::format("{:04} ", m_start) + m_project->variable(m_start));
+      ImGui::PushID("##controlswitch_id");
+      ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 75) - (16 * App::DPIHandler::get_ui_scale()));
+      ImGui::BeginDisabled(m_operation_var != 0);
+      if (ImGui::Button(
+              text.c_str(),
+              ImVec2{(ImGui::GetWindowContentRegionMax().x - 100) - 15 * App::DPIHandler::get_ui_scale(), 0})) {
+        singleRequest = true;
+        picker.emplace("Variables", m_project->system().variables);
+      }
+      ImGui::PopID();
+      ImGui::EndDisabled();
 
-    ImGui::BeginDisabled(isRangeEnabled);
-    ImGui::PushItemWidth(50);
-    ImGui::InputInt("##controlswitch_range1", &rand1, 0);
-    ImGui::SameLine();
-    ImGui::Text("~");
-    ImGui::SameLine();
-    ImGui::InputInt("##controlswitch_range2", &rand2, 0);
-    ImGui::PopItemWidth();
-    ImGui::EndDisabled();
+      ImGui::BeginDisabled(m_operation_var != 1);
+      ImGui::PushItemWidth(50);
+      ImGui::InputInt("##controlswitch_range1", &m_rand_1, 0);
+      ImGui::SameLine();
+      ImGui::Text("~");
+      ImGui::SameLine();
+      ImGui::InputInt("##controlswitch_range2", &m_rand_2, 0);
+      ImGui::PopItemWidth();
+      ImGui::EndDisabled();
 
+      ImGui::EndGroup();
+    }
     ImGui::SeparatorText("Operation");
-    ImGui::RadioButton("Set", &operation, 0);
-    ImGui::SameLine();
-    ImGui::RadioButton("Add", &operation, 1);
-    ImGui::SameLine();
-    ImGui::RadioButton("Sub", &operation, 2);
-    ImGui::SameLine();
-    ImGui::RadioButton("Mul", &operation, 3);
-    ImGui::SameLine();
-    ImGui::RadioButton("Div", &operation, 4);
-    ImGui::SameLine();
-    ImGui::RadioButton("Mod", &operation, 5);
+    ImGui::BeginGroup();
+    {
+      ImGui::RadioButton("Set", &m_operation, 0);
+      ImGui::SameLine();
+      ImGui::RadioButton("Add", &m_operation, 1);
+      ImGui::SameLine();
+      ImGui::RadioButton("Sub", &m_operation, 2);
+      ImGui::SameLine();
+      ImGui::RadioButton("Mul", &m_operation, 3);
+      ImGui::SameLine();
+      ImGui::RadioButton("Div", &m_operation, 4);
+      ImGui::SameLine();
+      ImGui::RadioButton("Mod", &m_operation, 5);
+      ImGui::EndGroup();
+    }
 
-    // Constant
     ImGui::SeparatorText("Operand");
-    ImGui::RadioButton("Constant", &operand, 0);
-    ImGui::SameLine();
-    ImGui::BeginDisabled(operand != 0);
-    ImGui::PushItemWidth(100);
-    ImGui::InputInt("##controlvariables_constant", &m_constant, 0);
-    ImGui::PopItemWidth();
-    ImGui::EndDisabled();
-
-    // Variable
-    ImGui::RadioButton("Variable", &operand, 1);
-    ImGui::SameLine();
-    ImGui::BeginDisabled(operand != 1);
-    ImGui::PushItemWidth(100);
-    text = operand != 1 ? "##commonevent_switch_empty"
-                        : (m_variable == 0 ? "" : std::format("{:04} ", m_variable) + m_project->variable(m_variable));
-    ImGui::PushID("##controlvariable_id2");
-    if (ImGui::Button(text.c_str(),
-                      ImVec2{(ImGui::GetWindowContentRegionMax().x - 75) - 15 * App::DPIHandler::get_ui_scale(), 0})) {
-      singleRequest = false;
-      picker.emplace("Variables", m_project->system().variables);
+    ImGui::BeginGroup();
+    {
+      ImGui::RadioButton("Constant", &m_operand, 0);
+      ImGui::RadioButton("Variable", &m_operand, 1);
+      ImGui::RadioButton("Random", &m_operand, 2);
+      ImGui::RadioButton("Game Data", &m_operand, 3);
+      ImGui::RadioButton("Script", &m_operand, 4);
+      ImGui::EndGroup();
     }
-    ImGui::PopID();
-    ImGui::PopItemWidth();
-    ImGui::EndDisabled();
+    ImGui::SameLine();
+    ImGui::BeginGroup();
+    {
 
-    // Random
-    ImGui::RadioButton("Random", &operand, 2);
-    ImGui::SameLine();
-    ImGui::BeginDisabled(operand != 2);
-    ImGui::PushItemWidth(100);
-    ImGui::InputInt("##controlvariables_range1", &m_rand_1, 0);
-    ImGui::SameLine();
-    ImGui::Text("~");
-    ImGui::SameLine();
-    ImGui::InputInt("##controlvariables_range2", &m_rand_2, 0);
-    ImGui::PopItemWidth();
-    ImGui::EndDisabled();
+      // Constant
+      ImGui::BeginDisabled(m_operand != 0);
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::InputInt("##controlvariables_constant", &m_constant, 0);
+      ImGui::EndDisabled();
 
-    // Game Data
-    ImGui::RadioButton("Game Data", &operand, 3);
-    ImGui::SameLine();
-    ImGui::BeginDisabled(operand != 3);
-    ImGui::PushItemWidth(100);
-    text = operand != 3                 ? "##commonevent_switch_empty"
-           : gameDataDialog.has_value() ? gameDataDialog->getUIString()
-                                        : "";
-    ImGui::PushID("##controlvariable_gamedata");
-    if (ImGui::Button(
-            text.c_str(),
-            ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      if (!gameDataDialog)
-        gameDataDialog.emplace("Game Data", m_project);
+      // Variable
+      ImGui::BeginDisabled(m_operand != 1);
+      std::string text = m_operand != 1 ? "##commonevent_switch_empty"
+                                        : std::format("{:04} ", m_variable) + m_project->variable(m_variable);
+      ImGui::PushID("##controlvariable_id2");
+      if (ImGui::Button(text.c_str(), ImVec2{App::DPIHandler::scale_value(300), 0})) {
+        singleRequest = false;
+        picker.emplace("Variables", m_project->system().variables);
+      }
+      ImGui::PopID();
+      ImGui::EndDisabled();
 
-      gameDataDialog->SetOpen(true);
+      // Random
+      ImGui::BeginDisabled(m_operand != 2);
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::InputInt("##controlvariables_range1", &m_rand_operand_1, 0);
+      ImGui::SameLine();
+      ImGui::Text("~");
+      ImGui::SameLine();
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::InputInt("##controlvariables_range2", &m_rand_operand_2, 0);
+      ImGui::EndDisabled();
+
+      // Game Data
+      ImGui::BeginDisabled(m_operand != 3);
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      text = m_operand != 3 ? "" : getUIString();
+      ImGui::PushID("##controlvariable_gamedata");
+      if (ImGui::Button(text.c_str(), ImVec2{App::DPIHandler::scale_value(300), 0})) {
+        if (!gameDataDialog)
+          gameDataDialog.emplace("Game Data", m_project, m_gameData_type, m_gameData_rawSource, m_gameData_value);
+
+        gameDataDialog->SetOpen(true);
+      }
+      ImGui::PopID();
+      ImGui::EndDisabled();
+
+      // Script
+      ImGui::BeginDisabled(m_operand != 4);
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(300));
+      if (ImGui::InputText("##controlvariables_script", &m_script)) {
+        command->script = m_script;
+      }
+      ImGui::EndDisabled();
+      ImGui::EndGroup();
     }
-    ImGui::PopID();
-    ImGui::PopItemWidth();
-    ImGui::EndDisabled();
-
-    // Script
-    ImGui::RadioButton("Script", &operand, 4);
-    ImGui::SameLine();
-    ImGui::BeginDisabled(operand != 4);
-    ImGui::PushItemWidth(200);
-    if (ImGui::InputText("##controlvariables_script", &script)) {
-      command->script = script;
-    }
-    ImGui::PopItemWidth();
-    ImGui::EndDisabled();
 
     ImGui::SetCursorPos(
         ImVec2(ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(100) - ImGui::GetStyle().FramePadding.x,
                ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {
-      if (isSwitchEnabled) {
-        command->start = variableId;
-        command->end = variableId;
+      m_confirmed = true;
+      if (m_operation_var == 0) {
+        command->start = m_variable_var;
+        command->end = m_variable_var;
       } else {
-        command->start = rand1;
-        command->end = rand2;
+        command->start = m_rand_1;
+        command->end = m_rand_2;
       }
-      command->operation = static_cast<VariableControlOperation>(operation);
-      command->operand = static_cast<VariableControlOperand>(operand);
-      command->constant = m_constant;
-      command->variable = m_variable;
-      command->random.min = m_rand_1;
-      command->random.max = m_rand_2;
-
-      if (gameDataDialog)
-        command->gameData = gameDataDialog->getData().gameData;
-
+      command->operation = static_cast<VariableControlOperation>(m_operation);
+      command->operand = static_cast<VariableControlOperand>(m_operand);
+      if (command->operand == VariableControlOperand::Constant) {
+        command->constant = m_constant;
+      } else if (command->operand == VariableControlOperand::Variable) {
+        command->variable = m_variable;
+      } else if (command->operand == VariableControlOperand::Random) {
+        command->random.min = m_rand_operand_1;
+        command->random.max = m_rand_operand_2;
+      } else if (command->operand == VariableControlOperand::Script) {
+        command->script = m_script;
+      } else if (command->operand == VariableControlOperand::Game_Data) {
+        command->gameData.type = static_cast<GameDataType>(m_gameData_type);
+        command->gameData.rawSource = m_gameData_rawSource;
+        if (command->gameData.type == GameDataType::Actor
+            || command->gameData.type == GameDataType::Enemy
+            || command->gameData.type == GameDataType::Character) {
+          command->gameData.value = m_gameData_value;
+        }
+      }
       ImGui::CloseCurrentPopup();
       SetOpen(false);
     }

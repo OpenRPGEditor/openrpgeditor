@@ -12,7 +12,7 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{551, 240} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{551, 260} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
     const auto buttonSize = ImVec2{144, 144} * App::DPIHandler::get_ui_scale();
     const auto buttonCenter = (buttonSize / 2);
@@ -82,23 +82,15 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
         }
         ImGui::EndCombo();
       }
+      ImGui::SameLine();
+      ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(50));
+      if (ImGui::Button("Preview...", ImVec2{App::DPIHandler::scale_value(100), 0})) {
+        // TODO
+      }
       ImGui::EndGroup();
     }
-    ImGui::SameLine();
-    ImGui::SetCursorPos(ImVec2{ImGui::GetCursorPosX() + App::DPIHandler::scale_value(70),
-                               ImGui::GetCursorPosY() + App::DPIHandler::scale_value(15)});
-    if (ImGui::Button("Preview...", ImVec2{App::DPIHandler::scale_value(100), 0})) {
-      // TODO
-    }
-
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + App::DPIHandler::scale_value(20));
-    ImGui::BeginGroup();
-    {
-      ImGui::Checkbox("Batch Entry", &m_batchEntry);
-      ImGui::EndGroup();
-    }
-    ImGui::SameLine();
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(380));
+    ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(80),
+                        ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(20)});
     ImGui::BeginGroup();
     {
       if (ImGui::Button("OK")) {
@@ -116,8 +108,8 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
             }
             moreCommands.back()->text.push_back(std::make_shared<NextTextCommand>());
             moreCommands.back()->text.back()->text = str;
-            if (moreCommands.back()->text.size() > 3) {
-              APP_INFO("New command on " + str);
+            textIndex++;
+            if (moreCommands.back()->text.size() > 3 && textIndex < split.size()) {
               moreCommands.push_back(std::make_shared<ShowTextCommand>());
               moreCommands.back()->faceImage = m_faceImage;
               moreCommands.back()->faceIndex = m_faceIndex;
@@ -128,7 +120,6 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
             command->text.push_back(std::make_shared<NextTextCommand>());
             command->text.back()->text = str;
           }
-          textIndex++;
         }
         ImGui::CloseCurrentPopup();
         SetOpen(false);

@@ -10,10 +10,10 @@ struct ControlVariables : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   [[nodiscard]] std::string variableFormat(const std::string& text) const;
-  int start{};
-  int end{};
-  VariableControlOperation operation{};
-  VariableControlOperand operand{};
+  int start{1};
+  int end{1};
+  VariableControlOperation operation = VariableControlOperation::_set__del_Set;
+  VariableControlOperand operand = VariableControlOperand::Constant;
   union {
     int constant;
     int variable;
@@ -22,14 +22,14 @@ struct ControlVariables : IEventCommand {
       int max;
     } random;
     struct {
-      GameDataType type;
+      GameDataType type = GameDataType::Other;
       int value;
       union {
         ActorDataSource actorSource;
         EnemyDataSource enemySource;
         CharacterDataSource characterSource;
         OtherDataSource otherSource;
-        int rawSource;
+        int rawSource{0};
       };
     } gameData;
     int raw{};

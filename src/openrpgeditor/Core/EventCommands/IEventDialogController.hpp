@@ -10,6 +10,7 @@ struct IEventDialogController : IDialogController {
   virtual void SetNext(const bool open) { m_isNext = open; }
   virtual std::shared_ptr<IEventCommand> getCommand() { return nullptr; }
   virtual std::vector<std::shared_ptr<IEventCommand>> getBatchCommands() { return std::vector<std::shared_ptr<IEventCommand>>{}; }
+  virtual std::string getUIString() { return ""; }
 
 protected:
   bool m_isNext{false};

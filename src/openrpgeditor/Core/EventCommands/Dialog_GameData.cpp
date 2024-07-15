@@ -107,7 +107,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       ImGui::PushID("##gamedata_actor_id");
       ImGui::BeginDisabled(m_type != 3);
       if (ImGui::Button(text.c_str(),
-                        ImVec2{((ImGui::GetWindowContentRegionMax().x / 4 + 50)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+                        ImVec2{((ImGui::GetWindowContentRegionMax().x / 4 + 64)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         a_picker = ObjectPicker<Actor>("Actors"sv, m_project->actors().actorList(), 0);
       }
       ImGui::EndDisabled();
@@ -133,17 +133,10 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       ImGui::BeginDisabled(m_type != 4);
 
       ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 4 + 50);
-      if (ImGui::BeginCombo("##gamedata_enemy", m_type != 4 ? "" : ("#"
-                                                                    + std::to_string(m_project->troops().troops().at(current_enemySource).id)
-                                                                    + m_project->troops().troops().at(current_enemySource).name).c_str())) {
-        for (auto dataSource : m_project->troops().troops()) {
-          if (dataSource.m_isValid) {
-            bool is_selected = (current_enemySource == dataSource.id);
-            if (ImGui::Selectable(("#" + std::to_string(dataSource.id) + dataSource.name).c_str(), is_selected)) {
-              current_enemySource = dataSource.id;
-              if (is_selected)
-                ImGui::SetItemDefaultFocus();
-            }
+      if (ImGui::BeginCombo("##gamedata_enemy_list", (m_type != 4 ? "" : "#" + std::to_string(current_enemySource) + " " + Database::Instance->troopMemberName(0, current_enemySource)).c_str())) {
+        for (int i = 1; i < 9; ++i) {
+          if (ImGui::Selectable(("#" + std::to_string(i) + " " + Database::Instance->troopMemberName(0, i)).c_str(), i == current_enemySource)) {
+            current_enemySource = i;
           }
         }
         ImGui::EndCombo();
@@ -170,14 +163,14 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       ImGui::BeginDisabled(m_type != 5);
       ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 4 + 50);
       if (ImGui::BeginCombo("##gamedata_character",
-                            m_type != 5 ? "" : current_characterSource == 0 ? "Player" : current_characterSource == 1 ? "This Event" : ("EV" + std::format("{:03} ", m_project->events().at(current_characterSource)->id)).c_str())) {
+                            m_type != 5 ? "" : current_characterSource == -1 ? "Player" : current_characterSource == 0 ? "This Event" : ("EV" + std::format("{:03} ", m_project->events().at(current_characterSource)->id)).c_str())) {
 
-        if (ImGui::Selectable("Player", current_characterSource == 0)) {
-          current_characterSource = 0;
+        if (ImGui::Selectable("Player", current_characterSource == -1)) {
+          current_characterSource = -1;
             ImGui::SetItemDefaultFocus();
         }
-        if (ImGui::Selectable("This Event", current_characterSource == 1)) {
-          current_characterSource = 1;
+        if (ImGui::Selectable("This Event", current_characterSource == 0)) {
+          current_characterSource = 0;
             ImGui::SetItemDefaultFocus();
         }
 

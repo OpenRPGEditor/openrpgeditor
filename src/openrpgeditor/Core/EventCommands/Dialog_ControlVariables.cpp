@@ -21,8 +21,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
       auto [closed, confirmed] = picker->draw();
       if (confirmed) {
         if (singleRequest) {
-          m_start = picker->selection();
-          m_end = picker->selection();
+          m_variable_var = picker->selection();
         } else {
           m_variable = picker->selection();
         }
@@ -51,7 +50,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     {
       std::string text = m_operation_var != 0
                              ? "##commonevent_switch_empty"
-                             : (m_start == 0 ? "" : std::format("{:04} ", m_start) + m_project->variable(m_start));
+                             : (m_start == 0 ? "" : std::format("{:04} ", m_variable_var) + m_project->variable(m_variable_var));
       ImGui::PushID("##controlswitch_id");
       ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 75) - (16 * App::DPIHandler::get_ui_scale()));
       ImGui::BeginDisabled(m_operation_var != 0);

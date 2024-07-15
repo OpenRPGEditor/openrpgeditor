@@ -39,7 +39,7 @@ private:
 
   int current_otherSource = 0;
   int current_partySource = 1;
-  int current_characterSource = 0;
+  int current_characterSource = -1;
   int current_enemySource = 1;
 
   int current_actorDataSource = 0;

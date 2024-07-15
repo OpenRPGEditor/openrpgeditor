@@ -63,12 +63,12 @@ struct Dialog_ControlVariables : IEventDialogController {
              formatString(m_project->actor(m_gameData_rawSource)->name, m_gameData_rawSource);
     }
     if (m_gameData_type == 4) { // GameDataType::Enemy
-      return std::string(magic_enum::enum_name(static_cast<EnemyDataSource>(m_gameData_value)).data()) + " of " +
-             formatString(m_project->troop(m_gameData_rawSource)->name, m_gameData_rawSource);
+      return std::string(magic_enum::enum_name(static_cast<EnemyDataSource>(m_gameData_value)).data()) + " of #" +
+             std::to_string(m_gameData_rawSource) + " " + Database::Instance->troopMemberName(0, m_gameData_rawSource);
     }
     if (m_gameData_type == 5) { // GameDataType::Character
-      std::string str = m_gameData_rawSource == 0   ? "Player"
-                        : m_gameData_rawSource == 1 ? "This Event"
+      std::string str = m_gameData_rawSource == -1   ? "Player"
+                        : m_gameData_rawSource == 0 ? "This Event"
                                                            : m_project->event(m_gameData_rawSource)->name;
       return std::string(magic_enum::enum_name(static_cast<CharacterDataSource>(m_gameData_value)).data()) +
              " of " + formatString(str, m_gameData_rawSource);
@@ -101,8 +101,7 @@ private:
   int m_rand_operand_1{0};
   int m_rand_operand_2{0};
   int m_variable_var{1};
-  int m_operand_var{1};
-  int m_operation_var;
+  int m_operation_var; // Radio button (Single / Range)
 
   // Other
   std::shared_ptr<ControlVariables> command;

@@ -96,7 +96,7 @@ std::string ControlVariables::stringRep(const Database& db) const {
           std::format(AOfB, varText, DecodeEnumName(static_cast<ActorDataSource>(gameData.value)), db.actorNameOrId(gameData.rawSource)));
     }
     case GameDataType::Enemy: {
-      return variableFormat(std::format(AOfB, varText, DecodeEnumName(static_cast<EnemyDataSource>(gameData.value)), gameData.rawSource));
+      return variableFormat(std::format(AOfB, varText, DecodeEnumName(static_cast<EnemyDataSource>(gameData.value)), std::format("#{}", gameData.rawSource)));
     }
     case GameDataType::Character: {
       return variableFormat(

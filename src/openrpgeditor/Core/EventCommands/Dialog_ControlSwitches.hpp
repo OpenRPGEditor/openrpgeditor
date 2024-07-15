@@ -11,7 +11,7 @@ struct Dialog_ControlSwitches : IEventDialogController {
     command.reset(new ControlSwitches());
     m_start = command->start;
     m_end = command->end;
-    isDisabled = static_cast<int>(command->turnOff);
+    m_isDisabled = static_cast<int>(command->turnOff);
   }
   std::tuple<bool, bool> draw() override;
 
@@ -22,9 +22,10 @@ struct Dialog_ControlSwitches : IEventDialogController {
 private:
   int m_start;
   int m_end;
-  int m_rand_1 = 0;
-  int m_rand_2 = 0;
-  int isDisabled;
+  int m_rand_1{1};
+  int m_rand_2{1};
+  int m_isDisabled;
+  int m_operation{0};
 
   std::shared_ptr<ControlSwitches> command;
   std::optional<VariableSwitchPicker> picker;

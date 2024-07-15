@@ -22,7 +22,7 @@ std::tuple<bool, bool> Dialog_ChangeBattleBack::draw() {
     ImGui::RadioButton("ON", &isDisabled, 1);
 
     if (ImGui::Button("OK")) {
-      // command->access = isDisabled == 0 ? AccessMode::Disable : AccessMode::Enable;
+      // command->access = m_isDisabled == 0 ? AccessMode::Disable : AccessMode::Enable;
       ImGui::CloseCurrentPopup();
       SetOpen(false);
       m_confirmed = true;

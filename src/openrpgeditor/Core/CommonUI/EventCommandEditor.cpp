@@ -151,6 +151,7 @@
 #include "Core/EventCommands/Dialog_ChangeActorImages.hpp"
 #include "Core/EventCommands/Dialog_ChangePluginCommand.hpp"
 #include "Core/EventCommands/Dialog_ShowText.hpp"
+#include "Core/EventCommands/Dialog_ConditionalBranch.hpp"
 
 #include <iostream>
 #include <vector>
@@ -424,8 +425,7 @@ void EventCommandEditor::drawPopup() {
         }
         if (ImGui::BeginTabItem("Flow")) {
           if (ImGui::Button("Conditional Branch...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ConditionalBranch>("Conditional Branch", m_project);
+            commandDialog = std::make_shared<Dialog_ConditionalBranch>("Conditional Branch", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column

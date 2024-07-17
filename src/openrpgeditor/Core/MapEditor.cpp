@@ -54,8 +54,6 @@ void MapEditor::setMap(MapInfo* info) {
 
   m_eventEditors.clear();
   m_mapInfo = info;
-  m_lowerLayer.clear();
-  m_upperLayer.clear();
 
   if (map() && map()->parallaxShow && !map()->parallaxName.empty()) {
     m_parallaxTexture = ResourceManager::instance()->loadParallaxImage(map()->parallaxName);
@@ -73,7 +71,8 @@ void MapEditor::drawParallax(ImGuiWindow* win) {
   // TODO: Proper parallax implementation
   win->DrawList->AddImage(m_parallaxTexture.get(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
                           win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_parallaxTexture.width()),
-                                                              static_cast<float>(m_parallaxTexture.height())} * m_mapScale));
+                                                               static_cast<float>(m_parallaxTexture.height())} *
+                                                        m_mapScale));
 }
 
 void MapEditor::drawGrid(ImGuiWindow* win) {
@@ -113,12 +112,6 @@ void MapEditor::handleEventDrag() {
   }
 }
 void MapEditor::handleMouseInput(ImGuiWindow* win) {
-  if (!ImGui::IsWindowFocused()) {
-    m_selectedEvent = nullptr;
-    m_movingEvent = nullptr;
-    return;
-  }
-
   // if (map()) {
   //   map()->data[(tileCellY() * map()->width) + tileCellX()] = 2086;
   // }
@@ -190,7 +183,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
 
   if ((ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) || ImGui::IsKeyPressed(ImGuiKey_Enter) ||
        ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)) &&
-      m_parent->editMode() == EditMode::Event) {
+      m_parent->editMode() == EditMode::Event && ImGui::IsWindowFocused()) {
 
     if (m_selectedEvent != nullptr) {
       auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(),
@@ -231,6 +224,26 @@ void MapEditor::handleKeyboardShortcuts() {
     }
   }
 }
+void MapEditor::updateFloorTypeAutotile(int x, int y, int layer, int flags) {}
+
+void MapEditor::updateWaterfallTypeAutotile(int x, int y, int layer, int flags) {}
+
+void MapEditor::renderLayerRects(ImGuiWindow* win, const MapRenderer::MapLayer& layer) {
+  for (const auto& l : layer.tileLayers) {
+    for (const auto& tile : l.rects) {
+      if (!TileHelper::isAutoTile(tile.tileId)) {
+        continue;
+      }
+      const float x0 = tile.x;
+      const float x1 = tile.x + tile.tileWidth;
+      const float y0 = tile.y;
+      const float y1 = tile.y + tile.tileHeight;
+      win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale),
+                             win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), 0xFF000000, 0, 0, 2.f);
+    }
+  }
+}
+
 void MapEditor::renderLayerTex(ImGuiWindow* win, const MapRenderer::TileLayer& tLayer) {
   if (!tLayer.tex) {
     return;
@@ -249,6 +262,7 @@ void MapEditor::renderLayerTex(ImGuiWindow* win, const MapRenderer::TileLayer& t
                             win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), ImVec2{u0, v0}, ImVec2{u1, v1});
   }
 }
+
 void MapEditor::renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer) {
   renderLayerTex(win, layer.tileLayers[0]); // A1
   renderLayerTex(win, layer.tileLayers[1]); // A2
@@ -259,10 +273,11 @@ void MapEditor::renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer
   renderLayerTex(win, layer.tileLayers[6]); // C
   renderLayerTex(win, layer.tileLayers[7]); // D
   renderLayerTex(win, layer.tileLayers[8]); // E
+  // renderLayerRects(win, layer);
 }
 void MapEditor::draw() {
   if (!m_checkeredBack) {
-    m_checkeredBack = CheckerboardTexture(8192 * 2, 8192 * 2);
+    m_checkeredBack = CheckerboardTexture(8192 * 2, 8192 * 2, CellSizes::_48, 255, 220);
   }
   // Keep mapScale to a quarter step
   if (ImGui::IsKeyDown(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
@@ -278,19 +293,22 @@ void MapEditor::draw() {
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(45.f)),
                       0, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
-    ImGui::SetScrollX(m_tileCursor.alignCoord(ImGui::GetScrollX()));
-    ImGui::SetScrollY(m_tileCursor.alignCoord(ImGui::GetScrollY()));
+    // ImGui::SetScrollX(m_tileCursor.alignCoord(ImGui::GetScrollX()));
+    // ImGui::SetScrollY(m_tileCursor.alignCoord(ImGui::GetScrollY()));
     if (map()) {
       ImGuiWindow* win = ImGui::GetCurrentWindow();
       win->ScrollTargetEdgeSnapDist;
-      ImGui::Dummy(ImVec2{(map()->width + 1) * (m_parent->system().tileSize * m_mapScale),
-                          (map()->height + 1) * (m_parent->system().tileSize * m_mapScale)});
+      ImGui::Dummy(ImVec2{(map()->width * m_parent->system().tileSize * m_mapScale),
+                          (map()->height * m_parent->system().tileSize * m_mapScale)});
 
-      auto region = win->ClipRect.Max;
-      float u1 = std::clamp(region.x / (8192 * 2), 0.f, 1.f);
-      float v1 = std::clamp(region.y / (8192 * 2), 0.f, 1.f);
+      const float u1 = std::clamp((static_cast<float>(map()->width * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
+      const float v1 = std::clamp((static_cast<float>(map()->height * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
+
       win->DrawList->AddImage(m_checkeredBack.get(), win->ClipRect.Min + ImVec2{0, 0},
-                              win->ClipRect.Min + ImVec2{region.x, region.y}, ImVec2{0, 0}, ImVec2{u1, v1});
+                              win->ClipRect.Min + (ImVec2{static_cast<float>(map()->width * tileSize()),
+                                                          static_cast<float>(map()->height * tileSize())} *
+                                                   m_mapScale),
+                              ImVec2{0, 0}, ImVec2{u1, v1});
 
       handleMouseInput(win);
 
@@ -315,15 +333,39 @@ void MapEditor::draw() {
 
       drawParallax(win);
 
-      for (int z = 0; z < 6; ++z) {
+      for (int z = 0; z < 4; ++z) {
         renderLayer(win, m_mapRenderer.m_lowerLayers[z]);
         if (m_prisonMode) {
           renderLayer(win, m_mapRenderer.m_upperLayers[z]);
         }
       }
 
+      for (int y = 0; y < map()->height; ++y) {
+        for (int x = 0; x < map()->width; ++x) {
+          const float dx = x * tileSize();
+          const float dy = y * tileSize();
+          const int bits = map()->data[m_mapRenderer.tileIdFromCoords(x, y, 4)];
+          if (!(bits & 0x0F)) {
+            continue;
+          }
+
+          const float w1 = tileSize() / 2;
+          const float h1 = tileSize() / 2;
+          for (int i = 0; i < 4; ++i) {
+            if (!(bits & (1 << i))) {
+              continue;
+            }
+            const float dx1 = dx + ((i % 2) * w1);
+            const float dy1 = dy + (std::floor(i / 2) * h1);
+            win->DrawList->AddRectFilled(win->ContentRegionRect.Min + (ImVec2{dx1, dy1} * m_mapScale),
+                                         win->ContentRegionRect.Min + (ImVec2{dx1 + w1, dy1 + h1} * m_mapScale),
+                                         0x7F000000);
+          }
+        }
+      }
+
       if (m_prisonMode) {
-        drawGrid(win);
+        // drawGrid(win);
       }
       if (ImGui::IsWindowHovered() || m_parent->editMode() == EditMode::Event) {
         m_tileCursor.draw(win);
@@ -441,7 +483,7 @@ void MapEditor::drawMapProperties() {
           ImGui::Text("Width");
           ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - App::DPIHandler::scale_value(15));
           int width = map()->width;
-          if (ImGui::DragInt("##map_width", &map()->width, 0, 0, 256)) {
+          if (ImGui::DragInt("##map_width", &width, 0, 0, 256)) {
             setDirty(map()->width, width, map()->m_isDirty);
           }
         }

@@ -372,18 +372,18 @@ void Project::drawTileInfo(MapRenderer::MapLayer& mapLayer, int z) {
             std::format("Sheet: {} ({}), ID: {}, x: {}, y: {}, z: {},  width: {}, height: {}, u: {}, v: {}",
                         m_mapEditor.mapRenderer().tileset()->tilesetNames[tile.tileSheet], LayerNames[tile.tileSheet],
                         tile.tileId, tile.x, tile.y, z, tile.tileWidth, tile.tileHeight, tile.u, tile.v);
-        if (MapRenderer::isAutoTile(tile.tileId)) {
+        if (TileHelper::isAutoTile(tile.tileId)) {
           info += std::format(
               "\n"
               "AutoTile Shape: {}, Kind: {}\n"
               "WaterTile: {}, WaterfallTile: {}, GroundTile {}, RoofTile: {}, ShadowingTile: {},\n"
               "WallSide: {}, WallTop: {}, FloorTypeAutoTile: {}, WallTypeAutoTile: {}\n",
-              MapRenderer::getAutoTileShape(tile.tileId), MapRenderer::getAutoTileKind(tile.tileId),
-              MapRenderer::isWaterTile(tile.tileId), MapRenderer::isWaterfallTile(tile.tileId),
-              MapRenderer::isGroundTile(tile.tileId), MapRenderer::isRoofTile(tile.tileId),
-              MapRenderer::isShadowingTile(tile.tileId), MapRenderer::isWallTopTile(tile.tileId),
-              MapRenderer::isWallSideTile(tile.tileId), MapRenderer::isFloorTypeAutotile(tile.tileId),
-              MapRenderer::isWallTypeAutotile(tile.tileId));
+              TileHelper::getAutoTileShape(tile.tileId), TileHelper::getAutoTileKind(tile.tileId),
+              TileHelper::isWaterTile(tile.tileId), TileHelper::isWaterfallTile(tile.tileId),
+              TileHelper::isGroundTile(tile.tileId), TileHelper::isRoofTile(tile.tileId),
+              TileHelper::isShadowingTile(tile.tileId), TileHelper::isWallTopTile(tile.tileId),
+              TileHelper::isWallSideTile(tile.tileId), TileHelper::isFloorTypeAutotile(tile.tileId),
+              TileHelper::isWallTypeAutotile(tile.tileId));
         }
         ImGui::Text(info.c_str());
       }

@@ -209,12 +209,12 @@ ExitStatus Application::run() {
   m_running = true;
   uint32_t a = SDL_GetTicks();
   double delta = 0;
-
+  bool firstFrame = true;
   while (m_running) {
     APP_PROFILE_SCOPE("MainLoop");
     delta = SDL_GetTicks() - a;
 
-    if (delta >= 1000.0 / 60.0) {
+    if (delta >= 1000.0 / 60.0 || firstFrame) {
       // m_window->setTitle("fps: " + std::to_string(1000.0 / delta));
       a = SDL_GetTicks();
 
@@ -258,6 +258,7 @@ ExitStatus Application::run() {
       SDL_RenderClear(m_window->getNativeRenderer());
       ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), m_window->getNativeRenderer());
       SDL_RenderPresent(m_window->getNativeRenderer());
+      firstFrame = false;
     }
   }
 

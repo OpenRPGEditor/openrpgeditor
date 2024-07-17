@@ -115,7 +115,7 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlph
       return;
     }
     int setId;
-    if (MapRenderer::isTileA5(tileId)) {
+    if (TileHelper::isTileA5(tileId)) {
       setId = 4;
     } else {
       setId = 5 + floor(tileId / 256);

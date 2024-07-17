@@ -32,7 +32,7 @@ struct ControlVariables : IEventCommand {
         int rawSource{0};
       };
     } gameData;
-    int raw{};
+    int raw[4]{};
   };
   std::string script{};
 };

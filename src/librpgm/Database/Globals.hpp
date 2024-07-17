@@ -287,7 +287,7 @@ enum class VariableComparisonType : int {
   _lteq__del_Less_than_or_Equal_to,
   _gt__del_Greater_than,
   _lt__del_Less_than,
-  _not_set__del_Not_Equal_to
+  _not__set__del_Not_Equal_to
 };
 
 enum class GoldComparisonType : int {

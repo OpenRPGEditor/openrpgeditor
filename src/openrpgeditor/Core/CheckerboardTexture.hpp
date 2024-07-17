@@ -2,10 +2,12 @@
 
 #include "SDL2/SDL.h"
 enum class CellSizes : uint8_t {
-  _8 = (1 << 3),
-  _16 = (1 << 4),
-  _32 = (1 << 5),
-  _64 = (1 << 6),
+  _8 = 8,
+  _16 = 16,
+  _24 = 24,
+  _32 = 32,
+  _48 = 48,
+  _64 = 64,
 };
 struct CheckerboardTexture {
 

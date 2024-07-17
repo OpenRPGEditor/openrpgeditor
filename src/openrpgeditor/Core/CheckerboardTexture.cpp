@@ -7,8 +7,7 @@ CheckerboardTexture::CheckerboardTexture(int width, int height, CellSizes cellSi
   uint8_t* data = (uint8_t*)malloc((width * height) * 4);
   for (int y = 0; y < height * 4; y += 4) {
     for (int x = 0; x < width * 4; x += 4) {
-      uint8_t c =
-          colors[(((y & static_cast<uint8_t>(cellSize)) == 0) ^ ((x & static_cast<uint8_t>(cellSize)) == 0)) * 1];
+      uint8_t c = colors[((y / static_cast<int>(cellSize)) % 2) ^ ((x / static_cast<int>(cellSize)) % 2)];
       *(data + ((y * width) + x) + 0) = c;
       *(data + ((y * width) + x) + 1) = c;
       *(data + ((y * width) + x) + 2) = c;

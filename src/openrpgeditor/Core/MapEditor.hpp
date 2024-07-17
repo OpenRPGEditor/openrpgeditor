@@ -18,8 +18,6 @@ struct MapEditor {
   void setMap(MapInfo* info);
 
   void clearLayers() {
-    m_lowerLayer.clear();
-    m_upperLayer.clear();
   }
 
   void scale(float scale) {
@@ -83,9 +81,14 @@ private:
   void drawGrid(ImGuiWindow* win);
   void handleEventDrag();
   void handleMouseInput(ImGuiWindow* win);
+  void renderLayerRects(ImGuiWindow* win, const MapRenderer::MapLayer& layer);
   void renderLayerTex(ImGuiWindow* win, const MapRenderer::TileLayer& tLayer);
   void renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer);
   void handleKeyboardShortcuts();
+
+  void updateFloorTypeAutotile(int x, int y, int layer, int flags);
+  void updateWaterfallTypeAutotile(int x, int y, int layer, int flags);
+
   Project* m_parent;
   MapInfo* m_mapInfo = nullptr;
   float m_mapScale = 1.f;
@@ -98,8 +101,6 @@ private:
   int m_tileId{};
   Texture m_parallaxTexture;
   MapRenderer m_mapRenderer;
-  std::vector<TileRect> m_lowerLayer;
-  std::vector<TileRect> m_upperLayer;
   std::vector<EventEditor> m_eventEditors;
   CheckerboardTexture m_checkeredBack;
   Event* m_movingEvent = nullptr;

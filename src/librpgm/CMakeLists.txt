@@ -57,6 +57,8 @@ add_library(
         Database/System.hpp
         Database/Terms.cpp
         Database/Terms.hpp
+        Database/TileHelper.cpp
+        Database/TileHelper.hpp
         Database/Tilesets.cpp
         Database/Tilesets.hpp
         #Database/Trait.cpp

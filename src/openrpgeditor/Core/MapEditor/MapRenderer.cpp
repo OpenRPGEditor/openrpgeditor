@@ -123,7 +123,7 @@ void MapRenderer::paintTiles(int startX, int startY, int x, int y) {
   // drawShadow(m_lowerTiles[4], shadowBits, dx, dy);
 
   if (isTableTile(upperTileId1) && !isTableTile(tileId1)) {
-    if (!isShadowingTile(tileId0)) {
+    if (!TileHelper::isShadowingTile(tileId0)) {
       drawTableEdge(m_lowerLayers[4], upperTileId1, dx, dy);
     }
   }
@@ -147,9 +147,9 @@ void MapRenderer::paintTiles(int startX, int startY, int x, int y) {
 }
 
 void MapRenderer::drawTile(MapLayer& layer, int tileId, int dx, int dy) {
-  if (isVisibleTile(tileId)) {
+  if (TileHelper::isVisibleTile(tileId)) {
     assert(tileId != 0);
-    if (isAutoTile(tileId)) {
+    if (TileHelper::isAutoTile(tileId)) {
       drawAutoTile(layer, tileId, dx, dy);
     } else {
       drawNormalTile(layer, tileId, dx, dy);
@@ -159,8 +159,8 @@ void MapRenderer::drawTile(MapLayer& layer, int tileId, int dx, int dy) {
 
 void MapRenderer::drawAutoTile(MapLayer& layer, const int tileId, const int dx, const int dy) {
   auto autoTileTable = FloorAutoTileTable;
-  const int kind = getAutoTileKind(tileId);
-  const int shape = getAutoTileShape(tileId);
+  const int kind = TileHelper::getAutoTileKind(tileId);
+  const int shape = TileHelper::getAutoTileShape(tileId);
   const float tx = kind % 8;
   const float ty = floor(kind / 8);
   float bx = 0;
@@ -170,7 +170,7 @@ void MapRenderer::drawAutoTile(MapLayer& layer, const int tileId, const int dx, 
   float animX = 0;
   float animY = 0;
 
-  if (isTileA1(tileId)) {
+  if (TileHelper::isTileA1(tileId)) {
     setNumber = 0;
     if (kind == 0) {
       animX = 2;
@@ -195,17 +195,17 @@ void MapRenderer::drawAutoTile(MapLayer& layer, const int tileId, const int dx, 
         animY = 1;
       }
     }
-  } else if (isTileA2(tileId)) {
+  } else if (TileHelper::isTileA2(tileId)) {
     setNumber = 1;
     bx = tx * 2;
     by = (ty - 2) * 3;
     isTable = isTableTile(tileId);
-  } else if (isTileA3(tileId)) {
+  } else if (TileHelper::isTileA3(tileId)) {
     setNumber = 2;
     bx = tx * 2;
     by = (ty - 6) * 2;
     autoTileTable = WallAutoTileTable;
-  } else if (isTileA4(tileId)) {
+  } else if (TileHelper::isTileA4(tileId)) {
     setNumber = 3;
     bx = tx * 2;
     by = floor((ty - 10) * 2.5 + (fmod(ty, 2) == 1 ? 0.5f : 0));
@@ -249,7 +249,7 @@ void MapRenderer::drawAutoTile(MapLayer& layer, const int tileId, const int dx, 
 void MapRenderer::drawNormalTile(MapLayer& layer, const int tileId, const int dx, const int dy) const {
   int setNumber = 0;
 
-  if (isTileA5(tileId)) {
+  if (TileHelper::isTileA5(tileId)) {
     setNumber = 4;
   } else {
     setNumber = 5 + static_cast<int>(floor(tileId / 256));
@@ -264,13 +264,13 @@ void MapRenderer::drawNormalTile(MapLayer& layer, const int tileId, const int dx
 }
 
 void MapRenderer::drawTableEdge(MapLayer& layer, const int tileId, const int dx, const int dy) const {
-  if (!isTileA2(tileId)) {
+  if (!TileHelper::isTileA2(tileId)) {
     return;
   }
 
   auto& autotileTable = FloorAutoTileTable;
-  const int kind = getAutoTileKind(tileId);
-  const int shape = getAutoTileShape(tileId);
+  const int kind = TileHelper::getAutoTileKind(tileId);
+  const int shape = TileHelper::getAutoTileShape(tileId);
 
   const float tx = kind % 8;
   const float ty = floor(kind / 8);

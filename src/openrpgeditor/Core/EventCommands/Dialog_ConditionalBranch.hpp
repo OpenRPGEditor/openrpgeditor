@@ -46,7 +46,12 @@ private:
   int m_actor_armor{1};
   int m_actor_weapon{1};
   int m_actor_state{1};
-
+  int m_enemy_selection{1};
+  int m_enemy_sub_selection{0};
+  int m_state_type{0};
+  int m_character_selection{-1};
+  int m_character_direction{1};
+  int m_vehicle_selection{0};
   bool m_elseBranch{false};
 
   std::shared_ptr<ConditionalBranchCommand> command;

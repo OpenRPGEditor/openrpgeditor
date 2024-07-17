@@ -35,7 +35,7 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
     ImGui::SeparatorText("Item");
     ImGui::PushID("##changeitems_item");
     if (ImGui::Button(
-            Database::Instance->armorNameOrId(m_item).c_str(),
+            Database::Instance->itemNameOrId(m_item).c_str(),
             {(App::DPIHandler::scale_value(160)), 0})) {
       item_picker = ObjectPicker<Item>("Items"sv, Database::Instance->items.items(), 0);
     }

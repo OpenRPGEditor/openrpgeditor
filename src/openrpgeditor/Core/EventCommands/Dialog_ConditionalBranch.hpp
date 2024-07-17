@@ -9,6 +9,7 @@
 #include "Database/States.hpp"
 #include "Database/Classes.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
+#include "Database/Items.hpp"
 
 struct Project;
 struct Dialog_ConditionalBranch : IEventDialogController {
@@ -52,6 +53,15 @@ private:
   int m_character_selection{-1};
   int m_character_direction{1};
   int m_vehicle_selection{0};
+  int m_gold_operation{0};
+  int m_gold_selection{0};
+  int m_item_selection{1};
+  int m_weapon_selection{1};
+  bool m_weapon_include{false};
+  int m_armor_selection{1};
+  bool m_armor_include{false};
+  int m_button_selection{0};
+  std::string m_script;
   bool m_elseBranch{false};
 
   std::shared_ptr<ConditionalBranchCommand> command;
@@ -62,5 +72,6 @@ private:
   std::optional<ObjectPicker<Armor>> armor_picker;
   std::optional<ObjectPicker<Skill>> skill_picker;
   std::optional<ObjectPicker<Class>> class_picker;
+  std::optional<ObjectPicker<Item>> item_picker;
   std::tuple<bool, bool> result;
 };

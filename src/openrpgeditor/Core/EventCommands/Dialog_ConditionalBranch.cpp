@@ -66,7 +66,12 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
     if (state_picker) {
       auto [closed, confirmed] = state_picker->draw();
       if (confirmed) {
-        m_actor_state = state_picker->selection();
+        if (m_state_type == 0) {
+          m_actor_state = state_picker->selection();
+        }
+        else {
+          m_enemy_sub_state = state_picker->selection();
+        }
         state_picker.reset();
       }
     }
@@ -612,7 +617,92 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
       {
         if (ImGui::Button("OK")) {
           m_confirmed = true;
-          command->type = static_cast<ConditionType>(m_type);
+          command->type = static_cast<ConditionType>(m_conditionType);
+          if (command->type == ConditionType::Switch) {
+            command->globalSwitch.switchIdx = m_switch_id;
+            command->globalSwitch.checkIfOn = static_cast<ValueControl>(m_switch_value);
+          }
+          else if (command->type == ConditionType::Variable) {
+            command->variable.id = m_variable_id;
+            command->variable.source = static_cast<VariableComparisonSource>(m_variable_subSource);
+            if (command->variable.source == VariableComparisonSource::Constant) {
+              command->variable.constant = m_sub_constant;
+            }
+            else {
+              command->variable.otherId = m_sub_variable_id;
+            }
+          }
+          else if (command->type == ConditionType::Self_Switch) {
+            command->selfSw = m_selfSw;
+            command->selfSwitch.checkIfOn = static_cast<ValueControl>(m_selfSw_value);
+          }
+          else if (command->type == ConditionType::Timer) {
+            command->timer.sec = m_timer_sec + (m_timer_min * 60);
+            command->timer.comparison = static_cast<TimerComparisonType>(m_timer_operation);
+          }
+          else if (command->type == ConditionType::Actor) {
+            command->actor.id = m_actor_selection;
+            command->actor.type = static_cast<ActorConditionType>(m_actor_sub_selection);
+            if (command->actor.type == ActorConditionType::In_The_Party) {
+              command->actor.checkId = 0;
+            }
+            if (command->actor.type == ActorConditionType::Name) {
+              command->name = m_actor_selection_nameinput;
+            }
+            if (command->actor.type == ActorConditionType::Class) {
+              command->actor.checkId = m_actor_class;
+            }
+            if (command->actor.type == ActorConditionType::Skill) {
+              command->actor.checkId = m_actor_skill;
+            }
+            if (command->actor.type == ActorConditionType::Weapon) {
+              command->actor.checkId = m_actor_weapon;
+            }
+            if (command->actor.type == ActorConditionType::Armor) {
+              command->actor.checkId = m_actor_armor;
+            }
+            if (command->actor.type == ActorConditionType::State) {
+              command->actor.checkId = m_actor_state;
+            }
+          }
+          else if (command->type == ConditionType::Enemy) {
+            command->enemy.id = m_enemy_selection;
+            command->enemy.type = static_cast<EnemyConditionType>(m_enemy_sub_selection);
+            if (command->enemy.type == EnemyConditionType::State) {
+              command->enemy.stateId = m_enemy_sub_state;
+            }
+            else {
+              command->enemy.stateId = 0;
+            }
+          }
+          else if (command->type == ConditionType::Character) {
+            command->character.id = m_character_selection;
+            command->character.facing = static_cast<Direction>(m_character_direction);
+          }
+          else if (command->type == ConditionType::Vehicle) {
+            command->vehicle.id = static_cast<VehicleType>(m_vehicle_selection);
+          }
+          else if (command->type == ConditionType::Gold) {
+            command->gold.type = static_cast<GoldComparisonType>(m_gold_operation);
+            command->gold.value = m_gold_selection;
+          }
+          else if (command->type == ConditionType::Item) {
+            command->item.id = m_item_selection;
+          }
+          else if (command->type == ConditionType::Weapon) {
+            command->equip.equipId = m_weapon_selection;
+            command->equip.includeEquipment = m_weapon_include;
+          }
+          else if (command->type == ConditionType::Armor) {
+                        command->equip.equipId = m_armor_selection;
+                        command->equip.includeEquipment = m_armor_include;
+          }
+          else if (command->type == ConditionType::Button) {
+            command->button = static_cast<Button>(m_button_selection);
+          }
+          else if (command->type == ConditionType::Script) {
+            command->script = m_script;
+          }
           ImGui::CloseCurrentPopup();
           SetOpen(false);
         }

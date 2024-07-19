@@ -738,6 +738,9 @@ void EventCommandEditor::drawPopup() {
 
         if (commandDialog) {
           auto [closed, confirmed] = commandDialog->draw();
+          if (!commandDialog->getParentIndent().has_value())
+            commandDialog->setParentIndent(m_commands->at(m_selectedCommand)->indent.value());
+
           if (confirmed) {
             std::vector<std::shared_ptr<IEventCommand>> cmds = commandDialog->getBatchCommands();
             if (cmds.empty()) {

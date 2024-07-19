@@ -10,6 +10,8 @@
 #include "Database/Classes.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Items.hpp"
+#include "Database/EventCommands/EventDummy.hpp"
+#include "Database/EventCommands/End.hpp"
 
 struct Project;
 struct Dialog_ConditionalBranch : IEventDialogController {
@@ -110,6 +112,23 @@ struct Dialog_ConditionalBranch : IEventDialogController {
   Project* m_project = nullptr;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::vector<std::shared_ptr<IEventCommand>> getBatchCommands() override {
+    std::shared_ptr<IEventCommand> sharedCommand = getCommand();
+    eventCommands.push_back(sharedCommand);
+
+    eventCommands.back()->indent = getParentIndent().value();
+    eventCommands.push_back(std::make_shared<EventDummy>());
+    eventCommands.back()->indent = getParentIndent().value() + 1;
+    if (m_elseBranch) {
+      eventCommands.push_back(std::make_shared<ElseCommand>());
+      eventCommands.back()->indent = getParentIndent().value();
+      eventCommands.push_back(std::make_shared<EventDummy>());
+      eventCommands.back()->indent = getParentIndent().value() + 1;
+    }
+    eventCommands.push_back(std::make_shared<EndCommand>());
+    eventCommands.back()->indent = getParentIndent().value();
+    return eventCommands;
+  };
 
 private:
   int m_conditionType{0};
@@ -151,7 +170,7 @@ private:
   int m_button_selection{0};
   std::string m_script;
   bool m_elseBranch{false};
-
+  std::vector<std::shared_ptr<IEventCommand>> eventCommands;
   std::shared_ptr<ConditionalBranchCommand> command;
   std::optional<VariableSwitchPicker> picker;
   std::optional<ObjectPicker<Actor>> actor_picker;
@@ -161,5 +180,6 @@ private:
   std::optional<ObjectPicker<Skill>> skill_picker;
   std::optional<ObjectPicker<Class>> class_picker;
   std::optional<ObjectPicker<Item>> item_picker;
+  bool m_confirmed{false};
   std::tuple<bool, bool> result;
 };

@@ -712,9 +712,9 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
         }
         ImGui::EndGroup();
       }
-
-      ImGui::EndPopup();
+      ImGui::EndTabBar();
     }
+    ImGui::EndPopup();
   }
   return std::make_tuple(!m_open, m_confirmed);
 }

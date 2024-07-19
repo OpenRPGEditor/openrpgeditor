@@ -738,12 +738,16 @@ void EventCommandEditor::drawPopup() {
 
         if (commandDialog) {
           auto [closed, confirmed] = commandDialog->draw();
-          if (!commandDialog->getParentIndent().has_value())
+          if (!commandDialog->getParentIndent().has_value()) {
             commandDialog->setParentIndent(m_commands->at(m_selectedCommand)->indent.value());
+            commandDialog->getCommand()->indent = commandDialog->getParentIndent().value();
+            APP_INFO("Parent indent set to " + std::to_string(commandDialog->getParentIndent().value()));
+          }
 
           if (confirmed) {
             std::vector<std::shared_ptr<IEventCommand>> cmds = commandDialog->getBatchCommands();
             if (cmds.empty()) {
+              APP_INFO("Command inserted with indent " + std::to_string(commandDialog->getParentIndent().value()));
               auto select = m_commands->insert(m_commands->begin() + m_selectedCommand, commandDialog->getCommand());
               m_selectedCommand = select - m_commands->begin();
             }

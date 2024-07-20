@@ -4,6 +4,8 @@ set(NAME "OpenRPGEditor")
 
 configure_file(App/ProjectInfo.cpp.in App/ProjectInfo.cpp @ONLY)
 
+add_subdirectory(Math)
+
 add_library(
         orecore STATIC
         
@@ -359,6 +361,7 @@ target_link_libraries(
         freetype
         clip
         sfml-audio
+        oremath
 )
 
 # Define set of OS specific files to include
@@ -378,7 +381,6 @@ add_executable(${NAME} WIN32 MACOSX_BUNDLE
         App/ProjectInfo.hpp
         App/ProjectInfo.cpp
 )
-
 
 
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/AppAssets.cmake)

@@ -86,6 +86,10 @@ private:
   void renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer);
   void handleKeyboardShortcuts();
 
+  void updateAllAutotiles();
+  void updateAutotilesInRect(int x, int y, int width, int height, int layer);
+  void updateAutotile(int x, int y, int layer, int flags);
+  void updateAutotilesAroundPoint(int x, int y, int layer, int flags);
   void updateFloorTypeAutotile(int x, int y, int layer, int flags);
   void updateWaterfallTypeAutotile(int x, int y, int layer, int flags);
 

@@ -12,8 +12,8 @@ struct ConditionalBranchCommand final : IEventCommand {
 
   ConditionType type{};
   struct {
-    int switchIdx{};
-    ValueControl checkIfOn;
+    int switchIdx{1};
+    ValueControl checkIfOn = ValueControl::ON;
   } globalSwitch{};
   struct {
     int id{};

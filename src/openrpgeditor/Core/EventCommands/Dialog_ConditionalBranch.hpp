@@ -27,6 +27,7 @@ struct Dialog_ConditionalBranch : IEventDialogController {
     else if (command->type == ConditionType::Variable) {
       m_variable_id = command->variable.id;
       m_variable_subSource = static_cast<int>(command->variable.source);
+      m_variable_value = static_cast<int>(command->variable.comparison);
       if (command->variable.source == VariableComparisonSource::Constant) {
          m_sub_constant = command->variable.constant;
       }
@@ -164,8 +165,10 @@ private:
   int m_gold_selection{0};
   int m_item_selection{1};
   int m_weapon_selection{1};
+  int m_weapon_type{0};
   bool m_weapon_include{false};
   int m_armor_selection{1};
+  int m_armor_type{0};
   bool m_armor_include{false};
   int m_button_selection{0};
   std::string m_script;

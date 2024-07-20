@@ -52,14 +52,24 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
     if (weapon_picker) {
       auto [closed, confirmed] = weapon_picker->draw();
       if (confirmed) {
-        m_actor_weapon = weapon_picker->selection();
+        if (m_weapon_type == 0) {
+          m_actor_weapon = weapon_picker->selection();
+        }
+        else {
+          m_weapon_selection = weapon_picker->selection();
+        }
         weapon_picker.reset();
       }
     }
     if (armor_picker) {
       auto [closed, confirmed] = armor_picker->draw();
       if (confirmed) {
-        m_actor_armor = armor_picker->selection();
+        if (m_armor_type == 0) {
+          m_actor_armor = armor_picker->selection();
+        }
+        else {
+          m_armor_selection = armor_picker->selection();
+        }
         armor_picker.reset();
       }
     }
@@ -105,7 +115,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           std::string text =
               m_conditionType != 0
                   ? "##conditional_switch_empty"
-                  : (m_switch_id == 0 ? "" : std::format("{:04} ", m_switch_id) + m_project->switche(m_switch_id));
+                  : Database::Instance->switchNameOrId(m_switch_id).c_str();
           ImGui::PushID("##conditional_switch_id");
           ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 50) - (16 * App::DPIHandler::get_ui_scale()));
           ImGui::BeginDisabled(m_conditionType != 0);
@@ -135,7 +145,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           // Variables
           ImGui::BeginDisabled(m_conditionType != 1);
           text = m_conditionType != 1 ? "##conditional_variable_id"
-                                      : std::format("{:04} ", m_variable_id) + m_project->variable(m_variable_id);
+                                      : Database::Instance->variableNameAndId(m_variable_id).c_str();
           ImGui::PushID("##controlvariable_id2");
           if (ImGui::Button(text.c_str(), ImVec2{App::DPIHandler::scale_value(200), 0})) {
             m_picker_type = 1;
@@ -342,6 +352,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           if (ImGui::Button(m_actor_sub_selection != 4 ? ""
                                                        : Database::Instance->weaponNameOrId(m_actor_weapon).c_str(),
                             {(App::DPIHandler::scale_value(180)), 0})) {
+            m_weapon_type = 0;
             weapon_picker = ObjectPicker<Weapon>("Weapon"sv, Database::Instance->weapons.weaponList(), 0);
           }
           ImGui::PopID();
@@ -352,6 +363,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           ImGui::PushID("##change_armors_selection");
           if (ImGui::Button(m_actor_sub_selection != 5 ? "" : Database::Instance->armorNameOrId(m_actor_armor).c_str(),
                             {(App::DPIHandler::scale_value(180)), 0})) {
+            m_armor_type = 0;
             armor_picker = ObjectPicker<Armor>("Armor"sv, Database::Instance->armors.armorList(), 0);
           }
           ImGui::PopID();
@@ -379,7 +391,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           ImGui::Dummy(ImVec2{0, 60});
           ImGui::RadioButton("Character", &m_conditionType, 6);
           ImGui::Dummy(ImVec2{0, 40});
-          ImGui::RadioButton("Vehicle", &m_conditionType, 7);
+          ImGui::RadioButton("Vehicle", &m_conditionType, 13);
           ImGui::EndGroup();
         }
         ImGui::SameLine();
@@ -472,12 +484,12 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           }
           ImGui::EndDisabled();
 
-          ImGui::BeginDisabled(m_conditionType != 7);
+          ImGui::BeginDisabled(m_conditionType != 13);
           ImGui::SetCursorPosY(ImGui::GetCursorPosY() + App::DPIHandler::scale_value(15));
           ImGui::SetNextItemWidth(180 * App::DPIHandler::get_ui_scale());
           if (ImGui::BeginCombo(
                   "##vehicle_location_selection",
-                  m_conditionType != 7
+                  m_conditionType != 13
                       ? ""
                       : DecodeEnumName(magic_enum::enum_value<VehicleType>(m_vehicle_selection)).c_str())) {
             for (auto& vehicle : magic_enum::enum_values<VehicleType>()) {
@@ -499,25 +511,25 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
       if (ImGui::BeginTabItem("Misc")) {
         ImGui::BeginGroup();
         {
-          ImGui::RadioButton("Gold", &m_conditionType, 8);
-          ImGui::RadioButton("Item", &m_conditionType, 9);
-          ImGui::RadioButton("Weapon", &m_conditionType, 10);
+          ImGui::RadioButton("Gold", &m_conditionType, 7);
+          ImGui::RadioButton("Item", &m_conditionType, 8);
+          ImGui::RadioButton("Weapon", &m_conditionType, 9);
           ImGui::Dummy(ImVec2{0, 25});
-          ImGui::RadioButton("Armor", &m_conditionType, 11);
+          ImGui::RadioButton("Armor", &m_conditionType, 10);
           ImGui::Dummy(ImVec2{0, 25});
-          ImGui::RadioButton("Button", &m_conditionType, 12);
-          ImGui::RadioButton("Script", &m_conditionType, 13);
+          ImGui::RadioButton("Button", &m_conditionType, 11);
+          ImGui::RadioButton("Script", &m_conditionType, 12);
           ImGui::EndGroup();
         }
         ImGui::SameLine();
         ImGui::BeginGroup();
         {
           // Gold
-          ImGui::BeginDisabled(m_conditionType != 8);
+          ImGui::BeginDisabled(m_conditionType != 7);
           ImGui::SetNextItemWidth(120 * App::DPIHandler::get_ui_scale());
           if (ImGui::BeginCombo(
                   "##conditional_gold_operation",
-                  m_conditionType != 8
+                  m_conditionType != 7
                       ? ""
                       : DecodeEnumName(magic_enum::enum_value<GoldComparisonType>(m_gold_operation)).c_str())) {
             for (auto& operation : magic_enum::enum_values<GoldComparisonType>()) {
@@ -543,9 +555,9 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           ImGui::EndDisabled();
 
           // Item
-          ImGui::BeginDisabled(m_conditionType != 9);
+          ImGui::BeginDisabled(m_conditionType != 8);
           ImGui::PushID("##conditional_item_selection");
-          if (ImGui::Button(m_conditionType != 9 ? "" : Database::Instance->itemNameOrId(m_item_selection).c_str(),
+          if (ImGui::Button(m_conditionType != 8 ? "" : Database::Instance->itemNameOrId(m_item_selection).c_str(),
                             {(App::DPIHandler::scale_value(180)), 0})) {
             item_picker = ObjectPicker<Item>("Items"sv, Database::Instance->items.items(), 0);
           }
@@ -553,10 +565,11 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           ImGui::EndDisabled();
 
           // Weapon
-          ImGui::BeginDisabled(m_conditionType != 10);
+          ImGui::BeginDisabled(m_conditionType != 9);
           ImGui::PushID("##conditional_weapon_selection");
-          if (ImGui::Button(m_conditionType != 10 ? "" : Database::Instance->weaponNameOrId(m_weapon_selection).c_str(),
+          if (ImGui::Button(m_conditionType != 9 ? "" : Database::Instance->weaponNameOrId(m_weapon_selection).c_str(),
                             {(App::DPIHandler::scale_value(180)), 0})) {
+            m_weapon_type = 1;
             weapon_picker = ObjectPicker<Weapon>("Weapons"sv, Database::Instance->weapons.weapons(), 0);
           }
           ImGui::PopID();
@@ -566,10 +579,11 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           ImGui::EndDisabled();
 
           // Armor
-          ImGui::BeginDisabled(m_conditionType != 11);
+          ImGui::BeginDisabled(m_conditionType != 10);
           ImGui::PushID("##conditional_armor_selection");
-          if (ImGui::Button(m_conditionType != 11 ? "" : Database::Instance->armorNameOrId(m_armor_selection).c_str(),
+          if (ImGui::Button(m_conditionType != 10 ? "" : Database::Instance->armorNameOrId(m_armor_selection).c_str(),
                             {(App::DPIHandler::scale_value(160)), 0})) {
+            m_armor_type = 1;
             armor_picker = ObjectPicker<Armor>("Armors"sv, Database::Instance->armors.armors(), 0);
           }
           ImGui::PopID();
@@ -579,10 +593,10 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           ImGui::EndDisabled();
 
           // Button
-          ImGui::BeginDisabled(m_conditionType != 12);
+          ImGui::BeginDisabled(m_conditionType != 11);
           ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
           if (ImGui::BeginCombo("##conditional_button_selection",
-                                m_conditionType != 12
+                                m_conditionType != 11
                                     ? ""
                                     : DecodeEnumName(magic_enum::enum_value<Button>(m_button_selection)).c_str())) {
             for (auto& button : magic_enum::enum_values<Button>()) {
@@ -600,7 +614,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           ImGui::EndDisabled();
 
           // Script
-          ImGui::BeginDisabled(m_conditionType != 13);
+          ImGui::BeginDisabled(m_conditionType != 12);
           ImGui::SetNextItemWidth(App::DPIHandler::scale_value(350));
           ImGui::InputText("##conditional_script", &m_script);
           ImGui::EndDisabled();
@@ -625,6 +639,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           else if (command->type == ConditionType::Variable) {
             command->variable.id = m_variable_id;
             command->variable.source = static_cast<VariableComparisonSource>(m_variable_subSource);
+            command->variable.comparison = static_cast<VariableComparisonType>(m_variable_value);
             if (command->variable.source == VariableComparisonSource::Constant) {
               command->variable.constant = m_sub_constant;
             }
@@ -677,7 +692,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           }
           else if (command->type == ConditionType::Character) {
             command->character.id = m_character_selection;
-            command->character.facing = static_cast<Direction>(m_character_direction);
+            command->character.facing = static_cast<Direction>((m_character_direction * 2) + 2);
           }
           else if (command->type == ConditionType::Vehicle) {
             command->vehicle.id = static_cast<VehicleType>(m_vehicle_selection);

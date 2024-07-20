@@ -344,6 +344,8 @@ add_library(
         Core/MapEditor/MapRenderer.hpp
         Core/EventCommands/Dialog_ConditionalBranch.cpp
         Core/EventCommands/Dialog_ConditionalBranch.hpp
+        Core/EventCommands/Dialog_ShowChoice.cpp
+        Core/EventCommands/Dialog_ShowChoice.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})

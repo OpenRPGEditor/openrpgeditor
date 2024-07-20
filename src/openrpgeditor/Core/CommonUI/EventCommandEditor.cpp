@@ -152,6 +152,7 @@
 #include "Core/EventCommands/Dialog_ChangePluginCommand.hpp"
 #include "Core/EventCommands/Dialog_ShowText.hpp"
 #include "Core/EventCommands/Dialog_ConditionalBranch.hpp"
+#include "Core/EventCommands/Dialog_ShowChoice.hpp"
 
 #include <iostream>
 #include <vector>
@@ -516,8 +517,7 @@ void EventCommandEditor::drawPopup() {
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Show Choices...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ShowChoices>("Show Choices", m_project);
+            commandDialog = std::make_shared<Dialog_ShowChoice>("Show Choices", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column

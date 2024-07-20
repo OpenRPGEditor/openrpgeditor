@@ -9,11 +9,11 @@ struct ShowChoiceCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  TextBackground background{};
-  ChoiceWindowPosition positionType{};
+  TextBackground background = TextBackground::Window;
+  ChoiceWindowPosition positionType = ChoiceWindowPosition::Right;
   std::vector<std::string> choices;
-  int cancelType{};  // < 0 == disallow/branch
-  int defaultType{}; // -1 is none
+  int cancelType{2};  // < 0 == disallow/branch
+  int defaultType{1}; // -1 is none
 };
 
 struct WhenSelectedCommand final : IEventCommand {

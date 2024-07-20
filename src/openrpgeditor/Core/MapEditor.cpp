@@ -114,6 +114,7 @@ void MapEditor::handleEventDrag() {
 void MapEditor::handleMouseInput(ImGuiWindow* win) {
   // if (map()) {
   //   map()->data[(tileCellY() * map()->width) + tileCellX()] = 2086;
+  //   updateAutotilesAroundPoint(Point{tileCellX(), tileCellY()}, 0);
   // }
 
   if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow) || ImGui::IsKeyPressed(ImGuiKey_RightArrow) ||
@@ -224,9 +225,102 @@ void MapEditor::handleKeyboardShortcuts() {
     }
   }
 }
-void MapEditor::updateFloorTypeAutotile(int x, int y, int layer, int flags) {}
 
-void MapEditor::updateWaterfallTypeAutotile(int x, int y, int layer, int flags) {}
+void MapEditor::updateAllAutotiles() {
+  const auto rect = Rect(0, 0, map()->width, map()->height);
+  updateAutotilesInRect(rect, 0);
+  updateAutotilesInRect(rect, 1);
+}
+
+void MapEditor::updateAutotilesInRect(const Rect& rect, int layer) {}
+
+void MapEditor::updateAutotile(const Point& point, const int layer, const int flags) {
+  if (isRegionMode() || !isMapPointValid(point)) {
+    return;
+  }
+
+  auto tileId = readMapData(point, layer);
+  if (TileHelper::isFloorTypeAutotile(tileId)) {
+    tileId = updateFloorTypeAutotile(point, layer, flags);
+  } else if (TileHelper::isWallTypeAutotile(tileId)) {
+    tileId = updateWallTypeAutotile(point, layer, flags);
+  } else if (TileHelper::isWaterfallTile(tileId)) {
+    tileId = updateWaterfallTypeAutotile(point, layer, flags);
+  }
+
+  writeMapData(point, layer, tileId);
+  /* TODO: Flags */
+  if (layer == 0 && (flags & (0x10 | 0x08 | 0x01))) {
+    updateShadowData(point);
+  }
+}
+void MapEditor::updateAutotilesAroundPoint(const Point& point, const int layer) {
+  updateAutotile(point, layer, 0xFF);
+  updateAutotile(Point{point.x(), point.y() - 1}, layer, 0x80 | 0x08 | 0x04);
+  updateAutotile(Point{point.x() - 1, point.y()}, layer, 0x40 | 0x04 | 0x02);
+  updateAutotile(Point{point.x(), point.y() + 1}, layer, 0x20 | 0x02 | 0x01);
+  updateAutotile(Point{point.x() + 1, point.y()}, layer, 0x10 | 0x08 | 0x01);
+  updateAutotile(Point{point.x() + 1, point.y() - 1}, layer, 0x08);
+  updateAutotile(Point{point.x() - 1, point.y() - 1}, layer, 0x04);
+  updateAutotile(Point{point.x() - 1, point.y() + 1}, layer, 0x02);
+  updateAutotile(Point{point.x() + 1, point.y() + 1}, layer, 0x01);
+}
+
+void MapEditor::updateShadowData(const Point& point) {
+  const int tileId = (isGroundTile(point, 0) && isShadowingTile(Point{point.x() - 1, point.y()}, 0) &&
+                      isShadowingTile(Point{point.x() - 1, point.y() - 1}, 0))
+                         ? 5
+                         : 0;
+  writeMapData(point, 4, tileId);
+}
+
+int MapEditor::updateFloorTypeAutotile(const Point& point, const int layer, const int flags) const {
+  const auto tileId = readMapData(point, layer);
+  const auto kind = TileHelper::getAutoTileKind(tileId);
+  const auto shape = TileHelper::getAutoTileShape(tileId);
+  const auto dir = TileHelper::floorShapeToDir(shape);
+  const auto leftTop = makeDirectionBit(Point{point.x() - 1, point.y() - 1}, tileId, layer, flags & 1, false);
+  const auto rightTop = makeDirectionBit(Point{point.x() + 1, point.y() - 1}, tileId, layer, flags & 2, false);
+  const auto rightBottom = makeDirectionBit(Point{point.x() + 1, point.y() + 1}, tileId, layer, flags & 4, false);
+  const auto leftBottom = makeDirectionBit(Point{point.x() - 1, point.y() + 1}, tileId, layer, flags & 8, false);
+  const auto leftMiddle = makeDirectionBit(Point{point.x() - 1, point.y()}, tileId, layer, flags & 0x10, false);
+  const auto topMiddle = makeDirectionBit(Point{point.x(), point.y() - 1}, tileId, layer, flags & 0x20, false);
+  const auto rightMiddle = makeDirectionBit(Point{point.x() + 1, point.y()}, tileId, layer, flags & 0x40, false);
+  const auto bottomMiddle = makeDirectionBit(Point{point.x(), point.y() + 1}, tileId, layer, flags & 0x80, false);
+  const auto newShape = TileHelper::floorDirToShape(rightBottom | rightTop | leftTop | leftBottom | leftMiddle |
+                                                    topMiddle | rightMiddle | bottomMiddle | (dir & ~flags));
+
+  return TileHelper::makeAutoTileId(kind, newShape);
+}
+
+int MapEditor::updateWallTypeAutotile(const Point& point, int layer, int flags) const { return -1; }
+
+int MapEditor::updateWaterfallTypeAutotile(const Point& point, int layer, int flags) const { return -1; }
+int MapEditor::makeDirectionBit(const Point& nextPos, const int tileId, const int layer, const int flags,
+                                const bool skipBorder) const {
+  int ret = 0;
+  if (flags) {
+    const auto nextTileId = readMapData(nextPos, layer);
+    if (nextTileId < 0) {
+      return 0;
+    }
+    ret = flags;
+    if (!skipBorder) {
+      ret = 0;
+      if (TileHelper::shouldCreateBorder(tileId, nextTileId)) {
+        ret = flags;
+      }
+    }
+  }
+  return ret;
+}
+bool MapEditor::isGroundTile(const Point& p, const int layer) const {
+  return TileHelper::isGroundTile(readMapData(p, layer));
+}
+
+bool MapEditor::isShadowingTile(const Point& p, const int layer) const {
+  return TileHelper::isShadowingTile(readMapData(p, layer));
+}
 
 void MapEditor::renderLayerRects(ImGuiWindow* win, const MapRenderer::MapLayer& layer) {
   for (const auto& l : layer.tileLayers) {

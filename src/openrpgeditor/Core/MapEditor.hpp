@@ -7,6 +7,7 @@
 #include "Core/EventEditor.hpp"
 #include "Database/MapInfos.hpp"
 #include "MapEditor/MapCursor.hpp"
+#include "OREMath/Rect.hpp"
 
 struct Project;
 struct Map;
@@ -17,8 +18,7 @@ struct MapEditor {
 
   void setMap(MapInfo* info);
 
-  void clearLayers() {
-  }
+  void clearLayers() {}
 
   void scale(float scale) {
     m_mapScale += scale;
@@ -75,6 +75,27 @@ struct MapEditor {
 
   float zoom() const { return m_mapScale; }
 
+  Rect mapRect() const {
+    if (!map()) {
+      return {};
+    }
+
+    return Rect{0, 0, map()->width, map()->height};
+  }
+
+  bool isMapPointValid(const Point& point) const { return mapRect().contains(point); }
+  bool isRegionMode() const { return m_regionMode; }
+
+  int readMapData(const Point& point, const int layer) const {
+    return m_mapRenderer.tileId(point.x(), point.y(), layer);
+  }
+  void writeMapData(const Point& point, const int layer, const int tileId) {
+    if (!map()) {
+      return;
+    }
+    map()->data[m_mapRenderer.tileIdFromCoords(point.x(), point.y(), layer)] = tileId;
+  }
+
 private:
   void drawMapProperties();
   void drawParallax(ImGuiWindow* win);
@@ -87,11 +108,16 @@ private:
   void handleKeyboardShortcuts();
 
   void updateAllAutotiles();
-  void updateAutotilesInRect(int x, int y, int width, int height, int layer);
-  void updateAutotile(int x, int y, int layer, int flags);
-  void updateAutotilesAroundPoint(int x, int y, int layer, int flags);
-  void updateFloorTypeAutotile(int x, int y, int layer, int flags);
-  void updateWaterfallTypeAutotile(int x, int y, int layer, int flags);
+  void updateAutotilesInRect(const Rect& rect, int layer);
+  void updateAutotile(const Point& point, int layer, int flags);
+  void updateAutotilesAroundPoint(const Point& point, int layer);
+  void updateShadowData(const Point& point);
+  int updateFloorTypeAutotile(const Point& point, int layer, int flags) const;
+  int updateWallTypeAutotile(const Point& point, int layer, int flags) const;
+  int updateWaterfallTypeAutotile(const Point& point, int layer, int flags) const;
+  int makeDirectionBit(const Point& nextPos, int tileId, int layer, int flags, bool skipBorder) const;
+  bool isGroundTile(const Point& p, int layer) const;
+  bool isShadowingTile(const Point& p, int layer) const;
 
   Project* m_parent;
   MapInfo* m_mapInfo = nullptr;
@@ -111,6 +137,7 @@ private:
   Event* m_selectedEvent = nullptr;
   bool m_hasScrolled = true;
   bool m_prisonMode{true};
+  bool m_regionMode{false};
 
   int m_movingEventX = -1;
   int m_movingEventY = -1;

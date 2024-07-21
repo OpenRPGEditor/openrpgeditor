@@ -346,6 +346,10 @@ add_library(
         Core/EventCommands/Dialog_ConditionalBranch.hpp
         Core/EventCommands/Dialog_ShowChoice.cpp
         Core/EventCommands/Dialog_ShowChoice.hpp
+        Core/EventCommands/Dialog_ShowScrollingText.cpp
+        Core/EventCommands/Dialog_ShowScrollingText.hpp
+        Core/EventCommands/Dialog_ShopProcessing.cpp
+        Core/EventCommands/Dialog_ShopProcessing.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})

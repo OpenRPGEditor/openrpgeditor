@@ -20,8 +20,8 @@ struct ShowScrollTextCommand final : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   void addText(NextScrollingTextCommand* n) { text.emplace_back(n); }
 
-  int speed;
-  bool noFast;
+  int speed{2};
+  bool noFast{false};
   std::vector<std::shared_ptr<NextScrollingTextCommand>> text;
 
 };

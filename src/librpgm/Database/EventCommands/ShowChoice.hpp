@@ -11,9 +11,9 @@ struct ShowChoiceCommand final : IEventCommand {
 
   TextBackground background = TextBackground::Window;
   ChoiceWindowPosition positionType = ChoiceWindowPosition::Right;
-  std::vector<std::string> choices;
-  int cancelType{2};  // < 0 == disallow/branch
-  int defaultType{1}; // -1 is none
+  std::vector<std::string> choices{"Yes", "No"};
+  int cancelType{1};  // < 0 == disallow/branch
+  int defaultType{0}; // -1 is none
 };
 
 struct WhenSelectedCommand final : IEventCommand {

@@ -153,6 +153,8 @@
 #include "Core/EventCommands/Dialog_ShowText.hpp"
 #include "Core/EventCommands/Dialog_ConditionalBranch.hpp"
 #include "Core/EventCommands/Dialog_ShowChoice.hpp"
+#include "Core/EventCommands/Dialog_ShowScrollingText.hpp"
+#include "Core/EventCommands/Dialog_ShopProcessing.hpp"
 
 #include <iostream>
 #include <vector>
@@ -530,8 +532,7 @@ void EventCommandEditor::drawPopup() {
             commandDialog = std::make_shared<Dialog_GetOnOffVehicle>("Get on/off Vehicle", m_project);
           }
           if (ImGui::Button("Show Scrolling Text...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ShowScrollingText>("Show Scrolling Text", m_project);
+            commandDialog = std::make_shared<Dialog_ShowScrollingText>("Show Scrolling Text", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second Column
@@ -549,8 +550,7 @@ void EventCommandEditor::drawPopup() {
           }
           ImGui::SameLine(); // Second Column
           if (ImGui::Button("Shop Processing...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ShopProcessing>("Shop Processing", m_project);
+            commandDialog = std::make_shared<Dialog_ShopProcessing>("Shop Processing", m_project);
             commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Third Column
@@ -741,13 +741,11 @@ void EventCommandEditor::drawPopup() {
           if (!commandDialog->getParentIndent().has_value()) {
             commandDialog->setParentIndent(m_commands->at(m_selectedCommand)->indent.value());
             commandDialog->getCommand()->indent = commandDialog->getParentIndent().value();
-            APP_INFO("Parent indent set to " + std::to_string(commandDialog->getParentIndent().value()));
           }
 
           if (confirmed) {
             std::vector<std::shared_ptr<IEventCommand>> cmds = commandDialog->getBatchCommands();
             if (cmds.empty()) {
-              APP_INFO("Command inserted with indent " + std::to_string(commandDialog->getParentIndent().value()));
               auto select = m_commands->insert(m_commands->begin() + m_selectedCommand, commandDialog->getCommand());
               m_selectedCommand = select - m_commands->begin();
             }

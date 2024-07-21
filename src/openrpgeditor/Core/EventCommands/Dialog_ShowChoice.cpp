@@ -81,9 +81,9 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
       ImGui::Text("Default:");
       ImGui::PushItemWidth((App::DPIHandler::scale_value(120)));
       if (ImGui::BeginCombo("##showchoice_default",
-                            m_defaultType < 0 ? "None" : ("Choice #" + std::to_string(m_defaultType)).c_str())) {
+                            m_defaultType < 0 ? "None" : ("Choice #" + std::to_string(m_defaultType + 1)).c_str())) {
 
-        for (int i{-1}; i < 7; i++) {
+        for (int i{-1}; i < 6; i++) {
           bool is_selected = m_defaultType == i;
           if (i < 0) {
             if (ImGui::Selectable("None", is_selected)) {
@@ -92,7 +92,7 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
                 ImGui::SetItemDefaultFocus();
             }
           } else {
-            if (ImGui::Selectable(("Choice #" + std::to_string(i)).c_str(), is_selected)) {
+            if (ImGui::Selectable(("Choice #" + std::to_string(i + 1)).c_str(), is_selected)) {
               m_defaultType = i;
               if (is_selected)
                 ImGui::SetItemDefaultFocus();
@@ -106,10 +106,10 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
       ImGui::PushItemWidth((App::DPIHandler::scale_value(120)));
       std::string text = m_cancelType == -2   ? "Branch"
                          : m_cancelType == -1 ? "Disallow"
-                             : ("Choice #" + std::to_string(m_cancelType));
+                             : ("Choice #" + std::to_string(m_cancelType + 1));
 
       if (ImGui::BeginCombo("##showchoice_cancel", text.c_str())) {
-        for (int i{-2}; i < 7; i++) {
+        for (int i{-2}; i < 6; i++) {
           bool is_selected = m_cancelType == i;
           if (i < 0) {
             if (i == -2) {
@@ -126,8 +126,8 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
               }
             }
           } else {
-            if (ImGui::Selectable(("Choice #" + std::to_string(i)).c_str(), is_selected)) {
-              m_defaultType = i;
+            if (ImGui::Selectable(("Choice #" + std::to_string(i + 1)).c_str(), is_selected)) {
+              m_cancelType = i;
               if (is_selected)
                 ImGui::SetItemDefaultFocus();
             }
@@ -143,9 +143,25 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
     {
       if (ImGui::Button("OK")) {
         m_confirmed = true;
+
+        if (!m_choice_1.empty()) { m_choices[0] = m_choice_1; }
+        if (!m_choice_2.empty()) { m_choices[1] = m_choice_2; }
+        if (!m_choice_3.empty()) { m_choices[2] = m_choice_3; }
+        if (!m_choice_4.empty()) { m_choices[3] = m_choice_4; }
+        if (!m_choice_5.empty()) { m_choices[4] = m_choice_5; }
+        if (!m_choice_6.empty()) { m_choices[5] = m_choice_6; }
+
         command->background = static_cast<TextBackground>(m_background);
         command->positionType = static_cast<ChoiceWindowPosition>(m_position);
-        command->choices = m_choices;
+        //command->choices = m_choices;
+
+        int index{0};
+        command->choices.clear();
+        for (auto& str : m_choices) {
+          if (!str.empty())
+            command->choices.push_back(str);
+          index++;
+        }
         command->cancelType = m_cancelType;
         command->defaultType = m_defaultType;
         ImGui::CloseCurrentPopup();

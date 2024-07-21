@@ -55,6 +55,7 @@ static std::map<EventCode, std::string_view> CommandColors{
   {EventCode::Show_Choices,             solarized::indigo},
   {EventCode::Input_Number,             solarized::indigo},
   {EventCode::When_Selected,            solarized::indigo},
+  {EventCode::When_Cancel,              solarized::indigo},
   {EventCode::End_del_ShowChoices,      solarized::indigo},
   {EventCode::Select_Item,              solarized::indigo},
   {EventCode::Show_Scrolling_Text,      solarized::indigo},

@@ -187,8 +187,8 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
       m_parent->editMode() == EditMode::Event && ImGui::IsWindowFocused()) {
 
     if (m_selectedEvent != nullptr) {
-      auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(),
-                             [&](const EventEditor& editor) { return editor.event()->id == m_selectedEvent->id; });
+      const auto it = std::ranges::find_if(
+          m_eventEditors, [&](const EventEditor& editor) { return editor.event()->id == m_selectedEvent->id; });
       if (it == m_eventEditors.end()) {
         m_eventEditors.emplace_back(m_parent, m_selectedEvent);
       }

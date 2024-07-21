@@ -17,7 +17,7 @@ static inline bool fuzzyIsNull(const double p) { return std::abs(p) <= DBL_EPSIL
 
 static inline bool fuzzyIsNull(const float p) { return std::abs(p) <= FLT_EPSILON; }
 
-static inline bool qIsNull(const double d) {
+static inline bool isNull(const double d) {
   union U {
     double d;
     uint64_t u;

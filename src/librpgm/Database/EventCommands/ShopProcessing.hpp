@@ -11,10 +11,10 @@ struct ShopProcessingGoodCommand final : IEventCommand {
   void serializeParameters(nlohmann::json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  ShopType type;
-  int id;
-  PriceType priceType;
-  int price;
+  ShopType type = ShopType::Item;
+  int id{1};
+  PriceType priceType = PriceType::Standard;
+  int price{0};
 };
 
 struct ShopProcessingCommand final : IEventCommand {
@@ -28,9 +28,9 @@ struct ShopProcessingCommand final : IEventCommand {
   void addGood(ShopProcessingGoodCommand* good) { goods.emplace_back(good); }
 
   ShopType type{};
-  int id{};
+  int id{0};
   PriceType priceType{};
   int price{};
-  bool purchaseOnly{};
+  bool purchaseOnly{false};
   std::vector<std::shared_ptr<ShopProcessingGoodCommand>> goods;
 };

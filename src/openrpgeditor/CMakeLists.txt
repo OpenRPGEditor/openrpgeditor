@@ -350,6 +350,8 @@ add_library(
         Core/EventCommands/Dialog_ShowScrollingText.hpp
         Core/EventCommands/Dialog_ShopProcessing.cpp
         Core/EventCommands/Dialog_ShopProcessing.hpp
+        Core/EventCommands/Dialog_ShopProcessing_Goods.cpp
+        Core/EventCommands/Dialog_ShopProcessing_Goods.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})

@@ -19,6 +19,14 @@ struct Dialog_ShopProcessing_Goods : IEventDialogController {
     }
     m_type_selection = static_cast<int>(command->type);
     m_price_operation = static_cast<int>(command->priceType);
+    // ID
+    if (command->type == ShopType::Armor) {
+      m_armor_selection = command->id;
+    } else if (command->type == ShopType::Weapon) {
+      m_weapon_selection = command->id;
+    } else {
+      m_item_selection = command->id;
+    }
     // Price
     if (m_price_operation == 0) {
       if (command->type == ShopType::Armor) {
@@ -29,13 +37,8 @@ struct Dialog_ShopProcessing_Goods : IEventDialogController {
         m_price_constant = Database::Instance->items.item(m_item_selection)->price;
       }
     }
-    // ID
-    if (command->type == ShopType::Armor) {
-      m_armor_selection = command->id;
-    } else if (command->type == ShopType::Weapon) {
-      m_weapon_selection = command->id;
-    } else {
-      m_item_selection = command->id;
+    else {
+      m_price_constant = command->price;
     }
   }
   explicit Dialog_ShopProcessing_Goods(const std::string& name, int id, int price, int shopType, int priceType)
@@ -56,7 +59,7 @@ struct Dialog_ShopProcessing_Goods : IEventDialogController {
     }
     
     // Price
-    if (priceType == 1) {
+    if (priceType == 0) {
       if (shopType == 2) {
         m_price_constant = Database::Instance->armors.armor(m_armor_selection)->price;
       } else if (shopType == 1) {

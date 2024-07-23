@@ -692,7 +692,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           }
           else if (command->type == ConditionType::Character) {
             command->character.id = m_character_selection;
-            command->character.facing = static_cast<Direction>((m_character_direction * 2) + 2);
+            command->character.facing = static_cast<Direction>((m_character_direction * 2));
           }
           else if (command->type == ConditionType::Vehicle) {
             command->vehicle.id = static_cast<VehicleType>(m_vehicle_selection);

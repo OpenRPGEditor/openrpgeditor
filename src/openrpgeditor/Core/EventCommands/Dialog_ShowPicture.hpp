@@ -2,6 +2,7 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ShowPicture.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
+#include "Core/CommonUI/ImagePicker.hpp"
 
 struct Project;
 struct Dialog_ShowPicture : IEventDialogController {
@@ -18,6 +19,8 @@ struct Dialog_ShowPicture : IEventDialogController {
     m_zoomY = command->zoomY;
     m_opacityValue = command->opacityValue;
     m_blendMode = static_cast<int>(command->blendMode);
+
+    m_imagePicker.emplace(ImagePicker::PickerMode::Picture, m_imageName, "");
   }
   std::tuple<bool, bool> draw() override;
 
@@ -43,5 +46,6 @@ private:
   bool m_confirmed{false};
   std::optional<VariableSwitchPicker> picker;
   std::shared_ptr<ShowPictureCommand> command;
+  std::optional<ImagePicker> m_imagePicker;
   std::tuple<bool, bool> result;
 };

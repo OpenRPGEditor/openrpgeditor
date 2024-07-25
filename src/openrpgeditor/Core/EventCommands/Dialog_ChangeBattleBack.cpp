@@ -15,17 +15,25 @@ std::tuple<bool, bool> Dialog_ChangeBattleBack::draw() {
                              ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
-    ImGui::SeparatorText("Menu");
-
-    ImGui::RadioButton("OFF", &isDisabled, 0);
-    ImGui::SameLine();
-    ImGui::RadioButton("ON", &isDisabled, 1);
+        if (const auto [closed, confirmed] = m_imagePicker->draw(); closed) {
+          if (confirmed) {
+            m_imagePicker->Accept();
+            m_image = m_imagePicker->selectedImage();
+          }
+        }
+        ImGui::Text("Battle Background:");
+        ImGui::PushID("#battleback_image_selection");
+        if (ImGui::Button("", ImVec2{(App::DPIHandler::scale_value(300)), 0})) {
+          m_imagePicker->SetOpen(true);
+        }
+        ImGui::PopID();
 
     if (ImGui::Button("OK")) {
-      // command->access = m_isDisabled == 0 ? AccessMode::Disable : AccessMode::Enable;
+      m_confirmed = true;
+      command->battleBack1Name = m_image;
+      command->battleBack2Name = m_image_2;
       ImGui::CloseCurrentPopup();
       SetOpen(false);
-      m_confirmed = true;
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {

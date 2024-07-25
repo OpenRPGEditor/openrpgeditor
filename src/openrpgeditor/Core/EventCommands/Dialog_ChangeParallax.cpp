@@ -12,16 +12,22 @@ std::tuple<bool, bool> Dialog_ChangeParallax::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{400, 200} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{400, 400} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
 
+    if (const auto [closed, confirmed] = m_imagePicker->draw(); closed) {
+      if (confirmed) {
+        m_imagePicker->Accept();
+        m_image = m_imagePicker->selectedImage();
+      }
+    }
 
     ImGui::SeparatorText("Parallax Background");
     // Actor Button
         ImGui::Text("Image:");
         ImGui::PushID("#parallax_image_selection");
         if (ImGui::Button("", ImVec2{(App::DPIHandler::scale_value(300)), 0})) {
-          // TODO: Image Picker
+          m_imagePicker->SetOpen(true);
         }
         ImGui::PopID();
         ImGui::Checkbox("Loop Horizontally", &m_loopHorizontally);

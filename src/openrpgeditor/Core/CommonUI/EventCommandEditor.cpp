@@ -155,6 +155,8 @@
 #include "Core/EventCommands/Dialog_ShowChoice.hpp"
 #include "Core/EventCommands/Dialog_ShowScrollingText.hpp"
 #include "Core/EventCommands/Dialog_ShopProcessing.hpp"
+#include "Core/EventCommands/Dialog_ChangeParallax.hpp"
+#include "Core/EventCommands/Dialog_ChangeBattleBack.hpp"
 
 #include <iostream>
 #include <vector>
@@ -692,8 +694,7 @@ void EventCommandEditor::drawPopup() {
           }
           ImGui::SameLine(); // Second column
           if (ImGui::Button("Change Parallax...", size)) {
-            // TODO
-            // commandDialog = std::make_shared<Dialog_ChangeParallax>("Change Parallax", m_project);
+            commandDialog = std::make_shared<Dialog_ChangeParallax>("Change Parallax", m_project);
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Change Tileset...", size)) {
@@ -706,9 +707,8 @@ void EventCommandEditor::drawPopup() {
             commandDialog->SetOpen(true);
           }
           if (ImGui::Button("Change Battle Back...", size)) {
-            // TODO : We need a specific image picker for this one (double images w/ preview)
-            // commandDialog = std::make_shared<Dialog_ChangeBattleBack>("Change Battle Back", m_project);
-            // commandDialog->SetOpen(true);
+            commandDialog = std::make_shared<Dialog_ChangeBattleBack>("Change Battle Back", m_project);
+            commandDialog->SetOpen(true);
           }
           ImGui::SameLine(); // Second column
           if (ImGui::Button("Change Vehicle Image...", size)) {

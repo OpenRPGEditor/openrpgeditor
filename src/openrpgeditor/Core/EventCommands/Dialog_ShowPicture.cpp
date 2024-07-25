@@ -28,6 +28,13 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
       }
     }
 
+    if (const auto [closed, confirmed] = m_imagePicker->draw(); closed) {
+      if (confirmed) {
+        m_imagePicker->Accept();
+        m_imageName = m_imagePicker->selectedImage();
+      }
+    }
+
     ImGui::SeparatorText("Picture");
     ImGui::BeginGroup();
     {
@@ -48,8 +55,8 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
       // Actor Button
       ImGui::Text("Image:");
       ImGui::PushID("##showpicture_image_selection");
-      if (ImGui::Button("", ImVec2{(App::DPIHandler::scale_value(300)), 0})) {
-        // TODO: Image Picker
+      if (ImGui::Button(m_imageName.c_str(), ImVec2{(App::DPIHandler::scale_value(300)), 0})) {
+        m_imagePicker->SetOpen(true);
       }
       ImGui::PopID();
       ImGui::EndGroup();

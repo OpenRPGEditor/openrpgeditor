@@ -19,11 +19,13 @@ std::tuple<bool, bool> Dialog_ChangeBattleBack::draw() {
           if (confirmed) {
             m_imagePicker->Accept();
             m_image = m_imagePicker->selectedImage();
+            m_image_2 = m_imagePicker->selectedImage2();
           }
         }
         ImGui::Text("Battle Background:");
         ImGui::PushID("#battleback_image_selection");
-        if (ImGui::Button("", ImVec2{(App::DPIHandler::scale_value(300)), 0})) {
+        if (ImGui::Button(m_image_2.empty() ? m_image.c_str() : (m_image + " & " + m_image_2).c_str(),
+                          ImVec2{(App::DPIHandler::scale_value(300)), 0})) {
           m_imagePicker->SetOpen(true);
         }
         ImGui::PopID();

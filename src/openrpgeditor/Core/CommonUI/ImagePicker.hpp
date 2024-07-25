@@ -18,6 +18,9 @@ struct ImagePicker : IDialogController {
   [[nodiscard]] std::string selectedImage() const {
     return m_selectedImage >= 0 ? m_images[m_selectedImage] : "";
   }
+  [[nodiscard]] std::string selectedImage2() const {
+    return m_selectedImage2 >= 0 ? m_images_2[m_selectedImage2] : "";
+  }
   void setImageInfo(std::string_view imageName, std::string_view image2Name);
 
 private:
@@ -28,4 +31,5 @@ private:
   PickerMode m_pickType;
   CheckerboardTexture m_checkerboardTexture{};
   int m_selectedImage{-1};
+  int m_selectedImage2{-1};
 };

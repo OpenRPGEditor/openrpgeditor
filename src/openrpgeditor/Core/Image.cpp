@@ -22,3 +22,6 @@ Image::Image(std::string_view imageName, std::string_view imageName2, int pickTy
 int Image::imageWidth() const { return m_imageTexture.width(); }
 int Image::imageHeight() const { return m_imageTexture.height(); }
 
+int Image::image2Width() const { return m_imageTexture2.width(); }
+int Image::image2Height() const { return m_imageTexture2.height(); }
+

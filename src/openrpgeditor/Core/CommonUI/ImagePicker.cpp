@@ -7,18 +7,15 @@
 #include "Core/Log.hpp"
 
 ImagePicker::ImagePicker(PickerMode mode, const std::string_view imageName, const std::string_view image2Name)
-: IDialogController("Select an Image##image_picker")
-, m_checkerboardTexture(864, 768) {
+: IDialogController("Select an Image##image_picker"), m_checkerboardTexture(864, 768) {
   m_pickType = mode;
   if (m_pickType == PickerMode::Parallax) {
     m_images = ResourceManager::instance()->getDirectoryContents("img/parallaxes/", ".png");
-  }
-  else if (m_pickType == PickerMode::Picture) {
+  } else if (m_pickType == PickerMode::Picture) {
     m_images = ResourceManager::instance()->getDirectoryContents("img/pictures/", ".png");
-  }
-  else {
-        m_images = ResourceManager::instance()->getDirectoryContents("img/battlebacks1/", ".png");
-        m_images_2 = ResourceManager::instance()->getDirectoryContents("img/battlebacks2/", ".png");
+  } else {
+    m_images = ResourceManager::instance()->getDirectoryContents("img/battlebacks1/", ".png");
+    m_images_2 = ResourceManager::instance()->getDirectoryContents("img/battlebacks2/", ".png");
   }
   setImageInfo(imageName, image2Name);
 }
@@ -40,6 +37,24 @@ void ImagePicker::setImageInfo(std::string_view imageName, const std::string_vie
 
   } else {
     m_selectedImage = -1;
+  }
+
+  if (!image2Name.empty()) {
+    bool found = false;
+    for (int i = 0; i < m_images_2.size(); ++i) {
+      if (!m_images_2[i].compare(image2Name)) {
+        found = true;
+        m_selectedImage2 = i;
+        break;
+      }
+    }
+    if (!found) {
+      m_selectedImage2 = -1;
+      return;
+    }
+
+  } else {
+    m_selectedImage2 = -1;
   }
 }
 
@@ -73,8 +88,8 @@ std::tuple<bool, bool> ImagePicker::draw() {
             if (ImGui::Selectable(sheet.c_str(), m_selectedImage == i,
                                   ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
               if (m_selectedImage != i) {
-                m_image.emplace(sheet, "", static_cast<int>(m_pickType));
                 m_selectedImage = i;
+                m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), m_selectedImage2 == -1 ? "" : m_images_2.at(m_selectedImage2), static_cast<int>(m_pickType));
               }
               if (ImGui::IsItemHovered()) {
                 ImGui::SetTooltip("%s", sheet.c_str());
@@ -83,26 +98,68 @@ std::tuple<bool, bool> ImagePicker::draw() {
           }
           ImGui::EndTable();
         }
-         ImGui::EndChild();
-         ImGui::SameLine();
-         ImGui::BeginChild("##image_picker_image_panel",
-                           ImVec2{App::DPIHandler::scale_value(894), App::DPIHandler::scale_value(784)},
-                           ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
-         {
-           const auto imageRect =
-               ImVec2{static_cast<float>(m_image->imageWidth()), static_cast<float>(m_image->imageHeight())} *
-               App::DPIHandler::get_ui_scale();
-           if (m_image) {
-             auto win = ImGui::GetCurrentWindow();
-             ImGui::GetWindowDrawList()->AddImage(
-                 m_checkerboardTexture.get(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
-                 win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_image->texture().width()),
-                                                      static_cast<float>(m_image->texture().height())} *
-                                               App::DPIHandler::get_ui_scale()));
-             ImGui::Image(m_image->texture().get(), imageRect);
-           }
-         }
-         ImGui::EndChild();
+        ImGui::EndChild();
+        ImGui::SameLine();
+        ImGui::BeginChild("##image_picker_list##2",
+                          ImVec2{App::DPIHandler::scale_value(200), App::DPIHandler::scale_value(768)},
+                          ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
+        {
+          if (m_pickType == PickerMode::Battleback) {
+            if (ImGui::BeginTable("##image_picker.tablelist##2", 1)) {
+              ImGui::TableNextRow();
+              ImGui::TableNextColumn();
+              if (ImGui::Selectable("(None)##2", m_selectedImage2 < 0,
+                                    ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+                m_selectedImage2 = -1;
+                m_image.reset();
+              }
+              for (int i = 0; i < m_images_2.size(); ++i) {
+                const auto& sheet2 = m_images_2[i];
+                ImGui::TableNextColumn();
+                if (ImGui::Selectable(sheet2.c_str(), m_selectedImage2 == i,
+                                      ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+                  if (m_selectedImage2 != i) {
+                    m_selectedImage2 = i;
+                    m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), m_selectedImage2 == -1 ? "" : m_images_2.at(m_selectedImage2), static_cast<int>(m_pickType));
+                  }
+                  if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("%s", sheet2.c_str());
+                  }
+                }
+              }
+              ImGui::EndTable();
+            }
+          }
+
+          ImGui::EndChild();
+        }
+        ImGui::SameLine();
+        ImGui::BeginChild("##image_picker_image_panel",
+                          ImVec2{App::DPIHandler::scale_value(894), App::DPIHandler::scale_value(784)},
+                          ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
+        {
+          const auto imageRect =
+              ImVec2{static_cast<float>(m_image->imageWidth()), static_cast<float>(m_image->imageHeight())} *
+              App::DPIHandler::get_ui_scale();
+          if (m_image) {
+            auto win = ImGui::GetCurrentWindow();
+            ImGui::GetWindowDrawList()->AddImage(
+                m_checkerboardTexture.get(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
+                win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_image->texture().width()),
+                                                     static_cast<float>(m_image->texture().height())} *
+                                              App::DPIHandler::get_ui_scale()));
+
+            ImGui::Image(m_image->texture().get(), imageRect);
+            if (m_pickType == PickerMode::Battleback) {
+              ImGui::GetWindowDrawList()->AddImage(
+                  m_image->texture().get(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
+                  win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_image->texture2().width()),
+                                                       static_cast<float>(m_image->texture2().height())} *
+                                                App::DPIHandler::get_ui_scale()));
+            }
+          }
+        }
+        ImGui::EndChild();
       }
       ImGui::EndGroup();
       ImGui::BeginGroup();

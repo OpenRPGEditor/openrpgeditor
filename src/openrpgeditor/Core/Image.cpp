@@ -3,13 +3,17 @@
 #include "Core/ResourceManager.hpp"
 #include "Log.hpp"
 
-Image::Image(std::string_view imageName, std::string_view imageName2, int pickType) {
+Image::Image(std::string_view imageName, int pickType, bool battleBack2 = false) {
   if (imageName.empty()) {
     return;
   }
   if (pickType == 0) {
-    m_imageTexture = ResourceManager::instance()->loadBattlebacks1Image(imageName);
-    m_imageTexture2 = ResourceManager::instance()->loadBattlebacks2Image(imageName2);
+    if (battleBack2) {
+      m_imageTexture = ResourceManager::instance()->loadBattlebacks2Image(imageName);
+    }
+    else {
+      m_imageTexture = ResourceManager::instance()->loadBattlebacks1Image(imageName);
+    }
 
   } else if (pickType == 1) {
     m_imageTexture = ResourceManager::instance()->loadParallaxImage(imageName);
@@ -21,7 +25,4 @@ Image::Image(std::string_view imageName, std::string_view imageName2, int pickTy
 
 int Image::imageWidth() const { return m_imageTexture.width(); }
 int Image::imageHeight() const { return m_imageTexture.height(); }
-
-int Image::image2Width() const { return m_imageTexture2.width(); }
-int Image::image2Height() const { return m_imageTexture2.height(); }
 

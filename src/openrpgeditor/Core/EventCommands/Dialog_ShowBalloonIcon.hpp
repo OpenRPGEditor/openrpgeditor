@@ -2,12 +2,14 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ShowBalloonIcon.hpp"
 
-struct Project;
 struct Dialog_ShowBalloonIcon : IEventDialogController {
   Dialog_ShowBalloonIcon() = delete;
-  explicit Dialog_ShowBalloonIcon(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ShowBalloonIconCommand());
+  explicit Dialog_ShowBalloonIcon(const std::string& name,
+                                  const std::shared_ptr<ShowBalloonIconCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ShowBalloonIconCommand());
+    }
     m_character = command->id;
     m_balloonIndex = static_cast<int>(command->index);
     m_waitCompletion = command->waitForCompletion;
@@ -15,7 +17,6 @@ struct Dialog_ShowBalloonIcon : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_character;

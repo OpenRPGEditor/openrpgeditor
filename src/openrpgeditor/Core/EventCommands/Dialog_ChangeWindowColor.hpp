@@ -2,12 +2,14 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeWindowColor.hpp"
 
-struct Project;
 struct Dialog_ChangeWindowColor : IEventDialogController {
   Dialog_ChangeWindowColor() = delete;
-  explicit Dialog_ChangeWindowColor(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeWindowColorCommand());
+  explicit Dialog_ChangeWindowColor(const std::string& name,
+                                    const std::shared_ptr<ChangeWindowColorCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeWindowColorCommand());
+    }
     red = command->r;
     green = command->g;
     blue = command->b;
@@ -15,7 +17,6 @@ struct Dialog_ChangeWindowColor : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int red;

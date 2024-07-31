@@ -3,7 +3,6 @@
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Project.hpp"
 #include "Core/ImGuiUtils.hpp"
 
 std::tuple<bool, bool> Dialog_ShopProcessing::draw() {

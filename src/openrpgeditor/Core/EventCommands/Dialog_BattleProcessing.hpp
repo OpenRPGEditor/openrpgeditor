@@ -5,21 +5,22 @@
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Troops.hpp"
 
-struct Project;
 struct Dialog_BattleProcessing : IEventDialogController {
   Dialog_BattleProcessing() = delete;
-  explicit Dialog_BattleProcessing(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new BattleProcessingCommand());
+  explicit Dialog_BattleProcessing(const std::string& name,
+                                   const std::shared_ptr<BattleProcessingCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new BattleProcessingCommand());
+    }
+
     m_type = static_cast<int>(command->type);
     m_id = command->id;
     m_canEscape = command->canEscape;
     m_canLose = command->canLose;
   }
   std::tuple<bool, bool> draw() override;
-
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_type;

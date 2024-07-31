@@ -1,25 +1,26 @@
 #pragma once
 #include "Core/EventCommands/IEventDialogController.hpp"
-#include "Core/Project.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/CommonEvents.hpp"
 #include "Database/EventCommands/CommonEvent.hpp"
+#include "Database/Database.hpp"
 
 using namespace std::string_view_literals;
 
-struct Project;
 struct Dialog_CommonEvent : IEventDialogController {
   Dialog_CommonEvent() = delete;
-  explicit Dialog_CommonEvent(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new CommonEventCommand());
+  explicit Dialog_CommonEvent(const std::string& name,
+                              const std::shared_ptr<CommonEventCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new CommonEventCommand());
+    }
     eventId = command->event;
-    m_picker = ObjectPicker("Common Events"sv, m_project->database().commonEvents.events(), 0);
+    m_picker = ObjectPicker("Common Events"sv, Database::Instance->commonEvents.events(), 0);
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-
-  Project* m_project = nullptr;
 
 private:
   int eventId;

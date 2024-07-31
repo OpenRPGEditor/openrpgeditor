@@ -2,8 +2,6 @@
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/ImGuiUtils.hpp"
-#include "Core/Log.hpp"
-#include "Core/Project.hpp"
 using namespace std::string_view_literals;
 std::tuple<bool, bool> Dialog_ChangeVehicleBGM::draw() {
 
@@ -96,7 +94,6 @@ std::tuple<bool, bool> Dialog_ChangeVehicleBGM::draw() {
     m_confirmed = true;
     command->bgm = m_audio;
     command->vehicle = static_cast<VehicleType>(m_vehicle);
-    APP_INFO(command->stringRep(m_project->database()));
     ImGui::CloseCurrentPopup();
     SetOpen(false);
   }

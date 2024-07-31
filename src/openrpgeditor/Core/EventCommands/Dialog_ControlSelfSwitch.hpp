@@ -3,11 +3,14 @@
 #include "Database/States.hpp"
 #include "Database/EventCommands/ControlSelfSwitch.hpp"
 
-struct Project;
 struct Dialog_ControlSelfSwitch : IEventDialogController {
   Dialog_ControlSelfSwitch() = delete;
-  explicit Dialog_ControlSelfSwitch(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
+  explicit Dialog_ControlSelfSwitch(const std::string& name,
+                                    const std::shared_ptr<ControlSelfSwitchCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ControlSelfSwitchCommand());
+    }
     command.reset(new ControlSelfSwitchCommand());
     m_selfSw = command->selfSw;
     m_turnOff = static_cast<int>(command->turnOff);
@@ -15,7 +18,6 @@ struct Dialog_ControlSelfSwitch : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   std::string m_selfSw; // A, B, C, D

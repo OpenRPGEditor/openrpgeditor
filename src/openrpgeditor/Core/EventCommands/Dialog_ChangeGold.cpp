@@ -3,7 +3,6 @@
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Project.hpp"
 #include "Database/Database.hpp"
 
 std::tuple<bool, bool> Dialog_ChangeGold::draw() {
@@ -50,7 +49,7 @@ std::tuple<bool, bool> Dialog_ChangeGold::draw() {
       if (ImGui::Button(
               text.c_str(),
               ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        picker.emplace("Variables", m_project->system().variables);
+        picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();
       ImGui::EndDisabled();

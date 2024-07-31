@@ -3,7 +3,6 @@
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Project.hpp"
 #include "Core/Log.hpp"
 
 std::tuple<bool, bool> Dialog_ShowText::draw() {
@@ -42,7 +41,7 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
     ImGui::BeginGroup();
     {
       ImGui::Text("Text:");
-      ImGui::InputTextMultiline("##showtext_multiline", &m_textLine, ImVec2{437.f, 107.f});
+      ImGui::InputTextMultiline("##showtext_multiline", m_textLine, 4096, ImVec2{437.f, 107.f});
       ImGui::EndGroup();
     }
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(100.f));

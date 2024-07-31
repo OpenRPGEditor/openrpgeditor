@@ -2,8 +2,6 @@
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/ImGuiUtils.hpp"
-#include "Core/Log.hpp"
-#include "Core/Project.hpp"
 using namespace std::string_view_literals;
 std::tuple<bool, bool> Dialog_ChangeDefeatME::draw() {
 
@@ -78,7 +76,6 @@ std::tuple<bool, bool> Dialog_ChangeDefeatME::draw() {
   if (ImGui::Button("OK")) {
     m_confirmed = true;
     command->me = m_audio;
-    APP_INFO(command->stringRep(m_project->database()));
     ImGui::CloseCurrentPopup();
     SetOpen(false);
   }

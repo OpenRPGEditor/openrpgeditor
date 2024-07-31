@@ -1,7 +1,6 @@
 #include "Dialog_GameData.hpp"
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Project.hpp"
 using namespace std::string_view_literals;
 std::tuple<bool, bool> Dialog_GameData::draw() {
 
@@ -59,13 +58,13 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
     ImGui::BeginGroup(); {
       // Item
       std::string text =
-          m_type != 0 ? "##gamedata_item_empty" : std::format("{:04} ", m_item_source) + m_project->item(m_item_source)->name;
+          m_type != 0 ? "##gamedata_item_empty" : std::format("{:04} ", m_item_source) + Database::Instance->itemName(m_item_source);
       ImGui::PushID("##gamedata_item_id");
       ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 50) - (16 * App::DPIHandler::get_ui_scale()));
       ImGui::BeginDisabled(m_type != 0);
       if (ImGui::Button(text.c_str(),
                         ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        i_picker = ObjectPicker<Item>("Items"sv, m_project->items().items(), 0);
+        i_picker = ObjectPicker<Item>("Items"sv, Database::Instance->items.items(), 0);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -75,12 +74,12 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
 
       // Weapon Selection
       text = m_type != 1 ? "##gamedata_weapon_empty"
-                         : std::format("{:04} ", m_weapon_source) + m_project->weapon(m_weapon_source)->name;
+                         : std::format("{:04} ", m_weapon_source) + Database::Instance->weaponName(m_weapon_source);
       ImGui::PushID("##gamedata_weapon_id");
       ImGui::BeginDisabled(m_type != 1);
       if (ImGui::Button(text.c_str(),
                         ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        w_picker = ObjectPicker<Weapon>("Weapons"sv, m_project->weapons().weaponList(), 0);
+        w_picker = ObjectPicker<Weapon>("Weapons"sv, Database::Instance->weapons.weaponList(), 0);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -89,12 +88,12 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
 
       // Armor Selection
       text = m_type != 2 ? "##gamedata_armor_empty"
-                         : std::format("{:04} ", m_armor_source) + m_project->armor(m_armor_source)->name;
+                         : std::format("{:04} ", m_armor_source) + Database::Instance->armorName(m_armor_source);
       ImGui::PushID("##gamedata_armor_id");
       ImGui::BeginDisabled(m_type != 2);
       if (ImGui::Button(text.c_str(),
                         ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        ar_picker = ObjectPicker<Armor>("Armors"sv, m_project->armors().armorList(), 0);
+        ar_picker = ObjectPicker<Armor>("Armors"sv, Database::Instance->armors.armorList(), 0);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -103,12 +102,12 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
 
       // Actor Selection
       text = m_type != 3 ? "##gamedata_actor_empty"
-                         : std::format("{:04} ", m_actor_source) + m_project->actor(m_actor_source)->name;
+                         : std::format("{:04} ", m_actor_source) + Database::Instance->actorName(m_actor_source);
       ImGui::PushID("##gamedata_actor_id");
       ImGui::BeginDisabled(m_type != 3);
       if (ImGui::Button(text.c_str(),
                         ImVec2{((ImGui::GetWindowContentRegionMax().x / 4 + 64)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        a_picker = ObjectPicker<Actor>("Actors"sv, m_project->actors().actorList(), 0);
+        a_picker = ObjectPicker<Actor>("Actors"sv, Database::Instance->actors.actorList(), 0);
       }
       ImGui::EndDisabled();
       ImGui::PopID();
@@ -163,7 +162,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       ImGui::BeginDisabled(m_type != 5);
       ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 4 + 50);
       if (ImGui::BeginCombo("##gamedata_character",
-                            m_type != 5 ? "" : current_characterSource == -1 ? "Player" : current_characterSource == 0 ? "This Event" : ("EV" + std::format("{:03} ", m_project->events().at(current_characterSource)->id)).c_str())) {
+                            m_type != 5 ? "" : current_characterSource == -1 ? "Player" : current_characterSource == 0 ? "This Event" : ("EV" + std::format("{:03} ", Database::Instance->mapInfos.currentMap()->event(current_characterSource)->id)).c_str())) {
 
         if (ImGui::Selectable("Player", current_characterSource == -1)) {
           current_characterSource = -1;
@@ -174,7 +173,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
             ImGui::SetItemDefaultFocus();
         }
 
-        for (auto& dataSource : m_project->events()) {
+        for (auto& dataSource : Database::Instance->mapInfos.currentMap()->map()->events) {
           if (!dataSource.has_value())
             continue;
 

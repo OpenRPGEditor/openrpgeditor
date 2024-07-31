@@ -5,14 +5,13 @@
 struct Project;
 struct Dialog_MovementChangeSpeed : IEventDialogController {
   Dialog_MovementChangeSpeed() = delete;
-  explicit Dialog_MovementChangeSpeed(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
+  explicit Dialog_MovementChangeSpeed(const std::string& name) : IEventDialogController(name) {
     command.reset(new MovementSpeedCommand());
     m_speed = command->speed;
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_speed;

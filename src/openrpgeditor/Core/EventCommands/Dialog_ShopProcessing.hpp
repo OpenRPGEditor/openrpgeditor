@@ -4,12 +4,14 @@
 #include "Core/Log.hpp"
 #include "Dialog_ShopProcessing_Goods.hpp"
 
-struct Project;
 struct Dialog_ShopProcessing : IEventDialogController {
   Dialog_ShopProcessing() = delete;
-  explicit Dialog_ShopProcessing(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ShopProcessingCommand());
+  explicit Dialog_ShopProcessing(const std::string& name,
+                                 const std::shared_ptr<ShopProcessingCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ShopProcessingCommand());
+    }
     m_id = command->id;
     m_type = static_cast<int>(command->type);
     m_priceType = static_cast<int>(command->priceType);
@@ -22,7 +24,6 @@ struct Dialog_ShopProcessing : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_goods_selection{0};

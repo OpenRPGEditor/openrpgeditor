@@ -2,11 +2,14 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ScrollMap.hpp"
 
-struct Project;
 struct Dialog_ScrollMap : IEventDialogController {
   Dialog_ScrollMap() = delete;
-  explicit Dialog_ScrollMap(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ScrollMapCommand());
+  explicit Dialog_ScrollMap(const std::string& name,
+                            const std::shared_ptr<ScrollMapCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ScrollMapCommand());
+    }
 
     m_direction = static_cast<int>(command->direction);
     m_distance = command->distance;
@@ -16,7 +19,6 @@ struct Dialog_ScrollMap : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_direction;

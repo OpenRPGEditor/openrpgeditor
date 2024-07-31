@@ -4,11 +4,14 @@
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/EventCommands/MovePicture.hpp"
 
-struct Project;
 struct Dialog_MovePicture : IEventDialogController {
   Dialog_MovePicture() = delete;
-  explicit Dialog_MovePicture(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new MovePictureCommand());
+  explicit Dialog_MovePicture(const std::string& name,
+                              const std::shared_ptr<MovePictureCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new MovePictureCommand());
+    }
     m_number = command->picture;
     m_origin = static_cast<int>(command->origin);
     m_type = static_cast<int>(command->pictureLocation);
@@ -24,7 +27,6 @@ struct Dialog_MovePicture : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_number;

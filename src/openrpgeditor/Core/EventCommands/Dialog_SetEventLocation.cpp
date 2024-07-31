@@ -3,7 +3,6 @@
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Project.hpp"
 #include "Database/Database.hpp"
 
 std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
@@ -39,7 +38,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
         ImGui::SetItemDefaultFocus();
       }
 
-      for (auto& dataSource : m_project->events()) {
+      for (auto& dataSource : Database::Instance->mapInfos.currentMap()->map()->events) {
         if (!dataSource.has_value())
           continue;
 
@@ -81,7 +80,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
               m_mode == 1 ? Database::Instance->variableNameAndId(m_x_var).c_str() : "",
               ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 1;
-        picker.emplace("Variables", m_project->system().variables);
+        picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();
       ImGui::PushID("##transfer_var_y");
@@ -89,7 +88,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
               m_mode == 1 ? Database::Instance->variableNameAndId(m_y_var).c_str() : "",
               ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 2;
-        picker.emplace("Variables", m_project->system().variables);
+        picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -107,7 +106,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
         ImGui::SetItemDefaultFocus();
       }
 
-      for (auto& dataSource : m_project->events()) {
+      for (auto& dataSource : Database::Instance->mapInfos.currentMap()->map()->events) {
         if (!dataSource.has_value())
           continue;
 

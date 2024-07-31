@@ -5,17 +5,19 @@
 #include "Database/EventCommands/ChangeNickname.hpp"
 #include "Database/EventCommands/Wait.hpp"
 
-struct Project;
 struct Dialog_Wait : IEventDialogController {
   Dialog_Wait() = delete;
-  explicit Dialog_Wait(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new WaitCommand());
+  explicit Dialog_Wait(const std::string& name,
+                       const std::shared_ptr<WaitCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new WaitCommand());
+    }
     m_waitDuration = command->duration;
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_waitDuration;

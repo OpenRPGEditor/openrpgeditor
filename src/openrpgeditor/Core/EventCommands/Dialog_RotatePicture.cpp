@@ -3,7 +3,6 @@
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Project.hpp"
 
 std::tuple<bool, bool> Dialog_RotatePicture::draw() {
   if (IsOpen()) {

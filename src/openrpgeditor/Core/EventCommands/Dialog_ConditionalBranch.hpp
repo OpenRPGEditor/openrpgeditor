@@ -13,12 +13,14 @@
 #include "Database/EventCommands/EventDummy.hpp"
 #include "Database/EventCommands/End.hpp"
 
-struct Project;
 struct Dialog_ConditionalBranch : IEventDialogController {
   Dialog_ConditionalBranch() = delete;
-  explicit Dialog_ConditionalBranch(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ConditionalBranchCommand());
+  explicit Dialog_ConditionalBranch(const std::string& name,
+                                    const std::shared_ptr<ConditionalBranchCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ConditionalBranchCommand());
+    }
 
     if (command->type == ConditionType::Switch) {
       m_switch_id = command->globalSwitch.switchIdx;
@@ -109,8 +111,6 @@ struct Dialog_ConditionalBranch : IEventDialogController {
     m_conditionType = static_cast<int>(command->type);
   }
   std::tuple<bool, bool> draw() override;
-
-  Project* m_project = nullptr;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
   std::vector<std::shared_ptr<IEventCommand>> getBatchCommands() override {

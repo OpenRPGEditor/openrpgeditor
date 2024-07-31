@@ -6,11 +6,14 @@
 #include "Database/EventCommands/ChangeGold.hpp"
 #include "Database/EventCommands/RecoverAll.hpp"
 
-struct Project;
 struct Dialog_RecoverAll : IEventDialogController {
   Dialog_RecoverAll() = delete;
-  explicit Dialog_RecoverAll(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new RecoverAllCommand());
+  explicit Dialog_RecoverAll(const std::string& name,
+                             const std::shared_ptr<RecoverAllCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new RecoverAllCommand());
+    }
     m_actor = command->value;
     m_variable = command->value;
     m_Source = static_cast<int>(command->comparison);
@@ -18,7 +21,6 @@ struct Dialog_RecoverAll : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_actor;

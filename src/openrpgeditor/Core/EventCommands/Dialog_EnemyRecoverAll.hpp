@@ -7,18 +7,19 @@
 #include "Database/EventCommands/EnemyRecoverAll.hpp"
 #include "Database/EventCommands/RecoverAll.hpp"
 
-struct Project;
 struct Dialog_EnemyRecoverAll : IEventDialogController {
   Dialog_EnemyRecoverAll() = delete;
-  explicit Dialog_EnemyRecoverAll(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new EnemyRecoverAllCommand());
+  explicit Dialog_EnemyRecoverAll(const std::string& name,
+                                  const std::shared_ptr<EnemyRecoverAllCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new EnemyRecoverAllCommand());
+    }
     m_troop_selection = command->troop;
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_troop_selection = 0;

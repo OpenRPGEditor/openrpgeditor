@@ -2,11 +2,14 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/FlashScreen.hpp"
 
-struct Project;
 struct Dialog_FlashScreen : IEventDialogController {
   Dialog_FlashScreen() = delete;
-  explicit Dialog_FlashScreen(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new FlashScreenCommand());
+  explicit Dialog_FlashScreen(const std::string& name,
+                              const std::shared_ptr<FlashScreenCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new FlashScreenCommand());
+    }
     r = command->color.r;
     g = command->color.g;
     b = command->color.b;
@@ -17,7 +20,6 @@ struct Dialog_FlashScreen : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int r;

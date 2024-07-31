@@ -6,11 +6,14 @@
 #include "Database/States.hpp"
 #include "Database/Actors.hpp"
 
-struct Project;
 struct Dialog_ChangeState : IEventDialogController {
   Dialog_ChangeState() = delete;
-  explicit Dialog_ChangeState(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeStateCommand());
+  explicit Dialog_ChangeState(const std::string& name,
+                              const std::shared_ptr<ChangeStateCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeStateCommand());
+    }
 
     m_state = static_cast<int>(command->state);
     m_stateOp = static_cast<int>(command->stateOp);
@@ -24,7 +27,6 @@ struct Dialog_ChangeState : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_state;

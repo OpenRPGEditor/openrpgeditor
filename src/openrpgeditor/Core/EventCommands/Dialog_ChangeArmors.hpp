@@ -6,11 +6,14 @@
 #include "Database/EventCommands/ChangeEnemyHP.hpp"
 #include "Database/EventCommands/ChangeArmors.hpp"
 
-struct Project;
 struct Dialog_ChangeArmors : IEventDialogController {
   Dialog_ChangeArmors() = delete;
-  explicit Dialog_ChangeArmors(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeArmorsCommand());
+  explicit Dialog_ChangeArmors(const std::string& name,
+                               const std::shared_ptr<ChangeArmorsCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeArmorsCommand());
+    }
 
     m_item = static_cast<int>(command->item);
     m_operation = static_cast<int>(command->operation);
@@ -25,7 +28,6 @@ struct Dialog_ChangeArmors : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
 

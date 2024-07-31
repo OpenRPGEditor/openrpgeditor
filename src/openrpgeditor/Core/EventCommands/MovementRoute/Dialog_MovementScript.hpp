@@ -6,7 +6,7 @@
 struct Project;
 struct Dialog_MovementScript : IEventDialogController {
   Dialog_MovementScript() = delete;
-  explicit Dialog_MovementScript(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
+  explicit Dialog_MovementScript(const std::string& name) : IEventDialogController(name) {
     command.reset(new MovementScriptCommand());
     m_Text = command->script;
     m_textEditor.SetLanguageDefinition(TextEditor::LanguageDefinition::Javascript());
@@ -14,7 +14,6 @@ struct Dialog_MovementScript : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   TextEditor m_textEditor;

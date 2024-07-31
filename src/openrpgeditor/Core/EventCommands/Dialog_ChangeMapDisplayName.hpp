@@ -2,18 +2,19 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeMapDisplayName.hpp"
 
-struct Project;
 struct Dialog_ChangeMapDisplayName : IEventDialogController {
   Dialog_ChangeMapDisplayName() = delete;
-  explicit Dialog_ChangeMapDisplayName(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeMapNameDisplayCommand());
+  explicit Dialog_ChangeMapDisplayName(const std::string& name,
+                                       const std::shared_ptr<ChangeMapNameDisplayCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeMapNameDisplayCommand());
+    }
     m_checkIfOn = static_cast<int>(command->checkIfOn);
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_checkIfOn;

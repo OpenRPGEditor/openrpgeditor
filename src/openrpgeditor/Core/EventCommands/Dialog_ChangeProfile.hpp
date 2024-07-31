@@ -8,19 +8,20 @@
 #include "Database/EventCommands/ChangeProfile.hpp"
 #include "Database/EventCommands/RecoverAll.hpp"
 
-struct Project;
 struct Dialog_ChangeProfile : IEventDialogController {
   Dialog_ChangeProfile() = delete;
-  explicit Dialog_ChangeProfile(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeProfileCommand());
+  explicit Dialog_ChangeProfile(const std::string& name,
+                                const std::shared_ptr<ChangeProfileCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeProfileCommand());
+    }
     m_actor = command->actor;
     m_profile = command->profile;
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_actor;

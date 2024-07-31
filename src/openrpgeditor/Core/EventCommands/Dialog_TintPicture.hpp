@@ -2,11 +2,14 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/TintPicture.hpp"
 
-struct Project;
 struct Dialog_TintPicture : IEventDialogController {
   Dialog_TintPicture() = delete;
-  explicit Dialog_TintPicture(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new TintPictureCommand());
+  explicit Dialog_TintPicture(const std::string& name,
+                              const std::shared_ptr<TintPictureCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new TintPictureCommand());
+    }
     m_picture = command->picture;
     r = command->color.r;
     g = command->color.g;
@@ -18,7 +21,6 @@ struct Dialog_TintPicture : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_picture;

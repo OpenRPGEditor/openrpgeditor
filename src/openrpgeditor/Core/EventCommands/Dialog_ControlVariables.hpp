@@ -3,13 +3,17 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/CommandParser.hpp"
+#include "Database/Database.hpp"
 #include "Core/Log.hpp"
-struct Project;
+
 struct Dialog_ControlVariables : IEventDialogController {
   Dialog_ControlVariables() = delete;
-  explicit Dialog_ControlVariables(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ControlVariables());
+  explicit Dialog_ControlVariables(const std::string& name,
+                                   const std::shared_ptr<ControlVariables>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ControlVariables());
+    }
     m_operation = static_cast<int>(command->operation);
     m_operand = static_cast<int>(command->operand);
     if (command->start == command->end) {
@@ -41,26 +45,25 @@ struct Dialog_ControlVariables : IEventDialogController {
   m_rand_operand_2 = command->random.max;
   }
   std::tuple<bool, bool> draw() override;
-  Project* m_project = nullptr;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; }
 
   std::string getUIString() override {
     if (m_gameData_type == 0) { // GameDataType::Item
       return std::string("The number of " +
-                         formatString(m_project->item(m_gameData_rawSource)->name, m_gameData_rawSource));
+                         formatString(Database::Instance->itemNameOrId(m_gameData_rawSource), m_gameData_rawSource));
     }
     if (m_gameData_type == 1) { // GameDataType::Weapon
       return std::string("The number of " +
-                         formatString(m_project->weapon(m_gameData_rawSource)->name, m_gameData_rawSource));
+                         formatString(Database::Instance->weaponNameOrId(m_gameData_rawSource), m_gameData_rawSource));
     }
     if (m_gameData_type == 2) { // GameDataType::Armor
       return std::string("The number of " +
-                         formatString(m_project->armor(m_gameData_rawSource)->name, m_gameData_rawSource));
+                         formatString(Database::Instance->armorNameOrId(m_gameData_rawSource), m_gameData_rawSource));
     }
     if (m_gameData_type == 3) { // GameDataType::Actor
       return std::string(magic_enum::enum_name(static_cast<ActorDataSource>(m_gameData_value)).data()) + " of " +
-             formatString(m_project->actor(m_gameData_rawSource)->name, m_gameData_rawSource);
+             formatString(Database::Instance->actorNameOrId(m_gameData_rawSource), m_gameData_rawSource);
     }
     if (m_gameData_type == 4) { // GameDataType::Enemy
       return std::string(magic_enum::enum_name(static_cast<EnemyDataSource>(m_gameData_value)).data()) + " of #" +
@@ -69,7 +72,7 @@ struct Dialog_ControlVariables : IEventDialogController {
     if (m_gameData_type == 5) { // GameDataType::Character
       std::string str = m_gameData_rawSource == -1   ? "Player"
                         : m_gameData_rawSource == 0 ? "This Event"
-                                                           : m_project->event(m_gameData_rawSource)->name;
+                                                           : Database::Instance->eventNameOrId(m_gameData_rawSource);
       return std::string(magic_enum::enum_name(static_cast<CharacterDataSource>(m_gameData_value)).data()) +
              " of " + formatString(str, m_gameData_rawSource);
     }

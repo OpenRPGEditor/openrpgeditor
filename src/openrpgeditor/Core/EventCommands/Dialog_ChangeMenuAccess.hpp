@@ -2,18 +2,19 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeMenuAccess.hpp"
 
-struct Project;
 struct Dialog_ChangeMenuAccess : IEventDialogController {
   Dialog_ChangeMenuAccess() = delete;
-  explicit Dialog_ChangeMenuAccess(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeMenuAccessCommand());
+  explicit Dialog_ChangeMenuAccess(const std::string& name,
+                                   const std::shared_ptr<ChangeMenuAccessCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeMenuAccessCommand());
+    }
     isDisabled = static_cast<int>(command->access);
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int isDisabled;

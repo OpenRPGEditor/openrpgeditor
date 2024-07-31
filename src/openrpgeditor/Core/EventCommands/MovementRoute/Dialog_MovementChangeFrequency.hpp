@@ -6,14 +6,13 @@
 struct Project;
 struct Dialog_MovementChangeFrequency : IEventDialogController {
   Dialog_MovementChangeFrequency() = delete;
-  explicit Dialog_MovementChangeFrequency(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
+  explicit Dialog_MovementChangeFrequency(const std::string& name) : IEventDialogController(name) {
     command.reset(new MovementFrequencyCommand());
     m_frequency = command->frequency;
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_frequency;

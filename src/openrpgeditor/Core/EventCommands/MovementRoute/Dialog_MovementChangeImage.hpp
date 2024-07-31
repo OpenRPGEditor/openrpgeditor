@@ -8,7 +8,7 @@
 struct Project;
 struct Dialog_MovementChangeImage : IEventDialogController {
   Dialog_MovementChangeImage() = delete;
-  explicit Dialog_MovementChangeImage(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
+  explicit Dialog_MovementChangeImage(const std::string& name) : IEventDialogController(name) {
     command.reset(new MovementChangeImageCommand());
     m_image = command->image;
     m_character = command->character;
@@ -16,7 +16,6 @@ struct Dialog_MovementChangeImage : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   std::string m_image;

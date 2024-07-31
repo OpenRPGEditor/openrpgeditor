@@ -4,7 +4,6 @@
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/ImGuiUtils.hpp"
-#include "Core/Project.hpp"
 
 std::tuple<bool, bool> Dialog_PlayMovie::draw() {
   if (IsOpen()) {

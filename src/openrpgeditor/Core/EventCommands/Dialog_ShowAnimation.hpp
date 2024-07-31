@@ -7,12 +7,14 @@
 #include "Database/EventCommands/ChangeClass.hpp"
 #include "Database/EventCommands/ShowAnimation.hpp"
 
-struct Project;
 struct Dialog_ShowAnimation : IEventDialogController {
   Dialog_ShowAnimation() = delete;
-  explicit Dialog_ShowAnimation(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ShowAnimationCommand());
+  explicit Dialog_ShowAnimation(const std::string& name,
+                                const std::shared_ptr<ShowAnimationCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ShowAnimationCommand());
+    }
     m_character = command->character;
     m_animation = command->animation;
     m_waitCompletion = command->waitForCompletion;
@@ -20,7 +22,6 @@ struct Dialog_ShowAnimation : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   bool m_waitCompletion;

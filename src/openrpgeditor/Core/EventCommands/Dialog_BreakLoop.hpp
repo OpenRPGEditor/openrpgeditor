@@ -2,17 +2,19 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/BreakLoop.hpp"
 
-struct Project;
 struct Dialog_BreakLoop : IEventDialogController {
   Dialog_BreakLoop() = delete;
-  explicit Dialog_BreakLoop(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new BreakLoopCommand());
+  explicit Dialog_BreakLoop(const std::string& name,
+                            const std::shared_ptr<BreakLoopCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new BreakLoopCommand());
+    }
     m_open = true;
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   bool m_confirmed{true};

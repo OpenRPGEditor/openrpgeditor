@@ -3,11 +3,14 @@
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/EventCommands/SetEventLocation.hpp"
 
-struct Project;
 struct Dialog_SetEventLocation : IEventDialogController {
   Dialog_SetEventLocation() = delete;
-  explicit Dialog_SetEventLocation(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new SetEventLocationCommand());
+  explicit Dialog_SetEventLocation(const std::string& name,
+                                   const std::shared_ptr<SetEventLocationCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new SetEventLocationCommand());
+    }
     m_mode = static_cast<int>(command->mode);
     m_event = static_cast<int>(command->event);
 
@@ -28,7 +31,6 @@ struct Dialog_SetEventLocation : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
 

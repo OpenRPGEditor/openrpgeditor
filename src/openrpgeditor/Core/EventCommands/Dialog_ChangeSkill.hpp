@@ -6,11 +6,14 @@
 #include "Database/Skills.hpp"
 #include "Database/Actors.hpp"
 
-struct Project;
 struct Dialog_ChangeSkill : IEventDialogController {
   Dialog_ChangeSkill() = delete;
-  explicit Dialog_ChangeSkill(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeSkillCommand());
+  explicit Dialog_ChangeSkill(const std::string& name,
+                              const std::shared_ptr<ChangeSkillCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeSkillCommand());
+    }
     m_comparison = static_cast<int>(command->comparison);
     m_value = command->value;
     m_skillOp = static_cast<int>(command->skillOp);
@@ -19,7 +22,6 @@ struct Dialog_ChangeSkill : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
 

@@ -3,7 +3,6 @@
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Project.hpp"
 #include "Database/Database.hpp"
 
 std::tuple<bool, bool> Dialog_InputNumber::draw() {
@@ -28,7 +27,7 @@ std::tuple<bool, bool> Dialog_InputNumber::draw() {
     if (ImGui::Button(
             Database::Instance->variableNameOrId(m_variable).c_str(),
             ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
-      picker.emplace("Variables", m_project->system().variables);
+      picker.emplace("Variables", Database::Instance->system.variables);
             }
     ImGui::PopID();
     ImGui::SeparatorText("Digits");

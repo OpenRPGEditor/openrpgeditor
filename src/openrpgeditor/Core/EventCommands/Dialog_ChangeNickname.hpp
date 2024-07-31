@@ -4,19 +4,20 @@
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/ChangeNickname.hpp"
 
-struct Project;
 struct Dialog_ChangeNickname : IEventDialogController {
   Dialog_ChangeNickname() = delete;
-  explicit Dialog_ChangeNickname(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeNicknameCommand());
+  explicit Dialog_ChangeNickname(const std::string& name,
+                                 const std::shared_ptr<ChangeNicknameCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeNicknameCommand());
+    }
     m_actor = command->actor;
     m_nickname = command->nick;
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_actor = 1;

@@ -6,14 +6,13 @@
 struct Project;
 struct Dialog_MovementWait : IEventDialogController {
   Dialog_MovementWait() = delete;
-  explicit Dialog_MovementWait(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
+  explicit Dialog_MovementWait(const std::string& name) : IEventDialogController(name) {
     command.reset(new MovementWaitCommand());
     m_waitDuration = command->duration;
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_waitDuration;

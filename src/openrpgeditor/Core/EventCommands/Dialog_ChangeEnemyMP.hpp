@@ -5,11 +5,14 @@
 #include "Database/Troops.hpp"
 #include "Database/EventCommands/ChangeEnemyMP.hpp"
 
-struct Project;
 struct Dialog_ChangeEnemyMP : IEventDialogController {
   Dialog_ChangeEnemyMP() = delete;
-  explicit Dialog_ChangeEnemyMP(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeEnemyMPCommand());
+  explicit Dialog_ChangeEnemyMP(const std::string& name,
+                                const std::shared_ptr<ChangeEnemyMPCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeEnemyMPCommand());
+    }
 
     m_enemy = static_cast<int>(command->enemy);
     m_enemyOp = static_cast<int>(command->enemyOp);
@@ -23,7 +26,6 @@ struct Dialog_ChangeEnemyMP : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
 

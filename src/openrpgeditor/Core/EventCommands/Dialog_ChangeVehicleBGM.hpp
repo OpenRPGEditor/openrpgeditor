@@ -1,19 +1,19 @@
 #pragma once
 #include "Core/EventCommands/IEventDialogController.hpp"
-#include "Core/Log.hpp"
-#include "Core/Project.hpp"
-#include "Core/Settings.hpp"
+#include "Database/Database.hpp"
 #include "Database/EventCommands/ChangeVehicleBGM.hpp"
 #include <SFML/Audio.hpp>
 #include <iostream>
 
 namespace fs = std::filesystem;
-struct Project;
 struct Dialog_ChangeVehicleBGM : IEventDialogController {
   Dialog_ChangeVehicleBGM() = delete;
-  explicit Dialog_ChangeVehicleBGM(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeVehicleBGMCommand());
+  explicit Dialog_ChangeVehicleBGM(const std::string& name,
+                                   const std::shared_ptr<ChangeVehicleBGMCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeVehicleBGMCommand());
+    }
     m_vehicle = static_cast<int>(command->vehicle);
     m_audio = command->bgm;
     try {
@@ -28,8 +28,6 @@ struct Dialog_ChangeVehicleBGM : IEventDialogController {
   }
   std::tuple<bool, bool> draw() override;
   [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return command; }
-
-  Project* m_project = nullptr;
 
 private:
   bool m_confirmed{false};
@@ -62,7 +60,6 @@ private:
 
   bool playAudio(const char* path) {
     // Load and play music
-    APP_INFO(path);
     if (!buffer.loadFromFile(path)) {
       // error loading file
       return false;
@@ -91,9 +88,6 @@ private:
     } else { // To the left (-)
       sound.setPosition(sf::Vector3f(static_cast<float>(value) / 100.f, 0, 0));
     }
-    APP_INFO("Listener: " + std::to_string(sf::Listener::getPosition().x) + " " +
-             std::to_string(sf::Listener::getPosition().y));
-    APP_INFO("Sound: " + std::to_string(sound.getPosition().x) + " " + std::to_string(sound.getPosition().y));
   }
   void setPitch(int value) { sound.setPitch(value / 100.f); }
   void stopAudio() { sound.stop(); }

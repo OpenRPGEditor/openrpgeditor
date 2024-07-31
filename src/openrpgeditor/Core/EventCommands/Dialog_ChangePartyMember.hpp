@@ -5,12 +5,14 @@
 #include "Database/States.hpp"
 #include "Database/EventCommands/ChangePartyMember.hpp"
 
-struct Project;
 struct Dialog_ChangePartyMember : IEventDialogController {
   Dialog_ChangePartyMember() = delete;
-  explicit Dialog_ChangePartyMember(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangePartyMemberCommand());
+  explicit Dialog_ChangePartyMember(const std::string& name,
+                                    const std::shared_ptr<ChangePartyMemberCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangePartyMemberCommand());
+    }
     m_actor = command->member;
     m_operation = static_cast<int>(command->operation);
     m_isInit = command->initialize;
@@ -18,7 +20,6 @@ struct Dialog_ChangePartyMember : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_actor;

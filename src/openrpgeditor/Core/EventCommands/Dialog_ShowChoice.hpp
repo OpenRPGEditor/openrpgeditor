@@ -3,24 +3,26 @@
 #include "Database/EventCommands/ShowChoice.hpp"
 #include "Database/EventCommands/EventDummy.hpp"
 
-struct Project;
 struct Dialog_ShowChoice : IEventDialogController {
   Dialog_ShowChoice() = delete;
-  explicit Dialog_ShowChoice(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ShowChoiceCommand());
+  explicit Dialog_ShowChoice(const std::string& name,
+                             const std::shared_ptr<ShowChoiceCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ShowChoiceCommand());
+    }
 
     int index{0};
     for (auto& str : command->choices) {
       m_choices[index] = str;
       index++;
     }
-    m_choice_1 = m_choices.at(0).empty() ? "" : m_choices.at(0);
-    m_choice_2 = m_choices.at(1).empty() ? "" : m_choices.at(1);
-    m_choice_3 = m_choices.at(2).empty() ? "" : m_choices.at(2);
-    m_choice_4 = m_choices.at(3).empty() ? "" : m_choices.at(3);
-    m_choice_5 = m_choices.at(4).empty() ? "" : m_choices.at(4);
-    m_choice_6 = m_choices.at(5).empty() ? "" : m_choices.at(5);
+    strncpy(m_choice_1, m_choices.at(0).empty() ? "" : m_choices.at(0).c_str(), 4096);
+    strncpy(m_choice_2, m_choices.at(1).empty() ? "" : m_choices.at(1).c_str(), 4096);
+    strncpy(m_choice_3, m_choices.at(2).empty() ? "" : m_choices.at(2).c_str(), 4096);
+    strncpy(m_choice_4, m_choices.at(3).empty() ? "" : m_choices.at(3).c_str(), 4096);
+    strncpy(m_choice_5, m_choices.at(4).empty() ? "" : m_choices.at(4).c_str(), 4096);
+    strncpy(m_choice_6, m_choices.at(5).empty() ? "" : m_choices.at(5).c_str(), 4096);
 
     m_background = static_cast<int>(command->background);
     m_position = static_cast<int>(command->positionType);
@@ -62,7 +64,6 @@ struct Dialog_ShowChoice : IEventDialogController {
     }
     return eventCommands;
   };
-  Project* m_project = nullptr;
 
 private:
   std::vector<std::string> m_choices{6};
@@ -71,12 +72,12 @@ private:
   int m_defaultType;
   int m_cancelType;
 
-  std::string m_choice_1;
-  std::string m_choice_2;
-  std::string m_choice_3;
-  std::string m_choice_4;
-  std::string m_choice_5;
-  std::string m_choice_6;
+  char m_choice_1[4096];
+  char m_choice_2[4096];
+  char m_choice_3[4096];
+  char m_choice_4[4096];
+  char m_choice_5[4096];
+  char m_choice_6[4096];
 
   bool m_batchEntry{false};
   std::vector<std::shared_ptr<IEventCommand>> eventCommands;

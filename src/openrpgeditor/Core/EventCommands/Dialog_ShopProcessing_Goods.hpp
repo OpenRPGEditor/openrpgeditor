@@ -11,10 +11,8 @@ struct Dialog_ShopProcessing_Goods : IEventDialogController {
   Dialog_ShopProcessing_Goods() = delete;
   explicit Dialog_ShopProcessing_Goods(const std::string& name,
                                        const std::shared_ptr<ShopProcessingGoodCommand>& cmd = nullptr)
-  : IEventDialogController(name) {
-    if (cmd != nullptr) {
-      command = cmd;
-    } else {
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
       command.reset(new ShopProcessingGoodCommand());
     }
     m_type_selection = static_cast<int>(command->type);

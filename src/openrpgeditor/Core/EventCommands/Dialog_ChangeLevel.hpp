@@ -7,11 +7,14 @@
 #include "Database/EventCommands/ChangeHP.hpp"
 #include "Database/EventCommands/ChangeLevel.hpp"
 
-struct Project;
 struct Dialog_ChangeLevel : IEventDialogController {
   Dialog_ChangeLevel() = delete;
-  explicit Dialog_ChangeLevel(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeLevelCommand());
+  explicit Dialog_ChangeLevel(const std::string& name,
+                              const std::shared_ptr<ChangeLevelCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeLevelCommand());
+    }
 
     m_comparison = static_cast<int>(command->comparison);
     m_quantityOp = static_cast<int>(command->quantityOp);
@@ -31,7 +34,6 @@ struct Dialog_ChangeLevel : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
 

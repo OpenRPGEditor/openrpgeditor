@@ -3,18 +3,20 @@
 #include "Core/CommonUI/TextEditor.hpp"
 #include "Database/EventCommands/Script.hpp"
 
-struct Project;
 struct Dialog_Script : IEventDialogController {
   Dialog_Script() = delete;
-  explicit Dialog_Script(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ScriptCommand());
+  explicit Dialog_Script(const std::string& name,
+                         const std::shared_ptr<ScriptCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ScriptCommand());
+    }
     m_Text = command->script;
     m_textEditor.SetLanguageDefinition(TextEditor::LanguageDefinition::Javascript());
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   TextEditor m_textEditor;

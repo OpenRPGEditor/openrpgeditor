@@ -1,11 +1,9 @@
 #include "Core/DatabaseEditor/DBGameConstantsTab.hpp"
-
 #include "imgui.h"
 #include "Core/ImGuiNotify.hpp"
 #include "misc/cpp/imgui_stdlib.h"
-
-#include "Core/DatabaseEditor.hpp"
 #include "Core/Project.hpp"
+#include "Core/DatabaseEditor.hpp"
 #include "Database/GameConstants.hpp"
 
 template <>

@@ -6,7 +6,7 @@
 struct Project;
 struct Dialog_MovementJump : IEventDialogController {
   Dialog_MovementJump() = delete;
-  explicit Dialog_MovementJump(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
+  explicit Dialog_MovementJump(const std::string& name) : IEventDialogController(name) {
     command.reset(new MovementJumpCommand());
     m_jump_x = command->x;
     m_jump_y = command->y;
@@ -14,7 +14,6 @@ struct Dialog_MovementJump : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_jump_x;

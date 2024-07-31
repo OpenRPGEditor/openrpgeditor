@@ -6,11 +6,14 @@
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/ChangeTP.hpp"
 
-struct Project;
 struct Dialog_ChangeTP : IEventDialogController {
   Dialog_ChangeTP() = delete;
-  explicit Dialog_ChangeTP(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeTPCommand());
+  explicit Dialog_ChangeTP(const std::string& name,
+                           const std::shared_ptr<ChangeTPCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeTPCommand());
+    }
 
     m_comparison = static_cast<int>(command->comparison);
     m_quantityOp = static_cast<int>(command->quantityOp);
@@ -29,7 +32,6 @@ struct Dialog_ChangeTP : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
 

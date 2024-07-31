@@ -6,11 +6,14 @@
 #include "Database/EventCommands/EventDummy.hpp"
 #include "Database/EventCommands/MovementRoute/Frequency.hpp"
 
-struct Project;
 struct Dialog_SetMovementRoute : IEventDialogController {
   Dialog_SetMovementRoute() = delete;
-  explicit Dialog_SetMovementRoute(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-     command.reset(new SetMovementRouteCommand());
+  explicit Dialog_SetMovementRoute(const std::string& name,
+                                   const std::shared_ptr<SetMovementRouteCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new SetMovementRouteCommand());
+    }
      m_character = command->character;
      m_route = command->route;
      m_editNodes = command->editNodes;
@@ -22,7 +25,6 @@ struct Dialog_SetMovementRoute : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_character;

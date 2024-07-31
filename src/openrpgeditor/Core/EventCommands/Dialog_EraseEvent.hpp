@@ -2,17 +2,19 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/EraseEvent.hpp"
 
-struct Project;
 struct Dialog_EraseEvent : IEventDialogController {
   Dialog_EraseEvent() = delete;
-  explicit Dialog_EraseEvent(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new EraseEventCommand());
+  explicit Dialog_EraseEvent(const std::string& name,
+                             const std::shared_ptr<EraseEventCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new EraseEventCommand());
+    }
     m_open = true;
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   bool m_confirmed{true};

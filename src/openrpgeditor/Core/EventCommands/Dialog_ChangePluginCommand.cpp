@@ -3,7 +3,6 @@
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Project.hpp"
 
 std::tuple<bool, bool> Dialog_ChangePluginCommand::draw() {
   if (IsOpen()) {
@@ -14,7 +13,7 @@ std::tuple<bool, bool> Dialog_ChangePluginCommand::draw() {
   ImGui::SetNextWindowSize(ImVec2{300, 75} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(280));
-    ImGui::InputText("##plugin_input", &m_command);
+    ImGui::InputText("##plugin_input", m_command, 4096);
 
     if (ImGui::Button("OK")) {
       m_confirmed = true;

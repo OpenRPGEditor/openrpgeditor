@@ -6,11 +6,14 @@
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/ChangeHP.hpp"
 
-struct Project;
 struct Dialog_ChangeHP : IEventDialogController {
   Dialog_ChangeHP() = delete;
-  explicit Dialog_ChangeHP(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeHPCommand());
+  explicit Dialog_ChangeHP(const std::string& name,
+                           const std::shared_ptr<ChangeHPCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeHPCommand());
+    }
 
     m_comparison = static_cast<int>(command->comparison);
     m_quantityOp = static_cast<int>(command->quantityOp);
@@ -30,7 +33,6 @@ struct Dialog_ChangeHP : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
 

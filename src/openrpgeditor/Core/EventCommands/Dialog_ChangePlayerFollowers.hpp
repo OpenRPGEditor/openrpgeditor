@@ -2,18 +2,19 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangePlayerFollowers.hpp"
 
-struct Project;
 struct Dialog_ChangePlayerFollowers : IEventDialogController {
   Dialog_ChangePlayerFollowers() = delete;
-  explicit Dialog_ChangePlayerFollowers(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangePlayerFollowersCommand());
+  explicit Dialog_ChangePlayerFollowers(const std::string& name,
+                                        const std::shared_ptr<ChangePlayerFollowersCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangePlayerFollowersCommand());
+    }
     m_checkIfOn = static_cast<int>(command->followersEnabled);
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_checkIfOn;

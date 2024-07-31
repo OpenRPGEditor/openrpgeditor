@@ -3,7 +3,6 @@
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Project.hpp"
 #include "Database/Database.hpp"
 
 std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
@@ -63,7 +62,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
               m_mode == 1 ? Database::Instance->variableNameAndId(m_mapId_var).c_str() : "",
               ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 0;
-        picker.emplace("Variables", m_project->system().variables);
+        picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();
 
@@ -73,7 +72,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
               m_mode == 1 ? Database::Instance->variableNameAndId(m_x_var).c_str() : "",
               ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 1;
-        picker.emplace("Variables", m_project->system().variables);
+        picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();
 
@@ -83,7 +82,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
               m_mode == 1 ? Database::Instance->variableNameAndId(m_y_var).c_str() : "",
               ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 2;
-        picker.emplace("Variables", m_project->system().variables);
+        picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();
       ImGui::EndDisabled();

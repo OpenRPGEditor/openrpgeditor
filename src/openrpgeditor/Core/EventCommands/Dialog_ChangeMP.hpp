@@ -7,11 +7,14 @@
 #include "Database/EventCommands/ChangeHP.hpp"
 #include "Database/EventCommands/ChangeMP.hpp"
 
-struct Project;
 struct Dialog_ChangeMP : IEventDialogController {
   Dialog_ChangeMP() = delete;
-  explicit Dialog_ChangeMP(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeMPCommand());
+  explicit Dialog_ChangeMP(const std::string& name,
+                           const std::shared_ptr<ChangeMPCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeMPCommand());
+    }
 
     m_comparison = static_cast<int>(command->comparison);
     m_quantityOp = static_cast<int>(command->quantityOp);
@@ -30,7 +33,6 @@ struct Dialog_ChangeMP : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
 

@@ -4,11 +4,14 @@
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/CommonUI/ImagePicker.hpp"
 
-struct Project;
 struct Dialog_ShowPicture : IEventDialogController {
   Dialog_ShowPicture() = delete;
-  explicit Dialog_ShowPicture(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ShowPictureCommand());
+  explicit Dialog_ShowPicture(const std::string& name,
+                              const std::shared_ptr<ShowPictureCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ShowPictureCommand());
+    }
     m_number = command->number;
     m_imageName = command->imageName;
     m_origin = static_cast<int>(command->origin);
@@ -25,7 +28,6 @@ struct Dialog_ShowPicture : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_number;

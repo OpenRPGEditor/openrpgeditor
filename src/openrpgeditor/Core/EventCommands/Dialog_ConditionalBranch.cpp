@@ -1,9 +1,9 @@
 
 #include "Dialog_ConditionalBranch.hpp"
 #include "imgui.h"
+#include "Database/Database.hpp"
 #include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"
-#include "Core/Project.hpp"
 
 std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
 
@@ -121,7 +121,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           ImGui::BeginDisabled(m_conditionType != 0);
           if (ImGui::Button(text.c_str(), ImVec2{App::DPIHandler::scale_value(200), 0})) {
             m_picker_type = 0;
-            picker.emplace("Switches", m_project->system().switches);
+            picker.emplace("Switches", Database::Instance->system.switches);
           }
           ImGui::PopID();
           ImGui::SameLine();
@@ -149,7 +149,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           ImGui::PushID("##controlvariable_id2");
           if (ImGui::Button(text.c_str(), ImVec2{App::DPIHandler::scale_value(200), 0})) {
             m_picker_type = 1;
-            picker.emplace("Variables", m_project->system().variables);
+            picker.emplace("Variables", Database::Instance->system.variables);
           }
           ImGui::PopID();
 
@@ -196,7 +196,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
 
                     ImVec2{(App::DPIHandler::scale_value(200)), 0})) {
               m_picker_type = 2;
-              picker.emplace("Variables", m_project->system().variables);
+              picker.emplace("Variables", Database::Instance->system.variables);
             }
             ImGui::PopID();
             ImGui::EndDisabled();
@@ -437,7 +437,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
                   : m_character_selection == -1 ? "Player"
                   : m_character_selection == 0
                       ? "This Event"
-                      : ("EV" + std::format("{:03} ", m_project->events().at(m_character_selection)->id)).c_str())) {
+                      : ("EV" + std::format("{:03} ", Database::Instance->mapInfos.currentMap()->event(m_character_selection)->id)).c_str())) {
 
             if (ImGui::Selectable("Player", m_character_selection == -1)) {
               m_character_selection = -1;
@@ -448,7 +448,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
               ImGui::SetItemDefaultFocus();
             }
 
-            for (auto& dataSource : m_project->events()) {
+            for (auto& dataSource : Database::Instance->mapInfos.currentMap()->map()->events) {
               if (!dataSource.has_value())
                 continue;
 

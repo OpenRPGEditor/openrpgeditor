@@ -9,11 +9,14 @@
 #include "Core/SideViewBattlerSheet.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 
-struct Project;
 struct Dialog_ChangeActorImages : IEventDialogController {
   Dialog_ChangeActorImages() = delete;
-  explicit Dialog_ChangeActorImages(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeActorImageCommand());
+  explicit Dialog_ChangeActorImages(const std::string& name,
+                                    const std::shared_ptr<ChangeActorImageCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeActorImageCommand());
+    }
     m_actor = command->actor;
     m_charPicture = command->charPicture;
     m_charIndex = command->charIndex;
@@ -24,7 +27,6 @@ struct Dialog_ChangeActorImages : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_actor;

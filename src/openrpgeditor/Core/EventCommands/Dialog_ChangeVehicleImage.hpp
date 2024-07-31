@@ -5,11 +5,14 @@
 #include "Core/CharacterSheet.hpp"
 #include "Core/CommonUI/CharacterPicker.hpp"
 
-struct Project;
 struct Dialog_ChangeVehicleImage : IEventDialogController {
   Dialog_ChangeVehicleImage() = delete;
-  explicit Dialog_ChangeVehicleImage(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeVehicleImageCommand());
+  explicit Dialog_ChangeVehicleImage(const std::string& name,
+                                     const std::shared_ptr<ChangeVehicleImageCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeVehicleImageCommand());
+    }
     m_image = command->picture;
     m_character = command->pictureIndex;
     m_vehicle = static_cast<int>(command->vehicle);
@@ -17,7 +20,6 @@ struct Dialog_ChangeVehicleImage : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   std::string m_image;

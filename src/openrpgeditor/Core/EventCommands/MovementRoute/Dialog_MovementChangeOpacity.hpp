@@ -7,14 +7,13 @@
 struct Project;
 struct Dialog_MovementChangeOpacity : IEventDialogController {
   Dialog_MovementChangeOpacity() = delete;
-  explicit Dialog_MovementChangeOpacity(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
+  explicit Dialog_MovementChangeOpacity(const std::string& name) : IEventDialogController(name) {
     command.reset(new MovementChangeOpacityCommand());
     m_opacity = command->opacity;
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_opacity;

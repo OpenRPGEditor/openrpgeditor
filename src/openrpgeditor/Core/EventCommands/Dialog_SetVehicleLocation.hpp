@@ -4,11 +4,14 @@
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/EventCommands/SetVehicleLocation.hpp"
 
-struct Project;
 struct Dialog_SetVehicleLocation : IEventDialogController {
   Dialog_SetVehicleLocation() = delete;
-  explicit Dialog_SetVehicleLocation(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new SetVehicleLocationCommand());
+  explicit Dialog_SetVehicleLocation(const std::string& name,
+                                     const std::shared_ptr<SetVehicleLocationCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new SetVehicleLocationCommand());
+    }
     m_mode = static_cast<int>(command->mode);
     m_vehicle = static_cast<int>(command->vehicle);
     if (command->mode == TransferMode::Variable_Designation) {
@@ -25,7 +28,6 @@ struct Dialog_SetVehicleLocation : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_vehicle;

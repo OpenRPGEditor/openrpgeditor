@@ -4,17 +4,19 @@
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/FadeoutBGM.hpp"
 
-struct Project;
 struct Dialog_FadeoutBGM : IEventDialogController {
   Dialog_FadeoutBGM() = delete;
-  explicit Dialog_FadeoutBGM(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new FadeoutBGM());
+  explicit Dialog_FadeoutBGM(const std::string& name,
+                             const std::shared_ptr<FadeoutBGM>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new FadeoutBGM());
+    }
     m_duration = command->duration;
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_duration;

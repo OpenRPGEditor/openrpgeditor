@@ -3,14 +3,17 @@
 #include "Database/EventCommands/ScrollingText.hpp"
 #include "Core/Log.hpp"
 
-struct Project;
 struct Dialog_ShowScrollingText : IEventDialogController {
   Dialog_ShowScrollingText() = delete;
-  explicit Dialog_ShowScrollingText(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ShowScrollTextCommand());
+  explicit Dialog_ShowScrollingText(const std::string& name,
+                                    const std::shared_ptr<ShowScrollTextCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ShowScrollTextCommand());
+    }
     m_speed = command->speed;
     m_noFast = command->noFast;
+    //strncpy(m_textLine, command->command.c_str(), 4096);
   }
   std::tuple<bool, bool> draw() override;
 
@@ -22,12 +25,11 @@ struct Dialog_ShowScrollingText : IEventDialogController {
     }
     return eventCommands;
   };
-  Project* m_project = nullptr;
 
 private:
   int m_speed;
   bool m_noFast;
-  std::string m_textLine;
+  char m_textLine[4096];
 
   std::vector<std::shared_ptr<ShowScrollTextCommand>> moreCommands;
   std::vector<std::shared_ptr<IEventCommand>> eventCommands;

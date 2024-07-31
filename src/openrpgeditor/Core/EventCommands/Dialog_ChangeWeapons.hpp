@@ -4,11 +4,14 @@
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/EventCommands/ChangeWeapons.hpp"
 
-struct Project;
 struct Dialog_ChangeWeapons : IEventDialogController {
   Dialog_ChangeWeapons() = delete;
-  explicit Dialog_ChangeWeapons(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeWeaponsCommand());
+  explicit Dialog_ChangeWeapons(const std::string& name,
+                                const std::shared_ptr<ChangeWeaponsCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeWeaponsCommand());
+    }
 
     m_item = static_cast<int>(command->item);
     m_operation = static_cast<int>(command->operation);
@@ -23,7 +26,6 @@ struct Dialog_ChangeWeapons : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
 

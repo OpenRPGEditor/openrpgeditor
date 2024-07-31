@@ -3,11 +3,14 @@
 #include "Database/EventCommands/TransferPlayer.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 
-struct Project;
 struct Dialog_TransferPlayer : IEventDialogController {
   Dialog_TransferPlayer() = delete;
-  explicit Dialog_TransferPlayer(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new TransferPlayerCommand());
+  explicit Dialog_TransferPlayer(const std::string& name,
+                                 const std::shared_ptr<TransferPlayerCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new TransferPlayerCommand());
+    }
     m_mode = static_cast<int>(command->mode);
 
     if (command->mode == TransferMode::Variable_Designation) {
@@ -26,7 +29,6 @@ struct Dialog_TransferPlayer : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
 

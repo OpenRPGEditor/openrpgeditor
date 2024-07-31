@@ -5,11 +5,14 @@
 #include "Database/Classes.hpp"
 #include "Database/EventCommands/ChangeClass.hpp"
 
-struct Project;
 struct Dialog_ChangeClass : IEventDialogController {
   Dialog_ChangeClass() = delete;
-  explicit Dialog_ChangeClass(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeClassCommand());
+  explicit Dialog_ChangeClass(const std::string& name,
+                              const std::shared_ptr<ChangeClassCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeClassCommand());
+    }
     m_actor = command->actor;
     m_class = command->classId;
     m_saveLevel = command->saveLevel;
@@ -17,7 +20,6 @@ struct Dialog_ChangeClass : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_actor;

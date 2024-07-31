@@ -4,11 +4,15 @@
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/ChangeParameter.hpp"
-struct Project;
+
 struct Dialog_ChangeParameter : IEventDialogController {
   Dialog_ChangeParameter() = delete;
-  explicit Dialog_ChangeParameter(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeParameterCommand());
+  explicit Dialog_ChangeParameter(const std::string& name,
+                                  const std::shared_ptr<ChangeParameterCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeParameterCommand());
+    }
 
     m_comparison = static_cast<int>(command->comparison);
     m_quantityOp = static_cast<int>(command->quantityOp);
@@ -28,7 +32,6 @@ struct Dialog_ChangeParameter : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
 

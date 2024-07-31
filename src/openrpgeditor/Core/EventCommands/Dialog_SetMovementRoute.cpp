@@ -3,7 +3,6 @@
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Project.hpp"
 #include "Database/Database.hpp"
 #include "Core/ImGuiUtils.hpp"
 #include "Database/EventCommands/MovementRoute/MoveDown.hpp"
@@ -77,7 +76,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
         ImGui::SetItemDefaultFocus();
       }
 
-      for (auto& dataSource : m_project->events()) {
+      for (auto& dataSource : Database::Instance->mapInfos.currentMap()->map()->events) {
         if (!dataSource.has_value())
           continue;
 
@@ -107,7 +106,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
         ImGui::TableNextColumn();
         const bool isSelected = m_selected == n;
         char text[4096];
-        sprintf(text, "%s##cmd%i", m_route.list.at(n)->stringRep(m_project->database()).c_str(), n);
+        sprintf(text, "%s##cmd%i", m_route.list.at(n)->stringRep(*Database::Instance).c_str(), n);
         if (ImGui::SelectableWithBorder(text, isSelected,
                                         ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
                                             ImGuiSelectableFlags_AllowDoubleClick)) {
@@ -169,11 +168,11 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
         m_selected = m_route.addCommand(std::make_shared<MovementMove1StepBackwardCommand>(), m_selected);
       }
       if (ImGui::Button("Jump...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        movementRouteDialog = std::make_shared<Dialog_MovementJump>("Jump", m_project);
+        movementRouteDialog = std::make_shared<Dialog_MovementJump>("Jump");
         movementRouteDialog->SetOpen(true);
       }
       if (ImGui::Button("Wait...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        movementRouteDialog = std::make_shared<Dialog_MovementWait>("Wait", m_project);
+        movementRouteDialog = std::make_shared<Dialog_MovementWait>("Wait");
         movementRouteDialog->SetOpen(true);
       }
       ImGui::EndGroup();
@@ -214,19 +213,19 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
         m_selected = m_route.addCommand(std::make_shared<MovementTurnAwayFromPlayerCommand>(), m_selected);
       }
       if (ImGui::Button("Switch ON...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        movementRouteDialog = std::make_shared<Dialog_MovementSwitchON>("Script", m_project);
+        movementRouteDialog = std::make_shared<Dialog_MovementSwitchON>("Script");
         movementRouteDialog->SetOpen(true);
       }
       if (ImGui::Button("Switch OFF...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        movementRouteDialog = std::make_shared<Dialog_MovementSwitchOFF>("Script", m_project);
+        movementRouteDialog = std::make_shared<Dialog_MovementSwitchOFF>("Script");
         movementRouteDialog->SetOpen(true);
       }
       if (ImGui::Button("Change Speed...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        movementRouteDialog = std::make_shared<Dialog_MovementChangeSpeed>("Script", m_project);
+        movementRouteDialog = std::make_shared<Dialog_MovementChangeSpeed>("Script");
         movementRouteDialog->SetOpen(true);
       }
       if (ImGui::Button("Change Frequency...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        movementRouteDialog = std::make_shared<Dialog_MovementChangeFrequency>("Script", m_project);
+        movementRouteDialog = std::make_shared<Dialog_MovementChangeFrequency>("Script");
         movementRouteDialog->SetOpen(true);
       }
       ImGui::EndGroup();
@@ -264,23 +263,23 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
         m_selected = m_route.addCommand(std::make_shared<MovementTransparentOFFCommand>(), m_selected);
       }
       if (ImGui::Button("Change Image...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        movementRouteDialog = std::make_shared<Dialog_MovementChangeImage>("Image", m_project);
+        movementRouteDialog = std::make_shared<Dialog_MovementChangeImage>("Image");
         movementRouteDialog->SetOpen(true);
       }
       if (ImGui::Button("Change Opacity...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        movementRouteDialog = std::make_shared<Dialog_MovementChangeOpacity>("Opacity", m_project);
+        movementRouteDialog = std::make_shared<Dialog_MovementChangeOpacity>("Opacity");
         movementRouteDialog->SetOpen(true);
       }
       if (ImGui::Button("Change Blend Mode...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        movementRouteDialog = std::make_shared<Dialog_MovementChangeBlendMode>("Blend", m_project);
+        movementRouteDialog = std::make_shared<Dialog_MovementChangeBlendMode>("Blend");
         movementRouteDialog->SetOpen(true);
       }
       if (ImGui::Button("Play SE...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        movementRouteDialog = std::make_shared<Dialog_PlaySE>("Play SE", m_project);
+        movementRouteDialog = std::make_shared<Dialog_PlaySE>("Play SE");
         movementRouteDialog->SetOpen(true);
       }
       if (ImGui::Button("Script...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
-        movementRouteDialog = std::make_shared<Dialog_MovementScript>("Script", m_project);
+        movementRouteDialog = std::make_shared<Dialog_MovementScript>("Script");
         movementRouteDialog->SetOpen(true);
       }
       ImGui::EndGroup();

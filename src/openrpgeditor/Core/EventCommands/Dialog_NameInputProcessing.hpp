@@ -4,18 +4,20 @@
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/NameInput.hpp"
 
-struct Project;
 struct Dialog_NameInputProcessing : IEventDialogController {
   Dialog_NameInputProcessing() = delete;
-  explicit Dialog_NameInputProcessing(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new NameInputCommand());
+  explicit Dialog_NameInputProcessing(const std::string& name,
+                                      const std::shared_ptr<NameInputCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new NameInputCommand());
+    }
     m_actor = command->actorId;
     m_maxChar = command->maxChar;
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
 

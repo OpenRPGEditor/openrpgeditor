@@ -4,11 +4,14 @@
 #include "Database/EventCommands/InputNumber.hpp"
 #include "Database/EventCommands/SelectItem.hpp"
 
-struct Project;
 struct Dialog_SelectItem : IEventDialogController {
   Dialog_SelectItem() = delete;
-  explicit Dialog_SelectItem(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new SelectItemCommand());
+  explicit Dialog_SelectItem(const std::string& name,
+                             const std::shared_ptr<SelectItemCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new SelectItemCommand());
+    }
     m_variable = command->item;
     m_type = static_cast<int>(command->type);
 
@@ -16,7 +19,6 @@ struct Dialog_SelectItem : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_variable;

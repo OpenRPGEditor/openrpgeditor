@@ -3,7 +3,6 @@
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Project.hpp"
 #include "Database/Database.hpp"
 
 std::tuple<bool, bool> Dialog_BattleProcessing::draw() {
@@ -53,7 +52,7 @@ std::tuple<bool, bool> Dialog_BattleProcessing::draw() {
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
     if (ImGui::Button(m_type == 1 ? Database::Instance->variableNameOrId(m_var_selection).c_str() : "",
                       ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
-      picker.emplace("Variables", m_project->system().variables);
+      picker.emplace("Variables", Database::Instance->system.variables);
     }
     ImGui::PopID();
     ImGui::EndDisabled();

@@ -6,8 +6,7 @@
 #include <string>
 
 #include "Core/Window.hpp"
-
-#include "Core/Project.hpp"
+#include "Project.hpp"
 
 #include <optional>
 

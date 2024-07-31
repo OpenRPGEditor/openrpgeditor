@@ -1,18 +1,21 @@
 #pragma once
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/Log.hpp"
-#include "Core/Project.hpp"
 #include "Core/Settings.hpp"
+#include "Database/Database.hpp"
 #include "Database/EventCommands/PlayBGM.hpp"
 #include <SFML/Audio.hpp>
 #include <iostream>
 
 namespace fs = std::filesystem;
-struct Project;
 struct Dialog_PlayBGM : IEventDialogController {
   Dialog_PlayBGM() = delete;
-  explicit Dialog_PlayBGM(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new PlayBGMCommand());
+  explicit Dialog_PlayBGM(const std::string& name,
+                          const std::shared_ptr<PlayBGMCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new PlayBGMCommand());
+    }
     m_audio = command->audio;
     try {
       auto files = getFileNames(Database::Instance->basePath + "audio/bgm/");
@@ -26,8 +29,6 @@ struct Dialog_PlayBGM : IEventDialogController {
   }
   std::tuple<bool, bool> draw() override;
   [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return command; }
-
-  Project* m_project = nullptr;
 
 private:
   bool m_confirmed{false};

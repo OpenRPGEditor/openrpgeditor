@@ -5,11 +5,14 @@
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/ChangeEXP.hpp"
 
-struct Project;
 struct Dialog_ChangeEXP : IEventDialogController {
   Dialog_ChangeEXP() = delete;
-  explicit Dialog_ChangeEXP(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeEXPCommand());
+  explicit Dialog_ChangeEXP(const std::string& name,
+                            const std::shared_ptr<ChangeEXPCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeEXPCommand());
+    }
 
     m_comparison = static_cast<int>(command->comparison);
     m_quantityOp = static_cast<int>(command->quantityOp);
@@ -29,7 +32,6 @@ struct Dialog_ChangeEXP : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
 

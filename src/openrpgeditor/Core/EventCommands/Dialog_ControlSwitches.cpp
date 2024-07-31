@@ -1,9 +1,9 @@
 
 #include "Dialog_ControlSwitches.hpp"
 #include "imgui.h"
+#include "Database/Database.hpp"
 #include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"
-#include "Core/Project.hpp"
 
 std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
 
@@ -30,14 +30,14 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     ImGui::SameLine();
 
     std::string text =
-        m_operation != 0 ? "##commonevent_switch_empty" : (m_start == 0 ? "" : std::format("{:04} ", m_start) + m_project->switche(m_start));
+        m_operation != 0 ? "##commonevent_switch_empty" : (m_start == 0 ? "" : std::format("{:04} ", m_start) + Database::Instance->switchName(m_start));
     ImGui::PushID("##controlswitch_id");
     ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 50) - (16 * App::DPIHandler::get_ui_scale()));
     ImGui::BeginDisabled(m_operation != 0);
     if (ImGui::Button(text.c_str(), ImVec2{((ImGui::GetWindowContentRegionMax().x - 75)) -
                                                (15 * App::DPIHandler::get_ui_scale()),
                                            0})) {
-      picker.emplace("Switches", m_project->system().switches);
+      picker.emplace("Switches", Database::Instance->system.switches);
     }
     ImGui::PopID();
     ImGui::EndDisabled();

@@ -7,17 +7,24 @@
 #include "Core/FaceSheet.hpp"
 #include "Core/Log.hpp"
 
-struct Project;
 struct Dialog_ShowText : IEventDialogController {
   Dialog_ShowText() = delete;
-  explicit Dialog_ShowText(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ShowTextCommand());
+  explicit Dialog_ShowText(const std::string& name, const std::shared_ptr<ShowTextCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ShowTextCommand());
+    }
     m_faceImage = command->faceImage;
     m_faceIndex = command->faceIndex;
     m_background = static_cast<int>(command->background);
     m_position = static_cast<int>(command->position);
-    m_textLine = command->textLine;
+    int index{0};
+    for (auto& str : command->text) {
+      APP_INFO(str->text);
+      m_textLine[index] = *str->text.c_str();
+    }
+    //APP_INFO(m_textLine);
+    //strncpy(m_textLine, command->textLine.c_str(), 4096);
   }
   std::tuple<bool, bool> draw() override;
 
@@ -29,14 +36,13 @@ struct Dialog_ShowText : IEventDialogController {
     }
     return eventCommands;
   };
-  Project* m_project = nullptr;
 
 private:
   std::string m_faceImage;
   int m_faceIndex;
   int m_background;
   int m_position;
-  std::string m_textLine;
+  char m_textLine[4096];
   int textIndex{0};
 
   bool m_batchEntry{false};

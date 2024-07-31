@@ -3,17 +3,19 @@
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/EventCommands/Label.hpp"
 
-struct Project;
 struct Dialog_Label : IEventDialogController {
   Dialog_Label() = delete;
-  explicit Dialog_Label(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new LabelCommand());
+  explicit Dialog_Label(const std::string& name,
+                        const std::shared_ptr<LabelCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new LabelCommand());
+    }
     m_label = command->label;
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   std::string m_label;

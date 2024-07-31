@@ -2,11 +2,14 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/SetWeatherEffect.hpp"
 
-struct Project;
 struct Dialog_SetWeatherEffect : IEventDialogController {
   Dialog_SetWeatherEffect() = delete;
-  explicit Dialog_SetWeatherEffect(const std::string& name, Project* project) : IEventDialogController(name), m_project(project) {
-    command.reset(new SetWeatherEffectCommand());
+  explicit Dialog_SetWeatherEffect(const std::string& name,
+                                   const std::shared_ptr<SetWeatherEffectCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new SetWeatherEffectCommand());
+    }
     m_effect = static_cast<int>(command->effect);
     m_power = command->power;
     m_duration = command->duration;
@@ -15,7 +18,6 @@ struct Dialog_SetWeatherEffect : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
-  Project* m_project = nullptr;
 
 private:
   int m_effect;

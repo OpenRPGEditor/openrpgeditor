@@ -3,7 +3,6 @@
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Project.hpp"
 #include "Core/Log.hpp"
 
 std::tuple<bool, bool> Dialog_ShowScrollingText::draw() {
@@ -15,7 +14,7 @@ std::tuple<bool, bool> Dialog_ShowScrollingText::draw() {
   ImGui::SetNextWindowSize(ImVec2{551, 280} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
     ImGui::SeparatorText("Text");
-    ImGui::InputTextMultiline("##showscrolling_text", &m_textLine, ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(20), 0});
+    ImGui::InputTextMultiline("##showscrolling_text", m_textLine, 4096, ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(20), 0});
     ImGui::Text("Speed: ");
     ImGui::SameLine();
     ImGui::PushItemWidth((App::DPIHandler::scale_value(50)));

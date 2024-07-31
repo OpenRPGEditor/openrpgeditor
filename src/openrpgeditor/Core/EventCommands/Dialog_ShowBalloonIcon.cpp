@@ -3,7 +3,6 @@
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Project.hpp"
 #include "Database/Database.hpp"
 
 std::tuple<bool, bool> Dialog_ShowBalloonIcon::draw() {
@@ -28,7 +27,7 @@ std::tuple<bool, bool> Dialog_ShowBalloonIcon::draw() {
         ImGui::SetItemDefaultFocus();
       }
 
-      for (auto& dataSource : m_project->events()) {
+      for (auto& dataSource : Database::Instance->mapInfos.currentMap()->map()->events) {
         if (!dataSource.has_value())
           continue;
 

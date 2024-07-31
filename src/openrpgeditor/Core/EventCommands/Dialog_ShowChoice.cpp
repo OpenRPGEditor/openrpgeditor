@@ -3,7 +3,6 @@
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Project.hpp"
 #include "Core/Log.hpp"
 
 std::tuple<bool, bool> Dialog_ShowChoice::draw() {
@@ -35,12 +34,12 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
       ImGui::SameLine();
       ImGui::BeginGroup();
       {
-        ImGui::InputText("##showchoice_text_1", &m_choice_1);
-        ImGui::InputText("##showchoice_text_2", &m_choice_2);
-        ImGui::InputText("##showchoice_text_3", &m_choice_3);
-        ImGui::InputText("##showchoice_text_4", &m_choice_4);
-        ImGui::InputText("##showchoice_text_5", &m_choice_5);
-        ImGui::InputText("##showchoice_text_6", &m_choice_6);
+        ImGui::InputText("##showchoice_text_1", m_choice_1, 4096);
+        ImGui::InputText("##showchoice_text_2", m_choice_2, 4096);
+        ImGui::InputText("##showchoice_text_3", m_choice_3, 4096);
+        ImGui::InputText("##showchoice_text_4", m_choice_4, 4096);
+        ImGui::InputText("##showchoice_text_5", m_choice_5, 4096);
+        ImGui::InputText("##showchoice_text_6", m_choice_6, 4096);
         ImGui::EndGroup();
       }
       ImGui::EndGroup();
@@ -144,12 +143,12 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
       if (ImGui::Button("OK")) {
         m_confirmed = true;
 
-        if (!m_choice_1.empty()) { m_choices[0] = m_choice_1; }
-        if (!m_choice_2.empty()) { m_choices[1] = m_choice_2; }
-        if (!m_choice_3.empty()) { m_choices[2] = m_choice_3; }
-        if (!m_choice_4.empty()) { m_choices[3] = m_choice_4; }
-        if (!m_choice_5.empty()) { m_choices[4] = m_choice_5; }
-        if (!m_choice_6.empty()) { m_choices[5] = m_choice_6; }
+        if (!m_choice_1 == '\0') { m_choices[0] = m_choice_1; }
+        if (!m_choice_2 == '\0') { m_choices[1] = m_choice_2; }
+        if (!m_choice_3 == '\0') { m_choices[2] = m_choice_3; }
+        if (!m_choice_4 == '\0') { m_choices[3] = m_choice_4; }
+        if (!m_choice_5 == '\0') { m_choices[4] = m_choice_5; }
+        if (!m_choice_6 == '\0') { m_choices[5] = m_choice_6; }
 
         command->background = static_cast<TextBackground>(m_background);
         command->positionType = static_cast<ChoiceWindowPosition>(m_position);

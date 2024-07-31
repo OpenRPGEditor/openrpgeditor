@@ -3,7 +3,6 @@
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/Project.hpp"
 #include "Database/Database.hpp"
 
 std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
@@ -62,7 +61,7 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
       if (ImGui::Button(
               m_comparison == 1 ? (std::format("{:04} ", m_var) + Database::Instance->variableNameOrId(m_var)).c_str() : "",
               ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
-        picker.emplace("Variables", m_project->system().variables);
+        picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();
       ImGui::EndDisabled();

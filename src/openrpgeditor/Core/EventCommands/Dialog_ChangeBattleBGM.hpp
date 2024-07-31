@@ -1,19 +1,18 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
-#include "Core/Log.hpp"
-#include "Core/Project.hpp"
-#include "Core/Settings.hpp"
 #include "Database/EventCommands/ChangeBattleBGM.hpp"
-
+#include "Core/ResourceManager.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include <SFML/Audio.hpp>
 #include <iostream>
 
-struct Project;
 struct Dialog_ChangeBattleBGM : IEventDialogController {
   Dialog_ChangeBattleBGM() = delete;
-  explicit Dialog_ChangeBattleBGM(const std::string& name, Project* project)
-  : IEventDialogController(name), m_project(project) {
-    command.reset(new ChangeBattleBGMCommand());
+  explicit Dialog_ChangeBattleBGM(const std::string& name,
+                                  const std::shared_ptr<ChangeBattleBGMCommand>& cmd = nullptr)
+  : IEventDialogController(name), command(cmd) {
+    if (cmd == nullptr) {
+      command.reset(new ChangeBattleBGMCommand());
+    }
     m_audio = command->bgm;
     try {
       auto files = ResourceManager::instance()->getDirectoryContents("audio/bgm/", ".ogg");
@@ -27,8 +26,6 @@ struct Dialog_ChangeBattleBGM : IEventDialogController {
   }
   std::tuple<bool, bool> draw() override;
   [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return command; }
-
-  Project* m_project = nullptr;
 
 private:
   bool m_confirmed{false};
@@ -68,9 +65,6 @@ private:
     } else { // To the left (-)
       sound.setPosition(sf::Vector3f(static_cast<float>(value) / 100.f, 0, 0));
     }
-    APP_INFO("Listener: " + std::to_string(sf::Listener::getPosition().x) + " " +
-             std::to_string(sf::Listener::getPosition().y));
-    APP_INFO("Sound: " + std::to_string(sound.getPosition().x) + " " + std::to_string(sound.getPosition().y));
   }
   void setPitch(int value) { sound.setPitch(value / 100.f); }
   void stopAudio() { sound.stop(); }

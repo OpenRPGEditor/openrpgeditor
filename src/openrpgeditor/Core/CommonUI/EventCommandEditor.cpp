@@ -8,7 +8,6 @@
 #include "imgui_internal.h"
 #include "Core/Log.hpp"
 
-
 #include <iostream>
 #include <vector>
 void insertValue(std::string& indentPad, const std::string& val, const std::string& delim) {
@@ -99,8 +98,8 @@ void EventCommandEditor::draw() {
         }
         ImGui::EndPopup();
       }
-      //if (m_isNewEntry)
-      //  ImGui::OpenPopup("Command Window");
+      // if (m_isNewEntry)
+      //   ImGui::OpenPopup("Command Window");
       drawPopup();
       ImGui::EndTable();
     }
@@ -625,8 +624,53 @@ void EventCommandEditor::drawPopup() {
                   m_selectedCommand = (selection + 1) - m_commands->begin();
                 }
               }
+            } else {
+              if (std::static_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand())) {
+                EventCode code = commandDialog->getCommand()->code();
+                int whenIndex{0};
+                bool isEnd{false};
+                if (!isEnd) {
+                  int choiceSize =
+                      std::static_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand())->choices.size();
+                  APP_INFO(std::to_string(choiceSize));
+                  for (int i = m_selectedCommand; i < m_commands->size(); i++) {
+                    if (m_commands->at(i)->code() == EventCode::End_del_ShowChoices) {
+                      APP_INFO("when index: " + std::to_string(whenIndex));
+                      APP_INFO("End of choice");
+                      // On Accept:
+                      // If the last element name is "", then delete all when commands that are also ""
+                      // If there is a new choice, "when" has to be added
+                      // If choices are renamed, "whens" have to be renamed
+                      if (choiceSize >= whenIndex) {
+                        int numberOfWhens = choiceSize - whenIndex;
+                        APP_INFO("Found more options... need to make more whens: " + std::to_string(numberOfWhens));
+                        for (int z{0}; z < numberOfWhens; z++) {
+                          for (auto cmd : commandDialog->getTemplateCommands(EventCode::When_Selected, whenIndex)) {
+                            m_commands->insert(m_commands->begin() + (i - 1), cmd);
+                            //whenIndex++;
+                          }
+                        }
+                      } else if (std::static_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand())
+                                     ->choices.size() < whenIndex) {
+                        // Need to remove the ones that should not be there
+                        APP_INFO("Need to remove...");
+                      }
+                      isEnd = true;
+                    }
+                    if (m_commands->at(i)->code() == EventCode::When_Selected) {
+                      APP_INFO("Found when");
+                      whenIndex++;
+                      std::shared_ptr<WhenSelectedCommand> when =
+                          std::static_pointer_cast<WhenSelectedCommand>(m_commands->at(i));
+                      when->choice = std::static_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand())
+                                         ->choices.at(whenIndex - 1);
+                      when->param1 = whenIndex - 1;
+                    }
+                  }
+                }
+              }
             }
-            //commandDialog->SetOpen(false);
+            // commandDialog->SetOpen(false);
             commandDialog.reset();
             ImGui::CloseCurrentPopup();
           }
@@ -646,5 +690,3 @@ void EventCommandEditor::drawPopup() {
     ImGui::EndPopup();
   } // End of "Command Window" Popup
 }
-
-

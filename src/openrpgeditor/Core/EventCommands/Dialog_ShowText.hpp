@@ -18,12 +18,12 @@ struct Dialog_ShowText : IEventDialogController {
     m_faceIndex = command->faceIndex;
     m_background = static_cast<int>(command->background);
     m_position = static_cast<int>(command->position);
-    int index{0};
+    std::string textStr;
     for (auto& str : command->text) {
-      APP_INFO(str->text);
-      m_textLine[index] = *str->text.c_str();
+      textStr += str->text + "\n";
     }
-    //APP_INFO(m_textLine);
+    APP_INFO("(loading): " + textStr);
+    std::strcpy(m_textLine, textStr.c_str());
     //strncpy(m_textLine, command->textLine.c_str(), 4096);
   }
   std::tuple<bool, bool> draw() override;

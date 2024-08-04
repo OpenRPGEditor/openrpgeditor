@@ -167,6 +167,7 @@ private:
   void drawPopup();
   Project* m_project = nullptr;
   bool m_isNewEntry{false};
+  bool m_needsUpdate{false};
   int m_selectedCommand = -1;
   int m_hoveringCommand = -1;
   std::shared_ptr<IEventDialogController> commandDialog;

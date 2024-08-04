@@ -100,6 +100,7 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
         command->position = static_cast<TextWindowPosition>(m_position);
         command->textLine = m_textLine;
         std::vector<std::string> split = splitString(m_textLine, '\n');
+        int index{0};
         for (auto str : split) {
           if (split.size() > 4) {
             if (textIndex == 0) {
@@ -116,9 +117,12 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
               moreCommands.back()->position = static_cast<TextWindowPosition>(m_position);
             }
           } else {
+            if (index == 0) { command->text.clear(); }
+
             command->text.push_back(std::make_shared<NextTextCommand>());
             command->text.back()->text = str;
           }
+          index++;
         }
         ImGui::CloseCurrentPopup();
         SetOpen(false);

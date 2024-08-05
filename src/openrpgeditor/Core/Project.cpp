@@ -385,7 +385,7 @@ void Project::drawTileInfo(MapRenderer::MapLayer& mapLayer, int z) {
               TileHelper::isWallSideTile(tile.tileId), TileHelper::isFloorTypeAutotile(tile.tileId),
               TileHelper::isWallTypeAutotile(tile.tileId));
         }
-        ImGui::Text(info.c_str());
+        ImGui::Text("%s", info.c_str());
       }
     }
   }

@@ -10,7 +10,7 @@ struct Face {
 struct FaceSheet {
   explicit FaceSheet(const std::string_view sheetName);
 
-  Face getFaceRect(int index);
+  Face getFaceRect(int index) const;
   [[nodiscard]] const Texture& texture() const { return m_texture; }
 
   static constexpr int faceWidth() { return 144; }

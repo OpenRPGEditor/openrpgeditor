@@ -41,5 +41,11 @@ constexpr int TILE_ID_MAX = 8192;
 [[nodiscard]] bool shouldCreateBorder(int currentTileId, int adjacentTileId);
 
 [[nodiscard]] int floorDirToShape(int dir);
-[[nodiscard]]int floorShapeToDir(int shape);
+[[nodiscard]] int floorShapeToDir(int shape);
+
+[[nodiscard]] int wallDirToShape(int dir);
+[[nodiscard]] int wallShapeToDir(int shape);
+
+[[nodiscard]] int waterfallDirToShape(int dir);
+[[nodiscard]] int waterfallShapeToDir(int shape);
 } // namespace TileHelper

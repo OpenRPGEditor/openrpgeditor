@@ -232,7 +232,32 @@ void MapEditor::updateAllAutotiles() {
   updateAutotilesInRect(rect, 1);
 }
 
-void MapEditor::updateAutotilesInRect(const Rect& rect, int layer) {}
+void MapEditor::updateAutotilesInRect(const Rect& rect, const int layer) {
+  const int minX = rect.x() - 1;
+  const int minY = rect.y() - 1;
+  const int width = (rect.right() + 1) - minX;
+  const int height = (rect.bottom() + 1) - minY;
+  for (int y = 0; y < height; ++y) {
+    for (int x = 0; x < width; ++x) {
+      int flags = 0x10 | 0x08 | 0x01;
+      if (x != width) {
+        flags = (x == 0 ? 0x40 | 0x04 | 0x02 : 0xFF);
+      }
+
+      if (y == height) {
+        flags &= 0x20 | 0x02 | 0x01;
+      } else if (y == 0) {
+        flags &= 0x80 | 0x08 | 0x04;
+      }
+
+      Point p{minX + x, minY + y};
+      if (!isMapPointValid(p)) {
+        break;
+      }
+      updateAutotile(p, layer, flags);
+    }
+  }
+}
 
 void MapEditor::updateAutotile(const Point& point, const int layer, const int flags) {
   if (isRegionMode() || !isMapPointValid(point)) {
@@ -279,10 +304,10 @@ int MapEditor::updateFloorTypeAutotile(const Point& point, const int layer, cons
   const auto kind = TileHelper::getAutoTileKind(tileId);
   const auto shape = TileHelper::getAutoTileShape(tileId);
   const auto dir = TileHelper::floorShapeToDir(shape);
-  const auto leftTop = makeDirectionBit(Point{point.x() - 1, point.y() - 1}, tileId, layer, flags & 1, false);
-  const auto rightTop = makeDirectionBit(Point{point.x() + 1, point.y() - 1}, tileId, layer, flags & 2, false);
-  const auto rightBottom = makeDirectionBit(Point{point.x() + 1, point.y() + 1}, tileId, layer, flags & 4, false);
-  const auto leftBottom = makeDirectionBit(Point{point.x() - 1, point.y() + 1}, tileId, layer, flags & 8, false);
+  const auto leftTop = makeDirectionBit(Point{point.x() - 1, point.y() - 1}, tileId, layer, flags & 0x01, false);
+  const auto rightTop = makeDirectionBit(Point{point.x() + 1, point.y() - 1}, tileId, layer, flags & 0x02, false);
+  const auto rightBottom = makeDirectionBit(Point{point.x() + 1, point.y() + 1}, tileId, layer, flags & 0x04, false);
+  const auto leftBottom = makeDirectionBit(Point{point.x() - 1, point.y() + 1}, tileId, layer, flags & 0x08, false);
   const auto leftMiddle = makeDirectionBit(Point{point.x() - 1, point.y()}, tileId, layer, flags & 0x10, false);
   const auto topMiddle = makeDirectionBit(Point{point.x(), point.y() - 1}, tileId, layer, flags & 0x20, false);
   const auto rightMiddle = makeDirectionBit(Point{point.x() + 1, point.y()}, tileId, layer, flags & 0x40, false);
@@ -293,9 +318,39 @@ int MapEditor::updateFloorTypeAutotile(const Point& point, const int layer, cons
   return TileHelper::makeAutoTileId(kind, newShape);
 }
 
-int MapEditor::updateWallTypeAutotile(const Point& point, int layer, int flags) const { return -1; }
+int MapEditor::updateWallTypeAutotile(const Point& point, const int layer, const int flags) const {
+  const auto tileId = readMapData(point, layer);
+  const auto kind = TileHelper::getAutoTileKind(tileId);
+  const auto shape = TileHelper::getAutoTileShape(tileId);
+  const auto dir = TileHelper::wallShapeToDir(shape);
+  int x = point.x();
+  int y = point.y();
 
-int MapEditor::updateWaterfallTypeAutotile(const Point& point, int layer, int flags) const { return -1; }
+  bool same = false;
+  int tmpY = y;
+  do  {
+    --tmpY;
+    same = isSameKindTile(Point{x, tmpY}, layer, tileId);
+  } while (same);
+  do  {
+    ++tmpY;
+    same = isSameKindTile(Point{x, tmpY}, layer, tileId);
+  } while (same);
+  return -1;
+}
+
+int MapEditor::updateWaterfallTypeAutotile(const Point& point, const int layer, const int flags) const {
+  const auto tileId = readMapData(point, layer);
+  const auto kind = TileHelper::getAutoTileKind(tileId);
+  const auto shape = TileHelper::getAutoTileShape(tileId);
+  const auto dir = TileHelper::waterfallShapeToDir(shape);
+  const auto x = point.x();
+  const auto y = point.y();
+  const auto left = makeDirectionBit(Point{x - 1, y}, tileId, layer, flags & 0x10, false);
+  const auto right = makeDirectionBit(Point{x + 1, y}, tileId, layer, flags & 0x40, false);
+  return TileHelper::makeAutoTileId(kind, TileHelper::waterfallDirToShape(left | right | (dir & ~flags)));
+}
+
 int MapEditor::makeDirectionBit(const Point& nextPos, const int tileId, const int layer, const int flags,
                                 const bool skipBorder) const {
   int ret = 0;
@@ -320,6 +375,10 @@ bool MapEditor::isGroundTile(const Point& p, const int layer) const {
 
 bool MapEditor::isShadowingTile(const Point& p, const int layer) const {
   return TileHelper::isShadowingTile(readMapData(p, layer));
+}
+
+bool MapEditor::isSameKindTile(const Point& p, const int layer, const int tileId) const {
+  return TileHelper::isSameKindTile(readMapData(p, layer), tileId);
 }
 
 void MapEditor::renderLayerRects(ImGuiWindow* win, const MapRenderer::MapLayer& layer) {

@@ -118,6 +118,7 @@ private:
   int makeDirectionBit(const Point& nextPos, int tileId, int layer, int flags, bool skipBorder) const;
   bool isGroundTile(const Point& p, int layer) const;
   bool isShadowingTile(const Point& p, int layer) const;
+  bool isSameKindTile(const Point& p, int layer, int tileId) const;
 
   Project* m_parent;
   MapInfo* m_mapInfo = nullptr;

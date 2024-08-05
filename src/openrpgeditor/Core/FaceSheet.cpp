@@ -4,9 +4,9 @@
 FaceSheet::FaceSheet(const std::string_view sheetName)
 : m_texture(ResourceManager::instance()->loadFaceImage(sheetName)) {}
 
-Face FaceSheet::getFaceRect(int index) {
-  int fx = index % 4;
-  int fy = index / 4;
+Face FaceSheet::getFaceRect(const int index) const {
+  const int fx = index % 4;
+  const int fy = index / 4;
 
   Face face;
   face.u0 = fx * faceWidth();

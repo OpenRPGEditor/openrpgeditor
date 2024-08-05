@@ -112,4 +112,50 @@ int floorShapeToDir(const int shape) {
   return table[shape];
 }
 
+[[nodiscard]] int wallDirToShape(const int dir) {
+  int shape = (dir >> 4) & 0x01;
+  if (dir & 0x20) {
+    shape |= 0x02;
+  }
+  if (dir & 0x40) {
+    shape |= 0x04;
+  }
+  if (dir & 0x80) {
+    shape |= 0x08;
+  }
+  return shape;
+}
+
+[[nodiscard]] int wallShapeToDir(const int shape) {
+  int dir = (shape & 0x01) ? 0x10 : 0;
+  if ((shape & 0x2) != 0) {
+    dir |= 0x20;
+  }
+  if ((shape & 0x4) != 0) {
+    dir |= 0x40;
+  }
+  if ((shape & 0x8) != 0) {
+    dir |= 0x80;
+  }
+  return dir;
+}
+
+int waterfallShapeToDir(const int shape) {
+  int dir = (shape & 0x01) ? 0x10 : 0;
+
+  if (shape & 0x02) {
+    dir |= 0x40;
+  }
+
+  return dir;
+}
+
+int waterfallDirToShape(const int dir) {
+  int shape = (dir >> 4) & 1;
+  if (dir & 0x40) {
+    shape |= 0x2;
+  }
+  return shape;
+}
+
 } // namespace TileHelper

@@ -346,9 +346,9 @@ void DBClassesTab::draw() {
                   }
                 }
                 ImGui::TableNextColumn();
-                ImGui::Text(skill->name.c_str());
+                ImGui::Text("%s", skill->name.c_str());
                 ImGui::TableNextColumn();
-                ImGui::Text(learning.note.c_str());
+                ImGui::Text("%s", learning.note.c_str());
               }
 
               ImGui::TableNextRow();

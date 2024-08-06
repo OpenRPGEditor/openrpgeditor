@@ -35,6 +35,7 @@ constexpr int TILE_ID_MAX = 8192;
 [[nodiscard]] bool isWallTopTile(int tileId);
 [[nodiscard]] bool isWallSideTile(int tileId);
 [[nodiscard]] bool isWallTile(int tileId);
+[[nodiscard]] bool isWallOrRoofTile(int tileId);
 [[nodiscard]] bool isFloorTypeAutotile(int tileId);
 [[nodiscard]] bool isWallTypeAutotile(int tileId);
 [[nodiscard]] bool isWaterfallTypeAutotile(int tileId);

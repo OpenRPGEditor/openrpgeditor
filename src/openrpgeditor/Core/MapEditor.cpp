@@ -319,24 +319,63 @@ int MapEditor::updateFloorTypeAutotile(const Point& point, const int layer, cons
 }
 
 int MapEditor::updateWallTypeAutotile(const Point& point, const int layer, const int flags) const {
-  const auto tileId = readMapData(point, layer);
-  const auto kind = TileHelper::getAutoTileKind(tileId);
-  const auto shape = TileHelper::getAutoTileShape(tileId);
-  const auto dir = TileHelper::wallShapeToDir(shape);
-  int x = point.x();
-  int y = point.y();
+  const int tileId = readMapData(point, layer);
+  const int autotileKind = TileHelper::getAutoTileKind(tileId);
+  const int autotileShape = TileHelper::getAutoTileShape(tileId);
+  const int direction = TileHelper::wallShapeToDir(autotileShape);
 
-  bool same = false;
-  int tmpY = y;
-  do  {
-    --tmpY;
-    same = isSameKindTile(Point{x, tmpY}, layer, tileId);
-  } while (same);
-  do  {
-    ++tmpY;
-    same = isSameKindTile(Point{x, tmpY}, layer, tileId);
-  } while (same);
-  return -1;
+  const int yCoord = point.y();
+  const int xCoord = point.x();
+
+  int tmpYStart = yCoord;
+  while (isSameKindTile(Point{xCoord, tmpYStart--}, layer, tileId))
+    ;
+
+  int tmpYEnd = yCoord;
+  while (isSameKindTile(Point{xCoord, tmpYEnd++}, layer, tileId))
+    ;
+
+  bool hasSameKindLeft = false;
+  bool hasSameKindRight = false;
+
+  if (isSameKindTile(Point{xCoord - 1, yCoord}, layer, tileId)) {
+    hasSameKindLeft = !isSameKindTile(Point{xCoord - 1, tmpYStart}, layer, tileId) ||
+                      !isSameKindTile(Point{xCoord - 1, tmpYEnd}, layer, tileId);
+  }
+
+  if (isSameKindTile(Point{xCoord + 1, yCoord}, layer, tileId)) {
+    hasSameKindRight = !isSameKindTile(Point{xCoord + 1, tmpYStart}, layer, tileId) ||
+                       !isSameKindTile(Point{xCoord + 1, tmpYEnd}, layer, tileId);
+  }
+
+  if (TileHelper::isWallSideTile(tileId)) {
+    if (!hasSameKindLeft) {
+      hasSameKindLeft = !isWallOrRoofTile(Point{xCoord - 1, yCoord}, layer) ||
+                        !isWallOrRoofTile(Point{xCoord - 1, tmpYStart}, layer) ||
+                        !isWallOrRoofTile(Point{xCoord - 1, tmpYEnd}, layer);
+    }
+
+    if (!hasSameKindRight) {
+      hasSameKindRight = !isWallOrRoofTile(Point{xCoord + 1, yCoord}, layer) ||
+                         !isWallOrRoofTile(Point{xCoord + 1, tmpYStart}, layer) ||
+                         !isWallOrRoofTile(Point{xCoord + 1, tmpYEnd}, layer);
+    }
+  }
+
+  int updatedDirection = (direction & ~flags) & ~0x10;
+  if (!hasSameKindLeft) {
+    updatedDirection = (direction & ~flags) | 0x10;
+  }
+  updatedDirection &= ~0x40;
+  if (!hasSameKindRight) {
+    updatedDirection |= 0x40;
+  }
+
+  const int northDirectionBit = makeDirectionBit(Point{xCoord, yCoord - 1}, tileId, layer, flags & 0x20, true);
+  const int southDirectionBit = makeDirectionBit(Point{xCoord, yCoord + 1}, tileId, layer, flags & 0x80, true);
+
+  const int shape = TileHelper::wallDirToShape(southDirectionBit | northDirectionBit | updatedDirection);
+  return TileHelper::makeAutoTileId(autotileKind, shape);
 }
 
 int MapEditor::updateWaterfallTypeAutotile(const Point& point, const int layer, const int flags) const {
@@ -368,6 +407,10 @@ int MapEditor::makeDirectionBit(const Point& nextPos, const int tileId, const in
     }
   }
   return ret;
+}
+
+bool MapEditor::isWallOrRoofTile(const Point& p, const int layer) const {
+  return TileHelper::isWallOrRoofTile(readMapData(p, layer));
 }
 bool MapEditor::isGroundTile(const Point& p, const int layer) const {
   return TileHelper::isGroundTile(readMapData(p, layer));
@@ -450,7 +493,6 @@ void MapEditor::draw() {
     // ImGui::SetScrollY(m_tileCursor.alignCoord(ImGui::GetScrollY()));
     if (map()) {
       ImGuiWindow* win = ImGui::GetCurrentWindow();
-      win->ScrollTargetEdgeSnapDist;
       ImGui::Dummy(ImVec2{(map()->width * m_parent->system().tileSize * m_mapScale),
                           (map()->height * m_parent->system().tileSize * m_mapScale)});
 

@@ -60,6 +60,8 @@ bool isWallSideTile(const int tileId) {
 
 bool isWallTile(const int tileId) { return isWallTopTile(tileId) || isWallSideTile(tileId); }
 
+bool isWallOrRoofTile(const int tileId) { return isWallTile(tileId) || isRoofTile(tileId); }
+
 bool isFloorTypeAutotile(const int tileId) {
   return (isTileA1(tileId) && !isWaterfallTile(tileId)) || isTileA2(tileId) || isWallTopTile(tileId);
 }

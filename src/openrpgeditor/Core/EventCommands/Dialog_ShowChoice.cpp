@@ -105,7 +105,7 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
       ImGui::PushItemWidth((App::DPIHandler::scale_value(120)));
       std::string text = m_cancelType == -2   ? "Branch"
                          : m_cancelType == -1 ? "Disallow"
-                             : ("Choice #" + std::to_string(m_cancelType + 1));
+                                              : ("Choice #" + std::to_string(m_cancelType + 1));
 
       if (ImGui::BeginCombo("##showchoice_cancel", text.c_str())) {
         for (int i{-2}; i < 6; i++) {
@@ -143,24 +143,51 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
       if (ImGui::Button("OK")) {
         m_confirmed = true;
 
+        /*
         if (!m_choice_1.empty()) { m_choices[0] = m_choice_1; }
         if (!m_choice_2.empty()) { m_choices[1] = m_choice_2; }
         if (!m_choice_3.empty()) { m_choices[2] = m_choice_3; }
         if (!m_choice_4.empty()) { m_choices[3] = m_choice_4; }
         if (!m_choice_5.empty()) { m_choices[4] = m_choice_5; }
         if (!m_choice_6.empty()) { m_choices[5] = m_choice_6; }
+        */
+        m_choices[0] = m_choice_1;
+        m_choices[1] = m_choice_2;
+        m_choices[2] = m_choice_3;
+        m_choices[3] = m_choice_4;
+        m_choices[4] = m_choice_5;
+        m_choices[5] = m_choice_6;
 
         command->background = static_cast<TextBackground>(m_background);
         command->positionType = static_cast<ChoiceWindowPosition>(m_position);
-        //command->choices = m_choices;
+        // command->choices = m_choices;
 
-        int index{0};
         command->choices.clear();
         for (auto& str : m_choices) {
           if (!str.empty())
             command->choices.push_back(str);
+        }
+
+        /*
+        // Validation
+        int index{0};
+        int deletionIndex{-1};
+        for (auto&str : m_choices) {
+          if (str.empty()) {
+            APP_INFO(std::to_string(index) + " is marked for deletion");
+            deletionIndex = index;
+            break;
+          }
           index++;
         }
+        if (!m_choices.back().empty())
+          deletionIndex = -1;
+
+        if (deletionIndex > -1) {
+          APP_INFO("Erasing from " + std::to_string(deletionIndex));
+          command->choices.erase(command->choices.begin() + deletionIndex, command->choices.end());
+        }
+         */
         command->cancelType = m_cancelType;
         command->defaultType = m_defaultType;
 

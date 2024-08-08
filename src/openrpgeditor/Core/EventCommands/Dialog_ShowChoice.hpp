@@ -34,17 +34,18 @@ struct Dialog_ShowChoice : IEventDialogController {
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
 
   std::vector<std::shared_ptr<IEventCommand>> getTemplateCommands(EventCode code, int intParam1 = 0) override {
+    std::vector<std::shared_ptr<IEventCommand>> commandList;
     if (code == EventCode::When_Selected) {
       std::shared_ptr<WhenSelectedCommand> when;
-      eventCommands.push_back(std::make_shared<WhenSelectedCommand>());
-      eventCommands.back()->indent = getParentIndent().value();
-      when = static_pointer_cast<WhenSelectedCommand>(eventCommands.back());
+      commandList.push_back(std::make_shared<WhenSelectedCommand>());
+      commandList.back()->indent = getParentIndent().value();
+      when = static_pointer_cast<WhenSelectedCommand>(commandList.back());
       when->choice = command->choices.at(intParam1);
       when->param1 = intParam1;
-      eventCommands.push_back(std::make_shared<EventDummy>());
-      eventCommands.back()->indent = getParentIndent().value() + 1;
+      commandList.push_back(std::make_shared<EventDummy>());
+      commandList.back()->indent = getParentIndent().value() + 1;
     }
-    return eventCommands;
+    return commandList;
   }
 
   std::vector<std::shared_ptr<IEventCommand>> getBatchCommands() override {

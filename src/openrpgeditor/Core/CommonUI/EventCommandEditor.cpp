@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <vector>
+
 void insertValue(std::string& indentPad, const std::string& val, const std::string& delim) {
   auto pos = indentPad.find(delim);
   if (pos != std::string::npos) {
@@ -626,51 +627,59 @@ void EventCommandEditor::drawPopup() {
               }
             } else {
               if (std::static_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand())) {
+                std::shared_ptr<ShowChoiceCommand> commandPointer = std::static_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand());
+
+                for (auto choice : commandPointer->choices) {
+                  APP_INFO("Choice Print: " + choice);
+                }
                 EventCode code = commandDialog->getCommand()->code();
                 int whenIndex{0};
-                bool isEnd{false};
-                if (!isEnd) {
-                  int choiceSize =
-                      std::static_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand())->choices.size();
-                  APP_INFO(std::to_string(choiceSize));
-                  for (int i = m_selectedCommand; i < m_commands->size(); i++) {
-                    if (m_commands->at(i)->code() == EventCode::End_del_ShowChoices) {
-                      APP_INFO("when index: " + std::to_string(whenIndex));
-                      APP_INFO("End of choice");
-                      // On Accept:
-                      // If the last element name is "", then delete all when commands that are also ""
-                      // If there is a new choice, "when" has to be added
-                      // If choices are renamed, "whens" have to be renamed
-                      if (choiceSize >= whenIndex) {
-                        int numberOfWhens = choiceSize - whenIndex;
-                        APP_INFO("Found more options... need to make more whens: " + std::to_string(numberOfWhens));
-                        for (int z{0}; z < numberOfWhens; z++) {
-                          for (auto cmd : commandDialog->getTemplateCommands(EventCode::When_Selected, whenIndex)) {
-                            m_commands->insert(m_commands->begin() + (i - 1), cmd);
-                            //whenIndex++;
-                          }
+                int deletionIndex{0};
+                bool isDeletion{false};
+                int choiceSize =
+                    commandPointer->choices.size();
+                APP_INFO(std::to_string(choiceSize));
+                for (int i = m_selectedCommand; i < m_commands->size(); i++) {
+                  if (m_commands->at(i)->code() == EventCode::End_del_ShowChoices) {
+                    if (choiceSize > whenIndex) {
+                      int numberOfWhens = choiceSize - whenIndex;
+                      APP_INFO("Found more options... need to make more whens: " + std::to_string(numberOfWhens));
+                      for (int z{0}; z < numberOfWhens; z++) {
+                        for (auto cmd : commandDialog->getTemplateCommands(EventCode::When_Selected, whenIndex)) {
+                          m_commands->insert(m_commands->begin() + (i - 1), cmd);
                         }
-                      } else if (std::static_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand())
-                                     ->choices.size() < whenIndex) {
-                        // Need to remove the ones that should not be there
-                        APP_INFO("Need to remove...");
                       }
-                      isEnd = true;
                     }
-                    if (m_commands->at(i)->code() == EventCode::When_Selected) {
-                      APP_INFO("Found when");
+
+                    if (isDeletion) {
+                      APP_INFO("isDeletion...");
+                      APP_INFO("Deletion index... " + std::to_string(deletionIndex));
+                      APP_INFO(DecodeEnumName(m_commands->at(deletionIndex)->code()));
+                      APP_INFO(DecodeEnumName(m_commands->at(i-1)->code()));
+                      m_commands->erase(m_commands->begin() + (deletionIndex - 1), m_commands->begin() + (i - 1));
+                      break;
+                    }
+                  }
+
+                  if (m_commands->at(i)->code() == EventCode::When_Selected) {
+                    if (whenIndex < commandPointer->choices.size()) {
+                      std::shared_ptr<WhenSelectedCommand> when = std::static_pointer_cast<WhenSelectedCommand>(m_commands->at(i));
+
+                      when->choice = commandPointer->choices.at(whenIndex);
+                      when->param1 = whenIndex;
+
                       whenIndex++;
-                      std::shared_ptr<WhenSelectedCommand> when =
-                          std::static_pointer_cast<WhenSelectedCommand>(m_commands->at(i));
-                      when->choice = std::static_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand())
-                                         ->choices.at(whenIndex - 1);
-                      when->param1 = whenIndex - 1;
+                    }
+                    else {
+                      if (!isDeletion) {
+                        isDeletion = true;
+                        deletionIndex = i;
+                      }
                     }
                   }
                 }
               }
             }
-            // commandDialog->SetOpen(false);
             commandDialog.reset();
             ImGui::CloseCurrentPopup();
           }

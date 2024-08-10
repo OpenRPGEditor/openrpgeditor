@@ -12,7 +12,8 @@ std::tuple<bool, bool> Dialog_RecoverAll::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{402, 117} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+                                 ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (picker) {
       auto [closed, confirmed] = picker->draw();
@@ -48,7 +49,7 @@ std::tuple<bool, bool> Dialog_RecoverAll::draw() {
         // TODO Picker needs "Entire Party" option
         if (ImGui::Button(
                 text.c_str(),
-                ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+                ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
               actor_picker = ObjectPicker<Actor>("Actor"sv, Database::Instance->actors.actorList(), 0);
         }
         ImGui::PopID();
@@ -61,7 +62,7 @@ std::tuple<bool, bool> Dialog_RecoverAll::draw() {
         ImGui::PushID("##controlvariable_gamedata");
         if (ImGui::Button(
                 text.c_str(),
-                ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+                ImVec2{200  - (15 * App::DPIHandler::get_ui_scale()), 0})) {
           picker.emplace("Variables", Database::Instance->system.variables);
                 }
         ImGui::PopID();

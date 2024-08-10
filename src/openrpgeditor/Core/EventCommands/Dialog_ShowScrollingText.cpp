@@ -12,7 +12,8 @@ std::tuple<bool, bool> Dialog_ShowScrollingText::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{551, 280} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+                                 ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::SeparatorText("Text");
     ImGui::InputTextMultiline("##showscrolling_text", m_textLine, 4096, ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(20), 0});
     ImGui::Text("Speed: ");

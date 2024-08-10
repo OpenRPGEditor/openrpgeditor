@@ -11,8 +11,8 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{183, 141} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
+  ImGui::SetNextWindowSize(windowSize * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (animation_picker) {
       auto [closed, confirmed] = animation_picker->draw();
@@ -73,6 +73,7 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
       ImGui::CloseCurrentPopup();
       SetOpen(false);
     }
+    windowSize = ImVec2{ImGui::GetContentRegionMax().x, ImGui::GetContentRegionMax().y};
     ImGui::EndPopup();
   }
 

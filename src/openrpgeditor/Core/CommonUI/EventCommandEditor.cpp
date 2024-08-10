@@ -691,9 +691,14 @@ void EventCommandEditor::drawPopup() {
     ImGui::EndGroup();
 
     if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))) {
-      m_isNewEntry = false;
-      m_selectedCommand = 0;
-      ImGui::CloseCurrentPopup();
+      if (commandDialog) {
+        commandDialog.reset();
+      }
+      else {
+        m_isNewEntry = false;
+        m_selectedCommand = 0;
+        ImGui::CloseCurrentPopup();
+      }
     }
 
     ImGui::EndPopup();

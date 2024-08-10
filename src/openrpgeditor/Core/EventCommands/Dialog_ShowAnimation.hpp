@@ -27,6 +27,7 @@ private:
   bool m_waitCompletion;
   int m_animation;
   int m_character;
+  ImVec2 windowSize{183, 141};
 
   bool m_confirmed{false};
   std::optional<ObjectPicker<Animation>> animation_picker;

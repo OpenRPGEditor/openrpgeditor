@@ -36,7 +36,7 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
     ImGui::PushID("##changeitems_item");
     if (ImGui::Button(
             Database::Instance->itemNameOrId(m_item).c_str(),
-            {(App::DPIHandler::scale_value(160)), 0})) {
+            ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
       item_picker = ObjectPicker<Item>("Items"sv, Database::Instance->items.items(), 0);
     }
     ImGui::PopID();
@@ -70,7 +70,7 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
       ImGui::PushID("##changeenemyhp_quant_var");
       if (ImGui::Button(
               m_operandSource == 1 ? Database::Instance->variableNameAndId(m_quantity_var).c_str() : "",
-              ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
+              ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();

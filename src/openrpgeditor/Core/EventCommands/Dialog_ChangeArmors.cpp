@@ -35,7 +35,7 @@ std::tuple<bool, bool> Dialog_ChangeArmors::draw() {
     // Section 1 Armor
     ImGui::SeparatorText("Armor");
     ImGui::PushID("##changearmors_item");
-    if (ImGui::Button(Database::Instance->armorNameOrId(m_item).c_str(), {(App::DPIHandler::scale_value(160)), 0})) {
+    if (ImGui::Button(Database::Instance->armorNameOrId(m_item).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
       armor_picker = ObjectPicker<Armor>("Armor"sv, Database::Instance->armors.armorList(), 0);
     }
     ImGui::PopID();
@@ -70,7 +70,7 @@ std::tuple<bool, bool> Dialog_ChangeArmors::draw() {
       ImGui::BeginDisabled(m_operandSource != 1);
       ImGui::PushID("##changeenemyhp_quant_var");
       if (ImGui::Button(m_operandSource == 1 ? Database::Instance->variableNameAndId(m_quantity_var).c_str() : "",
-                        ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
+                        ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();

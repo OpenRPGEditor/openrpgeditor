@@ -49,7 +49,7 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
       ImGui::PushID("##changeskill_actor");
       if (ImGui::Button(
               m_comparison == 0 ? (std::format("{:04} ", m_value) + Database::Instance->actorNameOrId(m_value)).c_str() : "",
-              {(App::DPIHandler::scale_value(160)), 0})) {
+              ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
 
         actor_picker = ObjectPicker<Actor>("Actor"sv, Database::Instance->actors.actorList(), 0);
       }
@@ -61,7 +61,7 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
       ImGui::PushID("##changeskill_var");
       if (ImGui::Button(
               m_comparison == 1 ? (std::format("{:04} ", m_var) + Database::Instance->variableNameOrId(m_var)).c_str() : "",
-              ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
+              ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();

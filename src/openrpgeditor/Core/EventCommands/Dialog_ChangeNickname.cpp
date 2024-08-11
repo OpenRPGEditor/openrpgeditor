@@ -29,13 +29,13 @@ std::tuple<bool, bool> Dialog_ChangeNickname::draw() {
     ImGui::PushID("##nickname_selection_actor");
     if (ImGui::Button(
             Database::Instance->actorName(m_actor).c_str(),
-            ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
+            ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
       actor_picker = ObjectPicker<Actor>("Actor"sv, Database::Instance->actors.actorList(), 0);
             }
     ImGui::PopID();
 
     ImGui::SeparatorText("Nickname");
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
+    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(185));
     ImGui::InputText("##nickname_input", &m_nickname);
 
 

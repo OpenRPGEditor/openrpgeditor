@@ -51,7 +51,7 @@ std::tuple<bool, bool> Dialog_BattleProcessing::draw() {
     ImGui::PushID("##battleprocess_var");
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
     if (ImGui::Button(m_type == 1 ? Database::Instance->variableNameOrId(m_var_selection).c_str() : "",
-                      ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
+                      ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
       picker.emplace("Variables", Database::Instance->system.variables);
     }
     ImGui::PopID();

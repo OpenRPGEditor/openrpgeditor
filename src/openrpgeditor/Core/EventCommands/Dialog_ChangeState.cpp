@@ -51,7 +51,7 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
       ImGui::PushID("##changestate_actor");
       if (ImGui::Button(
               m_comparison != 0 ? "" : Database::Instance->actorNameOrId(m_actor).c_str(),
-              {(App::DPIHandler::scale_value(160)), 0})) {
+              ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         actor_picker = ObjectPicker<Actor>("Actors"sv, Database::Instance->actors.actorList(), 0);
       }
       ImGui::PopID();
@@ -61,7 +61,7 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
       ImGui::PushID("##changeenemyhp_quant_var");
       if (ImGui::Button(
               m_comparison == 1 ? Database::Instance->variableNameAndId(m_actor_var).c_str() : "",
-              ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
+              ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();

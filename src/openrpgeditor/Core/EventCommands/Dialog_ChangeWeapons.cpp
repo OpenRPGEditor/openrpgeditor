@@ -36,7 +36,7 @@ std::tuple<bool, bool> Dialog_ChangeWeapons::draw() {
     ImGui::PushID("##changeweapons_item");
     if (ImGui::Button(
             Database::Instance->weaponNameOrId(m_item).c_str(),
-            {(App::DPIHandler::scale_value(160)), 0})) {
+            ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
       weapon_picker = ObjectPicker<Weapon>("Weapon"sv, Database::Instance->weapons.weaponList(), 0);
     }
     ImGui::PopID();
@@ -70,7 +70,7 @@ std::tuple<bool, bool> Dialog_ChangeWeapons::draw() {
       ImGui::PushID("##changeenemyhp_quant_var");
       if (ImGui::Button(
               m_operandSource == 1 ? Database::Instance->variableNameAndId(m_quantity_var).c_str() : "",
-              ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
+              ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();

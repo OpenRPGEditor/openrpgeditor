@@ -38,7 +38,7 @@ std::tuple<bool, bool> Dialog_ShowBattleAnimation::draw() {
     ImGui::SeparatorText("Animation");
     ImGui::PushID("##showanim_animation_select");
     if (ImGui::Button(Database::Instance->animationName(m_animation).c_str(),
-                      ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
+                      ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
       animation_picker = ObjectPicker<Animation>("Animation"sv, Database::Instance->animations.animations(), 0);
     }
     ImGui::PopID();

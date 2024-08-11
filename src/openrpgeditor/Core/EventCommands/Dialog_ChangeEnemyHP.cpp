@@ -24,7 +24,7 @@ std::tuple<bool, bool> Dialog_ChangeEnemyHP::draw() {
     }
     // Section 1 Enemy
     ImGui::SeparatorText("Enemy");
-    ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
+    ImGui::PushItemWidth((App::DPIHandler::scale_value(200)));
     if (ImGui::BeginCombo("##changeenemyhp_list", (m_enemy > -1 ? "#" + std::to_string(m_enemy + 1) : ""
                                                    + Database::Instance->troopMemberName(0, m_enemy)).c_str())) {
       if (ImGui::Selectable("Entire Troop", m_enemy == -1)) {
@@ -68,7 +68,7 @@ std::tuple<bool, bool> Dialog_ChangeEnemyHP::draw() {
       ImGui::PushID("##changeenemyhp_quant_var");
       if (ImGui::Button(
               m_quantitySource == 1 ? Database::Instance->variableNameAndId(m_quantity_var).c_str() : "",
-              ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
+              ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();

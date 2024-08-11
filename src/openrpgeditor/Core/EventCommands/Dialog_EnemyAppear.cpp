@@ -16,7 +16,7 @@ std::tuple<bool, bool> Dialog_EnemyAppear::draw() {
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Enemy");
-    ImGui::SetNextItemWidth(100 * App::DPIHandler::get_ui_scale());
+    ImGui::SetNextItemWidth(160 * App::DPIHandler::get_ui_scale());
 
     if (ImGui::BeginCombo("##enemystate_change_list", m_troop_selection == 0 ? "Entire Troop" : ("#" + std::to_string(m_troop_selection) + " ?").c_str())) {
       if (ImGui::Selectable("Entire Troop", m_troop_selection == 0)) {

@@ -46,7 +46,7 @@ std::tuple<bool, bool> Dialog_ChangeParameter::draw() {
       ImGui::PushID("##changemp_actor");
       if (ImGui::Button(
               m_comparison == 0 ? (std::format("{:04} ", m_value) + Database::Instance->actorName(m_value)).c_str() : "",
-              {(App::DPIHandler::scale_value(160)), 0})) {
+              ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
 
         actor_picker = ObjectPicker<Actor>("Actor"sv, Database::Instance->actors.actorList(), 0);
       }
@@ -58,7 +58,7 @@ std::tuple<bool, bool> Dialog_ChangeParameter::draw() {
       ImGui::PushID("##changemp_var");
       if (ImGui::Button(
               m_comparison == 1 ? Database::Instance->variableNameAndId(m_value_var).c_str() : "",
-              ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
+              ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         isOperand = false;
         picker.emplace("Variables", Database::Instance->system.variables);
       }
@@ -111,7 +111,7 @@ std::tuple<bool, bool> Dialog_ChangeParameter::draw() {
       ImGui::PushID("##changemp_quant_var");
       if (ImGui::Button(
               m_quantitySource == 1 ? Database::Instance->variableNameAndId(m_quantity_var).c_str() : "",
-              ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
+     ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         isOperand = true;
         picker.emplace("Variables", Database::Instance->system.variables);
       }

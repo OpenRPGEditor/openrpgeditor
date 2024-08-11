@@ -51,7 +51,7 @@ std::tuple<bool, bool> Dialog_ChangeEnemyState::draw() {
     ImGui::PushID("##enemystate_change");
     if (ImGui::Button(
             text.c_str(),
-            ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+            ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
       state_picker = ObjectPicker<State>("State"sv, Database::Instance->states.states(), 0);
     }
     ImGui::PopID();

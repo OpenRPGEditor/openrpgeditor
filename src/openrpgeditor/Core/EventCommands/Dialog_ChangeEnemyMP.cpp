@@ -10,7 +10,7 @@ std::tuple<bool, bool> Dialog_ChangeEnemyMP::draw() {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 1.5f));
   ImGui::SetNextWindowSize(ImVec2{254, 205} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
@@ -24,7 +24,7 @@ std::tuple<bool, bool> Dialog_ChangeEnemyMP::draw() {
     }
     // Section 1 Enemy
     ImGui::SeparatorText("Enemy");
-    ImGui::PushItemWidth((App::DPIHandler::scale_value(200)));
+    ImGui::PushItemWidth(App::DPIHandler::scale_value(200));
     if (ImGui::BeginCombo("##changeenemymp_list", (m_enemy > -1 ? "#" + std::to_string(m_enemy + 1) : ""
                                                                                                           + Database::Instance->troopMemberName(0, m_enemy)).c_str())) {
       if (ImGui::Selectable("Entire Troop", m_enemy == -1)) {

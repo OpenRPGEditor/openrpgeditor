@@ -15,11 +15,14 @@ std::tuple<bool, bool> Dialog_PlayMovie::draw() {
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
+    ImGui::BeginGroup();
+    {
+
     if (ImGui::BeginTable("##movie_contents", 1,
                           ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                               ImGuiTableFlags_ScrollY,
-                          ImVec2{(ImGui::GetContentRegionMax().x) -  App::DPIHandler::scale_value(10),
-                                 ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
+                              ImVec2{App::DPIHandler::scale_value(500),
+                                       App::DPIHandler::scale_value(500)})) {
 
       ImGui::TableSetupScrollFreeze(1, 0);
       ImGui::TableSetupColumn("File");
@@ -60,6 +63,8 @@ std::tuple<bool, bool> Dialog_PlayMovie::draw() {
       }
       ImGui::EndTable();
                                  }
+    }
+    ImGui::EndGroup();
 
     if (ImGui::Button("OK")) {
       m_confirmed = true;

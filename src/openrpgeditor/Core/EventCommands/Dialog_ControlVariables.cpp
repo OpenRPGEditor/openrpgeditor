@@ -159,9 +159,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
       ImGui::EndGroup();
     }
 
-    ImGui::SetCursorPos(
-        ImVec2(ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(100) - ImGui::GetStyle().FramePadding.x,
-               ImGui::GetCursorPosY()));
+    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 78, ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {
       m_confirmed = true;
       if (m_operation_var == 0) {

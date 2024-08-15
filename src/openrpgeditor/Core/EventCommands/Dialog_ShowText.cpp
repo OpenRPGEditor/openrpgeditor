@@ -83,60 +83,53 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
         ImGui::EndCombo();
       }
       ImGui::SameLine();
-      ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(50));
       if (ImGui::Button("Preview...", ImVec2{App::DPIHandler::scale_value(100), 0})) {
         // TODO
       }
       ImGui::EndGroup();
     }
-    ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(80),
-                        ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(20)});
-    ImGui::BeginGroup();
-    {
-      if (ImGui::Button("OK")) {
-        m_confirmed = true;
-        command->faceImage = m_faceImage;
-        command->faceIndex = m_faceIndex;
-        command->background = static_cast<TextBackground>(m_background);
-        command->position = static_cast<TextWindowPosition>(m_position);
-        command->textLine = m_textLine;
-        std::vector<std::string> split = splitString(m_textLine, '\n');
-        int index{0};
-        for (auto str : split) {
-          if (split.size() > 4) {
-            if (textIndex == 0) {
-              moreCommands.push_back(command);
-            }
-            moreCommands.back()->text.push_back(std::make_shared<NextTextCommand>());
-            moreCommands.back()->text.back()->text = str;
-            textIndex++;
-            if (moreCommands.back()->text.size() > 3 && textIndex < split.size()) {
-              moreCommands.push_back(std::make_shared<ShowTextCommand>());
-              moreCommands.back()->faceImage = m_faceImage;
-              moreCommands.back()->faceIndex = m_faceIndex;
-              moreCommands.back()->background = static_cast<TextBackground>(m_background);
-              moreCommands.back()->position = static_cast<TextWindowPosition>(m_position);
-            }
-          } else {
-            if (index == 0) { command->text.clear(); }
-
-            command->text.push_back(std::make_shared<NextTextCommand>());
-            command->text.back()->text = str;
+    //ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 78, ImGui::GetCursorPosY()));
+    if (ImGui::Button("OK")) {
+      m_confirmed = true;
+      command->faceImage = m_faceImage;
+      command->faceIndex = m_faceIndex;
+      command->background = static_cast<TextBackground>(m_background);
+      command->position = static_cast<TextWindowPosition>(m_position);
+      command->textLine = m_textLine;
+      std::vector<std::string> split = splitString(m_textLine, '\n');
+      int index{0};
+      for (auto str : split) {
+        if (split.size() > 4) {
+          if (textIndex == 0) {
+            moreCommands.push_back(command);
           }
-          index++;
-        }
-        ImGui::CloseCurrentPopup();
-        SetOpen(false);
-      }
-      ImGui::SameLine();
-      if (ImGui::Button("Cancel")) {
-        ImGui::CloseCurrentPopup();
-        SetOpen(false);
-      }
-      ImGui::EndPopup();
-      ImGui::EndGroup();
-    }
-  }
+          moreCommands.back()->text.push_back(std::make_shared<NextTextCommand>());
+          moreCommands.back()->text.back()->text = str;
+          textIndex++;
+          if (moreCommands.back()->text.size() > 3 && textIndex < split.size()) {
+            moreCommands.push_back(std::make_shared<ShowTextCommand>());
+            moreCommands.back()->faceImage = m_faceImage;
+            moreCommands.back()->faceIndex = m_faceIndex;
+            moreCommands.back()->background = static_cast<TextBackground>(m_background);
+            moreCommands.back()->position = static_cast<TextWindowPosition>(m_position);
+          }
+        } else {
+          if (index == 0) { command->text.clear(); }
 
+          command->text.push_back(std::make_shared<NextTextCommand>());
+          command->text.back()->text = str;
+        }
+        index++;
+      }
+      ImGui::CloseCurrentPopup();
+      SetOpen(false);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Cancel")) {
+      ImGui::CloseCurrentPopup();
+      SetOpen(false);
+    }
+    ImGui::EndPopup();
+  }
   return std::make_tuple(!m_open, m_confirmed);
 }

@@ -24,18 +24,14 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     }
 
     ImGui::SeparatorText("Switch");
-    ImGui::PushItemWidth(200);
     ImGui::RadioButton("Single", &m_operation, 0); // Specific Switch
-    ImGui::PopItemWidth();
     ImGui::SameLine();
 
     std::string text =
         m_operation != 0 ? "##commonevent_switch_empty" : (m_start == 0 ? "" : std::format("{:04} ", m_start) + Database::Instance->switchName(m_start));
     ImGui::PushID("##controlswitch_id");
-    ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 50) - (16 * App::DPIHandler::get_ui_scale()));
     ImGui::BeginDisabled(m_operation != 0);
-    if (ImGui::Button(text.c_str(), ImVec2{((ImGui::GetWindowContentRegionMax().x - 75)) -
-                                               (15 * App::DPIHandler::get_ui_scale()),
+    if (ImGui::Button(text.c_str(), ImVec2{(App::DPIHandler::scale_value(160)),
                                            0})) {
       picker.emplace("Switches", Database::Instance->system.switches);
     }
@@ -45,7 +41,7 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     ImGui::RadioButton("Range", &m_operation, 1); // Range of Switches
     ImGui::SameLine();
     ImGui::BeginDisabled(m_operation != 1);
-    ImGui::PushItemWidth(50);
+    ImGui::PushItemWidth(App::DPIHandler::scale_value(50));
     ImGui::InputInt("##controlswitch_range1", &m_rand_1, 0);
     ImGui::SameLine();
     ImGui::Text("~");
@@ -60,7 +56,7 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     ImGui::SameLine();
     ImGui::RadioButton("OFF", &operationBool, 1); // Range of Switches
 
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 75, ImGui::GetCursorPosY()));
+    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 78, ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {
       m_confirmed = true;
       if (m_operation == 0) {

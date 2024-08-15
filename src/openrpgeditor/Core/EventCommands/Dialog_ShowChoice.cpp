@@ -137,8 +137,8 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
       }
       ImGui::EndGroup();
     }
-    ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(80),
-                               ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(20)});
+    //ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionAvail().x - App::DPIHandler::scale_value(80),
+    //                           ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(20)});
     ImGui::BeginGroup();
     {
       if (ImGui::Button("OK")) {
@@ -200,9 +200,9 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
         ImGui::CloseCurrentPopup();
         SetOpen(false);
       }
-      ImGui::EndPopup();
       ImGui::EndGroup();
     }
+      ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);

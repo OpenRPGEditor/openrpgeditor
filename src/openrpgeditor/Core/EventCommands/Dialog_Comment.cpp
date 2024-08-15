@@ -16,7 +16,7 @@ std::tuple<bool, bool> Dialog_Comment::draw() {
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
     static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
-    if (ImGui::InputTextMultiline("##source", script, IM_ARRAYSIZE(script), ImVec2(ImGui::GetContentRegionMax().x - 25, ImGui::GetContentRegionMax().y - 50), flags))
+    if (ImGui::InputTextMultiline("##source", script, IM_ARRAYSIZE(script), ImVec2{575, 550} * App::DPIHandler::get_ui_scale(), flags))
     {
 
     }

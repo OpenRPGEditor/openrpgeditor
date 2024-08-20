@@ -13,7 +13,13 @@ struct Dialog_ShowScrollingText : IEventDialogController {
     }
     m_speed = command->speed;
     m_noFast = command->noFast;
-    //strncpy(m_textLine, command->command.c_str(), 4096);
+
+    std::string textStr;
+    for (auto& str : command->text) {
+      textStr += str->text + "\n";
+    }
+
+    strncpy(m_textLine, textStr.c_str(), 4096);
   }
   std::tuple<bool, bool> draw() override;
 

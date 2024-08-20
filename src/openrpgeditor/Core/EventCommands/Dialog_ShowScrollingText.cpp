@@ -15,10 +15,10 @@ std::tuple<bool, bool> Dialog_ShowScrollingText::draw() {
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::SeparatorText("Text");
-    ImGui::InputTextMultiline("##showscrolling_text", m_textLine, 4096, ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(20), 0});
+    ImGui::InputTextMultiline("##showscrolling_text", m_textLine, 4096, ImVec2{App::DPIHandler::scale_value(537), App::DPIHandler::scale_value(107)});
     ImGui::Text("Speed: ");
     ImGui::SameLine();
-    ImGui::PushItemWidth((App::DPIHandler::scale_value(50)));
+    ImGui::PushItemWidth(App::DPIHandler::scale_value(50));
     if (ImGui::InputInt("##showscrolling_speed", &m_speed, 0)) {
       if (m_speed > 8)
         m_speed = 8;
@@ -28,12 +28,10 @@ std::tuple<bool, bool> Dialog_ShowScrollingText::draw() {
     ImGui::SameLine();
     ImGui::Checkbox("No Fast Forward", &m_noFast);
     ImGui::SameLine();
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(50));
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(190));
     if (ImGui::Button("Preview...", ImVec2{App::DPIHandler::scale_value(100), 0})) {
       // TODO
     }
-        ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(80),
-                                   ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(20)});
     ImGui::BeginGroup();
     {
       if (ImGui::Button("OK")) {
@@ -53,9 +51,9 @@ std::tuple<bool, bool> Dialog_ShowScrollingText::draw() {
         ImGui::CloseCurrentPopup();
         SetOpen(false);
       }
-      ImGui::EndPopup();
       ImGui::EndGroup();
     }
+      ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);

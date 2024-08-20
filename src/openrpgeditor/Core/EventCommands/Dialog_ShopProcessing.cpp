@@ -51,8 +51,8 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
     if (ImGui::BeginTable("##shop_processing_main", 2,
                           ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                               ImGuiTableFlags_ScrollY,
-                          ImVec2{(ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(10)),
-                                 ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(40)})) {
+                          ImVec2{(App::DPIHandler::scale_value(530)),
+                                 App::DPIHandler::scale_value(390)})) {
 
       ImGui::TableSetupScrollFreeze(1, 0);
       ImGui::TableSetupColumn("Merchandise", ImGuiTableColumnFlags_WidthStretch);
@@ -148,8 +148,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
     }
     ImGui::Checkbox("Purchase Only", &m_purchaseOnly);
 
-    ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(80),
-                               ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(20)});
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(ImGui::GetWindowWidth() - 106));
     ImGui::BeginGroup();
     {
       if (ImGui::Button("OK")) {
@@ -168,9 +167,9 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
         ImGui::CloseCurrentPopup();
         SetOpen(false);
       }
-      ImGui::EndPopup();
       ImGui::EndGroup();
     }
+      ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);

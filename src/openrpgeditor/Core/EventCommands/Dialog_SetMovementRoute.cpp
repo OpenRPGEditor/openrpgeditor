@@ -285,7 +285,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
       }
       ImGui::EndGroup();
     }
-    ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(80), ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(20)});
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(712));
     if (ImGui::Button("OK")) {
       m_confirmed = true;
       command->character = m_character;

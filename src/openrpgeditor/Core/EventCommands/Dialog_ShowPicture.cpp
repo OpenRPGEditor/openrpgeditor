@@ -55,7 +55,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
       // Actor Button
       ImGui::Text("Image:");
       ImGui::PushID("##showpicture_image_selection");
-      if (ImGui::Button(m_imageName.c_str(), ImVec2{(App::DPIHandler::scale_value(300)), 0})) {
+      if (ImGui::Button(m_imageName.c_str(), ImVec2{(App::DPIHandler::scale_value(220)), 0})) {
         m_imagePicker->SetOpen(true);
       }
       ImGui::PopID();
@@ -127,33 +127,6 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
       }
       ImGui::PopID();
       ImGui::EndDisabled();
-      if (ImGui::Button("OK")) {
-        m_confirmed = true;
-        command->number = m_number;
-        command->imageName = m_imageName;
-        command->origin = static_cast<PictureOrigin>(m_origin);
-        command->type = static_cast<PictureDesignationSource>(m_type);
-        if (command->type == PictureDesignationSource::Direct_designation) {
-          command->value1 = m_constant1;
-          command->value2 = m_constant2;
-        }
-        else {
-          command->value1 = m_value1;
-          command->value2 = m_value2;
-        }
-        command->zoomX = m_zoomX;
-        command->zoomY = m_zoomY;
-        command->opacityValue = m_opacityValue;
-        command->blendMode = static_cast<Blend>(m_blendMode);
-        ImGui::CloseCurrentPopup();
-        SetOpen(false);
-      }
-      ImGui::SameLine();
-      if (ImGui::Button("Cancel")) {
-        ImGui::CloseCurrentPopup();
-        SetOpen(false);
-      }
-
       ImGui::EndGroup();
     }
     // Set Cursor
@@ -179,7 +152,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
       }
       ImGui::SeparatorText("Blend");
       ImGui::Text("Opacity:");
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
       if (ImGui::InputInt("##showpicture_opacity", &m_opacityValue, 1, 100)) {
         if (m_opacityValue < 0)
           m_opacityValue = -0;
@@ -199,6 +172,33 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
         }
         ImGui::EndCombo();
       }
+    }
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 20);
+    if (ImGui::Button("OK")) {
+      m_confirmed = true;
+      command->number = m_number;
+      command->imageName = m_imageName;
+      command->origin = static_cast<PictureOrigin>(m_origin);
+      command->type = static_cast<PictureDesignationSource>(m_type);
+      if (command->type == PictureDesignationSource::Direct_designation) {
+        command->value1 = m_constant1;
+        command->value2 = m_constant2;
+      }
+      else {
+        command->value1 = m_value1;
+        command->value2 = m_value2;
+      }
+      command->zoomX = m_zoomX;
+      command->zoomY = m_zoomY;
+      command->opacityValue = m_opacityValue;
+      command->blendMode = static_cast<Blend>(m_blendMode);
+      ImGui::CloseCurrentPopup();
+      SetOpen(false);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Cancel")) {
+      ImGui::CloseCurrentPopup();
+      SetOpen(false);
     }
     ImGui::EndPopup();
   }

@@ -54,6 +54,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
       const auto buttonCenter = (buttonSize / 2);
       ImGui::BeginGroup();
       {
+
         ImGui::Text("Face:");
         auto cursorPos = ImGui::GetCursorPos();
         if (ImGui::ImageButton("##svbattler_image", m_buttonBack.get(),
@@ -86,22 +87,25 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
           m_characterPicker.setCharacterInfo(m_facePicture, m_charIndex);
           m_characterPicker.SetOpen(true);
         }
-        if (m_characterSheet->texture()) {
-          if (m_characterSheet->characterWidth() < 72 || m_characterSheet->characterHeight() < 96) {
-            ImGui::SetCursorPos(
-                cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f, m_characterSheet->characterHeight() / 2.f} *
-                             App::DPIHandler::get_ui_scale()));
-          } else {
-            ImGui::SetCursorPos(cursorPos);
+          if (m_characterSheet && m_characterSheet->texture()) {
+            if (m_characterSheet->characterWidth() < 72 || m_characterSheet->characterHeight() < 96) {
+              ImGui::SetCursorPos(
+                  cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f, m_characterSheet->characterHeight() / 2.f} *
+                               App::DPIHandler::get_ui_scale()));
+            } else {
+              ImGui::SetCursorPos(cursorPos);
+            }
+
+            const auto [uv0, uv1] = m_characterSheet->getRectForCharacter(m_charIndex);
+
+            ImGui::Image(m_characterSheet->texture().get(),
+                         ImVec2{static_cast<float>(m_characterSheet->characterWidth()),
+                                static_cast<float>(m_characterSheet->characterHeight())} *
+                             App::DPIHandler::get_ui_scale(),
+                         ImVec2{uv0.u, uv0.v}, ImVec2{uv1.u, uv1.v});
+
           }
-          const auto [uv0, uv1] = m_characterSheet->getRectForCharacter(m_charIndex);
-          ImGui::Image(m_characterSheet->texture().get(),
-                       ImVec2{static_cast<float>(m_characterSheet->characterWidth()),
-                              static_cast<float>(m_characterSheet->characterHeight())} *
-                           App::DPIHandler::get_ui_scale(),
-                       ImVec2{uv0.u, uv0.v}, ImVec2{uv1.u, uv1.v});
         }
-      }
       ImGui::EndGroup();
       ImGui::SameLine();
       ImGui::BeginGroup();
@@ -148,7 +152,6 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
       }
       ImGui::EndGroup();
     }
-
     ImGui::EndPopup();
   }
 

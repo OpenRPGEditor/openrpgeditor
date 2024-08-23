@@ -334,8 +334,8 @@ private:
       return std::make_shared<Dialog_RotatePicture>(DecodeEnumName(code),
                                                     std::dynamic_pointer_cast<RotatePictureCommand>(cmd));
     case EventCode::Tint_Picture:
-      return std::make_shared<Dialog_RotatePicture>(DecodeEnumName(code),
-                                                    std::dynamic_pointer_cast<RotatePictureCommand>(cmd));
+      return std::make_shared<Dialog_TintPicture>(DecodeEnumName(code),
+                                                    std::dynamic_pointer_cast<TintPictureCommand>(cmd));
     case EventCode::Erase_Picture:
       return std::make_shared<Dialog_ErasePicture>(DecodeEnumName(code), std::dynamic_pointer_cast<ErasePictureCommand>(cmd));
     case EventCode::Set_Weather_Effect:

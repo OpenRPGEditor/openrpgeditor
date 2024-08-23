@@ -120,37 +120,10 @@ std::tuple<bool, bool> Dialog_MovePicture::draw() {
       ImGui::SameLine();
       ImGui::Text("frames 1/60 sec");
       ImGui::SameLine();
-      ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 80.f);
+      //ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 80.f);
       ImGui::Checkbox("Wait for Completion", &m_waitForCompletion);
 
 
-      if (ImGui::Button("OK")) {
-        m_confirmed = true;
-        command->picture = m_number;
-        command->origin = static_cast<PictureOrigin>(m_origin);
-        command->pictureLocation = static_cast<PictureDesignationSource>(m_type);
-        if (command->pictureLocation == PictureDesignationSource::Direct_designation) {
-          command->x = m_constant1;
-          command->y = m_constant2;
-        }
-        else {
-          command->x = m_value1;
-          command->y = m_value2;
-        }
-        command->width = m_zoomX;
-        command->height = m_zoomY;
-        command->opacity = m_opacityValue;
-        command->blendMode = static_cast<Blend>(m_blendMode);
-        command->duration = m_duration;
-        command->waitForCompletion = m_waitForCompletion;
-        ImGui::CloseCurrentPopup();
-        SetOpen(false);
-      }
-      ImGui::SameLine();
-      if (ImGui::Button("Cancel")) {
-        ImGui::CloseCurrentPopup();
-        SetOpen(false);
-      }
       ImGui::EndGroup();
     }
     //ImGui::SetCursorPosX(cursorPos.x);
@@ -178,7 +151,7 @@ std::tuple<bool, bool> Dialog_MovePicture::draw() {
       }
       ImGui::SeparatorText("Blend");
       ImGui::Text("Opacity:");
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
       if (ImGui::InputInt("##movepicture_opacity", &m_opacityValue, 1, 100)) {
         if (m_opacityValue < 0)
           m_opacityValue = -0;
@@ -199,6 +172,35 @@ std::tuple<bool, bool> Dialog_MovePicture::draw() {
         ImGui::EndCombo();
       }
 
+    }
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 80);
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 100);
+    if (ImGui::Button("OK")) {
+      m_confirmed = true;
+      command->picture = m_number;
+      command->origin = static_cast<PictureOrigin>(m_origin);
+      command->pictureLocation = static_cast<PictureDesignationSource>(m_type);
+      if (command->pictureLocation == PictureDesignationSource::Direct_designation) {
+        command->x = m_constant1;
+        command->y = m_constant2;
+      }
+      else {
+        command->x = m_value1;
+        command->y = m_value2;
+      }
+      command->width = m_zoomX;
+      command->height = m_zoomY;
+      command->opacity = m_opacityValue;
+      command->blendMode = static_cast<Blend>(m_blendMode);
+      command->duration = m_duration;
+      command->waitForCompletion = m_waitForCompletion;
+      ImGui::CloseCurrentPopup();
+      SetOpen(false);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Cancel")) {
+      ImGui::CloseCurrentPopup();
+      SetOpen(false);
     }
     ImGui::EndPopup();
   }

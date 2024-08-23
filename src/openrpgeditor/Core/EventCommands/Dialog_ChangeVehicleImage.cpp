@@ -51,7 +51,7 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
         m_characterPicker.setCharacterInfo(m_image, m_character);
         m_characterPicker.SetOpen(true);
       }
-      if (m_characterSheet->texture()) {
+      if (m_characterSheet && m_characterSheet->texture()) {
         if (m_characterSheet->characterWidth() < 72 || m_characterSheet->characterHeight() < 96) {
           ImGui::SetCursorPos(
               cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f, m_characterSheet->characterHeight() / 2.f} *
@@ -67,7 +67,10 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
                      ImVec2{uv0.u, uv0.v}, ImVec2{uv1.u, uv1.v});
       }
     }
+    ImGui::SameLine();
+    ImGui::Dummy(ImVec2{App::DPIHandler::scale_value(20), 0});
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.f);
+    ImGui::Dummy(ImVec2{0, App::DPIHandler::scale_value(10)});
     ImGui::BeginGroup(); {
       if (ImGui::Button("OK")) {
         m_confirmed = true;

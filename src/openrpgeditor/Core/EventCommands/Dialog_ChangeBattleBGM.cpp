@@ -10,7 +10,7 @@ std::tuple<bool, bool> Dialog_ChangeBattleBGM::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.f));
-  ImGui::SetNextWindowSize(ImVec2{400, 360} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{610, 380} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
     // Audio List
     if (ImGui::BeginTable("##bgm_audio_contents", 1,

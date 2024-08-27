@@ -29,19 +29,19 @@ std::tuple<bool, bool> Dialog_ChangeWindowColor::draw() {
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
       ImGui::SliderInt("##windowcolor_red", &red, -255, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
       ImGui::InputInt("##windowcolor_int_red", &red, 1, 100);
 
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
       ImGui::SliderInt("##windowcolor_green", &green, -255, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
       ImGui::InputInt("##windowcolor_int_red", &green, 1, 100);
 
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
       ImGui::SliderInt("##windowcolor_blue", &blue, -255, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
       ImGui::InputInt("##windowcolor_int_red", &blue, 1, 100);
     }
     ImGui::EndGroup();

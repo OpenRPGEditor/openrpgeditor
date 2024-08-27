@@ -4,7 +4,7 @@
 
 struct DBSkillsTab : IDBEditorTab {
   DBSkillsTab() = delete;
-  explicit DBSkillsTab(Skills& system, DatabaseEditor* parent) : IDBEditorTab(parent), m_skills(system) {}
+  explicit DBSkillsTab(Skills& system, DatabaseEditor* parent);
   void draw() override;
 
   [[nodiscard]] std::vector<Skill>& skills() { return m_skills.skills(); }
@@ -13,4 +13,10 @@ struct DBSkillsTab : IDBEditorTab {
   [[nodiscard]] const Skill* skill(int id) const { return m_skills.skill(id); }
 private:
   Skills& m_skills;
+  Skill* m_selectedSkill{};
+  int m_maxSkills{};
+  int m_editMaxSkills;
+  float m_splitterWidth = 300.f;
+  bool m_changeIntDialogOpen = false;
+  bool m_changeConfirmDialogOpen = false;
 };

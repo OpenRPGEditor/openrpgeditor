@@ -70,6 +70,18 @@ public:
   }
   std::vector<Troop>& troops() { return m_troops; }
   const std::vector<Troop>& troops() const { return m_troops; }
+  int count() { return m_troops.size() - 1; }
+
+  void resize(int newSize) {
+    ++newSize;
+    int oldSize = m_troops.size();
+    m_troops.resize(newSize);
+    if (newSize > oldSize) {
+      for (int i = oldSize; i < m_troops.size(); ++i) {
+        m_troops[i].id = i;
+      }
+    }
+  }
 private:
   std::vector<Troop> m_troops;
 };

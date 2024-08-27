@@ -5,7 +5,7 @@
 struct Items;
 struct DBItemsTab : IDBEditorTab {
   DBItemsTab() = delete;
-  explicit DBItemsTab(Items& items, DatabaseEditor* parent) : IDBEditorTab(parent), m_items(items) {}
+  explicit DBItemsTab(Items& items, DatabaseEditor* parent);
   void draw() override;
 
   [[nodiscard]] std::vector<Item>& items() { return m_items.items(); }
@@ -16,4 +16,10 @@ struct DBItemsTab : IDBEditorTab {
 
 private:
   Items& m_items;
+  Item* m_selectedItem{};
+  int m_maxItems{};
+  int m_editMaxItems;
+  float m_splitterWidth = 300.f;
+  bool m_changeIntDialogOpen = false;
+  bool m_changeConfirmDialogOpen = false;
 };

@@ -4,7 +4,7 @@
 
 struct DBStatesTab : IDBEditorTab {
   DBStatesTab() = delete;
-  explicit DBStatesTab(States& system, DatabaseEditor* parent) : IDBEditorTab(parent), m_states(system) {}
+  explicit DBStatesTab(States& system, DatabaseEditor* parent);
   void draw() override;
 
   [[nodiscard]] State* state(int id) { return m_states.state(id); }
@@ -15,4 +15,10 @@ struct DBStatesTab : IDBEditorTab {
 
 private:
   States& m_states;
+  State* m_selectedState{};
+  int m_maxStates{};
+  int m_editMaxStates;
+  float m_splitterWidth = 300.f;
+  bool m_changeIntDialogOpen = false;
+  bool m_changeConfirmDialogOpen = false;
 };

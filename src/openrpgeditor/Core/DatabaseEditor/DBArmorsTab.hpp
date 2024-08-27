@@ -4,7 +4,7 @@
 
 struct DBArmorsTab : IDBEditorTab {
   DBArmorsTab() = delete;
-  explicit DBArmorsTab(Armors& armors, DatabaseEditor* parent) : IDBEditorTab(parent), m_armors(armors) {}
+  explicit DBArmorsTab(Armors& armors, DatabaseEditor* parent);
   void draw() override;
 
   [[nodiscard]] std::vector<Armor>& armors() { return m_armors.armors(); }
@@ -14,4 +14,10 @@ struct DBArmorsTab : IDBEditorTab {
 
 private:
   Armors& m_armors;
+  Armor* m_selectedArmor{};
+  int m_maxArmors{};
+  int m_editMaxArmors;
+  float m_splitterWidth = 300.f;
+  bool m_changeIntDialogOpen = false;
+  bool m_changeConfirmDialogOpen = false;
 };

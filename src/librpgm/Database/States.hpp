@@ -74,6 +74,18 @@ public:
 
   [[nodiscard]] std::vector<State>& states() { return m_states; }
   [[nodiscard]] const std::vector<State>& states() const { return m_states; }
+  int count() { return m_states.size() - 1; }
+
+  void resize(int newSize) {
+    ++newSize;
+    int oldSize = m_states.size();
+    m_states.resize(newSize);
+    if (newSize > oldSize) {
+      for (int i = oldSize; i < m_states.size(); ++i) {
+        m_states[i].id = i;
+      }
+    }
+  }
 
 private:
   std::vector<State> m_states;

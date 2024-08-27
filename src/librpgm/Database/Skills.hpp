@@ -72,6 +72,18 @@ public:
   std::vector<Skill>& skills() { return m_skills; }
   const std::vector<Skill>& skills() const { return m_skills; }
 
+  int count() { return m_skills.size() - 1; }
+
+  void resize(int newSize) {
+    ++newSize;
+    int oldSize = m_skills.size();
+    m_skills.resize(newSize);
+    if (newSize > oldSize) {
+      for (int i = oldSize; i < m_skills.size(); ++i) {
+        m_skills[i].id = i;
+      }
+    }
+  }
 private:
   std::vector<Skill> m_skills;
 };

@@ -67,6 +67,18 @@ public:
   std::vector<Item>& items() { return m_items; }
   const std::vector<Item>& items() const { return m_items; }
 
+  int count() { return m_items.size() - 1; }
+
+  void resize(int newSize) {
+    ++newSize;
+    int oldSize = m_items.size();
+    m_items.resize(newSize);
+    if (newSize > oldSize) {
+      for (int i = oldSize; i < m_items.size(); ++i) {
+        m_items[i].id = i;
+      }
+    }
+  }
 private:
   std::vector<Item> m_items;
 };

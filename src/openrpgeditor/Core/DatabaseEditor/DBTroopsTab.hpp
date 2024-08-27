@@ -6,7 +6,7 @@
 struct Troops;
 struct DBTroopsTab : IDBEditorTab {
   DBTroopsTab() = delete;
-  explicit DBTroopsTab(Troops& troops, DatabaseEditor* parent) : IDBEditorTab(parent), m_troops(troops) {}
+  explicit DBTroopsTab(Troops& troops, DatabaseEditor* parent);
   void draw() override;
 
   [[nodiscard]] std::vector<Troop>& troops() { return m_troops.troops(); }
@@ -17,4 +17,10 @@ struct DBTroopsTab : IDBEditorTab {
 
 private:
   Troops& m_troops;
+  Troop* m_selectedTroop{};
+  int m_maxTroops{};
+  int m_editMaxTroops;
+  float m_splitterWidth = 300.f;
+  bool m_changeIntDialogOpen = false;
+  bool m_changeConfirmDialogOpen = false;
 };

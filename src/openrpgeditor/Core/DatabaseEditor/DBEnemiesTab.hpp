@@ -5,7 +5,7 @@
 struct Enemies;
 struct DBEnemiesTab : IDBEditorTab {
   DBEnemiesTab() = delete;
-  explicit DBEnemiesTab(Enemies& enemies, DatabaseEditor* parent) : IDBEditorTab(parent), m_enemies(enemies) {}
+  explicit DBEnemiesTab(Enemies& enemies, DatabaseEditor* parent);
   void draw() override;
 
   [[nodiscard]] std::vector<Enemy>& enemies() { return m_enemies.enemies(); }
@@ -16,4 +16,10 @@ struct DBEnemiesTab : IDBEditorTab {
 
 private:
   Enemies& m_enemies;
+  Enemy* m_selectedEnemy{};
+  int m_maxEnemies{};
+  int m_editMaxEnemies;
+  float m_splitterWidth = 300.f;
+  bool m_changeIntDialogOpen = false;
+  bool m_changeConfirmDialogOpen = false;
 };

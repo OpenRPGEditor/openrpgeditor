@@ -59,6 +59,19 @@ public:
 
   std::vector<Weapon>& weaponList() { return m_weapons; }
   const std::vector<Weapon>& weaponList() const { return m_weapons; }
+
+  int count() { return m_weapons.size() - 1; }
+
+  void resize(int newSize) {
+    ++newSize;
+    int oldSize = m_weapons.size();
+    m_weapons.resize(newSize);
+    if (newSize > oldSize) {
+      for (int i = oldSize; i < m_weapons.size(); ++i) {
+        m_weapons[i].id = i;
+      }
+    }
+  }
 private:
   std::vector<Weapon> m_weapons;
 };

@@ -32,6 +32,18 @@ public:
 
     return nullptr;
   }
+  int count() { return m_animations.size() - 1; }
+
+  void resize(int newSize) {
+    ++newSize;
+    int oldSize = m_animations.size();
+    m_animations.resize(newSize);
+    if (newSize > oldSize) {
+      for (int i = oldSize; i < m_animations.size(); ++i) {
+        m_animations[i].id = i;
+      }
+    }
+  }
 
 private:
   std::vector<Animation> m_animations;

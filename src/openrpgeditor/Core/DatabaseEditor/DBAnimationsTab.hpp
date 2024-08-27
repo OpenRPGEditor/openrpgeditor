@@ -6,7 +6,7 @@ struct DatabaseEditor;
 struct Animations;
 struct DBAnimationsTab : IDBEditorTab {
   DBAnimationsTab() = delete;
-  explicit DBAnimationsTab(Animations& system, DatabaseEditor* parent) : IDBEditorTab(parent), m_animations(system) {}
+  explicit DBAnimationsTab(Animations& system, DatabaseEditor* parent);
   void draw() override;
 
   [[nodiscard]] std::vector<Animation>& animations() { return m_animations.animations(); }
@@ -16,4 +16,10 @@ struct DBAnimationsTab : IDBEditorTab {
 
 private:
   Animations& m_animations;
+  Animation* m_selectedAnimation{};
+  int m_maxAnimations{};
+  int m_editMaxAnimations;
+  float m_splitterWidth = 300.f;
+  bool m_changeIntDialogOpen = false;
+  bool m_changeConfirmDialogOpen = false;
 };

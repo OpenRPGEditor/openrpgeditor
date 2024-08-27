@@ -4,7 +4,7 @@
 
 struct DBTilesetsTab : IDBEditorTab {
   DBTilesetsTab() = delete;
-  explicit DBTilesetsTab(Tilesets& tilesets, DatabaseEditor* parent) : IDBEditorTab(parent), m_tilesets(tilesets) {}
+  explicit DBTilesetsTab(Tilesets& tilesets, DatabaseEditor* parent);
   void draw() override;
 
   [[nodiscard]] std::vector<Tileset>& tilesets() { return m_tilesets.tilesets(); }
@@ -15,4 +15,10 @@ struct DBTilesetsTab : IDBEditorTab {
 
 private:
   Tilesets& m_tilesets;
+  Tileset* m_selectedTileset{};
+  int m_maxTilesets{};
+  int m_editMaxTilesets;
+  float m_splitterWidth = 300.f;
+  bool m_changeIntDialogOpen = false;
+  bool m_changeConfirmDialogOpen = false;
 };

@@ -59,6 +59,18 @@ public:
 
   std::vector<Armor>& armorList() { return m_armors; }
   const std::vector<Armor>& armorList() const { return m_armors; }
+  int count() { return m_armors.size() - 1; }
+
+  void resize(int newSize) {
+    ++newSize;
+    int oldSize = m_armors.size();
+    m_armors.resize(newSize);
+    if (newSize > oldSize) {
+      for (int i = oldSize; i < m_armors.size(); ++i) {
+        m_armors[i].id = i;
+      }
+    }
+  }
 private:
   std::vector<Armor> m_armors;
 };

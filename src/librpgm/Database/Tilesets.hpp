@@ -76,6 +76,18 @@ public:
 
   [[nodiscard]] std::vector<Tileset>& tilesets() { return m_tilesets; }
   [[nodiscard]] const std::vector<Tileset>& tilesets() const { return m_tilesets; }
+  int count() { return m_tilesets.size() - 1; }
+
+  void resize(int newSize) {
+    ++newSize;
+    int oldSize = m_tilesets.size();
+    m_tilesets.resize(newSize);
+    if (newSize > oldSize) {
+      for (int i = oldSize; i < m_tilesets.size(); ++i) {
+        m_tilesets[i].id = i;
+      }
+    }
+  }
 
 private:
   std::vector<Tileset> m_tilesets;

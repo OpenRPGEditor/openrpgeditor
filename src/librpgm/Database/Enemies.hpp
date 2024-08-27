@@ -74,6 +74,18 @@ public:
 
   [[nodiscard]] std::vector<Enemy>& enemies() { return m_enemies; }
   [[nodiscard]] const std::vector<Enemy>& enemies() const { return m_enemies; }
+  int count() { return m_enemies.size() - 1; }
+
+  void resize(int newSize) {
+    ++newSize;
+    int oldSize = m_enemies.size();
+    m_enemies.resize(newSize);
+    if (newSize > oldSize) {
+      for (int i = oldSize; i < m_enemies.size(); ++i) {
+        m_enemies[i].id = i;
+      }
+    }
+  }
 
 private:
   std::vector<Enemy> m_enemies;

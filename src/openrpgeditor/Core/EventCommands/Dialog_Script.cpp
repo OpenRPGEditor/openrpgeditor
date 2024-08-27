@@ -19,9 +19,9 @@ std::tuple<bool, bool> Dialog_Script::draw() {
 
     static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
     ImGui::PushFont(App::APP->getMonoFont());
-    m_textEditor.Render("##no_title", ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x,
-                                             ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) -
-                                                 ImGui::GetStyle().FramePadding.y});
+
+    m_textEditor.Render("##no_title", ImVec2{App::DPIHandler::scale_value(580),
+                                           App::DPIHandler::scale_value(580)});
     ImGui::PopFont();
     if (ImGui::Button("OK")) {
       auto script = m_textEditor.GetText();
@@ -30,13 +30,11 @@ std::tuple<bool, bool> Dialog_Script::draw() {
         m_isNext = true;
 
       command->script = scripts.front();
-      APP_DEBUG(command->script);
       if (m_isNext) {
         command->moreScript.clear();
         command->moreScript.reserve(scripts.size());
         for (auto str = std::next(scripts.begin()); str != scripts.end(); ++str) {
           command->moreScript.emplace_back(std::make_shared<NextScriptCommand>())->script = *str;
-          APP_DEBUG(command->moreScript.back()->script);
         }
         command->moreScript.shrink_to_fit();
       }

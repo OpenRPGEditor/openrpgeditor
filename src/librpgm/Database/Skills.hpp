@@ -8,7 +8,7 @@
 #include <nlohmann/json.hpp>
 
 class Skill {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Skill, id, animationId, damage, description, effects, iconIndex, message1,
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Skill, id, animationId, damage, description, effects, hitType, iconIndex, message1,
                                               message2, mpCost, name, note, occasion, repeats, requiredWtypeId1,
                                               requiredWtypeId2, scope, speed, stypeId, successRate, tpCost, tpGain);
 
@@ -25,6 +25,7 @@ public:
   std::string name;
   std::string note;
   Occasion occasion;
+  HitType hitType;
   int repeats;
   int requiredWtypeId1; // In System?
   int requiredWtypeId2; // "" ""

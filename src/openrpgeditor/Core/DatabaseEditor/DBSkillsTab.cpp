@@ -2,15 +2,23 @@
 #include "Database/Skills.hpp"
 #include "Core/Application.hpp"
 #include "imgui.h"
+#include "Core/ImGuiUtils.hpp"
 DBSkillsTab::DBSkillsTab(Skills& skills, DatabaseEditor* parent) : IDBEditorTab(parent), m_skills(skills) {
   m_selectedSkill = m_skills.skill(1);
   if (m_selectedSkill) {
-    //m_traitsEditor.setTraits(&m_selectedClass->traits);
+    // m_traitsEditor.setTraits(&m_selectedClass->traits);
   }
   m_maxSkills = m_skills.count();
 }
 
 void DBSkillsTab::draw() {
+  if (animation_picker) {
+    auto [closed, confirmed] = animation_picker->draw();
+    if (confirmed) {
+      m_selectedSkill->animationId = animation_picker->selection();
+      animation_picker.reset();
+    }
+  }
   ImGui::BeginChild("#orpg_skills_editor");
   {
     ImGui::BeginChild("##orpg_skills_editor_skills", ImVec2{250.f, 0} * App::DPIHandler::get_ui_scale(), 0,
@@ -34,8 +42,8 @@ void DBSkillsTab::draw() {
               if (ImGui::Selectable(name, &skill_ == m_selectedSkill) ||
                   (ImGui::IsItemFocused() && m_selectedSkill != &skill_)) {
                 m_selectedSkill = &skill_;
-                //m_traitsEditor.setTraits(&m_selectedClass->traits);
-                  }
+                // m_traitsEditor.setTraits(&m_selectedClass->traits);
+              }
             }
           }
           ImGui::EndGroup();
@@ -48,7 +56,7 @@ void DBSkillsTab::draw() {
                           ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxSkills = m_maxSkills;
-                          }
+        }
       }
       ImGui::EndGroup();
     }
@@ -56,6 +64,272 @@ void DBSkillsTab::draw() {
     ImGui::SameLine();
     ImGui::BeginChild("##orpg_skills_editor_skills_skill_properties");
     {
+      ImGui::BeginChild("##orpg_classes_editor_classes_class_properties");
+      {
+        if (m_selectedSkill) {
+          ImGui::BeginChild("##orpg_classes_class_panel_left", ImVec2{ImGui::GetContentRegionMax().x / 2, 0.f});
+          {
+            ImGui::BeginGroup();
+            {
+              ImGui::SeparatorText("General Settings");
+              // Name
+              ImGui::BeginGroup();
+              {
+                char name[4096];
+                strncpy(name, m_selectedSkill->name.c_str(), 4096);
+                if (ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_name", "Name:", name, 4096,
+                                             (ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(16))) {
+                  m_selectedSkill->name = name;
+                }
+                ImGui::EndGroup();
+              }
+              ImGui::SameLine();
+              // Icon
+              ImGui::BeginGroup();
+              {
+                ImGui::Text("Icon:");
+                // ImGui::SameLine();
+                // ImGui::Image(); // Show icon image
+                ImGui::Text(std::to_string(m_selectedSkill->iconIndex).c_str());
+                ImGui::EndGroup();
+              }
+
+              // Description
+              ImGui::BeginGroup();
+              {
+                char description[4096];
+                strncpy(description, m_selectedSkill->description.c_str(), 4096);
+                ImGui::Text("Description:");
+                ImGui::InputTextMultiline("##orpg_database_skills_description", description, 4096,
+                                          ImVec2{App::DPIHandler::scale_value(500), App::DPIHandler::scale_value(60)});
+
+                ImGui::EndGroup();
+              }
+              // Skill Type, MP/TP Cost
+              ImGui::BeginGroup();
+              {
+                ImGui::BeginGroup();
+                {
+                  ImGui::Text("Skill Type:");
+                  float cursorPosY = ImGui::GetCursorPosY();
+                  ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+                  if (ImGui::BeginCombo(
+                          "##orpg_database_skills_skilltype",
+                          m_selectedSkill->stypeId == 0
+                              ? "None"
+                              : Database::Instance->system.skillType(m_selectedSkill->stypeId)->c_str())) {
+                    int index{0};
+                    for (auto& dataSource : Database::Instance->system.skillTypes) {
+                      bool is_selected = (m_selectedSkill->stypeId == index);
+                      if (index == 0) {
+                        if (ImGui::Selectable("None", is_selected)) {
+                          m_selectedSkill->stypeId = index;
+                          if (is_selected)
+                            ImGui::SetItemDefaultFocus();
+                        }
+                      } else {
+                        if (ImGui::Selectable(dataSource.c_str(), is_selected)) {
+                          m_selectedSkill->stypeId = index;
+                          if (is_selected)
+                            ImGui::SetItemDefaultFocus();
+                        }
+                      }
+
+                      index++;
+                    }
+                    ImGui::EndCombo();
+                  }
+                  ImGui::EndGroup();
+                }
+                ImGui::SameLine();
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
+                ImGui::BeginGroup();
+                {
+                  ImGui::Text("MP Cost:");
+                  ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+                  if (ImGui::InputInt("##orpg_database_skills_manacost", &m_selectedSkill->mpCost, 1, 100)) {
+                    if (m_selectedSkill->mpCost < 0)
+                      m_selectedSkill->mpCost = 0;
+                    if (m_selectedSkill->mpCost > 9999)
+                      m_selectedSkill->mpCost = 9999;
+                  }
+                  ImGui::EndGroup();
+                }
+                ImGui::SameLine();
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
+                ImGui::BeginGroup();
+                {
+                  ImGui::Text("TP Cost:");
+                  ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+                  if (ImGui::InputInt("##orpg_database_skills_tcost", &m_selectedSkill->tpCost, 1, 100)) {
+                    if (m_selectedSkill->tpCost < 0)
+                      m_selectedSkill->tpCost = 0;
+                    if (m_selectedSkill->tpCost > 999)
+                      m_selectedSkill->tpCost = 999;
+                  }
+                  ImGui::EndGroup();
+                }
+                ImGui::SameLine();
+                ImGui::EndGroup();
+              }
+              // Scope, Occasion
+              ImGui::BeginGroup();
+              {
+                ImGui::BeginGroup();
+                {
+                  ImGui::Text("Scope:");
+                  ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+                  if (ImGui::BeginCombo("##orpg_database_skills_scopelist",
+                                        DecodeEnumName(magic_enum::enum_name(m_selectedSkill->scope)).c_str())) {
+                    int index{0};
+                    for (auto& dir : magic_enum::enum_values<Scope>()) {
+                      bool is_selected =
+                          m_selectedSkill->scope == static_cast<Scope>(magic_enum::enum_index(dir).value());
+                      if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
+                        m_selectedSkill->scope = static_cast<Scope>(magic_enum::enum_index(dir).value());
+                        if (is_selected)
+                          ImGui::SetItemDefaultFocus();
+                      }
+                      index++;
+                    }
+                    ImGui::EndCombo();
+                  }
+                  ImGui::EndGroup();
+                }
+                ImGui::SameLine();
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
+                ImGui::BeginGroup();
+                {
+                  ImGui::Text("Occasion:");
+                  ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+                  if (ImGui::BeginCombo("##orpg_database_skills_occasionlist",
+                                        DecodeEnumName(magic_enum::enum_name(m_selectedSkill->occasion)).c_str())) {
+                    int index{0};
+                    for (auto& dir : magic_enum::enum_values<Occasion>()) {
+                      bool is_selected =
+                          m_selectedSkill->occasion == static_cast<Occasion>(magic_enum::enum_index(dir).value());
+                      if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
+                        m_selectedSkill->occasion = static_cast<Occasion>(magic_enum::enum_index(dir).value());
+                        if (is_selected)
+                          ImGui::SetItemDefaultFocus();
+                      }
+                      index++;
+                    }
+                    ImGui::EndCombo();
+                  }
+                  ImGui::EndGroup();
+                }
+              }
+              ImGui::EndGroup();
+            }
+            ImGui::EndGroup();
+            // Invocation
+
+            ImGui::SeparatorText("Invocation");
+            ImGui::BeginGroup();
+            {
+              ImGui::BeginGroup();
+              {
+                ImGui::Text("Speed:");
+                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+                if (ImGui::InputInt("##orpg_database_skills_speed", &m_selectedSkill->speed, 1, 100)) {
+                  if (m_selectedSkill->speed < -2000)
+                    m_selectedSkill->speed = -2000;
+                  if (m_selectedSkill->speed > 2000)
+                    m_selectedSkill->speed = 2000;
+                }
+                ImGui::EndGroup();
+              }
+              ImGui::SameLine();
+              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
+              ImGui::BeginGroup();
+              {
+                ImGui::Text("Success:");
+                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+                if (ImGui::InputInt("##orpg_database_skills_successRate", &m_selectedSkill->successRate, 1, 100)) {
+                  if (m_selectedSkill->successRate < 0)
+                    m_selectedSkill->successRate = 0;
+                  if (m_selectedSkill->successRate > 100)
+                    m_selectedSkill->successRate = 100;
+                }
+                ImGui::EndGroup();
+              }
+              ImGui::SameLine();
+              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
+              ImGui::BeginGroup();
+              {
+                ImGui::Text("Repeat:");
+                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+                if (ImGui::InputInt("##orpg_database_skills_repeats", &m_selectedSkill->repeats, 1, 100)) {
+                  if (m_selectedSkill->repeats < 1)
+                    m_selectedSkill->repeats = 1;
+                  if (m_selectedSkill->repeats > 9)
+                    m_selectedSkill->repeats = 9;
+                }
+                ImGui::EndGroup();
+              }
+              ImGui::SameLine();
+              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
+              ImGui::BeginGroup();
+              {
+                ImGui::Text("TP Gain:");
+                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+                if (ImGui::InputInt("##orpg_database_skills_tpGain", &m_selectedSkill->tpGain, 1, 100)) {
+                  if (m_selectedSkill->tpGain < 0)
+                    m_selectedSkill->tpGain = 0;
+                  if (m_selectedSkill->tpGain > 100)
+                    m_selectedSkill->tpGain = 100;
+                }
+                ImGui::EndGroup();
+              }
+              ImGui::BeginGroup();
+              {
+                ImGui::Text("Hit Type:");
+                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+                if (ImGui::BeginCombo("##orpg_database_skills_hitType",
+                                      DecodeEnumName(magic_enum::enum_name(m_selectedSkill->hitType)).c_str())) {
+                  int index{0};
+                  for (auto& dir : magic_enum::enum_values<HitType>()) {
+                    bool is_selected =
+                        m_selectedSkill->hitType == static_cast<HitType>(magic_enum::enum_index(dir).value());
+                    if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
+                      m_selectedSkill->hitType = static_cast<HitType>(magic_enum::enum_index(dir).value());
+                      if (is_selected)
+                        ImGui::SetItemDefaultFocus();
+                    }
+                    index++;
+                  }
+                  ImGui::EndCombo();
+                }
+                ImGui::EndGroup();
+              }
+              ImGui::SameLine();
+              // Animation
+              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3.f);
+              ImGui::BeginGroup();
+              {
+                ImGui::Text("Animation:");
+                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+                // Animation Button
+                ImGui::PushID("##orpg_database_skills_animation");
+                if (ImGui::Button(m_selectedSkill->animationId == -1 ? "Normal Attack"
+                                  : m_selectedSkill->animationId == 0
+                                      ? "None"
+                                      : Database::Instance->animationName(m_selectedSkill->animationId).c_str(),
+                                  ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+                  animation_picker =
+                      ObjectPicker<Animation>("Animation"sv, Database::Instance->animations.animations(), 0);
+                }
+                ImGui::PopID();
+                ImGui::EndGroup();
+              }
+              ImGui::EndGroup();
+            }
+          }
+          ImGui::EndChild();
+        }
+      }
+
       ImGui::EndChild();
     }
     ImGui::EndChild();
@@ -76,7 +350,7 @@ void DBSkillsTab::draw() {
         if (ImGui::Button("Cancel")) {
           m_changeIntDialogOpen = false;
         }
-                           }
+      }
       ImGui::End();
 
       if (m_changeConfirmDialogOpen) {
@@ -98,10 +372,9 @@ void DBSkillsTab::draw() {
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }
-                             }
+        }
         ImGui::End();
       }
     }
   }
 }
-

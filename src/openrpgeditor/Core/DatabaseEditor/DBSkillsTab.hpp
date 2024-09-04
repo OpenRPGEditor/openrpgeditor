@@ -1,5 +1,7 @@
 #pragma once
+#include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include "Database/Animation.hpp"
 #include "Database/Skills.hpp"
 
 struct DBSkillsTab : IDBEditorTab {
@@ -19,4 +21,5 @@ private:
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
+  std::optional<ObjectPicker<Animation>> animation_picker;
 };

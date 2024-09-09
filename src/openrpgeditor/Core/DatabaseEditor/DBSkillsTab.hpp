@@ -21,5 +21,7 @@ private:
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
+  int m_message_template{0};
+  std::vector<std::string> m_message_templateList{"casts %1!", "does %1!", "uses %1"};
   std::optional<ObjectPicker<Animation>> animation_picker;
 };

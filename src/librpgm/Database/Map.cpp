@@ -11,7 +11,7 @@ Map Map::load(std::string_view filepath) {
   return Map();
 }
 
-bool Map::serialize(std::string_view filepath) {
+bool Map::serialize(std::string_view filepath) const {
   std::ofstream file(filepath.data());
 
   if (file.is_open()) {

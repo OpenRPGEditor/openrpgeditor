@@ -38,5 +38,5 @@ void Animations::serialize(std::string_view filename) {
     }
   }
 
-  file << data;
+  file << data.dump(4);
 }

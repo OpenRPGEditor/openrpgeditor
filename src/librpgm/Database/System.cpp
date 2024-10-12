@@ -20,6 +20,6 @@ bool System::serialize(std::string_view filepath) {
     data["hasEncryptedAudio"] = *hasEncryptedAudio;
     data["encryptionKey"] = *encryptionKey;
   }
-  file << data;
+  file << data.dump(4);
   return true;
 }

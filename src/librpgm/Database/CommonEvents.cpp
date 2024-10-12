@@ -46,7 +46,7 @@ bool CommonEvents::serialize(std::string_view filename) {
     data.push_back(event);
   }
 
-  file << data;
+  file << data.dump(4);
 
   return true;
 }

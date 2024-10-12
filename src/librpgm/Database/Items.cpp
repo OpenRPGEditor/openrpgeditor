@@ -26,7 +26,7 @@ Items Items::load(std::string_view filename) {
 
 void Items::serialize(std::string_view filename) {
   std::ofstream file(filename.data());
-  json data{nullptr};
+  json data;
 
   for (const Item& item : m_items) {
     if (item.m_isValid) {
@@ -36,5 +36,5 @@ void Items::serialize(std::string_view filename) {
     }
   }
 
-  file << data;
+  file << data.dump(4);
 }

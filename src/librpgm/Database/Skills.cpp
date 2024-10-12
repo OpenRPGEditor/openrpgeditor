@@ -38,7 +38,7 @@ bool Skills::serialize(std::string_view filename) {
     }
   }
 
-  file << data;
+  file << data.dump(4);
 
   return true;
 }

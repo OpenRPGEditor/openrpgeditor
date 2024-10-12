@@ -34,7 +34,7 @@ bool Weapons::serialize(std::string_view filename) {
     data.push_back(weapon);
   }
 
-  file << data;
+  file << data.dump(4);
 
   return true;
 }

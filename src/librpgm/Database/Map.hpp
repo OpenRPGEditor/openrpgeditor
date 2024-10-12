@@ -26,7 +26,7 @@ public:
   };
 
   static Map load(std::string_view filepath);
-  bool serialize(std::string_view filepath);
+  bool serialize(std::string_view filepath) const;
 
   [[nodiscard]] std::vector<std::optional<Event>> getSorted() const {
     std::vector<std::optional<Event>> ret = events;

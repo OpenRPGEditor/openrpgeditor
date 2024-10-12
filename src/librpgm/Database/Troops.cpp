@@ -33,7 +33,7 @@ bool Troops::serialize(std::string_view filepath) { // TODO: Temporary file for 
     data.push_back(troop);
   }
 
-  file << data;
+  file << data.dump(4);
 
   return true;
 }

@@ -38,7 +38,7 @@ bool MapInfos::serialize(std::string_view filename) {
     data.push_back(m_mapinfos[i]);
   }
 
-  file << data;
+  file << data.dump(4);
 
   return true;
 }

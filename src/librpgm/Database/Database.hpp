@@ -51,6 +51,8 @@ struct Database {
 
   Map loadMap(int mapId);
 
+  bool serializeProject(std::string_view tmpPath);
+
   static std::string framesText(const int frames) {
     return std::to_string(frames) + (frames > 1 ? " frames" : " frame");
   }

@@ -121,6 +121,17 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   return true;
 }
 
+bool Project::save() {
+  /* TODO: Implement proper save and temp path handling */
+  if (m_database->serializeProject("CURRENTLY_UNUSED")) {
+    ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Project serialized successfully!"});
+    return true;
+  }
+
+  ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to serialize project!"});
+  return false;
+}
+
 bool Project::close(bool promptSave) {
   if (promptSave) {
     // TODO: Implement when safe to do so
@@ -221,7 +232,9 @@ void Project::drawToolbar() {
     ImGui::ActionTooltip("Open Project", "Opens an existing project.");
   }
   ImGui::SameLine();
-  ImGui::Button(ICON_FA_FLOPPY_DISK, ButtonSize);
+  if (ImGui::Button(ICON_FA_FLOPPY_DISK, ButtonSize)) {
+    save();
+  }
   ImGui::SameLine();
   if (ImGui::IsItemHovered()) {
     ImGui::ActionTooltip("Save Project", "Saves the project.");
@@ -421,7 +434,7 @@ void Project::handleOpenFile() {
   constexpr nfdu8filteritem_t filters = {"RPG Maker Projects", "rpgproject,rmmzproject"};
   const std::string directory = Settings::instance()->lastDirectory.empty()
                                     ? std::filesystem::current_path().generic_string()
-                                                                            : Settings::instance()->lastDirectory;
+                                    : Settings::instance()->lastDirectory;
   const auto result = NFD_OpenDialogU8(&outPath, &filters, 1, directory.c_str());
   if (result == NFD_OKAY) {
     const std::filesystem::path path{outPath};
@@ -470,7 +483,7 @@ void Project::drawMenu() {
         close();
       }
       if (ImGui::MenuItem(ICON_FA_FLOPPY_DISK " Save Project...", "Ctlr+S")) {
-        // TODO: Implement project saving
+        save();
       }
       ImGui::Separator();
       if (ImGui::BeginMenu("Recent Projects", !Settings::instance()->mru.empty())) {

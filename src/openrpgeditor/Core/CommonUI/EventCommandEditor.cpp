@@ -626,8 +626,8 @@ void EventCommandEditor::drawPopup() {
                 }
               }
             } else {
-              if (std::static_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand())) {
-                std::shared_ptr<ShowChoiceCommand> commandPointer = std::static_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand());
+              if (std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand())) {
+                std::shared_ptr<ShowChoiceCommand> commandPointer = std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand());
 
                 for (auto choice : commandPointer->choices) {
                   APP_INFO("Choice Print: " + choice);

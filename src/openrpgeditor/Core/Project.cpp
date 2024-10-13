@@ -784,12 +784,13 @@ void Project::setMap(MapInfo& in) {
   m_mapListView.setCurrentMapId(in.id);
   if (m_mapListView.currentMapInfo()) {
     m_mapEditor.setMap(&in);
-    in.map()->serialize("Map001.json");
     m_database->mapInfos.setCurrentMap(&in);
   } else {
     m_mapEditor.setMap(nullptr);
     m_database->mapInfos.setCurrentMap(nullptr);
   }
+
+  m_database->system.editMapId = in.id;
 
   // if (m_map) {
   //   printf("%zu bytes, %i w %i h, %lu layers\n", m_map->data.size(), m_map->width, m_map->height,

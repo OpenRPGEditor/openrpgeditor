@@ -44,7 +44,7 @@ bool Database::serializeProject(std::string_view tmpPath) {
     animations.serialize(projectBasePath + "/data/Animations.json");
     tilesets.serialize(projectBasePath + "/data/Tilesets.json");
     commonEvents.serialize(projectBasePath + "/data/CommonEvents.json");
-    system.serialize(projectBasePath + "/data/Systems.json");
+    system.serialize(projectBasePath + "/data/System.json");
     /* TODO: Implement */
     plugins.serialize(projectBasePath + "/js/plugins.js");
     mapInfos.serialize(projectBasePath + "/data/MapInfos.json");

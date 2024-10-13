@@ -83,7 +83,7 @@ void EndGroupPanel() {
   EndGroup();
 }
 
-bool LabelOverLineEdit(const char* id, const char* label, char* string, int len, float width, const char* tooltip) {
+bool LabelOverLineEdit(const char* id, const char* label, char* string, int len, float width, const char* tooltip, ImGuiInputTextFlags flags) {
   BeginGroup();
   bool ret = false;
   {
@@ -91,7 +91,7 @@ bool LabelOverLineEdit(const char* id, const char* label, char* string, int len,
     char* name = (char*)malloc(len);
     strncpy(name, string, len);
     SetNextItemWidth(width);
-    if (InputText(id, name, len, ImGuiInputTextFlags_EnterReturnsTrue)) {
+    if (InputText(id, name, len, flags)) {
       strncpy(string, name, len);
       ret = true;
     }

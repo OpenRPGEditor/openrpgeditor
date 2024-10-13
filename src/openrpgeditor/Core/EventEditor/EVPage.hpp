@@ -34,6 +34,7 @@ private:
   };
   EventEditor* m_parent;
   EventPage* m_page;
+  char m_pageNameBuf[4096];
   EventCommandEditor m_commandEditor;
   CharacterSheet m_characterSheet;
   CheckerboardTexture m_buttonBack{80, 102, CellSizes::_64, 255, 200};

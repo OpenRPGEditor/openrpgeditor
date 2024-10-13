@@ -14,6 +14,7 @@
 EVPage::EVPage(EventEditor* parent, EventPage* page)
 : m_parent(parent), m_page(page), m_commandEditor(parent->project()), m_characterSheet(page->image.characterName) {
   m_commandEditor.setCommands(&m_page->list);
+  strncpy(m_pageNameBuf, m_page->name.c_str(), 4096);
 }
 
 std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
@@ -25,13 +26,20 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(250));
     ImGui::BeginChild("##event_page_settings_panel", ImVec2{App::DPIHandler::scale_value(350), 0.f});
     {
-      char nameBuf[4096];
-      strncpy(nameBuf, m_page->name.c_str(), 4096);
       if (ImGui::LabelOverLineEdit(
-              "##event_page_name_edit", "Page Name:", nameBuf, 4096, App::DPIHandler::scale_value(150),
-              "Page names are an OpenRPGMaker addition and will not be viewable in RPG Maker MV/MZ")) {
-        m_page->name = nameBuf;
+              "##event_page_name_edit", "Page Name:", m_pageNameBuf, 4096, App::DPIHandler::scale_value(150),
+              "Page names are an OpenRPGMaker addition and will not be viewable in RPG Maker MV/MZ",
+              ImGuiInputTextFlags_None)) {}
+
+      ImGui::SameLine();
+      ImGui::BeginGroup();
+      {
+        ImGui::NewLine();
+        if (ImGui::Button("Apply")) {
+          m_page->name = m_pageNameBuf;
+        }
       }
+      ImGui::EndGroup();
 
       ImGui::BeginGroup();
       {

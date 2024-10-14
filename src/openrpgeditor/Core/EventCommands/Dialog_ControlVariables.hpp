@@ -16,10 +16,12 @@ struct Dialog_ControlVariables : IEventDialogController {
     }
     m_operation = static_cast<int>(command->operation);
     m_operand = static_cast<int>(command->operand);
+
     if (command->start == command->end) {
       m_operation_var = 0;
       m_start = command->start;
       m_end = command->end;
+      m_variable_var = m_start;
     }
     else {
       m_operation_var = 1;

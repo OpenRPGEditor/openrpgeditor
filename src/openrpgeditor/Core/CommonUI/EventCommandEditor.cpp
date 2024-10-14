@@ -99,8 +99,9 @@ void EventCommandEditor::draw() {
         }
         ImGui::EndPopup();
       }
-      // if (m_isNewEntry)
-      //   ImGui::OpenPopup("Command Window");
+      if (m_isNewEntry)
+        ImGui::OpenPopup("Command Window");
+
       drawPopup();
       ImGui::EndTable();
     }
@@ -625,6 +626,7 @@ void EventCommandEditor::drawPopup() {
                   m_selectedCommand = (selection + 1) - m_commands->begin();
                 }
               }
+              m_isNewEntry = false;
             } else {
               if (std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand())) {
                 std::shared_ptr<ShowChoiceCommand> commandPointer = std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand());

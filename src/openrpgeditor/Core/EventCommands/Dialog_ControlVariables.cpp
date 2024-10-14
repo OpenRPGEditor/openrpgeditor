@@ -50,9 +50,9 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     {
       std::string text = m_operation_var != 0
                              ? "##commonevent_switch_empty"
-                             : (m_start == 0 ? "" : std::format("{:04} ", m_variable_var) + Database::Instance->variableName(m_variable_var));
+                             : (m_variable_var == 0 ? "" : std::format("{:04} ", m_variable_var) + Database::Instance->variableName(m_variable_var));
       ImGui::PushID("##controlswitch_id");
-      ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 75) - (16 * App::DPIHandler::get_ui_scale()));
+      //ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 75) - (16 * App::DPIHandler::get_ui_scale()));
       ImGui::BeginDisabled(m_operation_var != 0);
       if (ImGui::Button(
               text.c_str(),
@@ -159,7 +159,6 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
       ImGui::EndGroup();
     }
 
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 78, ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {
       m_confirmed = true;
       if (m_operation_var == 0) {

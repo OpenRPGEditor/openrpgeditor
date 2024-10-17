@@ -356,6 +356,10 @@ add_library(
         Core/CommonUI/ImagePicker.hpp
         Core/Image.cpp
         Core/Image.hpp
+        Core/NWJSVersionManager.cpp
+        Core/NWJSVersionManager.hpp
+        Core/DownloadManager.cpp
+        Core/DownloadManager.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})
@@ -374,6 +378,7 @@ target_link_libraries(
         clip
         sfml-audio
         oremath
+        curl
 )
 
 # Define set of OS specific files to include
@@ -392,6 +397,8 @@ add_executable(${NAME} WIN32 MACOSX_BUNDLE
         App/Main.cpp
         App/ProjectInfo.hpp
         App/ProjectInfo.cpp
+        Core/DownloadManager.cpp
+        Core/DownloadManager.hpp
 )
 
 

@@ -6,7 +6,8 @@
 #include <deque>
 
 struct Settings {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Settings, window, mru, lastDirectory, uiScale, fontSize, monoFontSize);
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Settings, window, mru, lastDirectory, uiScale, fontSize, monoFontSize,
+                                              currentNWJSVersion);
   struct WindowRect {
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(WindowRect, x, y, w, h, maximized);
     int x{};
@@ -25,6 +26,7 @@ struct Settings {
   float uiScale{1.0};
   float fontSize{12.f};
   float monoFontSize{12.f};
+  std::string currentNWJSVersion;
 
   [[nodiscard]] static Settings* instance() { return m_instance; }
 

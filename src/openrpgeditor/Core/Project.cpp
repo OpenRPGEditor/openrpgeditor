@@ -360,6 +360,9 @@ void Project::draw() {
   if (m_showAboutWindow) {
     ImGui::ShowAboutWindow(&m_showAboutWindow);
   }
+
+  m_nwjsVersionManager.draw();
+
   ImGui::RenderNotifications();
 }
 
@@ -607,6 +610,9 @@ void Project::drawMenu() {
       if (ImGui::MenuItem("Database", "F9", false, m_databaseEditor != std::nullopt)) {
         m_databaseEditor->open();
       }
+      if (ImGui::MenuItem("NWJS Version Manager", "F10", false)) {
+        m_nwjsVersionManager.open();
+      }
 
       /* Add tools above this */
       ImGui::Separator();
@@ -760,6 +766,10 @@ void Project::handleKeyboardShortcuts() {
   if (ImGui::IsKeyReleased(ImGuiKey_F9)) {
     m_databaseEditor->open();
   }
+  if (ImGui::IsKeyReleased(ImGuiKey_F10)) {
+    m_nwjsVersionManager.open();
+  }
+
   // TODO: Add missing tools
   /* Game */
   if ((ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) &&

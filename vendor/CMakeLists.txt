@@ -72,14 +72,14 @@ FetchContent_Declare(
         GIT_REPOSITORY https://github.com/SFML/SFML.git
         GIT_TAG 2.6.1)
 
-#FetchContent_Declare(curl
-#        GIT_REPOSITORY "https://github.com/curl/curl.git"
-#        GIT_TAG tiny-curl-8_4_0
-#)
+FetchContent_Declare(curl
+        GIT_REPOSITORY "https://github.com/curl/curl.git"
+        GIT_TAG curl-8_10_1
+)
 #FetchContent_Declare(liblcf
 #        GIT_REPOSITORY "https://github.com/EasyRPG/liblcf.git"
-#        GIT_TAG "0.8"
 #)
+
 # Settings
 
 # For SDL2 to be able to override options
@@ -88,7 +88,6 @@ set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(BUILD_STATIC_LIBRARIES ON)
 set(BUILD_SHARED_LIBRARIES OFF)
 set(BUILD_CURL_EXE OFF)
-set(LIBLCF_WITH_ICU OFF)
 set(DOCTEST_NO_INSTALL ON)
 set(FMT_INSTALL OFF)
 set(FMT_STATIC ON)
@@ -112,7 +111,7 @@ FetchContent_MakeAvailable(
         magic_enum
         freetype2
         clip
-        #curl
+        curl
         #liblcf
         SFML
 )

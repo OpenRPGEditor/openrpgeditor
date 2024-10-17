@@ -4,6 +4,7 @@
 #include "EventListView.hpp"
 #include "MapEditor.hpp"
 #include "MapListView.hpp"
+#include "NWJSVersionManager.hpp"
 #include "TilesetPicker.hpp"
 #include "UndoStack.hpp"
 #include "CommonUI/CharacterPicker.hpp"
@@ -33,7 +34,12 @@ enum class DrawTool {
 
 class Project {
 public:
-  Project() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this) {}
+  Project()
+  : m_mapListView(this)
+  , m_mapEditor(this)
+  , m_eventListView(this)
+  , m_tilesetPicker(this)
+  , m_nwjsVersionManager("https://dl.nwjs.io") {}
 
   bool load(std::string_view filePath, std::string_view basePath);
   bool save();
@@ -154,6 +160,7 @@ private:
   MapEditor m_mapEditor;
   EventListView m_eventListView;
   TilesetPicker m_tilesetPicker;
+  NWJSVersionManager m_nwjsVersionManager;
   UndoStack m_undoStack;
   UndoStack m_redoStack;
   bool m_isValid = false;

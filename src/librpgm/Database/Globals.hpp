@@ -6,7 +6,7 @@
 
 #define MAGIC_ENUM_RANGE_MIN (-4096)
 #define MAGIC_ENUM_RANGE_MAX (4096)
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 
 /* DO NOT MODIFY ENUM NAMES
  * They may not seem like they make sense,

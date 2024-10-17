@@ -22,6 +22,8 @@
 #include "misc/freetype/imgui_freetype.h"
 #include "SFML/Audio.hpp"
 
+#include "Core/NWJSVersionManager.hpp"
+
 #include <iostream>
 namespace App {
 Application* APP = nullptr;

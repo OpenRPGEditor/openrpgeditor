@@ -607,6 +607,17 @@ void EventCommandEditor::drawPopup() {
           ImGui::EndTabItem();
         }
 
+        // Event Templates
+        ImGui::PushItemWidth(App::DPIHandler::scale_value(500));
+        if (ImGui::BeginCombo("##commandwindow_templates", m_currentTemplate.c_str())) {
+          for (const auto self : {"Window Display", "Window Reset", "ARPG - Start", "ARPG - Stop"}) {
+            if (ImGui::Selectable(self, self == m_currentTemplate)) {
+              m_currentTemplate = self;
+            }
+          }
+          ImGui::EndCombo();
+        }
+
         if (commandDialog) {
           auto [closed, confirmed] = commandDialog->draw();
           if (!commandDialog->getParentIndent().has_value()) {

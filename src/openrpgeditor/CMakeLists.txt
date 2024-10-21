@@ -360,6 +360,8 @@ add_library(
         Core/NWJSVersionManager.hpp
         Core/DownloadManager.cpp
         Core/DownloadManager.hpp
+        Core/DatabaseEditor/DBTemplatesTab.cpp
+        Core/DatabaseEditor/DBTemplatesTab.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})

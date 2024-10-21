@@ -17,6 +17,7 @@
 #include "Database/MapInfos.hpp"
 #include "Database/Map.hpp"
 #include "Database/Plugins.hpp"
+#include "Database/Templates.hpp"
 #include <string_view>
 using namespace std::string_view_literals;
 
@@ -45,6 +46,7 @@ struct Database {
   Plugins plugins{};
   MapInfos mapInfos{};
   GameConstants gameConstants{};
+  Templates templates{};
   std::string projectVersion; // As stored in the .rpgproject file
   std::string projectFilePath;
   std::string basePath;

@@ -69,6 +69,8 @@ add_library(
         Database/Vehicle.hpp
         Database/Weapons.cpp
         Database/Weapons.hpp
+        Database/Templates.cpp
+        Database/Templates.hpp
 )
 
 target_include_directories(librpgm PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)

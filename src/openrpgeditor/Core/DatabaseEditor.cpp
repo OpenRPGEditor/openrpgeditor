@@ -54,6 +54,9 @@ void DatabaseEditor::draw() {
     if (ImGui::Selectable("Exported Constants", m_currentTab == &m_gameConstants)) {
       m_currentTab = &m_gameConstants;
     }
+    if (ImGui::Selectable("Templates", m_currentTab == &m_templates)) {
+      m_currentTab = &m_templates;
+    }
     ImGui::EndChild();
     ImGui::SameLine();
     if (m_currentTab) {

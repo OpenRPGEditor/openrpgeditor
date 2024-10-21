@@ -78,7 +78,7 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   APP_INFO("Loading Animation definitions...");
   m_database->animations = Animations::load(m_database->basePath + "/data/Animations.json");
   APP_INFO("Loading Tileset definitions...");
-  m_database->tilesets = Tilesets::load(m_database->basePath + "/data/Tilesets.json");
+  m_database->tilesets = Tilesets::load(m_database->basePath + "/data/Ti衣擦れlesets.json");
   APP_INFO("Loading CommonEvent definitions...");
   m_database->commonEvents = CommonEvents::load(m_database->basePath + "/data/CommonEvents.json");
   APP_INFO("Loading System...");
@@ -87,12 +87,14 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   m_database->plugins = Plugins::load(m_database->basePath + "js/plugins.js");
   APP_INFO("Loading GameConstants");
   m_database->gameConstants = GameConstants::load(m_database->basePath + "/data/Constants.json");
+  APP_INFO("Loading Templates");
+  m_database->templates = Templates::load(m_database->basePath + "/data/Templates.json");
   APP_INFO("Loading MapInfos...");
   m_database->mapInfos = MapInfos::load(m_database->basePath + "/data/MapInfos.json");
   m_databaseEditor.emplace(this, m_database->actors, m_database->classes, m_database->skills, m_database->items,
                            m_database->weapons, m_database->armors, m_database->enemies, m_database->troops,
                            m_database->states, m_database->animations, m_database->tilesets, m_database->commonEvents,
-                           m_database->system, m_database->gameConstants);
+                           m_database->system, m_database->gameConstants, m_database->templates);
 
   MapInfo* info = m_database->mapInfos.map(0);
   info->expanded = true;

@@ -5,3 +5,6 @@
 #include "Core/Project.hpp"
 #include "Core/DatabaseEditor.hpp"
 #include "Database/Templates.hpp"
+
+void DBTemplatesTab::draw() {
+}

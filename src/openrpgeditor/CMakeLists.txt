@@ -380,7 +380,7 @@ target_link_libraries(
         clip
         sfml-audio
         oremath
-        curl
+        libcurl
 )
 
 # Define set of OS specific files to include

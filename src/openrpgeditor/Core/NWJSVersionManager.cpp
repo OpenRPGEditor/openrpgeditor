@@ -4,7 +4,6 @@
 #include "imgui.h"
 #include "App/ProjectInfo.hpp"
 #include "Database/EventCommands/ChangeVictoryME.hpp"
-#include <tinyxml2.h>
 #include <cstring>
 #include <iostream>
 #include <curl/curl.h>

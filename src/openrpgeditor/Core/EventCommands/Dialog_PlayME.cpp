@@ -12,7 +12,8 @@ std::tuple<bool, bool> Dialog_PlayME::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{610, 380} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::BeginGroup();
@@ -22,8 +23,7 @@ std::tuple<bool, bool> Dialog_PlayME::draw() {
       if (ImGui::BeginTable("##me_audio_contents", 1,
                             ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                                 ImGuiTableFlags_ScrollY,
-                                ImVec2{App::DPIHandler::scale_value(500),
-                                       App::DPIHandler::scale_value(500)})) {
+                            ImVec2{App::DPIHandler::scale_value(500), App::DPIHandler::scale_value(500)})) {
 
         ImGui::TableSetupScrollFreeze(1, 0);
         ImGui::TableSetupColumn("File");
@@ -37,7 +37,7 @@ std::tuple<bool, bool> Dialog_PlayME::draw() {
           m_audio.name = "";
           if (m_selected == 0)
             ImGui::SetItemDefaultFocus();
-                                            }
+        }
 
         for (int n = 0; n < m_audios.size(); n++) {
           ImGui::TableNextColumn();
@@ -52,10 +52,10 @@ std::tuple<bool, bool> Dialog_PlayME::draw() {
             m_audio.name = m_audios.at(m_selected - 1);
             if (isSelected)
               ImGui::SetItemDefaultFocus();
-                                              }
+          }
         }
         ImGui::EndTable();
-                            }
+      }
     }
     ImGui::EndGroup();
     ImGui::SameLine();
@@ -86,19 +86,20 @@ std::tuple<bool, bool> Dialog_PlayME::draw() {
         setPanning(m_audio.pan);
       }
     }
-    }
+
     ImGui::EndGroup();
 
-  if (ImGui::Button("OK")) {
-    m_confirmed = true;
-    command->audio = m_audio;
-    ImGui::CloseCurrentPopup();
-    SetOpen(false);
+    if (ImGui::Button("OK")) {
+      m_confirmed = true;
+      command->audio = m_audio;
+      ImGui::CloseCurrentPopup();
+      SetOpen(false);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Cancel")) {
+      SetOpen(false);
+    }
+    ImGui::EndPopup();
   }
-  ImGui::SameLine();
-  if (ImGui::Button("Cancel")) {
-    SetOpen(false);
-  }
-  ImGui::EndPopup();
   return std::make_tuple(!m_open, m_confirmed);
 }

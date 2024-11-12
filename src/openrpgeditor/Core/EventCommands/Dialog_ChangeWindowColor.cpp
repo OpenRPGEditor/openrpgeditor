@@ -11,11 +11,13 @@ std::tuple<bool, bool> Dialog_ChangeWindowColor::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{402, 150} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::Dummy(ImVec2(0, 5));
-    ImGui::BeginGroup(); {
+    ImGui::BeginGroup();
+    {
       ImGui::Text("Red:");
       ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 8.f);
       ImGui::Text("Green:");
@@ -46,8 +48,10 @@ std::tuple<bool, bool> Dialog_ChangeWindowColor::draw() {
     }
     ImGui::EndGroup();
     ImGui::SameLine();
-    ImGui::ColorButton("##windowcolor_square", ImVec4{static_cast<float>(red * (1.0f / 255.0f)), static_cast<float>(green * (1.0f / 255.0f)), static_cast<float>(blue * (1.0f / 255.0f)), 1}, 0,
-      ImVec2{100, 100});
+    ImGui::ColorButton("##windowcolor_square",
+                       ImVec4{static_cast<float>(red * (1.0f / 255.0f)), static_cast<float>(green * (1.0f / 255.0f)),
+                              static_cast<float>(blue * (1.0f / 255.0f)), 1},
+                       0, ImVec2{100, 100});
 
     ImGui::SetCursorPosY(ImGui::GetCursorPos().y - 10.f);
     if (ImGui::Button("OK")) {

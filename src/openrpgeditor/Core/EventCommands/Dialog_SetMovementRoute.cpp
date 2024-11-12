@@ -60,7 +60,8 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{818, 395} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
     // Character Selection
@@ -125,10 +126,13 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     ImGui::Checkbox("Repeat Movements", &m_route.repeat);
     ImGui::Checkbox("Skip If Cannot Move", &m_route.skippable);
     ImGui::Checkbox("Wait for Completion", &m_route.wait);
-    ImGui::SetCursorPos(ImVec2{cursorPos.x+App::DPIHandler::scale_value(180), cursorPos.y - App::DPIHandler::scale_value(10)});
+    ImGui::SetCursorPos(
+        ImVec2{cursorPos.x + App::DPIHandler::scale_value(180), cursorPos.y - App::DPIHandler::scale_value(10)});
     ImGui::SeparatorText("Movement Commands");
-    ImGui::SetCursorPos(ImVec2{cursorPos.x+App::DPIHandler::scale_value(180), cursorPos.y + App::DPIHandler::scale_value(10)});
-    ImGui::BeginGroup(); {
+    ImGui::SetCursorPos(
+        ImVec2{cursorPos.x + App::DPIHandler::scale_value(180), cursorPos.y + App::DPIHandler::scale_value(10)});
+    ImGui::BeginGroup();
+    {
       if (ImGui::Button("Move Down", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         m_selected = m_route.addCommand(std::make_shared<MovementMoveDownCommand>(), m_selected);
       }
@@ -179,7 +183,8 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
       ImGui::EndGroup();
     }
     ImGui::SameLine();
-    ImGui::BeginGroup(); {
+    ImGui::BeginGroup();
+    {
       if (ImGui::Button("Turn Down", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         m_selected = m_route.addCommand(std::make_shared<MovementTurnDownCommand>(), m_selected);
       }
@@ -232,7 +237,8 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
       ImGui::EndGroup();
     }
     ImGui::SameLine();
-    ImGui::BeginGroup(); {
+    ImGui::BeginGroup();
+    {
       if (ImGui::Button("Walking Animation ON", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         m_selected = m_route.addCommand(std::make_shared<MovementWalkingAnimationONCommand>(), m_selected);
       }
@@ -305,14 +311,14 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
       SetOpen(false);
     }
 
-        if (movementRouteDialog) {
-          auto [closed, confirmed] = movementRouteDialog->draw();
-          if (confirmed) {
-            auto select = m_route.list.insert(m_route.list.begin() + m_selected, movementRouteDialog->getCommand());
-            m_selected = select - m_route.list.begin();
-            movementRouteDialog.reset();
-          }
-        }
+    if (movementRouteDialog) {
+      auto [closed, confirmed] = movementRouteDialog->draw();
+      if (confirmed) {
+        auto select = m_route.list.insert(m_route.list.begin() + m_selected, movementRouteDialog->getCommand());
+        m_selected = select - m_route.list.begin();
+        movementRouteDialog.reset();
+      }
+    }
     ImGui::EndPopup();
   }
 

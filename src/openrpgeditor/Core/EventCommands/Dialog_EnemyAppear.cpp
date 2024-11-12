@@ -12,13 +12,16 @@ std::tuple<bool, bool> Dialog_EnemyAppear::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{181, 94} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Enemy");
     ImGui::SetNextItemWidth(160 * App::DPIHandler::get_ui_scale());
 
-    if (ImGui::BeginCombo("##enemystate_change_list", m_troop_selection == 0 ? "Entire Troop" : ("#" + std::to_string(m_troop_selection) + " ?").c_str())) {
+    if (ImGui::BeginCombo("##enemystate_change_list", m_troop_selection == 0
+                                                          ? "Entire Troop"
+                                                          : ("#" + std::to_string(m_troop_selection) + " ?").c_str())) {
       if (ImGui::Selectable("Entire Troop", m_troop_selection == 0)) {
         m_troop_selection = 0;
       }

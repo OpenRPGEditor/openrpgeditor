@@ -17,7 +17,8 @@ std::tuple<bool, bool> Dialog_ChangeVehicleBGM::draw() {
     if (ImGui::BeginTable("##bgm_audio_contents", 1,
                           ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                               ImGuiTableFlags_ScrollY,
-                          ImVec2{(ImGui::GetContentRegionMax().x / 2)+ 175, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
+                          ImVec2{(ImGui::GetContentRegionMax().x / 2) + 175,
+                                 ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
 
       ImGui::TableSetupScrollFreeze(1, 0);
       ImGui::TableSetupColumn("File");
@@ -25,10 +26,9 @@ std::tuple<bool, bool> Dialog_ChangeVehicleBGM::draw() {
       for (int n = 0; n < m_audios.size(); n++) {
         ImGui::TableNextColumn();
         const bool isSelected = (m_selected == n);
-        if (ImGui::SelectableWithBorder(m_audios.at(n).c_str(),
-                                          isSelected,
-                                          ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
-                                              ImGuiSelectableFlags_AllowDoubleClick)) {
+        if (ImGui::SelectableWithBorder(m_audios.at(n).c_str(), isSelected,
+                                        ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
+                                            ImGuiSelectableFlags_AllowDoubleClick)) {
           if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
             playAudio((Database::Instance->basePath + "audio/bgm/" + m_audios.at(m_selected) + ".ogg").c_str());
           }
@@ -46,7 +46,8 @@ std::tuple<bool, bool> Dialog_ChangeVehicleBGM::draw() {
     {
       ImGui::Text("Vehicle:");
       ImGui::PushItemWidth((App::DPIHandler::scale_value(100)));
-      if (ImGui::BeginCombo("##vehicle_location_selection", DecodeEnumName(magic_enum::enum_value<VehicleType>(m_vehicle)).c_str())) {
+      if (ImGui::BeginCombo("##vehicle_location_selection",
+                            DecodeEnumName(magic_enum::enum_value<VehicleType>(m_vehicle)).c_str())) {
         for (auto& vehicle : magic_enum::enum_values<VehicleType>()) {
           bool is_selected = m_vehicle == magic_enum::enum_index(vehicle).value();
           if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(vehicle)).c_str(), is_selected)) {
@@ -82,28 +83,26 @@ std::tuple<bool, bool> Dialog_ChangeVehicleBGM::draw() {
       }
     }
     ImGui::EndGroup();
-
-  }
-
-  ImGui::BeginGroup();
-  {
-  ImGui::SetCursorPos(ImVec2(
-      (ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(90)) - ImGui::GetStyle().FramePadding.x,
-      (ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(30)) - ImGui::GetStyle().FramePadding.y));
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->bgm = m_audio;
-      command->vehicle = static_cast<VehicleType>(m_vehicle);
-      ImGui::CloseCurrentPopup();
-      SetOpen(false);
+    ImGui::BeginGroup();
+    {
+      ImGui::SetCursorPos(ImVec2(
+          (ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(90)) - ImGui::GetStyle().FramePadding.x,
+          (ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(30)) - ImGui::GetStyle().FramePadding.y));
+      if (ImGui::Button("OK")) {
+        m_confirmed = true;
+        command->bgm = m_audio;
+        command->vehicle = static_cast<VehicleType>(m_vehicle);
+        ImGui::CloseCurrentPopup();
+        SetOpen(false);
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("Cancel")) {
+        SetOpen(false);
+      }
     }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      SetOpen(false);
-    }
-  }
-  ImGui::EndGroup();
+    ImGui::EndGroup();
 
-  ImGui::EndPopup();
+    ImGui::EndPopup();
+  }
   return std::make_tuple(!m_open, m_confirmed);
 }

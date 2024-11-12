@@ -11,7 +11,8 @@ std::tuple<bool, bool> Dialog_ScrollMap::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{200, 140} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Direction                Distance");
@@ -21,7 +22,8 @@ std::tuple<bool, bool> Dialog_ScrollMap::draw() {
     auto dir = magic_enum::enum_cast<Direction>(m_direction);
     if (ImGui::BeginCombo("##scrollmap_direction", DecodeEnumName(magic_enum::enum_name(dir.value())).c_str())) {
       for (auto& direction : magic_enum::enum_values<Direction>()) {
-        if (magic_enum::enum_integer(direction) == 0) continue;
+        if (magic_enum::enum_integer(direction) == 0)
+          continue;
 
         bool is_selected = m_direction == magic_enum::enum_integer(direction);
         if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(direction)).c_str(), is_selected)) {
@@ -56,7 +58,6 @@ std::tuple<bool, bool> Dialog_ScrollMap::draw() {
       }
       ImGui::EndCombo();
     }
-
 
     if (ImGui::Button("OK")) {
       m_confirmed = true;

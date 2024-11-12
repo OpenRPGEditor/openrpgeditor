@@ -11,11 +11,13 @@ std::tuple<bool, bool> Dialog_TintScreen::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{400, 250} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Color Tone");
-    ImGui::BeginGroup(); {
+    ImGui::BeginGroup();
+    {
       ImGui::Text("Red:");
       ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 8.f);
       ImGui::Text("Green:");
@@ -60,7 +62,7 @@ std::tuple<bool, bool> Dialog_TintScreen::draw() {
         if (b > 255)
           b = 255;
       }
-      
+
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
       ImGui::SliderInt("##tintscreen_gray", &gray, 0, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
@@ -81,8 +83,10 @@ std::tuple<bool, bool> Dialog_TintScreen::draw() {
     ImGui::EndGroup();
     ImGui::SameLine();
 
-    ImGui::ColorButton("##tintscreen_square", ImVec4{static_cast<float>(r * (1.0f / 255.0f)), static_cast<float>(g * (1.0f / 255.0f)), static_cast<float>(b * (1.0f / 255.0f)), 1}, 0,
-      ImVec2{100, 100});
+    ImGui::ColorButton("##tintscreen_square",
+                       ImVec4{static_cast<float>(r * (1.0f / 255.0f)), static_cast<float>(g * (1.0f / 255.0f)),
+                              static_cast<float>(b * (1.0f / 255.0f)), 1},
+                       0, ImVec2{100, 100});
 
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4.f);
     ImGui::PushItemWidth((App::DPIHandler::scale_value(380)));

@@ -13,7 +13,8 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{400, 305} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (picker) {
@@ -183,8 +184,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
       if (command->type == PictureDesignationSource::Direct_designation) {
         command->value1 = m_constant1;
         command->value2 = m_constant2;
-      }
-      else {
+      } else {
         command->value1 = m_value1;
         command->value2 = m_value2;
       }

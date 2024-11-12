@@ -17,7 +17,8 @@ std::tuple<bool, bool> Dialog_MovementChangeSpeed::draw() {
 
     ImGui::SeparatorText("Speed");
     ImGui::PushItemWidth((App::DPIHandler::scale_value(100)));
-    if (ImGui::BeginCombo("##movement_frequency_selection", DecodeEnumName(magic_enum::enum_value<MovementSpeed>(m_speed)).c_str())) {
+    if (ImGui::BeginCombo("##movement_frequency_selection",
+                          DecodeEnumName(magic_enum::enum_value<MovementSpeed>(m_speed)).c_str())) {
       for (auto& speed : magic_enum::enum_values<MovementSpeed>()) {
         bool is_selected = m_speed == magic_enum::enum_index(speed).value();
         if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(speed)).c_str(), is_selected)) {
@@ -28,7 +29,6 @@ std::tuple<bool, bool> Dialog_MovementChangeSpeed::draw() {
       }
       ImGui::EndCombo();
     }
-
 
     if (ImGui::Button("OK")) {
       m_confirmed = true;

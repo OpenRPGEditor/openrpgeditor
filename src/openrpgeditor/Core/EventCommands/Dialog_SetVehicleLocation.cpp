@@ -12,7 +12,8 @@ std::tuple<bool, bool> Dialog_SetVehicleLocation::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{380, 242} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (picker) {
@@ -33,10 +34,12 @@ std::tuple<bool, bool> Dialog_SetVehicleLocation::draw() {
         picker.reset();
       }
     }
-    ImGui::BeginGroup();{
+    ImGui::BeginGroup();
+    {
       ImGui::Text("Vehicle:");
       ImGui::PushItemWidth((App::DPIHandler::scale_value(180)));
-      if (ImGui::BeginCombo("##vehicle_location_selection", DecodeEnumName(magic_enum::enum_value<VehicleType>(m_vehicle)).c_str())) {
+      if (ImGui::BeginCombo("##vehicle_location_selection",
+                            DecodeEnumName(magic_enum::enum_value<VehicleType>(m_vehicle)).c_str())) {
         for (auto& vehicle : magic_enum::enum_values<VehicleType>()) {
           bool is_selected = m_vehicle == magic_enum::enum_index(vehicle).value();
           if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(vehicle)).c_str(), is_selected)) {
@@ -55,14 +58,16 @@ std::tuple<bool, bool> Dialog_SetVehicleLocation::draw() {
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
     ImGui::BeginDisabled(m_mode != 0);
     ImGui::PushID("#transfer_coord_selection");
-    if (ImGui::Button(m_mode == 0 ? Database::Instance->mapNameOrId(m_mapId).c_str() : "", ImVec2{(App::DPIHandler::scale_value(300)), 0})) {
+    if (ImGui::Button(m_mode == 0 ? Database::Instance->mapNameOrId(m_mapId).c_str() : "",
+                      ImVec2{(App::DPIHandler::scale_value(300)), 0})) {
       // TODO: Coordinate selector
     }
     ImGui::EndDisabled();
 
     ImGui::RadioButton("Designation with variables", &m_mode, 1);
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 30);
-    ImGui::BeginGroup(); {
+    ImGui::BeginGroup();
+    {
       ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 2.f);
       ImGui::Text("ID:");
       ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 6.f);
@@ -72,32 +77,28 @@ std::tuple<bool, bool> Dialog_SetVehicleLocation::draw() {
       ImGui::EndGroup();
     }
     ImGui::SameLine();
-    ImGui::BeginGroup(); {
+    ImGui::BeginGroup();
+    {
       ImGui::BeginDisabled(m_mode != 1);
       ImGui::PushID("##transfer_var_mapId");
-      if (ImGui::Button(
-              m_mode == 1 ? Database::Instance->variableNameAndId(m_mapId_var).c_str() : "",
-              ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
+      if (ImGui::Button(m_mode == 1 ? Database::Instance->variableNameAndId(m_mapId_var).c_str() : "",
+                        ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 0;
         picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();
 
-
       ImGui::PushID("##transfer_var_x");
-      if (ImGui::Button(
-              m_mode == 1 ? Database::Instance->variableNameAndId(m_x_var).c_str() : "",
-              ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
+      if (ImGui::Button(m_mode == 1 ? Database::Instance->variableNameAndId(m_x_var).c_str() : "",
+                        ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 1;
         picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();
 
-
       ImGui::PushID("##transfer_var_y");
-      if (ImGui::Button(
-              m_mode == 1 ? Database::Instance->variableNameAndId(m_y_var).c_str() : "",
-              ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
+      if (ImGui::Button(m_mode == 1 ? Database::Instance->variableNameAndId(m_y_var).c_str() : "",
+                        ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 2;
         picker.emplace("Variables", Database::Instance->system.variables);
       }
@@ -113,8 +114,7 @@ std::tuple<bool, bool> Dialog_SetVehicleLocation::draw() {
         command->mapId = m_mapId_var;
         command->x = m_x_var;
         command->y = m_y_var;
-      }
-      else {
+      } else {
         command->mapId = m_mapId;
         command->x = m_x;
         command->y = m_y;

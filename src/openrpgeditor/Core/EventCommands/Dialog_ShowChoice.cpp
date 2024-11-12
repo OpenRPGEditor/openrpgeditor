@@ -12,7 +12,8 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{551, 290} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginGroup();
     {
@@ -137,8 +138,8 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
       }
       ImGui::EndGroup();
     }
-    //ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionAvail().x - App::DPIHandler::scale_value(80),
-    //                           ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(20)});
+    // ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionAvail().x - App::DPIHandler::scale_value(80),
+    //                            ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(20)});
     ImGui::BeginGroup();
     {
       if (ImGui::Button("OK")) {
@@ -202,7 +203,7 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
       }
       ImGui::EndGroup();
     }
-      ImGui::EndPopup();
+    ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);

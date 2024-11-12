@@ -12,7 +12,8 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{551, 260} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
     const auto buttonSize = ImVec2{144, 144} * App::DPIHandler::get_ui_scale();
     const auto buttonCenter = (buttonSize / 2);
@@ -88,7 +89,7 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
       }
       ImGui::EndGroup();
     }
-    //ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 78, ImGui::GetCursorPosY()));
+    // ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 78, ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {
       m_confirmed = true;
       command->faceImage = m_faceImage;
@@ -114,7 +115,9 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
             moreCommands.back()->position = static_cast<TextWindowPosition>(m_position);
           }
         } else {
-          if (index == 0) { command->text.clear(); }
+          if (index == 0) {
+            command->text.clear();
+          }
 
           command->text.push_back(std::make_shared<NextTextCommand>());
           command->text.back()->text = str;

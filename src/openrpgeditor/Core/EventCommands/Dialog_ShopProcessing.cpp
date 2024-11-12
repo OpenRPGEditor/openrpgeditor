@@ -12,7 +12,8 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{551, 400} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
     if (goodsDialog) {
       auto [closed, confirmed] = goodsDialog->draw();
@@ -51,8 +52,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
     if (ImGui::BeginTable("##shop_processing_main", 2,
                           ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
                               ImGuiTableFlags_ScrollY,
-                          ImVec2{(App::DPIHandler::scale_value(530)),
-                                 App::DPIHandler::scale_value(390)})) {
+                          ImVec2{(App::DPIHandler::scale_value(530)), App::DPIHandler::scale_value(390)})) {
 
       ImGui::TableSetupScrollFreeze(1, 0);
       ImGui::TableSetupColumn("Merchandise", ImGuiTableColumnFlags_WidthStretch);
@@ -73,7 +73,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
             APP_INFO("price: " + std::to_string(m_price));
             m_selection_type = 2;
             if (!goodsDialog)
-              goodsDialog.emplace("Goods Processing", m_id, m_price,m_type,  m_priceType);
+              goodsDialog.emplace("Goods Processing", m_id, m_price, m_type, m_priceType);
 
             goodsDialog->SetOpen(true);
           }
@@ -169,7 +169,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
       }
       ImGui::EndGroup();
     }
-      ImGui::EndPopup();
+    ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);

@@ -12,7 +12,8 @@ std::tuple<bool, bool> Dialog_ShowBattleAnimation::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{183, 159} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (animation_picker) {
@@ -24,9 +25,12 @@ std::tuple<bool, bool> Dialog_ShowBattleAnimation::draw() {
     }
     ImGui::SeparatorText("Enemy");
     ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
-    if (ImGui::BeginCombo("##enemyanimation_list", ("#" + std::to_string(m_enemy) + " " + Database::Instance->troopMemberName(0, m_enemy)).c_str())) {
+    if (ImGui::BeginCombo(
+            "##enemyanimation_list",
+            ("#" + std::to_string(m_enemy) + " " + Database::Instance->troopMemberName(0, m_enemy)).c_str())) {
       for (int i = 1; i < 9; ++i) {
-        if (ImGui::Selectable(("#" + std::to_string(i) + " " + Database::Instance->troopMemberName(0, i)).c_str(), i == m_enemy)) {
+        if (ImGui::Selectable(("#" + std::to_string(i) + " " + Database::Instance->troopMemberName(0, i)).c_str(),
+                              i == m_enemy)) {
           m_enemy = i;
         }
       }

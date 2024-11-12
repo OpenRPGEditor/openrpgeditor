@@ -12,10 +12,12 @@ std::tuple<bool, bool> Dialog_ShowScrollingText::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{551, 280} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::SeparatorText("Text");
-    ImGui::InputTextMultiline("##showscrolling_text", m_textLine, 4096, ImVec2{App::DPIHandler::scale_value(537), App::DPIHandler::scale_value(107)});
+    ImGui::InputTextMultiline("##showscrolling_text", m_textLine, 4096,
+                              ImVec2{App::DPIHandler::scale_value(537), App::DPIHandler::scale_value(107)});
     ImGui::Text("Speed: ");
     ImGui::SameLine();
     ImGui::PushItemWidth(App::DPIHandler::scale_value(50));
@@ -41,7 +43,7 @@ std::tuple<bool, bool> Dialog_ShowScrollingText::draw() {
         std::vector<std::string> split = splitString(m_textLine, '\n');
         for (auto str : split) {
           command->text.push_back(std::make_shared<NextScrollingTextCommand>());
-          command->text.back()->text= str;
+          command->text.back()->text = str;
         }
         ImGui::CloseCurrentPopup();
         SetOpen(false);
@@ -53,7 +55,7 @@ std::tuple<bool, bool> Dialog_ShowScrollingText::draw() {
       }
       ImGui::EndGroup();
     }
-      ImGui::EndPopup();
+    ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);

@@ -15,7 +15,7 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
   ImGui::SetNextWindowSize(ImVec2{300, 200} * App::DPIHandler::get_ui_scale());
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
     if (picker) {
-      auto [closed, confirmed]  = picker->draw();
+      auto [closed, confirmed] = picker->draw();
       if (confirmed) {
         m_start = picker->selection();
         m_end = picker->selection();
@@ -28,11 +28,12 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     ImGui::SameLine();
 
     std::string text =
-        m_operation != 0 ? "##commonevent_switch_empty" : (m_start == 0 ? "" : std::format("{:04} ", m_start) + Database::Instance->switchName(m_start));
+        m_operation != 0
+            ? "##commonevent_switch_empty"
+            : (m_start == 0 ? "" : std::format("{:04} ", m_start) + Database::Instance->switchName(m_start));
     ImGui::PushID("##controlswitch_id");
     ImGui::BeginDisabled(m_operation != 0);
-    if (ImGui::Button(text.c_str(), ImVec2{(App::DPIHandler::scale_value(160)),
-                                           0})) {
+    if (ImGui::Button(text.c_str(), ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
       picker.emplace("Switches", Database::Instance->system.switches);
     }
     ImGui::PopID();
@@ -62,8 +63,7 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
       if (m_operation == 0) {
         command->start = m_start;
         command->end = m_end;
-      }
-      else {
+      } else {
         command->start = m_rand_1;
         command->end = m_rand_2;
       }

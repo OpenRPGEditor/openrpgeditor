@@ -12,7 +12,8 @@ std::tuple<bool, bool> Dialog_SelectItem::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{200, 140} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (picker) {
@@ -25,11 +26,10 @@ std::tuple<bool, bool> Dialog_SelectItem::draw() {
     ImGui::SeparatorText("Variable");
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
     ImGui::PushID("##inputnumber_variable");
-    if (ImGui::Button(
-            Database::Instance->variableNameOrId(m_variable).c_str(),
-            ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
+    if (ImGui::Button(Database::Instance->variableNameOrId(m_variable).c_str(),
+                      ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
       picker.emplace("Variables", Database::Instance->system.variables);
-            }
+    }
     ImGui::PopID();
     ImGui::SeparatorText("Item Type");
     ImGui::PushItemWidth((App::DPIHandler::scale_value(180)));

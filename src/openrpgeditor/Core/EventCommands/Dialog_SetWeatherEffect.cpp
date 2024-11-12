@@ -11,11 +11,13 @@ std::tuple<bool, bool> Dialog_SetWeatherEffect::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{400, 165} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Weather");
-    ImGui::BeginGroup(); {
+    ImGui::BeginGroup();
+    {
       ImGui::Text("Type:");
       ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 8.f);
       ImGui::Text("Power:");
@@ -25,7 +27,8 @@ std::tuple<bool, bool> Dialog_SetWeatherEffect::draw() {
     ImGui::BeginGroup();
     {
       ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
-      if (ImGui::BeginCombo("##weather_effect_selection", DecodeEnumName(magic_enum::enum_value<WeatherEffect>(m_effect)).c_str())) {
+      if (ImGui::BeginCombo("##weather_effect_selection",
+                            DecodeEnumName(magic_enum::enum_value<WeatherEffect>(m_effect)).c_str())) {
         for (auto& effect : magic_enum::enum_values<WeatherEffect>()) {
           bool is_selected = m_effect == magic_enum::enum_index(effect).value();
           if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(effect)).c_str(), is_selected)) {
@@ -46,7 +49,6 @@ std::tuple<bool, bool> Dialog_SetWeatherEffect::draw() {
         if (m_power < 1)
           m_power = 1;
       }
-
     }
     ImGui::EndGroup();
     ImGui::SeparatorText("Duration");

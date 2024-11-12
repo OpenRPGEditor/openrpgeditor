@@ -12,7 +12,8 @@ std::tuple<bool, bool> Dialog_ChangeEnemyMP::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 1.5f));
   ImGui::SetNextWindowSize(ImVec2{254, 205} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (picker) {
@@ -25,14 +26,16 @@ std::tuple<bool, bool> Dialog_ChangeEnemyMP::draw() {
     // Section 1 Enemy
     ImGui::SeparatorText("Enemy");
     ImGui::PushItemWidth(App::DPIHandler::scale_value(200));
-    if (ImGui::BeginCombo("##changeenemymp_list", (m_enemy > -1 ? "#" + std::to_string(m_enemy + 1) : ""
-                                                                                                          + Database::Instance->troopMemberName(0, m_enemy)).c_str())) {
+    if (ImGui::BeginCombo("##changeenemymp_list", (m_enemy > -1 ? "#" + std::to_string(m_enemy + 1)
+                                                                : "" + Database::Instance->troopMemberName(0, m_enemy))
+                                                      .c_str())) {
       if (ImGui::Selectable("Entire Troop", m_enemy == -1)) {
         m_enemy = -1;
       }
       for (int i = 0; i < 8; ++i) {
-        if (ImGui::Selectable((i > -1 ? "#" + std::to_string(i + 1) : ""
-                                                                          + Database::Instance->troopMemberName(0, i)).c_str(), i == m_enemy)) {
+        if (ImGui::Selectable(
+                (i > -1 ? "#" + std::to_string(i + 1) : "" + Database::Instance->troopMemberName(0, i)).c_str(),
+                i == m_enemy)) {
           m_enemy = i;
         }
       }
@@ -47,13 +50,15 @@ std::tuple<bool, bool> Dialog_ChangeEnemyMP::draw() {
 
     // Section 3 (Operand: Constant/Variable)
     ImGui::SeparatorText("Operand");
-    ImGui::BeginGroup(); {
+    ImGui::BeginGroup();
+    {
       ImGui::RadioButton("Constant", &m_quantitySource, 0);
       ImGui::RadioButton("Variable", &m_quantitySource, 1);
       ImGui::EndGroup();
     }
     ImGui::SameLine();
-    ImGui::BeginGroup(); {
+    ImGui::BeginGroup();
+    {
       ImGui::BeginDisabled(m_quantitySource != 0);
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
       if (ImGui::InputInt("##changeenemymp_constant", &m_quantity)) {
@@ -66,9 +71,8 @@ std::tuple<bool, bool> Dialog_ChangeEnemyMP::draw() {
 
       ImGui::BeginDisabled(m_quantitySource != 1);
       ImGui::PushID("##changeenemymp_quant_var");
-      if (ImGui::Button(
-              m_quantitySource == 1 ? Database::Instance->variableNameAndId(m_quantity_var).c_str() : "",
-              ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+      if (ImGui::Button(m_quantitySource == 1 ? Database::Instance->variableNameAndId(m_quantity_var).c_str() : "",
+                        ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         picker.emplace("Variables", Database::Instance->system.variables);
       }
       ImGui::PopID();

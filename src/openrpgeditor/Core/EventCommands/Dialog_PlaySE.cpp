@@ -85,18 +85,19 @@ std::tuple<bool, bool> Dialog_PlaySE::draw() {
         setPanning(m_audio.pan);
       }
     }
+
+    ImGui::EndGroup();
+    if (ImGui::Button("OK")) {
+      m_confirmed = true;
+      command->audio = m_audio;
+      ImGui::CloseCurrentPopup();
+      SetOpen(false);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Cancel")) {
+      SetOpen(false);
+    }
+    ImGui::EndPopup();
   }
-  ImGui::EndGroup();
-  if (ImGui::Button("OK")) {
-    m_confirmed = true;
-    command->audio = m_audio;
-    ImGui::CloseCurrentPopup();
-    SetOpen(false);
-  }
-  ImGui::SameLine();
-  if (ImGui::Button("Cancel")) {
-    SetOpen(false);
-  }
-  ImGui::EndPopup();
   return std::make_tuple(!m_open, m_confirmed);
 }

@@ -455,8 +455,8 @@ void DBSkillsTab::draw() {
                   }
                   ImGui::EndCombo();
                 }
-                ImGui::EndGroup();
               }
+              ImGui::EndGroup();
               ImGui::SameLine();
               ImGui::BeginGroup();
               {
@@ -496,8 +496,8 @@ void DBSkillsTab::draw() {
                   }
                   ImGui::EndCombo();
                 }
-                ImGui::EndGroup();
               }
+              ImGui::EndGroup();
               char formula[4096];
               strncpy(formula, m_selectedSkill->damage.formula.c_str(), 4096);
               ImGui::LabelOverLineEdit("##orpg_database_skills_formula", "Formula", formula, 4096, 400.f);
@@ -511,8 +511,8 @@ void DBSkillsTab::draw() {
                   if (m_selectedSkill->damage.variance > 100)
                     m_selectedSkill->damage.variance = 100;
                 }
-                ImGui::EndGroup();
               }
+              ImGui::EndGroup();
               ImGui::SameLine();
               ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3.f);
               ImGui::BeginGroup();
@@ -522,6 +522,7 @@ void DBSkillsTab::draw() {
               }
               ImGui::EndGroup();
             }
+            ImGui::EndGroup();
           }
           ImGui::EndGroup();
         }

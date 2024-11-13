@@ -87,25 +87,24 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
           m_characterPicker.setCharacterInfo(m_facePicture, m_charIndex);
           m_characterPicker.SetOpen(true);
         }
-          if (m_characterSheet && m_characterSheet->texture()) {
-            if (m_characterSheet->characterWidth() < 72 || m_characterSheet->characterHeight() < 96) {
-              ImGui::SetCursorPos(
-                  cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f, m_characterSheet->characterHeight() / 2.f} *
-                               App::DPIHandler::get_ui_scale()));
-            } else {
-              ImGui::SetCursorPos(cursorPos);
-            }
-
-            const auto [uv0, uv1] = m_characterSheet->getRectForCharacter(m_charIndex);
-
-            ImGui::Image(m_characterSheet->texture().get(),
-                         ImVec2{static_cast<float>(m_characterSheet->characterWidth()),
-                                static_cast<float>(m_characterSheet->characterHeight())} *
-                             App::DPIHandler::get_ui_scale(),
-                         ImVec2{uv0.u, uv0.v}, ImVec2{uv1.u, uv1.v});
-
+        if (m_characterSheet && m_characterSheet->texture()) {
+          if (m_characterSheet->characterWidth() < 72 || m_characterSheet->characterHeight() < 96) {
+            ImGui::SetCursorPos(cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f,
+                                                    m_characterSheet->characterHeight() / 2.f} *
+                                             App::DPIHandler::get_ui_scale()));
+          } else {
+            ImGui::SetCursorPos(cursorPos);
           }
+
+          const auto [min, max] = m_characterSheet->getRectForCharacter(m_charIndex);
+
+          ImGui::Image(m_characterSheet->texture().get(),
+                       ImVec2{static_cast<float>(m_characterSheet->characterWidth()),
+                              static_cast<float>(m_characterSheet->characterHeight())} *
+                           App::DPIHandler::get_ui_scale(),
+                       min, max);
         }
+      }
       ImGui::EndGroup();
       ImGui::SameLine();
       ImGui::BeginGroup();
@@ -124,9 +123,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
                                    App::DPIHandler::get_ui_scale();
           ImGui::SetCursorPos((cursorPos + buttonCenter) - (battlerRect / 2));
           const auto rect = m_battlerSheet->getAction(SideViewActionType::StepForward);
-          ImVec2 uv0{rect.frames[1].u0, rect.frames[1].v0};
-          ImVec2 uv1{rect.frames[1].u1, rect.frames[1].v1};
-          ImGui::Image(m_battlerSheet->texture().get(), battlerRect, uv0, uv1);
+          ImGui::Image(m_battlerSheet->texture().get(), battlerRect, rect.frames[1].min, rect.frames[1].max);
         }
       }
       ImGui::EndGroup();

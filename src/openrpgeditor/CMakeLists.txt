@@ -11,10 +11,13 @@ add_library(
         
         Core/Application.cpp
         Core/Application.hpp
+
         Core/Graphics/CharacterSheet.cpp
         Core/Graphics/CharacterSheet.hpp
         Core/Graphics/CheckerboardTexture.cpp
         Core/Graphics/CheckerboardTexture.hpp
+        Core/Graphics/SimpleRect.hpp
+
         Core/DatabaseEditor.cpp
         Core/DatabaseEditor.hpp
         Core/DPIHandler.hpp

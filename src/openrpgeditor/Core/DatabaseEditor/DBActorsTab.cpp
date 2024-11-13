@@ -186,10 +186,8 @@ void DBActorsTab::draw() {
                            std::ceil(static_cast<float>(m_characterSheet->characterHeight() * 2))} *
                     App::DPIHandler::get_ui_scale();
                 ImGui::SetCursorPos((cursorPos + buttonCenter) - (characterRect / 2));
-                const auto rect = m_characterSheet->getRectForCharacter(m_selectedActor->characterIndex, 1);
-                ImVec2 uv0{rect.uv0.u, rect.uv0.v};
-                ImVec2 uv1{rect.uv1.u, rect.uv1.v};
-                ImGui::Image(m_characterSheet->texture().get(), characterRect, uv0, uv1);
+                const auto [min, max] = m_characterSheet->getRectForCharacter(m_selectedActor->characterIndex, 1);
+                ImGui::Image(m_characterSheet->texture().get(), characterRect, min, max);
               }
             }
             ImGui::EndGroup();
@@ -205,9 +203,7 @@ void DBActorsTab::draw() {
                                          App::DPIHandler::get_ui_scale();
                 ImGui::SetCursorPos((cursorPos + buttonCenter) - (battlerRect / 2));
                 const auto rect = m_battlerSheet->getAction(SideViewActionType::StepForward);
-                ImVec2 uv0{rect.frames[1].u0, rect.frames[1].v0};
-                ImVec2 uv1{rect.frames[1].u1, rect.frames[1].v1};
-                ImGui::Image(m_battlerSheet->texture().get(), battlerRect, uv0, uv1);
+                ImGui::Image(m_battlerSheet->texture().get(), battlerRect, rect.frames[1].min, rect.frames[1].max);
               }
             }
             ImGui::EndGroup();

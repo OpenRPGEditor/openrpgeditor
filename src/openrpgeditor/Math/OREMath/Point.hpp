@@ -79,11 +79,13 @@ inline Point operator/(const Point& lhs, const float rhs) {
 class PointF {
 public:
   PointF() = default;
-  explicit PointF(const float x, const float y) : mX(x), mY(y) {}
+  PointF(const float x, const float y) : mX(x), mY(y) {}
   bool isNull() const { return mX == 0.f && mY == 0.f; }
   int manhattanLength() const { return std::abs(mX) + std::abs(mY); }
 
-  explicit operator ImVec2() const { return ImVec2{mX, mY}; }
+#ifdef IMGUI_VERSION
+  operator ImVec2() const { return ImVec2{mX, mY}; }
+#endif
 
   float x() const { return mX; }
   float& xr() { return mX; }

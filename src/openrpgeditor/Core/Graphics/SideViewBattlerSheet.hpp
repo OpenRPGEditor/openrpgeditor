@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Graphics/SimpleRect.hpp"
 #include "Core/Graphics/Texture.hpp"
 #include <array>
 #include <string_view>
@@ -16,16 +17,9 @@ enum class SideViewActionType {
 };
 // clang-format on
 
-struct SideViewActionFrame {
-  float u0{};
-  float v0{};
-  float u1{};
-  float v1{};
-};
-
 struct SideViewAction {
   SideViewActionType type{SideViewActionType::Invalid};
-  std::array<SideViewActionFrame, 3> frames;
+  std::array<SimpleRect, 3> frames;
 };
 struct SideViewBattlerSheet {
   explicit SideViewBattlerSheet(const std::string_view sheetName);

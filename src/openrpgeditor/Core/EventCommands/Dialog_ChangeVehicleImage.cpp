@@ -12,7 +12,8 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{125, 225} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
+                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (const auto [closed, confirmed] = m_characterPicker.draw(); closed) {
@@ -23,10 +24,12 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
         m_characterSheet = CharacterSheet(m_image);
       }
     }
-    ImGui::BeginGroup();{
+    ImGui::BeginGroup();
+    {
       ImGui::Text("Vehicle:");
       ImGui::PushItemWidth((App::DPIHandler::scale_value(100)));
-      if (ImGui::BeginCombo("##vehicle_location_selection", DecodeEnumName(magic_enum::enum_value<VehicleType>(m_vehicle)).c_str())) {
+      if (ImGui::BeginCombo("##vehicle_location_selection",
+                            DecodeEnumName(magic_enum::enum_value<VehicleType>(m_vehicle)).c_str())) {
         for (auto& vehicle : magic_enum::enum_values<VehicleType>()) {
           bool is_selected = m_vehicle == magic_enum::enum_index(vehicle).value();
           if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(vehicle)).c_str(), is_selected)) {
@@ -59,19 +62,20 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
         } else {
           ImGui::SetCursorPos(cursorPos);
         }
-        const auto [uv0, uv1] = m_characterSheet->getRectForCharacter(m_character);
+        const auto [min, max] = m_characterSheet->getRectForCharacter(m_character);
         ImGui::Image(m_characterSheet->texture().get(),
                      ImVec2{static_cast<float>(m_characterSheet->characterWidth()),
                             static_cast<float>(m_characterSheet->characterHeight())} *
                          App::DPIHandler::get_ui_scale(),
-                     ImVec2{uv0.u, uv0.v}, ImVec2{uv1.u, uv1.v});
+                     min, max);
       }
     }
     ImGui::SameLine();
     ImGui::Dummy(ImVec2{App::DPIHandler::scale_value(20), 0});
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.f);
     ImGui::Dummy(ImVec2{0, App::DPIHandler::scale_value(10)});
-    ImGui::BeginGroup(); {
+    ImGui::BeginGroup();
+    {
       if (ImGui::Button("OK")) {
         m_confirmed = true;
         command->vehicle = static_cast<VehicleType>(m_vehicle);

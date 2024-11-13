@@ -135,7 +135,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
     ImGui::BeginGroup();
     {
       ImGui::SeparatorText("");
-      ImGui::Text("Width %");
+      ImGui::Text("Width %%");
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
       if (ImGui::InputInt("##showpicture_width", &m_zoomX, 1, 100)) {
         if (m_zoomX < -2000)
@@ -143,7 +143,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
         if (m_zoomX > 2000)
           m_zoomX = 2000;
       }
-      ImGui::Text("Height %");
+      ImGui::Text("Height %%");
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
       if (ImGui::InputInt("##showpicture_height", &m_zoomY, 1, 100)) {
         if (m_zoomY < -2000)

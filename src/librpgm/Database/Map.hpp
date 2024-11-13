@@ -59,6 +59,9 @@ public:
   }
 
   Event* createNewEvent() {
+    if (events.empty()) {
+      events.emplace_back();
+    }
     auto it = std::find_if(events.begin() + 1, events.end(), [](const auto& ev) { return !ev; });
     Event* ret;
     if (it != events.end()) {

@@ -22,14 +22,14 @@ SideViewAction SideViewBattlerSheet::getAction(const SideViewActionType actionTy
   for (int pattern = 0; pattern < 3; ++pattern) {
     const float cx = std::floor(motionIndex % 3) + pattern;
     const float cy = std::floor(motionIndex / 3);
-    action.frames[pattern].u0 = (cx * cw);
-    action.frames[pattern].v0 = (cy * ch);
-    action.frames[pattern].u1 = ((cx * cw) + cw);
-    action.frames[pattern].v1 = ((cy * ch) + ch);
-    action.frames[pattern].u0 /= m_texture.width();
-    action.frames[pattern].v0 /= m_texture.height();
-    action.frames[pattern].u1 /= m_texture.width();
-    action.frames[pattern].v1 /= m_texture.height();
+    action.frames[pattern].min.xr() = (cx * cw);
+    action.frames[pattern].min.yr() = (cy * ch);
+    action.frames[pattern].max.xr() = ((cx * cw) + cw);
+    action.frames[pattern].max.yr() = ((cy * ch) + ch);
+    action.frames[pattern].min.xr() /= m_texture.width();
+    action.frames[pattern].min.yr() /= m_texture.height();
+    action.frames[pattern].max.xr() /= m_texture.width();
+    action.frames[pattern].max.yr() /= m_texture.height();
   }
 
   return action;

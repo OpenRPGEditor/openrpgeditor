@@ -1,16 +1,8 @@
 #pragma once
 
+#include "Core/Graphics/SimpleRect.hpp"
 #include "Core/Graphics/Texture.hpp"
 #include "Database/Globals.hpp"
-
-struct CharacterUV {
-  float u;
-  float v;
-};
-struct CharacterRect {
-  CharacterUV uv0;
-  CharacterUV uv1;
-};
 
 struct CharacterSheet {
   CharacterSheet() = delete;
@@ -24,7 +16,7 @@ struct CharacterSheet {
   [[nodiscard]] bool isSingleCharacter() const { return m_isSingleCharacter; }
   [[nodiscard]] bool isNoShift() const { return m_noShift6_noHalfTransInBush; }
   [[nodiscard]] bool isNoHalfTransparentInBush() const { return m_noShift6_noHalfTransInBush; }
-  [[nodiscard]] CharacterRect getRectForCharacter(int character, int pattern = 0,
+  [[nodiscard]] SimpleRect getRectForCharacter(int character, int pattern = 0,
                                                   Direction direction = Direction::Down) const;
 
   explicit operator bool() const { return m_sheetTexture.operator bool(); }

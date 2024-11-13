@@ -163,13 +163,13 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
           } else {
             ImGui::SetCursorPos(cursorPos);
           }
-          const auto [uv0, uv1] = m_characterSheet.getRectForCharacter(m_page->image.characterIndex,
+          const auto [min, max] = m_characterSheet.getRectForCharacter(m_page->image.characterIndex,
                                                                        m_page->image.pattern, m_page->image.direction);
           ImGui::Image(m_characterSheet.texture().get(),
                        ImVec2{static_cast<float>(m_characterSheet.characterWidth()),
                               static_cast<float>(m_characterSheet.characterHeight())} *
                            App::DPIHandler::get_ui_scale(),
-                       ImVec2{uv0.u, uv0.v}, ImVec2{uv1.u, uv1.v});
+                       min, max);
         }
       }
       ImGui::EndGroup();

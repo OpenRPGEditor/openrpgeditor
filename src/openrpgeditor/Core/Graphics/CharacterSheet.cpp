@@ -28,7 +28,7 @@ CharacterSheet::CharacterSheet(std::string_view sheetName) {
 int CharacterSheet::characterWidth() const { return m_sheetTexture.width() / patternCount(); }
 int CharacterSheet::characterHeight() const { return m_sheetTexture.height() / directionCount(); }
 
-CharacterRect CharacterSheet::getRectForCharacter(int character, int pattern, Direction direction) const {
+SimpleRect CharacterSheet::getRectForCharacter(int character, int pattern, Direction direction) const {
   if (!m_sheetTexture) {
     return {};
   }
@@ -41,11 +41,12 @@ CharacterRect CharacterSheet::getRectForCharacter(int character, int pattern, Di
   const float charY =
       static_cast<float>((character / (m_sheetTexture.width() / CharacterAtlasWidth)) * CharacterAtlasHeight);
   const float patternOffset = static_cast<float>(pattern * CharacterSpriteWidth);
-  const float directionOffset = (((static_cast<int>(direction) - 2) / 2) * CharacterSpriteHeight);
+  const float directionOffset =
+      direction != Direction::Retain ? (((static_cast<int>(direction) - 2) / 2) * CharacterSpriteHeight) : 0.f;
 
   return {
-      {(charX + patternOffset) / m_sheetTexture.width(), (charY + directionOffset) / m_sheetTexture.height()},
-      {(charX + patternOffset + CharacterSpriteWidth) / m_sheetTexture.width(),
-       (charY + directionOffset + CharacterSpriteHeight) / m_sheetTexture.height()},
+      PointF{(charX + patternOffset) / m_sheetTexture.width(), (charY + directionOffset) / m_sheetTexture.height()},
+      PointF{(charX + patternOffset + CharacterSpriteWidth) / m_sheetTexture.width(),
+             (charY + directionOffset + CharacterSpriteHeight) / m_sheetTexture.height()},
   };
 }

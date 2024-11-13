@@ -48,7 +48,7 @@ bool Database::serializeProject(std::string_view tmpPath) {
     /* TODO: Implement */
     plugins.serialize(projectBasePath + "/js/plugins.js");
     mapInfos.serialize(projectBasePath + "/data/MapInfos.json");
-    gameConstants.serialize(projectBasePath + "/data/GameConstants.json");
+    gameConstants.serialize(projectBasePath + "/data/Constants.json");
 
     for (const auto& map : mapInfos.mapInfos()) {
       if (map->map()) {

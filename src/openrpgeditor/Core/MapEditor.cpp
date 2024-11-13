@@ -100,7 +100,7 @@ void MapEditor::handleEventDrag() {
     int oldY = m_movingEvent->y;
 
     auto it = std::find_if(map()->events.begin(), map()->events.end(), [&](const std::optional<Event>& e) {
-      return e && e->x == tileCellX() && e->y == tileCellY() && &e.value() != m_movingEvent;
+      return e && e->id != 0 && e->x == tileCellX() && e->y == tileCellY() && &e.value() != m_movingEvent;
     });
 
     m_movingEvent->x = m_tileCursor.tileX();
@@ -568,7 +568,7 @@ void MapEditor::draw() {
 
       auto sortedEvents = map()->getSorted();
       for (auto& event : sortedEvents) {
-        if (!event) {
+        if (!event || event->id == 0) {
           continue;
         }
         auto realEvent = map()->event(event->id);
@@ -603,7 +603,7 @@ void MapEditor::draw() {
                       m_tileCursor.tileX(), m_tileCursor.tileY());
       if (map()) {
         auto ev = std::find_if(map()->events.begin(), map()->events.end(), [&](const std::optional<Event>& e) {
-          return e && m_tileCursor.tileX() == e->x && m_tileCursor.tileY() == e->y;
+          return e && e->id != 0 && m_tileCursor.tileX() == e->x && m_tileCursor.tileY() == e->y;
         });
         if (ev != map()->events.end()) {
           fmt += std::format(" {} ({:03})", (*ev)->name, (*ev)->id);

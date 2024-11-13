@@ -57,6 +57,7 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   m_database->projectVersion = version;
   m_database->basePath = basePath;
   m_database->projectFilePath = filePath;
+  m_resourceManager.emplace(m_database->basePath);
   APP_INFO("Loading Actor definitions...");
   m_database->actors = Actors::load(m_database->basePath + "/data/Actors.json");
   APP_INFO("Loading Class definitions...");
@@ -101,7 +102,6 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   info->expanded = true;
   info->name = m_database->system.gameTitle;
   APP_INFO("Loaded project!");
-  m_resourceManager.emplace(m_database->basePath);
   // Load the previously loaded map
   SDL_SetCursor(SDL_GetDefaultCursor());
   m_mapEditor.clearLayers();

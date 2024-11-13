@@ -4,7 +4,8 @@
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 
 #include "imgui.h"
-DBSkillsTab::DBSkillsTab(Skills& skills, DatabaseEditor* parent) : IDBEditorTab(parent), m_skills(skills) {
+DBSkillsTab::DBSkillsTab(Skills& skills, DatabaseEditor* parent)
+: IDBEditorTab(parent), m_skills(skills), m_iconSheet("system/IconSet") {
   m_selectedSkill = m_skills.skill(1);
   if (m_selectedSkill) {
     // m_traitsEditor.setTraits(&m_selectedClass->traits);
@@ -89,7 +90,12 @@ void DBSkillsTab::draw() {
             {
               ImGui::Text("Icon:");
               // ImGui::SameLine();
-              // ImGui::Image(); // Show icon image
+              auto [min, max] = m_iconSheet.rectForId(m_selectedSkill->iconIndex);
+              ImGui::Image(
+                  m_iconSheet.texture().get(),
+                  ImVec2{static_cast<float>(m_iconSheet.iconWidth()), static_cast<float>(m_iconSheet.iconHeight())},
+                  min,
+                  max); // Show icon image
               ImGui::Text("%s", std::to_string(m_selectedSkill->iconIndex).c_str());
             }
             ImGui::EndGroup();

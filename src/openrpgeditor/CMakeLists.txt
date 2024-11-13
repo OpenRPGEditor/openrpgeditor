@@ -16,7 +16,18 @@ add_library(
         Core/Graphics/CharacterSheet.hpp
         Core/Graphics/CheckerboardTexture.cpp
         Core/Graphics/CheckerboardTexture.hpp
+        Core/Graphics/IconSheet.cpp
+        Core/Graphics/IconSheet.hpp
         Core/Graphics/SimpleRect.hpp
+        Core/Graphics/Texture.cpp
+        Core/Graphics/Texture.hpp
+        Core/Graphics/FaceSheet.cpp
+        Core/Graphics/FaceSheet.hpp
+        Core/Graphics/image_loader.c
+        Core/Graphics/image_loader.h
+        Core/Graphics/stb_image.h
+        Core/Graphics/SideViewBattlerSheet.cpp
+        Core/Graphics/SideViewBattlerSheet.hpp
 
         Core/DatabaseEditor.cpp
         Core/DatabaseEditor.hpp
@@ -62,16 +73,6 @@ add_library(
         Core/CommonUI/ImagePicker.hpp
         Core/CommonUI/GridAtlasPicker.cpp
         Core/CommonUI/GridAtlasPicker.hpp
-
-        Core/Graphics/Texture.cpp
-        Core/Graphics/Texture.hpp
-        Core/Graphics/FaceSheet.cpp
-        Core/Graphics/FaceSheet.hpp
-        Core/Graphics/image_loader.c
-        Core/Graphics/image_loader.h
-        Core/Graphics/stb_image.h
-        Core/Graphics/SideViewBattlerSheet.cpp
-        Core/Graphics/SideViewBattlerSheet.hpp
 
         Core/ImGuiExt/ImGuiNotify.hpp
         Core/ImGuiExt/ImGuiParsedText.cpp

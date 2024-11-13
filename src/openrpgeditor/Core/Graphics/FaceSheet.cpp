@@ -1,4 +1,4 @@
-#include "Core/FaceSheet.hpp"
+#include "Core/Graphics/FaceSheet.hpp"
 #include "Core/ResourceManager.hpp"
 
 FaceSheet::FaceSheet(const std::string_view sheetName)

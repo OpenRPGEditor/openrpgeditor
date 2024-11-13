@@ -1,4 +1,4 @@
-#include "Dialog_BreakLoop.hpp"
+#include "Core/EventCommands/Dialog_BreakLoop.hpp"
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_BreakLoop::draw() {

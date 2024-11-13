@@ -1,4 +1,4 @@
-#include "Dialog_EraseEvent.hpp"
+#include "Core/EventCommands/Dialog_EraseEvent.hpp"
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_EraseEvent::draw() {

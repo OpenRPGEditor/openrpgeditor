@@ -1,4 +1,4 @@
-#include "Dialog_MovementChangeOpacity.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementChangeOpacity.hpp"
 #include <tuple>
 #include "imgui.h"
 #include "Core/Application.hpp"

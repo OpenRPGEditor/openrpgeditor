@@ -1,5 +1,5 @@
 #pragma once
-#include "Dialog_GameData.hpp"
+#include "Core/EventCommands/Dialog_GameData.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/CommandParser.hpp"

@@ -1,4 +1,4 @@
-#include "Dialog_SaveBGM.hpp"
+#include "Core/EventCommands/Dialog_SaveBGM.hpp"
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_SaveBGM::draw() {

@@ -2,7 +2,7 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ShopProcessing.hpp"
 #include "Core/Log.hpp"
-#include "Dialog_ShopProcessing_Goods.hpp"
+#include "Core/EventCommands/Dialog_ShopProcessing_Goods.hpp"
 
 struct Dialog_ShopProcessing : IEventDialogController {
   Dialog_ShopProcessing() = delete;

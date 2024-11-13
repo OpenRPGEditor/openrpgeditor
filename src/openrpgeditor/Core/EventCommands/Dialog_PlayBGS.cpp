@@ -1,7 +1,7 @@
-#include "Dialog_PlayBGS.hpp"
+#include "Core/EventCommands/Dialog_PlayBGS.hpp"
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/ImGuiUtils.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Log.hpp"
 using namespace std::string_view_literals;
 std::tuple<bool, bool> Dialog_PlayBGS::draw() {

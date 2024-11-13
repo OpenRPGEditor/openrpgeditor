@@ -3,9 +3,9 @@
 #include <vector>
 #include <algorithm>
 
-#include "Core/Texture.hpp"
-#include "Database/Map.hpp"
+#include "Core/Graphics/Texture.hpp"
 
+#include "Database/Map.hpp"
 #include "Database/Tilesets.hpp"
 #include "Database/TileHelper.hpp"
 

@@ -1,4 +1,4 @@
-#include "Dialog_MovementChangeSpeed.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.hpp"
 #include <tuple>
 #include "imgui.h"
 #include "Core/Application.hpp"

@@ -1,4 +1,4 @@
-#include "Dialog_ChangePluginCommand.hpp"
+#include "Core/EventCommands/Dialog_ChangePluginCommand.hpp"
 
 #include <tuple>
 #include "imgui.h"

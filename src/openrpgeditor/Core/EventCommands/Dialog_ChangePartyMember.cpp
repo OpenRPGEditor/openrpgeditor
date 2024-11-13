@@ -1,4 +1,4 @@
-#include "Dialog_ChangePartyMember.hpp"
+#include "Core/EventCommands/Dialog_ChangePartyMember.hpp"
 
 #include <tuple>
 #include "imgui.h"

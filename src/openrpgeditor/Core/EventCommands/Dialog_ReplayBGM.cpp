@@ -1,4 +1,4 @@
-#include "Dialog_ReplayBGM.hpp"
+#include "Core/EventCommands/Dialog_ReplayBGM.hpp"
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ReplayBGM::draw() {

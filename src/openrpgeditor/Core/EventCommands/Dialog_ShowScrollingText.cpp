@@ -1,4 +1,4 @@
-#include "Dialog_ShowScrollingText.hpp"
+#include "Core/EventCommands/Dialog_ShowScrollingText.hpp"
 
 #include <tuple>
 #include "imgui.h"

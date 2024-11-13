@@ -1,7 +1,8 @@
 #include "Core/EventEditor.hpp"
 
-#include "DPIHandler.hpp"
-#include "ImGuiUtils.hpp"
+#include "Core/DPIHandler.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+
 #include "Database/Event.hpp"
 #include "Database/EventPage.hpp"
 #include "Database/EventCommands/EventDummy.hpp"

@@ -1,4 +1,4 @@
-#include "Dialog_ChangeActorImages.hpp"
+#include "Core/EventCommands/Dialog_ChangeActorImages.hpp"
 #include <tuple>
 #include "imgui.h"
 #include "Core/Application.hpp"

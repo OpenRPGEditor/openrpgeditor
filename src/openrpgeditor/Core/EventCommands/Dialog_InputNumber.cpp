@@ -1,4 +1,4 @@
-#include "Dialog_InputNumber.hpp"
+#include "Core/EventCommands/Dialog_InputNumber.hpp"
 
 #include <tuple>
 #include "imgui.h"

@@ -1,7 +1,6 @@
-#include "Core/Image.hpp"
+#include "Core/Graphics/Image.hpp"
 
 #include "Core/ResourceManager.hpp"
-#include "Log.hpp"
 
 Image::Image(std::string_view imageName, int pickType, bool battleBack2 = false) {
   if (imageName.empty()) {

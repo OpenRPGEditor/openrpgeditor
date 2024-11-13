@@ -4,10 +4,10 @@
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/DatabaseEditor.hpp"
-#include "Core/ImGuiUtils.hpp"
 #include "Core/CommonUI/TraitsEditor.hpp"
-#include "Core/ImGuiParsedText.hpp"
-#include "Core/SideViewBattlerSheet.hpp"
+#include "Core/Graphics/SideViewBattlerSheet.hpp"
+#include "Core/ImGuiExt/ImGuiParsedText.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 
 DBActorsTab::DBActorsTab(Actors& actors, DatabaseEditor* parent) : IDBEditorTab(parent), m_actors(actors) {
   m_selectedActor = m_actors.actor(1);
@@ -148,7 +148,9 @@ void DBActorsTab::draw() {
             ImGui::EndGroup();
           }
           ImGui::EndGroup();
-          ImGui::BeginGroup();
+          ImGui::BeginChild("##orpg_actors_editor_actor_images", ImVec2(),
+                            ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_HorizontalScrollbar);
           {
             ImGui::SeparatorText("Images");
             const auto buttonSize = ImVec2{144, 144} * App::DPIHandler::get_ui_scale();
@@ -210,7 +212,7 @@ void DBActorsTab::draw() {
             }
             ImGui::EndGroup();
           }
-          ImGui::EndGroup();
+          ImGui::EndChild();
           ImGui::BeginGroup();
           {
             ImGui::SeparatorText("Initial Equipment");

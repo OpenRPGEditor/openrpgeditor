@@ -1,4 +1,4 @@
-#include "Dialog_SetWeatherEffect.hpp"
+#include "Core/EventCommands/Dialog_SetWeatherEffect.hpp"
 
 #include <tuple>
 #include "imgui.h"

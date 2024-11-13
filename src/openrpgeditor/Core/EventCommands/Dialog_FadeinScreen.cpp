@@ -1,4 +1,4 @@
-#include "Dialog_FadeinScreen.hpp"
+#include "Core/EventCommands/Dialog_FadeinScreen.hpp"
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_FadeinScreen::draw() {

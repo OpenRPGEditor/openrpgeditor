@@ -1,4 +1,4 @@
-#include "Dialog_Label.hpp"
+#include "Core/EventCommands/Dialog_Label.hpp"
 
 #include <tuple>
 #include "imgui.h"

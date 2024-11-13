@@ -2,9 +2,9 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/Plugin.hpp"
 #include "Database/EventCommands/ShowText.hpp"
-#include "Core/CheckerboardTexture.hpp"
+#include "Core/Graphics/CheckerboardTexture.hpp"
 #include "Core/CommonUI/CharacterPicker.hpp"
-#include "Core/FaceSheet.hpp"
+#include "Core/Graphics/FaceSheet.hpp"
 #include "Core/Log.hpp"
 
 struct Dialog_ShowText : IEventDialogController {

@@ -1,4 +1,4 @@
-#include "Dialog_ChangeMenuAccess.hpp"
+#include "Core/EventCommands/Dialog_ChangeMenuAccess.hpp"
 
 #include <tuple>
 #include "imgui.h"

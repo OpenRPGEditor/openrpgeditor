@@ -1,4 +1,4 @@
-#include "Dialog_ChangeParameter.hpp"
+#include "Core/EventCommands/Dialog_ChangeParameter.hpp"
 
 #include <tuple>
 #include "imgui.h"

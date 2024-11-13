@@ -1,4 +1,4 @@
-#include "Dialog_ChangePlayerFollowers.hpp"
+#include "Core/EventCommands/Dialog_ChangePlayerFollowers.hpp"
 
 #include <tuple>
 #include "imgui.h"

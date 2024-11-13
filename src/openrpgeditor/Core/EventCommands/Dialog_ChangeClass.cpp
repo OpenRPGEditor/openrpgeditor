@@ -1,4 +1,4 @@
-#include "Dialog_ChangeClass.hpp"
+#include "Core/EventCommands/Dialog_ChangeClass.hpp"
 
 #include <tuple>
 #include "imgui.h"

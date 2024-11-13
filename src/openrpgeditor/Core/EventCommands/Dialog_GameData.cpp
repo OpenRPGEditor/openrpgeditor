@@ -1,4 +1,4 @@
-#include "Dialog_GameData.hpp"
+#include "Core/EventCommands/Dialog_GameData.hpp"
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 using namespace std::string_view_literals;

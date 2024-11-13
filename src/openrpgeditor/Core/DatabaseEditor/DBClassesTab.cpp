@@ -1,10 +1,11 @@
 #include "Core/DatabaseEditor/DBClassesTab.hpp"
 
 #include "implot.h"
+#include "imgui_internal.h"
 #include "Core/Application.hpp"
 #include "Core/DPIHandler.hpp"
-#include "Core/ImGuiParsedText.hpp"
-#include "Core/ImGuiUtils.hpp"
+#include "Core/ImGuiExt/ImGuiParsedText.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Database/Classes.hpp"
 #include "Database/RPGEquations.hpp"
 
@@ -48,6 +49,7 @@ void DBClassesTab::drawExperienceGraph(ExperienceGraphMode mode) const {
     constexpr std::string_view red = "&push-color=255,0,0;";
     constexpr std::string_view green = "&push-color=0,255,0;";
     const std::string_view color = mode == ExperienceGraphMode::Total ? red : green;
+    ImGui::PushFont(App::APP->getMonoFont());
     for (int i = 0; i < 20; ++i) {
       std::string labelText = std::format(
           "L{:2}: {}{:7}&pop-color; L{:2}: {}{:7}&pop-color; L{:2}: {}{:7}&pop-color; L{:2}: {}{:7}&pop-color;",
@@ -59,6 +61,7 @@ void DBClassesTab::drawExperienceGraph(ExperienceGraphMode mode) const {
       }
       ImGui::TextParsed("%s", labelText.c_str());
     }
+    ImGui::PopFont();
   }
   ImGui::EndGroup();
 
@@ -81,7 +84,7 @@ void DBClassesTab::drawExpPopup() {
   if (ImGui::BeginPopupModal("EXP Curve##curve_dialog", nullptr,
                              ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings |
                                  ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_NoScrollbar)) {
+                                 ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar)) {
     if (ImGui::BeginTabBar("##exp_graph_tabbar")) {
       if (ImGui::BeginTabItem("To Next Level")) {
         drawExperienceGraph(ExperienceGraphMode::Next);
@@ -195,14 +198,15 @@ void DBClassesTab::draw() {
     ImGui::BeginChild("##orpg_classes_editor_classes_class_properties");
     {
       if (m_selectedClass) {
-        ImGui::BeginChild("##orpg_classes_class_panel_left", ImVec2{ImGui::GetContentRegionMax().x / 2, 0.f});
+        ImGui::BeginChild("##orpg_classes_class_panel_left", ImVec2{ImGui::GetContentRegionMax().x / 2, 0.f}, 0,
+                          ImGuiWindowFlags_HorizontalScrollbar);
         {
           ImGui::BeginGroup();
           {
             ImGui::SeparatorText("General Settings");
             char name[4096];
             strncpy(name, m_selectedClass->name.c_str(), 4096);
-            if (ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_name", "Name:", name, 4096,
+            if (ImGui::LabelOverLineEdit("##orpg_classes_editor_actors_actor_name", "Name:", name, 4096,
                                          (ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(16))) {
               m_selectedClass->name = name;
             }
@@ -221,7 +225,9 @@ void DBClassesTab::draw() {
             ImGui::EndGroup();
           }
           ImGui::EndGroup();
-          ImGui::BeginGroup();
+          ImGui::BeginChild("##orpg_classes_class_parameter_curves", ImVec2(),
+                            ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_HorizontalScrollbar);
           {
             ImGui::SeparatorText("Parameter Curves");
             if (ImPlot::BeginPlot("Max HP", ParameterGraphSize * App::DPIHandler::get_ui_scale(),
@@ -320,7 +326,7 @@ void DBClassesTab::draw() {
               ImPlot::EndPlot();
             }
           }
-          ImGui::EndGroup();
+          ImGui::EndChild();
           ImGui::BeginGroup();
           {
             ImGui::SeparatorText("Skills to Learn");

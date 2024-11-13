@@ -1,8 +1,9 @@
 #include "Core/CommonUI/EventCommandEditor.hpp"
+#include "Core/ImGuiExt/ImGuiParsedText.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+
 #include "Core/DPIHandler.hpp"
 #include "Core/Application.hpp"
-#include "Core/ImGuiParsedText.hpp"
-#include "Core/ImGuiUtils.hpp"
 
 #include "imgui.h"
 #include "imgui_internal.h"

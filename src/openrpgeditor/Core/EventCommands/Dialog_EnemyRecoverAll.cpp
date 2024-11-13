@@ -1,4 +1,4 @@
-#include "Dialog_EnemyRecoverAll.hpp"
+#include "Core/EventCommands/Dialog_EnemyRecoverAll.hpp"
 
 #include <tuple>
 #include "imgui.h"

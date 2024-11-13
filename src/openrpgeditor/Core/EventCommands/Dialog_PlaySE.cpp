@@ -1,8 +1,9 @@
-#include "Dialog_PlaySE.hpp"
+#include "Core/EventCommands/Dialog_PlaySE.hpp"
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/ImGuiUtils.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Log.hpp"
+
 using namespace std::string_view_literals;
 std::tuple<bool, bool> Dialog_PlaySE::draw() {
 

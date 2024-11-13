@@ -1,4 +1,4 @@
-#include "Dialog_ExitEventProcessing.hpp"
+#include "Core/EventCommands/Dialog_ExitEventProcessing.hpp"
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ExitEventProcessing::draw() {

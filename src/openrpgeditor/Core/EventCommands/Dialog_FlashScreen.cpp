@@ -1,4 +1,4 @@
-#include "Dialog_FlashScreen.hpp"
+#include "Core/EventCommands/Dialog_FlashScreen.hpp"
 
 #include <tuple>
 #include "imgui.h"

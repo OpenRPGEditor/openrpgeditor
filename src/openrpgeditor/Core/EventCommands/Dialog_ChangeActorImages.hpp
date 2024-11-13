@@ -2,11 +2,11 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/TextEditor.hpp"
 #include "Database/EventCommands/ChangeActorImage.hpp"
-#include "Core/CharacterSheet.hpp"
+#include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/CommonUI/CharacterPicker.hpp"
-#include "Core/FaceSheet.hpp"
+#include "Core/Graphics/FaceSheet.hpp"
 #include "Database/Actors.hpp"
-#include "Core/SideViewBattlerSheet.hpp"
+#include "Core/Graphics/SideViewBattlerSheet.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 
 struct Dialog_ChangeActorImages : IEventDialogController {

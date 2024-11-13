@@ -1,4 +1,4 @@
-#include "Dialog_ShowText.hpp"
+#include "Core/EventCommands/Dialog_ShowText.hpp"
 
 #include <tuple>
 #include "imgui.h"

@@ -1,4 +1,4 @@
-#include "Dialog_ErasePicture.hpp"
+#include "Core/EventCommands/Dialog_ErasePicture.hpp"
 
 #include <tuple>
 #include "imgui.h"

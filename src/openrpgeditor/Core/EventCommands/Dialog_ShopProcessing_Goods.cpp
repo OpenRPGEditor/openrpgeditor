@@ -1,4 +1,4 @@
-#include "Dialog_ShopProcessing_Goods.hpp"
+#include "Core/EventCommands/Dialog_ShopProcessing_Goods.hpp"
 
 #include <tuple>
 #include "imgui.h"

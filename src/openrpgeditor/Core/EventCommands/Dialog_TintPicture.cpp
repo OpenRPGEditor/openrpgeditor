@@ -1,4 +1,4 @@
-#include "Dialog_TintPicture.hpp"
+#include "Core/EventCommands/Dialog_TintPicture.hpp"
 
 #include <tuple>
 #include "imgui.h"

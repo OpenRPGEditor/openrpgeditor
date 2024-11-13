@@ -1,4 +1,4 @@
-#include "Dialog_ChangeMapDisplayName.hpp"
+#include "Core/EventCommands/Dialog_ChangeMapDisplayName.hpp"
 
 #include <tuple>
 #include "imgui.h"

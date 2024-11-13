@@ -1,4 +1,4 @@
-#include "Dialog_AbortBattle.hpp"
+#include "Core/EventCommands/Dialog_AbortBattle.hpp"
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_AbortBattle::draw() {

@@ -1,4 +1,4 @@
-#include "Dialog_TimerControl.hpp"
+#include "Core/EventCommands/Dialog_TimerControl.hpp"
 
 #include <tuple>
 #include "imgui.h"

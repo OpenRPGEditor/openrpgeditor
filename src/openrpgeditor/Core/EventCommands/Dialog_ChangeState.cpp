@@ -1,4 +1,4 @@
-#include "Dialog_ChangeState.hpp"
+#include "Core/EventCommands/Dialog_ChangeState.hpp"
 
 #include <tuple>
 #include "imgui.h"

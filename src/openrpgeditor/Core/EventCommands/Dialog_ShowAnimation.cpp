@@ -1,4 +1,4 @@
-#include "Dialog_ShowAnimation.hpp"
+#include "Core/EventCommands/Dialog_ShowAnimation.hpp"
 
 #include <tuple>
 #include "imgui.h"

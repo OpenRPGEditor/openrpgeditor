@@ -1,4 +1,4 @@
-#include "Dialog_ChangeVehicleImage.hpp"
+#include "Core/EventCommands/Dialog_ChangeVehicleImage.hpp"
 #include <tuple>
 #include "imgui.h"
 #include "Core/Application.hpp"

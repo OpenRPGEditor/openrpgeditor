@@ -1,4 +1,4 @@
-#include "Dialog_ChangeBattleBack.hpp"
+#include "Core/EventCommands/Dialog_ChangeBattleBack.hpp"
 
 #include <tuple>
 #include "imgui.h"

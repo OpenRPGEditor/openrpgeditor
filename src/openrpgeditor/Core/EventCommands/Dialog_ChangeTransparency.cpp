@@ -1,4 +1,4 @@
-#include "Dialog_ChangeTransparency.hpp"
+#include "Core/EventCommands/Dialog_ChangeTransparency.hpp"
 
 #include <tuple>
 #include "imgui.h"

@@ -1,9 +1,11 @@
 #pragma once
+
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/TextEditor.hpp"
-#include "Database/EventCommands/ChangeVehicleImage.hpp"
-#include "Core/CharacterSheet.hpp"
 #include "Core/CommonUI/CharacterPicker.hpp"
+#include "Core/Graphics/CharacterSheet.hpp"
+
+#include "Database/EventCommands/ChangeVehicleImage.hpp"
 
 struct Dialog_ChangeVehicleImage : IEventDialogController {
   Dialog_ChangeVehicleImage() = delete;

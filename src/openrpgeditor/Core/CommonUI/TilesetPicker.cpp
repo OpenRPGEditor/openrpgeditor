@@ -1,4 +1,4 @@
-#include "Core/TilesetPicker.hpp"
+#include "Core/CommonUI/TilesetPicker.hpp"
 #include "Core/Project.hpp"
 
 #include "imgui.h"

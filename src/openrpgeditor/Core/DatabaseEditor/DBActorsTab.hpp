@@ -1,8 +1,8 @@
 #pragma once
-#include "Core/CharacterSheet.hpp"
-#include "Core/CheckerboardTexture.hpp"
-#include "Core/FaceSheet.hpp"
-#include "Core/SideViewBattlerSheet.hpp"
+#include "Core/Graphics/CharacterSheet.hpp"
+#include "Core/Graphics/CheckerboardTexture.hpp"
+#include "Core/Graphics/FaceSheet.hpp"
+#include "Core/Graphics/SideViewBattlerSheet.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/CommonUI/TraitsEditor.hpp"
 #include "Database/Actors.hpp"

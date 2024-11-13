@@ -1,4 +1,4 @@
-#include "Dialog_StopSE.hpp"
+#include "Core/EventCommands/Dialog_StopSE.hpp"
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_StopSE::draw() {

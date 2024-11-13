@@ -1,4 +1,4 @@
-#include "Core/SideViewBattlerSheet.hpp"
+#include "Core/Graphics/SideViewBattlerSheet.hpp"
 #include "Core/ResourceManager.hpp"
 
 struct SVMotion {

@@ -1,4 +1,4 @@
-#include "Dialog_RecoverAll.hpp"
+#include "Core/EventCommands/Dialog_RecoverAll.hpp"
 
 #include <tuple>
 #include "imgui.h"

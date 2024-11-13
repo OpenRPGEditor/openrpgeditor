@@ -1,4 +1,4 @@
-#include "Dialog_OpenMenuScreen.hpp"
+#include "Core/EventCommands/Dialog_OpenMenuScreen.hpp"
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_OpenMenuScreen::draw() {

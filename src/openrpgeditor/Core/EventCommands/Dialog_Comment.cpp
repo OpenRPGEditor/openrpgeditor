@@ -1,4 +1,4 @@
-#include "Dialog_Comment.hpp"
+#include "Core/EventCommands/Dialog_Comment.hpp"
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"

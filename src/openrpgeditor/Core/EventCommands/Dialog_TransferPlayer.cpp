@@ -1,4 +1,4 @@
-#include "Dialog_TransferPlayer.hpp"
+#include "Core/EventCommands/Dialog_TransferPlayer.hpp"
 
 #include <tuple>
 #include "imgui.h"

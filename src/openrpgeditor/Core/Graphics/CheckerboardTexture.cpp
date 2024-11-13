@@ -1,4 +1,4 @@
-#include "Core/CheckerboardTexture.hpp"
+#include "Core/Graphics/CheckerboardTexture.hpp"
 #include "Core/Application.hpp"
 
 CheckerboardTexture::CheckerboardTexture(int width, int height, CellSizes cellSize, uint8_t evenColor, uint8_t oddColor)

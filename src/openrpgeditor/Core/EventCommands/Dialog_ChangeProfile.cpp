@@ -1,4 +1,4 @@
-#include "Dialog_ChangeProfile.hpp"
+#include "Core/EventCommands/Dialog_ChangeProfile.hpp"
 
 #include <tuple>
 #include "imgui.h"

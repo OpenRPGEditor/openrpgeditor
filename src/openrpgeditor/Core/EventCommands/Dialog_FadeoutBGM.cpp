@@ -1,4 +1,4 @@
-#include "Dialog_FadeoutBGM.hpp"
+#include "Core/EventCommands/Dialog_FadeoutBGM.hpp"
 
 #include <tuple>
 #include "imgui.h"

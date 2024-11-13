@@ -1,4 +1,4 @@
-#include "Dialog_ChangeNickname.hpp"
+#include "Core/EventCommands/Dialog_ChangeNickname.hpp"
 
 #include <tuple>
 #include "imgui.h"

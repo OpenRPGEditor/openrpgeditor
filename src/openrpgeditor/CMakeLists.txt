@@ -11,10 +11,10 @@ add_library(
         
         Core/Application.cpp
         Core/Application.hpp
-        Core/CharacterSheet.cpp
-        Core/CharacterSheet.hpp
-        Core/CheckerboardTexture.cpp
-        Core/CheckerboardTexture.hpp
+        Core/Graphics/CharacterSheet.cpp
+        Core/Graphics/CharacterSheet.hpp
+        Core/Graphics/CheckerboardTexture.cpp
+        Core/Graphics/CheckerboardTexture.hpp
         Core/DatabaseEditor.cpp
         Core/DatabaseEditor.hpp
         Core/DPIHandler.hpp
@@ -22,15 +22,6 @@ add_library(
         Core/EventEditor.hpp
         Core/EventListView.cpp
         Core/EventListView.hpp
-        Core/FaceSheet.cpp
-        Core/FaceSheet.hpp
-        Core/image_loader.c
-        Core/image_loader.h
-        Core/ImGuiNotify.hpp
-        Core/ImGuiParsedText.cpp
-        Core/ImGuiParsedText.hpp
-        Core/ImGuiUtils.cpp
-        Core/ImGuiUtils.hpp
         Core/Log.cpp
         Core/Log.hpp
         Core/MapEditor.cpp
@@ -44,20 +35,10 @@ add_library(
         Core/Resources.hpp
         Core/Settings.cpp
         Core/Settings.hpp
-        Core/SideViewBattlerSheet.cpp
-        Core/SideViewBattlerSheet.hpp
-        Core/stb_image.h
-        Core/TextParser.cpp
-        Core/TextParser.hpp
-        Core/Texture.cpp
-        Core/Texture.hpp
-        Core/TilesetPicker.cpp
-        Core/TilesetPicker.hpp
         Core/UndoStack.cpp
         Core/UndoStack.hpp
         Core/Window.cpp
         Core/Window.hpp
-
 
         Core/CommonUI/CharacterPicker.cpp
         Core/CommonUI/CharacterPicker.hpp
@@ -72,6 +53,30 @@ add_library(
         Core/CommonUI/TraitsEditor.hpp
         Core/CommonUI/VariableSwitchPicker.cpp
         Core/CommonUI/VariableSwitchPicker.hpp
+        Core/CommonUI/TilesetPicker.cpp
+        Core/CommonUI/TilesetPicker.hpp
+        Core/CommonUI/ImagePicker.cpp
+        Core/CommonUI/ImagePicker.hpp
+        Core/CommonUI/GridAtlasPicker.cpp
+        Core/CommonUI/GridAtlasPicker.hpp
+
+        Core/Graphics/Texture.cpp
+        Core/Graphics/Texture.hpp
+        Core/Graphics/FaceSheet.cpp
+        Core/Graphics/FaceSheet.hpp
+        Core/Graphics/image_loader.c
+        Core/Graphics/image_loader.h
+        Core/Graphics/stb_image.h
+        Core/Graphics/SideViewBattlerSheet.cpp
+        Core/Graphics/SideViewBattlerSheet.hpp
+
+        Core/ImGuiExt/ImGuiNotify.hpp
+        Core/ImGuiExt/ImGuiParsedText.cpp
+        Core/ImGuiExt/ImGuiParsedText.hpp
+        Core/ImGuiExt/ImGuiUtils.cpp
+        Core/ImGuiExt/ImGuiUtils.hpp
+        Core/ImGuiExt/TextParser.cpp
+        Core/ImGuiExt/TextParser.hpp
 
 
         Core/DatabaseEditor/DBActorsTab.cpp
@@ -102,11 +107,13 @@ add_library(
         Core/DatabaseEditor/DBTroopsTab.hpp
         Core/DatabaseEditor/DBWeaponsTab.cpp
         Core/DatabaseEditor/DBWeaponsTab.hpp
+        Core/DatabaseEditor/DBTemplatesTab.cpp
+        Core/DatabaseEditor/DBTemplatesTab.hpp
 
 
         Core/Debug/Instrumentor.hpp
 
-
+        Core/EventCommands/IEventDialogController.hpp
         Core/EventCommands/Dialog_AbortBattle.cpp
         Core/EventCommands/Dialog_AbortBattle.hpp
         Core/EventCommands/Dialog_BattleProcessing.cpp
@@ -303,12 +310,20 @@ add_library(
         Core/EventCommands/Dialog_TransferPlayer.hpp
         Core/EventCommands/Dialog_Wait.cpp
         Core/EventCommands/Dialog_Wait.hpp
-        Core/EventCommands/IEventDialogController.hpp
         Core/EventCommands/Dialog_ShowText.cpp
         Core/EventCommands/Dialog_ShowText.hpp
         Core/EventCommands/Dialog_ChangePluginCommand.cpp
         Core/EventCommands/Dialog_ChangePluginCommand.hpp
-
+        Core/EventCommands/Dialog_ConditionalBranch.cpp
+        Core/EventCommands/Dialog_ConditionalBranch.hpp
+        Core/EventCommands/Dialog_ShowChoice.cpp
+        Core/EventCommands/Dialog_ShowChoice.hpp
+        Core/EventCommands/Dialog_ShowScrollingText.cpp
+        Core/EventCommands/Dialog_ShowScrollingText.hpp
+        Core/EventCommands/Dialog_ShopProcessing.cpp
+        Core/EventCommands/Dialog_ShopProcessing.hpp
+        Core/EventCommands/Dialog_ShopProcessing_Goods.cpp
+        Core/EventCommands/Dialog_ShopProcessing_Goods.hpp
 
         Core/EventCommands/MovementRoute/Dialog_MovementChangeBlendMode.cpp
         Core/EventCommands/MovementRoute/Dialog_MovementChangeBlendMode.hpp
@@ -331,6 +346,7 @@ add_library(
         Core/EventCommands/MovementRoute/Dialog_MovementWait.cpp
         Core/EventCommands/MovementRoute/Dialog_MovementWait.hpp
 
+
         Core/EventEditor/EVPage.cpp
         Core/EventEditor/EVPage.hpp
 
@@ -342,26 +358,15 @@ add_library(
         #Core/MapEditor/MapProperties.hpp
         Core/MapEditor/MapRenderer.cpp
         Core/MapEditor/MapRenderer.hpp
-        Core/EventCommands/Dialog_ConditionalBranch.cpp
-        Core/EventCommands/Dialog_ConditionalBranch.hpp
-        Core/EventCommands/Dialog_ShowChoice.cpp
-        Core/EventCommands/Dialog_ShowChoice.hpp
-        Core/EventCommands/Dialog_ShowScrollingText.cpp
-        Core/EventCommands/Dialog_ShowScrollingText.hpp
-        Core/EventCommands/Dialog_ShopProcessing.cpp
-        Core/EventCommands/Dialog_ShopProcessing.hpp
-        Core/EventCommands/Dialog_ShopProcessing_Goods.cpp
-        Core/EventCommands/Dialog_ShopProcessing_Goods.hpp
-        Core/CommonUI/ImagePicker.cpp
-        Core/CommonUI/ImagePicker.hpp
-        Core/Image.cpp
-        Core/Image.hpp
+
+
+
+        Core/Graphics/Image.cpp
+        Core/Graphics/Image.hpp
         Core/NWJSVersionManager.cpp
         Core/NWJSVersionManager.hpp
         Core/DownloadManager.cpp
         Core/DownloadManager.hpp
-        Core/DatabaseEditor/DBTemplatesTab.cpp
-        Core/DatabaseEditor/DBTemplatesTab.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})

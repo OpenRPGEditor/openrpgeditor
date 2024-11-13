@@ -1,5 +1,7 @@
 #pragma once
-#include "Core/CharacterSheet.hpp"
+
+#include "Core/Graphics/CharacterSheet.hpp"
+
 #include "Database/Event.hpp"
 
 struct ImGuiWindow;

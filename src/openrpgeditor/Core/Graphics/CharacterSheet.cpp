@@ -1,4 +1,4 @@
-#include "Core/CharacterSheet.hpp"
+#include "Core/Graphics/CharacterSheet.hpp"
 
 #include "Core/ResourceManager.hpp"  }
 

@@ -1,4 +1,4 @@
-#include "Dialog_Wait.hpp"
+#include "Core/EventCommands/Dialog_Wait.hpp"
 
 #include <tuple>
 #include "imgui.h"

@@ -1,4 +1,4 @@
-#include "Dialog_ChangeEncounter.hpp"
+#include "Core/EventCommands/Dialog_ChangeEncounter.hpp"
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"

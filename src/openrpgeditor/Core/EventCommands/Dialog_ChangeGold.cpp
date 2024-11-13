@@ -1,4 +1,4 @@
-#include "Dialog_ChangeGold.hpp"
+#include "Core/EventCommands/Dialog_ChangeGold.hpp"
 
 #include <tuple>
 #include "imgui.h"

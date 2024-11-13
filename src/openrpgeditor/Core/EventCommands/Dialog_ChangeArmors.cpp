@@ -1,4 +1,4 @@
-#include "Dialog_ChangeArmors.hpp"
+#include "Core/EventCommands/Dialog_ChangeArmors.hpp"
 
 #include <tuple>
 #include "imgui.h"

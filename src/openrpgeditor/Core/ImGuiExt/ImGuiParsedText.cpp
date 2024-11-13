@@ -1,6 +1,7 @@
-#include "Core/ImGuiParsedText.hpp"
+#include "Core/ImGuiExt/ImGuiParsedText.hpp"
+#include "Core/ImGuiExt/TextParser.hpp"
+
 #include "imgui_internal.h"
-#include "Core/TextParser.hpp"
 
 namespace ImGui {
 static const int kMaxChar = 10000;

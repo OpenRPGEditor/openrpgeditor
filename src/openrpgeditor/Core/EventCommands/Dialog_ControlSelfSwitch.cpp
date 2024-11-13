@@ -1,4 +1,4 @@
-#include "Dialog_ControlSelfSwitch.hpp"
+#include "Core/EventCommands/Dialog_ControlSelfSwitch.hpp"
 
 #include <tuple>
 #include "imgui.h"

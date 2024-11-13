@@ -1,4 +1,4 @@
-#include "Dialog_ChangeParallax.hpp"
+#include "Core/EventCommands/Dialog_ChangeParallax.hpp"
 
 #include <tuple>
 #include "imgui.h"

@@ -1,10 +1,10 @@
 #include "Core/MapEditor/MapEvent.hpp"
 
 #include "Core/MapEditor.hpp"
-
-#include "Core/Texture.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/Project.hpp"
+
+#include "Core/Graphics/Texture.hpp"
 
 #include "imgui.h"
 #include "imgui_internal.h"

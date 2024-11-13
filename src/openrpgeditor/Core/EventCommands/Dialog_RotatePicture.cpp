@@ -1,4 +1,4 @@
-#include "Dialog_RotatePicture.hpp"
+#include "Core/EventCommands/Dialog_RotatePicture.hpp"
 
 #include <tuple>
 #include "imgui.h"

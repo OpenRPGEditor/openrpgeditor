@@ -1,4 +1,4 @@
-#include "Dialog_NameInputProcessing.hpp"
+#include "Core/EventCommands/Dialog_NameInputProcessing.hpp"
 
 #include <tuple>
 #include "imgui.h"

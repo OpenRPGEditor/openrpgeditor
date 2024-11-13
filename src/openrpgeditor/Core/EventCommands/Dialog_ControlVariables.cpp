@@ -1,7 +1,7 @@
 
-#include "Dialog_ControlVariables.hpp"
+#include "Core/EventCommands/Dialog_ControlVariables.hpp"
 #include "Database/Database.hpp"
-#include "Dialog_GameData.hpp"
+#include "Core/EventCommands/Dialog_GameData.hpp"
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"

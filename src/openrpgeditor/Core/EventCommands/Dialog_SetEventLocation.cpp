@@ -1,4 +1,4 @@
-#include "Dialog_SetEventLocation.hpp"
+#include "Core/EventCommands/Dialog_SetEventLocation.hpp"
 
 #include <tuple>
 #include "imgui.h"

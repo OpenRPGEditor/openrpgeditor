@@ -1,9 +1,9 @@
-#include "Dialog_PlayMovie.hpp"
+#include "Core/EventCommands/Dialog_PlayMovie.hpp"
 
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Core/ImGuiUtils.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 
 std::tuple<bool, bool> Dialog_PlayMovie::draw() {
   if (IsOpen()) {

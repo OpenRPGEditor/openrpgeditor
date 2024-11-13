@@ -1,11 +1,13 @@
 #pragma once
 
 #include "Core/CommonUI/IDialogController.hpp"
-#include "Core/Texture.hpp"
-#include "Core/CheckerboardTexture.hpp"
-#include "Database/Globals.hpp"
-#include "Core/Image.hpp"
+#include "Core/Graphics/Texture.hpp"
+#include "Core/Graphics/CheckerboardTexture.hpp"
+#include "Core/Graphics/Image.hpp"
 #include "Core/Log.hpp"
+
+#include "Database/Globals.hpp"
+
 struct Image;
 struct ImagePicker : IDialogController {
     enum class PickerMode {

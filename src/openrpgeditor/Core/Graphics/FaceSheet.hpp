@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Texture.hpp"
+#include "Core/Graphics/Texture.hpp"
 struct Face {
   float u0;
   float v0;

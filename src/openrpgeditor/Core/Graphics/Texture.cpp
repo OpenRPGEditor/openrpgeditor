@@ -1,6 +1,6 @@
-#include "Core/Texture.hpp"
+#include "Core/Graphics/Texture.hpp"
 #include "Core/Application.hpp"
-#include "Core/image_loader.h"
+#include "Core/Graphics/image_loader.h"
 #include "SDL2/SDL.h"
 
 #include <iostream>

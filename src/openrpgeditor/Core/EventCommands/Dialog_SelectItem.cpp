@@ -1,4 +1,4 @@
-#include "Dialog_SelectItem.hpp"
+#include "Core/EventCommands/Dialog_SelectItem.hpp"
 
 #include <tuple>
 #include "imgui.h"

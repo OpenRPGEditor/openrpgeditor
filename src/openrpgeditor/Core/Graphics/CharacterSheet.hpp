@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Texture.hpp"
+#include "Core/Graphics/Texture.hpp"
 #include "Database/Globals.hpp"
 
 struct CharacterUV {

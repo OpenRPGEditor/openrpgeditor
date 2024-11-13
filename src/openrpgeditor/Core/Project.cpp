@@ -13,8 +13,8 @@
 #include <shellapi.h>
 #endif
 
-#include "ImGuiNotify.hpp"
-#include "ImGuiUtils.hpp"
+#include "Core/ImGuiExt/ImGuiNotify.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "nfd.h"
 
 #include <fstream>

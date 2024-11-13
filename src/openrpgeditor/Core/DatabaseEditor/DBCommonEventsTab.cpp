@@ -5,11 +5,12 @@
 #include "Core/Application.hpp"
 #include "Core/DPIHandler.hpp"
 #include "Core/DatabaseEditor.hpp"
-#include "Core/ImGuiUtils.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+
+#include <Core/Utils.hpp>
+
 #include "Database/System.hpp"
 
-#include <Core/ImGuiParsedText.hpp>
-#include <Core/Utils.hpp>
 #include <string>
 
 DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor* parent)

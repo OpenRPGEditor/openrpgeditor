@@ -1,5 +1,5 @@
 
-#include "Dialog_ControlSwitches.hpp"
+#include "Core/EventCommands/Dialog_ControlSwitches.hpp"
 #include "imgui.h"
 #include "Database/Database.hpp"
 #include "Core/DPIHandler.hpp"

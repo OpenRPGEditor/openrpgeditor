@@ -1,4 +1,4 @@
-#include "Dialog_ChangeWeapons.hpp"
+#include "Core/EventCommands/Dialog_ChangeWeapons.hpp"
 
 #include <tuple>
 #include "imgui.h"

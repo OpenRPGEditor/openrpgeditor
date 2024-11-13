@@ -1,4 +1,4 @@
-#include "Dialog_MovePicture.hpp"
+#include "Core/EventCommands/Dialog_MovePicture.hpp"
 
 #include <tuple>
 #include "imgui.h"

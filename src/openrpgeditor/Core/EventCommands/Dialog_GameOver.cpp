@@ -1,4 +1,4 @@
-#include "Dialog_GameOver.hpp"
+#include "Core/EventCommands/Dialog_GameOver.hpp"
 
 #include "Core/Log.hpp"
 

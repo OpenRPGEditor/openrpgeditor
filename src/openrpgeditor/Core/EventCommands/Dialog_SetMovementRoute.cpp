@@ -1,10 +1,10 @@
-#include "Dialog_SetMovementRoute.hpp"
+#include "Core/EventCommands/Dialog_SetMovementRoute.hpp"
 
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Database/Database.hpp"
-#include "Core/ImGuiUtils.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Database/EventCommands/MovementRoute/MoveDown.hpp"
 #include "Database/EventCommands/MovementRoute/MoveLeft.hpp"
 #include "Database/EventCommands/MovementRoute/MoveRight.hpp"
@@ -51,7 +51,7 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeOpacity.hpp"
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeBlendMode.hpp"
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeImage.hpp"
-#include "Dialog_PlaySE.hpp"
+#include "Core/EventCommands/Dialog_PlaySE.hpp"
 
 std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
   if (IsOpen()) {

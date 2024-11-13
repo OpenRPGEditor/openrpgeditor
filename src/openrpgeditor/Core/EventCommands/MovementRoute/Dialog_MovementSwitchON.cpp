@@ -1,4 +1,4 @@
-#include "Dialog_MovementSwitchON.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementSwitchON.hpp"
 #include "Core/Log.hpp"
 
 std::tuple<bool, bool> Dialog_MovementSwitchON::draw() {

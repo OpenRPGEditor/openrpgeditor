@@ -1,23 +1,23 @@
 #pragma once
 
-#include "DatabaseEditor.hpp"
-#include "EventListView.hpp"
-#include "MapEditor.hpp"
-#include "MapListView.hpp"
-#include "NWJSVersionManager.hpp"
-#include "TilesetPicker.hpp"
-#include "UndoStack.hpp"
-#include "CommonUI/CharacterPicker.hpp"
-#include "CommonUI/ObjectPicker.hpp"
-
-#include <string_view>
-#include <string>
+#include "Core/DatabaseEditor.hpp"
+#include "Core/EventListView.hpp"
+#include "Core/MapEditor.hpp"
+#include "Core/MapListView.hpp"
+#include "Core/NWJSVersionManager.hpp"
+#include "Core/UndoStack.hpp"
 #include "Core/ResourceManager.hpp"
-#include "Core/CommonUI/TextEditor.hpp"
 #include "Core/EventEditor.hpp"
+
+#include "Core/CommonUI/TilesetPicker.hpp"
+#include "Core/CommonUI/ObjectPicker.hpp"
+#include "Core/CommonUI/TextEditor.hpp"
 
 #include "Database/Database.hpp"
 #include "Database/MapInfos.hpp"
+
+#include <string_view>
+#include <string>
 
 enum class EditMode {
   Map,

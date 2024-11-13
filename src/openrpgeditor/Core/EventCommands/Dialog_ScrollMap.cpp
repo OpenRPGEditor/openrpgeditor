@@ -1,4 +1,4 @@
-#include "Dialog_ScrollMap.hpp"
+#include "Core/EventCommands/Dialog_ScrollMap.hpp"
 
 #include <tuple>
 #include "imgui.h"

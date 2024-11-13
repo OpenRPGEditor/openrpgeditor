@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 
-#include "Core/Texture.hpp"
+#include "Core/Graphics/Texture.hpp"
 
 #include "Database/Map.hpp"
 

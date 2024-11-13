@@ -17,7 +17,7 @@ private:
   Skills& m_skills;
   Skill* m_selectedSkill{};
   int m_maxSkills{};
-  int m_editMaxSkills;
+  int m_editMaxSkills{};
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;

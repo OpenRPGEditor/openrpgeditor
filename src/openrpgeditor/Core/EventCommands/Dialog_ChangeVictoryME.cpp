@@ -1,7 +1,10 @@
-#include "Dialog_ChangeVictoryME.hpp"
+#include "Core/EventCommands/Dialog_ChangeVictoryME.hpp"
+
 #include "imgui.h"
+
 #include "Core/DPIHandler.hpp"
-#include "Core/ImGuiUtils.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+
 using namespace std::string_view_literals;
 std::tuple<bool, bool> Dialog_ChangeVictoryME::draw() {
 

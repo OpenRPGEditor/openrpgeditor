@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Core/CharacterSheet.hpp"
+#include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/CommonUI/IDialogController.hpp"
-#include "Core/Texture.hpp"
-#include "Core/CheckerboardTexture.hpp"
+#include "Core/Graphics/CheckerboardTexture.hpp"
 #include "Database/Globals.hpp"
 
 struct CharacterPicker : IDialogController {

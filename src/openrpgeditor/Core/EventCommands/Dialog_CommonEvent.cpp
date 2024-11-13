@@ -1,5 +1,5 @@
 
-#include "Dialog_CommonEvent.hpp"
+#include "Core/EventCommands/Dialog_CommonEvent.hpp"
 #include "imgui.h"
 #include "Core/Log.hpp"
 

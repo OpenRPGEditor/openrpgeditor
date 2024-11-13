@@ -3,7 +3,7 @@
 #include "Core/DPIHandler.hpp"
 #include "Core/Project.hpp"
 
-#include "ImGuiUtils.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 
 #include "imgui_internal.h"
 #include "imgui.h"
@@ -204,7 +204,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
         ImGui::IsKeyReleased(ImGuiKey_RightShift)) ||
        ImGui::IsMouseReleased(ImGuiMouseButton_Left)) &&
       m_parent->editMode() == EditMode::Event) {
-    /* If we have a selected actor and it's no longer in it's original location, push it onto the undo stack
+    /* If we have a selected actor, and it's no longer in its original location, push it onto the undo stack
      * as an operation
      */
     if (m_movingEvent != nullptr && (m_movingEvent->x != m_movingEventX || m_movingEvent->y != m_movingEventY)) {

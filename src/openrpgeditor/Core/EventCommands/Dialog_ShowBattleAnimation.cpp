@@ -1,4 +1,4 @@
-#include "Dialog_ShowBattleAnimation.hpp"
+#include "Core/EventCommands/Dialog_ShowBattleAnimation.hpp"
 
 #include <tuple>
 #include "imgui.h"

@@ -1,4 +1,4 @@
-#include "Dialog_ChangeWindowColor.hpp"
+#include "Core/EventCommands/Dialog_ChangeWindowColor.hpp"
 
 #include <tuple>
 #include "imgui.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CheckerboardTexture.hpp"
+#include "Core/Graphics/CheckerboardTexture.hpp"
 #include "Core/MapEditor/MapRenderer.hpp"
 #include "Core/MapEditor/MapEvent.hpp"
 

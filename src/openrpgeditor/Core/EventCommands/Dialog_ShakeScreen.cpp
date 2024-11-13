@@ -1,4 +1,4 @@
-#include "Dialog_ShakeScreen.hpp"
+#include "Core/EventCommands/Dialog_ShakeScreen.hpp"
 
 #include <tuple>
 #include "imgui.h"

@@ -1,4 +1,4 @@
-#include "Dialog_ChangeTP.hpp"
+#include "Core/EventCommands/Dialog_ChangeTP.hpp"
 
 #include <tuple>
 #include "imgui.h"

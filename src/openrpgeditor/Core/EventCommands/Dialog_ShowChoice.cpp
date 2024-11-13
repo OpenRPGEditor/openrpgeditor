@@ -1,6 +1,6 @@
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
-#include "Dialog_ShowChoice.hpp"
+#include "Core/EventCommands/Dialog_ShowChoice.hpp"
 #include <tuple>
 #include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"

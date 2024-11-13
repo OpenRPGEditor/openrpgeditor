@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Texture.hpp"
+#include "Core/Graphics/Texture.hpp"
 #include <array>
 #include <string_view>
 

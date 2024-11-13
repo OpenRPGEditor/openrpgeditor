@@ -1,4 +1,4 @@
-#include "Dialog_FadeoutScreen.hpp"
+#include "Core/EventCommands/Dialog_FadeoutScreen.hpp"
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_FadeoutScreen::draw() {

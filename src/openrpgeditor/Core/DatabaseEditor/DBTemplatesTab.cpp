@@ -1,6 +1,6 @@
 #include "Core/DatabaseEditor/DBTemplatesTab.hpp"
 #include "imgui.h"
-#include "Core/ImGuiNotify.hpp"
+#include "Core/ImGuiExt/ImGuiNotify.hpp"
 #include "misc/cpp/imgui_stdlib.h"
 #include "Core/Project.hpp"
 #include "Core/DatabaseEditor.hpp"

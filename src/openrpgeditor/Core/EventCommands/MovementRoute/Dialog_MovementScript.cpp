@@ -1,4 +1,4 @@
-#include "Dialog_MovementScript.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementScript.hpp"
 #include <tuple>
 #include "imgui.h"
 #include "Core/Application.hpp"

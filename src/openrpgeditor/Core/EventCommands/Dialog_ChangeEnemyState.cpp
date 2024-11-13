@@ -1,4 +1,4 @@
-#include "Dialog_ChangeEnemyState.hpp"
+#include "Core/EventCommands/Dialog_ChangeEnemyState.hpp"
 
 #include <tuple>
 #include "imgui.h"

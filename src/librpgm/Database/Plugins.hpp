@@ -5,8 +5,8 @@
 #include "nlohmann/json.hpp"
 
 struct Plugin {
-  friend void to_json(nlohmann::json& to, const Plugin& plugin);
-  friend void from_json(const nlohmann::json& from, Plugin& plugin);
+  friend void to_json(nlohmann::ordered_json& to, const Plugin& plugin);
+  friend void from_json(const nlohmann::ordered_json& from, Plugin& plugin);
 
   std::string name;
   bool status{true};

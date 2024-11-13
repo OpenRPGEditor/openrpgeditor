@@ -7,8 +7,12 @@ void to_json(nlohmann::ordered_json& to, const Plugin& plugin) {
         {"description", plugin.description},
         {"parameters", nlohmann::json{}}};
 
-  for (const auto& parameter : plugin.parameters) {
-    to["parameters"][parameter.first] = parameter.second;
+  if (!plugin.parameters.empty()) {
+    for (const auto& parameter : plugin.parameters) {
+      to["parameters"][parameter.first] = parameter.second;
+    }
+  } else {
+    to["parameters"] = nlohmann::ordered_json({});
   }
 }
 

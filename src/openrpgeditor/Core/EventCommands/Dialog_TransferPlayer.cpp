@@ -44,6 +44,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
                       ImVec2{(App::DPIHandler::scale_value(300)), 0})) {
       // TODO: Coordinate selector
     }
+    ImGui::PopID();
     ImGui::EndDisabled();
 
     ImGui::RadioButton("Designation with variables", &m_mode, 1);
@@ -56,8 +57,8 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
       ImGui::Text("X:");
       ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 6.f);
       ImGui::Text("Y:");
-      ImGui::EndGroup();
     }
+    ImGui::EndGroup();
     ImGui::SameLine();
     ImGui::BeginGroup();
     {
@@ -86,8 +87,8 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
       }
       ImGui::PopID();
       ImGui::EndDisabled();
-      ImGui::EndGroup();
     }
+    ImGui::EndGroup();
 
     ImGui::Separator();
     ImGui::BeginGroup();
@@ -106,8 +107,8 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
         }
         ImGui::EndCombo();
       }
-      ImGui::EndGroup();
     }
+    ImGui::EndGroup();
     ImGui::SameLine();
     ImGui::SetCursorPosY(ImGui::GetCursorPos().y - 3.f);
     ImGui::BeginGroup();
@@ -125,8 +126,8 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
         }
         ImGui::EndCombo();
       }
-      ImGui::EndGroup();
     }
+    ImGui::EndGroup();
     if (ImGui::Button("OK")) {
       m_confirmed = true;
 

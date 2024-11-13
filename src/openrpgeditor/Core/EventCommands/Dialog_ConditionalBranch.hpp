@@ -114,6 +114,7 @@ struct Dialog_ConditionalBranch : IEventDialogController {
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
   std::vector<std::shared_ptr<IEventCommand>> getBatchCommands() override {
+    std::vector<std::shared_ptr<IEventCommand>> eventCommands;
     std::shared_ptr<IEventCommand> sharedCommand = getCommand();
     eventCommands.push_back(sharedCommand);
 
@@ -173,7 +174,6 @@ private:
   int m_button_selection{0};
   std::string m_script;
   bool m_elseBranch{false};
-  std::vector<std::shared_ptr<IEventCommand>> eventCommands;
   std::shared_ptr<ConditionalBranchCommand> command;
   std::optional<VariableSwitchPicker> picker;
   std::optional<ObjectPicker<Actor>> actor_picker;

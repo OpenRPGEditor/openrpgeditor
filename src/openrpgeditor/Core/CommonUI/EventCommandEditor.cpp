@@ -8,6 +8,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "Core/Log.hpp"
+#include "Database/EventCommands/RepeatAbove.hpp"
 
 #include <iostream>
 #include <vector>
@@ -39,7 +40,8 @@ void EventCommandEditor::draw() {
       if (m_commands) {
         ImGui::PushFont(App::APP->getMonoFont());
         for (int n = 0; n < m_commands->size(); n++) {
-          const bool isSelected = (m_selectedCommand == n);
+          const bool isSelected =
+              (m_selectedCommand == n || (m_selectedEnd != -1 && n > m_selectedCommand && n <= m_selectedEnd));
           std::string indentPad = m_commands->at(n)->stringRep(m_project->database());
           auto str = splitString(indentPad, '\n');
           float height = 0.f;
@@ -60,19 +62,47 @@ void EventCommandEditor::draw() {
                                                 ImGuiSelectableFlags_AllowDoubleClick,
                                             ImVec2(0, height))) {
               if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                m_selectedCommand = n;
-
                 if (m_commands->at(n)->code() == EventCode::Event_Dummy) {
                   m_isNewEntry = true;
                   ImGui::OpenPopup("Command Window");
                 } else {
                   m_isNewEntry = false;
-                  commandDialog = CreateCommandDialog(m_commands->at(n)->code(), m_commands->at(n));
-                  commandDialog->SetOpen(true);
-                  ImGui::OpenPopup("Command Window");
+                  /* These are generated automatically based on their related event command dialogs */
+                  if (m_commands->at(n)->code() != EventCode::Repeat_Above &&
+                      m_commands->at(n)->code() != EventCode::Else && m_commands->at(n)->code() != EventCode::End) {
+                    commandDialog = CreateCommandDialog(m_commands->at(n)->code(), m_commands->at(n));
+                    commandDialog->SetOpen(true);
+                    // ImGui::OpenPopup("Command Window");
+                  }
                 }
               }
               m_selectedCommand = n;
+              if (m_commands->at(n)->code() == EventCode::Loop) {
+                int j = n + 1;
+                while (true) {
+                  if ((m_commands->at(j)->code() == EventCode::Repeat_Above &&
+                       *m_commands->at(j)->indent == *m_commands->at(n)->indent) ||
+                      j >= m_commands->size()) {
+                    break;
+                  }
+                  ++j;
+                }
+                m_selectedEnd = j;
+              } else if (m_commands->at(n)->code() == EventCode::Repeat_Above) {
+                m_selectedEnd = n;
+                int j = n - 1;
+                while (true) {
+                  if ((m_commands->at(j)->code() == EventCode::Loop &&
+                       *m_commands->at(j)->indent == *m_commands->at(n)->indent) ||
+                      j < 0) {
+                    break;
+                  }
+                  --j;
+                }
+                m_selectedCommand = j;
+              } else {
+                m_selectedEnd = -1;
+              }
             }
             if (ImGui::IsItemHovered()) {
               m_hoveringCommand = n;
@@ -104,12 +134,100 @@ void EventCommandEditor::draw() {
         ImGui::OpenPopup("Command Window");
 
       drawPopup();
+
+      // We don't want to draw this if the command window is open, or they'll conflict with each other
+      if (!ImGui::IsPopupOpen("Command Window")) {
+        drawCommandDialog();
+      }
+
       ImGui::EndTable();
     }
   }
   ImGui::EndGroup();
 }
 
+void EventCommandEditor::drawCommandDialog() {
+  if (commandDialog) {
+    auto [closed, confirmed] = commandDialog->draw();
+    if (!commandDialog->getParentIndent().has_value()) {
+      commandDialog->setParentIndent(m_commands->at(m_selectedCommand)->indent.value());
+      commandDialog->getCommand()->indent = commandDialog->getParentIndent().value();
+    }
+
+    if (confirmed) {
+      if (m_isNewEntry) {
+        std::vector<std::shared_ptr<IEventCommand>> cmds = commandDialog->getBatchCommands();
+        if (cmds.empty()) {
+          auto select = m_commands->insert(m_commands->begin() + m_selectedCommand, commandDialog->getCommand());
+          m_selectedCommand = select - m_commands->begin();
+          m_selectedEnd = -1;
+        } else {
+          for (auto cmd : cmds) {
+            auto selection = m_commands->insert(m_commands->begin() + m_selectedCommand, cmd);
+            m_selectedCommand = (selection + 1) - m_commands->begin();
+          }
+        }
+        m_isNewEntry = false;
+      } else {
+        if (std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand())) {
+          std::shared_ptr<ShowChoiceCommand> commandPointer =
+              std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand());
+
+          for (auto choice : commandPointer->choices) {
+            APP_INFO("Choice Print: " + choice);
+          }
+          EventCode code = commandDialog->getCommand()->code();
+          int whenIndex{0};
+          int deletionIndex{0};
+          bool isDeletion{false};
+          int choiceSize = commandPointer->choices.size();
+          APP_INFO(std::to_string(choiceSize));
+          for (int i = m_selectedCommand; i < m_commands->size(); i++) {
+            if (m_commands->at(i)->code() == EventCode::End_del_ShowChoices) {
+              if (choiceSize > whenIndex) {
+                int numberOfWhens = choiceSize - whenIndex;
+                APP_INFO("Found more options... need to make more whens: " + std::to_string(numberOfWhens));
+                for (int z{0}; z < numberOfWhens; z++) {
+                  for (auto cmd : commandDialog->getTemplateCommands(EventCode::When_Selected, whenIndex)) {
+                    m_commands->insert(m_commands->begin() + (i - 1), cmd);
+                  }
+                }
+              }
+
+              if (isDeletion) {
+                APP_INFO("isDeletion...");
+                APP_INFO("Deletion index... " + std::to_string(deletionIndex));
+                APP_INFO(DecodeEnumName(m_commands->at(deletionIndex)->code()));
+                APP_INFO(DecodeEnumName(m_commands->at(i - 1)->code()));
+                m_commands->erase(m_commands->begin() + (deletionIndex - 1), m_commands->begin() + (i - 1));
+                break;
+              }
+            }
+
+            if (m_commands->at(i)->code() == EventCode::When_Selected) {
+              if (whenIndex < commandPointer->choices.size()) {
+                std::shared_ptr<WhenSelectedCommand> when =
+                    std::static_pointer_cast<WhenSelectedCommand>(m_commands->at(i));
+
+                when->choice = commandPointer->choices.at(whenIndex);
+                when->param1 = whenIndex;
+
+                whenIndex++;
+              } else {
+                if (!isDeletion) {
+                  isDeletion = true;
+                  deletionIndex = i;
+                }
+              }
+            }
+          }
+        }
+      }
+      commandDialog.reset();
+      ImGui::CloseCurrentPopup();
+    }
+  }
+}
 void EventCommandEditor::drawPopup() {
   if (m_selectedCommand < 0) {
     return;
@@ -619,85 +737,7 @@ void EventCommandEditor::drawPopup() {
           ImGui::EndCombo();
         }
 
-        if (commandDialog) {
-          auto [closed, confirmed] = commandDialog->draw();
-          if (!commandDialog->getParentIndent().has_value()) {
-            commandDialog->setParentIndent(m_commands->at(m_selectedCommand)->indent.value());
-            commandDialog->getCommand()->indent = commandDialog->getParentIndent().value();
-          }
-
-          if (confirmed) {
-            if (m_isNewEntry) {
-              std::vector<std::shared_ptr<IEventCommand>> cmds = commandDialog->getBatchCommands();
-              if (cmds.empty()) {
-                auto select = m_commands->insert(m_commands->begin() + m_selectedCommand, commandDialog->getCommand());
-                m_selectedCommand = select - m_commands->begin();
-              } else {
-                for (auto cmd : cmds) {
-                  auto selection = m_commands->insert(m_commands->begin() + m_selectedCommand, cmd);
-                  m_selectedCommand = (selection + 1) - m_commands->begin();
-                }
-              }
-              m_isNewEntry = false;
-            } else {
-              if (std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand())) {
-                std::shared_ptr<ShowChoiceCommand> commandPointer = std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand());
-
-                for (auto choice : commandPointer->choices) {
-                  APP_INFO("Choice Print: " + choice);
-                }
-                EventCode code = commandDialog->getCommand()->code();
-                int whenIndex{0};
-                int deletionIndex{0};
-                bool isDeletion{false};
-                int choiceSize =
-                    commandPointer->choices.size();
-                APP_INFO(std::to_string(choiceSize));
-                for (int i = m_selectedCommand; i < m_commands->size(); i++) {
-                  if (m_commands->at(i)->code() == EventCode::End_del_ShowChoices) {
-                    if (choiceSize > whenIndex) {
-                      int numberOfWhens = choiceSize - whenIndex;
-                      APP_INFO("Found more options... need to make more whens: " + std::to_string(numberOfWhens));
-                      for (int z{0}; z < numberOfWhens; z++) {
-                        for (auto cmd : commandDialog->getTemplateCommands(EventCode::When_Selected, whenIndex)) {
-                          m_commands->insert(m_commands->begin() + (i - 1), cmd);
-                        }
-                      }
-                    }
-
-                    if (isDeletion) {
-                      APP_INFO("isDeletion...");
-                      APP_INFO("Deletion index... " + std::to_string(deletionIndex));
-                      APP_INFO(DecodeEnumName(m_commands->at(deletionIndex)->code()));
-                      APP_INFO(DecodeEnumName(m_commands->at(i-1)->code()));
-                      m_commands->erase(m_commands->begin() + (deletionIndex - 1), m_commands->begin() + (i - 1));
-                      break;
-                    }
-                  }
-
-                  if (m_commands->at(i)->code() == EventCode::When_Selected) {
-                    if (whenIndex < commandPointer->choices.size()) {
-                      std::shared_ptr<WhenSelectedCommand> when = std::static_pointer_cast<WhenSelectedCommand>(m_commands->at(i));
-
-                      when->choice = commandPointer->choices.at(whenIndex);
-                      when->param1 = whenIndex;
-
-                      whenIndex++;
-                    }
-                    else {
-                      if (!isDeletion) {
-                        isDeletion = true;
-                        deletionIndex = i;
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            commandDialog.reset();
-            ImGui::CloseCurrentPopup();
-          }
-        }
+        drawCommandDialog();
 
         ImGui::EndTabBar();
       }
@@ -707,8 +747,7 @@ void EventCommandEditor::drawPopup() {
     if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))) {
       if (commandDialog) {
         commandDialog.reset();
-      }
-      else {
+      } else {
         m_isNewEntry = false;
         m_selectedCommand = 0;
         ImGui::CloseCurrentPopup();

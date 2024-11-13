@@ -1,6 +1,6 @@
 #include "Core/Graphics/CharacterSheet.hpp"
 
-#include "Core/ResourceManager.hpp"  }
+#include "Core/ResourceManager.hpp"
 
 CharacterSheet::CharacterSheet(std::string_view sheetName) {
   if (sheetName.empty()) {

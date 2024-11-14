@@ -4,10 +4,11 @@
 
 #include "imgui.h"
 
-DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent) : IDBEditorTab(parent), m_animations(animations) {
+DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent)
+: IDBEditorTab(parent), m_animations(animations) {
   m_selectedAnimation = m_animations.animation(1);
   if (m_selectedAnimation) {
-    //m_traitsEditor.setTraits(&m_selectedClass->traits);
+    // m_traitsEditor.setTraits(&m_selectedClass->traits);
   }
   m_maxAnimations = m_animations.count();
 }
@@ -36,8 +37,8 @@ void DBAnimationsTab::draw() {
               if (ImGui::Selectable(name, &skill_ == m_selectedAnimation) ||
                   (ImGui::IsItemFocused() && m_selectedAnimation != &skill_)) {
                 m_selectedAnimation = &skill_;
-                //m_traitsEditor.setTraits(&m_selectedClass->traits);
-                  }
+                // m_traitsEditor.setTraits(&m_selectedClass->traits);
+              }
             }
           }
           ImGui::EndGroup();
@@ -50,16 +51,14 @@ void DBAnimationsTab::draw() {
                           ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxAnimations = m_maxAnimations;
-                          }
+        }
       }
       ImGui::EndGroup();
     }
     ImGui::EndChild();
     ImGui::SameLine();
     ImGui::BeginChild("##orpg_animations_editor_animations_animation_properties");
-    {
-      ImGui::EndChild();
-    }
+    { ImGui::EndChild(); }
     ImGui::EndChild();
 
     if (m_changeIntDialogOpen) {
@@ -78,7 +77,7 @@ void DBAnimationsTab::draw() {
         if (ImGui::Button("Cancel")) {
           m_changeIntDialogOpen = false;
         }
-                           }
+      }
       ImGui::End();
 
       if (m_changeConfirmDialogOpen) {
@@ -100,7 +99,7 @@ void DBAnimationsTab::draw() {
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }
-                             }
+        }
         ImGui::End();
       }
     }

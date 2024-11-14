@@ -17,6 +17,8 @@
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "nfd.h"
 
+#include <clip.h>
+
 #include <fstream>
 
 #include <array>
@@ -34,6 +36,15 @@ constexpr std::array KnownRPGMVVersions = {
     "RPGMZ 1.8.0"sv,
 };
 // clang-format on
+
+Project::Project()
+: m_mapListView(this)
+, m_mapEditor(this)
+, m_eventListView(this)
+, m_tilesetPicker(this)
+, m_nwjsVersionManager("https://dl.nwjs.io") {
+  clip::register_format("application/rpgmv-EventCommand");
+}
 
 bool Project::load(std::string_view filePath, std::string_view basePath) {
   close();

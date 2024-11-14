@@ -5,6 +5,7 @@
 #include "Core/DPIHandler.hpp"
 #include "Core/Application.hpp"
 
+#include <clip.h>
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "Core/Log.hpp"
@@ -12,6 +13,8 @@
 
 #include <iostream>
 #include <vector>
+
+clip::format RPGMVEventCommandFormat = clip::register_format("application/rpgmv-EventCommand");
 
 void insertValue(std::string& indentPad, const std::string& val, const std::string& delim) {
   auto pos = indentPad.find(delim);
@@ -141,6 +144,32 @@ void EventCommandEditor::draw() {
       }
 
       ImGui::EndTable();
+    }
+
+    if (ImGui::IsKeyPressed(ImGuiKey_V) &&
+        (ImGui::IsModKey(ImGuiKey_LeftCtrl) || ImGui::IsModKey(ImGuiKey_RightCtrl))) {
+      clip::lock l;
+      if (l.is_convertible(RPGMVEventCommandFormat)) {
+        auto len = l.get_data_length(RPGMVEventCommandFormat);
+        std::string cmd;
+        cmd.resize(len);
+        if (l.get_data(RPGMVEventCommandFormat, cmd.data(), len)) {
+          nlohmann::json cmdJson = nlohmann::json::parse(cmd);
+          CommandParser parser;
+          auto commands = parser.parse(cmdJson);
+          m_commands->insert(m_commands->begin() + m_selectedCommand, commands.begin(), commands.end());
+        }
+      }
+    } else if (ImGui::IsKeyPressed(ImGuiKey_C) &&
+               (ImGui::IsModKey(ImGuiKey_LeftCtrl) || ImGui::IsModKey(ImGuiKey_RightCtrl))) {
+      clip::lock l;
+      int start = m_selectedCommand;
+      int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd;
+      std::vector<std::shared_ptr<IEventCommand>> commands(m_commands->begin() + start, m_commands->begin() + end);
+      nlohmann::json cmdJson;
+      CommandParser::serialize(cmdJson, commands);
+      auto v = cmdJson.dump();
+      l.set_data(RPGMVEventCommandFormat, v.data(), v.size());
     }
   }
   ImGui::EndGroup();

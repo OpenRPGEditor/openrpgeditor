@@ -42,17 +42,13 @@ std::string TransferPlayerCommand::stringRep(const Database& db) const {
   }
 
   if (mode == TransferMode::Variable_Designation) {
-    auto varMap = db.system.variable(mapId);
-    auto varX = db.system.variable(x);
-    auto varY = db.system.variable(y);
-    varMap = varMap.empty() ? std::format("#{:04}", mapId) : varMap;
-    varX = varX.empty() ? std::format("#{:04}", x) : varX;
-    varY = varY.empty() ? std::format("#{:04}", y) : varY;
+    auto varMap = db.variableNameOrId(mapId);
+    auto varX = db.variableNameOrId(x);
+    auto varY = db.variableNameOrId(y);
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Transfer Player" +
            colon.data() + std::format("{{{}}} ({{{}}},{{{}}})", varMap, varX, varY) + suffix;
   }
-  const auto map = db.mapInfos.map(mapId);
-  const auto mapName = map && !map->name.empty() ? map->name : std::format("#{:03}", mapId);
+  const auto mapName =  db.mapNameOrId(mapId);
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Transfer Player" + colon.data() +
          mapName + std::format(" ({},{})", x, y) + ColorFormatter::popColor() + suffix;
 }

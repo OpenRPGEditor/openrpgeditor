@@ -373,7 +373,7 @@ add_library(
         Core/DownloadManager.hpp
 )
 
-target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML  ${CLIP_INCLUDES})
+target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${clip_SOURCE_DIR})
 target_compile_features(orecore PRIVATE cxx_std_20)
 target_link_libraries(
         orecore
@@ -416,7 +416,8 @@ add_executable(${NAME} WIN32 MACOSX_BUNDLE
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/AppAssets.cmake)
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/Packaging.cmake)
 
-target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${CLIP_INCLUDES})
+target_include_directories(${NAME} PUBLIC )
+target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML)
 target_compile_features(${NAME} PRIVATE cxx_std_20)
 target_link_libraries(
         ${NAME}

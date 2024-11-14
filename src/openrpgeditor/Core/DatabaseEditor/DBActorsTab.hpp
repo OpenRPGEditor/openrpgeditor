@@ -23,6 +23,9 @@ struct DBActorsTab : IDBEditorTab {
   const Actor* actor(int id) const { return m_actors.actor(id); }
 
 private:
+  bool checkEquipable(int etypeId, int dataId) const;
+  static std::string itemDisplayName(bool isWeapon, int dataId) ;
+
   Actors& m_actors;
   Actor* m_selectedActor{};
   int m_maxActors{};

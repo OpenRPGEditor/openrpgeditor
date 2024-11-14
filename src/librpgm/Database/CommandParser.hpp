@@ -11,6 +11,9 @@ struct CommandParser {
 
 
   EventCode nextEventCommand() {
+    if (index + 1 >= parser.size()) {
+      return EventCode::Event_Dummy;
+    }
     EventCode ret;
     parser[index + 1].at("code").get_to(ret);
     return ret;

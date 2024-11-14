@@ -182,10 +182,10 @@ void DBActorsTab::draw() {
               ImGui::ImageButton("##orpg_actors_character_image", m_buttonBack.get(), buttonSize);
               if (m_characterSheet && m_characterSheet->texture()) {
                 const auto characterRect =
-                    ImVec2{std::ceil(static_cast<float>(m_characterSheet->characterWidth() * 2)),
-                           std::ceil(static_cast<float>(m_characterSheet->characterHeight() * 2))} *
+                    ImVec2{std::ceil(static_cast<float>(m_characterSheet->characterWidth() * 1.75)),
+                           std::ceil(static_cast<float>(m_characterSheet->characterHeight() * 1.75))} *
                     App::DPIHandler::get_ui_scale();
-                ImGui::SetCursorPos((cursorPos + buttonCenter) - (characterRect / 2));
+                ImGui::SetCursorPos((cursorPos + buttonCenter) - (characterRect / 1.75));
                 const auto [min, max] = m_characterSheet->getRectForCharacter(m_selectedActor->characterIndex, 1);
                 ImGui::Image(m_characterSheet->texture().get(), characterRect, min, max);
               }
@@ -221,55 +221,30 @@ void DBActorsTab::draw() {
               ImGui::TableSetupColumn("Type");
               ImGui::TableSetupColumn("Equipment Item");
               ImGui::TableHeadersRow();
-              /* Weapon */
-              ImGui::TableNextRow();
-              if (ImGui::TableNextColumn()) {
-                auto equip = m_parent->equipType(1);
-                if (ImGui::Selectable(equip ? equip->c_str() : "##actors_editor_actor_equip", false,
+              const auto& equipTypes = Database::Instance->system.equipTypes;
+
+              for (int i = 0; i < equipTypes.size() - 1; i++) {
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                int etypeId = Database::Instance->slotIdToEquipId(m_selectedActor->id, i);
+                auto etypeName = equipTypes[etypeId];
+                int dataId = m_selectedActor->equips[i];
+                if (!checkEquipable(etypeId, dataId)) {
+                  dataId = 0;
+                }
+
+                if (ImGui::Selectable(etypeName.c_str(), m_selectedEquip == i,
                                       ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
+                  m_selectedEquip = i;
                   if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
                     m_showEquipEdit = true;
-                    m_selectedEquip = 0;
                     m_chosenEquip =
                         m_selectedEquip < m_selectedActor->equips.size() ? m_selectedActor->equips[m_selectedEquip] : 0;
                   }
                 }
-              }
-              if (ImGui::TableNextColumn()) {
-                std::string label;
-                if (!m_selectedActor->equips.empty()) {
-                  auto weapon = m_parent->weapon(m_selectedActor->equips[0]);
-                  label = weapon ? weapon->name : "None";
-                } else {
-                  label = "None";
-                }
-                ImGui::Text("%s", label.c_str());
-              }
-              for (int i = 2; i < m_parent->equipTypes().size(); ++i) {
-                ImGui::TableNextRow();
-                if (ImGui::TableNextColumn()) {
-                  if (ImGui::Selectable(m_parent->equipType(i)->c_str(), false,
-                                        ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
-                    if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                      m_showEquipEdit = true;
-                      m_selectedEquip = i - 1;
-                      m_chosenEquip = m_selectedEquip < m_selectedActor->equips.size()
-                                          ? m_selectedActor->equips[m_selectedEquip]
-                                          : 0;
-                    }
-                  }
-                }
-                if (ImGui::TableNextColumn()) {
-                  std::string label;
-                  const int armorId = i - 1;
-                  if (armorId < m_selectedActor->equips.size()) {
-                    auto armor = m_parent->armor(m_selectedActor->equips[armorId]);
-                    label = armor ? armor->name : "None";
-                  } else {
-                    label = "None";
-                  }
-                  ImGui::Text("%s", label.c_str());
-                }
+
+                ImGui::TableNextColumn();
+                ImGui::Text("%s", itemDisplayName(etypeId <= 1, dataId).c_str());
               }
               ImGui::EndTable();
             }
@@ -350,83 +325,6 @@ void DBActorsTab::draw() {
     if (ImGui::Begin("Select Equipment...", &m_showEquipEdit,
                      ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_Modal |
                          ImGuiWindowFlags_NoCollapse)) {
-      if (m_selectedEquip == 0) {
-        ImGui::Text("Weapon:");
-        const std::vector<Weapon>& weapons = m_parent->weapons();
-        std::vector<Weapon> filtered;
-        auto cls = m_parent->classes().classType(m_selectedActor->classId);
-        if (cls && !cls->traits.empty()) {
-          auto it = std::find_if(cls->traits.begin(), cls->traits.end(), [](const auto& c) {
-            return c.code == TraitCode::Equip_Weapon; // Weapon
-          });
-          if (it != cls->traits.end()) {
-            for (const auto& weapon : weapons) {
-              if (weapon.wtypeId == it->dataId) {
-                filtered.push_back(weapon);
-              }
-            }
-          }
-        }
-        std::string label;
-        if (!m_selectedActor->equips.empty()) {
-          auto weapon = m_parent->weapon(m_chosenEquip);
-          label = weapon ? weapon->name : "None";
-        } else {
-          label = "None";
-        }
-
-        if (ImGui::BeginCombo("##orpg_weapon_selection", label.c_str())) {
-          if (ImGui::Selectable("None", m_chosenEquip == 0)) {
-            m_chosenEquip = 0;
-          }
-
-          for (auto w : filtered) {
-            std::string label = w.name.empty() ? "##orpg_weapon_name_invalid_" + std::to_string(w.id) : w.name;
-            if (ImGui::Selectable(label.c_str(), m_chosenEquip == w.id)) {
-              m_chosenEquip = w.id;
-            }
-          }
-          ImGui::EndCombo();
-        }
-      } else {
-        ImGui::Text("Armor:");
-        std::vector<Armor> filtered;
-        const std::vector<Armor>& armors = m_parent->armors();
-        auto cls = m_parent->classes().classType(m_selectedActor->classId);
-        if (cls && !cls->traits.empty()) {
-          auto it = std::find_if(cls->traits.begin(), cls->traits.end(), [](const auto& c) {
-            return c.code == TraitCode::Equip_Armor; // Armor
-          });
-          if (it != cls->traits.end()) {
-            for (const auto& armor : armors) {
-              if (armor.atypeId == it->dataId && armor.etypeId == m_selectedEquip + 1) {
-                filtered.push_back(armor);
-              }
-            }
-          }
-        }
-        std::string label;
-        if (!m_selectedActor->equips.empty()) {
-          auto armor = m_parent->armor(m_chosenEquip);
-          label = armor ? armor->name : "None";
-        } else {
-          label = "None";
-        }
-
-        if (ImGui::BeginCombo("##orpg_armor_selection", label.c_str())) {
-          if (ImGui::Selectable("None", m_chosenEquip == 0)) {
-            m_chosenEquip = 0;
-          }
-
-          for (auto a : filtered) {
-            std::string label = a.name.empty() ? "##orpg_armor_name_invalid_" + std::to_string(a.id) : a.name;
-            if (ImGui::Selectable(label.c_str(), m_chosenEquip == a.id)) {
-              m_chosenEquip = a.id;
-            }
-          }
-          ImGui::EndCombo();
-        }
-      }
       ImGui::SameLine();
       if (ImGui::Button("OK")) {
         m_showEquipEdit = false;
@@ -443,4 +341,40 @@ void DBActorsTab::draw() {
       ImGui::End();
     }
   }
+}
+
+bool DBActorsTab::checkEquipable(const int etypeId, const int dataId) const {
+  if (dataId <= 0) {
+    return false;
+  }
+
+  if (Database::Instance->isEquipTypeSealed(m_selectedActor->id, etypeId)) {
+    return false;
+  }
+
+  if (etypeId <= 1) {
+    if (const auto& weapon = Database::Instance->weapons.weapon(dataId);
+        weapon && Database::Instance->isEquipWeaponTypeOk(m_selectedActor->id, weapon->wtypeId)) {
+      return true;
+    }
+  } else {
+    if (const auto& armor = Database::Instance->armors.armor(dataId);
+        armor && armor->etypeId == etypeId &&
+        Database::Instance->isEquipArmorTypeOk(m_selectedActor->id, armor->atypeId)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+std::string DBActorsTab::itemDisplayName(const bool isWeapon, const int dataId) {
+  if (dataId <= 0) {
+    return "None";
+  }
+  if (isWeapon) {
+    return Database::Instance->weaponNameOrId(dataId);
+  }
+
+  return Database::Instance->armorNameOrId(dataId);
 }

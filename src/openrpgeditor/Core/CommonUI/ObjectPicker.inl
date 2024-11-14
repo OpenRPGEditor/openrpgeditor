@@ -85,6 +85,10 @@ std::tuple<bool, bool> ObjectPicker<T>::draw() {
               m_confirmed = true;
             }
           }
+          if (m_selection == getId(*value) && m_initialSelection) {
+            ImGui::SetScrollHereY();
+            m_initialSelection = false;
+          }
         }
         /* Name */
         if (ImGui::TableNextColumn()) {

@@ -294,14 +294,17 @@ struct Database {
   }
 
   std::vector<Trait*> allTraits(const int actorId) const {
-    const auto [act, _] = featureObjects(actorId);
-    if (act == nullptr) {
-      return {};
-    }
+    const auto [act, cls] = featureObjects(actorId);
     std::vector<Trait*> ret;
-    ret.reserve(act->traits.size());
-    for (auto& trait : act->traits) {
-      ret.push_back(&trait);
+    if (act) {
+      for (auto& trait : act->traits) {
+        ret.push_back(&trait);
+      }
+    }
+    if (cls) {
+      for (auto& trait : cls->traits) {
+        ret.push_back(&trait);
+      }
     }
 
     return ret;

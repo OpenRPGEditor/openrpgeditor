@@ -34,12 +34,7 @@ enum class DrawTool {
 
 class Project {
 public:
-  Project()
-  : m_mapListView(this)
-  , m_mapEditor(this)
-  , m_eventListView(this)
-  , m_tilesetPicker(this)
-  , m_nwjsVersionManager("https://dl.nwjs.io") {}
+  Project();
 
   bool load(std::string_view filePath, std::string_view basePath);
   bool save();

@@ -29,6 +29,7 @@ private:
   bool m_confirmed{false};
   int m_selection{1};
   bool m_open = true;
+  bool m_initialSelection = true;
   std::string m_filter;
 };
 

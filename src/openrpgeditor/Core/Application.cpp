@@ -40,7 +40,22 @@ Application::Application(const std::string& title) {
     APP_ERROR("Error: %s\n", SDL_GetError());
     m_exitStatus = ExitStatus::Failure;
   }
+
   m_window = std::make_unique<Window>(Window::Settings{title});
+
+  const char* conf_path = SDL_GetPrefPath(COMPANY_NAMESPACE, APP_NAME);
+  m_userConfigPath = std::string{conf_path};
+  SDL_free((void*)conf_path);
+
+  if (m_settings.load(m_userConfigPath + "config.json")) {
+    m_window->setWindowSize(m_settings.window.w, m_settings.window.h);
+    m_window->setWindowPosition(m_settings.window.x, m_settings.window.y);
+    if (m_settings.window.maximized) {
+      m_window->setMaximized();
+    }
+  }
+  APP_DEBUG("User config path: {}", m_userConfigPath);
+
   APP = this;
 }
 
@@ -75,28 +90,15 @@ ExitStatus Application::run() {
                     ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_NavEnableGamepad |
                     ImGuiConfigFlags_DpiEnableScaleFonts | ImGuiConfigFlags_DpiEnableScaleViewports;
 
-  const char* conf_path = SDL_GetPrefPath(COMPANY_NAMESPACE, APP_NAME);
-  const std::string user_config_path{conf_path};
-  SDL_free((void*)conf_path);
-
-  Settings settings;
-  if (settings.load(user_config_path + "config.json")) {
-    m_window->setWindowSize(settings.window.w, settings.window.h);
-    m_window->setWindowPosition(settings.window.x, settings.window.y);
-    if (settings.window.maximized) {
-      m_window->setMaximized();
-    }
-  }
-  APP_DEBUG("User config path: {}", user_config_path);
 
   // Absolute imgui.ini path to preserve settings independent of app location.
-  static const std::string imgui_ini_filename{user_config_path + "imgui.ini"};
+  static const std::string imgui_ini_filename{m_userConfigPath + "imgui.ini"};
   io.IniFilename = imgui_ini_filename.c_str();
 
   // ImGUI font
   const float fontScale = DPIHandler::get_ui_scale() * 2;
-  const float font_size{settings.fontSize * fontScale};
-  const float mono_font_size{settings.monoFontSize * fontScale};
+  const float font_size{m_settings.fontSize * fontScale};
+  const float mono_font_size{m_settings.monoFontSize * fontScale};
   const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
   const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf").generic_string()};
   const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf").generic_string()};
@@ -264,7 +266,7 @@ ExitStatus Application::run() {
     }
   }
 
-  Settings::instance()->serialize(user_config_path + "config.json");
+  Settings::instance()->serialize(m_userConfigPath + "config.json");
   NFD_Quit();
   return m_exitStatus;
 }

@@ -14,7 +14,7 @@
 #include <iostream>
 #include <vector>
 
-clip::format RPGMVEventCommandFormat = clip::register_format("application/rpgmv-EventCommand");
+static clip::format RPGMVEventCommandFormat = -1;
 
 void insertValue(std::string& indentPad, const std::string& val, const std::string& delim) {
   auto pos = indentPad.find(delim);
@@ -23,6 +23,9 @@ void insertValue(std::string& indentPad, const std::string& val, const std::stri
   }
 }
 void EventCommandEditor::draw() {
+  if (RPGMVEventCommandFormat == -1) {
+    RPGMVEventCommandFormat = clip::register_format("application/rpgmv-EventCommand");
+  }
   ImGui::BeginGroup();
   {
     ImGui::Text("Content:");

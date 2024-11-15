@@ -46,6 +46,8 @@ private:
 
   bool m_running{true};
   bool m_minimized{false};
+  std::string m_userConfigPath;
+  Settings m_settings;
   Project m_project;
   ImFont* m_mainFont{};
   ImFont* m_monoFont{};

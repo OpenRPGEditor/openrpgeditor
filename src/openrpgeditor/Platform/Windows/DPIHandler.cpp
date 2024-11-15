@@ -5,19 +5,14 @@
 
 #include "Core/Debug/Instrumentor.hpp"
 #include "Core/Window.hpp"
+#include "Core/Settings.hpp"
 
 namespace App {
 
 float DPIHandler::get_ui_scale() {
   APP_PROFILE_FUNCTION();
 
-  constexpr int display_index{0};
-  const float default_dpi{96.0F};
-  float dpi{default_dpi};
-
-  SDL_GetDisplayDPI(display_index, nullptr, &dpi, nullptr);
-
-  return dpi / default_dpi;
+  return Settings::instance()->uiScale;
 }
 
 WindowSize DPIHandler::get_dpi_aware_window_size(const Window::Settings& settings) {

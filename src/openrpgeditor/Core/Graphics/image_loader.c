@@ -16,7 +16,7 @@ bool LoadTextureFromFile(const char* filename, SDL_Texture** texture_ptr, int* w
   unsigned char* data = stbi_load(filename, width, height, &channels, 0);
 
   if (data == NULL) {
-    fprintf(stderr, "Failed to load image: %s\n", stbi_failure_reason());
+    fprintf(stderr, "Failed to load image: %s, reason: %s\n", filename, stbi_failure_reason());
     return false;
   }
 

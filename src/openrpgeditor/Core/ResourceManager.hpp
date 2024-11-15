@@ -19,9 +19,9 @@ public:
   explicit ResourceManager(std::string_view basePath);
   ~ResourceManager();
 
-  sf::SoundBuffer& loadBGM(std::string_view path);
-  sf::SoundBuffer& loadBGS(std::string_view path);
-  sf::SoundBuffer& loadSE(std::string_view path);
+  sf::SoundBuffer loadBGM(std::string_view path);
+  sf::SoundBuffer loadBGS(std::string_view path);
+  sf::SoundBuffer loadSE(std::string_view path);
   Texture loadImage(std::string_view path);
   Texture loadAnimationImage(std::string_view path);
   Texture loadBattlebacks1Image(std::string_view path);
@@ -42,7 +42,7 @@ public:
 
   std::vector<std::string> getDirectoryContents(const std::string& directoryPath, const std::string_view filter="") const;
 private:
-  sf::SoundBuffer& loadSound(std::string_view path);
+  sf::SoundBuffer loadSound(std::string_view path);
   Texture loadTexture(std::string_view path);
   std::map<std::string, Texture> m_loadedTextures; // Path -> texture
   std::map<std::string, sf::SoundBuffer> m_loadedSound; // Path -> sound

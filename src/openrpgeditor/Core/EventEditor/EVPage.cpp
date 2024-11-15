@@ -26,10 +26,10 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(250));
     ImGui::BeginChild("##event_page_settings_panel", ImVec2{App::DPIHandler::scale_value(350), 0.f});
     {
-      if (ImGui::LabelOverLineEdit(
-              "##event_page_name_edit", "Page Name:", m_pageNameBuf, 4096, App::DPIHandler::scale_value(150),
-              "Page names are an OpenRPGMaker addition and will not be viewable in RPG Maker MV/MZ",
-              ImGuiInputTextFlags_None)) {}
+      ImGui::LabelOverLineEdit("##event_page_name_edit", "Page Name:", m_pageNameBuf, 4096,
+                               App::DPIHandler::scale_value(150),
+                               "Page names are an Open RPG Editor addition and will not be viewable in RPG Maker MV/MZ",
+                               ImGuiInputTextFlags_None);
 
       ImGui::SameLine();
       ImGui::BeginGroup();
@@ -135,7 +135,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
                                             : "##event_page_actor_selection_button_text";
               if (ImGui::Button(actor.c_str(),
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                // TODO: Implement actor selection
+                m_actorPicker.emplace("Actors"sv, Database::Instance->actors.actorList(), m_page->conditions.actorId);
               }
             }
             ImGui::EndDisabled();
@@ -321,6 +321,14 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
           m_page->conditions.itemId = m_itemPicker->selection();
         }
         m_itemPicker.reset();
+      }
+    }
+    if (m_actorPicker) {
+      if (auto [closed, confirmed] = m_actorPicker->draw(); closed) {
+        if (confirmed) {
+          m_page->conditions.actorId = m_actorPicker->selection();
+        }
+        m_actorPicker.reset();
       }
     }
     ImGui::EndTabItem();

@@ -4,7 +4,10 @@
 
 class Sound {
 public:
-  Sound(const sf::SoundBuffer& buffer);
+  Sound() = default;
+  explicit Sound(const sf::SoundBuffer& buffer);
+  Sound(const Sound& other);
+  Sound& operator=(const Sound& other);
 
   void play();
   void pause();
@@ -40,12 +43,14 @@ public:
   [[nodiscard]] float getAttenuation() const;
 
 private:
+  sf::SoundBuffer m_leftBuffer;
+  sf::SoundBuffer m_rightBuffer;
   sf::Sound m_leftSound;
   sf::Sound m_rightSound;
-  float m_volume;
-  float m_pitch;
-  float m_pan;
-  float m_minDistance;
-  float m_attenuation;
-  bool m_relativeToListener;
+  float m_volume{100.f};
+  float m_pitch{1.f};
+  float m_pan{0.f};
+  float m_minDistance{1.f};
+  float m_attenuation{1.f};
+  bool m_relativeToListener{false};
 };

@@ -41,33 +41,28 @@ ResourceManager::~ResourceManager() {
     SDL_DestroyTexture(static_cast<SDL_Texture*>(texture.m_texture));
   }
   m_loadedTextures.clear();
-  m_loadedSound.clear();
 }
 
 sf::SoundBuffer ResourceManager::loadSound(const std::string_view path) {
   if (!fs::is_regular_file(path)) {
     return {};
   }
-  if (m_loadedSound.contains(path.data())) {
-    return m_loadedSound[path.data()];
-  }
 
   sf::SoundBuffer buffer;
   buffer.loadFromFile(path.data());
-  m_loadedSound[path.data()] = buffer;
-  return m_loadedSound[path.data()];
+  return buffer;
 }
-sf::SoundBuffer ResourceManager::loadBGM(const std::string_view path) {
+sf::SoundBuffer ResourceManager::loadBGM(const std::string_view path) const {
   std::string fullpath = m_bgmPath + path.data() + ".ogg";
   return loadSound(fullpath);
 }
 
-sf::SoundBuffer ResourceManager::loadBGS(const std::string_view path) {
+sf::SoundBuffer ResourceManager::loadBGS(const std::string_view path) const {
   std::string fullpath = m_bgsPath + path.data() + ".ogg";
   return loadSound(fullpath);
 }
 
-sf::SoundBuffer ResourceManager::loadSE(const std::string_view path) {
+sf::SoundBuffer ResourceManager::loadSE(const std::string_view path) const {
   std::string fullpath = m_sePath + path.data() + ".ogg";
   return loadSound(fullpath);
 }
@@ -166,7 +161,9 @@ std::vector<std::string> ResourceManager::getDirectoryContents(const std::string
       continue;
     }
 
-    fileNames.push_back(entry.path().filename().replace_extension().generic_string());
+    auto filename = entry.path().filename();
+    filename = filename.replace_extension();
+    fileNames.push_back(filename.generic_string());
   }
   return fileNames;
 }

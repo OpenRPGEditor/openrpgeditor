@@ -35,8 +35,7 @@ std::tuple<bool, bool> Dialog_PlayBGM::draw() {
                                             ImGuiSelectableFlags_AllowDoubleClick)) {
           m_selected = 0;
           m_audio.name = "";
-          if (m_selected == 0)
-            ImGui::SetItemDefaultFocus();
+          ImGui::SetItemDefaultFocus();
         }
 
         for (int n = 0; n < m_audios.size(); n++) {
@@ -46,7 +45,7 @@ std::tuple<bool, bool> Dialog_PlayBGM::draw() {
                                           ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
                                               ImGuiSelectableFlags_AllowDoubleClick)) {
             if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-              playAudio((Database::Instance->basePath + "audio/bgm/" + m_audios.at(m_selected - 1) + ".ogg").c_str());
+              playAudio(m_audios.at(m_selected - 1));
             }
             m_selected = n + 1;
             m_audio.name = m_audios.at(m_selected - 1);
@@ -63,7 +62,7 @@ std::tuple<bool, bool> Dialog_PlayBGM::draw() {
     {
       if (ImGui::Button("Play", ImVec2(100, 0))) {
         if (m_selected > 0)
-          playAudio((Database::Instance->basePath + "audio/bgm/" + m_audios.at(m_selected - 1) + ".ogg").c_str());
+          playAudio(m_audios.at(m_selected - 1));
       }
       if (ImGui::Button("Stop", ImVec2(100, 0))) {
         stopAudio();

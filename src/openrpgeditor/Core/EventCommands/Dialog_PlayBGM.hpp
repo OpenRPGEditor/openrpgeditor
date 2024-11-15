@@ -2,30 +2,29 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/Log.hpp"
 #include "Core/Settings.hpp"
+#include "Core/ResourceManager.hpp"
+
 #include "Database/Database.hpp"
 #include "Database/EventCommands/PlayBGM.hpp"
-#include <SFML/Audio.hpp>
+#include "Core/Sound.hpp"
+
 #include <iostream>
 
 namespace fs = std::filesystem;
 struct Dialog_PlayBGM : IEventDialogController {
   Dialog_PlayBGM() = delete;
-  explicit Dialog_PlayBGM(const std::string& name,
-                          const std::shared_ptr<PlayBGMCommand>& cmd = nullptr)
+  explicit Dialog_PlayBGM(const std::string& name, const std::shared_ptr<PlayBGMCommand>& cmd = nullptr)
   : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new PlayBGMCommand());
     }
     m_audio = command->audio;
     try {
-      auto files = getFileNames(Database::Instance->basePath + "audio/bgm/");
-      for (const auto& file : files) {
-        m_audios.push_back(file);
-      }
+      m_audios = ResourceManager::instance()->getDirectoryContents("audio/bgm/", ".ogg");
     } catch (const std::filesystem::filesystem_error& e) {
       std::cerr << "Error accessing directory: " << e.what() << std::endl;
     }
-    m_audio.name = "";
+    m_audio.name.clear();
   }
   std::tuple<bool, bool> draw() override;
   [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return command; }
@@ -36,66 +35,26 @@ private:
   int m_selected = 0;
   Audio m_audio;
 
-  sf::SoundBuffer buffer;
-  sf::Sound sound;
+  Sound m_sound;
 
   std::shared_ptr<PlayBGMCommand> command;
   std::tuple<bool, bool> result;
   std::vector<std::string> m_audios;
-  std::vector<std::string> getFileNames(const std::string& directoryPath) {
-    std::vector<std::string> fileNames;
 
-    for (const auto& entry : fs::directory_iterator(directoryPath)) {
-      if (entry.path().extension() != ".ogg")
-        continue;
-
-      std::string filename = entry.path().filename().string();
-      size_t lastDotPos = filename.find_last_of(".");
-      if (lastDotPos != std::string::npos) {
-        std::string str = filename.substr(0, lastDotPos);
-        fileNames.push_back(str);
-      } else {
-        fileNames.push_back(filename);
-      }
-    }
-    return fileNames;
-  }
-
-  bool playAudio(const char* path) {
+  bool playAudio(const std::string& path) {
     // Load and play music
     APP_INFO(path);
-    if (!buffer.loadFromFile(path)) {
-      // error loading file
-      return false;
-    }
-    sf::Listener::setPosition(0.f, 0.f, 0.f); // Set listener position
-    sound.setRelativeToListener(true);        // Ensure sound is not relative to listener
-    sound.setBuffer(buffer);
-    sound.play();
+    m_sound = Sound(ResourceManager::instance()->loadBGM(path));
+    m_sound.play();
+    setVolume(m_audio.volume);
+    setPanning(m_audio.pan);
+    setPitch(m_audio.pitch);
     return true;
   }
   void setVolume(int volume) {
-    sound.setVolume(volume); // 0% to 100%
+    m_sound.setVolume(static_cast<float>(volume)); // 0% to 100%
   }
-  void setPanning(int value) {
-    // TODO -- how can we pan this thing
-    /*
-    *(-1,0,0)' is to the left of the listener
-    (1,0,0)' is to the right of the listener
-    (0,0,1)' is in front of the listener
-    (0,0,-1)' is behind the listener
-    */
-    if (value > 0) {
-      // To the right (+)
-      // sound.setPosition(sf::Vector3f{ static_cast<float>(value), 0.f, 0.f});
-      sound.setPosition(sf::Vector3f(static_cast<float>(value) / 100.f, 0, 0));
-    } else { // To the left (-)
-      sound.setPosition(sf::Vector3f(static_cast<float>(value) / 100.f, 0, 0));
-    }
-    APP_INFO("Listener: " + std::to_string(sf::Listener::getPosition().x) + " " +
-             std::to_string(sf::Listener::getPosition().y));
-    APP_INFO("Sound: " + std::to_string(sound.getPosition().x) + " " + std::to_string(sound.getPosition().y));
-  }
-  void setPitch(int value) { sound.setPitch(value / 100.f); }
-  void stopAudio() { sound.stop(); }
+  void setPanning(int value) { m_sound.setPan(static_cast<float>(value) / 100.0f); }
+  void setPitch(int value) { m_sound.setPitch(value / 100.f); }
+  void stopAudio() { m_sound.stop(); }
 };

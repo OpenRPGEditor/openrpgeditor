@@ -153,4 +153,20 @@ public:
     }
     return &weaponTypes[id];
   }
+
+  [[nodiscard]] std::vector<char> encryptionKeyAsBytes() const {
+    if (!encryptionKey) {
+      return {};
+    }
+
+    std::vector<char> bytes;
+
+    for (unsigned int i = 0; i < encryptionKey->length(); i += 2) {
+      std::string byteString = encryptionKey->substr(i, 2);
+      char byte = static_cast<char>(strtol(byteString.c_str(), nullptr, 16));
+      bytes.push_back(byte);
+    }
+
+    return bytes;
+  }
 };

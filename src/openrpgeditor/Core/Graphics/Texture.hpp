@@ -28,6 +28,7 @@ public:
 
 private:
   explicit Texture(std::string_view filename);
+  explicit Texture(const char* data, int length, int width, int height);
   void* m_texture = nullptr;
   int m_width{};
   int m_height{};

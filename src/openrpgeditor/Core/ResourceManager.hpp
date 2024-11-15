@@ -40,7 +40,7 @@ public:
 
   static ResourceManager* instance() { return m_instance; }
 
-  std::vector<std::string> getDirectoryContents(const std::string& directoryPath, const std::string_view filter="") const;
+  [[nodiscard]] std::vector<std::string> getDirectoryContents(const std::string& directoryPath, std::string_view filter={}) const;
 private:
   sf::SoundBuffer loadSound(std::string_view path);
   Texture loadTexture(std::string_view path);

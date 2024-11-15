@@ -1,5 +1,7 @@
 #include "Core/Sound.hpp"
 
+#include "Log.hpp"
+
 sf::Vector3f stereoPanPosition(float panAmount) {
   // make sure that panAmount is in the range [-1, 1] (-1 is left; 1 is right)
   if (panAmount > 1.f)
@@ -10,22 +12,41 @@ sf::Vector3f stereoPanPosition(float panAmount) {
 }
 
 Sound::Sound(const sf::SoundBuffer& buffer) {
-  auto samples = buffer.getSamples();
-  std::vector<sf::Int16> leftSamples;
-  std::vector<sf::Int16> rightSamples;
-
-  for (int i = 0; i < buffer.getSampleCount() / 2; ++i) {
-    leftSamples.push_back(samples[i * 2]);
-    rightSamples.push_back(samples[(i * 2) + 1]);
+  m_numChannels = buffer.getChannelCount();
+  if (m_numChannels > 2) {
+    APP_DEBUG("Unsupported number of channels {}", m_numChannels);
   }
 
-  m_leftBuffer.loadFromSamples(leftSamples.data(), leftSamples.size(), 1, buffer.getSampleRate());
-  m_leftSound.setBuffer(m_leftBuffer);
+  if (m_numChannels == 2) {
+    auto samples = buffer.getSamples();
+    std::vector<sf::Int16> leftSamples;
+    std::vector<sf::Int16> rightSamples;
 
-  m_rightBuffer.loadFromSamples(rightSamples.data(), rightSamples.size(), 1, buffer.getSampleRate());
-  m_rightSound.setBuffer(m_rightBuffer);
+    for (int i = 0; i < buffer.getSampleCount() / 2; ++i) {
+      leftSamples.push_back(samples[i * 2]);
+      rightSamples.push_back(samples[(i * 2) + 1]);
+    }
 
-  /* Retrieve and sync up parameters */
+    m_leftBuffer.loadFromSamples(leftSamples.data(), leftSamples.size(), 1, buffer.getSampleRate());
+    m_leftSound.setBuffer(m_leftBuffer);
+
+    m_rightBuffer.loadFromSamples(rightSamples.data(), rightSamples.size(), 1, buffer.getSampleRate());
+    m_rightSound.setBuffer(m_rightBuffer);
+    /* Retrieve and sync up parameters */
+    m_volume = m_leftSound.getVolume();
+    m_minDistance = m_leftSound.getMinDistance();
+    m_attenuation = m_leftSound.getAttenuation();
+    m_pitch = m_leftSound.getPitch();
+    m_relativeToListener = false;
+    m_leftSound.setRelativeToListener(m_relativeToListener);
+    m_rightSound.setVolume(m_volume);
+    m_rightSound.setMinDistance(m_minDistance);
+    m_rightSound.setPitch(m_pitch);
+    m_rightSound.setRelativeToListener(m_relativeToListener);
+  } else {
+    m_leftBuffer = buffer;
+  }
+
   m_volume = m_leftSound.getVolume();
   m_minDistance = m_leftSound.getMinDistance();
   m_attenuation = m_leftSound.getAttenuation();
@@ -41,6 +62,7 @@ Sound::Sound(const sf::SoundBuffer& buffer) {
 }
 
 Sound::Sound(const Sound& other) {
+  m_numChannels = other.m_numChannels;
   m_leftBuffer = other.m_leftBuffer;
   m_rightBuffer = other.m_rightBuffer;
   m_minDistance = other.m_minDistance;
@@ -64,6 +86,7 @@ Sound::Sound(const Sound& other) {
 }
 
 Sound& Sound::operator=(const Sound& other) {
+  m_numChannels = other.m_numChannels;
   m_leftBuffer = other.m_leftBuffer;
   m_rightBuffer = other.m_rightBuffer;
   m_minDistance = other.m_minDistance;

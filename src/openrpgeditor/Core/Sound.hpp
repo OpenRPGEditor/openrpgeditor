@@ -53,4 +53,5 @@ private:
   float m_minDistance{1.f};
   float m_attenuation{1.f};
   bool m_relativeToListener{false};
+  int m_numChannels = 2;
 };

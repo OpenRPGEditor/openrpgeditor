@@ -103,7 +103,7 @@ void TraitsEditor::draw(DatabaseEditor* dbEditor) {
             break;
           }
           case TraitCode::Equip_Weapon: {
-            ImGui::Text("%s", Database::Instance->weaponNameOrId(trait.dataId).c_str());
+            ImGui::Text("%s", Database::Instance->weaponTypeNameOrId(trait.dataId).c_str());
             break;
           }
           case TraitCode::Equip_Armor: {

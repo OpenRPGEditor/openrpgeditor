@@ -1,8 +1,12 @@
 #pragma once
 
 #include "Database/Trait.hpp"
+#include "Core/CommonUI/ObjectPicker.hpp"
+
 #include <vector>
 
+class State;
+class Skill;
 struct DatabaseEditor;
 
 struct TraitsEditor {
@@ -18,4 +22,6 @@ private:
   bool m_tempTraitAssigned{false};
   Trait m_tempTrait;
   Trait* m_deletingTrait = nullptr;
+  std::optional<ObjectPicker<State>> m_statePicker;
+  std::optional<ObjectPicker<Skill>> m_skillPicker;
 };

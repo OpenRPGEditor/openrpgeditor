@@ -23,7 +23,7 @@ CharacterPicker::CharacterPicker(const PickerMode mode, const std::string_view s
 : IDialogController("Select an Image##character_picker")
 , m_pickerMode(mode)
 , m_characterIndex(character)
-, m_checkerboardTexture(864, 768)
+, m_checkerboardTexture(4096, 4096)
 , m_pattern(pattern)
 , m_direction(direction) {
   m_characterSheets = ResourceManager::instance()->getDirectoryContents("img/characters/", ".png");
@@ -131,7 +131,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
       ImGui::SameLine();
       ImGui::BeginChild("##character_picker_sheet_panel",
                         ImVec2{App::DPIHandler::scale_value(894), App::DPIHandler::scale_value(784)},
-                        ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground);
+                        ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
       {
         auto win = ImGui::GetCurrentWindow();
         if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered()) {
@@ -168,13 +168,16 @@ std::tuple<bool, bool> CharacterPicker::draw() {
           }
         }
         if (m_characterSheet) {
+          ImGui::Dummy(ImVec2{static_cast<float>(m_characterSheet->texture().width()),
+                              static_cast<float>(m_characterSheet->texture().height())} *
+                       App::DPIHandler::get_ui_scale());
           win->DrawList->AddImage(
               m_checkerboardTexture.get(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
               win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_characterSheet->texture().width()),
                                                    static_cast<float>(m_characterSheet->texture().height())} *
                                             App::DPIHandler::get_ui_scale()),
               ImVec2{0.f, 0.f},
-              {m_characterSheet->texture().width() / 864.f, m_characterSheet->texture().height() / 768.f});
+              {m_characterSheet->texture().width() / 4096.f, m_characterSheet->texture().height() / 4096.f});
           win->DrawList->AddImage(m_characterSheet->texture().get(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
                                   win->ContentRegionRect.Min +
                                       (ImVec2{static_cast<float>(m_characterSheet->texture().width()),

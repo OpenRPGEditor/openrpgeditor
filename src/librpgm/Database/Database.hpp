@@ -283,6 +283,11 @@ struct Database {
   [[nodiscard]] std::string variableNameOrId(const int id) const { return nameOrId(variableName(id), id); }
   [[nodiscard]] std::string variableNameAndId(const int id) const { return nameAndId(variableName(id), id); }
   [[nodiscard]] std::string mapNameOrId(const int id) const { return nameOrId(mapName(id), id); }
+  [[nodiscard]] std::string skillTypeNameOrId(const int id) const { return nameOrId(skillTypeName(id), id, 2); }
+  [[nodiscard]] std::string weaponTypeNameOrId(const int id) const { return nameOrId(weaponTypeName(id), id, 2); }
+  [[nodiscard]] std::string elementNameOrId(const int id) const { return nameOrId(elementName(id), id, 2); }
+  [[nodiscard]] std::string armorTypeOrId(const int id) const { return nameOrId(armorTypeName(id), id, 2); }
+  [[nodiscard]] std::string equipTypeNameOrId(const int id) const { return nameOrId(equipTypeName(id), id, 2); }
 
   [[nodiscard]] std::pair<Actor*, Class*> featureObjects(const int actorId) const {
     const auto actor = actors.actor(actorId);
@@ -366,7 +371,6 @@ struct Database {
   }
 
   [[nodiscard]] std::vector<char> encryptionKeyAsBytes() const { return system.encryptionKeyAsBytes(); }
-
 
   static Database* Instance;
 };

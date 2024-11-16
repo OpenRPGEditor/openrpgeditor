@@ -53,10 +53,8 @@ void TraitsEditor::draw(DatabaseEditor* dbEditor) {
         if (ImGui::TableNextColumn()) {
           switch (trait.code) {
           case TraitCode::Element_Rate: {
-            auto elem = dbEditor->element(trait.dataId);
-            if (elem) {
-              ImGui::Text("%s * %i%%", elem->c_str(), static_cast<int>(trait.value * 100));
-            }
+            ImGui::Text("%s * %i%%", Database::Instance->equipTypeNameOrId(trait.dataId).c_str(),
+                        static_cast<int>(trait.value * 100));
             break;
           }
           case TraitCode::Ex_daa_Parameter: {
@@ -78,28 +76,16 @@ void TraitsEditor::draw(DatabaseEditor* dbEditor) {
             break;
           case TraitCode::Attack_State:
           case TraitCode::State_Rate: {
-            if (const auto state = dbEditor->state(trait.dataId)) {
-              ImGui::Text("%s %c %i%%", state->name.c_str(), trait.code == TraitCode::Attack_State ? '+' : '*',
-                          static_cast<int>(trait.value * 100));
-            } else {
-              ImGui::Text("Data Error! state %i not found", trait.dataId);
-            }
+            ImGui::Text("%s %c %i%%", Database::Instance->stateNameOrId(trait.dataId).c_str(),
+                        trait.code == TraitCode::Attack_State ? '+' : '*', static_cast<int>(trait.value * 100));
             break;
           }
           case TraitCode::State_Resist: {
-            auto state = dbEditor->state(trait.dataId);
-            if (state) {
-              ImGui::Text("%s", state->name.c_str());
-            } else {
-              ImGui::Text("Data Error! state %i not found", trait.dataId);
-            }
+            ImGui::Text("%s", Database::Instance->stateNameOrId(trait.dataId).c_str());
             break;
           }
           case TraitCode::Attack_Element: {
-            auto elem = dbEditor->element(trait.dataId);
-            if (elem) {
-              ImGui::Text("%s", elem->c_str());
-            }
+            ImGui::Text("%s", Database::Instance->elementNameOrId(trait.dataId).c_str());
             break;
           }
           case TraitCode::Attack_Speed:
@@ -108,42 +94,25 @@ void TraitsEditor::draw(DatabaseEditor* dbEditor) {
             break;
           case TraitCode::Add_Skill_Type:
           case TraitCode::Seal_Skill_Type: {
-            auto skill = dbEditor->skillType(trait.dataId);
-            if (skill) {
-              ImGui::Text("%s", skill->c_str());
-            }
+            ImGui::Text("%s", Database::Instance->skillTypeNameOrId(trait.dataId).c_str());
             break;
           }
           case TraitCode::Add_Skill:
           case TraitCode::Seal_Skill: {
-            auto skill = dbEditor->skill(trait.dataId);
-            if (skill) {
-              ImGui::Text("%s", skill->name.c_str());
-            } else {
-              ImGui::Text("Data Error! skill %i not found", trait.dataId);
-            }
+            ImGui::Text("%s", Database::Instance->skillNameOrId(trait.dataId).c_str());
             break;
           }
           case TraitCode::Equip_Weapon: {
-            auto weapon = dbEditor->weaponType(trait.dataId);
-            if (weapon) {
-              ImGui::Text("%s", weapon->c_str());
-            }
+            ImGui::Text("%s", Database::Instance->weaponNameOrId(trait.dataId).c_str());
             break;
           }
           case TraitCode::Equip_Armor: {
-            auto armorType = dbEditor->armorType(trait.dataId);
-            if (armorType) {
-              ImGui::Text("%s", armorType->c_str());
-            }
+            ImGui::Text("%s", Database::Instance->armorTypeOrId(trait.dataId).c_str());
             break;
           }
           case TraitCode::Lock_Equip:
           case TraitCode::Seal_Equip: {
-            auto equip = dbEditor->equipType(trait.dataId);
-            if (equip) {
-              ImGui::Text("%s", equip->c_str());
-            }
+            ImGui::Text("%s", Database::Instance->equipTypeNameOrId(trait.dataId).c_str());
             break;
           }
           case TraitCode::Slot_Type:
@@ -202,9 +171,9 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
     return;
   }
 
-  ImGui::SetNextWindowSize(ImVec2{680, 550} * App::DPIHandler::get_ui_scale());
   if (ImGui::BeginPopupModal(TraitsEditorPopupId.data(), nullptr,
-                             ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
+                             ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse |
+                                 ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize)) {
     if (!m_isNewEntry && !m_tempTraitAssigned) {
       // We're not a new entry so copy our values so we can restore them if we cancel
       m_tempTrait = *m_selectedTrait;
@@ -218,23 +187,55 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
                                         m_selectedTrait->code <= TraitCode::State_Resist && m_updateTab
                                     ? ImGuiTabItemFlags_SetSelected
                                     : 0)) {
-          ImGui::BeginGroup();
+          ImGui::BeginChild("##orpg_traits_rate_left_child", ImVec2(0, 0),
+                            ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY |
+                                ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_NoBackground);
           {
-            ImGui::BeginGroup();
-            {
-              if (ImGui::RadioButton("Element Rate", m_selectedTrait->code == TraitCode::Element_Rate)) {
-                if (m_selectedTrait->code != TraitCode::State_Resist) {
-                  m_selectedTrait->dataId = 1;
-                  m_selectedTrait->value = 1;
-                }
-                m_selectedTrait->code = TraitCode::Element_Rate;
+            if (ImGui::RadioButton("Element Rate", m_selectedTrait->code == TraitCode::Element_Rate)) {
+              if (m_selectedTrait->code != TraitCode::State_Resist) {
+                m_selectedTrait->dataId = 1;
+                m_selectedTrait->value = 1;
               }
+              m_selectedTrait->code = TraitCode::Element_Rate;
             }
-            ImGui::EndGroup();
-            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
-            ImGui::BeginGroup();
+            ImGui::NewLine();
+            ImGui::Spacing();
+            if (ImGui::RadioButton("Debuff Rate", m_selectedTrait->code == TraitCode::Debuff_Rate)) {
+              if (m_selectedTrait->code != TraitCode::Debuff_Rate) {
+                m_selectedTrait->dataId = static_cast<int>(DebuffSource::Max_HP);
+                m_selectedTrait->value = 1;
+              }
+              m_selectedTrait->code = TraitCode::Debuff_Rate;
+            }
+            ImGui::NewLine();
+            ImGui::Spacing();
+            if (ImGui::RadioButton("State Rate", m_selectedTrait->code == TraitCode::State_Rate)) {
+              if (m_selectedTrait->code != TraitCode::State_Rate) {
+                m_selectedTrait->dataId = 1;
+                m_selectedTrait->value = 1;
+              }
+              m_selectedTrait->code = TraitCode::State_Rate;
+            }
+            ImGui::NewLine();
+            ImGui::Spacing();
+            if (ImGui::RadioButton("State Resist", m_selectedTrait->code == TraitCode::State_Resist)) {
+              if (m_selectedTrait->code != TraitCode::State_Resist) {
+                m_selectedTrait->dataId = 1;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::State_Resist;
+            }
+          }
+          ImGui::EndChild();
+          ImGui::SameLine();
+          ImGui::BeginChild("##orpg_traits_rate_right_child", ImVec2(0, 0),
+                            ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY |
+                                ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_NoBackground);
+          {
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Element_Rate);
             {
-              ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Element_Rate);
               const auto element = dbEditor->element(m_selectedTrait->dataId);
               if (ImGui::BeginCombo("##trait_element_rate_combo",
                                     m_selectedTrait->code == TraitCode::Element_Rate ? element->c_str() : "")) {
@@ -253,26 +254,10 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
                                    m_selectedTrait->code == TraitCode::Element_Rate ? "* %d%%" : "")) {
                 m_selectedTrait->value = tmpInt / 100.0;
               }
-              ImGui::EndDisabled();
             }
-            ImGui::EndGroup();
-          }
-          ImGui::EndGroup();
-          ImGui::BeginGroup();
-          {
-            ImGui::BeginGroup();
-            if (ImGui::RadioButton("Debuff Rate", m_selectedTrait->code == TraitCode::Debuff_Rate)) {
-              if (m_selectedTrait->code != TraitCode::Debuff_Rate) {
-                m_selectedTrait->dataId = static_cast<int>(DebuffSource::Max_HP);
-                m_selectedTrait->value = 1;
-              }
-              m_selectedTrait->code = TraitCode::Debuff_Rate;
-            }
-            ImGui::EndGroup();
-            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
-            ImGui::BeginGroup();
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Debuff_Rate);
             {
-              ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Debuff_Rate);
               if (ImGui::BeginCombo("##trait_debuff_rate_combo",
                                     m_selectedTrait->code == TraitCode::Debuff_Rate
                                         ? DecodeEnumName(static_cast<DebuffSource>(m_selectedTrait->dataId)).c_str()
@@ -291,42 +276,15 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
                                    m_selectedTrait->code == TraitCode::Debuff_Rate ? "* %d%%" : "")) {
                 m_selectedTrait->value = tmpInt / 100.0;
               }
-              ImGui::EndDisabled();
             }
-            ImGui::EndGroup();
-          }
-          ImGui::EndGroup();
-          ImGui::BeginGroup();
-          {
-            ImGui::BeginGroup();
-            if (ImGui::RadioButton("State Rate", m_selectedTrait->code == TraitCode::State_Rate)) {
-              if (m_selectedTrait->code != TraitCode::State_Rate) {
-                m_selectedTrait->dataId = 1;
-                m_selectedTrait->value = 1;
-              }
-              m_selectedTrait->code = TraitCode::State_Rate;
-            }
-            ImGui::EndGroup();
-            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
-            ImGui::BeginGroup();
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::State_Rate);
             {
-              ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::State_Rate);
-              const auto state = dbEditor->state(m_selectedTrait->dataId);
-              const std::string preview = state && m_selectedTrait->code == TraitCode::State_Rate
-                                              ? std::format("{:04} {}", state->id, state->name)
-                                              : "";
-              if (ImGui::BeginCombo("##trait_state_rate_combo", preview.c_str())) {
-                for (const auto& state : dbEditor->states().states()) {
-                  if (!state.m_isValid) {
-                    continue;
-                  }
-
-                  if (ImGui::Selectable(std::format("{:04} {}", state.id, state.name).c_str(),
-                                        m_selectedTrait->dataId == state.id)) {
-                    m_selectedTrait->dataId = state.id;
-                  }
-                }
-                ImGui::EndCombo();
+              if (ImGui::Button(m_selectedTrait->code == TraitCode::State_Rate
+                                    ? Database::Instance->stateNameOrId(m_selectedTrait->dataId).c_str()
+                                    : "##trait_state_rate_selection",
+                                ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
+                m_statePicker.emplace("States"sv, Database::Instance->states.states(), m_selectedTrait->dataId);
               }
               int tmpInt =
                   m_selectedTrait->code == TraitCode::State_Rate ? static_cast<int>(m_selectedTrait->value * 100) : 0;
@@ -334,48 +292,20 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
                                    m_selectedTrait->code == TraitCode::State_Rate ? "* %d%%" : "")) {
                 m_selectedTrait->value = tmpInt / 100.0;
               }
-              ImGui::EndDisabled();
             }
-            ImGui::EndGroup();
-          }
-          ImGui::EndGroup();
-          ImGui::BeginGroup();
-          {
-            ImGui::BeginGroup();
-            if (ImGui::RadioButton("State Resist", m_selectedTrait->code == TraitCode::State_Resist)) {
-              if (m_selectedTrait->code != TraitCode::State_Resist) {
-                m_selectedTrait->dataId = 1;
-                m_selectedTrait->value = 0;
-              }
-              m_selectedTrait->code = TraitCode::State_Resist;
-            }
-            ImGui::EndGroup();
-            ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
-            ImGui::BeginGroup();
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::State_Resist);
             {
-              ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::State_Resist);
-              const auto state = dbEditor->state(m_selectedTrait->dataId);
-              const std::string preview = state && m_selectedTrait->code == TraitCode::State_Resist
-                                              ? std::format("{:04} {}", state->id, state->name)
-                                              : "";
-              if (ImGui::BeginCombo("##trait_state_resist_combo", preview.c_str())) {
-                for (const auto& state : dbEditor->states().states()) {
-                  if (!state.m_isValid) {
-                    continue;
-                  }
-
-                  if (ImGui::Selectable(std::format("{:04} {}", state.id, state.name).c_str(),
-                                        m_selectedTrait->dataId == state.id)) {
-                    m_selectedTrait->dataId = state.id;
-                  }
-                }
-                ImGui::EndCombo();
+              if (ImGui::Button(m_selectedTrait->code == TraitCode::State_Resist
+                                    ? Database::Instance->stateNameOrId(m_selectedTrait->dataId).c_str()
+                                    : "##trait_state_resist_selection",
+                                ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
+                m_statePicker.emplace("States"sv, Database::Instance->states.states(), m_selectedTrait->dataId);
               }
-              ImGui::EndDisabled();
             }
-            ImGui::EndGroup();
+            ImGui::EndDisabled();
           }
-          ImGui::EndGroup();
+          ImGui::EndChild();
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Param", nullptr,
@@ -383,110 +313,116 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
                                         m_selectedTrait->code <= TraitCode::Sp_daa_Parameter && m_updateTab
                                     ? ImGuiTabItemFlags_SetSelected
                                     : 0)) {
-          ImGui::BeginGroup();
-          if (ImGui::RadioButton("Parameter", m_selectedTrait->code == TraitCode::Parameter)) {
-            if (m_selectedTrait->code != TraitCode::Parameter) {
-              m_selectedTrait->dataId = static_cast<int>(ParameterSource::Max_HP);
-              m_selectedTrait->value = 1;
+          ImGui::BeginChild("##orpg_traits_param_left_child", ImVec2(0, 0),
+                            ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY |
+                                ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_NoBackground);
+          {
+            if (ImGui::RadioButton("Parameter", m_selectedTrait->code == TraitCode::Parameter)) {
+              if (m_selectedTrait->code != TraitCode::Parameter) {
+                m_selectedTrait->dataId = static_cast<int>(ParameterSource::Max_HP);
+                m_selectedTrait->value = 1;
+              }
+              m_selectedTrait->code = TraitCode::Parameter;
             }
-            m_selectedTrait->code = TraitCode::Parameter;
+            ImGui::NewLine();
+            ImGui::Spacing();
+            if (ImGui::RadioButton("Ex-Parameter", m_selectedTrait->code == TraitCode::Ex_daa_Parameter)) {
+              if (m_selectedTrait->code != TraitCode::Ex_daa_Parameter) {
+                m_selectedTrait->dataId = static_cast<int>(EXParameterSource::Hit_Rate);
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Ex_daa_Parameter;
+            }
+            ImGui::NewLine();
+            ImGui::Spacing();
+            if (ImGui::RadioButton("Sp-Parameter", m_selectedTrait->code == TraitCode::Sp_daa_Parameter)) {
+              if (m_selectedTrait->code != TraitCode::Sp_daa_Parameter) {
+                m_selectedTrait->dataId = static_cast<int>(SPParameterSource::Target_Rate);
+                m_selectedTrait->value = 1;
+              }
+              m_selectedTrait->code = TraitCode::Sp_daa_Parameter;
+            }
           }
-          ImGui::EndGroup();
-          ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
-          ImGui::BeginGroup();
+          ImGui::EndChild();
+          ImGui::SameLine();
+          ImGui::BeginChild("##orpg_traits_param_right_child", ImVec2(0, 0),
+                            ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY |
+                                ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_NoBackground);
           {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Parameter);
-            if (ImGui::BeginCombo("##trait_parameter_combo",
-                                  m_selectedTrait->code == TraitCode::Parameter
-                                      ? DecodeEnumName(static_cast<ParameterSource>(m_selectedTrait->dataId)).c_str()
-                                      : "")) {
-              for (auto v : magic_enum::enum_values<ParameterSource>()) {
-                if (ImGui::Selectable(DecodeEnumName(v).c_str(),
-                                      static_cast<ParameterSource>(m_selectedTrait->dataId) == v)) {
-                  m_selectedTrait->dataId = static_cast<int>(v);
+            {
+              if (ImGui::BeginCombo("##trait_parameter_combo",
+                                    m_selectedTrait->code == TraitCode::Parameter
+                                        ? DecodeEnumName(static_cast<ParameterSource>(m_selectedTrait->dataId)).c_str()
+                                        : "")) {
+                for (auto v : magic_enum::enum_values<ParameterSource>()) {
+                  if (ImGui::Selectable(DecodeEnumName(v).c_str(),
+                                        static_cast<ParameterSource>(m_selectedTrait->dataId) == v)) {
+                    m_selectedTrait->dataId = static_cast<int>(v);
+                  }
                 }
+                ImGui::EndCombo();
               }
-              ImGui::EndCombo();
-            }
-            int tmpInt =
-                m_selectedTrait->code == TraitCode::Parameter ? static_cast<int>(m_selectedTrait->value * 100) : 0;
-            if (ImGui::SliderInt("##trait_parameter_value", &tmpInt, 0, 100,
-                                 m_selectedTrait->code == TraitCode::Parameter ? "* %d%%" : "")) {
-              m_selectedTrait->value = tmpInt / 100.0;
+              int tmpInt =
+                  m_selectedTrait->code == TraitCode::Parameter ? static_cast<int>(m_selectedTrait->value * 100) : 0;
+              if (ImGui::SliderInt("##trait_parameter_value", &tmpInt, 0, 100,
+                                   m_selectedTrait->code == TraitCode::Parameter ? "* %d%%" : "")) {
+                m_selectedTrait->value = tmpInt / 100.0;
+              }
             }
             ImGui::EndDisabled();
-          }
-          ImGui::EndGroup();
-          ImGui::BeginGroup();
-          if (ImGui::RadioButton("Ex-Parameter", m_selectedTrait->code == TraitCode::Ex_daa_Parameter)) {
-            if (m_selectedTrait->code != TraitCode::Ex_daa_Parameter) {
-              m_selectedTrait->dataId = static_cast<int>(EXParameterSource::Hit_Rate);
-              m_selectedTrait->value = 0;
-            }
-            m_selectedTrait->code = TraitCode::Ex_daa_Parameter;
-          }
-          ImGui::EndGroup();
-          ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
-          ImGui::BeginGroup();
-          {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Ex_daa_Parameter);
-            if (ImGui::BeginCombo("##trait_exparameter_combo",
-                                  m_selectedTrait->code == TraitCode::Ex_daa_Parameter
-                                      ? DecodeEnumName(static_cast<EXParameterSource>(m_selectedTrait->dataId)).c_str()
-                                      : "")) {
-              for (auto v : magic_enum::enum_values<EXParameterSource>()) {
-                if (ImGui::Selectable(DecodeEnumName(v).c_str(),
-                                      static_cast<EXParameterSource>(m_selectedTrait->dataId) == v)) {
-                  m_selectedTrait->dataId = static_cast<int>(v);
+            {
+              if (ImGui::BeginCombo(
+                      "##trait_exparameter_combo",
+                      m_selectedTrait->code == TraitCode::Ex_daa_Parameter
+                          ? DecodeEnumName(static_cast<EXParameterSource>(m_selectedTrait->dataId)).c_str()
+                          : "")) {
+                for (auto v : magic_enum::enum_values<EXParameterSource>()) {
+                  if (ImGui::Selectable(DecodeEnumName(v).c_str(),
+                                        static_cast<EXParameterSource>(m_selectedTrait->dataId) == v)) {
+                    m_selectedTrait->dataId = static_cast<int>(v);
+                  }
                 }
+                ImGui::EndCombo();
               }
-              ImGui::EndCombo();
-            }
-            int tmpInt = m_selectedTrait->code == TraitCode::Ex_daa_Parameter
-                             ? static_cast<int>(m_selectedTrait->value * 100)
-                             : 0;
-            if (ImGui::SliderInt("##trait_exparameter_value", &tmpInt, 0, 100,
-                                 m_selectedTrait->code == TraitCode::Ex_daa_Parameter ? "+ %d%%" : "")) {
-              m_selectedTrait->value = tmpInt / 100.0;
+              int tmpInt = m_selectedTrait->code == TraitCode::Ex_daa_Parameter
+                               ? static_cast<int>(m_selectedTrait->value * 100)
+                               : 0;
+              if (ImGui::SliderInt("##trait_exparameter_value", &tmpInt, 0, 100,
+                                   m_selectedTrait->code == TraitCode::Ex_daa_Parameter ? "+ %d%%" : "")) {
+                m_selectedTrait->value = tmpInt / 100.0;
+              }
             }
             ImGui::EndDisabled();
-          }
-          ImGui::EndGroup();
-          ImGui::BeginGroup();
-          if (ImGui::RadioButton("Sp-Parameter", m_selectedTrait->code == TraitCode::Sp_daa_Parameter)) {
-            if (m_selectedTrait->code != TraitCode::Sp_daa_Parameter) {
-              m_selectedTrait->dataId = static_cast<int>(SPParameterSource::Target_Rate);
-              m_selectedTrait->value = 1;
-            }
-            m_selectedTrait->code = TraitCode::Sp_daa_Parameter;
-          }
-          ImGui::EndGroup();
-          ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
-          ImGui::BeginGroup();
-          {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Sp_daa_Parameter);
-            if (ImGui::BeginCombo("##trait_spparameter_combo",
-                                  m_selectedTrait->code == TraitCode::Sp_daa_Parameter
-                                      ? DecodeEnumName(static_cast<SPParameterSource>(m_selectedTrait->dataId)).c_str()
-                                      : "")) {
-              for (auto v : magic_enum::enum_values<SPParameterSource>()) {
-                if (ImGui::Selectable(DecodeEnumName(v).c_str(),
-                                      static_cast<SPParameterSource>(m_selectedTrait->dataId) == v)) {
-                  m_selectedTrait->dataId = static_cast<int>(v);
+            {
+              if (ImGui::BeginCombo(
+                      "##trait_spparameter_combo",
+                      m_selectedTrait->code == TraitCode::Sp_daa_Parameter
+                          ? DecodeEnumName(static_cast<SPParameterSource>(m_selectedTrait->dataId)).c_str()
+                          : "")) {
+                for (auto v : magic_enum::enum_values<SPParameterSource>()) {
+                  if (ImGui::Selectable(DecodeEnumName(v).c_str(),
+                                        static_cast<SPParameterSource>(m_selectedTrait->dataId) == v)) {
+                    m_selectedTrait->dataId = static_cast<int>(v);
+                  }
                 }
+                ImGui::EndCombo();
               }
-              ImGui::EndCombo();
-            }
-            int tmpInt = m_selectedTrait->code == TraitCode::Sp_daa_Parameter
-                             ? static_cast<int>(m_selectedTrait->value * 100)
-                             : 0;
-            if (ImGui::SliderInt("##trait_spparameter_value", &tmpInt, 0, 100,
-                                 m_selectedTrait->code == TraitCode::Sp_daa_Parameter ? "* %d%%" : "")) {
-              m_selectedTrait->value = tmpInt / 100.0;
+              int tmpInt = m_selectedTrait->code == TraitCode::Sp_daa_Parameter
+                               ? static_cast<int>(m_selectedTrait->value * 100)
+                               : 0;
+              if (ImGui::SliderInt("##trait_spparameter_value", &tmpInt, 0, 100,
+                                   m_selectedTrait->code == TraitCode::Sp_daa_Parameter ? "* %d%%" : "")) {
+                m_selectedTrait->value = tmpInt / 100.0;
+              }
             }
             ImGui::EndDisabled();
           }
-          ImGui::EndGroup();
+          ImGui::EndChild();
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Attack", nullptr,
@@ -494,35 +430,103 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
                                         m_selectedTrait->code <= TraitCode::Attack_Times__plu_ && m_updateTab
                                     ? ImGuiTabItemFlags_SetSelected
                                     : 0)) {
-          ImGui::BeginGroup();
-          if (ImGui::RadioButton("Attack Element", m_selectedTrait->code == TraitCode::Attack_Element)) {
-            if (m_selectedTrait->code != TraitCode::Attack_Element) {
-              m_selectedTrait->dataId = 1;
-              m_selectedTrait->value = 0;
+          ImGui::BeginChild("##orpg_traits_attack_left_child", ImVec2(0, 0),
+                            ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY |
+                                ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_NoBackground);
+          {
+            if (ImGui::RadioButton("Attack Element", m_selectedTrait->code == TraitCode::Attack_Element)) {
+              if (m_selectedTrait->code != TraitCode::Attack_Element) {
+                m_selectedTrait->dataId = 1;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Attack_Element;
             }
-            m_selectedTrait->code = TraitCode::Attack_Element;
+            if (ImGui::RadioButton("Attack State", m_selectedTrait->code == TraitCode::Attack_State)) {
+              if (m_selectedTrait->code != TraitCode::Attack_State) {
+                m_selectedTrait->dataId = 1;
+                m_selectedTrait->value = 1;
+              }
+              m_selectedTrait->code = TraitCode::Attack_State;
+            }
+            ImGui::NewLine();
+            ImGui::Spacing();
+            if (ImGui::RadioButton("Attack Speed", m_selectedTrait->code == TraitCode::Attack_Speed)) {
+              if (m_selectedTrait->code != TraitCode::Attack_Speed) {
+                m_selectedTrait->dataId = 1;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Attack_Speed;
+            }
+            if (ImGui::RadioButton("Attack Times +", m_selectedTrait->code == TraitCode::Attack_Times__plu_)) {
+              if (m_selectedTrait->code != TraitCode::Attack_Times__plu_) {
+                m_selectedTrait->dataId = 1;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Attack_Times__plu_;
+            }
           }
-          ImGui::EndGroup();
-          ImGui::SameLine((ImGui::GetContentRegionAvail().x / 2) - (104 * App::DPIHandler::get_ui_scale()));
-          ImGui::BeginGroup();
+          ImGui::EndChild();
+          ImGui::SameLine();
+          ImGui::BeginChild("##orpg_traits_attack_right_child", ImVec2(0, 0),
+                            ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY |
+                                ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_NoBackground);
           {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Attack_Element);
-            auto element = dbEditor->element(m_selectedTrait->dataId);
-            if (ImGui::BeginCombo("##trait_attack_elem_combo",
-                                  m_selectedTrait->code == TraitCode::Attack_Element && element ? element->c_str()
-                                                                                                : "")) {
-              for (int i = 1; i < dbEditor->elementsCount(); ++i) {
-                auto elem = dbEditor->element(i);
-                if (ImGui::Selectable(elem ? elem->c_str() : "##traits_editor_empty_attack_elem",
-                                      m_selectedTrait->dataId == i)) {
-                  m_selectedTrait->dataId = i;
+            {
+              auto element = dbEditor->element(m_selectedTrait->dataId);
+              if (ImGui::BeginCombo("##trait_attack_elem_combo",
+                                    m_selectedTrait->code == TraitCode::Attack_Element && element ? element->c_str()
+                                                                                                  : "")) {
+                for (int i = 1; i < dbEditor->elementsCount(); ++i) {
+                  auto elem = dbEditor->element(i);
+                  if (ImGui::Selectable(elem ? elem->c_str() : "##traits_editor_empty_attack_elem",
+                                        m_selectedTrait->dataId == i)) {
+                    m_selectedTrait->dataId = i;
+                  }
                 }
+                ImGui::EndCombo();
               }
-              ImGui::EndCombo();
+            }
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Attack_State);
+            {
+              if (ImGui::Button(m_selectedTrait->code == TraitCode::Attack_State
+                                    ? Database::Instance->stateNameOrId(m_selectedTrait->dataId).c_str()
+                                    : "##trait_attack_state_selection",
+                                ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
+                m_statePicker.emplace("States"sv, Database::Instance->states.states(), m_selectedTrait->dataId);
+              }
+
+              int tmpInt =
+                  m_selectedTrait->code == TraitCode::Attack_State ? static_cast<int>(m_selectedTrait->value * 100) : 0;
+              if (ImGui::SliderInt("##trait_attack_state_value", &tmpInt, 0, 100,
+                                   m_selectedTrait->code == TraitCode::Attack_State ? "* %d%%" : "")) {
+                m_selectedTrait->value = tmpInt / 100.0;
+              }
+            }
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Attack_Speed);
+            {
+              float tmp = m_selectedTrait->code == TraitCode::Attack_Speed ? m_selectedTrait->value : 0;
+              if (ImGui::SliderFloat("##trait_attack_speed_value", &tmp, -1000, 1000,
+                                     m_selectedTrait->code == TraitCode::Attack_Speed ? "%g" : "")) {
+                m_selectedTrait->value = tmp;
+              }
+            }
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Attack_Times__plu_);
+            {
+              float tmp = m_selectedTrait->code == TraitCode::Attack_Times__plu_ ? m_selectedTrait->value : 0;
+              if (ImGui::SliderFloat("##trait_attack_times+_value", &tmp, -9, 9,
+                                     m_selectedTrait->code == TraitCode::Attack_Times__plu_ ? "%g" : "")) {
+                m_selectedTrait->value = tmp;
+              }
             }
             ImGui::EndDisabled();
           }
-          ImGui::EndGroup();
+          ImGui::EndChild();
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Skill", nullptr,
@@ -530,6 +534,101 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
                                         m_selectedTrait->code <= TraitCode::Seal_Skill && m_updateTab
                                     ? ImGuiTabItemFlags_SetSelected
                                     : 0)) {
+          ImGui::BeginChild("##orpg_traits_skill_left_child", ImVec2(0, 0),
+                            ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY |
+                                ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_NoBackground);
+          {
+            if (ImGui::RadioButton("Add Skill Type", m_selectedTrait->code == TraitCode::Add_Skill_Type)) {
+              if (m_selectedTrait->code != TraitCode::Add_Skill_Type) {
+                m_selectedTrait->dataId = 1;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Add_Skill_Type;
+            }
+            if (ImGui::RadioButton("Seal Skill Type", m_selectedTrait->code == TraitCode::Seal_Skill_Type)) {
+              if (m_selectedTrait->code != TraitCode::Seal_Skill_Type) {
+                m_selectedTrait->dataId = 1;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Seal_Skill_Type;
+            }
+            if (ImGui::RadioButton("Add Skill", m_selectedTrait->code == TraitCode::Add_Skill)) {
+              if (m_selectedTrait->code != TraitCode::Add_Skill) {
+                m_selectedTrait->dataId = 1;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Add_Skill;
+            }
+            if (ImGui::RadioButton("Seal Skill", m_selectedTrait->code == TraitCode::Seal_Skill)) {
+              if (m_selectedTrait->code != TraitCode::Seal_Skill) {
+                m_selectedTrait->dataId = 1;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Seal_Skill;
+            }
+          }
+          ImGui::EndChild();
+          ImGui::SameLine();
+          ImGui::BeginChild("##orpg_traits_skill_right_child", ImVec2(0, 0),
+                            ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY |
+                                ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_NoBackground);
+          {
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Add_Skill_Type);
+            {
+              const auto preview = m_selectedTrait->code == TraitCode::Add_Skill_Type
+                                       ? Database::Instance->skillTypeNameOrId(m_selectedTrait->dataId)
+                                       : "";
+              if (ImGui::BeginCombo("##trait_editor_add_skill_type_combo", preview.c_str())) {
+                for (int i = 1; i < Database::Instance->system.skillTypes.size(); i++) {
+                  if (ImGui::Selectable(Database::Instance->skillTypeNameOrId(i).c_str(),
+                                        i == m_selectedTrait->dataId)) {
+                    m_selectedTrait->dataId = i;
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Seal_Skill_Type);
+            {
+              const auto preview = m_selectedTrait->code == TraitCode::Seal_Skill_Type
+                                       ? Database::Instance->skillTypeNameOrId(m_selectedTrait->dataId)
+                                       : "";
+              if (ImGui::BeginCombo("##trait_editor_seal_skill_type_combo", preview.c_str())) {
+                for (int i = 1; i < Database::Instance->system.skillTypes.size(); i++) {
+                  if (ImGui::Selectable(Database::Instance->skillTypeNameOrId(i).c_str(),
+                                        i == m_selectedTrait->dataId)) {
+                    m_selectedTrait->dataId = i;
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Add_Skill);
+            {
+              if (ImGui::Button(m_selectedTrait->code == TraitCode::Add_Skill
+                                    ? Database::Instance->skillNameOrId(m_selectedTrait->dataId).c_str()
+                                    : "##trait_add_skill_selection",
+                                ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
+                m_skillPicker.emplace("Skills"sv, Database::Instance->skills.skills(), m_selectedTrait->dataId);
+              }
+            }
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Seal_Skill);
+            {
+              if (ImGui::Button(m_selectedTrait->code == TraitCode::Seal_Skill
+                                    ? Database::Instance->skillNameOrId(m_selectedTrait->dataId).c_str()
+                                    : "##trait_seal_skill_selection",
+                                ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
+                m_skillPicker.emplace("Skills"sv, Database::Instance->skills.skills(), m_selectedTrait->dataId);
+              }
+            }
+            ImGui::EndDisabled();
+          }
+          ImGui::EndChild();
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Equip", nullptr,
@@ -537,6 +636,135 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
                                         m_selectedTrait->code <= TraitCode::Slot_Type && m_updateTab
                                     ? ImGuiTabItemFlags_SetSelected
                                     : 0)) {
+          ImGui::BeginChild("##orpg_traits_equip_left_child", ImVec2(0, 0),
+                            ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY |
+                                ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_NoBackground);
+          {
+            if (ImGui::RadioButton("Equip Weapon", m_selectedTrait->code == TraitCode::Equip_Weapon)) {
+              if (m_selectedTrait->code != TraitCode::Equip_Weapon) {
+                m_selectedTrait->dataId = 1;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Equip_Weapon;
+            }
+            if (ImGui::RadioButton("Equip Armor", m_selectedTrait->code == TraitCode::Equip_Armor)) {
+              if (m_selectedTrait->code != TraitCode::Equip_Armor) {
+                m_selectedTrait->dataId = 1;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Equip_Armor;
+            }
+            if (ImGui::RadioButton("Lock Equip", m_selectedTrait->code == TraitCode::Lock_Equip)) {
+              if (m_selectedTrait->code != TraitCode::Lock_Equip) {
+                m_selectedTrait->dataId = 1;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Lock_Equip;
+            }
+            if (ImGui::RadioButton("Seal Equip", m_selectedTrait->code == TraitCode::Seal_Equip)) {
+              if (m_selectedTrait->code != TraitCode::Seal_Equip) {
+                m_selectedTrait->dataId = 1;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Seal_Equip;
+            }
+            if (ImGui::RadioButton("Slot Type", m_selectedTrait->code == TraitCode::Slot_Type)) {
+              if (m_selectedTrait->code != TraitCode::Slot_Type) {
+                m_selectedTrait->dataId = 0;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Slot_Type;
+            }
+          }
+          ImGui::EndChild();
+          ImGui::SameLine();
+          ImGui::BeginChild("##orpg_traits_equip_right_child", ImVec2(0, 0),
+                            ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY |
+                                ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_NoBackground);
+          {
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Equip_Weapon);
+            {
+              const auto preview = m_selectedTrait->code == TraitCode::Equip_Weapon
+                                       ? Database::Instance->weaponTypeNameOrId(m_selectedTrait->dataId)
+                                       : "";
+              if (ImGui::BeginCombo("##trait_editor_equip_weapon_type_combo", preview.c_str())) {
+                for (int i = 1; i < Database::Instance->system.weaponTypes.size(); i++) {
+                  if (ImGui::Selectable(Database::Instance->weaponTypeNameOrId(i).c_str(),
+                                        i == m_selectedTrait->dataId)) {
+                    m_selectedTrait->dataId = i;
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Equip_Armor);
+            {
+              const auto preview = m_selectedTrait->code == TraitCode::Equip_Armor
+                                       ? Database::Instance->armorTypeOrId(m_selectedTrait->dataId)
+                                       : "";
+              if (ImGui::BeginCombo("##trait_editor_equip_armor_type_combo", preview.c_str())) {
+                for (int i = 1; i < Database::Instance->system.armorTypes.size(); i++) {
+                  if (ImGui::Selectable(Database::Instance->armorTypeOrId(i).c_str(), i == m_selectedTrait->dataId)) {
+                    m_selectedTrait->dataId = i;
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Lock_Equip);
+            {
+              const auto preview = m_selectedTrait->code == TraitCode::Lock_Equip
+                                       ? Database::Instance->equipTypeNameOrId(m_selectedTrait->dataId)
+                                       : "";
+              if (ImGui::BeginCombo("##trait_editor_equip_type_combo", preview.c_str())) {
+                for (int i = 1; i < Database::Instance->system.equipTypes.size(); i++) {
+                  if (ImGui::Selectable(Database::Instance->equipTypeNameOrId(i).c_str(),
+                                        i == m_selectedTrait->dataId)) {
+                    m_selectedTrait->dataId = i;
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Seal_Equip);
+            {
+              const auto preview = m_selectedTrait->code == TraitCode::Seal_Equip
+                                       ? Database::Instance->equipTypeNameOrId(m_selectedTrait->dataId)
+                                       : "";
+              if (ImGui::BeginCombo("##trait_editor_seal_equip_type_combo", preview.c_str())) {
+                for (int i = 1; i < Database::Instance->system.equipTypes.size(); i++) {
+                  if (ImGui::Selectable(Database::Instance->equipTypeNameOrId(i).c_str(),
+                                        i == m_selectedTrait->dataId)) {
+                    m_selectedTrait->dataId = i;
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Slot_Type);
+            {
+              const auto preview = m_selectedTrait->code == TraitCode::Slot_Type
+                                       ? DecodeEnumName(static_cast<SlotType>(m_selectedTrait->dataId))
+                                       : "";
+              if (ImGui::BeginCombo("##trait_editor_slot_type_combo", preview.c_str())) {
+                for (const auto& type : magic_enum::enum_values<SlotType>()) {
+                  if (ImGui::Selectable(DecodeEnumName(type).c_str(),
+                                        m_selectedTrait->dataId == static_cast<int>(type))) {
+                    m_selectedTrait->dataId = static_cast<int>(type);
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            ImGui::EndDisabled();
+          }
+          ImGui::EndChild();
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Other", nullptr,
@@ -544,6 +772,108 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
                                         m_selectedTrait->code <= TraitCode::Party_Ability && m_updateTab
                                     ? ImGuiTabItemFlags_SetSelected
                                     : 0)) {
+          ImGui::BeginChild("##orpg_traits_other_left_child", ImVec2(0, 0),
+                            ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY |
+                                ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_NoBackground);
+          {
+            if (ImGui::RadioButton("Action Times +", m_selectedTrait->code == TraitCode::Action_Times__plu_)) {
+              if (m_selectedTrait->code != TraitCode::Action_Times__plu_) {
+                m_selectedTrait->dataId = 0;
+                m_selectedTrait->value = 1;
+              }
+              m_selectedTrait->code = TraitCode::Action_Times__plu_;
+            }
+            if (ImGui::RadioButton("Special Flag", m_selectedTrait->code == TraitCode::Special_Flag)) {
+              if (m_selectedTrait->code != TraitCode::Special_Flag) {
+                m_selectedTrait->dataId = 0;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Special_Flag;
+            }
+            if (ImGui::RadioButton("Collapse Effect", m_selectedTrait->code == TraitCode::Collapse_Effect)) {
+              if (m_selectedTrait->code != TraitCode::Collapse_Effect) {
+                m_selectedTrait->dataId = 0;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Collapse_Effect;
+            }
+            if (ImGui::RadioButton("Party Ability", m_selectedTrait->code == TraitCode::Party_Ability)) {
+              if (m_selectedTrait->code != TraitCode::Party_Ability) {
+                m_selectedTrait->dataId = 0;
+                m_selectedTrait->value = 0;
+              }
+              m_selectedTrait->code = TraitCode::Party_Ability;
+            }
+          }
+          ImGui::EndChild();
+          ImGui::SameLine();
+          ImGui::BeginChild("##orpg_traits_other_right_child", ImVec2(0, 0),
+                            ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY |
+                                ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_NoBackground);
+          {
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Action_Times__plu_);
+            {
+              int tmpInt = m_selectedTrait->code == TraitCode::Action_Times__plu_
+                               ? static_cast<int>(m_selectedTrait->value * 100)
+                               : 0;
+              if (ImGui::SliderInt("##trait_action_times_plus_value", &tmpInt, 0, 100,
+                                   m_selectedTrait->code == TraitCode::Action_Times__plu_ ? "%d%%" : "")) {
+                m_selectedTrait->value = tmpInt / 100.0;
+              }
+            }
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Special_Flag);
+            {
+              const auto preview = m_selectedTrait->code == TraitCode::Special_Flag
+                                       ? DecodeEnumName(static_cast<SpecialFlag>(m_selectedTrait->dataId))
+                                       : "";
+              if (ImGui::BeginCombo("##trait_editor_special_flag_combo", preview.c_str())) {
+                for (const auto& type : magic_enum::enum_values<SpecialFlag>()) {
+                  if (ImGui::Selectable(DecodeEnumName(type).c_str(),
+                                        m_selectedTrait->dataId == static_cast<int>(type))) {
+                    m_selectedTrait->dataId = static_cast<int>(type);
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Collapse_Effect);
+            {
+              const auto preview = m_selectedTrait->code == TraitCode::Collapse_Effect
+                                       ? DecodeEnumName(static_cast<CollapseEffect>(m_selectedTrait->dataId))
+                                       : "";
+              if (ImGui::BeginCombo("##trait_editor_collapse_effect_combo", preview.c_str())) {
+                for (const auto& type : magic_enum::enum_values<CollapseEffect>()) {
+                  if (ImGui::Selectable(DecodeEnumName(type).c_str(),
+                                        m_selectedTrait->dataId == static_cast<int>(type))) {
+                    m_selectedTrait->dataId = static_cast<int>(type);
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Party_Ability);
+            {
+              const auto preview = m_selectedTrait->code == TraitCode::Party_Ability
+                                       ? DecodeEnumName(static_cast<PartyAbility>(m_selectedTrait->dataId))
+                                       : "";
+              if (ImGui::BeginCombo("##trait_editor_party_ability_combo", preview.c_str())) {
+                for (const auto& type : magic_enum::enum_values<PartyAbility>()) {
+                  if (ImGui::Selectable(DecodeEnumName(type).c_str(),
+                                        m_selectedTrait->dataId == static_cast<int>(type))) {
+                    m_selectedTrait->dataId = static_cast<int>(type);
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            ImGui::EndDisabled();
+          }
+          ImGui::EndChild();
           ImGui::EndTabItem();
         }
         ImGui::EndTabBar();
@@ -571,6 +901,24 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
       }
     }
     ImGui::EndGroup();
+
+    if (m_statePicker) {
+      if (auto [closed, confirmed] = m_statePicker->draw(); closed) {
+        if (confirmed) {
+          m_selectedTrait->dataId = m_statePicker->selection();
+        }
+        m_statePicker.reset();
+      }
+    }
+
+    if (m_skillPicker) {
+      if (auto [closed, confirmed] = m_skillPicker->draw(); closed) {
+        if (confirmed) {
+          m_selectedTrait->dataId = m_skillPicker->selection();
+        }
+        m_skillPicker.reset();
+      }
+    }
     ImGui::EndPopup();
   }
   m_updateTab = false;

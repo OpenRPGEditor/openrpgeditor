@@ -4,12 +4,10 @@
 #include <format>
 
 #include "imgui.h"
-#include "imgui_internal.h"
-#include "Core/DPIHandler.hpp"
 
 using namespace std::string_view_literals;
 
-static constexpr std::string_view TraitsEditorPopupId = "Traits Edit"sv;
+static constexpr auto TraitsEditorPopupId = "Traits Edit"sv;
 
 void TraitsEditor::draw(DatabaseEditor* dbEditor) {
   if (m_traits == nullptr) {
@@ -240,7 +238,6 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
               if (ImGui::BeginCombo("##trait_element_rate_combo",
                                     m_selectedTrait->code == TraitCode::Element_Rate ? element.c_str() : "")) {
                 for (int i = 1; i < dbEditor->elementsCount(); ++i) {
-                  auto v = dbEditor->element(i);
                   if (ImGui::Selectable(Database::Instance->elementNameOrId(i).c_str(), i == m_selectedTrait->dataId)) {
                     m_selectedTrait->dataId = i;
                   }
@@ -508,7 +505,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::EndDisabled();
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Attack_Speed);
             {
-              float tmp = m_selectedTrait->code == TraitCode::Attack_Speed ? m_selectedTrait->value : 0;
+              float tmp = m_selectedTrait->code == TraitCode::Attack_Speed ? static_cast<float>(m_selectedTrait->value) : 0;
               if (ImGui::SliderFloat("##trait_attack_speed_value", &tmp, -1000, 1000,
                                      m_selectedTrait->code == TraitCode::Attack_Speed ? "%g" : "")) {
                 m_selectedTrait->value = tmp;
@@ -517,7 +514,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::EndDisabled();
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Attack_Times__plu_);
             {
-              float tmp = m_selectedTrait->code == TraitCode::Attack_Times__plu_ ? m_selectedTrait->value : 0;
+              float tmp = m_selectedTrait->code == TraitCode::Attack_Times__plu_ ? static_cast<float>(m_selectedTrait->value) : 0;
               if (ImGui::SliderFloat("##trait_attack_times+_value", &tmp, -9, 9,
                                      m_selectedTrait->code == TraitCode::Attack_Times__plu_ ? "%g" : "")) {
                 m_selectedTrait->value = tmp;
@@ -891,7 +888,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
       }
       ImGui::SameLine();
       if (ImGui::Button("Cancel")) {
-        if (!m_isNewEntry && m_selectedTrait) {
+        if (!m_isNewEntry) {
           // Restore values to their unmodified state;
           *m_selectedTrait = m_tempTrait;
         }

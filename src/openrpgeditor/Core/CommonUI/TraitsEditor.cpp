@@ -53,7 +53,7 @@ void TraitsEditor::draw(DatabaseEditor* dbEditor) {
         if (ImGui::TableNextColumn()) {
           switch (trait.code) {
           case TraitCode::Element_Rate: {
-            ImGui::Text("%s * %i%%", Database::Instance->equipTypeNameOrId(trait.dataId).c_str(),
+            ImGui::Text("%s * %i%%", Database::Instance->elementNameOrId(trait.dataId).c_str(),
                         static_cast<int>(trait.value * 100));
             break;
           }
@@ -236,13 +236,12 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
           {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Element_Rate);
             {
-              const auto element = dbEditor->element(m_selectedTrait->dataId);
+              const auto element = Database::Instance->elementNameOrId(m_selectedTrait->dataId);
               if (ImGui::BeginCombo("##trait_element_rate_combo",
-                                    m_selectedTrait->code == TraitCode::Element_Rate ? element->c_str() : "")) {
+                                    m_selectedTrait->code == TraitCode::Element_Rate ? element.c_str() : "")) {
                 for (int i = 1; i < dbEditor->elementsCount(); ++i) {
                   auto v = dbEditor->element(i);
-                  if (ImGui::Selectable(v ? (" " + *v).c_str() : "##traits_empty_element_name",
-                                        i == m_selectedTrait->dataId)) {
+                  if (ImGui::Selectable(Database::Instance->elementNameOrId(i).c_str(), i == m_selectedTrait->dataId)) {
                     m_selectedTrait->dataId = i;
                   }
                 }

@@ -14,7 +14,6 @@ static bool LoadTexturePriv(SDL_Texture** texture_ptr, const int* width, const i
                             const int channels, void* data) {
   SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(data, *width, *height, channels * 8, channels * *width, 0x000000ff,
                                                   0x0000ff00, 0x00ff0000, 0xff000000);
-  stbi_image_free(data);
 
   if (surface == NULL) {
     fprintf(stderr, "Failed to create SDL surface: %s\n", SDL_GetError());
@@ -22,14 +21,17 @@ static bool LoadTexturePriv(SDL_Texture** texture_ptr, const int* width, const i
   }
 
   *texture_ptr = SDL_CreateTextureFromSurface(renderer, surface);
-  SDL_FreeSurface(surface);
+
 
   if ((*texture_ptr) == NULL) {
     fprintf(stderr, "Failed to create SDL texture: %s\n", SDL_GetError());
-
+    SDL_FreeSurface(surface);
+    stbi_image_free(data);
     return false;
   }
 
+  SDL_FreeSurface(surface);
+  stbi_image_free(data);
   return true;
 }
 

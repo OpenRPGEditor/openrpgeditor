@@ -19,10 +19,10 @@ public:
   virtual ~ThreadedFileQueue();
 
   // Set the base path for file operations
-  void setBasePath(const std::string& basePath);
+  void setBasepath(const std::string_view basePath);
 
   // Get the current base path
-  std::string getBasePath() const;
+  std::string getBasepath() const;
 
   // Enqueue a task to the queue
   bool enqueue(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback);
@@ -36,9 +36,12 @@ public:
   // Abort current processing
   void abort();
 
+  void terminate();
+
   // Reset and clear the queue, also aborts current tasks
   void reset();
 
+  bool hasTasks() const { return m_taskQueue.size() > 0; }
 protected:
   // The worker loop, to be implemented in subclasses (serialization/deserialization)
   virtual void processTask(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback) = 0;

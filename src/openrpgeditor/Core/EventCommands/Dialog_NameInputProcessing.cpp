@@ -26,9 +26,9 @@ std::tuple<bool, bool> Dialog_NameInputProcessing::draw() {
     ImGui::SeparatorText("Actor");
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
     ImGui::PushID("##nameinput_actor");
-    if (ImGui::Button(Database::Instance->actorNameOrId(m_actor).c_str(),
+    if (ImGui::Button(Database::instance().actorNameOrId(m_actor).c_str(),
                       ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
-      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::Instance->actors.actorList(), 0);
+      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance().actors.actorList(), 0);
     }
     ImGui::PopID();
     ImGui::SeparatorText("Max characters");

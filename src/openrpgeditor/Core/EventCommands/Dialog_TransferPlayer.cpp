@@ -40,7 +40,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
     ImGui::BeginDisabled(m_mode != 0);
     ImGui::PushID("#transfer_coord_selection");
-    if (ImGui::Button(m_mode == 0 ? Database::Instance->mapNameOrId(m_mapId).c_str() : "",
+    if (ImGui::Button(m_mode == 0 ? Database::instance().mapNameOrId(m_mapId).c_str() : "",
                       ImVec2{(App::DPIHandler::scale_value(300)), 0})) {
       // TODO: Coordinate selector
     }
@@ -64,26 +64,26 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
     {
       ImGui::BeginDisabled(m_mode != 1);
       ImGui::PushID("##transfer_var_mapId");
-      if (ImGui::Button(m_mode == 1 ? Database::Instance->variableNameAndId(m_mapId_var).c_str() : "",
+      if (ImGui::Button(m_mode == 1 ? Database::instance().variableNameAndId(m_mapId_var).c_str() : "",
                         ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 0;
-        picker.emplace("Variables", Database::Instance->system.variables);
+        picker.emplace("Variables", Database::instance().system.variables);
       }
       ImGui::PopID();
 
       ImGui::PushID("##transfer_var_x");
-      if (ImGui::Button(m_mode == 1 ? Database::Instance->variableNameAndId(m_x_var).c_str() : "",
+      if (ImGui::Button(m_mode == 1 ? Database::instance().variableNameAndId(m_x_var).c_str() : "",
                         ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 1;
-        picker.emplace("Variables", Database::Instance->system.variables);
+        picker.emplace("Variables", Database::instance().system.variables);
       }
       ImGui::PopID();
 
       ImGui::PushID("##transfer_var_y");
-      if (ImGui::Button(m_mode == 1 ? Database::Instance->variableNameAndId(m_y_var).c_str() : "",
+      if (ImGui::Button(m_mode == 1 ? Database::instance().variableNameAndId(m_y_var).c_str() : "",
                         ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 2;
-        picker.emplace("Variables", Database::Instance->system.variables);
+        picker.emplace("Variables", Database::instance().system.variables);
       }
       ImGui::PopID();
       ImGui::EndDisabled();

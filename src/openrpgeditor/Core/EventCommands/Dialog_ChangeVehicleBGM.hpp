@@ -17,7 +17,7 @@ struct Dialog_ChangeVehicleBGM : IEventDialogController {
     m_vehicle = static_cast<int>(command->vehicle);
     m_audio = command->bgm;
     try {
-      auto files = getFileNames(Database::Instance->basePath + "audio/bgm/");
+      auto files = getFileNames(Database::instance().basePath + "audio/bgm/");
       for (const auto& file : files) {
         m_audios.push_back(file);
       }

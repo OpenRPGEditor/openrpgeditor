@@ -30,11 +30,11 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     std::string text =
         m_operation != 0
             ? "##commonevent_switch_empty"
-            : (m_start == 0 ? "" : std::format("{:04} ", m_start) + Database::Instance->switchName(m_start));
+            : (m_start == 0 ? "" : std::format("{:04} ", m_start) + Database::instance().switchName(m_start));
     ImGui::PushID("##controlswitch_id");
     ImGui::BeginDisabled(m_operation != 0);
     if (ImGui::Button(text.c_str(), ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
-      picker.emplace("Switches", Database::Instance->system.switches);
+      picker.emplace("Switches", Database::instance().system.switches);
     }
     ImGui::PopID();
     ImGui::EndDisabled();

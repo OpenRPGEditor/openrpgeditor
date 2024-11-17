@@ -5,25 +5,21 @@
 
 namespace fs = std::filesystem;
 
-DeserializationQueue::~DeserializationQueue() {
-  abort();
-  if (m_workerThread.joinable()) {
-    m_workerThread.join();
-  }
-}
-
 void DeserializationQueue::processTask(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback) {
-  m_currentFile = fileData->getFilePath();
+  m_currentFile = fileData->filepath();
 
   fs::path filePath = fs::path(m_basePath) / fs::path(m_currentFile);
   if (std::ifstream inFile(filePath, std::ios::binary); inFile) {
     fileData->deserialize(inFile);
-    {
-      std::lock_guard<std::mutex> lock(m_mutex);
-      m_completedTasks++;
-    }
+    m_completedTasks++;
     callback(fileData);
+    std::cerr << "Deserialized: " << filePath << std::endl;
   } else {
     std::cerr << "Error: Failed to open file for deserialization: " << filePath << std::endl;
   }
+}
+
+DeserializationQueue& DeserializationQueue::instance() {
+  static DeserializationQueue instance;
+  return instance;
 }

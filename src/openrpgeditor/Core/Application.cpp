@@ -23,6 +23,8 @@
 #include "SFML/Audio.hpp"
 
 #include "Core/NWJSVersionManager.hpp"
+#include "Database/Serializable/DeserializationQueue.hpp"
+#include "Database/Serializable/SerializationQueue.hpp"
 
 #include <iostream>
 namespace App {
@@ -267,6 +269,8 @@ ExitStatus Application::run() {
   }
 
   Settings::instance()->serialize(m_userConfigPath + "config.json");
+  // SerializationQueue::instance().terminate();
+  // DeserializationQueue::instance().terminate();
   NFD_Quit();
   return m_exitStatus;
 }

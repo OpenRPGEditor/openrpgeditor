@@ -54,9 +54,9 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
       // Items
       ImGui::BeginDisabled(m_type_selection != 0);
       ImGui::PushID("##merchandise_items");
-      if (ImGui::Button(m_type_selection != 0 ? "" : Database::Instance->itemNameOrId(m_item_selection).c_str(),
+      if (ImGui::Button(m_type_selection != 0 ? "" : Database::instance().itemNameOrId(m_item_selection).c_str(),
                         ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
-        item_picker = ObjectPicker<Item>("Items"sv, Database::Instance->items.items(), 0);
+        item_picker = ObjectPicker<Item>("Items"sv, Database::instance().items.items(), 0);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -64,9 +64,9 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
       // Weapon
       ImGui::BeginDisabled(m_type_selection != 1);
       ImGui::PushID("##merchandise_weapon");
-      if (ImGui::Button(m_type_selection != 1 ? "" : Database::Instance->weaponNameOrId(m_weapon_selection).c_str(),
+      if (ImGui::Button(m_type_selection != 1 ? "" : Database::instance().weaponNameOrId(m_weapon_selection).c_str(),
                         ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
-        weapon_picker = ObjectPicker<Weapon>("Weapons"sv, Database::Instance->weapons.weapons(), 0);
+        weapon_picker = ObjectPicker<Weapon>("Weapons"sv, Database::instance().weapons.weapons(), 0);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -74,9 +74,9 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
       // Armor
       ImGui::BeginDisabled(m_type_selection != 2);
       ImGui::PushID("##merchandise_armor");
-      if (ImGui::Button(m_type_selection != 2 ? "" : Database::Instance->armorNameOrId(m_armor_selection).c_str(),
+      if (ImGui::Button(m_type_selection != 2 ? "" : Database::instance().armorNameOrId(m_armor_selection).c_str(),
                         ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
-        armor_picker = ObjectPicker<Armor>("Armors"sv, Database::Instance->armors.armors(), 0);
+        armor_picker = ObjectPicker<Armor>("Armors"sv, Database::instance().armors.armors(), 0);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -123,11 +123,11 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
         }
         if (command->priceType == PriceType::Standard) {
           if (command->type == ShopType::Armor) {
-            command->price = Database::Instance->armors.armor(command->id)->price;
+            command->price = Database::instance().armors.armor(command->id)->price;
           } else if (command->type == ShopType::Weapon) {
-            command->price = Database::Instance->weapons.weapon(command->id)->price;
+            command->price = Database::instance().weapons.weapon(command->id)->price;
           } else if (command->type == ShopType::Item) {
-            command->price = Database::Instance->items.item(command->id)->price;
+            command->price = Database::instance().items.item(command->id)->price;
           }
         } else {
           command->price = m_price_constant;

@@ -51,7 +51,7 @@ void TraitsEditor::draw(DatabaseEditor* dbEditor) {
         if (ImGui::TableNextColumn()) {
           switch (trait.code) {
           case TraitCode::Element_Rate: {
-            ImGui::Text("%s * %i%%", Database::Instance->elementNameOrId(trait.dataId).c_str(),
+            ImGui::Text("%s * %i%%", Database::instance().elementNameOrId(trait.dataId).c_str(),
                         static_cast<int>(trait.value * 100));
             break;
           }
@@ -74,16 +74,16 @@ void TraitsEditor::draw(DatabaseEditor* dbEditor) {
             break;
           case TraitCode::Attack_State:
           case TraitCode::State_Rate: {
-            ImGui::Text("%s %c %i%%", Database::Instance->stateNameOrId(trait.dataId).c_str(),
+            ImGui::Text("%s %c %i%%", Database::instance().stateNameOrId(trait.dataId).c_str(),
                         trait.code == TraitCode::Attack_State ? '+' : '*', static_cast<int>(trait.value * 100));
             break;
           }
           case TraitCode::State_Resist: {
-            ImGui::Text("%s", Database::Instance->stateNameOrId(trait.dataId).c_str());
+            ImGui::Text("%s", Database::instance().stateNameOrId(trait.dataId).c_str());
             break;
           }
           case TraitCode::Attack_Element: {
-            ImGui::Text("%s", Database::Instance->elementNameOrId(trait.dataId).c_str());
+            ImGui::Text("%s", Database::instance().elementNameOrId(trait.dataId).c_str());
             break;
           }
           case TraitCode::Attack_Speed:
@@ -92,25 +92,25 @@ void TraitsEditor::draw(DatabaseEditor* dbEditor) {
             break;
           case TraitCode::Add_Skill_Type:
           case TraitCode::Seal_Skill_Type: {
-            ImGui::Text("%s", Database::Instance->skillTypeNameOrId(trait.dataId).c_str());
+            ImGui::Text("%s", Database::instance().skillTypeNameOrId(trait.dataId).c_str());
             break;
           }
           case TraitCode::Add_Skill:
           case TraitCode::Seal_Skill: {
-            ImGui::Text("%s", Database::Instance->skillNameOrId(trait.dataId).c_str());
+            ImGui::Text("%s", Database::instance().skillNameOrId(trait.dataId).c_str());
             break;
           }
           case TraitCode::Equip_Weapon: {
-            ImGui::Text("%s", Database::Instance->weaponTypeNameOrId(trait.dataId).c_str());
+            ImGui::Text("%s", Database::instance().weaponTypeNameOrId(trait.dataId).c_str());
             break;
           }
           case TraitCode::Equip_Armor: {
-            ImGui::Text("%s", Database::Instance->armorTypeOrId(trait.dataId).c_str());
+            ImGui::Text("%s", Database::instance().armorTypeOrId(trait.dataId).c_str());
             break;
           }
           case TraitCode::Lock_Equip:
           case TraitCode::Seal_Equip: {
-            ImGui::Text("%s", Database::Instance->equipTypeNameOrId(trait.dataId).c_str());
+            ImGui::Text("%s", Database::instance().equipTypeNameOrId(trait.dataId).c_str());
             break;
           }
           case TraitCode::Slot_Type:
@@ -234,11 +234,11 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
           {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Element_Rate);
             {
-              const auto element = Database::Instance->elementNameOrId(m_selectedTrait->dataId);
+              const auto element = Database::instance().elementNameOrId(m_selectedTrait->dataId);
               if (ImGui::BeginCombo("##trait_element_rate_combo",
                                     m_selectedTrait->code == TraitCode::Element_Rate ? element.c_str() : "")) {
                 for (int i = 1; i < dbEditor->elementsCount(); ++i) {
-                  if (ImGui::Selectable(Database::Instance->elementNameOrId(i).c_str(), i == m_selectedTrait->dataId)) {
+                  if (ImGui::Selectable(Database::instance().elementNameOrId(i).c_str(), i == m_selectedTrait->dataId)) {
                     m_selectedTrait->dataId = i;
                   }
                 }
@@ -277,10 +277,10 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::State_Rate);
             {
               if (ImGui::Button(m_selectedTrait->code == TraitCode::State_Rate
-                                    ? Database::Instance->stateNameOrId(m_selectedTrait->dataId).c_str()
+                                    ? Database::instance().stateNameOrId(m_selectedTrait->dataId).c_str()
                                     : "##trait_state_rate_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_statePicker.emplace("States"sv, Database::Instance->states.states(), m_selectedTrait->dataId);
+                m_statePicker.emplace("States"sv, Database::instance().states.states(), m_selectedTrait->dataId);
               }
               int tmpInt =
                   m_selectedTrait->code == TraitCode::State_Rate ? static_cast<int>(m_selectedTrait->value * 100) : 0;
@@ -293,10 +293,10 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::State_Resist);
             {
               if (ImGui::Button(m_selectedTrait->code == TraitCode::State_Resist
-                                    ? Database::Instance->stateNameOrId(m_selectedTrait->dataId).c_str()
+                                    ? Database::instance().stateNameOrId(m_selectedTrait->dataId).c_str()
                                     : "##trait_state_resist_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_statePicker.emplace("States"sv, Database::Instance->states.states(), m_selectedTrait->dataId);
+                m_statePicker.emplace("States"sv, Database::instance().states.states(), m_selectedTrait->dataId);
               }
             }
             ImGui::EndDisabled();
@@ -489,10 +489,10 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Attack_State);
             {
               if (ImGui::Button(m_selectedTrait->code == TraitCode::Attack_State
-                                    ? Database::Instance->stateNameOrId(m_selectedTrait->dataId).c_str()
+                                    ? Database::instance().stateNameOrId(m_selectedTrait->dataId).c_str()
                                     : "##trait_attack_state_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_statePicker.emplace("States"sv, Database::Instance->states.states(), m_selectedTrait->dataId);
+                m_statePicker.emplace("States"sv, Database::instance().states.states(), m_selectedTrait->dataId);
               }
 
               int tmpInt =
@@ -574,11 +574,11 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Add_Skill_Type);
             {
               const auto preview = m_selectedTrait->code == TraitCode::Add_Skill_Type
-                                       ? Database::Instance->skillTypeNameOrId(m_selectedTrait->dataId)
+                                       ? Database::instance().skillTypeNameOrId(m_selectedTrait->dataId)
                                        : "";
               if (ImGui::BeginCombo("##trait_editor_add_skill_type_combo", preview.c_str())) {
-                for (int i = 1; i < Database::Instance->system.skillTypes.size(); i++) {
-                  if (ImGui::Selectable(Database::Instance->skillTypeNameOrId(i).c_str(),
+                for (int i = 1; i < Database::instance().system.skillTypes.size(); i++) {
+                  if (ImGui::Selectable(Database::instance().skillTypeNameOrId(i).c_str(),
                                         i == m_selectedTrait->dataId)) {
                     m_selectedTrait->dataId = i;
                   }
@@ -590,11 +590,11 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Seal_Skill_Type);
             {
               const auto preview = m_selectedTrait->code == TraitCode::Seal_Skill_Type
-                                       ? Database::Instance->skillTypeNameOrId(m_selectedTrait->dataId)
+                                       ? Database::instance().skillTypeNameOrId(m_selectedTrait->dataId)
                                        : "";
               if (ImGui::BeginCombo("##trait_editor_seal_skill_type_combo", preview.c_str())) {
-                for (int i = 1; i < Database::Instance->system.skillTypes.size(); i++) {
-                  if (ImGui::Selectable(Database::Instance->skillTypeNameOrId(i).c_str(),
+                for (int i = 1; i < Database::instance().system.skillTypes.size(); i++) {
+                  if (ImGui::Selectable(Database::instance().skillTypeNameOrId(i).c_str(),
                                         i == m_selectedTrait->dataId)) {
                     m_selectedTrait->dataId = i;
                   }
@@ -606,20 +606,20 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Add_Skill);
             {
               if (ImGui::Button(m_selectedTrait->code == TraitCode::Add_Skill
-                                    ? Database::Instance->skillNameOrId(m_selectedTrait->dataId).c_str()
+                                    ? Database::instance().skillNameOrId(m_selectedTrait->dataId).c_str()
                                     : "##trait_add_skill_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_skillPicker.emplace("Skills"sv, Database::Instance->skills.skills(), m_selectedTrait->dataId);
+                m_skillPicker.emplace("Skills"sv, Database::instance().skills.skills(), m_selectedTrait->dataId);
               }
             }
             ImGui::EndDisabled();
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Seal_Skill);
             {
               if (ImGui::Button(m_selectedTrait->code == TraitCode::Seal_Skill
-                                    ? Database::Instance->skillNameOrId(m_selectedTrait->dataId).c_str()
+                                    ? Database::instance().skillNameOrId(m_selectedTrait->dataId).c_str()
                                     : "##trait_seal_skill_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_skillPicker.emplace("Skills"sv, Database::Instance->skills.skills(), m_selectedTrait->dataId);
+                m_skillPicker.emplace("Skills"sv, Database::instance().skills.skills(), m_selectedTrait->dataId);
               }
             }
             ImGui::EndDisabled();
@@ -683,11 +683,11 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Equip_Weapon);
             {
               const auto preview = m_selectedTrait->code == TraitCode::Equip_Weapon
-                                       ? Database::Instance->weaponTypeNameOrId(m_selectedTrait->dataId)
+                                       ? Database::instance().weaponTypeNameOrId(m_selectedTrait->dataId)
                                        : "";
               if (ImGui::BeginCombo("##trait_editor_equip_weapon_type_combo", preview.c_str())) {
-                for (int i = 1; i < Database::Instance->system.weaponTypes.size(); i++) {
-                  if (ImGui::Selectable(Database::Instance->weaponTypeNameOrId(i).c_str(),
+                for (int i = 1; i < Database::instance().system.weaponTypes.size(); i++) {
+                  if (ImGui::Selectable(Database::instance().weaponTypeNameOrId(i).c_str(),
                                         i == m_selectedTrait->dataId)) {
                     m_selectedTrait->dataId = i;
                   }
@@ -699,11 +699,11 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Equip_Armor);
             {
               const auto preview = m_selectedTrait->code == TraitCode::Equip_Armor
-                                       ? Database::Instance->armorTypeOrId(m_selectedTrait->dataId)
+                                       ? Database::instance().armorTypeOrId(m_selectedTrait->dataId)
                                        : "";
               if (ImGui::BeginCombo("##trait_editor_equip_armor_type_combo", preview.c_str())) {
-                for (int i = 1; i < Database::Instance->system.armorTypes.size(); i++) {
-                  if (ImGui::Selectable(Database::Instance->armorTypeOrId(i).c_str(), i == m_selectedTrait->dataId)) {
+                for (int i = 1; i < Database::instance().system.armorTypes.size(); i++) {
+                  if (ImGui::Selectable(Database::instance().armorTypeOrId(i).c_str(), i == m_selectedTrait->dataId)) {
                     m_selectedTrait->dataId = i;
                   }
                 }
@@ -714,11 +714,11 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Lock_Equip);
             {
               const auto preview = m_selectedTrait->code == TraitCode::Lock_Equip
-                                       ? Database::Instance->equipTypeNameOrId(m_selectedTrait->dataId)
+                                       ? Database::instance().equipTypeNameOrId(m_selectedTrait->dataId)
                                        : "";
               if (ImGui::BeginCombo("##trait_editor_equip_type_combo", preview.c_str())) {
-                for (int i = 1; i < Database::Instance->system.equipTypes.size(); i++) {
-                  if (ImGui::Selectable(Database::Instance->equipTypeNameOrId(i).c_str(),
+                for (int i = 1; i < Database::instance().system.equipTypes.size(); i++) {
+                  if (ImGui::Selectable(Database::instance().equipTypeNameOrId(i).c_str(),
                                         i == m_selectedTrait->dataId)) {
                     m_selectedTrait->dataId = i;
                   }
@@ -730,11 +730,11 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::BeginDisabled(m_selectedTrait->code != TraitCode::Seal_Equip);
             {
               const auto preview = m_selectedTrait->code == TraitCode::Seal_Equip
-                                       ? Database::Instance->equipTypeNameOrId(m_selectedTrait->dataId)
+                                       ? Database::instance().equipTypeNameOrId(m_selectedTrait->dataId)
                                        : "";
               if (ImGui::BeginCombo("##trait_editor_seal_equip_type_combo", preview.c_str())) {
-                for (int i = 1; i < Database::Instance->system.equipTypes.size(); i++) {
-                  if (ImGui::Selectable(Database::Instance->equipTypeNameOrId(i).c_str(),
+                for (int i = 1; i < Database::instance().system.equipTypes.size(); i++) {
+                  if (ImGui::Selectable(Database::instance().equipTypeNameOrId(i).c_str(),
                                         i == m_selectedTrait->dataId)) {
                     m_selectedTrait->dataId = i;
                   }

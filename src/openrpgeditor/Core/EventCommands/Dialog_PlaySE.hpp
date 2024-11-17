@@ -18,7 +18,7 @@ struct Dialog_PlaySE : IEventDialogController {
     }
     m_audio = command->audio;
     try {
-      auto files = getFileNames(Database::Instance->basePath + "audio/se/");
+      auto files = getFileNames(Database::instance().basePath + "audio/se/");
       for (const auto& file : files) {
         m_audios.push_back(file);
       }

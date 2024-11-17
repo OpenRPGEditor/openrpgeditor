@@ -95,7 +95,7 @@ void DBGameConstantsTab::drawAliasModal(const GameConstants::Type type) {
       break;
     case GameConstants::Type::Map:
       map = &m_constants->maps;
-      name = Database::Instance->mapInfos.map(m_selection)->name;
+      name = Database::instance().mapInfos.map(m_selection)->name;
       break;
     default:
       return;
@@ -911,7 +911,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(Database::Instance->mapInfos.map(id)->name, alias);
+          drawNameAndAliasColumns(Database::instance().mapInfos.map(id)->name, alias);
           if (drawDeleteButton(id)) {
             it = m_constants->maps.erase(it);
           } else {
@@ -922,7 +922,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_mapsPicker.emplace("Maps", Database::Instance->mapInfos.mapInfos(), m_selection);
+        m_mapsPicker.emplace("Maps", Database::instance().mapInfos.mapInfos(), m_selection);
       }
       if (m_mapsPicker) {
         const auto [closed, confirmed] = m_mapsPicker->draw();

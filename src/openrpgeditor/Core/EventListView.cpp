@@ -16,7 +16,7 @@ void EventListView::draw() {
       for (auto& event : map->events) {
         bool selectedHere = false;
         if (event) {
-          sprintf(eventNameBuf, "%s (%i, %i)", Database::Instance->eventNameOrId(event->id).c_str(), event->x, event->y);
+          sprintf(eventNameBuf, "%s (%i, %i)", Database::instance().eventNameOrId(event->id).c_str(), event->x, event->y);
           if (ImGui::Selectable(eventNameBuf, m_parent->mapEditor()->selectedEvent() == &*event,
                                 ImGuiSelectableFlags_AllowDoubleClick | ImGuiSelectableFlags_SelectOnNav)) {
             m_parent->mapEditor()->setSelectedEvent(&*event);

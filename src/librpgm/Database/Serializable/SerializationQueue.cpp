@@ -7,13 +7,6 @@
 
 namespace fs = std::filesystem;
 
-SerializationQueue::~SerializationQueue() {
-  abort();
-  if (m_workerThread.joinable()) {
-    m_workerThread.join();
-  }
-}
-
 std::string generateRandomFilename(const std::string& prefix, int length = 10) {
   static const std::string allowedChars =
       "abcdefghijklmnopqrstuvwxyz"
@@ -33,10 +26,9 @@ std::string generateRandomFilename(const std::string& prefix, int length = 10) {
 }
 
 void SerializationQueue::processTask(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback) {
-  m_currentFile = fileData->getFilePath();
+  m_currentFile = fileData->filepath();
 
   if (m_basePath.empty()) {
-    std::cerr << "Base path is empty. Skipping serialization for file: " << m_currentFile << std::endl;
     return;
   }
 
@@ -78,7 +70,10 @@ void SerializationQueue::processTask(const std::shared_ptr<ISerializable>& fileD
         callback(fileData); // Callback with the successfully serialized data
       } catch (const std::exception& e) {}
     }
-  } else {
-    std::cerr << "Error: Failed to open temp file for serialization: " << tempFilePath << std::endl;
   }
+}
+
+SerializationQueue& SerializationQueue::instance() {
+  static SerializationQueue instance;
+  return instance;
 }

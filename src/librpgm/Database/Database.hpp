@@ -23,8 +23,8 @@ using namespace std::string_view_literals;
 
 struct Database {
   static constexpr auto InvalidDataName = "?"sv;
-  Database() { Instance = this; }
-  ~Database() { Instance = nullptr; }
+  Database(std::string_view projectBasePath, std::string_view projectFilePath, std::string_view projectVersion);
+  ~Database() { m_instance = nullptr; }
   Database(Database&) = delete;
   Database(Database&&) = delete;
   Database& operator=(Database&) = delete;
@@ -372,5 +372,8 @@ struct Database {
 
   [[nodiscard]] std::vector<char> encryptionKeyAsBytes() const { return system.encryptionKeyAsBytes(); }
 
-  static Database* Instance;
+  static Database& instance() { return *m_instance; }
+
+private:
+  static Database* m_instance;
 };

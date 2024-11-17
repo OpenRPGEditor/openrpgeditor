@@ -25,7 +25,7 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
     }
     ImGui::SeparatorText("Character");
     ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
-    if (ImGui::BeginCombo("##showanim_character", Database::Instance->eventNameOrId(m_character).c_str())) {
+    if (ImGui::BeginCombo("##showanim_character", Database::instance().eventNameOrId(m_character).c_str())) {
 
       if (ImGui::Selectable("Player", m_character == -1)) {
         m_character = -1;
@@ -36,7 +36,7 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
         ImGui::SetItemDefaultFocus();
       }
 
-      for (auto& dataSource : Database::Instance->mapInfos.currentMap()->map()->events) {
+      for (auto& dataSource : Database::instance().mapInfos.currentMap()->map()->events) {
         if (!dataSource.has_value())
           continue;
 
@@ -52,9 +52,9 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
 
     // Animation Button
     ImGui::PushID("##showanim_animation_select");
-    if (ImGui::Button(Database::Instance->animationName(m_animation).c_str(),
+    if (ImGui::Button(Database::instance().animationName(m_animation).c_str(),
                       ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      animation_picker = ObjectPicker<Animation>("Animation"sv, Database::Instance->animations.animations(), 0);
+      animation_picker = ObjectPicker<Animation>("Animation"sv, Database::instance().animations.animations(), 0);
     }
     ImGui::PopID();
     // Wait for completion

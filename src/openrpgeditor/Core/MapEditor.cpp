@@ -46,12 +46,6 @@ private:
 };
 
 void MapEditor::setMap(MapInfo* info) {
-  if (info == nullptr) {
-    m_mapRenderer.setMap(nullptr, nullptr);
-  } else {
-    m_mapRenderer.setMap(info->map(), m_parent->tileset(info->map()->tilesetId));
-  }
-
   m_eventEditors.clear();
   m_mapInfo = info;
 
@@ -472,6 +466,10 @@ void MapEditor::renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer
   // renderLayerRects(win, layer);
 }
 void MapEditor::draw() {
+  if (m_mapInfo != nullptr && m_mapInfo->map() != nullptr && m_mapRenderer.map() != m_mapInfo->map()) {
+    m_mapRenderer.setMap(m_mapInfo->map(), Database::instance().tilesets.tileset(m_mapInfo->map()->tilesetId));
+  }
+
   if (!m_checkeredBack) {
     m_checkeredBack = CheckerboardTexture(8192 * 2, 8192 * 2, CellSizes::_48, 255, 220);
   }

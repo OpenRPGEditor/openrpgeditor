@@ -23,3 +23,5 @@ CheckerboardTexture::CheckerboardTexture(int width, int height, CellSizes cellSi
 
   free(data);
 }
+
+CheckerboardTexture::~CheckerboardTexture() { SDL_DestroyTexture(static_cast<SDL_Texture*>(m_texture)); }

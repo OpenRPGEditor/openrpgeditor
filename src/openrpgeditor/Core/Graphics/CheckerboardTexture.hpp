@@ -14,6 +14,7 @@ struct CheckerboardTexture {
   CheckerboardTexture() = default;
   CheckerboardTexture(int width, int height, CellSizes cellSize = CellSizes::_64, uint8_t evenColor = 255,
                     uint8_t oddColor = 127);
+  ~CheckerboardTexture();
 
   void* get() const { return m_texture; }
   explicit operator bool() const { return m_texture != nullptr; }

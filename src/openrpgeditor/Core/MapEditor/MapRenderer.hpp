@@ -43,11 +43,12 @@ public:
 
   MapRenderer();
   void setMap(const Map* map, const Tileset* tilest, int tileWidth = 48, int tileHeight = 48);
+  [[nodiscard]] const Map* map() const { return m_map; }
 
   void update();
 
-  int tileId(int x, int y, int z) const;
-  bool isOverworld() const { return m_tileset && m_tileset->mode == Tileset::Mode::World; }
+  [[nodiscard]] int tileId(int x, int y, int z) const;
+  [[nodiscard]] bool isOverworld() const { return m_tileset && m_tileset->mode == Tileset::Mode::World; }
 
   [[nodiscard]] std::vector<int> tilesetFlags() const {
     if (m_tileset) {

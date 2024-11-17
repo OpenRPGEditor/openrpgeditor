@@ -7,6 +7,8 @@
 
 #include "Core/Window.hpp"
 #include "Project.hpp"
+#include "Database/Serializable/DeserializationQueue.hpp"
+#include "Database/Serializable/SerializationQueue.hpp"
 
 #include <optional>
 

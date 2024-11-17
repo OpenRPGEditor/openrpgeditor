@@ -31,8 +31,8 @@ std::tuple<bool, bool> Dialog_ChangeProfile::draw() {
 
     // Actor Button
     ImGui::PushID("##nickname_selection_actor");
-    if (ImGui::Button(Database::Instance->actorName(m_actor).c_str(), ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
-      actor_picker = ObjectPicker("Actor"sv, Database::Instance->actors.actorList(), m_actor);
+    if (ImGui::Button(Database::instance().actorName(m_actor).c_str(), ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
+      actor_picker = ObjectPicker("Actor"sv, Database::instance().actors.actorList(), m_actor);
     }
     ImGui::PopID();
 

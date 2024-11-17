@@ -2,9 +2,14 @@
 #include "Database/Serializable/ThreadedFileQueue.hpp"
 
 class SerializationQueue : public ThreadedFileQueue {
-public:
   SerializationQueue() = default;
-  ~SerializationQueue() override;
+public:
+  SerializationQueue(const SerializationQueue&) = delete;
+  SerializationQueue(SerializationQueue&&) = delete;
+  SerializationQueue& operator=(const SerializationQueue&) = delete;
+  SerializationQueue& operator=(SerializationQueue&&) = delete;
+
+  static SerializationQueue& instance();
 
 protected:
   // Implement the processTask method for serialization

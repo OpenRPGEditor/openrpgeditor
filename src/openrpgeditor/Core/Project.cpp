@@ -16,6 +16,8 @@
 #include "Core/ImGuiExt/ImGuiNotify.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "nfd.h"
+#include "Database/Serializable/DeserializationQueue.hpp"
+#include "Database/Serializable/SerializationQueue.hpp"
 
 #include <clip.h>
 
@@ -42,9 +44,7 @@ Project::Project()
 , m_mapEditor(this)
 , m_eventListView(this)
 , m_tilesetPicker(this)
-, m_nwjsVersionManager("https://dl.nwjs.io") {
-  clip::register_format("application/rpgmv-EventCommand");
-}
+, m_nwjsVersionManager("https://dl.nwjs.io") {}
 
 bool Project::load(std::string_view filePath, std::string_view basePath) {
   close();
@@ -63,47 +63,12 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
     return false;
   }
   APP_INFO("Got project for {}", version);
-  m_database.emplace();
-
-  m_database->projectVersion = version;
-  m_database->basePath = basePath;
-  m_database->projectFilePath = filePath;
+  SerializationQueue::instance().reset();
+  DeserializationQueue::instance().reset();
+  SerializationQueue::instance().setBasepath(basePath);
+  DeserializationQueue::instance().setBasepath(basePath);
+  m_database.emplace(basePath, filePath, version);
   m_resourceManager.emplace(m_database->basePath);
-  APP_INFO("Loading Actor definitions...");
-  m_database->actors = Actors::load(m_database->basePath + "/data/Actors.json");
-  APP_INFO("Loading Class definitions...");
-  m_database->classes = Classes::load(m_database->basePath + "/data/Classes.json");
-  APP_INFO("Loading Skill definitions...");
-  m_database->skills = Skills::load(m_database->basePath + "/data/Skills.json");
-  APP_INFO("Loading Item definitions...");
-  m_database->items = Items::load(m_database->basePath + "/data/Items.json");
-  APP_INFO("Loading Weapon definitions...");
-  m_database->weapons = Weapons::load(m_database->basePath + "/data/Weapons.json");
-  APP_INFO("Loading Armor definitions...");
-  m_database->armors = Armors::load(m_database->basePath + "/data/Armors.json");
-  APP_INFO("Loading Enemy definitions...");
-  m_database->enemies = Enemies::load(m_database->basePath + "/data/Enemies.json");
-  APP_INFO("Loading Troop definitions...");
-  m_database->troops = Troops::load(m_database->basePath + "/data/Troops.json");
-  APP_INFO("Loading State definitions...");
-  m_database->states = States::load(m_database->basePath + "/data/States.json");
-  APP_INFO("Loading Animation definitions...");
-  m_database->animations = Animations::load(m_database->basePath + "/data/Animations.json");
-  APP_INFO("Loading Tileset definitions...");
-  m_database->tilesets = Tilesets::load(m_database->basePath + "/data/Tilesets.json");
-  APP_INFO("Loading CommonEvent definitions...");
-  m_database->commonEvents = CommonEvents::load(m_database->basePath + "/data/CommonEvents.json");
-  APP_INFO("Loading System...");
-  m_database->system = System::load(m_database->basePath + "/data/System.json");
-  APP_INFO("Loading Plugins...");
-  m_database->plugins = Plugins::load(m_database->basePath + "js/plugins.js");
-  APP_INFO("Loading GameConstants");
-  m_database->gameConstants = GameConstants::load(m_database->basePath + "/data/Constants.json");
-  APP_INFO("Loading Templates");
-  m_database->templates = Templates::load(m_database->basePath + "/data/Templates.json");
-  APP_INFO(std::to_string(m_database->templates.commands.size()) + " size of commands");
-  APP_INFO("Loading MapInfos...");
-  m_database->mapInfos = MapInfos::load(m_database->basePath + "/data/MapInfos.json");
   m_databaseEditor.emplace(this, m_database->actors, m_database->classes, m_database->skills, m_database->items,
                            m_database->weapons, m_database->armors, m_database->enemies, m_database->troops,
                            m_database->states, m_database->animations, m_database->tilesets, m_database->commonEvents,
@@ -150,10 +115,10 @@ bool Project::close(bool promptSave) {
   if (promptSave) {
     // TODO: Implement when safe to do so
     if (m_database) {
-      m_database->gameConstants.serialize(m_database->basePath + "/data/Constants.json");
-      if (m_database->gameConstants.generateJS) {
-        m_database->gameConstants.generateConstantsJS(m_database->basePath + "/js/Constants.js");
-      }
+      // m_database->gameConstants.serialize(m_database->basePath + "/data/Constants.json");
+      // if (m_database->gameConstants.generateJS) {
+      //   m_database->gameConstants.generateConstantsJS(m_database->basePath + "/js/Constants.js");
+      // }
     }
   }
 
@@ -346,6 +311,23 @@ void Project::drawToolbar() {
     ImGui::ActionTooltip("Shadow Pen", "Adds or removes shadows of walls");
   }
   ImGui::EndDisabled();
+
+  if (DeserializationQueue::instance().hasTasks()) {
+    ImGui::Begin("Load Progress....");
+    ImGui::Text("Loading %s....", DeserializationQueue::instance().getCurrentFile().data());
+    ImGui::ProgressBar(DeserializationQueue::instance().getProgress());
+    ImGui::End();
+  } else if (DeserializationQueue::instance().getProgress() >= 100.f) {
+    DeserializationQueue::instance().reset();
+  }
+  if (SerializationQueue::instance().hasTasks()) {
+    ImGui::Begin("Load Progress....");
+    ImGui::Text("Loading %s....", SerializationQueue::instance().getCurrentFile().data());
+    ImGui::ProgressBar(SerializationQueue::instance().getProgress());
+    ImGui::End();
+  } else if (SerializationQueue::instance().getProgress() >= 100.f) {
+    SerializationQueue::instance().reset();
+  }
   ImGui::End();
 }
 

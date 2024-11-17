@@ -25,9 +25,9 @@ std::tuple<bool, bool> Dialog_ChangeTileset::draw() {
 
     ImGui::SeparatorText("Tileset");
     ImGui::PushID("##tileset_selection");
-    if (ImGui::Button((std::format("{:04}", m_tileset) + Database::Instance->tilesetName(m_tileset)).c_str(),
+    if (ImGui::Button((std::format("{:04}", m_tileset) + Database::instance().tilesetName(m_tileset)).c_str(),
                       ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
-      tileset_picker = ObjectPicker<Tileset>("Tileset"sv, Database::Instance->tilesets.tilesets(), 0);
+      tileset_picker = ObjectPicker<Tileset>("Tileset"sv, Database::instance().tilesets.tilesets(), 0);
     }
     ImGui::PopID();
 

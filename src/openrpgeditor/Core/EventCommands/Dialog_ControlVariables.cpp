@@ -50,7 +50,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     {
       std::string text = m_operation_var != 0
                              ? "##commonevent_switch_empty"
-                             : (m_variable_var == 0 ? "" : std::format("{:04} ", m_variable_var) + Database::Instance->variableName(m_variable_var));
+                             : (m_variable_var == 0 ? "" : std::format("{:04} ", m_variable_var) + Database::instance().variableName(m_variable_var));
       ImGui::PushID("##controlswitch_id");
       //ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 75) - (16 * App::DPIHandler::get_ui_scale()));
       ImGui::BeginDisabled(m_operation_var != 0);
@@ -58,7 +58,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
               text.c_str(),
               ImVec2{(ImGui::GetWindowContentRegionMax().x - 100) - 15 * App::DPIHandler::get_ui_scale(), 0})) {
         singleRequest = true;
-        picker.emplace("Variables", Database::Instance->system.variables);
+        picker.emplace("Variables", Database::instance().system.variables);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -115,11 +115,11 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
       // Variable
       ImGui::BeginDisabled(m_operand != 1);
       std::string text = m_operand != 1 ? "##commonevent_switch_empty"
-                                        : std::format("{:04} ", m_variable) + Database::Instance->variableName(m_variable);
+                                        : std::format("{:04} ", m_variable) + Database::instance().variableName(m_variable);
       ImGui::PushID("##controlvariable_id2");
       if (ImGui::Button(text.c_str(), ImVec2{App::DPIHandler::scale_value(300), 0})) {
         singleRequest = false;
-        picker.emplace("Variables", Database::Instance->system.variables);
+        picker.emplace("Variables", Database::instance().system.variables);
       }
       ImGui::PopID();
       ImGui::EndDisabled();

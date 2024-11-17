@@ -1,6 +1,48 @@
 #include "Database/Database.hpp"
 
-Database* Database::Instance = nullptr;
+Database* Database::m_instance = nullptr;
+
+Database::Database(const std::string_view _projectBasePath, const std::string_view _projectFilePath,
+                   const std::string_view _projectVersion) {
+  m_instance = this;
+  projectVersion = _projectVersion;
+  basePath = _projectBasePath;
+  projectFilePath = _projectFilePath;
+  actors = Actors::load(basePath + "/data/Actors.json");
+  RPGM_INFO("Loading Class definitions...");
+  classes = Classes::load(basePath + "/data/Classes.json");
+  RPGM_INFO("Loading Skill definitions...");
+  skills = Skills::load(basePath + "/data/Skills.json");
+  RPGM_INFO("Loading Item definitions...");
+  items = Items::load(basePath + "/data/Items.json");
+  RPGM_INFO("Loading Weapon definitions...");
+  weapons = Weapons::load(basePath + "/data/Weapons.json");
+  RPGM_INFO("Loading Armor definitions...");
+  armors = Armors::load(basePath + "/data/Armors.json");
+  RPGM_INFO("Loading Enemy definitions...");
+  enemies = Enemies::load(basePath + "/data/Enemies.json");
+  RPGM_INFO("Loading Troop definitions...");
+  troops = Troops::load(basePath + "/data/Troops.json");
+  RPGM_INFO("Loading State definitions...");
+  states = States::load(basePath + "/data/States.json");
+  RPGM_INFO("Loading Animation definitions...");
+  animations = Animations::load(basePath + "/data/Animations.json");
+  RPGM_INFO("Loading Tileset definitions...");
+  tilesets = Tilesets::load(basePath + "/data/Tilesets.json");
+  RPGM_INFO("Loading CommonEvent definitions...");
+  commonEvents = CommonEvents::load(basePath + "/data/CommonEvents.json");
+  RPGM_INFO("Loading System...");
+  system = System::load(basePath + "/data/System.json");
+  RPGM_INFO("Loading Plugins...");
+  plugins = Plugins::load(basePath + "js/plugins.js");
+  RPGM_INFO("Loading GameConstants");
+  gameConstants = GameConstants::load(basePath + "/data/Constants.json");
+  RPGM_INFO("Loading Templates");
+  templates = Templates::load(basePath + "/data/Templates.json");
+  RPGM_INFO(std::to_string(templates.commands.size()) + " size of commands");
+  mapInfos = MapInfos::load(basePath + "/data/MapInfos.json");
+}
+
 Map Database::loadMap(int mapId) {
   std::string path = std::format("{}data/Map{:03}.json", basePath, mapId);
   RPGM_DEBUG("Loading map {}", path);

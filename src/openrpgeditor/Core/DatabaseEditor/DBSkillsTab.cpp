@@ -120,9 +120,9 @@ void DBSkillsTab::draw() {
                 if (ImGui::BeginCombo("##orpg_database_skills_skilltype",
                                       m_selectedSkill->stypeId == 0
                                           ? "None"
-                                          : Database::Instance->system.skillType(m_selectedSkill->stypeId)->c_str())) {
+                                          : Database::instance().system.skillType(m_selectedSkill->stypeId)->c_str())) {
                   int index{0};
-                  for (auto& dataSource : Database::Instance->system.skillTypes) {
+                  for (auto& dataSource : Database::instance().system.skillTypes) {
                     bool is_selected = (m_selectedSkill->stypeId == index);
                     if (index == 0) {
                       if (ImGui::Selectable("None", is_selected)) {
@@ -318,10 +318,10 @@ void DBSkillsTab::draw() {
               if (ImGui::Button(m_selectedSkill->animationId == -1 ? "Normal Attack"
                                 : m_selectedSkill->animationId == 0
                                     ? "None"
-                                    : Database::Instance->animationName(m_selectedSkill->animationId).c_str(),
+                                    : Database::instance().animationName(m_selectedSkill->animationId).c_str(),
                                 ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
                 animation_picker =
-                    ObjectPicker<Animation>("Animation"sv, Database::Instance->animations.animations(), 0);
+                    ObjectPicker<Animation>("Animation"sv, Database::instance().animations.animations(), 0);
               }
               ImGui::PopID();
             }
@@ -373,9 +373,9 @@ void DBSkillsTab::draw() {
                       "##orpg_database_reqweapon_1",
                       m_selectedSkill->requiredWtypeId1 == 0
                           ? "None"
-                          : Database::Instance->system.weaponType(m_selectedSkill->requiredWtypeId1)->c_str())) {
+                          : Database::instance().system.weaponType(m_selectedSkill->requiredWtypeId1)->c_str())) {
                 int index{0};
-                for (auto& msg : Database::Instance->system.weaponTypes) {
+                for (auto& msg : Database::instance().system.weaponTypes) {
                   bool is_selected = m_selectedSkill->requiredWtypeId1 == index;
                   if (index == 0) {
                     if (ImGui::Selectable("None", is_selected)) {
@@ -384,7 +384,7 @@ void DBSkillsTab::draw() {
                         ImGui::SetItemDefaultFocus();
                     }
                   } else {
-                    if (ImGui::Selectable(Database::Instance->system.weaponType(index)->c_str(), is_selected)) {
+                    if (ImGui::Selectable(Database::instance().system.weaponType(index)->c_str(), is_selected)) {
                       m_selectedSkill->requiredWtypeId1 = index;
                       if (is_selected)
                         ImGui::SetItemDefaultFocus();
@@ -407,9 +407,9 @@ void DBSkillsTab::draw() {
                       "##orpg_database_reqweapon_2",
                       m_selectedSkill->requiredWtypeId2 == 0
                           ? "None"
-                          : Database::Instance->system.weaponType(m_selectedSkill->requiredWtypeId2)->c_str())) {
+                          : Database::instance().system.weaponType(m_selectedSkill->requiredWtypeId2)->c_str())) {
                 int index{0};
-                for (auto& msg : Database::Instance->system.weaponTypes) {
+                for (auto& msg : Database::instance().system.weaponTypes) {
                   bool is_selected = m_selectedSkill->requiredWtypeId2 == index;
                   if (index == 0) {
                     if (ImGui::Selectable("None", is_selected)) {
@@ -418,7 +418,7 @@ void DBSkillsTab::draw() {
                         ImGui::SetItemDefaultFocus();
                     }
                   } else {
-                    if (ImGui::Selectable(Database::Instance->system.weaponType(index)->c_str(), is_selected)) {
+                    if (ImGui::Selectable(Database::instance().system.weaponType(index)->c_str(), is_selected)) {
                       m_selectedSkill->requiredWtypeId2 = index;
                       if (is_selected)
                         ImGui::SetItemDefaultFocus();
@@ -474,9 +474,9 @@ void DBSkillsTab::draw() {
                         m_selectedSkill->damage.elementId == -1 ? "Normal Attack"
                         : m_selectedSkill->damage.elementId == 0
                             ? "None"
-                            : Database::Instance->system.element(m_selectedSkill->damage.elementId)->c_str())) {
+                            : Database::instance().system.element(m_selectedSkill->damage.elementId)->c_str())) {
                   int index{-1};
-                  for (auto& msg : Database::Instance->system.elements) {
+                  for (auto& msg : Database::instance().system.elements) {
                     bool is_selected = m_selectedSkill->damage.elementId == index;
                     if (index == -1) {
                       if (ImGui::Selectable("Normal Attack", is_selected)) {
@@ -492,7 +492,7 @@ void DBSkillsTab::draw() {
                       }
                     } else {
                       if (ImGui::Selectable(
-                              Database::Instance->system.element(m_selectedSkill->damage.elementId)->c_str(),
+                              Database::instance().system.element(m_selectedSkill->damage.elementId)->c_str(),
                               is_selected)) {
                         m_selectedSkill->damage.elementId = index;
                         if (is_selected)

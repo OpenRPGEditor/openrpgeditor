@@ -26,13 +26,13 @@ std::tuple<bool, bool> Dialog_ChangeEnemyHP::draw() {
     ImGui::SeparatorText("Enemy");
     ImGui::PushItemWidth((App::DPIHandler::scale_value(200)));
     if (ImGui::BeginCombo("##changeenemyhp_list", (m_enemy > -1 ? "#" + std::to_string(m_enemy + 1) : ""
-                                                   + Database::Instance->troopMemberName(0, m_enemy)).c_str())) {
+                                                   + Database::instance().troopMemberName(0, m_enemy)).c_str())) {
       if (ImGui::Selectable("Entire Troop", m_enemy == -1)) {
         m_enemy = -1;
       }
       for (int i = 0; i < 8; ++i) {
         if (ImGui::Selectable((i > -1 ? "#" + std::to_string(i + 1) : ""
-            + Database::Instance->troopMemberName(0, i)).c_str(), i == m_enemy)) {
+            + Database::instance().troopMemberName(0, i)).c_str(), i == m_enemy)) {
           m_enemy = i;
         }
       }
@@ -67,9 +67,9 @@ std::tuple<bool, bool> Dialog_ChangeEnemyHP::draw() {
       ImGui::BeginDisabled(m_quantitySource != 1);
       ImGui::PushID("##changeenemyhp_quant_var");
       if (ImGui::Button(
-              m_quantitySource == 1 ? Database::Instance->variableNameAndId(m_quantity_var).c_str() : "",
+              m_quantitySource == 1 ? Database::instance().variableNameAndId(m_quantity_var).c_str() : "",
               ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        picker.emplace("Variables", Database::Instance->system.variables);
+        picker.emplace("Variables", Database::instance().system.variables);
       }
       ImGui::PopID();
       ImGui::EndDisabled();

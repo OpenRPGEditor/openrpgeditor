@@ -27,17 +27,17 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
 
     ImGui::PushID("##change_equip_actor_selection");
     if (ImGui::Button(
-            Database::Instance->actorName(m_actor).c_str(),
+            Database::instance().actorName(m_actor).c_str(),
             ImVec2{App::DPIHandler::scale_value(160), 0})) {
-      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::Instance->actors.actorList(), 0);
+      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance().actors.actorList(), 0);
             }
     ImGui::PopID();
 
     ImGui::SeparatorText("Equipment Type");
     ImGui::SetNextItemWidth(160 * App::DPIHandler::get_ui_scale());
-    if (ImGui::BeginCombo("##equip_type_list", Database::Instance->equipTypeName(m_equipmentType).c_str())) {
-      for (int i = 1; i < Database::Instance->system.equipTypes.size(); ++i) {
-        if (ImGui::Selectable(Database::Instance->system.equipTypes.at(i).c_str(), i == m_equipmentType)) {
+    if (ImGui::BeginCombo("##equip_type_list", Database::instance().equipTypeName(m_equipmentType).c_str())) {
+      for (int i = 1; i < Database::instance().system.equipTypes.size(); ++i) {
+        if (ImGui::Selectable(Database::instance().system.equipTypes.at(i).c_str(), i == m_equipmentType)) {
           m_equipmentType = i;
         }
       }
@@ -46,7 +46,7 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
     ImGui::SeparatorText("Equipment Item");
     ImGui::SetNextItemWidth(160 * App::DPIHandler::get_ui_scale());
     std::string text = m_equipmentItem == 0 ? "None" :
-      (m_equipmentType == 1 ? Database::Instance->weaponName(m_equipmentItem) : Database::Instance->armorName(m_equipmentItem));
+      (m_equipmentType == 1 ? Database::instance().weaponName(m_equipmentItem) : Database::instance().armorName(m_equipmentItem));
     if (ImGui::BeginCombo("##equip_item_list", text.c_str())) {
       if (m_equipmentType == 1) {
         // None
@@ -54,7 +54,7 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
           m_equipmentItem = 0;
         }
 
-        for (auto equips : Database::Instance->weapons.weaponList()) {
+        for (auto equips : Database::instance().weapons.weaponList()) {
           if (equips.etypeId == m_equipmentType && equips.wtypeId != 0) {
             if (ImGui::Selectable(equips.name.c_str(), equips.id == m_equipmentItem)) {
               m_equipmentItem = equips.id;
@@ -68,7 +68,7 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
           m_equipmentItem = 0;
         }
 
-        for (auto equips : Database::Instance->armors.armorList()) {
+        for (auto equips : Database::instance().armors.armorList()) {
           if (equips.etypeId == m_equipmentType && equips.atypeId != 0) {
             if (ImGui::Selectable(equips.name.c_str(), equips.id == m_equipmentItem)) {
               m_equipmentItem = equips.id;

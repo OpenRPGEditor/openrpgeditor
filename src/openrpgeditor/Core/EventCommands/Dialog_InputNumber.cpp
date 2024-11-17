@@ -26,9 +26,9 @@ std::tuple<bool, bool> Dialog_InputNumber::draw() {
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
     ImGui::PushID("##inputnumber_variable");
     if (ImGui::Button(
-            Database::Instance->variableNameOrId(m_variable).c_str(),
+            Database::instance().variableNameOrId(m_variable).c_str(),
             ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
-      picker.emplace("Variables", Database::Instance->system.variables);
+      picker.emplace("Variables", Database::instance().system.variables);
             }
     ImGui::PopID();
     ImGui::SeparatorText("Digits");

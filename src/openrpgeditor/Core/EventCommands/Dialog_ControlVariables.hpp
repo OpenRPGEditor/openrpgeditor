@@ -53,28 +53,28 @@ struct Dialog_ControlVariables : IEventDialogController {
   std::string getUIString() override {
     if (m_gameData_type == 0) { // GameDataType::Item
       return std::string("The number of " +
-                         formatString(Database::Instance->itemNameOrId(m_gameData_rawSource), m_gameData_rawSource));
+                         formatString(Database::instance().itemNameOrId(m_gameData_rawSource), m_gameData_rawSource));
     }
     if (m_gameData_type == 1) { // GameDataType::Weapon
       return std::string("The number of " +
-                         formatString(Database::Instance->weaponNameOrId(m_gameData_rawSource), m_gameData_rawSource));
+                         formatString(Database::instance().weaponNameOrId(m_gameData_rawSource), m_gameData_rawSource));
     }
     if (m_gameData_type == 2) { // GameDataType::Armor
       return std::string("The number of " +
-                         formatString(Database::Instance->armorNameOrId(m_gameData_rawSource), m_gameData_rawSource));
+                         formatString(Database::instance().armorNameOrId(m_gameData_rawSource), m_gameData_rawSource));
     }
     if (m_gameData_type == 3) { // GameDataType::Actor
       return std::string(magic_enum::enum_name(static_cast<ActorDataSource>(m_gameData_value)).data()) + " of " +
-             formatString(Database::Instance->actorNameOrId(m_gameData_rawSource), m_gameData_rawSource);
+             formatString(Database::instance().actorNameOrId(m_gameData_rawSource), m_gameData_rawSource);
     }
     if (m_gameData_type == 4) { // GameDataType::Enemy
       return std::string(magic_enum::enum_name(static_cast<EnemyDataSource>(m_gameData_value)).data()) + " of #" +
-             std::to_string(m_gameData_rawSource) + " " + Database::Instance->troopMemberName(0, m_gameData_rawSource);
+             std::to_string(m_gameData_rawSource) + " " + Database::instance().troopMemberName(0, m_gameData_rawSource);
     }
     if (m_gameData_type == 5) { // GameDataType::Character
       std::string str = m_gameData_rawSource == -1   ? "Player"
                         : m_gameData_rawSource == 0 ? "This Event"
-                                                           : Database::Instance->eventNameOrId(m_gameData_rawSource);
+                                                           : Database::instance().eventNameOrId(m_gameData_rawSource);
       return std::string(magic_enum::enum_name(static_cast<CharacterDataSource>(m_gameData_value)).data()) +
              " of " + formatString(str, m_gameData_rawSource);
     }

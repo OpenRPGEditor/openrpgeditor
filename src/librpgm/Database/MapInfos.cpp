@@ -2,6 +2,8 @@
 
 #include "Database/Database.hpp"
 #include "Database/Map.hpp"
+#include "Serializable/DeserializationQueue.hpp"
+#include "Serializable/MapSerializer.hpp"
 
 #include <fstream>
 
@@ -17,9 +19,14 @@ MapInfos MapInfos::load(std::string_view filename) {
     auto& mapinfo = mapinfos.m_mapinfos.emplace_back();
     value.get_to(mapinfo);
     if (mapinfo && mapinfo->id != 0) {
-      if (auto map = Database::Instance->loadMap(mapinfo->id); map.m_isValid) {
-        mapinfo->m_map = std::make_unique<Map>(map);
-      }
+      std::string path = std::format("data/Map{:03}.json", mapinfo->id);
+      DeserializationQueue::instance().enqueue(
+          std::make_shared<MapSerializer>(path), [&mapinfo](const std::shared_ptr<ISerializable>& serializer) {
+            auto map = *std::dynamic_pointer_cast<MapSerializer>(serializer)->data();
+            if (map.m_isValid) {
+              mapinfo->m_map = std::make_unique<Map>(map);
+            }
+          });
     }
   }
   mapinfos.m_mapinfos[0].emplace();

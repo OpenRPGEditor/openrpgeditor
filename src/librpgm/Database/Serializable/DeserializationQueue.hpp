@@ -2,9 +2,14 @@
 #include "Database/Serializable/ThreadedFileQueue.hpp"
 
 class DeserializationQueue : public ThreadedFileQueue {
-public:
   DeserializationQueue() = default;
-  ~DeserializationQueue() override;
+public:
+  DeserializationQueue(const DeserializationQueue&) = delete;
+  DeserializationQueue(DeserializationQueue&&) = delete;
+  DeserializationQueue& operator=(const DeserializationQueue&) = delete;
+  DeserializationQueue& operator=(DeserializationQueue&&) = delete;
+
+  static DeserializationQueue& instance();
 
 protected:
   // Implement the processTask method for deserialization

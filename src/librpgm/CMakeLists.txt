@@ -71,6 +71,15 @@ add_library(
         Database/Weapons.hpp
         Database/Templates.cpp
         Database/Templates.hpp
+
+        Database/Serializable/ISerializable.hpp
+        Database/Serializable/Task.hpp
+        Database/Serializable/ThreadedFileQueue.hpp
+        Database/Serializable/ThreadedFileQueue.cpp
+        Database/Serializable/SerializationQueue.hpp
+        Database/Serializable/SerializationQueue.cpp
+        Database/Serializable/DeserializationQueue.hpp
+        Database/Serializable/DeserializationQueue.cpp
 )
 
 target_include_directories(librpgm PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)

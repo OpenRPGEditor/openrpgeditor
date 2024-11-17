@@ -44,15 +44,14 @@ bool MapInfos::serialize(std::string_view filename) {
 }
 
 void recursiveSort(MapInfo& in) {
-  std::sort(in.m_children.begin(), in.m_children.end(),
-            [](const MapInfo* a, const MapInfo* b) { return a->order < b->order; });
+  std::ranges::sort(in.m_children, [](const MapInfo* a, const MapInfo* b) { return a->order < b->order; });
 
   for (auto& mapInfo : in.m_children) {
     recursiveSort(*mapInfo);
   }
 }
 
-void MapInfos::buildTree(bool reset) {
+void MapInfos::buildTree(const bool reset) {
   if (reset) {
     for (auto& mapInfo : m_mapinfos) {
       mapInfo->m_children.clear();

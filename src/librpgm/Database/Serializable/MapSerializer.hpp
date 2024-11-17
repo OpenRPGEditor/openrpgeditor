@@ -3,9 +3,10 @@
 #include "Database/Serializable/ISerializable.hpp"
 #include "Database/Map.hpp"
 
-class MapSerializer : public ITypedSerializable<Map> {
+class MapSerializer final : public ITypedSerializable<Map> {
 public:
   explicit MapSerializer(const std::string_view filename) : ITypedSerializable(filename) {}
+  MapSerializer(const Map& map, const std::string_view filename) : ITypedSerializable(filename), m_map(map) {}
 
   void serialize(std::ofstream& os) const override;
   void deserialize(std::ifstream& is) override;

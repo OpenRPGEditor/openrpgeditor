@@ -82,6 +82,10 @@ add_library(
         Database/Serializable/DeserializationQueue.cpp
         Database/Serializable/MapSerializer.cpp
         Database/Serializable/MapSerializer.hpp
+        Database/Serializable/ActorsSerializer.cpp
+        Database/Serializable/ActorsSerializer.hpp
+        Database/Serializable/ClassesSerializer.cpp
+        Database/Serializable/ClassesSerializer.hpp
 )
 
 target_include_directories(librpgm PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)

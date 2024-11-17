@@ -1,5 +1,9 @@
 #include "Database/Database.hpp"
 
+#include "Serializable/ActorsSerializer.hpp"
+#include "Serializable/ClassesSerializer.hpp"
+#include "Serializable/DeserializationQueue.hpp"
+
 Database* Database::m_instance = nullptr;
 
 Database::Database(const std::string_view _projectBasePath, const std::string_view _projectFilePath,
@@ -8,9 +12,17 @@ Database::Database(const std::string_view _projectBasePath, const std::string_vi
   projectVersion = _projectVersion;
   basePath = _projectBasePath;
   projectFilePath = _projectFilePath;
-  actors = Actors::load(basePath + "/data/Actors.json");
-  RPGM_INFO("Loading Class definitions...");
-  classes = Classes::load(basePath + "/data/Classes.json");
+  RPGM_INFO("Queue Actor definitions for load...");
+  DeserializationQueue::instance().enqueue(std::make_shared<ActorsSerializer>("data/Actors.json"),
+                                           [this](const std::shared_ptr<ISerializable>& serializer) {
+                                             actors = *std::dynamic_pointer_cast<ActorsSerializer>(serializer)->data();
+                                           });
+  RPGM_INFO("Queue Class definitions for load...");
+  DeserializationQueue::instance().enqueue(std::make_shared<ClassesSerializer>("data/Classes.json"),
+                                           [this](const std::shared_ptr<ISerializable>& serializer) {
+                                             classes =
+                                                 *std::dynamic_pointer_cast<ClassesSerializer>(serializer)->data();
+                                           });
   RPGM_INFO("Loading Skill definitions...");
   skills = Skills::load(basePath + "/data/Skills.json");
   RPGM_INFO("Loading Item definitions...");

@@ -34,7 +34,7 @@ struct MapEditor {
   int tileCellY() const { return m_tileCursor.tileY(); }
   int tileAbsoluteX() const { return m_tileCursor.absoluteX(); }
   int tileAbsoluteY() const { return m_tileCursor.absoluteY(); }
-  int tileSize();
+  int tileSize() const;
 
   Event* selectedEvent() { return m_selectedEvent; }
   const Event* selectedEvent() const { return m_selectedEvent; }

@@ -13,14 +13,16 @@ struct CheckerboardTexture {
 
   CheckerboardTexture() = default;
   CheckerboardTexture(int width, int height, CellSizes cellSize = CellSizes::_64, uint8_t evenColor = 255,
-                    uint8_t oddColor = 127);
+                      uint8_t oddColor = 127);
+  CheckerboardTexture(const CheckerboardTexture& other);
+  CheckerboardTexture& operator=(const CheckerboardTexture& other);
   ~CheckerboardTexture();
 
-  void* get() const { return m_texture; }
+  [[nodiscard]] void* get() const { return m_texture; }
   explicit operator bool() const { return m_texture != nullptr; }
 
 private:
-  void* m_texture = nullptr;
+  mutable void* m_texture = nullptr;
   int m_width;
   int m_height;
 };

@@ -122,6 +122,9 @@ bool Project::close(bool promptSave) {
     }
   }
 
+  SerializationQueue::instance().reset();
+  DeserializationQueue::instance().reset();
+
   m_undoStack.clear();
   m_redoStack.clear();
 

@@ -46,6 +46,7 @@ private:
 };
 
 void MapEditor::setMap(MapInfo* info) {
+  m_mapRenderer.setMap(nullptr, nullptr);
   m_eventEditors.clear();
   m_mapInfo = info;
 
@@ -56,7 +57,7 @@ void MapEditor::setMap(MapInfo* info) {
   }
 }
 
-int MapEditor::tileSize() { return m_parent->system().tileSize; }
+int MapEditor::tileSize() const { return m_parent->system().tileSize; }
 
 void MapEditor::drawParallax(ImGuiWindow* win) {
   if (!m_parallaxTexture) {

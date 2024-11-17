@@ -13,7 +13,6 @@ void DeserializationQueue::processTask(const std::shared_ptr<ISerializable>& fil
     fileData->deserialize(inFile);
     m_completedTasks++;
     callback(fileData);
-    std::cerr << "Deserialized: " << filePath << std::endl;
   } else {
     std::cerr << "Error: Failed to open file for deserialization: " << filePath << std::endl;
   }

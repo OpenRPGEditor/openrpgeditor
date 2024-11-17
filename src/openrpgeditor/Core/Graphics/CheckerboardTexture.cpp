@@ -24,4 +24,19 @@ CheckerboardTexture::CheckerboardTexture(int width, int height, CellSizes cellSi
   free(data);
 }
 
+CheckerboardTexture::CheckerboardTexture(const CheckerboardTexture& other) {
+  m_width = other.m_width;
+  m_height = other.m_height;
+  m_texture = other.m_texture;
+  other.m_texture = nullptr;
+}
+
+CheckerboardTexture& CheckerboardTexture::operator=(const CheckerboardTexture& other) {
+  m_width = other.m_width;
+  m_height = other.m_height;
+  m_texture = other.m_texture;
+  other.m_texture = nullptr;
+  return *this;
+}
+
 CheckerboardTexture::~CheckerboardTexture() { SDL_DestroyTexture(static_cast<SDL_Texture*>(m_texture)); }

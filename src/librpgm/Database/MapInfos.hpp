@@ -6,13 +6,13 @@
 
 struct MapInfo {
   NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(MapInfo, expanded, id, name, order, parentId, scrollX, scrollY);
-  bool expanded;
-  int id;
+  bool expanded{};
+  int id{};
   std::string name;
-  int order;
-  int parentId;
-  double scrollX;
-  double scrollY;
+  int order{};
+  int parentId{};
+  double scrollX{};
+  double scrollY{};
 
   std::vector<MapInfo*>& children() { return m_children; }
   const std::vector<MapInfo*>& children() const { return m_children; }
@@ -20,8 +20,8 @@ struct MapInfo {
   Map* map() { return m_map.get(); }
   const Map* map() const { return m_map.get(); }
 
-  Event* event(int id) { return m_map->event(id); }
-  const Event* event(int id) const { return m_map->event(id); }
+  Event* event(int id) { return m_map ? m_map->event(id) : nullptr; }
+  const Event* event(int id) const { return m_map ? m_map->event(id) : nullptr; }
 
 private:
   friend void recursiveSort(MapInfo& in);

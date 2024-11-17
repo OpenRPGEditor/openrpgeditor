@@ -61,7 +61,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
           ImGui::BeginDisabled(!m_page->conditions.switch1Valid);
           {
             const std::string label =
-                m_page->conditions.switch1Valid ? Database::instance().switchNameOrId(m_page->conditions.switch1Id) : "";
+                m_page->conditions.switch1Valid ? Database::instance()->switchNameOrId(m_page->conditions.switch1Id) : "";
             if (ImGui::Button((label + "##event_page_switch1_selection_button").c_str(),
                               ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
               m_variableSwitchSelection = Switch1;
@@ -73,7 +73,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
           ImGui::BeginDisabled(!m_page->conditions.switch2Valid);
           {
             const std::string label =
-                m_page->conditions.switch2Valid ? Database::instance().switchNameOrId(m_page->conditions.switch2Id) : "";
+                m_page->conditions.switch2Valid ? Database::instance()->switchNameOrId(m_page->conditions.switch2Id) : "";
             if (ImGui::Button((label + "##event_page_switch2_selection_button").c_str(),
                               ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
               m_variableSwitchSelection = Switch2;
@@ -87,7 +87,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
             ImGui::BeginDisabled(!m_page->conditions.variableValid);
             {
               const std::string label = m_page->conditions.variableValid
-                                            ? Database::instance().variableNameOrId(m_page->conditions.variableId)
+                                            ? Database::instance()->variableNameOrId(m_page->conditions.variableId)
                                             : "";
               if (ImGui::Button((label + "##event_page_variable_selection_button").c_str(),
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
@@ -123,7 +123,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
                   m_page->conditions.itemValid && it != nullptr ? it->name : "##event_page_item_selection_button_text";
               if (ImGui::Button(item.c_str(),
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_itemPicker.emplace("Items"sv, Database::instance().items.items(), m_page->conditions.itemId);
+                m_itemPicker.emplace("Items"sv, Database::instance()->items.items(), m_page->conditions.itemId);
               }
             }
             ImGui::EndDisabled();
@@ -135,7 +135,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
                                             : "##event_page_actor_selection_button_text";
               if (ImGui::Button(actor.c_str(),
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_actorPicker.emplace("Actors"sv, Database::instance().actors.actorList(), m_page->conditions.actorId);
+                m_actorPicker.emplace("Actors"sv, Database::instance()->actors.actorList(), m_page->conditions.actorId);
               }
             }
             ImGui::EndDisabled();

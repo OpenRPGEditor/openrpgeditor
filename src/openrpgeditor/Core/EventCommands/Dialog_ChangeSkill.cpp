@@ -48,10 +48,10 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
       ImGui::BeginDisabled(m_comparison != 0);
       ImGui::PushID("##changeskill_actor");
       if (ImGui::Button(
-              m_comparison == 0 ? (std::format("{:04} ", m_value) + Database::instance().actorNameOrId(m_value)).c_str() : "",
+              m_comparison == 0 ? (std::format("{:04} ", m_value) + Database::instance()->actorNameOrId(m_value)).c_str() : "",
               ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
 
-        actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance().actors.actorList(), 0);
+        actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), 0);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -60,9 +60,9 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
       ImGui::BeginDisabled(m_comparison != 1);
       ImGui::PushID("##changeskill_var");
       if (ImGui::Button(
-              m_comparison == 1 ? (std::format("{:04} ", m_var) + Database::instance().variableNameOrId(m_var)).c_str() : "",
+              m_comparison == 1 ? (std::format("{:04} ", m_var) + Database::instance()->variableNameOrId(m_var)).c_str() : "",
               ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        picker.emplace("Variables", Database::instance().system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -78,9 +78,9 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
     ImGui::SeparatorText("Skill");
     ImGui::PushID("##changeskill_skill_selection");
     if (ImGui::Button(
-            (std::format("{:04} ", m_skill) + Database::instance().skillNameOrId(m_skill)).c_str(),
+            (std::format("{:04} ", m_skill) + Database::instance()->skillNameOrId(m_skill)).c_str(),
             ImVec2{(App::DPIHandler::scale_value(225)), 0})) {
-      skill_picker = ObjectPicker<Skill>("Skill"sv, Database::instance().skills.skills(), 0);
+      skill_picker = ObjectPicker<Skill>("Skill"sv, Database::instance()->skills.skills(), 0);
     }
     ImGui::PopID();
 

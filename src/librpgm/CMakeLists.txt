@@ -80,12 +80,37 @@ add_library(
         Database/Serializable/SerializationQueue.cpp
         Database/Serializable/DeserializationQueue.hpp
         Database/Serializable/DeserializationQueue.cpp
-        Database/Serializable/MapSerializer.cpp
-        Database/Serializable/MapSerializer.hpp
+
+        Database/Serializable/SystemSerializer.cpp
+        Database/Serializable/SystemSerializer.hpp
         Database/Serializable/ActorsSerializer.cpp
         Database/Serializable/ActorsSerializer.hpp
         Database/Serializable/ClassesSerializer.cpp
         Database/Serializable/ClassesSerializer.hpp
+        Database/Serializable/SkillsSerializer.cpp
+        Database/Serializable/SkillsSerializer.hpp
+        Database/Serializable/ItemsSerializer.cpp
+        Database/Serializable/ItemsSerializer.hpp
+        Database/Serializable/WeaponsSerializer.cpp
+        Database/Serializable/WeaponsSerializer.hpp
+        Database/Serializable/ArmorsSerializer.cpp
+        Database/Serializable/ArmorsSerializer.hpp
+        Database/Serializable/MapSerializer.cpp
+        Database/Serializable/MapSerializer.hpp
+        Database/Serializable/EnemiesSerializer.cpp
+        Database/Serializable/EnemiesSerializer.hpp
+        Database/Serializable/TroopsSerializer.cpp
+        Database/Serializable/TroopsSerializer.hpp
+        Database/Serializable/StatesSerializer.cpp
+        Database/Serializable/StatesSerializer.hpp
+        Database/Serializable/AnimationsSerializer.cpp
+        Database/Serializable/AnimationsSerializer.hpp
+        Database/Serializable/TilesetsSerializer.cpp
+        Database/Serializable/TilesetsSerializer.hpp
+        Database/Serializable/CommonEventsSerializer.cpp
+        Database/Serializable/CommonEventsSerializer.hpp
+        #Database/Serializable/MapInfosSerializer.cpp
+        #Database/Serializable/MapInfosSerializer.hpp
 )
 
 target_include_directories(librpgm PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)
@@ -94,12 +119,12 @@ target_link_libraries(librpgm PRIVATE project_warnings magic_enum nlohmann_json:
 
 add_library(
         librpgmeventcmds STATIC
-        
+
         Database/CommandParser.cpp
         Database/CommandParser.hpp
         Database/EventCommands.hpp
 
-        
+
         Database/EventCommands/AbortBattle.cpp
         Database/EventCommands/AbortBattle.hpp
         Database/EventCommands/BattleProcessing.cpp

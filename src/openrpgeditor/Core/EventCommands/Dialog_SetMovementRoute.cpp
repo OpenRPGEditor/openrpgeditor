@@ -67,7 +67,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     // Character Selection
     ImVec2 cursorPos = ImGui::GetCursorPos();
     ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
-    if (ImGui::BeginCombo("##showroute_character", Database::instance().eventNameOrId(m_character).c_str())) {
+    if (ImGui::BeginCombo("##showroute_character", Database::instance()->eventNameOrId(m_character).c_str())) {
 
       if (ImGui::Selectable("Player", m_character == -1)) {
         m_character = -1;
@@ -78,7 +78,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
         ImGui::SetItemDefaultFocus();
       }
 
-      for (auto& dataSource : Database::instance().mapInfos.currentMap()->map()->events) {
+      for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events) {
         if (!dataSource.has_value())
           continue;
 
@@ -108,7 +108,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
         ImGui::TableNextColumn();
         const bool isSelected = m_selected == n;
         char text[4096];
-        sprintf(text, "%s##cmd%i", m_route.list.at(n)->stringRep(Database::instance()).c_str(), n);
+        sprintf(text, "%s##cmd%i", m_route.list.at(n)->stringRep(*Database::instance()).c_str(), n);
         if (ImGui::SelectableWithBorder(text, isSelected,
                                         ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
                                             ImGuiSelectableFlags_AllowDoubleClick)) {

@@ -24,7 +24,7 @@ void EventEditor::fixupPages() {
 bool EventEditor::draw() {
   if (m_event) {
     std::string title = std::format("Event {} - ID {}##event_editor_{}_{}", m_event->name, m_event->id,
-                                    Database::instance().mapInfos.currentMap()->id, m_event->id);
+                                    Database::instance()->mapInfos.currentMap()->id, m_event->id);
     ImGui::SetNextWindowSize(ImVec2{640, 480} * App::DPIHandler::get_ui_scale(), ImGuiCond_Once);
     if (ImGui::Begin(title.c_str(), &m_isOpen)) {
       ImGui::BeginGroup();

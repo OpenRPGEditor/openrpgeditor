@@ -41,10 +41,10 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
       }
     }
     ImGui::PushID("##actor_selection");
-    if (ImGui::Button((std::format("{:04} ", m_actor) + Database::instance().actorName(m_actor)).c_str(),
+    if (ImGui::Button((std::format("{:04} ", m_actor) + Database::instance()->actorName(m_actor)).c_str(),
                       {(App::DPIHandler::scale_value(160)), 0})) {
 
-      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance().actors.actorList(), 0);
+      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), 0);
     }
     ImGui::PopID();
     ImGui::BeginGroup();

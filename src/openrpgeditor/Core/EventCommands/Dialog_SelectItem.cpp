@@ -26,9 +26,9 @@ std::tuple<bool, bool> Dialog_SelectItem::draw() {
     ImGui::SeparatorText("Variable");
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
     ImGui::PushID("##inputnumber_variable");
-    if (ImGui::Button(Database::instance().variableNameOrId(m_variable).c_str(),
+    if (ImGui::Button(Database::instance()->variableNameOrId(m_variable).c_str(),
                       ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
-      picker.emplace("Variables", Database::instance().system.variables);
+      picker.emplace("Variables", Database::instance()->system.variables);
     }
     ImGui::PopID();
     ImGui::SeparatorText("Item Type");

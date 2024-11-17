@@ -468,7 +468,7 @@ void MapEditor::renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer
 }
 void MapEditor::draw() {
   if (m_mapInfo != nullptr && m_mapInfo->map() != nullptr && m_mapRenderer.map() != m_mapInfo->map()) {
-    m_mapRenderer.setMap(m_mapInfo->map(), Database::instance().tilesets.tileset(m_mapInfo->map()->tilesetId));
+    m_mapRenderer.setMap(m_mapInfo->map(), Database::instance()->tilesets.tileset(m_mapInfo->map()->tilesetId));
   }
 
   if (!m_checkeredBack) {

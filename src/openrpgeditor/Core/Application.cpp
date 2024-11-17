@@ -92,7 +92,6 @@ ExitStatus Application::run() {
                     ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_NavEnableGamepad |
                     ImGuiConfigFlags_DpiEnableScaleFonts | ImGuiConfigFlags_DpiEnableScaleViewports;
 
-
   // Absolute imgui.ini path to preserve settings independent of app location.
   static const std::string imgui_ini_filename{m_userConfigPath + "imgui.ini"};
   io.IniFilename = imgui_ini_filename.c_str();
@@ -216,7 +215,13 @@ ExitStatus Application::run() {
   uint32_t a = SDL_GetTicks();
   double delta = 0;
   bool firstFrame = true;
-  while (m_running) {
+  while (true) {
+    if (!m_running) {
+      DeserializationQueue::instance().abort();
+      SerializationQueue::instance().abort();
+      m_project.close();
+      break;
+    }
     APP_PROFILE_SCOPE("MainLoop");
     delta = SDL_GetTicks() - a;
 
@@ -269,8 +274,8 @@ ExitStatus Application::run() {
   }
 
   Settings::instance()->serialize(m_userConfigPath + "config.json");
-  // SerializationQueue::instance().terminate();
-  // DeserializationQueue::instance().terminate();
+  SerializationQueue::instance().terminate();
+  DeserializationQueue::instance().terminate();
   NFD_Quit();
   return m_exitStatus;
 }

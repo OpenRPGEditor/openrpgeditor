@@ -336,13 +336,14 @@ void Project::drawToolbar() {
 
 void Project::draw() {
   m_toolbarSize = App::DPIHandler::scale_value(Settings::instance()->fontSize + 32);
-  if (m_databaseEditor) {
-    m_databaseEditor->draw();
-  }
   drawMenu();
   setupDocking();
   drawToolbar();
   m_mapEditor.draw();
+
+  if (m_databaseEditor) {
+    m_databaseEditor->draw();
+  }
 
   if (m_editMode == EditMode::Map) {
     m_tilesetPicker.draw();

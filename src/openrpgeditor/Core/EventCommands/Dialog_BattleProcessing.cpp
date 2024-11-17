@@ -37,10 +37,10 @@ std::tuple<bool, bool> Dialog_BattleProcessing::draw() {
     ImGui::BeginDisabled(m_type != 0);
     ImGui::PushID("##battleprocess_direct");
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
-    if (ImGui::Button(m_type == 0 ? Database::instance().troopNameOrId(m_id).c_str() : "",
+    if (ImGui::Button(m_type == 0 ? Database::instance()->troopNameOrId(m_id).c_str() : "",
                       {(App::DPIHandler::scale_value(160)), 0})) {
 
-      enemy_picker = ObjectPicker<Troop>("Troop"sv, Database::instance().troops.troops(), 0);
+      enemy_picker = ObjectPicker<Troop>("Troop"sv, Database::instance()->troops.troops(), 0);
     }
     ImGui::PopID();
     ImGui::EndDisabled();
@@ -50,9 +50,9 @@ std::tuple<bool, bool> Dialog_BattleProcessing::draw() {
     ImGui::BeginDisabled(m_type != 1);
     ImGui::PushID("##battleprocess_var");
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
-    if (ImGui::Button(m_type == 1 ? Database::instance().variableNameOrId(m_var_selection).c_str() : "",
+    if (ImGui::Button(m_type == 1 ? Database::instance()->variableNameOrId(m_var_selection).c_str() : "",
                       ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      picker.emplace("Variables", Database::instance().system.variables);
+      picker.emplace("Variables", Database::instance()->system.variables);
     }
     ImGui::PopID();
     ImGui::EndDisabled();

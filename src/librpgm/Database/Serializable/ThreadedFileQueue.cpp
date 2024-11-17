@@ -3,7 +3,7 @@
 #include <filesystem>
 
 ThreadedFileQueue::ThreadedFileQueue() { m_workerThread = std::thread(&ThreadedFileQueue::workerLoop, this); }
-ThreadedFileQueue::~ThreadedFileQueue() { terminate(); }
+ThreadedFileQueue::~ThreadedFileQueue() {}
 
 void ThreadedFileQueue::setBasepath(const std::string_view basePath) {
   std::lock_guard lock(m_mutex);

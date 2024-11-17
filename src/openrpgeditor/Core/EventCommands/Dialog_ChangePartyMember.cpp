@@ -27,9 +27,9 @@ std::tuple<bool, bool> Dialog_ChangePartyMember::draw() {
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
     ImGui::PushID("##changepartymember_actor_selection");
     if (ImGui::Button(
-            Database::instance().actorName(m_actor).c_str(),
+            Database::instance()->actorName(m_actor).c_str(),
             ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance().actors.actorList(), 0);
+      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), 0);
             }
     ImGui::PopID();
 

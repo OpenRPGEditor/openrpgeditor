@@ -6,12 +6,8 @@
 class ClassesSerializer final : public ITypedSerializable<Classes> {
 public:
   explicit ClassesSerializer(const std::string_view filepath) : ITypedSerializable(filepath) {}
-  ClassesSerializer(const Classes& actors, const std::string_view filepath)
-  : ITypedSerializable(filepath), m_classes(actors) {}
+  ClassesSerializer(const Classes& classes, const std::string_view filepath)
+  : ITypedSerializable(classes, filepath) {}
   void serialize(std::ofstream& os) const override;
   void deserialize(std::ifstream& is) override;
-
-private:
-  [[nodiscard]] const void* dataInternal() const override { return &m_classes; }
-  Classes m_classes;
 };

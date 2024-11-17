@@ -39,12 +39,12 @@ std::tuple<bool, bool> Dialog_EnemyTransform::draw() {
       ImGui::EndCombo();
     }
     ImGui::SeparatorText("Transform to");
-    std::string text = Database::instance().enemyName(m_enemy);
+    std::string text = Database::instance()->enemyName(m_enemy);
     ImGui::PushID("##enemytransform_selection");
     if (ImGui::Button(
             text.c_str(),
             ImVec2{App::DPIHandler::scale_value(160), 0})) {
-      enemy_picker = ObjectPicker<Enemy>("Enemy"sv, Database::instance().enemies.enemies(), 0);
+      enemy_picker = ObjectPicker<Enemy>("Enemy"sv, Database::instance()->enemies.enemies(), 0);
             }
     ImGui::PopID();
 

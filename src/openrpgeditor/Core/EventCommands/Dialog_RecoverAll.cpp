@@ -44,13 +44,13 @@ std::tuple<bool, bool> Dialog_RecoverAll::draw() {
         // Actor Button
         ImGui::BeginDisabled(m_Source != 0);
         ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
-        std::string text = m_Source != 0 ? "##commonevent_switch_empty" : Database::instance().actorName(m_actor);
+        std::string text = m_Source != 0 ? "##commonevent_switch_empty" : Database::instance()->actorName(m_actor);
         ImGui::PushID("##recoverall_selection_actor");
         // TODO Picker needs "Entire Party" option
         if (ImGui::Button(
                 text.c_str(),
                 ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-              actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance().actors.actorList(), 0);
+              actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), 0);
         }
         ImGui::PopID();
         ImGui::EndDisabled();
@@ -58,12 +58,12 @@ std::tuple<bool, bool> Dialog_RecoverAll::draw() {
         // Variable Button
         ImGui::BeginDisabled(m_Source != 1);
         ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
-        text = m_Source != 1 ? "##commonevent_switch_empty" : Database::instance().variableName(m_variable);
+        text = m_Source != 1 ? "##commonevent_switch_empty" : Database::instance()->variableName(m_variable);
         ImGui::PushID("##controlvariable_gamedata");
         if (ImGui::Button(
                 text.c_str(),
                 ImVec2{200  - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-          picker.emplace("Variables", Database::instance().system.variables);
+          picker.emplace("Variables", Database::instance()->system.variables);
                 }
         ImGui::PopID();
         ImGui::EndDisabled();

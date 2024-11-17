@@ -15,9 +15,6 @@ public:
   // Getter for the file path associated with this object
   [[nodiscard]] virtual std::string_view filepath() const { return m_filepath; }
 
-protected:
-  [[nodiscard]] virtual const void* dataInternal() const = 0;
-
 private:
   std::string m_filepath;
 };
@@ -26,5 +23,9 @@ template <typename T>
 class ITypedSerializable : public ISerializable {
 public:
   explicit ITypedSerializable(const std::string_view filepath) : ISerializable(filepath) {}
-  const T* data() const { return static_cast<const T*>(dataInternal()); }
+  ITypedSerializable(const T& data, const std::string_view filepath) : ISerializable(filepath), m_data(data) {}
+  const T& data() const { return m_data; }
+
+protected:
+  T m_data;
 };

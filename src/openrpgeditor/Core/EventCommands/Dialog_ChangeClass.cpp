@@ -34,8 +34,8 @@ std::tuple<bool, bool> Dialog_ChangeClass::draw() {
 
     // Actor Button
     ImGui::PushID("##change_class_actor");
-    if (ImGui::Button(Database::instance().actorName(m_actor).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      actor_picker = ObjectPicker("Actor"sv, Database::instance().actors.actorList(), 0);
+    if (ImGui::Button(Database::instance()->actorName(m_actor).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+      actor_picker = ObjectPicker("Actor"sv, Database::instance()->actors.actorList(), 0);
     }
     ImGui::PopID();
 
@@ -43,8 +43,8 @@ std::tuple<bool, bool> Dialog_ChangeClass::draw() {
 
     // Actor Button
     ImGui::PushID("##change_class_classid");
-    if (ImGui::Button(Database::instance().className(m_class).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      class_picker = ObjectPicker<Class>("Class"sv, Database::instance().classes.classes(), 0);
+    if (ImGui::Button(Database::instance()->className(m_class).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+      class_picker = ObjectPicker<Class>("Class"sv, Database::instance()->classes.classes(), 0);
     }
     ImGui::PopID();
 

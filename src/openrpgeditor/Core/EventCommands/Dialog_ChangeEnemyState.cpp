@@ -50,10 +50,10 @@ std::tuple<bool, bool> Dialog_ChangeEnemyState::draw() {
 
     ImGui::SeparatorText("State");
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
-    std::string text = Database::instance().stateName(m_state);
+    std::string text = Database::instance()->stateName(m_state);
     ImGui::PushID("##enemystate_change");
     if (ImGui::Button(text.c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      state_picker = ObjectPicker<State>("State"sv, Database::instance().states.states(), 0);
+      state_picker = ObjectPicker<State>("State"sv, Database::instance()->states.states(), 0);
     }
     ImGui::PopID();
 

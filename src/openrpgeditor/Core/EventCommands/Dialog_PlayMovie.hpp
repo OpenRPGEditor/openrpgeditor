@@ -18,7 +18,7 @@ struct Dialog_PlayMovie : IEventDialogController {
     }
     m_movie = command->name;
     try {
-      auto files = getFileNames(Database::instance().basePath + "movies/");
+      auto files = getFileNames(Database::instance()->basePath + "movies/");
       for (const auto& file : files) {
         m_movies.push_back(file);
       }

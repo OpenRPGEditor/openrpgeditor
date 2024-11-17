@@ -1,8 +1,21 @@
 #include "Database/Database.hpp"
 
-#include "Serializable/ActorsSerializer.hpp"
-#include "Serializable/ClassesSerializer.hpp"
-#include "Serializable/DeserializationQueue.hpp"
+#include "Database/Serializable/DeserializationQueue.hpp"
+#include "Database/Serializable/SerializationQueue.hpp"
+
+#include "Database/Serializable/SystemSerializer.hpp"
+#include "Database/Serializable/ActorsSerializer.hpp"
+#include "Database/Serializable/ClassesSerializer.hpp"
+#include "Database/Serializable/ItemsSerializer.hpp"
+#include "Database/Serializable/SkillsSerializer.hpp"
+#include "Database/Serializable/WeaponsSerializer.hpp"
+#include "Database/Serializable/ArmorsSerializer.hpp"
+#include "Database/Serializable/EnemiesSerializer.hpp"
+#include "Database/Serializable/TroopsSerializer.hpp"
+#include "Database/Serializable/StatesSerializer.hpp"
+#include "Database/Serializable/AnimationsSerializer.hpp"
+#include "Database/Serializable/TilesetsSerializer.hpp"
+#include "Database/Serializable/CommonEventsSerializer.hpp"
 
 Database* Database::m_instance = nullptr;
 
@@ -12,39 +25,89 @@ Database::Database(const std::string_view _projectBasePath, const std::string_vi
   projectVersion = _projectVersion;
   basePath = _projectBasePath;
   projectFilePath = _projectFilePath;
+  RPGM_INFO("Queue System definitions for load...");
+  DeserializationQueue::instance().enqueue(std::make_shared<SystemSerializer>("data/System.json"),
+                                           [this](const std::shared_ptr<ISerializable>& serializer) {
+                                             system = std::dynamic_pointer_cast<SystemSerializer>(serializer)->data();
+                                             RPGM_INFO("System definitions loaded");
+                                           });
   RPGM_INFO("Queue Actor definitions for load...");
   DeserializationQueue::instance().enqueue(std::make_shared<ActorsSerializer>("data/Actors.json"),
                                            [this](const std::shared_ptr<ISerializable>& serializer) {
-                                             actors = *std::dynamic_pointer_cast<ActorsSerializer>(serializer)->data();
+                                             actors = std::dynamic_pointer_cast<ActorsSerializer>(serializer)->data();
+                                             RPGM_INFO("Actor definitions loaded");
                                            });
   RPGM_INFO("Queue Class definitions for load...");
   DeserializationQueue::instance().enqueue(std::make_shared<ClassesSerializer>("data/Classes.json"),
                                            [this](const std::shared_ptr<ISerializable>& serializer) {
-                                             classes =
-                                                 *std::dynamic_pointer_cast<ClassesSerializer>(serializer)->data();
+                                             classes = std::dynamic_pointer_cast<ClassesSerializer>(serializer)->data();
+                                             RPGM_INFO("Class definitions loaded");
                                            });
-  RPGM_INFO("Loading Skill definitions...");
-  skills = Skills::load(basePath + "/data/Skills.json");
-  RPGM_INFO("Loading Item definitions...");
-  items = Items::load(basePath + "/data/Items.json");
-  RPGM_INFO("Loading Weapon definitions...");
-  weapons = Weapons::load(basePath + "/data/Weapons.json");
-  RPGM_INFO("Loading Armor definitions...");
-  armors = Armors::load(basePath + "/data/Armors.json");
-  RPGM_INFO("Loading Enemy definitions...");
-  enemies = Enemies::load(basePath + "/data/Enemies.json");
-  RPGM_INFO("Loading Troop definitions...");
-  troops = Troops::load(basePath + "/data/Troops.json");
-  RPGM_INFO("Loading State definitions...");
-  states = States::load(basePath + "/data/States.json");
-  RPGM_INFO("Loading Animation definitions...");
-  animations = Animations::load(basePath + "/data/Animations.json");
-  RPGM_INFO("Loading Tileset definitions...");
-  tilesets = Tilesets::load(basePath + "/data/Tilesets.json");
-  RPGM_INFO("Loading CommonEvent definitions...");
-  commonEvents = CommonEvents::load(basePath + "/data/CommonEvents.json");
-  RPGM_INFO("Loading System...");
-  system = System::load(basePath + "/data/System.json");
+  RPGM_INFO("Queue Skill definitions for load...");
+  DeserializationQueue::instance().enqueue(std::make_shared<SkillsSerializer>("data/Skills.json"),
+                                           [this](const std::shared_ptr<ISerializable>& serializer) {
+                                             skills = std::dynamic_pointer_cast<SkillsSerializer>(serializer)->data();
+                                             RPGM_INFO("Skill definitions loaded");
+                                           });
+  RPGM_INFO("Queue Item definitions for load...");
+  DeserializationQueue::instance().enqueue(std::make_shared<ItemsSerializer>("data/Items.json"),
+                                           [this](const std::shared_ptr<ISerializable>& serializer) {
+                                             items = std::dynamic_pointer_cast<ItemsSerializer>(serializer)->data();
+                                             RPGM_INFO("Item definitions loaded");
+                                           });
+  RPGM_INFO("Queue Weapon definitions for load...");
+  DeserializationQueue::instance().enqueue(std::make_shared<WeaponsSerializer>("data/Weapons.json"),
+                                           [this](const std::shared_ptr<ISerializable>& serializer) {
+                                             weapons = std::dynamic_pointer_cast<WeaponsSerializer>(serializer)->data();
+                                             RPGM_INFO("Weapon definitions loaded");
+                                           });
+  RPGM_INFO("Queue Armor definitions for load...");
+  DeserializationQueue::instance().enqueue(std::make_shared<ArmorsSerializer>("data/Armors.json"),
+                                           [this](const std::shared_ptr<ISerializable>& serializer) {
+                                             armors = std::dynamic_pointer_cast<ArmorsSerializer>(serializer)->data();
+                                             RPGM_INFO("Armor definitions loaded");
+                                           });
+  RPGM_INFO("Queue Enemy definitions for load...");
+  DeserializationQueue::instance().enqueue(std::make_shared<EnemiesSerializer>("data/Enemies.json"),
+                                           [this](const std::shared_ptr<ISerializable>& serializer) {
+                                             enemies = std::dynamic_pointer_cast<EnemiesSerializer>(serializer)->data();
+                                             RPGM_INFO("Enemy definitions loaded");
+                                           });
+  RPGM_INFO("Queue Troop definitions for load...");
+  DeserializationQueue::instance().enqueue(std::make_shared<TroopsSerializer>("data/Troops.json"),
+                                           [this](const std::shared_ptr<ISerializable>& serializer) {
+                                             troops = std::dynamic_pointer_cast<TroopsSerializer>(serializer)->data();
+                                             RPGM_INFO("Troop definitions loaded");
+                                           });
+  RPGM_INFO("Queue State definitions for load...");
+  DeserializationQueue::instance().enqueue(std::make_shared<StatesSerializer>("data/States.json"),
+                                           [this](const std::shared_ptr<ISerializable>& serializer) {
+                                             states = std::dynamic_pointer_cast<StatesSerializer>(serializer)->data();
+                                             RPGM_INFO("State definitions loaded");
+                                           });
+  RPGM_INFO("Queue Animation definitions for load...");
+  DeserializationQueue::instance().enqueue(std::make_shared<AnimationsSerializer>("data/Animations.json"),
+                                           [this](const std::shared_ptr<ISerializable>& serializer) {
+                                             animations =
+                                                 std::dynamic_pointer_cast<AnimationsSerializer>(serializer)->data();
+                                             RPGM_INFO("Animation definitions loaded");
+                                           });
+  RPGM_INFO("Queue Tileset definitions for load...");
+  DeserializationQueue::instance().enqueue(std::make_shared<TilesetsSerializer>("data/Tilesets.json"),
+                                           [this](const std::shared_ptr<ISerializable>& serializer) {
+                                             tilesets =
+                                                 std::dynamic_pointer_cast<TilesetsSerializer>(serializer)->data();
+                                             RPGM_INFO("Tileset definitions loaded");
+                                           });
+  RPGM_INFO("Queue CommonEvent definitions for load...");
+  DeserializationQueue::instance().enqueue(std::make_shared<CommonEventsSerializer>("data/CommonEvents.json"),
+                                           [this](const std::shared_ptr<ISerializable>& serializer) {
+                                             commonEvents =
+                                                 std::dynamic_pointer_cast<CommonEventsSerializer>(serializer)->data();
+                                             RPGM_INFO("CommonEvent definitions loaded");
+                                           });
+  mapInfos = MapInfos::load(basePath + "/data/MapInfos.json");
+
   RPGM_INFO("Loading Plugins...");
   plugins = Plugins::load(basePath + "js/plugins.js");
   RPGM_INFO("Loading GameConstants");
@@ -52,7 +115,6 @@ Database::Database(const std::string_view _projectBasePath, const std::string_vi
   RPGM_INFO("Loading Templates");
   templates = Templates::load(basePath + "/data/Templates.json");
   RPGM_INFO(std::to_string(templates.commands.size()) + " size of commands");
-  mapInfos = MapInfos::load(basePath + "/data/MapInfos.json");
 }
 
 Map Database::loadMap(int mapId) {

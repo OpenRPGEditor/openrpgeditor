@@ -372,7 +372,7 @@ struct Database {
 
   [[nodiscard]] std::vector<char> encryptionKeyAsBytes() const { return system.encryptionKeyAsBytes(); }
 
-  static Database& instance() { return *m_instance; }
+  static Database* instance() { return m_instance; }
 
 private:
   static Database* m_instance;

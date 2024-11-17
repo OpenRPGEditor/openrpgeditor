@@ -19,11 +19,10 @@ MapInfos MapInfos::load(std::string_view filename) {
     auto& mapinfo = mapinfos.m_mapinfos.emplace_back();
     value.get_to(mapinfo);
     if (mapinfo && mapinfo->id != 0) {
-      std::string path = std::format("data/Map{:03}.json", mapinfo->id);
       DeserializationQueue::instance().enqueue(
-          std::make_shared<MapSerializer>(path), [&mapinfo](const std::shared_ptr<ISerializable>& serializer) {
-            auto map = *std::dynamic_pointer_cast<MapSerializer>(serializer)->data();
-            if (map.m_isValid) {
+          std::make_shared<MapSerializer>(std::format("data/Map{:03}.json", mapinfo->id)),
+          [&mapinfo](const std::shared_ptr<ISerializable>& serializer) {
+            if (auto map = std::dynamic_pointer_cast<MapSerializer>(serializer)->data(); map.m_isValid) {
               mapinfo->m_map = std::make_unique<Map>(map);
             }
           });

@@ -27,9 +27,9 @@ std::tuple<bool, bool> Dialog_ShowBattleAnimation::draw() {
     ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
     if (ImGui::BeginCombo(
             "##enemyanimation_list",
-            ("#" + std::to_string(m_enemy) + " " + Database::instance().troopMemberName(0, m_enemy)).c_str())) {
+            ("#" + std::to_string(m_enemy) + " " + Database::instance()->troopMemberName(0, m_enemy)).c_str())) {
       for (int i = 1; i < 9; ++i) {
-        if (ImGui::Selectable(("#" + std::to_string(i) + " " + Database::instance().troopMemberName(0, i)).c_str(),
+        if (ImGui::Selectable(("#" + std::to_string(i) + " " + Database::instance()->troopMemberName(0, i)).c_str(),
                               i == m_enemy)) {
           m_enemy = i;
         }
@@ -41,9 +41,9 @@ std::tuple<bool, bool> Dialog_ShowBattleAnimation::draw() {
     // Animation Button
     ImGui::SeparatorText("Animation");
     ImGui::PushID("##showanim_animation_select");
-    if (ImGui::Button(Database::instance().animationName(m_animation).c_str(),
+    if (ImGui::Button(Database::instance()->animationName(m_animation).c_str(),
                       ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      animation_picker = ObjectPicker<Animation>("Animation"sv, Database::instance().animations.animations(), 0);
+      animation_picker = ObjectPicker<Animation>("Animation"sv, Database::instance()->animations.animations(), 0);
     }
     ImGui::PopID();
 

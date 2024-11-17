@@ -221,12 +221,12 @@ void DBActorsTab::draw() {
               ImGui::TableSetupColumn("Type");
               ImGui::TableSetupColumn("Equipment Item");
               ImGui::TableHeadersRow();
-              const auto& equipTypes = Database::instance().system.equipTypes;
+              const auto& equipTypes = Database::instance()->system.equipTypes;
 
               for (int i = 0; i < equipTypes.size() - 1; i++) {
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn();
-                int etypeId = Database::instance().slotIdToEquipId(m_selectedActor->id, i);
+                int etypeId = Database::instance()->slotIdToEquipId(m_selectedActor->id, i);
                 auto etypeName = equipTypes[etypeId];
                 int dataId = m_selectedActor->equips[i];
                 if (!checkEquipable(etypeId, dataId)) {
@@ -348,19 +348,19 @@ bool DBActorsTab::checkEquipable(const int etypeId, const int dataId) const {
     return false;
   }
 
-  if (Database::instance().isEquipTypeSealed(m_selectedActor->id, etypeId)) {
+  if (Database::instance()->isEquipTypeSealed(m_selectedActor->id, etypeId)) {
     return false;
   }
 
   if (etypeId <= 1) {
-    if (const auto& weapon = Database::instance().weapons.weapon(dataId);
-        weapon && Database::instance().isEquipWeaponTypeOk(m_selectedActor->id, weapon->wtypeId)) {
+    if (const auto& weapon = Database::instance()->weapons.weapon(dataId);
+        weapon && Database::instance()->isEquipWeaponTypeOk(m_selectedActor->id, weapon->wtypeId)) {
       return true;
     }
   } else {
-    if (const auto& armor = Database::instance().armors.armor(dataId);
+    if (const auto& armor = Database::instance()->armors.armor(dataId);
         armor && armor->etypeId == etypeId &&
-        Database::instance().isEquipArmorTypeOk(m_selectedActor->id, armor->atypeId)) {
+        Database::instance()->isEquipArmorTypeOk(m_selectedActor->id, armor->atypeId)) {
       return true;
     }
   }
@@ -373,8 +373,8 @@ std::string DBActorsTab::itemDisplayName(const bool isWeapon, const int dataId) 
     return "None";
   }
   if (isWeapon) {
-    return Database::instance().weaponNameOrId(dataId);
+    return Database::instance()->weaponNameOrId(dataId);
   }
 
-  return Database::instance().armorNameOrId(dataId);
+  return Database::instance()->armorNameOrId(dataId);
 }

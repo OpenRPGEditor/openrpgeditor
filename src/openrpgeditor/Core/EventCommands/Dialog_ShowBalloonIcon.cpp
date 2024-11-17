@@ -18,7 +18,7 @@ std::tuple<bool, bool> Dialog_ShowBalloonIcon::draw() {
 
     ImGui::SeparatorText("Character");
     ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
-    if (ImGui::BeginCombo("##showanim_character", Database::instance().eventNameOrId(m_character).c_str())) {
+    if (ImGui::BeginCombo("##showanim_character", Database::instance()->eventNameOrId(m_character).c_str())) {
 
       if (ImGui::Selectable("Player", m_character == -1)) {
         m_character = -1;
@@ -29,7 +29,7 @@ std::tuple<bool, bool> Dialog_ShowBalloonIcon::draw() {
         ImGui::SetItemDefaultFocus();
       }
 
-      for (auto& dataSource : Database::instance().mapInfos.currentMap()->map()->events) {
+      for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events) {
         if (!dataSource.has_value())
           continue;
 

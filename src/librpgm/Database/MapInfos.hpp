@@ -26,6 +26,7 @@ struct MapInfo {
 private:
   friend void recursiveSort(MapInfo& in);
   friend class MapInfos;
+  friend class MapInfosSerializer;
   std::vector<MapInfo*> m_children;
   std::unique_ptr<Map> m_map;
 };

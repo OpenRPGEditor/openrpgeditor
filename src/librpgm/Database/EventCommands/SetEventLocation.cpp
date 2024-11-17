@@ -35,7 +35,7 @@ std::string SetEventLocationCommand::stringRep(const Database& db) const {
   }
 
   if (mode == TransferMode::Exchange_With_Another_Event) {
-    return prefix + ", Exchange with " + (x > 0 ? Database::instance().eventNameOrId(x).c_str() : "This Event") + suffix;
+    return prefix + ", Exchange with " + (x > 0 ? Database::instance()->eventNameOrId(x).c_str() : "This Event") + suffix;
   }
 
   return prefix + std::format(", ({}, {})", x, y) + suffix;

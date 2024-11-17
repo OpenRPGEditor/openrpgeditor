@@ -33,14 +33,14 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
     }
     ImGui::SeparatorText("Event");
     ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
-    if (ImGui::BeginCombo("##setevloc_character", Database::instance().eventNameOrId(m_event).c_str())) {
+    if (ImGui::BeginCombo("##setevloc_character", Database::instance()->eventNameOrId(m_event).c_str())) {
 
       if (ImGui::Selectable("This Event", m_event == 0)) {
         m_event = 0;
         ImGui::SetItemDefaultFocus();
       }
 
-      for (auto& dataSource : Database::instance().mapInfos.currentMap()->map()->events) {
+      for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events) {
         if (!dataSource.has_value())
           continue;
 
@@ -80,17 +80,17 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
     {
 
       ImGui::PushID("##transfer_var_x");
-      if (ImGui::Button(m_mode == 1 ? Database::instance().variableNameAndId(m_x_var).c_str() : "",
+      if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_x_var).c_str() : "",
                         ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 1;
-        picker.emplace("Variables", Database::instance().system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables);
       }
       ImGui::PopID();
       ImGui::PushID("##transfer_var_y");
-      if (ImGui::Button(m_mode == 1 ? Database::instance().variableNameAndId(m_y_var).c_str() : "",
+      if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_y_var).c_str() : "",
                         ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 2;
-        picker.emplace("Variables", Database::instance().system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -102,14 +102,14 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
     ImGui::BeginDisabled(m_mode != 2);
     ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
     if (ImGui::BeginCombo("##exchangeev_event",
-                          m_mode != 2 ? "" : Database::instance().eventNameOrId(m_otherEvent).c_str())) {
+                          m_mode != 2 ? "" : Database::instance()->eventNameOrId(m_otherEvent).c_str())) {
 
       if (ImGui::Selectable("This Event", m_otherEvent == 0)) {
         m_otherEvent = 0;
         ImGui::SetItemDefaultFocus();
       }
 
-      for (auto& dataSource : Database::instance().mapInfos.currentMap()->map()->events) {
+      for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events) {
         if (!dataSource.has_value())
           continue;
 

@@ -44,7 +44,7 @@ std::tuple<bool, bool> Dialog_PlayBGS::draw() {
                                           ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
                                               ImGuiSelectableFlags_AllowDoubleClick)) {
             if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-              playAudio((Database::instance().basePath + "audio/bgs/" + m_audios.at(m_selected - 1) + ".ogg").c_str());
+              playAudio((Database::instance()->basePath + "audio/bgs/" + m_audios.at(m_selected - 1) + ".ogg").c_str());
             }
             m_selected = n + 1;
             m_audio.name = m_audios.at(m_selected - 1);
@@ -61,7 +61,7 @@ std::tuple<bool, bool> Dialog_PlayBGS::draw() {
     {
       if (ImGui::Button("Play", ImVec2(100, 0))) {
         if (m_selected > 0)
-          playAudio((Database::instance().basePath + "audio/bgs/" + m_audios.at(m_selected) + ".ogg").c_str());
+          playAudio((Database::instance()->basePath + "audio/bgs/" + m_audios.at(m_selected) + ".ogg").c_str());
       }
       if (ImGui::Button("Stop", ImVec2(100, 0))) {
         stopAudio();

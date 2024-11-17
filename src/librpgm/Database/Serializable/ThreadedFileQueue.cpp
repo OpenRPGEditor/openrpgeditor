@@ -27,7 +27,7 @@ bool ThreadedFileQueue::enqueue(const std::shared_ptr<ISerializable>& fileData, 
 }
 
 float ThreadedFileQueue::getProgress() const {
-  return m_totalTasks == 0 ? 0.f : (static_cast<float>(m_completedTasks) / static_cast<float>(m_totalTasks));
+  return m_totalTasks == 0 ? 0.f : (static_cast<float>(m_completedTasks) / static_cast<float>(m_totalTasks) * 100.f);
 }
 
 std::string_view ThreadedFileQueue::getCurrentFile() const { return m_currentFile; }

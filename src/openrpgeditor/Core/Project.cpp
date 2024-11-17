@@ -316,9 +316,9 @@ void Project::drawToolbar() {
   ImGui::EndDisabled();
 
   if (DeserializationQueue::instance().hasTasks()) {
-    ImGui::Begin("Load Progress....");
+    ImGui::Begin("Load Progress....", nullptr);
     ImGui::Text("Loading %s....", DeserializationQueue::instance().getCurrentFile().data());
-    ImGui::ProgressBar(DeserializationQueue::instance().getProgress());
+    ImGui::ProgressBar(DeserializationQueue::instance().getProgress() / 100.f);
     ImGui::End();
   } else if (DeserializationQueue::instance().getProgress() >= 100.f) {
     DeserializationQueue::instance().reset();
@@ -326,7 +326,7 @@ void Project::drawToolbar() {
   if (SerializationQueue::instance().hasTasks()) {
     ImGui::Begin("Load Progress....");
     ImGui::Text("Loading %s....", SerializationQueue::instance().getCurrentFile().data());
-    ImGui::ProgressBar(SerializationQueue::instance().getProgress());
+    ImGui::ProgressBar(SerializationQueue::instance().getProgress() / 100.f);
     ImGui::End();
   } else if (SerializationQueue::instance().getProgress() >= 100.f) {
     SerializationQueue::instance().reset();

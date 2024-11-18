@@ -27,21 +27,21 @@ constexpr std::array<std::array<std::array<int, 2>, 4>, 48> FloorAutoTileTable{{
 }};
 
 constexpr std::array<std::array<std::array<int, 2>, 4>, 48> WallAutoTileTable{{{{{2, 2}, {1, 2}, {2, 1}, {1, 1}}},
-                                                                                  {{{0, 2}, {1, 2}, {0, 1}, {1, 1}}},
-                                                                                  {{{2, 0}, {1, 0}, {2, 1}, {1, 1}}},
-                                                                                  {{{0, 0}, {1, 0}, {0, 1}, {1, 1}}},
-                                                                                  {{{2, 2}, {3, 2}, {2, 1}, {3, 1}}},
-                                                                                  {{{0, 2}, {3, 2}, {0, 1}, {3, 1}}},
-                                                                                  {{{2, 0}, {3, 0}, {2, 1}, {3, 1}}},
-                                                                                  {{{0, 0}, {3, 0}, {0, 1}, {3, 1}}},
-                                                                                  {{{2, 2}, {1, 2}, {2, 3}, {1, 3}}},
-                                                                                  {{{0, 2}, {1, 2}, {0, 3}, {1, 3}}},
-                                                                                  {{{2, 0}, {1, 0}, {2, 3}, {1, 3}}},
-                                                                                  {{{0, 0}, {1, 0}, {0, 3}, {1, 3}}},
-                                                                                  {{{2, 2}, {3, 2}, {2, 3}, {3, 3}}},
-                                                                                  {{{0, 2}, {3, 2}, {0, 3}, {3, 3}}},
-                                                                                  {{{2, 0}, {3, 0}, {2, 3}, {3, 3}}},
-                                                                                  {{{0, 0}, {3, 0}, {0, 3}, {3, 3}}}}};
+                                                                               {{{0, 2}, {1, 2}, {0, 1}, {1, 1}}},
+                                                                               {{{2, 0}, {1, 0}, {2, 1}, {1, 1}}},
+                                                                               {{{0, 0}, {1, 0}, {0, 1}, {1, 1}}},
+                                                                               {{{2, 2}, {3, 2}, {2, 1}, {3, 1}}},
+                                                                               {{{0, 2}, {3, 2}, {0, 1}, {3, 1}}},
+                                                                               {{{2, 0}, {3, 0}, {2, 1}, {3, 1}}},
+                                                                               {{{0, 0}, {3, 0}, {0, 1}, {3, 1}}},
+                                                                               {{{2, 2}, {1, 2}, {2, 3}, {1, 3}}},
+                                                                               {{{0, 2}, {1, 2}, {0, 3}, {1, 3}}},
+                                                                               {{{2, 0}, {1, 0}, {2, 3}, {1, 3}}},
+                                                                               {{{0, 0}, {1, 0}, {0, 3}, {1, 3}}},
+                                                                               {{{2, 2}, {3, 2}, {2, 3}, {3, 3}}},
+                                                                               {{{0, 2}, {3, 2}, {0, 3}, {3, 3}}},
+                                                                               {{{2, 0}, {3, 0}, {2, 3}, {3, 3}}},
+                                                                               {{{0, 0}, {3, 0}, {0, 3}, {3, 3}}}}};
 
 constexpr std::array<std::array<std::array<int, 2>, 4>, 48> WaterfallAutoTileTable{{
     {{{2, 0}, {1, 0}, {2, 1}, {1, 1}}},
@@ -51,8 +51,7 @@ constexpr std::array<std::array<std::array<int, 2>, 4>, 48> WaterfallAutoTileTab
 }};
 
 static bool tileTablesInitialized = false;
-MapRenderer::MapRenderer() {
-}
+MapRenderer::MapRenderer() {}
 
 void MapRenderer::setMap(const Map* map, const Tileset* tileset, int tileWidth, int tileHeight) {
   m_map = map;
@@ -313,7 +312,8 @@ int MapRenderer::tileId(const int x, const int y, const int z) const {
 
   int idx = (z * m_map->height + y) * m_map->width + x;
   if (idx < m_map->data.size()) {
-    return m_map->data[idx];
+    const auto& tile = m_map->data[idx];
+    return tile ? *tile : 0;
   }
 
   return 0;

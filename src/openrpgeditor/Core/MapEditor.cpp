@@ -536,9 +536,13 @@ void MapEditor::draw() {
 
       for (int y = 0; y < map()->height; ++y) {
         for (int x = 0; x < map()->width; ++x) {
+          auto tile = map()->data[m_mapRenderer.tileIdFromCoords(x, y, 4)];
+          if (!tile) {
+            continue;
+          }
           const float dx = x * tileSize();
           const float dy = y * tileSize();
-          const int bits = map()->data[m_mapRenderer.tileIdFromCoords(x, y, 4)];
+          const int bits = *tile;
           if (!(bits & 0x0F)) {
             continue;
           }

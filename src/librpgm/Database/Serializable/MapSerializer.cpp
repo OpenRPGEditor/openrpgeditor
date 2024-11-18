@@ -8,8 +8,8 @@ void MapSerializer::serialize(std::ofstream& os) const {
       nlohmann::json data = m_data;
       os << data.dump(4);
     }
-  } catch(...) {
-    std::cerr << "Error while writing to file" << std::endl;
+  } catch (const std::exception& e) {
+    std::cerr << "Error while writing to file \"" << filepath() << "\" " << e.what() << std::endl;
   }
 }
 
@@ -19,7 +19,7 @@ void MapSerializer::deserialize(std::ifstream& is) {
       m_data = nlohmann::json::parse(is).get<Map>();
       m_data.m_isValid = true;
     }
-  } catch(...) {
-    std::cerr << "Error while reading from file" << std::endl;
+  } catch (const std::exception& e) {
+    std::cerr << "Error while reading from file \"" << filepath() << "\"" << e.what() << std::endl;
   }
 }

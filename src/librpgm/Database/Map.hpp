@@ -111,7 +111,7 @@ public:
   int width{};
   int height{};
 
-  std::vector<int> data;
+  std::vector<std::optional<int>> data;
   std::vector<std::optional<Event>> events;
 
   bool m_isDirty = false;

@@ -2,6 +2,14 @@
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Database/System.hpp"
 
+/* TODO: Move this somewhere else */
+enum class AudioType {
+  BackgroundMusic,
+  Melody,
+  SoundEffect,
+};
+
+
 struct System;
 struct DBSystemTab : IDBEditorTab {
   DBSystemTab() = delete;
@@ -52,6 +60,7 @@ struct DBSystemTab : IDBEditorTab {
   [[nodiscard]] Messages& messages() { return m_system.terms.messages; }
   [[nodiscard]] const Messages& messages() const { return m_system.terms.messages; }
 
+  void addAudioRow(Audio& audio, const std::string& type, AudioType audioType);
 private:
   System& m_system;
 };

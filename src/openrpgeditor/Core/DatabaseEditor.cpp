@@ -10,7 +10,7 @@ void DatabaseEditor::draw() {
   ImGui::PushID("##orpg_database_editor");
   if (ImGui::Begin("Database", &m_isOpen)) {
     ImGui::SetNextItemWidth(100.f);
-    ImGui::BeginChild("##orpg_database_editor_tab_buttons", ImVec2{App::DPIHandler::scale_value(200), 0}, 0,
+    ImGui::BeginChild("##orpg_database_editor_tab_buttons", ImVec2{App::DPIHandler::scale_value(130), 0}, 0,
                       ImGuiWindowFlags_NoBackground);
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 100);
     if (ImGui::Selectable("Actors", m_currentTab == &m_actors)) {

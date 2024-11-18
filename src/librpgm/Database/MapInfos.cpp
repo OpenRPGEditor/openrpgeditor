@@ -18,15 +18,6 @@ MapInfos MapInfos::load(std::string_view filename) {
   for (const auto& [_, value] : data.items()) {
     auto& mapinfo = mapinfos.m_mapinfos.emplace_back();
     value.get_to(mapinfo);
-    if (mapinfo && mapinfo->id != 0) {
-      DeserializationQueue::instance().enqueue(
-          std::make_shared<MapSerializer>(std::format("data/Map{:03}.json", mapinfo->id)),
-          [&mapinfo](const std::shared_ptr<ISerializable>& serializer) {
-            if (auto map = std::dynamic_pointer_cast<MapSerializer>(serializer)->data(); map.m_isValid) {
-              mapinfo->m_map = std::make_unique<Map>(map);
-            }
-          });
-    }
   }
   mapinfos.m_mapinfos[0].emplace();
   mapinfos.m_mapinfos.shrink_to_fit();
@@ -73,4 +64,18 @@ void MapInfos::buildTree(const bool reset) {
   }
 
   recursiveSort(root());
+}
+
+void MapInfos::loadAllMaps() {
+  for (auto& mapinfo : m_mapinfos) {
+    if (mapinfo && mapinfo->id != 0) {
+      DeserializationQueue::instance().enqueue(
+          std::make_shared<MapSerializer>(std::format("data/Map{:03}.json", mapinfo->id)),
+          [&mapinfo](const std::shared_ptr<ISerializable>& serializer) {
+            if (auto map = std::dynamic_pointer_cast<MapSerializer>(serializer)->data(); map.m_isValid) {
+              mapinfo->m_map = std::make_unique<Map>(map);
+            }
+          });
+    }
+  }
 }

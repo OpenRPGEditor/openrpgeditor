@@ -74,6 +74,8 @@ public:
   MapInfo* currentMap() { return m_currentMap; }
   const MapInfo* currentMap() const { return m_currentMap; }
 
+  void loadAllMaps();
+
 private:
   std::vector<std::optional<MapInfo>> m_mapinfos;
   MapInfo* m_currentMap = nullptr;

@@ -107,6 +107,7 @@ Database::Database(const std::string_view _projectBasePath, const std::string_vi
                                              RPGM_INFO("CommonEvent definitions loaded");
                                            });
   mapInfos = MapInfos::load(basePath + "/data/MapInfos.json");
+  mapInfos.loadAllMaps();
 
   RPGM_INFO("Loading Plugins...");
   plugins = Plugins::load(basePath + "js/plugins.js");

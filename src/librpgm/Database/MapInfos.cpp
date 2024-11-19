@@ -87,13 +87,21 @@ void MapInfos::loadAllMaps() {
 //      if (auto map = Database::instance()->loadMap(mapinfo->id); map.m_isValid) {
 //        mapinfo->m_map = std::make_unique<Map>(map);
 //      }
-       DeserializationQueue::instance().enqueue(
-           std::make_shared<MapSerializer>(std::format("data/Map{:03}.json", mapinfo->id)),
-           [&mapinfo](const std::shared_ptr<ISerializable>& serializer) {
-             if (auto map = std::dynamic_pointer_cast<MapSerializer>(serializer)->data(); map.m_isValid) {
-               mapinfo->m_map = std::make_unique<Map>(map);
-             }
-           });
+      DeserializationQueue::instance().enqueue(
+          std::make_shared<MapSerializer>(std::format("data/Map{:03}.json", mapinfo->id), mapinfo->id),
+          [this](auto&& handle) { mapLoadCallback(std::forward<decltype(handle)>(handle)); });
+    }
+  }
+}
+
+static std::mutex MapInfosMutex;
+void MapInfos::mapLoadCallback(const std::shared_ptr<ISerializable>& data) {
+  if (auto mapSerializable = std::dynamic_pointer_cast<MapSerializer>(data)) {
+    std::lock_guard lock(MapInfosMutex);
+    auto& mapinfo = m_mapinfos[mapSerializable->mapId()];
+    const auto& map = mapSerializable->data();
+    if (mapinfo && map.m_isValid) {
+      mapinfo->m_map = std::make_unique<Map>(map);
     }
   }
 }

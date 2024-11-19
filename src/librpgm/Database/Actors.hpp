@@ -11,9 +11,8 @@
 
 class Actor {
 public:
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Actor, id, battlerName, characterIndex, characterName, classId, equips,
-                                              faceIndex, faceName, traits, initialLevel, maxLevel, name, nickname, note,
-                                              profile);
+  friend void to_json(nlohmann::json& to, const Actor& actor);
+  friend void from_json(const nlohmann::json& from, Actor& actor);
   int id = 0;
   std::string battlerName;
   int characterIndex = 0;
@@ -40,6 +39,8 @@ public:
    */
   bool m_isValid{false};
 };
+void to_json(nlohmann::json& to, const Actor& actor);
+void from_json(const nlohmann::json& from, Actor& actor);
 
 class Actors {
 public:

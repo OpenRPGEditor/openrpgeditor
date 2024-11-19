@@ -11,9 +11,8 @@
 #include "nlohmann/json.hpp"
 
 struct EventCondition {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(EventCondition, actorId, actorValid, itemId, itemValid, selfSwitchCh, selfSwitchValid,
-                                 switch1Id, switch1Valid, switch2Id, switch2Valid, variableId, variableValid,
-                                 variableValue);
+  friend void to_json(nlohmann::json& to, const EventCondition& cond);
+  friend void from_json(const nlohmann::json& from, EventCondition& cond);
   int actorId{1};
   bool actorValid{};
   int itemId{1};
@@ -31,9 +30,12 @@ struct EventCondition {
   [[nodiscard]] bool isDirty() const { return m_isDirty; }
   bool m_isDirty{false};
 };
+void to_json(nlohmann::json& to, const EventCondition& cond);
+void from_json(const nlohmann::json& from, EventCondition& cond);
 
 struct EventImage {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(EventImage, tileId, characterName, direction, pattern, characterIndex);
+  friend void to_json(nlohmann::json& to, const EventImage& image);
+  friend void from_json(const nlohmann::json& from, EventImage& image);
   int tileId{};
   std::string characterName;
   Direction direction{Direction::Down};
@@ -43,6 +45,8 @@ struct EventImage {
   [[nodiscard]] bool isDirty() const { return m_isDirty; }
   bool m_isDirty{false};
 };
+void to_json(nlohmann::json& to, const EventImage& image);
+void from_json(const nlohmann::json& from, EventImage& image);
 
 struct EventPage {
   friend void to_json(nlohmann::json& json, const EventPage& eventPage);
@@ -76,3 +80,5 @@ struct EventPage {
   }
   mutable bool m_isDirty{false};
 };
+void to_json(nlohmann::json& json, const EventPage& eventPage);
+void from_json(const nlohmann::json& json, EventPage& eventPage);

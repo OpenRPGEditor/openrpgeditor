@@ -57,7 +57,9 @@ FetchContent_Declare(
         GIT_REPOSITORY "https://github.com/gabime/spdlog.git"
         GIT_TAG v1.14.1)
 
-FetchContent_Declare(json GIT_REPOSITORY "https://github.com/nlohmann/json.git")
+FetchContent_Declare(json
+        GIT_REPOSITORY "https://github.com/nlohmann/json.git"
+)
 
 FetchContent_Declare(magic_enum
         GIT_REPOSITORY "https://github.com/Neargye/magic_enum.git")
@@ -97,6 +99,7 @@ set(BUILD_SHARED_LIBS OFF)
 set(SPDLOG_FMT_EXTERNAL ON)
 set(SPDLOG_BUILD_SHARED OFF)
 set(SPDLOG_ENABLE_PCH ON)
+set(JSON_ImplicitConversions OFF)
 
 # Populate
 

@@ -15,13 +15,13 @@ void to_json(nlohmann::json& to, const CommonEvent& event) {
             {"switchId", event.switchId},
             {"trigger", event.trigger}};
 }
-void from_json(const nlohmann::json& to, CommonEvent& event) {
-  to.at("id").get_to(event.id);
-  to.at("name").get_to(event.name);
+void from_json(const nlohmann::json& from, CommonEvent& event) {
+  event.id = from.value("id", event.id);
+  event.name = from.value("name", event.name);
   CommandParser parser;
-  event.commands = parser.parse(to.at("list"));
-  to.at("switchId").get_to(event.switchId);
-  to.at("trigger").get_to(event.trigger);
+  event.commands = parser.parse(from.at("list"));
+  event.switchId = from.value("switchId", event.switchId);
+  event.trigger = from.value("trigger", event.trigger);
 }
 
 CommonEvents CommonEvents::load(std::string_view filepath) {

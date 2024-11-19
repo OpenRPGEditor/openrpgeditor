@@ -9,10 +9,11 @@
 
 class Enemy {
 public:
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Enemy, id, actions, battlerHue, battlerName, dropItems, exp, traits, gold,
-                                              name, note, params);
+  friend void to_json(nlohmann::json& to, const Enemy& enemy);
+  friend void from_json(const nlohmann::json& from, Enemy& enemy);
   struct Action {
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Action, conditionParam1, conditionParam2, conditionType, rating, skillId);
+    friend void to_json(nlohmann::json& to, const Action& action);
+    friend void from_json(const nlohmann::json& from, Action& action);
     int conditionParam1;
     int conditionParam2;
     ActionCondition conditionType;
@@ -21,7 +22,8 @@ public:
   };
 
   struct DropItem {
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(DropItem, dataId, denominator, kind);
+    friend void to_json(nlohmann::json& to, const DropItem& dropitem);
+    friend void from_json(const nlohmann::json& from, DropItem& dropitem);
     int dataId;
     int denominator;
     int kind;
@@ -47,6 +49,12 @@ public:
    */
   bool m_isValid{false};
 };
+void to_json(nlohmann::json& to, const Enemy& enemy);
+void from_json(const nlohmann::json& from, Enemy& enemy);
+void to_json(nlohmann::json& to, const Enemy::Action& action);
+void from_json(const nlohmann::json& from, Enemy::Action& action);
+void to_json(nlohmann::json& to, const Enemy::DropItem& dropitem);
+void from_json(const nlohmann::json& from, Enemy::DropItem& dropitem);
 
 class Enemies {
 public:

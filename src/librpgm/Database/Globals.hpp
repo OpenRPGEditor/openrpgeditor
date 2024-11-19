@@ -813,24 +813,26 @@ static inline std::string UndectorateEnumName(E e) {
 #include "nlohmann/json.hpp"
 // helper boiler plates for json parsing
 
+// partial specialization (full specialization works too)
 namespace nlohmann {
 template <typename T>
-void to_json(json& j, const std::optional<T>& opt) {
-  if (opt) {
-    j = *opt;
-  } else {
-    j = nullptr;
+struct adl_serializer<std::optional<T>> {
+  static void to_json(json& j, const std::optional<T>& opt) {
+    if (!opt.has_value()) {
+      j = nullptr;
+    } else {
+      j = *opt; // this will call adl_serializer<T>::to_json which will
+      // find the free function to_json in T's namespace!
+    }
   }
-}
 
-template <typename T>
-void from_json(const json& j, std::optional<T>& opt) {
-  if (j.is_null()) {
-    opt = std::nullopt;
-  } else {
-    opt = j.get<T>();
+  static void from_json(const json& j, std::optional<T>& opt) {
+    if (!j.is_null()) {
+      opt = j.template get<T>(); // same as above, but with
+      // adl_serializer<T>::from_json
+    }
   }
-}
+};
 } // namespace nlohmann
 
 /* Helper function to set dirty state */

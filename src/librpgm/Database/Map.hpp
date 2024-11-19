@@ -12,14 +12,11 @@
 
 class Map {
 public:
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Map, autoPlayBgm, autoPlayBgs, battleBack1Name, battleBack2Name, bgm, bgs,
-                                              disableDashing, displayName, encounters, encounterStep, note,
-                                              parallaxLoopX, parallaxLoopY, parallaxName, parallaxShow, parallaxSx,
-                                              parallaxSy, scrollType, specifyBattleBack, tilesetId, width, height, data,
-                                              events);
-
+  friend void to_json(nlohmann::json& json, const Map& map);
+  friend void from_json(const nlohmann::json& json, Map& map);
   struct Encounter {
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Encounter, regionSet, troopId, weight);
+    friend void to_json(nlohmann::json& json, const Encounter& encounter);
+    friend void from_json(const nlohmann::json& json, Encounter& encounter);
     std::array<int, 3> regionSet{};
     int troopId{};
     int weight{};
@@ -123,3 +120,8 @@ public:
     return m_isDirty;
   }
 };
+
+void to_json(nlohmann::json& json, const Map& map);
+void from_json(const nlohmann::json& json, Map& map);
+void to_json(nlohmann::json& json, const Map::Encounter& encounter);
+void from_json(const nlohmann::json& json, Map::Encounter& encounter);

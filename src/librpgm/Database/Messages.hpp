@@ -7,13 +7,9 @@
 #include <string>
 
 struct Messages {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(
-      Messages, actionFailure, actorDamage, actorDrain, actorGain, actorLoss, actorNoDamage, actorNoHit, actorRecovery,
-      alwaysDash, bgmVolume, bgsVolume, buffAdd, buffRemove, commandRemember, counterAttack, criticalToActor,
-      criticalToEnemy, debuffAdd, defeat, emerge, enemyDamage, enemyDrain, enemyGain, enemyLoss, enemyNoDamage,
-      enemyNoHit, enemyRecovery, escapeFailure, escapeStart, evasion, expNext, expTotal, file, levelUp, loadMessage,
-      magicEvasion, magicReflection, meVolume, obtainExp, btainGold, obtainItem, obtainSkil, partyName, possession,
-      preemptive, saveMessage, seVolume, substitute, surprise, useItem, victory);
+  friend void to_json(nlohmann::json& to, const Messages& messages);
+  friend void from_json(const nlohmann::json& from, Messages& messages);
+
   std::string actionFailure;
   std::string actorDamage;
   std::string actorDrain;
@@ -53,9 +49,9 @@ struct Messages {
   std::string magicReflection;
   std::string meVolume;
   std::string obtainExp;
-  std::string btainGold;
+  std::string obtainGold;
   std::string obtainItem;
-  std::string obtainSkil;
+  std::string obtainSkill;
   std::string partyName;
   std::string possession;
   std::string preemptive;
@@ -66,3 +62,6 @@ struct Messages {
   std::string useItem;
   std::string victory;
 };
+
+void to_json(nlohmann::json& to, const Messages& messages);
+void from_json(const nlohmann::json& from, Messages& messages);

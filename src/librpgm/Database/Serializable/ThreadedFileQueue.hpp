@@ -41,7 +41,8 @@ public:
   // Reset and clear the queue, also aborts current tasks
   void reset();
 
-  bool hasTasks() const { return m_taskQueue.size() > 0; }
+  bool hasTasks() const { return !m_taskQueue.empty(); }
+
 protected:
   // The worker loop, to be implemented in subclasses (serialization/deserialization)
   virtual void processTask(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback) = 0;

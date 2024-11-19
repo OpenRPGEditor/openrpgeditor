@@ -11,7 +11,7 @@ void to_json(nlohmann::json& json, const MovementRoute& route) {
 void from_json(const nlohmann::json& json, MovementRoute& route) {
   CommandParser parser;
   route.list = parser.parse(json["list"]);
-  json["repeat"].get_to(route.repeat);
-  json["skippable"].get_to(route.skippable);
-  json["wait"].get_to(route.wait);
+  route.repeat = json.value("repeat", route.repeat);
+  route.skippable = json.value("skippable", route.skippable);
+  route.wait = json.value("wait", route.wait);
 }

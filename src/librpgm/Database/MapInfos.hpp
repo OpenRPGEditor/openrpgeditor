@@ -5,7 +5,8 @@
 #include <string>
 
 struct MapInfo {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(MapInfo, expanded, id, name, order, parentId, scrollX, scrollY);
+  friend void to_json(nlohmann::json& json, const MapInfo& mapinfo);
+  friend void from_json(const nlohmann::json& json, MapInfo& mapinfo);
   bool expanded{};
   int id{};
   std::string name;
@@ -30,6 +31,8 @@ private:
   std::vector<MapInfo*> m_children;
   std::unique_ptr<Map> m_map;
 };
+void to_json(nlohmann::json& json, const MapInfo& mapinfo);
+void from_json(const nlohmann::json& json, MapInfo& mapinfo);
 
 class MapInfos {
 public:

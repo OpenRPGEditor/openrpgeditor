@@ -5,10 +5,8 @@
 #include <nlohmann/json.hpp>
 
 struct GameConstants {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(GameConstants, variables, switches, actors, classes, skills, items,
-                                              weapons, armors, enemies, troops, states, animations, tilesets,
-                                              commonEvents, maps, generateJS);
-
+  friend void to_json(nlohmann::json& json, const GameConstants& constants);
+  friend void from_json(const nlohmann::json& json, GameConstants& constants);
   enum class Type {
     Variable,
     Switch,
@@ -50,3 +48,5 @@ struct GameConstants {
 
   bool isValidName(Type type, int id, const std::string& constant);
 };
+void to_json(nlohmann::json& json, const GameConstants& constants);
+void from_json(const nlohmann::json& json, GameConstants& constants);

@@ -4,6 +4,27 @@
 
 using json = nlohmann::json;
 
+void to_json(nlohmann::json& out, const Armor& armor) {
+  out = {
+      {"id", armor.id},           {"atypeId", armor.atypeId}, {"description", armor.description},
+      {"etypeId", armor.etypeId}, {"traits", armor.traits},   {"iconIndex", armor.iconIndex},
+      {"name", armor.name},       {"note", armor.note},       {"params", armor.params},
+      {"price", armor.price},
+  };
+}
+
+void from_json(const nlohmann::json& from, Armor& armor) {
+  armor.id = from.value("id", armor.id);
+  armor.atypeId = from.value("atypeId", armor.atypeId);
+  armor.description = from.value("description", armor.description);
+  armor.etypeId = from.value("etypeId", armor.etypeId);
+  armor.iconIndex = from.value("iconIndex", armor.iconIndex);
+  armor.name = from.value("name", armor.name);
+  armor.note = from.value("note", armor.note);
+  armor.params = from.value("params", armor.params);
+  armor.price = from.value("price", armor.price);
+}
+
 Armors Armors::load(std::string_view filename) {
   std::ifstream file(filename.data());
   json data = json::parse(file);

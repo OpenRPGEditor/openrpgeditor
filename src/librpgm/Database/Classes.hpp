@@ -9,15 +9,16 @@
 #include <array>
 
 struct Learning {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Learning, level, note, skillId);
-
   int level{};
   std::string note;
   int skillId{};
 };
+void to_json(nlohmann::json& to, const Learning& learning);
+void from_json(const nlohmann::json& from, Learning& learning);
 
 struct Class {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Class, id, expParams, traits, learnings, name, note, params);
+  friend void to_json(nlohmann::json& to, const Class& cls);
+  friend void from_json(const nlohmann::json& from, Class& cls);
   int id{};
   std::array<int, 4> expParams{}; // Base, Extra, Acceleration A, Acceleration B
   std::vector<Trait> traits;
@@ -35,6 +36,8 @@ struct Class {
    */
   bool m_isValid{false};
 };
+void to_json(nlohmann::json& to, const Class& cls);
+void from_json(const nlohmann::json& from, Class& cls);
 
 class Classes {
 public:

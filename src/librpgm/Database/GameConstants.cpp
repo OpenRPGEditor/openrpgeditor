@@ -5,6 +5,37 @@
 #include <fstream>
 #include <format>
 
+void to_json(nlohmann::json& json, const GameConstants& constants) {
+  json = {
+      {"variables", constants.variables}, {"switches", constants.switches},
+      {"actors", constants.actors},       {"classes", constants.classes},
+      {"skills", constants.skills},       {"items", constants.items},
+      {"weapons", constants.weapons},     {"armors", constants.armors},
+      {"enemies", constants.enemies},     {"troops", constants.troops},
+      {"states", constants.states},       {"animations", constants.animations},
+      {"tilesets", constants.tilesets},   {"commonEvents", constants.commonEvents},
+      {"maps", constants.maps},           {"generateJS", constants.generateJS},
+  };
+}
+void from_json(const nlohmann::json& json, GameConstants& constants) {
+  constants.variables = json.value("variables", constants.variables);
+  constants.switches = json.value("switches", constants.switches);
+  constants.actors = json.value("actors", constants.actors);
+  constants.classes = json.value("classes", constants.classes);
+  constants.skills = json.value("skills", constants.skills);
+  constants.items = json.value("items", constants.items);
+  constants.weapons = json.value("weapons", constants.weapons);
+  constants.armors = json.value("armors", constants.armors);
+  constants.enemies = json.value("enemies", constants.enemies);
+  constants.troops = json.value("troops", constants.troops);
+  constants.states = json.value("states", constants.states);
+  constants.animations = json.value("animations", constants.animations);
+  constants.tilesets = json.value("tilesets", constants.tilesets);
+  constants.commonEvents = json.value("commonEvents", constants.commonEvents);
+  constants.maps = json.value("maps", constants.maps);
+  constants.generateJS = json.value("generateJS", constants.generateJS);
+}
+
 GameConstants GameConstants::load(std::string_view path) {
   if (std::ifstream file(path.data()); file.is_open()) {
     try {

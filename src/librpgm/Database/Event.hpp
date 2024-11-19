@@ -7,7 +7,8 @@
 
 class Event {
 public:
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Event, id, name, note, pages, x, y);
+  friend void to_json(nlohmann::json& to, const Event& event);
+  friend void from_json(const nlohmann::json& from, Event& event);
   int id{};
   std::string name{};
   std::string note{};
@@ -25,3 +26,6 @@ public:
 
   mutable bool m_isDirty{false};
 };
+
+void to_json(nlohmann::json& to, const Event& event);
+void from_json(const nlohmann::json& from, Event& event);

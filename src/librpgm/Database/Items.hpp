@@ -9,9 +9,8 @@
 
 class Item {
 public:
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Item, id, animationId, consumable, damage, description, effects, hitType,
-                                              iconIndex, itypeId, name, note, occasion, price, scope, speed,
-                                              successRate, tpGain);
+  friend void to_json(nlohmann::json& json, const Item& item);
+  friend void from_json(const nlohmann::json& json, Item& item);
   int id;
   int animationId;
   bool consumable;
@@ -40,6 +39,8 @@ public:
    */
   bool m_isValid{false};
 };
+void to_json(nlohmann::json& json, const Item& item);
+void from_json(const nlohmann::json& json, Item& item);
 
 class Items {
 public:

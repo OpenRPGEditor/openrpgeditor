@@ -4,9 +4,8 @@
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
-Animations::Animations() {}
 
-Animations Animations::load(std::string_view filename) {
+Animations Animations::load(const std::string_view filename) {
   std::ifstream file(filename.data());
   json data = json::parse(file);
   Animations animations;
@@ -26,7 +25,7 @@ Animations Animations::load(std::string_view filename) {
   return animations;
 }
 
-void Animations::serialize(std::string_view filename) {
+void Animations::serialize(const std::string_view filename) {
   std::ofstream file(filename.data());
   json data;
 

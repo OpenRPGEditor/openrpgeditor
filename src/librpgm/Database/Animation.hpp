@@ -10,8 +10,8 @@
 
 class Animation {
 public:
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Animation, id, animation1Hue, animation1Name, animation2Hue,
-                                              animation2Name, frames, name, position, timings);
+  friend void to_json(nlohmann::json& to, const Animation& animation);
+  friend void from_json(const nlohmann::json& from, Animation& animation);
   struct Color {
     int r;
     int g;
@@ -31,7 +31,8 @@ public:
   };
 
   struct Timing {
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Timing, flashColor, flashDuration, flashScope, frame, se);
+    void to_json(nlohmann::json& to, const Timing& timing);
+    void from_json(const nlohmann::json& from, Timing& timing);
     std::array<int, 4> flashColor{};
     int flashDuration{};
     FlashScope flashScope = FlashScope{};
@@ -58,3 +59,7 @@ public:
    */
   bool m_isValid{false};
 };
+void to_json(nlohmann::json& to, const Animation::Timing& timing);
+void from_json(const nlohmann::json& from, Animation::Timing& timing);
+void to_json(nlohmann::json& to, const Animation& animation);
+void from_json(const nlohmann::json& from, Animation& animation);

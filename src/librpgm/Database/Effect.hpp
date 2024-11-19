@@ -4,10 +4,13 @@
 #include <string>
 
 struct Effect {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Effect, code, dataId, value1, value2);
+  friend void to_json(nlohmann::json& to, const Effect& effect);
+  friend void from_json(const nlohmann::json& from, Effect& effect);
   // TODO: Fully document this
-  int code;
-  int dataId;
-  int value1;
-  int value2;
+  int code{};
+  int dataId{};
+  int value1{};
+  int value2{};
 };
+void to_json(nlohmann::json& to, const Effect& effect);
+void from_json(const nlohmann::json& from, Effect& effect);

@@ -3,6 +3,41 @@
 #include <fstream>
 
 using json = nlohmann::json;
+void to_json(nlohmann::json& to, const Actor& actor) {
+  to = {
+      {"id", actor.id},
+      {"battlerName", actor.battlerName},
+      {"characterIndex", actor.characterIndex},
+      {"characterName", actor.characterName},
+      {"classId", actor.classId},
+      {"equips", actor.equips},
+      {"faceIndex", actor.faceIndex},
+      {"faceName", actor.faceName},
+      {"traits", actor.traits},
+      {"initialLevel", actor.initialLevel},
+      {"maxLevel", actor.maxLevel},
+      {"name", actor.name},
+      {"nickname", actor.nickname},
+      {"note", actor.note},
+      {"profile", actor.profile},
+  };
+}
+void from_json(const nlohmann::json& from, Actor& actor) {
+  actor.id = from.value("id", actor.id);
+  actor.battlerName = from.value("battlerName", actor.battlerName);
+  actor.characterIndex = from.value("characterIndex", actor.characterIndex);
+  actor.characterName = from.value("characterName", actor.characterName);
+  actor.classId = from.value("classId", actor.classId);
+  actor.equips = from.value("equips", actor.equips);
+  actor.faceIndex = from.value("faceIndex", actor.faceIndex);
+  actor.faceName = from.value("faceName", actor.faceName);
+  actor.traits = from.value("traits", actor.traits);
+  actor.initialLevel = from.value("initialLevel", actor.initialLevel);
+  actor.maxLevel = from.value("maxLevel", actor.maxLevel);
+  actor.name = from.value("name", actor.name);
+  actor.nickname = from.value("nickname", actor.nickname);
+  actor.profile = from.value("profile", actor.profile);
+}
 
 Actors Actors::load(std::string_view filename) {
   std::ifstream file(filename.data());

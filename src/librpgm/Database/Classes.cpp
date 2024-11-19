@@ -4,6 +4,36 @@
 
 using json = nlohmann::json;
 
+void to_json(nlohmann::json& to, const Learning& learning) {
+  to = nlohmann::json{
+      {"level", learning.level},
+      {"note", learning.note},
+      {"skillId", learning.skillId},
+  };
+}
+void from_json(const nlohmann::json& from, Learning& learning) {
+  learning.level = from.value("level", learning.level);
+  learning.note = from.value("note", learning.note);
+  learning.skillId = from.value("skillId", learning.skillId);
+}
+
+void to_json(nlohmann::json& to, const Class& cls) {
+  to = nlohmann::json{
+      {"id", cls.id},     {"expParams", cls.expParams}, {"traits", cls.traits}, {"learnings", cls.learnings},
+      {"name", cls.name}, {"note", cls.note},           {"params", cls.params},
+  };
+}
+
+void from_json(const nlohmann::json& from, Class& cls) {
+  cls.id = from.value("id", cls.id);
+  cls.expParams = from.value("expParams", cls.expParams);
+  cls.traits = from.value("traits", cls.traits);
+  cls.learnings = from.value("learnings", cls.learnings);
+  cls.name = from.value("name", cls.name);
+  cls.note = from.value("note", cls.note);
+  cls.params = from.value("params", cls.params);
+}
+
 Classes Classes::load(std::string_view filename) {
   std::ifstream file(filename.data());
   json data = json::parse(file);

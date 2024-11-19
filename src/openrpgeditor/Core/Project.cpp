@@ -68,6 +68,7 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   SerializationQueue::instance().setBasepath(basePath);
   DeserializationQueue::instance().setBasepath(basePath);
   m_database.emplace(basePath, filePath, version);
+  m_database->load();
   m_resourceManager.emplace(m_database->basePath);
   m_databaseEditor.emplace(this, m_database->actors, m_database->classes, m_database->skills, m_database->items,
                            m_database->weapons, m_database->armors, m_database->enemies, m_database->troops,

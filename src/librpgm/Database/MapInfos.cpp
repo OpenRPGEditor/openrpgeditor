@@ -84,16 +84,16 @@ void MapInfos::buildTree(const bool reset) {
 void MapInfos::loadAllMaps() {
   for (auto& mapinfo : m_mapinfos) {
     if (mapinfo && mapinfo->id != 0) {
-      if (auto map = Database::instance()->loadMap(mapinfo->id); map.m_isValid) {
-        mapinfo->m_map = std::make_unique<Map>(map);
-      }
-      // DeserializationQueue::instance().enqueue(
-      //     std::make_shared<MapSerializer>(std::format("data/Map{:03}.json", mapinfo->id)),
-      //     [&mapinfo](const std::shared_ptr<ISerializable>& serializer) {
-      //       if (auto map = std::dynamic_pointer_cast<MapSerializer>(serializer)->data(); map.m_isValid) {
-      //         mapinfo->m_map = std::make_unique<Map>(map);
-      //       }
-      //     });
+//      if (auto map = Database::instance()->loadMap(mapinfo->id); map.m_isValid) {
+//        mapinfo->m_map = std::make_unique<Map>(map);
+//      }
+       DeserializationQueue::instance().enqueue(
+           std::make_shared<MapSerializer>(std::format("data/Map{:03}.json", mapinfo->id)),
+           [&mapinfo](const std::shared_ptr<ISerializable>& serializer) {
+             if (auto map = std::dynamic_pointer_cast<MapSerializer>(serializer)->data(); map.m_isValid) {
+               mapinfo->m_map = std::make_unique<Map>(map);
+             }
+           });
     }
   }
 }

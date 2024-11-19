@@ -25,6 +25,9 @@ Database::Database(const std::string_view _projectBasePath, const std::string_vi
   projectVersion = _projectVersion;
   basePath = _projectBasePath;
   projectFilePath = _projectFilePath;
+}
+
+void Database::load() {
   RPGM_INFO("Queue System definitions for load...");
   DeserializationQueue::instance().enqueue(std::make_shared<SystemSerializer>("data/System.json"),
                                            [this](const std::shared_ptr<ISerializable>& serializer) {
@@ -117,7 +120,6 @@ Database::Database(const std::string_view _projectBasePath, const std::string_vi
   templates = Templates::load(basePath + "/data/Templates.json");
   RPGM_INFO(std::to_string(templates.commands.size()) + " size of commands");
 }
-
 Map Database::loadMap(int mapId) {
   std::string path = std::format("{}data/Map{:03}.json", basePath, mapId);
   RPGM_DEBUG("Loading map {}", path);

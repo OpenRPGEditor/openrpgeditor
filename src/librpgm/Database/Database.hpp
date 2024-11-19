@@ -27,6 +27,7 @@ struct Database {
   ~Database() { m_instance = nullptr; }
   Database(Database&) = delete;
   Database(Database&&) = delete;
+  void load();
   Database& operator=(Database&) = delete;
   Database& operator=(Database&&) = delete;
 

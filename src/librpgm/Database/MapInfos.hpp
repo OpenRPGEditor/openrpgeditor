@@ -4,6 +4,7 @@
 #include "Database/Map.hpp"
 #include <string>
 
+class ISerializable;
 struct MapInfo {
   friend void to_json(nlohmann::json& json, const MapInfo& mapinfo);
   friend void from_json(const nlohmann::json& json, MapInfo& mapinfo);
@@ -82,4 +83,6 @@ public:
 private:
   std::vector<std::optional<MapInfo>> m_mapinfos;
   MapInfo* m_currentMap = nullptr;
+
+  void mapLoadCallback(const std::shared_ptr<ISerializable>& data);
 };

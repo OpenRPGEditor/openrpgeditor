@@ -18,7 +18,7 @@ void to_json(nlohmann::ordered_json& to, const Plugin& plugin) {
 
 void from_json(const nlohmann::ordered_json& from, Plugin& plugin) {
   plugin.name = from["name"].get<std::string>();
-  plugin.status = from["status"].get<int>();
+  plugin.status = from["status"].get<bool>();
   plugin.description = from["description"].get<std::string>();
   if (from.contains("parameters")) {
     nlohmann::ordered_json parameters = from["parameters"];

@@ -65,6 +65,7 @@ void from_json(const nlohmann::json& j, System& system) {
   system.defeatMe = j.value("defeatMe", system.defeatMe);
   system.editMapId = j.value("editMapId", system.editMapId);
   system.elements = j.value("elements", system.elements);
+  system.equipTypes = j.value("equipTypes", system.equipTypes);
   system.gameTitle = j.value("gameTitle", system.gameTitle);
   system.gameoverMe = j.value("gameoverMe", system.gameoverMe);
   system.locale = j.value("locale", system.locale);

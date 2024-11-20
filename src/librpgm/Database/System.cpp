@@ -44,6 +44,7 @@ void to_json(nlohmann::json& j, const System& system) {
       {"testTroopId", system.testTroopId},
       {"title1Name", system.title1Name},
       {"title2Name", system.title2Name},
+      {"titleBgm", system.titleBgm},
       {"variables", system.variables},
       {"tileSize", system.tileSize},
       {"versionId", system.versionId},
@@ -88,6 +89,7 @@ void from_json(const nlohmann::json& j, System& system) {
   system.terms = j.value("terms", system.terms);
   system.title1Name = j.value("title1Name", system.title1Name);
   system.title2Name = j.value("title2Name", system.title2Name);
+  system.titleBgm = j.value("titleBgm", system.titleBgm);
   system.variables = j.value("variables", system.variables);
   system.tileSize = j.value("tileSize", system.tileSize);
   system.versionId = j.value("versionId", system.versionId);

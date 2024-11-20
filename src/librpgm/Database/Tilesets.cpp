@@ -4,7 +4,23 @@
 
 using json = nlohmann::json;
 
-Tileset::Tileset() {}
+void to_json(nlohmann::json& j, const Tileset& tileset) {
+  j = {
+      {"id", tileset.id},
+      {"flags", tileset.flags},
+      {"mode", tileset.mode},
+      {"note", tileset.note},
+      {"tilesetNames", tileset.tilesetNames},
+  };
+}
+
+void from_json(const nlohmann::json& j, Tileset& tileset) {
+  tileset.id = j.value("id", tileset.id);
+  tileset.flags = j.value("flags", tileset.flags);
+  tileset.mode = j.value("mode", tileset.mode);
+  tileset.note = j.value("note", tileset.note);
+  tileset.tilesetNames = j.value("tilesetNames", tileset.tilesetNames);
+}
 
 Tilesets Tilesets::load(std::string_view filename) {
   std::ifstream file(filename.data());

@@ -4,6 +4,36 @@
 
 using json = nlohmann::json;
 
+void to_json(nlohmann::json& j, const Troop::Member& m) {
+  j = {
+      {"enemyId", m.enemyId},
+      {"x", m.x},
+      {"y", m.y},
+      {"hidden", m.hidden},
+  };
+}
+
+void from_json(const nlohmann::json& j, Troop::Member& m) {
+  m.enemyId = j.value("enemyId", m.enemyId);
+  m.x = j.value("x", m.x);
+  m.y = j.value("y", m.y);
+  m.hidden = j.value("hidden", m.hidden);
+}
+
+void to_json(nlohmann::json& j, const Troop& t) {
+  j = {
+      {"id", t.id},
+      {"name", t.name},
+      {"members", t.members},
+  };
+}
+
+void from_json(const nlohmann::json& j, Troop& t) {
+  t.id = j.value("id", t.id);
+  t.name = j.value("name", t.name);
+  t.members = j.value("members", t.members);
+}
+
 Troops Troops::load(std::string_view filepath) {
   std::ifstream file(filepath.data());
   json data = json::parse(file);

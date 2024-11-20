@@ -8,10 +8,8 @@
 #include <nlohmann/json.hpp>
 
 class Skill {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Skill, id, animationId, damage, description, effects, hitType, iconIndex, message1,
-                                              message2, mpCost, name, note, occasion, repeats, requiredWtypeId1,
-                                              requiredWtypeId2, scope, speed, stypeId, successRate, tpCost, tpGain);
-
+  friend void to_json(nlohmann::json &j, const Skill &skill);
+  friend void  from_json(const nlohmann::json &j, Skill &skill);
 public:
   int id;
   int animationId;
@@ -88,3 +86,6 @@ public:
 private:
   std::vector<Skill> m_skills;
 };
+
+void to_json(nlohmann::json &j, const Skill &skill);
+void  from_json(const nlohmann::json &j, Skill &skill);

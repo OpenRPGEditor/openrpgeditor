@@ -5,8 +5,11 @@
 
 struct Database;
 struct IEventCommand {
+#pragma warning(push)
+#pragma warning(disable : 4566)
   static constexpr std::string_view diamond = "\u25c6";
   static constexpr std::string_view colon = "\uff1a";
+#pragma warning(pop)
 
   IEventCommand() = default;
   explicit IEventCommand(const std::optional<int>& _indent, [[maybe_unused]] const nlohmann::json& parameters);

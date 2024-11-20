@@ -5,14 +5,16 @@
 #include "nlohmann/json.hpp"
 
 struct Troop {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Troop, id, members, name);
+  friend void to_json(nlohmann::json& j, const Troop& t);
+  friend void from_json(const nlohmann::json& j, Troop& t);
 
   struct Member {
+    friend void to_json(nlohmann::json& j, const Member& m);
+    friend void from_json(const nlohmann::json& j, Member& m);
     int enemyId = 0;
     int x = 0;
     int y = 0;
     bool hidden = false;
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Member, enemyId, x, y, hidden);
   };
   int id;
   std::string name;
@@ -43,6 +45,10 @@ struct Troop {
    */
   bool m_isValid{false};
 };
+void to_json(nlohmann::json& j, const Troop::Member& m);
+void from_json(const nlohmann::json& j, Troop::Member& m);
+void to_json(nlohmann::json& j, const Troop& t);
+void from_json(const nlohmann::json& j, Troop& t);
 
 class Troops {
 public:

@@ -8,11 +8,10 @@
 #include <string>
 
 class State {
+  friend void to_json(nlohmann::json& j, const State& state);
+  friend void from_json(const nlohmann::json& j, State& state);
+
 public:
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(State, id, autoRemovalTiming, chanceByDamage, iconIndex, maxTurns,
-                                              message1, message2, message3, message4, name, note, overlay, priority,
-                                              releaseByDamage, removeAtBattleEnd, removeByDamage, removeByRestriction,
-                                              restriction, stepsToRemove, traits);
   int id = 0;
   AutoRemovalTiming autoRemovalTiming = AutoRemovalTiming::None;
   int chanceByDamage = 100;
@@ -45,6 +44,8 @@ public:
    */
   bool m_isValid{false};
 };
+void to_json(nlohmann::json& j, const State& state);
+void from_json(const nlohmann::json& j, State& state);
 
 class States {
 public:

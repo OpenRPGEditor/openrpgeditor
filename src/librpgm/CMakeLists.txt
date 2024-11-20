@@ -110,6 +110,7 @@ add_library(
         Database/Serializable/CommonEventsSerializer.cpp
         Database/Serializable/CommonEventsSerializer.hpp
         Database/Effect.cpp
+        Database/Trait.cpp
         #Database/Serializable/MapInfosSerializer.cpp
         #Database/Serializable/MapInfosSerializer.hpp
 )

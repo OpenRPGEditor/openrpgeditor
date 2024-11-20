@@ -315,23 +315,6 @@ void Project::drawToolbar() {
     ImGui::ActionTooltip("Shadow Pen", "Adds or removes shadows of walls");
   }
   ImGui::EndDisabled();
-
-  if (DeserializationQueue::instance().hasTasks()) {
-    ImGui::Begin("Load Progress....", nullptr);
-    ImGui::Text("Loading %s....", DeserializationQueue::instance().getCurrentFile().data());
-    ImGui::ProgressBar(DeserializationQueue::instance().getProgress() / 100.f);
-    ImGui::End();
-  } else if (DeserializationQueue::instance().getProgress() >= 100.f) {
-    DeserializationQueue::instance().reset();
-  }
-  if (SerializationQueue::instance().hasTasks()) {
-    ImGui::Begin("Load Progress....");
-    ImGui::Text("Loading %s....", SerializationQueue::instance().getCurrentFile().data());
-    ImGui::ProgressBar(SerializationQueue::instance().getProgress() / 100.f);
-    ImGui::End();
-  } else if (SerializationQueue::instance().getProgress() >= 100.f) {
-    SerializationQueue::instance().reset();
-  }
   ImGui::End();
 }
 
@@ -363,6 +346,33 @@ void Project::draw() {
   }
 
   m_nwjsVersionManager.draw();
+
+  if (DeserializationQueue::instance().hasTasks()) {
+    ImGui::Begin("Loading Project....", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Text("Loading %s (%i of %i)....", DeserializationQueue::instance().getCurrentFile().data(),
+                DeserializationQueue::instance().currentTaskIndex(), DeserializationQueue::instance().totalTasks());
+    ImGui::ProgressBar(DeserializationQueue::instance().getProgress() / 100.f);
+    if (ImGui::Button("Cancel")) {
+      DeserializationQueue::instance().reset();
+      close();
+    }
+    ImGui::End();
+  } else if (DeserializationQueue::instance().getProgress() >= 100.f) {
+    DeserializationQueue::instance().reset();
+  }
+  if (SerializationQueue::instance().hasTasks()) {
+    ImGui::Begin("Saving Project....", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Text("Saving %s....", SerializationQueue::instance().getCurrentFile().data());
+    ImGui::Text("Saving %s (%i of %i)....", SerializationQueue::instance().getCurrentFile().data(),
+                SerializationQueue::instance().currentTaskIndex(), DeserializationQueue::instance().totalTasks());
+    if (ImGui::Button("Cancel")) {
+      SerializationQueue::instance().reset();
+      close();
+    }
+    ImGui::End();
+  } else if (SerializationQueue::instance().getProgress() >= 100.f) {
+    SerializationQueue::instance().reset();
+  }
 
   ImGui::RenderNotifications();
 }

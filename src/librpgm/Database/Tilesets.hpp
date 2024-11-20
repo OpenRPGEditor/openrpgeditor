@@ -8,7 +8,8 @@
 
 class Tileset {
 public:
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Tileset, id, flags, mode, name, note, tilesetNames);
+  friend void to_json(nlohmann::json& j, const Tileset& tileset);
+  friend void from_json(const nlohmann::json& j, Tileset& tileset);
 
   enum class Mode {
     World,
@@ -30,8 +31,6 @@ public:
     Unk11 = 1 << 10,
   };
 
-  Tileset();
-
   int id;
   std::vector<int> flags;
   Mode mode;
@@ -49,6 +48,8 @@ public:
    */
   bool m_isValid{false};
 };
+void to_json(nlohmann::json& j, const Tileset& tileset);
+void from_json(const nlohmann::json& j, Tileset& tileset);
 
 class Tilesets {
 public:

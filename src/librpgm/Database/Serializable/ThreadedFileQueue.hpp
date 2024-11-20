@@ -43,6 +43,9 @@ public:
 
   bool hasTasks() const { return !m_taskQueue.empty(); }
 
+  int currentTaskIndex() const { return m_completedTasks; }
+  int totalTasks() const { return m_totalTasks; }
+
 protected:
   // The worker loop, to be implemented in subclasses (serialization/deserialization)
   virtual void processTask(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback) = 0;

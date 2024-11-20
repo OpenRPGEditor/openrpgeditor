@@ -7,9 +7,13 @@
 #include <string>
 
 struct Terms {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Terms, basic, commands, messages, params);
+  friend void to_json(nlohmann::json &j, const Terms &terms);
+  friend void from_json(const nlohmann::json &j, Terms &terms);
   std::vector<std::optional<std::string>> basic;
   std::vector<std::optional<std::string>> commands;
   Messages messages;
   std::vector<std::optional<std::string>> params;
 };
+
+void to_json(nlohmann::json &j, const Terms &terms);
+void from_json(const nlohmann::json &j, Terms &terms);

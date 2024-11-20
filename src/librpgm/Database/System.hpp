@@ -8,16 +8,10 @@
 #include <nlohmann/json.hpp>
 
 class System {
+  friend void to_json(nlohmann::json& j, const System& system);
+  friend void from_json(const nlohmann::json& j, System& system);
+
 public:
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(System, airship, armorTypes, attackMotions, battleBgm, attackMotions,
-                                              battleback1Name, battleback2Name, battlerHue, battlerName, boat,
-                                              currencyUnit, defeatMe, editMapId, elements, equipTypes, gameTitle,
-                                              gameoverMe, locale, magicSkills, menuCommands, optDisplayTp, optDrawTitle,
-                                              optExtraExp, optFloorDeath, optFollowers, optSideView, optSlipDeath,
-                                              optTransparent, partyMembers, ship, skillTypes, sounds, startMapId,
-                                              startX, startY, switches, terms, testBattlers, testTroopId, title1Name,
-                                              title2Name, titleBgm, variables, tileSize, versionId, victoryMe,
-                                              weaponTypes, windowTone);
   struct Motion {
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Motion, type, weaponImageId);
     int type = 0;
@@ -170,3 +164,6 @@ public:
     return bytes;
   }
 };
+
+void to_json(nlohmann::json& j, const System& system);
+void from_json(const nlohmann::json& j, System& system);

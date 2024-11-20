@@ -5,8 +5,11 @@
 #include "nlohmann/json.hpp"
 
 struct Trait {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Trait, code, dataId, value);
+  friend void to_json(nlohmann::json& j, const Trait& trait);
+  friend void from_json(const nlohmann::json& j, Trait& trait);
   TraitCode code = TraitCode::Element_Rate;
   int dataId = 1;
   double value = 1.f;
 };
+void to_json(nlohmann::json& j, const Trait& trait);
+void from_json(const nlohmann::json& j, Trait& trait);

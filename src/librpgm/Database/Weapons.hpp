@@ -7,8 +7,8 @@
 #include <string_view>
 
 struct Weapon {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(Weapon, id, animationId, description, etypeId, traits, iconIndex, name, note, params,
-                                 price, wtypeId);
+  friend void to_json(nlohmann::json& j, const Weapon& w);
+  friend void from_json(const nlohmann::json& j, Weapon& w);
   int id;
   int animationId;
   std::string description;
@@ -30,6 +30,9 @@ struct Weapon {
    */
   bool m_isValid{false};
 };
+
+void to_json(nlohmann::json& j, const Weapon& w);
+void from_json(const nlohmann::json& j, Weapon& w);
 
 class Weapons {
 public:

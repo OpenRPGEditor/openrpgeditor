@@ -143,7 +143,7 @@ ExitStatus Application::run() {
   style.GrabMinSize = 9.0f;
   style.GrabRounding = 4.0f;
   style.PopupRounding = 7.0;
-  style.TabBorderSize = 1.f;
+  style.TabBorderSize = 3.f;
   style.TabRounding = 6.5f;
   style.DockingSeparatorSize = 6.f;
   style.ScaleAllSizes(DPIHandler::get_ui_scale());

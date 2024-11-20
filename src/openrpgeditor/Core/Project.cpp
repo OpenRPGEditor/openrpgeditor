@@ -198,7 +198,7 @@ void Project::drawToolbar() {
 
   ImGuiWindowFlags window_flags = 0 | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar |
                                   ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar |
-                                  ImGuiWindowFlags_NoSavedSettings;
+                                  ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBringToFrontOnFocus;
   ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
   ImGui::Begin("##ore_toolbar", nullptr, window_flags);
   ImGui::PopStyleVar();
@@ -338,8 +338,8 @@ void Project::drawToolbar() {
 void Project::draw() {
   m_toolbarSize = App::DPIHandler::scale_value(Settings::instance()->fontSize + 32);
   drawMenu();
-  setupDocking();
   drawToolbar();
+  setupDocking();
   m_mapEditor.draw();
 
   if (m_databaseEditor) {

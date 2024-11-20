@@ -228,7 +228,7 @@ void DBActorsTab::draw() {
                 ImGui::TableNextColumn();
                 int etypeId = Database::instance()->slotIdToEquipId(m_selectedActor->id, i);
                 auto etypeName = equipTypes[etypeId];
-                int dataId = m_selectedActor->equips[i];
+                int dataId = i < m_selectedActor->equips.size() ? m_selectedActor->equips[i] : 0;
                 if (!checkEquipable(etypeId, dataId)) {
                   dataId = 0;
                 }
@@ -344,11 +344,7 @@ void DBActorsTab::draw() {
 }
 
 bool DBActorsTab::checkEquipable(const int etypeId, const int dataId) const {
-  if (dataId <= 0) {
-    return false;
-  }
-
-  if (Database::instance()->isEquipTypeSealed(m_selectedActor->id, etypeId)) {
+  if (dataId <= 0 || Database::instance()->isEquipTypeSealed(m_selectedActor->id, etypeId)) {
     return false;
   }
 
@@ -357,12 +353,10 @@ bool DBActorsTab::checkEquipable(const int etypeId, const int dataId) const {
         weapon && Database::instance()->isEquipWeaponTypeOk(m_selectedActor->id, weapon->wtypeId)) {
       return true;
     }
-  } else {
-    if (const auto& armor = Database::instance()->armors.armor(dataId);
-        armor && armor->etypeId == etypeId &&
-        Database::instance()->isEquipArmorTypeOk(m_selectedActor->id, armor->atypeId)) {
-      return true;
-    }
+  } else if (const auto& armor = Database::instance()->armors.armor(dataId);
+             armor && armor->etypeId == etypeId &&
+             Database::instance()->isEquipArmorTypeOk(m_selectedActor->id, armor->atypeId)) {
+    return true;
   }
 
   return false;

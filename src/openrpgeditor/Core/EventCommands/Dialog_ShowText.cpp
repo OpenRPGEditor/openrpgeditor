@@ -21,7 +21,7 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
     {
       ImGui::Text("Face:");
       auto cursorPos = ImGui::GetCursorPos();
-      if (ImGui::ImageButton("##svbattler_image", m_buttonBack.get(),
+      if (ImGui::ImageButton("##svbattler_image", m_buttonBack,
                              ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
         m_characterPicker.setCharacterInfo(m_faceImage, m_faceIndex);
         m_characterPicker.SetOpen(true);
@@ -35,7 +35,7 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
         const auto rect = m_faceSheet->getFaceRect(m_faceIndex);
         ImVec2 uv0{rect.u0, rect.v0};
         ImVec2 uv1{rect.u1, rect.v1};
-        ImGui::Image(m_faceSheet->texture().get(), faceRect, uv0, uv1);
+        ImGui::Image(m_faceSheet->texture(), faceRect, uv0, uv1);
       }
     }
     ImGui::EndGroup();

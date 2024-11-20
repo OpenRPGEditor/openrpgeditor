@@ -159,7 +159,7 @@ void DBActorsTab::draw() {
             {
               ImGui::Text("Face:");
               auto cursorPos = ImGui::GetCursorPos();
-              ImGui::ImageButton("##orpg_actors_face_image", m_buttonBack.get(), buttonSize);
+              ImGui::ImageButton("##orpg_actors_face_image", m_buttonBack, buttonSize);
               if (m_faceSheet && m_faceSheet->texture()) {
                 const auto faceRect = ImVec2{static_cast<float>(m_faceSheet->faceWidth()),
                                              static_cast<float>(m_faceSheet->faceHeight())} *
@@ -170,7 +170,7 @@ void DBActorsTab::draw() {
                 const auto rect = m_faceSheet->getFaceRect(m_selectedActor->faceIndex);
                 ImVec2 uv0{rect.u0, rect.v0};
                 ImVec2 uv1{rect.u1, rect.v1};
-                ImGui::Image(m_faceSheet->texture().get(), faceRect, uv0, uv1);
+                ImGui::Image(m_faceSheet->texture(), faceRect, uv0, uv1);
               }
             }
             ImGui::EndGroup();
@@ -179,7 +179,7 @@ void DBActorsTab::draw() {
             {
               ImGui::Text("Character:");
               auto cursorPos = ImGui::GetCursorPos();
-              ImGui::ImageButton("##orpg_actors_character_image", m_buttonBack.get(), buttonSize);
+              ImGui::ImageButton("##orpg_actors_character_image", m_buttonBack, buttonSize);
               if (m_characterSheet && m_characterSheet->texture()) {
                 const auto characterRect =
                     ImVec2{std::ceil(static_cast<float>(m_characterSheet->characterWidth() * 1.75)),
@@ -187,7 +187,7 @@ void DBActorsTab::draw() {
                     App::DPIHandler::get_ui_scale();
                 ImGui::SetCursorPos((cursorPos + buttonCenter) - (characterRect / 1.75));
                 const auto [min, max] = m_characterSheet->getRectForCharacter(m_selectedActor->characterIndex, 1);
-                ImGui::Image(m_characterSheet->texture().get(), characterRect, min, max);
+                ImGui::Image(m_characterSheet->texture(), characterRect, min, max);
               }
             }
             ImGui::EndGroup();
@@ -196,14 +196,14 @@ void DBActorsTab::draw() {
             {
               ImGui::Text("[SV] Battler:");
               auto cursorPos = ImGui::GetCursorPos();
-              ImGui::ImageButton("##orpg_actors_battler_image", m_buttonBack.get(), buttonSize);
+              ImGui::ImageButton("##orpg_actors_battler_image", m_buttonBack, buttonSize);
               if (m_battlerSheet && m_battlerSheet->texture()) {
                 const auto battlerRect = ImVec2{static_cast<float>(m_battlerSheet->characterWidth()) * 2,
                                                 static_cast<float>(m_battlerSheet->characterHeight()) * 2} *
                                          App::DPIHandler::get_ui_scale();
                 ImGui::SetCursorPos((cursorPos + buttonCenter) - (battlerRect / 2));
                 const auto rect = m_battlerSheet->getAction(SideViewActionType::StepForward);
-                ImGui::Image(m_battlerSheet->texture().get(), battlerRect, rect.frames[1].min, rect.frames[1].max);
+                ImGui::Image(m_battlerSheet->texture(), battlerRect, rect.frames[1].min, rect.frames[1].max);
               }
             }
             ImGui::EndGroup();

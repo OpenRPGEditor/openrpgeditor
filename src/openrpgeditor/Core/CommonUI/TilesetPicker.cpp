@@ -12,7 +12,7 @@ void TilesetPicker::draw() {
           Texture tilesetTxtr =
               ResourceManager::instance()->loadTilesetImage(m_parent->tileset(map->tilesetId)->tilesetNames[0]);
           if (tilesetTxtr) {
-            ImGui::Image(tilesetTxtr.get(),
+            ImGui::Image(tilesetTxtr,
                          ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
           }
         }
@@ -23,7 +23,7 @@ void TilesetPicker::draw() {
           Texture tilesetTxtr =
               ResourceManager::instance()->loadTilesetImage(m_parent->tileset(map->tilesetId)->tilesetNames[5]);
           if (tilesetTxtr) {
-            ImGui::Image(tilesetTxtr.get(),
+            ImGui::Image(tilesetTxtr,
                          ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
           }
           ImGui::EndTabItem();
@@ -34,7 +34,7 @@ void TilesetPicker::draw() {
           Texture tilesetTxtr =
               ResourceManager::instance()->loadTilesetImage(m_parent->tileset(map->tilesetId)->tilesetNames[6]);
           if (tilesetTxtr) {
-            ImGui::Image(tilesetTxtr.get(),
+            ImGui::Image(tilesetTxtr,
                          ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
           }
           ImGui::EndTabItem();
@@ -45,7 +45,7 @@ void TilesetPicker::draw() {
           Texture tilesetTxtr =
               ResourceManager::instance()->loadTilesetImage(m_parent->tileset(map->tilesetId)->tilesetNames[7]);
           if (tilesetTxtr) {
-            ImGui::Image(tilesetTxtr.get(),
+            ImGui::Image(tilesetTxtr,
                          ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
           }
           ImGui::EndTabItem();

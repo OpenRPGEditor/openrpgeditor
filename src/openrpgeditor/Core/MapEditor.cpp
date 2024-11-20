@@ -64,7 +64,7 @@ void MapEditor::drawParallax(ImGuiWindow* win) {
     return;
   }
   // TODO: Proper parallax implementation
-  win->DrawList->AddImage(m_parallaxTexture.get(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
+  win->DrawList->AddImage(m_parallaxTexture, win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
                           win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_parallaxTexture.width()),
                                                                static_cast<float>(m_parallaxTexture.height())} *
                                                         m_mapScale));
@@ -449,7 +449,7 @@ void MapEditor::renderLayerTex(ImGuiWindow* win, const MapRenderer::TileLayer& t
     const float u1 = (tile.u + tile.tileWidth) / tLayer.tex.width();
     const float v0 = tile.v / tLayer.tex.height();
     const float v1 = (tile.v + tile.tileHeight) / tLayer.tex.height();
-    win->DrawList->AddImage(tLayer.tex.get(), win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale),
+    win->DrawList->AddImage(tLayer.tex, win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale),
                             win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), ImVec2{u0, v0}, ImVec2{u1, v1});
   }
 }
@@ -498,7 +498,7 @@ void MapEditor::draw() {
       const float u1 = std::clamp((static_cast<float>(map()->width * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
       const float v1 = std::clamp((static_cast<float>(map()->height * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
 
-      win->DrawList->AddImage(m_checkeredBack.get(), win->ClipRect.Min + ImVec2{0, 0},
+      win->DrawList->AddImage(m_checkeredBack, win->ClipRect.Min + ImVec2{0, 0},
                               win->ClipRect.Min + (ImVec2{static_cast<float>(map()->width * tileSize()),
                                                           static_cast<float>(map()->height * tileSize())} *
                                                    m_mapScale),

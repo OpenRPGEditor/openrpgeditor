@@ -14,8 +14,8 @@ FetchContent_Declare(
 
 FetchContent_Declare(
         imgui
-        GIT_REPOSITORY "https://github.com/Antidote/imgui.git"
-        GIT_TAG docking-layout # Branch: docking
+        GIT_REPOSITORY "https://github.com/ocornut/imgui.git"
+        GIT_TAG docking # Branch: docking
 )
 
 #FetchContent_Declare(
@@ -117,13 +117,11 @@ FetchContent_MakeAvailable(
         curl
         #liblcf
         SFML
+        imgui
+        implot
 )
 
 add_subdirectory(imgui-setup)
-
-FetchContent_MakeAvailable(
-        imgui
-)
 
 
 #target_include_directories(ImGuiFileDialog PRIVATE ${imgui_SOURCE_DIR})

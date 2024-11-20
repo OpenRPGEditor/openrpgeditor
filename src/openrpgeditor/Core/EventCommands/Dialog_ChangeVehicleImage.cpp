@@ -49,7 +49,7 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
     ImGui::BeginGroup();
     {
       auto cursorPos = ImGui::GetCursorPos();
-      if (ImGui::ImageButton("##event_image", m_buttonBack.get(),
+      if (ImGui::ImageButton("##event_image", m_buttonBack,
                              ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
         m_characterPicker.setCharacterInfo(m_image, m_character);
         m_characterPicker.SetOpen(true);
@@ -63,7 +63,7 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
           ImGui::SetCursorPos(cursorPos);
         }
         const auto [min, max] = m_characterSheet->getRectForCharacter(m_character);
-        ImGui::Image(m_characterSheet->texture().get(),
+        ImGui::Image(m_characterSheet->texture(),
                      ImVec2{static_cast<float>(m_characterSheet->characterWidth()),
                             static_cast<float>(m_characterSheet->characterHeight())} *
                          App::DPIHandler::get_ui_scale(),

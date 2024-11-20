@@ -382,7 +382,7 @@ target_link_libraries(
         PRIVATE project_warnings
         PUBLIC fmt::fmt-header-only spdlog::spdlog_header_only
         SDL2::SDL2
-        imgui
+        imgui-setup
         nfd
         magic_enum
         nlohmann_json::nlohmann_json
@@ -427,7 +427,7 @@ target_link_libraries(
         PUBLIC fmt::fmt-header-only spdlog::spdlog_header_only
         orecore
         SDL2::SDL2
-        imgui
+        imgui-setup
         nfd
         magic_enum
         nlohmann_json::nlohmann_json

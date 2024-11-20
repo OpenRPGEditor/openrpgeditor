@@ -60,8 +60,9 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
         {
           ImGui::BeginDisabled(!m_page->conditions.switch1Valid);
           {
-            const std::string label =
-                m_page->conditions.switch1Valid ? Database::instance()->switchNameOrId(m_page->conditions.switch1Id) : "";
+            const std::string label = m_page->conditions.switch1Valid
+                                          ? Database::instance()->switchNameOrId(m_page->conditions.switch1Id)
+                                          : "";
             if (ImGui::Button((label + "##event_page_switch1_selection_button").c_str(),
                               ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
               m_variableSwitchSelection = Switch1;
@@ -72,8 +73,9 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
           ImGui::EndDisabled();
           ImGui::BeginDisabled(!m_page->conditions.switch2Valid);
           {
-            const std::string label =
-                m_page->conditions.switch2Valid ? Database::instance()->switchNameOrId(m_page->conditions.switch2Id) : "";
+            const std::string label = m_page->conditions.switch2Valid
+                                          ? Database::instance()->switchNameOrId(m_page->conditions.switch2Id)
+                                          : "";
             if (ImGui::Button((label + "##event_page_switch2_selection_button").c_str(),
                               ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
               m_variableSwitchSelection = Switch2;
@@ -149,8 +151,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
       {
         ImGui::SeparatorText("Image");
         auto cursorPos = ImGui::GetCursorPos();
-        if (ImGui::ImageButton("##event_image", m_buttonBack.get(),
-                               ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
+        if (ImGui::ImageButton("##event_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
           m_characterPicker.setCharacterInfo(m_page->image.characterName, m_page->image.characterIndex,
                                              m_page->image.pattern, m_page->image.direction);
           m_characterPicker.SetOpen(true);
@@ -165,7 +166,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
           }
           const auto [min, max] = m_characterSheet.getRectForCharacter(m_page->image.characterIndex,
                                                                        m_page->image.pattern, m_page->image.direction);
-          ImGui::Image(m_characterSheet.texture().get(),
+          ImGui::Image(m_characterSheet.texture(),
                        ImVec2{static_cast<float>(m_characterSheet.characterWidth()),
                               static_cast<float>(m_characterSheet.characterHeight())} *
                            App::DPIHandler::get_ui_scale(),

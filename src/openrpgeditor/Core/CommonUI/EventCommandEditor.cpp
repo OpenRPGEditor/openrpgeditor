@@ -150,7 +150,7 @@ void EventCommandEditor::draw() {
     }
 
     if (ImGui::IsKeyPressed(ImGuiKey_V) &&
-        (ImGui::IsModKey(ImGuiKey_LeftCtrl) || ImGui::IsModKey(ImGuiKey_RightCtrl))) {
+        (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
       clip::lock l;
       if (l.is_convertible(RPGMVEventCommandFormat)) {
         auto len = l.get_data_length(RPGMVEventCommandFormat);
@@ -164,7 +164,7 @@ void EventCommandEditor::draw() {
         }
       }
     } else if (ImGui::IsKeyPressed(ImGuiKey_C) &&
-               (ImGui::IsModKey(ImGuiKey_LeftCtrl) || ImGui::IsModKey(ImGuiKey_RightCtrl))) {
+               (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
       clip::lock l;
       int start = m_selectedCommand;
       int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd;
@@ -776,7 +776,7 @@ void EventCommandEditor::drawPopup() {
     }
     ImGui::EndGroup();
 
-    if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))) {
+    if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
       if (commandDialog) {
         commandDialog.reset();
       } else {

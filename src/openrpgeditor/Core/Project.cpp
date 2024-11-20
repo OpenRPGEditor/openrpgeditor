@@ -382,7 +382,7 @@ void Project::drawTileInfo(MapRenderer::MapLayer& mapLayer, int z) {
         v0 /= layer.tex.height();
         u1 /= layer.tex.width();
         v1 /= layer.tex.height();
-        ImGui::Image(layer.tex.get(),
+        ImGui::Image(layer.tex,
                      {static_cast<float>(m_mapEditor.tileSize()), static_cast<float>(m_mapEditor.tileSize())},
                      ImVec2{u0, v0}, ImVec2{u1, v1});
         std::string info =

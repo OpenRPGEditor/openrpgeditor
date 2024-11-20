@@ -10,7 +10,7 @@ static ImU32 col_buf[kMaxChar];
 static bool char_skip[kMaxChar];
 
 
-void ImFont_RenderAnsiText(const ImFont* font, ImDrawList* draw_list, float size, ImVec2 pos, ImU32 col,
+void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVec2 pos, ImU32 col,
                            const ImVec4& clip_rect, const char* text_begin, const char* text_end,
                            float wrap_width = 0.0f, bool cpu_fine_clip = false) {
   if (!text_end)
@@ -243,7 +243,7 @@ void ImFont_RenderAnsiText(const ImFont* font, ImDrawList* draw_list, float size
   draw_list->_VtxCurrentIdx = (unsigned int)draw_list->VtxBuffer.Size;
 }
 
-void ImDrawList_AddAnsiText(ImDrawList* drawList, const ImFont* font, float font_size, const ImVec2& pos, ImU32 col,
+void ImDrawList_AddAnsiText(ImDrawList* drawList, ImFont* font, float font_size, const ImVec2& pos, ImU32 col,
                             const char* text_begin, const char* text_end = NULL, float wrap_width = 0.0f,
                             const ImVec4* cpu_fine_clip_rect = NULL) {
   if ((col & IM_COL32_A_MASK) == 0)

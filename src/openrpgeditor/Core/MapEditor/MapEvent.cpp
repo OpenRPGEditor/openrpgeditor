@@ -31,7 +31,7 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlph
   ImU32 bgColor = 0x7f000000;
   ImU32 imageColor = 0xFFFFFFFF;
   if (selected) {
-    ImU8 r = oscillate(0.5, 1.0, 2.0, ImGui::GetTime()) * 255;
+    ImU8 r = static_cast<ImU8>(oscillate(0.5, 1.0, 2.0, ImGui::GetTime()) * 255.f);
     borderCol &= 0xFFFFFF00;
     borderCol |= r;
     bgColor &= 0xFFFFFF00;
@@ -70,16 +70,15 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlph
       m_pattern = std::clamp<int>(std::abs(std::remainder(ImGui::GetTime() * 8, 3 * 2)), 0, 3);
     }
     if (!m_parent->prisonMode()) {
-      Texture tex = m_characterSheet.texture();
       auto [min, max] = m_characterSheet.getRectForCharacter(m_event->pages[0].image.characterIndex, m_pattern,
                                                              m_event->pages[0].image.direction);
 
       evMin.x -= ((static_cast<float>(m_characterSheet.characterWidth()) - m_parent->tileSize()) / 2.f) * mapScale;
       evMax.x += ((static_cast<float>(m_characterSheet.characterWidth()) - m_parent->tileSize()) / 2.f) * mapScale;
       evMin.y -= (static_cast<float>(m_characterSheet.characterHeight()) - m_parent->tileSize()) * mapScale;
-      win->DrawList->AddImage(tex.get(), evMin, evMax, min, max, imageColor);
+      win->DrawList->AddImage(m_characterSheet.texture(), evMin, evMax, min, max, imageColor);
     } else {
-      Texture tex = m_characterSheet.texture();
+      const Texture& tex = m_characterSheet.texture();
       auto [min, max] = m_characterSheet.getRectForCharacter(
           m_event->pages[0].image.characterIndex, m_event->pages[0].image.pattern, m_event->pages[0].image.direction);
 
@@ -103,7 +102,7 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlph
 
       evMin += ImVec2{3.f, 3.f};
       evMax -= ImVec2{3.f, 3.f};
-      win->DrawList->AddImage(tex.get(), evMin, evMax, min, max, imageColor);
+      win->DrawList->AddImage(tex, evMin, evMax, min, max, imageColor);
     }
   } else if (m_parent->map() && m_event->pages[0].image.tileId) {
     int tileId = m_event->pages[0].image.tileId;
@@ -118,13 +117,13 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlph
       setId = 5 + floor(tileId / 256);
     }
 
-    auto tex = ResourceManager::instance()->loadTilesetImage(tileset->tilesetNames[setId]);
+    const auto& tex = ResourceManager::instance()->loadTilesetImage(tileset->tilesetNames[setId]);
     if (!tex) {
       return;
     }
 
-    float tileU0 = (fmod(floor(tileId / 128), 2) * 8 + (tileId % 8)) * m_parent->tileSize();
-    float tileV0 = fmod(floor(tileId % 256 / 8), 16) * m_parent->tileSize();
+    float tileU0 = (fmodf(floorf(tileId / 128), 2) * 8 + (tileId % 8)) * m_parent->tileSize();
+    float tileV0 = fmodf(floorf(tileId % 256 / 8), 16) * m_parent->tileSize();
     float tileU1 = tileU0 + static_cast<float>(m_parent->tileSize());
     float tileV1 = tileV0 + static_cast<float>(m_parent->tileSize());
     if (m_parent->prisonMode()) {
@@ -137,6 +136,6 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlph
     tileU1 /= static_cast<float>(tex.width());
     tileV1 /= static_cast<float>(tex.height());
 
-    win->DrawList->AddImage(tex.get(), evMin, evMax, ImVec2{tileU0, tileV0}, ImVec2{tileU1, tileV1}, imageColor);
+    win->DrawList->AddImage(tex, evMin, evMax, ImVec2{tileU0, tileV0}, ImVec2{tileU1, tileV1}, imageColor);
   }
 }

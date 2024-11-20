@@ -1,5 +1,6 @@
 #pragma once
 
+#include "imgui.h"
 #include "SDL2/SDL.h"
 enum class CellSizes : uint8_t {
   _8 = 8,
@@ -20,6 +21,8 @@ struct CheckerboardTexture {
 
   [[nodiscard]] void* get() const { return m_texture; }
   explicit operator bool() const { return m_texture != nullptr; }
+
+  operator ImTextureID() const { return reinterpret_cast<ImTextureID>(m_texture); }
 
 private:
   mutable void* m_texture = nullptr;

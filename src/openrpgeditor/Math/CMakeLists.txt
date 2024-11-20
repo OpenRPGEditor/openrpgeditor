@@ -5,5 +5,5 @@ add_library(oremath STATIC
         OREMath/Size.hpp OREMath/Size.cpp
 )
 
-target_link_libraries(oremath PRIVATE imgui)
+target_link_libraries(oremath PRIVATE imgui-setup)
 target_include_directories(oremath PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

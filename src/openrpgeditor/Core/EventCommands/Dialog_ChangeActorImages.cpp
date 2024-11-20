@@ -57,7 +57,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
 
         ImGui::Text("Face:");
         auto cursorPos = ImGui::GetCursorPos();
-        if (ImGui::ImageButton("##svbattler_image", m_buttonBack.get(),
+        if (ImGui::ImageButton("##svbattler_image", m_buttonBack,
                                ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
           m_image_selection = 0;
           m_characterPicker.setCharacterInfo(m_charPicture, m_actor);
@@ -72,7 +72,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
           const auto rect = m_faceSheet->getFaceRect(m_faceIndex);
           ImVec2 uv0{rect.u0, rect.v0};
           ImVec2 uv1{rect.u1, rect.v1};
-          ImGui::Image(m_faceSheet->texture().get(), faceRect, uv0, uv1);
+          ImGui::Image(m_faceSheet->texture(), faceRect, uv0, uv1);
         }
       }
       ImGui::EndGroup();
@@ -81,8 +81,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
       {
         ImGui::Text("Character:");
         auto cursorPos = ImGui::GetCursorPos();
-        if (ImGui::ImageButton("##char_image", m_buttonBack.get(),
-                               ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
+        if (ImGui::ImageButton("##char_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
           m_image_selection = 1;
           m_characterPicker.setCharacterInfo(m_facePicture, m_charIndex);
           m_characterPicker.SetOpen(true);
@@ -98,7 +97,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
 
           const auto [min, max] = m_characterSheet->getRectForCharacter(m_charIndex);
 
-          ImGui::Image(m_characterSheet->texture().get(),
+          ImGui::Image(m_characterSheet->texture(),
                        ImVec2{static_cast<float>(m_characterSheet->characterWidth()),
                               static_cast<float>(m_characterSheet->characterHeight())} *
                            App::DPIHandler::get_ui_scale(),
@@ -111,7 +110,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
       {
         ImGui::Text("[SV] Battler:");
         auto cursorPos = ImGui::GetCursorPos();
-        if (ImGui::ImageButton("##svbattler_image", m_buttonBack.get(),
+        if (ImGui::ImageButton("##svbattler_image", m_buttonBack,
                                ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
           m_image_selection = 2;
           m_characterPicker.setCharacterInfo(m_battlerPicture, m_faceIndex);
@@ -123,7 +122,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
                                    App::DPIHandler::get_ui_scale();
           ImGui::SetCursorPos((cursorPos + buttonCenter) - (battlerRect / 2));
           const auto rect = m_battlerSheet->getAction(SideViewActionType::StepForward);
-          ImGui::Image(m_battlerSheet->texture().get(), battlerRect, rect.frames[1].min, rect.frames[1].max);
+          ImGui::Image(m_battlerSheet->texture(), battlerRect, rect.frames[1].min, rect.frames[1].max);
         }
       }
       ImGui::EndGroup();

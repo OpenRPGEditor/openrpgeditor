@@ -88,7 +88,8 @@ std::tuple<bool, bool> ImagePicker::draw() {
                                   ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
               if (m_selectedImage != i) {
                 m_selectedImage = i;
-                m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), static_cast<int>(m_pickType), false);
+                m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), static_cast<int>(m_pickType),
+                                false);
               }
               if (ImGui::IsItemHovered()) {
                 ImGui::SetTooltip("%s", sheet.c_str());
@@ -119,7 +120,8 @@ std::tuple<bool, bool> ImagePicker::draw() {
                                       ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
                   if (m_selectedImage2 != i) {
                     m_selectedImage2 = i;
-                    m_image2.emplace(m_selectedImage2 == -1 ? "" : m_images_2.at(m_selectedImage2), static_cast<int>(m_pickType), true);
+                    m_image2.emplace(m_selectedImage2 == -1 ? "" : m_images_2.at(m_selectedImage2),
+                                     static_cast<int>(m_pickType), true);
                   }
                   if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("%s", sheet2.c_str());
@@ -142,20 +144,20 @@ std::tuple<bool, bool> ImagePicker::draw() {
               App::DPIHandler::get_ui_scale();
           auto win = ImGui::GetCurrentWindow();
           if (m_image) {
-            ImGui::GetWindowDrawList()->AddImage(
-                m_checkerboardTexture.get(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
-                win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_image->texture().width()),
-                                                     static_cast<float>(m_image->texture().height())} *
-                                              App::DPIHandler::get_ui_scale()));
+            ImGui::GetWindowDrawList()->AddImage(m_checkerboardTexture, win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
+                                                 win->ContentRegionRect.Min +
+                                                     (ImVec2{static_cast<float>(m_image->texture().width()),
+                                                             static_cast<float>(m_image->texture().height())} *
+                                                      App::DPIHandler::get_ui_scale()));
 
-            ImGui::Image(m_image->texture().get(), imageRect);
+            ImGui::Image(m_image->texture(), imageRect);
           }
           if (m_image2) {
-            ImGui::GetWindowDrawList()->AddImage(
-                m_image2->texture().get(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
-                win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_image2->texture().width()),
-                                                     static_cast<float>(m_image2->texture().height())} *
-                                              App::DPIHandler::get_ui_scale()));
+            ImGui::GetWindowDrawList()->AddImage(m_image2->texture(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
+                                                 win->ContentRegionRect.Min +
+                                                     (ImVec2{static_cast<float>(m_image2->texture().width()),
+                                                             static_cast<float>(m_image2->texture().height())} *
+                                                      App::DPIHandler::get_ui_scale()));
           }
         }
         ImGui::EndChild();

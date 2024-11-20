@@ -1,19 +1,9 @@
-FetchContent_GetProperties(imgui)
-if (NOT imgui_POPULATED)
-    FetchContent_Populate(imgui)
-endif ()
-
-FetchContent_GetProperties(implot)
-if (NOT implot_POPULATED)
-    FetchContent_Populate(implot)
-endif ()
-
-project(imgui LANGUAGES CXX C)
+project(imgui-setup LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 17)
 
-add_library(imgui STATIC
+add_library(imgui-setup STATIC
         ${implot_SOURCE_DIR}/implot.h ${implot_SOURCE_DIR}/implot.cpp
         ${implot_SOURCE_DIR}/implot_demo.cpp
         ${implot_SOURCE_DIR}/implot_internal.h ${implot_SOURCE_DIR}/implot_items.cpp
@@ -29,7 +19,7 @@ add_library(imgui STATIC
         imgui_impl_sdlrenderer2.h imgui_impl_sdlrenderer2.cpp
 )
 
-target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR} ${implot_SOURCE_DIR} "${freetype2_SOURCE_DIR}/include")
-target_compile_features(imgui PRIVATE cxx_std_20)
-target_compile_definitions(imgui PUBLIC IMGUI_DEFINE_MATH_OPERATORS IMGUI_ENABLE_FREETYPE)
-target_link_libraries(imgui PUBLIC SDL2::SDL2 freetype)
+target_include_directories(imgui-setup PUBLIC ${imgui_SOURCE_DIR} ${implot_SOURCE_DIR} "${freetype2_SOURCE_DIR}/include")
+target_compile_features(imgui-setup PRIVATE cxx_std_20)
+target_compile_definitions(imgui-setup PUBLIC IMGUI_DEFINE_MATH_OPERATORS IMGUI_ENABLE_FREETYPE)
+target_link_libraries(imgui-setup PUBLIC SDL2::SDL2 freetype)

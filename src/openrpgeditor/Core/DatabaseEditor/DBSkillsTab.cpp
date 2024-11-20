@@ -92,7 +92,7 @@ void DBSkillsTab::draw() {
               // ImGui::SameLine();
               auto [min, max] = m_iconSheet.rectForId(m_selectedSkill->iconIndex);
               ImGui::Image(
-                  m_iconSheet.texture().get(),
+                  m_iconSheet.texture(),
                   ImVec2{static_cast<float>(m_iconSheet.iconWidth()), static_cast<float>(m_iconSheet.iconHeight())},
                   min,
                   max); // Show icon image
@@ -117,10 +117,11 @@ void DBSkillsTab::draw() {
                 ImGui::Text("Skill Type:");
                 float cursorPosY = ImGui::GetCursorPosY();
                 ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
-                if (ImGui::BeginCombo("##orpg_database_skills_skilltype",
-                                      m_selectedSkill->stypeId == 0
-                                          ? "None"
-                                          : Database::instance()->system.skillType(m_selectedSkill->stypeId)->c_str())) {
+                if (ImGui::BeginCombo(
+                        "##orpg_database_skills_skilltype",
+                        m_selectedSkill->stypeId == 0
+                            ? "None"
+                            : Database::instance()->system.skillType(m_selectedSkill->stypeId)->c_str())) {
                   int index{0};
                   for (auto& dataSource : Database::instance()->system.skillTypes) {
                     bool is_selected = (m_selectedSkill->stypeId == index);
@@ -320,8 +321,7 @@ void DBSkillsTab::draw() {
                                     ? "None"
                                     : Database::instance()->animationName(m_selectedSkill->animationId).c_str(),
                                 ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-                animation_picker =
-                    ObjectPicker<Animation>("Animation"sv, Database::instance()->animations.animations(), 0);
+                animation_picker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), 0);
               }
               ImGui::PopID();
             }

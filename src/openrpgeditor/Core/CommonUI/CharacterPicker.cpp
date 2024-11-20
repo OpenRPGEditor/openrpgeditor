@@ -172,13 +172,13 @@ std::tuple<bool, bool> CharacterPicker::draw() {
                               static_cast<float>(m_characterSheet->texture().height())} *
                        App::DPIHandler::get_ui_scale());
           win->DrawList->AddImage(
-              m_checkerboardTexture.get(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
+              m_checkerboardTexture, win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
               win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_characterSheet->texture().width()),
                                                    static_cast<float>(m_characterSheet->texture().height())} *
                                             App::DPIHandler::get_ui_scale()),
               ImVec2{0.f, 0.f},
               {m_characterSheet->texture().width() / 4096.f, m_characterSheet->texture().height() / 4096.f});
-          win->DrawList->AddImage(m_characterSheet->texture().get(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
+          win->DrawList->AddImage(m_characterSheet->texture(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
                                   win->ContentRegionRect.Min +
                                       (ImVec2{static_cast<float>(m_characterSheet->texture().width()),
                                               static_cast<float>(m_characterSheet->texture().height())} *

@@ -37,7 +37,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
       }
     }
 
-    if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))) {
+    if (ImGui::IsKeyPressed(ImGuiKey_Delete)) {
       if (m_goods_selection > 0) {
         m_goods.erase(m_goods.begin() + m_goods_selection);
       } else {

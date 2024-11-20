@@ -1,5 +1,7 @@
 #pragma once
 
+#include "imgui.h"
+
 #include <string_view>
 
 class Texture {
@@ -25,6 +27,7 @@ public:
   [[nodiscard]] int height() const { return m_height; }
 
   operator bool() const { return m_texture != nullptr; }
+  operator ImTextureID() const { return reinterpret_cast<ImTextureID>(m_texture); }
 
 private:
   explicit Texture(std::string_view filename);

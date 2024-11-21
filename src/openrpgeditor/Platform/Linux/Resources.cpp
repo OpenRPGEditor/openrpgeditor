@@ -10,7 +10,6 @@
 namespace App {
 
 std::filesystem::path Resources::resource_path(const std::filesystem::path& file_path) {
-  APP_PROFILE_FUNCTION();
   const char* base_path = SDL_GetBasePath();
   std::filesystem::path font_path{base_path};
   SDL_free((void*)base_path);
@@ -19,10 +18,6 @@ std::filesystem::path Resources::resource_path(const std::filesystem::path& file
   return font_path;
 }
 
-std::filesystem::path Resources::font_path(const std::string_view& font_file) {
-  APP_PROFILE_FUNCTION();
+std::filesystem::path Resources::font_path(const std::string_view& font_file) { return resource_path(font_file); }
 
-  return resource_path(font_file);
-}
-
-}  // namespace App
+} // namespace App

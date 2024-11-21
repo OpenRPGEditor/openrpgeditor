@@ -30,8 +30,6 @@
 namespace App {
 Application* APP = nullptr;
 Application::Application(const std::string& title) {
-  APP_PROFILE_FUNCTION();
-
 #if !defined(WIN32) && !defined(APPLE)
   // We want the compositor to be enabled
   SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
@@ -62,8 +60,6 @@ Application::Application(const std::string& title) {
 }
 
 Application::~Application() {
-  APP_PROFILE_FUNCTION();
-
   ImGui_ImplSDLRenderer2_Shutdown();
   ImGui_ImplSDL2_Shutdown();
   ImPlot::DestroyContext();
@@ -73,8 +69,11 @@ Application::~Application() {
 }
 
 ExitStatus Application::run() {
-  APP_PROFILE_FUNCTION();
   NFD_Init();
+  /* Do an initial clear */
+  SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 28, 38, 43, 255);
+  SDL_RenderClear(m_window->getNativeRenderer());
+  SDL_RenderPresent(m_window->getNativeRenderer());
 
   if (m_exitStatus == ExitStatus::Failure) {
     return m_exitStatus;
@@ -84,7 +83,7 @@ ExitStatus Application::run() {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   /* Allocate a much larger temp buffer for large strings */
-  ImGui::GetCurrentContext()->TempBuffer.resize(8192 * 3 + 2);
+  //ImGui::GetCurrentContext()->TempBuffer.resize(8192 * 3 + 2);
   ImPlot::CreateContext();
   ImGuiIO& io{ImGui::GetIO()};
 
@@ -214,7 +213,8 @@ ExitStatus Application::run() {
   m_running = true;
   uint32_t a = SDL_GetTicks();
   double delta = 0;
-  bool firstFrame = true;
+  bool warmup = true;
+  int warmupFrames = 0;
   while (true) {
     if (!m_running) {
       DeserializationQueue::instance().abort();
@@ -222,17 +222,21 @@ ExitStatus Application::run() {
       m_project.close();
       break;
     }
-    APP_PROFILE_SCOPE("MainLoop");
     delta = SDL_GetTicks() - a;
 
-    if (delta >= 1000.0 / 60.0 || firstFrame) {
-      // m_window->setTitle("fps: " + std::to_string(1000.0 / delta));
-      a = SDL_GetTicks();
+    if (delta >= 1000.0 / 60.0 || warmup) {
+      if (warmup && delta >= 1000.0 / 60.0) {
+        a = SDL_GetTicks();
+        ++warmupFrames;
+      } else if (!warmup) {
+        a = SDL_GetTicks();
+      }
 
+      if (warmupFrames == 60) {
+        warmup = false;
+      }
       SDL_Event event{};
       while (SDL_PollEvent(&event) == 1) {
-        APP_PROFILE_SCOPE("EventPolling");
-
         ImGui_ImplSDL2_ProcessEvent(&event);
 
         if (event.type == SDL_QUIT) {
@@ -269,7 +273,6 @@ ExitStatus Application::run() {
       SDL_RenderClear(m_window->getNativeRenderer());
       ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), m_window->getNativeRenderer());
       SDL_RenderPresent(m_window->getNativeRenderer());
-      firstFrame = false;
     }
   }
 
@@ -281,14 +284,10 @@ ExitStatus Application::run() {
 }
 
 void Application::stop() {
-  APP_PROFILE_FUNCTION();
-
   m_running = false;
 }
 
 void Application::onEvent(const SDL_WindowEvent& event) {
-  APP_PROFILE_FUNCTION();
-
   switch (event.event) {
   case SDL_WINDOWEVENT_CLOSE:
     return onClose();
@@ -321,19 +320,14 @@ void Application::onEvent(const SDL_WindowEvent& event) {
 }
 
 void Application::onMinimize() {
-  APP_PROFILE_FUNCTION();
-
   m_minimized = true;
 }
 
 void Application::onShown() {
-  APP_PROFILE_FUNCTION();
-
   m_minimized = false;
 }
 
 void Application::onClose() {
-  APP_PROFILE_FUNCTION();
   m_project.close(true);
   stop();
 }

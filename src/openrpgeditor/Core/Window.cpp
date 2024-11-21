@@ -8,21 +8,13 @@
 namespace App {
 
 Window::Window(const Settings& settings) {
-  APP_PROFILE_FUNCTION();
-
-  const auto window_flags{
-      static_cast<SDL_WindowFlags>(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI)};
+  const auto window_flags{static_cast<SDL_WindowFlags>(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI)};
   const WindowSize size{DPIHandler::get_dpi_aware_window_size(settings)};
 
-  m_window = SDL_CreateWindow(settings.title.c_str(),
-      SDL_WINDOWPOS_CENTERED,
-      SDL_WINDOWPOS_CENTERED,
-      size.width,
-      size.height,
-      window_flags);
+  m_window = SDL_CreateWindow(settings.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, size.width,
+                              size.height, window_flags);
 
-  auto renderer_flags{
-      static_cast<SDL_RendererFlags>(SDL_RENDERER_ACCELERATED)};
+  auto renderer_flags{static_cast<SDL_RendererFlags>(SDL_RENDERER_ACCELERATED)};
   m_renderer = SDL_CreateRenderer(m_window, -1, renderer_flags);
 
   if (m_renderer == nullptr) {
@@ -38,23 +30,14 @@ Window::Window(const Settings& settings) {
 }
 
 Window::~Window() {
-  APP_PROFILE_FUNCTION();
 
   SDL_DestroyRenderer(m_renderer);
   SDL_DestroyWindow(m_window);
 }
 
-SDL_Window* Window::getNativeWindow() const {
-  APP_PROFILE_FUNCTION();
+SDL_Window* Window::getNativeWindow() const { return m_window; }
 
-  return m_window;
-}
-
-SDL_Renderer* Window::getNativeRenderer() const {
-  APP_PROFILE_FUNCTION();
-
-  return m_renderer;
-}
+SDL_Renderer* Window::getNativeRenderer() const { return m_renderer; }
 
 int Window::getWidth() const {
   int width{};
@@ -68,16 +51,12 @@ int Window::getHeight() const {
   return height;
 }
 
-void Window::setMaximized() {
-  SDL_MaximizeWindow(m_window);
-}
+void Window::setMaximized() { SDL_MaximizeWindow(m_window); }
 
-void Window::setWindowSize(int width, int height) {
-  SDL_SetWindowSize(m_window, width, height);
-}
+void Window::setWindowSize(int width, int height) { SDL_SetWindowSize(m_window, width, height); }
 
 int Window::getPositionX() const {
-  int x {};
+  int x{};
   SDL_GetWindowPosition(m_window, &x, nullptr);
   return x;
 }
@@ -87,8 +66,6 @@ int Window::getPositionY() const {
   return y;
 }
 
-void Window::setWindowPosition(int x, int y) {
-  SDL_SetWindowPosition(m_window, x, y);
-}
+void Window::setWindowPosition(int x, int y) { SDL_SetWindowPosition(m_window, x, y); }
 
-}  // namespace App
+} // namespace App

@@ -4,10 +4,10 @@
 
 struct ScrollMapCommand final : IEventCommand {
   ScrollMapCommand() = default;
-  explicit ScrollMapCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
+  explicit ScrollMapCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
   ~ScrollMapCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Scroll_Map; }
-  void serializeParameters(nlohmann::json& out) const override;
+  void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   Direction direction = Direction::Down;

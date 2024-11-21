@@ -2,11 +2,11 @@
 
 void ClassesSerializer::serialize(std::ofstream& os) const {
   try {
-    nlohmann::json data;
+    nlohmann::ordered_json data;
 
-    for (const Class& actor : m_data.classes()) {
-      if (actor.m_isValid) {
-        data.push_back(actor);
+    for (const Class& cls : m_data.classes()) {
+      if (cls.m_isValid) {
+        data.push_back(cls);
       } else {
         data.push_back(nullptr);
       }
@@ -18,7 +18,7 @@ void ClassesSerializer::serialize(std::ofstream& os) const {
 
 void ClassesSerializer::deserialize(std::ifstream& is) {
   try {
-    nlohmann::json data = nlohmann::json::parse(is);
+    nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
     m_data.classes().reserve(data.size());
 
     int i = 0;

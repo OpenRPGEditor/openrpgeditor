@@ -1,12 +1,12 @@
 #include "Database/EventCommands/MovementRoute/ChangeImage.hpp"
 
-MovementChangeImageCommand::MovementChangeImageCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+MovementChangeImageCommand::MovementChangeImageCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IMovementRouteStep(indent, parameters) {
   parameters.at(0).get_to(image);
   parameters.at(1).get_to(character);
 }
 
-void MovementChangeImageCommand::serializeParameters(nlohmann::json& out) const {
+void MovementChangeImageCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(image);
   out.push_back(character);
 }

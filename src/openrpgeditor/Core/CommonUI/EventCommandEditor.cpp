@@ -157,7 +157,7 @@ void EventCommandEditor::draw() {
         std::string cmd;
         cmd.resize(len);
         if (l.get_data(RPGMVEventCommandFormat, cmd.data(), len)) {
-          nlohmann::json cmdJson = nlohmann::json::parse(cmd);
+          nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(cmd);
           CommandParser parser;
           auto commands = parser.parse(cmdJson);
           m_commands->insert(m_commands->begin() + m_selectedCommand, commands.begin(), commands.end());
@@ -169,7 +169,7 @@ void EventCommandEditor::draw() {
       int start = m_selectedCommand;
       int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd;
       std::vector<std::shared_ptr<IEventCommand>> commands(m_commands->begin() + start, m_commands->begin() + end);
-      nlohmann::json cmdJson;
+      nlohmann::ordered_json cmdJson;
       CommandParser::serialize(cmdJson, commands);
       auto v = cmdJson.dump();
       l.set_data(RPGMVEventCommandFormat, v.data(), v.size());

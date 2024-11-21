@@ -4,7 +4,7 @@
 
 struct EraseEventCommand final : IEventCommand {
   EraseEventCommand() = default;
-  explicit EraseEventCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+  explicit EraseEventCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
   : IEventCommand(indent, parameters) {}
   ~EraseEventCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Erase_Event; }

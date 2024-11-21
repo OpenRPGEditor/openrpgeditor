@@ -4,10 +4,10 @@
 
 struct ChangeParameterCommand final : IEventCommand {
   ChangeParameterCommand() = default;
-  explicit ChangeParameterCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
+  explicit ChangeParameterCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
   ~ChangeParameterCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Parameter; }
-  void serializeParameters(nlohmann::json& out) const override;
+  void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   ActorComparisonSource comparison = ActorComparisonSource::Fixed;

@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ForceActionCommand::ForceActionCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ForceActionCommand::ForceActionCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(sourceComparison);
   parameters.at(1).get_to(source);
@@ -10,7 +10,7 @@ ForceActionCommand::ForceActionCommand(const std::optional<int>& indent, const n
   parameters.at(3).get_to(target);
 }
 
-void ForceActionCommand::serializeParameters(nlohmann::json& out) const {
+void ForceActionCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(sourceComparison);
   out.push_back(source);
   out.push_back(skill);

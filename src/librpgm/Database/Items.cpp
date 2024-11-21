@@ -3,7 +3,7 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 
-void to_json(nlohmann::json& json, const Item& item) {
+void to_json(nlohmann::ordered_json& json, const Item& item) {
   json = {
       {"id", item.id},
       {"animationId", item.animationId},
@@ -25,7 +25,7 @@ void to_json(nlohmann::json& json, const Item& item) {
       {"tpGain", item.tpGain},
   };
 }
-void from_json(const nlohmann::json& json, Item& item) {
+void from_json(const nlohmann::ordered_json& json, Item& item) {
   item.id = json.value("id", item.id);
   item.animationId = json.value("animationId", item.animationId);
   item.consumable = json.value("consumable", item.consumable);
@@ -46,7 +46,7 @@ void from_json(const nlohmann::json& json, Item& item) {
   item.tpGain = json.value("tpGain", item.tpGain);
 }
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 Items Items::load(std::string_view filename) {
   std::ifstream file(filename.data());
   json data = json::parse(file);

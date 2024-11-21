@@ -2,9 +2,9 @@
 
 #include <fstream>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
-void to_json(nlohmann::json& j, const Skill& skill) {
+void to_json(nlohmann::ordered_json& j, const Skill& skill) {
   j = {
       {"id", skill.id},
       {"animationId", skill.animationId},
@@ -31,7 +31,7 @@ void to_json(nlohmann::json& j, const Skill& skill) {
   };
 }
 
-void from_json(const nlohmann::json& j, Skill& skill) {
+void from_json(const nlohmann::ordered_json& j, Skill& skill) {
   skill.id = j.value("id", skill.id);
   skill.animationId = j.value("animationId", skill.animationId);
   skill.damage = j.value("damage", skill.damage);

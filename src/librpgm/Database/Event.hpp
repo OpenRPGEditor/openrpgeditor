@@ -7,8 +7,8 @@
 
 class Event {
 public:
-  friend void to_json(nlohmann::json& to, const Event& event);
-  friend void from_json(const nlohmann::json& from, Event& event);
+  friend void to_json(nlohmann::ordered_json& to, const Event& event);
+  friend void from_json(const nlohmann::ordered_json& from, Event& event);
   int id{};
   std::string name{};
   std::string note{};
@@ -27,5 +27,5 @@ public:
   mutable bool m_isDirty{false};
 };
 
-void to_json(nlohmann::json& to, const Event& event);
-void from_json(const nlohmann::json& from, Event& event);
+void to_json(nlohmann::ordered_json& to, const Event& event);
+void from_json(const nlohmann::ordered_json& from, Event& event);

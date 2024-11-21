@@ -1,6 +1,6 @@
 #include "Database/Effect.hpp"
 
-void to_json(nlohmann::json& to, const Effect& effect) {
+void to_json(nlohmann::ordered_json& to, const Effect& effect) {
   to = {
       {"code", effect.code},
       {"dataId", effect.dataId},
@@ -9,7 +9,7 @@ void to_json(nlohmann::json& to, const Effect& effect) {
   };
 }
 
-void from_json(const nlohmann::json& from, Effect& effect) {
+void from_json(const nlohmann::ordered_json& from, Effect& effect) {
   effect.code = from.value("code", effect.code);
   effect.dataId = from.value("dataId", effect.dataId);
   effect.value1 = from.value("value1", effect.value1);

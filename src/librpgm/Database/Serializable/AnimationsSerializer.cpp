@@ -2,7 +2,7 @@
 
 void AnimationsSerializer::serialize(std::ofstream& os) const {
   try {
-    nlohmann::json data;
+    nlohmann::ordered_json data;
 
     for (const Animation& animation : m_data.animations()) {
       if (animation.m_isValid) {
@@ -18,7 +18,7 @@ void AnimationsSerializer::serialize(std::ofstream& os) const {
 
 void AnimationsSerializer::deserialize(std::ifstream& is) {
   try {
-    nlohmann::json data = nlohmann::json::parse(is);
+    nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
     m_data.animations().reserve(data.size());
 
     int i = 0;

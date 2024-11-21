@@ -1,6 +1,6 @@
 #include "Database/Messages.hpp"
 
-void to_json(nlohmann::json& to, const Messages& messages) {
+void to_json(nlohmann::ordered_json& to, const Messages& messages) {
   to = {
       {"actionFailure", messages.actionFailure},
       {"actorDamage", messages.actorDamage},
@@ -56,7 +56,7 @@ void to_json(nlohmann::json& to, const Messages& messages) {
   };
 }
 
-void from_json(const nlohmann::json& from, Messages& messages){
+void from_json(const nlohmann::ordered_json& from, Messages& messages){
   messages.actionFailure = from.value("actionFailure", messages.actionFailure);
   messages.actorDamage = from.value("actorDamage", messages.actorDamage);
   messages.actorDrain = from.value("actorDrain", messages.actorDrain);

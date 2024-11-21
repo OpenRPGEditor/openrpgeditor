@@ -8,8 +8,8 @@
 
 class Tileset {
 public:
-  friend void to_json(nlohmann::json& j, const Tileset& tileset);
-  friend void from_json(const nlohmann::json& j, Tileset& tileset);
+  friend void to_json(nlohmann::ordered_json& j, const Tileset& tileset);
+  friend void from_json(const nlohmann::ordered_json& j, Tileset& tileset);
 
   enum class Mode {
     World,

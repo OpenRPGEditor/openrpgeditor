@@ -2,7 +2,19 @@
 
 #include <fstream>
 
-void to_json(nlohmann::json& j, const System& system) {
+void to_json(nlohmann::ordered_json& j, const System::Motion& motion) {
+  j = {
+      {"type", motion.type},
+      {"weaponImageId", motion.weaponImageId},
+  };
+}
+
+void from_json(const nlohmann::ordered_json& j, System::Motion& motion) {
+  motion.type = j.value("type", motion.type);
+  motion.weaponImageId = j.value("weaponImageId", motion.type);
+}
+
+void to_json(nlohmann::ordered_json& j, const System& system) {
   j = {
       {"airship", system.airship},
       {"armorTypes", system.armorTypes},
@@ -54,7 +66,7 @@ void to_json(nlohmann::json& j, const System& system) {
   };
 }
 
-void from_json(const nlohmann::json& j, System& system) {
+void from_json(const nlohmann::ordered_json& j, System& system) {
   system.airship = j.value("airship", system.airship);
   system.armorTypes = j.value("armorTypes", system.armorTypes);
   system.attackMotions = j.value("attackMotions", system.attackMotions);
@@ -100,7 +112,7 @@ void from_json(const nlohmann::json& j, System& system) {
 
 System System::load(std::string_view filepath) {
   std::ifstream file(filepath.data());
-  nlohmann::json data = nlohmann::json::parse(file);
+  nlohmann::ordered_json data = nlohmann::json::parse(file);
   System ret = data.get<System>();
   data["hasEncryptedImages"].get_to(ret.hasEncryptedImages);
   data["hasEncryptedAudio"].get_to(ret.hasEncryptedAudio);
@@ -110,7 +122,7 @@ System System::load(std::string_view filepath) {
 
 bool System::serialize(std::string_view filepath) {
   std::ofstream file(filepath.data());
-  nlohmann::json data = *this;
+  nlohmann::ordered_json data = *this;
   if (hasEncryptedImages || hasEncryptedAudio || encryptionKey) {
     data["hasEncryptedImages"] = *hasEncryptedImages;
     data["hasEncryptedAudio"] = *hasEncryptedAudio;

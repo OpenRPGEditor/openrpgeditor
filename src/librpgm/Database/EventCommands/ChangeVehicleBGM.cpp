@@ -1,12 +1,12 @@
 #include "Database/EventCommands/ChangeVehicleBGM.hpp"
 
-ChangeVehicleBGMCommand::ChangeVehicleBGMCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeVehicleBGMCommand::ChangeVehicleBGMCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(vehicle);
   parameters.at(1).get_to(bgm);
 }
 
-void ChangeVehicleBGMCommand::serializeParameters(nlohmann::json& out) const {
+void ChangeVehicleBGMCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(vehicle);
   out.push_back(bgm);
 }

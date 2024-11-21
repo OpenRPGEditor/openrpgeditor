@@ -1,7 +1,7 @@
 #include "Database/EventCommands/ControlVariables.hpp"
 #include "Database/Database.hpp"
 
-ControlVariables::ControlVariables(const std::optional<int>& indent, const nlohmann::json& parameters)
+ControlVariables::ControlVariables(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(start);
   parameters.at(1).get_to(end);
@@ -29,7 +29,7 @@ ControlVariables::ControlVariables(const std::optional<int>& indent, const nlohm
   }
 }
 
-void ControlVariables::serializeParameters(nlohmann::json& out) const {
+void ControlVariables::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(start);
   out.push_back(end);
   out.push_back(operation);

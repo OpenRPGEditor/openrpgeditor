@@ -11,8 +11,8 @@
 
 class Actor {
 public:
-  friend void to_json(nlohmann::json& to, const Actor& actor);
-  friend void from_json(const nlohmann::json& from, Actor& actor);
+  friend void to_json(nlohmann::ordered_json& to, const Actor& actor);
+  friend void from_json(const nlohmann::ordered_json& from, Actor& actor);
   int id = 0;
   std::string battlerName;
   int characterIndex = 0;

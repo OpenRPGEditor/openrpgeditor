@@ -5,12 +5,12 @@
 #include "nlohmann/json.hpp"
 
 struct Troop {
-  friend void to_json(nlohmann::json& j, const Troop& t);
-  friend void from_json(const nlohmann::json& j, Troop& t);
+  friend void to_json(nlohmann::ordered_json& j, const Troop& t);
+  friend void from_json(const nlohmann::ordered_json& j, Troop& t);
 
   struct Member {
-    friend void to_json(nlohmann::json& j, const Member& m);
-    friend void from_json(const nlohmann::json& j, Member& m);
+    friend void to_json(nlohmann::ordered_json& j, const Member& m);
+    friend void from_json(const nlohmann::ordered_json& j, Member& m);
     int enemyId = 0;
     int x = 0;
     int y = 0;
@@ -45,10 +45,10 @@ struct Troop {
    */
   bool m_isValid{false};
 };
-void to_json(nlohmann::json& j, const Troop::Member& m);
-void from_json(const nlohmann::json& j, Troop::Member& m);
-void to_json(nlohmann::json& j, const Troop& t);
-void from_json(const nlohmann::json& j, Troop& t);
+void to_json(nlohmann::ordered_json& j, const Troop::Member& m);
+void from_json(const nlohmann::ordered_json& j, Troop::Member& m);
+void to_json(nlohmann::ordered_json& j, const Troop& t);
+void from_json(const nlohmann::ordered_json& j, Troop& t);
 
 class Troops {
 public:

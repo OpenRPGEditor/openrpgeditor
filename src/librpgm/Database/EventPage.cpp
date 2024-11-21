@@ -1,6 +1,6 @@
 #include "EventPage.hpp"
 
-void to_json(nlohmann::json& to, const EventCondition& cond) {
+void to_json(nlohmann::ordered_json& to, const EventCondition& cond) {
   to = {
       {"actorId", cond.actorId},
       {"actorValid", cond.actorValid},
@@ -17,7 +17,7 @@ void to_json(nlohmann::json& to, const EventCondition& cond) {
       {"variableValue", cond.variableValue},
   };
 }
-void from_json(const nlohmann::json& from, EventCondition& cond) {
+void from_json(const nlohmann::ordered_json& from, EventCondition& cond) {
   cond.actorId = from.value("actorId", cond.actorId);
   cond.actorValid = from.value("actorValid", cond.actorValid);
   cond.itemId = from.value("itemId", cond.itemId);
@@ -33,13 +33,13 @@ void from_json(const nlohmann::json& from, EventCondition& cond) {
   cond.variableValue = from.value("variableValue", cond.variableValue);
 }
 
-void to_json(nlohmann::json& to, const EventImage& image) {
+void to_json(nlohmann::ordered_json& to, const EventImage& image) {
   to = {
       {"tileId", image.tileId},   {"characterName", image.characterName},   {"direction", image.direction},
       {"pattern", image.pattern}, {"characterIndex", image.characterIndex},
   };
 }
-void from_json(const nlohmann::json& from, EventImage& image) {
+void from_json(const nlohmann::ordered_json& from, EventImage& image) {
   image.tileId = from.value("tileId", image.tileId);
   image.characterName = from.value("characterName", image.characterName);
   image.direction = from.value("direction", image.direction);
@@ -47,7 +47,7 @@ void from_json(const nlohmann::json& from, EventImage& image) {
   image.characterIndex = from.value("characterIndex", image.characterIndex);
 }
 
-void to_json(nlohmann::json& json, const EventPage& eventPage) {
+void to_json(nlohmann::ordered_json& json, const EventPage& eventPage) {
   json["conditions"] = eventPage.conditions;
   json["directionFix"] = eventPage.directionFix;
   json["image"] = eventPage.image;
@@ -66,7 +66,7 @@ void to_json(nlohmann::json& json, const EventPage& eventPage) {
   }
 }
 
-void from_json(const nlohmann::json& json, EventPage& eventPage) {
+void from_json(const nlohmann::ordered_json& json, EventPage& eventPage) {
   eventPage.conditions = json.value("conditions", eventPage.conditions);
   eventPage.directionFix = json.value("directionFix", eventPage.directionFix);
   eventPage.image = json.value("image", eventPage.image);

@@ -4,7 +4,7 @@
 
 struct EndCommand final : IEventCommand {
   EndCommand() = default;
-  explicit EndCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+  explicit EndCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
   : IEventCommand(indent, parameters) {}
   ~EndCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::End; }

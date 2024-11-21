@@ -817,7 +817,7 @@ static inline std::string UndectorateEnumName(E e) {
 namespace nlohmann {
 template <typename T>
 struct adl_serializer<std::optional<T>> {
-  static void to_json(json& j, const std::optional<T>& opt) {
+  static void to_json(ordered_json& j, const std::optional<T>& opt) {
     if (!opt.has_value()) {
       j = nullptr;
     } else {
@@ -826,7 +826,7 @@ struct adl_serializer<std::optional<T>> {
     }
   }
 
-  static void from_json(const json& j, std::optional<T>& opt) {
+  static void from_json(const ordered_json& j, std::optional<T>& opt) {
     if (!j.is_null()) {
       opt = j.template get<T>(); // same as above, but with
       // adl_serializer<T>::from_json

@@ -5,8 +5,8 @@
 #include <nlohmann/json.hpp>
 
 struct GameConstants {
-  friend void to_json(nlohmann::json& json, const GameConstants& constants);
-  friend void from_json(const nlohmann::json& json, GameConstants& constants);
+  friend void to_json(nlohmann::ordered_json& json, const GameConstants& constants);
+  friend void from_json(const nlohmann::ordered_json& json, GameConstants& constants);
   enum class Type {
     Variable,
     Switch,
@@ -48,5 +48,5 @@ struct GameConstants {
 
   bool isValidName(Type type, int id, const std::string& constant);
 };
-void to_json(nlohmann::json& json, const GameConstants& constants);
-void from_json(const nlohmann::json& json, GameConstants& constants);
+void to_json(nlohmann::ordered_json& json, const GameConstants& constants);
+void from_json(const nlohmann::ordered_json& json, GameConstants& constants);

@@ -4,7 +4,7 @@
 
 struct MovementTransparentONCommand final : IMovementRouteStep {
   MovementTransparentONCommand() = default;
-  explicit MovementTransparentONCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+  explicit MovementTransparentONCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
   : IMovementRouteStep(indent, parameters) {}
   ~MovementTransparentONCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Transparent_ON; }

@@ -4,10 +4,10 @@
 
 struct BattleProcessingCommand final : IEventCommand {
   BattleProcessingCommand() = default;
-  explicit BattleProcessingCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
+  explicit BattleProcessingCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
   ~BattleProcessingCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Battle_Processing; }
-  void serializeParameters(nlohmann::json& out) const override;
+  void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   BattleProcessType type = BattleProcessType::Direct_designation;
@@ -26,7 +26,7 @@ struct IfWinCommand final : IEventCommand {
 
 struct IfEscapeCommand final : IEventCommand {
   IfEscapeCommand() = default;
-  explicit IfEscapeCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+  explicit IfEscapeCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
   : IEventCommand(indent, parameters) {}
   ~IfEscapeCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::If_Escape; }
@@ -34,7 +34,7 @@ struct IfEscapeCommand final : IEventCommand {
 
 struct IfLoseCommand final : IEventCommand {
   IfLoseCommand() = default;
-  explicit IfLoseCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+  explicit IfLoseCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
   : IEventCommand(indent, parameters) {}
   ~IfLoseCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::If_Lose; }
@@ -42,7 +42,7 @@ struct IfLoseCommand final : IEventCommand {
 
 struct EndBattleProcessingCommand final : IEventCommand {
   EndBattleProcessingCommand() = default;
-  explicit EndBattleProcessingCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+  explicit EndBattleProcessingCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
   : IEventCommand(indent, parameters) {}
   ~EndBattleProcessingCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::End_del_Battle_Processing; }

@@ -6,8 +6,8 @@
 
 class ISerializable;
 struct MapInfo {
-  friend void to_json(nlohmann::json& json, const MapInfo& mapinfo);
-  friend void from_json(const nlohmann::json& json, MapInfo& mapinfo);
+  friend void to_json(nlohmann::ordered_json& json, const MapInfo& mapinfo);
+  friend void from_json(const nlohmann::ordered_json& json, MapInfo& mapinfo);
   bool expanded{};
   int id{};
   std::string name;
@@ -32,8 +32,8 @@ private:
   std::vector<MapInfo*> m_children;
   std::unique_ptr<Map> m_map;
 };
-void to_json(nlohmann::json& json, const MapInfo& mapinfo);
-void from_json(const nlohmann::json& json, MapInfo& mapinfo);
+void to_json(nlohmann::ordered_json& json, const MapInfo& mapinfo);
+void from_json(const nlohmann::ordered_json& json, MapInfo& mapinfo);
 
 class MapInfos {
 public:

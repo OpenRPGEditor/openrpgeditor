@@ -1,14 +1,14 @@
 #include "Database/EventCommands/ChangeEquipment.hpp"
 #include "Database/Database.hpp"
 
-ChangeEquipmentCommand::ChangeEquipmentCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeEquipmentCommand::ChangeEquipmentCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(actorId);
   parameters.at(1).get_to(equipType);
   parameters.at(2).get_to(equipment);
 }
 
-void ChangeEquipmentCommand::serializeParameters(nlohmann::json& out) const {
+void ChangeEquipmentCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(actorId);
   out.push_back(equipType);
   out.push_back(equipment);

@@ -1,6 +1,6 @@
 #include "Database/EventCommands/SetWeatherEffect.hpp"
 
-SetWeatherEffectCommand::SetWeatherEffectCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+SetWeatherEffectCommand::SetWeatherEffectCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   std::string eff;
   parameters.at(0).get_to(eff);
@@ -10,7 +10,7 @@ SetWeatherEffectCommand::SetWeatherEffectCommand(const std::optional<int>& inden
   parameters.at(3).get_to(waitForCompletion);
 }
 
-void SetWeatherEffectCommand::serializeParameters(nlohmann::json& out) const {
+void SetWeatherEffectCommand::serializeParameters(nlohmann::ordered_json& out) const {
   std::string eff = magic_enum::enum_name(effect).data();
   std::ranges::transform(eff, eff.begin(), [](const char c) { return std::tolower(c); });
   out.push_back(eff);

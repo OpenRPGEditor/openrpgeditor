@@ -1,6 +1,6 @@
 #include "Database/Trait.hpp"
 
-void to_json(nlohmann::json& j, const Trait& t) {
+void to_json(nlohmann::ordered_json& j, const Trait& t) {
   j = {
       {"code", t.code},
       {"dataId", t.dataId},
@@ -8,7 +8,7 @@ void to_json(nlohmann::json& j, const Trait& t) {
   };
 }
 
-void from_json(const nlohmann::json& j, Trait& t) {
+void from_json(const nlohmann::ordered_json& j, Trait& t) {
   t.code = j.value("code", t.code);
   t.dataId = j.value("dataId", t.dataId);
   t.value = j.value("value", t.value);

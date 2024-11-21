@@ -1,18 +1,18 @@
 #include "Database/EventCommands/Script.hpp"
 
-NextScriptCommand::NextScriptCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+NextScriptCommand::NextScriptCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(script);
 }
 
-void NextScriptCommand::serializeParameters(nlohmann::json& out) const { out.push_back(script); }
+void NextScriptCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(script); }
 
-ScriptCommand::ScriptCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ScriptCommand::ScriptCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(script);
 }
 
-void ScriptCommand::serializeParameters(nlohmann::json& out) const {
+void ScriptCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(script);
 }
 

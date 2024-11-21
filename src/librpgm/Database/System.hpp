@@ -8,12 +8,13 @@
 #include <nlohmann/json.hpp>
 
 class System {
-  friend void to_json(nlohmann::json& j, const System& system);
-  friend void from_json(const nlohmann::json& j, System& system);
+  friend void to_json(nlohmann::ordered_json& j, const System& system);
+  friend void from_json(const nlohmann::ordered_json& j, System& system);
 
 public:
   struct Motion {
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Motion, type, weaponImageId);
+    friend void to_json(nlohmann::ordered_json& j, const Motion& motion);
+    friend void from_json(const nlohmann::ordered_json& j, Motion& motion);
     int type = 0;
     int weaponImageId = 0;
   };
@@ -165,5 +166,7 @@ public:
   }
 };
 
-void to_json(nlohmann::json& j, const System& system);
-void from_json(const nlohmann::json& j, System& system);
+void to_json(nlohmann::ordered_json& j, const System::Motion& motion);
+void from_json(const nlohmann::ordered_json& j, System::Motion& motion);
+void to_json(nlohmann::ordered_json& j, const System& system);
+void from_json(const nlohmann::ordered_json& j, System& system);

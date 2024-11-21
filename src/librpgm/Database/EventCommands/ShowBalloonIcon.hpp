@@ -4,10 +4,10 @@
 
 struct ShowBalloonIconCommand final : IEventCommand {
   ShowBalloonIconCommand() = default;
-  explicit ShowBalloonIconCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
+  explicit ShowBalloonIconCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
   ~ShowBalloonIconCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Balloon_Icon; }
-  void serializeParameters(nlohmann::json& out) const override;
+  void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   int id = -1;

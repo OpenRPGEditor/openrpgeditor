@@ -1,7 +1,7 @@
 #include "Database/EventCommands/SetVehicleLocation.hpp"
 #include "Database/Database.hpp"
 
-SetVehicleLocationCommand::SetVehicleLocationCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+SetVehicleLocationCommand::SetVehicleLocationCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(vehicle);
   parameters.at(1).get_to(mode);
@@ -10,7 +10,7 @@ SetVehicleLocationCommand::SetVehicleLocationCommand(const std::optional<int>& i
   parameters.at(4).get_to(y);
 }
 
-void SetVehicleLocationCommand::serializeParameters(nlohmann::json& out) const {
+void SetVehicleLocationCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(vehicle);
   out.push_back(mode);
   out.push_back(mapId);

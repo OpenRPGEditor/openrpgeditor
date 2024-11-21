@@ -2,9 +2,9 @@
 
 #include <fstream>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
-void to_json(nlohmann::json& to, const Enemy& enemy) {
+void to_json(nlohmann::ordered_json& to, const Enemy& enemy) {
   to = {
       {"id", enemy.id},
       {"actions", enemy.actions},
@@ -18,7 +18,7 @@ void to_json(nlohmann::json& to, const Enemy& enemy) {
       {"params", enemy.params},
   };
 }
-void from_json(const nlohmann::json& from, Enemy& enemy) {
+void from_json(const nlohmann::ordered_json& from, Enemy& enemy) {
   enemy.id = from.value("id", enemy.id);
   enemy.actions = from.value("actions", enemy.actions);
   enemy.battlerHue = from.value("battlerHue", enemy.battlerHue);
@@ -31,7 +31,7 @@ void from_json(const nlohmann::json& from, Enemy& enemy) {
   enemy.note = from.value("note", enemy.note);
   enemy.params = from.value("params", enemy.params);
 }
-void to_json(nlohmann::json& to, const Enemy::Action& action) {
+void to_json(nlohmann::ordered_json& to, const Enemy::Action& action) {
   to = {
       {"conditionParam1", action.conditionParam1},
       {"conditionParam2", action.conditionParam2},
@@ -40,7 +40,7 @@ void to_json(nlohmann::json& to, const Enemy::Action& action) {
       {"skillId", action.skillId},
   };
 }
-void from_json(const nlohmann::json& from, Enemy::Action& action) {
+void from_json(const nlohmann::ordered_json& from, Enemy::Action& action) {
   action.conditionParam1 = from.value("conditionParam1", action.conditionParam1);
   action.conditionParam2 = from.value("conditionParam2", action.conditionParam2);
   action.conditionType = from.value("conditionType", action.conditionType);
@@ -48,14 +48,14 @@ void from_json(const nlohmann::json& from, Enemy::Action& action) {
   action.skillId = from.value("skillId", action.skillId);
 }
 
-void to_json(nlohmann::json& to, const Enemy::DropItem& dropitem) {
+void to_json(nlohmann::ordered_json& to, const Enemy::DropItem& dropitem) {
   to = {
       {"dataId", dropitem.dataId},
       {"denominator", dropitem.denominator},
       {"kind", dropitem.kind},
   };
 }
-void from_json(const nlohmann::json& from, Enemy::DropItem& dropitem) {
+void from_json(const nlohmann::ordered_json& from, Enemy::DropItem& dropitem) {
   dropitem.dataId = from.value("dataId", dropitem.dataId);
   dropitem.denominator = from.value("denominator", dropitem.denominator);
   dropitem.kind = from.value("kind", dropitem.kind);

@@ -3,10 +3,10 @@
 
 struct SelectItemCommand final : IEventCommand {
   SelectItemCommand() = default;
-  explicit SelectItemCommand(const std::optional<int>& _indent, const nlohmann::json& parameters);
+  explicit SelectItemCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters);
   ~SelectItemCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Select_Item; }
-  void serializeParameters(nlohmann::json& out) const override;
+  void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   int item = 1;

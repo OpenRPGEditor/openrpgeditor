@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangeItemsCommand::ChangeItemsCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeItemsCommand::ChangeItemsCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(item);
   parameters.at(1).get_to(operation);
@@ -10,7 +10,7 @@ ChangeItemsCommand::ChangeItemsCommand(const std::optional<int>& indent, const n
   parameters.at(3).get_to(operand);
 }
 
-void ChangeItemsCommand::serializeParameters(nlohmann::json& out) const {
+void ChangeItemsCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(item);
   out.push_back(operation);
   out.push_back(operandSource);

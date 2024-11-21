@@ -8,8 +8,8 @@
 #include <string>
 
 class State {
-  friend void to_json(nlohmann::json& j, const State& state);
-  friend void from_json(const nlohmann::json& j, State& state);
+  friend void to_json(nlohmann::ordered_json& j, const State& state);
+  friend void from_json(const nlohmann::ordered_json& j, State& state);
 
 public:
   int id = 0;
@@ -44,8 +44,8 @@ public:
    */
   bool m_isValid{false};
 };
-void to_json(nlohmann::json& j, const State& state);
-void from_json(const nlohmann::json& j, State& state);
+void to_json(nlohmann::ordered_json& j, const State& state);
+void from_json(const nlohmann::ordered_json& j, State& state);
 
 class States {
 public:

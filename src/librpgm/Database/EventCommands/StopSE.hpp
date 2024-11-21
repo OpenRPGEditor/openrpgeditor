@@ -4,7 +4,7 @@
 
 struct StopSECommand final : IEventCommand {
   StopSECommand() = default;
-  explicit StopSECommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+  explicit StopSECommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
   : IEventCommand(indent, parameters) {}
   ~StopSECommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Stop_SE; }

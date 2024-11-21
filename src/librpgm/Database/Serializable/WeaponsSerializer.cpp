@@ -2,7 +2,7 @@
 
 void WeaponsSerializer::serialize(std::ofstream& os) const {
   try {
-    nlohmann::json data;
+    nlohmann::ordered_json data;
 
     for (const Weapon& weapon : m_data.weapons()) {
       if (weapon.m_isValid) {
@@ -18,7 +18,7 @@ void WeaponsSerializer::serialize(std::ofstream& os) const {
 
 void WeaponsSerializer::deserialize(std::ifstream& is) {
   try {
-    nlohmann::json data = nlohmann::json::parse(is);
+    nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
     m_data.weapons().reserve(data.size());
 
     int i = 0;

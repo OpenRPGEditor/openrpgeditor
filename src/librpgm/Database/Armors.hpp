@@ -7,8 +7,8 @@
 #include <string_view>
 
 struct Armor {
-  friend void to_json(nlohmann::json& out, const Armor& armor);
-  friend void from_json(const nlohmann::json& from, Armor& armor);
+  friend void to_json(nlohmann::ordered_json& out, const Armor& armor);
+  friend void from_json(const nlohmann::ordered_json& from, Armor& armor);
   int id{};
   int atypeId{};
   std::string description;
@@ -29,8 +29,8 @@ struct Armor {
    */
   bool m_isValid{false};
 };
-void to_json(nlohmann::json& out, const Armor& armor);
-void from_json(const nlohmann::json& from, Armor& armor);
+void to_json(nlohmann::ordered_json& out, const Armor& armor);
+void from_json(const nlohmann::ordered_json& from, Armor& armor);
 
 class Armors {
 public:

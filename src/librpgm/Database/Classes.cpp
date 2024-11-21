@@ -2,29 +2,29 @@
 
 #include <fstream>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
-void to_json(nlohmann::json& to, const Learning& learning) {
-  to = nlohmann::json{
+void to_json(nlohmann::ordered_json& to, const Learning& learning) {
+  to = {
       {"level", learning.level},
       {"note", learning.note},
       {"skillId", learning.skillId},
   };
 }
-void from_json(const nlohmann::json& from, Learning& learning) {
+void from_json(const nlohmann::ordered_json& from, Learning& learning) {
   learning.level = from.value("level", learning.level);
   learning.note = from.value("note", learning.note);
   learning.skillId = from.value("skillId", learning.skillId);
 }
 
-void to_json(nlohmann::json& to, const Class& cls) {
-  to = nlohmann::json{
+void to_json(nlohmann::ordered_json& to, const Class& cls) {
+  to = {
       {"id", cls.id},     {"expParams", cls.expParams}, {"traits", cls.traits}, {"learnings", cls.learnings},
       {"name", cls.name}, {"note", cls.note},           {"params", cls.params},
   };
 }
 
-void from_json(const nlohmann::json& from, Class& cls) {
+void from_json(const nlohmann::ordered_json& from, Class& cls) {
   cls.id = from.value("id", cls.id);
   cls.expParams = from.value("expParams", cls.expParams);
   cls.traits = from.value("traits", cls.traits);

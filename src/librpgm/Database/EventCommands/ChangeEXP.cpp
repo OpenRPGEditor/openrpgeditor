@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangeEXPCommand::ChangeEXPCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeEXPCommand::ChangeEXPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(comparison);
   parameters.at(1).get_to(value);
@@ -12,7 +12,7 @@ ChangeEXPCommand::ChangeEXPCommand(const std::optional<int>& indent, const nlohm
   parameters.at(5).get_to(showLevelUp);
 }
 
-void ChangeEXPCommand::serializeParameters(nlohmann::json& out) const {
+void ChangeEXPCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(comparison);
   out.push_back(value);
   out.push_back(quantityOp);

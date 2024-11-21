@@ -7,8 +7,8 @@
 #include <string_view>
 
 struct Weapon {
-  friend void to_json(nlohmann::json& j, const Weapon& w);
-  friend void from_json(const nlohmann::json& j, Weapon& w);
+  friend void to_json(nlohmann::ordered_json& j, const Weapon& w);
+  friend void from_json(const nlohmann::ordered_json& j, Weapon& w);
   int id;
   int animationId;
   std::string description;
@@ -17,7 +17,7 @@ struct Weapon {
   int iconIndex;
   std::string name;
   std::string note;
-  std::array<int, 8> params; // Attack, Defance, M.Attack, M.Defence, Agility, Luck, Max HP, Max MP
+  std::array<int, 8> params; // Attack, Defence, M.Attack, M.Defence, Agility, Luck, Max HP, Max MP
   int price;
   int wtypeId;
 
@@ -31,8 +31,8 @@ struct Weapon {
   bool m_isValid{false};
 };
 
-void to_json(nlohmann::json& j, const Weapon& w);
-void from_json(const nlohmann::json& j, Weapon& w);
+void to_json(nlohmann::ordered_json& j, const Weapon& w);
+void from_json(const nlohmann::ordered_json& j, Weapon& w);
 
 class Weapons {
 public:

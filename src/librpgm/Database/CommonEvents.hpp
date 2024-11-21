@@ -7,8 +7,8 @@
 #include <nlohmann/json.hpp>
 
 struct CommonEvent {
-  friend void to_json(nlohmann::json& to, const CommonEvent& event);
-  friend void from_json(const nlohmann::json& to, CommonEvent& event);
+  friend void to_json(nlohmann::ordered_json& to, const CommonEvent& event);
+  friend void from_json(const nlohmann::ordered_json& to, CommonEvent& event);
 
   int id{};
   std::vector<std::shared_ptr<IEventCommand>> commands;
@@ -16,6 +16,9 @@ struct CommonEvent {
   int switchId{};
   CommonEventTriggerType trigger;
 };
+
+void to_json(nlohmann::ordered_json& to, const CommonEvent& event);
+void from_json(const nlohmann::ordered_json& to, CommonEvent& event);
 
 class CommonEvents {
 public:

@@ -2,14 +2,14 @@
 
 #include "Database/Database.hpp"
 
-ShowBalloonIconCommand::ShowBalloonIconCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ShowBalloonIconCommand::ShowBalloonIconCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(id);
   parameters.at(1).get_to(index);
   parameters.at(2).get_to(waitForCompletion);
 }
 
-void ShowBalloonIconCommand::serializeParameters(nlohmann::json& out) const {
+void ShowBalloonIconCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(id);
   out.push_back(index);
   out.push_back(waitForCompletion);

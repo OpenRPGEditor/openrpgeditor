@@ -5,7 +5,8 @@
 #include <string>
 
 struct Damage {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Damage, critical, elementId, formula, type, variance);
+  friend void to_json(nlohmann::ordered_json& j, const Damage& damage);
+  friend void from_json(const nlohmann::ordered_json& j, Damage& damage);
 
   bool critical;
   int elementId;
@@ -13,3 +14,6 @@ struct Damage {
   DamageType type;
   int variance;
 };
+
+void to_json(nlohmann::ordered_json& j, const Damage& damage);
+void from_json(const nlohmann::ordered_json& j, Damage& damage);

@@ -1,6 +1,6 @@
 #include "Database/Vehicle.hpp"
 
-void to_json(nlohmann::json& j, const Vehicle& v) {
+void to_json(nlohmann::ordered_json& j, const Vehicle& v) {
   j = {
       {"bgm", v.bgm},
       {"characterIndex", v.characterIndex},
@@ -10,7 +10,7 @@ void to_json(nlohmann::json& j, const Vehicle& v) {
       {"startY", v.startY},
   };
 }
-void from_json(const nlohmann::json& j, Vehicle& v) {
+void from_json(const nlohmann::ordered_json& j, Vehicle& v) {
   v.bgm = j.value("bgm", v.bgm);
   v.characterIndex = j.value("characterIndex", v.characterIndex);
   v.characterName = j.value("characterName", v.characterName);

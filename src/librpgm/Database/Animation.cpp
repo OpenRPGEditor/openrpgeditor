@@ -1,8 +1,8 @@
 #include "Animation.hpp"
 #include <iostream>
 
-void to_json(nlohmann::json& to, const Animation::Timing& timing) {
-  to = nlohmann::json{
+void to_json(nlohmann::ordered_json& to, const Animation::Timing& timing) {
+  to = {
       {"flashColor", timing.flashColor},
       {"flashDuration", timing.flashDuration},
       {"flashScope", timing.flashScope},
@@ -11,7 +11,7 @@ void to_json(nlohmann::json& to, const Animation::Timing& timing) {
   };
 }
 
-void from_json(const nlohmann::json& from, Animation::Timing& timing) {
+void from_json(const nlohmann::ordered_json& from, Animation::Timing& timing) {
   from.at("flashColor").get_to(timing.flashColor);
   from.at("flashDuration").get_to(timing.flashDuration);
   from.at("flashScope").get_to(timing.flashScope);
@@ -19,8 +19,8 @@ void from_json(const nlohmann::json& from, Animation::Timing& timing) {
   from.at("se").get_to(timing.se);
 }
 
-void to_json(nlohmann::json& to, const Animation& animation) {
-  to = nlohmann::json{
+void to_json(nlohmann::ordered_json& to, const Animation& animation) {
+  to = {
       {"id", animation.id},
       {"animation1Hue", animation.animation1Hue},
       {"animation1Name", animation.animation1Name},
@@ -32,7 +32,7 @@ void to_json(nlohmann::json& to, const Animation& animation) {
       {"timings", animation.timings},
   };
 }
-void from_json(const nlohmann::json& from, Animation& animation) {
+void from_json(const nlohmann::ordered_json& from, Animation& animation) {
   animation.id = from.value("id", animation.id);
   animation.animation1Hue = from.value("animation1Hue", animation.animation1Hue);
   animation.animation1Name = from.value("animation1Name", animation.animation1Name);

@@ -13,12 +13,12 @@ struct Learning {
   std::string note;
   int skillId{};
 };
-void to_json(nlohmann::json& to, const Learning& learning);
-void from_json(const nlohmann::json& from, Learning& learning);
+void to_json(nlohmann::ordered_json& to, const Learning& learning);
+void from_json(const nlohmann::ordered_json& from, Learning& learning);
 
 struct Class {
-  friend void to_json(nlohmann::json& to, const Class& cls);
-  friend void from_json(const nlohmann::json& from, Class& cls);
+  friend void to_json(nlohmann::ordered_json& to, const Class& cls);
+  friend void from_json(const nlohmann::ordered_json& from, Class& cls);
   int id{};
   std::array<int, 4> expParams{}; // Base, Extra, Acceleration A, Acceleration B
   std::vector<Trait> traits;
@@ -36,8 +36,8 @@ struct Class {
    */
   bool m_isValid{false};
 };
-void to_json(nlohmann::json& to, const Class& cls);
-void from_json(const nlohmann::json& from, Class& cls);
+void to_json(nlohmann::ordered_json& to, const Class& cls);
+void from_json(const nlohmann::ordered_json& from, Class& cls);
 
 class Classes {
 public:

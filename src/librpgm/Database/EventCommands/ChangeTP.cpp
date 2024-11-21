@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangeTPCommand::ChangeTPCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeTPCommand::ChangeTPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(comparison);
   parameters.at(1).get_to(value);
@@ -11,7 +11,7 @@ ChangeTPCommand::ChangeTPCommand(const std::optional<int>& indent, const nlohman
   parameters.at(4).get_to(quantity);
 }
 
-void ChangeTPCommand::serializeParameters(nlohmann::json& out) const {
+void ChangeTPCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(comparison);
   out.push_back(value);
   out.push_back(quantityOp);

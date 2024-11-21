@@ -1,6 +1,6 @@
 #include "Database/EventCommands/TintScreen.hpp"
 
-TintScreenCommand::TintScreenCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+TintScreenCommand::TintScreenCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   auto colorValues = parameters.at(0);
   colorValues[0].get_to(color.r);
@@ -11,7 +11,7 @@ TintScreenCommand::TintScreenCommand(const std::optional<int>& indent, const nlo
   parameters.at(2).get_to(waitForCompletion);
 }
 
-void TintScreenCommand::serializeParameters(nlohmann::json& out) const {
+void TintScreenCommand::serializeParameters(nlohmann::ordered_json& out) const {
   auto colorValues = nlohmann::json();
   colorValues.push_back(color.r);
   colorValues.push_back(color.g);

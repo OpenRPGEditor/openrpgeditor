@@ -2,13 +2,13 @@
 
 #include "Database/Database.hpp"
 
-SelectItemCommand::SelectItemCommand(const std::optional<int>& _indent, const nlohmann::json& parameters)
+SelectItemCommand::SelectItemCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(_indent, parameters) {
   parameters.at(0).get_to(item);
   parameters.at(1).get_to(type);
 }
 
-void SelectItemCommand::serializeParameters(nlohmann::json& out) const {
+void SelectItemCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(item);
   out.push_back(type);
 }

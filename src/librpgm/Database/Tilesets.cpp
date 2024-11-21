@@ -2,9 +2,9 @@
 
 #include <fstream>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
-void to_json(nlohmann::json& j, const Tileset& tileset) {
+void to_json(nlohmann::ordered_json& j, const Tileset& tileset) {
   j = {
       {"id", tileset.id},
       {"flags", tileset.flags},
@@ -14,7 +14,7 @@ void to_json(nlohmann::json& j, const Tileset& tileset) {
   };
 }
 
-void from_json(const nlohmann::json& j, Tileset& tileset) {
+void from_json(const nlohmann::ordered_json& j, Tileset& tileset) {
   tileset.id = j.value("id", tileset.id);
   tileset.flags = j.value("flags", tileset.flags);
   tileset.mode = j.value("mode", tileset.mode);

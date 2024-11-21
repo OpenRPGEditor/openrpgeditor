@@ -2,7 +2,7 @@
 
 void EnemiesSerializer::serialize(std::ofstream& os) const {
   try {
-    nlohmann::json data;
+    nlohmann::ordered_json data;
 
     for (const Enemy& enemy : m_data.enemies()) {
       if (enemy.m_isValid) {
@@ -18,7 +18,7 @@ void EnemiesSerializer::serialize(std::ofstream& os) const {
 
 void EnemiesSerializer::deserialize(std::ifstream& is) {
   try {
-    nlohmann::json data = nlohmann::json::parse(is);
+    nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
     m_data.enemies().reserve(data.size());
 
     int i = 0;

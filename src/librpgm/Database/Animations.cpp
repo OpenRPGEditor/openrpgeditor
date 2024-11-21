@@ -3,7 +3,7 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
 Animations Animations::load(const std::string_view filename) {
   std::ifstream file(filename.data());

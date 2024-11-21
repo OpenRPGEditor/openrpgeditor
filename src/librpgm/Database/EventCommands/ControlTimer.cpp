@@ -1,6 +1,6 @@
 #include "Database/EventCommands/ControlTimer.hpp"
 
-ControlTimerCommand::ControlTimerCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ControlTimerCommand::ControlTimerCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(control);
   if (control == TimerControl::Start) {
@@ -8,7 +8,7 @@ ControlTimerCommand::ControlTimerCommand(const std::optional<int>& indent, const
   }
 }
 
-void ControlTimerCommand::serializeParameters(nlohmann::json& out) const {
+void ControlTimerCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(control);
   if (control == TimerControl::Start) {
     out.push_back(seconds);

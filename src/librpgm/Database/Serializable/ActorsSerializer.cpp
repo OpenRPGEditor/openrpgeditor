@@ -2,7 +2,7 @@
 
 void ActorsSerializer::serialize(std::ofstream& os) const {
   try {
-    nlohmann::json data;
+    nlohmann::ordered_json data;
 
     for (const Actor& actor : m_data.actorList()) {
       if (actor.m_isValid) {
@@ -18,7 +18,7 @@ void ActorsSerializer::serialize(std::ofstream& os) const {
 
 void ActorsSerializer::deserialize(std::ifstream& is) {
   try {
-    nlohmann::json data = nlohmann::json::parse(is);
+    nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
     m_data.actorList().reserve(data.size());
 
     int i = 0;

@@ -4,10 +4,10 @@
 
 struct TintScreenCommand final : IEventCommand {
   TintScreenCommand() = default;
-  explicit TintScreenCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
+  explicit TintScreenCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
   ~TintScreenCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Tint_Screen; }
-  void serializeParameters(nlohmann::json& out) const override;
+  void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   struct {

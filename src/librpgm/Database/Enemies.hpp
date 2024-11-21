@@ -9,11 +9,11 @@
 
 class Enemy {
 public:
-  friend void to_json(nlohmann::json& to, const Enemy& enemy);
-  friend void from_json(const nlohmann::json& from, Enemy& enemy);
+  friend void to_json(nlohmann::ordered_json& to, const Enemy& enemy);
+  friend void from_json(const nlohmann::ordered_json& from, Enemy& enemy);
   struct Action {
-    friend void to_json(nlohmann::json& to, const Action& action);
-    friend void from_json(const nlohmann::json& from, Action& action);
+    friend void to_json(nlohmann::ordered_json& to, const Action& action);
+    friend void from_json(const nlohmann::ordered_json& from, Action& action);
     int conditionParam1;
     int conditionParam2;
     ActionCondition conditionType;
@@ -22,8 +22,8 @@ public:
   };
 
   struct DropItem {
-    friend void to_json(nlohmann::json& to, const DropItem& dropitem);
-    friend void from_json(const nlohmann::json& from, DropItem& dropitem);
+    friend void to_json(nlohmann::ordered_json& to, const DropItem& dropitem);
+    friend void from_json(const nlohmann::ordered_json& from, DropItem& dropitem);
     int dataId;
     int denominator;
     int kind;
@@ -49,12 +49,12 @@ public:
    */
   bool m_isValid{false};
 };
-void to_json(nlohmann::json& to, const Enemy& enemy);
-void from_json(const nlohmann::json& from, Enemy& enemy);
-void to_json(nlohmann::json& to, const Enemy::Action& action);
-void from_json(const nlohmann::json& from, Enemy::Action& action);
-void to_json(nlohmann::json& to, const Enemy::DropItem& dropitem);
-void from_json(const nlohmann::json& from, Enemy::DropItem& dropitem);
+void to_json(nlohmann::ordered_json& to, const Enemy& enemy);
+void from_json(const nlohmann::ordered_json& from, Enemy& enemy);
+void to_json(nlohmann::ordered_json& to, const Enemy::Action& action);
+void from_json(const nlohmann::ordered_json& from, Enemy::Action& action);
+void to_json(nlohmann::ordered_json& to, const Enemy::DropItem& dropitem);
+void from_json(const nlohmann::ordered_json& from, Enemy::DropItem& dropitem);
 
 class Enemies {
 public:

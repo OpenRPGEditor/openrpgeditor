@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangeHPCommand::ChangeHPCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeHPCommand::ChangeHPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(comparison);
   parameters.at(1).get_to(value);
@@ -12,7 +12,7 @@ ChangeHPCommand::ChangeHPCommand(const std::optional<int>& indent, const nlohman
   parameters.at(5).get_to(allowKnockout);
 }
 
-void ChangeHPCommand::serializeParameters(nlohmann::json& out) const {
+void ChangeHPCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(comparison);
   out.push_back(value);
   out.push_back(quantityOp);

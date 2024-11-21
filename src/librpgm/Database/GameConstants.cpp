@@ -5,7 +5,7 @@
 #include <fstream>
 #include <format>
 
-void to_json(nlohmann::json& json, const GameConstants& constants) {
+void to_json(nlohmann::ordered_json& json, const GameConstants& constants) {
   json = {
       {"variables", constants.variables}, {"switches", constants.switches},
       {"actors", constants.actors},       {"classes", constants.classes},
@@ -17,7 +17,7 @@ void to_json(nlohmann::json& json, const GameConstants& constants) {
       {"maps", constants.maps},           {"generateJS", constants.generateJS},
   };
 }
-void from_json(const nlohmann::json& json, GameConstants& constants) {
+void from_json(const nlohmann::ordered_json& json, GameConstants& constants) {
   constants.variables = json.value("variables", constants.variables);
   constants.switches = json.value("switches", constants.switches);
   constants.actors = json.value("actors", constants.actors);
@@ -39,7 +39,7 @@ void from_json(const nlohmann::json& json, GameConstants& constants) {
 GameConstants GameConstants::load(std::string_view path) {
   if (std::ifstream file(path.data()); file.is_open()) {
     try {
-      nlohmann::json data = nlohmann::json::parse(file);
+      nlohmann::json data = nlohmann::ordered_json::parse(file);
       GameConstants ret;
       data.get_to(ret);
       return ret;
@@ -53,7 +53,7 @@ bool GameConstants::serialize(const std::string_view path) {
   std::ofstream file(path.data());
   try {
     if (file.is_open()) {
-      const nlohmann::json data = *this;
+      const nlohmann::ordered_json data = *this;
       file << data.dump(4);
       return true;
     }

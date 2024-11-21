@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-BattleProcessingCommand::BattleProcessingCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+BattleProcessingCommand::BattleProcessingCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(type);
   parameters.at(1).get_to(id);
@@ -10,7 +10,7 @@ BattleProcessingCommand::BattleProcessingCommand(const std::optional<int>& inden
   parameters.at(3).get_to(canLose);
 }
 
-void BattleProcessingCommand::serializeParameters(nlohmann::json& out) const {
+void BattleProcessingCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(type);
   out.push_back(id);
   out.push_back(canEscape);

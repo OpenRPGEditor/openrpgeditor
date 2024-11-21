@@ -2,12 +2,12 @@
 
 #include "Database/Database.hpp"
 
-ChangeDefeatMECommand::ChangeDefeatMECommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeDefeatMECommand::ChangeDefeatMECommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(me);
 }
 
-void ChangeDefeatMECommand::serializeParameters(nlohmann::json& out) const {
+void ChangeDefeatMECommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(me);
 }
 

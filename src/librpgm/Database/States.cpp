@@ -2,8 +2,8 @@
 
 #include <fstream>
 
-using json = nlohmann::json;
-void to_json(nlohmann::json& j, const State& state) {
+using json = nlohmann::ordered_json;
+void to_json(nlohmann::ordered_json& j, const State& state) {
   j = {
       {"id", state.id},
       {"autoRemovalTiming", state.autoRemovalTiming},
@@ -28,7 +28,7 @@ void to_json(nlohmann::json& j, const State& state) {
   };
 }
 
-void from_json(const nlohmann::json& j, State& state) {
+void from_json(const nlohmann::ordered_json& j, State& state) {
   state.id = j.value("id", state.id);
   state.autoRemovalTiming = j.value("autoRemovalTiming", state.autoRemovalTiming);
   state.chanceByDamage = j.value("chanceByDamage", state.chanceByDamage);

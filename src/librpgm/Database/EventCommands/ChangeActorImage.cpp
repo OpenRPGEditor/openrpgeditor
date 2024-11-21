@@ -1,7 +1,7 @@
 #include "Database/EventCommands/ChangeActorImage.hpp"
 #include "Database/Database.hpp"
 
-ChangeActorImageCommand::ChangeActorImageCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeActorImageCommand::ChangeActorImageCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(actor);
   parameters.at(1).get_to(charPicture);
@@ -11,7 +11,7 @@ ChangeActorImageCommand::ChangeActorImageCommand(const std::optional<int>& inden
   parameters.at(5).get_to(battlerPicture);
 }
 
-void ChangeActorImageCommand::serializeParameters(nlohmann::json& out) const {
+void ChangeActorImageCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(actor);
   out.push_back(charPicture);
   out.push_back(charIndex);

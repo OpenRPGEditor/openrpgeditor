@@ -4,7 +4,7 @@
 
 struct GameOverCommand final : IEventCommand {
   GameOverCommand() = default;
-  explicit GameOverCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+  explicit GameOverCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
   : IEventCommand(indent, parameters) {}
   ~GameOverCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Game_Over; }

@@ -37,7 +37,7 @@ public:
   Project();
 
   bool load(std::string_view filePath, std::string_view basePath);
-  bool save();
+  void save();
   bool close(bool promptSave = false);
   void setupDocking();
 

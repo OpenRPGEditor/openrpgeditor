@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ConditionalBranchCommand::ConditionalBranchCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ConditionalBranchCommand::ConditionalBranchCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(type);
   switch (type) {
@@ -101,7 +101,7 @@ ConditionalBranchCommand::ConditionalBranchCommand(const std::optional<int>& ind
   }
 }
 
-void ConditionalBranchCommand::serializeParameters(nlohmann::json& out) const {
+void ConditionalBranchCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(type);
   switch (type) {
   case ConditionType::Switch: {

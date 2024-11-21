@@ -1,11 +1,11 @@
 #include "Database/EventCommands/Label.hpp"
 
-LabelCommand::LabelCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+LabelCommand::LabelCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(label);
 }
 
-void LabelCommand::serializeParameters(nlohmann::json& out) const { out.push_back(label); }
+void LabelCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(label); }
 
 std::string LabelCommand::stringRep(const Database& db) const {
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Label" + colon.data() + label +

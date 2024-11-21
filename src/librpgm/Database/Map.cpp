@@ -1,7 +1,7 @@
 #include "Database/Map.hpp"
 #include <fstream>
 
-void to_json(nlohmann::json& json, const Map& map) {
+void to_json(nlohmann::ordered_json& json, const Map& map) {
   json = {
       {"autoPlayBgm", map.autoPlayBgm},
       {"autoPlayBgs", map.autoPlayBgs},
@@ -29,7 +29,7 @@ void to_json(nlohmann::json& json, const Map& map) {
       {"events", map.events},
   };
 }
-void from_json(const nlohmann::json& json, Map& map) {
+void from_json(const nlohmann::ordered_json& json, Map& map) {
   map.autoPlayBgm = json.value("autoPlayBgm", map.autoPlayBgm);
   map.autoPlayBgs = json.value("autoPlayBgs", map.autoPlayBgs);
   map.battleBack1Name = json.value("battleBack1Name", map.battleBack1Name);
@@ -56,14 +56,14 @@ void from_json(const nlohmann::json& json, Map& map) {
   map.events = json.value("events", map.events);
 }
 
-void to_json(nlohmann::json& json, const Map::Encounter& encounter) {
+void to_json(nlohmann::ordered_json& json, const Map::Encounter& encounter) {
   json = {
       {"regionSet", encounter.regionSet},
       {"troopId", encounter.troopId},
       {"weight", encounter.weight},
   };
 }
-void from_json(const nlohmann::json& json, Map::Encounter& encounter) {
+void from_json(const nlohmann::ordered_json& json, Map::Encounter& encounter) {
   encounter.regionSet = json.value("regionSet", encounter.regionSet);
   encounter.troopId = json.value("troopId", encounter.troopId);
   encounter.weight = json.value("weight", encounter.weight);
@@ -72,7 +72,7 @@ void from_json(const nlohmann::json& json, Map::Encounter& encounter) {
 Map Map::load(std::string_view filepath) {
   std::ifstream file(filepath.data());
   if (file.is_open()) {
-    Map ret = nlohmann::json::parse(file).get<Map>();
+    Map ret = nlohmann::ordered_json::parse(file).get<Map>();
     ret.m_isValid = true;
     return ret;
   }
@@ -83,7 +83,7 @@ bool Map::serialize(std::string_view filepath) const {
   std::ofstream file(filepath.data());
 
   if (file.is_open()) {
-    nlohmann::json data = *this;
+    nlohmann::ordered_json data = *this;
     file << data.dump(4);
     return true;
   }

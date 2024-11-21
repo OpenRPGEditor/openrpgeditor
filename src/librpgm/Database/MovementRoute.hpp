@@ -6,8 +6,8 @@
 
 struct IEventCommand;
 struct MovementRoute {
-  friend void to_json(nlohmann::json& to, const MovementRoute& route);
-  friend void from_json(const nlohmann::json& to, MovementRoute& route);
+  friend void to_json(nlohmann::ordered_json& to, const MovementRoute& route);
+  friend void from_json(const nlohmann::ordered_json& to, MovementRoute& route);
 
   std::vector<std::shared_ptr<IEventCommand>> list;
   bool repeat;

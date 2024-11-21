@@ -4,10 +4,10 @@
 
 struct SetEventLocationCommand final : IEventCommand {
   SetEventLocationCommand() = default;
-  explicit SetEventLocationCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
+  explicit SetEventLocationCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
   ~SetEventLocationCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Set_Event_Location; }
-  void serializeParameters(nlohmann::json& out) const override;
+  void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   TransferMode mode = TransferMode::Direct;

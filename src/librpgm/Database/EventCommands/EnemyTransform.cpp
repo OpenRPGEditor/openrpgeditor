@@ -1,13 +1,13 @@
 #include "Database/EventCommands/EnemyTransform.hpp"
 #include "Database/Database.hpp"
 
-EnemyTransformCommand::EnemyTransformCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+EnemyTransformCommand::EnemyTransformCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(enemy);
   parameters.at(1).get_to(transform);
 }
 
-void EnemyTransformCommand::serializeParameters(nlohmann::json& out) const {
+void EnemyTransformCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(enemy);
   out.push_back(transform);
 }

@@ -2,9 +2,9 @@
 
 #include <fstream>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
-void to_json(nlohmann::json& out, const Armor& armor) {
+void to_json(nlohmann::ordered_json& out, const Armor& armor) {
   out = {
       {"id", armor.id},           {"atypeId", armor.atypeId}, {"description", armor.description},
       {"etypeId", armor.etypeId}, {"traits", armor.traits},   {"iconIndex", armor.iconIndex},
@@ -13,7 +13,7 @@ void to_json(nlohmann::json& out, const Armor& armor) {
   };
 }
 
-void from_json(const nlohmann::json& from, Armor& armor) {
+void from_json(const nlohmann::ordered_json& from, Armor& armor) {
   armor.id = from.value("id", armor.id);
   armor.atypeId = from.value("atypeId", armor.atypeId);
   armor.description = from.value("description", armor.description);

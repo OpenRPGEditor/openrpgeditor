@@ -5,10 +5,10 @@
 
 struct TransferPlayerCommand final : IEventCommand {
   TransferPlayerCommand() = default;
-  explicit TransferPlayerCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
+  explicit TransferPlayerCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
   ~TransferPlayerCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Transfer_Player; }
-  void serializeParameters(nlohmann::json& out) const override;
+  void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   TransferMode mode = TransferMode::Direct;
   int mapId = Database::instance() != nullptr && Database::instance()->mapInfos.currentMap() != nullptr

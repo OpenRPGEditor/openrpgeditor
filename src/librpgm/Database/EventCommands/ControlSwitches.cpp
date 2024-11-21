@@ -2,14 +2,14 @@
 
 #include "Database/Database.hpp"
 
-ControlSwitches::ControlSwitches(const std::optional<int>& indent, const nlohmann::json& parameters)
+ControlSwitches::ControlSwitches(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(start);
   parameters.at(1).get_to(end);
   parameters.at(2).get_to(turnOff); // It's inverted because why the fuck not
 }
 
-void ControlSwitches::serializeParameters(nlohmann::json& out) const {
+void ControlSwitches::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(start);
   out.push_back(end);
   out.push_back(turnOff);

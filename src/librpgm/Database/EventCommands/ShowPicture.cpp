@@ -1,6 +1,6 @@
 #include "Database/EventCommands/ShowPicture.hpp"
 
-ShowPictureCommand::ShowPictureCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ShowPictureCommand::ShowPictureCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(number);
   parameters.at(1).get_to(imageName);
@@ -14,7 +14,7 @@ ShowPictureCommand::ShowPictureCommand(const std::optional<int>& indent, const n
   parameters.at(9).get_to(blendMode);
 }
 
-void ShowPictureCommand::serializeParameters(nlohmann::json& out) const {
+void ShowPictureCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(number);
   out.push_back(imageName);
   out.push_back(origin);

@@ -1,7 +1,7 @@
 #include "Database/EventCommands/ChangeEnemyMP.hpp"
 #include "Database/Database.hpp"
 
-ChangeEnemyMPCommand::ChangeEnemyMPCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeEnemyMPCommand::ChangeEnemyMPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(enemy);
   parameters.at(1).get_to(enemyOp);
@@ -9,7 +9,7 @@ ChangeEnemyMPCommand::ChangeEnemyMPCommand(const std::optional<int>& indent, con
   parameters.at(3).get_to(quantity);
 }
 
-void ChangeEnemyMPCommand::serializeParameters(nlohmann::json& out) const {
+void ChangeEnemyMPCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(enemy);
   out.push_back(enemyOp);
   out.push_back(quantitySource);

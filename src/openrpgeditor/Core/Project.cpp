@@ -101,16 +101,7 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   return true;
 }
 
-bool Project::save() {
-  /* TODO: Implement proper save and temp path handling */
-  if (m_database->serializeProject("CURRENTLY_UNUSED")) {
-    ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Project serialized successfully!"});
-    return true;
-  }
-
-  ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to serialize project!"});
-  return false;
-}
+void Project::save() { m_database->serializeProject(); }
 
 bool Project::close(bool promptSave) {
   if (promptSave) {
@@ -362,9 +353,9 @@ void Project::draw() {
   }
   if (SerializationQueue::instance().hasTasks()) {
     ImGui::Begin("Saving Project....", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text("Saving %s....", SerializationQueue::instance().getCurrentFile().data());
     ImGui::Text("Saving %s (%i of %i)....", SerializationQueue::instance().getCurrentFile().data(),
-                SerializationQueue::instance().currentTaskIndex(), DeserializationQueue::instance().totalTasks());
+                SerializationQueue::instance().currentTaskIndex(), SerializationQueue::instance().totalTasks());
+    ImGui::ProgressBar(SerializationQueue::instance().getProgress() / 100.f);
     if (ImGui::Button("Cancel")) {
       SerializationQueue::instance().reset();
       close();

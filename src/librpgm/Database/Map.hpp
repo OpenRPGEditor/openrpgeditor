@@ -12,11 +12,11 @@
 
 class Map {
 public:
-  friend void to_json(nlohmann::json& json, const Map& map);
-  friend void from_json(const nlohmann::json& json, Map& map);
+  friend void to_json(nlohmann::ordered_json& json, const Map& map);
+  friend void from_json(const nlohmann::ordered_json& json, Map& map);
   struct Encounter {
-    friend void to_json(nlohmann::json& json, const Encounter& encounter);
-    friend void from_json(const nlohmann::json& json, Encounter& encounter);
+    friend void to_json(nlohmann::ordered_json& json, const Encounter& encounter);
+    friend void from_json(const nlohmann::ordered_json& json, Encounter& encounter);
     std::array<int, 3> regionSet{};
     int troopId{};
     int weight{};
@@ -121,7 +121,7 @@ public:
   }
 };
 
-void to_json(nlohmann::json& json, const Map& map);
-void from_json(const nlohmann::json& json, Map& map);
-void to_json(nlohmann::json& json, const Map::Encounter& encounter);
-void from_json(const nlohmann::json& json, Map::Encounter& encounter);
+void to_json(nlohmann::ordered_json& json, const Map& map);
+void from_json(const nlohmann::ordered_json& json, Map& map);
+void to_json(nlohmann::ordered_json& json, const Map::Encounter& encounter);
+void from_json(const nlohmann::ordered_json& json, Map::Encounter& encounter);

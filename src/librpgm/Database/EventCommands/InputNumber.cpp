@@ -2,13 +2,13 @@
 
 #include "Database/Database.hpp"
 
-InputNumberCommand::InputNumberCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+InputNumberCommand::InputNumberCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(variable);
   parameters.at(1).get_to(digits);
 }
 
-void InputNumberCommand::serializeParameters(nlohmann::json& out) const {
+void InputNumberCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(variable);
   out.push_back(digits);
 }

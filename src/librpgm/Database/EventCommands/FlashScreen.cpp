@@ -1,6 +1,6 @@
 #include "Database/EventCommands/FlashScreen.hpp"
 
-FlashScreenCommand::FlashScreenCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+FlashScreenCommand::FlashScreenCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   auto colorValue = parameters.at(0);
 
@@ -13,8 +13,8 @@ FlashScreenCommand::FlashScreenCommand(const std::optional<int>& indent, const n
   parameters.at(2).get_to(waitForCompletion);
 }
 
-void FlashScreenCommand::serializeParameters(nlohmann::json& out) const {
-  auto colorValue = nlohmann::json();
+void FlashScreenCommand::serializeParameters(nlohmann::ordered_json& out) const {
+  auto colorValue = nlohmann::ordered_json();
 
   colorValue.push_back(color.r);
   colorValue.push_back(color.g);

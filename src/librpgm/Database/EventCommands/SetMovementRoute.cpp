@@ -2,13 +2,13 @@
 #include "Database/CommandParser.hpp"
 #include "Database/Database.hpp"
 
-MovementRouteStepCommand::MovementRouteStepCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+MovementRouteStepCommand::MovementRouteStepCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   CommandParser p;
   step = p.parse(parameters)[0];
 }
 
-void MovementRouteStepCommand::serializeParameters(nlohmann::json& out) const {
+void MovementRouteStepCommand::serializeParameters(nlohmann::ordered_json& out) const {
   const auto code = step->code();
   const bool doParameters =
       code == EventCode::Jump || code == EventCode::Change_Blend_Mode || code == EventCode::Change_Image ||
@@ -18,13 +18,13 @@ void MovementRouteStepCommand::serializeParameters(nlohmann::json& out) const {
   step->serialize(out.emplace_back(), step->code() != EventCode::Event_Dummy, doParameters);
 }
 
-SetMovementRouteCommand::SetMovementRouteCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+SetMovementRouteCommand::SetMovementRouteCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(character);
   parameters.at(1).get_to(route);
 }
 
-void SetMovementRouteCommand::serializeParameters(nlohmann::json& out) const {
+void SetMovementRouteCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(character);
   out.push_back(route);
 }

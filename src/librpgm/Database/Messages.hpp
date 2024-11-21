@@ -7,8 +7,8 @@
 #include <string>
 
 struct Messages {
-  friend void to_json(nlohmann::json& to, const Messages& messages);
-  friend void from_json(const nlohmann::json& from, Messages& messages);
+  friend void to_json(nlohmann::ordered_json& to, const Messages& messages);
+  friend void from_json(const nlohmann::ordered_json& from, Messages& messages);
 
   std::string actionFailure;
   std::string actorDamage;
@@ -63,5 +63,5 @@ struct Messages {
   std::string victory;
 };
 
-void to_json(nlohmann::json& to, const Messages& messages);
-void from_json(const nlohmann::json& from, Messages& messages);
+void to_json(nlohmann::ordered_json& to, const Messages& messages);
+void from_json(const nlohmann::ordered_json& from, Messages& messages);

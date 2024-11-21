@@ -1,7 +1,7 @@
 #include "Database/EventCommands/ShopProcessing.hpp"
 #include "Database/Database.hpp"
 
-ShopProcessingGoodCommand::ShopProcessingGoodCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ShopProcessingGoodCommand::ShopProcessingGoodCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(type);
   parameters.at(1).get_to(id);
@@ -9,7 +9,7 @@ ShopProcessingGoodCommand::ShopProcessingGoodCommand(const std::optional<int>& i
   parameters.at(3).get_to(price);
 }
 
-void ShopProcessingGoodCommand::serializeParameters(nlohmann::json& out) const {
+void ShopProcessingGoodCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(type);
   out.push_back(id);
   out.push_back(priceType);
@@ -33,7 +33,7 @@ std::string ShopProcessingGoodCommand::stringRep(const Database& db) const {
          good + ColorFormatter::popColor();
 }
 
-ShopProcessingCommand::ShopProcessingCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ShopProcessingCommand::ShopProcessingCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(type);
   parameters.at(1).get_to(id);
@@ -42,7 +42,7 @@ ShopProcessingCommand::ShopProcessingCommand(const std::optional<int>& indent, c
   parameters.at(4).get_to(purchaseOnly);
 }
 
-void ShopProcessingCommand::serializeParameters(nlohmann::json& out) const {
+void ShopProcessingCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(type);
   out.push_back(id);
   out.push_back(priceType);

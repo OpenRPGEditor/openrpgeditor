@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangeStateCommand::ChangeStateCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeStateCommand::ChangeStateCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(comparison);
   parameters.at(1).get_to(value);
@@ -10,7 +10,7 @@ ChangeStateCommand::ChangeStateCommand(const std::optional<int>& indent, const n
   parameters.at(3).get_to(state);
 }
 
-void ChangeStateCommand::serializeParameters(nlohmann::json& out) const {
+void ChangeStateCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(comparison);
   out.push_back(value);
   out.push_back(stateOp);

@@ -2,7 +2,7 @@
 
 void TroopsSerializer::serialize(std::ofstream& os) const {
   try {
-    nlohmann::json data;
+    nlohmann::ordered_json data;
 
     for (const Troop& troop : m_data.troops()) {
       if (troop.m_isValid) {
@@ -18,7 +18,7 @@ void TroopsSerializer::serialize(std::ofstream& os) const {
 
 void TroopsSerializer::deserialize(std::ifstream& is) {
   try {
-    nlohmann::json data = nlohmann::json::parse(is);
+    nlohmann::ordered_json data = nlohmann::json::parse(is);
     m_data.troops().reserve(data.size());
 
     int i = 0;

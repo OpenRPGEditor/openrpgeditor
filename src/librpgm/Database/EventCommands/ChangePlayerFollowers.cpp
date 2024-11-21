@@ -1,12 +1,12 @@
 #include "Database/EventCommands/ChangePlayerFollowers.hpp"
 
 ChangePlayerFollowersCommand::ChangePlayerFollowersCommand(const std::optional<int>& indent,
-                                                           const nlohmann::json& parameters)
+                                                           const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(followersEnabled);
 }
 
-void ChangePlayerFollowersCommand::serializeParameters(nlohmann::json& out) const { out.push_back(followersEnabled); }
+void ChangePlayerFollowersCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(followersEnabled); }
 
 std::string ChangePlayerFollowersCommand::stringRep(const Database& db) const {
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Player Followers" +

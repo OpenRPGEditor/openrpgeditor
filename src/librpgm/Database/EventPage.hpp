@@ -11,8 +11,8 @@
 #include "nlohmann/json.hpp"
 
 struct EventCondition {
-  friend void to_json(nlohmann::json& to, const EventCondition& cond);
-  friend void from_json(const nlohmann::json& from, EventCondition& cond);
+  friend void to_json(nlohmann::ordered_json& to, const EventCondition& cond);
+  friend void from_json(const nlohmann::ordered_json& from, EventCondition& cond);
   int actorId{1};
   bool actorValid{};
   int itemId{1};
@@ -30,12 +30,12 @@ struct EventCondition {
   [[nodiscard]] bool isDirty() const { return m_isDirty; }
   bool m_isDirty{false};
 };
-void to_json(nlohmann::json& to, const EventCondition& cond);
-void from_json(const nlohmann::json& from, EventCondition& cond);
+void to_json(nlohmann::ordered_json& to, const EventCondition& cond);
+void from_json(const nlohmann::ordered_json& from, EventCondition& cond);
 
 struct EventImage {
-  friend void to_json(nlohmann::json& to, const EventImage& image);
-  friend void from_json(const nlohmann::json& from, EventImage& image);
+  friend void to_json(nlohmann::ordered_json& to, const EventImage& image);
+  friend void from_json(const nlohmann::ordered_json& from, EventImage& image);
   int tileId{};
   std::string characterName;
   Direction direction{Direction::Down};
@@ -45,12 +45,12 @@ struct EventImage {
   [[nodiscard]] bool isDirty() const { return m_isDirty; }
   bool m_isDirty{false};
 };
-void to_json(nlohmann::json& to, const EventImage& image);
-void from_json(const nlohmann::json& from, EventImage& image);
+void to_json(nlohmann::ordered_json& to, const EventImage& image);
+void from_json(const nlohmann::ordered_json& from, EventImage& image);
 
 struct EventPage {
-  friend void to_json(nlohmann::json& json, const EventPage& eventPage);
-  friend void from_json(const nlohmann::json& json, EventPage& eventPage);
+  friend void to_json(nlohmann::ordered_json& json, const EventPage& eventPage);
+  friend void from_json(const nlohmann::ordered_json& json, EventPage& eventPage);
 
   EventCondition conditions{};
   bool directionFix{};
@@ -80,5 +80,5 @@ struct EventPage {
   }
   mutable bool m_isDirty{false};
 };
-void to_json(nlohmann::json& json, const EventPage& eventPage);
-void from_json(const nlohmann::json& json, EventPage& eventPage);
+void to_json(nlohmann::ordered_json& json, const EventPage& eventPage);
+void from_json(const nlohmann::ordered_json& json, EventPage& eventPage);

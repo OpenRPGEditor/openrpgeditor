@@ -4,7 +4,7 @@
 
 struct MovementMoveLowerLeftCommand final : IMovementRouteStep {
   MovementMoveLowerLeftCommand() = default;
-  explicit MovementMoveLowerLeftCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+  explicit MovementMoveLowerLeftCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
   : IMovementRouteStep(indent, parameters) {}
   ~MovementMoveLowerLeftCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Move_Lower_Left; }

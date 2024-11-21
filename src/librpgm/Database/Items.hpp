@@ -9,8 +9,8 @@
 
 class Item {
 public:
-  friend void to_json(nlohmann::json& json, const Item& item);
-  friend void from_json(const nlohmann::json& json, Item& item);
+  friend void to_json(nlohmann::ordered_json& json, const Item& item);
+  friend void from_json(const nlohmann::ordered_json& json, Item& item);
   int id;
   int animationId;
   bool consumable;
@@ -39,8 +39,8 @@ public:
    */
   bool m_isValid{false};
 };
-void to_json(nlohmann::json& json, const Item& item);
-void from_json(const nlohmann::json& json, Item& item);
+void to_json(nlohmann::ordered_json& json, const Item& item);
+void from_json(const nlohmann::ordered_json& json, Item& item);
 
 class Items {
 public:

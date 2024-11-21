@@ -4,10 +4,10 @@
 
 struct ChangeMPCommand final : IEventCommand {
   ChangeMPCommand() = default;
-  explicit ChangeMPCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
+  explicit ChangeMPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
   ~ChangeMPCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_MP; }
-  void serializeParameters(nlohmann::json& out) const override;
+  void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   ActorComparisonSource comparison = ActorComparisonSource::Fixed;

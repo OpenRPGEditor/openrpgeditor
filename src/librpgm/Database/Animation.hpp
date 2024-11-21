@@ -10,8 +10,8 @@
 
 class Animation {
 public:
-  friend void to_json(nlohmann::json& to, const Animation& animation);
-  friend void from_json(const nlohmann::json& from, Animation& animation);
+  friend void to_json(nlohmann::ordered_json& to, const Animation& animation);
+  friend void from_json(const nlohmann::ordered_json& from, Animation& animation);
   struct Color {
     int r;
     int g;
@@ -31,8 +31,8 @@ public:
   };
 
   struct Timing {
-    void to_json(nlohmann::json& to, const Timing& timing);
-    void from_json(const nlohmann::json& from, Timing& timing);
+    void to_json(nlohmann::ordered_json& to, const Timing& timing);
+    void from_json(const nlohmann::ordered_json& from, Timing& timing);
     std::array<int, 4> flashColor{};
     int flashDuration{};
     FlashScope flashScope = FlashScope{};
@@ -59,7 +59,7 @@ public:
    */
   bool m_isValid{false};
 };
-void to_json(nlohmann::json& to, const Animation::Timing& timing);
-void from_json(const nlohmann::json& from, Animation::Timing& timing);
-void to_json(nlohmann::json& to, const Animation& animation);
-void from_json(const nlohmann::json& from, Animation& animation);
+void to_json(nlohmann::ordered_json& to, const Animation::Timing& timing);
+void from_json(const nlohmann::ordered_json& from, Animation::Timing& timing);
+void to_json(nlohmann::ordered_json& to, const Animation& animation);
+void from_json(const nlohmann::ordered_json& from, Animation& animation);

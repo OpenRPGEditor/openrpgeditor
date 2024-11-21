@@ -5,11 +5,11 @@
 #include "nlohmann/json.hpp"
 
 struct Trait {
-  friend void to_json(nlohmann::json& j, const Trait& trait);
-  friend void from_json(const nlohmann::json& j, Trait& trait);
+  friend void to_json(nlohmann::ordered_json& j, const Trait& trait);
+  friend void from_json(const nlohmann::ordered_json& j, Trait& trait);
   TraitCode code = TraitCode::Element_Rate;
   int dataId = 1;
   double value = 1.f;
 };
-void to_json(nlohmann::json& j, const Trait& trait);
-void from_json(const nlohmann::json& j, Trait& trait);
+void to_json(nlohmann::ordered_json& j, const Trait& trait);
+void from_json(const nlohmann::ordered_json& j, Trait& trait);

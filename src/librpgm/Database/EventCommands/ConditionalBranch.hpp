@@ -3,10 +3,10 @@
 
 struct ConditionalBranchCommand final : IEventCommand {
   ConditionalBranchCommand() = default;
-  explicit ConditionalBranchCommand(const std::optional<int>& indent, const nlohmann::json& parameters);
+  explicit ConditionalBranchCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
   ~ConditionalBranchCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Conditional_Branch; }
-  void serializeParameters(nlohmann::json& out) const override;
+  void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   [[nodiscard]] std::string conditionalFormat(const std::string& text) const;
 
@@ -68,7 +68,7 @@ struct ConditionalBranchCommand final : IEventCommand {
 
 struct ElseCommand final : IEventCommand {
   ElseCommand() = default;
-  explicit ElseCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+  explicit ElseCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
   : IEventCommand(indent, parameters) {}
   ~ElseCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Else; }

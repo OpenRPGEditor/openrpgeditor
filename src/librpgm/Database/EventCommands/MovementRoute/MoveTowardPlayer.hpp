@@ -4,7 +4,7 @@
 
 struct MovementMoveTowardPlayerCommand final : IMovementRouteStep {
   MovementMoveTowardPlayerCommand() = default;
-  explicit MovementMoveTowardPlayerCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+  explicit MovementMoveTowardPlayerCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
   : IMovementRouteStep(indent, parameters) {}
   ~MovementMoveTowardPlayerCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Move_toward_Player; }

@@ -2,14 +2,14 @@
 
 #include "Database/Database.hpp"
 
-ChangeClassCommand::ChangeClassCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeClassCommand::ChangeClassCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(actor);
   parameters.at(1).get_to(classId);
   parameters.at(2).get_to(saveLevel);
 }
 
-void ChangeClassCommand::serializeParameters(nlohmann::json& out) const {
+void ChangeClassCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(actor);
   out.push_back(classId);
   out.push_back(saveLevel);

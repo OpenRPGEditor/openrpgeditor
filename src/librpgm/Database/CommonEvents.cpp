@@ -2,9 +2,9 @@
 #include "CommonEvents.hpp"
 #include <fstream>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
-void to_json(nlohmann::json& to, const CommonEvent& event) {
+void to_json(nlohmann::ordered_json& to, const CommonEvent& event) {
   CommandParser parser;
   json commands;
   parser.serialize(commands, event.commands);
@@ -15,7 +15,7 @@ void to_json(nlohmann::json& to, const CommonEvent& event) {
             {"switchId", event.switchId},
             {"trigger", event.trigger}};
 }
-void from_json(const nlohmann::json& from, CommonEvent& event) {
+void from_json(const nlohmann::ordered_json& from, CommonEvent& event) {
   event.id = from.value("id", event.id);
   event.name = from.value("name", event.name);
   CommandParser parser;

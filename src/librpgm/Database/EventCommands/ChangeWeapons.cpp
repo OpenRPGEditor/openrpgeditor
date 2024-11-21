@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangeWeaponsCommand::ChangeWeaponsCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeWeaponsCommand::ChangeWeaponsCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(item);
   parameters.at(1).get_to(operation);
@@ -11,7 +11,7 @@ ChangeWeaponsCommand::ChangeWeaponsCommand(const std::optional<int>& indent, con
   parameters.at(4).get_to(includeEquipment);
 }
 
-void ChangeWeaponsCommand::serializeParameters(nlohmann::json& out) const {
+void ChangeWeaponsCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(item);
   out.push_back(operation);
   out.push_back(operandSource);

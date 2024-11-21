@@ -7,15 +7,15 @@
 
 #include <fstream>
 
-using json = nlohmann::json;
-void to_json(nlohmann::json& json, const MapInfo& mapinfo) {
+using json = nlohmann::ordered_json;
+void to_json(nlohmann::ordered_json& json, const MapInfo& mapinfo) {
   json = {
       {"id", mapinfo.id},           {"expanded", mapinfo.expanded}, {"name", mapinfo.name},
       {"order", mapinfo.order},     {"parentId", mapinfo.parentId}, {"scrollX", mapinfo.scrollX},
       {"scrollY", mapinfo.scrollY},
   };
 }
-void from_json(const nlohmann::json& json, MapInfo& mapinfo) {
+void from_json(const nlohmann::ordered_json& json, MapInfo& mapinfo) {
   mapinfo.id = json.value("id", mapinfo.id);
   mapinfo.expanded = json.value("expanded", mapinfo.expanded);
   mapinfo.name = json.value("name", mapinfo.name);

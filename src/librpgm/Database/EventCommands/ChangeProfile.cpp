@@ -1,13 +1,13 @@
 #include "Database/EventCommands/ChangeProfile.hpp"
 #include "Database/Database.hpp"
 
-ChangeProfileCommand::ChangeProfileCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeProfileCommand::ChangeProfileCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(actor);
   parameters.at(1).get_to(profile);
 }
 
-void ChangeProfileCommand::serializeParameters(nlohmann::json& out) const {
+void ChangeProfileCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(actor);
   out.push_back(profile);
 }

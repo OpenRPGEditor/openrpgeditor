@@ -1,6 +1,6 @@
 #include "Database/Terms.hpp"
 
-void to_json(nlohmann::json& j, const Terms& terms) {
+void to_json(nlohmann::ordered_json& j, const Terms& terms) {
   j = {
       {"basic", terms.basic},
       {"commands", terms.commands},
@@ -9,7 +9,7 @@ void to_json(nlohmann::json& j, const Terms& terms) {
   };
 }
 
-void from_json(const nlohmann::json& j, Terms& terms) {
+void from_json(const nlohmann::ordered_json& j, Terms& terms) {
   terms.basic = j.value("basic", terms.basic);
   terms.commands = j.value("commands", terms.commands);
   terms.messages = j.value("messages", terms.messages);

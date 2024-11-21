@@ -3,7 +3,7 @@
 
 struct RepeatAboveCommand final : IEventCommand {
   RepeatAboveCommand() = default;
-  explicit RepeatAboveCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+  explicit RepeatAboveCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
   : IEventCommand(indent, parameters) {}
   ~RepeatAboveCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Repeat_Above; }

@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
 std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _json) {
   std::vector<std::shared_ptr<IEventCommand>> ret;
@@ -563,7 +563,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
   return ret;
 }
 
-void CommandParser::serialize(nlohmann::json& data, const std::vector<std::shared_ptr<IEventCommand>>& list,
+void CommandParser::serialize(nlohmann::ordered_json& data, const std::vector<std::shared_ptr<IEventCommand>>& list,
                               bool movementRoute) {
   for (const auto& cmd : list) {
     if (!cmd) {

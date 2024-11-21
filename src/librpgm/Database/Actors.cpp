@@ -2,8 +2,7 @@
 
 #include <fstream>
 
-using json = nlohmann::json;
-void to_json(nlohmann::json& to, const Actor& actor) {
+void to_json(nlohmann::ordered_json& to, const Actor& actor) {
   to = {
       {"id", actor.id},
       {"battlerName", actor.battlerName},
@@ -22,7 +21,7 @@ void to_json(nlohmann::json& to, const Actor& actor) {
       {"profile", actor.profile},
   };
 }
-void from_json(const nlohmann::json& from, Actor& actor) {
+void from_json(const nlohmann::ordered_json& from, Actor& actor) {
   actor.id = from.value("id", actor.id);
   actor.battlerName = from.value("battlerName", actor.battlerName);
   actor.characterIndex = from.value("characterIndex", actor.characterIndex);
@@ -41,7 +40,7 @@ void from_json(const nlohmann::json& from, Actor& actor) {
 
 Actors Actors::load(std::string_view filename) {
   std::ifstream file(filename.data());
-  json data = json::parse(file);
+  nlohmann::ordered_json data = nlohmann::ordered_json::parse(file);
   Actors actors;
   actors.m_actors.reserve(data.size());
 
@@ -61,7 +60,7 @@ Actors Actors::load(std::string_view filename) {
 
 bool Actors::serialize(std::string_view filename) {
   std::ofstream file(filename.data());
-  json data;
+  nlohmann::ordered_json data;
 
   for (const Actor& actor : m_actors) {
     if (actor.m_isValid) {

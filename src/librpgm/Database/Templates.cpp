@@ -5,10 +5,36 @@
 #include <fstream>
 #include <format>
 
+void to_json(nlohmann::ordered_json& j, const Template& templ) {
+  j = {
+      {"name", templ.name},
+      {"type", templ.type},
+      {"commands", templ.commands},
+      {"parameters", templ.parameters},
+  };
+}
+
+void from_json(const nlohmann::ordered_json& j, Template& templ) {
+  templ.name = j.value("name", templ.name);
+  templ.type = j.value("type", templ.type);
+  templ.commands = j.value("commands", templ.commands);
+  templ.parameters = j.value("parameters", templ.parameters);
+}
+
+void to_json(nlohmann::ordered_json& j, const Templates& templ) {
+  j = {
+      {"templates", templ.templates},
+  };
+}
+
+void from_json(const nlohmann::ordered_json& j, Templates& templ) {
+  templ.templates = j.value("templates", templ.templates);
+}
+
 Templates Templates::load(std::string_view path) {
   if (std::ifstream file(path.data()); file.is_open()) {
     try {
-      nlohmann::json data = nlohmann::json::parse(file);
+      nlohmann::ordered_json data = nlohmann::ordered_json::parse(file);
       Templates ret;
       data.get_to(ret);
       return ret;
@@ -22,7 +48,7 @@ bool Templates::serialize(const std::string_view path) {
   std::ofstream file(path.data());
   try {
     if (file.is_open()) {
-      const nlohmann::json data = *this;
+      const nlohmann::ordered_json data = *this;
       file << data.dump(4);
       return true;
     }

@@ -1,7 +1,7 @@
 #include "Database/EventCommands/SetEventLocation.hpp"
 #include "Database/Database.hpp"
 
-SetEventLocationCommand::SetEventLocationCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+SetEventLocationCommand::SetEventLocationCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(event);
   parameters.at(1).get_to(mode);
@@ -10,7 +10,7 @@ SetEventLocationCommand::SetEventLocationCommand(const std::optional<int>& inden
   parameters.at(4).get_to(direction);
 }
 
-void SetEventLocationCommand::serializeParameters(nlohmann::json& out) const {
+void SetEventLocationCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(event);
   out.push_back(mode);
   out.push_back(x); // Stores event designation ID

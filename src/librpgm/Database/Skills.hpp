@@ -8,8 +8,9 @@
 #include <nlohmann/json.hpp>
 
 class Skill {
-  friend void to_json(nlohmann::json &j, const Skill &skill);
-  friend void  from_json(const nlohmann::json &j, Skill &skill);
+  friend void to_json(nlohmann::ordered_json& j, const Skill& skill);
+  friend void from_json(const nlohmann::ordered_json& j, Skill& skill);
+
 public:
   int id;
   int animationId;
@@ -83,9 +84,10 @@ public:
       }
     }
   }
+
 private:
   std::vector<Skill> m_skills;
 };
 
-void to_json(nlohmann::json &j, const Skill &skill);
-void  from_json(const nlohmann::json &j, Skill &skill);
+void to_json(nlohmann::ordered_json& j, const Skill& skill);
+void from_json(const nlohmann::ordered_json& j, Skill& skill);

@@ -1,7 +1,7 @@
 #include "Database/EventCommands/ChangeMP.hpp"
 #include "Database/Database.hpp"
 
-ChangeMPCommand::ChangeMPCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeMPCommand::ChangeMPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(comparison);
   parameters.at(1).get_to(value);
@@ -10,7 +10,7 @@ ChangeMPCommand::ChangeMPCommand(const std::optional<int>& indent, const nlohman
   parameters.at(4).get_to(quantity);
 }
 
-void ChangeMPCommand::serializeParameters(nlohmann::json& out) const {
+void ChangeMPCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(comparison);
   out.push_back(value);
   out.push_back(quantityOp);

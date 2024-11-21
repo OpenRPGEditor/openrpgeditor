@@ -2,9 +2,9 @@
 
 #include <fstream>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
-void to_json(nlohmann::json& j, const Troop::Member& m) {
+void to_json(nlohmann::ordered_json& j, const Troop::Member& m) {
   j = {
       {"enemyId", m.enemyId},
       {"x", m.x},
@@ -13,14 +13,14 @@ void to_json(nlohmann::json& j, const Troop::Member& m) {
   };
 }
 
-void from_json(const nlohmann::json& j, Troop::Member& m) {
+void from_json(const nlohmann::ordered_json& j, Troop::Member& m) {
   m.enemyId = j.value("enemyId", m.enemyId);
   m.x = j.value("x", m.x);
   m.y = j.value("y", m.y);
   m.hidden = j.value("hidden", m.hidden);
 }
 
-void to_json(nlohmann::json& j, const Troop& t) {
+void to_json(nlohmann::ordered_json& j, const Troop& t) {
   j = {
       {"id", t.id},
       {"name", t.name},
@@ -28,7 +28,7 @@ void to_json(nlohmann::json& j, const Troop& t) {
   };
 }
 
-void from_json(const nlohmann::json& j, Troop& t) {
+void from_json(const nlohmann::ordered_json& j, Troop& t) {
   t.id = j.value("id", t.id);
   t.name = j.value("name", t.name);
   t.members = j.value("members", t.members);

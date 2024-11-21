@@ -1,6 +1,6 @@
 #include "Database/Audio.hpp"
 
-void to_json(nlohmann::json& out, const Audio& audio) {
+void to_json(nlohmann::ordered_json& out, const Audio& audio) {
   out = {
       {"name", audio.name},
       {"pan", audio.pan},
@@ -9,7 +9,7 @@ void to_json(nlohmann::json& out, const Audio& audio) {
   };
 }
 
-void from_json(const nlohmann::json& from, Audio& audio) {
+void from_json(const nlohmann::ordered_json& from, Audio& audio) {
   audio.name = from.value("name", audio.name);
   audio.pan = from.value("pan", audio.pan);
   audio.pitch = from.value("pitch", audio.pitch);

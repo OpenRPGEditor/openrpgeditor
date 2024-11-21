@@ -2,14 +2,14 @@
 
 #include "Database/Database.hpp"
 
-ChangeGoldCommand::ChangeGoldCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeGoldCommand::ChangeGoldCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(operation);
   parameters.at(1).get_to(operandSource);
   parameters.at(2).get_to(operand);
 }
 
-void ChangeGoldCommand::serializeParameters(nlohmann::json& out) const {
+void ChangeGoldCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(operation);
   out.push_back(operandSource);
   out.push_back(operand);

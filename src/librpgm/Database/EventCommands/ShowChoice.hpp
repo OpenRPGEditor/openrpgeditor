@@ -3,10 +3,10 @@
 
 struct ShowChoiceCommand final : IEventCommand {
   ShowChoiceCommand() = default;
-  explicit ShowChoiceCommand(const std::optional<int>& _indent, const nlohmann::json& parameters);
+  explicit ShowChoiceCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters);
   ~ShowChoiceCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Choices; }
-  void serializeParameters(nlohmann::json& out) const override;
+  void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   TextBackground background = TextBackground::Window;
@@ -18,10 +18,10 @@ struct ShowChoiceCommand final : IEventCommand {
 
 struct WhenSelectedCommand final : IEventCommand {
   WhenSelectedCommand() = default;
-  explicit WhenSelectedCommand(const std::optional<int>& _indent, const nlohmann::json& parameters);
+  explicit WhenSelectedCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters);
   ~WhenSelectedCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::When_Selected; }
-  void serializeParameters(nlohmann::json& out) const override;
+  void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   int param1;

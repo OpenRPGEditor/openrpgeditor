@@ -1,6 +1,6 @@
 #include "ShowChoice.hpp"
 
-ShowChoiceCommand::ShowChoiceCommand(const std::optional<int>& _indent, const nlohmann::json& parameters)
+ShowChoiceCommand::ShowChoiceCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(_indent, parameters) {
   parameters.at(0).get_to(choices);
   parameters.at(1).get_to(cancelType);
@@ -26,7 +26,7 @@ ShowChoiceCommand::ShowChoiceCommand(const std::optional<int>& _indent, const nl
   }
 }
 
-void ShowChoiceCommand::serializeParameters(nlohmann::json& out) const {
+void ShowChoiceCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(choices);
   out.push_back(cancelType);
   if (defaultType != 0 || positionType != ChoiceWindowPosition::Right || background != TextBackground::Window) {
@@ -54,13 +54,13 @@ std::string ShowChoiceCommand::stringRep(const Database& db) const {
          choiceList + ColorFormatter::popColor() + suffix;
 }
 
-WhenSelectedCommand::WhenSelectedCommand(const std::optional<int>& _indent, const nlohmann::json& parameters)
+WhenSelectedCommand::WhenSelectedCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(_indent, parameters) {
   parameters.at(0).get_to(param1);
   parameters.at(1).get_to(choice);
 }
 
-void WhenSelectedCommand::serializeParameters(nlohmann::json& out) const {
+void WhenSelectedCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(param1);
   out.push_back(choice);
 }

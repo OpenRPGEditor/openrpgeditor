@@ -2,7 +2,7 @@
 
 void StatesSerializer::serialize(std::ofstream& os) const {
   try {
-    nlohmann::json data;
+    nlohmann::ordered_json data;
 
     for (const State& state : m_data.states()) {
       if (state.m_isValid) {
@@ -18,7 +18,7 @@ void StatesSerializer::serialize(std::ofstream& os) const {
 
 void StatesSerializer::deserialize(std::ifstream& is) {
   try {
-    nlohmann::json data = nlohmann::json::parse(is);
+    nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
     m_data.states().reserve(data.size());
 
     int i = 0;

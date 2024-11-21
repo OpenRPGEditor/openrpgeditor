@@ -2,7 +2,7 @@
 
 void CommonEventsSerializer::serialize(std::ofstream& os) const {
   try {
-    nlohmann::json data;
+    nlohmann::ordered_json data;
 
     for (const auto& event : m_data.events()) {
       data.push_back(event);
@@ -14,7 +14,7 @@ void CommonEventsSerializer::serialize(std::ofstream& os) const {
 
 void CommonEventsSerializer::deserialize(std::ifstream& is) {
   try {
-    nlohmann::json data = nlohmann::json::parse(is);
+    nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
     CommonEvents commonEvents;
     m_data.events().reserve(data.size());
 

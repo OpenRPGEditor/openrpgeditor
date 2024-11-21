@@ -1,6 +1,6 @@
 #include "Database/EventCommands/TintPicture.hpp"
 
-TintPictureCommand::TintPictureCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+TintPictureCommand::TintPictureCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(picture);
   auto colorValues = parameters.at(1);
@@ -12,7 +12,7 @@ TintPictureCommand::TintPictureCommand(const std::optional<int>& indent, const n
   parameters.at(3).get_to(waitForCompletion);
 }
 
-void TintPictureCommand::serializeParameters(nlohmann::json& out) const {
+void TintPictureCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(picture);
   auto colorValues = nlohmann::json();
   colorValues.push_back(color.r);

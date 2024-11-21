@@ -2,12 +2,12 @@
 
 #include "Database/Database.hpp"
 
-PlaySECommand::PlaySECommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+PlaySECommand::PlaySECommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(audio);
 }
 
-void PlaySECommand::serializeParameters(nlohmann::json& out) const {
+void PlaySECommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(audio);
 }
 

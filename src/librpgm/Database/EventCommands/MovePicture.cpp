@@ -1,7 +1,7 @@
 #include "Database/EventCommands/MovePicture.hpp"
 #include "Database/Database.hpp"
 
-MovePictureCommand::MovePictureCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+MovePictureCommand::MovePictureCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(picture);
   // param[1] is not used
@@ -17,7 +17,7 @@ MovePictureCommand::MovePictureCommand(const std::optional<int>& indent, const n
   parameters.at(11).get_to(waitForCompletion);
 }
 
-void MovePictureCommand::serializeParameters(nlohmann::json& out) const {
+void MovePictureCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(picture);
   out.push_back(0); // param[1] is not used
   out.push_back(origin);

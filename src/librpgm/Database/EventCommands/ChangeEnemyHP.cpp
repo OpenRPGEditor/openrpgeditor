@@ -1,7 +1,7 @@
 #include "Database/EventCommands/ChangeEnemyHP.hpp"
 #include "Database/Database.hpp"
 
-ChangeEnemyHPCommand::ChangeEnemyHPCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+ChangeEnemyHPCommand::ChangeEnemyHPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(enemy);
   parameters.at(1).get_to(enemyOp);
@@ -10,7 +10,7 @@ ChangeEnemyHPCommand::ChangeEnemyHPCommand(const std::optional<int>& indent, con
   parameters.at(4).get_to(allowKnockOut);
 }
 
-void ChangeEnemyHPCommand::serializeParameters(nlohmann::json& out) const {
+void ChangeEnemyHPCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(enemy);
   out.push_back(enemyOp);
   out.push_back(quantitySource);

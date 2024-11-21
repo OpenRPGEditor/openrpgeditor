@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/TintScreen.hpp"
+#include <algorithm>
 
 struct Dialog_TintScreen : IEventDialogController {
   Dialog_TintScreen() = delete;
@@ -35,12 +36,14 @@ private:
 
   std::array<float, 3> rgbToHsv(int r, int g, int b) {
     // Convert RGB values from 0-255 to 0-1 range
+
     float rf = r / 255.0f;
     float gf = g / 255.0f;
     float bf = b / 255.0f;
-
-    float cmax = std::max(rf, std::max(gf, bf));
-    float cmin = std::min(rf, std::min(gf, bf));
+    //float cmax = std::max(rf, std::max(gf, bf));
+    float cmax = 0.f;
+    float cmin = 0.f;
+    //float cmin = std::min(rf, std::min(gf, bf));
     float delta = cmax - cmin;
 
     float h = 0.0f;

@@ -34,19 +34,19 @@ int main() {
     AllocConsole();
 
     HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
-    int hCrt = _open_osfhandle((long)handle_out, _O_TEXT);
+    int hCrt = _open_osfhandle((size_t)handle_out, _O_TEXT);
     FILE* hf_out = _fdopen(hCrt, "w");
     setvbuf(hf_out, NULL, _IONBF, 1);
     *stdout = *hf_out;
 
     HANDLE handle_in = GetStdHandle(STD_INPUT_HANDLE);
-    hCrt = _open_osfhandle((long)handle_in, _O_TEXT);
+    hCrt = _open_osfhandle((size_t)handle_in, _O_TEXT);
     FILE* hf_in = _fdopen(hCrt, "r");
     setvbuf(hf_in, NULL, _IONBF, 128);
     *stdin = *hf_in;
 
     HANDLE handle_err = GetStdHandle(STD_ERROR_HANDLE);
-    hCrt = _open_osfhandle((long)handle_err, _O_TEXT);
+    hCrt = _open_osfhandle((size_t)handle_err, _O_TEXT);
     FILE* hf_err = _fdopen(hCrt, "r");
     setvbuf(hf_err, NULL, _IONBF, 128);
     *stderr = *hf_err;

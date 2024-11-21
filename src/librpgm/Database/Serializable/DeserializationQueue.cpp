@@ -11,11 +11,11 @@ void DeserializationQueue::processTask(const std::shared_ptr<ISerializable>& fil
   fs::path filePath = fs::path(m_basePath) / fs::path(m_currentFile);
   if (std::ifstream inFile(filePath, std::ios::binary); inFile) {
     {
-      std::lock_guard lock(m_mutex);
+      //std::lock_guard lock(m_mutex);
       fileData->deserialize(inFile);
       m_completedTasks++;
+      callback(fileData);
     }
-    callback(fileData);
   } else {
     std::cerr << "Error: Failed to open file for deserialization: " << filePath << std::endl;
   }

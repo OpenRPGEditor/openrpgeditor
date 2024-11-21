@@ -113,6 +113,8 @@ add_library(
         Core/DatabaseEditor/DBWeaponsTab.hpp
         Core/DatabaseEditor/DBTemplatesTab.cpp
         Core/DatabaseEditor/DBTemplatesTab.hpp
+        Core/TemplateEditor/TemplatesTint.cpp
+        Core/TemplateEditor/TemplatesTint.hpp
 
 
         Core/Debug/Instrumentor.hpp
@@ -412,6 +414,8 @@ add_executable(${NAME} WIN32 MACOSX_BUNDLE
         App/ProjectInfo.cpp
         Core/DownloadManager.cpp
         Core/DownloadManager.hpp
+        Core/TemplateEditor/TemplatesCommand.cpp
+        Core/TemplateEditor/TemplatesCommand.hpp
 )
 
 
@@ -443,3 +447,10 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebug
             ZLIB_DEBUG
     )
 endif ()
+
+if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    add_compile_definitions(
+            _DEBUG
+            DEBUG
+    )
+endif()

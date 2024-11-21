@@ -118,7 +118,7 @@ void Database::load() {
   gameConstants = GameConstants::load(basePath + "/data/Constants.json");
   RPGM_INFO("Loading Templates");
   templates = Templates::load(basePath + "/data/Templates.json");
-  RPGM_INFO(std::to_string(templates.commands.size()) + " size of commands");
+  mapInfos = MapInfos::load(basePath + "/data/MapInfos.json");
 }
 Map Database::loadMap(int mapId) {
   std::string path = std::format("{}data/Map{:03}.json", basePath, mapId);

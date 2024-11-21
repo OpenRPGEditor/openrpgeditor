@@ -11,13 +11,17 @@ struct Templates;
 struct DBTemplatesTab : IDBEditorTab {
   explicit DBTemplatesTab(Templates& templates, DatabaseEditor* parent)
   : IDBEditorTab(parent), m_templates(&templates) {
-    m_templateName = m_templates->templates.at(m_selection).name;
-    m_templateType = m_templates->templates.at(m_selection).type;
-    m_currentTemplate = CreateTemplateDialog(static_cast<Template::TemplateType>(m_templates->templates.at(m_selection).type));
+    if (m_templates->templates.size() > 0) {
+      m_templateName = m_templates->templates.at(m_selection).name;
+      m_templateType = m_templates->templates.at(m_selection).type;
+      m_currentTemplate =
+          CreateTemplateDialog(static_cast<Template::TemplateType>(m_templates->templates.at(m_selection).type));
+    }
   }
 
   void draw() override;
   std::vector<Templates*>& templates() { return m_template; }
+
 private:
   Templates* m_templates = nullptr;
   std::vector<Templates*> m_template;
@@ -30,12 +34,12 @@ private:
 
   std::shared_ptr<IDBTemplates> CreateTemplateDialog(Template::TemplateType type) {
     switch (type) {
-      case Template::TemplateType::Command:
-        return std::make_shared<TemplatesCommand>(&m_templates->templates.at(m_selection), m_parent);
-      case Template::TemplateType::Tint:
-        return std::make_shared<TemplatesTint>(&m_templates->templates.at(m_selection), m_parent);
-      default:
-        break;
+    case Template::TemplateType::Command:
+      return std::make_shared<TemplatesCommand>(&m_templates->templates.at(m_selection), m_parent);
+    case Template::TemplateType::Tint:
+      return std::make_shared<TemplatesTint>(&m_templates->templates.at(m_selection), m_parent);
+    default:
+      break;
     }
   }
   void SetTemplate() {
@@ -50,8 +54,7 @@ private:
     m_templates->templates.at(m_selection).type = m_templateType;
     if (static_cast<Template::TemplateType>(m_templateType) == Template::TemplateType::Command) {
 
-    }
-    else if (static_cast<Template::TemplateType>(m_templateType) == Template::TemplateType::Tint) {
+    } else if (static_cast<Template::TemplateType>(m_templateType) == Template::TemplateType::Tint) {
       m_templates->templates.at(m_selection).commands.clear();
       m_templates->templates.at(m_selection).commands = m_currentTemplate->getData();
     }

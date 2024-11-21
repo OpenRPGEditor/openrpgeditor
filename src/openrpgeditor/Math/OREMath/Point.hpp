@@ -8,17 +8,17 @@
 class Point {
 public:
   Point() = default;
-  explicit Point(const int x, const int y) : mX(x), mY(y) {}
-  bool isNull() const { return mX == 0 && mY == 0; }
+  Point(const int x, const int y) : mX(x), mY(y) {}
+  [[nodiscard]] bool isNull() const { return mX == 0 && mY == 0; }
 
   explicit operator ImVec2() const { return ImVec2{static_cast<float>(mX), static_cast<float>(mY)}; }
 
-  int manhattanLength() const { return std::abs(mX) + std::abs(mY); }
+  [[nodiscard]] int manhattanLength() const { return std::abs(mX) + std::abs(mY); }
 
-  int x() const { return mX; }
-  int& xr() { return mX; }
-  int y() const { return mY; }
-  int& yr() { return mY; }
+  [[nodiscard]] int x() const { return mX; }
+  [[nodiscard]] int& xr() { return mX; }
+  [[nodiscard]] int y() const { return mY; }
+  [[nodiscard]] int& yr() { return mY; }
 
   Point& operator+=(const Point& p) {
     mX += p.x();
@@ -33,14 +33,14 @@ public:
   }
 
   Point& operator*=(const float c) {
-    mX = std::round(mX * c);
-    mY = std::round(mY * c);
+    mX = oRound(mX * c);
+    mY = oRound(mY * c);
     return *this;
   }
 
   Point& operator/=(const float c) {
-    mX = std::round(mX / c);
-    mY = std::round(mY / c);
+    mX = oRound(mX / c);
+    mY = oRound(mY / c);
     return *this;
   }
 
@@ -63,33 +63,29 @@ inline bool operator!=(const Point& lhs, const Point& rhs) { return lhs.mX != rh
 
 inline Point operator+(const Point& lhs, const Point& rhs) { return Point{lhs.mX + rhs.mX, lhs.mY + rhs.mY}; }
 inline Point operator-(const Point& lhs, const Point& rhs) { return Point{lhs.mX - rhs.mX, lhs.mY - rhs.mY}; }
-inline Point operator*(const Point& lhs, const float rhs) {
-  return Point{static_cast<int>(std::round(lhs.mX * rhs)), static_cast<int>(std::round(lhs.mY * rhs))};
-}
-inline Point operator*(const float lhs, const Point& rhs) {
-  return Point{static_cast<int>(std::round(lhs * rhs.mX)), static_cast<int>(std::round(lhs * rhs.mY))};
-}
+inline Point operator*(const Point& lhs, const float rhs) { return Point{oRound(lhs.mX * rhs), oRound(lhs.mY * rhs)}; }
+inline Point operator*(const float lhs, const Point& rhs) { return Point{oRound(lhs * rhs.mX), oRound(lhs * rhs.mY)}; }
 
 inline Point operator-(const Point& lhs) { return Point{-lhs.mX, -lhs.mY}; }
 
 inline Point operator/(const Point& lhs, const float rhs) {
-  return Point{static_cast<int>(std::round(lhs.mX / rhs)), static_cast<int>(std::round(lhs.mY / rhs))};
+  return Point{(oRound(lhs.mX / rhs)), (oRound(lhs.mY / rhs))};
 }
 
 class PointF {
 public:
   PointF() = default;
   PointF(const float x, const float y) : mX(x), mY(y) {}
-  bool isNull() const { return mX == 0.f && mY == 0.f; }
-  int manhattanLength() const { return std::abs(mX) + std::abs(mY); }
+  [[nodiscard]] bool isNull() const { return mX == 0.f && mY == 0.f; }
+  [[nodiscard]] float manhattanLength() const { return oAbs(mX) + oAbs(mY); }
 
 #ifdef IMGUI_VERSION
   operator ImVec2() const { return ImVec2{mX, mY}; }
 #endif
 
-  float x() const { return mX; }
+  [[nodiscard]] float x() const { return mX; }
   float& xr() { return mX; }
-  float y() const { return mY; }
+  [[nodiscard]] float y() const { return mY; }
   float& yr() { return mY; }
 
   PointF& operator+=(const PointF& p) {
@@ -124,6 +120,8 @@ public:
   friend inline PointF operator*(float, const PointF&);
   friend inline PointF operator-(const PointF&);
   friend inline PointF operator/(const PointF&, float);
+
+  [[nodiscard]] Point toPoint() const { return Point{oRound(mX), oRound(mY)}; }
 
 private:
   float mX{0.f};

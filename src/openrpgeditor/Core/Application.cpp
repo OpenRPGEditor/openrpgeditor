@@ -83,7 +83,7 @@ ExitStatus Application::run() {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   /* Allocate a much larger temp buffer for large strings */
-  //ImGui::GetCurrentContext()->TempBuffer.resize(8192 * 3 + 2);
+  // ImGui::GetCurrentContext()->TempBuffer.resize(8192 * 3 + 2);
   ImPlot::CreateContext();
   ImGuiIO& io{ImGui::GetIO()};
 
@@ -269,7 +269,7 @@ ExitStatus Application::run() {
       ImGui::EndFrame();
       ImGui::UpdatePlatformWindows();
 
-      SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 100, 100, 100, 255);
+      SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 28, 38, 43, 255);
       SDL_RenderClear(m_window->getNativeRenderer());
       ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), m_window->getNativeRenderer());
       SDL_RenderPresent(m_window->getNativeRenderer());
@@ -283,9 +283,7 @@ ExitStatus Application::run() {
   return m_exitStatus;
 }
 
-void Application::stop() {
-  m_running = false;
-}
+void Application::stop() { m_running = false; }
 
 void Application::onEvent(const SDL_WindowEvent& event) {
   switch (event.event) {
@@ -319,13 +317,9 @@ void Application::onEvent(const SDL_WindowEvent& event) {
   }
 }
 
-void Application::onMinimize() {
-  m_minimized = true;
-}
+void Application::onMinimize() { m_minimized = true; }
 
-void Application::onShown() {
-  m_minimized = false;
-}
+void Application::onShown() { m_minimized = false; }
 
 void Application::onClose() {
   m_project.close(true);

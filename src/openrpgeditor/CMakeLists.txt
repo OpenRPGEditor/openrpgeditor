@@ -375,6 +375,8 @@ add_library(
         Core/DownloadManager.hpp
         Core/Sound.cpp
         Core/Sound.hpp
+        Core/Graphics/ColorTonePreview.cpp
+        Core/Graphics/ColorTonePreview.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${clip_SOURCE_DIR})

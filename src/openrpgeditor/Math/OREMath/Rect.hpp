@@ -283,6 +283,11 @@ public:
     setBottom(p.y());
   }
 
+  PointF topLeft() const { return {mX, mY}; }
+  PointF bottomRight() const { return {mX + mWidth, mY + mHeight}; }
+  PointF topRight() const { return {mX + mWidth, mY}; }
+  PointF bottomLeft() const { return {mX, mY + mHeight}; }
+
   PointF center() const { return PointF{mX + mWidth / 2, mY + mHeight / 2}; }
 
   void moveLeft(const float pos) { mX = pos; }

@@ -15,7 +15,7 @@ void DBTemplatesTab::draw() {
 
       if (ImGui::Button("Add", ImVec2{App::DPIHandler::scale_value(300), 0})) {
         m_templates->templates.push_back(
-            Template("New Template" + std::to_string(m_templates->templates.size()), 0, {}, {}));
+            Template("New Template" + std::to_string(m_templates->templates.size()), Template::TemplateType::Command, {}, {}));
         if (m_templates->serialize(m_parent->project()->database().basePath + "data/Templates.json")) {
           ImGui::InsertNotification(
               ImGuiToast{ImGuiToastType::Success, "Serialized data/Templates.json successfully!"});
@@ -28,7 +28,7 @@ void DBTemplatesTab::draw() {
       if (ImGui::Button("Delete", ImVec2{App::DPIHandler::scale_value(300), 0})) {}
       ImGui::SameLine();
 
-      ImGui::BeginDisabled(!m_hasChanges);
+      ImGui::BeginDisabled(!(m_hasChanges || m_currentTemplate->hasChanges()));
       if (ImGui::Button("Apply", ImVec2{App::DPIHandler::scale_value(300), 0})) {
         SaveChanges();
         if (m_templates->serialize(m_parent->project()->database().basePath + "data/Templates.json")) {
@@ -70,7 +70,14 @@ void DBTemplatesTab::draw() {
     ImGui::BeginGroup();
     {
       ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(10));
-      ImGui::InputText("##orpg_templates_name_input", &m_templateName);
+      if (ImGui::InputText("##orpg_templates_name_input", &m_templateName)) {
+         if (m_templateName == m_templates->templates.at(m_selection).name) {
+           m_hasChanges = false;
+         }
+         else {
+           m_hasChanges = true;
+         }
+      }
       ImGui::SameLine();
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
       if (ImGui::BeginCombo(
@@ -82,7 +89,12 @@ void DBTemplatesTab::draw() {
           if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
             m_templateType = magic_enum::enum_index(dir).value();
             m_currentTemplate = CreateTemplateDialog(static_cast<Template::TemplateType>(m_templateType));
-            m_hasChanges = true;
+            if (m_templateType == static_cast<int>(m_templates->templates.at(m_selection).type)) {
+              m_hasChanges = false;
+            }
+            else {
+              m_hasChanges = true;
+            }
             if (is_selected)
               ImGui::SetItemDefaultFocus();
           }

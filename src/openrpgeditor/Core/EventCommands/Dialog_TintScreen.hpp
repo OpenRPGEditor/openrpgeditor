@@ -28,6 +28,7 @@ private:
   int b;
   int gray;
   int m_duration;
+  int m_currentTemplate{-1};
   bool m_waitForCompletion;
 
   bool m_confirmed{false};

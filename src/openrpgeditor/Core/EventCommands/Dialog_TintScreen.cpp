@@ -3,6 +3,7 @@
 #include <tuple>
 #include "imgui.h"
 #include "Core/DPIHandler.hpp"
+#include "Database/Database.hpp"
 
 std::tuple<bool, bool> Dialog_TintScreen::draw() {
   if (IsOpen()) {
@@ -33,7 +34,7 @@ std::tuple<bool, bool> Dialog_TintScreen::draw() {
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
       ImGui::SliderInt("##tintscreen_red", &r, -255, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
       if (ImGui::InputInt("##tintscreen_int_red", &r, 1, 100)) {
         if (r < -255)
           r = -255;
@@ -44,7 +45,7 @@ std::tuple<bool, bool> Dialog_TintScreen::draw() {
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
       ImGui::SliderInt("##tintscreen_green", &g, -255, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
       if (ImGui::InputInt("##tintscreen_int_green", &g, 1, 100)) {
         if (g < -255)
           g = -255;
@@ -55,7 +56,7 @@ std::tuple<bool, bool> Dialog_TintScreen::draw() {
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
       ImGui::SliderInt("##tintscreen_blue", &b, -255, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
       if (ImGui::InputInt("##tintscreen_int_blue", &b, 1, 100)) {
         if (b < -255)
           b = -255;
@@ -66,7 +67,7 @@ std::tuple<bool, bool> Dialog_TintScreen::draw() {
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
       ImGui::SliderInt("##tintscreen_gray", &gray, 0, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
       if (ImGui::InputInt("##tintscreen_int_gray", &gray, 1, 100)) {
         if (gray < 1)
           gray = 1;
@@ -90,8 +91,28 @@ std::tuple<bool, bool> Dialog_TintScreen::draw() {
 
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4.f);
     ImGui::PushItemWidth((App::DPIHandler::scale_value(380)));
-    if (ImGui::BeginCombo("##tintscreen_presets", "Future presets go in this list")) {
-      // TODO: Template system for tint screen
+    if (ImGui::BeginCombo("##tintscreen_presets", m_currentTemplate == -1 ?  "" : Database::instance()->templates.templates.at(m_currentTemplate).name.c_str())) {
+            int index{0};
+            for (auto& templ : Database::instance()->templates.templates) {
+              if (templ.type == Template::TemplateType::Tint) {
+                if (!templ.commands.empty()) {
+                  bool is_selected = m_currentTemplate == index;
+                  if (ImGui::Selectable(templ.name.c_str(), is_selected)) {
+                    m_currentTemplate = index;
+                    r = templ.commands.at(0);
+                    g = templ.commands.at(1);
+                    b = templ.commands.at(2);
+                    gray = templ.commands.at(3);
+                    if (is_selected)
+                      ImGui::SetItemDefaultFocus();
+                  }
+                  index++;
+                }
+                else {
+                  if (ImGui::Selectable(("Error loading template: " + templ.name).c_str(), false)) {}
+                }
+              }
+            }
       ImGui::EndCombo();
     }
     ImGui::SeparatorText("Duration");

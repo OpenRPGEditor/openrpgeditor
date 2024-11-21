@@ -11,7 +11,7 @@ public:
 
   enum class TemplateType { Command, Tint };
   std::string name;
-  int type;
+  TemplateType type;
   std::vector<int> commands;
   std::vector<std::string> parameters;
 };

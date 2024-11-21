@@ -18,6 +18,12 @@ struct TemplatesTint : IDBTemplates {
   std::vector<int> getData() override {
     return std::vector<int>(std::initializer_list<int>{r, g, b, gray});
   }
+  bool hasChanges() override {
+    return r != m_currentTemplate->commands.at(0)
+           || g != m_currentTemplate->commands.at(1)
+           || b != m_currentTemplate->commands.at(2)
+           || gray != m_currentTemplate->commands.at(3);
+  }
 private:
   Template* m_currentTemplate;
 

@@ -16,9 +16,35 @@ struct Troop {
     int y = 0;
     bool hidden = false;
   };
+
+  struct Conditions {
+    friend void to_json(nlohmann::ordered_json& j, const Conditions& c);
+    friend void from_json(const nlohmann::ordered_json& j, Conditions& c);
+    int actorHp;
+    int actorId;
+    bool actorValid;
+    int enemyIndex;
+    int enemyHp;
+    bool enemyValid;
+    int switchId;
+    bool switchValid;
+    int turnA;
+    int turnB;
+    bool turnEnding;
+    bool turnValid;
+  };
+  struct Page {
+    friend void to_json(nlohmann::ordered_json& j, const Page& p);
+    friend void from_json(const nlohmann::ordered_json& j, Page& p);
+
+    Conditions conditions;
+    std::vector<std::shared_ptr<IEventCommand>> list;
+    int span;
+  };
   int id;
-  std::string name;
   std::vector<Member> members;
+  std::string name;
+  std::vector<Page> pages;
 
   Member* member(int index) {
     if (index < 0 || index > members.size()) {
@@ -45,6 +71,10 @@ struct Troop {
    */
   bool m_isValid{false};
 };
+void to_json(nlohmann::ordered_json& j, const Troop::Conditions& c);
+void from_json(const nlohmann::ordered_json& j, Troop::Conditions& c);
+void to_json(nlohmann::ordered_json& j, const Troop::Page& p);
+void from_json(nlohmann::ordered_json& j, Troop::Page& p);
 void to_json(nlohmann::ordered_json& j, const Troop::Member& m);
 void from_json(const nlohmann::ordered_json& j, Troop::Member& m);
 void to_json(nlohmann::ordered_json& j, const Troop& t);
@@ -58,7 +88,7 @@ public:
 
   [[nodiscard]] Troop* troop(int id) {
     for (auto& troop : m_troops) {
-      if (troop.id == id  && troop.m_isValid) {
+      if (troop.id == id && troop.m_isValid) {
         return &troop;
       }
     }
@@ -67,7 +97,7 @@ public:
 
   [[nodiscard]] const Troop* troop(int id) const {
     for (const auto& troop : m_troops) {
-      if (troop.id == id  && troop.m_isValid) {
+      if (troop.id == id && troop.m_isValid) {
         return &troop;
       }
     }
@@ -88,6 +118,7 @@ public:
       }
     }
   }
+
 private:
   std::vector<Troop> m_troops;
 };

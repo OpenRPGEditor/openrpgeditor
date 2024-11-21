@@ -739,8 +739,8 @@ void MapEditor::drawMapProperties() {
       {
         ImGui::BeginGroup();
         {
-          if (ImGui::Checkbox("Autoplay BGM", &map()->autoPlayBgm)) {}
-          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->autoPlayBgm);
+          if (ImGui::Checkbox("Autoplay BGM", &map()->autoplayBgm)) {}
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->autoplayBgm);
           {
             ImGui::PushID("##map_bgm_button");
             ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 30);
@@ -755,8 +755,8 @@ void MapEditor::drawMapProperties() {
         ImGui::SameLine();
         ImGui::BeginGroup();
         {
-          if (ImGui::Checkbox("Autoplay BGS", &map()->autoPlayBgs)) {}
-          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->autoPlayBgs);
+          if (ImGui::Checkbox("Autoplay BGS", &map()->autoplayBgs)) {}
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->autoplayBgs);
           {
             ImGui::PushID("##map_bgs_button");
             std::string text = map()->bgs.name.empty() ? "##map_bgs_button_empty" : map()->bgs.name;
@@ -769,12 +769,12 @@ void MapEditor::drawMapProperties() {
         ImGui::EndGroup();
         ImGui::BeginGroup();
         {
-          if (ImGui::Checkbox("Battleback", &map()->specifyBattleBack)) {}
-          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->specifyBattleBack);
+          if (ImGui::Checkbox("Battleback", &map()->specifyBattleback)) {}
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->specifyBattleback);
           {
             ImGui::PushID("##map_battleback_button");
             // TODO: Combine battleBack1Name and battleBack2Name
-            std::string text = map()->bgs.name.empty() ? "##map_battleback_button_empty" : map()->battleBack1Name;
+            std::string text = map()->bgs.name.empty() ? "##map_battleback_button_empty" : map()->battleback1Name;
             if (ImGui::Button(text.c_str(),
                               ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
             ImGui::PopID();

@@ -3,16 +3,17 @@
 
 void to_json(nlohmann::ordered_json& json, const Map& map) {
   json = {
-      {"autoPlayBgm", map.autoPlayBgm},
-      {"autoPlayBgs", map.autoPlayBgs},
-      {"battleBack1Name", map.battleBack1Name},
-      {"battleBack2Name", map.battleBack2Name},
+      {"autoplayBgm", map.autoplayBgm},
+      {"autoplayBgs", map.autoplayBgs},
+      {"battleback1Name", map.battleback1Name},
+      {"battleback2Name", map.battleback2Name},
       {"bgm", map.bgm},
       {"bgs", map.bgs},
       {"disableDashing", map.disableDashing},
       {"displayName", map.displayName},
-      {"encounters", map.encounters},
+      {"encounterList", map.encounterList},
       {"encounterStep", map.encounterStep},
+      {"height", map.height},
       {"note", map.note},
       {"parallaxLoopX", map.parallaxLoopX},
       {"parallaxLoopY", map.parallaxLoopY},
@@ -21,25 +22,25 @@ void to_json(nlohmann::ordered_json& json, const Map& map) {
       {"parallaxSx", map.parallaxSx},
       {"parallaxSy", map.parallaxSy},
       {"scrollType", map.scrollType},
-      {"specifyBattleBack", map.specifyBattleBack},
+      {"specifyBattleback", map.specifyBattleback},
       {"tilesetId", map.tilesetId},
       {"width", map.width},
-      {"height", map.height},
       {"data", map.data},
       {"events", map.events},
   };
 }
 void from_json(const nlohmann::ordered_json& json, Map& map) {
-  map.autoPlayBgm = json.value("autoPlayBgm", map.autoPlayBgm);
-  map.autoPlayBgs = json.value("autoPlayBgs", map.autoPlayBgs);
-  map.battleBack1Name = json.value("battleBack1Name", map.battleBack1Name);
-  map.battleBack2Name = json.value("battleBack2Name", map.battleBack2Name);
+  map.autoplayBgm = json.value("autoplayBgm", map.autoplayBgm);
+  map.autoplayBgs = json.value("autoplayBgs", map.autoplayBgs);
+  map.battleback1Name = json.value("battleback1Name", map.battleback1Name);
+  map.battleback2Name = json.value("battleback2Name", map.battleback2Name);
   map.bgm = json.value("bgm", map.bgm);
   map.bgs = json.value("bgs", map.bgs);
   map.disableDashing = json.value("disableDashing", map.disableDashing);
   map.displayName = json.value("displayName", map.displayName);
-  map.encounters = json.value("encounters", map.encounters);
+  map.encounterList = json.value("encounterList", map.encounterList);
   map.encounterStep = json.value("encounterStep", map.encounterStep);
+  map.height = json.value("height", map.height);
   map.note = json.value("note", map.note);
   map.parallaxLoopX = json.value("parallaxLoopX", map.parallaxLoopX);
   map.parallaxLoopY = json.value("parallaxLoopY", map.parallaxLoopY);
@@ -48,10 +49,9 @@ void from_json(const nlohmann::ordered_json& json, Map& map) {
   map.parallaxSx = json.value("parallaxSx", map.parallaxSx);
   map.parallaxSy = json.value("parallaxSy", map.parallaxSy);
   map.scrollType = json.value("scrollType", map.scrollType);
-  map.specifyBattleBack = json.value("specifyBattleBack", map.specifyBattleBack);
+  map.specifyBattleback = json.value("specifyBattleback", map.specifyBattleback);
   map.tilesetId = json.value("tilesetId", map.tilesetId);
   map.width = json.value("width", map.width);
-  map.height = json.value("height", map.height);
   map.data = json.value("data", map.data);
   map.events = json.value("events", map.events);
 }

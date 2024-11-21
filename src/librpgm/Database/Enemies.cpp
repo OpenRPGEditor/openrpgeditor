@@ -14,6 +14,7 @@ void to_json(nlohmann::ordered_json& to, const Enemy& enemy) {
       {"exp", enemy.exp},
       {"traits", enemy.traits},
       {"gold", enemy.gold},
+      {"name", enemy.name},
       {"note", enemy.note},
       {"params", enemy.params},
   };

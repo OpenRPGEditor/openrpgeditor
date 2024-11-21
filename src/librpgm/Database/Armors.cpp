@@ -18,6 +18,7 @@ void from_json(const nlohmann::ordered_json& from, Armor& armor) {
   armor.atypeId = from.value("atypeId", armor.atypeId);
   armor.description = from.value("description", armor.description);
   armor.etypeId = from.value("etypeId", armor.etypeId);
+  armor.traits = from.value("traits", armor.traits);
   armor.iconIndex = from.value("iconIndex", armor.iconIndex);
   armor.name = from.value("name", armor.name);
   armor.note = from.value("note", armor.note);

@@ -19,9 +19,9 @@ void to_json(nlohmann::ordered_json& j, const System& system) {
       {"airship", system.airship},
       {"armorTypes", system.armorTypes},
       {"attackMotions", system.attackMotions},
+      {"battleBgm", system.battleBgm},
       {"battleback1Name", system.battleback1Name},
       {"battleback2Name", system.battleback2Name},
-      {"battleBgm", system.battleBgm},
       {"battlerHue", system.battlerHue},
       {"battlerName", system.battlerName},
       {"boat", system.boat},
@@ -71,6 +71,8 @@ void from_json(const nlohmann::ordered_json& j, System& system) {
   system.armorTypes = j.value("armorTypes", system.armorTypes);
   system.attackMotions = j.value("attackMotions", system.attackMotions);
   system.battleBgm = j.value("battleBgm", system.battleBgm);
+  system.battleback1Name = j.value("battleback1Name", system.battleback1Name);
+  system.battleback2Name = j.value("battleback2Name", system.battleback2Name);
   system.battlerHue = j.value("battlerHue", system.battlerHue);
   system.battlerName = j.value("battlerName", system.battlerName);
   system.boat = j.value("boat", system.boat);
@@ -94,11 +96,15 @@ void from_json(const nlohmann::ordered_json& j, System& system) {
   system.optTransparent = j.value("optTransparent", system.optTransparent);
   system.partyMembers = j.value("partyMembers", system.partyMembers);
   system.ship = j.value("ship", system.ship);
+  system.skillTypes = j.value("skillTypes", system.skillTypes);
+  system.sounds = j.value("sounds", system.sounds);
   system.startMapId = j.value("startMapId", system.startMapId);
   system.startX = j.value("startX", system.startX);
   system.startY = j.value("startY", system.startY);
   system.switches = j.value("switches", system.switches);
   system.terms = j.value("terms", system.terms);
+  system.testBattlers = j.value("testBattlers", system.testBattlers);
+  system.testTroopId = j.value("testTroopId", system.testTroopId);
   system.title1Name = j.value("title1Name", system.title1Name);
   system.title2Name = j.value("title2Name", system.title2Name);
   system.titleBgm = j.value("titleBgm", system.titleBgm);

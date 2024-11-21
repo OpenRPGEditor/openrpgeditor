@@ -14,6 +14,8 @@ void to_json(nlohmann::ordered_json& j, const State& state) {
       {"message2", state.message2},
       {"message3", state.message3},
       {"message4", state.message4},
+      {"minTurns", state.minTurns},
+      {"motion", state.motion},
       {"name", state.name},
       {"note", state.note},
       {"overlay", state.overlay},
@@ -22,6 +24,7 @@ void to_json(nlohmann::ordered_json& j, const State& state) {
       {"removeAtBattleEnd", state.removeAtBattleEnd},
       {"removeByDamage", state.removeByDamage},
       {"removeByRestriction", state.removeByRestriction},
+      {"removeByWalking", state.removeByWalking},
       {"restriction", state.restriction},
       {"stepsToRemove", state.stepsToRemove},
       {"traits", state.traits},
@@ -38,6 +41,8 @@ void from_json(const nlohmann::ordered_json& j, State& state) {
   state.message2 = j.value("message2", state.message2);
   state.message3 = j.value("message3", state.message3);
   state.message4 = j.value("message4", state.message4);
+  state.minTurns = j.value("minTurns", state.minTurns);
+  state.motion = j.value("motion", state.motion);
   state.name = j.value("name", state.name);
   state.note = j.value("note", state.note);
   state.overlay = j.value("overlay", state.overlay);
@@ -45,6 +50,7 @@ void from_json(const nlohmann::ordered_json& j, State& state) {
   state.releaseByDamage = j.value("releaseByDamage", state.releaseByDamage);
   state.removeAtBattleEnd = j.value("removeAtBattleEnd", state.removeAtBattleEnd);
   state.removeByRestriction = j.value("removeByRestriction", state.removeByRestriction);
+  state.removeByWalking = j.value("removeByWalking", state.removeByWalking);
   state.restriction = j.value("restriction", state.restriction);
   state.stepsToRemove = j.value("stepsToRemove", state.stepsToRemove);
   state.traits = j.value("traits", state.traits);

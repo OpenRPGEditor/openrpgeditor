@@ -25,6 +25,7 @@ void from_json(const nlohmann::ordered_json& j, Weapon& w) {
   w.animationId = j.value("animationId", w.animationId);
   w.description = j.value("description", w.description);
   w.etypeId = j.value("etypeId", w.etypeId);
+  w.traits = j.value("traits", w.traits);
   w.iconIndex = j.value("iconIndex", w.iconIndex);
   w.name = j.value("name", w.name);
   w.note = j.value("note", w.note);

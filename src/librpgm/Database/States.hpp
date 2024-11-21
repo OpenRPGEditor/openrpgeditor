@@ -31,6 +31,7 @@ public:
   bool removeAtBattleEnd = false;
   bool removeByDamage = false;
   bool removeByRestriction = false;
+  bool removeByWalking = false;
   StateRestriction restriction = StateRestriction::None;
   int stepsToRemove = 1000;
   std::vector<Trait> traits;

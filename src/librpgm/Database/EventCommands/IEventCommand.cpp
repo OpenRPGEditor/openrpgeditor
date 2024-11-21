@@ -5,12 +5,14 @@ IEventCommand::IEventCommand(const std::optional<int>& _indent, [[maybe_unused]]
 
 void IEventCommand::serialize(nlohmann::ordered_json& out, const bool doIndent, const bool doParameters) const {
   out["code"] = code();
+
+  if (doIndent) {
+    out["indent"] = indent;
+  }
+
   if (doParameters) {
     out["parameters"] = nlohmann::json::array();
     serializeParameters(out["parameters"]);
-  }
-  if (doIndent) {
-    out["indent"] = indent;
   }
 }
 

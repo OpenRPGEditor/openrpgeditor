@@ -56,9 +56,10 @@ void to_json(nlohmann::ordered_json& to, const Messages& messages) {
   };
 }
 
-void from_json(const nlohmann::ordered_json& from, Messages& messages){
+void from_json(const nlohmann::ordered_json& from, Messages& messages) {
   messages.actionFailure = from.value("actionFailure", messages.actionFailure);
   messages.actorDamage = from.value("actorDamage", messages.actorDamage);
+  messages.actorNoHit = from.value("actorNoHit", messages.actorNoHit);
   messages.actorDrain = from.value("actorDrain", messages.actorDrain);
   messages.actorGain = from.value("actorGain", messages.actorGain);
   messages.actorLoss = from.value("actorLoss", messages.actorLoss);

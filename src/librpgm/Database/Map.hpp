@@ -85,15 +85,15 @@ public:
     }
   }
 
-  bool autoPlayBgm{};
-  bool autoPlayBgs{};
-  std::string battleBack1Name;
-  std::string battleBack2Name;
+  bool autoplayBgm{};
+  bool autoplayBgs{};
+  std::string battleback1Name;
+  std::string battleback2Name;
   Audio bgm;
   Audio bgs;
   bool disableDashing{};
   std::string displayName;
-  std::vector<Encounter> encounters;
+  std::vector<Encounter> encounterList;
   int encounterStep{};
   std::string note;
   bool parallaxLoopX{};
@@ -103,7 +103,7 @@ public:
   int parallaxSx{};
   int parallaxSy{};
   ScrollType scrollType{};
-  bool specifyBattleBack{};
+  bool specifyBattleback{};
   int tilesetId{};
   int width{};
   int height{};

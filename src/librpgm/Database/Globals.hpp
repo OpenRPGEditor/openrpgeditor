@@ -835,6 +835,35 @@ struct adl_serializer<std::optional<T>> {
 };
 } // namespace nlohmann
 
+// Custom serializer for floating-point numbers
+static inline void to_json(nlohmann::ordered_json& j, const double& value) {
+  std::ostringstream oss;
+  oss << std::setprecision(std::numeric_limits<double>::max_digits10) << value;
+  std::string str = oss.str();
+
+  // Remove trailing zeros after decimal point
+  str.erase(str.find_last_not_of('0') + 1, std::string::npos);
+  if (str.back() == '.') {
+    str.pop_back();
+  }
+
+  j = str;
+}
+
+static inline void to_json(nlohmann::ordered_json& j, const float& value) {
+  std::ostringstream oss;
+  oss << std::setprecision(std::numeric_limits<float>::max_digits10) << value;
+  std::string str = oss.str();
+
+  // Remove trailing zeros after decimal point
+  str.erase(str.find_last_not_of('0') + 1, std::string::npos);
+  if (str.back() == '.') {
+    str.pop_back();
+  }
+
+  j = str;
+}
+
 /* Helper function to set dirty state */
 template <typename T>
 void setDirty(const T& a, const T& b, bool& dirty) {

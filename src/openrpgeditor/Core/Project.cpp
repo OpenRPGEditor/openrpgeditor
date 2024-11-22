@@ -377,6 +377,7 @@ void Project::draw() {
     ImGui::Text("for an example on how to use these!");
     /* Calling this every frame is safe, if the size is the same it will bail immediately */
     m_tonePicker.setPreviewSize(60, 100);
+    ImGui::SeparatorText("Color Tone");
     if (m_tonePicker.draw()) {
       // Handle modified values here!
       auto r = m_tonePicker.r();
@@ -385,6 +386,7 @@ void Project::draw() {
       auto gray = m_tonePicker.gray();
     }
     /* Calling this every frame is safe, if the size is the same it will bail immediately */
+    ImGui::SeparatorText("Flash Color");
     m_flashPicker.setPreviewSize(60, 100);
     if (m_flashPicker.draw()) {
       // Handle modified values here!

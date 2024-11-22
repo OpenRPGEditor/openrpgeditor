@@ -18,7 +18,7 @@ void ShowBalloonIconCommand::serializeParameters(nlohmann::ordered_json& out) co
 std::string ShowBalloonIconCommand::stringRep(const Database& db) const {
   const auto evName = db.eventNameOrId(id);
   const auto suffix =
-      waitForCompletion == true ? ColorFormatter::getColor(Color::Gray) + " (Wait)" + ColorFormatter::popColor() : "";
+      waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor() : "";
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Show Balloon Icon" +
          colon.data() + evName + DecodeEnumName(index) + ColorFormatter::popColor() + suffix;
 }

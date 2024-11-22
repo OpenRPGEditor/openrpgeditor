@@ -36,7 +36,7 @@ std::string ChangeEnemyHPCommand::stringRep(const Database& db) const {
   std::string suffix;
   if (allowKnockOut) {
     suffix =
-        ColorFormatter::getColor(Color::Gray) + " " + db.parentheses("Allow Knockout") + ColorFormatter::popColor();
+        ColorFormatter::getColor(FormatColor::Gray) + " " + db.parentheses("Allow Knockout") + ColorFormatter::popColor();
   }
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Enemy HP" + colon.data() +
          enemyStr + DecodeEnumName(enemyOp) + " " + quantityStr + ColorFormatter::popColor() + suffix;

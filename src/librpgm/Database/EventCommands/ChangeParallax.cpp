@@ -23,7 +23,7 @@ std::string ChangeParallaxCommand::stringRep(const Database& db) const {
   auto rep = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Parallax" +
              colon.data() + db.imageText(image) + ColorFormatter::popColor();
   if (loopHorizontally || loopVertically) {
-    rep += ColorFormatter::getColor(Color::Gray) + " (";
+    rep += ColorFormatter::getColor(FormatColor::Gray) + " (";
 
     if (loopHorizontally) {
       rep += "Loop Horizontally";

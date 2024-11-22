@@ -43,7 +43,7 @@ std::string ChangeEXPCommand::stringRep(const Database& db) const {
 
   std::string suffix;
   if (showLevelUp) {
-    suffix = ColorFormatter::getColor(Color::Gray) + " " + db.parentheses("Show Level Up") + ColorFormatter::popColor();
+    suffix = ColorFormatter::getColor(FormatColor::Gray) + " " + db.parentheses("Show Level Up") + ColorFormatter::popColor();
   }
 
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change EXP" + colon.data() +

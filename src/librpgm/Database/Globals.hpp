@@ -792,7 +792,7 @@ enum class TimerControl {
   Stop,
 };
 
-enum class Color {
+enum class FormatColor {
   Gray,
   Red,
   Default,

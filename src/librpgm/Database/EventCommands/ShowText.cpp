@@ -27,7 +27,7 @@ void ShowTextCommand::serializeParameters(nlohmann::ordered_json& out) const {
 std::string ShowTextCommand::stringRep(const Database& db) const {
   const auto name = UndectorateEnumName(code());
   std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + name + colon.data() +
-                    ColorFormatter::popColor() + ColorFormatter::getColor(Color::Gray) +
+                    ColorFormatter::popColor() + ColorFormatter::getColor(FormatColor::Gray) +
                     db.imageText(faceImage, faceIndex) + ", " + DecodeEnumName(background) + ", " +
                     DecodeEnumName(position) + ColorFormatter::popColor();
 

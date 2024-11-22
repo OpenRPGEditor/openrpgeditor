@@ -299,14 +299,14 @@ std::string ConditionalBranchCommand::stringRep(const Database& db) const {
   if (type == ConditionType::Weapon) {
     std::string ret = conditionalFormat(std::format("Party has {}", db.weapons.weapon(equip.equipId)->name));
     if (equip.includeEquipment) {
-      ret += ColorFormatter::getColor(Color::Gray) + "(Include Equipment)" + ColorFormatter::popColor();
+      ret += ColorFormatter::getColor(FormatColor::Gray) + "(Include Equipment)" + ColorFormatter::popColor();
     }
     return ret;
   }
   if (type == ConditionType::Armor) {
     std::string ret = conditionalFormat(std::format("Party has {}", db.armors.armor(equip.equipId)->name));
     if (equip.includeEquipment) {
-      ret += ColorFormatter::getColor(Color::Gray) + "(Include Equipment)" + ColorFormatter::popColor();
+      ret += ColorFormatter::getColor(FormatColor::Gray) + "(Include Equipment)" + ColorFormatter::popColor();
     }
     return ret;
   }

@@ -20,10 +20,10 @@ struct Color {
   static int green(const Rgb rgb) { return (rgb >> 8) & 0xff; }
   static int blue(const Rgb rgb) { return rgb & 0xff; }
   static Rgb rgb(const int r, const int g, const int b) {
-    return (255 << 24) | ((r & 0xff) << 16) | ((g << 8) & 0xFF) | (b & 0xff);
+    return (255 << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff);
   }
   static Rgb rgba(const int r, const int g, const int b, const int a) {
-    return ((a & 0xFF) << 24) | ((r & 0xff) << 16) | ((g << 8) & 0xFF) | (b & 0xff);
+    return ((a & 0xFF) << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff);
   }
 
   static int gray(const int r, const int g, const int b) { return (r * 11 + g * 16 + b * 5) / 32; }

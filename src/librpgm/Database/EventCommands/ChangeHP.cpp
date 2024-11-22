@@ -44,7 +44,7 @@ std::string ChangeHPCommand::stringRep(const Database& db) const {
   std::string suffix;
   if (allowKnockout) {
     suffix =
-        ColorFormatter::getColor(Color::Gray) + " " + db.parentheses("Allow Knockout") + ColorFormatter::popColor();
+        ColorFormatter::getColor(FormatColor::Gray) + " " + db.parentheses("Allow Knockout") + ColorFormatter::popColor();
   }
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change HP" + colon.data() +
          actName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr + ColorFormatter::popColor() + suffix;

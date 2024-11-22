@@ -45,7 +45,7 @@ std::string SetMovementRouteCommand::stringRep(const Database& db) const {
 
   std::string moveRoute = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + name +
                           colon.data() + characterName + ColorFormatter::popColor() +
-                          ColorFormatter::getColor(Color::Gray) + stringSuffix + ColorFormatter::popColor();
+                          ColorFormatter::getColor(FormatColor::Gray) + stringSuffix + ColorFormatter::popColor();
 
   const std::string stepColor = ColorFormatter::getColorCode(EventCode::Movement_Route_Step);
   const std::string stepSymbol = symbol(EventCode::Movement_Route_Step);

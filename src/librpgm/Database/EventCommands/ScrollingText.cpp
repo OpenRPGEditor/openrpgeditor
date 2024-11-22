@@ -23,7 +23,7 @@ void ShowScrollTextCommand::serializeParameters(nlohmann::ordered_json& out) con
 std::string ShowScrollTextCommand::stringRep(const Database& db) const {
   static constexpr std::string_view name = "Text(S)";
   std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + name.data() +
-                    colon.data() + ColorFormatter::popColor() + ColorFormatter::getColor(Color::Gray) + "Speed " +
+                    colon.data() + ColorFormatter::popColor() + ColorFormatter::getColor(FormatColor::Gray) + "Speed " +
                     std::to_string(speed) + (noFast == true ? ", No Fast Forward" : "") + ColorFormatter::popColor();
 
   for (const auto& t : text) {

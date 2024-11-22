@@ -29,7 +29,7 @@ std::string ChangeArmorsCommand::stringRep(const Database& db) const {
   }
   std::string suffix;
   if (includeEquipment) {
-    suffix = ColorFormatter::getColor(Color::Gray) + db.parentheses("Include Equipment") + ColorFormatter::popColor();
+    suffix = ColorFormatter::getColor(FormatColor::Gray) + db.parentheses("Include Equipment") + ColorFormatter::popColor();
   }
 
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Armors" + colon.data() +

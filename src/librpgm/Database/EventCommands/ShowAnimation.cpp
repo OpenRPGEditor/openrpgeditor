@@ -21,6 +21,6 @@ std::string ShowAnimationCommand::stringRep(const Database& db) const {
 
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Show Animation" + colon.data() +
          evName + ", " + animName + " " + ColorFormatter::popColor() +
-         (waitForCompletion == true ? ColorFormatter::getColor(Color::Gray) + "(Wait)" + ColorFormatter::popColor()
+         (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + "(Wait)" + ColorFormatter::popColor()
                                     : "");
 }

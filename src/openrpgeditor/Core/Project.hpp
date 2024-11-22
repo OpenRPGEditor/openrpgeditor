@@ -16,6 +16,7 @@
 
 #include "Database/Database.hpp"
 #include "Database/MapInfos.hpp"
+#include "Graphics/ColorTonePreview.hpp"
 
 #include <string_view>
 #include <string>
@@ -182,4 +183,5 @@ private:
 
   float m_menuBarHeight{};
   float m_toolbarSize = 32;
+  ColorTonePreview m_tonePreview = ColorTonePreview(128, 256);
 };

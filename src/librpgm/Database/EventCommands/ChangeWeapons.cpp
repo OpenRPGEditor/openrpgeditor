@@ -28,5 +28,5 @@ std::string ChangeWeaponsCommand::stringRep(const Database& db) const {
           : !var.empty()                                  ? var
                                                           : std::format("#{:04}", operand)) +
          ColorFormatter::popColor() +
-         (includeEquipment == true ? ColorFormatter::getColor(Color::Gray) + "(Include Equipment)" : "");
+         (includeEquipment == true ? ColorFormatter::getColor(FormatColor::Gray) + "(Include Equipment)" : "");
 }

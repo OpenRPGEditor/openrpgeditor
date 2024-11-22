@@ -43,7 +43,7 @@ void ShowChoiceCommand::serializeParameters(nlohmann::ordered_json& out) const {
 
 std::string ShowChoiceCommand::stringRep(const Database& db) const {
   std::string suffix =
-      ColorFormatter::getColor(Color::Gray) + " (" + DecodeEnumName(background) + ", " + DecodeEnumName(positionType);
+      ColorFormatter::getColor(FormatColor::Gray) + " (" + DecodeEnumName(background) + ", " + DecodeEnumName(positionType);
   suffix += (defaultType < 0 ? ", -" : ", #" + std::to_string(defaultType + 1));
   suffix += (cancelType < 0 ? ", -" : ", #" + std::to_string(cancelType + 1)) + ")" + ColorFormatter::popColor();
 

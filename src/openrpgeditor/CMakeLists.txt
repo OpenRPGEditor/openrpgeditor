@@ -379,6 +379,10 @@ add_library(
         Core/Graphics/ColorTonePreview.hpp
         Core/CommonUI/CreateNewProjectDialog.cpp
         Core/CommonUI/CreateNewProjectDialog.hpp
+        Core/CommonUI/ColorTonePicker.cpp
+        Core/CommonUI/ColorTonePicker.hpp
+        Core/CommonUI/ColorFlashPicker.cpp
+        Core/CommonUI/ColorFlashPicker.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${clip_SOURCE_DIR})

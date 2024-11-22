@@ -18,6 +18,7 @@
 #include "nfd.h"
 #include "Database/Serializable/DeserializationQueue.hpp"
 #include "Database/Serializable/SerializationQueue.hpp"
+#include "OREMath/Color.hpp"
 
 #include <clip.h>
 
@@ -370,6 +371,30 @@ void Project::draw() {
   ImGui::RenderNotifications();
 
   drawCreateNewProjectPopup();
+  ImGui::Begin("Test", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
+  {
+    ImGui::Text("Nexus look in Core/Project.cpp on line %i", __LINE__);
+    ImGui::Text("for an example on how to use these!");
+    /* Calling this every frame is safe, if the size is the same it will bail immediately */
+    m_tonePicker.setPreviewSize(60, 100);
+    if (m_tonePicker.draw()) {
+      // Handle modified values here!
+      auto r = m_tonePicker.r();
+      auto g = m_tonePicker.g();
+      auto b = m_tonePicker.b();
+      auto gray = m_tonePicker.gray();
+    }
+    /* Calling this every frame is safe, if the size is the same it will bail immediately */
+    m_flashPicker.setPreviewSize(60, 100);
+    if (m_flashPicker.draw()) {
+      // Handle modified values here!
+      auto r = m_flashPicker.r();
+      auto g = m_flashPicker.g();
+      auto b = m_flashPicker.b();
+      auto intensity = m_flashPicker.intensity();
+    }
+  }
+  ImGui::End();
 }
 
 void Project::drawCreateNewProjectPopup() {

@@ -88,39 +88,3 @@ void ColorTonePreview::setSize(const int width, const int height) {
     m_textureHeight = height;
   }
 }
-
-void ColorTonePreview::draw() {
-  if (!m_texture) {
-    update(0.f, 0.f, 0.f, 0.f);
-  }
-  if (!m_r || !m_g || !m_b || !m_gray) {
-    ImGui::BeginGroup();
-    ImGui::Text("Invalid Parameters!");
-    ImGui::EndGroup();
-    return;
-  }
-  ImGui::BeginGroup();
-  {
-    if (ImGui::SliderInt("Red", m_r, -255, 255)) {
-      m_invalid = true;
-    }
-    if (ImGui::SliderInt("Green", m_g, -255, 255)) {
-      m_invalid = true;
-    }
-    if (ImGui::SliderInt("Blue", m_b, -255, 255)) {
-      m_invalid = true;
-    }
-    if (ImGui::SliderInt("Gray", m_gray, 0, 255)) {
-      m_invalid = true;
-    }
-  }
-  ImGui::EndGroup();
-  ImGui::SameLine();
-  ImGui::BeginGroup();
-  if (m_invalid) {
-    update(*m_r / 255.f, *m_g / 255.f, *m_b / 255.f, *m_gray / 255.f);
-    m_invalid = false;
-  }
-  ImGui::Image(*this, ImVec2{static_cast<float>(width()), static_cast<float>(height())});
-  ImGui::EndGroup();
-}

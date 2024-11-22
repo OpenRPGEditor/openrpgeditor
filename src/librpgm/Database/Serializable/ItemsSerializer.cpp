@@ -4,6 +4,12 @@ void ItemsSerializer::serialize(std::ofstream& os) const {
   try {
     nlohmann::ordered_json data;
 
+    if (m_data.items().empty()) {
+      data.push_back(nullptr);
+      os << data.dump(4);
+      return;
+    }
+
     for (const Item& item : m_data.items()) {
       if (item.m_isValid) {
         data.push_back(item);

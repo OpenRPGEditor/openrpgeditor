@@ -3,6 +3,11 @@
 void TilesetsSerializer::serialize(std::ofstream& os) const {
   try {
     nlohmann::ordered_json data;
+    if (m_data.tilesets().empty()) {
+      data.push_back(nullptr);
+      os << data.dump(4);
+      return;
+    }
 
     for (const Tileset& tileset : m_data.tilesets()) {
       if (tileset.m_isValid) {

@@ -4,6 +4,11 @@ void CommonEventsSerializer::serialize(std::ofstream& os) const {
   try {
     nlohmann::ordered_json data;
 
+    if (m_data.events().empty()) {
+      data.push_back(nullptr);
+      os << data.dump(4);
+      return;
+    }
     for (const auto& event : m_data.events()) {
       data.push_back(event);
     }

@@ -34,7 +34,7 @@ void SerializationQueue::processTask(const std::shared_ptr<ISerializable>& fileD
 
   // Generate a temporary file path in the base directory
   fs::path tempFilePath = fs::temp_directory_path() / fs::path(generateRandomFilename("ore"));
-  fs::path finalFilePath = fs::path(m_basePath) / fs::path(m_currentFile);
+  fs::path finalFilePath = fs::path(m_basePath) / fs::path(fileData->filepath());
 
   std::ofstream outFile(tempFilePath, std::ios::binary);
   if (outFile) {

@@ -4,6 +4,12 @@ void AnimationsSerializer::serialize(std::ofstream& os) const {
   try {
     nlohmann::ordered_json data;
 
+    if (m_data.animations().empty()) {
+      data.push_back(nullptr);
+      os << data.dump(4);
+      return;
+    }
+
     for (const Animation& animation : m_data.animations()) {
       if (animation.m_isValid) {
         data.push_back(animation);

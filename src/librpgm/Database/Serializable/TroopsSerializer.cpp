@@ -4,6 +4,12 @@ void TroopsSerializer::serialize(std::ofstream& os) const {
   try {
     nlohmann::ordered_json data;
 
+    if (m_data.troops().empty()) {
+      data.push_back(nullptr);
+      os << data.dump(4);
+      return;
+    }
+
     for (const Troop& troop : m_data.troops()) {
       if (troop.m_isValid) {
         data.push_back(troop);

@@ -194,7 +194,9 @@ void Project::drawToolbar() {
   ImGui::Begin("##ore_toolbar", nullptr, window_flags);
   ImGui::PopStyleVar();
 
-  ImGui::Button(ICON_FA_FILE, ButtonSize);
+  if (ImGui::Button(ICON_FA_FILE, ButtonSize)) {
+    handleCreateNewProject();
+  }
   if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
     ImGui::ActionTooltip("New Project", "Creates a new project.");
   }
@@ -366,6 +368,63 @@ void Project::draw() {
   }
 
   ImGui::RenderNotifications();
+
+  drawCreateNewProjectPopup();
+}
+
+void Project::drawCreateNewProjectPopup() {
+  static constexpr std::array<std::string_view, 23> directoryList{{"data"sv,
+                                                                   "fonts"sv,
+                                                                   "audio/bgm"sv,
+                                                                   "audio/bgs"sv,
+                                                                   "audio/me"sv,
+                                                                   "audio/se"sv,
+                                                                   "img/animations"sv,
+                                                                   "img/battlebacks1"sv,
+                                                                   "img/battlebacks2"sv,
+                                                                   "img/characters"sv,
+                                                                   "img/enemies"sv,
+                                                                   "img/faces"sv,
+                                                                   "img/parallaxes"sv,
+                                                                   "img/pictures"sv,
+                                                                   "img/sv_actors"sv,
+                                                                   "img/sv_enemies"sv,
+                                                                   "img/system"sv,
+                                                                   "img/tilesets"sv,
+                                                                   "img/titles1"sv,
+                                                                   "img/titles2"sv,
+                                                                   "js/libs"sv,
+                                                                   "js/plugins"sv,
+                                                                   "movies"sv}};
+
+  const auto [closed, confirmed] = m_createNewProject.draw();
+  if (closed) {
+    if (confirmed) {
+      const auto projectName = m_createNewProject.projectName();
+      const auto gameTitle = m_createNewProject.gameTitle();
+
+      const auto projectPath = Settings::instance()->projectBaseDirectory / std::filesystem::path(projectName);
+
+      if (create_directories(projectPath)) {
+        for (const auto& directory : directoryList) {
+          create_directories(projectPath / directory);
+        }
+
+        auto projectFilePath = projectPath / std::filesystem::path("Game.rpgproject");
+        std::ofstream projectFile(projectFilePath);
+        projectFile << KnownRPGMVVersions[KnownRPGMVVersions.size() - 2] << std::endl;
+        SerializationQueue::instance().setBasepath(projectPath.generic_string());
+        m_database.emplace(projectPath.generic_string(), projectFilePath.generic_string(),
+                           KnownRPGMVVersions[KnownRPGMVVersions.size() - 2]);
+        m_database->system.gameTitle = gameTitle;
+        m_database->system.locale = "en_US";
+        m_database->system.versionId = floor(rand() * 100000000);
+        m_database->serializeProject();
+        while (SerializationQueue::instance().hasTasks()) {}
+        load(projectFilePath.generic_string(), projectPath.generic_string());
+      }
+    }
+  }
 }
 
 void Project::drawTileInfo(MapRenderer::MapLayer& mapLayer, int z) {
@@ -449,6 +508,8 @@ void Project::handleOpenFile() {
   }
 }
 
+void Project::handleCreateNewProject() { m_createNewProject.SetOpen(true); }
+
 void Project::handleUndo() {
   if (!m_undoStack.hasCommands()) {
     return;
@@ -479,7 +540,7 @@ void Project::drawMenu() {
   if (ImGui::BeginMainMenuBar()) {
     if (ImGui::BeginMenu("File")) {
       if (ImGui::MenuItem(ICON_FA_FILE "  New Project...", "Ctrl+N")) {
-        // TODO: Implement project creation
+        handleCreateNewProject();
       }
       if (ImGui::MenuItem(ICON_FA_FOLDER " Open Project...", "Ctrl+O")) {
         handleOpenFile();

@@ -5,6 +5,11 @@
 void SkillsSerializer::serialize(std::ofstream& os) const {
   try {
     nlohmann::ordered_json data;
+    if (m_data.skills().empty()) {
+      data.push_back(nullptr);
+      os << data.dump(4);
+      return;
+    }
 
     for (const Skill& skill : m_data.skills()) {
       if (skill.m_isValid) {

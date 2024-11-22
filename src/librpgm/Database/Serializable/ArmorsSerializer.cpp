@@ -4,6 +4,12 @@ void ArmorsSerializer::serialize(std::ofstream& os) const {
   try {
     nlohmann::ordered_json data;
 
+    if (m_data.armors().empty()) {
+      data.push_back(nullptr);
+      os << data.dump(4);
+      return;
+    }
+
     for (const Armor& armor : m_data.armors()) {
       if (armor.m_isValid) {
         data.push_back(armor);

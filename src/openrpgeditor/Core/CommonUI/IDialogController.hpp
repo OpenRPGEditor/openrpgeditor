@@ -18,7 +18,7 @@ struct IDialogController {
   }
 
 protected:
-  int m_parentIndent;
+  int m_parentIndent{0};
   bool m_confirmed{false};
   bool m_open{false};
   std::string m_name;

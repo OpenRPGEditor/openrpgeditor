@@ -4,6 +4,12 @@ void ClassesSerializer::serialize(std::ofstream& os) const {
   try {
     nlohmann::ordered_json data;
 
+    if (m_data.classes().empty()) {
+      data.push_back(nullptr);
+      os << data.dump(4);
+      return;
+    }
+
     for (const Class& cls : m_data.classes()) {
       if (cls.m_isValid) {
         data.push_back(cls);

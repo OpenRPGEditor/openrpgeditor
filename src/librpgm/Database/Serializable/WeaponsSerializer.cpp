@@ -4,6 +4,12 @@ void WeaponsSerializer::serialize(std::ofstream& os) const {
   try {
     nlohmann::ordered_json data;
 
+    if (m_data.weapons().empty()) {
+      data.push_back(nullptr);
+      os << data.dump(4);
+      return;
+    }
+
     for (const Weapon& weapon : m_data.weapons()) {
       if (weapon.m_isValid) {
         data.push_back(weapon);

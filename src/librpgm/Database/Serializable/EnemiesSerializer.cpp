@@ -4,6 +4,12 @@ void EnemiesSerializer::serialize(std::ofstream& os) const {
   try {
     nlohmann::ordered_json data;
 
+    if (m_data.enemies().empty()) {
+      data.push_back(nullptr);
+      os << data.dump(4);
+      return;
+    }
+
     for (const Enemy& enemy : m_data.enemies()) {
       if (enemy.m_isValid) {
         data.push_back(enemy);

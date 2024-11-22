@@ -138,6 +138,9 @@ Map Database::loadMap(int mapId) {
 }
 
 void Database::serializeProject() {
+  SerializationQueue::instance().enqueue(
+    std::make_shared<CommonEventsSerializer>(commonEvents, "data/CommonEvents.json"),
+    [this](const std::shared_ptr<ISerializable>& serializer) {});
   SerializationQueue::instance().enqueue(std::make_shared<SystemSerializer>(system, "data/System.json"),
                                          [this](const std::shared_ptr<ISerializable>& serializer) {});
   SerializationQueue::instance().enqueue(std::make_shared<ActorsSerializer>(actors, "data/Actors.json"),
@@ -162,9 +165,7 @@ void Database::serializeProject() {
                                          [this](const std::shared_ptr<ISerializable>& serializer) {});
   SerializationQueue::instance().enqueue(std::make_shared<TilesetsSerializer>(tilesets, "data/Tilesets.json"),
                                          [this](const std::shared_ptr<ISerializable>& serializer) {});
-  SerializationQueue::instance().enqueue(
-      std::make_shared<CommonEventsSerializer>(commonEvents, "data/CommonEvents.json"),
-      [this](const std::shared_ptr<ISerializable>& serializer) {});
+
   /* TODO: Implement Serializers */
   plugins.serialize(basePath + "/js/plugins.js");
   mapInfos.serialize(basePath + "/data/MapInfos.json");

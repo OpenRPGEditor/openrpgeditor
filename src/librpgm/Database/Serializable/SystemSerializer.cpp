@@ -1,7 +1,7 @@
 #include "SystemSerializer.hpp"
 
 void SystemSerializer::serialize(std::ofstream& os) const {
-  try {
+  // try {
     nlohmann::ordered_json data = m_data;
     if (m_data.encryptionKey && (m_data.hasEncryptedAudio || m_data.hasEncryptedImages)) {
       data["hasEncryptedImages"] = m_data.hasEncryptedImages ? *m_data.hasEncryptedImages : false;
@@ -9,7 +9,7 @@ void SystemSerializer::serialize(std::ofstream& os) const {
       data["encryptionKey"] = *m_data.encryptionKey;
     }
     os << data.dump(4);
-  } catch (...) {}
+  // } catch (...) {}
 }
 
 void SystemSerializer::deserialize(std::ifstream& is) {

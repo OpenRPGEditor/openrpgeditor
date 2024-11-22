@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CommonUI/CreateNewProjectDialog.hpp"
 #include "Core/DatabaseEditor.hpp"
 #include "Core/EventListView.hpp"
 #include "Core/MapEditor.hpp"
@@ -19,6 +20,7 @@
 #include <string_view>
 #include <string>
 
+class CreateNewProjectDialog;
 enum class EditMode {
   Map,
   Event,
@@ -52,6 +54,7 @@ public:
   void draw();
   void drawTileInfo(MapRenderer::MapLayer& mapLayer, int z);
   void handleOpenFile();
+  void handleCreateNewProject();
   void handleUndo();
   void handleRedo();
 
@@ -149,6 +152,7 @@ public:
 private:
   void drawMenu();
   void drawToolbar();
+  void drawCreateNewProjectPopup();
   void drawTileDebugger();
   void handleKeyboardShortcuts();
   MapListView m_mapListView;
@@ -161,6 +165,7 @@ private:
   bool m_isValid = false;
   bool m_isLoaded = false;
   bool m_isModified = false;
+  CreateNewProjectDialog m_createNewProject = CreateNewProjectDialog("Create New Project");
 
   std::optional<Database> m_database;
 

@@ -3,6 +3,12 @@
 void StatesSerializer::serialize(std::ofstream& os) const {
   try {
     nlohmann::ordered_json data;
+    if (m_data.states().empty()) {
+      data.push_back(nullptr);
+      os << data.dump(4);
+      return;
+    }
+
 
     for (const State& state : m_data.states()) {
       if (state.m_isValid) {

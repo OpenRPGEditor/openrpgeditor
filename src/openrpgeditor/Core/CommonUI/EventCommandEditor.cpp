@@ -48,7 +48,7 @@ void EventCommandEditor::draw() {
         for (int n = 0; n < m_commands->size(); n++) {
           const bool isSelected =
               (m_selectedCommand == n || (m_selectedEnd != -1 && n > m_selectedCommand && n <= m_selectedEnd));
-          std::string indentPad = m_commands->at(n)->stringRep(m_project->database());
+          std::string indentPad = m_commands->at(n)->stringRep(*Database::instance());
           auto str = splitString(indentPad, '\n');
           float height = 0.f;
           for (int i = 0; i < str.size(); ++i) {
@@ -148,7 +148,13 @@ void EventCommandEditor::draw() {
 
       ImGui::EndTable();
     }
-
+    if (ImGui::IsKeyPressed((ImGuiKey_Delete))) {
+      if (m_commands->at(m_selectedCommand)->code() != EventCode::Event_Dummy) {
+        int start = m_selectedCommand;
+        int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd;
+        m_commands->erase(m_commands->begin() + start, m_commands->begin() + end);
+      }
+    }
     if (ImGui::IsKeyPressed(ImGuiKey_V) &&
         (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
       clip::lock l;
@@ -173,6 +179,20 @@ void EventCommandEditor::draw() {
       CommandParser::serialize(cmdJson, commands);
       auto v = cmdJson.dump();
       l.set_data(RPGMVEventCommandFormat, v.data(), v.size());
+    }
+    else if (ImGui::IsKeyPressed(ImGuiKey_X) &&
+               (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
+      if (m_commands->at(m_selectedCommand)->code() != EventCode::Event_Dummy) {
+          clip::lock l;
+          int start = m_selectedCommand;
+          int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd;
+          std::vector<std::shared_ptr<IEventCommand>> commands(m_commands->begin() + start, m_commands->begin() + end);
+          nlohmann::ordered_json cmdJson;
+          CommandParser::serialize(cmdJson, commands);
+          auto v = cmdJson.dump();
+          l.set_data(RPGMVEventCommandFormat, v.data(), v.size());
+          m_commands->erase(m_commands->begin() + start, m_commands->begin() + end);
+      }
     }
   }
   ImGui::EndGroup();
@@ -760,10 +780,27 @@ void EventCommandEditor::drawPopup() {
 
         // Event Templates
         ImGui::PushItemWidth(App::DPIHandler::scale_value(500));
-        if (ImGui::BeginCombo("##commandwindow_templates", m_currentTemplate.c_str())) {
-          for (const auto self : {"Window Display", "Window Reset", "ARPG - Start", "ARPG - Stop"}) {
-            if (ImGui::Selectable(self, self == m_currentTemplate)) {
-              m_currentTemplate = self;
+        if (ImGui::BeginCombo("##eventcommand_editor_presets", "Select a preset to insert into selection...")) {
+          int index{0};
+          for (auto& templ : Database::instance()->templates.templates) {
+            if (templ.type == Template::TemplateType::Command) {
+              if (!templ.commands.empty()) {
+                if (ImGui::Selectable(templ.name.c_str(), false)) {
+
+                  CommandParser parser;
+                  nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(templ.commands);
+                  std::vector<std::shared_ptr<IEventCommand>> parsed = parser.parse(cmdJson);
+
+                  if ((parsed.size() == 1 && parsed.at(0)->code() == EventCode::Event_Dummy) == false) {
+                    m_commands->insert(m_commands->begin() + m_selectedCommand, parsed.begin(), parsed.end() - 1);
+                  }
+                  ImGui::CloseCurrentPopup();
+                }
+                index++;
+              }
+              else {
+                if (ImGui::Selectable(("Error loading template: " + templ.name).c_str(), false)) {}
+              }
             }
           }
           ImGui::EndCombo();

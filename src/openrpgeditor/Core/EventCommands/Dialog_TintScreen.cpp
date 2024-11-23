@@ -95,14 +95,14 @@ std::tuple<bool, bool> Dialog_TintScreen::draw() {
             int index{0};
             for (auto& templ : Database::instance()->templates.templates) {
               if (templ.type == Template::TemplateType::Tint) {
-                if (!templ.commands.empty()) {
+                if (!templ.parameters.empty()) {
                   bool is_selected = m_currentTemplate == index;
                   if (ImGui::Selectable(templ.name.c_str(), is_selected)) {
                     m_currentTemplate = index;
-                    r = templ.commands.at(0);
-                    g = templ.commands.at(1);
-                    b = templ.commands.at(2);
-                    gray = templ.commands.at(3);
+                    r = templ.parameters.at(0);
+                    g = templ.parameters.at(1);
+                    b = templ.parameters.at(2);
+                    gray = templ.parameters.at(3);
                     if (is_selected)
                       ImGui::SetItemDefaultFocus();
                   }

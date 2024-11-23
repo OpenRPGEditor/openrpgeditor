@@ -169,7 +169,7 @@ private:
   Project* m_project = nullptr;
   bool m_isNewEntry{false};
   bool m_needsUpdate{false};
-  std::string m_currentTemplate;
+  int m_currentTemplate{-1};
   int m_selectedCommand = -1;
   int m_selectedEnd = -1;
   int m_hoveringCommand = -1;

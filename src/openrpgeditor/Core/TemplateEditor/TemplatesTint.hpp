@@ -19,10 +19,10 @@ struct TemplatesTint : IDBTemplates {
     return std::vector<int>(std::initializer_list<int>{r, g, b, gray});
   }
   bool hasChanges() override {
-    return r != m_currentTemplate->commands.at(0)
-           || g != m_currentTemplate->commands.at(1)
-           || b != m_currentTemplate->commands.at(2)
-           || gray != m_currentTemplate->commands.at(3);
+    return r != m_currentTemplate->parameters.at(0)
+           || g != m_currentTemplate->parameters.at(1)
+           || b != m_currentTemplate->parameters.at(2)
+           || gray != m_currentTemplate->parameters.at(3);
   }
 private:
   Template* m_currentTemplate;

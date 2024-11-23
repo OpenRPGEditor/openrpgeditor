@@ -10,9 +10,4 @@ TemplatesCommand::TemplatesCommand(Template* templ,DatabaseEditor* parent)
 }
 
 void TemplatesCommand::draw() {
-  ImGui::BeginChild("#orpg_template_editor_commands");
-  {
-    ImGui::SeparatorText("Command");
-  }
-  ImGui::EndChild();
 };

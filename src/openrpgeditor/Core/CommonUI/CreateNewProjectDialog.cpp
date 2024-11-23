@@ -55,9 +55,9 @@ std::tuple<bool, bool> CreateNewProjectDialog::draw() {
       ImGui::EndGroup();
       ImGui::BeginGroup();
       {
-        char location[PATH_MAX];
-        strncpy(location, Settings::instance()->projectBaseDirectory.c_str(), PATH_MAX);
-        if (ImGui::LabelOverLineEdit("##project_location_label", "Location:", location, PATH_MAX, 0.f, nullptr,
+        char location[4096];
+        strncpy(location, Settings::instance()->projectBaseDirectory.c_str(), 4096);
+        if (ImGui::LabelOverLineEdit("##project_location_label", "Location:", location, 4096, 0.f, nullptr,
                                      ImGuiInputTextFlags_None)) {
           Settings::instance()->projectBaseDirectory = location;
         }

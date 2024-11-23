@@ -3,6 +3,8 @@
 #include <map>
 #include <string>
 #include <nlohmann/json.hpp>
+#include <memory>
+#include <Database/EventCommands/IEventCommand.hpp>
 
 class Template {
 public:
@@ -12,8 +14,8 @@ public:
   enum class TemplateType { Command, Tint };
   std::string name;
   TemplateType type;
-  std::vector<int> commands;
-  std::vector<std::string> parameters;
+  std::string commands;
+  std::vector<int> parameters;
 };
 
 void to_json(nlohmann::ordered_json& j, const Template& templ);

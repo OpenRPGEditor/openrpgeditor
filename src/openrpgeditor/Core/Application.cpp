@@ -25,6 +25,10 @@
 #include "Core/NWJSVersionManager.hpp"
 #include "Database/Serializable/DeserializationQueue.hpp"
 #include "Database/Serializable/SerializationQueue.hpp"
+#include "FirstBootWizard/ProjectLocationPage.hpp"
+#include "FirstBootWizard/RPGMakerLocationAndVersionPage.hpp"
+#include "FirstBootWizard/UISettingsPage.hpp"
+#include "FirstBootWizard/WelcomePage.hpp"
 
 #include <iostream>
 namespace App {
@@ -68,74 +72,10 @@ Application::~Application() {
   SDL_Quit();
 }
 
-ExitStatus Application::run() {
-  NFD_Init();
-  /* Do an initial clear */
-  SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 28, 38, 43, 255);
-  SDL_RenderClear(m_window->getNativeRenderer());
-  SDL_RenderPresent(m_window->getNativeRenderer());
-
-  if (m_exitStatus == ExitStatus::Failure) {
-    return m_exitStatus;
-  }
-
-  // Setup Dear ImGui context
-  IMGUI_CHECKVERSION();
-  ImGui::CreateContext();
-  /* Allocate a much larger temp buffer for large strings */
-  // ImGui::GetCurrentContext()->TempBuffer.resize(8192 * 3 + 2);
-  ImPlot::CreateContext();
-  ImGuiIO& io{ImGui::GetIO()};
-
-  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable |
-                    ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_NavEnableGamepad |
-                    ImGuiConfigFlags_DpiEnableScaleFonts | ImGuiConfigFlags_DpiEnableScaleViewports;
-
-  // Absolute imgui.ini path to preserve settings independent of app location.
-  static const std::string imgui_ini_filename{m_userConfigPath + "imgui.ini"};
-  io.IniFilename = imgui_ini_filename.c_str();
-
-  // ImGUI font
-  const float fontScale = DPIHandler::get_ui_scale() * 2;
-  const float font_size{m_settings.fontSize * fontScale};
-  const float mono_font_size{m_settings.monoFontSize * fontScale};
-  const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
-  const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf").generic_string()};
-  const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf").generic_string()};
-  const std::string font_path_awesome{Resources::font_path("Font Awesome 6 Free-Solid-900.otf").generic_string()};
-  const std::string font_path_mono{Resources::font_path("mplus-1m-regular.ttf").generic_string()};
-
-  static constexpr ImWchar specialChar[] = {
-      /* clang-format off */
-      0x0001, 0xFFFF,
-      0
-      /* clang-format on */
-  };
-
-  ImVector<ImWchar> ranges;
-  ImFontGlyphRangesBuilder builder;
-  builder.AddRanges(specialChar);
-  builder.BuildRanges(&ranges);
-  ImFontConfig config;
-  config.MergeMode = false;
-  config.FontBuilderFlags |= ImGuiFreeTypeBuilderFlags_ForceAutoHint | ImGuiFreeTypeBuilderFlags_LoadColor;
-  m_mainFont = io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, &config, ranges.Data);
-  config.MergeMode = true;
-  io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), font_size, &config, ranges.Data);
-  io.Fonts->Build();
-
-  config.MergeMode = false;
-  config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_Bold;
-  m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_mono.c_str(), mono_font_size, &config, ranges.Data);
-  config.MergeMode = true;
-  io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), mono_font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), mono_font_size, &config, ranges.Data);
-  io.Fonts->Build();
-  io.FontGlobalScale = 1.f / fontScale;
-
-  auto& style = ImGui::GetStyle();
+void Application::updateScale() {
+  ImGui::GetStyle() = ImGuiStyle();
+  updateGuiColors();
+  ImGuiStyle& style = ImGui::GetStyle();
   style.WindowRounding = 6.f;
   style.FrameRounding = 2.0f;
   // style.ScrollbarSize = 18.f;
@@ -147,7 +87,10 @@ ExitStatus Application::run() {
   style.DockingSeparatorSize = 6.f;
   style.ScaleAllSizes(DPIHandler::get_ui_scale());
   style.ScrollbarSize = 18.f;
+}
 
+void Application::updateGuiColors() {
+  ImGuiStyle& style = ImGui::GetStyle();
   auto* colors = style.Colors;
   colors[ImGuiCol_Text] = ImVec4(0.95f, 0.96f, 0.98f, 1.00f);
   colors[ImGuiCol_TextDisabled] = ImVec4(0.36f, 0.42f, 0.47f, 1.00f);
@@ -204,6 +147,82 @@ ExitStatus Application::run() {
   colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
   colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
   colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+}
+
+void Application::updateFonts() {
+  ImGuiIO& io{ImGui::GetIO()};
+  // ImGUI font
+  const float fontScale = DPIHandler::get_ui_scale() * 2;
+  const float font_size = m_settings.fontSize * fontScale;
+  const float mono_font_size = m_settings.monoFontSize * fontScale;
+  const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
+  const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf").generic_string()};
+  const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf").generic_string()};
+  const std::string font_path_awesome{Resources::font_path("Font Awesome 6 Free-Solid-900.otf").generic_string()};
+  const std::string font_path_mono{Resources::font_path("mplus-1m-regular.ttf").generic_string()};
+
+  static constexpr ImWchar specialChar[] = {
+      /* clang-format off */
+      0x0001, 0xFFFF,
+      0
+      /* clang-format on */
+  };
+
+  ImVector<ImWchar> ranges;
+  ImFontGlyphRangesBuilder builder;
+  builder.AddRanges(specialChar);
+  builder.BuildRanges(&ranges);
+  ImFontConfig config;
+  io.Fonts->Clear();
+  config.MergeMode = false;
+  config.FontBuilderFlags |= ImGuiFreeTypeBuilderFlags_ForceAutoHint | ImGuiFreeTypeBuilderFlags_LoadColor;
+  m_mainFont = io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, &config, ranges.Data);
+  config.MergeMode = true;
+  io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), font_size, &config, ranges.Data);
+  io.Fonts->Build();
+
+  config.MergeMode = false;
+  config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_Bold;
+  m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_mono.c_str(), mono_font_size, &config, ranges.Data);
+  config.MergeMode = true;
+  io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), mono_font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), mono_font_size, &config, ranges.Data);
+  io.Fonts->Build();
+  io.FontGlobalScale = 1.f / fontScale;
+
+  updateScale();
+}
+
+ExitStatus Application::run() {
+  NFD_Init();
+  /* Do an initial clear */
+  SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 28, 38, 43, 255);
+  SDL_RenderClear(m_window->getNativeRenderer());
+  SDL_RenderPresent(m_window->getNativeRenderer());
+
+  if (m_exitStatus == ExitStatus::Failure) {
+    return m_exitStatus;
+  }
+
+  // Setup Dear ImGui context
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  /* Allocate a much larger temp buffer for large strings */
+  // ImGui::GetCurrentContext()->TempBuffer.resize(8192 * 3 + 2);
+  ImPlot::CreateContext();
+  ImGuiIO& io{ImGui::GetIO()};
+
+  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable |
+                    ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_NavEnableGamepad |
+                    ImGuiConfigFlags_DpiEnableScaleFonts | ImGuiConfigFlags_DpiEnableScaleViewports;
+
+  // Absolute imgui.ini path to preserve settings independent of app location.
+  static const std::string imgui_ini_filename{m_userConfigPath + "imgui.ini"};
+  io.IniFilename = imgui_ini_filename.c_str();
+
+  updateFonts();
 
   //  Setup Platform/Renderer backends
   ImGui_ImplSDL2_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
@@ -214,8 +233,25 @@ ExitStatus Application::run() {
   uint32_t a = SDL_GetTicks();
   double delta = 0;
   bool warmup = true;
+
+  // Check if we need to run the FirstBoot wizard
+  if (!Settings::instance()->ranFirstBootWizard) {
+    m_firstBootWizard.emplace();
+    m_firstBootWizard->addPage(std::make_shared<WelcomePage>());
+    m_firstBootWizard->addPage(std::make_shared<UISettingsPage>());
+    m_firstBootWizard->addPage(std::make_shared<RPGMakerLocationAndVersionPage>());
+    m_firstBootWizard->addPage(std::make_shared<ProjectLocationPage>());
+  }
   int warmupFrames = 0;
   while (true) {
+    if (m_fontUpdateRequested && m_fontUpdateDelay <= 0) {
+      ImGui_ImplSDLRenderer2_Shutdown();
+      ImGui_ImplSDL2_Shutdown();
+      updateFonts();
+      ImGui_ImplSDL2_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
+      ImGui_ImplSDLRenderer2_Init(m_window->getNativeRenderer());
+      m_fontUpdateRequested = false;
+    }
     if (!m_running) {
       DeserializationQueue::instance().abort();
       SerializationQueue::instance().abort();
@@ -225,6 +261,11 @@ ExitStatus Application::run() {
     delta = SDL_GetTicks() - a;
 
     if (delta >= 1000.0 / 60.0 || warmup) {
+
+      if (m_fontUpdateRequested && m_fontUpdateDelay > 0) {
+        m_fontUpdateDelay--;
+      }
+
       if (warmup && delta >= 1000.0 / 60.0) {
         a = SDL_GetTicks();
         ++warmupFrames;
@@ -261,7 +302,14 @@ ExitStatus Application::run() {
 
       ImGui::NewFrame();
 
-      m_project.draw();
+      if (m_firstBootWizard && m_firstBootWizard->draw()) {
+        Settings::instance()->ranFirstBootWizard = true;
+        m_firstBootWizard.reset();
+      }
+
+      if (!m_firstBootWizard) {
+        m_project.draw();
+      }
 
       // Rendering
       ImGui::Render();

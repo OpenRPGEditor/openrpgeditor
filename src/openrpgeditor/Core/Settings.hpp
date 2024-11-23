@@ -6,10 +6,9 @@
 #include <deque>
 
 struct Settings {
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Settings, window, mru, lastDirectory, uiScale, fontSize, monoFontSize,
-                                              currentNWJSVersion, projectBaseDirectory);
   struct WindowRect {
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(WindowRect, x, y, w, h, maximized);
+    friend void to_json(nlohmann::ordered_json& j, const WindowRect& r);
+    friend void from_json(const nlohmann::ordered_json& j, WindowRect& r);
     int x{};
     int y{};
     int w{1920};
@@ -24,13 +23,19 @@ struct Settings {
   std::deque<std::pair<std::string, std::string>> mru;
   std::string lastDirectory;
   std::string projectBaseDirectory;
+  std::string rpgMakerLocation;
+  int rpgMakerVersion{-1};
   float uiScale{1.0};
-  float fontSize{12.f};
-  float monoFontSize{12.f};
+  int fontSize{12};
+  int monoFontSize{12};
   std::string currentNWJSVersion;
+  bool ranFirstBootWizard{false};
 
   [[nodiscard]] static Settings* instance() { return m_instance; }
 
 private:
   static Settings* m_instance;
 };
+
+void to_json(nlohmann::ordered_json& j, const Settings::WindowRect& r);
+void from_json(const nlohmann::ordered_json& j, Settings::WindowRect& r);

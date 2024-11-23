@@ -1,5 +1,7 @@
 #pragma once
 
+#include "FirstBootWizard.hpp"
+
 #include <SDL2/SDL.h>
 
 #include <memory>
@@ -7,8 +9,6 @@
 
 #include "Core/Window.hpp"
 #include "Project.hpp"
-#include "Database/Serializable/DeserializationQueue.hpp"
-#include "Database/Serializable/SerializationQueue.hpp"
 
 #include <optional>
 
@@ -23,6 +23,14 @@ class Application {
 public:
   explicit Application(const std::string& title);
   ~Application();
+  void updateScale();
+  void updateGuiColors();
+  void requestFontUpdate() {
+    m_fontUpdateRequested = true;
+    m_fontUpdateDelay = 1;
+  }
+
+  bool fontUpdateRequestPerformed() const { return m_fontUpdateDelay <= 0 && !m_fontUpdateRequested; }
 
   Application(const Application&) = delete;
   Application(Application&&) = delete;
@@ -43,6 +51,7 @@ public:
   [[nodiscard]] ImFont* getMonoFont() const { return m_monoFont; }
 
 private:
+  void updateFonts();
   ExitStatus m_exitStatus{ExitStatus::Success};
   std::unique_ptr<Window> m_window{nullptr};
 
@@ -53,6 +62,9 @@ private:
   Project m_project;
   ImFont* m_mainFont{};
   ImFont* m_monoFont{};
+  std::optional<FirstBootWizard> m_firstBootWizard;
+  bool m_fontUpdateRequested{false};
+  int m_fontUpdateDelay = 1;
 };
 
 extern Application* APP;

@@ -6,7 +6,9 @@ CheckerboardTexture::CheckerboardTexture(const int width, const int height, cons
 : m_width(width), m_height(height) {
   const uint8_t colors[2]{oddColor, evenColor};
   auto* data = static_cast<uint8_t*>(malloc(width * height * 4));
+#pragma unroll
   for (int y = 0; y < height * 4; y += 4) {
+#pragma unroll
     for (int x = 0; x < width * 4; x += 4) {
       const uint8_t c = colors[y / static_cast<int>(cellSize) % 2 ^ x / static_cast<int>(cellSize) % 2];
       *(data + (y * width + x) + 0) = c;

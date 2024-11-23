@@ -112,6 +112,7 @@ add_library(
         Database/Effect.cpp
         Database/Trait.cpp
         Database/Damage.cpp
+        Database/Versions.hpp
         #Database/Serializable/MapInfosSerializer.cpp
         #Database/Serializable/MapInfosSerializer.hpp
 )

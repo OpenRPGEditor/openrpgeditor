@@ -8,7 +8,7 @@ add_subdirectory(Math)
 
 add_library(
         orecore STATIC
-        
+
         Core/Application.cpp
         Core/Application.hpp
 
@@ -366,7 +366,6 @@ add_library(
         Core/MapEditor/MapRenderer.hpp
 
 
-
         Core/Graphics/Image.cpp
         Core/Graphics/Image.hpp
         Core/NWJSVersionManager.cpp
@@ -383,6 +382,24 @@ add_library(
         Core/CommonUI/ColorTonePicker.hpp
         Core/CommonUI/ColorFlashPicker.cpp
         Core/CommonUI/ColorFlashPicker.hpp
+        Core/Graphics/GameWindowBackground.cpp
+        Core/Graphics/GameWindowBackground.hpp
+        Core/FirstBootWizard.cpp
+        Core/FirstBootWizard.hpp
+
+        Core/DownloadManager.cpp
+        Core/DownloadManager.hpp
+        Core/TemplateEditor/TemplatesCommand.cpp
+        Core/TemplateEditor/TemplatesCommand.hpp
+        Core/FirstBootWizard/IWizardPage.hpp
+        Core/FirstBootWizard/WelcomePage.cpp
+        Core/FirstBootWizard/WelcomePage.hpp
+        Core/FirstBootWizard/UISettingsPage.cpp
+        Core/FirstBootWizard/UISettingsPage.hpp
+        Core/FirstBootWizard/RPGMakerLocationAndVersionPage.cpp
+        Core/FirstBootWizard/RPGMakerLocationAndVersionPage.hpp
+        Core/FirstBootWizard/ProjectLocationPage.cpp
+        Core/FirstBootWizard/ProjectLocationPage.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${clip_SOURCE_DIR})
@@ -420,17 +437,13 @@ add_executable(${NAME} WIN32 MACOSX_BUNDLE
         App/Main.cpp
         App/ProjectInfo.hpp
         App/ProjectInfo.cpp
-        Core/DownloadManager.cpp
-        Core/DownloadManager.hpp
-        Core/TemplateEditor/TemplatesCommand.cpp
-        Core/TemplateEditor/TemplatesCommand.hpp
 )
 
 
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/AppAssets.cmake)
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/Packaging.cmake)
 
-target_include_directories(${NAME} PUBLIC )
+target_include_directories(${NAME} PUBLIC)
 target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML)
 target_compile_features(${NAME} PRIVATE cxx_std_20)
 target_link_libraries(
@@ -461,4 +474,9 @@ if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
             _DEBUG
             DEBUG
     )
+endif ()
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    # GCC and Clang
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -funroll-loops")
 endif()

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "CommonUI/ColorFlashPicker.hpp"
-#include "CommonUI/ColorTonePicker.hpp"
 #include "CommonUI/CreateNewProjectDialog.hpp"
 #include "Core/DatabaseEditor.hpp"
 #include "Core/EventListView.hpp"
@@ -18,7 +16,6 @@
 
 #include "Database/Database.hpp"
 #include "Database/MapInfos.hpp"
-#include "Graphics/ColorTonePreview.hpp"
 
 #include <string_view>
 #include <string>
@@ -185,6 +182,4 @@ private:
 
   float m_menuBarHeight{};
   float m_toolbarSize = 32;
-  ColorTonePicker m_tonePicker{};
-  ColorFlashPicker m_flashPicker{};
 };

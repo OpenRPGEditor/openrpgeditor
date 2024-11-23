@@ -4,10 +4,7 @@
 
 sf::Vector3f stereoPanPosition(float panAmount) {
   // make sure that panAmount is in the range [-1, 1] (-1 is left; 1 is right)
-  if (panAmount > 1.f)
-    panAmount = 1.f;
-  if (panAmount < -1.f)
-    panAmount = -1.f;
+  panAmount = std::clamp(panAmount, -1.f, 1.f);
   return {panAmount, 0.f, panAmount < 0.f ? -panAmount - 1.f : panAmount - 1.f};
 }
 

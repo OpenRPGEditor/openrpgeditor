@@ -7,20 +7,32 @@ bool ColorTonePicker::draw() {
   {
     ImGui::BeginGroup();
     {
-      if (ImGui::SliderInt(std::format("Red##color_preview_red_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(),
+      ImGui::Text("Red");
+      ImGui::Spacing();
+      ImGui::Text("Green");
+      ImGui::Spacing();
+      ImGui::Text("Blue");
+      ImGui::Spacing();
+      ImGui::Text("Gray");
+    }
+    ImGui::EndGroup();
+    ImGui::SameLine();
+    ImGui::BeginGroup();
+    {
+      if (ImGui::SliderInt(std::format("##color_preview_red_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(),
                            &m_r, -255, 255)) {
         m_toneInvalid = m_modified = true;
       }
       if (ImGui::SliderInt(
-              std::format("Green##color_preview_green_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(), &m_g, -255,
+              std::format("##color_preview_green_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(), &m_g, -255,
               255)) {
         m_toneInvalid = m_modified = true;
       }
-      if (ImGui::SliderInt(std::format("Blue##color_preview_blue_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(),
+      if (ImGui::SliderInt(std::format("##color_preview_blue_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(),
                            &m_b, -255, 255)) {
         m_toneInvalid = m_modified = true;
       }
-      if (ImGui::SliderInt(std::format("Gray##color_preview_gray_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(),
+      if (ImGui::SliderInt(std::format("##color_preview_gray_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(),
                            &m_gray, 0, 255)) {
         m_toneInvalid = m_modified = true;
       }

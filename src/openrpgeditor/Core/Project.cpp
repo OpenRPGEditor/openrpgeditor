@@ -20,6 +20,7 @@
 #include "Database/Serializable/SerializationQueue.hpp"
 
 #include "Database/Versions.hpp"
+#include "Graphics/GameWindowBackground.hpp"
 
 #include <clip.h>
 

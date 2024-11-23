@@ -400,6 +400,8 @@ add_library(
         Core/FirstBootWizard/RPGMakerLocationAndVersionPage.hpp
         Core/FirstBootWizard/ProjectLocationPage.cpp
         Core/FirstBootWizard/ProjectLocationPage.hpp
+        Core/CommonUI/GameWindowColorPicker.cpp
+        Core/CommonUI/GameWindowColorPicker.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${clip_SOURCE_DIR})

@@ -12,21 +12,33 @@ bool ColorFlashPicker::draw() {
   {
     ImGui::BeginGroup();
     {
-      if (ImGui::SliderInt(std::format("Red##color_preview_red_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(),
+      ImGui::Text("Red");
+      ImGui::Spacing();
+      ImGui::Text("Green");
+      ImGui::Spacing();
+      ImGui::Text("Blue");
+      ImGui::Spacing();
+      ImGui::Text("Intensity");
+    }
+    ImGui::EndGroup();
+    ImGui::SameLine();
+    ImGui::BeginGroup();
+    {
+      if (ImGui::SliderInt(std::format("##color_preview_red_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(),
                            &m_r, 0, 255)) {
         m_modified = true;
       }
       if (ImGui::SliderInt(
-              std::format("Green##color_preview_green_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(), &m_g, 0,
+              std::format("##color_preview_green_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(), &m_g, 0,
               255)) {
         m_modified = true;
       }
-      if (ImGui::SliderInt(std::format("Blue##color_preview_blue_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(),
+      if (ImGui::SliderInt(std::format("##color_preview_blue_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(),
                            &m_b, 0, 255)) {
         m_modified = true;
       }
       if (ImGui::SliderInt(
-              std::format("Gray##color_preview_intensity_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(),
+              std::format("##color_preview_intensity_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(),
               &m_intensity, 0, 255)) {
         m_modified = true;
       }

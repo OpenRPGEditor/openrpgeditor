@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Database/Globals.hpp"
 #include "Database/ColorFormatter.hpp"
 #include "nlohmann/json.hpp"

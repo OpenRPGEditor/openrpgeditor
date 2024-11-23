@@ -1,4 +1,4 @@
-#include "Database/EventCommands/IEventCommand.hpp"
+﻿#include "Database/EventCommands/IEventCommand.hpp"
 
 IEventCommand::IEventCommand(const std::optional<int>& _indent, [[maybe_unused]] const nlohmann::ordered_json& parameters)
 : indent(_indent) {}

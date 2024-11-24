@@ -435,12 +435,19 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
             Platform/Linux/DPIHandler.cpp)
 endif ()
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_compile_options(orecore PRIVATE /utf-8)
+endif()
+
 add_executable(${NAME} WIN32 MACOSX_BUNDLE
         App/Main.cpp
         App/ProjectInfo.hpp
         App/ProjectInfo.cpp
 )
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_compile_options(${NAME} PRIVATE /utf-8)
+endif()
 
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/AppAssets.cmake)
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/Packaging.cmake)
@@ -478,7 +485,3 @@ if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
     )
 endif ()
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    # GCC and Clang
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -funroll-loops")
-endif()

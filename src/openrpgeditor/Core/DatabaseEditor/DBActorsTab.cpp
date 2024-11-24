@@ -14,7 +14,6 @@ DBActorsTab::DBActorsTab(Actors& actors, DatabaseEditor* parent) : IDBEditorTab(
   if (m_selectedActor) {
     m_traitsEditor.setTraits(&m_selectedActor->traits);
   }
-  m_maxActors = m_actors.count();
 }
 
 void DBActorsTab::draw() {
@@ -58,12 +57,12 @@ void DBActorsTab::draw() {
         }
         ImGui::EndChild();
         char str[4096];
-        snprintf(str, 4096, "Max Actors %i", m_maxActors);
+        snprintf(str, 4096, "Max Actors %i", m_actors.count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max",
                           ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
           m_changeIntDialogOpen = true;
-          m_editMaxActors = m_maxActors;
+          m_editMaxActors = m_actors.count();
         }
       }
       ImGui::EndGroup();
@@ -304,15 +303,13 @@ void DBActorsTab::draw() {
         ImGui::Text("Are you sure?");
         if (ImGui::Button("Yes")) {
           int tmpId = m_selectedActor->id;
-          m_maxActors = m_editMaxActors;
-          m_actors.resize(m_maxActors);
+          m_actors.resize(m_editMaxActors);
           m_selectedActor = m_actors.actor(tmpId);
           m_changeIntDialogOpen = false;
           m_changeConfirmDialogOpen = false;
         }
         ImGui::SameLine();
         if (ImGui::Button("Cancel")) {
-          m_editMaxActors = m_maxActors;
           m_changeIntDialogOpen = false;
           m_changeConfirmDialogOpen = false;
         }

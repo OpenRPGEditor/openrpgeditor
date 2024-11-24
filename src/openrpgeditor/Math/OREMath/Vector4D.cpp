@@ -13,7 +13,7 @@ Vector4D::Vector4D(const Vector3D& vector) : m_x(vector.m_x), m_y(vector.m_y), m
 Vector4D::Vector4D(const Vector3D& vector, const float wpos)
 : m_x(vector.m_x), m_y(vector.m_y), m_z(vector.m_z), m_w(wpos) {}
 
-float Vector4D::length() const { return std::sqrtf(m_x * m_x + m_y * m_y + m_z * m_z); }
+float Vector4D::length() const { return sqrtf(m_x * m_x + m_y * m_y + m_z * m_z); }
 
 float Vector4D::lengthSquared() const { return m_x * m_x + m_y * m_y + m_z * m_z; }
 
@@ -24,7 +24,7 @@ Vector4D Vector4D::normalized() const {
   if (fuzzyIsNull(len - 1.0f))
     return *this;
   if (!fuzzyIsNull(len))
-    return *this / std::sqrtf(len);
+    return *this / sqrtf(len);
   return {};
 }
 

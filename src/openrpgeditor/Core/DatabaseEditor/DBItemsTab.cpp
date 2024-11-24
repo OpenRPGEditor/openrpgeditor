@@ -7,9 +7,8 @@
 DBItemsTab::DBItemsTab(Items& Items, DatabaseEditor* parent) : IDBEditorTab(parent), m_items(Items) {
   m_selectedItem = m_items.item(1);
   if (m_selectedItem) {
-    //m_traitsEditor.setTraits(&m_selectedClass->traits);
+    // m_traitsEditor.setTraits(&m_selectedClass->traits);
   }
-  m_maxItems = m_items.count();
 }
 
 void DBItemsTab::draw() {
@@ -36,30 +35,28 @@ void DBItemsTab::draw() {
               if (ImGui::Selectable(name, &skill_ == m_selectedItem) ||
                   (ImGui::IsItemFocused() && m_selectedItem != &skill_)) {
                 m_selectedItem = &skill_;
-                //m_traitsEditor.setTraits(&m_selectedClass->traits);
-                  }
+                // m_traitsEditor.setTraits(&m_selectedClass->traits);
+              }
             }
           }
           ImGui::EndGroup();
         }
         ImGui::EndChild();
         char str[4096];
-        snprintf(str, 4096, "Max Items %i", m_maxItems);
+        snprintf(str, 4096, "Max Items %i", m_items.count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max",
                           ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
           m_changeIntDialogOpen = true;
-          m_editMaxItems = m_maxItems;
-                          }
+          m_editMaxItems = m_items.count();
+        }
       }
       ImGui::EndGroup();
     }
     ImGui::EndChild();
     ImGui::SameLine();
     ImGui::BeginChild("##orpg_items_editor_items_item_properties");
-    {
-      ImGui::EndChild();
-    }
+    { ImGui::EndChild(); }
     ImGui::EndChild();
 
     if (m_changeIntDialogOpen) {
@@ -78,7 +75,7 @@ void DBItemsTab::draw() {
         if (ImGui::Button("Cancel")) {
           m_changeIntDialogOpen = false;
         }
-                           }
+      }
       ImGui::End();
 
       if (m_changeConfirmDialogOpen) {
@@ -88,19 +85,18 @@ void DBItemsTab::draw() {
           ImGui::Text("Are you sure?");
           if (ImGui::Button("Yes")) {
             int tmpId = m_selectedItem->id;
-            m_maxItems = m_editMaxItems;
-            m_items.resize(m_maxItems);
+            m_items.resize(m_editMaxItems);
             m_selectedItem = m_items.item(tmpId);
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }
           ImGui::SameLine();
           if (ImGui::Button("Cancel")) {
-            m_editMaxItems = m_maxItems;
+            m_editMaxItems = m_items.count();
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }
-                             }
+        }
         ImGui::End();
       }
     }

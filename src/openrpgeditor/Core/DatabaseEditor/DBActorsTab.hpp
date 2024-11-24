@@ -28,7 +28,6 @@ private:
 
   Actors& m_actors;
   Actor* m_selectedActor{};
-  int m_maxActors{};
   int m_editMaxActors;
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;

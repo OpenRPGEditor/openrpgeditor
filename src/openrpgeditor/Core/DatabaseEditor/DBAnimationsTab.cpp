@@ -7,10 +7,6 @@
 DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent)
 : IDBEditorTab(parent), m_animations(animations) {
   m_selectedAnimation = m_animations.animation(1);
-  if (m_selectedAnimation) {
-    // m_traitsEditor.setTraits(&m_selectedClass->traits);
-  }
-  m_maxAnimations = m_animations.count();
 }
 
 void DBAnimationsTab::draw() {
@@ -45,12 +41,12 @@ void DBAnimationsTab::draw() {
         }
         ImGui::EndChild();
         char str[4096];
-        snprintf(str, 4096, "Max Animations %i", m_maxAnimations);
+        snprintf(str, 4096, "Max Animations %i", m_animations.count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max",
                           ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
           m_changeIntDialogOpen = true;
-          m_editMaxAnimations = m_maxAnimations;
+          m_editMaxAnimations = m_animations.count();
         }
       }
       ImGui::EndGroup();
@@ -87,15 +83,13 @@ void DBAnimationsTab::draw() {
           ImGui::Text("Are you sure?");
           if (ImGui::Button("Yes")) {
             int tmpId = m_selectedAnimation->id;
-            m_maxAnimations = m_editMaxAnimations;
-            m_animations.resize(m_maxAnimations);
+            m_animations.resize(m_editMaxAnimations);
             m_selectedAnimation = m_animations.animation(tmpId);
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }
           ImGui::SameLine();
           if (ImGui::Button("Cancel")) {
-            m_editMaxAnimations = m_maxAnimations;
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }

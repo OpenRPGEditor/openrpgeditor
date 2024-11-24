@@ -17,8 +17,7 @@ struct DBAnimationsTab : IDBEditorTab {
 private:
   Animations& m_animations;
   Animation* m_selectedAnimation{};
-  int m_maxAnimations{};
-  int m_editMaxAnimations;
+  int m_editMaxAnimations{};
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;

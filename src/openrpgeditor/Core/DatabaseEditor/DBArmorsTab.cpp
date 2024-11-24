@@ -7,9 +7,8 @@
 DBArmorsTab::DBArmorsTab(Armors& Armors, DatabaseEditor* parent) : IDBEditorTab(parent), m_armors(Armors) {
   m_selectedArmor = m_armors.armor(1);
   if (m_selectedArmor) {
-    //m_traitsEditor.setTraits(&m_selectedClass->traits);
+    // m_traitsEditor.setTraits(&m_selectedClass->traits);
   }
-  m_maxArmors = m_armors.count();
 }
 
 void DBArmorsTab::draw() {
@@ -36,30 +35,28 @@ void DBArmorsTab::draw() {
               if (ImGui::Selectable(name, &skill_ == m_selectedArmor) ||
                   (ImGui::IsItemFocused() && m_selectedArmor != &skill_)) {
                 m_selectedArmor = &skill_;
-                //m_traitsEditor.setTraits(&m_selectedClass->traits);
-                  }
+                // m_traitsEditor.setTraits(&m_selectedClass->traits);
+              }
             }
           }
           ImGui::EndGroup();
         }
         ImGui::EndChild();
         char str[4096];
-        snprintf(str, 4096, "Max Armors %i", m_maxArmors);
+        snprintf(str, 4096, "Max Armors %i", m_armors.count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max",
                           ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
           m_changeIntDialogOpen = true;
-          m_editMaxArmors = m_maxArmors;
-                          }
+          m_editMaxArmors = m_armors.count();
+        }
       }
       ImGui::EndGroup();
     }
     ImGui::EndChild();
     ImGui::SameLine();
     ImGui::BeginChild("##orpg_armors_editor_armors_armor_properties");
-    {
-      ImGui::EndChild();
-    }
+    { ImGui::EndChild(); }
     ImGui::EndChild();
 
     if (m_changeIntDialogOpen) {
@@ -78,7 +75,7 @@ void DBArmorsTab::draw() {
         if (ImGui::Button("Cancel")) {
           m_changeIntDialogOpen = false;
         }
-                           }
+      }
       ImGui::End();
 
       if (m_changeConfirmDialogOpen) {
@@ -88,19 +85,17 @@ void DBArmorsTab::draw() {
           ImGui::Text("Are you sure?");
           if (ImGui::Button("Yes")) {
             int tmpId = m_selectedArmor->id;
-            m_maxArmors = m_editMaxArmors;
-            m_armors.resize(m_maxArmors);
+            m_armors.resize(m_editMaxArmors);
             m_selectedArmor = m_armors.armor(tmpId);
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }
           ImGui::SameLine();
           if (ImGui::Button("Cancel")) {
-            m_editMaxArmors = m_maxArmors;
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }
-                             }
+        }
         ImGui::End();
       }
     }

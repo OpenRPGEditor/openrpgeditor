@@ -7,9 +7,8 @@
 DBEnemiesTab::DBEnemiesTab(Enemies& Enemies, DatabaseEditor* parent) : IDBEditorTab(parent), m_enemies(Enemies) {
   m_selectedEnemy = m_enemies.enemy(1);
   if (m_selectedEnemy) {
-    //m_traitsEditor.setTraits(&m_selectedClass->traits);
+    // m_traitsEditor.setTraits(&m_selectedClass->traits);
   }
-  m_maxEnemies = m_enemies.count();
 }
 
 void DBEnemiesTab::draw() {
@@ -36,30 +35,28 @@ void DBEnemiesTab::draw() {
               if (ImGui::Selectable(name, &skill_ == m_selectedEnemy) ||
                   (ImGui::IsItemFocused() && m_selectedEnemy != &skill_)) {
                 m_selectedEnemy = &skill_;
-                //m_traitsEditor.setTraits(&m_selectedClass->traits);
-                  }
+                // m_traitsEditor.setTraits(&m_selectedClass->traits);
+              }
             }
           }
           ImGui::EndGroup();
         }
         ImGui::EndChild();
         char str[4096];
-        snprintf(str, 4096, "Max Enemies %i", m_maxEnemies);
+        snprintf(str, 4096, "Max Enemies %i", m_enemies.count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max",
                           ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
           m_changeIntDialogOpen = true;
-          m_editMaxEnemies = m_maxEnemies;
-                          }
+          m_editMaxEnemies = m_enemies.count();
+        }
       }
       ImGui::EndGroup();
     }
     ImGui::EndChild();
     ImGui::SameLine();
     ImGui::BeginChild("##orpg_enemies_editor_enemies_enemy_properties");
-    {
-      ImGui::EndChild();
-    }
+    { ImGui::EndChild(); }
     ImGui::EndChild();
 
     if (m_changeIntDialogOpen) {
@@ -78,7 +75,7 @@ void DBEnemiesTab::draw() {
         if (ImGui::Button("Cancel")) {
           m_changeIntDialogOpen = false;
         }
-                           }
+      }
       ImGui::End();
 
       if (m_changeConfirmDialogOpen) {
@@ -88,19 +85,17 @@ void DBEnemiesTab::draw() {
           ImGui::Text("Are you sure?");
           if (ImGui::Button("Yes")) {
             int tmpId = m_selectedEnemy->id;
-            m_maxEnemies = m_editMaxEnemies;
-            m_enemies.resize(m_maxEnemies);
+            m_enemies.resize(m_editMaxEnemies);
             m_selectedEnemy = m_enemies.enemy(tmpId);
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }
           ImGui::SameLine();
           if (ImGui::Button("Cancel")) {
-            m_editMaxEnemies = m_maxEnemies;
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }
-                             }
+        }
         ImGui::End();
       }
     }

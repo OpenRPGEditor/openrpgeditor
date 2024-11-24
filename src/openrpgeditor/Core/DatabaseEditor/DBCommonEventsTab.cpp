@@ -16,7 +16,6 @@
 DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor* parent)
 : IDBEditorTab(parent), m_events(commonEvents), m_commandEditor(parent->project()) {
   m_selectedCommonEvent = m_events.event(1);
-  m_maxCommonEvents = m_events.count();
   m_commandEditor.setCommands(&m_selectedCommonEvent->commands);
 }
 
@@ -144,7 +143,7 @@ void DBCommonEventsTab::draw() {
       ImGui::Text(
           "Specify an amount to resize the common event list to\n"
           "This cannot be undone!");
-      ImGui::InputInt("##value_input", &m_maxCommonEvents);
+      ImGui::InputInt("##value_input", &m_editMaxCommonEvents);
       ImGui::SameLine();
       if (ImGui::Button("Accept")) {
         m_changeConfirmDialogOpen = true;
@@ -164,7 +163,7 @@ void DBCommonEventsTab::draw() {
         ImGui::Text("Are you sure?");
         if (ImGui::Button("Yes")) {
           int tmpId = m_selectedCommonEvent->id;
-          m_events.resize(m_maxCommonEvents);
+          m_events.resize(m_editMaxCommonEvents);
           m_selectedCommonEvent = m_events.event(tmpId);
           m_commandEditor.setCommands(&m_selectedCommonEvent->commands);
           m_changeIntDialogOpen = false;

@@ -19,7 +19,6 @@ DBClassesTab::DBClassesTab(Classes& classes, DatabaseEditor* parent) : IDBEditor
   if (m_selectedClass) {
     m_traitsEditor.setTraits(&m_selectedClass->traits);
   }
-  m_maxClasses = m_classes.count();
 }
 
 void DBClassesTab::drawExperienceGraph(ExperienceGraphMode mode) const {
@@ -183,12 +182,12 @@ void DBClassesTab::draw() {
         }
         ImGui::EndChild();
         char str[4096];
-        snprintf(str, 4096, "Max Classes %i", m_maxClasses);
+        snprintf(str, 4096, "Max Classes %i", m_classes.count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max",
                           ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
           m_changeIntDialogOpen = true;
-          m_editMaxClasses = m_maxClasses;
+          m_editMaxClasses = m_classes.count();
         }
       }
       ImGui::EndGroup();
@@ -430,15 +429,13 @@ void DBClassesTab::draw() {
         ImGui::Text("Are you sure?");
         if (ImGui::Button("Yes")) {
           int tmpId = m_selectedClass->id;
-          m_maxClasses = m_editMaxClasses;
-          m_classes.resize(m_maxClasses);
+          m_classes.resize(m_editMaxClasses);
           m_selectedClass = m_classes.classType(tmpId);
           m_changeIntDialogOpen = false;
           m_changeConfirmDialogOpen = false;
         }
         ImGui::SameLine();
         if (ImGui::Button("Cancel")) {
-          m_editMaxClasses = m_maxClasses;
           m_changeIntDialogOpen = false;
           m_changeConfirmDialogOpen = false;
         }

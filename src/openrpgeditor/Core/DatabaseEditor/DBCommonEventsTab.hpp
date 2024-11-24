@@ -17,7 +17,7 @@ private:
   CommonEvents& m_events;
   CommonEvent* m_selectedCommonEvent{};
   EventCommandEditor m_commandEditor;
-  int m_maxCommonEvents{};
+  int m_editMaxCommonEvents{};
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;

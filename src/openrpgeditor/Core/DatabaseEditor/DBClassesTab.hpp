@@ -26,8 +26,7 @@ private:
   void drawExpPopup();
   Classes& m_classes;
   Class* m_selectedClass{};
-  int m_maxClasses{};
-  int m_editMaxClasses;
+  int m_editMaxClasses{};
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;

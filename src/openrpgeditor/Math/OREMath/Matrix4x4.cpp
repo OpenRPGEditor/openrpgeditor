@@ -1,5 +1,7 @@
 // ReSharper disable CppTooWideScopeInitStatement
 #include "Matrix4x4.hpp"
+#define _USE_MATH_DEFINES 1
+#include <math.h>
 #include <cmath>
 
 static constexpr float InvDistToPlane = 1.f / 1024.f;
@@ -480,7 +482,7 @@ void Matrix4x4::rotate(const float angle, float x, float y, float z) {
   }
   if (!quick) {
     if (auto len = x * x + y * y + z * z; !fuzzyIsNull(len - 1.0f) && !fuzzyIsNull(len)) {
-      len = std::sqrtf(len);
+      len = sqrtf(len);
       x /= len;
       y /= len;
       z /= len;
@@ -575,7 +577,7 @@ void Matrix4x4::projectedRotate(const float angle, float x, float y, float z) {
   }
   if (!quick) {
     if (float len = x * x + y * y + z * z; !fuzzyIsNull(len - 1.0f) && !fuzzyIsNull(len)) {
-      len = std::sqrtf(len);
+      len = sqrtf(len);
       x /= len;
       y /= len;
       z /= len;

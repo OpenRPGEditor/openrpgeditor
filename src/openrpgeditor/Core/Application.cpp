@@ -260,6 +260,19 @@ ExitStatus Application::run() {
     }
     delta = SDL_GetTicks() - a;
 
+    SDL_Event event{};
+    while (SDL_PollEvent(&event) == 1) {
+      ImGui_ImplSDL2_ProcessEvent(&event);
+
+      if (event.type == SDL_QUIT) {
+        stop();
+      }
+
+      if (event.type == SDL_WINDOWEVENT && event.window.windowID == SDL_GetWindowID(m_window->getNativeWindow())) {
+        onEvent(event.window);
+      }
+    }
+
     if (delta >= 1000.0 / 60.0 || warmup) {
 
       if (m_fontUpdateRequested && m_fontUpdateDelay > 0) {
@@ -275,18 +288,6 @@ ExitStatus Application::run() {
 
       if (warmupFrames == 60) {
         warmup = false;
-      }
-      SDL_Event event{};
-      while (SDL_PollEvent(&event) == 1) {
-        ImGui_ImplSDL2_ProcessEvent(&event);
-
-        if (event.type == SDL_QUIT) {
-          stop();
-        }
-
-        if (event.type == SDL_WINDOWEVENT && event.window.windowID == SDL_GetWindowID(m_window->getNativeWindow())) {
-          onEvent(event.window);
-        }
       }
 
       // Start the Dear ImGui frame

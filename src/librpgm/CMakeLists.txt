@@ -359,7 +359,6 @@ add_library(
 target_include_directories(librpgmeventcmds PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)
 target_compile_features(librpgmeventcmds PRIVATE cxx_std_20)
 target_link_libraries(librpgmeventcmds PRIVATE librpgm project_warnings magic_enum nlohmann_json::nlohmann_json fmt::fmt-header-only spdlog::spdlog_header_only)
-target_compile_options(librpgmeventcmds PRIVATE /utf-8)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(librpgmeventcmds PRIVATE /utf-8)
 endif()

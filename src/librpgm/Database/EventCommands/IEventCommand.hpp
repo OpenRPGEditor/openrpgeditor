@@ -27,6 +27,15 @@ struct IEventCommand {
     }
   }
 
+  [[nodiscard]] virtual constexpr bool collapsable() const { return false; }
+  [[nodiscard]] virtual bool isCollapsed() const { return false; }
+  virtual void setCollapsed(bool collapsed) {}
+  [[nodiscard]] virtual bool isPartner(EventCode code, const std::optional<int>& codeIndent) { return false; }
+  [[nodiscard]] virtual constexpr bool hasPartner() const { return false; }
+  [[nodiscard]] virtual constexpr int partnerCount() const { return 0; }
+  [[nodiscard]] virtual bool reverseSelection() const { return false; }
+  virtual void setReverseSelection(bool reverseSelection) {}
+
   std::optional<int> indent{};
   mutable bool m_isDirty{false};
 };

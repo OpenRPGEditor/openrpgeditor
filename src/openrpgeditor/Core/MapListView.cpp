@@ -16,6 +16,7 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
   }
 
   if ((ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemFocused()) && m_selectedMapId != in.id) {
+    m_selectedMapId = in.id;
     m_parent->setMap(*m_mapInfos->map(in.id));
   }
 
@@ -40,6 +41,10 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
           m_mapInfos->map(in.id)->parentId = m_mapInfos->map(src->id)->parentId;
           m_mapInfos->map(src->id)->parentId = in.id;
         }
+        /* Set ordering to force it at the end */
+        if (!in.children().empty()) {
+          m_mapInfos->map(src->id)->order = in.children().back()->order + 1;
+        }
         m_mapTreeStale = true;
       }
     }
@@ -48,6 +53,7 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
   if (ImGui::BeginPopupContextWindow()) {
     // Ensure we have the right-clicked map selected
     if (m_selectedMapId != in.id && ImGui::IsItemHovered()) {
+      m_selectedMapId = in.id;
       m_parent->setMap(in);
     }
     if (ImGui::MenuItem("New...")) {
@@ -110,8 +116,9 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
     ImGui::TreePop();
   }
 }
-
-#if 0
+#define PRINT_MAP_ORDERING 0
+#if PRINT_MAP_ORDERING
+static bool orderingPrinted = false;
 void recursivePrintOrdering(const MapInfo& in) {
   static int indent = 0;
   std::cout << std::string(indent, '\t') + std::format("id {} name {} order {}", in.id, in.name, in.order) << std::endl;
@@ -133,11 +140,14 @@ void MapListView::draw() {
 
   if (m_mapInfos && m_mapTreeStale) {
     m_mapInfos->buildTree(true);
+    m_mapInfos->rebuildOrdering();
     m_mapTreeStale = false;
+#if PRINT_MAP_ORDERING
+    orderingPrinted = false;
+#endif
   }
 
-#if 0
-  static bool orderingPrinted = false;
+#if PRINT_MAP_ORDERING
   if (m_mapInfos && !orderingPrinted) {
     recursivePrintOrdering(m_mapInfos->root());
     orderingPrinted = true;
@@ -146,13 +156,20 @@ void MapListView::draw() {
 }
 
 void MapListView::recursiveExpandParents(MapInfo& in) {
-  in.expanded = m_selectedMapId != in.id && !in.children().empty();
+  if (!in.expanded && m_selectedMapId != in.id) {
+    in.expanded = true;
+  }
+
   if (in.parentId != 0) {
     recursiveExpandParents(*m_mapInfos->map(in.parentId));
   }
 }
 
 void MapListView::setCurrentMapId(const int id, const bool doExpand) {
+  if (id == m_selectedMapId) {
+    return;
+  }
+
   m_selectedMapId = id;
 
   if (doExpand && m_selectedMapId >= 0) {

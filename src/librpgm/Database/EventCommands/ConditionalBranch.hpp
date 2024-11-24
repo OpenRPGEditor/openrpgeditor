@@ -9,6 +9,20 @@ struct ConditionalBranchCommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   [[nodiscard]] std::string conditionalFormat(const std::string& text) const;
+  [[nodiscard]] constexpr bool collapsable() const override { return true; }
+  [[nodiscard]] bool isCollapsed() const override { return m_collapsed; }
+  void setCollapsed(const bool collapsed) override { m_collapsed = collapsed; }
+  bool isPartner(const EventCode code, const std::optional<int>& codeIndent) override {
+    if (!codeIndent) {
+      return false;
+    }
+
+    return (code == EventCode::Else || code == EventCode::End) && *codeIndent == *indent;
+  }
+
+  [[nodiscard]] constexpr int partnerCount() const override { return 2; }
+
+  [[nodiscard]] constexpr bool hasPartner() const override { return true; }
 
   ConditionType type{};
   struct {
@@ -64,6 +78,8 @@ struct ConditionalBranchCommand final : IEventCommand {
   std::string selfSw; // A, B, C, D
   std::string name;
   std::string script;
+
+  bool m_collapsed{false};
 };
 
 struct ElseCommand final : IEventCommand {
@@ -71,4 +87,21 @@ struct ElseCommand final : IEventCommand {
   explicit ElseCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {}
   ~ElseCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Else; }
+
+  [[nodiscard]] constexpr bool collapsable() const override { return true; }
+  [[nodiscard]] bool isCollapsed() const override { return m_collapsed; }
+  void setCollapsed(const bool collapsed) override { m_collapsed = collapsed; }
+  bool isPartner(const EventCode code, const std::optional<int>& codeIndent) override {
+    if (!codeIndent) {
+      return false;
+    }
+
+    return (code == EventCode::Conditional_Branch || code == EventCode::End) && *codeIndent == *indent;
+  }
+  [[nodiscard]] constexpr bool hasPartner() const override { return true; }
+  [[nodiscard]] constexpr int partnerCount() const override { return 2; }
+  [[nodiscard]] bool reverseSelection() const override { return m_reverseSelection; }
+  void setReverseSelection(const bool reverseSelection) override { m_reverseSelection = reverseSelection; }
+  bool m_reverseSelection = false;
+  bool m_collapsed{false};
 };

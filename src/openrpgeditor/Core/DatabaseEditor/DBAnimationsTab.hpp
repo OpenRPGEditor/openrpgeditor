@@ -6,7 +6,7 @@ struct DatabaseEditor;
 struct Animations;
 struct DBAnimationsTab : IDBEditorTab {
   DBAnimationsTab() = delete;
-  explicit DBAnimationsTab(Animations& system, DatabaseEditor* parent);
+  explicit DBAnimationsTab(Animations& animations, DatabaseEditor* parent);
   void draw() override;
 
   [[nodiscard]] std::vector<Animation>& animations() { return m_animations.animations(); }

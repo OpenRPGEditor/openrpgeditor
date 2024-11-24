@@ -64,6 +64,9 @@ void recursiveSort(MapInfo& in) {
 void MapInfos::buildTree(const bool reset) {
   if (reset) {
     for (auto& mapInfo : m_mapinfos) {
+      if (!mapInfo) {
+        continue;
+      }
       mapInfo->m_children.clear();
     }
   }
@@ -77,6 +80,24 @@ void MapInfos::buildTree(const bool reset) {
   }
 
   recursiveSort(root());
+}
+
+void recursiveRebuildOrdering(MapInfo& in, int& order) {
+  in.order = order++;
+  for (auto* mapinfo : in.children()) {
+    if (mapinfo) {
+      recursiveRebuildOrdering(*mapinfo, order);
+    }
+  }
+}
+
+void MapInfos::rebuildOrdering() {
+  if (m_mapinfos.empty()) {
+    return;
+  }
+
+  int order = 0;
+  recursiveRebuildOrdering(m_mapinfos[0].value(), order);
 }
 
 void MapInfos::loadAllMaps() {

@@ -64,7 +64,7 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
 
   MapInfo* info = m_database->mapInfos.map(0);
   info->expanded = true;
-  info->name = m_database->system.gameTitle;
+  info->name = m_database->system.gameTitle.empty() ? std::filesystem::path(basePath).filename().generic_string() : m_database->system.gameTitle;
   APP_INFO("Loaded project!");
   // Load the previously loaded map
   SDL_SetCursor(SDL_GetDefaultCursor());

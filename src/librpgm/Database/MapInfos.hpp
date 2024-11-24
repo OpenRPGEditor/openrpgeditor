@@ -80,6 +80,8 @@ public:
 
   void loadAllMaps();
 
+  void rebuildOrdering();
+
 private:
   std::vector<std::optional<MapInfo>> m_mapinfos;
   MapInfo* m_currentMap = nullptr;

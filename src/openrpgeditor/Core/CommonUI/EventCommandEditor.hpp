@@ -156,6 +156,11 @@ struct IEventCommand;
 struct Project;
 struct EventCommandEditor {
   EventCommandEditor(Project* project) : m_project(project), commandDialog(nullptr) {}
+  void blockSelect(int n);
+  void handleClipboardInteraction() const;
+  static void setupTableHeader();
+  static void setupTableColors();
+  void handleBlockCollapse(ImVec2 skippedRegion, int& n) const;
   void draw();
 
   void setCommands(std::vector<std::shared_ptr<IEventCommand>>* commands) {
@@ -166,6 +171,12 @@ struct EventCommandEditor {
 private:
   void drawPopup();
   void drawCommandDialog();
+  void drawSystemTab(ImVec2 size);
+  void drawScreenTab(ImVec2 size);
+  void drawSceneTab(ImVec2 size);
+  void drawFlowControlTab(ImVec2 size);
+  void drawAudioTab(ImVec2 size);
+  void drawActorTab(ImVec2 size);
   Project* m_project = nullptr;
   bool m_isNewEntry{false};
   bool m_needsUpdate{false};

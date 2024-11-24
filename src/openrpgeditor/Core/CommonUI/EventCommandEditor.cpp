@@ -37,7 +37,7 @@ void EventCommandEditor::blockSelect(const int n) {
   if (m_commands->at(n)->hasPartner()) {
     if (!m_commands->at(n)->reverseSelection()) {
       int j = n + 1;
-      int partnerCount = ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl) ? m_commands->at(n)->partnerCount() : 1;
+      int partnerCount = ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl) || m_commands->at(n)->isCollapsed() ? m_commands->at(n)->partnerCount() : 1;
       while (partnerCount) {
         if (j >= m_commands->size() || *m_commands->at(j)->indent < *m_commands->at(n)->indent) {
           break;
@@ -53,6 +53,9 @@ void EventCommandEditor::blockSelect(const int n) {
           }
           ++j;
         }
+        if (j >= m_commands->size() - 1 || (m_commands->at(j) && m_commands->at(j)->code() == EventCode::Event_Dummy)) {
+          j--;
+        }
       }
       m_selectedEnd = j;
     } else {
@@ -61,6 +64,9 @@ void EventCommandEditor::blockSelect(const int n) {
       int partnerCount = ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl) ? m_commands->at(n)->partnerCount() : 1;
       while (partnerCount--) {
         if (j < 0 || *m_commands->at(j)->indent < *m_commands->at(n)->indent) {
+          if (*m_commands->at(j)->indent < *m_commands->at(n)->indent) {
+            ++j;
+          }
           break;
         }
         while (true) {
@@ -91,14 +97,18 @@ void EventCommandEditor::handleClipboardInteraction() const {
         nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(cmd);
         CommandParser parser;
         auto commands = parser.parse(cmdJson);
-        int curIndent = isNestable(m_commands->at(m_selectedCommand)) ? *m_commands->at(m_selectedCommand)->indent + 1 : *m_commands->at(m_selectedCommand)->indent;
+        int curIndent = m_selectedCommand > 0 ? *m_commands->at(m_selectedCommand)->indent : 0;
         int nestedCount = 0;
+        if (isNestable(commands[0])) {
+          ++nestedCount;
+        }
+
         for (auto& command : commands) {
           if (!command->indent) {
             command->indent.emplace();
           }
           if (isNestableEnd(command)) {
-            if (nestedCount > 0) {
+            if (nestedCount > 0 && curIndent > 0) {
               curIndent--;
             }
             nestedCount--;

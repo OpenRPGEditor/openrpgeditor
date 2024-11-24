@@ -110,9 +110,7 @@ void DBTemplatesTab::draw() {
           m_commandEditor.draw();
         }
         else {
-          if (m_currentTemplate) {
-            m_currentTemplate->draw();
-          }
+          m_currentTemplate->draw();
         }
         ImGui::EndGroup();
       }

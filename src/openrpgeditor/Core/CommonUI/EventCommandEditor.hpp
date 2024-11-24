@@ -169,6 +169,7 @@ private:
   Project* m_project = nullptr;
   bool m_isNewEntry{false};
   bool m_needsUpdate{false};
+  bool m_isRequested{false};
   int m_currentTemplate{-1};
   int m_selectedCommand = -1;
   int m_selectedEnd = -1;

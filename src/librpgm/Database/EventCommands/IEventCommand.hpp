@@ -18,6 +18,13 @@ struct IEventCommand {
   [[nodiscard]] virtual std::string stringRep(const Database& db) const;
   virtual std::string symbol(EventCode code) const;
   virtual std::string indentText(std::optional<int> indent) const;
+  virtual void adjustIndent(int offset) {
+    if (indent) { indent.value() += offset; }
+    else {
+      indent.emplace(0);
+      indent.value() += offset;
+    }
+  }
 
   std::optional<int> indent{};
   mutable bool m_isDirty{false};

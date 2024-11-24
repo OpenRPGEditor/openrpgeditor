@@ -68,6 +68,7 @@ void EventCommandEditor::draw() {
                                                 ImGuiSelectableFlags_AllowDoubleClick,
                                             ImVec2(0, height))) {
               if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                m_isRequested = true;
                 if (m_commands->at(n)->code() == EventCode::Event_Dummy) {
                   m_isNewEntry = true;
                   ImGui::OpenPopup("Command Window");
@@ -132,6 +133,7 @@ void EventCommandEditor::draw() {
           m_selectedCommand = m_hoveringCommand;
         }
         if (ImGui::Button("New...", ImVec2(200.0f, 0.0f))) {
+          m_isRequested = true;
           m_isNewEntry = true;
         }
         ImGui::EndPopup();
@@ -284,6 +286,7 @@ void EventCommandEditor::drawPopup() {
   if (m_selectedCommand < 0) {
     return;
   }
+  if (!m_isRequested) { return; }
 
   ImGui::SetNextWindowSize(ImVec2{680, 550} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal("Command Window", nullptr,
@@ -790,11 +793,17 @@ void EventCommandEditor::drawPopup() {
                   CommandParser parser;
                   nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(templ.commands);
                   std::vector<std::shared_ptr<IEventCommand>> parsed = parser.parse(cmdJson);
-
+                  for (const auto& command : parsed) {
+                    if (command) {
+                      command->adjustIndent(m_commands->at(m_selectedCommand)->indent.value());
+                    }
+                  }
                   if ((parsed.size() == 1 && parsed.at(0)->code() == EventCode::Event_Dummy) == false) {
                     m_commands->insert(m_commands->begin() + m_selectedCommand, parsed.begin(), parsed.end() - 1);
                   }
-                  ImGui::CloseCurrentPopup();
+                  m_isNewEntry = false;
+                  m_isRequested = false;
+                  //ImGui::CloseCurrentPopup();
                 }
                 index++;
               }

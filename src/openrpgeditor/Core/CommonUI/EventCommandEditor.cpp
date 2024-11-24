@@ -34,6 +34,10 @@ static bool isNestableEnd(const std::shared_ptr<IEventCommand>& selectedCmd) {
          selectedCmd->code() == EventCode::When_Selected || selectedCmd->code() == EventCode::When_Cancel;
 }
 void EventCommandEditor::blockSelect(const int n) {
+  if (!m_hasFocus) {
+    return;
+  }
+
   if (m_commands->at(n)->hasPartner()) {
     if (!m_commands->at(n)->reverseSelection()) {
       int j = n + 1;
@@ -84,6 +88,10 @@ void EventCommandEditor::blockSelect(const int n) {
 }
 
 void EventCommandEditor::handleClipboardInteraction() const {
+  if (!m_hasFocus) {
+    return;
+  }
+
   if (RPGMVEventCommandFormat == -1) {
     RPGMVEventCommandFormat = clip::register_format("application/rpgmv-EventCommand");
   }
@@ -194,8 +202,9 @@ void EventCommandEditor::handleBlockCollapse(ImVec2 skippedRegion, int& n) const
 }
 void EventCommandEditor::draw() {
 
-  ImGui::BeginGroup();
+  ImGui::BeginChild("##event_command_editor");
   {
+    m_hasFocus = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_NoPopupHierarchy);
     ImGui::Text("Content:");
     if (ImGui::BeginTable("##commonevent_code_contents", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
                           ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
@@ -314,7 +323,7 @@ void EventCommandEditor::draw() {
 
       ImGui::EndTable();
     }
-    if (ImGui::IsKeyPressed((ImGuiKey_Delete))) {
+    if (ImGui::IsKeyPressed((ImGuiKey_Delete)) && m_hasFocus) {
       if (m_commands->at(m_selectedCommand)->code() != EventCode::Event_Dummy) {
         int start = m_selectedCommand;
         int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd;
@@ -323,7 +332,7 @@ void EventCommandEditor::draw() {
     }
     handleClipboardInteraction();
   }
-  ImGui::EndGroup();
+  ImGui::EndChild();
 }
 
 void EventCommandEditor::drawCommandDialog() {

@@ -186,6 +186,7 @@ private:
   int m_selectedEnd = -1;
   int m_hoveringCommand = -1;
   int m_hoveringEnd = -1;
+  bool m_hasFocus{false};
   std::shared_ptr<IEventDialogController> commandDialog;
   std::vector<std::shared_ptr<IEventCommand>>* m_commands = nullptr;
 

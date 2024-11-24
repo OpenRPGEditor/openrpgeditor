@@ -13,7 +13,7 @@ struct WindowSize {
 };
 
 class DPIHandler {
- public:
+public:
   [[nodiscard]] static float get_ui_scale();
   [[nodiscard]] static WindowSize get_dpi_aware_window_size(const Window::Settings& settings);
 
@@ -23,4 +23,4 @@ class DPIHandler {
   static float scale_value(float v) { return v * get_ui_scale(); }
 };
 
-}  // namespace App
+} // namespace App

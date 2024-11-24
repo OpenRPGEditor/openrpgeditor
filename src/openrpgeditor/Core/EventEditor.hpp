@@ -12,6 +12,7 @@ struct EventEditor {
     for (auto& page : event->pages) {
       m_pages.emplace_back(this, &page);
     }
+    m_id = event->id;
   }
   void fixupPages();
 
@@ -23,9 +24,12 @@ struct EventEditor {
   Project* project() { return m_parent; }
   const Project* project() const { return m_parent; }
 
+  int id() const { return m_id; }
+
 private:
   Project* m_parent = nullptr;
   Event* m_event = nullptr;
+  int m_id;
   std::vector<EVPage> m_pages;
   int m_selectedPage = 0;
   bool m_isOpen = true;

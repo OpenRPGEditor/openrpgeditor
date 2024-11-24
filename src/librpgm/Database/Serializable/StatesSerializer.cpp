@@ -9,7 +9,6 @@ void StatesSerializer::serialize(std::ofstream& os) const {
       return;
     }
 
-
     for (const State& state : m_data.states()) {
       if (state.m_isValid) {
         data.push_back(state);

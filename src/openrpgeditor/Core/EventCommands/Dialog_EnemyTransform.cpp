@@ -1,9 +1,9 @@
 #include "Core/EventCommands/Dialog_EnemyTransform.hpp"
 
-#include <tuple>
-#include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Database/Database.hpp"
+#include "imgui.h"
+#include <tuple>
 
 std::tuple<bool, bool> Dialog_EnemyTransform::draw() {
   if (IsOpen()) {
@@ -12,8 +12,7 @@ std::tuple<bool, bool> Dialog_EnemyTransform::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{181, 150} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (enemy_picker) {
       auto [closed, confirmed] = enemy_picker->draw();
@@ -41,11 +40,9 @@ std::tuple<bool, bool> Dialog_EnemyTransform::draw() {
     ImGui::SeparatorText("Transform to");
     std::string text = Database::instance()->enemyName(m_enemy);
     ImGui::PushID("##enemytransform_selection");
-    if (ImGui::Button(
-            text.c_str(),
-            ImVec2{App::DPIHandler::scale_value(160), 0})) {
+    if (ImGui::Button(text.c_str(), ImVec2{App::DPIHandler::scale_value(160), 0})) {
       enemy_picker = ObjectPicker<Enemy>("Enemy"sv, Database::instance()->enemies.enemies(), 0);
-            }
+    }
     ImGui::PopID();
 
     if (ImGui::Button("OK")) {

@@ -1,7 +1,6 @@
 #include "Database/EventCommands/TintPicture.hpp"
 
-TintPictureCommand::TintPictureCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+TintPictureCommand::TintPictureCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(picture);
   auto colorValues = parameters.at(1);
   colorValues[0].get_to(color.r);
@@ -26,8 +25,6 @@ void TintPictureCommand::serializeParameters(nlohmann::ordered_json& out) const 
 
 std::string TintPictureCommand::stringRep(const Database& db) const {
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Tint Picture" + colon.data() +
-         std::format("#{}, ({},{},{},{}), {} frames", picture, color.r, color.g, color.b, color.gray, duration) +
-         ColorFormatter::popColor() +
-         (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor()
-                                    : "");
+         std::format("#{}, ({},{},{},{}), {} frames", picture, color.r, color.g, color.b, color.gray, duration) + ColorFormatter::popColor() +
+         (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
 }

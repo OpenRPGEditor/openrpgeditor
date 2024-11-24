@@ -1,12 +1,12 @@
 #include "Core/NWJSVersionManager.hpp"
 #include "Core/Settings.hpp"
 
-#include "imgui.h"
 #include "App/ProjectInfo.hpp"
 #include "Database/EventCommands/ChangeVictoryME.hpp"
+#include "imgui.h"
 #include <cstring>
-#include <iostream>
 #include <curl/curl.h>
+#include <iostream>
 #include <memory>
 
 #include <SDL2/SDL.h>
@@ -35,8 +35,7 @@ bool versionCompare(const std::string& v1, const std::string& v2) {
   }
 
   // If one version has more parts than the other
-  return std::distance(std::istream_iterator<std::string>(iss1), std::istream_iterator<std::string>()) >
-         std::distance(std::istream_iterator<std::string>(iss2), std::istream_iterator<std::string>());
+  return std::distance(std::istream_iterator<std::string>(iss1), std::istream_iterator<std::string>()) > std::distance(std::istream_iterator<std::string>(iss2), std::istream_iterator<std::string>());
 }
 
 std::string extractVersionFromHtml(const std::string& html) {
@@ -52,8 +51,7 @@ std::string extractVersionFromHtml(const std::string& html) {
 
 NWJSVersionManager::NWJSVersionManager(std::string_view nwjsPath) : m_NWJSPath(nwjsPath) {}
 
-size_t NWJSVersionManager::indexWriteCallback(const void* contents, const size_t size, const size_t nmemb,
-                                              std::vector<char>* userp) {
+size_t NWJSVersionManager::indexWriteCallback(const void* contents, const size_t size, const size_t nmemb, std::vector<char>* userp) {
   const auto* buf = static_cast<const char*>(contents);
   for (size_t i = 0; i < size * nmemb; ++i) {
     userp->push_back(buf[i]);
@@ -61,10 +59,7 @@ size_t NWJSVersionManager::indexWriteCallback(const void* contents, const size_t
   return size * nmemb;
 }
 
-size_t NWJSVersionManager::payloadWriteCallback(const void* content, const size_t size, const size_t nmemb,
-                                                FILE* userp) {
-  return fwrite(content, size, nmemb, userp);
-}
+size_t NWJSVersionManager::payloadWriteCallback(const void* content, const size_t size, const size_t nmemb, FILE* userp) { return fwrite(content, size, nmemb, userp); }
 
 bool NWJSVersionManager::getListing() {
   CURL* curl = curl_easy_init();
@@ -115,9 +110,7 @@ void NWJSVersionManager::draw() {
     if (m_versions.empty()) {
       ImGui::Text("Unable to get version list!");
     } else {
-      ImGui::Text("Current Version: %s", Settings::instance()->currentNWJSVersion.empty()
-                                             ? "None"
-                                             : Settings::instance()->currentNWJSVersion.c_str());
+      ImGui::Text("Current Version: %s", Settings::instance()->currentNWJSVersion.empty() ? "None" : Settings::instance()->currentNWJSVersion.c_str());
       ImGui::Text("Latest Version: %s", m_versions[0].c_str());
       ImGui::SeparatorText("Available Versions");
       std::string version = m_selectedVersion < 0 ? "None" : m_versions[m_selectedVersion];
@@ -154,7 +147,7 @@ void NWJSVersionManager::draw() {
         std::string user_config_path{conf_path};
         SDL_free((void*)conf_path);
 
-        user_config_path +=  std::string("/nwjs-sdk-") + m_versions[m_selectedVersion] + "-linux-x64.tar.gz";
+        user_config_path += std::string("/nwjs-sdk-") + m_versions[m_selectedVersion] + "-linux-x64.tar.gz";
 
         FILE* f = fopen(user_config_path.c_str(), "wb");
 

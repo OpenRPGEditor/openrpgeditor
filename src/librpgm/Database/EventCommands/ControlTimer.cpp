@@ -1,7 +1,6 @@
 #include "Database/EventCommands/ControlTimer.hpp"
 
-ControlTimerCommand::ControlTimerCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ControlTimerCommand::ControlTimerCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(control);
   if (control == TimerControl::Start) {
     parameters.at(1).get_to(seconds);
@@ -26,6 +25,6 @@ std::string ControlTimerCommand::stringRep(const Database& db) const {
     min = "0";
     sec = std::to_string(seconds);
   }
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Control Timer" + colon.data() +
-         DecodeEnumName(control) + ", " + min + " min " + sec + " sec" + ColorFormatter::popColor();
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Control Timer" + colon.data() + DecodeEnumName(control) + ", " + min + " min " + sec + " sec" +
+         ColorFormatter::popColor();
 }

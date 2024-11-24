@@ -2,24 +2,20 @@
 #include "Database/CommandParser.hpp"
 #include "Database/Database.hpp"
 
-MovementRouteStepCommand::MovementRouteStepCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+MovementRouteStepCommand::MovementRouteStepCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   CommandParser p;
   step = p.parse(parameters)[0];
 }
 
 void MovementRouteStepCommand::serializeParameters(nlohmann::ordered_json& out) const {
   const auto code = step->code();
-  const bool doParameters =
-      code == EventCode::Jump || code == EventCode::Change_Blend_Mode || code == EventCode::Change_Image ||
-      code == EventCode::Change_Opacity || code == EventCode::Frequency || code == EventCode::Speed ||
-      code == EventCode::Play_SE_del_Movement || code == EventCode::Wait_del_Movement ||
-      code == EventCode::Script_del_Movement || code == EventCode::Switch_ON || code == EventCode::Switch_OFF;
+  const bool doParameters = code == EventCode::Jump || code == EventCode::Change_Blend_Mode || code == EventCode::Change_Image || code == EventCode::Change_Opacity || code == EventCode::Frequency ||
+                            code == EventCode::Speed || code == EventCode::Play_SE_del_Movement || code == EventCode::Wait_del_Movement || code == EventCode::Script_del_Movement ||
+                            code == EventCode::Switch_ON || code == EventCode::Switch_OFF;
   step->serialize(out.emplace_back(), step->code() != EventCode::Event_Dummy, doParameters);
 }
 
-SetMovementRouteCommand::SetMovementRouteCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+SetMovementRouteCommand::SetMovementRouteCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(character);
   parameters.at(1).get_to(route);
 }
@@ -33,18 +29,14 @@ std::string SetMovementRouteCommand::stringRep(const Database& db) const {
   const auto name = DecodeEnumName(code());
   auto map = db.mapInfos.currentMap();
   const Event* event = map ? map->event(character) : nullptr;
-  std::string characterName = character == -1  ? "Player"
-                              : character == 0 ? "This Event"
-                              : event          ? event->name
-                                               : std::to_string(character);
+  std::string characterName = character == -1 ? "Player" : character == 0 ? "This Event" : event ? event->name : std::to_string(character);
   ;
   std::string stringSuffix = "";
   stringSuffix += route.repeat == true ? "(Repeat" : "(";
   stringSuffix += route.skippable == true ? (route.repeat == true ? ", Skip" : "Skip") : "";
   stringSuffix += route.wait == true ? ((route.repeat == true || route.skippable == true) ? ", Wait)" : "Wait)") : ")";
 
-  std::string moveRoute = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + name +
-                          colon.data() + characterName + ColorFormatter::popColor() +
+  std::string moveRoute = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + name + colon.data() + characterName + ColorFormatter::popColor() +
                           ColorFormatter::getColor(FormatColor::Gray) + stringSuffix + ColorFormatter::popColor();
 
   const std::string stepColor = ColorFormatter::getColorCode(EventCode::Movement_Route_Step);
@@ -53,8 +45,7 @@ std::string SetMovementRouteCommand::stringRep(const Database& db) const {
   const std::string popColor = ColorFormatter::popColor();
   for (const auto& t : editNodes) {
     if (t->code() != EventCode::Event_Dummy) {
-      moveRoute += "\n" + indentText(t->indent) + stepSymbol + stepColor + stepSpacing + colon.data() +
-                   t->stringRep(db) + popColor;
+      moveRoute += "\n" + indentText(t->indent) + stepSymbol + stepColor + stepSpacing + colon.data() + t->stringRep(db) + popColor;
     }
   }
   return moveRoute;

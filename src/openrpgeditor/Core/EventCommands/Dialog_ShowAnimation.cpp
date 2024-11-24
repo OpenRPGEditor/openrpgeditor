@@ -1,9 +1,9 @@
 #include "Core/EventCommands/Dialog_ShowAnimation.hpp"
 
-#include <tuple>
-#include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Database/Database.hpp"
+#include "imgui.h"
+#include <tuple>
 
 std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
   if (IsOpen()) {
@@ -12,9 +12,7 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(windowSize * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
-                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (animation_picker) {
       auto [closed, confirmed] = animation_picker->draw();
@@ -52,8 +50,7 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
 
     // Animation Button
     ImGui::PushID("##showanim_animation_select");
-    if (ImGui::Button(Database::instance()->animationName(m_animation).c_str(),
-                      ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+    if (ImGui::Button(Database::instance()->animationName(m_animation).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
       animation_picker = ObjectPicker<Animation>("Animation"sv, Database::instance()->animations.animations(), 0);
     }
     ImGui::PopID();

@@ -5,144 +5,94 @@
 #include "imgui.h"
 
 void MapListView::recursiveDrawTree(MapInfo& in) {
-  std::string id = ("#orpg_map_" + std::to_string(in.id) + in.name);
+  const std::string id = ("#orpg_map_" + std::to_string(in.id) + in.name);
   bool open = ImGui::TreeNodeEx(id.c_str(),
-                                (in.expanded ? ImGuiTreeNodeFlags_DefaultOpen : 0) |
-                                    (in.children().empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
-                                    (m_selectedMapId == in.id ? ImGuiTreeNodeFlags_Selected : 0) |
-                                    ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick,
+                                (in.expanded ? ImGuiTreeNodeFlags_DefaultOpen : 0) | (in.children().empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
+                                    (m_selectedMapId == in.id ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick,
                                 "%s", in.name.c_str());
+  if (m_selectedMapId == in.id && m_needsScroll) {
+    ImGui::SetScrollHereY();
+    m_needsScroll = false;
+  }
+
   if ((ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemFocused()) && m_selectedMapId != in.id) {
-    m_parent->setMap(in);
+    m_parent->setMap(*m_mapInfos->map(in.id));
   }
 
   if (ImGui::BeginDragDropSource()) {
     if (in.id != 0) {
       auto payload = m_mapInfos->map(in.id);
-      ImGui::SetDragDropPayload("##orpg_dnd_mapinfo", payload, sizeof(payload));
+      ImGui::SetDragDropPayload("##orpg_dnd_mapinfo", payload, sizeof(uintptr_t));
       ImGui::Text("%s", payload->name.c_str());
     }
     ImGui::EndDragDropSource();
   }
 
   if (ImGui::BeginDragDropTarget()) {
-    const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("##orpg_dnd_mapinfo");
-    if (payload) {
-      MapInfo* src = static_cast<MapInfo*>(payload->Data);
-      if (src) {
-        m_mapInfos->map(src->id)->parentId = in.id;
+    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("##orpg_dnd_mapinfo")) {
+      if (const auto* src = static_cast<MapInfo*>(payload->Data)) {
+        // Are we trying to put our parent into ourselves?
+        if (in.parentId != src->id) {
+          // Nope, we can just safely set the parent id without worry
+          m_mapInfos->map(src->id)->parentId = in.id;
+        } else {
+          // Yes, we have to swap parents, and assign the new parent
+          m_mapInfos->map(in.id)->parentId = m_mapInfos->map(src->id)->parentId;
+          m_mapInfos->map(src->id)->parentId = in.id;
+        }
         m_mapTreeStale = true;
       }
     }
     ImGui::EndDragDropTarget();
   }
   if (ImGui::BeginPopupContextWindow()) {
-    // Ensure we have the right clicked map selected
+    // Ensure we have the right-clicked map selected
     if (m_selectedMapId != in.id && ImGui::IsItemHovered()) {
       m_parent->setMap(in);
     }
-    if (ImGui::Button("New...", ImVec2(200.0f, 0.0f))) {
+    if (ImGui::MenuItem("New...")) {
       // TODO: Add new map to directory based on current location. Maybe add it as a subdirectory of the current parent?
     }
 
-    ImVec2 cursorPos = ImGui::GetCursorPos();
-    // Move back up a couple couple pixels
-    cursorPos.y -= 4.f;
-    ImGui::SetCursorPos(cursorPos);
-
-    if (ImGui::Button("Load...", ImVec2(200.0f, 0.0f))) {
+    if (ImGui::Selectable("Load...")) {
       // TODO: Inserts a map from templates?
     }
 
-    cursorPos = ImGui::GetCursorPos();
-    // Move back up a couple couple pixels
-    cursorPos.y -= 4.f;
-    ImGui::SetCursorPos(cursorPos);
-
     ImGui::Separator();
 
-    cursorPos = ImGui::GetCursorPos();
-    // Move back up a couple couple pixels
-    cursorPos.y -= 4.f;
-    ImGui::SetCursorPos(cursorPos);
-
-    if (ImGui::Button("Copy", ImVec2(200.0f, 0.0f))) {
+    if (ImGui::MenuItem("Copy")) {
       // TODO: Map -> Clipboard
     }
 
-    cursorPos = ImGui::GetCursorPos();
-    // Move back up a couple couple pixels
-    cursorPos.y -= 4.f;
-    ImGui::SetCursorPos(cursorPos);
-
-    if (ImGui::Button("Paste", ImVec2(200.0f, 0.0f))) {
+    if (ImGui::MenuItem("Paste")) {
       // TODO: Clipboard -> Map inserted
     }
 
-    cursorPos = ImGui::GetCursorPos();
-    // Move back up a couple couple pixels
-    cursorPos.y -= 4.f;
-    ImGui::SetCursorPos(cursorPos);
-
-    if (ImGui::Button("Delete", ImVec2(200.0f, 0.0f))) {
+    if (ImGui::MenuItem("Delete")) {
       // TODO: Deletes a map
     }
 
-    cursorPos = ImGui::GetCursorPos();
-    // Move back up a couple couple pixels
-    cursorPos.y -= 4.f;
-    ImGui::SetCursorPos(cursorPos);
-
     ImGui::Separator();
 
-    cursorPos = ImGui::GetCursorPos();
-    // Move back up a couple couple pixels
-    cursorPos.y -= 4.f;
-    ImGui::SetCursorPos(cursorPos);
-
-    if (ImGui::Button("Find...", ImVec2(200.0f, 0.0f))) {
+    if (ImGui::MenuItem("Find...")) {
       // TODO: Finds a map based on a string input
     }
 
-    cursorPos = ImGui::GetCursorPos();
-    // Move back up a couple couple pixels
-    cursorPos.y -= 4.f;
-    ImGui::SetCursorPos(cursorPos);
-
-    if (ImGui::Button("Find Next", ImVec2(200.0f, 0.0f))) {
+    if (ImGui::MenuItem("Find Next")) {
       // TODO: FInds the next map result based on a string input
     }
 
-    cursorPos = ImGui::GetCursorPos();
-    // Move back up a couple couple pixels
-    cursorPos.y -= 4.f;
-    ImGui::SetCursorPos(cursorPos);
-
-    if (ImGui::Button("Find Previous", ImVec2(200.0f, 0.0f))) {
+    if (ImGui::MenuItem("Find Previous")) {
       // TODO: FInds the previous map result based on a string input
     }
-    cursorPos = ImGui::GetCursorPos();
-    // Move back up a couple couple pixels
-    cursorPos.y -= 4.f;
-    ImGui::SetCursorPos(cursorPos);
 
     ImGui::Separator();
 
-    cursorPos = ImGui::GetCursorPos();
-    // Move back up a couple couple pixels
-    cursorPos.y -= 4.f;
-    ImGui::SetCursorPos(cursorPos);
-
-    if (ImGui::Button("Shift...", ImVec2(200.0f, 0.0f))) {
+    if (ImGui::MenuItem("Shift...")) {
       // TODO: Moves the map position in directory
     }
 
-    cursorPos = ImGui::GetCursorPos();
-    // Move back up a couple couple pixels
-    cursorPos.y -= 4.f;
-    ImGui::SetCursorPos(cursorPos);
-
-    if (ImGui::Button("Generate Dungeon...", ImVec2(200.0f, 0.0f))) {
+    if (ImGui::MenuItem("Generate Dungeon...")) {
       // ???
     }
     ImGui::EndPopup();
@@ -161,8 +111,20 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
   }
 }
 
+#if 0
+void recursivePrintOrdering(const MapInfo& in) {
+  static int indent = 0;
+  std::cout << std::string(indent, '\t') + std::format("id {} name {} order {}", in.id, in.name, in.order) << std::endl;
+  indent++;
+  for (auto& mapInfo : in.children()) {
+    recursivePrintOrdering(*mapInfo);
+  }
+  indent--;
+}
+#endif
+
 void MapListView::draw() {
-  if (ImGui::Begin("Maps", nullptr, ImGuiWindowFlags_AlwaysHorizontalScrollbar)) {
+  if (ImGui::Begin("Maps", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
     if (m_mapInfos && !m_mapInfos->empty()) {
       recursiveDrawTree(m_mapInfos->root());
     }
@@ -173,6 +135,30 @@ void MapListView::draw() {
     m_mapInfos->buildTree(true);
     m_mapTreeStale = false;
   }
+
+#if 0
+  static bool orderingPrinted = false;
+  if (m_mapInfos && !orderingPrinted) {
+    recursivePrintOrdering(m_mapInfos->root());
+    orderingPrinted = true;
+  }
+#endif
+}
+
+void MapListView::recursiveExpandParents(MapInfo& in) {
+  in.expanded = m_selectedMapId != in.id && !in.children().empty();
+  if (in.parentId != 0) {
+    recursiveExpandParents(*m_mapInfos->map(in.parentId));
+  }
+}
+
+void MapListView::setCurrentMapId(const int id, const bool doExpand) {
+  m_selectedMapId = id;
+
+  if (doExpand && m_selectedMapId >= 0) {
+    recursiveExpandParents(*m_mapInfos->map(m_selectedMapId));
+  }
+  m_needsScroll = true;
 }
 
 MapInfo* MapListView::currentMapInfo() { return m_mapInfos->map(m_selectedMapId); }

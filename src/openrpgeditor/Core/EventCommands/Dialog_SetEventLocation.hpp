@@ -1,13 +1,11 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/SetEventLocation.hpp"
 
 struct Dialog_SetEventLocation : IEventDialogController {
   Dialog_SetEventLocation() = delete;
-  explicit Dialog_SetEventLocation(const std::string& name,
-                                   const std::shared_ptr<SetEventLocationCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_SetEventLocation(const std::string& name, const std::shared_ptr<SetEventLocationCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new SetEventLocationCommand());
     }
@@ -17,12 +15,10 @@ struct Dialog_SetEventLocation : IEventDialogController {
     if (command->mode == TransferMode::Variable_Designation) {
       m_x_var = command->x;
       m_y_var = command->y;
-    }
-    else if (command->mode == TransferMode::Exchange_With_Another_Event) {
+    } else if (command->mode == TransferMode::Exchange_With_Another_Event) {
       m_otherEvent = command->x;
       m_y_var = 0;
-    }
-    else {
+    } else {
       m_x = command->x;
       m_y = command->y;
     }
@@ -33,7 +29,6 @@ struct Dialog_SetEventLocation : IEventDialogController {
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
 
 private:
-
   // If exchanging, it uses x_var for event id
   int m_event;
   int m_mode;

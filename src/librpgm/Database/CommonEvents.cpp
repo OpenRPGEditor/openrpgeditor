@@ -9,11 +9,7 @@ void to_json(nlohmann::ordered_json& to, const CommonEvent& event) {
   json commands;
   parser.serialize(commands, event.commands);
 
-  to = json{{"id", event.id},
-            {"list", commands},
-            {"name", event.name},
-            {"switchId", event.switchId},
-            {"trigger", event.trigger}};
+  to = json{{"id", event.id}, {"list", commands}, {"name", event.name}, {"switchId", event.switchId}, {"trigger", event.trigger}};
 }
 void from_json(const nlohmann::ordered_json& from, CommonEvent& event) {
   event.id = from.value("id", event.id);

@@ -1,8 +1,8 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/TextEditor.hpp"
-#include "Database/EventCommands/MovementRoute/Wait.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/MovementRoute/ChangeOpacity.hpp"
+#include "Database/EventCommands/MovementRoute/Wait.hpp"
 
 struct Project;
 struct Dialog_MovementChangeOpacity : IEventDialogController {

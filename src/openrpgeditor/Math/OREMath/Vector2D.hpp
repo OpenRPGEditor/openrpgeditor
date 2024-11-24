@@ -87,22 +87,14 @@ inline Vector2D operator+(const Vector2D& v1, const Vector2D& v2) { return {v1.m
 
 inline Vector2D operator-(const Vector2D& v1, const Vector2D& v2) { return {v1.m_x - v2.m_x, v1.m_y - v2.m_y}; }
 
-inline Vector2D operator*(const float factor, const Vector2D& vector) {
-  return {vector.m_x * factor, vector.m_y * factor};
-}
+inline Vector2D operator*(const float factor, const Vector2D& vector) { return {vector.m_x * factor, vector.m_y * factor}; }
 
-inline Vector2D operator*(const Vector2D& vector, const float factor) {
-  return {vector.m_x * factor, vector.m_y * factor};
-}
+inline Vector2D operator*(const Vector2D& vector, const float factor) { return {vector.m_x * factor, vector.m_y * factor}; }
 
 inline Vector2D operator*(const Vector2D& v1, const Vector2D& v2) { return {v1.m_x * v2.m_x, v1.m_y * v2.m_y}; }
 
 inline Vector2D operator-(const Vector2D& vector) { return {-vector.m_x, -vector.m_y}; }
 
-inline Vector2D operator/(const Vector2D& vector, const float divisor) {
-  return Vector2D(vector.m_x / divisor, vector.m_y / divisor);
-}
+inline Vector2D operator/(const Vector2D& vector, const float divisor) { return Vector2D(vector.m_x / divisor, vector.m_y / divisor); }
 
-inline bool fuzzyCompare(const Vector2D& v1, const Vector2D& v2) {
-  return fuzzyCompare(v1.m_x, v2.m_x) && fuzzyCompare(v1.m_y, v2.m_y);
-}
+inline bool fuzzyCompare(const Vector2D& v1, const Vector2D& v2) { return fuzzyCompare(v1.m_x, v2.m_x) && fuzzyCompare(v1.m_y, v2.m_y); }

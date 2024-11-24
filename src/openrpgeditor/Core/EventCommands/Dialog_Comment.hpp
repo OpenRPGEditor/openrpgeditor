@@ -4,9 +4,7 @@
 
 struct Dialog_Comment : IEventDialogController {
   Dialog_Comment() = delete;
-  explicit Dialog_Comment(const std::string& name,
-                          const std::shared_ptr<CommentCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_Comment(const std::string& name, const std::shared_ptr<CommentCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new CommentCommand());
     }

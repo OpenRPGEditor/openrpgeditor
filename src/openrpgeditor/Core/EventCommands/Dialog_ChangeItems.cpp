@@ -1,9 +1,9 @@
 #include "Core/EventCommands/Dialog_ChangeItems.hpp"
 
-#include <tuple>
-#include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Database/Database.hpp"
+#include "imgui.h"
+#include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeItems::draw() {
   if (IsOpen()) {
@@ -12,8 +12,7 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{254, 205} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (picker) {
       auto [closed, confirmed] = picker->draw();
@@ -34,9 +33,7 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
     // Section 1 Armor
     ImGui::SeparatorText("Item");
     ImGui::PushID("##changeitems_item");
-    if (ImGui::Button(
-            Database::instance()->itemNameOrId(m_item).c_str(),
-            ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+    if (ImGui::Button(Database::instance()->itemNameOrId(m_item).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
       item_picker = ObjectPicker<Item>("Items"sv, Database::instance()->items.items(), 0);
     }
     ImGui::PopID();
@@ -49,13 +46,15 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
 
     // Section 3 (Operand: Constant/Variable)
     ImGui::SeparatorText("Operand");
-    ImGui::BeginGroup(); {
+    ImGui::BeginGroup();
+    {
       ImGui::RadioButton("Constant", &m_operandSource, 0);
       ImGui::RadioButton("Variable", &m_operandSource, 1);
       ImGui::EndGroup();
     }
     ImGui::SameLine();
-    ImGui::BeginGroup(); {
+    ImGui::BeginGroup();
+    {
       ImGui::BeginDisabled(m_operandSource != 0);
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
       if (ImGui::InputInt("##changeenemyhp_constant", &m_quantity)) {
@@ -68,9 +67,7 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
 
       ImGui::BeginDisabled(m_operandSource != 1);
       ImGui::PushID("##changeenemyhp_quant_var");
-      if (ImGui::Button(
-              m_operandSource == 1 ? Database::instance()->variableNameAndId(m_quantity_var).c_str() : "",
-              ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+      if (ImGui::Button(m_operandSource == 1 ? Database::instance()->variableNameAndId(m_quantity_var).c_str() : "", ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         picker.emplace("Variables", Database::instance()->system.variables);
       }
       ImGui::PopID();

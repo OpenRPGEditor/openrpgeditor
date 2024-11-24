@@ -1,13 +1,11 @@
 #pragma once
+#include "Core/CommonUI/ImagePicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeParallax.hpp"
-#include "Core/CommonUI/ImagePicker.hpp"
 
 struct Dialog_ChangeParallax : IEventDialogController {
   Dialog_ChangeParallax() = delete;
-  explicit Dialog_ChangeParallax(const std::string& name,
-                                 const std::shared_ptr<ChangeParallaxCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeParallax(const std::string& name, const std::shared_ptr<ChangeParallaxCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeParallaxCommand());
     }

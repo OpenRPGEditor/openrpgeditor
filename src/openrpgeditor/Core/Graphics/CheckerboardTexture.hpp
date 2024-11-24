@@ -1,7 +1,7 @@
 #pragma once
 
-#include "imgui.h"
 #include "SDL2/SDL.h"
+#include "imgui.h"
 enum class CellSizes : uint8_t {
   _8 = 8,
   _16 = 16,
@@ -13,8 +13,7 @@ enum class CellSizes : uint8_t {
 struct CheckerboardTexture {
 
   CheckerboardTexture() = default;
-  CheckerboardTexture(int width, int height, CellSizes cellSize = CellSizes::_64, uint8_t evenColor = 255,
-                      uint8_t oddColor = 127);
+  CheckerboardTexture(int width, int height, CellSizes cellSize = CellSizes::_64, uint8_t evenColor = 255, uint8_t oddColor = 127);
   CheckerboardTexture(const CheckerboardTexture& other);
   CheckerboardTexture& operator=(const CheckerboardTexture& other);
   ~CheckerboardTexture();

@@ -1,7 +1,6 @@
 #include "Database/EventCommands/ShakeScreen.hpp"
 
-ShakeScreenCommand::ShakeScreenCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ShakeScreenCommand::ShakeScreenCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(power);
   parameters.at(1).get_to(speed);
   parameters.at(2).get_to(duration);
@@ -16,8 +15,6 @@ void ShakeScreenCommand::serializeParameters(nlohmann::ordered_json& out) const 
 }
 
 std::string ShakeScreenCommand::stringRep(const Database& db) const {
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Shake Screen" + colon.data() +
-         std::format("{}, {}, {} frames", power, speed, duration) + ColorFormatter::popColor() +
-         (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor()
-                                    : "");
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Shake Screen" + colon.data() + std::format("{}, {}, {} frames", power, speed, duration) +
+         ColorFormatter::popColor() + (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
 }

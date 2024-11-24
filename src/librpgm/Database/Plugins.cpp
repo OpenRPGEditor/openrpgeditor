@@ -2,10 +2,7 @@
 #include <fstream>
 
 void to_json(nlohmann::ordered_json& to, const Plugin& plugin) {
-  to = {{"name", plugin.name},
-        {"status", plugin.status},
-        {"description", plugin.description},
-        {"parameters", nlohmann::json{}}};
+  to = {{"name", plugin.name}, {"status", plugin.status}, {"description", plugin.description}, {"parameters", nlohmann::json{}}};
 
   if (!plugin.parameters.empty()) {
     for (const auto& parameter : plugin.parameters) {

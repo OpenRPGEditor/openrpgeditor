@@ -1,9 +1,9 @@
 #include "Core/EventCommands/Dialog_TintScreen.hpp"
 
-#include <tuple>
-#include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Database/Database.hpp"
+#include "imgui.h"
+#include <tuple>
 
 std::tuple<bool, bool> Dialog_TintScreen::draw() {
   if (IsOpen()) {
@@ -12,9 +12,7 @@ std::tuple<bool, bool> Dialog_TintScreen::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{400, 250} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
-                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Color Tone");
     ImGui::BeginGroup();
@@ -84,35 +82,32 @@ std::tuple<bool, bool> Dialog_TintScreen::draw() {
     ImGui::EndGroup();
     ImGui::SameLine();
 
-    ImGui::ColorButton("##tintscreen_square",
-                       ImVec4{static_cast<float>(r * (1.0f / 255.0f)), static_cast<float>(g * (1.0f / 255.0f)),
-                              static_cast<float>(b * (1.0f / 255.0f)), 1},
-                       0, ImVec2{100, 100});
+    ImGui::ColorButton("##tintscreen_square", ImVec4{static_cast<float>(r * (1.0f / 255.0f)), static_cast<float>(g * (1.0f / 255.0f)), static_cast<float>(b * (1.0f / 255.0f)), 1}, 0,
+                       ImVec2{100, 100});
 
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4.f);
     ImGui::PushItemWidth((App::DPIHandler::scale_value(380)));
-    if (ImGui::BeginCombo("##tintscreen_presets", m_currentTemplate == -1 ?  "" : Database::instance()->templates.templates.at(m_currentTemplate).name.c_str())) {
-            int index{0};
-            for (auto& templ : Database::instance()->templates.templates) {
-              if (templ.type == Template::TemplateType::Tint) {
-                if (!templ.parameters.empty()) {
-                  bool is_selected = m_currentTemplate == index;
-                  if (ImGui::Selectable(templ.name.c_str(), is_selected)) {
-                    m_currentTemplate = index;
-                    r = templ.parameters.at(0);
-                    g = templ.parameters.at(1);
-                    b = templ.parameters.at(2);
-                    gray = templ.parameters.at(3);
-                    if (is_selected)
-                      ImGui::SetItemDefaultFocus();
-                  }
-                  index++;
-                }
-                else {
-                  if (ImGui::Selectable(("Error loading template: " + templ.name).c_str(), false)) {}
-                }
-              }
+    if (ImGui::BeginCombo("##tintscreen_presets", m_currentTemplate == -1 ? "" : Database::instance()->templates.templates.at(m_currentTemplate).name.c_str())) {
+      int index{0};
+      for (auto& templ : Database::instance()->templates.templates) {
+        if (templ.type == Template::TemplateType::Tint) {
+          if (!templ.parameters.empty()) {
+            bool is_selected = m_currentTemplate == index;
+            if (ImGui::Selectable(templ.name.c_str(), is_selected)) {
+              m_currentTemplate = index;
+              r = templ.parameters.at(0);
+              g = templ.parameters.at(1);
+              b = templ.parameters.at(2);
+              gray = templ.parameters.at(3);
+              if (is_selected)
+                ImGui::SetItemDefaultFocus();
             }
+            index++;
+          } else {
+            if (ImGui::Selectable(("Error loading template: " + templ.name).c_str(), false)) {}
+          }
+        }
+      }
       ImGui::EndCombo();
     }
     ImGui::SeparatorText("Duration");

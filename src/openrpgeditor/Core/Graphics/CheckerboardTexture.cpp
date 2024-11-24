@@ -1,9 +1,7 @@
 #include "Core/Graphics/CheckerboardTexture.hpp"
 #include "Core/Application.hpp"
 
-CheckerboardTexture::CheckerboardTexture(const int width, const int height, const CellSizes cellSize,
-                                         const uint8_t evenColor, const uint8_t oddColor)
-: m_width(width), m_height(height) {
+CheckerboardTexture::CheckerboardTexture(const int width, const int height, const CellSizes cellSize, const uint8_t evenColor, const uint8_t oddColor) : m_width(width), m_height(height) {
   const uint8_t colors[2]{oddColor, evenColor};
   auto* data = static_cast<uint8_t*>(malloc(width * height * 4));
 #pragma unroll
@@ -19,8 +17,7 @@ CheckerboardTexture::CheckerboardTexture(const int width, const int height, cons
   }
   SDL_Renderer* renderer = App::APP->getWindow()->getNativeRenderer();
 
-  SDL_Surface* surface =
-      SDL_CreateRGBSurfaceWithFormatFrom(data, width, height, 32, 4 * width, SDL_PIXELFORMAT_ARGB8888);
+  SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormatFrom(data, width, height, 32, 4 * width, SDL_PIXELFORMAT_ARGB8888);
 
   m_texture = SDL_CreateTextureFromSurface(renderer, surface);
 

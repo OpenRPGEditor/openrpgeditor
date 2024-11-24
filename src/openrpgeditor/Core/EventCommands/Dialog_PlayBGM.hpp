@@ -1,29 +1,26 @@
 #pragma once
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/Log.hpp"
-#include "Core/Settings.hpp"
 #include "Core/ResourceManager.hpp"
+#include "Core/Settings.hpp"
 
+#include "Core/Sound.hpp"
 #include "Database/Database.hpp"
 #include "Database/EventCommands/PlayBGM.hpp"
-#include "Core/Sound.hpp"
 
 #include <iostream>
 
 namespace fs = std::filesystem;
 struct Dialog_PlayBGM : IEventDialogController {
   Dialog_PlayBGM() = delete;
-  explicit Dialog_PlayBGM(const std::string& name, const std::shared_ptr<PlayBGMCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_PlayBGM(const std::string& name, const std::shared_ptr<PlayBGMCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new PlayBGMCommand());
     }
     m_audio = command->audio;
     try {
       m_audios = ResourceManager::instance()->getDirectoryContents("audio/bgm/", ".ogg");
-    } catch (const std::filesystem::filesystem_error& e) {
-      std::cerr << "Error accessing directory: " << e.what() << std::endl;
-    }
+    } catch (const std::filesystem::filesystem_error& e) { std::cerr << "Error accessing directory: " << e.what() << std::endl; }
     m_audio.name.clear();
   }
   std::tuple<bool, bool> draw() override;

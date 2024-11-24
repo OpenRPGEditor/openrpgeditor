@@ -2,8 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangeEnemyTPCommand::ChangeEnemyTPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ChangeEnemyTPCommand::ChangeEnemyTPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(enemy);
   parameters.at(1).get_to(enemyOp);
   parameters.at(2).get_to(quantitySource);
@@ -32,6 +31,6 @@ std::string ChangeEnemyTPCommand::stringRep(const Database& db) const {
     quantityStr = std::format("{}", quantity);
   }
 
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Enemy TP" + colon.data() +
-         enemyStr + ", " + DecodeEnumName(enemyOp) + " " + quantityStr + ColorFormatter::popColor();
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Enemy TP" + colon.data() + enemyStr + ", " + DecodeEnumName(enemyOp) + " " + quantityStr +
+         ColorFormatter::popColor();
 }

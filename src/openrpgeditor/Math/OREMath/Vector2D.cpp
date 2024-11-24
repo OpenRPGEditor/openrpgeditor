@@ -12,8 +12,7 @@ float Vector2D::length() const { return sqrtf(m_x * m_x + m_y * m_y); }
 float Vector2D::lengthSquared() const { return m_x * m_x + m_y * m_y; }
 
 Vector2D Vector2D::normalized() const {
-  const double len =
-      static_cast<double>(m_x) * static_cast<double>(m_x) + static_cast<double>(m_y) * static_cast<double>(m_y);
+  const double len = static_cast<double>(m_x) * static_cast<double>(m_x) + static_cast<double>(m_y) * static_cast<double>(m_y);
   if (fuzzyIsNull(len - 1.0f)) {
     return *this;
   }
@@ -24,8 +23,7 @@ Vector2D Vector2D::normalized() const {
 }
 
 void Vector2D::normalize() {
-  double len =
-      static_cast<double>(m_x) * static_cast<double>(m_x) + static_cast<double>(m_y) * static_cast<double>(m_y);
+  double len = static_cast<double>(m_x) * static_cast<double>(m_x) + static_cast<double>(m_y) * static_cast<double>(m_y);
   if (fuzzyIsNull(len - 1.0f) || fuzzyIsNull(len)) {
     return;
   }

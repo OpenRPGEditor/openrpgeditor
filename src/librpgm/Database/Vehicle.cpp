@@ -2,12 +2,7 @@
 
 void to_json(nlohmann::ordered_json& j, const Vehicle& v) {
   j = {
-      {"bgm", v.bgm},
-      {"characterIndex", v.characterIndex},
-      {"characterName", v.characterName},
-      {"startMapId", v.startMapId},
-      {"startX", v.startX},
-      {"startY", v.startY},
+      {"bgm", v.bgm}, {"characterIndex", v.characterIndex}, {"characterName", v.characterName}, {"startMapId", v.startMapId}, {"startX", v.startX}, {"startY", v.startY},
   };
 }
 void from_json(const nlohmann::ordered_json& j, Vehicle& v) {

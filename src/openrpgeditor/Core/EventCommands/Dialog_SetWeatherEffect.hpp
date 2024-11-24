@@ -4,9 +4,7 @@
 
 struct Dialog_SetWeatherEffect : IEventDialogController {
   Dialog_SetWeatherEffect() = delete;
-  explicit Dialog_SetWeatherEffect(const std::string& name,
-                                   const std::shared_ptr<SetWeatherEffectCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_SetWeatherEffect(const std::string& name, const std::shared_ptr<SetWeatherEffectCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new SetWeatherEffectCommand());
     }

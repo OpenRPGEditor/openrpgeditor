@@ -4,9 +4,7 @@
 
 struct Dialog_FlashScreen : IEventDialogController {
   Dialog_FlashScreen() = delete;
-  explicit Dialog_FlashScreen(const std::string& name,
-                              const std::shared_ptr<FlashScreenCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_FlashScreen(const std::string& name, const std::shared_ptr<FlashScreenCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new FlashScreenCommand());
     }

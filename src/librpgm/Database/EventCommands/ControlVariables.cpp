@@ -1,8 +1,7 @@
 #include "Database/EventCommands/ControlVariables.hpp"
 #include "Database/Database.hpp"
 
-ControlVariables::ControlVariables(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ControlVariables::ControlVariables(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(start);
   parameters.at(1).get_to(end);
   parameters.at(2).get_to(operation);
@@ -57,8 +56,7 @@ void ControlVariables::serializeParameters(nlohmann::ordered_json& out) const {
 }
 
 std::string ControlVariables::variableFormat(const std::string& text) const {
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + DecodeEnumName(code()) +
-         colon.data() + text + ColorFormatter::popColor();
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + DecodeEnumName(code()) + colon.data() + text + ColorFormatter::popColor();
 }
 
 std::string ControlVariables::stringRep(const Database& db) const {
@@ -92,15 +90,13 @@ std::string ControlVariables::stringRep(const Database& db) const {
       return variableFormat(std::format(numberOf, varText, db.armorNameOrId(gameData.rawSource)));
     }
     case GameDataType::Actor: {
-      return variableFormat(
-          std::format(AOfB, varText, DecodeEnumName(static_cast<ActorDataSource>(gameData.value)), db.actorNameOrId(gameData.rawSource)));
+      return variableFormat(std::format(AOfB, varText, DecodeEnumName(static_cast<ActorDataSource>(gameData.value)), db.actorNameOrId(gameData.rawSource)));
     }
     case GameDataType::Enemy: {
       return variableFormat(std::format(AOfB, varText, DecodeEnumName(static_cast<EnemyDataSource>(gameData.value)), std::format("#{}", gameData.rawSource)));
     }
     case GameDataType::Character: {
-      return variableFormat(
-          std::format(AOfB, varText, DecodeEnumName(static_cast<CharacterDataSource>(gameData.value)), db.eventNameOrId(gameData.rawSource)));
+      return variableFormat(std::format(AOfB, varText, DecodeEnumName(static_cast<CharacterDataSource>(gameData.value)), db.eventNameOrId(gameData.rawSource)));
     }
     case GameDataType::Party: {
       return variableFormat(std::format("{} Actor ID of the party member #{}", varText, gameData.rawSource));

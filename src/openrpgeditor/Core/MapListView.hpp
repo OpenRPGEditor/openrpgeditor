@@ -13,17 +13,19 @@ struct MapListView {
   MapInfo* currentMapInfo();
   const MapInfo* currentMapInfo() const;
 
-
   void reset() {
     m_mapInfos = nullptr;
     m_selectedMapId = -1;
   }
 
-  void setCurrentMapId(int id) { m_selectedMapId = id; }
+  void setCurrentMapId(int id, bool doExpand = false);
+
 private:
+  void recursiveExpandParents(MapInfo& in);
   void recursiveDrawTree(MapInfo& in);
   Project* m_parent = nullptr;
   MapInfos* m_mapInfos = nullptr;
   int m_selectedMapId = -1;
   bool m_mapTreeStale{false};
+  bool m_needsScroll{false};
 };

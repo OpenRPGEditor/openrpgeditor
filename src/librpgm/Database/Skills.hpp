@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Database/Globals.hpp"
 #include "Database/Damage.hpp"
 #include "Database/Effect.hpp"
+#include "Database/Globals.hpp"
 
-#include <string>
 #include <nlohmann/json.hpp>
+#include <string>
 
 class Skill {
   friend void to_json(nlohmann::ordered_json& j, const Skill& skill);

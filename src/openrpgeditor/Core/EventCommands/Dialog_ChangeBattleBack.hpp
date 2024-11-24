@@ -1,13 +1,11 @@
 #pragma once
+#include "Core/CommonUI/ImagePicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeBattleback.hpp"
-#include "Core/CommonUI/ImagePicker.hpp"
 
 struct Dialog_ChangeBattleBack : IEventDialogController {
   Dialog_ChangeBattleBack() = delete;
-  explicit Dialog_ChangeBattleBack(const std::string& name,
-                                   const std::shared_ptr<ChangeBattlebackCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeBattleBack(const std::string& name, const std::shared_ptr<ChangeBattlebackCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeBattlebackCommand());
     }

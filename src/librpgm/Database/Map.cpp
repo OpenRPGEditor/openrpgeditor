@@ -1,4 +1,5 @@
 #include "Database/Map.hpp"
+#include "Database/Event.hpp"
 #include <fstream>
 
 void to_json(nlohmann::ordered_json& json, const Map& map) {
@@ -67,6 +68,35 @@ void from_json(const nlohmann::ordered_json& json, Map::Encounter& encounter) {
   encounter.regionSet = json.value("regionSet", encounter.regionSet);
   encounter.troopId = json.value("troopId", encounter.troopId);
   encounter.weight = json.value("weight", encounter.weight);
+}
+
+void Map::resize(const int newWidth, const int newHeight) {
+  static constexpr int MaxLayers = 6;
+  std::vector<std::optional<int>> newData;
+  newData.resize(MaxLayers * newWidth * newHeight);
+  std::ranges::fill(newData.begin(), newData.end(), 0);
+
+  for (int y = 0; y < newHeight; ++y) {
+    for (int x = 0; x < newWidth; ++x) {
+      if (x < width && y < height) {
+        for (int z = 0; z < MaxLayers; ++z) {
+          const int si = (z * height + y) * width + x;
+          const int di = (z * newHeight + y) * newWidth + x;
+          newData[di] = data[si];
+        }
+      }
+    }
+  }
+
+  std::ranges::for_each(events, [&](auto& event) {
+    if (event->x >= newWidth || event->y >= newHeight) {
+      event.reset();
+    }
+  });
+
+  width = newWidth;
+  height = newHeight;
+  data = std::move(newData);
 }
 
 Map Map::load(std::string_view filepath) {

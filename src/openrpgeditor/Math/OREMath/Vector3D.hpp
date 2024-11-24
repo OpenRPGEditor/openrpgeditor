@@ -9,8 +9,7 @@ class Vector3D {
 public:
   Vector3D();
   Vector3D(const float xpos, const float ypos, float zpos) : m_x(xpos), m_y(ypos), m_z(zpos) {}
-  explicit Vector3D(const Point& point)
-  : m_x(static_cast<float>(point.x())), m_y(static_cast<float>(point.y())), m_z(0.f) {}
+  explicit Vector3D(const Point& point) : m_x(static_cast<float>(point.x())), m_y(static_cast<float>(point.y())), m_z(0.f) {}
   explicit Vector3D(const PointF& point) : m_x(point.x()), m_y(point.y()), m_z(0.f) {}
   explicit Vector3D(const Vector2D& vector);
   Vector3D(const Vector2D& vector, float zpos);
@@ -100,37 +99,19 @@ private:
   friend inline Vector3D operator*(const Matrix4x4& matrix, const Vector3D& vector);
 };
 
-inline bool operator==(const Vector3D& v1, const Vector3D& v2) {
-  return v1.m_x == v2.m_x && v1.m_y == v2.m_y && v1.m_z == v2.m_z;
-}
+inline bool operator==(const Vector3D& v1, const Vector3D& v2) { return v1.m_x == v2.m_x && v1.m_y == v2.m_y && v1.m_z == v2.m_z; }
 
-inline bool operator!=(const Vector3D& v1, const Vector3D& v2) {
-  return v1.m_x != v2.m_x || v1.m_y != v2.m_y || v1.m_z != v2.m_z;
-}
+inline bool operator!=(const Vector3D& v1, const Vector3D& v2) { return v1.m_x != v2.m_x || v1.m_y != v2.m_y || v1.m_z != v2.m_z; }
 
-inline Vector3D operator+(const Vector3D& v1, const Vector3D& v2) {
-  return {v1.m_x + v2.m_x, v1.m_y + v2.m_y, v1.m_z + v2.m_z};
-}
+inline Vector3D operator+(const Vector3D& v1, const Vector3D& v2) { return {v1.m_x + v2.m_x, v1.m_y + v2.m_y, v1.m_z + v2.m_z}; }
 
-inline Vector3D operator-(const Vector3D& v1, const Vector3D& v2) {
-  return {v1.m_x - v2.m_x, v1.m_y - v2.m_y, v1.m_z - v2.m_z};
-}
+inline Vector3D operator-(const Vector3D& v1, const Vector3D& v2) { return {v1.m_x - v2.m_x, v1.m_y - v2.m_y, v1.m_z - v2.m_z}; }
 
-inline Vector3D operator*(const Vector3D& vector, const float factor) {
-  return {factor * vector.m_x, factor * vector.m_y, factor * vector.m_z};
-}
-inline Vector3D operator*(const float factor, const Vector3D& vector) {
-  return {factor * vector.m_x, factor * vector.m_y, factor * vector.m_z};
-}
-inline Vector3D operator*(const Vector3D& v1, const Vector3D& v2) {
-  return {v1.m_x * v2.m_x, v1.m_y * v2.m_y, v1.m_z * v2.m_z};
-}
+inline Vector3D operator*(const Vector3D& vector, const float factor) { return {factor * vector.m_x, factor * vector.m_y, factor * vector.m_z}; }
+inline Vector3D operator*(const float factor, const Vector3D& vector) { return {factor * vector.m_x, factor * vector.m_y, factor * vector.m_z}; }
+inline Vector3D operator*(const Vector3D& v1, const Vector3D& v2) { return {v1.m_x * v2.m_x, v1.m_y * v2.m_y, v1.m_z * v2.m_z}; }
 
 inline Vector3D operator-(const Vector3D& vector) { return {-vector.m_x, -vector.m_y, -vector.m_z}; }
-inline Vector3D operator/(const Vector3D& vector, const float divisor) {
-  return {vector.m_x / divisor, vector.m_y / divisor, vector.m_z / divisor};
-}
+inline Vector3D operator/(const Vector3D& vector, const float divisor) { return {vector.m_x / divisor, vector.m_y / divisor, vector.m_z / divisor}; }
 
-inline bool fuzzyCompare(const Vector3D& v1, const Vector3D& v2) {
-  return fuzzyCompare(v1.m_x, v2.m_x) && fuzzyCompare(v1.m_y, v2.m_y) && fuzzyCompare(v1.m_z, v2.m_z);
-}
+inline bool fuzzyCompare(const Vector3D& v1, const Vector3D& v2) { return fuzzyCompare(v1.m_x, v2.m_x) && fuzzyCompare(v1.m_y, v2.m_y) && fuzzyCompare(v1.m_z, v2.m_z); }

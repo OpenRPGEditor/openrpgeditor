@@ -61,6 +61,7 @@ public:
       }
     }
   }
+
 private:
   std::vector<std::optional<CommonEvent>> m_events;
 };

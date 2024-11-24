@@ -2,8 +2,8 @@
 
 #include "Database/Database.hpp"
 
-#include <fstream>
 #include <format>
+#include <fstream>
 
 void to_json(nlohmann::ordered_json& j, const Template& templ) {
   j = {
@@ -27,9 +27,7 @@ void to_json(nlohmann::ordered_json& j, const Templates& templ) {
   };
 }
 
-void from_json(const nlohmann::ordered_json& j, Templates& templ) {
-  templ.templates = j.value("templates", templ.templates);
-}
+void from_json(const nlohmann::ordered_json& j, Templates& templ) { templ.templates = j.value("templates", templ.templates); }
 
 Templates Templates::load(std::string_view path) {
   if (std::ifstream file(path.data()); file.is_open()) {

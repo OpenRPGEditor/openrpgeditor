@@ -1,11 +1,10 @@
 #include "Core/DatabaseEditor/DBSkillsTab.hpp"
-#include "Database/Skills.hpp"
 #include "Core/Application.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
+#include "Database/Skills.hpp"
 
 #include "imgui.h"
-DBSkillsTab::DBSkillsTab(Skills& skills, DatabaseEditor* parent)
-: IDBEditorTab(parent), m_skills(skills), m_iconSheet("system/IconSet") {
+DBSkillsTab::DBSkillsTab(Skills& skills, DatabaseEditor* parent) : IDBEditorTab(parent), m_skills(skills), m_iconSheet("system/IconSet") {
   m_selectedSkill = m_skills.skill(1);
   if (m_selectedSkill) {
     // m_traitsEditor.setTraits(&m_selectedClass->traits);
@@ -23,14 +22,12 @@ void DBSkillsTab::draw() {
   }
   ImGui::BeginChild("#orpg_skills_editor");
   {
-    ImGui::BeginChild("##orpg_skills_editor_skills", ImVec2{250.f, 0} * App::DPIHandler::get_ui_scale(), 0,
-                      ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("##orpg_skills_editor_skills", ImVec2{250.f, 0} * App::DPIHandler::get_ui_scale(), 0, ImGuiWindowFlags_HorizontalScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Skills");
-        ImGui::BeginChild("##orpg_skills_editor_skills_list",
-                          ImVec2{0, ImGui::GetContentRegionMax().y - (App::DPIHandler::scale_value(108))});
+        ImGui::BeginChild("##orpg_skills_editor_skills_list", ImVec2{0, ImGui::GetContentRegionMax().y - (App::DPIHandler::scale_value(108))});
         {
           ImGui::BeginGroup();
           {
@@ -41,8 +38,7 @@ void DBSkillsTab::draw() {
 
               char name[4096];
               snprintf(name, 4096, "%04i %s", skill_.id, skill_.name.c_str());
-              if (ImGui::Selectable(name, &skill_ == m_selectedSkill) ||
-                  (ImGui::IsItemFocused() && m_selectedSkill != &skill_)) {
+              if (ImGui::Selectable(name, &skill_ == m_selectedSkill) || (ImGui::IsItemFocused() && m_selectedSkill != &skill_)) {
                 m_selectedSkill = &skill_;
                 // m_traitsEditor.setTraits(&m_selectedClass->traits);
               }
@@ -54,8 +50,7 @@ void DBSkillsTab::draw() {
         char str[4096];
         snprintf(str, 4096, "Max Skills %i", m_maxSkills);
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max",
-                          ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
+        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxSkills = m_maxSkills;
         }
@@ -78,8 +73,7 @@ void DBSkillsTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedSkill->name.c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_name", "Name:", name, 4096,
-                                           (ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(16))) {
+              if (ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_name", "Name:", name, 4096, (ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(16))) {
                 m_selectedSkill->name = name;
               }
             }
@@ -91,11 +85,8 @@ void DBSkillsTab::draw() {
               ImGui::Text("Icon:");
               // ImGui::SameLine();
               auto [min, max] = m_iconSheet.rectForId(m_selectedSkill->iconIndex);
-              ImGui::Image(
-                  m_iconSheet.texture(),
-                  ImVec2{static_cast<float>(m_iconSheet.iconWidth()), static_cast<float>(m_iconSheet.iconHeight())},
-                  min,
-                  max); // Show icon image
+              ImGui::Image(m_iconSheet.texture(), ImVec2{static_cast<float>(m_iconSheet.iconWidth()), static_cast<float>(m_iconSheet.iconHeight())}, min,
+                           max); // Show icon image
               ImGui::Text("%s", std::to_string(m_selectedSkill->iconIndex).c_str());
             }
             ImGui::EndGroup();
@@ -105,8 +96,7 @@ void DBSkillsTab::draw() {
               char description[4096];
               strncpy(description, m_selectedSkill->description.c_str(), 4096);
               ImGui::Text("Description:");
-              ImGui::InputTextMultiline("##orpg_database_skills_description", description, 4096,
-                                        ImVec2{App::DPIHandler::scale_value(500), App::DPIHandler::scale_value(60)});
+              ImGui::InputTextMultiline("##orpg_database_skills_description", description, 4096, ImVec2{App::DPIHandler::scale_value(500), App::DPIHandler::scale_value(60)});
             }
             ImGui::EndGroup();
             // Skill Type, MP/TP Cost
@@ -117,11 +107,7 @@ void DBSkillsTab::draw() {
                 ImGui::Text("Skill Type:");
                 float cursorPosY = ImGui::GetCursorPosY();
                 ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
-                if (ImGui::BeginCombo(
-                        "##orpg_database_skills_skilltype",
-                        m_selectedSkill->stypeId == 0
-                            ? "None"
-                            : Database::instance()->system.skillType(m_selectedSkill->stypeId)->c_str())) {
+                if (ImGui::BeginCombo("##orpg_database_skills_skilltype", m_selectedSkill->stypeId == 0 ? "None" : Database::instance()->system.skillType(m_selectedSkill->stypeId)->c_str())) {
                   int index{0};
                   for (auto& dataSource : Database::instance()->system.skillTypes) {
                     bool is_selected = (m_selectedSkill->stypeId == index);
@@ -183,12 +169,10 @@ void DBSkillsTab::draw() {
               {
                 ImGui::Text("Scope:");
                 ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
-                if (ImGui::BeginCombo("##orpg_database_skills_scopelist",
-                                      DecodeEnumName(magic_enum::enum_name(m_selectedSkill->scope)).c_str())) {
+                if (ImGui::BeginCombo("##orpg_database_skills_scopelist", DecodeEnumName(magic_enum::enum_name(m_selectedSkill->scope)).c_str())) {
                   int index{0};
                   for (auto& dir : magic_enum::enum_values<Scope>()) {
-                    bool is_selected =
-                        m_selectedSkill->scope == static_cast<Scope>(magic_enum::enum_index(dir).value());
+                    bool is_selected = m_selectedSkill->scope == static_cast<Scope>(magic_enum::enum_index(dir).value());
                     if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
                       m_selectedSkill->scope = static_cast<Scope>(magic_enum::enum_index(dir).value());
                       if (is_selected)
@@ -206,12 +190,10 @@ void DBSkillsTab::draw() {
               {
                 ImGui::Text("Occasion:");
                 ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
-                if (ImGui::BeginCombo("##orpg_database_skills_occasionlist",
-                                      DecodeEnumName(magic_enum::enum_name(m_selectedSkill->occasion)).c_str())) {
+                if (ImGui::BeginCombo("##orpg_database_skills_occasionlist", DecodeEnumName(magic_enum::enum_name(m_selectedSkill->occasion)).c_str())) {
                   int index{0};
                   for (auto& dir : magic_enum::enum_values<Occasion>()) {
-                    bool is_selected =
-                        m_selectedSkill->occasion == static_cast<Occasion>(magic_enum::enum_index(dir).value());
+                    bool is_selected = m_selectedSkill->occasion == static_cast<Occasion>(magic_enum::enum_index(dir).value());
                     if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
                       m_selectedSkill->occasion = static_cast<Occasion>(magic_enum::enum_index(dir).value());
                       if (is_selected)
@@ -290,12 +272,10 @@ void DBSkillsTab::draw() {
             {
               ImGui::Text("Hit Type:");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
-              if (ImGui::BeginCombo("##orpg_database_skills_hitType",
-                                    DecodeEnumName(magic_enum::enum_name(m_selectedSkill->hitType)).c_str())) {
+              if (ImGui::BeginCombo("##orpg_database_skills_hitType", DecodeEnumName(magic_enum::enum_name(m_selectedSkill->hitType)).c_str())) {
                 int index{0};
                 for (auto& dir : magic_enum::enum_values<HitType>()) {
-                  bool is_selected =
-                      m_selectedSkill->hitType == static_cast<HitType>(magic_enum::enum_index(dir).value());
+                  bool is_selected = m_selectedSkill->hitType == static_cast<HitType>(magic_enum::enum_index(dir).value());
                   if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
                     m_selectedSkill->hitType = static_cast<HitType>(magic_enum::enum_index(dir).value());
                     if (is_selected)
@@ -316,10 +296,9 @@ void DBSkillsTab::draw() {
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
               // Animation Button
               ImGui::PushID("##orpg_database_skills_animation");
-              if (ImGui::Button(m_selectedSkill->animationId == -1 ? "Normal Attack"
-                                : m_selectedSkill->animationId == 0
-                                    ? "None"
-                                    : Database::instance()->animationName(m_selectedSkill->animationId).c_str(),
+              if (ImGui::Button(m_selectedSkill->animationId == -1  ? "Normal Attack"
+                                : m_selectedSkill->animationId == 0 ? "None"
+                                                                    : Database::instance()->animationName(m_selectedSkill->animationId).c_str(),
                                 ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
                 animation_picker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), 0);
               }
@@ -346,8 +325,7 @@ void DBSkillsTab::draw() {
 
             ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 80.f);
             ImGui::SetNextItemWidth(App::DPIHandler::scale_value(400));
-            if (ImGui::BeginCombo("##orpg_database_message_templateList",
-                                  m_message_templateList.at(m_message_template).c_str())) {
+            if (ImGui::BeginCombo("##orpg_database_message_templateList", m_message_templateList.at(m_message_template).c_str())) {
               int index{0};
               for (auto& msg : m_message_templateList) {
                 bool is_selected = m_message_template == index;
@@ -369,11 +347,8 @@ void DBSkillsTab::draw() {
             {
               ImGui::Text("Weapon Type 1");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
-              if (ImGui::BeginCombo(
-                      "##orpg_database_reqweapon_1",
-                      m_selectedSkill->requiredWtypeId1 == 0
-                          ? "None"
-                          : Database::instance()->system.weaponType(m_selectedSkill->requiredWtypeId1)->c_str())) {
+              if (ImGui::BeginCombo("##orpg_database_reqweapon_1",
+                                    m_selectedSkill->requiredWtypeId1 == 0 ? "None" : Database::instance()->system.weaponType(m_selectedSkill->requiredWtypeId1)->c_str())) {
                 int index{0};
                 for (auto& msg : Database::instance()->system.weaponTypes) {
                   bool is_selected = m_selectedSkill->requiredWtypeId1 == index;
@@ -403,11 +378,8 @@ void DBSkillsTab::draw() {
             {
               ImGui::Text("Weapon Type 2");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
-              if (ImGui::BeginCombo(
-                      "##orpg_database_reqweapon_2",
-                      m_selectedSkill->requiredWtypeId2 == 0
-                          ? "None"
-                          : Database::instance()->system.weaponType(m_selectedSkill->requiredWtypeId2)->c_str())) {
+              if (ImGui::BeginCombo("##orpg_database_reqweapon_2",
+                                    m_selectedSkill->requiredWtypeId2 == 0 ? "None" : Database::instance()->system.weaponType(m_selectedSkill->requiredWtypeId2)->c_str())) {
                 int index{0};
                 for (auto& msg : Database::instance()->system.weaponTypes) {
                   bool is_selected = m_selectedSkill->requiredWtypeId2 == index;
@@ -447,12 +419,10 @@ void DBSkillsTab::draw() {
               {
                 ImGui::Text("Type:");
                 ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
-                if (ImGui::BeginCombo("##orpg_database_skills_damage_type",
-                                      DecodeEnumName(magic_enum::enum_name(m_selectedSkill->damage.type)).c_str())) {
+                if (ImGui::BeginCombo("##orpg_database_skills_damage_type", DecodeEnumName(magic_enum::enum_name(m_selectedSkill->damage.type)).c_str())) {
                   int index{0};
                   for (auto& dir : magic_enum::enum_values<DamageType>()) {
-                    bool is_selected =
-                        m_selectedSkill->damage.type == static_cast<DamageType>(magic_enum::enum_index(dir).value());
+                    bool is_selected = m_selectedSkill->damage.type == static_cast<DamageType>(magic_enum::enum_index(dir).value());
                     if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
                       m_selectedSkill->damage.type = static_cast<DamageType>(magic_enum::enum_index(dir).value());
                       if (is_selected)
@@ -469,12 +439,10 @@ void DBSkillsTab::draw() {
               {
                 ImGui::Text("Element:");
                 ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
-                if (ImGui::BeginCombo(
-                        "##orpg_database_skills_damage_element",
-                        m_selectedSkill->damage.elementId == -1 ? "Normal Attack"
-                        : m_selectedSkill->damage.elementId == 0
-                            ? "None"
-                            : Database::instance()->system.element(m_selectedSkill->damage.elementId)->c_str())) {
+                if (ImGui::BeginCombo("##orpg_database_skills_damage_element", m_selectedSkill->damage.elementId == -1 ? "Normal Attack"
+                                                                               : m_selectedSkill->damage.elementId == 0
+                                                                                   ? "None"
+                                                                                   : Database::instance()->system.element(m_selectedSkill->damage.elementId)->c_str())) {
                   int index{-1};
                   for (auto& msg : Database::instance()->system.elements) {
                     bool is_selected = m_selectedSkill->damage.elementId == index;
@@ -491,9 +459,7 @@ void DBSkillsTab::draw() {
                           ImGui::SetItemDefaultFocus();
                       }
                     } else {
-                      if (ImGui::Selectable(
-                              Database::instance()->system.element(m_selectedSkill->damage.elementId)->c_str(),
-                              is_selected)) {
+                      if (ImGui::Selectable(Database::instance()->system.element(m_selectedSkill->damage.elementId)->c_str(), is_selected)) {
                         m_selectedSkill->damage.elementId = index;
                         if (is_selected)
                           ImGui::SetItemDefaultFocus();
@@ -541,8 +507,7 @@ void DBSkillsTab::draw() {
   ImGui::EndChild();
   if (m_changeIntDialogOpen) {
     if (ImGui::Begin("Change Max Classes", &m_changeIntDialogOpen,
-                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_Modal |
-                         ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
+                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_Modal | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
       ImGui::Text(
           "Specify an amount to resize the skill list to\n"
           "This cannot be undone!");
@@ -560,8 +525,7 @@ void DBSkillsTab::draw() {
 
     if (m_changeConfirmDialogOpen) {
       if (ImGui::Begin("Confirm Change", &m_changeConfirmDialogOpen,
-                       ImGuiWindowFlags_NoResize | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoSavedSettings |
-                           ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
+                       ImGuiWindowFlags_NoResize | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
         ImGui::Text("Are you sure?");
         if (ImGui::Button("Yes")) {
           int tmpId = m_selectedSkill->id;

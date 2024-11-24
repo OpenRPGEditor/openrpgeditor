@@ -9,10 +9,8 @@ static char char_buf[kMaxChar];
 static ImU32 col_buf[kMaxChar];
 static bool char_skip[kMaxChar];
 
-
-void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVec2 pos, ImU32 col,
-                           const ImVec4& clip_rect, const char* text_begin, const char* text_end,
-                           float wrap_width = 0.0f, bool cpu_fine_clip = false) {
+void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVec2 pos, ImU32 col, const ImVec4& clip_rect, const char* text_begin, const char* text_end, float wrap_width = 0.0f,
+                           bool cpu_fine_clip = false) {
   if (!text_end)
     text_end = text_begin + strlen(text_begin); // ImGui functions generally already provides a valid text_end,
   // so this is merely to handle direct calls.
@@ -243,8 +241,7 @@ void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVe
   draw_list->_VtxCurrentIdx = (unsigned int)draw_list->VtxBuffer.Size;
 }
 
-void ImDrawList_AddAnsiText(ImDrawList* drawList, ImFont* font, float font_size, const ImVec2& pos, ImU32 col,
-                            const char* text_begin, const char* text_end = NULL, float wrap_width = 0.0f,
+void ImDrawList_AddAnsiText(ImDrawList* drawList, ImFont* font, float font_size, const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end = NULL, float wrap_width = 0.0f,
                             const ImVec4* cpu_fine_clip_rect = NULL) {
   if ((col & IM_COL32_A_MASK) == 0)
     return;
@@ -272,8 +269,7 @@ void ImDrawList_AddAnsiText(ImDrawList* drawList, ImFont* font, float font_size,
     clip_rect.z = ImMin(clip_rect.z, cpu_fine_clip_rect->z);
     clip_rect.w = ImMin(clip_rect.w, cpu_fine_clip_rect->w);
   }
-  ImFont_RenderAnsiText(font, drawList, font_size, pos, col, clip_rect, text_begin, text_end, wrap_width,
-                        cpu_fine_clip_rect != NULL);
+  ImFont_RenderAnsiText(font, drawList, font_size, pos, col, clip_rect, text_begin, text_end, wrap_width, cpu_fine_clip_rect != NULL);
 }
 
 void RenderParsedText(ImVec2 pos, const char* text, const char* text_end, bool hide_text_after_hash) {
@@ -291,8 +287,7 @@ void RenderParsedText(ImVec2 pos, const char* text, const char* text_end, bool h
   }
 
   if (text != text_display_end) {
-    ImDrawList_AddAnsiText(window->DrawList, g.Font, g.FontSize, pos, ParseGetCurrentColor(), text,
-                           text_display_end);
+    ImDrawList_AddAnsiText(window->DrawList, g.Font, g.FontSize, pos, ParseGetCurrentColor(), text, text_display_end);
     if (g.LogEnabled)
       LogRenderedText(&pos, text, text_display_end);
   }
@@ -306,8 +301,7 @@ void RenderParsedTextWrapped(ImVec2 pos, const char* text, const char* text_end,
     text_end = text + strlen(text); // FIXME-OPT
 
   if (text != text_end) {
-    ImDrawList_AddAnsiText(window->DrawList, g.Font, g.FontSize, pos, GetColorU32(ImGuiCol_Text), text, text_end,
-                           wrap_width);
+    ImDrawList_AddAnsiText(window->DrawList, g.Font, g.FontSize, pos, GetColorU32(ImGuiCol_Text), text, text_end, wrap_width);
     if (g.LogEnabled)
       LogRenderedText(&pos, text, text_end);
   }

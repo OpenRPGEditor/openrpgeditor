@@ -20,8 +20,7 @@ struct CommonEvent;
 struct MapInfo;
 struct GameConstants;
 struct DBGameConstantsTab : IDBEditorTab {
-  explicit DBGameConstantsTab(GameConstants& constants, DatabaseEditor* parent)
-  : IDBEditorTab(parent), m_constants(&constants) {}
+  explicit DBGameConstantsTab(GameConstants& constants, DatabaseEditor* parent) : IDBEditorTab(parent), m_constants(&constants) {}
 
   void draw() override;
 

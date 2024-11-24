@@ -1,29 +1,26 @@
 #pragma once
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/Log.hpp"
-#include "Core/Settings.hpp"
 #include "Core/ResourceManager.hpp"
+#include "Core/Settings.hpp"
 
+#include "Core/Sound.hpp"
 #include "Database/Database.hpp"
 #include "Database/EventCommands/ChangeBattleBGM.hpp"
-#include "Core/Sound.hpp"
 
 #include <iostream>
 
 namespace fs = std::filesystem;
 struct Dialog_ChangeBattleBGM : IEventDialogController {
   Dialog_ChangeBattleBGM() = delete;
-  explicit Dialog_ChangeBattleBGM(const std::string& name, const std::shared_ptr<ChangeBattleBGMCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeBattleBGM(const std::string& name, const std::shared_ptr<ChangeBattleBGMCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeBattleBGMCommand());
     }
     m_audio = command->bgm;
     try {
       m_audios = ResourceManager::instance()->getDirectoryContents("audio/bgm/", ".ogg");
-    } catch (const std::filesystem::filesystem_error& e) {
-      std::cerr << "Error accessing directory: " << e.what() << std::endl;
-    }
+    } catch (const std::filesystem::filesystem_error& e) { std::cerr << "Error accessing directory: " << e.what() << std::endl; }
     m_audio.name.clear();
   }
   std::tuple<bool, bool> draw() override;

@@ -1,7 +1,6 @@
 #include "Database/EventCommands/ShowPicture.hpp"
 
-ShowPictureCommand::ShowPictureCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ShowPictureCommand::ShowPictureCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(number);
   parameters.at(1).get_to(imageName);
   parameters.at(2).get_to(origin);
@@ -29,8 +28,7 @@ void ShowPictureCommand::serializeParameters(nlohmann::ordered_json& out) const 
 
 std::string ShowPictureCommand::stringRep(const Database& db) const {
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Show Picture" + colon.data() +
-         std::format("#{}, {}, {} ({},{}), ({}%, {}%), {}, {}", number, imageName.empty() ? "None" : imageName,
-                     DecodeEnumName(origin), value1, value2, zoomX, zoomY, opacityValue,
+         std::format("#{}, {}, {} ({},{}), ({}%, {}%), {}, {}", number, imageName.empty() ? "None" : imageName, DecodeEnumName(origin), value1, value2, zoomX, zoomY, opacityValue,
                      DecodeEnumName(blendMode)) +
          ColorFormatter::popColor();
 }

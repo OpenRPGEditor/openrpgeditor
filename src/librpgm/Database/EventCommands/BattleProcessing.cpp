@@ -2,8 +2,7 @@
 
 #include "Database/Database.hpp"
 
-BattleProcessingCommand::BattleProcessingCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+BattleProcessingCommand::BattleProcessingCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(type);
   parameters.at(1).get_to(id);
   parameters.at(2).get_to(canEscape);
@@ -26,6 +25,5 @@ std::string BattleProcessingCommand::stringRep(const Database& db) const {
   } else {
     enemy = "Same as Random Encounter";
   }
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Battle Processing" +
-         colon.data() + enemy + ColorFormatter::popColor();
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Battle Processing" + colon.data() + enemy + ColorFormatter::popColor();
 }

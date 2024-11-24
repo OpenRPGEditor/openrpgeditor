@@ -1,15 +1,13 @@
 #pragma once
+#include "Core/CommonUI/ObjectPicker.hpp"
+#include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/BattleProcessing.hpp"
-#include "Core/CommonUI/VariableSwitchPicker.hpp"
-#include "Core/CommonUI/ObjectPicker.hpp"
 #include "Database/Troops.hpp"
 
 struct Dialog_BattleProcessing : IEventDialogController {
   Dialog_BattleProcessing() = delete;
-  explicit Dialog_BattleProcessing(const std::string& name,
-                                   const std::shared_ptr<BattleProcessingCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_BattleProcessing(const std::string& name, const std::shared_ptr<BattleProcessingCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new BattleProcessingCommand());
     }

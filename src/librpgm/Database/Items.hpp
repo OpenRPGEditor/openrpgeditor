@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Database/Globals.hpp"
 #include "Database/Damage.hpp"
 #include "Database/Effect.hpp"
+#include "Database/Globals.hpp"
 
 #include <nlohmann/json.hpp>
 #include <string>
@@ -80,6 +80,7 @@ public:
       }
     }
   }
+
 private:
   std::vector<Item> m_items;
 };

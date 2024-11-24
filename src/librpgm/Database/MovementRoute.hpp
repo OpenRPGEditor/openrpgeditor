@@ -1,8 +1,8 @@
 #pragma once
 
 #include "nlohmann/json.hpp"
-#include <memory>
 #include <Database/EventCommands/IEventCommand.hpp>
+#include <memory>
 
 struct IEventCommand;
 struct MovementRoute {
@@ -15,9 +15,7 @@ struct MovementRoute {
   bool wait;
 
   [[nodiscard]] bool isDirty() const {
-    m_isDirty |= std::any_of(list.begin(), list.end(),[](const auto& cmd) {
-      return cmd && cmd->isDirty();
-    });
+    m_isDirty |= std::any_of(list.begin(), list.end(), [](const auto& cmd) { return cmd && cmd->isDirty(); });
 
     return m_isDirty;
   }

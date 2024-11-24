@@ -1,7 +1,7 @@
 
 #include "Core/EventCommands/Dialog_CommonEvent.hpp"
-#include "imgui.h"
 #include "Core/Log.hpp"
+#include "imgui.h"
 
 template <>
 inline int ObjectPicker<std::optional<CommonEvent>>::getId(const std::optional<CommonEvent>& value) {

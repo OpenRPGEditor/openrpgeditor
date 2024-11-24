@@ -9,7 +9,6 @@ enum class AudioType {
   SoundEffect,
 };
 
-
 struct System;
 struct DBSystemTab : IDBEditorTab {
   DBSystemTab() = delete;
@@ -61,6 +60,7 @@ struct DBSystemTab : IDBEditorTab {
   [[nodiscard]] const Messages& messages() const { return m_system.terms.messages; }
 
   void addAudioRow(Audio& audio, const std::string& type, AudioType audioType);
+
 private:
   System& m_system;
 };

@@ -2,19 +2,15 @@
 
 #include "Database/Database.hpp"
 
-#include <fstream>
 #include <format>
+#include <fstream>
 
 void to_json(nlohmann::ordered_json& json, const GameConstants& constants) {
   json = {
-      {"variables", constants.variables}, {"switches", constants.switches},
-      {"actors", constants.actors},       {"classes", constants.classes},
-      {"skills", constants.skills},       {"items", constants.items},
-      {"weapons", constants.weapons},     {"armors", constants.armors},
-      {"enemies", constants.enemies},     {"troops", constants.troops},
-      {"states", constants.states},       {"animations", constants.animations},
-      {"tilesets", constants.tilesets},   {"commonEvents", constants.commonEvents},
-      {"maps", constants.maps},           {"generateJS", constants.generateJS},
+      {"variables", constants.variables},   {"switches", constants.switches},     {"actors", constants.actors},     {"classes", constants.classes},           {"skills", constants.skills},
+      {"items", constants.items},           {"weapons", constants.weapons},       {"armors", constants.armors},     {"enemies", constants.enemies},           {"troops", constants.troops},
+      {"states", constants.states},         {"animations", constants.animations}, {"tilesets", constants.tilesets}, {"commonEvents", constants.commonEvents}, {"maps", constants.maps},
+      {"generateJS", constants.generateJS},
   };
 }
 void from_json(const nlohmann::ordered_json& json, GameConstants& constants) {
@@ -353,64 +349,35 @@ bool GameConstants::isValidName(Type type, int id, const std::string& constant) 
   }
   switch (type) {
   case Type::Variable:
-    return std::find_if(variables.begin(), variables.end(), [&constant, id](const auto& v) {
-             return v.first != id && v.second == constant;
-           }) == variables.end();
+    return std::find_if(variables.begin(), variables.end(), [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == variables.end();
   case Type::Switch:
-    return std::find_if(switches.begin(), switches.end(), [&constant, id](const auto& v) {
-             return v.first != id && v.second == constant;
-           }) == switches.end();
+    return std::find_if(switches.begin(), switches.end(), [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == switches.end();
   case Type::Actor:
-    return std::find_if(actors.begin(), actors.end(), [&constant, id](const auto& v) {
-             return v.first != id && v.second == constant;
-           }) == actors.end();
+    return std::find_if(actors.begin(), actors.end(), [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == actors.end();
   case Type::Class:
-    return std::find_if(classes.begin(), classes.end(), [&constant, id](const auto& v) {
-             return v.first != id && v.second == constant;
-           }) == classes.end();
+    return std::find_if(classes.begin(), classes.end(), [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == classes.end();
   case Type::Skill:
-    return std::find_if(skills.begin(), skills.end(), [&constant, id](const auto& v) {
-             return v.first != id && v.second == constant;
-           }) == skills.end();
+    return std::find_if(skills.begin(), skills.end(), [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == skills.end();
   case Type::Item:
-    return std::find_if(items.begin(), items.end(), [&constant, id](const auto& v) {
-             return v.first != id && v.second == constant;
-           }) == items.end();
+    return std::find_if(items.begin(), items.end(), [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == items.end();
   case Type::Weapon:
-    return std::find_if(weapons.begin(), weapons.end(), [&constant, id](const auto& v) {
-             return v.first != id && v.second == constant;
-           }) == weapons.end();
+    return std::find_if(weapons.begin(), weapons.end(), [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == weapons.end();
   case Type::Armor:
-    return std::find_if(armors.begin(), armors.end(), [&constant, id](const auto& v) {
-             return v.first != id && v.second == constant;
-           }) == armors.end();
+    return std::find_if(armors.begin(), armors.end(), [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == armors.end();
   case Type::Enemy:
-    return std::find_if(enemies.begin(), enemies.end(), [&constant, id](const auto& v) {
-             return v.first != id && v.second == constant;
-           }) == enemies.end();
+    return std::find_if(enemies.begin(), enemies.end(), [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == enemies.end();
   case Type::Troop:
-    return std::find_if(troops.begin(), troops.end(), [&constant, id](const auto& v) {
-             return v.first != id && v.second == constant;
-           }) == troops.end();
+    return std::find_if(troops.begin(), troops.end(), [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == troops.end();
   case Type::State:
-    return std::find_if(states.begin(), states.end(), [&constant, id](const auto& v) {
-             return v.first != id && v.second == constant;
-           }) == states.end();
+    return std::find_if(states.begin(), states.end(), [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == states.end();
   case Type::Animation:
-    return std::find_if(animations.begin(), animations.end(), [&constant, id](const auto& v) {
-             return v.first != id && v.second == constant;
-           }) == animations.end();
+    return std::find_if(animations.begin(), animations.end(), [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == animations.end();
   case Type::Tileset:
-    return std::find_if(tilesets.begin(), tilesets.end(), [&constant, id](const auto& v) {
-             return v.first != id && v.second == constant;
-           }) == tilesets.end();
+    return std::find_if(tilesets.begin(), tilesets.end(), [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == tilesets.end();
   case Type::CommonEvent:
-    return std::find_if(commonEvents.begin(), commonEvents.end(), [&constant, id](const auto& v) {
-             return v.first != id && v.second == constant;
-           }) == commonEvents.end();
+    return std::find_if(commonEvents.begin(), commonEvents.end(), [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == commonEvents.end();
   case Type::Map:
-    return std::find_if(maps.begin(), maps.end(),
-                        [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == maps.end();
+    return std::find_if(maps.begin(), maps.end(), [&constant, id](const auto& v) { return v.first != id && v.second == constant; }) == maps.end();
   }
 
   return false;

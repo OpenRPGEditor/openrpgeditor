@@ -15,10 +15,7 @@ int getAutoTileShape(const int tileId) { return (tileId - TILE_ID_A1) % 48; }
 
 int makeAutoTileId(const int kind, const int shape) { return TILE_ID_A1 + kind * 48 + shape; }
 
-bool isSameKindTile(const int tileId1, const int tileId2) {
-  return (isAutoTile(tileId1) && isAutoTile(tileId2) && getAutoTileKind(tileId1) == getAutoTileKind(tileId2)) ||
-         tileId1 == tileId2;
-}
+bool isSameKindTile(const int tileId1, const int tileId2) { return (isAutoTile(tileId1) && isAutoTile(tileId2) && getAutoTileKind(tileId1) == getAutoTileKind(tileId2)) || tileId1 == tileId2; }
 
 bool isTileA1(const int tileId) { return tileId >= TILE_ID_A1 && tileId < TILE_ID_A2; }
 
@@ -38,13 +35,9 @@ bool isTileD(const int tileId) { return tileId >= TILE_ID_D && tileId < TILE_ID_
 
 bool isTileE(const int tileId) { return tileId >= TILE_ID_E && tileId < TILE_ID_A5; }
 
-bool isWaterTile(const int tileId) {
-  return isTileA1(tileId) && !(tileId >= TILE_ID_A1 + 96 && tileId < TILE_ID_A1 + 192);
-}
+bool isWaterTile(const int tileId) { return isTileA1(tileId) && !(tileId >= TILE_ID_A1 + 96 && tileId < TILE_ID_A1 + 192); }
 
-bool isWaterfallTile(const int tileId) {
-  return (tileId >= TILE_ID_A1 + 192 && tileId < TILE_ID_A2) && getAutoTileKind(tileId) % 2 == 1;
-}
+bool isWaterfallTile(const int tileId) { return (tileId >= TILE_ID_A1 + 192 && tileId < TILE_ID_A2) && getAutoTileKind(tileId) % 2 == 1; }
 
 bool isGroundTile(const int tileId) { return isTileA1(tileId) || isTileA2(tileId) || isTileA5(tileId); }
 
@@ -54,17 +47,13 @@ bool isRoofTile(const int tileId) { return isTileA3(tileId) && getAutoTileKind(t
 
 bool isWallTopTile(const int tileId) { return isTileA4(tileId) && getAutoTileKind(tileId) % 16 < 8; }
 
-bool isWallSideTile(const int tileId) {
-  return (isTileA3(tileId) || isTileA4(tileId)) && getAutoTileKind(tileId) % 16 >= 8;
-}
+bool isWallSideTile(const int tileId) { return (isTileA3(tileId) || isTileA4(tileId)) && getAutoTileKind(tileId) % 16 >= 8; }
 
 bool isWallTile(const int tileId) { return isWallTopTile(tileId) || isWallSideTile(tileId); }
 
 bool isWallOrRoofTile(const int tileId) { return isWallTile(tileId) || isRoofTile(tileId); }
 
-bool isFloorTypeAutotile(const int tileId) {
-  return (isTileA1(tileId) && !isWaterfallTile(tileId)) || isTileA2(tileId) || isWallTopTile(tileId);
-}
+bool isFloorTypeAutotile(const int tileId) { return (isTileA1(tileId) && !isWaterfallTile(tileId)) || isTileA2(tileId) || isWallTopTile(tileId); }
 
 bool isWallTypeAutotile(const int tileId) { return isRoofTile(tileId) || isWallSideTile(tileId); }
 
@@ -90,16 +79,12 @@ bool shouldCreateBorder(const int currentTileId, const int adjacentTileId) {
 
 int floorDirToShape(const int dir) {
   static constexpr std::array table{
-      0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 16, 17, 17, 18, 18, 19, 19, 16, 16,
-      17, 17, 18, 18, 19, 19, 20, 20, 20, 20, 21, 21, 21, 21, 22, 22, 22, 22, 23, 23, 23, 23, 34, 34, 34, 34,
-      35, 35, 35, 35, 34, 34, 34, 34, 35, 35, 35, 35, 24, 26, 24, 26, 24, 26, 24, 26, 25, 27, 25, 27, 25, 27,
-      25, 27, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 36, 36, 36, 36, 36, 36, 36, 36,
-      37, 37, 37, 37, 37, 37, 37, 37, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 28, 29,
-      30, 31, 28, 29, 30, 31, 28, 29, 30, 31, 28, 29, 30, 31, 40, 40, 41, 41, 40, 40, 41, 41, 40, 40, 41, 41,
-      40, 40, 41, 41, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 43, 43, 43, 43, 43, 43,
-      43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 38, 39, 38, 39, 38, 39, 38, 39, 38, 39, 38, 39, 38, 39, 38, 39,
-      44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45,
-      45, 45, 45, 45, 45, 45, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46,
+      0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 16, 17, 17, 18, 18, 19, 19, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 20, 20, 21, 21, 21, 21, 22, 22, 22,
+      22, 23, 23, 23, 23, 34, 34, 34, 34, 35, 35, 35, 35, 34, 34, 34, 34, 35, 35, 35, 35, 24, 26, 24, 26, 24, 26, 24, 26, 25, 27, 25, 27, 25, 27, 25, 27, 32, 32, 32, 32, 32, 32,
+      32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 36, 36, 36, 36, 36, 36, 36, 36, 37, 37, 37, 37, 37, 37, 37, 37, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 28,
+      29, 30, 31, 28, 29, 30, 31, 28, 29, 30, 31, 28, 29, 30, 31, 40, 40, 41, 41, 40, 40, 41, 41, 40, 40, 41, 41, 40, 40, 41, 41, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33, 33,
+      33, 33, 33, 33, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 38, 39, 38, 39, 38, 39, 38, 39, 38, 39, 38, 39, 38, 39, 38, 39, 44, 44, 44, 44, 44, 44, 44,
+      44, 44, 44, 44, 44, 44, 44, 44, 44, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46,
   };
 
   return table[dir];

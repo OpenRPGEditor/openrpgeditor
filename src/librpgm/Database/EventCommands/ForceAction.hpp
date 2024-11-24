@@ -14,5 +14,4 @@ struct ForceActionCommand final : IEventCommand {
   int source;
   int skill;
   int target;
-
 };

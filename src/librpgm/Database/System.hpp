@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Database/Globals.hpp"
 #include "Database/Battler.hpp"
+#include "Database/Globals.hpp"
 #include "Database/Terms.hpp"
 #include "Database/Vehicle.hpp"
 

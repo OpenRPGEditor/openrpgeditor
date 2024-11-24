@@ -12,6 +12,4 @@ struct RecoverAllCommand final : IEventCommand {
 
   ActorComparisonSource comparison = ActorComparisonSource::Fixed;
   int value = 1;
-
 };
-

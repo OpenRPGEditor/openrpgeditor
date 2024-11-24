@@ -5,7 +5,7 @@
 struct ControlVariables : IEventCommand {
   ControlVariables() = default;
   explicit ControlVariables(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
-  ~ControlVariables() override{};
+  ~ControlVariables() override {};
   [[nodiscard]] EventCode code() const override { return EventCode::Control_Variables; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;

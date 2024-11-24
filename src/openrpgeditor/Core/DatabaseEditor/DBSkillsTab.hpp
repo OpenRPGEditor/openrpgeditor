@@ -14,6 +14,7 @@ struct DBSkillsTab : IDBEditorTab {
   [[nodiscard]] const std::vector<Skill>& skills() const { return m_skills.skills(); }
   [[nodiscard]] Skill* skill(int id) { return m_skills.skill(id); }
   [[nodiscard]] const Skill* skill(int id) const { return m_skills.skill(id); }
+
 private:
   Skills& m_skills;
   Skill* m_selectedSkill{};

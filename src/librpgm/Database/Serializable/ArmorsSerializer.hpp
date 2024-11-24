@@ -1,6 +1,6 @@
 #pragma once
-#include "Database/Serializable/ISerializable.hpp"
 #include "Database/Armors.hpp"
+#include "Database/Serializable/ISerializable.hpp"
 
 class ArmorsSerializer final : public ITypedSerializable<Armors> {
 public:

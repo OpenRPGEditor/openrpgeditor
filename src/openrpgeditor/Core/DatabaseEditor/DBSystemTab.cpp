@@ -1,10 +1,10 @@
 #include "Core/DatabaseEditor/DBSystemTab.hpp"
 #include "Database/Actors.hpp"
 
-#include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Database/Database.hpp"
+#include "imgui.h"
 
 enum class SoundType {
   Cursor,
@@ -26,11 +26,9 @@ void DBSystemTab::addAudioRow(Audio& audio, const std::string& type, AudioType a
   ImGui::TableNextRow();
   {
     ImGui::TableNextColumn();
-    if (ImGui::Selectable(type.c_str(), false,
-                          ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {}
+    if (ImGui::Selectable(type.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {}
     ImGui::TableNextColumn();
-    ImGui::Selectable(audio.name.c_str(), false,
-                      ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick);
+    ImGui::Selectable(audio.name.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick);
   }
 }
 
@@ -39,16 +37,13 @@ void DBSystemTab::draw() {
   {
     ImGui::BeginGroup();
     {
-      ImGui::BeginChild("#orpg_system_starting_party", ImVec2(0, App::DPIHandler::scale_value(150.f)),
-                        ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AlwaysAutoResize,
+      ImGui::BeginChild("#orpg_system_starting_party", ImVec2(0, App::DPIHandler::scale_value(150.f)), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AlwaysAutoResize,
                         ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize);
       {
         ImGui::BeginGroup();
         {
           ImGui::TextUnformatted("Starting Party");
-          if (ImGui::BeginTable("##starting_party_list", 1,
-                                ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
-                                    ImGuiTableFlags_ScrollY)) {
+          if (ImGui::BeginTable("##starting_party_list", 1, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY)) {
             ImGui::TableSetupColumn("Actor");
             ImGui::TableSetupScrollFreeze(1, 1);
             ImGui::TableHeadersRow();
@@ -57,13 +52,11 @@ void DBSystemTab::draw() {
             for (auto& actor : actors) {
               ImGui::TableNextRow();
               ImGui::TableNextColumn();
-              if (ImGui::Selectable(Database::instance()->actorNameOrId(actor).c_str(), false,
-                                    ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {}
+              if (ImGui::Selectable(Database::instance()->actorNameOrId(actor).c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {}
             }
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
-            if (ImGui::Selectable("##orpg_system_tab_party_list_dummy", false,
-                                  ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {}
+            if (ImGui::Selectable("##orpg_system_tab_party_list_dummy", false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {}
             ImGui::EndTable();
           }
         }
@@ -71,8 +64,7 @@ void DBSystemTab::draw() {
       }
       ImGui::EndChild();
       ImGui::SameLine();
-      ImGui::BeginChild("##starting_game_settings", ImVec2(),
-                        ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
+      ImGui::BeginChild("##starting_game_settings", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
                         ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize);
       {
         ImGui::BeginGroup();
@@ -120,14 +112,10 @@ void DBSystemTab::draw() {
     ImGui::EndGroup();
     ImGui::BeginGroup();
     {
-      ImGui::BeginChild("##orpg_system_audio_files", ImVec2(),
-                        ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AlwaysAutoResize,
-                        ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize);
+      ImGui::BeginChild("##orpg_system_audio_files", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoResize);
       {
         ImGui::TextUnformatted("Music");
-        if (ImGui::BeginTable("##system_audio_music_list", 2,
-                              ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
-                                  ImGuiTableFlags_ScrollY,
+        if (ImGui::BeginTable("##system_audio_music_list", 2, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
                               ImVec2(0, App::DPIHandler::scale_value(250.f)))) {
           ImGui::TableSetupColumn("Type");
           ImGui::TableSetupColumn("File");
@@ -147,9 +135,7 @@ void DBSystemTab::draw() {
         }
 
         ImGui::TextUnformatted("Sounds");
-        if (ImGui::BeginTable("##system_audio_sound_list", 2,
-                              ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
-                                  ImGuiTableFlags_ScrollY,
+        if (ImGui::BeginTable("##system_audio_sound_list", 2, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
                               ImVec2(0, App::DPIHandler::scale_value(250.f)))) {
           ImGui::TableSetupColumn("Type");
           ImGui::TableSetupColumn("File");

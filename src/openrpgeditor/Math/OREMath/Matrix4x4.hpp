@@ -1,16 +1,15 @@
 #pragma once
+#include "GenericMatrix.hpp"
 #include "MathGlobals.hpp"
+#include "Rect.hpp"
 #include "Vector3D.hpp"
 #include "Vector4D.hpp"
-#include "GenericMatrix.hpp"
-#include "Rect.hpp"
 
 class Matrix4x4 {
 public:
   Matrix4x4() { setToIdentity(); }
   explicit Matrix4x4(const float* values);
-  Matrix4x4(float m11, float m12, float m13, float m14, float m21, float m22, float m23, float m24, float m31,
-            float m32, float m33, float m34, float m41, float m42, float m43, float m44);
+  Matrix4x4(float m11, float m12, float m13, float m14, float m21, float m22, float m23, float m24, float m31, float m32, float m33, float m34, float m41, float m42, float m43, float m44);
   template <int N, int M>
   explicit Matrix4x4(const GenericMatrix<N, M, float>& matrix);
   Matrix4x4(const float* values, int cols, int rows);
@@ -114,10 +113,8 @@ private:
   void projectedRotate(float angle, float x, float y, float z);
 };
 
-inline Matrix4x4::Matrix4x4(const float m11, const float m12, const float m13, const float m14, const float m21,
-                            const float m22, const float m23, const float m24, const float m31, const float m32,
-                            const float m33, const float m34, const float m41, const float m42, const float m43,
-                            const float m44) {
+inline Matrix4x4::Matrix4x4(const float m11, const float m12, const float m13, const float m14, const float m21, const float m22, const float m23, const float m24, const float m31, const float m32,
+                            const float m33, const float m34, const float m41, const float m42, const float m43, const float m44) {
   m[0][0] = m11;
   m[0][1] = m21;
   m[0][2] = m31;
@@ -341,16 +338,14 @@ inline Matrix4x4& Matrix4x4::operator*=(const float factor) {
 }
 
 inline bool Matrix4x4::operator==(const Matrix4x4& other) const {
-  return m[0][0] == other.m[0][0] && m[0][1] == other.m[0][1] && m[0][2] == other.m[0][2] && m[0][3] == other.m[0][3] &&
-         m[1][0] == other.m[1][0] && m[1][1] == other.m[1][1] && m[1][2] == other.m[1][2] && m[1][3] == other.m[1][3] &&
-         m[2][0] == other.m[2][0] && m[2][1] == other.m[2][1] && m[2][2] == other.m[2][2] && m[2][3] == other.m[2][3] &&
+  return m[0][0] == other.m[0][0] && m[0][1] == other.m[0][1] && m[0][2] == other.m[0][2] && m[0][3] == other.m[0][3] && m[1][0] == other.m[1][0] && m[1][1] == other.m[1][1] &&
+         m[1][2] == other.m[1][2] && m[1][3] == other.m[1][3] && m[2][0] == other.m[2][0] && m[2][1] == other.m[2][1] && m[2][2] == other.m[2][2] && m[2][3] == other.m[2][3] &&
          m[3][0] == other.m[3][0] && m[3][1] == other.m[3][1] && m[3][2] == other.m[3][2] && m[3][3] == other.m[3][3];
 }
 
 inline bool Matrix4x4::operator!=(const Matrix4x4& other) const {
-  return m[0][0] != other.m[0][0] || m[0][1] != other.m[0][1] || m[0][2] != other.m[0][2] || m[0][3] != other.m[0][3] ||
-         m[1][0] != other.m[1][0] || m[1][1] != other.m[1][1] || m[1][2] != other.m[1][2] || m[1][3] != other.m[1][3] ||
-         m[2][0] != other.m[2][0] || m[2][1] != other.m[2][1] || m[2][2] != other.m[2][2] || m[2][3] != other.m[2][3] ||
+  return m[0][0] != other.m[0][0] || m[0][1] != other.m[0][1] || m[0][2] != other.m[0][2] || m[0][3] != other.m[0][3] || m[1][0] != other.m[1][0] || m[1][1] != other.m[1][1] ||
+         m[1][2] != other.m[1][2] || m[1][3] != other.m[1][3] || m[2][0] != other.m[2][0] || m[2][1] != other.m[2][1] || m[2][2] != other.m[2][2] || m[2][3] != other.m[2][3] ||
          m[3][0] != other.m[3][0] || m[3][1] != other.m[3][1] || m[3][2] != other.m[3][2] || m[3][3] != other.m[3][3];
 }
 
@@ -425,14 +420,10 @@ inline Matrix4x4 operator*(const Matrix4x4& m1, const Matrix4x4& m2) {
 }
 
 inline Vector3D operator*(const Vector3D& vector, const Matrix4x4& matrix) {
-  const float x =
-      vector.x() * matrix.m[0][0] + vector.y() * matrix.m[0][1] + vector.z() * matrix.m[0][2] + matrix.m[0][3];
-  const float y =
-      vector.x() * matrix.m[1][0] + vector.y() * matrix.m[1][1] + vector.z() * matrix.m[1][2] + matrix.m[1][3];
-  const float z =
-      vector.x() * matrix.m[2][0] + vector.y() * matrix.m[2][1] + vector.z() * matrix.m[2][2] + matrix.m[2][3];
-  const float w =
-      vector.x() * matrix.m[3][0] + vector.y() * matrix.m[3][1] + vector.z() * matrix.m[3][2] + matrix.m[3][3];
+  const float x = vector.x() * matrix.m[0][0] + vector.y() * matrix.m[0][1] + vector.z() * matrix.m[0][2] + matrix.m[0][3];
+  const float y = vector.x() * matrix.m[1][0] + vector.y() * matrix.m[1][1] + vector.z() * matrix.m[1][2] + matrix.m[1][3];
+  const float z = vector.x() * matrix.m[2][0] + vector.y() * matrix.m[2][1] + vector.z() * matrix.m[2][2] + matrix.m[2][3];
+  const float w = vector.x() * matrix.m[3][0] + vector.y() * matrix.m[3][1] + vector.z() * matrix.m[3][2] + matrix.m[3][3];
   if (w == 1.0f) {
     return {x, y, z};
   }
@@ -447,20 +438,15 @@ inline Vector3D operator*(const Matrix4x4& matrix, const Vector3D& vector) {
     return {vector.x() + matrix.m[3][0], vector.y() + matrix.m[3][1], vector.z() + matrix.m[3][2]};
   }
   if (matrix.flagBits == (Matrix4x4::Translation | Matrix4x4::Scale)) {
-    return {vector.x() * matrix.m[0][0] + matrix.m[3][0], vector.y() * matrix.m[1][1] + matrix.m[3][1],
-            vector.z() * matrix.m[2][2] + matrix.m[3][2]};
+    return {vector.x() * matrix.m[0][0] + matrix.m[3][0], vector.y() * matrix.m[1][1] + matrix.m[3][1], vector.z() * matrix.m[2][2] + matrix.m[3][2]};
   }
   if (matrix.flagBits == Matrix4x4::Scale) {
     return {vector.x() * matrix.m[0][0], vector.y() * matrix.m[1][1], vector.z() * matrix.m[2][2]};
   }
-  const float x =
-      vector.x() * matrix.m[0][0] + vector.y() * matrix.m[1][0] + vector.z() * matrix.m[2][0] + matrix.m[3][0];
-  const float y =
-      vector.x() * matrix.m[0][1] + vector.y() * matrix.m[1][1] + vector.z() * matrix.m[2][1] + matrix.m[3][1];
-  const float z =
-      vector.x() * matrix.m[0][2] + vector.y() * matrix.m[1][2] + vector.z() * matrix.m[2][2] + matrix.m[3][2];
-  const float w =
-      vector.x() * matrix.m[0][3] + vector.y() * matrix.m[1][3] + vector.z() * matrix.m[2][3] + matrix.m[3][3];
+  const float x = vector.x() * matrix.m[0][0] + vector.y() * matrix.m[1][0] + vector.z() * matrix.m[2][0] + matrix.m[3][0];
+  const float y = vector.x() * matrix.m[0][1] + vector.y() * matrix.m[1][1] + vector.z() * matrix.m[2][1] + matrix.m[3][1];
+  const float z = vector.x() * matrix.m[0][2] + vector.y() * matrix.m[1][2] + vector.z() * matrix.m[2][2] + matrix.m[3][2];
+  const float w = vector.x() * matrix.m[0][3] + vector.y() * matrix.m[1][3] + vector.z() * matrix.m[2][3] + matrix.m[3][3];
   if (w == 1.0f) {
     return {x, y, z};
   }
@@ -468,26 +454,18 @@ inline Vector3D operator*(const Matrix4x4& matrix, const Vector3D& vector) {
 }
 
 inline Vector4D operator*(const Vector4D& vector, const Matrix4x4& matrix) {
-  const auto x = vector.x() * matrix.m[0][0] + vector.y() * matrix.m[0][1] + vector.z() * matrix.m[0][2] +
-                 vector.w() * matrix.m[0][3];
-  const auto y = vector.x() * matrix.m[1][0] + vector.y() * matrix.m[1][1] + vector.z() * matrix.m[1][2] +
-                 vector.w() * matrix.m[1][3];
-  const auto z = vector.x() * matrix.m[2][0] + vector.y() * matrix.m[2][1] + vector.z() * matrix.m[2][2] +
-                 vector.w() * matrix.m[2][3];
-  const auto w = vector.x() * matrix.m[3][0] + vector.y() * matrix.m[3][1] + vector.z() * matrix.m[3][2] +
-                 vector.w() * matrix.m[3][3];
+  const auto x = vector.x() * matrix.m[0][0] + vector.y() * matrix.m[0][1] + vector.z() * matrix.m[0][2] + vector.w() * matrix.m[0][3];
+  const auto y = vector.x() * matrix.m[1][0] + vector.y() * matrix.m[1][1] + vector.z() * matrix.m[1][2] + vector.w() * matrix.m[1][3];
+  const auto z = vector.x() * matrix.m[2][0] + vector.y() * matrix.m[2][1] + vector.z() * matrix.m[2][2] + vector.w() * matrix.m[2][3];
+  const auto w = vector.x() * matrix.m[3][0] + vector.y() * matrix.m[3][1] + vector.z() * matrix.m[3][2] + vector.w() * matrix.m[3][3];
   return {x, y, z, w};
 }
 
 inline Vector4D operator*(const Matrix4x4& matrix, const Vector4D& vector) {
-  const float x = vector.x() * matrix.m[0][0] + vector.y() * matrix.m[1][0] + vector.z() * matrix.m[2][0] +
-                  vector.w() * matrix.m[3][0];
-  const float y = vector.x() * matrix.m[0][1] + vector.y() * matrix.m[1][1] + vector.z() * matrix.m[2][1] +
-                  vector.w() * matrix.m[3][1];
-  const float z = vector.x() * matrix.m[0][2] + vector.y() * matrix.m[1][2] + vector.z() * matrix.m[2][2] +
-                  vector.w() * matrix.m[3][2];
-  const float w = vector.x() * matrix.m[0][3] + vector.y() * matrix.m[1][3] + vector.z() * matrix.m[2][3] +
-                  vector.w() * matrix.m[3][3];
+  const float x = vector.x() * matrix.m[0][0] + vector.y() * matrix.m[1][0] + vector.z() * matrix.m[2][0] + vector.w() * matrix.m[3][0];
+  const float y = vector.x() * matrix.m[0][1] + vector.y() * matrix.m[1][1] + vector.z() * matrix.m[2][1] + vector.w() * matrix.m[3][1];
+  const float z = vector.x() * matrix.m[0][2] + vector.y() * matrix.m[1][2] + vector.z() * matrix.m[2][2] + vector.w() * matrix.m[3][2];
+  const float w = vector.x() * matrix.m[0][3] + vector.y() * matrix.m[1][3] + vector.z() * matrix.m[2][3] + vector.w() * matrix.m[3][3];
   return {x, y, z, w};
 }
 
@@ -629,14 +607,10 @@ inline Matrix4x4 operator*(const Matrix4x4& matrix, const float factor) {
 }
 
 inline bool fuzzyCompare(const Matrix4x4& m1, const Matrix4x4& m2) {
-  return fuzzyCompare(m1.m[0][0], m2.m[0][0]) && fuzzyCompare(m1.m[0][1], m2.m[0][1]) &&
-         fuzzyCompare(m1.m[0][2], m2.m[0][2]) && fuzzyCompare(m1.m[0][3], m2.m[0][3]) &&
-         fuzzyCompare(m1.m[1][0], m2.m[1][0]) && fuzzyCompare(m1.m[1][1], m2.m[1][1]) &&
-         fuzzyCompare(m1.m[1][2], m2.m[1][2]) && fuzzyCompare(m1.m[1][3], m2.m[1][3]) &&
-         fuzzyCompare(m1.m[2][0], m2.m[2][0]) && fuzzyCompare(m1.m[2][1], m2.m[2][1]) &&
-         fuzzyCompare(m1.m[2][2], m2.m[2][2]) && fuzzyCompare(m1.m[2][3], m2.m[2][3]) &&
-         fuzzyCompare(m1.m[3][0], m2.m[3][0]) && fuzzyCompare(m1.m[3][1], m2.m[3][1]) &&
-         fuzzyCompare(m1.m[3][2], m2.m[3][2]) && fuzzyCompare(m1.m[3][3], m2.m[3][3]);
+  return fuzzyCompare(m1.m[0][0], m2.m[0][0]) && fuzzyCompare(m1.m[0][1], m2.m[0][1]) && fuzzyCompare(m1.m[0][2], m2.m[0][2]) && fuzzyCompare(m1.m[0][3], m2.m[0][3]) &&
+         fuzzyCompare(m1.m[1][0], m2.m[1][0]) && fuzzyCompare(m1.m[1][1], m2.m[1][1]) && fuzzyCompare(m1.m[1][2], m2.m[1][2]) && fuzzyCompare(m1.m[1][3], m2.m[1][3]) &&
+         fuzzyCompare(m1.m[2][0], m2.m[2][0]) && fuzzyCompare(m1.m[2][1], m2.m[2][1]) && fuzzyCompare(m1.m[2][2], m2.m[2][2]) && fuzzyCompare(m1.m[2][3], m2.m[2][3]) &&
+         fuzzyCompare(m1.m[3][0], m2.m[3][0]) && fuzzyCompare(m1.m[3][1], m2.m[3][1]) && fuzzyCompare(m1.m[3][2], m2.m[3][2]) && fuzzyCompare(m1.m[3][3], m2.m[3][3]);
 }
 
 inline Point Matrix4x4::map(const Point& point) const { return *this * point; }
@@ -652,8 +626,7 @@ inline Vector3D Matrix4x4::mapVector(const Vector3D& vector) const {
   if (flagBits == Scale || flagBits == (Translation | Scale)) {
     return {vector.x() * m[0][0], vector.y() * m[1][1], vector.z() * m[2][2]};
   }
-  return {vector.x() * m[0][0] + vector.y() * m[1][0] + vector.z() * m[2][0],
-          vector.x() * m[0][1] + vector.y() * m[1][1] + vector.z() * m[2][1],
+  return {vector.x() * m[0][0] + vector.y() * m[1][0] + vector.z() * m[2][0], vector.x() * m[0][1] + vector.y() * m[1][1] + vector.z() * m[2][1],
           vector.x() * m[0][2] + vector.y() * m[1][2] + vector.z() * m[2][2]};
 }
 

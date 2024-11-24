@@ -2,8 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangeParameterCommand::ChangeParameterCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ChangeParameterCommand::ChangeParameterCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(comparison);
   parameters.at(1).get_to(value);
   parameters.at(2).get_to(param);
@@ -40,7 +39,6 @@ std::string ChangeParameterCommand::stringRep(const Database& db) const {
     quantityStr = std::format("{{{}}}", db.variableNameOrId(quantity));
   }
 
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Parameter" +
-         colon.data() + actorName + ", " + DecodeEnumName(param) + " " + DecodeEnumName(quantityOp) + " " +
-         quantityStr + ColorFormatter::popColor();
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Parameter" + colon.data() + actorName + ", " + DecodeEnumName(param) + " " + DecodeEnumName(quantityOp) +
+         " " + quantityStr + ColorFormatter::popColor();
 }

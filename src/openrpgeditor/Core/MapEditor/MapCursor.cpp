@@ -13,10 +13,7 @@ inline int roundUp(int numToRound, int multiple) {
   return numToRound + multiple - remainder;
 }
 
-int MapCursor::alignCoord(int value) {
-  return roundUp(value - (value % (static_cast<int>(m_tileSize * m_mapScale))),
-                 static_cast<int>(m_tileSize * m_mapScale));
-}
+int MapCursor::alignCoord(int value) { return roundUp(value - (value % (static_cast<int>(m_tileSize * m_mapScale))), static_cast<int>(m_tileSize * m_mapScale)); }
 
 void MapCursor::update(float mapScale, int mapWidth, int mapHeight, int tileSize, ImGuiWindow* win) {
   m_mapScale = mapScale;
@@ -24,10 +21,8 @@ void MapCursor::update(float mapScale, int mapWidth, int mapHeight, int tileSize
   m_mapHeight = mapHeight;
   m_tileSize = tileSize;
 
-
   /* Keyboard mode is disabled until scrolling can be figured out */
-  if ((ImGui::IsKeyPressed(ImGuiKey_LeftArrow) || ImGui::IsKeyPressed(ImGuiKey_RightArrow) ||
-      ImGui::IsKeyPressed(ImGuiKey_UpArrow) || ImGui::IsKeyPressed(ImGuiKey_DownArrow)) && false) {
+  if ((ImGui::IsKeyPressed(ImGuiKey_LeftArrow) || ImGui::IsKeyPressed(ImGuiKey_RightArrow) || ImGui::IsKeyPressed(ImGuiKey_UpArrow) || ImGui::IsKeyPressed(ImGuiKey_DownArrow)) && false) {
     m_mode = MapCursorMode::Keyboard;
 
     if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
@@ -71,8 +66,7 @@ void MapCursor::update(float mapScale, int mapWidth, int mapHeight, int tileSize
     ImVec2 cursorPos = ImGui::GetIO().MousePos;
     cursorPos -= win->ContentRegionRect.Min;
 
-    if (!(cursorPos.x < 0 || cursorPos.y < 0 || cursorPos.x >= ((mapWidth * tileSize) * m_mapScale) ||
-          cursorPos.y >= ((m_mapHeight * tileSize) * m_mapScale))) {
+    if (!(cursorPos.x < 0 || cursorPos.y < 0 || cursorPos.x >= ((mapWidth * tileSize) * m_mapScale) || cursorPos.y >= ((m_mapHeight * tileSize) * m_mapScale))) {
       if (cursorPos.x < 0) {
         cursorPos.x = 0;
       }
@@ -108,10 +102,8 @@ void MapCursor::draw(ImGuiWindow* win) {
 
   auto tileSizef = static_cast<float>(m_tileSize);
 
-  win->DrawList->AddRect(m_cursorPos + (ImVec2{0.f, 0.f} * m_mapScale),
-                         m_cursorPos + (ImVec2{tileSizef, tileSizef} * m_mapScale), 0xFF000000, 0.f, 0, 5.f);
-  win->DrawList->AddRect(m_cursorPos + (ImVec2{0.f, 0.f} * m_mapScale),
-                         m_cursorPos + (ImVec2{tileSizef, tileSizef} * m_mapScale), 0xFFFFFFFF, 0.f, 0, 3.f);
+  win->DrawList->AddRect(m_cursorPos + (ImVec2{0.f, 0.f} * m_mapScale), m_cursorPos + (ImVec2{tileSizef, tileSizef} * m_mapScale), 0xFF000000, 0.f, 0, 5.f);
+  win->DrawList->AddRect(m_cursorPos + (ImVec2{0.f, 0.f} * m_mapScale), m_cursorPos + (ImVec2{tileSizef, tileSizef} * m_mapScale), 0xFFFFFFFF, 0.f, 0, 3.f);
 }
 
 void MapCursor::setFromAbsolute(float x, float y, ImGuiWindow* win) {

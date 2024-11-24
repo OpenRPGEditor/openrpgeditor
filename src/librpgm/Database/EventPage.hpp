@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Database/Globals.hpp"
-#include "Database/EventPage.hpp"
 #include "Database/CommandParser.hpp"
+#include "Database/EventPage.hpp"
+#include "Database/Globals.hpp"
 #include "Database/MovementRoute.hpp"
 
 #include <string>

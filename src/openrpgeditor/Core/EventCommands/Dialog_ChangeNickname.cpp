@@ -1,9 +1,9 @@
 #include "Core/EventCommands/Dialog_ChangeNickname.hpp"
 
-#include <tuple>
-#include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Database/Database.hpp"
+#include "imgui.h"
+#include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeNickname::draw() {
   if (IsOpen()) {
@@ -12,32 +12,28 @@ std::tuple<bool, bool> Dialog_ChangeNickname::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{183, 135} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
-      if (actor_picker) {
-        auto [closed, confirmed] = actor_picker->draw();
-        if (confirmed) {
-          m_actor = actor_picker->selection();
-          actor_picker.reset();
-        }
+    if (actor_picker) {
+      auto [closed, confirmed] = actor_picker->draw();
+      if (confirmed) {
+        m_actor = actor_picker->selection();
+        actor_picker.reset();
       }
+    }
 
     ImGui::SeparatorText("Actor");
 
     // Actor Button
     ImGui::PushID("##nickname_selection_actor");
-    if (ImGui::Button(
-            Database::instance()->actorName(m_actor).c_str(),
-            ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+    if (ImGui::Button(Database::instance()->actorName(m_actor).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
       actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), 0);
-            }
+    }
     ImGui::PopID();
 
     ImGui::SeparatorText("Nickname");
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(185));
     ImGui::InputText("##nickname_input", &m_nickname);
-
 
     if (ImGui::Button("OK")) {
       m_confirmed = true;

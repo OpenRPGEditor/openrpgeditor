@@ -1,57 +1,57 @@
 #include "Core/EventCommands/Dialog_SetMovementRoute.hpp"
 
-#include <tuple>
-#include "imgui.h"
 #include "Core/DPIHandler.hpp"
-#include "Database/Database.hpp"
+#include "Core/EventCommands/Dialog_PlaySE.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementChangeBlendMode.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementChangeImage.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementChangeOpacity.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementJump.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementScript.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementSwitchOFF.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementSwitchON.hpp"
+#include "Core/EventCommands/MovementRoute/Dialog_MovementWait.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
+#include "Database/Database.hpp"
+#include "Database/EventCommands/MovementRoute/DirectionFixOFF.hpp"
+#include "Database/EventCommands/MovementRoute/DirectionFixON.hpp"
+#include "Database/EventCommands/MovementRoute/Jump.hpp"
+#include "Database/EventCommands/MovementRoute/Move1StepBackward.hpp"
+#include "Database/EventCommands/MovementRoute/Move1StepForward.hpp"
+#include "Database/EventCommands/MovementRoute/MoveAtRandom.hpp"
+#include "Database/EventCommands/MovementRoute/MoveAwayFromPlayer.hpp"
 #include "Database/EventCommands/MovementRoute/MoveDown.hpp"
 #include "Database/EventCommands/MovementRoute/MoveLeft.hpp"
-#include "Database/EventCommands/MovementRoute/MoveRight.hpp"
-#include "Database/EventCommands/MovementRoute/MoveUp.hpp"
 #include "Database/EventCommands/MovementRoute/MoveLowerLeft.hpp"
 #include "Database/EventCommands/MovementRoute/MoveLowerRight.hpp"
-#include "Database/EventCommands/MovementRoute/MoveUpperRight.hpp"
-#include "Database/EventCommands/MovementRoute/MoveAtRandom.hpp"
-#include "Database/EventCommands/MovementRoute/Move1StepForward.hpp"
-#include "Database/EventCommands/MovementRoute/Move1StepBackward.hpp"
-#include "Database/EventCommands/MovementRoute/Jump.hpp"
-#include "Database/EventCommands/MovementRoute/Wait.hpp"
-#include "Database/EventCommands/MovementRoute/MoveAwayFromPlayer.hpp"
+#include "Database/EventCommands/MovementRoute/MoveRight.hpp"
 #include "Database/EventCommands/MovementRoute/MoveTowardPlayer.hpp"
+#include "Database/EventCommands/MovementRoute/MoveUp.hpp"
+#include "Database/EventCommands/MovementRoute/MoveUpperLeft.hpp"
+#include "Database/EventCommands/MovementRoute/MoveUpperRight.hpp"
+#include "Database/EventCommands/MovementRoute/SteppingAnimationOFF.hpp"
+#include "Database/EventCommands/MovementRoute/SteppingAnimationON.hpp"
+#include "Database/EventCommands/MovementRoute/ThroughOFF.hpp"
+#include "Database/EventCommands/MovementRoute/ThroughON.hpp"
+#include "Database/EventCommands/MovementRoute/TransparentOFF.hpp"
+#include "Database/EventCommands/MovementRoute/TransparentON.hpp"
+#include "Database/EventCommands/MovementRoute/Turn180Deg.hpp"
+#include "Database/EventCommands/MovementRoute/Turn90DegLeft.hpp"
+#include "Database/EventCommands/MovementRoute/Turn90DegLeftOrRight.hpp"
+#include "Database/EventCommands/MovementRoute/Turn90DegRight.hpp"
+#include "Database/EventCommands/MovementRoute/TurnAtRandom.hpp"
+#include "Database/EventCommands/MovementRoute/TurnAwayFromPlayer.hpp"
+#include "Database/EventCommands/MovementRoute/TurnDown.hpp"
 #include "Database/EventCommands/MovementRoute/TurnLeft.hpp"
 #include "Database/EventCommands/MovementRoute/TurnRight.hpp"
-#include "Database/EventCommands/MovementRoute/TurnUp.hpp"
-#include "Database/EventCommands/MovementRoute/Turn90DegRight.hpp"
-#include "Database/EventCommands/MovementRoute/Turn90DegLeft.hpp"
-#include "Database/EventCommands/MovementRoute/Turn180Deg.hpp"
-#include "Database/EventCommands/MovementRoute/Turn90DegLeftOrRight.hpp"
-#include "Database/EventCommands/MovementRoute/TurnAtRandom.hpp"
 #include "Database/EventCommands/MovementRoute/TurnTowardPlayer.hpp"
-#include "Database/EventCommands/MovementRoute/TransparentON.hpp"
-#include "Database/EventCommands/MovementRoute/TransparentOFF.hpp"
-#include "Database/EventCommands/MovementRoute/TurnDown.hpp"
-#include "Database/EventCommands/MovementRoute/TurnAwayFromPlayer.hpp"
-#include "Database/EventCommands/MovementRoute/WalkingAnimationON.hpp"
+#include "Database/EventCommands/MovementRoute/TurnUp.hpp"
+#include "Database/EventCommands/MovementRoute/Wait.hpp"
 #include "Database/EventCommands/MovementRoute/WalkingAnimationOFF.hpp"
-#include "Database/EventCommands/MovementRoute/SteppingAnimationON.hpp"
-#include "Database/EventCommands/MovementRoute/SteppingAnimationOFF.hpp"
-#include "Database/EventCommands/MovementRoute/DirectionFixON.hpp"
-#include "Database/EventCommands/MovementRoute/DirectionFixOFF.hpp"
-#include "Database/EventCommands/MovementRoute/ThroughON.hpp"
-#include "Database/EventCommands/MovementRoute/ThroughOFF.hpp"
-#include "Core/EventCommands/MovementRoute/Dialog_MovementScript.hpp"
-#include "Database/EventCommands/MovementRoute/MoveUpperLeft.hpp"
-#include "Core/EventCommands/MovementRoute/Dialog_MovementJump.hpp"
-#include "Core/EventCommands/MovementRoute/Dialog_MovementWait.hpp"
-#include "Core/EventCommands/MovementRoute/Dialog_MovementSwitchON.hpp"
-#include "Core/EventCommands/MovementRoute/Dialog_MovementSwitchOFF.hpp"
-#include "Core/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.hpp"
-#include "Core/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.hpp"
-#include "Core/EventCommands/MovementRoute/Dialog_MovementChangeOpacity.hpp"
-#include "Core/EventCommands/MovementRoute/Dialog_MovementChangeBlendMode.hpp"
-#include "Core/EventCommands/MovementRoute/Dialog_MovementChangeImage.hpp"
-#include "Core/EventCommands/Dialog_PlaySE.hpp"
+#include "Database/EventCommands/MovementRoute/WalkingAnimationON.hpp"
+#include "imgui.h"
+#include <tuple>
 
 std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
   if (IsOpen()) {
@@ -60,9 +60,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{818, 395} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
-                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     // Character Selection
     ImVec2 cursorPos = ImGui::GetCursorPos();
@@ -93,11 +91,8 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     }
 
     // Step Table
-    if (ImGui::BeginTable("##bgm_audio_contents", 1,
-                          ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
-                              ImGuiTableFlags_ScrollY,
-                          ImVec2{App::DPIHandler::scale_value(160),
-                                 ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(110)})) {
+    if (ImGui::BeginTable("##bgm_audio_contents", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
+                          ImVec2{App::DPIHandler::scale_value(160), ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(110)})) {
 
       ImGui::TableSetupScrollFreeze(1, 0);
       ImGui::TableSetupColumn("File");
@@ -109,9 +104,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
         const bool isSelected = m_selected == n;
         char text[4096];
         sprintf(text, "%s##cmd%i", m_route.list.at(n)->stringRep(*Database::instance()).c_str(), n);
-        if (ImGui::SelectableWithBorder(text, isSelected,
-                                        ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
-                                            ImGuiSelectableFlags_AllowDoubleClick)) {
+        if (ImGui::SelectableWithBorder(text, isSelected, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
           if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
             // Edit node
           }
@@ -126,11 +119,9 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     ImGui::Checkbox("Repeat Movements", &m_route.repeat);
     ImGui::Checkbox("Skip If Cannot Move", &m_route.skippable);
     ImGui::Checkbox("Wait for Completion", &m_route.wait);
-    ImGui::SetCursorPos(
-        ImVec2{cursorPos.x + App::DPIHandler::scale_value(180), cursorPos.y - App::DPIHandler::scale_value(10)});
+    ImGui::SetCursorPos(ImVec2{cursorPos.x + App::DPIHandler::scale_value(180), cursorPos.y - App::DPIHandler::scale_value(10)});
     ImGui::SeparatorText("Movement Commands");
-    ImGui::SetCursorPos(
-        ImVec2{cursorPos.x + App::DPIHandler::scale_value(180), cursorPos.y + App::DPIHandler::scale_value(10)});
+    ImGui::SetCursorPos(ImVec2{cursorPos.x + App::DPIHandler::scale_value(180), cursorPos.y + App::DPIHandler::scale_value(10)});
     ImGui::BeginGroup();
     {
       if (ImGui::Button("Move Down", ImVec2{App::DPIHandler::scale_value(200), 0})) {

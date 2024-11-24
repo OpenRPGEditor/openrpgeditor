@@ -1,23 +1,21 @@
 #pragma once
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
-#include "Core/TemplateEditor/IDBTemplates.hpp"
-#include "Database/Templates.hpp"
-#include "Core/TemplateEditor/TemplatesTint.hpp"
-#include "Core/TemplateEditor/TemplatesCommand.hpp"
 #include "Core/EventEditor.hpp"
+#include "Core/TemplateEditor/IDBTemplates.hpp"
+#include "Core/TemplateEditor/TemplatesCommand.hpp"
+#include "Core/TemplateEditor/TemplatesTint.hpp"
+#include "Database/Templates.hpp"
 
 #include <optional>
 
 struct Templates;
 struct DBTemplatesTab : IDBEditorTab {
-  explicit DBTemplatesTab(Templates& templates, DatabaseEditor* parent)
-  : IDBEditorTab(parent), m_templates(&templates), m_commandEditor(nullptr) {
+  explicit DBTemplatesTab(Templates& templates, DatabaseEditor* parent) : IDBEditorTab(parent), m_templates(&templates), m_commandEditor(nullptr) {
     if (m_templates->templates.size() > 0) {
       if (m_templates->templates.at(m_selection).commands.empty()) {
         m_currentCommands.emplace_back(std::make_shared<EventDummy>());
         m_currentCommands.back()->indent = 0;
-      }
-      else {
+      } else {
         CommandParser parser;
         nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(m_templates->templates.at(m_selection).commands);
         m_currentCommands = parser.parse(cmdJson);
@@ -25,12 +23,9 @@ struct DBTemplatesTab : IDBEditorTab {
       m_commandEditor.setCommands(&m_currentCommands);
       m_templateName = m_templates->templates.at(m_selection).name;
       m_templateType = static_cast<int>(m_templates->templates.at(m_selection).type);
-      m_currentTemplate =
-          CreateTemplateDialog(static_cast<Template::TemplateType>(m_templates->templates.at(m_selection).type));
-    }
-    else {
-      m_currentTemplate =
-          CreateTemplateDialog(static_cast<Template::TemplateType>(0));
+      m_currentTemplate = CreateTemplateDialog(static_cast<Template::TemplateType>(m_templates->templates.at(m_selection).type));
+    } else {
+      m_currentTemplate = CreateTemplateDialog(static_cast<Template::TemplateType>(0));
       m_currentCommands.emplace_back(std::make_shared<EventDummy>());
       m_currentCommands.back()->indent = 0;
       m_commandEditor.setCommands(&m_currentCommands);
@@ -54,8 +49,7 @@ private:
   std::shared_ptr<IDBTemplates> CreateTemplateDialog(Template::TemplateType type) {
     if (m_templates->templates.empty()) {
       return std::make_shared<TemplatesCommand>(nullptr, m_parent);
-    }
-    else {
+    } else {
       switch (type) {
       case Template::TemplateType::Command:
         return std::make_shared<TemplatesCommand>(&m_templates->templates.at(m_selection), m_parent);

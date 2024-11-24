@@ -2,8 +2,7 @@
 
 void to_json(nlohmann::ordered_json& to, const Event& event) {
   to = {
-      {"id", event.id},       {"name", event.name}, {"note", event.note},
-      {"pages", event.pages}, {"x", event.x},       {"y", event.y},
+      {"id", event.id}, {"name", event.name}, {"note", event.note}, {"pages", event.pages}, {"x", event.x}, {"y", event.y},
   };
 }
 void from_json(const nlohmann::ordered_json& from, Event& event) {

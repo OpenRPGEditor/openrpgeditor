@@ -21,5 +21,4 @@ struct TintPictureCommand final : IEventCommand {
 
   int duration{60};
   bool waitForCompletion{true};
-
 };

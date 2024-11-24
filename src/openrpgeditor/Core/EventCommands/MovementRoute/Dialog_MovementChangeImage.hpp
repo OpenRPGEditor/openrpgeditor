@@ -1,9 +1,9 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
-#include "Core/CommonUI/TextEditor.hpp"
-#include "Database/EventCommands/MovementRoute/ChangeImage.hpp"
-#include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/CommonUI/CharacterPicker.hpp"
+#include "Core/CommonUI/TextEditor.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
+#include "Core/Graphics/CharacterSheet.hpp"
+#include "Database/EventCommands/MovementRoute/ChangeImage.hpp"
 
 struct Project;
 struct Dialog_MovementChangeImage : IEventDialogController {

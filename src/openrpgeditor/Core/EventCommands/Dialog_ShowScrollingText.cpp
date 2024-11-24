@@ -1,9 +1,9 @@
 #include "Core/EventCommands/Dialog_ShowScrollingText.hpp"
 
-#include <tuple>
-#include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"
+#include "imgui.h"
+#include <tuple>
 
 std::tuple<bool, bool> Dialog_ShowScrollingText::draw() {
   if (IsOpen()) {
@@ -12,12 +12,9 @@ std::tuple<bool, bool> Dialog_ShowScrollingText::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{551, 280} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
-                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::SeparatorText("Text");
-    ImGui::InputTextMultiline("##showscrolling_text", m_textLine, 4096,
-                              ImVec2{App::DPIHandler::scale_value(537), App::DPIHandler::scale_value(107)});
+    ImGui::InputTextMultiline("##showscrolling_text", m_textLine, 4096, ImVec2{App::DPIHandler::scale_value(537), App::DPIHandler::scale_value(107)});
     ImGui::Text("Speed: ");
     ImGui::SameLine();
     ImGui::PushItemWidth(App::DPIHandler::scale_value(50));

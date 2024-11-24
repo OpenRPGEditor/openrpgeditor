@@ -8,9 +8,7 @@
 namespace fs = std::filesystem;
 struct Dialog_ChangeDefeatME : IEventDialogController {
   Dialog_ChangeDefeatME() = delete;
-  explicit Dialog_ChangeDefeatME(const std::string& name,
-                                 const std::shared_ptr<ChangeDefeatMECommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeDefeatME(const std::string& name, const std::shared_ptr<ChangeDefeatMECommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeDefeatMECommand());
     }
@@ -20,9 +18,7 @@ struct Dialog_ChangeDefeatME : IEventDialogController {
       for (const auto& file : files) {
         m_audios.push_back(file);
       }
-    } catch (const std::filesystem::filesystem_error& e) {
-      std::cerr << "Error accessing directory: " << e.what() << std::endl;
-    }
+    } catch (const std::filesystem::filesystem_error& e) { std::cerr << "Error accessing directory: " << e.what() << std::endl; }
     m_audio.name = m_audios.at(m_selected);
   }
   std::tuple<bool, bool> draw() override;

@@ -9,19 +9,16 @@ Image::Image(std::string_view imageName, int pickType, bool battleBack2 = false)
   if (pickType == 0) {
     if (battleBack2) {
       m_imageTexture = ResourceManager::instance()->loadBattlebacks2Image(imageName);
-    }
-    else {
+    } else {
       m_imageTexture = ResourceManager::instance()->loadBattlebacks1Image(imageName);
     }
 
   } else if (pickType == 1) {
     m_imageTexture = ResourceManager::instance()->loadParallaxImage(imageName);
-  }
-  else {
+  } else {
     m_imageTexture = ResourceManager::instance()->loadPictureImage(imageName);
   }
 }
 
 int Image::imageWidth() const { return m_imageTexture.width(); }
 int Image::imageHeight() const { return m_imageTexture.height(); }
-

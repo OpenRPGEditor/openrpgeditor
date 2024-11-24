@@ -1,9 +1,9 @@
 #include "Core/EventCommands/Dialog_ChangeProfile.hpp"
 
-#include <tuple>
-#include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Database/Database.hpp"
+#include "imgui.h"
+#include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeProfile::draw() {
   if (IsOpen()) {
@@ -12,9 +12,7 @@ std::tuple<bool, bool> Dialog_ChangeProfile::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{300, 220} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
-                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (actor_picker) {
       auto [closed, confirmed] = actor_picker->draw();
@@ -38,8 +36,7 @@ std::tuple<bool, bool> Dialog_ChangeProfile::draw() {
 
     ImGui::SeparatorText("Profile");
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(280));
-    ImGui::InputTextMultiline("##profile_input", &m_profile,
-                              ImVec2{App::DPIHandler::scale_value(280), App::DPIHandler::scale_value(100)});
+    ImGui::InputTextMultiline("##profile_input", &m_profile, ImVec2{App::DPIHandler::scale_value(280), App::DPIHandler::scale_value(100)});
 
     if (ImGui::Button("OK")) {
       m_confirmed = true;

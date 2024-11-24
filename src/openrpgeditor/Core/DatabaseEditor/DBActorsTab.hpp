@@ -1,10 +1,10 @@
 #pragma once
+#include "Core/CommonUI/TraitsEditor.hpp"
+#include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/Graphics/CheckerboardTexture.hpp"
 #include "Core/Graphics/FaceSheet.hpp"
 #include "Core/Graphics/SideViewBattlerSheet.hpp"
-#include "Core/DatabaseEditor/IDBEditorTab.hpp"
-#include "Core/CommonUI/TraitsEditor.hpp"
 #include "Database/Actors.hpp"
 #include "Database/Trait.hpp"
 
@@ -15,7 +15,6 @@ struct DBActorsTab : IDBEditorTab {
   explicit DBActorsTab(Actors& actors, DatabaseEditor* parent);
   void draw() override;
 
-
   Actors& actors() { return m_actors; }
   const Actors& actors() const { return m_actors; }
 
@@ -24,7 +23,7 @@ struct DBActorsTab : IDBEditorTab {
 
 private:
   bool checkEquipable(int etypeId, int dataId) const;
-  static std::string itemDisplayName(bool isWeapon, int dataId) ;
+  static std::string itemDisplayName(bool isWeapon, int dataId);
 
   Actors& m_actors;
   Actor* m_selectedActor{};
@@ -40,5 +39,4 @@ private:
   std::optional<CharacterSheet> m_characterSheet;
   std::optional<SideViewBattlerSheet> m_battlerSheet;
   TraitsEditor m_traitsEditor;
-
 };

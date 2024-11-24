@@ -1,8 +1,7 @@
 #include "Database/EventCommands/ShopProcessing.hpp"
 #include "Database/Database.hpp"
 
-ShopProcessingGoodCommand::ShopProcessingGoodCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ShopProcessingGoodCommand::ShopProcessingGoodCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(type);
   parameters.at(1).get_to(id);
   parameters.at(2).get_to(priceType);
@@ -29,12 +28,10 @@ std::string ShopProcessingGoodCommand::stringRep(const Database& db) const {
     good = db.weaponNameOrId(id);
     break;
   }
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "               " + colon.data() +
-         good + ColorFormatter::popColor();
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "               " + colon.data() + good + ColorFormatter::popColor();
 }
 
-ShopProcessingCommand::ShopProcessingCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ShopProcessingCommand::ShopProcessingCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(type);
   parameters.at(1).get_to(id);
   parameters.at(2).get_to(priceType);
@@ -63,8 +60,7 @@ std::string ShopProcessingCommand::stringRep(const Database& db) const {
     good = db.weaponNameOrId(id);
     break;
   }
-  std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Shop Processing" +
-                    colon.data() + good + ColorFormatter::popColor();
+  std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Shop Processing" + colon.data() + good + ColorFormatter::popColor();
 
   for (const auto& g : goods) {
     ret += "\n" + g->stringRep(db);

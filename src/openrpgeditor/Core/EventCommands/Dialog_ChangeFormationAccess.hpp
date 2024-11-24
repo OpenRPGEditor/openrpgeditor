@@ -4,9 +4,7 @@
 
 struct Dialog_ChangeFormationAccess : IEventDialogController {
   Dialog_ChangeFormationAccess() = delete;
-  explicit Dialog_ChangeFormationAccess(const std::string& name,
-                                        const std::shared_ptr<ChangeFormationAccessCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeFormationAccess(const std::string& name, const std::shared_ptr<ChangeFormationAccessCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeFormationAccessCommand());
     }

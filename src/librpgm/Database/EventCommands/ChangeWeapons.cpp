@@ -2,8 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangeWeaponsCommand::ChangeWeaponsCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ChangeWeaponsCommand::ChangeWeaponsCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(item);
   parameters.at(1).get_to(operation);
   parameters.at(2).get_to(operandSource);
@@ -22,11 +21,10 @@ void ChangeWeaponsCommand::serializeParameters(nlohmann::ordered_json& out) cons
 std::string ChangeWeaponsCommand::stringRep(const Database& db) const {
   const auto var = db.system.variable(operand);
   const auto wp = db.weapons.weapon(item);
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Weapons" + colon.data() +
-         (wp && !wp->name.empty() ? wp->name : std::format("#{:04}", item)) + DecodeEnumName(operation) +
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Weapons" + colon.data() + (wp && !wp->name.empty() ? wp->name : std::format("#{:04}", item)) +
+         DecodeEnumName(operation) +
          (operandSource == QuantityChangeSource::Constant ? std::to_string(operand)
           : !var.empty()                                  ? var
                                                           : std::format("#{:04}", operand)) +
-         ColorFormatter::popColor() +
-         (includeEquipment == true ? ColorFormatter::getColor(FormatColor::Gray) + "(Include Equipment)" : "");
+         ColorFormatter::popColor() + (includeEquipment == true ? ColorFormatter::getColor(FormatColor::Gray) + "(Include Equipment)" : "");
 }

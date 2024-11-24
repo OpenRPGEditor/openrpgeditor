@@ -4,9 +4,7 @@
 
 struct Dialog_EraseEvent : IEventDialogController {
   Dialog_EraseEvent() = delete;
-  explicit Dialog_EraseEvent(const std::string& name,
-                             const std::shared_ptr<EraseEventCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_EraseEvent(const std::string& name, const std::shared_ptr<EraseEventCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new EraseEventCommand());
     }

@@ -11,5 +11,4 @@ struct PluginCommandMV : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   std::string command;
-
 };

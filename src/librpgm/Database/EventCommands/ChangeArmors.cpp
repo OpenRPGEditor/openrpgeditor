@@ -2,8 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangeArmorsCommand::ChangeArmorsCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ChangeArmorsCommand::ChangeArmorsCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(item);
   parameters.at(1).get_to(operation);
   parameters.at(2).get_to(operandSource);
@@ -32,6 +31,6 @@ std::string ChangeArmorsCommand::stringRep(const Database& db) const {
     suffix = ColorFormatter::getColor(FormatColor::Gray) + db.parentheses("Include Equipment") + ColorFormatter::popColor();
   }
 
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Armors" + colon.data() +
-         armorName + " " + DecodeEnumName(operation) + " " + oper + ColorFormatter::popColor() + suffix;
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Armors" + colon.data() + armorName + " " + DecodeEnumName(operation) + " " + oper +
+         ColorFormatter::popColor() + suffix;
 }

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "nlohmann/json.hpp"
 #include "Database/Map.hpp"
+#include "nlohmann/json.hpp"
 #include <string>
 
 class ISerializable;

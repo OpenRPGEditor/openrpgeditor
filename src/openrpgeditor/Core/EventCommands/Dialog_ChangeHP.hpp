@@ -1,16 +1,14 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
-#include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
-#include "Database/Skills.hpp"
+#include "Core/CommonUI/VariableSwitchPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/ChangeHP.hpp"
+#include "Database/Skills.hpp"
 
 struct Dialog_ChangeHP : IEventDialogController {
   Dialog_ChangeHP() = delete;
-  explicit Dialog_ChangeHP(const std::string& name,
-                           const std::shared_ptr<ChangeHPCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeHP(const std::string& name, const std::shared_ptr<ChangeHPCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeHPCommand());
     }
@@ -35,8 +33,6 @@ struct Dialog_ChangeHP : IEventDialogController {
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
 
 private:
-
-
   int m_comparison;
   int m_value;
   int m_value_var{1};

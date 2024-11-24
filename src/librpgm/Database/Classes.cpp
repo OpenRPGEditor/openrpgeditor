@@ -19,8 +19,7 @@ void from_json(const nlohmann::ordered_json& from, Learning& learning) {
 
 void to_json(nlohmann::ordered_json& to, const Class& cls) {
   to = {
-      {"id", cls.id},     {"expParams", cls.expParams}, {"traits", cls.traits}, {"learnings", cls.learnings},
-      {"name", cls.name}, {"note", cls.note},           {"params", cls.params},
+      {"id", cls.id}, {"expParams", cls.expParams}, {"traits", cls.traits}, {"learnings", cls.learnings}, {"name", cls.name}, {"note", cls.note}, {"params", cls.params},
   };
 }
 

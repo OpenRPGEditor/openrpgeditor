@@ -1,8 +1,8 @@
 #pragma once
 #include "Database/Log.hpp"
 
-#include <string>
 #include <optional>
+#include <string>
 
 #define MAGIC_ENUM_RANGE_MIN (-4096)
 #define MAGIC_ENUM_RANGE_MAX (4096)
@@ -54,18 +54,7 @@ enum class DebuffSource {
   Luck,
 };
 
-enum class EXParameterSource {
-  Hit_Rate,
-  Evasion_Rate,
-  Critical_Rate,
-  Critical_Evasion,
-  Magic_Evasion,
-  Magic_Reflection,
-  Counter_Attack,
-  HP_Regeneration,
-  MP_Regeneration,
-  TP_Regeneration
-};
+enum class EXParameterSource { Hit_Rate, Evasion_Rate, Critical_Rate, Critical_Evasion, Magic_Evasion, Magic_Reflection, Counter_Attack, HP_Regeneration, MP_Regeneration, TP_Regeneration };
 
 enum class SPParameterSource {
   Target_Rate,
@@ -329,20 +318,7 @@ enum class GameDataType {
   Other,
 };
 
-enum class ActorDataSource {
-  Level,
-  EXP,
-  HP,
-  MP,
-  Max_HP,
-  Max_MP,
-  Attack,
-  Defense,
-  M_pe_Attack,
-  M_pe_Defense,
-  Agility,
-  Luck
-};
+enum class ActorDataSource { Level, EXP, HP, MP, Max_HP, Max_MP, Attack, Defense, M_pe_Attack, M_pe_Defense, Agility, Luck };
 
 enum class EnemyDataSource {
   HP,

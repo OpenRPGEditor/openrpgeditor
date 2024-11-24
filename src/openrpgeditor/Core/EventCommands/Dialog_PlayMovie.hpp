@@ -10,9 +10,7 @@
 namespace fs = std::filesystem;
 struct Dialog_PlayMovie : IEventDialogController {
   Dialog_PlayMovie() = delete;
-  explicit Dialog_PlayMovie(const std::string& name,
-                            const std::shared_ptr<PlayMovieCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_PlayMovie(const std::string& name, const std::shared_ptr<PlayMovieCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new PlayMovieCommand());
     }
@@ -22,9 +20,7 @@ struct Dialog_PlayMovie : IEventDialogController {
       for (const auto& file : files) {
         m_movies.push_back(file);
       }
-    } catch (const std::filesystem::filesystem_error& e) {
-      std::cerr << "Error accessing directory: " << e.what() << std::endl;
-    }
+    } catch (const std::filesystem::filesystem_error& e) { std::cerr << "Error accessing directory: " << e.what() << std::endl; }
     m_movie = "";
   }
   std::tuple<bool, bool> draw() override;

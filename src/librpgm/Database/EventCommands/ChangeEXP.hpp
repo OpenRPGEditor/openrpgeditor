@@ -16,5 +16,4 @@ struct ChangeEXPCommand final : IEventCommand {
   QuantityChangeSource quantitySource = QuantityChangeSource::Constant;
   int quantity{1};
   bool showLevelUp{false};
-
 };

@@ -1,8 +1,7 @@
 #include "Database/EventCommands/ChangeEquipment.hpp"
 #include "Database/Database.hpp"
 
-ChangeEquipmentCommand::ChangeEquipmentCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ChangeEquipmentCommand::ChangeEquipmentCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(actorId);
   parameters.at(1).get_to(equipType);
   parameters.at(2).get_to(equipment);
@@ -22,9 +21,7 @@ std::string ChangeEquipmentCommand::stringRep(const Database& db) const {
     eType = 1;
   }
   const auto equipTypeName = db.equipTypeName(equipType);
-  const auto equipName = equipment == 0 ? "None"
-                         : eType <= 1   ? db.weaponNameOrId(equipment)
-                                        : db.armorNameOrId(equipment);
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Equipment" +
-         colon.data() + std::format("{}, {} = {}", actorName, equipTypeName, equipName) + ColorFormatter::popColor();
+  const auto equipName = equipment == 0 ? "None" : eType <= 1 ? db.weaponNameOrId(equipment) : db.armorNameOrId(equipment);
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Equipment" + colon.data() + std::format("{}, {} = {}", actorName, equipTypeName, equipName) +
+         ColorFormatter::popColor();
 }

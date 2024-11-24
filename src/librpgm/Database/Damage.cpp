@@ -2,8 +2,7 @@
 
 void to_json(nlohmann::ordered_json& j, const Damage& damage) {
   j = {
-      {"critical", damage.critical}, {"elementId", damage.elementId}, {"formula", damage.formula},
-      {"type", damage.type},         {"variance", damage.variance},
+      {"critical", damage.critical}, {"elementId", damage.elementId}, {"formula", damage.formula}, {"type", damage.type}, {"variance", damage.variance},
   };
 }
 void from_json(const nlohmann::ordered_json& j, Damage& damage) {

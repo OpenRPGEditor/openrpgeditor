@@ -1,9 +1,9 @@
 #include "Core/EventCommands/Dialog_ChangeVehicleImage.hpp"
-#include <tuple>
-#include "imgui.h"
 #include "Core/Application.hpp"
-#include "Core/Log.hpp"
 #include "Core/DPIHandler.hpp"
+#include "Core/Log.hpp"
+#include "imgui.h"
+#include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
   if (IsOpen()) {
@@ -12,9 +12,7 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{125, 225} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
-                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (const auto [closed, confirmed] = m_characterPicker.draw(); closed) {
       if (confirmed) {
@@ -28,8 +26,7 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
     {
       ImGui::Text("Vehicle:");
       ImGui::PushItemWidth((App::DPIHandler::scale_value(100)));
-      if (ImGui::BeginCombo("##vehicle_location_selection",
-                            DecodeEnumName(magic_enum::enum_value<VehicleType>(m_vehicle)).c_str())) {
+      if (ImGui::BeginCombo("##vehicle_location_selection", DecodeEnumName(magic_enum::enum_value<VehicleType>(m_vehicle)).c_str())) {
         for (auto& vehicle : magic_enum::enum_values<VehicleType>()) {
           bool is_selected = m_vehicle == magic_enum::enum_index(vehicle).value();
           if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(vehicle)).c_str(), is_selected)) {
@@ -49,25 +46,19 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
     ImGui::BeginGroup();
     {
       auto cursorPos = ImGui::GetCursorPos();
-      if (ImGui::ImageButton("##event_image", m_buttonBack,
-                             ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
+      if (ImGui::ImageButton("##event_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
         m_characterPicker.setCharacterInfo(m_image, m_character);
         m_characterPicker.SetOpen(true);
       }
       if (m_characterSheet && m_characterSheet->texture()) {
         if (m_characterSheet->characterWidth() < 72 || m_characterSheet->characterHeight() < 96) {
-          ImGui::SetCursorPos(
-              cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f, m_characterSheet->characterHeight() / 2.f} *
-                           App::DPIHandler::get_ui_scale()));
+          ImGui::SetCursorPos(cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f, m_characterSheet->characterHeight() / 2.f} * App::DPIHandler::get_ui_scale()));
         } else {
           ImGui::SetCursorPos(cursorPos);
         }
         const auto [min, max] = m_characterSheet->getRectForCharacter(m_character);
         ImGui::Image(m_characterSheet->texture(),
-                     ImVec2{static_cast<float>(m_characterSheet->characterWidth()),
-                            static_cast<float>(m_characterSheet->characterHeight())} *
-                         App::DPIHandler::get_ui_scale(),
-                     min, max);
+                     ImVec2{static_cast<float>(m_characterSheet->characterWidth()), static_cast<float>(m_characterSheet->characterHeight())} * App::DPIHandler::get_ui_scale(), min, max);
       }
     }
     ImGui::SameLine();

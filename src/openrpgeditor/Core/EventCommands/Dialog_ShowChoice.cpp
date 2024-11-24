@@ -1,9 +1,9 @@
-#include "imgui.h"
-#include "misc/cpp/imgui_stdlib.h"
 #include "Core/EventCommands/Dialog_ShowChoice.hpp"
-#include <tuple>
 #include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"
+#include "imgui.h"
+#include "misc/cpp/imgui_stdlib.h"
+#include <tuple>
 
 std::tuple<bool, bool> Dialog_ShowChoice::draw() {
   if (IsOpen()) {
@@ -12,9 +12,7 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{551, 290} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
-                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginGroup();
     {
       ImGui::SeparatorText("Choices");
@@ -52,8 +50,7 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
     {
       ImGui::Text("Background:");
       ImGui::PushItemWidth((App::DPIHandler::scale_value(120)));
-      if (ImGui::BeginCombo("##showchoice_background",
-                            DecodeEnumName(magic_enum::enum_value<TextBackground>(m_background)).c_str())) {
+      if (ImGui::BeginCombo("##showchoice_background", DecodeEnumName(magic_enum::enum_value<TextBackground>(m_background)).c_str())) {
         for (auto& bg : magic_enum::enum_values<TextBackground>()) {
           bool is_selected = m_background == magic_enum::enum_index(bg).value();
           if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(bg)).c_str(), is_selected)) {
@@ -66,8 +63,7 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
       }
       ImGui::Text("Window Position:");
       ImGui::PushItemWidth((App::DPIHandler::scale_value(120)));
-      if (ImGui::BeginCombo("##showchoice_windowpos",
-                            DecodeEnumName(magic_enum::enum_value<ChoiceWindowPosition>(m_position)).c_str())) {
+      if (ImGui::BeginCombo("##showchoice_windowpos", DecodeEnumName(magic_enum::enum_value<ChoiceWindowPosition>(m_position)).c_str())) {
         for (auto& bg : magic_enum::enum_values<ChoiceWindowPosition>()) {
           bool is_selected = m_background == magic_enum::enum_index(bg).value();
           if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(bg)).c_str(), is_selected)) {
@@ -81,8 +77,7 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
 
       ImGui::Text("Default:");
       ImGui::PushItemWidth((App::DPIHandler::scale_value(120)));
-      if (ImGui::BeginCombo("##showchoice_default",
-                            m_defaultType < 0 ? "None" : ("Choice #" + std::to_string(m_defaultType + 1)).c_str())) {
+      if (ImGui::BeginCombo("##showchoice_default", m_defaultType < 0 ? "None" : ("Choice #" + std::to_string(m_defaultType + 1)).c_str())) {
 
         for (int i{-1}; i < 6; i++) {
           bool is_selected = m_defaultType == i;
@@ -105,9 +100,7 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
 
       ImGui::Text("Cancel:");
       ImGui::PushItemWidth((App::DPIHandler::scale_value(120)));
-      std::string text = m_cancelType == -2   ? "Branch"
-                         : m_cancelType == -1 ? "Disallow"
-                                              : ("Choice #" + std::to_string(m_cancelType + 1));
+      std::string text = m_cancelType == -2 ? "Branch" : m_cancelType == -1 ? "Disallow" : ("Choice #" + std::to_string(m_cancelType + 1));
 
       if (ImGui::BeginCombo("##showchoice_cancel", text.c_str())) {
         for (int i{-2}; i < 6; i++) {

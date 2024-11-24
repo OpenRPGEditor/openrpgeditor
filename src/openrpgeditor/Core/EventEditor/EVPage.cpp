@@ -1,18 +1,17 @@
 #include "Core/EventEditor/EVPage.hpp"
-#include "Core/EventEditor.hpp"
-#include "Core/Project.hpp"
 #include "Core/DPIHandler.hpp"
+#include "Core/EventEditor.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
+#include "Core/Project.hpp"
 
-#include <string>
 #include <format>
+#include <string>
 
 #include "imgui.h"
 
 #include "Database/EventPage.hpp"
 
-EVPage::EVPage(EventEditor* parent, EventPage* page)
-: m_parent(parent), m_page(page), m_commandEditor(parent->project()), m_characterSheet(page->image.characterName) {
+EVPage::EVPage(EventEditor* parent, EventPage* page) : m_parent(parent), m_page(page), m_commandEditor(parent->project()), m_characterSheet(page->image.characterName) {
   m_commandEditor.setCommands(&m_page->list);
   strncpy(m_pageNameBuf, m_page->name.c_str(), 4096);
 }
@@ -23,13 +22,9 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
   std::string title = m_page->name.empty() ? std::format("Page {}", std::to_string(index + 1)) : m_page->name;
   bool selected = ImGui::BeginTabItem(title.c_str(), p_open);
   if (selected) {
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(250));
-    ImGui::BeginChild("##event_page_settings_panel", ImVec2{App::DPIHandler::scale_value(350), 0.f});
-    {
-      ImGui::LabelOverLineEdit("##event_page_name_edit", "Page Name:", m_pageNameBuf, 4096,
-                               App::DPIHandler::scale_value(150),
-                               "Page names are an Open RPG Editor addition and will not be viewable in RPG Maker MV/MZ",
-                               ImGuiInputTextFlags_None);
+    if (ImGui::BeginChild("##event_page_settings_panel", {}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_HorizontalScrollbar)) {
+      ImGui::LabelOverLineEdit("##event_page_name_edit", "Page Name:", m_pageNameBuf, 4096, App::DPIHandler::scale_value(150),
+                               "Page names are an Open RPG Editor addition and will not be viewable in RPG Maker MV/MZ", ImGuiInputTextFlags_None);
 
       ImGui::SameLine();
       ImGui::BeginGroup();
@@ -60,11 +55,8 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
         {
           ImGui::BeginDisabled(!m_page->conditions.switch1Valid);
           {
-            const std::string label = m_page->conditions.switch1Valid
-                                          ? Database::instance()->switchNameOrId(m_page->conditions.switch1Id)
-                                          : "";
-            if (ImGui::Button((label + "##event_page_switch1_selection_button").c_str(),
-                              ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
+            const std::string label = m_page->conditions.switch1Valid ? Database::instance()->switchNameOrId(m_page->conditions.switch1Id) : "";
+            if (ImGui::Button((label + "##event_page_switch1_selection_button").c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
               m_variableSwitchSelection = Switch1;
               m_variableSwitchPicker.emplace("Switch", m_parent->project()->system().switches);
               m_variableSwitchPicker->setSelection(m_page->conditions.switch1Id);
@@ -73,11 +65,8 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
           ImGui::EndDisabled();
           ImGui::BeginDisabled(!m_page->conditions.switch2Valid);
           {
-            const std::string label = m_page->conditions.switch2Valid
-                                          ? Database::instance()->switchNameOrId(m_page->conditions.switch2Id)
-                                          : "";
-            if (ImGui::Button((label + "##event_page_switch2_selection_button").c_str(),
-                              ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
+            const std::string label = m_page->conditions.switch2Valid ? Database::instance()->switchNameOrId(m_page->conditions.switch2Id) : "";
+            if (ImGui::Button((label + "##event_page_switch2_selection_button").c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
               m_variableSwitchSelection = Switch2;
               m_variableSwitchPicker.emplace("Switch", m_parent->project()->system().switches);
               m_variableSwitchPicker->setSelection(m_page->conditions.switch2Id);
@@ -88,11 +77,8 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
           {
             ImGui::BeginDisabled(!m_page->conditions.variableValid);
             {
-              const std::string label = m_page->conditions.variableValid
-                                            ? Database::instance()->variableNameOrId(m_page->conditions.variableId)
-                                            : "";
-              if (ImGui::Button((label + "##event_page_variable_selection_button").c_str(),
-                                ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
+              const std::string label = m_page->conditions.variableValid ? Database::instance()->variableNameOrId(m_page->conditions.variableId) : "";
+              if (ImGui::Button((label + "##event_page_variable_selection_button").c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
                 m_variableSwitchSelection = Variable;
                 m_variableSwitchPicker.emplace("Variable", m_parent->project()->system().variables);
                 m_variableSwitchPicker->setSelection(m_page->conditions.variableId);
@@ -121,10 +107,8 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
             ImGui::BeginDisabled(!m_page->conditions.itemValid);
             {
               auto it = m_parent->project()->item(m_page->conditions.itemId);
-              const std::string item =
-                  m_page->conditions.itemValid && it != nullptr ? it->name : "##event_page_item_selection_button_text";
-              if (ImGui::Button(item.c_str(),
-                                ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
+              const std::string item = m_page->conditions.itemValid && it != nullptr ? it->name : "##event_page_item_selection_button_text";
+              if (ImGui::Button(item.c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
                 m_itemPicker.emplace("Items"sv, Database::instance()->items.items(), m_page->conditions.itemId);
               }
             }
@@ -132,11 +116,8 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
             ImGui::BeginDisabled(!m_page->conditions.actorValid);
             {
               auto ac = m_parent->project()->actor(m_page->conditions.actorId);
-              const std::string actor = m_page->conditions.actorValid && ac != nullptr
-                                            ? ac->name
-                                            : "##event_page_actor_selection_button_text";
-              if (ImGui::Button(actor.c_str(),
-                                ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
+              const std::string actor = m_page->conditions.actorValid && ac != nullptr ? ac->name : "##event_page_actor_selection_button_text";
+              if (ImGui::Button(actor.c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
                 m_actorPicker.emplace("Actors"sv, Database::instance()->actors.actorList(), m_page->conditions.actorId);
               }
             }
@@ -152,25 +133,18 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
         ImGui::SeparatorText("Image");
         auto cursorPos = ImGui::GetCursorPos();
         if (ImGui::ImageButton("##event_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
-          m_characterPicker.setCharacterInfo(m_page->image.characterName, m_page->image.characterIndex,
-                                             m_page->image.pattern, m_page->image.direction);
+          m_characterPicker.setCharacterInfo(m_page->image.characterName, m_page->image.characterIndex, m_page->image.pattern, m_page->image.direction);
           m_characterPicker.SetOpen(true);
         }
         if (m_characterSheet.texture()) {
           if (m_characterSheet.characterWidth() < 72 || m_characterSheet.characterHeight() < 96) {
-            ImGui::SetCursorPos(
-                cursorPos + (ImVec2{m_characterSheet.characterWidth() / 2.f, m_characterSheet.characterHeight() / 2.f} *
-                             App::DPIHandler::get_ui_scale()));
+            ImGui::SetCursorPos(cursorPos + ImVec2{m_characterSheet.characterWidth() / 2.f, m_characterSheet.characterHeight() / 2.f} * App::DPIHandler::get_ui_scale());
           } else {
             ImGui::SetCursorPos(cursorPos);
           }
-          const auto [min, max] = m_characterSheet.getRectForCharacter(m_page->image.characterIndex,
-                                                                       m_page->image.pattern, m_page->image.direction);
+          const auto [min, max] = m_characterSheet.getRectForCharacter(m_page->image.characterIndex, m_page->image.pattern, m_page->image.direction);
           ImGui::Image(m_characterSheet.texture(),
-                       ImVec2{static_cast<float>(m_characterSheet.characterWidth()),
-                              static_cast<float>(m_characterSheet.characterHeight())} *
-                           App::DPIHandler::get_ui_scale(),
-                       min, max);
+                       ImVec2{static_cast<float>(m_characterSheet.characterWidth()), static_cast<float>(m_characterSheet.characterHeight())} * App::DPIHandler::get_ui_scale(), min, max);
         }
       }
       ImGui::EndGroup();
@@ -205,8 +179,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
           ImGui::Text("Speed");
           ImGui::SameLine();
           ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - App::DPIHandler::scale_value(15));
-          auto preview = std::format("{}: {}", magic_enum::enum_index(m_page->moveSpeed).value() + 1,
-                                     DecodeEnumName(m_page->moveSpeed));
+          auto preview = std::format("{}: {}", magic_enum::enum_index(m_page->moveSpeed).value() + 1, DecodeEnumName(m_page->moveSpeed));
           if (ImGui::BeginCombo("##event_page_auto_movement_speed_combo", preview.c_str())) {
             for (auto v : magic_enum::enum_values<MovementSpeed>()) {
               std::string label = std::format("{}: {}", magic_enum::enum_index(v).value() + 1, DecodeEnumName(v));
@@ -219,8 +192,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
           ImGui::Text("Freq");
           ImGui::SameLine();
           ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - App::DPIHandler::scale_value(15));
-          preview = std::format("{}: {}", magic_enum::enum_index(m_page->moveFrequency).value() + 1,
-                                DecodeEnumName(m_page->moveFrequency));
+          preview = std::format("{}: {}", magic_enum::enum_index(m_page->moveFrequency).value() + 1, DecodeEnumName(m_page->moveFrequency));
           if (ImGui::BeginCombo("##event_page_auto_movement_freq_combo", preview.c_str())) {
             for (auto v : magic_enum::enum_values<MovementFrequency>()) {
               std::string label = std::format("{}: {}", magic_enum::enum_index(v).value() + 1, DecodeEnumName(v));
@@ -291,7 +263,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
         const auto tmpName = m_characterPicker.selectedSheet();
         m_page->image.pattern = m_characterPicker.selectedPattern();
         m_page->image.direction = m_characterPicker.selectedDirection();
-        if (m_page->image.characterName.compare(tmpName) != 0) {
+        if (m_page->image.characterName != tmpName) {
           m_page->image.characterName = tmpName;
           m_characterSheet = CharacterSheet(m_page->image.characterName);
         }

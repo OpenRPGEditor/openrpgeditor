@@ -1,13 +1,11 @@
 #pragma once
+#include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/TransferPlayer.hpp"
-#include "Core/CommonUI/VariableSwitchPicker.hpp"
 
 struct Dialog_TransferPlayer : IEventDialogController {
   Dialog_TransferPlayer() = delete;
-  explicit Dialog_TransferPlayer(const std::string& name,
-                                 const std::shared_ptr<TransferPlayerCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_TransferPlayer(const std::string& name, const std::shared_ptr<TransferPlayerCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new TransferPlayerCommand());
     }
@@ -17,8 +15,7 @@ struct Dialog_TransferPlayer : IEventDialogController {
       m_mapId_var = command->mapId;
       m_x_var = command->x;
       m_y_var = command->y;
-    }
-    else {
+    } else {
       m_mapId = command->mapId;
       m_x = command->x;
       m_y = command->y;
@@ -31,7 +28,6 @@ struct Dialog_TransferPlayer : IEventDialogController {
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
 
 private:
-
   int m_mode;
   int m_mapId;
   int m_x;

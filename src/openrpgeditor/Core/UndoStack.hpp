@@ -2,8 +2,8 @@
 
 #include "Core/IUndoCommand.hpp"
 
-#include <stack>
 #include <memory>
+#include <stack>
 
 struct UndoStack {
 

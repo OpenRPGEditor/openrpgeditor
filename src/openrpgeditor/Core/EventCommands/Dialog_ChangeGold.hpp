@@ -1,13 +1,11 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeGold.hpp"
 
 struct Dialog_ChangeGold : IEventDialogController {
   Dialog_ChangeGold() = delete;
-  explicit Dialog_ChangeGold(const std::string& name,
-                             const std::shared_ptr<ChangeGoldCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeGold(const std::string& name, const std::shared_ptr<ChangeGoldCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeGoldCommand());
     }

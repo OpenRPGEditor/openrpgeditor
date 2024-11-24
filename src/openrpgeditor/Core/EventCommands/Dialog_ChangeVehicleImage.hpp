@@ -1,17 +1,15 @@
 #pragma once
 
-#include "Core/EventCommands/IEventDialogController.hpp"
-#include "Core/CommonUI/TextEditor.hpp"
 #include "Core/CommonUI/CharacterPicker.hpp"
+#include "Core/CommonUI/TextEditor.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/Graphics/CharacterSheet.hpp"
 
 #include "Database/EventCommands/ChangeVehicleImage.hpp"
 
 struct Dialog_ChangeVehicleImage : IEventDialogController {
   Dialog_ChangeVehicleImage() = delete;
-  explicit Dialog_ChangeVehicleImage(const std::string& name,
-                                     const std::shared_ptr<ChangeVehicleImageCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeVehicleImage(const std::string& name, const std::shared_ptr<ChangeVehicleImageCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeVehicleImageCommand());
     }

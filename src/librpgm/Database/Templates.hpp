@@ -1,10 +1,10 @@
 #pragma once
 
-#include <map>
-#include <string>
-#include <nlohmann/json.hpp>
-#include <memory>
 #include <Database/EventCommands/IEventCommand.hpp>
+#include <map>
+#include <memory>
+#include <nlohmann/json.hpp>
+#include <string>
 
 class Template {
 public:

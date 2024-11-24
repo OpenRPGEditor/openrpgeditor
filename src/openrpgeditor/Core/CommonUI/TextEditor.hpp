@@ -23,15 +23,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-#include <string>
-#include <vector>
-#include <array>
-#include <memory>
-#include <unordered_set>
-#include <unordered_map>
-#include <map>
-#include <regex>
 #include "imgui.h"
+#include <array>
+#include <map>
+#include <memory>
+#include <regex>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
 class TextEditor {
 public:
@@ -138,8 +138,7 @@ public:
     bool mMultiLineComment : 1;
     bool mPreprocessor : 1;
 
-    Glyph(Char aChar, PaletteIndex aColorIndex)
-    : mChar(aChar), mColorIndex(aColorIndex), mComment(false), mMultiLineComment(false), mPreprocessor(false) {}
+    Glyph(Char aChar, PaletteIndex aColorIndex) : mChar(aChar), mColorIndex(aColorIndex), mComment(false), mMultiLineComment(false), mPreprocessor(false) {}
   };
 
   typedef std::vector<Glyph> Line;
@@ -148,8 +147,7 @@ public:
   struct LanguageDefinition {
     typedef std::pair<std::string, PaletteIndex> TokenRegexString;
     typedef std::vector<TokenRegexString> TokenRegexStrings;
-    typedef bool (*TokenizeCallback)(const char* in_begin, const char* in_end, const char*& out_begin,
-                                     const char*& out_end, PaletteIndex& paletteIndex);
+    typedef bool (*TokenizeCallback)(const char* in_begin, const char* in_end, const char*& out_begin, const char*& out_end, PaletteIndex& paletteIndex);
 
     std::string mName;
     Keywords mKeywords;
@@ -275,11 +273,9 @@ private:
     UndoRecord() {}
     ~UndoRecord() {}
 
-    UndoRecord(const std::string& aAdded, const TextEditor::Coordinates aAddedStart,
-               const TextEditor::Coordinates aAddedEnd,
+    UndoRecord(const std::string& aAdded, const TextEditor::Coordinates aAddedStart, const TextEditor::Coordinates aAddedEnd,
 
-               const std::string& aRemoved, const TextEditor::Coordinates aRemovedStart,
-               const TextEditor::Coordinates aRemovedEnd,
+               const std::string& aRemoved, const TextEditor::Coordinates aRemovedStart, const TextEditor::Coordinates aRemovedEnd,
 
                TextEditor::EditorState& aBefore, TextEditor::EditorState& aAfter);
 

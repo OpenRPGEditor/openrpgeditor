@@ -19,21 +19,16 @@ bool ColorTonePicker::draw() {
     ImGui::SameLine();
     ImGui::BeginGroup();
     {
-      if (ImGui::SliderInt(std::format("##color_preview_red_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(),
-                           &m_r, -255, 255)) {
+      if (ImGui::SliderInt(std::format("##color_preview_red_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(), &m_r, -255, 255)) {
         m_toneInvalid = m_modified = true;
       }
-      if (ImGui::SliderInt(
-              std::format("##color_preview_green_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(), &m_g, -255,
-              255)) {
+      if (ImGui::SliderInt(std::format("##color_preview_green_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(), &m_g, -255, 255)) {
         m_toneInvalid = m_modified = true;
       }
-      if (ImGui::SliderInt(std::format("##color_preview_blue_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(),
-                           &m_b, -255, 255)) {
+      if (ImGui::SliderInt(std::format("##color_preview_blue_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(), &m_b, -255, 255)) {
         m_toneInvalid = m_modified = true;
       }
-      if (ImGui::SliderInt(std::format("##color_preview_gray_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(),
-                           &m_gray, 0, 255)) {
+      if (ImGui::SliderInt(std::format("##color_preview_gray_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(), &m_gray, 0, 255)) {
         m_toneInvalid = m_modified = true;
       }
     }
@@ -46,12 +41,8 @@ bool ColorTonePicker::draw() {
     ImGui::EndGroup();
     ImGui::SameLine();
     ImGui::BeginChild(std::format("##color_preview_child_{}", reinterpret_cast<intptr_t>(this)).c_str(), ImVec2(0, 0),
-                      ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize |
-                          ImGuiChildFlags_FrameStyle);
-    {
-      ImGui::Image(m_tonePreview,
-                   ImVec2{static_cast<float>(m_tonePreview.width()), static_cast<float>(m_tonePreview.height())});
-    }
+                      ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle);
+    { ImGui::Image(m_tonePreview, ImVec2{static_cast<float>(m_tonePreview.width()), static_cast<float>(m_tonePreview.height())}); }
     ImGui::EndChild();
   }
   ImGui::EndGroup();

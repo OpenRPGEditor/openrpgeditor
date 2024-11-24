@@ -1,14 +1,12 @@
 #pragma once
+#include "Core/CommonUI/ImagePicker.hpp"
+#include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ShowPicture.hpp"
-#include "Core/CommonUI/VariableSwitchPicker.hpp"
-#include "Core/CommonUI/ImagePicker.hpp"
 
 struct Dialog_ShowPicture : IEventDialogController {
   Dialog_ShowPicture() = delete;
-  explicit Dialog_ShowPicture(const std::string& name,
-                              const std::shared_ptr<ShowPictureCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ShowPicture(const std::string& name, const std::shared_ptr<ShowPictureCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ShowPictureCommand());
     }

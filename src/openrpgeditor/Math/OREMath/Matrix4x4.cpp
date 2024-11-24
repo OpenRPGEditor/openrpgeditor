@@ -1,8 +1,8 @@
 // ReSharper disable CppTooWideScopeInitStatement
 #include "Matrix4x4.hpp"
 #define _USE_MATH_DEFINES 1
-#include <math.h>
 #include <cmath>
+#include <math.h>
 
 static constexpr float InvDistToPlane = 1.f / 1024.f;
 
@@ -30,10 +30,8 @@ Matrix4x4::Matrix4x4(const float* values, const int cols, const int rows) {
   flagBits = General;
 }
 
-static float matrixDet3(const float m[4][4], const int col0, const int col1, const int col2, const int row0,
-                        const int row1, const int row2) {
-  return m[col0][row0] * (m[col1][row1] * m[col2][row2] - m[col1][row2] * m[col2][row1]) -
-         m[col1][row0] * (m[col0][row1] * m[col2][row2] - m[col0][row2] * m[col2][row1]) +
+static float matrixDet3(const float m[4][4], const int col0, const int col1, const int col2, const int row0, const int row1, const int row2) {
+  return m[col0][row0] * (m[col1][row1] * m[col2][row2] - m[col1][row2] * m[col2][row1]) - m[col1][row0] * (m[col0][row1] * m[col2][row2] - m[col0][row2] * m[col2][row1]) +
          m[col2][row0] * (m[col0][row1] * m[col1][row2] - m[col0][row2] * m[col1][row1]);
 }
 
@@ -610,14 +608,12 @@ void Matrix4x4::projectedRotate(const float angle, float x, float y, float z) {
 }
 
 void Matrix4x4::ortho(const Rect& rect) {
-  ortho(static_cast<float>(rect.x()), static_cast<float>(rect.x() + rect.width()),
-        static_cast<float>(rect.y() + rect.height()), static_cast<float>(rect.y()), -1.0f, 1.0f);
+  ortho(static_cast<float>(rect.x()), static_cast<float>(rect.x() + rect.width()), static_cast<float>(rect.y() + rect.height()), static_cast<float>(rect.y()), -1.0f, 1.0f);
 }
 
 void Matrix4x4::ortho(const RectF& rect) { ortho(rect.left(), rect.right(), rect.bottom(), rect.top(), -1.0f, 1.0f); }
 
-void Matrix4x4::ortho(const float left, const float right, const float bottom, const float top, const float nearPlane,
-                      const float farPlane) {
+void Matrix4x4::ortho(const float left, const float right, const float bottom, const float top, const float nearPlane, const float farPlane) {
   if (left == right || bottom == top || nearPlane == farPlane) {
     return;
   }
@@ -651,8 +647,7 @@ void Matrix4x4::ortho(const float left, const float right, const float bottom, c
   *this *= m;
 }
 
-void Matrix4x4::frustum(const float left, const float right, const float bottom, const float top, const float nearPlane,
-                        const float farPlane) {
+void Matrix4x4::frustum(const float left, const float right, const float bottom, const float top, const float nearPlane, const float farPlane) {
   if (left == right || bottom == top || nearPlane == farPlane) {
     return;
   }
@@ -787,8 +782,7 @@ Rect Matrix4x4::mapRect(const Rect& rect) const {
     return {oRound(x), oRound(y), oRound(w), oRound(h)};
   }
   if (flagBits == Translation) {
-    return {oRound(static_cast<float>(rect.x()) + m[3][0]), oRound(static_cast<float>(rect.y()) + m[3][1]),
-            rect.width(), rect.height()};
+    return {oRound(static_cast<float>(rect.x()) + m[3][0]), oRound(static_cast<float>(rect.y()) + m[3][1]), rect.width(), rect.height()};
   }
 
   const Point tl = map(rect.topLeft());

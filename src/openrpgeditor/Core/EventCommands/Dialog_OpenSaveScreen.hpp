@@ -4,9 +4,7 @@
 
 struct Dialog_OpenSaveScreen : IEventDialogController {
   Dialog_OpenSaveScreen() = delete;
-  explicit Dialog_OpenSaveScreen(const std::string& name,
-                                 const std::shared_ptr<OpenSaveCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_OpenSaveScreen(const std::string& name, const std::shared_ptr<OpenSaveCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new OpenSaveCommand());
     }

@@ -1,10 +1,10 @@
 #include "Core/EventCommands/Dialog_Script.hpp"
-#include <tuple>
-#include "imgui.h"
 #include "Core/Application.hpp"
-#include "misc/cpp/imgui_stdlib.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"
+#include "imgui.h"
+#include "misc/cpp/imgui_stdlib.h"
+#include <tuple>
 
 std::tuple<bool, bool> Dialog_Script::draw() {
   if (IsOpen()) {
@@ -14,14 +14,12 @@ std::tuple<bool, bool> Dialog_Script::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{600, 600} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
     ImGui::PushFont(App::APP->getMonoFont());
 
-    m_textEditor.Render("##no_title", ImVec2{App::DPIHandler::scale_value(580),
-                                           App::DPIHandler::scale_value(580)});
+    m_textEditor.Render("##no_title", ImVec2{App::DPIHandler::scale_value(580), App::DPIHandler::scale_value(580)});
     ImGui::PopFont();
     if (ImGui::Button("OK")) {
       auto script = m_textEditor.GetText();

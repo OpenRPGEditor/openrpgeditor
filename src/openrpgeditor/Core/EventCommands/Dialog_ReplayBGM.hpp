@@ -4,9 +4,7 @@
 
 struct Dialog_ReplayBGM : IEventDialogController {
   Dialog_ReplayBGM() = delete;
-  explicit Dialog_ReplayBGM(const std::string& name,
-                            const std::shared_ptr<ResumeBGMCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ReplayBGM(const std::string& name, const std::shared_ptr<ResumeBGMCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ResumeBGMCommand());
     }

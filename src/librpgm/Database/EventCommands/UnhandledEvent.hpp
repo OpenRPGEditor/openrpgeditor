@@ -9,4 +9,3 @@ struct UnhandledEventCommand final : IEventCommand {
   EventCode m_code{};
   nlohmann::ordered_json data;
 };
-

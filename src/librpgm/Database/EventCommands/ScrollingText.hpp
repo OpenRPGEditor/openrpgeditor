@@ -23,5 +23,4 @@ struct ShowScrollTextCommand final : IEventCommand {
   int speed{2};
   bool noFast{false};
   std::vector<std::shared_ptr<NextScrollingTextCommand>> text;
-
 };

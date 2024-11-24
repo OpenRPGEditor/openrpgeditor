@@ -1,14 +1,12 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
-#include "Database/EventCommands/ShopProcessing.hpp"
-#include "Core/Log.hpp"
 #include "Core/EventCommands/Dialog_ShopProcessing_Goods.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
+#include "Core/Log.hpp"
+#include "Database/EventCommands/ShopProcessing.hpp"
 
 struct Dialog_ShopProcessing : IEventDialogController {
   Dialog_ShopProcessing() = delete;
-  explicit Dialog_ShopProcessing(const std::string& name,
-                                 const std::shared_ptr<ShopProcessingCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ShopProcessing(const std::string& name, const std::shared_ptr<ShopProcessingCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ShopProcessingCommand());
     }

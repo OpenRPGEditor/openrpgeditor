@@ -4,8 +4,8 @@
 #include "Database/Trait.hpp"
 
 #include <nlohmann/json.hpp>
-#include <vector>
 #include <string>
+#include <vector>
 
 class State {
   friend void to_json(nlohmann::ordered_json& j, const State& state);

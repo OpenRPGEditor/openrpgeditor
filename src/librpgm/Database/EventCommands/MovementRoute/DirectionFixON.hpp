@@ -4,8 +4,7 @@
 
 struct MovementDirectionFixONCommand final : IMovementRouteStep {
   MovementDirectionFixONCommand() = default;
-  explicit MovementDirectionFixONCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-  : IMovementRouteStep(indent, parameters) {}
+  explicit MovementDirectionFixONCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IMovementRouteStep(indent, parameters) {}
   ~MovementDirectionFixONCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Direction_Fix_ON; }
 };

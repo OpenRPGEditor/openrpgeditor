@@ -1,6 +1,6 @@
 #pragma once
-#include "Database/Serializable/ISerializable.hpp"
 #include "Database/Enemies.hpp"
+#include "Database/Serializable/ISerializable.hpp"
 
 class EnemiesSerializer final : public ITypedSerializable<Enemies> {
 public:

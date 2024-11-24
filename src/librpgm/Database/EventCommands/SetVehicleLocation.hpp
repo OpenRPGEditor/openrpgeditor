@@ -1,6 +1,6 @@
 #pragma once
-#include "Database/EventCommands/IEventCommand.hpp"
 #include "Database/Database.hpp"
+#include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
 struct SetVehicleLocationCommand final : IEventCommand {

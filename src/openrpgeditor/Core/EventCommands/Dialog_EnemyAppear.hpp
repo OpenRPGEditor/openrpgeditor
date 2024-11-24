@@ -1,15 +1,13 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/ChangeGold.hpp"
 #include "Database/EventCommands/EnemyAppear.hpp"
 
 struct Dialog_EnemyAppear : IEventDialogController {
   Dialog_EnemyAppear() = delete;
-  explicit Dialog_EnemyAppear(const std::string& name,
-                              const std::shared_ptr<EnemyAppearCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_EnemyAppear(const std::string& name, const std::shared_ptr<EnemyAppearCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new EnemyAppearCommand());
     }

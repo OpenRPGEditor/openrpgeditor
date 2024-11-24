@@ -4,9 +4,7 @@
 
 struct Dialog_ReturnToTitle : IEventDialogController {
   Dialog_ReturnToTitle() = delete;
-  explicit Dialog_ReturnToTitle(const std::string& name,
-                                const std::shared_ptr<ReturnToTitleCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ReturnToTitle(const std::string& name, const std::shared_ptr<ReturnToTitleCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ReturnToTitleCommand());
     }

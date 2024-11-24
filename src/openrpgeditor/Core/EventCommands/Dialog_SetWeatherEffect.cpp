@@ -1,8 +1,8 @@
 #include "Core/EventCommands/Dialog_SetWeatherEffect.hpp"
 
-#include <tuple>
-#include "imgui.h"
 #include "Core/DPIHandler.hpp"
+#include "imgui.h"
+#include <tuple>
 
 std::tuple<bool, bool> Dialog_SetWeatherEffect::draw() {
   if (IsOpen()) {
@@ -11,9 +11,7 @@ std::tuple<bool, bool> Dialog_SetWeatherEffect::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{400, 165} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
-                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Weather");
     ImGui::BeginGroup();
@@ -27,8 +25,7 @@ std::tuple<bool, bool> Dialog_SetWeatherEffect::draw() {
     ImGui::BeginGroup();
     {
       ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
-      if (ImGui::BeginCombo("##weather_effect_selection",
-                            DecodeEnumName(magic_enum::enum_value<WeatherEffect>(m_effect)).c_str())) {
+      if (ImGui::BeginCombo("##weather_effect_selection", DecodeEnumName(magic_enum::enum_value<WeatherEffect>(m_effect)).c_str())) {
         for (auto& effect : magic_enum::enum_values<WeatherEffect>()) {
           bool is_selected = m_effect == magic_enum::enum_index(effect).value();
           if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(effect)).c_str(), is_selected)) {

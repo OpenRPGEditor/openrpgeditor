@@ -1,29 +1,13 @@
 #pragma once
 
 #include <map>
-#include <string>
 #include <nlohmann/json.hpp>
+#include <string>
 
 struct GameConstants {
   friend void to_json(nlohmann::ordered_json& json, const GameConstants& constants);
   friend void from_json(const nlohmann::ordered_json& json, GameConstants& constants);
-  enum class Type {
-    Variable,
-    Switch,
-    Actor,
-    Class,
-    Skill,
-    Item,
-    Weapon,
-    Armor,
-    Enemy,
-    Troop,
-    State,
-    Animation,
-    Tileset,
-    CommonEvent,
-    Map
-  };
+  enum class Type { Variable, Switch, Actor, Class, Skill, Item, Weapon, Armor, Enemy, Troop, State, Animation, Tileset, CommonEvent, Map };
   std::map<int, std::string> variables;
   std::map<int, std::string> switches;
   std::map<int, std::string> actors;

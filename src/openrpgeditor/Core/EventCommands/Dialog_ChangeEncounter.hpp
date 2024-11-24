@@ -4,9 +4,7 @@
 
 struct Dialog_ChangeEncounter : IEventDialogController {
   Dialog_ChangeEncounter() = delete;
-  explicit Dialog_ChangeEncounter(const std::string& name,
-                                  const std::shared_ptr<ChangeEncounterDisableCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeEncounter(const std::string& name, const std::shared_ptr<ChangeEncounterDisableCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeEncounterDisableCommand());
     }

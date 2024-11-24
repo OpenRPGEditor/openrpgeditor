@@ -1,7 +1,7 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/ChangeGold.hpp"
 #include "Database/EventCommands/EnemyRecoverAll.hpp"
@@ -9,9 +9,7 @@
 
 struct Dialog_EnemyRecoverAll : IEventDialogController {
   Dialog_EnemyRecoverAll() = delete;
-  explicit Dialog_EnemyRecoverAll(const std::string& name,
-                                  const std::shared_ptr<EnemyRecoverAllCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_EnemyRecoverAll(const std::string& name, const std::shared_ptr<EnemyRecoverAllCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new EnemyRecoverAllCommand());
     }

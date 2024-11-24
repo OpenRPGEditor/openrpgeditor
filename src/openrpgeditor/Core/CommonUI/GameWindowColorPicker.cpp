@@ -20,18 +20,15 @@ bool GameWindowColorPicker::draw() {
       ImGui::SameLine();
       ImGui::BeginGroup();
       {
-        if (ImGui::SliderInt(std::format("##window_color_red_{}", reinterpret_cast<intptr_t>(this)).data(), &m_r, -255,
-                             255)) {
+        if (ImGui::SliderInt(std::format("##window_color_red_{}", reinterpret_cast<intptr_t>(this)).data(), &m_r, -255, 255)) {
           m_backgroundInvalid = m_modified = true;
-                             }
-        if (ImGui::SliderInt(std::format("##window_color_green_{}", reinterpret_cast<intptr_t>(this)).data(), &m_g, -255,
-                             255)) {
+        }
+        if (ImGui::SliderInt(std::format("##window_color_green_{}", reinterpret_cast<intptr_t>(this)).data(), &m_g, -255, 255)) {
           m_backgroundInvalid = m_modified = true;
-                             }
-        if (ImGui::SliderInt(std::format("##window_color_blue_{}", reinterpret_cast<intptr_t>(this)).data(), &m_b, -255,
-                             255)) {
+        }
+        if (ImGui::SliderInt(std::format("##window_color_blue_{}", reinterpret_cast<intptr_t>(this)).data(), &m_b, -255, 255)) {
           m_backgroundInvalid = m_modified = true;
-                             }
+        }
       }
       ImGui::EndGroup();
 
@@ -43,8 +40,7 @@ bool GameWindowColorPicker::draw() {
     ImGui::EndGroup();
     ImGui::SameLine();
     ImGui::BeginChild(std::format("##window_color_preview_child_{}", reinterpret_cast<intptr_t>(this)).data(), {},
-                      ImGuiChildFlags_FrameStyle | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY |
-                          ImGuiChildFlags_AlwaysAutoResize);
+                      ImGuiChildFlags_FrameStyle | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
     { ImGui::Image(m_background, {static_cast<float>(m_background.width()), static_cast<float>(m_background.height())}); }
     ImGui::EndChild();
   }

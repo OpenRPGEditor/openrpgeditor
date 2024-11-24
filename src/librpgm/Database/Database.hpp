@@ -1,23 +1,23 @@
 #pragma once
 
-#include "GameConstants.hpp"
 #include "Database/Actors.hpp"
-#include "Database/Classes.hpp"
-#include "Database/Skills.hpp"
-#include "Database/Items.hpp"
-#include "Database/Weapons.hpp"
-#include "Database/Armors.hpp"
-#include "Database/Enemies.hpp"
-#include "Database/Troops.hpp"
-#include "Database/States.hpp"
 #include "Database/Animations.hpp"
-#include "Database/Tilesets.hpp"
+#include "Database/Armors.hpp"
+#include "Database/Classes.hpp"
 #include "Database/CommonEvents.hpp"
-#include "Database/System.hpp"
-#include "Database/MapInfos.hpp"
+#include "Database/Enemies.hpp"
+#include "Database/Items.hpp"
 #include "Database/Map.hpp"
+#include "Database/MapInfos.hpp"
 #include "Database/Plugins.hpp"
+#include "Database/Skills.hpp"
+#include "Database/States.hpp"
+#include "Database/System.hpp"
 #include "Database/Templates.hpp"
+#include "Database/Tilesets.hpp"
+#include "Database/Troops.hpp"
+#include "Database/Weapons.hpp"
+#include "GameConstants.hpp"
 #include <string_view>
 using namespace std::string_view_literals;
 
@@ -56,13 +56,9 @@ struct Database {
 
   void serializeProject();
 
-  static std::string framesText(const int frames) {
-    return std::to_string(frames) + (frames > 1 ? " frames" : " frame");
-  }
+  static std::string framesText(const int frames) { return std::to_string(frames) + (frames > 1 ? " frames" : " frame"); }
 
-  static std::string secondsText(const int seconds) {
-    return std::to_string(seconds) + (seconds > 1 ? " seconds" : " second");
-  }
+  static std::string secondsText(const int seconds) { return std::to_string(seconds) + (seconds > 1 ? " seconds" : " second"); }
 
   static std::string parentheses(const std::string& text) { return "(" + text + ")"; }
 
@@ -367,9 +363,7 @@ struct Database {
 
   [[nodiscard]] bool isDualWield(const int actorId) const { return slotType(actorId) == 1; }
 
-  [[nodiscard]] int slotIdToEquipId(const int actorId, const int slotId) const {
-    return slotId == 1 && isDualWield(actorId) ? 1 : slotId + 1;
-  }
+  [[nodiscard]] int slotIdToEquipId(const int actorId, const int slotId) const { return slotId == 1 && isDualWield(actorId) ? 1 : slotId + 1; }
 
   [[nodiscard]] std::vector<char> encryptionKeyAsBytes() const { return system.encryptionKeyAsBytes(); }
 

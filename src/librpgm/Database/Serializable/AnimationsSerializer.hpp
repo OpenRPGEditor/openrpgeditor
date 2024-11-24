@@ -1,6 +1,6 @@
 #pragma once
-#include "Database/Serializable/ISerializable.hpp"
 #include "Database/Animations.hpp"
+#include "Database/Serializable/ISerializable.hpp"
 
 class AnimationsSerializer final : public ITypedSerializable<Animations> {
 public:

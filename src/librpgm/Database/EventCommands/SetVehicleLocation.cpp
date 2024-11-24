@@ -1,8 +1,7 @@
 #include "Database/EventCommands/SetVehicleLocation.hpp"
 #include "Database/Database.hpp"
 
-SetVehicleLocationCommand::SetVehicleLocationCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+SetVehicleLocationCommand::SetVehicleLocationCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(vehicle);
   parameters.at(1).get_to(mode);
   parameters.at(2).get_to(mapId);
@@ -19,8 +18,7 @@ void SetVehicleLocationCommand::serializeParameters(nlohmann::ordered_json& out)
 }
 
 std::string SetVehicleLocationCommand::stringRep(const Database& db) const {
-  const auto prefix = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) +
-                      "Set Vehicle Location" + colon.data() + DecodeEnumName(vehicle) + ",";
+  const auto prefix = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Set Vehicle Location" + colon.data() + DecodeEnumName(vehicle) + ",";
   const auto suffix = ColorFormatter::popColor();
 
   if (mode == TransferMode::Variable_Designation) {

@@ -1,6 +1,6 @@
 ---
 BasedOnStyle: LLVM
-ColumnLimit: 120
+ColumnLimit: 200
 UseTab: Never
 TabWidth: 2
 ---
@@ -23,7 +23,7 @@ Cpp11BracedListStyle: true
 NamespaceIndentation: None
 BinPackArguments: true
 BinPackParameters: true
-SortIncludes: false
+SortIncludes: true
 AccessModifierOffset: -2
 ConstructorInitializerIndentWidth: 0
 ConstructorInitializerAllOnOneLineOrOnePerLine: true

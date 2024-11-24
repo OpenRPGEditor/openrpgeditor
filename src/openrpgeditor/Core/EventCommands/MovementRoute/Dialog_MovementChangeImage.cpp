@@ -1,9 +1,9 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeImage.hpp"
-#include <tuple>
-#include "imgui.h"
 #include "Core/Application.hpp"
-#include "Core/Log.hpp"
 #include "Core/DPIHandler.hpp"
+#include "Core/Log.hpp"
+#include "imgui.h"
+#include <tuple>
 
 std::tuple<bool, bool> Dialog_MovementChangeImage::draw() {
   if (IsOpen()) {
@@ -12,9 +12,7 @@ std::tuple<bool, bool> Dialog_MovementChangeImage::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{115, 167} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
-                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (const auto [closed, confirmed] = m_characterPicker.draw(); closed) {
       if (confirmed) {
@@ -36,18 +34,13 @@ std::tuple<bool, bool> Dialog_MovementChangeImage::draw() {
       }
       if (m_characterSheet->texture()) {
         if (m_characterSheet->characterWidth() < 72 || m_characterSheet->characterHeight() < 96) {
-          ImGui::SetCursorPos(
-              cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f, m_characterSheet->characterHeight() / 2.f} *
-                           App::DPIHandler::get_ui_scale()));
+          ImGui::SetCursorPos(cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f, m_characterSheet->characterHeight() / 2.f} * App::DPIHandler::get_ui_scale()));
         } else {
           ImGui::SetCursorPos(cursorPos);
         }
         const auto [min, max] = m_characterSheet->getRectForCharacter(m_character);
         ImGui::Image(m_characterSheet->texture(),
-                     ImVec2{static_cast<float>(m_characterSheet->characterWidth()),
-                            static_cast<float>(m_characterSheet->characterHeight())} *
-                         App::DPIHandler::get_ui_scale(),
-                     min, max);
+                     ImVec2{static_cast<float>(m_characterSheet->characterWidth()), static_cast<float>(m_characterSheet->characterHeight())} * App::DPIHandler::get_ui_scale(), min, max);
       }
     }
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.f);

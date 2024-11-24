@@ -70,8 +70,7 @@ void EndGroupPanel() {
   // GetWindowDrawList()->AddRectFilled(itemMin, itemMax, IM_COL32(255, 0, 0, 64), 4.0f);
 
   ImVec2 halfFrame = ImVec2(frameHeight * 0.25f, frameHeight) * 0.5f;
-  GetWindowDrawList()->AddRect(itemMin + halfFrame, itemMax - ImVec2(halfFrame.x, 0.0f),
-                               ImColor(GetStyleColorVec4(ImGuiCol_Border)), halfFrame.x);
+  GetWindowDrawList()->AddRect(itemMin + halfFrame, itemMax - ImVec2(halfFrame.x, 0.0f), ImColor(GetStyleColorVec4(ImGuiCol_Border)), halfFrame.x);
 
   PopStyleVar(2);
 
@@ -83,8 +82,7 @@ void EndGroupPanel() {
   EndGroup();
 }
 
-bool LabelOverLineEdit(const char* id, const char* label, char* string, int len, float width, const char* tooltip,
-                       ImGuiInputTextFlags flags) {
+bool LabelOverLineEdit(const char* id, const char* label, char* string, int len, float width, const char* tooltip, ImGuiInputTextFlags flags) {
   BeginGroup();
   bool ret = false;
   {
@@ -173,8 +171,7 @@ bool SelectableWithBorder(const char* label, bool selected, ImGuiSelectableFlags
   const bool is_multi_select = (g.LastItemData.ItemFlags & ImGuiItemFlags_IsMultiSelect) != 0;
   if (!is_visible)
     if (!is_multi_select || !g.BoxSelectState.UnclipMode ||
-        !g.BoxSelectState.UnclipRect.Overlaps(
-            bb)) // Extra layer of "no logic clip" for box-select support (would be more overhead to add to ItemAdd)
+        !g.BoxSelectState.UnclipRect.Overlaps(bb)) // Extra layer of "no logic clip" for box-select support (would be more overhead to add to ItemAdd)
       return false;
 
   const bool disabled_global = (g.CurrentItemFlags & ImGuiItemFlags_Disabled) != 0;
@@ -235,8 +232,7 @@ bool SelectableWithBorder(const char* label, bool selected, ImGuiSelectableFlags
     //   BeginSelection() calling PushFocusScope())
     //   - (2) usage will fail with clipped items
     //   The multi-select API aim to fix those issues, e.g. may be replaced with a BeginSelection() API.
-    if ((flags & ImGuiSelectableFlags_SelectOnNav) && g.NavJustMovedToId != 0 &&
-        g.NavJustMovedToFocusScopeId == g.CurrentFocusScopeId)
+    if ((flags & ImGuiSelectableFlags_SelectOnNav) && g.NavJustMovedToId != 0 && g.NavJustMovedToFocusScopeId == g.CurrentFocusScopeId)
       if (g.NavJustMovedToId == id)
         selected = pressed = true;
   }
@@ -245,8 +241,7 @@ bool SelectableWithBorder(const char* label, bool selected, ImGuiSelectableFlags
   // with keyboard/gamepad
   if (pressed || (hovered && (flags & ImGuiSelectableFlags_SetNavIdOnHover))) {
     if (!g.NavHighlightItemUnderNav && g.NavWindow == window && g.NavLayer == window->DC.NavLayerCurrent) {
-      SetNavID(id, window->DC.NavLayerCurrent, g.CurrentFocusScopeId,
-               WindowRectAbsToRel(window, bb)); // (bb == NavRect)
+      SetNavID(id, window->DC.NavLayerCurrent, g.CurrentFocusScopeId, WindowRectAbsToRel(window, bb)); // (bb == NavRect)
       if (g.IO.ConfigNavCursorVisibleAuto)
         g.NavCursorVisible = false;
     }
@@ -263,14 +258,11 @@ bool SelectableWithBorder(const char* label, bool selected, ImGuiSelectableFlags
     if (highlighted || selected) {
       // Between 1.91.0 and 1.91.4 we made selected Selectable use an arbitrary lerp between _Header and _HeaderHovered.
       // Removed that now. (#8106)
-      ImU32 col = GetColorU32((held && highlighted) ? ImGuiCol_HeaderActive
-                              : highlighted         ? ImGuiCol_HeaderHovered
-                                                    : ImGuiCol_Header);
+      ImU32 col = GetColorU32((held && highlighted) ? ImGuiCol_HeaderActive : highlighted ? ImGuiCol_HeaderHovered : ImGuiCol_Header);
       RenderFrame(bb.Min, bb.Max, col, true, 0.0f);
     }
     if (g.NavId == id) {
-      ImGuiNavRenderCursorFlags nav_render_cursor_flags =
-          ImGuiNavRenderCursorFlags_Compact | ImGuiNavRenderCursorFlags_NoRounding;
+      ImGuiNavRenderCursorFlags nav_render_cursor_flags = ImGuiNavRenderCursorFlags_Compact | ImGuiNavRenderCursorFlags_NoRounding;
       if (is_multi_select)
         nav_render_cursor_flags |= ImGuiNavRenderCursorFlags_AlwaysDraw; // Always show the nav rectangle
       RenderNavCursor(bb, id, nav_render_cursor_flags);
@@ -288,8 +280,7 @@ bool SelectableWithBorder(const char* label, bool selected, ImGuiSelectableFlags
     RenderTextClipped(text_min, text_max, label, NULL, &label_size, style.SelectableTextAlign, &bb);
 
   // Automatically close popups
-  if (pressed && (window->Flags & ImGuiWindowFlags_Popup) && !(flags & ImGuiSelectableFlags_NoAutoClosePopups) &&
-      (g.LastItemData.ItemFlags & ImGuiItemFlags_AutoClosePopups))
+  if (pressed && (window->Flags & ImGuiWindowFlags_Popup) && !(flags & ImGuiSelectableFlags_NoAutoClosePopups) && (g.LastItemData.ItemFlags & ImGuiItemFlags_AutoClosePopups))
     CloseCurrentPopup();
 
   if (disabled_item && !disabled_global)

@@ -4,9 +4,7 @@
 
 struct Dialog_BreakLoop : IEventDialogController {
   Dialog_BreakLoop() = delete;
-  explicit Dialog_BreakLoop(const std::string& name,
-                            const std::shared_ptr<BreakLoopCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_BreakLoop(const std::string& name, const std::shared_ptr<BreakLoopCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new BreakLoopCommand());
     }

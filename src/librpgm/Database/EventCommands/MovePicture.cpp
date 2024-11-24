@@ -1,8 +1,7 @@
 #include "Database/EventCommands/MovePicture.hpp"
 #include "Database/Database.hpp"
 
-MovePictureCommand::MovePictureCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+MovePictureCommand::MovePictureCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(picture);
   // param[1] is not used
   parameters.at(2).get_to(origin);
@@ -39,16 +38,10 @@ std::string MovePictureCommand::stringRep(const Database& db) const {
     varX = varX.empty() ? std::format("#{:04}", x) : varX;
     varY = varY.empty() ? std::format("#{:04}", y) : varY;
     return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Move Picture" + colon.data() +
-           std::format("#{}, {} ({{{}}},{{{}}}), ({}%, {}%), {}, {}, {} frames", picture, DecodeEnumName(origin), varX,
-                       varY, width, height, opacity, DecodeEnumName(blendMode), duration) +
-           ColorFormatter::popColor() +
-           (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor()
-                                      : "");
+           std::format("#{}, {} ({{{}}},{{{}}}), ({}%, {}%), {}, {}, {} frames", picture, DecodeEnumName(origin), varX, varY, width, height, opacity, DecodeEnumName(blendMode), duration) +
+           ColorFormatter::popColor() + (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
   }
   return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Move Picture" + colon.data() +
-         std::format("#{}, {} ({},{}), ({}%, {}%), {}, {}, {} frames", picture, DecodeEnumName(origin), x, y, width,
-                     height, opacity, DecodeEnumName(blendMode), duration) +
-         ColorFormatter::popColor() +
-         (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor()
-                                    : "");
+         std::format("#{}, {} ({},{}), ({}%, {}%), {}, {}, {} frames", picture, DecodeEnumName(origin), x, y, width, height, opacity, DecodeEnumName(blendMode), duration) +
+         ColorFormatter::popColor() + (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
 }

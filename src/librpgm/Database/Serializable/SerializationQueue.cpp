@@ -1,7 +1,7 @@
 #include "Database/Serializable/SerializationQueue.hpp"
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
-#include <cstdlib>
 #include <iostream>
 #include <random>
 

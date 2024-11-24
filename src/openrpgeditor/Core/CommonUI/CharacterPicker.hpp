@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/CommonUI/IDialogController.hpp"
+#include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/Graphics/CheckerboardTexture.hpp"
 #include "Database/Globals.hpp"
 
@@ -11,16 +11,13 @@ struct CharacterPicker : IDialogController {
     PatternAndDirection,
   };
 
-  explicit CharacterPicker(const PickerMode mode = PickerMode::Character, std::string_view sheetName = {},
-                           int character = 0, int pattern = 0, Direction direction = Direction::Down);
+  explicit CharacterPicker(const PickerMode mode = PickerMode::Character, std::string_view sheetName = {}, int character = 0, int pattern = 0, Direction direction = Direction::Down);
   std::tuple<bool, bool> draw() override;
   [[nodiscard]] PickerMode pickerMode() const { return m_pickerMode; }
   [[nodiscard]] int selectedPattern() const { return m_pattern; }
   [[nodiscard]] Direction selectedDirection() const { return m_direction; }
   [[nodiscard]] int character() const { return m_characterIndex; }
-  [[nodiscard]] std::string selectedSheet() const {
-    return m_selectedSheet >= 0 ? m_characterSheets[m_selectedSheet] : "";
-  }
+  [[nodiscard]] std::string selectedSheet() const { return m_selectedSheet >= 0 ? m_characterSheets[m_selectedSheet] : ""; }
 
   void setCharacterInfo(std::string_view sheetName, int character = 0, int pattern = 0, Direction direction = Direction::Down);
 

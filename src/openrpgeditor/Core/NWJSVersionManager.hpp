@@ -11,10 +11,9 @@ public:
 
   bool downloadSelectedVersion();
 
-
   void draw();
 
-  [[nodiscard]] bool isOpen() const { return m_isOpen;}
+  [[nodiscard]] bool isOpen() const { return m_isOpen; }
   void open() { m_isOpen = true; }
 
 private:

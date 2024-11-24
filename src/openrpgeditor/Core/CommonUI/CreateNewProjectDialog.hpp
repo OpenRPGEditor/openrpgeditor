@@ -9,6 +9,7 @@ public:
   void SetOpen(bool open) override;
   std::string_view projectName() const { return m_projectName; }
   std::string_view gameTitle() const { return m_gameTitle; }
+
 private:
   std::string m_projectName;
   std::string m_gameTitle;

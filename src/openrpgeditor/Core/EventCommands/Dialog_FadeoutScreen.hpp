@@ -4,9 +4,7 @@
 
 struct Dialog_FadeoutScreen : IEventDialogController {
   Dialog_FadeoutScreen() = delete;
-  explicit Dialog_FadeoutScreen(const std::string& name,
-                                const std::shared_ptr<FadeoutScreenCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_FadeoutScreen(const std::string& name, const std::shared_ptr<FadeoutScreenCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new FadeoutScreenCommand());
     }

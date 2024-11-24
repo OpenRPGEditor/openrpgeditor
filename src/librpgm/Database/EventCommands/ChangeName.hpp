@@ -12,5 +12,4 @@ struct ChangeNameCommand final : IEventCommand {
 
   int actor = 1;
   std::string name;
-
 };

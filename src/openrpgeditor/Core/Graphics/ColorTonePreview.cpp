@@ -1,9 +1,9 @@
 #include "Core/Graphics/ColorTonePreview.hpp"
-#include "SDL_render.h"
 #include "Core/Application.hpp"
-#include "OREMath/Vector3D.hpp"
-#include "OREMath/Matrix4x4.hpp"
 #include "OREMath/Color.hpp"
+#include "OREMath/Matrix4x4.hpp"
+#include "OREMath/Vector3D.hpp"
+#include "SDL_render.h"
 
 double fract(double x) { return x - floor(x); }
 
@@ -38,8 +38,7 @@ Vector3D HSLtoRGB(const Vector3D& color) {
   return Vector3D{static_cast<float>(r), static_cast<float>(g), static_cast<float>(b)};
 }
 
-ColorTonePreview::ColorTonePreview(const int width, const int height)
-: m_textureWidth(width), m_textureHeight(height) {}
+ColorTonePreview::ColorTonePreview(const int width, const int height) : m_textureWidth(width), m_textureHeight(height) {}
 
 ColorTonePreview::~ColorTonePreview() {
   SDL_DestroyTexture(static_cast<SDL_Texture*>(m_texture));
@@ -59,8 +58,7 @@ void ColorTonePreview::update(float r, float g, float b, float gray) {
   const float a22 = 0.072 + 0.928 * s;
   Matrix4x4 matrix(a00, a10, a20, 0, a01, a11, a21, 0, a02, a12, a22, 0, r, g, b, 1);
   if (!m_texture) {
-    m_texture = SDL_CreateTexture(App::APP->getWindow()->getNativeRenderer(), SDL_PIXELFORMAT_ARGB8888,
-                                  SDL_TEXTUREACCESS_STREAMING, m_textureWidth, m_textureHeight);
+    m_texture = SDL_CreateTexture(App::APP->getWindow()->getNativeRenderer(), SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, m_textureWidth, m_textureHeight);
   }
 
   uint32_t* pixels = nullptr;
@@ -72,8 +70,7 @@ void ColorTonePreview::update(float r, float g, float b, float gray) {
         const float t = static_cast<float>(y) / static_cast<float>(m_textureHeight);
         auto color = HSLtoRGB({t, 1.f, s}) * matrix;
         pixels[(y * m_textureWidth) + x] =
-            Color::rgb(oRound(std::clamp(color.x(), 0.f, 1.f) * 255.f), oRound(std::clamp(color.y(), 0.f, 1.f) * 255.f),
-                       oRound(std::clamp(color.z(), 0.f, 1.f) * 255.f));
+            Color::rgb(oRound(std::clamp(color.x(), 0.f, 1.f) * 255.f), oRound(std::clamp(color.y(), 0.f, 1.f) * 255.f), oRound(std::clamp(color.z(), 0.f, 1.f) * 255.f));
       }
     }
     SDL_UnlockTexture(static_cast<SDL_Texture*>(m_texture));

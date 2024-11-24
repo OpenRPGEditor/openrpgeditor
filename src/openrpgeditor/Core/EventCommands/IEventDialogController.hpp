@@ -13,7 +13,7 @@ struct IEventDialogController : IDialogController {
   virtual std::string getUIString() { return ""; }
   void setParentIndent(int indent) { m_parentIndent.emplace(indent); }
   std::optional<int> getParentIndent() { return m_parentIndent; }
-  virtual std::vector<std::shared_ptr<IEventCommand>> getTemplateCommands(EventCode code, int intParam1 = 0) { return  std::vector<std::shared_ptr<IEventCommand>>{}; }
+  virtual std::vector<std::shared_ptr<IEventCommand>> getTemplateCommands(EventCode code, int intParam1 = 0) { return std::vector<std::shared_ptr<IEventCommand>>{}; }
 
 protected:
   std::optional<int> m_parentIndent;

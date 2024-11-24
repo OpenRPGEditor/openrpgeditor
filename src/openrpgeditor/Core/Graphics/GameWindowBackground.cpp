@@ -22,14 +22,12 @@ void GameWindowBackground::update(const int r, const int g, const int b) {
   }
 
   if (!m_renderTexture) {
-    m_renderTexture = SDL_CreateTexture(App::APP->getWindow()->getNativeRenderer(), SDL_PIXELFORMAT_ARGB8888,
-                                        SDL_TEXTUREACCESS_TARGET, m_width, m_height);
+    m_renderTexture = SDL_CreateTexture(App::APP->getWindow()->getNativeRenderer(), SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, m_width, m_height);
     SDL_SetTextureBlendMode(static_cast<SDL_Texture*>(m_renderTexture), SDL_BLENDMODE_BLEND);
   }
 
   if (!m_resultTexture) {
-    m_resultTexture = SDL_CreateTexture(App::APP->getWindow()->getNativeRenderer(), SDL_PIXELFORMAT_ARGB8888,
-                                        SDL_TEXTUREACCESS_STREAMING, m_width, m_height);
+    m_resultTexture = SDL_CreateTexture(App::APP->getWindow()->getNativeRenderer(), SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, m_width, m_height);
     SDL_SetTextureBlendMode(static_cast<SDL_Texture*>(m_resultTexture), SDL_BLENDMODE_BLEND);
   }
 
@@ -51,15 +49,13 @@ void GameWindowBackground::update(const int r, const int g, const int b) {
 
     SDL_Rect screct{0, 0, 96, 96};
     SDL_Rect dstrect{0, 0, m_width, m_height};
-    SDL_RenderCopy(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_windowTexture.get()),
-                   &screct, &dstrect);
+    SDL_RenderCopy(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_windowTexture.get()), &screct, &dstrect);
 
     screct = {0, 96, 96, 96};
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < cols; j++) {
         dstrect = {j * 96, i * 96, 96, 96};
-        SDL_RenderCopy(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_windowTexture.get()),
-                       &screct, &dstrect);
+        SDL_RenderCopy(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_windowTexture.get()), &screct, &dstrect);
       }
     }
     SDL_RenderPresent(App::APP->getWindow()->getNativeRenderer());
@@ -69,12 +65,10 @@ void GameWindowBackground::update(const int r, const int g, const int b) {
 
   const SDL_Rect screct = {0, 0, m_width, m_height};
   std::unique_ptr<uint8_t[]> pixels(new uint8_t[m_width * m_height * 4]);
-  if (SDL_RenderReadPixels(App::APP->getWindow()->getNativeRenderer(), &screct, SDL_PIXELFORMAT_ARGB8888, pixels.get(),
-                           SDL_CalculatePitch(SDL_PIXELFORMAT_ARGB8888, m_width)) == 0) {
+  if (SDL_RenderReadPixels(App::APP->getWindow()->getNativeRenderer(), &screct, SDL_PIXELFORMAT_ARGB8888, pixels.get(), SDL_CalculatePitch(SDL_PIXELFORMAT_ARGB8888, m_width)) == 0) {
     uint8_t* resultPixels;
     int pitch = 0;
-    if (SDL_LockTexture(static_cast<SDL_Texture*>(m_resultTexture), nullptr, reinterpret_cast<void**>(&resultPixels),
-                        &pitch) == 0) {
+    if (SDL_LockTexture(static_cast<SDL_Texture*>(m_resultTexture), nullptr, reinterpret_cast<void**>(&resultPixels), &pitch) == 0) {
       for (int k = 0; k < m_width * m_height * 4; k += 4) {
         resultPixels[k + 3] = std::clamp(pixels[k + 3] + 0, 0, 255);
         resultPixels[k + 2] = std::clamp(pixels[k + 2] + r, 0, 255);

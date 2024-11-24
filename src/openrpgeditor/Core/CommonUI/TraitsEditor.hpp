@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Database/Trait.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
+#include "Database/Trait.hpp"
 
 #include <vector>
 

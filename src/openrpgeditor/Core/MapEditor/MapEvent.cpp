@@ -1,18 +1,15 @@
 #include "Core/MapEditor/MapEvent.hpp"
 
 #include "Core/MapEditor.hpp"
-#include "Core/ResourceManager.hpp"
 #include "Core/Project.hpp"
+#include "Core/ResourceManager.hpp"
 
 #include "Core/Graphics/Texture.hpp"
 
 #include "imgui.h"
 #include "imgui_internal.h"
 
-MapEvent::MapEvent(MapEditor* parent, Event* event)
-: m_parent(parent), m_event(event), m_characterSheet(event->pages[0].image.characterName) {
-  m_pattern = m_event->pages[0].image.pattern;
-}
+MapEvent::MapEvent(MapEditor* parent, Event* event) : m_parent(parent), m_event(event), m_characterSheet(event->pages[0].image.characterName) { m_pattern = m_event->pages[0].image.pattern; }
 
 double oscillate(const double minValue, const double maxValue, const double period, const double currentTime) {
   const double rangeDelta = maxValue - minValue;
@@ -57,9 +54,7 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlph
   float eventS = m_parent->tileSize() * mapScale;
   ImVec2 evMin = ImVec2{eventX, eventY};
   ImVec2 evMax = ImVec2{(eventX + eventS), (eventY + eventS)};
-  if (m_parent->prisonMode() ||
-      (((m_event->pages[0].image.characterName.empty() || !m_characterSheet) && m_event->pages[0].image.tileId == 0) &&
-       !m_parent->prisonMode())) {
+  if (m_parent->prisonMode() || (((m_event->pages[0].image.characterName.empty() || !m_characterSheet) && m_event->pages[0].image.tileId == 0) && !m_parent->prisonMode())) {
     win->DrawList->AddRectFilled(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, bgColor);
     win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, outlineCol, 0, 0, 5.f);
     win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, borderCol, 0, 0, 3.f);
@@ -70,8 +65,7 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlph
       m_pattern = std::clamp<int>(std::abs(std::remainder(ImGui::GetTime() * 8, 3 * 2)), 0, 3);
     }
     if (!m_parent->prisonMode()) {
-      auto [min, max] = m_characterSheet.getRectForCharacter(m_event->pages[0].image.characterIndex, m_pattern,
-                                                             m_event->pages[0].image.direction);
+      auto [min, max] = m_characterSheet.getRectForCharacter(m_event->pages[0].image.characterIndex, m_pattern, m_event->pages[0].image.direction);
 
       evMin.x -= ((static_cast<float>(m_characterSheet.characterWidth()) - m_parent->tileSize()) / 2.f) * mapScale;
       evMax.x += ((static_cast<float>(m_characterSheet.characterWidth()) - m_parent->tileSize()) / 2.f) * mapScale;
@@ -79,8 +73,7 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlph
       win->DrawList->AddImage(m_characterSheet.texture(), evMin, evMax, min, max, imageColor);
     } else {
       const Texture& tex = m_characterSheet.texture();
-      auto [min, max] = m_characterSheet.getRectForCharacter(
-          m_event->pages[0].image.characterIndex, m_event->pages[0].image.pattern, m_event->pages[0].image.direction);
+      auto [min, max] = m_characterSheet.getRectForCharacter(m_event->pages[0].image.characterIndex, m_event->pages[0].image.pattern, m_event->pages[0].image.direction);
 
       if (m_characterSheet.characterWidth() == 72) {
         min.xr() *= tex.width();

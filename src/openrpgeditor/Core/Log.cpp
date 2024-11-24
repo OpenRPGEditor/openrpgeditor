@@ -29,4 +29,4 @@ Log::Log() {
   m_logger->flush_on(level);
 }
 
-}  // namespace App
+} // namespace App

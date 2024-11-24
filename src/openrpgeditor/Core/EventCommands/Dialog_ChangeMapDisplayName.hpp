@@ -4,9 +4,7 @@
 
 struct Dialog_ChangeMapDisplayName : IEventDialogController {
   Dialog_ChangeMapDisplayName() = delete;
-  explicit Dialog_ChangeMapDisplayName(const std::string& name,
-                                       const std::shared_ptr<ChangeMapNameDisplayCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeMapDisplayName(const std::string& name, const std::shared_ptr<ChangeMapNameDisplayCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeMapNameDisplayCommand());
     }

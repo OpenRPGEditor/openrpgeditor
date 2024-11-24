@@ -1,16 +1,14 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
-#include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
+#include "Core/CommonUI/VariableSwitchPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
+#include "Database/Actors.hpp"
 #include "Database/EventCommands/ChangeSkill.hpp"
 #include "Database/Skills.hpp"
-#include "Database/Actors.hpp"
 
 struct Dialog_ChangeSkill : IEventDialogController {
   Dialog_ChangeSkill() = delete;
-  explicit Dialog_ChangeSkill(const std::string& name,
-                              const std::shared_ptr<ChangeSkillCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeSkill(const std::string& name, const std::shared_ptr<ChangeSkillCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeSkillCommand());
     }
@@ -24,13 +22,12 @@ struct Dialog_ChangeSkill : IEventDialogController {
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
 
 private:
+  int m_comparison;
+  int m_value;
+  int m_skillOp;
+  int m_skill;
 
-    int m_comparison;
-    int m_value;
-    int m_skillOp;
-    int m_skill;
-
-    int m_var{1};
+  int m_var{1};
 
   bool m_confirmed{false};
   std::optional<ObjectPicker<Actor>> actor_picker;

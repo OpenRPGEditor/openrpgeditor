@@ -2,8 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangeTPCommand::ChangeTPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ChangeTPCommand::ChangeTPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(comparison);
   parameters.at(1).get_to(value);
   parameters.at(2).get_to(quantityOp);
@@ -18,7 +17,6 @@ void ChangeTPCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(quantitySource);
   out.push_back(quantity);
 }
-
 
 std::string ChangeTPCommand::stringRep(const Database& db) const {
   std::string actorName;
@@ -39,6 +37,6 @@ std::string ChangeTPCommand::stringRep(const Database& db) const {
     quantityStr = std::to_string(quantity);
   }
 
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change TP" + colon.data() +
-         actorName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr + ColorFormatter::popColor();
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change TP" + colon.data() + actorName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr +
+         ColorFormatter::popColor();
 }

@@ -13,6 +13,7 @@ struct DBCommonEventsTab : IDBEditorTab {
 
   [[nodiscard]] CommonEvent* event(int id) { return m_events.event(id); }
   [[nodiscard]] const CommonEvent* event(int id) const { return m_events.event(id); }
+
 private:
   CommonEvents& m_events;
   CommonEvent* m_selectedCommonEvent{};

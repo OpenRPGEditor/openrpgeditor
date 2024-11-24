@@ -1,6 +1,6 @@
 #pragma once
-#include "Core/CommonUI/EventCommandEditor.hpp"
 #include "Core/CommonUI/CharacterPicker.hpp"
+#include "Core/CommonUI/EventCommandEditor.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/Graphics/CharacterSheet.hpp"

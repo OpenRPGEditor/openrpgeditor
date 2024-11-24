@@ -3,11 +3,7 @@
 
 void to_json(nlohmann::ordered_json& to, const Animation::Timing& timing) {
   to = {
-      {"flashColor", timing.flashColor},
-      {"flashDuration", timing.flashDuration},
-      {"flashScope", timing.flashScope},
-      {"frame", timing.frame},
-      {"se", timing.se},
+      {"flashColor", timing.flashColor}, {"flashDuration", timing.flashDuration}, {"flashScope", timing.flashScope}, {"frame", timing.frame}, {"se", timing.se},
   };
 }
 

@@ -2,8 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ShowAnimationCommand::ShowAnimationCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ShowAnimationCommand::ShowAnimationCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(character);
   parameters.at(1).get_to(animation);
   parameters.at(2).get_to(waitForCompletion);
@@ -19,8 +18,6 @@ std::string ShowAnimationCommand::stringRep(const Database& db) const {
   const auto evName = db.eventNameOrId(character);
   const auto animName = db.animationNameOrId(animation);
 
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Show Animation" + colon.data() +
-         evName + ", " + animName + " " + ColorFormatter::popColor() +
-         (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + "(Wait)" + ColorFormatter::popColor()
-                                    : "");
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Show Animation" + colon.data() + evName + ", " + animName + " " + ColorFormatter::popColor() +
+         (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + "(Wait)" + ColorFormatter::popColor() : "");
 }

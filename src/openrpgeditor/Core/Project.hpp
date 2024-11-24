@@ -2,23 +2,23 @@
 
 #include "CommonUI/CreateNewProjectDialog.hpp"
 #include "Core/DatabaseEditor.hpp"
+#include "Core/EventEditor.hpp"
 #include "Core/EventListView.hpp"
 #include "Core/MapEditor.hpp"
 #include "Core/MapListView.hpp"
 #include "Core/NWJSVersionManager.hpp"
-#include "Core/UndoStack.hpp"
 #include "Core/ResourceManager.hpp"
-#include "Core/EventEditor.hpp"
+#include "Core/UndoStack.hpp"
 
-#include "Core/CommonUI/TilesetPicker.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/TextEditor.hpp"
+#include "Core/CommonUI/TilesetPicker.hpp"
 
 #include "Database/Database.hpp"
 #include "Database/MapInfos.hpp"
 
-#include <string_view>
 #include <string>
+#include <string_view>
 
 class CreateNewProjectDialog;
 enum class EditMode {

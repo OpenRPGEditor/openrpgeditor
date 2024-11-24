@@ -1,14 +1,12 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
-#include "Database/States.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeEnemyState.hpp"
+#include "Database/States.hpp"
 
 struct Dialog_ChangeEnemyState : IEventDialogController {
   Dialog_ChangeEnemyState() = delete;
-  explicit Dialog_ChangeEnemyState(const std::string& name,
-                                   const std::shared_ptr<ChangeEnemyStateCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeEnemyState(const std::string& name, const std::shared_ptr<ChangeEnemyStateCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeEnemyStateCommand());
     }

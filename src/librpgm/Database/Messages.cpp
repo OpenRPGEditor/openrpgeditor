@@ -83,8 +83,7 @@ void from_json(const nlohmann::ordered_json& from, Messages& messages) {
   messages.enemyLoss = from.value("enemyLoss", messages.enemyLoss);
   messages.enemyNoDamage = from.value("enemyNoDamage", messages.enemyNoDamage);
   messages.enemyNoHit = from.value("enemyNoHit", messages.enemyNoHit);
-  messages.enemyRecovery = from.value("enemyRecovery", messages.enemyRecovery),
-  messages.escapeFailure = from.value("escapeFailure", messages.escapeFailure),
+  messages.enemyRecovery = from.value("enemyRecovery", messages.enemyRecovery), messages.escapeFailure = from.value("escapeFailure", messages.escapeFailure),
   messages.escapeStart = from.value("escapeStart", messages.escapeStart);
   messages.evasion = from.value("evasion", messages.evasion);
   messages.expNext = from.value("expNext", messages.expNext);

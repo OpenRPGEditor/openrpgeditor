@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Database/Serializable/ISerializable.hpp"
 #include "Database/Actors.hpp"
+#include "Database/Serializable/ISerializable.hpp"
 
 class ActorsSerializer final : public ITypedSerializable<Actors> {
 public:

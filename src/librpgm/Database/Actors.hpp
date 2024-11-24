@@ -2,10 +2,10 @@
 
 #include "Database/Trait.hpp"
 
-#include <string>
 #include <array>
-#include <vector>
+#include <string>
 #include <string_view>
+#include <vector>
 
 #include "nlohmann/json.hpp"
 
@@ -80,11 +80,9 @@ public:
   }
 
   bool hasTestActor() const {
-    return std::find_if(m_actors.begin(), m_actors.end(), [](const auto& act) { return act.id == 0; }) !=
-           m_actors.end();
+    return std::find_if(m_actors.begin(), m_actors.end(), [](const auto& act) { return act.id == 0; }) != m_actors.end();
   }
   int count() const { return m_actors.size() - 1; }
-
 
   std::vector<Actor>& actorList() { return m_actors; }
   const std::vector<Actor>& actorList() const { return m_actors; }

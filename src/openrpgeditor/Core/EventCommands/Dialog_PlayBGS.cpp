@@ -1,8 +1,8 @@
 #include "Core/EventCommands/Dialog_PlayBGS.hpp"
-#include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Log.hpp"
+#include "imgui.h"
 using namespace std::string_view_literals;
 std::tuple<bool, bool> Dialog_PlayBGS::draw() {
 
@@ -12,25 +12,19 @@ std::tuple<bool, bool> Dialog_PlayBGS::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{610, 380} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
-                             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize)) {
     // Audio List
     ImVec2 tablePos = ImGui::GetCursorPos();
     ImGui::BeginGroup();
     {
-      if (ImGui::BeginTable("##bgs_audio_contents", 1,
-                            ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
-                                ImGuiTableFlags_ScrollY,
+      if (ImGui::BeginTable("##bgs_audio_contents", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
                             {App::DPIHandler::scale_value(500), App::DPIHandler::scale_value(500)})) {
 
         ImGui::TableSetupScrollFreeze(1, 0);
         ImGui::TableSetupColumn("File");
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        if (ImGui::SelectableWithBorder("None", m_selected == 0,
-                                        ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
-                                            ImGuiSelectableFlags_AllowDoubleClick)) {
+        if (ImGui::SelectableWithBorder("None", m_selected == 0, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
           m_selected = 0;
           m_audio.name = "";
           if (m_selected == 0)
@@ -40,9 +34,7 @@ std::tuple<bool, bool> Dialog_PlayBGS::draw() {
         for (int n = 0; n < m_audios.size(); n++) {
           ImGui::TableNextColumn();
           const bool isSelected = (m_selected == n + 1);
-          if (ImGui::SelectableWithBorder(m_audios.at(n).c_str(), isSelected,
-                                          ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
-                                              ImGuiSelectableFlags_AllowDoubleClick)) {
+          if (ImGui::SelectableWithBorder(m_audios.at(n).c_str(), isSelected, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
             if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
               playAudio((Database::instance()->basePath + "audio/bgs/" + m_audios.at(m_selected - 1) + ".ogg").c_str());
             }

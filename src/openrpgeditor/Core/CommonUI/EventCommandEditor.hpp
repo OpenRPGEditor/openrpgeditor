@@ -1,33 +1,54 @@
 #pragma once
 
 #include "Core/EventCommands/Dialog_AbortBattle.hpp"
+#include "Core/EventCommands/Dialog_BattleProcessing.hpp"
 #include "Core/EventCommands/Dialog_BreakLoop.hpp"
+#include "Core/EventCommands/Dialog_ChangeActorImages.hpp"
+#include "Core/EventCommands/Dialog_ChangeArmors.hpp"
 #include "Core/EventCommands/Dialog_ChangeBattleBGM.hpp"
+#include "Core/EventCommands/Dialog_ChangeBattleBack.hpp"
 #include "Core/EventCommands/Dialog_ChangeClass.hpp"
 #include "Core/EventCommands/Dialog_ChangeDefeatME.hpp"
+#include "Core/EventCommands/Dialog_ChangeEXP.hpp"
 #include "Core/EventCommands/Dialog_ChangeEncounter.hpp"
+#include "Core/EventCommands/Dialog_ChangeEnemyHP.hpp"
+#include "Core/EventCommands/Dialog_ChangeEnemyMP.hpp"
 #include "Core/EventCommands/Dialog_ChangeEnemyState.hpp"
+#include "Core/EventCommands/Dialog_ChangeEnemyTP.hpp"
 #include "Core/EventCommands/Dialog_ChangeEquipment.hpp"
 #include "Core/EventCommands/Dialog_ChangeFormationAccess.hpp"
 #include "Core/EventCommands/Dialog_ChangeGold.hpp"
+#include "Core/EventCommands/Dialog_ChangeHP.hpp"
+#include "Core/EventCommands/Dialog_ChangeItems.hpp"
+#include "Core/EventCommands/Dialog_ChangeLevel.hpp"
+#include "Core/EventCommands/Dialog_ChangeMP.hpp"
 #include "Core/EventCommands/Dialog_ChangeMapDisplayName.hpp"
 #include "Core/EventCommands/Dialog_ChangeMenuAccess.hpp"
 #include "Core/EventCommands/Dialog_ChangeName.hpp"
 #include "Core/EventCommands/Dialog_ChangeNickname.hpp"
+#include "Core/EventCommands/Dialog_ChangeParallax.hpp"
+#include "Core/EventCommands/Dialog_ChangeParameter.hpp"
 #include "Core/EventCommands/Dialog_ChangePartyMember.hpp"
 #include "Core/EventCommands/Dialog_ChangePlayerFollowers.hpp"
+#include "Core/EventCommands/Dialog_ChangePluginCommand.hpp"
 #include "Core/EventCommands/Dialog_ChangeProfile.hpp"
 #include "Core/EventCommands/Dialog_ChangeSaveAccess.hpp"
+#include "Core/EventCommands/Dialog_ChangeSkill.hpp"
+#include "Core/EventCommands/Dialog_ChangeState.hpp"
+#include "Core/EventCommands/Dialog_ChangeTP.hpp"
 #include "Core/EventCommands/Dialog_ChangeTileset.hpp"
 #include "Core/EventCommands/Dialog_ChangeTransparency.hpp"
 #include "Core/EventCommands/Dialog_ChangeVehicleBGM.hpp"
+#include "Core/EventCommands/Dialog_ChangeVehicleImage.hpp"
 #include "Core/EventCommands/Dialog_ChangeVictoryME.hpp"
+#include "Core/EventCommands/Dialog_ChangeWeapons.hpp"
 #include "Core/EventCommands/Dialog_ChangeWindowColor.hpp"
+#include "Core/EventCommands/Dialog_Comment.hpp"
 #include "Core/EventCommands/Dialog_CommonEvent.hpp"
+#include "Core/EventCommands/Dialog_ConditionalBranch.hpp"
+#include "Core/EventCommands/Dialog_ControlSelfSwitch.hpp"
 #include "Core/EventCommands/Dialog_ControlSwitches.hpp"
 #include "Core/EventCommands/Dialog_ControlVariables.hpp"
-#include "Core/EventCommands/Dialog_Comment.hpp"
-#include "Core/EventCommands/Dialog_ControlSelfSwitch.hpp"
 #include "Core/EventCommands/Dialog_EnemyAppear.hpp"
 #include "Core/EventCommands/Dialog_EnemyRecoverAll.hpp"
 #include "Core/EventCommands/Dialog_EnemyTransform.hpp"
@@ -46,6 +67,7 @@
 #include "Core/EventCommands/Dialog_JumpToLabel.hpp"
 #include "Core/EventCommands/Dialog_Label.hpp"
 #include "Core/EventCommands/Dialog_Loop.hpp"
+#include "Core/EventCommands/Dialog_MovePicture.hpp"
 #include "Core/EventCommands/Dialog_NameInputProcessing.hpp"
 #include "Core/EventCommands/Dialog_OpenMenuScreen.hpp"
 #include "Core/EventCommands/Dialog_OpenSaveScreen.hpp"
@@ -61,48 +83,26 @@
 #include "Core/EventCommands/Dialog_SaveBGM.hpp"
 #include "Core/EventCommands/Dialog_Script.hpp"
 #include "Core/EventCommands/Dialog_ScrollMap.hpp"
-#include "Core/EventCommands/Dialog_ShowPicture.hpp"
 #include "Core/EventCommands/Dialog_SelectItem.hpp"
+#include "Core/EventCommands/Dialog_SetEventLocation.hpp"
+#include "Core/EventCommands/Dialog_SetMovementRoute.hpp"
+#include "Core/EventCommands/Dialog_SetVehicleLocation.hpp"
 #include "Core/EventCommands/Dialog_SetWeatherEffect.hpp"
 #include "Core/EventCommands/Dialog_ShakeScreen.hpp"
+#include "Core/EventCommands/Dialog_ShopProcessing.hpp"
 #include "Core/EventCommands/Dialog_ShowAnimation.hpp"
 #include "Core/EventCommands/Dialog_ShowBalloonIcon.hpp"
 #include "Core/EventCommands/Dialog_ShowBattleAnimation.hpp"
+#include "Core/EventCommands/Dialog_ShowChoice.hpp"
+#include "Core/EventCommands/Dialog_ShowPicture.hpp"
+#include "Core/EventCommands/Dialog_ShowScrollingText.hpp"
+#include "Core/EventCommands/Dialog_ShowText.hpp"
 #include "Core/EventCommands/Dialog_StopSE.hpp"
 #include "Core/EventCommands/Dialog_TimerControl.hpp"
 #include "Core/EventCommands/Dialog_TintPicture.hpp"
 #include "Core/EventCommands/Dialog_TintScreen.hpp"
-#include "Core/EventCommands/Dialog_Wait.hpp"
-#include "Core/EventCommands/Dialog_ChangeHP.hpp"
-#include "Core/EventCommands/Dialog_ChangeEnemyHP.hpp"
-#include "Core/EventCommands/Dialog_ChangeMP.hpp"
-#include "Core/EventCommands/Dialog_ChangeEnemyMP.hpp"
-#include "Core/EventCommands/Dialog_ChangeTP.hpp"
-#include "Core/EventCommands/Dialog_ChangeEnemyTP.hpp"
-#include "Core/EventCommands/Dialog_ChangeEXP.hpp"
-#include "Core/EventCommands/Dialog_ChangeArmors.hpp"
-#include "Core/EventCommands/Dialog_ChangeWeapons.hpp"
-#include "Core/EventCommands/Dialog_ChangeItems.hpp"
-#include "Core/EventCommands/Dialog_ChangeState.hpp"
-#include "Core/EventCommands/Dialog_ChangeLevel.hpp"
-#include "Core/EventCommands/Dialog_ChangeParameter.hpp"
-#include "Core/EventCommands/Dialog_ChangeSkill.hpp"
-#include "Core/EventCommands/Dialog_MovePicture.hpp"
-#include "Core/EventCommands/Dialog_BattleProcessing.hpp"
 #include "Core/EventCommands/Dialog_TransferPlayer.hpp"
-#include "Core/EventCommands/Dialog_SetEventLocation.hpp"
-#include "Core/EventCommands/Dialog_SetVehicleLocation.hpp"
-#include "Core/EventCommands/Dialog_SetMovementRoute.hpp"
-#include "Core/EventCommands/Dialog_ChangeVehicleImage.hpp"
-#include "Core/EventCommands/Dialog_ChangeActorImages.hpp"
-#include "Core/EventCommands/Dialog_ChangePluginCommand.hpp"
-#include "Core/EventCommands/Dialog_ShowText.hpp"
-#include "Core/EventCommands/Dialog_ConditionalBranch.hpp"
-#include "Core/EventCommands/Dialog_ShowChoice.hpp"
-#include "Core/EventCommands/Dialog_ShowScrollingText.hpp"
-#include "Core/EventCommands/Dialog_ShopProcessing.hpp"
-#include "Core/EventCommands/Dialog_ChangeParallax.hpp"
-#include "Core/EventCommands/Dialog_ChangeBattleBack.hpp"
+#include "Core/EventCommands/Dialog_Wait.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/BattleProcessing.hpp"
 #include "Database/EventCommands/ChangeActorImage.hpp"
@@ -178,12 +178,10 @@ private:
   std::shared_ptr<IEventDialogController> commandDialog;
   std::vector<std::shared_ptr<IEventCommand>>* m_commands = nullptr;
 
-  std::shared_ptr<IEventDialogController> CreateCommandDialog(EventCode code,
-                                                              std::shared_ptr<IEventCommand> cmd = nullptr) {
+  std::shared_ptr<IEventDialogController> CreateCommandDialog(EventCode code, std::shared_ptr<IEventCommand> cmd = nullptr) {
     switch (code) {
     case EventCode::Battle_Processing:
-      return std::make_shared<Dialog_BattleProcessing>(DecodeEnumName(code),
-                                                       std::dynamic_pointer_cast<BattleProcessingCommand>(cmd));
+      return std::make_shared<Dialog_BattleProcessing>(DecodeEnumName(code), std::dynamic_pointer_cast<BattleProcessingCommand>(cmd));
     case EventCode::Event_Dummy:
       break;
     case EventCode::Show_Text:
@@ -203,8 +201,7 @@ private:
     case EventCode::Select_Item:
       return std::make_shared<Dialog_SelectItem>(DecodeEnumName(code), std::dynamic_pointer_cast<SelectItemCommand>(cmd));
     case EventCode::Show_Scrolling_Text:
-      return std::make_shared<Dialog_ShowScrollingText>(DecodeEnumName(code),
-                                                        std::dynamic_pointer_cast<ShowScrollTextCommand>(cmd));
+      return std::make_shared<Dialog_ShowScrollingText>(DecodeEnumName(code), std::dynamic_pointer_cast<ShowScrollTextCommand>(cmd));
     case EventCode::Next_Scrolling_Text:
       break;
     case EventCode::Comment:
@@ -212,8 +209,7 @@ private:
     case EventCode::Next_Comment:
       break;
     case EventCode::Conditional_Branch:
-      return std::make_shared<Dialog_ConditionalBranch>(DecodeEnumName(code),
-                                                        std::dynamic_pointer_cast<ConditionalBranchCommand>(cmd));
+      return std::make_shared<Dialog_ConditionalBranch>(DecodeEnumName(code), std::dynamic_pointer_cast<ConditionalBranchCommand>(cmd));
     case EventCode::Else:
       break;
     case EventCode::End:
@@ -225,8 +221,7 @@ private:
     case EventCode::Break_Loop:
       return std::make_shared<Dialog_BreakLoop>(DecodeEnumName(code), std::dynamic_pointer_cast<BreakLoopCommand>(cmd));
     case EventCode::Exit_Event_Processing:
-      return std::make_shared<Dialog_ExitEventProcessing>(DecodeEnumName(code),
-                                                          std::dynamic_pointer_cast<ExitEventProcessingCommand>(cmd));
+      return std::make_shared<Dialog_ExitEventProcessing>(DecodeEnumName(code), std::dynamic_pointer_cast<ExitEventProcessingCommand>(cmd));
     case EventCode::Common_Event:
       return std::make_shared<Dialog_CommonEvent>(DecodeEnumName(code), std::dynamic_pointer_cast<CommonEventCommand>(cmd));
     case EventCode::Label:
@@ -236,11 +231,9 @@ private:
     case EventCode::Control_Switches:
       return std::make_shared<Dialog_ControlSwitches>(DecodeEnumName(code), std::dynamic_pointer_cast<ControlSwitches>(cmd));
     case EventCode::Control_Variables:
-      return std::make_shared<Dialog_ControlVariables>(DecodeEnumName(code),
-                                                       std::dynamic_pointer_cast<ControlVariables>(cmd));
+      return std::make_shared<Dialog_ControlVariables>(DecodeEnumName(code), std::dynamic_pointer_cast<ControlVariables>(cmd));
     case EventCode::Control_Self_Switch:
-      return std::make_shared<Dialog_ControlSelfSwitch>(DecodeEnumName(code),
-                                                        std::dynamic_pointer_cast<ControlSelfSwitchCommand>(cmd));
+      return std::make_shared<Dialog_ControlSelfSwitch>(DecodeEnumName(code), std::dynamic_pointer_cast<ControlSelfSwitchCommand>(cmd));
     case EventCode::Control_Timer:
       return std::make_shared<Dialog_TimerControl>(DecodeEnumName(code), std::dynamic_pointer_cast<ControlTimerCommand>(cmd));
     case EventCode::Change_Gold:
@@ -248,79 +241,57 @@ private:
     case EventCode::Change_Items:
       return std::make_shared<Dialog_ChangeItems>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeItemsCommand>(cmd));
     case EventCode::Change_Weapons:
-      return std::make_shared<Dialog_ChangeWeapons>(DecodeEnumName(code),
-                                                    std::dynamic_pointer_cast<ChangeWeaponsCommand>(cmd));
+      return std::make_shared<Dialog_ChangeWeapons>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeWeaponsCommand>(cmd));
     case EventCode::Change_Armors:
       return std::make_shared<Dialog_ChangeArmors>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeArmorsCommand>(cmd));
     case EventCode::Change_Party_Member:
-      return std::make_shared<Dialog_ChangePartyMember>(DecodeEnumName(code),
-                                                        std::dynamic_pointer_cast<ChangePartyMemberCommand>(cmd));
+      return std::make_shared<Dialog_ChangePartyMember>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangePartyMemberCommand>(cmd));
     case EventCode::Change_Battle_BGM:
-      return std::make_shared<Dialog_ChangeBattleBGM>(DecodeEnumName(code),
-                                                      std::dynamic_pointer_cast<ChangeBattleBGMCommand>(cmd));
+      return std::make_shared<Dialog_ChangeBattleBGM>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeBattleBGMCommand>(cmd));
     case EventCode::Change_Victory_ME:
-      return std::make_shared<Dialog_ChangeVictoryME>(DecodeEnumName(code),
-                                                      std::dynamic_pointer_cast<ChangeVictoryMECommand>(cmd));
+      return std::make_shared<Dialog_ChangeVictoryME>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeVictoryMECommand>(cmd));
     case EventCode::Change_Save_Access:
-      return std::make_shared<Dialog_ChangeSaveAccess>(DecodeEnumName(code),
-                                                       std::dynamic_pointer_cast<ChangeSaveAccessCommand>(cmd));
+      return std::make_shared<Dialog_ChangeSaveAccess>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeSaveAccessCommand>(cmd));
     case EventCode::Change_Menu_Access:
-      return std::make_shared<Dialog_ChangeMenuAccess>(DecodeEnumName(code),
-                                                       std::dynamic_pointer_cast<ChangeMenuAccessCommand>(cmd));
+      return std::make_shared<Dialog_ChangeMenuAccess>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeMenuAccessCommand>(cmd));
     case EventCode::Change_Encounter_Disable:
-      return std::make_shared<Dialog_ChangeEncounter>(DecodeEnumName(code),
-                                                      std::dynamic_pointer_cast<ChangeEncounterDisableCommand>(cmd));
+      return std::make_shared<Dialog_ChangeEncounter>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEncounterDisableCommand>(cmd));
     case EventCode::Change_Formation_Access:
-      return std::make_shared<Dialog_ChangeFormationAccess>(
-          DecodeEnumName(code), std::dynamic_pointer_cast<ChangeFormationAccessCommand>(cmd));
+      return std::make_shared<Dialog_ChangeFormationAccess>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeFormationAccessCommand>(cmd));
     case EventCode::Change_Window_Color:
-      return std::make_shared<Dialog_ChangeWindowColor>(DecodeEnumName(code),
-                                                        std::dynamic_pointer_cast<ChangeWindowColorCommand>(cmd));
+      return std::make_shared<Dialog_ChangeWindowColor>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeWindowColorCommand>(cmd));
     case EventCode::Change_Defeat_ME:
-      return std::make_shared<Dialog_ChangeDefeatME>(DecodeEnumName(code),
-                                                     std::dynamic_pointer_cast<ChangeDefeatMECommand>(cmd));
+      return std::make_shared<Dialog_ChangeDefeatME>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeDefeatMECommand>(cmd));
     case EventCode::Change_Vechicle_BGM:
-      return std::make_shared<Dialog_ChangeVehicleBGM>(DecodeEnumName(code),
-                                                       std::dynamic_pointer_cast<ChangeVehicleBGMCommand>(cmd));
+      return std::make_shared<Dialog_ChangeVehicleBGM>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeVehicleBGMCommand>(cmd));
     case EventCode::Transfer_Player:
-      return std::make_shared<Dialog_TransferPlayer>(DecodeEnumName(code),
-                                                     std::dynamic_pointer_cast<TransferPlayerCommand>(cmd));
+      return std::make_shared<Dialog_TransferPlayer>(DecodeEnumName(code), std::dynamic_pointer_cast<TransferPlayerCommand>(cmd));
     case EventCode::Set_Vehicle_Location:
-      return std::make_shared<Dialog_SetVehicleLocation>(DecodeEnumName(code),
-                                                         std::dynamic_pointer_cast<SetVehicleLocationCommand>(cmd));
+      return std::make_shared<Dialog_SetVehicleLocation>(DecodeEnumName(code), std::dynamic_pointer_cast<SetVehicleLocationCommand>(cmd));
     case EventCode::Set_Event_Location:
-      return std::make_shared<Dialog_SetEventLocation>(DecodeEnumName(code),
-                                                       std::dynamic_pointer_cast<SetEventLocationCommand>(cmd));
+      return std::make_shared<Dialog_SetEventLocation>(DecodeEnumName(code), std::dynamic_pointer_cast<SetEventLocationCommand>(cmd));
     case EventCode::Scroll_Map:
       return std::make_shared<Dialog_ScrollMap>(DecodeEnumName(code), std::dynamic_pointer_cast<ScrollMapCommand>(cmd));
     case EventCode::Set_Movement_Route:
-      return std::make_shared<Dialog_SetMovementRoute>(DecodeEnumName(code),
-                                                       std::dynamic_pointer_cast<SetMovementRouteCommand>(cmd));
+      return std::make_shared<Dialog_SetMovementRoute>(DecodeEnumName(code), std::dynamic_pointer_cast<SetMovementRouteCommand>(cmd));
     case EventCode::Movement_Route_Step:
       break;
     case EventCode::Get_On_Off_Vehicle:
-      return std::make_shared<Dialog_GetOnOffVehicle>(DecodeEnumName(code),
-                                                      std::dynamic_pointer_cast<GetOnOffVehicleCommand>(cmd));
+      return std::make_shared<Dialog_GetOnOffVehicle>(DecodeEnumName(code), std::dynamic_pointer_cast<GetOnOffVehicleCommand>(cmd));
     case EventCode::Change_Transparency:
-      return std::make_shared<Dialog_ChangeTransparency>(DecodeEnumName(code),
-                                                         std::dynamic_pointer_cast<ChangeTransparencyCommand>(cmd));
+      return std::make_shared<Dialog_ChangeTransparency>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeTransparencyCommand>(cmd));
     case EventCode::Show_Animation:
-      return std::make_shared<Dialog_ShowAnimation>(DecodeEnumName(code),
-                                                    std::dynamic_pointer_cast<ShowAnimationCommand>(cmd));
+      return std::make_shared<Dialog_ShowAnimation>(DecodeEnumName(code), std::dynamic_pointer_cast<ShowAnimationCommand>(cmd));
     case EventCode::Show_Balloon_Icon:
-      return std::make_shared<Dialog_ShowBalloonIcon>(DecodeEnumName(code),
-                                                      std::dynamic_pointer_cast<ShowBalloonIconCommand>(cmd));
+      return std::make_shared<Dialog_ShowBalloonIcon>(DecodeEnumName(code), std::dynamic_pointer_cast<ShowBalloonIconCommand>(cmd));
     case EventCode::Erase_Event:
       return std::make_shared<Dialog_EraseEvent>(DecodeEnumName(code), std::dynamic_pointer_cast<EraseEventCommand>(cmd));
     case EventCode::Change_Player_Followers:
-      return std::make_shared<Dialog_ChangePlayerFollowers>(
-          DecodeEnumName(code), std::dynamic_pointer_cast<ChangePlayerFollowersCommand>(cmd));
+      return std::make_shared<Dialog_ChangePlayerFollowers>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangePlayerFollowersCommand>(cmd));
     case EventCode::Gather_Followers:
-      return std::make_shared<Dialog_GatherFollowers>(DecodeEnumName(code),
-                                                      std::dynamic_pointer_cast<GatherFollowersCommand>(cmd));
+      return std::make_shared<Dialog_GatherFollowers>(DecodeEnumName(code), std::dynamic_pointer_cast<GatherFollowersCommand>(cmd));
     case EventCode::Fadeout_Screen:
-      return std::make_shared<Dialog_FadeoutScreen>(DecodeEnumName(code),
-                                                    std::dynamic_pointer_cast<FadeoutScreenCommand>(cmd));
+      return std::make_shared<Dialog_FadeoutScreen>(DecodeEnumName(code), std::dynamic_pointer_cast<FadeoutScreenCommand>(cmd));
     case EventCode::Fadein_Screen:
       return std::make_shared<Dialog_FadeinScreen>(DecodeEnumName(code), std::dynamic_pointer_cast<FadeinScreenCommand>(cmd));
     case EventCode::Tint_Screen:
@@ -336,16 +307,13 @@ private:
     case EventCode::Move_Picture:
       return std::make_shared<Dialog_MovePicture>(DecodeEnumName(code), std::dynamic_pointer_cast<MovePictureCommand>(cmd));
     case EventCode::Rotate_Picture:
-      return std::make_shared<Dialog_RotatePicture>(DecodeEnumName(code),
-                                                    std::dynamic_pointer_cast<RotatePictureCommand>(cmd));
+      return std::make_shared<Dialog_RotatePicture>(DecodeEnumName(code), std::dynamic_pointer_cast<RotatePictureCommand>(cmd));
     case EventCode::Tint_Picture:
-      return std::make_shared<Dialog_TintPicture>(DecodeEnumName(code),
-                                                    std::dynamic_pointer_cast<TintPictureCommand>(cmd));
+      return std::make_shared<Dialog_TintPicture>(DecodeEnumName(code), std::dynamic_pointer_cast<TintPictureCommand>(cmd));
     case EventCode::Erase_Picture:
       return std::make_shared<Dialog_ErasePicture>(DecodeEnumName(code), std::dynamic_pointer_cast<ErasePictureCommand>(cmd));
     case EventCode::Set_Weather_Effect:
-      return std::make_shared<Dialog_SetWeatherEffect>(DecodeEnumName(code),
-                                                       std::dynamic_pointer_cast<SetWeatherEffectCommand>(cmd));
+      return std::make_shared<Dialog_SetWeatherEffect>(DecodeEnumName(code), std::dynamic_pointer_cast<SetWeatherEffectCommand>(cmd));
     case EventCode::Play_BGM:
       return std::make_shared<Dialog_PlayBGM>(DecodeEnumName(code), std::dynamic_pointer_cast<PlayBGMCommand>(cmd));
     case EventCode::Fadeout_BGM:
@@ -367,17 +335,13 @@ private:
     case EventCode::Play_Movie:
       return std::make_shared<Dialog_PlayMovie>(DecodeEnumName(code), std::dynamic_pointer_cast<PlayMovieCommand>(cmd));
     case EventCode::Change_Map_Name_Display:
-      return std::make_shared<Dialog_ChangeMapDisplayName>(DecodeEnumName(code),
-                                                           std::dynamic_pointer_cast<ChangeMapNameDisplayCommand>(cmd));
+      return std::make_shared<Dialog_ChangeMapDisplayName>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeMapNameDisplayCommand>(cmd));
     case EventCode::Change_Tileset:
-      return std::make_shared<Dialog_ChangeTileset>(DecodeEnumName(code),
-                                                    std::dynamic_pointer_cast<ChangeTilesetCommand>(cmd));
+      return std::make_shared<Dialog_ChangeTileset>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeTilesetCommand>(cmd));
     case EventCode::Change_Battle_Back:
-      return std::make_shared<Dialog_ChangeBattleBack>(DecodeEnumName(code),
-                                                       std::dynamic_pointer_cast<ChangeBattlebackCommand>(cmd));
+      return std::make_shared<Dialog_ChangeBattleBack>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeBattlebackCommand>(cmd));
     case EventCode::Change_Parallax:
-      return std::make_shared<Dialog_ChangeParallax>(DecodeEnumName(code),
-                                                     std::dynamic_pointer_cast<ChangeParallaxCommand>(cmd));
+      return std::make_shared<Dialog_ChangeParallax>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeParallaxCommand>(cmd));
     case EventCode::Get_Location_Info:
       // return std::make_shared<Dialog_GetLocationInfo>(DecodeEnumName(code),
       // std::dynamic_pointer_cast<GetLocationInfoCommand>(cmd));
@@ -391,13 +355,11 @@ private:
     case EventCode::End_del_Battle_Processing:
       break;
     case EventCode::Shop_Processing:
-      return std::make_shared<Dialog_ShopProcessing>(DecodeEnumName(code),
-                                                     std::dynamic_pointer_cast<ShopProcessingCommand>(cmd));
+      return std::make_shared<Dialog_ShopProcessing>(DecodeEnumName(code), std::dynamic_pointer_cast<ShopProcessingCommand>(cmd));
     case EventCode::Shop_Processing_Good:
       break;
     case EventCode::Name_Input_Processing:
-      return std::make_shared<Dialog_NameInputProcessing>(DecodeEnumName(code),
-                                                          std::dynamic_pointer_cast<NameInputCommand>(cmd));
+      return std::make_shared<Dialog_NameInputProcessing>(DecodeEnumName(code), std::dynamic_pointer_cast<NameInputCommand>(cmd));
     case EventCode::Change_HP:
       return std::make_shared<Dialog_ChangeHP>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeHPCommand>(cmd));
     case EventCode::Change_MP:
@@ -411,51 +373,39 @@ private:
     case EventCode::Change_Level:
       return std::make_shared<Dialog_ChangeLevel>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeLevelCommand>(cmd));
     case EventCode::Change_Parameter:
-      return std::make_shared<Dialog_ChangeParameter>(DecodeEnumName(code),
-                                                      std::dynamic_pointer_cast<ChangeParameterCommand>(cmd));
+      return std::make_shared<Dialog_ChangeParameter>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeParameterCommand>(cmd));
     case EventCode::Change_Skill:
       return std::make_shared<Dialog_ChangeSkill>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeSkillCommand>(cmd));
     case EventCode::Change_Equipment:
-      return std::make_shared<Dialog_ChangeEquipment>(DecodeEnumName(code),
-                                                      std::dynamic_pointer_cast<ChangeEquipmentCommand>(cmd));
+      return std::make_shared<Dialog_ChangeEquipment>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEquipmentCommand>(cmd));
     case EventCode::Change_Name:
       return std::make_shared<Dialog_ChangeName>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeNameCommand>(cmd));
     case EventCode::Change_Class:
       return std::make_shared<Dialog_ChangeClass>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeClassCommand>(cmd));
     case EventCode::Change_Actor_Images:
-      return std::make_shared<Dialog_ChangeActorImages>(DecodeEnumName(code),
-                                                        std::dynamic_pointer_cast<ChangeActorImageCommand>(cmd));
+      return std::make_shared<Dialog_ChangeActorImages>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeActorImageCommand>(cmd));
     case EventCode::Change_Vehicle_Image:
-      return std::make_shared<Dialog_ChangeVehicleImage>(DecodeEnumName(code),
-                                                         std::dynamic_pointer_cast<ChangeVehicleImageCommand>(cmd));
+      return std::make_shared<Dialog_ChangeVehicleImage>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeVehicleImageCommand>(cmd));
     case EventCode::Change_Nickname:
-      return std::make_shared<Dialog_ChangeNickname>(DecodeEnumName(code),
-                                                     std::dynamic_pointer_cast<ChangeNicknameCommand>(cmd));
+      return std::make_shared<Dialog_ChangeNickname>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeNicknameCommand>(cmd));
     case EventCode::Change_Profile:
-      return std::make_shared<Dialog_ChangeProfile>(DecodeEnumName(code),
-                                                    std::dynamic_pointer_cast<ChangeProfileCommand>(cmd));
+      return std::make_shared<Dialog_ChangeProfile>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeProfileCommand>(cmd));
     case EventCode::Change_TP:
       return std::make_shared<Dialog_ChangeTP>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeTPCommand>(cmd));
     case EventCode::Change_Enemy_HP:
-      return std::make_shared<Dialog_ChangeEnemyHP>(DecodeEnumName(code),
-                                                    std::dynamic_pointer_cast<ChangeEnemyHPCommand>(cmd));
+      return std::make_shared<Dialog_ChangeEnemyHP>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEnemyHPCommand>(cmd));
     case EventCode::Change_Enemy_MP:
-      return std::make_shared<Dialog_ChangeEnemyMP>(DecodeEnumName(code),
-                                                    std::dynamic_pointer_cast<ChangeEnemyMPCommand>(cmd));
+      return std::make_shared<Dialog_ChangeEnemyMP>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEnemyMPCommand>(cmd));
     case EventCode::Change_Enemy_State:
-      return std::make_shared<Dialog_ChangeEnemyState>(DecodeEnumName(code),
-                                                       std::dynamic_pointer_cast<ChangeEnemyStateCommand>(cmd));
+      return std::make_shared<Dialog_ChangeEnemyState>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEnemyStateCommand>(cmd));
     case EventCode::Enemy_Recover_All:
-      return std::make_shared<Dialog_EnemyRecoverAll>(DecodeEnumName(code),
-                                                      std::dynamic_pointer_cast<EnemyRecoverAllCommand>(cmd));
+      return std::make_shared<Dialog_EnemyRecoverAll>(DecodeEnumName(code), std::dynamic_pointer_cast<EnemyRecoverAllCommand>(cmd));
     case EventCode::Enemy_Appear:
       return std::make_shared<Dialog_EnemyAppear>(DecodeEnumName(code), std::dynamic_pointer_cast<EnemyAppearCommand>(cmd));
     case EventCode::Enemy_Transform:
-      return std::make_shared<Dialog_EnemyTransform>(DecodeEnumName(code),
-                                                     std::dynamic_pointer_cast<EnemyTransformCommand>(cmd));
+      return std::make_shared<Dialog_EnemyTransform>(DecodeEnumName(code), std::dynamic_pointer_cast<EnemyTransformCommand>(cmd));
     case EventCode::Show_Battle_Animation:
-      return std::make_shared<Dialog_ShowBattleAnimation>(DecodeEnumName(code),
-                                                          std::dynamic_pointer_cast<ShowBattleAnimationCommand>(cmd));
+      return std::make_shared<Dialog_ShowBattleAnimation>(DecodeEnumName(code), std::dynamic_pointer_cast<ShowBattleAnimationCommand>(cmd));
     case EventCode::Force_Action:
       // return std::make_shared<Dialog_ForceAction>(DecodeEnumName(code),
       // std::dynamic_pointer_cast<ForceActionCommand>(cmd));
@@ -463,8 +413,7 @@ private:
     case EventCode::Abort_Battle:
       return std::make_shared<Dialog_AbortBattle>(DecodeEnumName(code), std::dynamic_pointer_cast<AbortBattleCommand>(cmd));
     case EventCode::Change_Enemy_TP:
-      return std::make_shared<Dialog_ChangeEnemyTP>(DecodeEnumName(code),
-                                                    std::dynamic_pointer_cast<ChangeEnemyTPCommand>(cmd));
+      return std::make_shared<Dialog_ChangeEnemyTP>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEnemyTPCommand>(cmd));
     case EventCode::Open_Menu_Screen:
       return std::make_shared<Dialog_OpenMenuScreen>(DecodeEnumName(code), std::dynamic_pointer_cast<OpenMenuCommand>(cmd));
     case EventCode::Open_Save_Screen:
@@ -472,15 +421,13 @@ private:
     case EventCode::Game_Over:
       return std::make_shared<Dialog_GameOver>(DecodeEnumName(code), std::dynamic_pointer_cast<GameOverCommand>(cmd));
     case EventCode::Return_To_Title_Screen:
-      return std::make_shared<Dialog_ReturnToTitle>(DecodeEnumName(code),
-                                                    std::dynamic_pointer_cast<ReturnToTitleCommand>(cmd));
+      return std::make_shared<Dialog_ReturnToTitle>(DecodeEnumName(code), std::dynamic_pointer_cast<ReturnToTitleCommand>(cmd));
     case EventCode::Script:
       return std::make_shared<Dialog_Script>(DecodeEnumName(code), std::dynamic_pointer_cast<ScriptCommand>(cmd));
     case EventCode::Next_Script:
       break;
     case EventCode::PluginMV_Command:
-      return std::make_shared<Dialog_ChangePluginCommand>(DecodeEnumName(code),
-                                                          std::dynamic_pointer_cast<PluginCommandMV>(cmd));
+      return std::make_shared<Dialog_ChangePluginCommand>(DecodeEnumName(code), std::dynamic_pointer_cast<PluginCommandMV>(cmd));
     case EventCode::PluginMZ_Command:
       break;
     case EventCode::Next_PluginMZ_Command:

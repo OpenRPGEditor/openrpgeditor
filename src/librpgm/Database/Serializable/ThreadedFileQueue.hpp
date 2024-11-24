@@ -1,14 +1,14 @@
 #pragma once
 
-#include <queue>
-#include <thread>
-#include <mutex>
-#include <condition_variable>
-#include <string>
-#include <memory>
-#include <functional>
-#include "Database/Serializable/Task.hpp"
 #include "Database/Serializable/ISerializable.hpp"
+#include "Database/Serializable/Task.hpp"
+#include <condition_variable>
+#include <functional>
+#include <memory>
+#include <mutex>
+#include <queue>
+#include <string>
+#include <thread>
 
 // Base class for a threaded file queue (for serialization and deserialization).
 class ThreadedFileQueue {

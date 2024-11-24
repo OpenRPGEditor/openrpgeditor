@@ -1,7 +1,6 @@
 #include "Database/EventCommands/ChangeWindowColor.hpp"
 
-ChangeWindowColorCommand::ChangeWindowColorCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ChangeWindowColorCommand::ChangeWindowColorCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   auto colors = parameters.at(0);
   colors[0].get_to(r);
   colors[1].get_to(g);
@@ -17,6 +16,5 @@ void ChangeWindowColorCommand::serializeParameters(nlohmann::ordered_json& out) 
 }
 
 std::string ChangeWindowColorCommand::stringRep(const Database& db) const {
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Window Color" +
-         colon.data() + std::format("({}, {}, {})", r, g, b) + ColorFormatter::popColor();
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Window Color" + colon.data() + std::format("({}, {}, {})", r, g, b) + ColorFormatter::popColor();
 }

@@ -1,6 +1,6 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/TextEditor.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/MovementRoute/Speed.hpp"
 struct Project;
 struct Dialog_MovementChangeSpeed : IEventDialogController {

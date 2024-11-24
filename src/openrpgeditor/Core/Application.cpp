@@ -11,16 +11,16 @@
 #include <memory>
 #include <string>
 
+#include "App/ProjectInfo.hpp"
 #include "Core/DPIHandler.hpp"
 #include "Core/Debug/Instrumentor.hpp"
 #include "Core/Log.hpp"
 #include "Core/Resources.hpp"
-#include "Core/Window.hpp"
 #include "Core/Settings.hpp"
+#include "Core/Window.hpp"
 #include "Database/RPGEquations.hpp"
-#include "App/ProjectInfo.hpp"
-#include "misc/freetype/imgui_freetype.h"
 #include "SFML/Audio.hpp"
+#include "misc/freetype/imgui_freetype.h"
 
 #include "Core/NWJSVersionManager.hpp"
 #include "Database/Serializable/DeserializationQueue.hpp"
@@ -153,8 +153,8 @@ void Application::updateFonts() {
   ImGuiIO& io{ImGui::GetIO()};
   // ImGUI font
   const float fontScale = DPIHandler::get_ui_scale() * 2;
-  const float font_size = m_settings.fontSize * fontScale;
-  const float mono_font_size = m_settings.monoFontSize * fontScale;
+  const float font_size = oRound(m_settings.fontSize * fontScale);
+  const float mono_font_size = oRound(m_settings.monoFontSize * fontScale);
   const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
   const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf").generic_string()};
   const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf").generic_string()};
@@ -214,9 +214,8 @@ ExitStatus Application::run() {
   ImPlot::CreateContext();
   ImGuiIO& io{ImGui::GetIO()};
 
-  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable |
-                    ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_NavEnableGamepad |
-                    ImGuiConfigFlags_DpiEnableScaleFonts | ImGuiConfigFlags_DpiEnableScaleViewports;
+  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_NavEnableGamepad | ImGuiConfigFlags_DpiEnableScaleFonts |
+                    ImGuiConfigFlags_DpiEnableScaleViewports;
 
   // Absolute imgui.ini path to preserve settings independent of app location.
   static const std::string imgui_ini_filename{m_userConfigPath + "imgui.ini"};

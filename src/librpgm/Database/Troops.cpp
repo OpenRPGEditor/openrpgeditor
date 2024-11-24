@@ -6,10 +6,8 @@ using json = nlohmann::ordered_json;
 
 void to_json(nlohmann::ordered_json& j, const Troop::Conditions& c) {
   j = {
-      {"actorHp", c.actorHp},   {"actorId", c.actorId},         {"actorValid", c.actorValid},
-      {"enemyHp", c.enemyHp},   {"enemyIndex", c.enemyIndex},   {"enemyValid", c.enemyValid},
-      {"switchId", c.switchId}, {"switchValid", c.switchValid}, {"turnA", c.turnA},
-      {"turnB", c.turnB},       {"turnEnding", c.turnEnding},   {"turnValid", c.turnValid},
+      {"actorHp", c.actorHp},   {"actorId", c.actorId},         {"actorValid", c.actorValid}, {"enemyHp", c.enemyHp}, {"enemyIndex", c.enemyIndex}, {"enemyValid", c.enemyValid},
+      {"switchId", c.switchId}, {"switchValid", c.switchValid}, {"turnA", c.turnA},           {"turnB", c.turnB},     {"turnEnding", c.turnEnding}, {"turnValid", c.turnValid},
   };
 }
 void from_json(const nlohmann::ordered_json& j, Troop::Conditions& c) {

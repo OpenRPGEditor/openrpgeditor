@@ -16,5 +16,4 @@ struct ChangeParameterCommand final : IEventCommand {
   QuantityChangeOp quantityOp = QuantityChangeOp::_plu__del_Increase;
   QuantityChangeSource quantitySource = QuantityChangeSource::Constant;
   int quantity{1};
-
 };

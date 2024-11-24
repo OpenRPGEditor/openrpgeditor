@@ -1,15 +1,13 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/Actors.hpp"
-#include "Database/States.hpp"
 #include "Database/EventCommands/ChangePartyMember.hpp"
+#include "Database/States.hpp"
 
 struct Dialog_ChangePartyMember : IEventDialogController {
   Dialog_ChangePartyMember() = delete;
-  explicit Dialog_ChangePartyMember(const std::string& name,
-                                    const std::shared_ptr<ChangePartyMemberCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangePartyMember(const std::string& name, const std::shared_ptr<ChangePartyMemberCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangePartyMemberCommand());
     }

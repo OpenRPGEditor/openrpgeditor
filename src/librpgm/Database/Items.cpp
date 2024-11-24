@@ -5,24 +5,10 @@
 
 void to_json(nlohmann::ordered_json& json, const Item& item) {
   json = {
-      {"id", item.id},
-      {"animationId", item.animationId},
-      {"consumable", item.consumable},
-      {"damage", item.damage},
-      {"description", item.description},
-      {"effects", item.effects},
-      {"hitType", item.hitType},
-      {"iconIndex", item.iconIndex},
-      {"itypeId", item.itypeId},
-      {"name", item.name},
-      {"note", item.note},
-      {"occasion", item.occasion},
-      {"price", item.price},
-      {"repeats", item.repeats},
-      {"scope", item.scope},
-      {"speed", item.speed},
-      {"successRate", item.successRate},
-      {"tpGain", item.tpGain},
+      {"id", item.id},           {"animationId", item.animationId}, {"consumable", item.consumable}, {"damage", item.damage},   {"description", item.description},
+      {"effects", item.effects}, {"hitType", item.hitType},         {"iconIndex", item.iconIndex},   {"itypeId", item.itypeId}, {"name", item.name},
+      {"note", item.note},       {"occasion", item.occasion},       {"price", item.price},           {"repeats", item.repeats}, {"scope", item.scope},
+      {"speed", item.speed},     {"successRate", item.successRate}, {"tpGain", item.tpGain},
   };
 }
 void from_json(const nlohmann::ordered_json& json, Item& item) {

@@ -1,16 +1,14 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
-#include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
-#include "Database/Troops.hpp"
-#include "Database/EventCommands/ChangeEnemyHP.hpp"
+#include "Core/CommonUI/VariableSwitchPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeArmors.hpp"
+#include "Database/EventCommands/ChangeEnemyHP.hpp"
+#include "Database/Troops.hpp"
 
 struct Dialog_ChangeArmors : IEventDialogController {
   Dialog_ChangeArmors() = delete;
-  explicit Dialog_ChangeArmors(const std::string& name,
-                               const std::shared_ptr<ChangeArmorsCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeArmors(const std::string& name, const std::shared_ptr<ChangeArmorsCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeArmorsCommand());
     }
@@ -30,8 +28,6 @@ struct Dialog_ChangeArmors : IEventDialogController {
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
 
 private:
-
-
   int m_item;
   int m_operation;
   int m_operandSource;

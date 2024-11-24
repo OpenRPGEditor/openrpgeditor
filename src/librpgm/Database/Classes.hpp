@@ -4,9 +4,9 @@
 
 #include <nlohmann/json.hpp>
 
-#include <vector>
-#include <string>
 #include <array>
+#include <string>
+#include <vector>
 
 struct Learning {
   int level{};

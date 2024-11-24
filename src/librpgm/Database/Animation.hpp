@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Database/Globals.hpp"
 #include "Database/Audio.hpp"
+#include "Database/Globals.hpp"
 
+#include <nlohmann/json.hpp>
+#include <optional>
 #include <string>
 #include <vector>
-#include <optional>
-#include <nlohmann/json.hpp>
 
 class Animation {
 public:

@@ -9,5 +9,5 @@ public:
   virtual ~IWizardPage() = default;
   virtual void draw() = 0;
   [[nodiscard]] virtual constexpr std::string_view pageTitle() const = 0;
-  [[nodiscard]] virtual bool allRequiredFieldsAreSet() const  { return true; }
+  [[nodiscard]] virtual bool allRequiredFieldsAreSet() const { return true; }
 };

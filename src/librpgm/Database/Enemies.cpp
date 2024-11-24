@@ -34,11 +34,7 @@ void from_json(const nlohmann::ordered_json& from, Enemy& enemy) {
 }
 void to_json(nlohmann::ordered_json& to, const Enemy::Action& action) {
   to = {
-      {"conditionParam1", action.conditionParam1},
-      {"conditionParam2", action.conditionParam2},
-      {"conditionType", action.conditionType},
-      {"rating", action.rating},
-      {"skillId", action.skillId},
+      {"conditionParam1", action.conditionParam1}, {"conditionParam2", action.conditionParam2}, {"conditionType", action.conditionType}, {"rating", action.rating}, {"skillId", action.skillId},
   };
 }
 void from_json(const nlohmann::ordered_json& from, Enemy::Action& action) {

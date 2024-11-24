@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Core/Graphics/CheckerboardTexture.hpp"
-#include "Core/MapEditor/MapRenderer.hpp"
 #include "Core/MapEditor/MapEvent.hpp"
+#include "Core/MapEditor/MapRenderer.hpp"
 
 #include "Core/EventEditor.hpp"
 #include "Database/MapInfos.hpp"
@@ -53,8 +53,7 @@ struct MapEditor {
   void setMovingEvent(Event* event) { m_movingEvent = event; }
 
   void addEventEditor(const EventEditor& editor) {
-    auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(),
-                           [editor](const EventEditor& ed) { return editor.event()->id == ed.event()->id; });
+    auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(), [editor](const EventEditor& ed) { return editor.event()->id == ed.event()->id; });
     if (it == m_eventEditors.end()) {
       m_eventEditors.push_back(editor);
     }
@@ -86,9 +85,7 @@ struct MapEditor {
   bool isMapPointValid(const Point& point) const { return mapRect().contains(point); }
   bool isRegionMode() const { return m_regionMode; }
 
-  int readMapData(const Point& point, const int layer) const {
-    return m_mapRenderer.tileId(point.x(), point.y(), layer);
-  }
+  int readMapData(const Point& point, const int layer) const { return m_mapRenderer.tileId(point.x(), point.y(), layer); }
   void writeMapData(const Point& point, const int layer, const int tileId) {
     if (!map()) {
       return;
@@ -121,6 +118,8 @@ private:
   bool isSameKindTile(const Point& p, int layer, int tileId) const;
   bool isWallOrRoofTile(const Point& p, int layer) const;
 
+  void resizeMap(int width, int height);
+
   Project* m_parent;
   MapInfo* m_mapInfo = nullptr;
   float m_mapScale = 1.f;
@@ -143,4 +142,6 @@ private:
 
   int m_movingEventX = -1;
   int m_movingEventY = -1;
+  int m_tempMapWidth = 0;
+  int m_tempMapHeight = 0;
 };

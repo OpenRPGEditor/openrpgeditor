@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
 struct VariableSwitchPicker {
   VariableSwitchPicker(const std::string_view objectType, std::vector<std::string>& values);

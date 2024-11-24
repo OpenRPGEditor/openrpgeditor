@@ -2,12 +2,12 @@
 
 #include "Settings.hpp"
 
-#include "Core/Log.hpp"
 #include "Core/Application.hpp"
+#include "Core/Log.hpp"
 #include "Core/Utils.hpp"
+#include "IconsFontAwesome6.h"
 #include "imgui.h"
 #include "imgui_internal.h"
-#include "IconsFontAwesome6.h"
 
 #if _WIN32
 #include <shellapi.h>
@@ -15,9 +15,9 @@
 
 #include "Core/ImGuiExt/ImGuiNotify.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
-#include "nfd.h"
 #include "Database/Serializable/DeserializationQueue.hpp"
 #include "Database/Serializable/SerializationQueue.hpp"
+#include "nfd.h"
 
 #include "Database/Versions.hpp"
 #include "Graphics/GameWindowBackground.hpp"
@@ -26,19 +26,14 @@
 
 #include <fstream>
 
+#include <algorithm>
 #include <array>
 #include <string_view>
-#include <algorithm>
 
 using namespace std::literals::string_view_literals;
 static SDL_Cursor* waitCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAITARROW);
 
-Project::Project()
-: m_mapListView(this)
-, m_mapEditor(this)
-, m_eventListView(this)
-, m_tilesetPicker(this)
-, m_nwjsVersionManager("https://dl.nwjs.io") {}
+Project::Project() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this), m_nwjsVersionManager("https://dl.nwjs.io") {}
 
 bool Project::load(std::string_view filePath, std::string_view basePath) {
   close();
@@ -64,10 +59,8 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   m_database.emplace(basePath, filePath, version);
   m_database->load();
   m_resourceManager.emplace(m_database->basePath);
-  m_databaseEditor.emplace(this, m_database->actors, m_database->classes, m_database->skills, m_database->items,
-                           m_database->weapons, m_database->armors, m_database->enemies, m_database->troops,
-                           m_database->states, m_database->animations, m_database->tilesets, m_database->commonEvents,
-                           m_database->system, m_database->gameConstants, m_database->templates);
+  m_databaseEditor.emplace(this, m_database->actors, m_database->classes, m_database->skills, m_database->items, m_database->weapons, m_database->armors, m_database->enemies, m_database->troops,
+                           m_database->states, m_database->animations, m_database->tilesets, m_database->commonEvents, m_database->system, m_database->gameConstants, m_database->templates);
 
   MapInfo* info = m_database->mapInfos.map(0);
   info->expanded = true;
@@ -83,8 +76,7 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
     setMap(*m);
   }
 
-  auto fileIt = std::find_if(Settings::instance()->mru.begin(), Settings::instance()->mru.end(),
-                             [&filePath](const auto& t) { return t.first == filePath.data(); });
+  auto fileIt = std::find_if(Settings::instance()->mru.begin(), Settings::instance()->mru.end(), [&filePath](const auto& t) { return t.first == filePath.data(); });
   if (fileIt == Settings::instance()->mru.end()) {
     Settings::instance()->mru.emplace_front(filePath.data(), m_database->system.gameTitle);
   } else {
@@ -131,10 +123,8 @@ void Project::setupDocking() {
   ImGui::SetNextWindowPos(viewport->Pos + ImVec2(0, m_toolbarSize));
   ImGui::SetNextWindowSize(viewport->Size - ImVec2(0, m_toolbarSize));
   ImGui::SetNextWindowViewport(viewport->ID);
-  ImGuiWindowFlags window_flags = 0 | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking |
-                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
-                                  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
-                                  ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+  ImGuiWindowFlags window_flags = 0 | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+                                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
   ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
   ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
@@ -164,8 +154,7 @@ void Project::setupDocking() {
     ImGui::DockBuilderDockWindow("Maps", dock2);
     ImGui::DockBuilderDockWindow("Map Editor", dock3);
     ImGui::DockBuilderDockWindow("Map Properties", dock4);
-    ImGui::DockBuilderGetNode(dock3)->SetLocalFlags(static_cast<int>(ImGuiDockNodeFlags_NoUndocking) |
-                                                    static_cast<int>(ImGuiDockNodeFlags_NoDocking));
+    ImGui::DockBuilderGetNode(dock3)->SetLocalFlags(static_cast<int>(ImGuiDockNodeFlags_NoUndocking) | static_cast<int>(ImGuiDockNodeFlags_NoDocking));
     // 7. We're done setting up our docking configuration:
     ImGui::DockBuilderFinish(mainWindowGroup);
   }
@@ -181,8 +170,7 @@ void Project::drawToolbar() {
   ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, m_toolbarSize));
   ImGui::SetNextWindowViewport(viewport->ID);
 
-  ImGuiWindowFlags window_flags = 0 | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar |
-                                  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar |
+  ImGuiWindowFlags window_flags = 0 | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar |
                                   ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBringToFrontOnFocus;
   ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
   ImGui::Begin("##ore_toolbar", nullptr, window_flags);
@@ -336,8 +324,8 @@ void Project::draw() {
 
   if (DeserializationQueue::instance().hasTasks()) {
     ImGui::Begin("Loading Project....", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text("Loading %s (%i of %i)....", DeserializationQueue::instance().getCurrentFile().data(),
-                DeserializationQueue::instance().currentTaskIndex(), DeserializationQueue::instance().totalTasks());
+    ImGui::Text("Loading %s (%i of %i)....", DeserializationQueue::instance().getCurrentFile().data(), DeserializationQueue::instance().currentTaskIndex(),
+                DeserializationQueue::instance().totalTasks());
     ImGui::ProgressBar(DeserializationQueue::instance().getProgress() / 100.f);
     if (ImGui::Button("Cancel")) {
       DeserializationQueue::instance().reset();
@@ -349,8 +337,7 @@ void Project::draw() {
   }
   if (SerializationQueue::instance().hasTasks()) {
     ImGui::Begin("Saving Project....", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text("Saving %s (%i of %i)....", SerializationQueue::instance().getCurrentFile().data(),
-                SerializationQueue::instance().currentTaskIndex(), SerializationQueue::instance().totalTasks());
+    ImGui::Text("Saving %s (%i of %i)....", SerializationQueue::instance().getCurrentFile().data(), SerializationQueue::instance().currentTaskIndex(), SerializationQueue::instance().totalTasks());
     ImGui::ProgressBar(SerializationQueue::instance().getProgress() / 100.f);
     if (ImGui::Button("Cancel")) {
       SerializationQueue::instance().reset();
@@ -367,29 +354,10 @@ void Project::draw() {
 }
 
 void Project::drawCreateNewProjectPopup() {
-  static constexpr std::array<std::string_view, 23> directoryList{{"data"sv,
-                                                                   "fonts"sv,
-                                                                   "audio/bgm"sv,
-                                                                   "audio/bgs"sv,
-                                                                   "audio/me"sv,
-                                                                   "audio/se"sv,
-                                                                   "img/animations"sv,
-                                                                   "img/battlebacks1"sv,
-                                                                   "img/battlebacks2"sv,
-                                                                   "img/characters"sv,
-                                                                   "img/enemies"sv,
-                                                                   "img/faces"sv,
-                                                                   "img/parallaxes"sv,
-                                                                   "img/pictures"sv,
-                                                                   "img/sv_actors"sv,
-                                                                   "img/sv_enemies"sv,
-                                                                   "img/system"sv,
-                                                                   "img/tilesets"sv,
-                                                                   "img/titles1"sv,
-                                                                   "img/titles2"sv,
-                                                                   "js/libs"sv,
-                                                                   "js/plugins"sv,
-                                                                   "movies"sv}};
+  static constexpr std::array<std::string_view, 23> directoryList{
+      {"data"sv,           "fonts"sv,       "audio/bgm"sv, "audio/bgs"sv,      "audio/me"sv,     "audio/se"sv,      "img/animations"sv, "img/battlebacks1"sv, "img/battlebacks2"sv,
+       "img/characters"sv, "img/enemies"sv, "img/faces"sv, "img/parallaxes"sv, "img/pictures"sv, "img/sv_actors"sv, "img/sv_enemies"sv, "img/system"sv,       "img/tilesets"sv,
+       "img/titles1"sv,    "img/titles2"sv, "js/libs"sv,   "js/plugins"sv,     "movies"sv}};
 
   const auto [closed, confirmed] = m_createNewProject.draw();
   if (closed) {
@@ -408,8 +376,7 @@ void Project::drawCreateNewProjectPopup() {
         std::ofstream projectFile(projectFilePath);
         projectFile << KnownRPGMVVersions[KnownRPGMVVersions.size() - 2] << std::endl;
         SerializationQueue::instance().setBasepath(projectPath.generic_string());
-        m_database.emplace(projectPath.generic_string(), projectFilePath.generic_string(),
-                           KnownRPGMVVersions[KnownRPGMVVersions.size() - 2]);
+        m_database.emplace(projectPath.generic_string(), projectFilePath.generic_string(), KnownRPGMVVersions[KnownRPGMVVersions.size() - 2]);
         m_database->system.gameTitle = gameTitle;
         m_database->system.locale = "en_US";
         m_database->system.versionId = floor(rand() * 100000000);
@@ -436,25 +403,18 @@ void Project::drawTileInfo(MapRenderer::MapLayer& mapLayer, int z) {
         v0 /= layer.tex.height();
         u1 /= layer.tex.width();
         v1 /= layer.tex.height();
-        ImGui::Image(layer.tex,
-                     {static_cast<float>(m_mapEditor.tileSize()), static_cast<float>(m_mapEditor.tileSize())},
-                     ImVec2{u0, v0}, ImVec2{u1, v1});
-        std::string info =
-            std::format("Sheet: {} ({}), ID: {}, x: {}, y: {}, z: {},  width: {}, height: {}, u: {}, v: {}",
-                        m_mapEditor.mapRenderer().tileset()->tilesetNames[tile.tileSheet], LayerNames[tile.tileSheet],
-                        tile.tileId, tile.x, tile.y, z, tile.tileWidth, tile.tileHeight, tile.u, tile.v);
+        ImGui::Image(layer.tex, {static_cast<float>(m_mapEditor.tileSize()), static_cast<float>(m_mapEditor.tileSize())}, ImVec2{u0, v0}, ImVec2{u1, v1});
+        std::string info = std::format("Sheet: {} ({}), ID: {}, x: {}, y: {}, z: {},  width: {}, height: {}, u: {}, v: {}", m_mapEditor.mapRenderer().tileset()->tilesetNames[tile.tileSheet],
+                                       LayerNames[tile.tileSheet], tile.tileId, tile.x, tile.y, z, tile.tileWidth, tile.tileHeight, tile.u, tile.v);
         if (TileHelper::isAutoTile(tile.tileId)) {
           info += std::format(
               "\n"
               "AutoTile Shape: {}, Kind: {}\n"
               "WaterTile: {}, WaterfallTile: {}, GroundTile {}, RoofTile: {}, ShadowingTile: {},\n"
               "WallSide: {}, WallTop: {}, FloorTypeAutoTile: {}, WallTypeAutoTile: {}\n",
-              TileHelper::getAutoTileShape(tile.tileId), TileHelper::getAutoTileKind(tile.tileId),
-              TileHelper::isWaterTile(tile.tileId), TileHelper::isWaterfallTile(tile.tileId),
-              TileHelper::isGroundTile(tile.tileId), TileHelper::isRoofTile(tile.tileId),
-              TileHelper::isShadowingTile(tile.tileId), TileHelper::isWallTopTile(tile.tileId),
-              TileHelper::isWallSideTile(tile.tileId), TileHelper::isFloorTypeAutotile(tile.tileId),
-              TileHelper::isWallTypeAutotile(tile.tileId));
+              TileHelper::getAutoTileShape(tile.tileId), TileHelper::getAutoTileKind(tile.tileId), TileHelper::isWaterTile(tile.tileId), TileHelper::isWaterfallTile(tile.tileId),
+              TileHelper::isGroundTile(tile.tileId), TileHelper::isRoofTile(tile.tileId), TileHelper::isShadowingTile(tile.tileId), TileHelper::isWallTopTile(tile.tileId),
+              TileHelper::isWallSideTile(tile.tileId), TileHelper::isFloorTypeAutotile(tile.tileId), TileHelper::isWallTypeAutotile(tile.tileId));
         }
         ImGui::Text("%s", info.c_str());
       }
@@ -490,9 +450,7 @@ void Project::drawTileDebugger() {
 void Project::handleOpenFile() {
   nfdu8char_t* outPath;
   constexpr nfdu8filteritem_t filters = {"RPG Maker Projects", "rpgproject,rmmzproject"};
-  const std::string directory = Settings::instance()->lastDirectory.empty()
-                                    ? std::filesystem::current_path().generic_string()
-                                    : Settings::instance()->lastDirectory;
+  const std::string directory = Settings::instance()->lastDirectory.empty() ? std::filesystem::current_path().generic_string() : Settings::instance()->lastDirectory;
   const auto result = NFD_OpenDialogU8(&outPath, &filters, 1, directory.c_str());
   if (result == NFD_OKAY) {
     const std::filesystem::path path{outPath};
@@ -642,8 +600,7 @@ void Project::drawMenu() {
     }
     if (ImGui::BeginMenu("Draw")) {
       for (auto v : magic_enum::enum_values<DrawTool>()) {
-        if (ImGui::MenuItem(DecodeEnumName(magic_enum::enum_name(v)).data(), nullptr, drawTool() == v,
-                            editMode() == EditMode::Map)) {
+        if (ImGui::MenuItem(DecodeEnumName(magic_enum::enum_name(v)).data(), nullptr, drawTool() == v, editMode() == EditMode::Map)) {
           setDrawTool(v);
         }
       }
@@ -725,54 +682,44 @@ void Project::drawMenu() {
 
 void Project::handleKeyboardShortcuts() {
   /* File Menu */
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      ImGui::IsKeyPressed(ImGuiKey_N)) {
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && ImGui::IsKeyPressed(ImGuiKey_N)) {
     // TODO: implement new project creation
   }
 
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      ImGui::IsKeyPressed(ImGuiKey_O)) {
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && ImGui::IsKeyPressed(ImGuiKey_O)) {
     handleOpenFile();
   }
 
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      ImGui::IsKeyPressed(ImGuiKey_S)) {
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && ImGui::IsKeyPressed(ImGuiKey_S)) {
     // TODO: implement saving
   }
 
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      ImGui::IsKeyReleased(ImGuiKey_O)) {
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && ImGui::IsKeyReleased(ImGuiKey_O)) {
     handleOpenFile();
   }
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      ImGui::IsKeyPressed(ImGuiKey_Q)) {
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && ImGui::IsKeyPressed(ImGuiKey_Q)) {
     App::APP->stop();
   }
 
   /* Edit Menu */
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      !(ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) &&
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && !(ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) &&
       ImGui::IsKeyPressed(ImGuiKey_Z)) {
     handleUndo();
   }
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      (ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) &&
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && (ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) &&
       ImGui::IsKeyPressed(ImGuiKey_Z)) {
     handleRedo();
   }
   /* TODO Clipboard */
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      ImGui::IsKeyPressed(ImGuiKey_X)) {
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && ImGui::IsKeyPressed(ImGuiKey_X)) {
     // TODO: Implement clipboard cut
   }
 
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      ImGui::IsKeyPressed(ImGuiKey_C)) {
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && ImGui::IsKeyPressed(ImGuiKey_C)) {
     // TODO: Implement clipboard copy
   }
 
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      ImGui::IsKeyPressed(ImGuiKey_V)) {
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && ImGui::IsKeyPressed(ImGuiKey_V)) {
     // TODO: Implement clipboard paste
   }
 
@@ -780,16 +727,14 @@ void Project::handleKeyboardShortcuts() {
     // TODO: Implement Delete
   }
 
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      ImGui::IsKeyPressed(ImGuiKey_F)) {
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && ImGui::IsKeyPressed(ImGuiKey_F)) {
     // TODO: Implement Find
   }
   if (ImGui::IsKeyPressed(ImGuiKey_F3)) {
     // TODO: Implement Find Next
   }
 
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) &&
-      ImGui::IsKeyPressed(ImGuiKey_F3)) {
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) && ImGui::IsKeyPressed(ImGuiKey_F3)) {
     // TODO: Implement Find Previous
   }
 
@@ -806,16 +751,13 @@ void Project::handleKeyboardShortcuts() {
   }
 
   /* Scale */
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      (ImGui::IsKeyPressed(ImGuiKey_Equal) || ImGui::IsKeyPressed(ImGuiKey_KeypadAdd))) {
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && (ImGui::IsKeyPressed(ImGuiKey_Equal) || ImGui::IsKeyPressed(ImGuiKey_KeypadAdd))) {
     m_mapEditor.scale(0.25f);
   }
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      (ImGui::IsKeyPressed(ImGuiKey_Minus) || ImGui::IsKeyPressed(ImGuiKey_KeypadSubtract))) {
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && (ImGui::IsKeyPressed(ImGuiKey_Minus) || ImGui::IsKeyPressed(ImGuiKey_KeypadSubtract))) {
     m_mapEditor.scale(-0.25f);
   }
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) &&
-      (ImGui::IsKeyPressed(ImGuiKey_Keypad0) || ImGui::IsKeyPressed(ImGuiKey_0))) {
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && (ImGui::IsKeyPressed(ImGuiKey_Keypad0) || ImGui::IsKeyPressed(ImGuiKey_0))) {
     m_mapEditor.setScale(1.f);
   }
 
@@ -829,8 +771,7 @@ void Project::handleKeyboardShortcuts() {
 
   // TODO: Add missing tools
   /* Game */
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) &&
-      ImGui::IsKeyPressed(ImGuiKey_R)) {
+  if ((ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) && ImGui::IsKeyPressed(ImGuiKey_R)) {
     // TODO: Implement Play Test
   }
 
@@ -848,7 +789,7 @@ void Project::setMap(MapInfo& in) {
   }
 
   SDL_SetCursor(waitCursor);
-  m_mapListView.setCurrentMapId(in.id);
+  m_mapListView.setCurrentMapId(in.id, true);
   if (m_mapListView.currentMapInfo()) {
     m_mapEditor.setMap(&in);
     m_database->mapInfos.setCurrentMap(&in);

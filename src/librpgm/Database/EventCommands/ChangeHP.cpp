@@ -2,8 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangeHPCommand::ChangeHPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ChangeHPCommand::ChangeHPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(comparison);
   parameters.at(1).get_to(value);
   parameters.at(2).get_to(quantityOp);
@@ -20,7 +19,6 @@ void ChangeHPCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(quantity);
   out.push_back(allowKnockout);
 }
-
 
 std::string ChangeHPCommand::stringRep(const Database& db) const {
   std::string actName;
@@ -43,9 +41,8 @@ std::string ChangeHPCommand::stringRep(const Database& db) const {
 
   std::string suffix;
   if (allowKnockout) {
-    suffix =
-        ColorFormatter::getColor(FormatColor::Gray) + " " + db.parentheses("Allow Knockout") + ColorFormatter::popColor();
+    suffix = ColorFormatter::getColor(FormatColor::Gray) + " " + db.parentheses("Allow Knockout") + ColorFormatter::popColor();
   }
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change HP" + colon.data() +
-         actName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr + ColorFormatter::popColor() + suffix;
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change HP" + colon.data() + actName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr +
+         ColorFormatter::popColor() + suffix;
 }

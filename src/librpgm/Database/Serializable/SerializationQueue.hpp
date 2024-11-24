@@ -3,6 +3,7 @@
 
 class SerializationQueue : public ThreadedFileQueue {
   SerializationQueue() = default;
+
 public:
   SerializationQueue(const SerializationQueue&) = delete;
   SerializationQueue(SerializationQueue&&) = delete;

@@ -6,9 +6,7 @@ struct CommandParser {
   int index = 0;
 
   std::vector<std::shared_ptr<IEventCommand>> parse(const nlohmann::ordered_json& data);
-  static void serialize(nlohmann::ordered_json& data, const std::vector<std::shared_ptr<IEventCommand>>& list,
-                        bool movementRoute = false);
-
+  static void serialize(nlohmann::ordered_json& data, const std::vector<std::shared_ptr<IEventCommand>>& list, bool movementRoute = false);
 
   EventCode nextEventCommand() {
     if (index + 1 >= parser.size()) {

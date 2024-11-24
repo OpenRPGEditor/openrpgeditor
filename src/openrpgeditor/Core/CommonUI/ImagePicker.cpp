@@ -1,13 +1,12 @@
 #include "Core/CommonUI/ImagePicker.hpp"
-#include <iostream>
+#include "Core/DPIHandler.hpp"
+#include "Core/Log.hpp"
+#include "Core/ResourceManager.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
-#include "Core/DPIHandler.hpp"
-#include "Core/ResourceManager.hpp"
-#include "Core/Log.hpp"
+#include <iostream>
 
-ImagePicker::ImagePicker(PickerMode mode, const std::string_view imageName, const std::string_view image2Name)
-: IDialogController("Select an Image##image_picker"), m_checkerboardTexture(864, 768) {
+ImagePicker::ImagePicker(PickerMode mode, const std::string_view imageName, const std::string_view image2Name) : IDialogController("Select an Image##image_picker"), m_checkerboardTexture(864, 768) {
   m_pickType = mode;
   if (m_pickType == PickerMode::Parallax) {
     m_images = ResourceManager::instance()->getDirectoryContents("img/parallaxes/", ".png");
@@ -65,31 +64,25 @@ std::tuple<bool, bool> ImagePicker::draw() {
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{894, 768} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
-                             ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::BeginGroup();
     {
-      ImGui::BeginChild("##image_picker_list",
-                        ImVec2{App::DPIHandler::scale_value(200), App::DPIHandler::scale_value(768)},
-                        ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
+      ImGui::BeginChild("##image_picker_list", ImVec2{App::DPIHandler::scale_value(200), App::DPIHandler::scale_value(768)}, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
       {
         if (ImGui::BeginTable("##image_picker.tablelist", 1)) {
           ImGui::TableNextRow();
           ImGui::TableNextColumn();
-          if (ImGui::Selectable("(None)", m_selectedImage < 0,
-                                ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+          if (ImGui::Selectable("(None)", m_selectedImage < 0, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
             m_selectedImage = -1;
             m_image.reset();
           }
           for (int i = 0; i < m_images.size(); ++i) {
             const auto& sheet = m_images[i];
             ImGui::TableNextColumn();
-            if (ImGui::Selectable(sheet.c_str(), m_selectedImage == i,
-                                  ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+            if (ImGui::Selectable(sheet.c_str(), m_selectedImage == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
               if (m_selectedImage != i) {
                 m_selectedImage = i;
-                m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), static_cast<int>(m_pickType),
-                                false);
+                m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), static_cast<int>(m_pickType), false);
               }
               if (ImGui::IsItemHovered()) {
                 ImGui::SetTooltip("%s", sheet.c_str());
@@ -100,28 +93,23 @@ std::tuple<bool, bool> ImagePicker::draw() {
         }
         ImGui::EndChild();
         ImGui::SameLine();
-        ImGui::BeginChild("##image_picker_list##2",
-                          ImVec2{App::DPIHandler::scale_value(200), App::DPIHandler::scale_value(768)},
-                          ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
+        ImGui::BeginChild("##image_picker_list##2", ImVec2{App::DPIHandler::scale_value(200), App::DPIHandler::scale_value(768)}, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
         {
           if (m_pickType == PickerMode::Battleback) {
             if (ImGui::BeginTable("##image_picker.tablelist##2", 1)) {
               ImGui::TableNextRow();
               ImGui::TableNextColumn();
-              if (ImGui::Selectable("(None)##2", m_selectedImage2 < 0,
-                                    ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+              if (ImGui::Selectable("(None)##2", m_selectedImage2 < 0, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
                 m_selectedImage2 = -1;
                 m_image2.reset();
               }
               for (int i = 0; i < m_images_2.size(); ++i) {
                 const auto& sheet2 = m_images_2[i];
                 ImGui::TableNextColumn();
-                if (ImGui::Selectable(sheet2.c_str(), m_selectedImage2 == i,
-                                      ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+                if (ImGui::Selectable(sheet2.c_str(), m_selectedImage2 == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
                   if (m_selectedImage2 != i) {
                     m_selectedImage2 = i;
-                    m_image2.emplace(m_selectedImage2 == -1 ? "" : m_images_2.at(m_selectedImage2),
-                                     static_cast<int>(m_pickType), true);
+                    m_image2.emplace(m_selectedImage2 == -1 ? "" : m_images_2.at(m_selectedImage2), static_cast<int>(m_pickType), true);
                   }
                   if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("%s", sheet2.c_str());
@@ -135,29 +123,22 @@ std::tuple<bool, bool> ImagePicker::draw() {
           ImGui::EndChild();
         }
         ImGui::SameLine();
-        ImGui::BeginChild("##image_picker_image_panel",
-                          ImVec2{App::DPIHandler::scale_value(894), App::DPIHandler::scale_value(784)},
-                          ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
+        ImGui::BeginChild("##image_picker_image_panel", ImVec2{App::DPIHandler::scale_value(894), App::DPIHandler::scale_value(784)}, ImGuiChildFlags_Border,
+                          ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
         {
-          const auto imageRect =
-              ImVec2{static_cast<float>(m_image->imageWidth()), static_cast<float>(m_image->imageHeight())} *
-              App::DPIHandler::get_ui_scale();
+          const auto imageRect = ImVec2{static_cast<float>(m_image->imageWidth()), static_cast<float>(m_image->imageHeight())} * App::DPIHandler::get_ui_scale();
           auto win = ImGui::GetCurrentWindow();
           if (m_image) {
             ImGui::GetWindowDrawList()->AddImage(m_checkerboardTexture, win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
                                                  win->ContentRegionRect.Min +
-                                                     (ImVec2{static_cast<float>(m_image->texture().width()),
-                                                             static_cast<float>(m_image->texture().height())} *
-                                                      App::DPIHandler::get_ui_scale()));
+                                                     (ImVec2{static_cast<float>(m_image->texture().width()), static_cast<float>(m_image->texture().height())} * App::DPIHandler::get_ui_scale()));
 
             ImGui::Image(m_image->texture(), imageRect);
           }
           if (m_image2) {
             ImGui::GetWindowDrawList()->AddImage(m_image2->texture(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
                                                  win->ContentRegionRect.Min +
-                                                     (ImVec2{static_cast<float>(m_image2->texture().width()),
-                                                             static_cast<float>(m_image2->texture().height())} *
-                                                      App::DPIHandler::get_ui_scale()));
+                                                     (ImVec2{static_cast<float>(m_image2->texture().width()), static_cast<float>(m_image2->texture().height())} * App::DPIHandler::get_ui_scale()));
           }
         }
         ImGui::EndChild();

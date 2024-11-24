@@ -2,8 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ConditionalBranchCommand::ConditionalBranchCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ConditionalBranchCommand::ConditionalBranchCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(type);
   switch (type) {
   case ConditionType::Switch: {
@@ -200,8 +199,7 @@ void ConditionalBranchCommand::serializeParameters(nlohmann::ordered_json& out) 
 }
 
 std::string ConditionalBranchCommand::conditionalFormat(const std::string& text) const {
-  return std::format("{}{}{}If{}{}{}", indentText(indent), symbol(code()), ColorFormatter::getColorCode(code()), colon,
-                     text, ColorFormatter::popColor());
+  return std::format("{}{}{}If{}{}{}", indentText(indent), symbol(code()), ColorFormatter::getColorCode(code()), colon, text, ColorFormatter::popColor());
 }
 
 std::string ConditionalBranchCommand::stringRep(const Database& db) const {
@@ -280,10 +278,7 @@ std::string ConditionalBranchCommand::stringRep(const Database& db) const {
   if (type == ConditionType::Character) {
     const auto map = db.mapInfos.currentMap();
     const Event* event = map != nullptr ? map->event(character.id) : nullptr;
-    std::string name = character.id == -1    ? "Player"
-                       : character.id == 0   ? "This Event"
-                       : event->name.empty() ? std::format("Unnamed Event #{:03}", character.id)
-                                             : event->name;
+    std::string name = character.id == -1 ? "Player" : character.id == 0 ? "This Event" : event->name.empty() ? std::format("Unnamed Event #{:03}", character.id) : event->name;
     return conditionalFormat(std::format("{} is facing {}", name, DecodeEnumName(character.facing)));
   }
   if (type == ConditionType::Vehicle) {
@@ -316,6 +311,5 @@ std::string ConditionalBranchCommand::stringRep(const Database& db) const {
   if (type == ConditionType::Script) {
     return conditionalFormat(std::format("Script: {}", script));
   }
-  return std::string(indent ? *indent * 4 : 0, ' ') +
-         "◇ &push-color=255,0,255;Condition&pop-color; &push-color=0,255,0;TBD&pop-color;";
+  return std::string(indent ? *indent * 4 : 0, ' ') + "◇ &push-color=255,0,255;Condition&pop-color; &push-color=0,255,0;TBD&pop-color;";
 }

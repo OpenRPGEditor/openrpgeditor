@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Database/Globals.hpp"
 #include "Database/Audio.hpp"
 #include "Database/Event.hpp"
 #include "Database/EventCommands/EventDummy.hpp"
+#include "Database/Globals.hpp"
 
 #include <format>
 #include <string>
@@ -46,8 +46,7 @@ public:
   }
 
   Event* eventAt(int x, int y) {
-    auto it =
-        std::find_if(events.begin(), events.end(), [&x, &y](const auto& ev) { return ev && ev->x == x && ev->y == y; });
+    auto it = std::find_if(events.begin(), events.end(), [&x, &y](const auto& ev) { return ev && ev->x == x && ev->y == y; });
     if (it != events.end()) {
       return &it->value();
     }
@@ -84,6 +83,8 @@ public:
       m_isDirty = true;
     }
   }
+
+  void resize(int newWidth, int newHeight);
 
   bool autoplayBgm{};
   bool autoplayBgs{};

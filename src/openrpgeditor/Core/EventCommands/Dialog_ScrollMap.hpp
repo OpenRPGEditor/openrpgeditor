@@ -4,9 +4,7 @@
 
 struct Dialog_ScrollMap : IEventDialogController {
   Dialog_ScrollMap() = delete;
-  explicit Dialog_ScrollMap(const std::string& name,
-                            const std::shared_ptr<ScrollMapCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ScrollMap(const std::string& name, const std::shared_ptr<ScrollMapCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ScrollMapCommand());
     }
@@ -14,7 +12,6 @@ struct Dialog_ScrollMap : IEventDialogController {
     m_direction = static_cast<int>(command->direction);
     m_distance = command->distance;
     m_speed = static_cast<int>(command->speed);
-
   }
   std::tuple<bool, bool> draw() override;
 

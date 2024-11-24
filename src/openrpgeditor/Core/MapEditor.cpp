@@ -5,8 +5,8 @@
 
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 
-#include "imgui_internal.h"
 #include "imgui.h"
+#include "imgui_internal.h"
 
 #include <format>
 
@@ -30,13 +30,9 @@ struct EventMoveUndoCommand : IUndoCommand {
       return "Invalid move command!";
     }
     if (!m_isRedo) {
-      return std::format("Move {} from {},{} to {},{}",
-                         m_event->name.empty() ? std::to_string(m_event->id) : m_event->name, m_x, m_y, m_event->x,
-                         m_event->y);
+      return std::format("Move {} from {},{} to {},{}", m_event->name.empty() ? std::to_string(m_event->id) : m_event->name, m_x, m_y, m_event->x, m_event->y);
     }
-    return std::format("Move {} from {},{} to {},{}",
-                       m_event->name.empty() ? std::to_string(m_event->id) : m_event->name, m_event->x, m_event->y, m_x,
-                       m_y);
+    return std::format("Move {} from {},{} to {},{}", m_event->name.empty() ? std::to_string(m_event->id) : m_event->name, m_event->x, m_event->y, m_x, m_y);
   }
 
 private:
@@ -65,23 +61,17 @@ void MapEditor::drawParallax(ImGuiWindow* win) {
   }
   // TODO: Proper parallax implementation
   win->DrawList->AddImage(m_parallaxTexture, win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
-                          win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_parallaxTexture.width()),
-                                                               static_cast<float>(m_parallaxTexture.height())} *
-                                                        m_mapScale));
+                          win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_parallaxTexture.width()), static_cast<float>(m_parallaxTexture.height())} * m_mapScale));
 }
 
 void MapEditor::drawGrid(ImGuiWindow* win) {
   for (int y = tileSize() * m_mapScale; y < (map()->height * tileSize()) * m_mapScale; y += tileSize() * m_mapScale) {
-    win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)},
-                           win->ContentRegionRect.Min +
-                               ImVec2{(map()->width * tileSize()) * m_mapScale, static_cast<float>(y)},
+    win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)}, win->ContentRegionRect.Min + ImVec2{(map()->width * tileSize()) * m_mapScale, static_cast<float>(y)},
                            0x7f0a0a0a, 3.f);
   }
 
   for (int x = tileSize() * m_mapScale; x < (map()->width * tileSize()) * m_mapScale; x += tileSize() * m_mapScale) {
-    win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), 0.f},
-                           win->ContentRegionRect.Min +
-                               ImVec2{static_cast<float>(x), (map()->height * tileSize()) * m_mapScale},
+    win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), 0.f}, win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), (map()->height * tileSize()) * m_mapScale},
                            0x7f0a0a0a, 3.f);
   }
 }
@@ -94,9 +84,8 @@ void MapEditor::handleEventDrag() {
     int oldX = m_movingEvent->x;
     int oldY = m_movingEvent->y;
 
-    auto it = std::find_if(map()->events.begin(), map()->events.end(), [&](const std::optional<Event>& e) {
-      return e && e->id != 0 && e->x == tileCellX() && e->y == tileCellY() && &e.value() != m_movingEvent;
-    });
+    auto it = std::find_if(map()->events.begin(), map()->events.end(),
+                           [&](const std::optional<Event>& e) { return e && e->id != 0 && e->x == tileCellX() && e->y == tileCellY() && &e.value() != m_movingEvent; });
 
     m_movingEvent->x = m_tileCursor.tileX();
     m_movingEvent->y = m_tileCursor.tileY();
@@ -112,8 +101,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
   //   updateAutotilesAroundPoint(Point{tileCellX(), tileCellY()}, 0);
   // }
 
-  if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow) || ImGui::IsKeyPressed(ImGuiKey_RightArrow) ||
-      ImGui::IsKeyPressed(ImGuiKey_UpArrow) || ImGui::IsKeyPressed(ImGuiKey_DownArrow)) {
+  if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow) || ImGui::IsKeyPressed(ImGuiKey_RightArrow) || ImGui::IsKeyPressed(ImGuiKey_UpArrow) || ImGui::IsKeyPressed(ImGuiKey_DownArrow)) {
     m_tileCursor.setKeyboardMode();
   } else if (std::fabs(ImGui::GetIO().MouseDelta.x) > 0.5f || std::fabs(ImGui::GetIO().MouseDelta.y) > 0.5f) {
     m_tileCursor.setMouseMode();
@@ -121,8 +109,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
 
   if (ImGui::IsWindowHovered() && m_parent->editMode() == EditMode::Map) {
     m_tileCursor.update(m_mapScale, map()->width, map()->height, m_parent->system().tileSize, win);
-  } else if (ImGui::IsWindowHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left) &&
-             (m_parent->editMode() == EditMode::Event || m_movingEvent)) {
+  } else if (ImGui::IsWindowHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left) && (m_parent->editMode() == EditMode::Event || m_movingEvent)) {
     m_tileCursor.update(m_mapScale, map()->width, map()->height, m_parent->system().tileSize, win);
     handleEventDrag();
     m_scaleChanged = false;
@@ -132,8 +119,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     m_scaleChanged = false;
   }
 
-  if (m_parent->editMode() == EditMode::Event && m_tileCursor.mode() == MapCursorMode::Keyboard &&
-      (ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) &&
+  if (m_parent->editMode() == EditMode::Event && m_tileCursor.mode() == MapCursorMode::Keyboard && (ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) &&
       (!m_movingEvent || !m_selectedEvent)) {
     m_selectedEvent = map()->eventAt(m_tileCursor.tileX(), m_tileCursor.tileY());
     m_movingEvent = m_selectedEvent;
@@ -141,21 +127,18 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
       m_movingEventX = m_movingEvent->x;
       m_movingEventY = m_movingEvent->y;
     }
-  } else if (m_parent->editMode() == EditMode::Event && m_tileCursor.mode() == MapCursorMode::Keyboard &&
-             (ImGui::IsKeyReleased(ImGuiKey_LeftShift) || ImGui::IsKeyReleased(ImGuiKey_RightShift))) {
+  } else if (m_parent->editMode() == EditMode::Event && m_tileCursor.mode() == MapCursorMode::Keyboard && (ImGui::IsKeyReleased(ImGuiKey_LeftShift) || ImGui::IsKeyReleased(ImGuiKey_RightShift))) {
     if (m_movingEvent) {
       m_movingEvent->x = m_tileCursor.tileX();
       m_movingEvent->y = m_tileCursor.tileY();
     }
   }
 
-  if (m_selectedEvent && !m_movingEvent && m_selectedEvent->x != m_tileCursor.tileX() &&
-      m_selectedEvent->y != m_tileCursor.tileY()) {
+  if (m_selectedEvent && !m_movingEvent && m_selectedEvent->x != m_tileCursor.tileX() && m_selectedEvent->y != m_tileCursor.tileY()) {
     m_selectedEvent = nullptr;
   }
 
-  if ((ImGui::IsMouseClicked(ImGuiMouseButton_Left) && m_parent->editMode() == EditMode::Event &&
-       (m_movingEvent || m_selectedEvent))) {
+  if ((ImGui::IsMouseClicked(ImGuiMouseButton_Left) && m_parent->editMode() == EditMode::Event && (m_movingEvent || m_selectedEvent))) {
     auto event = map()->eventAt(m_tileCursor.tileX(), m_tileCursor.tileY());
     if (event == nullptr) {
       m_movingEvent = nullptr;
@@ -166,8 +149,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     m_hasScrolled = true;
   }
 
-  if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered() &&
-      m_parent->editMode() == EditMode::Event && m_movingEvent == nullptr) {
+  if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered() && m_parent->editMode() == EditMode::Event && m_movingEvent == nullptr) {
     m_selectedEvent = map()->eventAt(m_tileCursor.tileX(), m_tileCursor.tileY());
     m_movingEvent = m_selectedEvent;
     if (m_movingEvent) {
@@ -177,13 +159,11 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     m_hasScrolled = true;
   }
 
-  if ((ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) || ImGui::IsKeyPressed(ImGuiKey_Enter) ||
-       ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)) &&
-      m_parent->editMode() == EditMode::Event && ImGui::IsWindowFocused()) {
+  if ((ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) || ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)) && m_parent->editMode() == EditMode::Event &&
+      ImGui::IsWindowFocused()) {
 
     if (m_selectedEvent != nullptr) {
-      const auto it = std::ranges::find_if(
-          m_eventEditors, [&](const EventEditor& editor) { return editor.event()->id == m_selectedEvent->id; });
+      const auto it = std::ranges::find_if(m_eventEditors, [&](const EventEditor& editor) { return editor.event()->id == m_selectedEvent->id; });
       if (it == m_eventEditors.end()) {
         m_eventEditors.emplace_back(m_parent, m_selectedEvent);
       }
@@ -195,9 +175,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     }
   }
 
-  if (((m_tileCursor.mode() == MapCursorMode::Keyboard && (ImGui::IsKeyReleased(ImGuiKey_LeftShift)) ||
-        ImGui::IsKeyReleased(ImGuiKey_RightShift)) ||
-       ImGui::IsMouseReleased(ImGuiMouseButton_Left)) &&
+  if (((m_tileCursor.mode() == MapCursorMode::Keyboard && (ImGui::IsKeyReleased(ImGuiKey_LeftShift)) || ImGui::IsKeyReleased(ImGuiKey_RightShift)) || ImGui::IsMouseReleased(ImGuiMouseButton_Left)) &&
       m_parent->editMode() == EditMode::Event) {
     /* If we have a selected actor, and it's no longer in its original location, push it onto the undo stack
      * as an operation
@@ -287,10 +265,7 @@ void MapEditor::updateAutotilesAroundPoint(const Point& point, const int layer) 
 }
 
 void MapEditor::updateShadowData(const Point& point) {
-  const int tileId = (isGroundTile(point, 0) && isShadowingTile(Point{point.x() - 1, point.y()}, 0) &&
-                      isShadowingTile(Point{point.x() - 1, point.y() - 1}, 0))
-                         ? 5
-                         : 0;
+  const int tileId = (isGroundTile(point, 0) && isShadowingTile(Point{point.x() - 1, point.y()}, 0) && isShadowingTile(Point{point.x() - 1, point.y() - 1}, 0)) ? 5 : 0;
   writeMapData(point, 4, tileId);
 }
 
@@ -307,8 +282,7 @@ int MapEditor::updateFloorTypeAutotile(const Point& point, const int layer, cons
   const auto topMiddle = makeDirectionBit(Point{point.x(), point.y() - 1}, tileId, layer, flags & 0x20, false);
   const auto rightMiddle = makeDirectionBit(Point{point.x() + 1, point.y()}, tileId, layer, flags & 0x40, false);
   const auto bottomMiddle = makeDirectionBit(Point{point.x(), point.y() + 1}, tileId, layer, flags & 0x80, false);
-  const auto newShape = TileHelper::floorDirToShape(rightBottom | rightTop | leftTop | leftBottom | leftMiddle |
-                                                    topMiddle | rightMiddle | bottomMiddle | (dir & ~flags));
+  const auto newShape = TileHelper::floorDirToShape(rightBottom | rightTop | leftTop | leftBottom | leftMiddle | topMiddle | rightMiddle | bottomMiddle | (dir & ~flags));
 
   return TileHelper::makeAutoTileId(kind, newShape);
 }
@@ -334,26 +308,20 @@ int MapEditor::updateWallTypeAutotile(const Point& point, const int layer, const
   bool hasSameKindRight = false;
 
   if (isSameKindTile(Point{xCoord - 1, yCoord}, layer, tileId)) {
-    hasSameKindLeft = !isSameKindTile(Point{xCoord - 1, tmpYStart}, layer, tileId) ||
-                      !isSameKindTile(Point{xCoord - 1, tmpYEnd}, layer, tileId);
+    hasSameKindLeft = !isSameKindTile(Point{xCoord - 1, tmpYStart}, layer, tileId) || !isSameKindTile(Point{xCoord - 1, tmpYEnd}, layer, tileId);
   }
 
   if (isSameKindTile(Point{xCoord + 1, yCoord}, layer, tileId)) {
-    hasSameKindRight = !isSameKindTile(Point{xCoord + 1, tmpYStart}, layer, tileId) ||
-                       !isSameKindTile(Point{xCoord + 1, tmpYEnd}, layer, tileId);
+    hasSameKindRight = !isSameKindTile(Point{xCoord + 1, tmpYStart}, layer, tileId) || !isSameKindTile(Point{xCoord + 1, tmpYEnd}, layer, tileId);
   }
 
   if (TileHelper::isWallSideTile(tileId)) {
     if (!hasSameKindLeft) {
-      hasSameKindLeft = !isWallOrRoofTile(Point{xCoord - 1, yCoord}, layer) ||
-                        !isWallOrRoofTile(Point{xCoord - 1, tmpYStart}, layer) ||
-                        !isWallOrRoofTile(Point{xCoord - 1, tmpYEnd}, layer);
+      hasSameKindLeft = !isWallOrRoofTile(Point{xCoord - 1, yCoord}, layer) || !isWallOrRoofTile(Point{xCoord - 1, tmpYStart}, layer) || !isWallOrRoofTile(Point{xCoord - 1, tmpYEnd}, layer);
     }
 
     if (!hasSameKindRight) {
-      hasSameKindRight = !isWallOrRoofTile(Point{xCoord + 1, yCoord}, layer) ||
-                         !isWallOrRoofTile(Point{xCoord + 1, tmpYStart}, layer) ||
-                         !isWallOrRoofTile(Point{xCoord + 1, tmpYEnd}, layer);
+      hasSameKindRight = !isWallOrRoofTile(Point{xCoord + 1, yCoord}, layer) || !isWallOrRoofTile(Point{xCoord + 1, tmpYStart}, layer) || !isWallOrRoofTile(Point{xCoord + 1, tmpYEnd}, layer);
     }
   }
 
@@ -385,8 +353,7 @@ int MapEditor::updateWaterfallTypeAutotile(const Point& point, const int layer, 
   return TileHelper::makeAutoTileId(kind, TileHelper::waterfallDirToShape(left | right | (dir & ~flags)));
 }
 
-int MapEditor::makeDirectionBit(const Point& nextPos, const int tileId, const int layer, const int flags,
-                                const bool skipBorder) const {
+int MapEditor::makeDirectionBit(const Point& nextPos, const int tileId, const int layer, const int flags, const bool skipBorder) const {
   int ret = 0;
   if (flags) {
     const auto nextTileId = readMapData(nextPos, layer);
@@ -404,20 +371,12 @@ int MapEditor::makeDirectionBit(const Point& nextPos, const int tileId, const in
   return ret;
 }
 
-bool MapEditor::isWallOrRoofTile(const Point& p, const int layer) const {
-  return TileHelper::isWallOrRoofTile(readMapData(p, layer));
-}
-bool MapEditor::isGroundTile(const Point& p, const int layer) const {
-  return TileHelper::isGroundTile(readMapData(p, layer));
-}
+bool MapEditor::isWallOrRoofTile(const Point& p, const int layer) const { return TileHelper::isWallOrRoofTile(readMapData(p, layer)); }
+bool MapEditor::isGroundTile(const Point& p, const int layer) const { return TileHelper::isGroundTile(readMapData(p, layer)); }
 
-bool MapEditor::isShadowingTile(const Point& p, const int layer) const {
-  return TileHelper::isShadowingTile(readMapData(p, layer));
-}
+bool MapEditor::isShadowingTile(const Point& p, const int layer) const { return TileHelper::isShadowingTile(readMapData(p, layer)); }
 
-bool MapEditor::isSameKindTile(const Point& p, const int layer, const int tileId) const {
-  return TileHelper::isSameKindTile(readMapData(p, layer), tileId);
-}
+bool MapEditor::isSameKindTile(const Point& p, const int layer, const int tileId) const { return TileHelper::isSameKindTile(readMapData(p, layer), tileId); }
 
 void MapEditor::renderLayerRects(ImGuiWindow* win, const MapRenderer::MapLayer& layer) {
   for (const auto& l : layer.tileLayers) {
@@ -429,8 +388,7 @@ void MapEditor::renderLayerRects(ImGuiWindow* win, const MapRenderer::MapLayer& 
       const float x1 = tile.x + tile.tileWidth;
       const float y0 = tile.y;
       const float y1 = tile.y + tile.tileHeight;
-      win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale),
-                             win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), 0xFF000000, 0, 0, 2.f);
+      win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale), win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), 0xFF000000, 0, 0, 2.f);
     }
   }
 }
@@ -449,8 +407,7 @@ void MapEditor::renderLayerTex(ImGuiWindow* win, const MapRenderer::TileLayer& t
     const float u1 = (tile.u + tile.tileWidth) / tLayer.tex.width();
     const float v0 = tile.v / tLayer.tex.height();
     const float v1 = (tile.v + tile.tileHeight) / tLayer.tex.height();
-    win->DrawList->AddImage(tLayer.tex, win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale),
-                            win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), ImVec2{u0, v0}, ImVec2{u1, v1});
+    win->DrawList->AddImage(tLayer.tex, win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale), win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), ImVec2{u0, v0}, ImVec2{u1, v1});
   }
 }
 
@@ -469,6 +426,8 @@ void MapEditor::renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer
 void MapEditor::draw() {
   if (m_mapInfo != nullptr && m_mapInfo->map() != nullptr && m_mapRenderer.map() != m_mapInfo->map()) {
     m_mapRenderer.setMap(m_mapInfo->map(), Database::instance()->tilesets.tileset(m_mapInfo->map()->tilesetId));
+    m_tempMapWidth = m_mapInfo->map()->width;
+    m_tempMapHeight = m_mapInfo->map()->height;
   }
 
   if (!m_checkeredBack) {
@@ -486,23 +445,18 @@ void MapEditor::draw() {
   std::erase_if(m_eventEditors, [](EventEditor& editor) { return !editor.draw(); });
 
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoTitleBar)) {
-    ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(45.f)),
-                      0, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
+    ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(45.f)), 0, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
     // ImGui::SetScrollX(m_tileCursor.alignCoord(ImGui::GetScrollX()));
     // ImGui::SetScrollY(m_tileCursor.alignCoord(ImGui::GetScrollY()));
     if (map()) {
       ImGuiWindow* win = ImGui::GetCurrentWindow();
-      ImGui::Dummy(ImVec2{(map()->width * m_parent->system().tileSize * m_mapScale),
-                          (map()->height * m_parent->system().tileSize * m_mapScale)});
+      ImGui::Dummy(ImVec2{(map()->width * m_parent->system().tileSize * m_mapScale), (map()->height * m_parent->system().tileSize * m_mapScale)});
 
       const float u1 = std::clamp((static_cast<float>(map()->width * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
       const float v1 = std::clamp((static_cast<float>(map()->height * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
 
       win->DrawList->AddImage(m_checkeredBack, win->ClipRect.Min + ImVec2{0, 0},
-                              win->ClipRect.Min + (ImVec2{static_cast<float>(map()->width * tileSize()),
-                                                          static_cast<float>(map()->height * tileSize())} *
-                                                   m_mapScale),
-                              ImVec2{0, 0}, ImVec2{u1, v1});
+                              win->ClipRect.Min + (ImVec2{static_cast<float>(map()->width * tileSize()), static_cast<float>(map()->height * tileSize())} * m_mapScale), ImVec2{0, 0}, ImVec2{u1, v1});
 
       handleMouseInput(win);
 
@@ -555,9 +509,7 @@ void MapEditor::draw() {
             }
             const float dx1 = dx + ((i % 2) * w1);
             const float dy1 = dy + (std::floor(i / 2) * h1);
-            win->DrawList->AddRectFilled(win->ContentRegionRect.Min + (ImVec2{dx1, dy1} * m_mapScale),
-                                         win->ContentRegionRect.Min + (ImVec2{dx1 + w1, dy1 + h1} * m_mapScale),
-                                         0x7F000000);
+            win->DrawList->AddRectFilled(win->ContentRegionRect.Min + (ImVec2{dx1, dy1} * m_mapScale), win->ContentRegionRect.Min + (ImVec2{dx1 + w1, dy1 + h1} * m_mapScale), 0x7F000000);
           }
         }
       }
@@ -576,16 +528,13 @@ void MapEditor::draw() {
         }
         auto realEvent = map()->event(event->id);
         if (m_selectedEvent == realEvent && !m_hasScrolled) {
-          ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) +
-                            (((event->x * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.x / 2)));
-          ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) +
-                            (((event->y * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.y / 2)));
+          ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + (((event->x * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.x / 2)));
+          ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + (((event->y * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.y / 2)));
           m_hasScrolled = true;
         }
         bool isHovered = event->x == tileCellX() && event->y == tileCellY();
         MapEvent mapEvent(this, &event.value());
-        mapEvent.draw(m_mapScale, isHovered, m_selectedEvent == realEvent, m_parent->editMode() != EditMode::Event,
-                      win);
+        mapEvent.draw(m_mapScale, isHovered, m_selectedEvent == realEvent, m_parent->editMode() != EditMode::Event, win);
       }
 
       if (!m_prisonMode) {
@@ -601,13 +550,10 @@ void MapEditor::draw() {
       ImGui::SameLine();
       ImGui::SliderFloat("##map_scale", &m_mapScale, 0.25f, 4.f);
       ImGui::SameLine();
-      std::string fmt =
-          std::format("Tile {}, ({}, {})", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0),
-                      m_tileCursor.tileX(), m_tileCursor.tileY());
+      std::string fmt = std::format("Tile {}, ({}, {})", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0), m_tileCursor.tileX(), m_tileCursor.tileY());
       if (map()) {
-        auto ev = std::find_if(map()->events.begin(), map()->events.end(), [&](const std::optional<Event>& e) {
-          return e && e->id != 0 && m_tileCursor.tileX() == e->x && m_tileCursor.tileY() == e->y;
-        });
+        auto ev =
+            std::find_if(map()->events.begin(), map()->events.end(), [&](const std::optional<Event>& e) { return e && e->id != 0 && m_tileCursor.tileX() == e->x && m_tileCursor.tileY() == e->y; });
         if (ev != map()->events.end()) {
           fmt += std::format(" {} ({:03})", (*ev)->name, (*ev)->id);
         }
@@ -622,6 +568,19 @@ void MapEditor::draw() {
   // if (ImGui::BeginPopupContextWindow()) {
   //   if (ImGui::BeginPopupContextItem(""))
   // }
+}
+
+void MapEditor::resizeMap(const int width, const int height) {
+  if (map()) {
+    map()->resize(width, height);
+    for (auto it = m_eventEditors.begin(); it != m_eventEditors.end();) {
+      if (map()->event(it->id()) == nullptr) {
+        it = m_eventEditors.erase(it);
+      } else {
+        ++it;
+      }
+    }
+  }
 }
 
 void MapEditor::drawMapProperties() {
@@ -662,12 +621,9 @@ void MapEditor::drawMapProperties() {
         {
           ImGui::Text("Tileset");
           strncpy(buf, m_parent->currentMapInfo()->name.c_str(), 4096);
-          std::string text = m_parent->tileset(map()->tilesetId)->name.empty()
-                                 ? "##map_tileset_button_empty"
-                                 : m_parent->tileset(map()->tilesetId)->name;
+          std::string text = m_parent->tileset(map()->tilesetId)->name.empty() ? "##map_tileset_button_empty" : m_parent->tileset(map()->tilesetId)->name;
           ImGui::PushID("##map_tileset_button");
-          if (ImGui::Button(text.c_str(),
-                            ImVec2{ImGui::GetContentRegionMax().x / 2 - App::DPIHandler::scale_value(15), 0})) {}
+          if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetContentRegionMax().x / 2 - App::DPIHandler::scale_value(15), 0})) {}
           ImGui::PopID();
         }
         ImGui::EndGroup();
@@ -680,9 +636,9 @@ void MapEditor::drawMapProperties() {
           ImGui::SetCursorPos(cursorPos);
           ImGui::Text("Width");
           ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - App::DPIHandler::scale_value(15));
-          int width = map()->width;
-          if (ImGui::DragInt("##map_width", &width, 0, 0, 256)) {
-            setDirty(map()->width, width, map()->m_isDirty);
+          ImGui::DragInt("##map_width", &m_tempMapWidth, 0, 0, 256);
+          if (ImGui::IsItemDeactivatedAfterEdit()) {
+            resizeMap(m_tempMapWidth, map()->height);
           }
         }
         ImGui::EndGroup();
@@ -695,9 +651,9 @@ void MapEditor::drawMapProperties() {
           ImGui::SetCursorPos(cursorPos);
           ImGui::Text("Height");
           ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - App::DPIHandler::scale_value(15));
-          int height = map()->height;
-          if (ImGui::DragInt("##map_height", &map()->height, 0, 0, 256)) {
-            setDirty(map()->height, height, map()->m_isDirty);
+          ImGui::DragInt("##map_height", &m_tempMapHeight, 0, 0, 256);
+          if (ImGui::IsItemDeactivatedAfterEdit()) {
+            resizeMap(map()->width, m_tempMapHeight);
           }
         }
         ImGui::EndGroup();
@@ -708,8 +664,7 @@ void MapEditor::drawMapProperties() {
           ImGui::SetCursorPos(cursorPos);
           ImGui::Text("Scroll Type");
           ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15));
-          if (ImGui::BeginCombo("##map_scroll_type",
-                                DecodeEnumName(magic_enum::enum_name(map()->scrollType)).c_str())) {
+          if (ImGui::BeginCombo("##map_scroll_type", DecodeEnumName(magic_enum::enum_name(map()->scrollType)).c_str())) {
             for (const auto& e : magic_enum::enum_values<ScrollType>()) {
               if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(e)).c_str(), e == map()->scrollType)) {
                 map()->scrollType = e;
@@ -745,8 +700,7 @@ void MapEditor::drawMapProperties() {
             ImGui::PushID("##map_bgm_button");
             ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 30);
             std::string text = map()->bgm.name.empty() ? "##map_bgm_button_empty" : map()->bgm.name;
-            if (ImGui::Button(text.c_str(),
-                              ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
+            if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
             ImGui::PopID();
           }
           ImGui::PopItemFlag();
@@ -760,8 +714,7 @@ void MapEditor::drawMapProperties() {
           {
             ImGui::PushID("##map_bgs_button");
             std::string text = map()->bgs.name.empty() ? "##map_bgs_button_empty" : map()->bgs.name;
-            if (ImGui::Button(text.c_str(),
-                              ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
+            if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
             ImGui::PopID();
           }
           ImGui::PopItemFlag();
@@ -775,8 +728,7 @@ void MapEditor::drawMapProperties() {
             ImGui::PushID("##map_battleback_button");
             // TODO: Combine battleBack1Name and battleBack2Name
             std::string text = map()->bgs.name.empty() ? "##map_battleback_button_empty" : map()->battleback1Name;
-            if (ImGui::Button(text.c_str(),
-                              ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
+            if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
             ImGui::PopID();
           }
           ImGui::PopItemFlag();
@@ -798,8 +750,7 @@ void MapEditor::drawMapProperties() {
           ImGui::Text("Parallax Background");
           ImGui::PushID("##map_parallax_button");
           std::string text = map()->parallaxName.empty() ? "##map_parallax_button_empty" : map()->parallaxName;
-          if (ImGui::Button(text.c_str(),
-                            ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
+          if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
           ImGui::PopID();
         }
         ImGui::EndGroup();
@@ -843,10 +794,7 @@ void MapEditor::drawMapProperties() {
           ImGui::Text("Note");
 
           strncpy(buf, map()->note.c_str(), 4096);
-          if (ImGui::InputTextMultiline("##map_note", buf, 2048,
-                                        ImVec2(ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(15),
-                                               App::DPIHandler::scale_value(400)),
-                                        flags)) {
+          if (ImGui::InputTextMultiline("##map_note", buf, 2048, ImVec2(ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(15), App::DPIHandler::scale_value(400)), flags)) {
             map()->note = buf;
           }
         }

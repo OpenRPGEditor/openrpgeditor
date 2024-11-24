@@ -11,8 +11,7 @@ class Vector4D {
 public:
   Vector4D() : m_x(0.f), m_y(0.f), m_z(0.f), m_w(0.f) {}
   Vector4D(float xpos, float ypos, float zpos, float wpos) : m_x(xpos), m_y(ypos), m_z(zpos), m_w(wpos) {}
-  explicit Vector4D(const Point& point)
-  : m_x(static_cast<float>(point.x())), m_y(static_cast<float>(point.y())), m_z(0.f), m_w(0.f) {}
+  explicit Vector4D(const Point& point) : m_x(static_cast<float>(point.x())), m_y(static_cast<float>(point.y())), m_z(0.f), m_w(0.f) {}
   explicit Vector4D(const PointF& point) : m_x(point.x()), m_y(point.y()), m_z(0.f), m_w(0.f) {}
 
   explicit Vector4D(const Vector2D& vector);
@@ -115,41 +114,24 @@ private:
   friend Vector4D operator*(const Matrix4x4& matrix, const Vector4D& vector);
 };
 
-inline bool operator==(const Vector4D& v1, const Vector4D& v2) {
-  return v1.m_x == v2.m_x && v1.m_y == v2.m_y && v1.m_z == v2.m_z && v1.m_w == v2.m_w;
-}
+inline bool operator==(const Vector4D& v1, const Vector4D& v2) { return v1.m_x == v2.m_x && v1.m_y == v2.m_y && v1.m_z == v2.m_z && v1.m_w == v2.m_w; }
 
-inline bool operator!=(const Vector4D& v1, const Vector4D& v2) {
-  return v1.m_x != v2.m_x || v1.m_y != v2.m_y || v1.m_z != v2.m_z || v1.m_w != v2.m_w;
-}
+inline bool operator!=(const Vector4D& v1, const Vector4D& v2) { return v1.m_x != v2.m_x || v1.m_y != v2.m_y || v1.m_z != v2.m_z || v1.m_w != v2.m_w; }
 
-inline Vector4D operator+(const Vector4D& v1, const Vector4D& v2) {
-  return {v1.m_x + v2.m_x, v1.m_y + v2.m_y, v1.m_z + v2.m_z, v1.m_w + v2.m_w};
-}
+inline Vector4D operator+(const Vector4D& v1, const Vector4D& v2) { return {v1.m_x + v2.m_x, v1.m_y + v2.m_y, v1.m_z + v2.m_z, v1.m_w + v2.m_w}; }
 
-inline Vector4D operator-(const Vector4D& v1, const Vector4D& v2) {
-  return {v1.m_x - v2.m_x, v1.m_y - v2.m_y, v1.m_z - v2.m_z, v1.m_w - v2.m_w};
-}
+inline Vector4D operator-(const Vector4D& v1, const Vector4D& v2) { return {v1.m_x - v2.m_x, v1.m_y - v2.m_y, v1.m_z - v2.m_z, v1.m_w - v2.m_w}; }
 
-inline Vector4D operator*(float factor, const Vector4D& vector) {
-  return {vector.m_x * factor, vector.m_y * factor, vector.m_z * factor, vector.m_w * factor};
-}
+inline Vector4D operator*(float factor, const Vector4D& vector) { return {vector.m_x * factor, vector.m_y * factor, vector.m_z * factor, vector.m_w * factor}; }
 
-inline Vector4D operator*(const Vector4D& vector, const float factor) {
-  return {vector.m_x * factor, vector.m_y * factor, vector.m_z * factor, vector.m_w * factor};
-}
+inline Vector4D operator*(const Vector4D& vector, const float factor) { return {vector.m_x * factor, vector.m_y * factor, vector.m_z * factor, vector.m_w * factor}; }
 
-inline Vector4D operator*(const Vector4D& v1, const Vector4D& v2) {
-  return {v1.m_x * v2.m_x, v1.m_y * v2.m_y, v1.m_z * v2.m_z, v1.m_w * v2.m_w};
-}
+inline Vector4D operator*(const Vector4D& v1, const Vector4D& v2) { return {v1.m_x * v2.m_x, v1.m_y * v2.m_y, v1.m_z * v2.m_z, v1.m_w * v2.m_w}; }
 
 inline Vector4D operator-(const Vector4D& vector) { return {-vector.m_x, -vector.m_y, -vector.m_z, -vector.m_w}; }
 
-inline Vector4D operator/(const Vector4D& vector, float divisor) {
-  return {vector.m_x / divisor, vector.m_y / divisor, vector.m_z / divisor, vector.m_w / divisor};
-}
+inline Vector4D operator/(const Vector4D& vector, float divisor) { return {vector.m_x / divisor, vector.m_y / divisor, vector.m_z / divisor, vector.m_w / divisor}; }
 
 inline bool fuzzyCompare(const Vector4D& v1, const Vector4D& v2) {
-  return fuzzyCompare(v1.m_x, v2.m_x) && fuzzyCompare(v1.m_y, v2.m_y) && fuzzyCompare(v1.m_z, v2.m_z) &&
-         fuzzyCompare(v1.m_w, v2.m_w);
+  return fuzzyCompare(v1.m_x, v2.m_x) && fuzzyCompare(v1.m_y, v2.m_y) && fuzzyCompare(v1.m_z, v2.m_z) && fuzzyCompare(v1.m_w, v2.m_w);
 }

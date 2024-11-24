@@ -1,30 +1,28 @@
 #pragma once
 
-#include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/DatabaseEditor/DBActorsTab.hpp"
-#include "Core/DatabaseEditor/DBClassesTab.hpp"
-#include "Core/DatabaseEditor/DBSkillsTab.hpp"
-#include "Core/DatabaseEditor/DBItemsTab.hpp"
-#include "Core/DatabaseEditor/DBWeaponsTab.hpp"
-#include "Core/DatabaseEditor/DBArmorsTab.hpp"
-#include "Core/DatabaseEditor/DBEnemiesTab.hpp"
-#include "Core/DatabaseEditor/DBTroopsTab.hpp"
-#include "Core/DatabaseEditor/DBStatesTab.hpp"
 #include "Core/DatabaseEditor/DBAnimationsTab.hpp"
-#include "Core/DatabaseEditor/DBTilesetsTab.hpp"
+#include "Core/DatabaseEditor/DBArmorsTab.hpp"
+#include "Core/DatabaseEditor/DBClassesTab.hpp"
 #include "Core/DatabaseEditor/DBCommonEventsTab.hpp"
+#include "Core/DatabaseEditor/DBEnemiesTab.hpp"
+#include "Core/DatabaseEditor/DBItemsTab.hpp"
+#include "Core/DatabaseEditor/DBSkillsTab.hpp"
+#include "Core/DatabaseEditor/DBStatesTab.hpp"
 #include "Core/DatabaseEditor/DBSystemTab.hpp"
 #include "Core/DatabaseEditor/DBTemplatesTab.hpp"
-#include "DatabaseEditor/DBGameConstantsTab.hpp"
+#include "Core/DatabaseEditor/DBTilesetsTab.hpp"
+#include "Core/DatabaseEditor/DBTroopsTab.hpp"
+#include "Core/DatabaseEditor/DBWeaponsTab.hpp"
+#include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Database/Classes.hpp"
+#include "DatabaseEditor/DBGameConstantsTab.hpp"
 
 struct Project;
 struct DatabaseEditor {
   DatabaseEditor() = delete;
-  explicit DatabaseEditor(Project* parent, Actors& actors, Classes& classes, Skills& skills, Items& items,
-                          Weapons& weapons, Armors& armors, Enemies& enemies, Troops& troops, States& states,
-                          Animations& animations, Tilesets& tilesets, CommonEvents& commonEvents, System& system,
-                          GameConstants& constants, Templates& templates)
+  explicit DatabaseEditor(Project* parent, Actors& actors, Classes& classes, Skills& skills, Items& items, Weapons& weapons, Armors& armors, Enemies& enemies, Troops& troops, States& states,
+                          Animations& animations, Tilesets& tilesets, CommonEvents& commonEvents, System& system, GameConstants& constants, Templates& templates)
   : m_parent(parent)
   , m_actors(actors, this)
   , m_classes(classes, this)
@@ -158,7 +156,6 @@ struct DatabaseEditor {
 
   [[nodiscard]] std::string* weaponType(int id) { return m_system.weaponType(id); }
   [[nodiscard]] const std::string* weaponType(int id) const { return m_system.weaponType(id); }
-
 
   Project* project() { return m_parent; }
   const Project* project() const { return m_parent; }

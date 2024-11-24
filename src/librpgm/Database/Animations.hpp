@@ -5,7 +5,6 @@
 
 class Animations {
 public:
-
   static Animations load(std::string_view filename);
   void serialize(std::string_view filename);
 

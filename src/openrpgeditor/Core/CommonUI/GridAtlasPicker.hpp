@@ -5,5 +5,6 @@
 class GridAtlasPicker {
 public:
   GridAtlasPicker() = delete;
+
 private:
 };

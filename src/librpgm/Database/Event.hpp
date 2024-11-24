@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Database/Globals.hpp"
 #include "Database/EventPage.hpp"
+#include "Database/Globals.hpp"
 #include <string>
 #include <vector>
 
@@ -17,9 +17,7 @@ public:
   int y{};
 
   bool isDirty() const {
-    m_isDirty |= std::any_of(pages.begin(), pages.end(), [](const auto& page) {
-      return page.isDirty();
-    });
+    m_isDirty |= std::any_of(pages.begin(), pages.end(), [](const auto& page) { return page.isDirty(); });
 
     return m_isDirty;
   }

@@ -1,6 +1,6 @@
 #include "OREMath/Size.hpp"
-#include <cinttypes>
 #include <algorithm>
+#include <cinttypes>
 
 void Size::transpose() { std::swap(mWidth, mHeight); }
 
@@ -13,8 +13,7 @@ void Size::scale(const Size& size, const AspectRatioMode mode) {
 
   const uint64_t rw = size.mHeight * mWidth / mHeight;
 
-  if ((mode == AspectRatioMode::Keep && rw <= size.mWidth) ||
-      (mode == AspectRatioMode::KeepByExpanding && rw >= size.mWidth)) {
+  if ((mode == AspectRatioMode::Keep && rw <= size.mWidth) || (mode == AspectRatioMode::KeepByExpanding && rw >= size.mWidth)) {
     mWidth = rw;
     mHeight = size.mHeight;
   } else {
@@ -34,8 +33,7 @@ void SizeF::scale(const SizeF& size, const AspectRatioMode mode) {
 
   const double rw = size.mHeight * mWidth / mHeight;
 
-  if ((mode == AspectRatioMode::Keep && rw <= size.mWidth) ||
-      (mode == AspectRatioMode::KeepByExpanding && rw >= size.mWidth)) {
+  if ((mode == AspectRatioMode::Keep && rw <= size.mWidth) || (mode == AspectRatioMode::KeepByExpanding && rw >= size.mWidth)) {
     mWidth = rw;
     mHeight = size.mHeight;
   } else {

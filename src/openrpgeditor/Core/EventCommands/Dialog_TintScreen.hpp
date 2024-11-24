@@ -5,9 +5,7 @@
 
 struct Dialog_TintScreen : IEventDialogController {
   Dialog_TintScreen() = delete;
-  explicit Dialog_TintScreen(const std::string& name,
-                             const std::shared_ptr<TintScreenCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_TintScreen(const std::string& name, const std::shared_ptr<TintScreenCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new TintScreenCommand());
     }
@@ -41,10 +39,10 @@ private:
     float rf = r / 255.0f;
     float gf = g / 255.0f;
     float bf = b / 255.0f;
-    //float cmax = std::max(rf, std::max(gf, bf));
+    // float cmax = std::max(rf, std::max(gf, bf));
     float cmax = 0.f;
     float cmin = 0.f;
-    //float cmin = std::min(rf, std::min(gf, bf));
+    // float cmin = std::min(rf, std::min(gf, bf));
     float delta = cmax - cmin;
 
     float h = 0.0f;

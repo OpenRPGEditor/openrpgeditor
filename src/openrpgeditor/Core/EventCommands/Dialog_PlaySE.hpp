@@ -10,9 +10,7 @@
 namespace fs = std::filesystem;
 struct Dialog_PlaySE : IEventDialogController {
   Dialog_PlaySE() = delete;
-  explicit Dialog_PlaySE(const std::string& name,
-                         const std::shared_ptr<PlaySECommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_PlaySE(const std::string& name, const std::shared_ptr<PlaySECommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new PlaySECommand());
     }
@@ -22,9 +20,7 @@ struct Dialog_PlaySE : IEventDialogController {
       for (const auto& file : files) {
         m_audios.push_back(file);
       }
-    } catch (const std::filesystem::filesystem_error& e) {
-      std::cerr << "Error accessing directory: " << e.what() << std::endl;
-    }
+    } catch (const std::filesystem::filesystem_error& e) { std::cerr << "Error accessing directory: " << e.what() << std::endl; }
   }
   std::tuple<bool, bool> draw() override;
   [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return command; }
@@ -91,8 +87,7 @@ private:
     } else { // To the left (-)
       sound.setPosition(sf::Vector3f(static_cast<float>(value) / 100.f, 0, 0));
     }
-    APP_INFO("Listener: " + std::to_string(sf::Listener::getPosition().x) + " " +
-             std::to_string(sf::Listener::getPosition().y));
+    APP_INFO("Listener: " + std::to_string(sf::Listener::getPosition().x) + " " + std::to_string(sf::Listener::getPosition().y));
     APP_INFO("Sound: " + std::to_string(sound.getPosition().x) + " " + std::to_string(sound.getPosition().y));
   }
   void setPitch(int value) { sound.setPitch(value / 100.f); }

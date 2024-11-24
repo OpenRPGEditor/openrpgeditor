@@ -2,8 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangePartyMemberCommand::ChangePartyMemberCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ChangePartyMemberCommand::ChangePartyMemberCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(member);
   parameters.at(1).get_to(operation);
   parameters.at(2).get_to(initialize);
@@ -21,7 +20,6 @@ std::string ChangePartyMemberCommand::stringRep(const Database& db) const {
   if (initialize) {
     suffix = ColorFormatter::getColor(FormatColor::Gray) + " (Initialize)" + ColorFormatter::popColor();
   }
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Party Member" +
-         colon.data() + (operation == PartyMemberOperation::_daa__del_Remove ? "Remove " : "Add ") + actName +
-         ColorFormatter::popColor() + suffix;
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Party Member" + colon.data() +
+         (operation == PartyMemberOperation::_daa__del_Remove ? "Remove " : "Add ") + actName + ColorFormatter::popColor() + suffix;
 }

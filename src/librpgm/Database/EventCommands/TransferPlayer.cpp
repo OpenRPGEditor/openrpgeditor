@@ -2,8 +2,7 @@
 
 #include "Database/Database.hpp"
 
-TransferPlayerCommand::TransferPlayerCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+TransferPlayerCommand::TransferPlayerCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(mode);
   parameters.at(1).get_to(mapId);
   parameters.at(2).get_to(x);
@@ -45,10 +44,8 @@ std::string TransferPlayerCommand::stringRep(const Database& db) const {
     auto varMap = db.variableNameOrId(mapId);
     auto varX = db.variableNameOrId(x);
     auto varY = db.variableNameOrId(y);
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Transfer Player" +
-           colon.data() + std::format("{{{}}} ({{{}}},{{{}}})", varMap, varX, varY) + suffix;
+    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Transfer Player" + colon.data() + std::format("{{{}}} ({{{}}},{{{}}})", varMap, varX, varY) + suffix;
   }
-  const auto mapName =  db.mapNameOrId(mapId);
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Transfer Player" + colon.data() +
-         mapName + std::format(" ({},{})", x, y) + ColorFormatter::popColor() + suffix;
+  const auto mapName = db.mapNameOrId(mapId);
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Transfer Player" + colon.data() + mapName + std::format(" ({},{})", x, y) + ColorFormatter::popColor() + suffix;
 }

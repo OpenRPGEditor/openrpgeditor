@@ -1,7 +1,7 @@
 #include "Core/DatabaseEditor.hpp"
 
-#include "imgui.h"
 #include "ImGuiExt/ImGuiUtils.hpp"
+#include "imgui.h"
 
 void DatabaseEditor::draw() {
   if (!m_isOpen) {
@@ -11,8 +11,7 @@ void DatabaseEditor::draw() {
   ImGui::PushID("##orpg_database_editor");
   if (ImGui::Begin("Database", &m_isOpen)) {
     ImGui::SetNextItemWidth(100.f);
-    ImGui::BeginChild("##orpg_database_editor_tab_buttons", ImVec2{App::DPIHandler::scale_value(130), 0}, 0,
-                      ImGuiWindowFlags_NoBackground);
+    ImGui::BeginChild("##orpg_database_editor_tab_buttons", ImVec2{App::DPIHandler::scale_value(130), 0}, 0, ImGuiWindowFlags_NoBackground);
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 100);
     if (ImGui::SelectableWithBorder("Actors", m_currentTab == &m_actors)) {
       m_currentTab = &m_actors;

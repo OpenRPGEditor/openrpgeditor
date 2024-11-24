@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "Database/Armors.hpp"
 #include "Database/Weapons.hpp"
@@ -12,8 +12,7 @@
  */
 template <typename T>
 struct ObjectPicker {
-  ObjectPicker(const std::string_view objectType, std::vector<T>& list, const int initialSelection)
-  : m_objectType(objectType), m_list(&list), m_selection(initialSelection) {}
+  ObjectPicker(const std::string_view objectType, std::vector<T>& list, const int initialSelection) : m_objectType(objectType), m_list(&list), m_selection(initialSelection) {}
 
   std::tuple<bool, bool> draw();
 

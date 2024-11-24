@@ -1,8 +1,8 @@
 #pragma once
 
+#include <curl/curl.h>
 #include <string>
 #include <vector>
-#include <curl/curl.h>
 class DownloadManager {
 public:
   struct DownloadEntry {
@@ -13,7 +13,6 @@ public:
   };
 
   DownloadManager();
-
 
 private:
   CURLM* m_multiHandle;

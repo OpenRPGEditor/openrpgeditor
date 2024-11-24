@@ -1,14 +1,12 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/NameInput.hpp"
 
 struct Dialog_NameInputProcessing : IEventDialogController {
   Dialog_NameInputProcessing() = delete;
-  explicit Dialog_NameInputProcessing(const std::string& name,
-                                      const std::shared_ptr<NameInputCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_NameInputProcessing(const std::string& name, const std::shared_ptr<NameInputCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new NameInputCommand());
     }
@@ -20,7 +18,6 @@ struct Dialog_NameInputProcessing : IEventDialogController {
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
 
 private:
-
   int m_actor;
   int m_maxChar;
 

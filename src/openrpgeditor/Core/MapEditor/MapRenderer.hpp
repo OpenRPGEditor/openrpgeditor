@@ -1,13 +1,13 @@
 #pragma once
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 #include "Core/Graphics/Texture.hpp"
 
 #include "Database/Map.hpp"
-#include "Database/Tilesets.hpp"
 #include "Database/TileHelper.hpp"
+#include "Database/Tilesets.hpp"
 
 class Map;
 class Tileset;
@@ -35,8 +35,7 @@ public:
 
   struct MapLayer {
     std::vector<TileLayer> tileLayers;
-    void addRect(int setId, int tileId, float u, float v, float x, float y, int tileWidth, int tileHeight,
-                 float animX = 0.f, float animY = 0.f) {
+    void addRect(int setId, int tileId, float u, float v, float x, float y, int tileWidth, int tileHeight, float animX = 0.f, float animY = 0.f) {
       tileLayers[setId].rects.push_back({tileId, u, v, x, y, tileWidth, tileHeight, setId, animX, animY});
     }
   };

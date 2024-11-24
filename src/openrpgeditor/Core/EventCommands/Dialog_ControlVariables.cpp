@@ -1,10 +1,10 @@
 
 #include "Core/EventCommands/Dialog_ControlVariables.hpp"
-#include "Database/Database.hpp"
-#include "Core/EventCommands/Dialog_GameData.hpp"
-#include "imgui.h"
 #include "Core/DPIHandler.hpp"
+#include "Core/EventCommands/Dialog_GameData.hpp"
 #include "Core/Log.hpp"
+#include "Database/Database.hpp"
+#include "imgui.h"
 
 std::tuple<bool, bool> Dialog_ControlVariables::draw() {
 
@@ -15,8 +15,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{450, 440} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     if (picker) {
       auto [closed, confirmed] = picker->draw();
       if (confirmed) {
@@ -48,15 +47,11 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     ImGui::SameLine();
     ImGui::BeginGroup();
     {
-      std::string text = m_operation_var != 0
-                             ? "##commonevent_switch_empty"
-                             : (m_variable_var == 0 ? "" : std::format("{:04} ", m_variable_var) + Database::instance()->variableName(m_variable_var));
+      std::string text = m_operation_var != 0 ? "##commonevent_switch_empty" : (m_variable_var == 0 ? "" : std::format("{:04} ", m_variable_var) + Database::instance()->variableName(m_variable_var));
       ImGui::PushID("##controlswitch_id");
-      //ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 75) - (16 * App::DPIHandler::get_ui_scale()));
+      // ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 75) - (16 * App::DPIHandler::get_ui_scale()));
       ImGui::BeginDisabled(m_operation_var != 0);
-      if (ImGui::Button(
-              text.c_str(),
-              ImVec2{(ImGui::GetWindowContentRegionMax().x - 100) - 15 * App::DPIHandler::get_ui_scale(), 0})) {
+      if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetWindowContentRegionMax().x - 100) - 15 * App::DPIHandler::get_ui_scale(), 0})) {
         singleRequest = true;
         picker.emplace("Variables", Database::instance()->system.variables);
       }
@@ -114,8 +109,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
 
       // Variable
       ImGui::BeginDisabled(m_operand != 1);
-      std::string text = m_operand != 1 ? "##commonevent_switch_empty"
-                                        : std::format("{:04} ", m_variable) + Database::instance()->variableName(m_variable);
+      std::string text = m_operand != 1 ? "##commonevent_switch_empty" : std::format("{:04} ", m_variable) + Database::instance()->variableName(m_variable);
       ImGui::PushID("##controlvariable_id2");
       if (ImGui::Button(text.c_str(), ImVec2{App::DPIHandler::scale_value(300), 0})) {
         singleRequest = false;
@@ -182,9 +176,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
       } else if (command->operand == VariableControlOperand::Game_Data) {
         command->gameData.type = static_cast<GameDataType>(m_gameData_type);
         command->gameData.rawSource = m_gameData_rawSource;
-        if (command->gameData.type == GameDataType::Actor
-            || command->gameData.type == GameDataType::Enemy
-            || command->gameData.type == GameDataType::Character) {
+        if (command->gameData.type == GameDataType::Actor || command->gameData.type == GameDataType::Enemy || command->gameData.type == GameDataType::Character) {
           command->gameData.value = m_gameData_value;
         }
       }

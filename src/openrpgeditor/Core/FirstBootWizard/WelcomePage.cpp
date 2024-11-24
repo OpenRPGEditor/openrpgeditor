@@ -31,11 +31,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.)";
   const auto textSize = ImGui::CalcTextSize("ABCDEFGHIJK");
-  ImGui::InputTextMultiline(
-      "##ore_license_text", const_cast<char*>(license), sizeof(license),
-      {ImGui::GetContentRegionMax().x - ImGui::GetStyle().FramePadding.x * 2,
-       ImGui::GetContentRegionMax().y - (ImGui::GetCursorPosY() + textSize.y + (ImGui::GetStyle().FramePadding.x * 2) +
-                                         ImGui::GetStyle().ItemSpacing.y)},
-      ImGuiInputTextFlags_ReadOnly);
+  ImGui::InputTextMultiline("##ore_license_text", const_cast<char*>(license), sizeof(license),
+                            {ImGui::GetContentRegionMax().x - ImGui::GetStyle().FramePadding.x * 2,
+                             ImGui::GetContentRegionMax().y - (ImGui::GetCursorPosY() + textSize.y + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().ItemSpacing.y)},
+                            ImGuiInputTextFlags_ReadOnly);
   ImGui::EndGroup();
 }

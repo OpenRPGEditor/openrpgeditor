@@ -1,8 +1,7 @@
 #include "Database/EventCommands/ChangeProfile.hpp"
 #include "Database/Database.hpp"
 
-ChangeProfileCommand::ChangeProfileCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ChangeProfileCommand::ChangeProfileCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(actor);
   parameters.at(1).get_to(profile);
 }
@@ -17,6 +16,5 @@ std::string ChangeProfileCommand::stringRep(const Database& db) const {
   const auto actName = act && !act->name.empty() ? act->name : std::format("#{:04}", actor);
   auto tmpProfile = profile;
   ReplaceStr(tmpProfile, "\n", " ");
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Profile" + colon.data() +
-         actName + ", " + tmpProfile + ColorFormatter::popColor();
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Profile" + colon.data() + actName + ", " + tmpProfile + ColorFormatter::popColor();
 }

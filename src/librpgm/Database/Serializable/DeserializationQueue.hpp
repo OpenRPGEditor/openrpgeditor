@@ -3,6 +3,7 @@
 
 class DeserializationQueue : public ThreadedFileQueue {
   DeserializationQueue() = default;
+
 public:
   DeserializationQueue(const DeserializationQueue&) = delete;
   DeserializationQueue(DeserializationQueue&&) = delete;

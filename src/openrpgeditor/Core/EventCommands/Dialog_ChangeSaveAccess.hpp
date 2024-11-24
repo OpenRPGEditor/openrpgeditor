@@ -4,9 +4,7 @@
 
 struct Dialog_ChangeSaveAccess : IEventDialogController {
   Dialog_ChangeSaveAccess() = delete;
-  explicit Dialog_ChangeSaveAccess(const std::string& name,
-                                   const std::shared_ptr<ChangeSaveAccessCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeSaveAccess(const std::string& name, const std::shared_ptr<ChangeSaveAccessCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeSaveAccessCommand());
     }

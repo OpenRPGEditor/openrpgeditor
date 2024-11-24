@@ -1,9 +1,9 @@
 
 #include "Core/EventCommands/Dialog_ControlSwitches.hpp"
-#include "imgui.h"
-#include "Database/Database.hpp"
 #include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"
+#include "Database/Database.hpp"
+#include "imgui.h"
 
 std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
 
@@ -27,10 +27,7 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     ImGui::RadioButton("Single", &m_operation, 0); // Specific Switch
     ImGui::SameLine();
 
-    std::string text =
-        m_operation != 0
-            ? "##commonevent_switch_empty"
-            : (m_start == 0 ? "" : std::format("{:04} ", m_start) + Database::instance()->switchName(m_start));
+    std::string text = m_operation != 0 ? "##commonevent_switch_empty" : (m_start == 0 ? "" : std::format("{:04} ", m_start) + Database::instance()->switchName(m_start));
     ImGui::PushID("##controlswitch_id");
     ImGui::BeginDisabled(m_operation != 0);
     if (ImGui::Button(text.c_str(), ImVec2{(App::DPIHandler::scale_value(160)), 0})) {

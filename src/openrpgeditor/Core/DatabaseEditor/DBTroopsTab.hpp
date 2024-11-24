@@ -2,7 +2,6 @@
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Database/Troops.hpp"
 
-
 struct Troops;
 struct DBTroopsTab : IDBEditorTab {
   DBTroopsTab() = delete;

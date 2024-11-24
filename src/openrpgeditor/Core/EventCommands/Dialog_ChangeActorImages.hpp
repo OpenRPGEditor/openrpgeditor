@@ -1,19 +1,17 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
-#include "Core/CommonUI/TextEditor.hpp"
-#include "Database/EventCommands/ChangeActorImage.hpp"
-#include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/CommonUI/CharacterPicker.hpp"
-#include "Core/Graphics/FaceSheet.hpp"
-#include "Database/Actors.hpp"
-#include "Core/Graphics/SideViewBattlerSheet.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
+#include "Core/CommonUI/TextEditor.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
+#include "Core/Graphics/CharacterSheet.hpp"
+#include "Core/Graphics/FaceSheet.hpp"
+#include "Core/Graphics/SideViewBattlerSheet.hpp"
+#include "Database/Actors.hpp"
+#include "Database/EventCommands/ChangeActorImage.hpp"
 
 struct Dialog_ChangeActorImages : IEventDialogController {
   Dialog_ChangeActorImages() = delete;
-  explicit Dialog_ChangeActorImages(const std::string& name,
-                                    const std::shared_ptr<ChangeActorImageCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeActorImages(const std::string& name, const std::shared_ptr<ChangeActorImageCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeActorImageCommand());
     }

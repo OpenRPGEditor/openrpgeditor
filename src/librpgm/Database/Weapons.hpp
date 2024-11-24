@@ -75,6 +75,7 @@ public:
       }
     }
   }
+
 private:
   std::vector<Weapon> m_weapons;
 };

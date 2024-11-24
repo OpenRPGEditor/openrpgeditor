@@ -1,8 +1,7 @@
 #include "Database/EventCommands/ChangeSkill.hpp"
 #include "Database/Database.hpp"
 
-ChangeSkillCommand::ChangeSkillCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ChangeSkillCommand::ChangeSkillCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(comparison);
   parameters.at(1).get_to(value);
   parameters.at(2).get_to(skillOp);
@@ -32,6 +31,6 @@ std::string ChangeSkillCommand::stringRep(const Database& db) const {
 
   const auto sk = db.skills.skill(skill);
   std::string skillName = sk && !sk->name.empty() ? sk->name : std::format("{{#{:04}}}", skill);
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Skill" + colon.data() +
-         actorName + ", " + DecodeEnumName(skillOp) + " " + skillName + ColorFormatter::popColor();
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Skill" + colon.data() + actorName + ", " + DecodeEnumName(skillOp) + " " + skillName +
+         ColorFormatter::popColor();
 }

@@ -1,14 +1,12 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
-#include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
+#include "Core/CommonUI/VariableSwitchPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeWeapons.hpp"
 
 struct Dialog_ChangeWeapons : IEventDialogController {
   Dialog_ChangeWeapons() = delete;
-  explicit Dialog_ChangeWeapons(const std::string& name,
-                                const std::shared_ptr<ChangeWeaponsCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeWeapons(const std::string& name, const std::shared_ptr<ChangeWeaponsCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeWeaponsCommand());
     }
@@ -28,8 +26,6 @@ struct Dialog_ChangeWeapons : IEventDialogController {
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
 
 private:
-
-
   int m_item;
   int m_operation;
   int m_operandSource;

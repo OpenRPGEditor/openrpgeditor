@@ -68,9 +68,7 @@ inline Point operator*(const float lhs, const Point& rhs) { return Point{oRound(
 
 inline Point operator-(const Point& lhs) { return Point{-lhs.mX, -lhs.mY}; }
 
-inline Point operator/(const Point& lhs, const float rhs) {
-  return Point{(oRound(lhs.mX / rhs)), (oRound(lhs.mY / rhs))};
-}
+inline Point operator/(const Point& lhs, const float rhs) { return Point{(oRound(lhs.mX / rhs)), (oRound(lhs.mY / rhs))}; }
 
 class PointF {
 public:
@@ -128,12 +126,8 @@ private:
   float mY{0.f};
 };
 
-inline bool operator==(const PointF& lhs, const PointF& rhs) {
-  return fuzzyIsNull(lhs.mX - rhs.mX) && fuzzyIsNull(lhs.mY - rhs.mY);
-}
-inline bool operator!=(const PointF& lhs, const PointF& rhs) {
-  return !fuzzyIsNull(lhs.mX - rhs.mX) || !fuzzyIsNull(lhs.mY - rhs.mY);
-}
+inline bool operator==(const PointF& lhs, const PointF& rhs) { return fuzzyIsNull(lhs.mX - rhs.mX) && fuzzyIsNull(lhs.mY - rhs.mY); }
+inline bool operator!=(const PointF& lhs, const PointF& rhs) { return !fuzzyIsNull(lhs.mX - rhs.mX) || !fuzzyIsNull(lhs.mY - rhs.mY); }
 
 inline PointF operator+(const PointF& lhs, const PointF& rhs) { return PointF{lhs.mX + rhs.mX, lhs.mY + rhs.mY}; }
 inline PointF operator-(const PointF& lhs, const PointF& rhs) { return PointF{lhs.mX - rhs.mX, lhs.mY - rhs.mY}; }

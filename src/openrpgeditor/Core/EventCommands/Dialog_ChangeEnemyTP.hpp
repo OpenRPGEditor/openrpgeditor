@@ -1,15 +1,13 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
-#include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
-#include "Database/Troops.hpp"
+#include "Core/CommonUI/VariableSwitchPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeEnemyTP.hpp"
+#include "Database/Troops.hpp"
 
 struct Dialog_ChangeEnemyTP : IEventDialogController {
   Dialog_ChangeEnemyTP() = delete;
-  explicit Dialog_ChangeEnemyTP(const std::string& name,
-                                const std::shared_ptr<ChangeEnemyTPCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeEnemyTP(const std::string& name, const std::shared_ptr<ChangeEnemyTPCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeEnemyTPCommand());
     }
@@ -28,8 +26,6 @@ struct Dialog_ChangeEnemyTP : IEventDialogController {
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
 
 private:
-
-
   int m_enemy;
   int m_enemyOp;
   int m_quantitySource;

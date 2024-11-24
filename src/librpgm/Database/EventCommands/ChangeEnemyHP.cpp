@@ -1,8 +1,7 @@
 #include "Database/EventCommands/ChangeEnemyHP.hpp"
 #include "Database/Database.hpp"
 
-ChangeEnemyHPCommand::ChangeEnemyHPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ChangeEnemyHPCommand::ChangeEnemyHPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(enemy);
   parameters.at(1).get_to(enemyOp);
   parameters.at(2).get_to(quantitySource);
@@ -35,9 +34,8 @@ std::string ChangeEnemyHPCommand::stringRep(const Database& db) const {
 
   std::string suffix;
   if (allowKnockOut) {
-    suffix =
-        ColorFormatter::getColor(FormatColor::Gray) + " " + db.parentheses("Allow Knockout") + ColorFormatter::popColor();
+    suffix = ColorFormatter::getColor(FormatColor::Gray) + " " + db.parentheses("Allow Knockout") + ColorFormatter::popColor();
   }
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Enemy HP" + colon.data() +
-         enemyStr + DecodeEnumName(enemyOp) + " " + quantityStr + ColorFormatter::popColor() + suffix;
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Enemy HP" + colon.data() + enemyStr + DecodeEnumName(enemyOp) + " " + quantityStr +
+         ColorFormatter::popColor() + suffix;
 }

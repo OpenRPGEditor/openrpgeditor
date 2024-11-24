@@ -1,14 +1,12 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/FadeoutBGS.hpp"
 
 struct Dialog_FadeoutBGS : IEventDialogController {
   Dialog_FadeoutBGS() = delete;
-  explicit Dialog_FadeoutBGS(const std::string& name,
-                             const std::shared_ptr<FadeoutBGS>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_FadeoutBGS(const std::string& name, const std::shared_ptr<FadeoutBGS>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new FadeoutBGS());
     }

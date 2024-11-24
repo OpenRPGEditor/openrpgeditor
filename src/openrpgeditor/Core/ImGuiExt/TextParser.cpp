@@ -1,6 +1,6 @@
 #include "Core/ImGuiExt/TextParser.hpp"
-#include <stack>
 #include <regex>
+#include <stack>
 #include <string>
 
 namespace ImGui {

@@ -1,15 +1,13 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/Actors.hpp"
 #include "Database/Animation.hpp"
 #include "Database/EventCommands/ShowBattleAnimation.hpp"
 
 struct Dialog_ShowBattleAnimation : IEventDialogController {
   Dialog_ShowBattleAnimation() = delete;
-  explicit Dialog_ShowBattleAnimation(const std::string& name,
-                                      const std::shared_ptr<ShowBattleAnimationCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ShowBattleAnimation(const std::string& name, const std::shared_ptr<ShowBattleAnimationCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ShowBattleAnimationCommand());
     }

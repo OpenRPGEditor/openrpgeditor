@@ -14,7 +14,7 @@ Texture::Texture(std::string_view filename) {
   }
 }
 
- Texture::Texture(const char* data, int length, int width, int height) {
+Texture::Texture(const char* data, int length, int width, int height) {
   SDL_Texture* tmp = nullptr;
   if (LoadTextureFromMemory(data, length, &tmp, &m_width, &m_height, App::APP->getWindow()->getNativeRenderer())) {
     m_texture = tmp;

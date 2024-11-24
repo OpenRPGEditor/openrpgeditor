@@ -2,8 +2,7 @@
 
 #include "Database/Database.hpp"
 
-ChangeLevelCommand::ChangeLevelCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ChangeLevelCommand::ChangeLevelCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(comparison);
   parameters.at(1).get_to(value);
   parameters.at(2).get_to(quantityOp);
@@ -45,6 +44,6 @@ std::string ChangeLevelCommand::stringRep(const Database& db) const {
     suffix = ColorFormatter::getColor(FormatColor::Gray) + " (Show Level Up)" + ColorFormatter::popColor();
   }
 
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Level" + colon.data() +
-         actName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr + ColorFormatter::popColor() + suffix;
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Level" + colon.data() + actName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr +
+         ColorFormatter::popColor() + suffix;
 }

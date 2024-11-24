@@ -35,11 +35,7 @@ void from_json(const nlohmann::ordered_json& from, EventCondition& cond) {
 
 void to_json(nlohmann::ordered_json& to, const EventImage& image) {
   to = {
-      {"characterIndex", image.characterIndex},
-      {"characterName", image.characterName},
-      {"direction", image.direction},
-      {"pattern", image.pattern},
-      {"tileId", image.tileId},
+      {"characterIndex", image.characterIndex}, {"characterName", image.characterName}, {"direction", image.direction}, {"pattern", image.pattern}, {"tileId", image.tileId},
   };
 }
 void from_json(const nlohmann::ordered_json& from, EventImage& image) {

@@ -16,8 +16,7 @@ struct CharacterSheet {
   [[nodiscard]] bool isSingleCharacter() const { return m_isSingleCharacter; }
   [[nodiscard]] bool isNoShift() const { return m_noShift6_noHalfTransInBush; }
   [[nodiscard]] bool isNoHalfTransparentInBush() const { return m_noShift6_noHalfTransInBush; }
-  [[nodiscard]] SimpleRect getRectForCharacter(int character, int pattern = 0,
-                                                  Direction direction = Direction::Down) const;
+  [[nodiscard]] SimpleRect getRectForCharacter(int character, int pattern = 0, Direction direction = Direction::Down) const;
 
   explicit operator bool() const { return m_sheetTexture.operator bool(); }
 
@@ -28,9 +27,7 @@ struct CharacterSheet {
 
   const Texture& texture() const { return m_sheetTexture; }
 
-  int numCharacters() const {
-    return (m_sheetTexture.width() / characterWidth()) + (m_sheetTexture.height() / characterHeight());
-  }
+  int numCharacters() const { return (m_sheetTexture.width() / characterWidth()) + (m_sheetTexture.height() / characterHeight()); }
 
 private:
   bool m_isSingleCharacter = false;

@@ -1,14 +1,12 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
-#include "Database/EventCommands/TransferPlayer.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/SetVehicleLocation.hpp"
+#include "Database/EventCommands/TransferPlayer.hpp"
 
 struct Dialog_SetVehicleLocation : IEventDialogController {
   Dialog_SetVehicleLocation() = delete;
-  explicit Dialog_SetVehicleLocation(const std::string& name,
-                                     const std::shared_ptr<SetVehicleLocationCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_SetVehicleLocation(const std::string& name, const std::shared_ptr<SetVehicleLocationCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new SetVehicleLocationCommand());
     }
@@ -18,8 +16,7 @@ struct Dialog_SetVehicleLocation : IEventDialogController {
       m_mapId_var = command->mapId;
       m_x_var = command->x;
       m_y_var = command->y;
-    }
-    else {
+    } else {
       m_mapId = command->mapId;
       m_x = command->x;
       m_y = command->y;

@@ -51,8 +51,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ret.emplace_back(new SelectItemCommand(indent, parameters));
       break;
     case EventCode::Show_Scrolling_Text: {
-      auto text =
-          dynamic_cast<ShowScrollTextCommand*>(ret.emplace_back(new ShowScrollTextCommand(indent, parameters)).get());
+      auto text = dynamic_cast<ShowScrollTextCommand*>(ret.emplace_back(new ShowScrollTextCommand(indent, parameters)).get());
       while (nextEventCommand() == EventCode::Next_Scrolling_Text) {
         ++index;
         auto nextIndent = currentCommand().value("indent", std::optional<int>{});
@@ -165,8 +164,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ret.emplace_back(new ScrollMapCommand(indent, parameters));
       break;
     case EventCode::Set_Movement_Route: {
-      auto route = dynamic_cast<SetMovementRouteCommand*>(
-          ret.emplace_back(new SetMovementRouteCommand(indent, parameters)).get());
+      auto route = dynamic_cast<SetMovementRouteCommand*>(ret.emplace_back(new SetMovementRouteCommand(indent, parameters)).get());
       while (nextEventCommand() == EventCode::Movement_Route_Step) {
         ++index;
         auto nextIndent = currentCommand().value("indent", std::optional<int>{});
@@ -293,8 +291,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ret.emplace_back(new EndBattleProcessingCommand(indent, parameters));
       break;
     case EventCode::Shop_Processing: {
-      auto* shop =
-          dynamic_cast<ShopProcessingCommand*>(ret.emplace_back(new ShopProcessingCommand(indent, parameters)).get());
+      auto* shop = dynamic_cast<ShopProcessingCommand*>(ret.emplace_back(new ShopProcessingCommand(indent, parameters)).get());
       while (nextEventCommand() == EventCode::Shop_Processing_Good) {
         ++index;
         auto nextIndent = currentCommand().value("indent", std::optional<int>{});
@@ -550,13 +547,11 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     default:
-      UnhandledEventCommand* end =
-          dynamic_cast<UnhandledEventCommand*>(ret.emplace_back(new UnhandledEventCommand()).get());
+      UnhandledEventCommand* end = dynamic_cast<UnhandledEventCommand*>(ret.emplace_back(new UnhandledEventCommand()).get());
       end->indent = parser[index].value("indent", std::optional<int>{});
       end->m_code = code;
       end->data = parser[index];
-      std::cout << "Unhandled command: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")"
-                << std::endl;
+      std::cout << "Unhandled command: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")" << std::endl;
       break;
     }
     ++index;
@@ -564,8 +559,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
   return ret;
 }
 
-void CommandParser::serialize(nlohmann::ordered_json& data, const std::vector<std::shared_ptr<IEventCommand>>& list,
-                              bool movementRoute) {
+void CommandParser::serialize(nlohmann::ordered_json& data, const std::vector<std::shared_ptr<IEventCommand>>& list, bool movementRoute) {
   for (const auto& cmd : list) {
     if (!cmd) {
       continue;
@@ -573,12 +567,9 @@ void CommandParser::serialize(nlohmann::ordered_json& data, const std::vector<st
     const auto code = cmd->code();
     bool doParameters = true;
     if ((code >= EventCode::Move_Down && code <= EventCode::Script_del_Movement) || movementRoute) {
-      doParameters = code == EventCode::Jump || code == EventCode::Change_Blend_Mode ||
-                     code == EventCode::Change_Image || code == EventCode::Change_Opacity ||
-                     code == EventCode::Frequency || code == EventCode::Speed ||
-                     code == EventCode::Play_SE_del_Movement || code == EventCode::Wait_del_Movement ||
-                     code == EventCode::Script_del_Movement || code == EventCode::Switch_ON ||
-                     code == EventCode::Switch_OFF || code == EventCode::Event_Dummy;
+      doParameters = code == EventCode::Jump || code == EventCode::Change_Blend_Mode || code == EventCode::Change_Image || code == EventCode::Change_Opacity || code == EventCode::Frequency ||
+                     code == EventCode::Speed || code == EventCode::Play_SE_del_Movement || code == EventCode::Wait_del_Movement || code == EventCode::Script_del_Movement ||
+                     code == EventCode::Switch_ON || code == EventCode::Switch_OFF || code == EventCode::Event_Dummy;
     }
     cmd->serialize(data.emplace_back(), movementRoute ? code != EventCode::Event_Dummy : true, doParameters);
 

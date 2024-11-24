@@ -5,8 +5,8 @@
 #include <iostream>
 
 #if defined(_WIN32) && defined(DEBUG)
-#include <io.h>
 #include <fcntl.h>
+#include <io.h>
 #include <windows.h>
 #endif
 

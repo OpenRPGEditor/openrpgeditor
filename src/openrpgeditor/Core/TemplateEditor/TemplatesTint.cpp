@@ -1,7 +1,7 @@
 #include "Core/TemplateEditor/TemplatesTint.hpp"
+#include "Core/Application.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Database/Templates.hpp"
-#include "Core/Application.hpp"
 
 #include "imgui.h"
 
@@ -65,21 +65,19 @@ void TemplatesTint::draw() {
           gray = 1;
         if (gray > 255)
           gray = 255;
-        //std::array<float, 3> hsv = rgbToHsv(r, g, b);
-        //hsv[1] = gray / 100.f;
-        //std::array<int, 3> rgb = hsvToRgb(hsv[0], hsv[1], hsv[2]);
-        //r = rgb[0];
-        //g = rgb[1];
-        //b = rgb[2];
+        // std::array<float, 3> hsv = rgbToHsv(r, g, b);
+        // hsv[1] = gray / 100.f;
+        // std::array<int, 3> rgb = hsvToRgb(hsv[0], hsv[1], hsv[2]);
+        // r = rgb[0];
+        // g = rgb[1];
+        // b = rgb[2];
       }
     }
     ImGui::EndGroup();
     ImGui::SameLine();
 
-    ImGui::ColorButton("##tintscreen_square",
-                       ImVec4{static_cast<float>(r * (1.0f / 255.0f)), static_cast<float>(g * (1.0f / 255.0f)),
-                              static_cast<float>(b * (1.0f / 255.0f)), 1},
-                       0, ImVec2{100, 100});
+    ImGui::ColorButton("##tintscreen_square", ImVec4{static_cast<float>(r * (1.0f / 255.0f)), static_cast<float>(g * (1.0f / 255.0f)), static_cast<float>(b * (1.0f / 255.0f)), 1}, 0,
+                       ImVec2{100, 100});
   }
   ImGui::EndChild();
 };

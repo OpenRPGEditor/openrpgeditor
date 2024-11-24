@@ -28,7 +28,7 @@ struct InstrumentationSession {
 };
 
 class Instrumentor {
- public:
+public:
   Instrumentor(const Instrumentor&) = delete;
   Instrumentor(Instrumentor&&) = delete;
   Instrumentor& operator=(Instrumentor other) = delete;
@@ -42,9 +42,7 @@ class Instrumentor {
       // Subsequent profiling output meant for the original session will end up in the
       // newly opened session instead.  That's better than having badly formatted
       // profiling output.
-      APP_ERROR("Instrumentor::begin_session('{0}') when session '{1}' already open.",
-          name,
-          m_current_session->name);
+      APP_ERROR("Instrumentor::begin_session('{0}') when session '{1}' already open.", name, m_current_session->name);
       internal_end_session();
     }
     m_output_stream.open(filepath);
@@ -91,12 +89,10 @@ class Instrumentor {
     return instance;
   }
 
- private:
+private:
   Instrumentor() : m_current_session(nullptr) {}
 
-  ~Instrumentor() {
-    end_session();
-  }
+  ~Instrumentor() { end_session(); }
 
   void write_header() {
     m_output_stream << R"({"otherData": {},"traceEvents":[{})";
@@ -123,10 +119,8 @@ class Instrumentor {
 };
 
 class InstrumentationTimer {
- public:
-  explicit InstrumentationTimer(std::string name)
-      : m_name(std::move(name)),
-        m_start_time_point(std::chrono::steady_clock::now()) {}
+public:
+  explicit InstrumentationTimer(std::string name) : m_name(std::move(name)), m_start_time_point(std::chrono::steady_clock::now()) {}
 
   InstrumentationTimer(const InstrumentationTimer&) = delete;
   InstrumentationTimer(InstrumentationTimer&&) = delete;
@@ -142,31 +136,27 @@ class InstrumentationTimer {
   void stop() {
     const auto end_time_point{std::chrono::steady_clock::now()};
     const auto high_res_start{FloatingPointMicroseconds{m_start_time_point.time_since_epoch()}};
-    const auto elapsed_time{
-        std::chrono::time_point_cast<std::chrono::microseconds>(end_time_point).time_since_epoch() -
-        std::chrono::time_point_cast<std::chrono::microseconds>(m_start_time_point)
-            .time_since_epoch()};
+    const auto elapsed_time{std::chrono::time_point_cast<std::chrono::microseconds>(end_time_point).time_since_epoch() -
+                            std::chrono::time_point_cast<std::chrono::microseconds>(m_start_time_point).time_since_epoch()};
 
-    Instrumentor::get().write_profile(
-        {m_name, high_res_start, elapsed_time, std::this_thread::get_id()});
+    Instrumentor::get().write_profile({m_name, high_res_start, elapsed_time, std::this_thread::get_id()});
 
     m_stopped = true;
   }
 
- private:
+private:
   const std::string m_name;
   bool m_stopped{false};
   const std::chrono::time_point<std::chrono::steady_clock> m_start_time_point;
 };
 
-}  // namespace App::Debug
+} // namespace App::Debug
 
 #if APP_PROFILE
 // Resolve which function signature macro will be used. Note that this only
 // is resolved when the (pre)compiler starts, so the syntax highlighting
 // could mark the wrong one in your editor!
-#if defined(__GNUC__) || (defined(__MWERKS__) && (__MWERKS__ >= 0x3000)) || \
-    (defined(__ICC) && (__ICC >= 600)) || defined(__ghs__)
+#if defined(__GNUC__) || (defined(__MWERKS__) && (__MWERKS__ >= 0x3000)) || (defined(__ICC) && (__ICC >= 600)) || defined(__ghs__)
 // There is an implicit decay of an array into a pointer.
 // NOLINTNEXTLINE
 #define APP_FUNC_SIG __PRETTY_FUNCTION__
@@ -174,8 +164,7 @@ class InstrumentationTimer {
 #define APP_FUNC_SIG __PRETTY_FUNCTION__
 #elif defined(__FUNCSIG__)
 #define APP_FUNC_SIG __FUNCSIG__
-#elif (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 600)) || \
-    (defined(__IBMCPP__) && (__IBMCPP__ >= 500))
+#elif (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 600)) || (defined(__IBMCPP__) && (__IBMCPP__ >= 500))
 #define APP_FUNC_SIG __FUNCTION__
 #elif defined(__BORLANDC__) && (__BORLANDC__ >= 0x550)
 #define APP_FUNC_SIG __FUNC__
@@ -190,13 +179,10 @@ class InstrumentationTimer {
 #define JOIN_AGAIN(x, y) x##y
 #define JOIN(x, y) JOIN_AGAIN(x, y)
 #define APP_PROFILE_BEGIN_SESSION(name) ::App::Debug::Instrumentor::get().begin_session(name)
-#define APP_PROFILE_BEGIN_SESSION_WITH_FILE(name, file_path) \
-  ::App::Debug::Instrumentor::get().begin_session(name, file_path)
+#define APP_PROFILE_BEGIN_SESSION_WITH_FILE(name, file_path) ::App::Debug::Instrumentor::get().begin_session(name, file_path)
 #define APP_PROFILE_END_SESSION() ::App::Debug::Instrumentor::get().end_session()
-#define APP_PROFILE_SCOPE(name)                                    \
-  const ::App::Debug::InstrumentationTimer JOIN(timer, __LINE__) { \
-    name                                                           \
-  }
+#define APP_PROFILE_SCOPE(name)                                                                                                                                                                        \
+  const ::App::Debug::InstrumentationTimer JOIN(timer, __LINE__) { name }
 #define APP_PROFILE_FUNCTION() APP_PROFILE_SCOPE(APP_FUNC_SIG)
 #else
 #define APP_PROFILE_BEGIN_SESSION(name)

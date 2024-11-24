@@ -1,15 +1,13 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
-#include "Database/EventCommands/MovementRoute/SwitchOFF.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/Database.hpp"
+#include "Database/EventCommands/MovementRoute/SwitchOFF.hpp"
 
 struct Project;
 struct Dialog_MovementSwitchOFF : IEventDialogController {
   Dialog_MovementSwitchOFF() = delete;
-  explicit Dialog_MovementSwitchOFF(const std::string& name,
-                                    const std::shared_ptr<MovementSwitchOFFCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_MovementSwitchOFF(const std::string& name, const std::shared_ptr<MovementSwitchOFFCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new MovementSwitchOFFCommand());
     }

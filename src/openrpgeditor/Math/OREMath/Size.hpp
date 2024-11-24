@@ -1,6 +1,6 @@
 #pragma once
-#include "imgui.h"
 #include "OREMath/MathGlobals.hpp"
+#include "imgui.h"
 
 class Size {
 public:
@@ -59,13 +59,9 @@ private:
 
 Size operator+(const Size& lhs, const Size& rhs) { return Size{lhs.mWidth + rhs.mWidth, lhs.mHeight + rhs.mHeight}; }
 Size operator-(const Size& lhs, const Size& rhs) { return Size{lhs.mWidth - rhs.mWidth, lhs.mHeight - rhs.mHeight}; }
-Size operator*(const Size& lhs, const float rhs) {
-  return Size{static_cast<int>(lhs.mWidth * rhs), static_cast<int>(lhs.mHeight * rhs)};
-}
+Size operator*(const Size& lhs, const float rhs) { return Size{static_cast<int>(lhs.mWidth * rhs), static_cast<int>(lhs.mHeight * rhs)}; }
 
-Size operator/(const Size& lhs, const float rhs) {
-  return Size{static_cast<int>(lhs.mWidth / rhs), static_cast<int>(lhs.mHeight / rhs)};
-}
+Size operator/(const Size& lhs, const float rhs) { return Size{static_cast<int>(lhs.mWidth / rhs), static_cast<int>(lhs.mHeight / rhs)}; }
 
 class SizeF {
 public:
@@ -121,20 +117,12 @@ private:
   float mHeight{-1};
 };
 
-inline bool operator==(const SizeF& lhs, const SizeF& rhs) {
-  return lhs.mWidth == rhs.mWidth && lhs.mHeight == rhs.mHeight;
-}
+inline bool operator==(const SizeF& lhs, const SizeF& rhs) { return lhs.mWidth == rhs.mWidth && lhs.mHeight == rhs.mHeight; }
 
-inline bool operator!=(const SizeF& lhs, const SizeF& rhs) {
-  return lhs.mWidth != rhs.mWidth || lhs.mHeight != rhs.mHeight;
-}
+inline bool operator!=(const SizeF& lhs, const SizeF& rhs) { return lhs.mWidth != rhs.mWidth || lhs.mHeight != rhs.mHeight; }
 
-SizeF operator+(const SizeF& lhs, const SizeF& rhs) {
-  return SizeF{lhs.mWidth + rhs.mWidth, lhs.mHeight + rhs.mHeight};
-}
-SizeF operator-(const SizeF& lhs, const SizeF& rhs) {
-  return SizeF{lhs.mWidth - rhs.mWidth, lhs.mHeight - rhs.mHeight};
-}
+SizeF operator+(const SizeF& lhs, const SizeF& rhs) { return SizeF{lhs.mWidth + rhs.mWidth, lhs.mHeight + rhs.mHeight}; }
+SizeF operator-(const SizeF& lhs, const SizeF& rhs) { return SizeF{lhs.mWidth - rhs.mWidth, lhs.mHeight - rhs.mHeight}; }
 SizeF operator*(const SizeF& lhs, const float rhs) { return SizeF{lhs.mWidth * rhs, lhs.mHeight * rhs}; }
 SizeF operator*(const float lhs, const SizeF& rhs) { return SizeF{lhs * rhs.mWidth, lhs * rhs.mHeight}; }
 

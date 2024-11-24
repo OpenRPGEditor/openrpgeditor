@@ -1,8 +1,7 @@
 #include "Database/EventCommands/ChangeActorImage.hpp"
 #include "Database/Database.hpp"
 
-ChangeActorImageCommand::ChangeActorImageCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+ChangeActorImageCommand::ChangeActorImageCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(actor);
   parameters.at(1).get_to(charPicture);
   parameters.at(2).get_to(charIndex);
@@ -26,7 +25,6 @@ std::string ChangeActorImageCommand::stringRep(const Database& db) const {
   std::string battlerString = db.imageText(battlerPicture);
 
   const auto actName = db.actorNameOrId(actor);
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Actor Images" +
-         colon.data() + actName + ", " + charString + ", " + faceString + ", " + battlerString +
+  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Actor Images" + colon.data() + actName + ", " + charString + ", " + faceString + ", " + battlerString +
          ColorFormatter::popColor();
 }

@@ -4,9 +4,7 @@
 
 struct Dialog_GetOnOffVehicle : IEventDialogController {
   Dialog_GetOnOffVehicle() = delete;
-  explicit Dialog_GetOnOffVehicle(const std::string& name,
-                                  const std::shared_ptr<GetOnOffVehicleCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_GetOnOffVehicle(const std::string& name, const std::shared_ptr<GetOnOffVehicleCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new GetOnOffVehicleCommand());
     }

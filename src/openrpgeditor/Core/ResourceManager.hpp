@@ -12,10 +12,10 @@
 class ResourceManager {
 public:
   ResourceManager() = delete;
-  ResourceManager(ResourceManager&)=delete;
-  ResourceManager(ResourceManager&&)=delete;
-  ResourceManager& operator=(ResourceManager&)=delete;
-  ResourceManager& operator=(ResourceManager&&)=delete;
+  ResourceManager(ResourceManager&) = delete;
+  ResourceManager(ResourceManager&&) = delete;
+  ResourceManager& operator=(ResourceManager&) = delete;
+  ResourceManager& operator=(ResourceManager&&) = delete;
   explicit ResourceManager(std::string_view basePath);
   ~ResourceManager();
 
@@ -40,7 +40,8 @@ public:
 
   static ResourceManager* instance() { return m_instance; }
 
-  [[nodiscard]] std::vector<std::string> getDirectoryContents(const std::string& directoryPath, std::string_view filter={}) const;
+  [[nodiscard]] std::vector<std::string> getDirectoryContents(const std::string& directoryPath, std::string_view filter = {}) const;
+
 private:
   static sf::SoundBuffer loadSound(std::string_view path);
   Texture loadTexture(std::string_view path);

@@ -6,10 +6,8 @@ using json = nlohmann::ordered_json;
 
 void to_json(nlohmann::ordered_json& out, const Armor& armor) {
   out = {
-      {"id", armor.id},           {"atypeId", armor.atypeId}, {"description", armor.description},
-      {"etypeId", armor.etypeId}, {"traits", armor.traits},   {"iconIndex", armor.iconIndex},
-      {"name", armor.name},       {"note", armor.note},       {"params", armor.params},
-      {"price", armor.price},
+      {"id", armor.id},     {"atypeId", armor.atypeId}, {"description", armor.description}, {"etypeId", armor.etypeId}, {"traits", armor.traits}, {"iconIndex", armor.iconIndex},
+      {"name", armor.name}, {"note", armor.note},       {"params", armor.params},           {"price", armor.price},
   };
 }
 

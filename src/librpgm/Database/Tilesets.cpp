@@ -6,8 +6,7 @@ using json = nlohmann::ordered_json;
 
 void to_json(nlohmann::ordered_json& j, const Tileset& tileset) {
   j = {
-      {"id", tileset.id},     {"flags", tileset.flags}, {"mode", tileset.mode},
-      {"name", tileset.name}, {"note", tileset.note},   {"tilesetNames", tileset.tilesetNames},
+      {"id", tileset.id}, {"flags", tileset.flags}, {"mode", tileset.mode}, {"name", tileset.name}, {"note", tileset.note}, {"tilesetNames", tileset.tilesetNames},
   };
 }
 

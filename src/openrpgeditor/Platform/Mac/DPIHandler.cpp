@@ -6,19 +6,14 @@
 #include <cmath>
 
 #include "Core/Debug/Instrumentor.hpp"
-#include "Core/Window.hpp"
 #include "Core/Settings.hpp"
+#include "Core/Window.hpp"
 
 namespace App {
 
-float DPIHandler::get_ui_scale() {
-  return Settings::instance()->uiScale;
-}
+float DPIHandler::get_ui_scale() { return Settings::instance()->uiScale; }
 
-WindowSize DPIHandler::get_dpi_aware_window_size(const Window::Settings& settings) {
-
-  return {settings.width, settings.height};
-}
+WindowSize DPIHandler::get_dpi_aware_window_size(const Window::Settings& settings) { return {settings.width, settings.height}; }
 
 void DPIHandler::set_render_scale(SDL_Renderer* renderer) {
   constexpr int display_index{0};
@@ -33,7 +28,7 @@ void DPIHandler::set_render_scale(SDL_Renderer* renderer) {
 }
 
 void DPIHandler::set_global_font_scaling(ImGuiIO* io) {
-  //io->FontGlobalScale = 1.0F / get_ui_scale();
+  // io->FontGlobalScale = 1.0F / get_ui_scale();
 }
 
-}  // namespace App
+} // namespace App

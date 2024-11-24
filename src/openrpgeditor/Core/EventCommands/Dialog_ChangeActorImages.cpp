@@ -1,9 +1,9 @@
 #include "Core/EventCommands/Dialog_ChangeActorImages.hpp"
-#include <tuple>
-#include "imgui.h"
 #include "Core/Application.hpp"
-#include "Core/Log.hpp"
 #include "Core/DPIHandler.hpp"
+#include "Core/Log.hpp"
+#include "imgui.h"
+#include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
   if (IsOpen()) {
@@ -12,9 +12,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{400, 225} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open,
-                             ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (const auto [closed, confirmed] = m_characterPicker.draw(); closed) {
       if (confirmed) {
@@ -41,8 +39,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
       }
     }
     ImGui::PushID("##actor_selection");
-    if (ImGui::Button((std::format("{:04} ", m_actor) + Database::instance()->actorName(m_actor)).c_str(),
-                      {(App::DPIHandler::scale_value(160)), 0})) {
+    if (ImGui::Button((std::format("{:04} ", m_actor) + Database::instance()->actorName(m_actor)).c_str(), {(App::DPIHandler::scale_value(160)), 0})) {
 
       actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), 0);
     }
@@ -57,18 +54,14 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
 
         ImGui::Text("Face:");
         auto cursorPos = ImGui::GetCursorPos();
-        if (ImGui::ImageButton("##svbattler_image", m_buttonBack,
-                               ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
+        if (ImGui::ImageButton("##svbattler_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
           m_image_selection = 0;
           m_characterPicker.setCharacterInfo(m_charPicture, m_actor);
           m_characterPicker.SetOpen(true);
         }
         if (m_faceSheet && m_faceSheet->texture()) {
-          const auto faceRect =
-              ImVec2{static_cast<float>(m_faceSheet->faceWidth()), static_cast<float>(m_faceSheet->faceHeight())} *
-              App::DPIHandler::get_ui_scale();
-          ImGui::SetCursorPos(((cursorPos + buttonCenter) - (faceRect / 2)) +
-                              (ImGui::GetStyle().ItemInnerSpacing - ImVec2{0.f, App::DPIHandler::scale_value(1.f)}));
+          const auto faceRect = ImVec2{static_cast<float>(m_faceSheet->faceWidth()), static_cast<float>(m_faceSheet->faceHeight())} * App::DPIHandler::get_ui_scale();
+          ImGui::SetCursorPos(((cursorPos + buttonCenter) - (faceRect / 2)) + (ImGui::GetStyle().ItemInnerSpacing - ImVec2{0.f, App::DPIHandler::scale_value(1.f)}));
           const auto rect = m_faceSheet->getFaceRect(m_faceIndex);
           ImVec2 uv0{rect.u0, rect.v0};
           ImVec2 uv1{rect.u1, rect.v1};
@@ -88,9 +81,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
         }
         if (m_characterSheet && m_characterSheet->texture()) {
           if (m_characterSheet->characterWidth() < 72 || m_characterSheet->characterHeight() < 96) {
-            ImGui::SetCursorPos(cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f,
-                                                    m_characterSheet->characterHeight() / 2.f} *
-                                             App::DPIHandler::get_ui_scale()));
+            ImGui::SetCursorPos(cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f, m_characterSheet->characterHeight() / 2.f} * App::DPIHandler::get_ui_scale()));
           } else {
             ImGui::SetCursorPos(cursorPos);
           }
@@ -98,10 +89,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
           const auto [min, max] = m_characterSheet->getRectForCharacter(m_charIndex);
 
           ImGui::Image(m_characterSheet->texture(),
-                       ImVec2{static_cast<float>(m_characterSheet->characterWidth()),
-                              static_cast<float>(m_characterSheet->characterHeight())} *
-                           App::DPIHandler::get_ui_scale(),
-                       min, max);
+                       ImVec2{static_cast<float>(m_characterSheet->characterWidth()), static_cast<float>(m_characterSheet->characterHeight())} * App::DPIHandler::get_ui_scale(), min, max);
         }
       }
       ImGui::EndGroup();
@@ -110,16 +98,13 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
       {
         ImGui::Text("[SV] Battler:");
         auto cursorPos = ImGui::GetCursorPos();
-        if (ImGui::ImageButton("##svbattler_image", m_buttonBack,
-                               ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
+        if (ImGui::ImageButton("##svbattler_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
           m_image_selection = 2;
           m_characterPicker.setCharacterInfo(m_battlerPicture, m_faceIndex);
           m_characterPicker.SetOpen(true);
         }
         if (m_battlerSheet && m_battlerSheet->texture()) {
-          const auto battlerRect = ImVec2{static_cast<float>(m_battlerSheet->characterWidth()) * 2,
-                                          static_cast<float>(m_battlerSheet->characterHeight()) * 2} *
-                                   App::DPIHandler::get_ui_scale();
+          const auto battlerRect = ImVec2{static_cast<float>(m_battlerSheet->characterWidth()) * 2, static_cast<float>(m_battlerSheet->characterHeight()) * 2} * App::DPIHandler::get_ui_scale();
           ImGui::SetCursorPos((cursorPos + buttonCenter) - (battlerRect / 2));
           const auto rect = m_battlerSheet->getAction(SideViewActionType::StepForward);
           ImGui::Image(m_battlerSheet->texture(), battlerRect, rect.frames[1].min, rect.frames[1].max);

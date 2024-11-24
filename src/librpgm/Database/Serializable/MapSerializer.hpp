@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Database/Serializable/ISerializable.hpp"
 #include "Database/Map.hpp"
+#include "Database/Serializable/ISerializable.hpp"
 
 class MapSerializer final : public ITypedSerializable<Map> {
 public:
@@ -11,7 +11,8 @@ public:
   void serialize(std::ofstream& os) const override;
   void deserialize(std::ifstream& is) override;
 
-  [[nodiscard]] int mapId() const {return m_mapId; }
+  [[nodiscard]] int mapId() const { return m_mapId; }
+
 private:
   int m_mapId = 0;
 };

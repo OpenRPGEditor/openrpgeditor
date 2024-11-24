@@ -8,18 +8,16 @@
 namespace RPGM {
 
 class Log {
- public:
+public:
   Log(const Log&) = delete;
   Log(const Log&&) = delete;
   Log& operator=(const Log&) = delete;
   Log& operator=(const Log&&) = delete;
   ~Log() = default;
 
-  static std::shared_ptr<spdlog::logger>& logger() {
-    return get().m_logger;
-  }
+  static std::shared_ptr<spdlog::logger>& logger() { return get().m_logger; }
 
- private:
+private:
   // The constructor shall not be deleted but used to bootstrap the logger. Ignoring
   // the lint warning is ignoring doing `Log() = delete`.
   // NOLINTNEXTLINE
@@ -33,7 +31,7 @@ class Log {
   std::shared_ptr<spdlog::logger> m_logger;
 };
 
-}  // namespace App
+} // namespace RPGM
 
 #ifndef RPGM_DEACTIVATE_LOGGING
 

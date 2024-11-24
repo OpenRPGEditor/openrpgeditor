@@ -1,16 +1,15 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
-#include "Database/EventCommands/Plugin.hpp"
-#include "Database/EventCommands/ShowText.hpp"
-#include "Core/Graphics/CheckerboardTexture.hpp"
 #include "Core/CommonUI/CharacterPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
+#include "Core/Graphics/CheckerboardTexture.hpp"
 #include "Core/Graphics/FaceSheet.hpp"
 #include "Core/Log.hpp"
+#include "Database/EventCommands/Plugin.hpp"
+#include "Database/EventCommands/ShowText.hpp"
 
 struct Dialog_ShowText : IEventDialogController {
   Dialog_ShowText() = delete;
-  explicit Dialog_ShowText(const std::string& name, const std::shared_ptr<ShowTextCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ShowText(const std::string& name, const std::shared_ptr<ShowTextCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ShowTextCommand());
     }
@@ -24,7 +23,7 @@ struct Dialog_ShowText : IEventDialogController {
     }
     APP_INFO("(loading): " + textStr);
     std::strcpy(m_textLine, textStr.c_str());
-    //strncpy(m_textLine, command->textLine.c_str(), 4096);
+    // strncpy(m_textLine, command->textLine.c_str(), 4096);
   }
   std::tuple<bool, bool> draw() override;
 

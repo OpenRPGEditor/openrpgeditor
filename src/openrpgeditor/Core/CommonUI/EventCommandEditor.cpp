@@ -2,14 +2,14 @@
 #include "Core/ImGuiExt/ImGuiParsedText.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "Core/Application.hpp"
+#include "Core/DPIHandler.hpp"
 
-#include <clip.h>
-#include "imgui.h"
-#include "imgui_internal.h"
 #include "Core/Log.hpp"
 #include "Database/EventCommands/RepeatAbove.hpp"
+#include "imgui.h"
+#include "imgui_internal.h"
+#include <clip.h>
 
 #include <iostream>
 #include <vector>
@@ -29,9 +29,7 @@ void EventCommandEditor::draw() {
   ImGui::BeginGroup();
   {
     ImGui::Text("Content:");
-    if (ImGui::BeginTable("##commonevent_code_contents", 2,
-                          ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX |
-                              ImGuiTableFlags_ScrollY,
+    if (ImGui::BeginTable("##commonevent_code_contents", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
                           ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
       ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.37f, 0.37f, 0.37f, 0.43f));
       ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.37f, 0.37f, 0.37f, 0.78f));
@@ -46,8 +44,7 @@ void EventCommandEditor::draw() {
       if (m_commands) {
         ImGui::PushFont(App::APP->getMonoFont());
         for (int n = 0; n < m_commands->size(); n++) {
-          const bool isSelected =
-              (m_selectedCommand == n || (m_selectedEnd != -1 && n > m_selectedCommand && n <= m_selectedEnd));
+          const bool isSelected = (m_selectedCommand == n || (m_selectedEnd != -1 && n > m_selectedCommand && n <= m_selectedEnd));
           std::string indentPad = m_commands->at(n)->stringRep(*Database::instance());
           auto str = splitString(indentPad, '\n');
           float height = 0.f;
@@ -62,11 +59,8 @@ void EventCommandEditor::draw() {
           if (ImGui::TableNextColumn()) {
             const int step = n + 1;
             const int stepPadding = (totalPadding - static_cast<int>(std::floor(std::log10(step)))) + 1;
-            if (ImGui::SelectableWithBorder((std::string(stepPadding, ' ') + std::to_string(step) + " ").c_str(),
-                                            isSelected,
-                                            ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns |
-                                                ImGuiSelectableFlags_AllowDoubleClick,
-                                            ImVec2(0, height))) {
+            if (ImGui::SelectableWithBorder((std::string(stepPadding, ' ') + std::to_string(step) + " ").c_str(), isSelected,
+                                            ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick, ImVec2(0, height))) {
               if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
                 m_isRequested = true;
                 if (m_commands->at(n)->code() == EventCode::Event_Dummy) {
@@ -75,8 +69,7 @@ void EventCommandEditor::draw() {
                 } else {
                   m_isNewEntry = false;
                   /* These are generated automatically based on their related event command dialogs */
-                  if (m_commands->at(n)->code() != EventCode::Repeat_Above &&
-                      m_commands->at(n)->code() != EventCode::Else && m_commands->at(n)->code() != EventCode::End) {
+                  if (m_commands->at(n)->code() != EventCode::Repeat_Above && m_commands->at(n)->code() != EventCode::Else && m_commands->at(n)->code() != EventCode::End) {
                     commandDialog = CreateCommandDialog(m_commands->at(n)->code(), m_commands->at(n));
                     commandDialog->SetOpen(true);
                     // ImGui::OpenPopup("Command Window");
@@ -87,9 +80,7 @@ void EventCommandEditor::draw() {
               if (m_commands->at(n)->code() == EventCode::Loop) {
                 int j = n + 1;
                 while (true) {
-                  if ((m_commands->at(j)->code() == EventCode::Repeat_Above &&
-                       *m_commands->at(j)->indent == *m_commands->at(n)->indent) ||
-                      j >= m_commands->size()) {
+                  if ((m_commands->at(j)->code() == EventCode::Repeat_Above && *m_commands->at(j)->indent == *m_commands->at(n)->indent) || j >= m_commands->size()) {
                     break;
                   }
                   ++j;
@@ -99,9 +90,7 @@ void EventCommandEditor::draw() {
                 m_selectedEnd = n;
                 int j = n - 1;
                 while (true) {
-                  if ((m_commands->at(j)->code() == EventCode::Loop &&
-                       *m_commands->at(j)->indent == *m_commands->at(n)->indent) ||
-                      j < 0) {
+                  if ((m_commands->at(j)->code() == EventCode::Loop && *m_commands->at(j)->indent == *m_commands->at(n)->indent) || j < 0) {
                     break;
                   }
                   --j;
@@ -157,8 +146,7 @@ void EventCommandEditor::draw() {
         m_commands->erase(m_commands->begin() + start, m_commands->begin() + end);
       }
     }
-    if (ImGui::IsKeyPressed(ImGuiKey_V) &&
-        (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
+    if (ImGui::IsKeyPressed(ImGuiKey_V) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
       clip::lock l;
       if (l.is_convertible(RPGMVEventCommandFormat)) {
         auto len = l.get_data_length(RPGMVEventCommandFormat);
@@ -171,8 +159,7 @@ void EventCommandEditor::draw() {
           m_commands->insert(m_commands->begin() + m_selectedCommand, commands.begin(), commands.end());
         }
       }
-    } else if (ImGui::IsKeyPressed(ImGuiKey_C) &&
-               (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
+    } else if (ImGui::IsKeyPressed(ImGuiKey_C) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
       clip::lock l;
       int start = m_selectedCommand;
       int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd;
@@ -181,19 +168,17 @@ void EventCommandEditor::draw() {
       CommandParser::serialize(cmdJson, commands);
       auto v = cmdJson.dump();
       l.set_data(RPGMVEventCommandFormat, v.data(), v.size());
-    }
-    else if (ImGui::IsKeyPressed(ImGuiKey_X) &&
-               (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
+    } else if (ImGui::IsKeyPressed(ImGuiKey_X) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
       if (m_commands->at(m_selectedCommand)->code() != EventCode::Event_Dummy) {
-          clip::lock l;
-          int start = m_selectedCommand;
-          int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd;
-          std::vector<std::shared_ptr<IEventCommand>> commands(m_commands->begin() + start, m_commands->begin() + end);
-          nlohmann::ordered_json cmdJson;
-          CommandParser::serialize(cmdJson, commands);
-          auto v = cmdJson.dump();
-          l.set_data(RPGMVEventCommandFormat, v.data(), v.size());
-          m_commands->erase(m_commands->begin() + start, m_commands->begin() + end);
+        clip::lock l;
+        int start = m_selectedCommand;
+        int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd;
+        std::vector<std::shared_ptr<IEventCommand>> commands(m_commands->begin() + start, m_commands->begin() + end);
+        nlohmann::ordered_json cmdJson;
+        CommandParser::serialize(cmdJson, commands);
+        auto v = cmdJson.dump();
+        l.set_data(RPGMVEventCommandFormat, v.data(), v.size());
+        m_commands->erase(m_commands->begin() + start, m_commands->begin() + end);
       }
     }
   }
@@ -224,8 +209,7 @@ void EventCommandEditor::drawCommandDialog() {
         m_isNewEntry = false;
       } else {
         if (std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand())) {
-          std::shared_ptr<ShowChoiceCommand> commandPointer =
-              std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand());
+          std::shared_ptr<ShowChoiceCommand> commandPointer = std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand());
 
           for (auto choice : commandPointer->choices) {
             APP_INFO("Choice Print: " + choice);
@@ -260,8 +244,7 @@ void EventCommandEditor::drawCommandDialog() {
 
             if (m_commands->at(i)->code() == EventCode::When_Selected) {
               if (whenIndex < commandPointer->choices.size()) {
-                std::shared_ptr<WhenSelectedCommand> when =
-                    std::static_pointer_cast<WhenSelectedCommand>(m_commands->at(i));
+                std::shared_ptr<WhenSelectedCommand> when = std::static_pointer_cast<WhenSelectedCommand>(m_commands->at(i));
 
                 when->choice = commandPointer->choices.at(whenIndex);
                 when->param1 = whenIndex;
@@ -286,11 +269,12 @@ void EventCommandEditor::drawPopup() {
   if (m_selectedCommand < 0) {
     return;
   }
-  if (!m_isRequested) { return; }
+  if (!m_isRequested) {
+    return;
+  }
 
   ImGui::SetNextWindowSize(ImVec2{680, 550} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal("Command Window", nullptr,
-                             ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
+  if (ImGui::BeginPopupModal("Command Window", nullptr, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
     ImGui::BeginGroup();
     {
 
@@ -803,11 +787,10 @@ void EventCommandEditor::drawPopup() {
                   }
                   m_isNewEntry = false;
                   m_isRequested = false;
-                  //ImGui::CloseCurrentPopup();
+                  // ImGui::CloseCurrentPopup();
                 }
                 index++;
-              }
-              else {
+              } else {
                 if (ImGui::Selectable(("Error loading template: " + templ.name).c_str(), false)) {}
               }
             }

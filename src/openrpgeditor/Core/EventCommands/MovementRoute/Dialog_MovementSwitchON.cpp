@@ -4,7 +4,7 @@
 std::tuple<bool, bool> Dialog_MovementSwitchON::draw() {
 
   if (picker) {
-    auto [closed, confirmed]  = picker->draw();
+    auto [closed, confirmed] = picker->draw();
     if (confirmed) {
       m_open = closed;
       m_confirmed = confirmed;

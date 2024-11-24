@@ -1,6 +1,6 @@
 #pragma once
-#include "Database/Serializable/ISerializable.hpp"
 #include "Database/Items.hpp"
+#include "Database/Serializable/ISerializable.hpp"
 
 class ItemsSerializer final : public ITypedSerializable<Items> {
 public:

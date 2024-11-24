@@ -3,8 +3,8 @@
 #include "Database/Trait.hpp"
 
 #include <nlohmann/json.hpp>
-#include <vector>
 #include <string>
+#include <vector>
 
 struct Messages {
   friend void to_json(nlohmann::ordered_json& to, const Messages& messages);

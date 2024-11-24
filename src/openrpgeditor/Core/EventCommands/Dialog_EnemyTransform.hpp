@@ -1,14 +1,12 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/Enemies.hpp"
 #include "Database/EventCommands/EnemyTransform.hpp"
 
 struct Dialog_EnemyTransform : IEventDialogController {
   Dialog_EnemyTransform() = delete;
-  explicit Dialog_EnemyTransform(const std::string& name,
-                                 const std::shared_ptr<EnemyTransformCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_EnemyTransform(const std::string& name, const std::shared_ptr<EnemyTransformCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new EnemyTransformCommand());
     }

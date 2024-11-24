@@ -1,9 +1,9 @@
 #include "Core/ResourceManager.hpp"
 
-#include "SFML/Audio/SoundBuffer.hpp"
 #include "Core/Log.hpp"
 #include "Core/Utils.hpp"
 #include "SDL2/SDL.h"
+#include "SFML/Audio/SoundBuffer.hpp"
 #include <exception>
 namespace fs = std::filesystem;
 
@@ -153,8 +153,7 @@ Texture ResourceManager::loadTitle2Image(std::string_view path) {
   return loadTexture(fullpath);
 }
 
-std::vector<std::string> ResourceManager::getDirectoryContents(const std::string& directoryPath,
-                                                               const std::string_view filter) const {
+std::vector<std::string> ResourceManager::getDirectoryContents(const std::string& directoryPath, const std::string_view filter) const {
   std::vector<std::string> fileNames;
   for (const auto& entry : fs::directory_iterator(m_basePath + directoryPath)) {
     if (!filter.empty() && entry.path().extension().compare(filter) != 0) {

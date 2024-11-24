@@ -4,9 +4,7 @@
 
 struct Dialog_ExitEventProcessing : IEventDialogController {
   Dialog_ExitEventProcessing() = delete;
-  explicit Dialog_ExitEventProcessing(const std::string& name,
-                                      const std::shared_ptr<ExitEventProcessingCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ExitEventProcessing(const std::string& name, const std::shared_ptr<ExitEventProcessingCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ExitEventProcessingCommand());
     }

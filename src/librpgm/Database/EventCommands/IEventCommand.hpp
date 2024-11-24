@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "Database/Globals.hpp"
 #include "Database/ColorFormatter.hpp"
+#include "Database/Globals.hpp"
 #include "nlohmann/json.hpp"
 
 struct Database;
@@ -19,8 +19,9 @@ struct IEventCommand {
   virtual std::string symbol(EventCode code) const;
   virtual std::string indentText(std::optional<int> indent) const;
   virtual void adjustIndent(int offset) {
-    if (indent) { indent.value() += offset; }
-    else {
+    if (indent) {
+      indent.value() += offset;
+    } else {
       indent.emplace(0);
       indent.value() += offset;
     }

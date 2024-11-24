@@ -4,9 +4,7 @@
 
 struct Dialog_ChangePluginCommand : IEventDialogController {
   Dialog_ChangePluginCommand() = delete;
-  explicit Dialog_ChangePluginCommand(const std::string& name,
-                                      const std::shared_ptr<PluginCommandMV>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangePluginCommand(const std::string& name, const std::shared_ptr<PluginCommandMV>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new PluginCommandMV());
     }

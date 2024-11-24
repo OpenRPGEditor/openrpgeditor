@@ -1,17 +1,15 @@
 #pragma once
-#include "Core/EventCommands/IEventDialogController.hpp"
-#include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
-#include "Database/Skills.hpp"
+#include "Core/CommonUI/VariableSwitchPicker.hpp"
+#include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/Actors.hpp"
 #include "Database/EventCommands/ChangeHP.hpp"
 #include "Database/EventCommands/ChangeLevel.hpp"
+#include "Database/Skills.hpp"
 
 struct Dialog_ChangeLevel : IEventDialogController {
   Dialog_ChangeLevel() = delete;
-  explicit Dialog_ChangeLevel(const std::string& name,
-                              const std::shared_ptr<ChangeLevelCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeLevel(const std::string& name, const std::shared_ptr<ChangeLevelCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeLevelCommand());
     }
@@ -36,8 +34,6 @@ struct Dialog_ChangeLevel : IEventDialogController {
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
 
 private:
-
-
   int m_comparison;
   int m_value;
   int m_value_var{1};

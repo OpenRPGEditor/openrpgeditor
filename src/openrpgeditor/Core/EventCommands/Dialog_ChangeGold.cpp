@@ -1,9 +1,9 @@
 #include "Core/EventCommands/Dialog_ChangeGold.hpp"
 
-#include <tuple>
-#include "imgui.h"
 #include "Core/DPIHandler.hpp"
 #include "Database/Database.hpp"
+#include "imgui.h"
+#include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeGold::draw() {
   if (IsOpen()) {
@@ -12,8 +12,7 @@ std::tuple<bool, bool> Dialog_ChangeGold::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{402, 160} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (picker) {
       auto [closed, confirmed] = picker->draw();
@@ -47,9 +46,7 @@ std::tuple<bool, bool> Dialog_ChangeGold::draw() {
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
       std::string text = m_operandSource != 1 ? "##commonevent_switch_empty" : Database::instance()->variableNameOrId(m_variable);
       ImGui::PushID("##controlvariable_gamedata");
-      if (ImGui::Button(
-              text.c_str(),
-              ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+      if (ImGui::Button(text.c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         picker.emplace("Variables", Database::instance()->system.variables);
       }
       ImGui::PopID();
@@ -63,8 +60,7 @@ std::tuple<bool, bool> Dialog_ChangeGold::draw() {
       command->operandSource = static_cast<QuantityChangeSource>(m_operandSource);
       if (command->operandSource == QuantityChangeSource::Constant) {
         command->operand = m_constant;
-      }
-      else {
+      } else {
         command->operand = m_variable;
       }
       ImGui::CloseCurrentPopup();

@@ -5,14 +5,11 @@
 class Rect {
 public:
   Rect() = default;
-  Rect(const Point& topLeft, const Point& bottomRight)
-  : mLeft(topLeft.x()), mTop(topLeft.y()), mRight(bottomRight.x()), mBottom(bottomRight.y()) {}
+  Rect(const Point& topLeft, const Point& bottomRight) : mLeft(topLeft.x()), mTop(topLeft.y()), mRight(bottomRight.x()), mBottom(bottomRight.y()) {}
 
-  Rect(const Point& topLeft, const Size& size)
-  : mLeft(topLeft.x()), mTop(topLeft.y()), mRight(mLeft + size.width() - 1), mBottom(mTop + size.height() - 1) {}
+  Rect(const Point& topLeft, const Size& size) : mLeft(topLeft.x()), mTop(topLeft.y()), mRight(mLeft + size.width() - 1), mBottom(mTop + size.height() - 1) {}
 
-  Rect(const int left, const int top, const int width, const int height)
-  : mLeft(left), mTop(top), mRight(left + width - 1), mBottom(top + height - 1) {}
+  Rect(const int left, const int top, const int width, const int height) : mLeft(left), mTop(top), mRight(left + width - 1), mBottom(top + height - 1) {}
 
   Rect normalized() const;
 
@@ -82,9 +79,7 @@ public:
 
   Rect translated(const int x, const int y) const { return translated(Point(x, y)); }
 
-  Rect translated(const Point& p) const {
-    return Rect(Point(mLeft + p.x(), mTop + p.y()), Point(mRight + p.x(), mBottom + p.y()));
-  }
+  Rect translated(const Point& p) const { return Rect(Point(mLeft + p.x(), mTop + p.y()), Point(mRight + p.x(), mBottom + p.y())); }
 
   void moveTo(const int x, const int y) {
     mRight += x - mLeft;
@@ -171,9 +166,7 @@ public:
     mBottom = bottom;
   }
 
-  Rect adjusted(const int left, const int top, const int right, const int bottom) const {
-    return Rect(Point{mLeft + left, mTop + top}, Point{mRight + right, mBottom + bottom});
-  }
+  Rect adjusted(const int left, const int top, const int right, const int bottom) const { return Rect(Point{mLeft + left, mTop + top}, Point{mRight + right, mBottom + bottom}); }
 
   void adjust(const int left, const int top, const int right, const int bottom) {
     mLeft += left;
@@ -211,13 +204,9 @@ public:
     return *this;
   }
 
-  bool operator==(const Rect& other) const {
-    return mLeft == other.mLeft && mTop == other.mTop && mRight == other.mRight && mBottom == other.mTop;
-  }
+  bool operator==(const Rect& other) const { return mLeft == other.mLeft && mTop == other.mTop && mRight == other.mRight && mBottom == other.mTop; }
 
-  bool operator!=(const Rect& other) const {
-    return mLeft != other.mLeft || mTop != other.mTop || mRight != other.mRight || mBottom != other.mTop;
-  }
+  bool operator!=(const Rect& other) const { return mLeft != other.mLeft || mTop != other.mTop || mRight != other.mRight || mBottom != other.mTop; }
 
 private:
   int mLeft{0};
@@ -229,12 +218,9 @@ private:
 class RectF {
 public:
   RectF() = default;
-  RectF(const PointF& topLeft, const PointF& bottomRight)
-  : mX(topLeft.x()), mY(topLeft.y()), mWidth(topLeft.x() - bottomRight.x()), mHeight(topLeft.y() - bottomRight.y()) {}
-  RectF(const PointF& topLeft, const SizeF& size)
-  : mX(topLeft.x()), mY(topLeft.y()), mWidth(size.width()), mHeight(size.height()) {}
-  RectF(const float left, const float top, const float width, const float height)
-  : mX(left), mY(top), mWidth(width), mHeight(height) {}
+  RectF(const PointF& topLeft, const PointF& bottomRight) : mX(topLeft.x()), mY(topLeft.y()), mWidth(topLeft.x() - bottomRight.x()), mHeight(topLeft.y() - bottomRight.y()) {}
+  RectF(const PointF& topLeft, const SizeF& size) : mX(topLeft.x()), mY(topLeft.y()), mWidth(size.width()), mHeight(size.height()) {}
+  RectF(const float left, const float top, const float width, const float height) : mX(left), mY(top), mWidth(width), mHeight(height) {}
 
   bool isNull() const { return mWidth == 0.f && mHeight == 0.f; }
   bool isEmpty() const { return mWidth <= 0.f || mHeight <= 0.f; }
@@ -367,9 +353,7 @@ public:
     mWidth += right - left;
     mHeight += bottom - top;
   }
-  RectF adjusted(const float left, const float top, const float right, const float bottom) const {
-    return RectF(mX + left, mY + top, mWidth + right - left, mHeight + bottom - top);
-  }
+  RectF adjusted(const float left, const float top, const float right, const float bottom) const { return RectF(mX + left, mY + top, mWidth + right - left, mHeight + bottom - top); }
 
   void setWidth(const float w) { mWidth = w; }
 
@@ -396,20 +380,11 @@ public:
 
   RectF united(const RectF& r) const { return *this | r; }
 
-  bool operator==(const RectF& other) const {
-    return fuzzyCompare(mX, other.mX) && fuzzyCompare(mY, other.mY) && fuzzyCompare(mWidth, other.mWidth) &&
-           fuzzyCompare(mHeight, other.mHeight);
-  }
+  bool operator==(const RectF& other) const { return fuzzyCompare(mX, other.mX) && fuzzyCompare(mY, other.mY) && fuzzyCompare(mWidth, other.mWidth) && fuzzyCompare(mHeight, other.mHeight); }
 
-  bool operator!=(const RectF& other) const {
-    return !fuzzyCompare(mX, other.mX) || !fuzzyCompare(mY, other.mY) || !fuzzyCompare(mWidth, other.mWidth) ||
-           !fuzzyCompare(mHeight, other.mHeight);
-  }
+  bool operator!=(const RectF& other) const { return !fuzzyCompare(mX, other.mX) || !fuzzyCompare(mY, other.mY) || !fuzzyCompare(mWidth, other.mWidth) || !fuzzyCompare(mHeight, other.mHeight); }
 
-  Rect toRect() const {
-    return Rect{static_cast<int>(std::round(mX)), static_cast<int>(std::round(mY)),
-                static_cast<int>(std::round(mWidth)), static_cast<int>(std::round(mHeight))};
-  }
+  Rect toRect() const { return Rect{static_cast<int>(std::round(mX)), static_cast<int>(std::round(mY)), static_cast<int>(std::round(mWidth)), static_cast<int>(std::round(mHeight))}; }
 
   Rect toAlignedRect() const;
 

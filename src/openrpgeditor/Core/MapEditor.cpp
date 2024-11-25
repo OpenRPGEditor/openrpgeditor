@@ -5,6 +5,7 @@
 #include "Database/EventParser.hpp"
 
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
+#include "Core/ImGuiExt/ImGuiNotify.hpp"
 
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -463,7 +464,7 @@ void MapEditor::draw() {
 
       if (ImGui::BeginPopupContextWindow()) {
         if (ImGui::Button("Insert template...", ImVec2(200.0f, 0.0f))) {
-          template_picker = ObjectPicker("Templates"sv, Database::instance()->templates.templateList(Template::TemplateType::Command), 0);
+          template_picker = ObjectPicker("Templates"sv, Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
         }
         if (ImGui::Button("Save as template...", ImVec2(200.0f, 0.0f))) {
           nlohmann::ordered_json eventJson;
@@ -485,9 +486,13 @@ void MapEditor::draw() {
       if (template_picker) {
         auto [closed, confirmed] = template_picker->draw();
         if (confirmed) {
+          EventParser parser;
           nlohmann::ordered_json eventJson = nlohmann::ordered_json::parse(Database::instance()->templates.templates.at(template_picker->selection()).commands);
-          // Event test = eventJson.value();
-          //  insert event template from selection
+
+          Event ev = parser.parse(eventJson);
+          ev.x = tileCellX();
+          ev.y = tileCellY();
+          map()->createEventFromTemplate(ev);
           template_picker.reset();
         }
       }

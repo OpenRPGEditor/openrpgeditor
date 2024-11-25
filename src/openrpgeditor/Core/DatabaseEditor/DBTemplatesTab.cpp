@@ -112,7 +112,7 @@ void DBTemplatesTab::draw() {
     }
     ImGui::EndChild();
   }
-
+}
   void DBTemplatesTab::SetTemplate() {
     m_templateName = m_templates->templates.at(m_selection).name;
     m_templateType = static_cast<int>(m_templates->templates.at(m_selection).type);
@@ -147,12 +147,8 @@ void DBTemplatesTab::draw() {
     }
   }
   void DBTemplatesTab::AddTemplate(std::string label, Template::TemplateType type, std::string commandString, std::vector<int> params) {
-
-<<<<<<< Updated upstream
-    m_templates->templates.push_back(Template(label + " " + std::to_string(m_templates->templates.size()), type, commandString, params));
-=======
     m_templates->addTemplate(Template(m_templates->templates.size() + 1, label + " " + std::to_string(m_templates->templates.size() + 1), type, commandString, params));
->>>>>>> Stashed changes
+
     m_templateName = m_templates->templates.back().name;
     m_templateType = static_cast<int>(m_templates->templates.back().type);
     m_currentCommands.clear();

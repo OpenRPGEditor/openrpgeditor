@@ -75,6 +75,9 @@ public:
     m_isDirty = true;
     return ret;
   }
+  void createEventFromTemplate(Event ev) {
+    events.emplace_back(ev);
+  }
 
   void deleteEvent(int id) {
     auto it = std::find_if(events.begin(), events.end(), [&id](const auto& ev) { return ev && ev->id == id; });

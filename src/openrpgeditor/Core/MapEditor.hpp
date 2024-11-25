@@ -8,6 +8,7 @@
 #include "Database/MapInfos.hpp"
 #include "MapEditor/MapCursor.hpp"
 #include "OREMath/Rect.hpp"
+#include "Core/CommonUI/ObjectPicker.hpp"
 
 struct Project;
 struct Map;
@@ -139,6 +140,8 @@ private:
   bool m_hasScrolled = true;
   bool m_prisonMode{true};
   bool m_regionMode{false};
+
+  std::optional<ObjectPicker<Template>> template_picker;
 
   int m_movingEventX = -1;
   int m_movingEventY = -1;

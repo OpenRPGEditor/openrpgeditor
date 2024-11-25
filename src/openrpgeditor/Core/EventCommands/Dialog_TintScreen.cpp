@@ -89,23 +89,21 @@ std::tuple<bool, bool> Dialog_TintScreen::draw() {
     ImGui::PushItemWidth((App::DPIHandler::scale_value(380)));
     if (ImGui::BeginCombo("##tintscreen_presets", m_currentTemplate == -1 ? "" : Database::instance()->templates.templates.at(m_currentTemplate).name.c_str())) {
       int index{0};
-      for (auto& templ : Database::instance()->templates.templates) {
-        if (templ.type == Template::TemplateType::Tint) {
-          if (!templ.parameters.empty()) {
-            bool is_selected = m_currentTemplate == index;
-            if (ImGui::Selectable(templ.name.c_str(), is_selected)) {
-              m_currentTemplate = index;
-              r = templ.parameters.at(0);
-              g = templ.parameters.at(1);
-              b = templ.parameters.at(2);
-              gray = templ.parameters.at(3);
-              if (is_selected)
-                ImGui::SetItemDefaultFocus();
-            }
-            index++;
-          } else {
-            if (ImGui::Selectable(("Error loading template: " + templ.name).c_str(), false)) {}
+      for (auto& templ : Database::instance()->templates.templateList(Template::TemplateType::Tint)) {
+        if (!templ.parameters.empty()) {
+          bool is_selected = m_currentTemplate == index;
+          if (ImGui::Selectable(templ.name.c_str(), is_selected)) {
+            m_currentTemplate = index;
+            r = templ.parameters.at(0);
+            g = templ.parameters.at(1);
+            b = templ.parameters.at(2);
+            gray = templ.parameters.at(3);
+            if (is_selected)
+              ImGui::SetItemDefaultFocus();
           }
+          index++;
+        } else {
+          if (ImGui::Selectable(("Error loading template: " + templ.name).c_str(), false)) {}
         }
       }
       ImGui::EndCombo();

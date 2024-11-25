@@ -15,6 +15,7 @@ void to_json(nlohmann::ordered_json& j, const Template& templ) {
 }
 
 void from_json(const nlohmann::ordered_json& j, Template& templ) {
+  templ.id = j.value("id", templ.id);
   templ.name = j.value("name", templ.name);
   templ.type = j.value("type", templ.type);
   templ.commands = j.value("commands", templ.commands);

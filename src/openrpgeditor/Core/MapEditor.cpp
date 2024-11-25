@@ -2,6 +2,7 @@
 
 #include "Core/DPIHandler.hpp"
 #include "Core/Project.hpp"
+#include "Database/EventParser.hpp"
 
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 
@@ -460,6 +461,37 @@ void MapEditor::draw() {
 
       handleMouseInput(win);
 
+      if (ImGui::BeginPopupContextWindow()) {
+        if (ImGui::Button("Insert template...", ImVec2(200.0f, 0.0f))) {
+          template_picker = ObjectPicker("Templates"sv, Database::instance()->templates.templateList(Template::TemplateType::Command), 0);
+        }
+        if (ImGui::Button("Save as template...", ImVec2(200.0f, 0.0f))) {
+          nlohmann::ordered_json eventJson;
+          EventParser::serialize(eventJson, *m_selectedEvent);
+          Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
+                                                               "New Event Template " + std::to_string(Database::instance()->templates.templates.size() + 1), Template::TemplateType::Event,
+                                                               eventJson.dump(), {}));
+
+          if (Database::instance()->templates.serialize(Database::instance()->basePath + "data/Templates.json")) {
+            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Saved event as template successfully!"});
+          } else {
+            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to saved event as template!"});
+          }
+          Database::instance()->templates.templates.back().commands = eventJson.dump();
+          // Save selected event
+        }
+        ImGui::EndPopup();
+      }
+      if (template_picker) {
+        auto [closed, confirmed] = template_picker->draw();
+        if (confirmed) {
+          nlohmann::ordered_json eventJson = nlohmann::ordered_json::parse(Database::instance()->templates.templates.at(template_picker->selection()).commands);
+          // Event test = eventJson.value();
+          //  insert event template from selection
+          template_picker.reset();
+        }
+      }
+
       if (m_tileCursor.mode() == MapCursorMode::Keyboard && !ImGui::IsWindowFocused()) {
         ImGui::FocusWindow(win, ImGuiFocusRequestFlags_UnlessBelowModal | ImGuiFocusRequestFlags_RestoreFocusedChild);
       }
@@ -579,10 +611,6 @@ void MapEditor::draw() {
   }
   ImGui::End();
   drawMapProperties();
-
-  // if (ImGui::BeginPopupContextWindow()) {
-  //   if (ImGui::BeginPopupContextItem(""))
-  // }
 }
 
 void MapEditor::resizeMap(const int width, const int height) {

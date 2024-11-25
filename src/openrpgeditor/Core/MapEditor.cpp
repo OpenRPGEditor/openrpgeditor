@@ -523,7 +523,7 @@ void MapEditor::draw() {
 
       auto sortedEvents = map()->getSorted();
       for (auto& event : sortedEvents) {
-        if (!event || event->id == 0) {
+        if (!event || event->id == 0 || event->pages[0].priorityType == EventPriority::Above_characters) {
           continue;
         }
         auto realEvent = map()->event(event->id);
@@ -541,6 +541,21 @@ void MapEditor::draw() {
         for (int z = 0; z < 6; z++) {
           renderLayer(win, m_mapRenderer.m_upperLayers[z]);
         }
+      }
+
+      for (auto& event : sortedEvents) {
+        if (!event || event->id == 0 || event->pages[0].priorityType != EventPriority::Above_characters) {
+          continue;
+        }
+        auto realEvent = map()->event(event->id);
+        if (m_selectedEvent == realEvent && !m_hasScrolled) {
+          ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + (((event->x * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.x / 2)));
+          ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + (((event->y * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.y / 2)));
+          m_hasScrolled = true;
+        }
+        bool isHovered = event->x == tileCellX() && event->y == tileCellY();
+        MapEvent mapEvent(this, &event.value());
+        mapEvent.draw(m_mapScale, isHovered, m_selectedEvent == realEvent, m_parent->editMode() != EditMode::Event, win);
       }
     }
     ImGui::EndChild();

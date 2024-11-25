@@ -156,7 +156,7 @@ void EventCommandEditor::handleClipboardInteraction() const {
 void EventCommandEditor::setupTableHeader() {
   ImGui::TableSetupColumn("Step##command_selectable_column", ImGuiTableFlags_SizingFixedFit);
   ImGui::TableSetupColumn("##command_collapse_column", ImGuiTableFlags_SizingFixedFit);
-  ImGui::TableSetupColumn("Text");
+  ImGui::TableSetupColumn("Command Operation");
   ImGui::TableSetupScrollFreeze(3, 1);
   ImGui::TableHeadersRow();
 }
@@ -167,7 +167,7 @@ void EventCommandEditor::setupTableColors() {
   ImGui::PushStyleColor(ImGuiCol_TableRowBg, ImVec4(0.03f, 0.21f, 0.26f, 1.00f));
   ImGui::PushStyleColor(ImGuiCol_TableRowBgAlt, ImVec4(0.04f, 0.16f, 0.19f, 1.00f));
 }
-void EventCommandEditor::handleBlockCollapse(ImVec2 skippedRegion, int& n) const {
+void EventCommandEditor::handleBlockCollapse(int& n) const {
   if (m_commands->at(n)->collapsable()) {
     int oldN = n;
     auto cmd = m_commands->at(n);
@@ -182,7 +182,6 @@ void EventCommandEditor::handleBlockCollapse(ImVec2 skippedRegion, int& n) const
         n++;
 
         auto rep = next->stringRep(*Database::instance());
-        skippedRegion.y += ImGui::CalcTextSize(rep.c_str()).y;
         if (next->code() != EventCode::Event_Dummy) {
           if (std::ranges::count(tooltip.begin(), tooltip.end(), '\n') < 5) {
             tooltip += rep + "\n";
@@ -214,7 +213,6 @@ void EventCommandEditor::draw() {
       const int totalPadding = std::max(static_cast<int>(std::floor(std::log10(m_commands->size()))), 4);
       if (m_commands) {
         ImGui::PushFont(App::APP->getMonoFont());
-        ImVec2 skippedRegion{};
         for (int n = 0; n < m_commands->size(); n++) {
           const bool isSelected = (m_selectedCommand == n || (m_selectedEnd != -1 && n > m_selectedCommand && n <= m_selectedEnd));
           std::string indentPad = m_commands->at(n)->stringRep(*Database::instance());
@@ -295,7 +293,7 @@ void EventCommandEditor::draw() {
 
           if (isSelected)
             ImGui::SetItemDefaultFocus();
-          handleBlockCollapse(skippedRegion, n);
+          handleBlockCollapse(n);
         }
         ImGui::PopFont();
       }

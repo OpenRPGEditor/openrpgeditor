@@ -356,6 +356,8 @@ private:
   bool mHandleMouseInputs;
   bool mIgnoreImGuiChild;
   bool mShowWhitespaces;
+  bool mTabsAsSpaces{true};
+  int mTabSpaceCount = 2;
 
   Palette mPaletteBase;
   Palette mPalette;

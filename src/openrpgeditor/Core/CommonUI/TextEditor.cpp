@@ -698,8 +698,15 @@ void TextEditor::HandleKeyboardInputs() {
       SelectAll();
     else if (!IsReadOnly() && !ctrl && !shift && !alt && ImGui::IsKeyPressed(ImGuiKey_Enter))
       EnterCharacter('\n', false);
-    else if (!IsReadOnly() && !ctrl && !alt && ImGui::IsKeyPressed(ImGuiKey_Tab))
-      EnterCharacter('\t', shift);
+    else if (!IsReadOnly() && !ctrl && !alt && ImGui::IsKeyPressed(ImGuiKey_Tab)) {
+      if (mTabsAsSpaces) {
+        for (int i = 0; i < mTabSpaceCount; ++i) {
+          EnterCharacter(' ', shift);
+        }
+      } else {
+        EnterCharacter('\t', shift);
+      }
+    }
 
     if (!IsReadOnly() && !io.InputQueueCharacters.empty()) {
       for (int i = 0; i < io.InputQueueCharacters.Size; i++) {
@@ -1019,7 +1026,7 @@ void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder) {
   ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::ColorConvertU32ToFloat4(mPalette[(int)PaletteIndex::Background]));
   ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
   if (!mIgnoreImGuiChild)
-    ImGui::BeginChild(aTitle, aSize, aBorder, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar | ImGuiWindowFlags_NoMove);
+    ImGui::BeginChild(aTitle, aSize, aBorder, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoMove);
 
   if (mHandleKeyboardInputs) {
     HandleKeyboardInputs();
@@ -2511,13 +2518,23 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::Javascript
   static bool inited = false;
   static LanguageDefinition langDef;
   if (!inited) {
-    static const char* const jsKeywords[] = {
-        "await",   "break",  "case",     "catch",  "class",      "const",  "continue", "debugger",   "default",   "delete", "do",  "else", "enum",    "export",  "extends",   "false",
-        "finally", "for",    "function", "if",     "implements", "import", "in",       "instanceof", "interface", "let",    "new", "null", "package", "private", "protected", "prototype",
-        "public",  "return", "super",    "switch", "static",     "this",   "throw",    "try",        "true",      "typeof", "var", "void", "while",   "with",    "yield",
-    };
+    static constexpr std::string_view jsKeywords[] = {"await",     "break",  "case",    "catch", "class",   "const",   "continue",  "debugger",  "default",    "delete", "do",    "else",
+                                                      "enum",      "export", "extends", "false", "finally", "for",     "function",  "if",        "implements", "import", "in",    "instanceof",
+                                                      "interface", "let",    "new",     "null",  "package", "private", "protected", "prototype", "public",     "return", "super", "switch",
+                                                      "static",    "this",   "throw",   "try",   "true",    "typeof",  "var",       "void",      "while",      "with",   "yield", "console"};
     for (auto& k : jsKeywords)
-      langDef.mKeywords.insert(k);
+      langDef.mKeywords.insert(k.data());
+
+    static constexpr std::string_view identifiers[] = {
+        "Math",      "Array",       "string",  "Object", "prototype", "keys",     "values",     "entries", "call",   "apply",   "bind",   "toUpperCase", "toLowerCase", "split",
+        "substring", "lastIndexOf", "indexOf", "charAt", "length",    "splice",   "slice",      "join",    "concat", "unshift", "shift",  "pop",         "push",        "abs",
+        "ceil",      "floor",       "round",   "max",    "min",       "parseInt", "parseFloat", "Number",  "String", "Boolean", "random", "log",
+    };
+    for (auto& k : identifiers) {
+      Identifier id;
+      id.mDeclaration = "Built-in function";
+      langDef.mIdentifiers.insert(std::make_pair(k.data(), id));
+    }
 
     langDef.mTokenize = [](const char* in_begin, const char* in_end, const char*& out_begin, const char*& out_end, PaletteIndex& paletteIndex) -> bool {
       paletteIndex = PaletteIndex::Max;
@@ -2551,7 +2568,6 @@ const TextEditor::LanguageDefinition& TextEditor::LanguageDefinition::Javascript
     langDef.mAutoIndentation = true;
 
     langDef.mName = "Javascript";
-
     inited = true;
   }
   return langDef;

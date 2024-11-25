@@ -16,6 +16,7 @@ void DBItemsTab::draw() {
   {
     ImGui::BeginChild("##orpg_items_editor_items", ImVec2{250.f, 0} * App::DPIHandler::get_ui_scale(), 0, ImGuiWindowFlags_HorizontalScrollbar);
     {
+      ImGui::PushFont(App::APP->getMonoFont());
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Items");

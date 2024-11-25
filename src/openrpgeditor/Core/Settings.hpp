@@ -22,6 +22,7 @@ struct Settings {
   WindowRect window{};
   std::deque<std::pair<std::string, std::string>> mru;
   std::string lastDirectory;
+  std::string lastProject;
   std::string projectBaseDirectory;
   std::string rpgMakerLocation;
   int rpgMakerVersion{-1};

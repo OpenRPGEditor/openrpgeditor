@@ -10,6 +10,12 @@ struct Dialog_Script : IEventDialogController {
       command.reset(new ScriptCommand());
     }
     m_Text = command->script;
+    for (const auto& next : command->moreScript) {
+      m_Text += !m_Text.empty() ? "\n" + next->script : next->script;
+    }
+    if (!m_Text.empty()) {
+      m_textEditor.SetText(m_Text);
+    }
     m_textEditor.SetLanguageDefinition(TextEditor::LanguageDefinition::Javascript());
   }
   std::tuple<bool, bool> draw() override;

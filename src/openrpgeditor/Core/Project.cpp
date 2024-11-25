@@ -63,6 +63,7 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
                            m_database->states, m_database->animations, m_database->tilesets, m_database->commonEvents, m_database->system, m_database->gameConstants, m_database->templates);
 
   MapInfo* info = m_database->mapInfos.map(0);
+  Settings::instance()->lastProject = filePath;
   info->expanded = true;
   info->name = m_database->system.gameTitle.empty() ? std::filesystem::path(basePath).filename().generic_string() : m_database->system.gameTitle;
   APP_INFO("Loaded project!");

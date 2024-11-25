@@ -160,7 +160,7 @@ struct EventCommandEditor {
   void handleClipboardInteraction() const;
   static void setupTableHeader();
   static void setupTableColors();
-  void handleBlockCollapse(ImVec2 skippedRegion, int& n) const;
+  void handleBlockCollapse(int& n) const;
   void draw();
 
   void setCommands(std::vector<std::shared_ptr<IEventCommand>>* commands) {

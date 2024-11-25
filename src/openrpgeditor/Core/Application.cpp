@@ -233,6 +233,9 @@ ExitStatus Application::run() {
   double delta = 0;
   bool warmup = true;
 
+  bool needsInitialProjectLoad =
+      !Settings::instance()->lastProject.empty() && std::filesystem::is_regular_file(Settings::instance()->lastProject) &&
+      (std::filesystem::path(Settings::instance()->lastProject).extension() == ".rpgproject" || std::filesystem::path(Settings::instance()->lastProject).extension() == ".rmmzproject");
   // Check if we need to run the FirstBoot wizard
   if (!Settings::instance()->ranFirstBootWizard) {
     m_firstBootWizard.emplace();
@@ -309,6 +312,10 @@ ExitStatus Application::run() {
 
       if (!m_firstBootWizard) {
         m_project.draw();
+        if (needsInitialProjectLoad) {
+          m_project.load(Settings::instance()->lastProject, std::filesystem::path(Settings::instance()->lastProject).remove_filename().generic_string());
+          needsInitialProjectLoad = false;
+        }
       }
 
       // Rendering

@@ -25,6 +25,7 @@ bool Settings::load(std::string_view path) {
       window = parser.value("window", window);
       mru = parser.value("mru", mru);
       lastDirectory = parser.value("lastDirectory", lastDirectory);
+      lastProject = parser.value("lastProject", lastProject);
       projectBaseDirectory = parser.value("projectBaseDirectory", projectBaseDirectory);
       rpgMakerLocation = parser.value("rpgMakerLocation", rpgMakerLocation);
       rpgMakerVersion = parser.value("rpgMakerVersion", rpgMakerVersion);
@@ -46,6 +47,7 @@ void Settings::serialize(std::string_view path) {
     const nlohmann::ordered_json parser{{"window", window},                             //
                                         {"mru", mru},                                   //
                                         {"lastDirectory", lastDirectory},               //
+                                        {"lastProject", lastProject},                   //
                                         {"projectBaseDirectory", projectBaseDirectory}, //
                                         {"rpgMakerLocation", rpgMakerLocation},         //
                                         {"rpgMakerVersion", rpgMakerVersion},           //

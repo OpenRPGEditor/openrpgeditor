@@ -1,7 +1,6 @@
 #include "Core/TemplateEditor/TemplatesTint.hpp"
-#include "Core/Application.hpp"
-#include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Database/Templates.hpp"
+#include "Core/Application.hpp"
 
 #include "imgui.h"
 

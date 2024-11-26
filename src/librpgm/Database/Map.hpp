@@ -75,8 +75,9 @@ public:
     m_isDirty = true;
     return ret;
   }
-  void createEventFromTemplate(Event ev) {
+  Event* createEventFromTemplate(Event ev) {
     events.emplace_back(ev);
+    return &(*events.back());
   }
 
   void deleteEvent(int id) {

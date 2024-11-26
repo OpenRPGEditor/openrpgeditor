@@ -2,6 +2,7 @@
 
 #include "Core/EventEditor/EVPage.hpp"
 #include "Database/Event.hpp"
+#include "Core/TemplateEditor/TemplatesEvent.hpp"
 
 #include <vector>
 

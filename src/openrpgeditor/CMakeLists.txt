@@ -404,6 +404,8 @@ add_library(
         Core/CommonUI/GameWindowColorPicker.hpp
         Core/Graphics/CheckeredCompositeTexture.cpp
         Core/Graphics/CheckeredCompositeTexture.hpp
+        Core/TemplateEditor/TemplatesEvent.cpp
+        Core/TemplateEditor/TemplatesEvent.hpp
 )
 
 target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${clip_SOURCE_DIR} ${cpuid_SOURCE_DIR})

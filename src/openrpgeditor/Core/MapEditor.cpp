@@ -489,7 +489,9 @@ void MapEditor::draw() {
                 Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
                                                                      "New Event Template " + std::to_string(Database::instance()->templates.templates.size() + 1), Template::TemplateType::Event,
                                                                      eventJson.dump(), {}));
-              } else {
+
+              }
+              else {
                 Database::instance()->templates.templates.at(template_picker.value().selection() - 1).commands = eventJson.dump();
               }
               if (Database::instance()->templates.serialize(Database::instance()->basePath + "data/Templates.json")) {
@@ -498,8 +500,9 @@ void MapEditor::draw() {
                 ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to saved event as template!"});
               }
               Database::instance()->templates.templates.back().commands = eventJson.dump();
-            } else {
-              eventJson = nlohmann::ordered_json::parse(Database::instance()->templates.templates.at(template_picker->selection() - 1).commands);
+            }
+            else {
+              nlohmann::ordered_json eventJson = nlohmann::ordered_json::parse(Database::instance()->templates.templates.at(template_picker->selection() - 1).commands);
 
               Event ev = parser.parse(eventJson);
               ev.id = map()->events.size();
@@ -507,9 +510,17 @@ void MapEditor::draw() {
               ev.x = tileCellX();
               ev.y = tileCellY();
               map()->createEventFromTemplate(ev);
+              eventProperties = TemplatesEvent(map()->createEventFromTemplate(ev), nullptr);
             }
           }
           template_picker.reset();
+        }
+      }
+      if (eventProperties) {
+        eventProperties->draw();
+        if (eventProperties->hasChanges()) {
+          // Perform event changes
+          eventProperties.reset();
         }
       }
 

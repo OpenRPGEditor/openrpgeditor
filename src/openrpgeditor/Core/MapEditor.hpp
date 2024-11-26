@@ -143,6 +143,7 @@ private:
   bool m_templateSaving{false};
 
   std::optional<ObjectPicker<Template>> template_picker;
+  std::optional<TemplatesEvent> eventProperties;
 
   int m_movingEventX = -1;
   int m_movingEventY = -1;

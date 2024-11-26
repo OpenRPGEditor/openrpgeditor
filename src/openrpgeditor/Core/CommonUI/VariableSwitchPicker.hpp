@@ -7,7 +7,7 @@
 
 class VariableSwitchPicker : public IDialogController {
 public:
-  VariableSwitchPicker(const std::string_view name, std::vector<std::string>& values, int selection);
+  VariableSwitchPicker(const std::string_view name, std::vector<std::string>& values, int selection, int rangeStart = 1);
 
   int selection() const { return m_selection; }
   void setSelection(const int selection) { m_selection = selection; }

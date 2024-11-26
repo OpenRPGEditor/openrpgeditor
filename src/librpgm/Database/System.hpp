@@ -65,7 +65,7 @@ public:
   uint32_t versionId = 0;
   Audio victoryMe;
   std::vector<std::string> weaponTypes;
-  std::vector<int> windowTone;
+  std::array<int, 3> windowTone;
   std::optional<bool> hasEncryptedImages;
   std::optional<bool> hasEncryptedAudio;
   std::optional<std::string> encryptionKey;

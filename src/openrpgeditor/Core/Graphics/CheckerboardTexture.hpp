@@ -13,7 +13,7 @@ enum class CellSizes : uint8_t {
 struct CheckerboardTexture {
 
   CheckerboardTexture() = default;
-  CheckerboardTexture(int width, int height, CellSizes cellSize = CellSizes::_64, uint8_t evenColor = 255, uint8_t oddColor = 127);
+  CheckerboardTexture(int width, int height, CellSizes cellSize = CellSizes::_64, uint8_t evenColor = 255, uint8_t oddColor = 220);
   CheckerboardTexture(const CheckerboardTexture& other);
   CheckerboardTexture& operator=(const CheckerboardTexture& other);
   ~CheckerboardTexture();

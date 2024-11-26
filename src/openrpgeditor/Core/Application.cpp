@@ -90,7 +90,9 @@ void Application::updateScale() {
   style.TabBorderSize = 3.f;
   style.TabRounding = 6.5f;
   style.DockingSeparatorSize = 6.f;
+  style.FrameBorderSize = 1.f;
   style.ScaleAllSizes(DPIHandler::get_ui_scale());
+  style.FramePadding = ImVec2(8, 6);
   style.ScrollbarSize = 18.f;
 }
 

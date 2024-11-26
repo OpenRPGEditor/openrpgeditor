@@ -3,19 +3,18 @@
 #include "Core/Application.hpp"
 #include <SDL.h>
 
-int roundUp(int numToRound, int multiple) {
-  if (multiple == 0)
-    return numToRound;
-
-  int remainder = abs(numToRound) % multiple;
-  if (remainder == 0)
-    return numToRound;
-
-  if (numToRound < 0)
-    return -(abs(numToRound) - remainder);
-  else
-    return numToRound + multiple - remainder;
-}
+// static int roundUp(const int numToRound, const int multiple) {
+//   if (multiple == 0)
+//     return numToRound;
+//
+//   int remainder = abs(numToRound) % multiple;
+//   if (remainder == 0)
+//     return numToRound;
+//
+//   if (numToRound < 0)
+//     return -(abs(numToRound) - remainder);
+//   return numToRound + multiple - remainder;
+// }
 
 CheckeredCompositeTexture::CheckeredCompositeTexture() : m_checker(32, 32) {}
 
@@ -65,21 +64,21 @@ void CheckeredCompositeTexture::update() {
   }
 
   for (const auto& [texture, originalSize, offset, scaleToRect] : m_texturesToComposite) {
-    const float aspect = static_cast<double>(originalSize.x()) / static_cast<double>(originalSize.y());
+    const float aspect = static_cast<float>(originalSize.x()) / static_cast<float>(originalSize.y());
     int width = originalSize.x();
     int height = originalSize.y();
 
     if (scaleToRect) {
       width = m_finalSize.x();
-      height = static_cast<int>(m_finalSize.x() / aspect);
+      height = static_cast<int>(static_cast<float>(m_finalSize.x()) / aspect);
       if (height > m_finalSize.y()) {
         height = m_finalSize.y();
-        width = static_cast<int>(m_finalSize.y() * aspect);
+        width = static_cast<int>(static_cast<float>(m_finalSize.y()) * aspect);
       }
     }
 
     const SDL_Rect screct = {offset.x(), offset.y(), originalSize.x(), originalSize.y()};
-    const SDL_Rect dstrect = {oAbs((m_finalSize.x() / 2) - (width / 2)), oAbs((m_finalSize.y() / 2) - (height / 2)), width, height};
+    const SDL_Rect dstrect = {oAbs(m_finalSize.x() / 2 - (width / 2)), oAbs(m_finalSize.y() / 2 - (height / 2)), width, height};
     SDL_RenderCopy(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(texture.get()), &screct, &dstrect);
   }
 

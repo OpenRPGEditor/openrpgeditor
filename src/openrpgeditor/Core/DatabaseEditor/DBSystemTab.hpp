@@ -1,9 +1,11 @@
 #pragma once
 #include "Core/CommonUI/CharacterPicker.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
+#include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/Graphics/CheckeredCompositeTexture.hpp"
+#include "Core/Graphics/GameWindowBackground.hpp"
 #include "Database/Actors.hpp"
 #include "Database/System.hpp"
 
@@ -73,8 +75,15 @@ private:
   CharacterSheet m_shipSheet;
   CharacterSheet* m_currentSheet = nullptr;
   CharacterPicker m_characterPicker;
+  GameWindowBackground m_gameWindowBackground = GameWindowBackground(164, 164);
   CheckeredCompositeTexture m_boatButtonTexture;
   CheckeredCompositeTexture m_shipButtonTexture;
   CheckeredCompositeTexture m_airshipButtonTexture;
   std::optional<ObjectPicker<Actor>> m_actorsPicker;
+  std::optional<VariableSwitchPicker> m_skillTypePicker;
+  int m_selectedActor = -1;
+  int m_selectedSkill = -1;
+  int m_selectedMusic = -1;
+  int m_selectedSound = -1;
+  int m_selectedMotion = -1;
 };

@@ -12,16 +12,23 @@ static bool ContainsCaseInsensitive(std::string_view str, std::string_view val) 
   return std::search(str.begin(), str.end(), val.begin(), val.end(), [](char ch1, char ch2) { return std::toupper(ch1) == std::toupper(ch2); }) != str.end();
 }
 
-VariableSwitchPicker::VariableSwitchPicker(const std::string_view objectType, std::vector<std::string>& values) : m_objectType(objectType), m_list(&values) {
+VariableSwitchPicker::VariableSwitchPicker(const std::string_view name, std::vector<std::string>& values, const int initialSelection)
+: IDialogController(name), m_list(&values), m_selection(initialSelection) {
   for (int i = 1; i < m_list->size(); ++i) {
     m_trackedValues.emplace_back(i, &(*m_list)[i]);
   }
 }
 
 std::tuple<bool, bool> VariableSwitchPicker::draw() {
-  std::string title = std::format("{} Selection##{}", m_objectType, reinterpret_cast<uintptr_t>(this));
+  const std::string title = std::format("{} Selection##{}", m_name, reinterpret_cast<uintptr_t>(this));
+  if (isOpen()) {
+    ImGui::OpenPopup(title.c_str());
+  }
+
+  const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+  ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{720, 640} * App::DPIHandler::get_ui_scale(), ImGuiCond_Once);
-  if (ImGui::Begin(title.c_str(), &m_open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::Text("Filter");
     ImGui::SameLine();
     ImGui::InputText("##variable_switch_selection_filter_input", &m_filter);
@@ -79,6 +86,9 @@ std::tuple<bool, bool> VariableSwitchPicker::draw() {
               m_confirmed = true;
             }
           }
+          if (m_selection == id) {
+            ImGui::SetItemDefaultFocus();
+          }
         }
         /* Name */
         if (ImGui::TableNextColumn()) {
@@ -94,14 +104,18 @@ std::tuple<bool, bool> VariableSwitchPicker::draw() {
       if (ImGui::Button("OK")) {
         m_confirmed = true;
         m_open = false;
+        ImGui::CloseCurrentPopup();
       }
       ImGui::SameLine();
       if (ImGui::Button("Cancel")) {
+        m_confirmed = false;
         m_open = false;
+        ImGui::CloseCurrentPopup();
       }
     }
     ImGui::EndGroup();
+    ImGui::EndPopup();
   }
-  ImGui::End();
+
   return std::make_tuple(!m_open, m_confirmed);
 }

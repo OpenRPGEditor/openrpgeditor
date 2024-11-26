@@ -9,8 +9,8 @@
 using namespace std::string_view_literals;
 #include "nfd.h"
 
-void CreateNewProjectDialog::SetOpen(bool open) {
-  IDialogController::SetOpen(open);
+void CreateNewProjectDialog::setOpen(bool open) {
+  IDialogController::setOpen(open);
 
   if (!Settings::instance()->projectBaseDirectory.empty()) {
     int i = 1;
@@ -24,7 +24,7 @@ void CreateNewProjectDialog::SetOpen(bool open) {
 }
 
 std::tuple<bool, bool> CreateNewProjectDialog::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();

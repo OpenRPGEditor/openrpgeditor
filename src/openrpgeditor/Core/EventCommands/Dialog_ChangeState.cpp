@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeState::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,22 +16,28 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
 
     if (picker) {
       auto [closed, confirmed] = picker->draw();
-      if (confirmed) {
-        m_actor_var = picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_actor_var = picker->selection();
+        }
         picker.reset();
       }
     }
     if (actor_picker) {
       auto [closed, confirmed] = actor_picker->draw();
-      if (confirmed) {
-        m_actor = actor_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_actor = actor_picker->selection();
+        }
         actor_picker.reset();
       }
     }
     if (state_picker) {
       auto [closed, confirmed] = state_picker->draw();
-      if (confirmed) {
-        m_state = state_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_state = state_picker->selection();
+        }
         state_picker.reset();
       }
     }
@@ -50,7 +56,8 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
       ImGui::BeginDisabled(m_comparison != 0);
       ImGui::PushID("##changestate_actor");
       if (ImGui::Button(m_comparison != 0 ? "" : Database::instance()->actorNameOrId(m_actor).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        actor_picker = ObjectPicker<Actor>("Actors"sv, Database::instance()->actors.actorList(), 0);
+        actor_picker = ObjectPicker<Actor>("Actors"sv, Database::instance()->actors.actorList(), m_actor);
+        actor_picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -58,7 +65,8 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
       ImGui::BeginDisabled(m_comparison != 1);
       ImGui::PushID("##changeenemyhp_quant_var");
       if (ImGui::Button(m_comparison == 1 ? Database::instance()->variableNameAndId(m_actor_var).c_str() : "", ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables, m_actor_var);
+        picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -73,7 +81,8 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
     ImGui::SeparatorText("State");
     ImGui::PushID("##changestate_state");
     if (ImGui::Button(Database::instance()->stateNameOrId(m_state).c_str(), {(App::DPIHandler::scale_value(160)), 0})) {
-      state_picker = ObjectPicker<State>("States"sv, Database::instance()->states.states(), 0);
+      state_picker = ObjectPicker<State>("States"sv, Database::instance()->states.states(), m_state);
+      state_picker->setOpen(true);
     }
     ImGui::PopID();
 
@@ -90,12 +99,12 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
         command->value = m_actor;
 
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
 
     ImGui::EndPopup();

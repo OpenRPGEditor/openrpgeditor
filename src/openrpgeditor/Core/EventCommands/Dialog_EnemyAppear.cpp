@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_EnemyAppear::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -34,12 +34,12 @@ std::tuple<bool, bool> Dialog_EnemyAppear::draw() {
       m_confirmed = true;
       command->enemy = m_troop_selection - 1;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

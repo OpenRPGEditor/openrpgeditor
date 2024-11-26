@@ -4,6 +4,7 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeWeapons.hpp"
 
+struct Weapon;
 struct Dialog_ChangeWeapons : IEventDialogController {
   Dialog_ChangeWeapons() = delete;
   explicit Dialog_ChangeWeapons(const std::string& name, const std::shared_ptr<ChangeWeaponsCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {

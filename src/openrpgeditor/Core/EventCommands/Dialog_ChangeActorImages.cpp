@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,7 +16,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
 
     if (const auto [closed, confirmed] = m_characterPicker.draw(); closed) {
       if (confirmed) {
-        m_characterPicker.Accept();
+        m_characterPicker.accept();
         if (m_image_selection == 0) {
           m_faceIndex = m_characterPicker.character();
           m_facePicture = m_characterPicker.selectedSheet();
@@ -33,15 +33,18 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
     }
     if (actor_picker) {
       auto [closed, confirmed] = actor_picker->draw();
-      if (confirmed) {
-        m_actor = actor_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_actor = actor_picker->selection();
+        }
         actor_picker.reset();
       }
     }
     ImGui::PushID("##actor_selection");
     if (ImGui::Button((std::format("{:04} ", m_actor) + Database::instance()->actorName(m_actor)).c_str(), {(App::DPIHandler::scale_value(160)), 0})) {
 
-      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), 0);
+      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_actor);
+      actor_picker->setOpen(true);
     }
     ImGui::PopID();
     ImGui::BeginGroup();
@@ -57,7 +60,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
         if (ImGui::ImageButton("##svbattler_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
           m_image_selection = 0;
           m_characterPicker.setCharacterInfo(m_charPicture, m_actor);
-          m_characterPicker.SetOpen(true);
+          m_characterPicker.setOpen(true);
         }
         if (m_faceSheet && m_faceSheet->texture()) {
           const auto faceRect = ImVec2{static_cast<float>(m_faceSheet->faceWidth()), static_cast<float>(m_faceSheet->faceHeight())} * App::DPIHandler::get_ui_scale();
@@ -77,7 +80,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
         if (ImGui::ImageButton("##char_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
           m_image_selection = 1;
           m_characterPicker.setCharacterInfo(m_facePicture, m_charIndex);
-          m_characterPicker.SetOpen(true);
+          m_characterPicker.setOpen(true);
         }
         if (m_characterSheet && m_characterSheet->texture()) {
           if (m_characterSheet->characterWidth() < 72 || m_characterSheet->characterHeight() < 96) {
@@ -101,7 +104,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
         if (ImGui::ImageButton("##svbattler_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
           m_image_selection = 2;
           m_characterPicker.setCharacterInfo(m_battlerPicture, m_faceIndex);
-          m_characterPicker.SetOpen(true);
+          m_characterPicker.setOpen(true);
         }
         if (m_battlerSheet && m_battlerSheet->texture()) {
           const auto battlerRect = ImVec2{static_cast<float>(m_battlerSheet->characterWidth()) * 2, static_cast<float>(m_battlerSheet->characterHeight()) * 2} * App::DPIHandler::get_ui_scale();
@@ -124,12 +127,12 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
         command->faceIndex = m_faceIndex;
         command->battlerPicture = m_battlerPicture;
         ImGui::CloseCurrentPopup();
-        SetOpen(false);
+        setOpen(false);
       }
       ImGui::SameLine();
       if (ImGui::Button("Cancel")) {
         ImGui::CloseCurrentPopup();
-        SetOpen(false);
+        setOpen(false);
       }
       ImGui::EndGroup();
     }

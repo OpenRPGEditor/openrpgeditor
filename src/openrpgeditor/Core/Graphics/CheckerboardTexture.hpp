@@ -23,6 +23,9 @@ struct CheckerboardTexture {
 
   operator ImTextureID() const { return reinterpret_cast<ImTextureID>(m_texture); }
 
+  int width() const { return m_width; }
+  int height() const { return m_height; }
+
 private:
   mutable void* m_texture = nullptr;
   int m_width;

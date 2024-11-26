@@ -461,7 +461,7 @@ void Project::handleOpenFile() {
   }
 }
 
-void Project::handleCreateNewProject() { m_createNewProject.SetOpen(true); }
+void Project::handleCreateNewProject() { m_createNewProject.setOpen(true); }
 
 void Project::handleUndo() {
   if (!m_undoStack.hasCommands()) {

@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ControlSelfSwitch::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -35,12 +35,12 @@ std::tuple<bool, bool> Dialog_ControlSelfSwitch::draw() {
       command->selfSw = m_selfSw;
       command->turnOff = static_cast<ValueControl>(m_turnOff);
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

@@ -6,7 +6,7 @@ public:
   explicit CreateNewProjectDialog(const std::string_view name) : IDialogController(name) {}
   std::tuple<bool, bool> draw() override;
 
-  void SetOpen(bool open) override;
+  void setOpen(bool open) override;
   std::string_view projectName() const { return m_projectName; }
   std::string_view gameTitle() const { return m_gameTitle; }
 

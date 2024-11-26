@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeGold::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,8 +16,10 @@ std::tuple<bool, bool> Dialog_ChangeGold::draw() {
 
     if (picker) {
       auto [closed, confirmed] = picker->draw();
-      if (confirmed) {
-        m_variable = picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_variable = picker->selection();
+        }
         picker.reset();
       }
     }
@@ -47,7 +49,8 @@ std::tuple<bool, bool> Dialog_ChangeGold::draw() {
       std::string text = m_operandSource != 1 ? "##commonevent_switch_empty" : Database::instance()->variableNameOrId(m_variable);
       ImGui::PushID("##controlvariable_gamedata");
       if (ImGui::Button(text.c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables, m_variable);
+        picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -64,12 +67,12 @@ std::tuple<bool, bool> Dialog_ChangeGold::draw() {
         command->operand = m_variable;
       }
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

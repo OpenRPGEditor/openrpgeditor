@@ -260,31 +260,54 @@ struct Database {
     return nameOrId(eventName(id), id, 3);
   }
   [[nodiscard]] std::string actorNameOrId(const int id) const { return nameOrId(actorName(id), id); }
+  [[nodiscard]] std::string actorNameAndId(const int id) const { return nameAndId(actorName(id), id); }
   [[nodiscard]] std::string classNameOrId(const int id) const { return nameOrId(className(id), id); }
+  [[nodiscard]] std::string classNameAndId(const int id) const { return nameAndId(className(id), id); }
   [[nodiscard]] std::string skillNameOrId(const int id) const { return nameOrId(skillName(id), id); }
   [[nodiscard]] std::string itemNameOrId(const int id) const { return nameOrId(itemName(id), id); }
+  [[nodiscard]] std::string itemNameAndId(const int id) const { return nameAndId(itemName(id), id); }
   [[nodiscard]] std::string weaponNameOrId(const int id) const { return nameOrId(weaponName(id), id); }
+  [[nodiscard]] std::string weaponNameAndId(const int id) const { return nameAndId(weaponName(id), id); }
   [[nodiscard]] std::string armorNameOrId(const int id) const { return nameOrId(armorName(id), id); }
+  [[nodiscard]] std::string armorNameAndId(const int id) const { return nameAndId(armorName(id), id); }
   [[nodiscard]] std::string enemyNameOrId(const int id) const { return nameOrId(enemyName(id), id); }
+  [[nodiscard]] std::string enemyNameAndId(const int id) const { return nameAndId(enemyName(id), id); }
   [[nodiscard]] std::string troopNameOrId(const int id) const {
     if (id == -1) {
       return "Entire Troop";
     }
     return nameOrId(troopName(id), id);
   }
+  [[nodiscard]] std::string troopNameAndId(const int id) const {
+    if (id == -1) {
+      return "Entire Troop";
+    }
+    return nameAndId(troopName(id), id);
+  }
+
   [[nodiscard]] std::string stateNameOrId(const int id) const { return nameOrId(stateName(id), id); }
+  [[nodiscard]] std::string stateNameAndId(const int id) const { return nameAndId(stateName(id), id); }
   [[nodiscard]] std::string animationNameOrId(const int id) const { return nameOrId(animationName(id), id); }
+  [[nodiscard]] std::string animationNameAndId(const int id) const { return nameAndId(animationName(id), id); }
   [[nodiscard]] std::string tilesetNameOrId(const int id) const { return nameOrId(tilesetName(id), id); }
+  [[nodiscard]] std::string tilesetNameAndId(const int id) const { return nameAndId(tilesetName(id), id); }
   [[nodiscard]] std::string commonEventNameOrId(const int id) const { return nameOrId(commonEventName(id), id); }
+  [[nodiscard]] std::string commonEventNameAndId(const int id) const { return nameAndId(commonEventName(id), id); }
   [[nodiscard]] std::string switchNameOrId(const int id) const { return nameOrId(switchName(id), id); }
+  [[nodiscard]] std::string switchNameAndId(const int id) const { return nameAndId(switchName(id), id); }
   [[nodiscard]] std::string variableNameOrId(const int id) const { return nameOrId(variableName(id), id); }
   [[nodiscard]] std::string variableNameAndId(const int id) const { return nameAndId(variableName(id), id); }
   [[nodiscard]] std::string mapNameOrId(const int id) const { return nameOrId(mapName(id), id); }
+  [[nodiscard]] std::string mapNameAndId(const int id) const { return nameAndId(mapName(id), id); }
   [[nodiscard]] std::string skillTypeNameOrId(const int id) const { return nameOrId(skillTypeName(id), id, 2); }
+  [[nodiscard]] std::string skillTypeNameAndId(const int id) const { return nameAndId(skillTypeName(id), id, 2); }
   [[nodiscard]] std::string weaponTypeNameOrId(const int id) const { return nameOrId(weaponTypeName(id), id, 2); }
   [[nodiscard]] std::string elementNameOrId(const int id) const { return nameOrId(elementName(id), id, 2); }
+  [[nodiscard]] std::string elementNameAndId(const int id) const { return nameAndId(elementName(id), id, 2); }
   [[nodiscard]] std::string armorTypeOrId(const int id) const { return nameOrId(armorTypeName(id), id, 2); }
+  [[nodiscard]] std::string armorTypeAndId(const int id) const { return nameAndId(armorTypeName(id), id, 2); }
   [[nodiscard]] std::string equipTypeNameOrId(const int id) const { return nameOrId(equipTypeName(id), id, 2); }
+  [[nodiscard]] std::string equipTypeNameAndId(const int id) const { return nameAndId(equipTypeName(id), id, 2); }
 
   [[nodiscard]] std::pair<Actor*, Class*> featureObjects(const int actorId) const {
     const auto actor = actors.actor(actorId);

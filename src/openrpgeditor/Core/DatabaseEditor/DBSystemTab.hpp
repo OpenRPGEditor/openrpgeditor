@@ -1,5 +1,10 @@
 #pragma once
+#include "Core/CommonUI/CharacterPicker.hpp"
+#include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include "Core/Graphics/CharacterSheet.hpp"
+#include "Core/Graphics/CheckeredCompositeTexture.hpp"
+#include "Database/Actors.hpp"
 #include "Database/System.hpp"
 
 /* TODO: Move this somewhere else */
@@ -12,7 +17,7 @@ enum class AudioType {
 struct System;
 struct DBSystemTab : IDBEditorTab {
   DBSystemTab() = delete;
-  explicit DBSystemTab(System& system, DatabaseEditor* parent) : IDBEditorTab(parent), m_system(system) {}
+  explicit DBSystemTab(System& system, DatabaseEditor* parent);
   void draw() override;
 
   [[nodiscard]] std::string* element(const int id) { return m_system.element(id); }
@@ -59,8 +64,17 @@ struct DBSystemTab : IDBEditorTab {
   [[nodiscard]] Messages& messages() { return m_system.terms.messages; }
   [[nodiscard]] const Messages& messages() const { return m_system.terms.messages; }
 
-  void addAudioRow(Audio& audio, const std::string& type, AudioType audioType);
+  void addAudioRow(const Audio& audio, const std::string& type, AudioType audioType);
 
 private:
   System& m_system;
+  CharacterSheet m_boatSheet;
+  CharacterSheet m_airshipSheet;
+  CharacterSheet m_shipSheet;
+  CharacterSheet* m_currentSheet = nullptr;
+  CharacterPicker m_characterPicker;
+  CheckeredCompositeTexture m_boatButtonTexture;
+  CheckeredCompositeTexture m_shipButtonTexture;
+  CheckeredCompositeTexture m_airshipButtonTexture;
+  std::optional<ObjectPicker<Actor>> m_actorsPicker;
 };

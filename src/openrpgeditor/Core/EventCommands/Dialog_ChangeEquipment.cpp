@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,8 +16,10 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
 
     if (actor_picker) {
       auto [closed, confirmed] = actor_picker->draw();
-      if (confirmed) {
-        m_actor = actor_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_actor = actor_picker->selection();
+        }
         actor_picker.reset();
       }
     }
@@ -26,7 +28,8 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
 
     ImGui::PushID("##change_equip_actor_selection");
     if (ImGui::Button(Database::instance()->actorName(m_actor).c_str(), ImVec2{App::DPIHandler::scale_value(160), 0})) {
-      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), 0);
+      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_actor);
+      actor_picker->setOpen(true);
     }
     ImGui::PopID();
 
@@ -80,12 +83,12 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
       command->equipType = m_equipmentType;
       command->equipment = m_equipmentItem;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

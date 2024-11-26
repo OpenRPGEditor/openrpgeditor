@@ -249,6 +249,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
               if (ImGui::Button(m_selectedTrait->code == TraitCode::State_Rate ? Database::instance()->stateNameOrId(m_selectedTrait->dataId).c_str() : "##trait_state_rate_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
                 m_statePicker.emplace("States"sv, Database::instance()->states.states(), m_selectedTrait->dataId);
+                m_statePicker->setOpen(true);
               }
               int tmpInt = m_selectedTrait->code == TraitCode::State_Rate ? static_cast<int>(m_selectedTrait->value * 100) : 0;
               if (ImGui::SliderInt("##trait_state_rate_value", &tmpInt, 0, 100, m_selectedTrait->code == TraitCode::State_Rate ? "* %d%%" : "")) {
@@ -261,6 +262,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
               if (ImGui::Button(m_selectedTrait->code == TraitCode::State_Resist ? Database::instance()->stateNameOrId(m_selectedTrait->dataId).c_str() : "##trait_state_resist_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
                 m_statePicker.emplace("States"sv, Database::instance()->states.states(), m_selectedTrait->dataId);
+                m_statePicker->setOpen(true);
               }
             }
             ImGui::EndDisabled();
@@ -418,6 +420,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
               if (ImGui::Button(m_selectedTrait->code == TraitCode::Attack_State ? Database::instance()->stateNameOrId(m_selectedTrait->dataId).c_str() : "##trait_attack_state_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
                 m_statePicker.emplace("States"sv, Database::instance()->states.states(), m_selectedTrait->dataId);
+                m_statePicker->setOpen(true);
               }
 
               int tmpInt = m_selectedTrait->code == TraitCode::Attack_State ? static_cast<int>(m_selectedTrait->value * 100) : 0;
@@ -516,6 +519,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
               if (ImGui::Button(m_selectedTrait->code == TraitCode::Add_Skill ? Database::instance()->skillNameOrId(m_selectedTrait->dataId).c_str() : "##trait_add_skill_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
                 m_skillPicker.emplace("Skills"sv, Database::instance()->skills.skills(), m_selectedTrait->dataId);
+                m_skillPicker->setOpen(true);
               }
             }
             ImGui::EndDisabled();
@@ -524,6 +528,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
               if (ImGui::Button(m_selectedTrait->code == TraitCode::Seal_Skill ? Database::instance()->skillNameOrId(m_selectedTrait->dataId).c_str() : "##trait_seal_skill_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
                 m_skillPicker.emplace("Skills"sv, Database::instance()->skills.skills(), m_selectedTrait->dataId);
+                m_skillPicker->setOpen(true);
               }
             }
             ImGui::EndDisabled();

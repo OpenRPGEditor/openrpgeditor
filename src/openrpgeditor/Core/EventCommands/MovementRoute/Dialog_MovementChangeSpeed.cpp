@@ -5,7 +5,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_MovementChangeSpeed::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -31,12 +31,12 @@ std::tuple<bool, bool> Dialog_MovementChangeSpeed::draw() {
       m_confirmed = true;
       command->speed = m_speed;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
 
     ImGui::EndPopup();

@@ -7,7 +7,7 @@
 
 std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
 
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,9 +16,11 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
     if (picker) {
       auto [closed, confirmed] = picker->draw();
-      if (confirmed) {
-        m_start = picker->selection();
-        m_end = picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_start = picker->selection();
+          m_end = picker->selection();
+        }
         picker.reset();
       }
     }
@@ -31,7 +33,8 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     ImGui::PushID("##controlswitch_id");
     ImGui::BeginDisabled(m_operation != 0);
     if (ImGui::Button(text.c_str(), ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
-      picker.emplace("Switches", Database::instance()->system.switches);
+      picker.emplace("Switches", Database::instance()->system.switches, m_start);
+      picker->setOpen(true);
     }
     ImGui::PopID();
     ImGui::EndDisabled();
@@ -66,11 +69,11 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
       }
       command->turnOff = static_cast<ValueControl>(operationBool);
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

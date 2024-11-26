@@ -10,5 +10,5 @@ struct MovementSwitchOFFCommand final : IMovementRouteStep {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
-  int id;
+  int id{1};
 };

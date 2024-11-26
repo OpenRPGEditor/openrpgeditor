@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeItems::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,16 +16,20 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
 
     if (picker) {
       auto [closed, confirmed] = picker->draw();
-      if (confirmed) {
-        m_quantity_var = picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_quantity_var = picker->selection();
+        }
         picker.reset();
       }
     }
 
     if (item_picker) {
       auto [closed, confirmed] = item_picker->draw();
-      if (confirmed) {
-        m_item = item_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_item = item_picker->selection();
+        }
         item_picker.reset();
       }
     }
@@ -34,7 +38,8 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
     ImGui::SeparatorText("Item");
     ImGui::PushID("##changeitems_item");
     if (ImGui::Button(Database::instance()->itemNameOrId(m_item).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      item_picker = ObjectPicker<Item>("Items"sv, Database::instance()->items.items(), 0);
+      item_picker = ObjectPicker<Item>("Items"sv, Database::instance()->items.items(), m_item);
+      item_picker->setOpen(true);
     }
     ImGui::PopID();
 
@@ -68,7 +73,8 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
       ImGui::BeginDisabled(m_operandSource != 1);
       ImGui::PushID("##changeenemyhp_quant_var");
       if (ImGui::Button(m_operandSource == 1 ? Database::instance()->variableNameAndId(m_quantity_var).c_str() : "", ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables, m_quantity_var);
+        picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -88,12 +94,12 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
         command->operand = m_quantity;
 
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
 
     ImGui::EndPopup();

@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeClass::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,15 +16,19 @@ std::tuple<bool, bool> Dialog_ChangeClass::draw() {
 
     if (actor_picker) {
       auto [closed, confirmed] = actor_picker->draw();
-      if (confirmed) {
-        m_actor = actor_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_actor = actor_picker->selection();
+        }
         actor_picker.reset();
       }
     }
     if (class_picker) {
       auto [closed, confirmed] = class_picker->draw();
-      if (confirmed) {
-        m_class = class_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_class = class_picker->selection();
+        }
         class_picker.reset();
       }
     }
@@ -34,7 +38,8 @@ std::tuple<bool, bool> Dialog_ChangeClass::draw() {
     // Actor Button
     ImGui::PushID("##change_class_actor");
     if (ImGui::Button(Database::instance()->actorName(m_actor).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      actor_picker = ObjectPicker("Actor"sv, Database::instance()->actors.actorList(), 0);
+      actor_picker = ObjectPicker("Actor"sv, Database::instance()->actors.actorList(), m_actor);
+      actor_picker->setOpen(true);
     }
     ImGui::PopID();
 
@@ -43,7 +48,8 @@ std::tuple<bool, bool> Dialog_ChangeClass::draw() {
     // Actor Button
     ImGui::PushID("##change_class_classid");
     if (ImGui::Button(Database::instance()->className(m_class).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      class_picker = ObjectPicker<Class>("Class"sv, Database::instance()->classes.classes(), 0);
+      class_picker = ObjectPicker<Class>("Class"sv, Database::instance()->classes.classes(), m_class);
+      class_picker->setOpen(true);
     }
     ImGui::PopID();
 
@@ -56,12 +62,12 @@ std::tuple<bool, bool> Dialog_ChangeClass::draw() {
       command->classId = m_class;
       command->saveLevel = m_saveLevel;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

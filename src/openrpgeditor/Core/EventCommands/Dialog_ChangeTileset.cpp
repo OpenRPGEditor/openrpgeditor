@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeTileset::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,8 +16,10 @@ std::tuple<bool, bool> Dialog_ChangeTileset::draw() {
 
     if (tileset_picker) {
       auto [closed, confirmed] = tileset_picker->draw();
-      if (confirmed) {
-        m_tileset = tileset_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_tileset = tileset_picker->selection();
+        }
         tileset_picker.reset();
       }
     }
@@ -25,7 +27,8 @@ std::tuple<bool, bool> Dialog_ChangeTileset::draw() {
     ImGui::SeparatorText("Tileset");
     ImGui::PushID("##tileset_selection");
     if (ImGui::Button((std::format("{:04}", m_tileset) + Database::instance()->tilesetName(m_tileset)).c_str(), ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
-      tileset_picker = ObjectPicker<Tileset>("Tileset"sv, Database::instance()->tilesets.tilesets(), 0);
+      tileset_picker = ObjectPicker<Tileset>("Tileset"sv, Database::instance()->tilesets.tilesets(), m_tileset);
+      tileset_picker->setOpen(true);
     }
     ImGui::PopID();
 
@@ -33,12 +36,12 @@ std::tuple<bool, bool> Dialog_ChangeTileset::draw() {
       m_confirmed = true;
       command->tileset = m_tileset;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

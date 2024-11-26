@@ -2,11 +2,12 @@
 
 #include "Core/DPIHandler.hpp"
 #include "Database/Database.hpp"
+#include "Database/Weapons.hpp"
 #include "imgui.h"
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeWeapons::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,16 +17,20 @@ std::tuple<bool, bool> Dialog_ChangeWeapons::draw() {
 
     if (picker) {
       auto [closed, confirmed] = picker->draw();
-      if (confirmed) {
-        m_quantity_var = picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_quantity_var = picker->selection();
+        }
         picker.reset();
       }
     }
 
     if (weapon_picker) {
       auto [closed, confirmed] = weapon_picker->draw();
-      if (confirmed) {
-        m_item = weapon_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_item = weapon_picker->selection();
+        }
         weapon_picker.reset();
       }
     }
@@ -34,7 +39,8 @@ std::tuple<bool, bool> Dialog_ChangeWeapons::draw() {
     ImGui::SeparatorText("Weapon");
     ImGui::PushID("##changeweapons_item");
     if (ImGui::Button(Database::instance()->weaponNameOrId(m_item).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      weapon_picker = ObjectPicker<Weapon>("Weapon"sv, Database::instance()->weapons.weaponList(), 0);
+      weapon_picker = ObjectPicker<Weapon>("Weapon"sv, Database::instance()->weapons.weaponList(), m_item);
+      weapon_picker->setOpen(true);
     }
     ImGui::PopID();
 
@@ -68,7 +74,8 @@ std::tuple<bool, bool> Dialog_ChangeWeapons::draw() {
       ImGui::BeginDisabled(m_operandSource != 1);
       ImGui::PushID("##changeenemyhp_quant_var");
       if (ImGui::Button(m_operandSource == 1 ? Database::instance()->variableNameAndId(m_quantity_var).c_str() : "", ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables, m_quantity_var);
+        picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -93,12 +100,12 @@ std::tuple<bool, bool> Dialog_ChangeWeapons::draw() {
         command->operand = m_quantity;
 
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
 
     ImGui::EndPopup();

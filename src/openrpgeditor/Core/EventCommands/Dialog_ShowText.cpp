@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ShowText::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -21,7 +21,7 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
       auto cursorPos = ImGui::GetCursorPos();
       if (ImGui::ImageButton("##svbattler_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
         m_characterPicker.setCharacterInfo(m_faceImage, m_faceIndex);
-        m_characterPicker.SetOpen(true);
+        m_characterPicker.setOpen(true);
       }
       if (m_faceSheet && m_faceSheet->texture()) {
         const auto faceRect = ImVec2{static_cast<float>(m_faceSheet->faceWidth()), static_cast<float>(m_faceSheet->faceHeight())} * App::DPIHandler::get_ui_scale();
@@ -117,12 +117,12 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
         index++;
       }
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

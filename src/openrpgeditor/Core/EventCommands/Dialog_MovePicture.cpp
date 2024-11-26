@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_MovePicture::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,12 +16,13 @@ std::tuple<bool, bool> Dialog_MovePicture::draw() {
 
     if (picker) {
       auto [closed, confirmed] = picker->draw();
-      if (confirmed) {
-        if (xOrY)
-          m_value2 = picker->selection();
-        else
-          m_value1 = picker->selection();
-
+      if (closed) {
+        if (confirmed) {
+          if (xOrY)
+            m_value2 = picker->selection();
+          else
+            m_value1 = picker->selection();
+        }
         picker.reset();
       }
     }
@@ -91,14 +92,16 @@ std::tuple<bool, bool> Dialog_MovePicture::draw() {
       if (ImGui::Button(m_type == 1 ? Database::instance()->variableNameOrId(m_value1).c_str() : "",
                         ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         xOrY = false;
-        picker.emplace("Variables", Database::instance()->system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables, m_value1);
+        picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::PushID("##movepicture_vardesig_y");
       if (ImGui::Button(m_type == 1 ? Database::instance()->variableNameOrId(m_value2).c_str() : "",
                         ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         xOrY = true;
-        picker.emplace("Variables", Database::instance()->system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables, m_value2);
+        picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -188,12 +191,12 @@ std::tuple<bool, bool> Dialog_MovePicture::draw() {
       command->duration = m_duration;
       command->waitForCompletion = m_waitForCompletion;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

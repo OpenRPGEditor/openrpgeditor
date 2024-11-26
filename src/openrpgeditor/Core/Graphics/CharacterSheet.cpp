@@ -2,7 +2,7 @@
 
 #include "Core/ResourceManager.hpp"
 
-CharacterSheet::CharacterSheet(std::string_view sheetName) {
+CharacterSheet::CharacterSheet(std::string_view sheetName) : m_characterName(sheetName) {
   if (sheetName.empty()) {
     return;
   }

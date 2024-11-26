@@ -16,6 +16,7 @@ struct Dialog_ChangeParallax : IEventDialogController {
     m_scrollY = command->scrollY;
 
     m_imagePicker.emplace(ImagePicker::PickerMode::Parallax, m_image, "");
+    m_imagePicker->setOpen(true);
   }
   std::tuple<bool, bool> draw() override;
 

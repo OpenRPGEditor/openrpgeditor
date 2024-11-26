@@ -7,7 +7,7 @@
 using namespace std::string_view_literals;
 std::tuple<bool, bool> Dialog_PlayME::draw() {
 
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -86,11 +86,11 @@ std::tuple<bool, bool> Dialog_PlayME::draw() {
       m_confirmed = true;
       command->audio = m_audio;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

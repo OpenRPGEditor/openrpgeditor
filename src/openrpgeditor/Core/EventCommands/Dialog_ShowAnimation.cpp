@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,8 +16,10 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
 
     if (animation_picker) {
       auto [closed, confirmed] = animation_picker->draw();
-      if (confirmed) {
-        m_animation = animation_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_animation = animation_picker->selection();
+        }
         animation_picker.reset();
       }
     }
@@ -51,7 +53,8 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
     // Animation Button
     ImGui::PushID("##showanim_animation_select");
     if (ImGui::Button(Database::instance()->animationName(m_animation).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      animation_picker = ObjectPicker<Animation>("Animation"sv, Database::instance()->animations.animations(), 0);
+      animation_picker = ObjectPicker<Animation>("Animation"sv, Database::instance()->animations.animations(), m_animation);
+      animation_picker->setOpen(true);
     }
     ImGui::PopID();
     // Wait for completion
@@ -63,12 +66,12 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
       command->animation = m_animation;
       command->waitForCompletion = m_waitCompletion;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     windowSize = ImVec2{ImGui::GetContentRegionMax().x, ImGui::GetContentRegionMax().y};
     ImGui::EndPopup();

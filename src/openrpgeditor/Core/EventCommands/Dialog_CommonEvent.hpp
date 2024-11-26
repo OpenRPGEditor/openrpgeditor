@@ -14,7 +14,7 @@ struct Dialog_CommonEvent : IEventDialogController {
       command.reset(new CommonEventCommand());
     }
     eventId = command->event;
-    m_picker = ObjectPicker("Common Events"sv, Database::instance()->commonEvents.events(), 0);
+    m_picker = ObjectPicker("Common Events"sv, Database::instance()->commonEvents.events(), eventId);
   }
   std::tuple<bool, bool> draw() override;
 

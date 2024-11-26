@@ -54,7 +54,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -165,11 +165,11 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
       }
       if (ImGui::Button("Jump...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         movementRouteDialog = std::make_shared<Dialog_MovementJump>("Jump");
-        movementRouteDialog->SetOpen(true);
+        movementRouteDialog->setOpen(true);
       }
       if (ImGui::Button("Wait...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         movementRouteDialog = std::make_shared<Dialog_MovementWait>("Wait");
-        movementRouteDialog->SetOpen(true);
+        movementRouteDialog->setOpen(true);
       }
       ImGui::EndGroup();
     }
@@ -211,19 +211,19 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
       }
       if (ImGui::Button("Switch ON...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         movementRouteDialog = std::make_shared<Dialog_MovementSwitchON>("Script");
-        movementRouteDialog->SetOpen(true);
+        movementRouteDialog->setOpen(true);
       }
       if (ImGui::Button("Switch OFF...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         movementRouteDialog = std::make_shared<Dialog_MovementSwitchOFF>("Script");
-        movementRouteDialog->SetOpen(true);
+        movementRouteDialog->setOpen(true);
       }
       if (ImGui::Button("Change Speed...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         movementRouteDialog = std::make_shared<Dialog_MovementChangeSpeed>("Script");
-        movementRouteDialog->SetOpen(true);
+        movementRouteDialog->setOpen(true);
       }
       if (ImGui::Button("Change Frequency...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         movementRouteDialog = std::make_shared<Dialog_MovementChangeFrequency>("Script");
-        movementRouteDialog->SetOpen(true);
+        movementRouteDialog->setOpen(true);
       }
       ImGui::EndGroup();
     }
@@ -262,23 +262,23 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
       }
       if (ImGui::Button("Change Image...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         movementRouteDialog = std::make_shared<Dialog_MovementChangeImage>("Image");
-        movementRouteDialog->SetOpen(true);
+        movementRouteDialog->setOpen(true);
       }
       if (ImGui::Button("Change Opacity...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         movementRouteDialog = std::make_shared<Dialog_MovementChangeOpacity>("Opacity");
-        movementRouteDialog->SetOpen(true);
+        movementRouteDialog->setOpen(true);
       }
       if (ImGui::Button("Change Blend Mode...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         movementRouteDialog = std::make_shared<Dialog_MovementChangeBlendMode>("Blend");
-        movementRouteDialog->SetOpen(true);
+        movementRouteDialog->setOpen(true);
       }
       if (ImGui::Button("Play SE...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         movementRouteDialog = std::make_shared<Dialog_PlaySE>("Play SE");
-        movementRouteDialog->SetOpen(true);
+        movementRouteDialog->setOpen(true);
       }
       if (ImGui::Button("Script...", ImVec2{App::DPIHandler::scale_value(200), 0})) {
         movementRouteDialog = std::make_shared<Dialog_MovementScript>("Script");
-        movementRouteDialog->SetOpen(true);
+        movementRouteDialog->setOpen(true);
       }
       ImGui::EndGroup();
     }
@@ -294,19 +294,21 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
         }
       }
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
 
     if (movementRouteDialog) {
       auto [closed, confirmed] = movementRouteDialog->draw();
-      if (confirmed) {
-        auto select = m_route.list.insert(m_route.list.begin() + m_selected, movementRouteDialog->getCommand());
-        m_selected = select - m_route.list.begin();
+      if (closed) {
+        if (confirmed) {
+          auto select = m_route.list.insert(m_route.list.begin() + m_selected, movementRouteDialog->getCommand());
+          m_selected = select - m_route.list.begin();
+        }
         movementRouteDialog.reset();
       }
     }

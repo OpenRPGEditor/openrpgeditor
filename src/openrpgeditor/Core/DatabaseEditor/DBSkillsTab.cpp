@@ -14,9 +14,11 @@ DBSkillsTab::DBSkillsTab(Skills& skills, DatabaseEditor* parent) : IDBEditorTab(
 
 void DBSkillsTab::draw() {
   if (animation_picker) {
-    auto [closed, confirmed] = animation_picker->draw();
-    if (confirmed) {
-      m_selectedSkill->animationId = animation_picker->selection();
+    const auto [closed, confirmed] = animation_picker->draw();
+    if (closed) {
+      if (confirmed) {
+        m_selectedSkill->animationId = animation_picker->selection();
+      }
       animation_picker.reset();
     }
   }
@@ -300,7 +302,8 @@ void DBSkillsTab::draw() {
                                 : m_selectedSkill->animationId == 0 ? "None"
                                                                     : Database::instance()->animationName(m_selectedSkill->animationId).c_str(),
                                 ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-                animation_picker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), 0);
+                animation_picker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), m_selectedSkill->animationId);
+                animation_picker->setOpen(true);
               }
               ImGui::PopID();
             }

@@ -4,8 +4,8 @@
 #include "Core/Project.hpp"
 #include "Database/EventParser.hpp"
 
-#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/ImGuiExt/ImGuiNotify.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -466,44 +466,48 @@ void MapEditor::draw() {
         if (ImGui::MenuItem("Insert template...")) {
           m_templateSaving = false;
           template_picker = ObjectPicker("Templates"sv, Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+          template_picker->setNoSelectionMeansAdd(false);
+          template_picker->setOpen(true);
         }
         if (ImGui::MenuItem("Save as template...")) {
           m_templateSaving = true;
           template_picker = ObjectPicker("Templates"sv, Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+          template_picker->setNoSelectionMeansAdd(true);
+          template_picker->setOpen(true);
         }
         ImGui::EndPopup();
       }
       if (template_picker) {
         auto [closed, confirmed] = template_picker->draw();
-        if (confirmed) {
-          nlohmann::ordered_json eventJson;
-          EventParser parser;
-          if (m_templateSaving) {
-            EventParser::serialize(eventJson, *m_selectedEvent);
-            if (template_picker.value().selection() == 0) {
-                            Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
-                                                                                 "New Event Template " + std::to_string(Database::instance()->templates.templates.size() + 1), Template::TemplateType::Event,
-                                                                                 eventJson.dump(), {}));
-            }
-            else {
-              Database::instance()->templates.templates.at(template_picker.value().selection() - 1).commands = eventJson.dump();
-            }
-            if (Database::instance()->templates.serialize(Database::instance()->basePath + "data/Templates.json")) {
-              ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Saved event as template successfully!"});
+        if (closed) {
+          if (confirmed) {
+            nlohmann::ordered_json eventJson;
+            EventParser parser;
+            if (m_templateSaving) {
+              EventParser::serialize(eventJson, *m_selectedEvent);
+              if (template_picker.value().selection() == 0) {
+                Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
+                                                                     "New Event Template " + std::to_string(Database::instance()->templates.templates.size() + 1), Template::TemplateType::Event,
+                                                                     eventJson.dump(), {}));
+              } else {
+                Database::instance()->templates.templates.at(template_picker.value().selection() - 1).commands = eventJson.dump();
+              }
+              if (Database::instance()->templates.serialize(Database::instance()->basePath + "data/Templates.json")) {
+                ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Saved event as template successfully!"});
+              } else {
+                ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to saved event as template!"});
+              }
+              Database::instance()->templates.templates.back().commands = eventJson.dump();
             } else {
-              ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to saved event as template!"});
-            }
-            Database::instance()->templates.templates.back().commands = eventJson.dump();
-          }
-          else {
-            nlohmann::ordered_json eventJson = nlohmann::ordered_json::parse(Database::instance()->templates.templates.at(template_picker->selection() - 1).commands);
+              eventJson = nlohmann::ordered_json::parse(Database::instance()->templates.templates.at(template_picker->selection() - 1).commands);
 
-            Event ev = parser.parse(eventJson);
-            ev.id = map()->events.size();
-            // Ask here to change the properties of the event
-            ev.x = tileCellX();
-            ev.y = tileCellY();
-            map()->createEventFromTemplate(ev);
+              Event ev = parser.parse(eventJson);
+              ev.id = map()->events.size();
+              // Ask here to change the properties of the event
+              ev.x = tileCellX();
+              ev.y = tileCellY();
+              map()->createEventFromTemplate(ev);
+            }
           }
           template_picker.reset();
         }

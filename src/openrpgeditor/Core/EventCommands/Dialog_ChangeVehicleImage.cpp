@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -15,11 +15,13 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (const auto [closed, confirmed] = m_characterPicker.draw(); closed) {
-      if (confirmed) {
-        m_characterPicker.Accept();
-        m_character = m_characterPicker.character();
-        m_image = m_characterPicker.selectedSheet();
-        m_characterSheet = CharacterSheet(m_image);
+      if (closed) {
+        if (confirmed) {
+          m_characterPicker.accept();
+          m_character = m_characterPicker.character();
+          m_image = m_characterPicker.selectedSheet();
+          m_characterSheet = CharacterSheet(m_image);
+        }
       }
     }
     ImGui::BeginGroup();
@@ -48,7 +50,7 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
       auto cursorPos = ImGui::GetCursorPos();
       if (ImGui::ImageButton("##event_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
         m_characterPicker.setCharacterInfo(m_image, m_character);
-        m_characterPicker.SetOpen(true);
+        m_characterPicker.setOpen(true);
       }
       if (m_characterSheet && m_characterSheet->texture()) {
         if (m_characterSheet->characterWidth() < 72 || m_characterSheet->characterHeight() < 96) {
@@ -73,12 +75,12 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
         command->picture = m_image;
         command->pictureIndex = m_character;
         ImGui::CloseCurrentPopup();
-        SetOpen(false);
+        setOpen(false);
       }
       ImGui::SameLine();
       if (ImGui::Button("Cancel")) {
         ImGui::CloseCurrentPopup();
-        SetOpen(false);
+        setOpen(false);
       }
       ImGui::EndGroup();
     }

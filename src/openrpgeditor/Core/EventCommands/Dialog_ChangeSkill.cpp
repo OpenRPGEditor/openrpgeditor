@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,23 +16,29 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
 
     if (actor_picker) {
       auto [closed, confirmed] = actor_picker->draw();
-      if (confirmed) {
-        m_value = actor_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_value = actor_picker->selection();
+        }
         actor_picker.reset();
       }
     }
     if (skill_picker) {
       auto [closed, confirmed] = skill_picker->draw();
-      if (confirmed) {
-        m_skill = skill_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_skill = skill_picker->selection();
+        }
         skill_picker.reset();
       }
     }
 
     if (picker) {
       auto [closed, confirmed] = picker->draw();
-      if (confirmed) {
-        m_var = picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_var = picker->selection();
+        }
         picker.reset();
       }
     }
@@ -50,7 +56,8 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
       ImGui::PushID("##changeskill_actor");
       if (ImGui::Button(m_comparison == 0 ? (std::format("{:04} ", m_value) + Database::instance()->actorNameOrId(m_value)).c_str() : "", ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
 
-        actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), 0);
+        actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_value);
+        actor_picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -58,7 +65,8 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
       ImGui::BeginDisabled(m_comparison != 1);
       ImGui::PushID("##changeskill_var");
       if (ImGui::Button(m_comparison == 1 ? (std::format("{:04} ", m_var) + Database::instance()->variableNameOrId(m_var)).c_str() : "", ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables, m_var);
+        picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -74,7 +82,8 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
     ImGui::SeparatorText("Skill");
     ImGui::PushID("##changeskill_skill_selection");
     if (ImGui::Button((std::format("{:04} ", m_skill) + Database::instance()->skillNameOrId(m_skill)).c_str(), ImVec2{(App::DPIHandler::scale_value(225)), 0})) {
-      skill_picker = ObjectPicker<Skill>("Skill"sv, Database::instance()->skills.skills(), 0);
+      skill_picker = ObjectPicker<Skill>("Skill"sv, Database::instance()->skills.skills(), m_skill);
+      skill_picker->setOpen(true);
     }
     ImGui::PopID();
 
@@ -89,12 +98,12 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
         command->value = m_var;
       }
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
 
     ImGui::EndPopup();

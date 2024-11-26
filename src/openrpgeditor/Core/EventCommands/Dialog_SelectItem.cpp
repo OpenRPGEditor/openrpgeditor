@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_SelectItem::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,8 +16,10 @@ std::tuple<bool, bool> Dialog_SelectItem::draw() {
 
     if (picker) {
       auto [closed, confirmed] = picker->draw();
-      if (confirmed) {
-        m_variable = picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_variable = picker->selection();
+        }
         picker.reset();
       }
     }
@@ -25,7 +27,8 @@ std::tuple<bool, bool> Dialog_SelectItem::draw() {
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
     ImGui::PushID("##inputnumber_variable");
     if (ImGui::Button(Database::instance()->variableNameOrId(m_variable).c_str(), ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
-      picker.emplace("Variables", Database::instance()->system.variables);
+      picker.emplace("Variables", Database::instance()->system.variables, m_variable);
+      picker->setOpen(true);
     }
     ImGui::PopID();
     ImGui::SeparatorText("Item Type");
@@ -47,12 +50,12 @@ std::tuple<bool, bool> Dialog_SelectItem::draw() {
       command->item = m_variable;
       command->type = static_cast<ItemType>(m_type);
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

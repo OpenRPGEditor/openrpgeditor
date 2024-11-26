@@ -5,7 +5,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangePluginCommand::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -19,12 +19,12 @@ std::tuple<bool, bool> Dialog_ChangePluginCommand::draw() {
       m_confirmed = true;
       command->command = m_command;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

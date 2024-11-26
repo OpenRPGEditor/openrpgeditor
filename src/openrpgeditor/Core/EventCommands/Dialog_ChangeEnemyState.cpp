@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeEnemyState::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,8 +16,10 @@ std::tuple<bool, bool> Dialog_ChangeEnemyState::draw() {
 
     if (state_picker) {
       auto [closed, confirmed] = state_picker->draw();
-      if (confirmed) {
-        m_state = state_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_state = state_picker->selection();
+        }
         state_picker.reset();
       }
     }
@@ -49,7 +51,8 @@ std::tuple<bool, bool> Dialog_ChangeEnemyState::draw() {
     std::string text = Database::instance()->stateName(m_state);
     ImGui::PushID("##enemystate_change");
     if (ImGui::Button(text.c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      state_picker = ObjectPicker<State>("State"sv, Database::instance()->states.states(), 0);
+      state_picker = ObjectPicker<State>("State"sv, Database::instance()->states.states(), m_state);
+      state_picker->setOpen(true);
     }
     ImGui::PopID();
 
@@ -59,12 +62,12 @@ std::tuple<bool, bool> Dialog_ChangeEnemyState::draw() {
       command->enemyOp = static_cast<PartyMemberOperation>(m_operation);
       command->state = m_state;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

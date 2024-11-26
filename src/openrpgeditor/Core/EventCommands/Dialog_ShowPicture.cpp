@@ -7,7 +7,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ShowPicture::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -17,20 +17,23 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
 
     if (picker) {
       auto [closed, confirmed] = picker->draw();
-      if (confirmed) {
-        if (xOrY)
-          m_value2 = picker->selection();
-        else
-          m_value1 = picker->selection();
-
+      if (closed) {
+        if (confirmed) {
+          if (xOrY)
+            m_value2 = picker->selection();
+          else
+            m_value1 = picker->selection();
+        }
         picker.reset();
       }
     }
 
     if (const auto [closed, confirmed] = m_imagePicker->draw(); closed) {
-      if (confirmed) {
-        m_imagePicker->Accept();
-        m_imageName = m_imagePicker->selectedImage();
+      if (closed) {
+        if (confirmed) {
+          m_imagePicker->accept();
+          m_imageName = m_imagePicker->selectedImage();
+        }
       }
     }
 
@@ -55,7 +58,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
       ImGui::Text("Image:");
       ImGui::PushID("##showpicture_image_selection");
       if (ImGui::Button(m_imageName.c_str(), ImVec2{(App::DPIHandler::scale_value(220)), 0})) {
-        m_imagePicker->SetOpen(true);
+        m_imagePicker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndGroup();
@@ -112,14 +115,16 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
       if (ImGui::Button(m_type == 1 ? Database::instance()->variableNameOrId(m_value1).c_str() : "",
                         ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         xOrY = false;
-        picker.emplace("Variables", Database::instance()->system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables, m_value1);
+        picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::PushID("##showpicture_vardesig_y");
       if (ImGui::Button(m_type == 1 ? Database::instance()->variableNameOrId(m_value2).c_str() : "",
                         ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
         xOrY = true;
-        picker.emplace("Variables", Database::instance()->system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables, m_value2);
+        picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -187,12 +192,12 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
       command->opacityValue = m_opacityValue;
       command->blendMode = static_cast<Blend>(m_blendMode);
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

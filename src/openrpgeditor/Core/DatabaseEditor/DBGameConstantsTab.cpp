@@ -216,7 +216,8 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_switchVariblePicker.emplace("Variables", m_parent->project()->system().variables);
+        m_switchVariblePicker.emplace("Variables", m_parent->project()->system().variables, 1);
+        m_switchVariblePicker->setOpen(true);
       }
 
       if (m_switchVariblePicker) {
@@ -265,7 +266,8 @@ void DBGameConstantsTab::draw() {
         ImGui::EndTable();
       }
       if (ImGui::Button("Add")) {
-        m_switchVariblePicker.emplace("Switches", m_parent->project()->system().switches);
+        m_switchVariblePicker.emplace("Switches", m_parent->project()->system().switches, 1);
+        m_switchVariblePicker->setOpen(true);
       }
       if (m_switchVariblePicker) {
         const auto [closed, confirmed] = m_switchVariblePicker->draw();
@@ -311,6 +313,7 @@ void DBGameConstantsTab::draw() {
       }
       if (ImGui::Button("Add")) {
         m_actorsPicker.emplace("Actors", m_parent->project()->actors().actorList(), m_selection);
+        m_actorsPicker->setOpen(true);
       }
       if (m_actorsPicker) {
         const auto [closed, confirmed] = m_actorsPicker->draw();
@@ -357,6 +360,7 @@ void DBGameConstantsTab::draw() {
 
       if (ImGui::Button("Add")) {
         m_classesPicker.emplace("Classes", m_parent->classes().classes(), m_selection);
+        m_classesPicker->setOpen(true);
       }
       if (m_classesPicker) {
         const auto [closed, confirmed] = m_classesPicker->draw();
@@ -404,6 +408,7 @@ void DBGameConstantsTab::draw() {
 
       if (ImGui::Button("Add")) {
         m_skillsPicker.emplace("Skills", m_parent->skills(), m_selection);
+        m_skillsPicker->setOpen(true);
       }
       if (m_skillsPicker) {
         const auto [closed, confirmed] = m_skillsPicker->draw();
@@ -451,6 +456,7 @@ void DBGameConstantsTab::draw() {
 
       if (ImGui::Button("Add")) {
         m_itemsPicker.emplace("Items", m_parent->items(), m_selection);
+        m_itemsPicker->setOpen(true);
       }
       if (m_itemsPicker) {
         const auto [closed, confirmed] = m_itemsPicker->draw();
@@ -498,6 +504,7 @@ void DBGameConstantsTab::draw() {
 
       if (ImGui::Button("Add")) {
         m_weaponsPicker.emplace("Weapons", m_parent->weapons(), m_selection);
+        m_weaponsPicker->setOpen(true);
       }
       if (m_weaponsPicker) {
         const auto [closed, confirmed] = m_weaponsPicker->draw();
@@ -545,6 +552,7 @@ void DBGameConstantsTab::draw() {
 
       if (ImGui::Button("Add")) {
         m_armorsPicker.emplace("Armors", m_parent->armors(), m_selection);
+        m_armorsPicker->setOpen(true);
       }
       if (m_armorsPicker) {
         const auto [closed, confirmed] = m_armorsPicker->draw();
@@ -592,6 +600,7 @@ void DBGameConstantsTab::draw() {
 
       if (ImGui::Button("Add")) {
         m_enemiesPicker.emplace("Enemies", m_parent->enemies(), m_selection);
+        m_enemiesPicker->setOpen(true);
       }
       if (m_enemiesPicker) {
         const auto [closed, confirmed] = m_enemiesPicker->draw();
@@ -639,6 +648,7 @@ void DBGameConstantsTab::draw() {
 
       if (ImGui::Button("Add")) {
         m_troopsPicker.emplace("Troops", m_parent->troops(), m_selection);
+        m_troopsPicker->setOpen(true);
       }
       if (m_troopsPicker) {
         const auto [closed, confirmed] = m_troopsPicker->draw();
@@ -686,6 +696,7 @@ void DBGameConstantsTab::draw() {
 
       if (ImGui::Button("Add")) {
         m_statesPicker.emplace("States", m_parent->states().states(), m_selection);
+        m_statesPicker->setOpen(true);
       }
       if (m_statesPicker) {
         const auto [closed, confirmed] = m_statesPicker->draw();
@@ -733,6 +744,7 @@ void DBGameConstantsTab::draw() {
 
       if (ImGui::Button("Add")) {
         m_animationPicker.emplace("Animations", m_parent->animations(), m_selection);
+        m_animationPicker->setOpen(true);
       }
       if (m_animationPicker) {
         const auto [closed, confirmed] = m_animationPicker->draw();
@@ -780,6 +792,7 @@ void DBGameConstantsTab::draw() {
 
       if (ImGui::Button("Add")) {
         m_tilesetPicker.emplace("Tilesets", m_parent->tilesets(), m_selection);
+        m_tilesetPicker->setOpen(true);
       }
       if (m_tilesetPicker) {
         const auto [closed, confirmed] = m_tilesetPicker->draw();
@@ -827,6 +840,7 @@ void DBGameConstantsTab::draw() {
 
       if (ImGui::Button("Add")) {
         m_commonEventPicker.emplace("Common Events", m_parent->commonEvents(), m_selection);
+        m_commonEventPicker->setOpen(true);
       }
       if (m_commonEventPicker) {
         const auto [closed, confirmed] = m_commonEventPicker->draw();
@@ -874,6 +888,7 @@ void DBGameConstantsTab::draw() {
 
       if (ImGui::Button("Add")) {
         m_mapsPicker.emplace("Maps", Database::instance()->mapInfos.mapInfos(), m_selection);
+        m_mapsPicker->setOpen(true);
       }
       if (m_mapsPicker) {
         const auto [closed, confirmed] = m_mapsPicker->draw();

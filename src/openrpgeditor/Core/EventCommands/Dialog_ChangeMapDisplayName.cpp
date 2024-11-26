@@ -5,7 +5,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeMapDisplayName::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -22,13 +22,13 @@ std::tuple<bool, bool> Dialog_ChangeMapDisplayName::draw() {
     if (ImGui::Button("OK")) {
       command->checkIfOn = m_checkIfOn == 0 ? ValueControl::ON : ValueControl::OFF;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
       m_confirmed = true;
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

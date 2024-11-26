@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -15,19 +15,21 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     if (goodsDialog) {
       auto [closed, confirmed] = goodsDialog->draw();
-      if (confirmed) {
-        if (m_selection_type == 1) {
-          APP_INFO("Running selection type 1");
-          m_goods.push_back(std::static_pointer_cast<ShopProcessingGoodCommand>(goodsDialog->getCommand()));
-        } else if (m_selection_type == 2) {
-          APP_INFO("Running selection type 2");
-          std::shared_ptr<ShopProcessingGoodCommand> shopCmd = std::static_pointer_cast<ShopProcessingGoodCommand>(goodsDialog->getCommand());
-          APP_INFO(std::to_string(shopCmd->id) + "\n" + std::to_string(shopCmd->price) + "\n" + std::to_string(static_cast<int>(shopCmd->type)) + "\n" +
-                   std::to_string(static_cast<int>(shopCmd->priceType)));
-          m_id = shopCmd->id;
-          m_priceType = static_cast<int>(shopCmd->priceType);
-          m_type = static_cast<int>(shopCmd->type);
-          m_price = shopCmd->price;
+      if (closed) {
+        if (confirmed) {
+          if (m_selection_type == 1) {
+            APP_INFO("Running selection type 1");
+            m_goods.push_back(std::static_pointer_cast<ShopProcessingGoodCommand>(goodsDialog->getCommand()));
+          } else if (m_selection_type == 2) {
+            APP_INFO("Running selection type 2");
+            std::shared_ptr<ShopProcessingGoodCommand> shopCmd = std::static_pointer_cast<ShopProcessingGoodCommand>(goodsDialog->getCommand());
+            APP_INFO(std::to_string(shopCmd->id) + "\n" + std::to_string(shopCmd->price) + "\n" + std::to_string(static_cast<int>(shopCmd->type)) + "\n" +
+                     std::to_string(static_cast<int>(shopCmd->priceType)));
+            m_id = shopCmd->id;
+            m_priceType = static_cast<int>(shopCmd->priceType);
+            m_type = static_cast<int>(shopCmd->type);
+            m_price = shopCmd->price;
+          }
         }
         goodsDialog.reset();
       }
@@ -65,7 +67,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
             if (!goodsDialog)
               goodsDialog.emplace("Goods Processing", m_id, m_price, m_type, m_priceType);
 
-            goodsDialog->SetOpen(true);
+            goodsDialog->setOpen(true);
           }
           m_goods_selection = 0;
           if (isSelected)
@@ -97,7 +99,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
               if (!goodsDialog)
                 goodsDialog.emplace("Goods Processing", m_goods.at(n));
 
-              goodsDialog->SetOpen(true);
+              goodsDialog->setOpen(true);
             }
             m_goods_selection = n + 1;
             if (isSelected)
@@ -123,7 +125,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
           if (!goodsDialog)
             goodsDialog.emplace("Goods Processing");
 
-          goodsDialog->SetOpen(true);
+          goodsDialog->setOpen(true);
         }
         m_goods_selection = m_goods.size() + 1;
         if (isSelected)
@@ -145,12 +147,12 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
         command->type = static_cast<ShopType>(m_type);
         command->price = m_price;
         ImGui::CloseCurrentPopup();
-        SetOpen(false);
+        setOpen(false);
       }
       ImGui::SameLine();
       if (ImGui::Button("Cancel")) {
         ImGui::CloseCurrentPopup();
-        SetOpen(false);
+        setOpen(false);
       }
       ImGui::EndGroup();
     }

@@ -5,7 +5,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_TimerControl::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -31,12 +31,12 @@ std::tuple<bool, bool> Dialog_TimerControl::draw() {
       command->control = static_cast<TimerControl>(m_operation);
       command->seconds = (m_minute * 60) + m_second;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

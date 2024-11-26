@@ -11,7 +11,8 @@ struct Dialog_MovementSwitchON : IEventDialogController {
     if (cmd == nullptr) {
       command.reset(new MovementSwitchONCommand());
     }
-    picker.emplace("Switches", Database::instance()->system.switches);
+    picker.emplace("Switches", Database::instance()->system.switches, cmd->id);
+    picker->setOpen(true);
   }
   std::tuple<bool, bool> draw() override;
 

@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_EnemyTransform::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -41,7 +41,8 @@ std::tuple<bool, bool> Dialog_EnemyTransform::draw() {
     std::string text = Database::instance()->enemyName(m_enemy);
     ImGui::PushID("##enemytransform_selection");
     if (ImGui::Button(text.c_str(), ImVec2{App::DPIHandler::scale_value(160), 0})) {
-      enemy_picker = ObjectPicker<Enemy>("Enemy"sv, Database::instance()->enemies.enemies(), 0);
+      enemy_picker = ObjectPicker<Enemy>("Enemy"sv, Database::instance()->enemies.enemies(), m_enemy);
+      enemy_picker->setOpen(true);
     }
     ImGui::PopID();
 
@@ -50,12 +51,12 @@ std::tuple<bool, bool> Dialog_EnemyTransform::draw() {
       command->enemy = m_troop_selection - 1;
       command->transform = m_enemy;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

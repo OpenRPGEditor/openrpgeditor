@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_PlayMovie::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -30,7 +30,7 @@ std::tuple<bool, bool> Dialog_PlayMovie::draw() {
             m_confirmed = true;
             command->name = m_movie;
             ImGui::CloseCurrentPopup();
-            SetOpen(false);
+            setOpen(false);
           }
           m_selected = 0;
           m_movie = "";
@@ -45,7 +45,7 @@ std::tuple<bool, bool> Dialog_PlayMovie::draw() {
               m_confirmed = true;
               command->name = m_movie;
               ImGui::CloseCurrentPopup();
-              SetOpen(false);
+              setOpen(false);
             }
             m_selected = n + 1;
             m_movie = m_movies.at(m_selected - 1);
@@ -62,12 +62,12 @@ std::tuple<bool, bool> Dialog_PlayMovie::draw() {
       m_confirmed = true;
       command->name = m_movie;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

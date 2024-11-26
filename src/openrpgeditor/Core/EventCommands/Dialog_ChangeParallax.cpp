@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeParallax::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -15,9 +15,11 @@ std::tuple<bool, bool> Dialog_ChangeParallax::draw() {
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (const auto [closed, confirmed] = m_imagePicker->draw(); closed) {
-      if (confirmed) {
-        m_imagePicker->Accept();
-        m_image = m_imagePicker->selectedImage();
+      if (closed) {
+        if (confirmed) {
+          m_imagePicker->accept();
+          m_image = m_imagePicker->selectedImage();
+        }
       }
     }
 
@@ -26,7 +28,7 @@ std::tuple<bool, bool> Dialog_ChangeParallax::draw() {
     ImGui::Text("Image:");
     ImGui::PushID("#parallax_image_selection");
     if (ImGui::Button(m_image.c_str(), ImVec2{(App::DPIHandler::scale_value(300)), 0})) {
-      m_imagePicker->SetOpen(true);
+      m_imagePicker->setOpen(true);
     }
     ImGui::PopID();
     ImGui::Checkbox("Loop Horizontally", &m_loopHorizontally);
@@ -61,12 +63,12 @@ std::tuple<bool, bool> Dialog_ChangeParallax::draw() {
       command->scrollX = m_scrollX;
       command->scrollY = m_scrollY;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
 
     ImGui::EndPopup();

@@ -7,6 +7,7 @@
 #include <optional>
 
 struct Actor;
+struct Armor;
 struct Class;
 struct Skill;
 struct Item;

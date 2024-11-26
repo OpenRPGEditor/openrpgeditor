@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeNickname::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,8 +16,10 @@ std::tuple<bool, bool> Dialog_ChangeNickname::draw() {
 
     if (actor_picker) {
       auto [closed, confirmed] = actor_picker->draw();
-      if (confirmed) {
-        m_actor = actor_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_actor = actor_picker->selection();
+        }
         actor_picker.reset();
       }
     }
@@ -27,7 +29,8 @@ std::tuple<bool, bool> Dialog_ChangeNickname::draw() {
     // Actor Button
     ImGui::PushID("##nickname_selection_actor");
     if (ImGui::Button(Database::instance()->actorName(m_actor).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), 0);
+      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_actor);
+      actor_picker->setOpen(true);
     }
     ImGui::PopID();
 
@@ -40,12 +43,12 @@ std::tuple<bool, bool> Dialog_ChangeNickname::draw() {
       command->actor = m_actor;
       command->nick = m_nickname;
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

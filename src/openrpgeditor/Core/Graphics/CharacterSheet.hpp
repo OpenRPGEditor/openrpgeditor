@@ -29,8 +29,13 @@ struct CharacterSheet {
 
   int numCharacters() const { return (m_sheetTexture.width() / characterWidth()) + (m_sheetTexture.height() / characterHeight()); }
 
+  std::string_view characterName() const { return m_characterName; }
+
+  operator ImTextureID() const { return m_sheetTexture.operator ImTextureID(); }
+
 private:
   bool m_isSingleCharacter = false;
   bool m_noShift6_noHalfTransInBush = false;
+  std::string m_characterName;
   Texture m_sheetTexture;
 };

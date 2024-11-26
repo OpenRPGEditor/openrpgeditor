@@ -7,7 +7,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -17,22 +17,28 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
 
     if (armor_picker) {
       auto [closed, confirmed] = armor_picker->draw();
-      if (confirmed) {
-        m_armor_selection = armor_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_armor_selection = armor_picker->selection();
+        }
         armor_picker.reset();
       }
     }
     if (item_picker) {
       auto [closed, confirmed] = item_picker->draw();
-      if (confirmed) {
-        m_item_selection = item_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_item_selection = item_picker->selection();
+        }
         item_picker.reset();
       }
     }
     if (weapon_picker) {
       auto [closed, confirmed] = weapon_picker->draw();
-      if (confirmed) {
-        m_weapon_selection = weapon_picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_weapon_selection = weapon_picker->selection();
+        }
         weapon_picker.reset();
       }
     }
@@ -53,7 +59,8 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
       ImGui::BeginDisabled(m_type_selection != 0);
       ImGui::PushID("##merchandise_items");
       if (ImGui::Button(m_type_selection != 0 ? "" : Database::instance()->itemNameOrId(m_item_selection).c_str(), ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
-        item_picker = ObjectPicker<Item>("Items"sv, Database::instance()->items.items(), 0);
+        item_picker = ObjectPicker<Item>("Items"sv, Database::instance()->items.items(), m_item_selection);
+        item_picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -62,7 +69,8 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
       ImGui::BeginDisabled(m_type_selection != 1);
       ImGui::PushID("##merchandise_weapon");
       if (ImGui::Button(m_type_selection != 1 ? "" : Database::instance()->weaponNameOrId(m_weapon_selection).c_str(), ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
-        weapon_picker = ObjectPicker<Weapon>("Weapons"sv, Database::instance()->weapons.weapons(), 0);
+        weapon_picker = ObjectPicker<Weapon>("Weapons"sv, Database::instance()->weapons.weapons(), m_weapon_selection);
+        weapon_picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -71,7 +79,8 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
       ImGui::BeginDisabled(m_type_selection != 2);
       ImGui::PushID("##merchandise_armor");
       if (ImGui::Button(m_type_selection != 2 ? "" : Database::instance()->armorNameOrId(m_armor_selection).c_str(), ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
-        armor_picker = ObjectPicker<Armor>("Armors"sv, Database::instance()->armors.armors(), 0);
+        armor_picker = ObjectPicker<Armor>("Armors"sv, Database::instance()->armors.armors(), m_armor_selection);
+        armor_picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -127,12 +136,12 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
           command->price = m_price_constant;
         }
         ImGui::CloseCurrentPopup();
-        SetOpen(false);
+        setOpen(false);
       }
       ImGui::SameLine();
       if (ImGui::Button("Cancel")) {
         ImGui::CloseCurrentPopup();
-        SetOpen(false);
+        setOpen(false);
       }
       ImGui::EndGroup();
     }

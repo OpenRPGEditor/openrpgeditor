@@ -67,7 +67,7 @@ void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const i
 }
 
 std::tuple<bool, bool> CharacterPicker::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
 

@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeEnemyTP::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,8 +16,10 @@ std::tuple<bool, bool> Dialog_ChangeEnemyTP::draw() {
 
     if (picker) {
       auto [closed, confirmed] = picker->draw();
-      if (confirmed) {
-        m_quantity_var = picker->selection();
+      if (closed) {
+        if (confirmed) {
+          m_quantity_var = picker->selection();
+        }
         picker.reset();
       }
     }
@@ -66,7 +68,8 @@ std::tuple<bool, bool> Dialog_ChangeEnemyTP::draw() {
       ImGui::BeginDisabled(m_quantitySource != 1);
       ImGui::PushID("##changeenemymp_quant_var");
       if (ImGui::Button(m_quantitySource == 1 ? Database::instance()->variableNameAndId(m_quantity_var).c_str() : "", ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables, m_quantity_var);
+        picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -87,12 +90,12 @@ std::tuple<bool, bool> Dialog_ChangeEnemyTP::draw() {
         command->quantity = m_quantity;
 
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
 
     ImGui::EndPopup();

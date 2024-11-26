@@ -57,7 +57,7 @@ void ImagePicker::setImageInfo(std::string_view imageName, std::string_view imag
 }
 
 std::tuple<bool, bool> ImagePicker::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
 

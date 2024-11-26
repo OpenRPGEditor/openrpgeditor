@@ -8,7 +8,7 @@
 
 std::tuple<bool, bool> Dialog_ControlVariables::draw() {
 
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
     // SetOpen(false);
   }
@@ -18,11 +18,13 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     if (picker) {
       auto [closed, confirmed] = picker->draw();
-      if (confirmed) {
-        if (singleRequest) {
-          m_variable_var = picker->selection();
-        } else {
-          m_variable = picker->selection();
+      if (closed) {
+        if (confirmed) {
+          if (singleRequest) {
+            m_variable_var = picker->selection();
+          } else {
+            m_variable = picker->selection();
+          }
         }
         picker.reset();
       }
@@ -53,7 +55,8 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
       ImGui::BeginDisabled(m_operation_var != 0);
       if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetWindowContentRegionMax().x - 100) - 15 * App::DPIHandler::get_ui_scale(), 0})) {
         singleRequest = true;
-        picker.emplace("Variables", Database::instance()->system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables, m_operation_var);
+        picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -113,7 +116,8 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
       ImGui::PushID("##controlvariable_id2");
       if (ImGui::Button(text.c_str(), ImVec2{App::DPIHandler::scale_value(300), 0})) {
         singleRequest = false;
-        picker.emplace("Variables", Database::instance()->system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables, m_operand);
+        picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -138,7 +142,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
         if (!gameDataDialog)
           gameDataDialog.emplace("Game Data", m_gameData_type, m_gameData_rawSource, m_gameData_value);
 
-        gameDataDialog->SetOpen(true);
+        gameDataDialog->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -181,12 +185,12 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
         }
       }
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::EndPopup();
   }

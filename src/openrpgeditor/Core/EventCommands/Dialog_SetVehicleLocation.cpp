@@ -6,7 +6,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_SetVehicleLocation::draw() {
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -16,19 +16,22 @@ std::tuple<bool, bool> Dialog_SetVehicleLocation::draw() {
 
     if (picker) {
       auto [closed, confirmed] = picker->draw();
-      if (confirmed) {
-        switch (m_var_selection) {
-        case 0:
-          m_mapId_var = picker->selection();
-          break;
-        case 1:
-          m_x_var = picker->selection();
-          break;
-        case 2:
-          m_y_var = picker->selection();
-          break;
+      if (closed) {
+        if (confirmed) {
+          switch (m_var_selection) {
+          case 0:
+            m_mapId_var = picker->selection();
+            break;
+          case 1:
+            m_x_var = picker->selection();
+            break;
+          case 2:
+            m_y_var = picker->selection();
+            break;
+          default:
+            break;
+          }
         }
-
         picker.reset();
       }
     }
@@ -80,21 +83,24 @@ std::tuple<bool, bool> Dialog_SetVehicleLocation::draw() {
       ImGui::PushID("##transfer_var_mapId");
       if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_mapId_var).c_str() : "", ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 0;
-        picker.emplace("Variables", Database::instance()->system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables, m_mapId_var);
+        picker->setOpen(true);
       }
       ImGui::PopID();
 
       ImGui::PushID("##transfer_var_x");
       if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_x_var).c_str() : "", ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 1;
-        picker.emplace("Variables", Database::instance()->system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables, m_x_var);
+        picker->setOpen(true);
       }
       ImGui::PopID();
 
       ImGui::PushID("##transfer_var_y");
       if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_y_var).c_str() : "", ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
         m_var_selection = 2;
-        picker.emplace("Variables", Database::instance()->system.variables);
+        picker.emplace("Variables", Database::instance()->system.variables, m_y_var);
+        picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -116,12 +122,12 @@ std::tuple<bool, bool> Dialog_SetVehicleLocation::draw() {
       }
 
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
     ImGui::SameLine();
     if (ImGui::Button("Cancel")) {
       ImGui::CloseCurrentPopup();
-      SetOpen(false);
+      setOpen(false);
     }
 
     ImGui::EndPopup();

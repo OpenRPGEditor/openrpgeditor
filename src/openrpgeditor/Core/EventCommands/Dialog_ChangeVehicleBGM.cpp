@@ -8,7 +8,7 @@
 using namespace std::string_view_literals;
 std::tuple<bool, bool> Dialog_ChangeVehicleBGM::draw() {
 
-  if (IsOpen()) {
+  if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -89,11 +89,11 @@ std::tuple<bool, bool> Dialog_ChangeVehicleBGM::draw() {
         command->bgm = m_audio;
         command->vehicle = static_cast<VehicleType>(m_vehicle);
         ImGui::CloseCurrentPopup();
-        SetOpen(false);
+        setOpen(false);
       }
       ImGui::SameLine();
       if (ImGui::Button("Cancel")) {
-        SetOpen(false);
+        setOpen(false);
       }
     }
     ImGui::EndGroup();

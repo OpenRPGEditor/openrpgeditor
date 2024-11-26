@@ -404,8 +404,8 @@ add_library(
         Core/CommonUI/GameWindowColorPicker.hpp
 )
 
-target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${clip_SOURCE_DIR})
-target_compile_features(orecore PRIVATE cxx_std_20)
+target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${clip_SOURCE_DIR} ${cpuid_SOURCE_DIR})
+target_compile_features(orecore PRIVATE cxx_std_23)
 target_link_libraries(
         orecore
         PRIVATE project_warnings
@@ -421,6 +421,7 @@ target_link_libraries(
         sfml-audio
         oremath
         libcurl
+        cpuid
 )
 
 # Define set of OS specific files to include
@@ -435,9 +436,9 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
             Platform/Linux/DPIHandler.cpp)
 endif ()
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(orecore PRIVATE /utf-8)
-endif()
+endif ()
 
 add_executable(${NAME} WIN32 MACOSX_BUNDLE
         App/Main.cpp
@@ -445,16 +446,16 @@ add_executable(${NAME} WIN32 MACOSX_BUNDLE
         App/ProjectInfo.cpp
 )
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(${NAME} PRIVATE /utf-8)
-endif()
+endif ()
 
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/AppAssets.cmake)
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/Packaging.cmake)
 
 target_include_directories(${NAME} PUBLIC)
-target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML)
-target_compile_features(${NAME} PRIVATE cxx_std_20)
+target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${cpuid_SOURCE_DIR})
+target_compile_features(${NAME} PRIVATE cxx_std_23)
 target_link_libraries(
         ${NAME}
         PRIVATE project_warnings
@@ -470,6 +471,7 @@ target_link_libraries(
         librpgmmovementroutecmds
         freetype
         sfml-audio
+        cpuid
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebugInfo")

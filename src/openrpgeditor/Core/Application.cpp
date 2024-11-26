@@ -18,8 +18,6 @@
 #include "Core/Resources.hpp"
 #include "Core/Settings.hpp"
 #include "Core/Window.hpp"
-#include "Database/RPGEquations.hpp"
-#include "SFML/Audio.hpp"
 #include "misc/freetype/imgui_freetype.h"
 
 #include "Core/NWJSVersionManager.hpp"
@@ -30,10 +28,17 @@
 #include "FirstBootWizard/UISettingsPage.hpp"
 #include "FirstBootWizard/WelcomePage.hpp"
 
+#include <libcpuid/libcpuid.h>
+
 #include <iostream>
 namespace App {
 Application* APP = nullptr;
 Application::Application(const std::string& title) {
+  if (!cpuid_present()) {
+    std::cerr << "CPU does not support this CPU" << std::endl;
+  } else {
+    std::cout << magic_enum::enum_name<cpu_vendor_t>(cpuid_get_vendor()) << std::endl;
+  }
 #if !defined(WIN32) && !defined(APPLE)
   // We want the compositor to be enabled
   SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");

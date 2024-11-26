@@ -78,6 +78,12 @@ FetchContent_Declare(curl
         GIT_REPOSITORY "https://github.com/curl/curl.git"
         GIT_TAG curl-8_10_1
 )
+
+FetchContent_Declare(cpuid
+        GIT_REPOSITORY "https://github.com/anrieff/libcpuid.git"
+        GIT_TAG v0.7.0
+)
+
 #FetchContent_Declare(liblcf
 #        GIT_REPOSITORY "https://github.com/EasyRPG/liblcf.git"
 #)
@@ -119,10 +125,10 @@ FetchContent_MakeAvailable(
         SFML
         imgui
         implot
+        cpuid
 )
 
 add_subdirectory(imgui-setup)
-
 
 #target_include_directories(ImGuiFileDialog PRIVATE ${imgui_SOURCE_DIR})
 #target_compile_definitions(ImGuiFileDialog PRIVATE USE_THUMBNAILS DONT_DEFINE_AGAIN__STB_IMAGE_IMPLEMENTATION)

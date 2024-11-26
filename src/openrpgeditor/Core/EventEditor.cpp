@@ -2,10 +2,12 @@
 
 #include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
+#include "Core/ImGuiExt/ImGuiNotify.hpp"
 
 #include "Database/Event.hpp"
 #include "Database/EventCommands/EventDummy.hpp"
 #include "Database/EventPage.hpp"
+#include "Database/EventParser.hpp"
 
 #include <format>
 #include <string>
@@ -69,6 +71,34 @@ bool EventEditor::draw() {
           if (m_selectedPage != -1) {
             m_pages[m_selectedPage].clearPage();
           }
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Save as\nTemplate")) {
+          template_picker = ObjectPicker("Templates"sv, Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+
+        }
+      }
+      if (template_picker) {
+        auto [closed, confirmed] = template_picker->draw();
+        if (confirmed) {
+          nlohmann::ordered_json eventJson;
+          EventParser parser;
+          EventParser::serialize(eventJson, *m_event);
+          if (template_picker.value().selection() == 0) {
+            Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
+                                                                 "New Event Template " + std::to_string(Database::instance()->templates.templates.size() + 1), Template::TemplateType::Event,
+                                                                 eventJson.dump(), {}));
+          }
+          else {
+            Database::instance()->templates.templates.at(template_picker.value().selection() - 1).commands = eventJson.dump();
+          }
+          if (Database::instance()->templates.serialize(Database::instance()->basePath + "data/Templates.json")) {
+            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Saved event as template successfully!"});
+          } else {
+            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to saved event as template!"});
+          }
+          Database::instance()->templates.templates.back().commands = eventJson.dump();
+          template_picker.reset();
         }
       }
       ImGui::EndGroup();

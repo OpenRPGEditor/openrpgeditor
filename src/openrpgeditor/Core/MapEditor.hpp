@@ -140,6 +140,7 @@ private:
   bool m_hasScrolled = true;
   bool m_prisonMode{true};
   bool m_regionMode{false};
+  bool m_templateSaving{false};
 
   std::optional<ObjectPicker<Template>> template_picker;
 

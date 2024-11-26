@@ -38,6 +38,7 @@ private:
   Templates* m_templates = nullptr;
   std::vector<Templates*> m_template;
   std::vector<std::shared_ptr<IEventCommand>> m_currentCommands;
+  int m_id{0};
   int m_selection{0};
   int m_templateType{0};
   std::string m_templateName;

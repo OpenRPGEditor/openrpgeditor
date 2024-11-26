@@ -114,6 +114,7 @@ void DBTemplatesTab::draw() {
   }
 }
   void DBTemplatesTab::SetTemplate() {
+    m_id = m_templates->templates.at(m_selection).id;
     m_templateName = m_templates->templates.at(m_selection).name;
     m_templateType = static_cast<int>(m_templates->templates.at(m_selection).type);
     m_currentTemplate = CreateTemplateDialog(static_cast<Template::TemplateType>(m_templateType));
@@ -149,6 +150,7 @@ void DBTemplatesTab::draw() {
   void DBTemplatesTab::AddTemplate(std::string label, Template::TemplateType type, std::string commandString, std::vector<int> params) {
     m_templates->addTemplate(Template(m_templates->templates.size() + 1, label + " " + std::to_string(m_templates->templates.size() + 1), type, commandString, params));
 
+    m_id = m_templates->templates.back().id;
     m_templateName = m_templates->templates.back().name;
     m_templateType = static_cast<int>(m_templates->templates.back().type);
     m_currentCommands.clear();

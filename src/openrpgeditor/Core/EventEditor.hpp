@@ -27,6 +27,8 @@ struct EventEditor {
   int id() const { return m_id; }
 
 private:
+  std::optional<ObjectPicker<Template>> template_picker;
+
   Project* m_parent = nullptr;
   Event* m_event = nullptr;
   int m_id;

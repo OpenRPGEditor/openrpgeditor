@@ -7,6 +7,7 @@
 
 void to_json(nlohmann::ordered_json& j, const Template& templ) {
   j = {
+      {"id", templ.id},
       {"name", templ.name},
       {"type", templ.type},
       {"commands", templ.commands},

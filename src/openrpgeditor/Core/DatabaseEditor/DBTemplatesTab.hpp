@@ -56,7 +56,7 @@ private:
       case Template::TemplateType::Tint:
         return std::make_shared<TemplatesTint>(&m_templates->templates.at(m_selection), m_parent);
       default:
-        break;
+        return nullptr;
       }
     }
   }

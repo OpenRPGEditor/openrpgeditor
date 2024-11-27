@@ -14,6 +14,7 @@ public:
   enum class TemplateType { Command, Tint, Event };
   int id = 0;
   std::string name;
+  std::string note;
   TemplateType type;
   std::string commands;
   std::vector<int> parameters;

@@ -7,12 +7,21 @@
 
 
 void TemplatesEvent::draw() {
-  ImGui::SetNextWindowSize(ImVec2{720, 640} * App::DPIHandler::get_ui_scale(), ImGuiCond_Once);
+  ImGui::SetNextWindowSize(ImVec2{500, 400} * App::DPIHandler::get_ui_scale(), ImGuiCond_Once);
   if (ImGui::Begin("Template Properties", &m_open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings)) {
+    ImGui::Text("ID:");
+    ImGui::SetNextItemWidth(200 * App::DPIHandler::get_ui_scale());
+    ImGui::InputInt("##orpg_templates_event_properties_id", &m_id);
     ImGui::Text("Name:");
-    ImGui::InputText("##orpg_templates_event_properties_name", &m_eventName);ImGui::BeginChild("ArrowButtons", {70, 70});
+    ImGui::InputText("##orpg_templates_event_properties_name", &m_eventName);
+    ImGui::Text("Note:");
+    ImGui::InputText("##orpg_templates_event_properties_note", &m_eventNote);
+    ImGui::BeginChild("ArrowButtons", ImVec2{150, 150} * App::DPIHandler::get_ui_scale(), 0, ImGuiWindowFlags_NoBackground);
+    ImGui::Text("Initial Direction:");
     ImGui::Columns(3, nullptr, false);
-    //ImGui::PushButtonRepeat(true);
+    ImGui::SetColumnWidth(0, 40.f);
+    ImGui::SetColumnWidth(1, 40.f);
+    ImGui::SetColumnWidth(2, 40.f);
     for (int i = 0; i < 9; i++)
     {
       switch (i)
@@ -21,25 +30,34 @@ void TemplatesEvent::draw() {
         //if (ImGui::ArrowButton("##UpLeft", ImGuiDir_UpLeft)){}
         break;
       case 1:
-        if (ImGui::ArrowButton("##Up", ImGuiDir_Up)){}
+        if (ImGui::ArrowButton("##Up", ImGuiDir_Up)){
+          m_characterIndex = 8;
+        }
         break;
       case 2:
         //if (ImGui::ArrowButton("##UpRight", ImGuiDir_UpRight)){}
         break;
       case 3:
-        if (ImGui::ArrowButton("##Left", ImGuiDir_Left)){}
+        if (ImGui::ArrowButton("##Left", ImGuiDir_Left)){
+          m_characterIndex = 4;
+        }
         break;
       case 4:
-        if (ImGui::Button("C")){}
+        ImGui::SetCursorPos(ImVec2{ImGui::GetCursorPosX() + 10, ImGui::GetCursorPosY() + 5} * App::DPIHandler::get_ui_scale());
+        ImGui::Text("%s", std::to_string(m_characterIndex).c_str());
         break;
       case 5:
-        if (ImGui::ArrowButton("##Right", ImGuiDir_Right)){}
+        if (ImGui::ArrowButton("##Right", ImGuiDir_Right)){
+          m_characterIndex = 6;
+        }
         break;
       case 6:
         //if (ImGui::ArrowButton("##DownLeft", ImGuiDir_DownLeft)){}
         break;
       case 7:
-        if (ImGui::ArrowButton("##Down", ImGuiDir_Down)){}
+        if (ImGui::ArrowButton("##Down", ImGuiDir_Down)){
+          m_characterIndex = 2;
+        }
         break;
       case 8:
         //if (ImGui::ArrowButton("##DownRight", ImGuiDir_DownRight)){}
@@ -47,8 +65,29 @@ void TemplatesEvent::draw() {
       }
       ImGui::NextColumn();
     }
-    //ImGui::PopButtonRepeat();
     ImGui::EndChild();
+
+    ImGui::BeginGroup();
+    {
+      if (ImGui::Button("OK")) {
+        m_event->id = m_id;
+        m_event->name = m_eventName;
+        m_event->note = m_eventNote;
+        for (auto& page : m_event->pages) {
+          page.image.characterIndex = m_characterIndex;
+        }
+        m_open = false;
+        ImGui::CloseCurrentPopup();
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("Cancel")) {
+        m_open = false;
+        ImGui::CloseCurrentPopup();
+      }
+    }
+    ImGui::EndGroup();
+    //ImGui::PopButtonRepeat();
+    //ImGui::EndChild();
   }
   ImGui::End();
 };

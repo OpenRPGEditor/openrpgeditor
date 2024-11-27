@@ -5,6 +5,8 @@
 #include "Database/Templates.hpp"
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
+#include <cstring>
+
 void DBTemplatesTab::draw() {
 
   ImGui::BeginChild("##orpg_templates_editor");
@@ -24,6 +26,7 @@ void DBTemplatesTab::draw() {
           }
           m_selection = m_templates->templates.size() > 0 ? m_templates->templates.size() - 1 : 0;
         }
+      }
         ImGui::SameLine();
         if (ImGui::Button("Delete", ImVec2{App::DPIHandler::scale_value(300), 0})) {}
         ImGui::SameLine();
@@ -62,7 +65,7 @@ void DBTemplatesTab::draw() {
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(10));
         ImGui::Text("Name:");
         ImGui::SameLine();
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(500));
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(700));
         ImGui::Text("Type:");
         // TemplateType List
         ImGui::BeginGroup();
@@ -98,6 +101,17 @@ void DBTemplatesTab::draw() {
           }
         }
         ImGui::EndGroup();
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 10.f);
+        ImGui::BeginGroup(); {
+          ImGui::Text("Note:");
+          char note[8192];
+          strncpy(note, m_templateNote.c_str(), IM_ARRAYSIZE(note));
+          if (ImGui::InputTextMultiline("##orpg_templates_note_input", note, IM_ARRAYSIZE(note),
+                                        ImVec2{App::DPIHandler::scale_value(875), App::DPIHandler::scale_value(150)})) {
+            m_templateNote = note;
+          }
+          ImGui::EndGroup();
+        }
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(10));
         ImGui::BeginGroup();
         {
@@ -112,10 +126,10 @@ void DBTemplatesTab::draw() {
     }
     ImGui::EndChild();
   }
-}
   void DBTemplatesTab::SetTemplate() {
     m_id = m_templates->templates.at(m_selection).id;
     m_templateName = m_templates->templates.at(m_selection).name;
+    m_templateNote = m_templates->templates.at(m_selection).note;
     m_templateType = static_cast<int>(m_templates->templates.at(m_selection).type);
     m_currentTemplate = CreateTemplateDialog(static_cast<Template::TemplateType>(m_templateType));
 
@@ -133,6 +147,7 @@ void DBTemplatesTab::draw() {
 
   void DBTemplatesTab::SaveChanges() {
     m_templates->templates.at(m_selection).name = m_templateName;
+    m_templates->templates.at(m_selection).note = m_templateNote;
     m_templates->templates.at(m_selection).type = static_cast<Template::TemplateType>(m_templateType);
     if (m_templates->templates.at(m_selection).type == Template::TemplateType::Command) {
       m_templates->templates.at(m_selection).parameters.clear();
@@ -148,7 +163,7 @@ void DBTemplatesTab::draw() {
     }
   }
   void DBTemplatesTab::AddTemplate(std::string label, Template::TemplateType type, std::string commandString, std::vector<int> params) {
-    m_templates->addTemplate(Template(m_templates->templates.size() + 1, label + " " + std::to_string(m_templates->templates.size() + 1), type, commandString, params));
+    m_templates->addTemplate(Template(m_templates->templates.size() + 1, label + " " + std::to_string(m_templates->templates.size() + 1), "", type, commandString, params));
 
     m_id = m_templates->templates.back().id;
     m_templateName = m_templates->templates.back().name;

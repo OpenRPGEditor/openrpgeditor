@@ -487,7 +487,7 @@ void MapEditor::draw() {
               EventParser::serialize(eventJson, *m_selectedEvent);
               if (template_picker.value().selection() == 0) {
                 Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
-                                                                     "New Event Template " + std::to_string(Database::instance()->templates.templates.size() + 1), Template::TemplateType::Event,
+                                                                     "New Event Template " + std::to_string(Database::instance()->templates.templates.size() + 1), "", Template::TemplateType::Event,
                                                                      eventJson.dump(), {}));
 
               }
@@ -510,7 +510,7 @@ void MapEditor::draw() {
               ev.x = tileCellX();
               ev.y = tileCellY();
               map()->createEventFromTemplate(ev);
-              eventProperties = TemplatesEvent(map()->createEventFromTemplate(ev), nullptr);
+              eventProperties = TemplatesEvent(map()->createEventFromTemplate(ev), map(),nullptr);
             }
           }
           template_picker.reset();

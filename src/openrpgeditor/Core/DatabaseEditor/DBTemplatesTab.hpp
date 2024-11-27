@@ -21,6 +21,7 @@ struct DBTemplatesTab : IDBEditorTab {
         m_currentCommands = parser.parse(cmdJson);
       }
       m_commandEditor.setCommands(&m_currentCommands);
+      m_templateNote = m_templates->templates.at(m_selection).note;
       m_templateName = m_templates->templates.at(m_selection).name;
       m_templateType = static_cast<int>(m_templates->templates.at(m_selection).type);
       m_currentTemplate = CreateTemplateDialog(static_cast<Template::TemplateType>(m_templates->templates.at(m_selection).type));
@@ -42,6 +43,7 @@ private:
   int m_selection{0};
   int m_templateType{0};
   std::string m_templateName;
+  std::string m_templateNote;
   bool m_hasChanges = false;
   EventCommandEditor m_commandEditor;
 

@@ -87,7 +87,7 @@ bool EventEditor::draw() {
             EventParser::serialize(eventJson, *m_event);
             if (template_picker.value().selection() == 0) {
               Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
-                                                                   "New Event Template " + std::to_string(Database::instance()->templates.templates.size() + 1), Template::TemplateType::Event,
+                                                                   "New Event Template " + std::to_string(Database::instance()->templates.templates.size() + 1), "", Template::TemplateType::Event,
                                                                    eventJson.dump(), {}));
             }
             else {

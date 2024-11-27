@@ -65,5 +65,6 @@ private:
   }
   void AddTemplate(std::string label, Template::TemplateType type, std::string commandString, std::vector<int> params);
   void SetTemplate();
+  void SaveToFile(int selectionIndex);
   void SaveChanges();
 };

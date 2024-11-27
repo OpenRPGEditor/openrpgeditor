@@ -17,18 +17,15 @@ void DBTemplatesTab::draw() {
       if (ImGui::Button("Add", ImVec2{App::DPIHandler::scale_value(300), 0})) {
 
         AddTemplate("New Template", Template::TemplateType::Command, "", {});
-        if (m_templates->serialize(m_parent->project()->database().basePath + "data/Templates.json")) {
-          ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Serialized data/Templates.json successfully!"});
-          if (m_templates->serialize(Database::instance()->basePath + "data/Templates.json")) {
-            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Serialized data/Templates.json successfully!"});
-          } else {
-            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to serialize data/Templates.json!"});
-          }
-          m_selection = m_templates->templates.size() > 0 ? m_templates->templates.size() - 1 : 0;
-        }
+        SaveToFile(m_templates->templates.size() > 0 ? m_templates->templates.size() - 1 : 0);
       }
         ImGui::SameLine();
-        if (ImGui::Button("Delete", ImVec2{App::DPIHandler::scale_value(300), 0})) {}
+        if (ImGui::Button("Delete", ImVec2{App::DPIHandler::scale_value(300), 0})) {
+          int start = m_templates->templates.at(m_selection).id;
+          m_templates->templates.erase(m_templates->templates.begin() + start, m_templates->templates.begin() + start);
+          int selection = m_selection == 0 ? (m_selection + 1) : ((m_selection == m_templates->templates.size() - 1) ? (m_selection - 1) : (m_selection - 1));
+          SaveToFile(selection);
+        }
         ImGui::SameLine();
 
         ImGui::BeginDisabled(!(m_hasChanges || m_currentTemplate->hasChanges() || m_templateType == 0));
@@ -175,4 +172,15 @@ void DBTemplatesTab::draw() {
     nlohmann::ordered_json cmdJson;
     CommandParser::serialize(cmdJson, m_currentCommands);
     m_templates->templates.at(m_templates->templates.size() - 1).commands = cmdJson.dump();
+  }
+
+  void DBTemplatesTab::SaveToFile(int selectionIndex) {
+    if (m_templates->serialize(m_parent->project()->database().basePath + "data/Templates.json")) {
+      if (m_templates->serialize(Database::instance()->basePath + "data/Templates.json")) {
+        ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Serialized data/Templates.json successfully!"});
+      } else {
+        ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to serialize data/Templates.json!"});
+      }
+      m_selection = selectionIndex;
+    }
   }

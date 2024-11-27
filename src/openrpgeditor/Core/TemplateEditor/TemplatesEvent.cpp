@@ -1,6 +1,5 @@
 #include "Core/TemplateEditor/TemplatesEvent.hpp"
 #include "Core/Application.hpp"
-#include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Database/Templates.hpp"
 
 #include "imgui.h"
@@ -70,18 +69,26 @@ void TemplatesEvent::draw() {
     ImGui::BeginGroup();
     {
       if (ImGui::Button("OK")) {
-        m_event->id = m_id;
+        if (m_id < m_map->events.size()) {
+          if (m_id != m_event->id) {
+            // User requested that the event index be changed
+            int oldIndex = m_event->id;
+            int newIndex = m_map->events.at(m_id)->id;
+            std::swap(m_map->events.at(oldIndex), m_map->events.at(newIndex));
+            m_event->id = m_id;
+          }
+        }
         m_event->name = m_eventName;
         m_event->note = m_eventNote;
         for (auto& page : m_event->pages) {
           page.image.characterIndex = m_characterIndex;
         }
-        m_open = false;
+        m_hasChanges = true;
         ImGui::CloseCurrentPopup();
       }
       ImGui::SameLine();
       if (ImGui::Button("Cancel")) {
-        m_open = false;
+        m_hasChanges = true;
         ImGui::CloseCurrentPopup();
       }
     }

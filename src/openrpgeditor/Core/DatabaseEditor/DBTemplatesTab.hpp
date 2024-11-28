@@ -4,6 +4,7 @@
 #include "Core/TemplateEditor/IDBTemplates.hpp"
 #include "Core/TemplateEditor/TemplatesCommand.hpp"
 #include "Core/TemplateEditor/TemplatesTint.hpp"
+#include "Core/TemplateEditor/TemplatesEventProperties.hpp"
 #include "Database/Templates.hpp"
 
 #include <optional>
@@ -16,11 +17,16 @@ struct DBTemplatesTab : IDBEditorTab {
         m_currentCommands.emplace_back(std::make_shared<EventDummy>());
         m_currentCommands.back()->indent = 0;
       } else {
-        CommandParser parser;
-        nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(m_templates->templates.at(m_selection).commands);
-        m_currentCommands = parser.parse(cmdJson);
+        if (m_templates->templates.at(m_selection).type == Template::TemplateType::Command) {
+          CommandParser parser;
+          nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(m_templates->templates.at(m_selection).commands);
+          m_currentCommands = parser.parse(cmdJson);
+          m_commandEditor.setCommands(&m_currentCommands);
+        }
+        else {
+          m_currentCommands.clear();
+        }
       }
-      m_commandEditor.setCommands(&m_currentCommands);
       m_templateNote = m_templates->templates.at(m_selection).note;
       m_templateName = m_templates->templates.at(m_selection).name;
       m_templateType = static_cast<int>(m_templates->templates.at(m_selection).type);
@@ -58,6 +64,8 @@ private:
         return std::make_shared<TemplatesCommand>(&m_templates->templates.at(m_selection), m_parent);
       case Template::TemplateType::Tint:
         return std::make_shared<TemplatesTint>(&m_templates->templates.at(m_selection), m_parent);
+      case Template::TemplateType::Event:
+        return std::make_shared<TemplatesEventProperties>(&m_templates->templates.at(m_selection), m_parent);
       default:
         return nullptr;
       }
@@ -65,6 +73,6 @@ private:
   }
   void AddTemplate(std::string label, Template::TemplateType type, std::string commandString, std::vector<int> params);
   void SetTemplate();
-  void SaveToFile(int selectionIndex);
+  void SaveToFile();
   void SaveChanges();
 };

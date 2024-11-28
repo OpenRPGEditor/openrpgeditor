@@ -463,6 +463,9 @@ void MapEditor::draw() {
       handleMouseInput(win);
 
       if (ImGui::BeginPopupContextWindow()) {
+        m_tileCursor.setPosition(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
+        m_selectedEvent = map()->eventAt(m_tileCursor.tileX(), m_tileCursor.tileY());
+        ImGui::BeginDisabled(m_selectedEvent == nullptr);
         if (ImGui::MenuItem("Insert template...")) {
           m_templateSaving = false;
           template_picker = ObjectPicker("Templates"sv, Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
@@ -475,6 +478,7 @@ void MapEditor::draw() {
           template_picker->setNoSelectionMeansAdd(true);
           template_picker->setOpen(true);
         }
+        ImGui::EndDisabled();
         ImGui::EndPopup();
       }
       if (template_picker) {

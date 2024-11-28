@@ -17,18 +17,37 @@ void DBTemplatesTab::draw() {
       if (ImGui::Button("Add", ImVec2{App::DPIHandler::scale_value(300), 0})) {
 
         AddTemplate("New Template", Template::TemplateType::Command, "", {});
-        SaveToFile(m_templates->templates.size() > 0 ? m_templates->templates.size() - 1 : 0);
+        m_selection = m_templates->templates.size() > 0 ? m_templates->templates.size() - 1 : 0;
+        SetTemplate();
+        SaveToFile();
       }
         ImGui::SameLine();
+        ImGui::BeginDisabled(m_templates->templates.size() == 0);
         if (ImGui::Button("Delete", ImVec2{App::DPIHandler::scale_value(300), 0})) {
           int start = m_templates->templates.at(m_selection).id;
-          m_templates->templates.erase(m_templates->templates.begin() + start, m_templates->templates.begin() + start);
-          int selection = m_selection == 0 ? (m_selection + 1) : ((m_selection == m_templates->templates.size() - 1) ? (m_selection - 1) : (m_selection - 1));
-          SaveToFile(selection);
+          if (m_templates->templates.size() == 1) {
+            m_templates->templates.clear();
+          }
+          else {
+            if (start >= 0) {
+              m_templates->templates.erase(m_templates->templates.begin() + (start-1));
+            }
+          }
+          int idx{1};
+          for (auto& templ : m_templates->templates) {
+            templ.id = idx;
+            idx++; // Reorder the indexes
+          }
+          m_selection = m_selection == m_templates->templates.size() ? (m_selection - 1) : m_selection;
+          if (m_templates->templates.size() > 0) {
+            SetTemplate();
+          }
+          SaveToFile();
         }
+        ImGui::EndDisabled();
         ImGui::SameLine();
 
-        ImGui::BeginDisabled(!(m_hasChanges || m_currentTemplate->hasChanges() || m_templateType == 0));
+        ImGui::BeginDisabled(!(m_hasChanges || m_currentTemplate->hasChanges() || m_templateType == 0) || m_templates->templates.size() < 1);
         if (ImGui::Button("Apply", ImVec2{App::DPIHandler::scale_value(300), 0})) {
           SaveChanges();
           if (m_templates->serialize(m_parent->project()->database().basePath + "data/Templates.json")) {
@@ -77,9 +96,13 @@ void DBTemplatesTab::draw() {
           }
           ImGui::SameLine();
           ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+          ImGui::BeginDisabled(m_templateType == 2); // Shouldn't let event templates change
           if (ImGui::BeginCombo("##orpg_templatetypes_list", DecodeEnumName(magic_enum::enum_name(static_cast<Template::TemplateType>(m_templateType))).c_str())) {
             int index{0};
             for (auto& dir : magic_enum::enum_values<Template::TemplateType>()) {
+
+              if (magic_enum::enum_index(dir).value() == 2) { continue; } // Skip event val
+
               bool is_selected = m_templateType == magic_enum::enum_index(dir).value();
               if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
                 m_templateType = magic_enum::enum_index(dir).value();
@@ -96,6 +119,7 @@ void DBTemplatesTab::draw() {
             }
             ImGui::EndCombo();
           }
+          ImGui::EndDisabled();
         }
         ImGui::EndGroup();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 10.f);
@@ -135,9 +159,14 @@ void DBTemplatesTab::draw() {
       m_currentCommands.emplace_back(std::make_shared<EventDummy>());
       m_currentCommands.back()->indent = 0;
     } else {
-      CommandParser parser;
-      nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(m_templates->templates.at(m_selection).commands);
-      m_currentCommands = parser.parse(cmdJson);
+      if (m_templateType == 0) {
+        CommandParser parser;
+        nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(m_templates->templates.at(m_selection).commands);
+        m_currentCommands = parser.parse(cmdJson);
+      }
+      else {
+        m_currentCommands.clear(); // Everything else has no commands
+      }
     }
     m_hasChanges = false;
   }
@@ -160,27 +189,29 @@ void DBTemplatesTab::draw() {
     }
   }
   void DBTemplatesTab::AddTemplate(std::string label, Template::TemplateType type, std::string commandString, std::vector<int> params) {
+
+    m_currentCommands.clear();
+    m_currentCommands.emplace_back(std::make_shared<EventDummy>());
+    m_currentCommands.back()->indent = 0;
+    m_commandEditor.setCommands(&m_currentCommands);
+
     m_templates->addTemplate(Template(m_templates->templates.size() + 1, label + " " + std::to_string(m_templates->templates.size() + 1), "", type, commandString, params));
 
     m_id = m_templates->templates.back().id;
     m_templateName = m_templates->templates.back().name;
     m_templateType = static_cast<int>(m_templates->templates.back().type);
-    m_currentCommands.clear();
-    m_currentCommands.emplace_back(std::make_shared<EventDummy>());
-    m_currentCommands.back()->indent = 0;
 
     nlohmann::ordered_json cmdJson;
     CommandParser::serialize(cmdJson, m_currentCommands);
     m_templates->templates.at(m_templates->templates.size() - 1).commands = cmdJson.dump();
   }
 
-  void DBTemplatesTab::SaveToFile(int selectionIndex) {
+  void DBTemplatesTab::SaveToFile() {
     if (m_templates->serialize(m_parent->project()->database().basePath + "data/Templates.json")) {
       if (m_templates->serialize(Database::instance()->basePath + "data/Templates.json")) {
         ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Serialized data/Templates.json successfully!"});
       } else {
         ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to serialize data/Templates.json!"});
       }
-      m_selection = selectionIndex;
     }
   }

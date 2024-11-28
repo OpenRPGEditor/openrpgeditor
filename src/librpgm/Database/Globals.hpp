@@ -774,6 +774,27 @@ enum class FormatColor {
   Default,
 };
 
+/**
+ * @name Flags
+ * @brief Allows the developer to set specific tile behaviors
+ */
+enum class TileFlags {
+  None = 0,
+  PassageSouth = 1 << 0,                                                //!< If set characters cannot pass through from the south, if unset they can
+  PassageWest = 1 << 1,                                                 //!< If set characters cannot pass through from the west, if unset they can
+  PassageEast = 1 << 2,                                                 //!< If set characters cannot pass through from the east, if unset they can
+  PassageNorth = 1 << 3,                                                //!< If set characters cannot pass through from the north, if unset they can
+  PassageHigherTile = 1 << 4,                                           //!< If set characters cannot pass through from below, if unset they can
+  Impassable = PassageNorth | PassageSouth | PassageEast | PassageWest, //!< If all cardinal direction flags are set characters cannot pass from any direction, if unset they can
+  Ladder = 1 << 5,                                                      //!< If unset Tile behaves like a ladder, if unset it doesn't
+  Bush = 1 << 6,                                                        //!< Tile behaves like a bush, if unset it doesn't
+  Counter = 1 << 7,                                                     //!< If unset this flag forces the tile to be moved 12 pixels down, if unset it doesn't
+  Damage = 1 << 8,                                                      //!< If unset this flag causes damage to the player character, if unset they can
+  BoatPassage = 1 << 9,                                                 //!< If unset boats cannot pass through, if unset they can
+  ShipPassage = 1 << 10,                                                //!< If unset ships cannot pass through, if unset they can
+  AirshipPassage = 1 << 11,                                             //!< If unset Airships cannot pass through, if unset they can
+};
+
 void ReplaceStr(std::string& str, const std::string& oldStr, const std::string& newStr);
 std::string DecodeEnumName(std::string_view str);
 template <typename E>

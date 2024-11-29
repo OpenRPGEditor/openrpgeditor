@@ -1,12 +1,20 @@
-#include "TemplatesEvent.hpp"
+#include "Core/TemplateEditor/Dialog/TemplatesEvent.hpp"
 #include "Core/Application.hpp"
 #include "Database/Templates.hpp"
 
 #include "imgui.h"
 
+#include "IconsFontAwesome6.h"
 void TemplatesEvent::draw() {
+  static constexpr std::array<std::string_view, 4> kDirectionArrows = {{
+      ICON_FA_ARROW_DOWN,
+      ICON_FA_ARROW_LEFT,
+      ICON_FA_ARROW_RIGHT,
+      ICON_FA_ARROW_UP,
+  }};
   ImGui::SetNextWindowSize(ImVec2{500, 400} * App::DPIHandler::get_ui_scale(), ImGuiCond_Once);
-  if (ImGui::Begin("Template Properties", &m_open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoResize)) {
+  if (ImGui::Begin("Template Properties", &m_open,
+                   ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoResize)) {
     ImGui::Text("ID:");
     ImGui::SetNextItemWidth(200 * App::DPIHandler::get_ui_scale());
     ImGui::InputInt("##orpg_templates_event_properties_id", &m_id);
@@ -17,9 +25,11 @@ void TemplatesEvent::draw() {
     ImGui::BeginChild("ArrowButtons", ImVec2{150, 150} * App::DPIHandler::get_ui_scale(), 0, ImGuiWindowFlags_NoBackground);
     ImGui::Text("Initial Direction:");
     ImGui::Columns(3, nullptr, false);
-    ImGui::SetColumnWidth(0, 40.f);
-    ImGui::SetColumnWidth(1, 40.f);
-    ImGui::SetColumnWidth(2, 40.f);
+    const auto size = ImGui::CalcTextSize(ICON_FA_ARROW_LEFT);
+    const auto width = size.x + (ImGui::GetStyle().FramePadding.x * 2) + (ImGui::GetStyle().ItemSpacing.x * 2);
+    ImGui::SetColumnWidth(0, width);
+    ImGui::SetColumnWidth(1, width);
+    ImGui::SetColumnWidth(2, width);
     for (int i = 0; i < 9; i++) {
       switch (i) {
       case 0:
@@ -39,8 +49,8 @@ void TemplatesEvent::draw() {
         }
         break;
       case 4:
-        ImGui::SetCursorPos(ImVec2{ImGui::GetCursorPosX() + 10, ImGui::GetCursorPosY() + 5} * App::DPIHandler::get_ui_scale());
-        ImGui::Text("%s", std::to_string(m_direction).c_str());
+        ImGui::SetCursorPos(ImVec2{ImGui::GetCursorPosX() + size.x / 2, ImGui::GetCursorPosY() + size.y / 2});
+        ImGui::Text("%s", kDirectionArrows[(m_direction - 2) / 2].data());
         break;
       case 5:
         if (ImGui::ArrowButton("##Right", ImGuiDir_Right)) {

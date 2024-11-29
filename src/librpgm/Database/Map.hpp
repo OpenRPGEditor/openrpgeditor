@@ -27,7 +27,7 @@ public:
 
   [[nodiscard]] std::vector<std::optional<Event>> getSorted() const {
     std::vector<std::optional<Event>> ret = events;
-    std::sort(ret.begin(), ret.end(), [](const std::optional<Event>& a, const std::optional<Event>& b) {
+    std::ranges::sort(ret, [](const std::optional<Event>& a, const std::optional<Event>& b) {
       if (!a || !b) {
         return false;
       }
@@ -37,31 +37,39 @@ public:
   }
 
   Event* event(int id) {
-    auto it = std::find_if(events.begin(), events.end(), [&id](const auto& ev) { return ev && ev->id == id; });
 
-    if (it != events.end()) {
+    if (const auto it = std::ranges::find_if(events, [&id](const auto& ev) { return ev && ev->id == id; }); it != events.end()) {
       return &it->value();
     }
     return nullptr;
   }
 
   Event* eventAt(int x, int y) {
-    auto it = std::find_if(events.begin(), events.end(), [&x, &y](const auto& ev) { return ev && ev->x == x && ev->y == y; });
-    if (it != events.end()) {
+    if (const auto it = std::ranges::find_if(events, [&x, &y](const auto& ev) { return ev && ev->x == x && ev->y == y; }); it != events.end()) {
       return &it->value();
     }
 
     return nullptr;
   }
 
+  std::vector<Event*> eventsAt(const int x, const int y) {
+    std::vector<Event*> ret;
+    std::ranges::for_each(events, [&ret, &x, &y](auto& ev) {
+      if (ev && ev->x == x && ev->y == y) {
+        ret.push_back(&ev.value());
+      }
+    });
+    return ret;
+  }
+
   Event* createNewEvent() {
     if (events.empty()) {
       events.emplace_back();
     }
-    auto it = std::find_if(events.begin() + 1, events.end(), [](const auto& ev) { return !ev; });
+    const auto it = std::find_if(events.begin() + 1, events.end(), [](const auto& ev) { return !ev; });
     Event* ret;
     if (it != events.end()) {
-      (*it) = Event();
+      *it = Event();
       (*it)->id = it - events.begin();
       ret = &it->value();
     } else {
@@ -75,7 +83,7 @@ public:
     m_isDirty = true;
     return ret;
   }
-  Event* createEventFromTemplate(Event ev, int index) {
+  Event* createEventFromTemplate(const Event& ev) {
     // Inserts new template
     if (ev.id == events.size()) {
       events.emplace_back(ev);
@@ -83,21 +91,34 @@ public:
       events.insert(events.begin() + ev.id, ev);
     }
     // Resort and rename
-    for (int i = (ev.id + 1); i < events.size(); ++i) {
+    for (int i = ev.id + 1; i < events.size(); ++i) {
       events.at(i)->id = i + 1;
       if (events.at(i)->name.contains("EV")) {
         events.at(i)->name = std::format("EV{:03} ", i);
       }
     }
-    return &(*events.back());
+    return &(*events.at(ev.id));
   }
 
   void deleteEvent(int id) {
-    auto it = std::find_if(events.begin(), events.end(), [&id](const auto& ev) { return ev && ev->id == id; });
-    if (it != events.end()) {
-      (*it).reset();
+    if (const auto it = std::ranges::find_if(events, [&id](const auto& ev) { return ev && ev->id == id; }); it != events.end()) {
+      it->reset();
       m_isDirty = true;
     }
+  }
+
+  int findOrMakeFreeId() const {
+    if (events.empty()) {
+      return 1;
+    }
+
+    for (int i = 0; i < events.size(); ++i) {
+      if (!events[i]) {
+        return i;
+      }
+    }
+
+    return events.size();
   }
 
   void resize(int newWidth, int newHeight);
@@ -132,7 +153,7 @@ public:
   bool m_isValid{false};
 
   bool isDirty() {
-    m_isDirty |= std::any_of(events.begin(), events.end(), [](const auto& e) { return e && e->isDirty(); });
+    m_isDirty |= std::ranges::any_of(events, [](const auto& e) { return e && e->isDirty(); });
 
     return m_isDirty;
   }

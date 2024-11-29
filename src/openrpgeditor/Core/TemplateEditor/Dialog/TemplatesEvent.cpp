@@ -88,15 +88,15 @@ void TemplatesEvent::draw() {
         m_event->name = m_eventName;
         m_event->note = m_eventNote;
 
-        m_event->x = tileX;
-        m_event->y = tileY;
+        m_event->x = m_tileX;
+        m_event->y = m_tileY;
         for (auto& page : m_event->pages) {
           page.image.direction = static_cast<Direction>(m_direction);
         }
         if (m_id != m_event->id) {
           m_event->id = m_id;
         }
-        m_map->createEventFromTemplate(*m_event, m_event->id);
+        m_map->createEventFromTemplate(*m_event);
         m_hasChanges = true;
         ImGui::CloseCurrentPopup();
       }

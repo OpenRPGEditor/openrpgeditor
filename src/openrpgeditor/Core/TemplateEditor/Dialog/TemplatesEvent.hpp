@@ -6,8 +6,8 @@
 
 struct TemplatesEvent : IDBTemplates {
   TemplatesEvent() = delete;
-  explicit TemplatesEvent(Event* ev, Map* map, DatabaseEditor* parent, int x, int y) : IDBTemplates(parent), m_map(map), m_event(ev), tileX(x), tileY(y) {
-    m_id = m_map->events.size() - 1;
+  explicit TemplatesEvent(Event* ev, Map* map, DatabaseEditor* parent, int x, int y) : IDBTemplates(parent), m_map(map), m_event(ev), m_tileX(x), m_tileY(y) {
+    m_id = m_map->findOrMakeFreeId();
     m_eventName = m_event->name;
     m_eventNote = m_event->note;
     m_direction = static_cast<int>(m_event->pages.front().image.direction); // We assume that the character index for one page defines the rest.
@@ -29,8 +29,8 @@ private:
   int m_direction;
   int m_id;
 
-  int tileX;
-  int tileY;
+  int m_tileX;
+  int m_tileY;
 
   bool m_hasChanges{false};
   bool m_open{true};

@@ -462,24 +462,33 @@ void MapEditor::draw() {
 
       handleMouseInput(win);
 
-      if (ImGui::BeginPopupContextWindow()) {
-        m_tileCursor.setPosition(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
-        m_selectedEvent = map()->eventAt(m_tileCursor.tileX(), m_tileCursor.tileY());
-        ImGui::BeginDisabled(m_selectedEvent == nullptr);
-        if (ImGui::MenuItem("Insert template...")) {
-          m_templateSaving = false;
-          template_picker = ObjectPicker("Templates"sv, Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
-          template_picker->setNoSelectionMeansAdd(false);
-          template_picker->setOpen(true);
+      if (m_selectedEvent) {
+        if (ImGui::BeginPopupContextWindow()) {
+          ImGui::BeginDisabled(true);
+          if (ImGui::MenuItem("Insert template...")) {}
+          ImGui::EndDisabled();
+          if (ImGui::MenuItem("Save as template...")) {
+            m_templateSaving = true;
+            template_picker = ObjectPicker("Templates"sv, Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+            template_picker->setNoSelectionMeansAdd(true);
+            template_picker->setOpen(true);
+          }
+          ImGui::EndPopup();
         }
-        if (ImGui::MenuItem("Save as template...")) {
-          m_templateSaving = true;
-          template_picker = ObjectPicker("Templates"sv, Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
-          template_picker->setNoSelectionMeansAdd(true);
-          template_picker->setOpen(true);
+      } else {
+        // No event selected, but it should still show if the map cursor is on the screen
+        if (ImGui::BeginPopupContextWindow()) {
+          if (ImGui::MenuItem("Insert template...")) {
+            m_templateSaving = false;
+            template_picker = ObjectPicker("Templates"sv, Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+            template_picker->setNoSelectionMeansAdd(false);
+            template_picker->setOpen(true);
+          }
+          ImGui::BeginDisabled(true);
+          if (ImGui::MenuItem("Save as template...")) {}
+          ImGui::EndDisabled();
+          ImGui::EndPopup();
         }
-        ImGui::EndDisabled();
-        ImGui::EndPopup();
       }
       if (template_picker) {
         auto [closed, confirmed] = template_picker->draw();
@@ -493,28 +502,19 @@ void MapEditor::draw() {
                 Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
                                                                      "New Event Template " + std::to_string(Database::instance()->templates.templates.size() + 1), "", Template::TemplateType::Event,
                                                                      eventJson.dump(), {}));
-
-              }
-              else {
-                Database::instance()->templates.templates.at(template_picker.value().selection() - 1).commands = eventJson.dump();
-              }
-              if (Database::instance()->templates.serialize(Database::instance()->basePath + "data/Templates.json")) {
-                ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Saved event as template successfully!"});
+                templateName_picker = TemplateName(&Database::instance()->templates.templates.back(), nullptr);
               } else {
-                ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to saved event as template!"});
+                Database::instance()->templates.templates.at(template_picker.value().selection() - 1).commands = eventJson.dump();
+                templateName_picker = TemplateName(&Database::instance()->templates.templates.at(template_picker.value().selection() - 1), nullptr);
               }
               Database::instance()->templates.templates.back().commands = eventJson.dump();
-            }
-            else {
+
+            } else {
               nlohmann::ordered_json eventJson = nlohmann::ordered_json::parse(Database::instance()->templates.templates.at(template_picker->selection() - 1).commands);
 
-              Event ev = parser.parse(eventJson);
-              ev.id = map()->events.size();
-              // Ask here to change the properties of the event
-              ev.x = tileCellX();
-              ev.y = tileCellY();
-              map()->createEventFromTemplate(ev);
-              eventProperties = TemplatesEvent(map()->createEventFromTemplate(ev), map(),nullptr);
+              m_templateEvent.emplace(parser.parse(eventJson));
+              m_templateEvent.value().id = map()->events.size() - 1;
+              eventProperties = TemplatesEvent(&m_templateEvent.value(), map(), nullptr, tileCellX(), tileCellY());
             }
           }
           template_picker.reset();
@@ -523,8 +523,18 @@ void MapEditor::draw() {
       if (eventProperties) {
         eventProperties->draw();
         if (eventProperties->hasChanges()) {
-          // Perform event changes
           eventProperties.reset();
+        }
+      }
+      if (templateName_picker) {
+        templateName_picker->draw();
+        if (templateName_picker->hasChanges()) {
+          if (Database::instance()->templates.serialize(Database::instance()->basePath + "data/Templates.json")) {
+            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Saved event as template successfully!"});
+          } else {
+            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to saved event as template!"});
+          }
+          templateName_picker.reset();
         }
       }
 

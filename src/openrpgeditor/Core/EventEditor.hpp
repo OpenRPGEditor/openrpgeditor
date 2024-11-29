@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Core/EventEditor/EVPage.hpp"
+#include "Core/TemplateEditor/Dialog/TemplatesEvent.hpp"
 #include "Database/Event.hpp"
-#include "Core/TemplateEditor/TemplatesEvent.hpp"
 
 #include <vector>
 

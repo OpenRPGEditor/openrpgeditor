@@ -4,11 +4,12 @@
 #include "Core/MapEditor/MapEvent.hpp"
 #include "Core/MapEditor/MapRenderer.hpp"
 
+#include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/EventEditor.hpp"
 #include "Database/MapInfos.hpp"
 #include "MapEditor/MapCursor.hpp"
 #include "OREMath/Rect.hpp"
-#include "Core/CommonUI/ObjectPicker.hpp"
+#include "TemplateEditor/Dialog/TemplateName.hpp"
 
 struct Project;
 struct Map;
@@ -144,6 +145,8 @@ private:
 
   std::optional<ObjectPicker<Template>> template_picker;
   std::optional<TemplatesEvent> eventProperties;
+  std::optional<TemplateName> templateName_picker;
+  std::optional<Event> m_templateEvent;
 
   int m_movingEventX = -1;
   int m_movingEventY = -1;

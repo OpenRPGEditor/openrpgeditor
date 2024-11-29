@@ -1,4 +1,4 @@
-#include "Core/TemplateEditor/TemplatesEvent.hpp"
+#include "TemplatesEvent.hpp"
 #include "Core/Application.hpp"
 #include "Database/Templates.hpp"
 
@@ -6,7 +6,7 @@
 
 void TemplatesEvent::draw() {
   ImGui::SetNextWindowSize(ImVec2{500, 400} * App::DPIHandler::get_ui_scale(), ImGuiCond_Once);
-  if (ImGui::Begin("Template Properties", &m_open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings)) {
+  if (ImGui::Begin("Template Properties", &m_open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoResize)) {
     ImGui::Text("ID:");
     ImGui::SetNextItemWidth(200 * App::DPIHandler::get_ui_scale());
     ImGui::InputInt("##orpg_templates_event_properties_id", &m_id);

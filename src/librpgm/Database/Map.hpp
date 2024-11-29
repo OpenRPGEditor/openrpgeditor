@@ -75,8 +75,20 @@ public:
     m_isDirty = true;
     return ret;
   }
-  Event* createEventFromTemplate(Event ev) {
-    events.emplace_back(ev);
+  Event* createEventFromTemplate(Event ev, int index) {
+    // Inserts new template
+    if (ev.id == events.size()) {
+      events.emplace_back(ev);
+    } else {
+      events.insert(events.begin() + ev.id, ev);
+    }
+    // Resort and rename
+    for (int i = (ev.id + 1); i < events.size(); ++i) {
+      events.at(i)->id = i + 1;
+      if (events.at(i)->name.contains("EV")) {
+        events.at(i)->name = std::format("EV{:03} ", i);
+      }
+    }
     return &(*events.back());
   }
 

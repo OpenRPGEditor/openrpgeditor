@@ -181,5 +181,6 @@ private:
   bool m_showTileDebug{false};
 
   float m_menuBarHeight{};
+  float m_toolbarButtonSize{};
   float m_toolbarSize = 32;
 };

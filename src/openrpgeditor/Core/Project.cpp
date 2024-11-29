@@ -165,7 +165,7 @@ void Project::setupDocking() {
 }
 
 void Project::drawToolbar() {
-  const ImVec2 ButtonSize = ImVec2{32, 32} * App::DPIHandler::get_ui_scale();
+  const ImVec2 ButtonSize = {m_toolbarButtonSize, m_toolbarButtonSize};
   ImGuiViewport* viewport = ImGui::GetMainViewport();
   ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + m_menuBarHeight));
   ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, m_toolbarSize));
@@ -295,7 +295,9 @@ void Project::drawToolbar() {
 }
 
 void Project::draw() {
-  m_toolbarSize = App::DPIHandler::scale_value(Settings::instance()->fontSize + 32);
+  m_toolbarButtonSize = ImGui::CalcTextSize(ICON_FA_EYE_SLASH).x;
+  m_toolbarSize = m_toolbarButtonSize + (ImGui::GetStyle().ItemSpacing.y * 4) + (ImGui::GetStyle().FramePadding.y * 4);
+  m_toolbarButtonSize += ImGui::GetStyle().ItemSpacing.x * 2;
   drawMenu();
   drawToolbar();
   setupDocking();

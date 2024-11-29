@@ -26,7 +26,7 @@ void TemplatesEvent::draw() {
     ImGui::Text("Initial Direction:");
     ImGui::Columns(3, nullptr, false);
     const auto size = ImGui::CalcTextSize(ICON_FA_ARROW_LEFT);
-    const auto width = size.x + (ImGui::GetStyle().FramePadding.x * 2) + (ImGui::GetStyle().ItemSpacing.x * 2);
+    const auto width = size.x + (ImGui::GetStyle().FramePadding.x * 2) + (ImGui::GetStyle().ItemSpacing.x);
     ImGui::SetColumnWidth(0, width);
     ImGui::SetColumnWidth(1, width);
     ImGui::SetColumnWidth(2, width);
@@ -49,7 +49,7 @@ void TemplatesEvent::draw() {
         }
         break;
       case 4:
-        ImGui::SetCursorPos(ImVec2{ImGui::GetCursorPosX() + size.x / 2, ImGui::GetCursorPosY() + size.y / 2});
+        ImGui::SetCursorPos(ImVec2{ImGui::GetCursorPosX() + size.x / 2, ImGui::GetCursorPosY() + size.y / 2} - (ImGui::GetStyle().ItemSpacing / 2));
         ImGui::Text("%s", kDirectionArrows[(m_direction - 2) / 2].data());
         break;
       case 5:

@@ -412,7 +412,7 @@ add_library(
         Core/TemplateEditor/Dialog/TemplateName.hpp
 )
 
-target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${clip_SOURCE_DIR} ${cpuid_SOURCE_DIR})
+target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${clip_SOURCE_DIR} ${cpuid_SOURCE_DIR} "${angelscript_SOURCE_DIR}../../include" "${angelscript_SOURCE_DIR}../../../add_on")
 target_compile_features(orecore PRIVATE cxx_std_23)
 target_link_libraries(
         orecore
@@ -430,6 +430,7 @@ target_link_libraries(
         oremath
         libcurl
         cpuid
+        angelscript
 )
 
 # Define set of OS specific files to include
@@ -462,7 +463,7 @@ include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/AppAssets.cmake)
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/Packaging.cmake)
 
 target_include_directories(${NAME} PUBLIC)
-target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${cpuid_SOURCE_DIR})
+target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${cpuid_SOURCE_DIR} "${angelscript_SOURCE_DIR}../../include" "${angelscript_SOURCE_DIR}../../../add_on")
 target_compile_features(${NAME} PRIVATE cxx_std_23)
 target_link_libraries(
         ${NAME}
@@ -480,6 +481,7 @@ target_link_libraries(
         freetype
         sfml-audio
         cpuid
+        angelscript
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebugInfo")

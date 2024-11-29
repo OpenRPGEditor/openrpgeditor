@@ -4,6 +4,19 @@
 
 #include <SDL.h>
 
+static int roundUp(const int numToRound, const int multiple) {
+  if (multiple == 0)
+    return numToRound;
+
+  int remainder = abs(numToRound) % multiple;
+  if (remainder == 0)
+    return numToRound;
+
+  if (numToRound < 0)
+    return -(abs(numToRound) - remainder);
+  return numToRound + multiple - remainder;
+}
+
 static int SDL_CalculatePitch(Uint32 format, int width) {
   int pitch;
 
@@ -44,8 +57,8 @@ void GameWindowBackground::update(const int r, const int g, const int b) {
   if (m_sizeChanged || !m_isInitialized) {
     SDL_SetRenderDrawColor(App::APP->getWindow()->getNativeRenderer(), 0, 0, 0, 0);
     SDL_RenderClear(App::APP->getWindow()->getNativeRenderer());
-    int cols = m_width / 96;
-    int rows = m_height / 96;
+    int cols = roundUp(m_width, 96) / 96;
+    int rows = roundUp(m_height, 96) / 96;
 
     SDL_Rect screct{0, 0, 96, 96};
     SDL_Rect dstrect{0, 0, m_width, m_height};
@@ -91,6 +104,5 @@ void GameWindowBackground::setSize(const int width, const int height) {
     m_width = width;
     m_height = height;
     m_sizeChanged = true;
-    m_isInitialized = false;
   }
 }

@@ -365,6 +365,7 @@ void Project::drawCreateNewProjectPopup() {
     if (confirmed) {
       const auto projectName = m_createNewProject.projectName();
       const auto gameTitle = m_createNewProject.gameTitle();
+      const auto copyExampleProject = m_createNewProject.copyExample();
 
       const auto projectPath = Settings::instance()->projectBaseDirectory / std::filesystem::path(projectName);
 
@@ -377,11 +378,30 @@ void Project::drawCreateNewProjectPopup() {
         std::ofstream projectFile(projectFilePath);
         projectFile << KnownRPGMVVersions[KnownRPGMVVersions.size() - 2] << std::endl;
         SerializationQueue::instance().setBasepath(projectPath.generic_string());
-        m_database.emplace(projectPath.generic_string(), projectFilePath.generic_string(), KnownRPGMVVersions[KnownRPGMVVersions.size() - 2]);
-        m_database->system.gameTitle = gameTitle;
-        m_database->system.locale = "en_US";
-        m_database->system.versionId = floor(rand() * 100000000);
-        m_database->serializeProject();
+        if (copyExampleProject) {
+          // TODO: Locale
+          std::filesystem::path examplePath = std::filesystem::path(Settings::instance()->rpgMakerLocation) / "NewData";
+          examplePath.make_preferred();
+          if (exists(examplePath)) {
+            for (const auto& entry : std::filesystem::recursive_directory_iterator(examplePath)) {
+              const auto tmpPath = entry.path().generic_string().substr(examplePath.generic_string().size() + 1);
+              const auto destPath = projectPath / std::filesystem::path(tmpPath);
+              if (entry.is_directory() && !exists(destPath)) {
+                create_directories(destPath);
+              } else if (entry.is_regular_file()) {
+                std::cout << destPath.generic_string() << std::endl;
+                std::filesystem::copy_file(entry.path(), destPath);
+              }
+            }
+          }
+        }
+        if (!copyExampleProject) {
+          m_database.emplace(projectPath.generic_string(), projectFilePath.generic_string(), KnownRPGMVVersions[KnownRPGMVVersions.size() - 2]);
+          m_database->system.gameTitle = gameTitle;
+          m_database->system.locale = "en_US";
+          m_database->system.versionId = floor(rand() * 100000000);
+          m_database->serializeProject();
+        }
         while (SerializationQueue::instance().hasTasks()) {}
         load(projectFilePath.generic_string(), projectPath.generic_string());
       }

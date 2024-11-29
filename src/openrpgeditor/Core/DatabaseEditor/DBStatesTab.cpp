@@ -9,7 +9,6 @@ DBStatesTab::DBStatesTab(States& States, DatabaseEditor* parent) : IDBEditorTab(
   if (m_selectedState) {
     // m_traitsEditor.setTraits(&m_selectedClass->traits);
   }
-  m_maxStates = m_states.count();
 }
 
 void DBStatesTab::draw() {
@@ -41,11 +40,11 @@ void DBStatesTab::draw() {
         }
         ImGui::EndChild();
         char str[4096];
-        snprintf(str, 4096, "Max States %i", m_maxStates);
+        snprintf(str, 4096, "Max States %i", m_states.count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
           m_changeIntDialogOpen = true;
-          m_editMaxStates = m_maxStates;
+          m_editMaxStates = m_states.count();
         }
       }
       ImGui::EndGroup();
@@ -80,15 +79,14 @@ void DBStatesTab::draw() {
           ImGui::Text("Are you sure?");
           if (ImGui::Button("Yes")) {
             int tmpId = m_selectedState->id;
-            m_maxStates = m_editMaxStates;
-            m_states.resize(m_maxStates);
+            m_states.resize(m_editMaxStates);
             m_selectedState = m_states.state(tmpId);
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }
           ImGui::SameLine();
           if (ImGui::Button("Cancel")) {
-            m_editMaxStates = m_maxStates;
+            m_editMaxStates = m_states.count();
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }

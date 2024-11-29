@@ -59,12 +59,7 @@ public:
     return nullptr;
   }
 
-  bool empty() const {
-    // If the vector is actually empty or we only have the dummy root node we have no maps
-    // This allows for cases when a MapInfos.json only has it's root node
-    // That being said the editor should *not* allow the user to delete their last map
-    return m_mapinfos.empty() || m_mapinfos.size() == 1;
-  }
+  bool empty() const { return m_mapinfos.empty(); }
 
   MapInfo& root() { return m_mapinfos[0].value(); }
   const MapInfo& root() const { return m_mapinfos[0].value(); }

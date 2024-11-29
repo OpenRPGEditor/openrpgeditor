@@ -60,6 +60,9 @@ void DBSystemTab::addAudioRow(const Audio& audio, const std::string& type, Audio
 
 void DBSystemTab::draw() {
   ImGui::BeginChild("#orpg_system_tab", ImVec2(0, 0), ImGuiChildFlags_None, ImGuiWindowFlags_HorizontalScrollbar);
+  if (m_gameWindowBackground.width() != oRound(App::DPIHandler::scale_value(164)) || m_gameWindowBackground.height() != oRound(App::DPIHandler::scale_value(164))) {
+    m_gameWindowBackground.setSize(oRound(App::DPIHandler::scale_value(164)), oRound(App::DPIHandler::scale_value(164)));
+  }
   {
     ImGui::BeginGroup();
     {
@@ -168,10 +171,10 @@ void DBSystemTab::draw() {
                           ImGuiWindowFlags_NoResize);
         {
           ImGui::TextUnformatted("Window Color");
-          m_gameWindowBackground.update(m_system.windowTone[1], m_system.windowTone[1], m_system.windowTone[2]);
+          m_gameWindowBackground.update(m_system.windowTone[0], m_system.windowTone[1], m_system.windowTone[2]);
           if (ImGui::ImageButtonEx(ImGui::GetID("##game_window_background_button"), m_gameWindowBackground,
-                                   ImVec2{static_cast<float>(m_gameWindowBackground.width()), static_cast<float>(m_gameWindowBackground.height())} * App::DPIHandler::get_ui_scale(), ImVec2{0.f, 0.f},
-                                   ImVec2{1.f, 1}, {}, {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
+                                   ImVec2{static_cast<float>(m_gameWindowBackground.width()), static_cast<float>(m_gameWindowBackground.height())}, ImVec2{0.f, 0.f}, ImVec2{1.f, 1.f}, {},
+                                   {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
             // TODO: GameWindowColorPickerDialog imp
           }
         }

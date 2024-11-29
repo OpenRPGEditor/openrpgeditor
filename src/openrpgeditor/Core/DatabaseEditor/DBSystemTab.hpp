@@ -75,7 +75,7 @@ private:
   CharacterSheet m_shipSheet;
   CharacterSheet* m_currentSheet = nullptr;
   CharacterPicker m_characterPicker;
-  GameWindowBackground m_gameWindowBackground = GameWindowBackground(164, 164);
+  GameWindowBackground m_gameWindowBackground = GameWindowBackground(192, 192);
   CheckeredCompositeTexture m_boatButtonTexture;
   CheckeredCompositeTexture m_shipButtonTexture;
   CheckeredCompositeTexture m_airshipButtonTexture;

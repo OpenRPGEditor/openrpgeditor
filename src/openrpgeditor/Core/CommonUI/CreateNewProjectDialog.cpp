@@ -73,6 +73,7 @@ std::tuple<bool, bool> CreateNewProjectDialog::draw() {
           }
         }
         ImGui::EndGroup();
+        ImGui::Checkbox("Copy example project from RPG Maker", &m_copyExample);
       }
       ImGui::EndGroup();
     }

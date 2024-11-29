@@ -95,6 +95,7 @@ void Database::load() {
   });
   mapInfos = MapInfos::load(basePath + "/data/MapInfos.json");
   mapInfos.loadAllMaps();
+  mapInfos.buildTree(true);
 
   RPGM_INFO("Loading Plugins...");
   plugins = Plugins::load(basePath + "js/plugins.js");

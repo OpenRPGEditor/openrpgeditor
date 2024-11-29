@@ -81,7 +81,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
           continue;
 
         bool is_selected = (m_character == dataSource->id);
-        if (ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
+        if (ImGui::Selectable(Database::instance()->instance()->eventNameOrId(dataSource->id).c_str(), is_selected)) {
           m_character = dataSource->id;
           if (is_selected)
             ImGui::SetItemDefaultFocus();
@@ -91,8 +91,10 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     }
 
     // Step Table
-    if (ImGui::BeginTable("##bgm_audio_contents", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                          ImVec2{App::DPIHandler::scale_value(160), ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(110)})) {
+    auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNO");
+    calc.y *= 16;
+    calc.y += ImGui::GetStyle().ItemSpacing.y * 32;
+    if (ImGui::BeginTable("##bgm_audio_contents", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY, calc)) {
 
       ImGui::TableSetupScrollFreeze(1, 0);
       ImGui::TableSetupColumn("File");

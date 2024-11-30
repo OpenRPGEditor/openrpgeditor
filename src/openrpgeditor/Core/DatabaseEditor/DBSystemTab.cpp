@@ -7,21 +7,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-enum class SoundType {
-  Cursor,
-  OK,
-  Cancel,
-  Buzzer,
-  Equip,
-  Save,
-  Load,
-  Battle_Start,
-  Escape,
-  Enemy_Attack,
-  Enemy_Damage,
-  Enemy_Collapse,
-
-};
+using namespace std::string_view_literals;
 
 DBSystemTab::DBSystemTab(System& system, DatabaseEditor* parent) : IDBEditorTab(parent), m_system(system) {}
 
@@ -95,16 +81,36 @@ void DBSystemTab::draw() {
             ImGui::TableHeadersRow();
 
             const auto& actors = m_system.partyMembers;
-            for (auto& actor : actors) {
+            for (int i = 0; auto& actor : actors) {
               ImGui::TableNextRow();
               ImGui::TableNextColumn();
-              if (ImGui::Selectable(Database::instance()->actorNameOrId(actor).c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {}
+              if (ImGui::Selectable(Database::instance()->actorNameOrId(actor).c_str(), m_selectedActor == i, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
+                m_selectedActor = i;
+                if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                  if (!m_actorsPicker) {
+                    m_actorsPicker.emplace("Party Member"sv, Database::instance()->actors.actorList(), m_selectedActor);
+                  }
+                  m_actorsPicker->setOpen(true);
+                }
+              }
+              ++i;
             }
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
-            if (ImGui::Selectable("##orpg_system_tab_party_list_dummy", false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
-              // m_actorsPicker.emplace()
+            if (ImGui::Selectable("##orpg_system_tab_party_list_dummy", m_selectedActor == -1, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
+              m_selectedActor = -1;
+              if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                if (!m_actorsPicker) {
+                  m_actorsPicker.emplace("Party Member"sv, Database::instance()->actors.actorList(), 1);
+                }
+                m_actorsPicker->setOpen(true);
+              }
             }
+            if (ImGui::IsKeyPressed(ImGuiKey_Delete) && ImGui::IsWindowFocused() && m_selectedActor != -1) {
+              m_system.partyMembers.erase(m_system.partyMembers.begin() + m_selectedActor);
+              --m_selectedActor;
+            }
+
             ImGui::EndTable();
           }
         }
@@ -227,7 +233,9 @@ void DBSystemTab::draw() {
             if (ImGui::Selectable(Database::instance()->skillTypeNameOrId(skill).c_str(), m_selectedSkill == i, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
               m_selectedSkill = i;
               if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                m_skillTypePicker.emplace("Skill Types", m_system.skillTypes, i, 0);
+                if (!m_skillTypePicker) {
+                  m_skillTypePicker.emplace("Skill Type", m_system.skillTypes, m_selectedSkill);
+                }
                 m_skillTypePicker->setOpen(true);
               }
             }
@@ -235,11 +243,19 @@ void DBSystemTab::draw() {
           }
           ImGui::TableNextRow();
           ImGui::TableNextColumn();
-          if (ImGui::Selectable("##orpg_system_tab_party_list_dummy", i >= m_system.magicSkills.size(), ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
+          if (ImGui::Selectable("##orpg_system_tab_party_list_dummy", m_selectedSkill == -1, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
+            m_selectedSkill = -1;
             if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-              m_skillTypePicker.emplace("Skill Types", m_system.skillTypes, 1, 0);
+              if (!m_skillTypePicker) {
+                m_skillTypePicker.emplace("Skill Type", m_system.skillTypes, 0);
+              }
               m_skillTypePicker->setOpen(true);
             }
+          }
+
+          if (ImGui::IsKeyPressed(ImGuiKey_Delete) && ImGui::IsWindowFocused() && m_selectedSkill != -1) {
+            m_system.magicSkills.erase(m_system.magicSkills.begin() + m_selectedSkill);
+            m_selectedSkill--;
           }
           ImGui::EndTable();
         }
@@ -284,6 +300,10 @@ void DBSystemTab::draw() {
           ImGui::TableSetupScrollFreeze(2, 1);
           ImGui::TableHeadersRow();
 
+          for (int type = 0; const auto& sound : m_system.sounds) {
+            addAudioRow(sound, DecodeEnumName(static_cast<SoundType>(type)), AudioType::SoundEffect);
+            ++type;
+          }
           ImGui::EndTable();
         }
       }
@@ -344,9 +364,9 @@ void DBSystemTab::draw() {
               }
             }
             ImGui::TableNextColumn();
-            ImGui::TextUnformatted("{NEEDS ENUM}");
+            ImGui::TextUnformatted(DecodeEnumName(attackMotion.type).c_str());
             ImGui::TableNextColumn();
-            ImGui::TextUnformatted("{NEEDS ENUM}");
+            ImGui::TextUnformatted(DecodeEnumName(attackMotion.weaponImageId).c_str());
             ++i;
           }
           ImGui::EndTable();
@@ -355,11 +375,123 @@ void DBSystemTab::draw() {
       ImGui::EndChild();
     }
     ImGui::EndGroup();
+    ImGui::SameLine();
+    ImGui::BeginGroup();
+    {
+      auto calc = ImGui::CalcTextSize("ABCDEFGKLMNOPQRSTUVWXYZABCDEFGKLMNOPQRSTUVWX").x;
+      ImGui::BeginChild("##orpg_system_start_positions", {calc, 0}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle,
+                        ImGuiWindowFlags_NoResize);
+      {
+        ImGui::TextUnformatted("Starting Position");
+        ImGui::BeginGroup();
+        {
+          ImGui::TextUnformatted("Player");
+          const std::string label =
+              std::format("{} ({},{})##player_start_button", m_system.startMapId == 0 ? "None" : Database::instance()->mapNameOrId(m_system.startMapId), m_system.startX, m_system.startY);
+          if (ImGui::Button(label.c_str(), {ImGui::GetContentRegionAvail().x, 0})) {
+            // TODO: Map position picker
+          }
+        }
+        ImGui::EndGroup();
+        ImGui::BeginGroup();
+        {
+          ImGui::TextUnformatted("Boat");
+          const std::string label = std::format("{} ({},{})##boat_start_button", m_system.boat.startMapId == 0 ? "None" : Database::instance()->mapNameOrId(m_system.boat.startMapId),
+                                                m_system.boat.startX, m_system.boat.startY);
+          if (ImGui::Button(label.c_str(), {ImGui::GetContentRegionAvail().x, 0})) {
+            // TODO: Map position picker
+          }
+        }
+        ImGui::EndGroup();
+        ImGui::BeginGroup();
+        {
+          ImGui::TextUnformatted("Ship");
+          const std::string label = std::format("{} ({},{})##ship_start_button", m_system.ship.startMapId == 0 ? "None" : Database::instance()->mapNameOrId(m_system.ship.startMapId),
+                                                m_system.ship.startX, m_system.ship.startY);
+          if (ImGui::Button(label.c_str(), {ImGui::GetContentRegionAvail().x, 0})) {
+            // TODO: Map position picker
+          }
+        }
+        ImGui::EndGroup();
+        ImGui::BeginGroup();
+        {
+          ImGui::TextUnformatted("Airship");
+          const std::string label = std::format("{} ({},{})##airship_start_button", m_system.airship.startMapId == 0 ? "None" : Database::instance()->mapNameOrId(m_system.airship.startMapId),
+                                                m_system.airship.startX, m_system.airship.startY);
+          if (ImGui::Button(label.c_str(), {ImGui::GetContentRegionAvail().x, 0})) {
+            // TODO: Map position picker
+          }
+        }
+        ImGui::EndGroup();
+      }
+      ImGui::EndChild();
+      ImGui::BeginChild("##orpg_system_title_image", {calc, 0}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle,
+                        ImGuiWindowFlags_NoResize);
+      {
+        ImGui::TextUnformatted("Title Screen");
+        ImGui::BeginGroup();
+        {
+          ImGui::TextUnformatted("Images");
+          const std::string label = std::format("{}##title_images_button", Database::dualImageText(m_system.title1Name, m_system.title2Name));
+          if (ImGui::Button(label.c_str(), {ImGui::GetContentRegionAvail().x, 0})) {
+            if (!m_titleImagePicker) {
+              m_titleImagePicker.emplace(ImagePicker::PickerMode::Title, m_system.title1Name, m_system.title2Name);
+            } else {
+              m_titleImagePicker->setImageInfo(m_system.title1Name, m_system.title2Name);
+            }
+            m_titleImagePicker->setOpen(true);
+          }
+        }
+        ImGui::EndGroup();
+        ImGui::Checkbox("Draw Game Title", &m_system.optDrawTitle);
+      }
+      ImGui::EndChild();
+    }
+    ImGui::EndGroup();
   }
   ImGui::EndChild();
 
-  const auto& [closed, confirmed] = m_characterPicker->draw();
-  if (closed) {
+  if (m_actorsPicker) {
+    if (const auto [closed, confirmed] = m_actorsPicker->draw(); closed && confirmed) {
+      if (m_selectedActor == -1) {
+        int actor = m_actorsPicker->selection();
+        // We only want on instance of each actor in the party, so check to make sure this actor isn't already in the party
+        if (std::ranges::find_if(m_system.partyMembers, [actor](const auto& partyMember) { return partyMember == actor; }) == m_system.partyMembers.end()) {
+          m_system.partyMembers.emplace_back(actor);
+          m_selectedActor = static_cast<int>(m_system.partyMembers.size() - 1);
+        }
+      } else {
+        m_system.partyMembers[m_selectedActor] = m_actorsPicker->selection();
+      }
+      m_actorsPicker->accept();
+    }
+  }
+
+  if (m_skillTypePicker) {
+    if (const auto [closed, confirmed] = m_skillTypePicker->draw(); closed && confirmed) {
+      if (m_selectedSkill == -1) {
+        int magicSkill = m_skillTypePicker->selection();
+        // We only want on instance of each skill type in the skills list, so check to make sure this type isn't already in the skills list
+        if (std::ranges::find_if(m_system.magicSkills, [magicSkill](const auto& skill) { return skill == magicSkill; }) == m_system.magicSkills.end()) {
+          m_system.magicSkills.emplace_back(magicSkill);
+          m_selectedSkill = static_cast<int>(m_system.magicSkills.size() - 1);
+        }
+      } else {
+        m_system.magicSkills[m_selectedSkill] = m_skillTypePicker->selection();
+      }
+      m_skillTypePicker->accept();
+    }
+  }
+
+  if (m_titleImagePicker) {
+    if (const auto& [closed, confirmed] = m_titleImagePicker->draw(); closed && confirmed) {
+      m_system.title1Name = m_titleImagePicker->selectedImage();
+      m_system.title2Name = m_titleImagePicker->selectedImage2();
+      m_titleImagePicker->accept();
+    }
+  }
+
+  if (const auto& [closed, confirmed] = m_characterPicker->draw(); closed) {
     if (confirmed && m_currentSheet != nullptr) {
       if (m_currentSheet == &m_boatSheet.value()) {
         m_system.boat.characterName = m_characterPicker->selectedSheet();

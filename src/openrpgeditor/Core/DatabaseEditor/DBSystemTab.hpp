@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/CommonUI/CharacterPicker.hpp"
+#include "Core/CommonUI/ImagePicker.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
@@ -81,6 +82,7 @@ private:
   std::optional<CheckeredCompositeTexture> m_airshipButtonTexture;
   std::optional<ObjectPicker<Actor>> m_actorsPicker;
   std::optional<VariableSwitchPicker> m_skillTypePicker;
+  std::optional<ImagePicker> m_titleImagePicker;
   int m_selectedActor = -1;
   int m_selectedSkill = -1;
   int m_selectedMusic = -1;

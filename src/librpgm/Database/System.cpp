@@ -11,7 +11,7 @@ void to_json(nlohmann::ordered_json& j, const System::Motion& motion) {
 
 void from_json(const nlohmann::ordered_json& j, System::Motion& motion) {
   motion.type = j.value("type", motion.type);
-  motion.weaponImageId = j.value("weaponImageId", motion.type);
+  motion.weaponImageId = j.value("weaponImageId", motion.weaponImageId);
 }
 
 void to_json(nlohmann::ordered_json& j, const System& system) {

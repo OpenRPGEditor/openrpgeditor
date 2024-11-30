@@ -318,7 +318,20 @@ enum class GameDataType {
   Other,
 };
 
-enum class ActorDataSource { Level, EXP, HP, MP, Max_HP, Max_MP, Attack, Defense, M_pe_Attack, M_pe_Defense, Agility, Luck };
+enum class ActorDataSource {
+  Level,
+  EXP,
+  HP,
+  MP,
+  Max_HP,
+  Max_MP,
+  Attack,
+  Defense,
+  M_pe_Attack,
+  M_pe_Defense,
+  Agility,
+  Luck,
+};
 
 enum class EnemyDataSource {
   HP,
@@ -772,6 +785,73 @@ enum class FormatColor {
   Gray,
   Red,
   Default,
+};
+
+enum class MotionType {
+  Thrust,
+  Swing,
+  Missile,
+};
+
+enum class MotionImage {
+  None,
+  Dagger,
+  Sword,
+  Flail,
+  Axe,
+  Whip,
+  Cane,
+  Bow,
+  Crossbow,
+  Gun,
+  Claw,
+  Glove,
+  Spear,
+  Mace,
+  Rod,
+  Club,
+  Combat_Chain,
+  Futuristic_Sword,
+  Iron_Pipe,
+  Slingshot,
+  Shotgun,
+  Rifle,
+  Chainsaw,
+  Railgun,
+  Stun_Rod,
+  User_daa_defined_1,
+  User_daa_defined_2,
+  User_daa_defined_3,
+  User_daa_defined_4,
+  User_daa_defined_5,
+  User_daa_defined_6,
+};
+
+enum class SoundType {
+  Cursor,
+  OK,
+  Cancel,
+  Buzzer,
+  Equip,
+  Save,
+  Load,
+  Battle_Start,
+  Escape,
+  Enemy_Attack,
+  Enemy_Damage,
+  Enemy_Collapse,
+  Boss_Collapse_1,
+  Boss_Collapse_2,
+  Actor_Damage,
+  Actor_Collapse,
+  Recovery,
+  Miss,
+  Evasion,
+  Magic_Evasion,
+  Magic_Reflection,
+  Shop,
+  Use_Item,
+  Use_Skill,
 };
 
 /**

@@ -15,8 +15,8 @@ public:
   struct Motion {
     friend void to_json(nlohmann::ordered_json& j, const Motion& motion);
     friend void from_json(const nlohmann::ordered_json& j, Motion& motion);
-    int type = 0;
-    int weaponImageId = 0;
+    MotionType type = MotionType::Thrust;
+    MotionImage weaponImageId = MotionImage::None;
   };
 
   Vehicle airship;

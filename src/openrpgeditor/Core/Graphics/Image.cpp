@@ -2,12 +2,12 @@
 
 #include "Core/ResourceManager.hpp"
 
-Image::Image(std::string_view imageName, int pickType, bool battleBack2 = false) {
+Image::Image(const std::string_view imageName, const int pickType, const bool secondImage = false) {
   if (imageName.empty()) {
     return;
   }
   if (pickType == 0) {
-    if (battleBack2) {
+    if (secondImage) {
       m_imageTexture = ResourceManager::instance()->loadBattlebacks2Image(imageName);
     } else {
       m_imageTexture = ResourceManager::instance()->loadBattlebacks1Image(imageName);
@@ -15,8 +15,14 @@ Image::Image(std::string_view imageName, int pickType, bool battleBack2 = false)
 
   } else if (pickType == 1) {
     m_imageTexture = ResourceManager::instance()->loadParallaxImage(imageName);
-  } else {
+  } else if (pickType == 2) {
     m_imageTexture = ResourceManager::instance()->loadPictureImage(imageName);
+  } else if (pickType == 3) {
+    if (secondImage) {
+      m_imageTexture = ResourceManager::instance()->loadTitle2Image(imageName);
+    } else {
+      m_imageTexture = ResourceManager::instance()->loadTitle1Image(imageName);
+    }
   }
 }
 

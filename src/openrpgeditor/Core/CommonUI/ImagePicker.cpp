@@ -8,13 +8,21 @@
 
 ImagePicker::ImagePicker(PickerMode mode, const std::string_view imageName, const std::string_view image2Name) : IDialogController("Select an Image##image_picker"), m_checkerboardTexture(864, 768) {
   m_pickType = mode;
-  if (m_pickType == PickerMode::Parallax) {
+  switch (m_pickType) {
+  case PickerMode::Parallax:
     m_images = ResourceManager::instance()->getDirectoryContents("img/parallaxes/", ".png");
-  } else if (m_pickType == PickerMode::Picture) {
+    break;
+  case PickerMode::Picture:
     m_images = ResourceManager::instance()->getDirectoryContents("img/pictures/", ".png");
-  } else {
+    break;
+  case PickerMode::Battleback:
     m_images = ResourceManager::instance()->getDirectoryContents("img/battlebacks1/", ".png");
     m_images_2 = ResourceManager::instance()->getDirectoryContents("img/battlebacks2/", ".png");
+    break;
+  case PickerMode::Title:
+    m_images = ResourceManager::instance()->getDirectoryContents("img/titles1/", ".png");
+    m_images_2 = ResourceManager::instance()->getDirectoryContents("img/titles2/", ".png");
+    break;
   }
   setImageInfo(imageName, image2Name);
 }
@@ -95,7 +103,7 @@ std::tuple<bool, bool> ImagePicker::draw() {
         ImGui::SameLine();
         ImGui::BeginChild("##image_picker_list##2", ImVec2{App::DPIHandler::scale_value(200), App::DPIHandler::scale_value(768)}, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
         {
-          if (m_pickType == PickerMode::Battleback) {
+          if (m_pickType == PickerMode::Battleback || m_pickType == PickerMode::Title) {
             if (ImGui::BeginTable("##image_picker.tablelist##2", 1)) {
               ImGui::TableNextRow();
               ImGui::TableNextColumn();
@@ -126,9 +134,9 @@ std::tuple<bool, bool> ImagePicker::draw() {
         ImGui::BeginChild("##image_picker_image_panel", ImVec2{App::DPIHandler::scale_value(894), App::DPIHandler::scale_value(784)}, ImGuiChildFlags_Border,
                           ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
         {
-          const auto imageRect = ImVec2{static_cast<float>(m_image->imageWidth()), static_cast<float>(m_image->imageHeight())} * App::DPIHandler::get_ui_scale();
           auto win = ImGui::GetCurrentWindow();
           if (m_image) {
+            const auto imageRect = ImVec2{static_cast<float>(m_image->imageWidth()), static_cast<float>(m_image->imageHeight())} * App::DPIHandler::get_ui_scale();
             ImGui::GetWindowDrawList()->AddImage(m_checkerboardTexture, win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
                                                  win->ContentRegionRect.Min +
                                                      (ImVec2{static_cast<float>(m_image->texture().width()), static_cast<float>(m_image->texture().height())} * App::DPIHandler::get_ui_scale()));

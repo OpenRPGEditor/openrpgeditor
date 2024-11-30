@@ -6,7 +6,7 @@
 struct Image {
   Image() = delete;
 
-  explicit Image(std::string_view imageName, int pickType, bool battleBack2);
+  explicit Image(std::string_view imageName, int pickType, bool secondImage);
   int imageWidth() const;
   int imageHeight() const;
 

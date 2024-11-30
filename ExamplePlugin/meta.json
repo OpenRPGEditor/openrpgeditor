@@ -1,0 +1,11 @@
+{
+    "name": "Example Plugin",
+    "author": "Example Author",
+    "email": "email@example.com",
+    "license": "MIT",
+    "description": "An example plugin to demonstrate how to create a plugin",
+    "compiled": false,
+    "created": "2024-11-29T19:19:56",
+    "last-modified":"2024-11-29T19:19:56",
+    "main-script": "main"
+}

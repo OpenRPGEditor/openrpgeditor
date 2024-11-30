@@ -150,6 +150,22 @@ public:
   const Database& database() const { return m_database.value(); }
 
 private:
+  void onActorsLoaded();
+  void onClassesLoaded();
+  void onSkillsLoaded();
+  void onItemsLoaded();
+  void onWeaponsLoaded();
+  void onArmorsLoaded();
+  void onEnemiesLoaded();
+  void onTroopsLoaded();
+  void onStatesLoaded();
+  void onAnimationsLoaded();
+  void onTilesetsLoaded();
+  void onCommonEventsLoaded();
+  void onSystemLoaded();
+  void onGameConstantsLoaded();
+  void onTemplatesLoaded();
+
   void drawMenu();
   void drawToolbar();
   void drawCreateNewProjectPopup();

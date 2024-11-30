@@ -70,15 +70,15 @@ struct DBSystemTab : IDBEditorTab {
 
 private:
   System& m_system;
-  CharacterSheet m_boatSheet;
-  CharacterSheet m_airshipSheet;
-  CharacterSheet m_shipSheet;
+  std::optional<CharacterSheet> m_boatSheet;
+  std::optional<CharacterSheet> m_airshipSheet;
+  std::optional<CharacterSheet> m_shipSheet;
   CharacterSheet* m_currentSheet = nullptr;
-  CharacterPicker m_characterPicker;
-  GameWindowBackground m_gameWindowBackground = GameWindowBackground(192, 192);
-  CheckeredCompositeTexture m_boatButtonTexture;
-  CheckeredCompositeTexture m_shipButtonTexture;
-  CheckeredCompositeTexture m_airshipButtonTexture;
+  std::optional<CharacterPicker> m_characterPicker;
+  std::optional<GameWindowBackground> m_gameWindowBackground = GameWindowBackground(192, 192);
+  std::optional<CheckeredCompositeTexture> m_boatButtonTexture;
+  std::optional<CheckeredCompositeTexture> m_shipButtonTexture;
+  std::optional<CheckeredCompositeTexture> m_airshipButtonTexture;
   std::optional<ObjectPicker<Actor>> m_actorsPicker;
   std::optional<VariableSwitchPicker> m_skillTypePicker;
   int m_selectedActor = -1;

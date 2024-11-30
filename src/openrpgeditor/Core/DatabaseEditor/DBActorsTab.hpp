@@ -34,7 +34,7 @@ private:
   bool m_showEquipEdit = false;
   int m_selectedEquip = 0;
   int m_chosenEquip = 0;
-  CheckerboardTexture m_buttonBack{144, 144, CellSizes::_32, 220, 255};
+  std::optional<CheckerboardTexture> m_buttonBack;
   std::optional<FaceSheet> m_faceSheet;
   std::optional<CharacterSheet> m_characterSheet;
   std::optional<SideViewBattlerSheet> m_battlerSheet;

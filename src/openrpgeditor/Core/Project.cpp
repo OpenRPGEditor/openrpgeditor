@@ -20,7 +20,6 @@
 #include "nfd.h"
 
 #include "Database/Versions.hpp"
-#include "Graphics/GameWindowBackground.hpp"
 
 #include <clip.h>
 
@@ -56,12 +55,26 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   DeserializationQueue::instance().reset();
   SerializationQueue::instance().setBasepath(basePath);
   DeserializationQueue::instance().setBasepath(basePath);
+  m_databaseEditor.emplace(this);
   m_database.emplace(basePath, filePath, version);
-  m_database->load();
   m_resourceManager.emplace(m_database->basePath);
-  m_databaseEditor.emplace(this, m_database->actors, m_database->classes, m_database->skills, m_database->items, m_database->weapons, m_database->armors, m_database->enemies, m_database->troops,
-                           m_database->states, m_database->animations, m_database->tilesets, m_database->commonEvents, m_database->system, m_database->gameConstants, m_database->templates);
 
+  m_database->actorsLoaded.connect<&Project::onActorsLoaded>(this);
+  m_database->classesLoaded.connect<&Project::onClassesLoaded>(this);
+  m_database->skillsLoaded.connect<&Project::onSkillsLoaded>(this);
+  m_database->itemsLoaded.connect<&Project::onItemsLoaded>(this);
+  m_database->weaponsLoaded.connect<&Project::onWeaponsLoaded>(this);
+  m_database->armorsLoaded.connect<&Project::onArmorsLoaded>(this);
+  m_database->enemiesLoaded.connect<&Project::onEnemiesLoaded>(this);
+  m_database->troopsLoaded.connect<&Project::onTroopsLoaded>(this);
+  m_database->statesLoaded.connect<&Project::onStatesLoaded>(this);
+  m_database->animationsLoaded.connect<&Project::onAnimationsLoaded>(this);
+  m_database->tilesetsLoaded.connect<&Project::onTilesetsLoaded>(this);
+  m_database->commonEventsLoaded.connect<&Project::onCommonEventsLoaded>(this);
+  m_database->systemLoaded.connect<&Project::onSystemLoaded>(this);
+  m_database->gameConstantsLoaded.connect<&Project::onGameConstantsLoaded>(this);
+  m_database->templatesLoaded.connect<&Project::onTemplatesLoaded>(this);
+  m_database->load();
   MapInfo* info = m_database->mapInfos.map(0);
   Settings::instance()->lastProject = filePath;
   info->expanded = true;
@@ -644,7 +657,7 @@ void Project::drawMenu() {
     }
 
     if (ImGui::BeginMenu("Tools")) {
-      if (ImGui::MenuItem("Database", "F9", false, m_databaseEditor != std::nullopt)) {
+      if (ImGui::MenuItem("Database", "F9", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
         m_databaseEditor->open();
       }
       if (ImGui::MenuItem("NWJS Version Manager", "F10", false)) {
@@ -840,3 +853,19 @@ void Project::setMap(MapInfo& in) {
 
   SDL_SetCursor(SDL_GetDefaultCursor());
 }
+
+void Project::onActorsLoaded() { m_databaseEditor->setActors(m_database->actors); }
+void Project::onClassesLoaded() { m_databaseEditor->setClasses(m_database->classes); }
+void Project::onSkillsLoaded() { m_databaseEditor->setSkills(m_database->skills); }
+void Project::onItemsLoaded() { m_databaseEditor->setItems(m_database->items); }
+void Project::onWeaponsLoaded() { m_databaseEditor->setWeapons(m_database->weapons); }
+void Project::onArmorsLoaded() { m_databaseEditor->setArmors(m_database->armors); }
+void Project::onEnemiesLoaded() { m_databaseEditor->setEnemies(m_database->enemies); }
+void Project::onTroopsLoaded() { m_databaseEditor->setTroops(m_database->troops); }
+void Project::onStatesLoaded() { m_databaseEditor->setStates(m_database->states); }
+void Project::onAnimationsLoaded() { m_databaseEditor->setAnimations(m_database->animations); }
+void Project::onTilesetsLoaded() { m_databaseEditor->setTilesets(m_database->tilesets); }
+void Project::onCommonEventsLoaded() { m_databaseEditor->setCommonEvents(m_database->commonEvents); }
+void Project::onSystemLoaded() { m_databaseEditor->setSystem(m_database->system); }
+void Project::onGameConstantsLoaded() { m_databaseEditor->setGameConstants(m_database->gameConstants); }
+void Project::onTemplatesLoaded() { m_databaseEditor->setTemplates(m_database->templates); }

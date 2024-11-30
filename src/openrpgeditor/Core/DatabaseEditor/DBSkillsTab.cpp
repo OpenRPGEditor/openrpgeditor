@@ -4,7 +4,7 @@
 #include "Database/Skills.hpp"
 
 #include "imgui.h"
-DBSkillsTab::DBSkillsTab(Skills& skills, DatabaseEditor* parent) : IDBEditorTab(parent), m_skills(skills), m_iconSheet("system/IconSet") {
+DBSkillsTab::DBSkillsTab(Skills& skills, DatabaseEditor* parent) : IDBEditorTab(parent), m_skills(skills) {
   m_selectedSkill = m_skills.skill(1);
   if (m_selectedSkill) {
     // m_traitsEditor.setTraits(&m_selectedClass->traits);
@@ -13,13 +13,13 @@ DBSkillsTab::DBSkillsTab(Skills& skills, DatabaseEditor* parent) : IDBEditorTab(
 }
 
 void DBSkillsTab::draw() {
-  if (animation_picker) {
-    const auto [closed, confirmed] = animation_picker->draw();
+  if (m_animationPicker) {
+    const auto [closed, confirmed] = m_animationPicker->draw();
     if (closed) {
       if (confirmed) {
-        m_selectedSkill->animationId = animation_picker->selection();
+        m_selectedSkill->animationId = m_animationPicker->selection();
       }
-      animation_picker.reset();
+      m_animationPicker.reset();
     }
   }
   ImGui::BeginChild("#orpg_skills_editor");
@@ -86,8 +86,9 @@ void DBSkillsTab::draw() {
             {
               ImGui::Text("Icon:");
               // ImGui::SameLine();
-              auto [min, max] = m_iconSheet.rectForId(m_selectedSkill->iconIndex);
-              ImGui::Image(m_iconSheet.texture(), ImVec2{static_cast<float>(m_iconSheet.iconWidth()), static_cast<float>(m_iconSheet.iconHeight())}, min,
+              const auto* iconSheet = m_parent->getIconSheet();
+              auto [min, max] = iconSheet->rectForId(m_selectedSkill->iconIndex);
+              ImGui::Image(iconSheet->texture(), ImVec2{static_cast<float>(iconSheet->iconWidth()), static_cast<float>(iconSheet->iconHeight())}, min,
                            max); // Show icon image
               ImGui::Text("%s", std::to_string(m_selectedSkill->iconIndex).c_str());
             }
@@ -302,8 +303,8 @@ void DBSkillsTab::draw() {
                                 : m_selectedSkill->animationId == 0 ? "None"
                                                                     : Database::instance()->animationName(m_selectedSkill->animationId).c_str(),
                                 ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-                animation_picker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), m_selectedSkill->animationId);
-                animation_picker->setOpen(true);
+                m_animationPicker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), m_selectedSkill->animationId);
+                m_animationPicker->setOpen(true);
               }
               ImGui::PopID();
             }

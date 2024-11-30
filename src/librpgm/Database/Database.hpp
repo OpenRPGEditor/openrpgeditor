@@ -6,6 +6,7 @@
 #include "Database/Classes.hpp"
 #include "Database/CommonEvents.hpp"
 #include "Database/Enemies.hpp"
+#include "Database/GameConstants.hpp"
 #include "Database/Items.hpp"
 #include "Database/Map.hpp"
 #include "Database/MapInfos.hpp"
@@ -17,7 +18,8 @@
 #include "Database/Tilesets.hpp"
 #include "Database/Troops.hpp"
 #include "Database/Weapons.hpp"
-#include "GameConstants.hpp"
+#include "Utils/SignalSlot.hpp"
+
 #include <string_view>
 using namespace std::string_view_literals;
 
@@ -391,6 +393,24 @@ struct Database {
   [[nodiscard]] std::vector<char> encryptionKeyAsBytes() const { return system.encryptionKeyAsBytes(); }
 
   static Database* instance() { return m_instance; }
+
+  signal<void()> actorsLoaded;
+  signal<void()> classesLoaded;
+  signal<void()> skillsLoaded;
+  signal<void()> itemsLoaded;
+  signal<void()> weaponsLoaded;
+  signal<void()> armorsLoaded;
+  signal<void()> enemiesLoaded;
+  signal<void()> troopsLoaded;
+  signal<void()> statesLoaded;
+  signal<void()> animationsLoaded;
+  signal<void()> tilesetsLoaded;
+  signal<void()> commonEventsLoaded;
+  signal<void()> systemLoaded;
+  signal<void()> pluginsLoaded;
+  signal<void()> mapInfosLoaded;
+  signal<void()> gameConstantsLoaded;
+  signal<void()> templatesLoaded;
 
 private:
   static Database* m_instance;

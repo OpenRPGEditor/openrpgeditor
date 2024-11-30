@@ -23,30 +23,7 @@ enum class SoundType {
 
 };
 
-DBSystemTab::DBSystemTab(System& system, DatabaseEditor* parent)
-: IDBEditorTab(parent), m_system(system), m_boatSheet(system.boat.characterName), m_airshipSheet(system.airship.characterName), m_shipSheet(system.ship.characterName) {
-  // Boat
-  {
-    m_boatButtonTexture.setSize(144, 144);
-    const auto& [uv0, uv1] = m_boatSheet.getRectForCharacter(m_system.boat.characterIndex, 1);
-    Point offset{static_cast<int>(uv0.x() * m_boatSheet.texture().width()), static_cast<int>(uv0.y() * m_shipSheet.texture().height())};
-    m_boatButtonTexture.setTexturesToComposite({{m_boatSheet.texture(), {m_boatSheet.characterWidth(), m_boatSheet.characterHeight()}, offset}});
-  }
-  // Ship
-  {
-    m_shipButtonTexture.setSize(144, 144);
-    const auto& [uv0, uv1] = m_shipSheet.getRectForCharacter(m_system.ship.characterIndex, 1);
-    const Point offset{static_cast<int>(uv0.x() * m_shipSheet.texture().width()), static_cast<int>(uv0.y() * m_shipSheet.texture().height())};
-    m_shipButtonTexture.setTexturesToComposite({{m_shipSheet.texture(), {m_shipSheet.characterWidth(), m_shipSheet.characterHeight()}, offset}});
-  }
-  // Airship
-  {
-    m_airshipButtonTexture.setSize(144, 144);
-    const auto& [uv0, uv1] = m_airshipSheet.getRectForCharacter(m_system.airship.characterIndex, 1);
-    const Point offset{static_cast<int>(uv0.x() * m_airshipSheet.texture().width()), static_cast<int>(uv0.y() * m_airshipSheet.texture().height())};
-    m_airshipButtonTexture.setTexturesToComposite({{m_airshipSheet.texture(), {m_airshipSheet.characterWidth(), m_airshipSheet.characterHeight()}, offset}});
-  }
-}
+DBSystemTab::DBSystemTab(System& system, DatabaseEditor* parent) : IDBEditorTab(parent), m_system(system) {}
 
 void DBSystemTab::addAudioRow(const Audio& audio, const std::string& type, AudioType audioType) {
   ImGui::TableNextRow();
@@ -59,9 +36,47 @@ void DBSystemTab::addAudioRow(const Audio& audio, const std::string& type, Audio
 }
 
 void DBSystemTab::draw() {
+  if (!m_characterPicker) {
+    m_characterPicker.emplace();
+  }
+
+  if (!m_boatButtonTexture) {
+    m_boatButtonTexture.emplace();
+    m_boatButtonTexture->setSize(144, 144);
+    if (!m_boatSheet) {
+      m_boatSheet.emplace(m_system.boat.characterName);
+    }
+    const auto& [uv0, uv1] = m_boatSheet->getRectForCharacter(m_system.boat.characterIndex, 1);
+    Point offset{static_cast<int>(uv0.x() * m_boatSheet->texture().width()), static_cast<int>(uv0.y() * m_shipSheet->texture().height())};
+    m_boatButtonTexture->setTexturesToComposite({{m_boatSheet->texture(), {m_boatSheet->characterWidth(), m_boatSheet->characterHeight()}, offset}});
+  }
+  if (!m_shipButtonTexture) {
+    m_shipButtonTexture.emplace();
+    m_shipButtonTexture->setSize(144, 144);
+    if (!m_shipSheet) {
+      m_shipSheet.emplace(m_system.ship.characterName);
+    }
+    const auto& [uv0, uv1] = m_shipSheet->getRectForCharacter(m_system.ship.characterIndex, 1);
+    const Point offset{static_cast<int>(uv0.x() * m_shipSheet->texture().width()), static_cast<int>(uv0.y() * m_shipSheet->texture().height())};
+    m_shipButtonTexture->setTexturesToComposite({{m_shipSheet->texture(), {m_shipSheet->characterWidth(), m_shipSheet->characterHeight()}, offset}});
+  }
+  if (!m_airshipButtonTexture) {
+    m_airshipButtonTexture.emplace();
+    m_airshipButtonTexture->setSize(144, 144);
+    if (!m_airshipSheet) {
+      m_airshipSheet.emplace(m_system.airship.characterName);
+    }
+    const auto& [uv0, uv1] = m_airshipSheet->getRectForCharacter(m_system.airship.characterIndex, 1);
+    const Point offset{static_cast<int>(uv0.x() * m_airshipSheet->texture().width()), static_cast<int>(uv0.y() * m_airshipSheet->texture().height())};
+    m_airshipButtonTexture->setTexturesToComposite({{m_airshipSheet->texture(), {m_airshipSheet->characterWidth(), m_airshipSheet->characterHeight()}, offset}});
+  }
   ImGui::BeginChild("#orpg_system_tab", ImVec2(0, 0), ImGuiChildFlags_None, ImGuiWindowFlags_HorizontalScrollbar);
-  if (m_gameWindowBackground.width() != oRound(App::DPIHandler::scale_value(164)) || m_gameWindowBackground.height() != oRound(App::DPIHandler::scale_value(164))) {
-    m_gameWindowBackground.setSize(oRound(App::DPIHandler::scale_value(164)), oRound(App::DPIHandler::scale_value(164)));
+  if (!m_gameWindowBackground) {
+    m_gameWindowBackground.emplace();
+  }
+
+  if (m_gameWindowBackground->width() != oRound(App::DPIHandler::scale_value(164)) || m_gameWindowBackground->height() != oRound(App::DPIHandler::scale_value(164))) {
+    m_gameWindowBackground->setSize(oRound(App::DPIHandler::scale_value(164)), oRound(App::DPIHandler::scale_value(164)));
   }
   {
     ImGui::BeginGroup();
@@ -125,17 +140,17 @@ void DBSystemTab::draw() {
                           ImGuiWindowFlags_NoResize);
         {
           ImGui::TextUnformatted("Vehicle Images");
-          if (!m_boatSheet || m_boatSheet.characterName() != m_system.boat.characterName) {
+          if (!m_boatSheet || m_boatSheet->characterName() != m_system.boat.characterName) {
             m_boatSheet = CharacterSheet(m_system.boat.characterName);
           }
           ImGui::BeginGroup();
           {
             ImGui::TextUnformatted("Boat:");
-            if (ImGui::ImageButtonEx(ImGui::GetID("##system_boat_image"), m_boatButtonTexture.get(), ImVec2(m_boatButtonTexture.size()) * App::DPIHandler::get_ui_scale(), {0.f, 0.f}, {1.f, 1.f}, {},
+            if (ImGui::ImageButtonEx(ImGui::GetID("##system_boat_image"), m_boatButtonTexture->get(), ImVec2(m_boatButtonTexture->size()) * App::DPIHandler::get_ui_scale(), {0.f, 0.f}, {1.f, 1.f}, {},
                                      {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
-              m_currentSheet = &m_boatSheet;
-              m_characterPicker.setCharacterInfo(m_system.boat.characterName, m_system.boat.characterIndex);
-              m_characterPicker.setOpen(true);
+              m_currentSheet = &m_boatSheet.value();
+              m_characterPicker->setCharacterInfo(m_system.boat.characterName, m_system.boat.characterIndex);
+              m_characterPicker->setOpen(true);
             }
           }
           ImGui::EndGroup();
@@ -143,12 +158,12 @@ void DBSystemTab::draw() {
           ImGui::BeginGroup();
           {
             ImGui::TextUnformatted("Ship:");
-            const auto& [uv0, uv1] = m_shipSheet.getRectForCharacter(m_system.ship.characterIndex, 1);
-            if (ImGui::ImageButtonEx(ImGui::GetID("##system_ship_image"), m_shipButtonTexture.get(), ImVec2(m_shipButtonTexture.size()) * App::DPIHandler::get_ui_scale(), {0.f, 0.f}, {1.f, 1.f}, {},
+            const auto& [uv0, uv1] = m_shipSheet->getRectForCharacter(m_system.ship.characterIndex, 1);
+            if (ImGui::ImageButtonEx(ImGui::GetID("##system_ship_image"), m_shipButtonTexture->get(), ImVec2(m_shipButtonTexture->size()) * App::DPIHandler::get_ui_scale(), {0.f, 0.f}, {1.f, 1.f}, {},
                                      {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
-              m_currentSheet = &m_shipSheet;
-              m_characterPicker.setCharacterInfo(m_system.ship.characterName, m_system.ship.characterIndex);
-              m_characterPicker.setOpen(true);
+              m_currentSheet = &m_shipSheet.value();
+              m_characterPicker->setCharacterInfo(m_system.ship.characterName, m_system.ship.characterIndex);
+              m_characterPicker->setOpen(true);
             }
           }
           ImGui::EndGroup();
@@ -156,11 +171,11 @@ void DBSystemTab::draw() {
           ImGui::BeginGroup();
           {
             ImGui::TextUnformatted("Airship:");
-            if (ImGui::ImageButtonEx(ImGui::GetID("##system_airship_image"), m_airshipButtonTexture.get(), ImVec2(m_airshipButtonTexture.size()) * App::DPIHandler::get_ui_scale(), ImVec2{0.f, 0.f},
+            if (ImGui::ImageButtonEx(ImGui::GetID("##system_airship_image"), m_airshipButtonTexture->get(), ImVec2(m_airshipButtonTexture->size()) * App::DPIHandler::get_ui_scale(), ImVec2{0.f, 0.f},
                                      ImVec2{1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
-              m_currentSheet = &m_airshipSheet;
-              m_characterPicker.setCharacterInfo(m_system.airship.characterName, m_system.airship.characterIndex);
-              m_characterPicker.setOpen(true);
+              m_currentSheet = &m_airshipSheet.value();
+              m_characterPicker->setCharacterInfo(m_system.airship.characterName, m_system.airship.characterIndex);
+              m_characterPicker->setOpen(true);
             }
           }
           ImGui::EndGroup();
@@ -171,9 +186,9 @@ void DBSystemTab::draw() {
                           ImGuiWindowFlags_NoResize);
         {
           ImGui::TextUnformatted("Window Color");
-          m_gameWindowBackground.update(m_system.windowTone[0], m_system.windowTone[1], m_system.windowTone[2]);
-          if (ImGui::ImageButtonEx(ImGui::GetID("##game_window_background_button"), m_gameWindowBackground,
-                                   ImVec2{static_cast<float>(m_gameWindowBackground.width()), static_cast<float>(m_gameWindowBackground.height())}, ImVec2{0.f, 0.f}, ImVec2{1.f, 1.f}, {},
+          m_gameWindowBackground->update(m_system.windowTone[0], m_system.windowTone[1], m_system.windowTone[2]);
+          if (ImGui::ImageButtonEx(ImGui::GetID("##game_window_background_button"), *m_gameWindowBackground,
+                                   ImVec2{static_cast<float>(m_gameWindowBackground->width()), static_cast<float>(m_gameWindowBackground->height())}, ImVec2{0.f, 0.f}, ImVec2{1.f, 1.f}, {},
                                    {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
             // TODO: GameWindowColorPickerDialog imp
           }
@@ -343,33 +358,33 @@ void DBSystemTab::draw() {
   }
   ImGui::EndChild();
 
-  const auto& [closed, confirmed] = m_characterPicker.draw();
+  const auto& [closed, confirmed] = m_characterPicker->draw();
   if (closed) {
     if (confirmed && m_currentSheet != nullptr) {
-      if (m_currentSheet == &m_boatSheet) {
-        m_system.boat.characterName = m_characterPicker.selectedSheet();
-        m_system.boat.characterIndex = m_characterPicker.character();
+      if (m_currentSheet == &m_boatSheet.value()) {
+        m_system.boat.characterName = m_characterPicker->selectedSheet();
+        m_system.boat.characterIndex = m_characterPicker->character();
         m_boatSheet = CharacterSheet(m_system.boat.characterName);
-        const auto& [uv0, uv1] = m_boatSheet.getRectForCharacter(m_system.boat.characterIndex, 1);
-        const Point offset{static_cast<int>(uv0.x() * m_boatSheet.texture().width()), static_cast<int>(uv0.y() * m_boatSheet.texture().height())};
-        m_boatButtonTexture.setTexturesToComposite({{m_boatSheet.texture(), {m_boatSheet.characterWidth(), m_boatSheet.characterHeight()}, offset}});
-      } else if (m_currentSheet == &m_shipSheet) {
-        m_system.ship.characterName = m_characterPicker.selectedSheet();
-        m_system.ship.characterIndex = m_characterPicker.character();
+        const auto& [uv0, uv1] = m_boatSheet->getRectForCharacter(m_system.boat.characterIndex, 1);
+        const Point offset{static_cast<int>(uv0.x() * m_boatSheet->texture().width()), static_cast<int>(uv0.y() * m_boatSheet->texture().height())};
+        m_boatButtonTexture->setTexturesToComposite({{m_boatSheet->texture(), {m_boatSheet->characterWidth(), m_boatSheet->characterHeight()}, offset}});
+      } else if (m_currentSheet == &m_shipSheet.value()) {
+        m_system.ship.characterName = m_characterPicker->selectedSheet();
+        m_system.ship.characterIndex = m_characterPicker->character();
         m_shipSheet = CharacterSheet(m_system.ship.characterName);
-        const auto& [uv0, uv1] = m_shipSheet.getRectForCharacter(m_system.ship.characterIndex, 1);
-        const Point offset{static_cast<int>(uv0.x() * m_shipSheet.texture().width()), static_cast<int>(uv0.y() * m_shipSheet.texture().height())};
-        m_shipButtonTexture.setTexturesToComposite({{m_shipSheet.texture(), {m_shipSheet.characterWidth(), m_shipSheet.characterHeight()}, offset}});
-      } else if (m_currentSheet == &m_airshipSheet) {
-        m_system.airship.characterName = m_characterPicker.selectedSheet();
-        m_system.airship.characterIndex = m_characterPicker.character();
+        const auto& [uv0, uv1] = m_shipSheet->getRectForCharacter(m_system.ship.characterIndex, 1);
+        const Point offset{static_cast<int>(uv0.x() * m_shipSheet->texture().width()), static_cast<int>(uv0.y() * m_shipSheet->texture().height())};
+        m_shipButtonTexture->setTexturesToComposite({{m_shipSheet->texture(), {m_shipSheet->characterWidth(), m_shipSheet->characterHeight()}, offset}});
+      } else if (m_currentSheet == &m_airshipSheet.value()) {
+        m_system.airship.characterName = m_characterPicker->selectedSheet();
+        m_system.airship.characterIndex = m_characterPicker->character();
         m_airshipSheet = CharacterSheet(m_system.airship.characterName);
-        const auto& [uv0, uv1] = m_airshipSheet.getRectForCharacter(m_system.airship.characterIndex, 1);
-        const Point offset{static_cast<int>(uv0.x() * m_airshipSheet.texture().width()), static_cast<int>(uv0.y() * m_airshipSheet.texture().height())};
-        m_airshipButtonTexture.setTexturesToComposite({{m_airshipSheet.texture(), {m_airshipSheet.characterWidth(), m_airshipSheet.characterHeight()}, offset}});
+        const auto& [uv0, uv1] = m_airshipSheet->getRectForCharacter(m_system.airship.characterIndex, 1);
+        const Point offset{static_cast<int>(uv0.x() * m_airshipSheet->texture().width()), static_cast<int>(uv0.y() * m_airshipSheet->texture().height())};
+        m_airshipButtonTexture->setTexturesToComposite({{m_airshipSheet->texture(), {m_airshipSheet->characterWidth(), m_airshipSheet->characterHeight()}, offset}});
       }
       m_currentSheet = nullptr;
     }
-    m_characterPicker.setOpen(false);
+    m_characterPicker->setOpen(false);
   }
 }

@@ -119,7 +119,11 @@ add_library(
         #Database/Serializable/MapInfosSerializer.hpp
 )
 
-target_include_directories(librpgm PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)
+target_include_directories(librpgm PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        nlohmann
+        "${CMAKE_SOURCE_DIR}/extern/nano-signal-slot"
+)
 target_compile_features(librpgm PRIVATE cxx_std_20)
 target_link_libraries(librpgm PRIVATE project_warnings magic_enum nlohmann_json::nlohmann_json fmt::fmt-header-only spdlog::spdlog_header_only)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
@@ -358,7 +362,11 @@ add_library(
         Database/EventCommands/Wait.hpp
 )
 
-target_include_directories(librpgmeventcmds PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)
+target_include_directories(librpgmeventcmds PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        nlohmann
+        "${CMAKE_SOURCE_DIR}/extern/nano-signal-slot"
+)
 target_compile_features(librpgmeventcmds PRIVATE cxx_std_20)
 target_link_libraries(librpgmeventcmds PRIVATE librpgm project_warnings magic_enum nlohmann_json::nlohmann_json fmt::fmt-header-only spdlog::spdlog_header_only)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
@@ -463,7 +471,11 @@ add_library(
         Database/EventCommands/MovementRoute/WalkingAnimationON.hpp
 )
 
-target_include_directories(librpgmmovementroutecmds PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann)
+target_include_directories(librpgmmovementroutecmds PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        nlohmann
+        "${CMAKE_SOURCE_DIR}/extern/nano-signal-slot"
+)
 target_compile_features(librpgmmovementroutecmds PRIVATE cxx_std_20)
 target_link_libraries(librpgmmovementroutecmds PRIVATE librpgm project_warnings magic_enum nlohmann_json::nlohmann_json fmt::fmt-header-only spdlog::spdlog_header_only)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")

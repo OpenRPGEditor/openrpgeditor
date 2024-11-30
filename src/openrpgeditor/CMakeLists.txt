@@ -410,9 +410,18 @@ add_library(
         Core/TemplateEditor/TemplatesEventProperties.hpp
         Core/TemplateEditor/Dialog/TemplateName.cpp
         Core/TemplateEditor/Dialog/TemplateName.hpp
+        ../librpgm/Utils/SignalSlot.hpp
 )
 
-target_include_directories(orecore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${clip_SOURCE_DIR} ${cpuid_SOURCE_DIR} "${angelscript_SOURCE_DIR}../../include" "${angelscript_SOURCE_DIR}../../../add_on")
+target_include_directories(orecore PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${SFML_SOURCE_DIR}/include/SFML
+        ${clip_SOURCE_DIR}
+        ${cpuid_SOURCE_DIR}
+        ${CMAKE_SOURCE_DIR}/extern/angelscript/angelscript/include
+        ${CMAKE_SOURCE_DIR}/extern/angelscript/add_on
+        "${CMAKE_SOURCE_DIR}/extern/nano-signal-slot"
+)
 target_compile_features(orecore PRIVATE cxx_std_23)
 target_link_libraries(
         orecore
@@ -463,7 +472,15 @@ include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/AppAssets.cmake)
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/Packaging.cmake)
 
 target_include_directories(${NAME} PUBLIC)
-target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SFML_SOURCE_DIR}/include/SFML ${cpuid_SOURCE_DIR} "${angelscript_SOURCE_DIR}../../include" "${angelscript_SOURCE_DIR}../../../add_on")
+target_include_directories(${NAME} PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${SFML_SOURCE_DIR}/include/SFML
+        ${cpuid_SOURCE_DIR}
+        ${CMAKE_SOURCE_DIR}/extern/angelscript/angelscript/include
+        ${CMAKE_SOURCE_DIR}/extern/angelscript/add_on
+        "${CMAKE_SOURCE_DIR}/extern/nano-signal-slot"
+)
+
 target_compile_features(${NAME} PRIVATE cxx_std_23)
 target_link_libraries(
         ${NAME}

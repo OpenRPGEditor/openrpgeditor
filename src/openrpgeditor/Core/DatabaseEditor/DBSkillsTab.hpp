@@ -1,4 +1,5 @@
 #pragma once
+#include "Core/CommonUI/EffectsEditor.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/IconSheet.hpp"
@@ -23,6 +24,8 @@ private:
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
+  std::vector<Effect> m_effects;
+  EffectsEditor m_effectsEditor;
   int m_message_template{0};
   std::vector<std::string> m_message_templateList{"casts %1!", "does %1!", "uses %1"};
   std::optional<ObjectPicker<Animation>> m_animationPicker;

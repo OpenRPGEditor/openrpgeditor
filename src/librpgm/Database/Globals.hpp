@@ -95,6 +95,21 @@ enum class PartyAbility {
   Gold_Double,
   Drop_Item_Double,
 };
+enum class EffectCode {
+  Recover_HP = 11,
+  Recover_MP = 12,
+  Gain_TP = 13,
+  Add_State = 21,
+  Remove_State = 22,
+  Add_Buff = 31,
+  Add_Debuff = 32,
+  Remove_Buff = 33,
+  Remove_Debuff = 34,
+  Special_Effect = 41,
+  Grow = 42,
+  Learn_Skill = 43,
+  Common_Event = 44,
+};
 enum class TraitCode {
   Element_Rate = 11,
   Debuff_Rate = 12,
@@ -365,6 +380,10 @@ enum class OtherDataSource {
   Battle_Count,
   Win_Count,
   Escape_Count,
+};
+
+enum class SpecialEffectSource {
+  Escape,
 };
 
 enum class PartyMemberOperation {

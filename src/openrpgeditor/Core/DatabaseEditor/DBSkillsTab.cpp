@@ -7,7 +7,7 @@
 DBSkillsTab::DBSkillsTab(Skills& skills, DatabaseEditor* parent) : IDBEditorTab(parent), m_skills(skills) {
   m_selectedSkill = m_skills.skill(1);
   if (m_selectedSkill) {
-    // m_traitsEditor.setTraits(&m_selectedClass->traits);
+    m_effectsEditor.setEffects(&m_selectedSkill->effects);
   }
   m_maxSkills = m_skills.count();
 }
@@ -82,6 +82,7 @@ void DBSkillsTab::draw() {
             ImGui::EndGroup();
             ImGui::SameLine();
             // Icon
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
             ImGui::BeginGroup();
             {
               ImGui::Text("Icon:");
@@ -135,7 +136,7 @@ void DBSkillsTab::draw() {
               }
               ImGui::EndGroup();
               ImGui::SameLine();
-              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3.f);
+              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
               ImGui::BeginGroup();
               {
                 ImGui::Text("MP Cost:");
@@ -149,7 +150,7 @@ void DBSkillsTab::draw() {
               }
               ImGui::EndGroup();
               ImGui::SameLine();
-              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3.f);
+              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
               ImGui::BeginGroup();
               {
                 ImGui::Text("TP Cost:");
@@ -188,7 +189,7 @@ void DBSkillsTab::draw() {
               }
               ImGui::EndGroup();
               ImGui::SameLine();
-              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3.f);
+              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
               ImGui::BeginGroup();
               {
                 ImGui::Text("Occasion:");
@@ -230,7 +231,7 @@ void DBSkillsTab::draw() {
             }
             ImGui::EndGroup();
             ImGui::SameLine();
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3.f);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
             ImGui::BeginGroup();
             {
               ImGui::Text("Success:");
@@ -244,7 +245,7 @@ void DBSkillsTab::draw() {
             }
             ImGui::EndGroup();
             ImGui::SameLine();
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3.f);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
             ImGui::BeginGroup();
             {
               ImGui::Text("Repeat:");
@@ -258,7 +259,7 @@ void DBSkillsTab::draw() {
             }
             ImGui::EndGroup();
             ImGui::SameLine();
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3.f);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
             ImGui::BeginGroup();
             {
               ImGui::Text("TP Gain:");
@@ -292,7 +293,7 @@ void DBSkillsTab::draw() {
             ImGui::EndGroup();
             ImGui::SameLine();
             // Animation
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3.f);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
             ImGui::BeginGroup();
             {
               ImGui::Text("Animation:");
@@ -377,7 +378,7 @@ void DBSkillsTab::draw() {
             }
             ImGui::EndGroup();
             ImGui::SameLine();
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3.f);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
             ImGui::BeginGroup();
             {
               ImGui::Text("Weapon Type 2");
@@ -439,6 +440,7 @@ void DBSkillsTab::draw() {
               }
               ImGui::EndGroup();
               ImGui::SameLine();
+              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
               ImGui::BeginGroup();
               {
                 ImGui::Text("Element:");
@@ -491,13 +493,16 @@ void DBSkillsTab::draw() {
               }
               ImGui::EndGroup();
               ImGui::SameLine();
-              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3.f);
+              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
               ImGui::BeginGroup();
               {
                 ImGui::Text("Critical Hits:");
                 ImGui::Checkbox("##orpg_database_skills_crits", &m_selectedSkill->damage.critical);
               }
               ImGui::EndGroup();
+
+              // Begin effects drawing
+              m_effectsEditor.draw(m_parent);
             }
             ImGui::EndGroup();
           }

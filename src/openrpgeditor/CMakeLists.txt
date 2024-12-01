@@ -411,6 +411,8 @@ add_library(
         Core/TemplateEditor/Dialog/TemplateName.cpp
         Core/TemplateEditor/Dialog/TemplateName.hpp
         ../librpgm/Utils/SignalSlot.hpp
+        Core/CommonUI/EffectsEditor.cpp
+        Core/CommonUI/EffectsEditor.hpp
 )
 
 target_include_directories(orecore PUBLIC

@@ -172,7 +172,7 @@ void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
           ImGui::BeginChild("##orpg_traits_rate_left_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_NoBackground);
           {
             if (ImGui::RadioButton("Element Rate", m_selectedTrait->code == TraitCode::Element_Rate)) {
-              if (m_selectedTrait->code != TraitCode::State_Resist) {
+              if (m_selectedTrait->code != TraitCode::Element_Rate) {
                 m_selectedTrait->dataId = 1;
                 m_selectedTrait->value = 1;
               }

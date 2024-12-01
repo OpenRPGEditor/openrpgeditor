@@ -126,9 +126,11 @@ void DBSystemTab::draw() {
         {
           char tmp[4096]{};
           strncpy(tmp, m_system.gameTitle.c_str(), 4096);
+          ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetStyleColorVec4(ImGuiCol_ChildBg));
           if (ImGui::LabelOverLineEdit("##orpg_system_tab_game_title", "Game Title", tmp, 4096, 0)) {
             m_system.gameTitle = tmp;
           }
+          ImGui::PopStyleColor();
         }
         ImGui::EndChild();
         ImGui::SameLine();
@@ -137,9 +139,11 @@ void DBSystemTab::draw() {
         {
           char tmp[4096]{};
           strncpy(tmp, m_system.currencyUnit.c_str(), 4096);
+          ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetStyleColorVec4(ImGuiCol_ChildBg));
           if (ImGui::LabelOverLineEdit("##orpg_system_tab_game_currency", "Currency", tmp, 4096, ImGui::CalcTextSize("ABCDEFGKLMNOPQRSTUVWXYZ01").x)) {
             m_system.currencyUnit = tmp;
           }
+          ImGui::PopStyleColor();
         }
         ImGui::EndChild();
         ImGui::BeginChild("##game_vehicle_images", ImVec2(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle,
@@ -320,6 +324,7 @@ void DBSystemTab::draw() {
                         ImGuiWindowFlags_NoResize);
       {
         ImGui::TextUnformatted("Menu Commands");
+        ImGui::NewLine();
         ImGui::BeginChild("##menu_command_set1", {ImGui::GetContentRegionMax().x / 3, 0}, 0, ImGuiWindowFlags_NoBackground);
         {
           ImGui::Checkbox("Item", &m_system.menuCommands[0]);

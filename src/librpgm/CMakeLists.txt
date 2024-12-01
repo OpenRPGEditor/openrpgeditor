@@ -117,6 +117,7 @@ add_library(
         Database/EventParser.hpp
         #Database/Serializable/MapInfosSerializer.cpp
         #Database/Serializable/MapInfosSerializer.hpp
+        Utils/SignalSlot.hpp
 )
 
 target_include_directories(librpgm PUBLIC

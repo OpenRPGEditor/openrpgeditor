@@ -58,6 +58,12 @@ void DatabaseEditor::draw() {
     if (ImGui::SelectableWithBorder("System", m_currentTab == &m_system.value())) {
       m_currentTab = &m_system.value();
     }
+    if (ImGui::SelectableWithBorder("Types", m_currentTab == &m_types.value())) {
+      m_currentTab = &m_types.value();
+    }
+    if (ImGui::SelectableWithBorder("Terms", m_currentTab == &m_terms.value())) {
+      m_currentTab = &m_terms.value();
+    }
     if (ImGui::SelectableWithBorder("Exported Constants", m_currentTab == &m_gameConstants.value())) {
       m_currentTab = &m_gameConstants.value();
     }

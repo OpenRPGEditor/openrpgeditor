@@ -12,8 +12,10 @@
 #include "Core/DatabaseEditor/DBStatesTab.hpp"
 #include "Core/DatabaseEditor/DBSystemTab.hpp"
 #include "Core/DatabaseEditor/DBTemplatesTab.hpp"
+#include "Core/DatabaseEditor/DBTermsTab.hpp"
 #include "Core/DatabaseEditor/DBTilesetsTab.hpp"
 #include "Core/DatabaseEditor/DBTroopsTab.hpp"
+#include "Core/DatabaseEditor/DBTypesTab.hpp"
 #include "Core/DatabaseEditor/DBWeaponsTab.hpp"
 #include "Core/Graphics/IconSheet.hpp"
 
@@ -154,13 +156,17 @@ struct DatabaseEditor {
   void setAnimations(Animations& animations) { m_animations.emplace(animations, this); }
   void setTilesets(Tilesets& tilesets) { m_tilesets.emplace(tilesets, this); }
   void setCommonEvents(CommonEvents& commonEvents) { m_commonEvents.emplace(commonEvents, this); }
-  void setSystem(System& system) { m_system.emplace(system, this); }
+  void setSystem(System& system) {
+    m_system.emplace(system, this);
+    m_types.emplace(system, this);
+    m_terms.emplace(system, this);
+  }
   void setGameConstants(GameConstants& gameConstants) { m_gameConstants.emplace(gameConstants, this); }
   void setTemplates(Templates& templates) { m_templates.emplace(templates, this); }
 
   bool isReady() const {
-    return m_actors && m_classes && m_skills && m_items && m_weapons && m_armors && m_enemies && m_troops && m_states && m_animations && m_tilesets && m_commonEvents && m_system && m_gameConstants &&
-           m_templates;
+    return m_actors && m_classes && m_skills && m_items && m_weapons && m_armors && m_enemies && m_troops && m_states && m_animations && m_tilesets && m_commonEvents && m_system && m_terms &&
+           m_types && m_gameConstants && m_templates;
   }
   const IconSheet* getIconSheet();
 
@@ -179,6 +185,8 @@ private:
   std::optional<DBTilesetsTab> m_tilesets;
   std::optional<DBCommonEventsTab> m_commonEvents;
   std::optional<DBSystemTab> m_system;
+  std::optional<DBTypesTab> m_types;
+  std::optional<DBTermsTab> m_terms;
   std::optional<DBGameConstantsTab> m_gameConstants;
   std::optional<DBTemplatesTab> m_templates;
   std::optional<IconSheet> m_iconSheet;

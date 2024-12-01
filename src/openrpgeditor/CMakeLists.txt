@@ -410,9 +410,12 @@ add_library(
         Core/TemplateEditor/TemplatesEventProperties.hpp
         Core/TemplateEditor/Dialog/TemplateName.cpp
         Core/TemplateEditor/Dialog/TemplateName.hpp
-        ../librpgm/Utils/SignalSlot.hpp
         Core/CommonUI/EffectsEditor.cpp
         Core/CommonUI/EffectsEditor.hpp
+        Core/DatabaseEditor/DBTermsTab.cpp
+        Core/DatabaseEditor/DBTermsTab.hpp
+        Core/DatabaseEditor/DBTypesTab.cpp
+        Core/DatabaseEditor/DBTypesTab.hpp
 )
 
 target_include_directories(orecore PUBLIC

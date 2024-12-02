@@ -17,7 +17,7 @@ public:
   struct Encounter {
     friend void to_json(nlohmann::ordered_json& json, const Encounter& encounter);
     friend void from_json(const nlohmann::ordered_json& json, Encounter& encounter);
-    std::array<int, 3> regionSet{};
+    std::vector<int> regionSet{};
     int troopId{};
     int weight{};
   };

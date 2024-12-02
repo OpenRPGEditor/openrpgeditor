@@ -27,9 +27,7 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
         const auto faceRect = ImVec2{static_cast<float>(m_faceSheet->faceWidth()), static_cast<float>(m_faceSheet->faceHeight())} * App::DPIHandler::get_ui_scale();
         ImGui::SetCursorPos(((cursorPos + buttonCenter) - (faceRect / 2)) + (ImGui::GetStyle().ItemInnerSpacing - ImVec2{0.f, App::DPIHandler::scale_value(1.f)}));
         const auto rect = m_faceSheet->getFaceRect(m_faceIndex);
-        ImVec2 uv0{rect.u0, rect.v0};
-        ImVec2 uv1{rect.u1, rect.v1};
-        ImGui::Image(m_faceSheet->texture(), faceRect, uv0, uv1);
+        ImGui::Image(m_faceSheet->texture(), faceRect, rect.min, rect.max);
       }
     }
     ImGui::EndGroup();

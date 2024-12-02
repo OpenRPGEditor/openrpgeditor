@@ -3,6 +3,7 @@
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/Graphics/CheckerboardTexture.hpp"
+#include "Core/Graphics/CheckeredCompositeTexture.hpp"
 #include "Core/Graphics/FaceSheet.hpp"
 #include "Core/Graphics/SideViewBattlerSheet.hpp"
 #include "Database/Actors.hpp"
@@ -34,9 +35,11 @@ private:
   bool m_showEquipEdit = false;
   int m_selectedEquip = 0;
   int m_chosenEquip = 0;
-  std::optional<CheckerboardTexture> m_buttonBack;
   std::optional<FaceSheet> m_faceSheet;
   std::optional<CharacterSheet> m_characterSheet;
   std::optional<SideViewBattlerSheet> m_battlerSheet;
+  std::optional<CheckeredCompositeTexture> m_faceButton;
+  std::optional<CheckeredCompositeTexture> m_actorButton;
+  std::optional<CheckeredCompositeTexture> m_battlerButton;
   TraitsEditor m_traitsEditor;
 };

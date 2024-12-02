@@ -8,14 +8,14 @@ Face FaceSheet::getFaceRect(const int index) const {
   const int fy = index / 4;
 
   Face face;
-  face.u0 = fx * faceWidth();
-  face.v0 = fy * faceHeight();
-  face.u1 = (fx * faceWidth()) + faceWidth();
-  face.v1 = (fy * faceHeight()) + faceHeight();
-  face.u0 /= m_texture.width();
-  face.v0 /= m_texture.height();
-  face.u1 /= m_texture.width();
-  face.v1 /= m_texture.height();
+  face.min.xr() = fx * faceWidth();
+  face.min.yr() = fy * faceHeight();
+  face.max.xr() = (fx * faceWidth()) + faceWidth();
+  face.max.yr() = (fy * faceHeight()) + faceHeight();
+  face.min.xr() /= m_texture.width();
+  face.min.yr() /= m_texture.height();
+  face.max.xr() /= m_texture.width();
+  face.max.yr() /= m_texture.height();
 
   return face;
 }

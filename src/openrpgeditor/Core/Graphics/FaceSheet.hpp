@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Core/Graphics/Texture.hpp"
+#include "OREMath/Point.hpp"
+
 struct Face {
-  float u0;
-  float v0;
-  float u1;
-  float v1;
+  PointF min;
+  PointF max;
 };
+
 struct FaceSheet {
   explicit FaceSheet(const std::string_view sheetName);
 

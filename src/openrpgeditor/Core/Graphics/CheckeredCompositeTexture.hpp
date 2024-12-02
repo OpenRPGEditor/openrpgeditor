@@ -18,12 +18,18 @@ public:
 
   void setSize(int finalWidth, int finalHeight);
   void setTexturesToComposite(const std::vector<CompositeTexture>& texturesToComposite);
+  bool hasCompositeTextures() const { return !m_texturesToComposite.empty(); }
   ImTextureID get();
 
-  int width() const { return m_checker.width(); }
-  int height() const { return m_checker.height(); }
+  int width() const { return m_finalSize.x(); }
+  int height() const { return m_finalSize.y(); }
 
   Point size() const { return m_finalSize; }
+
+  void clear() {
+    m_texturesToComposite.clear();
+    m_isDirty = true;
+  }
 
 private:
   void update();

@@ -168,7 +168,6 @@ void DBSystemTab::draw() {
           ImGui::BeginGroup();
           {
             ImGui::TextUnformatted("Ship:");
-            const auto& [uv0, uv1] = m_shipSheet->getRectForCharacter(m_system.ship.characterIndex, 1);
             if (ImGui::ImageButtonEx(ImGui::GetID("##system_ship_image"), m_shipButtonTexture->get(), ImVec2(m_shipButtonTexture->size()) * App::DPIHandler::get_ui_scale(), {0.f, 0.f}, {1.f, 1.f}, {},
                                      {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
               m_currentSheet = &m_shipSheet.value();

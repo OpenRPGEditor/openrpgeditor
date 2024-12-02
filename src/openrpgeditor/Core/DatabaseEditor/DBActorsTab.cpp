@@ -8,6 +8,7 @@
 #include "Core/ImGuiExt/ImGuiParsedText.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "imgui.h"
+#include "imgui_internal.h"
 
 DBActorsTab::DBActorsTab(Actors& actors, DatabaseEditor* parent) : IDBEditorTab(parent), m_actors(actors) {
   m_selectedActor = m_actors.actor(1);
@@ -23,8 +24,39 @@ void DBActorsTab::draw() {
     m_battlerSheet.emplace(m_selectedActor->battlerName);
   }
 
-  if (!m_buttonBack) {
-    m_buttonBack.emplace(144, 144, CellSizes::_32, 220, 255);
+  if (!m_faceButton) {
+    m_faceButton.emplace();
+    m_faceButton->setSize(144, 144);
+  }
+
+  if (!m_actorButton) {
+    m_actorButton.emplace();
+    m_actorButton->setSize(144, 144);
+  }
+  if (!m_battlerButton) {
+    m_battlerButton.emplace();
+    m_battlerButton->setSize(144, 144);
+  }
+
+  if (m_selectedActor) {
+    if (!m_faceButton->hasCompositeTextures()) {
+      const auto [min, max] = m_faceSheet->getFaceRect(m_selectedActor->faceIndex);
+      m_faceButton->setTexturesToComposite({{m_faceSheet->texture(),
+                                             {m_faceSheet->faceWidth(), m_faceSheet->faceWidth()},
+                                             {static_cast<int>(min.x() * m_faceSheet->texture().width()), static_cast<int>(min.y() * m_faceSheet->texture().height())}}});
+    }
+    if (!m_actorButton->hasCompositeTextures()) {
+      const auto [min, max] = m_characterSheet->getRectForCharacter(m_selectedActor->characterIndex, 1);
+      m_actorButton->setTexturesToComposite({{m_characterSheet->texture(),
+                                              {m_characterSheet->characterWidth(), m_characterSheet->characterHeight()},
+                                              {static_cast<int>(min.x() * m_characterSheet->texture().width()), static_cast<int>(min.y() * m_characterSheet->texture().height())}}});
+    }
+    if (!m_battlerButton->hasCompositeTextures()) {
+      const auto [_, frames] = m_battlerSheet->getAction(SideViewActionType::StepForward);
+      m_battlerButton->setTexturesToComposite({{m_battlerSheet->texture(),
+                                                {m_battlerSheet->characterWidth(), m_battlerSheet->characterHeight()},
+                                                {static_cast<int>(frames[1].min.x() * m_battlerSheet->texture().width()), static_cast<int>(frames[1].min.y() * m_battlerSheet->texture().height())}}});
+    }
   }
 
   ImGui::BeginChild("##orpg_actors_editor");
@@ -45,12 +77,17 @@ void DBActorsTab::draw() {
 
               char name[4096];
               snprintf(name, 4096, "%04i %s", actor.id, actor.name.c_str());
-              if (ImGui::Selectable(name, &actor == m_selectedActor) || (ImGui::IsItemFocused() && m_selectedActor != &actor)) {
-                m_selectedActor = &actor;
-                m_faceSheet.emplace(m_selectedActor->faceName);
-                m_characterSheet.emplace(m_selectedActor->characterName);
-                m_battlerSheet.emplace(m_selectedActor->battlerName);
-                m_traitsEditor.setTraits(&m_selectedActor->traits);
+              if (ImGui::Selectable(name, &actor == m_selectedActor, ImGuiSelectableFlags_SelectOnNav)) {
+                if (m_selectedActor != &actor) {
+                  m_selectedActor = &actor;
+                  m_faceSheet.emplace(m_selectedActor->faceName);
+                  m_characterSheet.emplace(m_selectedActor->characterName);
+                  m_battlerSheet.emplace(m_selectedActor->battlerName);
+                  m_traitsEditor.setTraits(&m_selectedActor->traits);
+                  m_faceButton->clear();
+                  m_actorButton->clear();
+                  m_battlerButton->clear();
+                }
               }
             }
           }
@@ -146,50 +183,27 @@ void DBActorsTab::draw() {
           ImGui::BeginChild("##orpg_actors_editor_actor_images", ImVec2(), ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_HorizontalScrollbar);
           {
             ImGui::SeparatorText("Images");
-            const auto buttonSize = ImVec2{144, 144} * App::DPIHandler::get_ui_scale();
-            const auto buttonCenter = (buttonSize / 2);
             ImGui::BeginGroup();
             {
               ImGui::Text("Face:");
-              auto cursorPos = ImGui::GetCursorPos();
-              ImGui::ImageButton("##orpg_actors_face_image", *m_buttonBack, buttonSize);
-              if (m_faceSheet && m_faceSheet->texture()) {
-                const auto faceRect = ImVec2{static_cast<float>(m_faceSheet->faceWidth()), static_cast<float>(m_faceSheet->faceHeight())} * App::DPIHandler::get_ui_scale();
-                ImGui::SetCursorPos(((cursorPos + buttonCenter) - (faceRect / 2)) + (ImGui::GetStyle().ItemInnerSpacing - ImVec2{0.f, App::DPIHandler::scale_value(1.f)}));
-                const auto rect = m_faceSheet->getFaceRect(m_selectedActor->faceIndex);
-                ImVec2 uv0{rect.u0, rect.v0};
-                ImVec2 uv1{rect.u1, rect.v1};
-                ImGui::Image(m_faceSheet->texture(), faceRect, uv0, uv1);
-              }
+              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_actors_face_image"), m_faceButton->get(), ImVec2{m_faceButton->size()} * App::DPIHandler::get_ui_scale(), {0.f, 0.f}, {1.f, 1.f}, {},
+                                       {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {}
             }
             ImGui::EndGroup();
             ImGui::SameLine();
             ImGui::BeginGroup();
             {
               ImGui::Text("Character:");
-              auto cursorPos = ImGui::GetCursorPos();
-              ImGui::ImageButton("##orpg_actors_character_image", *m_buttonBack, buttonSize);
-              if (m_characterSheet && m_characterSheet->texture()) {
-                const auto characterRect = ImVec2{std::ceil(static_cast<float>(m_characterSheet->characterWidth() * 1.75)), std::ceil(static_cast<float>(m_characterSheet->characterHeight() * 1.75))} *
-                                           App::DPIHandler::get_ui_scale();
-                ImGui::SetCursorPos((cursorPos + buttonCenter) - (characterRect / 1.75));
-                const auto [min, max] = m_characterSheet->getRectForCharacter(m_selectedActor->characterIndex, 1);
-                ImGui::Image(m_characterSheet->texture(), characterRect, min, max);
-              }
+              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_actors_character_image"), m_actorButton->get(), ImVec2{m_actorButton->size()} * App::DPIHandler::get_ui_scale(), {0.f, 0.f}, {1.f, 1.f}, {},
+                                       {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {}
             }
             ImGui::EndGroup();
             ImGui::SameLine();
             ImGui::BeginGroup();
             {
               ImGui::Text("[SV] Battler:");
-              auto cursorPos = ImGui::GetCursorPos();
-              ImGui::ImageButton("##orpg_actors_battler_image", *m_buttonBack, buttonSize);
-              if (m_battlerSheet && m_battlerSheet->texture()) {
-                const auto battlerRect = ImVec2{static_cast<float>(m_battlerSheet->characterWidth()) * 2, static_cast<float>(m_battlerSheet->characterHeight()) * 2} * App::DPIHandler::get_ui_scale();
-                ImGui::SetCursorPos((cursorPos + buttonCenter) - (battlerRect / 2));
-                const auto rect = m_battlerSheet->getAction(SideViewActionType::StepForward);
-                ImGui::Image(m_battlerSheet->texture(), battlerRect, rect.frames[1].min, rect.frames[1].max);
-              }
+              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_actors_battler_image"), m_battlerButton->get(), ImVec2{m_battlerButton->size()} * App::DPIHandler::get_ui_scale(), {0.f, 0.f}, {1.f, 1.f},
+                                       {}, {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {}
             }
             ImGui::EndGroup();
           }

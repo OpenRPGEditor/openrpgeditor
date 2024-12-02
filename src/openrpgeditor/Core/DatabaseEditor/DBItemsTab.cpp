@@ -14,14 +14,14 @@ DBItemsTab::DBItemsTab(Items& Items, DatabaseEditor* parent) : IDBEditorTab(pare
 
 void DBItemsTab::draw() {
   if (!m_itemButtonTexture) {
-    // m_itemButtonTexture.emplace();
-    // m_itemButtonTexture->setSize(38, 38);
-    // if (!m_itemSheet) {
-    //   // m_itemSheet.emplace(m_parent->getIconSheet());
-    // }
-    // const auto& [uv0, uv1] = m_itemSheet->getRectForCharacter(m_selectedItem->iconIndex, 1);
-    // const Point offset{static_cast<int>(uv0.x() * m_itemSheet->texture().width()), static_cast<int>(uv0.y() * m_itemSheet->texture().height())};
-    // m_itemButtonTexture->setTexturesToComposite({{m_itemSheet->texture(), {m_itemSheet->characterWidth(), m_itemSheet->characterHeight()}, offset}});
+    m_itemButtonTexture.emplace();
+    m_itemButtonTexture->setSize(38, 38);
+    if (!m_itemSheet) {
+      m_itemSheet.emplace(*m_parent->getIconSheet());
+    }
+    const auto& [uv0, uv1] = m_itemSheet.value().rectForId(m_selectedItem->iconIndex);
+    const Point offset{static_cast<int>(uv0.x() * m_itemSheet.value().texture().width()), static_cast<int>(uv0.y() * m_itemSheet.value().texture().height())};
+    m_itemButtonTexture->setTexturesToComposite({{m_itemSheet.value().texture(), {m_itemSheet.value().iconWidth(), m_itemSheet.value().iconHeight()}, offset}});
   }
   if (m_animationPicker) {
     const auto [closed, confirmed] = m_animationPicker->draw();
@@ -96,12 +96,12 @@ void DBItemsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::TextUnformatted("Icon:");
-              // if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_database_items_image"), m_itemButtonTexture->get(), ImVec2(m_itemButtonTexture->size()) * App::DPIHandler::get_ui_scale(), {0.f, 0.f},
-              //                          {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
-              //   m_currentSheet = &m_itemSheet.value();
-              //   m_characterPicker->setCharacterInfo("", m_selectedItem->iconIndex);
-              //   m_characterPicker->setOpen(true);
-              // }
+              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_database_items_image"), m_itemButtonTexture->get(), ImVec2(m_itemButtonTexture->size()) * App::DPIHandler::get_ui_scale(), {0.f, 0.f},
+                                       {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
+                m_currentSheet = &m_itemSheet.value();
+                // m_characterPicker->setCharacterInfo("", m_selectedItem->iconIndex);
+                // m_characterPicker->setOpen(true);
+              }
               ImGui::SameLine();
               ImGui::SetCursorPos(ImVec2{ImGui::GetCursorPosX() + 10.f, ImGui::GetCursorPosY() - 6.f});
               ImGui::BeginGroup();

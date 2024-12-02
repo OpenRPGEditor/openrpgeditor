@@ -2,8 +2,8 @@
 #include "Core/CommonUI/CharacterPicker.hpp"
 #include "Core/CommonUI/EffectsEditor.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
-#include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/Graphics/CheckeredCompositeTexture.hpp"
+#include "Core/Graphics/IconSheet.hpp"
 #include "Database/Animation.hpp"
 #include "Database/Items.hpp"
 
@@ -26,11 +26,11 @@ private:
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
-  CharacterSheet* m_currentSheet = nullptr;
+  IconSheet* m_currentSheet = nullptr;
   std::optional<CharacterPicker> m_characterPicker;
   std::optional<CheckeredCompositeTexture> m_itemButtonTexture;
-  std::optional<CharacterSheet> m_itemSheet;
-  std::optional<CharacterPicker> m_itemPicker;
+  std::optional<IconSheet> m_itemSheet;
+  std::optional<IconSheet> m_itemPicker;
   EffectsEditor m_effectsEditor;
   std::optional<ObjectPicker<Animation>> m_animationPicker;
 };

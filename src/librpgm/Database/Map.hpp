@@ -112,7 +112,7 @@ public:
       return 1;
     }
 
-    for (int i = 0; i < events.size(); ++i) {
+    for (int i = 1; i < events.size(); ++i) {
       if (!events[i]) {
         return i;
       }

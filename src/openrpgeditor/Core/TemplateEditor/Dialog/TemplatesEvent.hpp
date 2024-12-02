@@ -26,7 +26,7 @@ private:
   std::string m_eventName;
   std::string m_eventNote;
   int m_direction;
-  int m_id;
+  int m_id{1};
 
   int m_tileX;
   int m_tileY;

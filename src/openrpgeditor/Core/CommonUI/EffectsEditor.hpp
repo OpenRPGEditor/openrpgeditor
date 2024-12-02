@@ -25,5 +25,5 @@ private:
   Effect* m_deletingEffect = nullptr;
   std::optional<ObjectPicker<State>> m_statePicker;
   std::optional<ObjectPicker<Skill>> m_skillPicker;
-  std::optional<ObjectPicker<CommonEvent>> m_commonEventPicker;
+  std::optional<ObjectPicker<std::optional<CommonEvent>>> m_commonEventPicker;
 };

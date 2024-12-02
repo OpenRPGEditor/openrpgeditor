@@ -9,6 +9,17 @@ using namespace std::string_view_literals;
 
 static constexpr auto EffectsEditorPopupId = "Effects Edit"sv;
 
+template <>
+inline int ObjectPicker<std::optional<CommonEvent>>::getId(const std::optional<CommonEvent>& value) {
+  return value ? value->id : 0;
+}
+
+static const std::string InvalidCommonEvent = "Invalid Common Event";
+template <>
+inline const std::string& ObjectPicker<std::optional<CommonEvent>>::getName(const std::optional<CommonEvent>& value) {
+  return value ? value->name : InvalidCommonEvent;
+}
+
 void EffectsEditor::draw(DatabaseEditor* dbEditor) {
   if (m_effects == nullptr) {
     return;
@@ -450,6 +461,121 @@ void EffectsEditor::drawPopup(DatabaseEditor* dbEditor) {
         }
 
         // Tab 4 - Special Effect, Grow, Learn Skill, Common Event
+
+        if (ImGui::BeginTabItem("Other", nullptr,
+                                m_selectedEffect->code >= EffectCode::Special_Effect && m_selectedEffect->code <= EffectCode::Common_Event && m_updateTab ? ImGuiTabItemFlags_SetSelected : 0)) {
+          ImGui::BeginChild("##orpg_effects_params_left_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_NoBackground);
+          {
+
+            if (ImGui::RadioButton("Special Effect", m_selectedEffect->code == EffectCode::Special_Effect)) {
+              if (m_selectedEffect->code != EffectCode::Special_Effect) {
+                m_selectedEffect->dataId = 0;
+                m_selectedEffect->value1 = 1;
+                m_selectedEffect->value2 = 0;
+              }
+              m_selectedEffect->code = EffectCode::Special_Effect;
+            }
+            ImGui::Spacing();
+            if (ImGui::RadioButton("Add Grow", m_selectedEffect->code == EffectCode::Grow)) {
+              if (m_selectedEffect->code != EffectCode::Grow) {
+                m_selectedEffect->dataId = 0;
+                m_selectedEffect->value1 = 1;
+                m_selectedEffect->value2 = 0;
+              }
+              m_selectedEffect->code = EffectCode::Grow;
+            }
+            ImGui::NewLine();
+            ImGui::Spacing();
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.f);
+            if (ImGui::RadioButton("Learn Skill", m_selectedEffect->code == EffectCode::Learn_Skill)) {
+              if (m_selectedEffect->code != EffectCode::Learn_Skill) {
+                m_selectedEffect->dataId = 1;
+                m_selectedEffect->value1 = 1;
+                m_selectedEffect->value2 = 0;
+              }
+              m_selectedEffect->code = EffectCode::Learn_Skill;
+            }
+            ImGui::Spacing();
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3.f);
+            if (ImGui::RadioButton("Common Event", m_selectedEffect->code == EffectCode::Common_Event)) {
+              if (m_selectedEffect->code != EffectCode::Common_Event) {
+                m_selectedEffect->dataId = 1;
+                m_selectedEffect->value1 = 1;
+                m_selectedEffect->value2 = 0;
+              }
+              m_selectedEffect->code = EffectCode::Common_Event;
+            }
+          }
+          ImGui::EndChild();
+          ImGui::SameLine();
+          ImGui::BeginChild("##orpg_effects_params_right_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
+                            ImGuiWindowFlags_NoBackground);
+          {
+            // Special_Effect
+            ImGui::BeginDisabled(m_selectedEffect->code != EffectCode::Special_Effect);
+            {
+              if (ImGui::BeginCombo("##effect_special_effect_combo",
+                                    m_selectedEffect->code == EffectCode::Special_Effect ? DecodeEnumName(static_cast<SpecialEffectSource>(m_selectedEffect->dataId)).c_str() : "")) {
+                for (auto v : magic_enum::enum_values<SpecialEffectSource>()) {
+                  if (ImGui::Selectable(DecodeEnumName(v).c_str(), static_cast<SpecialEffectSource>(m_selectedEffect->dataId) == v)) {
+                    m_selectedEffect->dataId = static_cast<int>(v);
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            ImGui::EndDisabled();
+            // Grow
+            ImGui::BeginDisabled(m_selectedEffect->code != EffectCode::Grow);
+            {
+              if (ImGui::BeginCombo("##effect_grow_combo", m_selectedEffect->code == EffectCode::Grow ? DecodeEnumName(static_cast<ParameterSource>(m_selectedEffect->dataId)).c_str() : "")) {
+                for (auto v : magic_enum::enum_values<ParameterSource>()) {
+                  if (ImGui::Selectable(DecodeEnumName(v).c_str(), static_cast<ParameterSource>(m_selectedEffect->dataId) == v)) {
+                    m_selectedEffect->dataId = static_cast<int>(v);
+                  }
+                }
+                ImGui::EndCombo();
+              }
+              int tmpInt = m_selectedEffect->code == EffectCode::Grow ? m_selectedEffect->value1 : 0;
+              ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
+              if (ImGui::InputInt("##effect_grow_value", &tmpInt)) {
+                if (tmpInt > 1000) {
+                  tmpInt = 1000;
+                } else if (tmpInt < 1) {
+                  tmpInt = 1;
+                }
+                m_selectedEffect->value1 = tmpInt;
+              }
+            }
+            ImGui::EndDisabled();
+            // Learn Skill
+            ImGui::BeginDisabled(m_selectedEffect->code != EffectCode::Learn_Skill);
+            {
+              // Skill Button - Picker
+              if (ImGui::Button(m_selectedEffect->code == EffectCode::Learn_Skill ? Database::instance()->skillNameOrId(m_selectedEffect->dataId).c_str() : "##effects_learn_skill_selection",
+                                ImVec2{ImGui::GetContentRegionAvail().x, 0})) {
+                m_skillPicker.emplace("Skill"sv, Database::instance()->skills.skills(), m_selectedEffect->dataId);
+                m_skillPicker->setOpen(true);
+              }
+            }
+            ImGui::EndDisabled();
+            // Common Event
+            ImGui::BeginDisabled(m_selectedEffect->code != EffectCode::Common_Event);
+            {
+              // Common Event Button - Picker
+              if (ImGui::Button(m_selectedEffect->code == EffectCode::Common_Event ? Database::instance()->commonEventNameOrId(m_selectedEffect->dataId).c_str() : "##effects_common_event_selection",
+                                ImVec2{ImGui::GetContentRegionAvail().x, 0})) {
+
+                m_commonEventPicker.emplace("Common Event"sv, Database::instance()->commonEvents.events(), m_selectedEffect->dataId);
+                m_commonEventPicker->setOpen(true);
+              }
+            }
+            ImGui::EndDisabled();
+          }
+          ImGui::EndChild();
+          ImGui::EndTabItem();
+        }
       }
       ImGui::EndTabBar();
       ImGui::EndGroup();

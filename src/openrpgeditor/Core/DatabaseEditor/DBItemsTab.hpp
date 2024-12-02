@@ -1,5 +1,10 @@
 #pragma once
+#include "Core/CommonUI/CharacterPicker.hpp"
+#include "Core/CommonUI/EffectsEditor.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include "Core/Graphics/CharacterSheet.hpp"
+#include "Core/Graphics/CheckeredCompositeTexture.hpp"
+#include "Database/Animation.hpp"
 #include "Database/Items.hpp"
 
 struct Items;
@@ -21,4 +26,11 @@ private:
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
+  CharacterSheet* m_currentSheet = nullptr;
+  std::optional<CharacterPicker> m_characterPicker;
+  std::optional<CheckeredCompositeTexture> m_itemButtonTexture;
+  std::optional<CharacterSheet> m_itemSheet;
+  std::optional<CharacterPicker> m_itemPicker;
+  EffectsEditor m_effectsEditor;
+  std::optional<ObjectPicker<Animation>> m_animationPicker;
 };

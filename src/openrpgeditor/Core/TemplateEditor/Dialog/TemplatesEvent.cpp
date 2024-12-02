@@ -17,7 +17,12 @@ void TemplatesEvent::draw() {
                    ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoResize)) {
     ImGui::Text("ID:");
     ImGui::SetNextItemWidth(200 * App::DPIHandler::get_ui_scale());
-    ImGui::InputInt("##orpg_templates_event_properties_id", &m_id);
+
+    if (ImGui::InputInt("##orpg_templates_event_properties_id", &m_id)) {
+      if (m_id == 0) {
+        m_id = 1; // Cannot pick index 0
+      }
+    }
     ImGui::Text("Name:");
     ImGui::InputText("##orpg_templates_event_properties_name", &m_eventName);
     ImGui::Text("Note:");

@@ -66,7 +66,6 @@ void DBSkillsTab::draw() {
       if (m_selectedSkill) {
         ImGui::BeginChild("##orpg_skills_skill_panel_left", ImVec2{ImGui::GetContentRegionMax().x / 2, 0.f});
         {
-          ImVec2 cursorPos = ImGui::GetCursorPos();
           ImGui::BeginGroup();
           {
             ImGui::SeparatorText("General Settings");
@@ -75,7 +74,7 @@ void DBSkillsTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedSkill->name.c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_name", "Name:", name, 4096, (ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(16))) {
+              if (ImGui::LabelOverLineEdit("##orpg_skills_editor_skills_skill_name", "Name:", name, 4096, (ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(16))) {
                 m_selectedSkill->name = name;
               }
             }
@@ -100,7 +99,7 @@ void DBSkillsTab::draw() {
               char description[4096];
               strncpy(description, m_selectedSkill->description.c_str(), 4096);
               ImGui::Text("Description:");
-              ImGui::InputTextMultiline("##orpg_database_skills_description", description, 4096, ImVec2{App::DPIHandler::scale_value(500), App::DPIHandler::scale_value(60)});
+              ImGui::InputTextMultiline("##orpg_database_skills_description", description, 4096, ImVec2{App::DPIHandler::scale_value(360), App::DPIHandler::scale_value(60)});
             }
             ImGui::EndGroup();
             // Skill Type, MP/TP Cost
@@ -110,7 +109,7 @@ void DBSkillsTab::draw() {
               {
                 ImGui::Text("Skill Type:");
                 float cursorPosY = ImGui::GetCursorPosY();
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
                 if (ImGui::BeginCombo("##orpg_database_skills_skilltype", m_selectedSkill->stypeId == 0 ? "None" : Database::instance()->system.skillType(m_selectedSkill->stypeId)->c_str())) {
                   int index{0};
                   for (auto& dataSource : Database::instance()->system.skillTypes) {
@@ -135,12 +134,10 @@ void DBSkillsTab::draw() {
                 }
               }
               ImGui::EndGroup();
-              ImGui::SameLine();
-              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
               ImGui::BeginGroup();
               {
                 ImGui::Text("MP Cost:");
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
                 if (ImGui::InputInt("##orpg_database_skills_manacost", &m_selectedSkill->mpCost, 1, 100)) {
                   if (m_selectedSkill->mpCost < 0)
                     m_selectedSkill->mpCost = 0;
@@ -154,7 +151,7 @@ void DBSkillsTab::draw() {
               ImGui::BeginGroup();
               {
                 ImGui::Text("TP Cost:");
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
                 if (ImGui::InputInt("##orpg_database_skills_tcost", &m_selectedSkill->tpCost, 1, 100)) {
                   if (m_selectedSkill->tpCost < 0)
                     m_selectedSkill->tpCost = 0;
@@ -172,7 +169,7 @@ void DBSkillsTab::draw() {
               ImGui::BeginGroup();
               {
                 ImGui::Text("Scope:");
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
                 if (ImGui::BeginCombo("##orpg_database_skills_scopelist", DecodeEnumName(magic_enum::enum_name(m_selectedSkill->scope)).c_str())) {
                   int index{0};
                   for (auto& dir : magic_enum::enum_values<Scope>()) {
@@ -193,7 +190,7 @@ void DBSkillsTab::draw() {
               ImGui::BeginGroup();
               {
                 ImGui::Text("Occasion:");
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
                 if (ImGui::BeginCombo("##orpg_database_skills_occasionlist", DecodeEnumName(magic_enum::enum_name(m_selectedSkill->occasion)).c_str())) {
                   int index{0};
                   for (auto& dir : magic_enum::enum_values<Occasion>()) {
@@ -221,7 +218,7 @@ void DBSkillsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Speed:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
               if (ImGui::InputInt("##orpg_database_skills_speed", &m_selectedSkill->speed, 1, 100)) {
                 if (m_selectedSkill->speed < -2000)
                   m_selectedSkill->speed = -2000;
@@ -235,7 +232,7 @@ void DBSkillsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Success:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
               if (ImGui::InputInt("##orpg_database_skills_successRate", &m_selectedSkill->successRate, 1, 100)) {
                 if (m_selectedSkill->successRate < 0)
                   m_selectedSkill->successRate = 0;
@@ -244,12 +241,10 @@ void DBSkillsTab::draw() {
               }
             }
             ImGui::EndGroup();
-            ImGui::SameLine();
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
             ImGui::BeginGroup();
             {
               ImGui::Text("Repeat:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
               if (ImGui::InputInt("##orpg_database_skills_repeats", &m_selectedSkill->repeats, 1, 100)) {
                 if (m_selectedSkill->repeats < 1)
                   m_selectedSkill->repeats = 1;
@@ -263,7 +258,7 @@ void DBSkillsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("TP Gain:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
               if (ImGui::InputInt("##orpg_database_skills_tpGain", &m_selectedSkill->tpGain, 1, 100)) {
                 if (m_selectedSkill->tpGain < 0)
                   m_selectedSkill->tpGain = 0;
@@ -275,7 +270,7 @@ void DBSkillsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Hit Type:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
               if (ImGui::BeginCombo("##orpg_database_skills_hitType", DecodeEnumName(magic_enum::enum_name(m_selectedSkill->hitType)).c_str())) {
                 int index{0};
                 for (auto& dir : magic_enum::enum_values<HitType>()) {
@@ -297,7 +292,7 @@ void DBSkillsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Animation:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
               // Animation Button
               ImGui::PushID("##orpg_database_skills_animation");
               if (ImGui::Button(m_selectedSkill->animationId == -1  ? "Normal Attack"
@@ -351,7 +346,7 @@ void DBSkillsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Weapon Type 1");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
               if (ImGui::BeginCombo("##orpg_database_reqweapon_1",
                                     m_selectedSkill->requiredWtypeId1 == 0 ? "None" : Database::instance()->system.weaponType(m_selectedSkill->requiredWtypeId1)->c_str())) {
                 int index{0};
@@ -382,7 +377,7 @@ void DBSkillsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Weapon Type 2");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
               if (ImGui::BeginCombo("##orpg_database_reqweapon_2",
                                     m_selectedSkill->requiredWtypeId2 == 0 ? "None" : Database::instance()->system.weaponType(m_selectedSkill->requiredWtypeId2)->c_str())) {
                 int index{0};
@@ -503,6 +498,18 @@ void DBSkillsTab::draw() {
 
               // Begin effects drawing
               m_effectsEditor.draw(m_parent);
+
+              ImGui::BeginGroup();
+              {
+                ImGui::SeparatorText("Note:");
+                char note[8192];
+                strncpy(note, m_selectedSkill->note.c_str(), IM_ARRAYSIZE(note));
+                if (ImGui::InputTextMultiline("##orpg_database_skills_note", note, IM_ARRAYSIZE(note),
+                                              ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(16), ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
+                  m_selectedSkill->note = note;
+                }
+              }
+              ImGui::EndGroup();
             }
             ImGui::EndGroup();
           }

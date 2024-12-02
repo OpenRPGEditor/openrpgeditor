@@ -206,7 +206,7 @@ void EventCommandEditor::draw() {
     m_hasFocus = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_NoPopupHierarchy);
     ImGui::Text("Content:");
     if (ImGui::BeginTable("##commonevent_code_contents", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                          ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
+                          ImVec2{0, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y})) {
       setupTableColors();
       setupTableHeader();
 
@@ -278,7 +278,7 @@ void EventCommandEditor::draw() {
           if (ImGui::TableNextColumn()) {
             auto cmd = m_commands->at(n);
             if (cmd->collapsable()) {
-              if (ImGui::Selectable(std::format("{}##orpg_command_collapse_btn_{}", cmd->isCollapsed() ? "+" : "-", n).c_str())) {
+              if (ImGui::Selectable(std::format("{}##orpg_command_collapse_btn_{}", cmd->isCollapsed() ? "+" : "-", n).c_str(), false, ImGuiSelectableFlags_AllowOverlap)) {
                 cmd->setCollapsed(!cmd->isCollapsed());
               }
             } else {

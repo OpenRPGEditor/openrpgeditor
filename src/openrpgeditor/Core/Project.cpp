@@ -776,6 +776,9 @@ void Project::handleKeyboardShortcuts() {
   }
 
   /* Tools */
+  if (ImGui::IsKeyReleased(ImGuiKey_F8)) {
+    m_settingsDialog.setOpen(true);
+  }
   if (ImGui::IsKeyReleased(ImGuiKey_F9)) {
     m_databaseEditor->open();
   }

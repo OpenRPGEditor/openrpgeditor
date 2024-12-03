@@ -149,6 +149,10 @@ struct Database {
   }
 
   [[nodiscard]] std::string stateName(const int id) const {
+    if (id == 0) {
+      return "Normal Attack";
+    }
+
     const auto object = states.state(id);
     return object ? object->name : InvalidDataName.data();
   }

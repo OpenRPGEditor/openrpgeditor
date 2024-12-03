@@ -78,7 +78,7 @@ void CheckeredCompositeTexture::update() {
     }
 
     const SDL_Rect screct = {offset.x(), offset.y(), originalSize.x(), originalSize.y()};
-    const SDL_Rect dstrect = {oAbs(m_finalSize.x() / 2 - (width / 2)), oAbs(m_finalSize.y() / 2 - (height / 2)), width, height};
+    const SDL_Rect dstrect = {oAbs(m_finalSize.x() / 2 - (width / 2)) + 1, oAbs(m_finalSize.y() / 2 - (height / 2)) + 1, width - 2, height - 2};
     SDL_RenderCopy(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(texture.get()), &screct, &dstrect);
   }
 

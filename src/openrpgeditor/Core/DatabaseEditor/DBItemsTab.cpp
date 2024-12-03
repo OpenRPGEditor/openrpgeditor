@@ -15,14 +15,18 @@ DBItemsTab::DBItemsTab(Items& Items, DatabaseEditor* parent) : IDBEditorTab(pare
 void DBItemsTab::draw() {
   if (!m_itemButtonTexture) {
     m_itemButtonTexture.emplace();
-    m_itemButtonTexture->setSize(38, 38);
+    m_itemButtonTexture->setSize(48, 48);
     if (!m_itemSheet) {
       m_itemSheet.emplace(*m_parent->getIconSheet());
     }
+  }
+
+  if (m_selectedItem && !m_itemButtonTexture->hasCompositeTextures()) {
     const auto& [uv0, uv1] = m_itemSheet.value().rectForId(m_selectedItem->iconIndex);
     const Point offset{static_cast<int>(uv0.x() * m_itemSheet.value().texture().width()), static_cast<int>(uv0.y() * m_itemSheet.value().texture().height())};
     m_itemButtonTexture->setTexturesToComposite({{m_itemSheet.value().texture(), {m_itemSheet.value().iconWidth(), m_itemSheet.value().iconHeight()}, offset}});
   }
+
   if (m_animationPicker) {
     const auto [closed, confirmed] = m_animationPicker->draw();
     if (closed) {
@@ -52,8 +56,11 @@ void DBItemsTab::draw() {
               char name[4096];
               snprintf(name, 4096, "%04i %s", skill_.id, skill_.name.c_str());
               if (ImGui::Selectable(name, &skill_ == m_selectedItem) || (ImGui::IsItemFocused() && m_selectedItem != &skill_)) {
-                m_selectedItem = &skill_;
-                m_effectsEditor.setEffects(&m_selectedItem->effects);
+                if (m_selectedItem != &skill_) {
+                  m_selectedItem = &skill_;
+                  m_effectsEditor.setEffects(&m_selectedItem->effects);
+                  m_itemButtonTexture->clear();
+                }
               }
             }
           }

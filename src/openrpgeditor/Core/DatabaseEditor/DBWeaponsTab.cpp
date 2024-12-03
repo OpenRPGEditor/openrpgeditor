@@ -1,8 +1,8 @@
 #include "Core/DatabaseEditor/DBWeaponsTab.hpp"
 #include "Core/Application.hpp"
-#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Database/Weapons.hpp"
 
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
 

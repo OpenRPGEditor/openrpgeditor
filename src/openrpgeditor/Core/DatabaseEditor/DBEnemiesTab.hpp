@@ -1,5 +1,8 @@
 #pragma once
+#include "Core/CommonUI/TraitsEditor.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include "Core/Graphics/CharacterSheet.hpp"
+#include "Core/Graphics/CheckeredCompositeTexture.hpp"
 #include "Database/Enemies.hpp"
 
 struct Enemies;
@@ -21,4 +24,9 @@ private:
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
+  CharacterSheet* m_currentSheet = nullptr;
+  std::optional<CheckeredCompositeTexture> m_characterButtonTexture;
+  std::optional<CharacterSheet> m_characterSheet;
+  std::optional<CharacterSheet> m_characterPicker;
+  TraitsEditor m_traitsEditor;
 };

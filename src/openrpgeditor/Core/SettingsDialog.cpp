@@ -43,6 +43,7 @@ std::tuple<bool, bool> SettingsDialog::draw() {
         m_open = false;
 
         m_wasUIRefreshRequested = false;
+        m_tempSettings.clear();
         ImGui::CloseCurrentPopup();
         if (m_hasChangedSettings) {
           App::APP->serializeSettings();

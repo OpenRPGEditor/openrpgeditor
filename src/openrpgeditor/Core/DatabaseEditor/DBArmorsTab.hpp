@@ -1,5 +1,8 @@
 #pragma once
+#include "Core/CommonUI/TraitsEditor.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include "Core/Graphics/CheckeredCompositeTexture.hpp"
+#include "Core/Graphics/IconSheet.hpp"
 #include "Database/Armors.hpp"
 
 struct DBArmorsTab : IDBEditorTab {
@@ -19,4 +22,9 @@ private:
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
+  IconSheet* m_currentSheet = nullptr;
+  std::optional<CheckeredCompositeTexture> m_itemButtonTexture;
+  std::optional<IconSheet> m_itemSheet;
+  std::optional<IconSheet> m_itemPicker;
+  TraitsEditor m_traitsEditor;
 };

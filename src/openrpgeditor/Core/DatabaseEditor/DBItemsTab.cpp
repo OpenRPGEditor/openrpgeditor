@@ -53,7 +53,7 @@ void DBItemsTab::draw() {
               snprintf(name, 4096, "%04i %s", skill_.id, skill_.name.c_str());
               if (ImGui::Selectable(name, &skill_ == m_selectedItem) || (ImGui::IsItemFocused() && m_selectedItem != &skill_)) {
                 m_selectedItem = &skill_;
-                // m_traitsEditor.setTraits(&m_selectedClass->traits);
+                m_effectsEditor.setEffects(&m_selectedItem->effects);
               }
             }
           }

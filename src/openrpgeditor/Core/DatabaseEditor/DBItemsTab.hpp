@@ -1,5 +1,4 @@
 #pragma once
-#include "Core/CommonUI/CharacterPicker.hpp"
 #include "Core/CommonUI/EffectsEditor.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/CheckeredCompositeTexture.hpp"
@@ -27,7 +26,6 @@ private:
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
   IconSheet* m_currentSheet = nullptr;
-  std::optional<CharacterPicker> m_characterPicker;
   std::optional<CheckeredCompositeTexture> m_itemButtonTexture;
   std::optional<IconSheet> m_itemSheet;
   std::optional<IconSheet> m_itemPicker;

@@ -9,6 +9,7 @@
 #include "Core/NWJSVersionManager.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/UndoStack.hpp"
+#include "SettingsDialog.hpp"
 
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/TextEditor.hpp"
@@ -165,12 +166,14 @@ private:
   void onSystemLoaded();
   void onGameConstantsLoaded();
   void onTemplatesLoaded();
+  void onDatabaseReady();
 
   void drawMenu();
   void drawToolbar();
   void drawCreateNewProjectPopup();
   void drawTileDebugger();
   void handleKeyboardShortcuts();
+  SettingsDialog m_settingsDialog;
   MapListView m_mapListView;
   MapEditor m_mapEditor;
   EventListView m_eventListView;

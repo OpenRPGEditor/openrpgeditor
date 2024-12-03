@@ -32,7 +32,17 @@
 
 #include <iostream>
 namespace App {
+constexpr auto SettingsFilename = "config.json"sv;
 Application* APP = nullptr;
+void Application::loadSettings() {
+  if (m_settings.load(m_userConfigPath + SettingsFilename.data())) {
+    m_window->setWindowSize(m_settings.window.w, m_settings.window.h);
+    m_window->setWindowPosition(m_settings.window.x, m_settings.window.y);
+    if (m_settings.window.maximized) {
+      m_window->setMaximized();
+    }
+  }
+}
 Application::Application(const std::string& title) {
   if (!cpuid_present()) {
     std::cerr << "CPU does not support this CPU" << std::endl;
@@ -56,13 +66,7 @@ Application::Application(const std::string& title) {
   m_userConfigPath = std::string{conf_path};
   SDL_free((void*)conf_path);
 
-  if (m_settings.load(m_userConfigPath + "config.json")) {
-    m_window->setWindowSize(m_settings.window.w, m_settings.window.h);
-    m_window->setWindowPosition(m_settings.window.x, m_settings.window.y);
-    if (m_settings.window.maximized) {
-      m_window->setMaximized();
-    }
-  }
+  loadSettings();
   APP_DEBUG("User config path: {}", m_userConfigPath);
 
   APP = this;
@@ -202,6 +206,7 @@ void Application::updateFonts() {
   updateScale();
 }
 
+void Application::serializeSettings() { m_settings.serialize(m_userConfigPath + SettingsFilename.data()); }
 ExitStatus Application::run() {
   NFD_Init();
   /* Do an initial clear */
@@ -338,7 +343,7 @@ ExitStatus Application::run() {
     }
   }
 
-  Settings::instance()->serialize(m_userConfigPath + "config.json");
+  serializeSettings();
   SerializationQueue::instance().terminate();
   DeserializationQueue::instance().terminate();
   NFD_Quit();

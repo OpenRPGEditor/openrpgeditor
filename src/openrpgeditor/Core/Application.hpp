@@ -21,6 +21,8 @@ enum class ExitStatus : int { Success = 0, Failure = 1 };
 
 class Application {
 public:
+  void loadSettings();
+  void serializeSettings();
   explicit Application(const std::string& title);
   ~Application();
   void updateScale();

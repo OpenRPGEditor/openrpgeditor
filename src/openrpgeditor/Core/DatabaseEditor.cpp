@@ -4,7 +4,13 @@
 #include "imgui.h"
 
 void DatabaseEditor::draw() {
-  if (!m_isOpen || !isReady()) {
+  if (isReady() && !onReady.is_empty()) {
+    onReady.fire();
+  } else if (!isReady()) {
+    return;
+  }
+
+  if (!m_isOpen) {
     return;
   }
 

@@ -416,6 +416,12 @@ add_library(
         Core/DatabaseEditor/DBTermsTab.hpp
         Core/DatabaseEditor/DBTypesTab.cpp
         Core/DatabaseEditor/DBTypesTab.hpp
+
+        Core/SettingsDialog.cpp
+        Core/SettingsDialog.hpp
+        Core/SettingsDialog/ISettingsTab.hpp
+        Core/SettingsDialog/GeneralSettingsTab.cpp
+        Core/SettingsDialog/GeneralSettingsTab.hpp
 )
 
 target_include_directories(orecore PUBLIC

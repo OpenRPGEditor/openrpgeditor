@@ -170,6 +170,8 @@ struct DatabaseEditor {
   }
   const IconSheet* getIconSheet();
 
+  signal<void()> onReady;
+
 private:
   Project* m_parent;
   std::optional<DBActorsTab> m_actors;

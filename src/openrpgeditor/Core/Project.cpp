@@ -3,8 +3,14 @@
 #include "Settings.hpp"
 
 #include "Core/Application.hpp"
+#include "Core/ImGuiExt/ImGuiNotify.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Log.hpp"
+#include "Core/SettingsDialog/GeneralSettingsTab.hpp"
 #include "Core/Utils.hpp"
+#include "Database/Serializable/DeserializationQueue.hpp"
+#include "Database/Serializable/SerializationQueue.hpp"
+#include "Database/Versions.hpp"
 #include "IconsFontAwesome6.h"
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -13,26 +19,18 @@
 #include <shellapi.h>
 #endif
 
-#include "Core/ImGuiExt/ImGuiNotify.hpp"
-#include "Core/ImGuiExt/ImGuiUtils.hpp"
-#include "Database/Serializable/DeserializationQueue.hpp"
-#include "Database/Serializable/SerializationQueue.hpp"
-#include "nfd.h"
-
-#include "Database/Versions.hpp"
-
-#include <clip.h>
-
-#include <fstream>
-
-#include <algorithm>
 #include <array>
+#include <clip.h>
+#include <fstream>
+#include <nfd.h>
 #include <string_view>
 
 using namespace std::literals::string_view_literals;
 static SDL_Cursor* waitCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAITARROW);
 
-Project::Project() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this), m_nwjsVersionManager("https://dl.nwjs.io") {}
+Project::Project() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this), m_nwjsVersionManager("https://dl.nwjs.io") {
+  m_settingsDialog.addTab(new GeneralSettingsTab());
+}
 
 bool Project::load(std::string_view filePath, std::string_view basePath) {
   close();
@@ -42,9 +40,7 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   std::getline(file, version);
   Utils::trim(version);
 
-  auto it = std::find(KnownRPGMVVersions.begin(), KnownRPGMVVersions.end(), version);
-
-  m_isValid = it != KnownRPGMVVersions.end();
+  m_isValid = std::ranges::find(KnownRPGMVVersions, version) != KnownRPGMVVersions.end();
   if (!m_isValid) {
     APP_ERROR("Invalid project version {}", version);
     SDL_SetCursor(SDL_GetDefaultCursor());
@@ -55,10 +51,11 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   DeserializationQueue::instance().reset();
   SerializationQueue::instance().setBasepath(basePath);
   DeserializationQueue::instance().setBasepath(basePath);
+  m_resourceManager.emplace(basePath);
   m_databaseEditor.emplace(this);
-  m_database.emplace(basePath, filePath, version);
-  m_resourceManager.emplace(m_database->basePath);
+  m_databaseEditor->onReady.connect<&Project::onDatabaseReady>(this);
 
+  m_database.emplace(basePath, filePath, version);
   m_database->actorsLoaded.connect<&Project::onActorsLoaded>(this);
   m_database->classesLoaded.connect<&Project::onClassesLoaded>(this);
   m_database->skillsLoaded.connect<&Project::onSkillsLoaded>(this);
@@ -75,29 +72,6 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   m_database->gameConstantsLoaded.connect<&Project::onGameConstantsLoaded>(this);
   m_database->templatesLoaded.connect<&Project::onTemplatesLoaded>(this);
   m_database->load();
-  MapInfo* info = m_database->mapInfos.map(0);
-  Settings::instance()->lastProject = filePath;
-  info->expanded = true;
-  info->name = m_database->system.gameTitle.empty() ? std::filesystem::path(basePath).filename().generic_string() : m_database->system.gameTitle;
-  APP_INFO("Loaded project!");
-  // Load the previously loaded map
-  SDL_SetCursor(SDL_GetDefaultCursor());
-  m_mapEditor.clearLayers();
-  m_mapListView.setMapInfos(&m_database->mapInfos);
-
-  MapInfo* m = m_database->mapInfos.map(m_database->system.editMapId);
-  if (m != nullptr) {
-    setMap(*m);
-  }
-
-  auto fileIt = std::find_if(Settings::instance()->mru.begin(), Settings::instance()->mru.end(), [&filePath](const auto& t) { return t.first == filePath.data(); });
-  if (fileIt == Settings::instance()->mru.end()) {
-    Settings::instance()->mru.emplace_front(filePath.data(), m_database->system.gameTitle);
-  } else {
-    Settings::instance()->mru.erase(fileIt);
-    Settings::instance()->mru.emplace_front(filePath.data(), m_database->system.gameTitle);
-  }
-  m_isLoaded = true;
   return true;
 }
 
@@ -314,6 +288,7 @@ void Project::draw() {
   drawMenu();
   drawToolbar();
   setupDocking();
+  m_settingsDialog.draw();
   m_mapEditor.draw();
 
   if (m_databaseEditor) {
@@ -657,6 +632,9 @@ void Project::drawMenu() {
     }
 
     if (ImGui::BeginMenu("Tools")) {
+      if (ImGui::MenuItem("Settings", "F8", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
+        m_settingsDialog.setOpen(true);
+      }
       if (ImGui::MenuItem("Database", "F9", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
         m_databaseEditor->open();
       }
@@ -869,3 +847,34 @@ void Project::onCommonEventsLoaded() { m_databaseEditor->setCommonEvents(m_datab
 void Project::onSystemLoaded() { m_databaseEditor->setSystem(m_database->system); }
 void Project::onGameConstantsLoaded() { m_databaseEditor->setGameConstants(m_database->gameConstants); }
 void Project::onTemplatesLoaded() { m_databaseEditor->setTemplates(m_database->templates); }
+
+void Project::onDatabaseReady() {
+  MapInfo* info = m_database->mapInfos.map(0);
+  Settings::instance()->lastProject = m_database->projectFilePath;
+  info->expanded = true;
+  info->name = m_database->system.gameTitle.empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system.gameTitle;
+  APP_INFO("Loaded project!");
+  // Load the previously loaded map
+  SDL_SetCursor(SDL_GetDefaultCursor());
+  m_mapEditor.clearLayers();
+  m_mapListView.setMapInfos(&m_database->mapInfos);
+
+  if (MapInfo* m = m_database->mapInfos.map(m_database->system.editMapId); m != nullptr) {
+    setMap(*m);
+  }
+
+  if (const auto fileIt = std::ranges::find_if(Settings::instance()->mru, [this](const auto& t) { return t.first == m_database->projectFilePath; }); fileIt == Settings::instance()->mru.end()) {
+    Settings::instance()->mru.emplace_front(m_database->projectFilePath,
+                                            m_database->system.gameTitle.empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system.gameTitle);
+  } else {
+    Settings::instance()->mru.erase(fileIt);
+    Settings::instance()->mru.emplace_front(m_database->projectFilePath,
+                                            m_database->system.gameTitle.empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system.gameTitle);
+  }
+  while (Settings::instance()->mru.size() > Settings::instance()->maxMru) {
+    Settings::instance()->mru.pop_back();
+  }
+  m_isLoaded = true;
+  /* Disconnect the signal so we don't get spammed */
+  m_databaseEditor->onReady.disconnect<&Project::onDatabaseReady>(this);
+}

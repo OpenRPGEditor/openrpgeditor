@@ -18,7 +18,9 @@ struct Settings {
 
   Settings();
   bool load(std::string_view path);
+  bool loadFromJson(const nlohmann::ordered_json& parser);
   void serialize(std::string_view path);
+  nlohmann::ordered_json serializeToJson();
   WindowRect window{};
   std::deque<std::pair<std::string, std::string>> mru;
   std::string lastDirectory;
@@ -29,6 +31,7 @@ struct Settings {
   float uiScale{1.0};
   int fontSize{12};
   int monoFontSize{12};
+  int maxMru{10};
   std::string currentNWJSVersion;
   bool ranFirstBootWizard{false};
 

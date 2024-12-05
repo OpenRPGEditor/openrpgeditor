@@ -25,6 +25,14 @@ void DBEnemiesTab::draw() {
     const Point offset{static_cast<int>(uv0.x() * m_characterSheet.value().texture().width()), static_cast<int>(uv0.y() * m_characterSheet.value().texture().height())};
     m_characterButtonTexture->setTexturesToComposite({{m_characterSheet.value().texture(), {m_characterSheet.value().characterWidth(), m_characterSheet.value().characterHeight()}, offset}});
   }
+
+  if (m_isDropConfirmed) {
+    m_selectedEnemy->dropItems.at(m_dropIndex).dataId = m_item.at(m_dropIndex);
+    m_selectedEnemy->dropItems.at(m_dropIndex).kind = m_dropSelection;
+    m_selectedEnemy->dropItems.at(m_dropIndex).denominator = m_dropDenominator;
+    m_isOpen = false;
+    m_isDropConfirmed = false;
+  }
   ImGui::BeginChild("#orpg_enemies_editor");
   {
     ImGui::BeginChild("##orpg_enemies_editor_enemies", ImVec2{250.f, 0} * App::DPIHandler::get_ui_scale(), 0, ImGuiWindowFlags_HorizontalScrollbar);
@@ -232,10 +240,10 @@ void DBEnemiesTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
-              // Animation Button
               ImGui::PushID("##orpg_database_enemy_drops_1");
-              if (ImGui::Button(m_selectedEnemy->dropItems.at(0).dataId == 0 ? "None" : "", ImVec2{ImGui::GetContentRegionMax().x, 0})) {
-                // TODO: Drop Items
+              if (ImGui::Button(m_selectedEnemy->dropItems.at(0).kind > 0 ? GetDropString(0, m_selectedEnemy->dropItems.at(0).kind).c_str() : "", ImVec2{ImGui::GetContentRegionMax().x, 0})) {
+                m_dropIndex = 0;
+                m_isOpen = true;
               }
               ImGui::PopID();
             }
@@ -244,10 +252,10 @@ void DBEnemiesTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
-              // Animation Button
               ImGui::PushID("##orpg_database_enemy_drops_2");
-              if (ImGui::Button(m_selectedEnemy->dropItems.at(1).dataId == 0 ? "None" : "", ImVec2{ImGui::GetContentRegionMax().x, 0})) {
-                // TODO: Drop Items
+              if (ImGui::Button(m_selectedEnemy->dropItems.at(1).kind > 0 ? GetDropString(1, m_selectedEnemy->dropItems.at(1).kind).c_str() : "", ImVec2{ImGui::GetContentRegionMax().x, 0})) {
+                m_dropIndex = 1;
+                m_isOpen = true;
               }
               ImGui::PopID();
             }
@@ -256,10 +264,10 @@ void DBEnemiesTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
-              // Animation Button
               ImGui::PushID("##orpg_database_enemy_drops_3");
-              if (ImGui::Button(m_selectedEnemy->dropItems.at(2).dataId == 0 ? "None" : "", ImVec2{ImGui::GetContentRegionMax().x, 0})) {
-                // TODO: Drop Items
+              if (ImGui::Button(m_selectedEnemy->dropItems.at(2).kind > 0 ? GetDropString(2, m_selectedEnemy->dropItems.at(2).kind).c_str() : "", ImVec2{ImGui::GetContentRegionMax().x, 0})) {
+                m_dropIndex = 2;
+                m_isOpen = true;
               }
               ImGui::PopID();
             }
@@ -331,5 +339,141 @@ void DBEnemiesTab::draw() {
         ImGui::End();
       }
     }
+    drawPopup();
+  }
+}
+void DBEnemiesTab::drawPopup() {
+  if (m_isOpen) {
+    ImGui::OpenPopup("Drop Item Selection");
+  }
+
+  if (ImGui::BeginPopupModal("Drop Item Selection", nullptr, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize)) {
+    if (item_picker) {
+      auto [closed, confirmed] = item_picker->draw();
+      if (closed) {
+        if (confirmed) {
+          m_item.at(0) = item_picker->selection();
+        }
+        item_picker.reset();
+      }
+    }
+    if (weapon_picker) {
+      auto [closed, confirmed] = weapon_picker->draw();
+      if (closed) {
+        if (confirmed) {
+          m_item.at(1) = weapon_picker->selection();
+        }
+        weapon_picker.reset();
+      }
+    }
+
+    if (armor_picker) {
+      auto [closed, confirmed] = armor_picker->draw();
+      if (closed) {
+        if (confirmed) {
+          m_item.at(2) = armor_picker->selection();
+        }
+        armor_picker.reset();
+      }
+    }
+    ImGui::BeginChild("##orpg_dropitem_left_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_NoBackground);
+    {
+
+      if (ImGui::RadioButton("None", m_dropSelection == 0)) {
+        m_dropSelection = 0;
+      }
+      if (ImGui::RadioButton("Item", m_dropSelection == 1)) {
+        m_dropSelection = 1;
+      }
+      if (ImGui::RadioButton("Weapon", m_dropSelection == 2)) {
+        m_dropSelection = 2;
+      }
+      if (ImGui::RadioButton("Armor", m_dropSelection == 3)) {
+        m_dropSelection = 3;
+      }
+    }
+    ImGui::EndChild();
+    ImGui::SameLine();
+    ImGui::BeginChild("##orpg_dropitem_right_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_NoBackground);
+    {
+      // None
+      ImGui::NewLine();
+      ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10.f);
+      //  Item
+      ImGui::BeginDisabled(m_dropSelection != 1);
+      {
+        ImGui::PushID("##orpg_dropitem_item");
+        if (ImGui::Button(m_dropSelection != 1 ? "" : Database::instance()->itemNameOrId(m_item.at(0)).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+          item_picker = ObjectPicker<Item>("Item"sv, Database::instance()->items.items(), m_item.at(0));
+          item_picker->setOpen(true);
+        }
+        ImGui::PopID();
+      }
+      ImGui::EndDisabled();
+      // Weapon
+      ImGui::BeginDisabled(m_dropSelection != 2);
+      {
+        ImGui::PushID("##orpg_dropitem_weapon");
+        if (ImGui::Button(m_dropSelection != 2 ? "" : Database::instance()->weaponNameOrId(m_item.at(1)).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+          weapon_picker = ObjectPicker<Weapon>("Weapon"sv, Database::instance()->weapons.weaponList(), m_item.at(1));
+          weapon_picker->setOpen(true);
+        }
+        ImGui::PopID();
+      }
+      ImGui::EndDisabled();
+      // Armor
+      ImGui::BeginDisabled(m_dropSelection != 3);
+      {
+        ImGui::PushID("##orpg_dropitem_armor");
+        if (ImGui::Button(m_dropSelection != 3 ? "" : Database::instance()->armorNameOrId(m_item.at(2)).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+          armor_picker = ObjectPicker<Armor>("Armor"sv, Database::instance()->armors.armorList(), m_item.at(2));
+          armor_picker->setOpen(true);
+        }
+        ImGui::PopID();
+      }
+      ImGui::EndDisabled();
+      ImGui::BeginDisabled(m_dropSelection < 1);
+      {
+        ImGui::SeparatorText("Probability");
+        if (ImGui::InputInt("##orpg_dropitem_denom", &m_dropDenominator)) {
+          if (m_dropDenominator < 1) {
+            m_dropDenominator = 1;
+          }
+          if (m_dropDenominator > 1000) {
+            m_dropDenominator = 1000;
+          }
+        }
+      }
+      ImGui::EndDisabled();
+    }
+    ImGui::EndChild();
+    ImGui::Separator();
+    ImGui::BeginGroup();
+    {
+      if (ImGui::Button("OK")) {
+        m_isOpen = false;
+        m_isDropConfirmed = true;
+        ImGui::CloseCurrentPopup();
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("Cancel")) {
+        m_isOpen = false;
+        ImGui::CloseCurrentPopup();
+      }
+      ImGui::EndGroup();
+    }
+    ImGui::EndPopup();
+  }
+}
+std::string DBEnemiesTab::GetDropString(int dropIndex, int kindId) {
+  switch (kindId) {
+  case 1:
+    return Database::instance()->itemNameOrId(m_selectedEnemy->dropItems.at(dropIndex).dataId);
+  case 2:
+    return Database::instance()->weaponNameOrId(m_selectedEnemy->dropItems.at(dropIndex).dataId);
+  case 3:
+    return Database::instance()->armorNameOrId(m_selectedEnemy->dropItems.at(dropIndex).dataId);
+  default:
+    break;
   }
 }

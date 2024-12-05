@@ -13,8 +13,7 @@ Window::Window(const Settings& settings) {
 
   m_window = SDL_CreateWindow(settings.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, size.width, size.height, window_flags);
 
-  auto renderer_flags{static_cast<SDL_RendererFlags>(SDL_RENDERER_ACCELERATED)};
-  m_renderer = SDL_CreateRenderer(m_window, -1, renderer_flags);
+  m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 
   if (m_renderer == nullptr) {
     APP_ERROR("Error creating SDL_Renderer!");

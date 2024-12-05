@@ -708,9 +708,6 @@ void Project::handleKeyboardShortcuts() {
     // TODO: implement saving
   }
 
-  if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && ImGui::IsKeyReleased(ImGuiKey_O)) {
-    handleOpenFile();
-  }
   if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && ImGui::IsKeyPressed(ImGuiKey_Q)) {
     App::APP->stop();
   }

@@ -422,6 +422,11 @@ add_library(
         Core/SettingsDialog/ISettingsTab.hpp
         Core/SettingsDialog/GeneralSettingsTab.cpp
         Core/SettingsDialog/GeneralSettingsTab.hpp
+        Core/Graphics/RenderImage.cpp
+        Core/Graphics/RenderImage.hpp
+
+        Core/Tilemap/ITileView.cpp
+        Core/Tilemap/ITileView.hpp
 )
 
 target_include_directories(orecore PUBLIC

@@ -11,6 +11,7 @@ DBEnemiesTab::DBEnemiesTab(Enemies& Enemies, DatabaseEditor* parent) : IDBEditor
   m_selectedEnemy = m_enemies.enemy(1);
   if (m_selectedEnemy) {
     m_traitsEditor.setTraits(&m_selectedEnemy->traits);
+    m_actionsEditor.setActions(&m_selectedEnemy->actions);
   }
 }
 
@@ -54,6 +55,7 @@ void DBEnemiesTab::draw() {
               if (ImGui::Selectable(name, &skill_ == m_selectedEnemy) || (ImGui::IsItemFocused() && m_selectedEnemy != &skill_)) {
                 m_selectedEnemy = &skill_;
                 m_traitsEditor.setTraits(&m_selectedEnemy->traits);
+                m_actionsEditor.setActions(&m_selectedEnemy->actions);
               }
             }
           }
@@ -280,7 +282,7 @@ void DBEnemiesTab::draw() {
         ImGui::SameLine();
         ImGui::BeginChild("##orpg_weapons_weapon_panel_right");
         {
-
+          m_actionsEditor.draw(m_parent);
           m_traitsEditor.draw(m_parent);
           ImGui::BeginGroup();
           {

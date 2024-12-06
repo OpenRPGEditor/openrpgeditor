@@ -117,10 +117,10 @@ void EffectsEditor::draw(DatabaseEditor* dbEditor) {
         ImGui::PopID();
       }
 
-      /* Dummy entry for adding new traits */
+      /* Dummy entry for adding new effects */
       ImGui::TableNextRow();
       if (ImGui::TableNextColumn()) {
-        if (ImGui::Selectable("##traits_editor_trait_dummy", false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
+        if (ImGui::Selectable("##effects_editor_effect_dummy", false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
           if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
             m_tempEffect = Effect();
             m_isNewEntry = true;

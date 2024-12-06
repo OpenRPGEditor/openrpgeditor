@@ -1,4 +1,5 @@
 #pragma once
+#include "Core/CommonUI/ActionsEditor.hpp"
 #include "Core/CommonUI/TraitsEditor.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/CharacterSheet.hpp"
@@ -37,10 +38,11 @@ private:
   std::optional<CharacterSheet> m_characterSheet;
   std::optional<CharacterSheet> m_characterPicker;
   TraitsEditor m_traitsEditor;
+  ActionsEditor m_actionsEditor;
   std::optional<ObjectPicker<Item>> item_picker;
   std::optional<ObjectPicker<Armor>> armor_picker;
   std::optional<ObjectPicker<Weapon>> weapon_picker;
-  std::vector<int> m_item{0, 0, 0};
+  std::vector<int> m_item{1, 1, 1};
 
   int m_dropIndex{0};
   int m_dropDenominator{1};

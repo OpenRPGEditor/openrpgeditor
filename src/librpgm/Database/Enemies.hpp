@@ -17,8 +17,8 @@ public:
     int conditionParam1;
     int conditionParam2;
     ActionCondition conditionType;
-    int rating;
-    int skillId;
+    int rating{5};
+    int skillId{1};
   };
 
   struct DropItem {

@@ -17,17 +17,18 @@ void ActionsEditor::draw(DatabaseEditor* dbEditor) {
   ImGui::BeginGroup();
   {
     ImGui::SeparatorText("Action Patterns");
-    if (ImGui::BeginTable("##orpg_actions_editor", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollY | ImGuiTableFlags_ScrollY,
+    if (ImGui::BeginTable("##orpg_actions_editor", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollY | ImGuiTableFlags_ScrollY,
                           ImVec2{ImGui::GetContentRegionMax().x - 15, ImGui::GetContentRegionMax().y - 600})) {
-      ImGui::TableSetupColumn("Type");
-      ImGui::TableSetupColumn("Content");
+      ImGui::TableSetupColumn("Skill");
+      ImGui::TableSetupColumn("Condition");
+      ImGui::TableSetupColumn("Rating");
       ImGui::TableHeadersRow();
 
       for (auto& action : *m_actions) {
         ImGui::PushID(&action);
         ImGui::TableNextRow();
         if (ImGui::TableNextColumn()) {
-          if (ImGui::Selectable(std::format("{}##action_{}", DecodeEnumName(action.conditionType), reinterpret_cast<uintptr_t>(&action)).c_str(), m_selectedAction == &action,
+          if (ImGui::Selectable(std::format("{}##action_{}", Database::instance()->skillNameOrId(action.skillId).c_str(), reinterpret_cast<uintptr_t>(&action)).c_str(), m_selectedAction == &action,
                                 ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
             m_selectedAction = &action;
             if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
@@ -46,37 +47,40 @@ void ActionsEditor::draw(DatabaseEditor* dbEditor) {
         if (ImGui::TableNextColumn()) {
           switch (action.conditionType) {
           case ActionCondition::Always: {
-            // ImGui::Text("%i%% + %i", static_cast<int>(effect.value1 * 100), effect.value2);
+            ImGui::Text("Always");
             break;
           }
           case ActionCondition::Turn: {
-            // ImGui::Text("%i%% + %i", static_cast<int>(effect.value1 * 100), effect.value2);
+            ImGui::Text("Turn %i + %i * X", action.conditionParam1, action.conditionParam2);
             break;
           }
           case ActionCondition::HP: {
-            // ImGui::Text("%i", static_cast<int>(effect.value1));
+            ImGui::Text("HP %i%% ~ %i%%", static_cast<int>(action.conditionParam1 * 100), static_cast<int>(action.conditionParam2 * 100));
             break;
           }
           case ActionCondition::MP: {
-            // ImGui::Text("%s %i%%", Database::instance()->stateNameOrId(effect.dataId).c_str(), static_cast<int>(effect.value1 * 100));
+            ImGui::Text("MP %i%% ~ %i%%", static_cast<int>(action.conditionParam1 * 100), static_cast<int>(action.conditionParam2 * 100));
             break;
           }
           case ActionCondition::State: {
-            // ImGui::Text("%s %i%%", Database::instance()->stateNameOrId(effect.dataId).c_str(), static_cast<int>(effect.value1 * 100));
+            ImGui::Text("State %s", Database::instance()->stateNameOrId(action.conditionParam1).c_str());
             break;
           }
           case ActionCondition::Party_Level: {
-            // ImGui::Text("%s + %i turns", DecodeEnumName(static_cast<ParameterSource>(effect.dataId)).c_str(), static_cast<int>(effect.value1));
+            ImGui::Text("Party Level >= %i", action.conditionParam1);
             break;
           }
           case ActionCondition::Switch: {
-            // ImGui::Text("%s + %i turns", DecodeEnumName(static_cast<ParameterSource>(effect.dataId)).c_str(), static_cast<int>(effect.value1));
+            ImGui::Text("%s", Database::instance()->switchNameOrId(action.conditionParam1).c_str());
             break;
           }
           default:
             // ImGui::Text("%i %g", effect.dataId, effect.value1);
             break;
           }
+        }
+        if (ImGui::TableNextColumn()) {
+          ImGui::Text("%i", action.rating);
         }
 
         ImGui::PopID();
@@ -120,7 +124,37 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
     }
     ImGui::BeginGroup();
     {
-      ImGui::BeginChild("##orpg_actions_rate_left_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_NoBackground);
+      ImGui::BeginChild("##orpg_actions_upper_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_NoBackground);
+      {
+        ImGui::SeparatorText("Skill and Rating");
+        ImGui::BeginGroup();
+        {
+          ImGui::Text("Skill:");
+          ImGui::SameLine();
+          ImGui::Dummy(ImVec2{160, 0});
+          ImGui::SameLine();
+          ImGui::Text("Rating:");
+          ImGui::EndGroup();
+        }
+        ImGui::BeginGroup();
+        {
+          // Skill Button - Picker
+          if (ImGui::Button(Database::instance()->skillNameOrId(m_selectedAction->skillId).c_str(), ImVec2{200 * App::DPIHandler::get_ui_scale(), 0})) {
+            m_skillPicker.emplace("Skill"sv, Database::instance()->skills.skills(), m_selectedAction->skillId);
+            m_skillPicker->setOpen(true);
+          }
+          ImGui::SameLine();
+          ImGui::SetNextItemWidth(150 * App::DPIHandler::get_ui_scale());
+          int tmpInt = m_selectedAction->rating;
+          if (ImGui::InputInt("##action_rating", &tmpInt)) {
+            m_selectedAction->rating = tmpInt;
+          }
+          ImGui::SeparatorText("Conditions");
+          ImGui::EndGroup();
+        }
+      }
+      ImGui::EndChild();
+      ImGui::BeginChild("##orpg_actions_left_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_NoBackground);
       {
 
         if (ImGui::RadioButton("Always", m_selectedAction->conditionType == ActionCondition::Always)) {
@@ -131,52 +165,58 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
         }
         if (ImGui::RadioButton("Turn", m_selectedAction->conditionType == ActionCondition::Turn)) {
           if (m_selectedAction->conditionType != ActionCondition::Turn) {
-            // TODO
+            m_selectedAction->conditionParam1 = 0;
+            m_selectedAction->conditionParam2 = 0;
           }
           m_selectedAction->conditionType = ActionCondition::Turn;
         }
         if (ImGui::RadioButton("HP", m_selectedAction->conditionType == ActionCondition::HP)) {
           if (m_selectedAction->conditionType != ActionCondition::HP) {
-            // TODO
+            m_selectedAction->conditionParam1 = 0;
+            m_selectedAction->conditionParam2 = 1;
           }
           m_selectedAction->conditionType = ActionCondition::HP;
         }
         // MP
         if (ImGui::RadioButton("MP", m_selectedAction->conditionType == ActionCondition::MP)) {
           if (m_selectedAction->conditionType != ActionCondition::MP) {
-            // TODO
+            m_selectedAction->conditionParam1 = 0;
+            m_selectedAction->conditionParam2 = 1;
           }
           m_selectedAction->conditionType = ActionCondition::MP;
         }
         // State
         if (ImGui::RadioButton("State", m_selectedAction->conditionType == ActionCondition::State)) {
           if (m_selectedAction->conditionType != ActionCondition::State) {
-            // TODO
+            m_selectedAction->conditionParam1 = 1; // State id
+            m_selectedAction->conditionParam2 = 0;
           }
           m_selectedAction->conditionType = ActionCondition::State;
         }
         // Party Level
         if (ImGui::RadioButton("Party Level", m_selectedAction->conditionType == ActionCondition::Party_Level)) {
           if (m_selectedAction->conditionType != ActionCondition::Party_Level) {
-            // TODO
+            m_selectedAction->conditionParam1 = 1;
+            m_selectedAction->conditionParam2 = 0;
           }
           m_selectedAction->conditionType = ActionCondition::Party_Level;
         }
         // Switch
         if (ImGui::RadioButton("Switch", m_selectedAction->conditionType == ActionCondition::Switch)) {
           if (m_selectedAction->conditionType != ActionCondition::Switch) {
-            // TODO
+            m_selectedAction->conditionParam1 = 1;
+            m_selectedAction->conditionParam2 = 0;
           }
           m_selectedAction->conditionType = ActionCondition::Switch;
         }
         ImGui::EndChild();
         ImGui::SameLine();
-        ImGui::BeginChild("##orpg_effects_rate_right_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_NoBackground);
+        ImGui::BeginChild("##orpg_actions_right_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_NoBackground);
         {
           // Always
           // => No Widget
           ImGui::NewLine();
-          ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 15.f);
+          ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 13.f);
 
           // Turn
           ImGui::BeginDisabled(m_selectedAction->conditionType != ActionCondition::Turn);
@@ -192,7 +232,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
             int tmpInt2 = m_selectedAction->conditionType == ActionCondition::Turn ? m_selectedAction->conditionParam2 : 0;
             ImGui::SameLine();
             ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
-            if (ImGui::InputInt("##action_turn_value2", &tmpInt)) {
+            if (ImGui::InputInt("##action_turn_value2", &tmpInt2)) {
               m_selectedAction->conditionParam2 = tmpInt2;
             }
           }
@@ -200,38 +240,38 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
           // HP
           ImGui::BeginDisabled(m_selectedAction->conditionType != ActionCondition::HP);
           {
-            int tmpInt = m_selectedAction->conditionType == ActionCondition::HP ? m_selectedAction->conditionParam1 : 0;
+            int tmpInt = m_selectedAction->conditionType == ActionCondition::HP ? static_cast<int>(m_selectedAction->conditionParam1 * 100) : 0;
             ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
-            if (ImGui::InputInt("##action_hp_value1", &tmpInt)) {
-              m_selectedAction->conditionParam1 = tmpInt;
+            if (ImGui::SliderInt("##action_hp_value1", &tmpInt, 0, 100, m_selectedAction->conditionType == ActionCondition::HP ? "%d%%" : "")) {
+              m_selectedAction->conditionParam1 = tmpInt / 100.0;
             }
             ImGui::SameLine();
             ImGui::Text("~");
             ImGui::SameLine();
-            int tmpInt2 = m_selectedAction->conditionType == ActionCondition::HP ? m_selectedAction->conditionParam2 : 0;
             ImGui::SameLine();
+            int tmpInt2 = m_selectedAction->conditionType == ActionCondition::HP ? static_cast<int>(m_selectedAction->conditionParam2 * 100) : 0;
             ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
-            if (ImGui::InputInt("##action_hp_value2", &tmpInt)) {
-              m_selectedAction->conditionParam2 = tmpInt2;
+            if (ImGui::SliderInt("##action_hp_value2", &tmpInt2, 0, 100, m_selectedAction->conditionType == ActionCondition::HP ? "%d%%" : "")) {
+              m_selectedAction->conditionParam2 = tmpInt2 / 100.0;
             }
           }
           ImGui::EndDisabled();
           // MP
           ImGui::BeginDisabled(m_selectedAction->conditionType != ActionCondition::MP);
           {
-            int tmpInt = m_selectedAction->conditionType == ActionCondition::MP ? m_selectedAction->conditionParam1 : 0;
+            int tmpInt = m_selectedAction->conditionType == ActionCondition::MP ? static_cast<int>(m_selectedAction->conditionParam1 * 100) : 0;
             ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
-            if (ImGui::InputInt("##action_mp_value1", &tmpInt)) {
-              m_selectedAction->conditionParam1 = tmpInt;
+            if (ImGui::SliderInt("##action_mp_value1", &tmpInt, 0, 100, m_selectedAction->conditionType == ActionCondition::MP ? "%d%%" : "")) {
+              m_selectedAction->conditionParam1 = tmpInt / 100.0;
             }
             ImGui::SameLine();
             ImGui::Text("~");
             ImGui::SameLine();
-            int tmpInt2 = m_selectedAction->conditionType == ActionCondition::MP ? m_selectedAction->conditionParam2 : 0;
+            int tmpInt2 = m_selectedAction->conditionType == ActionCondition::MP ? static_cast<int>(m_selectedAction->conditionParam2 * 100) : 0;
             ImGui::SameLine();
             ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
-            if (ImGui::InputInt("##action_mp_value2", &tmpInt)) {
-              m_selectedAction->conditionParam2 = tmpInt2;
+            if (ImGui::SliderInt("##action_mp_value2", &tmpInt2, 0, 100, m_selectedAction->conditionType == ActionCondition::MP ? "%d%%" : "")) {
+              m_selectedAction->conditionParam2 = tmpInt2 / 100.0;
             }
           }
           ImGui::EndDisabled();

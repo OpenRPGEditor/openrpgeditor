@@ -6,10 +6,10 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBWeaponsTab::DBWeaponsTab(Weapons& Weapons, DatabaseEditor* parent) : IDBEditorTab(parent), m_weapons(Weapons) {
+DBWeaponsTab::DBWeaponsTab(Weapons& weapons, DatabaseEditor* parent) : IDBEditorTab(parent), m_weapons(weapons) {
   m_selectedWeapon = m_weapons.weapon(1);
   if (m_selectedWeapon) {
-    m_traitsEditor.setTraits(&m_selectedWeapon->traits);
+    m_traitsEditor.setTraits(&m_selectedWeapon->traits());
   }
   m_maxWeapons = m_weapons.count();
 }
@@ -21,15 +21,14 @@ void DBWeaponsTab::draw() {
     if (!m_itemSheet) {
       m_itemSheet.emplace(*m_parent->getIconSheet());
     }
-    const auto& [uv0, uv1] = m_itemSheet.value().rectForId(m_selectedWeapon->iconIndex);
+    const auto& [uv0, uv1] = m_itemSheet.value().rectForId(m_selectedWeapon->iconIndex());
     const Point offset{static_cast<int>(uv0.x() * m_itemSheet.value().texture().width()), static_cast<int>(uv0.y() * m_itemSheet.value().texture().height())};
     m_itemButtonTexture->setTexturesToComposite({{m_itemSheet.value().texture(), {m_itemSheet.value().iconWidth(), m_itemSheet.value().iconHeight()}, offset}});
   }
   if (m_animationPicker) {
-    const auto [closed, confirmed] = m_animationPicker->draw();
-    if (closed) {
+    if (const auto [closed, confirmed] = m_animationPicker->draw(); closed) {
       if (confirmed) {
-        m_selectedWeapon->animationId = m_animationPicker->selection();
+        m_selectedWeapon->setAnimationId(m_animationPicker->selection());
       }
       m_animationPicker.reset();
     }
@@ -41,20 +40,18 @@ void DBWeaponsTab::draw() {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Weapons");
-        ImGui::BeginChild("##orpg_weapons_editor_weapons_list", ImVec2{0, ImGui::GetContentRegionMax().y - (App::DPIHandler::scale_value(108))});
+        ImGui::BeginChild("##orpg_weapons_editor_weapons_list", ImVec2{0, ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(108)});
         {
           ImGui::BeginGroup();
           {
-            for (auto& skill_ : m_weapons.weapons()) {
-              if (skill_.id == 0) {
+            for (auto& weapon : m_weapons.weapons()) {
+              if (weapon.id() == 0) {
                 continue;
               }
 
-              char name[4096];
-              snprintf(name, 4096, "%04i %s", skill_.id, skill_.name.c_str());
-              if (ImGui::Selectable(name, &skill_ == m_selectedWeapon) || (ImGui::IsItemFocused() && m_selectedWeapon != &skill_)) {
-                m_selectedWeapon = &skill_;
-                m_traitsEditor.setTraits(&m_selectedWeapon->traits);
+              if (ImGui::Selectable(Database::instance()->weaponNameAndId(weapon.id()).c_str(), &weapon == m_selectedWeapon) || (ImGui::IsItemFocused() && m_selectedWeapon != &weapon)) {
+                m_selectedWeapon = &weapon;
+                m_traitsEditor.setTraits(&m_selectedWeapon->traits());
               }
             }
           }
@@ -64,7 +61,7 @@ void DBWeaponsTab::draw() {
         char str[4096];
         snprintf(str, 4096, "Max Weapons %i", m_maxWeapons);
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
+        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(8), 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxWeapons = m_maxWeapons;
         }
@@ -85,9 +82,9 @@ void DBWeaponsTab::draw() {
             ImGui::BeginGroup();
             {
               char name[4096];
-              strncpy(name, m_selectedWeapon->name.c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_weapons_editor_name", "Name:", name, 4096, (ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(16))) {
-                m_selectedWeapon->name = name;
+              strncpy(name, m_selectedWeapon->name().c_str(), 4096);
+              if (ImGui::LabelOverLineEdit("##orpg_weapons_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - App::DPIHandler::scale_value(16))) {
+                m_selectedWeapon->setName(name);
               }
             }
             ImGui::EndGroup();
@@ -109,7 +106,7 @@ void DBWeaponsTab::draw() {
             ImGui::BeginGroup();
             {
               char description[4096];
-              strncpy(description, m_selectedWeapon->description.c_str(), 4096);
+              strncpy(description, m_selectedWeapon->description().c_str(), 4096);
               ImGui::Text("Description:");
               ImGui::InputTextMultiline("##orpg_database_weapons_description", description, 4096, ImVec2{App::DPIHandler::scale_value(360), App::DPIHandler::scale_value(60)});
             }
@@ -138,11 +135,9 @@ void DBWeaponsTab::draw() {
             {
               ImGui::Text("Price:");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-              if (ImGui::InputInt("##orpg_database_weapons_price", &m_selectedWeapon->price, 1, 100)) {
-                if (m_selectedWeapon->price < 0)
-                  m_selectedWeapon->price = 0;
-                if (m_selectedWeapon->price > 999999)
-                  m_selectedWeapon->price = 999999;
+              int price = m_selectedWeapon->price();
+              if (ImGui::InputInt("##orpg_database_weapons_price", &price, 1, 100)) {
+                m_selectedWeapon->setPrice(std::clamp(price, 0, 999999));
               }
             }
             ImGui::EndGroup();
@@ -152,11 +147,11 @@ void DBWeaponsTab::draw() {
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
               // Animation Button
               ImGui::PushID("##orpg_database_weapon_animation");
-              if (ImGui::Button(m_selectedWeapon->animationId == -1  ? "Normal Attack"
-                                : m_selectedWeapon->animationId == 0 ? "None"
-                                                                     : Database::instance()->animationName(m_selectedWeapon->animationId).c_str(),
-                                ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-                m_animationPicker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), m_selectedWeapon->animationId);
+              if (ImGui::Button(m_selectedWeapon->animationId() == -1  ? "Normal Attack"
+                                : m_selectedWeapon->animationId() == 0 ? "None"
+                                                                       : Database::instance()->animationName(m_selectedWeapon->animationId()).c_str(),
+                                ImVec2{200 - 15 * App::DPIHandler::get_ui_scale(), 0})) {
+                m_animationPicker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), m_selectedWeapon->animationId());
                 m_animationPicker->setOpen(true);
               }
               ImGui::PopID();
@@ -172,11 +167,9 @@ void DBWeaponsTab::draw() {
             {
               ImGui::Text("Attack:");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-              if (ImGui::InputInt("##orpg_database_weapon_attack", &m_selectedWeapon->params.at(0), 1, 100)) {
-                if (m_selectedWeapon->params.at(0) < -999)
-                  m_selectedWeapon->params.at(0) = -999;
-                if (m_selectedWeapon->params.at(0) > 999)
-                  m_selectedWeapon->params.at(0) = 999;
+              int param = m_selectedWeapon->param(0);
+              if (ImGui::InputInt("##orpg_database_weapon_attack", &param, 1, 100)) {
+                m_selectedWeapon->setParam(0, std::clamp(param, -999, 999));
               }
             }
             ImGui::EndGroup();
@@ -186,11 +179,9 @@ void DBWeaponsTab::draw() {
             {
               ImGui::Text("Defense:");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-              if (ImGui::InputInt("##orpg_database_weapon_defense", &m_selectedWeapon->params.at(1), 1, 100)) {
-                if (m_selectedWeapon->params.at(1) < -999)
-                  m_selectedWeapon->params.at(1) = -999;
-                if (m_selectedWeapon->params.at(1) > 999)
-                  m_selectedWeapon->params.at(1) = 999;
+              int param = m_selectedWeapon->param(1);
+              if (ImGui::InputInt("##orpg_database_weapon_defense", &param, 1, 100)) {
+                m_selectedWeapon->setParam(1, std::clamp(param, -999, 999));
               }
             }
             ImGui::EndGroup();
@@ -198,11 +189,9 @@ void DBWeaponsTab::draw() {
             {
               ImGui::Text("M.Attack:");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-              if (ImGui::InputInt("##orpg_database_weapon_mattack", &m_selectedWeapon->params.at(2), 1, 100)) {
-                if (m_selectedWeapon->params.at(2) < -999)
-                  m_selectedWeapon->params.at(2) = -999;
-                if (m_selectedWeapon->params.at(2) > 999)
-                  m_selectedWeapon->params.at(2) = 999;
+              int param = m_selectedWeapon->param(2);
+              if (ImGui::InputInt("##orpg_database_weapon_mattack", &param, 1, 100)) {
+                m_selectedWeapon->setParam(2, std::clamp(param, -999, 999));
               }
             }
             ImGui::EndGroup();
@@ -212,11 +201,9 @@ void DBWeaponsTab::draw() {
             {
               ImGui::Text("M.Defense:");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-              if (ImGui::InputInt("##orpg_database_weapon_mdefense", &m_selectedWeapon->params.at(3), 1, 100)) {
-                if (m_selectedWeapon->params.at(3) < -999)
-                  m_selectedWeapon->params.at(3) = -999;
-                if (m_selectedWeapon->params.at(3) > 999)
-                  m_selectedWeapon->params.at(3) = 999;
+              int param = m_selectedWeapon->param(3);
+              if (ImGui::InputInt("##orpg_database_weapon_mdefense", &param, 1, 100)) {
+                m_selectedWeapon->setParam(3, std::clamp(param, -999, 999));
               }
             }
             ImGui::EndGroup();
@@ -224,11 +211,9 @@ void DBWeaponsTab::draw() {
             {
               ImGui::Text("Agility:");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-              if (ImGui::InputInt("##orpg_database_weapon_agility", &m_selectedWeapon->params.at(4), 1, 100)) {
-                if (m_selectedWeapon->params.at(4) < -999)
-                  m_selectedWeapon->params.at(4) = -999;
-                if (m_selectedWeapon->params.at(4) > 999)
-                  m_selectedWeapon->params.at(4) = 999;
+              int param = m_selectedWeapon->param(4);
+              if (ImGui::InputInt("##orpg_database_weapon_agility", &param, 1, 100)) {
+                m_selectedWeapon->setParam(4, std::clamp(param, -999, 999));
               }
             }
             ImGui::EndGroup();
@@ -238,11 +223,9 @@ void DBWeaponsTab::draw() {
             {
               ImGui::Text("Luck:");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-              if (ImGui::InputInt("##orpg_database_weapon_luck", &m_selectedWeapon->params.at(5), 1, 100)) {
-                if (m_selectedWeapon->params.at(5) < -999)
-                  m_selectedWeapon->params.at(5) = -999;
-                if (m_selectedWeapon->params.at(5) > 999)
-                  m_selectedWeapon->params.at(5) = 999;
+              int param = m_selectedWeapon->param(5);
+              if (ImGui::InputInt("##orpg_database_weapon_luck", &param, 1, 100)) {
+                m_selectedWeapon->setParam(5, std::clamp(param, -999, 999));
               }
             }
             ImGui::EndGroup();
@@ -250,11 +233,9 @@ void DBWeaponsTab::draw() {
             {
               ImGui::Text("Max HP:");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-              if (ImGui::InputInt("##orpg_database_weapon_maxhp", &m_selectedWeapon->params.at(6), 1, 100)) {
-                if (m_selectedWeapon->params.at(6) < -9999)
-                  m_selectedWeapon->params.at(6) = -9999;
-                if (m_selectedWeapon->params.at(6) > 9999)
-                  m_selectedWeapon->params.at(6) = 9999;
+              int param = m_selectedWeapon->param(6);
+              if (ImGui::InputInt("##orpg_database_weapon_maxhp", &param, 1, 100)) {
+                m_selectedWeapon->setParam(6, std::clamp(param, -9999, 9999));
               }
             }
             ImGui::EndGroup();
@@ -264,11 +245,9 @@ void DBWeaponsTab::draw() {
             {
               ImGui::Text("Max MP:");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-              if (ImGui::InputInt("##orpg_database_weapon_maxmp", &m_selectedWeapon->params.at(7), 1, 100)) {
-                if (m_selectedWeapon->params.at(7) < -9999)
-                  m_selectedWeapon->params.at(7) = -9999;
-                if (m_selectedWeapon->params.at(7) > 9999)
-                  m_selectedWeapon->params.at(7) = 9999;
+              int param = m_selectedWeapon->param(7);
+              if (ImGui::InputInt("##orpg_database_weapon_maxmp", &param, 1, 100)) {
+                m_selectedWeapon->setParam(7, std::clamp(param, -9999, 9999));
               }
             }
             ImGui::EndGroup();
@@ -284,10 +263,10 @@ void DBWeaponsTab::draw() {
           {
             ImGui::SeparatorText("Note:");
             char note[8192];
-            strncpy(note, m_selectedWeapon->note.c_str(), IM_ARRAYSIZE(note));
+            strncpy(note, m_selectedWeapon->note().c_str(), IM_ARRAYSIZE(note));
             if (ImGui::InputTextMultiline("##orpg_database_weapons_note", note, IM_ARRAYSIZE(note),
                                           ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(16), ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
-              m_selectedWeapon->note = note;
+              m_selectedWeapon->setNote(note);
             }
           }
           ImGui::EndGroup();
@@ -322,7 +301,7 @@ void DBWeaponsTab::draw() {
                          ImGuiWindowFlags_NoResize | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
           ImGui::Text("Are you sure?");
           if (ImGui::Button("Yes")) {
-            int tmpId = m_selectedWeapon->id;
+            const int tmpId = m_selectedWeapon->id();
             m_maxWeapons = m_editMaxWeapons;
             m_weapons.resize(m_maxWeapons);
             m_selectedWeapon = m_weapons.weapon(tmpId);

@@ -6,8 +6,9 @@
 #include "Database/Animation.hpp"
 #include "Database/Items.hpp"
 
-struct Items;
-struct DBItemsTab : IDBEditorTab {
+class Items;
+class DBItemsTab final : public IDBEditorTab {
+public:
   DBItemsTab() = delete;
   explicit DBItemsTab(Items& items, DatabaseEditor* parent);
   void draw() override;
@@ -15,8 +16,8 @@ struct DBItemsTab : IDBEditorTab {
   [[nodiscard]] std::vector<Item>& items() { return m_items.items(); }
   [[nodiscard]] const std::vector<Item>& items() const { return m_items.items(); }
 
-  [[nodiscard]] Item* item(int id) { return m_items.item(id); }
-  [[nodiscard]] const Item* item(int id) const { return m_items.item(id); }
+  [[nodiscard]] Item* item(const int id) { return m_items.item(id); }
+  [[nodiscard]] const Item* item(const int id) const { return m_items.item(id); }
 
 private:
   Items& m_items;

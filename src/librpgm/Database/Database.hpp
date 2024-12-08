@@ -54,8 +54,6 @@ struct Database {
   std::string projectFilePath;
   std::string basePath;
 
-  Map loadMap(int mapId);
-
   void serializeProject();
 
   static std::string framesText(const int frames) { return std::to_string(frames) + (frames > 1 ? " frames" : " frame"); }
@@ -111,41 +109,41 @@ struct Database {
   }
   [[nodiscard]] std::string actorName(const int id) const {
     const auto object = actors.actor(id);
-    return object ? object->name : InvalidDataName.data();
+    return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string className(const int id) const {
     const auto object = classes.classType(id);
-    return object ? object->name : InvalidDataName.data();
+    return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string skillName(const int id) const {
     const auto object = skills.skill(id);
-    return object ? object->name : InvalidDataName.data();
+    return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string itemName(const int id) const {
     const auto object = items.item(id);
-    return object ? object->name : InvalidDataName.data();
+    return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string weaponName(const int id) const {
     const auto object = weapons.weapon(id);
-    return object ? object->name : InvalidDataName.data();
+    return object ? object->name() : InvalidDataName.data();
   }
   [[nodiscard]] std::string armorName(const int id) const {
     const auto object = armors.armor(id);
-    return object ? object->name : InvalidDataName.data();
+    return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string enemyName(const int id) const {
     const auto object = enemies.enemy(id);
-    return object ? object->name : InvalidDataName.data();
+    return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string troopName(const int id) const {
     const auto object = troops.troop(id);
-    return object ? object->name : InvalidDataName.data();
+    return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string stateName(const int id) const {
@@ -154,22 +152,22 @@ struct Database {
     }
 
     const auto object = states.state(id);
-    return object ? object->name : InvalidDataName.data();
+    return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string animationName(const int id) const {
     const auto object = animations.animation(id);
-    return object ? object->name : InvalidDataName.data();
+    return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string tilesetName(const int id) const {
     const auto object = tilesets.tileset(id);
-    return object ? object->name : InvalidDataName.data();
+    return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string commonEventName(const int id) const {
     const auto object = commonEvents.event(id);
-    return object ? object->name : InvalidDataName.data();
+    return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string switchName(const int id) const {
@@ -232,12 +230,12 @@ struct Database {
 
   [[nodiscard]] std::string mapName(const int id) const {
     const auto map = mapInfos.map(id);
-    return map ? map->name : InvalidDataName.data();
+    return map ? map->name() : InvalidDataName.data();
   }
 
   static std::string makeIdText(const int id, const int numDigits) {
-    std::string ret = std::to_string(id);
-    int digits = std::clamp<int>(numDigits - static_cast<int>(ret.length()), 0, 4);
+    const std::string ret = std::to_string(id);
+    const int digits = std::clamp<int>(numDigits - static_cast<int>(ret.length()), 0, 4);
     return std::string(digits, '0') + ret;
   }
 
@@ -321,19 +319,19 @@ struct Database {
       return {};
     }
 
-    return std::make_pair(const_cast<Actor*>(actor), const_cast<Class*>(classes.classType(actor->classId)));
+    return std::make_pair(const_cast<Actor*>(actor), const_cast<Class*>(classes.classType(actor->classId())));
   }
 
   [[nodiscard]] std::vector<Trait*> allTraits(const int actorId) const {
     const auto [act, cls] = featureObjects(actorId);
     std::vector<Trait*> ret;
     if (act) {
-      for (auto& trait : act->traits) {
+      for (auto& trait : act->traits()) {
         ret.push_back(&trait);
       }
     }
     if (cls) {
-      for (auto& trait : cls->traits) {
+      for (auto& trait : cls->traits()) {
         ret.push_back(&trait);
       }
     }

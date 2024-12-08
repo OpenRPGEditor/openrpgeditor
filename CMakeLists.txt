@@ -7,13 +7,15 @@ set(CMAKE_C_STANDARD 23)
 
 add_definitions(-DJSON_DIAGNOSTICS=1)
 project(
-        OpenRPGEditor
-        DESCRIPTION "A drop-in replacement for RPG Maker MV."
-        VERSION 0.0.0
-        LANGUAGES CXX C)
+  OpenRPGEditor
+  DESCRIPTION "A drop-in replacement for RPG Maker MV."
+  VERSION 0.0.0
+  LANGUAGES CXX C)
 
 set(PROJECT_COMPANY_NAME "OpenRPGEditor Team")
-set(PROJECT_COMPANY_NAMESPACE "io.gitgud.antidote.openrgpeditor") # Reverse domain name notation
+set(PROJECT_COMPANY_NAMESPACE "io.gitgud.antidote.openrgpeditor") # Reverse
+                                                                  # domain name
+                                                                  # notation
 
 include(cmake/StandardProjectSettings.cmake)
 include(GNUInstallDirs)
@@ -22,7 +24,7 @@ include(GNUInstallDirs)
 add_library(project_warnings INTERFACE)
 include(cmake/CompilerWarnings.cmake)
 
-#enable_testing()
+# enable_testing()
 
 add_subdirectory(packaging)
 add_subdirectory(vendor)

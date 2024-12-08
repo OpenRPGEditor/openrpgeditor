@@ -11,7 +11,7 @@ void WeaponsSerializer::serialize(std::ofstream& os) const {
     }
 
     for (const Weapon& weapon : m_data.weapons()) {
-      if (weapon.m_isValid) {
+      if (weapon.isValid()) {
         data.push_back(weapon);
       } else {
         data.push_back(nullptr);
@@ -31,10 +31,10 @@ void WeaponsSerializer::deserialize(std::ifstream& is) {
     for (const auto& [_, value] : data.items()) {
       Weapon& weapon = m_data.weapons().emplace_back();
       weapon.m_isValid = value != nullptr;
-      if (weapon.m_isValid) {
+      if (weapon.isValid()) {
         value.get_to(weapon);
       } else {
-        weapon.id = i;
+        weapon.m_id = i;
       }
       ++i;
     }

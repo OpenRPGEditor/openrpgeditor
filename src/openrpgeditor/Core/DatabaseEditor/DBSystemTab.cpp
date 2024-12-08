@@ -1,5 +1,5 @@
 #include "Core/DatabaseEditor/DBSystemTab.hpp"
-#include "Database/Actors.hpp"
+#include "Database/Class.hpp"
 
 #include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"

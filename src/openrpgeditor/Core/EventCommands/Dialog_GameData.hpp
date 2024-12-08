@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
-#include "Database/Actors.hpp"
+#include "Database/Class.hpp"
 #include "Database/Database.hpp"
 #include "Database/EventCommands/ControlVariables.hpp"
 #include "Database/Items.hpp"
@@ -23,10 +23,10 @@ private:
   int m_raw_source; // Final value
   int m_value;
 
-  int m_weapon_source{1};
-  int m_armor_source{1};
-  int m_item_source{1};
-  int m_actor_source{1};
+  int m_weaponSource{1};
+  int m_armorSource{1};
+  int m_itemSource{1};
+  int m_actorSource{1};
 
   static constexpr auto ActorData = magic_enum::enum_values<ActorDataSource>();
   static constexpr auto EnemyData = magic_enum::enum_values<EnemyDataSource>();
@@ -36,16 +36,16 @@ private:
   int current_otherSource = 0;
   int current_partySource = 1;
   int current_characterSource = -1;
-  int current_enemySource = 1;
+  int m_currentEnemySource = 1;
 
-  int current_actorDataSource = 0;
-  int current_enemyDataSource = 0;
+  int m_currentActorDataSource = 0;
+  int m_currentEnemyDataSource = 0;
   int current_characterDataSource = 0;
 
   ControlVariables command;
-  std::optional<ObjectPicker<Item>> i_picker;
-  std::optional<ObjectPicker<Actor>> a_picker;
-  std::optional<ObjectPicker<Armor>> ar_picker;
-  std::optional<ObjectPicker<Weapon>> w_picker;
+  std::optional<ObjectPicker<Item>> m_itemPicker;
+  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::optional<ObjectPicker<Armor>> m_armorPicker;
+  std::optional<ObjectPicker<Weapon>> m_weaponPicker;
   std::tuple<bool, bool> result;
 };

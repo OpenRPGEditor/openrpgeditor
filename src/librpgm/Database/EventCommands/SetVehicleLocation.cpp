@@ -31,5 +31,5 @@ std::string SetVehicleLocationCommand::stringRep(const Database& db) const {
     return prefix + std::format(" {{{}}} ({{{}}},{{{}}}) ", varMap, varX, varY) + suffix;
   }
   const auto map = db.mapInfos.map(mapId);
-  return prefix + std::format(" {} ({}, {})", map->name, x, y) + suffix;
+  return prefix + std::format(" {} ({}, {})", map->name(), x, y) + suffix;
 }

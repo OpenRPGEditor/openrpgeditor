@@ -1,12 +1,9 @@
 #pragma once
 #include "Core/CommonUI/ObjectPicker.hpp"
-#include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
-#include "Database/Actors.hpp"
-#include "Database/EventCommands/ChangeGold.hpp"
-#include "Database/EventCommands/ChangeNickname.hpp"
+
+#include "Database/Actor.hpp"
 #include "Database/EventCommands/ChangeProfile.hpp"
-#include "Database/EventCommands/RecoverAll.hpp"
 
 struct Dialog_ChangeProfile : IEventDialogController {
   Dialog_ChangeProfile() = delete;

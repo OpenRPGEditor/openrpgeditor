@@ -1,5 +1,5 @@
 #include "Core/DatabaseEditor/DBActorsTab.hpp"
-#include "Database/Actors.hpp"
+#include "Database/Class.hpp"
 
 #include "Core/CommonUI/TraitsEditor.hpp"
 #include "Core/DPIHandler.hpp"
@@ -13,15 +13,15 @@
 DBActorsTab::DBActorsTab(Actors& actors, DatabaseEditor* parent) : IDBEditorTab(parent), m_actors(actors) {
   m_selectedActor = m_actors.actor(1);
   if (m_selectedActor) {
-    m_traitsEditor.setTraits(&m_selectedActor->traits);
+    m_traitsEditor.setTraits(&m_selectedActor->traits());
   }
 }
 
 void DBActorsTab::draw() {
   if (m_selectedActor != nullptr && !m_characterSheet && !m_battlerSheet && !m_faceSheet) {
-    m_faceSheet.emplace(m_selectedActor->faceName);
-    m_characterSheet.emplace(m_selectedActor->characterName);
-    m_battlerSheet.emplace(m_selectedActor->battlerName);
+    m_faceSheet.emplace(m_selectedActor->faceName());
+    m_characterSheet.emplace(m_selectedActor->characterName());
+    m_battlerSheet.emplace(m_selectedActor->battlerName());
   }
 
   if (!m_faceButton) {
@@ -40,13 +40,13 @@ void DBActorsTab::draw() {
 
   if (m_selectedActor) {
     if (!m_faceButton->hasCompositeTextures()) {
-      const auto [min, max] = m_faceSheet->getFaceRect(m_selectedActor->faceIndex);
+      const auto [min, max] = m_faceSheet->getFaceRect(m_selectedActor->faceIndex());
       m_faceButton->setTexturesToComposite({{m_faceSheet->texture(),
                                              {m_faceSheet->faceWidth(), m_faceSheet->faceWidth()},
                                              {static_cast<int>(min.x() * m_faceSheet->texture().width()), static_cast<int>(min.y() * m_faceSheet->texture().height())}}});
     }
     if (!m_actorButton->hasCompositeTextures()) {
-      const auto [min, max] = m_characterSheet->getRectForCharacter(m_selectedActor->characterIndex, 1);
+      const auto [min, max] = m_characterSheet->getRectForCharacter(m_selectedActor->characterIndex(), 1);
       m_actorButton->setTexturesToComposite({{m_characterSheet->texture(),
                                               {m_characterSheet->characterWidth(), m_characterSheet->characterHeight()},
                                               {static_cast<int>(min.x() * m_characterSheet->texture().width()), static_cast<int>(min.y() * m_characterSheet->texture().height())}}});
@@ -66,24 +66,24 @@ void DBActorsTab::draw() {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Actors");
-        ImGui::BeginChild("##orpg_actors_editor_actor_list", ImVec2{0, ImGui::GetContentRegionMax().y - (App::DPIHandler::scale_value(108))});
+        ImGui::BeginChild("##orpg_actors_editor_actor_list", ImVec2{0, ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(108)});
         {
           ImGui::BeginGroup();
           {
             for (auto& actor : m_actors.m_actors) {
-              if (actor.id == 0) {
+              if (actor.id() == 0) {
                 continue;
               }
 
-              char name[4096];
-              snprintf(name, 4096, "%04i %s", actor.id, actor.name.c_str());
-              if (ImGui::Selectable(name, &actor == m_selectedActor, ImGuiSelectableFlags_SelectOnNav)) {
+              if (ImGui::Selectable(Database::instance()->actorNameAndId(actor.id()).c_str(), &actor == m_selectedActor, ImGuiSelectableFlags_SelectOnNav)) {
                 if (m_selectedActor != &actor) {
                   m_selectedActor = &actor;
-                  m_faceSheet.emplace(m_selectedActor->faceName);
-                  m_characterSheet.emplace(m_selectedActor->characterName);
-                  m_battlerSheet.emplace(m_selectedActor->battlerName);
-                  m_traitsEditor.setTraits(&m_selectedActor->traits);
+                  m_tempActor.initialLevel = actor.initialLevel();
+                  m_tempActor.maxLevel = actor.maxLevel();
+                  m_faceSheet.emplace(m_selectedActor->faceName());
+                  m_characterSheet.emplace(m_selectedActor->characterName());
+                  m_battlerSheet.emplace(m_selectedActor->battlerName());
+                  m_traitsEditor.setTraits(&m_selectedActor->traits());
                   m_faceButton->clear();
                   m_actorButton->clear();
                   m_battlerButton->clear();
@@ -97,7 +97,7 @@ void DBActorsTab::draw() {
         char str[4096];
         snprintf(str, 4096, "Max Actors %i", m_actors.count());
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
+        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(8), 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxActors = m_actors.count();
         }
@@ -115,30 +115,29 @@ void DBActorsTab::draw() {
           {
             ImGui::SeparatorText("General Settings");
             char name[4096];
-            strncpy(name, m_selectedActor->name.c_str(), 4096);
-            if (ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_name", "Name:", name, 4096, (ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(16))) {
-              m_selectedActor->name = name;
+            strncpy(name, m_selectedActor->name().c_str(), 4096);
+            ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - App::DPIHandler::scale_value(16));
+            if (ImGui::IsItemDeactivatedAfterEdit()) {
+              m_selectedActor->setName(name);
             }
             ImGui::SameLine();
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
-            strncpy(name, m_selectedActor->nickname.c_str(), 4096);
-            if (ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_nickname", "Nickname:", name, 4096, (ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(16))) {
-              m_selectedActor->nickname = name;
+            strncpy(name, m_selectedActor->nickname().c_str(), 4096);
+            ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_nickname", "Nickname:", name, 4096, ImGui::GetContentRegionMax().x / 2 - App::DPIHandler::scale_value(16));
+            if (ImGui::IsItemDeactivatedAfterEdit()) {
+              m_selectedActor->setNickname(name);
             }
             ImGui::BeginGroup();
             {
               ImGui::Text("Class:");
               Classes classes = m_parent->classes();
-              auto cls = classes.classType(m_selectedActor->classId);
-              ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 16);
-              char buf[4096];
-              snprintf(buf, 4096, "%04i %s", cls->id, cls->name.c_str());
-              if (ImGui::BeginCombo("##orpg_actors_editor_class_combo", buf)) {
+              const auto cls = classes.classType(m_selectedActor->classId());
+              ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2 - 16);
+              if (ImGui::BeginCombo("##orpg_actors_editor_class_combo", Database::instance()->classNameAndId(cls->id()).c_str())) {
                 for (const auto& c : classes.classes()) {
-                  snprintf(buf, 4096, "%04i %s", c.id, c.name.c_str());
-                  if (ImGui::Selectable(buf, c.id == m_selectedActor->classId)) {
-                    m_selectedActor->classId = c.id;
-                    m_selectedActor->m_isValid = true;
+                  if (ImGui::Selectable(Database::instance()->classNameAndId(c.id()).c_str(), c.id() == m_selectedActor->classId())) {
+                    m_selectedActor->setClassId(c.id());
+                    m_selectedActor->setValid(true);
                   }
                 }
                 ImGui::EndCombo();
@@ -150,10 +149,11 @@ void DBActorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Initial Level:");
-              ImGui::SetNextItemWidth((ImGui::GetCursorPosX() / 2) - App::DPIHandler::scale_value(16));
-              ImGui::InputInt("##orpg_actors_initial_level_edit", &m_selectedActor->initialLevel);
-              m_selectedActor->initialLevel = std::clamp(m_selectedActor->initialLevel, 1, 99);
-              m_selectedActor->m_isValid = true;
+              ImGui::SetNextItemWidth(ImGui::GetCursorPosX() / 2 - App::DPIHandler::scale_value(16));
+              ImGui::InputInt("##orpg_actors_initial_level_edit", &m_tempActor.initialLevel);
+              if (ImGui::IsItemDeactivatedAfterEdit()) {
+                m_selectedActor->setInitialLevel(std::clamp(m_tempActor.initialLevel, 1, 99));
+              }
             }
             ImGui::EndGroup();
             ImGui::SameLine();
@@ -161,20 +161,20 @@ void DBActorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Max Level:");
-              ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - App::DPIHandler::scale_value(16));
-              ImGui::InputInt("##orpg_actors_max_level_edit", &m_selectedActor->maxLevel);
-              m_selectedActor->maxLevel = std::clamp(m_selectedActor->maxLevel, 1, 99);
-              m_selectedActor->m_isValid = true;
+              ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2 / 2 - App::DPIHandler::scale_value(16));
+              ImGui::InputInt("##orpg_actors_max_level_edit", &m_tempActor.maxLevel);
+              if (ImGui::IsItemDeactivatedAfterEdit()) {
+                m_selectedActor->setMaxLevel(std::clamp(m_tempActor.maxLevel, 1, 99));
+              }
             }
             ImGui::EndGroup();
             ImGui::BeginGroup();
             {
               ImGui::Text("Profile:");
               char profile[8192];
-              strncpy(profile, m_selectedActor->profile.c_str(), IM_ARRAYSIZE(profile));
+              strncpy(profile, m_selectedActor->profile().c_str(), IM_ARRAYSIZE(profile));
               if (ImGui::InputTextMultiline("##orpg_actors_profile", profile, IM_ARRAYSIZE(profile), ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(16), 0})) {
-                m_selectedActor->profile = profile;
-                m_selectedActor->m_isValid = true;
+                m_selectedActor->setProfile(profile);
               }
             }
             ImGui::EndGroup();
@@ -223,9 +223,9 @@ void DBActorsTab::draw() {
               for (int i = 0; i < equipTypes.size() - 1; i++) {
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn();
-                int etypeId = Database::instance()->slotIdToEquipId(m_selectedActor->id, i);
+                const int etypeId = Database::instance()->slotIdToEquipId(m_selectedActor->id(), i);
                 auto etypeName = equipTypes[etypeId];
-                int dataId = i < m_selectedActor->equips.size() ? m_selectedActor->equips[i] : 0;
+                int dataId = i < m_selectedActor->equips().size() ? m_selectedActor->equips()[i] : 0;
                 if (!checkEquipable(etypeId, dataId)) {
                   dataId = 0;
                 }
@@ -234,7 +234,7 @@ void DBActorsTab::draw() {
                   m_selectedEquip = i;
                   if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
                     m_showEquipEdit = true;
-                    m_chosenEquip = m_selectedEquip < m_selectedActor->equips.size() ? m_selectedActor->equips[m_selectedEquip] : 0;
+                    m_chosenEquip = m_selectedEquip < m_selectedActor->equips().size() ? m_selectedActor->equips()[m_selectedEquip] : 0;
                   }
                 }
 
@@ -256,10 +256,10 @@ void DBActorsTab::draw() {
           {
             ImGui::SeparatorText("Note:");
             char note[8192];
-            strncpy(note, m_selectedActor->note.c_str(), IM_ARRAYSIZE(note));
+            strncpy(note, m_selectedActor->note().c_str(), IM_ARRAYSIZE(note));
             if (ImGui::InputTextMultiline("##orpg_actors_note", note, IM_ARRAYSIZE(note),
                                           ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(16), ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
-              m_selectedActor->note = note;
+              m_selectedActor->setNote(note);
             }
           }
           ImGui::EndGroup();
@@ -294,7 +294,7 @@ void DBActorsTab::draw() {
                        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
         ImGui::Text("Are you sure?");
         if (ImGui::Button("Yes")) {
-          int tmpId = m_selectedActor->id;
+          const int tmpId = m_selectedActor->id();
           m_actors.resize(m_editMaxActors);
           m_selectedActor = m_actors.actor(tmpId);
           m_changeIntDialogOpen = false;
@@ -315,31 +315,32 @@ void DBActorsTab::draw() {
       ImGui::SameLine();
       if (ImGui::Button("OK")) {
         m_showEquipEdit = false;
-        if (m_selectedEquip >= m_selectedActor->equips.size()) {
-          m_selectedActor->equips.resize(m_selectedEquip + 1);
+        if (m_selectedEquip >= m_selectedActor->equips().size()) {
+          m_selectedActor->addEquip(m_chosenEquip);
+        } else {
+          m_selectedActor->setEquip(m_selectedEquip, m_chosenEquip);
         }
-        m_selectedActor->equips[m_selectedEquip] = m_chosenEquip;
-        m_selectedActor->m_isValid = true;
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel")) {
+          m_showEquipEdit = false;
+        }
+        ImGui::End();
       }
-      ImGui::SameLine();
-      if (ImGui::Button("Cancel")) {
-        m_showEquipEdit = false;
-      }
-      ImGui::End();
     }
   }
 }
 
 bool DBActorsTab::checkEquipable(const int etypeId, const int dataId) const {
-  if (dataId <= 0 || Database::instance()->isEquipTypeSealed(m_selectedActor->id, etypeId)) {
+  if (dataId <= 0 || Database::instance()->isEquipTypeSealed(m_selectedActor->id(), etypeId)) {
     return false;
   }
 
   if (etypeId <= 1) {
-    if (const auto& weapon = Database::instance()->weapons.weapon(dataId); weapon && Database::instance()->isEquipWeaponTypeOk(m_selectedActor->id, weapon->wtypeId)) {
+    if (const auto& weapon = Database::instance()->weapons.weapon(dataId); weapon && Database::instance()->isEquipWeaponTypeOk(m_selectedActor->id(), weapon->wtypeId())) {
       return true;
     }
-  } else if (const auto& armor = Database::instance()->armors.armor(dataId); armor && armor->etypeId == etypeId && Database::instance()->isEquipArmorTypeOk(m_selectedActor->id, armor->atypeId)) {
+  } else if (const auto& armor = Database::instance()->armors.armor(dataId);
+             armor && armor->etypeId() == etypeId && Database::instance()->isEquipArmorTypeOk(m_selectedActor->id(), armor->atypeId())) {
     return true;
   }
 

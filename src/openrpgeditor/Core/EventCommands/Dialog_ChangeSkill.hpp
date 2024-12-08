@@ -2,9 +2,10 @@
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
-#include "Database/Actors.hpp"
+
+#include "Database/Actor.hpp"
 #include "Database/EventCommands/ChangeSkill.hpp"
-#include "Database/Skills.hpp"
+#include "Database/Skill.hpp"
 
 struct Dialog_ChangeSkill : IEventDialogController {
   Dialog_ChangeSkill() = delete;

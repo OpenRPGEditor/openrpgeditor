@@ -14,13 +14,13 @@ std::tuple<bool, bool> Dialog_NameInputProcessing::draw() {
   ImGui::SetNextWindowSize(ImVec2{200, 140} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
-    if (actor_picker) {
-      auto [closed, confirmed] = actor_picker->draw();
+    if (m_actorPicker) {
+      auto [closed, confirmed] = m_actorPicker->draw();
       if (closed) {
         if (confirmed) {
-          m_actor = actor_picker->selection();
+          m_actor = m_actorPicker->selection();
         }
-        actor_picker.reset();
+        m_actorPicker.reset();
       }
     }
 
@@ -28,8 +28,8 @@ std::tuple<bool, bool> Dialog_NameInputProcessing::draw() {
     ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
     ImGui::PushID("##nameinput_actor");
     if (ImGui::Button(Database::instance()->actorNameOrId(m_actor).c_str(), ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
-      actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_actor);
-      actor_picker->setOpen(true);
+      m_actorPicker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_actor);
+      m_actorPicker->setOpen(true);
     }
     ImGui::PopID();
     ImGui::SeparatorText("Max characters");
@@ -43,8 +43,8 @@ std::tuple<bool, bool> Dialog_NameInputProcessing::draw() {
 
     if (ImGui::Button("OK")) {
       m_confirmed = true;
-      command->actorId = m_actor;
-      command->maxChar = m_maxChar;
+      m_command->actorId = m_actor;
+      m_command->maxChar = m_maxChar;
       ImGui::CloseCurrentPopup();
       setOpen(false);
     }

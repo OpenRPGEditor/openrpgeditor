@@ -5,7 +5,7 @@
 
 struct DBCommonEventsTab : IDBEditorTab {
   DBCommonEventsTab() = delete;
-  explicit DBCommonEventsTab(CommonEvents& events, DatabaseEditor* parent);
+  explicit DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor* parent);
   void draw() override;
 
   [[nodiscard]] std::vector<std::optional<CommonEvent>>& events() { return m_events.events(); }

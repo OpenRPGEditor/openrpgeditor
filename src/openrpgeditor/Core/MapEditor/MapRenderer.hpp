@@ -41,17 +41,17 @@ public:
   };
 
   MapRenderer();
-  void setMap(const Map* map, const Tileset* tilest, int tileWidth = 48, int tileHeight = 48);
+  void setMap(const Map* map, const Tileset* tileset, int tileWidth = 48, int tileHeight = 48);
   [[nodiscard]] const Map* map() const { return m_map; }
 
   void update();
 
   [[nodiscard]] int tileId(int x, int y, int z) const;
-  [[nodiscard]] bool isOverworld() const { return m_tileset && m_tileset->mode == Tileset::Mode::World; }
+  [[nodiscard]] bool isOverworld() const { return m_tileset && m_tileset->mode() == Tileset::Mode::World; }
 
   [[nodiscard]] std::vector<int> tilesetFlags() const {
     if (m_tileset) {
-      return m_tileset->flags;
+      return m_tileset->flags();
     }
     return {};
   }
@@ -62,11 +62,11 @@ public:
   [[nodiscard]] bool checkPassage(const int x, const int y, const int bit) const;
   [[nodiscard]] bool isPassable(const int x, const int y, const int d) const;
 
-  [[nodiscard]] int tileIdFromCoords(int x, int y, int z) { return (z * m_map->height + y) * m_map->width + x; }
+  [[nodiscard]] int tileIdFromCoords(int x, int y, int z) { return (z * m_map->height() + y) * m_map->width() + x; }
 
-  [[nodiscard]] bool isHigherTile(int tileId) { return m_tileset->flags[tileId] & 0x10; }
+  [[nodiscard]] bool isHigherTile(int tileId) { return m_tileset->flag(tileId) & 0x10; }
 
-  [[nodiscard]] bool isTableTile(int tileId) { return TileHelper::isTileA2(tileId) && m_tileset->flags[tileId] & 0x80; }
+  [[nodiscard]] bool isTableTile(int tileId) { return TileHelper::isTileA2(tileId) && m_tileset->flag(tileId) & 0x80; }
 
   [[nodiscard]] bool isOverpassPosition(int mx, int my) { return false; }
 

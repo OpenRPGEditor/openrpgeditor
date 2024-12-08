@@ -10,7 +10,7 @@ void StatesSerializer::serialize(std::ofstream& os) const {
     }
 
     for (const State& state : m_data.states()) {
-      if (state.m_isValid) {
+      if (state.isValid()) {
         data.push_back(state);
       } else {
         data.push_back(nullptr);
@@ -30,10 +30,10 @@ void StatesSerializer::deserialize(std::ifstream& is) {
     for (const auto& [_, value] : data.items()) {
       State& state = m_data.states().emplace_back();
       state.m_isValid = value != nullptr;
-      if (state.m_isValid) {
+      if (state.isValid()) {
         value.get_to(state);
       } else {
-        state.id = i;
+        state.m_id = i;
       }
       ++i;
     }

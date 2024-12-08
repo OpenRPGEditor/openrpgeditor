@@ -21,8 +21,8 @@ public:
 
   [[nodiscard]] int selection() const { return m_selection; }
 
-  static int getId(const T& value) { return value.id; }
-  static const std::string& getName(const T& value) { return value.name; }
+  static int getId(const T& value) { return value.id(); }
+  static const std::string& getName(const T& value) { return value.name(); }
 
   [[nodiscard]] bool isOpen() const { return m_open; }
   [[nodiscard]] bool isConfirmed() const { return m_confirmed; }

@@ -5,26 +5,26 @@
 #include "imgui.h"
 
 void MapListView::recursiveDrawTree(MapInfo& in) {
-  const std::string id = ("#orpg_map_" + std::to_string(in.id) + in.name);
-  bool open = ImGui::TreeNodeEx(id.c_str(),
-                                (in.expanded ? ImGuiTreeNodeFlags_DefaultOpen : 0) | (in.children().empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
-                                    (m_selectedMapId == in.id ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick,
-                                "%s", in.name.c_str());
-  if (m_selectedMapId == in.id && m_needsScroll) {
+  const std::string id = ("#orpg_map_" + std::to_string(in.id()) + in.name());
+  const bool open = ImGui::TreeNodeEx(id.c_str(),
+                                      (in.expanded() ? ImGuiTreeNodeFlags_DefaultOpen : 0) | (in.children().empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
+                                          (m_selectedMapId == in.id() ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick,
+                                      "%s", in.name().c_str());
+  if (m_selectedMapId == in.id() && m_needsScroll) {
     ImGui::SetScrollHereY();
     m_needsScroll = false;
   }
 
-  if ((ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemFocused()) && m_selectedMapId != in.id) {
-    m_selectedMapId = in.id;
-    m_parent->setMap(*m_mapInfos->map(in.id));
+  if ((ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemFocused()) && m_selectedMapId != in.id()) {
+    m_selectedMapId = in.id();
+    m_parent->setMap(*m_mapInfos->map(in.id()));
   }
 
   if (ImGui::BeginDragDropSource()) {
-    if (in.id != 0) {
-      auto payload = m_mapInfos->map(in.id);
+    if (in.id() != 0) {
+      const auto payload = m_mapInfos->map(in.id());
       ImGui::SetDragDropPayload("##orpg_dnd_mapinfo", payload, sizeof(uintptr_t));
-      ImGui::Text("%s", payload->name.c_str());
+      ImGui::Text("%s", payload->name().c_str());
     }
     ImGui::EndDragDropSource();
   }
@@ -33,17 +33,17 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("##orpg_dnd_mapinfo")) {
       if (const auto* src = static_cast<MapInfo*>(payload->Data)) {
         // Are we trying to put our parent into ourselves?
-        if (in.parentId != src->id) {
+        if (in.parentId() != src->id()) {
           // Nope, we can just safely set the parent id without worry
-          m_mapInfos->map(src->id)->parentId = in.id;
+          m_mapInfos->map(src->id())->setParentId(in.id());
         } else {
           // Yes, we have to swap parents, and assign the new parent
-          m_mapInfos->map(in.id)->parentId = m_mapInfos->map(src->id)->parentId;
-          m_mapInfos->map(src->id)->parentId = in.id;
+          m_mapInfos->map(in.id())->setParentId(m_mapInfos->map(src->id())->parentId());
+          m_mapInfos->map(src->id())->setParentId(in.id());
         }
         /* Set ordering to force it at the end */
         if (!in.children().empty()) {
-          m_mapInfos->map(src->id)->order = in.children().back()->order + 1;
+          m_mapInfos->map(src->id())->setOrder(in.children().back()->order() + 1);
         }
         m_mapTreeStale = true;
       }
@@ -52,8 +52,8 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
   }
   if (ImGui::BeginPopupContextWindow()) {
     // Ensure we have the right-clicked map selected
-    if (m_selectedMapId != in.id && ImGui::IsItemHovered()) {
-      m_selectedMapId = in.id;
+    if (m_selectedMapId != in.id() && ImGui::IsItemHovered()) {
+      m_selectedMapId = in.id();
       m_parent->setMap(in);
     }
     if (ImGui::MenuItem("New...")) {
@@ -104,13 +104,13 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
     ImGui::EndPopup();
   }
   if (open) {
-    for (auto& mapInfo : in.children()) {
+    for (const auto& mapInfo : in.children()) {
       recursiveDrawTree(*mapInfo);
     }
   }
 
   if (ImGui::IsItemToggledOpen()) {
-    in.expanded ^= 1;
+    in.setExpanded(!in.expanded());
   }
   if (open) {
     ImGui::TreePop();
@@ -156,12 +156,12 @@ void MapListView::draw() {
 }
 
 void MapListView::recursiveExpandParents(MapInfo& in) {
-  if (!in.expanded && m_selectedMapId != in.id) {
-    in.expanded = true;
+  if (!in.expanded() && m_selectedMapId != in.id()) {
+    in.setExpanded(true);
   }
 
-  if (in.parentId != 0) {
-    recursiveExpandParents(*m_mapInfos->map(in.parentId));
+  if (in.parentId() != 0) {
+    recursiveExpandParents(*m_mapInfos->map(in.parentId()));
   }
 }
 

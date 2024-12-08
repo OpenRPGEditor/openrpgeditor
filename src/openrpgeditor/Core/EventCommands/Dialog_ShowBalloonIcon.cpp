@@ -27,7 +27,7 @@ std::tuple<bool, bool> Dialog_ShowBalloonIcon::draw() {
         ImGui::SetItemDefaultFocus();
       }
 
-      for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events) {
+      for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events()) {
         if (!dataSource.has_value())
           continue;
 

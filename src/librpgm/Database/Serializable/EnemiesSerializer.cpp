@@ -11,7 +11,7 @@ void EnemiesSerializer::serialize(std::ofstream& os) const {
     }
 
     for (const Enemy& enemy : m_data.enemies()) {
-      if (enemy.m_isValid) {
+      if (enemy.isValid()) {
         data.push_back(enemy);
       } else {
         data.push_back(nullptr);
@@ -31,10 +31,10 @@ void EnemiesSerializer::deserialize(std::ifstream& is) {
     for (const auto& [_, value] : data.items()) {
       Enemy& enemy = m_data.enemies().emplace_back();
       enemy.m_isValid = value != nullptr;
-      if (enemy.m_isValid) {
+      if (enemy.isValid()) {
         value.get_to(enemy);
       } else {
-        enemy.id = i;
+        enemy.m_id = i;
       }
       ++i;
     }

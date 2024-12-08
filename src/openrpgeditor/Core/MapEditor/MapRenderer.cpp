@@ -60,7 +60,7 @@ void MapRenderer::setMap(const Map* map, const Tileset* tileset, int tileWidth, 
   if (m_map && m_tileset) {
     for (int z = 0; z < 6; ++z) {
       for (int i = 0; i < 9; ++i) {
-        auto tex = ResourceManager::instance()->loadTilesetImage(m_tileset->tilesetNames[i]);
+        auto tex = ResourceManager::instance()->loadTilesetImage(m_tileset->tilesetName(i));
         m_lowerLayers[z].tileLayers.emplace_back(tex);
         m_upperLayers[z].tileLayers.emplace_back(tex);
       }
@@ -75,14 +75,14 @@ void MapRenderer::update() {
   for (int z = 0; z < 6; ++z) {
     for (int i = 0; i < 9; ++i) {
       m_lowerLayers[z].tileLayers[i].rects.clear();
-      m_lowerLayers[z].tileLayers[i].rects.reserve(m_map->width * m_map->height);
+      m_lowerLayers[z].tileLayers[i].rects.reserve(m_map->width() * m_map->height());
       m_upperLayers[z].tileLayers[i].rects.clear();
-      m_upperLayers[z].tileLayers[i].rects.reserve(m_map->width * m_map->height);
+      m_upperLayers[z].tileLayers[i].rects.reserve(m_map->width() * m_map->height());
     }
   }
 
-  for (int y = 0; y < m_map->height; ++y) {
-    for (int x = 0; x < m_map->width; ++x) {
+  for (int y = 0; y < m_map->height(); ++y) {
+    for (int x = 0; x < m_map->width(); ++x) {
       paintTiles(0, 0, x, y);
     }
   }
@@ -304,9 +304,8 @@ int MapRenderer::tileId(const int x, const int y, const int z) const {
     return 0;
   }
 
-  int idx = (z * m_map->height + y) * m_map->width + x;
-  if (idx < m_map->data.size()) {
-    const auto& tile = m_map->data[idx];
+  if (const int idx = (z * m_map->height() + y) * m_map->width() + x; idx < m_map->data().size()) {
+    const auto& tile = m_map->data()[idx];
     return tile ? *tile : 0;
   }
 

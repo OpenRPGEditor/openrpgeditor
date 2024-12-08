@@ -1,8 +1,8 @@
 #include "Core/EventEditor.hpp"
 
 #include "Core/DPIHandler.hpp"
-#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/ImGuiExt/ImGuiNotify.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 
 #include "Database/Event.hpp"
 #include "Database/EventCommands/EventDummy.hpp"
@@ -25,7 +25,7 @@ void EventEditor::fixupPages() {
 
 bool EventEditor::draw() {
   if (m_event) {
-    std::string title = std::format("Event {} - ID {}##event_editor_{}_{}", m_event->name, m_event->id, Database::instance()->mapInfos.currentMap()->id, m_event->id);
+    std::string title = std::format("Event {} - ID {}##event_editor_{}_{}", m_event->name, m_event->id, Database::instance()->mapInfos.currentMap()->id(), m_event->id);
     ImGui::SetNextWindowSize(ImVec2{640, 480} * App::DPIHandler::get_ui_scale(), ImGuiCond_Once);
     if (ImGui::Begin(title.c_str(), &m_isOpen)) {
       ImGui::BeginGroup();
@@ -75,7 +75,6 @@ bool EventEditor::draw() {
         ImGui::SameLine();
         if (ImGui::Button("Save as\nTemplate")) {
           template_picker = ObjectPicker("Templates"sv, Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
-
         }
       }
       if (template_picker) {
@@ -89,16 +88,15 @@ bool EventEditor::draw() {
               Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
                                                                    "New Event Template " + std::to_string(Database::instance()->templates.templates.size() + 1), "", Template::TemplateType::Event,
                                                                    eventJson.dump(), {}));
-            }
-            else {
-              Database::instance()->templates.templates.at(template_picker.value().selection() - 1).commands = eventJson.dump();
+            } else {
+              Database::instance()->templates.templates.at(template_picker.value().selection() - 1).setCommands(eventJson.dump());
             }
             if (Database::instance()->templates.serialize(Database::instance()->basePath + "data/Templates.json")) {
               ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Saved event as template successfully!"});
             } else {
               ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to saved event as template!"});
             }
-            Database::instance()->templates.templates.back().commands = eventJson.dump();
+            Database::instance()->templates.templates.back().setCommands(eventJson.dump());
           }
           template_picker.reset();
         }

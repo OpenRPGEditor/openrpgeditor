@@ -4,7 +4,7 @@
 
 #include "imgui.h"
 
-DBTroopsTab::DBTroopsTab(Troops& Troops, DatabaseEditor* parent) : IDBEditorTab(parent), m_troops(Troops) {
+DBTroopsTab::DBTroopsTab(Troops& troops, DatabaseEditor* parent) : IDBEditorTab(parent), m_troops(troops) {
   m_selectedTroop = m_troops.troop(1);
   if (m_selectedTroop) {
     // m_traitsEditor.setTraits(&m_selectedClass->traits);
@@ -20,19 +20,17 @@ void DBTroopsTab::draw() {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Troops");
-        ImGui::BeginChild("##orpg_troops_editor_troops_list", ImVec2{0, ImGui::GetContentRegionMax().y - (App::DPIHandler::scale_value(108))});
+        ImGui::BeginChild("##orpg_troops_editor_troops_list", ImVec2{0, ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(108)});
         {
           ImGui::BeginGroup();
           {
-            for (auto& skill_ : m_troops.troops()) {
-              if (skill_.id == 0) {
+            for (auto& troop : m_troops.troops()) {
+              if (troop.id() == 0) {
                 continue;
               }
 
-              char name[4096];
-              snprintf(name, 4096, "%04i %s", skill_.id, skill_.name.c_str());
-              if (ImGui::Selectable(name, &skill_ == m_selectedTroop) || (ImGui::IsItemFocused() && m_selectedTroop != &skill_)) {
-                m_selectedTroop = &skill_;
+              if (ImGui::Selectable(Database::instance()->troopNameAndId(troop.id()).c_str(), &troop == m_selectedTroop) || (ImGui::IsItemFocused() && m_selectedTroop != &troop)) {
+                m_selectedTroop = &troop;
                 // m_traitsEditor.setTraits(&m_selectedClass->traits);
               }
             }
@@ -43,7 +41,7 @@ void DBTroopsTab::draw() {
         char str[4096];
         snprintf(str, 4096, "Max Troops %i", m_maxTroops);
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
+        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(8), 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxTroops = m_maxTroops;
         }
@@ -79,7 +77,7 @@ void DBTroopsTab::draw() {
                          ImGuiWindowFlags_NoResize | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
           ImGui::Text("Are you sure?");
           if (ImGui::Button("Yes")) {
-            int tmpId = m_selectedTroop->id;
+            const int tmpId = m_selectedTroop->id();
             m_maxTroops = m_editMaxTroops;
             m_troops.resize(m_maxTroops);
             m_selectedTroop = m_troops.troop(tmpId);

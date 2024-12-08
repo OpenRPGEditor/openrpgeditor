@@ -126,11 +126,11 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
         }
         if (command->priceType == PriceType::Standard) {
           if (command->type == ShopType::Armor) {
-            command->price = Database::instance()->armors.armor(command->id)->price;
+            command->price = Database::instance()->armors.armor(command->id)->price();
           } else if (command->type == ShopType::Weapon) {
-            command->price = Database::instance()->weapons.weapon(command->id)->price;
+            command->price = Database::instance()->weapons.weapon(command->id)->price();
           } else if (command->type == ShopType::Item) {
-            command->price = Database::instance()->items.item(command->id)->price;
+            command->price = Database::instance()->items.item(command->id)->price();
           }
         } else {
           command->price = m_price_constant;

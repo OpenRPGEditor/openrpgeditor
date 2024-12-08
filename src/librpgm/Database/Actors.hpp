@@ -1,64 +1,26 @@
 #pragma once
 
-#include "Database/Trait.hpp"
+#include "Database/Actor.hpp"
+#include "Database/IModifiable.hpp"
 
-#include <array>
-#include <string>
-#include <string_view>
 #include <vector>
 
 #include "nlohmann/json.hpp"
 
-class Actor {
+class Actors final : public IModifiable {
 public:
-  friend void to_json(nlohmann::ordered_json& to, const Actor& actor);
-  friend void from_json(const nlohmann::ordered_json& from, Actor& actor);
-  int id = 0;
-  std::string battlerName;
-  int characterIndex = 0;
-  std::string characterName;
-  int classId = 1;
-  std::vector<int> equips;
-  int faceIndex = 0;
-  std::string faceName;
-  std::vector<Trait> traits;
-  int initialLevel = 1;
-  int maxLevel = 99;
-  std::string name;
-  std::string nickname;
-  std::string note;
-  std::string profile;
-
-  /*!
-   * @name m_isValid
-   * @details
-   * Indicates that this is an actual valid entry and not a dummy
-   *
-   * When making a new entry make sure to set this to true or it won't be
-   * serialized.
-   */
-  bool m_isValid{false};
-};
-void to_json(nlohmann::json& to, const Actor& actor);
-void from_json(const nlohmann::json& from, Actor& actor);
-
-class Actors {
-public:
-  static Actors load(std::string_view filename);
-  bool serialize(std::string_view filename);
-
-  [[nodiscard]] Actor* actor(int id) {
+  [[nodiscard]] Actor* actor(const int id) {
     for (auto& actor : m_actors) {
-      if (actor.id == id && actor.m_isValid) {
+      if (actor.id() == id && actor.isValid()) {
         return &actor;
       }
     }
     return nullptr;
   }
 
-  [[nodiscard]] const Actor* actor(int id) const {
+  [[nodiscard]] const Actor* actor(const int id) const {
     for (const auto& actor : m_actors) {
-      if (actor.id == id && actor.m_isValid) {
+      if (actor.id() == id && actor.isValid()) {
         return &actor;
       }
     }
@@ -70,17 +32,18 @@ public:
     if (hasTestActor()) {
       ++newSize;
     }
-    int oldSize = m_actors.size();
+    const int oldSize = m_actors.size();
     m_actors.resize(newSize);
     if (newSize > oldSize) {
       for (int i = oldSize; i < m_actors.size(); ++i) {
-        m_actors[i].id = i;
+        m_actors[i].setId(i);
       }
     }
+    onModified().fire(this);
   }
 
   bool hasTestActor() const {
-    return std::find_if(m_actors.begin(), m_actors.end(), [](const auto& act) { return act.id == 0; }) != m_actors.end();
+    return std::ranges::find_if(m_actors, [](const auto& act) { return act.id() == 0; }) != m_actors.end();
   }
   int count() const { return m_actors.size() - 1; }
 

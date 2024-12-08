@@ -26,17 +26,17 @@ struct Dialog_ShopProcessing_Goods : IEventDialogController {
     // Price
     if (m_price_operation == 0) {
       if (command->type == ShopType::Armor) {
-        m_price_constant = Database::instance()->armors.armor(m_armor_selection)->price;
+        m_price_constant = Database::instance()->armors.armor(m_armor_selection)->price();
       } else if (command->type == ShopType::Weapon) {
-        m_price_constant = Database::instance()->weapons.weapon(m_weapon_selection)->price;
+        m_price_constant = Database::instance()->weapons.weapon(m_weapon_selection)->price();
       } else {
-        m_price_constant = Database::instance()->items.item(m_item_selection)->price;
+        m_price_constant = Database::instance()->items.item(m_item_selection)->price();
       }
     } else {
       m_price_constant = command->price;
     }
   }
-  explicit Dialog_ShopProcessing_Goods(const std::string& name, int id, int price, int shopType, int priceType) : IEventDialogController(name) {
+  explicit Dialog_ShopProcessing_Goods(const std::string& name, int id, const int price, const int shopType, const int priceType) : IEventDialogController(name) {
     command.reset(new ShopProcessingGoodCommand());
     if (id < 1)
       id = 1;
@@ -55,11 +55,11 @@ struct Dialog_ShopProcessing_Goods : IEventDialogController {
     // Price
     if (priceType == 0) {
       if (shopType == 2) {
-        m_price_constant = Database::instance()->armors.armor(m_armor_selection)->price;
+        m_price_constant = Database::instance()->armors.armor(m_armor_selection)->price();
       } else if (shopType == 1) {
-        m_price_constant = Database::instance()->weapons.weapon(m_weapon_selection)->price;
+        m_price_constant = Database::instance()->weapons.weapon(m_weapon_selection)->price();
       } else if (shopType == 0) {
-        m_price_constant = Database::instance()->items.item(m_item_selection)->price;
+        m_price_constant = Database::instance()->items.item(m_item_selection)->price();
       }
     } else {
       m_price_constant = price;

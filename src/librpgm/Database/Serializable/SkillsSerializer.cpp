@@ -12,7 +12,7 @@ void SkillsSerializer::serialize(std::ofstream& os) const {
     }
 
     for (const Skill& skill : m_data.skills()) {
-      if (skill.m_isValid) {
+      if (skill.isValid()) {
         data.push_back(skill);
       } else {
         data.push_back(nullptr);
@@ -32,10 +32,10 @@ void SkillsSerializer::deserialize(std::ifstream& is) {
     for (const auto& [_, value] : data.items()) {
       Skill& skill = m_data.skills().emplace_back();
       skill.m_isValid = value != nullptr;
-      if (skill.m_isValid) {
+      if (skill.isValid()) {
         value.get_to(skill);
       } else {
-        skill.id = i;
+        skill.m_id = i;
       }
       ++i;
     }

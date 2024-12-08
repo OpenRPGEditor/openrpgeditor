@@ -19,10 +19,11 @@
 #include "Core/DatabaseEditor/DBWeaponsTab.hpp"
 #include "Core/Graphics/IconSheet.hpp"
 
-#include "Database/Classes.hpp"
+#include "Database/Class.hpp"
 
 struct Project;
-struct DatabaseEditor {
+class DatabaseEditor {
+public:
   DatabaseEditor() = delete;
   explicit DatabaseEditor(Project* parent) : m_parent(parent) {}
 

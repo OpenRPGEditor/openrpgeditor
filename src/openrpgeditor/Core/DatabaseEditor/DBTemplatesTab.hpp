@@ -3,8 +3,8 @@
 #include "Core/EventEditor.hpp"
 #include "Core/TemplateEditor/IDBTemplates.hpp"
 #include "Core/TemplateEditor/TemplatesCommand.hpp"
-#include "Core/TemplateEditor/TemplatesTint.hpp"
 #include "Core/TemplateEditor/TemplatesEventProperties.hpp"
+#include "Core/TemplateEditor/TemplatesTint.hpp"
 #include "Database/Templates.hpp"
 
 #include <optional>
@@ -12,27 +12,26 @@
 struct Templates;
 struct DBTemplatesTab : IDBEditorTab {
   explicit DBTemplatesTab(Templates& templates, DatabaseEditor* parent) : IDBEditorTab(parent), m_templates(&templates), m_commandEditor(nullptr) {
-    if (m_templates->templates.size() > 0) {
-      if (m_templates->templates.at(m_selection).commands.empty()) {
+    if (!m_templates->templates.empty()) {
+      if (m_templates->templates.at(m_selection).commands().empty()) {
         m_currentCommands.emplace_back(std::make_shared<EventDummy>());
         m_currentCommands.back()->indent = 0;
       } else {
-        if (m_templates->templates.at(m_selection).type == Template::TemplateType::Command) {
+        if (m_templates->templates.at(m_selection).type() == Template::TemplateType::Command) {
           CommandParser parser;
-          nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(m_templates->templates.at(m_selection).commands);
+          nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(m_templates->templates.at(m_selection).commands());
           m_currentCommands = parser.parse(cmdJson);
           m_commandEditor.setCommands(&m_currentCommands);
-        }
-        else {
+        } else {
           m_currentCommands.clear();
         }
       }
-      m_templateNote = m_templates->templates.at(m_selection).note;
-      m_templateName = m_templates->templates.at(m_selection).name;
-      m_templateType = static_cast<int>(m_templates->templates.at(m_selection).type);
-      m_currentTemplate = CreateTemplateDialog(static_cast<Template::TemplateType>(m_templates->templates.at(m_selection).type));
+      m_templateNote = m_templates->templates.at(m_selection).note();
+      m_templateName = m_templates->templates.at(m_selection).name();
+      m_templateType = static_cast<int>(m_templates->templates.at(m_selection).type());
+      m_currentTemplate = CreateTemplateDialog((m_templates->templates.at(m_selection).type()));
     } else {
-      m_currentTemplate = CreateTemplateDialog(static_cast<Template::TemplateType>(0));
+      m_currentTemplate = CreateTemplateDialog(Template::TemplateType::Command);
       m_currentCommands.emplace_back(std::make_shared<EventDummy>());
       m_currentCommands.back()->indent = 0;
       m_commandEditor.setCommands(&m_currentCommands);
@@ -55,20 +54,19 @@ private:
 
   std::shared_ptr<IDBTemplates> m_currentTemplate;
 
-  std::shared_ptr<IDBTemplates> CreateTemplateDialog(Template::TemplateType type) {
+  std::shared_ptr<IDBTemplates> CreateTemplateDialog(const Template::TemplateType type) {
     if (m_templates->templates.empty()) {
       return std::make_shared<TemplatesCommand>(nullptr, m_parent);
-    } else {
-      switch (type) {
-      case Template::TemplateType::Command:
-        return std::make_shared<TemplatesCommand>(&m_templates->templates.at(m_selection), m_parent);
-      case Template::TemplateType::Tint:
-        return std::make_shared<TemplatesTint>(&m_templates->templates.at(m_selection), m_parent);
-      case Template::TemplateType::Event:
-        return std::make_shared<TemplatesEventProperties>(&m_templates->templates.at(m_selection), m_parent);
-      default:
-        return nullptr;
-      }
+    }
+    switch (type) {
+    case Template::TemplateType::Command:
+      return std::make_shared<TemplatesCommand>(&m_templates->templates.at(m_selection), m_parent);
+    case Template::TemplateType::Tint:
+      return std::make_shared<TemplatesTint>(&m_templates->templates.at(m_selection), m_parent);
+    case Template::TemplateType::Event:
+      return std::make_shared<TemplatesEventProperties>(&m_templates->templates.at(m_selection), m_parent);
+    default:
+      return nullptr;
     }
   }
   void AddTemplate(std::string label, Template::TemplateType type, std::string commandString, std::vector<int> params);

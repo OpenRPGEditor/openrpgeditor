@@ -441,12 +441,11 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
               ImGui::SetItemDefaultFocus();
             }
 
-            for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events) {
+            for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events()) {
               if (!dataSource.has_value())
                 continue;
 
-              bool is_selected = (m_character_selection == dataSource->id);
-              if (ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
+              if (const bool is_selected = (m_character_selection == dataSource->id); ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
                 m_character_selection = dataSource->id;
                 if (is_selected)
                   ImGui::SetItemDefaultFocus();

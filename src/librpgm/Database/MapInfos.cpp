@@ -8,20 +8,7 @@
 #include <fstream>
 
 using json = nlohmann::ordered_json;
-void to_json(nlohmann::ordered_json& json, const MapInfo& mapinfo) {
-  json = {
-      {"id", mapinfo.id}, {"expanded", mapinfo.expanded}, {"name", mapinfo.name}, {"order", mapinfo.order}, {"parentId", mapinfo.parentId}, {"scrollX", mapinfo.scrollX}, {"scrollY", mapinfo.scrollY},
-  };
-}
-void from_json(const nlohmann::ordered_json& json, MapInfo& mapinfo) {
-  mapinfo.id = json.value("id", mapinfo.id);
-  mapinfo.expanded = json.value("expanded", mapinfo.expanded);
-  mapinfo.name = json.value("name", mapinfo.name);
-  mapinfo.order = json.value("order", mapinfo.order);
-  mapinfo.parentId = json.value("parentId", mapinfo.parentId);
-  mapinfo.scrollX = json.value("scrollX", mapinfo.scrollX);
-  mapinfo.scrollY = json.value("scrollY", mapinfo.scrollY);
-}
+
 MapInfos MapInfos::load(std::string_view filename) {
   std::ifstream file(filename.data());
   json data = json::parse(file);
@@ -54,7 +41,7 @@ bool MapInfos::serialize(std::string_view filename) {
 }
 
 void recursiveSort(MapInfo& in) {
-  std::ranges::sort(in.m_children, [](const MapInfo* a, const MapInfo* b) { return a->order < b->order; });
+  std::ranges::sort(in.m_children, [](const MapInfo* a, const MapInfo* b) { return a->order() < b->order(); });
 
   for (auto& mapInfo : in.m_children) {
     recursiveSort(*mapInfo);
@@ -71,11 +58,11 @@ void MapInfos::buildTree(const bool reset) {
     }
   }
   for (auto& mapInfo : m_mapinfos) {
-    if (!mapInfo || mapInfo->id == 0) {
+    if (!mapInfo || mapInfo->id() == 0) {
       continue;
     }
-    if (mapInfo->parentId >= 0 && mapInfo->parentId < m_mapinfos.size()) {
-      m_mapinfos[mapInfo->parentId]->m_children.push_back(&mapInfo.value());
+    if (mapInfo->parentId() >= 0 && mapInfo->parentId() < m_mapinfos.size()) {
+      m_mapinfos[mapInfo->parentId()]->m_children.push_back(&mapInfo.value());
     }
   }
 
@@ -83,7 +70,7 @@ void MapInfos::buildTree(const bool reset) {
 }
 
 void recursiveRebuildOrdering(MapInfo& in, int& order) {
-  in.order = order++;
+  in.setOrder(order++);
   for (auto* mapinfo : in.children()) {
     if (mapinfo) {
       recursiveRebuildOrdering(*mapinfo, order);
@@ -101,24 +88,23 @@ void MapInfos::rebuildOrdering() {
 }
 
 void MapInfos::loadAllMaps() {
-  for (auto& mapinfo : m_mapinfos) {
-    if (mapinfo && mapinfo->id != 0) {
+  for (const auto& mapinfo : m_mapinfos) {
+    if (mapinfo && mapinfo->id() != 0) {
       //      if (auto map = Database::instance()->loadMap(mapinfo->id); map.m_isValid) {
       //        mapinfo->m_map = std::make_unique<Map>(map);
       //      }
-      DeserializationQueue::instance().enqueue(std::make_shared<MapSerializer>(std::format("data/Map{:03}.json", mapinfo->id), mapinfo->id),
-                                               [this](auto&& handle) { mapLoadCallback(std::forward<decltype(handle)>(handle)); });
+      DeserializationQueue::instance().enqueue(std::make_shared<MapSerializer>(std::format("data/Map{:03}.json", mapinfo->id()), mapinfo->id()),
+                                               [this]<typename T>(T&& handle) { mapLoadCallback(std::forward<T>(handle)); });
     }
   }
 }
 
 static std::mutex MapInfosMutex;
 void MapInfos::mapLoadCallback(const std::shared_ptr<ISerializable>& data) {
-  if (auto mapSerializable = std::dynamic_pointer_cast<MapSerializer>(data)) {
+  if (const auto mapSerializable = std::dynamic_pointer_cast<MapSerializer>(data)) {
     std::lock_guard lock(MapInfosMutex);
     auto& mapinfo = m_mapinfos[mapSerializable->mapId()];
-    const auto& map = mapSerializable->data();
-    if (mapinfo && map.m_isValid) {
+    if (const auto& map = mapSerializable->data(); mapinfo && map.isValid()) {
       mapinfo->m_map = std::make_unique<Map>(map);
     }
   }

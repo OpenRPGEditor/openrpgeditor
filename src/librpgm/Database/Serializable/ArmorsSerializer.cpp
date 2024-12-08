@@ -11,7 +11,7 @@ void ArmorsSerializer::serialize(std::ofstream& os) const {
     }
 
     for (const Armor& armor : m_data.armors()) {
-      if (armor.m_isValid) {
+      if (armor.isValid()) {
         data.push_back(armor);
       } else {
         data.push_back(nullptr);
@@ -31,10 +31,10 @@ void ArmorsSerializer::deserialize(std::ifstream& is) {
     for (const auto& [_, value] : data.items()) {
       Armor& armor = m_data.armors().emplace_back();
       armor.m_isValid = value != nullptr;
-      if (armor.m_isValid) {
+      if (armor.isValid()) {
         value.get_to(armor);
       } else {
-        armor.id = i;
+        armor.m_id = i;
       }
       ++i;
     }

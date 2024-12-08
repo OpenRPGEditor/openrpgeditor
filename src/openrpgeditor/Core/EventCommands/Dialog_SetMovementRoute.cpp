@@ -13,10 +13,11 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementSwitchON.hpp"
 #include "Core/EventCommands/MovementRoute/Dialog_MovementWait.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
+
 #include "Database/Database.hpp"
 #include "Database/EventCommands/MovementRoute/DirectionFixOFF.hpp"
 #include "Database/EventCommands/MovementRoute/DirectionFixON.hpp"
-#include "Database/EventCommands/MovementRoute/Jump.hpp"
+// #include "Database/EventCommands/MovementRoute/Jump.hpp"
 #include "Database/EventCommands/MovementRoute/Move1StepBackward.hpp"
 #include "Database/EventCommands/MovementRoute/Move1StepForward.hpp"
 #include "Database/EventCommands/MovementRoute/MoveAtRandom.hpp"
@@ -47,7 +48,7 @@
 #include "Database/EventCommands/MovementRoute/TurnRight.hpp"
 #include "Database/EventCommands/MovementRoute/TurnTowardPlayer.hpp"
 #include "Database/EventCommands/MovementRoute/TurnUp.hpp"
-#include "Database/EventCommands/MovementRoute/Wait.hpp"
+// #include "Database/EventCommands/MovementRoute/Wait.hpp"
 #include "Database/EventCommands/MovementRoute/WalkingAnimationOFF.hpp"
 #include "Database/EventCommands/MovementRoute/WalkingAnimationON.hpp"
 #include "imgui.h"
@@ -63,8 +64,8 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     // Character Selection
-    ImVec2 cursorPos = ImGui::GetCursorPos();
-    ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
+    const ImVec2 cursorPos = ImGui::GetCursorPos();
+    ImGui::PushItemWidth(App::DPIHandler::scale_value(160));
     if (ImGui::BeginCombo("##showroute_character", Database::instance()->eventNameOrId(m_character).c_str())) {
 
       if (ImGui::Selectable("Player", m_character == -1)) {
@@ -76,11 +77,11 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
         ImGui::SetItemDefaultFocus();
       }
 
-      for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events) {
+      for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events()) {
         if (!dataSource.has_value())
           continue;
 
-        bool is_selected = (m_character == dataSource->id);
+        bool is_selected = m_character == dataSource->id;
         if (ImGui::Selectable(Database::instance()->instance()->eventNameOrId(dataSource->id).c_str(), is_selected)) {
           m_character = dataSource->id;
           if (is_selected)
@@ -305,10 +306,9 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     }
 
     if (movementRouteDialog) {
-      auto [closed, confirmed] = movementRouteDialog->draw();
-      if (closed) {
+      if (const auto [closed, confirmed] = movementRouteDialog->draw(); closed) {
         if (confirmed) {
-          auto select = m_route.list.insert(m_route.list.begin() + m_selected, movementRouteDialog->getCommand());
+          const auto select = m_route.list.insert(m_route.list.begin() + m_selected, movementRouteDialog->getCommand());
           m_selected = select - m_route.list.begin();
         }
         movementRouteDialog.reset();

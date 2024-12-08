@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/CommonUI/TraitsEditor.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+
 #include "Database/Classes.hpp"
 
 #include <array>

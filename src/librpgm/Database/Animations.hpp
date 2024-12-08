@@ -5,15 +5,12 @@
 
 class Animations {
 public:
-  static Animations load(std::string_view filename);
-  void serialize(std::string_view filename);
-
   std::vector<Animation>& animations() { return m_animations; }
   const std::vector<Animation>& animations() const { return m_animations; }
 
   [[nodiscard]] Animation* animation(int id) {
     for (auto& animation : m_animations) {
-      if (animation.id == id && animation.m_isValid) {
+      if (animation.id() == id && animation.m_isValid) {
         return &animation;
       }
     }
@@ -22,7 +19,7 @@ public:
 
   [[nodiscard]] const Animation* animation(int id) const {
     for (const auto& animation : m_animations) {
-      if (animation.id == id && animation.m_isValid) {
+      if (animation.id() == id && animation.m_isValid) {
         return &animation;
       }
     }
@@ -37,7 +34,7 @@ public:
     m_animations.resize(newSize);
     if (newSize > oldSize) {
       for (int i = oldSize; i < m_animations.size(); ++i) {
-        m_animations[i].id = i;
+        m_animations[i].setId(i);
       }
     }
   }

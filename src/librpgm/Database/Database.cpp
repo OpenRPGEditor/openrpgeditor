@@ -121,21 +121,6 @@ void Database::load() {
   templates = Templates::load(basePath + "/data/Templates.json");
   templatesLoaded.fire();
 }
-Map Database::loadMap(int mapId) {
-  std::string path = std::format("{}data/Map{:03}.json", basePath, mapId);
-  RPGM_DEBUG("Loading map {}", path);
-  Map ret{};
-#ifndef DEBUG
-  try {
-#endif
-    ret = Map::load(path);
-    RPGM_DEBUG("Map Loaded");
-#ifndef DEBUG
-  } catch (const std::exception& e) { RPGM_DEBUG("Map Failed To Load! Got exception {}", e.what()); }
-#endif
-
-  return ret;
-}
 
 void Database::serializeProject() {
   SerializationQueue::instance().enqueue(std::make_shared<CommonEventsSerializer>(commonEvents, "data/CommonEvents.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
@@ -159,7 +144,7 @@ void Database::serializeProject() {
 
   for (const auto& map : mapInfos.mapInfos()) {
     if (map->map()) {
-      SerializationQueue::instance().enqueue(std::make_shared<MapSerializer>(*map->map(), std::format("data/Map{:03}.json", map->id)), [this](const std::shared_ptr<ISerializable>& serializer) {});
+      SerializationQueue::instance().enqueue(std::make_shared<MapSerializer>(*map->map(), std::format("data/Map{:03}.json", map->id())), [this](const std::shared_ptr<ISerializable>& serializer) {});
     }
   }
 }

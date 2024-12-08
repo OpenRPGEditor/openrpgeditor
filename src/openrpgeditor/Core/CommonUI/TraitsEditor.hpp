@@ -7,9 +7,10 @@
 
 class State;
 class Skill;
-struct DatabaseEditor;
+class DatabaseEditor;
 
-struct TraitsEditor {
+class TraitsEditor final {
+public:
   void setTraits(std::vector<Trait>* traits) { m_traits = traits; }
   void draw(DatabaseEditor* dbEditor);
 

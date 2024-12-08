@@ -2,12 +2,11 @@
 #include "Core/CommonUI/TraitsEditor.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/CharacterSheet.hpp"
-#include "Core/Graphics/CheckerboardTexture.hpp"
 #include "Core/Graphics/CheckeredCompositeTexture.hpp"
 #include "Core/Graphics/FaceSheet.hpp"
 #include "Core/Graphics/SideViewBattlerSheet.hpp"
+
 #include "Database/Actors.hpp"
-#include "Database/Trait.hpp"
 
 #include <optional>
 
@@ -26,9 +25,13 @@ private:
   bool checkEquipable(int etypeId, int dataId) const;
   static std::string itemDisplayName(bool isWeapon, int dataId);
 
+  struct TempActor {
+    int initialLevel{};
+    int maxLevel{};
+  } m_tempActor{};
   Actors& m_actors;
   Actor* m_selectedActor{};
-  int m_editMaxActors;
+  int m_editMaxActors{};
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;

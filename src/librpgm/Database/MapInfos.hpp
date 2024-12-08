@@ -1,39 +1,6 @@
 #pragma once
 
-#include "Database/Map.hpp"
-#include "nlohmann/json.hpp"
-#include <string>
-
-class ISerializable;
-struct MapInfo {
-  friend void to_json(nlohmann::ordered_json& json, const MapInfo& mapinfo);
-  friend void from_json(const nlohmann::ordered_json& json, MapInfo& mapinfo);
-  bool expanded{};
-  int id{};
-  std::string name;
-  int order{};
-  int parentId{};
-  double scrollX{};
-  double scrollY{};
-
-  std::vector<MapInfo*>& children() { return m_children; }
-  const std::vector<MapInfo*>& children() const { return m_children; }
-
-  Map* map() { return m_map.get(); }
-  const Map* map() const { return m_map.get(); }
-
-  Event* event(int id) { return m_map ? m_map->event(id) : nullptr; }
-  const Event* event(int id) const { return m_map ? m_map->event(id) : nullptr; }
-
-private:
-  friend void recursiveSort(MapInfo& in);
-  friend class MapInfos;
-  friend class MapInfosSerializer;
-  std::vector<MapInfo*> m_children;
-  std::unique_ptr<Map> m_map;
-};
-void to_json(nlohmann::ordered_json& json, const MapInfo& mapinfo);
-void from_json(const nlohmann::ordered_json& json, MapInfo& mapinfo);
+#include "Database/MapInfo.hpp"
 
 class MapInfos {
 public:
@@ -42,7 +9,7 @@ public:
 
   [[nodiscard]] MapInfo* map(int id) {
     for (auto& item : m_mapinfos) {
-      if (item->id == id) {
+      if (item->id() == id) {
         return &item.value();
       }
     }
@@ -51,7 +18,7 @@ public:
 
   [[nodiscard]] const MapInfo* map(int id) const {
     for (const auto& set : m_mapinfos) {
-      if (set->id == id) {
+      if (set->id() == id) {
         return &set.value();
       }
     }

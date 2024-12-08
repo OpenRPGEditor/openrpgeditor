@@ -9,14 +9,13 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
   if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+  const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{380, 313} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (picker) {
-      auto [closed, confirmed] = picker->draw();
-      if (closed) {
+      if (auto [closed, confirmed] = picker->draw(); closed) {
         if (confirmed) {
           switch (m_var_selection) {
           case 1:
@@ -33,7 +32,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
       }
     }
     ImGui::SeparatorText("Event");
-    ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
+    ImGui::PushItemWidth(App::DPIHandler::scale_value(160));
     if (ImGui::BeginCombo("##setevloc_character", Database::instance()->eventNameOrId(m_event).c_str())) {
 
       if (ImGui::Selectable("This Event", m_event == 0)) {
@@ -41,12 +40,11 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
         ImGui::SetItemDefaultFocus();
       }
 
-      for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events) {
+      for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events()) {
         if (!dataSource.has_value())
           continue;
 
-        bool is_selected = (m_event == dataSource->id);
-        if (ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
+        if (const bool is_selected = m_event == dataSource->id; ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
           m_event = dataSource->id;
           if (is_selected)
             ImGui::SetItemDefaultFocus();
@@ -100,7 +98,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
     ImGui::RadioButton("Exchange with another event", &m_mode, 2);
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
     ImGui::BeginDisabled(m_mode != 2);
-    ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
+    ImGui::PushItemWidth(App::DPIHandler::scale_value(160));
     if (ImGui::BeginCombo("##exchangeev_event", m_mode != 2 ? "" : Database::instance()->eventNameOrId(m_otherEvent).c_str())) {
 
       if (ImGui::Selectable("This Event", m_otherEvent == 0)) {
@@ -108,12 +106,11 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
         ImGui::SetItemDefaultFocus();
       }
 
-      for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events) {
+      for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events()) {
         if (!dataSource.has_value())
           continue;
 
-        bool is_selected = (m_otherEvent == dataSource->id);
-        if (ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
+        if (const bool is_selected = m_otherEvent == dataSource->id; ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
           m_otherEvent = dataSource->id;
           if (is_selected)
             ImGui::SetItemDefaultFocus();
@@ -127,11 +124,10 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
     ImGui::BeginGroup();
     {
       ImGui::Text("Direction:");
-      ImGui::PushItemWidth((App::DPIHandler::scale_value(180)));
+      ImGui::PushItemWidth(App::DPIHandler::scale_value(180));
       if (ImGui::BeginCombo("##direction_selection", DecodeEnumName(magic_enum::enum_value<Direction>(m_direction)).c_str())) {
         for (auto& dir : magic_enum::enum_values<Direction>()) {
-          bool is_selected = m_direction == magic_enum::enum_index(dir).value();
-          if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
+          if (const bool is_selected = m_direction == magic_enum::enum_index(dir).value(); ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
             m_direction = magic_enum::enum_index(dir).value();
             if (is_selected)
               ImGui::SetItemDefaultFocus();
@@ -156,7 +152,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
         command->x = m_x;
         command->y = m_y;
       }
-      command->direction = static_cast<Direction>((m_direction * 2) + 2);
+      command->direction = static_cast<Direction>(m_direction * 2 + 2);
 
       ImGui::CloseCurrentPopup();
       setOpen(false);

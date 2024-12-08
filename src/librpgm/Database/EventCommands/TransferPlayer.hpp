@@ -11,7 +11,7 @@ struct TransferPlayerCommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   TransferMode mode = TransferMode::Direct;
-  int mapId = Database::instance() != nullptr && Database::instance()->mapInfos.currentMap() != nullptr ? Database::instance()->mapInfos.currentMap()->id : 1;
+  int mapId = Database::instance() != nullptr && Database::instance()->mapInfos.currentMap() != nullptr ? Database::instance()->mapInfos.currentMap()->id() : 1;
   int x{0};
   int y{0};
   Direction direction = Direction::Retain;

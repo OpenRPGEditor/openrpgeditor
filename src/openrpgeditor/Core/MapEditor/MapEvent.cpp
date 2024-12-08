@@ -99,7 +99,7 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlph
     }
   } else if (m_parent->map() && m_event->pages[0].image.tileId) {
     int tileId = m_event->pages[0].image.tileId;
-    auto tileset = m_parent->project()->tileset(m_parent->map()->tilesetId);
+    auto tileset = m_parent->project()->tileset(m_parent->map()->tilesetId());
     if (!tileset) {
       return;
     }
@@ -110,7 +110,7 @@ void MapEvent::draw(float mapScale, bool isHovered, bool selected, bool halfAlph
       setId = 5 + floor(tileId / 256);
     }
 
-    const auto& tex = ResourceManager::instance()->loadTilesetImage(tileset->tilesetNames[setId]);
+    const auto& tex = ResourceManager::instance()->loadTilesetImage(tileset->tilesetName(setId));
     if (!tex) {
       return;
     }

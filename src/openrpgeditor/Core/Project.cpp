@@ -415,7 +415,7 @@ void Project::drawTileInfo(MapRenderer::MapLayer& mapLayer, int z) {
         u1 /= layer.tex.width();
         v1 /= layer.tex.height();
         ImGui::Image(layer.tex, {static_cast<float>(m_mapEditor.tileSize()), static_cast<float>(m_mapEditor.tileSize())}, ImVec2{u0, v0}, ImVec2{u1, v1});
-        std::string info = std::format("Sheet: {} ({}), ID: {}, x: {}, y: {}, z: {},  width: {}, height: {}, u: {}, v: {}", m_mapEditor.mapRenderer().tileset()->tilesetNames[tile.tileSheet],
+        std::string info = std::format("Sheet: {} ({}), ID: {}, x: {}, y: {}, z: {},  width: {}, height: {}, u: {}, v: {}", m_mapEditor.mapRenderer().tileset()->tilesetName(tile.tileSheet),
                                        LayerNames[tile.tileSheet], tile.tileId, tile.x, tile.y, z, tile.tileWidth, tile.tileHeight, tile.u, tile.v);
         if (TileHelper::isAutoTile(tile.tileId)) {
           info += std::format(
@@ -796,14 +796,14 @@ void Project::handleKeyboardShortcuts() {
 }
 
 void Project::setMap(MapInfo& in) {
-  if (in.id == 0) {
+  if (in.id() == 0) {
     m_mapListView.setCurrentMapId(0);
     m_mapEditor.setMap(nullptr);
     return;
   }
 
   SDL_SetCursor(waitCursor);
-  m_mapListView.setCurrentMapId(in.id, true);
+  m_mapListView.setCurrentMapId(in.id(), true);
   if (m_mapListView.currentMapInfo()) {
     m_mapEditor.setMap(&in);
     m_database->mapInfos.setCurrentMap(&in);
@@ -812,7 +812,7 @@ void Project::setMap(MapInfo& in) {
     m_database->mapInfos.setCurrentMap(nullptr);
   }
 
-  m_database->system.editMapId = in.id;
+  m_database->system.editMapId = in.id();
 
   // if (m_map) {
   //   printf("%zu bytes, %i w %i h, %lu layers\n", m_map->data.size(), m_map->width, m_map->height,
@@ -851,8 +851,8 @@ void Project::onTemplatesLoaded() { m_databaseEditor->setTemplates(m_database->t
 void Project::onDatabaseReady() {
   MapInfo* info = m_database->mapInfos.map(0);
   Settings::instance()->lastProject = m_database->projectFilePath;
-  info->expanded = true;
-  info->name = m_database->system.gameTitle.empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system.gameTitle;
+  info->setExpanded(true);
+  info->setName(m_database->system.gameTitle.empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system.gameTitle);
   APP_INFO("Loaded project!");
   // Load the previously loaded map
   SDL_SetCursor(SDL_GetDefaultCursor());

@@ -17,7 +17,7 @@ public:
   Damage damage;
   std::string description;
   std::vector<Effect> effects;
-  ItemType hitType;
+  HitType hitType;
   int iconIndex;
   int itypeId;
   std::string name;

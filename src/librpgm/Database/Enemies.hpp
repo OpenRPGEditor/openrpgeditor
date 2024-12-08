@@ -14,9 +14,9 @@ public:
   struct Action {
     friend void to_json(nlohmann::ordered_json& to, const Action& action);
     friend void from_json(const nlohmann::ordered_json& from, Action& action);
-    int conditionParam1;
-    int conditionParam2;
-    ActionCondition conditionType;
+    float conditionParam1{1.f};
+    float conditionParam2{1.f};
+    ActionCondition conditionType = ActionCondition::Always;
     int rating{5};
     int skillId{1};
   };

@@ -265,9 +265,9 @@ void DBItemsTab::draw() {
                 if (ImGui::BeginCombo("##orpg_database_items_hitType", DecodeEnumName(magic_enum::enum_name(m_selectedItem->hitType)).c_str())) {
                   int index{0};
                   for (auto& dir : magic_enum::enum_values<ItemType>()) {
-                    bool is_selected = m_selectedItem->hitType == static_cast<ItemType>(magic_enum::enum_index(dir).value());
+                    bool is_selected = m_selectedItem->hitType == static_cast<HitType>(magic_enum::enum_index(dir).value());
                     if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
-                      m_selectedItem->hitType = static_cast<ItemType>(magic_enum::enum_index(dir).value());
+                      m_selectedItem->hitType = static_cast<HitType>(magic_enum::enum_index(dir).value());
                       if (is_selected)
                         ImGui::SetItemDefaultFocus();
                     }

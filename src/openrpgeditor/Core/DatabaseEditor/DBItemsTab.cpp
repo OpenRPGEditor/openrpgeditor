@@ -5,10 +5,10 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBItemsTab::DBItemsTab(Items& Items, DatabaseEditor* parent) : IDBEditorTab(parent), m_items(Items) {
+DBItemsTab::DBItemsTab(Items& items, DatabaseEditor* parent) : IDBEditorTab(parent), m_items(items) {
   m_selectedItem = m_items.item(1);
   if (m_selectedItem) {
-    m_effectsEditor.setEffects(&m_selectedItem->effects);
+    m_effectsEditor.setEffects(&m_selectedItem->effects());
   }
 }
 
@@ -22,16 +22,15 @@ void DBItemsTab::draw() {
   }
 
   if (m_selectedItem && !m_itemButtonTexture->hasCompositeTextures()) {
-    const auto& [uv0, uv1] = m_itemSheet.value().rectForId(m_selectedItem->iconIndex);
+    const auto& [uv0, uv1] = m_itemSheet.value().rectForId(m_selectedItem->iconIndex());
     const Point offset{static_cast<int>(uv0.x() * m_itemSheet.value().texture().width()), static_cast<int>(uv0.y() * m_itemSheet.value().texture().height())};
     m_itemButtonTexture->setTexturesToComposite({{m_itemSheet.value().texture(), {m_itemSheet.value().iconWidth(), m_itemSheet.value().iconHeight()}, offset}});
   }
 
   if (m_animationPicker) {
-    const auto [closed, confirmed] = m_animationPicker->draw();
-    if (closed) {
+    if (const auto [closed, confirmed] = m_animationPicker->draw(); closed) {
       if (confirmed) {
-        m_selectedItem->animationId = m_animationPicker->selection();
+        m_selectedItem->setAnimationId(m_animationPicker->selection());
       }
       m_animationPicker.reset();
     }
@@ -44,21 +43,21 @@ void DBItemsTab::draw() {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Items");
-        ImGui::BeginChild("##orpg_items_editor_items_list", ImVec2{0, ImGui::GetContentRegionMax().y - (App::DPIHandler::scale_value(108))});
+        ImGui::BeginChild("##orpg_items_editor_items_list", ImVec2{0, ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(108)});
         {
           ImGui::BeginGroup();
           {
             for (auto& skill_ : m_items.items()) {
-              if (skill_.id == 0) {
+              if (skill_.id() == 0) {
                 continue;
               }
 
               char name[4096];
-              snprintf(name, 4096, "%04i %s", skill_.id, skill_.name.c_str());
+              snprintf(name, 4096, "%04i %s", skill_.id(), skill_.name().c_str());
               if (ImGui::Selectable(name, &skill_ == m_selectedItem) || (ImGui::IsItemFocused() && m_selectedItem != &skill_)) {
                 if (m_selectedItem != &skill_) {
                   m_selectedItem = &skill_;
-                  m_effectsEditor.setEffects(&m_selectedItem->effects);
+                  m_effectsEditor.setEffects(&m_selectedItem->effects());
                   m_itemButtonTexture->clear();
                 }
               }
@@ -70,7 +69,7 @@ void DBItemsTab::draw() {
         char str[4096];
         snprintf(str, 4096, "Max Items %i", m_items.count());
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
+        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(8), 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxItems = m_items.count();
         }
@@ -91,9 +90,9 @@ void DBItemsTab::draw() {
             ImGui::BeginGroup();
             {
               char name[4096];
-              strncpy(name, m_selectedItem->name.c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_items_editor_name", "Name:", name, 4096, (ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(16))) {
-                m_selectedItem->name = name;
+              strncpy(name, m_selectedItem->name().c_str(), 4096);
+              if (ImGui::LabelOverLineEdit("##orpg_items_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - App::DPIHandler::scale_value(16))) {
+                m_selectedItem->setName(name);
               }
             }
             ImGui::EndGroup();
@@ -114,7 +113,10 @@ void DBItemsTab::draw() {
               ImGui::BeginGroup();
               {
                 ImGui::Text("Consumable");
-                ImGui::Checkbox("##orpg_database_items_consumable", &m_selectedItem->consumable);
+                bool consumable = m_selectedItem->consumable();
+                if (ImGui::Checkbox("##orpg_database_items_consumable", &consumable)) {
+                  m_selectedItem->setConsumable(consumable);
+                }
               }
               ImGui::EndGroup();
             }
@@ -123,7 +125,7 @@ void DBItemsTab::draw() {
             ImGui::BeginGroup();
             {
               char description[4096];
-              strncpy(description, m_selectedItem->description.c_str(), 4096);
+              strncpy(description, m_selectedItem->description().c_str(), 4096);
               ImGui::Text("Description:");
               ImGui::InputTextMultiline("##orpg_database_items_description", description, 4096, ImVec2{App::DPIHandler::scale_value(360), App::DPIHandler::scale_value(60)});
             }
@@ -133,11 +135,10 @@ void DBItemsTab::draw() {
             {
               ImGui::Text("Item Type:");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-              if (ImGui::BeginCombo("##orpg_database_items_itype", DecodeEnumName(magic_enum::enum_name(static_cast<ItemType>(m_selectedItem->itypeId))).c_str())) {
-                int index{0};
+              if (ImGui::BeginCombo("##orpg_database_items_itype", DecodeEnumName(magic_enum::enum_name(static_cast<ItemType>(m_selectedItem->itypeId()))).c_str())) {
                 for (auto v : magic_enum::enum_values<ItemType>()) {
-                  if (ImGui::Selectable(DecodeEnumName(v).c_str(), static_cast<ItemType>(m_selectedItem->itypeId) == v)) {
-                    m_selectedItem->itypeId = static_cast<int>(v);
+                  if (ImGui::Selectable(DecodeEnumName(v).c_str(), static_cast<ItemType>(m_selectedItem->itypeId()) == v)) {
+                    m_selectedItem->setItypeId(static_cast<int>(v));
                   }
                 }
                 ImGui::EndCombo();
@@ -150,11 +151,9 @@ void DBItemsTab::draw() {
             {
               ImGui::Text("Price:");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-              if (ImGui::InputInt("##orpg_database_items_price", &m_selectedItem->price, 1, 100)) {
-                if (m_selectedItem->price < 0)
-                  m_selectedItem->price = 0;
-                if (m_selectedItem->price > 999999)
-                  m_selectedItem->price = 999999;
+              int price = m_selectedItem->price();
+              if (ImGui::InputInt("##orpg_database_items_price", &price, 1, 100)) {
+                m_selectedItem->setPrice(std::clamp(price, 0, 999999));
               }
             }
             ImGui::EndGroup();
@@ -167,12 +166,12 @@ void DBItemsTab::draw() {
             {
               ImGui::Text("Scope:");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-              if (ImGui::BeginCombo("##orpg_database_items_scopelist", DecodeEnumName(magic_enum::enum_name(m_selectedItem->scope)).c_str())) {
+              if (ImGui::BeginCombo("##orpg_database_items_scopelist", DecodeEnumName(magic_enum::enum_name(m_selectedItem->scope())).c_str())) {
                 int index{0};
                 for (auto& dir : magic_enum::enum_values<Scope>()) {
-                  bool is_selected = m_selectedItem->scope == static_cast<Scope>(magic_enum::enum_index(dir).value());
-                  if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
-                    m_selectedItem->scope = static_cast<Scope>(magic_enum::enum_index(dir).value());
+                  if (const bool is_selected = m_selectedItem->scope() == static_cast<Scope>(magic_enum::enum_index(dir).value());
+                      ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
+                    m_selectedItem->setScope(dir);
                     if (is_selected)
                       ImGui::SetItemDefaultFocus();
                   }
@@ -188,12 +187,12 @@ void DBItemsTab::draw() {
             {
               ImGui::Text("Occasion:");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-              if (ImGui::BeginCombo("##orpg_database_items_occasionlist", DecodeEnumName(magic_enum::enum_name(m_selectedItem->occasion)).c_str())) {
+              if (ImGui::BeginCombo("##orpg_database_items_occasionlist", DecodeEnumName(magic_enum::enum_name(m_selectedItem->occasion())).c_str())) {
                 int index{0};
                 for (auto& dir : magic_enum::enum_values<Occasion>()) {
-                  bool is_selected = m_selectedItem->occasion == static_cast<Occasion>(magic_enum::enum_index(dir).value());
-                  if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
-                    m_selectedItem->occasion = static_cast<Occasion>(magic_enum::enum_index(dir).value());
+                  if (const bool is_selected = m_selectedItem->occasion() == static_cast<Occasion>(magic_enum::enum_index(dir).value());
+                      ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
+                    m_selectedItem->setOccasion(dir);
                     if (is_selected)
                       ImGui::SetItemDefaultFocus();
                   }
@@ -210,11 +209,9 @@ void DBItemsTab::draw() {
               {
                 ImGui::Text("Speed:");
                 ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-                if (ImGui::InputInt("##orpg_database_items_speed", &m_selectedItem->speed, 1, 100)) {
-                  if (m_selectedItem->speed < -2000)
-                    m_selectedItem->speed = -2000;
-                  if (m_selectedItem->speed > 2000)
-                    m_selectedItem->speed = 2000;
+                int speed = m_selectedItem->speed();
+                if (ImGui::InputInt("##orpg_database_items_speed", &speed, 1, 100)) {
+                  m_selectedItem->setSpeed(std::clamp(speed, -2000, 2000));
                 }
               }
               ImGui::EndGroup();
@@ -224,11 +221,9 @@ void DBItemsTab::draw() {
               {
                 ImGui::Text("Success:");
                 ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-                if (ImGui::InputInt("##orpg_database_items_successRate", &m_selectedItem->successRate, 1, 100)) {
-                  if (m_selectedItem->successRate < 0)
-                    m_selectedItem->successRate = 0;
-                  if (m_selectedItem->successRate > 100)
-                    m_selectedItem->successRate = 100;
+                int successRate = m_selectedItem->successRate();
+                if (ImGui::InputInt("##orpg_database_items_successRate", &successRate, 1, 100)) {
+                  m_selectedItem->setSuccessRate(std::clamp(successRate, 0, 100));
                 }
               }
               ImGui::EndGroup();
@@ -236,11 +231,9 @@ void DBItemsTab::draw() {
               {
                 ImGui::Text("Repeat:");
                 ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-                if (ImGui::InputInt("##orpg_database_items_repeats", &m_selectedItem->repeats, 1, 100)) {
-                  if (m_selectedItem->repeats < 1)
-                    m_selectedItem->repeats = 1;
-                  if (m_selectedItem->repeats > 9)
-                    m_selectedItem->repeats = 9;
+                int repeats = m_selectedItem->repeats();
+                if (ImGui::InputInt("##orpg_database_items_repeats", &repeats, 1, 100)) {
+                  m_selectedItem->setRepeats(std::clamp(repeats, 1, 9));
                 }
               }
               ImGui::EndGroup();
@@ -250,11 +243,9 @@ void DBItemsTab::draw() {
               {
                 ImGui::Text("TP Gain:");
                 ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-                if (ImGui::InputInt("##orpg_database_items_tpGain", &m_selectedItem->tpGain, 1, 100)) {
-                  if (m_selectedItem->tpGain < 0)
-                    m_selectedItem->tpGain = 0;
-                  if (m_selectedItem->tpGain > 100)
-                    m_selectedItem->tpGain = 100;
+                int tpGain = m_selectedItem->tpGain();
+                if (ImGui::InputInt("##orpg_database_items_tpGain", &tpGain, 1, 100)) {
+                  m_selectedItem->setTpGain(std::clamp(tpGain, 0, 100));
                 }
               }
               ImGui::EndGroup();
@@ -262,12 +253,12 @@ void DBItemsTab::draw() {
               {
                 ImGui::Text("Hit Type:");
                 ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
-                if (ImGui::BeginCombo("##orpg_database_items_hitType", DecodeEnumName(magic_enum::enum_name(m_selectedItem->hitType)).c_str())) {
+                if (ImGui::BeginCombo("##orpg_database_items_hitType", DecodeEnumName(magic_enum::enum_name(m_selectedItem->hitType())).c_str())) {
                   int index{0};
-                  for (auto& dir : magic_enum::enum_values<ItemType>()) {
-                    bool is_selected = m_selectedItem->hitType == static_cast<HitType>(magic_enum::enum_index(dir).value());
-                    if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
-                      m_selectedItem->hitType = static_cast<HitType>(magic_enum::enum_index(dir).value());
+                  for (auto& dir : magic_enum::enum_values<HitType>()) {
+                    if (const bool is_selected = m_selectedItem->hitType() == static_cast<HitType>(magic_enum::enum_index(dir).value());
+                        ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
+                      m_selectedItem->setHitType(dir);
                       if (is_selected)
                         ImGui::SetItemDefaultFocus();
                     }
@@ -286,11 +277,11 @@ void DBItemsTab::draw() {
                 ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
                 // Animation Button
                 ImGui::PushID("##orpg_database_items_animation");
-                if (ImGui::Button(m_selectedItem->animationId == -1  ? "Normal Attack"
-                                  : m_selectedItem->animationId == 0 ? "None"
-                                                                     : Database::instance()->animationName(m_selectedItem->animationId).c_str(),
-                                  ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-                  m_animationPicker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), m_selectedItem->animationId);
+                if (ImGui::Button(m_selectedItem->animationId() == -1  ? "Normal Attack"
+                                  : m_selectedItem->animationId() == 0 ? "None"
+                                                                       : Database::instance()->animationName(m_selectedItem->animationId()).c_str(),
+                                  ImVec2{200 - 15 * App::DPIHandler::get_ui_scale(), 0})) {
+                  m_animationPicker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), m_selectedItem->animationId());
                   m_animationPicker->setOpen(true);
                 }
                 ImGui::PopID();
@@ -311,10 +302,10 @@ void DBItemsTab::draw() {
           {
             ImGui::SeparatorText("Note:");
             char note[8192];
-            strncpy(note, m_selectedItem->note.c_str(), IM_ARRAYSIZE(note));
+            strncpy(note, m_selectedItem->note().c_str(), IM_ARRAYSIZE(note));
             if (ImGui::InputTextMultiline("##orpg_database_items_note", note, IM_ARRAYSIZE(note),
                                           ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(16), ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
-              m_selectedItem->note = note;
+              m_selectedItem->setNote(note);
             }
           }
           ImGui::EndGroup();
@@ -349,7 +340,7 @@ void DBItemsTab::draw() {
                        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
         ImGui::Text("Are you sure?");
         if (ImGui::Button("Yes")) {
-          int tmpId = m_selectedItem->id;
+          const int tmpId = m_selectedItem->id();
           m_items.resize(m_editMaxItems);
           m_selectedItem = m_items.item(tmpId);
           m_changeIntDialogOpen = false;

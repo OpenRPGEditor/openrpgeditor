@@ -81,7 +81,7 @@ struct MapEditor {
       return {};
     }
 
-    return Rect{0, 0, map()->width, map()->height};
+    return Rect{0, 0, map()->width(), map()->height()};
   }
 
   bool isMapPointValid(const Point& point) const { return mapRect().contains(point); }
@@ -92,7 +92,7 @@ struct MapEditor {
     if (!map()) {
       return;
     }
-    map()->data[m_mapRenderer.tileIdFromCoords(point.x(), point.y(), layer)] = tileId;
+    map()->data()[m_mapRenderer.tileIdFromCoords(point.x(), point.y(), layer)] = tileId;
   }
 
 private:

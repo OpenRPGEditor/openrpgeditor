@@ -1,8 +1,9 @@
 #pragma once
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
-#include "Database/Actors.hpp"
-#include "Database/Classes.hpp"
+
+#include "Database/Actor.hpp"
+#include "Database/Class.hpp"
 #include "Database/EventCommands/ChangeClass.hpp"
 
 struct Dialog_ChangeClass : IEventDialogController {

@@ -1,8 +1,8 @@
 #pragma once
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
-#include "Database/Actors.hpp"
-#include "Database/Enemies.hpp"
+#include "Database/Actor.hpp"
+#include "Database/Enemy.hpp"
 #include "Database/EventCommands/ChangeEquipment.hpp"
 
 struct Dialog_ChangeEquipment : IEventDialogController {

@@ -78,9 +78,9 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
 
         std::string text = m_priceType == 1 ? std::to_string(m_price)
                            : m_id == 0      ? ""
-                           : m_type == 2    ? std::to_string(Database::instance()->armors.armor(m_id)->price)
-                           : m_type == 1    ? std::to_string(Database::instance()->weapons.weapon(m_id)->price)
-                                            : std::to_string(Database::instance()->items.item(m_id)->price);
+                           : m_type == 2    ? std::to_string(Database::instance()->armors.armor(m_id)->price())
+                           : m_type == 1    ? std::to_string(Database::instance()->weapons.weapon(m_id)->price())
+                                            : std::to_string(Database::instance()->items.item(m_id)->price());
         ImGui::Text("%s", text.c_str());
       }
 
@@ -108,9 +108,9 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
         }
         if (ImGui::TableNextColumn()) {
           std::string text = m_goods.at(n)->priceType == PriceType::Specific ? std::to_string(m_goods.at(n)->price)
-                             : m_goods.at(n)->type == ShopType::Armor        ? std::to_string(Database::instance()->armors.armor(itemId)->price)
-                             : m_goods.at(n)->type == ShopType::Item         ? std::to_string(Database::instance()->items.item(itemId)->price)
-                                                                             : std::to_string(Database::instance()->weapons.weapon(itemId)->price);
+                             : m_goods.at(n)->type == ShopType::Armor        ? std::to_string(Database::instance()->armors.armor(itemId)->price())
+                             : m_goods.at(n)->type == ShopType::Item         ? std::to_string(Database::instance()->items.item(itemId)->price())
+                                                                             : std::to_string(Database::instance()->weapons.weapon(itemId)->price());
           ImGui::Text("%s", text.c_str());
         }
       }

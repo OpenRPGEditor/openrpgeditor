@@ -34,7 +34,7 @@ void AnimationsSerializer::deserialize(std::ifstream& is) {
       if (animation.m_isValid) {
         value.get_to(animation);
       } else {
-        animation.id = i;
+        animation.m_id = i;
       }
       ++i;
     }

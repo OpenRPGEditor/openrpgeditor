@@ -14,31 +14,31 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
   ImGui::SetNextWindowSize(ImVec2{254, 205} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
-    if (picker) {
-      auto [closed, confirmed] = picker->draw();
+    if (m_picker) {
+      auto [closed, confirmed] = m_picker->draw();
       if (closed) {
         if (confirmed) {
-          m_actor_var = picker->selection();
+          m_actorVar = m_picker->selection();
         }
-        picker.reset();
+        m_picker.reset();
       }
     }
-    if (actor_picker) {
-      auto [closed, confirmed] = actor_picker->draw();
+    if (m_actorPicker) {
+      auto [closed, confirmed] = m_actorPicker->draw();
       if (closed) {
         if (confirmed) {
-          m_actor = actor_picker->selection();
+          m_actor = m_actorPicker->selection();
         }
-        actor_picker.reset();
+        m_actorPicker.reset();
       }
     }
-    if (state_picker) {
-      auto [closed, confirmed] = state_picker->draw();
+    if (m_statePicker) {
+      auto [closed, confirmed] = m_statePicker->draw();
       if (closed) {
         if (confirmed) {
-          m_state = state_picker->selection();
+          m_state = m_statePicker->selection();
         }
-        state_picker.reset();
+        m_statePicker.reset();
       }
     }
 
@@ -56,17 +56,17 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
       ImGui::BeginDisabled(m_comparison != 0);
       ImGui::PushID("##changestate_actor");
       if (ImGui::Button(m_comparison != 0 ? "" : Database::instance()->actorNameOrId(m_actor).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        actor_picker = ObjectPicker<Actor>("Actors"sv, Database::instance()->actors.actorList(), m_actor);
-        actor_picker->setOpen(true);
+        m_actorPicker = ObjectPicker<Actor>("Actors"sv, Database::instance()->actors.actorList(), m_actor);
+        m_actorPicker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
 
       ImGui::BeginDisabled(m_comparison != 1);
       ImGui::PushID("##changeenemyhp_quant_var");
-      if (ImGui::Button(m_comparison == 1 ? Database::instance()->variableNameAndId(m_actor_var).c_str() : "", ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables, m_actor_var);
-        picker->setOpen(true);
+      if (ImGui::Button(m_comparison == 1 ? Database::instance()->variableNameAndId(m_actorVar).c_str() : "", ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+        m_picker.emplace("Variables", Database::instance()->system.variables, m_actorVar);
+        m_picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -81,22 +81,22 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
     ImGui::SeparatorText("State");
     ImGui::PushID("##changestate_state");
     if (ImGui::Button(Database::instance()->stateNameOrId(m_state).c_str(), {(App::DPIHandler::scale_value(160)), 0})) {
-      state_picker = ObjectPicker<State>("States"sv, Database::instance()->states.states(), m_state);
-      state_picker->setOpen(true);
+      m_statePicker = ObjectPicker<State>("States"sv, Database::instance()->states.states(), m_state);
+      m_statePicker->setOpen(true);
     }
     ImGui::PopID();
 
     if (ImGui::Button("OK")) {
       m_confirmed = true;
 
-      command->comparison = static_cast<ActorComparisonSource>(m_comparison);
-      command->stateOp = static_cast<PartyMemberOperation>(m_stateOp);
-      command->state = m_state;
+      m_command->comparison = static_cast<ActorComparisonSource>(m_comparison);
+      m_command->stateOp = static_cast<PartyMemberOperation>(m_stateOp);
+      m_command->state = m_state;
 
-      if (command->comparison == ActorComparisonSource::Variable)
-        command->value = m_actor_var;
+      if (m_command->comparison == ActorComparisonSource::Variable)
+        m_command->value = m_actorVar;
       else
-        command->value = m_actor;
+        m_command->value = m_actor;
 
       ImGui::CloseCurrentPopup();
       setOpen(false);

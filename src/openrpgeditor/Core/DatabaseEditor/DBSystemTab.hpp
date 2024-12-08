@@ -7,7 +7,8 @@
 #include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/Graphics/CheckeredCompositeTexture.hpp"
 #include "Core/Graphics/GameWindowBackground.hpp"
-#include "Database/Actors.hpp"
+
+#include "Database/Actor.hpp"
 #include "Database/System.hpp"
 
 /* TODO: Move this somewhere else */

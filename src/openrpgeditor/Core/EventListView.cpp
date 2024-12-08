@@ -13,7 +13,7 @@ void EventListView::draw() {
   if (ImGui::Begin("Events")) {
     Map* map = m_parent->currentMap();
     if (map) {
-      for (auto& event : map->events) {
+      for (auto& event : map->events()) {
         if (event) {
           bool selectedHere = false;
           sprintf(eventNameBuf, "%s (%i, %i)", Database::instance()->eventNameOrId(event->id).c_str(), event->x, event->y);

@@ -1,8 +1,9 @@
 #pragma once
 #include <vector>
 
-struct DatabaseEditor;
-struct IDBTemplates {
+class DatabaseEditor;
+class IDBTemplates {
+public:
   explicit IDBTemplates(DatabaseEditor* parent) : m_parent(parent) {}
   virtual ~IDBTemplates() = default;
   virtual std::vector<int> getData() { return {}; }

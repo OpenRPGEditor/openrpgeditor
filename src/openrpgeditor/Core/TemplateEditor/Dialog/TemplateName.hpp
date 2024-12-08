@@ -2,9 +2,10 @@
 #include "Core/TemplateEditor/IDBTemplates.hpp"
 #include "Database/Templates.hpp"
 
-struct TemplateName : IDBTemplates {
+class TemplateName : public IDBTemplates {
+public:
   TemplateName() = delete;
-  explicit TemplateName(Template* templ, DatabaseEditor* parent) : IDBTemplates(parent), m_template(templ) { m_templateName = m_template->name; }
+  explicit TemplateName(Template* templ, DatabaseEditor* parent) : IDBTemplates(parent), m_template(templ) { m_templateName = m_template->name(); }
   bool hasChanges() override { return m_hasChanges; }
   void draw() override;
   DatabaseEditor* m_parent = nullptr;

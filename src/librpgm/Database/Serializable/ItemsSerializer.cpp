@@ -11,7 +11,7 @@ void ItemsSerializer::serialize(std::ofstream& os) const {
     }
 
     for (const Item& item : m_data.items()) {
-      if (item.m_isValid) {
+      if (item.isValid()) {
         data.push_back(item);
       } else {
         data.push_back(nullptr);
@@ -31,10 +31,10 @@ void ItemsSerializer::deserialize(std::ifstream& is) {
     for (const auto& [_, value] : data.items()) {
       Item& item = m_data.items().emplace_back();
       item.m_isValid = value != nullptr;
-      if (item.m_isValid) {
+      if (item.isValid()) {
         value.get_to(item);
       } else {
-        item.id = i;
+        item.m_id = i;
       }
       ++i;
     }

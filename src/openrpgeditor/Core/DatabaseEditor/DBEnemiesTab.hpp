@@ -23,7 +23,7 @@ struct DBEnemiesTab : IDBEditorTab {
 
 private:
   void drawPopup();
-  std::string GetDropString(int dropIndex, int kindId);
+  std::string getDropString(int dropIndex, int kindId) const;
   Enemies& m_enemies;
   Enemy* m_selectedEnemy{};
   int m_editMaxEnemies{};

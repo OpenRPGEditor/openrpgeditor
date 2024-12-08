@@ -937,12 +937,12 @@ void EventCommandEditor::drawPopup() {
         if (ImGui::BeginCombo("##eventcommand_editor_presets", "Select a preset to insert into selection...")) {
           int index{0};
           for (auto& templ : Database::instance()->templates.templates) {
-            if (templ.type == Template::TemplateType::Command) {
-              if (!templ.commands.empty()) {
-                if (ImGui::Selectable(templ.name.c_str(), false)) {
+            if (templ.type() == Template::TemplateType::Command) {
+              if (!templ.commands().empty()) {
+                if (ImGui::Selectable(templ.name().c_str(), false)) {
 
                   CommandParser parser;
-                  nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(templ.commands);
+                  nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(templ.commands());
                   std::vector<std::shared_ptr<IEventCommand>> parsed = parser.parse(cmdJson);
                   for (const auto& command : parsed) {
                     if (command) {
@@ -958,7 +958,7 @@ void EventCommandEditor::drawPopup() {
                 }
                 index++;
               } else {
-                if (ImGui::Selectable(("Error loading template: " + templ.name).c_str(), false)) {}
+                if (ImGui::Selectable(("Error loading template: " + templ.name()).c_str(), false)) {}
               }
             }
           }

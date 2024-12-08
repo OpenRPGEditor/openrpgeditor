@@ -2,9 +2,10 @@
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Database/Animations.hpp"
 
-struct DatabaseEditor;
-struct Animations;
-struct DBAnimationsTab : IDBEditorTab {
+class DatabaseEditor;
+class Animations;
+class DBAnimationsTab final : public IDBEditorTab {
+public:
   DBAnimationsTab() = delete;
   explicit DBAnimationsTab(Animations& animations, DatabaseEditor* parent);
   void draw() override;

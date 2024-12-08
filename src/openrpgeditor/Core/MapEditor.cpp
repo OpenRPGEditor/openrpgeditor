@@ -48,8 +48,8 @@ void MapEditor::setMap(MapInfo* info) {
   m_eventEditors.clear();
   m_mapInfo = info;
 
-  if (map() && map()->parallaxShow && !map()->parallaxName.empty()) {
-    m_parallaxTexture = ResourceManager::instance()->loadParallaxImage(map()->parallaxName);
+  if (map() && map()->parallaxShow() && !map()->parallaxName().empty()) {
+    m_parallaxTexture = ResourceManager::instance()->loadParallaxImage(map()->parallaxName());
   } else {
     m_parallaxTexture = Texture();
   }
@@ -67,13 +67,13 @@ void MapEditor::drawParallax(ImGuiWindow* win) {
 }
 
 void MapEditor::drawGrid(ImGuiWindow* win) {
-  for (int y = tileSize() * m_mapScale; y < (map()->height * tileSize()) * m_mapScale; y += tileSize() * m_mapScale) {
-    win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)}, win->ContentRegionRect.Min + ImVec2{(map()->width * tileSize()) * m_mapScale, static_cast<float>(y)},
+  for (int y = tileSize() * m_mapScale; y < (map()->height() * tileSize()) * m_mapScale; y += tileSize() * m_mapScale) {
+    win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)}, win->ContentRegionRect.Min + ImVec2{(map()->width() * tileSize()) * m_mapScale, static_cast<float>(y)},
                            0x7f0a0a0a, 3.f);
   }
 
-  for (int x = tileSize() * m_mapScale; x < (map()->width * tileSize()) * m_mapScale; x += tileSize() * m_mapScale) {
-    win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), 0.f}, win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), (map()->height * tileSize()) * m_mapScale},
+  for (int x = tileSize() * m_mapScale; x < (map()->width() * tileSize()) * m_mapScale; x += tileSize() * m_mapScale) {
+    win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), 0.f}, win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), (map()->height() * tileSize()) * m_mapScale},
                            0x7f0a0a0a, 3.f);
   }
 }
@@ -83,15 +83,14 @@ void MapEditor::handleEventDrag() {
   if (m_movingEvent) {
     /* For now we'll prevent events from occupying the same tile */
     /* TODO(phil): Implement some way to sort through events on the same tile */
-    int oldX = m_movingEvent->x;
-    int oldY = m_movingEvent->y;
+    const int oldX = m_movingEvent->x;
+    const int oldY = m_movingEvent->y;
 
-    auto it = std::find_if(map()->events.begin(), map()->events.end(),
-                           [&](const std::optional<Event>& e) { return e && e->id != 0 && e->x == tileCellX() && e->y == tileCellY() && &e.value() != m_movingEvent; });
+    const auto it = std::ranges::find_if(map()->events(), [&](const std::optional<Event>& e) { return e && e->id != 0 && e->x == tileCellX() && e->y == tileCellY() && &e.value() != m_movingEvent; });
 
     m_movingEvent->x = m_tileCursor.tileX();
     m_movingEvent->y = m_tileCursor.tileY();
-    if (it != map()->events.end()) {
+    if (it != map()->events().end()) {
       m_movingEvent->x = oldX;
       m_movingEvent->y = oldY;
     }
@@ -110,13 +109,13 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
   }
 
   if (ImGui::IsWindowHovered() && m_parent->editMode() == EditMode::Map) {
-    m_tileCursor.update(m_mapScale, map()->width, map()->height, m_parent->system().tileSize, win);
+    m_tileCursor.update(m_mapScale, map()->width(), map()->height(), m_parent->system().tileSize, win);
   } else if (ImGui::IsWindowHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left) && (m_parent->editMode() == EditMode::Event || m_movingEvent)) {
-    m_tileCursor.update(m_mapScale, map()->width, map()->height, m_parent->system().tileSize, win);
+    m_tileCursor.update(m_mapScale, map()->width(), map()->height(), m_parent->system().tileSize, win);
     handleEventDrag();
     m_scaleChanged = false;
   } else if (m_scaleChanged || m_tileCursor.mode() == MapCursorMode::Keyboard) {
-    m_tileCursor.update(m_mapScale, map()->width, map()->height, m_parent->system().tileSize, win);
+    m_tileCursor.update(m_mapScale, map()->width(), map()->height(), m_parent->system().tileSize, win);
     handleEventDrag();
     m_scaleChanged = false;
   }
@@ -202,7 +201,7 @@ void MapEditor::handleKeyboardShortcuts() {
 }
 
 void MapEditor::updateAllAutotiles() {
-  const auto rect = Rect(0, 0, map()->width, map()->height);
+  const auto rect = Rect(0, 0, map()->width(), map()->height());
   updateAutotilesInRect(rect, 0);
   updateAutotilesInRect(rect, 1);
 }
@@ -427,9 +426,9 @@ void MapEditor::renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer
 }
 void MapEditor::draw() {
   if (m_mapInfo != nullptr && m_mapInfo->map() != nullptr && m_mapRenderer.map() != m_mapInfo->map()) {
-    m_mapRenderer.setMap(m_mapInfo->map(), Database::instance()->tilesets.tileset(m_mapInfo->map()->tilesetId));
-    m_tempMapWidth = m_mapInfo->map()->width;
-    m_tempMapHeight = m_mapInfo->map()->height;
+    m_mapRenderer.setMap(m_mapInfo->map(), Database::instance()->tilesets.tileset(m_mapInfo->map()->tilesetId()));
+    m_tempMapWidth = m_mapInfo->map()->width();
+    m_tempMapHeight = m_mapInfo->map()->height();
   }
 
   if (!m_checkeredBack) {
@@ -452,13 +451,14 @@ void MapEditor::draw() {
     // ImGui::SetScrollY(m_tileCursor.alignCoord(ImGui::GetScrollY()));
     if (map()) {
       ImGuiWindow* win = ImGui::GetCurrentWindow();
-      ImGui::Dummy(ImVec2{(map()->width * m_parent->system().tileSize * m_mapScale), (map()->height * m_parent->system().tileSize * m_mapScale)});
+      ImGui::Dummy(ImVec2{(map()->width() * m_parent->system().tileSize * m_mapScale), (map()->height() * m_parent->system().tileSize * m_mapScale)});
 
-      const float u1 = std::clamp((static_cast<float>(map()->width * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
-      const float v1 = std::clamp((static_cast<float>(map()->height * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
+      const float u1 = std::clamp((static_cast<float>(map()->width() * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
+      const float v1 = std::clamp((static_cast<float>(map()->height() * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
 
       win->DrawList->AddImage(m_checkeredBack, win->ClipRect.Min + ImVec2{0, 0},
-                              win->ClipRect.Min + (ImVec2{static_cast<float>(map()->width * tileSize()), static_cast<float>(map()->height * tileSize())} * m_mapScale), ImVec2{0, 0}, ImVec2{u1, v1});
+                              win->ClipRect.Min + (ImVec2{static_cast<float>(map()->width() * tileSize()), static_cast<float>(map()->height() * tileSize())} * m_mapScale), ImVec2{0, 0},
+                              ImVec2{u1, v1});
 
       handleMouseInput(win);
 
@@ -504,16 +504,16 @@ void MapEditor::draw() {
                                                                      eventJson.dump(), {}));
                 templateName_picker = TemplateName(&Database::instance()->templates.templates.back(), nullptr);
               } else {
-                Database::instance()->templates.templates.at(template_picker.value().selection() - 1).commands = eventJson.dump();
+                Database::instance()->templates.templates.at(template_picker.value().selection() - 1).setCommands(eventJson.dump());
                 templateName_picker = TemplateName(&Database::instance()->templates.templates.at(template_picker.value().selection() - 1), nullptr);
               }
-              Database::instance()->templates.templates.back().commands = eventJson.dump();
+              Database::instance()->templates.templates.back().setCommands(eventJson.dump());
 
             } else {
-              nlohmann::ordered_json eventJson = nlohmann::ordered_json::parse(Database::instance()->templates.templates.at(template_picker->selection() - 1).commands);
+              nlohmann::ordered_json eventJson = nlohmann::ordered_json::parse(Database::instance()->templates.templates.at(template_picker->selection() - 1).commands());
 
               m_templateEvent.emplace(parser.parse(eventJson));
-              m_templateEvent.value().id = map()->events.size() - 1;
+              m_templateEvent.value().id = map()->events().size() - 1;
               eventProperties = TemplatesEvent(&m_templateEvent.value(), map(), nullptr, tileCellX(), tileCellY());
             }
           }
@@ -549,11 +549,11 @@ void MapEditor::draw() {
         m_initialScrollSet = false;
       }
 
-      if (ImGui::GetScrollX() != m_mapInfo->scrollX || ImGui::GetScrollY() != m_mapInfo->scrollY) {
+      if (ImGui::GetScrollX() != m_mapInfo->scrollX() || ImGui::GetScrollY() != m_mapInfo->scrollY()) {
         m_tileCursor.setVisible(false);
       }
-      m_mapInfo->scrollX = ImGui::GetScrollX();
-      m_mapInfo->scrollY = ImGui::GetScrollY();
+      m_mapInfo->setScrollX(ImGui::GetScrollX());
+      m_mapInfo->setScrollY(ImGui::GetScrollY());
 
       m_mapRenderer.update();
 
@@ -566,9 +566,9 @@ void MapEditor::draw() {
         }
       }
 
-      for (int y = 0; y < map()->height; ++y) {
-        for (int x = 0; x < map()->width; ++x) {
-          auto tile = map()->data[m_mapRenderer.tileIdFromCoords(x, y, 4)];
+      for (int y = 0; y < map()->height(); ++y) {
+        for (int x = 0; x < map()->width(); ++x) {
+          auto tile = map()->data()[m_mapRenderer.tileIdFromCoords(x, y, 4)];
           if (!tile) {
             continue;
           }
@@ -645,9 +645,8 @@ void MapEditor::draw() {
       ImGui::SameLine();
       std::string fmt = std::format("Tile {}, ({}, {})", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0), m_tileCursor.tileX(), m_tileCursor.tileY());
       if (map()) {
-        auto ev =
-            std::find_if(map()->events.begin(), map()->events.end(), [&](const std::optional<Event>& e) { return e && e->id != 0 && m_tileCursor.tileX() == e->x && m_tileCursor.tileY() == e->y; });
-        if (ev != map()->events.end()) {
+        if (const auto ev = std::ranges::find_if(map()->events(), [&](const std::optional<Event>& e) { return e && e->id != 0 && m_tileCursor.tileX() == e->x && m_tileCursor.tileY() == e->y; });
+            ev != map()->events().end()) {
           fmt += std::format(" {} ({:03})", (*ev)->name, (*ev)->id);
         }
       }
@@ -681,12 +680,11 @@ void MapEditor::drawMapProperties() {
         ImGui::SeparatorText("General Settings");
         ImGui::BeginGroup();
         {
-          ImGui::Text("Name - ID: %.03i", m_mapInfo->id);
+          ImGui::Text("Name - ID: %.03i", m_mapInfo->id());
           ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15));
-          strncpy(buf, m_mapInfo->name.c_str(), 4096);
+          strncpy(buf, m_mapInfo->name().c_str(), 4096);
           if (ImGui::InputText("##map_name", buf, 4096)) {
-            m_mapInfo->name = buf;
-            map()->m_isDirty = true;
+            m_mapInfo->setName(buf);
           }
         }
         ImGui::EndGroup();
@@ -699,18 +697,17 @@ void MapEditor::drawMapProperties() {
           ImGui::SetCursorPos(cursorPos);
           ImGui::Text("Display Name");
           ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15));
-          strncpy(buf, map()->displayName.c_str(), 4096);
+          strncpy(buf, map()->displayName().c_str(), 4096);
           if (ImGui::InputText("##map_display_name", buf, 4096)) {
-            map()->displayName = buf;
-            map()->m_isDirty = true;
+            map()->setDisplayName(buf);
           }
         }
         ImGui::EndGroup();
         ImGui::BeginGroup();
         {
           ImGui::Text("Tileset");
-          strncpy(buf, m_parent->currentMapInfo()->name.c_str(), 4096);
-          std::string text = m_parent->tileset(map()->tilesetId)->name.empty() ? "##map_tileset_button_empty" : m_parent->tileset(map()->tilesetId)->name;
+          strncpy(buf, m_parent->currentMapInfo()->name().c_str(), 4096);
+          std::string text = m_parent->tileset(map()->tilesetId())->name().empty() ? "##map_tileset_button_empty" : m_parent->tileset(map()->tilesetId())->name();
           ImGui::PushID("##map_tileset_button");
           if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetContentRegionMax().x / 2 - App::DPIHandler::scale_value(15), 0})) {}
           ImGui::PopID();
@@ -720,14 +717,14 @@ void MapEditor::drawMapProperties() {
         ImGui::BeginGroup();
         {
           ImVec2 cursorPos = ImGui::GetCursorPos();
-          // Move back up a couple couple pixels
+          // Move back up a couple pixels
           cursorPos.y -= 4.f;
           ImGui::SetCursorPos(cursorPos);
           ImGui::Text("Width");
           ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - App::DPIHandler::scale_value(15));
           ImGui::DragInt("##map_width", &m_tempMapWidth, 0, 0, 256);
           if (ImGui::IsItemDeactivatedAfterEdit()) {
-            resizeMap(m_tempMapWidth, map()->height);
+            resizeMap(m_tempMapWidth, map()->height());
           }
         }
         ImGui::EndGroup();
@@ -735,30 +732,30 @@ void MapEditor::drawMapProperties() {
         ImGui::BeginGroup();
         {
           ImVec2 cursorPos = ImGui::GetCursorPos();
-          // Move back up a couple couple pixels
+          // Move back up a couple pixels
           cursorPos.y -= 4.f;
           ImGui::SetCursorPos(cursorPos);
           ImGui::Text("Height");
           ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - App::DPIHandler::scale_value(15));
           ImGui::DragInt("##map_height", &m_tempMapHeight, 0, 0, 256);
           if (ImGui::IsItemDeactivatedAfterEdit()) {
-            resizeMap(map()->width, m_tempMapHeight);
+            resizeMap(map()->width(), m_tempMapHeight);
           }
         }
         ImGui::EndGroup();
         ImGui::BeginGroup();
         {
-          ImVec2 cursorPos = ImGui::GetCursorPos();
-          // Move back up a couple couple pixels
+          const auto cursorPos = ImGui::GetCursorPos();
+          // Move back up a couple pixels
           ImGui::SetCursorPos(cursorPos);
           ImGui::Text("Scroll Type");
           ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15));
-          if (ImGui::BeginCombo("##map_scroll_type", DecodeEnumName(magic_enum::enum_name(map()->scrollType)).c_str())) {
+          if (ImGui::BeginCombo("##map_scroll_type", DecodeEnumName(magic_enum::enum_name(map()->scrollType())).c_str())) {
             for (const auto& e : magic_enum::enum_values<ScrollType>()) {
-              if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(e)).c_str(), e == map()->scrollType)) {
-                map()->scrollType = e;
+              if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(e)).c_str(), e == map()->scrollType())) {
+                map()->setScrollType(e);
               }
-              if (e == map()->scrollType) {
+              if (e == map()->scrollType()) {
                 ImGui::SetItemDefaultFocus();
               }
             }
@@ -770,12 +767,15 @@ void MapEditor::drawMapProperties() {
         ImGui::BeginGroup();
         {
           ImVec2 cursorPos = ImGui::GetCursorPos();
-          // Move back up a couple couple pixels
+          // Move back up a couple pixels
           cursorPos.y -= 4.f;
           ImGui::SetCursorPos(cursorPos);
           ImGui::Text("Enc. Steps");
           ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15));
-          if (ImGui::DragInt("##map_enc_steps", &map()->encounterStep, 0, 0, 999)) {}
+          auto encounterStep = map()->encounterStep();
+          if (ImGui::DragInt("##map_enc_steps", &encounterStep, 0, 0, 999)) {
+            map()->setEncounterStep(encounterStep);
+          }
         }
         ImGui::EndGroup();
       }
@@ -783,12 +783,15 @@ void MapEditor::drawMapProperties() {
       {
         ImGui::BeginGroup();
         {
-          if (ImGui::Checkbox("Autoplay BGM", &map()->autoplayBgm)) {}
-          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->autoplayBgm);
+          bool autoplayBgm = map()->autoplayBgm();
+          if (ImGui::Checkbox("Autoplay BGM", &autoplayBgm)) {
+            map()->setAutoplayBgm(autoplayBgm);
+          }
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->autoplayBgm());
           {
             ImGui::PushID("##map_bgm_button");
             ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 30);
-            std::string text = map()->bgm.name.empty() ? "##map_bgm_button_empty" : map()->bgm.name;
+            std::string text = map()->bgm().name.empty() ? "##map_bgm_button_empty" : map()->bgm().name;
             if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
             ImGui::PopID();
           }
@@ -798,11 +801,14 @@ void MapEditor::drawMapProperties() {
         ImGui::SameLine();
         ImGui::BeginGroup();
         {
-          if (ImGui::Checkbox("Autoplay BGS", &map()->autoplayBgs)) {}
-          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->autoplayBgs);
+          bool autoplayBgs = map()->autoplayBgs();
+          if (ImGui::Checkbox("Autoplay BGS", &autoplayBgs)) {
+            map()->setAutoplayBgs(autoplayBgs);
+          }
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->autoplayBgs());
           {
             ImGui::PushID("##map_bgs_button");
-            std::string text = map()->bgs.name.empty() ? "##map_bgs_button_empty" : map()->bgs.name;
+            std::string text = map()->bgs().name.empty() ? "##map_bgs_button_empty" : map()->bgs().name;
             if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
             ImGui::PopID();
           }
@@ -811,12 +817,15 @@ void MapEditor::drawMapProperties() {
         ImGui::EndGroup();
         ImGui::BeginGroup();
         {
-          if (ImGui::Checkbox("Battleback", &map()->specifyBattleback)) {}
-          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->specifyBattleback);
+          bool specifyBattleback = map()->specifyBattleback();
+          if (ImGui::Checkbox("Battleback", &specifyBattleback)) {
+            map()->setSpecifyBattleback(specifyBattleback);
+          }
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->specifyBattleback());
           {
             ImGui::PushID("##map_battleback_button");
             // TODO: Combine battleBack1Name and battleBack2Name
-            std::string text = map()->bgs.name.empty() ? "##map_battleback_button_empty" : map()->battleback1Name;
+            std::string text = map()->bgs().name.empty() ? "##map_battleback_button_empty" : map()->battleback1Name();
             if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
             ImGui::PopID();
           }
@@ -826,8 +835,11 @@ void MapEditor::drawMapProperties() {
         ImGui::SameLine();
         ImGui::BeginGroup();
         {
-          if (ImGui::Checkbox("Disable Dashing", &map()->disableDashing)) {}
-          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->disableDashing);
+          bool disableDashing = map()->disableDashing();
+          if (ImGui::Checkbox("Disable Dashing", &disableDashing)) {
+            map()->setDisableDashing(disableDashing);
+          }
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->disableDashing());
           ImGui::PopItemFlag();
         }
         ImGui::EndGroup();
@@ -838,18 +850,24 @@ void MapEditor::drawMapProperties() {
         {
           ImGui::Text("Parallax Background");
           ImGui::PushID("##map_parallax_button");
-          std::string text = map()->parallaxName.empty() ? "##map_parallax_button_empty" : map()->parallaxName;
+          std::string text = map()->parallaxName().empty() ? "##map_parallax_button_empty" : map()->parallaxName();
           if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15), 0})) {}
           ImGui::PopID();
         }
         ImGui::EndGroup();
         ImGui::BeginGroup();
         {
-          if (ImGui::Checkbox("Loop Horizontally", &map()->parallaxLoopX)) {}
-          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->parallaxLoopX);
+          bool parallaxLoopX = map()->parallaxLoopX();
+          if (ImGui::Checkbox("Loop Horizontally", &parallaxLoopX)) {
+            map()->setParallaxLoopX(parallaxLoopX);
+          }
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->parallaxLoopX());
           {
             ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15));
-            if (ImGui::DragInt("##map_parallax_Sx", &map()->parallaxSx, 0, 0, 999)) {}
+            int parallaxSx = map()->parallaxSx();
+            if (ImGui::DragInt("##map_parallax_Sx", &parallaxSx, 0, 0, 999)) {
+              map()->setParallaxSx(parallaxSx);
+            }
           }
           ImGui::PopItemFlag();
         }
@@ -857,34 +875,43 @@ void MapEditor::drawMapProperties() {
         ImGui::SameLine();
         ImGui::BeginGroup();
         {
-          if (ImGui::Checkbox("Loop Vertically", &map()->parallaxLoopY)) {}
-          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->parallaxLoopY);
+          bool parallaxLoopY = map()->parallaxLoopY();
+          if (ImGui::Checkbox("Loop Vertically", &parallaxLoopY)) {
+            map()->setParallaxLoopY(parallaxLoopY);
+          }
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->parallaxLoopY());
           {
+            int parallaxSy = map()->parallaxSy();
             ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(15));
-            if (ImGui::DragInt("##map_parallax_Sy", &map()->parallaxSy, 0, 0, 999)) {}
+            if (ImGui::DragInt("##map_parallax_Sy", &parallaxSy, 0, 0, 999)) {
+              map()->setParallaxSy(parallaxSy);
+            }
           }
           ImGui::PopItemFlag();
         }
         ImGui::EndGroup();
         ImGui::BeginGroup();
         {
-          if (ImGui::Checkbox("Show in Editor", &map()->parallaxShow)) {}
-          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->parallaxShow);
+          bool parallaxShow = map()->parallaxShow();
+          if (ImGui::Checkbox("Show in Editor", &parallaxShow)) {
+            map()->setParallaxShow(parallaxShow);
+          }
+          ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->parallaxShow());
           ImGui::PopItemFlag();
         }
         ImGui::EndGroup();
         ImGui::BeginGroup();
         {
           ImVec2 cursorPos = ImGui::GetCursorPos();
-          ImGuiInputTextFlags flags = ImGuiInputTextFlags_CtrlEnterForNewLine;
-          // Move back up a couple couple pixels
+          constexpr ImGuiInputTextFlags flags = ImGuiInputTextFlags_CtrlEnterForNewLine;
+          // Move back up a couple pixels
           cursorPos.y -= 4.f;
           ImGui::SetCursorPos(cursorPos);
           ImGui::Text("Note");
 
-          strncpy(buf, map()->note.c_str(), 4096);
+          strncpy(buf, map()->note().c_str(), 4096);
           if (ImGui::InputTextMultiline("##map_note", buf, 2048, ImVec2(ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(15), App::DPIHandler::scale_value(400)), flags)) {
-            map()->note = buf;
+            map()->setNote(buf);
           }
         }
         ImGui::Dummy(ImVec2(0.0f, 15.0f));

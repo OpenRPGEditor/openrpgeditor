@@ -4,7 +4,7 @@
 
 #include "imgui.h"
 
-DBTilesetsTab::DBTilesetsTab(Tilesets& Tilesets, DatabaseEditor* parent) : IDBEditorTab(parent), m_tilesets(Tilesets) {
+DBTilesetsTab::DBTilesetsTab(Tilesets& tilesets, DatabaseEditor* parent) : IDBEditorTab(parent), m_tilesets(tilesets) {
   m_selectedTileset = m_tilesets.tileset(1);
   if (m_selectedTileset) {
     // m_traitsEditor.setTraits(&m_selectedClass->traits);
@@ -20,19 +20,17 @@ void DBTilesetsTab::draw() {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Tilesets");
-        ImGui::BeginChild("##orpg_tilesets_editor_tilesets_list", ImVec2{0, ImGui::GetContentRegionMax().y - (App::DPIHandler::scale_value(108))});
+        ImGui::BeginChild("##orpg_tilesets_editor_tilesets_list", ImVec2{0, ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(108)});
         {
           ImGui::BeginGroup();
           {
-            for (auto& skill_ : m_tilesets.tilesets()) {
-              if (skill_.id == 0) {
+            for (auto& tileset : m_tilesets.tilesets()) {
+              if (tileset.id() == 0) {
                 continue;
               }
 
-              char name[4096];
-              snprintf(name, 4096, "%04i %s", skill_.id, skill_.name.c_str());
-              if (ImGui::Selectable(name, &skill_ == m_selectedTileset) || (ImGui::IsItemFocused() && m_selectedTileset != &skill_)) {
-                m_selectedTileset = &skill_;
+              if (ImGui::Selectable(Database::instance()->tilesetNameAndId(tileset.id()).c_str(), &tileset == m_selectedTileset) || (ImGui::IsItemFocused() && m_selectedTileset != &tileset)) {
+                m_selectedTileset = &tileset;
                 // m_traitsEditor.setTraits(&m_selectedClass->traits);
               }
             }
@@ -43,7 +41,7 @@ void DBTilesetsTab::draw() {
         char str[4096];
         snprintf(str, 4096, "Max Tilesets %i", m_maxTilesets);
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
+        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(8), 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxTilesets = m_maxTilesets;
         }
@@ -79,7 +77,7 @@ void DBTilesetsTab::draw() {
                          ImGuiWindowFlags_NoResize | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
           ImGui::Text("Are you sure?");
           if (ImGui::Button("Yes")) {
-            int tmpId = m_selectedTileset->id;
+            const int tmpId = m_selectedTileset->id();
             m_maxTilesets = m_editMaxTilesets;
             m_tilesets.resize(m_maxTilesets);
             m_selectedTileset = m_tilesets.tileset(tmpId);

@@ -1,7 +1,8 @@
 #pragma once
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
-#include "Database/Actors.hpp"
+#include "Database/Actor.hpp"
+
 #include "Database/EventCommands/ChangeNickname.hpp"
 
 struct Dialog_ChangeNickname : IEventDialogController {

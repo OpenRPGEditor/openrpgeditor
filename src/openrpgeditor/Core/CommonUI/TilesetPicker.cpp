@@ -4,40 +4,36 @@
 #include "imgui.h"
 
 void TilesetPicker::draw() {
-  Map* map = m_parent->currentMap();
+  const Map* map = m_parent->currentMap();
   if (ImGui::Begin("Tilesets")) {
     if (ImGui::BeginTabBar("##tileset")) {
       if (ImGui::BeginTabItem("  A  ", nullptr)) {
         if (map) {
-          Texture tilesetTxtr = ResourceManager::instance()->loadTilesetImage(m_parent->tileset(map->tilesetId)->tilesetNames[0]);
-          if (tilesetTxtr) {
+          if (const Texture tilesetTxtr = ResourceManager::instance()->loadTilesetImage(m_parent->tileset(map->tilesetId())->tilesetName(0))) {
             ImGui::Image(tilesetTxtr, ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
           }
         }
         ImGui::EndTabItem();
       }
-      if (map && !m_parent->tileset(map->tilesetId)->tilesetNames[5].empty()) {
+      if (map && !m_parent->tileset(map->tilesetId())->tilesetName(5).empty()) {
         if (ImGui::BeginTabItem("  B  ", nullptr)) {
-          Texture tilesetTxtr = ResourceManager::instance()->loadTilesetImage(m_parent->tileset(map->tilesetId)->tilesetNames[5]);
-          if (tilesetTxtr) {
+          if (const Texture tilesetTxtr = ResourceManager::instance()->loadTilesetImage(m_parent->tileset(map->tilesetId())->tilesetName(5))) {
             ImGui::Image(tilesetTxtr, ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
           }
           ImGui::EndTabItem();
         }
       }
-      if (map && !m_parent->tileset(map->tilesetId)->tilesetNames[6].empty()) {
+      if (map && !m_parent->tileset(map->tilesetId())->tilesetName(6).empty()) {
         if (ImGui::BeginTabItem("  C  ", nullptr)) {
-          Texture tilesetTxtr = ResourceManager::instance()->loadTilesetImage(m_parent->tileset(map->tilesetId)->tilesetNames[6]);
-          if (tilesetTxtr) {
+          if (const Texture tilesetTxtr = ResourceManager::instance()->loadTilesetImage(m_parent->tileset(map->tilesetId())->tilesetName(6))) {
             ImGui::Image(tilesetTxtr, ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
           }
           ImGui::EndTabItem();
         }
       }
-      if (map && !m_parent->tileset(map->tilesetId)->tilesetNames[7].empty()) {
+      if (map && !m_parent->tileset(map->tilesetId())->tilesetName(7).empty()) {
         if (ImGui::BeginTabItem("  D  ", nullptr)) {
-          Texture tilesetTxtr = ResourceManager::instance()->loadTilesetImage(m_parent->tileset(map->tilesetId)->tilesetNames[7]);
-          if (tilesetTxtr) {
+          if (const Texture tilesetTxtr = ResourceManager::instance()->loadTilesetImage(m_parent->tileset(map->tilesetId())->tilesetName(7))) {
             ImGui::Image(tilesetTxtr, ImVec2{static_cast<float>(tilesetTxtr.width()), static_cast<float>(tilesetTxtr.width())});
           }
           ImGui::EndTabItem();

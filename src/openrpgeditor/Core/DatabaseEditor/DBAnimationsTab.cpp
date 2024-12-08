@@ -14,19 +14,17 @@ void DBAnimationsTab::draw() {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Animations");
-        ImGui::BeginChild("##orpg_animations_editor_animations_list", ImVec2{0, ImGui::GetContentRegionMax().y - (App::DPIHandler::scale_value(108))});
+        ImGui::BeginChild("##orpg_animations_editor_animations_list", ImVec2{0, ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(108)});
         {
           ImGui::BeginGroup();
           {
-            for (auto& skill_ : m_animations.animations()) {
-              if (skill_.id == 0) {
+            for (auto& animation : m_animations.animations()) {
+              if (animation.id() == 0) {
                 continue;
               }
-
-              char name[4096];
-              snprintf(name, 4096, "%04i %s", skill_.id, skill_.name.c_str());
-              if (ImGui::Selectable(name, &skill_ == m_selectedAnimation) || (ImGui::IsItemFocused() && m_selectedAnimation != &skill_)) {
-                m_selectedAnimation = &skill_;
+              if (ImGui::Selectable(Database::instance()->animationNameAndId(animation.id()).c_str(), &animation == m_selectedAnimation) ||
+                  (ImGui::IsItemFocused() && m_selectedAnimation != &animation)) {
+                m_selectedAnimation = &animation;
                 // m_traitsEditor.setTraits(&m_selectedClass->traits);
               }
             }
@@ -37,7 +35,7 @@ void DBAnimationsTab::draw() {
         char str[4096];
         snprintf(str, 4096, "Max Animations %i", m_animations.count());
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
+        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(8), 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxAnimations = m_animations.count();
         }
@@ -73,7 +71,7 @@ void DBAnimationsTab::draw() {
                          ImGuiWindowFlags_NoResize | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
           ImGui::Text("Are you sure?");
           if (ImGui::Button("Yes")) {
-            int tmpId = m_selectedAnimation->id;
+            const int tmpId = m_selectedAnimation->id();
             m_animations.resize(m_editMaxAnimations);
             m_selectedAnimation = m_animations.animation(tmpId);
             m_changeIntDialogOpen = false;

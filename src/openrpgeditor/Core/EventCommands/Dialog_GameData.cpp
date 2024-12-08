@@ -1,6 +1,8 @@
 #include "Core/EventCommands/Dialog_GameData.hpp"
 #include "Core/DPIHandler.hpp"
+
 #include "imgui.h"
+
 using namespace std::string_view_literals;
 std::tuple<bool, bool> Dialog_GameData::draw() {
 
@@ -8,45 +10,41 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
     ImGui::OpenPopup(m_name.c_str());
     // SetOpen(false);
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+  const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.f));
   ImGui::SetNextWindowSize(ImVec2{610, 380} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
 
-    if (a_picker) {
-      auto [closed, confirmed] = a_picker->draw();
-      if (closed) {
+    if (m_actorPicker) {
+      if (const auto [closed, confirmed] = m_actorPicker->draw(); closed) {
         if (confirmed) {
-          m_actor_source = a_picker->selection();
+          m_actorSource = m_actorPicker->selection();
         }
-        a_picker.reset();
+        m_actorPicker.reset();
       }
     }
-    if (ar_picker) {
-      auto [closed, confirmed] = ar_picker->draw();
-      if (closed) {
+    if (m_armorPicker) {
+      if (const auto [closed, confirmed] = m_armorPicker->draw(); closed) {
         if (confirmed) {
-          m_armor_source = ar_picker->selection();
+          m_armorSource = m_armorPicker->selection();
         }
-        ar_picker.reset();
+        m_armorPicker.reset();
       }
     }
-    if (w_picker) {
-      auto [closed, confirmed] = w_picker->draw();
-      if (closed) {
+    if (m_weaponPicker) {
+      if (const auto [closed, confirmed] = m_weaponPicker->draw(); closed) {
         if (confirmed) {
-          m_weapon_source = w_picker->selection();
+          m_weaponSource = m_weaponPicker->selection();
         }
-        w_picker.reset();
+        m_weaponPicker.reset();
       }
     }
-    if (i_picker) {
-      auto [closed, confirmed] = i_picker->draw();
-      if (closed) {
+    if (m_itemPicker) {
+      if (const auto [closed, confirmed] = m_itemPicker->draw(); closed) {
         if (confirmed) {
-          m_item_source = i_picker->selection();
+          m_itemSource = m_itemPicker->selection();
         }
-        i_picker.reset();
+        m_itemPicker.reset();
       }
     }
 
@@ -67,13 +65,13 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
     ImGui::BeginGroup();
     {
       // Item
-      std::string text = m_type != 0 ? "##gamedata_item_empty" : Database::instance()->itemNameAndId(m_item_source);
+      std::string text = m_type != 0 ? "##gamedata_item_empty" : Database::instance()->itemNameAndId(m_itemSource);
       ImGui::PushID("##gamedata_item_id");
-      ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 50) - (16 * App::DPIHandler::get_ui_scale()));
+      ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x + 50 - 16 * App::DPIHandler::get_ui_scale());
       ImGui::BeginDisabled(m_type != 0);
-      if (ImGui::Button(text.c_str(), ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        i_picker = ObjectPicker<Item>("Items"sv, Database::instance()->items.items(), m_item_source);
-        i_picker->setOpen(true);
+      if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 2 - 15 * App::DPIHandler::get_ui_scale(), 0})) {
+        m_itemPicker = ObjectPicker("Items"sv, Database::instance()->items.items(), m_itemSource);
+        m_itemPicker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -81,12 +79,12 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       ImGui::Text("(Possession Count)");
 
       // Weapon Selection
-      text = m_type != 1 ? "##gamedata_weapon_empty" : std::format("{:04} ", m_weapon_source) + Database::instance()->weaponName(m_weapon_source);
+      text = m_type != 1 ? "##gamedata_weapon_empty" : std::format("{:04} ", m_weaponSource) + Database::instance()->weaponName(m_weaponSource);
       ImGui::PushID("##gamedata_weapon_id");
       ImGui::BeginDisabled(m_type != 1);
-      if (ImGui::Button(text.c_str(), ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        w_picker = ObjectPicker<Weapon>("Weapons"sv, Database::instance()->weapons.weaponList(), m_weapon_source);
-        w_picker->setOpen(true);
+      if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 2 - 15 * App::DPIHandler::get_ui_scale(), 0})) {
+        m_weaponPicker = ObjectPicker("Weapons"sv, Database::instance()->weapons.weaponList(), m_weaponSource);
+        m_weaponPicker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -94,12 +92,12 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       ImGui::Text("(Possession Count)");
 
       // Armor Selection
-      text = m_type != 2 ? "##gamedata_armor_empty" : std::format("{:04} ", m_armor_source) + Database::instance()->armorName(m_armor_source);
+      text = m_type != 2 ? "##gamedata_armor_empty" : std::format("{:04} ", m_armorSource) + Database::instance()->armorName(m_armorSource);
       ImGui::PushID("##gamedata_armor_id");
       ImGui::BeginDisabled(m_type != 2);
-      if (ImGui::Button(text.c_str(), ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        ar_picker = ObjectPicker<Armor>("Armors"sv, Database::instance()->armors.armorList(), m_armor_source);
-        ar_picker->setOpen(true);
+      if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 2 - 15 * App::DPIHandler::get_ui_scale(), 0})) {
+        m_armorPicker = ObjectPicker("Armors"sv, Database::instance()->armors.armorList(), m_armorSource);
+        m_armorPicker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::EndDisabled();
@@ -107,24 +105,22 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       ImGui::Text("(Possession Count)");
 
       // Actor Selection
-      text = m_type != 3 ? "##gamedata_actor_empty" : std::format("{:04} ", m_actor_source) + Database::instance()->actorName(m_actor_source);
+      text = m_type != 3 ? "##gamedata_actor_empty" : std::format("{:04} ", m_actorSource) + Database::instance()->actorName(m_actorSource);
       ImGui::PushID("##gamedata_actor_id");
       ImGui::BeginDisabled(m_type != 3);
-      if (ImGui::Button(text.c_str(), ImVec2{((ImGui::GetWindowContentRegionMax().x / 4 + 64)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
-        a_picker = ObjectPicker<Actor>("Actors"sv, Database::instance()->actors.actorList(), m_actor_source);
-        a_picker->setOpen(true);
+      if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 4 + 64 - 15 * App::DPIHandler::get_ui_scale(), 0})) {
+        m_actorPicker = ObjectPicker("Actors"sv, Database::instance()->actors.actorList(), m_actorSource);
+        m_actorPicker->setOpen(true);
       }
       ImGui::EndDisabled();
       ImGui::PopID();
       ImGui::SameLine();
       ImGui::BeginDisabled(m_type != 3);
       ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 4 + 50);
-      if (ImGui::BeginCombo("##gamedata_actor_combo", m_type != 3 ? "" : magic_enum::enum_name(static_cast<ActorDataSource>(current_actorDataSource)).data())) {
+      if (ImGui::BeginCombo("##gamedata_actor_combo", m_type != 3 ? "" : magic_enum::enum_name(static_cast<ActorDataSource>(m_currentActorDataSource)).data())) {
         for (auto dataSource : ActorData) {
-          bool is_selected = (current_actorDataSource == static_cast<int>(dataSource));
-
-          if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected)) {
-            current_actorDataSource = static_cast<int>(dataSource);
+          if (const bool is_selected = m_currentActorDataSource == static_cast<int>(dataSource); ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected)) {
+            m_currentActorDataSource = static_cast<int>(dataSource);
             if (is_selected)
               ImGui::SetItemDefaultFocus();
           }
@@ -137,10 +133,10 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       ImGui::BeginDisabled(m_type != 4);
 
       ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 4 + 50);
-      if (ImGui::BeginCombo("##gamedata_enemy_list", (m_type != 4 ? "" : "#" + std::to_string(current_enemySource) + " " + Database::instance()->troopMemberName(0, current_enemySource)).c_str())) {
+      if (ImGui::BeginCombo("##gamedata_enemy_list", (m_type != 4 ? "" : "#" + std::to_string(m_currentEnemySource) + " " + Database::instance()->troopMemberName(0, m_currentEnemySource)).c_str())) {
         for (int i = 1; i < 9; ++i) {
-          if (ImGui::Selectable(("#" + std::to_string(i) + " " + Database::instance()->troopMemberName(0, i)).c_str(), i == current_enemySource)) {
-            current_enemySource = i;
+          if (ImGui::Selectable(("#" + std::to_string(i) + " " + Database::instance()->troopMemberName(0, i)).c_str(), i == m_currentEnemySource)) {
+            m_currentEnemySource = i;
           }
         }
         ImGui::EndCombo();
@@ -150,11 +146,10 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       ImGui::SameLine();
       ImGui::BeginDisabled(m_type != 4);
       ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 4 + 50);
-      if (ImGui::BeginCombo("##gamedata_enemy_combo", m_type != 4 ? "" : magic_enum::enum_name(static_cast<EnemyDataSource>(current_enemyDataSource)).data())) {
+      if (ImGui::BeginCombo("##gamedata_enemy_combo", m_type != 4 ? "" : magic_enum::enum_name(static_cast<EnemyDataSource>(m_currentEnemyDataSource)).data())) {
         for (auto dataSource : EnemyData) {
-          bool is_selected = (current_enemyDataSource == static_cast<int>(dataSource));
-          if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected)) {
-            current_enemyDataSource = static_cast<int>(dataSource);
+          if (const bool is_selected = m_currentEnemyDataSource == static_cast<int>(dataSource); ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected)) {
+            m_currentEnemyDataSource = static_cast<int>(dataSource);
             if (is_selected)
               ImGui::SetItemDefaultFocus();
           }
@@ -181,12 +176,11 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
           ImGui::SetItemDefaultFocus();
         }
 
-        for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events) {
+        for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events()) {
           if (!dataSource.has_value())
             continue;
 
-          bool is_selected = (current_characterSource == dataSource->id);
-          if (ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
+          if (const bool is_selected = current_characterSource == dataSource->id; ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
             current_characterSource = dataSource->id;
             if (is_selected)
               ImGui::SetItemDefaultFocus();
@@ -202,8 +196,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 4 + 50);
       if (ImGui::BeginCombo("##gamedata_character_combo", m_type != 5 ? "" : magic_enum::enum_name(static_cast<CharacterDataSource>(current_characterDataSource)).data())) {
         for (auto dataSource : CharacterData) {
-          bool is_selected = current_characterDataSource == static_cast<int>(dataSource);
-          if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected)) {
+          if (const bool is_selected = current_characterDataSource == static_cast<int>(dataSource); ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected)) {
             current_characterDataSource = static_cast<int>(dataSource);
             if (is_selected)
               ImGui::SetItemDefaultFocus();
@@ -218,8 +211,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 2);
       if (ImGui::BeginCombo("##gamedata_party", m_type != 6 ? "" : ("Member #" + std::to_string(current_partySource)).c_str())) {
         for (int n = 1; n < 9; n++) {
-          bool is_selected = (current_partySource == n);
-          if (ImGui::Selectable(("Member #" + std::to_string(n)).c_str(), is_selected)) {
+          if (const bool is_selected = current_partySource == n; ImGui::Selectable(("Member #" + std::to_string(n)).c_str(), is_selected)) {
             current_partySource = n;
             if (is_selected)
               ImGui::SetItemDefaultFocus();
@@ -236,8 +228,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       ImGui::PushItemWidth(ImGui::GetWindowContentRegionMax().x / 2);
       if (ImGui::BeginCombo("##gamedata_other", m_type != 7 ? "" : magic_enum::enum_name(static_cast<OtherDataSource>(current_otherSource)).data())) {
         for (auto dataSource : OtherSource) {
-          bool is_selected = (current_otherSource == static_cast<int>(dataSource));
-          if (ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected)) {
+          if (const bool is_selected = current_otherSource == static_cast<int>(dataSource); ImGui::Selectable(magic_enum::enum_name(dataSource).data(), is_selected)) {
             current_otherSource = static_cast<int>(dataSource);
             if (is_selected)
               ImGui::SetItemDefaultFocus();
@@ -255,21 +246,21 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       command.gameData.type = static_cast<GameDataType>(m_type);
       switch (m_type) {
       case 0: // Item
-        command.gameData.rawSource = m_item_source;
+        command.gameData.rawSource = m_itemSource;
         break;
       case 1:
-        command.gameData.rawSource = m_weapon_source;
+        command.gameData.rawSource = m_weaponSource;
         break;
       case 2:
-        command.gameData.rawSource = m_armor_source;
+        command.gameData.rawSource = m_armorSource;
         break;
       case 3:
-        command.gameData.rawSource = m_actor_source;
-        command.gameData.value = current_actorDataSource;
+        command.gameData.rawSource = m_actorSource;
+        command.gameData.value = m_currentActorDataSource;
         break;
       case 4:
-        command.gameData.rawSource = current_enemySource;
-        command.gameData.value = current_enemyDataSource;
+        command.gameData.rawSource = m_currentEnemySource;
+        command.gameData.value = m_currentEnemyDataSource;
         break;
       case 5:
         command.gameData.rawSource = current_characterSource;

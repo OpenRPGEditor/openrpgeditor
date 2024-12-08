@@ -34,7 +34,7 @@ void TroopsSerializer::deserialize(std::ifstream& is) {
       if (troop.m_isValid) {
         value.get_to(troop);
       } else {
-        troop.id = i;
+        troop.setId(i);
       }
       ++i;
     }

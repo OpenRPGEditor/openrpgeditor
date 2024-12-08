@@ -5,7 +5,7 @@
 void MapSerializer::serialize(std::ofstream& os) const {
   try {
     if (os.is_open()) {
-      nlohmann::ordered_json data = m_data;
+      const nlohmann::ordered_json data = m_data;
       os << data.dump(4);
     }
   } catch (const std::exception& e) { std::cerr << "Error while writing to file \"" << filepath() << "\" " << e.what() << std::endl; }

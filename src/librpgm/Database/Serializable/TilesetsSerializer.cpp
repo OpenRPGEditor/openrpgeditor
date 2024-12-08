@@ -10,7 +10,7 @@ void TilesetsSerializer::serialize(std::ofstream& os) const {
     }
 
     for (const Tileset& tileset : m_data.tilesets()) {
-      if (tileset.m_isValid) {
+      if (tileset.isValid()) {
         data.push_back(tileset);
       } else {
         data.push_back(nullptr);
@@ -29,11 +29,11 @@ void TilesetsSerializer::deserialize(std::ifstream& is) {
     int i = 0;
     for (const auto& [_, value] : data.items()) {
       Tileset& tileset = m_data.tilesets().emplace_back();
-      tileset.m_isValid = value != nullptr;
-      if (tileset.m_isValid) {
+      tileset.setValid(value != nullptr);
+      if (tileset.isValid()) {
         value.get_to(tileset);
       } else {
-        tileset.id = i;
+        tileset.setId(i);
       }
       ++i;
     }

@@ -54,9 +54,9 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
         }
 
         for (auto equips : Database::instance()->weapons.weaponList()) {
-          if (equips.etypeId == m_equipmentType && equips.wtypeId != 0) {
-            if (ImGui::Selectable(equips.name.c_str(), equips.id == m_equipmentItem)) {
-              m_equipmentItem = equips.id;
+          if (equips.etypeId() == m_equipmentType && equips.wtypeId() != 0) {
+            if (ImGui::Selectable(equips.name().c_str(), equips.id() == m_equipmentItem)) {
+              m_equipmentItem = equips.id();
             }
           }
         }
@@ -67,9 +67,9 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
         }
 
         for (auto equips : Database::instance()->armors.armorList()) {
-          if (equips.etypeId == m_equipmentType && equips.atypeId != 0) {
-            if (ImGui::Selectable(equips.name.c_str(), equips.id == m_equipmentItem)) {
-              m_equipmentItem = equips.id;
+          if (equips.etypeId() == m_equipmentType && equips.atypeId() != 0) {
+            if (ImGui::Selectable(equips.name().c_str(), equips.id() == m_equipmentItem)) {
+              m_equipmentItem = equips.id();
             }
           }
         }

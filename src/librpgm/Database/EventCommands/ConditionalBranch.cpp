@@ -241,37 +241,37 @@ std::string ConditionalBranchCommand::stringRep(const Database& db) const {
     const auto act = db.actors.actor(actor.id);
     switch (actor.type) {
     case ActorConditionType::Name: {
-      return conditionalFormat(std::format("Name of {} is {}", act->name, name));
+      return conditionalFormat(std::format("Name of {} is {}", act->name(), name));
     }
     case ActorConditionType::Class: {
       const auto cls = db.classes.classType(actor.checkId);
-      return conditionalFormat(std::format("Class of {} is {}", act->name, cls->name));
+      return conditionalFormat(std::format("Class of {} is {}", act->name(), cls->name()));
     }
     case ActorConditionType::Skill: {
       const auto skill = db.skills.skill(actor.checkId);
-      return conditionalFormat(std::format("{} has learned {}", act->name, skill->name));
+      return conditionalFormat(std::format("{} has learned {}", act->name(), skill->name()));
     }
     case ActorConditionType::Weapon: {
       const auto weapon = db.weapons.weapon(actor.checkId);
-      return conditionalFormat(std::format("{} has equipped {}", act->name, weapon->name));
+      return conditionalFormat(std::format("{} has equipped {}", act->name(), weapon->name()));
     }
     case ActorConditionType::Armor: {
       const auto armor = db.armors.armor(actor.checkId);
-      return conditionalFormat(std::format("{} has equipped {}", act->name, armor->name));
+      return conditionalFormat(std::format("{} has equipped {}", act->name(), armor->name()));
     }
     case ActorConditionType::State: {
       const auto state = db.states.state(actor.checkId);
-      return conditionalFormat(std::format("{} is affected by {}", act->name, state->name));
+      return conditionalFormat(std::format("{} is affected by {}", act->name(), state->name()));
     }
     case ActorConditionType::In_The_Party: {
-      return conditionalFormat(std::format("{} is in the party", act->name));
+      return conditionalFormat(std::format("{} is in the party", act->name()));
     }
     }
   }
   if (type == ConditionType::Enemy) {
     if (enemy.type == EnemyConditionType::State) {
       auto state = db.states.state(enemy.stateId);
-      return conditionalFormat(std::format("#{} is affected by {}", std::to_string(enemy.id + 1), state->name));
+      return conditionalFormat(std::format("#{} is affected by {}", std::to_string(enemy.id + 1), state->name()));
     }
     return conditionalFormat(std::format("#{} is appeared", std::to_string(enemy.id + 1)));
   }
@@ -289,17 +289,17 @@ std::string ConditionalBranchCommand::stringRep(const Database& db) const {
   }
   if (type == ConditionType::Item) {
     const auto itm = db.items.item(item.id);
-    return conditionalFormat(std::format("Party has {}", itm->name));
+    return conditionalFormat(std::format("Party has {}", itm->name()));
   }
   if (type == ConditionType::Weapon) {
-    std::string ret = conditionalFormat(std::format("Party has {}", db.weapons.weapon(equip.equipId)->name));
+    std::string ret = conditionalFormat(std::format("Party has {}", db.weapons.weapon(equip.equipId)->name()));
     if (equip.includeEquipment) {
       ret += ColorFormatter::getColor(FormatColor::Gray) + "(Include Equipment)" + ColorFormatter::popColor();
     }
     return ret;
   }
   if (type == ConditionType::Armor) {
-    std::string ret = conditionalFormat(std::format("Party has {}", db.armors.armor(equip.equipId)->name));
+    std::string ret = conditionalFormat(std::format("Party has {}", db.armors.armor(equip.equipId)->name()));
     if (equip.includeEquipment) {
       ret += ColorFormatter::getColor(FormatColor::Gray) + "(Include Equipment)" + ColorFormatter::popColor();
     }

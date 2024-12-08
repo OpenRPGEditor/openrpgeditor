@@ -144,8 +144,8 @@ public:
   Troops& troops() { return m_database->troops; }
   const Troops& troops() const { return m_database->troops; }
 
-  std::vector<std::optional<Event>> events() { return currentMap()->events; }
-  std::vector<std::optional<Event>> events() const { return currentMap()->events; }
+  std::vector<std::optional<Event>> events() { return currentMap()->events(); }
+  std::vector<std::optional<Event>> events() const { return currentMap()->events(); }
 
   Database& database() { return m_database.value(); }
   const Database& database() const { return m_database.value(); }

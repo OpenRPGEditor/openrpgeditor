@@ -20,20 +20,21 @@ struct Tileset;
 struct CommonEvent;
 struct MapInfo;
 struct GameConstants;
-struct DBGameConstantsTab : IDBEditorTab {
+class DBGameConstantsTab final : public IDBEditorTab {
+public:
   explicit DBGameConstantsTab(GameConstants& constants, DatabaseEditor* parent) : IDBEditorTab(parent), m_constants(&constants) {}
 
   void draw() override;
 
 private:
   void drawAliasModal(GameConstants::Type type);
-  void setupTableHeaders();
+  static void setupTableHeaders();
   bool drawSelectable(int id, bool selected);
-  void drawNameAndAliasColumns(const std::string& name, const std::string& alias);
-  bool drawDeleteButton(int id);
+  static void drawNameAndAliasColumns(const std::string& name, const std::string& alias);
+  static bool drawDeleteButton(int id);
 
   GameConstants* m_constants = nullptr;
-  std::optional<VariableSwitchPicker> m_switchVariblePicker;
+  std::optional<VariableSwitchPicker> m_switchVariablePicker;
   std::optional<ObjectPicker<Actor>> m_actorsPicker;
   std::optional<ObjectPicker<Class>> m_classesPicker;
   std::optional<ObjectPicker<Skill>> m_skillsPicker;

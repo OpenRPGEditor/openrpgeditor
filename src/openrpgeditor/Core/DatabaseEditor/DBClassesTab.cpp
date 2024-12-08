@@ -4,7 +4,7 @@
 #include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiParsedText.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
-#include "Database/Classes.hpp"
+#include "Database/Class.hpp"
 #include "Database/RPGEquations.hpp"
 #include "imgui_internal.h"
 #include "implot.h"
@@ -17,11 +17,11 @@ constexpr ImVec2 ParameterGraphSize{128, 128};
 DBClassesTab::DBClassesTab(Classes& classes, DatabaseEditor* parent) : IDBEditorTab(parent), m_classes(classes) {
   m_selectedClass = m_classes.classType(1);
   if (m_selectedClass) {
-    m_traitsEditor.setTraits(&m_selectedClass->traits);
+    m_traitsEditor.setTraits(&m_selectedClass->traits());
   }
 }
 
-void DBClassesTab::drawExperienceGraph(ExperienceGraphMode mode) const {
+void DBClassesTab::drawExperienceGraph(const ExperienceGraphMode mode) const {
   if (!m_selectedClass) {
     return;
   }
@@ -131,7 +131,7 @@ void DBClassesTab::drawExpPopup() {
     ImGui::BeginGroup();
     {
       if (ImGui::Button("OK")) {
-        m_selectedClass->expParams = m_expWorkValues;
+        m_selectedClass->setExpParams(m_expWorkValues);
         ImGui::CloseCurrentPopup();
       }
       ImGui::SameLine();
@@ -156,15 +156,13 @@ void DBClassesTab::draw() {
           ImGui::BeginGroup();
           {
             for (auto& class_ : m_classes.classes()) {
-              if (class_.id == 0) {
+              if (class_.id() == 0) {
                 continue;
               }
 
-              char name[4096];
-              snprintf(name, 4096, "%04i %s", class_.id, class_.name.c_str());
-              if (ImGui::Selectable(name, &class_ == m_selectedClass) || (ImGui::IsItemFocused() && m_selectedClass != &class_)) {
+              if (ImGui::Selectable(Database::instance()->classNameAndId(class_.id()).c_str(), &class_ == m_selectedClass) || (ImGui::IsItemFocused() && m_selectedClass != &class_)) {
                 m_selectedClass = &class_;
-                m_traitsEditor.setTraits(&m_selectedClass->traits);
+                m_traitsEditor.setTraits(&m_selectedClass->traits());
               }
             }
           }
@@ -192,20 +190,20 @@ void DBClassesTab::draw() {
           {
             ImGui::SeparatorText("General Settings");
             char name[4096];
-            strncpy(name, m_selectedClass->name.c_str(), 4096);
+            strncpy(name, m_selectedClass->name().c_str(), 4096);
             if (ImGui::LabelOverLineEdit("##orpg_classes_editor_actors_actor_name", "Name:", name, 4096, (ImGui::GetContentRegionMax().x / 2) - App::DPIHandler::scale_value(16))) {
-              m_selectedClass->name = name;
+              m_selectedClass->setName(name);
             }
             ImGui::SameLine();
             ImGui::BeginGroup();
             {
               ImGui::Text("EXP Curve:");
               char curvePreview[4096];
-              snprintf(curvePreview, 4096, "[%i, %i, %i, %i]##exp_curve_button", m_selectedClass->expParams[0], m_selectedClass->expParams[1], m_selectedClass->expParams[2],
-                       m_selectedClass->expParams[3]);
+              snprintf(curvePreview, 4096, "[%i, %i, %i, %i]##exp_curve_button", m_selectedClass->expParams()[0], m_selectedClass->expParams()[1], m_selectedClass->expParams()[2],
+                       m_selectedClass->expParams()[3]);
               if (ImGui::Button(curvePreview)) {
                 ImGui::OpenPopup("EXP Curve##curve_dialog");
-                m_expWorkValues = m_selectedClass->expParams;
+                m_expWorkValues = m_selectedClass->expParams();
               }
             }
             ImGui::EndGroup();
@@ -220,7 +218,7 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 9999.f, ImPlotCond_Always);
               if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
-              ImPlot::PlotShaded("##MaxHP", m_selectedClass->params[0].data(), m_selectedClass->params[0].size());
+              ImPlot::PlotShaded("##MaxHP", m_selectedClass->params()[0].data(), m_selectedClass->params()[0].size());
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
@@ -231,7 +229,7 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 9999.f, ImPlotCond_Always);
               if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
-              ImPlot::PlotShaded("##MaxMP", m_selectedClass->params[1].data(), m_selectedClass->params[1].size());
+              ImPlot::PlotShaded("##MaxMP", m_selectedClass->params()[1].data(), m_selectedClass->params()[1].size());
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
@@ -241,7 +239,7 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
               if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
-              ImPlot::PlotShaded("##Attack", m_selectedClass->params[2].data(), m_selectedClass->params[2].size());
+              ImPlot::PlotShaded("##Attack", m_selectedClass->params()[2].data(), m_selectedClass->params()[2].size());
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
@@ -251,7 +249,7 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
               if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
-              ImPlot::PlotShaded("##Defense", m_selectedClass->params[3].data(), m_selectedClass->params[3].size());
+              ImPlot::PlotShaded("##Defense", m_selectedClass->params()[3].data(), m_selectedClass->params()[3].size());
               ImPlot::EndPlot();
             }
             if (ImPlot::BeginPlot("M.Attack", ParameterGraphSize * App::DPIHandler::get_ui_scale(), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoMouseText)) {
@@ -260,7 +258,7 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
               if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
-              ImPlot::PlotShaded("##M.Attack", m_selectedClass->params[4].data(), m_selectedClass->params[4].size());
+              ImPlot::PlotShaded("##M.Attack", m_selectedClass->params()[4].data(), m_selectedClass->params()[4].size());
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
@@ -270,7 +268,7 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
               if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
-              ImPlot::PlotShaded("##M.Defense", m_selectedClass->params[5].data(), m_selectedClass->params[5].size());
+              ImPlot::PlotShaded("##M.Defense", m_selectedClass->params()[5].data(), m_selectedClass->params()[5].size());
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
@@ -280,7 +278,7 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
               if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
-              ImPlot::PlotShaded("##Agility", m_selectedClass->params[6].data(), m_selectedClass->params[6].size());
+              ImPlot::PlotShaded("##Agility", m_selectedClass->params()[6].data(), m_selectedClass->params()[6].size());
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
@@ -290,7 +288,7 @@ void DBClassesTab::draw() {
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
               if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
-              ImPlot::PlotShaded("##Luck", m_selectedClass->params[7].data(), m_selectedClass->params[7].size());
+              ImPlot::PlotShaded("##Luck", m_selectedClass->params()[7].data(), m_selectedClass->params()[7].size());
               ImPlot::EndPlot();
             }
           }
@@ -304,8 +302,8 @@ void DBClassesTab::draw() {
               ImGui::TableSetupColumn("Note");
               ImGui::TableHeadersRow();
 
-              for (auto& learning : m_selectedClass->learnings) {
-                auto skill = m_parent->skill(learning.skillId);
+              for (auto& learning : m_selectedClass->learnings()) {
+                const auto skill = m_parent->skill(learning.skillId);
                 if (!skill) {
                   continue;
                 }
@@ -317,7 +315,7 @@ void DBClassesTab::draw() {
                   }
                 }
                 ImGui::TableNextColumn();
-                ImGui::Text("%s", skill->name.c_str());
+                ImGui::Text("%s", skill->name().c_str());
                 ImGui::TableNextColumn();
                 ImGui::Text("%s", learning.note.c_str());
               }
@@ -351,10 +349,10 @@ void DBClassesTab::draw() {
           {
             ImGui::SeparatorText("Note:");
             char note[8192];
-            strncpy(note, m_selectedClass->note.c_str(), IM_ARRAYSIZE(note));
+            strncpy(note, m_selectedClass->note().c_str(), IM_ARRAYSIZE(note));
             if (ImGui::InputTextMultiline("##orpg_classes_note", note, IM_ARRAYSIZE(note),
                                           ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(16), ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
-              m_selectedClass->note = note;
+              m_selectedClass->setNote(note);
             }
           }
           ImGui::EndGroup();
@@ -389,7 +387,7 @@ void DBClassesTab::draw() {
                        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
         ImGui::Text("Are you sure?");
         if (ImGui::Button("Yes")) {
-          int tmpId = m_selectedClass->id;
+          const int tmpId = m_selectedClass->id();
           m_classes.resize(m_editMaxClasses);
           m_selectedClass = m_classes.classType(tmpId);
           m_changeIntDialogOpen = false;

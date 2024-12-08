@@ -107,7 +107,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
             ImGui::BeginDisabled(!m_page->conditions.itemValid);
             {
               auto it = m_parent->project()->item(m_page->conditions.itemId);
-              const std::string item = m_page->conditions.itemValid && it != nullptr ? it->name : "##event_page_item_selection_button_text";
+              const std::string item = m_page->conditions.itemValid && it != nullptr ? it->name() : "##event_page_item_selection_button_text";
               if (ImGui::Button(item.c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
                 m_itemPicker.emplace("Items"sv, Database::instance()->items.items(), m_page->conditions.itemId);
                 m_itemPicker->setOpen(true);
@@ -117,7 +117,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
             ImGui::BeginDisabled(!m_page->conditions.actorValid);
             {
               auto ac = m_parent->project()->actor(m_page->conditions.actorId);
-              const std::string actor = m_page->conditions.actorValid && ac != nullptr ? ac->name : "##event_page_actor_selection_button_text";
+              const std::string actor = m_page->conditions.actorValid && ac != nullptr ? ac->name() : "##event_page_actor_selection_button_text";
               if (ImGui::Button(actor.c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
                 m_actorPicker.emplace("Actors"sv, Database::instance()->actors.actorList(), m_page->conditions.actorId);
                 m_actorPicker->setOpen(true);

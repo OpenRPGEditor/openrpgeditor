@@ -1,13 +1,15 @@
 #pragma once
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
-#include "Database/CommonEvents.hpp"
+
+#include "Database/CommonEvent.hpp"
 #include "Database/Database.hpp"
 #include "Database/EventCommands/CommonEvent.hpp"
 
 using namespace std::string_view_literals;
 
-struct Dialog_CommonEvent : IEventDialogController {
+class Dialog_CommonEvent final : public IEventDialogController {
+public:
   Dialog_CommonEvent() = delete;
   explicit Dialog_CommonEvent(const std::string& name, const std::shared_ptr<CommonEventCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
     if (cmd == nullptr) {

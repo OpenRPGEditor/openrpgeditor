@@ -11,7 +11,7 @@ void ActorsSerializer::serialize(std::ofstream& os) const {
     }
 
     for (const Actor& actor : m_data.actorList()) {
-      if (actor.m_isValid) {
+      if (actor.isValid()) {
         data.push_back(actor);
       } else {
         data.push_back(nullptr);
@@ -31,10 +31,10 @@ void ActorsSerializer::deserialize(std::ifstream& is) {
     for (const auto& [_, value] : data.items()) {
       Actor& actor = m_data.actorList().emplace_back();
       actor.m_isValid = value != nullptr;
-      if (actor.m_isValid) {
+      if (actor.isValid()) {
         value.get_to(actor);
       } else {
-        actor.id = i;
+        actor.m_id = i;
       }
       ++i;
     }

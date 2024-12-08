@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
-#include "Database/Actors.hpp"
+#include "Database/Class.hpp"
 #include "Database/Animation.hpp"
 #include "Database/EventCommands/ShowBattleAnimation.hpp"
 

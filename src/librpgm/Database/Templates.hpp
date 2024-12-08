@@ -1,31 +1,9 @@
 #pragma once
 
-#include <Database/EventCommands/IEventCommand.hpp>
-#include <map>
-#include <memory>
-#include <nlohmann/json.hpp>
-#include <string>
-
-class Template {
-public:
-  friend void to_json(nlohmann::ordered_json& j, const Template& templ);
-  friend void from_json(const nlohmann::ordered_json& j, Template& templ);
-
-  enum class TemplateType { Command, Tint, Event };
-  int id = 0;
-  std::string name;
-  std::string note;
-  TemplateType type;
-  std::string commands;
-  std::vector<int> parameters;
-};
-
-void to_json(nlohmann::ordered_json& j, const Template& templ);
-void from_json(const nlohmann::ordered_json& j, Template& templ);
+#include "Database/Template.hpp"
 
 class Templates {
-private:
-  mutable std::unordered_map<Template::TemplateType, std::vector<Template>> filteredCache;
+  mutable std::unordered_map<Template::TemplateType, std::vector<Template>> m_filteredCache;
 
 public:
   friend void to_json(nlohmann::ordered_json& j, const Templates& templ);
@@ -37,21 +15,21 @@ public:
 
   void addTemplate(const Template& tmpl) {
     templates.push_back(tmpl);
-    filteredCache.clear();
+    m_filteredCache.clear();
   }
   std::vector<Template>& templateList(Template::TemplateType type) {
-    auto it = filteredCache.find(type);
-    if (it == filteredCache.end()) {
+    auto it = m_filteredCache.find(type);
+    if (it == m_filteredCache.end()) {
       // Filter and store the result in the cache
       std::vector<Template> filteredTemplates;
       for (const auto& tmpl : templates) {
-        if (tmpl.type == type) {
+        if (tmpl.type() == type) {
           filteredTemplates.push_back(tmpl);
         }
       }
-      filteredCache[type] = std::move(filteredTemplates);
+      m_filteredCache[type] = std::move(filteredTemplates);
     }
-    return filteredCache[type];
+    return m_filteredCache[type];
   }
 };
 void to_json(nlohmann::ordered_json& j, const Templates& templ);

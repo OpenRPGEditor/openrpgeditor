@@ -23,15 +23,13 @@ void DBStatesTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            for (auto& skill_ : m_states.states()) {
-              if (skill_.id == 0) {
+            for (auto& state : m_states.states()) {
+              if (state.id() == 0) {
                 continue;
               }
 
-              char name[4096];
-              snprintf(name, 4096, "%04i %s", skill_.id, skill_.name.c_str());
-              if (ImGui::Selectable(name, &skill_ == m_selectedState) || (ImGui::IsItemFocused() && m_selectedState != &skill_)) {
-                m_selectedState = &skill_;
+              if (ImGui::Selectable(Database::instance()->stateNameAndId(state.id()).c_str(), &state == m_selectedState) || (ImGui::IsItemFocused() && m_selectedState != &state)) {
+                m_selectedState = &state;
                 // m_traitsEditor.setTraits(&m_selectedClass->traits);
               }
             }
@@ -78,7 +76,7 @@ void DBStatesTab::draw() {
                          ImGuiWindowFlags_NoResize | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
           ImGui::Text("Are you sure?");
           if (ImGui::Button("Yes")) {
-            int tmpId = m_selectedState->id;
+            const int tmpId = m_selectedState->id();
             m_states.resize(m_editMaxStates);
             m_selectedState = m_states.state(tmpId);
             m_changeIntDialogOpen = false;

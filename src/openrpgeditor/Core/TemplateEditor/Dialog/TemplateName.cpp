@@ -14,7 +14,7 @@ void TemplateName::draw() {
     ImGui::BeginGroup();
     {
       if (ImGui::Button("OK")) {
-        m_template->name = m_templateName;
+        m_template->setName(m_templateName);
         m_hasChanges = true;
         ImGui::CloseCurrentPopup();
       }

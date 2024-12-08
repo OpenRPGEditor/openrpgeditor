@@ -40,15 +40,21 @@ public:
     std::optional<Audio> se{};
   };
 
-  int id = 0;
-  int animation1Hue = 0;
-  std::string animation1Name;
-  int animation2Hue = 0;
-  std::string animation2Name;
-  std::vector<std::vector<std::array<int, 8>>> frames;
-  std::string name;
-  Position position = Position::Head;
-  std::vector<Timing> timings;
+  int id() const { return m_id; }
+  void setId(const int id) { m_id = id; }
+
+  const std::string& name() const { return m_name; }
+  void setName(const std::string& name) { m_name = name; }
+
+  int m_id = 0;
+  int m_animation1Hue = 0;
+  std::string m_animation1Name;
+  int m_animation2Hue = 0;
+  std::string m_animation2Name;
+  std::vector<std::vector<std::array<int, 8>>> m_frames;
+  std::string m_name;
+  Position m_position = Position::Head;
+  std::vector<Timing> m_timings;
 
   /*!
    * @name m_isValid

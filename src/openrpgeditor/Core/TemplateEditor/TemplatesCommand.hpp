@@ -2,7 +2,8 @@
 #include "Core/TemplateEditor/IDBTemplates.hpp"
 #include "Database/Templates.hpp"
 
-struct TemplatesCommand : IDBTemplates {
+class TemplatesCommand final : public IDBTemplates {
+public:
   TemplatesCommand() = delete;
   explicit TemplatesCommand(Template* templ, DatabaseEditor* parent);
   void draw() override;

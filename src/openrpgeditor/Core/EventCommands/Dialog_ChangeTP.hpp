@@ -2,9 +2,9 @@
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
-#include "Database/Actors.hpp"
+
+#include "Database/Actor.hpp"
 #include "Database/EventCommands/ChangeTP.hpp"
-#include "Database/Skills.hpp"
 
 struct Dialog_ChangeTP : IEventDialogController {
   Dialog_ChangeTP() = delete;

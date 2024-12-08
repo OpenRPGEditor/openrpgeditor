@@ -11,7 +11,7 @@ void ClassesSerializer::serialize(std::ofstream& os) const {
     }
 
     for (const Class& cls : m_data.classes()) {
-      if (cls.m_isValid) {
+      if (cls.isValid()) {
         data.push_back(cls);
       } else {
         data.push_back(nullptr);
@@ -31,10 +31,10 @@ void ClassesSerializer::deserialize(std::ifstream& is) {
     for (const auto& [_, value] : data.items()) {
       Class& cls = m_data.classes().emplace_back();
       cls.m_isValid = value != nullptr;
-      if (cls.m_isValid) {
+      if (cls.isValid()) {
         value.get_to(cls);
       } else {
-        cls.id = i;
+        cls.m_id = i;
       }
       ++i;
     }

@@ -11,24 +11,24 @@
 
 template <>
 inline int ObjectPicker<std::optional<CommonEvent>>::getId(const std::optional<CommonEvent>& value) {
-  return value ? value->id : 0;
+  return value ? value->id() : 0;
 }
 
 static const std::string InvalidCommonEvent = "Invalid Common Event";
 template <>
 inline const std::string& ObjectPicker<std::optional<CommonEvent>>::getName(const std::optional<CommonEvent>& value) {
-  return value ? value->name : InvalidCommonEvent;
+  return value ? value->name() : InvalidCommonEvent;
 }
 
 template <>
 inline int ObjectPicker<std::optional<MapInfo>>::getId(const std::optional<MapInfo>& value) {
-  return value ? value->id : 0;
+  return value ? value->id() : 0;
 }
 
 static const std::string InvalidMap = "Invalid Map";
 template <>
 inline const std::string& ObjectPicker<std::optional<MapInfo>>::getName(const std::optional<MapInfo>& value) {
-  return value ? value->name : InvalidMap;
+  return value ? value->name() : InvalidMap;
 }
 
 void DBGameConstantsTab::drawAliasModal(const GameConstants::Type type) {
@@ -46,55 +46,55 @@ void DBGameConstantsTab::drawAliasModal(const GameConstants::Type type) {
       break;
     case GameConstants::Type::Actor:
       map = &m_constants->actors;
-      name = m_parent->actor(m_selection)->name;
+      name = m_parent->actor(m_selection)->name();
       break;
     case GameConstants::Type::Class:
       map = &m_constants->classes;
-      name = m_parent->classType(m_selection)->name;
+      name = m_parent->classType(m_selection)->name();
       break;
     case GameConstants::Type::Skill:
       map = &m_constants->skills;
-      name = m_parent->skill(m_selection)->name;
+      name = m_parent->skill(m_selection)->name();
       break;
     case GameConstants::Type::Item:
       map = &m_constants->items;
-      name = m_parent->item(m_selection)->name;
+      name = m_parent->item(m_selection)->name();
       break;
     case GameConstants::Type::Weapon:
       map = &m_constants->weapons;
-      name = m_parent->weapon(m_selection)->name;
+      name = m_parent->weapon(m_selection)->name();
       break;
     case GameConstants::Type::Armor:
       map = &m_constants->armors;
-      name = m_parent->armor(m_selection)->name;
+      name = m_parent->armor(m_selection)->name();
       break;
     case GameConstants::Type::Enemy:
       map = &m_constants->enemies;
-      name = m_parent->enemy(m_selection)->name;
+      name = m_parent->enemy(m_selection)->name();
       break;
     case GameConstants::Type::Troop:
       map = &m_constants->troops;
-      name = m_parent->troop(m_selection)->name;
+      name = m_parent->troop(m_selection)->name();
       break;
     case GameConstants::Type::State:
       map = &m_constants->states;
-      name = m_parent->state(m_selection)->name;
+      name = m_parent->state(m_selection)->name();
       break;
     case GameConstants::Type::Animation:
       map = &m_constants->animations;
-      name = m_parent->animation(m_selection)->name;
+      name = m_parent->animation(m_selection)->name();
       break;
     case GameConstants::Type::Tileset:
       map = &m_constants->tilesets;
-      name = m_parent->tileset(m_selection)->name;
+      name = m_parent->tileset(m_selection)->name();
       break;
     case GameConstants::Type::CommonEvent:
       map = &m_constants->commonEvents;
-      name = m_parent->commonEvent(m_selection)->name;
+      name = m_parent->commonEvent(m_selection)->name();
       break;
     case GameConstants::Type::Map:
       map = &m_constants->maps;
-      name = Database::instance()->mapInfos.map(m_selection)->name;
+      name = Database::instance()->mapInfos.map(m_selection)->name();
       break;
     default:
       return;
@@ -141,7 +141,7 @@ void DBGameConstantsTab::setupTableHeaders() {
   ImGui::TableHeadersRow();
 }
 
-bool DBGameConstantsTab::drawSelectable(int id, bool selected) {
+bool DBGameConstantsTab::drawSelectable(const int id, const bool selected) {
   ImGui::TableNextRow();
   ImGui::TableNextColumn();
   if (ImGui::Selectable(std::format("{:04}", id).c_str(), selected, ImGuiSelectableFlags_AllowDoubleClick | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowOverlap)) {
@@ -216,20 +216,18 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_switchVariblePicker.emplace("Variables", m_parent->project()->system().variables, 1);
-        m_switchVariblePicker->setOpen(true);
+        m_switchVariablePicker.emplace("Variables", m_parent->project()->system().variables, 1);
+        m_switchVariablePicker->setOpen(true);
       }
 
-      if (m_switchVariblePicker) {
-        const auto [closed, confirmed] = m_switchVariblePicker->draw();
-        if (closed) {
-          const int selection = m_switchVariblePicker->selection();
-          if (confirmed && !m_constants->variables.contains(selection)) {
+      if (m_switchVariablePicker) {
+        if (const auto [closed, confirmed] = m_switchVariablePicker->draw(); closed) {
+          if (const int selection = m_switchVariablePicker->selection(); confirmed && !m_constants->variables.contains(selection)) {
             m_constants->variables[selection] = std::format("VARIABLE_{:04}", selection);
             m_selection = selection;
             m_openPopup = true;
           }
-          m_switchVariblePicker.reset();
+          m_switchVariablePicker.reset();
         }
       }
 
@@ -266,19 +264,17 @@ void DBGameConstantsTab::draw() {
         ImGui::EndTable();
       }
       if (ImGui::Button("Add")) {
-        m_switchVariblePicker.emplace("Switches", m_parent->project()->system().switches, 1);
-        m_switchVariblePicker->setOpen(true);
+        m_switchVariablePicker.emplace("Switches", m_parent->project()->system().switches, 1);
+        m_switchVariablePicker->setOpen(true);
       }
-      if (m_switchVariblePicker) {
-        const auto [closed, confirmed] = m_switchVariblePicker->draw();
-        if (closed) {
-          const int selection = m_switchVariblePicker->selection();
-          if (confirmed && !m_constants->switches.contains(selection)) {
+      if (m_switchVariablePicker) {
+        if (const auto [closed, confirmed] = m_switchVariablePicker->draw(); closed) {
+          if (const int selection = m_switchVariablePicker->selection(); confirmed && !m_constants->switches.contains(selection)) {
             m_constants->switches[selection] = std::format("SWITCH_{:04}", selection);
             m_selection = selection;
             m_openPopup = true;
           }
-          m_switchVariblePicker.reset();
+          m_switchVariablePicker.reset();
         }
       }
       if (m_openPopup) {
@@ -302,7 +298,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->actor(id)->name, alias);
+          drawNameAndAliasColumns(m_parent->actor(id)->name(), alias);
           if (drawDeleteButton(id)) {
             m_constants->actors.erase(id);
           } else {
@@ -316,10 +312,8 @@ void DBGameConstantsTab::draw() {
         m_actorsPicker->setOpen(true);
       }
       if (m_actorsPicker) {
-        const auto [closed, confirmed] = m_actorsPicker->draw();
-        if (closed) {
-          const int selection = m_actorsPicker->selection();
-          if (confirmed && !m_constants->actors.contains(selection)) {
+        if (const auto [closed, confirmed] = m_actorsPicker->draw(); closed) {
+          if (const int selection = m_actorsPicker->selection(); confirmed && !m_constants->actors.contains(selection)) {
             m_constants->actors[selection] = std::format("ACTOR_{:04}", selection);
             m_selection = selection;
             m_openPopup = true;
@@ -348,7 +342,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->classType(id)->name, alias);
+          drawNameAndAliasColumns(m_parent->classType(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->classes.erase(it);
           } else {
@@ -363,10 +357,8 @@ void DBGameConstantsTab::draw() {
         m_classesPicker->setOpen(true);
       }
       if (m_classesPicker) {
-        const auto [closed, confirmed] = m_classesPicker->draw();
-        if (closed) {
-          const int selection = m_classesPicker->selection();
-          if (confirmed && !m_constants->classes.contains(selection)) {
+        if (const auto [closed, confirmed] = m_classesPicker->draw(); closed) {
+          if (const int selection = m_classesPicker->selection(); confirmed && !m_constants->classes.contains(selection)) {
             m_constants->classes[selection] = std::format("CLASS_{:04}", selection);
             m_selection = selection;
             m_openPopup = true;
@@ -396,7 +388,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->skill(id)->name, alias);
+          drawNameAndAliasColumns(m_parent->skill(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->skills.erase(it);
           } else {
@@ -411,10 +403,8 @@ void DBGameConstantsTab::draw() {
         m_skillsPicker->setOpen(true);
       }
       if (m_skillsPicker) {
-        const auto [closed, confirmed] = m_skillsPicker->draw();
-        if (closed) {
-          const int selection = m_skillsPicker->selection();
-          if (confirmed && !m_constants->skills.contains(selection)) {
+        if (const auto [closed, confirmed] = m_skillsPicker->draw(); closed) {
+          if (const int selection = m_skillsPicker->selection(); confirmed && !m_constants->skills.contains(selection)) {
             m_constants->skills[selection] = std::format("SKILL_{:04}", selection);
             m_selection = selection;
             m_openPopup = true;
@@ -444,7 +434,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->item(id)->name, alias);
+          drawNameAndAliasColumns(m_parent->item(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->items.erase(it);
           } else {
@@ -459,10 +449,8 @@ void DBGameConstantsTab::draw() {
         m_itemsPicker->setOpen(true);
       }
       if (m_itemsPicker) {
-        const auto [closed, confirmed] = m_itemsPicker->draw();
-        if (closed) {
-          const int selection = m_itemsPicker->selection();
-          if (confirmed && !m_constants->items.contains(selection)) {
+        if (const auto [closed, confirmed] = m_itemsPicker->draw(); closed) {
+          if (const int selection = m_itemsPicker->selection(); confirmed && !m_constants->items.contains(selection)) {
             m_constants->items[selection] = std::format("ITEM_{:04}", selection);
             m_selection = selection;
             m_openPopup = true;
@@ -492,7 +480,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->weapon(id)->name, alias);
+          drawNameAndAliasColumns(m_parent->weapon(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->weapons.erase(it);
           } else {
@@ -507,10 +495,8 @@ void DBGameConstantsTab::draw() {
         m_weaponsPicker->setOpen(true);
       }
       if (m_weaponsPicker) {
-        const auto [closed, confirmed] = m_weaponsPicker->draw();
-        if (closed) {
-          const int selection = m_weaponsPicker->selection();
-          if (confirmed && !m_constants->weapons.contains(selection)) {
+        if (const auto [closed, confirmed] = m_weaponsPicker->draw(); closed) {
+          if (const int selection = m_weaponsPicker->selection(); confirmed && !m_constants->weapons.contains(selection)) {
             m_constants->weapons[selection] = std::format("WEAPON_{:04}", selection);
             m_selection = selection;
             m_openPopup = true;
@@ -540,7 +526,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->armor(id)->name, alias);
+          drawNameAndAliasColumns(m_parent->armor(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->armors.erase(it);
           } else {
@@ -555,10 +541,8 @@ void DBGameConstantsTab::draw() {
         m_armorsPicker->setOpen(true);
       }
       if (m_armorsPicker) {
-        const auto [closed, confirmed] = m_armorsPicker->draw();
-        if (closed) {
-          const int selection = m_armorsPicker->selection();
-          if (confirmed && !m_constants->armors.contains(selection)) {
+        if (const auto [closed, confirmed] = m_armorsPicker->draw(); closed) {
+          if (const int selection = m_armorsPicker->selection(); confirmed && !m_constants->armors.contains(selection)) {
             m_constants->armors[selection] = std::format("ARMOR_{:04}", selection);
             m_selection = selection;
             m_openPopup = true;
@@ -588,7 +572,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->enemy(id)->name, alias);
+          drawNameAndAliasColumns(m_parent->enemy(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->enemies.erase(it);
           } else {
@@ -603,10 +587,8 @@ void DBGameConstantsTab::draw() {
         m_enemiesPicker->setOpen(true);
       }
       if (m_enemiesPicker) {
-        const auto [closed, confirmed] = m_enemiesPicker->draw();
-        if (closed) {
-          const int selection = m_enemiesPicker->selection();
-          if (confirmed && !m_constants->enemies.contains(selection)) {
+        if (const auto [closed, confirmed] = m_enemiesPicker->draw(); closed) {
+          if (const int selection = m_enemiesPicker->selection(); confirmed && !m_constants->enemies.contains(selection)) {
             m_constants->enemies[selection] = std::format("ENEMY_{:04}", selection);
             m_selection = selection;
             m_openPopup = true;
@@ -636,7 +618,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->troop(id)->name, alias);
+          drawNameAndAliasColumns(m_parent->troop(id)->m_name, alias);
           if (drawDeleteButton(id)) {
             it = m_constants->troops.erase(it);
           } else {
@@ -651,10 +633,8 @@ void DBGameConstantsTab::draw() {
         m_troopsPicker->setOpen(true);
       }
       if (m_troopsPicker) {
-        const auto [closed, confirmed] = m_troopsPicker->draw();
-        if (closed) {
-          const int selection = m_troopsPicker->selection();
-          if (confirmed && !m_constants->troops.contains(selection)) {
+        if (const auto [closed, confirmed] = m_troopsPicker->draw(); closed) {
+          if (const int selection = m_troopsPicker->selection(); confirmed && !m_constants->troops.contains(selection)) {
             m_constants->troops[selection] = std::format("TROOP_{:04}", selection);
             m_selection = selection;
             m_openPopup = true;
@@ -684,7 +664,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->state(id)->name, alias);
+          drawNameAndAliasColumns(m_parent->state(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->states.erase(it);
           } else {
@@ -699,10 +679,8 @@ void DBGameConstantsTab::draw() {
         m_statesPicker->setOpen(true);
       }
       if (m_statesPicker) {
-        const auto [closed, confirmed] = m_statesPicker->draw();
-        if (closed) {
-          const int selection = m_statesPicker->selection();
-          if (confirmed && !m_constants->states.contains(selection)) {
+        if (const auto [closed, confirmed] = m_statesPicker->draw(); closed) {
+          if (const int selection = m_statesPicker->selection(); confirmed && !m_constants->states.contains(selection)) {
             m_constants->states[selection] = std::format("STATE_{:04}", selection);
             m_selection = selection;
             m_openPopup = true;
@@ -732,7 +710,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->animation(id)->name, alias);
+          drawNameAndAliasColumns(m_parent->animation(id)->m_name, alias);
           if (drawDeleteButton(id)) {
             it = m_constants->animations.erase(it);
           } else {
@@ -747,10 +725,8 @@ void DBGameConstantsTab::draw() {
         m_animationPicker->setOpen(true);
       }
       if (m_animationPicker) {
-        const auto [closed, confirmed] = m_animationPicker->draw();
-        if (closed) {
-          const int selection = m_animationPicker->selection();
-          if (confirmed && !m_constants->animations.contains(selection)) {
+        if (const auto [closed, confirmed] = m_animationPicker->draw(); closed) {
+          if (const int selection = m_animationPicker->selection(); confirmed && !m_constants->animations.contains(selection)) {
             m_constants->animations[selection] = std::format("ANIMATION_{:04}", selection);
             m_selection = selection;
             m_openPopup = true;
@@ -780,7 +756,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->tileset(id)->name, alias);
+          drawNameAndAliasColumns(m_parent->tileset(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->tilesets.erase(it);
           } else {
@@ -795,10 +771,8 @@ void DBGameConstantsTab::draw() {
         m_tilesetPicker->setOpen(true);
       }
       if (m_tilesetPicker) {
-        const auto [closed, confirmed] = m_tilesetPicker->draw();
-        if (closed) {
-          const int selection = m_tilesetPicker->selection();
-          if (confirmed && !m_constants->tilesets.contains(selection)) {
+        if (const auto [closed, confirmed] = m_tilesetPicker->draw(); closed) {
+          if (const int selection = m_tilesetPicker->selection(); confirmed && !m_constants->tilesets.contains(selection)) {
             m_constants->tilesets[selection] = std::format("TILESET_{:04}", selection);
             m_selection = selection;
             m_openPopup = true;
@@ -828,7 +802,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->commonEvent(id)->name, alias);
+          drawNameAndAliasColumns(m_parent->commonEvent(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->commonEvents.erase(it);
           } else {
@@ -843,10 +817,8 @@ void DBGameConstantsTab::draw() {
         m_commonEventPicker->setOpen(true);
       }
       if (m_commonEventPicker) {
-        const auto [closed, confirmed] = m_commonEventPicker->draw();
-        if (closed) {
-          const int selection = m_commonEventPicker->selection();
-          if (confirmed && !m_constants->commonEvents.contains(selection)) {
+        if (const auto [closed, confirmed] = m_commonEventPicker->draw(); closed) {
+          if (const int selection = m_commonEventPicker->selection(); confirmed && !m_constants->commonEvents.contains(selection)) {
             m_constants->commonEvents[selection] = std::format("COMMON_EVENT_{:04}", selection);
             m_selection = selection;
             m_openPopup = true;
@@ -876,7 +848,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(Database::instance()->mapInfos.map(id)->name, alias);
+          drawNameAndAliasColumns(Database::instance()->mapInfos.map(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->maps.erase(it);
           } else {
@@ -891,10 +863,8 @@ void DBGameConstantsTab::draw() {
         m_mapsPicker->setOpen(true);
       }
       if (m_mapsPicker) {
-        const auto [closed, confirmed] = m_mapsPicker->draw();
-        if (closed) {
-          const int selection = m_mapsPicker->selection();
-          if (confirmed && !m_constants->maps.contains(selection)) {
+        if (const auto [closed, confirmed] = m_mapsPicker->draw(); closed) {
+          if (const int selection = m_mapsPicker->selection(); confirmed && !m_constants->maps.contains(selection)) {
             m_constants->maps[selection] = std::format("MAP_{:03}", selection);
             m_selection = selection;
             m_openPopup = true;

@@ -1,6 +1,6 @@
 #pragma once
 #include "Core/EventCommands/IEventDialogController.hpp"
-#include "Database/Actors.hpp"
+#include "Database/Class.hpp"
 #include "Database/EventCommands/ChangeNickname.hpp"
 #include "Database/EventCommands/ControlTimer.hpp"
 

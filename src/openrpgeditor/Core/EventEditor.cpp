@@ -127,7 +127,16 @@ bool EventEditor::draw() {
           }
           fixupPages();
         }
+
+        if (ImGui::TabItemButton(" + ")) {
+          EventPage* page = &m_event->pages.emplace_back();
+          page->list.emplace_back(new EventDummy());
+          m_pages.emplace_back(this, page);
+          fixupPages();
+          m_selectedPage = m_pages.size() - 1;
+        }
         ImGui::EndTabBar();
+        ImGui::SameLine();
       }
       ImGui::EndGroup();
     }

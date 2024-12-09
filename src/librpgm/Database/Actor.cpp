@@ -38,37 +38,37 @@ Actor& Actor::operator=(const Actor& other) {
 
 Actor::Actor(Actor&& other) noexcept
 : m_id(other.m_id)
-, m_battlerName(other.m_battlerName)
+, m_battlerName(std::move(other.m_battlerName))
 , m_characterIndex(other.m_characterIndex)
-, m_characterName(other.m_characterName)
+, m_characterName(std::move(other.m_characterName))
 , m_classId(other.m_classId)
-, m_equips(other.m_equips)
+, m_equips(std::move(other.m_equips))
 , m_faceIndex(other.m_faceIndex)
-, m_faceName(other.m_faceName)
-, m_traits(other.m_traits)
+, m_faceName(std::move(other.m_faceName))
+, m_traits(std::move(other.m_traits))
 , m_initialLevel(other.m_initialLevel)
 , m_maxLevel(other.m_maxLevel)
-, m_name(other.m_name)
-, m_nickname(other.m_nickname)
-, m_note(other.m_note)
-, m_profile(other.m_profile) {}
+, m_name(std::move(other.m_name))
+, m_nickname(std::move(other.m_nickname))
+, m_note(std::move(other.m_note))
+, m_profile(std::move(other.m_profile)) {}
 
 Actor& Actor::operator=(Actor&& other) noexcept {
   m_id = other.m_id;
-  m_battlerName = other.m_battlerName;
+  m_battlerName = std::move(other.m_battlerName);
   m_characterIndex = other.m_characterIndex;
-  m_characterName = other.m_characterName;
+  m_characterName = std::move(other.m_characterName);
   m_classId = other.m_classId;
-  m_equips = other.m_equips;
+  m_equips = std::move(other.m_equips);
   m_faceIndex = other.m_faceIndex;
-  m_faceName = other.m_faceName;
-  m_traits = other.m_traits;
+  m_faceName = std::move(other.m_faceName);
+  m_traits = std::move(other.m_traits);
   m_initialLevel = other.m_initialLevel;
   m_maxLevel = other.m_maxLevel;
-  m_name = other.m_name;
-  m_nickname = other.m_nickname;
-  m_note = other.m_note;
-  m_profile = other.m_profile;
+  m_name = std::move(other.m_name);
+  m_nickname = std::move(other.m_nickname);
+  m_note = std::move(other.m_note);
+  m_profile = std::move(other.m_profile);
   return *this;
 }
 

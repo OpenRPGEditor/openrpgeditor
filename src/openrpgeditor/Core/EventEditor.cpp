@@ -136,7 +136,6 @@ bool EventEditor::draw() {
           m_selectedPage = m_pages.size() - 1;
         }
         ImGui::EndTabBar();
-        ImGui::SameLine();
       }
       ImGui::EndGroup();
     }

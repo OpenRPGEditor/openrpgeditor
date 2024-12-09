@@ -15,7 +15,8 @@ Actor::Actor(const Actor& other)
 , m_name(other.m_name)
 , m_nickname(other.m_nickname)
 , m_note(other.m_note)
-, m_profile(other.m_profile) {}
+, m_profile(other.m_profile)
+, m_isValid(other.m_isValid) {}
 
 Actor& Actor::operator=(const Actor& other) {
   m_id = other.m_id;
@@ -33,6 +34,7 @@ Actor& Actor::operator=(const Actor& other) {
   m_nickname = other.m_nickname;
   m_note = other.m_note;
   m_profile = other.m_profile;
+  m_isValid = other.m_isValid;
   return *this;
 }
 
@@ -51,7 +53,8 @@ Actor::Actor(Actor&& other) noexcept
 , m_name(std::move(other.m_name))
 , m_nickname(std::move(other.m_nickname))
 , m_note(std::move(other.m_note))
-, m_profile(std::move(other.m_profile)) {}
+, m_profile(std::move(other.m_profile))
+, m_isValid(other.m_isValid) {}
 
 Actor& Actor::operator=(Actor&& other) noexcept {
   m_id = other.m_id;
@@ -69,6 +72,7 @@ Actor& Actor::operator=(Actor&& other) noexcept {
   m_nickname = std::move(other.m_nickname);
   m_note = std::move(other.m_note);
   m_profile = std::move(other.m_profile);
+  m_isValid = other.m_isValid;
   return *this;
 }
 

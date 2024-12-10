@@ -6,7 +6,7 @@ class TemplatesTint final : public IDBTemplates {
 public:
   TemplatesTint() = delete;
   explicit TemplatesTint(Template* templ, DatabaseEditor* parent) : IDBTemplates(parent), m_currentTemplate(templ) {
-    if (!m_currentTemplate->parameters().empty() > 0 && m_currentTemplate->parameters().size() == 4) {
+    if (!m_currentTemplate->parameters().empty() && m_currentTemplate->parameters().size() == 4) {
       r = m_currentTemplate->parameters().at(0);
       g = m_currentTemplate->parameters().at(1);
       b = m_currentTemplate->parameters().at(2);

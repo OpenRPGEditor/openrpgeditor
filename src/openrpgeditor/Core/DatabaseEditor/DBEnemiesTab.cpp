@@ -174,7 +174,7 @@ void DBEnemiesTab::draw() {
               ImGui::Text("Agility:");
               ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
               int param = m_selectedEnemy->param(6);
-              if (ImGui::InputInt("##orpg_database_enemy_mdefense", &param, 1, 100)) {
+              if (ImGui::InputInt("##orpg_database_enemy_agility", &param, 1, 100)) {
                 m_selectedEnemy->setParam(6, std::clamp(param, -9999, 9999));
               }
             }

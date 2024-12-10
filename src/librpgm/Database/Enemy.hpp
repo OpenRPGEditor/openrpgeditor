@@ -15,11 +15,11 @@ public:
   struct Action {
     friend void to_json(nlohmann::ordered_json& to, const Action& action);
     friend void from_json(const nlohmann::ordered_json& from, Action& action);
-    int conditionParam1;
-    int conditionParam2;
-    ActionCondition conditionType;
-    int rating;
-    int skillId;
+    float conditionParam1;
+    float conditionParam2;
+    ActionCondition conditionType = ActionCondition::Always;
+    int rating{5};
+    int skillId{1};
   };
 
   struct DropItem {

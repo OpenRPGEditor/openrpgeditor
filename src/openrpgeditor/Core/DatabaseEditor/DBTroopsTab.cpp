@@ -6,7 +6,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBTroopsTab::DBTroopsTab(Troops& troops, DatabaseEditor* parent) : IDBEditorTab(parent), m_troops(troops), m_enemies(Database::instance()->enemies) {
+DBTroopsTab::DBTroopsTab(Troops& troops, DatabaseEditor* parent) : IDBEditorTab(parent), m_troops(troops), m_enemies(Database::instance()->enemies), m_troopsEditor(nullptr, troops.troop(1)) {
   m_selectedTroop = m_troops.troop(1);
   if (m_selectedTroop) {
     // m_traitsEditor.setTraits(&m_selectedClass->traits);
@@ -168,17 +168,16 @@ void DBTroopsTab::draw() {
           ImGui::EndGroup();
         }
         ImGui::EndChild();
-        ImGui::BeginChild("##orpg_weapons_weapon_panel_bottom");
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 120.f);
+        ImGui::BeginChild("##orpg_troops_panel_bottom");
         {
+          ImGui::SeparatorText("Battle Event");
           ImGui::BeginGroup();
-          {
-            // Troop Command Window
-          }
+          { m_troopsEditor.draw(); }
           ImGui::EndGroup();
         }
         ImGui::EndChild();
       }
-
       ImGui::EndChild();
     }
     ImGui::EndChild();

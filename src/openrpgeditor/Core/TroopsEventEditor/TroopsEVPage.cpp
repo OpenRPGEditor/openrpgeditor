@@ -76,9 +76,15 @@ std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
     ImGui::BeginDisabled(!m_page->conditions.enemyValid);
     {
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
-      if (ImGui::BeginCombo("##orpg_troops_panel_conditions_enemylist", m_page->conditions.enemyValid ? ("#" + std::to_string(m_page->conditions.enemyIndex) + " ?").c_str() : "")) {
-        for (int i = 1; i < 9; ++i) {
-          std::string text = "#" + std::to_string(i) + " ?";
+      std::string title = "#" + std::to_string(m_page->conditions.enemyIndex + 1) + " " +
+                          std::string((m_parent->event()->m_members.size() <= m_page->conditions.enemyIndex)
+                                          ? "?"
+                                          : Database::instance()->enemyNameOrId(m_parent->event()->m_members.at(m_page->conditions.enemyIndex).enemyId));
+
+      if (ImGui::BeginCombo("##orpg_troops_panel_conditions_enemylist", m_page->conditions.enemyValid ? title.c_str() : "")) {
+        for (int i = 0; i < 8; ++i) {
+          std::string text =
+              "#" + std::to_string(i + 1) + " " + std::string((m_parent->event()->m_members.size() <= i) ? "?" : Database::instance()->enemyNameOrId(m_parent->event()->m_members.at(i).enemyId));
           if (ImGui::Selectable(text.c_str(), i == m_page->conditions.enemyIndex)) {
             m_page->conditions.enemyIndex = i;
           }

@@ -22,6 +22,11 @@ struct TroopsEVEditor {
   Troop* event() { return m_troop; }
   const Troop* event() const { return m_troop; }
 
+  void setTroop(Troop* troop) {
+    m_troop = troop;
+    fixupPages();
+  }
+
   Project* project() { return m_parent; }
   const Project* project() const { return m_parent; }
 

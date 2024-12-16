@@ -45,6 +45,7 @@ bool TroopsEVEditor::draw() {
       }
       ImGui::EndGroup();
     }
+    
     ImGui::SameLine();
     if (ImGui::BeginChild("##orpg_troop_editor_page_content", ImVec2(0, 0), false)) {
       if (ImGui::BeginTabBar("##orpg_troop_editor_page", ImGuiTabBarFlags_AutoSelectNewTabs)) {

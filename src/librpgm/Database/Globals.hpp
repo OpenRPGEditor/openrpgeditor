@@ -872,7 +872,11 @@ enum class SoundType {
   Use_Item,
   Use_Skill,
 };
-
+enum class Span {
+  Battle,
+  Turn,
+  Moment,
+};
 /**
  * @name Flags
  * @brief Allows the developer to set specific tile behaviors

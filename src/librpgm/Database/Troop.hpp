@@ -19,16 +19,16 @@ struct Troop {
   struct Conditions {
     friend void to_json(nlohmann::ordered_json& j, const Conditions& c);
     friend void from_json(const nlohmann::ordered_json& j, Conditions& c);
-    int actorHp;
-    int actorId;
+    int actorHp{50};
+    int actorId{1};
     bool actorValid;
-    int enemyIndex;
-    int enemyHp;
+    int enemyIndex{0};
+    int enemyHp{50};
     bool enemyValid;
-    int switchId;
+    int switchId{1};
     bool switchValid;
-    int turnA;
-    int turnB;
+    int turnA{0};
+    int turnB{0};
     bool turnEnding;
     bool turnValid;
   };

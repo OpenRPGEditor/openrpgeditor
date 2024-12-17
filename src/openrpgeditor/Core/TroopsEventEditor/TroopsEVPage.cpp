@@ -2,6 +2,7 @@
 #include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Project.hpp"
+#include "Database/Globals.hpp"
 
 #include <format>
 #include <string>
@@ -110,7 +111,7 @@ std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
       }
       ImGui::SameLine();
       ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
-      ImGui::SliderInt("##orpg_troops_panel_conditions_actorhp", &m_page->conditions.enemyHp, 0, 100, m_page->conditions.actorId > 0 ? " %d%%" : "");
+      ImGui::SliderInt("##orpg_troops_panel_conditions_actorhp", &m_page->conditions.actorHp, 0, 100, m_page->conditions.actorId > 0 ? " %d%%" : "");
       ImGui::SameLine();
       ImGui::Text("or below");
     }
@@ -119,7 +120,7 @@ std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
     ImGui::BeginDisabled(!m_page->conditions.switchValid);
     {
       if (ImGui::Button(
-              std::string(std::format("{}##orpg_troops_conditions_switch_page_{}", m_page->conditions.switchId > 0 ? Database::instance()->switchNameOrId(m_page->conditions.switchId) : "", m_page_id))
+              std::string(std::format("{}##orpg_troops_conditions_switch_page_{}", m_page->conditions.switchValid ? Database::instance()->switchNameOrId(m_page->conditions.switchId) : "", m_page_id))
                   .c_str(),
               ImVec2{(App::DPIHandler::scale_value(150)), 0})) {
         picker.emplace("Switches", Database::instance()->system.switches, m_page->conditions.switchId);
@@ -129,6 +130,21 @@ std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
     ImGui::EndDisabled();
   }
   ImGui::EndGroup();
+
+  ImGui::BeginGroup();
+  {
+    const auto preview = DecodeEnumName(static_cast<Span>(m_page->span));
+    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(300));
+    if (ImGui::BeginCombo("##trait_editor_party_ability_combo", preview.c_str())) {
+      for (const auto& type : magic_enum::enum_values<Span>()) {
+        if (ImGui::Selectable(DecodeEnumName(type).c_str(), m_page->span == static_cast<int>(type))) {
+          m_page->span = static_cast<int>(type);
+        }
+      }
+      ImGui::EndCombo();
+    }
+    ImGui::EndGroup();
+  }
 
   open ^= 1;
   return std::make_tuple(open, true);

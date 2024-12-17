@@ -1,4 +1,5 @@
 #pragma once
+#include "Core/CommonUI/TraitsEditor.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Database/States.hpp"
 
@@ -20,4 +21,5 @@ private:
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
+  TraitsEditor m_traitsEditor;
 };

@@ -71,7 +71,7 @@ void DBStatesTab::draw() {
             ImGui::EndGroup();
             ImGui::SameLine();
             // Image
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.f);
             ImGui::BeginGroup();
             {
               ImGui::Text("Icon:");
@@ -79,11 +79,15 @@ void DBStatesTab::draw() {
             }
             ImGui::EndGroup();
             ImGui::SameLine();
-            const auto* iconSheet = m_parent->getIconSheet();
-            auto [min, max] = iconSheet->rectForId(m_selectedState->iconIndex());
-            ImGui::Image(iconSheet->texture(), ImVec2{static_cast<float>(iconSheet->iconWidth()), static_cast<float>(iconSheet->iconHeight())}, min,
-                         max); // Show icon image
-
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 20.f);
+            ImGui::BeginGroup();
+            {
+              const auto* iconSheet = m_parent->getIconSheet();
+              auto [min, max] = iconSheet->rectForId(m_selectedState->iconIndex());
+              ImGui::Image(iconSheet->texture(), ImVec2{static_cast<float>(iconSheet->iconWidth()), static_cast<float>(iconSheet->iconHeight())}, min,
+                           max); // Show icon image
+              ImGui::EndGroup();
+            }
             ImGui::BeginGroup();
             {
               ImGui::Text("Restriction:");
@@ -168,30 +172,25 @@ void DBStatesTab::draw() {
               ImGui::Text("Remove by Restriction");
             }
             ImGui::EndGroup();
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.f);
             ImGui::BeginGroup();
             {
-              // Auto-removing timing
-              ImGui::BeginGroup();
-              {
-                ImGui::Text("Auto-removal Timing:");
-                ImGui::SameLine();
-                ImGui::EndGroup();
-              }
-              ImGui::SameLine();
-              ImGui::BeginGroup();
-              {
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
-                if (ImGui::BeginCombo("##database_state_removal_timing_combo", DecodeEnumName(m_selectedState->autoRemovalTiming()).c_str())) {
-                  for (const auto& type : magic_enum::enum_values<AutoRemovalTiming>()) {
-                    if (ImGui::Selectable(DecodeEnumName(type).c_str(), m_selectedState->autoRemovalTiming() == type)) {
-                      m_selectedState->setAutoRemovalTiming(type);
-                    }
+              ImGui::Text("Auto-removal Timing:");
+              ImGui::EndGroup();
+            }
+            ImGui::SameLine();
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
+            ImGui::BeginGroup();
+            {
+              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              if (ImGui::BeginCombo("##database_state_removal_timing_combo", DecodeEnumName(m_selectedState->autoRemovalTiming()).c_str())) {
+                for (const auto& type : magic_enum::enum_values<AutoRemovalTiming>()) {
+                  if (ImGui::Selectable(DecodeEnumName(type).c_str(), m_selectedState->autoRemovalTiming() == type)) {
+                    m_selectedState->setAutoRemovalTiming(type);
                   }
-                  ImGui::EndCombo();
                 }
-                ImGui::EndGroup();
+                ImGui::EndCombo();
               }
-
               ImGui::EndGroup();
             }
             ImGui::BeginGroup();
@@ -201,7 +200,7 @@ void DBStatesTab::draw() {
                 // Duration in turns
                 ImGui::Text("Duration in Turns:");
                 int tempInt = m_selectedState->minTurns();
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(130));
+                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
                 if (ImGui::InputInt("##database_state_duration_turns_1", &tempInt)) {
                   m_selectedState->setMinTurns(std::clamp(tempInt, 1, 9999));
                 }
@@ -209,7 +208,7 @@ void DBStatesTab::draw() {
                 ImGui::Text("~");
                 ImGui::SameLine();
                 int tempInt2 = m_selectedState->maxTurns();
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(130));
+                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
                 if (ImGui::InputInt("##database_state_duration_turns_2", &tempInt2)) {
                   m_selectedState->setMaxTurns(std::clamp(tempInt2, 1, 9999));
                 }
@@ -227,6 +226,7 @@ void DBStatesTab::draw() {
               ImGui::SameLine();
               ImGui::Text("Remove by Damage");
               ImGui::SameLine();
+              ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 2.f);
               ImGui::BeginDisabled(!isRemoveByDamage);
               {
                 int tempInt = m_selectedState->chanceByDamage();
@@ -252,8 +252,8 @@ void DBStatesTab::draw() {
               {
                 int tempInt = m_selectedState->stepsToRemove();
                 ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
-                if (ImGui::SliderInt("##database_states_stepstoremove", &tempInt, 0, 100, isRemoveByWalking ? " %d%%" : "")) {
-                  m_selectedState->setStepsToRemove(tempInt);
+                if (ImGui::InputInt("##database_states_stepstoremove", &tempInt)) {
+                  m_selectedState->setStepsToRemove(std::clamp(tempInt, 1, 9999));
                 }
                 ImGui::SameLine();
                 ImGui::Text("(steps)");
@@ -266,6 +266,42 @@ void DBStatesTab::draw() {
           ImGui::BeginGroup();
           {
             ImGui::SeparatorText("Messages");
+            ImGui::Text("If an actor is inflicted with the state:");
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.f);
+            ImGui::TextColored(ImVec4(0.30f, 0.30f, 0.30f, 1.0f), "(Target Name)");
+            ImGui::SameLine();
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
+            std::string text1 = m_selectedState->message1();
+            if (ImGui::InputText("##orpg_states_messages_input1", &text1)) {
+              m_selectedState->setMessage1(text1);
+            }
+            ImGui::Text("If an enemy is inflicted with the state:");
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.f);
+            ImGui::TextColored(ImVec4(0.30f, 0.30f, 0.30f, 1.0f), "(Target Name)");
+            ImGui::SameLine();
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
+            std::string text2 = m_selectedState->message2();
+            if (ImGui::InputText("##orpg_states_messages_input2", &text2)) {
+              m_selectedState->setMessage2(text2);
+            }
+            ImGui::Text("If the state persists:");
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.f);
+            ImGui::TextColored(ImVec4(0.30f, 0.30f, 0.30f, 1.0f), "(Target Name)");
+            ImGui::SameLine();
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
+            std::string text3 = m_selectedState->message3();
+            if (ImGui::InputText("##orpg_states_messages_input3", &text3)) {
+              m_selectedState->setMessage1(text3);
+            }
+            ImGui::Text("If the state is removed:");
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.f);
+            ImGui::TextColored(ImVec4(0.30f, 0.30f, 0.30f, 1.0f), "(Target Name)");
+            ImGui::SameLine();
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
+            std::string text4 = m_selectedState->message4();
+            if (ImGui::InputText("##orpg_states_messages_input4", &text4)) {
+              m_selectedState->setMessage1(text4);
+            }
             ImGui::EndGroup();
           }
         }

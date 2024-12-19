@@ -2,17 +2,29 @@
 #include "Core/Application.hpp"
 #include "Database/Tilesets.hpp"
 
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "imgui.h"
+#include "imgui_internal.h"
 
 DBTilesetsTab::DBTilesetsTab(Tilesets& tilesets, DatabaseEditor* parent) : IDBEditorTab(parent), m_tilesets(tilesets) {
   m_selectedTileset = m_tilesets.tileset(1);
   if (m_selectedTileset) {
+    m_imagePicker.emplace(ImagePicker::PickerMode::Tileset, "", "");
     // m_traitsEditor.setTraits(&m_selectedClass->traits);
   }
   m_maxTilesets = m_tilesets.count();
 }
 
 void DBTilesetsTab::draw() {
+  if (const auto [closed, confirmed] = m_imagePicker->draw(); closed) {
+    if (closed) {
+      if (confirmed) {
+        m_imagePicker->accept();
+        // m_imageName = m_imagePicker->selectedImage();
+      }
+    }
+  }
+
   ImGui::BeginChild("#orpg_tilesets_editor");
   {
     ImGui::BeginChild("##orpg_tilesets_editor_tilesets", ImVec2{250.f, 0} * App::DPIHandler::get_ui_scale(), 0, ImGuiWindowFlags_HorizontalScrollbar);
@@ -51,7 +63,152 @@ void DBTilesetsTab::draw() {
     ImGui::EndChild();
     ImGui::SameLine();
     ImGui::BeginChild("##orpg_tilesets_editor_tilesets_tileset_properties");
-    { ImGui::EndChild(); }
+    {
+      if (m_selectedTileset) {
+        ImGui::BeginChild("##orpg_tilesets_tileset_panel_left", ImVec2{ImGui::GetContentRegionMax().x / 3, 0.f});
+        {
+          ImGui::BeginGroup();
+          {
+            ImGui::SeparatorText("General Settings");
+            // Name
+            ImGui::BeginGroup();
+            {
+              char name[4096];
+              strncpy(name, m_selectedTileset->name().c_str(), 4096);
+              if (ImGui::LabelOverLineEdit("##orpg_tilesets_tileset_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x)) {
+                m_selectedTileset->setName(name);
+              }
+            }
+            ImGui::EndGroup();
+            // Mode
+            ImGui::BeginGroup();
+            {
+              ImGui::Text("Mode:");
+              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(300));
+              if (ImGui::BeginCombo("##orpg_tilesets_tileset_mode", DecodeEnumName(m_selectedTileset->mode()).c_str())) {
+                for (const auto& type : magic_enum::enum_values<Tileset::Mode>()) {
+                  if (ImGui::Selectable(DecodeEnumName(type).c_str(), m_selectedTileset->mode() == type)) {
+                    m_selectedTileset->setMode(type);
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            ImGui::EndGroup();
+          }
+          ImGui::EndGroup();
+          ImGui::BeginGroup();
+          {
+            ImGui::SeparatorText("Images");
+            ImGui::Text("A1 (Animation):");
+            ImGui::PushID("##orpg_tileset_a1_selection");
+            if (ImGui::Button(m_selectedTileset->tilesetName(0).c_str(), ImVec2{(App::DPIHandler::scale_value(250)), 0})) {
+              m_imagePicker->setOpen(true);
+            }
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+          ImGui::BeginGroup();
+          {
+            ImGui::Text("A2 (Ground):");
+            ImGui::PushID("##orpg_tileset_a2_selection");
+            if (ImGui::Button(m_selectedTileset->tilesetName(1).c_str(), ImVec2{(App::DPIHandler::scale_value(250)), 0})) {
+              m_imagePicker->setOpen(true);
+            }
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+          // A3
+          ImGui::BeginGroup();
+          {
+            ImGui::Text("A3 (Buildings):");
+            ImGui::PushID("##orpg_tileset_a3_selection");
+            if (ImGui::Button(m_selectedTileset->tilesetName(2).c_str(), ImVec2{(App::DPIHandler::scale_value(250)), 0})) {
+              m_imagePicker->setOpen(true);
+            }
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+          // A4
+          ImGui::BeginGroup();
+          {
+            ImGui::Text("A4 (Walls):");
+            ImGui::PushID("##orpg_tileset_a4_selection");
+            if (ImGui::Button(m_selectedTileset->tilesetName(3).c_str(), ImVec2{(App::DPIHandler::scale_value(250)), 0})) {
+              m_imagePicker->setOpen(true);
+            }
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+          // A5
+          ImGui::BeginGroup();
+          {
+            ImGui::Text("A5 (Normal):");
+            ImGui::PushID("##orpg_tileset_a5_selection");
+            if (ImGui::Button(m_selectedTileset->tilesetName(4).c_str(), ImVec2{(App::DPIHandler::scale_value(250)), 0})) {
+              m_imagePicker->setOpen(true);
+            }
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+          // B
+          ImGui::BeginGroup();
+          {
+            ImGui::Text("B:");
+            ImGui::PushID("##orpg_tileset_b1_selection");
+            if (ImGui::Button(m_selectedTileset->tilesetName(5).c_str(), ImVec2{(App::DPIHandler::scale_value(250)), 0})) {
+              m_imagePicker->setOpen(true);
+            }
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+          // C
+          ImGui::BeginGroup();
+          {
+            ImGui::Text("C:");
+            ImGui::PushID("##orpg_tileset_c1_selection");
+            if (ImGui::Button(m_selectedTileset->tilesetName(6).c_str(), ImVec2{(App::DPIHandler::scale_value(250)), 0})) {
+              m_imagePicker->setOpen(true);
+            }
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+          // D
+          ImGui::BeginGroup();
+          {
+            ImGui::Text("D:");
+            ImGui::PushID("##orpg_tileset_d1_selection");
+            if (ImGui::Button(m_selectedTileset->tilesetName(7).c_str(), ImVec2{(App::DPIHandler::scale_value(250)), 0})) {
+              m_imagePicker->setOpen(true);
+            }
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+          // E
+          ImGui::BeginGroup();
+          {
+            ImGui::Text("E:");
+            ImGui::PushID("##orpg_tileset_e1_selection");
+            if (ImGui::Button(m_selectedTileset->tilesetName(8).c_str(), ImVec2{(App::DPIHandler::scale_value(250)), 0})) {
+              m_imagePicker->setOpen(true);
+            }
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+        }
+        ImGui::EndChild();
+
+        ImGui::SameLine();
+        ImGui::BeginChild("##orpg_tilesets_tileset_panel_middle");
+        {}
+        ImGui::EndChild();
+        ImGui::SameLine();
+        ImGui::BeginChild("##orpg_tilesets_tileset_panel_right");
+        {}
+        ImGui::EndChild();
+      }
+      ImGui::EndChild();
+    }
     ImGui::EndChild();
 
     if (m_changeIntDialogOpen) {

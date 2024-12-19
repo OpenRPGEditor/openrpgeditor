@@ -23,6 +23,8 @@ Image::Image(const std::string_view imageName, const int pickType, const bool se
     } else {
       m_imageTexture = ResourceManager::instance()->loadTitle1Image(imageName);
     }
+  } else if (pickType == 4) {
+    m_imageTexture = ResourceManager::instance()->loadTilesetImage(imageName);
   }
 }
 

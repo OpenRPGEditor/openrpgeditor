@@ -23,6 +23,9 @@ ImagePicker::ImagePicker(PickerMode mode, const std::string_view imageName, cons
     m_images = ResourceManager::instance()->getDirectoryContents("img/titles1/", ".png");
     m_images_2 = ResourceManager::instance()->getDirectoryContents("img/titles2/", ".png");
     break;
+  case PickerMode::Tileset:
+    m_images = ResourceManager::instance()->getDirectoryContents("img/tilesets/", ".png");
+    break;
   }
   setImageInfo(imageName, image2Name);
 }

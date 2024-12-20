@@ -23,6 +23,9 @@ private:
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
+  int m_selectedTileTab{0};
 
   std::optional<ImagePicker> m_imagePicker;
+  std::optional<Image> m_image;
+  CheckerboardTexture m_checkerboardTexture{};
 };

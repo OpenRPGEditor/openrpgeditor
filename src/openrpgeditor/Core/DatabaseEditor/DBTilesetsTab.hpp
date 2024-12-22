@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/CommonUI/ImagePicker.hpp"
+#include "Core/DPIHandler.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Database/Tilesets.hpp"
 
@@ -28,4 +29,15 @@ private:
   std::optional<ImagePicker> m_imagePicker;
   std::optional<Image> m_image;
   CheckerboardTexture m_checkerboardTexture{};
+
+  const int tileSize = 48;                             // Tile size in pixels
+  const int gridCols = 16;                             // Number of tiles per row
+  const float scale = App::DPIHandler::get_ui_scale(); // Scaling factor
+
+  void drawA1();
+  void drawA2();
+  void drawA3();
+  void drawA4();
+  void drawA5();
+  void drawTileset();
 };

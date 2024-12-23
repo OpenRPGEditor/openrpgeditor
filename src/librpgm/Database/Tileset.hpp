@@ -21,15 +21,18 @@ public:
   [[nodiscard]] const std::vector<int>& flags() const { return m_flags; }
   void setFlags(const std::vector<int>& flags) { m_flags = flags; }
   [[nodiscard]] int flag(const int idx) const {
-    assert(idx >= 0 && idx < m_flags.size());
-    return m_flags[idx];
+    if (idx >= 0 && idx < m_flags.size()) {
+      return m_flags[idx];
+    }
+    return 0;
   }
   void setFlag(const int idx, const int flag, const bool enabled = true) {
-    assert(idx >= 0 && idx < m_flags.size());
-    if (enabled) {
-      m_flags[idx] |= flag;
-    } else {
-      m_flags[idx] &= ~flag;
+    if (idx >= 0 && idx < m_flags.size()) {
+      if (enabled) {
+        m_flags[idx] |= flag;
+      } else {
+        m_flags[idx] &= ~flag;
+      }
     }
   }
 

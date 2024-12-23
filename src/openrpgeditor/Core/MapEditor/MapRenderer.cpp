@@ -159,7 +159,7 @@ void MapRenderer::drawAutoTile(MapLayer& layer, const int tileId, const int dx, 
   float bx = 0;
   float by = 0;
   int setNumber = 0;
-  bool isTable = false;
+  bool isTable = isTableTile(tileId);
   float animX = 0;
   float animY = 0;
 

@@ -413,7 +413,9 @@ add_library(
         Core/UndoStack.cpp
         Core/UndoStack.hpp
         Core/Window.cpp
-        Core/Window.hpp)
+        Core/Window.hpp
+        Core/Tilemap/TilePalette.cpp
+        Core/Tilemap/TilePalette.hpp)
 
 target_include_directories(
         orecore

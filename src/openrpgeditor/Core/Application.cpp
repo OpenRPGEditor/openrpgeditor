@@ -166,6 +166,7 @@ void Application::updateFonts() {
   const float fontScale = DPIHandler::get_ui_scale() * 2;
   const float font_size = oRound(m_settings.fontSize * fontScale);
   const float mono_font_size = oRound(m_settings.monoFontSize * fontScale);
+  DPIHandler::set_font_scale(fontScale);
   const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
   const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf").generic_string()};
   const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf").generic_string()};

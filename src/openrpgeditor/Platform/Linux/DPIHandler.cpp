@@ -10,6 +10,7 @@
 
 namespace App {
 
+float DPIHandler::font_scale = 1.f;
 float DPIHandler::get_ui_scale() { return Settings::instance()->uiScale; }
 
 WindowSize DPIHandler::get_dpi_aware_window_size(const Window::Settings& settings) { return {settings.width, settings.height}; }

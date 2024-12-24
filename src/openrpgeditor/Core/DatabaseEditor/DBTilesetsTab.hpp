@@ -26,7 +26,7 @@ private:
   bool m_changeConfirmDialogOpen = false;
   int m_selectedTileTab{0};
   int m_pickerSelection;
-  float checkerBoardHeight{0.f};
+  int checkerBoardHeight{0};
   bool m_updateCheckerboard{true};
 
   std::optional<ImagePicker> m_imagePicker;

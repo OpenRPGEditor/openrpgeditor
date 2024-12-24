@@ -21,7 +21,7 @@ void DBTilesetsTab::draw() {
         m_imagePicker->accept();
         m_selectedTileset->setTilesetName(m_pickerSelection, m_imagePicker->selectedImage());
 
-        checkerBoardHeight = 0.f;
+        checkerBoardHeight = 0;
         m_updateCheckerboard = true;
       }
     }
@@ -210,31 +210,33 @@ void DBTilesetsTab::draw() {
         ImGui::EndChild();
 
         ImGui::SameLine();
-        ImGui::BeginChild("##orpg_tilesets_tileset_panel_middle", ImVec2{App::DPIHandler::scale_value(400), App::DPIHandler::scale_value(768)});
+        ImGui::BeginChild("##orpg_tilesets_tileset_panel_middle", ImVec2{App::DPIHandler::scale_value(400), App::DPIHandler::scale_value(850)});
         {
-          ImGui::BeginChild("##orpg_database_tilesets_viewer", ImVec2{App::DPIHandler::scale_value(400), App::DPIHandler::scale_value(700)}, ImGuiChildFlags_Border,
+          ImGui::BeginChild("##orpg_database_tilesets_viewer", ImVec2{App::DPIHandler::scale_value(400), App::DPIHandler::scale_value((checkerBoardHeight * 48) + 8)}, ImGuiChildFlags_Border,
                             ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar);
           {
             // for (auto& tilesetF : m_selectedTileset->flags()) {
             //   int test = 1;
             // }
-            checkerBoardHeight = 0.f;
             auto win = ImGui::GetCurrentWindow();
             ImGui::GetWindowDrawList()->AddImage(m_checkerboardTexture, win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
-                                                 win->ContentRegionRect.Min + (ImVec2{384.f, checkerBoardHeight} * App::DPIHandler::get_ui_scale()));
+                                                 win->ContentRegionRect.Min + (ImVec2{384.f, 768.f} * App::DPIHandler::get_ui_scale()));
             drawA1();
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
             drawA2();
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 3.f);
             drawA3();
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
             drawA4();
             drawA5();
             drawTileset();
+            if (m_updateCheckerboard) {
+              m_updateCheckerboard = false;
+            }
             // ImGui::Image(m_image->texture(), imageRect);
           }
           ImGui::EndChild();
-          ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 10.f);
+          ImGui::SetCursorPosY(ImGui::GetContentRegionMax().y - 50.f);
           ImGui::BeginChild("##orpg_database_tilesets_selection_tabs", ImVec2{App::DPIHandler::scale_value(894), App::DPIHandler::scale_value(50)}, ImGuiChildFlags_Border,
                             ImGuiWindowFlags_NoBackground);
           {
@@ -426,7 +428,7 @@ void DBTilesetsTab::drawA1() {
   const int tilesetWidth = m_image->imageWidth();
   const int tilesetHeight = m_image->imageHeight();
   if (m_updateCheckerboard) {
-    checkerBoardHeight += 1.0f * tilesetHeight;
+    checkerBoardHeight += 2;
   }
 
   ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));
@@ -573,7 +575,7 @@ void DBTilesetsTab::drawA2() {
   const int tilesetWidth = m_image->imageWidth();
   const int tilesetHeight = m_image->imageHeight();
   if (m_updateCheckerboard) {
-    checkerBoardHeight += 1.0f * tilesetHeight;
+    checkerBoardHeight += 4;
   }
   ImVec2 uvTileSize = ImVec2(1.0f / (tilesetWidth / tileSize), 1.0f / (tilesetHeight / tileSize));
 
@@ -619,7 +621,7 @@ void DBTilesetsTab::drawA3() {
   const int tilesetWidth = m_image->imageWidth();
   const int tilesetHeight = m_image->imageHeight();
   if (m_updateCheckerboard) {
-    checkerBoardHeight += 1.0f * tilesetHeight;
+    checkerBoardHeight += 4;
   }
   ImVec2 uvTileSize = ImVec2(1.0f / (tilesetWidth / 96), 1.0f / (tilesetHeight / 96));
 
@@ -663,7 +665,7 @@ void DBTilesetsTab::drawA4() {
   const int tilesetWidth = m_image->imageWidth();
   const int tilesetHeight = m_image->imageHeight();
   if (m_updateCheckerboard) {
-    checkerBoardHeight += 1.0f * tilesetHeight;
+    checkerBoardHeight += 5;
   }
   ImVec2 uvTileSize = ImVec2(1.0f / (tilesetWidth / tileSize), 1.0f / (tilesetHeight / tileSize));
 
@@ -715,8 +717,7 @@ void DBTilesetsTab::drawA5() {
   const int tilesetWidth = m_image->imageWidth();
   const int tilesetHeight = m_image->imageHeight();
   if (m_updateCheckerboard) {
-    checkerBoardHeight += 1.0f * tilesetHeight;
-    m_updateCheckerboard = false;
+    // checkerBoardHeight += 18;
   }
   ImVec2 uvTileSize = ImVec2(1.0f / (tilesetWidth / tileSize), 1.0f / (tilesetHeight / tileSize));
 

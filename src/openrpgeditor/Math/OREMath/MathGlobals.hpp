@@ -42,5 +42,7 @@ constexpr T oAbs(const T& t) {
   return t >= 0 ? t : -t;
 }
 
-constexpr int oRound(const double d) { return d >= 0.0 ? static_cast<int>(d + 0.5) : static_cast<int>(d - static_cast<double>(static_cast<int>(d - 1)) + 0.5) + static_cast<int>(d - 1); }
+constexpr int64_t oRound(const double d) {
+  return d >= 0.0 ? static_cast<int64_t>(d + 0.5) : static_cast<int64_t>(d - static_cast<double>(static_cast<int64_t>(d - 1)) + 0.5) + static_cast<int64_t>(d - 1);
+}
 constexpr int oRound(const float d) { return d >= 0.0f ? static_cast<int>(d + 0.5f) : static_cast<int>(d - static_cast<float>(static_cast<int>(d - 1)) + 0.5f) + static_cast<int>(d - 1); }

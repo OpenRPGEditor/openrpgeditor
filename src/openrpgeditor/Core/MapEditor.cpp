@@ -7,6 +7,7 @@
 #include "Core/ImGuiExt/ImGuiNotify.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 
+#include "Tilemap/TilePalette.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
 
@@ -424,11 +425,20 @@ void MapEditor::renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer
   renderLayerTex(win, layer.tileLayers[8]); // E
   // renderLayerRects(win, layer);
 }
+
+static std::optional<TilePalette> palette;
+
 void MapEditor::draw() {
   if (m_mapInfo != nullptr && m_mapInfo->map() != nullptr && m_mapRenderer.map() != m_mapInfo->map()) {
     m_mapRenderer.setMap(m_mapInfo->map(), Database::instance()->tilesets.tileset(m_mapInfo->map()->tilesetId()));
     m_tempMapWidth = m_mapInfo->map()->width();
     m_tempMapHeight = m_mapInfo->map()->height();
+    if (!palette) {
+      palette.emplace();
+    }
+    palette->setTilesetNames(Database::instance()->tilesets.tileset(m_mapInfo->map()->tilesetId())->tilesetNames());
+    palette->setPageIndex(0);
+    palette->paintTiles();
   }
 
   if (!m_checkeredBack) {
@@ -444,6 +454,33 @@ void MapEditor::draw() {
   m_mapScale = std::clamp(m_mapScale, .25f, 4.f);
 
   std::erase_if(m_eventEditors, [](EventEditor& editor) { return !editor.draw(); });
+
+  if (map()) {
+    static int page = 0;
+    ImGui::BeginDisabled(!palette->isPageValid(0));
+    { ImGui::RadioButton("A", &page, 0); }
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    ImGui::BeginDisabled(!palette->isPageValid(1));
+    { ImGui::RadioButton("B", &page, 1); }
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    ImGui::BeginDisabled(!palette->isPageValid(2));
+    { ImGui::RadioButton("C", &page, 2); }
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    ImGui::BeginDisabled(!palette->isPageValid(3));
+    { ImGui::RadioButton("D", &page, 3); }
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    ImGui::BeginDisabled(!palette->isPageValid(4));
+    { ImGui::RadioButton("E", &page, 4); }
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    ImGui::RadioButton("R", &page, -1);
+    palette->setPageIndex(page);
+    ImGui::Image(static_cast<ImTextureID>(*palette), static_cast<ImVec2>(palette->imageSize()));
+  }
 
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoTitleBar)) {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(45.f)), 0, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);

@@ -141,7 +141,6 @@ void MapRenderer::paintTiles(int startX, int startY, int x, int y) {
 
 void MapRenderer::drawTile(MapLayer& layer, int tileId, int dx, int dy) {
   if (TileHelper::isVisibleTile(tileId)) {
-    assert(tileId != 0);
     if (TileHelper::isAutoTile(tileId)) {
       drawAutoTile(layer, tileId, dx, dy);
     } else {

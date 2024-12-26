@@ -1,21 +1,88 @@
 ﻿#pragma once
 
+#include "Core/Graphics/CheckerboardTexture.hpp"
+#include "Core/ResourceManager.hpp"
 #include "Core/Tilemap/ITileView.hpp"
+#include "Database/Tileset.hpp"
+#include "TileRenderHelper.hpp"
+
+#include <IconsFontAwesome6.h>
 #include <array>
 #include <string>
 #include <vector>
 
 class TilePalette : public ITileView {
 public:
-  std::vector<int> paletteTiles(int x, int y, int mode, bool checkSpecial) const;
+  static constexpr int kMaxColumns = 8;
+  std::vector<int> paletteTiles(int x, int y, Tileset::Mode mode, bool checkSpecial) const;
+
+  explicit TilePalette(const int tileWidth = 48, const int tileHeight = 48, const int blockWidth = 96, const int blockHeight = 96)
+  : ITileView(tileWidth, tileHeight, blockWidth, blockHeight), m_renderHelper(tileWidth, tileHeight), m_checkerboardTexture(32, 32) {}
+  void setMode(const Tileset::Mode mode) { m_tilesetMode = mode; }
+  Tileset::Mode mode() const { return m_tilesetMode; }
+
+  void setRegionMode() { m_isRegionMode = true; }
+  void setMapMode() { m_isRegionMode = false; }
+  bool isMapMode() const { return !m_isRegionMode; }
+  bool isRegionMode() const { return m_isRegionMode; }
 
   int pageIndex() const { return m_pageIndex; }
-  void setPageIndex(const int index) { m_pageIndex = index; }
+  void setPageIndex(const int page) {
+    if (page == m_pageIndex) {
+      return;
+    }
 
-  void setTilesetNames(const std::array<std::string, 9>& tilesetNames) { m_tilesetNames = tilesetNames; }
+    if (page == -1) {
+      setRegionMode();
+    } else {
+      setMapMode();
+    }
+    m_pageIndex = page;
+    updateMaxRows();
+    updateRenderTexture();
+    paintTiles();
+  }
+
+  bool tilesetExists(const int idx) const { return !m_tilesetNames[idx].empty(); }
+  bool isPageValid(const int page) const {
+    if (page == 0) {
+      bool ret = false;
+      for (int i = 0; i < 5; ++i) {
+        ret |= tilesetExists(i);
+      }
+      return ret;
+    }
+
+    return tilesetExists(4 + page);
+  }
+  void setTilesetNames(const std::array<std::string, 9>& tilesetNames);
+
+  void paintTiles();
+
+  int maxRows() const { return m_maxRows; }
+
+  Size paletteSize() const { return {kMaxColumns, m_maxRows}; }
+  Rect paletteRect() const { return {{}, paletteSize()}; }
+  bool isPointContained(const Point& point) const { return paletteRect().contains(point); }
+
+  Point imageSize() const { return {static_cast<int>(kMaxColumns * realTileWidth()), static_cast<int>(m_maxRows * realTileHeight())}; }
+
+  explicit operator ImTextureID() const { return m_finalResult.operator ImTextureID(); }
 
 private:
+  void updateMaxRows();
+  void updateRenderTexture();
+  void paintTile(RenderImage& image, const Point& point);
+
   static std::vector<int> makeTileIdList(int tileId1, int tileId2, int tileId3);
-  int m_pageIndex = 0;
+  TileRenderHelper m_renderHelper;
+  bool m_isRegionMode = false;
+  int m_pageIndex = 1;
+  int m_maxRows = 0;
+  Tileset::Mode m_tilesetMode{};
   std::array<std::string, 9> m_tilesetNames;
+  std::array<Texture, 9> m_textures;
+  RenderImage m_painter;
+  RenderImage m_finalResult;
+  CheckerboardTexture m_checkerboardTexture;
 };

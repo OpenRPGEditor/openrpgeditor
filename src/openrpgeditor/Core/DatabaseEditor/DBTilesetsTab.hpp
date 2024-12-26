@@ -32,6 +32,7 @@ private:
   std::optional<ImagePicker> m_imagePicker;
   std::optional<Image> m_image;
   CheckerboardTexture m_checkerboardTexture{};
+  CheckerboardTexture m_checkerboardTexture2{};
 
   const int tileSize = 48;                             // Tile size in pixels
   const int gridCols = 16;                             // Number of tiles per row
@@ -42,5 +43,5 @@ private:
   void drawA3();
   void drawA4();
   void drawA5();
-  void drawTileset();
+  void drawTileset(int type);
 };

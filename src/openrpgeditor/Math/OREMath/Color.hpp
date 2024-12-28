@@ -16,13 +16,13 @@ struct Color {
   explicit Color(Spec spec);
   Color(const int r, const int g, const int b, const int alpha = 255) { setRgb(r, g, b, alpha); }
   void setRgb(int r, int g, int b, int alpha = 255);
-  Rgb rgba() const;
+  [[nodiscard]] Rgb rgba() const;
   void setHsv(int h, int s, int v, int alpha = 255);
   void setHsl(int h, int s, int v, int alpha = 255);
   void setCmyk(int c, int m, int y, int k, int alpha = 255);
   void invalidate();
 
-  Color toRgb() const;
+  [[nodiscard]] Color toRgb() const;
 
   static Color fromRgb(int r, int g, int b, int alpha = 255);
   static Color fromHsv(int h, int s, int v, int alpha = 255);
@@ -77,5 +77,5 @@ private:
       uint16_t pad;
     } ahsl;
     uint16_t array[5];
-  } m_color;
+  } m_color{};
 };

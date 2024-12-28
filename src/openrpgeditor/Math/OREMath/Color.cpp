@@ -227,7 +227,7 @@ Color Color::toRgb() const {
 
 Color Color::fromRgb(const int r, const int g, const int b, int alpha) {
   if (!isRgbaValid(r, g, b, alpha)) {
-    return Color();
+    return {};
   }
 
   Color color;
@@ -241,7 +241,7 @@ Color Color::fromRgb(const int r, const int g, const int b, int alpha) {
 }
 Color Color::fromHsv(const int h, const int s, const int v, const int alpha) {
   if (((h < 0 || h >= 360) && h != -1) || s < 0 || s > 255 || v < 0 || v > 255 || alpha < 0 || alpha > 255) {
-    return Color();
+    return {};
   }
   Color color;
   color.m_spec = Spec::Hsv;
@@ -255,7 +255,7 @@ Color Color::fromHsv(const int h, const int s, const int v, const int alpha) {
 
 Color Color::fromHsl(const int h, const int s, const int l, const int alpha) {
   if (((h < 0 || h >= 360) && h != -1) || s < 0 || s > 255 || l < 0 || l > 255 || alpha < 0 || alpha > 255) {
-    return Color();
+    return {};
   }
   Color color;
   color.m_spec = Spec::Hsl;
@@ -269,7 +269,7 @@ Color Color::fromHsl(const int h, const int s, const int l, const int alpha) {
 
 Color Color::fromCmyk(const int c, const int m, const int y, const int k, const int alpha) {
   if (c < 0 || c > 255 || m < 0 || m > 255 || y < 0 || y > 255 || k < 0 || k > 255 || alpha < 0 || alpha > 255) {
-    return Color();
+    return {};
   }
   Color color;
   color.m_spec = Spec::Cmyk;

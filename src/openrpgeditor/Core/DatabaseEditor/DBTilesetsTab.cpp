@@ -793,14 +793,16 @@ void DBTilesetsTab::drawTileset(int type) {
       //  }
       ImVec2 cursorPos = ImGui::GetCursorPos();
       ImGui::Image(m_image->texture(), tileRect, uv0, uv1);
+      ImGui::PopID();
       ImGui::SetCursorPos(cursorPos);
+      ImGui::PushID(std::format("##orpg_database_tileset_{}_flag_{} ", type, y * gridCols + x).c_str());
       if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(), m_tileMarker->uv1(), ImVec4(0.0f, 0.0f, 0.0f, 0.0f),
                              ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {
         printf("Tile clicked: (%d, %d)\n", x, y);
       }
+      ImGui::PopID();
       ImGui::PopStyleColor(3);
       ImGui::PopStyleVar(2);
-      ImGui::PopID();
       ImGui::SameLine();
     }
     ImGui::NewLine(); // Move to the next row

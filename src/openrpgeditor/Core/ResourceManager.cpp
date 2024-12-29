@@ -2,6 +2,7 @@
 
 #include "Core/Log.hpp"
 #include "Core/Utils.hpp"
+#include "Resources.hpp"
 #include "SDL2/SDL.h"
 #include "SFML/Audio/SoundBuffer.hpp"
 #include <exception>
@@ -152,11 +153,12 @@ Texture ResourceManager::loadTitle2Image(std::string_view path) {
   std::string fullpath = (m_titles2Path / path).replace_extension(".png").generic_string();
   return loadTexture(fullpath);
 }
-Texture ResourceManager::loadEditorTexture(int width, int height) {
-  fs::path relativePath = std::format("../../../src/assets/images/tilemarkers_{}x{}.png", width, height);
 
-  return loadTexture(relativePath.string());
+Texture ResourceManager::loadTileMarkers(int width, int height) {
+  fs::path relativePath = std::format("tilemarkers_{}x{}.png", width, height);
+  return loadTexture(loadEditorTexture(relativePath.generic_string()));
 }
+std::string ResourceManager::loadEditorTexture(std::string path) { return App::Resources::image_path(path).string(); }
 
 std::vector<std::string> ResourceManager::getDirectoryContents(const std::string& directoryPath, const std::string_view filter) const {
   std::vector<std::string> fileNames;

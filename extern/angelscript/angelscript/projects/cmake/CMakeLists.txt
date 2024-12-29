@@ -6,7 +6,7 @@ option(BUILD_SHARED_LIBS "Build shared library" OFF)
 option(AS_NO_EXCEPTIONS "Disable exception handling in script context" OFF)
 
 if (MSVC)
-    set(MSVC_COMPILE_FLAGS "/MP /FS" CACHE STRING "Compiler flags to use with MSVC")
+    set(MSVC_COMPILE_FLAGS /MP /FS CACHE STRING "Compiler flags to use with MSVC")
 endif ()
 
 if (APPLE)

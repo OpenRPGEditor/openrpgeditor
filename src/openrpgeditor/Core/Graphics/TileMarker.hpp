@@ -20,6 +20,6 @@ struct TileMarker {
 private:
   Texture m_imageTexture;
   int m_markerType{0};
-  const int m_imageWidth{5};
-  const int m_imageHeight{5};
+  const int m_imageWidth{16};
+  const int m_imageHeight{16};
 };

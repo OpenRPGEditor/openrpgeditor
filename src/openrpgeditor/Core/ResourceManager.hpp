@@ -22,6 +22,7 @@ public:
   sf::SoundBuffer loadBGM(std::string_view path) const;
   sf::SoundBuffer loadBGS(std::string_view path) const;
   sf::SoundBuffer loadSE(std::string_view path) const;
+  Texture loadEditorTexture(int width, int height);
   Texture loadImage(std::string_view path);
   Texture loadAnimationImage(std::string_view path);
   Texture loadBattlebacks1Image(std::string_view path);

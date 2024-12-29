@@ -417,7 +417,9 @@ add_library(
         Core/Tilemap/TilePalette.cpp
         Core/Tilemap/TilePalette.hpp
         Core/Tilemap/TileRenderHelper.cpp
-        Core/Tilemap/TileRenderHelper.hpp)
+        Core/Tilemap/TileRenderHelper.hpp
+        Core/Graphics/TileMarker.cpp
+        Core/Graphics/TileMarker.hpp)
 
 target_include_directories(
         orecore

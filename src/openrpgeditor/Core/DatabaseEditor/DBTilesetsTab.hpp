@@ -2,6 +2,7 @@
 #include "Core/CommonUI/ImagePicker.hpp"
 #include "Core/DPIHandler.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include "Core/Graphics/TileMarker.hpp"
 #include "Database/Tilesets.hpp"
 
 class DBTilesetsTab final : public IDBEditorTab {
@@ -31,6 +32,8 @@ private:
 
   std::optional<ImagePicker> m_imagePicker;
   std::optional<Image> m_image;
+  std::optional<TileMarker> m_tileMarker;
+
   CheckerboardTexture m_checkerboardTexture{};
   CheckerboardTexture m_checkerboardTexture2{};
 

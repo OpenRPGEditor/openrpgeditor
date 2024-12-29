@@ -152,6 +152,11 @@ Texture ResourceManager::loadTitle2Image(std::string_view path) {
   std::string fullpath = (m_titles2Path / path).replace_extension(".png").generic_string();
   return loadTexture(fullpath);
 }
+Texture ResourceManager::loadEditorTexture(int width, int height) {
+  fs::path relativePath = std::format("../../../src/assets/images/tilemarkers_{}x{}.png", width, height);
+
+  return loadTexture(relativePath.string());
+}
 
 std::vector<std::string> ResourceManager::getDirectoryContents(const std::string& directoryPath, const std::string_view filter) const {
   std::vector<std::string> fileNames;

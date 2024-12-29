@@ -3,6 +3,7 @@ set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/MPLUSRounded1c-M
 set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/NotoSansSinhala-Medium.ttf)
 set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/JetBrainsMono-Medium.ttf)
 set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/fonts/mplus-1m-regular.ttf)
+set(SHARED_STATIC_ASSETS ${PROJECT_SOURCE_DIR}/src/assets/images/tilemarkers_64x80.png)
 
 # Platform specific static assets
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")

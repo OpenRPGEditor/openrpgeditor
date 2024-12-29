@@ -95,7 +95,7 @@ void TilePalette::updateMaxRows() {
     return;
   }
 
-  uint maxRows = 32;
+  int maxRows = 32;
 
   if (m_pageIndex == 0) {
     maxRows = 0;

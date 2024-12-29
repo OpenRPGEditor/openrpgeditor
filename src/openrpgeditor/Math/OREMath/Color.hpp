@@ -49,11 +49,11 @@ private:
   Spec m_spec{};
   union {
     struct {
-      ushort alpha;
-      ushort red;
-      ushort green;
-      ushort blue;
-      ushort pad;
+      uint16_t alpha;
+      uint16_t red;
+      uint16_t green;
+      uint16_t blue;
+      uint16_t pad;
     } argb;
     struct {
       uint16_t alpha;

@@ -210,9 +210,10 @@ void DBTilesetsTab::draw() {
         ImGui::EndChild();
 
         ImGui::SameLine();
-        ImGui::BeginChild("##orpg_tilesets_tileset_panel_middle", ImVec2{App::DPIHandler::scale_value(400), App::DPIHandler::scale_value(1536)});
+        ImGui::BeginChild("##orpg_tilesets_tileset_panel_middle", ImVec2{App::DPIHandler::scale_value(400), App::DPIHandler::scale_value(850)});
         {
-          ImGui::BeginChild("##orpg_database_tilesets_viewer", ImVec2{App::DPIHandler::scale_value(400), 1536}, ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar);
+          ImGui::BeginChild("##orpg_database_tilesets_viewer", ImVec2{App::DPIHandler::scale_value(400), 1536}, ImGuiChildFlags_Border,
+                            ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
           {
             // for (auto& tilesetF : m_selectedTileset->flags()) {
             //   int test = 1;
@@ -249,7 +250,62 @@ void DBTilesetsTab::draw() {
           ImGui::EndChild();
         }
         ImGui::EndChild();
-        ImGui::SetCursorPosY(ImGui::GetContentRegionMax().y - 50.f);
+        ImGui::SameLine();
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 8.f);
+        ImGui::BeginChild("##orpg_tilesets_tileset_panel_right");
+        {
+          ImGui::BeginGroup();
+          {
+            ImGui::PushID("##orpg_tileset_flags_passage");
+            if (ImGui::Button("Passage", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+          ImGui::BeginGroup();
+          {
+            ImGui::PushID("##orpg_tileset_flags_passage_4dir");
+            if (ImGui::Button("Passage (4 dir)", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+          ImGui::BeginGroup();
+          {
+            ImGui::PushID("##orpg_tileset_flags_ladder");
+            if (ImGui::Button("Ladder", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+          ImGui::BeginGroup();
+          {
+            ImGui::PushID("##orpg_tileset_flags_bush");
+            if (ImGui::Button("Bush", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+          ImGui::BeginGroup();
+          {
+            ImGui::PushID("##orpg_tileset_flags_counter");
+            if (ImGui::Button("Counter", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+          ImGui::BeginGroup();
+          {
+            ImGui::PushID("##orpg_tileset_flags_damagefloor");
+            if (ImGui::Button("Damage Floor", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+          ImGui::BeginGroup();
+          {
+            ImGui::PushID("##orpg_tileset_flags_terraintag");
+            if (ImGui::Button("Terrain Tag", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
+            ImGui::PopID();
+          }
+          ImGui::EndGroup();
+        }
+        ImGui::EndChild();
+        ImGui::SetCursorPosY(ImGui::GetContentRegionMax().y - 54.f);
         ImGui::BeginChild("##orpg_database_tilesets_selection_tabs", ImVec2{App::DPIHandler::scale_value(894), App::DPIHandler::scale_value(50)}, ImGuiChildFlags_Border,
                           ImGuiWindowFlags_NoBackground);
         {
@@ -334,61 +390,6 @@ void DBTilesetsTab::draw() {
           currentColor = normalColor;
         }
         ImGui::EndChild();
-        ImGui::SameLine();
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 8.f);
-        ImGui::BeginChild("##orpg_tilesets_tileset_panel_right");
-        {
-          ImGui::BeginGroup();
-          {
-            ImGui::PushID("##orpg_tileset_flags_passage");
-            if (ImGui::Button("Passage", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
-            ImGui::PopID();
-          }
-          ImGui::EndGroup();
-          ImGui::BeginGroup();
-          {
-            ImGui::PushID("##orpg_tileset_flags_passage_4dir");
-            if (ImGui::Button("Passage (4 dir)", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
-            ImGui::PopID();
-          }
-          ImGui::EndGroup();
-          ImGui::BeginGroup();
-          {
-            ImGui::PushID("##orpg_tileset_flags_ladder");
-            if (ImGui::Button("Ladder", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
-            ImGui::PopID();
-          }
-          ImGui::EndGroup();
-          ImGui::BeginGroup();
-          {
-            ImGui::PushID("##orpg_tileset_flags_bush");
-            if (ImGui::Button("Bush", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
-            ImGui::PopID();
-          }
-          ImGui::EndGroup();
-          ImGui::BeginGroup();
-          {
-            ImGui::PushID("##orpg_tileset_flags_counter");
-            if (ImGui::Button("Counter", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
-            ImGui::PopID();
-          }
-          ImGui::EndGroup();
-          ImGui::BeginGroup();
-          {
-            ImGui::PushID("##orpg_tileset_flags_damagefloor");
-            if (ImGui::Button("Damage Floor", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
-            ImGui::PopID();
-          }
-          ImGui::EndGroup();
-          ImGui::BeginGroup();
-          {
-            ImGui::PushID("##orpg_tileset_flags_terraintag");
-            if (ImGui::Button("Terrain Tag", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
-            ImGui::PopID();
-          }
-          ImGui::EndGroup();
-        }
-        ImGui::EndChild();
       }
       ImGui::EndChild();
     }
@@ -459,126 +460,125 @@ void DBTilesetsTab::drawA1() {
 
   ImVec2 uv0_1 = ImVec2(0 * uvTileSize.x, 0 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_1 = ImVec2((0 + 1) * uvTileSize.x, (0 + 1) * uvTileSize.y); // Bottom-right UV
-  // ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_1", m_image->texture(), tileRect, uv0_1, uv1_1, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_1, uv1_1);
   ImGui::SameLine();
 
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
   ImVec2 uv0_2 = ImVec2(0 * uvTileSize.x, 3 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_2 = ImVec2((0 + 1) * uvTileSize.x, (3 + 1) * uvTileSize.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_2", m_image->texture(), tileRect, uv0_2, uv1_2, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_2, uv1_2);
   ImGui::SameLine();
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
   ImVec2 a1_5Cursor = ImGui::GetCursorPos();
   ImVec2 uv0_3 = ImVec2((0 * uvTileSize.x) + uvTileSizeTest.x, (0 * uvTileSize.y) + uvTileSizeTest.y);             // Top-left UV
   ImVec2 uv1_3 = ImVec2(((0 + 1) * uvTileSize.x) + uvTileSizeTest.x, ((0 + 1) * uvTileSize.y) + uvTileSizeTest.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_3", m_image->texture(), tileRect, uv0_3, uv1_3, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_3, uv1_3);
   ImGui::SameLine();
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
   // ImVec2 a1_6Cursor = ImGui::GetCursorPos();
   ImVec2 uv0_4 = ImVec2((0 * uvTileSize.x) + uvTileSizeTest.x, (0 * uvTileSize.y) + uvTileSizeTest.y);             // Top-left UV
   ImVec2 uv1_4 = ImVec2(((0 + 1) * uvTileSize.x) + uvTileSizeTest.x, ((0 + 1) * uvTileSize.y) + uvTileSizeTest.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_4", m_image->texture(), tileRect, uv0_4, uv1_4, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_4, uv1_4);
   // Masks
   ImGui::SetCursorPos(a1_5Cursor);
   ImVec2 uv0_5 = ImVec2(6 * uvTileSize.x, 0 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_5 = ImVec2((6 + 1) * uvTileSize.x, (0 + 1) * uvTileSize.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_5", m_image->texture(), tileRect, uv0_5, uv1_5, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_5, uv1_5);
   ImGui::SameLine();
 
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
   ImVec2 uv0_6 = ImVec2(6 * uvTileSize.x, 3 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_6 = ImVec2((6 + 1) * uvTileSize.x, (3 + 1) * uvTileSize.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_6", m_image->texture(), tileRect, uv0_6, uv1_6, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_6, uv1_6);
   ImGui::SameLine();
 
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
   ImVec2 uv0_7 = ImVec2(8 * uvTileSize.x, 0 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_7 = ImVec2((8 + 1) * uvTileSize.x, (0 + 1) * uvTileSize.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_7", m_image->texture(), tileRect, uv0_7, uv1_7, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_7, uv1_7);
   ImGui::SameLine();
 
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
   ImVec2 uv0_8 = ImVec2(14 * uvTileSize.x, 0 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_8 = ImVec2((14 + 1) * uvTileSize.x, (0 + 1) * uvTileSize.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_8", m_image->texture(), tileRect, uv0_8, uv1_8, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_8, uv1_8);
   ImGui::SameLine();
 
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
   ImVec2 uv0_9 = ImVec2(8 * uvTileSize.x, 3 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_9 = ImVec2((8 + 1) * uvTileSize.x, (3 + 1) * uvTileSize.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_9", m_image->texture(), tileRect, uv0_9, uv1_9, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_9, uv1_9);
   ImGui::SameLine();
 
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
   ImVec2 uv0_10 = ImVec2(14 * uvTileSize.x, 3 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_10 = ImVec2((14 + 1) * uvTileSize.x, (3 + 1) * uvTileSize.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_10", m_image->texture(), tileRect, uv0_10, uv1_10, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_10, uv1_10);
   // ImGui::NewLine();
   ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
 
   // ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 8.f);
   ImVec2 uv0_11 = ImVec2(0 * uvTileSize.x, 6 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_11 = ImVec2((0 + 1) * uvTileSize.x, (6 + 1) * uvTileSize.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_11", m_image->texture(), tileRect, uv0_11, uv1_11, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_11, uv1_11);
   ImGui::SameLine();
 
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
   ImVec2 uv0_12 = ImVec2(8 * uvTileSize.x, 6 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_12 = ImVec2((8 + 1) * uvTileSize.x, (6 + 1) * uvTileSize.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_12", m_image->texture(), tileRect, uv0_12, uv1_12, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_12, uv1_12);
   ImGui::SameLine();
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
   ImVec2 uv0_13 = ImVec2(0 * uvTileSize.x, 9 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_13 = ImVec2((0 + 1) * uvTileSize.x, (9 + 1) * uvTileSize.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_13", m_image->texture(), tileRect, uv0_13, uv1_13, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_13, uv1_13);
   ImGui::SameLine();
 
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
   ImVec2 uv0_14 = ImVec2(8 * uvTileSize.x, 9 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_14 = ImVec2((8 + 1) * uvTileSize.x, (9 + 1) * uvTileSize.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_14", m_image->texture(), tileRect, uv0_14, uv1_14, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_14, uv1_14);
   ImGui::SameLine();
 
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
   ImVec2 uv0_15 = ImVec2(8 * uvTileSize.x, 6 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_15 = ImVec2((8 + 1) * uvTileSize.x, (6 + 1) * uvTileSize.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_15", m_image->texture(), tileRect, uv0_15, uv1_15, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_15, uv1_15);
   ImGui::SameLine();
 
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
   ImVec2 uv0_16 = ImVec2(14 * uvTileSize.x, 6 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_16 = ImVec2((14 + 1) * uvTileSize.x, (6 + 1) * uvTileSize.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_16", m_image->texture(), tileRect, uv0_16, uv1_16, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_16, uv1_16);
   ImGui::SameLine();
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
   ImVec2 uv0_17 = ImVec2(8 * uvTileSize.x, 9 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_17 = ImVec2((8 + 1) * uvTileSize.x, (9 + 1) * uvTileSize.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_17", m_image->texture(), tileRect, uv0_17, uv1_17, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_17, uv1_17);
   ImGui::SameLine();
 
   ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
   ImVec2 uv0_18 = ImVec2(14 * uvTileSize.x, 9 * uvTileSize.y);             // Top-left UV
   ImVec2 uv1_18 = ImVec2((14 + 1) * uvTileSize.x, (9 + 1) * uvTileSize.y); // Bottom-right UV
-  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_a1_editor_18", m_image->texture(), tileRect, uv0_18, uv1_18, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {}
 
+  ImGui::Image(m_image->texture(), tileRect, uv0_18, uv1_18);
   ImGui::PopStyleColor(3);
   ImGui::PopStyleVar(2);
   m_image.reset();
@@ -613,10 +613,7 @@ void DBTilesetsTab::drawA2() {
       ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0, 0});
 
       ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
-      if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_image->texture(), tileRect, uv0, uv1, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {
-        printf("Tile clicked: (%d, %d)\n", x, y);
-      }
-
+      ImGui::Image(m_image->texture(), tileRect, uv0, uv1);
       ImGui::PopStyleColor(3);
       ImGui::PopStyleVar(2);
       x += 1;
@@ -659,10 +656,8 @@ void DBTilesetsTab::drawA3() {
       ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0, 0});
 
       ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
-      if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_image->texture(), tileRect, uv0, uv1, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {
-        printf("Tile clicked: (%d, %d)\n", x, y);
-      }
 
+      ImGui::Image(m_image->texture(), tileRect, uv0, uv1);
       ImGui::PopStyleColor(3);
       ImGui::PopStyleVar(2);
       ImGui::PopID();
@@ -704,10 +699,8 @@ void DBTilesetsTab::drawA4() {
       ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0, 0});
 
       ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
-      if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_image->texture(), tileRect, uv0, uv1, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {
-        printf("Tile clicked: (%d, %d)\n", x, y);
-      }
 
+      ImGui::Image(m_image->texture(), tileRect, uv0, uv1);
       ImGui::PopStyleColor(3);
       ImGui::PopStyleVar(2);
       x += 1;
@@ -755,10 +748,8 @@ void DBTilesetsTab::drawA5() {
       ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0, 0});
 
       ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
-      if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_image->texture(), tileRect, uv0, uv1, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {
-        printf("Tile clicked: (%d, %d)\n", x, y);
-      }
 
+      ImGui::Image(m_image->texture(), tileRect, uv0, uv1);
       ImGui::PopStyleColor(3);
       ImGui::PopStyleVar(2);
       ImGui::PopID();
@@ -775,6 +766,7 @@ void DBTilesetsTab::drawTileset(int type) {
     return;
 
   m_image.emplace(m_selectedTileset->tilesetNames().at(type), static_cast<int>(ImagePicker::PickerMode::Tileset), false);
+  m_tileMarker.emplace(0, 64, 80);
   const int tilesetWidth = m_image->imageWidth();
   const int tilesetHeight = m_image->imageHeight();
   ImVec2 uvTileSize = ImVec2(1.0f / (tilesetWidth / tileSize), 1.0f / (tilesetHeight / tileSize));
@@ -795,12 +787,17 @@ void DBTilesetsTab::drawTileset(int type) {
       ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.f, 0.f, 0.f, 0.f));
       ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.f);
       ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0, 0});
-
       ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
-      if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_image->texture(), tileRect, uv0, uv1, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {
+      //  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_image->texture(), tileRect, uv0, uv1, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {
+      //    printf("Tile clicked: (%d, %d)\n", x, y);
+      //  }
+      ImVec2 cursorPos = ImGui::GetCursorPos();
+      ImGui::Image(m_image->texture(), tileRect, uv0, uv1);
+      ImGui::SetCursorPos(cursorPos);
+      if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(), m_tileMarker->uv1(), ImVec4(0.0f, 0.0f, 0.0f, 0.0f),
+                             ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {
         printf("Tile clicked: (%d, %d)\n", x, y);
       }
-
       ImGui::PopStyleColor(3);
       ImGui::PopStyleVar(2);
       ImGui::PopID();
@@ -830,9 +827,10 @@ void DBTilesetsTab::drawTileset(int type) {
       ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0, 0});
 
       ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
-      if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_image->texture(), tileRect, uv0, uv1, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {
-        printf("Tile clicked: (%d, %d)\n", x, y);
-      }
+      // if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_image->texture(), tileRect, uv0, uv1, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {
+      //   printf("Tile clicked: (%d, %d)\n", x, y);
+      // }
+      ImGui::Image(m_image->texture(), tileRect, uv0, uv1);
 
       ImGui::PopStyleColor(3);
       ImGui::PopStyleVar(2);

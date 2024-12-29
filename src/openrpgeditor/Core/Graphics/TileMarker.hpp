@@ -4,6 +4,8 @@
 #include "Database/Globals.hpp"
 
 struct TileMarker {
+  static constexpr int kNumColumns = 4;
+  static constexpr int kNumRows = 5;
   TileMarker() = delete;
 
   explicit TileMarker(int markerType, int width, int height);
@@ -20,6 +22,6 @@ struct TileMarker {
 private:
   Texture m_imageTexture;
   int m_markerType{0};
-  const int m_imageWidth{16};
-  const int m_imageHeight{16};
+  int m_imageWidth{16};
+  int m_imageHeight{16};
 };

@@ -1,6 +1,7 @@
 #include "Core/ResourceManager.hpp"
 
 #include "Core/Log.hpp"
+#include "Core/Resources.hpp"
 #include "Core/Utils.hpp"
 #include "Resources.hpp"
 #include "SDL2/SDL.h"

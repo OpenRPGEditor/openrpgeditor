@@ -766,11 +766,12 @@ void DBTilesetsTab::drawTileset(int type) {
     return;
 
   m_image.emplace(m_selectedTileset->tilesetNames().at(type), static_cast<int>(ImagePicker::PickerMode::Tileset), false);
-  m_tileMarker.emplace(0, 64, 80);
+  m_tileMarker.emplace(TileFlags::None, 1, 64, 80);
   const int tilesetWidth = m_image->imageWidth();
   const int tilesetHeight = m_image->imageHeight();
   ImVec2 uvTileSize = ImVec2(1.0f / (tilesetWidth / tileSize), 1.0f / (tilesetHeight / tileSize));
   checkerBoardHeight = 32;
+  int tileIndex{0};
   for (int y = 0; y < tilesetHeight / tileSize; ++y) {
     for (int x = 0; x < gridCols / 2; ++x) {
       if (x == 0) {
@@ -796,14 +797,23 @@ void DBTilesetsTab::drawTileset(int type) {
       ImGui::PopID();
       ImGui::SetCursorPos(cursorPos);
       ImGui::PushID(std::format("##orpg_database_tileset_{}_flag_{} ", type, y * gridCols + x).c_str());
-      if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(), m_tileMarker->uv1(), ImVec4(0.0f, 0.0f, 0.0f, 0.0f),
-                             ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {
-        printf("Tile clicked: (%d, %d)\n", x, y);
+
+      bool isPassable = (m_selectedTileset->flags().at(tileIndex) & static_cast<int>(TileFlags::Impassable)) == 0;
+      bool hasHigherTile = (m_selectedTileset->flags().at(tileIndex) & static_cast<int>(TileFlags::PassageHigherTile)) != 0;
+
+      if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0() + m_tileMarker->passableOffset(isPassable, hasHigherTile),
+                             m_tileMarker->uv1() + m_tileMarker->passableOffset(isPassable, hasHigherTile), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {
+        if (isPassable) {
+          m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::None));
+        } else {
+          m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Impassable));
+        }
       }
       ImGui::PopID();
       ImGui::PopStyleColor(3);
       ImGui::PopStyleVar(2);
       ImGui::SameLine();
+      tileIndex++;
     }
     ImGui::NewLine(); // Move to the next row
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);

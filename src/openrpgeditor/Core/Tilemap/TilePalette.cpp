@@ -1,7 +1,8 @@
 ﻿#include "Core/Tilemap/TilePalette.hpp"
+#include "Core/ResourceManager.hpp"
+#include "Core/Tilemap/TileRenderHelper.hpp"
 
 #include "Database/TileHelper.hpp"
-#include "TileRenderHelper.hpp"
 
 void TilePalette::setTilesetNames(const std::array<std::string, 9>& tilesetNames) {
   m_tilesetNames = tilesetNames;
@@ -17,8 +18,8 @@ void TilePalette::setTilesetNames(const std::array<std::string, 9>& tilesetNames
 }
 
 void TilePalette::updateRenderTexture() {
-  const int width = (paletteSize().width() * realTileWidth()) + (m_spacing * (kMaxColumns + 1));
-  const int height = (paletteSize().height() * realTileHeight()) + (m_spacing * (maxRows() + 1));
+  const int width = paletteSize().width() * realTileWidth();
+  const int height = paletteSize().height() * realTileHeight();
 
   m_painter.setSize(width, height);
   m_finalResult.setSize(width, height);
@@ -88,6 +89,16 @@ std::vector<int> TilePalette::paletteTiles(int x, int y, const Tileset::Mode mod
   return makeTileIdList(-1, -1, tileId);
 }
 
+std::vector<int> TilePalette::regionTiles(const Point& point) {
+  std::vector<int> ret;
+  ret.push_back(getRegionNumber(point));
+  int i = 3;
+  while (i--) {
+    ret.push_back(-1);
+  }
+  return ret;
+}
+
 std::vector<int> TilePalette::makeTileIdList(int tileId1, int tileId2, int tileId3) { return {tileId1, tileId2, tileId3, -1}; }
 
 void TilePalette::updateMaxRows() {
@@ -117,6 +128,86 @@ void TilePalette::updateMaxRows() {
   paintTiles();
 }
 
+void TilePalette::eraseCursor() { setCursorRect({}); }
+void TilePalette::setCursorRect(const Rect& rect) {
+  if (m_cursorRect == rect) {
+    return;
+  }
+
+  m_cursorRect = rect;
+
+  updateCursorPixelRect();
+}
+
+void TilePalette::updateCursorPixelRect() {
+  const Rect rect(static_cast<int>(realTileWidth() * m_cursorRect.left()), static_cast<int>(realTileHeight() * m_cursorRect.top()), static_cast<int>(m_cursorRect.width() * realTileWidth()),
+                  static_cast<int>(m_cursorRect.height() * realTileHeight()));
+  if (rect == m_cursorPixelRect) {
+    return;
+  }
+  m_cursorPixelRect = rect;
+}
+
+void TilePalette::updatePick(const Point& point) {
+  setCursorPage(m_pageIndex);
+  setCursorRect(createRect(m_pickPoint, point) & paletteRect());
+}
+
+void TilePalette::setPenData(const Size& size, const std::vector<int>& data) {
+  m_penData = data;
+  m_penSize = size;
+}
+
+void TilePalette::onCursorDrag(const PointF& point) {
+  if (!m_isPicking) {
+    return;
+  }
+
+  updatePick(pixelPointToTilePoint(point));
+}
+void TilePalette::onCursorClicked(const PointF& point) {
+  const Point p = pixelPointToTilePoint(point);
+  if (isPointContained(p)) {
+    startPick(p);
+  }
+}
+
+void TilePalette::onCursorReleased() {
+  if (!m_isPicking) {
+    return;
+  }
+  endPick();
+}
+
+void TilePalette::endPick() {
+  std::vector<int> penData;
+  int startX = m_cursorRect.left();
+  int endX = m_cursorRect.right();
+  int startY = m_cursorRect.top();
+  int endY = m_cursorRect.bottom();
+
+  if (startY <= endY) {
+    startX = m_cursorRect.left();
+    endX = m_cursorRect.right();
+    for (; startY <= endY; ++startY) {
+      for (; startX <= endX; ++startX) {
+        if (isRegionMode()) {
+          auto tiles = regionTiles({startX, startY});
+          penData.insert(penData.end(), tiles.begin(), tiles.end());
+        } else {
+          auto tiles = paletteTiles(startX, startY, m_tilesetMode, false);
+          penData.insert(penData.end(), tiles.begin(), tiles.end());
+        }
+        endX = m_cursorRect.right();
+      }
+      startX = m_cursorRect.left();
+      endY = m_cursorRect.bottom();
+    }
+    startY = m_cursorRect.top();
+  }
+  setPenData({(endX - startX) + 1, (endY - startY) + 1}, penData);
+  m_isPicking = false;
+}
 void TilePalette::paintTiles() {
   if (!m_painter.bind()) {
     return;
@@ -131,8 +222,8 @@ void TilePalette::paintTiles() {
   m_painter.unbind();
 
   if (m_finalResult.bind()) {
-    const int width = (paletteSize().width() * realTileWidth()) + (m_spacing * (kMaxColumns + 1));
-    const int height = (paletteSize().height() * realTileHeight()) + (m_spacing * (maxRows() + 1));
+    const int width = (paletteSize().width() * realTileWidth());
+    const int height = (paletteSize().height() * realTileHeight());
     const int cols = std::ceil(static_cast<float>(width) / static_cast<float>(m_checkerboardTexture.width()));
     const int rows = std::ceil(static_cast<float>(height) / static_cast<float>(m_checkerboardTexture.height()));
     const Rect srcRect{0, 0, m_checkerboardTexture.width(), m_checkerboardTexture.height()};
@@ -150,7 +241,7 @@ void TilePalette::paintTiles() {
 }
 
 void TilePalette::paintTile(RenderImage& image, const Point& point) {
-  const RectF rect = {(point.x() * realTileWidth()) + (spacing() * (point.x() + 1)), (point.y() * realTileHeight()) + (spacing() * (point.y() + 1)), realTileWidth(), realTileHeight()};
+  const RectF rect = {(point.x() * realTileWidth()), (point.y() * realTileHeight()), realTileWidth(), realTileHeight()};
   m_renderHelper.clearRect(image, rect);
   if (!isPointContained(point)) {
     return;

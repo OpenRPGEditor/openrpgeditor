@@ -33,6 +33,7 @@ enum class DrawTool {
   Ellipse,
   Flood_Fill,
   Shadow_Pen,
+  Eraser,
 };
 
 class Project {
@@ -149,6 +150,8 @@ public:
 
   Database& database() { return m_database.value(); }
   const Database& database() const { return m_database.value(); }
+
+  const TilesetPicker& tilesetPicker() const { return m_tilesetPicker; }
 
 private:
   void onActorsLoaded();

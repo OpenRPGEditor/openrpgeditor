@@ -1,12 +1,10 @@
 ﻿#pragma once
 
 #include "Core/Graphics/CheckerboardTexture.hpp"
-#include "Core/ResourceManager.hpp"
 #include "Core/Tilemap/ITileView.hpp"
 #include "Database/Tileset.hpp"
 #include "TileRenderHelper.hpp"
 
-#include <IconsFontAwesome6.h>
 #include <array>
 #include <string>
 #include <vector>
@@ -15,9 +13,12 @@ class TilePalette : public ITileView {
 public:
   static constexpr int kMaxColumns = 8;
   std::vector<int> paletteTiles(int x, int y, Tileset::Mode mode, bool checkSpecial) const;
+  static std::vector<int> regionTiles(const Point& point);
 
   explicit TilePalette(const int tileWidth = 48, const int tileHeight = 48, const int blockWidth = 96, const int blockHeight = 96)
-  : ITileView(tileWidth, tileHeight, blockWidth, blockHeight), m_renderHelper(tileWidth, tileHeight), m_checkerboardTexture(32, 32) {}
+  : ITileView(tileWidth, tileHeight, blockWidth, blockHeight), m_renderHelper(tileWidth, tileHeight), m_checkerboardTexture(32, 32) {
+    updateCursorPixelRect();
+  }
   void setMode(const Tileset::Mode mode) { m_tilesetMode = mode; }
   Tileset::Mode mode() const { return m_tilesetMode; }
 
@@ -65,28 +66,44 @@ public:
   Rect paletteRect() const { return {{}, paletteSize()}; }
   bool isPointContained(const Point& point) const { return paletteRect().contains(point); }
 
-  Point imageSize() const {
-    return {static_cast<int>(kMaxColumns * realTileWidth()) + (m_spacing * (kMaxColumns + 1)), static_cast<int>(m_maxRows * realTileHeight()) + (m_spacing * (m_maxRows + 1))};
-  }
-
-  void setSpacing(const int spacing) {
-    m_spacing = spacing;
-    updateRenderTexture();
-    paintTiles();
-  }
-  int spacing() const { return m_spacing; }
+  Point imageSize() const { return {static_cast<int>(kMaxColumns * realTileWidth()), static_cast<int>(m_maxRows * realTileHeight())}; }
 
   explicit operator ImTextureID() const { return m_finalResult.operator ImTextureID(); }
+
+  void setPenData(const Size& size, const std::vector<int>& data);
+  const std::vector<int>& penData() const { return m_penData; }
+  const Size& penSize() const { return m_penSize; }
+
+  static int getRegionNumber(const Point& point) { return point.x() + point.y() * 8; }
+
+  void eraseCursor();
+  void setCursorRect(const Rect& rect);
+  Rect cursorRect() const { return m_cursorRect; }
+  Rect cursorPixelRect() const { return m_cursorPixelRect; }
+  void setCursorPage(const int cursorPage) { m_cursorPage = cursorPage; }
+  void startPick(const Point& point) {
+    m_pickPoint = point;
+    updatePick(point);
+    m_isPicking = true;
+  }
+  void endPick();
+
+  void onCursorDrag(const PointF& point);
+  void onCursorClicked(const PointF& point);
+  void onCursorReleased();
 
 private:
   void updateMaxRows();
   void updateRenderTexture();
+  void updateCursorPixelRect();
+  void updatePick(const Point& point);
   void paintTile(RenderImage& image, const Point& point);
 
   static std::vector<int> makeTileIdList(int tileId1, int tileId2, int tileId3);
   TileRenderHelper m_renderHelper;
   bool m_isRegionMode = false;
-  int m_pageIndex = 1;
+  int m_pageIndex = 0;
+  int m_cursorPage = 0;
   int m_maxRows = 0;
   Tileset::Mode m_tilesetMode{};
   std::array<std::string, 9> m_tilesetNames;
@@ -94,5 +111,10 @@ private:
   RenderImage m_painter;
   RenderImage m_finalResult;
   CheckerboardTexture m_checkerboardTexture;
-  int m_spacing = 3;
+  Rect m_cursorRect;
+  Rect m_cursorPixelRect;
+  std::vector<int> m_penData;
+  Size m_penSize;
+  bool m_isPicking = false;
+  Point m_pickPoint;
 };

@@ -177,6 +177,47 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     }
   }
 
+  if ((ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseDragging(ImGuiMouseButton_Left)) && m_parent->editMode() == EditMode::Map &&
+      (ImGui::IsWindowFocused() && ImGui::IsWindowHovered()) && map()) {
+    const auto& penData = m_parent->tilesetPicker().penData();
+    if (!penData.empty()) {
+      if (m_parent->tilesetPicker().isRegionMode()) {
+        map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), 5)] = penData[0];
+      } else {
+        switch (m_parent->drawTool()) {
+        case DrawTool::Pencil: {
+          for (int i = 0; i < 4; ++i) {
+            if (penData[i] == -1) {
+              continue;
+            }
+            map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), i)] = penData[i];
+            updateAutotilesAroundPoint({m_tileCursor.tileX(), m_tileCursor.tileY()}, i);
+          }
+        } break;
+        case DrawTool::Rectangle:
+          break;
+        case DrawTool::Ellipse:
+          break;
+        case DrawTool::Flood_Fill:
+          break;
+        case DrawTool::Shadow_Pen:
+          break;
+        case DrawTool::Eraser:
+          if (m_parent->tilesetPicker().isRegionMode()) {
+            // Clear region tiles
+            map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), 5)] = 0;
+          } else {
+            for (int i = 0; i < 5; ++i) {
+              map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), i)] = 0;
+              updateAutotilesAroundPoint({m_tileCursor.tileX(), m_tileCursor.tileY()}, i);
+            }
+          }
+          break;
+        }
+      }
+    }
+  }
+
   if (((m_tileCursor.mode() == MapCursorMode::Keyboard && (ImGui::IsKeyReleased(ImGuiKey_LeftShift)) || ImGui::IsKeyReleased(ImGuiKey_RightShift)) || ImGui::IsMouseReleased(ImGuiMouseButton_Left)) &&
       m_parent->editMode() == EditMode::Event) {
     /* If we have a selected actor, and it's no longer in its original location, push it onto the undo stack
@@ -442,7 +483,7 @@ void MapEditor::draw() {
   }
 
   if (!m_checkeredBack) {
-    // m_checkeredBack = CheckerboardTexture(8192 * 2, 8192 * 2, CellSizes::_48, 255, 220);
+    m_checkeredBack = CheckerboardTexture(8192 * 2, 8192 * 2, CellSizes::_48, 255, 220);
   }
   // Keep mapScale to a quarter step
   if (ImGui::IsKeyDown(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
@@ -466,9 +507,9 @@ void MapEditor::draw() {
       const float u1 = std::clamp((static_cast<float>(map()->width() * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
       const float v1 = std::clamp((static_cast<float>(map()->height() * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
 
-      // win->DrawList->AddImage(static_cast<ImTextureID>(m_checkeredBack), win->ClipRect.Min + ImVec2{0, 0},
-      //                         win->ClipRect.Min + (ImVec2{static_cast<float>(map()->width() * tileSize()), static_cast<float>(map()->height() * tileSize())} * m_mapScale), ImVec2{0, 0},
-      //                         ImVec2{u1, v1});
+      win->DrawList->AddImage(static_cast<ImTextureID>(m_checkeredBack), win->ClipRect.Min + ImVec2{0, 0},
+                              win->ClipRect.Min + (ImVec2{static_cast<float>(map()->width() * tileSize()), static_cast<float>(map()->height() * tileSize())} * m_mapScale), ImVec2{0, 0},
+                              ImVec2{u1, v1});
 
       handleMouseInput(win);
 

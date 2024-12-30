@@ -278,6 +278,17 @@ void Project::drawToolbar() {
     ImGui::ActionTooltip("Shadow Pen", "Adds or removes shadows of walls");
   }
   ImGui::EndDisabled();
+  ImGui::SameLine();
+  ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Eraser);
+  {
+    if (ImGui::Button(ICON_FA_ERASER, ButtonSize)) {
+      setDrawTool(DrawTool::Eraser);
+    }
+  }
+  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+    ImGui::ActionTooltip("Eraser", "Erases tiles at a given point");
+  }
+  ImGui::EndDisabled();
   ImGui::End();
 }
 

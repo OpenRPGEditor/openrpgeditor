@@ -442,7 +442,7 @@ void MapEditor::draw() {
   }
 
   if (!m_checkeredBack) {
-    m_checkeredBack = CheckerboardTexture(8192 * 2, 8192 * 2, CellSizes::_48, 255, 220);
+    // m_checkeredBack = CheckerboardTexture(8192 * 2, 8192 * 2, CellSizes::_48, 255, 220);
   }
   // Keep mapScale to a quarter step
   if (ImGui::IsKeyDown(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
@@ -455,33 +455,6 @@ void MapEditor::draw() {
 
   std::erase_if(m_eventEditors, [](EventEditor& editor) { return !editor.draw(); });
 
-  if (map()) {
-    static int page = 0;
-    ImGui::BeginDisabled(!palette->isPageValid(0));
-    { ImGui::RadioButton("A", &page, 0); }
-    ImGui::EndDisabled();
-    ImGui::SameLine();
-    ImGui::BeginDisabled(!palette->isPageValid(1));
-    { ImGui::RadioButton("B", &page, 1); }
-    ImGui::EndDisabled();
-    ImGui::SameLine();
-    ImGui::BeginDisabled(!palette->isPageValid(2));
-    { ImGui::RadioButton("C", &page, 2); }
-    ImGui::EndDisabled();
-    ImGui::SameLine();
-    ImGui::BeginDisabled(!palette->isPageValid(3));
-    { ImGui::RadioButton("D", &page, 3); }
-    ImGui::EndDisabled();
-    ImGui::SameLine();
-    ImGui::BeginDisabled(!palette->isPageValid(4));
-    { ImGui::RadioButton("E", &page, 4); }
-    ImGui::EndDisabled();
-    ImGui::SameLine();
-    ImGui::RadioButton("R", &page, -1);
-    palette->setPageIndex(page);
-    ImGui::Image(static_cast<ImTextureID>(*palette), static_cast<ImVec2>(palette->imageSize()));
-  }
-
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoTitleBar)) {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(45.f)), 0, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
     // ImGui::SetScrollX(m_tileCursor.alignCoord(ImGui::GetScrollX()));
@@ -493,9 +466,9 @@ void MapEditor::draw() {
       const float u1 = std::clamp((static_cast<float>(map()->width() * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
       const float v1 = std::clamp((static_cast<float>(map()->height() * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
 
-      win->DrawList->AddImage(m_checkeredBack, win->ClipRect.Min + ImVec2{0, 0},
-                              win->ClipRect.Min + (ImVec2{static_cast<float>(map()->width() * tileSize()), static_cast<float>(map()->height() * tileSize())} * m_mapScale), ImVec2{0, 0},
-                              ImVec2{u1, v1});
+      // win->DrawList->AddImage(static_cast<ImTextureID>(m_checkeredBack), win->ClipRect.Min + ImVec2{0, 0},
+      //                         win->ClipRect.Min + (ImVec2{static_cast<float>(map()->width() * tileSize()), static_cast<float>(map()->height() * tileSize())} * m_mapScale), ImVec2{0, 0},
+      //                         ImVec2{u1, v1});
 
       handleMouseInput(win);
 

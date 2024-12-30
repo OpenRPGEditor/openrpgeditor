@@ -270,7 +270,9 @@ ExitStatus Application::run() {
     if (!m_running) {
       DeserializationQueue::instance().abort();
       SerializationQueue::instance().abort();
-      m_project.close();
+      if (m_project) {
+        m_project->close();
+      }
       break;
     }
     delta = SDL_GetTicks() - a;
@@ -324,9 +326,12 @@ ExitStatus Application::run() {
       }
 
       if (!m_firstBootWizard) {
-        m_project.draw();
+        if (!m_project) {
+          m_project.emplace();
+        }
+        m_project->draw();
         if (needsInitialProjectLoad) {
-          m_project.load(Settings::instance()->lastProject, std::filesystem::path(Settings::instance()->lastProject).remove_filename().generic_string());
+          m_project->load(Settings::instance()->lastProject, std::filesystem::path(Settings::instance()->lastProject).remove_filename().generic_string());
           needsInitialProjectLoad = false;
         }
       }
@@ -390,7 +395,9 @@ void Application::onMinimize() { m_minimized = true; }
 void Application::onShown() { m_minimized = false; }
 
 void Application::onClose() {
-  m_project.close(true);
+  if (m_project) {
+    m_project->close(true);
+  }
   stop();
 }
 

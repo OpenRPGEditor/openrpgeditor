@@ -30,7 +30,7 @@ std::tuple<bool, bool> Dialog_MovementChangeImage::draw() {
     ImGui::BeginGroup();
     {
       auto cursorPos = ImGui::GetCursorPos();
-      if (ImGui::ImageButton("##event_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
+      if (ImGui::ImageButton("##event_image", static_cast<ImTextureID>(m_buttonBack), ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
         m_characterPicker.setCharacterInfo(m_image, m_character);
         m_characterPicker.setOpen(true);
       }

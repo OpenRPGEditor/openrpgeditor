@@ -18,16 +18,23 @@ struct CheckerboardTexture {
   CheckerboardTexture& operator=(const CheckerboardTexture& other);
   ~CheckerboardTexture();
 
-  [[nodiscard]] void* get() const { return m_texture; }
+  [[nodiscard]] void* get() const {
+    updateTexture();
+    return m_texture;
+  }
   explicit operator bool() const { return m_texture != nullptr; }
 
-  operator ImTextureID() const { return reinterpret_cast<ImTextureID>(m_texture); }
+  explicit operator ImTextureID() const { return reinterpret_cast<ImTextureID>(get()); }
 
   int width() const { return m_width; }
   int height() const { return m_height; }
 
 private:
+  void updateTexture() const;
   mutable void* m_texture = nullptr;
   int m_width;
   int m_height;
+  CellSizes m_cellSize;
+  uint8_t m_evenColor;
+  uint8_t m_oddColor;
 };

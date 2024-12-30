@@ -8,6 +8,8 @@ void TilePalette::setTilesetNames(const std::array<std::string, 9>& tilesetNames
   for (int i = 0; i < 9; i++) {
     if (!m_tilesetNames[i].empty()) {
       m_textures[i] = ResourceManager::instance()->loadTilesetImage(m_tilesetNames[i]);
+    } else {
+      m_textures[i].invalidate();
     }
   }
   updateMaxRows();
@@ -15,8 +17,8 @@ void TilePalette::setTilesetNames(const std::array<std::string, 9>& tilesetNames
 }
 
 void TilePalette::updateRenderTexture() {
-  const int width = paletteSize().width() * realTileWidth();
-  const int height = paletteSize().height() * realTileHeight();
+  const int width = (paletteSize().width() * realTileWidth()) + (m_spacing * (kMaxColumns + 1));
+  const int height = (paletteSize().height() * realTileHeight()) + (m_spacing * (maxRows() + 1));
 
   m_painter.setSize(width, height);
   m_finalResult.setSize(width, height);
@@ -83,7 +85,6 @@ std::vector<int> TilePalette::paletteTiles(int x, int y, const Tileset::Mode mod
   }
 
   const int tileId = x + ((m_pageIndex - 1) * 32 + y) * 8;
-  printf("%i\n", tileId);
   return makeTileIdList(-1, -1, tileId);
 }
 
@@ -130,10 +131,10 @@ void TilePalette::paintTiles() {
   m_painter.unbind();
 
   if (m_finalResult.bind()) {
-    const int width = paletteSize().width() * realTileWidth();
-    const int height = paletteSize().height() * realTileHeight();
-    const int cols = std::round(static_cast<float>(width) / static_cast<float>(m_checkerboardTexture.width()));
-    const int rows = std::round(static_cast<float>(height) / static_cast<float>(m_checkerboardTexture.height()));
+    const int width = (paletteSize().width() * realTileWidth()) + (m_spacing * (kMaxColumns + 1));
+    const int height = (paletteSize().height() * realTileHeight()) + (m_spacing * (maxRows() + 1));
+    const int cols = std::ceil(static_cast<float>(width) / static_cast<float>(m_checkerboardTexture.width()));
+    const int rows = std::ceil(static_cast<float>(height) / static_cast<float>(m_checkerboardTexture.height()));
     const Rect srcRect{0, 0, m_checkerboardTexture.width(), m_checkerboardTexture.height()};
     for (int i = 0; i < rows; ++i) {
       for (int j = 0; j < cols; ++j) {
@@ -149,7 +150,7 @@ void TilePalette::paintTiles() {
 }
 
 void TilePalette::paintTile(RenderImage& image, const Point& point) {
-  const RectF rect = {point.x() * realTileWidth(), point.y() * realTileHeight(), realTileWidth(), realTileHeight()};
+  const RectF rect = {(point.x() * realTileWidth()) + (spacing() * (point.x() + 1)), (point.y() * realTileHeight()) + (spacing() * (point.y() + 1)), realTileWidth(), realTileHeight()};
   m_renderHelper.clearRect(image, rect);
   if (!isPointContained(point)) {
     return;

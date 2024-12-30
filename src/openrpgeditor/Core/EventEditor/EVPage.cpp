@@ -134,7 +134,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
       {
         ImGui::SeparatorText("Image");
         auto cursorPos = ImGui::GetCursorPos();
-        if (ImGui::ImageButton("##event_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
+        if (ImGui::ImageButton("##event_image", static_cast<ImTextureID>(m_buttonBack), ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
           m_characterPicker.setCharacterInfo(m_page->image.characterName, m_page->image.characterIndex, m_page->image.pattern, m_page->image.direction);
           m_characterPicker.setOpen(true);
         }

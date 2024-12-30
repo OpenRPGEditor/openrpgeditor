@@ -29,6 +29,12 @@ public:
   operator bool() const { return m_texture != nullptr; }
   operator ImTextureID() const { return reinterpret_cast<ImTextureID>(m_texture); }
 
+  void invalidate() {
+    m_texture = nullptr;
+    m_width = 0;
+    m_height = 0;
+  }
+
 private:
   explicit Texture(std::string_view filename);
   explicit Texture(const char* data, int length, int width, int height);

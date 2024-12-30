@@ -57,7 +57,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
 
         ImGui::Text("Face:");
         auto cursorPos = ImGui::GetCursorPos();
-        if (ImGui::ImageButton("##svbattler_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
+        if (ImGui::ImageButton("##svbattler_image", static_cast<ImTextureID>(m_buttonBack), ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
           m_image_selection = 0;
           m_characterPicker.setCharacterInfo(m_charPicture, m_actor);
           m_characterPicker.setOpen(true);
@@ -75,7 +75,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
       {
         ImGui::Text("Character:");
         auto cursorPos = ImGui::GetCursorPos();
-        if (ImGui::ImageButton("##char_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
+        if (ImGui::ImageButton("##char_image", static_cast<ImTextureID>(m_buttonBack), ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
           m_image_selection = 1;
           m_characterPicker.setCharacterInfo(m_facePicture, m_charIndex);
           m_characterPicker.setOpen(true);
@@ -99,7 +99,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
       {
         ImGui::Text("[SV] Battler:");
         auto cursorPos = ImGui::GetCursorPos();
-        if (ImGui::ImageButton("##svbattler_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
+        if (ImGui::ImageButton("##svbattler_image", static_cast<ImTextureID>(m_buttonBack), ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
           m_image_selection = 2;
           m_characterPicker.setCharacterInfo(m_battlerPicture, m_faceIndex);
           m_characterPicker.setOpen(true);

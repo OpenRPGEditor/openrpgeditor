@@ -140,7 +140,7 @@ std::tuple<bool, bool> ImagePicker::draw() {
           auto win = ImGui::GetCurrentWindow();
           if (m_image) {
             const auto imageRect = ImVec2{static_cast<float>(m_image->imageWidth()), static_cast<float>(m_image->imageHeight())} * App::DPIHandler::get_ui_scale();
-            ImGui::GetWindowDrawList()->AddImage(m_checkerboardTexture, win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
+            ImGui::GetWindowDrawList()->AddImage(static_cast<ImTextureID>(m_checkerboardTexture), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
                                                  win->ContentRegionRect.Min +
                                                      (ImVec2{static_cast<float>(m_image->texture().width()), static_cast<float>(m_image->texture().height())} * App::DPIHandler::get_ui_scale()));
 

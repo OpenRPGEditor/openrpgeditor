@@ -19,7 +19,7 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
     {
       ImGui::Text("Face:");
       auto cursorPos = ImGui::GetCursorPos();
-      if (ImGui::ImageButton("##svbattler_image", m_buttonBack, ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
+      if (ImGui::ImageButton("##svbattler_image", static_cast<ImTextureID>(m_buttonBack), ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
         m_characterPicker.setCharacterInfo(m_faceImage, m_faceIndex);
         m_characterPicker.setOpen(true);
       }

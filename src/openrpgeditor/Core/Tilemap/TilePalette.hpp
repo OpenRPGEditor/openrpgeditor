@@ -27,12 +27,12 @@ public:
   bool isRegionMode() const { return m_isRegionMode; }
 
   int pageIndex() const { return m_pageIndex; }
-  void setPageIndex(const int page) {
+  void setPageIndex(int page) {
     if (page == m_pageIndex) {
       return;
     }
 
-    if (page == -1) {
+    if (page <= -1) {
       setRegionMode();
     } else {
       setMapMode();
@@ -65,7 +65,16 @@ public:
   Rect paletteRect() const { return {{}, paletteSize()}; }
   bool isPointContained(const Point& point) const { return paletteRect().contains(point); }
 
-  Point imageSize() const { return {static_cast<int>(kMaxColumns * realTileWidth()), static_cast<int>(m_maxRows * realTileHeight())}; }
+  Point imageSize() const {
+    return {static_cast<int>(kMaxColumns * realTileWidth()) + (m_spacing * (kMaxColumns + 1)), static_cast<int>(m_maxRows * realTileHeight()) + (m_spacing * (m_maxRows + 1))};
+  }
+
+  void setSpacing(const int spacing) {
+    m_spacing = spacing;
+    updateRenderTexture();
+    paintTiles();
+  }
+  int spacing() const { return m_spacing; }
 
   explicit operator ImTextureID() const { return m_finalResult.operator ImTextureID(); }
 
@@ -85,4 +94,5 @@ private:
   RenderImage m_painter;
   RenderImage m_finalResult;
   CheckerboardTexture m_checkerboardTexture;
+  int m_spacing = 3;
 };

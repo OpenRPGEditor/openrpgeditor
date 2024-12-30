@@ -6,7 +6,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBTilesetsTab::DBTilesetsTab(Tilesets& tilesets, DatabaseEditor* parent) : IDBEditorTab(parent), m_tilesets(tilesets), m_checkerboardTexture(384, 768), m_checkerboardTexture2(384, 768) {
+DBTilesetsTab::DBTilesetsTab(Tilesets& tilesets, DatabaseEditor* parent) : IDBEditorTab(parent), m_tilesets(tilesets) {
   m_selectedTileset = m_tilesets.tileset(1);
   if (m_selectedTileset) {
     m_imagePicker.emplace(ImagePicker::PickerMode::Tileset, "", "");
@@ -219,10 +219,10 @@ void DBTilesetsTab::draw() {
             //   int test = 1;
             // }
             auto win = ImGui::GetCurrentWindow();
-            ImGui::GetWindowDrawList()->AddImage(m_checkerboardTexture, win->ContentRegionRect.Min * App::DPIHandler::get_ui_scale(),
+            ImGui::GetWindowDrawList()->AddImage(static_cast<ImTextureID>(m_checkerboardTexture), win->ContentRegionRect.Min * App::DPIHandler::get_ui_scale(),
                                                  (win->ContentRegionRect.Min + ImVec2{384.f, 768.f}) * App::DPIHandler::get_ui_scale());
 
-            ImGui::GetWindowDrawList()->AddImage(m_checkerboardTexture2, (win->ContentRegionRect.Min + ImVec2{0.f, 768.f}) * App::DPIHandler::get_ui_scale(),
+            ImGui::GetWindowDrawList()->AddImage(static_cast<ImTextureID>(m_checkerboardTexture2), (win->ContentRegionRect.Min + ImVec2{0.f, 768.f}) * App::DPIHandler::get_ui_scale(),
                                                  (win->ContentRegionRect.Min + ImVec2{384.f, 1536.f}) * App::DPIHandler::get_ui_scale());
             if (m_selectedTileTab == 0) {
               drawA1();

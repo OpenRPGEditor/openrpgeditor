@@ -37,9 +37,11 @@ private:
   CheckerboardTexture m_checkerboardTexture{};
   CheckerboardTexture m_checkerboardTexture2{};
 
-  const int tileSize = 48;                             // Tile size in pixels
-  const int gridCols = 16;                             // Number of tiles per row
-  const float scale = App::DPIHandler::get_ui_scale(); // Scaling factor
+  const int tileSize = 48;                                    // Tile size in pixels
+  const int gridCols = 16;                                    // Number of tiles per row
+  const float scale = App::DPIHandler::get_ui_scale();        // Scaling factor
+  const ImVec4 defaultTint = ImVec4(1.0f, 1.0f, 1.0f, 0.70f); // 75% transparency
+  const ImVec4 hoveredTint = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);  // Fully opaque
 
   void drawA1();
   void drawA2();

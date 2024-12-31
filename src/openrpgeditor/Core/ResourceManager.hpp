@@ -37,7 +37,7 @@ public:
   Texture loadTilesetImage(std::string_view path);
   Texture loadTitle1Image(std::string_view path);
   Texture loadTitle2Image(std::string_view path);
-  std::string loadEditorTexture(std::string path);
+  Texture loadEditorTexture(std::string_view path);
   Texture loadTileMarkers(int width, int height);
 
   static ResourceManager* instance() { return m_instance; }

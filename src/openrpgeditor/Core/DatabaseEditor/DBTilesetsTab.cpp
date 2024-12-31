@@ -766,7 +766,7 @@ void DBTilesetsTab::drawTileset(int type) {
     return;
 
   m_image.emplace(m_selectedTileset->tilesetNames().at(type), static_cast<int>(ImagePicker::PickerMode::Tileset), false);
-  m_tileMarker.emplace(TileFlags::None, 1, 64, 80);
+  m_tileMarker.emplace(TileFlags::None, 1, 256, 320);
   const int tilesetWidth = m_image->imageWidth();
   const int tilesetHeight = m_image->imageHeight();
   ImVec2 uvTileSize = ImVec2(1.0f / (tilesetWidth / tileSize), 1.0f / (tilesetHeight / tileSize));
@@ -783,15 +783,9 @@ void DBTilesetsTab::drawTileset(int type) {
 
       ImGui::PushID(std::format("##orpg_database_tileset_{}_t_{} ", type, y * gridCols + x).c_str());
 
-      ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));
-      ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.f, 0.f, 0.f, 0.f));
-      ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.f, 0.f, 0.f, 0.f));
       ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.f);
       ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0, 0});
       ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
-      //  if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_image->texture(), tileRect, uv0, uv1, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {
-      //    printf("Tile clicked: (%d, %d)\n", x, y);
-      //  }
       ImVec2 cursorPos = ImGui::GetCursorPos();
       ImGui::Image(m_image->texture(), tileRect, uv0, uv1);
       ImGui::PopID();
@@ -800,9 +794,13 @@ void DBTilesetsTab::drawTileset(int type) {
 
       bool isPassable = (m_selectedTileset->flags().at(tileIndex) & static_cast<int>(TileFlags::Impassable)) == 0;
       bool hasHigherTile = (m_selectedTileset->flags().at(tileIndex) & static_cast<int>(TileFlags::PassageHigherTile)) != 0;
+      ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));
+      ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.f, 0.f, 0.f, 0.f));
+      ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.f, 0.f, 0.f, 0.f));
 
-      if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0() + m_tileMarker->passableOffset(isPassable, hasHigherTile),
-                             m_tileMarker->uv1() + m_tileMarker->passableOffset(isPassable, hasHigherTile), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {
+      ImVec4 tint = ImGui::IsItemHovered() ? hoveredTint : defaultTint;
+      if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(hasHigherTile ? 8 : (isPassable ? 0 : 1)),
+                             m_tileMarker->uv1(hasHigherTile ? 8 : (isPassable ? 0 : 1)), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
         if (isPassable) {
           m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::None));
         } else {
@@ -832,22 +830,35 @@ void DBTilesetsTab::drawTileset(int type) {
 
       ImGui::PushID(std::format("##orpg_database_tileset_{}_t2_{} ", type, y * gridCols + x).c_str());
 
+      ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.f);
+      ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0, 0});
+      ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
+      ImVec2 cursorPos = ImGui::GetCursorPos();
+      ImGui::Image(m_image->texture(), tileRect, uv0, uv1);
+      ImGui::PopID();
+      ImGui::SetCursorPos(cursorPos);
+      ImGui::PushID(std::format("##orpg_database_tileset_{}_flag2_{} ", type, y * gridCols + x).c_str());
+
+      bool isPassable = (m_selectedTileset->flags().at(tileIndex) & static_cast<int>(TileFlags::Impassable)) == 0;
+      bool hasHigherTile = (m_selectedTileset->flags().at(tileIndex) & static_cast<int>(TileFlags::PassageHigherTile)) != 0;
       ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));
       ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.f, 0.f, 0.f, 0.f));
       ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.f, 0.f, 0.f, 0.f));
-      ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.f);
-      ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0, 0});
 
-      ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
-      // if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_image->texture(), tileRect, uv0, uv1, ImVec4(0.0f, 0.0f, 0.0f, 0.0f), ImVec4(1.0f, 1.0f, 1.0f, 1.0f))) {
-      //   printf("Tile clicked: (%d, %d)\n", x, y);
-      // }
-      ImGui::Image(m_image->texture(), tileRect, uv0, uv1);
-
+      ImVec4 tint = ImGui::IsItemHovered() ? hoveredTint : defaultTint;
+      if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(hasHigherTile ? 8 : (isPassable ? 0 : 1)),
+                             m_tileMarker->uv1(hasHigherTile ? 8 : (isPassable ? 0 : 1)), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
+        if (isPassable) {
+          m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::None));
+        } else {
+          m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Impassable));
+        }
+      }
+      ImGui::PopID();
       ImGui::PopStyleColor(3);
       ImGui::PopStyleVar(2);
-      ImGui::PopID();
       ImGui::SameLine();
+      tileIndex++;
     }
     ImGui::NewLine(); // Move to the next row
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);

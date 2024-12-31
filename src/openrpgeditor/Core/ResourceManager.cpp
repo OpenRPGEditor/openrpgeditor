@@ -157,9 +157,15 @@ Texture ResourceManager::loadTitle2Image(std::string_view path) {
 
 Texture ResourceManager::loadTileMarkers(int width, int height) {
   fs::path relativePath = std::format("tilemarkers_{}x{}.png", width, height);
-  return loadTexture(loadEditorTexture(relativePath.generic_string()));
+  return loadEditorTexture(relativePath.generic_string());
 }
-std::string ResourceManager::loadEditorTexture(std::string path) { return App::Resources::image_path(path).string(); }
+Texture ResourceManager::loadEditorTexture(std::string_view path) {
+  const auto* oldHint = SDL_GetHint(SDL_HINT_RENDER_SCALE_QUALITY);
+  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
+  Texture ret = loadTexture(App::Resources::image_path(path).string());
+  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, oldHint);
+  return ret;
+}
 
 std::vector<std::string> ResourceManager::getDirectoryContents(const std::string& directoryPath, const std::string_view filter) const {
   std::vector<std::string> fileNames;

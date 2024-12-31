@@ -3,7 +3,7 @@
 
 #include "Database/Map.hpp"
 
-#include "Core/Project.hpp"
+#include "Core/MainWindow.hpp"
 
 #include "imgui.h"
 #include "imgui_internal.h"

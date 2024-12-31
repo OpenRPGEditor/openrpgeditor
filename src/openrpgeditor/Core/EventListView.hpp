@@ -1,11 +1,11 @@
 #pragma once
 
-struct Project;
+struct MainWindow;
 struct EventListView {
-  EventListView(Project* parent) : m_parent(parent) {}
+  EventListView(MainWindow* parent) : m_parent(parent) {}
 
   void draw();
 
 private:
-  Project* m_parent;
+  MainWindow* m_parent;
 };

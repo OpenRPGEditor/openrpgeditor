@@ -3,7 +3,7 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/MovementRoute/Frequency.hpp"
 
-struct Project;
+struct MainWindow;
 struct Dialog_MovementChangeFrequency : IEventDialogController {
   Dialog_MovementChangeFrequency() = delete;
   explicit Dialog_MovementChangeFrequency(const std::string& name) : IEventDialogController(name) {

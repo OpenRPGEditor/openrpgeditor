@@ -1,7 +1,7 @@
 #include "Core/MapEditor/MapEvent.hpp"
 
+#include "Core/MainWindow.hpp"
 #include "Core/MapEditor.hpp"
-#include "Core/Project.hpp"
 #include "Core/ResourceManager.hpp"
 
 #include "Core/Graphics/Texture.hpp"

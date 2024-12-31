@@ -1,5 +1,5 @@
 #include "Core/MapListView.hpp"
-#include "Core/Project.hpp"
+#include "Core/MainWindow.hpp"
 #include "Database/MapInfos.hpp"
 
 #include "imgui.h"
@@ -50,11 +50,14 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
     }
     ImGui::EndDragDropTarget();
   }
-  if (ImGui::BeginPopupContextWindow()) {
+  if (ImGui::BeginPopupContextItem()) {
     // Ensure we have the right-clicked map selected
-    if (m_selectedMapId != in.id() && ImGui::IsItemHovered()) {
+    if (m_selectedMapId != in.id()) {
       m_selectedMapId = in.id();
       m_parent->setMap(in);
+    }
+    if (ImGui::MenuItem("Edit...")) {
+      m_parent->openMapProperties(&in);
     }
     if (ImGui::MenuItem("New...")) {
       // TODO: Add new map to directory based on current location. Maybe add it as a subdirectory of the current parent?
@@ -103,6 +106,7 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
     }
     ImGui::EndPopup();
   }
+
   if (open) {
     for (const auto& mapInfo : in.children()) {
       recursiveDrawTree(*mapInfo);

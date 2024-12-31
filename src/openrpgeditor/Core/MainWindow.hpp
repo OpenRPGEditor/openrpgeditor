@@ -36,9 +36,9 @@ enum class DrawTool {
   Eraser,
 };
 
-class Project {
+class MainWindow {
 public:
-  Project();
+  MainWindow();
 
   bool load(std::string_view filePath, std::string_view basePath);
   void save();
@@ -153,6 +153,11 @@ public:
 
   const TilesetPicker& tilesetPicker() const { return m_tilesetPicker; }
 
+  void openMapProperties(MapInfo* mapInfo) {
+    m_mapProperties.setMapInfo(mapInfo);
+    m_mapProperties.setOpen(true);
+  }
+
 private:
   void onActorsLoaded();
   void onClassesLoaded();
@@ -178,6 +183,7 @@ private:
   void handleKeyboardShortcuts();
   SettingsDialog m_settingsDialog;
   MapListView m_mapListView;
+  MapProperties m_mapProperties;
   MapEditor m_mapEditor;
   EventListView m_eventListView;
   TilesetPicker m_tilesetPicker;

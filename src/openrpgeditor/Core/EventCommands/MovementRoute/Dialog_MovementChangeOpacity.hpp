@@ -4,7 +4,7 @@
 #include "Database/EventCommands/MovementRoute/ChangeOpacity.hpp"
 #include "Database/EventCommands/MovementRoute/Wait.hpp"
 
-struct Project;
+struct MainWindow;
 struct Dialog_MovementChangeOpacity : IEventDialogController {
   Dialog_MovementChangeOpacity() = delete;
   explicit Dialog_MovementChangeOpacity(const std::string& name) : IEventDialogController(name) {

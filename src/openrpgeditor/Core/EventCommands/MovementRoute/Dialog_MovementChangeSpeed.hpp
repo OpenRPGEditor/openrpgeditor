@@ -2,7 +2,7 @@
 #include "Core/CommonUI/TextEditor.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/MovementRoute/Speed.hpp"
-struct Project;
+struct MainWindow;
 struct Dialog_MovementChangeSpeed : IEventDialogController {
   Dialog_MovementChangeSpeed() = delete;
   explicit Dialog_MovementChangeSpeed(const std::string& name) : IEventDialogController(name) {

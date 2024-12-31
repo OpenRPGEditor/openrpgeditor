@@ -3,7 +3,7 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/MovementRoute/Script.hpp"
 
-struct Project;
+struct MainWindow;
 struct Dialog_MovementScript : IEventDialogController {
   Dialog_MovementScript() = delete;
   explicit Dialog_MovementScript(const std::string& name) : IEventDialogController(name) {

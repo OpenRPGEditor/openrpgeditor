@@ -5,7 +5,7 @@
 #include "Core/Graphics/CharacterSheet.hpp"
 #include "Database/EventCommands/MovementRoute/ChangeImage.hpp"
 
-struct Project;
+struct MainWindow;
 struct Dialog_MovementChangeImage : IEventDialogController {
   Dialog_MovementChangeImage() = delete;
   explicit Dialog_MovementChangeImage(const std::string& name) : IEventDialogController(name) {

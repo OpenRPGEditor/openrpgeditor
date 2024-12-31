@@ -2,7 +2,7 @@
 #include "Core/DPIHandler.hpp"
 #include "Core/EventEditor.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
-#include "Core/Project.hpp"
+#include "Core/MainWindow.hpp"
 
 #include <format>
 #include <string>

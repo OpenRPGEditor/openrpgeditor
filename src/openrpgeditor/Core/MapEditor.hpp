@@ -8,14 +8,15 @@
 #include "Core/EventEditor.hpp"
 #include "Database/MapInfos.hpp"
 #include "MapEditor/MapCursor.hpp"
+#include "MapEditor/MapProperties.hpp"
 #include "OREMath/Rect.hpp"
 #include "TemplateEditor/Dialog/TemplateName.hpp"
 
-struct Project;
+struct MainWindow;
 struct Map;
 struct MapInfo;
 struct MapEditor {
-  MapEditor(Project* parent) : m_parent(parent), m_tileCursor(this) {}
+  MapEditor(MainWindow* parent) : m_parent(parent), m_tileCursor(this) {}
   void draw();
 
   void setMap(MapInfo* info);
@@ -71,8 +72,8 @@ struct MapEditor {
   Map* map() { return m_mapInfo ? m_mapInfo->map() : nullptr; }
   const Map* map() const { return m_mapInfo ? m_mapInfo->map() : nullptr; }
 
-  Project* project() { return m_parent; }
-  const Project* project() const { return m_parent; }
+  MainWindow* project() { return m_parent; }
+  const MainWindow* project() const { return m_parent; }
 
   float zoom() const { return m_mapScale; }
 
@@ -96,7 +97,6 @@ struct MapEditor {
   }
 
 private:
-  void drawMapProperties();
   void drawParallax(ImGuiWindow* win);
   void drawGrid(ImGuiWindow* win);
   void handleEventDrag();
@@ -120,9 +120,7 @@ private:
   bool isSameKindTile(const Point& p, int layer, int tileId) const;
   bool isWallOrRoofTile(const Point& p, int layer) const;
 
-  void resizeMap(int width, int height);
-
-  Project* m_parent;
+  MainWindow* m_parent;
   MapInfo* m_mapInfo = nullptr;
   float m_mapScale = 1.f;
   bool m_scaleChanged = false;

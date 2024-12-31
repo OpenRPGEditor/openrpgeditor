@@ -4,7 +4,7 @@
 #include "Database/Database.hpp"
 #include "Database/EventCommands/MovementRoute/SwitchOFF.hpp"
 
-struct Project;
+struct MainWindow;
 struct Dialog_MovementSwitchOFF : IEventDialogController {
   Dialog_MovementSwitchOFF() = delete;
   explicit Dialog_MovementSwitchOFF(const std::string& name, const std::shared_ptr<MovementSwitchOFFCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
@@ -18,7 +18,7 @@ struct Dialog_MovementSwitchOFF : IEventDialogController {
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
 
-  Project* m_project = nullptr;
+  MainWindow* m_project = nullptr;
 
 private:
   bool m_confirmed{false};

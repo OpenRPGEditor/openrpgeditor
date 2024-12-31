@@ -3,7 +3,7 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/MovementRoute/Jump.hpp"
 
-struct Project;
+struct MainWindow;
 struct Dialog_MovementJump : IEventDialogController {
   Dialog_MovementJump() = delete;
   explicit Dialog_MovementJump(const std::string& name) : IEventDialogController(name) {

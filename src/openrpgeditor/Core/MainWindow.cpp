@@ -1,4 +1,4 @@
-#include "Core/Project.hpp"
+#include "Core/MainWindow.hpp"
 
 #include "Settings.hpp"
 
@@ -28,13 +28,12 @@
 using namespace std::literals::string_view_literals;
 static SDL_Cursor* waitCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAITARROW);
 
-Project::Project() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this), m_nwjsVersionManager("https://dl.nwjs.io") {
+MainWindow::MainWindow() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this), m_nwjsVersionManager("https://dl.nwjs.io") {
   m_settingsDialog.addTab(new GeneralSettingsTab());
 }
 
-bool Project::load(std::string_view filePath, std::string_view basePath) {
+bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
   close();
-  SDL_SetCursor(waitCursor);
   std::string version;
   std::ifstream file(filePath.data());
   std::getline(file, version);
@@ -43,7 +42,6 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   m_isValid = std::ranges::find(KnownRPGMVVersions, version) != KnownRPGMVVersions.end();
   if (!m_isValid) {
     APP_ERROR("Invalid project version {}", version);
-    SDL_SetCursor(SDL_GetDefaultCursor());
     return false;
   }
   APP_INFO("Got project for {}", version);
@@ -53,31 +51,31 @@ bool Project::load(std::string_view filePath, std::string_view basePath) {
   DeserializationQueue::instance().setBasepath(basePath);
   m_resourceManager.emplace(basePath);
   m_databaseEditor.emplace(this);
-  m_databaseEditor->onReady.connect<&Project::onDatabaseReady>(this);
+  m_databaseEditor->onReady.connect<&MainWindow::onDatabaseReady>(this);
 
   m_database.emplace(basePath, filePath, version);
-  m_database->actorsLoaded.connect<&Project::onActorsLoaded>(this);
-  m_database->classesLoaded.connect<&Project::onClassesLoaded>(this);
-  m_database->skillsLoaded.connect<&Project::onSkillsLoaded>(this);
-  m_database->itemsLoaded.connect<&Project::onItemsLoaded>(this);
-  m_database->weaponsLoaded.connect<&Project::onWeaponsLoaded>(this);
-  m_database->armorsLoaded.connect<&Project::onArmorsLoaded>(this);
-  m_database->enemiesLoaded.connect<&Project::onEnemiesLoaded>(this);
-  m_database->troopsLoaded.connect<&Project::onTroopsLoaded>(this);
-  m_database->statesLoaded.connect<&Project::onStatesLoaded>(this);
-  m_database->animationsLoaded.connect<&Project::onAnimationsLoaded>(this);
-  m_database->tilesetsLoaded.connect<&Project::onTilesetsLoaded>(this);
-  m_database->commonEventsLoaded.connect<&Project::onCommonEventsLoaded>(this);
-  m_database->systemLoaded.connect<&Project::onSystemLoaded>(this);
-  m_database->gameConstantsLoaded.connect<&Project::onGameConstantsLoaded>(this);
-  m_database->templatesLoaded.connect<&Project::onTemplatesLoaded>(this);
+  m_database->actorsLoaded.connect<&MainWindow::onActorsLoaded>(this);
+  m_database->classesLoaded.connect<&MainWindow::onClassesLoaded>(this);
+  m_database->skillsLoaded.connect<&MainWindow::onSkillsLoaded>(this);
+  m_database->itemsLoaded.connect<&MainWindow::onItemsLoaded>(this);
+  m_database->weaponsLoaded.connect<&MainWindow::onWeaponsLoaded>(this);
+  m_database->armorsLoaded.connect<&MainWindow::onArmorsLoaded>(this);
+  m_database->enemiesLoaded.connect<&MainWindow::onEnemiesLoaded>(this);
+  m_database->troopsLoaded.connect<&MainWindow::onTroopsLoaded>(this);
+  m_database->statesLoaded.connect<&MainWindow::onStatesLoaded>(this);
+  m_database->animationsLoaded.connect<&MainWindow::onAnimationsLoaded>(this);
+  m_database->tilesetsLoaded.connect<&MainWindow::onTilesetsLoaded>(this);
+  m_database->commonEventsLoaded.connect<&MainWindow::onCommonEventsLoaded>(this);
+  m_database->systemLoaded.connect<&MainWindow::onSystemLoaded>(this);
+  m_database->gameConstantsLoaded.connect<&MainWindow::onGameConstantsLoaded>(this);
+  m_database->templatesLoaded.connect<&MainWindow::onTemplatesLoaded>(this);
   m_database->load();
   return true;
 }
 
-void Project::save() { m_database->serializeProject(); }
+void MainWindow::save() { m_database->serializeProject(); }
 
-bool Project::close(bool promptSave) {
+bool MainWindow::close(bool promptSave) {
   if (promptSave) {
     // TODO: Implement when safe to do so
     if (m_database) {
@@ -106,7 +104,7 @@ bool Project::close(bool promptSave) {
   return true;
 }
 
-void Project::setupDocking() {
+void MainWindow::setupDocking() {
   ImGuiViewport* viewport = ImGui::GetMainViewport();
   ImGui::SetNextWindowPos(viewport->Pos + ImVec2(0, m_toolbarSize));
   ImGui::SetNextWindowSize(viewport->Size - ImVec2(0, m_toolbarSize));
@@ -151,7 +149,7 @@ void Project::setupDocking() {
   ImGui::PopStyleVar(3);
 }
 
-void Project::drawToolbar() {
+void MainWindow::drawToolbar() {
   const ImVec2 ButtonSize = {m_toolbarButtonSize, m_toolbarButtonSize};
   ImGuiViewport* viewport = ImGui::GetMainViewport();
   ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + m_menuBarHeight));
@@ -292,7 +290,7 @@ void Project::drawToolbar() {
   ImGui::End();
 }
 
-void Project::draw() {
+void MainWindow::draw() {
   m_toolbarButtonSize = ImGui::CalcTextSize(ICON_FA_EYE_SLASH).x;
   m_toolbarSize = m_toolbarButtonSize + (ImGui::GetStyle().ItemSpacing.y * 4) + (ImGui::GetStyle().FramePadding.y * 4);
   m_toolbarButtonSize += ImGui::GetStyle().ItemSpacing.x * 2;
@@ -313,6 +311,11 @@ void Project::draw() {
   }
 
   m_mapListView.draw();
+
+  if (const auto [closed, confirmed] = m_mapProperties.draw(); closed) {
+    // TODO: handle revert?
+  }
+
   drawTileDebugger();
 
   if (m_showDemoWindow) {
@@ -355,7 +358,7 @@ void Project::draw() {
   drawCreateNewProjectPopup();
 }
 
-void Project::drawCreateNewProjectPopup() {
+void MainWindow::drawCreateNewProjectPopup() {
   static constexpr std::array<std::string_view, 23> directoryList{
       {"data"sv,           "fonts"sv,       "audio/bgm"sv, "audio/bgs"sv,      "audio/me"sv,     "audio/se"sv,      "img/animations"sv, "img/battlebacks1"sv, "img/battlebacks2"sv,
        "img/characters"sv, "img/enemies"sv, "img/faces"sv, "img/parallaxes"sv, "img/pictures"sv, "img/sv_actors"sv, "img/sv_enemies"sv, "img/system"sv,       "img/tilesets"sv,
@@ -410,7 +413,7 @@ void Project::drawCreateNewProjectPopup() {
   }
 }
 
-void Project::drawTileInfo(MapRenderer::MapLayer& mapLayer, int z) {
+void MainWindow::drawTileInfo(MapRenderer::MapLayer& mapLayer, int z) {
   static constexpr std::array LayerNames{"A1"sv, "A2"sv, "A3"sv, "A4"sv, "A5"sv, "B"sv, "C"sv, "D"sv, "E"sv};
   for (const auto& layer : mapLayer.tileLayers) {
     for (const auto& tile : layer.rects) {
@@ -444,7 +447,7 @@ void Project::drawTileInfo(MapRenderer::MapLayer& mapLayer, int z) {
   }
 }
 
-void Project::drawTileDebugger() {
+void MainWindow::drawTileDebugger() {
   if (!m_showTileDebug || !m_mapEditor.map()) {
     return;
   }
@@ -469,7 +472,7 @@ void Project::drawTileDebugger() {
   ImGui::End();
 }
 
-void Project::handleOpenFile() {
+void MainWindow::handleOpenFile() {
   nfdu8char_t* outPath;
   constexpr nfdu8filteritem_t filters = {"RPG Maker Projects", "rpgproject,rmmzproject"};
   const std::string directory = Settings::instance()->lastDirectory.empty() ? std::filesystem::current_path().generic_string() : Settings::instance()->lastDirectory;
@@ -482,9 +485,9 @@ void Project::handleOpenFile() {
   }
 }
 
-void Project::handleCreateNewProject() { m_createNewProject.setOpen(true); }
+void MainWindow::handleCreateNewProject() { m_createNewProject.setOpen(true); }
 
-void Project::handleUndo() {
+void MainWindow::handleUndo() {
   if (!m_undoStack.hasCommands()) {
     return;
   }
@@ -497,7 +500,7 @@ void Project::handleUndo() {
   }
 }
 
-void Project::handleRedo() {
+void MainWindow::handleRedo() {
   if (!m_redoStack.hasCommands()) {
     return;
   }
@@ -509,7 +512,7 @@ void Project::handleRedo() {
     m_undoStack.push(cmd);
   }
 }
-void Project::drawMenu() {
+void MainWindow::drawMenu() {
   std::string loadFilepath;
   if (ImGui::BeginMainMenuBar()) {
     if (ImGui::BeginMenu("File")) {
@@ -705,7 +708,7 @@ void Project::drawMenu() {
   handleKeyboardShortcuts();
 }
 
-void Project::handleKeyboardShortcuts() {
+void MainWindow::handleKeyboardShortcuts() {
   /* File Menu */
   if ((ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) && ImGui::IsKeyPressed(ImGuiKey_N)) {
     // TODO: implement new project creation
@@ -806,7 +809,7 @@ void Project::handleKeyboardShortcuts() {
   }
 }
 
-void Project::setMap(MapInfo& in) {
+void MainWindow::setMap(MapInfo& in) {
   if (in.id() == 0) {
     m_mapListView.setCurrentMapId(0);
     m_mapEditor.setMap(nullptr);
@@ -843,30 +846,29 @@ void Project::setMap(MapInfo& in) {
   SDL_SetCursor(SDL_GetDefaultCursor());
 }
 
-void Project::onActorsLoaded() { m_databaseEditor->setActors(m_database->actors); }
-void Project::onClassesLoaded() { m_databaseEditor->setClasses(m_database->classes); }
-void Project::onSkillsLoaded() { m_databaseEditor->setSkills(m_database->skills); }
-void Project::onItemsLoaded() { m_databaseEditor->setItems(m_database->items); }
-void Project::onWeaponsLoaded() { m_databaseEditor->setWeapons(m_database->weapons); }
-void Project::onArmorsLoaded() { m_databaseEditor->setArmors(m_database->armors); }
-void Project::onEnemiesLoaded() { m_databaseEditor->setEnemies(m_database->enemies); }
-void Project::onTroopsLoaded() { m_databaseEditor->setTroops(m_database->troops); }
-void Project::onStatesLoaded() { m_databaseEditor->setStates(m_database->states); }
-void Project::onAnimationsLoaded() { m_databaseEditor->setAnimations(m_database->animations); }
-void Project::onTilesetsLoaded() { m_databaseEditor->setTilesets(m_database->tilesets); }
-void Project::onCommonEventsLoaded() { m_databaseEditor->setCommonEvents(m_database->commonEvents); }
-void Project::onSystemLoaded() { m_databaseEditor->setSystem(m_database->system); }
-void Project::onGameConstantsLoaded() { m_databaseEditor->setGameConstants(m_database->gameConstants); }
-void Project::onTemplatesLoaded() { m_databaseEditor->setTemplates(m_database->templates); }
+void MainWindow::onActorsLoaded() { m_databaseEditor->setActors(m_database->actors); }
+void MainWindow::onClassesLoaded() { m_databaseEditor->setClasses(m_database->classes); }
+void MainWindow::onSkillsLoaded() { m_databaseEditor->setSkills(m_database->skills); }
+void MainWindow::onItemsLoaded() { m_databaseEditor->setItems(m_database->items); }
+void MainWindow::onWeaponsLoaded() { m_databaseEditor->setWeapons(m_database->weapons); }
+void MainWindow::onArmorsLoaded() { m_databaseEditor->setArmors(m_database->armors); }
+void MainWindow::onEnemiesLoaded() { m_databaseEditor->setEnemies(m_database->enemies); }
+void MainWindow::onTroopsLoaded() { m_databaseEditor->setTroops(m_database->troops); }
+void MainWindow::onStatesLoaded() { m_databaseEditor->setStates(m_database->states); }
+void MainWindow::onAnimationsLoaded() { m_databaseEditor->setAnimations(m_database->animations); }
+void MainWindow::onTilesetsLoaded() { m_databaseEditor->setTilesets(m_database->tilesets); }
+void MainWindow::onCommonEventsLoaded() { m_databaseEditor->setCommonEvents(m_database->commonEvents); }
+void MainWindow::onSystemLoaded() { m_databaseEditor->setSystem(m_database->system); }
+void MainWindow::onGameConstantsLoaded() { m_databaseEditor->setGameConstants(m_database->gameConstants); }
+void MainWindow::onTemplatesLoaded() { m_databaseEditor->setTemplates(m_database->templates); }
 
-void Project::onDatabaseReady() {
+void MainWindow::onDatabaseReady() {
   MapInfo* info = m_database->mapInfos.map(0);
   Settings::instance()->lastProject = m_database->projectFilePath;
   info->setExpanded(true);
   info->setName(m_database->system.gameTitle.empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system.gameTitle);
   APP_INFO("Loaded project!");
   // Load the previously loaded map
-  SDL_SetCursor(SDL_GetDefaultCursor());
   m_mapEditor.clearLayers();
   m_mapListView.setMapInfos(&m_database->mapInfos);
 
@@ -887,5 +889,5 @@ void Project::onDatabaseReady() {
   }
   m_isLoaded = true;
   /* Disconnect the signal so we don't get spammed */
-  m_databaseEditor->onReady.disconnect<&Project::onDatabaseReady>(this);
+  m_databaseEditor->onReady.disconnect<&MainWindow::onDatabaseReady>(this);
 }

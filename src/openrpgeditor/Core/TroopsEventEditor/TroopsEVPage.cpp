@@ -1,7 +1,7 @@
 #include "Core/TroopsEventEditor/TroopsEVPage.hpp"
 #include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
-#include "Core/Project.hpp"
+#include "Core/MainWindow.hpp"
 #include "Database/Globals.hpp"
 
 #include <format>

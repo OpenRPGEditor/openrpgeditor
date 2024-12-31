@@ -372,16 +372,16 @@ add_library(
         Core/MapEditor/MapCursor.hpp
         Core/MapEditor/MapEvent.cpp
         Core/MapEditor/MapEvent.hpp
-        # Core/MapEditor/MapProperties.cpp
-        # Core/MapEditor/MapProperties.hpp
+        Core/MapEditor/MapProperties.cpp
+        Core/MapEditor/MapProperties.hpp
         Core/MapEditor/MapRenderer.cpp
         Core/MapEditor/MapRenderer.hpp
         Core/MapListView.cpp
         Core/MapListView.hpp
         Core/NWJSVersionManager.cpp
         Core/NWJSVersionManager.hpp
-        Core/Project.cpp
-        Core/Project.hpp
+        Core/MainWindow.cpp
+        Core/MainWindow.hpp
         Core/ResourceManager.cpp
         Core/ResourceManager.hpp
         Core/Resources.hpp

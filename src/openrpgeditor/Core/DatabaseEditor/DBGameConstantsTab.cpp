@@ -5,7 +5,7 @@
 #include "misc/cpp/imgui_stdlib.h"
 
 #include "Core/DatabaseEditor.hpp"
-#include "Core/Project.hpp"
+#include "Core/MainWindow.hpp"
 
 #include "Database/GameConstants.hpp"
 

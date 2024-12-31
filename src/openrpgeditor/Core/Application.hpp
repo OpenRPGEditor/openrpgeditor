@@ -8,12 +8,12 @@
 #include <string>
 
 #include "Core/Window.hpp"
-#include "Project.hpp"
+#include "MainWindow.hpp"
 
 #include <optional>
 
 struct ImFont;
-class Project;
+class MainWindow;
 
 namespace App {
 
@@ -61,7 +61,7 @@ private:
   bool m_minimized{false};
   std::string m_userConfigPath;
   Settings m_settings;
-  std::optional<Project> m_project;
+  std::optional<MainWindow> m_project;
   ImFont* m_mainFont{};
   ImFont* m_monoFont{};
   std::optional<FirstBootWizard> m_firstBootWizard;

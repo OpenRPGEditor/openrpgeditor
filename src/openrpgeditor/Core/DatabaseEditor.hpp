@@ -21,11 +21,11 @@
 
 #include "Database/Class.hpp"
 
-struct Project;
+struct MainWindow;
 class DatabaseEditor {
 public:
   DatabaseEditor() = delete;
-  explicit DatabaseEditor(Project* parent) : m_parent(parent) {}
+  explicit DatabaseEditor(MainWindow* parent) : m_parent(parent) {}
 
   void draw();
 
@@ -142,8 +142,8 @@ public:
   [[nodiscard]] std::string* weaponType(const int id) { return m_system->weaponType(id); }
   [[nodiscard]] const std::string* weaponType(const int id) const { return m_system->weaponType(id); }
 
-  Project* project() { return m_parent; }
-  const Project* project() const { return m_parent; }
+  MainWindow* project() { return m_parent; }
+  const MainWindow* project() const { return m_parent; }
 
   void setActors(Actors& actors) { m_actors.emplace(actors, this); }
   void setClasses(Classes& classes) { m_classes.emplace(classes, this); }
@@ -174,7 +174,7 @@ public:
   signal<void()> onReady;
 
 private:
-  Project* m_parent;
+  MainWindow* m_parent;
   std::optional<DBActorsTab> m_actors;
   std::optional<DBClassesTab> m_classes;
   std::optional<DBSkillsTab> m_skills;

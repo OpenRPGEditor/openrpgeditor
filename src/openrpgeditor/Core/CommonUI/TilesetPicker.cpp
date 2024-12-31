@@ -86,8 +86,8 @@ void TilesetPicker::draw() {
         const auto rect = m_palette.cursorPixelRect();
         const auto min = static_cast<ImVec2>(rect.topLeft() * App::DPIHandler::get_ui_scale());
         const auto max = static_cast<ImVec2>(rect.bottomRight() * App::DPIHandler::get_ui_scale());
-        win->DrawList->AddRect(win->ContentRegionRect.Min + (min + ImVec2{2.f, 2.f}), win->ContentRegionRect.Min + (max - ImVec2{2.f, 2.f}), 0xFF000000, 0.f, 0, 4.f);
-        win->DrawList->AddRect(win->ContentRegionRect.Min + (min + ImVec2{2.f, 2.f}), win->ContentRegionRect.Min + (max - ImVec2{2.f, 2.f}), 0xFFFFFFFF, 0.f, 0, 2.f);
+        win->DrawList->AddRect(win->ContentRegionRect.Min + (min + ImVec2{3.f, 3.f}), win->ContentRegionRect.Min + (max - ImVec2{2.f, 2.f}), 0xFF000000, 0.f, 0, 5.f);
+        win->DrawList->AddRect(win->ContentRegionRect.Min + (min + ImVec2{3.f, 3.f}), win->ContentRegionRect.Min + (max - ImVec2{2.f, 2.f}), 0xFFFFFFFF, 0.f, 0, 3.f);
       }
     }
     ImGui::EndChild();

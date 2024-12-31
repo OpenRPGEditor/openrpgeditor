@@ -27,7 +27,7 @@ private:
   bool m_changeConfirmDialogOpen = false;
   int m_selectedTileTab{0};
   int m_pickerSelection;
-  int checkerBoardHeight{0};
+  int m_checkerBoardHeight{0};
   bool m_updateCheckerboard{true};
 
   std::optional<ImagePicker> m_imagePicker;
@@ -37,11 +37,11 @@ private:
   CheckerboardTexture m_checkerboardTexture{};
   CheckerboardTexture m_checkerboardTexture2{};
 
-  const int tileSize = 48;                                    // Tile size in pixels
-  const int gridCols = 16;                                    // Number of tiles per row
-  const float scale = App::DPIHandler::get_ui_scale();        // Scaling factor
-  const ImVec4 defaultTint = ImVec4(1.0f, 1.0f, 1.0f, 0.70f); // 75% transparency
-  const ImVec4 hoveredTint = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);  // Fully opaque
+  const int m_tileSize = 48;                                     // Tile size in pixels
+  const int m_gridCols = 16;                                     // Number of tiles per row
+  const float m_scale = App::DPIHandler::get_ui_scale();         // Scaling factor
+  static constexpr ImVec4 kDefaultTint{1.0f, 1.0f, 1.0f, 0.70f}; // 75% transparency
+  static constexpr ImVec4 kHoveredTint{1.0f, 1.0f, 1.0f, 1.0f};  // Fully opaque
 
   void drawA1();
   void drawA2();

@@ -28,13 +28,17 @@ struct CheckerboardTexture {
 
   int width() const { return m_width; }
   int height() const { return m_height; }
+  void setWidth(int width);
+  void setHeight(int height);
+
+  void setSize(int width, int height);
 
 private:
   void updateTexture() const;
   mutable void* m_texture = nullptr;
-  int m_width;
-  int m_height;
-  CellSizes m_cellSize;
-  uint8_t m_evenColor;
-  uint8_t m_oddColor;
+  int m_width{0};
+  int m_height{0};
+  CellSizes m_cellSize{CellSizes::_64};
+  uint8_t m_evenColor{255};
+  uint8_t m_oddColor{220};
 };

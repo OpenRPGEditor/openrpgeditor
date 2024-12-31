@@ -26,6 +26,34 @@ CheckerboardTexture& CheckerboardTexture::operator=(const CheckerboardTexture& o
   return *this;
 }
 
+void CheckerboardTexture::setWidth(const int width) {
+  if (width == m_width) {
+    return;
+  }
+  m_width = width;
+  SDL_DestroyTexture(static_cast<SDL_Texture*>(m_texture));
+  m_texture = nullptr;
+}
+
+void CheckerboardTexture::setHeight(const int height) {
+  if (height == m_height) {
+    return;
+  }
+  m_height = height;
+  SDL_DestroyTexture(static_cast<SDL_Texture*>(m_texture));
+  m_texture = nullptr;
+}
+
+void CheckerboardTexture::setSize(const int width, const int height) {
+  if (width == m_width && m_height == height) {
+    return;
+  }
+  m_width = width;
+  m_height = height;
+  SDL_DestroyTexture(static_cast<SDL_Texture*>(m_texture));
+  m_texture = nullptr;
+}
+
 void CheckerboardTexture::updateTexture() const {
   if (m_texture != nullptr) {
     return;

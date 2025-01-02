@@ -7,15 +7,15 @@ set(CMAKE_C_STANDARD 23)
 
 add_definitions(-DJSON_DIAGNOSTICS=1)
 project(
-  OpenRPGEditor
-  DESCRIPTION "A drop-in replacement for RPG Maker MV."
-  VERSION 0.0.0
-  LANGUAGES CXX C)
+        OpenRPGEditor
+        DESCRIPTION "A drop-in replacement for RPG Maker MV."
+        VERSION 0.0.0
+        LANGUAGES CXX C)
 
 set(PROJECT_COMPANY_NAME "OpenRPGEditor Team")
 set(PROJECT_COMPANY_NAMESPACE "io.gitgud.antidote.openrgpeditor") # Reverse
-                                                                  # domain name
-                                                                  # notation
+# domain name
+# notation
 
 include(cmake/StandardProjectSettings.cmake)
 include(GNUInstallDirs)
@@ -30,3 +30,4 @@ add_subdirectory(packaging)
 add_subdirectory(vendor)
 add_subdirectory(src)
 add_subdirectory(extern/angelscript/angelscript/projects/cmake)
+add_subdirectory(extern/angelscript_addon_cmake)

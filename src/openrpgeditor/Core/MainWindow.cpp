@@ -19,6 +19,8 @@
 #include <shellapi.h>
 #endif
 
+#include "EditorPlugin/EditorPluginManager.hpp"
+#include "Script/ScriptEngine.hpp"
 #include "SettingsDialog/UISettingsTab.hpp"
 
 #include <array>
@@ -30,9 +32,45 @@
 using namespace std::literals::string_view_literals;
 static SDL_Cursor* waitCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAITARROW);
 
+MainWindow* MainWindow::m_instance = nullptr;
 MainWindow::MainWindow() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this), m_nwjsVersionManager("https://dl.nwjs.io") {
   m_settingsDialog.addTab(new GeneralSettingsTab());
   m_settingsDialog.addTab(new UISettingsTab());
+  m_instance = this;
+}
+
+MainWindow::ToolbarButton::ToolbarButton(const std::string& id, const ToolbarCategory category, asIScriptFunction* func) : m_id(id), m_category(category), m_func(func) {
+
+  if (func && func->GetFuncType() == asFUNC_DELEGATE) {
+    m_callbackObject = func->GetDelegateObject();
+    m_callbackObjectType = func->GetDelegateObjectType();
+    m_func = func->GetDelegateFunction();
+    ScriptEngine::instance()->engine()->AddRefScriptObject(m_callbackObject, m_callbackObjectType);
+    m_func->AddRef();
+    func->Release();
+  } else {
+    m_func = func;
+  }
+}
+
+MainWindow::ToolbarButton::~ToolbarButton() {
+  if (m_func) {
+    if (m_callbackObject && m_callbackObjectType) {
+      ScriptEngine::instance()->engine()->ReleaseScriptObject(m_callbackObject, m_callbackObjectType);
+    }
+    m_func->Release();
+  }
+}
+
+void MainWindow::ToolbarButton::callOnClicked() const {
+  if (!m_func) {
+    return;
+  }
+
+  if (const auto ctx = ScriptEngine::instance()->prepareContextFromPool(m_func)) {
+    ScriptEngine::executeCall(ctx);
+    ScriptEngine::instance()->returnContextToPool(ctx);
+  }
 }
 
 bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
@@ -186,6 +224,14 @@ void MainWindow::drawToolbar() {
   if (ImGui::IsItemHovered()) {
     ImGui::ActionTooltip("Save Project", "Saves the project.");
   }
+
+  for (const auto& button : m_toolbarButtons[ToolbarCategory::File]) {
+    ImGui::SameLine();
+    if (ImGui::Button(button.id().c_str(), ButtonSize)) {
+      button.callOnClicked();
+    }
+  }
+  ImGui::SameLine();
   ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
   ImGui::SameLine();
   if (ImGui::Button(ICON_FA_SCISSORS, ButtonSize)) {}
@@ -359,6 +405,8 @@ void MainWindow::draw() {
   ImGui::RenderNotifications();
 
   drawCreateNewProjectPopup();
+
+  EditorPluginManager::instance()->callDraws();
 }
 
 void MainWindow::drawCreateNewProjectPopup() {
@@ -893,4 +941,29 @@ void MainWindow::onDatabaseReady() {
   m_isLoaded = true;
   /* Disconnect the signal so we don't get spammed */
   m_databaseEditor->onReady.disconnect<&MainWindow::onDatabaseReady>(this);
+}
+
+void MainWindow::addToolbarButton(const std::string& id, ToolbarCategory category, asIScriptFunction* func) { m_toolbarButtons[category].emplace_back(id, category, func); }
+
+void AddToolbarButton(asIScriptFunction* func, const std::string& id, ToolbarCategory category, const std::string&) {
+  //
+  MainWindow::instance()->addToolbarButton(id, category, func);
+}
+
+void AddCallback(asIScriptFunction* func) {
+  //
+}
+void MainWindow::RegisterBindings() {
+  auto engine = ScriptEngine::instance()->engine();
+  engine->RegisterEnum("ToolbarCategory");
+
+  int r;
+  for (const auto& category : magic_enum::enum_values<ToolbarCategory>()) {
+    r = engine->RegisterEnumValue("ToolbarCategory", magic_enum::enum_name(category).data(), static_cast<int>(category));
+    assert(r >= 0);
+  }
+  r = engine->RegisterFuncdef("void ToolBarButtonClicked()");
+  assert(r >= 0);
+  r = engine->RegisterGlobalFunction("void addToolbarButton(ToolBarButtonClicked @const cb, const string& in, ToolbarCategory category)", asFUNCTION(AddToolbarButton), asCALL_CDECL);
+  assert(r >= 0);
 }

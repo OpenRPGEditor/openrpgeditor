@@ -10,6 +10,7 @@
 #include "Core/ResourceManager.hpp"
 #include "Core/UndoStack.hpp"
 #include "SettingsDialog.hpp"
+#include "angelscript.h"
 
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/TextEditor.hpp"
@@ -36,9 +37,32 @@ enum class DrawTool {
   Eraser,
 };
 
+enum class ToolbarCategory {
+  File,
+  UI,
+  MapOperation,
+};
+
+class asIScriptFunction;
 class MainWindow {
 public:
+  class ToolbarButton {
+  public:
+    ToolbarButton(const std::string& id, const ToolbarCategory category, asIScriptFunction* func);
+    ~ToolbarButton();
+    const std::string& id() const { return m_id; }
+
+    void callOnClicked() const;
+
+  private:
+    std::string m_id;
+    ToolbarCategory m_category;
+    asIScriptFunction* m_func;
+    void* m_callbackObject = nullptr;
+    asITypeInfo* m_callbackObjectType = nullptr;
+  };
   MainWindow();
+  ~MainWindow() { m_instance = nullptr; }
 
   bool load(std::string_view filePath, std::string_view basePath);
   void save();
@@ -158,6 +182,11 @@ public:
     m_mapProperties.setOpen(true);
   }
 
+  void addToolbarButton(const std::string& id, ToolbarCategory category, asIScriptFunction* func);
+  static void RegisterBindings();
+
+  static MainWindow* instance() { return m_instance; }
+
 private:
   void onActorsLoaded();
   void onClassesLoaded();
@@ -193,8 +222,9 @@ private:
   bool m_isValid = false;
   bool m_isLoaded = false;
   bool m_isModified = false;
-  CreateNewProjectDialog m_createNewProject = CreateNewProjectDialog("Create New Project");
 
+  std::unordered_map<ToolbarCategory, std::vector<ToolbarButton>> m_toolbarButtons;
+  CreateNewProjectDialog m_createNewProject = CreateNewProjectDialog("Create New Project");
   std::optional<Database> m_database;
 
   std::optional<DatabaseEditor> m_databaseEditor;
@@ -211,4 +241,5 @@ private:
   float m_menuBarHeight{};
   float m_toolbarButtonSize{};
   float m_toolbarSize = 32;
+  static MainWindow* m_instance;
 };

@@ -421,13 +421,26 @@ add_library(
         Core/Graphics/TileMarker.cpp
         Core/Graphics/TileMarker.hpp
         Core/SettingsDialog/UISettingsTab.cpp
-        Core/SettingsDialog/UISettingsTab.hpp)
+        Core/SettingsDialog/UISettingsTab.hpp
+        Core/EditorPlugin/EditorPluginManager.cpp
+        Core/EditorPlugin/EditorPluginManager.hpp
+        Core/DirectoryMonitor.cpp
+        Core/DirectoryMonitor.hpp
+        Core/Script/ScriptEngine.cpp
+        Core/Script/ScriptEngine.hpp
+        Core/EditorPlugin/EditorPlugin.cpp
+        Core/EditorPlugin/EditorPlugin.hpp
+        Core/Script/ByteCodeStream.cpp
+        Core/Script/ByteCodeStream.hpp
+        Core/Script/Bindings.cpp
+        Core/Script/Bindings.hpp)
 
 target_include_directories(
         orecore
         PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
         ${SFML_SOURCE_DIR}/include/SFML
         ${clip_SOURCE_DIR}
+        ${athena_SOURCE_DIR}/include
         ${cpuid_SOURCE_DIR}
         ${CMAKE_SOURCE_DIR}/extern/angelscript/angelscript/include
         ${CMAKE_SOURCE_DIR}/extern/angelscript/add_on
@@ -450,7 +463,10 @@ target_link_libraries(
         oremath
         libcurl
         cpuid
-        angelscript)
+        angelscript
+        angelscript_addons
+        athena-core
+)
 
 # Define set of OS specific files to include
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -506,7 +522,10 @@ target_link_libraries(
         freetype
         sfml-audio
         cpuid
-        angelscript)
+        angelscript
+        angelscript_addons
+        athena-core
+)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL
         "RelWithDebugInfo")

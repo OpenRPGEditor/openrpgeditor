@@ -41,13 +41,13 @@ void TilesetPicker::draw() {
 
   if (ImGui::Begin("Tilesets")) {
     const auto height = ImGui::CalcTextSize("A").y + (ImGui::GetStyle().FramePadding.y + (ImGui::GetStyle().ItemSpacing.y * 2));
-    ImGui::BeginChild("##tileset", {0, ImGui::GetContentRegionAvail().y - height}, 0, ImGuiWindowFlags_NoBackground);
+    ImGui::BeginChild("##tileset", {0, ImGui::GetContentRegionAvail().y - height}, 0, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
     {
       // We want to always render region tiles
       const ImVec2 cursorPos = (ImGui::GetMousePos() - ImGui::GetCurrentWindow()->ContentRegionRect.Min) / App::DPIHandler::get_ui_scale();
       if (m_palette.isPageValid(m_page) || m_page == -1) {
         ImGui::Image(static_cast<ImTextureID>(m_palette), static_cast<ImVec2>(m_palette.imageSize() * App::DPIHandler::get_ui_scale()));
-        if (ImGui::IsWindowFocused() || ImGui::IsWindowHovered()) {
+        if ((ImGui::IsWindowFocused() || ImGui::IsWindowHovered()) && ImGui::IsItemHovered()) {
           if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
             printf("Pick start!");
             m_palette.onCursorClicked({cursorPos.x, cursorPos.y});

@@ -604,7 +604,7 @@ static void CScriptDictionary_opIndex_const_Generic(asIScriptGeneric *gen)
 {
 	const CScriptDictionary *self = (const CScriptDictionary*)gen->GetObject();
 	dictKey_t *key = *(dictKey_t**)gen->GetAddressOfArg(0);
-	*(const CScriptDictValue**)gen->GetAddressOfReturnLocation() = *self->operator[](*key);
+	*(const CScriptDictValue**)gen->GetAddressOfReturnLocation() = self->operator[](*key);
 }
 
 

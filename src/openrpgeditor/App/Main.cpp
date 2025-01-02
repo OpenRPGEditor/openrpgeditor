@@ -30,6 +30,7 @@ extern "C" void z_error(char* m) {
 #endif
 
 int main() {
+  srand(time(NULL));
 #if defined(_WIN32) && defined(DEBUG)
   AllocConsole();
 

@@ -1,6 +1,23 @@
 #include "Application.hpp"
 
-#include <nfd.h>
+#include "App/ProjectInfo.hpp"
+#include "Core/DPIHandler.hpp"
+#include "Core/Debug/Instrumentor.hpp"
+#include "Core/EditorPlugin/EditorPluginManager.hpp"
+#include "Core/Log.hpp"
+#include "Core/Resources.hpp"
+#include "Core/Script/ScriptEngine.hpp"
+#include "Core/Settings.hpp"
+#include "Core/Window.hpp"
+#include "misc/freetype/imgui_freetype.h"
+
+#include "Database/Serializable/DeserializationQueue.hpp"
+#include "Database/Serializable/SerializationQueue.hpp"
+#include "FirstBootWizard/ProjectLocationPage.hpp"
+#include "FirstBootWizard/RPGMakerLocationAndVersionPage.hpp"
+#include "FirstBootWizard/UISettingsPage.hpp"
+#include "FirstBootWizard/WelcomePage.hpp"
+#include "Script/Bindings.hpp"
 
 #include <SDL2/SDL.h>
 #include <backends/imgui_impl_sdl2.h>
@@ -8,29 +25,12 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <implot.h>
+#include <iostream>
+#include <libcpuid/libcpuid.h>
 #include <memory>
+#include <nfd.h>
 #include <string>
 
-#include "App/ProjectInfo.hpp"
-#include "Core/DPIHandler.hpp"
-#include "Core/Debug/Instrumentor.hpp"
-#include "Core/Log.hpp"
-#include "Core/Resources.hpp"
-#include "Core/Settings.hpp"
-#include "Core/Window.hpp"
-#include "misc/freetype/imgui_freetype.h"
-
-#include "Core/NWJSVersionManager.hpp"
-#include "Database/Serializable/DeserializationQueue.hpp"
-#include "Database/Serializable/SerializationQueue.hpp"
-#include "FirstBootWizard/ProjectLocationPage.hpp"
-#include "FirstBootWizard/RPGMakerLocationAndVersionPage.hpp"
-#include "FirstBootWizard/UISettingsPage.hpp"
-#include "FirstBootWizard/WelcomePage.hpp"
-
-#include <libcpuid/libcpuid.h>
-
-#include <iostream>
 namespace App {
 constexpr auto SettingsFilename = "config.json"sv;
 Application* APP = nullptr;
@@ -70,6 +70,11 @@ Application::Application(const std::string& title) {
   APP_DEBUG("User config path: {}", m_userConfigPath);
 
   APP = this;
+  if (!ScriptEngine::instance()->initialize()) {
+    APP_ERROR("Failed to initialize script manager");
+    abort();
+  }
+  EditorPluginManager::instance()->initialize();
 }
 
 Application::~Application() {
@@ -246,6 +251,7 @@ ExitStatus Application::run() {
   double delta = 0;
   bool warmup = true;
 
+  m_project.emplace();
   bool needsInitialProjectLoad =
       !Settings::instance()->lastProject.empty() && std::filesystem::is_regular_file(Settings::instance()->lastProject) &&
       (std::filesystem::path(Settings::instance()->lastProject).extension() == ".rpgproject" || std::filesystem::path(Settings::instance()->lastProject).extension() == ".rmmzproject");
@@ -258,7 +264,9 @@ ExitStatus Application::run() {
     m_firstBootWizard->addPage(std::make_shared<ProjectLocationPage>());
   }
   int warmupFrames = 0;
+
   while (true) {
+    EditorPluginManager::instance()->initializeAllPlugins();
     if (m_fontUpdateRequested && m_fontUpdateDelay <= 0) {
       ImGui_ImplSDLRenderer2_Shutdown();
       ImGui_ImplSDL2_Shutdown();
@@ -326,9 +334,6 @@ ExitStatus Application::run() {
       }
 
       if (!m_firstBootWizard) {
-        if (!m_project) {
-          m_project.emplace();
-        }
         m_project->draw();
         if (needsInitialProjectLoad) {
           m_project->load(Settings::instance()->lastProject, std::filesystem::path(Settings::instance()->lastProject).remove_filename().generic_string());

@@ -55,7 +55,7 @@ FetchContent_Declare(
 FetchContent_Declare(
         spdlog
         GIT_REPOSITORY "https://github.com/gabime/spdlog.git"
-        GIT_TAG v1.14.1)
+        GIT_TAG v1.15.0)
 
 FetchContent_Declare(json
         GIT_REPOSITORY "https://github.com/nlohmann/json.git"
@@ -82,6 +82,11 @@ FetchContent_Declare(curl
 FetchContent_Declare(cpuid
         GIT_REPOSITORY "https://github.com/anrieff/libcpuid.git"
         GIT_TAG v0.7.0
+)
+
+FetchContent_Declare(athena
+        GIT_REPOSITORY "https://github.com/libAthena/athena.git"
+        GIT_TAG master
 )
 
 #FetchContent_Declare(liblcf
@@ -126,6 +131,7 @@ FetchContent_MakeAvailable(
         imgui
         implot
         cpuid
+        athena
 )
 
 add_subdirectory(imgui-setup)

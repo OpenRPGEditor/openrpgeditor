@@ -52,6 +52,8 @@ public:
   [[nodiscard]] ImFont* getMainFont() const { return m_mainFont; }
   [[nodiscard]] ImFont* getMonoFont() const { return m_monoFont; }
 
+  std::string_view userConfigPath() const { return m_userConfigPath; };
+
 private:
   void updateFonts();
   ExitStatus m_exitStatus{ExitStatus::Success};

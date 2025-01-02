@@ -16,6 +16,13 @@ struct Settings {
     bool maximized{false};
   };
 
+  struct Plugin {
+    friend void to_json(nlohmann::ordered_json& j, const Plugin& r);
+    friend void from_json(const nlohmann::ordered_json& j, Plugin& p);
+    bool enabled{false};
+    bool compiled{false};
+  };
+
   Settings();
   bool load(std::string_view path);
   bool loadFromJson(const nlohmann::ordered_json& parser);
@@ -23,6 +30,7 @@ struct Settings {
   nlohmann::ordered_json serializeToJson();
   WindowRect window{};
   std::deque<std::pair<std::string, std::string>> mru;
+  std::map<std::string, Plugin> plugins; // Base directory -> settings
   std::string lastDirectory;
   std::string lastProject;
   std::string projectBaseDirectory;

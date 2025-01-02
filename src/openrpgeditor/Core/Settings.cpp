@@ -17,6 +17,18 @@ void from_json(const nlohmann::ordered_json& j, Settings::WindowRect& r) {
   r.maximized = j.value("maximized", r.maximized);
 }
 
+void to_json(nlohmann::ordered_json& j, const Settings::Plugin& p) {
+  j = {
+      {"enabled", p.enabled},
+      {"compiled", p.compiled},
+  };
+}
+
+void from_json(const nlohmann::ordered_json& j, Settings::Plugin& p) {
+  p.enabled = j.value("enabled", p.enabled);
+  p.compiled = j.value("compiled", p.compiled);
+}
+
 Settings::Settings() { m_instance = this; }
 bool Settings::load(std::string_view path) {
   try {
@@ -33,6 +45,7 @@ bool Settings::loadFromJson(const nlohmann::ordered_json& parser) {
   try {
     window = parser.value("window", window);
     mru = parser.value("mru", mru);
+    plugins = parser.value("plugins", plugins);
     lastDirectory = parser.value("lastDirectory", lastDirectory);
     lastProject = parser.value("lastProject", lastProject);
     projectBaseDirectory = parser.value("projectBaseDirectory", projectBaseDirectory);
@@ -59,6 +72,7 @@ void Settings::serialize(const std::string_view path) {
 nlohmann::ordered_json Settings::serializeToJson() {
   return {{"window", window},                             //
           {"mru", mru},                                   //
+          {"plugins", plugins},                           //
           {"lastDirectory", lastDirectory},               //
           {"lastProject", lastProject},                   //
           {"projectBaseDirectory", projectBaseDirectory}, //

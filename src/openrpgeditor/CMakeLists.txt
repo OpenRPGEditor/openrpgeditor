@@ -419,7 +419,9 @@ add_library(
         Core/Tilemap/TileRenderHelper.cpp
         Core/Tilemap/TileRenderHelper.hpp
         Core/Graphics/TileMarker.cpp
-        Core/Graphics/TileMarker.hpp)
+        Core/Graphics/TileMarker.hpp
+        Core/SettingsDialog/UISettingsTab.cpp
+        Core/SettingsDialog/UISettingsTab.hpp)
 
 target_include_directories(
         orecore

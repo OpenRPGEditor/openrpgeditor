@@ -19,7 +19,7 @@ struct CheckerboardTexture {
   ~CheckerboardTexture();
 
   [[nodiscard]] void* get() const {
-    updateTexture();
+    update();
     return m_texture;
   }
   explicit operator bool() const { return m_texture != nullptr; }
@@ -32,13 +32,22 @@ struct CheckerboardTexture {
   void setHeight(int height);
 
   void setSize(int width, int height);
+  void update() const;
 
 private:
-  void updateTexture() const;
+  mutable void* m_checkerTexture = nullptr;
   mutable void* m_texture = nullptr;
-  int m_width{0};
-  int m_height{0};
+  mutable void* m_workTexture = nullptr;
+  mutable bool m_workDone{false};
+  mutable int m_width{0};
+  mutable int m_height{0};
+  int m_pendingWidth{0};
+  int m_pendingHeight{0};
   CellSizes m_cellSize{CellSizes::_64};
+  mutable int m_checkerSize{0};
   uint8_t m_evenColor{255};
   uint8_t m_oddColor{220};
+  mutable int m_workX{0};
+  mutable int m_workY{0};
+  mutable int m_frameDelay{0};
 };

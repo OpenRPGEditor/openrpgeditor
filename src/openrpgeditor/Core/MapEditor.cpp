@@ -467,19 +467,11 @@ void MapEditor::renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer
   // renderLayerRects(win, layer);
 }
 
-static std::optional<TilePalette> palette;
-
 void MapEditor::draw() {
   if (m_mapInfo != nullptr && m_mapInfo->map() != nullptr && m_mapRenderer.map() != m_mapInfo->map()) {
     m_mapRenderer.setMap(m_mapInfo->map(), Database::instance()->tilesets.tileset(m_mapInfo->map()->tilesetId()));
     m_tempMapWidth = m_mapInfo->map()->width();
     m_tempMapHeight = m_mapInfo->map()->height();
-    if (!palette) {
-      palette.emplace();
-    }
-    palette->setTilesetNames(Database::instance()->tilesets.tileset(m_mapInfo->map()->tilesetId())->tilesetNames());
-    palette->setPageIndex(0);
-    palette->paintTiles();
   }
 
   if (!m_checkeredBack) {

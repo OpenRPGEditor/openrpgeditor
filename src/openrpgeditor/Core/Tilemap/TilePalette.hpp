@@ -18,6 +18,8 @@ public:
   explicit TilePalette(const int tileWidth = 48, const int tileHeight = 48, const int blockWidth = 96, const int blockHeight = 96)
   : ITileView(tileWidth, tileHeight, blockWidth, blockHeight), m_renderHelper(tileWidth, tileHeight), m_checkerboardTexture(32, 32) {
     updateCursorPixelRect();
+    updateMaxRows();
+    updateRenderTexture();
   }
   void setMode(const Tileset::Mode mode) { m_tilesetMode = mode; }
   Tileset::Mode mode() const { return m_tilesetMode; }
@@ -41,7 +43,6 @@ public:
     m_pageIndex = page;
     updateMaxRows();
     updateRenderTexture();
-    paintTiles();
   }
 
   bool tilesetExists(const int idx) const { return !m_tilesetNames[idx].empty(); }

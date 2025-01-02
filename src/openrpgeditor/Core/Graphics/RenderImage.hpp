@@ -28,11 +28,11 @@ public:
   RenderImage() = default;
   RenderImage(int width, int height);
 
-  void* get() const { return m_renderImage; }
-  explicit operator ImTextureID() const { return reinterpret_cast<ImTextureID>(m_renderImage); }
+  void* get() const { return m_renderImage[m_currentBuffer]; }
+  explicit operator ImTextureID() const { return reinterpret_cast<ImTextureID>(get()); }
 
-  bool bind();
-  void unbind();
+  bool lock();
+  void unlock();
   void eraseRect(const RectF& rect) const;
   void fillRect(const RectF& rect, const Color& color) const;
   void drawImage(const RectF& target, const Texture& image, const Rect& src) const;
@@ -45,12 +45,16 @@ public:
 private:
   void createTexture();
   void setCurrentCompositionMode() const;
-  void* m_renderImage = nullptr;
+  void* m_renderImage[2]{nullptr, nullptr};
+  int m_currentBuffer = 1;
+  int m_workBuffer = 0;
+  bool m_bufferInvalid[2] = {true, true};
   CompositionMode m_compositionMode = CompositionMode::SourceOver;
-
-  int m_width{0};
-  int m_height{0};
-  int m_oldBlend{0};
+  int m_width[2] = {0, 0};
+  int m_height[2] = {0, 0};
+  int m_pendingWidth = 0;
+  int m_pendingHeight = 0;
+  int m_oldBlend = 0;
   void* m_oldTarget{nullptr};
-  bool m_bound{false};
+  bool m_locked{false};
 };

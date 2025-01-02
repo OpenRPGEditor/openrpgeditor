@@ -31,16 +31,13 @@ void TilesetPicker::draw() {
       while (!m_palette.isPageValid(m_page) && m_page > 0) {
         --m_page;
       }
-      const bool samePage = m_page == m_palette.pageIndex();
       setPage(m_page);
-      /* We need to force it to repaint tiles just in case we select the same page */
-      if (samePage) {
-        m_palette.paintTiles();
-      }
     } else {
       m_palette.setTilesetNames({});
     }
   }
+
+  m_palette.paintTiles();
 
   if (ImGui::Begin("Tilesets")) {
     const auto height = ImGui::CalcTextSize("A").y + (ImGui::GetStyle().FramePadding.y + (ImGui::GetStyle().ItemSpacing.y * 2));

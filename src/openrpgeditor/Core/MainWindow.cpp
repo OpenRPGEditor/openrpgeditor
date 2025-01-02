@@ -19,6 +19,8 @@
 #include <shellapi.h>
 #endif
 
+#include "SettingsDialog/UISettingsTab.hpp"
+
 #include <array>
 #include <clip.h>
 #include <fstream>
@@ -30,6 +32,7 @@ static SDL_Cursor* waitCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAITARR
 
 MainWindow::MainWindow() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this), m_nwjsVersionManager("https://dl.nwjs.io") {
   m_settingsDialog.addTab(new GeneralSettingsTab());
+  m_settingsDialog.addTab(new UISettingsTab());
 }
 
 bool MainWindow::load(std::string_view filePath, std::string_view basePath) {

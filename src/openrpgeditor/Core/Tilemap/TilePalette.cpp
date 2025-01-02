@@ -23,11 +23,11 @@ void TilePalette::updateRenderTexture() {
 
   m_painter.setSize(width, height);
   m_finalResult.setSize(width, height);
+  m_checkerboardTexture.setSize(width, height);
 }
 
 std::vector<int> TilePalette::paletteTiles(int x, int y, const Tileset::Mode mode, const bool checkSpecial) const {
   if (m_pageIndex == 0) {
-
     // Offsets in tiles
     constexpr std::array yOffs{
         2, 4, 4, 6, 16,
@@ -125,7 +125,6 @@ void TilePalette::updateMaxRows() {
   }
 
   m_maxRows = maxRows;
-  paintTiles();
 }
 
 void TilePalette::eraseCursor() { setCursorRect({}); }
@@ -209,7 +208,7 @@ void TilePalette::endPick() {
   m_isPicking = false;
 }
 void TilePalette::paintTiles() {
-  if (!m_painter.bind()) {
+  if (!m_painter.lock()) {
     return;
   }
 
@@ -219,24 +218,13 @@ void TilePalette::paintTiles() {
     }
   }
 
-  m_painter.unbind();
-
-  if (m_finalResult.bind()) {
+  m_painter.unlock();
+  if (m_finalResult.lock()) {
     const int width = (paletteSize().width() * realTileWidth());
     const int height = (paletteSize().height() * realTileHeight());
-    const int cols = std::ceil(static_cast<float>(width) / static_cast<float>(m_checkerboardTexture.width()));
-    const int rows = std::ceil(static_cast<float>(height) / static_cast<float>(m_checkerboardTexture.height()));
-    const Rect srcRect{0, 0, m_checkerboardTexture.width(), m_checkerboardTexture.height()};
-    for (int i = 0; i < rows; ++i) {
-      for (int j = 0; j < cols; ++j) {
-        const RectF destRect{static_cast<float>(j * m_checkerboardTexture.width()), static_cast<float>(i * m_checkerboardTexture.height()), static_cast<float>(m_checkerboardTexture.width()),
-                             static_cast<float>(m_checkerboardTexture.height())};
-        m_finalResult.drawImageRaw(destRect, m_checkerboardTexture.get(), srcRect);
-      }
-    }
-
+    m_finalResult.drawImageRaw({0, 0, static_cast<float>(width), static_cast<float>(height)}, m_checkerboardTexture.get(), {0, 0, width, height});
     m_finalResult.drawImageRaw({0, 0, static_cast<float>(width), static_cast<float>(height)}, m_painter.get(), {0, 0, width, height});
-    m_finalResult.unbind();
+    m_finalResult.unlock();
   }
 }
 

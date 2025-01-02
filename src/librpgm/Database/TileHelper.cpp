@@ -152,5 +152,9 @@ bool isNorthPassage(int tileFlags) { return (tileFlags & static_cast<int>(TileFl
 bool isSouthPassage(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::PassageSouth)) == 0; }
 bool isWestPassage(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::PassageWest)) == 0; }
 bool isEastPassage(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::PassageEast)) == 0; }
+bool isLadder(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::Ladder)) != 0; }
+bool isBush(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::Bush)) != 0; }
+bool isCounter(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::Counter)) != 0; }
+bool isDamageFloor(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::Damage)) != 0; }
 
 } // namespace TileHelper

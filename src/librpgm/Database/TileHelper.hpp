@@ -56,4 +56,8 @@ constexpr int TILE_ID_MAX = 8192;
 [[nodiscard]] bool isSouthPassage(int tileFlags);
 [[nodiscard]] bool isWestPassage(int tileFlags);
 [[nodiscard]] bool isEastPassage(int tileFlags);
+[[nodiscard]] bool isLadder(int tileFlags);
+[[nodiscard]] bool isBush(int tileFlags);
+[[nodiscard]] bool isCounter(int tileFlags);
+[[nodiscard]] bool isDamageFloor(int tileFlags);
 } // namespace TileHelper

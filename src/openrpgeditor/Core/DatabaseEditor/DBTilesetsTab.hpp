@@ -28,6 +28,7 @@ private:
   int m_selectedTileTab{0};
   int m_pickerSelection;
   int m_checkerBoardHeight{0};
+  int m_flagSelection{0};
   bool m_updateCheckerboard{true};
 
   std::optional<ImagePicker> m_imagePicker;
@@ -49,4 +50,6 @@ private:
   void drawA4();
   void drawA5();
   void drawTileset(int type);
+  void drawTileMarker(int flagType, ImVec2 tileRect, int tileIndex);
+  void toggleTileState(int tileIndex, bool reverse, TileFlags subTileFlag = TileFlags::None);
 };

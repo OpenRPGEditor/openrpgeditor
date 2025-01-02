@@ -210,9 +210,9 @@ void DBTilesetsTab::draw() {
         ImGui::EndChild();
 
         ImGui::SameLine();
-        ImGui::BeginChild("##orpg_tilesets_tileset_panel_middle", ImVec2{App::DPIHandler::scale_value(400), App::DPIHandler::scale_value(850)});
+        ImGui::BeginChild("##orpg_tilesets_tileset_panel_middle", ImVec2{App::DPIHandler::scale_value(410), App::DPIHandler::scale_value(860)});
         {
-          ImGui::BeginChild("##orpg_database_tilesets_viewer", ImVec2{App::DPIHandler::scale_value(400), 1536}, ImGuiChildFlags_Border,
+          ImGui::BeginChild("##orpg_database_tilesets_viewer", ImVec2{App::DPIHandler::scale_value(400), 1542}, ImGuiChildFlags_Border,
                             ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
           {
             // for (auto& tilesetF : m_selectedTileset->flags()) {
@@ -257,54 +257,112 @@ void DBTilesetsTab::draw() {
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 8.f);
         ImGui::BeginChild("##orpg_tilesets_tileset_panel_right");
         {
+          static ImVec4 currentColor = {0.f, 0.f, 0.f, 0.f};
+          static ImVec4 normalColor = {0.f, 0.f, 0.f, 0.f};
+          if (m_flagSelection == 0) {
+            currentColor = {0.5f, 0.5f, 0.5f, 1.0f};
+          }
+          ImGui::PushStyleColor(ImGuiCol_Button, currentColor);
+          currentColor = normalColor;
           ImGui::BeginGroup();
           {
             ImGui::PushID("##orpg_tileset_flags_passage");
-            if (ImGui::Button("Passage", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
+            if (ImGui::Button("Passage", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {
+              m_flagSelection = 0;
+            }
             ImGui::PopID();
           }
+          ImGui::PopStyleColor(1);
           ImGui::EndGroup();
+          if (m_flagSelection == 1) {
+            currentColor = {0.5f, 0.5f, 0.5f, 1.0f};
+          }
+          ImGui::PushStyleColor(ImGuiCol_Button, currentColor);
+          currentColor = normalColor;
           ImGui::BeginGroup();
           {
             ImGui::PushID("##orpg_tileset_flags_passage_4dir");
-            if (ImGui::Button("Passage (4 dir)", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
+            if (ImGui::Button("Passage (4 dir)", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {
+              m_flagSelection = 1;
+            }
             ImGui::PopID();
           }
+          ImGui::PopStyleColor(1);
           ImGui::EndGroup();
+          if (m_flagSelection == 2) {
+            currentColor = {0.5f, 0.5f, 0.5f, 1.0f};
+          }
+          ImGui::PushStyleColor(ImGuiCol_Button, currentColor);
+          currentColor = normalColor;
           ImGui::BeginGroup();
           {
             ImGui::PushID("##orpg_tileset_flags_ladder");
-            if (ImGui::Button("Ladder", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
+            if (ImGui::Button("Ladder", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {
+              m_flagSelection = 2;
+            }
             ImGui::PopID();
           }
+          ImGui::PopStyleColor(1);
           ImGui::EndGroup();
+          if (m_flagSelection == 3) {
+            currentColor = {0.5f, 0.5f, 0.5f, 1.0f};
+          }
+          ImGui::PushStyleColor(ImGuiCol_Button, currentColor);
+          currentColor = normalColor;
           ImGui::BeginGroup();
           {
             ImGui::PushID("##orpg_tileset_flags_bush");
-            if (ImGui::Button("Bush", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
+            if (ImGui::Button("Bush", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {
+              m_flagSelection = 3;
+            }
             ImGui::PopID();
           }
+          ImGui::PopStyleColor(1);
           ImGui::EndGroup();
+          if (m_flagSelection == 4) {
+            currentColor = {0.5f, 0.5f, 0.5f, 1.0f};
+          }
+          ImGui::PushStyleColor(ImGuiCol_Button, currentColor);
+          currentColor = normalColor;
           ImGui::BeginGroup();
           {
             ImGui::PushID("##orpg_tileset_flags_counter");
-            if (ImGui::Button("Counter", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
+            if (ImGui::Button("Counter", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {
+              m_flagSelection = 4;
+            }
             ImGui::PopID();
           }
+          ImGui::PopStyleColor(1);
           ImGui::EndGroup();
+          if (m_flagSelection == 5) {
+            currentColor = {0.5f, 0.5f, 0.5f, 1.0f};
+          }
+          ImGui::PushStyleColor(ImGuiCol_Button, currentColor);
+          currentColor = normalColor;
           ImGui::BeginGroup();
           {
             ImGui::PushID("##orpg_tileset_flags_damagefloor");
-            if (ImGui::Button("Damage Floor", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
+            if (ImGui::Button("Damage Floor", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {
+              m_flagSelection = 5;
+            }
             ImGui::PopID();
           }
+          ImGui::PopStyleColor(1);
           ImGui::EndGroup();
+          if (m_flagSelection == 6) {
+            currentColor = {0.5f, 0.5f, 0.5f, 1.0f};
+          }
+          ImGui::PushStyleColor(ImGuiCol_Button, currentColor);
+          currentColor = normalColor;
           ImGui::BeginGroup();
           {
             ImGui::PushID("##orpg_tileset_flags_terraintag");
-            if (ImGui::Button("Terrain Tag", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {}
+            if (ImGui::Button("Terrain Tag", ImVec2{(App::DPIHandler::scale_value(110)), 0})) {
+              m_flagSelection = 6;
+            }
             ImGui::PopID();
           }
+          ImGui::PopStyleColor(1);
           ImGui::EndGroup();
         }
         ImGui::EndChild();
@@ -775,6 +833,9 @@ void DBTilesetsTab::drawTileset(int type) {
   ImVec2 uvTileSize = ImVec2(1.0f / (tilesetWidth / m_tileSize), 1.0f / (tilesetHeight / m_tileSize));
   m_checkerBoardHeight = 32;
   int tileIndex{0};
+  if (type > 5) {
+    tileIndex += (256 * (type - 5));
+  }
   for (int y = 0; y < tilesetHeight / m_tileSize; ++y) {
     for (int x = 0; x < m_gridCols / 2; ++x) {
       if (x == 0) {
@@ -794,22 +855,10 @@ void DBTilesetsTab::drawTileset(int type) {
       ImGui::PopID();
       ImGui::SetCursorPos(cursorPos);
       ImGui::PushID(std::format("##orpg_database_tileset_{}_flag_{} ", type, y * m_gridCols + x).c_str());
-
-      bool isPassable = (m_selectedTileset->flags().at(tileIndex) & static_cast<int>(TileFlags::Impassable)) == 0;
-      bool hasHigherTile = (m_selectedTileset->flags().at(tileIndex) & static_cast<int>(TileFlags::PassageHigherTile)) != 0;
       ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));
       ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.f, 0.f, 0.f, 0.f));
       ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.f, 0.f, 0.f, 0.f));
-
-      ImVec4 tint = ImGui::IsItemHovered() ? kHoveredTint : kDefaultTint;
-      if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(hasHigherTile ? 8 : (isPassable ? 0 : 1)),
-                             m_tileMarker->uv1(hasHigherTile ? 8 : (isPassable ? 0 : 1)), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
-        if (isPassable) {
-          m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::None));
-        } else {
-          m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Impassable));
-        }
-      }
+      drawTileMarker(m_flagSelection, tileRect, tileIndex);
       ImGui::PopID();
       ImGui::PopStyleColor(3);
       ImGui::PopStyleVar(2);
@@ -841,22 +890,10 @@ void DBTilesetsTab::drawTileset(int type) {
       ImGui::PopID();
       ImGui::SetCursorPos(cursorPos);
       ImGui::PushID(std::format("##orpg_database_tileset_{}_flag2_{} ", type, y * m_gridCols + x).c_str());
-
-      bool isPassable = (m_selectedTileset->flags().at(tileIndex) & static_cast<int>(TileFlags::Impassable)) == 0;
-      bool hasHigherTile = (m_selectedTileset->flags().at(tileIndex) & static_cast<int>(TileFlags::PassageHigherTile)) != 0;
       ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));
       ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.f, 0.f, 0.f, 0.f));
       ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.f, 0.f, 0.f, 0.f));
-
-      ImVec4 tint = ImGui::IsItemHovered() ? kHoveredTint : kDefaultTint;
-      if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(hasHigherTile ? 8 : (isPassable ? 0 : 1)),
-                             m_tileMarker->uv1(hasHigherTile ? 8 : (isPassable ? 0 : 1)), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
-        if (isPassable) {
-          m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::None));
-        } else {
-          m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Impassable));
-        }
-      }
+      drawTileMarker(m_flagSelection, tileRect, tileIndex);
       ImGui::PopID();
       ImGui::PopStyleColor(3);
       ImGui::PopStyleVar(2);
@@ -867,4 +904,182 @@ void DBTilesetsTab::drawTileset(int type) {
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
   }
   m_image.reset();
+}
+void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tileRect, int tileIndex) {
+  if (flagType == 0) {
+    // Passage
+    bool isPassable = TileHelper::isTilePassable(m_selectedTileset->flags().at(tileIndex));
+    bool hasHigherTile = TileHelper::hasHigherTile(m_selectedTileset->flags().at(tileIndex));
+
+    if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+      toggleTileState(tileIndex, true);
+    }
+    ImVec4 tint = ImGui::IsItemHovered() ? kHoveredTint : kDefaultTint;
+    if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(hasHigherTile ? 8 : (isPassable ? 0 : 1)),
+                           m_tileMarker->uv1(hasHigherTile ? 8 : (isPassable ? 0 : 1)), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
+      toggleTileState(tileIndex, false);
+    }
+  } else if (flagType == 1) {
+    // Passage (4-dir)
+    // Texture and grid details
+    const int iconSize = 16; // Size of each icon in pixels
+
+    // Grid configuration
+    const int gridCols = 3;                    // Number of columns
+    const int gridRows = 3;                    // Number of rows
+    const ImVec2 iconSpacing = ImVec2(14, 14); // Spacing between icons
+
+    ImVec2 startPos = ImGui::GetCursorScreenPos();
+    startPos.x += 3.f;
+    startPos.y += 3.f;
+    ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+    // Loop through rows and columns
+    for (int y = 0; y < gridRows; y++) {
+      for (int x = 0; x < gridCols; x++) {
+        bool isDot = y == 1 && x == 1;
+        bool isUpArrow = y == 0 && x == 1;
+        bool isDownArrow = y == 2 && x == 1;
+        bool isLeftArrow = y == 1 && x == 0;
+        bool isRightArrow = y == 1 && x == 2;
+
+        ImVec2 minPos = startPos + ImVec2(x * iconSpacing.x, y * iconSpacing.y);
+        ImVec2 maxPos = minPos + ImVec2(iconSize, iconSize);
+
+        ImVec4 tintColor = kDefaultTint;
+        if (ImGui::IsWindowFocused() || ImGui::IsWindowHovered()) {
+          if (ImGui::IsMouseHoveringRect(minPos, maxPos)) {
+            tintColor.w = kHoveredTint.w; // Reduce alpha for transparency
+
+            if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+              toggleTileState(tileIndex, false,
+                              isUpArrow      ? TileFlags::PassageNorth
+                              : isDownArrow  ? TileFlags::PassageSouth
+                              : isLeftArrow  ? TileFlags::PassageWest
+                              : isRightArrow ? TileFlags::PassageEast
+                                             : TileFlags::None);
+            } else if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+              toggleTileState(tileIndex, true,
+                              isUpArrow      ? TileFlags::PassageNorth
+                              : isDownArrow  ? TileFlags::PassageSouth
+                              : isLeftArrow  ? TileFlags::PassageWest
+                              : isRightArrow ? TileFlags::PassageEast
+                                             : TileFlags::None);
+            }
+          }
+        }
+
+        if (isDot) {
+          // Dot
+          drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(3), m_tileMarker->uv1(3), ImGui::ColorConvertFloat4ToU32(tintColor));
+        }
+        if (isUpArrow) {
+          // Up Arrow
+          if (TileHelper::isNorthPassage(m_selectedTileset->flags().at(tileIndex))) {
+            drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(7), m_tileMarker->uv1(7), ImGui::ColorConvertFloat4ToU32(tintColor));
+          } else {
+            drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(3), m_tileMarker->uv1(3), ImGui::ColorConvertFloat4ToU32(tintColor));
+          }
+        }
+        if (isLeftArrow) {
+          // Left arrow
+          if (TileHelper::isWestPassage(m_selectedTileset->flags().at(tileIndex))) {
+            drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(5), m_tileMarker->uv1(5), ImGui::ColorConvertFloat4ToU32(tintColor));
+          } else {
+            drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(3), m_tileMarker->uv1(3), ImGui::ColorConvertFloat4ToU32(tintColor));
+          }
+        }
+        if (isRightArrow) {
+          // Right arrow
+          if (TileHelper::isEastPassage(m_selectedTileset->flags().at(tileIndex))) {
+            drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(6), m_tileMarker->uv1(6), ImGui::ColorConvertFloat4ToU32(tintColor));
+          } else {
+            drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(3), m_tileMarker->uv1(3), ImGui::ColorConvertFloat4ToU32(tintColor));
+          }
+        }
+        if (isDownArrow) {
+          // Down arrow
+          if (TileHelper::isSouthPassage(m_selectedTileset->flags().at(tileIndex))) {
+            drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(4), m_tileMarker->uv1(4), ImGui::ColorConvertFloat4ToU32(tintColor));
+          } else {
+            drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(3), m_tileMarker->uv1(3), ImGui::ColorConvertFloat4ToU32(tintColor));
+          }
+        }
+      }
+    }
+  } else if (flagType == 2) {
+    // Ladder
+  } else if (flagType == 3) {
+    // Bush
+  } else if (flagType == 4) {
+    // Counter
+  } else if (flagType == 5) {
+    // Damage Floor
+  } else if (flagType == 6) {
+    // Terrain Tag
+  }
+}
+
+void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTileFlag) {
+
+  int currentFlags = m_selectedTileset->flags().at(tileIndex);
+
+  if (m_flagSelection == 0) {
+    // Passage
+    // Determine the current state
+    bool hasHigherTile = TileHelper::hasHigherTile(currentFlags);
+    bool isPassable = TileHelper::isTilePassable(currentFlags) && (hasHigherTile == false);
+    bool isImpassable = TileHelper::isTilePassable(currentFlags) == false && hasHigherTile == false;
+
+    if (reverse) {
+      if (isPassable) {
+        // Transition to Higher Tile
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Impassable), false);
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageHigherTile), true);
+      } else if (isImpassable) {
+        // Transition to Passable
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Impassable), false);
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageHigherTile), false);
+      } else if (hasHigherTile) {
+        // Transition to Impassable
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Impassable), true);
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageHigherTile), false);
+      }
+    } else {
+      if (isPassable) {
+        // Transition to Impassable
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Impassable), true);
+      } else if (isImpassable) {
+        // Transition to Higher Tile
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Impassable), false);
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageHigherTile), true);
+      } else if (hasHigherTile) {
+        // Transition to Passable
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Impassable), false);
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageHigherTile), false);
+      }
+    }
+  } else if (m_flagSelection == 1) {
+    // Passage (4-dir)
+    if (subTileFlag == TileFlags::PassageNorth || subTileFlag == TileFlags::PassageSouth || subTileFlag == TileFlags::PassageWest || subTileFlag == TileFlags::PassageEast) {
+      if (static_cast<int>(subTileFlag) & m_selectedTileset->flags().at(tileIndex)) {
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(subTileFlag), false);
+      } else {
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(subTileFlag), true);
+      }
+    } else {
+      // Dot behavior
+      if (TileHelper::isNorthPassage(m_selectedTileset->flags().at(tileIndex)) || TileHelper::isSouthPassage(m_selectedTileset->flags().at(tileIndex)) || TileHelper::isWestPassage(m_selectedTileset->flags().at(tileIndex)) || TileHelper::isEastPassage(m_selectedTileset->flags().at(tileIndex))) {
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageNorth), true);
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageSouth), true);
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageWest), true);
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageEast), true);
+      } else {
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageNorth), false);
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageSouth), false);
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageWest), false);
+        m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageEast), false);
+      }
+    }
+  }
 }

@@ -49,4 +49,11 @@ constexpr int TILE_ID_MAX = 8192;
 
 [[nodiscard]] int waterfallDirToShape(int dir);
 [[nodiscard]] int waterfallShapeToDir(int shape);
+
+[[nodiscard]] bool isTilePassable(int tileFlags);
+[[nodiscard]] bool hasHigherTile(int tileFlags);
+[[nodiscard]] bool isNorthPassage(int tileFlags);
+[[nodiscard]] bool isSouthPassage(int tileFlags);
+[[nodiscard]] bool isWestPassage(int tileFlags);
+[[nodiscard]] bool isEastPassage(int tileFlags);
 } // namespace TileHelper

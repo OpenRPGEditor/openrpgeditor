@@ -1,5 +1,7 @@
 #include "Database/TileHelper.hpp"
 
+#include "Globals.hpp"
+
 #include <array>
 #include <cmath>
 
@@ -144,5 +146,11 @@ int waterfallDirToShape(const int dir) {
   }
   return shape;
 }
+bool isTilePassable(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::Impassable)) != static_cast<int>(TileFlags::Impassable); }
+bool hasHigherTile(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::PassageHigherTile)) != 0; }
+bool isNorthPassage(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::PassageNorth)) == 0; }
+bool isSouthPassage(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::PassageSouth)) == 0; }
+bool isWestPassage(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::PassageWest)) == 0; }
+bool isEastPassage(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::PassageEast)) == 0; }
 
 } // namespace TileHelper

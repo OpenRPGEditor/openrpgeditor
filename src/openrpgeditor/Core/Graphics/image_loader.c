@@ -11,8 +11,7 @@
 #include "stb_image.h"
 
 static bool LoadTexturePriv(SDL_Texture** texture_ptr, const int* width, const int* height, SDL_Renderer* renderer, const int channels, void* data) {
-  SDL_Surface* surface = SDL_CreateSurfaceFrom(*width, *height, SDL_PIXELFORMAT_RGBA8888, data, channels * *width);
-
+  SDL_Surface* surface = SDL_CreateSurfaceFrom(*width, *height, SDL_PIXELFORMAT_ABGR8888, data, channels * *width);
   if (surface == NULL) {
     fprintf(stderr, "Failed to create SDL surface: %s\n", SDL_GetError());
     return false;
@@ -26,6 +25,9 @@ static bool LoadTexturePriv(SDL_Texture** texture_ptr, const int* width, const i
     stbi_image_free(data);
     return false;
   }
+
+  SDL_SetTextureBlendMode(*texture_ptr, SDL_BLENDMODE_BLEND);
+  SDL_SetTextureScaleMode(*texture_ptr, SDL_SCALEMODE_NEAREST);
 
   SDL_DestroySurface(surface);
   stbi_image_free(data);

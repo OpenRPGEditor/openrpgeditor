@@ -77,8 +77,18 @@ void CheckeredCompositeTexture::update() {
       }
     }
 
-    const SDL_FRect screct = {static_cast<float>(offset.x()), static_cast<float>(offset.y()), static_cast<float>(originalSize.x()), static_cast<float>(originalSize.y())};
-    const SDL_FRect dstrect = {fabsf(m_finalSize.x() / 2 - (width / 2)) + 1, fabsf(m_finalSize.y() / 2 - (height / 2)) + 1, static_cast<float>(width - 2), static_cast<float>(height - 2)};
+    const SDL_FRect screct = {
+        static_cast<float>(offset.x()),
+        static_cast<float>(offset.y()),
+        static_cast<float>(originalSize.x()),
+        static_cast<float>(originalSize.y()),
+    };
+    const SDL_FRect dstrect = {
+        std::abs(static_cast<float>(m_finalSize.x() / 2 - (width / 2))) + 1,
+        std::abs(static_cast<float>(m_finalSize.y() / 2 - (height / 2))) + 1,
+        static_cast<float>(width - 2),
+        static_cast<float>(height - 2),
+    };
     SDL_RenderTexture(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(texture.get()), &screct, &dstrect);
   }
 

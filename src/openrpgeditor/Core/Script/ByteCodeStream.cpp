@@ -1,7 +1,5 @@
 #include "Core/Script/ByteCodeStream.hpp"
 
-#include "../../../../cmake-build-relwithdebinfo/_deps/sdl2-src/src/thread/SDL_systhread.h"
-
 #include <sha1.h>
 
 #include <athena/Compression.hpp>

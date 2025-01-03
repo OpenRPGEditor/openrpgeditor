@@ -91,7 +91,7 @@ void CheckerboardTexture::update() const {
       }
     }
 
-    SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormatFrom(data, m_checkerSize, m_checkerSize, 32, 4 * m_checkerSize, SDL_PIXELFORMAT_ARGB8888);
+    SDL_Surface* surface = SDL_CreateSurfaceFrom(m_checkerSize, m_checkerSize, SDL_PIXELFORMAT_ARGB8888, data, 4 * m_checkerSize);
 
     m_checkerTexture = SDL_CreateTextureFromSurface(renderer, surface);
     free(data);
@@ -106,11 +106,11 @@ void CheckerboardTexture::update() const {
   const int cols = std::ceil(static_cast<float>(m_pendingWidth) / static_cast<float>(m_checkerSize));
   const int rows = std::ceil(static_cast<float>(m_pendingHeight) / static_cast<float>(m_checkerSize));
 
-  const SDL_Rect screct{0, 0, m_checkerSize, m_checkerSize};
+  const SDL_FRect screct{0, 0, static_cast<float>(m_checkerSize), static_cast<float>(m_checkerSize)};
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
-      const SDL_Rect dstrect{j * m_checkerSize, i * m_checkerSize, m_checkerSize, m_checkerSize};
-      SDL_RenderCopy(renderer, static_cast<SDL_Texture*>(m_checkerTexture), &screct, &dstrect);
+      const SDL_FRect dstrect{static_cast<float>(j * m_checkerSize), static_cast<float>(i * m_checkerSize), static_cast<float>(m_checkerSize), static_cast<float>(m_checkerSize)};
+      SDL_RenderTexture(renderer, static_cast<SDL_Texture*>(m_checkerTexture), &screct, &dstrect);
     }
   }
 

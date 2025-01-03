@@ -1,6 +1,5 @@
 #include "Application.hpp"
 
-#include "../../../cmake-build-minsizerel/_deps/athena-src/include/athena/FileReader.hpp"
 #include "App/ProjectInfo.hpp"
 #include "Core/DPIHandler.hpp"
 #include "Core/Debug/Instrumentor.hpp"
@@ -20,9 +19,9 @@
 #include "FirstBootWizard/WelcomePage.hpp"
 #include "Script/Bindings.hpp"
 
-#include <SDL2/SDL.h>
-#include <backends/imgui_impl_sdl2.h>
-#include <backends/imgui_impl_sdlrenderer2.h>
+#include <SDL3/SDL.h>
+#include <backends/imgui_impl_sdl3.h>
+#include <backends/imgui_impl_sdlrenderer3.h>
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <implot.h>
@@ -45,8 +44,6 @@ void Application::loadSettings() {
   }
 }
 Application::Application(const std::string& title) {
-  std::ifstream test("/home/antidote/Projects/vhmv/VHMV/data/CommonEvents.json");
-
   if (!cpuid_present()) {
     std::cerr << "CPU does not support this CPU" << std::endl;
   } else {
@@ -57,9 +54,9 @@ Application::Application(const std::string& title) {
   SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
 #endif
 
-  const unsigned int init_flags{SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER};
-  if (SDL_Init(init_flags) != 0) {
-    APP_ERROR("Error: %s\n", SDL_GetError());
+  const unsigned int init_flags{SDL_INIT_VIDEO | SDL_INIT_GAMEPAD};
+  if (!SDL_Init(init_flags)) {
+    APP_ERROR("Error: {}\n", SDL_GetError());
     m_exitStatus = ExitStatus::Failure;
   }
 
@@ -81,8 +78,8 @@ Application::Application(const std::string& title) {
 }
 
 Application::~Application() {
-  ImGui_ImplSDLRenderer2_Shutdown();
-  ImGui_ImplSDL2_Shutdown();
+  ImGui_ImplSDLRenderer3_Shutdown();
+  ImGui_ImplSDL3_Shutdown();
   ImPlot::DestroyContext();
   ImGui::DestroyContext();
 
@@ -245,8 +242,8 @@ ExitStatus Application::run() {
   updateFonts();
 
   //  Setup Platform/Renderer backends
-  ImGui_ImplSDL2_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
-  ImGui_ImplSDLRenderer2_Init(m_window->getNativeRenderer());
+  ImGui_ImplSDL3_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
+  ImGui_ImplSDLRenderer3_Init(m_window->getNativeRenderer());
   SDL_GL_SetSwapInterval(0);
 
   m_running = true;
@@ -271,11 +268,11 @@ ExitStatus Application::run() {
   while (true) {
     EditorPluginManager::instance()->initializeAllPlugins();
     if (m_fontUpdateRequested && m_fontUpdateDelay <= 0) {
-      ImGui_ImplSDLRenderer2_Shutdown();
-      ImGui_ImplSDL2_Shutdown();
+      ImGui_ImplSDLRenderer3_Shutdown();
+      ImGui_ImplSDL3_Shutdown();
       updateFonts();
-      ImGui_ImplSDL2_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
-      ImGui_ImplSDLRenderer2_Init(m_window->getNativeRenderer());
+      ImGui_ImplSDL3_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
+      ImGui_ImplSDLRenderer3_Init(m_window->getNativeRenderer());
       m_fontUpdateRequested = false;
     }
     if (!m_running) {
@@ -290,13 +287,13 @@ ExitStatus Application::run() {
 
     SDL_Event event{};
     while (SDL_PollEvent(&event) == 1) {
-      ImGui_ImplSDL2_ProcessEvent(&event);
+      ImGui_ImplSDL3_ProcessEvent(&event);
 
-      if (event.type == SDL_QUIT) {
+      if (event.type == SDL_EVENT_QUIT) {
         stop();
       }
 
-      if (event.type == SDL_WINDOWEVENT && event.window.windowID == SDL_GetWindowID(m_window->getNativeWindow())) {
+      if (event.type >= SDL_EVENT_WINDOW_SHOWN && event.type <= SDL_EVENT_WINDOW_SHOWN && event.window.windowID == SDL_GetWindowID(m_window->getNativeWindow())) {
         onEvent(event.window);
       }
     }
@@ -319,8 +316,8 @@ ExitStatus Application::run() {
       }
 
       // Start the Dear ImGui frame
-      ImGui_ImplSDLRenderer2_NewFrame();
-      ImGui_ImplSDL2_NewFrame();
+      ImGui_ImplSDLRenderer3_NewFrame();
+      ImGui_ImplSDL3_NewFrame();
 
       // FIXME: Fixup monitors
       //  Currently crashes for some reason, copying MainPos and MainSize is recommended by the assert, so here we are
@@ -352,11 +349,12 @@ ExitStatus Application::run() {
 
       SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 28, 38, 43, 255);
       SDL_RenderClear(m_window->getNativeRenderer());
-      ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), m_window->getNativeRenderer());
+      ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), m_window->getNativeRenderer());
       SDL_RenderPresent(m_window->getNativeRenderer());
     }
   }
 
+  EditorPluginManager::instance()->shutdownAllPlugins();
   serializeSettings();
   SerializationQueue::instance().terminate();
   DeserializationQueue::instance().terminate();
@@ -367,14 +365,14 @@ ExitStatus Application::run() {
 void Application::stop() { m_running = false; }
 
 void Application::onEvent(const SDL_WindowEvent& event) {
-  switch (event.event) {
-  case SDL_WINDOWEVENT_CLOSE:
+  switch (event.type) {
+  case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
     return onClose();
-  case SDL_WINDOWEVENT_MINIMIZED:
+  case SDL_EVENT_WINDOW_MINIMIZED:
     return onMinimize();
-  case SDL_WINDOWEVENT_SHOWN:
+  case SDL_EVENT_WINDOW_SHOWN:
     return onShown();
-  case SDL_WINDOWEVENT_RESIZED: {
+  case SDL_EVENT_WINDOW_RESIZED: {
     if (!(SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED)) {
       Settings::instance()->window.w = event.data1;
       Settings::instance()->window.h = event.data2;
@@ -382,13 +380,13 @@ void Application::onEvent(const SDL_WindowEvent& event) {
     Settings::instance()->window.maximized = SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED;
     break;
   }
-  case SDL_WINDOWEVENT_MOVED: {
+  case SDL_EVENT_WINDOW_MOVED: {
     Settings::instance()->window.x = event.data1;
     Settings::instance()->window.y = event.data2;
     Settings::instance()->window.maximized = SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED;
     break;
   }
-  case SDL_WINDOWEVENT_MAXIMIZED: {
+  case SDL_EVENT_WINDOW_MAXIMIZED: {
     Settings::instance()->window.maximized = SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED;
     break;
   }

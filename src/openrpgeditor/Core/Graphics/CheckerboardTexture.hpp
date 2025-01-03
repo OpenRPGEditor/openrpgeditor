@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SDL2/SDL.h"
+#include "SDL3/SDL.h"
 #include "imgui.h"
 enum class CellSizes : uint8_t {
   _8 = 8,

@@ -1,6 +1,6 @@
 #include "Core/Resources.hpp"
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 
 #include <filesystem>
 #include <string_view>
@@ -12,7 +12,6 @@ namespace App {
 std::filesystem::path Resources::resource_path(const std::filesystem::path& file_path) {
   const char* base_path = SDL_GetBasePath();
   std::filesystem::path path{base_path};
-  SDL_free((void*)base_path);
   path /= "../share" / file_path;
   return path;
 }

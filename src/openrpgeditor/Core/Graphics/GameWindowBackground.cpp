@@ -2,7 +2,7 @@
 
 #include "Core/Application.hpp"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 static int roundUp(const int numToRound, const int multiple) {
   if (multiple == 0)
@@ -60,15 +60,15 @@ void GameWindowBackground::update(const int r, const int g, const int b) {
     int cols = roundUp(m_width, 96) / 96;
     int rows = roundUp(m_height, 96) / 96;
 
-    SDL_Rect screct{0, 0, 96, 96};
-    SDL_Rect dstrect{0, 0, m_width, m_height};
-    SDL_RenderCopy(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_windowTexture.get()), &screct, &dstrect);
+    SDL_FRect screct{0, 0, 96, 96};
+    SDL_FRect dstrect{0, 0, static_cast<float>(m_width), static_cast<float>(m_height)};
+    SDL_RenderTexture(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_windowTexture.get()), &screct, &dstrect);
 
     screct = {0, 96, 96, 96};
     for (int i = 0; i < rows; i++) {
       for (int j = 0; j < cols; j++) {
-        dstrect = {j * 96, i * 96, 96, 96};
-        SDL_RenderCopy(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_windowTexture.get()), &screct, &dstrect);
+        dstrect = {j * 96.f, i * 96.f, 96.f, 96.f};
+        SDL_RenderTexture(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_windowTexture.get()), &screct, &dstrect);
       }
     }
     SDL_RenderPresent(App::APP->getWindow()->getNativeRenderer());
@@ -77,19 +77,21 @@ void GameWindowBackground::update(const int r, const int g, const int b) {
   }
 
   const SDL_Rect screct = {0, 0, m_width, m_height};
-  std::unique_ptr<uint8_t[]> pixels(new uint8_t[m_width * m_height * 4]);
-  if (SDL_RenderReadPixels(App::APP->getWindow()->getNativeRenderer(), &screct, SDL_PIXELFORMAT_ARGB8888, pixels.get(), SDL_CalculatePitch(SDL_PIXELFORMAT_ARGB8888, m_width)) == 0) {
+  if (auto surface = SDL_RenderReadPixels(App::APP->getWindow()->getNativeRenderer(), &screct)) {
     uint8_t* resultPixels;
+    SDL_LockSurface(surface);
+    uint8_t* sourcePixels = static_cast<uint8_t*>(surface->pixels);
     int pitch = 0;
     if (SDL_LockTexture(static_cast<SDL_Texture*>(m_resultTexture), nullptr, reinterpret_cast<void**>(&resultPixels), &pitch) == 0) {
       for (int k = 0; k < m_width * m_height * 4; k += 4) {
-        resultPixels[k + 3] = std::clamp(pixels[k + 3] + 0, 0, 255);
-        resultPixels[k + 2] = std::clamp(pixels[k + 2] + r, 0, 255);
-        resultPixels[k + 1] = std::clamp(pixels[k + 1] + g, 0, 255);
-        resultPixels[k + 0] = std::clamp(pixels[k + 0] + b, 0, 255);
+        resultPixels[k + 3] = std::clamp(sourcePixels[k + 3] + 0, 0, 255);
+        resultPixels[k + 2] = std::clamp(sourcePixels[k + 2] + r, 0, 255);
+        resultPixels[k + 1] = std::clamp(sourcePixels[k + 1] + g, 0, 255);
+        resultPixels[k + 0] = std::clamp(sourcePixels[k + 0] + b, 0, 255);
       }
       SDL_UnlockTexture(static_cast<SDL_Texture*>(m_resultTexture));
     }
+    SDL_UnlockSurface(surface);
   }
 
   SDL_SetRenderTarget(App::APP->getWindow()->getNativeRenderer(), oldRenderTarget);

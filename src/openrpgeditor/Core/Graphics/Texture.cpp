@@ -1,7 +1,7 @@
 #include "Core/Graphics/Texture.hpp"
 #include "Core/Application.hpp"
 #include "Core/Graphics/image_loader.h"
-#include "SDL2/SDL.h"
+#include "SDL3/SDL.h"
 
 #include <iostream>
 

@@ -3,28 +3,27 @@
 #include "Core/DPIHandler.hpp"
 #include "Core/Debug/Instrumentor.hpp"
 #include "Core/Log.hpp"
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_render.h>
 
 namespace App {
 
 Window::Window(const Settings& settings) {
-  const auto window_flags{static_cast<SDL_WindowFlags>(SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI)};
+  const auto window_flags{static_cast<SDL_WindowFlags>(SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY)};
   const WindowSize size{DPIHandler::get_dpi_aware_window_size(settings)};
 
-  m_window = SDL_CreateWindow(settings.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, size.width, size.height, window_flags);
+  m_window = SDL_CreateWindow(settings.title.c_str(), size.width, size.height, window_flags);
 
-  m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
+  m_renderer = SDL_CreateRenderer(m_window, nullptr);
 
   if (m_renderer == nullptr) {
     APP_ERROR("Error creating SDL_Renderer!");
     return;
   }
 
-  SDL_RendererInfo info;
-  SDL_GetRendererInfo(m_renderer, &info);
   DPIHandler::set_render_scale(m_renderer);
 
-  APP_DEBUG("Current SDL_Renderer: {}", info.name);
+  APP_DEBUG("Current SDL_Renderer: {}", SDL_GetRendererName(m_renderer));
 }
 
 Window::~Window() {

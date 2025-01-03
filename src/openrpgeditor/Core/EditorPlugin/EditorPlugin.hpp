@@ -24,6 +24,7 @@ public:
     std::string lastModified;
     std::string mainScript;
     std::string version;
+    std::vector<std::string> dependencies;
 
     std::unordered_map<std::filesystem::path, std::filesystem::path> files; // absolute->relative
   };

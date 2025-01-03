@@ -82,6 +82,7 @@ void to_json(nlohmann::ordered_json& j, const EditorPlugin::PluginInfo& p) {
       {"created", p.dateCreated},
       {"last-modified", p.lastModified},
       {"main-script", p.mainScript},
+      {"dependencies", p.dependencies},
   };
 }
 
@@ -97,4 +98,5 @@ void from_json(const nlohmann::ordered_json& j, EditorPlugin::PluginInfo& p) {
   p.dateCreated = j.value("created", p.dateCreated);
   p.lastModified = j.value("last-modified", p.lastModified);
   p.mainScript = j.value("main-script", p.mainScript);
+  p.dependencies = j.value("dependencies", p.dependencies);
 }

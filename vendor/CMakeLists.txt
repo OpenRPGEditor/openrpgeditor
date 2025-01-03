@@ -43,14 +43,14 @@ FetchContent_Declare(
 )
 
 FetchContent_Declare(
-        SDL2
+        SDL3
         GIT_REPOSITORY "https://github.com/libsdl-org/SDL.git"
-        GIT_TAG release-2.30.3)
+        GIT_TAG preview-3.1.6)
 
 FetchContent_Declare(
-        SDL2_image
-        GIT_REPOSITORY "https://github.com/Antidote/SDL_image.git"
-        GIT_TAG xcf-fix)
+        SDL3_image
+        GIT_REPOSITORY https://github.com/libsdl-org/SDL_image
+        GIT_TAG preview-3.1.0)
 
 FetchContent_Declare(
         spdlog
@@ -104,7 +104,7 @@ set(BUILD_CURL_EXE OFF)
 set(DOCTEST_NO_INSTALL ON)
 set(FMT_INSTALL OFF)
 set(FMT_STATIC ON)
-set(SDL2_DISABLE_SDL2MAIN ON)
+set(SDL3_DISABLE_SDL2MAIN ON)
 set(SDL_STATIC_ENABLED_BY_DEFAULT OFF)
 set(BUILD_SHARED_LIBS OFF)
 set(SPDLOG_FMT_EXTERNAL ON)
@@ -118,8 +118,8 @@ FetchContent_MakeAvailable(
         doctest
         fmt
         nfd
-        SDL2
-        SDL2_image
+        SDL3
+        SDL3_image
         spdlog
         json
         magic_enum

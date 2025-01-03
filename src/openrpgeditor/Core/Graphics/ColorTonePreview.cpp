@@ -3,7 +3,7 @@
 #include "OREMath/Color.hpp"
 #include "OREMath/Matrix4x4.hpp"
 #include "OREMath/Vector3D.hpp"
-#include "SDL_render.h"
+#include "SDL3/SDL_render.h"
 
 double fract(double x) { return x - floor(x); }
 

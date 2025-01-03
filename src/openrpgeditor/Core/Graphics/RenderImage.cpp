@@ -3,7 +3,7 @@
 #include "Core/Application.hpp"
 #include "Core/Graphics/Texture.hpp"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 void RenderImage::createTexture() {
   if (m_renderImage[m_workBuffer]) {
@@ -142,7 +142,7 @@ void RenderImage::eraseRect(const RectF& rect) const {
   setCurrentCompositionMode();
 
   const SDL_FRect renderRect = {rect.x(), rect.y(), rect.width(), rect.height()};
-  SDL_RenderFillRectF(renderer, &renderRect);
+  SDL_RenderFillRect(renderer, &renderRect);
 }
 
 void RenderImage::fillRect(const RectF& rect, const Color& color) const {
@@ -162,7 +162,7 @@ void RenderImage::fillRect(const RectF& rect, const Color& color) const {
   const SDL_FRect renderRect = {rect.x(), rect.y(), rect.width(), rect.height()};
   Color::Rgb rgb = color.rgba();
   SDL_SetRenderDrawColor(renderer, Color::red(rgb), Color::green(rgb), Color::blue(rgb), Color::alpha(rgb));
-  SDL_RenderFillRectF(renderer, &renderRect);
+  SDL_RenderFillRect(renderer, &renderRect);
   SDL_SetRenderDrawColor(renderer, r, g, b, a);
 }
 
@@ -178,9 +178,9 @@ void RenderImage::drawImage(const RectF& target, const Texture& image, const Rec
     return;
   }
   setCurrentCompositionMode();
-  const SDL_Rect srcRect{src.x(), src.y(), src.width(), src.height()};
+  const SDL_FRect srcRect{static_cast<float>(src.x()), static_cast<float>(src.y()), static_cast<float>(src.width()), static_cast<float>(src.height())};
   const SDL_FRect destRect{target.x(), target.y(), target.width(), target.height()};
-  SDL_RenderCopyF(renderer, static_cast<SDL_Texture*>(image.get()), &srcRect, &destRect);
+  SDL_RenderTexture(renderer, static_cast<SDL_Texture*>(image.get()), &srcRect, &destRect);
 }
 
 void RenderImage::drawImageRaw(const RectF& target, void* image, const Rect& src) const {
@@ -195,7 +195,7 @@ void RenderImage::drawImageRaw(const RectF& target, void* image, const Rect& src
     return;
   }
   setCurrentCompositionMode();
-  const SDL_Rect srcRect{src.x(), src.y(), src.width(), src.height()};
+  const SDL_FRect srcRect{static_cast<float>(src.x()), static_cast<float>(src.y()), static_cast<float>(src.width()), static_cast<float>(src.height())};
   const SDL_FRect destRect{target.x(), target.y(), target.width(), target.height()};
-  SDL_RenderCopyF(renderer, static_cast<SDL_Texture*>(image), &srcRect, &destRect);
+  SDL_RenderTexture(renderer, static_cast<SDL_Texture*>(image), &srcRect, &destRect);
 }

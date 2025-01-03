@@ -30,7 +30,6 @@
 #include <string_view>
 
 using namespace std::literals::string_view_literals;
-static SDL_Cursor* waitCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAITARROW);
 
 MainWindow* MainWindow::m_instance = nullptr;
 MainWindow::MainWindow() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this), m_nwjsVersionManager("https://dl.nwjs.io") {
@@ -68,6 +67,9 @@ void MainWindow::ToolbarButton::callOnClicked() const {
   }
 
   if (const auto ctx = ScriptEngine::instance()->prepareContextFromPool(m_func)) {
+    if (m_callbackObject != nullptr) {
+      ctx->SetObject(m_callbackObject);
+    }
     ScriptEngine::executeCall(ctx);
     ScriptEngine::instance()->returnContextToPool(ctx);
   }
@@ -360,6 +362,7 @@ void MainWindow::draw() {
   }
 
   m_mapListView.draw();
+  EditorPluginManager::instance()->draw();
 
   if (const auto [closed, confirmed] = m_mapProperties.draw(); closed) {
     // TODO: handle revert?
@@ -867,7 +870,6 @@ void MainWindow::setMap(MapInfo& in) {
     return;
   }
 
-  SDL_SetCursor(waitCursor);
   m_mapListView.setCurrentMapId(in.id(), true);
   if (m_mapListView.currentMapInfo()) {
     m_mapEditor.setMap(&in);

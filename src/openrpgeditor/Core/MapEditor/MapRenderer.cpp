@@ -2,7 +2,7 @@
 
 #include "Core/Application.hpp"
 #include "Core/ResourceManager.hpp"
-#include "SDL2/SDL.h"
+#include "SDL3/SDL.h"
 
 #include "Database/Map.hpp"
 #include <cmath>
@@ -286,13 +286,7 @@ void MapRenderer::drawTableEdge(MapLayer& layer, const int tileId, const int dx,
 
 void MapRenderer::beginBlit(SDL_Texture* bitmap) {}
 
-void MapRenderer::blitImage(SDL_Texture* source, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh) {
-
-  SDL_Renderer* renderer = App::APP->getWindow()->getNativeRenderer();
-  SDL_Rect srect = {sx, sy, sw, sh};
-  SDL_Rect drect{dx, dy, dw, dh};
-  SDL_RenderCopy(renderer, source, &srect, &drect);
-}
+void MapRenderer::blitImage(SDL_Texture* source, int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh) {}
 
 void MapRenderer::endBlit() {}
 

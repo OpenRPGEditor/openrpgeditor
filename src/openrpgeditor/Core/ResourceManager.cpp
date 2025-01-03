@@ -4,8 +4,9 @@
 #include "Core/Resources.hpp"
 #include "Core/Utils.hpp"
 #include "Resources.hpp"
-#include "SDL2/SDL.h"
+#include "SDL3/SDL.h"
 #include "SFML/Audio/SoundBuffer.hpp"
+#include <SDL3/SDL_hints.h>
 #include <exception>
 namespace fs = std::filesystem;
 
@@ -160,10 +161,7 @@ Texture ResourceManager::loadTileMarkers(int width, int height) {
   return loadEditorTexture(relativePath.generic_string());
 }
 Texture ResourceManager::loadEditorTexture(std::string_view path) {
-  const auto* oldHint = SDL_GetHint(SDL_HINT_RENDER_SCALE_QUALITY);
-  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
   Texture ret = loadTexture(App::Resources::image_path(path).string());
-  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, oldHint);
   return ret;
 }
 

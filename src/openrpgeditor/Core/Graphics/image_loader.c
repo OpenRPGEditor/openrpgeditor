@@ -1,5 +1,5 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_surface.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_surface.h>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -11,7 +11,7 @@
 #include "stb_image.h"
 
 static bool LoadTexturePriv(SDL_Texture** texture_ptr, const int* width, const int* height, SDL_Renderer* renderer, const int channels, void* data) {
-  SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(data, *width, *height, channels * 8, channels * *width, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+  SDL_Surface* surface = SDL_CreateSurfaceFrom(*width, *height, SDL_PIXELFORMAT_RGBA8888, data, channels * *width);
 
   if (surface == NULL) {
     fprintf(stderr, "Failed to create SDL surface: %s\n", SDL_GetError());
@@ -22,12 +22,12 @@ static bool LoadTexturePriv(SDL_Texture** texture_ptr, const int* width, const i
 
   if ((*texture_ptr) == NULL) {
     fprintf(stderr, "Failed to create SDL texture: %s\n", SDL_GetError());
-    SDL_FreeSurface(surface);
+    SDL_DestroySurface(surface);
     stbi_image_free(data);
     return false;
   }
 
-  SDL_FreeSurface(surface);
+  SDL_DestroySurface(surface);
   stbi_image_free(data);
   return true;
 }

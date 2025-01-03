@@ -451,7 +451,7 @@ target_link_libraries(
         PRIVATE project_warnings
         PUBLIC fmt::fmt-header-only
         spdlog::spdlog_header_only
-        SDL2::SDL2
+        SDL3::SDL3
         imgui-setup
         nfd
         magic_enum
@@ -515,7 +515,8 @@ target_link_libraries(
         PUBLIC fmt::fmt-header-only
         spdlog::spdlog_header_only
         orecore
-        SDL2::SDL2
+        SDL3::SDL3
+        SDL3::SDL3
         imgui-setup
         nfd
         magic_enum

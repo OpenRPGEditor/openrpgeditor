@@ -1,6 +1,6 @@
 #include "Core/DPIHandler.hpp"
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <imgui.h>
 
 #include "Core/Application.hpp"

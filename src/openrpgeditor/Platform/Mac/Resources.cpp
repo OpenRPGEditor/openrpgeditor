@@ -1,6 +1,6 @@
 #include "Core/Resources.hpp"
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 
 #include <filesystem>
 #include <string>
@@ -13,7 +13,6 @@ namespace App {
 std::filesystem::path Resources::resource_path(const std::filesystem::path& file_path) {
   const char* base_path = SDL_GetBasePath();
   std::filesystem::path font_path{base_path};
-  SDL_free((void*)base_path);
   font_path /= file_path;
   return font_path;
 }

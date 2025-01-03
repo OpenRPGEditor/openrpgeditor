@@ -63,7 +63,7 @@ void ColorTonePreview::update(float r, float g, float b, float gray) {
 
   uint32_t* pixels = nullptr;
   int pitch = 0;
-  if (SDL_LockTexture(static_cast<SDL_Texture*>(m_texture), nullptr, reinterpret_cast<void**>(&pixels), &pitch) == 0) {
+  if (SDL_LockTexture(static_cast<SDL_Texture*>(m_texture), nullptr, reinterpret_cast<void**>(&pixels), &pitch)) {
     for (int y = 0; y < m_textureHeight; y++) {
       for (int x = 0; x < m_textureWidth; x++) {
         const float s = static_cast<float>(x) / static_cast<float>(m_textureWidth);

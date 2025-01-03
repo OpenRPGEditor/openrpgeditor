@@ -12,13 +12,13 @@
 #include <cassert>
 #include <cstdarg>
 #include <iostream>
+#include <ranges>
 #include <scriptarray/scriptarray.h>
 #include <scripthandle/scripthandle.h>
 #include <scriptmath/scriptmath.h>
 #include <scriptmath/scriptmathcomplex.h>
 #include <scriptstdstring/scriptstdstring.h>
 #include <weakref/weakref.h>
-
 ScriptEngine::~ScriptEngine() {
   for (const auto& context : m_contexts) {
     (void)context->Release();
@@ -27,6 +27,26 @@ ScriptEngine::~ScriptEngine() {
   if (m_engine) {
     m_engine->ShutDownAndRelease();
   }
+}
+
+std::vector<std::string> splitByDoubleColons(const std::string& str) {
+  std::vector<std::string> result;
+  std::string current;
+
+  for (char c : str) {
+    if (c == ':' && current.back() == ':') {
+      result.push_back(current.substr(0, current.size() - 1)); // Remove last ':'
+      current.clear();
+    } else {
+      current += c;
+    }
+  }
+
+  if (!current.empty()) {
+    result.push_back(current);
+  }
+
+  return result;
 }
 
 void PrintString(int level, std::string fmt, ...) {
@@ -83,6 +103,55 @@ bool ScriptEngine::initialize() {
   r = m_engine->RegisterGlobalFunction("void print(LogLevel level, const string& in)", asFUNCTION(PrintString), asCALL_CDECL);
   assert(r >= 0);
   RegisterBindings();
+
+  int processedCount = 0;
+  std::vector<const char*> processedNamespaces;
+
+  auto defaultNs = m_engine->GetDefaultNamespace();
+  m_engine->SetDefaultNamespace("Test1::Test2::Test3");
+  r = m_engine->RegisterGlobalFunction("void print(LogLevel level, const string& in)", asFUNCTION(PrintString), asCALL_CDECL);
+  m_engine->SetDefaultNamespace(defaultNs);
+  while (processedCount < m_engine->GetGlobalFunctionCount()) {
+    const char* ns = nullptr;
+    int depth = 0;
+    for (int i = 0; i < m_engine->GetGlobalFunctionCount(); i++) {
+      auto func = m_engine->GetGlobalFunctionByIndex(i);
+      if (func->GetNamespace() != ns && ns != nullptr) {
+        continue;
+      }
+
+      if (ns == nullptr) {
+        const auto thisns = func->GetNamespace();
+        if (thisns != nullptr) {
+          if (std::ranges::find(processedNamespaces, thisns) != processedNamespaces.end()) {
+            continue;
+          }
+          ns = thisns;
+          if (strlen(ns) > 0) {
+            const auto spaces = splitByDoubleColons(ns);
+            for (const auto& space : spaces) {
+              std::cout << std::string(depth * 2, ' ') + "namespace " + space + " {" << std::endl;
+              depth++;
+            }
+          }
+        }
+      }
+
+      std::cout << std::string(depth * 2, ' ') + func->GetDeclaration(true, false, true) << std::endl;
+      ++processedCount;
+    }
+
+    if (ns != nullptr) {
+      if (strlen(ns) > 0) {
+        const auto spaces = splitByDoubleColons(ns);
+        for (const auto& space : spaces | std::views::reverse) {
+          depth--;
+          std::cout << std::string(depth * 2, ' ') + "} // " + space << std::endl;
+        }
+      }
+      processedNamespaces.push_back(ns);
+    }
+  }
   return r >= 0;
 }
 

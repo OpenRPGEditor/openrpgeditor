@@ -1,5 +1,6 @@
 #include "Application.hpp"
 
+#include "../../../cmake-build-minsizerel/_deps/athena-src/include/athena/FileReader.hpp"
 #include "App/ProjectInfo.hpp"
 #include "Core/DPIHandler.hpp"
 #include "Core/Debug/Instrumentor.hpp"
@@ -44,6 +45,8 @@ void Application::loadSettings() {
   }
 }
 Application::Application(const std::string& title) {
+  std::ifstream test("/home/antidote/Projects/vhmv/VHMV/data/CommonEvents.json");
+
   if (!cpuid_present()) {
     std::cerr << "CPU does not support this CPU" << std::endl;
   } else {

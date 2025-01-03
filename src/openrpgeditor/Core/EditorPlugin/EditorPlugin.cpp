@@ -23,7 +23,7 @@ bool EditorPlugin::load(const std::filesystem::path& pluginBasedir, const Plugin
     m_module = ScriptEngine::instance()->createModule(info.identifier, pluginBasedir / "src" / scriptFilename);
     if (saveBinary && m_module) {
       ByteCodeWriter writer((pluginBasedir / "bin" / binFilename).generic_string());
-      m_module->SaveByteCode(&writer, true);
+      m_module->SaveByteCode(&writer);
     }
   }
 

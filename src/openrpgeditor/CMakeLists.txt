@@ -485,7 +485,11 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 endif ()
 
 add_executable(${NAME} WIN32 MACOSX_BUNDLE App/Main.cpp App/ProjectInfo.cpp
-        App/ProjectInfo.hpp)
+        App/ProjectInfo.hpp
+        Core/Script/ImGui/ImGuiMath.cpp
+        Core/Script/ImGui/ImGuiMath.hpp
+        Core/Script/ImGui/ImGuiCoreOperations.cpp
+        Core/Script/ImGui/ImGuiCoreOperations.hpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(${NAME} PRIVATE /utf-8)

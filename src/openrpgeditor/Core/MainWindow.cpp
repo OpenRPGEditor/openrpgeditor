@@ -945,9 +945,11 @@ void MainWindow::onDatabaseReady() {
 
 void MainWindow::addToolbarButton(const std::string& id, ToolbarCategory category, asIScriptFunction* func) { m_toolbarButtons[category].emplace_back(id, category, func); }
 
-void AddToolbarButton(asIScriptFunction* func, const std::string& id, ToolbarCategory category, const std::string&) {
-  //
-  MainWindow::instance()->addToolbarButton(id, category, func);
+void AddToolbarButton(asIScriptGeneric* generic) {
+  const std::string name = *static_cast<std::string*>(generic->GetArgAddress(0));
+  const auto category = static_cast<ToolbarCategory>(generic->GetArgDWord(1));
+  const auto func = static_cast<asIScriptFunction*>(generic->GetArgAddress(2));
+  MainWindow::instance()->addToolbarButton(name, category, func);
 }
 
 void AddCallback(asIScriptFunction* func) {
@@ -964,6 +966,6 @@ void MainWindow::RegisterBindings() {
   }
   r = engine->RegisterFuncdef("void ToolBarButtonClicked()");
   assert(r >= 0);
-  r = engine->RegisterGlobalFunction("void addToolbarButton(ToolBarButtonClicked @const cb, const string& in, ToolbarCategory category)", asFUNCTION(AddToolbarButton), asCALL_CDECL);
+  r = engine->RegisterGlobalFunction("void addToolbarButton(const string& in, ToolbarCategory category, ToolBarButtonClicked @const cb)", asFUNCTION(AddToolbarButton), asCALL_GENERIC);
   assert(r >= 0);
 }

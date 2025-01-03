@@ -896,6 +896,7 @@ enum class TileFlags {
   BoatPassage = 1 << 9,                                                 //!< If unset boats cannot pass through, if unset they can
   ShipPassage = 1 << 10,                                                //!< If unset ships cannot pass through, if unset they can
   AirshipPassage = 1 << 11,                                             //!< If unset Airships cannot pass through, if unset they can
+  TerrainTag = 1 << 12,
 };
 
 void ReplaceStr(std::string& str, const std::string& oldStr, const std::string& newStr);

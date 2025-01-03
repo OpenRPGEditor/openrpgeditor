@@ -1050,6 +1050,17 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tileRect, int tileIndex)
     }
   } else if (flagType == 6) {
     // Terrain Tag
+    if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+      toggleTileState(tileIndex, true);
+    }
+    ImVec4 tint = ImGui::IsItemHovered() ? kHoveredTint : kDefaultTint;
+    int terrainTag = TileHelper::getTerrainTag(m_selectedTileset->flags().at(tileIndex));
+    if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect,
+                           m_tileMarker->uv0(TileHelper::isTerrainTag(m_selectedTileset->flags().at(tileIndex)) ? 13 : TileHelper::getTerrainTag(m_selectedTileset->flags().at(tileIndex))),
+                           m_tileMarker->uv1(TileHelper::isTerrainTag(m_selectedTileset->flags().at(tileIndex)) ? 13 : TileHelper::getTerrainTag(m_selectedTileset->flags().at(tileIndex))),
+                           ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
+      toggleTileState(tileIndex, false);
+    }
   }
 }
 
@@ -1117,33 +1128,38 @@ void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTi
     }
   } else if (m_flagSelection == 2) {
     // Ladder
-    if (TileHelper::isLadder) {
+    if (TileHelper::isLadder(m_selectedTileset->flags().at(tileIndex))) {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Ladder), true);
     } else {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Ladder), false);
     }
   } else if (m_flagSelection == 3) {
     // Bush
-    if (TileHelper::isBush) {
+    if (TileHelper::isBush(m_selectedTileset->flags().at(tileIndex))) {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Bush), true);
     } else {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Bush), false);
     }
   } else if (m_flagSelection == 4) {
     // Counter
-    if (TileHelper::isCounter) {
+    if (TileHelper::isCounter(m_selectedTileset->flags().at(tileIndex))) {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Counter), true);
     } else {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Counter), false);
     }
   } else if (m_flagSelection == 5) {
     // Damage Floor
-    if (TileHelper::isDamageFloor) {
+    if (TileHelper::isDamageFloor(m_selectedTileset->flags().at(tileIndex))) {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Damage), true);
     } else {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Damage), false);
     }
   } else if (m_flagSelection == 6) {
     // Terrain Tag
+    m_selectedTileset->setFlag(tileIndex, 7 << 12, true);
+    // if (TileHelper::isTerrainTag(m_selectedTileset->flags().at(tileIndex))) {
+    // } else {
+    //   m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Damage), false);
+    // }
   }
 }

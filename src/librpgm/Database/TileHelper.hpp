@@ -60,4 +60,6 @@ constexpr int TILE_ID_MAX = 8192;
 [[nodiscard]] bool isBush(int tileFlags);
 [[nodiscard]] bool isCounter(int tileFlags);
 [[nodiscard]] bool isDamageFloor(int tileFlags);
+[[nodiscard]] bool isTerrainTag(int tileFlags);
+[[nodiscard]] int getTerrainTag(int tileFlags);
 } // namespace TileHelper

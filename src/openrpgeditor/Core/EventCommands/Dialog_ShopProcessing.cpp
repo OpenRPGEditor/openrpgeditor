@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ShopProcessing.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,7 +10,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{551, 400} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{551, 400}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     if (goodsDialog) {
       auto [closed, confirmed] = goodsDialog->draw();
@@ -47,8 +46,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
       }
     }
 
-    if (ImGui::BeginTable("##shop_processing_main", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                          ImVec2{(App::DPIHandler::scale_value(530)), App::DPIHandler::scale_value(390)})) {
+    if (ImGui::BeginTable("##shop_processing_main", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY, ImVec2{530, 390})) {
 
       ImGui::TableSetupScrollFreeze(1, 0);
       ImGui::TableSetupColumn("Merchandise", ImGuiTableColumnFlags_WidthStretch);
@@ -135,7 +133,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
     }
     ImGui::Checkbox("Purchase Only", &m_purchaseOnly);
 
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(ImGui::GetWindowWidth() - 106));
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetWindowWidth() - 106);
     ImGui::BeginGroup();
     {
       if (ImGui::Button("OK")) {

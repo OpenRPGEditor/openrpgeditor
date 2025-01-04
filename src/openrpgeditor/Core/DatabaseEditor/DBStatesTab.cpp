@@ -16,12 +16,12 @@ DBStatesTab::DBStatesTab(States& States, DatabaseEditor* parent) : IDBEditorTab(
 void DBStatesTab::draw() {
   ImGui::BeginChild("#orpg_states_editor");
   {
-    ImGui::BeginChild("##orpg_states_editor_states", ImVec2{250.f, 0} * App::DPIHandler::get_ui_scale(), 0, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("##orpg_states_editor_states", ImVec2{250.f, 0}, 0, ImGuiWindowFlags_HorizontalScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("States");
-        ImGui::BeginChild("##orpg_states_editor_States_list", ImVec2{0, ImGui::GetContentRegionMax().y - (App::DPIHandler::scale_value(108))});
+        ImGui::BeginChild("##orpg_states_editor_States_list", ImVec2{0, ImGui::GetContentRegionMax().y - (108)});
         {
           ImGui::BeginGroup();
           {
@@ -42,7 +42,7 @@ void DBStatesTab::draw() {
         char str[4096];
         snprintf(str, 4096, "Max States %i", m_states.count());
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
+        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - (8), 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxStates = m_states.count();
         }
@@ -91,7 +91,7 @@ void DBStatesTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Restriction:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               if (ImGui::BeginCombo("##database_state_restriction_combo", DecodeEnumName(m_selectedState->restriction()).c_str())) {
                 for (const auto& type : magic_enum::enum_values<StateRestriction>()) {
                   if (ImGui::Selectable(DecodeEnumName(type).c_str(), m_selectedState->restriction() == type)) {
@@ -109,7 +109,7 @@ void DBStatesTab::draw() {
               ImGui::Text("Priority:");
 
               int tempInt = m_selectedState->priority();
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               if (ImGui::InputInt("##database_state_priority", &tempInt)) {
                 m_selectedState->setPriority(std::clamp(tempInt, 0, 100));
               }
@@ -118,7 +118,7 @@ void DBStatesTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("[SV] Motion:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               if (ImGui::BeginCombo("##database_state_sv_motion_combo", DecodeEnumName(m_selectedState->motion()).c_str())) {
                 for (const auto& type : magic_enum::enum_values<StateMotion>()) {
                   if (ImGui::Selectable(DecodeEnumName(type).c_str(), m_selectedState->motion() == type)) {
@@ -134,7 +134,7 @@ void DBStatesTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("[SV] Overlay:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               if (ImGui::BeginCombo("##database_state_sv_overlay_combo", DecodeEnumName(m_selectedState->overlay()).c_str())) {
                 for (const auto& type : magic_enum::enum_values<StateOverlay>()) {
                   if (ImGui::Selectable(DecodeEnumName(type).c_str(), m_selectedState->overlay() == type)) {
@@ -182,7 +182,7 @@ void DBStatesTab::draw() {
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
             ImGui::BeginGroup();
             {
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               if (ImGui::BeginCombo("##database_state_removal_timing_combo", DecodeEnumName(m_selectedState->autoRemovalTiming()).c_str())) {
                 for (const auto& type : magic_enum::enum_values<AutoRemovalTiming>()) {
                   if (ImGui::Selectable(DecodeEnumName(type).c_str(), m_selectedState->autoRemovalTiming() == type)) {
@@ -200,7 +200,7 @@ void DBStatesTab::draw() {
                 // Duration in turns
                 ImGui::Text("Duration in Turns:");
                 int tempInt = m_selectedState->minTurns();
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+                ImGui::SetNextItemWidth(150);
                 if (ImGui::InputInt("##database_state_duration_turns_1", &tempInt)) {
                   m_selectedState->setMinTurns(std::clamp(tempInt, 1, 9999));
                 }
@@ -208,7 +208,7 @@ void DBStatesTab::draw() {
                 ImGui::Text("~");
                 ImGui::SameLine();
                 int tempInt2 = m_selectedState->maxTurns();
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+                ImGui::SetNextItemWidth(150);
                 if (ImGui::InputInt("##database_state_duration_turns_2", &tempInt2)) {
                   m_selectedState->setMaxTurns(std::clamp(tempInt2, 1, 9999));
                 }
@@ -230,7 +230,7 @@ void DBStatesTab::draw() {
               ImGui::BeginDisabled(!isRemoveByDamage);
               {
                 int tempInt = m_selectedState->chanceByDamage();
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+                ImGui::SetNextItemWidth(150);
                 if (ImGui::SliderInt("##database_states_removebydamage_chance", &tempInt, 0, 100, isRemoveByDamage ? " %d%%" : "")) {
                   m_selectedState->setChanceByDamage(tempInt);
                 }
@@ -251,7 +251,7 @@ void DBStatesTab::draw() {
               ImGui::BeginDisabled(!isRemoveByWalking);
               {
                 int tempInt = m_selectedState->stepsToRemove();
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+                ImGui::SetNextItemWidth(150);
                 if (ImGui::InputInt("##database_states_stepstoremove", &tempInt)) {
                   m_selectedState->setStepsToRemove(std::clamp(tempInt, 1, 9999));
                 }
@@ -316,7 +316,7 @@ void DBStatesTab::draw() {
             char note[8192];
             strncpy(note, m_selectedState->note().c_str(), IM_ARRAYSIZE(note));
             if (ImGui::InputTextMultiline("##orpg_database_states_note", note, IM_ARRAYSIZE(note),
-                                          ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(16), ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
+                                          ImVec2{ImGui::GetContentRegionMax().x - 16, ImGui::GetContentRegionAvail().y - 16})) {
               m_selectedState->setNote(note);
             }
           }

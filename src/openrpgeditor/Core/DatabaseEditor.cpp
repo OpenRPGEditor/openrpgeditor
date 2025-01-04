@@ -24,7 +24,7 @@ void DatabaseEditor::draw() {
     ImGui::SetNextItemWidth(100.f);
     const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQR").x;
     ImGui::BeginChild("##orpg_database_editor_tab_buttons", ImVec2{calc + ImGui::GetStyle().ItemSpacing.x, 0}, 0, ImGuiWindowFlags_NoBackground);
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + App::DPIHandler::scale_value(100));
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 100);
     if (ImGui::SelectableWithBorder("Actors", m_currentTab == &m_actors.value())) {
       m_currentTab = &m_actors.value();
     }

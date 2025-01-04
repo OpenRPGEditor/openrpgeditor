@@ -1,6 +1,6 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.hpp"
 #include "Core/Application.hpp"
-#include "Core/DPIHandler.hpp"
+
 #include "imgui.h"
 #include <tuple>
 
@@ -10,11 +10,11 @@ std::tuple<bool, bool> Dialog_MovementChangeSpeed::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{140, 97} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{140, 97}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Speed");
-    ImGui::PushItemWidth((App::DPIHandler::scale_value(100)));
+    ImGui::PushItemWidth((100));
     if (ImGui::BeginCombo("##movement_frequency_selection", DecodeEnumName(magic_enum::enum_value<MovementSpeed>(m_speed)).c_str())) {
       for (auto& speed : magic_enum::enum_values<MovementSpeed>()) {
         bool is_selected = m_speed == magic_enum::enum_index(speed).value();

@@ -51,8 +51,6 @@ bool ColorTonePicker::draw() {
 }
 
 void ColorTonePicker::setPreviewSize(int width, int height) {
-  width *= App::DPIHandler::get_ui_scale();
-  height *= App::DPIHandler::get_ui_scale();
 
   if (width == m_tonePreview.width() && height == m_tonePreview.height()) {
     return;

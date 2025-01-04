@@ -1,6 +1,6 @@
 #include "Core/EventCommands/Dialog_ChangeMP.hpp"
 
-#include "Core/DPIHandler.hpp"
+
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,7 +11,7 @@ std::tuple<bool, bool> Dialog_ChangeMP::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{254, 227} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{254, 227}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (actor_picker) {
@@ -48,7 +48,7 @@ std::tuple<bool, bool> Dialog_ChangeMP::draw() {
     {
       ImGui::BeginDisabled(m_comparison != 0);
       ImGui::PushID("##changemp_actor");
-      if (ImGui::Button(m_comparison == 0 ? Database::instance()->actorNameAndId(m_value).c_str() : "", ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+      if (ImGui::Button(m_comparison == 0 ? Database::instance()->actorNameAndId(m_value).c_str() : "", ImVec2{200 - 15, 0})) {
         actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_value);
         actor_picker->setOpen(true);
       }
@@ -57,7 +57,7 @@ std::tuple<bool, bool> Dialog_ChangeMP::draw() {
 
       ImGui::BeginDisabled(m_comparison != 1);
       ImGui::PushID("##changemp_var");
-      if (ImGui::Button(m_comparison == 1 ? Database::instance()->variableNameAndId(m_value_var).c_str() : "", ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+      if (ImGui::Button(m_comparison == 1 ? Database::instance()->variableNameAndId(m_value_var).c_str() : "", ImVec2{200 - 15, 0})) {
         isOperand = false;
         picker.emplace("Variables", Database::instance()->system.variables, m_value_var);
         picker->setOpen(true);
@@ -86,7 +86,7 @@ std::tuple<bool, bool> Dialog_ChangeMP::draw() {
     ImGui::BeginGroup();
     {
       ImGui::BeginDisabled(m_quantitySource != 0);
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::InputInt("##changemp_constant", &m_quantity)) {
         if (m_quantity > 9999)
           m_quantity = 9999;
@@ -97,7 +97,7 @@ std::tuple<bool, bool> Dialog_ChangeMP::draw() {
 
       ImGui::BeginDisabled(m_quantitySource != 1);
       ImGui::PushID("##changemp_quant_var");
-      if (ImGui::Button(m_quantitySource == 1 ? Database::instance()->variableNameAndId(m_quantity_var).c_str() : "", ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+      if (ImGui::Button(m_quantitySource == 1 ? Database::instance()->variableNameAndId(m_quantity_var).c_str() : "", ImVec2{200 - 15, 0})) {
         isOperand = true;
         picker.emplace("Variables", Database::instance()->system.variables, m_quantity_var);
         picker->setOpen(true);

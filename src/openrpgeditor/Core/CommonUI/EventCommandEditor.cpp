@@ -3,7 +3,7 @@
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 
 #include "Core/Application.hpp"
-#include "Core/DPIHandler.hpp"
+
 
 #include "Core/Log.hpp"
 #include "Database/EventCommands/RepeatAbove.hpp"
@@ -916,14 +916,14 @@ void EventCommandEditor::drawPopup() {
     return;
   }
 
-  ImGui::SetNextWindowSize(ImVec2{680, 550} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{680, 550}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal("Command Window", nullptr, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
     ImGui::BeginGroup();
     {
 
       if (ImGui::BeginTabBar("##orpg_command_window")) {
 
-        ImVec2 size = ImVec2{((ImGui::GetContentRegionAvail().x / 2) / 2) + App::DPIHandler::scale_value(50), 0};
+        ImVec2 size = ImVec2{((ImGui::GetContentRegionAvail().x / 2) / 2) + 50, 0};
 
         drawActorTab(size);
         drawAudioTab(size);
@@ -933,7 +933,7 @@ void EventCommandEditor::drawPopup() {
         drawSystemTab(size);
 
         // Event Templates
-        ImGui::PushItemWidth(App::DPIHandler::scale_value(500));
+        ImGui::PushItemWidth(500);
         if (ImGui::BeginCombo("##eventcommand_editor_presets", "Select a preset to insert into selection...")) {
           int index{0};
           for (auto& templ : Database::instance()->templates.templates) {

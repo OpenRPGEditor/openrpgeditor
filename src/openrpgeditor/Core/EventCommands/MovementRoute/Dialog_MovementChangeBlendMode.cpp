@@ -1,6 +1,6 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeBlendMode.hpp"
 #include "Core/Application.hpp"
-#include "Core/DPIHandler.hpp"
+
 #include "imgui.h"
 #include <tuple>
 
@@ -10,11 +10,11 @@ std::tuple<bool, bool> Dialog_MovementChangeBlendMode::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{105, 95} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{105, 95}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Blend");
-    ImGui::PushItemWidth((App::DPIHandler::scale_value(75)));
+    ImGui::PushItemWidth((75));
     if (ImGui::BeginCombo("##showpicture_blendmode", DecodeEnumName(magic_enum::enum_value<Blend>(m_blendMode)).c_str())) {
       for (auto& blend : magic_enum::enum_values<Blend>()) {
         bool is_selected = m_blendMode == magic_enum::enum_index(blend).value();

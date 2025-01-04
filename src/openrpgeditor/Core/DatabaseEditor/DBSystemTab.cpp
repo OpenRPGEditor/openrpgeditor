@@ -1,7 +1,6 @@
 #include "Core/DatabaseEditor/DBSystemTab.hpp"
 #include "Database/Class.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Database/Database.hpp"
 #include "imgui.h"
@@ -61,8 +60,8 @@ void DBSystemTab::draw() {
     m_gameWindowBackground.emplace();
   }
 
-  if (m_gameWindowBackground->width() != oRound(App::DPIHandler::scale_value(164)) || m_gameWindowBackground->height() != oRound(App::DPIHandler::scale_value(164))) {
-    m_gameWindowBackground->setSize(oRound(App::DPIHandler::scale_value(164)), oRound(App::DPIHandler::scale_value(164)));
+  if (m_gameWindowBackground->width() != 164 || m_gameWindowBackground->height() != 164) {
+    m_gameWindowBackground->setSize(164, 164);
   }
   {
     ImGui::BeginGroup();
@@ -156,8 +155,8 @@ void DBSystemTab::draw() {
           ImGui::BeginGroup();
           {
             ImGui::TextUnformatted("Boat:");
-            if (ImGui::ImageButtonEx(ImGui::GetID("##system_boat_image"), m_boatButtonTexture->get(), ImVec2(m_boatButtonTexture->size()) * App::DPIHandler::get_ui_scale(), {0.f, 0.f}, {1.f, 1.f}, {},
-                                     {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
+            if (ImGui::ImageButtonEx(ImGui::GetID("##system_boat_image"), m_boatButtonTexture->get(), ImVec2(m_boatButtonTexture->size()), {0.f, 0.f}, {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f},
+                                     ImGuiButtonFlags_PressedOnDoubleClick)) {
               m_currentSheet = &m_boatSheet.value();
               m_characterPicker->setCharacterInfo(m_system.boat.characterName, m_system.boat.characterIndex);
               m_characterPicker->setOpen(true);
@@ -168,8 +167,8 @@ void DBSystemTab::draw() {
           ImGui::BeginGroup();
           {
             ImGui::TextUnformatted("Ship:");
-            if (ImGui::ImageButtonEx(ImGui::GetID("##system_ship_image"), m_shipButtonTexture->get(), ImVec2(m_shipButtonTexture->size()) * App::DPIHandler::get_ui_scale(), {0.f, 0.f}, {1.f, 1.f}, {},
-                                     {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
+            if (ImGui::ImageButtonEx(ImGui::GetID("##system_ship_image"), m_shipButtonTexture->get(), ImVec2(m_shipButtonTexture->size()), {0.f, 0.f}, {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f},
+                                     ImGuiButtonFlags_PressedOnDoubleClick)) {
               m_currentSheet = &m_shipSheet.value();
               m_characterPicker->setCharacterInfo(m_system.ship.characterName, m_system.ship.characterIndex);
               m_characterPicker->setOpen(true);
@@ -180,8 +179,8 @@ void DBSystemTab::draw() {
           ImGui::BeginGroup();
           {
             ImGui::TextUnformatted("Airship:");
-            if (ImGui::ImageButtonEx(ImGui::GetID("##system_airship_image"), m_airshipButtonTexture->get(), ImVec2(m_airshipButtonTexture->size()) * App::DPIHandler::get_ui_scale(), ImVec2{0.f, 0.f},
-                                     ImVec2{1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
+            if (ImGui::ImageButtonEx(ImGui::GetID("##system_airship_image"), m_airshipButtonTexture->get(), ImVec2(m_airshipButtonTexture->size()), ImVec2{0.f, 0.f}, ImVec2{1.f, 1.f}, {},
+                                     {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
               m_currentSheet = &m_airshipSheet.value();
               m_characterPicker->setCharacterInfo(m_system.airship.characterName, m_system.airship.characterIndex);
               m_characterPicker->setOpen(true);

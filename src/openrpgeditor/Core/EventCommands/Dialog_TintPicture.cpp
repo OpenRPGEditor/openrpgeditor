@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_TintPicture.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "imgui.h"
 #include <tuple>
 
@@ -10,11 +9,11 @@ std::tuple<bool, bool> Dialog_TintPicture::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{400, 290} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{400, 290}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Picture");
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+    ImGui::SetNextItemWidth(75);
     if (ImGui::InputInt("##tintpicture_picture_id", &m_picture, 1, 100)) {
       if (m_picture < 1)
         m_picture = 1;
@@ -36,10 +35,10 @@ std::tuple<bool, bool> Dialog_TintPicture::draw() {
     ImGui::SameLine();
     ImGui::BeginGroup();
     {
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##tintpicture_red", &r, -255, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(75);
       if (ImGui::InputInt("##tintpicture_int_red", &r, 1, 100)) {
         if (r < -255)
           r = -255;
@@ -47,10 +46,10 @@ std::tuple<bool, bool> Dialog_TintPicture::draw() {
           r = 255;
       }
 
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##tintpicture_green", &g, -255, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(75);
       if (ImGui::InputInt("##tintpicture_int_green", &g, 1, 100)) {
         if (g < -255)
           g = -255;
@@ -58,10 +57,10 @@ std::tuple<bool, bool> Dialog_TintPicture::draw() {
           g = 255;
       }
 
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##tintpicture_blue", &b, -255, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(75);
       if (ImGui::InputInt("##tintpicture_int_blue", &b, 1, 100)) {
         if (b < -255)
           b = -255;
@@ -69,10 +68,10 @@ std::tuple<bool, bool> Dialog_TintPicture::draw() {
           b = 255;
       }
 
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##tintpicture_gray", &gray, 0, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(75);
       if (ImGui::InputInt("##tintpicture_int_gray", &gray, 1, 100)) {
         if (gray < 1)
           gray = 1;
@@ -87,13 +86,13 @@ std::tuple<bool, bool> Dialog_TintPicture::draw() {
                        ImVec2{100, 100});
 
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4.f);
-    ImGui::PushItemWidth((App::DPIHandler::scale_value(380)));
+    ImGui::PushItemWidth(380);
     if (ImGui::BeginCombo("##tintpicture_presets", "Future presets go in this list")) {
       // TODO: Template system for tint screen
       ImGui::EndCombo();
     }
     ImGui::SeparatorText("Duration");
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+    ImGui::SetNextItemWidth(100);
     if (ImGui::InputInt("##tintpicture_duration", &m_duration)) {
       if (m_duration < 1)
         m_duration = 1;

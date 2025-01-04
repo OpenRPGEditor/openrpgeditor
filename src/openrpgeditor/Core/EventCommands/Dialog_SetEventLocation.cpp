@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_SetEventLocation.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,7 +10,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
   }
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{380, 313} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{380, 313}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (picker) {
@@ -32,7 +31,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
       }
     }
     ImGui::SeparatorText("Event");
-    ImGui::PushItemWidth(App::DPIHandler::scale_value(160));
+    ImGui::PushItemWidth(160);
     if (ImGui::BeginCombo("##setevloc_character", Database::instance()->eventNameOrId(m_event).c_str())) {
 
       if (ImGui::Selectable("This Event", m_event == 0)) {
@@ -58,7 +57,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
     ImGui::BeginDisabled(m_mode != 0);
     ImGui::PushID("#transfer_coord_selection");
-    if (ImGui::Button(m_mode == 0 ? std::format("Current Map ({}, {})", m_x, m_y).c_str() : "", ImVec2{(App::DPIHandler::scale_value(300)), 0})) {
+    if (ImGui::Button(m_mode == 0 ? std::format("Current Map ({}, {})", m_x, m_y).c_str() : "", ImVec2{300, 0})) {
       // TODO: Coordinate selector
     }
     ImGui::EndDisabled();
@@ -78,14 +77,14 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
     {
 
       ImGui::PushID("##transfer_var_x");
-      if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_x_var).c_str() : "", ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
+      if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_x_var).c_str() : "", ImVec2{(280), 0})) {
         m_var_selection = 1;
         picker.emplace("Variables", Database::instance()->system.variables, m_x_var);
         picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::PushID("##transfer_var_y");
-      if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_y_var).c_str() : "", ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
+      if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_y_var).c_str() : "", ImVec2{(280), 0})) {
         m_var_selection = 2;
         picker.emplace("Variables", Database::instance()->system.variables, m_y_var);
         picker->setOpen(true);
@@ -98,7 +97,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
     ImGui::RadioButton("Exchange with another event", &m_mode, 2);
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
     ImGui::BeginDisabled(m_mode != 2);
-    ImGui::PushItemWidth(App::DPIHandler::scale_value(160));
+    ImGui::PushItemWidth(160);
     if (ImGui::BeginCombo("##exchangeev_event", m_mode != 2 ? "" : Database::instance()->eventNameOrId(m_otherEvent).c_str())) {
 
       if (ImGui::Selectable("This Event", m_otherEvent == 0)) {
@@ -124,7 +123,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
     ImGui::BeginGroup();
     {
       ImGui::Text("Direction:");
-      ImGui::PushItemWidth(App::DPIHandler::scale_value(180));
+      ImGui::PushItemWidth(180);
       if (ImGui::BeginCombo("##direction_selection", DecodeEnumName(magic_enum::enum_value<Direction>(m_direction)).c_str())) {
         for (auto& dir : magic_enum::enum_values<Direction>()) {
           if (const bool is_selected = m_direction == magic_enum::enum_index(dir).value(); ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {

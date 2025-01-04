@@ -39,7 +39,7 @@ void EditorPluginManager::draw() {
   ImGui::SetNextWindowSizeConstraints({640.f, 640.f}, {FLT_MAX, FLT_MAX});
   if (ImGui::Begin("Plugin Manager", &m_open)) {
     if (ImGui::BeginListBox("##pluginList",
-                            ImVec2(std::max(App::DPIHandler::scale_value(240.f), ImGui::GetContentRegionAvail().x / 3), ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y))) {
+                            ImVec2(std::max(240.f, ImGui::GetContentRegionAvail().x / 3), ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y))) {
       for (const auto& plugin : m_plugins | std::views::values) {
         ImGui::Selectable(std::format("{} - {}", plugin.identifier, plugin.name).c_str());
       }

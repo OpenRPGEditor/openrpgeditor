@@ -10,8 +10,7 @@ void UISettingsTab::draw() {
       Settings::instance()->uiScale = roundToNearestQuarter(Settings::instance()->uiScale);
     }
     if (ImGui::IsItemDeactivatedAfterEdit()) {
-      App::APP->requestFontUpdate();
-      m_fontSizeChanged = true;
+      App::APP->updateScale();
     }
     ImGui::Text("Font Size");
     ImGui::SliderInt("##ui_font_size", &Settings::instance()->fontSize, 8, 21);

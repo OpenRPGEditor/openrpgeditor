@@ -1,6 +1,5 @@
 #pragma once
 #include "Core/CommonUI/ImagePicker.hpp"
-#include "Core/DPIHandler.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/TileMarker.hpp"
 #include "Database/Tilesets.hpp"
@@ -40,7 +39,7 @@ private:
 
   const int m_tileSize = 48;                                     // Tile size in pixels
   const int m_gridCols = 16;                                     // Number of tiles per row
-  const float m_scale = App::DPIHandler::get_ui_scale();         // Scaling factor
+  const float m_scale = 1.f;                                     // Scaling factor
   static constexpr ImVec4 kDefaultTint{1.0f, 1.0f, 1.0f, 0.70f}; // 75% transparency
   static constexpr ImVec4 kHoveredTint{1.0f, 1.0f, 1.0f, 1.0f};  // Fully opaque
 

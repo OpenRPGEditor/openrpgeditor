@@ -1,5 +1,5 @@
 #include "Core/EventCommands/Dialog_PlayBGM.hpp"
-#include "Core/DPIHandler.hpp"
+
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Log.hpp"
 #include "imgui.h"
@@ -11,7 +11,7 @@ std::tuple<bool, bool> Dialog_PlayBGM::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{610, 380} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{610, 380}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize)) {
     // Audio List
     ImVec2 tablePos = ImGui::GetCursorPos();
@@ -19,7 +19,7 @@ std::tuple<bool, bool> Dialog_PlayBGM::draw() {
     ImGui::BeginGroup();
     {
       if (ImGui::BeginTable("##bgm_audio_contents", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{App::DPIHandler::scale_value(500), App::DPIHandler::scale_value(500)})) {
+                            ImVec2{500, 500})) {
 
         ImGui::TableSetupScrollFreeze(1, 0);
         ImGui::TableSetupColumn("File");
@@ -61,17 +61,17 @@ std::tuple<bool, bool> Dialog_PlayBGM::draw() {
       }
 
       ImGui::SeparatorText("Volume");
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::DragInt("##playbgm_audio.volume", &m_audio.volume, 0.5f, 0, 100)) {
         setVolume(m_audio.volume);
       }
       ImGui::SeparatorText("Pitch");
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::DragInt("##playbgm_audio.pitch", &m_audio.pitch, 0.5f, 0, 100)) {
         setPitch(m_audio.pitch);
       }
       ImGui::SeparatorText("Pan");
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::DragInt("##playbgm_audio.pan", &m_audio.pan, 0.5f, -100, 100)) {
         setPanning(m_audio.pan);
       }

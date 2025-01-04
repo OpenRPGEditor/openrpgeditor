@@ -1,6 +1,6 @@
 #include "Core/EventCommands/Dialog_ShakeScreen.hpp"
 
-#include "Core/DPIHandler.hpp"
+
 #include "imgui.h"
 #include <tuple>
 
@@ -10,7 +10,7 @@ std::tuple<bool, bool> Dialog_ShakeScreen::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{410, 190} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{410, 190}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Shake");
@@ -24,10 +24,10 @@ std::tuple<bool, bool> Dialog_ShakeScreen::draw() {
     ImGui::SameLine();
     ImGui::BeginGroup();
     {
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##shakescreen_power", &m_power, -1, 9, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(75);
       if (ImGui::InputInt("##shakescreen_power_int", &m_power, 1, 100)) {
         if (m_power < 1)
           m_power = 1;
@@ -35,10 +35,10 @@ std::tuple<bool, bool> Dialog_ShakeScreen::draw() {
           m_power = 9;
       }
 
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##shakescreen_speed", &m_speed, 1, 9, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(75);
       if (ImGui::InputInt("##shakescreen_speed_int", &m_speed, 1, 100)) {
         if (m_speed < 1)
           m_speed = 1;
@@ -48,13 +48,13 @@ std::tuple<bool, bool> Dialog_ShakeScreen::draw() {
     }
     ImGui::EndGroup();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4.f);
-    ImGui::PushItemWidth((App::DPIHandler::scale_value(390)));
+    ImGui::PushItemWidth(390);
     if (ImGui::BeginCombo("##flashscreen_presets", "Future presets go in this list")) {
       // TODO: Template system
       ImGui::EndCombo();
     }
     ImGui::SeparatorText("Duration");
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+    ImGui::SetNextItemWidth(100);
     if (ImGui::InputInt("##flashscreen_duration", &m_duration)) {
       if (m_duration < 1)
         m_duration = 1;

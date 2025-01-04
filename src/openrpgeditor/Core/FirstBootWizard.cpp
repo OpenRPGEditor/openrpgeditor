@@ -1,6 +1,5 @@
 #include "Core/FirstBootWizard.hpp"
 
-#include "DPIHandler.hpp"
 #include "imgui.h"
 
 bool FirstBootWizard::draw() {
@@ -12,7 +11,7 @@ bool FirstBootWizard::draw() {
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{640, 480} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{640, 480}, ImGuiCond_Appearing);
   ImGui::Begin((std::string(m_pages[m_currentPage]->pageTitle()) + " - First Boot Wizard").c_str(), nullptr,
                ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar);
   {

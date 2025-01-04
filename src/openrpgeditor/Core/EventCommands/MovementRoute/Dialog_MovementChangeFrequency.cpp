@@ -1,6 +1,6 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.hpp"
 #include "Core/Application.hpp"
-#include "Core/DPIHandler.hpp"
+
 #include "imgui.h"
 #include <tuple>
 
@@ -10,11 +10,11 @@ std::tuple<bool, bool> Dialog_MovementChangeFrequency::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{140, 97} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{140, 97}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Frequency");
-    ImGui::PushItemWidth((App::DPIHandler::scale_value(100)));
+    ImGui::PushItemWidth((100));
     if (ImGui::BeginCombo("##movement_frequency_selection", DecodeEnumName(static_cast<MovementFrequency>(m_frequency)).c_str())) {
       for (auto& freq : magic_enum::enum_values<MovementFrequency>()) {
         bool is_selected = m_frequency == static_cast<int>(freq);

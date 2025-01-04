@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ChangeEnemyState.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,7 +10,7 @@ std::tuple<bool, bool> Dialog_ChangeEnemyState::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{248, 182} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{248, 182}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (state_picker) {
@@ -26,7 +25,7 @@ std::tuple<bool, bool> Dialog_ChangeEnemyState::draw() {
 
     ImGui::SeparatorText("Enemy");
 
-    ImGui::SetNextItemWidth(160 * App::DPIHandler::get_ui_scale());
+    ImGui::SetNextItemWidth(160);
 
     if (ImGui::BeginCombo("##enemystate_change_list", m_troop_selection == 0 ? "Entire Troop" : ("#" + std::to_string(m_troop_selection) + " ?").c_str())) {
       if (ImGui::Selectable("Entire Troop", m_troop_selection == 0)) {
@@ -47,10 +46,10 @@ std::tuple<bool, bool> Dialog_ChangeEnemyState::draw() {
     ImGui::RadioButton("Decrease", &m_operation, 1);
 
     ImGui::SeparatorText("State");
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+    ImGui::SetNextItemWidth(100);
     std::string text = Database::instance()->stateName(m_state);
     ImGui::PushID("##enemystate_change");
-    if (ImGui::Button(text.c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+    if (ImGui::Button(text.c_str(), ImVec2{200 - 15, 0})) {
       state_picker = ObjectPicker<State>("State"sv, Database::instance()->states.states(), m_state);
       state_picker->setOpen(true);
     }

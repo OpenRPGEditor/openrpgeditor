@@ -1,7 +1,7 @@
 #include "Application.hpp"
 
 #include "App/ProjectInfo.hpp"
-#include "Core/DPIHandler.hpp"
+
 #include "Core/Debug/Instrumentor.hpp"
 #include "Core/EditorPlugin/EditorPluginManager.hpp"
 #include "Core/Log.hpp"
@@ -100,9 +100,9 @@ void Application::updateScale() {
   style.TabRounding = 6.5f;
   style.DockingSeparatorSize = 6.f;
   style.FrameBorderSize = 1.f;
-  style.ScaleAllSizes(DPIHandler::get_ui_scale());
   style.FramePadding = ImVec2(8, 6);
   style.ScrollbarSize = 18.f;
+  ImGui::GetIO().DisplayFramebufferScale = ImVec2(m_settings.uiScale, m_settings.uiScale);
 }
 
 void Application::updateGuiColors() {
@@ -168,10 +168,9 @@ void Application::updateGuiColors() {
 void Application::updateFonts() {
   ImGuiIO& io{ImGui::GetIO()};
   // ImGUI font
-  const float fontScale = DPIHandler::get_ui_scale() * 2;
-  const float font_size = oRound(m_settings.fontSize * fontScale);
-  const float mono_font_size = oRound(m_settings.monoFontSize * fontScale);
-  DPIHandler::set_font_scale(fontScale - (m_settings.fontSize / font_size));
+  float scale = std::max(1.f, SDL_GetWindowPixelDensity(m_window->getNativeWindow())) * 2;
+  const float font_size = m_settings.fontSize * scale;
+  const float mono_font_size = m_settings.monoFontSize * scale;
   const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
   const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf").generic_string()};
   const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf").generic_string()};
@@ -207,7 +206,7 @@ void Application::updateFonts() {
   io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->Build();
-  io.FontGlobalScale = 1.f / fontScale;
+  io.FontGlobalScale = 1.f / scale;
 
   updateScale();
 }
@@ -384,6 +383,10 @@ void Application::onEvent(const SDL_WindowEvent& event) {
     Settings::instance()->window.x = event.data1;
     Settings::instance()->window.y = event.data2;
     Settings::instance()->window.maximized = SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED;
+    break;
+  }
+  case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED: {
+    // TODO: We should probably handle this
     break;
   }
   case SDL_EVENT_WINDOW_MAXIMIZED: {

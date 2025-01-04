@@ -1,6 +1,6 @@
 
 #include "Core/EventCommands/Dialog_ControlVariables.hpp"
-#include "Core/DPIHandler.hpp"
+
 #include "Core/EventCommands/Dialog_GameData.hpp"
 #include "Core/Log.hpp"
 #include "Database/Database.hpp"
@@ -14,7 +14,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{450, 440} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{450, 440}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     if (picker) {
       auto [closed, confirmed] = picker->draw();
@@ -51,9 +51,9 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
     {
       std::string text = m_operation_var != 0 ? "##commonevent_switch_empty" : (m_variable_var == 0 ? "" : std::format("{:04} ", m_variable_var) + Database::instance()->variableName(m_variable_var));
       ImGui::PushID("##controlswitch_id");
-      // ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 75) - (16 * App::DPIHandler::get_ui_scale()));
+      // ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x + 75) - (16));
       ImGui::BeginDisabled(m_operation_var != 0);
-      if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetWindowContentRegionMax().x - 100) - 15 * App::DPIHandler::get_ui_scale(), 0})) {
+      if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetWindowContentRegionMax().x - 100) - 15, 0})) {
         singleRequest = true;
         picker.emplace("Variables", Database::instance()->system.variables, m_operation_var);
         picker->setOpen(true);
@@ -106,7 +106,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
 
       // Constant
       ImGui::BeginDisabled(m_operand != 0);
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(75);
       ImGui::InputInt("##controlvariables_constant", &m_constant, 0);
       ImGui::EndDisabled();
 
@@ -114,7 +114,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
       ImGui::BeginDisabled(m_operand != 1);
       std::string text = m_operand != 1 ? "##commonevent_switch_empty" : std::format("{:04} ", m_variable) + Database::instance()->variableName(m_variable);
       ImGui::PushID("##controlvariable_id2");
-      if (ImGui::Button(text.c_str(), ImVec2{App::DPIHandler::scale_value(300), 0})) {
+      if (ImGui::Button(text.c_str(), ImVec2{300, 0})) {
         singleRequest = false;
         picker.emplace("Variables", Database::instance()->system.variables, m_operand);
         picker->setOpen(true);
@@ -124,21 +124,21 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
 
       // Random
       ImGui::BeginDisabled(m_operand != 2);
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(75);
       ImGui::InputInt("##controlvariables_range1", &m_rand_operand_1, 0);
       ImGui::SameLine();
       ImGui::Text("~");
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(75);
       ImGui::InputInt("##controlvariables_range2", &m_rand_operand_2, 0);
       ImGui::EndDisabled();
 
       // Game Data
       ImGui::BeginDisabled(m_operand != 3);
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       text = m_operand != 3 ? "" : getUIString();
       ImGui::PushID("##controlvariable_gamedata");
-      if (ImGui::Button(text.c_str(), ImVec2{App::DPIHandler::scale_value(300), 0})) {
+      if (ImGui::Button(text.c_str(), ImVec2{300, 0})) {
         if (!gameDataDialog)
           gameDataDialog.emplace("Game Data", m_gameData_type, m_gameData_rawSource, m_gameData_value);
 
@@ -149,7 +149,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
 
       // Script
       ImGui::BeginDisabled(m_operand != 4);
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(300));
+      ImGui::SetNextItemWidth(300);
       if (ImGui::InputText("##controlvariables_script", &m_script)) {
         command->script = m_script;
       }

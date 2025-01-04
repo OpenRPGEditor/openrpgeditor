@@ -1,5 +1,4 @@
 #include "Core/EventCommands/Dialog_GameData.hpp"
-#include "Core/DPIHandler.hpp"
 
 #include "imgui.h"
 
@@ -12,7 +11,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
   }
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.f));
-  ImGui::SetNextWindowSize(ImVec2{610, 380} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{610, 380}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
 
     if (m_actorPicker) {
@@ -67,9 +66,9 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       // Item
       std::string text = m_type != 0 ? "##gamedata_item_empty" : Database::instance()->itemNameAndId(m_itemSource);
       ImGui::PushID("##gamedata_item_id");
-      ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x + 50 - 16 * App::DPIHandler::get_ui_scale());
+      ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x + 50 - 16);
       ImGui::BeginDisabled(m_type != 0);
-      if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 2 - 15 * App::DPIHandler::get_ui_scale(), 0})) {
+      if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 2 - 15, 0})) {
         m_itemPicker = ObjectPicker("Items"sv, Database::instance()->items.items(), m_itemSource);
         m_itemPicker->setOpen(true);
       }
@@ -82,7 +81,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       text = m_type != 1 ? "##gamedata_weapon_empty" : std::format("{:04} ", m_weaponSource) + Database::instance()->weaponName(m_weaponSource);
       ImGui::PushID("##gamedata_weapon_id");
       ImGui::BeginDisabled(m_type != 1);
-      if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 2 - 15 * App::DPIHandler::get_ui_scale(), 0})) {
+      if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 2 - 15, 0})) {
         m_weaponPicker = ObjectPicker("Weapons"sv, Database::instance()->weapons.weaponList(), m_weaponSource);
         m_weaponPicker->setOpen(true);
       }
@@ -95,7 +94,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       text = m_type != 2 ? "##gamedata_armor_empty" : std::format("{:04} ", m_armorSource) + Database::instance()->armorName(m_armorSource);
       ImGui::PushID("##gamedata_armor_id");
       ImGui::BeginDisabled(m_type != 2);
-      if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 2 - 15 * App::DPIHandler::get_ui_scale(), 0})) {
+      if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 2 - 15, 0})) {
         m_armorPicker = ObjectPicker("Armors"sv, Database::instance()->armors.armorList(), m_armorSource);
         m_armorPicker->setOpen(true);
       }
@@ -108,7 +107,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       text = m_type != 3 ? "##gamedata_actor_empty" : std::format("{:04} ", m_actorSource) + Database::instance()->actorName(m_actorSource);
       ImGui::PushID("##gamedata_actor_id");
       ImGui::BeginDisabled(m_type != 3);
-      if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 4 + 64 - 15 * App::DPIHandler::get_ui_scale(), 0})) {
+      if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 4 + 64 - 15, 0})) {
         m_actorPicker = ObjectPicker("Actors"sv, Database::instance()->actors.actorList(), m_actorSource);
         m_actorPicker->setOpen(true);
       }
@@ -240,7 +239,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
       ImGui::EndGroup();
     }
 
-    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(100) - ImGui::GetStyle().FramePadding.x, ImGui::GetCursorPosY()));
+    ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 100 - ImGui::GetStyle().FramePadding.x, ImGui::GetCursorPosY()));
     if (ImGui::Button("OK")) {
       m_confirmed = true;
       command.gameData.type = static_cast<GameDataType>(m_type);

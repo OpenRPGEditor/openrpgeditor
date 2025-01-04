@@ -1,5 +1,4 @@
 ﻿#include "Core/CommonUI/GameWindowColorPicker.hpp"
-#include "Core/DPIHandler.hpp"
 #include <format>
 
 bool GameWindowColorPicker::draw() {
@@ -50,9 +49,6 @@ bool GameWindowColorPicker::draw() {
 }
 
 void GameWindowColorPicker::setPreviewSize(int width, int height) {
-  width *= App::DPIHandler::get_ui_scale();
-  height *= App::DPIHandler::get_ui_scale();
-
   if (width == m_background.width() && height == m_background.height()) {
     return;
   }

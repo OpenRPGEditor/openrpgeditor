@@ -207,7 +207,7 @@ void EffectsEditor::drawPopup(DatabaseEditor* dbEditor) {
                 m_selectedEffect->value1 = tmpInt / 100.0;
               }
               int tmpInt2 = m_selectedEffect->code == EffectCode::Recover_HP ? static_cast<int>(m_selectedEffect->value2) : 0;
-              ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
+              ImGui::SetNextItemWidth(230);
               if (ImGui::InputInt("##effect_recover_hp_flat_value", &tmpInt2)) {
                 m_selectedEffect->value2 = tmpInt;
               }
@@ -223,7 +223,7 @@ void EffectsEditor::drawPopup(DatabaseEditor* dbEditor) {
                 m_selectedEffect->value1 = tmpInt / 100.0;
               }
               int tmpInt2 = m_selectedEffect->code == EffectCode::Recover_HP ? static_cast<int>(m_selectedEffect->value2) : 0;
-              ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
+              ImGui::SetNextItemWidth(230);
               if (ImGui::InputInt("##effect_recover_mp_flat_value", &tmpInt2)) {
                 m_selectedEffect->value2 = tmpInt;
               }
@@ -235,7 +235,7 @@ void EffectsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::BeginDisabled(m_selectedEffect->code != EffectCode::Gain_TP);
             {
               int tmpInt = m_selectedEffect->code == EffectCode::Gain_TP ? static_cast<int>(m_selectedEffect->value1) : 0;
-              ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
+              ImGui::SetNextItemWidth(230);
               if (ImGui::InputInt("##effect_gain_tp", &tmpInt)) {
                 if (tmpInt > 100) {
                   tmpInt = 100;
@@ -292,7 +292,7 @@ void EffectsEditor::drawPopup(DatabaseEditor* dbEditor) {
                 m_statePicker->setOpen(true);
               }
               // State %
-              ImGui::SetNextItemWidth(250 * App::DPIHandler::get_ui_scale());
+              ImGui::SetNextItemWidth(250);
               int tmpInt = m_selectedEffect->code == EffectCode::Add_State ? static_cast<int>(m_selectedEffect->value1 * 100) : 0;
               if (ImGui::SliderInt("##effect_state_add_value", &tmpInt, 0, 100, m_selectedEffect->code == EffectCode::Add_State ? "%d%%" : "")) {
                 m_selectedEffect->value1 = tmpInt / 100.0;
@@ -310,7 +310,7 @@ void EffectsEditor::drawPopup(DatabaseEditor* dbEditor) {
                 m_statePicker->setOpen(true);
               }
               // State %;
-              ImGui::SetNextItemWidth(250 * App::DPIHandler::get_ui_scale());
+              ImGui::SetNextItemWidth(250);
               int tmpInt = m_selectedEffect->code == EffectCode::Remove_State ? static_cast<int>(m_selectedEffect->value1 * 100) : 0;
               if (ImGui::SliderInt("##effect_state_remove_value", &tmpInt, 0, 100, m_selectedEffect->code == EffectCode::Remove_State ? "%d%%" : "")) {
                 m_selectedEffect->value1 = tmpInt / 100.0;
@@ -388,7 +388,7 @@ void EffectsEditor::drawPopup(DatabaseEditor* dbEditor) {
                 ImGui::EndCombo();
               }
               int tmpInt = m_selectedEffect->code == EffectCode::Add_Buff ? m_selectedEffect->value1 : 0;
-              ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
+              ImGui::SetNextItemWidth(230);
               if (ImGui::InputInt("##effect_addbuff_value", &tmpInt)) {
                 if (tmpInt > 1000) {
                   tmpInt = 1000;
@@ -414,7 +414,7 @@ void EffectsEditor::drawPopup(DatabaseEditor* dbEditor) {
                 ImGui::EndCombo();
               }
               int tmpInt = m_selectedEffect->code == EffectCode::Add_Debuff ? m_selectedEffect->value1 : 0;
-              ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
+              ImGui::SetNextItemWidth(230);
               if (ImGui::InputInt("##effect_adddebuff_value", &tmpInt)) {
                 if (tmpInt > 1000) {
                   tmpInt = 1000;
@@ -538,7 +538,7 @@ void EffectsEditor::drawPopup(DatabaseEditor* dbEditor) {
                 ImGui::EndCombo();
               }
               int tmpInt = m_selectedEffect->code == EffectCode::Grow ? m_selectedEffect->value1 : 0;
-              ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
+              ImGui::SetNextItemWidth(230);
               if (ImGui::InputInt("##effect_grow_value", &tmpInt)) {
                 if (tmpInt > 1000) {
                   tmpInt = 1000;

@@ -1,5 +1,5 @@
 #include "Core/TroopsEventEditor/TroopsEVPage.hpp"
-#include "Core/DPIHandler.hpp"
+
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/MainWindow.hpp"
 #include "Database/Globals.hpp"
@@ -38,7 +38,7 @@ std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
     }
   }
 
-  ImGui::BeginChild("##orpg_troops_panel_bottom_commands", ImVec2{0, ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(250)});
+  ImGui::BeginChild("##orpg_troops_panel_bottom_commands", ImVec2{0, ImGui::GetContentRegionMax().y - 250});
   {
     m_commandEditor.draw();
     ImGui::EndChild();
@@ -57,17 +57,17 @@ std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
     ImGui::EndGroup();
   }
   ImGui::SameLine();
-  // ImGui::SetCursorPosY(ImGui::GetCursorPosY() + App::DPIHandler::scale_value(100));
+  // ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 100);
   ImGui::BeginGroup();
   {
     ImGui::BeginDisabled(!m_page->conditions.turnEnding);
     {
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       if (ImGui::InputInt("##orpg_troops_panel_conditions_turnA", &m_page->conditions.turnA)) {
         m_page->conditions.turnA = std::clamp(m_page->conditions.turnA, 0, 9999);
       }
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       if (ImGui::InputInt("##orpg_troops_panel_conditions_turnB", &m_page->conditions.turnB)) {
         m_page->conditions.turnB = std::clamp(m_page->conditions.turnB, 0, 9999);
       }
@@ -76,7 +76,7 @@ std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
     // Enemy condition
     ImGui::BeginDisabled(!m_page->conditions.enemyValid);
     {
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       std::string title = "#" + std::to_string(m_page->conditions.enemyIndex + 1) + " " +
                           std::string((m_parent->event()->m_members.size() <= m_page->conditions.enemyIndex)
                                           ? "?"
@@ -93,7 +93,7 @@ std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
         ImGui::EndCombo();
       }
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##orpg_troops_panel_conditions_enemyhp", &m_page->conditions.enemyHp, 0, 100, m_page->conditions.enemyValid ? " %d%%" : "");
       ImGui::SameLine();
       ImGui::Text("or below");
@@ -105,12 +105,12 @@ std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
       if (ImGui::Button(
               std::string(std::format("{}##orpg_troops_conditions_actor_page_{}", m_page->conditions.actorValid ? Database::instance()->actorNameOrId(m_page->conditions.actorId) : "", m_page_id))
                   .c_str(),
-              {(App::DPIHandler::scale_value(150)), 0})) {
+              {(150), 0})) {
         m_actorPicker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_page->conditions.actorId);
         m_actorPicker->setOpen(true);
       }
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##orpg_troops_panel_conditions_actorhp", &m_page->conditions.actorHp, 0, 100, m_page->conditions.actorId > 0 ? " %d%%" : "");
       ImGui::SameLine();
       ImGui::Text("or below");
@@ -122,7 +122,7 @@ std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
       if (ImGui::Button(
               std::string(std::format("{}##orpg_troops_conditions_switch_page_{}", m_page->conditions.switchValid ? Database::instance()->switchNameOrId(m_page->conditions.switchId) : "", m_page_id))
                   .c_str(),
-              ImVec2{(App::DPIHandler::scale_value(150)), 0})) {
+              ImVec2{(150), 0})) {
         picker.emplace("Switches", Database::instance()->system.switches, m_page->conditions.switchId);
         picker->setOpen(true);
       }
@@ -134,7 +134,7 @@ std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
   ImGui::BeginGroup();
   {
     const auto preview = DecodeEnumName(static_cast<Span>(m_page->span));
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(300));
+    ImGui::SetNextItemWidth(300);
     if (ImGui::BeginCombo("##trait_editor_party_ability_combo", preview.c_str())) {
       for (const auto& type : magic_enum::enum_values<Span>()) {
         if (ImGui::Selectable(DecodeEnumName(type).c_str(), m_page->span == static_cast<int>(type))) {

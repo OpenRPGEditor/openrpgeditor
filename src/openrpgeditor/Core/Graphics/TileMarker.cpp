@@ -1,5 +1,5 @@
 #include "Core/Graphics/TileMarker.hpp"
-#include "Core/DPIHandler.hpp"
+
 #include "Core/ResourceManager.hpp"
 
 TileMarker::TileMarker(TileFlags flags, int pageIndex, int width, int height) {

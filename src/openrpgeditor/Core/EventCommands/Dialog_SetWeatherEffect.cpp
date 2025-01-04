@@ -1,6 +1,6 @@
 #include "Core/EventCommands/Dialog_SetWeatherEffect.hpp"
 
-#include "Core/DPIHandler.hpp"
+
 #include "imgui.h"
 #include <tuple>
 
@@ -10,7 +10,7 @@ std::tuple<bool, bool> Dialog_SetWeatherEffect::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{400, 165} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{400, 165}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Weather");
@@ -24,7 +24,7 @@ std::tuple<bool, bool> Dialog_SetWeatherEffect::draw() {
     ImGui::SameLine();
     ImGui::BeginGroup();
     {
-      ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
+      ImGui::PushItemWidth((160));
       if (ImGui::BeginCombo("##weather_effect_selection", DecodeEnumName(magic_enum::enum_value<WeatherEffect>(m_effect)).c_str())) {
         for (auto& effect : magic_enum::enum_values<WeatherEffect>()) {
           bool is_selected = m_effect == magic_enum::enum_index(effect).value();
@@ -36,10 +36,10 @@ std::tuple<bool, bool> Dialog_SetWeatherEffect::draw() {
         }
         ImGui::EndCombo();
       }
-      ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
+      ImGui::PushItemWidth((160));
       ImGui::SliderInt("##weather_effect_power", &m_power, 1, 9, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::PushItemWidth((App::DPIHandler::scale_value(80)));
+      ImGui::PushItemWidth((80));
       if (ImGui::InputInt("##weather_effect_power_int", &m_power)) {
         if (m_power > 9)
           m_power = 9;
@@ -49,7 +49,7 @@ std::tuple<bool, bool> Dialog_SetWeatherEffect::draw() {
     }
     ImGui::EndGroup();
     ImGui::SeparatorText("Duration");
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+    ImGui::SetNextItemWidth(100);
     if (ImGui::InputInt("##tintscreen_duration", &m_duration)) {
       if (m_duration < 1)
         m_duration = 1;

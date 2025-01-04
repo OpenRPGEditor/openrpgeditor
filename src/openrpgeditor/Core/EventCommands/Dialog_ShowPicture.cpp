@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ShowPicture.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"
 #include "Database/Database.hpp"
 #include "imgui.h"
@@ -12,7 +11,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{400, 305} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{400, 305}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (picker) {
@@ -41,7 +40,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
     ImGui::BeginGroup();
     {
       ImGui::Text("Number:");
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::InputInt("##showpicture_id", &m_number, 1, 100)) {
         if (m_number < 1)
           m_number = 1;
@@ -57,7 +56,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
       // Actor Button
       ImGui::Text("Image:");
       ImGui::PushID("##showpicture_image_selection");
-      if (ImGui::Button(m_imageName.c_str(), ImVec2{(App::DPIHandler::scale_value(220)), 0})) {
+      if (ImGui::Button(m_imageName.c_str(), ImVec2{220, 0})) {
         m_imagePicker->setOpen(true);
       }
       ImGui::PopID();
@@ -66,7 +65,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
     ImVec2 cursorPos = ImGui::GetCursorPos();
     ImGui::SeparatorText("Position and Scale");
     ImGui::Text("Origin:");
-    ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
+    ImGui::PushItemWidth((160));
     if (ImGui::BeginCombo("##showpicture_origin", DecodeEnumName(magic_enum::enum_value<PictureOrigin>(m_origin)).c_str())) {
       for (auto& origin : magic_enum::enum_values<PictureOrigin>()) {
         bool is_selected = m_origin == magic_enum::enum_index(origin).value();
@@ -91,9 +90,9 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
     ImGui::BeginGroup();
     {
       ImGui::BeginDisabled(m_type != 0);
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       ImGui::InputInt("##showpicture_directdesig_x", &m_constant1, 1, 100);
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       ImGui::InputInt("##showpicture_directdesig_y", &m_constant2, 1, 100);
       ImGui::EndDisabled();
       ImGui::EndGroup();
@@ -112,16 +111,14 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
     {
       ImGui::BeginDisabled(m_type != 1);
       ImGui::PushID("##showpicture_vardesig_x");
-      if (ImGui::Button(m_type == 1 ? Database::instance()->variableNameOrId(m_value1).c_str() : "",
-                        ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+      if (ImGui::Button(m_type == 1 ? Database::instance()->variableNameOrId(m_value1).c_str() : "", ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - 15, 0})) {
         xOrY = false;
         picker.emplace("Variables", Database::instance()->system.variables, m_value1);
         picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::PushID("##showpicture_vardesig_y");
-      if (ImGui::Button(m_type == 1 ? Database::instance()->variableNameOrId(m_value2).c_str() : "",
-                        ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+      if (ImGui::Button(m_type == 1 ? Database::instance()->variableNameOrId(m_value2).c_str() : "", ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - 15, 0})) {
         xOrY = true;
         picker.emplace("Variables", Database::instance()->system.variables, m_value2);
         picker->setOpen(true);
@@ -136,7 +133,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
     {
       ImGui::SeparatorText("");
       ImGui::Text("Width %%");
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::InputInt("##showpicture_width", &m_zoomX, 1, 100)) {
         if (m_zoomX < -2000)
           m_zoomX = -2000;
@@ -144,7 +141,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
           m_zoomX = 2000;
       }
       ImGui::Text("Height %%");
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::InputInt("##showpicture_height", &m_zoomY, 1, 100)) {
         if (m_zoomY < -2000)
           m_zoomY = -2000;
@@ -153,14 +150,14 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
       }
       ImGui::SeparatorText("Blend");
       ImGui::Text("Opacity:");
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::InputInt("##showpicture_opacity", &m_opacityValue, 1, 100)) {
         if (m_opacityValue < 0)
           m_opacityValue = -0;
         if (m_opacityValue > 255)
           m_opacityValue = 255;
       }
-      ImGui::PushItemWidth((App::DPIHandler::scale_value(75)));
+      ImGui::PushItemWidth((75));
       if (ImGui::BeginCombo("##showpicture_blendmode", DecodeEnumName(magic_enum::enum_value<Blend>(m_blendMode)).c_str())) {
         for (auto& blend : magic_enum::enum_values<Blend>()) {
           bool is_selected = m_blendMode == magic_enum::enum_index(blend).value();

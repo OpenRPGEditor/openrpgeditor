@@ -1,6 +1,6 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementJump.hpp"
 #include "Core/Application.hpp"
-#include "Core/DPIHandler.hpp"
+
 #include "imgui.h"
 #include <tuple>
 
@@ -10,13 +10,13 @@ std::tuple<bool, bool> Dialog_MovementJump::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{235, 110} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{235, 110}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::SeparatorText("Offset");
     ImGui::BeginGroup();
     {
       ImGui::Text("X:");
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::InputInt("##moveroute_jump_x", &m_jump_x)) {
         if (m_jump_x < -99)
           m_jump_x = -99;
@@ -30,7 +30,7 @@ std::tuple<bool, bool> Dialog_MovementJump::draw() {
     ImGui::BeginGroup();
     {
       ImGui::Text("Y:");
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::InputInt("##moveroute_jump_y", &m_jump_y)) {
         if (m_jump_x < -99)
           m_jump_x = -99;

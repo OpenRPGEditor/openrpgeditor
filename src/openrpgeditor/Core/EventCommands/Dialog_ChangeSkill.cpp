@@ -1,6 +1,6 @@
 #include "Core/EventCommands/Dialog_ChangeSkill.hpp"
 
-#include "Core/DPIHandler.hpp"
+
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,7 +11,7 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{240, 210} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{240, 210}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (actor_picker) {
@@ -54,7 +54,7 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
     {
       ImGui::BeginDisabled(m_comparison != 0);
       ImGui::PushID("##changeskill_actor");
-      if (ImGui::Button(m_comparison == 0 ? (std::format("{:04} ", m_value) + Database::instance()->actorNameOrId(m_value)).c_str() : "", ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+      if (ImGui::Button(m_comparison == 0 ? (std::format("{:04} ", m_value) + Database::instance()->actorNameOrId(m_value)).c_str() : "", ImVec2{200 - 15, 0})) {
 
         actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_value);
         actor_picker->setOpen(true);
@@ -64,7 +64,7 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
 
       ImGui::BeginDisabled(m_comparison != 1);
       ImGui::PushID("##changeskill_var");
-      if (ImGui::Button(m_comparison == 1 ? (std::format("{:04} ", m_var) + Database::instance()->variableNameOrId(m_var)).c_str() : "", ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+      if (ImGui::Button(m_comparison == 1 ? (std::format("{:04} ", m_var) + Database::instance()->variableNameOrId(m_var)).c_str() : "", ImVec2{200 - 15, 0})) {
         picker.emplace("Variables", Database::instance()->system.variables, m_var);
         picker->setOpen(true);
       }
@@ -81,7 +81,7 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
 
     ImGui::SeparatorText("Skill");
     ImGui::PushID("##changeskill_skill_selection");
-    if (ImGui::Button((std::format("{:04} ", m_skill) + Database::instance()->skillNameOrId(m_skill)).c_str(), ImVec2{(App::DPIHandler::scale_value(225)), 0})) {
+    if (ImGui::Button((std::format("{:04} ", m_skill) + Database::instance()->skillNameOrId(m_skill)).c_str(), ImVec2{225, 0})) {
       skill_picker = ObjectPicker<Skill>("Skill"sv, Database::instance()->skills.skills(), m_skill);
       skill_picker->setOpen(true);
     }

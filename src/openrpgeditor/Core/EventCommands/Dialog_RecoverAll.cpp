@@ -1,6 +1,6 @@
 #include "Core/EventCommands/Dialog_RecoverAll.hpp"
 
-#include "Core/DPIHandler.hpp"
+
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,7 +11,7 @@ std::tuple<bool, bool> Dialog_RecoverAll::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{402, 117} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{402, 117}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (picker) {
@@ -46,10 +46,10 @@ std::tuple<bool, bool> Dialog_RecoverAll::draw() {
     {
       // Actor Button
       ImGui::BeginDisabled(m_Source != 0);
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       std::string text = m_Source != 0 ? "##commonevent_switch_empty" : Database::instance()->actorName(m_actor);
       ImGui::PushID("##recoverall_selection_actor");
-      if (ImGui::Button(text.c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+      if (ImGui::Button(text.c_str(), ImVec2{200 - 15, 0})) {
         actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_actor);
         actor_picker->setUseDummyEntry("Entire Party");
         actor_picker->setOpen(true);
@@ -59,10 +59,10 @@ std::tuple<bool, bool> Dialog_RecoverAll::draw() {
 
       // Variable Button
       ImGui::BeginDisabled(m_Source != 1);
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       text = m_Source != 1 ? "##commonevent_switch_empty" : Database::instance()->variableName(m_variable);
       ImGui::PushID("##controlvariable_gamedata");
-      if (ImGui::Button(text.c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+      if (ImGui::Button(text.c_str(), ImVec2{200 - 15, 0})) {
         picker.emplace("Variables", Database::instance()->system.variables, m_variable);
         picker->setOpen(true);
       }

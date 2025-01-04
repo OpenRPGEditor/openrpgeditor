@@ -1,6 +1,6 @@
 #include "Core/EventCommands/Dialog_ChangeWindowColor.hpp"
 
-#include "Core/DPIHandler.hpp"
+
 #include "imgui.h"
 #include <tuple>
 
@@ -10,7 +10,7 @@ std::tuple<bool, bool> Dialog_ChangeWindowColor::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{402, 150} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{402, 150}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::Dummy(ImVec2(0, 5));
@@ -26,22 +26,22 @@ std::tuple<bool, bool> Dialog_ChangeWindowColor::draw() {
     ImGui::SameLine();
     ImGui::BeginGroup();
     {
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##windowcolor_red", &red, -255, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       ImGui::InputInt("##windowcolor_int_red", &red, 1, 100);
 
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##windowcolor_green", &green, -255, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       ImGui::InputInt("##windowcolor_int_red", &green, 1, 100);
 
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##windowcolor_blue", &blue, -255, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       ImGui::InputInt("##windowcolor_int_red", &blue, 1, 100);
     }
     ImGui::EndGroup();

@@ -1,6 +1,5 @@
 #include "Window.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "Core/Debug/Instrumentor.hpp"
 #include "Core/Log.hpp"
 #include <SDL3/SDL.h>
@@ -10,9 +9,8 @@ namespace App {
 
 Window::Window(const Settings& settings) {
   const auto window_flags{static_cast<SDL_WindowFlags>(SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY)};
-  const WindowSize size{DPIHandler::get_dpi_aware_window_size(settings)};
 
-  m_window = SDL_CreateWindow(settings.title.c_str(), size.width, size.height, window_flags);
+  m_window = SDL_CreateWindow(settings.title.c_str(), settings.width, settings.height, window_flags);
 
   m_renderer = SDL_CreateRenderer(m_window, nullptr);
 
@@ -20,8 +18,6 @@ Window::Window(const Settings& settings) {
     APP_ERROR("Error creating SDL_Renderer!");
     return;
   }
-
-  DPIHandler::set_render_scale(m_renderer);
 
   APP_DEBUG("Current SDL_Renderer: {}", SDL_GetRendererName(m_renderer));
 }

@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ControlSelfSwitch.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,12 +10,12 @@ std::tuple<bool, bool> Dialog_ControlSelfSwitch::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{168, 140} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{168, 140}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Self Switch");
 
-    ImGui::SetNextItemWidth(148 * App::DPIHandler::get_ui_scale());
+    ImGui::SetNextItemWidth(148);
     if (ImGui::BeginCombo("##selfswitch_list", m_selfSw.c_str())) {
       for (const auto self : {"A", "B", "C", "D"}) {
         if (ImGui::Selectable(self, self == m_selfSw)) {

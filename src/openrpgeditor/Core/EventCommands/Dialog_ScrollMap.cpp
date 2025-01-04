@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ScrollMap.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "imgui.h"
 #include <tuple>
 
@@ -10,12 +9,12 @@ std::tuple<bool, bool> Dialog_ScrollMap::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{200, 140} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{200, 140}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Direction                Distance");
 
-    ImGui::PushItemWidth(App::DPIHandler::scale_value(ImGui::GetContentRegionMax().x / 2));
+    ImGui::PushItemWidth(ImGui::GetContentRegionMax().x / 2);
 
     auto dir = magic_enum::enum_cast<Direction>(m_direction);
     if (ImGui::BeginCombo("##scrollmap_direction", DecodeEnumName(magic_enum::enum_name(dir.value())).c_str())) {
@@ -33,7 +32,7 @@ std::tuple<bool, bool> Dialog_ScrollMap::draw() {
       ImGui::EndCombo();
     }
     ImGui::SameLine();
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(80));
+    ImGui::SetNextItemWidth(80);
     if (ImGui::InputInt("##scrollmap_distance", &m_distance)) {
       if (m_distance > 100) {
         m_distance = 100;
@@ -42,7 +41,7 @@ std::tuple<bool, bool> Dialog_ScrollMap::draw() {
     }
 
     ImGui::SeparatorText("Speed");
-    ImGui::PushItemWidth(App::DPIHandler::scale_value(180));
+    ImGui::PushItemWidth(180);
 
     if (ImGui::BeginCombo("##scrollmap_speed", DecodeEnumName(static_cast<MovementSpeed>(m_speed)).c_str())) {
       for (auto& speed : magic_enum::enum_values<MovementSpeed>()) {

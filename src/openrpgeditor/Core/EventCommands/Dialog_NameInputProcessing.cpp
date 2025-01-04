@@ -1,6 +1,6 @@
 #include "Core/EventCommands/Dialog_NameInputProcessing.hpp"
 
-#include "Core/DPIHandler.hpp"
+
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,7 +11,7 @@ std::tuple<bool, bool> Dialog_NameInputProcessing::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{200, 140} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{200, 140}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (m_actorPicker) {
@@ -25,15 +25,15 @@ std::tuple<bool, bool> Dialog_NameInputProcessing::draw() {
     }
 
     ImGui::SeparatorText("Actor");
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+    ImGui::SetNextItemWidth(100);
     ImGui::PushID("##nameinput_actor");
-    if (ImGui::Button(Database::instance()->actorNameOrId(m_actor).c_str(), ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
+    if (ImGui::Button(Database::instance()->actorNameOrId(m_actor).c_str(), ImVec2{180, 0})) {
       m_actorPicker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_actor);
       m_actorPicker->setOpen(true);
     }
     ImGui::PopID();
     ImGui::SeparatorText("Max characters");
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(80));
+    ImGui::SetNextItemWidth(80);
     if (ImGui::InputInt("##inputnumber_digits", &m_maxChar)) {
       if (m_maxChar > 16) {
         m_maxChar = 16;

@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ShowText.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,21 +10,21 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{551, 260} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{551, 260}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-    const auto buttonSize = ImVec2{144, 144} * App::DPIHandler::get_ui_scale();
+    const auto buttonSize = ImVec2{144, 144};
     const auto buttonCenter = (buttonSize / 2);
     ImGui::BeginGroup();
     {
       ImGui::Text("Face:");
       auto cursorPos = ImGui::GetCursorPos();
-      if (ImGui::ImageButton("##svbattler_image", static_cast<ImTextureID>(m_buttonBack), ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
+      if (ImGui::ImageButton("##svbattler_image", static_cast<ImTextureID>(m_buttonBack), ImVec2{80.f, 102.f})) {
         m_characterPicker.setCharacterInfo(m_faceImage, m_faceIndex);
         m_characterPicker.setOpen(true);
       }
       if (m_faceSheet && m_faceSheet->texture()) {
-        const auto faceRect = ImVec2{static_cast<float>(m_faceSheet->faceWidth()), static_cast<float>(m_faceSheet->faceHeight())} * App::DPIHandler::get_ui_scale();
-        ImGui::SetCursorPos(((cursorPos + buttonCenter) - (faceRect / 2)) + (ImGui::GetStyle().ItemInnerSpacing - ImVec2{0.f, App::DPIHandler::scale_value(1.f)}));
+        const auto faceRect = ImVec2{static_cast<float>(m_faceSheet->faceWidth()), static_cast<float>(m_faceSheet->faceHeight())};
+        ImGui::SetCursorPos(((cursorPos + buttonCenter) - (faceRect / 2)) + (ImGui::GetStyle().ItemInnerSpacing - ImVec2{0.f, 1.f}));
         const auto rect = m_faceSheet->getFaceRect(m_faceIndex);
         ImGui::Image(m_faceSheet->texture(), faceRect, rect.min, rect.max);
       }
@@ -38,11 +37,11 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
       ImGui::InputTextMultiline("##showtext_multiline", m_textLine, 4096, ImVec2{437.f, 107.f});
       ImGui::EndGroup();
     }
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(100.f));
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 100.f);
     ImGui::BeginGroup();
     {
       ImGui::Text("Background:");
-      ImGui::PushItemWidth((App::DPIHandler::scale_value(120)));
+      ImGui::PushItemWidth((120));
       if (ImGui::BeginCombo("##showtext_background", DecodeEnumName(magic_enum::enum_value<TextBackground>(m_background)).c_str())) {
         for (auto& bg : magic_enum::enum_values<TextBackground>()) {
           bool is_selected = m_background == magic_enum::enum_index(bg).value();
@@ -57,11 +56,11 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
       ImGui::EndGroup();
     }
     ImGui::SameLine();
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - App::DPIHandler::scale_value(3));
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3);
     ImGui::BeginGroup();
     {
       ImGui::Text("Window Position:");
-      ImGui::PushItemWidth((App::DPIHandler::scale_value(120)));
+      ImGui::PushItemWidth((120));
       if (ImGui::BeginCombo("##showtext_windowpos", DecodeEnumName(magic_enum::enum_value<TextWindowPosition>(m_position)).c_str())) {
         for (auto& bg : magic_enum::enum_values<TextWindowPosition>()) {
           bool is_selected = m_background == magic_enum::enum_index(bg).value();
@@ -74,7 +73,7 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
         ImGui::EndCombo();
       }
       ImGui::SameLine();
-      if (ImGui::Button("Preview...", ImVec2{App::DPIHandler::scale_value(100), 0})) {
+      if (ImGui::Button("Preview...", ImVec2{100, 0})) {
         // TODO
       }
       ImGui::EndGroup();

@@ -1,7 +1,5 @@
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 
-#include "Core/DPIHandler.hpp"
-
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
 #include <format>
@@ -27,7 +25,7 @@ std::tuple<bool, bool> VariableSwitchPicker::draw() {
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{720, 640} * App::DPIHandler::get_ui_scale(), ImGuiCond_Once);
+  ImGui::SetNextWindowSize(ImVec2{720, 640}, ImGuiCond_Once);
   if (ImGui::BeginPopupModal(title.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::Text("Filter");
     ImGui::SameLine();
@@ -38,7 +36,7 @@ std::tuple<bool, bool> VariableSwitchPicker::draw() {
     }
 
     if (ImGui::BeginTable("Objects", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_Sortable | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersV | ImGuiTableFlags_ScrollY,
-                          ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                          ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
 
       ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_PreferSortAscending | ImGuiTableColumnFlags_DefaultSort | ImGuiTableColumnFlags_WidthFixed, 0, 1);
       ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch, 0, 2);

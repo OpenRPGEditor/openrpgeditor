@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ShopProcessing_Goods.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"
 #include "Database/Database.hpp"
 #include "imgui.h"
@@ -12,7 +11,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{402, 265} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{402, 265}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (armor_picker) {
@@ -58,7 +57,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
       // Items
       ImGui::BeginDisabled(m_type_selection != 0);
       ImGui::PushID("##merchandise_items");
-      if (ImGui::Button(m_type_selection != 0 ? "" : Database::instance()->itemNameOrId(m_item_selection).c_str(), ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
+      if (ImGui::Button(m_type_selection != 0 ? "" : Database::instance()->itemNameOrId(m_item_selection).c_str(), ImVec2{180, 0})) {
         item_picker = ObjectPicker<Item>("Items"sv, Database::instance()->items.items(), m_item_selection);
         item_picker->setOpen(true);
       }
@@ -68,7 +67,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
       // Weapon
       ImGui::BeginDisabled(m_type_selection != 1);
       ImGui::PushID("##merchandise_weapon");
-      if (ImGui::Button(m_type_selection != 1 ? "" : Database::instance()->weaponNameOrId(m_weapon_selection).c_str(), ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
+      if (ImGui::Button(m_type_selection != 1 ? "" : Database::instance()->weaponNameOrId(m_weapon_selection).c_str(), ImVec2{180, 0})) {
         weapon_picker = ObjectPicker<Weapon>("Weapons"sv, Database::instance()->weapons.weapons(), m_weapon_selection);
         weapon_picker->setOpen(true);
       }
@@ -78,7 +77,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
       // Armor
       ImGui::BeginDisabled(m_type_selection != 2);
       ImGui::PushID("##merchandise_armor");
-      if (ImGui::Button(m_type_selection != 2 ? "" : Database::instance()->armorNameOrId(m_armor_selection).c_str(), ImVec2{(App::DPIHandler::scale_value(180)), 0})) {
+      if (ImGui::Button(m_type_selection != 2 ? "" : Database::instance()->armorNameOrId(m_armor_selection).c_str(), ImVec2{180, 0})) {
         armor_picker = ObjectPicker<Armor>("Armors"sv, Database::instance()->armors.armors(), m_armor_selection);
         armor_picker->setOpen(true);
       }
@@ -98,7 +97,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
     }
     ImGui::SetCursorPos(ImVec2{cursorPos.x + 90, cursorPos.y});
     ImGui::BeginDisabled(m_price_operation != 1);
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+    ImGui::SetNextItemWidth(200);
     if (ImGui::InputInt("##merchandise_price_constant", &m_price_constant)) {
       if (m_price_constant > 999999) {
         m_price_constant = 999999;
@@ -109,7 +108,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
     }
     ImGui::EndDisabled();
 
-    ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(105), ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(25)});
+    ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionMax().x - 105, ImGui::GetContentRegionMax().y - 25});
     ImGui::BeginGroup();
     {
       if (ImGui::Button("OK")) {

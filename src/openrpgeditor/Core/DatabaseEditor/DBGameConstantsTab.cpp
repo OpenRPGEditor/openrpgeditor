@@ -197,7 +197,7 @@ void DBGameConstantsTab::draw() {
     if (ImGui::BeginTabItem("Variables")) {
       ImGui::Text("When exported to Constants.js all Variables will be prefixed with VAR_");
       if (ImGui::BeginTable("##ore_variable_constants_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
         setupTableHeaders();
         for (auto it = m_constants->variables.begin(); it != m_constants->variables.end();) {
           auto id = it->first;
@@ -246,7 +246,7 @@ void DBGameConstantsTab::draw() {
     if (ImGui::BeginTabItem("Switches")) {
       ImGui::Text("When exported to Constants.js all Switches will be prefixed with SW_");
       if (ImGui::BeginTable("##ore_switch_constants_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
         setupTableHeaders();
         for (auto it = m_constants->switches.begin(); it != m_constants->switches.end();) {
           auto id = it->first;
@@ -290,7 +290,7 @@ void DBGameConstantsTab::draw() {
     if (ImGui::BeginTabItem("Actors")) {
       ImGui::Text("When exported to Constants.js all Actors will be prefixed with ACT_");
       if (ImGui::BeginTable("##ore_actors_constants_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
         setupTableHeaders();
         for (auto it = m_constants->actors.begin(); it != m_constants->actors.end();) {
           auto id = it->first;
@@ -334,7 +334,7 @@ void DBGameConstantsTab::draw() {
     if (ImGui::BeginTabItem("Classes")) {
       ImGui::Text("When exported to Constants.js all Classes will be prefixed with CLS_");
       if (ImGui::BeginTable("##ore_classes_constants_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
         setupTableHeaders();
         for (auto it = m_constants->classes.begin(); it != m_constants->classes.end();) {
           auto id = it->first;
@@ -380,7 +380,7 @@ void DBGameConstantsTab::draw() {
     if (ImGui::BeginTabItem("Skills")) {
       ImGui::Text("When exported to Constants.js all Skills will be prefixed with SKL_");
       if (ImGui::BeginTable("##ore_skills_constants_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
         setupTableHeaders();
         for (auto it = m_constants->skills.begin(); it != m_constants->skills.end();) {
           auto id = it->first;
@@ -426,7 +426,7 @@ void DBGameConstantsTab::draw() {
     if (ImGui::BeginTabItem("Items")) {
       ImGui::Text("When exported to Constants.js all Items will be prefixed with ITM_");
       if (ImGui::BeginTable("##ore_items_constants_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
         setupTableHeaders();
         for (auto it = m_constants->items.begin(); it != m_constants->items.end();) {
           auto id = it->first;
@@ -472,7 +472,7 @@ void DBGameConstantsTab::draw() {
     if (ImGui::BeginTabItem("Weapons")) {
       ImGui::Text("When exported to Constants.js all Weapons will be prefixed with WPN_");
       if (ImGui::BeginTable("##ore_weapons_constants_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
         setupTableHeaders();
         for (auto it = m_constants->weapons.begin(); it != m_constants->weapons.end();) {
           auto id = it->first;
@@ -518,7 +518,7 @@ void DBGameConstantsTab::draw() {
     if (ImGui::BeginTabItem("Armors")) {
       ImGui::Text("When exported to Constants.js all Armors will be prefixed with ARM_");
       if (ImGui::BeginTable("##ore_armors_constants_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
         setupTableHeaders();
         for (auto it = m_constants->armors.begin(); it != m_constants->armors.end();) {
           auto id = it->first;
@@ -564,7 +564,7 @@ void DBGameConstantsTab::draw() {
     if (ImGui::BeginTabItem("Enemies")) {
       ImGui::Text("When exported to Constants.js all Enemies will be prefixed with ENM_");
       if (ImGui::BeginTable("##ore_enemies_constants_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
         setupTableHeaders();
         for (auto it = m_constants->enemies.begin(); it != m_constants->enemies.end();) {
           auto id = it->first;
@@ -610,7 +610,7 @@ void DBGameConstantsTab::draw() {
     if (ImGui::BeginTabItem("Troops")) {
       ImGui::Text("When exported to Constants.js all Troops will be prefixed with TRP_");
       if (ImGui::BeginTable("##ore_troops_constants_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
         setupTableHeaders();
         for (auto it = m_constants->troops.begin(); it != m_constants->troops.end();) {
           auto id = it->first;
@@ -656,7 +656,7 @@ void DBGameConstantsTab::draw() {
     if (ImGui::BeginTabItem("States")) {
       ImGui::Text("When exported to Constants.js all States will be prefixed with STA_");
       if (ImGui::BeginTable("##ore_troops_constants_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
         setupTableHeaders();
         for (auto it = m_constants->states.begin(); it != m_constants->states.end();) {
           auto id = it->first;
@@ -702,7 +702,7 @@ void DBGameConstantsTab::draw() {
     if (ImGui::BeginTabItem("Animations")) {
       ImGui::Text("When exported to Constants.js all Animations will be prefixed with ANM_");
       if (ImGui::BeginTable("##ore_troops_constants_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
         setupTableHeaders();
         for (auto it = m_constants->animations.begin(); it != m_constants->animations.end();) {
           auto id = it->first;
@@ -748,7 +748,7 @@ void DBGameConstantsTab::draw() {
     if (ImGui::BeginTabItem("Tilesets")) {
       ImGui::Text("When exported to Constants.js all Tilesets will be prefixed with TLS_");
       if (ImGui::BeginTable("##ore_troops_constants_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
         setupTableHeaders();
         for (auto it = m_constants->tilesets.begin(); it != m_constants->tilesets.end();) {
           auto id = it->first;
@@ -794,7 +794,7 @@ void DBGameConstantsTab::draw() {
     if (ImGui::BeginTabItem("Common Events")) {
       ImGui::Text("When exported to Constants.js all Common Events will be prefixed with CMN_");
       if (ImGui::BeginTable("##ore_troops_constants_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
         setupTableHeaders();
         for (auto it = m_constants->commonEvents.begin(); it != m_constants->commonEvents.end();) {
           auto id = it->first;
@@ -840,7 +840,7 @@ void DBGameConstantsTab::draw() {
     if (ImGui::BeginTabItem("Maps")) {
       ImGui::Text("When exported to Constants.js all Maps will be prefixed with MAP_");
       if (ImGui::BeginTable("##ore_troops_constants_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(32) - ImGui::GetStyle().FramePadding.y})) {
+                            ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
         setupTableHeaders();
         for (auto it = m_constants->maps.begin(); it != m_constants->maps.end();) {
           auto id = it->first;

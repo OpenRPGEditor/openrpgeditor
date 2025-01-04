@@ -23,12 +23,12 @@ void DBSkillsTab::draw() {
   }
   ImGui::BeginChild("#orpg_skills_editor");
   {
-    ImGui::BeginChild("##orpg_skills_editor_skills", ImVec2{250.f, 0} * App::DPIHandler::get_ui_scale(), 0, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("##orpg_skills_editor_skills", ImVec2{250.f, 0}, 0, ImGuiWindowFlags_HorizontalScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Skills");
-        ImGui::BeginChild("##orpg_skills_editor_skills_list", ImVec2{0, ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(108)});
+        ImGui::BeginChild("##orpg_skills_editor_skills_list", ImVec2{0, ImGui::GetContentRegionMax().y - 108});
         {
           ImGui::BeginGroup();
           {
@@ -51,7 +51,7 @@ void DBSkillsTab::draw() {
         char str[4096];
         snprintf(str, 4096, "Max Skills %i", m_maxSkills);
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(8), 0})) {
+        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxSkills = m_maxSkills;
         }
@@ -73,7 +73,7 @@ void DBSkillsTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedSkill->name().c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_skills_editor_skills_skill_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - App::DPIHandler::scale_value(16))) {
+              if (ImGui::LabelOverLineEdit("##orpg_skills_editor_skills_skill_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - 16)) {
                 m_selectedSkill->setName(name);
               }
             }
@@ -98,7 +98,7 @@ void DBSkillsTab::draw() {
               char description[4096];
               strncpy(description, m_selectedSkill->description().c_str(), 4096);
               ImGui::TextUnformatted("Description:");
-              ImGui::InputTextMultiline("##orpg_database_skills_description", description, 4096, ImVec2{App::DPIHandler::scale_value(360), App::DPIHandler::scale_value(60)});
+              ImGui::InputTextMultiline("##orpg_database_skills_description", description, 4096, ImVec2{360, 60});
             }
             ImGui::EndGroup();
             // Skill Type, MP/TP Cost
@@ -107,7 +107,7 @@ void DBSkillsTab::draw() {
               ImGui::BeginGroup();
               {
                 ImGui::Text("Skill Type:");
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
+                ImGui::SetNextItemWidth(160);
                 if (ImGui::BeginCombo("##orpg_database_skills_skilltype", m_selectedSkill->stypeId() == 0 ? "None" : Database::instance()->system.skillType(m_selectedSkill->stypeId())->c_str())) {
                   int index{0};
                   for (auto& dataSource : Database::instance()->system.skillTypes) {
@@ -135,7 +135,7 @@ void DBSkillsTab::draw() {
               ImGui::BeginGroup();
               {
                 ImGui::Text("MP Cost:");
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+                ImGui::SetNextItemWidth(150);
                 int mpCost = m_selectedSkill->mpCost();
                 if (ImGui::InputInt("##orpg_database_skills_manacost", &mpCost, 1, 100)) {
                   m_selectedSkill->setMpCost(std::clamp(mpCost, 0, 9999));
@@ -147,7 +147,7 @@ void DBSkillsTab::draw() {
               ImGui::BeginGroup();
               {
                 ImGui::Text("TP Cost:");
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+                ImGui::SetNextItemWidth(150);
                 int tpCost = m_selectedSkill->tpCost();
                 if (ImGui::InputInt("##orpg_database_skills_tcost", &tpCost, 1, 100)) {
                   m_selectedSkill->setTpCost(std::clamp(tpCost, 0, 999));
@@ -163,7 +163,7 @@ void DBSkillsTab::draw() {
               ImGui::BeginGroup();
               {
                 ImGui::Text("Scope:");
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
+                ImGui::SetNextItemWidth(160);
                 if (ImGui::BeginCombo("##orpg_database_skills_scopelist", DecodeEnumName(magic_enum::enum_name(m_selectedSkill->scope())).c_str())) {
                   int index{0};
                   for (auto& dir : magic_enum::enum_values<Scope>()) {
@@ -184,7 +184,7 @@ void DBSkillsTab::draw() {
               ImGui::BeginGroup();
               {
                 ImGui::Text("Occasion:");
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
+                ImGui::SetNextItemWidth(160);
                 if (ImGui::BeginCombo("##orpg_database_skills_occasionlist", DecodeEnumName(magic_enum::enum_name(m_selectedSkill->occasion())).c_str())) {
                   int index{0};
                   for (auto& dir : magic_enum::enum_values<Occasion>()) {
@@ -212,7 +212,7 @@ void DBSkillsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Speed:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               int speed = m_selectedSkill->speed();
               if (ImGui::InputInt("##orpg_database_skills_speed", &speed, 1, 100)) {
                 m_selectedSkill->setSpeed(std::clamp(speed, -2000, 2000));
@@ -224,7 +224,7 @@ void DBSkillsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Success:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               int successRate = m_selectedSkill->successRate();
               if (ImGui::InputInt("##orpg_database_skills_successRate", &successRate, 1, 100)) {
                 m_selectedSkill->setSuccessRate(std::clamp(successRate, 0, 100));
@@ -234,7 +234,7 @@ void DBSkillsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Repeat:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               int repeats = m_selectedSkill->repeats();
               if (ImGui::InputInt("##orpg_database_skills_repeats", &repeats, 1, 100)) {
                 m_selectedSkill->setRepeats(std::clamp(repeats, 1, 9));
@@ -246,7 +246,7 @@ void DBSkillsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("TP Gain:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               int tpGain = m_selectedSkill->tpGain();
               if (ImGui::InputInt("##orpg_database_skills_tpGain", &tpGain, 1, 100)) {
                 m_selectedSkill->setTpGain(std::clamp(tpGain, 0, 100));
@@ -256,7 +256,7 @@ void DBSkillsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Hit Type:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               if (ImGui::BeginCombo("##orpg_database_skills_hitType", DecodeEnumName(magic_enum::enum_name(m_selectedSkill->hitType())).c_str())) {
                 for (auto& dir : magic_enum::enum_values<HitType>()) {
                   if (const bool is_selected = m_selectedSkill->hitType() == static_cast<HitType>(magic_enum::enum_index(dir).value());
@@ -276,13 +276,13 @@ void DBSkillsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Animation:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
+              ImGui::SetNextItemWidth(160);
               // Animation Button
               ImGui::PushID("##orpg_database_skills_animation");
               if (ImGui::Button(m_selectedSkill->animationId() == -1  ? "Normal Attack"
                                 : m_selectedSkill->animationId() == 0 ? "None"
                                                                       : Database::instance()->animationName(m_selectedSkill->animationId()).c_str(),
-                                ImVec2{200 - 15 * App::DPIHandler::get_ui_scale(), 0})) {
+                                ImVec2{200 - 15, 0})) {
                 m_animationPicker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), m_selectedSkill->animationId());
                 m_animationPicker->setOpen(true);
               }
@@ -301,14 +301,14 @@ void DBSkillsTab::draw() {
 
             ImGui::Text("(User Name)");
             ImGui::SameLine();
-            ImGui::SetNextItemWidth(App::DPIHandler::scale_value(450));
+            ImGui::SetNextItemWidth(450);
             ImGui::InputText("##orpg_database_message_message1", message1, 4096);
-            ImGui::SetNextItemWidth(App::DPIHandler::scale_value(534));
+            ImGui::SetNextItemWidth(534);
             ImGui::InputText("##orpg_database_message_message2", message2, 4096);
             // ImGui::EndGroup();
 
             ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 80.f);
-            ImGui::SetNextItemWidth(App::DPIHandler::scale_value(400));
+            ImGui::SetNextItemWidth(400);
             if (ImGui::BeginCombo("##orpg_database_message_templateList", m_message_templateList.at(m_message_template).c_str())) {
               for (int index{0}; auto& _ : m_message_templateList) {
                 if (const bool is_selected = m_message_template == index; ImGui::Selectable(m_message_templateList.at(index).c_str(), is_selected)) {
@@ -328,7 +328,7 @@ void DBSkillsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Weapon Type 1");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               if (ImGui::BeginCombo("##orpg_database_reqweapon_1",
                                     m_selectedSkill->requiredWtypeId1() == 0 ? "None" : Database::instance()->system.weaponType(m_selectedSkill->requiredWtypeId1())->c_str())) {
                 for (int index{0}; auto& _ : Database::instance()->system.weaponTypes) {
@@ -358,7 +358,7 @@ void DBSkillsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Weapon Type 2");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               if (ImGui::BeginCombo("##orpg_database_reqweapon_2",
                                     m_selectedSkill->requiredWtypeId2() == 0 ? "None" : Database::instance()->system.weaponType(m_selectedSkill->requiredWtypeId2())->c_str())) {
                 int index{0};
@@ -399,7 +399,7 @@ void DBSkillsTab::draw() {
               ImGui::BeginGroup();
               {
                 ImGui::Text("Type:");
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+                ImGui::SetNextItemWidth(200);
                 if (ImGui::BeginCombo("##orpg_database_skills_damage_type", DecodeEnumName(magic_enum::enum_name(m_selectedSkill->damage().type)).c_str())) {
                   int index{0};
                   for (auto& dir : magic_enum::enum_values<DamageType>()) {
@@ -420,7 +420,7 @@ void DBSkillsTab::draw() {
               ImGui::BeginGroup();
               {
                 ImGui::Text("Element:");
-                ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+                ImGui::SetNextItemWidth(200);
                 if (ImGui::BeginCombo("##orpg_database_skills_damage_element", m_selectedSkill->damage().elementId == -1 ? "Normal Attack"
                                                                                : m_selectedSkill->damage().elementId == 0
                                                                                    ? "None"
@@ -485,7 +485,7 @@ void DBSkillsTab::draw() {
                 char note[8192];
                 strncpy(note, m_selectedSkill->note().c_str(), IM_ARRAYSIZE(note));
                 if (ImGui::InputTextMultiline("##orpg_database_skills_note", note, IM_ARRAYSIZE(note),
-                                              ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(16), ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
+                                              ImVec2{ImGui::GetContentRegionMax().x - 16, ImGui::GetContentRegionAvail().y - 16})) {
                   m_selectedSkill->setNote(note);
                 }
               }

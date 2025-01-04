@@ -139,12 +139,12 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
         ImGui::BeginGroup();
         {
           // Skill Button - Picker
-          if (ImGui::Button(Database::instance()->skillNameOrId(m_selectedAction->skillId).c_str(), ImVec2{200 * App::DPIHandler::get_ui_scale(), 0})) {
+          if (ImGui::Button(Database::instance()->skillNameOrId(m_selectedAction->skillId).c_str(), ImVec2{200, 0})) {
             m_skillPicker.emplace("Skill"sv, Database::instance()->skills.skills(), m_selectedAction->skillId);
             m_skillPicker->setOpen(true);
           }
           ImGui::SameLine();
-          ImGui::SetNextItemWidth(150 * App::DPIHandler::get_ui_scale());
+          ImGui::SetNextItemWidth(150);
           int tmpInt = m_selectedAction->rating;
           if (ImGui::InputInt("##action_rating", &tmpInt)) {
             m_selectedAction->rating = tmpInt;
@@ -222,7 +222,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
           ImGui::BeginDisabled(m_selectedAction->conditionType != ActionCondition::Turn);
           {
             int tmpInt = m_selectedAction->conditionType == ActionCondition::Turn ? static_cast<int>(m_selectedAction->conditionParam1) : 0;
-            ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
+            ImGui::SetNextItemWidth(230);
             if (ImGui::InputInt("##action_turn_value1", &tmpInt)) {
               m_selectedAction->conditionParam1 = static_cast<float>(tmpInt);
             }
@@ -231,7 +231,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::SameLine();
             int tmpInt2 = m_selectedAction->conditionType == ActionCondition::Turn ? static_cast<int>(m_selectedAction->conditionParam2) : 0;
             ImGui::SameLine();
-            ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
+            ImGui::SetNextItemWidth(230);
             if (ImGui::InputInt("##action_turn_value2", &tmpInt2)) {
               m_selectedAction->conditionParam2 = static_cast<float>(tmpInt2);
             }
@@ -241,7 +241,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
           ImGui::BeginDisabled(m_selectedAction->conditionType != ActionCondition::HP);
           {
             int tmpInt = m_selectedAction->conditionType == ActionCondition::HP ? static_cast<int>(m_selectedAction->conditionParam1 / 100) : 0;
-            ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
+            ImGui::SetNextItemWidth(230);
             if (ImGui::SliderInt("##action_hp_value1", &tmpInt, 0, 100, m_selectedAction->conditionType == ActionCondition::HP ? "%d%%" : "")) {
               m_selectedAction->conditionParam1 = static_cast<float>(tmpInt / 100.0);
             }
@@ -249,7 +249,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::Text("~");
             ImGui::SameLine();
             int tmpInt2 = m_selectedAction->conditionType == ActionCondition::HP ? static_cast<int>(m_selectedAction->conditionParam2 * 100) : 0;
-            ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
+            ImGui::SetNextItemWidth(230);
             if (ImGui::SliderInt("##action_hp_value2", &tmpInt2, 0, 100, m_selectedAction->conditionType == ActionCondition::HP ? "%d%%" : "")) {
               m_selectedAction->conditionParam2 = static_cast<float>(tmpInt2 / 100.0);
             }
@@ -259,7 +259,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
           ImGui::BeginDisabled(m_selectedAction->conditionType != ActionCondition::MP);
           {
             int tmpInt = m_selectedAction->conditionType == ActionCondition::MP ? static_cast<int>(m_selectedAction->conditionParam1 * 100) : 0;
-            ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
+            ImGui::SetNextItemWidth(230);
             if (ImGui::SliderInt("##action_mp_value1", &tmpInt, 0, 100, m_selectedAction->conditionType == ActionCondition::MP ? "%d%%" : "")) {
               m_selectedAction->conditionParam1 = static_cast<float>(tmpInt / 100.0);
             }
@@ -268,7 +268,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::SameLine();
             int tmpInt2 = m_selectedAction->conditionType == ActionCondition::MP ? static_cast<int>(m_selectedAction->conditionParam2 * 100) : 0;
             ImGui::SameLine();
-            ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
+            ImGui::SetNextItemWidth(230);
             if (ImGui::SliderInt("##action_mp_value2", &tmpInt2, 0, 100, m_selectedAction->conditionType == ActionCondition::MP ? "%d%%" : "")) {
               m_selectedAction->conditionParam2 = static_cast<float>(tmpInt2 / 100.0);
             }
@@ -291,7 +291,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
           ImGui::BeginDisabled(m_selectedAction->conditionType != ActionCondition::Party_Level);
           {
             int tmpInt = m_selectedAction->conditionType == ActionCondition::Party_Level ? static_cast<int>(m_selectedAction->conditionParam1) : 0;
-            ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
+            ImGui::SetNextItemWidth(230);
             if (ImGui::InputInt("##action_party_level_value1", &tmpInt)) {
               m_selectedAction->conditionParam1 = static_cast<float>(tmpInt);
             }

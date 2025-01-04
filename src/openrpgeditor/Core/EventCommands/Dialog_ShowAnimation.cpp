@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ShowAnimation.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,7 +10,7 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
   }
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(windowSize * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(windowSize, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (animation_picker) {
@@ -23,7 +22,7 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
       }
     }
     ImGui::SeparatorText("Character");
-    ImGui::PushItemWidth(App::DPIHandler::scale_value(160));
+    ImGui::PushItemWidth(160);
     if (ImGui::BeginCombo("##showanim_character", Database::instance()->eventNameOrId(m_character).c_str())) {
 
       if (ImGui::Selectable("Player", m_character == -1)) {
@@ -50,7 +49,7 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
 
     // Animation Button
     ImGui::PushID("##showanim_animation_select");
-    if (ImGui::Button(Database::instance()->animationName(m_animation).c_str(), ImVec2{200 - 15 * App::DPIHandler::get_ui_scale(), 0})) {
+    if (ImGui::Button(Database::instance()->animationName(m_animation).c_str(), ImVec2{200 - 15, 0})) {
       animation_picker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), m_animation);
       animation_picker->setOpen(true);
     }

@@ -9,12 +9,12 @@ DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent)
 void DBAnimationsTab::draw() {
   ImGui::BeginChild("#orpg_animations_editor");
   {
-    ImGui::BeginChild("##orpg_animations_editor_animations", ImVec2{250.f, 0} * App::DPIHandler::get_ui_scale(), 0, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("##orpg_animations_editor_animations", ImVec2{250.f, 0}, 0, ImGuiWindowFlags_HorizontalScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Animations");
-        ImGui::BeginChild("##orpg_animations_editor_animations_list", ImVec2{0, ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(108)});
+        ImGui::BeginChild("##orpg_animations_editor_animations_list", ImVec2{0, ImGui::GetContentRegionMax().y - 108});
         {
           ImGui::BeginGroup();
           {
@@ -35,7 +35,7 @@ void DBAnimationsTab::draw() {
         char str[4096];
         snprintf(str, 4096, "Max Animations %i", m_animations.count());
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(8), 0})) {
+        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxAnimations = m_animations.count();
         }

@@ -1,6 +1,6 @@
 #include "Core/EventCommands/Dialog_PlayMovie.hpp"
 
-#include "Core/DPIHandler.hpp"
+
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,14 +11,14 @@ std::tuple<bool, bool> Dialog_PlayMovie::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{270, 250} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{270, 250}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::BeginGroup();
     {
 
       if (ImGui::BeginTable("##movie_contents", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{App::DPIHandler::scale_value(500), App::DPIHandler::scale_value(500)})) {
+                            ImVec2{500, 500})) {
 
         ImGui::TableSetupScrollFreeze(1, 0);
         ImGui::TableSetupColumn("File");

@@ -1,6 +1,6 @@
 #include "Core/EventCommands/Dialog_RotatePicture.hpp"
 
-#include "Core/DPIHandler.hpp"
+
 #include "imgui.h"
 #include <tuple>
 
@@ -10,11 +10,11 @@ std::tuple<bool, bool> Dialog_RotatePicture::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{131, 140} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{131, 140}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Picture Number");
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(120));
+    ImGui::SetNextItemWidth(120);
     if (ImGui::InputInt("##rotatepicture_id", &m_picture)) {
       if (m_picture > 999) {
         m_picture = 999;
@@ -22,7 +22,7 @@ std::tuple<bool, bool> Dialog_RotatePicture::draw() {
         m_picture = 1;
     }
     ImGui::SeparatorText("Rotation Speed   ");
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(120));
+    ImGui::SetNextItemWidth(120);
     if (ImGui::InputInt("##rotatepicture_speed", &m_rotation)) {
       if (m_rotation > 999) {
         m_rotation = 999;

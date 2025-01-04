@@ -1,5 +1,4 @@
 #include "Core/CommonUI/CreateNewProjectDialog.hpp"
-#include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Settings.hpp"
 
@@ -29,7 +28,7 @@ std::tuple<bool, bool> CreateNewProjectDialog::draw() {
   }
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{894, 768} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{894, 768}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::BeginGroup();
     {

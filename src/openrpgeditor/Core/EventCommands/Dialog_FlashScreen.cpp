@@ -1,6 +1,6 @@
 #include "Core/EventCommands/Dialog_FlashScreen.hpp"
 
-#include "Core/DPIHandler.hpp"
+
 #include "imgui.h"
 #include <tuple>
 
@@ -10,7 +10,7 @@ std::tuple<bool, bool> Dialog_FlashScreen::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{410, 250} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{410, 250}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Flash Color");
@@ -28,10 +28,10 @@ std::tuple<bool, bool> Dialog_FlashScreen::draw() {
     ImGui::SameLine();
     ImGui::BeginGroup();
     {
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##flashscreen_red", &r, 0, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(75);
       if (ImGui::InputInt("##flashscreen_int_red", &r, 1, 100)) {
         if (r < 0)
           r = 0;
@@ -39,10 +39,10 @@ std::tuple<bool, bool> Dialog_FlashScreen::draw() {
           r = 255;
       }
 
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##flashscreen_green", &g, 0, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(75);
       if (ImGui::InputInt("##flashscreen_int_green", &g, 1, 100)) {
         if (g < 0)
           g = 0;
@@ -50,10 +50,10 @@ std::tuple<bool, bool> Dialog_FlashScreen::draw() {
           g = 255;
       }
 
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##flashscreen_blue", &b, 0, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(75);
       if (ImGui::InputInt("##flashscreen_int_blue", &b, 1, 100)) {
         if (b < 0)
           b = 0;
@@ -61,10 +61,10 @@ std::tuple<bool, bool> Dialog_FlashScreen::draw() {
           b = 255;
       }
 
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##lashscreen_gray", &m_intensity, 0, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(75));
+      ImGui::SetNextItemWidth(75);
       if (ImGui::InputInt("##flashscreen_int_gray", &m_intensity, 1, 100)) {
         if (m_intensity < 1)
           m_intensity = 1;
@@ -79,13 +79,13 @@ std::tuple<bool, bool> Dialog_FlashScreen::draw() {
                        ImVec2{100, 100});
 
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4.f);
-    ImGui::PushItemWidth((App::DPIHandler::scale_value(390)));
+    ImGui::PushItemWidth(390);
     if (ImGui::BeginCombo("##flashscreen_presets", "Future presets go in this list")) {
       // TODO: Template system for tint screen
       ImGui::EndCombo();
     }
     ImGui::SeparatorText("Duration");
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+    ImGui::SetNextItemWidth(100);
     if (ImGui::InputInt("##flashscreen_duration", &m_duration)) {
       if (m_duration < 1)
         m_duration = 1;

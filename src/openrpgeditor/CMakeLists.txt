@@ -82,7 +82,6 @@ add_library(
         Core/DownloadManager.cpp
         Core/DownloadManager.hpp
         Core/DownloadManager.hpp
-        Core/DPIHandler.hpp
         Core/EventCommands/Dialog_AbortBattle.cpp
         Core/EventCommands/Dialog_AbortBattle.hpp
         Core/EventCommands/Dialog_BattleProcessing.cpp
@@ -470,14 +469,11 @@ target_link_libraries(
 
 # Define set of OS specific files to include
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    target_sources(orecore PRIVATE Platform/Windows/Resources.cpp
-            Platform/Windows/DPIHandler.cpp)
+    target_sources(orecore PRIVATE Platform/Windows/Resources.cpp)
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    target_sources(orecore PRIVATE Platform/Mac/Resources.cpp
-            Platform/Mac/DPIHandler.cpp)
+    target_sources(orecore PRIVATE Platform/Mac/Resources.cpp)
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    target_sources(orecore PRIVATE Platform/Linux/Resources.cpp
-            Platform/Linux/DPIHandler.cpp)
+    target_sources(orecore PRIVATE Platform/Linux/Resources.cpp)
 endif ()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")

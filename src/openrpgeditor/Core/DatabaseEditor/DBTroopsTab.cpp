@@ -27,12 +27,12 @@ void DBTroopsTab::draw() {
   }
   ImGui::BeginChild("#orpg_troops_editor");
   {
-    ImGui::BeginChild("##orpg_troops_editor_troops", ImVec2{250.f, 0} * App::DPIHandler::get_ui_scale(), 0, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("##orpg_troops_editor_troops", ImVec2{250.f, 0}, 0, ImGuiWindowFlags_HorizontalScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Troops");
-        ImGui::BeginChild("##orpg_troops_editor_troops_list", ImVec2{0, ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(108)});
+        ImGui::BeginChild("##orpg_troops_editor_troops_list", ImVec2{0, ImGui::GetContentRegionMax().y - 108});
         {
           ImGui::BeginGroup();
           {
@@ -53,7 +53,7 @@ void DBTroopsTab::draw() {
         char str[4096];
         snprintf(str, 4096, "Max Troops %i", m_maxTroops);
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(8), 0})) {
+        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxTroops = m_maxTroops;
         }
@@ -82,7 +82,7 @@ void DBTroopsTab::draw() {
               ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 22.f);
               // Button 1 - Auto-name
               ImGui::PushID("##orpg_database_troops_auto_name");
-              if (ImGui::Button("Auto-name", ImVec2{App::DPIHandler::scale_value(100), 0})) {
+              if (ImGui::Button("Auto-name", ImVec2{100, 0})) {
                 // TODO
               }
               ImGui::PopID();
@@ -90,7 +90,7 @@ void DBTroopsTab::draw() {
               ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 22.f);
               // Button 2 - Change BG...
               ImGui::PushID("##orpg_database_troops_change_bg");
-              if (ImGui::Button("Change BG...", ImVec2{App::DPIHandler::scale_value(100), 0})) {
+              if (ImGui::Button("Change BG...", ImVec2{100, 0})) {
                 // TODO
               }
               ImGui::PopID();
@@ -98,7 +98,7 @@ void DBTroopsTab::draw() {
               ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 22.f);
               // Button 3 - Battle Test...
               ImGui::PushID("##orpg_database_troops_battle_test");
-              if (ImGui::Button("Battle Test...", ImVec2{App::DPIHandler::scale_value(100), 0})) {
+              if (ImGui::Button("Battle Test...", ImVec2{100, 0})) {
                 // TODO
               }
               ImGui::PopID();
@@ -108,8 +108,8 @@ void DBTroopsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::TextUnformatted("Image:");
-              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_database_troops_image"), m_characterButtonTexture->get(), ImVec2(m_characterButtonTexture->size()) * App::DPIHandler::get_ui_scale(),
-                                       {0.f, 0.f}, {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
+              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_database_troops_image"), m_characterButtonTexture->get(), ImVec2(m_characterButtonTexture->size()), {0.f, 0.f}, {1.f, 1.f}, {},
+                                       {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
                 m_currentSheet = &m_characterSheet.value();
                 // m_characterPicker->setCharacterInfo("", m_selectedItem->iconIndex);
                 // m_characterPicker->setOpen(true);
@@ -122,25 +122,25 @@ void DBTroopsTab::draw() {
             {
               // Button 1 - < Add
               ImGui::PushID("##orpg_database_troops_add");
-              if (ImGui::Button("< Add", {App::DPIHandler::scale_value(100), 0})) {
+              if (ImGui::Button("< Add", {100, 0})) {
                 // TODO
               }
               ImGui::PopID();
               // Button 2 - Remove >
               ImGui::PushID("##orpg_database_troops_remove");
-              if (ImGui::Button("Remove >", {App::DPIHandler::scale_value(100), 0})) {
+              if (ImGui::Button("Remove >", {100, 0})) {
                 // TODO
               }
               ImGui::PopID();
               // Button 3 - Clear
               ImGui::PushID("##orpg_database_troops_clear");
-              if (ImGui::Button("Clear", {App::DPIHandler::scale_value(100), 0})) {
+              if (ImGui::Button("Clear", {100, 0})) {
                 // TODO
               }
               ImGui::PopID();
               // Button 4 - Align
               ImGui::PushID("##orpg_database_troops_align");
-              if (ImGui::Button("Align", {App::DPIHandler::scale_value(100), 0})) {
+              if (ImGui::Button("Align", {100, 0})) {
                 // TODO
               }
               ImGui::PopID();
@@ -150,7 +150,7 @@ void DBTroopsTab::draw() {
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 20.f);
             ImGui::BeginGroup();
             {
-              ImGui::BeginChild("##orpg_enemies_editor_troops_enemies_list", ImVec2{0, ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(230)});
+              ImGui::BeginChild("##orpg_enemies_editor_troops_enemies_list", ImVec2{0, ImGui::GetContentRegionMax().y - 230});
               {
                 for (auto& enemy : m_enemies.enemies()) {
                   if (enemy.id() == 0) {

@@ -2,7 +2,6 @@
 
 #include "imgui.h"
 
-#include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 
 using namespace std::string_view_literals;
@@ -13,12 +12,12 @@ std::tuple<bool, bool> Dialog_ChangeVictoryME::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.f));
-  ImGui::SetNextWindowSize(ImVec2{610, 380} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{610, 380}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
     // Audio List
     ImVec2 tablePos = ImGui::GetCursorPos();
     if (ImGui::BeginTable("##bgm_audio_contents", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                          ImVec2{(ImGui::GetContentRegionMax().x / 2) + 175, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
+                          ImVec2{(ImGui::GetContentRegionMax().x / 2) + 175, ImGui::GetContentRegionAvail().y - 16})) {
 
       ImGui::TableSetupScrollFreeze(1, 0);
       ImGui::TableSetupColumn("File");
@@ -49,17 +48,17 @@ std::tuple<bool, bool> Dialog_ChangeVictoryME::draw() {
         stopAudio();
       }
       ImGui::SeparatorText("Volume");
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::DragInt("##playbgm_audio.volume", &m_audio.volume, 0.5f, 0, 100)) {
         setVolume(m_audio.volume);
       }
       ImGui::SeparatorText("Pitch");
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::DragInt("##playbgm_audio.pitch", &m_audio.pitch, 0.5f, 0, 100)) {
         setPitch(m_audio.pitch);
       }
       ImGui::SeparatorText("Pan");
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::DragInt("##playbgm_audio.pan", &m_audio.pan, 0.5f, -100, 100)) {
         setPanning(m_audio.pan);
       }
@@ -67,8 +66,7 @@ std::tuple<bool, bool> Dialog_ChangeVictoryME::draw() {
     ImGui::EndGroup();
     ImGui::BeginGroup();
     {
-      ImGui::SetCursorPos(ImVec2((ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(90)) - ImGui::GetStyle().FramePadding.x,
-                                 (ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(30)) - ImGui::GetStyle().FramePadding.y));
+      ImGui::SetCursorPos(ImVec2((ImGui::GetContentRegionMax().x - 90) - ImGui::GetStyle().FramePadding.x, (ImGui::GetContentRegionMax().y - 30) - ImGui::GetStyle().FramePadding.y));
 
       if (ImGui::Button("OK")) {
         m_confirmed = true;

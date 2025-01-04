@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ChangeName.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -27,14 +26,14 @@ std::tuple<bool, bool> Dialog_ChangeName::draw() {
 
     // Actor Button
     ImGui::PushID("##name_selection_actor");
-    if (ImGui::Button(Database::instance()->actorName(m_actor).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+    if (ImGui::Button(Database::instance()->actorName(m_actor).c_str(), ImVec2{200 - 15, 0})) {
       actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_actor);
       actor_picker->setOpen(true);
     }
     ImGui::PopID();
 
     ImGui::SeparatorText("Name");
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(185));
+    ImGui::SetNextItemWidth(185);
     ImGui::InputText("##name_input", &m_str);
 
     if (ImGui::Button("OK")) {

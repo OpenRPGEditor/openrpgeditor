@@ -1,6 +1,5 @@
 ﻿#include "Core/DatabaseEditor/DBTermsTab.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Database/System.hpp"
 
@@ -263,7 +262,7 @@ void DBTermsTab::draw() {
         ImGui::SameLine();
         drawString(commandWidth, "Game End", *m_system.terms.commands[10]);
 
-        ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, App::DPIHandler::scale_value(2.f));
+        ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2.f);
 
         drawString(commandWidth, "Weapon", *m_system.terms.commands[12]);
         ImGui::SameLine();
@@ -347,12 +346,12 @@ void DBTermsTab::draw() {
           ImGui::SameLine();
           drawString(messageWidth, "Use Item", m_system.terms.messages.useItem);
 
-          ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, App::DPIHandler::scale_value(2.f));
+          ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2.f);
           drawString(messageWidth, "Critical To Enemy", m_system.terms.messages.criticalToEnemy);
           ImGui::SameLine();
           drawString(messageWidth, "Critical To Actor", m_system.terms.messages.criticalToActor);
 
-          ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, App::DPIHandler::scale_value(2.f));
+          ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2.f);
           drawString(messageWidth, "Actor Damage", m_system.terms.messages.actorDamage);
           ImGui::SameLine();
           drawString(messageWidth, "Actor Recovery", m_system.terms.messages.actorRecovery);
@@ -367,7 +366,7 @@ void DBTermsTab::draw() {
 
           drawString(messageWidth, "Actor No Hit", m_system.terms.messages.actorNoHit);
 
-          ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, App::DPIHandler::scale_value(2.f));
+          ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2.f);
           drawString(messageWidth, "Enemy Damage", m_system.terms.messages.enemyDamage);
           ImGui::SameLine();
           drawString(messageWidth, "Enemy Recovery", m_system.terms.messages.enemyRecovery);
@@ -382,7 +381,7 @@ void DBTermsTab::draw() {
 
           drawString(messageWidth, "Enemy No Hit", m_system.terms.messages.enemyNoHit);
 
-          ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, App::DPIHandler::scale_value(2.f));
+          ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2.f);
           drawString(messageWidth, "Evasion", m_system.terms.messages.evasion);
           ImGui::SameLine();
           drawString(messageWidth, "Magic Evasion", m_system.terms.messages.magicEvasion);

@@ -1,5 +1,4 @@
 #include "Core/CommonUI/ImagePicker.hpp"
-#include "Core/DPIHandler.hpp"
 #include "Core/Log.hpp"
 #include "Core/ResourceManager.hpp"
 #include "imgui.h"
@@ -74,11 +73,11 @@ std::tuple<bool, bool> ImagePicker::draw() {
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{894, 768} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{894, 768}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::BeginGroup();
     {
-      ImGui::BeginChild("##image_picker_list", ImVec2{App::DPIHandler::scale_value(200), App::DPIHandler::scale_value(768)}, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
+      ImGui::BeginChild("##image_picker_list", ImVec2{200, 768}, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
       {
         if (ImGui::BeginTable("##image_picker.tablelist", 1)) {
           ImGui::TableNextRow();
@@ -104,7 +103,7 @@ std::tuple<bool, bool> ImagePicker::draw() {
         }
         ImGui::EndChild();
         ImGui::SameLine();
-        ImGui::BeginChild("##image_picker_list##2", ImVec2{App::DPIHandler::scale_value(200), App::DPIHandler::scale_value(768)}, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
+        ImGui::BeginChild("##image_picker_list##2", ImVec2{200, 768}, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
         {
           if (m_pickType == PickerMode::Battleback || m_pickType == PickerMode::Title) {
             if (ImGui::BeginTable("##image_picker.tablelist##2", 1)) {
@@ -134,22 +133,19 @@ std::tuple<bool, bool> ImagePicker::draw() {
           ImGui::EndChild();
         }
         ImGui::SameLine();
-        ImGui::BeginChild("##image_picker_image_panel", ImVec2{App::DPIHandler::scale_value(894), App::DPIHandler::scale_value(784)}, ImGuiChildFlags_Border,
-                          ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
+        ImGui::BeginChild("##image_picker_image_panel", ImVec2{894, 784}, ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
         {
           auto win = ImGui::GetCurrentWindow();
           if (m_image) {
-            const auto imageRect = ImVec2{static_cast<float>(m_image->imageWidth()), static_cast<float>(m_image->imageHeight())} * App::DPIHandler::get_ui_scale();
+            const auto imageRect = ImVec2{static_cast<float>(m_image->imageWidth()), static_cast<float>(m_image->imageHeight())};
             ImGui::GetWindowDrawList()->AddImage(static_cast<ImTextureID>(m_checkerboardTexture), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
-                                                 win->ContentRegionRect.Min +
-                                                     (ImVec2{static_cast<float>(m_image->texture().width()), static_cast<float>(m_image->texture().height())} * App::DPIHandler::get_ui_scale()));
+                                                 win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_image->texture().width()), static_cast<float>(m_image->texture().height())}));
 
             ImGui::Image(m_image->texture(), imageRect);
           }
           if (m_image2) {
             ImGui::GetWindowDrawList()->AddImage(m_image2->texture(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
-                                                 win->ContentRegionRect.Min +
-                                                     (ImVec2{static_cast<float>(m_image2->texture().width()), static_cast<float>(m_image2->texture().height())} * App::DPIHandler::get_ui_scale()));
+                                                 win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_image2->texture().width()), static_cast<float>(m_image2->texture().height())}));
           }
         }
         ImGui::EndChild();

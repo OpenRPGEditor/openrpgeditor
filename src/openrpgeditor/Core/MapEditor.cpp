@@ -1,6 +1,6 @@
 #include "Core/MapEditor.hpp"
 
-#include "Core/DPIHandler.hpp"
+
 #include "Core/MainWindow.hpp"
 #include "Database/EventParser.hpp"
 
@@ -489,7 +489,7 @@ void MapEditor::draw() {
   std::erase_if(m_eventEditors, [](EventEditor& editor) { return !editor.draw(); });
 
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoTitleBar)) {
-    ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(45.f)), 0, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
+    ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - 45.f), 0, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
     // ImGui::SetScrollX(m_tileCursor.alignCoord(ImGui::GetScrollX()));
     // ImGui::SetScrollY(m_tileCursor.alignCoord(ImGui::GetScrollY()));
     if (map()) {

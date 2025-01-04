@@ -14,7 +14,7 @@ void DBTemplatesTab::draw() {
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 10.f);
     ImGui::BeginGroup();
     {
-      if (ImGui::Button("Add", ImVec2{App::DPIHandler::scale_value(300), 0})) {
+      if (ImGui::Button("Add", ImVec2{300, 0})) {
 
         AddTemplate("New Template", Template::TemplateType::Command, "", {});
         m_selection = m_templates->templates.size() > 0 ? m_templates->templates.size() - 1 : 0;
@@ -23,7 +23,7 @@ void DBTemplatesTab::draw() {
       }
       ImGui::SameLine();
       ImGui::BeginDisabled(m_templates->templates.size() == 0);
-      if (ImGui::Button("Delete", ImVec2{App::DPIHandler::scale_value(300), 0})) {
+      if (ImGui::Button("Delete", ImVec2{300, 0})) {
         const int start = m_templates->templates.at(m_selection).id();
         if (m_templates->templates.size() == 1) {
           m_templates->templates.clear();
@@ -47,7 +47,7 @@ void DBTemplatesTab::draw() {
       ImGui::SameLine();
 
       ImGui::BeginDisabled(!(m_hasChanges || m_currentTemplate->hasChanges() || m_templateType == 0) || m_templates->templates.size() < 1);
-      if (ImGui::Button("Apply", ImVec2{App::DPIHandler::scale_value(300), 0})) {
+      if (ImGui::Button("Apply", ImVec2{300, 0})) {
         SaveChanges();
         if (m_templates->serialize(m_parent->project()->database().basePath + "data/Templates.json")) {
           ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Serialized data/Templates.json successfully!"});
@@ -76,15 +76,15 @@ void DBTemplatesTab::draw() {
 
     if (!m_templates->templates.empty()) {
       ImGui::SeparatorText("Template Properties");
-      ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(10));
+      ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 10);
       ImGui::Text("Name:");
       ImGui::SameLine();
-      ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(700));
+      ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 700);
       ImGui::Text("Type:");
       // TemplateType List
       ImGui::BeginGroup();
       {
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(10));
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 10);
         if (ImGui::InputText("##orpg_templates_name_input", &m_templateName)) {
           if (m_templateName == m_templates->templates.at(m_selection).name()) {
             m_hasChanges = false;
@@ -93,7 +93,7 @@ void DBTemplatesTab::draw() {
           }
         }
         ImGui::SameLine();
-        ImGui::SetNextItemWidth(App::DPIHandler::scale_value(200));
+        ImGui::SetNextItemWidth(200);
         ImGui::BeginDisabled(m_templateType == 2); // Shouldn't let event templates change
         if (ImGui::BeginCombo("##orpg_templatetypes_list", DecodeEnumName(magic_enum::enum_name(static_cast<Template::TemplateType>(m_templateType))).c_str())) {
           int index{0};
@@ -128,12 +128,12 @@ void DBTemplatesTab::draw() {
         ImGui::Text("Note:");
         char note[8192];
         strncpy(note, m_templateNote.c_str(), IM_ARRAYSIZE(note));
-        if (ImGui::InputTextMultiline("##orpg_templates_note_input", note, IM_ARRAYSIZE(note), ImVec2{App::DPIHandler::scale_value(875), App::DPIHandler::scale_value(150)})) {
+        if (ImGui::InputTextMultiline("##orpg_templates_note_input", note, IM_ARRAYSIZE(note), ImVec2{875, 150})) {
           m_templateNote = note;
         }
         ImGui::EndGroup();
       }
-      ImGui::SetCursorPosX(ImGui::GetCursorPosX() + App::DPIHandler::scale_value(10));
+      ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 10);
       ImGui::BeginGroup();
       {
         if (m_templateType == 0) {

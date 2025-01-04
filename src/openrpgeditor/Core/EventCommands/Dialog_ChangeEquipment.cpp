@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ChangeEquipment.hpp"
 
-#include "Core/DPIHandler.hpp"
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,7 +10,7 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{181, 185} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{181, 185}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (actor_picker) {
@@ -27,14 +26,14 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
     ImGui::SeparatorText("Actor");
 
     ImGui::PushID("##change_equip_actor_selection");
-    if (ImGui::Button(Database::instance()->actorName(m_actor).c_str(), ImVec2{App::DPIHandler::scale_value(160), 0})) {
+    if (ImGui::Button(Database::instance()->actorName(m_actor).c_str(), ImVec2{160, 0})) {
       actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_actor);
       actor_picker->setOpen(true);
     }
     ImGui::PopID();
 
     ImGui::SeparatorText("Equipment Type");
-    ImGui::SetNextItemWidth(160 * App::DPIHandler::get_ui_scale());
+    ImGui::SetNextItemWidth(160);
     if (ImGui::BeginCombo("##equip_type_list", Database::instance()->equipTypeName(m_equipmentType).c_str())) {
       for (int i = 1; i < Database::instance()->system.equipTypes.size(); ++i) {
         if (ImGui::Selectable(Database::instance()->system.equipTypes.at(i).c_str(), i == m_equipmentType)) {
@@ -44,7 +43,7 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
       ImGui::EndCombo();
     }
     ImGui::SeparatorText("Equipment Item");
-    ImGui::SetNextItemWidth(160 * App::DPIHandler::get_ui_scale());
+    ImGui::SetNextItemWidth(160);
     std::string text = m_equipmentItem == 0 ? "None" : (m_equipmentType == 1 ? Database::instance()->weaponName(m_equipmentItem) : Database::instance()->armorName(m_equipmentItem));
     if (ImGui::BeginCombo("##equip_item_list", text.c_str())) {
       if (m_equipmentType == 1) {

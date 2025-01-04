@@ -22,10 +22,10 @@ void TemplatesTint::draw() {
     ImGui::SameLine();
     ImGui::BeginGroup();
     {
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##tintscreen_red", &r, -255, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::InputInt("##tintscreen_int_red", &r, 1, 100)) {
         if (r < -255)
           r = -255;
@@ -33,10 +33,10 @@ void TemplatesTint::draw() {
           r = 255;
       }
 
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##tintscreen_green", &g, -255, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::InputInt("##tintscreen_int_green", &g, 1, 100)) {
         if (g < -255)
           g = -255;
@@ -44,10 +44,10 @@ void TemplatesTint::draw() {
           g = 255;
       }
 
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##tintscreen_blue", &b, -255, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::InputInt("##tintscreen_int_blue", &b, 1, 100)) {
         if (b < -255)
           b = -255;
@@ -55,10 +55,10 @@ void TemplatesTint::draw() {
           b = 255;
       }
 
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(150));
+      ImGui::SetNextItemWidth(150);
       ImGui::SliderInt("##tintscreen_gray", &gray, 0, 255, "", ImGuiSliderFlags_NoInput);
       ImGui::SameLine();
-      ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+      ImGui::SetNextItemWidth(100);
       if (ImGui::InputInt("##tintscreen_int_gray", &gray, 1, 100)) {
         if (gray < 1)
           gray = 1;

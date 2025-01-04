@@ -2,7 +2,6 @@
 #include "Database/Class.hpp"
 
 #include "Core/CommonUI/TraitsEditor.hpp"
-#include "Core/DPIHandler.hpp"
 #include "Core/DatabaseEditor.hpp"
 #include "Core/Graphics/SideViewBattlerSheet.hpp"
 #include "Core/ImGuiExt/ImGuiParsedText.hpp"
@@ -61,12 +60,12 @@ void DBActorsTab::draw() {
 
   ImGui::BeginChild("##orpg_actors_editor");
   {
-    ImGui::BeginChild("##orpg_actors_editor_actors", ImVec2{250.f, 0} * App::DPIHandler::get_ui_scale(), 0, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("##orpg_actors_editor_actors", ImVec2{250.f, 0}, 0, ImGuiWindowFlags_HorizontalScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Actors");
-        ImGui::BeginChild("##orpg_actors_editor_actor_list", ImVec2{0, ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(108)});
+        ImGui::BeginChild("##orpg_actors_editor_actor_list", ImVec2{0, ImGui::GetContentRegionMax().y - 108});
         {
           ImGui::BeginGroup();
           {
@@ -97,7 +96,7 @@ void DBActorsTab::draw() {
         char str[4096];
         snprintf(str, 4096, "Max Actors %i", m_actors.count());
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(8), 0})) {
+        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxActors = m_actors.count();
         }
@@ -116,14 +115,14 @@ void DBActorsTab::draw() {
             ImGui::SeparatorText("General Settings");
             char name[4096];
             strncpy(name, m_selectedActor->name().c_str(), 4096);
-            ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - App::DPIHandler::scale_value(16));
+            ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - 16);
             if (ImGui::IsItemDeactivatedAfterEdit()) {
               m_selectedActor->setName(name);
             }
             ImGui::SameLine();
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
             strncpy(name, m_selectedActor->nickname().c_str(), 4096);
-            ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_nickname", "Nickname:", name, 4096, ImGui::GetContentRegionMax().x / 2 - App::DPIHandler::scale_value(16));
+            ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_nickname", "Nickname:", name, 4096, ImGui::GetContentRegionMax().x / 2 - 16);
             if (ImGui::IsItemDeactivatedAfterEdit()) {
               m_selectedActor->setNickname(name);
             }
@@ -149,7 +148,7 @@ void DBActorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Initial Level:");
-              ImGui::SetNextItemWidth(ImGui::GetCursorPosX() / 2 - App::DPIHandler::scale_value(16));
+              ImGui::SetNextItemWidth(ImGui::GetCursorPosX() / 2 - 16);
               ImGui::InputInt("##orpg_actors_initial_level_edit", &m_tempActor.initialLevel);
               if (ImGui::IsItemDeactivatedAfterEdit()) {
                 m_selectedActor->setInitialLevel(std::clamp(m_tempActor.initialLevel, 1, 99));
@@ -161,7 +160,7 @@ void DBActorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Max Level:");
-              ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2 / 2 - App::DPIHandler::scale_value(16));
+              ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2 / 2 - 16);
               ImGui::InputInt("##orpg_actors_max_level_edit", &m_tempActor.maxLevel);
               if (ImGui::IsItemDeactivatedAfterEdit()) {
                 m_selectedActor->setMaxLevel(std::clamp(m_tempActor.maxLevel, 1, 99));
@@ -173,7 +172,7 @@ void DBActorsTab::draw() {
               ImGui::Text("Profile:");
               char profile[8192];
               strncpy(profile, m_selectedActor->profile().c_str(), IM_ARRAYSIZE(profile));
-              if (ImGui::InputTextMultiline("##orpg_actors_profile", profile, IM_ARRAYSIZE(profile), ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(16), 0})) {
+              if (ImGui::InputTextMultiline("##orpg_actors_profile", profile, IM_ARRAYSIZE(profile), ImVec2{ImGui::GetContentRegionMax().x - 16, 0})) {
                 m_selectedActor->setProfile(profile);
               }
             }
@@ -186,24 +185,24 @@ void DBActorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Face:");
-              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_actors_face_image"), m_faceButton->get(), ImVec2{m_faceButton->size()} * App::DPIHandler::get_ui_scale(), {0.f, 0.f}, {1.f, 1.f}, {},
-                                       {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {}
+              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_actors_face_image"), m_faceButton->get(), ImVec2{m_faceButton->size()}, {0.f, 0.f}, {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f},
+                                       ImGuiButtonFlags_PressedOnDoubleClick)) {}
             }
             ImGui::EndGroup();
             ImGui::SameLine();
             ImGui::BeginGroup();
             {
               ImGui::Text("Character:");
-              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_actors_character_image"), m_actorButton->get(), ImVec2{m_actorButton->size()} * App::DPIHandler::get_ui_scale(), {0.f, 0.f}, {1.f, 1.f}, {},
-                                       {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {}
+              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_actors_character_image"), m_actorButton->get(), ImVec2{m_actorButton->size()}, {0.f, 0.f}, {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f},
+                                       ImGuiButtonFlags_PressedOnDoubleClick)) {}
             }
             ImGui::EndGroup();
             ImGui::SameLine();
             ImGui::BeginGroup();
             {
               ImGui::Text("[SV] Battler:");
-              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_actors_battler_image"), m_battlerButton->get(), ImVec2{m_battlerButton->size()} * App::DPIHandler::get_ui_scale(), {0.f, 0.f}, {1.f, 1.f},
-                                       {}, {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {}
+              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_actors_battler_image"), m_battlerButton->get(), ImVec2{m_battlerButton->size()}, {0.f, 0.f}, {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f},
+                                       ImGuiButtonFlags_PressedOnDoubleClick)) {}
             }
             ImGui::EndGroup();
           }
@@ -213,7 +212,7 @@ void DBActorsTab::draw() {
             ImGui::SeparatorText("Initial Equipment");
             if (ImGui::BeginTable("##orpg_actors_actor_init_equip", 2,
                                   ImGuiTableFlags_Borders | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                                  ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(15), ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
+                                  ImVec2{ImGui::GetContentRegionMax().x - 15, ImGui::GetContentRegionAvail().y - 16})) {
 
               ImGui::TableSetupColumn("Type");
               ImGui::TableSetupColumn("Equipment Item");
@@ -257,8 +256,7 @@ void DBActorsTab::draw() {
             ImGui::SeparatorText("Note:");
             char note[8192];
             strncpy(note, m_selectedActor->note().c_str(), IM_ARRAYSIZE(note));
-            if (ImGui::InputTextMultiline("##orpg_actors_note", note, IM_ARRAYSIZE(note),
-                                          ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(16), ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
+            if (ImGui::InputTextMultiline("##orpg_actors_note", note, IM_ARRAYSIZE(note), ImVec2{ImGui::GetContentRegionMax().x - 16, ImGui::GetContentRegionAvail().y - 16})) {
               m_selectedActor->setNote(note);
             }
           }

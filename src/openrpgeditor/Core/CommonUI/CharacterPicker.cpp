@@ -1,5 +1,4 @@
 #include "Core/CommonUI/CharacterPicker.hpp"
-#include "Core/DPIHandler.hpp"
 #include "Core/ResourceManager.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -73,11 +72,11 @@ std::tuple<bool, bool> CharacterPicker::draw() {
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{894, 768} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{894, 768}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::BeginGroup();
     {
-      ImGui::BeginChild("##character_picker_sheet_list", ImVec2{App::DPIHandler::scale_value(200), App::DPIHandler::scale_value(768)}, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
+      ImGui::BeginChild("##character_picker_sheet_list", ImVec2{200, 768}, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
       {
         if (ImGui::BeginTable("##character_picker.characterlist", 1)) {
           ImGui::TableNextRow();
@@ -113,15 +112,14 @@ std::tuple<bool, bool> CharacterPicker::draw() {
       }
       ImGui::EndChild();
       ImGui::SameLine();
-      ImGui::BeginChild("##character_picker_sheet_panel", ImVec2{App::DPIHandler::scale_value(894), App::DPIHandler::scale_value(784)}, ImGuiChildFlags_Border,
-                        ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
+      ImGui::BeginChild("##character_picker_sheet_panel", ImVec2{894, 784}, ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
       {
         auto win = ImGui::GetCurrentWindow();
         if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered()) {
           auto mouseCursor = ImGui::GetMousePos();
           mouseCursor -= win->ContentRegionRect.Min;
-          int x = alignCoord(mouseCursor.x / App::DPIHandler::get_ui_scale(), m_selectionWidth);
-          int y = alignCoord(mouseCursor.y / App::DPIHandler::get_ui_scale(), m_selectionHeight);
+          int x = alignCoord(mouseCursor.x, m_selectionWidth);
+          int y = alignCoord(mouseCursor.y, m_selectionHeight);
           if ((x >= 0 && x < m_characterSheet->texture().width()) && (y >= 0 && y < m_characterSheet->texture().height())) {
             m_selectionX = x;
             m_selectionY = y;
@@ -143,24 +141,20 @@ std::tuple<bool, bool> CharacterPicker::draw() {
           }
         }
         if (m_characterSheet) {
-          ImGui::Dummy(ImVec2{static_cast<float>(m_characterSheet->texture().width()), static_cast<float>(m_characterSheet->texture().height())} * App::DPIHandler::get_ui_scale());
+          ImGui::Dummy(ImVec2{static_cast<float>(m_characterSheet->texture().width()), static_cast<float>(m_characterSheet->texture().height())});
           win->DrawList->AddImage(static_cast<ImTextureID>(m_checkerboardTexture), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
-                                  win->ContentRegionRect.Min +
-                                      (ImVec2{static_cast<float>(m_characterSheet->texture().width()), static_cast<float>(m_characterSheet->texture().height())} * App::DPIHandler::get_ui_scale()),
+                                  win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_characterSheet->texture().width()), static_cast<float>(m_characterSheet->texture().height())}),
                                   ImVec2{0.f, 0.f}, {m_characterSheet->texture().width() / 4096.f, m_characterSheet->texture().height() / 4096.f});
           win->DrawList->AddImage(m_characterSheet->texture(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
-                                  win->ContentRegionRect.Min +
-                                      (ImVec2{static_cast<float>(m_characterSheet->texture().width()), static_cast<float>(m_characterSheet->texture().height())} * App::DPIHandler::get_ui_scale()));
+                                  win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_characterSheet->texture().width()), static_cast<float>(m_characterSheet->texture().height())}));
 
-          win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_selectionX), static_cast<float>(m_selectionY)} * App::DPIHandler::get_ui_scale()),
+          win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_selectionX), static_cast<float>(m_selectionY)}),
                                  win->ContentRegionRect.Min +
-                                     (ImVec2{static_cast<float>(m_selectionX) + static_cast<float>(m_selectionWidth), static_cast<float>(m_selectionY) + static_cast<float>(m_selectionHeight)} *
-                                      App::DPIHandler::get_ui_scale()),
+                                     (ImVec2{static_cast<float>(m_selectionX) + static_cast<float>(m_selectionWidth), static_cast<float>(m_selectionY) + static_cast<float>(m_selectionHeight)}),
                                  0xFF000000, 0.f, 0, 7.f);
-          win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_selectionX), static_cast<float>(m_selectionY)} * App::DPIHandler::get_ui_scale()),
+          win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_selectionX), static_cast<float>(m_selectionY)}),
                                  win->ContentRegionRect.Min +
-                                     (ImVec2{static_cast<float>(m_selectionX) + static_cast<float>(m_selectionWidth), static_cast<float>(m_selectionY) + static_cast<float>(m_selectionHeight)} *
-                                      App::DPIHandler::get_ui_scale()),
+                                     (ImVec2{static_cast<float>(m_selectionX) + static_cast<float>(m_selectionWidth), static_cast<float>(m_selectionY) + static_cast<float>(m_selectionHeight)}),
                                  0xFFFFFFFF, 0.f, 0, 3.f);
         }
       }

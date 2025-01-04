@@ -1,6 +1,6 @@
 
 #include "Core/EventCommands/Dialog_ControlSwitches.hpp"
-#include "Core/DPIHandler.hpp"
+
 #include "Core/Log.hpp"
 #include "Database/Database.hpp"
 #include "imgui.h"
@@ -12,7 +12,7 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{300, 200} * App::DPIHandler::get_ui_scale());
+  ImGui::SetNextWindowSize(ImVec2{300, 200});
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
     if (picker) {
       auto [closed, confirmed] = picker->draw();
@@ -32,7 +32,7 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     std::string text = m_operation != 0 ? "##commonevent_switch_empty" : (m_start == 0 ? "" : std::format("{:04} ", m_start) + Database::instance()->switchName(m_start));
     ImGui::PushID("##controlswitch_id");
     ImGui::BeginDisabled(m_operation != 0);
-    if (ImGui::Button(text.c_str(), ImVec2{(App::DPIHandler::scale_value(160)), 0})) {
+    if (ImGui::Button(text.c_str(), ImVec2{(160), 0})) {
       picker.emplace("Switches", Database::instance()->system.switches, m_start);
       picker->setOpen(true);
     }
@@ -42,7 +42,7 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     ImGui::RadioButton("Range", &m_operation, 1); // Range of Switches
     ImGui::SameLine();
     ImGui::BeginDisabled(m_operation != 1);
-    ImGui::PushItemWidth(App::DPIHandler::scale_value(50));
+    ImGui::PushItemWidth(50);
     ImGui::InputInt("##controlswitch_range1", &m_rand_1, 0);
     ImGui::SameLine();
     ImGui::Text("~");

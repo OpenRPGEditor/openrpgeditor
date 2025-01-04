@@ -1,6 +1,6 @@
 #include "Core/EventCommands/Dialog_ChangeProfile.hpp"
 
-#include "Core/DPIHandler.hpp"
+
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,7 +11,7 @@ std::tuple<bool, bool> Dialog_ChangeProfile::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{300, 220} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{300, 220}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (actor_picker) {
@@ -29,15 +29,15 @@ std::tuple<bool, bool> Dialog_ChangeProfile::draw() {
 
     // Actor Button
     ImGui::PushID("##nickname_selection_actor");
-    if (ImGui::Button(Database::instance()->actorName(m_actor).c_str(), ImVec2{(App::DPIHandler::scale_value(280)), 0})) {
+    if (ImGui::Button(Database::instance()->actorName(m_actor).c_str(), ImVec2{(280), 0})) {
       actor_picker = ObjectPicker("Actor"sv, Database::instance()->actors.actorList(), m_actor);
       actor_picker->setOpen(true);
     }
     ImGui::PopID();
 
     ImGui::SeparatorText("Profile");
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(280));
-    ImGui::InputTextMultiline("##profile_input", &m_profile, ImVec2{App::DPIHandler::scale_value(280), App::DPIHandler::scale_value(100)});
+    ImGui::SetNextItemWidth(280);
+    ImGui::InputTextMultiline("##profile_input", &m_profile, ImVec2{280, 100});
 
     if (ImGui::Button("OK")) {
       m_confirmed = true;

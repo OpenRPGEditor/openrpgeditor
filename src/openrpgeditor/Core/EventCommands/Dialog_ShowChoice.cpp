@@ -1,5 +1,5 @@
 #include "Core/EventCommands/Dialog_ShowChoice.hpp"
-#include "Core/DPIHandler.hpp"
+
 #include "Core/Log.hpp"
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
@@ -11,7 +11,7 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{551, 290} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{551, 290}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginGroup();
     {
@@ -19,15 +19,15 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
       ImGui::BeginGroup();
       {
         ImGui::Text("#1:");
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + App::DPIHandler::scale_value(7));
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7);
         ImGui::Text("#2:");
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + App::DPIHandler::scale_value(7));
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7);
         ImGui::Text("#3:");
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + App::DPIHandler::scale_value(7));
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7);
         ImGui::Text("#4:");
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + App::DPIHandler::scale_value(7));
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7);
         ImGui::Text("#5:");
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + App::DPIHandler::scale_value(7));
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7);
         ImGui::Text("#6:");
         ImGui::EndGroup();
       }
@@ -45,11 +45,11 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
       ImGui::EndGroup();
     }
     ImGui::SameLine();
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + App::DPIHandler::scale_value(20));
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 20);
     ImGui::BeginGroup();
     {
       ImGui::Text("Background:");
-      ImGui::PushItemWidth((App::DPIHandler::scale_value(120)));
+      ImGui::PushItemWidth((120));
       if (ImGui::BeginCombo("##showchoice_background", DecodeEnumName(magic_enum::enum_value<TextBackground>(m_background)).c_str())) {
         for (auto& bg : magic_enum::enum_values<TextBackground>()) {
           bool is_selected = m_background == magic_enum::enum_index(bg).value();
@@ -62,7 +62,7 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
         ImGui::EndCombo();
       }
       ImGui::Text("Window Position:");
-      ImGui::PushItemWidth((App::DPIHandler::scale_value(120)));
+      ImGui::PushItemWidth((120));
       if (ImGui::BeginCombo("##showchoice_windowpos", DecodeEnumName(magic_enum::enum_value<ChoiceWindowPosition>(m_position)).c_str())) {
         for (auto& bg : magic_enum::enum_values<ChoiceWindowPosition>()) {
           bool is_selected = m_background == magic_enum::enum_index(bg).value();
@@ -76,7 +76,7 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
       }
 
       ImGui::Text("Default:");
-      ImGui::PushItemWidth((App::DPIHandler::scale_value(120)));
+      ImGui::PushItemWidth((120));
       if (ImGui::BeginCombo("##showchoice_default", m_defaultType < 0 ? "None" : ("Choice #" + std::to_string(m_defaultType + 1)).c_str())) {
 
         for (int i{-1}; i < 6; i++) {
@@ -99,7 +99,7 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
       }
 
       ImGui::Text("Cancel:");
-      ImGui::PushItemWidth((App::DPIHandler::scale_value(120)));
+      ImGui::PushItemWidth((120));
       std::string text = m_cancelType == -2 ? "Branch" : m_cancelType == -1 ? "Disallow" : ("Choice #" + std::to_string(m_cancelType + 1));
 
       if (ImGui::BeginCombo("##showchoice_cancel", text.c_str())) {
@@ -131,8 +131,8 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
       }
       ImGui::EndGroup();
     }
-    // ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionAvail().x - App::DPIHandler::scale_value(80),
-    //                            ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(20)});
+    // ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionAvail().x - 80,
+    //                            ImGui::GetContentRegionAvail().y - 20});
     ImGui::BeginGroup();
     {
       if (ImGui::Button("OK")) {

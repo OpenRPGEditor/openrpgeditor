@@ -5,10 +5,10 @@
 #include "imgui.h"
 
 void TemplateName::draw() {
-  ImGui::SetNextWindowSize(ImVec2{500, 130} * App::DPIHandler::get_ui_scale(), ImGuiCond_Once);
+  ImGui::SetNextWindowSize(ImVec2{500, 130}, ImGuiCond_Once);
   if (ImGui::Begin("Template Properties", &m_open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoResize)) {
     ImGui::Text("Template Name:");
-    ImGui::SetNextItemWidth(400 * App::DPIHandler::get_ui_scale());
+    ImGui::SetNextItemWidth(400);
     ImGui::InputText("##orpg_templates_rename", &m_templateName);
 
     ImGui::BeginGroup();

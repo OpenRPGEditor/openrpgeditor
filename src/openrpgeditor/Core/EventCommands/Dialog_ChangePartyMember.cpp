@@ -1,6 +1,6 @@
 #include "Core/EventCommands/Dialog_ChangePartyMember.hpp"
 
-#include "Core/DPIHandler.hpp"
+
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,7 +11,7 @@ std::tuple<bool, bool> Dialog_ChangePartyMember::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{248, 158} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{248, 158}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (actor_picker) {
@@ -25,9 +25,9 @@ std::tuple<bool, bool> Dialog_ChangePartyMember::draw() {
     }
 
     ImGui::SeparatorText("Actor");
-    ImGui::SetNextItemWidth(App::DPIHandler::scale_value(100));
+    ImGui::SetNextItemWidth(100);
     ImGui::PushID("##changepartymember_actor_selection");
-    if (ImGui::Button(Database::instance()->actorName(m_actor).c_str(), ImVec2{200 - (15 * App::DPIHandler::get_ui_scale()), 0})) {
+    if (ImGui::Button(Database::instance()->actorName(m_actor).c_str(), ImVec2{200 - 15, 0})) {
       actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_actor);
       actor_picker->setOpen(true);
     }

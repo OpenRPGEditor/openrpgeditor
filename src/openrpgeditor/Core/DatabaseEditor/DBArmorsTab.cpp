@@ -26,12 +26,12 @@ void DBArmorsTab::draw() {
   }
   ImGui::BeginChild("#orpg_armors_editor");
   {
-    ImGui::BeginChild("##orpg_armors_editor_armors", ImVec2{250.f, 0} * App::DPIHandler::get_ui_scale(), 0, ImGuiWindowFlags_HorizontalScrollbar);
+    ImGui::BeginChild("##orpg_armors_editor_armors", ImVec2{250.f, 0}, 0, ImGuiWindowFlags_HorizontalScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Armors");
-        ImGui::BeginChild("##orpg_armors_editor_armors_list", ImVec2{0, ImGui::GetContentRegionMax().y - (App::DPIHandler::scale_value(108))});
+        ImGui::BeginChild("##orpg_armors_editor_armors_list", ImVec2{0, ImGui::GetContentRegionMax().y - (108)});
         {
           ImGui::BeginGroup();
           {
@@ -54,7 +54,7 @@ void DBArmorsTab::draw() {
         char str[4096];
         snprintf(str, 4096, "Max Armors %i", m_armors.count());
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - (App::DPIHandler::scale_value(8)), 0})) {
+        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - (8), 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxArmors = m_armors.count();
         }
@@ -76,7 +76,7 @@ void DBArmorsTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedArmor->name().c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_armors_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - App::DPIHandler::scale_value(16))) {
+              if (ImGui::LabelOverLineEdit("##orpg_armors_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - 16)) {
                 m_selectedArmor->setName(name);
               }
             }
@@ -87,7 +87,7 @@ void DBArmorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::TextUnformatted("Icon:");
-              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_database_armors_image"), m_itemButtonTexture->get(), ImVec2(m_itemButtonTexture->size()) * App::DPIHandler::get_ui_scale(), {0.f, 0.f},
+              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_database_armors_image"), m_itemButtonTexture->get(), ImVec2(m_itemButtonTexture->size()), {0.f, 0.f},
                                        {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
                 m_currentSheet = &m_itemSheet.value();
                 // m_characterPicker->setCharacterInfo("", m_selectedItem->iconIndex);
@@ -101,7 +101,7 @@ void DBArmorsTab::draw() {
               char description[4096];
               strncpy(description, m_selectedArmor->description().c_str(), 4096);
               ImGui::Text("Description:");
-              ImGui::InputTextMultiline("##orpg_database_armors_description", description, 4096, ImVec2{App::DPIHandler::scale_value(360), App::DPIHandler::scale_value(60)});
+              ImGui::InputTextMultiline("##orpg_database_armors_description", description, 4096, ImVec2{360, 60});
             }
             ImGui::EndGroup();
             // Weapon Type
@@ -109,7 +109,7 @@ void DBArmorsTab::draw() {
             {
               ImGui::Text("Armor Type:");
               // TODO: Needs to be armor type
-              // ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              // ImGui::SetNextItemWidth(170);
               // if (ImGui::BeginCombo("##orpg_database_items_itype", DecodeEnumName(magic_enum::enum_name(static_cast<ItemType>(m_selectedItem->itypeId))).c_str())) {
               //  int index{0};
               //  for (auto v : magic_enum::enum_values<ItemType>()) {
@@ -127,7 +127,7 @@ void DBArmorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Price:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               int price = m_selectedArmor->price();
               if (ImGui::InputInt("##orpg_database_armors_price", &price, 1, 100)) {
                 m_selectedArmor->setPrice(std::clamp(price, 0, 999999));
@@ -137,7 +137,7 @@ void DBArmorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Equipment Type:");
-              // ImGui::SetNextItemWidth(App::DPIHandler::scale_value(160));
+              // ImGui::SetNextItemWidth(160);
               ImGui::PushID("##orpg_database_armors_equipmenttype");
               // TODO: Equipment Type combobox
               ImGui::PopID();
@@ -152,7 +152,7 @@ void DBArmorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Attack:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               int param = m_selectedArmor->param(0);
               if (ImGui::InputInt("##orpg_database_armor_attack", &param, 1, 100)) {
                 m_selectedArmor->setParam(0, std::clamp(param, -999, 999));
@@ -164,7 +164,7 @@ void DBArmorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Defense:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               int param = m_selectedArmor->param(1);
               if (ImGui::InputInt("##orpg_database_armor_defense", &param, 1, 100)) {
                 m_selectedArmor->setParam(1, std::clamp(param, -999, 999));
@@ -174,7 +174,7 @@ void DBArmorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("M.Attack:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               int param = m_selectedArmor->param(2);
               if (ImGui::InputInt("##orpg_database_armor_mattack", &param, 1, 100)) {
                 m_selectedArmor->setParam(2, std::clamp(param, -999, 999));
@@ -186,7 +186,7 @@ void DBArmorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("M.Defense:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               int param = m_selectedArmor->param(3);
               if (ImGui::InputInt("##orpg_database_armor_mdefense", &param, 1, 100)) {
                 m_selectedArmor->setParam(3, std::clamp(param, -999, 999));
@@ -196,7 +196,7 @@ void DBArmorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Agility:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               int param = m_selectedArmor->param(4);
               if (ImGui::InputInt("##orpg_database_armor_agility", &param, 1, 100)) {
                 m_selectedArmor->setParam(4, std::clamp(param, -999, 999));
@@ -208,7 +208,7 @@ void DBArmorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Luck:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               int param = m_selectedArmor->param(5);
               if (ImGui::InputInt("##orpg_database_armor_luck", &param, 1, 100)) {
                 m_selectedArmor->setParam(5, std::clamp(param, -999, 999));
@@ -218,7 +218,7 @@ void DBArmorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Max HP:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               int param = m_selectedArmor->param(6);
               if (ImGui::InputInt("##orpg_database_armor_maxhp", &param, 1, 100)) {
                 m_selectedArmor->setParam(6, std::clamp(param, -9999, 9999));
@@ -230,7 +230,7 @@ void DBArmorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Max MP:");
-              ImGui::SetNextItemWidth(App::DPIHandler::scale_value(170));
+              ImGui::SetNextItemWidth(170);
               int param = m_selectedArmor->param(7);
               if (ImGui::InputInt("##orpg_database_armor_maxmp", &param, 1, 100)) {
                 m_selectedArmor->setParam(7, std::clamp(param, -9999, 9999));
@@ -251,7 +251,7 @@ void DBArmorsTab::draw() {
             char note[8192];
             strncpy(note, m_selectedArmor->note().c_str(), IM_ARRAYSIZE(note));
             if (ImGui::InputTextMultiline("##orpg_database_armors_note", note, IM_ARRAYSIZE(note),
-                                          ImVec2{ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(16), ImGui::GetContentRegionAvail().y - App::DPIHandler::scale_value(16)})) {
+                                          ImVec2{ImGui::GetContentRegionMax().x - 16, ImGui::GetContentRegionAvail().y - 16})) {
               m_selectedArmor->setNote(note);
             }
           }

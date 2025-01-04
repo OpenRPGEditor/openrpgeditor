@@ -1,6 +1,6 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeImage.hpp"
 #include "Core/Application.hpp"
-#include "Core/DPIHandler.hpp"
+
 #include "Core/Log.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,7 +11,7 @@ std::tuple<bool, bool> Dialog_MovementChangeImage::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{115, 167} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{115, 167}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (const auto [closed, confirmed] = m_characterPicker.draw(); closed) {
@@ -25,24 +25,24 @@ std::tuple<bool, bool> Dialog_MovementChangeImage::draw() {
       }
     }
 
-    const auto buttonSize = ImVec2{144, 144} * App::DPIHandler::get_ui_scale();
+    const auto buttonSize = ImVec2{144, 144};
     const auto buttonCenter = (buttonSize / 2);
     ImGui::BeginGroup();
     {
       auto cursorPos = ImGui::GetCursorPos();
-      if (ImGui::ImageButton("##event_image", static_cast<ImTextureID>(m_buttonBack), ImVec2{80.f, 102.f} * App::DPIHandler::get_ui_scale())) {
+      if (ImGui::ImageButton("##event_image", static_cast<ImTextureID>(m_buttonBack), ImVec2{80.f, 102.f})) {
         m_characterPicker.setCharacterInfo(m_image, m_character);
         m_characterPicker.setOpen(true);
       }
       if (m_characterSheet->texture()) {
         if (m_characterSheet->characterWidth() < 72 || m_characterSheet->characterHeight() < 96) {
-          ImGui::SetCursorPos(cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f, m_characterSheet->characterHeight() / 2.f} * App::DPIHandler::get_ui_scale()));
+          ImGui::SetCursorPos(cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f, m_characterSheet->characterHeight() / 2.f}));
         } else {
           ImGui::SetCursorPos(cursorPos);
         }
         const auto [min, max] = m_characterSheet->getRectForCharacter(m_character);
         ImGui::Image(m_characterSheet->texture(),
-                     ImVec2{static_cast<float>(m_characterSheet->characterWidth()), static_cast<float>(m_characterSheet->characterHeight())} * App::DPIHandler::get_ui_scale(), min, max);
+                     ImVec2{static_cast<float>(m_characterSheet->characterWidth()), static_cast<float>(m_characterSheet->characterHeight())}, min, max);
       }
     }
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.f);

@@ -1,6 +1,6 @@
 #include "Core/EventCommands/Dialog_ShowBalloonIcon.hpp"
 
-#include "Core/DPIHandler.hpp"
+
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -11,11 +11,11 @@ std::tuple<bool, bool> Dialog_ShowBalloonIcon::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{183, 162} * App::DPIHandler::get_ui_scale(), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{183, 162}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Character");
-    ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
+    ImGui::PushItemWidth((160));
     if (ImGui::BeginCombo("##showanim_character", Database::instance()->eventNameOrId(m_character).c_str())) {
 
       if (ImGui::Selectable("Player", m_character == -1)) {
@@ -42,7 +42,7 @@ std::tuple<bool, bool> Dialog_ShowBalloonIcon::draw() {
     }
 
     ImGui::SeparatorText("Balloon Icon");
-    ImGui::PushItemWidth((App::DPIHandler::scale_value(160)));
+    ImGui::PushItemWidth((160));
     if (ImGui::BeginCombo("##balloon_selection", DecodeEnumName(magic_enum::enum_value<BalloonIcon>(m_balloonIndex)).c_str())) {
       for (auto& balloons : magic_enum::enum_values<BalloonIcon>()) {
         bool is_selected = m_balloonIndex == magic_enum::enum_index(balloons).value();

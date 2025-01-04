@@ -12,11 +12,11 @@ void TemplatesEvent::draw() {
       ICON_FA_ARROW_RIGHT,
       ICON_FA_ARROW_UP,
   }};
-  ImGui::SetNextWindowSize(ImVec2{500, 400} * App::DPIHandler::get_ui_scale(), ImGuiCond_Once);
+  ImGui::SetNextWindowSize(ImVec2{500, 400}, ImGuiCond_Once);
   if (ImGui::Begin("Template Properties", &m_open,
                    ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoResize)) {
     ImGui::Text("ID:");
-    ImGui::SetNextItemWidth(200 * App::DPIHandler::get_ui_scale());
+    ImGui::SetNextItemWidth(200);
 
     if (ImGui::InputInt("##orpg_templates_event_properties_id", &m_id)) {
       if (m_id == 0) {
@@ -27,7 +27,7 @@ void TemplatesEvent::draw() {
     ImGui::InputText("##orpg_templates_event_properties_name", &m_eventName);
     ImGui::Text("Note:");
     ImGui::InputText("##orpg_templates_event_properties_note", &m_eventNote);
-    ImGui::BeginChild("ArrowButtons", ImVec2{150, 150} * App::DPIHandler::get_ui_scale(), 0, ImGuiWindowFlags_NoBackground);
+    ImGui::BeginChild("ArrowButtons", ImVec2{150, 150}, 0, ImGuiWindowFlags_NoBackground);
     ImGui::Text("Initial Direction:");
     ImGui::Columns(3, nullptr, false);
     const auto size = ImGui::CalcTextSize(ICON_FA_ARROW_LEFT);

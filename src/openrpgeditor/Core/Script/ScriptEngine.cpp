@@ -7,8 +7,6 @@
 #include <angelscript.h>
 #include <scriptbuilder/scriptbuilder.h>
 
-#include <bits/fs_ops.h>
-#include <bits/fs_path.h>
 #include <cassert>
 #include <cstdarg>
 #include <iostream>

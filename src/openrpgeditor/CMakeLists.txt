@@ -465,6 +465,7 @@ target_link_libraries(
         angelscript
         angelscript_addons
         athena-core
+        lcf
 )
 
 # Define set of OS specific files to include

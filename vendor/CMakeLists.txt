@@ -89,9 +89,11 @@ FetchContent_Declare(athena
         GIT_TAG master
 )
 
-#FetchContent_Declare(liblcf
-#        GIT_REPOSITORY "https://github.com/EasyRPG/liblcf.git"
-#)
+FetchContent_Declare(liblcf
+        #GIT_REPOSITORY "https://github.com/EasyRPG/liblcf.git"
+        GIT_REPOSITORY "https://github.com/Antidote/liblcf.git"
+        GIT_TAG relax-inih-requirement
+)
 
 # Settings
 
@@ -110,7 +112,10 @@ set(BUILD_SHARED_LIBS OFF)
 set(SPDLOG_FMT_EXTERNAL ON)
 set(SPDLOG_BUILD_SHARED OFF)
 set(SPDLOG_ENABLE_PCH ON)
+set(SDLIMAGE_VENDORED OFF)
+set(LIBLCF_WITH_XML OFF)
 set(JSON_ImplicitConversions OFF)
+set(LIBLCF_WITH_INIH OFF)
 
 # Populate
 
@@ -126,7 +131,7 @@ FetchContent_MakeAvailable(
         freetype2
         clip
         curl
-        #liblcf
+        liblcf
         SFML
         imgui
         implot

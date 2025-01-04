@@ -157,27 +157,6 @@ bool isBush(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::Bus
 bool isCounter(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::Counter)) != 0; }
 bool isDamageFloor(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::Damage)) != 0; }
 bool isTerrainTag(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::TerrainTag)) != 0; }
-int getTerrainTag(int tileFlags) {
-  switch (tileFlags & static_cast<int>(TileFlags::TerrainTag)) {
-  case 0:
-    return 12;
-  case 1:
-    return 13;
-  case 2:
-    return 14;
-  case 3:
-    return 15;
-  case 4:
-    return 16;
-  case 5:
-    return 17;
-  case 6:
-    return 18;
-  case 7:
-    return 19;
-  default:
-    return 12;
-  }
-}
+int getTerrainTag(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::TerrainTag)) >> 12; }
 
 } // namespace TileHelper

@@ -212,8 +212,8 @@ void DBTilesetsTab::draw() {
         ImGui::SameLine();
         ImGui::BeginChild("##orpg_tilesets_tileset_panel_middle", ImVec2{410 + (ImGui::GetStyle().FramePadding.x * 4), 860});
         {
-          ImGui::BeginChild("##orpg_database_tilesets_viewer", ImVec2{410 + (ImGui::GetStyle().FramePadding.x * 2), 1542},
-                            ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+          ImGui::BeginChild("##orpg_database_tilesets_viewer", ImVec2{410 + (ImGui::GetStyle().FramePadding.x * 2), 1542}, ImGuiChildFlags_Border,
+                            ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
           {
             // for (auto& tilesetF : m_selectedTileset->flags()) {
             //   int test = 1;
@@ -225,8 +225,7 @@ void DBTilesetsTab::draw() {
             }
 
             auto win = ImGui::GetCurrentWindow();
-            ImGui::GetWindowDrawList()->AddImage(static_cast<ImTextureID>(m_checkerboardTexture), win->ContentRegionRect.Min,
-                                                 win->ContentRegionRect.Min + (ImVec2{384.f, 768.f}));
+            ImGui::GetWindowDrawList()->AddImage(static_cast<ImTextureID>(m_checkerboardTexture), win->ContentRegionRect.Min, win->ContentRegionRect.Min + (ImVec2{384.f, 768.f}));
 
             ImGui::GetWindowDrawList()->AddImage(static_cast<ImTextureID>(m_checkerboardTexture2), win->ContentRegionRect.Min + (ImVec2{0.f, 768.f}),
                                                  win->ContentRegionRect.Min + (ImVec2{384.f, 1536.f}));
@@ -367,8 +366,7 @@ void DBTilesetsTab::draw() {
         }
         ImGui::EndChild();
         ImGui::SetCursorPosY(ImGui::GetContentRegionMax().y - 54.f);
-        ImGui::BeginChild("##orpg_database_tilesets_selection_tabs", ImVec2{894, 50}, ImGuiChildFlags_Border,
-                          ImGuiWindowFlags_NoBackground);
+        ImGui::BeginChild("##orpg_database_tilesets_selection_tabs", ImVec2{894, 50}, ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground);
         {
 
           static ImVec4 currentColor = {0.f, 0.f, 0.f, 0.f};
@@ -1050,6 +1048,16 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tileRect, int tileIndex)
     }
   } else if (flagType == 6) {
     // Terrain Tag
+    if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+      toggleTileState(tileIndex, true);
+    }
+    ImVec4 tint = ImGui::IsItemHovered() ? kHoveredTint : kDefaultTint;
+    if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect,
+                           m_tileMarker->uv0(TileHelper::isTerrainTag(m_selectedTileset->flags().at(tileIndex)) ? TileHelper::getTerrainTag(m_selectedTileset->flags().at(tileIndex)) + 12 : 12),
+                           m_tileMarker->uv1(TileHelper::isTerrainTag(m_selectedTileset->flags().at(tileIndex)) ? TileHelper::getTerrainTag(m_selectedTileset->flags().at(tileIndex)) + 12 : 12),
+                           ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
+      toggleTileState(tileIndex, false);
+    }
   }
 }
 
@@ -1145,7 +1153,15 @@ void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTi
     }
   } else if (m_flagSelection == 6) {
     // Terrain Tag
-    m_selectedTileset->setFlag(tileIndex, 7 << 12, true);
+    int tag = TileHelper::getTerrainTag(m_selectedTileset->flags().at(tileIndex));
+    int flags = m_selectedTileset->flags().at(tileIndex);
+    if (tag > 6) {
+      tag = 0;
+    } else {
+      tag++;
+    }
+    m_selectedTileset->setFlag(tileIndex, 0xF << 12, false);
+    m_selectedTileset->setFlag(tileIndex, tag << 12, true);
     // if (TileHelper::isTerrainTag(m_selectedTileset->flags().at(tileIndex))) {
     // } else {
     //   m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Damage), false);

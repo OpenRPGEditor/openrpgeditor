@@ -9,6 +9,9 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 MapEvent::MapEvent(MapEditor* parent, Event* event) : m_parent(parent), m_event(event), m_characterSheet(event->pages[0].image.characterName) { m_pattern = m_event->pages[0].image.pattern; }
 
 double oscillate(const double minValue, const double maxValue, const double period, const double currentTime) {

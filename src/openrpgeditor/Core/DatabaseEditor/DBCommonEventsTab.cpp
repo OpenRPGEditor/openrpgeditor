@@ -20,12 +20,13 @@ DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor*
 void DBCommonEventsTab::draw() {
   ImGui::BeginChild("##orpg_commonevents_editor");
   {
-    ImGui::BeginChild("##orpg_commonevents_editor_commonevents", ImVec2{250.f, 0}, 0, ImGuiWindowFlags_HorizontalScrollbar);
+    const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUV");
+    ImGui::BeginChild("##orpg_commonevents_editor_commonevents", ImVec2{calc.x + (ImGui::GetStyle().ItemSpacing.x * 2), 0}, 0, ImGuiWindowFlags_NoScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Common Events");
-        ImGui::BeginChild("##orpg_commonevents_editor_commonevent_list", ImVec2{0, ImGui::GetContentRegionMax().y - 108});
+        ImGui::BeginChild("##orpg_commonevents_editor_commonevent_list", ImVec2{0, ImGui::GetContentRegionMax().y - ((calc.y + ImGui::GetStyle().ItemSpacing.y) * 4)});
         {
           ImGui::BeginGroup();
           {

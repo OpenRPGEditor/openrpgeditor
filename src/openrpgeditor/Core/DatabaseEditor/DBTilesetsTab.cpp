@@ -29,12 +29,13 @@ void DBTilesetsTab::draw() {
 
   ImGui::BeginChild("#orpg_tilesets_editor", ImVec2{0, 0}, 0, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
   {
-    ImGui::BeginChild("##orpg_tilesets_editor_tilesets", ImVec2{250.f, 0}, 0, ImGuiWindowFlags_HorizontalScrollbar);
+    const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUV");
+    ImGui::BeginChild("##orpg_tilesets_editor_tilesets", ImVec2{calc.x + (ImGui::GetStyle().ItemSpacing.x * 2), 0}, 0, ImGuiWindowFlags_NoScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Tilesets");
-        ImGui::BeginChild("##orpg_tilesets_editor_tilesets_list", ImVec2{0, ImGui::GetContentRegionMax().y - 108});
+        ImGui::BeginChild("##orpg_tilesets_editor_tilesets_list", ImVec2{0, ImGui::GetContentRegionMax().y - ((calc.y + ImGui::GetStyle().ItemSpacing.y) * 4)});
         {
           ImGui::BeginGroup();
           {
@@ -212,8 +213,8 @@ void DBTilesetsTab::draw() {
         ImGui::SameLine();
         ImGui::BeginChild("##orpg_tilesets_tileset_panel_middle", ImVec2{410 + (ImGui::GetStyle().FramePadding.x * 4), 860});
         {
-          ImGui::BeginChild("##orpg_database_tilesets_viewer", ImVec2{410 + (ImGui::GetStyle().FramePadding.x * 2), 1542},
-                            ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+          ImGui::BeginChild("##orpg_database_tilesets_viewer", ImVec2{410 + (ImGui::GetStyle().FramePadding.x * 2), 1542}, ImGuiChildFlags_Border,
+                            ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
           {
             // for (auto& tilesetF : m_selectedTileset->flags()) {
             //   int test = 1;
@@ -225,8 +226,7 @@ void DBTilesetsTab::draw() {
             }
 
             auto win = ImGui::GetCurrentWindow();
-            ImGui::GetWindowDrawList()->AddImage(static_cast<ImTextureID>(m_checkerboardTexture), win->ContentRegionRect.Min,
-                                                 win->ContentRegionRect.Min + (ImVec2{384.f, 768.f}));
+            ImGui::GetWindowDrawList()->AddImage(static_cast<ImTextureID>(m_checkerboardTexture), win->ContentRegionRect.Min, win->ContentRegionRect.Min + (ImVec2{384.f, 768.f}));
 
             ImGui::GetWindowDrawList()->AddImage(static_cast<ImTextureID>(m_checkerboardTexture2), win->ContentRegionRect.Min + (ImVec2{0.f, 768.f}),
                                                  win->ContentRegionRect.Min + (ImVec2{384.f, 1536.f}));
@@ -367,8 +367,7 @@ void DBTilesetsTab::draw() {
         }
         ImGui::EndChild();
         ImGui::SetCursorPosY(ImGui::GetContentRegionMax().y - 54.f);
-        ImGui::BeginChild("##orpg_database_tilesets_selection_tabs", ImVec2{894, 50}, ImGuiChildFlags_Border,
-                          ImGuiWindowFlags_NoBackground);
+        ImGui::BeginChild("##orpg_database_tilesets_selection_tabs", ImVec2{894, 50}, ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground);
         {
 
           static ImVec4 currentColor = {0.f, 0.f, 0.f, 0.f};

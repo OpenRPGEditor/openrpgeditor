@@ -23,12 +23,13 @@ void DBSkillsTab::draw() {
   }
   ImGui::BeginChild("#orpg_skills_editor");
   {
-    ImGui::BeginChild("##orpg_skills_editor_skills", ImVec2{250.f, 0}, 0, ImGuiWindowFlags_HorizontalScrollbar);
+    const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUV");
+    ImGui::BeginChild("##orpg_skills_editor_skills", ImVec2{calc.x + (ImGui::GetStyle().ItemSpacing.x * 2), 0}, 0, ImGuiWindowFlags_NoScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Skills");
-        ImGui::BeginChild("##orpg_skills_editor_skills_list", ImVec2{0, ImGui::GetContentRegionMax().y - 108});
+        ImGui::BeginChild("##orpg_skills_editor_skills_list", ImVec2{0, ImGui::GetContentRegionMax().y - ((calc.y + ImGui::GetStyle().ItemSpacing.y) * 4)});
         {
           ImGui::BeginGroup();
           {
@@ -484,8 +485,7 @@ void DBSkillsTab::draw() {
                 ImGui::SeparatorText("Note:");
                 char note[8192];
                 strncpy(note, m_selectedSkill->note().c_str(), IM_ARRAYSIZE(note));
-                if (ImGui::InputTextMultiline("##orpg_database_skills_note", note, IM_ARRAYSIZE(note),
-                                              ImVec2{ImGui::GetContentRegionMax().x - 16, ImGui::GetContentRegionAvail().y - 16})) {
+                if (ImGui::InputTextMultiline("##orpg_database_skills_note", note, IM_ARRAYSIZE(note), ImVec2{ImGui::GetContentRegionMax().x - 16, ImGui::GetContentRegionAvail().y - 16})) {
                   m_selectedSkill->setNote(note);
                 }
               }

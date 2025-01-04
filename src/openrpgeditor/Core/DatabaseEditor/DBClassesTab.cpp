@@ -146,12 +146,13 @@ void DBClassesTab::drawExpPopup() {
 void DBClassesTab::draw() {
   ImGui::BeginChild("#orpg_classes_editor");
   {
-    ImGui::BeginChild("##orpg_classes_editor_classes", ImVec2{250.f, 0}, 0, ImGuiWindowFlags_HorizontalScrollbar);
+    const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUV");
+    ImGui::BeginChild("##orpg_classes_editor_classes", ImVec2{calc.x + (ImGui::GetStyle().ItemSpacing.x * 2), 0}, 0, ImGuiWindowFlags_NoScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Classes");
-        ImGui::BeginChild("##orpg_classes_editor_class_list", ImVec2{0, ImGui::GetContentRegionMax().y - (108)});
+        ImGui::BeginChild("##orpg_classes_editor_class_list", ImVec2{0, ImGui::GetContentRegionMax().y - ((calc.y + ImGui::GetStyle().ItemSpacing.y) * 4)});
         {
           ImGui::BeginGroup();
           {

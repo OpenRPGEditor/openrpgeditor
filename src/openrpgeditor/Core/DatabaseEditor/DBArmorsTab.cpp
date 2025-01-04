@@ -26,12 +26,13 @@ void DBArmorsTab::draw() {
   }
   ImGui::BeginChild("#orpg_armors_editor");
   {
-    ImGui::BeginChild("##orpg_armors_editor_armors", ImVec2{250.f, 0}, 0, ImGuiWindowFlags_HorizontalScrollbar);
+    const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUV");
+    ImGui::BeginChild("##orpg_armors_editor_armors", ImVec2{calc.x + (ImGui::GetStyle().ItemSpacing.x * 2), 0}, 0, ImGuiWindowFlags_NoScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Armors");
-        ImGui::BeginChild("##orpg_armors_editor_armors_list", ImVec2{0, ImGui::GetContentRegionMax().y - (108)});
+        ImGui::BeginChild("##orpg_armors_editor_armors_list", ImVec2{0, ImGui::GetContentRegionMax().y - ((calc.y + ImGui::GetStyle().ItemSpacing.y) * 4)});
         {
           ImGui::BeginGroup();
           {
@@ -87,8 +88,8 @@ void DBArmorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::TextUnformatted("Icon:");
-              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_database_armors_image"), m_itemButtonTexture->get(), ImVec2(m_itemButtonTexture->size()), {0.f, 0.f},
-                                       {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
+              if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_database_armors_image"), m_itemButtonTexture->get(), ImVec2(m_itemButtonTexture->size()), {0.f, 0.f}, {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f},
+                                       ImGuiButtonFlags_PressedOnDoubleClick)) {
                 m_currentSheet = &m_itemSheet.value();
                 // m_characterPicker->setCharacterInfo("", m_selectedItem->iconIndex);
                 // m_characterPicker->setOpen(true);
@@ -250,8 +251,7 @@ void DBArmorsTab::draw() {
             ImGui::SeparatorText("Note:");
             char note[8192];
             strncpy(note, m_selectedArmor->note().c_str(), IM_ARRAYSIZE(note));
-            if (ImGui::InputTextMultiline("##orpg_database_armors_note", note, IM_ARRAYSIZE(note),
-                                          ImVec2{ImGui::GetContentRegionMax().x - 16, ImGui::GetContentRegionAvail().y - 16})) {
+            if (ImGui::InputTextMultiline("##orpg_database_armors_note", note, IM_ARRAYSIZE(note), ImVec2{ImGui::GetContentRegionMax().x - 16, ImGui::GetContentRegionAvail().y - 16})) {
               m_selectedArmor->setNote(note);
             }
           }

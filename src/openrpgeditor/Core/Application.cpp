@@ -292,7 +292,7 @@ ExitStatus Application::run() {
         stop();
       }
 
-      if (event.type >= SDL_EVENT_WINDOW_SHOWN && event.type <= SDL_EVENT_WINDOW_SHOWN && event.window.windowID == SDL_GetWindowID(m_window->getNativeWindow())) {
+      if (event.type >= SDL_EVENT_WINDOW_SHOWN && event.type <= SDL_EVENT_WINDOW_HDR_STATE_CHANGED && event.window.windowID == SDL_GetWindowID(m_window->getNativeWindow())) {
         onEvent(event.window);
       }
     }

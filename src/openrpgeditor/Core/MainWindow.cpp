@@ -92,7 +92,7 @@ bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
   DeserializationQueue::instance().reset();
   SerializationQueue::instance().setBasepath(basePath);
   DeserializationQueue::instance().setBasepath(basePath);
-  m_resourceManager.emplace(basePath);
+  ResourceManager::instance()->setBasepath(basePath);
   m_databaseEditor.emplace(this);
   m_databaseEditor->onReady.connect<&MainWindow::onDatabaseReady>(this);
 
@@ -140,7 +140,6 @@ bool MainWindow::close(bool promptSave) {
   m_database.reset();
 
   m_mapEditor.setMap(nullptr);
-  m_resourceManager.reset();
   m_mapListView.reset();
   m_isLoaded = false;
 
@@ -193,7 +192,7 @@ void MainWindow::setupDocking() {
 }
 
 void MainWindow::drawToolbar() {
-  const ImVec2 ButtonSize = {m_toolbarButtonSize, m_toolbarButtonSize};
+  const ImVec2 ButtonSize = {48, 48};
   ImGuiViewport* viewport = ImGui::GetMainViewport();
   ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + m_menuBarHeight));
   ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, m_toolbarSize));
@@ -264,7 +263,7 @@ void MainWindow::drawToolbar() {
   ImGui::SameLine();
   ImGui::BeginDisabled(m_editMode == EditMode::Map);
   {
-    if (ImGui::Button(ICON_FA_CHESS_BOARD, ButtonSize)) {
+    if (ImGui::ImageButton("map_button", ResourceManager::instance()->loadEditorTexture(std::format("icons/map/map_128x128.png")), ButtonSize)) {
       enterMapEditMode();
     }
   }
@@ -275,7 +274,7 @@ void MainWindow::drawToolbar() {
   ImGui::SameLine();
   ImGui::BeginDisabled(m_editMode == EditMode::Event);
   {
-    if (ImGui::Button(ICON_FA_CHESS_PAWN, ButtonSize)) {
+    if (ImGui::ImageButton("event_button", ResourceManager::instance()->loadEditorTexture(std::format("icons/map/event_128x128.png")), ButtonSize)) {
       enterEventEditMode();
     }
   }
@@ -284,7 +283,7 @@ void MainWindow::drawToolbar() {
   }
   ImGui::EndDisabled();
   ImGui::SameLine();
-  if (ImGui::Button(!m_mapEditor.prisonMode() ? ICON_FA_EYE : ICON_FA_EYE_SLASH, ButtonSize)) {
+  if (ImGui::ImageButton("preview_button", ResourceManager::instance()->loadEditorTexture(std::format("icons/map/preview{}_128x128.png", !m_mapEditor.prisonMode() ? "-off" : "")), ButtonSize)) {
     m_mapEditor.setPrisonMode(!m_mapEditor.prisonMode());
   }
   if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
@@ -342,7 +341,7 @@ void MainWindow::drawToolbar() {
 }
 
 void MainWindow::draw() {
-  m_toolbarButtonSize = ImGui::CalcTextSize(ICON_FA_EYE_SLASH).x;
+  m_toolbarButtonSize = 64;
   m_toolbarSize = m_toolbarButtonSize + (ImGui::GetStyle().ItemSpacing.y * 4) + (ImGui::GetStyle().FramePadding.y * 4);
   m_toolbarButtonSize += ImGui::GetStyle().ItemSpacing.x * 2;
   drawMenu();

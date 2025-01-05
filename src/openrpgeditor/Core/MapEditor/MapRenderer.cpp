@@ -345,7 +345,7 @@ bool MapRenderer::checkPassage(const int x, const int y, const int bit) const {
   const auto tiles = allTiles(x, y);
 
   for (int i = 0; i < tiles.size(); ++i) {
-    const int flag = flags[tiles[i]];
+    const int flag = *flags[tiles[i]];
     if ((flag & 0x10) != 0) { // [*] No Effect
       continue;
     }

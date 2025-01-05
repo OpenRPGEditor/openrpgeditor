@@ -232,8 +232,6 @@ private:
   EditMode m_editMode = EditMode::Event;
   DrawTool m_drawTool = DrawTool::Pencil;
 
-  std::optional<ResourceManager> m_resourceManager;
-
   bool m_showDemoWindow{};
   bool m_showAboutWindow{};
   bool m_showTileDebug{false};

@@ -10,40 +10,45 @@
 #include <exception>
 namespace fs = std::filesystem;
 
-ResourceManager* ResourceManager::m_instance = nullptr;
-ResourceManager::ResourceManager(std::string_view basePath)
-: m_basePath(basePath)
-, m_dataPath(m_basePath / "data/")
-, m_audioPath(m_basePath / "audio/")
-, m_bgmPath(m_basePath / "audio/bgm/")
-, m_bgsPath(m_basePath / "audio/bgs/")
-, m_sePath(m_basePath / "audio/se/")
-, m_imgPath(m_basePath / "img/")
-, m_animationsPath(m_basePath / "img/animations/")
-, m_battlebacks1Path(m_basePath / "img/battlebacks1/")
-, m_battlebacks2Path(m_basePath / "img/battlebacks2/")
-, m_charactersPath(m_basePath / "img/characters/")
-, m_enemiesPath(m_basePath / "img/enemies/")
-, m_facesPath(m_basePath / "img/faces/")
-, m_parallaxesPath(m_basePath / "img/parallaxes/")
-, m_picturesPath(m_basePath / "img/pictures/")
-, m_sv_actorsPath(m_basePath / "img/sv_actors/")
-, m_sv_enemiesPath(m_basePath / "img/sv_enemies/")
-, m_systemPath(m_basePath / "img/system/")
-, m_tilesetsPath(m_basePath / "img/tilesets/")
-, m_titles1Path(m_basePath / "img/titles1/")
-, m_titles2Path(m_basePath / "img/titles2/") {
-  m_instance = this;
-}
+void ResourceManager::setBasepath(const std::string_view basepath) {
+  m_basePath = basepath;
+  m_dataPath = m_basePath / "data/";
+  m_audioPath = m_basePath / "audio/";
+  m_bgmPath = m_basePath / "audio/bgm/";
+  m_bgsPath = m_basePath / "audio/bgs/";
+  m_sePath = m_basePath / "audio/se/";
+  m_imgPath = m_basePath / "img/";
+  m_animationsPath = m_basePath / "img/animations/";
+  m_battlebacks1Path = m_basePath / "img/battlebacks1/";
+  m_battlebacks2Path = m_basePath / "img/battlebacks2/";
+  m_charactersPath = m_basePath / "img/characters/";
+  m_enemiesPath = m_basePath / "img/enemies/";
+  m_facesPath = m_basePath / "img/faces/";
+  m_parallaxesPath = m_basePath / "img/parallaxes/";
+  m_picturesPath = m_basePath / "img/pictures/";
+  m_sv_actorsPath = m_basePath / "img/sv_actors/";
+  m_sv_enemiesPath = m_basePath / "img/sv_enemies/";
+  m_systemPath = m_basePath / "img/system/";
+  m_tilesetsPath = m_basePath / "img/tilesets/";
+  m_titles1Path = m_basePath / "img/titles1/";
+  m_titles2Path = m_basePath / "img/titles2/";
 
-ResourceManager::~ResourceManager() {
-  if (m_instance == this) {
-    m_instance = nullptr;
-  }
-  for (auto& [_, texture] : m_loadedTextures) {
+  for (const auto& texture : m_loadedTextures | std::views::values) {
     SDL_DestroyTexture(static_cast<SDL_Texture*>(texture.m_texture));
   }
   m_loadedTextures.clear();
+}
+
+ResourceManager::~ResourceManager() {
+  for (const auto& texture : m_loadedTextures | std::views::values) {
+    SDL_DestroyTexture(static_cast<SDL_Texture*>(texture.m_texture));
+  }
+  m_loadedTextures.clear();
+
+  for (const auto& texture : m_editorTextures | std::views::values) {
+    SDL_DestroyTexture(static_cast<SDL_Texture*>(texture.m_texture));
+  }
+  m_editorTextures.clear();
 }
 
 sf::SoundBuffer ResourceManager::loadSound(const std::string_view path) {
@@ -161,7 +166,17 @@ Texture ResourceManager::loadTileMarkers(int width, int height) {
   return loadEditorTexture(relativePath.generic_string());
 }
 Texture ResourceManager::loadEditorTexture(std::string_view path) {
-  Texture ret = loadTexture(App::Resources::image_path(path).string());
+  auto imagePath = App::Resources::image_path(path).generic_string();
+  if (!fs::is_regular_file(imagePath)) {
+    return {};
+  }
+
+  if (m_editorTextures.contains(imagePath)) {
+    return m_editorTextures[imagePath];
+  }
+
+  const Texture ret(imagePath);
+  m_editorTextures[imagePath] = ret;
   return ret;
 }
 

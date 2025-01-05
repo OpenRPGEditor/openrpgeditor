@@ -2,6 +2,7 @@
 
 #include "imgui.h"
 
+#include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 
 using namespace std::string_view_literals;
@@ -30,7 +31,7 @@ std::tuple<bool, bool> Dialog_ChangeVictoryME::draw() {
             playAudio((Database::instance()->basePath + "audio/bgm/" + m_audios.at(m_selected) + ".ogg").c_str());
           }
           m_selected = n;
-          m_audio.name = m_audios.at(m_selected);
+          m_audio.setName(m_audios.at(m_selected));
           if (isSelected)
             ImGui::SetItemDefaultFocus();
         }
@@ -49,24 +50,31 @@ std::tuple<bool, bool> Dialog_ChangeVictoryME::draw() {
       }
       ImGui::SeparatorText("Volume");
       ImGui::SetNextItemWidth(100);
-      if (ImGui::DragInt("##playbgm_audio.volume", &m_audio.volume, 0.5f, 0, 100)) {
-        setVolume(m_audio.volume);
+      int volume = m_audio.volume();
+      if (ImGui::DragInt("##playbgm_audio.volume", &volume, 0.5f, 0, 100)) {
+        m_audio.setVolume(volume);
+        setVolume(m_audio.volume());
       }
       ImGui::SeparatorText("Pitch");
       ImGui::SetNextItemWidth(100);
-      if (ImGui::DragInt("##playbgm_audio.pitch", &m_audio.pitch, 0.5f, 0, 100)) {
-        setPitch(m_audio.pitch);
+      int pitch = m_audio.pitch();
+      if (ImGui::DragInt("##playbgm_audio.pitch", &pitch, 0.5f, 0, 100)) {
+        m_audio.setPitch(pitch);
+        setPitch(m_audio.pitch());
       }
       ImGui::SeparatorText("Pan");
       ImGui::SetNextItemWidth(100);
-      if (ImGui::DragInt("##playbgm_audio.pan", &m_audio.pan, 0.5f, -100, 100)) {
-        setPanning(m_audio.pan);
+      int pan = m_audio.pan();
+      if (ImGui::DragInt("##playbgm_audio.pan", &pan, 0.5f, -100, 100)) {
+        m_audio.setPan(pan);
+        setPanning(m_audio.pan());
       }
     }
     ImGui::EndGroup();
     ImGui::BeginGroup();
     {
-      ImGui::SetCursorPos(ImVec2((ImGui::GetContentRegionMax().x - 90) - ImGui::GetStyle().FramePadding.x, (ImGui::GetContentRegionMax().y - 30) - ImGui::GetStyle().FramePadding.y));
+      ImGui::SetCursorPos(ImVec2((ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(90)) - ImGui::GetStyle().FramePadding.x,
+                                 (ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(30)) - ImGui::GetStyle().FramePadding.y));
 
       if (ImGui::Button("OK")) {
         m_confirmed = true;

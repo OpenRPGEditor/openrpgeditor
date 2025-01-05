@@ -548,7 +548,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
     }
     default:
       UnhandledEventCommand* end = dynamic_cast<UnhandledEventCommand*>(ret.emplace_back(new UnhandledEventCommand()).get());
-      end->indent = parser[index].value("indent", std::optional<int>{});
+      end->m_indent = parser[index].value("indent", std::optional<int>{});
       end->m_code = code;
       end->data = parser[index];
       std::cout << "Unhandled command: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")" << std::endl;

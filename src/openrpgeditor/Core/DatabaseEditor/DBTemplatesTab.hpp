@@ -11,11 +11,11 @@
 
 struct Templates;
 struct DBTemplatesTab : IDBEditorTab {
-  explicit DBTemplatesTab(Templates& templates, DatabaseEditor* parent) : IDBEditorTab(parent), m_templates(&templates), m_commandEditor(nullptr) {
+  explicit DBTemplatesTab(Templates& templates, DatabaseEditor* parent) : IDBEditorTab(parent), m_templates(&templates) {
     if (!m_templates->templates.empty()) {
       if (m_templates->templates.at(m_selection).commands().empty()) {
         m_currentCommands.emplace_back(std::make_shared<EventDummy>());
-        m_currentCommands.back()->indent = 0;
+        m_currentCommands.back()->setIndent(0);
       } else {
         if (m_templates->templates.at(m_selection).type() == Template::TemplateType::Command) {
           CommandParser parser;
@@ -33,7 +33,7 @@ struct DBTemplatesTab : IDBEditorTab {
     } else {
       m_currentTemplate = CreateTemplateDialog(Template::TemplateType::Command);
       m_currentCommands.emplace_back(std::make_shared<EventDummy>());
-      m_currentCommands.back()->indent = 0;
+      m_currentCommands.back()->setIndent(0);
       m_commandEditor.setCommands(&m_currentCommands);
     }
   }
@@ -69,8 +69,8 @@ private:
       return nullptr;
     }
   }
-  void AddTemplate(std::string label, Template::TemplateType type, std::string commandString, std::vector<int> params);
+  void AddTemplate(const std::string& label, Template::TemplateType type, const std::string& commandString, const std::vector<int>& params);
   void SetTemplate();
-  void SaveToFile();
+  void SaveToFile() const;
   void SaveChanges();
 };

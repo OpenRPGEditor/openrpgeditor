@@ -12,6 +12,6 @@ void EnemyTransformCommand::serializeParameters(nlohmann::ordered_json& out) con
 }
 
 std::string EnemyTransformCommand::stringRep(const Database& db) const {
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Enemy Transform" + colon.data() + " #" + std::to_string(enemy + 1) + ", " + db.enemyNameOrId(transform) +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Enemy Transform" + colon.data() + " #" + std::to_string(enemy + 1) + ", " + db.enemyNameOrId(transform) +
          ColorFormatter::popColor();
 }

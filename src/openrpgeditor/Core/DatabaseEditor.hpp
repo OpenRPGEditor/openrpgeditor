@@ -171,7 +171,7 @@ public:
   }
   const IconSheet* getIconSheet();
 
-  signal<void()> onReady;
+  rpgmutils::signal<void()> onReady;
 
 private:
   MainWindow* m_parent;

@@ -25,5 +25,5 @@ std::string BattleProcessingCommand::stringRep(const Database& db) const {
   } else {
     enemy = "Same as Random Encounter";
   }
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Battle Processing" + colon.data() + enemy + ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Battle Processing" + colon.data() + enemy + ColorFormatter::popColor();
 }

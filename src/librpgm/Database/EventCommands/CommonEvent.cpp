@@ -8,5 +8,5 @@ void CommonEventCommand::serializeParameters(nlohmann::ordered_json& out) const 
 
 std::string CommonEventCommand::stringRep(const Database& db) const {
   const auto eventName = db.commonEventNameOrId(event);
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Common Event" + colon.data() + eventName + ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Common Event" + colon.data() + eventName + ColorFormatter::popColor();
 }

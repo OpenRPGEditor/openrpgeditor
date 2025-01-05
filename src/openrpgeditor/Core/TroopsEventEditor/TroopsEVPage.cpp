@@ -9,13 +9,12 @@
 
 #include "imgui.h"
 
-TroopsEVPage::TroopsEVPage(TroopsEVEditor* parent, Troop::Page* page) : m_parent(parent), m_page(page), m_commandEditor(parent->project()) { m_commandEditor.setCommands(&m_page->list); }
+TroopsEVPage::TroopsEVPage(TroopsEVEditor* parent, Troop::Page* page) : m_parent(parent), m_page(page), m_pageNameBuf{}, m_page_id(0) { m_commandEditor.setCommands(&m_page->list); }
 
 std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
 
   // return std::make_tuple(false, true);
   bool open = true;
-  bool* p_open = canDelete ? &open : nullptr;
   m_page_id = index + 1;
 
   if (m_actorPicker) {
@@ -152,5 +151,5 @@ std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
 
 void TroopsEVPage::clearPage() {
   m_page->list.clear();
-  m_page->list.emplace_back(new EventDummy())->indent = 0;
+  m_page->list.emplace_back(new EventDummy())->setIndent(0);
 }

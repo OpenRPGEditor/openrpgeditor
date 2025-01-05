@@ -1,25 +1,30 @@
 ﻿#include "Database/IModifiable.hpp"
 
-class IModifiablePriv {
-public:
-  signal<void(IModifiable*)>& modifiedSignal() { return m_onModified; }
-
-private:
-  signal<void(IModifiable*)> m_onModified;
-};
-
 IModifiable::IModifiable() {}
-IModifiable::IModifiable(const IModifiable&) {}
-IModifiable& IModifiable::operator=(const IModifiable&) { return *this; }
 
-IModifiable::~IModifiable() {
-  delete m_onModified;
-  m_onModified = nullptr;
+IModifiable::IModifiable(const IModifiable& other) : m_hasChanges(other.m_hasChanges), m_modified(other.m_modified), m_signalsDisabled(other.m_signalsDisabled) {}
+
+IModifiable& IModifiable::operator=(const IModifiable& other) {
+  m_hasChanges = other.m_hasChanges;
+  m_modified = other.m_modified;
+  m_signalsDisabled = other.m_signalsDisabled;
+  return *this;
 }
 
-signal<void(IModifiable*)>& IModifiable::onModified() const {
+IModifiable::IModifiable(IModifiable&& other) noexcept : m_hasChanges(other.m_hasChanges), m_modified(other.m_modified), m_signalsDisabled(other.m_signalsDisabled) {}
+
+IModifiable& IModifiable::operator=(IModifiable&& other) noexcept {
+  m_hasChanges = other.m_hasChanges;
+  m_modified = other.m_modified;
+  m_signalsDisabled = other.m_signalsDisabled;
+  return *this;
+}
+
+IModifiable::~IModifiable() {}
+
+rpgmutils::signal<void(IModifiable*)>& IModifiable::onModified() {
   if (!m_onModified) {
-    m_onModified = new IModifiablePriv();
+    m_onModified.emplace();
   }
-  return m_onModified->modifiedSignal();
+  return *m_onModified;
 }

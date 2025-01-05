@@ -20,6 +20,6 @@ std::string ChangePartyMemberCommand::stringRep(const Database& db) const {
   if (initialize) {
     suffix = ColorFormatter::getColor(FormatColor::Gray) + " (Initialize)" + ColorFormatter::popColor();
   }
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Party Member" + colon.data() +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Party Member" + colon.data() +
          (operation == PartyMemberOperation::_daa__del_Remove ? "Remove " : "Add ") + actName + ColorFormatter::popColor() + suffix;
 }

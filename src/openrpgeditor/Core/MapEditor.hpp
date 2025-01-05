@@ -44,7 +44,7 @@ struct MapEditor {
   void setSelectedEvent(Event* event) {
     m_selectedEvent = event;
     if (event) {
-      m_tileCursor.setPosition(event->x, event->y);
+      m_tileCursor.setPosition(event->x(), event->y());
       m_hasScrolled = false;
     }
   }
@@ -54,13 +54,6 @@ struct MapEditor {
   Event* movingEvent() { return m_movingEvent; }
   const Event* movingEvent() const { return m_movingEvent; }
   void setMovingEvent(Event* event) { m_movingEvent = event; }
-
-  void addEventEditor(const EventEditor& editor) {
-    auto it = std::find_if(m_eventEditors.begin(), m_eventEditors.end(), [editor](const EventEditor& ed) { return editor.event()->id == ed.event()->id; });
-    if (it == m_eventEditors.end()) {
-      m_eventEditors.push_back(editor);
-    }
-  }
 
   MapRenderer& mapRenderer() { return m_mapRenderer; }
   const MapRenderer& mapRenderer() const { return m_mapRenderer; }
@@ -94,6 +87,79 @@ struct MapEditor {
       return;
     }
     map()->data()[m_mapRenderer.tileIdFromCoords(point.x(), point.y(), layer)] = tileId;
+  }
+
+  double adjustX(double x);
+  double adjustY(double y);
+  double roundX(double x);
+  double roundY(double y);
+  double xWithDirection(double x, Direction d);
+  double yWithDirection(double y, Direction d);
+  double roundXWithDirection(double x, Direction d);
+  double roundYWithDirection(double y, Direction d);
+
+  bool isValid(const double x, const double y) {
+    if (!map()) {
+      return false;
+    }
+
+    return mapRect().contains(x, y);
+  }
+
+  bool isPassable(const double x, const double y, Direction d) const { return m_mapRenderer.isPassable(x, y, static_cast<int>(d)); }
+
+  std::vector<Event*> eventsAtNoThrough(int x, int y) {
+    if (!map()) {
+      return {};
+    }
+    return map()->eventsAtNoThrough(x, y);
+  }
+
+  double deltaX(double x1, double x2) const {
+    if (!map()) {
+      return 0;
+    }
+    double result = x1 - x2;
+    if (isLoopHorizontally() && std::abs(result) > map()->width() / 2) {
+      if (result < 0) {
+        result += map()->width();
+      } else {
+        result -= map()->width();
+      }
+    }
+
+    return result;
+  }
+
+  double deltaY(const double y1, const double y2) const {
+    if (!map()) {
+      return 0;
+    }
+    double result = y1 - y2;
+    if (isLoopVertically() && std::abs(result) > map()->height() / 2) {
+      if (result < 0) {
+        result += map()->height();
+      } else {
+        result -= map()->height();
+      }
+    }
+
+    return result;
+  }
+
+  bool isLoopHorizontally() const {
+    if (!map()) {
+      return false;
+    }
+
+    return map()->scrollType() == ScrollType::Loop_Horizontally || map()->scrollType() == ScrollType::Loop_Both;
+  }
+
+  bool isLoopVertically() const {
+    if (!map()) {
+      return false;
+    }
+    return map()->scrollType() == ScrollType::Loop_Vertically || map()->scrollType() == ScrollType::Loop_Both;
   }
 
 private:
@@ -132,7 +198,6 @@ private:
   int m_tileId{};
   Texture m_parallaxTexture;
   MapRenderer m_mapRenderer;
-  std::vector<EventEditor> m_eventEditors;
   CheckerboardTexture m_checkeredBack;
   Event* m_movingEvent = nullptr;
   Event* m_selectedEvent = nullptr;

@@ -13,6 +13,6 @@ struct RepeatAboveCommand final : IEventCommand {
     if (!codeIndent) {
       return false;
     }
-    return code == EventCode::Loop && *indent == *codeIndent;
+    return code == EventCode::Loop && indent() == *codeIndent;
   }
 };

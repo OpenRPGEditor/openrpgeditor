@@ -13,6 +13,7 @@ class TraitsEditor final {
 public:
   void setTraits(std::vector<Trait>* traits) { m_traits = traits; }
   void draw(DatabaseEditor* dbEditor);
+  void drawRadioButton(std::string_view name, TraitCode code, int dataId, double initialValue) const;
 
 private:
   void drawPopup(DatabaseEditor* dbEditor);

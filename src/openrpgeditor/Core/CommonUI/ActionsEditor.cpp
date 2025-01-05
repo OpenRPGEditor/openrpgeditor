@@ -28,7 +28,7 @@ void ActionsEditor::draw(DatabaseEditor* dbEditor) {
         ImGui::PushID(&action);
         ImGui::TableNextRow();
         if (ImGui::TableNextColumn()) {
-          if (ImGui::Selectable(std::format("{}##action_{}", Database::instance()->skillNameOrId(action.skillId), reinterpret_cast<uintptr_t>(&action)).c_str(), m_selectedAction == &action,
+          if (ImGui::Selectable(std::format("{}##action_{}", Database::instance()->skillNameOrId(action.skillId()), reinterpret_cast<uintptr_t>(&action)).c_str(), m_selectedAction == &action,
                                 ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
             m_selectedAction = &action;
             if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
@@ -45,33 +45,33 @@ void ActionsEditor::draw(DatabaseEditor* dbEditor) {
           drawPopup(dbEditor);
         }
         if (ImGui::TableNextColumn()) {
-          switch (action.conditionType) {
+          switch (action.conditionType()) {
           case ActionCondition::Always: {
             ImGui::Text("Always");
             break;
           }
           case ActionCondition::Turn: {
-            ImGui::Text("Turn %i + %i * X", static_cast<int>(action.conditionParam1), static_cast<int>(action.conditionParam2));
+            ImGui::Text("Turn %i + %i * X", static_cast<int>(action.conditionParam1()), static_cast<int>(action.conditionParam2()));
             break;
           }
           case ActionCondition::HP: {
-            ImGui::Text("HP %i%% ~ %i%%", static_cast<int>(action.conditionParam1 * 100), static_cast<int>(action.conditionParam2 * 100));
+            ImGui::Text("HP %i%% ~ %i%%", static_cast<int>(action.conditionParam1() * 100), static_cast<int>(action.conditionParam2() * 100));
             break;
           }
           case ActionCondition::MP: {
-            ImGui::Text("MP %i%% ~ %i%%", static_cast<int>(action.conditionParam1 * 100), static_cast<int>(action.conditionParam2 * 100));
+            ImGui::Text("MP %i%% ~ %i%%", static_cast<int>(action.conditionParam1() * 100), static_cast<int>(action.conditionParam2() * 100));
             break;
           }
           case ActionCondition::State: {
-            ImGui::Text("State %s", Database::instance()->stateNameOrId(static_cast<int>(action.conditionParam1)).c_str());
+            ImGui::Text("State %s", Database::instance()->stateNameOrId(static_cast<int>(action.conditionParam1())).c_str());
             break;
           }
           case ActionCondition::Party_Level: {
-            ImGui::Text("Party Level >= %i", static_cast<int>(action.conditionParam1));
+            ImGui::Text("Party Level >= %i", static_cast<int>(action.conditionParam1()));
             break;
           }
           case ActionCondition::Switch: {
-            ImGui::Text("%s", Database::instance()->switchNameOrId(static_cast<int>(action.conditionParam1)).c_str());
+            ImGui::Text("%s", Database::instance()->switchNameOrId(static_cast<int>(action.conditionParam1())).c_str());
             break;
           }
           default:
@@ -80,7 +80,7 @@ void ActionsEditor::draw(DatabaseEditor* dbEditor) {
           }
         }
         if (ImGui::TableNextColumn()) {
-          ImGui::Text("%i", action.rating);
+          ImGui::Text("%i", action.rating());
         }
 
         ImGui::PopID();
@@ -139,15 +139,15 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
         ImGui::BeginGroup();
         {
           // Skill Button - Picker
-          if (ImGui::Button(Database::instance()->skillNameOrId(m_selectedAction->skillId).c_str(), ImVec2{200, 0})) {
-            m_skillPicker.emplace("Skill"sv, Database::instance()->skills.skills(), m_selectedAction->skillId);
+          if (ImGui::Button(Database::instance()->skillNameOrId(m_selectedAction->skillId()).c_str(), ImVec2{200, 0})) {
+            m_skillPicker.emplace("Skill"sv, Database::instance()->skills.skills(), m_selectedAction->skillId());
             m_skillPicker->setOpen(true);
           }
           ImGui::SameLine();
           ImGui::SetNextItemWidth(150);
-          int tmpInt = m_selectedAction->rating;
+          int tmpInt = m_selectedAction->rating();
           if (ImGui::InputInt("##action_rating", &tmpInt)) {
-            m_selectedAction->rating = tmpInt;
+            m_selectedAction->setRating(tmpInt);
           }
           ImGui::SeparatorText("Conditions");
           ImGui::EndGroup();
@@ -157,57 +157,57 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
       ImGui::BeginChild("##orpg_actions_left_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_NoBackground);
       {
 
-        if (ImGui::RadioButton("Always", m_selectedAction->conditionType == ActionCondition::Always)) {
-          if (m_selectedAction->conditionType != ActionCondition::Always) {
+        if (ImGui::RadioButton("Always", m_selectedAction->conditionType() == ActionCondition::Always)) {
+          if (m_selectedAction->conditionType() != ActionCondition::Always) {
             // TODO
+            m_selectedAction->setConditionType(ActionCondition::Always);
           }
-          m_selectedAction->conditionType = ActionCondition::Always;
         }
-        if (ImGui::RadioButton("Turn", m_selectedAction->conditionType == ActionCondition::Turn)) {
-          if (m_selectedAction->conditionType != ActionCondition::Turn) {
-            m_selectedAction->conditionParam1 = 0;
-            m_selectedAction->conditionParam2 = 0;
+        if (ImGui::RadioButton("Turn", m_selectedAction->conditionType() == ActionCondition::Turn)) {
+          if (m_selectedAction->conditionType() != ActionCondition::Turn) {
+            m_selectedAction->setConditionParam1(0);
+            m_selectedAction->setConditionParam2(0);
+            m_selectedAction->setConditionType(ActionCondition::Turn);
           }
-          m_selectedAction->conditionType = ActionCondition::Turn;
         }
-        if (ImGui::RadioButton("HP", m_selectedAction->conditionType == ActionCondition::HP)) {
-          if (m_selectedAction->conditionType != ActionCondition::HP) {
-            m_selectedAction->conditionParam1 = 0;
-            m_selectedAction->conditionParam2 = 1;
+        if (ImGui::RadioButton("HP", m_selectedAction->conditionType() == ActionCondition::HP)) {
+          if (m_selectedAction->conditionType() != ActionCondition::HP) {
+            m_selectedAction->setConditionParam1(0);
+            m_selectedAction->setConditionParam2(1);
+            m_selectedAction->setConditionType(ActionCondition::HP);
           }
-          m_selectedAction->conditionType = ActionCondition::HP;
         }
         // MP
-        if (ImGui::RadioButton("MP", m_selectedAction->conditionType == ActionCondition::MP)) {
-          if (m_selectedAction->conditionType != ActionCondition::MP) {
-            m_selectedAction->conditionParam1 = 0;
-            m_selectedAction->conditionParam2 = 1;
+        if (ImGui::RadioButton("MP", m_selectedAction->conditionType() == ActionCondition::MP)) {
+          if (m_selectedAction->conditionType() != ActionCondition::MP) {
+            m_selectedAction->setConditionParam1(0);
+            m_selectedAction->setConditionParam2(1);
+            m_selectedAction->setConditionType(ActionCondition::MP);
           }
-          m_selectedAction->conditionType = ActionCondition::MP;
         }
         // State
-        if (ImGui::RadioButton("State", m_selectedAction->conditionType == ActionCondition::State)) {
-          if (m_selectedAction->conditionType != ActionCondition::State) {
-            m_selectedAction->conditionParam1 = 1; // State id
-            m_selectedAction->conditionParam2 = 0;
+        if (ImGui::RadioButton("State", m_selectedAction->conditionType() == ActionCondition::State)) {
+          if (m_selectedAction->conditionType() != ActionCondition::State) {
+            m_selectedAction->setConditionParam1(1); // State id
+            m_selectedAction->setConditionParam2(0);
+            m_selectedAction->setConditionType(ActionCondition::State);
           }
-          m_selectedAction->conditionType = ActionCondition::State;
         }
         // Party Level
-        if (ImGui::RadioButton("Party Level", m_selectedAction->conditionType == ActionCondition::Party_Level)) {
-          if (m_selectedAction->conditionType != ActionCondition::Party_Level) {
-            m_selectedAction->conditionParam1 = 1;
-            m_selectedAction->conditionParam2 = 0;
+        if (ImGui::RadioButton("Party Level", m_selectedAction->conditionType() == ActionCondition::Party_Level)) {
+          if (m_selectedAction->conditionType() != ActionCondition::Party_Level) {
+            m_selectedAction->setConditionParam1(1);
+            m_selectedAction->setConditionParam2(0);
+            m_selectedAction->setConditionType(ActionCondition::Party_Level);
           }
-          m_selectedAction->conditionType = ActionCondition::Party_Level;
         }
         // Switch
-        if (ImGui::RadioButton("Switch", m_selectedAction->conditionType == ActionCondition::Switch)) {
-          if (m_selectedAction->conditionType != ActionCondition::Switch) {
-            m_selectedAction->conditionParam1 = 1;
-            m_selectedAction->conditionParam2 = 0;
+        if (ImGui::RadioButton("Switch", m_selectedAction->conditionType() == ActionCondition::Switch)) {
+          if (m_selectedAction->conditionType() != ActionCondition::Switch) {
+            m_selectedAction->setConditionParam1(1);
+            m_selectedAction->setConditionParam2(0);
+            m_selectedAction->setConditionType(ActionCondition::Switch);
           }
-          m_selectedAction->conditionType = ActionCondition::Switch;
         }
         ImGui::EndChild();
         ImGui::SameLine();
@@ -219,81 +219,81 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
           ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 13.f);
 
           // Turn
-          ImGui::BeginDisabled(m_selectedAction->conditionType != ActionCondition::Turn);
+          ImGui::BeginDisabled(m_selectedAction->conditionType() != ActionCondition::Turn);
           {
-            int tmpInt = m_selectedAction->conditionType == ActionCondition::Turn ? static_cast<int>(m_selectedAction->conditionParam1) : 0;
+            int tmpInt = m_selectedAction->conditionType() == ActionCondition::Turn ? static_cast<int>(m_selectedAction->conditionParam1()) : 0;
             ImGui::SetNextItemWidth(230);
             if (ImGui::InputInt("##action_turn_value1", &tmpInt)) {
-              m_selectedAction->conditionParam1 = static_cast<float>(tmpInt);
+              m_selectedAction->setConditionParam1(static_cast<float>(tmpInt));
             }
             ImGui::SameLine();
             ImGui::Text("~");
             ImGui::SameLine();
-            int tmpInt2 = m_selectedAction->conditionType == ActionCondition::Turn ? static_cast<int>(m_selectedAction->conditionParam2) : 0;
+            int tmpInt2 = m_selectedAction->conditionType() == ActionCondition::Turn ? static_cast<int>(m_selectedAction->conditionParam2()) : 0;
             ImGui::SameLine();
-            ImGui::SetNextItemWidth(230);
+            ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
             if (ImGui::InputInt("##action_turn_value2", &tmpInt2)) {
-              m_selectedAction->conditionParam2 = static_cast<float>(tmpInt2);
+              m_selectedAction->setConditionParam2(static_cast<float>(tmpInt2));
             }
           }
           ImGui::EndDisabled();
           // HP
-          ImGui::BeginDisabled(m_selectedAction->conditionType != ActionCondition::HP);
+          ImGui::BeginDisabled(m_selectedAction->conditionType() != ActionCondition::HP);
           {
-            int tmpInt = m_selectedAction->conditionType == ActionCondition::HP ? static_cast<int>(m_selectedAction->conditionParam1 / 100) : 0;
+            int tmpInt = m_selectedAction->conditionType() == ActionCondition::HP ? static_cast<int>(m_selectedAction->conditionParam1() / 100) : 0;
             ImGui::SetNextItemWidth(230);
-            if (ImGui::SliderInt("##action_hp_value1", &tmpInt, 0, 100, m_selectedAction->conditionType == ActionCondition::HP ? "%d%%" : "")) {
-              m_selectedAction->conditionParam1 = static_cast<float>(tmpInt / 100.0);
+            if (ImGui::SliderInt("##action_hp_value1", &tmpInt, 0, 100, m_selectedAction->conditionType() == ActionCondition::HP ? "%d%%" : "")) {
+              m_selectedAction->setConditionParam1(static_cast<float>(tmpInt / 100.0));
             }
             ImGui::SameLine();
             ImGui::Text("~");
             ImGui::SameLine();
-            int tmpInt2 = m_selectedAction->conditionType == ActionCondition::HP ? static_cast<int>(m_selectedAction->conditionParam2 * 100) : 0;
+            int tmpInt2 = m_selectedAction->conditionType() == ActionCondition::HP ? static_cast<int>(m_selectedAction->conditionParam2() * 100) : 0;
             ImGui::SetNextItemWidth(230);
-            if (ImGui::SliderInt("##action_hp_value2", &tmpInt2, 0, 100, m_selectedAction->conditionType == ActionCondition::HP ? "%d%%" : "")) {
-              m_selectedAction->conditionParam2 = static_cast<float>(tmpInt2 / 100.0);
+            if (ImGui::SliderInt("##action_hp_value2", &tmpInt2, 0, 100, m_selectedAction->conditionType() == ActionCondition::HP ? "%d%%" : "")) {
+              m_selectedAction->setConditionParam2(static_cast<float>(tmpInt2 / 100.0));
             }
           }
           ImGui::EndDisabled();
           // MP
-          ImGui::BeginDisabled(m_selectedAction->conditionType != ActionCondition::MP);
+          ImGui::BeginDisabled(m_selectedAction->conditionType() != ActionCondition::MP);
           {
-            int tmpInt = m_selectedAction->conditionType == ActionCondition::MP ? static_cast<int>(m_selectedAction->conditionParam1 * 100) : 0;
+            int tmpInt = m_selectedAction->conditionType() == ActionCondition::MP ? static_cast<int>(m_selectedAction->conditionParam1() * 100) : 0;
             ImGui::SetNextItemWidth(230);
-            if (ImGui::SliderInt("##action_mp_value1", &tmpInt, 0, 100, m_selectedAction->conditionType == ActionCondition::MP ? "%d%%" : "")) {
-              m_selectedAction->conditionParam1 = static_cast<float>(tmpInt / 100.0);
+            if (ImGui::SliderInt("##action_mp_value1", &tmpInt, 0, 100, m_selectedAction->conditionType() == ActionCondition::MP ? "%d%%" : "")) {
+              m_selectedAction->setConditionParam1(static_cast<float>(tmpInt / 100.0));
             }
             ImGui::SameLine();
             ImGui::Text("~");
             ImGui::SameLine();
-            int tmpInt2 = m_selectedAction->conditionType == ActionCondition::MP ? static_cast<int>(m_selectedAction->conditionParam2 * 100) : 0;
+            int tmpInt2 = m_selectedAction->conditionType() == ActionCondition::MP ? static_cast<int>(m_selectedAction->conditionParam2() * 100) : 0;
             ImGui::SameLine();
             ImGui::SetNextItemWidth(230);
-            if (ImGui::SliderInt("##action_mp_value2", &tmpInt2, 0, 100, m_selectedAction->conditionType == ActionCondition::MP ? "%d%%" : "")) {
-              m_selectedAction->conditionParam2 = static_cast<float>(tmpInt2 / 100.0);
+            if (ImGui::SliderInt("##action_mp_value2", &tmpInt2, 0, 100, m_selectedAction->conditionType() == ActionCondition::MP ? "%d%%" : "")) {
+              m_selectedAction->setConditionParam2(static_cast<float>(tmpInt2 / 100.0));
             }
           }
           ImGui::EndDisabled();
           // State
-          ImGui::BeginDisabled(m_selectedAction->conditionType != ActionCondition::State);
+          ImGui::BeginDisabled(m_selectedAction->conditionType() != ActionCondition::State);
           {
             // State Button - Picker
-            if (ImGui::Button(m_selectedAction->conditionType == ActionCondition::State ? Database::instance()->stateNameOrId(static_cast<int>(m_selectedAction->conditionParam1)).c_str()
-                                                                                        : "##actions_skill_selection",
+            if (ImGui::Button(m_selectedAction->conditionType() == ActionCondition::State ? Database::instance()->stateNameOrId(static_cast<int>(m_selectedAction->conditionParam1())).c_str()
+                                                                                          : "##actions_skill_selection",
                               ImVec2{ImGui::GetContentRegionAvail().x, 0})) {
-              m_statePicker.emplace("State"sv, Database::instance()->states.states(), m_selectedAction->conditionParam1);
+              m_statePicker.emplace("State"sv, Database::instance()->states.states(), m_selectedAction->conditionParam1());
               m_statePicker->setOpen(true);
             }
           }
           ImGui::EndDisabled();
 
           // Party Level
-          ImGui::BeginDisabled(m_selectedAction->conditionType != ActionCondition::Party_Level);
+          ImGui::BeginDisabled(m_selectedAction->conditionType() != ActionCondition::Party_Level);
           {
-            int tmpInt = m_selectedAction->conditionType == ActionCondition::Party_Level ? static_cast<int>(m_selectedAction->conditionParam1) : 0;
+            int tmpInt = m_selectedAction->conditionType() == ActionCondition::Party_Level ? static_cast<int>(m_selectedAction->conditionParam1()) : 0;
             ImGui::SetNextItemWidth(230);
             if (ImGui::InputInt("##action_party_level_value1", &tmpInt)) {
-              m_selectedAction->conditionParam1 = static_cast<float>(tmpInt);
+              m_selectedAction->setConditionParam1(static_cast<float>(tmpInt));
             }
             ImGui::SameLine();
             ImGui::Text("or above");
@@ -301,13 +301,13 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
           ImGui::EndDisabled();
 
           // Switch
-          ImGui::BeginDisabled(m_selectedAction->conditionType != ActionCondition::Switch);
+          ImGui::BeginDisabled(m_selectedAction->conditionType() != ActionCondition::Switch);
           {
             // Switch Button - Picker
-            if (ImGui::Button(m_selectedAction->conditionType == ActionCondition::Switch ? Database::instance()->switchNameOrId(static_cast<int>(m_selectedAction->conditionParam1)).c_str()
-                                                                                         : "##actions_switch_selection",
+            if (ImGui::Button(m_selectedAction->conditionType() == ActionCondition::Switch ? Database::instance()->switchNameOrId(static_cast<int>(m_selectedAction->conditionParam1())).c_str()
+                                                                                           : "##actions_switch_selection",
                               ImVec2{ImGui::GetContentRegionAvail().x, 0})) {
-              picker.emplace("Switches", Database::instance()->system.switches, m_selectedAction->conditionParam1);
+              picker.emplace("Switches", Database::instance()->system.switches, m_selectedAction->conditionParam1());
               picker->setOpen(true);
             }
           }
@@ -342,7 +342,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
     if (m_skillPicker) {
       if (auto [closed, confirmed] = m_skillPicker->draw(); closed) {
         if (confirmed) {
-          m_selectedAction->skillId = m_skillPicker->selection();
+          m_selectedAction->setSkillId(m_skillPicker->selection());
         }
         m_skillPicker.reset();
       }
@@ -350,7 +350,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
     if (m_statePicker) {
       if (auto [closed, confirmed] = m_statePicker->draw(); closed) {
         if (confirmed) {
-          m_selectedAction->conditionParam1 = static_cast<float>(m_statePicker->selection());
+          m_selectedAction->setConditionParam1(static_cast<float>(m_statePicker->selection()));
         }
         m_statePicker.reset();
       }
@@ -359,7 +359,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
       auto [closed, confirmed] = picker->draw();
       if (closed) {
         if (confirmed) {
-          m_selectedAction->conditionParam1 = static_cast<float>(picker->selection());
+          m_selectedAction->setConditionParam1(static_cast<float>(picker->selection()));
         }
         picker.reset();
       }

@@ -109,27 +109,20 @@ public:
   void setEvents(const std::vector<std::optional<Event>>& value) { m_events = value; }
 
   /* TODO: Move these to source file */
-  [[nodiscard]] std::vector<std::optional<Event>> getSorted() const {
-    std::vector<std::optional<Event>> ret = m_events;
-    std::ranges::sort(ret, [](const std::optional<Event>& a, const std::optional<Event>& b) {
-      if (!a || !b) {
-        return false;
-      }
-      return a->y < b->y;
-    });
-    return std::move(ret);
-  }
+  [[nodiscard]] std::vector<Event*> getSorted();
+
+  [[nodiscard]] std::vector<Event*> getRenderSorted();
 
   Event* event(int id) {
 
-    if (const auto it = std::ranges::find_if(m_events, [&id](const auto& ev) { return ev && ev->id == id; }); it != m_events.end()) {
+    if (const auto it = std::ranges::find_if(m_events, [&id](const auto& ev) { return ev && ev->id() == id; }); it != m_events.end()) {
       return &it->value();
     }
     return nullptr;
   }
 
   Event* eventAt(int x, int y) {
-    if (const auto it = std::ranges::find_if(m_events, [&x, &y](const auto& ev) { return ev && ev->x == x && ev->y == y; }); it != m_events.end()) {
+    if (const auto it = std::ranges::find_if(m_events, [&x, &y](const auto& ev) { return ev && ev->x() == x && ev->y() == y; }); it != m_events.end()) {
       return &it->value();
     }
 
@@ -139,12 +132,15 @@ public:
   std::vector<Event*> eventsAt(const int x, const int y) {
     std::vector<Event*> ret;
     std::ranges::for_each(m_events, [&ret, &x, &y](auto& ev) {
-      if (ev && ev->x == x && ev->y == y) {
+      if (ev && ev->x() == x && ev->y() == y) {
         ret.push_back(&ev.value());
       }
     });
     return ret;
   }
+
+  std::vector<Event*> eventsAtNoThrough(int x, int y);
+  std::vector<Event*> eventsAtRenderPosNoThrough(int x, int y);
 
   Event* createNewEvent() {
     if (m_events.empty()) {
@@ -154,38 +150,36 @@ public:
     Event* ret;
     if (it != m_events.end()) {
       *it = Event();
-      (*it)->id = it - m_events.begin();
+      (*it)->setId(it - m_events.begin());
       ret = &it->value();
     } else {
       ret = &m_events.emplace_back(Event()).value();
-      ret->id = m_events.size() - 1;
+      ret->setId(m_events.size() - 1);
     }
-    ret->name = std::format("EV{:03}", ret->id);
-    ret->pages.emplace_back();
-    ret->pages.back().list.emplace_back(new EventDummy());
-    ret->pages.back().list.back()->indent = 0;
+    ret->setName(std::format("EV{:03}", ret->id()));
+    ret->addPage({});
     m_isDirty = true;
     return ret;
   }
   Event* createEventFromTemplate(const Event& ev) {
     // Inserts new template
-    if (ev.id == m_events.size()) {
+    if (ev.id() == m_events.size()) {
       m_events.emplace_back(ev);
     } else {
-      m_events.insert(m_events.begin() + ev.id, ev);
+      m_events.insert(m_events.begin() + ev.id(), ev);
     }
     // Resort and rename
-    for (int i = ev.id + 1; i < m_events.size(); ++i) {
-      m_events.at(i)->id = i + 1;
-      if (m_events.at(i)->name.contains("EV")) {
-        m_events.at(i)->name = std::format("EV{:03} ", i);
+    for (int i = ev.id() + 1; i < m_events.size(); ++i) {
+      m_events.at(i)->setId(i + 1);
+      if (m_events.at(i)->name().contains("EV")) {
+        m_events.at(i)->setName(std::format("EV{:03} ", i));
       }
     }
-    return &*m_events.at(ev.id);
+    return &*m_events.at(ev.id());
   }
 
   void deleteEvent(int id) {
-    if (const auto it = std::ranges::find_if(m_events, [&id](const auto& ev) { return ev && ev->id == id; }); it != m_events.end()) {
+    if (const auto it = std::ranges::find_if(m_events, [&id](const auto& ev) { return ev && ev->id() == id; }); it != m_events.end()) {
       it->reset();
       m_isDirty = true;
     }
@@ -210,8 +204,8 @@ public:
   bool isValid() const { return m_isValid; }
   void setValid(const bool valid) { m_isValid = valid; }
 
-  bool isDirty() {
-    m_isDirty |= std::ranges::any_of(m_events, [](const auto& e) { return e && e->isDirty(); });
+  bool isModified() {
+    m_isDirty |= std::ranges::any_of(m_events, [](const auto& e) { return e && e->isModified(); });
 
     return m_isDirty;
   }

@@ -429,7 +429,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
                                                         : m_character_selection == -1 ? "Player"
                                                         : m_character_selection == 0
                                                             ? "This Event"
-                                                            : ("EV" + std::format("{:03} ", Database::instance()->mapInfos.currentMap()->event(m_character_selection)->id)).c_str())) {
+                                                            : ("EV" + std::format("{:03} ", Database::instance()->mapInfos.currentMap()->event(m_character_selection)->id())).c_str())) {
 
             if (ImGui::Selectable("Player", m_character_selection == -1)) {
               m_character_selection = -1;
@@ -444,8 +444,8 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
               if (!dataSource.has_value())
                 continue;
 
-              if (const bool is_selected = (m_character_selection == dataSource->id); ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
-                m_character_selection = dataSource->id;
+              if (const bool is_selected = (m_character_selection == dataSource->id()); ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id())).c_str(), is_selected)) {
+                m_character_selection = dataSource->id();
                 if (is_selected)
                   ImGui::SetItemDefaultFocus();
               }

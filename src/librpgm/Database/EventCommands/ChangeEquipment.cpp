@@ -22,6 +22,6 @@ std::string ChangeEquipmentCommand::stringRep(const Database& db) const {
   }
   const auto equipTypeName = db.equipTypeName(equipType);
   const auto equipName = equipment == 0 ? "None" : eType <= 1 ? db.weaponNameOrId(equipment) : db.armorNameOrId(equipment);
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Equipment" + colon.data() + std::format("{}, {} = {}", actorName, equipTypeName, equipName) +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Equipment" + colon.data() + std::format("{}, {} = {}", actorName, equipTypeName, equipName) +
          ColorFormatter::popColor();
 }

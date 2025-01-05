@@ -37,6 +37,6 @@ std::string ChangeTPCommand::stringRep(const Database& db) const {
     quantityStr = std::to_string(quantity);
   }
 
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change TP" + colon.data() + actorName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change TP" + colon.data() + actorName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr +
          ColorFormatter::popColor();
 }

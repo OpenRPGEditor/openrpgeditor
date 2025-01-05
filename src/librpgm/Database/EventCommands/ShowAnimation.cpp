@@ -18,6 +18,6 @@ std::string ShowAnimationCommand::stringRep(const Database& db) const {
   const auto evName = db.eventNameOrId(character);
   const auto animName = db.animationNameOrId(animation);
 
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Show Animation" + colon.data() + evName + ", " + animName + " " + ColorFormatter::popColor() +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Show Animation" + colon.data() + evName + ", " + animName + " " + ColorFormatter::popColor() +
          (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + "(Wait)" + ColorFormatter::popColor() : "");
 }

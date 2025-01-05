@@ -23,6 +23,6 @@ std::string ChangeEnemyStateCommand::stringRep(const Database& db) const {
   }
 
   const auto stStr = db.stateNameOrId(state);
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Enemy State" + colon.data() + enemyStr + DecodeEnumName(enemyOp) + " " + stStr +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Enemy State" + colon.data() + enemyStr + DecodeEnumName(enemyOp) + " " + stStr +
          ColorFormatter::popColor();
 }

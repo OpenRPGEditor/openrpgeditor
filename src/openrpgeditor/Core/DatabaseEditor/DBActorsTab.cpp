@@ -76,11 +76,10 @@ void DBActorsTab::draw() {
                 continue;
               }
 
-              if (ImGui::Selectable(Database::instance()->actorNameAndId(actor.id()).c_str(), &actor == m_selectedActor, ImGuiSelectableFlags_SelectOnNav)) {
+              if (ImGui::Selectable(std::format("{}{}", Database::instance()->actorNameAndId(actor.id()), actor.isModified() ? "*" : "").c_str(), &actor == m_selectedActor,
+                                    ImGuiSelectableFlags_SelectOnNav)) {
                 if (m_selectedActor != &actor) {
                   m_selectedActor = &actor;
-                  m_tempActor.initialLevel = actor.initialLevel();
-                  m_tempActor.maxLevel = actor.maxLevel();
                   m_faceSheet.emplace(m_selectedActor->faceName());
                   m_characterSheet.emplace(m_selectedActor->characterName());
                   m_battlerSheet.emplace(m_selectedActor->battlerName());
@@ -136,6 +135,9 @@ void DBActorsTab::draw() {
               ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2 - 16);
               if (ImGui::BeginCombo("##orpg_actors_editor_class_combo", Database::instance()->classNameAndId(cls->id()).c_str())) {
                 for (const auto& c : classes.classes()) {
+                  if (c.id() == 0) {
+                    continue;
+                  }
                   if (ImGui::Selectable(Database::instance()->classNameAndId(c.id()).c_str(), c.id() == m_selectedActor->classId())) {
                     m_selectedActor->setClassId(c.id());
                     m_selectedActor->setValid(true);
@@ -153,7 +155,7 @@ void DBActorsTab::draw() {
               ImGui::SetNextItemWidth(ImGui::GetCursorPosX() / 2 - 16);
               ImGui::InputInt("##orpg_actors_initial_level_edit", &m_tempActor.initialLevel);
               if (ImGui::IsItemDeactivatedAfterEdit()) {
-                m_selectedActor->setInitialLevel(std::clamp(m_tempActor.initialLevel, 1, 99));
+                m_selectedActor->setInitialLevel(std::clamp(initialLevel, 1, 99));
               }
             }
             ImGui::EndGroup();
@@ -165,7 +167,7 @@ void DBActorsTab::draw() {
               ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2 / 2 - 16);
               ImGui::InputInt("##orpg_actors_max_level_edit", &m_tempActor.maxLevel);
               if (ImGui::IsItemDeactivatedAfterEdit()) {
-                m_selectedActor->setMaxLevel(std::clamp(m_tempActor.maxLevel, 1, 99));
+                m_selectedActor->setMaxLevel(std::clamp(maxLevel, 1, 99));
               }
             }
             ImGui::EndGroup();

@@ -5,7 +5,7 @@
 #include "Database/Globals.hpp"
 
 struct CharacterSheet {
-  CharacterSheet() = delete;
+  CharacterSheet() = default;
 
   explicit CharacterSheet(std::string_view sheetName);
   int characterWidth() const;

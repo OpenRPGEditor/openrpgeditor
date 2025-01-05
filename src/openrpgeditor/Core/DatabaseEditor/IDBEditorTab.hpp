@@ -7,6 +7,9 @@ public:
   virtual ~IDBEditorTab() = default;
   virtual void draw() = 0;
 
+  /* TODO: Make pure */
+  virtual bool isModified() { return false; };
+
 protected:
   DatabaseEditor* m_parent;
 };

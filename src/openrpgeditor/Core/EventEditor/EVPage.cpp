@@ -11,7 +11,7 @@
 
 #include "Database/EventPage.hpp"
 
-EVPage::EVPage(EventEditor* parent, EventPage* page) : m_parent(parent), m_page(page), m_commandEditor(parent->project()), m_characterSheet(page->image.characterName) {
+EVPage::EVPage(EventPage* page) : IPageEditor(page), m_characterSheet(page->image.characterName) {
   m_commandEditor.setCommands(&m_page->list);
   strncpy(m_pageNameBuf, m_page->name.c_str(), 4096);
 }
@@ -58,7 +58,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
             const std::string label = m_page->conditions.switch1Valid ? Database::instance()->switchNameOrId(m_page->conditions.switch1Id) : "";
             if (ImGui::Button((label + "##event_page_switch1_selection_button").c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
               m_variableSwitchSelection = Switch1;
-              m_variableSwitchPicker.emplace("Switch", m_parent->project()->system().switches, m_page->conditions.switch1Id);
+              m_variableSwitchPicker.emplace("Switch", Database::instance()->system.switches, m_page->conditions.switch1Id);
               m_variableSwitchPicker->setOpen(true);
             }
           }
@@ -68,7 +68,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
             const std::string label = m_page->conditions.switch2Valid ? Database::instance()->switchNameOrId(m_page->conditions.switch2Id) : "";
             if (ImGui::Button((label + "##event_page_switch2_selection_button").c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
               m_variableSwitchSelection = Switch2;
-              m_variableSwitchPicker.emplace("Switch", m_parent->project()->system().switches, m_page->conditions.switch2Id);
+              m_variableSwitchPicker.emplace("Switch", Database::instance()->system.switches, m_page->conditions.switch2Id);
               m_variableSwitchPicker->setOpen(true);
             }
           }
@@ -80,7 +80,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
               const std::string label = m_page->conditions.variableValid ? Database::instance()->variableNameOrId(m_page->conditions.variableId) : "";
               if (ImGui::Button((label + "##event_page_variable_selection_button").c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
                 m_variableSwitchSelection = Variable;
-                m_variableSwitchPicker.emplace("Variable", m_parent->project()->system().variables, m_page->conditions.variableId);
+                m_variableSwitchPicker.emplace("Variable", Database::instance()->system.variables, m_page->conditions.variableId);
                 m_variableSwitchPicker->setOpen(true);
               }
               ImGui::Text("≥");
@@ -106,7 +106,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
             ImGui::EndDisabled();
             ImGui::BeginDisabled(!m_page->conditions.itemValid);
             {
-              auto it = m_parent->project()->item(m_page->conditions.itemId);
+              auto it = Database::instance()->items.item(m_page->conditions.itemId);
               const std::string item = m_page->conditions.itemValid && it != nullptr ? it->name() : "##event_page_item_selection_button_text";
               if (ImGui::Button(item.c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
                 m_itemPicker.emplace("Items"sv, Database::instance()->items.items(), m_page->conditions.itemId);
@@ -116,7 +116,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
             ImGui::EndDisabled();
             ImGui::BeginDisabled(!m_page->conditions.actorValid);
             {
-              auto ac = m_parent->project()->actor(m_page->conditions.actorId);
+              auto ac = Database::instance()->actors.actor(m_page->conditions.actorId);
               const std::string actor = m_page->conditions.actorValid && ac != nullptr ? ac->name() : "##event_page_actor_selection_button_text";
               if (ImGui::Button(actor.c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
                 m_actorPicker.emplace("Actors"sv, Database::instance()->actors.actorList(), m_page->conditions.actorId);
@@ -309,11 +309,9 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
     ImGui::EndTabItem();
   }
 
-  open ^= 1;
-  return std::make_tuple(open, selected);
+  return {!open, selected};
 }
 
-void EVPage::clearPage() {
-  m_page->list.clear();
-  m_page->list.emplace_back(new EventDummy())->indent = 0;
-}
+void EVPage::clearPage() const { m_page->clear(); }
+
+IPageEditor* IPageEditor::create(EventPage* page) { return new EVPage(page); }

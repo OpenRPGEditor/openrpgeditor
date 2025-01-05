@@ -157,7 +157,7 @@ void DBTemplatesTab::SetTemplate() {
   if (m_templates->templates.at(m_selection).commands() == "") {
     m_currentCommands.clear();
     m_currentCommands.emplace_back(std::make_shared<EventDummy>());
-    m_currentCommands.back()->indent = 0;
+    m_currentCommands.back()->setIndent(0);
   } else {
     if (m_templateType == 0) {
       CommandParser parser;
@@ -186,11 +186,11 @@ void DBTemplatesTab::SaveChanges() {
     m_templates->templates.at(m_selection).setParameters(m_currentTemplate->getData());
   }
 }
-void DBTemplatesTab::AddTemplate(std::string label, Template::TemplateType type, std::string commandString, std::vector<int> params) {
+void DBTemplatesTab::AddTemplate(const std::string& label, const Template::TemplateType type, const std::string& commandString, const std::vector<int>& params) {
 
   m_currentCommands.clear();
   m_currentCommands.emplace_back(std::make_shared<EventDummy>());
-  m_currentCommands.back()->indent = 0;
+  m_currentCommands.back()->setIndent(0);
   m_commandEditor.setCommands(&m_currentCommands);
 
   m_templates->addTemplate(Template(m_templates->templates.size() + 1, label + " " + std::to_string(m_templates->templates.size() + 1), "", type, commandString, params));
@@ -204,12 +204,10 @@ void DBTemplatesTab::AddTemplate(std::string label, Template::TemplateType type,
   m_templates->templates.at(m_templates->templates.size() - 1).setCommands(cmdJson.dump());
 }
 
-void DBTemplatesTab::SaveToFile() {
-  if (m_templates->serialize(m_parent->project()->database().basePath + "data/Templates.json")) {
-    if (m_templates->serialize(Database::instance()->basePath + "data/Templates.json")) {
-      ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Serialized data/Templates.json successfully!"});
-    } else {
-      ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to serialize data/Templates.json!"});
-    }
+void DBTemplatesTab::SaveToFile() const {
+  if (m_templates->serialize(Database::instance()->basePath + "data/Templates.json")) {
+    ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Serialized data/Templates.json successfully!"});
+  } else {
+    ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to serialize data/Templates.json!"});
   }
 }

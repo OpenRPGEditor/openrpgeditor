@@ -56,7 +56,7 @@ void ControlVariables::serializeParameters(nlohmann::ordered_json& out) const {
 }
 
 std::string ControlVariables::variableFormat(const std::string& text) const {
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + DecodeEnumName(code()) + colon.data() + text + ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + DecodeEnumName(code()) + colon.data() + text + ColorFormatter::popColor();
 }
 
 std::string ControlVariables::stringRep(const Database& db) const {

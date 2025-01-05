@@ -90,16 +90,16 @@ void TemplatesEvent::draw() {
         //     m_event->id = m_id;
         //   }
         // }
-        m_event->name = m_eventName;
-        m_event->note = m_eventNote;
+        m_event->setName(m_eventName);
+        m_event->setNote(m_eventNote);
 
-        m_event->x = m_tileX;
-        m_event->y = m_tileY;
-        for (auto& page : m_event->pages) {
+        m_event->setX(m_tileX);
+        m_event->setY(m_tileY);
+        for (auto& page : m_event->pages()) {
           page.image.direction = static_cast<Direction>(m_direction);
         }
-        if (m_id != m_event->id) {
-          m_event->id = m_id;
+        if (m_id != m_event->id()) {
+          m_event->setId(m_id);
         }
         m_map->createEventFromTemplate(*m_event);
         m_hasChanges = true;

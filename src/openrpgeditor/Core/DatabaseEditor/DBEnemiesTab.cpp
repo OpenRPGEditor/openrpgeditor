@@ -28,9 +28,9 @@ void DBEnemiesTab::draw() {
   }
 
   if (m_isDropConfirmed) {
-    m_selectedEnemy->dropItems().at(m_dropIndex).dataId = m_item.at(m_dropIndex);
-    m_selectedEnemy->dropItems().at(m_dropIndex).kind = m_dropSelection;
-    m_selectedEnemy->dropItems().at(m_dropIndex).denominator = m_dropDenominator;
+    m_selectedEnemy->dropItems().at(m_dropIndex).setDataId(m_item.at(m_dropIndex));
+    m_selectedEnemy->dropItems().at(m_dropIndex).setKind(m_dropSelection);
+    m_selectedEnemy->dropItems().at(m_dropIndex).setDenominator(m_dropDenominator);
     m_isOpen = false;
     m_isDropConfirmed = false;
   }
@@ -221,7 +221,7 @@ void DBEnemiesTab::draw() {
             {
               ImGui::SetNextItemWidth(160);
               ImGui::PushID("##orpg_database_enemy_drops_1");
-              if (ImGui::Button(m_selectedEnemy->dropItems().at(0).kind > 0 ? getDropString(0, m_selectedEnemy->dropItems().at(0).kind).c_str() : "", ImVec2{ImGui::GetContentRegionMax().x, 0})) {
+              if (ImGui::Button(m_selectedEnemy->dropItems().at(0).kind() > 0 ? getDropString(0, m_selectedEnemy->dropItems().at(0).kind()).c_str() : "", ImVec2{ImGui::GetContentRegionMax().x, 0})) {
                 m_dropIndex = 0;
                 m_isOpen = true;
               }
@@ -233,7 +233,7 @@ void DBEnemiesTab::draw() {
             {
               ImGui::SetNextItemWidth(160);
               ImGui::PushID("##orpg_database_enemy_drops_2");
-              if (ImGui::Button(m_selectedEnemy->dropItems().at(1).kind > 0 ? getDropString(1, m_selectedEnemy->dropItems().at(1).kind).c_str() : "", ImVec2{ImGui::GetContentRegionMax().x, 0})) {
+              if (ImGui::Button(m_selectedEnemy->dropItems().at(1).kind() > 0 ? getDropString(1, m_selectedEnemy->dropItems().at(1).kind()).c_str() : "", ImVec2{ImGui::GetContentRegionMax().x, 0})) {
                 m_dropIndex = 1;
                 m_isOpen = true;
               }
@@ -245,7 +245,7 @@ void DBEnemiesTab::draw() {
             {
               ImGui::SetNextItemWidth(160);
               ImGui::PushID("##orpg_database_enemy_drops_3");
-              if (ImGui::Button(m_selectedEnemy->dropItems().at(2).kind > 0 ? getDropString(2, m_selectedEnemy->dropItems().at(2).kind).c_str() : "", ImVec2{ImGui::GetContentRegionMax().x, 0})) {
+              if (ImGui::Button(m_selectedEnemy->dropItems().at(2).kind() > 0 ? getDropString(2, m_selectedEnemy->dropItems().at(2).kind()).c_str() : "", ImVec2{ImGui::GetContentRegionMax().x, 0})) {
                 m_dropIndex = 2;
                 m_isOpen = true;
               }
@@ -445,11 +445,11 @@ void DBEnemiesTab::drawPopup() {
 std::string DBEnemiesTab::getDropString(const int dropIndex, const int kindId) const {
   switch (kindId) {
   case 1:
-    return Database::instance()->itemNameOrId(m_selectedEnemy->dropItems().at(dropIndex).dataId);
+    return Database::instance()->itemNameOrId(m_selectedEnemy->dropItems().at(dropIndex).dataId());
   case 2:
-    return Database::instance()->weaponNameOrId(m_selectedEnemy->dropItems().at(dropIndex).dataId);
+    return Database::instance()->weaponNameOrId(m_selectedEnemy->dropItems().at(dropIndex).dataId());
   case 3:
-    return Database::instance()->armorNameOrId(m_selectedEnemy->dropItems().at(dropIndex).dataId);
+    return Database::instance()->armorNameOrId(m_selectedEnemy->dropItems().at(dropIndex).dataId());
   default:
     break;
   }

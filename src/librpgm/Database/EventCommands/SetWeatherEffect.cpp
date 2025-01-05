@@ -19,6 +19,6 @@ void SetWeatherEffectCommand::serializeParameters(nlohmann::ordered_json& out) c
 }
 
 std::string SetWeatherEffectCommand::stringRep(const Database& db) const {
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Set Weather Effect" + colon.data() + DecodeEnumName(effect) + ", " + std::to_string(power) + ", " +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Set Weather Effect" + colon.data() + DecodeEnumName(effect) + ", " + std::to_string(power) + ", " +
          std::to_string(duration) + " frames" + ColorFormatter::popColor() + (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
 }

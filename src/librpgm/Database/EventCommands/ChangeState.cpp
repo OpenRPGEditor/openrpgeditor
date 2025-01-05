@@ -30,6 +30,6 @@ std::string ChangeStateCommand::stringRep(const Database& db) const {
   }
 
   std::string stateName = db.stateNameOrId(state);
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change State" + colon.data() + actorName + ", " + DecodeEnumName(stateOp) + " " + stateName +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change State" + colon.data() + actorName + ", " + DecodeEnumName(stateOp) + " " + stateName +
          ColorFormatter::popColor();
 }

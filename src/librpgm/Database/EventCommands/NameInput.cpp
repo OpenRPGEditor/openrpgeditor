@@ -13,6 +13,6 @@ void NameInputCommand::serializeParameters(nlohmann::ordered_json& out) const {
 }
 
 std::string NameInputCommand::stringRep(const Database& db) const {
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Name Input Processing" + colon.data() + db.actorNameOrId(actorId) + ", " + std::to_string(maxChar) +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Name Input Processing" + colon.data() + db.actorNameOrId(actorId) + ", " + std::to_string(maxChar) +
          (maxChar > 1 ? " characters" : " character") + ColorFormatter::popColor();
 }

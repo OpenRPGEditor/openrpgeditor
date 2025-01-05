@@ -4,45 +4,98 @@
 #include <nlohmann/json.hpp>
 #include <string>
 
-struct Learning {
-  int level{};
-  std::string note;
-  int skillId{};
-};
-void to_json(nlohmann::ordered_json& to, const Learning& learning);
-void from_json(const nlohmann::ordered_json& from, Learning& learning);
-
-class Class {
+class Class final : public IModifiable {
   friend class ClassesSerializer;
   friend void to_json(nlohmann::ordered_json& to, const Class& cls);
   friend void from_json(const nlohmann::ordered_json& from, Class& cls);
 
 public:
-  [[nodiscard]] int id() const { return m_id; }
-  void setId(const int id) { m_id = id; }
+  class Learning final : public IModifiable {
+    friend void to_json(nlohmann::ordered_json& to, const Learning& learning);
+    friend void from_json(const nlohmann::ordered_json& from, Learning& learning);
 
-  [[nodiscard]] const std::array<int, 4>& expParams() const { return m_expParams; }
-  void setExpParams(const std::array<int, 4>& expParams) { m_expParams = expParams; }
-  void setExpParam(const int index, const int value) {
-    assert(index >= 0 && index < 4);
-    m_expParams[index] = value;
-  }
+  public:
+    Learning() = default;
+    Learning(const Learning& other);
+    Learning& operator=(const Learning& other);
+    Learning(Learning&& other) noexcept;
+    Learning& operator=(Learning&& other) noexcept;
 
-  [[nodiscard]] std::vector<Trait>& traits() { return m_traits; }
+    int level() const;
+    void setLevel(int level);
 
-  [[nodiscard]] std::vector<Learning>& learnings() { return m_learnings; }
+    const std::string& note() const;
+    void setNote(const std::string& note);
 
-  [[nodiscard]] const std::string& name() const { return m_name; }
-  void setName(const std::string& name) { m_name = name; }
+    int skillId() const;
+    void setSkillId(int skillId);
 
-  [[nodiscard]] const std::string& note() const { return m_note; }
-  void setNote(const std::string& note) { m_note = note; }
+    void restoreOriginal() override;
+    void acceptChanges() override;
+    nlohmann::ordered_json serializeOldValues() const override;
 
-  [[nodiscard]] const std::array<std::array<int, 99>, 8>& params() const { return m_params; }
-  void setParams(const std::array<std::array<int, 99>, 8>& params) { m_params = params; }
+    rpgmutils::signal<void(Learning*, int)>& levelModified();
+    rpgmutils::signal<void(Learning*, const std::string&)>& noteModified();
+    rpgmutils::signal<void(Learning*, int)>& skillIdModified();
 
-  [[nodiscard]] bool isValid() const { return m_isValid; }
-  void setValid(const bool isValid) { m_isValid = isValid; }
+  private:
+    int m_level{};
+    std::string m_note;
+    int m_skillId{};
+
+    std::optional<int> m_oldlevel;
+    std::optional<std::string> m_oldnote;
+    std::optional<int> m_oldskillId;
+    std::optional<rpgmutils::signal<void(Learning*, int)>> m_levelModified;
+    std::optional<rpgmutils::signal<void(Learning*, const std::string&)>> m_noteModified;
+    std::optional<rpgmutils::signal<void(Learning*, int)>> m_skillIdModified;
+  };
+
+  Class() = default;
+  Class(const Class& other);
+  Class& operator=(const Class& other);
+  Class(Class&& other) noexcept;
+  Class& operator=(Class&& other) noexcept;
+
+  [[nodiscard]] int id() const;
+  void setId(const int id);
+
+  [[nodiscard]] const std::array<int, 4>& expParams() const;
+  void setExpParams(const std::array<int, 4>& expParams);
+  void setExpParam(const int index, const int value);
+
+  /* TODO: Remove */
+  [[nodiscard]] std::vector<Trait>& traits();
+  [[nodiscard]] const std::vector<Trait>& traits() const;
+  void setTraits(const std::vector<Trait>& traits);
+
+  [[nodiscard]] const std::vector<Learning>& learnings() const;
+  void setLearnings(const std::vector<Learning>& learnings);
+
+  [[nodiscard]] const std::string& name() const;
+  void setName(const std::string& name);
+
+  [[nodiscard]] const std::string& note() const;
+  void setNote(const std::string& note);
+
+  [[nodiscard]] const std::array<std::array<int, 99>, 8>& params() const;
+  void setParams(const std::array<std::array<int, 99>, 8>& params);
+
+  [[nodiscard]] bool isValid() const;
+  void setValid(bool isValid);
+
+  void restoreOriginal() override;
+  void acceptChanges() override;
+  nlohmann::ordered_json serializeOldValues() const override;
+
+  rpgmutils::signal<void(Class*, int)>& idModified();
+  rpgmutils::signal<void(Class*, const std::array<int, 4>&)>& expParamsModified();
+  rpgmutils::signal<void(Class*, int, int)>& expParamModified();
+  rpgmutils::signal<void(Class*, const std::vector<Trait>&)>& traitsModified();
+  rpgmutils::signal<void(Class*, const std::vector<Learning>&)>& learningsModified();
+  rpgmutils::signal<void(Class*, const std::string&)>& nameModified();
+  rpgmutils::signal<void(Class*, const std::string&)>& noteModified();
+  rpgmutils::signal<void(Class*, const std::array<std::array<int, 99>, 8>&)>& paramsModified();
 
 private:
   int m_id{};
@@ -53,6 +106,23 @@ private:
   std::string m_note;
   std::array<std::array<int, 99>, 8> m_params;
 
+  std::optional<int> m_oldid;
+  std::optional<std::array<int, 4>> m_oldexpParams; // Base, Extra, Acceleration A, Acceleration B
+  std::optional<std::vector<Trait>> m_oldtraits;
+  std::optional<std::vector<Learning>> m_oldlearnings;
+  std::optional<std::string> m_oldname;
+  std::optional<std::string> m_oldnote;
+  std::optional<std::array<std::array<int, 99>, 8>> m_oldparams;
+
+  std::optional<rpgmutils::signal<void(Class*, int)>> m_idModified;
+  std::optional<rpgmutils::signal<void(Class*, const std::array<int, 4>&)>> m_expParamsModified;
+  std::optional<rpgmutils::signal<void(Class*, int, int)>> m_expParamModified;
+  std::optional<rpgmutils::signal<void(Class*, const std::vector<Trait>&)>> m_traitsModified;
+  std::optional<rpgmutils::signal<void(Class*, const std::vector<Learning>&)>> m_learningsModified;
+  std::optional<rpgmutils::signal<void(Class*, const std::string&)>> m_nameModified;
+  std::optional<rpgmutils::signal<void(Class*, const std::string&)>> m_noteModified;
+  std::optional<rpgmutils::signal<void(Class*, const std::array<std::array<int, 99>, 8>&)>> m_paramsModified;
+
   /*!
    * @name m_isValid
    * @details
@@ -62,5 +132,7 @@ private:
    */
   bool m_isValid{false};
 };
+void to_json(nlohmann::ordered_json& to, const Class::Learning& learning);
+void from_json(const nlohmann::ordered_json& from, Class::Learning& learning);
 void to_json(nlohmann::ordered_json& to, const Class& cls);
 void from_json(const nlohmann::ordered_json& from, Class& cls);

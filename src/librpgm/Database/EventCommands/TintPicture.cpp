@@ -24,7 +24,7 @@ void TintPictureCommand::serializeParameters(nlohmann::ordered_json& out) const 
 }
 
 std::string TintPictureCommand::stringRep(const Database& db) const {
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Tint Picture" + colon.data() +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Tint Picture" + colon.data() +
          std::format("#{}, ({},{},{},{}), {} frames", picture, color.r, color.g, color.b, color.gray, duration) + ColorFormatter::popColor() +
          (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
 }

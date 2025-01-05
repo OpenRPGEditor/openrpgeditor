@@ -15,6 +15,6 @@ void ChangeVehicleImageCommand::serializeParameters(nlohmann::ordered_json& out)
 }
 
 std::string ChangeVehicleImageCommand::stringRep(const Database& db) const {
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Vehicle Image" + colon.data() + DecodeEnumName(vehicle) + ", " + db.imageText(picture, pictureIndex) +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Vehicle Image" + colon.data() + DecodeEnumName(vehicle) + ", " + db.imageText(picture, pictureIndex) +
          ColorFormatter::popColor();
 }

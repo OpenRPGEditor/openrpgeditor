@@ -1,5 +1,5 @@
 #include "Core/MapEditor/MapProperties.hpp"
-
+#include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Database/Database.hpp"
 
@@ -146,7 +146,7 @@ std::tuple<bool, bool> MapProperties::draw() {
         {
           ImGui::PushID("##map_bgm_button");
           ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 30);
-          std::string text = map()->bgm().name.empty() ? "##map_bgm_button_empty" : map()->bgm().name;
+          const std::string text = map()->bgm().name().empty() ? "##map_bgm_button_empty" : map()->bgm().name();
           if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetContentRegionMax().x / 2) - 15, 0})) {}
           ImGui::PopID();
         }
@@ -163,7 +163,7 @@ std::tuple<bool, bool> MapProperties::draw() {
         ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->autoplayBgs());
         {
           ImGui::PushID("##map_bgs_button");
-          std::string text = map()->bgs().name.empty() ? "##map_bgs_button_empty" : map()->bgs().name;
+          const std::string text = map()->bgs().name().empty() ? "##map_bgs_button_empty" : map()->bgs().name();
           if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetContentRegionMax().x / 2) - 15, 0})) {}
           ImGui::PopID();
         }
@@ -180,7 +180,7 @@ std::tuple<bool, bool> MapProperties::draw() {
         {
           ImGui::PushID("##map_battleback_button");
           // TODO: Combine battleBack1Name and battleBack2Name
-          std::string text = map()->bgs().name.empty() ? "##map_battleback_button_empty" : map()->battleback1Name();
+          std::string text = map()->bgs().name().empty() ? "##map_battleback_button_empty" : map()->battleback1Name();
           if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetContentRegionMax().x / 2) - 15, 0})) {}
           ImGui::PopID();
         }

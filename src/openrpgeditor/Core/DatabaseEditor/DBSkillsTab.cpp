@@ -401,12 +401,11 @@ void DBSkillsTab::draw() {
               {
                 ImGui::Text("Type:");
                 ImGui::SetNextItemWidth(200);
-                if (ImGui::BeginCombo("##orpg_database_skills_damage_type", DecodeEnumName(magic_enum::enum_name(m_selectedSkill->damage().type)).c_str())) {
+                if (ImGui::BeginCombo("##orpg_database_skills_damage_type", DecodeEnumName(magic_enum::enum_name(m_selectedSkill->damage().type())).c_str())) {
                   int index{0};
                   for (auto& dir : magic_enum::enum_values<DamageType>()) {
-                    if (const bool is_selected = m_selectedSkill->damage().type == static_cast<DamageType>(magic_enum::enum_index(dir).value());
-                        ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
-                      m_selectedSkill->damage().type = static_cast<DamageType>(magic_enum::enum_index(dir).value());
+                    if (const bool is_selected = m_selectedSkill->damage().type() == dir; ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
+                      m_selectedSkill->damage().setType(dir);
                       if (is_selected)
                         ImGui::SetItemDefaultFocus();
                     }
@@ -422,28 +421,28 @@ void DBSkillsTab::draw() {
               {
                 ImGui::Text("Element:");
                 ImGui::SetNextItemWidth(200);
-                if (ImGui::BeginCombo("##orpg_database_skills_damage_element", m_selectedSkill->damage().elementId == -1 ? "Normal Attack"
-                                                                               : m_selectedSkill->damage().elementId == 0
+                if (ImGui::BeginCombo("##orpg_database_skills_damage_element", m_selectedSkill->damage().elementId() == -1 ? "Normal Attack"
+                                                                               : m_selectedSkill->damage().elementId() == 0
                                                                                    ? "None"
-                                                                                   : Database::instance()->system.element(m_selectedSkill->damage().elementId)->c_str())) {
+                                                                                   : Database::instance()->system.element(m_selectedSkill->damage().elementId())->c_str())) {
                   int index{-1};
                   for (auto& _ : Database::instance()->system.elements) {
-                    const bool is_selected = m_selectedSkill->damage().elementId == index;
+                    const bool is_selected = m_selectedSkill->damage().elementId() == index;
                     if (index == -1) {
                       if (ImGui::Selectable("Normal Attack", is_selected)) {
-                        m_selectedSkill->damage().elementId = index;
+                        m_selectedSkill->damage().setElementId(index);
                         if (is_selected)
                           ImGui::SetItemDefaultFocus();
                       }
                     } else if (index == 0) {
                       if (ImGui::Selectable("None", is_selected)) {
-                        m_selectedSkill->damage().elementId = index;
+                        m_selectedSkill->damage().setElementId(index);
                         if (is_selected)
                           ImGui::SetItemDefaultFocus();
                       }
                     } else {
-                      if (ImGui::Selectable(Database::instance()->system.element(m_selectedSkill->damage().elementId)->c_str(), is_selected)) {
-                        m_selectedSkill->damage().elementId = index;
+                      if (ImGui::Selectable(Database::instance()->system.element(m_selectedSkill->damage().elementId())->c_str(), is_selected)) {
+                        m_selectedSkill->damage().setElementId(index);
                         if (is_selected)
                           ImGui::SetItemDefaultFocus();
                       }
@@ -455,16 +454,14 @@ void DBSkillsTab::draw() {
               }
               ImGui::EndGroup();
               char formula[4096];
-              strncpy(formula, m_selectedSkill->damage().formula.c_str(), 4096);
+              strncpy(formula, m_selectedSkill->damage().formula().c_str(), 4096);
               ImGui::LabelOverLineEdit("##orpg_database_skills_formula", "Formula", formula, 4096, 400.f);
               ImGui::BeginGroup();
               {
                 ImGui::TextUnformatted("Variance:");
-                if (ImGui::InputInt("##orpg_database_skills_variance", &m_selectedSkill->damage().variance)) {
-                  if (m_selectedSkill->damage().variance < 0)
-                    m_selectedSkill->damage().variance = 0;
-                  if (m_selectedSkill->damage().variance > 100)
-                    m_selectedSkill->damage().variance = 100;
+                int variance = m_selectedSkill->damage().variance();
+                if (ImGui::InputInt("##orpg_database_skills_variance", &variance)) {
+                  m_selectedSkill->damage().setVariance(std::clamp(variance, 0, 100));
                 }
               }
               ImGui::EndGroup();
@@ -473,7 +470,10 @@ void DBSkillsTab::draw() {
               ImGui::BeginGroup();
               {
                 ImGui::Text("Critical Hits:");
-                ImGui::Checkbox("##orpg_database_skills_crits", &m_selectedSkill->damage().critical);
+                bool critical = m_selectedSkill->damage().critical();
+                if (ImGui::Checkbox("##orpg_database_skills_crits", &critical)) {
+                  m_selectedSkill->damage().setCritical(critical);
+                }
               }
               ImGui::EndGroup();
 

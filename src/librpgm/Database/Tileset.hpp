@@ -10,6 +10,7 @@
 
 class Tileset {
 public:
+  friend class TilesetsSerializer;
   friend void to_json(nlohmann::ordered_json& j, const Tileset& tileset);
   friend void from_json(const nlohmann::ordered_json& j, Tileset& tileset);
   enum class Mode {

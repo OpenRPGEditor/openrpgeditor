@@ -4,6 +4,87 @@
 
 EventPage::EventPage() { list.emplace_back(new EventDummy())->setIndent(0); }
 
+EventPage::EventPage(const EventPage& other)
+: IModifiable(other)
+, conditions(other.conditions)
+, directionFix(other.directionFix)
+, image(other.image)
+, list(other.list)
+, moveFrequency(other.moveFrequency)
+, moveSpeed(other.moveSpeed)
+, moveType(other.moveType)
+, priorityType(other.priorityType)
+, stepAnime(other.stepAnime)
+, through(other.through)
+, trigger(other.trigger)
+, walkAnime(other.walkAnime)
+, m_editor(other.m_editor) {
+  if (m_editor) {
+    m_editor->setPagePtr(this);
+  }
+}
+
+EventPage& EventPage::operator=(const EventPage& other) {
+  IModifiable::operator=(other);
+  conditions = other.conditions;
+  directionFix = other.directionFix;
+  image = other.image;
+  list = other.list;
+  moveFrequency = other.moveFrequency;
+  moveSpeed = other.moveSpeed;
+  moveType = other.moveType;
+  priorityType = other.priorityType;
+  stepAnime = other.stepAnime;
+  through = other.through;
+  trigger = other.trigger;
+  walkAnime = other.walkAnime;
+  m_editor = other.m_editor;
+  if (m_editor) {
+    m_editor->setPagePtr(this);
+  }
+  return *this;
+}
+EventPage::EventPage(EventPage&& other) noexcept
+: IModifiable(std::move(other))
+, conditions(other.conditions)
+, directionFix(other.directionFix)
+, image(other.image)
+, list(other.list)
+, moveFrequency(other.moveFrequency)
+, moveSpeed(other.moveSpeed)
+, moveType(other.moveType)
+, priorityType(other.priorityType)
+, stepAnime(other.stepAnime)
+, through(other.through)
+, trigger(other.trigger)
+, walkAnime(other.walkAnime)
+, m_editor(std::move(other.m_editor)) {
+  if (m_editor) {
+    m_editor->setPagePtr(this);
+  }
+}
+
+EventPage& EventPage::operator=(EventPage&& other) noexcept {
+  IModifiable::operator=(other);
+  conditions = other.conditions;
+  directionFix = other.directionFix;
+  image = other.image;
+  list = other.list;
+  moveFrequency = other.moveFrequency;
+  moveSpeed = other.moveSpeed;
+  moveType = other.moveType;
+  priorityType = other.priorityType;
+  stepAnime = other.stepAnime;
+  through = other.through;
+  trigger = other.trigger;
+  walkAnime = other.walkAnime;
+  m_editor = std::move(other.m_editor);
+  if (m_editor) {
+    m_editor->setPagePtr(this);
+  }
+  return *this;
+}
+
 void EventPage::clear() {
   list.clear();
   list.emplace_back(new EventDummy())->setIndent(0);
@@ -69,7 +150,7 @@ void to_json(nlohmann::ordered_json& json, const EventPage& eventPage) {
   json["through"] = eventPage.through;
   json["trigger"] = eventPage.trigger;
   json["walkAnime"] = eventPage.walkAnime;
-  if (!eventPage.name.empty()) {
+  if (eventPage.name) {
     json["name"] = eventPage.name;
   }
 }

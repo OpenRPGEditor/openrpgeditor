@@ -26,8 +26,14 @@ public:
   static IEventRenderer* create(Event* ev);
 
 protected:
+  friend class Event;
   explicit IEventRenderer(Event* event) : m_event(event) {}
-  Event* m_event;
+  virtual void eventPointerInvalidated() = 0;
+  void setEventPtr(Event* event) {
+    m_event = event;
+    eventPointerInvalidated();
+  }
+  Event* m_event{nullptr};
 };
 
 class Event final : public IModifiable {
@@ -108,6 +114,8 @@ public:
   rpgmutils::signal<void(Event*)>& pageRemoved();
   rpgmutils::signal<void(Event*, int)>& xModified();
   rpgmutils::signal<void(Event*, int)>& yModified();
+
+  void swapPages(int a, int b);
 
 private:
   int m_id{};

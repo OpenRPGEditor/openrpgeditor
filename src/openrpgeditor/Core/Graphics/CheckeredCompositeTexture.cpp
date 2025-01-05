@@ -50,6 +50,8 @@ void CheckeredCompositeTexture::update() {
 
   auto* oldTarget = SDL_GetRenderTarget(App::APP->getWindow()->getNativeRenderer());
   SDL_SetRenderTarget(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_compositedTexture));
+  uint8_t r, g, b, a;
+  SDL_GetRenderDrawColor(App::APP->getWindow()->getNativeRenderer(), &r, &g, &b, &a);
   SDL_SetRenderDrawColor(App::APP->getWindow()->getNativeRenderer(), 0, 0, 0, 0);
   SDL_RenderClear(App::APP->getWindow()->getNativeRenderer());
 
@@ -93,5 +95,6 @@ void CheckeredCompositeTexture::update() {
   }
 
   SDL_SetRenderTarget(App::APP->getWindow()->getNativeRenderer(), oldTarget);
+  SDL_SetRenderDrawColor(App::APP->getWindow()->getNativeRenderer(), r, g, b, a);
   m_isDirty = false;
 }

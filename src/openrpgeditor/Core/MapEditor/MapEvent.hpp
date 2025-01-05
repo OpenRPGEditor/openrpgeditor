@@ -140,6 +140,7 @@ public:
 protected:
   friend class IEventRenderer* IEventRenderer::create(Event* ev);
   explicit MapEvent(Event* event);
+  void eventPointerInvalidated() override;
 
   void updateAnimation();
   void updateAnimationCount();

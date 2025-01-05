@@ -14,7 +14,16 @@ Event::Event(const Event& other)
 , m_oldnote(other.m_oldnote)
 , m_oldpages(other.m_oldpages)
 , m_oldx(other.m_oldx)
-, m_oldy(other.m_oldy) {}
+, m_oldy(other.m_oldy)
+, m_editor(other.m_editor)
+, m_renderer(other.m_renderer) {
+  if (m_editor) {
+    m_editor->setEventPtr(this);
+  }
+  if (m_renderer) {
+    m_renderer->setEventPtr(this);
+  }
+}
 
 Event& Event::operator=(const Event& other) {
   IModifiable::operator=(other);
@@ -30,6 +39,14 @@ Event& Event::operator=(const Event& other) {
   m_oldpages = other.m_oldpages;
   m_oldx = other.m_oldx;
   m_oldy = other.m_oldy;
+  m_editor = other.m_editor;
+  m_renderer = other.m_renderer;
+  if (m_editor) {
+    m_editor->setEventPtr(this);
+  }
+  if (m_renderer) {
+    m_renderer->setEventPtr(this);
+  }
   return *this;
 }
 
@@ -46,7 +63,16 @@ Event::Event(Event&& other) noexcept
 , m_oldnote(std::move(other.m_oldnote))
 , m_oldpages(std::move(other.m_oldpages))
 , m_oldx(other.m_oldx)
-, m_oldy(other.m_oldy) {}
+, m_oldy(other.m_oldy)
+, m_editor(std::move(other.m_editor))
+, m_renderer(std::move(other.m_renderer)) {
+  if (m_editor) {
+    m_editor->setEventPtr(this);
+  }
+  if (m_renderer) {
+    m_renderer->setEventPtr(this);
+  }
+}
 
 Event& Event::operator=(Event&& other) noexcept {
   IModifiable::operator=(std::move(other));
@@ -62,6 +88,14 @@ Event& Event::operator=(Event&& other) noexcept {
   m_oldpages = std::move(other.m_oldpages);
   m_oldx = other.m_oldx;
   m_oldy = other.m_oldy;
+  m_editor = std::move(other.m_editor);
+  m_renderer = std::move(other.m_renderer);
+  if (m_editor) {
+    m_editor->setEventPtr(this);
+  }
+  if (m_renderer) {
+    m_renderer->setEventPtr(this);
+  }
   return *this;
 }
 
@@ -148,6 +182,22 @@ void Event::setY(const int y) {
   m_y = y;
   if (!signalsDisabled()) {
     yModified().fire(this, m_y);
+  }
+  setModified();
+}
+
+void Event::swapPages(int a, int b) {
+  if (a < 0 || a >= m_pages.size()) {
+    return;
+  }
+  if (b < 0 || b >= m_pages.size()) {
+    return;
+  }
+
+  MODIFIABLE_SET_OLD_VALUE(pages);
+  std::swap(m_pages.at(a), m_pages.at(b));
+  if (!signalsDisabled()) {
+    pagesModified().fire(this, m_pages);
   }
   setModified();
 }

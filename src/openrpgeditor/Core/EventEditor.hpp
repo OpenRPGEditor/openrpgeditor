@@ -25,10 +25,14 @@ public:
 protected:
   friend IEventEditor* IEventEditor::create(Event* ev);
   explicit EventEditor(Event* event) : IEventEditor(event) {}
+  void eventPointerInvalidated() override {};
 
 private:
   std::optional<ObjectPicker<Template>> m_templatePicker;
   int m_selectedPage = 0;
   bool m_open{false};
   bool m_confirmed{false};
+  bool m_doSwap{false};
+  int m_swapTarget{-1};
+  int m_swapDestination{-1};
 };

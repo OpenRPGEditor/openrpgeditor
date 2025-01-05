@@ -709,6 +709,8 @@ bool MapEvent::isMapPassable(const double x, const double y, const Direction d) 
   return m_mapEditor->isPassable(x, y, d) && m_mapEditor->isPassable(x2, y2, d2);
 }
 
+void MapEvent::eventPointerInvalidated() { setupPageSettings(); }
+
 IEventRenderer* IEventRenderer::create(Event* ev) { return new MapEvent(ev); }
 
 double MapEvent::scrolledX() const { return m_mapEditor->adjustX(m_realX); }

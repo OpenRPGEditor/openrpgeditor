@@ -52,8 +52,11 @@ class EventPage final : public IModifiable {
 public:
   friend void to_json(nlohmann::ordered_json& json, const EventPage& eventPage);
   friend void from_json(const nlohmann::ordered_json& json, EventPage& eventPage);
-
   EventPage();
+  EventPage(const EventPage& other);
+  EventPage& operator=(const EventPage& other);
+  EventPage(EventPage&& other) noexcept;
+  EventPage& operator=(EventPage&& other) noexcept;
   void clear();
 
   IPageEditor* editor() const {
@@ -75,11 +78,11 @@ public:
   EventPriority priorityType{};
   bool stepAnime = false;
   bool through{};
-  EventTriggerType trigger{};
+  EventTriggerType trigger{EventTriggerType::Action_Button};
   bool walkAnime = true;
 
   /* OpenRPGMaker Additions */
-  std::string name;
+  std::optional<std::string> name;
 
   [[nodiscard]] bool isModified() const override {
     bool modified = IModifiable::isModified();

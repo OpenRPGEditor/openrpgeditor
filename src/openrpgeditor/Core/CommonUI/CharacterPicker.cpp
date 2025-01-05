@@ -71,12 +71,13 @@ std::tuple<bool, bool> CharacterPicker::draw() {
   }
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{894, 768}, ImGuiCond_Appearing);
+  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 3, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::BeginGroup();
     {
-      ImGui::BeginChild("##character_picker_sheet_list", ImVec2{200, 768}, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
+      ImGui::Text("Selected Sheet: %s", m_selectedSheet == -1 ? "(None)" : m_characterSheets[m_selectedSheet].c_str());
+      ImGui::BeginChild("##character_picker_sheet_list", ImVec2{ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRS").x, 768}, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
       {
         if (ImGui::BeginTable("##character_picker.characterlist", 1)) {
           ImGui::TableNextRow();
@@ -85,10 +86,13 @@ std::tuple<bool, bool> CharacterPicker::draw() {
             m_selectedSheet = -1;
             m_characterSheet.reset();
           }
+          if (m_selectedSheet == -1) {
+            ImGui::SetItemDefaultFocus();
+          }
           for (int i = 0; i < m_characterSheets.size(); ++i) {
             const auto& sheet = m_characterSheets[i];
             ImGui::TableNextColumn();
-            if (ImGui::Selectable(sheet.c_str(), m_selectedSheet == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+            if (ImGui::Selectable(std::format("{0}##sheet_{0}", sheet).c_str(), m_selectedSheet == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
               if (m_selectedSheet != i) {
                 m_characterSheet.emplace(sheet);
                 if (m_pickerMode == PickerMode::Character) {
@@ -102,6 +106,9 @@ std::tuple<bool, bool> CharacterPicker::draw() {
                 m_selectionY = 0;
               }
               m_selectedSheet = i;
+            }
+            if (m_selectedSheet == i && ImGui::IsWindowAppearing()) {
+              ImGui::SetScrollHereY();
             }
             if (ImGui::IsItemHovered()) {
               ImGui::SetTooltip("%s", sheet.c_str());

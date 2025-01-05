@@ -9,14 +9,6 @@ static inline float roundToNearestQuarter(float num) { return static_cast<float>
 
 void UISettingsPage::draw() {
   ImGui::BeginChild("UISettingsPage", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiWindowFlags_AlwaysAutoResize, ImGuiWindowFlags_NoBackground);
-  ImGui::Text("UI Scale");
-  if (ImGui::SliderFloat("##ui_scale", &Settings::instance()->uiScale, 1.0f, 2.0f, "%.2f")) {
-    Settings::instance()->uiScale = roundToNearestQuarter(Settings::instance()->uiScale);
-  }
-  if (ImGui::IsItemDeactivatedAfterEdit()) {
-    App::APP->requestFontUpdate();
-    m_fontSizeChanged = true;
-  }
   ImGui::Text("Font Size");
   ImGui::SliderInt("##ui_font_size", &Settings::instance()->fontSize, 8, 21);
   if (ImGui::IsItemDeactivatedAfterEdit()) {

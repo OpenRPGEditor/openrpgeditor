@@ -12,7 +12,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{500, 400});
+  ImGui::SetNextWindowSize(ImVec2{800, 600});
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize)) {
     if (picker) {
       auto [closed, confirmed] = picker->draw();
@@ -598,10 +598,11 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
         }
         ImGui::EndTabItem();
       }
-      ImGui::SetCursorPosY(ImGui::GetContentRegionMax().y - 30);
+      ImGui::SetCursorPosY(ImGui::GetContentRegionMax().y - (30 + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y));
       ImGui::Separator();
       ImGui::Checkbox("Create Else Branch", &m_elseBranch);
-      ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionMax().x - 105, ImGui::GetContentRegionMax().y - 25});
+      ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionMax().x - (105 + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().ItemSpacing.x),
+                                 ImGui::GetContentRegionMax().y - (25 + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)});
       ImGui::BeginGroup();
       {
         if (ImGui::Button("OK")) {

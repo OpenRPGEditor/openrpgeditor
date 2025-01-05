@@ -2,7 +2,6 @@
 
 #include "imgui.h"
 
-#include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 
 using namespace std::string_view_literals;
@@ -73,8 +72,7 @@ std::tuple<bool, bool> Dialog_ChangeVictoryME::draw() {
     ImGui::EndGroup();
     ImGui::BeginGroup();
     {
-      ImGui::SetCursorPos(ImVec2((ImGui::GetContentRegionMax().x - App::DPIHandler::scale_value(90)) - ImGui::GetStyle().FramePadding.x,
-                                 (ImGui::GetContentRegionMax().y - App::DPIHandler::scale_value(30)) - ImGui::GetStyle().FramePadding.y));
+      ImGui::SetCursorPos(ImVec2((ImGui::GetContentRegionMax().x - 90) - ImGui::GetStyle().FramePadding.x, (ImGui::GetContentRegionMax().y - 30) - ImGui::GetStyle().FramePadding.y));
 
       if (ImGui::Button("OK")) {
         m_confirmed = true;

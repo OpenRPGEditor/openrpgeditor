@@ -1,5 +1,5 @@
 #include "Core/EventCommands/Dialog_PlayBGS.hpp"
-#include "Core/DPIHandler.hpp"
+
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Log.hpp"
 #include "imgui.h"

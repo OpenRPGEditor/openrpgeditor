@@ -231,7 +231,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
             ImGui::SameLine();
             int tmpInt2 = m_selectedAction->conditionType() == ActionCondition::Turn ? static_cast<int>(m_selectedAction->conditionParam2()) : 0;
             ImGui::SameLine();
-            ImGui::SetNextItemWidth(230 * App::DPIHandler::get_ui_scale());
+            ImGui::SetNextItemWidth(230);
             if (ImGui::InputInt("##action_turn_value2", &tmpInt2)) {
               m_selectedAction->setConditionParam2(static_cast<float>(tmpInt2));
             }

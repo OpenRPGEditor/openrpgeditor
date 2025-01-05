@@ -1,5 +1,5 @@
 #include "Core/MapEditor/MapProperties.hpp"
-#include "Core/DPIHandler.hpp"
+
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Database/Database.hpp"
 

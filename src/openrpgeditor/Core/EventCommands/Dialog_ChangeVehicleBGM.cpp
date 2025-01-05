@@ -2,7 +2,7 @@
 
 #include "imgui.h"
 
-#include "Core/DPIHandler.hpp"
+
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 
 using namespace std::string_view_literals;

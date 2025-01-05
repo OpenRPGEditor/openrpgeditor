@@ -346,7 +346,7 @@ add_library(
         Core/Graphics/IconSheet.hpp
         Core/Graphics/Image.cpp
         Core/Graphics/Image.hpp
-        Core/Graphics/image_loader.c
+        Core/Graphics/image_loader.cpp
         Core/Graphics/image_loader.h
         Core/Graphics/RenderImage.cpp
         Core/Graphics/RenderImage.hpp
@@ -451,6 +451,7 @@ target_link_libraries(
         PUBLIC fmt::fmt-header-only
         spdlog::spdlog_header_only
         SDL3::SDL3
+        SDL3_image::SDL3_image
         imgui-setup
         nfd
         magic_enum
@@ -513,7 +514,7 @@ target_link_libraries(
         spdlog::spdlog_header_only
         orecore
         SDL3::SDL3
-        SDL3::SDL3
+        SDL3_image::SDL3_image
         imgui-setup
         nfd
         magic_enum

@@ -49,5 +49,5 @@ private:
   void onFileModified(const std::filesystem::path& path);
   void onFileDeleted(const std::filesystem::path& path);
 
-  bool m_open = true;
+  bool m_open = false;
 };

@@ -52,6 +52,9 @@ Application::Application(const std::string& title) {
 #if !defined(WIN32) && !defined(APPLE)
   // We want the compositor to be enabled
   SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
+  /* TODO This needs fixes before we can switch to wayland, for now force x11 */
+  // SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "wayland");
+  SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "x11");
 #endif
 
   const unsigned int init_flags{SDL_INIT_VIDEO | SDL_INIT_GAMEPAD};
@@ -102,7 +105,6 @@ void Application::updateScale() {
   style.FrameBorderSize = 1.f;
   style.FramePadding = ImVec2(8, 6);
   style.ScrollbarSize = 18.f;
-  ImGui::GetIO().DisplayFramebufferScale = ImVec2(m_settings.uiScale, m_settings.uiScale);
 }
 
 void Application::updateGuiColors() {
@@ -319,11 +321,11 @@ ExitStatus Application::run() {
       ImGui_ImplSDL3_NewFrame();
 
       // FIXME: Fixup monitors
-      //  Currently crashes for some reason, copying MainPos and MainSize is recommended by the assert, so here we are
-      for (ImGuiPlatformMonitor& mon : ImGui::GetPlatformIO().Monitors) {
-        mon.WorkPos = mon.MainPos;
-        mon.WorkSize = mon.MainSize;
-      }
+      // //  Currently crashes for some reason, copying MainPos and MainSize is recommended by the assert, so here we are
+      // for (ImGuiPlatformMonitor& mon : ImGui::GetPlatformIO().Monitors) {
+      //   mon.WorkPos = mon.MainPos;
+      //   mon.WorkSize = mon.MainSize;
+      // }
 
       ImGui::NewFrame();
 

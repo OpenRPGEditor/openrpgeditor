@@ -49,7 +49,7 @@ public:
   [[nodiscard]] int tileId(int x, int y, int z) const;
   [[nodiscard]] bool isOverworld() const { return m_tileset && m_tileset->mode() == Tileset::Mode::World; }
 
-  [[nodiscard]] std::vector<int> tilesetFlags() const {
+  [[nodiscard]] std::vector<std::optional<int>> tilesetFlags() const {
     if (m_tileset) {
       return m_tileset->flags();
     }

@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "TileHelper.hpp"
+
 #include <array>
 #include <string>
 #include <vector>
@@ -18,21 +20,54 @@ public:
   [[nodiscard]] int id() const { return m_id; }
   void setId(const int id) { m_id = id; }
 
-  [[nodiscard]] const std::vector<int>& flags() const { return m_flags; }
-  void setFlags(const std::vector<int>& flags) { m_flags = flags; }
+  [[nodiscard]] const std::vector<std::optional<int>>& flags() const { return m_flags; }
+  int flag(const int id) {
+    if (id > TileHelper::TILE_ID_MAX) {
+      return 0;
+    }
+    if (id >= m_flags.size() && m_flags.size() <= TileHelper::TILE_ID_MAX) {
+      int i = 0;
+      while (i--) {
+        m_flags.emplace_back();
+      }
+      m_flags.back() = 0;
+    }
+
+    if (!m_flags[id]) {
+      m_flags[id] = 0;
+    }
+    return *m_flags[id];
+  }
+
   [[nodiscard]] int flag(const int idx) const {
+    if (idx > TileHelper::TILE_ID_MAX) {
+      return 0;
+    }
+    
     if (idx >= 0 && idx < m_flags.size()) {
-      return m_flags[idx];
+      return m_flags[idx] ? *m_flags[idx] : 0;
     }
     return 0;
   }
+
+  void setFlags(const std::vector<std::optional<int>>& flags) { m_flags = flags; }
   void setFlag(const int idx, const int flag, const bool enabled = true) {
-    if (idx >= 0 && idx < m_flags.size()) {
-      if (enabled) {
-        m_flags[idx] |= flag;
-      } else {
-        m_flags[idx] &= ~flag;
+    if (idx >= m_flags.size() && m_flags.size() <= TileHelper::TILE_ID_MAX) {
+      int i = idx;
+      while (i--) {
+        m_flags.emplace_back();
       }
+    } else if (idx > TileHelper::TILE_ID_MAX) {
+      return;
+    }
+    if (!m_flags[flag]) {
+      m_flags[idx] = 0;
+    }
+
+    if (enabled) {
+      *m_flags[idx] |= flag;
+    } else {
+      *m_flags[idx] &= ~flag;
     }
   }
 
@@ -61,7 +96,7 @@ public:
 
 private:
   int m_id;
-  std::vector<int> m_flags;
+  std::vector<std::optional<int>> m_flags;
   Mode m_mode;
   std::string m_name;
   std::string m_note;

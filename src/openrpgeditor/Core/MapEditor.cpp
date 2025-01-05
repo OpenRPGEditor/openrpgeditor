@@ -179,18 +179,35 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
   if ((ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseDragging(ImGuiMouseButton_Left)) && m_parent->editMode() == EditMode::Map &&
       (ImGui::IsWindowFocused() && ImGui::IsWindowHovered()) && map()) {
     const auto& penData = m_parent->tilesetPicker().penData();
+    int layer = 0;
     if (!penData.empty()) {
       if (m_parent->tilesetPicker().isRegionMode()) {
         map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), 5)] = penData[0][0];
       } else {
         switch (m_parent->drawTool()) {
         case DrawTool::Pencil: {
-          for (int i = 0; i < 4; ++i) {
-            if (penData[0][i] == -1) {
-              continue;
+          if (layer == -1) {
+            for (int i = 0; i < 4; ++i) {
+              if (penData[0][i] == -1) {
+                continue;
+              }
+              map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), i)] = penData[0][i];
+              updateAutotilesAroundPoint({m_tileCursor.tileX(), m_tileCursor.tileY()}, i);
             }
-            map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), i)] = penData[0][i];
-            updateAutotilesAroundPoint({m_tileCursor.tileX(), m_tileCursor.tileY()}, i);
+          } else {
+            int tileId = -1;
+            for (int i = 1; i < 4; ++i) {
+              if (penData[0][i] != -1) {
+                tileId = penData[0][i];
+                break;
+              }
+            }
+            if (tileId != -1) {
+              map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), layer)] = tileId;
+              if (TileHelper::isAutoTile(tileId)) {
+                updateAutotilesAroundPoint({m_tileCursor.tileX(), m_tileCursor.tileY()}, layer);
+              }
+            }
           }
         } break;
         case DrawTool::Rectangle:

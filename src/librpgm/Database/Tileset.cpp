@@ -1,4 +1,5 @@
 ﻿#include "Database/Tileset.hpp"
+#include "Database/Globals.hpp"
 
 void to_json(nlohmann::ordered_json& j, const Tileset& tileset) {
   j = {

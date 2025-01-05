@@ -8,6 +8,10 @@ class Texture {
   friend class ResourceManager;
 
 public:
+  enum FilterType {
+    Nearest,
+    Linear,
+  };
   Texture() = default;
   Texture(const Texture& other) {
     m_texture = other.m_texture;
@@ -34,6 +38,8 @@ public:
     m_width = 0;
     m_height = 0;
   }
+
+  void setFilter(FilterType filterType);
 
 private:
   explicit Texture(std::string_view filename);

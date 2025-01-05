@@ -99,8 +99,6 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
   auto evMax = ImVec2{(eventX + eventS), (eventY + eventS)};
   if (m_mapEditor->prisonMode() || (((!hasCharacterSheet || !m_characterSheet) && !isTile) && !m_mapEditor->prisonMode())) {
     win->DrawList->AddRectFilled(evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, bgColor);
-    win->DrawList->AddRect(evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, outlineCol, 0, 0, 5.f);
-    win->DrawList->AddRect(evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, borderCol, 0, 0, 3.f);
   }
 
   if (hasCharacterSheet && !isTile && m_characterSheet) {
@@ -132,10 +130,7 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
         min.yr() /= tex.height();
         max.yr() /= tex.height();
       }
-
-      evMin += ImVec2{3.f, 3.f};
-      evMax -= ImVec2{3.f, 3.f};
-      win->DrawList->AddImage(tex, evMin, evMax, min, max, imageColor);
+      win->DrawList->AddImage(tex, evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, min, max, imageColor);
     }
   } else if (m_mapEditor->map() && isTile) {
     const int tileId = page()->image.tileId;
@@ -159,17 +154,20 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
     float tileV0 = fmodf(floorf(tileId % 256 / 8), 16) * m_mapEditor->tileSize();
     float tileU1 = tileU0 + static_cast<float>(m_mapEditor->tileSize());
     float tileV1 = tileV0 + static_cast<float>(m_mapEditor->tileSize());
-    if (m_mapEditor->prisonMode()) {
-      evMin += ImVec2{3.f, 3.f};
-      evMax -= ImVec2{3.f, 3.f};
-    }
-
     tileU0 /= static_cast<float>(tex.width());
     tileV0 /= static_cast<float>(tex.height());
     tileU1 /= static_cast<float>(tex.width());
     tileV1 /= static_cast<float>(tex.height());
 
-    win->DrawList->AddImage(tex, evMin, evMax, ImVec2{tileU0, tileV0}, ImVec2{tileU1, tileV1}, imageColor);
+    if (m_mapEditor->prisonMode()) {
+      win->DrawList->AddImage(tex, evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, ImVec2{tileU0, tileV0}, ImVec2{tileU1, tileV1}, imageColor);
+    } else {
+      win->DrawList->AddImage(tex, evMin, evMax, ImVec2{tileU0, tileV0}, ImVec2{tileU1, tileV1}, imageColor);
+    }
+  }
+  if (m_mapEditor->prisonMode() || (((!hasCharacterSheet || !m_characterSheet) && !isTile) && !m_mapEditor->prisonMode())) {
+    win->DrawList->AddRect(evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, outlineCol, 0, 0, 5.f);
+    win->DrawList->AddRect(evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, borderCol, 0, 0, 3.f);
   }
 }
 

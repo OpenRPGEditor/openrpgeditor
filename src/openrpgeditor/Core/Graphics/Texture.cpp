@@ -9,6 +9,7 @@ Texture::Texture(std::string_view filename) {
   SDL_Texture* tmp = nullptr;
   if (LoadTextureFromFile(filename.data(), &tmp, &m_width, &m_height, App::APP->getWindow()->getNativeRenderer())) {
     m_texture = tmp;
+    SDL_SetTextureScaleMode(static_cast<SDL_Texture*>(m_texture), SDL_SCALEMODE_NEAREST);
   } else {
     m_texture = nullptr;
   }
@@ -22,3 +23,14 @@ Texture::Texture(std::string_view filename) {
 //     m_texture = nullptr;
 //   }
 // }
+
+void Texture::setFilter(FilterType filterType) {
+  switch (filterType) {
+  case Nearest:
+    SDL_SetTextureScaleMode(static_cast<SDL_Texture*>(m_texture), SDL_SCALEMODE_NEAREST);
+    break;
+  case Linear:
+    SDL_SetTextureScaleMode(static_cast<SDL_Texture*>(m_texture), SDL_SCALEMODE_LINEAR);
+    break;
+  }
+}

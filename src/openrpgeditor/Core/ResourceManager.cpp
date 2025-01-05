@@ -175,8 +175,9 @@ Texture ResourceManager::loadEditorTexture(std::string_view path) {
     return m_editorTextures[imagePath];
   }
 
-  const Texture ret(imagePath);
+  Texture ret(imagePath);
   m_editorTextures[imagePath] = ret;
+  ret.setFilter(Texture::Linear);
   return ret;
 }
 

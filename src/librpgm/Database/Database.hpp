@@ -87,8 +87,8 @@ struct Database {
   }
 
   static std::string audioText(const Audio& audio) {
-    if (!audio.name.empty()) {
-      return audio.name + " " + parentheses(std::format("{}, {}, {}", audio.volume, audio.pitch, audio.pan));
+    if (!audio.name().empty()) {
+      return audio.name() + " " + parentheses(std::format("{}, {}, {}", audio.volume(), audio.pitch(), audio.pan()));
     }
 
     return "None";
@@ -105,7 +105,7 @@ struct Database {
   [[nodiscard]] std::string eventName(const int id) const {
     const auto map = mapInfos.currentMap();
     const auto object = map ? map->event(id) : nullptr;
-    return object ? object->name : InvalidDataName.data();
+    return object ? object->name() : InvalidDataName.data();
   }
   [[nodiscard]] std::string actorName(const int id) const {
     const auto object = actors.actor(id);
@@ -322,9 +322,9 @@ struct Database {
     return std::make_pair(const_cast<Actor*>(actor), const_cast<Class*>(classes.classType(actor->classId())));
   }
 
-  [[nodiscard]] std::vector<Trait*> allTraits(const int actorId) const {
+  [[nodiscard]] std::vector<const Trait*> allTraits(const int actorId) const {
     const auto [act, cls] = featureObjects(actorId);
-    std::vector<Trait*> ret;
+    std::vector<const Trait*> ret;
     if (act) {
       for (auto& trait : act->traits()) {
         ret.push_back(&trait);
@@ -339,12 +339,12 @@ struct Database {
     return ret;
   }
 
-  [[nodiscard]] std::vector<Trait*> traits(const int actorId, const TraitCode code) const {
-    auto traits = allTraits(actorId);
-    std::vector<Trait*> ret;
+  [[nodiscard]] std::vector<const Trait*> traits(const int actorId, const TraitCode code) const {
+    const auto traits = allTraits(actorId);
+    std::vector<const Trait*> ret;
     ret.reserve(traits.size());
     for (auto& trait : traits) {
-      if (trait->code == code) {
+      if (trait->code() == code) {
         ret.push_back(trait);
       }
     }
@@ -357,8 +357,8 @@ struct Database {
     std::vector<int> ret;
     ret.reserve(tr.size());
     for (auto& trait : tr) {
-      if (trait->code == code) {
-        ret.push_back(trait->dataId);
+      if (trait->code() == code) {
+        ret.push_back(trait->dataId());
       }
     }
     ret.shrink_to_fit();
@@ -382,7 +382,7 @@ struct Database {
 
   [[nodiscard]] int slotType(const int actorId) const {
 
-    if (const std::vector<int> set = traitsSet(actorId, TraitCode::Slot_Type); set.size() > 0) {
+    if (const std::vector<int> set = traitsSet(actorId, TraitCode::Slot_Type); !set.empty()) {
       return *std::ranges::max_element(set);
     }
     return 0;
@@ -396,24 +396,41 @@ struct Database {
 
   static Database* instance() { return m_instance; }
 
-  signal<void()> actorsLoaded;
-  signal<void()> classesLoaded;
-  signal<void()> skillsLoaded;
-  signal<void()> itemsLoaded;
-  signal<void()> weaponsLoaded;
-  signal<void()> armorsLoaded;
-  signal<void()> enemiesLoaded;
-  signal<void()> troopsLoaded;
-  signal<void()> statesLoaded;
-  signal<void()> animationsLoaded;
-  signal<void()> tilesetsLoaded;
-  signal<void()> commonEventsLoaded;
-  signal<void()> systemLoaded;
-  signal<void()> pluginsLoaded;
-  signal<void()> mapInfosLoaded;
-  signal<void()> gameConstantsLoaded;
-  signal<void()> templatesLoaded;
+  rpgmutils::signal<void()>& actorsLoaded() { return m_actorsLoaded; }
+  rpgmutils::signal<void()>& classesLoaded() { return m_classesLoaded; }
+  rpgmutils::signal<void()>& skillsLoaded() { return m_skillsLoaded; }
+  rpgmutils::signal<void()>& itemsLoaded() { return m_itemsLoaded; }
+  rpgmutils::signal<void()>& weaponsLoaded() { return m_weaponsLoaded; }
+  rpgmutils::signal<void()>& armorsLoaded() { return m_armorsLoaded; }
+  rpgmutils::signal<void()>& enemiesLoaded() { return m_enemiesLoaded; }
+  rpgmutils::signal<void()>& troopsLoaded() { return m_troopsLoaded; }
+  rpgmutils::signal<void()>& statesLoaded() { return m_statesLoaded; }
+  rpgmutils::signal<void()>& animationsLoaded() { return m_animationsLoaded; }
+  rpgmutils::signal<void()>& tilesetsLoaded() { return m_tilesetsLoaded; }
+  rpgmutils::signal<void()>& commonEventsLoaded() { return m_commonEventsLoaded; }
+  rpgmutils::signal<void()>& systemLoaded() { return m_systemLoaded; }
+  rpgmutils::signal<void()>& pluginsLoaded() { return m_pluginsLoaded; }
+  rpgmutils::signal<void()>& mapInfosLoaded() { return m_mapInfosLoaded; }
+  rpgmutils::signal<void()>& gameConstantsLoaded() { return m_gameConstantsLoaded; }
+  rpgmutils::signal<void()>& templatesLoaded() { return m_templatesLoaded; }
 
 private:
+  rpgmutils::signal<void()> m_actorsLoaded;
+  rpgmutils::signal<void()> m_classesLoaded;
+  rpgmutils::signal<void()> m_skillsLoaded;
+  rpgmutils::signal<void()> m_itemsLoaded;
+  rpgmutils::signal<void()> m_weaponsLoaded;
+  rpgmutils::signal<void()> m_armorsLoaded;
+  rpgmutils::signal<void()> m_enemiesLoaded;
+  rpgmutils::signal<void()> m_troopsLoaded;
+  rpgmutils::signal<void()> m_statesLoaded;
+  rpgmutils::signal<void()> m_animationsLoaded;
+  rpgmutils::signal<void()> m_tilesetsLoaded;
+  rpgmutils::signal<void()> m_commonEventsLoaded;
+  rpgmutils::signal<void()> m_systemLoaded;
+  rpgmutils::signal<void()> m_pluginsLoaded;
+  rpgmutils::signal<void()> m_mapInfosLoaded;
+  rpgmutils::signal<void()> m_gameConstantsLoaded;
+  rpgmutils::signal<void()> m_templatesLoaded;
   static Database* m_instance;
 };

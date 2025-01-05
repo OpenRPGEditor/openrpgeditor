@@ -21,7 +21,7 @@ void ChangeWeaponsCommand::serializeParameters(nlohmann::ordered_json& out) cons
 std::string ChangeWeaponsCommand::stringRep(const Database& db) const {
   const auto var = db.system.variable(operand);
   const auto wp = db.weapons.weapon(item);
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Weapons" + colon.data() + db.weaponNameOrId(item) + DecodeEnumName(operation) +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Weapons" + colon.data() + db.weaponNameOrId(item) + DecodeEnumName(operation) +
          (operandSource == QuantityChangeSource::Constant ? std::to_string(operand) : db.variableNameOrId(operand)) + ColorFormatter::popColor() +
          (includeEquipment == true ? ColorFormatter::getColor(FormatColor::Gray) + "(Include Equipment)" : "");
 }

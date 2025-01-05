@@ -47,7 +47,7 @@ std::string ShowChoiceCommand::stringRep(const Database& db) const {
 
   std::string choiceList = std::accumulate(std::next(choices.begin()), choices.end(), *choices.begin(), [](const std::string& a, const std::string& b) { return a + ", " + b; });
 
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Show Choices" + colon.data() + choiceList + ColorFormatter::popColor() + suffix;
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Show Choices" + colon.data() + choiceList + ColorFormatter::popColor() + suffix;
 }
 
 WhenSelectedCommand::WhenSelectedCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters) : IEventCommand(_indent, parameters) {
@@ -61,5 +61,5 @@ void WhenSelectedCommand::serializeParameters(nlohmann::ordered_json& out) const
 }
 
 std::string WhenSelectedCommand::stringRep(const Database& db) const {
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "When " + choice + ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "When " + choice + ColorFormatter::popColor();
 }

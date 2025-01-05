@@ -13,7 +13,7 @@ struct EndCommand final : IEventCommand {
       return false;
     }
 
-    return (code == EventCode::Conditional_Branch || code == EventCode::Else) && *codeIndent == *indent;
+    return (code == EventCode::Conditional_Branch || code == EventCode::Else) && *codeIndent == indent();
   }
   [[nodiscard]] constexpr bool hasPartner() const override { return true; }
   [[nodiscard]] bool reverseSelection() const override { return true; }

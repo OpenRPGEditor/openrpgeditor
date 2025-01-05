@@ -31,9 +31,9 @@ std::tuple<bool, bool> Dialog_ShowBalloonIcon::draw() {
         if (!dataSource.has_value())
           continue;
 
-        bool is_selected = (m_character == dataSource->id);
-        if (ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
-          m_character = dataSource->id;
+        bool is_selected = (m_character == dataSource->id());
+        if (ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id())).c_str(), is_selected)) {
+          m_character = dataSource->id();
           if (is_selected)
             ImGui::SetItemDefaultFocus();
         }

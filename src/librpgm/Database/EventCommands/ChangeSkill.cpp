@@ -24,6 +24,6 @@ std::string ChangeSkillCommand::stringRep(const Database& db) const {
     actorName = value == 0 ? "Entire Party" : db.actorNameOrId(value);
   }
 
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Skill" + colon.data() + actorName + ", " + DecodeEnumName(skillOp) + " " + db.skillNameOrId(skill) +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Skill" + colon.data() + actorName + ", " + DecodeEnumName(skillOp) + " " + db.skillNameOrId(skill) +
          ColorFormatter::popColor();
 }

@@ -2,7 +2,7 @@
 
 #include "Database/Enemy.hpp"
 
-class Enemies {
+class Enemies final : public IModifiable {
 public:
   [[nodiscard]] Enemy* enemy(const int id) {
     for (auto& enemy : m_enemies) {
@@ -36,6 +36,10 @@ public:
         m_enemies[i].setId(i);
       }
     }
+  }
+
+  bool isModified() const override {
+    return IModifiable::isModified() | std::ranges::any_of(m_enemies, [](const auto& enemy) { return enemy.isModified(); });
   }
 
 private:

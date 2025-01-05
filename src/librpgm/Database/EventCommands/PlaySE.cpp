@@ -7,5 +7,5 @@ PlaySECommand::PlaySECommand(const std::optional<int>& indent, const nlohmann::o
 void PlaySECommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(audio); }
 
 std::string PlaySECommand::stringRep(const Database& db) const {
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Play SE" + colon.data() + db.audioText(audio) + ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Play SE" + colon.data() + db.audioText(audio) + ColorFormatter::popColor();
 }

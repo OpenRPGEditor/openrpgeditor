@@ -1,12 +1,12 @@
 ﻿#include "Database/EventCommands/IEventCommand.hpp"
 
-IEventCommand::IEventCommand(const std::optional<int>& _indent, [[maybe_unused]] const nlohmann::ordered_json& parameters) : indent(_indent) {}
+IEventCommand::IEventCommand(const std::optional<int>& _indent, [[maybe_unused]] const nlohmann::ordered_json& parameters) : m_indent(_indent) {}
 
 void IEventCommand::serialize(nlohmann::ordered_json& out, const bool doIndent, const bool doParameters) const {
   out["code"] = code();
 
   if (doIndent) {
-    out["indent"] = indent;
+    out["indent"] = indent();
   }
 
   if (doParameters) {
@@ -16,7 +16,7 @@ void IEventCommand::serialize(nlohmann::ordered_json& out, const bool doIndent, 
 }
 
 std::string IEventCommand::stringRep(const Database& db) const {
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + DecodeEnumName(code()) + ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + DecodeEnumName(code()) + ColorFormatter::popColor();
 }
 
 std::string IEventCommand::symbol(EventCode code) const { return static_cast<int>(code) < 400 ? diamond.data() : colon.data(); }

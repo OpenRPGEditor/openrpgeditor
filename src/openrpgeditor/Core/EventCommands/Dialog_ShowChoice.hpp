@@ -35,14 +35,13 @@ struct Dialog_ShowChoice : IEventDialogController {
   std::vector<std::shared_ptr<IEventCommand>> getTemplateCommands(EventCode code, int intParam1 = 0) override {
     std::vector<std::shared_ptr<IEventCommand>> commandList;
     if (code == EventCode::When_Selected) {
-      std::shared_ptr<WhenSelectedCommand> when;
       commandList.push_back(std::make_shared<WhenSelectedCommand>());
-      commandList.back()->indent = getParentIndent().value();
-      when = static_pointer_cast<WhenSelectedCommand>(commandList.back());
+      commandList.back()->setIndent(getParentIndent().value());
+      const auto when = static_pointer_cast<WhenSelectedCommand>(commandList.back());
       when->choice = command->choices.at(intParam1);
       when->param1 = intParam1;
       commandList.push_back(std::make_shared<EventDummy>());
-      commandList.back()->indent = getParentIndent().value() + 1;
+      commandList.back()->setIndent(getParentIndent().value() + 1);
     }
     return commandList;
   }
@@ -53,28 +52,28 @@ struct Dialog_ShowChoice : IEventDialogController {
 
     std::shared_ptr<IEventCommand> sharedCommand = getCommand();
     eventCommands.push_back(sharedCommand);
-    eventCommands.back()->indent = getParentIndent().value();
+    eventCommands.back()->setIndent(getParentIndent().value());
 
     for (int i{0}; i < command->choices.size(); i++) {
       // When "Choice"
       eventCommands.push_back(std::make_shared<WhenSelectedCommand>());
-      eventCommands.back()->indent = getParentIndent().value();
+      eventCommands.back()->setIndent(getParentIndent().value());
       when = static_pointer_cast<WhenSelectedCommand>(eventCommands.back());
       when->choice = command->choices.at(i);
       when->param1 = i;
       eventCommands.push_back(std::make_shared<EventDummy>());
       // When "Cancel"
-      eventCommands.back()->indent = getParentIndent().value() + 1;
+      eventCommands.back()->setIndent(getParentIndent().value() + 1);
       if (command->cancelType == -2 && i == command->choices.size() - 1) {
         eventCommands.push_back(std::make_shared<WhenCancelCommand>());
-        eventCommands.back()->indent = getParentIndent().value();
+        eventCommands.back()->setIndent(getParentIndent().value());
         eventCommands.push_back(std::make_shared<EventDummy>());
-        eventCommands.back()->indent = getParentIndent().value() + 1;
+        eventCommands.back()->setIndent(getParentIndent().value() + 1);
       }
       // Show Choices End
       if (i == command->choices.size() - 1) {
         eventCommands.push_back(std::make_shared<ShowChoicesEndCommand>());
-        eventCommands.back()->indent = getParentIndent().value();
+        eventCommands.back()->setIndent(getParentIndent().value());
       }
     }
     return eventCommands;

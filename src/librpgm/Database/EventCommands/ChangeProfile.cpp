@@ -15,5 +15,5 @@ std::string ChangeProfileCommand::stringRep(const Database& db) const {
   const auto actName = Database::instance()->actorNameOrId(actor);
   auto tmpProfile = profile;
   ReplaceStr(tmpProfile, "\n", " ");
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Profile" + colon.data() + actName + ", " + tmpProfile + ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Profile" + colon.data() + actName + ", " + tmpProfile + ColorFormatter::popColor();
 }

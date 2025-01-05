@@ -1,5 +1,6 @@
 #include "Database/Map.hpp"
 #include "Database/Event.hpp"
+#include "Database/EventPage.hpp"
 #include <fstream>
 
 void to_json(nlohmann::ordered_json& json, const Map& map) {
@@ -89,7 +90,7 @@ void Map::resize(const int newWidth, const int newHeight) {
   }
 
   std::ranges::for_each(m_events, [&](auto& event) {
-    if (event->x >= newWidth || event->y >= newHeight) {
+    if (event->x() >= newWidth || event->y() >= newHeight) {
       event.reset();
     }
   });
@@ -97,4 +98,65 @@ void Map::resize(const int newWidth, const int newHeight) {
   m_width = newWidth;
   m_height = newHeight;
   m_data = std::move(newData);
+}
+
+[[nodiscard]] std::vector<Event*> Map::getSorted() {
+  std::vector<Event*> ret;
+  for (auto& e : m_events) {
+    if (e) {
+      ret.push_back(&e.value());
+    }
+  }
+  std::ranges::sort(ret, [](const Event* a, const Event* b) {
+    const int aZ = static_cast<int>(a->page(0)->priorityType) * 2 + 1;
+    const int bZ = static_cast<int>(b->page(0)->priorityType) * 2 + 1;
+    if (aZ != bZ) {
+      return aZ < bZ;
+    }
+
+    if (a->y() != b->y()) {
+      return a->y() < b->y();
+    }
+    return a->renderer()->spriteId() < b->renderer()->spriteId();
+  });
+  return ret;
+}
+
+[[nodiscard]] std::vector<Event*> Map::getRenderSorted() {
+  std::vector<Event*> ret;
+  for (auto& e : m_events) {
+    if (e) {
+      ret.push_back(&e.value());
+    }
+  }
+  std::ranges::sort(ret, [](const Event* a, const Event* b) {
+    if (a->renderer()->screenZ() != b->renderer()->screenZ()) {
+      return a->renderer()->screenZ() < b->renderer()->screenZ();
+    }
+    if (a->renderer()->y() != b->renderer()->y()) {
+      return a->renderer()->y() < b->renderer()->y();
+    }
+    return a->renderer()->spriteId() < b->renderer()->spriteId();
+  });
+  return ret;
+}
+
+std::vector<Event*> Map::eventsAtNoThrough(const int x, const int y) {
+  std::vector<Event*> ret;
+  std::ranges::for_each(m_events, [&ret, &x, &y](auto& ev) {
+    if (ev && ev->x() == x && ev->y() == y && !ev->renderer()->isThrough()) {
+      ret.push_back(&ev.value());
+    }
+  });
+  return ret;
+}
+
+std::vector<Event*> Map::eventsAtRenderPosNoThrough(const int x, const int y) {
+  std::vector<Event*> ret;
+  std::ranges::for_each(m_events, [&ret, &x, &y](auto& ev) {
+    if (ev && ev->renderer()->x() == x && ev->renderer()->y() == y && !ev->renderer()->isThrough()) {
+      ret.push_back(&ev.value());
+    }
+  });
+  return ret;
 }

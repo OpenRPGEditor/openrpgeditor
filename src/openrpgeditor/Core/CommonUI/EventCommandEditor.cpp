@@ -43,12 +43,12 @@ void EventCommandEditor::blockSelect(const int n) {
       int j = n + 1;
       int partnerCount = ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl) || m_commands->at(n)->isCollapsed() ? m_commands->at(n)->partnerCount() : 1;
       while (partnerCount) {
-        if (j >= m_commands->size() || *m_commands->at(j)->indent < *m_commands->at(n)->indent) {
+        if (j >= m_commands->size() || *m_commands->at(j)->indent() < *m_commands->at(n)->indent()) {
           break;
         }
 
         while (true) {
-          if (j >= m_commands->size() || m_commands->at(n)->isPartner(m_commands->at(j)->code(), m_commands->at(j)->indent)) {
+          if (j >= m_commands->size() || m_commands->at(n)->isPartner(m_commands->at(j)->code(), m_commands->at(j)->indent())) {
             partnerCount--;
             if (partnerCount > 0) {
               ++j;
@@ -67,14 +67,14 @@ void EventCommandEditor::blockSelect(const int n) {
       int j = n - 1;
       int partnerCount = ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl) ? m_commands->at(n)->partnerCount() : 1;
       while (partnerCount--) {
-        if (j < 0 || *m_commands->at(j)->indent < *m_commands->at(n)->indent) {
-          if (*m_commands->at(j)->indent < *m_commands->at(n)->indent) {
+        if (j < 0 || *m_commands->at(j)->indent() < *m_commands->at(n)->indent()) {
+          if (*m_commands->at(j)->indent() < *m_commands->at(n)->indent()) {
             ++j;
           }
           break;
         }
         while (true) {
-          if (j < 0 || m_commands->at(n)->isPartner(m_commands->at(j)->code(), m_commands->at(j)->indent)) {
+          if (j < 0 || m_commands->at(n)->isPartner(m_commands->at(j)->code(), m_commands->at(j)->indent())) {
             break;
           }
           --j;
@@ -105,15 +105,15 @@ void EventCommandEditor::handleClipboardInteraction() const {
         nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(cmd);
         CommandParser parser;
         auto commands = parser.parse(cmdJson);
-        int curIndent = m_selectedCommand > 0 ? *m_commands->at(m_selectedCommand)->indent : 0;
+        int curIndent = m_selectedCommand > 0 ? *m_commands->at(m_selectedCommand)->indent() : 0;
         int nestedCount = 0;
         if (isNestable(commands[0])) {
           ++nestedCount;
         }
 
         for (auto& command : commands) {
-          if (!command->indent) {
-            command->indent.emplace();
+          if (!command->indent()) {
+            command->setIndent(0);
           }
           if (isNestableEnd(command)) {
             if (nestedCount > 0 && curIndent > 0) {
@@ -121,7 +121,7 @@ void EventCommandEditor::handleClipboardInteraction() const {
             }
             nestedCount--;
           }
-          *command->indent = curIndent;
+          command->setIndent(curIndent);
           if (isNestable(command)) {
             curIndent++;
             nestedCount++;
@@ -175,7 +175,7 @@ void EventCommandEditor::handleBlockCollapse(int& n) const {
     if (cmd->isCollapsed()) {
       auto next = m_commands->at(n + 1);
       bool addedElipses = false;
-      while (!cmd->isPartner(next->code(), next->indent)) {
+      while (!cmd->isPartner(next->code(), next->indent())) {
         if ((n + 1) >= m_commands->size() - 1) {
           break;
         }
@@ -186,7 +186,7 @@ void EventCommandEditor::handleBlockCollapse(int& n) const {
           if (std::ranges::count(tooltip.begin(), tooltip.end(), '\n') < 5) {
             tooltip += rep + "\n";
           } else if (!addedElipses) {
-            tooltip += next->indentText(*next->indent) + "\u2026";
+            tooltip += next->indentText(*next->indent()) + "\u2026";
             addedElipses = true;
           }
         }
@@ -337,8 +337,8 @@ void EventCommandEditor::drawCommandDialog() {
   if (commandDialog) {
     auto [closed, confirmed] = commandDialog->draw();
     if (!commandDialog->getParentIndent().has_value()) {
-      commandDialog->setParentIndent(m_commands->at(m_selectedCommand)->indent.value());
-      commandDialog->getCommand()->indent = commandDialog->getParentIndent().value();
+      commandDialog->setParentIndent(m_commands->at(m_selectedCommand)->indent().value());
+      commandDialog->getCommand()->setIndent(commandDialog->getParentIndent().value());
     }
     if (closed) {
       if (confirmed) {
@@ -946,7 +946,7 @@ void EventCommandEditor::drawPopup() {
                   std::vector<std::shared_ptr<IEventCommand>> parsed = parser.parse(cmdJson);
                   for (const auto& command : parsed) {
                     if (command) {
-                      command->adjustIndent(m_commands->at(m_selectedCommand)->indent.value());
+                      command->adjustIndent(m_commands->at(m_selectedCommand)->indent().value());
                     }
                   }
                   if ((parsed.size() == 1 && parsed.at(0)->code() == EventCode::Event_Dummy) == false) {

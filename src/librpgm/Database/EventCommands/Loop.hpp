@@ -15,7 +15,7 @@ struct LoopCommand final : IEventCommand {
     if (!codeIndent) {
       return false;
     }
-    return code == EventCode::Repeat_Above && *indent == codeIndent;
+    return code == EventCode::Repeat_Above && indent() == *codeIndent;
   }
 
   bool m_collapsed = false;

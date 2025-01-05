@@ -1,4 +1,13 @@
-#include "EventPage.hpp"
+#include "Database/EventPage.hpp"
+#include "Database/CommandParser.hpp"
+#include "Database/EventCommands/EventDummy.hpp"
+
+EventPage::EventPage() { list.emplace_back(new EventDummy())->setIndent(0); }
+
+void EventPage::clear() {
+  list.clear();
+  list.emplace_back(new EventDummy())->setIndent(0);
+}
 
 void to_json(nlohmann::ordered_json& to, const EventCondition& cond) {
   to = {

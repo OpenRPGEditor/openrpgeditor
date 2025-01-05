@@ -7,7 +7,6 @@
 #include <vector>
 
 class Actor final : public IModifiable {
-  friend class ActorsSerializer;
   friend void to_json(nlohmann::ordered_json& to, const Actor& actor);
   friend void from_json(const nlohmann::ordered_json& from, Actor& actor);
 
@@ -232,26 +231,34 @@ public:
    */
   void setValid(bool valid);
 
+  void restoreOriginal() override;
+  void acceptChanges() override;
+  nlohmann::ordered_json serializeOldValues() const override;
+
   /* Signals */
-  signal<void(Actor* actor, int newId)>& onIdModified();
-  signal<void(Actor* actor, const std::string& name)>& onBattlerNameModified();
-  signal<void(Actor* actor, int newIndex)>& onCharacterIndexModified();
-  signal<void(Actor* actor, const std::string& name)>& onCharacterNameModified();
-  signal<void(Actor* actor, int newId)>& onClassIdModified();
-  signal<void(Actor* actor, const std::vector<int>& newEquips)>& onEquipsModified();
-  signal<void(Actor* actor, int index, int newEquip)>& onEquipAdded();
-  signal<void(Actor* actor, int index, int newEquip)>& onEquipModified();
-  signal<void(Actor* actor, int index, int newEquip)>& onEquipRemoved();
-  signal<void(Actor* actor, int newId)>& onFaceIndexModified();
-  signal<void(Actor* actor, const std::string& newFaceName)>& onFaceNameModified();
-  signal<void(Actor* actor, const std::vector<Trait>& newTraits)>& onTraitsModified();
-  signal<void(Actor* actor, const Trait& trait)>& onTraitAdded();
-  signal<void(Actor* actor, int newInitialLevel)>& onInitialLevelModified();
-  signal<void(Actor* actor, int newMaxLevel)>& onMaxLevelModified();
-  signal<void(Actor* actor, const std::string& newName)>& onNameModified();
-  signal<void(Actor* actor, const std::string& newNickname)>& onNicknameModified();
-  signal<void(Actor* actor, const std::string& newNote)>& onNoteModified();
-  signal<void(Actor* actor, const std::string& newProfile)>& onProfileModified();
+  rpgmutils::signal<void(Actor* actor, int newId)>& idModified();
+  rpgmutils::signal<void(Actor* actor, const std::string& name)>& battlerNameModified();
+  rpgmutils::signal<void(Actor* actor, int newIndex)>& characterIndexModified();
+  rpgmutils::signal<void(Actor* actor, const std::string& name)>& characterNameModified();
+  rpgmutils::signal<void(Actor* actor, int newId)>& classIdModified();
+  rpgmutils::signal<void(Actor* actor, const std::vector<int>& newEquips)>& equipsModified();
+  rpgmutils::signal<void(Actor* actor, int index, int newEquip)>& equipAdded();
+  rpgmutils::signal<void(Actor* actor, int index, int newEquip)>& equipModified();
+  rpgmutils::signal<void(Actor* actor, int index, int newEquip)>& equipRemoved();
+  rpgmutils::signal<void(Actor* actor, int newId)>& faceIndexModified();
+  rpgmutils::signal<void(Actor* actor, const std::string& newFaceName)>& faceNameModified();
+  rpgmutils::signal<void(Actor* actor, const std::vector<Trait>& newTraits)>& traitsModified();
+  rpgmutils::signal<void(Actor* actor, const Trait& trait)>& traitAdded();
+  rpgmutils::signal<void(Actor* actor, int newInitialLevel)>& initialLevelModified();
+  rpgmutils::signal<void(Actor* actor, int newMaxLevel)>& maxLevelModified();
+  rpgmutils::signal<void(Actor* actor, const std::string& newName)>& nameModified();
+  rpgmutils::signal<void(Actor* actor, const std::string& newNickname)>& nicknameModified();
+  rpgmutils::signal<void(Actor* actor, const std::string& newNote)>& noteModified();
+  rpgmutils::signal<void(Actor* actor, const std::string& newProfile)>& profileModified();
+
+  bool isModified() const override {
+    return (IModifiable::isModified() | std::ranges::any_of(m_traits, [](const Trait& trait) { return trait.isModified(); }));
+  }
 
 private:
   int m_id = 1;
@@ -270,26 +277,43 @@ private:
   std::string m_note;
   std::string m_profile;
 
+  // !!!DO NOT CHANGE CASING!!!
+  std::optional<int> m_oldid;
+  std::optional<std::string> m_oldbattlerName;
+  std::optional<int> m_oldcharacterIndex;
+  std::optional<std::string> m_oldcharacterName;
+  std::optional<int> m_oldclassId;
+  std::optional<std::vector<int>> m_oldequips;
+  std::optional<int> m_oldfaceIndex;
+  std::optional<std::string> m_oldfaceName;
+  std::optional<std::vector<Trait>> m_oldtraits;
+  std::optional<int> m_oldinitialLevel;
+  std::optional<int> m_oldmaxLevel;
+  std::optional<std::string> m_oldname;
+  std::optional<std::string> m_oldnickname;
+  std::optional<std::string> m_oldnote;
+  std::optional<std::string> m_oldprofile;
+
   /* Signals */
-  std::optional<signal<void(Actor* actor, int newId)>> m_onIdModified;
-  std::optional<signal<void(Actor* actor, const std::string& newName)>> m_onBattlerNameModified;
-  std::optional<signal<void(Actor* actor, int newIndex)>> m_onCharacterIndexModified;
-  std::optional<signal<void(Actor* actor, const std::string& newName)>> m_onCharacterNameModified;
-  std::optional<signal<void(Actor* actor, int newId)>> m_onClassIdModified;
-  std::optional<signal<void(Actor* actor, const std::vector<int>& newEquips)>> m_onEquipsModified;
-  std::optional<signal<void(Actor* actor, int index, int newEquip)>> m_onEquipAdded;
-  std::optional<signal<void(Actor* actor, int index, int newEquip)>> m_onEquipModified;
-  std::optional<signal<void(Actor* actor, int index, int newEquip)>> m_onEquipRemoved;
-  std::optional<signal<void(Actor* actor, int newIndex)>> m_onFaceIndexModified;
-  std::optional<signal<void(Actor* actor, const std::string& newFaceName)>> m_onFaceNameModified;
-  std::optional<signal<void(Actor* actor, const std::vector<Trait>& newTraits)>> m_onTraitsModified;
-  std::optional<signal<void(Actor* actor, const Trait& trait)>> m_onTraitAdded;
-  std::optional<signal<void(Actor* actor, int newInitialLevel)>> m_onInitialLevelModified;
-  std::optional<signal<void(Actor* actor, int newMaxLevel)>> m_onMaxLevelModified;
-  std::optional<signal<void(Actor* actor, const std::string& newName)>> m_onNameModified;
-  std::optional<signal<void(Actor* actor, const std::string& newNickname)>> m_onNicknameModified;
-  std::optional<signal<void(Actor* actor, const std::string& newNote)>> m_onNoteModified;
-  std::optional<signal<void(Actor* actor, const std::string& newProfile)>> m_onProfileModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, int newId)>> m_idModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, const std::string& newName)>> m_battlerNameModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, int newIndex)>> m_characterIndexModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, const std::string& newName)>> m_characterNameModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, int newId)>> m_onClassIdModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, const std::vector<int>& newEquips)>> m_equipsModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, int index, int newEquip)>> m_equipAdded;
+  std::optional<rpgmutils::signal<void(Actor* actor, int index, int newEquip)>> m_equipModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, int index, int newEquip)>> m_equipRemoved;
+  std::optional<rpgmutils::signal<void(Actor* actor, int newIndex)>> m_faceIndexModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, const std::string& newFaceName)>> m_faceNameModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, const std::vector<Trait>& newTraits)>> m_traitsModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, const Trait& trait)>> m_traitAdded;
+  std::optional<rpgmutils::signal<void(Actor* actor, int newInitialLevel)>> m_initialLevelModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, int newMaxLevel)>> m_maxLevelModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, const std::string& newName)>> m_nameModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, const std::string& newNickname)>> m_nicknameModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, const std::string& newNote)>> m_noteModified;
+  std::optional<rpgmutils::signal<void(Actor* actor, const std::string& newProfile)>> m_profileModified;
 
   /*!
    * @name m_isValid

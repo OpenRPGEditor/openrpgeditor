@@ -1,5 +1,5 @@
 #include "Core/EventCommands/Dialog_PlayBGM.hpp"
-
+#include "Core/DPIHandler.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Log.hpp"
 #include "imgui.h"
@@ -28,7 +28,7 @@ std::tuple<bool, bool> Dialog_PlayBGM::draw() {
 
         if (ImGui::SelectableWithBorder("None", m_selected == 0, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
           m_selected = 0;
-          m_audio.name = "";
+          m_audio.setName("");
           ImGui::SetItemDefaultFocus();
         }
 
@@ -40,7 +40,7 @@ std::tuple<bool, bool> Dialog_PlayBGM::draw() {
               playAudio(m_audios.at(m_selected - 1));
             }
             m_selected = n + 1;
-            m_audio.name = m_audios.at(m_selected - 1);
+            m_audio.setName(m_audios.at(m_selected - 1));
             if (isSelected)
               ImGui::SetItemDefaultFocus();
           }
@@ -62,18 +62,24 @@ std::tuple<bool, bool> Dialog_PlayBGM::draw() {
 
       ImGui::SeparatorText("Volume");
       ImGui::SetNextItemWidth(100);
-      if (ImGui::DragInt("##playbgm_audio.volume", &m_audio.volume, 0.5f, 0, 100)) {
-        setVolume(m_audio.volume);
+      int volume = m_audio.volume();
+      if (ImGui::DragInt("##playbgm_audio.volume", &volume, 0.5f, 0, 100)) {
+        m_audio.setVolume(volume);
+        setVolume(m_audio.volume());
       }
       ImGui::SeparatorText("Pitch");
       ImGui::SetNextItemWidth(100);
-      if (ImGui::DragInt("##playbgm_audio.pitch", &m_audio.pitch, 0.5f, 0, 100)) {
-        setPitch(m_audio.pitch);
+      int pitch = m_audio.pitch();
+      if (ImGui::DragInt("##playbgm_audio.pitch", &pitch, 0.5f, 0, 100)) {
+        m_audio.setPitch(pitch);
+        setPitch(m_audio.pitch());
       }
       ImGui::SeparatorText("Pan");
       ImGui::SetNextItemWidth(100);
-      if (ImGui::DragInt("##playbgm_audio.pan", &m_audio.pan, 0.5f, -100, 100)) {
-        setPanning(m_audio.pan);
+      int pan = m_audio.pan();
+      if (ImGui::DragInt("##playbgm_audio.pan", &pan, 0.5f, -100, 100)) {
+        m_audio.setPan(pan);
+        setPanning(m_audio.pan());
       }
     }
     ImGui::EndGroup();

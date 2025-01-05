@@ -20,11 +20,11 @@ struct Dialog_Loop : IEventDialogController {
     std::vector<std::shared_ptr<IEventCommand>> eventCommands;
     std::shared_ptr<IEventCommand> sharedCommand = getCommand();
     eventCommands.push_back(sharedCommand);
-    eventCommands.back()->indent = getParentIndent().value();
+    eventCommands.back()->setIndent(getParentIndent().value());
     eventCommands.push_back(std::make_shared<EventDummy>());
-    eventCommands.back()->indent = getParentIndent().value() + 1;
+    eventCommands.back()->setIndent(getParentIndent().value() + 1);
     eventCommands.push_back(std::make_shared<RepeatAboveCommand>());
-    eventCommands.back()->indent = getParentIndent().value();
+    eventCommands.back()->setIndent(getParentIndent().value());
     return eventCommands;
   }
 

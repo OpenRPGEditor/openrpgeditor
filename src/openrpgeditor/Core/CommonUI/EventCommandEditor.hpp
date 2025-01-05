@@ -155,7 +155,7 @@
 struct IEventCommand;
 struct MainWindow;
 struct EventCommandEditor {
-  EventCommandEditor(MainWindow* project) : m_project(project), commandDialog(nullptr) {}
+  EventCommandEditor() : commandDialog(nullptr) {}
   void blockSelect(int n);
   void handleClipboardInteraction() const;
   static void setupTableHeader();
@@ -177,7 +177,6 @@ private:
   void drawFlowControlTab(ImVec2 size);
   void drawAudioTab(ImVec2 size);
   void drawActorTab(ImVec2 size);
-  MainWindow* m_project = nullptr;
   bool m_isNewEntry{false};
   bool m_needsUpdate{false};
   bool m_isRequested{false};

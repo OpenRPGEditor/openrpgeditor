@@ -25,10 +25,10 @@ std::string GetLocationInfoCommand::stringRep(const Database& db) const {
     auto varY = db.system.variable(y);
     varX = varX.empty() ? std::format("#{:04}", x) : varX;
     varY = varY.empty() ? std::format("#{:04}", y) : varY;
-    return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Get Location Info" + colon.data() + var + ", " + DecodeEnumName(type) +
+    return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Get Location Info" + colon.data() + var + ", " + DecodeEnumName(type) +
            std::format(", ({{{}}},{{{}}})", varX, varY) + ColorFormatter::popColor();
   }
 
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Get Location Info" + colon.data() + var + ", " + DecodeEnumName(type) + std::format(", ({},{})", x, y) +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Get Location Info" + colon.data() + var + ", " + DecodeEnumName(type) + std::format(", ({},{})", x, y) +
          ColorFormatter::popColor();
 }

@@ -907,8 +907,8 @@ void DBTilesetsTab::drawTileset(int type) {
 void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tileRect, int tileIndex) {
   if (flagType == 0) {
     // Passage
-    bool isPassable = TileHelper::isTilePassable(m_selectedTileset->flags().at(tileIndex));
-    bool hasHigherTile = TileHelper::hasHigherTile(m_selectedTileset->flags().at(tileIndex));
+    bool isPassable = TileHelper::isTilePassable(m_selectedTileset->flag(tileIndex));
+    bool hasHigherTile = TileHelper::hasHigherTile(m_selectedTileset->flag(tileIndex));
 
     if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
       toggleTileState(tileIndex, true);
@@ -974,7 +974,7 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tileRect, int tileIndex)
         }
         if (isUpArrow) {
           // Up Arrow
-          if (TileHelper::isNorthPassage(m_selectedTileset->flags().at(tileIndex))) {
+          if (TileHelper::isNorthPassage(m_selectedTileset->flag(tileIndex))) {
             drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(7), m_tileMarker->uv1(7), ImGui::ColorConvertFloat4ToU32(tintColor));
           } else {
             drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(3), m_tileMarker->uv1(3), ImGui::ColorConvertFloat4ToU32(tintColor));
@@ -982,7 +982,7 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tileRect, int tileIndex)
         }
         if (isLeftArrow) {
           // Left arrow
-          if (TileHelper::isWestPassage(m_selectedTileset->flags().at(tileIndex))) {
+          if (TileHelper::isWestPassage(m_selectedTileset->flag(tileIndex))) {
             drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(5), m_tileMarker->uv1(5), ImGui::ColorConvertFloat4ToU32(tintColor));
           } else {
             drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(3), m_tileMarker->uv1(3), ImGui::ColorConvertFloat4ToU32(tintColor));
@@ -990,7 +990,7 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tileRect, int tileIndex)
         }
         if (isRightArrow) {
           // Right arrow
-          if (TileHelper::isEastPassage(m_selectedTileset->flags().at(tileIndex))) {
+          if (TileHelper::isEastPassage(m_selectedTileset->flag(tileIndex))) {
             drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(6), m_tileMarker->uv1(6), ImGui::ColorConvertFloat4ToU32(tintColor));
           } else {
             drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(3), m_tileMarker->uv1(3), ImGui::ColorConvertFloat4ToU32(tintColor));
@@ -998,7 +998,7 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tileRect, int tileIndex)
         }
         if (isDownArrow) {
           // Down arrow
-          if (TileHelper::isSouthPassage(m_selectedTileset->flags().at(tileIndex))) {
+          if (TileHelper::isSouthPassage(m_selectedTileset->flag(tileIndex))) {
             drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(4), m_tileMarker->uv1(4), ImGui::ColorConvertFloat4ToU32(tintColor));
           } else {
             drawList->AddImage(m_tileMarker->texture(), minPos, maxPos, m_tileMarker->uv0(3), m_tileMarker->uv1(3), ImGui::ColorConvertFloat4ToU32(tintColor));
@@ -1012,8 +1012,8 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tileRect, int tileIndex)
       toggleTileState(tileIndex, true);
     }
     ImVec4 tint = ImGui::IsItemHovered() ? kHoveredTint : kDefaultTint;
-    if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(TileHelper::isLadder(m_selectedTileset->flags().at(tileIndex)) ? 2 : 3),
-                           m_tileMarker->uv1(TileHelper::isLadder(m_selectedTileset->flags().at(tileIndex)) ? 2 : 3), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
+    if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(TileHelper::isLadder(m_selectedTileset->flag(tileIndex)) ? 2 : 3),
+                           m_tileMarker->uv1(TileHelper::isLadder(m_selectedTileset->flag(tileIndex)) ? 2 : 3), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
       toggleTileState(tileIndex, false);
     }
   } else if (flagType == 3) {
@@ -1022,8 +1022,8 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tileRect, int tileIndex)
       toggleTileState(tileIndex, true);
     }
     ImVec4 tint = ImGui::IsItemHovered() ? kHoveredTint : kDefaultTint;
-    if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(TileHelper::isBush(m_selectedTileset->flags().at(tileIndex)) ? 9 : 3),
-                           m_tileMarker->uv1(TileHelper::isBush(m_selectedTileset->flags().at(tileIndex)) ? 9 : 3), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
+    if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(TileHelper::isBush(m_selectedTileset->flag(tileIndex)) ? 9 : 3),
+                           m_tileMarker->uv1(TileHelper::isBush(m_selectedTileset->flag(tileIndex)) ? 9 : 3), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
       toggleTileState(tileIndex, false);
     }
   } else if (flagType == 4) {
@@ -1032,8 +1032,8 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tileRect, int tileIndex)
       toggleTileState(tileIndex, true);
     }
     ImVec4 tint = ImGui::IsItemHovered() ? kHoveredTint : kDefaultTint;
-    if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(TileHelper::isCounter(m_selectedTileset->flags().at(tileIndex)) ? 10 : 3),
-                           m_tileMarker->uv1(TileHelper::isCounter(m_selectedTileset->flags().at(tileIndex)) ? 10 : 3), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
+    if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(TileHelper::isCounter(m_selectedTileset->flag(tileIndex)) ? 10 : 3),
+                           m_tileMarker->uv1(TileHelper::isCounter(m_selectedTileset->flag(tileIndex)) ? 10 : 3), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
       toggleTileState(tileIndex, false);
     }
   } else if (flagType == 5) {
@@ -1042,9 +1042,8 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tileRect, int tileIndex)
       toggleTileState(tileIndex, true);
     }
     ImVec4 tint = ImGui::IsItemHovered() ? kHoveredTint : kDefaultTint;
-    if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect,
-                           m_tileMarker->uv0(TileHelper::isDamageFloor(m_selectedTileset->flags().at(tileIndex)) ? 11 : 3),
-                           m_tileMarker->uv1(TileHelper::isDamageFloor(m_selectedTileset->flags().at(tileIndex)) ? 11 : 3), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
+    if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(TileHelper::isDamageFloor(m_selectedTileset->flag(tileIndex)) ? 11 : 3),
+                           m_tileMarker->uv1(TileHelper::isDamageFloor(m_selectedTileset->flag(tileIndex)) ? 11 : 3), ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
       toggleTileState(tileIndex, false);
     }
   } else if (flagType == 6) {
@@ -1054,8 +1053,8 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tileRect, int tileIndex)
     }
     ImVec4 tint = ImGui::IsItemHovered() ? kHoveredTint : kDefaultTint;
     if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect,
-                           m_tileMarker->uv0(TileHelper::isTerrainTag(m_selectedTileset->flags().at(tileIndex)) ? TileHelper::getTerrainTag(m_selectedTileset->flags().at(tileIndex)) + 12 : 12),
-                           m_tileMarker->uv1(TileHelper::isTerrainTag(m_selectedTileset->flags().at(tileIndex)) ? TileHelper::getTerrainTag(m_selectedTileset->flags().at(tileIndex)) + 12 : 12),
+                           m_tileMarker->uv0(TileHelper::isTerrainTag(m_selectedTileset->flag(tileIndex)) ? TileHelper::getTerrainTag(m_selectedTileset->flag(tileIndex)) + 12 : 12),
+                           m_tileMarker->uv1(TileHelper::isTerrainTag(m_selectedTileset->flag(tileIndex)) ? TileHelper::getTerrainTag(m_selectedTileset->flag(tileIndex)) + 12 : 12),
                            ImVec4(0.0f, 0.0f, 0.0f, 0.0f), tint)) {
       toggleTileState(tileIndex, false);
     }
@@ -1064,7 +1063,7 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tileRect, int tileIndex)
 
 void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTileFlag) {
 
-  int currentFlags = m_selectedTileset->flags().at(tileIndex);
+  int currentFlags = m_selectedTileset->flag(tileIndex);
 
   if (m_flagSelection == 0) {
     // Passage
@@ -1104,15 +1103,15 @@ void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTi
   } else if (m_flagSelection == 1) {
     // Passage (4-dir)
     if (subTileFlag == TileFlags::PassageNorth || subTileFlag == TileFlags::PassageSouth || subTileFlag == TileFlags::PassageWest || subTileFlag == TileFlags::PassageEast) {
-      if (static_cast<int>(subTileFlag) & m_selectedTileset->flags().at(tileIndex)) {
+      if (static_cast<int>(subTileFlag) & m_selectedTileset->flag(tileIndex)) {
         m_selectedTileset->setFlag(tileIndex, static_cast<int>(subTileFlag), false);
       } else {
         m_selectedTileset->setFlag(tileIndex, static_cast<int>(subTileFlag), true);
       }
     } else {
       // Dot behavior
-      if (TileHelper::isNorthPassage(m_selectedTileset->flags().at(tileIndex)) || TileHelper::isSouthPassage(m_selectedTileset->flags().at(tileIndex)) ||
-          TileHelper::isWestPassage(m_selectedTileset->flags().at(tileIndex)) || TileHelper::isEastPassage(m_selectedTileset->flags().at(tileIndex))) {
+      if (TileHelper::isNorthPassage(m_selectedTileset->flag(tileIndex)) || TileHelper::isSouthPassage(m_selectedTileset->flag(tileIndex)) ||
+          TileHelper::isWestPassage(m_selectedTileset->flag(tileIndex)) || TileHelper::isEastPassage(m_selectedTileset->flag(tileIndex))) {
         m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageNorth), true);
         m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageSouth), true);
         m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::PassageWest), true);
@@ -1126,36 +1125,36 @@ void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTi
     }
   } else if (m_flagSelection == 2) {
     // Ladder
-    if (TileHelper::isLadder(m_selectedTileset->flags().at(tileIndex))) {
+    if (TileHelper::isLadder(m_selectedTileset->flag(tileIndex))) {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Ladder), true);
     } else {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Ladder), false);
     }
   } else if (m_flagSelection == 3) {
     // Bush
-    if (TileHelper::isBush(m_selectedTileset->flags().at(tileIndex))) {
+    if (TileHelper::isBush(m_selectedTileset->flag(tileIndex))) {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Bush), true);
     } else {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Bush), false);
     }
   } else if (m_flagSelection == 4) {
     // Counter
-    if (TileHelper::isCounter(m_selectedTileset->flags().at(tileIndex))) {
+    if (TileHelper::isCounter(m_selectedTileset->flag(tileIndex))) {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Counter), true);
     } else {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Counter), false);
     }
   } else if (m_flagSelection == 5) {
     // Damage Floor
-    if (TileHelper::isDamageFloor(m_selectedTileset->flags().at(tileIndex))) {
+    if (TileHelper::isDamageFloor(m_selectedTileset->flag(tileIndex))) {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Damage), true);
     } else {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Damage), false);
     }
   } else if (m_flagSelection == 6) {
     // Terrain Tag
-    int tag = TileHelper::getTerrainTag(m_selectedTileset->flags().at(tileIndex));
-    int flags = m_selectedTileset->flags().at(tileIndex);
+    int tag = TileHelper::getTerrainTag(m_selectedTileset->flag(tileIndex));
+    int flags = m_selectedTileset->flag(tileIndex);
     if (tag > 6) {
       tag = 0;
     } else {
@@ -1163,7 +1162,7 @@ void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTi
     }
     m_selectedTileset->setFlag(tileIndex, 0xF << 12, false);
     m_selectedTileset->setFlag(tileIndex, tag << 12, true);
-    // if (TileHelper::isTerrainTag(m_selectedTileset->flags().at(tileIndex))) {
+    // if (TileHelper::isTerrainTag(m_selectedTileset->flag(tileIndex))) {
     // } else {
     //   m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Damage), false);
     // }

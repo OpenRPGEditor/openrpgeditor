@@ -36,6 +36,6 @@ std::string ChangeMPCommand::stringRep(const Database& db) const {
     quantityStr = std::format("{{{}}}", db.variableNameOrId(quantity));
   }
 
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change MP" + colon.data() + actName + ", " + DecodeEnumName(quantityOp) + quantityStr +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change MP" + colon.data() + actName + ", " + DecodeEnumName(quantityOp) + quantityStr +
          ColorFormatter::popColor();
 }

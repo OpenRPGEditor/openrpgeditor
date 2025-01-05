@@ -19,7 +19,7 @@ void ChangeParallaxCommand::serializeParameters(nlohmann::ordered_json& out) con
 }
 
 std::string ChangeParallaxCommand::stringRep(const Database& db) const {
-  auto rep = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Parallax" + colon.data() + db.imageText(image) + ColorFormatter::popColor();
+  auto rep = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Parallax" + colon.data() + db.imageText(image) + ColorFormatter::popColor();
   if (loopHorizontally || loopVertically) {
     rep += ColorFormatter::getColor(FormatColor::Gray) + " (";
 

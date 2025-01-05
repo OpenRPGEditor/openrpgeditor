@@ -15,6 +15,6 @@ void ShakeScreenCommand::serializeParameters(nlohmann::ordered_json& out) const 
 }
 
 std::string ShakeScreenCommand::stringRep(const Database& db) const {
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Shake Screen" + colon.data() + std::format("{}, {}, {} frames", power, speed, duration) +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Shake Screen" + colon.data() + std::format("{}, {}, {} frames", power, speed, duration) +
          ColorFormatter::popColor() + (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
 }

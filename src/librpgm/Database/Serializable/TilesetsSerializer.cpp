@@ -29,11 +29,11 @@ void TilesetsSerializer::deserialize(std::ifstream& is) {
     int i = 0;
     for (const auto& [_, value] : data.items()) {
       Tileset& tileset = m_data.tilesets().emplace_back();
-      tileset.setValid(value != nullptr);
+      tileset.m_isValid = value != nullptr;
       if (tileset.isValid()) {
         value.get_to(tileset);
       } else {
-        tileset.setId(i);
+        tileset.m_id = i;
       }
       ++i;
     }

@@ -31,6 +31,6 @@ std::string ChangeArmorsCommand::stringRep(const Database& db) const {
     suffix = ColorFormatter::getColor(FormatColor::Gray) + db.parentheses("Include Equipment") + ColorFormatter::popColor();
   }
 
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Armors" + colon.data() + armorName + " " + DecodeEnumName(operation) + " " + oper +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Armors" + colon.data() + armorName + " " + DecodeEnumName(operation) + " " + oper +
          ColorFormatter::popColor() + suffix;
 }

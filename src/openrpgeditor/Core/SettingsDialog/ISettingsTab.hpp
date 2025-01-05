@@ -7,6 +7,6 @@ public:
   virtual ~ISettingsTab() = default;
   virtual void draw() = 0;
 
-  signal<void()> onValueChanged;
-  signal<void()> onUIRefreshRequested;
+  rpgmutils::signal<void()> onValueChanged;
+  rpgmutils::signal<void()> onUIRefreshRequested;
 };

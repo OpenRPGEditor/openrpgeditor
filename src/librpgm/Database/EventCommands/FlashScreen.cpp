@@ -26,7 +26,7 @@ void FlashScreenCommand::serializeParameters(nlohmann::ordered_json& out) const 
 }
 
 std::string FlashScreenCommand::stringRep(const Database& db) const {
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Flash Screen" + colon.data() +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Flash Screen" + colon.data() +
          std::format("({},{},{},{}), {} frames", color.r, color.g, color.b, color.intensity, duration) + ColorFormatter::popColor() +
          (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
 }

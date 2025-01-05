@@ -44,6 +44,6 @@ std::string ChangeLevelCommand::stringRep(const Database& db) const {
     suffix = ColorFormatter::getColor(FormatColor::Gray) + " (Show Level Up)" + ColorFormatter::popColor();
   }
 
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Level" + colon.data() + actName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Level" + colon.data() + actName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr +
          ColorFormatter::popColor() + suffix;
 }

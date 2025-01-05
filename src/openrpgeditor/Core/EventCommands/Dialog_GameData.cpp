@@ -164,7 +164,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
                                                     : current_characterSource == -1 ? "Player"
                                                     : current_characterSource == 0
                                                         ? "This Event"
-                                                        : ("EV" + std::format("{:03} ", Database::instance()->mapInfos.currentMap()->event(current_characterSource)->id)).c_str())) {
+                                                        : ("EV" + std::format("{:03} ", Database::instance()->mapInfos.currentMap()->event(current_characterSource)->id())).c_str())) {
 
         if (ImGui::Selectable("Player", current_characterSource == -1)) {
           current_characterSource = -1;
@@ -179,8 +179,8 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
           if (!dataSource.has_value())
             continue;
 
-          if (const bool is_selected = current_characterSource == dataSource->id; ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
-            current_characterSource = dataSource->id;
+          if (const bool is_selected = current_characterSource == dataSource->id(); ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id())).c_str(), is_selected)) {
+            current_characterSource = dataSource->id();
             if (is_selected)
               ImGui::SetItemDefaultFocus();
           }

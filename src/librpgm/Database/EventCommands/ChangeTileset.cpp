@@ -7,5 +7,5 @@ void ChangeTilesetCommand::serializeParameters(nlohmann::ordered_json& out) cons
 
 std::string ChangeTilesetCommand::stringRep(const Database& db) const {
   const auto tilesetName = db.tilesetNameOrId(tileset);
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Tileset" + colon.data() + tilesetName + ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Tileset" + colon.data() + tilesetName + ColorFormatter::popColor();
 }

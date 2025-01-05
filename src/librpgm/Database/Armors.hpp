@@ -3,7 +3,7 @@
 #include "Database/Armor.hpp"
 #include <nlohmann/json.hpp>
 
-class Armors {
+class Armors final : public IModifiable {
 public:
   [[nodiscard]] std::vector<Armor>& armors() { return m_armors; }
   [[nodiscard]] const std::vector<Armor>& armors() const { return m_armors; }
@@ -40,6 +40,11 @@ public:
         m_armors[i].setId(i);
       }
     }
+    setModified();
+  }
+
+  bool isModified() const override {
+    return IModifiable::isModified() | std::ranges::any_of(m_armors, [](const auto& arm) { return arm.isModified(); });
   }
 
 private:

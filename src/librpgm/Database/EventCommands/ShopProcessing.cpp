@@ -28,7 +28,7 @@ std::string ShopProcessingGoodCommand::stringRep(const Database& db) const {
     good = db.weaponNameOrId(id);
     break;
   }
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "               " + colon.data() + good + ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "               " + colon.data() + good + ColorFormatter::popColor();
 }
 
 ShopProcessingCommand::ShopProcessingCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
@@ -60,7 +60,7 @@ std::string ShopProcessingCommand::stringRep(const Database& db) const {
     good = db.weaponNameOrId(id);
     break;
   }
-  std::string ret = indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Shop Processing" + colon.data() + good + ColorFormatter::popColor();
+  std::string ret = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Shop Processing" + colon.data() + good + ColorFormatter::popColor();
 
   for (const auto& g : goods) {
     ret += "\n" + g->stringRep(db);

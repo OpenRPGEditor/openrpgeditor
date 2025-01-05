@@ -8,16 +8,14 @@
 #include "Database/EventPage.hpp"
 
 struct EventEditor;
-struct EventPage;
 struct Actor;
 struct Item;
-struct EVPage {
-  EVPage(EventEditor* parent, EventPage* page);
+class EVPage final : IPageEditor {
+public:
+  /* Returns true when closed, closing is the equivalent of deleting */
+  std::tuple<bool, bool> draw(bool canDelete, int index) override;
 
-  /* Returns true when closed, closing is the equivelant of deleting */
-  std::tuple<bool, bool> draw(bool canDelete, int index);
-
-  void clearPage();
+  void clearPage() const;
 
   void setPage(EventPage* page) {
     m_page = page;
@@ -26,6 +24,10 @@ struct EVPage {
 
   void setParent(EventEditor* parent) { m_parent = parent; }
 
+protected:
+  friend IPageEditor* IPageEditor::create(EventPage* page);
+  explicit EVPage(EventPage* page);
+
 private:
   enum VariableSwitchSelection {
     Variable,
@@ -33,7 +35,6 @@ private:
     Switch2,
   };
   EventEditor* m_parent;
-  EventPage* m_page;
   char m_pageNameBuf[4096];
   EventCommandEditor m_commandEditor;
   CharacterSheet m_characterSheet;

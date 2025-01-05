@@ -21,7 +21,7 @@ struct Dialog_ChangeBattleBGM : IEventDialogController {
     try {
       m_audios = ResourceManager::instance()->getDirectoryContents("audio/bgm/", ".ogg");
     } catch (const std::filesystem::filesystem_error& e) { std::cerr << "Error accessing directory: " << e.what() << std::endl; }
-    m_audio.name.clear();
+    m_audio.setName("");
   }
   std::tuple<bool, bool> draw() override;
   [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return command; }
@@ -42,9 +42,9 @@ private:
     // Load and play music
     m_sound = Sound(ResourceManager::instance()->loadBGM(path));
     m_sound.play();
-    setVolume(m_audio.volume);
-    setPanning(m_audio.pan);
-    setPitch(m_audio.pitch);
+    setVolume(m_audio.volume());
+    setPanning(m_audio.pan());
+    setPitch(m_audio.pitch());
     return true;
   }
   void setVolume(int volume) {

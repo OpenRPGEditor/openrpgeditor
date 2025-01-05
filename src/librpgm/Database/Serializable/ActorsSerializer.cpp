@@ -30,12 +30,14 @@ void ActorsSerializer::deserialize(std::ifstream& is) {
     int i = 0;
     for (const auto& [_, value] : data.items()) {
       Actor& actor = m_data.actorList().emplace_back();
-      actor.m_isValid = value != nullptr;
+      actor.disableSignals();
+      actor.setValid(value != nullptr);
       if (actor.isValid()) {
         value.get_to(actor);
       } else {
-        actor.m_id = i;
+        actor.setId(i);
       }
+      actor.enableSignals();
       ++i;
     }
   } catch (...) {}

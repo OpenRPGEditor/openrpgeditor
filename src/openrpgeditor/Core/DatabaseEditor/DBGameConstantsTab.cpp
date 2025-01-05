@@ -710,7 +710,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->animation(id)->m_name, alias);
+          drawNameAndAliasColumns(m_parent->animation(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->animations.erase(it);
           } else {

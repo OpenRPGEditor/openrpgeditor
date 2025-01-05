@@ -1,12 +1,13 @@
 #include "Core/MapEditor.hpp"
 
 #include "Core/MainWindow.hpp"
-#include "Database/EventParser.hpp"
 
 #include "Core/ImGuiExt/ImGuiNotify.hpp"
-#include "Core/ImGuiExt/ImGuiUtils.hpp"
+#include "Core/Tilemap/TilePalette.hpp"
 
-#include "Tilemap/TilePalette.hpp"
+#include "Database/EventParser.hpp"
+#include "Utils/JavaMath.hpp"
+
 #include "imgui.h"
 #include "imgui_internal.h"
 
@@ -18,23 +19,24 @@ struct EventMoveUndoCommand : IUndoCommand {
   int type() const override { return -1; }
 
   bool undo() override {
-    if (m_event) {
-      std::swap(m_event->x, m_x);
-      std::swap(m_event->y, m_y);
-      return true;
-    }
+    // if (m_event) {
+    //   std::swap(m_event->x, m_x);
+    //   std::swap(m_event->y, m_y);
+    //   return true;
+    // }
 
     return false;
   }
 
   std::string description() override {
-    if (!m_event) {
-      return "Invalid move command!";
-    }
-    if (!m_isRedo) {
-      return std::format("Move {} from {},{} to {},{}", m_event->name.empty() ? std::to_string(m_event->id) : m_event->name, m_x, m_y, m_event->x, m_event->y);
-    }
-    return std::format("Move {} from {},{} to {},{}", m_event->name.empty() ? std::to_string(m_event->id) : m_event->name, m_event->x, m_event->y, m_x, m_y);
+    return {};
+    // if (!m_event) {
+    //   return "Invalid move command!";
+    // }
+    // if (!m_isRedo) {
+    //   return std::format("Move {} from {},{} to {},{}", m_event->name.empty() ? std::to_string(m_event->id) : m_event->name, m_x, m_y, m_event->x, m_event->y);
+    // }
+    // return std::format("Move {} from {},{} to {},{}", m_event->name.empty() ? std::to_string(m_event->id) : m_event->name, m_event->x, m_event->y, m_x, m_y);
   }
 
 private:
@@ -45,7 +47,6 @@ private:
 
 void MapEditor::setMap(MapInfo* info) {
   m_mapRenderer.setMap(nullptr, nullptr);
-  m_eventEditors.clear();
   m_mapInfo = info;
 
   if (map() && map()->parallaxShow() && !map()->parallaxName().empty()) {
@@ -83,16 +84,17 @@ void MapEditor::handleEventDrag() {
   if (m_movingEvent) {
     /* For now we'll prevent events from occupying the same tile */
     /* TODO(phil): Implement some way to sort through events on the same tile */
-    const int oldX = m_movingEvent->x;
-    const int oldY = m_movingEvent->y;
+    const int oldX = m_movingEvent->x();
+    const int oldY = m_movingEvent->y();
 
-    const auto it = std::ranges::find_if(map()->events(), [&](const std::optional<Event>& e) { return e && e->id != 0 && e->x == tileCellX() && e->y == tileCellY() && &e.value() != m_movingEvent; });
+    const auto it =
+        std::ranges::find_if(map()->events(), [&](const std::optional<Event>& e) { return e && e->id() != 0 && e->x() == tileCellX() && e->y() == tileCellY() && &e.value() != m_movingEvent; });
 
-    m_movingEvent->x = m_tileCursor.tileX();
-    m_movingEvent->y = m_tileCursor.tileY();
+    m_movingEvent->setX(m_tileCursor.tileX());
+    m_movingEvent->setY(m_tileCursor.tileY());
     if (it != map()->events().end()) {
-      m_movingEvent->x = oldX;
-      m_movingEvent->y = oldY;
+      m_movingEvent->setX(oldX);
+      m_movingEvent->setY(oldY);
     }
   }
 }
@@ -125,17 +127,17 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     m_selectedEvent = map()->eventAt(m_tileCursor.tileX(), m_tileCursor.tileY());
     m_movingEvent = m_selectedEvent;
     if (m_movingEvent) {
-      m_movingEventX = m_movingEvent->x;
-      m_movingEventY = m_movingEvent->y;
+      m_movingEventX = m_movingEvent->x();
+      m_movingEventY = m_movingEvent->y();
     }
   } else if (m_parent->editMode() == EditMode::Event && m_tileCursor.mode() == MapCursorMode::Keyboard && (ImGui::IsKeyReleased(ImGuiKey_LeftShift) || ImGui::IsKeyReleased(ImGuiKey_RightShift))) {
     if (m_movingEvent) {
-      m_movingEvent->x = m_tileCursor.tileX();
-      m_movingEvent->y = m_tileCursor.tileY();
+      m_movingEvent->setX(m_tileCursor.tileX());
+      m_movingEvent->setY(m_tileCursor.tileY());
     }
   }
 
-  if (m_selectedEvent && !m_movingEvent && m_selectedEvent->x != m_tileCursor.tileX() && m_selectedEvent->y != m_tileCursor.tileY()) {
+  if (m_selectedEvent && !m_movingEvent && m_selectedEvent->x() != m_tileCursor.tileX() && m_selectedEvent->y() != m_tileCursor.tileY()) {
     m_selectedEvent = nullptr;
   }
 
@@ -154,8 +156,8 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     m_selectedEvent = map()->eventAt(m_tileCursor.tileX(), m_tileCursor.tileY());
     m_movingEvent = m_selectedEvent;
     if (m_movingEvent) {
-      m_movingEventX = m_movingEvent->x;
-      m_movingEventY = m_movingEvent->y;
+      m_movingEventX = m_movingEvent->x();
+      m_movingEventY = m_movingEvent->y();
     }
     m_hasScrolled = true;
   }
@@ -164,15 +166,13 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
       ImGui::IsWindowFocused()) {
 
     if (m_selectedEvent != nullptr) {
-      const auto it = std::ranges::find_if(m_eventEditors, [&](const EventEditor& editor) { return editor.event()->id == m_selectedEvent->id; });
-      if (it == m_eventEditors.end()) {
-        m_eventEditors.emplace_back(m_parent, m_selectedEvent);
-      }
-    } else if (m_eventEditors.empty() && ImGui::IsWindowFocused()) {
-      auto ev = map()->createNewEvent();
-      ev->x = tileCellX();
-      ev->y = tileCellY();
-      m_eventEditors.emplace_back(m_parent, ev);
+      m_selectedEvent->editor()->open();
+    } else if (ImGui::IsWindowFocused()) {
+      /* TODO: Use temporary event object */
+      const auto ev = map()->createNewEvent();
+      ev->setX(tileCellX());
+      ev->setY(tileCellY());
+      ev->editor()->open();
     }
   }
 
@@ -239,8 +239,9 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     /* If we have a selected actor, and it's no longer in its original location, push it onto the undo stack
      * as an operation
      */
-    if (m_movingEvent != nullptr && (m_movingEvent->x != m_movingEventX || m_movingEvent->y != m_movingEventY)) {
-      m_parent->addUndo(std::make_shared<EventMoveUndoCommand>(m_movingEvent, m_movingEventX, m_movingEventY));
+    if (m_movingEvent != nullptr && (m_movingEvent->x() != m_movingEventX || m_movingEvent->y() != m_movingEventY)) {
+      // TODO: Actually implement undo
+      // m_parent->addUndo(std::make_shared<EventMoveUndoCommand>(m_movingEvent, m_movingEventX, m_movingEventY));
     }
     m_movingEvent = nullptr;
   }
@@ -252,7 +253,7 @@ void MapEditor::handleKeyboardShortcuts() {
   if (ImGui::IsKeyPressed(ImGuiKey_Delete) || ImGui::IsKeyPressed(ImGuiKey_Backspace)) {
     // TODO: Undo command
     if (ImGui::IsWindowFocused() && selectedEvent()) {
-      map()->deleteEvent(selectedEvent()->id);
+      map()->deleteEvent(selectedEvent()->id());
       setSelectedEvent(nullptr);
     }
   }
@@ -502,7 +503,14 @@ void MapEditor::draw() {
   m_mapScale = roundToNearestQuarter(m_mapScale);
   m_mapScale = std::clamp(m_mapScale, .25f, 4.f);
 
-  std::erase_if(m_eventEditors, [](EventEditor& editor) { return !editor.draw(); });
+  if (map()) {
+    std::ranges::for_each(map()->events(), [&](auto& event) {
+      if (!event || event->id() == 0) {
+        return;
+      }
+      event->editor()->draw();
+    });
+  }
 
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoTitleBar)) {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - 45.f), 0, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
@@ -553,9 +561,9 @@ void MapEditor::draw() {
         auto [closed, confirmed] = template_picker->draw();
         if (closed) {
           if (confirmed) {
-            nlohmann::ordered_json eventJson;
             EventParser parser;
             if (m_templateSaving) {
+              nlohmann::ordered_json eventJson;
               EventParser::serialize(eventJson, *m_selectedEvent);
               if (template_picker.value().selection() == 0) {
                 Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
@@ -572,7 +580,7 @@ void MapEditor::draw() {
               nlohmann::ordered_json eventJson = nlohmann::ordered_json::parse(Database::instance()->templates.templates.at(template_picker->selection() - 1).commands());
 
               m_templateEvent.emplace(parser.parse(eventJson));
-              m_templateEvent.value().id = map()->events().size() - 1;
+              m_templateEvent.value().setId(map()->events().size() - 1);
               eventProperties = TemplatesEvent(&m_templateEvent.value(), map(), nullptr, tileCellX(), tileCellY());
             }
           }
@@ -658,20 +666,40 @@ void MapEditor::draw() {
         m_tileCursor.draw(win);
       }
 
-      auto sortedEvents = map()->getSorted();
-      for (auto& event : sortedEvents) {
-        if (!event || event->id == 0 || event->pages[0].priorityType == EventPriority::Above_characters) {
+      auto sortedEvents = !prisonMode() ? map()->getSorted() : map()->getRenderSorted();
+
+      // for (const auto& event : sortedEvents) {
+      //   EventPage* page = !prisonMode() ? event->page(0) : event->renderer()->page();
+      //   if (!event || event->id() == 0 || page->priorityType != EventPriority::Below_character) {
+      //     continue;
+      //   }
+      //   if (m_selectedEvent == event && !m_hasScrolled) {
+      //     ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + (((event->x() * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.x / 2)));
+      //     ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + (((event->y() * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.y / 2)));
+      //     m_hasScrolled = true;
+      //   }
+      //   bool isHovered = event->x() == tileCellX() && event->y() == tileCellY();
+      //   if (auto* renderer = static_cast<MapEvent*>(event->renderer())) {
+      //     renderer->setMapEditor(this);
+      //     renderer->draw(m_mapScale, isHovered, m_selectedEvent == event, m_parent->editMode() != EditMode::Event);
+      //   }
+      // }
+
+      for (const auto& event : sortedEvents) {
+        EventPage* page = !prisonMode() ? event->page(0) : event->renderer()->page();
+        if (!event || event->id() == 0 /*|| page->priorityType != EventPriority::Same_as_characters*/) {
           continue;
         }
-        auto realEvent = map()->event(event->id);
-        if (m_selectedEvent == realEvent && !m_hasScrolled) {
-          ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + (((event->x * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.x / 2)));
-          ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + (((event->y * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.y / 2)));
+        if (m_selectedEvent == event && !m_hasScrolled) {
+          ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + (((event->x() * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.x / 2)));
+          ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + (((event->y() * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.y / 2)));
           m_hasScrolled = true;
         }
-        bool isHovered = event->x == tileCellX() && event->y == tileCellY();
-        MapEvent mapEvent(this, &event.value());
-        mapEvent.draw(m_mapScale, isHovered, m_selectedEvent == realEvent, m_parent->editMode() != EditMode::Event, win);
+        bool isHovered = event->x() == tileCellX() && event->y() == tileCellY();
+        if (auto* renderer = static_cast<MapEvent*>(event->renderer())) {
+          renderer->setMapEditor(this);
+          renderer->draw(m_mapScale, isHovered, m_selectedEvent == event, m_parent->editMode() != EditMode::Event);
+        }
       }
 
       if (!m_prisonMode) {
@@ -680,20 +708,23 @@ void MapEditor::draw() {
         }
       }
 
-      for (auto& event : sortedEvents) {
-        if (!event || event->id == 0 || event->pages[0].priorityType != EventPriority::Above_characters) {
-          continue;
-        }
-        auto realEvent = map()->event(event->id);
-        if (m_selectedEvent == realEvent && !m_hasScrolled) {
-          ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + (((event->x * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.x / 2)));
-          ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + (((event->y * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.y / 2)));
-          m_hasScrolled = true;
-        }
-        bool isHovered = event->x == tileCellX() && event->y == tileCellY();
-        MapEvent mapEvent(this, &event.value());
-        mapEvent.draw(m_mapScale, isHovered, m_selectedEvent == realEvent, m_parent->editMode() != EditMode::Event, win);
-      }
+      // for (auto& event : sortedEvents) {
+      //   EventPage* page = !prisonMode() ? event->page(0) : event->renderer()->page();
+      //   if (!event || event->id() == 0 || page->priorityType != EventPriority::Above_characters) {
+      //     continue;
+      //   }
+      //   auto realEvent = map()->event(event->id());
+      //   if (m_selectedEvent == realEvent && !m_hasScrolled) {
+      //     ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + (((event->x() * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.x / 2)));
+      //     ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + (((event->y() * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.y / 2)));
+      //     m_hasScrolled = true;
+      //   }
+      //   bool isHovered = event->x() == tileCellX() && event->y() == tileCellY();
+      //   if (auto* renderer = static_cast<MapEvent*>(event->renderer())) {
+      //     renderer->setMapEditor(this);
+      //     renderer->draw(m_mapScale, isHovered, m_selectedEvent == realEvent, m_parent->editMode() != EditMode::Event);
+      //   }
+      // }
     }
     ImGui::EndChild();
     ImGui::BeginChild("##map_editor_bottom_panel", ImVec2{}, 0, ImGuiWindowFlags_NoBackground);
@@ -704,9 +735,9 @@ void MapEditor::draw() {
       ImGui::SameLine();
       std::string fmt = std::format("Tile {}, ({}, {})", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0), m_tileCursor.tileX(), m_tileCursor.tileY());
       if (map()) {
-        if (const auto ev = std::ranges::find_if(map()->events(), [&](const std::optional<Event>& e) { return e && e->id != 0 && m_tileCursor.tileX() == e->x && m_tileCursor.tileY() == e->y; });
+        if (const auto ev = std::ranges::find_if(map()->events(), [&](const std::optional<Event>& e) { return e && e->id() != 0 && m_tileCursor.tileX() == e->x() && m_tileCursor.tileY() == e->y(); });
             ev != map()->events().end()) {
-          fmt += std::format(" {} ({:03})", (*ev)->name, (*ev)->id);
+          fmt += std::format(" {} ({:03})", (*ev)->name(), (*ev)->id());
         }
       }
       ImGui::Text("%s", fmt.c_str());
@@ -715,3 +746,12 @@ void MapEditor::draw() {
   }
   ImGui::End();
 }
+
+double MapEditor::adjustX(double x) { return x + ((ImGui::GetCurrentWindow()->ContentRegionRect.Min.x / tileSize()) * m_mapScale); }
+double MapEditor::adjustY(double y) { return y + ((ImGui::GetCurrentWindow()->ContentRegionRect.Min.y / tileSize()) * m_mapScale); }
+double MapEditor::roundX(const double x) { return isLoopHorizontally() ? Math::mod(x, map()->width()) : x; }
+double MapEditor::roundY(const double y) { return isLoopVertically() ? Math::mod(y, map()->height()) : y; }
+double MapEditor::xWithDirection(const double x, const Direction d) { return x + (d == Direction::Right ? 1 : d == Direction::Left ? -1 : 0); }
+double MapEditor::yWithDirection(const double y, const Direction d) { return y + (d == Direction::Down ? 1 : d == Direction::Up ? -1 : 0); }
+double MapEditor::roundXWithDirection(const double x, const Direction d) { return roundX(x + (d == Direction::Right ? 1 : d == Direction::Left ? -1 : 0)); }
+double MapEditor::roundYWithDirection(const double y, const Direction d) { return roundY(y + (d == Direction::Down ? 1 : d == Direction::Up ? -1 : 0)); }

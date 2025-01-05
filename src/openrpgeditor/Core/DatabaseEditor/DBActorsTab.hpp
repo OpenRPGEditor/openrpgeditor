@@ -21,14 +21,12 @@ struct DBActorsTab : IDBEditorTab {
   Actor* actor(int id) { return m_actors.actor(id); }
   const Actor* actor(int id) const { return m_actors.actor(id); }
 
+  bool isModified() const { return m_actors.isModified(); }
+
 private:
   bool checkEquipable(int etypeId, int dataId) const;
   static std::string itemDisplayName(bool isWeapon, int dataId);
 
-  struct TempActor {
-    int initialLevel{};
-    int maxLevel{};
-  } m_tempActor{};
   Actors& m_actors;
   Actor* m_selectedActor{};
   int m_editMaxActors{};

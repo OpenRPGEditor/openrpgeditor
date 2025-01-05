@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Database/CommandParser.hpp"
 #include "Database/EventPage.hpp"
 #include "Database/Globals.hpp"
+#include "Database/IPageEditor.hpp"
 #include "Database/MovementRoute.hpp"
 
 #include <string>
@@ -48,9 +48,21 @@ struct EventImage {
 void to_json(nlohmann::ordered_json& to, const EventImage& image);
 void from_json(const nlohmann::ordered_json& from, EventImage& image);
 
-struct EventPage {
+class EventPage final : public IModifiable {
+public:
   friend void to_json(nlohmann::ordered_json& json, const EventPage& eventPage);
   friend void from_json(const nlohmann::ordered_json& json, EventPage& eventPage);
+
+  EventPage();
+  void clear();
+
+  IPageEditor* editor() const {
+    if (!m_editor) {
+      m_editor.reset(IPageEditor::create(const_cast<EventPage*>(this)));
+    }
+
+    return m_editor.get();
+  }
 
   EventCondition conditions{};
   bool directionFix{};
@@ -69,16 +81,17 @@ struct EventPage {
   /* OpenRPGMaker Additions */
   std::string name;
 
-  [[nodiscard]] bool isDirty() const {
-    m_isDirty |= std::any_of(list.begin(), list.end(), [](const auto& cmd) { return cmd && cmd->isDirty(); });
+  [[nodiscard]] bool isModified() const override {
+    bool modified = IModifiable::isModified();
+    modified |= std::ranges::any_of(list, [](const auto& cmd) { return cmd && cmd->isModified(); });
 
-    m_isDirty |= conditions.isDirty();
-    m_isDirty |= image.isDirty();
-    m_isDirty |= moveRoute.isDirty();
-
-    return m_isDirty;
+    modified |= conditions.isDirty();
+    modified |= image.isDirty();
+    modified |= moveRoute.isModified();
+    return modified;
   }
-  mutable bool m_isDirty{false};
+
+  mutable std::shared_ptr<IPageEditor> m_editor;
 };
 void to_json(nlohmann::ordered_json& json, const EventPage& eventPage);
 void from_json(const nlohmann::ordered_json& json, EventPage& eventPage);

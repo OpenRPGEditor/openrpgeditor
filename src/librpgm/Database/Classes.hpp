@@ -3,7 +3,7 @@
 #include "Database/Class.hpp"
 
 #include <vector>
-class Classes {
+class Classes final : public IModifiable {
 public:
   [[nodiscard]] Class* classType(const int id) {
     for (auto& cls : m_classes) {
@@ -38,6 +38,11 @@ public:
         m_classes[i].setId(i);
       }
     }
+    setModified();
+  }
+
+  bool isModified() const override {
+    return IModifiable::isModified() | std::ranges::any_of(m_classes, [](const auto& cls) { return cls.isModified(); });
   }
 
 private:

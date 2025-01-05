@@ -101,17 +101,17 @@ struct Dialog_ConditionalBranch : IEventDialogController {
     std::shared_ptr<IEventCommand> sharedCommand = getCommand();
     eventCommands.push_back(sharedCommand);
 
-    eventCommands.back()->indent = getParentIndent().value();
+    eventCommands.back()->setIndent(getParentIndent().value());
     eventCommands.push_back(std::make_shared<EventDummy>());
-    eventCommands.back()->indent = getParentIndent().value() + 1;
+    eventCommands.back()->setIndent(getParentIndent().value() + 1);
     if (m_elseBranch) {
       eventCommands.push_back(std::make_shared<ElseCommand>());
-      eventCommands.back()->indent = getParentIndent().value();
+      eventCommands.back()->setIndent(getParentIndent().value());
       eventCommands.push_back(std::make_shared<EventDummy>());
-      eventCommands.back()->indent = getParentIndent().value() + 1;
+      eventCommands.back()->setIndent(getParentIndent().value() + 1);
     }
     eventCommands.push_back(std::make_shared<EndCommand>());
-    eventCommands.back()->indent = getParentIndent().value();
+    eventCommands.back()->setIndent(getParentIndent().value());
     return eventCommands;
   };
 

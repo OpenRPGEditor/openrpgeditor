@@ -31,6 +31,6 @@ std::string ChangeEnemyTPCommand::stringRep(const Database& db) const {
     quantityStr = std::format("{}", quantity);
   }
 
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Enemy TP" + colon.data() + enemyStr + ", " + DecodeEnumName(enemyOp) + " " + quantityStr +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Enemy TP" + colon.data() + enemyStr + ", " + DecodeEnumName(enemyOp) + " " + quantityStr +
          ColorFormatter::popColor();
 }

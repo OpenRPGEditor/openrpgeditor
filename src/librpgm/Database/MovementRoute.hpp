@@ -14,8 +14,8 @@ struct MovementRoute {
   bool skippable;
   bool wait;
 
-  [[nodiscard]] bool isDirty() const {
-    m_isDirty |= std::any_of(list.begin(), list.end(), [](const auto& cmd) { return cmd && cmd->isDirty(); });
+  [[nodiscard]] bool isModified() const {
+    m_isDirty |= std::ranges::any_of(list, [](const auto& cmd) { return cmd && cmd->isModified(); });
 
     return m_isDirty;
   }
@@ -26,6 +26,7 @@ struct MovementRoute {
     if (position < 0)
       position = 0;
     auto select = list.insert(list.begin() + position, command);
+    m_isDirty = true;
     return select - list.begin();
   }
 

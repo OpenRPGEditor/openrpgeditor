@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cctype>
 #include <locale>
+#include <random>
 
 namespace Utils {
 // trim from start (in place)

@@ -20,7 +20,7 @@ struct Dialog_ChangeVehicleBGM : IEventDialogController {
         m_audios.push_back(file);
       }
     } catch (const std::filesystem::filesystem_error& e) { std::cerr << "Error accessing directory: " << e.what() << std::endl; }
-    m_audio.name = m_audios.at(m_selected);
+    m_audio.setName(m_audios.at(m_selected));
   }
   std::tuple<bool, bool> draw() override;
   [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return command; }

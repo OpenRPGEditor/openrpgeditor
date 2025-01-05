@@ -39,7 +39,7 @@ public:
         m_actors[i].setId(i);
       }
     }
-    onModified().fire(this);
+    setModified();
   }
 
   bool hasTestActor() const {
@@ -49,6 +49,10 @@ public:
 
   std::vector<Actor>& actorList() { return m_actors; }
   const std::vector<Actor>& actorList() const { return m_actors; }
+
+  bool isModified() const override {
+    return IModifiable::isModified() | std::ranges::any_of(m_actors, [](const auto& act) { return act.isModified(); });
+  }
 
 private:
   friend class DBActorsTab;

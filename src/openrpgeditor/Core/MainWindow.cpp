@@ -97,21 +97,21 @@ bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
   m_databaseEditor->onReady.connect<&MainWindow::onDatabaseReady>(this);
 
   m_database.emplace(basePath, filePath, version);
-  m_database->actorsLoaded.connect<&MainWindow::onActorsLoaded>(this);
-  m_database->classesLoaded.connect<&MainWindow::onClassesLoaded>(this);
-  m_database->skillsLoaded.connect<&MainWindow::onSkillsLoaded>(this);
-  m_database->itemsLoaded.connect<&MainWindow::onItemsLoaded>(this);
-  m_database->weaponsLoaded.connect<&MainWindow::onWeaponsLoaded>(this);
-  m_database->armorsLoaded.connect<&MainWindow::onArmorsLoaded>(this);
-  m_database->enemiesLoaded.connect<&MainWindow::onEnemiesLoaded>(this);
-  m_database->troopsLoaded.connect<&MainWindow::onTroopsLoaded>(this);
-  m_database->statesLoaded.connect<&MainWindow::onStatesLoaded>(this);
-  m_database->animationsLoaded.connect<&MainWindow::onAnimationsLoaded>(this);
-  m_database->tilesetsLoaded.connect<&MainWindow::onTilesetsLoaded>(this);
-  m_database->commonEventsLoaded.connect<&MainWindow::onCommonEventsLoaded>(this);
-  m_database->systemLoaded.connect<&MainWindow::onSystemLoaded>(this);
-  m_database->gameConstantsLoaded.connect<&MainWindow::onGameConstantsLoaded>(this);
-  m_database->templatesLoaded.connect<&MainWindow::onTemplatesLoaded>(this);
+  m_database->actorsLoaded().connect<&MainWindow::onActorsLoaded>(this);
+  m_database->classesLoaded().connect<&MainWindow::onClassesLoaded>(this);
+  m_database->skillsLoaded().connect<&MainWindow::onSkillsLoaded>(this);
+  m_database->itemsLoaded().connect<&MainWindow::onItemsLoaded>(this);
+  m_database->weaponsLoaded().connect<&MainWindow::onWeaponsLoaded>(this);
+  m_database->armorsLoaded().connect<&MainWindow::onArmorsLoaded>(this);
+  m_database->enemiesLoaded().connect<&MainWindow::onEnemiesLoaded>(this);
+  m_database->troopsLoaded().connect<&MainWindow::onTroopsLoaded>(this);
+  m_database->statesLoaded().connect<&MainWindow::onStatesLoaded>(this);
+  m_database->animationsLoaded().connect<&MainWindow::onAnimationsLoaded>(this);
+  m_database->tilesetsLoaded().connect<&MainWindow::onTilesetsLoaded>(this);
+  m_database->commonEventsLoaded().connect<&MainWindow::onCommonEventsLoaded>(this);
+  m_database->systemLoaded().connect<&MainWindow::onSystemLoaded>(this);
+  m_database->gameConstantsLoaded().connect<&MainWindow::onGameConstantsLoaded>(this);
+  m_database->templatesLoaded().connect<&MainWindow::onTemplatesLoaded>(this);
   m_database->load();
   return true;
 }

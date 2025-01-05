@@ -38,8 +38,8 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
         if (!dataSource.has_value())
           continue;
 
-        if (const bool is_selected = m_character == dataSource->id; ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id)).c_str(), is_selected)) {
-          m_character = dataSource->id;
+        if (const bool is_selected = m_character == dataSource->id(); ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id())).c_str(), is_selected)) {
+          m_character = dataSource->id();
           if (is_selected)
             ImGui::SetItemDefaultFocus();
         }

@@ -3,37 +3,32 @@
 #include "Core/EventEditor/EVPage.hpp"
 #include "Core/TemplateEditor/Dialog/TemplatesEvent.hpp"
 #include "Database/Event.hpp"
+#include "Database/IEventEditor.hpp"
 
 #include <vector>
 
 struct MainWindow;
 
-struct EventEditor {
-  EventEditor(MainWindow* parent, Event* event) : m_parent(parent), m_event(event) {
-    for (auto& page : event->pages) {
-      m_pages.emplace_back(this, &page);
+class EventEditor final : public IEventEditor {
+public:
+  bool isOpen() const override { return m_open; }
+  void open() override { m_open = true; };
+  bool confirmed() const override { return m_confirmed; }
+  void accept() const override {
+    if (m_event) {
+      m_event->acceptChanges();
     }
-    m_id = event->id;
   }
-  void fixupPages();
 
-  bool draw();
+  std::tuple<bool, bool> draw() override;
 
-  Event* event() { return m_event; }
-  const Event* event() const { return m_event; }
-
-  MainWindow* project() { return m_parent; }
-  const MainWindow* project() const { return m_parent; }
-
-  int id() const { return m_id; }
+protected:
+  friend IEventEditor* IEventEditor::create(Event* ev);
+  explicit EventEditor(Event* event) : IEventEditor(event) {}
 
 private:
-  std::optional<ObjectPicker<Template>> template_picker;
-
-  MainWindow* m_parent = nullptr;
-  Event* m_event = nullptr;
-  int m_id;
-  std::vector<EVPage> m_pages;
+  std::optional<ObjectPicker<Template>> m_templatePicker;
   int m_selectedPage = 0;
-  bool m_isOpen = true;
+  bool m_open{false};
+  bool m_confirmed{false};
 };

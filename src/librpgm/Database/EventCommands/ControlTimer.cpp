@@ -25,6 +25,6 @@ std::string ControlTimerCommand::stringRep(const Database& db) const {
     min = "0";
     sec = std::to_string(seconds);
   }
-  return indentText(indent) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Control Timer" + colon.data() + DecodeEnumName(control) + ", " + min + " min " + sec + " sec" +
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Control Timer" + colon.data() + DecodeEnumName(control) + ", " + min + " min " + sec + " sec" +
          ColorFormatter::popColor();
 }

@@ -16,7 +16,7 @@ void DBSystemTab::addAudioRow(const Audio& audio, const std::string& type, Audio
     ImGui::TableNextColumn();
     if (ImGui::Selectable(type.c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {}
     ImGui::TableNextColumn();
-    ImGui::Text("%s", audio.name.c_str());
+    ImGui::Text("%s", audio.name().c_str());
   }
 }
 

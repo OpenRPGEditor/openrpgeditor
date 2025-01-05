@@ -153,7 +153,8 @@ void DBActorsTab::draw() {
             {
               ImGui::Text("Initial Level:");
               ImGui::SetNextItemWidth(ImGui::GetCursorPosX() / 2 - 16);
-              ImGui::InputInt("##orpg_actors_initial_level_edit", &m_tempActor.initialLevel);
+              int initialLevel = m_selectedActor->initialLevel();
+              ImGui::InputInt("##orpg_actors_initial_level_edit", &initialLevel);
               if (ImGui::IsItemDeactivatedAfterEdit()) {
                 m_selectedActor->setInitialLevel(std::clamp(initialLevel, 1, 99));
               }
@@ -165,7 +166,8 @@ void DBActorsTab::draw() {
             {
               ImGui::Text("Max Level:");
               ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2 / 2 - 16);
-              ImGui::InputInt("##orpg_actors_max_level_edit", &m_tempActor.maxLevel);
+              int maxLevel = m_selectedActor->maxLevel();
+              ImGui::InputInt("##orpg_actors_max_level_edit", &maxLevel);
               if (ImGui::IsItemDeactivatedAfterEdit()) {
                 m_selectedActor->setMaxLevel(std::clamp(maxLevel, 1, 99));
               }

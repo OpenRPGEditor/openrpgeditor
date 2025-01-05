@@ -27,22 +27,22 @@ public:
     }
   }
 
-  signal<void(const std::filesystem::path&)>& fileChanged() { return m_fileChanged; }
-  signal<void(const std::filesystem::path&)>& fileAdded() { return m_fileAdded; }
-  signal<void(const std::filesystem::path&)>& fileDeleted() { return m_fileDeleted; }
-  signal<void(const std::filesystem::path&)>& directoryChanged() { return m_directoryChanged; }
-  signal<void(const std::filesystem::path&)>& directoryAdded() { return m_directoryAdded; }
-  signal<void(const std::filesystem::path&)>& directoryDeleted() { return m_directoryDeleted; }
+  rpgmutils::signal<void(const std::filesystem::path&)>& fileChanged() { return m_fileChanged; }
+  rpgmutils::signal<void(const std::filesystem::path&)>& fileAdded() { return m_fileAdded; }
+  rpgmutils::signal<void(const std::filesystem::path&)>& fileDeleted() { return m_fileDeleted; }
+  rpgmutils::signal<void(const std::filesystem::path&)>& directoryChanged() { return m_directoryChanged; }
+  rpgmutils::signal<void(const std::filesystem::path&)>& directoryAdded() { return m_directoryAdded; }
+  rpgmutils::signal<void(const std::filesystem::path&)>& directoryDeleted() { return m_directoryDeleted; }
 
 private:
   void watchDirectory();
   std::string m_watchDirectory;
-  signal<void(const std::filesystem::path&)> m_fileChanged;
-  signal<void(const std::filesystem::path&)> m_fileAdded;
-  signal<void(const std::filesystem::path&)> m_fileDeleted;
-  signal<void(const std::filesystem::path&)> m_directoryChanged;
-  signal<void(const std::filesystem::path&)> m_directoryAdded;
-  signal<void(const std::filesystem::path&)> m_directoryDeleted;
+  rpgmutils::signal<void(const std::filesystem::path&)> m_fileChanged;
+  rpgmutils::signal<void(const std::filesystem::path&)> m_fileAdded;
+  rpgmutils::signal<void(const std::filesystem::path&)> m_fileDeleted;
+  rpgmutils::signal<void(const std::filesystem::path&)> m_directoryChanged;
+  rpgmutils::signal<void(const std::filesystem::path&)> m_directoryAdded;
+  rpgmutils::signal<void(const std::filesystem::path&)> m_directoryDeleted;
   std::mutex m_mutex;
   std::condition_variable m_cv;
   bool m_running = false;

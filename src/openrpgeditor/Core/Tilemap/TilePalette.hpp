@@ -12,8 +12,8 @@
 class TilePalette : public ITileView {
 public:
   static constexpr int kMaxColumns = 8;
-  std::vector<int> paletteTiles(int x, int y, Tileset::Mode mode, bool checkSpecial) const;
-  static std::vector<int> regionTiles(const Point& point);
+  static std::array<int, 4> paletteTiles(int x, int y, int page, const std::array<std::string, 9>& tilesetNames, Tileset::Mode mode, bool checkSpecial);
+  static std::array<int, 4> regionTiles(const Point& point);
 
   explicit TilePalette(const int tileWidth = 48, const int tileHeight = 48, const int blockWidth = 96, const int blockHeight = 96)
   : ITileView(tileWidth, tileHeight, blockWidth, blockHeight), m_renderHelper(tileWidth, tileHeight), m_checkerboardTexture(32, 32) {
@@ -45,17 +45,17 @@ public:
     updateRenderTexture();
   }
 
-  bool tilesetExists(const int idx) const { return !m_tilesetNames[idx].empty(); }
+  static bool tilesetExists(const std::array<std::string, 9>& tilesetNames, const int idx) { return !tilesetNames[idx].empty(); }
   bool isPageValid(const int page) const {
     if (page == 0) {
       bool ret = false;
       for (int i = 0; i < 5; ++i) {
-        ret |= tilesetExists(i);
+        ret |= tilesetExists(m_tilesetNames, i);
       }
       return ret;
     }
 
-    return tilesetExists(4 + page);
+    return tilesetExists(m_tilesetNames, 4 + page);
   }
   void setTilesetNames(const std::array<std::string, 9>& tilesetNames);
 
@@ -71,8 +71,8 @@ public:
 
   explicit operator ImTextureID() const { return m_finalResult.operator ImTextureID(); }
 
-  void setPenData(const Size& size, const std::vector<int>& data);
-  const std::vector<int>& penData() const { return m_penData; }
+  void setPenData(const Size& size, const std::vector<std::array<int, 4>>& data);
+  const std::vector<std::array<int, 4>>& penData() const { return m_penData; }
   const Size& penSize() const { return m_penSize; }
 
   static int getRegionNumber(const Point& point) { return point.x() + point.y() * 8; }
@@ -100,7 +100,7 @@ private:
   void updatePick(const Point& point);
   void paintTile(RenderImage& image, const Point& point);
 
-  static std::vector<int> makeTileIdList(int tileId1, int tileId2, int tileId3);
+  static std::array<int, 4> makeTileIdList(int tileId1, int tileId2, int tileId3);
   TileRenderHelper m_renderHelper;
   bool m_isRegionMode = false;
   int m_pageIndex = 0;
@@ -114,7 +114,7 @@ private:
   CheckerboardTexture m_checkerboardTexture;
   Rect m_cursorRect;
   Rect m_cursorPixelRect;
-  std::vector<int> m_penData;
+  std::vector<std::array<int, 4>> m_penData;
   Size m_penSize;
   bool m_isPicking = false;
   Point m_pickPoint;

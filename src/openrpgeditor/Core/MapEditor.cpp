@@ -1,6 +1,5 @@
 #include "Core/MapEditor.hpp"
 
-
 #include "Core/MainWindow.hpp"
 #include "Database/EventParser.hpp"
 
@@ -182,15 +181,15 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     const auto& penData = m_parent->tilesetPicker().penData();
     if (!penData.empty()) {
       if (m_parent->tilesetPicker().isRegionMode()) {
-        map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), 5)] = penData[0];
+        map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), 5)] = penData[0][0];
       } else {
         switch (m_parent->drawTool()) {
         case DrawTool::Pencil: {
           for (int i = 0; i < 4; ++i) {
-            if (penData[i] == -1) {
+            if (penData[0][i] == -1) {
               continue;
             }
-            map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), i)] = penData[i];
+            map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), i)] = penData[0][i];
             updateAutotilesAroundPoint({m_tileCursor.tileX(), m_tileCursor.tileY()}, i);
           }
         } break;

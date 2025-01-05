@@ -26,8 +26,8 @@ void TilePalette::updateRenderTexture() {
   m_checkerboardTexture.setSize(width, height);
 }
 
-std::vector<int> TilePalette::paletteTiles(int x, int y, const Tileset::Mode mode, const bool checkSpecial) const {
-  if (m_pageIndex == 0) {
+std::array<int, 4> TilePalette::paletteTiles(int x, int y, const int page, const std::array<std::string, 9>& tilesetNames, const Tileset::Mode mode, const bool checkSpecial) {
+  if (page == 0) {
     // Offsets in tiles
     constexpr std::array yOffs{
         2, 4, 4, 6, 16,
@@ -37,7 +37,7 @@ std::vector<int> TilePalette::paletteTiles(int x, int y, const Tileset::Mode mod
     };
 
     for (int i = 0; i < 5; ++i) {
-      if (!tilesetExists(i)) {
+      if (!tilesetExists(tilesetNames, i)) {
         continue;
       }
 
@@ -85,21 +85,13 @@ std::vector<int> TilePalette::paletteTiles(int x, int y, const Tileset::Mode mod
     return makeTileIdList(0, 0, 0);
   }
 
-  const int tileId = x + ((m_pageIndex - 1) * 32 + y) * 8;
+  const int tileId = x + ((page - 1) * 32 + y) * 8;
   return makeTileIdList(-1, -1, tileId);
 }
 
-std::vector<int> TilePalette::regionTiles(const Point& point) {
-  std::vector<int> ret;
-  ret.push_back(getRegionNumber(point));
-  int i = 3;
-  while (i--) {
-    ret.push_back(-1);
-  }
-  return ret;
-}
+std::array<int, 4> TilePalette::regionTiles(const Point& point) { return {getRegionNumber(point), -1, -1, -1}; }
 
-std::vector<int> TilePalette::makeTileIdList(int tileId1, int tileId2, int tileId3) { return {tileId1, tileId2, tileId3, -1}; }
+std::array<int, 4> TilePalette::makeTileIdList(const int tileId1, const int tileId2, const int tileId3) { return {tileId1, tileId2, tileId3, -1}; }
 
 void TilePalette::updateMaxRows() {
   if (!isMapMode()) {
@@ -114,7 +106,7 @@ void TilePalette::updateMaxRows() {
     static constexpr std::array yOffs{2, 4, 4, 6, 16};
 
     for (int i = 0; i < 5; ++i) {
-      if (tilesetExists(i)) {
+      if (tilesetExists(m_tilesetNames, i)) {
         maxRows += yOffs[i];
       }
     }
@@ -152,7 +144,7 @@ void TilePalette::updatePick(const Point& point) {
   setCursorRect(createRect(m_pickPoint, point) & paletteRect());
 }
 
-void TilePalette::setPenData(const Size& size, const std::vector<int>& data) {
+void TilePalette::setPenData(const Size& size, const std::vector<std::array<int, 4>>& data) {
   m_penData = data;
   m_penSize = size;
 }
@@ -179,7 +171,7 @@ void TilePalette::onCursorReleased() {
 }
 
 void TilePalette::endPick() {
-  std::vector<int> penData;
+  std::vector<std::array<int, 4>> penData;
   int startX = m_cursorRect.left();
   int endX = m_cursorRect.right();
   int startY = m_cursorRect.top();
@@ -191,11 +183,9 @@ void TilePalette::endPick() {
     for (; startY <= endY; ++startY) {
       for (; startX <= endX; ++startX) {
         if (isRegionMode()) {
-          auto tiles = regionTiles({startX, startY});
-          penData.insert(penData.end(), tiles.begin(), tiles.end());
+          penData.emplace_back(regionTiles({startX, startY}));
         } else {
-          auto tiles = paletteTiles(startX, startY, m_tilesetMode, false);
-          penData.insert(penData.end(), tiles.begin(), tiles.end());
+          penData.emplace_back(paletteTiles(startX, startY, m_pageIndex, m_tilesetNames, m_tilesetMode, false));
         }
         endX = m_cursorRect.right();
       }
@@ -235,7 +225,7 @@ void TilePalette::paintTile(RenderImage& image, const Point& point) {
     return;
   }
   if (isMapMode()) {
-    for (const auto tiles = paletteTiles(point.x(), point.y(), m_tilesetMode, true); const auto& tile : tiles) {
+    for (const auto tiles = paletteTiles(point.x(), point.y(), m_pageIndex, m_tilesetNames, m_tilesetMode, true); const auto& tile : tiles) {
       m_renderHelper.drawTile(m_painter, rect, tile, m_textures, false);
     }
   } else {

@@ -881,21 +881,6 @@ void MainWindow::setMap(MapInfo& in) {
 
   m_database->system.editMapId = in.id();
 
-  // if (m_map) {
-  //   printf("%zu bytes, %i w %i h, %lu layers\n", m_map->data.size(), m_map->width, m_map->height,
-  //          m_map->data.size() / (m_map->width * m_map->height));
-  //   for (int z = 0; z < m_map->data.size() / (m_map->width * m_map->height); z++) {
-  //     printf("-----------------Map Layer %.4i-----------------\n", z);
-  //     for (int y = 0; y < m_map->height; y++) {
-  //       for (int x = 0; x < m_map->width; x++) {
-  //         int tileId = (z * m_map->height + y) * m_map->width + x;
-  //         printf("%.04i ", m_map->data[tileId]);
-  //       }
-  //       printf("\n");
-  //     }
-  //   }
-  // }
-
   SDL_SetCursor(SDL_GetDefaultCursor());
 }
 

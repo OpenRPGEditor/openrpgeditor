@@ -10,7 +10,7 @@ struct TilesetPicker {
   void drawPageButton(std::string_view pageStr, int page);
   void draw();
 
-  const std::vector<int>& penData() const { return m_palette.penData(); }
+  const std::vector<std::array<int, 4>>& penData() const { return m_palette.penData(); }
   const Size& penSize() const { return m_palette.penSize(); }
   Rect cursorRect() const { return m_palette.cursorRect(); }
   bool isRegionMode() const { return m_palette.isRegionMode(); }

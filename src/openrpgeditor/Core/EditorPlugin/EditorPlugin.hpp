@@ -34,7 +34,7 @@ public:
   bool load(const std::filesystem::path& pluginBasedir, const PluginInfo& info);
 
   void callInitialize();
-  void callDraw();
+  void callDraw() const;
   void callShutdown();
 
 private:

@@ -49,7 +49,7 @@ void EditorPlugin::callInitialize() {
     m_initialized = true;
   }
 }
-void EditorPlugin::callDraw() {
+void EditorPlugin::callDraw() const {
   if (!m_drawFunction) {
     return;
   }
@@ -60,6 +60,7 @@ void EditorPlugin::callDraw() {
 }
 
 void EditorPlugin::callShutdown() {
+  m_initialized = false;
   if (!m_shutdownFunction) {
     return;
   }

@@ -98,9 +98,9 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
   auto evMin = ImVec2{eventX, eventY};
   auto evMax = ImVec2{(eventX + eventS), (eventY + eventS)};
   if (m_mapEditor->prisonMode() || (((!hasCharacterSheet || !m_characterSheet) && !isTile) && !m_mapEditor->prisonMode())) {
-    win->DrawList->AddRectFilled(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, bgColor);
-    win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, outlineCol, 0, 0, 5.f);
-    win->DrawList->AddRect(evMin + ImVec2{1.f, 1.f}, evMax - ImVec2{1.f, 1.f}, borderCol, 0, 0, 3.f);
+    win->DrawList->AddRectFilled(evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, bgColor);
+    win->DrawList->AddRect(evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, outlineCol, 0, 0, 5.f);
+    win->DrawList->AddRect(evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, borderCol, 0, 0, 3.f);
   }
 
   if (hasCharacterSheet && !isTile && m_characterSheet) {
@@ -221,6 +221,7 @@ void MapEvent::updateSelfMove() {
     switch (m_moveType) {
     case MoveType::Random:
       moveTypeRandom();
+      break;
     case MoveType::Approach:
       moveTypeTowardPlayer();
       break;

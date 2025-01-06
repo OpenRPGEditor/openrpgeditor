@@ -12,29 +12,29 @@ public:
   void draw(float mapScale, bool isHovered, bool selected, bool halfAlpha) override;
   void setupPageSettings() {
     if (page()) {
-      m_characterSheet = CharacterSheet(page()->image.characterName);
-      if (m_originalDirection != page()->image.direction) {
-        m_originalDirection = page()->image.direction;
+      m_characterSheet = CharacterSheet(page()->image().characterName());
+      if (m_originalDirection != page()->image().direction()) {
+        m_originalDirection = page()->image().direction();
         m_prelockDirection = Direction::Retain;
         setDirectionFix(false);
-        setDirection(page()->image.direction);
+        setDirection(page()->image().direction());
       }
-      if (m_originalPattern != page()->image.pattern) {
-        m_originalPattern = page()->image.pattern;
-        setPattern(page()->image.pattern);
+      if (m_originalPattern != page()->image().pattern()) {
+        m_originalPattern = page()->image().pattern();
+        setPattern(page()->image().pattern());
       }
-      setMoveFrequency(static_cast<int>(page()->moveFrequency));
+      setMoveFrequency(static_cast<int>(page()->moveFrequency()));
       m_originalMoveFrequency = m_moveFrequency;
-      setMoveSpeed(static_cast<int>(page()->moveSpeed));
-      m_originalMoveSpeed = static_cast<int>(page()->moveSpeed);
-      setPriorityType(page()->priorityType);
-      setThrough(page()->through);
-      setWalkAnime(page()->walkAnime);
-      setStepAnime(page()->stepAnime);
-      setDirectionFix(page()->directionFix);
-      setMoveRoute(&page()->moveRoute);
-      m_moveType = page()->moveType;
-      m_trigger = page()->trigger;
+      setMoveSpeed(static_cast<int>(page()->moveSpeed()));
+      m_originalMoveSpeed = static_cast<int>(page()->moveSpeed());
+      setPriorityType(page()->priorityType());
+      setThrough(page()->through());
+      setWalkAnime(page()->walkAnime());
+      setStepAnime(page()->stepAnime());
+      setDirectionFix(page()->directionFix());
+      setMoveRoute(&page()->moveRoute());
+      m_moveType = page()->moveType();
+      m_trigger = page()->trigger();
     }
   }
   void setPage(const int idx) override {
@@ -78,7 +78,7 @@ public:
   double x() const override { return m_realX; }
   double y() const override { return m_realY; }
 
-  int screenZ() const override { return static_cast<int>(page()->priorityType) * 2 + 1; }
+  int screenZ() const override { return static_cast<int>(page()->priorityType()) * 2 + 1; }
   uint32_t spriteId() const override { return m_spriteId; }
 
   void increaseSteps() {

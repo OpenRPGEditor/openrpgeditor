@@ -559,7 +559,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
   return ret;
 }
 
-void CommandParser::serialize(nlohmann::ordered_json& data, const std::vector<std::shared_ptr<IEventCommand>>& list, bool movementRoute) {
+void CommandParser::serialize(nlohmann::ordered_json& data, const std::vector<std::shared_ptr<IEventCommand>>& list, const bool movementRoute, const bool oldValues) {
   for (const auto& cmd : list) {
     if (!cmd) {
       continue;
@@ -580,7 +580,7 @@ void CommandParser::serialize(nlohmann::ordered_json& data, const std::vector<st
         if (!next) {
           continue;
         }
-        next->serialize(data.emplace_back());
+        next->serialize(data.emplace_back(), true, true, oldValues);
       }
       break;
     }
@@ -590,7 +590,7 @@ void CommandParser::serialize(nlohmann::ordered_json& data, const std::vector<st
         if (!next) {
           continue;
         }
-        next->serialize(data.emplace_back());
+        next->serialize(data.emplace_back(), true, true, oldValues);
       }
       break;
     }
@@ -600,7 +600,7 @@ void CommandParser::serialize(nlohmann::ordered_json& data, const std::vector<st
         if (!next) {
           continue;
         }
-        next->serialize(data.emplace_back());
+        next->serialize(data.emplace_back(), true, true, oldValues);
       }
       break;
     }
@@ -610,7 +610,7 @@ void CommandParser::serialize(nlohmann::ordered_json& data, const std::vector<st
         if (!next) {
           continue;
         }
-        next->serialize(data.emplace_back());
+        next->serialize(data.emplace_back(), true, true, oldValues);
       }
       break;
     }
@@ -620,7 +620,7 @@ void CommandParser::serialize(nlohmann::ordered_json& data, const std::vector<st
         if (!next) {
           continue;
         }
-        next->serialize(data.emplace_back());
+        next->serialize(data.emplace_back(), true, true, oldValues);
       }
       break;
     }

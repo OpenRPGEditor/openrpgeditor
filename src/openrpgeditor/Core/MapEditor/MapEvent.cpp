@@ -36,14 +36,14 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
   if (!m_mapEditor) {
     return;
   }
-  if ((!page()->walkAnime && page()->moveType != MoveType::Custom) || m_mapEditor->prisonMode()) {
+  if ((!page()->walkAnime() && page()->moveType() != MoveType::Custom) || m_mapEditor->prisonMode()) {
     m_x = m_realX = m_event->x();
     m_y = m_realY = m_event->y();
-    m_direction = page()->image.direction;
+    m_direction = page()->image().direction();
   }
-  const bool hasCharacterSheet = !page()->image.characterName.empty();
-  const bool isTile = page()->image.tileId > 0;
-  const int characterIndex = page()->image.characterIndex;
+  const bool hasCharacterSheet = !page()->image().characterName().empty();
+  const bool isTile = page()->image().tileId() > 0;
+  const int characterIndex = page()->image().characterIndex();
   const Direction direction = m_direction;
   const ImGuiWindow* win = ImGui::GetCurrentWindow();
   constexpr ImU32 NormalOutlineCol = 0xFF000000;
@@ -133,7 +133,7 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
       win->DrawList->AddImage(tex, evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, min, max, imageColor);
     }
   } else if (m_mapEditor->map() && isTile) {
-    const int tileId = page()->image.tileId;
+    const int tileId = page()->image().tileId();
     const auto tileset = m_mapEditor->project()->tileset(m_mapEditor->map()->tilesetId());
     if (!tileset) {
       return;
@@ -682,7 +682,7 @@ void MapEvent::processRouteEnd() {
 
 bool MapEvent::isCollidedWithEvents(double x, double y) {
   auto events = m_mapEditor->eventsAtNoThrough(x, y);
-  return std::ranges::any_of(events, [&](auto& e) { return e != m_event && e->renderer()->page()->priorityType == EventPriority::Same_as_characters; });
+  return std::ranges::any_of(events, [&](auto& e) { return e != m_event && e->renderer()->page()->priorityType() == EventPriority::Same_as_characters; });
 }
 
 bool MapEvent::isCollidedWithCharacters(const double x, const double y) { return isCollidedWithEvents(x, y) /*|| isCollidedWithVehicles(x, y)*/; }

@@ -10,41 +10,176 @@
 
 #include "nlohmann/json.hpp"
 
-struct EventCondition {
+class EventCondition final : public IModifiable {
   friend void to_json(nlohmann::ordered_json& to, const EventCondition& cond);
   friend void from_json(const nlohmann::ordered_json& from, EventCondition& cond);
-  int actorId{1};
-  bool actorValid{};
-  int itemId{1};
-  bool itemValid{};
-  std::string selfSwitchCh = "A";
-  bool selfSwitchValid{};
-  int switch1Id{1};
-  bool switch1Valid{};
-  int switch2Id{1};
-  bool switch2Valid{};
-  int variableId{1};
-  bool variableValid{};
-  int variableValue{};
 
-  [[nodiscard]] bool isDirty() const { return m_isDirty; }
-  bool m_isDirty{false};
+public:
+  EventCondition() = default;
+  EventCondition(const EventCondition& other);
+  EventCondition& operator=(const EventCondition& other);
+  EventCondition(EventCondition&& other) noexcept;
+  EventCondition& operator=(EventCondition&& other) noexcept;
+  bool operator==(const EventCondition& other) const;
+
+  int actorId() const;
+  void setActorId(int actorId);
+
+  bool actorValid() const;
+  void setActorValid(bool actorValid);
+
+  int itemId() const;
+  void setItemId(int itemId);
+
+  bool itemValid() const;
+  void setItemValid(bool itemValid);
+
+  std::string_view selfSwitchCh() const;
+  void setSelfSwitchCh(std::string_view selfSwitchCh);
+
+  bool selfSwitchValid() const;
+  void setSelfSwitchValid(bool selfSwitchValid);
+
+  int switch1Id() const;
+  void setSwitch1Id(int switch1Id);
+
+  bool switch1Valid() const;
+  void setSwitch1Valid(bool switch1Valid);
+
+  int switch2Id() const;
+  void setSwitch2Id(int switch2Id);
+  bool switch2Valid() const;
+  void setSwitch2Valid(bool switch2Valid);
+
+  int variableId() const;
+  void setVariableId(int variableId);
+
+  bool variableValid() const;
+  void setVariableValid(bool variableValid);
+
+  int variableValue() const;
+  void setVariableValue(int variableValue);
+
+  void restoreOriginal() override;
+  void acceptChanges() override;
+  nlohmann::ordered_json serializeOldValues() const override;
+
+  rpgmutils::signal<void(EventCondition*, int)>& actorIdModified();
+  rpgmutils::signal<void(EventCondition*, bool)>& actorValidModified();
+  rpgmutils::signal<void(EventCondition*, int)>& itemIdModified();
+  rpgmutils::signal<void(EventCondition*, bool)>& itemValidModified();
+  rpgmutils::signal<void(EventCondition*, const std::string&)>& selfSwitchModified();
+  rpgmutils::signal<void(EventCondition*, bool)>& selfSwitchValidModified();
+  rpgmutils::signal<void(EventCondition*, int)>& switch1IdModified();
+  rpgmutils::signal<void(EventCondition*, bool)>& switch1ValidModified();
+  rpgmutils::signal<void(EventCondition*, int)>& switch2IdModified();
+  rpgmutils::signal<void(EventCondition*, bool)>& switch2ValidModified();
+  rpgmutils::signal<void(EventCondition*, int)>& variableIdModified();
+  rpgmutils::signal<void(EventCondition*, bool)>& variableValidModified();
+  rpgmutils::signal<void(EventCondition*, int)>& variableValueModified();
+
+private:
+  int m_actorId{1};
+  bool m_actorValid{};
+  int m_itemId{1};
+  bool m_itemValid{};
+  std::string m_selfSwitchCh = "A";
+  bool m_selfSwitchValid{};
+  int m_switch1Id{1};
+  bool m_switch1Valid{};
+  int m_switch2Id{1};
+  bool m_switch2Valid{};
+  int m_variableId{1};
+  bool m_variableValid{};
+  int m_variableValue{};
+
+  std::optional<int> m_oldactorId;
+  std::optional<bool> m_oldactorValid;
+  std::optional<int> m_olditemId;
+  std::optional<bool> m_olditemValid;
+  std::optional<std::string> m_oldselfSwitchCh;
+  std::optional<bool> m_oldselfSwitchValid;
+  std::optional<int> m_oldswitch1Id;
+  std::optional<bool> m_oldswitch1Valid;
+  std::optional<int> m_oldswitch2Id;
+  std::optional<bool> m_oldswitch2Valid;
+  std::optional<int> m_oldvariableId;
+  std::optional<bool> m_oldvariableValid;
+  std::optional<int> m_oldvariableValue;
+
+  std::optional<rpgmutils::signal<void(EventCondition*, int)>> m_actorIdModified;
+  std::optional<rpgmutils::signal<void(EventCondition*, bool)>> m_actorValidModified;
+  std::optional<rpgmutils::signal<void(EventCondition*, int)>> m_itemIdModified;
+  std::optional<rpgmutils::signal<void(EventCondition*, bool)>> m_itemValidModified;
+  std::optional<rpgmutils::signal<void(EventCondition*, const std::string&)>> m_selfSwitchModified;
+  std::optional<rpgmutils::signal<void(EventCondition*, bool)>> m_selfSwitchValidModified;
+  std::optional<rpgmutils::signal<void(EventCondition*, int)>> m_switch1IdModified;
+  std::optional<rpgmutils::signal<void(EventCondition*, bool)>> m_switch1ValidModified;
+  std::optional<rpgmutils::signal<void(EventCondition*, int)>> m_switch2IdModified;
+  std::optional<rpgmutils::signal<void(EventCondition*, bool)>> m_switch2ValidModified;
+  std::optional<rpgmutils::signal<void(EventCondition*, int)>> m_variableIdModified;
+  std::optional<rpgmutils::signal<void(EventCondition*, bool)>> m_variableValidModified;
+  std::optional<rpgmutils::signal<void(EventCondition*, int)>> m_variableValueModified;
 };
 void to_json(nlohmann::ordered_json& to, const EventCondition& cond);
 void from_json(const nlohmann::ordered_json& from, EventCondition& cond);
 
-struct EventImage {
+class EventImage final : public IModifiable {
   friend void to_json(nlohmann::ordered_json& to, const EventImage& image);
   friend void from_json(const nlohmann::ordered_json& from, EventImage& image);
-  int tileId{};
-  std::string characterName;
-  Direction direction{Direction::Down};
-  int pattern{};
-  int characterIndex{};
 
-  [[nodiscard]] bool isDirty() const { return m_isDirty; }
-  bool m_isDirty{false};
+public:
+  EventImage() = default;
+  EventImage(const EventImage& other);
+  EventImage& operator=(const EventImage& other);
+  EventImage(EventImage&& other) noexcept;
+  EventImage& operator=(EventImage&& other) noexcept;
+  bool operator==(const EventImage& other) const;
+
+  int tileId() const;
+  void setTileId(int tileId);
+
+  std::string_view characterName() const;
+  void setCharacterName(std::string_view characterName);
+  Direction direction() const;
+  void setDirection(Direction direction);
+
+  int pattern() const;
+  void setPattern(int pattern);
+
+  int characterIndex() const;
+  void setCharacterIndex(int characterIndex);
+
+  void restoreOriginal() override;
+  void acceptChanges() override;
+  nlohmann::ordered_json serializeOldValues() const override;
+
+  rpgmutils::signal<void(EventImage*, int)>& tileIdModified();
+  rpgmutils::signal<void(EventImage*, const std::string&)>& characterNameModified();
+  rpgmutils::signal<void(EventImage*, Direction)>& directionModified();
+  rpgmutils::signal<void(EventImage*, int)>& patternModified();
+  rpgmutils::signal<void(EventImage*, int)>& characterIndexModified();
+
+private:
+  int m_tileId{};
+  std::string m_characterName;
+  Direction m_direction{Direction::Down};
+  int m_pattern{};
+  int m_characterIndex{};
+
+  std::optional<int> m_oldtileId;
+  std::optional<std::string> m_oldcharacterName;
+  std::optional<Direction> m_olddirection;
+  std::optional<int> m_oldpattern;
+  std::optional<int> m_oldcharacterIndex;
+
+  std::optional<rpgmutils::signal<void(EventImage*, int)>> m_tileIdModified;
+  std::optional<rpgmutils::signal<void(EventImage*, const std::string&)>> m_characterNameModified;
+  std::optional<rpgmutils::signal<void(EventImage*, Direction)>> m_directionModified;
+  std::optional<rpgmutils::signal<void(EventImage*, int)>> m_patternModified;
+  std::optional<rpgmutils::signal<void(EventImage*, int)>> m_characterIndexModified;
 };
+
 void to_json(nlohmann::ordered_json& to, const EventImage& image);
 void from_json(const nlohmann::ordered_json& from, EventImage& image);
 
@@ -57,8 +192,84 @@ public:
   EventPage& operator=(const EventPage& other);
   EventPage(EventPage&& other) noexcept;
   EventPage& operator=(EventPage&& other) noexcept;
-  void clear();
 
+  EventCondition& conditions();
+  const EventCondition& conditions() const;
+  void setCondition(const EventCondition& condition);
+
+  bool directionFix() const;
+  void setDirectionFix(bool directionFix);
+
+  EventImage& image();
+  const EventImage& image() const;
+  void setImage(const EventImage& image);
+
+  std::vector<std::shared_ptr<IEventCommand>>& list();
+  const std::vector<std::shared_ptr<IEventCommand>>& list() const;
+  void setList(const std::vector<std::shared_ptr<IEventCommand>>& list);
+
+  MovementRoute& moveRoute();
+  const MovementRoute& moveRoute() const;
+  void setMoveRoute(const MovementRoute& moveRoute);
+
+  MovementSpeed moveSpeed() const;
+  void setMoveSpeed(MovementSpeed movementSpeed);
+
+  MovementFrequency moveFrequency() const;
+  void setMoveFrequency(MovementFrequency moveFrequency);
+
+  MoveType moveType() const;
+  void setMoveType(MoveType movementType);
+
+  EventPriority priorityType() const;
+  void setPriorityType(EventPriority priority);
+
+  bool stepAnime() const;
+  void setStepAnime(bool stepAnime);
+
+  bool through() const;
+  void setThrough(bool through);
+
+  EventTriggerType trigger() const;
+  void setTrigger(EventTriggerType trigger);
+
+  bool walkAnime() const;
+  void setWalkAnime(bool walkAnime);
+
+  std::string_view name() const;
+  void setName(std::string_view name);
+
+  void restoreOriginal() override;
+  void acceptChanges() override;
+  nlohmann::ordered_json serializeOldValues() const override;
+
+  rpgmutils::signal<void(EventPage*, EventCondition)>& conditionsModified();
+  rpgmutils::signal<void(EventPage*, bool)>& directionFixModified();
+  rpgmutils::signal<void(EventPage*, EventImage)>& imageModified();
+  rpgmutils::signal<void(EventPage*, std::vector<std::shared_ptr<IEventCommand>>)>& listModified();
+  rpgmutils::signal<void(EventPage*, MovementFrequency)>& moveFrequencyModified();
+  rpgmutils::signal<void(EventPage*, MovementRoute)>& moveRouteModified();
+  rpgmutils::signal<void(EventPage*, MovementSpeed)>& moveSpeedModified();
+  rpgmutils::signal<void(EventPage*, MoveType)>& moveTypeModified();
+  rpgmutils::signal<void(EventPage*, EventPriority)>& priorityTypeModified();
+  rpgmutils::signal<void(EventPage*, bool)>& stepAnimeModified();
+  rpgmutils::signal<void(EventPage*, bool)>& throughModified();
+  rpgmutils::signal<void(EventPage*, EventTriggerType)>& triggerModified();
+  rpgmutils::signal<void(EventPage*, bool)>& walkAnimeModified();
+  /* OpenRPGMaker Additions */
+  rpgmutils::signal<void(EventPage*, const std::string&)>& nameModified();
+
+  [[nodiscard]] bool isModified() const override {
+    bool modified = IModifiable::isModified();
+    modified |= std::ranges::any_of(m_list, [](const auto& cmd) { return cmd && cmd->isModified(); });
+
+    modified |= m_conditions.isModified();
+    modified |= m_image.isModified();
+    modified |= m_moveRoute.isModified();
+    return modified;
+  }
+
+  void clear();
   IPageEditor* editor() const {
     if (!m_editor) {
       m_editor.reset(IPageEditor::create(const_cast<EventPage*>(this)));
@@ -67,32 +278,53 @@ public:
     return m_editor.get();
   }
 
-  EventCondition conditions{};
-  bool directionFix{};
-  EventImage image;
-  std::vector<std::shared_ptr<IEventCommand>> list;
-  MovementFrequency moveFrequency{MovementFrequency::Normal};
-  MovementRoute moveRoute{};
-  MovementSpeed moveSpeed{MovementSpeed::Normal};
-  MoveType moveType{MoveType::Fixed};
-  EventPriority priorityType{};
-  bool stepAnime = false;
-  bool through{};
-  EventTriggerType trigger{EventTriggerType::Action_Button};
-  bool walkAnime = true;
-
+private:
+  EventCondition m_conditions{};
+  bool m_directionFix{};
+  EventImage m_image;
+  std::vector<std::shared_ptr<IEventCommand>> m_list;
+  MovementFrequency m_moveFrequency{MovementFrequency::Normal};
+  MovementRoute m_moveRoute{};
+  MovementSpeed m_moveSpeed{MovementSpeed::Normal};
+  MoveType m_moveType{MoveType::Fixed};
+  EventPriority m_priorityType{};
+  bool m_stepAnime = false;
+  bool m_through{};
+  EventTriggerType m_trigger{EventTriggerType::Action_Button};
+  bool m_walkAnime = true;
   /* OpenRPGMaker Additions */
-  std::optional<std::string> name;
+  std::optional<std::string> m_name;
 
-  [[nodiscard]] bool isModified() const override {
-    bool modified = IModifiable::isModified();
-    modified |= std::ranges::any_of(list, [](const auto& cmd) { return cmd && cmd->isModified(); });
+  std::optional<EventCondition> m_oldconditions{};
+  std::optional<bool> m_olddirectionFix{};
+  std::optional<EventImage> m_oldimage;
+  std::optional<std::vector<std::shared_ptr<IEventCommand>>> m_oldlist;
+  std::optional<MovementFrequency> m_oldmoveFrequency{MovementFrequency::Normal};
+  std::optional<MovementRoute> m_oldmoveRoute{};
+  std::optional<MovementSpeed> m_oldmoveSpeed{MovementSpeed::Normal};
+  std::optional<MoveType> m_oldmoveType{MoveType::Fixed};
+  std::optional<EventPriority> m_oldpriorityType{};
+  std::optional<bool> m_oldstepAnime = false;
+  std::optional<bool> m_oldthrough{};
+  std::optional<EventTriggerType> m_oldtrigger{EventTriggerType::Action_Button};
+  std::optional<bool> m_oldwalkAnime = true;
+  std::optional<std::string> m_oldname;
 
-    modified |= conditions.isDirty();
-    modified |= image.isDirty();
-    modified |= moveRoute.isModified();
-    return modified;
-  }
+  std::optional<rpgmutils::signal<void(EventPage*, EventCondition)>> m_conditionsModified;
+  std::optional<rpgmutils::signal<void(EventPage*, bool)>> m_directionFixModified;
+  std::optional<rpgmutils::signal<void(EventPage*, EventImage)>> m_imageModified;
+  std::optional<rpgmutils::signal<void(EventPage*, std::vector<std::shared_ptr<IEventCommand>>)>> m_listModified;
+  std::optional<rpgmutils::signal<void(EventPage*, MovementFrequency)>> m_moveFrequencyModified;
+  std::optional<rpgmutils::signal<void(EventPage*, MovementRoute)>> m_moveRouteModified;
+  std::optional<rpgmutils::signal<void(EventPage*, MovementSpeed)>> m_moveSpeedModified;
+  std::optional<rpgmutils::signal<void(EventPage*, MoveType)>> m_moveTypeModified;
+  std::optional<rpgmutils::signal<void(EventPage*, EventPriority)>> m_priorityTypeModified;
+  std::optional<rpgmutils::signal<void(EventPage*, bool)>> m_stepAnimeModified;
+  std::optional<rpgmutils::signal<void(EventPage*, bool)>> m_throughModified;
+  std::optional<rpgmutils::signal<void(EventPage*, EventTriggerType)>> m_triggerModified;
+  std::optional<rpgmutils::signal<void(EventPage*, bool)>> m_walkAnimeModified;
+  /* OpenRPGMaker Additions */
+  std::optional<rpgmutils::signal<void(EventPage*, const std::string&)>> m_nameModified;
 
   mutable std::shared_ptr<IPageEditor> m_editor;
 };

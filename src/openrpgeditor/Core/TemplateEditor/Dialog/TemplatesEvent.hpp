@@ -9,8 +9,8 @@ struct TemplatesEvent final : IDBTemplates {
     m_id = m_map->findOrMakeFreeId();
     m_eventName = m_event->name();
     m_eventNote = m_event->note();
-    m_direction = static_cast<int>(m_event->page(0)->image.direction); // We assume that the character index for one page defines the rest.
-                                                                       // This is mostly useful for ARPG templates where all the event pages will be facing one direction.
+    m_direction = static_cast<int>(m_event->page(0)->image().direction()); // We assume that the character index for one page defines the rest.
+                                                                           // This is mostly useful for ARPG templates where all the event pages will be facing one direction.
     // for (auto& page : m_event->pages) {
     //   page.image.characterIndex = 1;
     // }

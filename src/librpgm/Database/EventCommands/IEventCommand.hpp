@@ -17,7 +17,7 @@ public:
   ~IEventCommand() override = default;
   [[nodiscard]] virtual EventCode code() const = 0;
   virtual void serializeParameters(nlohmann::ordered_json& out) const {}
-  virtual void serialize(nlohmann::ordered_json& out, bool doIndent = true, bool doParameters = true) const;
+  virtual void serialize(nlohmann::ordered_json& out, bool doIndent = true, bool doParameters = true, bool oldValues = false) const;
   [[nodiscard]] virtual std::string stringRep(const Database& db) const;
   virtual std::string symbol(EventCode code) const;
   virtual std::string indentText(std::optional<int> indent) const;

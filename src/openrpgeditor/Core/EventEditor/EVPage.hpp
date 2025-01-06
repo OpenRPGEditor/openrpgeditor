@@ -20,7 +20,7 @@ public:
 
   void setPage(EventPage* page) {
     m_page = page;
-    m_commandEditor.setCommands(&m_page->list);
+    m_commandEditor.setCommands(&m_page->list());
   }
 
   void setParent(EventEditor* parent) { m_parent = parent; }

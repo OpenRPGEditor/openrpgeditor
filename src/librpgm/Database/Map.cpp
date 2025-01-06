@@ -108,8 +108,8 @@ void Map::resize(const int newWidth, const int newHeight) {
     }
   }
   std::ranges::sort(ret, [](const Event* a, const Event* b) {
-    const int aZ = static_cast<int>(a->page(0)->priorityType) * 2 + 1;
-    const int bZ = static_cast<int>(b->page(0)->priorityType) * 2 + 1;
+    const int aZ = static_cast<int>(a->page(0)->priorityType()) * 2 + 1;
+    const int bZ = static_cast<int>(b->page(0)->priorityType()) * 2 + 1;
     if (aZ != bZ) {
       return aZ < bZ;
     }

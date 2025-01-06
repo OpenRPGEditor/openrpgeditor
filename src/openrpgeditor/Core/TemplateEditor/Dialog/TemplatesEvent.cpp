@@ -96,7 +96,7 @@ void TemplatesEvent::draw() {
         m_event->setX(m_tileX);
         m_event->setY(m_tileY);
         for (auto& page : m_event->pages()) {
-          page.image.direction = static_cast<Direction>(m_direction);
+          page.image().setDirection(static_cast<Direction>(m_direction));
         }
         if (m_id != m_event->id()) {
           m_event->setId(m_id);

@@ -1,0 +1,23 @@
+# Japanese translations for OpenRPGEditor package.
+# Copyright (C) 2025 "OpenRPGEditor Team"
+# This file is distributed under the same license as the OpenRPGEditor package.
+#  <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenRPGEditor \"0.0.0\"\n"
+"Report-Msgid-Bugs-To: <https://gitgud.io/antidote/openrgpeditor/issues>\n"
+"POT-Creation-Date: 2025-01-06 04:55-0800\n"
+"PO-Revision-Date: 2025-01-06 04:48-0800\n"
+"Last-Translator:  <EMAIL@ADDRESS>\n"
+"Language-Team: Japanese <translation-team-ja@lists.sourceforge.net>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: src/openrpgeditor/Core/Application.cpp:74
+#, c++-format
+msgid "User config path: {}"
+msgstr ""

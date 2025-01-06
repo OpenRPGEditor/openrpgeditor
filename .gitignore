@@ -39,6 +39,7 @@ CMakeFiles/
 *.filters
 *.sln
 *.user
+*.gmo
 
 CMakeCache.txt
 CPackConfig.cmake

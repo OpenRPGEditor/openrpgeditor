@@ -46,7 +46,7 @@ private:
 #define APP_INFO(...) ::App::Log::logger()->info(__VA_ARGS__)
 #define APP_WARN(...) ::App::Log::logger()->warn(__VA_ARGS__)
 #define APP_ERROR(...) ::App::Log::logger()->error(__VA_ARGS__)
-#define APP_FATAL(...) ::App::Log::logger()->fatal(__VA_ARGS__)
+#define APP_FATAL(...) ::App::Log::logger()->critical(__VA_ARGS__)
 
 #else
 

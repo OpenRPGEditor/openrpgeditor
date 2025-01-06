@@ -13,6 +13,7 @@
 #include "Core/Application.hpp"
 #include "Core/Debug/Instrumentor.hpp"
 #include "Core/Log.hpp"
+#include <orei18n.hpp>
 
 #if defined(_WIN32) && defined(ZLIB_DEBUG)
 // This is needed due to freetype's gzip not defining these
@@ -57,7 +58,10 @@ int main() {
   try {
 #endif
     // APP_PROFILE_BEGIN_SESSION_WITH_FILE("App", "profile.json");
-    setlocale(LC_ALL, "en_US.UTF-8");
+    setlocale(LC_ALL, "");
+    bindtextdomain(GETTEXT_DOMAIN, GETTEXT_OUTPUT_DIR);
+    textdomain(GETTEXT_DOMAIN);
+    bindtextdomain(GETTEXT_DOMAIN, "UTF-8");
     {
       App::Application app{"OpenRPGEditor"};
       app.run();

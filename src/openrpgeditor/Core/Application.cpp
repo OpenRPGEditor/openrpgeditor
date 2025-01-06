@@ -29,6 +29,7 @@
 #include <libcpuid/libcpuid.h>
 #include <memory>
 #include <nfd.h>
+#include <orei18n.hpp>
 #include <string>
 
 namespace App {
@@ -70,11 +71,11 @@ Application::Application(const std::string& title) {
   SDL_free((void*)conf_path);
 
   loadSettings();
-  APP_DEBUG("User config path: {}", m_userConfigPath);
+  APP_DEBUG(trFormat("User config path: {}", m_userConfigPath));
 
   APP = this;
   if (!ScriptEngine::instance()->initialize()) {
-    APP_ERROR("Failed to initialize script manager");
+    APP_FATAL("Failed to initialize script manager");
     abort();
   }
   EditorPluginManager::instance()->initialize();

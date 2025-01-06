@@ -513,7 +513,8 @@ void MapEditor::draw() {
   }
 
   if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoTitleBar)) {
-    ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - 45.f), 0, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
+    ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - (ImGui::CalcTextSize("S").y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)), 0,
+                      ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
     // ImGui::SetScrollX(m_tileCursor.alignCoord(ImGui::GetScrollX()));
     // ImGui::SetScrollY(m_tileCursor.alignCoord(ImGui::GetScrollY()));
     if (map()) {
@@ -727,8 +728,9 @@ void MapEditor::draw() {
       // }
     }
     ImGui::EndChild();
-    ImGui::BeginChild("##map_editor_bottom_panel", ImVec2{}, 0, ImGuiWindowFlags_NoBackground);
+    ImGui::BeginChild("##map_editor_bottom_panel", ImVec2{}, 0, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
     {
+      ImGui::Separator();
       ImGui::Text("Scale:");
       ImGui::SameLine();
       ImGui::SliderFloat("##map_scale", &m_mapScale, 0.25f, 4.f);

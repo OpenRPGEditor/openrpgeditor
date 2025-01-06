@@ -1,5 +1,3 @@
-set(NAME "OpenRPGEditor")
-
 # include(${PROJECT_SOURCE_DIR}/cmake/StaticAnalyzers.cmake)
 
 configure_file(App/ProjectInfo.cpp.in App/ProjectInfo.cpp @ONLY)
@@ -443,13 +441,13 @@ target_include_directories(
         ${cpuid_SOURCE_DIR}
         ${CMAKE_SOURCE_DIR}/extern/angelscript/angelscript/include
         ${CMAKE_SOURCE_DIR}/extern/angelscript/add_on
-        "${CMAKE_SOURCE_DIR}/extern/nano-signal-slot")
+        "${CMAKE_SOURCE_DIR}/extern/nano-signal-slot"
+)
 target_compile_features(orecore PRIVATE cxx_std_23)
 target_link_libraries(
         orecore
-        PRIVATE project_warnings
         PUBLIC fmt::fmt-header-only
-        spdlog::spdlog_header_only
+        spdlog::spdlog
         SDL3::SDL3
         SDL3_image::SDL3_image
         imgui-setup
@@ -468,6 +466,7 @@ target_link_libraries(
         athena-core
         lcf
 )
+target_compile_definitions(orecore PUBLIC GETTEXT_DOMAIN="${GETTEXT_DOMAIN}" GETTEXT_OUTPUT_DIR="${GETTEXT_OUTPUT_DIR}")
 
 # Define set of OS specific files to include
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -509,9 +508,8 @@ target_include_directories(
 target_compile_features(${NAME} PRIVATE cxx_std_23)
 target_link_libraries(
         ${NAME}
-        PRIVATE project_warnings
         PUBLIC fmt::fmt-header-only
-        spdlog::spdlog_header_only
+        spdlog::spdlog
         orecore
         SDL3::SDL3
         SDL3_image::SDL3_image
@@ -529,6 +527,7 @@ target_link_libraries(
         angelscript_addons
         athena-core
 )
+target_compile_definitions(${NAME} PUBLIC GETTEXT_DOMAIN="${GETTEXT_DOMAIN}" GETTEXT_OUTPUT_DIR="${GETTEXT_OUTPUT_DIR}")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL
         "RelWithDebugInfo")
@@ -538,3 +537,5 @@ endif ()
 if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
     add_compile_definitions(_DEBUG DEBUG)
 endif ()
+
+

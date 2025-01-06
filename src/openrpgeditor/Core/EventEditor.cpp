@@ -80,7 +80,7 @@ std::tuple<bool, bool> EventEditor::draw() {
     }
     ImGui::EndGroup();
     ImGui::BeginGroup();
-    if (ImGui::BeginTabBar("##orpg_event_editor_page", ImGuiTabBarFlags_AutoSelectNewTabs | ImGuiTabBarFlags_Reorderable)) {
+    if (ImGui::BeginTabBar("##orpg_event_editor_page" /*, ImGuiTabBarFlags_AutoSelectNewTabs | ImGuiTabBarFlags_Reorderable*/)) {
       auto curTabBar = ImGui::GetCurrentTabBar();
       int erasedIdx = 0;
       bool erased = false;
@@ -90,8 +90,10 @@ std::tuple<bool, bool> EventEditor::draw() {
         if (!m_event->page(i)) {
           continue;
         }
-
-        auto [del, selected] = m_event->page(i)->editor()->draw(m_event->pageCount() > 1, i, i == m_selectedPage);
+        if (i == m_selectedPage && !m_event->page(i)->editor()->isSelected()) {
+          m_event->page(i)->editor()->select();
+        }
+        auto [del, selected] = m_event->page(i)->editor()->draw(m_event->pageCount() > 1, i);
         if (i == m_selectedPage) {
           curTab = ImGui::TabBarGetCurrentTab(curTabBar);
           indexDuringRender = i;

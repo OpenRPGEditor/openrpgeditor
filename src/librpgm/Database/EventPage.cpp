@@ -11,6 +11,7 @@ EventPage::EventPage(const EventPage& other)
 , image(other.image)
 , list(other.list)
 , moveFrequency(other.moveFrequency)
+, moveRoute(other.moveRoute)
 , moveSpeed(other.moveSpeed)
 , moveType(other.moveType)
 , priorityType(other.priorityType)
@@ -31,6 +32,7 @@ EventPage& EventPage::operator=(const EventPage& other) {
   image = other.image;
   list = other.list;
   moveFrequency = other.moveFrequency;
+  moveRoute = other.moveRoute;
   moveSpeed = other.moveSpeed;
   moveType = other.moveType;
   priorityType = other.priorityType;
@@ -51,6 +53,7 @@ EventPage::EventPage(EventPage&& other) noexcept
 , image(other.image)
 , list(other.list)
 , moveFrequency(other.moveFrequency)
+, moveRoute(other.moveRoute)
 , moveSpeed(other.moveSpeed)
 , moveType(other.moveType)
 , priorityType(other.priorityType)
@@ -71,6 +74,7 @@ EventPage& EventPage::operator=(EventPage&& other) noexcept {
   image = other.image;
   list = other.list;
   moveFrequency = other.moveFrequency;
+  moveRoute = std::move(other.moveRoute);
   moveSpeed = other.moveSpeed;
   moveType = other.moveType;
   priorityType = other.priorityType;

@@ -14,7 +14,7 @@ struct Item;
 class EVPage final : IPageEditor {
 public:
   /* Returns true when closed, closing is the equivalent of deleting */
-  std::tuple<bool, bool> draw(bool canDelete, int index, bool isSelected) override;
+  std::tuple<bool, bool> draw(bool canDelete, int index) override;
 
   void clearPage() const;
 

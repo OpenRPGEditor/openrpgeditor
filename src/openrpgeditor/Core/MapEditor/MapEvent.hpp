@@ -232,6 +232,8 @@ protected:
   double scrolledX() const;
   double scrolledY() const;
 
+  void clearPageSettings();
+
 private:
   MapEditor* m_mapEditor = nullptr;
   CharacterSheet m_characterSheet;

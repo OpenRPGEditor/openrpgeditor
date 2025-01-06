@@ -709,7 +709,18 @@ bool MapEvent::isMapPassable(const double x, const double y, const Direction d) 
   return m_mapEditor->isPassable(x, y, d) && m_mapEditor->isPassable(x2, y2, d2);
 }
 
-void MapEvent::eventPointerInvalidated() { setupPageSettings(); }
+void MapEvent::clearPageSettings() {
+  m_moveType = MoveType::Fixed;
+  m_trigger = EventTriggerType::Action_Button;
+  setThrough(true);
+}
+
+void MapEvent::eventPointerInvalidated() {
+  clearPageSettings();
+  const auto page = m_page;
+  setPage(-1);
+  setPage(page);
+}
 
 IEventRenderer* IEventRenderer::create(Event* ev) { return new MapEvent(ev); }
 

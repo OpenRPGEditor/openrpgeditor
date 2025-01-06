@@ -19,7 +19,7 @@ EVPage::EVPage(EventPage* page) : IPageEditor(page), m_characterSheet(page->imag
   }
 }
 
-std::tuple<bool, bool> EVPage::draw(bool canDelete, int index, bool isSelected) {
+std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
   if (!m_actorButton) {
     m_actorButton.emplace();
     m_actorButton->setSize(80, 102);
@@ -42,7 +42,13 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index, bool isSelected) 
   } else {
     title = std::format("Page {0}##page_{1}", index + 1, reinterpret_cast<uintptr_t>(this));
   }
-  bool selected = ImGui::BeginTabItem(title.c_str(), p_open);
+
+  int flags = 0;
+  if (m_selected && m_selectedDirty) {
+    flags |= ImGuiTabItemFlags_SetSelected;
+    m_selectedDirty = false;
+  }
+  bool selected = ImGui::BeginTabItem(title.c_str(), p_open, flags);
   if (selected) {
     if (ImGui::BeginChild("##event_page_settings_panel", {ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHI").x + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().ItemSpacing.x, 0},
                           0, 0)) {

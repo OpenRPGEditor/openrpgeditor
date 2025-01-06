@@ -25,7 +25,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
   }
 
   if (!m_actorButton->hasCompositeTextures() && m_characterSheet) {
-    const auto [min, max] = m_characterSheet.getRectForCharacter(m_page->image().characterIndex(), m_page->image().pattern());
+    const auto [min, max] = m_characterSheet.getRectForCharacter(m_page->image().characterIndex(), m_page->image().pattern(), m_page->image().direction());
     m_actorButton->setTexturesToComposite({{m_characterSheet.texture(),
                                             {m_characterSheet.characterWidth(), m_characterSheet.characterHeight()},
                                             {static_cast<int>(min.x() * m_characterSheet.texture().width()), static_cast<int>(min.y() * m_characterSheet.texture().height())}}});

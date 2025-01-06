@@ -21,7 +21,7 @@ include(cmake/Getsourcefilepaths.cmake)
 
 set(GETTEXT_DOMAIN OpenRPGEditor)
 set(GETTEXT_TARGET i18n)
-set(GETTEXT_OUTPUT_DIR i18n)
+set(GETTEXT_OUTPUT_DIR i18n/locales)
 set(GETTEXT_LANGUAGES
         en de fr es ja ru
 )
@@ -47,24 +47,33 @@ add_subdirectory(extern/angelscript/angelscript/projects/cmake)
 add_subdirectory(extern/angelscript_addon_cmake)
 add_subdirectory(i18n)
 
-get_target_sources_with_paths(${NAME} APP_SOURCES)
-get_target_sources_with_paths(orecore ORECORE_SOURCES)
-get_target_sources_with_paths(librpgm RPGM_SOURCES)
-get_target_sources_with_paths(librpgmeventcmds RPGMEVENTCOMMANDS_SOURCES)
-get_target_sources_with_paths(librpgmmovementroutecmds RPGMMOVEMENTROUTECMDS_SOURCES)
+file(GLOB_RECURSE SOURCE_FILES
+        src/*.cpp
+        src/*.c
+        src/*.hpp
+        src/*.h
+        src/*.inl
+)
+
+set(PROJECT_SOURCES)
+foreach (abs_path IN LISTS SOURCE_FILES)
+    file(RELATIVE_PATH rel_path "${CMAKE_SOURCE_DIR}" "${abs_path}")
+    list(APPEND PROJECT_SOURCES "${rel_path}")
+endforeach ()
 
 configure_gettext(
         DOMAIN ${GETTEXT_DOMAIN}
-        TARGET_NAME ${GETTEXT_TARGET} ${APP_SOURCES} ${ORECORE_SOURCES} ${RPGM_SOURCES} ${RPGMEVENTCOMMANDS_SOURCES} ${RPGMMOVEMENTROUTECMDS_SOURCES}
-        SOURCES ${ORECORE_SOURCES}
+        TARGET_NAME ${GETTEXT_TARGET}
+        SOURCES ${PROJECT_SOURCES}
         POTFILE_DESTINATION ${GETTEXT_OUTPUT_DIR}
         XGETTEXT_ARGS
         "--keyword=tr"
         "--keyword=trFormat"
         "--keyword=trNOOP"
+        "--keyword=trENUM"
         "--add-comments=TRANSLATORS:"
         "--package-name=OpenRPGEditor"
-        "--package-version=\"0.0.0\""
+        "--package-version=\"0.0.1\""
         "--msgid-bugs-address=\"<https://gitgud.io/antidote/openrgpeditor/issues>\""
         "--copyright-holder=\"OpenRPGEditor Team\""
         "--language=c++"

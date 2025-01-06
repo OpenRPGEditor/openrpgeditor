@@ -1,5 +1,6 @@
 #pragma once
 #include "Database/Log.hpp"
+#include <orei18n.hpp>
 
 #include <optional>
 #include <string>
@@ -33,11 +34,11 @@
 
 /* May be something else so this is prelim */
 enum class ParameterSource {
-  Max_HP,
-  Max_MP,
-  Attack,
-  Defense,
-  M_pe_Attack,
+  trENUM("Max HP", Max_HP),
+  trENUM("Max MP", Max_MP),
+  trENUM("Attack", Attack),
+  trENUM("Defense", Defense),
+  trENUM("M.Attack", M_pe_Attack),
   M_pe_Defense,
   Agility,
   Luck,

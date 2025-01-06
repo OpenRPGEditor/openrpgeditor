@@ -146,7 +146,12 @@ int waterfallDirToShape(const int dir) {
   }
   return shape;
 }
-bool isTilePassable(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::Impassable)) != static_cast<int>(TileFlags::Impassable); }
+bool isTilePassable(int tileFlags) {
+  if (tileFlags == -1) {
+    return true;
+  }
+  return (tileFlags & static_cast<int>(TileFlags::Impassable)) != static_cast<int>(TileFlags::Impassable);
+}
 bool hasHigherTile(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::PassageHigherTile)) != 0; }
 bool isNorthPassage(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::PassageNorth)) == 0; }
 bool isSouthPassage(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::PassageSouth)) == 0; }
@@ -157,6 +162,6 @@ bool isBush(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::Bus
 bool isCounter(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::Counter)) != 0; }
 bool isDamageFloor(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::Damage)) != 0; }
 bool isTerrainTag(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::TerrainTag)) != 0; }
-int getTerrainTag(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::TerrainTag)) >> 12; }
+int getTerrainTag(int tileFlags) { return tileFlags >> 12; }
 
 } // namespace TileHelper

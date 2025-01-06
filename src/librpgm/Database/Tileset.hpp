@@ -34,6 +34,9 @@ public:
       m_flags.back() = 0;
     }
 
+    if (id >= m_flags.size()) {
+      return 0;
+    }
     if (!m_flags[id]) {
       m_flags[id] = 0;
     }
@@ -44,7 +47,7 @@ public:
     if (idx > TileHelper::TILE_ID_MAX) {
       return 0;
     }
-    
+
     if (idx >= 0 && idx < m_flags.size()) {
       return m_flags[idx] ? *m_flags[idx] : 0;
     }

@@ -71,7 +71,7 @@ Application::Application(const std::string& title) {
   SDL_free((void*)conf_path);
 
   loadSettings();
-  APP_DEBUG(trFormat("User config path: {}", m_userConfigPath));
+  APP_DEBUG("User config path: {}", m_userConfigPath);
 
   APP = this;
   if (!ScriptEngine::instance()->initialize()) {

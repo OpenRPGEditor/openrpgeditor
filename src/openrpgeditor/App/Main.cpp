@@ -15,6 +15,8 @@
 #include "Core/Log.hpp"
 #include <orei18n.hpp>
 
+#include "Database/Globals.hpp"
+
 #if defined(_WIN32) && defined(ZLIB_DEBUG)
 // This is needed due to freetype's gzip not defining these
 #include <stdlib.h>
@@ -29,6 +31,28 @@ extern "C" void z_error(char* m) {
 }
 
 #endif
+
+// template <typename E>
+// void translateEnum(bool withValue = false) {
+//   std::cout << "enum class " << magic_enum::enum_type_name<E>() << " {" << std::endl;
+//   for (const auto& v : magic_enum::enum_values<E>()) {
+//     const auto decoName = DecodeEnumName(magic_enum::enum_name(v));
+//     const auto undecoName = UndectorateEnumName(magic_enum::enum_name(v));
+//     std::cout << std::format("  trENUM(\"{}\", ", decoName);
+//     if (decoName != undecoName) {
+//       std::cout << std::format("trENUM(\"{}\", ", undecoName);
+//     }
+//     std::cout << magic_enum::enum_name(v) << ")";
+//     if (decoName != undecoName) {
+//       std::cout << ")" << std::endl;
+//     }
+//     if (withValue) {
+//       std::cout << " = " << static_cast<int>(v);
+//     }
+//     std::cout << "," << std::endl;
+//   }
+//   std::cout << "};" << std::endl;
+// }
 
 int main() {
   srand(time(NULL));

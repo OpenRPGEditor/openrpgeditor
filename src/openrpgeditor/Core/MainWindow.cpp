@@ -602,7 +602,9 @@ void MainWindow::drawMenu() {
         ImGui::EndMenu();
       }
       ImGui::Separator();
-      if (ImGui::MenuItem(ICON_FA_BOXES_PACKING " Deployment...")) {
+      // TL-NOTE: Use ellipses character appropriate for your language
+      // Deployment is referring to preparing a game for distribution to end users, exporting all related assets into an easily distributable form
+      if (ImGui::MenuItem(std::format("{} {}", ICON_FA_BOXES_PACKING, tr("Deployment...")).c_str(), " ")) {
         // TODO: Implement game deployment
       }
       /*
@@ -611,7 +613,8 @@ void MainWindow::drawMenu() {
       }
       */
       ImGui::Separator();
-      if (ImGui::MenuItem(ICON_FA_DOOR_CLOSED "  Exit", "Ctrl+Q")) {
+      // We're using std::format here instead of trFORMAT because we don't want to risk someone localizing the icon after the text
+      if (ImGui::MenuItem(std::format("{} {}", ICON_FA_DOOR_CLOSED, tr("Exit")).c_str(), "Ctrl+Q")) {
         App::APP->stop();
       }
       ImGui::EndMenu();
@@ -620,63 +623,65 @@ void MainWindow::drawMenu() {
     /* TODO: Implement shortcut handling, ImGui doesn't handle that for various reasons
      * so we have to do that ourselves
      */
-    if (ImGui::BeginMenu("Edit")) {
-      if (ImGui::MenuItem("Undo", "Ctrl+Z", false, m_undoStack.hasCommands())) {
+    if (ImGui::BeginMenu(trNOOP("Edit"))) {
+      if (ImGui::MenuItem(trNOOP("Undo"), "Ctrl+Z", false, m_undoStack.hasCommands())) {
         handleUndo();
       }
       if (ImGui::IsItemHovered() && m_undoStack.hasCommands()) {
         ImGui::SetTooltip("%s", m_undoStack.top()->description().c_str());
       }
 
-      if (ImGui::MenuItem("Redo", "Ctrl+Shift+Z", false, m_redoStack.hasCommands())) {
+      if (ImGui::MenuItem(trNOOP("Redo"), "Ctrl+Shift+Z", false, m_redoStack.hasCommands())) {
         handleRedo();
       }
       if (ImGui::IsItemHovered() && m_redoStack.hasCommands()) {
         ImGui::SetTooltip("%s", m_redoStack.top()->description().c_str());
       }
       ImGui::Separator();
-      if (ImGui::MenuItem("Cut", "Ctrl+X")) {
+      if (ImGui::MenuItem(trNOOP("Cut"), "Ctrl+X")) {
         // TODO: Implement clipboard
       }
-      if (ImGui::MenuItem("Copy", "Ctrl+C")) {
+      if (ImGui::MenuItem(trNOOP("Copy"), "Ctrl+C")) {
         // TODO: Implement clipboard
       }
-      if (ImGui::MenuItem("Paste", "Ctrl+V")) {
+      if (ImGui::MenuItem(trNOOP("Paste"), "Ctrl+V")) {
         // TODO: Implement clipboard
       }
-      if (ImGui::MenuItem("Delete", "Del")) {
+      if (ImGui::MenuItem(trNOOP("Delete"), "Del")) {
         // TODO: Implement
       }
       ImGui::Separator();
-      if (ImGui::MenuItem("Find", "Ctrl+F")) {
+      if (ImGui::MenuItem(trNOOP("Find"), "Ctrl+F")) {
         // TODO: Implement
       }
-      if (ImGui::MenuItem("Find Next", "F3")) {
+      if (ImGui::MenuItem(trNOOP("Find Next"), "F3")) {
         // TODO: Implement
       }
-      if (ImGui::MenuItem("Find Previous", "Shift+F3")) {
+      if (ImGui::MenuItem(trNOOP("Find Previous"), "Shift+F3")) {
         // TODO: Implement
       }
       ImGui::EndMenu();
     }
 
-    if (ImGui::BeginMenu("Mode")) {
-      if (ImGui::MenuItem("Map", "F5", editMode() == EditMode::Map)) {
+    if (ImGui::BeginMenu(trNOOP("Mode"))) {
+      if (ImGui::MenuItem(trNOOP("Map"), "F5", editMode() == EditMode::Map)) {
         enterMapEditMode();
       }
-      if (ImGui::MenuItem("Event", "F6", editMode() == EditMode::Event)) {
+      if (ImGui::MenuItem(trNOOP("Event"), "F6", editMode() == EditMode::Event)) {
         enterEventEditMode();
       }
       ImGui::Separator();
-      if (ImGui::MenuItem("Game Preview", "F7", !m_mapEditor.prisonMode())) {
+      if (ImGui::MenuItem(trNOOP("Game Preview"), "F7", !m_mapEditor.prisonMode())) {
         m_mapEditor.togglePrisonMode();
       }
       if (ImGui::IsItemHovered()) {
-        ImGui::SetTooltip("Toggles event borders, layer render order, and animations");
+        // TL-NOTE: Refers to Game Preview mode and is in reference to how events are drawn to the screen.
+        // Displays as a tooltip.
+        ImGui::SetTooltip(trNOOP("Toggles event borders, layer render order, and animations."));
       }
       ImGui::EndMenu();
     }
-    if (ImGui::BeginMenu("Draw")) {
+    if (ImGui::BeginMenu(trNOOP("Draw"))) {
       for (auto v : magic_enum::enum_values<DrawTool>()) {
         if (ImGui::MenuItem(DecodeEnumName(magic_enum::enum_name(v)).data(), nullptr, drawTool() == v, editMode() == EditMode::Map)) {
           setDrawTool(v);
@@ -685,43 +690,43 @@ void MainWindow::drawMenu() {
       ImGui::EndMenu();
     }
 
-    if (ImGui::BeginMenu("Scale")) {
-      if (ImGui::MenuItem("Zoom In", "Ctrl++", false, m_mapEditor.zoom() > 0.25f)) {
+    if (ImGui::BeginMenu(trNOOP("Scale"))) {
+      if (ImGui::MenuItem(trNOOP("Zoom In"), "Ctrl++", false, m_mapEditor.zoom() > 0.25f)) {
         m_mapEditor.scale(0.25f);
       }
-      if (ImGui::MenuItem("Zoom Out", "Ctrl+-", false, m_mapEditor.zoom() < 4.f)) {
+      if (ImGui::MenuItem(trNOOP("Zoom Out"), "Ctrl+-", false, m_mapEditor.zoom() < 4.f)) {
         m_mapEditor.scale(-0.25f);
       }
-      if (ImGui::MenuItem("Actual Size", "Ctrl+0", false, m_mapEditor.zoom() != 1.f)) {
+      if (ImGui::MenuItem(trNOOP("Actual Size"), "Ctrl+0", false, m_mapEditor.zoom() != 1.f)) {
         m_mapEditor.setScale(1.f);
       }
       ImGui::EndMenu();
     }
 
     if (ImGui::BeginMenu("Tools")) {
-      if (ImGui::MenuItem("Settings", "F8", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
+      if (ImGui::MenuItem(trNOOP("Settings"), "F8", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
         m_settingsDialog.setOpen(true);
       }
-      if (ImGui::MenuItem("Database", "F9", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
+      if (ImGui::MenuItem(trNOOP("Database"), "F9", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
         m_databaseEditor->open();
       }
-      if (ImGui::MenuItem("NWJS Version Manager", "F10", false)) {
+      if (ImGui::MenuItem(trNOOP("NWJS Version Manager"), "F10", false)) {
         m_nwjsVersionManager.open();
       }
 
       /* Add tools above this */
       ImGui::Separator();
-      if (ImGui::MenuItem("Reset Window Layout")) {
+      if (ImGui::MenuItem(trNOOP("Reset Window Layout"))) {
         ImGui::ClearIniSettings();
       }
       ImGui::EndMenu();
     }
-    if (ImGui::BeginMenu("Game")) {
-      if (ImGui::MenuItem("Play Test", "Ctrl+R", false, m_databaseEditor != std::nullopt)) {
+    if (ImGui::BeginMenu(trNOOP("Game"))) {
+      if (ImGui::MenuItem(trNOOP("Play Test"), "Ctrl+R", false, m_databaseEditor != std::nullopt)) {
         // TODO: Implement
       }
       ImGui::Separator();
-      if (ImGui::MenuItem("Open Folder", nullptr, false, m_databaseEditor != std::nullopt)) {
+      if (ImGui::MenuItem(trNOOP("Open Folder"), nullptr, false, m_databaseEditor != std::nullopt)) {
         /* is there a better way to do this? */
 #if __APPLE__
         char buff[4096]{};

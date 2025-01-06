@@ -52,7 +52,8 @@ std::string DecodeEnumName(std::string_view str) {
   ReplaceStr(result, "_", " ");
 
   result.shrink_to_fit();
-  return result;
+  auto trStr = gettext(result.c_str());
+  return trStr ? trStr : result;
 }
 
 std::string UndectorateEnumName(std::string_view str) {
@@ -79,8 +80,10 @@ std::string UndectorateEnumName(std::string_view str) {
   ReplaceStr(result, "_mul_", "");
   ReplaceStr(result, "_mod_", "");
   ReplaceStr(result, "_div_", "");
+  ReplaceStr(result, "_lteq_", "");
   ReplaceStr(result, "_lt_", "");
   ReplaceStr(result, "_gt_", "");
+  ReplaceStr(result, "_gteq_", "");
   ReplaceStr(result, "_not_", "");
 
   // Remove the leading underscore if it exists
@@ -91,7 +94,8 @@ std::string UndectorateEnumName(std::string_view str) {
   ReplaceStr(result, "_", " ");
 
   result.shrink_to_fit();
-  return result;
+  auto trStr = gettext(result.c_str());
+  return trStr ? trStr : result;
 }
 
 std::vector<std::string> splitString(const std::string& str, char delimiter) {

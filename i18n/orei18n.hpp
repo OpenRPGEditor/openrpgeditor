@@ -17,3 +17,4 @@ static inline std::string tr(std::string_view str) { return gettext(str.data());
 #define trNOOP(S) gettext(S)
 
 #define trENUM(S, X) X
+#define trENUMAlt(S, X) X

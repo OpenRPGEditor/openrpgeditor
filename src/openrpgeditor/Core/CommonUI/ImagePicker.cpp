@@ -50,7 +50,7 @@ void ImagePicker::setImageInfo(std::string_view imageName, std::string_view imag
   if (!image2Name.empty()) {
     bool found = false;
     for (int i = 0; i < m_images_2[i].size(); ++i) {
-      if (!m_images_2[i].compare(imageName)) {
+      if (!m_images_2[i].compare(image2Name)) {
         found = true;
         m_selectedImage2 = i;
         break;
@@ -90,13 +90,14 @@ std::tuple<bool, bool> ImagePicker::draw() {
             const auto& sheet = m_images[i];
             ImGui::TableNextColumn();
             if (ImGui::Selectable(sheet.c_str(), m_selectedImage == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
-              if (m_selectedImage != i) {
-                m_selectedImage = i;
-                m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), static_cast<int>(m_pickType), false);
-              }
+              m_selectedImage = i;
+              m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), static_cast<int>(m_pickType), false);
               if (ImGui::IsItemHovered()) {
                 ImGui::SetTooltip("%s", sheet.c_str());
               }
+            }
+            if (m_selectedImage == i && ImGui::IsWindowAppearing()) {
+              ImGui::SetScrollHereY();
             }
           }
           ImGui::EndTable();
@@ -117,10 +118,8 @@ std::tuple<bool, bool> ImagePicker::draw() {
                 const auto& sheet2 = m_images_2[i];
                 ImGui::TableNextColumn();
                 if (ImGui::Selectable(sheet2.c_str(), m_selectedImage2 == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
-                  if (m_selectedImage2 != i) {
-                    m_selectedImage2 = i;
-                    m_image2.emplace(m_selectedImage2 == -1 ? "" : m_images_2.at(m_selectedImage2), static_cast<int>(m_pickType), true);
-                  }
+                  m_selectedImage2 = i;
+                  m_image2.emplace(m_selectedImage2 == -1 ? "" : m_images_2.at(m_selectedImage2), static_cast<int>(m_pickType), true);
                   if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("%s", sheet2.c_str());
                   }
@@ -135,6 +134,13 @@ std::tuple<bool, bool> ImagePicker::draw() {
         ImGui::SameLine();
         ImGui::BeginChild("##image_picker_image_panel", ImVec2{894, 784}, ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
         {
+          if (!m_image && m_selectedImage != -1) {
+            m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), static_cast<int>(m_pickType), false);
+          }
+          if (!m_image2 && m_selectedImage2 != -1) {
+            m_image2.emplace(m_selectedImage2 == -1 ? "" : m_images.at(m_selectedImage2), static_cast<int>(m_pickType), false);
+          }
+
           auto win = ImGui::GetCurrentWindow();
           if (m_image) {
             const auto imageRect = ImVec2{static_cast<float>(m_image->imageWidth()), static_cast<float>(m_image->imageHeight())};

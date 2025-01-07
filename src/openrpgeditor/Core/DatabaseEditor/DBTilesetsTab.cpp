@@ -19,15 +19,14 @@ void DBTilesetsTab::draw() {
     }
   }
 
+  if (m_imagePicker && m_imagePicker->isOpen()) {}
   if (const auto [closed, confirmed] = m_imagePicker->draw(); closed) {
-    if (closed) {
-      if (confirmed) {
-        m_imagePicker->accept();
-        m_selectedTileset->setTilesetName(m_pickerSelection, m_imagePicker->selectedImage());
+    if (confirmed) {
+      m_imagePicker->accept();
+      m_selectedTileset->setTilesetName(m_pickerSelection, m_imagePicker->selectedImage());
 
-        m_checkerBoardHeight = 0;
-        m_updateCheckerboard = true;
-      }
+      m_checkerBoardHeight = 0;
+      m_updateCheckerboard = true;
     }
   }
 
@@ -111,6 +110,7 @@ void DBTilesetsTab::draw() {
             ImGui::PushID("##orpg_tileset_a1_selection");
             if (ImGui::Button(m_selectedTileset->tilesetName(0).c_str(), ImVec2{(170), 0})) {
               m_pickerSelection = 0;
+              m_imagePicker->setImageInfo(m_selectedTileset->tilesetName(m_pickerSelection), "");
               m_imagePicker->setOpen(true);
             }
             ImGui::PopID();
@@ -122,6 +122,7 @@ void DBTilesetsTab::draw() {
             ImGui::PushID("##orpg_tileset_a2_selection");
             if (ImGui::Button(m_selectedTileset->tilesetName(1).c_str(), ImVec2{(170), 0})) {
               m_pickerSelection = 1;
+              m_imagePicker->setImageInfo(m_selectedTileset->tilesetName(m_pickerSelection), "");
               m_imagePicker->setOpen(true);
             }
             ImGui::PopID();
@@ -134,6 +135,7 @@ void DBTilesetsTab::draw() {
             ImGui::PushID("##orpg_tileset_a3_selection");
             if (ImGui::Button(m_selectedTileset->tilesetName(2).c_str(), ImVec2{(170), 0})) {
               m_pickerSelection = 2;
+              m_imagePicker->setImageInfo(m_selectedTileset->tilesetName(m_pickerSelection), "");
               m_imagePicker->setOpen(true);
             }
             ImGui::PopID();
@@ -146,6 +148,7 @@ void DBTilesetsTab::draw() {
             ImGui::PushID("##orpg_tileset_a4_selection");
             if (ImGui::Button(m_selectedTileset->tilesetName(3).c_str(), ImVec2{(170), 0})) {
               m_pickerSelection = 3;
+              m_imagePicker->setImageInfo(m_selectedTileset->tilesetName(m_pickerSelection), "");
               m_imagePicker->setOpen(true);
             }
             ImGui::PopID();
@@ -158,6 +161,7 @@ void DBTilesetsTab::draw() {
             ImGui::PushID("##orpg_tileset_a5_selection");
             if (ImGui::Button(m_selectedTileset->tilesetName(4).c_str(), ImVec2{(170), 0})) {
               m_pickerSelection = 4;
+              m_imagePicker->setImageInfo(m_selectedTileset->tilesetName(m_pickerSelection), "");
               m_imagePicker->setOpen(true);
             }
             ImGui::PopID();
@@ -170,6 +174,7 @@ void DBTilesetsTab::draw() {
             ImGui::PushID("##orpg_tileset_b1_selection");
             if (ImGui::Button(m_selectedTileset->tilesetName(5).c_str(), ImVec2{(170), 0})) {
               m_pickerSelection = 5;
+              m_imagePicker->setImageInfo(m_selectedTileset->tilesetName(m_pickerSelection), "");
               m_imagePicker->setOpen(true);
             }
             ImGui::PopID();
@@ -182,6 +187,7 @@ void DBTilesetsTab::draw() {
             ImGui::PushID("##orpg_tileset_c1_selection");
             if (ImGui::Button(m_selectedTileset->tilesetName(6).c_str(), ImVec2{(170), 0})) {
               m_pickerSelection = 6;
+              m_imagePicker->setImageInfo(m_selectedTileset->tilesetName(m_pickerSelection), "");
               m_imagePicker->setOpen(true);
             }
             ImGui::PopID();
@@ -194,6 +200,7 @@ void DBTilesetsTab::draw() {
             ImGui::PushID("##orpg_tileset_d1_selection");
             if (ImGui::Button(m_selectedTileset->tilesetName(7).c_str(), ImVec2{(170), 0})) {
               m_pickerSelection = 7;
+              m_imagePicker->setImageInfo(m_selectedTileset->tilesetName(m_pickerSelection), "");
               m_imagePicker->setOpen(true);
             }
             ImGui::PopID();
@@ -206,6 +213,7 @@ void DBTilesetsTab::draw() {
             ImGui::PushID("##orpg_tileset_e1_selection");
             if (ImGui::Button(m_selectedTileset->tilesetName(8).c_str(), ImVec2{(170), 0})) {
               m_pickerSelection = 8;
+              m_imagePicker->setImageInfo(m_selectedTileset->tilesetName(m_pickerSelection), "");
               m_imagePicker->setOpen(true);
             }
             ImGui::PopID();

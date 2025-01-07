@@ -25,7 +25,6 @@ EditorPluginManager::EditorPluginManager() {
   m_directoryMonitor.fileChanged().connect<&EditorPluginManager::onFileModified>(this);
   m_directoryMonitor.fileDeleted().connect<&EditorPluginManager::onFileDeleted>(this);
   m_directoryMonitor.start();
-
   // populatePlugins();
 }
 

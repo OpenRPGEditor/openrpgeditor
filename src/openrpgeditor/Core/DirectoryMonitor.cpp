@@ -16,6 +16,10 @@ void DirectoryMonitor::watchDirectory() {
       break;
     }
 
+    if (!std::filesystem::exists(m_watchDirectory)) {
+      continue;
+    }
+
     for (const auto& entry : std::filesystem::recursive_directory_iterator(m_watchDirectory)) {
       auto lastWriteTime = last_write_time(entry);
       auto it = lastWriteTimes.find(entry);

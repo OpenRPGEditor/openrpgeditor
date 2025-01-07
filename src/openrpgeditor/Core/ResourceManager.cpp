@@ -190,7 +190,8 @@ std::vector<std::string> ResourceManager::getDirectoryContents(const std::string
 
     auto filename = entry.path().filename();
     filename = filename.replace_extension();
-    fileNames.emplace_back(filename.generic_string());
+    const auto path = filename.generic_string();
+    fileNames.emplace_back(path);
   }
   return fileNames;
 }

@@ -82,7 +82,9 @@ int main() {
   try {
 #endif
     // APP_PROFILE_BEGIN_SESSION_WITH_FILE("App", "profile.json");
-    setlocale(LC_ALL, "");
+    const auto locale = setlocale(LC_ALL, "");
+    setlocale(LC_ALL, locale);
+    std::cout << locale << std::endl;
     {
       App::Application app{"OpenRPGEditor"};
       app.run();

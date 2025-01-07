@@ -16,7 +16,10 @@
 #include "imgui_internal.h"
 
 #if _WIN32
+#define WIN32_LEAN_AND_MEAN
 #include <shellapi.h>
+#include <windows.h>
+#include <winuser.h>
 #endif
 
 #include "EditorPlugin/EditorPluginManager.hpp"

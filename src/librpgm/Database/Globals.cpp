@@ -52,7 +52,7 @@ std::string DecodeEnumName(std::string_view str) {
   ReplaceStr(result, "_", " ");
 
   result.shrink_to_fit();
-  auto trStr = gettext(result.c_str());
+  auto trStr = moloader::gettext(result.c_str());
   return trStr ? trStr : result;
 }
 
@@ -94,7 +94,7 @@ std::string UndectorateEnumName(std::string_view str) {
   ReplaceStr(result, "_", " ");
 
   result.shrink_to_fit();
-  auto trStr = gettext(result.c_str());
+  auto trStr = moloader::gettext(result.c_str());
   return trStr ? trStr : result;
 }
 

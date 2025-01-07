@@ -9,13 +9,16 @@
 DBTilesetsTab::DBTilesetsTab(Tilesets& tilesets, DatabaseEditor* parent) : IDBEditorTab(parent), m_tilesets(tilesets) {
   m_selectedTileset = m_tilesets.tileset(1);
   m_tileMarker.emplace(TileFlags::None, 1, 256, 320);
-  if (m_selectedTileset) {
-    m_imagePicker.emplace(ImagePicker::PickerMode::Tileset, "", "");
-  }
   m_maxTilesets = m_tilesets.count();
 }
 
 void DBTilesetsTab::draw() {
+  if (m_selectedTileset) {
+    if (!m_imagePicker) {
+      m_imagePicker.emplace(ImagePicker::PickerMode::Tileset, "", "");
+    }
+  }
+
   if (const auto [closed, confirmed] = m_imagePicker->draw(); closed) {
     if (closed) {
       if (confirmed) {

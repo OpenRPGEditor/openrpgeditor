@@ -14,8 +14,6 @@ project(
         VERSION 0.0.0
         LANGUAGES CXX C)
 
-find_package(Intl REQUIRED)
-
 set(GETTEXT_DOMAIN openrpgeditor)
 set(GETTEXT_OUTPUT_DIR locales)
 

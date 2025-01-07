@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenRPG Editor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-06 16:12-0800\n"
+"POT-Creation-Date: 2025-01-06 18:52-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -408,6 +408,7 @@ msgid "OK"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:164 src/librpgm/Database/Globals.hpp:854
+#: src/openrpgeditor/Core/MainWindow.cpp:387
 msgid "Cancel"
 msgstr ""
 
@@ -1890,6 +1891,7 @@ msgid "Lowest"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:753
+#: src/openrpgeditor/Core/MainWindow.cpp:513
 msgid "Lower"
 msgstr ""
 
@@ -2173,122 +2175,251 @@ msgstr ""
 msgid "Moment"
 msgstr ""
 
-#. TL-NOTE: Use ellipses character appropriate for your language
-#. Deployment is referring to preparing a game for distribution to end users, exporting all related assets into an easily distributable form
-#: src/openrpgeditor/Core/MainWindow.cpp:607
-msgid "Deployment..."
+#: src/openrpgeditor/Core/MainWindow.cpp:211
+msgid "New Project"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:617
-msgid "Exit"
+#: src/openrpgeditor/Core/MainWindow.cpp:211
+msgid "Creates a new project."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:626
-msgid "Edit"
+#: src/openrpgeditor/Core/MainWindow.cpp:218
+msgid "Open Project"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:627
-msgid "Undo"
+#: src/openrpgeditor/Core/MainWindow.cpp:218
+msgid "Opens an existing project."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:634
-msgid "Redo"
+#: src/openrpgeditor/Core/MainWindow.cpp:226
+msgid "Save Project"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:641
-msgid "Cut"
+#: src/openrpgeditor/Core/MainWindow.cpp:226
+msgid "Saves the project."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:644
-msgid "Copy"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:647
-msgid "Paste"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:650
-msgid "Delete"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:654
-msgid "Find"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:657
-msgid "Find Next"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:660
-msgid "Find Previous"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:666
-msgid "Mode"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:667
+#: src/openrpgeditor/Core/MainWindow.cpp:271
+#: src/openrpgeditor/Core/MainWindow.cpp:670
 msgid "Map"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:670
+#: src/openrpgeditor/Core/MainWindow.cpp:271
+msgid "Switch to Map Edit mode."
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:282
+#: src/openrpgeditor/Core/MainWindow.cpp:673
 msgid "Event"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:674
+#: src/openrpgeditor/Core/MainWindow.cpp:282
+msgid "Switch to Event Edit mode."
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:290
+#: src/openrpgeditor/Core/MainWindow.cpp:677
 msgid "Game Preview"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:290
+msgid "Toggles Game Preview mode."
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:326
+msgid "Shadow Pen"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:326
+msgid "Adds or removes shadows of walls"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:337
+msgid "Eraser"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:337
+msgid "Erases tiles at a given point"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:382
+msgid "Loading Project...."
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:383
+msgid "Loading {0} ({1} of {2])...."
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:396
+msgid "Saving Project...."
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:397
+#, c++-format
+msgid "Saving {0} ({1} of {2})...."
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:488
+#, c++-format
+msgid ""
+"Sheet: {} ({}), ID: {}, x: {}, y: {}, z: {},  width: {}, height: {}, u: {}, "
+"v: {}"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:492
+#, c++-format
+msgid ""
+"\n"
+"AutoTile Shape: {}, Kind: {}\n"
+"WaterTile: {}, WaterfallTile: {}, GroundTile {}, RoofTile: {}, "
+"ShadowingTile: {},\n"
+"WallSide: {}, WallTop: {}, FloorTypeAutoTile: {}, WallTypeAutoTile: {}\n"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:511
+msgid "Tile Debug"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:519
+msgid "Upper"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:533
+msgid "RPG Maker Projects"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:574
+msgid "File"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:575
+msgid "New Project..."
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:578
+msgid "Open Project..."
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:581
+msgid "Close Project..."
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:584
+msgid "Save Project..."
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:588
+msgid "Recent Projects"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:589
+msgid "Clear"
+msgstr ""
+
+#. TL-NOTE: Use ellipses character appropriate for your language
+#. Deployment is referring to preparing a game for distribution to end users, exporting all related assets into an easily distributable form
+#: src/openrpgeditor/Core/MainWindow.cpp:610
+msgid "Deployment..."
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:620
+msgid "Exit"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:629
+msgid "Edit"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:630
+msgid "Undo"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:637
+msgid "Redo"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:644
+msgid "Cut"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:647
+msgid "Copy"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:650
+msgid "Paste"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:653
+msgid "Delete"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:657
+msgid "Find"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:660
+msgid "Find Next"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:663
+msgid "Find Previous"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:669
+msgid "Mode"
 msgstr ""
 
 #. TL-NOTE: Refers to Game Preview mode and is in reference to how events are drawn to the screen.
 #. Displays as a tooltip.
-#: src/openrpgeditor/Core/MainWindow.cpp:680
+#: src/openrpgeditor/Core/MainWindow.cpp:683
 msgid "Toggles event borders, layer render order, and animations."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:684
+#: src/openrpgeditor/Core/MainWindow.cpp:687
 msgid "Draw"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:693
+#: src/openrpgeditor/Core/MainWindow.cpp:696
 msgid "Scale"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:694
+#: src/openrpgeditor/Core/MainWindow.cpp:697
 msgid "Zoom In"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:697
+#: src/openrpgeditor/Core/MainWindow.cpp:700
 msgid "Zoom Out"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:700
+#: src/openrpgeditor/Core/MainWindow.cpp:703
 msgid "Actual Size"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:707
+#: src/openrpgeditor/Core/MainWindow.cpp:710
 msgid "Settings"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:710
+#: src/openrpgeditor/Core/MainWindow.cpp:713
 msgid "Database"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:713
+#: src/openrpgeditor/Core/MainWindow.cpp:716
 msgid "NWJS Version Manager"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:719
+#: src/openrpgeditor/Core/MainWindow.cpp:722
 msgid "Reset Window Layout"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:724
+#: src/openrpgeditor/Core/MainWindow.cpp:727
 msgid "Game"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:725
+#: src/openrpgeditor/Core/MainWindow.cpp:728
 msgid "Play Test"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:729
+#: src/openrpgeditor/Core/MainWindow.cpp:732
 msgid "Open Folder"
 msgstr ""

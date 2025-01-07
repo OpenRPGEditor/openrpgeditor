@@ -8,14 +8,17 @@
 #include <string>
 
 #include "imgui.h"
+#include "imgui_internal.h"
 
 #include "Database/EventPage.hpp"
 
+int EVPage::mNextID = 0;
 EVPage::EVPage(EventPage* page) : IPageEditor(page), m_characterSheet(page->image().characterName()) {
   m_commandEditor.setCommands(&m_page->list());
   if (m_page->name().empty()) {
     strncpy(m_pageNameBuf, m_page->name().data(), 4096);
   }
+  m_uid = mNextID++;
 }
 
 std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
@@ -37,9 +40,9 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
   bool* p_open = canDelete ? &open : nullptr;
   std::string title;
   if (!m_page->name().empty()) {
-    title = std::format("{}##page_{}", m_page->name(), index + 1, reinterpret_cast<uintptr_t>(this));
+    title = std::format("{}###page_{}", m_page->name(), m_uid);
   } else {
-    title = std::format("Page {0}##page_{1}", index + 1, reinterpret_cast<uintptr_t>(this));
+    title = std::format("Page {0}###page_{1}", index + 1, m_uid);
   }
 
   int flags = 0;
@@ -48,19 +51,20 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
     m_selectedDirty = false;
   }
   bool selected = ImGui::BeginTabItem(title.c_str(), p_open, flags);
+  m_tabItem = ImGui::TabBarGetCurrentTab(ImGui::GetCurrentTabBar());
+  m_layoutIndex = m_tabItem->IndexDuringLayout;
   if (selected) {
     if (ImGui::BeginChild("##event_page_settings_panel", {ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHI").x + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().ItemSpacing.x, 0},
                           0, 0)) {
-      ImGui::LabelOverLineEdit("##event_page_name_edit", "Page Name:", m_pageNameBuf, 4096, 150, "Page names are an Open RPG Editor addition and will not be viewable in RPG Maker MV/MZ",
-                               ImGuiInputTextFlags_None);
+      ImGui::Text("ID %i", m_uid);
+      if (ImGui::LabelOverLineEdit("##event_page_name_edit", "Page Name:", m_pageNameBuf, 4096, 150, "Page names are an Open RPG Editor addition and will not be viewable in RPG Maker MV/MZ",
+                                   ImGuiInputTextFlags_None)) {
+        m_page->setName(m_pageNameBuf);
+      }
       ImGui::SameLine();
       ImGui::BeginGroup();
       {
         ImGui::NewLine();
-        if (ImGui::Button("Apply")) {
-          m_page->setName(m_pageNameBuf);
-        }
-        ImGui::SameLine();
         if (ImGui::Button("Clear Page")) {
           m_page->clear();
         }

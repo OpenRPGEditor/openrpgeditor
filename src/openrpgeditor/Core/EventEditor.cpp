@@ -51,7 +51,7 @@ std::tuple<bool, bool> EventEditor::draw() {
       ImGui::EndDisabled();
       ImGui::SameLine();
       if (ImGui::Button("Save as\nTemplate")) {
-        m_templatePicker = ObjectPicker("Templates"sv, Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+        m_templatePicker = ObjectPicker(tr("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
       }
     }
     if (m_templatePicker) {
@@ -63,15 +63,15 @@ std::tuple<bool, bool> EventEditor::draw() {
           EventParser::serialize(eventJson, *m_event);
           if (m_templatePicker.value().selection() == 0) {
             Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
-                                                                 "New Event Template " + std::to_string(Database::instance()->templates.templates.size() + 1), "", Template::TemplateType::Event,
-                                                                 eventJson.dump(), {}));
+                                                                 tr("New Event Template") + " " + std::to_string(Database::instance()->templates.templates.size() + 1), "",
+                                                                 Template::TemplateType::Event, eventJson.dump(), {}));
           } else {
             Database::instance()->templates.templates.at(m_templatePicker.value().selection() - 1).setCommands(eventJson.dump());
           }
           if (Database::instance()->templates.serialize(Database::instance()->basePath + "data/Templates.json")) {
-            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Saved event as template successfully!"});
+            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, trNOOP("Saved event as template successfully!")});
           } else {
-            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to saved event as template!"});
+            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, trNOOP("Failed to saved event as template!")});
           }
           Database::instance()->templates.templates.back().setCommands(eventJson.dump());
         }
@@ -80,12 +80,9 @@ std::tuple<bool, bool> EventEditor::draw() {
     }
     ImGui::EndGroup();
     ImGui::BeginGroup();
-    if (ImGui::BeginTabBar("##orpg_event_editor_page" /*, ImGuiTabBarFlags_AutoSelectNewTabs | ImGuiTabBarFlags_Reorderable*/)) {
-      auto curTabBar = ImGui::GetCurrentTabBar();
+    if (ImGui::BeginTabBar("##orpg_event_editor_page", ImGuiTabBarFlags_Reorderable)) {
       int erasedIdx = 0;
       bool erased = false;
-      const ImGuiTabItem* curTab = nullptr;
-      int indexDuringRender = m_selectedPage;
       for (int i = 0; i < m_event->pageCount(); ++i) {
         if (!m_event->page(i)) {
           continue;
@@ -94,10 +91,6 @@ std::tuple<bool, bool> EventEditor::draw() {
           m_event->page(i)->editor()->select();
         }
         auto [del, selected] = m_event->page(i)->editor()->draw(m_event->pageCount() > 1, i);
-        if (i == m_selectedPage) {
-          curTab = ImGui::TabBarGetCurrentTab(curTabBar);
-          indexDuringRender = i;
-        }
 
         if (del) {
           erasedIdx = i;
@@ -109,18 +102,34 @@ std::tuple<bool, bool> EventEditor::draw() {
           m_event->renderer()->setPage(i);
         }
       }
-      // /* Handle re-ordering, we want to handle this as soon as we're out of the loop to capture the page index asap */
-      // const auto orderedTab = ImGui::TabBarFindTabByOrder(curTabBar, indexDuringRender);
-      // if (curTab && orderedTab && curTab != orderedTab && orderedTab->IndexDuringLayout != -1 && curTab->IndexDuringLayout != -1 && curTab->IndexDuringLayout < m_event->pageCount() &&
-      //     orderedTab->IndexDuringLayout < m_event->pageCount()) {
-      //   m_event->swapPages(orderedTab->IndexDuringLayout, curTab->IndexDuringLayout);
-      //   printf("Tabs reordered %i -> %i!\n", orderedTab->IndexDuringLayout, curTab->IndexDuringLayout);
-      //   m_selectedPage = curTab->IndexDuringLayout;
-      //   //  TODO: We need to add a confirmation prompt and ok/cancel buttons to the dialog, but for now just accept changes
-      //   m_event->acceptChanges();
-      // }
+      const auto curTabBar = ImGui::GetCurrentTabBar();
+      std::vector<std::pair<int, int>> reorderTable;
+      auto& pages = m_event->pages();
+      int selectedPageId = static_cast<EVPage*>(m_event->page(m_selectedPage)->editor())->tabItem()->ID;
+      for (int i = 0; i < pages.size(); i++) {
+        auto pageEditor = static_cast<EVPage*>(m_event->page(i)->editor());
+        for (int j = 0; j < curTabBar->Tabs.size(); j++) {
+          int id = curTabBar->Tabs[j].ID == curTabBar->ReorderRequestTabId ? curTabBar->Tabs[curTabBar->Tabs[j].IndexDuringLayout].ID : curTabBar->Tabs[j].ID;
+          if (pageEditor->tabItem()->ID == id) {
+            if (selectedPageId == pageEditor->tabItem()->ID) {
+              m_selectedPage = j;
+            }
+            reorderTable.emplace_back(id, j);
+            break;
+          }
+        }
+      }
 
-      if (ImGui::TabItemButton(" + ", ImGuiTabItemFlags_Trailing)) {
+      if (!std::ranges::is_sorted(reorderTable, [](const auto& a, const auto& b) { return a.second < b.second; })) {
+        std::ranges::sort(pages, [&reorderTable](const EventPage& a, const EventPage& b) {
+          auto itA = std::ranges::find_if(reorderTable, [&a](const std::pair<int, int>& a2) { return a2.first == static_cast<EVPage*>(a.editor())->tabItem()->ID; });
+          auto itB = std::ranges::find_if(reorderTable, [&b](const std::pair<int, int>& a2) { return a2.first == static_cast<EVPage*>(b.editor())->tabItem()->ID; });
+          return itA->second < itB->second;
+        });
+        m_event->renderer()->setPage(m_selectedPage);
+      }
+
+      if (ImGui::TabItemButton(" + ", ImGuiTabItemFlags_Trailing | ImGuiTabItemFlags_NoReorder)) {
         m_event->addPage({});
         m_selectedPage = m_event->pageCount() - 1;
         m_event->renderer()->setPage(m_selectedPage);
@@ -145,6 +154,7 @@ std::tuple<bool, bool> EventEditor::draw() {
     ImGui::EndGroup();
   }
   ImGui::End();
+
   return {!m_open, m_confirmed};
 }
 

@@ -74,7 +74,7 @@ Application::Application(const std::string& title) {
   loadSettings();
   APP_DEBUG("User config path: {}", m_userConfigPath);
   // TODO: Detect system locale and automatically use that on first boot
-  moloader::load(m_userConfigPath + "/locales/en.mo");
+  moloader::load(m_userConfigPath + "/locales/ja.mo");
   APP = this;
   if (!ScriptEngine::instance()->initialize()) {
     APP_FATAL("Failed to initialize script manager");

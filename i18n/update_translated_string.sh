@@ -7,4 +7,4 @@
 
 cd "$(dirname "$0")/.."
 POTFILE=./i18n/locales/openrpgeditor.pot
-find ./i18n/locales/po -name '*.po' -exec msgmerge --quiet --update -N --backup=none -s {} $POTFILE \;
+find ./i18n/locales/po -name '*.po' -exec msgmerge --update -N --backup=none -s {} $POTFILE \;

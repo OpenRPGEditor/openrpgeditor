@@ -208,14 +208,14 @@ void MainWindow::drawToolbar() {
     handleCreateNewProject();
   }
   if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-    ImGui::ActionTooltip("New Project", "Creates a new project.");
+    ImGui::ActionTooltip(trNOOP("New Project"), trNOOP("Creates a new project."));
   }
   ImGui::SameLine();
   if (ImGui::Button(ICON_FA_FOLDER_OPEN, ButtonSize)) {
     handleOpenFile();
   }
   if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-    ImGui::ActionTooltip("Open Project", "Opens an existing project.");
+    ImGui::ActionTooltip(trNOOP("Open Project"), trNOOP("Opens an existing project."));
   }
   ImGui::SameLine();
   if (ImGui::Button(ICON_FA_FLOPPY_DISK, ButtonSize)) {
@@ -223,7 +223,7 @@ void MainWindow::drawToolbar() {
   }
   ImGui::SameLine();
   if (ImGui::IsItemHovered()) {
-    ImGui::ActionTooltip("Save Project", "Saves the project.");
+    ImGui::ActionTooltip(trNOOP("Save Project"), trNOOP("Saves the project."));
   }
 
   for (const auto& button : m_toolbarButtons[ToolbarCategory::File]) {
@@ -268,7 +268,7 @@ void MainWindow::drawToolbar() {
     }
   }
   if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-    ImGui::ActionTooltip("Map", "Switch to Map Edit mode.");
+    ImGui::ActionTooltip(trNOOP("Map"), trNOOP("Switch to Map Edit mode."));
   }
   ImGui::EndDisabled();
   ImGui::SameLine();
@@ -279,7 +279,7 @@ void MainWindow::drawToolbar() {
     }
   }
   if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-    ImGui::ActionTooltip("Event", "Switch to Event Edit mode.");
+    ImGui::ActionTooltip(trNOOP("Event"), trNOOP("Switch to Event Edit mode."));
   }
   ImGui::EndDisabled();
   ImGui::SameLine();
@@ -287,7 +287,7 @@ void MainWindow::drawToolbar() {
     m_mapEditor.setPrisonMode(!m_mapEditor.prisonMode());
   }
   if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-    ImGui::ActionTooltip("Game Preview", "Toggles Game Preview mode.");
+    ImGui::ActionTooltip(trNOOP("Game Preview"), trNOOP("Toggles Game Preview mode."));
   }
   ImGui::SameLine();
   ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
@@ -323,7 +323,7 @@ void MainWindow::drawToolbar() {
     }
   }
   if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-    ImGui::ActionTooltip("Shadow Pen", "Adds or removes shadows of walls");
+    ImGui::ActionTooltip(trNOOP("Shadow Pen"), trNOOP("Adds or removes shadows of walls"));
   }
   ImGui::EndDisabled();
   ImGui::SameLine();
@@ -334,7 +334,7 @@ void MainWindow::drawToolbar() {
     }
   }
   if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-    ImGui::ActionTooltip("Eraser", "Erases tiles at a given point");
+    ImGui::ActionTooltip(trNOOP("Eraser"), trNOOP("Erases tiles at a given point"));
   }
   ImGui::EndDisabled();
   ImGui::End();
@@ -379,11 +379,12 @@ void MainWindow::draw() {
   m_nwjsVersionManager.draw();
 
   if (DeserializationQueue::instance().hasTasks()) {
-    ImGui::Begin("Loading Project....", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text("Loading %s (%i of %i)....", DeserializationQueue::instance().getCurrentFile().data(), DeserializationQueue::instance().currentTaskIndex(),
-                DeserializationQueue::instance().totalTasks());
+    ImGui::Begin(trNOOP("Loading Project...."), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Text("%s", trFormat("Loading {0} ({1} of {2})....", DeserializationQueue::instance().getCurrentFile().data(), DeserializationQueue::instance().currentTaskIndex(),
+                               DeserializationQueue::instance().totalTasks())
+                          .c_str());
     ImGui::ProgressBar(DeserializationQueue::instance().getProgress() / 100.f);
-    if (ImGui::Button("Cancel")) {
+    if (ImGui::Button(trNOOP("Cancel"))) {
       DeserializationQueue::instance().reset();
       close();
     }
@@ -392,8 +393,10 @@ void MainWindow::draw() {
     DeserializationQueue::instance().reset();
   }
   if (SerializationQueue::instance().hasTasks()) {
-    ImGui::Begin("Saving Project....", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text("Saving %s (%i of %i)....", SerializationQueue::instance().getCurrentFile().data(), SerializationQueue::instance().currentTaskIndex(), SerializationQueue::instance().totalTasks());
+    ImGui::Begin(trNOOP("Saving Project...."), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Text("%s", trFormat("Saving {0} ({1} of {2})....", SerializationQueue::instance().getCurrentFile().data(), SerializationQueue::instance().currentTaskIndex(),
+                               SerializationQueue::instance().totalTasks())
+                          .c_str());
     ImGui::ProgressBar(SerializationQueue::instance().getProgress() / 100.f);
     if (ImGui::Button("Cancel")) {
       SerializationQueue::instance().reset();
@@ -482,10 +485,10 @@ void MainWindow::drawTileInfo(MapRenderer::MapLayer& mapLayer, int z) {
         u1 /= layer.tex.width();
         v1 /= layer.tex.height();
         ImGui::Image(layer.tex, {static_cast<float>(m_mapEditor.tileSize()), static_cast<float>(m_mapEditor.tileSize())}, ImVec2{u0, v0}, ImVec2{u1, v1});
-        std::string info = std::format("Sheet: {} ({}), ID: {}, x: {}, y: {}, z: {},  width: {}, height: {}, u: {}, v: {}", m_mapEditor.mapRenderer().tileset()->tilesetName(tile.tileSheet),
-                                       LayerNames[tile.tileSheet], tile.tileId, tile.x, tile.y, z, tile.tileWidth, tile.tileHeight, tile.u, tile.v);
+        std::string info = trFormat("Sheet: {} ({}), ID: {}, x: {}, y: {}, z: {},  width: {}, height: {}, u: {}, v: {}", m_mapEditor.mapRenderer().tileset()->tilesetName(tile.tileSheet),
+                                    LayerNames[tile.tileSheet], tile.tileId, tile.x, tile.y, z, tile.tileWidth, tile.tileHeight, tile.u, tile.v);
         if (TileHelper::isAutoTile(tile.tileId)) {
-          info += std::format(
+          info += trFormat(
               "\n"
               "AutoTile Shape: {}, Kind: {}\n"
               "WaterTile: {}, WaterfallTile: {}, GroundTile {}, RoofTile: {}, ShadowingTile: {},\n"
@@ -505,15 +508,15 @@ void MainWindow::drawTileDebugger() {
     return;
   }
 
-  if (ImGui::Begin("Tile Debug", &m_showTileDebug)) {
+  if (ImGui::Begin(trNOOP("Tile Debug"), &m_showTileDebug)) {
     if (ImGui::BeginTabBar("##tiledebugger")) {
-      if (ImGui::BeginTabItem("Lower")) {
+      if (ImGui::BeginTabItem(trNOOP("Lower"))) {
         for (int z = 0; z < 6; ++z) {
           drawTileInfo(m_mapEditor.mapRenderer().m_lowerLayers[z], z);
         }
         ImGui::EndTabItem();
       }
-      if (ImGui::BeginTabItem("Upper")) {
+      if (ImGui::BeginTabItem(trNOOP("Upper"))) {
         for (int z = 0; z < 6; ++z) {
           drawTileInfo(m_mapEditor.mapRenderer().m_upperLayers[z], z);
         }
@@ -527,7 +530,7 @@ void MainWindow::drawTileDebugger() {
 
 void MainWindow::handleOpenFile() {
   nfdu8char_t* outPath;
-  constexpr nfdu8filteritem_t filters = {"RPG Maker Projects", "rpgproject,rmmzproject"};
+  const nfdu8filteritem_t filters = {trNOOP("RPG Maker Projects"), "rpgproject,rmmzproject"};
   const std::string directory = Settings::instance()->lastDirectory.empty() ? std::filesystem::current_path().generic_string() : Settings::instance()->lastDirectory;
   const auto result = NFD_OpenDialogU8(&outPath, &filters, 1, directory.c_str());
   if (result == NFD_OKAY) {
@@ -568,22 +571,22 @@ void MainWindow::handleRedo() {
 void MainWindow::drawMenu() {
   std::string loadFilepath;
   if (ImGui::BeginMainMenuBar()) {
-    if (ImGui::BeginMenu("File")) {
-      if (ImGui::MenuItem(ICON_FA_FILE "  New Project...", "Ctrl+N")) {
+    if (ImGui::BeginMenu(trNOOP("File"))) {
+      if (ImGui::MenuItem(std::format("{} {}", ICON_FA_FILE, tr("New Project...")).c_str(), "Ctrl+N")) {
         handleCreateNewProject();
       }
-      if (ImGui::MenuItem(ICON_FA_FOLDER " Open Project...", "Ctrl+O")) {
+      if (ImGui::MenuItem(std::format("{} {}", ICON_FA_FOLDER, tr("Open Project...")).c_str(), "Ctrl+O")) {
         handleOpenFile();
       }
-      if (ImGui::MenuItem(ICON_FA_FOLDER_CLOSED " Close Project...")) {
+      if (ImGui::MenuItem(std::format("{} {}", ICON_FA_FOLDER_CLOSED, tr("Close Project...")).c_str())) {
         close();
       }
-      if (ImGui::MenuItem(ICON_FA_FLOPPY_DISK " Save Project...", "Ctlr+S")) {
+      if (ImGui::MenuItem(std::format("{} {}", ICON_FA_FLOPPY_DISK, tr("Save Project...")).c_str(), "Ctlr+S")) {
         save();
       }
       ImGui::Separator();
-      if (ImGui::BeginMenu("Recent Projects", !Settings::instance()->mru.empty())) {
-        if (ImGui::MenuItem(ICON_FA_BRUSH " Clear")) {
+      if (ImGui::BeginMenu(trNOOP("Recent Projects"), !Settings::instance()->mru.empty())) {
+        if (ImGui::MenuItem(std::format("{} {}", ICON_FA_BRUSH, tr("Clear")).c_str())) {
           Settings::instance()->mru.clear();
         }
         if (!Settings::instance()->mru.empty()) {

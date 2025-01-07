@@ -6,9 +6,11 @@
 /**
  * Wrapper around std::vformat to retrieve a translated string
  * @param fmt String to translate
+ * @param args
+ * @return Translated string
  */
 template <typename... Args>
-static inline std::string trFormat(std::string_view fmt, Args&&... args) {
+static inline std::string trFormat(const std::string_view fmt, Args&&... args) {
   return std::vformat(moloader::getstring(fmt.data()), std::make_format_args(args...));
 }
 static inline std::string tr(std::string_view str) { return moloader::getstring(str.data()); }

@@ -11,6 +11,7 @@
 struct EventEditor;
 struct Actor;
 struct Item;
+struct ImGuiTabItem;
 class EVPage final : IPageEditor {
 public:
   /* Returns true when closed, closing is the equivalent of deleting */
@@ -24,6 +25,8 @@ public:
   }
 
   void setParent(EventEditor* parent) { m_parent = parent; }
+  ImGuiTabItem* tabItem() const { return m_tabItem; }
+  int layoutIndex() const { return m_layoutIndex; }
 
 protected:
   friend IPageEditor* IPageEditor::create(EventPage* page);
@@ -31,12 +34,13 @@ protected:
   void pagePointerInvalidated() override;
 
 private:
+  friend class EventEditor;
   enum VariableSwitchSelection {
     Variable,
     Switch1,
     Switch2,
   };
-  EventEditor* m_parent;
+  EventEditor* m_parent = nullptr;
   char m_pageNameBuf[4096]{};
   EventCommandEditor m_commandEditor;
   CharacterSheet m_characterSheet;
@@ -46,4 +50,9 @@ private:
   std::optional<ObjectPicker<Item>> m_itemPicker;
   CharacterPicker m_characterPicker{CharacterPicker::PickerMode::PatternAndDirection};
   std::optional<CheckeredCompositeTexture> m_actorButton;
+  ImGuiTabItem* m_tabItem = nullptr;
+  int m_layoutIndex = 0;
+
+  int m_uid;
+  static int mNextID;
 };

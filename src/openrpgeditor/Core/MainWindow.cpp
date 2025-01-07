@@ -677,7 +677,7 @@ void MainWindow::drawMenu() {
       if (ImGui::IsItemHovered()) {
         // TL-NOTE: Refers to Game Preview mode and is in reference to how events are drawn to the screen.
         // Displays as a tooltip.
-        ImGui::SetTooltip(trNOOP("Toggles event borders, layer render order, and animations."));
+        ImGui::SetTooltip("%s", trNOOP("Toggles event borders, layer render order, and animations."));
       }
       ImGui::EndMenu();
     }

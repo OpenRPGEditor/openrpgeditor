@@ -83,9 +83,6 @@ int main() {
 #endif
     // APP_PROFILE_BEGIN_SESSION_WITH_FILE("App", "profile.json");
     setlocale(LC_ALL, "");
-    bindtextdomain(GETTEXT_DOMAIN, GETTEXT_OUTPUT_DIR);
-    textdomain(GETTEXT_DOMAIN);
-    bindtextdomain(GETTEXT_DOMAIN, "UTF-8");
     {
       App::Application app{"OpenRPGEditor"};
       app.run();

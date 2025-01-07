@@ -17,6 +17,7 @@ project(
 find_package(Intl REQUIRED)
 
 set(GETTEXT_DOMAIN openrpgeditor)
+set(GETTEXT_OUTPUT_DIR locales)
 
 set(PROJECT_COMPANY_NAME "OpenRPGEditor Team")
 set(PROJECT_COMPANY_NAMESPACE "io.gitgud.antidote.openrgpeditor") # Reverse
@@ -39,28 +40,31 @@ add_subdirectory(extern/angelscript_addon_cmake)
 add_subdirectory(i18n)
 
 target_link_libraries(librpgm PRIVATE
-        Intl::Intl
+        moloader::moloader
 )
 target_include_directories(librpgm PUBLIC
         i18n
+        ${moloader_SOURCE_DIR}/include
 )
 target_compile_definitions(librpgm PUBLIC GETTEXT_DOMAIN="${GETTEXT_DOMAIN}" GETTEXT_OUTPUT_DIR="${GETTEXT_OUTPUT_DIR}")
 
 
 target_link_libraries(librpgmeventcmds PRIVATE
-        Intl::Intl
+        moloader::moloader
 )
 target_compile_definitions(librpgmeventcmds PUBLIC GETTEXT_DOMAIN="${GETTEXT_DOMAIN}" GETTEXT_OUTPUT_DIR="${GETTEXT_OUTPUT_DIR}")
 
 
 target_include_directories(librpgmeventcmds PUBLIC
         i18n
+        ${moloader_SOURCE_DIR}/include
 )
 
 target_link_libraries(librpgmmovementroutecmds PRIVATE
-        Intl::Intl
+        moloader::moloader
 )
 target_include_directories(librpgmmovementroutecmds PUBLIC
         i18n
+        ${moloader_SOURCE_DIR}/include
 )
 target_compile_definitions(librpgmmovementroutecmds PUBLIC GETTEXT_DOMAIN="${GETTEXT_DOMAIN}" GETTEXT_OUTPUT_DIR="${GETTEXT_OUTPUT_DIR}")

@@ -95,6 +95,10 @@ FetchContent_Declare(liblcf
         GIT_TAG relax-inih-requirement
 )
 
+FetchContent_Declare(moloader
+        GIT_REPOSITORY "https://github.com/Antidote/moloader.git"
+        GIT_TAG main
+)
 # Settings
 
 # For SDL2 to be able to override options
@@ -137,6 +141,7 @@ FetchContent_MakeAvailable(
         implot
         cpuid
         athena
+        moloader
 )
 
 add_subdirectory(imgui-setup)

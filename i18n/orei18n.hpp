@@ -1,7 +1,7 @@
 #pragma once
 
 #include <format>
-#include <libintl.h>
+#include <moloader/moloader.hpp>
 
 /**
  * Wrapper around std::vformat to retrieve a translated string
@@ -9,12 +9,9 @@
  */
 template <typename... Args>
 static inline std::string trFormat(std::string_view fmt, Args&&... args) {
-  return std::vformat(gettext(fmt.data()), std::make_format_args(args...));
+  return std::vformat(moloader::getstring(fmt.data()), std::make_format_args(args...));
 }
-
-static inline std::string tr(std::string_view str) { return gettext(str.data()); }
-
-#define trNOOP(S) gettext(S)
-
+static inline std::string tr(std::string_view str) { return moloader::getstring(str.data()); }
+#define trNOOP(S) moloader::gettext(S)
 #define trENUM(S, X) X
 #define trENUMAlt(S, X) X

@@ -2,7 +2,7 @@
 
 #include "Database/Item.hpp"
 
-class Items {
+class Items final : public IModifiable {
 public:
   static Items load(std::string_view filename);
   void serialize(std::string_view filename);
@@ -39,6 +39,10 @@ public:
         m_items[i].setId(i);
       }
     }
+  }
+
+  bool isModified() const override {
+    return std::ranges::any_of(m_items, [](const auto& item) { return item.isModified(); });
   }
 
 private:

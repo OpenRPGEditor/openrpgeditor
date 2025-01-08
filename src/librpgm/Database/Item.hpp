@@ -4,66 +4,95 @@
 #include "Database/Effect.hpp"
 #include "Database/Globals.hpp"
 
-class Item {
+class Item final : public IModifiable {
   friend class ItemsSerializer;
 
 public:
   friend void to_json(nlohmann::ordered_json& json, const Item& item);
   friend void from_json(const nlohmann::ordered_json& json, Item& item);
 
-  [[nodiscard]] int id() const { return m_id; }
-  void setId(const int id) { m_id = id; }
+  Item() = default;
+  Item(const Item& other);
+  Item& operator=(const Item& other);
+  Item(Item&& other) noexcept;
+  Item& operator=(Item&& other) noexcept;
 
-  [[nodiscard]] int animationId() const { return m_animationId; }
-  void setAnimationId(const int animationId) { m_animationId = animationId; }
+  [[nodiscard]] int id() const;
+  void setId(int id);
 
-  [[nodiscard]] bool consumable() const { return m_consumable; }
-  void setConsumable(const bool consumable) { m_consumable = consumable; }
+  [[nodiscard]] int animationId() const;
+  void setAnimationId(int animationId);
 
-  Damage& damage() { return m_damage; }
-  void setDamage(const Damage& damage) { m_damage = damage; }
+  [[nodiscard]] bool consumable() const;
+  void setConsumable(bool consumable);
 
-  [[nodiscard]] const std::string& description() const { return m_description; }
-  void setDescription(const std::string& description) { m_description = description; }
+  Damage& damage();
+  void setDamage(const Damage& damage);
 
-  std::vector<Effect>& effects() { return m_effects; }
-  void setEffects(const std::vector<Effect>& effects) { m_effects = effects; }
+  [[nodiscard]] const std::string& description() const;
+  void setDescription(const std::string& description);
 
-  [[nodiscard]] HitType hitType() const { return m_hitType; }
-  void setHitType(const HitType hitType) { m_hitType = hitType; }
+  std::vector<Effect>& effects();
+  void setEffects(const std::vector<Effect>& effects);
 
-  [[nodiscard]] int iconIndex() const { return m_iconIndex; }
-  void setIconIndex(const int iconIndex) { m_iconIndex = iconIndex; }
+  [[nodiscard]] HitType hitType() const;
+  void setHitType(HitType hitType);
 
-  [[nodiscard]] int itypeId() const { return m_itypeId; }
-  void setItypeId(const int itypeId) { m_itypeId = itypeId; }
+  [[nodiscard]] int iconIndex() const;
+  void setIconIndex(int iconIndex);
 
-  [[nodiscard]] const std::string& name() const { return m_name; }
-  void setName(const std::string& name) { m_name = name; }
+  [[nodiscard]] int itypeId() const;
+  void setItypeId(int itypeId);
 
-  [[nodiscard]] const std::string& note() const { return m_note; }
-  void setNote(const std::string& note) { m_note = note; }
+  [[nodiscard]] const std::string& name() const;
+  void setName(const std::string& name);
 
-  [[nodiscard]] Occasion occasion() const { return m_occasion; }
-  void setOccasion(const Occasion occasion) { m_occasion = occasion; }
+  [[nodiscard]] const std::string& note() const;
+  void setNote(const std::string& note);
 
-  [[nodiscard]] int price() const { return m_price; }
-  void setPrice(const int price) { m_price = price; }
+  [[nodiscard]] Occasion occasion() const;
+  void setOccasion(Occasion occasion);
 
-  [[nodiscard]] int repeats() const { return m_repeats; }
-  void setRepeats(const int repeats) { m_repeats = repeats; }
+  [[nodiscard]] int price() const;
+  void setPrice(int price);
 
-  [[nodiscard]] Scope scope() const { return m_scope; }
-  void setScope(const Scope scope) { m_scope = scope; }
+  [[nodiscard]] int repeats() const;
+  void setRepeats(int repeats);
 
-  [[nodiscard]] int speed() const { return m_speed; }
-  void setSpeed(const int speed) { m_speed = speed; }
+  [[nodiscard]] Scope scope() const;
+  void setScope(Scope scope);
 
-  [[nodiscard]] int successRate() const { return m_successRate; }
-  void setSuccessRate(const int successRate) { m_successRate = successRate; }
+  [[nodiscard]] int speed() const;
+  void setSpeed(int speed);
 
-  [[nodiscard]] int tpGain() const { return m_tpGain; }
-  void setTpGain(const int tpGain) { m_tpGain = tpGain; }
+  [[nodiscard]] int successRate() const;
+  void setSuccessRate(int successRate);
+
+  [[nodiscard]] int tpGain() const;
+  void setTpGain(int tpGain);
+
+  void restoreOriginal() override;
+  void acceptChanges() override;
+  nlohmann::ordered_json serializeOldValues() const override;
+
+  rpgmutils::signal<void(Item*, int)>& idModified();
+  rpgmutils::signal<void(Item*, int)>& animationIdModified();
+  rpgmutils::signal<void(Item*, bool)>& consumableModified();
+  rpgmutils::signal<void(Item*, const Damage&)>& damageModified();
+  rpgmutils::signal<void(Item*, const std::string& description)>& descriptionModified();
+  rpgmutils::signal<void(Item*, const std::vector<Effect>&)>& effectsModified();
+  rpgmutils::signal<void(Item*, HitType)>& hitTypeModified();
+  rpgmutils::signal<void(Item*, int)>& iconIndexModified();
+  rpgmutils::signal<void(Item*, int)>& itypeIdModified();
+  rpgmutils::signal<void(Item*, const std::string&)>& nameModified();
+  rpgmutils::signal<void(Item*, const std::string&)>& noteModified();
+  rpgmutils::signal<void(Item*, Occasion)>& occasionModified();
+  rpgmutils::signal<void(Item*, int)>& priceModified();
+  rpgmutils::signal<void(Item*, int)>& repeatsModified();
+  rpgmutils::signal<void(Item*, Scope)>& scopeModified();
+  rpgmutils::signal<void(Item*, int)>& speedModified();
+  rpgmutils::signal<void(Item*, int)>& successRateModified();
+  rpgmutils::signal<void(Item*, int)>& tpGainModified();
 
   [[nodiscard]] bool isValid() const { return m_isValid; }
   void setValid(const bool valid) { m_isValid = valid; }
@@ -87,6 +116,44 @@ private:
   int m_speed;
   int m_successRate;
   int m_tpGain;
+
+  std::optional<int> m_oldid;
+  std::optional<int> m_oldanimationId;
+  std::optional<bool> m_oldconsumable;
+  std::optional<Damage> m_olddamage;
+  std::optional<std::string> m_olddescription;
+  std::optional<std::vector<Effect>> m_oldeffects;
+  std::optional<HitType> m_oldhitType;
+  std::optional<int> m_oldiconIndex;
+  std::optional<int> m_olditypeId;
+  std::optional<std::string> m_oldname;
+  std::optional<std::string> m_oldnote;
+  std::optional<Occasion> m_oldoccasion;
+  std::optional<int> m_oldprice;
+  std::optional<int> m_oldrepeats;
+  std::optional<Scope> m_oldscope;
+  std::optional<int> m_oldspeed;
+  std::optional<int> m_oldsuccessRate;
+  std::optional<int> m_oldtpGain;
+
+  std::optional<rpgmutils::signal<void(Item*, int)>> m_idModified;
+  std::optional<rpgmutils::signal<void(Item*, int)>> m_animationModified;
+  std::optional<rpgmutils::signal<void(Item*, bool)>> m_consumableModified;
+  std::optional<rpgmutils::signal<void(Item*, const Damage&)>> m_damageModified;
+  std::optional<rpgmutils::signal<void(Item*, const std::string& description)>> m_descriptionModified;
+  std::optional<rpgmutils::signal<void(Item*, const std::vector<Effect>&)>> m_effectsModified;
+  std::optional<rpgmutils::signal<void(Item*, HitType)>> m_hitTypeModified;
+  std::optional<rpgmutils::signal<void(Item*, int)>> m_iconIndexModified;
+  std::optional<rpgmutils::signal<void(Item*, int)>> m_itypeIdModified;
+  std::optional<rpgmutils::signal<void(Item*, const std::string&)>> m_nameModified;
+  std::optional<rpgmutils::signal<void(Item*, const std::string&)>> m_noteModified;
+  std::optional<rpgmutils::signal<void(Item*, Occasion)>> m_occasionModified;
+  std::optional<rpgmutils::signal<void(Item*, int)>> m_priceModified;
+  std::optional<rpgmutils::signal<void(Item*, int)>> m_repeatsModified;
+  std::optional<rpgmutils::signal<void(Item*, Scope)>> m_scopeModified;
+  std::optional<rpgmutils::signal<void(Item*, int)>> m_speedModified;
+  std::optional<rpgmutils::signal<void(Item*, int)>> m_successRateModified;
+  std::optional<rpgmutils::signal<void(Item*, int)>> m_tpGainModified;
 
   /*!
    * @name m_isValid

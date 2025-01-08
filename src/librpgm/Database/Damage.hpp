@@ -41,6 +41,10 @@ public:
   rpgmutils::signal<void(Damage*, DamageType)>& typeModified();
   rpgmutils::signal<void(Damage*, int)>& varianceModified();
 
+  bool operator==(const Damage& other) const {
+    return m_critical == other.m_critical && m_elementId == other.m_elementId && m_formula == other.m_formula && m_type == other.m_type && m_variance == other.m_variance;
+  }
+
 private:
   bool m_critical;
   int m_elementId;

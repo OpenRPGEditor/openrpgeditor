@@ -36,6 +36,8 @@ public:
   rpgmutils::signal<void(Effect*, float)>& value1Modified();
   rpgmutils::signal<void(Effect*, int)>& value2Modified();
 
+  bool operator==(const Effect& other) const { return m_code == other.m_code && m_dataId == other.m_dataId && m_value1 == other.m_value1 && m_value2 == other.m_value2; }
+
 private:
   EffectCode m_code = EffectCode::Recover_HP;
   int m_dataId{0};

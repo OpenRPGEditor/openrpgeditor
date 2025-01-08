@@ -448,35 +448,35 @@ void MainWindow::draw() {
       }
       ImGui::EndListBox();
     }
+    std::string preview = map && selectedEvent != -1 ? map->events[selectedEvent].name.c_str() : "";
+    if (ImGui::BeginCombo("##map_event_combo", preview.c_str())) {
+      for (int i = 0; i < map->events.size(); i++) {
+        if (ImGui::Selectable(map->events[i].name.c_str(), selectedEvent == i)) {
+          selectedEvent = i;
+          selectedPage = 0;
+        }
+        if (i == selectedEvent) {
+          ImGui::SetItemDefaultFocus();
+        }
+      }
+      ImGui::EndCombo();
+    }
+    ImGui::SameLine();
+    if (ImGui::BeginCombo("##map_event_page_combo", map && selectedEvent != -1 && selectedPage != -1 ? std::format("Page {}", selectedPage + 1).c_str() : "")) {
+      if (selectedEvent != -1) {
+        for (int i = 0; i < map->events[selectedEvent].pages.size(); i++) {
+          if (ImGui::Selectable(std::format("Page {}", i + 1).c_str(), selectedPage == i)) {
+            selectedPage = i;
+          }
+          if (i == selectedPage) {
+            ImGui::SetItemDefaultFocus();
+          }
+        }
+      }
+      ImGui::EndCombo();
+    }
     if (ImGui::BeginListBox("##lcf_event", ImVec2(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.x * 2, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y * 2))) {
       if (map) {
-        std::string preview = map && selectedEvent != -1 ? map->events[selectedEvent].name.c_str() : "";
-        if (ImGui::BeginCombo("##map_event_combo", preview.c_str())) {
-          for (int i = 0; i < map->events.size(); i++) {
-            if (ImGui::Selectable(map->events[i].name.c_str(), selectedEvent == i)) {
-              selectedEvent = i;
-              selectedPage = 0;
-            }
-            if (i == selectedEvent) {
-              ImGui::SetItemDefaultFocus();
-            }
-          }
-          ImGui::EndCombo();
-        }
-        ImGui::SameLine();
-        if (ImGui::BeginCombo("##map_event_page_combo", selectedEvent != -1 && selectedPage != -1 ? std::format("Page {}", selectedPage + 1).c_str() : "")) {
-          if (selectedEvent != -1) {
-            for (int i = 0; i < map->events[selectedEvent].pages.size(); i++) {
-              if (ImGui::Selectable(std::format("Page {}", i + 1).c_str(), selectedPage == i)) {
-                selectedPage = i;
-              }
-              if (i == selectedPage) {
-                ImGui::SetItemDefaultFocus();
-              }
-            }
-          }
-          ImGui::EndCombo();
-        }
         ImGui::Text("Event %s", selectedEvent != -1 ? map->events[selectedEvent].name.c_str() : "");
         ImGui::Text("Commands:");
         if (selectedEvent != -1 && selectedPage != -1) {

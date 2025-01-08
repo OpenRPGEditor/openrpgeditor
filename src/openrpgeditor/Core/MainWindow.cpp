@@ -22,7 +22,6 @@
 #include <winuser.h>
 #endif
 
-#include "../../../cmake-build-relwithdebinfo/_deps/liblcf-src/src/generated/lcf/rpg/database.h"
 #include "EditorPlugin/EditorPluginManager.hpp"
 #include "LCF_Importer/LCF_Importer.hpp"
 #include "Script/ScriptEngine.hpp"
@@ -443,18 +442,21 @@ void MainWindow::draw() {
         for (int i = 1; i < test.treeMap()->maps.size(); i++) {
           if (ImGui::Selectable(test.treeMap()->maps[i].name.c_str(), selectedMapIndex == i)) {
             selectedMapIndex = i;
+            selectedPage = -1;
+            selectedEvent = -1;
             map = std::move(test.loadMap(i));
           }
         }
       }
       ImGui::EndListBox();
     }
-    std::string preview = map && selectedEvent != -1 ? map->events[selectedEvent].name.c_str() : "";
+    std::string preview =
+        map && selectedEvent != -1 ? std::format("{} {}x{}", map->events[selectedEvent].name.c_str(), map->events[selectedEvent].x, map->events[selectedEvent].y) : "No Event Selected";
     ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2);
     if (ImGui::BeginCombo("##map_event_combo", preview.c_str())) {
       if (map) {
         for (int i = 0; i < map->events.size(); i++) {
-          if (ImGui::Selectable(map->events[i].name.c_str(), selectedEvent == i)) {
+          if (ImGui::Selectable(std::format("{} {}x{}", map->events[i].name.c_str(), map->events[i].x, map->events[i].y).c_str(), selectedEvent == i)) {
             selectedEvent = i;
             selectedPage = 0;
           }
@@ -467,7 +469,7 @@ void MainWindow::draw() {
     }
     ImGui::SameLine();
     ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - ImGui::GetStyle().FramePadding.x);
-    if (ImGui::BeginCombo("##map_event_page_combo", map && selectedEvent != -1 && selectedPage != -1 ? std::format("Page {}", selectedPage + 1).c_str() : "")) {
+    if (ImGui::BeginCombo("##map_event_page_combo", map && selectedEvent != -1 && selectedPage != -1 ? std::format("Page {}", selectedPage + 1).c_str() : "No Page Selected")) {
       if (map && selectedEvent != -1) {
         for (int i = 0; i < map->events[selectedEvent].pages.size(); i++) {
           if (ImGui::Selectable(std::format("Page {}", i + 1).c_str(), selectedPage == i)) {

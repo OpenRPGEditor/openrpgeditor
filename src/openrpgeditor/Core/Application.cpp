@@ -18,6 +18,7 @@
 #include "FirstBootWizard/UISettingsPage.hpp"
 #include "FirstBootWizard/WelcomePage.hpp"
 #include "Script/Bindings.hpp"
+#include "Utils/JavaMath.hpp"
 
 #include <SDL3/SDL.h>
 #include <backends/imgui_impl_sdl3.h>
@@ -70,6 +71,9 @@ Application::Application(const std::string& title) {
   const char* conf_path = SDL_GetPrefPath(COMPANY_NAMESPACE, APP_NAME);
   m_userConfigPath = std::string{conf_path};
   SDL_free((void*)conf_path);
+
+  Math::seed(1);
+  Math::use2kRandom(true);
 
   loadSettings();
   APP_DEBUG("User config path: {}", m_userConfigPath);

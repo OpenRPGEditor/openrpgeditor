@@ -486,7 +486,9 @@ add_executable(${NAME} WIN32 MACOSX_BUNDLE App/Main.cpp App/ProjectInfo.cpp
         Core/Script/ImGui/ImGuiMath.cpp
         Core/Script/ImGui/ImGuiMath.hpp
         Core/Script/ImGui/ImGuiCoreOperations.cpp
-        Core/Script/ImGui/ImGuiCoreOperations.hpp)
+        Core/Script/ImGui/ImGuiCoreOperations.hpp
+        Core/LCF_Importer/LCF_Importer.cpp
+        Core/LCF_Importer/LCF_Importer.hpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(${NAME} PRIVATE /utf-8)

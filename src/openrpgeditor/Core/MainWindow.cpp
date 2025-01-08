@@ -17,12 +17,14 @@
 
 #if _WIN32
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #include <shellapi.h>
+#include <windows.h>
 #include <winuser.h>
 #endif
 
+#include "../../../cmake-build-relwithdebinfo/_deps/liblcf-src/src/generated/lcf/rpg/database.h"
 #include "EditorPlugin/EditorPluginManager.hpp"
+#include "LCF_Importer/LCF_Importer.hpp"
 #include "Script/ScriptEngine.hpp"
 #include "SettingsDialog/UISettingsTab.hpp"
 
@@ -415,6 +417,87 @@ void MainWindow::draw() {
   drawCreateNewProjectPopup();
 
   EditorPluginManager::instance()->callDraws();
+
+  static LCF_Importer test;
+  static std::unique_ptr<lcf::rpg::Map> map;
+  static int selectedMapIndex = -1;
+  static int selectedEvent = -1;
+  static int selectedPage = -1;
+
+  if (ImGui::Begin("LCF Test")) {
+    if (ImGui::Button("Select an RPG Maker 2000 project...")) {
+      nfdu8char_t* loc;
+      const auto result = NFD_PickFolder(&loc, !Settings::instance()->lastDirectory.empty() ? Settings::instance()->lastDirectory.c_str() : nullptr);
+      if (result == NFD_OKAY) {
+        const std::filesystem::path path{loc};
+        test.setProject(path);
+        test.loadProject();
+        selectedMapIndex = -1;
+        NFD_FreePathU8(loc);
+      }
+    }
+
+    if (ImGui::BeginListBox("##lcf_map_list", ImVec2(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.x * 2, 0))) {
+      if (test.treeMap()) {
+        for (int i = 1; i < test.treeMap()->maps.size(); i++) {
+          if (ImGui::Selectable(test.treeMap()->maps[i].name.c_str(), selectedMapIndex == i)) {
+            selectedMapIndex = i;
+            map = std::move(test.loadMap(i));
+          }
+        }
+      }
+      ImGui::EndListBox();
+    }
+    if (ImGui::BeginListBox("##lcf_event", ImVec2(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.x * 2, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y * 2))) {
+      if (map) {
+        std::string preview = map && selectedEvent != -1 ? map->events[selectedEvent].name.c_str() : "";
+        if (ImGui::BeginCombo("##map_event_combo", preview.c_str())) {
+          for (int i = 0; i < map->events.size(); i++) {
+            if (ImGui::Selectable(map->events[i].name.c_str(), selectedEvent == i)) {
+              selectedEvent = i;
+              selectedPage = 0;
+            }
+            if (i == selectedEvent) {
+              ImGui::SetItemDefaultFocus();
+            }
+          }
+          ImGui::EndCombo();
+        }
+        ImGui::SameLine();
+        if (ImGui::BeginCombo("##map_event_page_combo", selectedEvent != -1 && selectedPage != -1 ? std::format("Page {}", selectedPage + 1).c_str() : "")) {
+          if (selectedEvent != -1) {
+            for (int i = 0; i < map->events[selectedEvent].pages.size(); i++) {
+              if (ImGui::Selectable(std::format("Page {}", i + 1).c_str(), selectedPage == i)) {
+                selectedPage = i;
+              }
+              if (i == selectedPage) {
+                ImGui::SetItemDefaultFocus();
+              }
+            }
+          }
+          ImGui::EndCombo();
+        }
+        ImGui::Text("Event %s", selectedEvent != -1 ? map->events[selectedEvent].name.c_str() : "");
+        ImGui::Text("Commands:");
+        if (selectedEvent != -1 && selectedPage != -1) {
+          for (int step = 0; const auto& cmd : map->events[selectedEvent].pages[selectedPage].event_commands) {
+            std::string parameters = "[";
+            for (int i = 0; const auto parameter : cmd.parameters) {
+              parameters += (i == 0) ? std::to_string(parameter) : ", " + std::to_string(parameter);
+              ++i;
+            }
+            parameters += "]";
+            if (ImGui::Selectable(std::format("{}{:05}-{}: {}, {}, {}###{}", std::string(cmd.indent * 4, ' '), cmd.code, lcf::rpg::EventCommand::kCodeTags[cmd.code], cmd.indent, cmd.string.c_str(),
+                                              parameters, step)
+                                      .c_str())) {}
+            step++;
+          }
+        }
+      }
+      ImGui::EndListBox();
+    }
+  }
+  ImGui::End();
 }
 
 void MainWindow::drawCreateNewProjectPopup() {

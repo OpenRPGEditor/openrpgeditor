@@ -9,6 +9,7 @@ struct ChangeNicknameCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Nickname; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeNicknameCommand>(*this); }
 
   int actor;
   std::string nick;

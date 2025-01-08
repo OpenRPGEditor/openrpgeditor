@@ -117,7 +117,15 @@ public:
 
   void swapPages(int a, int b);
 
+  Event clone() const { return Event(*this, 1); }
+
 private:
+  Event(const Event& other, int) : IModifiable(other), m_id(other.m_id), m_name(other.m_name), m_note(other.m_note), m_x(other.m_x), m_y(other.m_y) {
+    /* Clone our pages */
+    for (const auto& page : other.m_pages) {
+      m_pages.push_back(page.clone());
+    }
+  }
   int m_id{};
   std::string m_name{};
   std::string m_note{};

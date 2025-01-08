@@ -7,4 +7,5 @@ struct MovementDirectionFixOFFCommand final : IMovementRouteStep {
   explicit MovementDirectionFixOFFCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IMovementRouteStep(indent, parameters) {}
   ~MovementDirectionFixOFFCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Direction_Fix_OFF; }
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<MovementDirectionFixOFFCommand>(*this); }
 };

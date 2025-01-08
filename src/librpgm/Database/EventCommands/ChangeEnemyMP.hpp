@@ -9,6 +9,7 @@ struct ChangeEnemyMPCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Enemy_MP; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeEnemyMPCommand>(*this); }
 
   int enemy{-1};
   QuantityChangeOp enemyOp = QuantityChangeOp::_plu__del_Increase;

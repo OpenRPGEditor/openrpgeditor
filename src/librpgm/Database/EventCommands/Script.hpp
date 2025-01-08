@@ -8,6 +8,8 @@ struct NextScriptCommand final : IEventCommand {
   ~NextScriptCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Next_Script; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<NextScriptCommand>(*this); }
+
   std::string script;
 };
 
@@ -18,6 +20,8 @@ struct ScriptCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Script; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ScriptCommand>(*this); }
+
   void addText(NextScriptCommand* text) { moreScript.emplace_back(text); }
 
   std::string script;

@@ -9,6 +9,8 @@ struct ControlSwitches : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Control_Switches; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ControlSwitches>(*this); }
+
   int start{1};
   int end{1};
   ValueControl turnOff = ValueControl::ON;

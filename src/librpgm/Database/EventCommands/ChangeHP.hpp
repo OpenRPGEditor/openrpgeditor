@@ -9,6 +9,7 @@ struct ChangeHPCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_HP; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeHPCommand>(*this); }
 
   ActorComparisonSource comparison = ActorComparisonSource::Fixed;
   int value{1};

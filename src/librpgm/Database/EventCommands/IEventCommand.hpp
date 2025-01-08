@@ -46,6 +46,8 @@ public:
     setModified();
   }
 
+  virtual std::shared_ptr<IEventCommand> clone() const = 0;
+
 private:
   std::optional<int> m_indent{};
 };

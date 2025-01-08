@@ -9,6 +9,7 @@ struct NameInputCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Name_Input_Processing; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<NameInputCommand>(*this); }
 
   int actorId{1};
   int maxChar{8};

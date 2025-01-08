@@ -9,6 +9,7 @@ struct ChangeTPCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_TP; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeTPCommand>(*this); }
 
   ActorComparisonSource comparison = ActorComparisonSource::Fixed;
   int value{1};

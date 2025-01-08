@@ -9,6 +9,7 @@ struct ChangePlayerFollowersCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Player_Followers; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangePlayerFollowersCommand>(*this); }
 
   ValueControl followersEnabled = ValueControl::ON;
 };

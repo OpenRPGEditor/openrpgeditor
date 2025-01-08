@@ -3,74 +3,6 @@
 #include "Database/EventPage.hpp"
 #include <fstream>
 
-void to_json(nlohmann::ordered_json& json, const Map& map) {
-  json = {
-      {"autoplayBgm", map.m_autoplayBgm},
-      {"autoplayBgs", map.m_autoplayBgs},
-      {"battleback1Name", map.m_battleback1Name},
-      {"battleback2Name", map.m_battleback2Name},
-      {"bgm", map.m_bgm},
-      {"bgs", map.m_bgs},
-      {"disableDashing", map.m_disableDashing},
-      {"displayName", map.m_displayName},
-      {"encounterList", map.m_encounterList},
-      {"encounterStep", map.m_encounterStep},
-      {"height", map.m_height},
-      {"note", map.m_note},
-      {"parallaxLoopX", map.m_parallaxLoopX},
-      {"parallaxLoopY", map.m_parallaxLoopY},
-      {"parallaxName", map.m_parallaxName},
-      {"parallaxShow", map.m_parallaxShow},
-      {"parallaxSx", map.m_parallaxSx},
-      {"parallaxSy", map.m_parallaxSy},
-      {"scrollType", map.m_scrollType},
-      {"specifyBattleback", map.m_specifyBattleback},
-      {"tilesetId", map.m_tilesetId},
-      {"width", map.m_width},
-      {"data", map.m_data},
-      {"events", map.m_events},
-  };
-}
-void from_json(const nlohmann::ordered_json& json, Map& map) {
-  map.m_autoplayBgm = json.value("autoplayBgm", map.m_autoplayBgm);
-  map.m_autoplayBgs = json.value("autoplayBgs", map.m_autoplayBgs);
-  map.m_battleback1Name = json.value("battleback1Name", map.m_battleback1Name);
-  map.m_battleback2Name = json.value("battleback2Name", map.m_battleback2Name);
-  map.m_bgm = json.value("bgm", map.m_bgm);
-  map.m_bgs = json.value("bgs", map.m_bgs);
-  map.m_disableDashing = json.value("disableDashing", map.m_disableDashing);
-  map.m_displayName = json.value("displayName", map.m_displayName);
-  map.m_encounterList = json.value("encounterList", map.m_encounterList);
-  map.m_encounterStep = json.value("encounterStep", map.m_encounterStep);
-  map.m_height = json.value("height", map.m_height);
-  map.m_note = json.value("note", map.m_note);
-  map.m_parallaxLoopX = json.value("parallaxLoopX", map.m_parallaxLoopX);
-  map.m_parallaxLoopY = json.value("parallaxLoopY", map.m_parallaxLoopY);
-  map.m_parallaxName = json.value("parallaxName", map.m_parallaxName);
-  map.m_parallaxShow = json.value("parallaxShow", map.m_parallaxShow);
-  map.m_parallaxSx = json.value("parallaxSx", map.m_parallaxSx);
-  map.m_parallaxSy = json.value("parallaxSy", map.m_parallaxSy);
-  map.m_scrollType = json.value("scrollType", map.m_scrollType);
-  map.m_specifyBattleback = json.value("specifyBattleback", map.m_specifyBattleback);
-  map.m_tilesetId = json.value("tilesetId", map.m_tilesetId);
-  map.m_width = json.value("width", map.m_width);
-  map.m_data = json.value("data", map.m_data);
-  map.m_events = json.value("events", map.m_events);
-}
-
-void to_json(nlohmann::ordered_json& json, const Map::Encounter& encounter) {
-  json = {
-      {"regionSet", encounter.regionSet},
-      {"troopId", encounter.troopId},
-      {"weight", encounter.weight},
-  };
-}
-void from_json(const nlohmann::ordered_json& json, Map::Encounter& encounter) {
-  encounter.regionSet = json.value("regionSet", encounter.regionSet);
-  encounter.troopId = json.value("troopId", encounter.troopId);
-  encounter.weight = json.value("weight", encounter.weight);
-}
-
 void Map::resize(const int newWidth, const int newHeight) {
   static constexpr int MaxLayers = 6;
   std::vector<std::optional<int>> newData;
@@ -159,4 +91,155 @@ std::vector<Event*> Map::eventsAtRenderPosNoThrough(const int x, const int y) {
     }
   });
   return ret;
+}
+
+Event* Map::event(int id) {
+
+  if (const auto it = std::ranges::find_if(m_events, [&id](const auto& ev) { return ev && ev->id() == id; }); it != m_events.end()) {
+    return &it->value();
+  }
+  return nullptr;
+}
+
+Event* Map::eventAt(int x, int y) {
+  if (const auto it = std::ranges::find_if(m_events, [&x, &y](const auto& ev) { return ev && ev->x() == x && ev->y() == y; }); it != m_events.end()) {
+    return &it->value();
+  }
+
+  return nullptr;
+}
+
+std::vector<Event*> Map::eventsAt(const int x, const int y) {
+  std::vector<Event*> ret;
+  std::ranges::for_each(m_events, [&ret, &x, &y](auto& ev) {
+    if (ev && ev->x() == x && ev->y() == y) {
+      ret.push_back(&ev.value());
+    }
+  });
+  return ret;
+}
+
+Event* Map::createNewEvent() {
+  if (m_events.empty()) {
+    m_events.emplace_back();
+  }
+  const auto it = std::find_if(m_events.begin() + 1, m_events.end(), [](const auto& ev) { return !ev; });
+  Event* ret;
+  if (it != m_events.end()) {
+    *it = Event();
+    (*it)->setId(it - m_events.begin());
+    ret = &it->value();
+  } else {
+    ret = &m_events.emplace_back(Event()).value();
+    ret->setId(m_events.size() - 1);
+  }
+  ret->setName(std::format("EV{:03}", ret->id()));
+  ret->addPage({});
+  m_isDirty = true;
+  return ret;
+}
+Event* Map::createEventFromTemplate(const Event& ev) {
+  // Inserts new template
+  if (ev.id() == m_events.size()) {
+    m_events.emplace_back(ev);
+  } else {
+    m_events.insert(m_events.begin() + ev.id(), ev);
+  }
+  // Resort and rename
+  for (int i = ev.id() + 1; i < m_events.size(); ++i) {
+    m_events.at(i)->setId(i + 1);
+    if (m_events.at(i)->name().contains("EV")) {
+      m_events.at(i)->setName(std::format("EV{:03} ", i));
+    }
+  }
+  return &*m_events.at(ev.id());
+}
+
+void Map::deleteEvent(int id) {
+  if (const auto it = std::ranges::find_if(m_events, [&id](const auto& ev) { return ev && ev->id() == id; }); it != m_events.end()) {
+    it->reset();
+    m_isDirty = true;
+  }
+}
+
+int Map::findOrMakeFreeId() const {
+  if (m_events.empty()) {
+    return 1;
+  }
+
+  for (int i = 1; i < m_events.size(); ++i) {
+    if (!m_events[i]) {
+      return i;
+    }
+  }
+
+  return m_events.size();
+}
+
+void to_json(nlohmann::ordered_json& json, const Map& map) {
+  json = {
+      {"autoplayBgm", map.m_autoplayBgm},
+      {"autoplayBgs", map.m_autoplayBgs},
+      {"battleback1Name", map.m_battleback1Name},
+      {"battleback2Name", map.m_battleback2Name},
+      {"bgm", map.m_bgm},
+      {"bgs", map.m_bgs},
+      {"disableDashing", map.m_disableDashing},
+      {"displayName", map.m_displayName},
+      {"encounterList", map.m_encounterList},
+      {"encounterStep", map.m_encounterStep},
+      {"height", map.m_height},
+      {"note", map.m_note},
+      {"parallaxLoopX", map.m_parallaxLoopX},
+      {"parallaxLoopY", map.m_parallaxLoopY},
+      {"parallaxName", map.m_parallaxName},
+      {"parallaxShow", map.m_parallaxShow},
+      {"parallaxSx", map.m_parallaxSx},
+      {"parallaxSy", map.m_parallaxSy},
+      {"scrollType", map.m_scrollType},
+      {"specifyBattleback", map.m_specifyBattleback},
+      {"tilesetId", map.m_tilesetId},
+      {"width", map.m_width},
+      {"data", map.m_data},
+      {"events", map.m_events},
+  };
+}
+void from_json(const nlohmann::ordered_json& json, Map& map) {
+  map.m_autoplayBgm = json.value("autoplayBgm", map.m_autoplayBgm);
+  map.m_autoplayBgs = json.value("autoplayBgs", map.m_autoplayBgs);
+  map.m_battleback1Name = json.value("battleback1Name", map.m_battleback1Name);
+  map.m_battleback2Name = json.value("battleback2Name", map.m_battleback2Name);
+  map.m_bgm = json.value("bgm", map.m_bgm);
+  map.m_bgs = json.value("bgs", map.m_bgs);
+  map.m_disableDashing = json.value("disableDashing", map.m_disableDashing);
+  map.m_displayName = json.value("displayName", map.m_displayName);
+  map.m_encounterList = json.value("encounterList", map.m_encounterList);
+  map.m_encounterStep = json.value("encounterStep", map.m_encounterStep);
+  map.m_height = json.value("height", map.m_height);
+  map.m_note = json.value("note", map.m_note);
+  map.m_parallaxLoopX = json.value("parallaxLoopX", map.m_parallaxLoopX);
+  map.m_parallaxLoopY = json.value("parallaxLoopY", map.m_parallaxLoopY);
+  map.m_parallaxName = json.value("parallaxName", map.m_parallaxName);
+  map.m_parallaxShow = json.value("parallaxShow", map.m_parallaxShow);
+  map.m_parallaxSx = json.value("parallaxSx", map.m_parallaxSx);
+  map.m_parallaxSy = json.value("parallaxSy", map.m_parallaxSy);
+  map.m_scrollType = json.value("scrollType", map.m_scrollType);
+  map.m_specifyBattleback = json.value("specifyBattleback", map.m_specifyBattleback);
+  map.m_tilesetId = json.value("tilesetId", map.m_tilesetId);
+  map.m_width = json.value("width", map.m_width);
+  map.m_data = json.value("data", map.m_data);
+  map.m_events = json.value("events", map.m_events);
+}
+
+void to_json(nlohmann::ordered_json& json, const Map::Encounter& encounter) {
+  json = {
+      {"regionSet", encounter.regionSet},
+      {"troopId", encounter.troopId},
+      {"weight", encounter.weight},
+  };
+}
+void from_json(const nlohmann::ordered_json& json, Map::Encounter& encounter) {
+  encounter.regionSet = json.value("regionSet", encounter.regionSet);
+  encounter.troopId = json.value("troopId", encounter.troopId);
+  encounter.weight = json.value("weight", encounter.weight);
 }

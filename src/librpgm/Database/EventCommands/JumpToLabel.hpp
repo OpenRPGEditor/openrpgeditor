@@ -8,5 +8,7 @@ struct JumpToLabelCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Jump_To_Label; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<JumpToLabelCommand>(*this); }
+
   std::string label;
 };

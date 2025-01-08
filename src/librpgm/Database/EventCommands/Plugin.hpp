@@ -9,6 +9,7 @@ struct PluginCommandMV : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::PluginMV_Command; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<PluginCommandMV>(*this); }
 
   std::string command;
 };

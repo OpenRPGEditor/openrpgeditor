@@ -7,4 +7,5 @@ struct FadeoutScreenCommand final : IEventCommand {
   explicit FadeoutScreenCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {}
   ~FadeoutScreenCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Fadeout_Screen; }
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<FadeoutScreenCommand>(*this); }
 };

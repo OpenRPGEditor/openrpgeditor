@@ -8,4 +8,5 @@ struct ReturnToTitleCommand final : IEventCommand {
   ~ReturnToTitleCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Return_To_Title_Screen; }
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ReturnToTitleCommand>(*this); }
 };

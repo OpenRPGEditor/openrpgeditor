@@ -7,6 +7,7 @@ struct EndCommand final : IEventCommand {
   explicit EndCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {}
   ~EndCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::End; }
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<EndCommand>(*this); }
 
   bool isPartner(const EventCode code, const std::optional<int>& codeIndent) override {
     if (!codeIndent) {

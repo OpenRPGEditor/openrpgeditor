@@ -8,6 +8,7 @@ struct ShowChoiceCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Choices; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowChoiceCommand>(*this); }
 
   TextBackground background = TextBackground::Window;
   ChoiceWindowPosition positionType = ChoiceWindowPosition::Right;
@@ -23,6 +24,7 @@ struct WhenSelectedCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::When_Selected; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<WhenSelectedCommand>(*this); }
 
   int param1;
   std::string choice;
@@ -33,6 +35,7 @@ struct WhenCancelCommand final : IEventCommand {
   explicit WhenCancelCommand(const std::optional<int>& _indent, const nlohmann::json& parameters) : IEventCommand(_indent, parameters) {}
   ~WhenCancelCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::When_Cancel; }
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<WhenCancelCommand>(*this); }
 };
 
 struct ShowChoicesEndCommand final : IEventCommand {
@@ -40,4 +43,5 @@ struct ShowChoicesEndCommand final : IEventCommand {
   explicit ShowChoicesEndCommand(const std::optional<int>& _indent, const nlohmann::json& parameters) : IEventCommand(_indent, parameters) {}
   ~ShowChoicesEndCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::End_del_ShowChoices; }
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowChoicesEndCommand>(*this); }
 };

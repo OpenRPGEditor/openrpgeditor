@@ -10,6 +10,8 @@ struct ControlVariables : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   [[nodiscard]] std::string variableFormat(const std::string& text) const;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ControlVariables>(*this); }
+
   int start{1};
   int end{1};
   VariableControlOperation operation = VariableControlOperation::_set__del_Set;

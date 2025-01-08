@@ -7,6 +7,7 @@ struct NextScrollingTextCommand final : IEventCommand {
   ~NextScrollingTextCommand() override = default;
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] EventCode code() const override { return EventCode::Next_Scrolling_Text; }
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<NextScrollingTextCommand>(*this); }
 
   std::string text;
 };
@@ -18,6 +19,8 @@ struct ShowScrollTextCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Scrolling_Text; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowScrollTextCommand>(*this); }
+
   void addText(NextScrollingTextCommand* n) { text.emplace_back(n); }
 
   int speed{2};

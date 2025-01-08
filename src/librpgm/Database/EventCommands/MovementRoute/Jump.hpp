@@ -7,6 +7,8 @@ struct MovementJumpCommand final : IMovementRouteStep {
   explicit MovementJumpCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
   ~MovementJumpCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Jump; }
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<MovementJumpCommand>(*this); }
+
   int x{0};
   int y{0};
 

@@ -108,96 +108,25 @@ public:
   const std::vector<std::optional<Event>>& events() const { return m_events; }
   void setEvents(const std::vector<std::optional<Event>>& value) { m_events = value; }
 
-  /* TODO: Move these to source file */
   [[nodiscard]] std::vector<Event*> getSorted();
 
   [[nodiscard]] std::vector<Event*> getRenderSorted();
 
-  Event* event(int id) {
+  Event* event(int id);
 
-    if (const auto it = std::ranges::find_if(m_events, [&id](const auto& ev) { return ev && ev->id() == id; }); it != m_events.end()) {
-      return &it->value();
-    }
-    return nullptr;
-  }
+  Event* eventAt(int x, int y);
 
-  Event* eventAt(int x, int y) {
-    if (const auto it = std::ranges::find_if(m_events, [&x, &y](const auto& ev) { return ev && ev->x() == x && ev->y() == y; }); it != m_events.end()) {
-      return &it->value();
-    }
-
-    return nullptr;
-  }
-
-  std::vector<Event*> eventsAt(const int x, const int y) {
-    std::vector<Event*> ret;
-    std::ranges::for_each(m_events, [&ret, &x, &y](auto& ev) {
-      if (ev && ev->x() == x && ev->y() == y) {
-        ret.push_back(&ev.value());
-      }
-    });
-    return ret;
-  }
+  std::vector<Event*> eventsAt(const int x, const int y);
 
   std::vector<Event*> eventsAtNoThrough(int x, int y);
   std::vector<Event*> eventsAtRenderPosNoThrough(int x, int y);
 
-  Event* createNewEvent() {
-    if (m_events.empty()) {
-      m_events.emplace_back();
-    }
-    const auto it = std::find_if(m_events.begin() + 1, m_events.end(), [](const auto& ev) { return !ev; });
-    Event* ret;
-    if (it != m_events.end()) {
-      *it = Event();
-      (*it)->setId(it - m_events.begin());
-      ret = &it->value();
-    } else {
-      ret = &m_events.emplace_back(Event()).value();
-      ret->setId(m_events.size() - 1);
-    }
-    ret->setName(std::format("EV{:03}", ret->id()));
-    ret->addPage({});
-    m_isDirty = true;
-    return ret;
-  }
-  Event* createEventFromTemplate(const Event& ev) {
-    // Inserts new template
-    if (ev.id() == m_events.size()) {
-      m_events.emplace_back(ev);
-    } else {
-      m_events.insert(m_events.begin() + ev.id(), ev);
-    }
-    // Resort and rename
-    for (int i = ev.id() + 1; i < m_events.size(); ++i) {
-      m_events.at(i)->setId(i + 1);
-      if (m_events.at(i)->name().contains("EV")) {
-        m_events.at(i)->setName(std::format("EV{:03} ", i));
-      }
-    }
-    return &*m_events.at(ev.id());
-  }
+  Event* createNewEvent();
+  Event* createEventFromTemplate(const Event& ev);
 
-  void deleteEvent(int id) {
-    if (const auto it = std::ranges::find_if(m_events, [&id](const auto& ev) { return ev && ev->id() == id; }); it != m_events.end()) {
-      it->reset();
-      m_isDirty = true;
-    }
-  }
+  void deleteEvent(int id);
 
-  int findOrMakeFreeId() const {
-    if (m_events.empty()) {
-      return 1;
-    }
-
-    for (int i = 1; i < m_events.size(); ++i) {
-      if (!m_events[i]) {
-        return i;
-      }
-    }
-
-    return m_events.size();
-  }
+  int findOrMakeFreeId() const;
 
   void resize(int newWidth, int newHeight);
 

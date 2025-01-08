@@ -278,7 +278,28 @@ public:
     return m_editor.get();
   }
 
+  EventPage clone() const { return EventPage(*this, 1); }
+
 private:
+  EventPage(const EventPage& other, int) : IModifiable(other) {
+    m_conditions = other.m_conditions;
+    m_directionFix = other.m_directionFix;
+    m_image = other.m_image;
+    /* TODO: Clone instead of copy */
+    m_list = other.m_list;
+    for (const auto& cmd : other.m_list) {
+      m_list.push_back(cmd->clone());
+    }
+    m_moveRoute = other.m_moveRoute.clone();
+
+    m_moveSpeed = other.m_moveSpeed;
+    m_moveFrequency = other.m_moveFrequency;
+    m_moveType = other.m_moveType;
+    m_priorityType = other.m_priorityType;
+    m_trigger = other.m_trigger;
+    m_walkAnime = other.m_walkAnime;
+    m_name = other.m_name;
+  };
   EventCondition m_conditions{};
   bool m_directionFix{};
   EventImage m_image;

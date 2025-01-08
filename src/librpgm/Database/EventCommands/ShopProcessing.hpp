@@ -10,6 +10,7 @@ struct ShopProcessingGoodCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Shop_Processing_Good; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShopProcessingGoodCommand>(*this); }
 
   ShopType type = ShopType::Item;
   int id{1};
@@ -25,6 +26,8 @@ struct ShopProcessingCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Shop_Processing; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShopProcessingCommand>(*this); }
+
   void addGood(ShopProcessingGoodCommand* good) { goods.emplace_back(good); }
 
   ShopType type{};

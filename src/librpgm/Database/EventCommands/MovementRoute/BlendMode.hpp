@@ -8,5 +8,7 @@ struct MovementChangeBlendModeCommand final : IMovementRouteStep {
   ~MovementChangeBlendModeCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Blend_Mode; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<MovementChangeBlendModeCommand>(*this); }
+
   Blend mode = Blend::Normal;
 };

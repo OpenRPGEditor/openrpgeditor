@@ -7,6 +7,7 @@ struct ConditionalBranchCommand final : IEventCommand {
   ~ConditionalBranchCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Conditional_Branch; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ConditionalBranchCommand>(*this); }
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   [[nodiscard]] std::string conditionalFormat(const std::string& text) const;
   [[nodiscard]] constexpr bool collapsable() const override { return true; }
@@ -87,6 +88,7 @@ struct ElseCommand final : IEventCommand {
   explicit ElseCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {}
   ~ElseCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Else; }
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ElseCommand>(*this); }
 
   [[nodiscard]] constexpr bool collapsable() const override { return true; }
   [[nodiscard]] bool isCollapsed() const override { return m_collapsed; }

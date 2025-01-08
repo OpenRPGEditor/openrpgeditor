@@ -7,4 +7,5 @@ struct OpenSaveCommand final : IEventCommand {
   explicit OpenSaveCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {}
   ~OpenSaveCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Open_Save_Screen; }
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<OpenSaveCommand>(*this); }
 };

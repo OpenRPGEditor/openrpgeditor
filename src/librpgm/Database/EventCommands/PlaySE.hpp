@@ -11,5 +11,7 @@ struct PlaySECommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Play_SE; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<PlaySECommand>(*this); }
+
   Audio audio;
 };

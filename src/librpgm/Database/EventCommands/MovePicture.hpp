@@ -9,6 +9,7 @@ struct MovePictureCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Move_Picture; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<MovePictureCommand>(*this); }
 
   int picture{1};
   PictureOrigin origin = PictureOrigin::Upper_Left;

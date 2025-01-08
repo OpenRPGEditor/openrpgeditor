@@ -7,4 +7,5 @@ struct MovementWalkingAnimationONCommand final : IMovementRouteStep {
   explicit MovementWalkingAnimationONCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IMovementRouteStep(indent, parameters) {}
   ~MovementWalkingAnimationONCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Walking_Animation_ON; }
+  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<MovementWalkingAnimationONCommand>(*this); }
 };

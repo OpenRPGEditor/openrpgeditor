@@ -450,6 +450,7 @@ void MainWindow::draw() {
       ImGui::EndListBox();
     }
     std::string preview = map && selectedEvent != -1 ? map->events[selectedEvent].name.c_str() : "";
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2);
     if (ImGui::BeginCombo("##map_event_combo", preview.c_str())) {
       if (map) {
         for (int i = 0; i < map->events.size(); i++) {
@@ -465,6 +466,7 @@ void MainWindow::draw() {
       ImGui::EndCombo();
     }
     ImGui::SameLine();
+    ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - ImGui::GetStyle().FramePadding.x);
     if (ImGui::BeginCombo("##map_event_page_combo", map && selectedEvent != -1 && selectedPage != -1 ? std::format("Page {}", selectedPage + 1).c_str() : "")) {
       if (map && selectedEvent != -1) {
         for (int i = 0; i < map->events[selectedEvent].pages.size(); i++) {

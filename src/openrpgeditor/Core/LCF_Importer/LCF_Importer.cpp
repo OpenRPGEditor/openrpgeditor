@@ -35,7 +35,7 @@ bool LCF_Importer::loadProject() {
 std::unique_ptr<lcf::rpg::Map> LCF_Importer::loadMap(const int id) const {
   std::string mapName = std::format("Map{:04}.lmu", id);
   if (exists(m_projectPath / mapName)) {
-    return lcf::LMU_Reader::Load((m_projectPath / mapName).c_str(), "SJIS");
+    return lcf::LMU_Reader::Load((m_projectPath / mapName).generic_string().c_str(), "SJIS");
   }
   return nullptr;
 }

@@ -16,10 +16,12 @@
 #include "imgui_internal.h"
 
 #if _WIN32
+/* clang-format off */
 #define WIN32_LEAN_AND_MEAN
-#include <shellapi.h>
 #include <windows.h>
+#include <shellapi.h>
 #include <winuser.h>
+/* clang-format on */
 #endif
 
 #include "EditorPlugin/EditorPluginManager.hpp"

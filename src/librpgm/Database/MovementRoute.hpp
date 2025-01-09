@@ -36,7 +36,7 @@ public:
 
   MovementRoute clone() const { return MovementRoute(*this, 1); }
 
-  bool operator==(const MovementRoute& other) const { return list == other.list; }
+  bool operator==(const MovementRoute& other) const { return list == other.list && repeat == other.repeat && skippable == other.skippable && wait == other.wait; }
 
 private:
   MovementRoute(const MovementRoute& other, int) : IModifiable(other), repeat(other.repeat), skippable(other.skippable), wait(other.wait) {

@@ -92,6 +92,7 @@ struct ElseCommand final : IEventCommand {
 
   [[nodiscard]] constexpr bool collapsable() const override { return true; }
   [[nodiscard]] bool isCollapsed() const override { return m_collapsed; }
+  [[nodiscard]] bool isCollapseEnd() const override { return false; }
   void setCollapsed(const bool collapsed) override { m_collapsed = collapsed; }
   bool isPartner(const EventCode code, const std::optional<int>& codeIndent) override {
     if (!codeIndent) {

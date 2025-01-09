@@ -226,7 +226,39 @@ public:
   bool isValid() const { return m_isValid; }
   void setValid(const bool valid) { m_isValid = valid; }
 
+  Map clone() const { return Map(*this, 1); }
+
 private:
+  Map(const Map& other, int i) : IModifiable(other) {
+    m_autoplayBgm = other.m_autoplayBgm;
+    m_autoplayBgs = other.m_autoplayBgs;
+    m_battleback1Name = other.m_battleback1Name;
+    m_battleback2Name = other.m_battleback2Name;
+    m_bgm = other.m_bgm;
+    m_bgs = other.m_bgs;
+    m_disableDashing = other.m_disableDashing;
+    m_encounterList = other.m_encounterList;
+    m_encounterStep = other.m_encounterStep;
+    m_note = other.m_note;
+    m_parallaxLoopX = other.m_parallaxLoopX;
+    m_parallaxLoopY = other.m_parallaxLoopY;
+    m_parallaxName = other.m_parallaxName;
+    m_parallaxSx = other.m_parallaxSx;
+    m_parallaxSy = other.m_parallaxSy;
+    m_scrollType = other.m_scrollType;
+    m_specifyBattleback = other.m_specifyBattleback;
+    m_tilesetId = other.m_tilesetId;
+    m_width = other.m_width;
+    m_height = other.m_height;
+    m_data = other.m_data;
+    for (const auto& e : other.m_events) {
+      if (e) {
+        m_events.emplace_back(e->clone());
+      } else {
+        m_events.emplace_back();
+      }
+    }
+  }
   bool m_autoplayBgm{};
   bool m_autoplayBgs{};
   std::string m_battleback1Name;

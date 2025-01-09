@@ -38,7 +38,7 @@ private:
   double m_value = 1.f;
 
   // !!!DO NOT CHANGE CASING!!!
-  std::optional<TraitCode> m_oldcode = TraitCode::Element_Rate;
+  std::optional<TraitCode> m_oldcode;
   std::optional<int> m_olddataId;
   std::optional<double> m_oldvalue;
 

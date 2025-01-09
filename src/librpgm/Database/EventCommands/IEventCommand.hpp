@@ -28,11 +28,12 @@ public:
       m_indent.emplace(0);
       m_indent.value() += offset;
     }
-  setHasChanges();
+    setHasChanges();
   }
 
   [[nodiscard]] virtual constexpr bool collapsable() const { return false; }
   [[nodiscard]] virtual bool isCollapsed() const { return false; }
+  [[nodiscard]] virtual bool isCollapseEnd() const { return true; }
   virtual void setCollapsed(bool collapsed) {}
   [[nodiscard]] virtual bool isPartner(EventCode code, const std::optional<int>& codeIndent) { return false; }
   [[nodiscard]] virtual constexpr bool hasPartner() const { return false; }
@@ -43,7 +44,7 @@ public:
   std::optional<int> indent() const { return m_indent; }
   void setIndent(int indent) {
     m_indent = indent;
-  setHasChanges();
+    setHasChanges();
   }
 
   virtual std::shared_ptr<IEventCommand> clone() const = 0;

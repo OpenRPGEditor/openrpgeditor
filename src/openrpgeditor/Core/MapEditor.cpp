@@ -667,7 +667,7 @@ void MapEditor::draw() {
         m_tileCursor.draw(win);
       }
 
-      auto sortedEvents = !prisonMode() ? map()->getSorted() : map()->getRenderSorted();
+      auto sortedEvents = prisonMode() ? map()->getSorted() : map()->getRenderSorted();
 
       // for (const auto& event : sortedEvents) {
       //   EventPage* page = !prisonMode() ? event->page(0) : event->renderer()->page();

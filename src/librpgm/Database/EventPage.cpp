@@ -788,10 +788,9 @@ void EventPage::setList(const std::vector<std::shared_ptr<IEventCommand>>& list)
 MovementRoute& EventPage::moveRoute() { return m_moveRoute; }
 const MovementRoute& EventPage::moveRoute() const { return m_moveRoute; }
 void EventPage::setMoveRoute(const MovementRoute& moveRoute) {
-  // TODO: Implement MovementRoute's operator=
-  // if (moveRoute == moveRoute) {
-  //   return;
-  // }
+  if (m_moveRoute == moveRoute) {
+    return;
+  }
   MODIFIABLE_SET_OLD_VALUE(moveRoute);
   m_moveRoute = moveRoute;
   if (!signalsDisabled()) {

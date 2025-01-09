@@ -144,7 +144,8 @@ void Database::serializeProject() {
 
   for (const auto& map : mapInfos.mapInfos()) {
     if (map->map()) {
-      SerializationQueue::instance().enqueue(std::make_shared<MapSerializer>(*map->map(), std::format("data/Map{:03}.json", map->id())), [this](const std::shared_ptr<ISerializable>& serializer) {});
+      SerializationQueue::instance().enqueue(std::make_shared<MapSerializer>(map->map()->clone(), std::format("data/Map{:03}.json", map->id())),
+                                             [this](const std::shared_ptr<ISerializable>& serializer) {});
     }
   }
 }

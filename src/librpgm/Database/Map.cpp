@@ -1115,8 +1115,14 @@ void to_json(nlohmann::ordered_json& json, const Map& map) {
       {"tilesetId", map.m_tilesetId},
       {"width", map.m_width},
       {"data", map.m_data},
-      {"events", map.m_events},
   };
+  for (const auto& event : map.m_events) {
+    if (!event) {
+      json["events"].push_back(nullptr);
+    } else {
+      json["events"].push_back(event->clone());
+    }
+  }
 }
 void from_json(const nlohmann::ordered_json& json, Map& map) {
   map.m_autoplayBgm = json.value("autoplayBgm", map.m_autoplayBgm);

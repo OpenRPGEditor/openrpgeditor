@@ -285,9 +285,14 @@ rpgmutils::signal<void(Event*, int)>& Event::yModified() {
 }
 
 void to_json(nlohmann::ordered_json& to, const Event& event) {
-  to = {
-      {"id", event.m_id}, {"name", event.m_name}, {"note", event.m_note}, {"pages", event.m_pages}, {"x", event.m_x}, {"y", event.m_y},
-  };
+  to["id"] = event.m_id;
+  to["name"] = event.m_name;
+  to["note"] = event.m_note;
+  for (const auto& page : event.m_pages) {
+    to["pages"].push_back(page.clone());
+  }
+  to["x"] = event.m_x;
+  to["y"] = event.m_y;
 }
 
 void from_json(const nlohmann::ordered_json& from, Event& event) {

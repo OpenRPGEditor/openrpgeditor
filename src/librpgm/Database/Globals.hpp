@@ -727,7 +727,7 @@ enum class ChoiceWindowPosition {
 };
 
 enum class MovementSpeed {
-  trENUM("x8 Slower", x8_Slower),
+  trENUM("x8 Slower", x8_Slower) = 1,
   trENUM("x4 Slower", x4_Slower),
   trENUM("x2 Slower", x2_Slower),
   trENUM("Normal", Normal),
@@ -749,11 +749,11 @@ enum class MoveType {
 };
 
 enum class MovementFrequency {
-  trENUM("Lowest", Lowest),
-  trENUM("Lower", Lower),
-  trENUM("Normal", Normal),
-  trENUM("Higher", Higher),
-  trENUM("Highest", Highest),
+  trENUM("Lowest", Lowest) = 1,
+  trENUM("Lower", Lower) = 2,
+  trENUM("Normal", Normal) = 3,
+  trENUM("Higher", Higher) = 4,
+  trENUM("Highest", Highest) = 5,
 };
 
 enum class TileType {

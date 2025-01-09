@@ -512,7 +512,7 @@ void MapEditor::draw() {
     });
   }
 
-  if (ImGui::Begin("Map Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoTitleBar)) {
+  if (ImGui::Begin(trNOOP("Map Editor"), nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoTitleBar)) {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - (ImGui::CalcTextSize("S").y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)), 0,
                       ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
     // ImGui::SetScrollX(m_tileCursor.alignCoord(ImGui::GetScrollX()));
@@ -533,11 +533,11 @@ void MapEditor::draw() {
       if (m_selectedEvent) {
         if (ImGui::BeginPopupContextWindow()) {
           ImGui::BeginDisabled(true);
-          if (ImGui::MenuItem("Insert template...")) {}
+          if (ImGui::MenuItem(trNOOP("Insert template..."))) {}
           ImGui::EndDisabled();
-          if (ImGui::MenuItem("Save as template...")) {
+          if (ImGui::MenuItem(trNOOP("Save as template..."))) {
             m_templateSaving = true;
-            template_picker = ObjectPicker("Templates"sv, Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+            template_picker = ObjectPicker(trNOOP("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
             template_picker->setNoSelectionMeansAdd(true);
             template_picker->setOpen(true);
           }
@@ -546,14 +546,14 @@ void MapEditor::draw() {
       } else {
         // No event selected, but it should still show if the map cursor is on the screen
         if (ImGui::BeginPopupContextWindow()) {
-          if (ImGui::MenuItem("Insert template...")) {
+          if (ImGui::MenuItem(trNOOP("Insert template..."))) {
             m_templateSaving = false;
-            template_picker = ObjectPicker("Templates"sv, Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+            template_picker = ObjectPicker(trNOOP("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
             template_picker->setNoSelectionMeansAdd(false);
             template_picker->setOpen(true);
           }
           ImGui::BeginDisabled(true);
-          if (ImGui::MenuItem("Save as template...")) {}
+          if (ImGui::MenuItem(trNOOP("Save as template..."))) {}
           ImGui::EndDisabled();
           ImGui::EndPopup();
         }
@@ -568,8 +568,8 @@ void MapEditor::draw() {
               EventParser::serialize(eventJson, *m_selectedEvent);
               if (template_picker.value().selection() == 0) {
                 Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
-                                                                     "New Event Template " + std::to_string(Database::instance()->templates.templates.size() + 1), "", Template::TemplateType::Event,
-                                                                     eventJson.dump(), {}));
+                                                                     tr("New Event Template") + " " + std::to_string(Database::instance()->templates.templates.size() + 1), "",
+                                                                     Template::TemplateType::Event, eventJson.dump(), {}));
                 templateName_picker = TemplateName(&Database::instance()->templates.templates.back(), nullptr);
               } else {
                 Database::instance()->templates.templates.at(template_picker.value().selection() - 1).setCommands(eventJson.dump());
@@ -598,9 +598,9 @@ void MapEditor::draw() {
         templateName_picker->draw();
         if (templateName_picker->hasChanges()) {
           if (Database::instance()->templates.serialize(Database::instance()->basePath + "data/Templates.json")) {
-            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Saved event as template successfully!"});
+            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, trNOOP("Saved event as template successfully!")});
           } else {
-            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to saved event as template!"});
+            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, trNOOP("Failed to saved event as template!")});
           }
           templateName_picker.reset();
         }
@@ -731,11 +731,12 @@ void MapEditor::draw() {
     ImGui::BeginChild("##map_editor_bottom_panel", ImVec2{}, 0, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
     {
       ImGui::Separator();
-      ImGui::Text("Scale:");
+      ImGui::Text(trNOOP("Scale:"));
       ImGui::SameLine();
       ImGui::SliderFloat("##map_scale", &m_mapScale, 0.25f, 4.f);
       ImGui::SameLine();
-      std::string fmt = std::format("Tile {}, ({}, {})", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0), m_tileCursor.tileX(), m_tileCursor.tileY());
+      // TL-NOTE: The braces denote the tile ID x and y positions, they get replaced at runtime with those values
+      std::string fmt = std::format(trNOOP("Tile {}, ({}, {})"), m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0), m_tileCursor.tileX(), m_tileCursor.tileY());
       if (map()) {
         if (const auto ev = std::ranges::find_if(map()->events(), [&](const std::optional<Event>& e) { return e && e->id() != 0 && m_tileCursor.tileX() == e->x() && m_tileCursor.tileY() == e->y(); });
             ev != map()->events().end()) {

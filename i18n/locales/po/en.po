@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenRPG Editor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-08 15:12-0800\n"
+"POT-Creation-Date: 2025-01-09 03:26-0800\n"
 "PO-Revision-Date: 2025-01-06 16:12-0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:585
+#: src/openrpgeditor/Core/MainWindow.cpp:587
 #, c++-format
 msgid ""
 "\n"
@@ -113,6 +113,10 @@ msgstr "="
 msgid ">"
 msgstr ">"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:28
+msgid "Abbreviation"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:691
 msgid "Abnormal"
 msgstr "Abnormal"
@@ -133,6 +137,10 @@ msgstr "Action Button"
 msgid "Action End"
 msgstr "Action End"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:546
+msgid "Action Failure"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:148
 msgid "Action Times "
 msgstr "Action Times "
@@ -151,10 +159,35 @@ msgid "Actor Collapse"
 msgstr "Actor Collapse"
 
 #: src/librpgm/Database/Globals.hpp:866
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:442
 msgid "Actor Damage"
 msgstr "Actor Damage"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:796
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:461
+msgid "Actor Drain"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:452
+msgid "Actor Gain"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:456
+msgid "Actor Loss"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:466
+msgid "Actor No Damage"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:470
+msgid "Actor No Hit"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:447
+msgid "Actor Recovery"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:798
 msgid "Actual Size"
 msgstr "Actual Size"
 
@@ -186,12 +219,14 @@ msgstr "Add State"
 msgid "Additive"
 msgstr "Additive"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:330
+#: src/openrpgeditor/Core/MainWindow.cpp:332
 msgid "Adds or removes shadows of walls"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:43 src/librpgm/Database/Globals.hpp:54
 #: src/librpgm/Database/Globals.hpp:361 src/librpgm/Database/Globals.hpp:374
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:79
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:238
 msgid "Agility"
 msgstr "Agility"
 
@@ -219,6 +254,10 @@ msgstr "All Enemies"
 msgid "Always"
 msgstr "Always"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:306
+msgid "Always Dash"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:442
 msgid "Anger"
 msgstr "Anger"
@@ -233,11 +272,17 @@ msgstr "Approach"
 
 #: src/librpgm/Database/Globals.hpp:266 src/librpgm/Database/Globals.hpp:278
 #: src/librpgm/Database/Globals.hpp:342 src/librpgm/Database/Globals.hpp:657
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:172
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:277
 msgid "Armor"
 msgstr "Armor"
 
 #: src/librpgm/Database/Globals.hpp:39 src/librpgm/Database/Globals.hpp:50
 #: src/librpgm/Database/Globals.hpp:357 src/librpgm/Database/Globals.hpp:370
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:67
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:139
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:230
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:253
 msgid "Attack"
 msgstr "Attack"
 
@@ -292,6 +337,18 @@ msgstr "Autorun"
 #: src/librpgm/Database/Globals.hpp:822
 msgid "Axe"
 msgstr "Axe"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:316
+msgid "BGM Volume"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:320
+msgid "BGS Volume"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:217
+msgid "Basic Statuses"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:878
 msgid "Battle"
@@ -361,16 +418,31 @@ msgstr "Bow"
 msgid "Break Loop"
 msgstr "Break Loop"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:532
+msgid "Buff Add"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:541
+msgid "Buff Remove"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:267
 msgid "Button"
 msgstr "Button"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:187
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:287
+msgid "Buy"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:855
 msgid "Buzzer"
 msgstr "Buzzer"
 
 #: src/librpgm/Database/Globals.hpp:164 src/librpgm/Database/Globals.hpp:854
-#: src/openrpgeditor/Core/MainWindow.cpp:391
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:202
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:297
+#: src/openrpgeditor/Core/MainWindow.cpp:393
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -578,11 +650,13 @@ msgstr "Class"
 msgid "Claw"
 msgstr "Claw"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:682
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:184
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:285
+#: src/openrpgeditor/Core/MainWindow.cpp:684
 msgid "Clear"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:674
+#: src/openrpgeditor/Core/MainWindow.cpp:676
 msgid "Close Project..."
 msgstr ""
 
@@ -601,6 +675,14 @@ msgstr "Collapse Effect"
 #: src/librpgm/Database/Globals.hpp:834
 msgid "Combat Chain"
 msgstr "Combat Chain"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:311
+msgid "Command Remember"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:247
+msgid "Commands"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:524
 msgid "Comment"
@@ -623,6 +705,11 @@ msgstr "Confusion"
 msgid "Constant"
 msgstr "Constant"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:196
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:293
+msgid "Continue"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:534
 msgid "Control Self Switch"
 msgstr "Control Self Switch"
@@ -639,15 +726,16 @@ msgstr "Control Timer"
 msgid "Control Variables"
 msgstr "Control Variables"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:740
+#: src/openrpgeditor/Core/MainWindow.cpp:742
 msgid "Copy"
 msgstr "Copy"
 
 #: src/librpgm/Database/Globals.hpp:65
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:522
 msgid "Counter Attack"
 msgstr "Counter Attack"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:215
+#: src/openrpgeditor/Core/MainWindow.cpp:217
 msgid "Creates a new project."
 msgstr ""
 
@@ -658,6 +746,14 @@ msgstr "Critical Evasion"
 #: src/librpgm/Database/Globals.hpp:61
 msgid "Critical Rate"
 msgstr "Critical Rate"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:436
+msgid "Critical To Actor"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:431
+msgid "Critical To Enemy"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:826
 msgid "Crossbow"
@@ -675,7 +771,7 @@ msgstr "Cursor"
 msgid "Custom"
 msgstr "Custom"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:737
+#: src/openrpgeditor/Core/MainWindow.cpp:739
 msgid "Cut"
 msgstr "Cut"
 
@@ -683,13 +779,17 @@ msgstr "Cut"
 msgid "Dagger"
 msgstr "Dagger"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:806
+#: src/openrpgeditor/Core/MainWindow.cpp:808
 msgid "Database"
 msgstr "Database"
 
 #: src/librpgm/Database/Globals.hpp:693
 msgid "Dead"
 msgstr "Dead"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:536
+msgid "Debuff Add"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:129
 msgid "Debuff Rate"
@@ -699,18 +799,24 @@ msgstr "Debuff Rate"
 msgid "Decrease"
 msgstr "Decrease"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:398
+msgid "Defeat"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:40 src/librpgm/Database/Globals.hpp:51
 #: src/librpgm/Database/Globals.hpp:358 src/librpgm/Database/Globals.hpp:371
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:70
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:232
 msgid "Defense"
 msgstr "Defense"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:746
+#: src/openrpgeditor/Core/MainWindow.cpp:748
 msgid "Delete"
 msgstr "Delete"
 
 #. TL-NOTE: Use ellipses character appropriate for your language
 #. Deployment is referring to preparing a game for distribution to end users, exporting all related assets into an easily distributable form
-#: src/openrpgeditor/Core/MainWindow.cpp:703
+#: src/openrpgeditor/Core/MainWindow.cpp:705
 msgid "Deployment..."
 msgstr "Deployment..."
 
@@ -764,7 +870,7 @@ msgstr "Div"
 msgid "Down"
 msgstr "Down"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:780
+#: src/openrpgeditor/Core/MainWindow.cpp:782
 msgid "Draw"
 msgstr "Draw"
 
@@ -777,10 +883,21 @@ msgid "Dual Wield"
 msgstr "Dual Wield"
 
 #: src/librpgm/Database/Globals.hpp:352
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:120
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:123
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:222
 msgid "EXP"
 msgstr "EXP"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:722
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:345
+msgid "EXP Next"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:340
+msgid "EXP Total"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:724
 msgid "Edit"
 msgstr "Edit"
 
@@ -791,6 +908,10 @@ msgstr "Element Rate"
 #: src/librpgm/Database/Globals.hpp:631
 msgid "Else"
 msgstr "Else"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:368
+msgid "Emerge"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:422
 msgid "Enable"
@@ -831,12 +952,37 @@ msgid "Enemy Collapse"
 msgstr "Enemy Collapse"
 
 #: src/librpgm/Database/Globals.hpp:862
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:475
 msgid "Enemy Damage"
 msgstr "Enemy Damage"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:494
+msgid "Enemy Drain"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:485
+msgid "Enemy Gain"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:489
+msgid "Enemy Loss"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:499
+msgid "Enemy No Damage"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:503
+msgid "Enemy No Hit"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:611
 msgid "Enemy Recover All"
 msgstr "Enemy Recover All"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:480
+msgid "Enemy Recovery"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:613
 msgid "Enemy Transform"
@@ -847,8 +993,14 @@ msgid "Equal To"
 msgstr "Equal To"
 
 #: src/librpgm/Database/Globals.hpp:856
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:151
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:178
 msgid "Equip"
 msgstr "Equip"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:261
+msgid "Equip (Pause Screen)"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:144
 msgid "Equip Armor"
@@ -866,15 +1018,17 @@ msgstr "Erase Event"
 msgid "Erase Picture"
 msgstr "Erase Picture"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:341
+#: src/openrpgeditor/Core/MainWindow.cpp:343
 msgid "Eraser"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:341
+#: src/openrpgeditor/Core/MainWindow.cpp:343
 msgid "Erases tiles at a given point"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:400 src/librpgm/Database/Globals.hpp:860
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:136
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:251
 msgid "Escape"
 msgstr "Escape"
 
@@ -882,7 +1036,18 @@ msgstr "Escape"
 msgid "Escape Count"
 msgstr "Escape Count"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:387
+msgid "Escape Failure"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:382
+msgid "Escape Start"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:870
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:88
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:244
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:508
 msgid "Evasion"
 msgstr "Evasion"
 
@@ -890,8 +1055,8 @@ msgstr "Evasion"
 msgid "Evasion Rate"
 msgstr "Evasion Rate"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:286
-#: src/openrpgeditor/Core/MainWindow.cpp:766
+#: src/openrpgeditor/Core/MainWindow.cpp:288
+#: src/openrpgeditor/Core/MainWindow.cpp:768
 msgid "Event"
 msgstr "Event"
 
@@ -919,7 +1084,7 @@ msgstr "Exchange With Another Event"
 msgid "Exclamation"
 msgstr "Exclamation"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:713
+#: src/openrpgeditor/Core/MainWindow.cpp:715
 msgid "Exit"
 msgstr "Exit"
 
@@ -963,19 +1128,25 @@ msgstr "Fear"
 msgid "Feet"
 msgstr "Feet"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:667
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:133
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:249
+msgid "Fight"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:359
+#: src/openrpgeditor/Core/MainWindow.cpp:669
 msgid "File"
 msgstr "ファイル"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:750
+#: src/openrpgeditor/Core/MainWindow.cpp:752
 msgid "Find"
 msgstr "Find"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:753
+#: src/openrpgeditor/Core/MainWindow.cpp:755
 msgid "Find Next"
 msgstr "Find Next"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:756
+#: src/openrpgeditor/Core/MainWindow.cpp:758
 msgid "Find Previous"
 msgstr "Find Previous"
 
@@ -1003,9 +1174,18 @@ msgstr "Force Action"
 msgid "Forget"
 msgstr "Forget"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:157
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:265
+msgid "Formation"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:503
 msgid "Frequency"
 msgstr "Frequency"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:20
+msgid "Full"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:835
 msgid "Futuristic Sword"
@@ -1015,7 +1195,7 @@ msgstr "Futuristic Sword"
 msgid "Gain TP"
 msgstr "Gain TP"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:820
+#: src/openrpgeditor/Core/MainWindow.cpp:822
 msgid "Game"
 msgstr "Game"
 
@@ -1023,12 +1203,17 @@ msgstr "Game"
 msgid "Game Data"
 msgstr "Game Data"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:166
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:271
+msgid "Game End"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:620
 msgid "Game Over"
 msgstr "Game Over"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:294
-#: src/openrpgeditor/Core/MainWindow.cpp:770
+#: src/openrpgeditor/Core/MainWindow.cpp:296
+#: src/openrpgeditor/Core/MainWindow.cpp:772
 msgid "Game Preview"
 msgstr "Game Preview"
 
@@ -1082,6 +1267,8 @@ msgid "Grow"
 msgstr "Grow"
 
 #: src/librpgm/Database/Globals.hpp:91
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:142
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:255
 msgid "Guard"
 msgstr "Guard"
 
@@ -1095,6 +1282,9 @@ msgstr "Gun"
 
 #: src/librpgm/Database/Globals.hpp:353 src/librpgm/Database/Globals.hpp:366
 #: src/librpgm/Database/Globals.hpp:668
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:102
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:105
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:219
 msgid "HP"
 msgstr "HP"
 
@@ -1142,7 +1332,12 @@ msgstr "Higher"
 msgid "Highest"
 msgstr "Highest"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:85
+msgid "Hit"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:59
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:242
 msgid "Hit Rate"
 msgstr "Hit Rate"
 
@@ -1180,6 +1375,8 @@ msgstr "Iron Pipe"
 
 #: src/librpgm/Database/Globals.hpp:264 src/librpgm/Database/Globals.hpp:340
 #: src/librpgm/Database/Globals.hpp:655
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:145
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:257
 msgid "Item"
 msgstr "Item"
 
@@ -1192,6 +1389,8 @@ msgid "Jump To Label"
 msgstr "Jump To Label"
 
 #: src/librpgm/Database/Globals.hpp:210
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:175
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:279
 msgid "Key Item"
 msgstr "Key Item"
 
@@ -1222,8 +1421,14 @@ msgid "Less than or Equal to"
 msgstr "Less than or Equal to"
 
 #: src/librpgm/Database/Globals.hpp:351
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:96
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:218
 msgid "Level"
 msgstr "Level"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:417
+msgid "Level Up"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:446
 msgid "Light Bulb"
@@ -1233,11 +1438,15 @@ msgstr "Light Bulb"
 msgid "Load"
 msgstr "Load"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:386
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:354
+msgid "Load Message"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:388
 msgid "Loading Project...."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:387
+#: src/openrpgeditor/Core/MainWindow.cpp:389
 #, c++-format
 msgid "Loading {0} ({1} of {2})...."
 msgstr ""
@@ -1265,7 +1474,7 @@ msgid "Loop Vertically"
 msgstr "Loop Vertically"
 
 #: src/librpgm/Database/Globals.hpp:753
-#: src/openrpgeditor/Core/MainWindow.cpp:606
+#: src/openrpgeditor/Core/MainWindow.cpp:608
 msgid "Lower"
 msgstr "Lower"
 
@@ -1275,8 +1484,14 @@ msgstr "Lowest"
 
 #: src/librpgm/Database/Globals.hpp:44 src/librpgm/Database/Globals.hpp:55
 #: src/librpgm/Database/Globals.hpp:362 src/librpgm/Database/Globals.hpp:375
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:82
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:240
 msgid "Luck"
 msgstr "Luck"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:99
+msgid "Lv"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:52
 msgid "M Attack"
@@ -1288,11 +1503,15 @@ msgstr "M Defense"
 
 #: src/librpgm/Database/Globals.hpp:41 src/librpgm/Database/Globals.hpp:52
 #: src/librpgm/Database/Globals.hpp:359 src/librpgm/Database/Globals.hpp:372
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:73
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:234
 msgid "M.Attack"
 msgstr "M.Attack"
 
 #: src/librpgm/Database/Globals.hpp:42 src/librpgm/Database/Globals.hpp:53
 #: src/librpgm/Database/Globals.hpp:360 src/librpgm/Database/Globals.hpp:373
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:76
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:236
 msgid "M.Defense"
 msgstr "M.Defense"
 
@@ -1306,8 +1525,15 @@ msgstr "MAttack"
 msgid "MDefense"
 msgstr "MDefense"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:325
+msgid "ME Volume"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:354 src/librpgm/Database/Globals.hpp:367
 #: src/librpgm/Database/Globals.hpp:669
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:108
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:111
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:220
 msgid "MP"
 msgstr "MP"
 
@@ -1336,10 +1562,12 @@ msgid "Mace"
 msgstr "Mace"
 
 #: src/librpgm/Database/Globals.hpp:63 src/librpgm/Database/Globals.hpp:871
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:513
 msgid "Magic Evasion"
 msgstr "Magic Evasion"
 
 #: src/librpgm/Database/Globals.hpp:64 src/librpgm/Database/Globals.hpp:872
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:518
 msgid "Magic Reflection"
 msgstr "Magic Reflection"
 
@@ -1351,8 +1579,8 @@ msgstr "Magical Attack"
 msgid "Magical Damage"
 msgstr "Magical Damage"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:275
-#: src/openrpgeditor/Core/MainWindow.cpp:763
+#: src/openrpgeditor/Core/MainWindow.cpp:277
+#: src/openrpgeditor/Core/MainWindow.cpp:765
 msgid "Map"
 msgstr "Map"
 
@@ -1374,17 +1602,25 @@ msgstr "Map Y"
 
 #: src/librpgm/Database/Globals.hpp:37 src/librpgm/Database/Globals.hpp:48
 #: src/librpgm/Database/Globals.hpp:355 src/librpgm/Database/Globals.hpp:368
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:61
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:226
 msgid "Max HP"
 msgstr "Max HP"
 
 #: src/librpgm/Database/Globals.hpp:38 src/librpgm/Database/Globals.hpp:49
 #: src/librpgm/Database/Globals.hpp:356 src/librpgm/Database/Globals.hpp:369
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:64
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:228
 msgid "Max MP"
 msgstr "Max MP"
 
 #: src/librpgm/Database/Globals.hpp:183
 msgid "MenuScreen"
 msgstr "MenuScreen"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:301
+msgid "Messages"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:720 src/librpgm/Database/Globals.hpp:725
 msgid "Middle"
@@ -1402,7 +1638,7 @@ msgstr "Missile"
 msgid "Mod"
 msgstr "Mod"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:762
+#: src/openrpgeditor/Core/MainWindow.cpp:764
 msgid "Mode"
 msgstr "Mode"
 
@@ -1474,7 +1710,7 @@ msgstr "Multiply"
 msgid "Music Note"
 msgstr "Music Note"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:809
+#: src/openrpgeditor/Core/MainWindow.cpp:811
 msgid "NWJS Version Manager"
 msgstr "NWJS Version Manager"
 
@@ -1499,11 +1735,16 @@ msgstr "Never"
 msgid "New Event Template"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:215
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:193
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:291
+msgid "New Game"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:217
 msgid "New Project"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:668
+#: src/openrpgeditor/Core/MainWindow.cpp:670
 msgid "New Project..."
 msgstr ""
 
@@ -1573,7 +1814,23 @@ msgstr "OK"
 msgid "ON"
 msgstr "ON"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:825
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:403
+msgid "Obtain EXP"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:407
+msgid "Obtain Gold"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:412
+msgid "Obtain Item"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:421
+msgid "Obtain Skill"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:827
 msgid "Open Folder"
 msgstr "Open Folder"
 
@@ -1581,11 +1838,11 @@ msgstr "Open Folder"
 msgid "Open Menu Screen"
 msgstr "Open Menu Screen"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:222
+#: src/openrpgeditor/Core/MainWindow.cpp:224
 msgid "Open Project"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:671
+#: src/openrpgeditor/Core/MainWindow.cpp:673
 msgid "Open Project..."
 msgstr ""
 
@@ -1593,8 +1850,18 @@ msgstr ""
 msgid "Open Save Screen"
 msgstr "Open Save Screen"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:222
+#: src/openrpgeditor/Core/MainWindow.cpp:224
 msgid "Opens an existing project."
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:181
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:283
+msgid "Optimize"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:160
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:267
+msgid "Options"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:347
@@ -1625,7 +1892,12 @@ msgstr "Paralyze"
 msgid "Parameter"
 msgstr "Parameter"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:225
+msgid "Parameters"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:346
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:363
 msgid "Party"
 msgstr "Party"
 
@@ -1641,7 +1913,7 @@ msgstr "Party Level"
 msgid "Party Members"
 msgstr "Party Members"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:743
+#: src/openrpgeditor/Core/MainWindow.cpp:745
 msgid "Paste"
 msgstr "Paste"
 
@@ -1677,7 +1949,7 @@ msgstr "Play Movie"
 msgid "Play SE"
 msgstr "Play SE"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:821
+#: src/openrpgeditor/Core/MainWindow.cpp:823
 msgid "Play Test"
 msgstr "Play Test"
 
@@ -1701,6 +1973,14 @@ msgstr "PluginMZ Command"
 msgid "Poison"
 msgstr "Poison"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:335
+msgid "Possession"
+msgstr ""
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:373
+msgid "Preemptive"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:93
 msgid "Preserve TP"
 msgstr "Preserve TP"
@@ -1709,7 +1989,7 @@ msgstr "Preserve TP"
 msgid "Question"
 msgstr "Question"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:626
+#: src/openrpgeditor/Core/MainWindow.cpp:628
 msgid "RPG Maker Projects"
 msgstr ""
 
@@ -1733,7 +2013,7 @@ msgstr "Raise Preemptive"
 msgid "Random"
 msgstr "Random"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:681
+#: src/openrpgeditor/Core/MainWindow.cpp:683
 msgid "Recent Projects"
 msgstr ""
 
@@ -1761,7 +2041,7 @@ msgstr "Recovery Effect"
 msgid "Red"
 msgstr "Red"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:730
+#: src/openrpgeditor/Core/MainWindow.cpp:732
 msgid "Redo"
 msgstr "Redo"
 
@@ -1793,7 +2073,7 @@ msgstr "Remove State"
 msgid "Repeat Above"
 msgstr "Repeat Above"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:815
+#: src/openrpgeditor/Core/MainWindow.cpp:817
 msgid "Reset Window Layout"
 msgstr "Reset Window Layout"
 
@@ -1826,6 +2106,10 @@ msgstr "Rod"
 msgid "Rotate Picture"
 msgstr "Rotate Picture"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:330
+msgid "SE Volume"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:782
 msgid "Same as characters"
 msgstr "Same as characters"
@@ -1835,6 +2119,8 @@ msgid "Same as random encounter"
 msgstr "Same as random encounter"
 
 #: src/librpgm/Database/Globals.hpp:857
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:163
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:269
 msgid "Save"
 msgstr "Save"
 
@@ -1846,11 +2132,15 @@ msgstr "Save BGM"
 msgid "Save Count"
 msgstr "Save Count"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:230
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:349
+msgid "Save Message"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:232
 msgid "Save Project"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:677
+#: src/openrpgeditor/Core/MainWindow.cpp:679
 msgid "Save Project..."
 msgstr ""
 
@@ -1858,20 +2148,20 @@ msgstr ""
 msgid "Saved event as template successfully!"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:230
+#: src/openrpgeditor/Core/MainWindow.cpp:232
 msgid "Saves the project."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:400
+#: src/openrpgeditor/Core/MainWindow.cpp:402
 msgid "Saving Project...."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:401
+#: src/openrpgeditor/Core/MainWindow.cpp:403
 #, c++-format
 msgid "Saving {0} ({1} of {2})...."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:789
+#: src/openrpgeditor/Core/MainWindow.cpp:791
 msgid "Scale"
 msgstr "Scale"
 
@@ -1897,6 +2187,10 @@ msgstr "Script"
 msgid "Scroll Map"
 msgstr "Scroll Map"
 
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:106
+msgid "Scroll Type"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:146
 msgid "Seal Equip"
 msgstr "Seal Equip"
@@ -1916,6 +2210,11 @@ msgstr "Select Item"
 #: src/librpgm/Database/Globals.hpp:258
 msgid "Self Switch"
 msgstr "Self Switch"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:190
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:289
+msgid "Sell"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:323
 msgid "Set"
@@ -1937,11 +2236,11 @@ msgstr "Set Vehicle Location"
 msgid "Set Weather Effect"
 msgstr "Set Weather Effect"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:803
+#: src/openrpgeditor/Core/MainWindow.cpp:805
 msgid "Settings"
 msgstr "Settings"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:330
+#: src/openrpgeditor/Core/MainWindow.cpp:332
 msgid "Shadow Pen"
 msgstr ""
 
@@ -1949,7 +2248,7 @@ msgstr ""
 msgid "Shake Screen"
 msgstr "Shake Screen"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:581
+#: src/openrpgeditor/Core/MainWindow.cpp:583
 #, c++-format
 msgid ""
 "Sheet: {} ({}), ID: {}, x: {}, y: {}, z: {},  width: {}, height: {}, u: {}, "
@@ -2019,6 +2318,8 @@ msgid "Silence"
 msgstr "Silence"
 
 #: src/librpgm/Database/Globals.hpp:276
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:148
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:259
 msgid "Skill"
 msgstr "Skill"
 
@@ -2087,6 +2388,11 @@ msgstr "State Rate"
 msgid "State Resist"
 msgstr "State Resist"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:154
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:263
+msgid "Status"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:507
 msgid "Stepping Animation OFF"
 msgstr "Stepping Animation OFF"
@@ -2120,8 +2426,13 @@ msgid "Sub"
 msgstr "Sub"
 
 #: src/librpgm/Database/Globals.hpp:92
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:527
 msgid "Substitute"
 msgstr "Substitute"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:377
+msgid "Surprise"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:443
 msgid "Sweat"
@@ -2143,17 +2454,23 @@ msgstr "Switch OFF"
 msgid "Switch ON"
 msgstr "Switch ON"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:286
+#: src/openrpgeditor/Core/MainWindow.cpp:288
 msgid "Switch to Event Edit mode."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:275
+#: src/openrpgeditor/Core/MainWindow.cpp:277
 msgid "Switch to Map Edit mode."
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:820
 msgid "Sword"
 msgstr "Sword"
+
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:114
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:117
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:221
+msgid "TP"
+msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:77
 msgid "TP Charge Rate"
@@ -2195,7 +2512,7 @@ msgstr "Through ON"
 msgid "Thrust"
 msgstr "Thrust"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:604
+#: src/openrpgeditor/Core/MainWindow.cpp:606
 msgid "Tile Debug"
 msgstr ""
 
@@ -2231,13 +2548,18 @@ msgstr "Tint Picture"
 msgid "Tint Screen"
 msgstr "Tint Screen"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:294
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:199
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:295
+msgid "To Title"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:296
 msgid "Toggles Game Preview mode."
 msgstr ""
 
 #. TL-NOTE: Refers to Game Preview mode and is in reference to how events are drawn to the screen.
 #. Displays as a tooltip.
-#: src/openrpgeditor/Core/MainWindow.cpp:776
+#: src/openrpgeditor/Core/MainWindow.cpp:778
 msgid "Toggles event borders, layer render order, and animations."
 msgstr "Toggles event borders, layer render order, and animations."
 
@@ -2329,7 +2651,7 @@ msgstr "Turn away from Player"
 msgid "Turn toward Player"
 msgstr "Turn toward Player"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:723
+#: src/openrpgeditor/Core/MainWindow.cpp:725
 msgid "Undo"
 msgstr "Undo"
 
@@ -2337,7 +2659,7 @@ msgstr "Undo"
 msgid "Up"
 msgstr "Up"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:612
+#: src/openrpgeditor/Core/MainWindow.cpp:614
 msgid "Upper"
 msgstr ""
 
@@ -2346,6 +2668,7 @@ msgid "Upper Left"
 msgstr "Upper Left"
 
 #: src/librpgm/Database/Globals.hpp:874
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:426
 msgid "Use Item"
 msgstr "Use Item"
 
@@ -2415,6 +2738,10 @@ msgstr "Variable Designation"
 msgid "Vehicle"
 msgstr "Vehicle"
 
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:392
+msgid "Victory"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:488 src/librpgm/Database/Globals.hpp:567
 msgid "Wait"
 msgstr "Wait"
@@ -2429,6 +2756,8 @@ msgstr "Walking Animation ON"
 
 #: src/librpgm/Database/Globals.hpp:265 src/librpgm/Database/Globals.hpp:277
 #: src/librpgm/Database/Globals.hpp:341 src/librpgm/Database/Globals.hpp:656
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:169
+#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:275
 msgid "Weapon"
 msgstr "Weapon"
 
@@ -2464,11 +2793,11 @@ msgstr "Window"
 msgid "Yes"
 msgstr "Yes"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:790
+#: src/openrpgeditor/Core/MainWindow.cpp:792
 msgid "Zoom In"
 msgstr "Zoom In"
 
-#: src/openrpgeditor/Core/MainWindow.cpp:793
+#: src/openrpgeditor/Core/MainWindow.cpp:795
 msgid "Zoom Out"
 msgstr "Zoom Out"
 

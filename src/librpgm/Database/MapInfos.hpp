@@ -2,7 +2,7 @@
 
 #include "Database/MapInfo.hpp"
 
-class MapInfos {
+class MapInfos final : public IModifiable {
 public:
   static MapInfos load(std::string_view filepath);
   bool serialize(std::string_view filename);
@@ -43,6 +43,10 @@ public:
   void loadAllMaps();
 
   void rebuildOrdering();
+
+  bool isModified() const override {
+    return std::ranges::any_of(m_mapinfos, [](const auto& item) { return item->isModified(); });
+  }
 
 private:
   std::vector<std::optional<MapInfo>> m_mapinfos;

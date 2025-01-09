@@ -7,7 +7,9 @@ using namespace std::string_view_literals;
 
 #include <imgui.h>
 #include <imgui_internal.h>
-void DBTermsTab::drawAbbreviatedString(const float width, const std::string_view label, std::string& full, std::string& abbrv) {
+std::tuple<bool, bool> DBTermsTab::drawAbbreviatedString(const float width, const std::string_view label, std::string& full, std::string& abbrv) {
+  bool fullModified = false;
+  bool abbrvModified = false;
   ImGui::BeginChild(std::format("##orpg_{}_term", label.data()).c_str(), {width * 2 + (ImGui::GetStyle().ItemSpacing.x * 2) + (ImGui::GetStyle().FramePadding.x * 2), 0},
                     ImGuiChildFlags_FrameStyle | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
   {
@@ -17,6 +19,7 @@ void DBTermsTab::drawAbbreviatedString(const float width, const std::string_view
     strncpy(levelStr, full.c_str(), 256);
     if (ImGui::LabelOverLineEdit(std::format("##{}_term", label).c_str(), "Full", levelStr, 256, width)) {
       full = levelStr;
+      fullModified = true;
     }
     ImGui::SameLine();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().ItemSpacing.y);
@@ -24,13 +27,16 @@ void DBTermsTab::drawAbbreviatedString(const float width, const std::string_view
     strncpy(abvrStr, abbrv.c_str(), 256);
     if (ImGui::LabelOverLineEdit(std::format("##{}_abbreviation_term", label).c_str(), "Abbreviation", abvrStr, 256, width)) {
       abbrv = abvrStr;
+      abbrvModified = true;
     }
     ImGui::PopStyleColor();
   }
   ImGui::EndChild();
+  return {fullModified, abbrvModified};
 }
 
-void DBTermsTab::drawString(const float width, const std::string_view label, std::string& full) {
+bool DBTermsTab::drawString(const float width, const std::string_view label, std::string& full) {
+  bool result = false;
   ImGui::BeginChild(std::format("##orpg_{}_term", label.data()).c_str(), {width + ImGui::GetStyle().ItemSpacing.x + ImGui::GetStyle().FramePadding.x, 0},
                     ImGuiChildFlags_FrameStyle | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
   {
@@ -39,10 +45,12 @@ void DBTermsTab::drawString(const float width, const std::string_view label, std
     strncpy(levelStr, full.c_str(), 256);
     if (ImGui::LabelOverLineEdit(std::format("##{}_term", label).c_str(), label.data(), levelStr, 256, width)) {
       full = levelStr;
+      result = true;
     }
     ImGui::PopStyleColor();
   }
   ImGui::EndChild();
+  return result;
 }
 
 void DBTermsTab::initializeParameterStrings() const {
@@ -294,111 +302,250 @@ void DBTermsTab::draw() {
         ImGui::BeginChild("##messages_child", {}, ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
         {
           const auto messageWidth = (ImGui::GetContentRegionAvail().x / 3) - ImGui::GetStyle().ItemSpacing.x - (ImGui::GetStyle().FramePadding.x * 2);
-          drawString(messageWidth, "Always Dash", m_system.terms.messages.alwaysDash);
+          auto temp = m_system.terms.messages.alwaysDash();
+          if (drawString(messageWidth, "Always Dash", temp)) {
+            m_system.terms.messages.setAlwaysDash(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Command Remember", m_system.terms.messages.commandRemember);
+          temp = m_system.terms.messages.commandRemember();
+          if (drawString(messageWidth, "Command Remember", temp)) {
+            m_system.terms.messages.setCommandRemember(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "BGM Volume", m_system.terms.messages.bgmVolume);
+          temp = m_system.terms.messages.bgmVolume();
+          if (drawString(messageWidth, "BGM Volume", temp)) {
+            m_system.terms.messages.setBgmVolume(temp);
+          }
+          temp = m_system.terms.messages.bgsVolume();
+          if (drawString(messageWidth, "BGS Volume", temp)) {
+            m_system.terms.messages.setBgsVolume(temp);
+          }
+          ImGui::SameLine();
+          temp = m_system.terms.messages.meVolume();
+          if (drawString(messageWidth, "ME Volume", temp)) {
+            m_system.terms.messages.setMeVolume(temp);
+          }
+          ImGui::SameLine();
+          temp = m_system.terms.messages.seVolume();
+          if (drawString(messageWidth, "SE Volume", temp)) {
+            m_system.terms.messages.setSeVolume(temp);
+          }
 
-          drawString(messageWidth, "BGS Volume", m_system.terms.messages.bgsVolume);
+          temp = m_system.terms.messages.possession();
+          if (drawString(messageWidth, "Possession", temp)) {
+            m_system.terms.messages.setPossession(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "ME Volume", m_system.terms.messages.meVolume);
+          temp = m_system.terms.messages.expTotal();
+          if (drawString(messageWidth, "EXP Total", temp)) {
+            m_system.terms.messages.setExpTotal(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "SE Volume", m_system.terms.messages.seVolume);
+          temp = m_system.terms.messages.expNext();
+          if (drawString(messageWidth, "EXP Next", temp)) {
+            m_system.terms.messages.setExpNext(temp);
+          }
+          temp = m_system.terms.messages.saveMessage();
+          if (drawString(messageWidth, "Save Message", temp)) {
+            m_system.terms.messages.setSaveMessage(temp);
+          }
+          ImGui::SameLine();
+          temp = m_system.terms.messages.loadMessage();
+          if (drawString(messageWidth, "Load Message", temp)) {
+            m_system.terms.messages.setLoadMessage(temp);
+          }
+          ImGui::SameLine();
+          temp = m_system.terms.messages.file();
+          if (drawString(messageWidth, "File", temp)) {
+            m_system.terms.messages.setFile(temp);
+          }
+          temp = m_system.terms.messages.partyName();
+          if (drawString(messageWidth, "Party", temp)) {
+            m_system.terms.messages.setPartyName(temp);
+          }
+          ImGui::SameLine();
+          temp = m_system.terms.messages.emerge();
+          if (drawString(messageWidth, "Emerge", temp)) {
+            m_system.terms.messages.setEmerge(temp);
+          }
+          ImGui::SameLine();
+          temp = m_system.terms.messages.preemptive();
+          if (drawString(messageWidth, "Preemptive", temp)) {
+            m_system.terms.messages.setPreemptive(temp);
+          }
+          temp = m_system.terms.messages.surprise();
+          if (drawString(messageWidth, "Surprise", temp)) {
+            m_system.terms.messages.setSurprise(temp);
+          }
+          ImGui::SameLine();
+          temp = m_system.terms.messages.escapeStart();
+          if (drawString(messageWidth, "Escape Start", temp)) {
+            m_system.terms.messages.setEscapeStart(temp);
+          }
+          ImGui::SameLine();
+          temp = m_system.terms.messages.escapeFailure();
+          if (drawString(messageWidth, "Escape Failure", temp)) {
+            m_system.terms.messages.setEscapeFailure(temp);
+          }
 
-          drawString(messageWidth, "Possession", m_system.terms.messages.possession);
-          ImGui::SameLine();
-          drawString(messageWidth, "EXP Total", m_system.terms.messages.expTotal);
-          ImGui::SameLine();
-          drawString(messageWidth, "EXP Next", m_system.terms.messages.expNext);
+          temp = m_system.terms.messages.victory();
+          if (drawString(messageWidth, "Victory", temp)) {
+            m_system.terms.messages.setVictory(temp);
+          }
 
-          drawString(messageWidth, "Save Message", m_system.terms.messages.saveMessage);
           ImGui::SameLine();
-          drawString(messageWidth, "Load Message", m_system.terms.messages.loadMessage);
+          temp = m_system.terms.messages.defeat();
+          if (drawString(messageWidth, "Defeat", temp)) {
+            m_system.terms.messages.setDefeat(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "File", m_system.terms.messages.file);
-
-          drawString(messageWidth, "Party", m_system.terms.messages.partyName);
+          temp = m_system.terms.messages.obtainExp();
+          if (drawString(messageWidth, "Obtain EXP", temp)) {
+            m_system.terms.messages.setObtainExp(temp);
+          }
+          temp = m_system.terms.messages.obtainGold();
+          if (drawString(messageWidth, "Obtain Gold", temp)) {
+            m_system.terms.messages.setObtainGold(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Emerge", m_system.terms.messages.emerge);
+          temp = m_system.terms.messages.obtainItem();
+          if (drawString(messageWidth, "Obtain Item", temp)) {
+            m_system.terms.messages.setObtainItem(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Preemptive", m_system.terms.messages.preemptive);
-
-          drawString(messageWidth, "Surprise", m_system.terms.messages.surprise);
+          temp = m_system.terms.messages.levelUp();
+          if (drawString(messageWidth, "Level Up", temp)) {
+            m_system.terms.messages.setLevelUp(temp);
+          }
+          temp = m_system.terms.messages.obtainSkill();
+          if (drawString(messageWidth, "Obtain Skill", temp)) {
+            m_system.terms.messages.setObtainSkill(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Escape Start", m_system.terms.messages.escapeStart);
+          temp = m_system.terms.messages.useItem();
+          if (drawString(messageWidth, "Use Item", temp)) {
+            m_system.terms.messages.setUseItem(temp);
+          }
+          ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2.f);
+          temp = m_system.terms.messages.criticalToEnemy();
+          if (drawString(messageWidth, "Critical To Enemy", temp)) {
+            m_system.terms.messages.setCriticalToEnemy(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Escape Failure", m_system.terms.messages.escapeFailure);
-
-          drawString(messageWidth, "Victory", m_system.terms.messages.victory);
-          ImGui::SameLine();
-          drawString(messageWidth, "Defeat", m_system.terms.messages.defeat);
-          ImGui::SameLine();
-          drawString(messageWidth, "Obtain EXP", m_system.terms.messages.obtainExp);
-
-          drawString(messageWidth, "Obtain Gold", m_system.terms.messages.obtainGold);
-          ImGui::SameLine();
-          drawString(messageWidth, "Obtain Item", m_system.terms.messages.obtainItem);
-          ImGui::SameLine();
-          drawString(messageWidth, "Level Up", m_system.terms.messages.levelUp);
-
-          drawString(messageWidth, "Obtain Skill", m_system.terms.messages.obtainSkill);
-          ImGui::SameLine();
-          drawString(messageWidth, "Use Item", m_system.terms.messages.useItem);
+          temp = m_system.terms.messages.criticalToActor();
+          if (drawString(messageWidth, "Critical To Actor", temp)) {
+            m_system.terms.messages.setCriticalToActor(temp);
+          }
 
           ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2.f);
-          drawString(messageWidth, "Critical To Enemy", m_system.terms.messages.criticalToEnemy);
+          temp = m_system.terms.messages.actorDamage();
+          if (drawString(messageWidth, "Actor Damage", temp)) {
+            m_system.terms.messages.setActorDamage(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Critical To Actor", m_system.terms.messages.criticalToActor);
-
+          temp = m_system.terms.messages.actorRecovery();
+          if (drawString(messageWidth, "Actor Recovery", temp)) {
+            m_system.terms.messages.setActorRecovery(temp);
+          }
+          ImGui::SameLine();
+          temp = m_system.terms.messages.actorGain();
+          if (drawString(messageWidth, "Actor Gain", temp)) {
+            m_system.terms.messages.setActorGain(temp);
+          }
+          temp = m_system.terms.messages.actorLoss();
+          if (drawString(messageWidth, "Actor Loss", temp)) {
+            m_system.terms.messages.setActorLoss(temp);
+          }
+          ImGui::SameLine();
+          temp = m_system.terms.messages.actorDrain();
+          if (drawString(messageWidth, "Actor Drain", temp)) {
+            m_system.terms.messages.setActorDrain(temp);
+          }
+          ImGui::SameLine();
+          temp = m_system.terms.messages.actorNoDamage();
+          if (drawString(messageWidth, "Actor No Damage", temp)) {
+            m_system.terms.messages.setActorNoDamage(temp);
+          }
+          temp = m_system.terms.messages.actorNoHit();
+          if (drawString(messageWidth, "Actor No Hit", temp)) {
+            m_system.terms.messages.setActorNoHit(temp);
+          }
           ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2.f);
-          drawString(messageWidth, "Actor Damage", m_system.terms.messages.actorDamage);
+          temp = m_system.terms.messages.enemyDamage();
+          if (drawString(messageWidth, "Enemy Damage", temp)) {
+            m_system.terms.messages.setEnemyDamage(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Actor Recovery", m_system.terms.messages.actorRecovery);
+          temp = m_system.terms.messages.enemyRecovery();
+          if (drawString(messageWidth, "Enemy Recovery", temp)) {
+            m_system.terms.messages.setEnemyRecovery(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Actor Gain", m_system.terms.messages.actorGain);
-
-          drawString(messageWidth, "Actor Loss", m_system.terms.messages.actorLoss);
+          temp = m_system.terms.messages.enemyGain();
+          if (drawString(messageWidth, "Enemy Gain", temp)) {
+            m_system.terms.messages.setEnemyGain(temp);
+          }
+          temp = m_system.terms.messages.enemyLoss();
+          if (drawString(messageWidth, "Enemy Loss", temp)) {
+            m_system.terms.messages.setEnemyLoss(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Actor Drain", m_system.terms.messages.actorDrain);
+          temp = m_system.terms.messages.enemyDrain();
+          if (drawString(messageWidth, "Enemy Drain", temp)) {
+            m_system.terms.messages.setEnemyDrain(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Actor No Damage", m_system.terms.messages.actorNoDamage);
-
-          drawString(messageWidth, "Actor No Hit", m_system.terms.messages.actorNoHit);
-
+          temp = m_system.terms.messages.enemyNoDamage();
+          if (drawString(messageWidth, "Enemy No Damage", temp)) {
+            m_system.terms.messages.setEnemyNoDamage(temp);
+          }
+          temp = m_system.terms.messages.enemyNoHit();
+          if (drawString(messageWidth, "Enemy No Hit", temp)) {
+            m_system.terms.messages.setEnemyNoHit(temp);
+          }
           ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2.f);
-          drawString(messageWidth, "Enemy Damage", m_system.terms.messages.enemyDamage);
+          temp = m_system.terms.messages.evasion();
+          if (drawString(messageWidth, "Evasion", temp)) {
+            m_system.terms.messages.setEvasion(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Enemy Recovery", m_system.terms.messages.enemyRecovery);
+          temp = m_system.terms.messages.magicEvasion();
+          if (drawString(messageWidth, "Magic Evasion", temp)) {
+            m_system.terms.messages.setMagicEvasion(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Enemy Gain", m_system.terms.messages.enemyGain);
-
-          drawString(messageWidth, "Enemy Loss", m_system.terms.messages.enemyLoss);
+          temp = m_system.terms.messages.magicReflection();
+          if (drawString(messageWidth, "Magic Reflection", temp)) {
+            m_system.terms.messages.setMagicReflection(temp);
+          }
+          temp = m_system.terms.messages.counterAttack();
+          if (drawString(messageWidth, "Counter Attack", temp)) {
+            m_system.terms.messages.setCounterAttack(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Enemy Drain", m_system.terms.messages.enemyDrain);
+          temp = m_system.terms.messages.substitute();
+          if (drawString(messageWidth, "Substitute", temp)) {
+            m_system.terms.messages.setSubstitute(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Enemy No Damage", m_system.terms.messages.enemyNoDamage);
-
-          drawString(messageWidth, "Enemy No Hit", m_system.terms.messages.enemyNoHit);
-
-          ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2.f);
-          drawString(messageWidth, "Evasion", m_system.terms.messages.evasion);
+          temp = m_system.terms.messages.buffAdd();
+          if (drawString(messageWidth, "Buff Add", temp)) {
+            m_system.terms.messages.setBuffAdd(temp);
+          }
+          temp = m_system.terms.messages.debuffAdd();
+          if (drawString(messageWidth, "Debuff Add", temp)) {
+            m_system.terms.messages.setDebuffAdd(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Magic Evasion", m_system.terms.messages.magicEvasion);
+          temp = m_system.terms.messages.buffRemove();
+          if (drawString(messageWidth, "Buff Remove", temp)) {
+            m_system.terms.messages.setBuffRemove(temp);
+          }
           ImGui::SameLine();
-          drawString(messageWidth, "Magic Reflection", m_system.terms.messages.magicReflection);
-
-          drawString(messageWidth, "Counter Attack", m_system.terms.messages.counterAttack);
-          ImGui::SameLine();
-          drawString(messageWidth, "Substitute", m_system.terms.messages.substitute);
-          ImGui::SameLine();
-          drawString(messageWidth, "Buff Add", m_system.terms.messages.buffAdd);
-
-          drawString(messageWidth, "Debuff Add", m_system.terms.messages.debuffAdd);
-          ImGui::SameLine();
-          drawString(messageWidth, "Buff Remove", m_system.terms.messages.buffRemove);
-          ImGui::SameLine();
-          drawString(messageWidth, "Action Failure", m_system.terms.messages.actionFailure);
+          temp = m_system.terms.messages.actionFailure();
+          if (drawString(messageWidth, "Action Failure", temp)) {
+            m_system.terms.messages.setActionFailure(temp);
+          }
         }
         ImGui::EndChild();
         ImGui::EndTabItem();

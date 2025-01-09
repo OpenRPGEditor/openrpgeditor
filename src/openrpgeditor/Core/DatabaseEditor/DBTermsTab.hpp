@@ -10,8 +10,8 @@ public:
   void draw() override;
 
 private:
-  static void drawAbbreviatedString(float width, std::string_view label, std::string& full, std::string& abbrv);
-  static void drawString(float width, std::string_view label, std::string& full);
+  static std::tuple<bool, bool> drawAbbreviatedString(float width, std::string_view label, std::string& full, std::string& abbrv);
+  static bool drawString(float width, std::string_view label, std::string& full);
   void initializeParameterStrings() const;
   void initializeBasicStrings() const;
   void initializeCommandStrings() const;

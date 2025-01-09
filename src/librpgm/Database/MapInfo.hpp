@@ -5,13 +5,71 @@
 #include <string>
 
 class ISerializable;
-class MapInfo {
+class MapInfo final : public IModifiable {
   friend class MapInfosSerializer;
   friend void to_json(nlohmann::ordered_json& json, const MapInfo& mapinfo);
   friend void from_json(const nlohmann::ordered_json& json, MapInfo& mapinfo);
   friend class MapInfos; // TODO: Remove this
 
 public:
+  MapInfo() = default;
+  MapInfo(const MapInfo& other)
+  : IModifiable(other)
+  , m_expanded(other.m_expanded)
+  , m_id(other.m_id)
+  , m_name(other.m_name)
+  , m_order(other.m_order)
+  , m_parentId(other.m_parentId)
+  , m_scrollX(other.m_scrollX)
+  , m_scrollY(other.m_scrollY)
+  , m_children(other.m_children) {
+    if (other.m_map) {
+      m_map = std::make_unique<Map>(other.m_map->clone());
+    }
+  };
+  MapInfo& operator=(const MapInfo& other) {
+    IModifiable::operator=(other);
+    m_expanded = other.m_expanded;
+    m_id = other.m_id;
+    m_name = other.m_name;
+    m_order = other.m_order;
+    m_parentId = other.m_parentId;
+    m_scrollX = other.m_scrollX;
+    m_scrollY = other.m_scrollY;
+    if (other.m_map) {
+      m_map = std::make_unique<Map>(other.m_map->clone());
+    }
+    return *this;
+  }
+  MapInfo(MapInfo&& other) noexcept
+  : IModifiable(other)
+  , m_expanded(other.m_expanded)
+  , m_id(other.m_id)
+  , m_name(std::move(other.m_name))
+  , m_order(other.m_order)
+  , m_parentId(other.m_parentId)
+  , m_scrollX(other.m_scrollX)
+  , m_scrollY(other.m_scrollY)
+  , m_children(std::move(other.m_children)) {
+    if (other.m_map) {
+      m_map = std::make_unique<Map>(other.m_map->clone());
+    }
+  };
+  MapInfo& operator=(MapInfo&& other) noexcept {
+    IModifiable::operator=(std::move(other));
+    m_expanded = other.m_expanded;
+    m_id = other.m_id;
+    m_name = std::move(other.m_name);
+    m_order = other.m_order;
+    m_parentId = other.m_parentId;
+    m_scrollX = other.m_scrollX;
+    m_scrollY = other.m_scrollY;
+    if (other.m_map) {
+      m_map = std::make_unique<Map>(other.m_map->clone());
+    }
+    return *this;
+  }
+
   [[nodiscard]] int id() const { return m_id; }
   void setId(const int id) { m_id = id; }
 
@@ -33,16 +91,31 @@ public:
   [[nodiscard]] double scrollY() const { return m_scrollY; }
   void setScrollY(const double scrollY) { m_scrollY = scrollY; }
 
+  nlohmann::ordered_json serializeOldValues() const override { return clone(); }
+
   std::vector<MapInfo*>& children() { return m_children; }
   [[nodiscard]] const std::vector<MapInfo*>& children() const { return m_children; }
 
   Map* map() { return m_map.get(); }
   [[nodiscard]] const Map* map() const { return m_map.get(); }
 
-  Event* event(int id) { return m_map ? m_map->event(id) : nullptr; }
-  [[nodiscard]] const Event* event(int id) const { return m_map ? m_map->event(id) : nullptr; }
+  Event* event(const int id) { return m_map ? m_map->event(id) : nullptr; }
+  [[nodiscard]] const Event* event(const int id) const { return m_map ? m_map->event(id) : nullptr; }
+
+  MapInfo clone() const { return MapInfo(*this, 1); }
+
+  bool isModified() const override { return IModifiable::isModified() | (m_map ? m_map->isModified() : 0); }
 
 private:
+  MapInfo(const MapInfo& other, int)
+  : IModifiable(other)
+  , m_expanded(other.m_expanded)
+  , m_id(other.m_id)
+  , m_name(other.m_name)
+  , m_order(other.m_order)
+  , m_parentId(other.m_parentId)
+  , m_scrollX(other.m_scrollX)
+  , m_scrollY(other.m_scrollY) {};
   friend void recursiveSort(MapInfo& in);
   friend class MapInfos;
   friend class MapInfosSerializer;

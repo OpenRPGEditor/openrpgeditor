@@ -170,6 +170,8 @@ public:
     bool isModified = IModifiable::isModified();
     isModified |= std::ranges::any_of(m_events, [](const std::optional<Event>& value) { return value && value->isModified(); });
     isModified |= std::ranges::any_of(m_encounterList, [](const Encounter& value) { return value.isModified(); });
+    isModified |= m_bgm.isModified();
+    isModified |= m_bgs.isModified();
     return isModified;
   }
 

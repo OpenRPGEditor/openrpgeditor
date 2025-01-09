@@ -40,7 +40,7 @@ public:
         m_armors[i].setId(i);
       }
     }
-    setModified();
+  setHasChanges();
   }
 
   bool isModified() const override {

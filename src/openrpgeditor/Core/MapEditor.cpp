@@ -182,7 +182,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     int layer = 0;
     if (!penData.empty()) {
       if (m_parent->tilesetPicker().isRegionMode()) {
-        map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), 5)] = penData[0][0];
+        map()->setTileAt(penData[0][0], m_tileCursor.tileX(), m_tileCursor.tileY(), 5);
       } else {
         switch (m_parent->drawTool()) {
         case DrawTool::Pencil: {
@@ -191,7 +191,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
               if (penData[0][i] == -1) {
                 continue;
               }
-              map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), i)] = penData[0][i];
+              map()->setTileAt(penData[0][i], m_tileCursor.tileX(), m_tileCursor.tileY(), i);
               updateAutotilesAroundPoint({m_tileCursor.tileX(), m_tileCursor.tileY()}, i);
             }
           } else {
@@ -203,7 +203,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
               }
             }
             if (tileId != -1) {
-              map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), layer)] = tileId;
+              map()->setTileAt(penData[0][layer], m_tileCursor.tileX(), m_tileCursor.tileY(), layer);
               if (TileHelper::isAutoTile(tileId)) {
                 updateAutotilesAroundPoint({m_tileCursor.tileX(), m_tileCursor.tileY()}, layer);
               }
@@ -221,10 +221,10 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
         case DrawTool::Eraser:
           if (m_parent->tilesetPicker().isRegionMode()) {
             // Clear region tiles
-            map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), 5)] = 0;
+            map()->setTileAt(0, m_tileCursor.tileX(), m_tileCursor.tileY(), 5);
           } else {
             for (int i = 0; i < 5; ++i) {
-              map()->data()[m_mapRenderer.tileIdFromCoords(m_tileCursor.tileX(), m_tileCursor.tileY(), i)] = 0;
+              map()->setTileAt(0, m_tileCursor.tileX(), m_tileCursor.tileY(), i);
               updateAutotilesAroundPoint({m_tileCursor.tileX(), m_tileCursor.tileY()}, i);
             }
           }

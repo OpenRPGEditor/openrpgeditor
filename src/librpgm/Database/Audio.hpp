@@ -38,6 +38,8 @@ public:
   rpgmutils::signal<void(Audio*, int)>& pitchModified();
   rpgmutils::signal<void(Audio*, int)>& volumeModified();
 
+  bool operator==(const Audio& other) const { return m_name == other.m_name && m_pan == other.m_pan && m_pitch == other.m_pitch && m_volume == other.m_volume; }
+
 private:
   std::string m_name; // base name of the file (without extension) in audio/se
   int m_pan = 0;

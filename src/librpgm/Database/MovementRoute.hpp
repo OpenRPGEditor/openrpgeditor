@@ -30,11 +30,13 @@ public:
     if (position < 0)
       position = 0;
     auto select = list.insert(list.begin() + position, command);
-    setModified(true);
+    setHasChanges(true);
     return select - list.begin();
   }
 
   MovementRoute clone() const { return MovementRoute(*this, 1); }
+
+  bool operator==(const MovementRoute& other) const { return list == other.list; }
 
 private:
   MovementRoute(const MovementRoute& other, int) : IModifiable(other), repeat(other.repeat), skippable(other.skippable), wait(other.wait) {

@@ -34,14 +34,14 @@ std::tuple<bool, bool> MapProperties::draw() {
     return {!m_open, m_confirmed};
   }
 
-  if (ImGui::Begin("Map Properties", &m_open)) {
+  if (ImGui::Begin(std::format("{}###map_properties", trNOOP("Map Properties")).c_str(), &m_open)) {
     char buf[4096]{};
     ImGui::BeginGroupPanel();
     {
-      ImGui::SeparatorText("General Settings");
+      ImGui::SeparatorText(trNOOP("General Settings"));
       ImGui::BeginGroup();
       {
-        ImGui::Text("Name - ID: %.03i", m_mapInfo->id());
+        ImGui::Text("%s", trFormat("Name - ID: {}", m_mapInfo->id()).c_str());
         ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
         strncpy(buf, m_mapInfo->name().c_str(), 4096);
         if (ImGui::InputText("##map_name", buf, 4096)) {
@@ -56,7 +56,7 @@ std::tuple<bool, bool> MapProperties::draw() {
         // Move back up a couple couple pixels
         cursorPos.y -= 4.f;
         ImGui::SetCursorPos(cursorPos);
-        ImGui::Text("Display Name");
+        ImGui::Text("%s", trNOOP("Display Name"));
         ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
         strncpy(buf, map()->displayName().c_str(), 4096);
         if (ImGui::InputText("##map_display_name", buf, 4096)) {
@@ -66,7 +66,7 @@ std::tuple<bool, bool> MapProperties::draw() {
       ImGui::EndGroup();
       ImGui::BeginGroup();
       {
-        ImGui::Text("Tileset");
+        ImGui::Text("%s", trNOOP("Tileset"));
         strncpy(buf, m_mapInfo->name().c_str(), 4096);
         const auto& tilesetName = Database::instance()->tilesets.tileset(map()->tilesetId())->name();
         ImGui::PushID("##map_tileset_button");
@@ -81,7 +81,7 @@ std::tuple<bool, bool> MapProperties::draw() {
         // Move back up a couple pixels
         cursorPos.y -= 4.f;
         ImGui::SetCursorPos(cursorPos);
-        ImGui::Text("Width");
+        ImGui::Text("%s", trNOOP("Width"));
         ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - 15);
         ImGui::DragInt("##map_width", &m_tempWidth, 0, 0, 256);
       }
@@ -93,7 +93,7 @@ std::tuple<bool, bool> MapProperties::draw() {
         // Move back up a couple pixels
         cursorPos.y -= 4.f;
         ImGui::SetCursorPos(cursorPos);
-        ImGui::Text("Height");
+        ImGui::Text("%s", trNOOP("Height"));
         ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - 15);
         ImGui::DragInt("##map_height", &m_tempHeight, 0, 0, 256);
       }
@@ -103,7 +103,7 @@ std::tuple<bool, bool> MapProperties::draw() {
         const auto cursorPos = ImGui::GetCursorPos();
         // Move back up a couple pixels
         ImGui::SetCursorPos(cursorPos);
-        ImGui::Text("Scroll Type");
+        ImGui::Text("%s", trNOOP("Scroll Type"));
         ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
         if (ImGui::BeginCombo("##map_scroll_type", DecodeEnumName(magic_enum::enum_name(map()->scrollType())).c_str())) {
           for (const auto& e : magic_enum::enum_values<ScrollType>()) {
@@ -125,7 +125,7 @@ std::tuple<bool, bool> MapProperties::draw() {
         // Move back up a couple pixels
         cursorPos.y -= 4.f;
         ImGui::SetCursorPos(cursorPos);
-        ImGui::Text("Enc. Steps");
+        ImGui::Text("%s", trNOOP("Enc. Steps"));
         ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
         auto encounterStep = map()->encounterStep();
         if (ImGui::DragInt("##map_enc_steps", &encounterStep, 0, 0, 999)) {
@@ -139,7 +139,7 @@ std::tuple<bool, bool> MapProperties::draw() {
       ImGui::BeginGroup();
       {
         bool autoplayBgm = map()->autoplayBgm();
-        if (ImGui::Checkbox("Autoplay BGM", &autoplayBgm)) {
+        if (ImGui::Checkbox(trNOOP("Autoplay BGM"), &autoplayBgm)) {
           map()->setAutoplayBgm(autoplayBgm);
         }
         ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->autoplayBgm());
@@ -157,7 +157,7 @@ std::tuple<bool, bool> MapProperties::draw() {
       ImGui::BeginGroup();
       {
         bool autoplayBgs = map()->autoplayBgs();
-        if (ImGui::Checkbox("Autoplay BGS", &autoplayBgs)) {
+        if (ImGui::Checkbox(trNOOP("Autoplay BGS"), &autoplayBgs)) {
           map()->setAutoplayBgs(autoplayBgs);
         }
         ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->autoplayBgs());
@@ -173,7 +173,7 @@ std::tuple<bool, bool> MapProperties::draw() {
       ImGui::BeginGroup();
       {
         bool specifyBattleback = map()->specifyBattleback();
-        if (ImGui::Checkbox("Battleback", &specifyBattleback)) {
+        if (ImGui::Checkbox(trNOOP("Battleback"), &specifyBattleback)) {
           map()->setSpecifyBattleback(specifyBattleback);
         }
         ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->specifyBattleback());
@@ -191,7 +191,7 @@ std::tuple<bool, bool> MapProperties::draw() {
       ImGui::BeginGroup();
       {
         bool disableDashing = map()->disableDashing();
-        if (ImGui::Checkbox("Disable Dashing", &disableDashing)) {
+        if (ImGui::Checkbox(trNOOP("Disable Dashing"), &disableDashing)) {
           map()->setDisableDashing(disableDashing);
         }
         ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->disableDashing());
@@ -203,7 +203,7 @@ std::tuple<bool, bool> MapProperties::draw() {
     {
       ImGui::BeginGroup();
       {
-        ImGui::Text("Parallax Background");
+        ImGui::Text("%s", trNOOP("Parallax Background"));
         ImGui::PushID("##map_parallax_button");
         std::string text = map()->parallaxName().empty() ? "##map_parallax_button_empty" : map()->parallaxName();
         if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetContentRegionMax().x / 2) - 15, 0})) {}
@@ -213,7 +213,7 @@ std::tuple<bool, bool> MapProperties::draw() {
       ImGui::BeginGroup();
       {
         bool parallaxLoopX = map()->parallaxLoopX();
-        if (ImGui::Checkbox("Loop Horizontally", &parallaxLoopX)) {
+        if (ImGui::Checkbox(trNOOP("Loop Horizontally"), &parallaxLoopX)) {
           map()->setParallaxLoopX(parallaxLoopX);
         }
         ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->parallaxLoopX());
@@ -231,7 +231,7 @@ std::tuple<bool, bool> MapProperties::draw() {
       ImGui::BeginGroup();
       {
         bool parallaxLoopY = map()->parallaxLoopY();
-        if (ImGui::Checkbox("Loop Vertically", &parallaxLoopY)) {
+        if (ImGui::Checkbox(trNOOP("Loop Vertically"), &parallaxLoopY)) {
           map()->setParallaxLoopY(parallaxLoopY);
         }
         ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->parallaxLoopY());
@@ -248,7 +248,7 @@ std::tuple<bool, bool> MapProperties::draw() {
       ImGui::BeginGroup();
       {
         bool parallaxShow = map()->parallaxShow();
-        if (ImGui::Checkbox("Show in Editor", &parallaxShow)) {
+        if (ImGui::Checkbox(trNOOP("Show in Editor"), &parallaxShow)) {
           map()->setParallaxShow(parallaxShow);
         }
         ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->parallaxShow());
@@ -262,7 +262,7 @@ std::tuple<bool, bool> MapProperties::draw() {
         // Move back up a couple pixels
         cursorPos.y -= 4.f;
         ImGui::SetCursorPos(cursorPos);
-        ImGui::Text("Note");
+        ImGui::Text("%s", trNOOP("Note"));
 
         strncpy(buf, map()->note().c_str(), 4096);
         if (ImGui::InputTextMultiline("##map_note", buf, 2048, ImVec2(ImGui::GetContentRegionMax().x - 15, 400), flags)) {

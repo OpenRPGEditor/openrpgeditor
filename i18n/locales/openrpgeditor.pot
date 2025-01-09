@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenRPG Editor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-06 18:52-0800\n"
+"POT-Creation-Date: 2025-01-08 15:12-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -408,7 +408,7 @@ msgid "OK"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:164 src/librpgm/Database/Globals.hpp:854
-#: src/openrpgeditor/Core/MainWindow.cpp:387
+#: src/openrpgeditor/Core/MainWindow.cpp:391
 msgid "Cancel"
 msgstr ""
 
@@ -1811,10 +1811,12 @@ msgid "No Loop"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:706
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:234
 msgid "Loop Vertically"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:707
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:216
 msgid "Loop Horizontally"
 msgstr ""
 
@@ -1891,7 +1893,7 @@ msgid "Lowest"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:753
-#: src/openrpgeditor/Core/MainWindow.cpp:513
+#: src/openrpgeditor/Core/MainWindow.cpp:606
 msgid "Lower"
 msgstr ""
 
@@ -2175,98 +2177,176 @@ msgstr ""
 msgid "Moment"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:211
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:37
+msgid "Map Properties"
+msgstr ""
+
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:41
+msgid "General Settings"
+msgstr ""
+
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:44
+#, c++-format
+msgid "Name - ID: {}"
+msgstr ""
+
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:59
+msgid "Display Name"
+msgstr ""
+
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:69
+msgid "Tileset"
+msgstr ""
+
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:84
+msgid "Width"
+msgstr ""
+
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:96
+msgid "Height"
+msgstr ""
+
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:128
+msgid "Enc. Steps"
+msgstr ""
+
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:142
+msgid "Autoplay BGM"
+msgstr ""
+
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:160
+msgid "Autoplay BGS"
+msgstr ""
+
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:176
+msgid "Battleback"
+msgstr ""
+
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:194
+msgid "Disable Dashing"
+msgstr ""
+
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:206
+msgid "Parallax Background"
+msgstr ""
+
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:251
+msgid "Show in Editor"
+msgstr ""
+
+#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:265
+msgid "Note"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventEditor.cpp:54
+msgid "Templates"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventEditor.cpp:66
+msgid "New Event Template"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventEditor.cpp:72
+msgid "Saved event as template successfully!"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventEditor.cpp:74
+msgid "Failed to saved event as template!"
+msgstr ""
+
+#: src/openrpgeditor/Core/MainWindow.cpp:215
 msgid "New Project"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:211
+#: src/openrpgeditor/Core/MainWindow.cpp:215
 msgid "Creates a new project."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:218
+#: src/openrpgeditor/Core/MainWindow.cpp:222
 msgid "Open Project"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:218
+#: src/openrpgeditor/Core/MainWindow.cpp:222
 msgid "Opens an existing project."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:226
+#: src/openrpgeditor/Core/MainWindow.cpp:230
 msgid "Save Project"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:226
+#: src/openrpgeditor/Core/MainWindow.cpp:230
 msgid "Saves the project."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:271
-#: src/openrpgeditor/Core/MainWindow.cpp:670
+#: src/openrpgeditor/Core/MainWindow.cpp:275
+#: src/openrpgeditor/Core/MainWindow.cpp:763
 msgid "Map"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:271
+#: src/openrpgeditor/Core/MainWindow.cpp:275
 msgid "Switch to Map Edit mode."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:282
-#: src/openrpgeditor/Core/MainWindow.cpp:673
+#: src/openrpgeditor/Core/MainWindow.cpp:286
+#: src/openrpgeditor/Core/MainWindow.cpp:766
 msgid "Event"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:282
+#: src/openrpgeditor/Core/MainWindow.cpp:286
 msgid "Switch to Event Edit mode."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:290
-#: src/openrpgeditor/Core/MainWindow.cpp:677
+#: src/openrpgeditor/Core/MainWindow.cpp:294
+#: src/openrpgeditor/Core/MainWindow.cpp:770
 msgid "Game Preview"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:290
+#: src/openrpgeditor/Core/MainWindow.cpp:294
 msgid "Toggles Game Preview mode."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:326
+#: src/openrpgeditor/Core/MainWindow.cpp:330
 msgid "Shadow Pen"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:326
+#: src/openrpgeditor/Core/MainWindow.cpp:330
 msgid "Adds or removes shadows of walls"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:337
+#: src/openrpgeditor/Core/MainWindow.cpp:341
 msgid "Eraser"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:337
+#: src/openrpgeditor/Core/MainWindow.cpp:341
 msgid "Erases tiles at a given point"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:382
+#: src/openrpgeditor/Core/MainWindow.cpp:386
 msgid "Loading Project...."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:383
-msgid "Loading {0} ({1} of {2])...."
+#: src/openrpgeditor/Core/MainWindow.cpp:387
+#, c++-format
+msgid "Loading {0} ({1} of {2})...."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:396
+#: src/openrpgeditor/Core/MainWindow.cpp:400
 msgid "Saving Project...."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:397
+#: src/openrpgeditor/Core/MainWindow.cpp:401
 #, c++-format
 msgid "Saving {0} ({1} of {2})...."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:488
+#: src/openrpgeditor/Core/MainWindow.cpp:581
 #, c++-format
 msgid ""
 "Sheet: {} ({}), ID: {}, x: {}, y: {}, z: {},  width: {}, height: {}, u: {}, "
 "v: {}"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:492
+#: src/openrpgeditor/Core/MainWindow.cpp:585
 #, c++-format
 msgid ""
 "\n"
@@ -2276,150 +2356,150 @@ msgid ""
 "WallSide: {}, WallTop: {}, FloorTypeAutoTile: {}, WallTypeAutoTile: {}\n"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:511
+#: src/openrpgeditor/Core/MainWindow.cpp:604
 msgid "Tile Debug"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:519
+#: src/openrpgeditor/Core/MainWindow.cpp:612
 msgid "Upper"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:533
+#: src/openrpgeditor/Core/MainWindow.cpp:626
 msgid "RPG Maker Projects"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:574
+#: src/openrpgeditor/Core/MainWindow.cpp:667
 msgid "File"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:575
+#: src/openrpgeditor/Core/MainWindow.cpp:668
 msgid "New Project..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:578
+#: src/openrpgeditor/Core/MainWindow.cpp:671
 msgid "Open Project..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:581
+#: src/openrpgeditor/Core/MainWindow.cpp:674
 msgid "Close Project..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:584
+#: src/openrpgeditor/Core/MainWindow.cpp:677
 msgid "Save Project..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:588
+#: src/openrpgeditor/Core/MainWindow.cpp:681
 msgid "Recent Projects"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:589
+#: src/openrpgeditor/Core/MainWindow.cpp:682
 msgid "Clear"
 msgstr ""
 
 #. TL-NOTE: Use ellipses character appropriate for your language
 #. Deployment is referring to preparing a game for distribution to end users, exporting all related assets into an easily distributable form
-#: src/openrpgeditor/Core/MainWindow.cpp:610
+#: src/openrpgeditor/Core/MainWindow.cpp:703
 msgid "Deployment..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:620
+#: src/openrpgeditor/Core/MainWindow.cpp:713
 msgid "Exit"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:629
+#: src/openrpgeditor/Core/MainWindow.cpp:722
 msgid "Edit"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:630
+#: src/openrpgeditor/Core/MainWindow.cpp:723
 msgid "Undo"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:637
+#: src/openrpgeditor/Core/MainWindow.cpp:730
 msgid "Redo"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:644
+#: src/openrpgeditor/Core/MainWindow.cpp:737
 msgid "Cut"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:647
+#: src/openrpgeditor/Core/MainWindow.cpp:740
 msgid "Copy"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:650
+#: src/openrpgeditor/Core/MainWindow.cpp:743
 msgid "Paste"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:653
+#: src/openrpgeditor/Core/MainWindow.cpp:746
 msgid "Delete"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:657
+#: src/openrpgeditor/Core/MainWindow.cpp:750
 msgid "Find"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:660
+#: src/openrpgeditor/Core/MainWindow.cpp:753
 msgid "Find Next"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:663
+#: src/openrpgeditor/Core/MainWindow.cpp:756
 msgid "Find Previous"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:669
+#: src/openrpgeditor/Core/MainWindow.cpp:762
 msgid "Mode"
 msgstr ""
 
 #. TL-NOTE: Refers to Game Preview mode and is in reference to how events are drawn to the screen.
 #. Displays as a tooltip.
-#: src/openrpgeditor/Core/MainWindow.cpp:683
+#: src/openrpgeditor/Core/MainWindow.cpp:776
 msgid "Toggles event borders, layer render order, and animations."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:687
+#: src/openrpgeditor/Core/MainWindow.cpp:780
 msgid "Draw"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:696
+#: src/openrpgeditor/Core/MainWindow.cpp:789
 msgid "Scale"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:697
+#: src/openrpgeditor/Core/MainWindow.cpp:790
 msgid "Zoom In"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:700
+#: src/openrpgeditor/Core/MainWindow.cpp:793
 msgid "Zoom Out"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:703
+#: src/openrpgeditor/Core/MainWindow.cpp:796
 msgid "Actual Size"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:710
+#: src/openrpgeditor/Core/MainWindow.cpp:803
 msgid "Settings"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:713
+#: src/openrpgeditor/Core/MainWindow.cpp:806
 msgid "Database"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:716
+#: src/openrpgeditor/Core/MainWindow.cpp:809
 msgid "NWJS Version Manager"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:722
+#: src/openrpgeditor/Core/MainWindow.cpp:815
 msgid "Reset Window Layout"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:727
+#: src/openrpgeditor/Core/MainWindow.cpp:820
 msgid "Game"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:728
+#: src/openrpgeditor/Core/MainWindow.cpp:821
 msgid "Play Test"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:732
+#: src/openrpgeditor/Core/MainWindow.cpp:825
 msgid "Open Folder"
 msgstr ""

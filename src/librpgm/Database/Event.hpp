@@ -119,6 +119,8 @@ public:
 
   Event clone() const { return Event(*this, 1); }
 
+  bool operator==(const Event& other) const { return m_id == other.m_id && m_name == other.m_name && m_note == other.m_note && m_pages == other.m_pages && m_x == other.m_x && m_y == other.m_y; }
+
 private:
   Event(const Event& other, int) : IModifiable(other), m_id(other.m_id), m_name(other.m_name), m_note(other.m_note), m_x(other.m_x), m_y(other.m_y) {
     /* Clone our pages */
@@ -133,12 +135,12 @@ private:
   int m_x{};
   int m_y{};
 
-  std::optional<int> m_oldid{};
-  std::optional<std::string> m_oldname{};
-  std::optional<std::string> m_oldnote{};
-  std::optional<std::vector<EventPage>> m_oldpages{};
-  std::optional<int> m_oldx{};
-  std::optional<int> m_oldy{};
+  std::optional<int> m_oldid;
+  std::optional<std::string> m_oldname;
+  std::optional<std::string> m_oldnote;
+  std::optional<std::vector<EventPage>> m_oldpages;
+  std::optional<int> m_oldx;
+  std::optional<int> m_oldy;
 
   std::optional<rpgmutils::signal<void(Event*, int)>> m_idModified;
   std::optional<rpgmutils::signal<void(Event*, const std::string&)>> m_nameModified;

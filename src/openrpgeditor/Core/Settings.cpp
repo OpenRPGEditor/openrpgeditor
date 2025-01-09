@@ -51,6 +51,7 @@ bool Settings::loadFromJson(const nlohmann::ordered_json& parser) {
     projectBaseDirectory = parser.value("projectBaseDirectory", projectBaseDirectory);
     rpgMakerLocation = parser.value("rpgMakerLocation", rpgMakerLocation);
     rpgMakerVersion = parser.value("rpgMakerVersion", rpgMakerVersion);
+    locale = parser.value("locale", locale);
     uiScale = parser.value("uiScale", uiScale);
     fontSize = parser.value("fontSize", fontSize);
     monoFontSize = parser.value("monoFontSize", monoFontSize);
@@ -70,18 +71,21 @@ void Settings::serialize(const std::string_view path) {
 }
 
 nlohmann::ordered_json Settings::serializeToJson() {
-  return {{"window", window},                             //
-          {"mru", mru},                                   //
-          {"plugins", plugins},                           //
-          {"lastDirectory", lastDirectory},               //
-          {"lastProject", lastProject},                   //
-          {"projectBaseDirectory", projectBaseDirectory}, //
-          {"rpgMakerLocation", rpgMakerLocation},         //
-          {"rpgMakerVersion", rpgMakerVersion},           //
-          {"uiScale", uiScale},                           //
-          {"fontSize", fontSize},                         //
-          {"monoFontSize", monoFontSize},                 //
-          {"maxMru", maxMru},                             //
-          {"currentNWJSVersion", currentNWJSVersion},     //
-          {"ranFirstBootWizard", ranFirstBootWizard}};    //
+  return {
+      {"window", window},                             //
+      {"mru", mru},                                   //
+      {"plugins", plugins},                           //
+      {"lastDirectory", lastDirectory},               //
+      {"lastProject", lastProject},                   //
+      {"projectBaseDirectory", projectBaseDirectory}, //
+      {"rpgMakerLocation", rpgMakerLocation},         //
+      {"rpgMakerVersion", rpgMakerVersion},           //
+      {"locale", locale},                             //
+      {"uiScale", uiScale},                           //
+      {"fontSize", fontSize},                         //
+      {"monoFontSize", monoFontSize},                 //
+      {"maxMru", maxMru},                             //
+      {"currentNWJSVersion", currentNWJSVersion},     //
+      {"ranFirstBootWizard", ranFirstBootWizard},     //
+  };
 }

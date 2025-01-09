@@ -39,7 +39,7 @@ public:
         m_actors[i].setId(i);
       }
     }
-    setModified();
+  setHasChanges();
   }
 
   bool hasTestActor() const {

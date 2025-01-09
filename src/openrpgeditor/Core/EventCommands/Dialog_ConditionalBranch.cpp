@@ -440,7 +440,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
               ImGui::SetItemDefaultFocus();
             }
 
-            for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events()) {
+            for (const auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events()) {
               if (!dataSource.has_value())
                 continue;
 

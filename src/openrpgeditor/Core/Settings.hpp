@@ -35,6 +35,7 @@ struct Settings {
   std::string lastProject;
   std::string projectBaseDirectory;
   std::string rpgMakerLocation;
+  std::string locale;
   int rpgMakerVersion{-1};
   float uiScale{1.0};
   int fontSize{12};

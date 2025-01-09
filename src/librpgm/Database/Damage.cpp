@@ -63,7 +63,7 @@ void Damage::setCritical(const bool critical) {
   if (!signalsDisabled()) {
     criticalModified().fire(this, critical);
   }
-  setModified();
+  setHasChanges();
 }
 
 int Damage::elementId() const { return m_elementId; }
@@ -82,7 +82,7 @@ void Damage::setFormula(const std::string& formula) {
   if (!signalsDisabled()) {
     formulaModified().fire(this, formula);
   }
-  setModified();
+  setHasChanges();
 }
 
 DamageType Damage::type() const { return m_type; }
@@ -92,7 +92,7 @@ void Damage::setType(const DamageType type) {
   if (!signalsDisabled()) {
     typeModified().fire(this, type);
   }
-  setModified();
+  setHasChanges();
 }
 
 int Damage::variance() const { return m_variance; }
@@ -103,10 +103,11 @@ void Damage::setVariance(const int variance) {
   if (!signalsDisabled()) {
     varianceModified().fire(this, variance);
   }
-  setModified();
+  setHasChanges();
 }
 
 void Damage::restoreOriginal() {
+  IModifiable::restoreOriginal();
   MODIFIABLE_RESTORE_ORIGINAL_VALUE(critical);
   MODIFIABLE_RESTORE_ORIGINAL_VALUE(elementId);
   MODIFIABLE_RESTORE_ORIGINAL_VALUE(formula);
@@ -115,6 +116,7 @@ void Damage::restoreOriginal() {
 }
 
 void Damage::acceptChanges() {
+  IModifiable::acceptChanges();
   MODIFIABLE_ACCEPT_VALUE(critical);
   MODIFIABLE_ACCEPT_VALUE(elementId);
   MODIFIABLE_ACCEPT_VALUE(formula);

@@ -74,6 +74,7 @@ public:
   void restoreOriginal() override;
   void acceptChanges() override;
   nlohmann::ordered_json serializeOldValues() const override;
+  bool isModified() const override { return IModifiable::isModified() | m_damage.isModified(); }
 
   rpgmutils::signal<void(Item*, int)>& idModified();
   rpgmutils::signal<void(Item*, int)>& animationIdModified();

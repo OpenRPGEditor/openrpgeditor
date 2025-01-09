@@ -40,7 +40,7 @@ void Battler::setActorId(int actorId) {
   if (!signalsDisabled()) {
     actorIdModified().fire(this, actorId);
   }
-  setModified();
+  setHasChanges();
 }
 
 const std::vector<int>& Battler::equips() const { return m_equips; }
@@ -50,7 +50,7 @@ void Battler::setEquips(const std::vector<int>& equips) {
   if (!signalsDisabled()) {
     equipsModified().fire(this, m_equips);
   }
-  setModified();
+  setHasChanges();
 }
 void Battler::setEquip(int index, int equip) {
   assert(index >= 0 && index < m_equips.size());
@@ -59,7 +59,7 @@ void Battler::setEquip(int index, int equip) {
   if (!signalsDisabled()) {
     equipModified().fire(this, index, equip);
   }
-  setModified();
+  setHasChanges();
 }
 
 int Battler::level() const { return m_level; }
@@ -69,16 +69,18 @@ void Battler::setLevel(int level) {
   if (!signalsDisabled()) {
     levelModified().fire(this, level);
   }
-  setModified();
+  setHasChanges();
 }
 
 void Battler::restoreOriginal() {
+  IModifiable::restoreOriginal();
   MODIFIABLE_RESTORE_ORIGINAL_VALUE(actorId);
   MODIFIABLE_RESTORE_ORIGINAL_VALUE(equips);
   MODIFIABLE_RESTORE_ORIGINAL_VALUE(level);
 }
 
 void Battler::acceptChanges() {
+  IModifiable::acceptChanges();
   MODIFIABLE_ACCEPT_VALUE(actorId);
   MODIFIABLE_ACCEPT_VALUE(equips);
   MODIFIABLE_ACCEPT_VALUE(level);

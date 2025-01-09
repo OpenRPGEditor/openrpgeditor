@@ -47,6 +47,9 @@ void Application::loadSettings() {
   }
 }
 Application::Application(const std::string& title) {
+  const auto curlocale = std::locale("");
+  std::cout << "System locale: " << curlocale.name() << std::endl;
+  std::locale::global(std::locale(curlocale));
   if (!cpuid_present()) {
     std::cerr << "CPU does not support this CPU" << std::endl;
   } else {
@@ -76,6 +79,9 @@ Application::Application(const std::string& title) {
   Math::use2kRandom(true);
 
   loadSettings();
+  if (m_settings.locale.empty()) {
+    m_settings.locale = curlocale.name();
+  }
   APP_DEBUG("User config path: {}", m_userConfigPath);
   // TODO: Detect system locale and automatically use that on first boot
   moloader::load(m_userConfigPath + "/locales/ja.mo");

@@ -280,13 +280,18 @@ public:
 
   EventPage clone() const { return EventPage(*this, 1); }
 
+  bool operator==(const EventPage& rhs) const {
+    return m_conditions == rhs.m_conditions && m_directionFix == rhs.m_directionFix && m_image == rhs.m_image && m_list == rhs.m_list && m_moveFrequency == rhs.m_moveFrequency &&
+           m_moveRoute == rhs.m_moveRoute && m_moveSpeed == rhs.m_moveSpeed && m_moveType == rhs.m_moveType && m_priorityType == rhs.m_priorityType && m_stepAnime == rhs.m_stepAnime &&
+           m_through == rhs.m_through && m_trigger == rhs.m_trigger && m_walkAnime && (m_name ? m_name == rhs.m_name : true);
+    ;
+  }
+
 private:
   EventPage(const EventPage& other, int) : IModifiable(other) {
     m_conditions = other.m_conditions;
     m_directionFix = other.m_directionFix;
     m_image = other.m_image;
-    /* TODO: Clone instead of copy */
-    m_list = other.m_list;
     for (const auto& cmd : other.m_list) {
       m_list.push_back(cmd->clone());
     }
@@ -316,19 +321,19 @@ private:
   /* OpenRPGMaker Additions */
   std::optional<std::string> m_name;
 
-  std::optional<EventCondition> m_oldconditions{};
-  std::optional<bool> m_olddirectionFix{};
+  std::optional<EventCondition> m_oldconditions;
+  std::optional<bool> m_olddirectionFix;
   std::optional<EventImage> m_oldimage;
   std::optional<std::vector<std::shared_ptr<IEventCommand>>> m_oldlist;
-  std::optional<MovementFrequency> m_oldmoveFrequency{MovementFrequency::Normal};
-  std::optional<MovementRoute> m_oldmoveRoute{};
-  std::optional<MovementSpeed> m_oldmoveSpeed{MovementSpeed::Normal};
-  std::optional<MoveType> m_oldmoveType{MoveType::Fixed};
-  std::optional<EventPriority> m_oldpriorityType{};
-  std::optional<bool> m_oldstepAnime = false;
-  std::optional<bool> m_oldthrough{};
-  std::optional<EventTriggerType> m_oldtrigger{EventTriggerType::Action_Button};
-  std::optional<bool> m_oldwalkAnime = true;
+  std::optional<MovementFrequency> m_oldmoveFrequency;
+  std::optional<MovementRoute> m_oldmoveRoute;
+  std::optional<MovementSpeed> m_oldmoveSpeed;
+  std::optional<MoveType> m_oldmoveType;
+  std::optional<EventPriority> m_oldpriorityType;
+  std::optional<bool> m_oldstepAnime;
+  std::optional<bool> m_oldthrough;
+  std::optional<EventTriggerType> m_oldtrigger;
+  std::optional<bool> m_oldwalkAnime;
   std::optional<std::string> m_oldname;
 
   std::optional<rpgmutils::signal<void(EventPage*, EventCondition)>> m_conditionsModified;

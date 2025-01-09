@@ -106,7 +106,7 @@ void Event::setId(const int id) {
   if (!signalsDisabled()) {
     idModified().fire(this, id);
   }
-  setModified();
+  setHasChanges();
 }
 
 const std::string& Event::name() const { return m_name; }
@@ -116,7 +116,7 @@ void Event::setName(const std::string& name) {
   if (!signalsDisabled()) {
     nameModified().fire(this, name);
   }
-  setModified();
+  setHasChanges();
 }
 
 const std::string& Event::note() const { return m_note; }
@@ -126,7 +126,7 @@ void Event::setNote(const std::string& note) {
   if (!signalsDisabled()) {
     noteModified().fire(this, note);
   }
-  setModified();
+  setHasChanges();
 }
 
 std::vector<EventPage>& Event::pages() { return m_pages; }
@@ -137,7 +137,7 @@ void Event::setPages(const std::vector<EventPage>& pages) {
   if (!signalsDisabled()) {
     pagesModified().fire(this, pages);
   }
-  setModified();
+  setHasChanges();
 }
 
 void Event::addPage(const EventPage& page) {
@@ -151,7 +151,7 @@ void Event::insertPage(const EventPage& page, int index) {
   if (!signalsDisabled()) {
     pageInserted().fire(this, &m_pages[index], index);
   }
-  setModified();
+  setHasChanges();
 }
 
 void Event::removePage(const int index) {
@@ -163,7 +163,7 @@ void Event::removePage(const int index) {
   if (!signalsDisabled()) {
     pageRemoved().fire(this);
   }
-  setModified();
+  setHasChanges();
 }
 
 int Event::x() const { return m_x; }
@@ -173,7 +173,7 @@ void Event::setX(const int x) {
   if (!signalsDisabled()) {
     xModified().fire(this, m_x);
   }
-  setModified();
+  setHasChanges();
 }
 
 int Event::y() const { return m_y; }
@@ -183,7 +183,7 @@ void Event::setY(const int y) {
   if (!signalsDisabled()) {
     yModified().fire(this, m_y);
   }
-  setModified();
+  setHasChanges();
 }
 
 void Event::swapPages(int a, int b) {
@@ -199,10 +199,11 @@ void Event::swapPages(int a, int b) {
   if (!signalsDisabled()) {
     pagesModified().fire(this, m_pages);
   }
-  setModified();
+  setHasChanges();
 }
 
 void Event::restoreOriginal() {
+  IModifiable::restoreOriginal();
   MODIFIABLE_RESTORE_ORIGINAL_VALUE(id);
   MODIFIABLE_RESTORE_ORIGINAL_VALUE(name);
   MODIFIABLE_RESTORE_ORIGINAL_VALUE(note);
@@ -212,6 +213,7 @@ void Event::restoreOriginal() {
 }
 
 void Event::acceptChanges() {
+  IModifiable::acceptChanges();
   MODIFIABLE_ACCEPT_VALUE(id);
   MODIFIABLE_ACCEPT_VALUE(name);
   MODIFIABLE_ACCEPT_VALUE(note);

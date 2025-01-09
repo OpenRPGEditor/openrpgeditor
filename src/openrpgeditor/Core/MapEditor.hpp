@@ -86,7 +86,7 @@ struct MapEditor {
     if (!map()) {
       return;
     }
-    map()->data()[m_mapRenderer.tileIdFromCoords(point.x(), point.y(), layer)] = tileId;
+    map()->setTileAt(tileId, point.x(), point.y(), layer);
   }
 
   double adjustX(double x);

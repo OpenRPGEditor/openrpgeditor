@@ -45,6 +45,20 @@
      return name;                                                                                                                                                                                      \
    }()}
 
+#define MODIFIABLE_SERIALIZE_VALUE_CHILD_ARRAY_OPTIONAL(name)                                                                                                                                          \
+  {STRINGIZE(name), [&]() {                                                                                                                                                                            \
+     nlohmann::json name;                                                                                                                                                                              \
+     const auto& vec = m_old##name ? *m_old##name : m_##name;                                                                                                                                          \
+     for (const auto& v : vec) {                                                                                                                                                                       \
+       if (v) {                                                                                                                                                                                        \
+         name.push_back(v->serializeOldValues());                                                                                                                                                      \
+       } else {                                                                                                                                                                                        \
+         name.push_back(nullptr);                                                                                                                                                                      \
+       }                                                                                                                                                                                               \
+     }                                                                                                                                                                                                 \
+     return name;                                                                                                                                                                                      \
+   }()}
+
 #define MODIFIABLE_SERIALIZE_CHILD_VALUE(name) {STRINGIZE(name), (m_old##name ? *m_old##name : m_##name).serializeOldValues()}
 
 class IModifiable {
@@ -55,7 +69,7 @@ public:
   IModifiable(IModifiable&& other) noexcept;
   IModifiable& operator=(IModifiable&& other) noexcept;
   virtual ~IModifiable();
-  [[nodiscard]] virtual bool isModified() const { return m_modified; }
+  [[nodiscard]] virtual bool isModified() const { return m_modified | m_hasChanges; }
   void setModified(const bool modified = true) {
     m_modified = modified;
     if (m_modified && !signalsDisabled()) {
@@ -64,9 +78,13 @@ public:
   }
 
   virtual void restoreOriginal() { m_hasChanges = false; }
-  virtual void acceptChanges() { m_hasChanges = false; }
+  virtual void acceptChanges() {
+    m_hasChanges = false;
+    setModified(true);
+  }
   virtual nlohmann::ordered_json serializeOldValues() const { return {}; }
   bool hasChanges() const { return m_hasChanges; };
+  void setHasChanges(const bool hasChanges = true) { m_hasChanges = hasChanges; }
 
   bool signalsDisabled() const { return m_signalsDisabled; }
   void disableSignals() { m_signalsDisabled = true; }

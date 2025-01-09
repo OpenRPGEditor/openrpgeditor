@@ -52,7 +52,7 @@ void Effect::setCode(const EffectCode code) {
   if (!signalsDisabled()) {
     codeModified().fire(this, code);
   }
-  setModified();
+  setHasChanges();
 }
 
 int Effect::dataId() const { return m_dataId; }
@@ -62,7 +62,7 @@ void Effect::setDataId(const int dataId) {
   if (!signalsDisabled()) {
     dataIdModified().fire(this, m_dataId);
   }
-  setModified();
+  setHasChanges();
 }
 
 float Effect::value1() const { return m_value1; }
@@ -72,7 +72,7 @@ void Effect::setValue1(const float value1) {
   if (!signalsDisabled()) {
     value1Modified().fire(this, m_value1);
   }
-  setModified();
+  setHasChanges();
 }
 
 int Effect::value2() const { return m_value2; }
@@ -83,10 +83,11 @@ void Effect::setValue2(const int value2) {
   if (!signalsDisabled()) {
     value2Modified().fire(this, m_value2);
   }
-  setModified();
+  setHasChanges();
 }
 
 void Effect::restoreOriginal() {
+  IModifiable::restoreOriginal();
   MODIFIABLE_RESTORE_ORIGINAL_VALUE(code);
   MODIFIABLE_RESTORE_ORIGINAL_VALUE(dataId);
   MODIFIABLE_RESTORE_ORIGINAL_VALUE(value1);
@@ -94,6 +95,7 @@ void Effect::restoreOriginal() {
 }
 
 void Effect::acceptChanges() {
+  IModifiable::acceptChanges();
   MODIFIABLE_ACCEPT_VALUE(code);
   MODIFIABLE_ACCEPT_VALUE(dataId);
   MODIFIABLE_ACCEPT_VALUE(value1);

@@ -28,7 +28,7 @@ public:
       m_indent.emplace(0);
       m_indent.value() += offset;
     }
-    setModified();
+  setHasChanges();
   }
 
   [[nodiscard]] virtual constexpr bool collapsable() const { return false; }
@@ -43,7 +43,7 @@ public:
   std::optional<int> indent() const { return m_indent; }
   void setIndent(int indent) {
     m_indent = indent;
-    setModified();
+  setHasChanges();
   }
 
   virtual std::shared_ptr<IEventCommand> clone() const = 0;

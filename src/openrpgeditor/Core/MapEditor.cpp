@@ -736,7 +736,7 @@ void MapEditor::draw() {
       ImGui::SliderFloat("##map_scale", &m_mapScale, 0.25f, 4.f);
       ImGui::SameLine();
       // TL-NOTE: The braces denote the tile ID x and y positions, they get replaced at runtime with those values
-      std::string fmt = std::format(trNOOP("Tile {}, ({}, {})"), m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0), m_tileCursor.tileX(), m_tileCursor.tileY());
+      std::string fmt = trFormat("Tile {}, ({}, {})", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0), m_tileCursor.tileX(), m_tileCursor.tileY());
       if (map()) {
         if (const auto ev = std::ranges::find_if(map()->events(), [&](const std::optional<Event>& e) { return e && e->id() != 0 && m_tileCursor.tileX() == e->x() && m_tileCursor.tileY() == e->y(); });
             ev != map()->events().end()) {

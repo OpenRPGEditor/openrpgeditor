@@ -672,7 +672,7 @@ void MapEvent::processMoveCommand(const std::shared_ptr<IEventCommand>& command)
 }
 
 void MapEvent::processRouteEnd() {
-  if (m_moveRoute->repeat) {
+  if (m_moveRoute->repeat()) {
     m_moveRouteIndex = 0;
   } else if (m_moveRouteForcing) {
     m_moveRouteForcing = false;

@@ -32,9 +32,9 @@ std::string SetMovementRouteCommand::stringRep(const Database& db) const {
   std::string characterName = character == -1 ? "Player" : character == 0 ? "This Event" : event ? event->name() : std::to_string(character);
 
   std::string stringSuffix = "";
-  stringSuffix += route.repeat == true ? "(Repeat" : "(";
-  stringSuffix += route.skippable == true ? (route.repeat == true ? ", Skip" : "Skip") : "";
-  stringSuffix += route.wait == true ? ((route.repeat == true || route.skippable == true) ? ", Wait)" : "Wait)") : ")";
+  stringSuffix += route.repeat() == true ? "(Repeat" : "(";
+  stringSuffix += route.skippable() == true ? (route.repeat() == true ? ", Skip" : "Skip") : "";
+  stringSuffix += route.wait() == true ? ((route.repeat() == true || route.skippable() == true) ? ", Wait)" : "Wait)") : ")";
 
   std::string moveRoute = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + name + colon.data() + characterName + ColorFormatter::popColor() +
                           ColorFormatter::getColor(FormatColor::Gray) + stringSuffix + ColorFormatter::popColor();

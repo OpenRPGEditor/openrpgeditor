@@ -731,7 +731,7 @@ void MapEditor::draw() {
     ImGui::BeginChild("##map_editor_bottom_panel", ImVec2{}, 0, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
     {
       ImGui::Separator();
-      ImGui::Text(trNOOP("Scale:"));
+      ImGui::Text("%s", trNOOP("Scale:"));
       ImGui::SameLine();
       ImGui::SliderFloat("##map_scale", &m_mapScale, 0.25f, 4.f);
       ImGui::SameLine();

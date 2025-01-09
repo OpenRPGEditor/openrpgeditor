@@ -118,7 +118,7 @@ public:
       m_waitCount--;
     } else {
       setMovementSuccess(true);
-      if (const auto cmd = m_moveRouteIndex < m_moveRoute->list.size() ? m_moveRoute->list[m_moveRouteIndex] : nullptr) {
+      if (const auto cmd = m_moveRouteIndex < m_moveRoute->list().size() ? m_moveRoute->list()[m_moveRouteIndex] : nullptr) {
         processMoveCommand(cmd);
         advanceMoveRouteIndex();
       }
@@ -126,10 +126,10 @@ public:
   }
 
   void advanceMoveRouteIndex() {
-    if (m_moveRoute && (isMovementSucceeded() || m_moveRoute->skippable)) {
-      const auto numCommands = m_moveRoute->list.size() - 1;
+    if (m_moveRoute && (isMovementSucceeded() || m_moveRoute->skippable())) {
+      const auto numCommands = m_moveRoute->list().size() - 1;
       m_moveRouteIndex++;
-      if (m_moveRoute->repeat && m_moveRouteIndex >= numCommands) {
+      if (m_moveRoute->repeat() && m_moveRouteIndex >= numCommands) {
         m_moveRouteIndex = 0;
       }
     }

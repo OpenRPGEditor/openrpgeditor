@@ -101,11 +101,11 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
       ImGui::TableNextRow();
       ImGui::TableNextColumn();
 
-      for (int n = 0; n < m_route.list.size(); n++) {
+      for (int n = 0; n < m_route.list().size(); n++) {
         ImGui::TableNextColumn();
         const bool isSelected = m_selected == n;
         char text[4096];
-        sprintf(text, "%s##cmd%i", m_route.list.at(n)->stringRep(*Database::instance()).c_str(), n);
+        sprintf(text, "%s##cmd%i", m_route.list().at(n)->stringRep(*Database::instance()).c_str(), n);
         if (ImGui::SelectableWithBorder(text, isSelected, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
           if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
             // Edit node
@@ -118,9 +118,18 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
       ImGui::EndTable();
     }
     ImGui::Text("Options");
-    ImGui::Checkbox("Repeat Movements", &m_route.repeat);
-    ImGui::Checkbox("Skip If Cannot Move", &m_route.skippable);
-    ImGui::Checkbox("Wait for Completion", &m_route.wait);
+    bool tmp = m_route.repeat();
+    if (ImGui::Checkbox("Repeat Movements", &tmp)) {
+      m_route.setRepeat(tmp);
+    }
+    tmp = m_route.skippable();
+    if (ImGui::Checkbox("Skip If Cannot Move", &tmp)) {
+      m_route.setSkippable(tmp);
+    }
+    tmp = m_route.wait();
+    if (ImGui::Checkbox("Wait for Completion", &tmp)) {
+      m_route.setWait(tmp);
+    }
     ImGui::SetCursorPos(ImVec2{cursorPos.x + 180, cursorPos.y - 10});
     ImGui::SeparatorText("Movement Commands");
     ImGui::SetCursorPos(ImVec2{cursorPos.x + 180, cursorPos.y + 10});
@@ -289,7 +298,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
       m_confirmed = true;
       command->character = m_character;
       command->route = m_route;
-      for (const auto& cmd : m_route.list) {
+      for (const auto& cmd : m_route.list()) {
         if (cmd->code() != EventCode::Event_Dummy) {
           command->editNodes.push_back(std::make_shared<MovementRouteStepCommand>());
           command->editNodes.back()->step = cmd;
@@ -307,8 +316,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     if (movementRouteDialog) {
       if (const auto [closed, confirmed] = movementRouteDialog->draw(); closed) {
         if (confirmed) {
-          const auto select = m_route.list.insert(m_route.list.begin() + m_selected, movementRouteDialog->getCommand());
-          m_selected = select - m_route.list.begin();
+          m_selected = m_route.addCommand(movementRouteDialog->getCommand(), m_selected);
         }
         movementRouteDialog.reset();
       }

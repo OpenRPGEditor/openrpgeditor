@@ -15,7 +15,7 @@ struct Dialog_SetMovementRoute : IEventDialogController {
     m_character = command->character;
     m_route = command->route;
     m_editNodes = command->editNodes;
-    if (m_route.list.empty()) {
+    if (m_route.list().empty()) {
       m_route.addCommand(std::make_shared<EventDummy>(), 0);
     }
   }

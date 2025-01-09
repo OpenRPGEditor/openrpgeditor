@@ -269,7 +269,9 @@ void DBStatesTab::draw() {
             ImGui::SeparatorText("Messages");
             ImGui::Text("If an actor is inflicted with the state:");
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.f);
-            ImGui::TextColored(ImVec4(0.30f, 0.30f, 0.30f, 1.0f), "(Target Name)");
+            auto textColor = ImGui::GetStyleColorVec4(ImGuiCol_Text);
+            textColor.w = 0.5f;
+            ImGui::TextColored(textColor, "(Target Name)");
             ImGui::SameLine();
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
             std::string text1 = m_selectedState->message1();
@@ -278,7 +280,7 @@ void DBStatesTab::draw() {
             }
             ImGui::Text("If an enemy is inflicted with the state:");
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.f);
-            ImGui::TextColored(ImVec4(0.30f, 0.30f, 0.30f, 1.0f), "(Target Name)");
+            ImGui::TextColored(textColor, "(Target Name)");
             ImGui::SameLine();
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
             std::string text2 = m_selectedState->message2();
@@ -287,7 +289,7 @@ void DBStatesTab::draw() {
             }
             ImGui::Text("If the state persists:");
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.f);
-            ImGui::TextColored(ImVec4(0.30f, 0.30f, 0.30f, 1.0f), "(Target Name)");
+            ImGui::TextColored(textColor, "(Target Name)");
             ImGui::SameLine();
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
             std::string text3 = m_selectedState->message3();
@@ -296,7 +298,7 @@ void DBStatesTab::draw() {
             }
             ImGui::Text("If the state is removed:");
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.f);
-            ImGui::TextColored(ImVec4(0.30f, 0.30f, 0.30f, 1.0f), "(Target Name)");
+            ImGui::TextColored(textColor, "(Target Name)");
             ImGui::SameLine();
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
             std::string text4 = m_selectedState->message4();

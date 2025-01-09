@@ -286,7 +286,8 @@ void EventCommandEditor::draw() {
           }
           if (ImGui::TableNextColumn()) {
             for (const auto& s : str) {
-              ImGui::TextParsed("&push-color=0xFF,0xFF,0xFF;%s&pop-color;", s.c_str());
+              const auto col = ImGui::GetStyleColorVec4(ImGuiCol_Text);
+              ImGui::TextParsed(std::format("&push-color={},{},{};{}&pop-color;", static_cast<uint8_t>(col.x * 255), static_cast<uint8_t>(col.y * 255), static_cast<uint8_t>(col.z * 255), s).c_str());
             }
           }
 

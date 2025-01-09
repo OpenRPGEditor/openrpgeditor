@@ -47,9 +47,9 @@ void Application::loadSettings() {
   }
 }
 Application::Application(const std::string& title) {
-  const auto curlocale = std::locale("");
+  const auto curlocale = std::locale("en_US.UTF-8");
   std::cout << "System locale: " << curlocale.name() << std::endl;
-  std::locale::global(std::locale(curlocale));
+  std::locale::global(curlocale);
   if (!cpuid_present()) {
     std::cerr << "CPU does not support this CPU" << std::endl;
   } else {

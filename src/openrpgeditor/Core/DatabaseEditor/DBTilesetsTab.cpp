@@ -1360,7 +1360,7 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
 
 void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTileFlag) {
 
-  if (tileIndex >= m_selectedTileset->flags().size()) {
+  if (tileIndex >= TileHelper::TILE_ID_MAX) {
     return;
   }
   if (tileIndex < 1) {
@@ -1508,8 +1508,7 @@ void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTi
         tag++;
       }
     }
-    m_selectedTileset->setFlag(tileIndex, 0xF << 12, false);
-    m_selectedTileset->setFlag(tileIndex, tag << 12, true);
+    m_selectedTileset->setTerrainTag(tileIndex, tag);
     // if (TileHelper::isTerrainTag(m_selectedTileset->flag(tileIndex))) {
     // } else {
     //   m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Damage), false);

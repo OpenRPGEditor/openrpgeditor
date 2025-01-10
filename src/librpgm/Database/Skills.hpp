@@ -2,7 +2,7 @@
 
 #include "Database/Skill.hpp"
 
-class Skills {
+class Skills : public IModifiable {
 public:
   [[nodiscard]] Skill* skill(const int id) {
     for (auto& skill : m_skills) {
@@ -37,6 +37,10 @@ public:
         m_skills[i].setId(i);
       }
     }
+  }
+
+  bool isModified() const override {
+    return IModifiable::isModified() | std::ranges::any_of(m_skills, [](const Skill& skill) { return skill.isModified(); });
   }
 
 private:

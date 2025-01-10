@@ -161,7 +161,7 @@ bool isLadder(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::L
 bool isBush(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::Bush)) != 0; }
 bool isCounter(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::Counter)) != 0; }
 bool isDamageFloor(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::Damage)) != 0; }
-bool isTerrainTag(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::TerrainTag)) != 0; }
+bool isTerrainTag(int tileFlags) { return (tileFlags >> 12) > 0; }
 int getTerrainTag(int tileFlags) { return tileFlags >> 12; }
 
 } // namespace TileHelper

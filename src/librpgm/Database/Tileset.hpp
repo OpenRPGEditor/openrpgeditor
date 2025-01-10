@@ -27,7 +27,7 @@ public:
       return 0;
     }
     if (id >= m_flags.size() && m_flags.size() <= TileHelper::TILE_ID_MAX) {
-      int i = id - m_flags.size();
+      int i = id - (m_flags.size() - 1);
       while (i--) {
         m_flags.emplace_back();
       }
@@ -57,14 +57,14 @@ public:
   void setFlags(const std::vector<std::optional<int>>& flags) { m_flags = flags; }
   void setFlag(const int idx, const int flag, const bool enabled = true) {
     if (idx >= m_flags.size() && m_flags.size() <= TileHelper::TILE_ID_MAX) {
-      int i = idx - m_flags.size();
+      int i = idx - (m_flags.size() - 1);
       while (i--) {
         m_flags.emplace_back();
       }
     } else if (idx > TileHelper::TILE_ID_MAX) {
       return;
     }
-    if (!m_flags[flag]) {
+    if (!m_flags[idx]) {
       m_flags[idx] = 0;
     }
 
@@ -73,6 +73,22 @@ public:
     } else {
       *m_flags[idx] &= ~flag;
     }
+  }
+
+  void setTerrainTag(const int idx, const int tag) {
+    if (idx >= m_flags.size() && m_flags.size() <= TileHelper::TILE_ID_MAX) {
+      int i = idx - (m_flags.size() - 1);
+      while (i--) {
+        m_flags.emplace_back();
+      }
+    } else if (idx > TileHelper::TILE_ID_MAX) {
+      return;
+    }
+    if (!m_flags[idx]) {
+      m_flags[idx] = 0;
+    }
+
+    *m_flags[idx] = ((tag & 0xFFFFF) << 12) | (*m_flags[idx] & 0xFFF);
   }
 
   [[nodiscard]] Mode mode() const { return m_mode; }

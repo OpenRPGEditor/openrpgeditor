@@ -51,5 +51,5 @@ private:
   void drawA5();
   void drawTileset(int type);
   void drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex);
-  void toggleTileState(int tileIndex, bool reverse, TileFlags subTileFlag = TileFlags::None, ImVec2 tilePos = {0, 0});
+  void toggleTileState(int tileIndex, bool reverse, TileFlags subTileFlag = TileFlags::None);
 };

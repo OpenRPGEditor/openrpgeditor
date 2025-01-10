@@ -27,7 +27,7 @@ public:
       return 0;
     }
     if (id >= m_flags.size() && m_flags.size() <= TileHelper::TILE_ID_MAX) {
-      int i = 0;
+      int i = m_flags.size() - id;
       while (i--) {
         m_flags.emplace_back();
       }
@@ -57,7 +57,7 @@ public:
   void setFlags(const std::vector<std::optional<int>>& flags) { m_flags = flags; }
   void setFlag(const int idx, const int flag, const bool enabled = true) {
     if (idx >= m_flags.size() && m_flags.size() <= TileHelper::TILE_ID_MAX) {
-      int i = idx;
+      int i = m_flags.size() - idx;
       while (i--) {
         m_flags.emplace_back();
       }

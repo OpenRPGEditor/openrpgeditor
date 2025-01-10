@@ -90,9 +90,7 @@ FetchContent_Declare(athena
 )
 
 FetchContent_Declare(liblcf
-        #GIT_REPOSITORY "https://github.com/EasyRPG/liblcf.git"
-        GIT_REPOSITORY "https://github.com/Antidote/liblcf.git"
-        GIT_TAG relax-inih-requirement
+        GIT_REPOSITORY "https://github.com/EasyRPG/liblcf.git"
 )
 
 FetchContent_Declare(moloader

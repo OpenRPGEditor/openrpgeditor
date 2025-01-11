@@ -1068,125 +1068,77 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
     // Passage
     if (m_selectedTileTab == 0) {
       // A1 - A5
-
       std::vector<std::array<int, 4>> tileData;
       tileData.emplace_back(TilePalette::paletteTiles(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y), m_selectedTileTab, m_selectedTileset->tilesetNames(), m_selectedTileset->mode(), true));
 
-      bool hasHigherTile_1 = tileData.at(0).at(0) == -1 ? false : tileData.at(0).at(0) == 0 ? false : TileHelper::hasHigherTile(m_selectedTileset->flag(tileData.at(0).at(0)));
-      bool hasHigherTile_2 = tileData.at(0).at(1) == -1 ? false : tileData.at(0).at(1) == 0 ? false : TileHelper::hasHigherTile(m_selectedTileset->flag(tileData.at(0).at(1)));
-      bool hasHigherTile_3 = tileData.at(0).at(2) == -1 ? false : tileData.at(0).at(2) == 0 ? false : TileHelper::hasHigherTile(m_selectedTileset->flag(tileData.at(0).at(2)));
-      bool hasHigherTile_4 = tileData.at(0).at(3) == -1 ? false : tileData.at(0).at(3) == 0 ? false : TileHelper::hasHigherTile(m_selectedTileset->flag(tileData.at(0).at(3)));
+      bool isPassable = true;
+      bool isHigherTile = false;
+      int index = -1;
 
-      bool isPassable_1 = tileData.at(0).at(0) == -1 ? true : tileData.at(0).at(0) == 0 ? true : TileHelper::isTilePassable(m_selectedTileset->flag(tileData.at(0).at(0)));
-      bool isPassable_2 = tileData.at(0).at(1) == -1 ? true : tileData.at(0).at(1) == 0 ? true : TileHelper::isTilePassable(m_selectedTileset->flag(tileData.at(0).at(1)));
-      bool isPassable_3 = tileData.at(0).at(2) == -1 ? true : tileData.at(0).at(2) == 0 ? true : TileHelper::isTilePassable(m_selectedTileset->flag(tileData.at(0).at(2)));
-      bool isPassable_4 = tileData.at(0).at(3) == -1 ? true : tileData.at(0).at(3) == 0 ? true : TileHelper::isTilePassable(m_selectedTileset->flag(tileData.at(0).at(3)));
-
-      if (hasHigherTile_1 || hasHigherTile_2 /*& hasHigherTile_3 & hasHigherTile_4*/) { // Need to figure the correct insert for 2, 3 and 4 booleans
-        if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
-
-          if (TileHelper::isTileA1(tileIndex)) {
-            if (tileIndex < TileHelper::TILE_ID_A1 + 4) {
-              // First three tiles
-              toggleTileState(tileData.at(0).at(1), true);
-            } else {
-              toggleTileState(tileData.at(0).at(0), true);
-            }
-          } else {
-            for (auto& flagIndex : tileData.at(0)) {
-              toggleTileState(flagIndex, false);
+      if (TileHelper::isTileA5(tileIndex)) {
+        index = 0;
+        isPassable = TileHelper::isTilePassable(m_selectedTileset->flag(tileIndex));
+        isHigherTile = TileHelper::hasHigherTile(m_selectedTileset->flag(tileIndex));
+      } else if (tileIndex < TileHelper::TILE_ID_A1 + 4) {
+        index = 1;
+        isPassable = TileHelper::isTilePassable(m_selectedTileset->flag(tileData.at(0).at(index)));
+        isHigherTile = TileHelper::hasHigherTile(m_selectedTileset->flag(tileData.at(0).at(index)));
+      } else {
+        bool value = false;
+        for (int i = 3; i >= 0; --i) {
+          if (value == false) {
+            if (tileData.at(0).at(i) > 0) {
+              index = i;
+              value = true;
+              break;
             }
           }
+        }
+
+        if (index == -1) {
+          isPassable = true;
+          isHigherTile = false;
+        } else {
+          int flag = m_selectedTileset->flag(tileData.at(0).at(index));
+          isPassable = TileHelper::isTilePassable(flag);
+          isHigherTile = TileHelper::hasHigherTile(flag);
+        }
+      }
+
+      if (isHigherTile) {
+        if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+          toggleSelection(tileData.at(0).at(index), tileIndex, true);
         }
         ImVec4 tint = ImGui::IsItemHovered() ? kHoveredTint : kDefaultTint;
         if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button_higherTile", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(8), m_tileMarker->uv1(8), ImVec4(0.0f, 0.0f, 0.0f, 0.0f),
                                tint)) {
-
-          if (TileHelper::isTileA1(tileIndex)) {
-            if (tileIndex < TileHelper::TILE_ID_A1 + 4) {
-              // First three tiles
-              toggleTileState(tileData.at(0).at(1), false);
-            } else {
-              toggleTileState(tileData.at(0).at(0), false);
-            }
-          } else {
-            for (auto& flagIndex : tileData.at(0)) {
-              toggleTileState(flagIndex, false);
-            }
-          }
+          toggleSelection(tileData.at(0).at(index), tileIndex, false);
         }
       } else {
-        if (isPassable_1 && isPassable_2 && isPassable_3 && isPassable_4) {
+        if (isPassable) {
           // Passable
           if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
-
-            if (TileHelper::isTileA1(tileIndex)) {
-              if (tileIndex < TileHelper::TILE_ID_A1 + 4) {
-                // First three tiles
-                toggleTileState(tileData.at(0).at(1), true);
-              } else {
-                toggleTileState(tileData.at(0).at(0), true);
-              }
-            } else {
-              for (auto& flagIndex : tileData.at(0)) {
-                toggleTileState(flagIndex, true);
-              }
-            }
+            toggleSelection(tileData.at(0).at(index), tileIndex, true);
           }
           ImVec4 tint = ImGui::IsItemHovered() ? kHoveredTint : kDefaultTint;
           if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button_passable", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(0), m_tileMarker->uv1(0), ImVec4(0.0f, 0.0f, 0.0f, 0.0f),
                                  tint)) {
-
-            if (TileHelper::isTileA1(tileIndex)) {
-              if (tileIndex < TileHelper::TILE_ID_A1 + 4) {
-                // First three tiles
-                toggleTileState(tileData.at(0).at(1), false);
-              } else {
-                toggleTileState(tileData.at(0).at(0), false);
-              }
-            } else {
-              for (auto& flagIndex : tileData.at(0)) {
-                toggleTileState(flagIndex, false);
-              }
-            }
+            toggleSelection(tileData.at(0).at(index), tileIndex, false);
           }
         } else {
           // Impassable
           if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
-            if (TileHelper::isTileA1(tileIndex)) {
-              if (tileIndex < TileHelper::TILE_ID_A1 + 4) {
-                // First three tiles
-                toggleTileState(tileData.at(0).at(1), true);
-              } else {
-                toggleTileState(tileData.at(0).at(0), true);
-              }
-            } else {
-              for (auto& flagIndex : tileData.at(0)) {
-                toggleTileState(flagIndex, true);
-              }
-            }
+            toggleSelection(tileData.at(0).at(index), tileIndex, true);
           }
           ImVec4 tint = ImGui::IsItemHovered() ? kHoveredTint : kDefaultTint;
           if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button_impassable", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(1), m_tileMarker->uv1(1), ImVec4(0.0f, 0.0f, 0.0f, 0.0f),
                                  tint)) {
-
-            if (TileHelper::isTileA1(tileIndex)) {
-              if (tileIndex < TileHelper::TILE_ID_A1 + 4) {
-                // First three tiles
-                toggleTileState(tileData.at(0).at(1), false);
-              } else {
-                toggleTileState(tileData.at(0).at(0), false);
-              }
-            } else {
-              for (auto& flagIndex : tileData.at(0)) {
-                toggleTileState(flagIndex, false);
-              }
-            }
+            toggleSelection(tileData.at(0).at(index), tileIndex, false);
           }
         }
       }
     } else {
-      // B - E
+      // B - E tilesets
       bool isPassable = TileHelper::isTilePassable(m_selectedTileset->flag(tileIndex));
       bool hasHigherTile = TileHelper::hasHigherTile(m_selectedTileset->flag(tileIndex));
 
@@ -1357,7 +1309,6 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
     }
   }
 }
-
 void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTileFlag) {
 
   if (tileIndex >= TileHelper::TILE_ID_MAX) {
@@ -1381,11 +1332,6 @@ void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTi
     APP_INFO(std::format("hasHigherTile: {}", hasHigherTile));
     APP_INFO(std::format("isPassable: {}", isPassable));
     APP_INFO(std::format("isImpassable: {}", isImpassable));
-
-    if (m_selectedTileTab == 0) {
-      // A1 - A5
-      // int a_tileId = m_selectedTileset->flag(tileData.at(static_cast<int>(tilePos.x)).at(static_cast<int>(tilePos.y)));
-    }
 
     if (reverse) {
       if (isPassable) {
@@ -1509,9 +1455,18 @@ void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTi
       }
     }
     m_selectedTileset->setTerrainTag(tileIndex, tag);
-    // if (TileHelper::isTerrainTag(m_selectedTileset->flag(tileIndex))) {
-    // } else {
-    //   m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Damage), false);
-    // }
+  }
+}
+void DBTilesetsTab::toggleSelection(int flagIndex, int tileIndex, bool reverse) {
+  if (flagIndex < 1 && TileHelper::isTileA5(tileIndex) == false) {
+    return;
+  }
+  if (tileIndex < TileHelper::TILE_ID_A1 + 4 && tileIndex > TileHelper::TILE_ID_A1) {
+    // First three tiles
+    toggleTileState(flagIndex, reverse);
+  } else if (TileHelper::isTileA5(tileIndex)) {
+    toggleTileState(tileIndex, reverse);
+  } else {
+    toggleTileState(flagIndex, reverse);
   }
 }

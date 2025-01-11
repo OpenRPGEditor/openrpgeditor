@@ -33,7 +33,6 @@ private:
   std::optional<ImagePicker> m_imagePicker;
   std::optional<Image> m_image;
   std::optional<TileMarker> m_tileMarker;
-  std::vector<std::array<int, 4>> tileData;
 
   CheckerboardTexture m_checkerboardTexture{};
   CheckerboardTexture m_checkerboardTexture2{};
@@ -52,4 +51,5 @@ private:
   void drawTileset(int type);
   void drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex);
   void toggleTileState(int tileIndex, bool reverse, TileFlags subTileFlag = TileFlags::None);
+  void toggleSelection(int flagIndex, int tileIndex, bool reverse);
 };

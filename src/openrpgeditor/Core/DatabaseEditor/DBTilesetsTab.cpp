@@ -1447,7 +1447,7 @@ void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTi
     if (reverse) {
       tag--;
       if (tag < 0) {
-        tag = 6;
+        tag = 7;
       }
     } else {
       tag++;
@@ -1455,7 +1455,7 @@ void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTi
         tag = 0;
       }
     }
-    m_selectedTileset->setTerrainTag(tileIndex, std::clamp(tag, 0, 6));
+    m_selectedTileset->setTerrainTag(tileIndex, std::clamp(tag, 0, 7));
   }
 }
 void DBTilesetsTab::toggleSelection(int flagIndex, int tileIndex, bool reverse) {

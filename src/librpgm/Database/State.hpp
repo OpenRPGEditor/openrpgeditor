@@ -3,82 +3,120 @@
 #include "Database/Globals.hpp"
 #include "Database/Trait.hpp"
 
-class State {
+class State final : public IModifiable {
   friend class StatesSerializer;
   friend void to_json(nlohmann::ordered_json& j, const State& state);
   friend void from_json(const nlohmann::ordered_json& j, State& state);
 
 public:
-  [[nodiscard]] int id() const { return m_id; }
-  void setId(const int id) { m_id = id; }
+  State() = default;
+  State(const State& other);
+  State& operator=(const State& other);
+  State(State&& other) noexcept;
+  State& operator=(State&& other) noexcept;
 
-  [[nodiscard]] AutoRemovalTiming autoRemovalTiming() const { return m_autoRemovalTiming; }
-  void setAutoRemovalTiming(const AutoRemovalTiming autoRemovalTiming) { m_autoRemovalTiming = autoRemovalTiming; }
+  [[nodiscard]] int id() const;
+  void setId(int id);
 
-  [[nodiscard]] int chanceByDamage() const { return m_chanceByDamage; }
-  void setChanceByDamage(const int chanceByDamage) { m_chanceByDamage = chanceByDamage; }
+  [[nodiscard]] AutoRemovalTiming autoRemovalTiming() const;
+  void setAutoRemovalTiming(AutoRemovalTiming autoRemovalTiming);
 
-  [[nodiscard]] int iconIndex() const { return m_iconIndex; }
-  void setIconIndex(const int iconIndex) { m_iconIndex = iconIndex; }
+  [[nodiscard]] int chanceByDamage() const;
+  void setChanceByDamage(int chanceByDamage);
 
-  [[nodiscard]] int minTurns() const { return m_minTurns; }
-  void setMinTurns(const int minTurns) { m_minTurns = minTurns; }
+  [[nodiscard]] int iconIndex() const;
+  void setIconIndex(int iconIndex);
 
-  [[nodiscard]] int maxTurns() const { return m_maxTurns; }
-  void setMaxTurns(const int maxTurns) { m_maxTurns = maxTurns; }
+  [[nodiscard]] int minTurns() const;
+  void setMinTurns(int minTurns);
 
-  [[nodiscard]] const std::string& message1() const { return m_message1; }
-  void setMessage1(const std::string& message1) { m_message1 = message1; }
+  [[nodiscard]] int maxTurns() const;
+  void setMaxTurns(int maxTurns);
 
-  [[nodiscard]] const std::string& message2() const { return m_message2; }
-  void setMessage2(const std::string& message2) { m_message2 = message2; }
-  [[nodiscard]] const std::string& message3() const { return m_message3; }
-  void setMessage3(const std::string& message3) { m_message3 = message3; }
+  [[nodiscard]] const std::string& message1() const;
+  void setMessage1(const std::string& message1);
 
-  [[nodiscard]] const std::string& message4() const { return m_message4; }
-  void setMessage4(const std::string& message4) { m_message4 = message4; }
+  [[nodiscard]] const std::string& message2() const;
+  void setMessage2(const std::string& message2);
+  [[nodiscard]] const std::string& message3() const;
+  void setMessage3(const std::string& message3);
 
-  [[nodiscard]] StateMotion motion() const { return m_motion; }
-  void setMotion(const StateMotion motion) { m_motion = motion; }
+  [[nodiscard]] const std::string& message4() const;
+  void setMessage4(const std::string& message4);
 
-  [[nodiscard]] const std::string& name() const { return m_name; }
-  void setName(const std::string& name) { m_name = name; }
+  [[nodiscard]] StateMotion motion() const;
+  void setMotion(StateMotion motion);
 
-  [[nodiscard]] const std::string& note() const { return m_note; }
-  void setNote(const std::string& note) { m_note = note; }
+  [[nodiscard]] const std::string& name() const;
+  void setName(const std::string& name);
 
-  [[nodiscard]] StateOverlay overlay() const { return m_overlay; }
-  void setOverlay(const StateOverlay overlay) { m_overlay = overlay; }
+  [[nodiscard]] const std::string& note() const;
+  void setNote(const std::string& note);
 
-  [[nodiscard]] int priority() const { return m_priority; }
-  void setPriority(const int priority) { m_priority = priority; }
+  [[nodiscard]] StateOverlay overlay() const;
+  void setOverlay(StateOverlay overlay);
 
-  [[nodiscard]] bool releaseByDamage() const { return m_releaseByDamage; }
-  void setReleaseByDamage(const bool releaseByDamage) { m_releaseByDamage = releaseByDamage; }
+  [[nodiscard]] int priority() const;
+  void setPriority(int priority);
 
-  [[nodiscard]] bool removeAtBattleEnd() const { return m_removeAtBattleEnd; }
-  void setRemoveAtBattleEnd(const bool removeAtBattleEnd) { m_removeAtBattleEnd = removeAtBattleEnd; }
+  [[nodiscard]] bool releaseByDamage() const;
+  void setReleaseByDamage(bool releaseByDamage);
 
-  [[nodiscard]] bool removeByDamage() const { return m_removeByDamage; }
-  void setRemoveByDamage(const bool removeByDamage) { m_removeByDamage = removeByDamage; }
+  [[nodiscard]] bool removeAtBattleEnd() const;
+  void setRemoveAtBattleEnd(bool removeAtBattleEnd);
 
-  [[nodiscard]] bool removeByRestriction() const { return m_removeByRestriction; }
-  void setRemoveByRestriction(const bool removeByRestriction) { m_removeByRestriction = removeByRestriction; }
+  [[nodiscard]] bool removeByDamage() const;
+  void setRemoveByDamage(bool removeByDamage);
 
-  [[nodiscard]] bool removeByWalking() const { return m_removeByWalking; }
-  void setRemoveByWalking(const bool removeByWalking) { m_removeByWalking = removeByWalking; }
+  [[nodiscard]] bool removeByRestriction() const;
+  void setRemoveByRestriction(bool removeByRestriction);
 
-  [[nodiscard]] StateRestriction restriction() const { return m_restriction; }
-  void setRestriction(const StateRestriction restriction) { m_restriction = restriction; }
+  [[nodiscard]] bool removeByWalking() const;
+  void setRemoveByWalking(bool removeByWalking);
 
-  [[nodiscard]] int stepsToRemove() const { return m_stepsToRemove; }
-  void setStepsToRemove(const int stepsToRemove) { m_stepsToRemove = stepsToRemove; }
+  [[nodiscard]] StateRestriction restriction() const;
+  void setRestriction(StateRestriction restriction);
 
-  [[nodiscard]] std::vector<Trait>& traits() { return m_traits; }
-  void setTraits(const std::vector<Trait>& traits) { m_traits = traits; }
+  [[nodiscard]] int stepsToRemove() const;
+  void setStepsToRemove(int stepsToRemove);
+
+  [[nodiscard]] std::vector<Trait>& traits();
+  void setTraits(const std::vector<Trait>& traits);
+
+  void restoreOriginal() override;
+  void acceptChanges() override;
+  nlohmann::ordered_json serializeOldValues() const override;
+
+  bool isModified() const override {
+    return IModifiable::isModified() | std::ranges::any_of(m_traits, [](const Trait& trait) { return trait.isModified(); });
+  }
 
   [[nodiscard]] bool isValid() const { return m_isValid; }
   void setValid(const bool isValid) { m_isValid = isValid; }
+
+  rpgmutils::signal<void(State*, int)>& idModified();
+  rpgmutils::signal<void(State*, AutoRemovalTiming)>& autoRemovalTimingModified();
+  rpgmutils::signal<void(State*, int)>& chanceByDamageModified();
+  rpgmutils::signal<void(State*, int)>& iconIndexModified();
+  rpgmutils::signal<void(State*, int)>& minTurnsModified();
+  rpgmutils::signal<void(State*, int)>& maxTurnsModified();
+  rpgmutils::signal<void(State*, const std::string&)>& message1Modified();
+  rpgmutils::signal<void(State*, const std::string&)>& message2Modified();
+  rpgmutils::signal<void(State*, const std::string&)>& message3Modified();
+  rpgmutils::signal<void(State*, const std::string&)>& message4Modified();
+  rpgmutils::signal<void(State*, StateMotion)>& motionModified();
+  rpgmutils::signal<void(State*, const std::string&)>& nameModified();
+  rpgmutils::signal<void(State*, const std::string&)>& noteModified();
+  rpgmutils::signal<void(State*, StateOverlay)>& overlayModified();
+  rpgmutils::signal<void(State*, int)>& priorityModified();
+  rpgmutils::signal<void(State*, bool)>& releaseByDamageModified();
+  rpgmutils::signal<void(State*, bool)>& removeAtBattleEndModified();
+  rpgmutils::signal<void(State*, bool)>& removeByDamageModified();
+  rpgmutils::signal<void(State*, bool)>& removeByRestrictionModified();
+  rpgmutils::signal<void(State*, bool)>& removeByWalkingModified();
+  rpgmutils::signal<void(State*, StateRestriction)>& restrictionModified();
+  rpgmutils::signal<void(State*, int)>& stepsToRemoveModified();
+  rpgmutils::signal<void(State*, const std::vector<Trait>&)>& traitsModified();
 
 private:
   int m_id = 0;
@@ -104,6 +142,54 @@ private:
   StateRestriction m_restriction = StateRestriction::None;
   int m_stepsToRemove = 1000;
   std::vector<Trait> m_traits;
+
+  std::optional<int> m_oldid;
+  std::optional<AutoRemovalTiming> m_oldautoRemovalTiming;
+  std::optional<int> m_oldchanceByDamage;
+  std::optional<int> m_oldiconIndex;
+  std::optional<int> m_oldminTurns;
+  std::optional<int> m_oldmaxTurns;
+  std::optional<std::string> m_oldmessage1;
+  std::optional<std::string> m_oldmessage2;
+  std::optional<std::string> m_oldmessage3;
+  std::optional<std::string> m_oldmessage4;
+  std::optional<StateMotion> m_oldmotion;
+  std::optional<std::string> m_oldname;
+  std::optional<std::string> m_oldnote;
+  std::optional<StateOverlay> m_oldoverlay;
+  std::optional<int> m_oldpriority;
+  std::optional<bool> m_oldreleaseByDamage;
+  std::optional<bool> m_oldremoveAtBattleEnd;
+  std::optional<bool> m_oldremoveByDamage;
+  std::optional<bool> m_oldremoveByRestriction;
+  std::optional<bool> m_oldremoveByWalking;
+  std::optional<StateRestriction> m_oldrestriction;
+  std::optional<int> m_oldstepsToRemove;
+  std::optional<std::vector<Trait>> m_oldtraits;
+
+  std::optional<rpgmutils::signal<void(State*, int)>> m_idModified;
+  std::optional<rpgmutils::signal<void(State*, AutoRemovalTiming)>> m_autoRemovalTimingModified;
+  std::optional<rpgmutils::signal<void(State*, int)>> m_chanceByDamageModified;
+  std::optional<rpgmutils::signal<void(State*, int)>> m_iconIndexModified;
+  std::optional<rpgmutils::signal<void(State*, int)>> m_minTurnsModified;
+  std::optional<rpgmutils::signal<void(State*, int)>> m_maxTurnsModified;
+  std::optional<rpgmutils::signal<void(State*, const std::string&)>> m_message1Modified;
+  std::optional<rpgmutils::signal<void(State*, const std::string&)>> m_message2Modified;
+  std::optional<rpgmutils::signal<void(State*, const std::string&)>> m_message3Modified;
+  std::optional<rpgmutils::signal<void(State*, const std::string&)>> m_message4Modified;
+  std::optional<rpgmutils::signal<void(State*, StateMotion)>> m_motionModified;
+  std::optional<rpgmutils::signal<void(State*, const std::string&)>> m_nameModified;
+  std::optional<rpgmutils::signal<void(State*, const std::string&)>> m_noteModified;
+  std::optional<rpgmutils::signal<void(State*, StateOverlay)>> m_overlayModified;
+  std::optional<rpgmutils::signal<void(State*, int)>> m_priorityModified;
+  std::optional<rpgmutils::signal<void(State*, bool)>> m_releaseByDamageModified;
+  std::optional<rpgmutils::signal<void(State*, bool)>> m_removeAtBattleEndModified;
+  std::optional<rpgmutils::signal<void(State*, bool)>> m_removeByDamageModified;
+  std::optional<rpgmutils::signal<void(State*, bool)>> m_removeByRestrictionModified;
+  std::optional<rpgmutils::signal<void(State*, bool)>> m_removeByWalkingModified;
+  std::optional<rpgmutils::signal<void(State*, StateRestriction)>> m_restrictionModified;
+  std::optional<rpgmutils::signal<void(State*, int)>> m_stepsToRemoveModified;
+  std::optional<rpgmutils::signal<void(State*, const std::vector<Trait>&)>> m_traitsModified;
 
   /*!
    * @name m_isValid

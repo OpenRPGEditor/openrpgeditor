@@ -4,7 +4,7 @@
 
 #include <vector>
 
-class States {
+class States final : public IModifiable {
 public:
   [[nodiscard]] State* state(int id) {
     for (auto& state : m_states) {
@@ -39,6 +39,10 @@ public:
         m_states[i].setId(i);
       }
     }
+  }
+
+  bool isModified() const override {
+    return IModifiable::isModified() | std::ranges::any_of(m_states, [](const State& state) { return state.isValid(); });
   }
 
 private:

@@ -69,7 +69,7 @@ sf::SoundBuffer ResourceManager::loadSound(std::filesystem::path path) {
   }
 
   sf::SoundBuffer buffer;
-  buffer.loadFromFile(path.data());
+  buffer.loadFromFile(path.generic_string());
   return buffer;
 }
 sf::SoundBuffer ResourceManager::loadBGM(const std::string_view path) const { return loadSound((m_bgmPath / path).replace_extension(".ogg")); }

@@ -52,4 +52,5 @@ private:
   void drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex);
   void toggleTileState(int tileIndex, bool reverse, TileFlags subTileFlag = TileFlags::None);
   void toggleSelection(int flagIndex, int tileIndex, bool reverse);
+  int GetTileId(std::vector<std::array<int, 4>> tileData);
 };

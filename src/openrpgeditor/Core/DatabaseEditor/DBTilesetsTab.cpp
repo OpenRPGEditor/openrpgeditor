@@ -1084,16 +1084,7 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
         isPassable = TileHelper::isTilePassable(m_selectedTileset->flag(tileData.at(0).at(index)));
         isHigherTile = TileHelper::hasHigherTile(m_selectedTileset->flag(tileData.at(0).at(index)));
       } else {
-        bool value = false;
-        for (int i = 3; i >= 0; --i) {
-          if (value == false) {
-            if (tileData.at(0).at(i) > 0) {
-              index = i;
-              value = true;
-              break;
-            }
-          }
-        }
+        index = GetTileId(tileData);
 
         if (index == -1) {
           isPassable = true;
@@ -1172,6 +1163,8 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
     startPos.y += 3.f;
     ImDrawList* drawList = ImGui::GetWindowDrawList();
 
+    ImVec2 quadrantSize = ImVec2(16, 16); // tileRect quadrant sizes
+
     // Loop through rows and columns
     for (int y = 0; y < gridRows; y++) {
       for (int x = 0; x < gridCols; x++) {
@@ -1183,8 +1176,17 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
 
         ImVec2 minPos = startPos + ImVec2(x * iconSpacing.x, y * iconSpacing.y);
         ImVec2 maxPos = minPos + ImVec2(iconSize, iconSize);
+        ImVec2 quadrantMin = startPos + ImVec2(x * quadrantSize.x, y * quadrantSize.y);
+        ImVec2 quadrantMax = quadrantMin + quadrantSize;
 
         ImVec4 tintColor = kDefaultTint;
+
+        if (isDot) {
+          quadrantMin.x += 5.f;
+          quadrantMin.y += 5.f;
+          quadrantMax.x -= 5.f;
+          quadrantMax.y -= 5.f;
+        }
 
         if (TileHelper::isTileA1(tileIndex) || TileHelper::isTileA2(tileIndex)) {
           if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(-1), m_tileMarker->uv1(-1), ImVec4(0.0f, 0.0f, 0.0f, 0.0f),
@@ -1192,8 +1194,12 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
           return; // A1 and A2 does not have any 4-dir flags
         }
 
+        if (TileHelper::isTileA3(tileIndex) || TileHelper::isTileA4(tileIndex)) {
+          tileIndex = tileData.at(0).at(GetTileId(tileData)); // Obtains the tileId position for autotiles by iterating through tileData with GetTileId()
+        }
+
         if (ImGui::IsWindowFocused() || ImGui::IsWindowHovered()) {
-          if (ImGui::IsMouseHoveringRect(minPos, maxPos)) {
+          if (ImGui::IsMouseHoveringRect(quadrantMin, quadrantMax)) {
             tintColor.w = kHoveredTint.w; // Reduce alpha for transparency
 
             if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
@@ -1469,5 +1475,12 @@ void DBTilesetsTab::toggleSelection(int flagIndex, int tileIndex, bool reverse) 
     toggleTileState(tileIndex, reverse);
   } else {
     toggleTileState(flagIndex, reverse);
+  }
+}
+int DBTilesetsTab::GetTileId(std::vector<std::array<int, 4>> tileData) {
+  for (int i = 3; i >= 0; --i) {
+    if (tileData.at(0).at(i) > 0) {
+      return i;
+    }
   }
 }

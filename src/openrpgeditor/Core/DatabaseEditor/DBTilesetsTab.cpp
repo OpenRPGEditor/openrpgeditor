@@ -1084,7 +1084,7 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
         isPassable = TileHelper::isTilePassable(m_selectedTileset->flag(tileData.at(0).at(index)));
         isHigherTile = TileHelper::hasHigherTile(m_selectedTileset->flag(tileData.at(0).at(index)));
       } else {
-        index = GetTileId(tileData);
+        index = getTileId(tileData);
 
         if (index == -1) {
           isPassable = true;
@@ -1195,7 +1195,7 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
         }
 
         if (TileHelper::isTileA3(tileIndex) || TileHelper::isTileA4(tileIndex)) {
-          tileIndex = tileData.at(0).at(GetTileId(tileData)); // Obtains the tileId position for autotiles by iterating through tileData with GetTileId()
+          tileIndex = tileData.at(0).at(getTileId(tileData)); // Obtains the tileId position for autotiles by iterating through tileData with getTileId()
         }
 
         if (ImGui::IsWindowFocused() || ImGui::IsWindowHovered()) {
@@ -1477,10 +1477,11 @@ void DBTilesetsTab::toggleSelection(int flagIndex, int tileIndex, bool reverse) 
     toggleTileState(flagIndex, reverse);
   }
 }
-int DBTilesetsTab::GetTileId(std::vector<std::array<int, 4>> tileData) {
+int DBTilesetsTab::getTileId(const std::vector<std::array<int, 4>>& tileData) {
   for (int i = 3; i >= 0; --i) {
     if (tileData.at(0).at(i) > 0) {
       return i;
     }
   }
+  return 0;
 }

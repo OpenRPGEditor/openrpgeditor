@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_RecoverAll.hpp"
 
-
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -63,7 +62,7 @@ std::tuple<bool, bool> Dialog_RecoverAll::draw() {
       text = m_Source != 1 ? "##commonevent_switch_empty" : Database::instance()->variableName(m_variable);
       ImGui::PushID("##controlvariable_gamedata");
       if (ImGui::Button(text.c_str(), ImVec2{200 - 15, 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables, m_variable);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_variable);
         picker->setOpen(true);
       }
       ImGui::PopID();

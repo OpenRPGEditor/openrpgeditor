@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_TransferPlayer.hpp"
 
-
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -66,7 +65,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
       ImGui::PushID("##transfer_var_mapId");
       if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_mapId_var).c_str() : "", ImVec2{(280), 0})) {
         m_var_selection = 0;
-        picker.emplace("Variables", Database::instance()->system.variables, m_mapId_var);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_mapId_var);
         picker->setOpen(true);
       }
       ImGui::PopID();
@@ -74,7 +73,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
       ImGui::PushID("##transfer_var_x");
       if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_x_var).c_str() : "", ImVec2{(280), 0})) {
         m_var_selection = 1;
-        picker.emplace("Variables", Database::instance()->system.variables, m_x_var);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_x_var);
         picker->setOpen(true);
       }
       ImGui::PopID();
@@ -82,7 +81,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
       ImGui::PushID("##transfer_var_y");
       if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_y_var).c_str() : "", ImVec2{(280), 0})) {
         m_var_selection = 2;
-        picker.emplace("Variables", Database::instance()->system.variables, m_y_var);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_y_var);
         picker->setOpen(true);
       }
       ImGui::PopID();

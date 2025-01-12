@@ -10,7 +10,7 @@ static bool ContainsCaseInsensitive(std::string_view str, std::string_view val) 
   return std::search(str.begin(), str.end(), val.begin(), val.end(), [](char ch1, char ch2) { return std::toupper(ch1) == std::toupper(ch2); }) != str.end();
 }
 
-VariableSwitchPicker::VariableSwitchPicker(const std::string_view name, std::vector<std::string>& values, const int initialSelection, int rangeStart)
+VariableSwitchPicker::VariableSwitchPicker(const std::string_view name, const std::vector<std::string>& values, const int initialSelection, int rangeStart)
 : IDialogController(name), m_list(&values), m_selection(initialSelection) {
   for (int i = rangeStart; i < m_list->size(); ++i) {
     m_trackedValues.emplace_back(i, &(*m_list)[i]);
@@ -47,7 +47,7 @@ std::tuple<bool, bool> VariableSwitchPicker::draw() {
 
       bool hasSortSpec = sortSpecs != nullptr && sortSpecs->SpecsCount == 1;
 
-      std::vector<std::pair<int, std::string*>> sortedList;
+      std::vector<std::pair<int, const std::string*>> sortedList;
       for (auto& [id, name] : m_trackedValues) {
         if (!m_filter.empty()) {
           if (ContainsCaseInsensitive(*name, m_filter) || ContainsCaseInsensitive(std::to_string(id), m_filter)) {

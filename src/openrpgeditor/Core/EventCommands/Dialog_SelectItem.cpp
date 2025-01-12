@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_SelectItem.hpp"
 
-
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -27,7 +26,7 @@ std::tuple<bool, bool> Dialog_SelectItem::draw() {
     ImGui::SetNextItemWidth(100);
     ImGui::PushID("##inputnumber_variable");
     if (ImGui::Button(Database::instance()->variableNameOrId(m_variable).c_str(), ImVec2{180, 0})) {
-      picker.emplace("Variables", Database::instance()->system.variables, m_variable);
+      picker.emplace("Variables", Database::instance()->system.variables(), m_variable);
       picker->setOpen(true);
     }
     ImGui::PopID();

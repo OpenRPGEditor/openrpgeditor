@@ -72,7 +72,7 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
       ImGui::BeginDisabled(m_operandSource != 1);
       ImGui::PushID("##changeenemyhp_quant_var");
       if (ImGui::Button(m_operandSource == 1 ? Database::instance()->variableNameAndId(m_quantity_var).c_str() : "", ImVec2{200 - 15, 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables, m_quantity_var);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_quantity_var);
         picker->setOpen(true);
       }
       ImGui::PopID();

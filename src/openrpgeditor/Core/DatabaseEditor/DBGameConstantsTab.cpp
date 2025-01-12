@@ -38,59 +38,59 @@ void DBGameConstantsTab::drawAliasModal(const GameConstants::Type type) {
     switch (type) {
     case GameConstants::Type::Switch:
       map = &m_constants->switches;
-      name = m_parent->switches(m_selection);
+      name = Database::instance()->system.switche(m_selection);
       break;
     case GameConstants::Type::Variable:
       map = &m_constants->variables;
-      name = m_parent->variables(m_selection);
+      name = Database::instance()->system.variable(m_selection);
       break;
     case GameConstants::Type::Actor:
       map = &m_constants->actors;
-      name = m_parent->actor(m_selection)->name();
+      name = Database::instance()->actors.actor(m_selection)->name();
       break;
     case GameConstants::Type::Class:
       map = &m_constants->classes;
-      name = m_parent->classType(m_selection)->name();
+      name = Database::instance()->classes.classType(m_selection)->name();
       break;
     case GameConstants::Type::Skill:
       map = &m_constants->skills;
-      name = m_parent->skill(m_selection)->name();
+      name = Database::instance()->skills.skill(m_selection)->name();
       break;
     case GameConstants::Type::Item:
       map = &m_constants->items;
-      name = m_parent->item(m_selection)->name();
+      name = Database::instance()->items.item(m_selection)->name();
       break;
     case GameConstants::Type::Weapon:
       map = &m_constants->weapons;
-      name = m_parent->weapon(m_selection)->name();
+      name = Database::instance()->weapons.weapon(m_selection)->name();
       break;
     case GameConstants::Type::Armor:
       map = &m_constants->armors;
-      name = m_parent->armor(m_selection)->name();
+      name = Database::instance()->armors.armor(m_selection)->name();
       break;
     case GameConstants::Type::Enemy:
       map = &m_constants->enemies;
-      name = m_parent->enemy(m_selection)->name();
+      name = Database::instance()->enemies.enemy(m_selection)->name();
       break;
     case GameConstants::Type::Troop:
       map = &m_constants->troops;
-      name = m_parent->troop(m_selection)->name();
+      name = Database::instance()->troops.troop(m_selection)->name();
       break;
     case GameConstants::Type::State:
       map = &m_constants->states;
-      name = m_parent->state(m_selection)->name();
+      name = Database::instance()->states.state(m_selection)->name();
       break;
     case GameConstants::Type::Animation:
       map = &m_constants->animations;
-      name = m_parent->animation(m_selection)->name();
+      name = Database::instance()->animations.animation(m_selection)->name();
       break;
     case GameConstants::Type::Tileset:
       map = &m_constants->tilesets;
-      name = m_parent->tileset(m_selection)->name();
+      name = Database::instance()->tilesets.tileset(m_selection)->name();
       break;
     case GameConstants::Type::CommonEvent:
       map = &m_constants->commonEvents;
-      name = m_parent->commonEvent(m_selection)->name();
+      name = Database::instance()->commonEvents.event(m_selection)->name();
       break;
     case GameConstants::Type::Map:
       map = &m_constants->maps;
@@ -205,7 +205,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->variables(id), alias);
+          drawNameAndAliasColumns(Database::instance()->system.variable(id), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->variables.erase(it);
           } else {
@@ -216,7 +216,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_switchVariablePicker.emplace("Variables", m_parent->project()->system().variables, 1);
+        m_switchVariablePicker.emplace("Variables", Database::instance()->system.variables(), 1);
         m_switchVariablePicker->setOpen(true);
       }
 
@@ -254,7 +254,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->switches(id), alias);
+          drawNameAndAliasColumns(Database::instance()->system.switche(id), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->switches.erase(it);
           } else {
@@ -264,7 +264,7 @@ void DBGameConstantsTab::draw() {
         ImGui::EndTable();
       }
       if (ImGui::Button("Add")) {
-        m_switchVariablePicker.emplace("Switches", m_parent->project()->system().switches, 1);
+        m_switchVariablePicker.emplace("Switches", Database::instance()->system.switches(), 1);
         m_switchVariablePicker->setOpen(true);
       }
       if (m_switchVariablePicker) {
@@ -298,7 +298,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->actor(id)->name(), alias);
+          drawNameAndAliasColumns(Database::instance()->actors.actor(id)->name(), alias);
           if (drawDeleteButton(id)) {
             m_constants->actors.erase(id);
           } else {
@@ -308,7 +308,7 @@ void DBGameConstantsTab::draw() {
         ImGui::EndTable();
       }
       if (ImGui::Button("Add")) {
-        m_actorsPicker.emplace("Actors", m_parent->project()->actors().actorList(), m_selection);
+        m_actorsPicker.emplace("Actors", Database::instance()->actors.actorList(), m_selection);
         m_actorsPicker->setOpen(true);
       }
       if (m_actorsPicker) {
@@ -342,7 +342,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->classType(id)->name(), alias);
+          drawNameAndAliasColumns(Database::instance()->classes.classType(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->classes.erase(it);
           } else {
@@ -353,7 +353,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_classesPicker.emplace("Classes", m_parent->classes().classes(), m_selection);
+        m_classesPicker.emplace("Classes", Database::instance()->classes.classes(), m_selection);
         m_classesPicker->setOpen(true);
       }
       if (m_classesPicker) {
@@ -388,7 +388,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->skill(id)->name(), alias);
+          drawNameAndAliasColumns(Database::instance()->skills.skill(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->skills.erase(it);
           } else {
@@ -399,7 +399,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_skillsPicker.emplace("Skills", m_parent->skills(), m_selection);
+        m_skillsPicker.emplace("Skills", Database::instance()->skills.skills(), m_selection);
         m_skillsPicker->setOpen(true);
       }
       if (m_skillsPicker) {
@@ -434,7 +434,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->item(id)->name(), alias);
+          drawNameAndAliasColumns(Database::instance()->items.item(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->items.erase(it);
           } else {
@@ -445,7 +445,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_itemsPicker.emplace("Items", m_parent->items(), m_selection);
+        m_itemsPicker.emplace("Items", Database::instance()->items.items(), m_selection);
         m_itemsPicker->setOpen(true);
       }
       if (m_itemsPicker) {
@@ -480,7 +480,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->weapon(id)->name(), alias);
+          drawNameAndAliasColumns(Database::instance()->weapons.weapon(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->weapons.erase(it);
           } else {
@@ -491,7 +491,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_weaponsPicker.emplace("Weapons", m_parent->weapons(), m_selection);
+        m_weaponsPicker.emplace("Weapons", Database::instance()->weapons.weapons(), m_selection);
         m_weaponsPicker->setOpen(true);
       }
       if (m_weaponsPicker) {
@@ -526,7 +526,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->armor(id)->name(), alias);
+          drawNameAndAliasColumns(Database::instance()->armors.armor(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->armors.erase(it);
           } else {
@@ -537,7 +537,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_armorsPicker.emplace("Armors", m_parent->armors(), m_selection);
+        m_armorsPicker.emplace("Armors", Database::instance()->armors.armors(), m_selection);
         m_armorsPicker->setOpen(true);
       }
       if (m_armorsPicker) {
@@ -572,7 +572,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->enemy(id)->name(), alias);
+          drawNameAndAliasColumns(Database::instance()->enemies.enemy(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->enemies.erase(it);
           } else {
@@ -583,7 +583,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_enemiesPicker.emplace("Enemies", m_parent->enemies(), m_selection);
+        m_enemiesPicker.emplace("Enemies", Database::instance()->enemies.enemies(), m_selection);
         m_enemiesPicker->setOpen(true);
       }
       if (m_enemiesPicker) {
@@ -618,7 +618,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->troop(id)->m_name, alias);
+          drawNameAndAliasColumns(Database::instance()->troops.troop(id)->m_name, alias);
           if (drawDeleteButton(id)) {
             it = m_constants->troops.erase(it);
           } else {
@@ -629,7 +629,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_troopsPicker.emplace("Troops", m_parent->troops(), m_selection);
+        m_troopsPicker.emplace("Troops", Database::instance()->troops.troops(), m_selection);
         m_troopsPicker->setOpen(true);
       }
       if (m_troopsPicker) {
@@ -664,7 +664,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->state(id)->name(), alias);
+          drawNameAndAliasColumns(Database::instance()->states.state(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->states.erase(it);
           } else {
@@ -675,7 +675,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_statesPicker.emplace("States", m_parent->states().states(), m_selection);
+        m_statesPicker.emplace("States", Database::instance()->states.states(), m_selection);
         m_statesPicker->setOpen(true);
       }
       if (m_statesPicker) {
@@ -710,7 +710,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->animation(id)->name(), alias);
+          drawNameAndAliasColumns(Database::instance()->animations.animation(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->animations.erase(it);
           } else {
@@ -721,7 +721,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_animationPicker.emplace("Animations", m_parent->animations(), m_selection);
+        m_animationPicker.emplace("Animations", Database::instance()->animations.animations(), m_selection);
         m_animationPicker->setOpen(true);
       }
       if (m_animationPicker) {
@@ -756,7 +756,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->tileset(id)->name(), alias);
+          drawNameAndAliasColumns(Database::instance()->tilesets.tileset(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->tilesets.erase(it);
           } else {
@@ -767,7 +767,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_tilesetPicker.emplace("Tilesets", m_parent->tilesets(), m_selection);
+        m_tilesetPicker.emplace("Tilesets", Database::instance()->tilesets.tilesets(), m_selection);
         m_tilesetPicker->setOpen(true);
       }
       if (m_tilesetPicker) {
@@ -802,7 +802,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(m_parent->commonEvent(id)->name(), alias);
+          drawNameAndAliasColumns(Database::instance()->commonEvents.event(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->commonEvents.erase(it);
           } else {
@@ -813,7 +813,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_commonEventPicker.emplace("Common Events", m_parent->commonEvents(), m_selection);
+        m_commonEventPicker.emplace("Common Events", Database::instance()->commonEvents.events(), m_selection);
         m_commonEventPicker->setOpen(true);
       }
       if (m_commonEventPicker) {

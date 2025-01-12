@@ -33,7 +33,7 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
     ImGui::PushID("##controlswitch_id");
     ImGui::BeginDisabled(m_operation != 0);
     if (ImGui::Button(text.c_str(), ImVec2{(160), 0})) {
-      picker.emplace("Switches", Database::instance()->system.switches, m_start);
+      picker.emplace("Switches", Database::instance()->system.switches(), m_start);
       picker->setOpen(true);
     }
     ImGui::PopID();

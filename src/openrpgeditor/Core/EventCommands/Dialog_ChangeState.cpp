@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ChangeState.hpp"
 
-
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -65,7 +64,7 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
       ImGui::BeginDisabled(m_comparison != 1);
       ImGui::PushID("##changeenemyhp_quant_var");
       if (ImGui::Button(m_comparison == 1 ? Database::instance()->variableNameAndId(m_actorVar).c_str() : "", ImVec2{200 - 15, 0})) {
-        m_picker.emplace("Variables", Database::instance()->system.variables, m_actorVar);
+        m_picker.emplace("Variables", Database::instance()->system.variables(), m_actorVar);
         m_picker->setOpen(true);
       }
       ImGui::PopID();

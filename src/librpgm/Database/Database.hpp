@@ -171,52 +171,52 @@ struct Database {
   }
 
   [[nodiscard]] std::string switchName(const int id) const {
-    if (id < 0 || id >= system.switches.size()) {
+    if (id < 0 || id >= system.switches().size()) {
       return InvalidDataName.data();
     }
     return system.switche(id);
   }
 
   [[nodiscard]] std::string variableName(const int id) const {
-    if (id < 0 || id >= system.variables.size()) {
+    if (id < 0 || id >= system.variables().size()) {
       return InvalidDataName.data();
     }
     return system.variable(id);
   }
 
   [[nodiscard]] std::string elementName(const int id) const {
-    if (id < 0 || id >= system.elements.size()) {
+    if (id < 0 || id >= system.elements().size()) {
       return InvalidDataName.data();
     }
-    return *system.element(id);
+    return system.element(id);
   }
 
   [[nodiscard]] std::string skillTypeName(const int id) const {
-    if (id < 0 || id >= system.skillTypes.size()) {
+    if (id < 0 || id >= system.skillTypes().size()) {
       return InvalidDataName.data();
     }
-    return *system.skillType(id);
+    return system.skillType(id);
   }
 
   [[nodiscard]] std::string weaponTypeName(const int id) const {
-    if (id < 0 || id >= system.weaponTypes.size()) {
+    if (id < 0 || id >= system.weaponTypes().size()) {
       return InvalidDataName.data();
     }
-    return *system.weaponType(id);
+    return system.weaponType(id);
   }
 
   [[nodiscard]] std::string armorTypeName(const int id) const {
-    if (id < 0 || id >= system.armorTypes.size()) {
+    if (id < 0 || id >= system.armorTypes().size()) {
       return InvalidDataName.data();
     }
-    return *system.armorType(id);
+    return system.armorType(id);
   }
 
   [[nodiscard]] std::string equipTypeName(const int id) const {
-    if (id < 0 || id >= system.equipTypes.size()) {
+    if (id < 0 || id >= system.equipTypes().size()) {
       return InvalidDataName.data();
     }
-    return *system.equipType(id);
+    return system.equipType(id);
   }
 
   [[nodiscard]] std::string troopMemberName(const int id, const int index) const {

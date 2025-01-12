@@ -131,7 +131,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           ImGui::BeginDisabled(m_conditionType != 0);
           if (ImGui::Button(text.c_str(), ImVec2{200, 0})) {
             m_picker_type = 0;
-            picker.emplace("Switches", Database::instance()->system.switches, m_switch_id);
+            picker.emplace("Switches", Database::instance()->system.switches(), m_switch_id);
             picker->setOpen(true);
           }
           ImGui::PopID();
@@ -158,7 +158,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           ImGui::PushID("##controlvariable_id2");
           if (ImGui::Button(text.c_str(), ImVec2{200, 0})) {
             m_picker_type = 1;
-            picker.emplace("Variables", Database::instance()->system.variables, m_variable_id);
+            picker.emplace("Variables", Database::instance()->system.variables(), m_variable_id);
             picker->setOpen(true);
           }
           ImGui::PopID();
@@ -203,7 +203,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
 
                               ImVec2{(200), 0})) {
               m_picker_type = 2;
-              picker.emplace("Variables", Database::instance()->system.variables, m_sub_variable_id);
+              picker.emplace("Variables", Database::instance()->system.variables(), m_sub_variable_id);
               picker->setOpen(true);
             }
             ImGui::PopID();

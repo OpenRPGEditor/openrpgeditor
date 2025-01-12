@@ -32,6 +32,8 @@ public:
   rpgmutils::signal<void(Battler*, int, int)>& equipModified();
   rpgmutils::signal<void(Battler*, int)>& levelModified();
 
+  bool operator==(const Battler& other) const { return m_actorId == other.m_actorId && m_equips == other.m_equips && m_level == other.m_level; }
+
 private:
   int m_actorId{};
   std::vector<int> m_equips;

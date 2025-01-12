@@ -55,7 +55,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
       ImGui::BeginDisabled(m_operation_var != 0);
       if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetWindowContentRegionMax().x - 100) - 15, 0})) {
         singleRequest = true;
-        picker.emplace("Variables", Database::instance()->system.variables, m_operation_var);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_operation_var);
         picker->setOpen(true);
       }
       ImGui::PopID();
@@ -116,7 +116,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
       ImGui::PushID("##controlvariable_id2");
       if (ImGui::Button(text.c_str(), ImVec2{300, 0})) {
         singleRequest = false;
-        picker.emplace("Variables", Database::instance()->system.variables, m_operand);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_operand);
         picker->setOpen(true);
       }
       ImGui::PopID();

@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ChangeSkill.hpp"
 
-
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -65,7 +64,7 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
       ImGui::BeginDisabled(m_comparison != 1);
       ImGui::PushID("##changeskill_var");
       if (ImGui::Button(m_comparison == 1 ? (std::format("{:04} ", m_var) + Database::instance()->variableNameOrId(m_var)).c_str() : "", ImVec2{200 - 15, 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables, m_var);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_var);
         picker->setOpen(true);
       }
       ImGui::PopID();

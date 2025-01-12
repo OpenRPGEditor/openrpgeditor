@@ -110,7 +110,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
             const std::string label = m_page->conditions().switch1Valid() ? Database::instance()->switchNameOrId(m_page->conditions().switch1Id()) : "";
             if (ImGui::Button((label + "##event_page_switch1_selection_button").c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
               m_variableSwitchSelection = Switch1;
-              m_variableSwitchPicker.emplace("Switch", Database::instance()->system.switches, m_page->conditions().switch1Id());
+              m_variableSwitchPicker.emplace("Switch", Database::instance()->system.switches(), m_page->conditions().switch1Id());
               m_variableSwitchPicker->setOpen(true);
             }
           }
@@ -120,7 +120,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
             const std::string label = m_page->conditions().switch2Valid() ? Database::instance()->switchNameOrId(m_page->conditions().switch2Id()) : "";
             if (ImGui::Button((label + "##event_page_switch2_selection_button").c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
               m_variableSwitchSelection = Switch2;
-              m_variableSwitchPicker.emplace("Switch", Database::instance()->system.switches, m_page->conditions().switch2Id());
+              m_variableSwitchPicker.emplace("Switch", Database::instance()->system.switches(), m_page->conditions().switch2Id());
               m_variableSwitchPicker->setOpen(true);
             }
           }
@@ -132,7 +132,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
               const std::string label = m_page->conditions().variableValid() ? Database::instance()->variableNameOrId(m_page->conditions().variableId()) : "";
               if (ImGui::Button((label + "##event_page_variable_selection_button").c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
                 m_variableSwitchSelection = Variable;
-                m_variableSwitchPicker.emplace("Variable", Database::instance()->system.variables, m_page->conditions().variableId());
+                m_variableSwitchPicker.emplace("Variable", Database::instance()->system.variables(), m_page->conditions().variableId());
                 m_variableSwitchPicker->setOpen(true);
               }
               auto oldX = ImGui::GetCursorPosX();

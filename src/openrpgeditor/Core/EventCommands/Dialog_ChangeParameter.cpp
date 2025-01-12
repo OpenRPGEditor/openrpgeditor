@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ChangeParameter.hpp"
 
-
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>
@@ -59,7 +58,7 @@ std::tuple<bool, bool> Dialog_ChangeParameter::draw() {
       ImGui::PushID("##changemp_var");
       if (ImGui::Button(m_comparison == 1 ? Database::instance()->variableNameAndId(m_value_var).c_str() : "", ImVec2{200 - 15, 0})) {
         m_isOperand = false;
-        m_picker.emplace("Variables", Database::instance()->system.variables, m_value_var);
+        m_picker.emplace("Variables", Database::instance()->system.variables(), m_value_var);
         m_picker->setOpen(true);
       }
       ImGui::PopID();
@@ -113,7 +112,7 @@ std::tuple<bool, bool> Dialog_ChangeParameter::draw() {
       ImGui::PushID("##changemp_quant_var");
       if (ImGui::Button(m_quantitySource == 1 ? Database::instance()->variableNameAndId(m_quantity_var).c_str() : "", ImVec2{200 - 15, 0})) {
         m_isOperand = true;
-        m_picker.emplace("Variables", Database::instance()->system.variables, m_quantity_var);
+        m_picker.emplace("Variables", Database::instance()->system.variables(), m_quantity_var);
         m_picker->setOpen(true);
       }
       ImGui::PopID();

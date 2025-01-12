@@ -307,7 +307,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
             if (ImGui::Button(m_selectedAction->conditionType() == ActionCondition::Switch ? Database::instance()->switchNameOrId(static_cast<int>(m_selectedAction->conditionParam1())).c_str()
                                                                                            : "##actions_switch_selection",
                               ImVec2{ImGui::GetContentRegionAvail().x, 0})) {
-              picker.emplace("Switches", Database::instance()->system.switches, m_selectedAction->conditionParam1());
+              picker.emplace("Switches", Database::instance()->system.switches(), m_selectedAction->conditionParam1());
               picker->setOpen(true);
             }
           }

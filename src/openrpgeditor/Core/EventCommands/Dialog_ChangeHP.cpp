@@ -60,7 +60,7 @@ std::tuple<bool, bool> Dialog_ChangeHP::draw() {
       ImGui::PushID("##changehp_var");
       if (ImGui::Button(m_comparison == 1 ? Database::instance()->variableNameAndId(m_value_var).c_str() : "", ImVec2{200 - 15, 0})) {
         isOperand = false;
-        picker.emplace("Variables", Database::instance()->system.variables, m_value_var);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_value_var);
         picker->setOpen(true);
       }
       ImGui::PopID();
@@ -100,7 +100,7 @@ std::tuple<bool, bool> Dialog_ChangeHP::draw() {
       ImGui::PushID("##changehp_quant_var");
       if (ImGui::Button(m_quantitySource == 1 ? Database::instance()->variableNameAndId(m_quantity_var).c_str() : "", ImVec2{200 - 15, 0})) {
         isOperand = true;
-        picker.emplace("Variables", Database::instance()->system.variables, m_quantity_var);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_quantity_var);
         picker->setOpen(true);
       }
       ImGui::PopID();

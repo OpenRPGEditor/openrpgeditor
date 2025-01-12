@@ -104,29 +104,7 @@ public:
     m_editMode = EditMode::Event;
   }
 
-  std::string variable(int id) { return m_database->system.variable(id); }
-  const std::string variable(int id) const { return m_database->system.variable(id); }
-
-  std::string switche(int id) { return m_database->system.switche(id); }
-  const std::string switche(int id) const { return m_database->system.switche(id); }
-  CommonEvent* commonEvent(int id) { return m_database->commonEvents.event(id); }
-  const CommonEvent* commonEvent(int id) const { return m_database->commonEvents.event(id); }
-
-  Actor* actor(int id) { return m_database->actors.actor(id); }
-  Event* event(int id) { return m_mapEditor.map()->event(id); }
-  Class* actorClass(int id) { return m_database->classes.classType(id); }
-  const char* vehicle(int id) { return id == 0 ? "Boat" : id == 1 ? "Ship" : "Airship"; }
-  Enemy* enemy(int id) { return m_database->enemies.enemy(id); }
-  Skill* skill(int id) { return m_database->skills.skill(id); }
-  Weapon* weapon(int id) { return m_database->weapons.weapon(id); }
-  Armor* armor(int id) { return m_database->armors.armor(id); }
-  Item* item(int id) { return m_database->items.item(id); }
-  State* state(int id) { return m_database->states.state(id); }
-  MapInfo* map(int id) { return m_database->mapInfos.map(id); }
-  std::string equipType(int id) { return m_database->system.equipTypes.at(id); }
-  Animation* animation(int id) { return m_database->animations.animation(id); }
-  Tileset* tileset(int id) { return m_database->tilesets.tileset(id); }
-
+  MapEditor* mapEditor() { return &m_mapEditor; }
   void setDrawTool(DrawTool tool) { m_drawTool = tool; }
   DrawTool drawTool() const { return m_drawTool; }
 
@@ -147,27 +125,6 @@ public:
     /* Clear the redo stack since adding a new undo command invalidates the redo state */
     m_redoStack.clear();
   }
-
-  System& system() { return m_database->system; }
-  const System& system() const { return m_database->system; }
-
-  MapEditor* mapEditor() { return &m_mapEditor; }
-  const MapEditor* mapEditor() const { return &m_mapEditor; }
-
-  Items& items() { return m_database->items; }
-  const Items& items() const { return m_database->items; }
-
-  Armors& armors() { return m_database->armors; }
-  const Armors& armors() const { return m_database->armors; }
-
-  Weapons& weapons() { return m_database->weapons; }
-  const Weapons& weapons() const { return m_database->weapons; }
-
-  Actors& actors() { return m_database->actors; }
-  const Actors& actors() const { return m_database->actors; }
-
-  Troops& troops() { return m_database->troops; }
-  const Troops& troops() const { return m_database->troops; }
 
   std::vector<std::optional<Event>> events() { return currentMap()->events(); }
   std::vector<std::optional<Event>> events() const { return currentMap()->events(); }

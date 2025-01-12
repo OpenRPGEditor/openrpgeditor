@@ -56,7 +56,7 @@ void MapEditor::setMap(MapInfo* info) {
   }
 }
 
-int MapEditor::tileSize() const { return m_parent->system().tileSize; }
+int MapEditor::tileSize() const { return Database::instance()->system.tileSize(); }
 
 void MapEditor::drawParallax(ImGuiWindow* win) {
   if (!m_parallaxTexture) {
@@ -111,13 +111,13 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
   }
 
   if (ImGui::IsWindowHovered() && m_parent->editMode() == EditMode::Map) {
-    m_tileCursor.update(m_mapScale, map()->width(), map()->height(), m_parent->system().tileSize, win);
+    m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system.tileSize(), win);
   } else if (ImGui::IsWindowHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left) && (m_parent->editMode() == EditMode::Event || m_movingEvent)) {
-    m_tileCursor.update(m_mapScale, map()->width(), map()->height(), m_parent->system().tileSize, win);
+    m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system.tileSize(), win);
     handleEventDrag();
     m_scaleChanged = false;
   } else if (m_scaleChanged || m_tileCursor.mode() == MapCursorMode::Keyboard) {
-    m_tileCursor.update(m_mapScale, map()->width(), map()->height(), m_parent->system().tileSize, win);
+    m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system.tileSize(), win);
     handleEventDrag();
     m_scaleChanged = false;
   }
@@ -519,7 +519,7 @@ void MapEditor::draw() {
     // ImGui::SetScrollY(m_tileCursor.alignCoord(ImGui::GetScrollY()));
     if (map()) {
       ImGuiWindow* win = ImGui::GetCurrentWindow();
-      ImGui::Dummy(ImVec2{(map()->width() * m_parent->system().tileSize * m_mapScale), (map()->height() * m_parent->system().tileSize * m_mapScale)});
+      ImGui::Dummy(ImVec2{(map()->width() * Database::instance()->system.tileSize() * m_mapScale), (map()->height() * Database::instance()->system.tileSize() * m_mapScale)});
 
       const float u1 = std::clamp((static_cast<float>(map()->width() * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
       const float v1 = std::clamp((static_cast<float>(map()->height() * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);

@@ -21,7 +21,7 @@ private:
   };
 
   void setInitialBuffer(const std::vector<std::string>& list, std::string& buffer, int selected);
-  void drawTypeTable(std::string_view id, std::string_view listId, std::string_view label, std::vector<std::string>& list, int& selected, EditType editType, std::string& buffer);
+  void drawTypeTable(std::string_view id, std::string_view listId, std::string_view label, const std::vector<std::string>& list, int& selected, EditType editType, std::string& buffer);
 
   System& m_system;
   int m_selectedElement{1};

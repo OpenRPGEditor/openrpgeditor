@@ -122,7 +122,7 @@ std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
               std::string(std::format("{}##orpg_troops_conditions_switch_page_{}", m_page->conditions.switchValid ? Database::instance()->switchNameOrId(m_page->conditions.switchId) : "", m_page_id))
                   .c_str(),
               ImVec2{(150), 0})) {
-        picker.emplace("Switches", Database::instance()->system.switches, m_page->conditions.switchId);
+        picker.emplace("Switches", Database::instance()->system.switches(), m_page->conditions.switchId);
         picker->setOpen(true);
       }
     }

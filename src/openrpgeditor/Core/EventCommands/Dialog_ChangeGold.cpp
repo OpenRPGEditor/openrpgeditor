@@ -48,7 +48,7 @@ std::tuple<bool, bool> Dialog_ChangeGold::draw() {
       std::string text = m_operandSource != 1 ? "##commonevent_switch_empty" : Database::instance()->variableNameOrId(m_variable);
       ImGui::PushID("##controlvariable_gamedata");
       if (ImGui::Button(text.c_str(), ImVec2{200 - 15, 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables, m_variable);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_variable);
         picker->setOpen(true);
       }
       ImGui::PopID();

@@ -304,7 +304,7 @@ void DBClassesTab::draw() {
               ImGui::TableHeadersRow();
 
               for (auto& learning : m_selectedClass->learnings()) {
-                const auto skill = m_parent->skill(learning.skillId());
+                const auto skill = Database::instance()->skills.skill(learning.skillId());
                 if (!skill) {
                   continue;
                 }

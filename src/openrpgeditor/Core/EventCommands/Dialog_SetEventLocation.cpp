@@ -79,14 +79,14 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
       ImGui::PushID("##transfer_var_x");
       if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_x_var).c_str() : "", ImVec2{(280), 0})) {
         m_var_selection = 1;
-        picker.emplace("Variables", Database::instance()->system.variables, m_x_var);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_x_var);
         picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::PushID("##transfer_var_y");
       if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_y_var).c_str() : "", ImVec2{(280), 0})) {
         m_var_selection = 2;
-        picker.emplace("Variables", Database::instance()->system.variables, m_y_var);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_y_var);
         picker->setOpen(true);
       }
       ImGui::PopID();

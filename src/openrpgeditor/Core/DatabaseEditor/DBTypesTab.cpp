@@ -16,7 +16,7 @@ void DBTypesTab::setInitialBuffer(const std::vector<std::string>& list, std::str
   }
 }
 
-void DBTypesTab::drawTypeTable(const std::string_view id, const std::string_view listId, const std::string_view label, std::vector<std::string>& list, int& selected, const EditType editType,
+void DBTypesTab::drawTypeTable(const std::string_view id, const std::string_view listId, const std::string_view label, const std::vector<std::string>& list, int& selected, const EditType editType,
                                std::string& buffer) {
   ImGui::PushFont(App::APP->getMonoFont());
   auto calc = ImGui::CalcTextSize("ABCDEFGKLMNOPQRSTUVWXYZABCDEFG");
@@ -38,7 +38,7 @@ void DBTypesTab::drawTypeTable(const std::string_view id, const std::string_view
         }
       }
       if (ImGui::IsKeyPressed(ImGuiKey_Delete) && ImGui::IsWindowFocused() && selected > 0 && selected < list.size()) {
-        list[selected].clear();
+        // list[selected].clear();
       }
       ImGui::EndTable();
     }
@@ -47,7 +47,7 @@ void DBTypesTab::drawTypeTable(const std::string_view id, const std::string_view
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetStyleColorVec4(ImGuiCol_ChildBg));
     if (ImGui::InputText(std::format("{}_edit", listId).c_str(), &buffer) && selected > 0 && selected < list.size()) {
-      list[selected] = buffer;
+      // list[selected] = buffer;
     }
     ImGui::PopStyleColor();
 
@@ -61,23 +61,23 @@ void DBTypesTab::drawTypeTable(const std::string_view id, const std::string_view
   ImGui::EndChild();
 }
 void DBTypesTab::draw() {
-  setInitialBuffer(m_system.elements, m_elementBuffer, m_selectedElement);
-  setInitialBuffer(m_system.skillTypes, m_skillBuffer, m_selectedSkill);
-  setInitialBuffer(m_system.weaponTypes, m_weaponBuffer, m_selectedWeapon);
-  setInitialBuffer(m_system.armorTypes, m_armorBuffer, m_selectedArmor);
-  setInitialBuffer(m_system.equipTypes, m_equipmentBuffer, m_selectedEquipment);
+  setInitialBuffer(m_system.elements(), m_elementBuffer, m_selectedElement);
+  setInitialBuffer(m_system.skillTypes(), m_skillBuffer, m_selectedSkill);
+  setInitialBuffer(m_system.weaponTypes(), m_weaponBuffer, m_selectedWeapon);
+  setInitialBuffer(m_system.armorTypes(), m_armorBuffer, m_selectedArmor);
+  setInitialBuffer(m_system.equipTypes(), m_equipmentBuffer, m_selectedEquipment);
 
   ImGui::BeginChild("##orpg_types_editor", {}, ImGuiChildFlags_None, ImGuiWindowFlags_HorizontalScrollbar);
   {
-    drawTypeTable("##orpg_types_elements"sv, "##types_elements_list"sv, "Elements"sv, m_system.elements, m_selectedElement, EditType::Element, m_elementBuffer);
+    drawTypeTable("##orpg_types_elements"sv, "##types_elements_list"sv, "Elements"sv, m_system.elements(), m_selectedElement, EditType::Element, m_elementBuffer);
     ImGui::SameLine();
-    drawTypeTable("##orpg_types_skills"sv, "##types_skills_list"sv, "Skill Types"sv, m_system.skillTypes, m_selectedSkill, EditType::Skill, m_skillBuffer);
+    drawTypeTable("##orpg_types_skills"sv, "##types_skills_list"sv, "Skill Types"sv, m_system.skillTypes(), m_selectedSkill, EditType::Skill, m_skillBuffer);
     ImGui::SameLine();
-    drawTypeTable("##orpg_types_weapons"sv, "##types_weapons_list"sv, "Weapon Types"sv, m_system.weaponTypes, m_selectedWeapon, EditType::Weapon, m_weaponBuffer);
+    drawTypeTable("##orpg_types_weapons"sv, "##types_weapons_list"sv, "Weapon Types"sv, m_system.weaponTypes(), m_selectedWeapon, EditType::Weapon, m_weaponBuffer);
     ImGui::SameLine();
-    drawTypeTable("##orpg_types_armors"sv, "##types_armors_list"sv, "Armor Types"sv, m_system.armorTypes, m_selectedArmor, EditType::Armor, m_armorBuffer);
+    drawTypeTable("##orpg_types_armors"sv, "##types_armors_list"sv, "Armor Types"sv, m_system.armorTypes(), m_selectedArmor, EditType::Armor, m_armorBuffer);
     ImGui::SameLine();
-    drawTypeTable("##orpg_types_equips"sv, "##types_equips_list"sv, "Equipment Types"sv, m_system.equipTypes, m_selectedEquipment, EditType::Equipment, m_equipmentBuffer);
+    drawTypeTable("##orpg_types_equips"sv, "##types_equips_list"sv, "Equipment Types"sv, m_system.equipTypes(), m_selectedEquipment, EditType::Equipment, m_equipmentBuffer);
   }
   ImGui::EndChild();
 
@@ -110,28 +110,28 @@ void DBTypesTab::draw() {
         m_confirmationClosed = true;
         switch (m_maxEditType) {
         case EditType::Element: {
-          m_system.elements.resize(m_editMax + 1);
-          m_selectedElement = m_system.elements.size() - 1;
+          // m_system.elements().resize(m_editMax + 1);
+          // m_selectedElement = m_system.elements().size() - 1;
           break;
         }
         case EditType::Skill: {
-          m_system.skillTypes.resize(m_editMax + 1);
-          m_selectedSkill = m_system.skillTypes.size() - 1;
+          // m_system.skillTypes().resize(m_editMax + 1);
+          // m_selectedSkill = m_system.skillTypes().size() - 1;
           break;
         }
         case EditType::Weapon: {
-          m_system.weaponTypes.resize(m_editMax + 1);
-          m_selectedWeapon = m_system.weaponTypes.size() - 1;
+          // m_system.weaponTypes().resize(m_editMax + 1);
+          // m_selectedWeapon = m_system.weaponTypes().size() - 1;
           break;
         }
         case EditType::Armor: {
-          m_system.armorTypes.resize(m_editMax + 1);
-          m_selectedArmor = m_system.armorTypes.size() - 1;
+          // m_system.armorTypes().resize(m_editMax + 1);
+          // m_selectedArmor = m_system.armorTypes().size() - 1;
           break;
         }
         case EditType::Equipment: {
-          m_system.equipTypes.resize(m_editMax + 1);
-          m_selectedEquipment = (m_system.equipTypes.size() - 1 > 0) ? m_system.equipTypes.size() - 1 : 0;
+          // m_system.equipTypes().resize(m_editMax + 1);
+          // m_selectedEquipment = (m_system.equipTypes().size() - 1 > 0) ? m_system.equipTypes().size() - 1 : 0;
           break;
         }
         }

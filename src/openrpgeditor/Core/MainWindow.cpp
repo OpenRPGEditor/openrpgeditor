@@ -591,9 +591,9 @@ void MainWindow::drawCreateNewProjectPopup() {
         }
         if (!copyExampleProject) {
           m_database.emplace(projectPath.generic_string(), projectFilePath.generic_string(), KnownRPGMVVersions[KnownRPGMVVersions.size() - 2]);
-          m_database->system.gameTitle = gameTitle;
-          m_database->system.locale = "en_US";
-          m_database->system.versionId = floor(rand() * 100000000);
+          m_database->system.setGameTitle(gameTitle.data());
+          m_database->system.setLocale("en_US");
+          m_database->system.setVersionId(floor(rand() * 100000000));
           m_database->serializeProject();
         }
         while (SerializationQueue::instance().hasTasks()) {}
@@ -1020,7 +1020,7 @@ void MainWindow::setMap(MapInfo& in) {
     m_database->mapInfos.setCurrentMap(nullptr);
   }
 
-  m_database->system.editMapId = in.id();
+  m_database->system.setEditMapId(in.id());
 
   SDL_SetCursor(SDL_GetDefaultCursor());
 }
@@ -1045,23 +1045,23 @@ void MainWindow::onDatabaseReady() {
   MapInfo* info = m_database->mapInfos.map(0);
   Settings::instance()->lastProject = m_database->projectFilePath;
   info->setExpanded(true);
-  info->setName(m_database->system.gameTitle.empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system.gameTitle);
+  info->setName(m_database->system.gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system.gameTitle());
   APP_INFO("Loaded project!");
   // Load the previously loaded map
   m_mapEditor.clearLayers();
   m_mapListView.setMapInfos(&m_database->mapInfos);
 
-  if (MapInfo* m = m_database->mapInfos.map(m_database->system.editMapId); m != nullptr) {
+  if (MapInfo* m = m_database->mapInfos.map(m_database->system.editMapId()); m != nullptr) {
     setMap(*m);
   }
 
   if (const auto fileIt = std::ranges::find_if(Settings::instance()->mru, [this](const auto& t) { return t.first == m_database->projectFilePath; }); fileIt == Settings::instance()->mru.end()) {
     Settings::instance()->mru.emplace_front(m_database->projectFilePath,
-                                            m_database->system.gameTitle.empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system.gameTitle);
+                                            m_database->system.gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system.gameTitle());
   } else {
     Settings::instance()->mru.erase(fileIt);
     Settings::instance()->mru.emplace_front(m_database->projectFilePath,
-                                            m_database->system.gameTitle.empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system.gameTitle);
+                                            m_database->system.gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system.gameTitle());
   }
   while (Settings::instance()->mru.size() > Settings::instance()->maxMru) {
     Settings::instance()->mru.pop_back();

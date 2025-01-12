@@ -67,7 +67,7 @@ std::tuple<bool, bool> Dialog_ChangeEnemyTP::draw() {
       ImGui::BeginDisabled(m_quantitySource != 1);
       ImGui::PushID("##changeenemymp_quant_var");
       if (ImGui::Button(m_quantitySource == 1 ? Database::instance()->variableNameAndId(m_quantity_var).c_str() : "", ImVec2{200 - 15, 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables, m_quantity_var);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_quantity_var);
         picker->setOpen(true);
       }
       ImGui::PopID();

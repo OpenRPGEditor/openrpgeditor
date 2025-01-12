@@ -113,14 +113,14 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
       ImGui::PushID("##showpicture_vardesig_x");
       if (ImGui::Button(m_type == 1 ? Database::instance()->variableNameOrId(m_value1).c_str() : "", ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - 15, 0})) {
         xOrY = false;
-        picker.emplace("Variables", Database::instance()->system.variables, m_value1);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_value1);
         picker->setOpen(true);
       }
       ImGui::PopID();
       ImGui::PushID("##showpicture_vardesig_y");
       if (ImGui::Button(m_type == 1 ? Database::instance()->variableNameOrId(m_value2).c_str() : "", ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - 15, 0})) {
         xOrY = true;
-        picker.emplace("Variables", Database::instance()->system.variables, m_value2);
+        picker.emplace("Variables", Database::instance()->system.variables(), m_value2);
         picker->setOpen(true);
       }
       ImGui::PopID();

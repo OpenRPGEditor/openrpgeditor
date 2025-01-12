@@ -103,7 +103,7 @@ void DBCommonEventsTab::draw() {
               // m_parent->switches(m_selectedCommonEvent->switchId)); strncpy(buf,
               // m_mapInfos.map(m_selectedCommonEvent.id)->name.c_str(), 4096);
               const bool isSwitchEnabled = m_selectedCommonEvent->trigger() == CommonEventTriggerType::None;
-              const std::string text = isSwitchEnabled ? "##commonevent_switch_empty" : m_parent->switches(m_selectedCommonEvent->switchId());
+              const std::string text = isSwitchEnabled ? "##commonevent_switch_empty" : Database::instance()->system.switche(m_selectedCommonEvent->switchId());
               ImGui::PushID("##commonevent_button");
               ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2 / 2 - 16);
               ImGui::BeginDisabled(isSwitchEnabled);

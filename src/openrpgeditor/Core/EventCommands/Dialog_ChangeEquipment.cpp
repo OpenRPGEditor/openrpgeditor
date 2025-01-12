@@ -35,8 +35,8 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
     ImGui::SeparatorText("Equipment Type");
     ImGui::SetNextItemWidth(160);
     if (ImGui::BeginCombo("##equip_type_list", Database::instance()->equipTypeName(m_equipmentType).c_str())) {
-      for (int i = 1; i < Database::instance()->system.equipTypes.size(); ++i) {
-        if (ImGui::Selectable(Database::instance()->system.equipTypes.at(i).c_str(), i == m_equipmentType)) {
+      for (int i = 1; i < Database::instance()->system.equipTypes().size(); ++i) {
+        if (ImGui::Selectable(Database::instance()->system.equipType(i).c_str(), i == m_equipmentType)) {
           m_equipmentType = i;
         }
       }

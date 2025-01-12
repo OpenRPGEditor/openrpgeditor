@@ -130,11 +130,10 @@ void DBActorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Class:");
-              Classes classes = m_parent->classes();
-              const auto cls = classes.classType(m_selectedActor->classId());
+              const auto cls = Database::instance()->classes.classType(m_selectedActor->classId());
               ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2 - 16);
               if (ImGui::BeginCombo("##orpg_actors_editor_class_combo", Database::instance()->classNameAndId(cls->id()).c_str())) {
-                for (const auto& c : classes.classes()) {
+                for (const auto& c : Database::instance()->classes.classes()) {
                   if (c.id() == 0) {
                     continue;
                   }
@@ -223,7 +222,7 @@ void DBActorsTab::draw() {
               ImGui::TableSetupColumn("Type");
               ImGui::TableSetupColumn("Equipment Item");
               ImGui::TableHeadersRow();
-              const auto& equipTypes = Database::instance()->system.equipTypes;
+              const auto& equipTypes = Database::instance()->system.equipTypes();
 
               for (int i = 0; i < equipTypes.size() - 1; i++) {
                 ImGui::TableNextRow();

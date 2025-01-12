@@ -176,6 +176,21 @@ public:
   rpgmutils::signal<void(Messages*, const std::string&)>& useItemModified();
   rpgmutils::signal<void(Messages*, const std::string&)>& victoryModified();
 
+  bool operator==(const Messages& other) const {
+    return m_actionFailure == other.m_actionFailure && m_actorDamage == other.m_actorDamage && m_actorDrain == other.m_actorDrain && m_actorGain == other.m_actorGain &&
+           m_actorLoss == other.m_actorLoss && m_actorNoDamage == other.m_actorNoDamage && m_actorNoHit == other.m_actorNoHit && m_actorRecovery == other.m_actorRecovery &&
+           m_alwaysDash == other.m_alwaysDash && m_bgmVolume == other.m_bgmVolume && m_bgsVolume == other.m_bgsVolume && m_buffAdd == other.m_buffAdd && m_buffRemove == other.m_buffRemove &&
+           m_commandRemember == other.m_commandRemember && m_counterAttack == other.m_counterAttack && m_criticalToActor == other.m_criticalToActor && m_criticalToEnemy == other.m_criticalToEnemy &&
+           m_debuffAdd == other.m_debuffAdd && m_defeat == other.m_defeat && m_emerge == other.m_emerge && m_enemyDamage == other.m_enemyDamage && m_enemyDrain == other.m_enemyDrain &&
+           m_enemyGain == other.m_enemyGain && m_enemyLoss == other.m_enemyLoss && m_enemyNoDamage == other.m_enemyNoDamage && m_enemyNoHit == other.m_enemyNoHit &&
+           m_enemyRecovery == other.m_enemyRecovery && m_escapeFailure == other.m_escapeFailure && m_escapeStart == other.m_escapeStart && m_evasion == other.m_evasion &&
+           m_expNext == other.m_expNext && m_expTotal == other.m_expTotal && m_file == other.m_file && m_levelUp == other.m_levelUp && m_loadMessage == other.m_loadMessage &&
+           m_magicEvasion == other.m_magicEvasion && m_magicReflection == other.m_magicReflection && m_meVolume == other.m_meVolume && m_obtainExp == other.m_obtainExp &&
+           m_obtainGold == other.m_obtainGold && m_obtainItem == other.m_obtainItem && m_obtainSkill == other.m_obtainSkill && m_partyName == other.m_partyName && m_possession == other.m_possession &&
+           m_preemptive == other.m_preemptive && m_saveMessage == other.m_saveMessage && m_seVolume == other.m_seVolume && m_substitute == other.m_substitute && m_surprise == other.m_surprise &&
+           m_useItem == other.m_useItem && m_victory == other.m_victory;
+  }
+
 private:
   std::string m_actionFailure;
   std::string m_actorDamage;

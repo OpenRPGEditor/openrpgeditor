@@ -74,7 +74,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
         " * @summary Exported Variable \"{}\" ({})\n"
         " * @readonly\n"
         " */\n",
-        alias, Database::instance()->system.variables[id], id);
+        alias, Database::instance()->system.variable(id), id);
     file << std::format("const VAR_{} = {};\n", alias, id);
   }
   file << "\n/* -----------------SWITCHES------------------ */\n";
@@ -86,7 +86,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
         " * @summary Exported Switch \"{}\" ({})\n"
         " * @readonly\n"
         " */\n",
-        alias, Database::instance()->system.switches[id], id);
+        alias, Database::instance()->system.switche(id), id);
     file << std::format("const SW_{} = {};\n", alias, id);
   }
   file << "\n/* ------------------ACTORS------------------- */\n";

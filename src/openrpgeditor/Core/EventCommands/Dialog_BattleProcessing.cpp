@@ -52,7 +52,7 @@ std::tuple<bool, bool> Dialog_BattleProcessing::draw() {
     ImGui::PushID("##battleprocess_var");
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
     if (ImGui::Button(m_type == 1 ? Database::instance()->variableNameOrId(m_var_selection).c_str() : "", ImVec2{200 - 15, 0})) {
-      picker.emplace("Variables", Database::instance()->system.variables, m_var_selection);
+      picker.emplace("Variables", Database::instance()->system.variables(), m_var_selection);
       picker->setOpen(true);
     }
     ImGui::PopID();

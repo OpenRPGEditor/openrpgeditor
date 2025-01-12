@@ -1156,6 +1156,8 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
     }
   } else if (flagType == 1) {
     // Passage (4-dir)
+    std::vector<std::array<int, 4>> tileData;
+    tileData.emplace_back(TilePalette::paletteTiles(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y), m_selectedTileTab, m_selectedTileset->tilesetNames(), m_selectedTileset->mode(), true));
 
     // Texture and grid details
     const int iconSize = 16; // Size of each icon in pixels
@@ -1442,19 +1444,18 @@ void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTi
   } else if (m_flagSelection == 6) {
     // Terrain Tag
     int tag = TileHelper::getTerrainTag(m_selectedTileset->flag(tileIndex));
-    int flags = m_selectedTileset->flag(tileIndex);
-    if (tag > 6) {
-      tag = 0;
-
+    if (reverse) {
+      tag--;
+      if (tag < 0) {
+        tag = 6;
+      }
     } else {
-
-      if (tag > 6) {
+      tag++;
+      if (tag > 7) {
         tag = 0;
-      } else {
-        tag++;
       }
     }
-    m_selectedTileset->setTerrainTag(tileIndex, tag);
+    m_selectedTileset->setTerrainTag(tileIndex, std::clamp(tag, 0, 6));
   }
 }
 void DBTilesetsTab::toggleSelection(int flagIndex, int tileIndex, bool reverse) {

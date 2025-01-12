@@ -231,6 +231,22 @@ public:
 
   void restoreOriginal() override;
   void acceptChanges() override;
+
+  bool isModified() const override {
+    bool modified = IModifiable::isModified();
+    modified |= m_airship.isModified();
+    modified |= std::ranges::any_of(m_attackMotions, [&](auto motion) { return motion.isModified(); });
+    modified |= m_battleBgm.isModified();
+    modified |= m_boat.isModified();
+    modified |= m_defeatMe.isModified();
+    modified |= m_gameoverMe.isModified();
+    modified |= std::ranges::any_of(m_sounds, [&](auto sound) { return sound.isModified(); });
+    modified |= m_terms.isModified();
+    modified |= std::ranges::any_of(m_testBattlers, [&](auto battler) { return battler.isModified(); });
+    modified |= m_titleBgm.isModified();
+    modified |= m_victoryMe.isModified();
+    return modified;
+  }
   nlohmann::ordered_json serializeOldValues() const override;
   rpgmutils::signal<void(System*, const Vehicle&)>& airshipModified();
   rpgmutils::signal<void(System*, const std::vector<std::string>&)>& armorTypesModified();

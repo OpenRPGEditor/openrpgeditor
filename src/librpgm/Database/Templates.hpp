@@ -2,7 +2,7 @@
 
 #include "Database/Template.hpp"
 
-class Templates {
+class Templates final : public IModifiable {
   mutable std::unordered_map<Template::TemplateType, std::vector<Template>> m_filteredCache;
 
 public:
@@ -13,6 +13,9 @@ public:
   static Templates load(std::string_view path);
   bool serialize(std::string_view path);
 
+  bool isModified() const override {
+    return IModifiable::isModified() | std::ranges::any_of(templates, [](const Template& t) { return t.isModified(); });
+  }
   void addTemplate(const Template& tmpl) {
     templates.push_back(tmpl);
     m_filteredCache.clear();

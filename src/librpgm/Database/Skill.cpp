@@ -4,6 +4,8 @@
 Skill::Skill(const Skill& other)
 : IModifiable(other)
 , m_id(other.m_id)
+, m_animationId(other.m_animationId)
+, m_damage(other.m_damage)
 , m_description(other.m_description)
 , m_effects(other.m_effects)
 , m_iconIndex(other.m_iconIndex)
@@ -42,7 +44,8 @@ Skill::Skill(const Skill& other)
 , m_oldstypeId(other.m_oldstypeId)
 , m_oldsuccessRate(other.m_oldsuccessRate)
 , m_oldtpCost(other.m_oldtpCost)
-, m_oldtpGain(other.m_oldtpGain) {}
+, m_oldtpGain(other.m_oldtpGain)
+, m_isValid(other.m_isValid) {}
 Skill& Skill::operator=(const Skill& other) {
   IModifiable::operator=(other);
   m_id = other.m_id;
@@ -87,6 +90,7 @@ Skill& Skill::operator=(const Skill& other) {
   m_oldsuccessRate = other.m_oldsuccessRate;
   m_oldtpCost = other.m_oldtpCost;
   m_oldtpGain = other.m_oldtpGain;
+  m_isValid = other.m_isValid;
   return *this;
 }
 Skill::Skill(Skill&& other) noexcept
@@ -134,7 +138,8 @@ Skill::Skill(Skill&& other) noexcept
 , m_oldstypeId(other.m_oldstypeId)
 , m_oldsuccessRate(other.m_oldsuccessRate)
 , m_oldtpCost(other.m_oldtpCost)
-, m_oldtpGain(other.m_oldtpGain) {}
+, m_oldtpGain(other.m_oldtpGain)
+, m_isValid(other.m_isValid) {}
 
 Skill& Skill::operator=(Skill&& other) noexcept {
   IModifiable::operator=(std::move(other));
@@ -182,6 +187,7 @@ Skill& Skill::operator=(Skill&& other) noexcept {
   m_successRate = other.m_successRate;
   m_tpCost = other.m_tpCost;
   m_tpGain = other.m_tpGain;
+  m_isValid = other.m_isValid;
   return *this;
 }
 

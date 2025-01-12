@@ -32,6 +32,8 @@ public:
   rpgmutils::signal<void(Trait*, int)>& dataIdModified();
   rpgmutils::signal<void(Trait*, double)>& valueModified();
 
+  bool operator==(const Trait& trait) const { return m_code == trait.m_code && m_dataId == trait.m_dataId && m_value == trait.m_value; }
+
 private:
   TraitCode m_code = TraitCode::Element_Rate;
   int m_dataId = 1;

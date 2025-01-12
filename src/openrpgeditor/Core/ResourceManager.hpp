@@ -48,8 +48,8 @@ public:
 
 private:
   ResourceManager() = default;
-  static sf::SoundBuffer loadSound(std::string_view path);
-  Texture loadTexture(std::string_view path);
+  static sf::SoundBuffer loadSound(std::filesystem::path path);
+  Texture loadTexture(std::filesystem::path path);
   std::map<std::string, Texture> m_loadedTextures{}; // Path -> texture
   std::map<std::string, Texture> m_editorTextures{}; // Path -> texture
   std::filesystem::path m_basePath{};

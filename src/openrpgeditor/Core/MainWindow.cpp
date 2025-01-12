@@ -490,15 +490,54 @@ void MainWindow::draw() {
         ImGui::Text("Commands:");
         if (selectedEvent != -1 && selectedPage != -1) {
           for (int step = 0; const auto& cmd : map->events[selectedEvent].pages[selectedPage].event_commands) {
-            std::string parameters = "[";
-            for (int i = 0; const auto parameter : cmd.parameters) {
-              parameters += (i == 0) ? std::to_string(parameter) : ", " + std::to_string(parameter);
-              ++i;
+            switch (static_cast<lcf::rpg::EventCommand::Code>(cmd.code)) {
+            case lcf::rpg::EventCommand::Code::CallEvent: {
+              const auto type = cmd.parameters[0];
+              std::string rep = std::string(cmd.indent * 2, ' ') + "@> Call Event: ";
+              switch (type) {
+              case 0: {
+                // Common Event
+                auto id = cmd.parameters[1];
+                auto event = std::ranges::find_if(test.database()->commonevents, [&](const auto& e) { return e.ID == id; });
+                if (event != test.database()->commonevents.end()) {
+                  rep += event->name.c_str();
+                }
+              } break;
+              case 1: {
+                // Map Event
+                const auto id = cmd.parameters[1];
+                const auto event = std::ranges::find_if(map->events, [&](const auto& e) { return e.ID == id; });
+                if (event != map->events.end()) {
+                  rep += std::format("[{}][{}]", event->name.c_str(), cmd.parameters[2]);
+                }
+              } break;
+              case 2: {
+                // Map Event (Variable)
+                const auto eventId = cmd.parameters[1];
+                const auto event = std::ranges::find_if(test.database()->variables, [&](const auto& e) { return e.ID == eventId; });
+                const auto pageId = cmd.parameters[2];
+                const auto page = std::ranges::find_if(test.database()->variables, [&](const auto& e) { return e.ID == pageId; });
+                if (event != test.database()->variables.end() && page != test.database()->variables.end()) {
+                  rep += std::format("[{}][{}]", event->name.c_str(), page->name.c_str());
+                }
+              } break;
+              default:
+                break;
+              }
+              ImGui::Selectable(rep.c_str());
+            } break;
+            default: {
+              std::string parameters = "[";
+              for (int i = 0; const auto parameter : cmd.parameters) {
+                parameters += (i == 0) ? std::to_string(parameter) : ", " + std::to_string(parameter);
+                ++i;
+              }
+              parameters += "]";
+              if (ImGui::Selectable(std::format("{}{:05}-{}: {}, {}, {}###{}", std::string(cmd.indent * 4, ' '), cmd.code, lcf::rpg::EventCommand::kCodeTags[cmd.code], cmd.indent, cmd.string.c_str(),
+                                                parameters, step)
+                                        .c_str())) {}
+            } break;
             }
-            parameters += "]";
-            if (ImGui::Selectable(std::format("{}{:05}-{}: {}, {}, {}###{}", std::string(cmd.indent * 4, ' '), cmd.code, lcf::rpg::EventCommand::kCodeTags[cmd.code], cmd.indent, cmd.string.c_str(),
-                                              parameters, step)
-                                      .c_str())) {}
             step++;
           }
         }

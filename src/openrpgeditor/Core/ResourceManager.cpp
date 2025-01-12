@@ -8,6 +8,7 @@
 #include "SFML/Audio/SoundBuffer.hpp"
 #include <SDL3/SDL_hints.h>
 #include <exception>
+#include <iostream>
 namespace fs = std::filesystem;
 
 void ResourceManager::setBasepath(const std::string_view basepath) {
@@ -51,7 +52,18 @@ ResourceManager::~ResourceManager() {
   m_editorTextures.clear();
 }
 
-sf::SoundBuffer ResourceManager::loadSound(const std::string_view path) {
+sf::SoundBuffer ResourceManager::loadSound(std::filesystem::path path) {
+#ifndef _WIN32
+  auto pathStr = path.generic_string();
+  auto pos = pathStr.find('\\');
+  while (pos != pathStr.npos) {
+    pathStr[pos] = std::filesystem::path::preferred_separator;
+    pos = pathStr.find('\\', pos);
+  }
+  path = pathStr;
+#else
+  path.make_preferred();
+#endif
   if (!fs::is_regular_file(path)) {
     return {};
   }
@@ -60,106 +72,63 @@ sf::SoundBuffer ResourceManager::loadSound(const std::string_view path) {
   buffer.loadFromFile(path.data());
   return buffer;
 }
-sf::SoundBuffer ResourceManager::loadBGM(const std::string_view path) const {
-  std::string fullpath = (m_bgmPath / path).replace_extension(".ogg").generic_string();
-  return loadSound(fullpath);
-}
+sf::SoundBuffer ResourceManager::loadBGM(const std::string_view path) const { return loadSound((m_bgmPath / path).replace_extension(".ogg")); }
 
-sf::SoundBuffer ResourceManager::loadBGS(const std::string_view path) const {
-  std::string fullpath = (m_bgsPath / path).replace_extension(".ogg").generic_string();
-  return loadSound(fullpath);
-}
+sf::SoundBuffer ResourceManager::loadBGS(const std::string_view path) const { return loadSound((m_bgsPath / path).replace_extension(".ogg")); }
 
-sf::SoundBuffer ResourceManager::loadSE(const std::string_view path) const {
-  std::string fullpath = (m_sePath / path.data()).replace_extension(".ogg").generic_string();
-  return loadSound(fullpath);
-}
+sf::SoundBuffer ResourceManager::loadSE(const std::string_view path) const { return loadSound((m_sePath / path.data()).replace_extension(".ogg")); }
 
-Texture ResourceManager::loadTexture(const std::string_view path) {
+Texture ResourceManager::loadTexture(std::filesystem::path path) {
+#ifndef _WIN32
+  auto pathStr = path.generic_string();
+  auto pos = pathStr.find('\\');
+  while (pos != pathStr.npos) {
+    pathStr[pos] = std::filesystem::path::preferred_separator;
+    pos = pathStr.find('\\', pos);
+  }
+  path = pathStr;
+#else
+  path.make_preferred();
+#endif
   if (!fs::is_regular_file(path)) {
     return {};
   }
 
-  if (m_loadedTextures.contains(path.data())) {
-    return m_loadedTextures[path.data()];
+  if (m_loadedTextures.contains(path.generic_string())) {
+    return m_loadedTextures[path.generic_string()];
   }
 
-  const Texture ret(path);
-  m_loadedTextures[path.data()] = ret;
+  const Texture ret(path.generic_string());
+  m_loadedTextures[path.generic_string()] = ret;
   return ret;
 }
 
-Texture ResourceManager::loadImage(const std::string_view path) {
-  std::string fullpath = (m_imgPath / path).replace_extension(".png").generic_string();
-  return loadTexture(fullpath);
-}
+Texture ResourceManager::loadImage(const std::string_view path) { return loadTexture((m_imgPath / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadAnimationImage(const std::string_view path) {
-  std::string fullpath = (m_animationsPath / path).replace_extension(".png").generic_string();
-  return loadTexture(fullpath);
-}
+Texture ResourceManager::loadAnimationImage(const std::string_view path) { return loadTexture((m_animationsPath / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadBattlebacks1Image(const std::string_view path) {
-  std::string fullpath = (m_battlebacks1Path / path).replace_extension(".png").generic_string();
-  return loadTexture(fullpath);
-}
+Texture ResourceManager::loadBattlebacks1Image(const std::string_view path) { return loadTexture((m_battlebacks1Path / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadBattlebacks2Image(const std::string_view path) {
-  std::string fullpath = (m_battlebacks2Path / path).replace_extension(".png").generic_string();
-  return loadTexture(fullpath);
-}
+Texture ResourceManager::loadBattlebacks2Image(const std::string_view path) { return loadTexture((m_battlebacks2Path / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadCharacterImage(const std::string_view path) {
-  std::string fullpath = (m_charactersPath / path).replace_extension(".png").generic_string();
-  return loadTexture(fullpath);
-}
+Texture ResourceManager::loadCharacterImage(const std::string_view path) { return loadTexture((m_charactersPath / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadEnemyImage(std::string_view path) {
-  std::string fullpath = (m_enemiesPath / path).replace_extension(".png").generic_string();
-  return loadTexture(fullpath);
-}
+Texture ResourceManager::loadEnemyImage(std::string_view path) { return loadTexture((m_enemiesPath / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadFaceImage(std::string_view path) {
-  std::string fullpath = (m_facesPath / path).replace_extension(".png").generic_string();
-  return loadTexture(fullpath);
-}
+Texture ResourceManager::loadFaceImage(std::string_view path) { return loadTexture((m_facesPath / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadParallaxImage(std::string_view path) {
-  std::string fullpath = (m_parallaxesPath / path).replace_extension(".png").generic_string();
-  return loadTexture(fullpath);
-}
+Texture ResourceManager::loadParallaxImage(std::string_view path) { return loadTexture((m_parallaxesPath / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadPictureImage(std::string_view path) {
-  std::string fullpath = (m_picturesPath / path).replace_extension(".png").generic_string();
-  return loadTexture(fullpath);
-}
+Texture ResourceManager::loadPictureImage(std::string_view path) { return loadTexture((m_picturesPath / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadSVActorImage(std::string_view path) {
-  std::string fullpath = (m_sv_actorsPath / path).replace_extension(".png").generic_string();
-  return loadTexture(fullpath);
-}
-Texture ResourceManager::loadSVEnemyImage(std::string_view path) {
-  std::string fullpath = (m_sv_enemiesPath / path).replace_extension(".png").generic_string();
-  return loadTexture(fullpath);
-}
-Texture ResourceManager::loadSystemImage(std::string_view path) {
-  std::string fullpath = (m_systemPath / path).replace_extension(".png").generic_string();
-  return loadTexture(fullpath);
-}
-Texture ResourceManager::loadTilesetImage(std::string_view path) {
-  std::string fullpath = (m_tilesetsPath / path).replace_extension(".png").generic_string();
-  return loadTexture(fullpath);
-}
+Texture ResourceManager::loadSVActorImage(std::string_view path) { return loadTexture((m_sv_actorsPath / path).replace_extension(".png")); }
+Texture ResourceManager::loadSVEnemyImage(std::string_view path) { return loadTexture((m_sv_enemiesPath / path).replace_extension(".png")); }
+Texture ResourceManager::loadSystemImage(std::string_view path) { return loadTexture((m_systemPath / path).replace_extension(".png")); }
+Texture ResourceManager::loadTilesetImage(std::string_view path) { return loadTexture((m_tilesetsPath / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadTitle1Image(std::string_view path) {
-  std::string fullpath = (m_titles1Path / path).replace_extension(".png").generic_string();
-  return loadTexture(fullpath);
-}
+Texture ResourceManager::loadTitle1Image(std::string_view path) { return loadTexture((m_titles1Path / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadTitle2Image(std::string_view path) {
-  std::string fullpath = (m_titles2Path / path).replace_extension(".png").generic_string();
-  return loadTexture(fullpath);
-}
+Texture ResourceManager::loadTitle2Image(std::string_view path) { return loadTexture((m_titles2Path / path).replace_extension(".png")); }
 
 Texture ResourceManager::loadTileMarkers(int width, int height) {
   fs::path relativePath = std::format("tilemarkers_{}x{}.png", width, height);

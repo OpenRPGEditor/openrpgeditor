@@ -150,7 +150,7 @@ bool isTilePassable(int tileFlags) {
   if (tileFlags == -1) {
     return true;
   }
-  return (tileFlags & static_cast<int>(TileFlags::Impassable)) != static_cast<int>(TileFlags::Impassable);
+  return (tileFlags & static_cast<int>(TileFlags::Impassable)) == 0;
 }
 bool hasHigherTile(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::PassageHigherTile)) != 0; }
 bool isNorthPassage(int tileFlags) { return (tileFlags & static_cast<int>(TileFlags::PassageNorth)) == 0; }

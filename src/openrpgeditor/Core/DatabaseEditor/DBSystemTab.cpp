@@ -32,7 +32,7 @@ void DBSystemTab::draw() {
       m_boatSheet.emplace(m_system.boat().characterName);
     }
     const auto& [uv0, uv1] = m_boatSheet->getRectForCharacter(m_system.boat().characterIndex, 1);
-    Point offset{static_cast<int>(uv0.x() * m_boatSheet->texture().width()), static_cast<int>(uv0.y() * m_shipSheet->texture().height())};
+    Point offset{static_cast<int>(uv0.x() * m_boatSheet->texture().width()), static_cast<int>(uv0.y() * m_boatSheet->texture().height())};
     m_boatButtonTexture->setTexturesToComposite({{m_boatSheet->texture(), {m_boatSheet->characterWidth(), m_boatSheet->characterHeight()}, offset}});
   }
   if (!m_shipButtonTexture) {

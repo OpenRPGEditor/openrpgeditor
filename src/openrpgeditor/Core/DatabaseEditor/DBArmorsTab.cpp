@@ -109,17 +109,24 @@ void DBArmorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Armor Type:");
-              // TODO: Needs to be armor type
-              // ImGui::SetNextItemWidth(170);
-              // if (ImGui::BeginCombo("##orpg_database_items_itype", DecodeEnumName(magic_enum::enum_name(static_cast<ItemType>(m_selectedItem->itypeId))).c_str())) {
-              //  int index{0};
-              //  for (auto v : magic_enum::enum_values<ItemType>()) {
-              //    if (ImGui::Selectable(DecodeEnumName(v).c_str(), static_cast<ItemType>(m_selectedItem->itypeId) == v)) {
-              //      m_selectedItem->itypeId = static_cast<int>(v);
-              //    }
-              //  }
-              //  ImGui::EndCombo();
-              //}
+              ImGui::SetNextItemWidth(170);
+              if (ImGui::BeginCombo("##orpg_database_armors_atype", Database::instance()->system.armorType(m_selectedArmor->atypeId()).c_str())) {
+                int index{0};
+                for (auto v : Database::instance()->system.armorTypes()) {
+                  bool selected = index == m_selectedArmor->atypeId();
+                  if (index == 0) {
+                    if (ImGui::Selectable(std::format("None##_{}", index).c_str(), selected)) {
+                      m_selectedArmor->setAtypeId(index);
+                    }
+                  } else {
+                    if (ImGui::Selectable(Database::instance()->system.armorType(index) == "" ? std::format("#{:02}", index).c_str() : std::format("{}##_{}", v, index).c_str(), selected)) {
+                      m_selectedArmor->setAtypeId(index);
+                    }
+                  }
+                  index++;
+                }
+                ImGui::EndCombo();
+              }
             }
             ImGui::EndGroup();
             ImGui::SameLine();

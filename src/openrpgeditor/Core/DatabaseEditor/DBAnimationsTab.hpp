@@ -1,4 +1,5 @@
 #pragma once
+#include "Core/CommonUI/ImagePicker.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Database/Animations.hpp"
 
@@ -22,4 +23,7 @@ private:
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
+
+  std::optional<ImagePicker> m_imagePicker;
+  int m_pickerSelection;
 };

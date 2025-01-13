@@ -271,7 +271,7 @@ void DBItemsTab::draw() {
               ImGui::EndGroup();
               ImGui::SameLine();
               // Animation
-              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
+              ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
               ImGui::BeginGroup();
               {
                 ImGui::Text("Animation:");

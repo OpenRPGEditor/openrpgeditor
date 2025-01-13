@@ -260,7 +260,6 @@ void DBTilesetsTab::draw() {
             } else if (m_selectedTileTab > 0) {
               drawTileset(m_selectedTileTab + 4);
             }
-            // ImGui::Image(m_image->texture(), imageRect);
           }
           ImGui::EndChild();
         }
@@ -375,6 +374,16 @@ void DBTilesetsTab::draw() {
             ImGui::PopID();
           }
           ImGui::PopStyleColor(1);
+          ImGui::EndGroup();
+          ImGui::BeginGroup();
+          {
+            ImGui::SeparatorText("Note:");
+            char note[8192];
+            strncpy(note, m_selectedTileset->note().c_str(), IM_ARRAYSIZE(note));
+            if (ImGui::InputTextMultiline("##orpg_database_tilesets_note", note, IM_ARRAYSIZE(note), ImVec2{ImGui::GetContentRegionMax().x - 16, ImGui::GetContentRegionAvail().y - 16})) {
+              m_selectedTileset->setNote(note);
+            }
+          }
           ImGui::EndGroup();
         }
         ImGui::EndChild();

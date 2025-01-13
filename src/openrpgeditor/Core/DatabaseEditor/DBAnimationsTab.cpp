@@ -2,11 +2,28 @@
 #include "Core/Application.hpp"
 #include "Database/Animations.hpp"
 
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "imgui.h"
 
 DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent) : IDBEditorTab(parent), m_animations(animations) { m_selectedAnimation = m_animations.animation(1); }
 
 void DBAnimationsTab::draw() {
+  if (m_selectedAnimation) {
+    if (!m_imagePicker) {
+      m_imagePicker.emplace(ImagePicker::PickerMode::Picture, "", "");
+    }
+  }
+  if (const auto [closed, confirmed] = m_imagePicker->draw(); closed) {
+    if (confirmed) {
+      m_imagePicker->accept();
+      if (m_pickerSelection == 0) {
+        m_selectedAnimation->setAnimation1Name(m_imagePicker->selectedImage());
+      } else {
+        m_selectedAnimation->setAnimation2Name(m_imagePicker->selectedImage());
+      }
+    }
+  }
+
   ImGui::BeginChild("#orpg_animations_editor");
   {
     const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUV");
@@ -46,7 +63,48 @@ void DBAnimationsTab::draw() {
     ImGui::EndChild();
     ImGui::SameLine();
     ImGui::BeginChild("##orpg_animations_editor_animations_animation_properties");
-    { ImGui::EndChild(); }
+    {
+      if (m_selectedAnimation) {
+        ImGui::BeginChild("##orpg_animations_animation_panel_topleft", ImVec2{ImGui::GetContentRegionMax().x / 4, ImGui::GetContentRegionMax().x / 4});
+        {
+          ImGui::BeginGroup();
+          {
+            ImGui::SeparatorText("General Settings");
+            // Name
+            ImGui::BeginGroup();
+            {
+              char name[4096];
+              strncpy(name, m_selectedAnimation->name().c_str(), 4096);
+              if (ImGui::LabelOverLineEdit("##orpg_animations_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - 16)) {
+                m_selectedAnimation->setName(name);
+              }
+            }
+            ImGui::EndGroup();
+            ImGui::BeginGroup();
+            {
+              ImGui::Text("Images:");
+              ImGui::PushID("##orpg_animations_name1_selection");
+              if (ImGui::Button(m_selectedAnimation->animation1Name().data(), ImVec2{(170), 0})) {
+                m_pickerSelection = 0;
+                m_imagePicker->setImageInfo(m_selectedAnimation->animation1Name(), "");
+                m_imagePicker->setOpen(true);
+              }
+              ImGui::PopID();
+              ImGui::PushID("##orpg_animations_name2_selection");
+              if (ImGui::Button(m_selectedAnimation->animation2Name().data(), ImVec2{(170), 0})) {
+                m_pickerSelection = 1;
+                m_imagePicker->setImageInfo(m_selectedAnimation->animation2Name(), "");
+                m_imagePicker->setOpen(true);
+              }
+              ImGui::PopID();
+            }
+          }
+          ImGui::EndGroup();
+        }
+        ImGui::EndChild();
+      }
+      ImGui::EndChild();
+    }
     ImGui::EndChild();
 
     if (m_changeIntDialogOpen) {

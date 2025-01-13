@@ -1149,7 +1149,9 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
     // Passage (4-dir)
     std::vector<std::array<int, 4>> tileData;
     tileData.emplace_back(TilePalette::paletteTiles(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y), m_selectedTileTab, m_selectedTileset->tilesetNames(), m_selectedTileset->mode(), true));
-
+    if (TileHelper::isTileA3(tileIndex) || TileHelper::isTileA4(tileIndex)) {
+      tileIndex = tileData.at(0).at(getTileId(tileData)); // Obtains the tileId position for autotiles by iterating through tileData with getTileId()
+    }
     // Texture and grid details
     const int iconSize = 16; // Size of each icon in pixels
 
@@ -1192,10 +1194,6 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
           if (ImGui::ImageButton("##orpg_database_tilesets_tileset_button", m_tileMarker->texture(), tileRect, m_tileMarker->uv0(-1), m_tileMarker->uv1(-1), ImVec4(0.0f, 0.0f, 0.0f, 0.0f),
                                  ImVec4{1.f, 1.f, 1.f, 0.f})) {}
           return; // A1 and A2 does not have any 4-dir flags
-        }
-
-        if (TileHelper::isTileA3(tileIndex) || TileHelper::isTileA4(tileIndex)) {
-          tileIndex = tileData.at(0).at(getTileId(tileData)); // Obtains the tileId position for autotiles by iterating through tileData with getTileId()
         }
 
         if (ImGui::IsWindowFocused() || ImGui::IsWindowHovered()) {
@@ -1260,6 +1258,13 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
     }
   } else if (flagType == 2) {
     // Ladder
+
+    std::vector<std::array<int, 4>> tileData;
+    tileData.emplace_back(TilePalette::paletteTiles(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y), m_selectedTileTab, m_selectedTileset->tilesetNames(), m_selectedTileset->mode(), true));
+    if (TileHelper::isAutoTile(tileIndex)) {
+      tileIndex = tileData.at(0).at(getTileId(tileData)); // Obtains the tileId position for autotiles by iterating through tileData with getTileId()
+    }
+
     if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
       toggleTileState(tileIndex, true);
     }
@@ -1271,6 +1276,12 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
     }
   } else if (flagType == 3) {
     // Bush
+    std::vector<std::array<int, 4>> tileData;
+    tileData.emplace_back(TilePalette::paletteTiles(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y), m_selectedTileTab, m_selectedTileset->tilesetNames(), m_selectedTileset->mode(), true));
+    if (TileHelper::isAutoTile(tileIndex)) {
+      tileIndex = tileData.at(0).at(getTileId(tileData)); // Obtains the tileId position for autotiles by iterating through tileData with getTileId()
+    }
+
     if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
       toggleTileState(tileIndex, true);
     }
@@ -1282,6 +1293,12 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
     }
   } else if (flagType == 4) {
     // Counter
+    std::vector<std::array<int, 4>> tileData;
+    tileData.emplace_back(TilePalette::paletteTiles(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y), m_selectedTileTab, m_selectedTileset->tilesetNames(), m_selectedTileset->mode(), true));
+    if (TileHelper::isAutoTile(tileIndex)) {
+      tileIndex = tileData.at(0).at(getTileId(tileData)); // Obtains the tileId position for autotiles by iterating through tileData with getTileId()
+    }
+
     if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
       toggleTileState(tileIndex, true);
     }
@@ -1293,6 +1310,12 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
     }
   } else if (flagType == 5) {
     // Damage Floor
+
+    std::vector<std::array<int, 4>> tileData;
+    tileData.emplace_back(TilePalette::paletteTiles(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y), m_selectedTileTab, m_selectedTileset->tilesetNames(), m_selectedTileset->mode(), true));
+    if (TileHelper::isAutoTile(tileIndex)) {
+      tileIndex = tileData.at(0).at(getTileId(tileData)); // Obtains the tileId position for autotiles by iterating through tileData with getTileId()
+    }
     if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
       toggleTileState(tileIndex, true);
     }
@@ -1304,6 +1327,13 @@ void DBTilesetsTab::drawTileMarker(int flagType, ImVec2 tilePos, int tileIndex) 
     }
   } else if (flagType == 6) {
     // Terrain Tag
+
+    std::vector<std::array<int, 4>> tileData;
+    tileData.emplace_back(TilePalette::paletteTiles(static_cast<int>(tilePos.x), static_cast<int>(tilePos.y), m_selectedTileTab, m_selectedTileset->tilesetNames(), m_selectedTileset->mode(), true));
+    if (TileHelper::isAutoTile(tileIndex)) {
+      tileIndex = tileData.at(0).at(getTileId(tileData)); // Obtains the tileId position for autotiles by iterating through tileData with getTileId()
+    }
+
     if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
       toggleTileState(tileIndex, true);
     }
@@ -1419,33 +1449,33 @@ void DBTilesetsTab::toggleTileState(int tileIndex, bool reverse, TileFlags subTi
     // Ladder
     if (TileHelper::isLadder(m_selectedTileset->flag(tileIndex))) {
 
-      m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Ladder), true);
-    } else {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Ladder), false);
+    } else {
+      m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Ladder), true);
     }
   } else if (m_flagSelection == 3) {
     // Bush
     if (TileHelper::isBush(m_selectedTileset->flag(tileIndex))) {
 
-      m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Bush), true);
-    } else {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Bush), false);
+    } else {
+      m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Bush), true);
     }
   } else if (m_flagSelection == 4) {
     // Counter
     if (TileHelper::isCounter(m_selectedTileset->flag(tileIndex))) {
 
-      m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Counter), true);
-    } else {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Counter), false);
+    } else {
+      m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Counter), true);
     }
   } else if (m_flagSelection == 5) {
     // Damage Floor
     if (TileHelper::isDamageFloor(m_selectedTileset->flag(tileIndex))) {
 
-      m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Damage), true);
-    } else {
       m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Damage), false);
+    } else {
+      m_selectedTileset->setFlag(tileIndex, static_cast<int>(TileFlags::Damage), true);
     }
   } else if (m_flagSelection == 6) {
     // Terrain Tag

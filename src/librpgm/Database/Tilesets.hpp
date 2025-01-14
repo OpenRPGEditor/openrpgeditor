@@ -2,7 +2,7 @@
 
 #include "Database/Tileset.hpp"
 
-class Tilesets {
+class Tilesets final : public IModifiable {
 public:
   [[nodiscard]] Tileset* tileset(const int id) {
     for (auto& item : m_tilesets) {
@@ -36,6 +36,10 @@ public:
         m_tilesets[i].setId(i);
       }
     }
+  }
+
+  bool isModified() const override {
+    return IModifiable::isModified() | std::ranges::any_of(m_tilesets, [](const Tileset& tileset) { return tileset.isModified(); });
   }
 
 private:

@@ -1,6 +1,7 @@
 ﻿#pragma once
 
-#include "TileHelper.hpp"
+#include "Database/IModifiable.hpp"
+#include "Database/TileHelper.hpp"
 
 #include <array>
 #include <string>
@@ -8,7 +9,7 @@
 
 #include <nlohmann/json.hpp>
 
-class Tileset {
+class Tileset final : public IModifiable {
 public:
   friend class TilesetsSerializer;
   friend void to_json(nlohmann::ordered_json& j, const Tileset& tileset);
@@ -18,98 +19,48 @@ public:
     Area,
   };
 
-  [[nodiscard]] int id() const { return m_id; }
-  void setId(const int id) { m_id = id; }
+  Tileset() = default;
+  Tileset(const Tileset& other);
+  Tileset& operator=(const Tileset& other);
+  Tileset(Tileset&& other) noexcept;
+  Tileset& operator=(Tileset&& other) noexcept;
 
-  [[nodiscard]] const std::vector<std::optional<int>>& flags() const { return m_flags; }
-  int flag(const int id) {
-    if (id > TileHelper::TILE_ID_MAX) {
-      return 0;
-    }
-    if (id >= m_flags.size() && m_flags.size() <= TileHelper::TILE_ID_MAX) {
-      int i = id - (m_flags.size() - 1);
-      while (i--) {
-        m_flags.emplace_back();
-      }
-      m_flags.back() = 0;
-    }
+  [[nodiscard]] int id() const;
+  void setId(int id);
 
-    if (id >= m_flags.size()) {
-      return 0;
-    }
-    if (!m_flags[id]) {
-      m_flags[id] = 0;
-    }
-    return *m_flags[id];
-  }
+  [[nodiscard]] const std::vector<std::optional<int>>& flags() const;
 
-  [[nodiscard]] int flag(const int idx) const {
-    if (idx > TileHelper::TILE_ID_MAX) {
-      return 0;
-    }
+  int flag(int id);
+  [[nodiscard]] int flag(int idx) const;
 
-    if (idx >= 0 && idx < m_flags.size()) {
-      return m_flags[idx] ? *m_flags[idx] : 0;
-    }
-    return 0;
-  }
+  void setFlags(const std::vector<std::optional<int>>& flags);
+  void setFlag(int idx, int flag, bool enabled = true);
 
-  void setFlags(const std::vector<std::optional<int>>& flags) { m_flags = flags; }
-  void setFlag(const int idx, const int flag, const bool enabled = true) {
-    if (idx >= m_flags.size() && m_flags.size() <= TileHelper::TILE_ID_MAX) {
-      int i = idx - (m_flags.size() - 1);
-      while (i--) {
-        m_flags.emplace_back();
-      }
-    } else if (idx > TileHelper::TILE_ID_MAX) {
-      return;
-    }
-    if (!m_flags[idx]) {
-      m_flags[idx] = 0;
-    }
+  void setTerrainTag(int idx, int tag);
+  [[nodiscard]] Mode mode() const;
+  void setMode(Mode mode);
 
-    if (enabled) {
-      *m_flags[idx] |= flag;
-    } else {
-      *m_flags[idx] &= ~flag;
-    }
-  }
+  [[nodiscard]] const std::string& name() const;
+  void setName(const std::string& name);
 
-  void setTerrainTag(const int idx, const int tag) {
-    if (idx >= m_flags.size() && m_flags.size() <= TileHelper::TILE_ID_MAX) {
-      int i = idx - (m_flags.size() - 1);
-      while (i--) {
-        m_flags.emplace_back();
-      }
-    } else if (idx > TileHelper::TILE_ID_MAX) {
-      return;
-    }
-    if (!m_flags[idx]) {
-      m_flags[idx] = 0;
-    }
+  [[nodiscard]] const std::string& note() const;
+  void setNote(const std::string& note);
 
-    *m_flags[idx] = ((tag & 0xFFFFF) << 12) | (*m_flags[idx] & 0xFFF);
-  }
+  [[nodiscard]] const std::array<std::string, 9>& tilesetNames() const;
+  void setTilesetNames(const std::array<std::string, 9>& tilesetNames);
+  [[nodiscard]] const std::string& tilesetName(int idx) const;
+  void setTilesetName(int idx, const std::string& name);
 
-  [[nodiscard]] Mode mode() const { return m_mode; }
-  void setMode(const Mode mode) { m_mode = mode; }
+  void restoreOriginal() override;
+  void acceptChanges() override;
+  nlohmann::ordered_json serializeOldValues() const override;
 
-  [[nodiscard]] const std::string& name() const { return m_name; }
-  void setName(const std::string& name) { m_name = name; }
-
-  [[nodiscard]] const std::string& note() const { return m_note; }
-  void setNote(const std::string& note) { m_note = note; }
-
-  [[nodiscard]] const std::array<std::string, 9>& tilesetNames() const { return m_tilesetNames; }
-  void setTilesetNames(const std::array<std::string, 9>& tilesetNames) { m_tilesetNames = tilesetNames; }
-  [[nodiscard]] const std::string& tilesetName(const int idx) const {
-    assert(idx >= 0 && idx < m_tilesetNames.size());
-    return m_tilesetNames[idx];
-  }
-  void setTilesetName(const int idx, const std::string& name) {
-    assert(idx >= 0 && idx < m_tilesetNames.size());
-    m_tilesetNames[idx] = name;
-  }
+  rpgmutils::signal<void(Tileset*, int)>& idModified();
+  rpgmutils::signal<void(Tileset*, const std::vector<std::optional<int>>&)>& flagsModified();
+  rpgmutils::signal<void(Tileset*, Mode)>& modeModified();
+  rpgmutils::signal<void(Tileset*, const std::string&)>& nameModified();
+  rpgmutils::signal<void(Tileset*, const std::string&)>& noteModified();
+  rpgmutils::signal<void(Tileset*, const std::array<std::string, 9>&)>& tilesetNamesModified();
 
   [[nodiscard]] bool isValid() const { return m_isValid; }
   void setValid(const bool isValid) { m_isValid = isValid; }
@@ -121,6 +72,20 @@ private:
   std::string m_name;
   std::string m_note;
   std::array<std::string, 9> m_tilesetNames;
+
+  std::optional<int> m_oldid;
+  std::optional<std::vector<std::optional<int>>> m_oldflags;
+  std::optional<Mode> m_oldmode;
+  std::optional<std::string> m_oldname;
+  std::optional<std::string> m_oldnote;
+  std::optional<std::array<std::string, 9>> m_oldtilesetNames;
+
+  std::optional<rpgmutils::signal<void(Tileset*, int)>> m_idModified;
+  std::optional<rpgmutils::signal<void(Tileset*, const std::vector<std::optional<int>>&)>> m_flagsModified;
+  std::optional<rpgmutils::signal<void(Tileset*, Mode)>> m_modeModified;
+  std::optional<rpgmutils::signal<void(Tileset*, const std::string&)>> m_nameModified;
+  std::optional<rpgmutils::signal<void(Tileset*, const std::string&)>> m_noteModified;
+  std::optional<rpgmutils::signal<void(Tileset*, const std::array<std::string, 9>&)>> m_tilesetNamesModified;
 
   /*!
    * @name m_isValid

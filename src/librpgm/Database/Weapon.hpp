@@ -4,55 +4,74 @@
 #include "Database/Trait.hpp"
 #include <nlohmann/json.hpp>
 
-class Weapon {
+class Weapon final : IModifiable {
   friend class WeaponsSerializer;
   friend void to_json(nlohmann::ordered_json& j, const Weapon& w);
   friend void from_json(const nlohmann::ordered_json& j, Weapon& w);
 
 public:
-  [[nodiscard]] int id() const { return m_id; }
-  void setId(const int id) { m_id = id; }
+  Weapon() = default;
+  Weapon(const Weapon& other);
+  Weapon& operator=(const Weapon& other);
+  Weapon(Weapon&& other) noexcept;
+  Weapon& operator=(Weapon&& other) noexcept;
 
-  [[nodiscard]] int animationId() const { return m_animationId; }
-  void setAnimationId(const int animationId) { m_animationId = animationId; }
+  [[nodiscard]] int id() const;
+  void setId(int id);
 
-  [[nodiscard]] const std::string& description() const { return m_description; }
-  void setDescription(const std::string& description) { m_description = description; }
+  [[nodiscard]] int animationId() const;
+  void setAnimationId(int animationId);
 
-  [[nodiscard]] int etypeId() const { return m_etypeId; }
-  void setEtypeId(const int etypeId) { m_etypeId = etypeId; }
+  [[nodiscard]] const std::string& description() const;
+  void setDescription(const std::string& description);
 
-  [[nodiscard]] std::vector<Trait>& traits() { return m_traits; }
-  void setTraits(const std::vector<Trait>& traits) { m_traits = traits; }
+  [[nodiscard]] int etypeId() const;
+  void setEtypeId(int etypeId);
 
-  [[nodiscard]] int iconIndex() const { return m_iconIndex; }
-  void setIconIndex(const int iconIndex) { m_iconIndex = iconIndex; }
+  [[nodiscard]] std::vector<Trait>& traits();
+  void setTraits(const std::vector<Trait>& traits);
 
-  [[nodiscard]] const std::string& name() const { return m_name; }
-  void setName(const std::string& name) { m_name = name; }
+  [[nodiscard]] int iconIndex() const;
+  void setIconIndex(int iconIndex);
 
-  [[nodiscard]] const std::string& note() const { return m_note; }
-  void setNote(const std::string& note) { m_note = note; }
+  [[nodiscard]] const std::string& name() const;
+  void setName(const std::string& name);
 
-  std::array<int, 8>& params() { return m_params; }
-  void setParams(const std::array<int, 8>& params) { m_params = params; }
-  [[nodiscard]] int param(const int idx) const {
-    assert(idx >= 0 && idx < m_params.size());
-    return m_params[idx];
-  }
-  void setParam(const int idx, const int param) {
-    assert(param >= 0 && param < m_params.size());
-    m_params[idx] = param;
-  }
+  [[nodiscard]] const std::string& note() const;
+  void setNote(const std::string& note);
 
-  [[nodiscard]] int price() const { return m_price; }
-  void setPrice(const int price) { m_price = price; }
+  std::array<int, 8>& params();
+  void setParams(const std::array<int, 8>& params);
+  [[nodiscard]] int param(int idx) const;
+  void setParam(int idx, int param);
+  [[nodiscard]] int price() const;
+  void setPrice(int price);
 
-  [[nodiscard]] int wtypeId() const { return m_wtypeId; }
-  void setWtypeId(const int wtypeId) { m_wtypeId = wtypeId; }
+  [[nodiscard]] int wtypeId() const;
+  void setWtypeId(int wtypeId);
+
+  void restoreOriginal() override;
+  void acceptChanges() override;
+  nlohmann::ordered_json serializeOldValues() const override;
+
+  rpgmutils::signal<void(Weapon*, int)>& idModified();
+  rpgmutils::signal<void(Weapon*, int)>& animationIdModified();
+  rpgmutils::signal<void(Weapon*, const std::string&)>& descriptionModified();
+  rpgmutils::signal<void(Weapon*, int)>& etypeIdModified();
+  rpgmutils::signal<void(Weapon*, const std::vector<Trait>&)>& traitsModified();
+  rpgmutils::signal<void(Weapon*, int)>& iconIndexModified();
+  rpgmutils::signal<void(Weapon*, const std::string&)>& nameModified();
+  rpgmutils::signal<void(Weapon*, const std::string&)>& noteModified();
+  rpgmutils::signal<void(Weapon*, const std::array<int, 8>&)>& paramsModified();
+  rpgmutils::signal<void(Weapon*, int)>& priceModified();
+  rpgmutils::signal<void(Weapon*, int)>& wtypeIdModified();
 
   [[nodiscard]] bool isValid() const { return m_isValid; }
   void setValid(const bool isValid) { m_isValid = isValid; }
+
+  bool isModified() const override {
+    return IModifiable::isModified() | std::ranges::any_of(m_traits, [](const Trait& trait) { return trait.isModified(); });
+  }
 
 private:
   int m_id;
@@ -66,6 +85,30 @@ private:
   std::array<int, 8> m_params; // Attack, Defence, M.Attack, M.Defence, Agility, Luck, Max HP, Max MP
   int m_price;
   int m_wtypeId;
+
+  std::optional<int> m_oldid;
+  std::optional<int> m_oldanimationId;
+  std::optional<std::string> m_olddescription;
+  std::optional<int> m_oldetypeId;
+  std::optional<std::vector<Trait>> m_oldtraits;
+  std::optional<int> m_oldiconIndex;
+  std::optional<std::string> m_oldname;
+  std::optional<std::string> m_oldnote;
+  std::optional<std::array<int, 8>> m_oldparams;
+  std::optional<int> m_oldprice;
+  std::optional<int> m_oldwtypeId;
+
+  std::optional<rpgmutils::signal<void(Weapon*, int)>> m_idModified;
+  std::optional<rpgmutils::signal<void(Weapon*, int)>> m_animationIdModified;
+  std::optional<rpgmutils::signal<void(Weapon*, const std::string&)>> m_descriptionModified;
+  std::optional<rpgmutils::signal<void(Weapon*, int)>> m_etypeIdModified;
+  std::optional<rpgmutils::signal<void(Weapon*, const std::vector<Trait>&)>> m_traitsModified;
+  std::optional<rpgmutils::signal<void(Weapon*, int)>> m_iconIndexModified;
+  std::optional<rpgmutils::signal<void(Weapon*, const std::string&)>> m_nameModified;
+  std::optional<rpgmutils::signal<void(Weapon*, const std::string&)>> m_noteModified;
+  std::optional<rpgmutils::signal<void(Weapon*, const std::array<int, 8>&)>> m_paramsModified;
+  std::optional<rpgmutils::signal<void(Weapon*, int)>> m_priceModified;
+  std::optional<rpgmutils::signal<void(Weapon*, int)>> m_wtypeIdModified;
 
   /*!
    * @name m_isValid

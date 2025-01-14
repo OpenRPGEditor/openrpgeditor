@@ -2,7 +2,7 @@
 
 #include "Database/Weapon.hpp"
 
-class Weapons {
+class Weapons final : public IModifiable {
 public:
   std::vector<Weapon>& weapons() { return m_weapons; }
   [[nodiscard]] const std::vector<Weapon>& weapons() const { return m_weapons; }
@@ -39,6 +39,10 @@ public:
         m_weapons[i].setId(i);
       }
     }
+  }
+
+  bool isModified() const override {
+    return IModifiable::isModified() | std::ranges::any_of(m_weapons, [](const auto& w) { return w.isModified(); });
   }
 
 private:

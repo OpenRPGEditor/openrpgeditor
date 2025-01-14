@@ -10,7 +10,7 @@ struct MainWindow;
 
 struct TroopsEVEditor {
   TroopsEVEditor(MainWindow* parent, Troop* troop) : m_parent(parent), m_troop(troop) {
-    for (auto& page : troop->m_pages) {
+    for (auto& page : troop->pages()) {
       m_pages.emplace_back(this, &page);
     }
     m_id = troop->id();

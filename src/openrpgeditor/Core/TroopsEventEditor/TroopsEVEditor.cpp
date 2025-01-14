@@ -1,6 +1,5 @@
 #include "Core/EventEditor.hpp"
 
-
 #include "Core/ImGuiExt/ImGuiNotify.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 
@@ -18,8 +17,8 @@
 #include "imgui_internal.h"
 
 void TroopsEVEditor::fixupPages() {
-  for (int i = 0; i < m_troop->m_pages.size(); ++i) {
-    m_pages[i].setPage(&m_troop->m_pages[i], i + 1);
+  for (int i = 0; i < m_troop->pages().size(); ++i) {
+    m_pages[i].setPage(&m_troop->pages()[i], i + 1);
     m_pages[i].setParent(this);
   }
 }
@@ -45,11 +44,11 @@ bool TroopsEVEditor::draw() {
       }
       ImGui::EndGroup();
     }
-    
+
     ImGui::SameLine();
     if (ImGui::BeginChild("##orpg_troop_editor_page_content", ImVec2(0, 0), false)) {
       if (ImGui::BeginTabBar("##orpg_troop_editor_page", ImGuiTabBarFlags_AutoSelectNewTabs)) {
-        for (int i = 0; i < m_troop->m_pages.size(); ++i) {
+        for (int i = 0; i < m_troop->pages().size(); ++i) {
           if (ImGui::BeginTabItem(std::to_string(i + 1).c_str())) { // Check if BeginTabItem is successful
             m_selectedPage = i;
             m_pages[m_selectedPage].draw(false, i);
@@ -59,8 +58,8 @@ bool TroopsEVEditor::draw() {
 
         // Handle TabItemButton
         if (ImGui::TabItemButton(" + ")) {
-          Troop::Page* page = &m_troop->m_pages.emplace_back();
-          page->list.emplace_back(new EventDummy());
+          Troop::Page* page = &m_troop->pages().emplace_back();
+          page->list().emplace_back(new EventDummy());
           m_pages.emplace_back(this, page);
           fixupPages();
           m_selectedPage = m_pages.size() - 1;
@@ -72,7 +71,7 @@ bool TroopsEVEditor::draw() {
     }
 
     if (erased) {
-      m_troop->m_pages.erase(m_troop->m_pages.begin() + erasedIdx);
+      m_troop->pages().erase(m_troop->pages().begin() + erasedIdx);
       if (erasedIdx == m_selectedPage) {
         m_selectedPage = -1;
       }

@@ -618,7 +618,7 @@ void DBGameConstantsTab::draw() {
           if (drawSelectable(id, m_selection == id)) {
             m_selection = id;
           }
-          drawNameAndAliasColumns(Database::instance()->troops.troop(id)->m_name, alias);
+          drawNameAndAliasColumns(Database::instance()->troops.troop(id)->name(), alias);
           if (drawDeleteButton(id)) {
             it = m_constants->troops.erase(it);
           } else {

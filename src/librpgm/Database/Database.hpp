@@ -225,7 +225,7 @@ struct Database {
     }
     const auto object = troops.troop(id);
     const auto member = object ? object->member(index) : nullptr;
-    return member ? enemyName(member->enemyId) : InvalidDataName.data();
+    return member ? enemyName(member->enemyId()) : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string mapName(const int id) const {

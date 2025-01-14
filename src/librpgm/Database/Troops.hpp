@@ -4,7 +4,7 @@
 
 #include "nlohmann/json.hpp"
 
-class Troops {
+class Troops final : IModifiable {
 public:
   static Troops load(std::string_view filepath);
 
@@ -12,7 +12,7 @@ public:
 
   [[nodiscard]] Troop* troop(int id) {
     for (auto& troop : m_troops) {
-      if (troop.id() == id && troop.m_isValid) {
+      if (troop.id() == id && troop.isValid()) {
         return &troop;
       }
     }
@@ -21,7 +21,7 @@ public:
 
   [[nodiscard]] const Troop* troop(int id) const {
     for (const auto& troop : m_troops) {
-      if (troop.id() == id && troop.m_isValid) {
+      if (troop.id() == id && troop.isValid()) {
         return &troop;
       }
     }
@@ -41,6 +41,10 @@ public:
         m_troops[i].setId(i);
       }
     }
+  }
+
+  bool isModified() const override {
+    return IModifiable::isModified() | std::ranges::any_of(m_troops, [](const auto& troop) { return troop.isModified(); });
   }
 
 private:

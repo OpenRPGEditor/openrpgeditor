@@ -11,7 +11,7 @@ void TroopsSerializer::serialize(std::ofstream& os) const {
     }
 
     for (const Troop& troop : m_data.troops()) {
-      if (troop.m_isValid) {
+      if (troop.isValid()) {
         data.push_back(troop);
       } else {
         data.push_back(nullptr);

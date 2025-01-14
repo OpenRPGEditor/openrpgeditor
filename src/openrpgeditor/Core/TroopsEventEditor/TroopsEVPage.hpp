@@ -16,7 +16,7 @@ struct TroopsEVPage {
 
   void setPage(Troop::Page* page, int pageIndex) {
     m_page = page;
-    m_commandEditor.setCommands(&m_page->list);
+    m_commandEditor.setCommands(&m_page->list());
   }
   void setParent(TroopsEVEditor* parent) { m_parent = parent; }
 

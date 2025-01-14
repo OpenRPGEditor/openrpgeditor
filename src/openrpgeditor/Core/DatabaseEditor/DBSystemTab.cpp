@@ -29,9 +29,9 @@ void DBSystemTab::draw() {
     m_boatButtonTexture.emplace();
     m_boatButtonTexture->setSize(144, 144);
     if (!m_boatSheet) {
-      m_boatSheet.emplace(m_system.boat().characterName);
+      m_boatSheet.emplace(m_system.boat().characterName());
     }
-    const auto& [uv0, uv1] = m_boatSheet->getRectForCharacter(m_system.boat().characterIndex, 1);
+    const auto& [uv0, uv1] = m_boatSheet->getRectForCharacter(m_system.boat().characterIndex(), 1);
     Point offset{static_cast<int>(uv0.x() * m_boatSheet->texture().width()), static_cast<int>(uv0.y() * m_boatSheet->texture().height())};
     m_boatButtonTexture->setTexturesToComposite({{m_boatSheet->texture(), {m_boatSheet->characterWidth(), m_boatSheet->characterHeight()}, offset}});
   }
@@ -39,9 +39,9 @@ void DBSystemTab::draw() {
     m_shipButtonTexture.emplace();
     m_shipButtonTexture->setSize(144, 144);
     if (!m_shipSheet) {
-      m_shipSheet.emplace(m_system.ship().characterName);
+      m_shipSheet.emplace(m_system.ship().characterName());
     }
-    const auto& [uv0, uv1] = m_shipSheet->getRectForCharacter(m_system.ship().characterIndex, 1);
+    const auto& [uv0, uv1] = m_shipSheet->getRectForCharacter(m_system.ship().characterIndex(), 1);
     const Point offset{static_cast<int>(uv0.x() * m_shipSheet->texture().width()), static_cast<int>(uv0.y() * m_shipSheet->texture().height())};
     m_shipButtonTexture->setTexturesToComposite({{m_shipSheet->texture(), {m_shipSheet->characterWidth(), m_shipSheet->characterHeight()}, offset}});
   }
@@ -49,9 +49,9 @@ void DBSystemTab::draw() {
     m_airshipButtonTexture.emplace();
     m_airshipButtonTexture->setSize(144, 144);
     if (!m_airshipSheet) {
-      m_airshipSheet.emplace(m_system.airship().characterName);
+      m_airshipSheet.emplace(m_system.airship().characterName());
     }
-    const auto& [uv0, uv1] = m_airshipSheet->getRectForCharacter(m_system.airship().characterIndex, 1);
+    const auto& [uv0, uv1] = m_airshipSheet->getRectForCharacter(m_system.airship().characterIndex(), 1);
     const Point offset{static_cast<int>(uv0.x() * m_airshipSheet->texture().width()), static_cast<int>(uv0.y() * m_airshipSheet->texture().height())};
     m_airshipButtonTexture->setTexturesToComposite({{m_airshipSheet->texture(), {m_airshipSheet->characterWidth(), m_airshipSheet->characterHeight()}, offset}});
   }
@@ -149,8 +149,8 @@ void DBSystemTab::draw() {
                           ImGuiWindowFlags_NoResize);
         {
           ImGui::TextUnformatted("Vehicle Images");
-          if (!m_boatSheet || m_boatSheet->characterName() != m_system.boat().characterName) {
-            m_boatSheet = CharacterSheet(m_system.boat().characterName);
+          if (!m_boatSheet || m_boatSheet->characterName() != m_system.boat().characterName()) {
+            m_boatSheet = CharacterSheet(m_system.boat().characterName());
           }
           ImGui::BeginGroup();
           {
@@ -158,7 +158,7 @@ void DBSystemTab::draw() {
             if (ImGui::ImageButtonEx(ImGui::GetID("##system_boat_image"), m_boatButtonTexture->get(), ImVec2(m_boatButtonTexture->size()), {0.f, 0.f}, {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f},
                                      ImGuiButtonFlags_PressedOnDoubleClick)) {
               m_currentSheet = &m_boatSheet.value();
-              m_characterPicker->setCharacterInfo(m_system.boat().characterName, m_system.boat().characterIndex);
+              m_characterPicker->setCharacterInfo(m_system.boat().characterName(), m_system.boat().characterIndex());
               m_characterPicker->setOpen(true);
             }
           }
@@ -170,7 +170,7 @@ void DBSystemTab::draw() {
             if (ImGui::ImageButtonEx(ImGui::GetID("##system_ship_image"), m_shipButtonTexture->get(), ImVec2(m_shipButtonTexture->size()), {0.f, 0.f}, {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f},
                                      ImGuiButtonFlags_PressedOnDoubleClick)) {
               m_currentSheet = &m_shipSheet.value();
-              m_characterPicker->setCharacterInfo(m_system.ship().characterName, m_system.ship().characterIndex);
+              m_characterPicker->setCharacterInfo(m_system.ship().characterName(), m_system.ship().characterIndex());
               m_characterPicker->setOpen(true);
             }
           }
@@ -182,7 +182,7 @@ void DBSystemTab::draw() {
             if (ImGui::ImageButtonEx(ImGui::GetID("##system_airship_image"), m_airshipButtonTexture->get(), ImVec2(m_airshipButtonTexture->size()), ImVec2{0.f, 0.f}, ImVec2{1.f, 1.f}, {},
                                      {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
               m_currentSheet = &m_airshipSheet.value();
-              m_characterPicker->setCharacterInfo(m_system.airship().characterName, m_system.airship().characterIndex);
+              m_characterPicker->setCharacterInfo(m_system.airship().characterName(), m_system.airship().characterIndex());
               m_characterPicker->setOpen(true);
             }
           }
@@ -309,9 +309,9 @@ void DBSystemTab::draw() {
           addAudioRow(m_system.victoryMe(), "Victory", AudioType::Melody);
           addAudioRow(m_system.defeatMe(), "Defeat", AudioType::Melody);
           addAudioRow(m_system.gameoverMe(), "Game Over", AudioType::Melody);
-          addAudioRow(m_system.boat().bgm, "Boat", AudioType::BackgroundMusic);
-          addAudioRow(m_system.ship().bgm, "Ship", AudioType::BackgroundMusic);
-          addAudioRow(m_system.airship().bgm, "Airship", AudioType::BackgroundMusic);
+          addAudioRow(m_system.boat().bgm(), "Boat", AudioType::BackgroundMusic);
+          addAudioRow(m_system.ship().bgm(), "Ship", AudioType::BackgroundMusic);
+          addAudioRow(m_system.airship().bgm(), "Airship", AudioType::BackgroundMusic);
           ImGui::EndTable();
         }
       }
@@ -441,8 +441,8 @@ void DBSystemTab::draw() {
         ImGui::BeginGroup();
         {
           ImGui::TextUnformatted("Boat");
-          const std::string label = std::format("{} ({},{})##boat_start_button", m_system.boat().startMapId == 0 ? "None" : Database::instance()->mapNameOrId(m_system.boat().startMapId),
-                                                m_system.boat().startX, m_system.boat().startY);
+          const std::string label = std::format("{} ({},{})##boat_start_button", m_system.boat().startMapId() == 0 ? "None" : Database::instance()->mapNameOrId(m_system.boat().startMapId()),
+                                                m_system.boat().startX(), m_system.boat().startY());
           if (ImGui::Button(label.c_str(), {ImGui::GetContentRegionAvail().x, 0})) {
             // TODO: Map position picker
           }
@@ -451,8 +451,8 @@ void DBSystemTab::draw() {
         ImGui::BeginGroup();
         {
           ImGui::TextUnformatted("Ship");
-          const std::string label = std::format("{} ({},{})##ship_start_button", m_system.ship().startMapId == 0 ? "None" : Database::instance()->mapNameOrId(m_system.ship().startMapId),
-                                                m_system.ship().startX, m_system.ship().startY);
+          const std::string label = std::format("{} ({},{})##ship_start_button", m_system.ship().startMapId() == 0 ? "None" : Database::instance()->mapNameOrId(m_system.ship().startMapId()),
+                                                m_system.ship().startX(), m_system.ship().startY());
           if (ImGui::Button(label.c_str(), {ImGui::GetContentRegionAvail().x, 0})) {
             // TODO: Map position picker
           }
@@ -461,8 +461,8 @@ void DBSystemTab::draw() {
         ImGui::BeginGroup();
         {
           ImGui::TextUnformatted("Airship");
-          const std::string label = std::format("{} ({},{})##airship_start_button", m_system.airship().startMapId == 0 ? "None" : Database::instance()->mapNameOrId(m_system.airship().startMapId),
-                                                m_system.airship().startX, m_system.airship().startY);
+          const std::string label = std::format("{} ({},{})##airship_start_button", m_system.airship().startMapId() == 0 ? "None" : Database::instance()->mapNameOrId(m_system.airship().startMapId()),
+                                                m_system.airship().startX(), m_system.airship().startY());
           if (ImGui::Button(label.c_str(), {ImGui::GetContentRegionAvail().x, 0})) {
             // TODO: Map position picker
           }
@@ -542,24 +542,24 @@ void DBSystemTab::draw() {
   if (const auto& [closed, confirmed] = m_characterPicker->draw(); closed) {
     if (confirmed && m_currentSheet != nullptr) {
       if (m_currentSheet == &m_boatSheet.value()) {
-        m_system.boat().characterName = m_characterPicker->selectedSheet();
-        m_system.boat().characterIndex = m_characterPicker->character();
-        m_boatSheet = CharacterSheet(m_system.boat().characterName);
-        const auto& [uv0, uv1] = m_boatSheet->getRectForCharacter(m_system.boat().characterIndex, 1);
+        m_system.boat().setCharacterName(m_characterPicker->selectedSheet());
+        m_system.boat().setCharacterIndex(m_characterPicker->character());
+        m_boatSheet = CharacterSheet(m_system.boat().characterName());
+        const auto& [uv0, uv1] = m_boatSheet->getRectForCharacter(m_system.boat().characterIndex(), 1);
         const Point offset{static_cast<int>(uv0.x() * m_boatSheet->texture().width()), static_cast<int>(uv0.y() * m_boatSheet->texture().height())};
         m_boatButtonTexture->setTexturesToComposite({{m_boatSheet->texture(), {m_boatSheet->characterWidth(), m_boatSheet->characterHeight()}, offset}});
       } else if (m_currentSheet == &m_shipSheet.value()) {
-        m_system.ship().characterName = m_characterPicker->selectedSheet();
-        m_system.ship().characterIndex = m_characterPicker->character();
-        m_shipSheet = CharacterSheet(m_system.ship().characterName);
-        const auto& [uv0, uv1] = m_shipSheet->getRectForCharacter(m_system.ship().characterIndex, 1);
+        m_system.ship().setCharacterName(m_characterPicker->selectedSheet());
+        m_system.ship().setCharacterIndex(m_characterPicker->character());
+        m_shipSheet = CharacterSheet(m_system.ship().characterName());
+        const auto& [uv0, uv1] = m_shipSheet->getRectForCharacter(m_system.ship().characterIndex(), 1);
         const Point offset{static_cast<int>(uv0.x() * m_shipSheet->texture().width()), static_cast<int>(uv0.y() * m_shipSheet->texture().height())};
         m_shipButtonTexture->setTexturesToComposite({{m_shipSheet->texture(), {m_shipSheet->characterWidth(), m_shipSheet->characterHeight()}, offset}});
       } else if (m_currentSheet == &m_airshipSheet.value()) {
-        m_system.airship().characterName = m_characterPicker->selectedSheet();
-        m_system.airship().characterIndex = m_characterPicker->character();
-        m_airshipSheet = CharacterSheet(m_system.airship().characterName);
-        const auto& [uv0, uv1] = m_airshipSheet->getRectForCharacter(m_system.airship().characterIndex, 1);
+        m_system.airship().setCharacterName(m_characterPicker->selectedSheet());
+        m_system.airship().setCharacterIndex(m_characterPicker->character());
+        m_airshipSheet = CharacterSheet(m_system.airship().characterName());
+        const auto& [uv0, uv1] = m_airshipSheet->getRectForCharacter(m_system.airship().characterIndex(), 1);
         const Point offset{static_cast<int>(uv0.x() * m_airshipSheet->texture().width()), static_cast<int>(uv0.y() * m_airshipSheet->texture().height())};
         m_airshipButtonTexture->setTexturesToComposite({{m_airshipSheet->texture(), {m_airshipSheet->characterWidth(), m_airshipSheet->characterHeight()}, offset}});
       }

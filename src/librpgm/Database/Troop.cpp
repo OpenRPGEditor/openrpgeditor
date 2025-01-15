@@ -651,7 +651,8 @@ Troop::Troop(const Troop& other)
 , m_oldid(other.m_oldid)
 , m_oldmembers(other.m_oldmembers)
 , m_oldname(other.m_oldname)
-, m_oldpages(other.m_oldpages) {}
+, m_oldpages(other.m_oldpages)
+, m_isValid(other.m_isValid) {}
 
 Troop& Troop::operator=(const Troop& other) {
   IModifiable::operator=(other);
@@ -663,6 +664,7 @@ Troop& Troop::operator=(const Troop& other) {
   m_oldmembers = other.m_oldmembers;
   m_oldname = other.m_oldname;
   m_oldpages = other.m_oldpages;
+  m_isValid = other.m_isValid;
   return *this;
 }
 
@@ -675,7 +677,8 @@ Troop::Troop(Troop&& other) noexcept
 , m_oldid(other.m_oldid)
 , m_oldmembers(std::move(other.m_oldmembers))
 , m_oldname(std::move(other.m_oldname))
-, m_oldpages(std::move(other.m_oldpages)) {}
+, m_oldpages(std::move(other.m_oldpages))
+, m_isValid(other.m_isValid) {}
 
 Troop& Troop::operator=(Troop&& other) noexcept {
   IModifiable::operator=(std::move(other));
@@ -687,6 +690,7 @@ Troop& Troop::operator=(Troop&& other) noexcept {
   m_oldmembers = std::move(other.m_oldmembers);
   m_oldname = std::move(other.m_oldname);
   m_oldpages = std::move(other.m_oldpages);
+  m_isValid = other.m_isValid;
   return *this;
 }
 

@@ -541,5 +541,3 @@ endif ()
 if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
     add_compile_definitions(_DEBUG DEBUG)
 endif ()
-
-

@@ -430,7 +430,9 @@ add_library(
         Core/Script/ByteCodeStream.cpp
         Core/Script/ByteCodeStream.hpp
         Core/Script/Bindings.cpp
-        Core/Script/Bindings.hpp)
+        Core/Script/Bindings.hpp
+        Core/Tilemap/TilemapView.cpp
+        Core/Tilemap/TilemapView.hpp)
 
 target_include_directories(
         orecore

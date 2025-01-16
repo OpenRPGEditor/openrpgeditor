@@ -24,6 +24,16 @@ private:
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
 
+  int m_frameCursor{1};
+  int m_timingSE{0};
+  int m_frameType{0};
+
+  int r{255};
+  int g{255};
+  int b{255};
+  int m_intensity{255};
+  int m_duration{5};
+
   std::optional<ImagePicker> m_imagePicker;
   int m_pickerSelection;
 };

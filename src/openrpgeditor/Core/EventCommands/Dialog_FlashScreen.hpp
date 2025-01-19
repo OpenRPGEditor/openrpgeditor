@@ -1,4 +1,5 @@
 #pragma once
+#include "Core/CommonUI/ColorFlashPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/FlashScreen.hpp"
 
@@ -30,4 +31,6 @@ private:
   bool m_confirmed{false};
   std::shared_ptr<FlashScreenCommand> command;
   std::tuple<bool, bool> result;
+
+  ColorFlashPicker color_picker;
 };

@@ -1,5 +1,7 @@
 #pragma once
+#include "Core/CommonUI/ColorFlashPicker.hpp"
 #include "Core/CommonUI/ImagePicker.hpp"
+#include "Core/CommonUI/SoundPicker.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Database/Animations.hpp"
 
@@ -27,13 +29,33 @@ private:
   int m_frameCursor{1};
   int m_timingSE{0};
   int m_frameType{0};
+  int m_selectedTiming{0};
+
+  bool m_isApplyingChanges{false};
+
+  std::vector<Animation::Timing> m_selectedTimings;
 
   int r{255};
   int g{255};
   int b{255};
   int m_intensity{255};
   int m_duration{5};
+  Audio m_selectedAudio;
+  Animation::Color m_selectedColor;
+  int m_selectedScope;
+  int m_selectedDuration;
+  int m_selectedFrameNumber;
 
   std::optional<ImagePicker> m_imagePicker;
+  ColorFlashPicker color_picker;
   int m_pickerSelection;
+
+  SoundPicker sound_picker;
+
+  void onNameModified(Audio*, const std::string_view name) { m_selectedAudio.setName(name.data()); }
+  void onVolModified(Audio*, const int volume) { m_selectedAudio.setVolume(volume); }
+  void onPanModified(Audio*, const int pan) { m_selectedAudio.setPan(pan); }
+  void onPitchModified(Audio*, const int pitch) { m_selectedAudio.setPitch(pitch); }
+
+  Animation::Timing getTiming(int frame, Audio audio, Animation::Color color, FlashScope scope, int duration);
 };

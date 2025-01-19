@@ -7,28 +7,53 @@ bool ColorTonePicker::draw() {
   {
     ImGui::BeginGroup();
     {
-      ImGui::Text("Red");
-      ImGui::Spacing();
-      ImGui::Text("Green");
-      ImGui::Spacing();
-      ImGui::Text("Blue");
-      ImGui::Spacing();
-      ImGui::Text("Gray");
+      ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 5.f);
+      ImGui::Text(trNOOP("Red:"));
+      ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 12.f);
+      ImGui::Text(trNOOP("Green:"));
+      ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 14.f);
+      ImGui::Text(trNOOP("Blue:"));
+      ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 12.f);
+      ImGui::Text(trNOOP("Gray:"));
     }
     ImGui::EndGroup();
     ImGui::SameLine();
     ImGui::BeginGroup();
     {
+      ImGui::SetNextItemWidth(150);
       if (ImGui::SliderInt(std::format("##color_preview_red_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(), &m_r, -255, 255)) {
         m_toneInvalid = m_modified = true;
       }
+      ImGui::SameLine();
+      ImGui::SetNextItemWidth(120);
+      if (ImGui::InputInt("##color_preview_int_red", &m_r, 1, 100)) {
+        m_toneInvalid = m_modified = true;
+      }
+      ImGui::SetNextItemWidth(150);
       if (ImGui::SliderInt(std::format("##color_preview_green_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(), &m_g, -255, 255)) {
         m_toneInvalid = m_modified = true;
       }
+      ImGui::SameLine();
+      ImGui::SetNextItemWidth(120);
+      if (ImGui::InputInt("##color_preview_int_green", &m_g, 1, 100)) {
+        m_toneInvalid = m_modified = true;
+      }
+      ImGui::SetNextItemWidth(150);
       if (ImGui::SliderInt(std::format("##color_preview_blue_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(), &m_b, -255, 255)) {
         m_toneInvalid = m_modified = true;
       }
+      ImGui::SameLine();
+      ImGui::SetNextItemWidth(120);
+      if (ImGui::InputInt("##color_preview_int_blue", &m_b, 1, 100)) {
+        m_toneInvalid = m_modified = true;
+      }
+      ImGui::SetNextItemWidth(150);
       if (ImGui::SliderInt(std::format("##color_preview_gray_slider_{}", reinterpret_cast<intptr_t>(this)).c_str(), &m_gray, 0, 255)) {
+        m_toneInvalid = m_modified = true;
+      }
+      ImGui::SameLine();
+      ImGui::SetNextItemWidth(120);
+      if (ImGui::InputInt("##color_preview_int_gray", &m_gray, 1, 100)) {
         m_toneInvalid = m_modified = true;
       }
     }

@@ -1,4 +1,5 @@
 #pragma once
+#include "Core/CommonUI/ColorTonePicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/TintPicture.hpp"
 
@@ -32,4 +33,6 @@ private:
   bool m_confirmed{false};
   std::shared_ptr<TintPictureCommand> command;
   std::tuple<bool, bool> result;
+
+  ColorTonePicker color_picker;
 };

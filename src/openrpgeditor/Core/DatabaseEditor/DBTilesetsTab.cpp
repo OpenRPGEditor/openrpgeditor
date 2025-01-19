@@ -49,7 +49,6 @@ void DBTilesetsTab::draw() {
 
               if (ImGui::Selectable(Database::instance()->tilesetNameAndId(tileset.id()).c_str(), &tileset == m_selectedTileset) || (ImGui::IsItemFocused() && m_selectedTileset != &tileset)) {
                 m_selectedTileset = &tileset;
-                // m_traitsEditor.setTraits(&m_selectedClass->traits);
               }
             }
           }

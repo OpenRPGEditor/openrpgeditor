@@ -432,7 +432,9 @@ add_library(
         Core/Script/Bindings.cpp
         Core/Script/Bindings.hpp
         Core/Tilemap/TilemapView.cpp
-        Core/Tilemap/TilemapView.hpp)
+        Core/Tilemap/TilemapView.hpp
+        Core/CommonUI/SoundPicker.cpp
+        Core/CommonUI/SoundPicker.hpp)
 
 target_include_directories(
         orecore

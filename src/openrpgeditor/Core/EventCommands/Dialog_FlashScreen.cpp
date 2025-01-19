@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_FlashScreen.hpp"
 
-
 #include "imgui.h"
 #include <tuple>
 
@@ -14,69 +13,8 @@ std::tuple<bool, bool> Dialog_FlashScreen::draw() {
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Flash Color");
-    ImGui::BeginGroup();
-    {
-      ImGui::Text("Red:");
-      ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 8.f);
-      ImGui::Text("Green:");
-      ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 8.f);
-      ImGui::Text("Blue:");
-      ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 8.f);
-      ImGui::Text("Intensity:");
-    }
-    ImGui::EndGroup();
-    ImGui::SameLine();
-    ImGui::BeginGroup();
-    {
-      ImGui::SetNextItemWidth(150);
-      ImGui::SliderInt("##flashscreen_red", &r, 0, 255, "", ImGuiSliderFlags_NoInput);
-      ImGui::SameLine();
-      ImGui::SetNextItemWidth(75);
-      if (ImGui::InputInt("##flashscreen_int_red", &r, 1, 100)) {
-        if (r < 0)
-          r = 0;
-        if (r > 255)
-          r = 255;
-      }
 
-      ImGui::SetNextItemWidth(150);
-      ImGui::SliderInt("##flashscreen_green", &g, 0, 255, "", ImGuiSliderFlags_NoInput);
-      ImGui::SameLine();
-      ImGui::SetNextItemWidth(75);
-      if (ImGui::InputInt("##flashscreen_int_green", &g, 1, 100)) {
-        if (g < 0)
-          g = 0;
-        if (g > 255)
-          g = 255;
-      }
-
-      ImGui::SetNextItemWidth(150);
-      ImGui::SliderInt("##flashscreen_blue", &b, 0, 255, "", ImGuiSliderFlags_NoInput);
-      ImGui::SameLine();
-      ImGui::SetNextItemWidth(75);
-      if (ImGui::InputInt("##flashscreen_int_blue", &b, 1, 100)) {
-        if (b < 0)
-          b = 0;
-        if (b > 255)
-          b = 255;
-      }
-
-      ImGui::SetNextItemWidth(150);
-      ImGui::SliderInt("##lashscreen_gray", &m_intensity, 0, 255, "", ImGuiSliderFlags_NoInput);
-      ImGui::SameLine();
-      ImGui::SetNextItemWidth(75);
-      if (ImGui::InputInt("##flashscreen_int_gray", &m_intensity, 1, 100)) {
-        if (m_intensity < 1)
-          m_intensity = 1;
-        if (m_intensity > 255)
-          m_intensity = 255;
-      }
-    }
-    ImGui::EndGroup();
-    ImGui::SameLine();
-
-    ImGui::ColorButton("##flashscreen_square", ImVec4{static_cast<float>(r * (1.0f / 255.0f)), static_cast<float>(g * (1.0f / 255.0f)), static_cast<float>(b * (1.0f / 255.0f)), 1}, 0,
-                       ImVec2{100, 100});
+    color_picker.draw();
 
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4.f);
     ImGui::PushItemWidth(390);
@@ -100,10 +38,10 @@ std::tuple<bool, bool> Dialog_FlashScreen::draw() {
 
     if (ImGui::Button("OK")) {
       m_confirmed = true;
-      command->color.r = r;
-      command->color.g = g;
-      command->color.b = b;
-      command->color.intensity = m_intensity;
+      command->color.r = color_picker.r();
+      command->color.g = color_picker.g();
+      command->color.b = color_picker.b();
+      command->color.intensity = color_picker.intensity();
       command->duration = m_duration;
       command->waitForCompletion = m_waitForCompletion;
       ImGui::CloseCurrentPopup();

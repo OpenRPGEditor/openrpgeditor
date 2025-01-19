@@ -228,6 +228,14 @@ enum class FlashScope {
   trENUM("None", None),
   trENUM("Target", Target),
   trENUM("Screen", Screen),
+  trENUM("Screen", HideTarget),
+};
+
+enum class SEType {
+  BGM,
+  BGS,
+  SE,
+  ME,
 };
 
 enum class Position {

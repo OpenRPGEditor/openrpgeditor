@@ -59,7 +59,7 @@ void Animation::Color::setR(const int r) {
   setHasChanges(true);
 }
 
-int Animation::Color::g() const { return m_r; }
+int Animation::Color::g() const { return m_g; }
 
 void Animation::Color::setG(const int g) {
   MODIFIABLE_SET_OLD_VALUE(g);

@@ -5,7 +5,18 @@
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "imgui.h"
 
-DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent) : IDBEditorTab(parent), m_animations(animations) { m_selectedAnimation = m_animations.animation(1); }
+DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent) : IDBEditorTab(parent), m_animations(animations) {
+
+  m_selectedAnimation = m_animations.animation(1);
+
+  m_selectedTimings = m_selectedAnimation->timings();
+  color_picker.setValues(255, 255, 255, 255);
+
+  sound_picker.selectedAudio().nameModified().connect<&DBAnimationsTab::onNameModified>(this);
+  sound_picker.selectedAudio().volumeModified().connect<&DBAnimationsTab::onVolModified>(this);
+  sound_picker.selectedAudio().panModified().connect<&DBAnimationsTab::onPanModified>(this);
+  sound_picker.selectedAudio().pitchModified().connect<&DBAnimationsTab::onPitchModified>(this);
+}
 
 void DBAnimationsTab::draw() {
   if (m_selectedAnimation) {
@@ -23,6 +34,7 @@ void DBAnimationsTab::draw() {
       }
     }
   }
+  sound_picker.draw();
 
   ImGui::BeginChild("#orpg_animations_editor");
   {
@@ -31,7 +43,7 @@ void DBAnimationsTab::draw() {
     {
       ImGui::BeginGroup();
       {
-        ImGui::SeparatorText("Animations");
+        ImGui::SeparatorText(trNOOP("Animations"));
         ImGui::BeginChild("##orpg_animations_editor_animations_list", ImVec2{0, ImGui::GetContentRegionMax().y - ((calc.y + ImGui::GetStyle().ItemSpacing.y) * 4)});
         {
           ImGui::BeginGroup();
@@ -43,7 +55,9 @@ void DBAnimationsTab::draw() {
               if (ImGui::Selectable(Database::instance()->animationNameAndId(animation.id()).c_str(), &animation == m_selectedAnimation) ||
                   (ImGui::IsItemFocused() && m_selectedAnimation != &animation)) {
                 m_selectedAnimation = &animation;
-                // m_traitsEditor.setTraits(&m_selectedClass->traits);
+                m_frameCursor = 0; // Reset cursor on animation change
+
+                m_selectedTimings = m_selectedAnimation->timings();
               }
             }
           }
@@ -51,9 +65,9 @@ void DBAnimationsTab::draw() {
         }
         ImGui::EndChild();
         char str[4096];
-        snprintf(str, 4096, "Max Animations %i", m_animations.count());
+        snprintf(str, 4096, trFormat("Max Animations %i", m_animations.count()).c_str());
         ImGui::SeparatorText(str);
-        if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
+        if (ImGui::Button(trNOOP("Change Max"), ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxAnimations = m_animations.count();
         }
@@ -69,13 +83,13 @@ void DBAnimationsTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            ImGui::SeparatorText("General Settings");
+            ImGui::SeparatorText(trNOOP("General Settings"));
             // Name
             ImGui::BeginGroup();
             {
               char name[4096];
               strncpy(name, m_selectedAnimation->name().c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_animations_editor_name", "Name:", name, 4096, 200)) {
+              if (ImGui::LabelOverLineEdit("##orpg_animations_editor_name", trNOOP("Name:"), name, 4096, 200)) {
                 m_selectedAnimation->setName(name);
               }
             }
@@ -84,7 +98,7 @@ void DBAnimationsTab::draw() {
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
             ImGui::BeginGroup();
             {
-              ImGui::Text("Images:");
+              ImGui::Text(trNOOP("Images:"));
               ImGui::PushID("##orpg_animations_name1_selection");
               if (ImGui::Button(m_selectedAnimation->animation1Name().data(), ImVec2{200, 0})) {
                 m_pickerSelection = 0;
@@ -103,7 +117,7 @@ void DBAnimationsTab::draw() {
               ImGui::SameLine();
               ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 40.f);
               ImGui::PushID("##orpg_animations_play");
-              if (ImGui::Button("Play", ImVec2{150, 0})) {
+              if (ImGui::Button(trNOOP("Play"), ImVec2{150, 0})) {
                 // Play Animation
               }
               ImGui::PopID();
@@ -111,9 +125,9 @@ void DBAnimationsTab::draw() {
             ImGui::EndGroup();
             ImGui::BeginGroup();
             {
-              ImGui::Text("Frame:");
+              ImGui::Text(trNOOP("Frame:"));
               ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x - 50);
-              ImGui::SliderInt("##orpg_animations_frames_slider", &m_frameCursor, 1, m_selectedAnimation->frames().size());
+              ImGui::SliderInt("##orpg_animations_frames_slider", m_isApplyingChanges ? &m_selectedFrameNumber : &m_frameCursor, 1, m_selectedAnimation->frames().size());
               ImGui::EndGroup();
             }
           }
@@ -129,12 +143,12 @@ void DBAnimationsTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            ImGui::SeparatorText("Sound Effects and Flash Timing");
+            ImGui::SeparatorText(trNOOP("Sound Effects and Flash Timing"));
             if (ImGui::BeginTable("##orpg_animations_se_flash_timings", 3,
                                   ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollY | ImGuiTableFlags_ScrollY)) {
-              ImGui::TableSetupColumn("Frame #");
-              ImGui::TableSetupColumn("Sound Effect");
-              ImGui::TableSetupColumn("Flash");
+              ImGui::TableSetupColumn(trNOOP("Frame #"));
+              ImGui::TableSetupColumn(trNOOP("Sound Effect"));
+              ImGui::TableSetupColumn(trNOOP("Flash"));
               ImGui::TableHeadersRow();
 
               int timingIndex{0};
@@ -142,44 +156,59 @@ void DBAnimationsTab::draw() {
                 ImGui::PushID(&m_selectedAnimation->timings().at(i));
                 ImGui::TableNextRow();
                 if (ImGui::TableNextColumn()) {
-                  if (ImGui::Selectable(std::format("#{:03}##timing_{}", m_selectedAnimation->timing(i).frame() + 1, timingIndex).c_str(), i == timingIndex,
-                                        ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {}
-                  // if (ImGui::IsKeyPressed(ImGuiKey_Delete) && m_selectedEffect == &effect && m_deletingEffect == nullptr) {}
+                  if (ImGui::Selectable(
+                          std::format("#{:03}##timing_{}", m_isApplyingChanges && i == m_selectedTiming ? m_selectedFrameNumber + 1 : m_selectedAnimation->timing(i).frame() + 1, timingIndex).c_str(),
+                          i == m_selectedTiming, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
+                    if (!m_isApplyingChanges) {
+                      m_selectedTiming = timingIndex;
+                      if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                        m_isApplyingChanges = true;
+                        m_selectedAudio = *m_selectedAnimation->timing(m_selectedTiming).se();
+                        m_selectedColor = m_selectedAnimation->timing(m_selectedTiming).flashColor();
+                        m_selectedScope = static_cast<int>(m_selectedAnimation->timing(m_selectedTiming).flashScope());
+                        m_frameType = m_selectedScope;
+                        m_selectedDuration = m_selectedAnimation->timing(m_selectedTiming).flashDuration();
+                        m_selectedFrameNumber = m_selectedAnimation->timing(m_selectedTiming).frame();
+
+                        color_picker.setValues(m_selectedColor.r(), m_selectedColor.g(), m_selectedColor.b(), m_selectedColor.intensity());
+                      }
+                    }
+                  }
                   timingIndex++;
                 }
                 if (ImGui::TableNextColumn()) {
-                  ImGui::Text("%s", m_selectedAnimation->timing(i).se()->name().c_str());
+                  if (m_isApplyingChanges && m_selectedTiming == i) {
+                    ImGui::Text("%s", m_selectedAudio.name().c_str());
+                  } else {
+                    ImGui::Text("%s", m_selectedAnimation->timing(i).se()->name().c_str());
+                  }
                 }
                 if (ImGui::TableNextColumn()) {
                   if (m_selectedAnimation->timing(i).flashScope() == FlashScope::HideTarget) {
-                    ImGui::Text("%s, %i frames", DecodeEnumName(m_selectedAnimation->timing(i).flashScope()), m_selectedAnimation->timing(i).frame());
+                    if (m_isApplyingChanges && m_selectedTiming == i) {
+                      ImGui::Text("%s, %i frames", DecodeEnumName(static_cast<FlashScope>(m_selectedScope)).c_str(), m_selectedFrameNumber);
+                    } else {
+                      ImGui::Text("%s, %i frames", DecodeEnumName(m_selectedAnimation->timing(i).flashScope()).c_str(), m_selectedAnimation->timing(i).frame());
+                    }
                   } else {
                     int red = m_selectedAnimation->timing(i).flashColor().r();
                     int green = m_selectedAnimation->timing(i).flashColor().g();
                     int blue = m_selectedAnimation->timing(i).flashColor().b();
                     int intensity = m_selectedAnimation->timing(i).flashColor().intensity();
 
-                    ImGui::Text("%s(%i,%i,%i,%i), %i frames", DecodeEnumName(m_selectedAnimation->timing(i).flashScope()).c_str(), red, green, blue, intensity, m_selectedAnimation->timing(i).frame());
+                    if (m_isApplyingChanges && m_selectedTiming == i) {
+                      ImGui::Text("%s(%i,%i,%i,%i), %i frames", DecodeEnumName(static_cast<FlashScope>(m_selectedScope)).c_str(), m_selectedColor.r(), m_selectedColor.g(), m_selectedColor.b(),
+                                  m_selectedColor.intensity(), m_selectedDuration);
+                    } else {
+                      ImGui::Text("%s(%i,%i,%i,%i), %i frames", DecodeEnumName(m_selectedAnimation->timing(i).flashScope()).c_str(), red, green, blue, intensity,
+                                  m_selectedAnimation->timing(i).flashDuration());
+                    }
                   }
                 }
                 ImGui::PopID();
               }
 
               ImGui::TableNextRow();
-              /*
-              if (ImGui::TableNextColumn()) {
-                if (ImGui::Selectable("##effects_editor_effect_dummy", false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
-                  if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                    m_tempEffect = Effect();
-                    m_isNewEntry = true;
-                    m_updateTab = true;
-                    m_tempEffectAssigned = false;
-                    m_selectedEffect = &m_tempEffect;
-                    ImGui::OpenPopup(EffectsEditorPopupId.data());
-                  }
-                }
-              }
-              */
               ImGui::EndTable();
             }
           }
@@ -188,20 +217,62 @@ void DBAnimationsTab::draw() {
         ImGui::EndChild();
         ImGui::SameLine();
         ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 8.f);
+
         ImGui::BeginChild("##orpg_animations_animation_panel_middle_buttons", ImVec2{50, 320});
         {
           ImGui::Dummy(ImVec2{0, 140});
+          ImGui::BeginDisabled(m_isApplyingChanges == true);
           ImGui::PushID("##orpg_animations_timings_add");
           if (ImGui::Button("+", ImVec2{50, 0})) {
-            // Add timings
+            Animation::Timing timing;
+            Audio SE;
+            Animation::Color color;
+
+            SE.setName("");
+            SE.setVolume(100);
+            SE.setPan(50);
+            SE.setPitch(100);
+
+            color.setR(255);
+            color.setG(255);
+            color.setB(255);
+            color.setIntensity(255);
+
+            timing.setFrame(m_frameCursor - 1);
+            timing.setSe(SE);
+            timing.setFlashColor(color);
+            timing.setFlashScope(static_cast<FlashScope>(m_frameType));
+            timing.setFlashDuration(m_duration);
+
+            m_selectedTimings.emplace_back(timing);
+
+            std::sort(m_selectedTimings.begin(), m_selectedTimings.end(), [](const auto& a, const auto& b) { return a.frame() < b.frame(); });
+
+            m_selectedAnimation->setTimings(m_selectedTimings);
           }
           ImGui::PopID();
+          ImGui::EndDisabled();
+          ImGui::BeginDisabled(m_selectedAnimation->timings().size() < 1 || m_isApplyingChanges == true);
           ImGui::PushID("##orpg_animations_timings_remove");
           if (ImGui::Button("-", ImVec2{50, 0})) {
-            // Remove timings
+            m_selectedTimings.erase(m_selectedTimings.begin() + m_selectedTiming, m_selectedTimings.begin() + m_selectedTiming + 1);
+            m_selectedAnimation->setTimings(m_selectedTimings);
+            if (m_selectedTiming > 0) {
+              m_selectedTiming--;
+            }
           }
           ImGui::PopID();
+          ImGui::EndDisabled();
+          ImGui::BeginDisabled(m_isApplyingChanges == false);
+          ImGui::PushID("##orpg_animations_timings_apply");
+          if (ImGui::Button("✓", ImVec2{50, 0})) {
+            m_selectedAnimation->setTiming(m_selectedTiming, getTiming(m_selectedFrameNumber, m_selectedAudio, m_selectedColor, static_cast<FlashScope>(m_selectedScope), m_selectedDuration));
+            m_isApplyingChanges = false;
+          }
+          ImGui::PopID();
+          ImGui::EndDisabled();
         }
+
         ImGui::EndChild();
         ImGui::SameLine();
         ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 8.f);
@@ -211,7 +282,7 @@ void DBAnimationsTab::draw() {
           {
             ImGui::BeginGroup();
             {
-              ImGui::Text("Frame:");
+              ImGui::Text(trNOOP("Frame:"));
               ImGui::EndGroup();
             }
             ImGui::BeginGroup();
@@ -225,10 +296,10 @@ void DBAnimationsTab::draw() {
           ImGui::SameLine();
           ImGui::BeginGroup();
           {
-            ImGui::Text("Sound Effect:");
+            ImGui::Text(trNOOP("Sound Effect:"));
             ImGui::PushID("##orpg_animations_timings_soundeffect");
-            if (ImGui::Button(m_timingSE == 0 ? "" : Database::instance()->system.sounds().at(m_timingSE).name().c_str(), ImVec2{200, 0})) {
-              // Select SE
+            if (ImGui::Button(m_isApplyingChanges ? m_selectedAnimation->timing(m_selectedTiming).se()->name().c_str() : m_selectedAudio.name().c_str(), ImVec2{200, 0})) {
+              sound_picker.show(SEType::SE);
             }
             ImGui::PopID();
             ImGui::EndGroup();
@@ -236,99 +307,60 @@ void DBAnimationsTab::draw() {
           ImGui::BeginGroup();
           {
             ImGui::SeparatorText("Flash Type");
-            if (ImGui::RadioButton("None##orpg_animations_timings_frametype_none", m_frameType == 0)) {
+            if (ImGui::RadioButton(trNOOP("None"), m_isApplyingChanges ? m_selectedScope == 0 : m_frameType == 0)) {
+
+              m_selectedScope = 0;
               m_frameType = 0;
+              if (m_isApplyingChanges) {
+              } else {
+              }
             }
             ImGui::SameLine();
-            if (ImGui::RadioButton("Target##orpg_animations_timings_frametype_target", m_frameType == 1)) {
+            if (ImGui::RadioButton(trNOOP("Target"), m_isApplyingChanges ? m_selectedScope == 1 : m_frameType == 1)) {
+
+              m_selectedScope = 1;
               m_frameType = 1;
+              if (m_isApplyingChanges) {
+              } else {
+              }
             }
             ImGui::SameLine();
-            if (ImGui::RadioButton("Screen##orpg_animations_timings_frametype_screen", m_frameType == 2)) {
+            if (ImGui::RadioButton(trNOOP("Screen"), m_isApplyingChanges ? m_selectedScope == 2 : m_frameType == 2)) {
+
+              m_selectedScope = 2;
               m_frameType = 2;
+              if (m_isApplyingChanges) {
+              } else {
+              }
             }
             ImGui::SameLine();
-            if (ImGui::RadioButton("Hide Target##orpg_animations_timings_frametype_hidetarget", m_frameType == 3)) {
+            if (ImGui::RadioButton(trNOOP("Hide Target"), m_isApplyingChanges ? m_selectedScope == 3 : m_frameType == 3)) {
+
+              m_selectedScope = 3;
               m_frameType = 3;
+              if (m_isApplyingChanges) {
+              } else {
+              }
             }
 
             ImGui::EndGroup(); // End Group: Flash
           }
-          ImGui::BeginGroup();
-          {
-            ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 5.f);
-            ImGui::Text("Red:");
-            ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 12.f);
-            ImGui::Text("Green:");
-            ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 14.f);
-            ImGui::Text("Blue:");
-            ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 12.f);
-            ImGui::Text("Intensity:");
-          }
-          ImGui::EndGroup();
-          ImGui::SameLine();
-          ImGui::BeginGroup();
-          {
-            ImGui::SetNextItemWidth(150);
-            ImGui::SliderInt("##orpg_animations_timings_red", &r, 0, 255, "", ImGuiSliderFlags_NoInput);
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(120);
-            if (ImGui::InputInt("##orpg_animations_timings_int_red", &r, 1, 100)) {
-              if (r < 0)
-                r = 0;
-              if (r > 255)
-                r = 255;
-            }
+          ImGui::BeginDisabled((m_frameType == static_cast<int>(FlashScope::None) || m_frameType == static_cast<int>(FlashScope::HideTarget)) && m_isApplyingChanges == false);
 
-            ImGui::SetNextItemWidth(150);
-            ImGui::SliderInt("##orpg_animations_timings_green", &g, 0, 255, "", ImGuiSliderFlags_NoInput);
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(120);
-            if (ImGui::InputInt("##orpg_animations_timings_int_green", &g, 1, 100)) {
-              if (g < 0)
-                g = 0;
-              if (g > 255)
-                g = 255;
-            }
-
-            ImGui::SetNextItemWidth(150);
-            ImGui::SliderInt("##orpg_animations_timings_blue", &b, 0, 255, "", ImGuiSliderFlags_NoInput);
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(120);
-            if (ImGui::InputInt("##orpg_animations_timings_int_blue", &b, 1, 100)) {
-              if (b < 0)
-                b = 0;
-              if (b > 255)
-                b = 255;
-            }
-
-            ImGui::SetNextItemWidth(150);
-            ImGui::SliderInt("##orpg_animations_timings_gray", &m_intensity, 0, 255, "", ImGuiSliderFlags_NoInput);
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(120);
-            if (ImGui::InputInt("##orpg_animations_timings_int_gray", &m_intensity, 1, 100)) {
-              if (m_intensity < 1)
-                m_intensity = 1;
-              if (m_intensity > 255)
-                m_intensity = 255;
-            }
-          }
-          ImGui::EndGroup();
-          ImGui::SameLine();
-
-          ImGui::ColorButton("##orpg_animations_timings_square", ImVec4{static_cast<float>(r * (1.0f / 255.0f)), static_cast<float>(g * (1.0f / 255.0f)), static_cast<float>(b * (1.0f / 255.0f)), 1},
-                             0, ImVec2{100, 100});
-
-          ImGui::SeparatorText("Duration");
+          // Color Picker
+          color_picker.draw();
+          ImGui::SeparatorText(trNOOP("Duration"));
           ImGui::SetNextItemWidth(100);
-          if (ImGui::InputInt("##orpg_animations_timings_duration", &m_duration)) {
-            if (m_duration < 1)
-              m_duration = 1;
-            if (m_duration > 999)
-              m_duration = 999;
+          if (ImGui::InputInt("##orpg_animations_timings_duration", m_isApplyingChanges ? &m_selectedDuration : &m_duration)) {
+
+            if (m_isApplyingChanges) {
+              m_selectedDuration = std::clamp(m_selectedDuration, 1, 255);
+            } else {
+              m_duration = std::clamp(m_duration, 1, 255);
+            }
           }
           ImGui::SameLine();
-          ImGui::Text("frames 1/60 sec");
+          ImGui::Text(trNOOP("frames 1/60 sec"));
 
           ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4.f);
           ImGui::PushItemWidth(390);
@@ -336,6 +368,7 @@ void DBAnimationsTab::draw() {
             // TODO: Template system for tint screen
             ImGui::EndCombo();
           }
+          ImGui::EndDisabled();
         }
         ImGui::EndChild();
       }
@@ -344,28 +377,28 @@ void DBAnimationsTab::draw() {
     ImGui::EndChild();
 
     if (m_changeIntDialogOpen) {
-      if (ImGui::Begin("Change Max Animations", &m_changeIntDialogOpen,
+      if (ImGui::Begin(trNOOP("Change Max Animations"), &m_changeIntDialogOpen,
                        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_Modal | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
         ImGui::Text(
-            "Specify an amount to resize the animation list to\n"
-            "This cannot be undone!");
+            trNOOP("Specify an amount to resize the animation list to\n"
+                   "This cannot be undone!"));
         ImGui::InputInt("##value_input", &m_editMaxAnimations);
         ImGui::SameLine();
-        if (ImGui::Button("Accept")) {
+        if (ImGui::Button(trNOOP("Accept"))) {
           m_changeConfirmDialogOpen = true;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Cancel")) {
+        if (ImGui::Button(trNOOP("Cancel"))) {
           m_changeIntDialogOpen = false;
         }
       }
       ImGui::End();
 
       if (m_changeConfirmDialogOpen) {
-        if (ImGui::Begin("Confirm Change", &m_changeConfirmDialogOpen,
+        if (ImGui::Begin(trNOOP("Confirm Change"), &m_changeConfirmDialogOpen,
                          ImGuiWindowFlags_NoResize | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
-          ImGui::Text("Are you sure?");
-          if (ImGui::Button("Yes")) {
+          ImGui::Text(trNOOP("Are you sure?"));
+          if (ImGui::Button(trNOOP("Yes"))) {
             const int tmpId = m_selectedAnimation->id();
             m_animations.resize(m_editMaxAnimations);
             m_selectedAnimation = m_animations.animation(tmpId);
@@ -373,7 +406,7 @@ void DBAnimationsTab::draw() {
             m_changeConfirmDialogOpen = false;
           }
           ImGui::SameLine();
-          if (ImGui::Button("Cancel")) {
+          if (ImGui::Button(trNOOP("Cancel"))) {
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }
@@ -382,4 +415,19 @@ void DBAnimationsTab::draw() {
       }
     }
   }
+}
+Animation::Timing DBAnimationsTab::getTiming(int frame, Audio audio, Animation::Color color, FlashScope scope, int duration) {
+  Animation::Timing m_timing;
+
+  color.setR(color_picker.r());
+  color.setG(color_picker.g());
+  color.setB(color_picker.b());
+  color.setIntensity(color_picker.intensity());
+
+  m_timing.setFrame(frame);
+  m_timing.setSe(audio);
+  m_timing.setFlashColor(color);
+  m_timing.setFlashScope(scope);
+  m_timing.setFlashDuration(duration);
+  return m_timing;
 }

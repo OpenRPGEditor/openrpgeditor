@@ -10,12 +10,12 @@ DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent)
   m_selectedAnimation = m_animations.animation(1);
 
   m_selectedTimings = m_selectedAnimation->timings();
-  color_picker.setValues(255, 255, 255, 255);
+  m_colorPicker.setValues(255, 255, 255, 255);
 
-  sound_picker.selectedAudio().nameModified().connect<&DBAnimationsTab::onNameModified>(this);
-  sound_picker.selectedAudio().volumeModified().connect<&DBAnimationsTab::onVolModified>(this);
-  sound_picker.selectedAudio().panModified().connect<&DBAnimationsTab::onPanModified>(this);
-  sound_picker.selectedAudio().pitchModified().connect<&DBAnimationsTab::onPitchModified>(this);
+  m_soundPicker.selectedAudio().nameModified().connect<&DBAnimationsTab::onNameModified>(this);
+  m_soundPicker.selectedAudio().volumeModified().connect<&DBAnimationsTab::onVolModified>(this);
+  m_soundPicker.selectedAudio().panModified().connect<&DBAnimationsTab::onPanModified>(this);
+  m_soundPicker.selectedAudio().pitchModified().connect<&DBAnimationsTab::onPitchModified>(this);
 }
 
 void DBAnimationsTab::draw() {
@@ -34,7 +34,7 @@ void DBAnimationsTab::draw() {
       }
     }
   }
-  sound_picker.draw();
+  m_soundPicker.draw();
 
   ImGui::BeginChild("#orpg_animations_editor");
   {
@@ -64,9 +64,7 @@ void DBAnimationsTab::draw() {
           ImGui::EndGroup();
         }
         ImGui::EndChild();
-        char str[4096];
-        snprintf(str, 4096, trFormat("Max Animations %i", m_animations.count()).c_str());
-        ImGui::SeparatorText(str);
+        ImGui::SeparatorText(trFormat("Max Animations {}", m_animations.count()).c_str());
         if (ImGui::Button(trNOOP("Change Max"), ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
           m_changeIntDialogOpen = true;
           m_editMaxAnimations = m_animations.count();
@@ -170,7 +168,7 @@ void DBAnimationsTab::draw() {
                         m_selectedDuration = m_selectedAnimation->timing(m_selectedTiming).flashDuration();
                         m_selectedFrameNumber = m_selectedAnimation->timing(m_selectedTiming).frame();
 
-                        color_picker.setValues(m_selectedColor.r(), m_selectedColor.g(), m_selectedColor.b(), m_selectedColor.intensity());
+                        m_colorPicker.setValues(m_selectedColor.r(), m_selectedColor.g(), m_selectedColor.b(), m_selectedColor.intensity());
                       }
                     }
                   }
@@ -299,7 +297,7 @@ void DBAnimationsTab::draw() {
             ImGui::Text(trNOOP("Sound Effect:"));
             ImGui::PushID("##orpg_animations_timings_soundeffect");
             if (ImGui::Button(m_isApplyingChanges ? m_selectedAnimation->timing(m_selectedTiming).se()->name().c_str() : m_selectedAudio.name().c_str(), ImVec2{200, 0})) {
-              sound_picker.show(SEType::SE);
+              m_soundPicker.show(SEType::SE);
             }
             ImGui::PopID();
             ImGui::EndGroup();
@@ -345,10 +343,10 @@ void DBAnimationsTab::draw() {
 
             ImGui::EndGroup(); // End Group: Flash
           }
-          ImGui::BeginDisabled((m_frameType == static_cast<int>(FlashScope::None) || m_frameType == static_cast<int>(FlashScope::HideTarget)) && m_isApplyingChanges == false);
+          ImGui::BeginDisabled((m_frameType == static_cast<int>(FlashScope::None) || m_frameType == static_cast<int>(FlashScope::Hide_Target)) && m_isApplyingChanges == false);
 
           // Color Picker
-          color_picker.draw();
+          m_colorPicker.draw();
           ImGui::SeparatorText(trNOOP("Duration"));
           ImGui::SetNextItemWidth(100);
           if (ImGui::InputInt("##orpg_animations_timings_duration", m_isApplyingChanges ? &m_selectedDuration : &m_duration)) {
@@ -419,10 +417,10 @@ void DBAnimationsTab::draw() {
 Animation::Timing DBAnimationsTab::getTiming(int frame, Audio audio, Animation::Color color, FlashScope scope, int duration) {
   Animation::Timing m_timing;
 
-  color.setR(color_picker.r());
-  color.setG(color_picker.g());
-  color.setB(color_picker.b());
-  color.setIntensity(color_picker.intensity());
+  color.setR(m_colorPicker.r());
+  color.setG(m_colorPicker.g());
+  color.setB(m_colorPicker.b());
+  color.setIntensity(m_colorPicker.intensity());
 
   m_timing.setFrame(frame);
   m_timing.setSe(audio);

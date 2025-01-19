@@ -14,7 +14,7 @@ class SoundPicker {
 public:
   SoundPicker() = default;
 
-  [[nodiscard]] Audio selectedAudio() const { return m_audio; }
+  [[nodiscard]] Audio& selectedAudio() { return m_audio; }
 
   /**
    * Draws the SoundPicker elements.
@@ -60,6 +60,7 @@ private:
     if (m_type == SEType::BGM) {
       return "audio/bgm/";
     }
+    return {};
   }
   std::vector<std::string> getFileNames(const std::string& directoryPath) {
     std::vector<std::string> fileNames;

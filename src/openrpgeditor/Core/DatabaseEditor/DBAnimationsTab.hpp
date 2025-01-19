@@ -35,10 +35,6 @@ private:
 
   std::vector<Animation::Timing> m_selectedTimings;
 
-  int r{255};
-  int g{255};
-  int b{255};
-  int m_intensity{255};
   int m_duration{5};
   Audio m_selectedAudio;
   Animation::Color m_selectedColor;
@@ -47,10 +43,10 @@ private:
   int m_selectedFrameNumber;
 
   std::optional<ImagePicker> m_imagePicker;
-  ColorFlashPicker color_picker;
+  ColorFlashPicker m_colorPicker;
   int m_pickerSelection;
 
-  SoundPicker sound_picker;
+  SoundPicker m_soundPicker;
 
   void onNameModified(Audio*, const std::string_view name) { m_selectedAudio.setName(name.data()); }
   void onVolModified(Audio*, const int volume) { m_selectedAudio.setVolume(volume); }

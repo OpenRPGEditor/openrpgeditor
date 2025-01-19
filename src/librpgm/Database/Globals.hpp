@@ -228,7 +228,7 @@ enum class FlashScope {
   trENUM("None", None),
   trENUM("Target", Target),
   trENUM("Screen", Screen),
-  trENUM("Screen", HideTarget),
+  trENUM("Hide Target", Hide_Target),
 };
 
 enum class SEType {

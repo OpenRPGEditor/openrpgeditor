@@ -434,7 +434,14 @@ add_library(
         Core/Tilemap/TilemapView.cpp
         Core/Tilemap/TilemapView.hpp
         Core/CommonUI/SoundPicker.cpp
-        Core/CommonUI/SoundPicker.hpp)
+        Core/CommonUI/SoundPicker.hpp
+        Core/ImGuiExt/imgui-knobs.h
+        Core/ImGuiExt/imgui-knobs.cpp
+        Core/ImGuiExt/imgui_neo_internal.h
+        Core/ImGuiExt/imgui_neo_internal.cpp
+        Core/ImGuiExt/imgui_neo_sequencer.h
+        Core/ImGuiExt/imgui_neo_sequencer.cpp
+)
 
 target_include_directories(
         orecore

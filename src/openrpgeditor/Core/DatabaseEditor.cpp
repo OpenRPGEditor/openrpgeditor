@@ -19,6 +19,8 @@ void DatabaseEditor::draw() {
   }
 
   ImGui::SetNextWindowSizeConstraints(ImVec2{800, 720}, ImVec2{FLT_MAX, FLT_MAX});
+  ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing);
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, {0.5, 0.5});
   ImGui::PushID("##orpg_database_editor");
   if (ImGui::Begin("Database", &m_isOpen)) {
     ImGui::SetNextItemWidth(100.f);

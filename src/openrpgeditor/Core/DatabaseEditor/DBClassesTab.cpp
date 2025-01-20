@@ -147,7 +147,7 @@ void DBClassesTab::draw() {
   ImGui::BeginChild("#orpg_classes_editor");
   {
     const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUV");
-    ImGui::BeginChild("##orpg_classes_editor_classes", ImVec2{calc.x + (ImGui::GetStyle().ItemSpacing.x * 2), 0}, 0, ImGuiWindowFlags_NoScrollbar);
+    ImGui::BeginChild("##orpg_classes_editor_classes", ImVec2{calc.x + (ImGui::GetStyle().ItemSpacing.x * 2), 0}, ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX, ImGuiWindowFlags_NoScrollbar);
     {
       ImGui::BeginGroup();
       {
@@ -185,7 +185,7 @@ void DBClassesTab::draw() {
     ImGui::BeginChild("##orpg_classes_editor_classes_class_properties");
     {
       if (m_selectedClass) {
-        ImGui::BeginChild("##orpg_classes_class_panel_left", ImVec2{ImGui::GetContentRegionMax().x / 2, 0.f}, 0, ImGuiWindowFlags_HorizontalScrollbar);
+        ImGui::BeginChild("##orpg_classes_class_panel_left", ImVec2{ImGui::GetContentRegionMax().x / 2, 0.f}, ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX, ImGuiWindowFlags_HorizontalScrollbar);
         {
           ImGui::BeginGroup();
           {
@@ -344,9 +344,10 @@ void DBClassesTab::draw() {
         ImGui::SameLine();
         ImGui::BeginChild("##orpg_classes_class_panel_right");
         {
+          ImGui::BeginChild("##traits_editor", {0, ImGui::GetContentRegionAvail().y / 2}, ImGuiChildFlags_ResizeY);
           m_traitsEditor.draw(m_parent);
-
-          ImGui::BeginGroup();
+          ImGui::EndChild();
+          ImGui::BeginChild("##note");
           {
             ImGui::SeparatorText("Note:");
             char note[8192];
@@ -355,7 +356,7 @@ void DBClassesTab::draw() {
               m_selectedClass->setNote(note);
             }
           }
-          ImGui::EndGroup();
+          ImGui::EndChild();
         }
         ImGui::EndChild();
       }

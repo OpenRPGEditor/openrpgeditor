@@ -17,7 +17,7 @@ void DBStatesTab::draw() {
   ImGui::BeginChild("#orpg_states_editor");
   {
     const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUV");
-    ImGui::BeginChild("##orpg_states_editor_states", ImVec2{calc.x + (ImGui::GetStyle().ItemSpacing.x * 2), 0}, 0, ImGuiWindowFlags_NoScrollbar);
+    ImGui::BeginChild("##orpg_states_editor_states", ImVec2{calc.x + (ImGui::GetStyle().ItemSpacing.x * 2), 0}, ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX, ImGuiWindowFlags_NoScrollbar);
     {
       ImGui::BeginGroup();
       {
@@ -312,8 +312,10 @@ void DBStatesTab::draw() {
         ImGui::SameLine();
         ImGui::BeginChild("##orpg_states_state_panel_right");
         {
+          ImGui::BeginChild("##traits_editor", {0, ImGui::GetContentRegionAvail().y / 2}, ImGuiChildFlags_ResizeY);
           m_traitsEditor.draw(m_parent);
-          ImGui::BeginGroup();
+          ImGui::EndChild();
+          ImGui::BeginChild("##notes");
           {
             ImGui::SeparatorText("Note:");
             char note[8192];
@@ -322,7 +324,7 @@ void DBStatesTab::draw() {
               m_selectedState->setNote(note);
             }
           }
-          ImGui::EndGroup();
+          ImGui::EndChild();
         }
         ImGui::EndChild();
       }

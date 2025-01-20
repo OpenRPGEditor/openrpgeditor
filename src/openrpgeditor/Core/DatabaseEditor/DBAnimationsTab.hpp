@@ -52,6 +52,7 @@ private:
   void onVolModified(Audio*, const int volume) { m_selectedAudio.setVolume(volume); }
   void onPanModified(Audio*, const int pan) { m_selectedAudio.setPan(pan); }
   void onPitchModified(Audio*, const int pitch) { m_selectedAudio.setPitch(pitch); }
+  void resetSelection(Animation::Timing& timing);
 
   Animation::Timing getTiming(int frame, Audio audio, Animation::Color color, FlashScope scope, int duration);
 };

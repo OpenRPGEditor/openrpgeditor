@@ -32,7 +32,8 @@ bool SoundPicker::draw() {
         for (int n = 0; n < m_audios.size(); n++) {
           ImGui::TableNextColumn();
           const bool isSelected = (m_selected == n + 1);
-          if (ImGui::SelectableWithBorder(m_audios.at(n).c_str(), isSelected, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
+          if (ImGui::SelectableWithBorder(std::format("{}##{}", m_audios.at(n), n).c_str(), isSelected,
+                                          ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
             if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
               playAudio((Database::instance()->basePath + "audio/se/" + m_audios.at(m_selected - 1) + ".ogg").c_str());
             }

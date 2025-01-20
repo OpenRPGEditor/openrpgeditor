@@ -11,6 +11,10 @@ DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent)
 
   m_selectedTimings = m_selectedAnimation->timings();
   m_colorPicker.setValues(255, 255, 255, 255);
+  m_selectedAudio.setName("");
+  m_selectedAudio.setVolume(100);
+  m_selectedAudio.setPan(0);
+  m_selectedAudio.setPitch(100);
 
   m_soundPicker.selectedAudio().nameModified().connect<&DBAnimationsTab::onNameModified>(this);
   m_soundPicker.selectedAudio().volumeModified().connect<&DBAnimationsTab::onVolModified>(this);
@@ -182,7 +186,7 @@ void DBAnimationsTab::draw() {
                   }
                 }
                 if (ImGui::TableNextColumn()) {
-                  if (m_selectedAnimation->timing(i).flashScope() == FlashScope::HideTarget) {
+                  if (m_selectedAnimation->timing(i).flashScope() == FlashScope::Hide_Target) {
                     if (m_isApplyingChanges && m_selectedTiming == i) {
                       ImGui::Text("%s, %i frames", DecodeEnumName(static_cast<FlashScope>(m_selectedScope)).c_str(), m_selectedFrameNumber);
                     } else {
@@ -226,10 +230,14 @@ void DBAnimationsTab::draw() {
             Audio SE;
             Animation::Color color;
 
-            SE.setName("");
-            SE.setVolume(100);
-            SE.setPan(50);
-            SE.setPitch(100);
+            if (m_selectedAudio.name() != "") {
+              SE = m_selectedAudio;
+            } else {
+              SE.setName("");
+              SE.setVolume(100);
+              SE.setPan(0);
+              SE.setPitch(100);
+            }
 
             color.setR(255);
             color.setG(255);
@@ -296,7 +304,7 @@ void DBAnimationsTab::draw() {
           {
             ImGui::Text(trNOOP("Sound Effect:"));
             ImGui::PushID("##orpg_animations_timings_soundeffect");
-            if (ImGui::Button(m_isApplyingChanges ? m_selectedAnimation->timing(m_selectedTiming).se()->name().c_str() : m_selectedAudio.name().c_str(), ImVec2{200, 0})) {
+            if (ImGui::Button(m_selectedAudio.name().c_str(), ImVec2{200, 0})) {
               m_soundPicker.show(SEType::SE);
             }
             ImGui::PopID();
@@ -428,4 +436,18 @@ Animation::Timing DBAnimationsTab::getTiming(int frame, Audio audio, Animation::
   m_timing.setFlashScope(scope);
   m_timing.setFlashDuration(duration);
   return m_timing;
+}
+void DBAnimationsTab::resetSelection(Animation::Timing& timing) {
+  timing.se()->setName("");
+  timing.se()->setVolume(100);
+  timing.se()->setPan(0);
+  timing.se()->setPitch(100);
+
+  timing.flashColor().setR(255);
+  timing.flashColor().setG(255);
+  timing.flashColor().setB(255);
+  timing.flashColor().setIntensity(255);
+
+  timing.setFlashScope(FlashScope::None);
+  timing.setFlashDuration(5);
 }

@@ -8,7 +8,7 @@ struct Dialog_SaveBGM : IEventDialogController {
     if (cmd == nullptr) {
       command.reset(new SaveBGMCommand());
     }
-    m_open = true;
+    m_open = false;
   }
   std::tuple<bool, bool> draw() override;
 

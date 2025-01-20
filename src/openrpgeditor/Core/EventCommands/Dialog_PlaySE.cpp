@@ -1,6 +1,7 @@
 #include "Core/EventCommands/Dialog_PlaySE.hpp"
 
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
+#include "Core/ImGuiExt/imgui-knobs.h"
 #include "Core/Log.hpp"
 #include "imgui.h"
 
@@ -19,8 +20,7 @@ std::tuple<bool, bool> Dialog_PlaySE::draw() {
 
       // Audio List
       ImVec2 tablePos = ImGui::GetCursorPos();
-      if (ImGui::BeginTable("##se_audio_contents", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{500, 500})) {
+      if (ImGui::BeginTable("##se_audio_contents", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY, ImVec2{500, 555})) {
 
         ImGui::TableSetupScrollFreeze(1, 0);
         ImGui::TableSetupColumn("File");
@@ -62,24 +62,21 @@ std::tuple<bool, bool> Dialog_PlaySE::draw() {
         stopAudio();
       }
 
-      ImGui::SeparatorText("Volume");
-      ImGui::SetNextItemWidth(100);
+      ImGui::Separator();
       int volume = m_audio.volume();
-      if (ImGui::DragInt("##playse_audio.volume", &volume, 0.5f, 0, 100)) {
+      if (ImGuiKnobs::KnobInt("Volume", &volume, 0, 100, 1, "%d%", ImGuiKnobVariant_WiperDot, 200.f, ImGuiKnobFlags_AlwaysClamp)) {
         m_audio.setVolume(volume);
         setVolume(m_audio.volume());
       }
-      ImGui::SeparatorText("Pitch");
-      ImGui::SetNextItemWidth(100);
+      ImGui::Separator();
       int pitch = m_audio.pitch();
-      if (ImGui::DragInt("##playse_audio.pitch", &pitch, 0.5f, 0, 100)) {
+      if (ImGuiKnobs::KnobInt("Pitch", &pitch, 0, 100, 1, "%d%", ImGuiKnobVariant_WiperDot, 200.f, ImGuiKnobFlags_AlwaysClamp)) {
         m_audio.setPitch(pitch);
         setPitch(m_audio.pitch());
       }
-      ImGui::SeparatorText("Pan");
-      ImGui::SetNextItemWidth(100);
+      ImGui::Separator();
       int pan = m_audio.pan();
-      if (ImGui::DragInt("##playse_audio.pan", &pan, 0.5f, -100, 100)) {
+      if (ImGuiKnobs::KnobInt("Pan", &pan, -100, 100, 1, "%d%", ImGuiKnobVariant_WiperDot, 200.f, ImGuiKnobFlags_AlwaysClamp)) {
         m_audio.setPan(pan);
         setPanning(m_audio.pan());
       }

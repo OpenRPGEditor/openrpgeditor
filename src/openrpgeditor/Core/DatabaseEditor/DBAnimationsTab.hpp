@@ -45,7 +45,7 @@ private:
   std::optional<ImagePicker> m_imagePicker;
   ColorFlashPicker m_colorPicker;
   int m_pickerSelection;
-
+  int m_selectedNeoGroup{-1};
   SoundPicker m_soundPicker;
 
   void onNameModified(Audio*, const std::string_view name) { m_selectedAudio.setName(name.data()); }

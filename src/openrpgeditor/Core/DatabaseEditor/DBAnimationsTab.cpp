@@ -3,6 +3,7 @@
 #include "Database/Animations.hpp"
 
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
+#include "Core/ImGuiExt/imgui_neo_sequencer.h"
 #include "imgui.h"
 
 DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent) : IDBEditorTab(parent), m_animations(animations) {
@@ -25,7 +26,7 @@ DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent)
 void DBAnimationsTab::draw() {
   if (m_selectedAnimation) {
     if (!m_imagePicker) {
-      m_imagePicker.emplace(ImagePicker::PickerMode::Picture, "", "");
+      m_imagePicker.emplace(ImagePicker::PickerMode::Animation, "", "");
     }
   }
   if (const auto [closed, confirmed] = m_imagePicker->draw(); closed) {
@@ -138,7 +139,42 @@ void DBAnimationsTab::draw() {
         ImGui::EndChild();
 
         ImGui::BeginChild("##orpg_animations_animation_panel_middle", ImVec2{ImGui::GetContentRegionMax().x, 300});
-        { ImGui::Dummy(ImVec2{ImGui::GetContentRegionMax().x, 300}); }
+        {
+
+          int currentFrame = 1;
+          int startFrame = 1;
+          int endFrame = m_selectedAnimation->frames().size();
+
+          static bool transformOpen = false;
+          std::vector<ImGui::FrameIndexType> keys = {1, 2, 3};
+          bool doDelete = false;
+
+          if (ImGui::BeginNeoSequencer("Group", &currentFrame, &startFrame, &endFrame, {0, 0},
+                                       ImGuiNeoSequencerFlags_EnableSelection | ImGuiNeoSequencerFlags_Selection_EnableDragging | ImGuiNeoSequencerFlags_Selection_EnableDeletion |
+                                           ImGuiNeoSequencerFlags_HideZoom)) {
+
+            int index{0};
+            for (auto&& f : m_selectedAnimation->frames()) {
+              bool selected = m_selectedNeoGroup == index;
+              if (ImGui::BeginNeoGroup(std::format("Frame {}:", index + 1).c_str(), &selected)) {
+                m_selectedNeoGroup = index;
+                for (auto& timing : m_selectedAnimation->timings()) {
+                  if (timing.frame() == index) {
+                    if (ImGui::BeginNeoTimelineEx("Timing")) {
+                      ImGui::NeoKeyframe(&index);
+                      ImGui::EndNeoTimeLine();
+                    }
+                  }
+                }
+                ImGui::EndNeoGroup();
+              }
+              index++;
+            }
+            ImGui::EndNeoSequencer();
+          }
+
+          // ImGui::Dummy(ImVec2{ImGui::GetContentRegionMax().x, 300});
+        }
         ImGui::EndChild();
 
         ImGui::BeginChild("##orpg_animations_animation_panel_middleleft", ImVec2{ImGui::GetContentRegionMax().x / 2 - 50, 360});

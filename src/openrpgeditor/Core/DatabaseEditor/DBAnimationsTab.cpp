@@ -220,9 +220,9 @@ void DBAnimationsTab::draw() {
               }
             }*/
 
-            for (auto&& f : m_selectedAnimation->frames()) {
+            for (auto& f : m_selectedAnimation->frames()) {
 
-              // for (auto&& framePart : f) {
+              // for (auto& framePart : f) {
               //   if (ImGui::BeginNeoGroup(std::format("Frame {}:", index + 1).c_str(), &selected)) {
               //     m_selectedNeoGroup = index;
               //     for (auto& timing : m_selectedAnimation->timings()) {

@@ -208,12 +208,12 @@ public:
      */
     void setBlend(Blend blend);
 
-
     /**
      *
      * @return
      */
-    bool* showTimeLine() const;
+    bool showTimeLine() const;
+    void setShowTimeLine(bool show);
 
     /* SIGNALS */
     rpgmutils::signal<void(FramePart*, int)>& patternModified();
@@ -390,6 +390,11 @@ public:
    */
   void setAnimation2Name(std::string_view animation2Name);
 
+  /**
+   *
+   * @return
+   */
+  std::vector<std::vector<FramePart>>& frames();
   /**
    *
    * @return

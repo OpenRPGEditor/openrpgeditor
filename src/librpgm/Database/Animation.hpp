@@ -208,6 +208,13 @@ public:
      */
     void setBlend(Blend blend);
 
+
+    /**
+     *
+     * @return
+     */
+    bool* showTimeLine() const;
+
     /* SIGNALS */
     rpgmutils::signal<void(FramePart*, int)>& patternModified();
     rpgmutils::signal<void(FramePart*, int)>& xModified();
@@ -231,6 +238,7 @@ public:
     Mirror m_mirror;
     int m_opacity;
     Blend m_blend;
+    bool m_show{false};
 
     std::optional<int> m_oldpattern;
     std::optional<int> m_oldx;
@@ -279,6 +287,9 @@ public:
     const Audio* se() const;
     void setSe(const Audio& se);
 
+    bool showTimeLine() const;
+    void setTimeLine(bool show);
+
     // SIGNALS
     rpgmutils::signal<void(Timing*, const Color&)>& flashColorModified();
     rpgmutils::signal<void(Timing*, int)>& flashDurationModified();
@@ -298,6 +309,7 @@ public:
     FlashScope m_flashScope{};
     int m_frame{};
     std::optional<Audio> m_se{};
+    bool m_show{false};
 
     std::optional<Color> m_oldflashColor;
     std::optional<int> m_oldflashDuration;

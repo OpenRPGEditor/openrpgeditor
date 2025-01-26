@@ -313,6 +313,12 @@ void Animation::FramePart::setBlend(const Blend blend) {
   }
   setHasChanges(true);
 }
+bool Animation::FramePart::showTimeLine() const  {
+  return m_show;
+}
+void Animation::FramePart::setShowTimeLine(bool show)  {
+  m_show = show;
+}
 
 rpgmutils::signal<void(Animation::FramePart*, int)>& Animation::FramePart::patternModified() {
   if (!m_patternModified) {
@@ -519,6 +525,13 @@ void Animation::Timing::setSe(const Audio& se) {
     seModified().fire(this, se);
   }
   setHasChanges(true);
+}
+
+bool Animation::Timing::showTimeLine() const {
+  return m_show;
+}
+void Animation::Timing::setTimeLine(bool show) {
+  m_show = show;
 }
 
 rpgmutils::signal<void(Animation::Timing*, const Animation::Color&)>& Animation::Timing::flashColorModified() {

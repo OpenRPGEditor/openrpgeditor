@@ -61,7 +61,6 @@ void DBAnimationsTab::draw() {
                   (ImGui::IsItemFocused() && m_selectedAnimation != &animation)) {
                 m_selectedAnimation = &animation;
                 m_frameCursor = 0; // Reset cursor on animation change
-
                 m_selectedTimings = m_selectedAnimation->timings();
               }
             }
@@ -149,26 +148,94 @@ void DBAnimationsTab::draw() {
           std::vector<ImGui::FrameIndexType> keys = {1, 2, 3};
           bool doDelete = false;
 
-          if (ImGui::BeginNeoSequencer("Group", &currentFrame, &startFrame, &endFrame, {0, 0},
+          if (ImGui::BeginNeoSequencer("Group", &currentFrame, &startFrame, &endFrame, {0, 300},
                                        ImGuiNeoSequencerFlags_EnableSelection | ImGuiNeoSequencerFlags_Selection_EnableDragging | ImGuiNeoSequencerFlags_Selection_EnableDeletion |
                                            ImGuiNeoSequencerFlags_HideZoom)) {
-
-            int index{0};
-            for (auto&& f : m_selectedAnimation->frames()) {
-              bool selected = m_selectedNeoGroup == index;
-              if (ImGui::BeginNeoGroup(std::format("Frame {}:", index + 1).c_str(), &selected)) {
-                m_selectedNeoGroup = index;
+            int timingIndex{0};
+            bool is_selected = m_selectedAnimation->timing(timingIndex).showTimeLine();
+            if (ImGui::BeginNeoGroup("Timing", &is_selected)) {
+              if (ImGui::BeginNeoTimelineEx("Sound Effect")) {
                 for (auto& timing : m_selectedAnimation->timings()) {
-                  if (timing.frame() == index) {
-                    if (ImGui::BeginNeoTimelineEx("Timing")) {
-                      ImGui::NeoKeyframe(&index);
+                  int timingFrame = timing.frame();
+                  ImGui::NeoKeyframe(&timingFrame);
+                }
+                ImGui::EndNeoTimeLine();
+              }
+              if (ImGui::IsItemHovered()) {
+                ImGui::BeginTooltip();
+                ImGui::TextUnformatted("Test");
+                ImGui::EndTooltip();
+              }
+              if (ImGui::BeginNeoTimelineEx("Flash Color")) {
+                for (auto& timing : m_selectedAnimation->timings()) {
+                  int timingFrame = timing.frame();
+                  ImGui::NeoKeyframe(&timingFrame);
+                }
+                ImGui::EndNeoTimeLine();
+              }
+              ImGui::EndNeoGroup();
+            }
+
+            /*int frameIndex{0};
+            for (auto& framePart : m_selectedAnimation->frames()) {
+              // Each unique frame
+              if (frameIndex > 0) {
+                continue;
+              }
+              frameIndex++;
+
+              // We display the timing for the frame first, then we show all the accompanying image frames
+
+
+              /*
+              if (ImGui::BeginNeoGroup("Test Layer", &selected_layer)) {
+              frame.setShowTimeLine(true);
+                m_selectedAnimation->setFrame(frame);
+
+
+                int imageIndex{0};
+                for (auto& frame : framePart) {
+                  // This has all the image frames
+                  bool selected_image = m_selectedImageLayers.at(imageIndex);
+                  if (ImGui::BeginNeoGroup(std::format("Image {}", imageIndex).c_str(), &selected_image)) {
+                    m_selectedImageLayers.at(imageIndex) = !m_selectedImageLayers.at(imageIndex);
+                    if (ImGui::BeginNeoTimelineEx("Pattern")) {
                       ImGui::EndNeoTimeLine();
                     }
+                    if (ImGui::BeginNeoTimelineEx("X")) {
+                      ImGui::EndNeoTimeLine();
+                    }
+                    if (ImGui::BeginNeoTimelineEx("Y")) {
+                      ImGui::EndNeoTimeLine();
+                    }
+                    if (ImGui::BeginNeoTimelineEx("Scale")) {
+                      ImGui::EndNeoTimeLine();
+                    }
+                    ImGui::EndNeoGroup();
                   }
+                  imageIndex++;
                 }
+                layerIndex++;
                 ImGui::EndNeoGroup();
               }
-              index++;
+            }*/
+
+            for (auto&& f : m_selectedAnimation->frames()) {
+
+              // for (auto&& framePart : f) {
+              //   if (ImGui::BeginNeoGroup(std::format("Frame {}:", index + 1).c_str(), &selected)) {
+              //     m_selectedNeoGroup = index;
+              //     for (auto& timing : m_selectedAnimation->timings()) {
+              //       if (timing.frame() == index) {
+              //         if (ImGui::BeginNeoTimelineEx("Timing")) {
+              //           ImGui::NeoKeyframe(&index);
+              //           ImGui::EndNeoTimeLine();
+              //         }
+              //       }
+              //     }
+              //     ImGui::EndNeoGroup();
+              //   }
+              // }
             }
             ImGui::EndNeoSequencer();
           }

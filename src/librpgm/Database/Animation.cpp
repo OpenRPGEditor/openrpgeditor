@@ -724,6 +724,7 @@ void Animation::setAnimation2Name(const std::string_view animation2Name) {
   setHasChanges();
 }
 
+std::vector<std::vector<Animation::FramePart>>& Animation::frames() { return m_frames; }
 const std::vector<std::vector<Animation::FramePart>>& Animation::frames() const { return m_frames; }
 void Animation::setFrames(const std::vector<std::vector<FramePart>>& frames) {
   MODIFIABLE_SET_OLD_VALUE(frames);

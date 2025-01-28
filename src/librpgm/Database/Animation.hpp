@@ -462,6 +462,12 @@ public:
    * @param index
    * @return
    */
+  Timing& timing(int index);
+  /**
+   *
+   * @param index
+   * @return
+   */
   const Timing& timing(int index) const;
 
   /**
@@ -470,6 +476,20 @@ public:
    * @param timing
    */
   void setTiming(int index, const Timing& timing);
+
+  /**
+   *
+   *
+   */
+  bool showTimeLine(int index);
+  /**
+   *
+   * @param index
+   * @param show
+   */
+  void setTimeLine(int index, bool show);
+
+  void setTimeLine(const std::vector<bool>& shows);
 
   /**
    *
@@ -516,6 +536,7 @@ private:
   std::string m_name;
   Position m_position = Position::Head;
   std::vector<Timing> m_timings;
+  std::vector<bool> m_shows;
 
   // !!!DO NOT CHANGE CASING!!!
   std::optional<int> m_oldid;

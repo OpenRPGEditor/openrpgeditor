@@ -750,6 +750,11 @@ void Animation::setFrame(const int index, const std::vector<FramePart>& frame) {
   setHasChanges();
 }
 
+bool Animation::showTimeLine(int index) { return m_shows.at(index); }
+
+void Animation::setTimeLine(const int index, bool show) { m_shows.at(index) = show; }
+void Animation::setTimeLine(const std::vector<bool>& shows) { m_shows = shows; }
+
 const std::string& Animation::name() const { return m_name; }
 void Animation::setName(const std::string_view name) {
   MODIFIABLE_SET_OLD_VALUE(name);
@@ -778,6 +783,11 @@ void Animation::setTimings(const std::vector<Timing>& timings) {
     timingsModified().fire(this, m_timings);
   }
   setHasChanges();
+}
+
+Animation::Timing& Animation::timing(const int index) {
+  assert(index >= 0 && index < m_timings.size());
+  return m_timings[index];
 }
 
 const Animation::Timing& Animation::timing(const int index) const {

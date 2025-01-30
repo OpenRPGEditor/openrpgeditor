@@ -214,6 +214,7 @@ public:
      */
     bool showTimeLine() const;
     void setShowTimeLine(bool show);
+    std::string getToolTip();
 
     /* SIGNALS */
     rpgmutils::signal<void(FramePart*, int)>& patternModified();
@@ -289,6 +290,7 @@ public:
 
     bool showTimeLine() const;
     void setTimeLine(bool show);
+    std::string getToolTip(bool alt) const;
 
     // SIGNALS
     rpgmutils::signal<void(Timing*, const Color&)>& flashColorModified();

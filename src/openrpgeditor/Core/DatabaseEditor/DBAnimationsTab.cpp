@@ -139,19 +139,21 @@ void DBAnimationsTab::draw() {
         }
         ImGui::EndChild();
 
-        ImGui::BeginChild("##orpg_animations_animation_panel_middle", ImVec2{0, 5000});
+        ImGui::BeginChild("##orpg_animations_animation_panel_middle");
         {
+          ImGui::Dummy(ImVec2{ImGui::GetContentRegionMax().x, 300});
           ImGui::BeginGroup();
           {
             int currentFrame = 1;
             int startFrame = 1;
             int endFrame = m_selectedAnimation->frames().size();
-
-            if (ImGui::BeginNeoSequencer("Group", &currentFrame, &startFrame, &endFrame, {0.0f, 0.0f},
+            if (ImGui::BeginNeoSequencer("Group", &currentFrame, &startFrame, &endFrame, {0.0f, 400.0f},
                                          ImGuiNeoSequencerFlags_EnableSelection | ImGuiNeoSequencerFlags_Selection_EnableDragging | ImGuiNeoSequencerFlags_Selection_EnableDeletion |
                                              ImGuiNeoSequencerFlags_HideZoom)) {
 
               int timingIndex{0};
+              int se_timingTotal{0};
+              int flash_timingTotal{0};
 
               for (auto& timing : m_selectedAnimation->timings()) {
                 bool is_selected = m_selectedAnimation->timing(timingIndex).showTimeLine();
@@ -161,20 +163,37 @@ void DBAnimationsTab::draw() {
                     if (ImGui::BeginNeoTimelineEx("Sound Effect")) {
                       for (auto& timing : m_selectedAnimation->timings()) {
                         int timingFrame = timing.frame();
+                        ImGui::PushID(std::format("##timing_se_{}_{}", timingIndex, se_timingTotal).c_str());
                         ImGui::NeoKeyframe(&timingFrame);
+                        ImGui::PopID();
+
+                        if (ImGui::IsNeoKeyframeHovered()) {
+                          ImGui::BeginTooltip();
+                          ImGui::TextUnformatted(timing.getToolTip(false).c_str());
+                          ImGui::EndTooltip();
+                        }
+                        if (ImGui::IsNeoKeyframeSelected()) {
+                          // Edit the data
+                        }
+                        se_timingTotal++;
                       }
                       ImGui::EndNeoTimeLine();
-                    }
-                    if (ImGui::IsItemHovered()) {
-                      // Sound Effect tooltip
-                      ImGui::BeginTooltip();
-                      ImGui::TextUnformatted("Test");
-                      ImGui::EndTooltip();
                     }
                     if (ImGui::BeginNeoTimelineEx("Flash Color")) {
                       for (auto& timing : m_selectedAnimation->timings()) {
                         int timingFrame = timing.frame();
+                        ImGui::PushID(std::format("##timing_flash_{}_{}", timingIndex, flash_timingTotal).c_str());
                         ImGui::NeoKeyframe(&timingFrame);
+                        ImGui::PopID();
+                        if (ImGui::IsNeoKeyframeHovered()) {
+                          ImGui::BeginTooltip();
+                          ImGui::TextUnformatted(timing.getToolTip(true).c_str());
+                          ImGui::EndTooltip();
+                        }
+                        if (ImGui::IsNeoKeyframeSelected()) {
+                          // Edit the data
+                        }
+                        flash_timingTotal++;
                       }
                       ImGui::EndNeoTimeLine();
                     }
@@ -191,48 +210,27 @@ void DBAnimationsTab::draw() {
 
               // Begin Image Section
 
-              int imageIndex{0};
+              int imageIndex{1};
               for (auto& frame : m_selectedAnimation->frames().at(m_frameCursor - 1)) {
                 // This has all the image frames
-                bool selected_image = frame.showTimeLine();
-                if (ImGui::BeginNeoGroup(std::format("Image {}", imageIndex + 1).c_str(), &selected_image)) {
-                  frame.setShowTimeLine(true);
-                  if (ImGui::BeginNeoTimelineEx("Pattern")) {
-                    ImGui::EndNeoTimeLine();
+                if (ImGui::BeginNeoTimelineEx(std::format("Image {}", imageIndex).c_str())) {
+                  ImGui::NeoKeyframe(&imageIndex);
+                  if (ImGui::IsNeoKeyframeHovered()) {
+                    ImGui::BeginTooltip();
+                    ImGui::TextUnformatted(frame.getToolTip().c_str());
+                    ImGui::EndTooltip();
                   }
-                  if (ImGui::BeginNeoTimelineEx("X")) {
-                    ImGui::EndNeoTimeLine();
+                  if (ImGui::IsNeoKeyframeSelected()) {
+                    // Edit the data
                   }
-                  if (ImGui::BeginNeoTimelineEx("Y")) {
-                    ImGui::EndNeoTimeLine();
-                  }
-                  if (ImGui::BeginNeoTimelineEx("Scale")) {
-                    ImGui::EndNeoTimeLine();
-                  }
-                  ImGui::EndNeoGroup();
-                }
-                if (selected_image != frame.showTimeLine()) {
-                  frame.setShowTimeLine(selected_image);
+                  ImGui::EndNeoTimeLine();
                 }
                 imageIndex++;
               }
-              // bool is_layerSelected = m_selectedAnimation->showTimeLine(m_frameCursor - 1);
-              // if (ImGui::BeginNeoGroup(std::format("Layer {}", m_frameCursor).c_str(), &is_layerSelected)) {
-              //   m_selectedAnimation->setTimeLine(m_frameCursor - 1, true);
-              //   // Timing Section
-              //
-              //   ImGui::EndNeoGroup();
-              // }
-              // if (is_layerSelected != m_selectedAnimation->showTimeLine(m_frameCursor - 1)) {
-              //   m_selectedAnimation->setTimeLine(m_frameCursor - 1, is_layerSelected);
-              //   // End Layer Section
-              // }
               ImGui::EndNeoSequencer();
             }
             ImGui::EndGroup();
           }
-
-          // ImGui::Dummy(ImVec2{ImGui::GetContentRegionMax().x, 300});
         }
         ImGui::EndChild();
         /*

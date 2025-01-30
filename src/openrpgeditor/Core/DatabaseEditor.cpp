@@ -78,6 +78,9 @@ void DatabaseEditor::draw() {
     if (ImGui::SelectableWithBorder("Templates", m_currentTab == &m_templates.value())) {
       m_currentTab = &m_templates.value();
     }
+    if (ImGui::SelectableWithBorder("Documentation", m_currentTab == &m_docs.value())) {
+      m_currentTab = &m_docs.value();
+    }
     ImGui::EndChild();
     ImGui::SameLine();
     if (m_currentTab) {

@@ -315,6 +315,10 @@ void Animation::FramePart::setBlend(const Blend blend) {
 }
 bool Animation::FramePart::showTimeLine() const { return m_show; }
 void Animation::FramePart::setShowTimeLine(const bool show) { m_show = show; }
+std::string Animation::FramePart::getToolTip() {
+  return std::format("Pattern: {}\nX: {}\nY: {}\nScale: {}\nRotation: {}\nMirror: {}\nOpacity: {}\nBlend: {}", m_pattern, m_x, m_y, m_scale, m_rotation, DecodeEnumName(m_mirror), m_opacity,
+                     DecodeEnumName(m_blend));
+}
 
 rpgmutils::signal<void(Animation::FramePart*, int)>& Animation::FramePart::patternModified() {
   if (!m_patternModified) {
@@ -525,6 +529,13 @@ void Animation::Timing::setSe(const Audio& se) {
 
 bool Animation::Timing::showTimeLine() const { return m_show; }
 void Animation::Timing::setTimeLine(bool show) { m_show = show; }
+std::string Animation::Timing::getToolTip(bool alt) const {
+  if (alt) {
+    return std::format("Scope: {}\nRed: {}\nGreen: {}\nBlue: {}\nIntensity: {}\nDuration: {}", DecodeEnumName(m_flashScope), m_flashColor.r(), m_flashColor.g(), m_flashColor.b(),
+                       m_flashColor.intensity(), m_flashDuration);
+  }
+  return std::format("{}\nVolume: {}\nPan: {}\nPitch: {}", m_se->name(), m_se->volume(), m_se->pan(), m_se->pitch());
+}
 
 rpgmutils::signal<void(Animation::Timing*, const Animation::Color&)>& Animation::Timing::flashColorModified() {
   if (!m_flashColorModified) {

@@ -160,6 +160,7 @@ private:
   void onSystemLoaded();
   void onGameConstantsLoaded();
   void onTemplatesLoaded();
+  void onDocsLoaded();
   void onDatabaseReady();
 
   void drawMenu();

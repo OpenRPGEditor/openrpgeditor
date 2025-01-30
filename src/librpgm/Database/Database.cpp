@@ -120,6 +120,10 @@ void Database::load() {
   RPGM_INFO("Loading Templates");
   templates = Templates::load(basePath + "/data/Templates.json");
   templatesLoaded().fire();
+
+  RPGM_INFO("Loading Documentation");
+  docs = Docs::load(basePath + "/editor/Documentation.json");
+  docsLoaded().fire();
 }
 
 void Database::serializeProject() {

@@ -441,6 +441,8 @@ add_library(
         Core/ImGuiExt/imgui_neo_internal.cpp
         Core/ImGuiExt/imgui_neo_sequencer.h
         Core/ImGuiExt/imgui_neo_sequencer.cpp
+        Core/DatabaseEditor/DBDocTab.cpp
+        Core/DatabaseEditor/DBDocTab.hpp
 )
 
 target_include_directories(

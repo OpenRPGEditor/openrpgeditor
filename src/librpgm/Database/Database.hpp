@@ -5,6 +5,7 @@
 #include "Database/Armors.hpp"
 #include "Database/Classes.hpp"
 #include "Database/CommonEvents.hpp"
+#include "Database/Docs.hpp"
 #include "Database/Enemies.hpp"
 #include "Database/GameConstants.hpp"
 #include "Database/Items.hpp"
@@ -50,6 +51,7 @@ struct Database {
   MapInfos mapInfos{};
   GameConstants gameConstants{};
   Templates templates{};
+  Docs docs{};
   std::string projectVersion; // As stored in the .rpgproject file
   std::string projectFilePath;
   std::string basePath;
@@ -413,6 +415,7 @@ struct Database {
   rpgmutils::signal<void()>& mapInfosLoaded() { return m_mapInfosLoaded; }
   rpgmutils::signal<void()>& gameConstantsLoaded() { return m_gameConstantsLoaded; }
   rpgmutils::signal<void()>& templatesLoaded() { return m_templatesLoaded; }
+  rpgmutils::signal<void()>& docsLoaded() { return m_docsLoaded; }
 
 private:
   rpgmutils::signal<void()> m_actorsLoaded;
@@ -432,5 +435,6 @@ private:
   rpgmutils::signal<void()> m_mapInfosLoaded;
   rpgmutils::signal<void()> m_gameConstantsLoaded;
   rpgmutils::signal<void()> m_templatesLoaded;
+  rpgmutils::signal<void()> m_docsLoaded;
   static Database* m_instance;
 };

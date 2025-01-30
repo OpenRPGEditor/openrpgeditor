@@ -148,7 +148,9 @@ add_library(
         Database/IPageEditor.hpp
         Database/IEventEditor.cpp
         Utils/JavaMath.cpp
-        Utils/JavaMath.hpp)
+        Utils/JavaMath.hpp
+        Database/Docs.cpp
+        Database/Docs.hpp)
 
 target_include_directories(
         librpgm PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann

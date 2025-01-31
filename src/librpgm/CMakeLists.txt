@@ -150,7 +150,9 @@ add_library(
         Utils/JavaMath.cpp
         Utils/JavaMath.hpp
         Database/Docs.cpp
-        Database/Docs.hpp)
+        Database/Docs.hpp
+        Database/Doc.cpp
+        Database/Doc.hpp)
 
 target_include_directories(
         librpgm PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann

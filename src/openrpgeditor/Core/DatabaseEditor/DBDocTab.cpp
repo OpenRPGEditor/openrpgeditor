@@ -1,6 +1,7 @@
 #include "Core/DatabaseEditor/DBDocTab.hpp"
 #include "Core/DatabaseEditor.hpp"
 #include "Core/ImGuiExt/ImGuiNotify.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/MainWindow.hpp"
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
@@ -17,25 +18,10 @@ DBDocTab::DBDocTab(Docs& docs, DatabaseEditor* parent) : IDBEditorTab(parent), m
 
     Save();
   }
-  std::vector<std::string> texts = splitString(m_docs->docs.at(m_selectedCategory).texts().at(m_selectedCategory), '\n');
+  m_names = m_docs->docs.front().names();
+  m_texts = m_docs->docs.front().texts();
 
-  bool isHeaderText{false};
-  int headerIndex{0};
-  for (auto& text : texts) {
-    if (text.contains("/##")) {
-      isHeaderText = false;
-      headerIndex++;
-    } else if (text.contains("##")) {
-      isHeaderText = true;
-      headerTexts.push_back(std::vector<std::string>{});
-      headerTexts.at(headerIndex).push_back(text.substr(2, text.size() - 1).data());
-    }
-    if (isHeaderText) {
-      if (!text.contains("##")) {
-        headerTexts.at(headerIndex).push_back(text);
-      }
-    }
-  }
+  createHeaders();
 }
 
 void DBDocTab::draw() {
@@ -44,15 +30,96 @@ void DBDocTab::draw() {
   {
     ImGui::BeginGroup();
     {
-      ImGui::BeginChild("##orpg_docs_navigation_headers");
+      ImGui::BeginChild("##orpg_docs_navigation_headers", ImVec2{calc.x + (ImGui::GetStyle().ItemSpacing.x * 2), ImGui::GetContentRegionMax().y - 35});
       {
         ImGui::BeginGroup();
         {
+          if (ImGui::Button("+##orpg_docs_add_category", ImVec2(40, 0))) {
+            m_selectedCategory = m_names.size();
+            m_names.emplace_back(trNOOP("New Category"));
+            m_texts.emplace_back(trNOOP("Begin adding text!"));
+            m_docs->docs.front().setNames(m_names);
+            m_docs->docs.front().setTexts(m_texts);
+            Save();
+            setDoc(m_selectedCategory);
+          }
+          if (ImGui::IsItemHovered()) {
+            ImGui::BeginTooltip();
+            {
+              ImGui::Text(trNOOP("Adds a new category."));
+              ImGui::EndTooltip();
+            }
+          }
+          ImGui::SameLine();
+          ImGui::BeginDisabled(m_names.empty());
+          if (ImGui::Button("-##orpg_docs_remove_category", ImVec2(40, 0))) {
+            int indexToRemove = m_selectedCategory;
+            if (m_selectedCategory > 0) {
+              m_selectedCategory--;
+            }
+            if (indexToRemove >= 0 && indexToRemove < m_names.size()) {
+              m_names.erase(m_names.begin() + indexToRemove);
+            }
+            if (indexToRemove >= 0 && indexToRemove < m_texts.size()) {
+              m_texts.erase(m_texts.begin() + indexToRemove);
+            }
+            m_docs->docs.front().setNames(m_names);
+            m_docs->docs.front().setTexts(m_texts);
+            Save();
+            setDoc(m_selectedCategory);
+          }
+          if (ImGui::IsItemHovered()) {
+            ImGui::BeginTooltip();
+            {
+              ImGui::Text(trNOOP("Removes a category."));
+              ImGui::EndTooltip();
+            }
+          }
+          ImGui::EndDisabled();
+          ImGui::SameLine();
+          ImGui::BeginDisabled(m_selectedCategory == 0);
+          if (ImGui::Button("↑##orpg_docs_sort_up", ImVec2(40, 0))) {
+            std::swap(m_names.at(m_selectedCategory), m_names.at(m_selectedCategory - 1));
+            std::swap(m_texts.at(m_selectedCategory), m_texts.at(m_selectedCategory - 1));
+            m_docs->docs.front().setNames(m_names);
+            m_docs->docs.front().setTexts(m_texts);
+            setDoc(m_selectedCategory - 1);
+          }
+          if (ImGui::IsItemHovered()) {
+            ImGui::BeginTooltip();
+            {
+              ImGui::Text(trNOOP("Moves the selected category up by one on its index."));
+              ImGui::EndTooltip();
+            }
+          }
+          ImGui::EndDisabled();
+          ImGui::SameLine();
+          ImGui::BeginDisabled(m_selectedCategory == m_names.size() - 1);
+          if (ImGui::Button("↓##orpg_docs_sort_down", ImVec2(40, 0))) {
+            std::swap(m_names.at(m_selectedCategory), m_names.at(m_selectedCategory + 1));
+            std::swap(m_texts.at(m_selectedCategory), m_texts.at(m_selectedCategory + 1));
+            m_docs->docs.front().setNames(m_names);
+            m_docs->docs.front().setTexts(m_texts);
+            setDoc(m_selectedCategory + 1);
+          }
+          ImGui::EndDisabled();
+          if (ImGui::IsItemHovered()) {
+            ImGui::BeginTooltip();
+            {
+              ImGui::Text(trNOOP("Moves the selected category down by one on its index."));
+              ImGui::EndTooltip();
+            }
+          }
+          ImGui::EndGroup();
+        }
+        ImGui::BeginGroup();
+        {
           ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x);
-          if (ImGui::BeginCombo("##orpg_navigation_combo", m_docs->docs.at(m_selectedCategory).names().at(m_selectedCategory).c_str())) {
-            for (int i = 0; i < m_docs->docs.at(m_selectedCategory).names().size(); i++) {
-              if (ImGui::Selectable(m_docs->docs.at(m_selectedCategory).names().at(i).c_str(), i == m_selectedCategory)) {
-                m_selectedCategory = i;
+          if (ImGui::BeginCombo(std::format("##orpg_navigation_combo_{}", m_selectedCategory).c_str(),
+                                m_names.empty() ? "Add a new category" : m_docs->docs.at(0).names().at(m_selectedCategory).c_str(), ImGuiComboFlags_NoArrowButton)) {
+            for (int i = 0; i < m_docs->docs.at(0).names().size(); i++) {
+              if (ImGui::Selectable(std::format("{}##{}", m_docs->docs.at(0).names().at(i), i).c_str(), i == m_selectedCategory)) {
+                setDoc(i);
                 // SetScroll
               }
             }
@@ -60,16 +127,16 @@ void DBDocTab::draw() {
           }
           ImGui::SeparatorText("Headers");
           if (headerTexts.size() == 0) {
-            ImGui::Text("No headers available");
+            ImGui::Text(trNOOP("No headers available"));
           } else {
             int index{0};
             for (auto& header : headerTexts) {
               char name[4096];
               snprintf(name, 4096, "%s", header.front().c_str());
-              if (ImGui::Selectable(name, index == m_selectedHeader) || (ImGui::IsItemFocused() && m_selectedHeader != index)) {
+              if (ImGui::Selectable(std::format("{}##headerText_{}", name, index).c_str(), index == m_selectedHeader) || (ImGui::IsItemFocused() && m_selectedHeader != index)) {
                 m_selectedHeader = index;
-                // SetScroll
               }
+              index++;
             }
           }
         }
@@ -83,60 +150,143 @@ void DBDocTab::draw() {
   ImGui::SameLine();
   ImGui::BeginChild("##orpg_docs_editor");
   {
-    if (m_isEdittingText) {
-      // Text Editor Mode
-      char text[4096];
-      strcpy(text, m_docs->docs.at(m_selectedCategory).texts().at(m_selectedCategory).c_str()); // Copy the string to the array
-      ImGui::Text(trNOOP("Editing documentation... Press enter to confirm."));
-      if (ImGui::InputTextMultiline("##orpg_docs_text", text, IM_ARRAYSIZE(text), ImVec2{ImGui::GetContentRegionMax().x, ImGui::GetContentRegionMax().y - 30})) {
-        // m_docs->setString(text);
-        if (ImGui::IsKeyPressed(ImGuiKey_KeypadEnter)) {
-          Save();
-          m_isEdittingText = false;
-        }
+    // Menu Bar above editor
+    ImGui::BeginGroup();
+    {
+      ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.f);
+      ImGui::Text(trNOOP("Name:"));
+      ImGui::SameLine();
+      ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
+      char name[4096];
+      strncpy(name, m_names.empty() ? "" : m_names.at(m_selectedCategory).c_str(), 4096);
+      ImGui::SetNextItemWidth(200);
+      ImGui::BeginDisabled(!m_isEdittingText);
+      if (ImGui::InputText(std::format("##orpg_doc_category_editor_name{}", m_selectedCategory).c_str(), name, 4096)) {
+        m_names.at(m_selectedCategory) = name;
+        m_isEdittingNames = true;
       }
-    } else {
-      // Text Viewing Mode
-      if (m_docs->docs.at(m_selectedCategory).texts().at(m_selectedCategory).empty()) {
-        ImGui::Text(trNOOP("\tNo documentation available.\n\tDouble-click to begin editing..."));
+      ImGui::EndDisabled();
+      ImGui::SameLine();
+      ImGui::BeginDisabled(m_isEdittingText);
+      ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
+      ImGui::BeginDisabled(m_texts.empty());
+      if (ImGui::Button(trNOOP("Edit"), ImVec2(100, 30))) {
+        m_isEdittingText = !m_isEdittingText;
+      }
+      ImGui::EndDisabled();
+      ImGui::EndDisabled();
+      ImGui::SameLine();
+      ImGui::BeginDisabled(!m_isEdittingText);
+      ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
+      if (ImGui::Button(trNOOP("Apply"), ImVec2(100, 30))) {
+        if (m_isEdittingTexts) {
+          m_docs->docs.front().setTexts(m_texts);
+          m_isEdittingTexts = false;
+        }
+        if (m_isEdittingNames) {
+          m_docs->docs.front().setNames(m_names);
+          m_isEdittingNames = false;
+        }
+        Save();
+        createHeaders();
+        m_isEdittingText = !m_isEdittingText;
+      }
+      ImGui::EndDisabled();
+      ImGui::SameLine();
+      ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
+      ImGui::TextDisabled("(?)");
+      if (ImGui::BeginItemTooltip()) {
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted(GetFormattingHelpText().c_str());
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+      }
+
+      ImGui::EndGroup();
+    }
+    // Editor
+    ImGui::BeginChild("##orpg_docs_editor_text", ImVec2(0, 0), 0, ImGuiWindowFlags_NoScrollbar);
+    {
+      if (m_isEdittingText) {
+        // Text Editor Mode
+        char text[4096];
+        strcpy(text, m_texts.at(m_selectedCategory).c_str()); // Copy the string to the array
+        if (ImGui::InputTextMultiline("##orpg_docs_text", text, IM_ARRAYSIZE(text), ImVec2{ImGui::GetContentRegionMax().x, ImGui::GetContentRegionMax().y - 30})) {
+          m_texts.at(m_selectedCategory) = text;
+          m_isEdittingTexts = true;
+        }
       } else {
-        // Documentation available
+        // Text Viewing Mode
 
-        int headerIndex{0};
-        float xPos = ImGui::GetCursorPosX();
+        if (m_docs->docs.at(0).texts().empty()) {
+          ImGui::Text(trNOOP("\tNo documentation available."));
+        } else {
+          // Documentation available
 
-        for (auto& text : splitString(m_docs->docs.at(m_selectedCategory).texts().at(m_selectedCategory), '\n')) {
-          if (text.contains("##") && inHeader == false) {
-            inHeader = true;
-          } else if (text.contains("##") && inHeader) {
-            inHeader = false;
+          int headerIndex{0};
+          float xPos = ImGui::GetCursorPosX();
 
-            if (ImGui::CollapsingHeader(headerTexts.at(headerIndex).front().c_str())) {
-              for (auto it = headerTexts.at(headerIndex).begin(); it != headerTexts.at(headerIndex).end(); ++it) {
-                ImGui::SetCursorPosX(xPos + 20);
-                if (isBulletFormatting(it->c_str())) {
-                  ImGui::BulletText(it->substr(1, it->size() - 1).data());
-                } else {
-                  ImGui::Text(it->c_str());
+          for (auto& text : splitString(m_docs->docs.at(0).texts().at(m_selectedCategory), '\n')) {
+            if (text.contains("##") && inHeader == false) {
+              inHeader = true;
+            } else if (text.contains("##") && inHeader) {
+              inHeader = false;
+
+              if (ImGui::CollapsingHeader(std::format("{}##header{}", headerTexts.at(headerIndex).front(), m_selectedCategory).c_str())) {
+                for (auto it = headerTexts.at(headerIndex).begin() + (headerTexts.at(headerIndex).size() == 1 ? 0 : 1); it != headerTexts.at(headerIndex).end(); ++it) {
+                  ImGui::SetCursorPosX(xPos + 20);
+                  if (isSeperatorFormatting(it->c_str())) {
+                    if (it->size() > 1) {
+                      // We use text
+                      ImGui::SeparatorText(it->substr(1, it->size() - 1).c_str());
+                    } else {
+                      // Just seperator
+                      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 3);
+                    }
+                  } else if (isBulletFormatting(*it)) {
+                    ImGui::BulletText(it->substr(1, it->size() - 1).data());
+                  } else if (isIndentFormatting(text)) {
+                    // ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
+                    ImGui::Text(std::string('\t' + it->substr(2, it->size() - 1)).c_str());
+                  } else if (isArrowBulletFormatting(*it)) {
+                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
+                    ImGui::Text(std::string("→ " + it->substr(1, it->size() - 1)).c_str());
+
+                  } else {
+                    ImGui::Text(it->c_str());
+                  }
                 }
               }
-            }
-            headerIndex++;
-          } else {
-            if (!inHeader) {
-              if (isBulletFormatting(text.c_str())) {
-                ImGui::BulletText(text.substr(1, text.size() - 1).data());
-              } else {
-                ImGui::Text(text.c_str());
+              headerIndex++;
+            } else {
+              if (!inHeader) {
+                if (isSeperatorFormatting(text)) {
+                  if (text.size() > 1) {
+                    // We use text
+                    ImGui::SeparatorText(text.substr(1, text.size() - 1).c_str());
+                  } else {
+                    // Just seperator
+                    ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 3);
+                  }
+                } else if (isBulletFormatting(text)) {
+                  ImGui::BulletText(text.substr(1, text.size() - 1).data());
+                } else if (isArrowBulletFormatting(text)) {
+                  ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
+                  ImGui::Text(std::string("→ " + text.substr(1, text.size() - 1)).c_str());
+
+                } else if (isIndentFormatting(text)) {
+                  ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 40);
+                  ImGui::Text(std::string(text.substr(2, text.size() - 1)).c_str());
+                } else {
+                  ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
+                  ImGui::Text(text.c_str());
+                }
               }
             }
           }
         }
       }
-      if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-        // Enter Edit Mode
-        m_isEdittingText = true;
-      }
+      ImGui::EndChild();
     }
   }
   ImGui::EndChild();
@@ -155,3 +305,35 @@ void DBDocTab::Save() const {
     ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to serialize editor/Documentation.json!"});
   }
 }
+// ##Example Text 1
+// Example Text in Header 2231
+/// ##
+void DBDocTab::createHeaders() {
+  headerTexts.clear();
+  if (m_names.empty()) {
+    return;
+  }
+  std::vector<std::string> texts = splitString(m_docs->docs.front().texts().at(m_selectedCategory), '\n');
+  bool isHeaderText{false};
+  int headerIndex{0};
+  for (auto& text : texts) {
+    if (text.contains("/##")) {
+      isHeaderText = false;
+      headerIndex++;
+    } else if (text.contains("##")) {
+      isHeaderText = true;
+      headerTexts.push_back(std::vector<std::string>{});
+      headerTexts.at(headerIndex).push_back(text.substr(2, text.size() - 1).data());
+    }
+    if (isHeaderText) {
+      if (!text.contains("##")) {
+        headerTexts.at(headerIndex).push_back(text);
+      }
+    }
+  }
+}
+void DBDocTab::setDoc(int index) {
+  m_selectedCategory = index;
+  createHeaders();
+}
+std::string DBDocTab::GetFormattingHelpText() { return trNOOP("Headers: \n##\n<text>\n/##\nBullets: - text\nSeperators: ~ or ~text\nArrow Bullets: > text\nIndent: \\t<text>"); }

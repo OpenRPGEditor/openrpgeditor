@@ -22,14 +22,26 @@ private:
   bool m_isEdittingNames{false};
   bool m_isEdittingTexts{false};
 
+  bool isArrowBullet{false};
+  bool isIdenting{false};
+  bool isFontFormat{false};
+  bool isBulletFormat{false};
+  bool isPictureFormat{false};
+
+  float m_formatScale{0.0};
+
   void Save() const;
   bool isHeader() const { return inHeader; }
-  bool isBulletFormatting(std::string text) { return text.starts_with("- "); }
+  bool isBulletFormatting(std::string text) { return text.starts_with("-"); }
   bool isSeperatorFormatting(std::string text) { return text.starts_with("~"); }
   bool isArrowBulletFormatting(std::string text) { return text.starts_with(">"); }
   bool isIndentFormatting(std::string text) { return text.starts_with("\\t"); }
   bool isFormatting() const { return (isHeader() == false); }
+  bool isFontFormatting(std::string text) const { return text.starts_with("\\f"); }
+  bool isPictureFormatting(std::string text) const { return text.starts_with("\\p"); }
   void createHeaders();
   void setDoc(int index);
   std::string GetFormattingHelpText();
+  bool ProcessFormatting(std::string& text);
+  bool isNumericOnly(const std::string& text);
 };

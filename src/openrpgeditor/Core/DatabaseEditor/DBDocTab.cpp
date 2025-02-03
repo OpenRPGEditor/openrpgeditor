@@ -1,4 +1,5 @@
 #include "Core/DatabaseEditor/DBDocTab.hpp"
+#include "Core/Application.hpp"
 #include "Core/DatabaseEditor.hpp"
 #include "Core/ImGuiExt/ImGuiNotify.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
@@ -7,7 +8,6 @@
 #include "misc/cpp/imgui_stdlib.h"
 #include <cstring>
 DBDocTab::DBDocTab(Docs& docs, DatabaseEditor* parent) : IDBEditorTab(parent), m_docs(&docs) {
-
   if (m_docs->docs.size() == 0) {
     Doc doc;
 
@@ -234,26 +234,65 @@ void DBDocTab::draw() {
 
               if (ImGui::CollapsingHeader(std::format("{}##header{}", headerTexts.at(headerIndex).front(), m_selectedCategory).c_str())) {
                 for (auto it = headerTexts.at(headerIndex).begin() + (headerTexts.at(headerIndex).size() == 1 ? 0 : 1); it != headerTexts.at(headerIndex).end(); ++it) {
+                  std::string itText = *it;
                   ImGui::SetCursorPosX(xPos + 20);
-                  if (isSeperatorFormatting(it->c_str())) {
-                    if (it->size() > 1) {
+                  if (isSeperatorFormatting(itText)) {
+                    // Seperators have no extra formatting
+                    if (itText.size() > 1) {
                       // We use text
-                      ImGui::SeparatorText(it->substr(1, it->size() - 1).c_str());
+                      ImGui::Text("");
+                      ImGui::SeparatorText(itText.substr(1, it->size() - 1).c_str());
+                      ImGui::Text("");
                     } else {
                       // Just seperator
                       ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 3);
                     }
-                  } else if (isBulletFormatting(*it)) {
-                    ImGui::BulletText(it->substr(1, it->size() - 1).data());
-                  } else if (isIndentFormatting(text)) {
-                    // ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
-                    ImGui::Text(std::string('\t' + it->substr(2, it->size() - 1)).c_str());
-                  } else if (isArrowBulletFormatting(*it)) {
-                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
-                    ImGui::Text(std::string("→ " + it->substr(1, it->size() - 1)).c_str());
-
                   } else {
-                    ImGui::Text(it->c_str());
+                    // Process through formatting
+                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
+                    while (ProcessFormatting(itText)) {}
+                    if (isArrowBullet) {
+                      itText = "→ " + itText;
+                    }
+                    if (isFontFormat) {
+                      ImFont font = *App::APP->getMainFont();
+                      font.Scale = font.Scale + m_formatScale;
+
+                      ImGui::PushFont(&font);
+
+                      if (isPictureFormat) {
+                        // Show Picture
+                        Texture texture = ResourceManager::instance()->loadEditorTexture(itText);
+                        ImGui::Image(texture, ImVec2{static_cast<float>(texture.width()), static_cast<float>(texture.height())}, ImVec2{0, 0}, ImVec2{1, 1});
+                      } else {
+                        if (isBulletFormat) {
+                          ImGui::BulletText(itText.c_str());
+                        } else {
+                          ImGui::Text(itText.c_str());
+                        }
+                      }
+                      ImGui::PopFont();
+                    } else {
+                      if (isPictureFormat) {
+                        // Show Picture
+                        Texture texture = ResourceManager::instance()->loadEditorTexture(itText);
+                        ImGui::Image(texture, ImVec2{static_cast<float>(texture.width()), static_cast<float>(texture.height())}, ImVec2{0, 0}, ImVec2{1, 1});
+
+                      } else {
+                        if (isBulletFormat) {
+                          ImGui::BulletText(itText.c_str());
+                        } else {
+                          ImGui::Text(itText.c_str());
+                        }
+                      }
+                    }
+
+                    // Reset bools per line
+                    isFontFormat = false;
+                    isArrowBullet = false;
+                    isIdenting = false;
+                    isBulletFormat = false;
+                    isPictureFormat = false;
                   }
                 }
               }
@@ -261,25 +300,62 @@ void DBDocTab::draw() {
             } else {
               if (!inHeader) {
                 if (isSeperatorFormatting(text)) {
+                  // Seperators don't get any extra formatting
                   if (text.size() > 1) {
                     // We use text
                     ImGui::SeparatorText(text.substr(1, text.size() - 1).c_str());
                   } else {
                     // Just seperator
+                    ImGui::Text("");
                     ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 3);
+                    ImGui::Text("");
                   }
-                } else if (isBulletFormatting(text)) {
-                  ImGui::BulletText(text.substr(1, text.size() - 1).data());
-                } else if (isArrowBulletFormatting(text)) {
-                  ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
-                  ImGui::Text(std::string("→ " + text.substr(1, text.size() - 1)).c_str());
-
-                } else if (isIndentFormatting(text)) {
-                  ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 40);
-                  ImGui::Text(std::string(text.substr(2, text.size() - 1)).c_str());
                 } else {
+                  // Basic text formatting branching
                   ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
-                  ImGui::Text(text.c_str());
+                  while (ProcessFormatting(text)) {}
+                  if (isArrowBullet) {
+                    text = "→ " + text;
+                  }
+                  if (isFontFormat) {
+                    ImFont font = *App::APP->getMainFont();
+                    font.Scale = font.Scale + m_formatScale;
+
+                    ImGui::PushFont(&font);
+
+                    if (isPictureFormat) {
+                      // Show Picture
+                      Texture texture = ResourceManager::instance()->loadEditorTexture(text);
+                      ImGui::Image(texture, ImVec2{static_cast<float>(texture.width()), static_cast<float>(texture.height())}, ImVec2{0, 0}, ImVec2{1, 1});
+                    } else {
+                      if (isBulletFormat) {
+                        ImGui::BulletText(text.c_str());
+                      } else {
+                        ImGui::Text(text.c_str());
+                      }
+                    }
+                    ImGui::PopFont();
+                  } else {
+                    if (isPictureFormat) {
+                      // Show Picture
+                      Texture texture = ResourceManager::instance()->loadEditorTexture(text);
+                      ImGui::Image(texture, ImVec2{static_cast<float>(texture.width()), static_cast<float>(texture.height())}, ImVec2{0, 0}, ImVec2{1, 1});
+
+                    } else {
+                      if (isBulletFormat) {
+                        ImGui::BulletText(text.c_str());
+                      } else {
+                        ImGui::Text(text.c_str());
+                      }
+                    }
+                  }
+
+                  // Reset bools per line
+                  isFontFormat = false;
+                  isArrowBullet = false;
+                  isIdenting = false;
+                  isBulletFormat = false;
+                  isPictureFormat = false;
                 }
               }
             }
@@ -336,4 +412,49 @@ void DBDocTab::setDoc(int index) {
   m_selectedCategory = index;
   createHeaders();
 }
-std::string DBDocTab::GetFormattingHelpText() { return trNOOP("Headers: \n##\n<text>\n/##\nBullets: - text\nSeperators: ~ or ~text\nArrow Bullets: > text\nIndent: \\t<text>"); }
+std::string DBDocTab::GetFormattingHelpText() {
+  return trNOOP("Headers: \n##\n<text>\n/##\nBullets: -text\nSeperators: ~ or ~text\nArrow Bullets: >text\nIndent: \\t<text>\nPicture: \\p<name>\nFont Scale: \\f0.5<text>");
+}
+
+bool DBDocTab::ProcessFormatting(std::string& text) {
+  bool containsFormatting{false};
+  if (isArrowBulletFormatting(text)) {
+    isArrowBullet = true;
+    containsFormatting = true;
+    text = text.substr(1, text.size() - 1);
+  }
+  if (isIndentFormatting(text)) {
+    isIdenting = true;
+    containsFormatting = true;
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
+    text = text.substr(2, text.size() - 1);
+  }
+  if (isFontFormatting(text)) {
+    isFontFormat = true;
+    containsFormatting = true;
+    text = std::string(text.substr(2, text.size() - 1));
+
+    std::string fontScale = text.substr(0, 3);
+
+    m_formatScale = std::stof(fontScale);
+
+    text = std::string(text.substr(3, text.size() - 1));
+  }
+  if (isBulletFormatting(text)) {
+    isBulletFormat = true;
+    containsFormatting = true;
+    text = text.substr(1, text.size() - 1).data();
+  }
+  if (isPictureFormatting(text)) {
+    isPictureFormat = true;
+    containsFormatting = true;
+    text = std::string(text.substr(2, text.size() - 1)) + ".png";
+  }
+  return containsFormatting;
+}
+bool DBDocTab::isNumericOnly(const std::string& str) {
+  // Check if all characters in the string are alphabetic
+  return std::all_of(str.begin(), str.end(), [](char c) {
+    return std::isdigit(c); // Returns true if c is an alphabetic character
+  });
+}

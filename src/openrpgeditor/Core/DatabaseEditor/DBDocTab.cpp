@@ -5,8 +5,8 @@
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/MainWindow.hpp"
 #include "imgui.h"
-#include "misc/cpp/imgui_stdlib.h"
 #include <cstring>
+#include <misc/cpp/imgui_stdlib.h>
 DBDocTab::DBDocTab(Docs& docs, DatabaseEditor* parent) : IDBEditorTab(parent), m_docs(&docs) {
   if (m_docs->docs.size() == 0) {
     Doc doc;
@@ -53,20 +53,20 @@ void DBDocTab::draw() {
           ImGui::SameLine();
           ImGui::BeginDisabled(m_names.empty());
           if (ImGui::Button("-##orpg_docs_remove_category", ImVec2(40, 0))) {
-            int indexToRemove = m_selectedCategory;
-            if (m_selectedCategory > 0) {
-              m_selectedCategory--;
-            }
-            if (indexToRemove >= 0 && indexToRemove < m_names.size()) {
-              m_names.erase(m_names.begin() + indexToRemove);
-            }
-            if (indexToRemove >= 0 && indexToRemove < m_texts.size()) {
-              m_texts.erase(m_texts.begin() + indexToRemove);
-            }
-            m_docs->docs.front().setNames(m_names);
-            m_docs->docs.front().setTexts(m_texts);
-            Save();
-            setDoc(m_selectedCategory);
+            // int indexToRemove = m_selectedCategory;
+            // if (m_selectedCategory > 0) {
+            //   m_selectedCategory--;
+            // }
+            // if (indexToRemove >= 0 && indexToRemove < m_names.size()) {
+            //   m_names.erase(m_names.begin() + indexToRemove);
+            // }
+            // if (indexToRemove >= 0 && indexToRemove < m_texts.size()) {
+            //   m_texts.erase(m_texts.begin() + indexToRemove);
+            // }
+            // m_docs->docs.front().setNames(m_names);
+            // m_docs->docs.front().setTexts(m_texts);
+            // Save();
+            // setDoc(m_selectedCategory);
           }
           if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
@@ -209,9 +209,8 @@ void DBDocTab::draw() {
     {
       if (m_isEdittingText) {
         // Text Editor Mode
-        char text[4096];
-        strcpy(text, m_texts.at(m_selectedCategory).c_str()); // Copy the string to the array
-        if (ImGui::InputTextMultiline("##orpg_docs_text", text, IM_ARRAYSIZE(text), ImVec2{ImGui::GetContentRegionMax().x, ImGui::GetContentRegionMax().y - 30})) {
+        std::string text = m_texts.at(m_selectedCategory);
+        if (ImGui::InputTextMultiline("##orpg_docs_text", &text, ImVec2{ImGui::GetContentRegionMax().x, ImGui::GetContentRegionMax().y - 30})) {
           m_texts.at(m_selectedCategory) = text;
           m_isEdittingTexts = true;
         }

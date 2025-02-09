@@ -230,7 +230,7 @@ void DBDocTab::draw() {
               inHeader = true;
             } else if (text.contains("##") && inHeader) {
               inHeader = false;
-
+              // TODO: Header Status
               if (ImGui::CollapsingHeader(std::format("{}##header{}", headerTexts.at(headerIndex).front(), m_selectedCategory).c_str())) {
                 for (auto it = headerTexts.at(headerIndex).begin() + (headerTexts.at(headerIndex).size() == 1 ? 0 : 1); it != headerTexts.at(headerIndex).end(); ++it) {
                   std::string itText = *it;

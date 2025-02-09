@@ -279,7 +279,6 @@ public:
   }
 
   EventPage clone() const { return EventPage(*this, 1); }
-
   bool operator==(const EventPage& rhs) const {
     return m_conditions == rhs.m_conditions && m_directionFix == rhs.m_directionFix && m_image == rhs.m_image && m_list == rhs.m_list && m_moveFrequency == rhs.m_moveFrequency &&
            m_moveRoute == rhs.m_moveRoute && m_moveSpeed == rhs.m_moveSpeed && m_moveType == rhs.m_moveType && m_priorityType == rhs.m_priorityType && m_stepAnime == rhs.m_stepAnime &&

@@ -9,6 +9,7 @@
 #include "Core/NWJSVersionManager.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/UndoStack.hpp"
+#include "EventSearcher.hpp"
 #include "SettingsDialog.hpp"
 #include "angelscript.h"
 
@@ -175,6 +176,7 @@ private:
   EventListView m_eventListView;
   TilesetPicker m_tilesetPicker;
   NWJSVersionManager m_nwjsVersionManager;
+  EventSearcher m_eventSearcher;
   UndoStack m_undoStack;
   UndoStack m_redoStack;
   bool m_isValid = false;

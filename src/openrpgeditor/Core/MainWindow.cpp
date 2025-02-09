@@ -38,7 +38,7 @@
 using namespace std::literals::string_view_literals;
 
 MainWindow* MainWindow::m_instance = nullptr;
-MainWindow::MainWindow() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this), m_nwjsVersionManager("https://dl.nwjs.io") {
+MainWindow::MainWindow() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this), m_nwjsVersionManager("https://dl.nwjs.io"), m_eventSearcher(this) {
   m_settingsDialog.addTab(new GeneralSettingsTab());
   m_settingsDialog.addTab(new UISettingsTab());
   m_instance = this;
@@ -356,6 +356,7 @@ void MainWindow::draw() {
   setupDocking();
   m_settingsDialog.draw();
   m_mapEditor.draw();
+  m_eventSearcher.draw();
 
   if (m_databaseEditor) {
     m_databaseEditor->draw();
@@ -850,6 +851,9 @@ void MainWindow::drawMenu() {
       }
       if (ImGui::MenuItem(trNOOP("NWJS Version Manager"), "F10", false)) {
         m_nwjsVersionManager.open();
+      }
+      if (ImGui::MenuItem(trNOOP("Event Searcher..."), "", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
+        m_eventSearcher.open();
       }
 
       /* Add tools above this */

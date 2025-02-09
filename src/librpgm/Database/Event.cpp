@@ -201,6 +201,36 @@ void Event::swapPages(int a, int b) {
   }
   setHasChanges();
 }
+std::vector<std::shared_ptr<const IModifiable>> Event::hasVariable(int targetId) const {
+  std::vector<std::shared_ptr<const IModifiable>> events; // Change shared_ptr to const IModifiable
+  bool resultFound{false};
+  for (auto& pages : m_pages) {
+    if (pages.conditions().variableValid()) {
+      if (pages.conditions().variableId() == targetId) {
+        resultFound = true;
+      }
+    }
+  }
+  if (resultFound) {
+    events.push_back(std::shared_ptr<const IModifiable>(this));
+  }
+  return events;
+}
+std::vector<std::shared_ptr<const IModifiable>> Event::hasSwitch(int targetId) const {
+  std::vector<std::shared_ptr<const IModifiable>> events; // Change shared_ptr to const IModifiable
+  bool resultFound{false};
+  for (auto& pages : m_pages) {
+    if (pages.conditions().variableValid()) {
+      if (pages.conditions().variableId() == targetId) {
+        resultFound = true;
+      }
+    }
+  }
+  if (resultFound) {
+    events.push_back(std::shared_ptr<const IModifiable>(this));
+  }
+  return events;
+}
 
 void Event::restoreOriginal() {
   IModifiable::restoreOriginal();

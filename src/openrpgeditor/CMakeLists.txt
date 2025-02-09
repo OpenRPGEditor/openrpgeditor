@@ -443,6 +443,8 @@ add_library(
         Core/ImGuiExt/imgui_neo_sequencer.cpp
         Core/DatabaseEditor/DBDocTab.cpp
         Core/DatabaseEditor/DBDocTab.hpp
+        Core/EventSearcher.cpp
+        Core/EventSearcher.hpp
 )
 
 target_include_directories(

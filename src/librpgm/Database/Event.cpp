@@ -201,7 +201,7 @@ void Event::swapPages(int a, int b) {
   }
   setHasChanges();
 }
-std::vector<std::shared_ptr<const IModifiable>> Event::hasVariable(int targetId) const {
+std::vector<std::shared_ptr<const IModifiable>> Event::getVariableEvents(int targetId) const {
   std::vector<std::shared_ptr<const IModifiable>> events; // Change shared_ptr to const IModifiable
   bool resultFound{false};
   for (auto& pages : m_pages) {
@@ -210,13 +210,21 @@ std::vector<std::shared_ptr<const IModifiable>> Event::hasVariable(int targetId)
         resultFound = true;
       }
     }
+    for (const auto& command : pages.list()) {
+      // Go through command list and find matches
+      if (command->code() == EventCode::Control_Variables) {
+        if (command->hasVariable(targetId)) {
+          resultFound = true;
+        }
+      }
+    }
   }
   if (resultFound) {
     events.push_back(std::shared_ptr<const IModifiable>(this));
   }
   return events;
 }
-std::vector<std::shared_ptr<const IModifiable>> Event::hasSwitch(int targetId) const {
+std::vector<std::shared_ptr<const IModifiable>> Event::getSwitchEvents(int targetId) const {
   std::vector<std::shared_ptr<const IModifiable>> events; // Change shared_ptr to const IModifiable
   bool resultFound{false};
   for (auto& pages : m_pages) {

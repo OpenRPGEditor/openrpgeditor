@@ -90,8 +90,11 @@ public:
   void disableSignals() { m_signalsDisabled = true; }
   void enableSignals() { m_signalsDisabled = false; }
 
-  virtual std::vector<std::shared_ptr<const IModifiable>> hasVariable(int targetId) const { return {}; }
-  virtual std::vector<std::shared_ptr<const IModifiable>> hasSwitch(int targetId) const { return {}; }
+  virtual std::vector<std::shared_ptr<const IModifiable>> getVariableEvents(int targetId) const { return {}; }
+  virtual std::vector<std::shared_ptr<const IModifiable>> getSwitchEvents(int targetId) const { return {}; }
+
+  virtual bool hasVariable(int targetId) { return false; }
+  virtual bool hasSwitch(int targetId) { return false; }
 
   rpgmutils::signal<void(IModifiable*)>& onModified();
 

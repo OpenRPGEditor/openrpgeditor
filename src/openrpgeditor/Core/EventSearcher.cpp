@@ -57,6 +57,7 @@ void EventSearcher::draw() {
     }
     // TODO - Common event search in command list
     // TODO - Control variable search in command list
+    // TODO consider all iteration types to search for!
     if (ImGui::Button("Search")) {
       // Search button
       if (m_selectedSearchType == 0) {
@@ -65,7 +66,7 @@ void EventSearcher::draw() {
           if (mapInfo->map()) {
             for (auto& event : mapInfo->map()->events()) {
               if (event) {
-                std::vector<std::shared_ptr<const IModifiable>> searchVector = event.value().hasSwitch(m_selectedVariable);
+                std::vector<std::shared_ptr<const IModifiable>> searchVector = event.value().getSwitchEvents(m_selectedVariable);
                 for (const auto& search : searchVector) {
                   m_events[mapInfo->id()].push_back(search);
                 }
@@ -79,10 +80,19 @@ void EventSearcher::draw() {
           if (mapInfo->map()) {
             for (auto& event : mapInfo->map()->events()) {
               if (event) {
-                std::vector<std::shared_ptr<const IModifiable>> searchVector = event.value().hasVariable(m_selectedVariable);
+                std::vector<std::shared_ptr<const IModifiable>> searchVector = event.value().getVariableEvents(m_selectedVariable);
                 for (const auto& search : searchVector) {
                   m_events[mapInfo->id()].push_back(search);
                 }
+              }
+            }
+          }
+        }
+        for (auto& common : m_parent->database().commonEvents.events()) {
+          if (common.has_value()) {
+            for (auto& cmd : common.value().commands()) {
+              if (cmd->hasVariable(m_selectedVariable)) {
+                m_common.push_back(common->id());
               }
             }
           }
@@ -103,6 +113,7 @@ void EventSearcher::draw() {
       ImGui::TableHeadersRow();
       ImGui::TableNextRow();
 
+      int tableIndex{0};
       for (auto& pair : m_events) {
         for (auto& eventRef : pair.second) {
           Event event = *std::dynamic_pointer_cast<const Event>(eventRef);
@@ -111,15 +122,20 @@ void EventSearcher::draw() {
             if (page.conditions().variableValid() && m_selectedSearchType == 1) {
               if (page.conditions().variableId() == m_selectedVariable) {
                 drawTable(pair.first, event.id(), event.name(), event.x(), event.y(), index + 1);
+                tableIndex++;
               }
             } else if ((page.conditions().switch1Valid() || page.conditions().switch2Valid()) && m_selectedSearchType == 0) {
               if (page.conditions().switch1Id() == m_selectedSwitch || page.conditions().switch2Id() == m_selectedSwitch) {
                 drawTable(pair.first, event.id(), event.name(), event.x(), event.y(), index + 1);
+                tableIndex++;
               }
             }
             index++;
           }
         }
+      }
+      for (auto& commonEv : m_common) {
+        drawTable(commonEv, tableIndex);
       }
       ImGui::EndTable();
     }
@@ -151,6 +167,32 @@ void EventSearcher::drawTable(int mapId, int eventId, std::string eventName, int
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_eventsearcher_event_pos_{}_{}", eventId, pageNo).c_str());
   ImGui::Text(std::string(std::format("({},{})", x, y)).c_str());
+  ImGui::PopID();
+  ImGui::TableNextRow();
+}
+void EventSearcher::drawTable(int commonId, int tableIndex) {
+  const bool isSelected = (m_selectedEvent == tableIndex);
+
+  if (ImGui::SelectableWithBorder(std::format("Common Event##orpg_table_commonev_entry{}", commonId).c_str(), isSelected,
+                                  ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
+
+    if (isSelected)
+      ImGui::SetItemDefaultFocus();
+  }
+
+  ImGui::TableNextColumn();
+  ImGui::PushID(std::format("##orpg_eventsearcher_commonev_data_{}", commonId).c_str());
+  ImGui::Text(std::format("{:03}:{}", commonId, Database::instance()->commonEventName(commonId)).c_str());
+  ImGui::PopID();
+
+  ImGui::TableNextColumn();
+  ImGui::PushID(std::format("##orpg_eventsearcher_commonev_pageNo_{}", commonId).c_str());
+  ImGui::Text("-");
+  ImGui::PopID();
+
+  ImGui::TableNextColumn();
+  ImGui::PushID(std::format("##orpg_eventsearcher_commonev_pos_{}", commonId).c_str());
+  ImGui::Text("-");
   ImGui::PopID();
   ImGui::TableNextRow();
 }

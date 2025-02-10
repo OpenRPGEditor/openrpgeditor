@@ -12,6 +12,8 @@ struct ControlVariables : IEventCommand {
   [[nodiscard]] std::string variableFormat(const std::string& text) const;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ControlVariables>(*this); }
 
+  bool hasVariable(int targetId) override { return (start == targetId && end == targetId) || variable == targetId; };
+
   int start{1};
   int end{1};
   VariableControlOperation operation = VariableControlOperation::_set__del_Set;

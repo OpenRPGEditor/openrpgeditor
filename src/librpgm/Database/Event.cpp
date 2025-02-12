@@ -201,19 +201,21 @@ void Event::swapPages(int a, int b) {
   }
   setHasChanges();
 }
-std::vector<std::shared_ptr<const IModifiable>> Event::getVariableEvents(int targetId) const {
+std::vector<std::shared_ptr<const IModifiable>> Event::getConditionReferences(int targetId, SearchType type) const {
   std::vector<std::shared_ptr<const IModifiable>> events; // Change shared_ptr to const IModifiable
   bool resultFound{false};
-  for (auto& pages : m_pages) {
-    if (pages.conditions().variableValid()) {
-      if (pages.conditions().variableId() == targetId) {
-        resultFound = true;
+  if (type == SearchType::Variable) {
+    for (auto& pages : m_pages) {
+      if (pages.conditions().variableValid()) {
+        if (pages.conditions().variableId() == targetId) {
+          resultFound = true;
+        }
       }
     }
-    for (const auto& command : pages.list()) {
-      // Go through command list and find matches
-      if (command->code() == EventCode::Control_Variables) {
-        if (command->hasVariable(targetId)) {
+  } else if (type == SearchType::Switch) {
+    for (auto& pages : m_pages) {
+      if (pages.conditions().switch1Valid() || pages.conditions().switch2Valid()) {
+        if (pages.conditions().switch1Id() == targetId || pages.conditions().switch2Id() == targetId) {
           resultFound = true;
         }
       }
@@ -224,13 +226,30 @@ std::vector<std::shared_ptr<const IModifiable>> Event::getVariableEvents(int tar
   }
   return events;
 }
-std::vector<std::shared_ptr<const IModifiable>> Event::getSwitchEvents(int targetId) const {
+std::vector<std::shared_ptr<const IModifiable>> Event::getListReferences(int targetId, SearchType type) const {
   std::vector<std::shared_ptr<const IModifiable>> events; // Change shared_ptr to const IModifiable
   bool resultFound{false};
-  for (auto& pages : m_pages) {
-    if (pages.conditions().variableValid()) {
-      if (pages.conditions().variableId() == targetId) {
-        resultFound = true;
+  if (type == SearchType::Variable) {
+    for (auto& pages : m_pages) {
+      for (const auto& command : pages.list()) {
+        // Go through command list and find matches
+        if (command->code() == EventCode::Control_Variables) {
+          if (command->hasVariable(targetId)) {
+            resultFound = true;
+          }
+        }
+      }
+    }
+
+  } else if (type == SearchType::Switch) {
+    for (auto& pages : m_pages) {
+      for (const auto& command : pages.list()) {
+        // Go through command list and find matches
+        if (command->code() == EventCode::Control_Switches) {
+          if (command->hasSwitch(targetId)) {
+            resultFound = true;
+          }
+        }
       }
     }
   }

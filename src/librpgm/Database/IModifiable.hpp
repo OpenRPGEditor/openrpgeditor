@@ -90,8 +90,8 @@ public:
   void disableSignals() { m_signalsDisabled = true; }
   void enableSignals() { m_signalsDisabled = false; }
 
-  virtual std::vector<std::shared_ptr<const IModifiable>> getVariableEvents(int targetId) const { return {}; }
-  virtual std::vector<std::shared_ptr<const IModifiable>> getSwitchEvents(int targetId) const { return {}; }
+  virtual std::vector<std::shared_ptr<const IModifiable>> getConditionReferences(int targetId, SearchType type) const { return {}; }
+  virtual std::vector<std::shared_ptr<const IModifiable>> getListReferences(int targetId, SearchType type) const { return {}; }
 
   virtual bool hasVariable(int targetId) { return false; }
   virtual bool hasSwitch(int targetId) { return false; }

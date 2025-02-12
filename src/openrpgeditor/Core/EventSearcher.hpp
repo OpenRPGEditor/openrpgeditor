@@ -2,26 +2,27 @@
 
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Database/Event.hpp"
+#include "ReferenceSearch.hpp"
 #include "imgui.h"
+
 #include <vector>
 
 struct MainWindow;
 class EventSearcher {
 public:
-  explicit EventSearcher(MainWindow* parent) : m_parent(parent) {}
+  explicit EventSearcher(MainWindow* parent) : reference(parent), m_parent(parent) {}
 
   bool getListing();
 
   void draw();
-  void drawTable(int mapId, int eventId, std::string eventName, int x, int y, int pageNo);
+  void drawTable(std::string label, int mapId, int eventId, std::string eventName, int x, int y, int pageNo);
   void drawTable(int commonId, int tableIndex);
 
   [[nodiscard]] bool isOpen() const { return m_isOpen; }
   void open() { m_isOpen = true; }
 
 private:
-  std::map<int, std::vector<std::shared_ptr<const IModifiable>>> m_events;
-  std::vector<int> m_common;
+  ReferenceSearch reference;
   // std::vector<std::optional<Event>> m_events;
   std::optional<VariableSwitchPicker> picker;
   MainWindow* m_parent;

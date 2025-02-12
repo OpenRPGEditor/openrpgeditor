@@ -888,6 +888,13 @@ enum class Span {
   trENUM("Moment", Moment),
 };
 
+enum class SearchType {
+  trENUM("Variable", Variable),
+  trENUM("Switch", Switch),
+  trENUM("EventName", EventName),
+  trENUM("CommonEvent", CommonEvent),
+
+};
 /**
  * @name Flags
  * @brief Allows the developer to set specific tile behaviors

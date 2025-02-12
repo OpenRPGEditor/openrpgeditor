@@ -120,8 +120,8 @@ public:
   Event clone() const { return Event(*this, 1); }
 
   bool operator==(const Event& other) const { return m_id == other.m_id && m_name == other.m_name && m_note == other.m_note && m_pages == other.m_pages && m_x == other.m_x && m_y == other.m_y; }
-  std::vector<std::shared_ptr<const IModifiable>> getVariableEvents(int targetId) const;
-  std::vector<std::shared_ptr<const IModifiable>> getSwitchEvents(int targetId) const;
+  std::vector<std::shared_ptr<const IModifiable>> getConditionReferences(int targetId, SearchType type) const override;
+  std::vector<std::shared_ptr<const IModifiable>> getListReferences(int targetId, SearchType type) const override;
 
 private:
   Event(const Event& other, int) : IModifiable(other), m_id(other.m_id), m_name(other.m_name), m_note(other.m_note), m_x(other.m_x), m_y(other.m_y) {

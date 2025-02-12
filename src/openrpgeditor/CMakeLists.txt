@@ -445,6 +445,8 @@ add_library(
         Core/DatabaseEditor/DBDocTab.hpp
         Core/EventSearcher.cpp
         Core/EventSearcher.hpp
+        Core/ReferenceSearch.cpp
+        Core/ReferenceSearch.hpp
 )
 
 target_include_directories(

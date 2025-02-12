@@ -25,6 +25,8 @@ struct ConditionalBranchCommand final : IEventCommand {
 
   [[nodiscard]] constexpr bool hasPartner() const override { return true; }
 
+  bool hasVariable(int targetId) override { return type == ConditionType::Variable && (variable.id == targetId || variable.otherId == targetId); };
+
   ConditionType type{};
   struct {
     int switchIdx{1};

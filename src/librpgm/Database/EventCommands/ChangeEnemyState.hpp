@@ -11,7 +11,15 @@ struct ChangeEnemyStateCommand final : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db) const override;
 
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeEnemyStateCommand>(*this); }
-
+  bool hasReference(int targetId, SearchType type) override {
+    if (type == SearchType::Enemy) {
+      return enemy == targetId;
+    }
+    if (type == SearchType::State) {
+      return targetId == state;
+    }
+    return false;
+  };
   int enemy;
   PartyMemberOperation enemyOp;
   int state;

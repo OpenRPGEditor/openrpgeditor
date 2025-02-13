@@ -10,7 +10,15 @@ struct ShowBattleAnimationCommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowBattleAnimationCommand>(*this); }
-
+  bool hasReference(int targetId, SearchType type) override {
+    if (type == SearchType::Enemy) {
+      return enemy == targetId;
+    }
+    if (type == SearchType::Animation) {
+      return animation == targetId;
+    }
+    return false;
+  };
   int enemy = 1; // equals 0 if bool is true
   int animation = 1;
   bool targetAllEnemies = false;

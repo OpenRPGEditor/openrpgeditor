@@ -9,6 +9,11 @@ struct CommonEventCommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<CommonEventCommand>(*this); }
-
+  bool hasReference(int targetId, SearchType type) override {
+    if (type == SearchType::CommonEvent) {
+      return event == targetId;
+    }
+    return false;
+  };
   int event = 1;
 };

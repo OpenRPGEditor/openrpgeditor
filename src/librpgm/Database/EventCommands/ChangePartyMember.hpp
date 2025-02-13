@@ -9,7 +9,12 @@ struct ChangePartyMemberCommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangePartyMemberCommand>(*this); }
-
+  bool hasReference(int targetId, SearchType type) override {
+    if (type == SearchType::Actor) {
+      return member == targetId;
+    }
+    return false;
+  };
   int member = 1;
   PartyMemberOperation operation = PartyMemberOperation::_plu__del_Add;
   bool initialize = false;

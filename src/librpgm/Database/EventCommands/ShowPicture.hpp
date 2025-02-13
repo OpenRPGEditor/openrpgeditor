@@ -10,7 +10,12 @@ struct ShowPictureCommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowPictureCommand>(*this); }
-
+  bool hasReference(int targetId, SearchType type) override {
+    if (type == SearchType::PictureId) {
+      return number == targetId;
+    }
+    return false;
+  };
   int number{1};
   std::string imageName;
   PictureOrigin origin = PictureOrigin::Upper_Left;

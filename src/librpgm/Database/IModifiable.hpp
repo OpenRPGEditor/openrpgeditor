@@ -93,8 +93,7 @@ public:
   virtual std::vector<std::shared_ptr<const IModifiable>> getConditionReferences(int targetId, SearchType type) const { return {}; }
   virtual std::vector<std::shared_ptr<const IModifiable>> getListReferences(int targetId, SearchType type) const { return {}; }
 
-  virtual bool hasVariable(int targetId) { return false; }
-  virtual bool hasSwitch(int targetId) { return false; }
+  virtual bool hasReference(int targetId, SearchType type) { return false; }
 
   rpgmutils::signal<void(IModifiable*)>& onModified();
 

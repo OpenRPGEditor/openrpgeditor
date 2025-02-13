@@ -114,12 +114,12 @@ void EventSearcher::draw() {
             for (auto& commands : page.list()) {
               if (resultFound == false) { // We only want one entry per page -- so draw once if any result is found
                 if (m_selectedSearchType == 0) {
-                  if (commands->hasSwitch(m_selectedVariable)) {
+                  if (commands->hasReference(m_selectedEvent, SearchType::Switch)) {
                     drawTable("Command List", pair.first, event.id(), event.name(), event.x(), event.y(), index + 1);
                     resultFound = true;
                   }
                 } else if (m_selectedSearchType == 1) {
-                  if (commands->hasVariable(m_selectedVariable)) {
+                  if (commands->hasReference(m_selectedVariable, SearchType::Variable)) {
                     drawTable("Command List", pair.first, event.id(), event.name(), event.x(), event.y(), index + 1);
                     resultFound = true;
                   }

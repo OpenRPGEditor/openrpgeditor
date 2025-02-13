@@ -10,6 +10,11 @@ struct MovementSwitchOFFCommand final : IMovementRouteStep {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<MovementSwitchOFFCommand>(*this); }
-
+  bool hasReference(int targetId, SearchType type) override {
+    if (type == SearchType::Switch) {
+      return targetId == id;
+    }
+    return false;
+  };
   int id{1};
 };

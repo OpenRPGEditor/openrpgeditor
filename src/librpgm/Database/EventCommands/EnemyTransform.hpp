@@ -11,7 +11,12 @@ struct EnemyTransformCommand final : IEventCommand {
 
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
-
+  bool hasReference(int targetId, SearchType type) override {
+    if (type == SearchType::Enemy) {
+      return targetId == enemy;
+    }
+    return false;
+  };
   int enemy;
   int transform;
 };

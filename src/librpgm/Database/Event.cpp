@@ -233,10 +233,8 @@ std::vector<std::shared_ptr<const IModifiable>> Event::getListReferences(int tar
     for (auto& pages : m_pages) {
       for (const auto& command : pages.list()) {
         // Go through command list and find matches
-        if (command->code() == EventCode::Control_Variables) {
-          if (command->hasVariable(targetId)) {
-            resultFound = true;
-          }
+        if (command->hasReference(targetId, SearchType::Variable)) {
+          resultFound = true;
         }
       }
     }
@@ -245,10 +243,8 @@ std::vector<std::shared_ptr<const IModifiable>> Event::getListReferences(int tar
     for (auto& pages : m_pages) {
       for (const auto& command : pages.list()) {
         // Go through command list and find matches
-        if (command->code() == EventCode::Control_Switches) {
-          if (command->hasSwitch(targetId)) {
-            resultFound = true;
-          }
+        if (command->hasReference(targetId, SearchType::Switch)) {
+          resultFound = true;
         }
       }
     }

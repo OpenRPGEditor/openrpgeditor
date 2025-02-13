@@ -47,14 +47,12 @@ void ReferenceSearch::findAllReferences(std::string text, SearchType type) {
 void ReferenceSearch::searchCommonByVariable(int targetId, SearchType type) {
   for (auto& common : m_parent->database().commonEvents.events()) {
     if (common.has_value()) {
+      bool resultFound{false};
       for (auto& cmd : common.value().commands()) {
-        if (type == SearchType::Variable) {
-          if (cmd->hasVariable(targetId)) {
+        if (!resultFound) {
+          if (cmd->hasReference(targetId, type)) {
             m_common.push_back(common->id());
-          }
-        } else if (type == SearchType::Switch) {
-          if (cmd->hasSwitch(targetId)) {
-            m_common.push_back(common->id());
+            resultFound = true;
           }
         }
       }

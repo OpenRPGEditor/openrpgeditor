@@ -11,8 +11,12 @@ struct ControlVariables : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   [[nodiscard]] std::string variableFormat(const std::string& text) const;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ControlVariables>(*this); }
-
-  bool hasVariable(int targetId) override { return (start == targetId && end == targetId) || variable == targetId; };
+  bool hasReference(int targetId, SearchType type) override {
+    if (type == SearchType::Variable) {
+      return (start == targetId && end == targetId) || variable == targetId;
+    }
+    return false;
+  };
 
   int start{1};
   int end{1};

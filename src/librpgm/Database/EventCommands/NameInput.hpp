@@ -10,7 +10,12 @@ struct NameInputCommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<NameInputCommand>(*this); }
-
+  bool hasReference(int targetId, SearchType type) override {
+    if (type == SearchType::Actor) {
+      return targetId == actorId;
+    }
+    return false;
+  };
   int actorId{1};
   int maxChar{8};
 };

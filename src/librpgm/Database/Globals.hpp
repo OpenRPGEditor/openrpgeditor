@@ -893,6 +893,18 @@ enum class SearchType {
   trENUM("Switch", Switch),
   trENUM("EventName", EventName),
   trENUM("CommonEvent", CommonEvent),
+  trENUM("Armors", Armors),
+  trENUM("Items", Items),
+  trENUM("Weapons", Weapons),
+  trENUM("Enemy", Enemy),
+  trENUM("Audio", Audio),
+  trENUM("PictureId", PictureId),
+  trENUM("Class", Class),
+  trENUM("Equipment", Equipment),
+  trENUM("Actor", Actor),
+  trENUM("Skill", Skill),
+  trENUM("State", State),
+  trENUM("Animation", Animation),
 
 };
 /**

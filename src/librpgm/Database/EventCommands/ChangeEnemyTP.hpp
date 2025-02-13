@@ -11,7 +11,17 @@ struct ChangeEnemyTPCommand final : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeEnemyTPCommand>(*this); }
 
-  int enemy{-1};
+  bool hasReference(int targetId, SearchType type) override {
+    if (type == SearchType::Variable) {
+      return quantitySource == QuantityChangeSource::Variable && quantity == targetId;
+    }
+    if (type == SearchType::Enemy) {
+      return targetId == enemy;
+    }
+    return false;
+  };
+
+   int enemy{-1};
   QuantityChangeOp enemyOp = QuantityChangeOp::_plu__del_Increase;
   QuantityChangeSource quantitySource = QuantityChangeSource::Constant;
   int quantity{1};

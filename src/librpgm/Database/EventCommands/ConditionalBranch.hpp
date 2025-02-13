@@ -25,7 +25,15 @@ struct ConditionalBranchCommand final : IEventCommand {
 
   [[nodiscard]] constexpr bool hasPartner() const override { return true; }
 
-  bool hasVariable(int targetId) override { return type == ConditionType::Variable && (variable.id == targetId || variable.otherId == targetId); };
+  bool hasReference(int targetId, SearchType searchType) override {
+    if (searchType == SearchType::Variable) {
+      return type == ConditionType::Variable && (variable.id == targetId || variable.otherId == targetId);
+    }
+    if (searchType == SearchType::Switch) {
+      return type == ConditionType::Switch && globalSwitch.switchIdx == targetId;
+    }
+    return false;
+  };
 
   ConditionType type{};
   struct {

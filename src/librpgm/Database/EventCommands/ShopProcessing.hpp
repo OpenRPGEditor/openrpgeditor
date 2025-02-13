@@ -11,7 +11,18 @@ struct ShopProcessingGoodCommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShopProcessingGoodCommand>(*this); }
-
+  bool hasReference(int targetId, SearchType searchType) override {
+    if (searchType == SearchType::Items && type == ShopType::Item) {
+      return id == targetId;
+    }
+    if (searchType == SearchType::Armors && type == ShopType::Armor) {
+      return id == targetId;
+    }
+    if (searchType == SearchType::Weapons && type == ShopType::Weapon) {
+      return id == targetId;
+    }
+    return false;
+  };
   ShopType type = ShopType::Item;
   int id{1};
   PriceType priceType = PriceType::Standard;

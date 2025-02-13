@@ -9,7 +9,12 @@ struct InputNumberCommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<InputNumberCommand>(*this); }
-
+  bool hasReference(int targetId, SearchType type) override {
+    if (type == SearchType::Variable) {
+      return variable == targetId;
+    }
+    return false;
+  };
   int variable = 1;
   int digits = 1;
 };

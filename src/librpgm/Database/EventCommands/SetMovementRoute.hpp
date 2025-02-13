@@ -26,7 +26,14 @@ struct SetMovementRouteCommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   void addStep(MovementRouteStepCommand* step) { editNodes.emplace_back(step); }
-
+  bool hasReference(int targetId, SearchType type) override {
+    for (auto& nextCmd : editNodes) {
+      if (nextCmd->hasReference(targetId, type)) {
+        return true;
+      }
+    }
+    return false;
+  };
   int character{-1};
   MovementRoute route;
   std::vector<std::shared_ptr<MovementRouteStepCommand>> editNodes;

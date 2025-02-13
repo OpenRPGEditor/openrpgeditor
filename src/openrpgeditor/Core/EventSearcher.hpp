@@ -31,6 +31,7 @@ private:
   int m_selectedEvent{0};
   int m_selectedSwitch{1};
   int m_selectedVariable{1};
+  int m_targetId{0};
   int m_map{1};
   std::string m_searchString;
   bool m_dataType{false};

@@ -25,34 +25,33 @@ void EventSearcher::draw() {
   }
   if (ImGui::Begin("Event Searcher", &m_isOpen, ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::Text("Search By:");
-
     ImGui::BeginGroup();
     {
-      ImGui::RadioButton("Switch", &m_selectedSearchType, 0);
-      ImGui::RadioButton("Variable", &m_selectedSearchType, 1);
-      ImGui::RadioButton("Event Name", &m_selectedSearchType, 2);
-      ImGui::EndGroup();
-    }
-    ImGui::SameLine();
-    ImGui::BeginGroup();
-    {
-      ImGui::BeginDisabled(m_selectedSearchType != 0);
-      if (ImGui::Button(m_selectedSearchType != 0 ? "##orpg_search_switch_empty" : Database::instance()->switchNameAndId(m_selectedSwitch).c_str(), ImVec2{250, 0})) {
-        picker.emplace("Switches", Database::instance()->system.switches(), m_selectedSwitch);
-        picker->setOpen(true);
-        m_dataType = true;
+      if (ImGui::BeginCombo("##orpg_search_combobox", DecodeEnumName(static_cast<SearchType>(m_selectedSearchType)).c_str())) {
+        for (auto v : magic_enum::enum_values<SearchType>()) {
+          if (ImGui::Selectable(DecodeEnumName(v).c_str(), static_cast<SearchType>(m_selectedSearchType) == v)) {
+            m_selectedSearchType = static_cast<int>(v);
+          }
+        }
+        ImGui::EndCombo();
       }
-      ImGui::EndDisabled();
-      ImGui::BeginDisabled(m_selectedSearchType != 1);
-      if (ImGui::Button(m_selectedSearchType != 1 ? "##orpg_search_var_empty" : Database::instance()->variableNameAndId(m_selectedVariable).c_str(), ImVec2{250, 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables(), m_selectedVariable);
-        picker->setOpen(true);
-        m_dataType = false;
+      if (m_selectedSearchType == 0) { // Variable
+        if (ImGui::Button(m_selectedSearchType != 1 ? "##orpg_search_var_empty" : Database::instance()->variableNameAndId(m_selectedVariable).c_str(), ImVec2{290, 0})) {
+          picker.emplace("Variables", Database::instance()->system.variables(), m_selectedVariable);
+          picker->setOpen(true);
+          m_dataType = false;
+        }
+      } else if (m_selectedSearchType == 1) {
+        // Switch
+        if (ImGui::Button(m_selectedSearchType != 0 ? "##orpg_search_switch_empty" : Database::instance()->switchNameAndId(m_selectedSwitch).c_str(), ImVec2{290, 0})) {
+          picker.emplace("Switches", Database::instance()->system.switches(), m_selectedSwitch);
+          picker->setOpen(true);
+          m_dataType = true;
+        }
+      } else {
+        // All other data, input int
+        ImGui::InputInt("##orpg_search_string", &m_targetId);
       }
-      ImGui::EndDisabled();
-      ImGui::BeginDisabled(m_selectedSearchType != 2);
-      ImGui::InputText("##orpg_search_string", &m_searchString);
-      ImGui::EndDisabled();
       ImGui::EndGroup();
     }
     // TODO - Common event search in command list
@@ -61,11 +60,11 @@ void EventSearcher::draw() {
     if (ImGui::Button("Search")) {
       // Search button
       if (m_selectedSearchType == 0) {
-        // Switch Search
-        reference.findAllReferences(m_selectedSwitch, SearchType::Switch);
-      } else if (m_selectedSearchType == 1) {
         // Variable Search
         reference.findAllReferences(m_selectedVariable, SearchType::Variable);
+
+      } else if (m_selectedSearchType == 1) { // Switch Search
+        reference.findAllReferences(m_selectedSwitch, SearchType::Switch);
       } else if (m_selectedSearchType == 2) {
         // Event Name Search
         reference.findAllReferences(m_searchString, SearchType::EventName);
@@ -114,12 +113,13 @@ void EventSearcher::draw() {
             for (auto& commands : page.list()) {
               if (resultFound == false) { // We only want one entry per page -- so draw once if any result is found
                 if (m_selectedSearchType == 0) {
-                  if (commands->hasReference(m_selectedEvent, SearchType::Switch)) {
+                  if (commands->hasReference(m_selectedVariable, SearchType::Variable)) {
                     drawTable("Command List", pair.first, event.id(), event.name(), event.x(), event.y(), index + 1);
                     resultFound = true;
                   }
+
                 } else if (m_selectedSearchType == 1) {
-                  if (commands->hasReference(m_selectedVariable, SearchType::Variable)) {
+                  if (commands->hasReference(m_selectedEvent, SearchType::Switch)) {
                     drawTable("Command List", pair.first, event.id(), event.name(), event.x(), event.y(), index + 1);
                     resultFound = true;
                   }

@@ -31,7 +31,7 @@ struct ScriptCommand final : IEventCommand {
       }
     }
     if (type == SearchType::Switch) {
-      if (script.contains("gameSwitches") && script.contains(Database::instance()->gameConstants.variables.at(targetId))) {
+      if (script.contains("gameSwitches") && script.contains(Database::instance()->gameConstants.switches.at(targetId))) {
         return true;
       }
     }
@@ -42,7 +42,7 @@ struct ScriptCommand final : IEventCommand {
         }
       }
       if (type == SearchType::Switch) {
-        if (nextCmd->script.contains("gameSwitches") && script.contains(Database::instance()->gameConstants.variables.at(targetId))) {
+        if (nextCmd->script.contains("gameSwitches") && script.contains(Database::instance()->gameConstants.switches.at(targetId))) {
           return true;
         }
       }

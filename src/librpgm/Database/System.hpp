@@ -159,6 +159,7 @@ public:
   [[nodiscard]] std::string skillType(int id) const;
   void setSkillType(int id, const std::string& value);
 
+  std::vector<Audio>& sounds();
   const std::vector<Audio>& sounds() const;
   void setSounds(const std::vector<Audio>& value);
 

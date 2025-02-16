@@ -905,6 +905,7 @@ enum class SearchType {
   trENUM("Skill", Skill),
   trENUM("State", State),
   trENUM("Animation", Animation),
+  trENUM("Script", Script)
 
 };
 /**

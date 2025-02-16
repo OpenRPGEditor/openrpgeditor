@@ -15,15 +15,24 @@ struct MovementScriptCommand final : IMovementRouteStep {
   std::string script;
   bool hasReference(int targetId, SearchType type) override {
     if (type == SearchType::Variable) {
-      if (script.contains("gameVariables") && script.contains(Database::instance()->gameConstants.variables.at(targetId))) {
+      if (script.contains("gameVariables") && script.contains(Database::instance()->gameConstants.variables[targetId])) {
         return true;
       }
     }
     if (type == SearchType::Switch) {
-      if (script.contains("gameSwitches") && script.contains(Database::instance()->gameConstants.variables.at(targetId))) {
+      if (script.contains("gameSwitches") && script.contains(Database::instance()->gameConstants.switches[targetId])) {
         return true;
       }
     }
     return false;
   };
+  bool hasStringReference(std::string text, SearchType type) {
+    if (text == "") {
+      return true;
+    }
+    if (script.contains(text)) {
+      return true;
+    }
+    return false;
+  }
 };

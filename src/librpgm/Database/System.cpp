@@ -963,6 +963,7 @@ void System::setSkillType(int id, const std::string& value) {
   setHasChanges();
 }
 
+std::vector<Audio>& System::sounds() { return m_sounds; }
 const std::vector<Audio>& System::sounds() const { return m_sounds; }
 void System::setSounds(const std::vector<Audio>& value) {
   if (m_sounds == value) {

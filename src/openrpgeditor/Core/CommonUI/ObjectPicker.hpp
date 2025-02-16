@@ -37,6 +37,15 @@ public:
     m_useDummyEntry = true;
     m_entireText = type;
   }
+  bool drawPicker(int& selectedData) {
+    auto [closed, confirmed] = draw();
+    if (closed) {
+      if (confirmed) {
+        selectedData = selection();
+      }
+    }
+    return closed;
+  }
 
 private:
   std::string m_name;

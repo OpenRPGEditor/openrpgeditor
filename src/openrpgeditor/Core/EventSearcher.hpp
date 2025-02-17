@@ -7,6 +7,7 @@
 #include "Database/Armors.hpp"
 #include "Database/Audio.hpp"
 #include "Database/Class.hpp"
+#include "Database/CommonEvent.hpp"
 #include "Database/Enemies.hpp"
 #include "Database/Event.hpp"
 #include "Database/Items.hpp"
@@ -53,13 +54,14 @@ private:
   std::string m_searchString;
   std::string m_pickedString;
 
+  bool m_valueSelected{false};
+
   SearchType type{SearchType::Variable};
 
   std::optional<ObjectPicker<Animation>> m_animationPicker;
   std::optional<ObjectPicker<Class>> m_classPicker;
-  // std::optional<ObjectPicker<Audio>> m_audioPicker;
   std::optional<ObjectPicker<State>> m_statePicker;
-  // std::optional<ObjectPicker<std::optional<CommonEvent>>> m_commonPicker;
+  std::optional<ObjectPicker<std::optional<CommonEvent>>> m_commonPicker;
   std::optional<ObjectPicker<Actor>> m_actorPicker;
   std::optional<ObjectPicker<Weapon>> m_weaponPicker;
   std::optional<ObjectPicker<Armor>> m_armorPicker;

@@ -12,9 +12,9 @@ struct ChangeDefeatMECommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeDefeatMECommand>(*this); }
-  bool hasReference(int targetId, SearchType type) override {
+  bool hasStringReference(std::string text, SearchType type) override {
     if (type == SearchType::Audio) {
-      return Database::instance()->system.sounds().at(targetId).name() == me.name();
+      return text.contains(me.name());
     }
     return false;
   };

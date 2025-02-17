@@ -201,8 +201,8 @@ void Event::swapPages(int a, int b) {
   }
   setHasChanges();
 }
-std::vector<std::shared_ptr<const IModifiable>> Event::getConditionReferences(int targetId, SearchType type) const {
-  std::vector<std::shared_ptr<const IModifiable>> events; // Change shared_ptr to const IModifiable
+std::vector<int> Event::getConditionReferences(int targetId, SearchType type) const {
+  std::vector<int> events; // Change shared_ptr to const IModifiable
   bool resultFound{false};
   if (type == SearchType::Variable) {
     for (auto& pages : m_pages) {
@@ -222,12 +222,12 @@ std::vector<std::shared_ptr<const IModifiable>> Event::getConditionReferences(in
     }
   }
   if (resultFound) {
-    events.push_back(std::shared_ptr<const IModifiable>(this));
+    events.push_back(m_id);
   }
   return events;
 }
-std::vector<std::shared_ptr<const IModifiable>> Event::getListReferences(int targetId, SearchType type) const {
-  std::vector<std::shared_ptr<const IModifiable>> events; // Change shared_ptr to const IModifiable
+std::vector<int> Event::getListReferences(int targetId, SearchType type) const {
+  std::vector<int> events; // Change shared_ptr to const IModifiable
   bool resultFound{false};
   for (auto& pages : m_pages) {
     for (const auto& command : pages.list()) {
@@ -239,13 +239,13 @@ std::vector<std::shared_ptr<const IModifiable>> Event::getListReferences(int tar
   }
 
   if (resultFound) {
-    events.push_back(std::shared_ptr<const IModifiable>(this));
+    events.push_back(m_id);
   }
   return events;
 }
 
-std::vector<std::shared_ptr<const IModifiable>> Event::getListReferences(std::string text, SearchType type) const {
-  std::vector<std::shared_ptr<const IModifiable>> events; // Change shared_ptr to const IModifiable
+std::vector<int> Event::getListReferences(std::string text, SearchType type) const {
+  std::vector<int> events; // Change shared_ptr to const IModifiable
   bool resultFound{false};
   for (auto& pages : m_pages) {
     for (const auto& command : pages.list()) {
@@ -257,7 +257,7 @@ std::vector<std::shared_ptr<const IModifiable>> Event::getListReferences(std::st
   }
 
   if (resultFound) {
-    events.push_back(std::shared_ptr<const IModifiable>(this));
+    events.push_back(m_id);
   }
   return events;
 }

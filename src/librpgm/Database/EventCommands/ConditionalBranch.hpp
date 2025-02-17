@@ -27,10 +27,59 @@ struct ConditionalBranchCommand final : IEventCommand {
 
   bool hasReference(int targetId, SearchType searchType) override {
     if (searchType == SearchType::Variable) {
-      return type == ConditionType::Variable && (variable.id == targetId || variable.otherId == targetId);
+      if (type == ConditionType::Variable) {
+        if (variable.id == targetId) {
+          return true;
+        }
+        return variable.source == VariableComparisonSource::Variable && variable.otherId == targetId;
+      }
     }
     if (searchType == SearchType::Switch) {
       return type == ConditionType::Switch && globalSwitch.switchIdx == targetId;
+    }
+    if (searchType == SearchType::Armors || searchType == SearchType::Weapons) {
+      if (type == ConditionType::Armor || type == ConditionType::Weapon) {
+        return equip.equipId == targetId;
+      }
+    }
+    if (searchType == SearchType::Items) {
+      if (type == ConditionType::Item) {
+        return item.id == targetId;
+      }
+    }
+    if (searchType == SearchType::Enemy) {
+      if (type == ConditionType::Enemy) {
+        return enemy.id == targetId;
+      }
+    }
+    if (searchType == SearchType::State) {
+      if (type == ConditionType::Actor) {
+        if (actor.type == ActorConditionType::State) {
+          return actor.checkId == targetId;
+        }
+      }
+      if (type == ConditionType::Enemy) {
+        return enemy.stateId == targetId;
+      }
+    }
+    if (searchType == SearchType::Actor) {
+      if (type == ConditionType::Actor) {
+        return actor.id == targetId;
+      }
+    }
+    if (searchType == SearchType::Skill) {
+      if (type == ConditionType::Actor) {
+        if (actor.type == ActorConditionType::Skill) {
+          return actor.checkId == targetId;
+        }
+      }
+    }
+    if (searchType == SearchType::Class) {
+      if (type == ConditionType::Actor) {
+        if (actor.type == ActorConditionType::Class) {
+          return actor.checkId == targetId;
+        }
+      }
     }
     return false;
   };

@@ -17,6 +17,7 @@ public:
     }
     eventId = command->event;
     m_picker = ObjectPicker("Common Events"sv, Database::instance()->commonEvents.events(), eventId);
+    m_picker->setOpen(true);
   }
   std::tuple<bool, bool> draw() override;
 

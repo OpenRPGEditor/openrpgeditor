@@ -26,22 +26,39 @@ struct ScriptCommand final : IEventCommand {
   void addText(NextScriptCommand* text) { moreScript.emplace_back(text); }
   bool hasReference(int targetId, SearchType type) override {
     if (type == SearchType::Variable) {
-      if (script.contains("gameVariables") && script.contains(Database::instance()->gameConstants.variables[targetId])) {
+      std::string cnst = Database::instance()->gameConstants.variables[targetId];
+      if (cnst.empty()) {
+        return false;
+      }
+
+      if (script.contains("gameVariables") && script.contains(cnst)) {
         return true;
       }
     }
     if (type == SearchType::Switch) {
-      if (script.contains("gameSwitches") && script.contains(Database::instance()->gameConstants.switches[targetId])) {
+      std::string cnst = Database::instance()->gameConstants.switches[targetId];
+      if (cnst.empty()) {
+        return false;
+      }
+      if (script.contains("gameSwitches") && script.contains(cnst)) {
         return true;
       }
     }
     for (auto& nextCmd : moreScript) {
       if (type == SearchType::Variable) {
+        std::string cnst = Database::instance()->gameConstants.variables[targetId];
+        if (cnst.empty()) {
+          return false;
+        }
         if (nextCmd->script.contains("gameVariables") && script.contains(Database::instance()->gameConstants.variables[targetId])) {
           return true;
         }
       }
       if (type == SearchType::Switch) {
+        std::string cnst = Database::instance()->gameConstants.switches[targetId];
+        if (cnst.empty()) {
+          return false;
+        }
         if (nextCmd->script.contains("gameSwitches") && script.contains(Database::instance()->gameConstants.switches[targetId])) {
           return true;
         }

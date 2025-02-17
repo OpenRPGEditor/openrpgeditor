@@ -13,7 +13,10 @@ struct ControlVariables : IEventCommand {
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ControlVariables>(*this); }
   bool hasReference(int targetId, SearchType type) override {
     if (type == SearchType::Variable) {
-      return (start == targetId && end == targetId) || variable == targetId;
+      if (start == targetId) {
+        return true;
+      }
+      return (variable == targetId && operand == VariableControlOperand::Variable);
     }
     return false;
   };

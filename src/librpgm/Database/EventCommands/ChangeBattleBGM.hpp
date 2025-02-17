@@ -12,9 +12,9 @@ struct ChangeBattleBGMCommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeBattleBGMCommand>(*this); }
-  bool hasReference(int targetId, SearchType type) override {
+  bool hasStringReference(std::string text, SearchType type) override {
     if (type == SearchType::Audio) {
-      return Database::instance()->system.sounds().at(targetId).name() == bgm.name();
+      return text.contains(bgm.name());
     }
     return false;
   };

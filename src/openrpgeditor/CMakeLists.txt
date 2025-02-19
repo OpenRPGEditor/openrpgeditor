@@ -447,6 +447,8 @@ add_library(
         Core/EventSearcher.hpp
         Core/ReferenceSearch.cpp
         Core/ReferenceSearch.hpp
+        Core/DatabaseEditor/DBMappingsTab.cpp
+        Core/DatabaseEditor/DBMappingsTab.hpp
 )
 
 target_include_directories(

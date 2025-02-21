@@ -7,6 +7,7 @@
 #include "imgui.h"
 #include <cstring>
 #include <misc/cpp/imgui_stdlib.h>
+#include <numeric>
 DBDocTab::DBDocTab(Docs& docs, DatabaseEditor* parent) : IDBEditorTab(parent), m_docs(&docs) {
   if (m_docs->docs.size() == 0) {
     Doc doc;
@@ -134,7 +135,17 @@ void DBDocTab::draw() {
               char name[4096];
               snprintf(name, 4096, "%s", header.front().c_str());
               if (ImGui::Selectable(std::format("{}##headerText_{}", name, index).c_str(), index == m_selectedHeader) || (ImGui::IsItemFocused() && m_selectedHeader != index)) {
+
                 m_selectedHeader = index;
+              }
+              if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                std::string text;
+                for (auto iter = headerTexts.at(m_selectedHeader).begin() + 1; iter != headerTexts.at(m_selectedHeader).end(); ++iter) {
+                  text += *iter + "\n";
+                }
+                headerText = text;
+                referenceText = text;
+                m_isEdittingHeader = true;
               }
               index++;
             }
@@ -176,20 +187,46 @@ void DBDocTab::draw() {
       ImGui::EndDisabled();
       ImGui::EndDisabled();
       ImGui::SameLine();
-      ImGui::BeginDisabled(!m_isEdittingText);
+      ImGui::BeginDisabled(!(m_isEdittingText || m_isEdittingHeader));
       ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
       if (ImGui::Button(trNOOP("Apply"), ImVec2(100, 30))) {
-        if (m_isEdittingTexts) {
-          m_docs->docs.front().setTexts(m_texts);
-          m_isEdittingTexts = false;
+        if (m_isEdittingHeader) {
+          std::vector<std::string> text = m_docs->docs.front().texts();
+          if (text.at(m_selectedCategory).contains(referenceText)) {
+            size_t beginPos = text.at(m_selectedCategory).find(referenceText);
+            size_t count = 1;
+            size_t pos = 0;
+
+            // Use find to locate each occurrence of referenceText
+            if (text.at(m_selectedCategory).find(referenceText, beginPos + referenceText.length()) != std::string::npos) {
+              count++;
+            }
+            if (count < 2) {
+              // If found, replace the substring with "this is a test"
+              if (headerText.back() != '\n') {
+                headerText += '\n';
+              }
+              text.at(m_selectedCategory).replace(beginPos, referenceText.length(), "");
+              text.at(m_selectedCategory).insert(beginPos, headerText);
+              m_docs->docs.front().setTexts(text);
+              createHeaders();
+            }
+            m_isEdittingHeader = false;
+          }
+        } else {
+
+          if (m_isEdittingTexts) {
+            m_docs->docs.front().setTexts(m_texts);
+            m_isEdittingTexts = false;
+          }
+          if (m_isEdittingNames) {
+            m_docs->docs.front().setNames(m_names);
+            m_isEdittingNames = false;
+          }
+          Save();
+          createHeaders();
+          m_isEdittingText = !m_isEdittingText;
         }
-        if (m_isEdittingNames) {
-          m_docs->docs.front().setNames(m_names);
-          m_isEdittingNames = false;
-        }
-        Save();
-        createHeaders();
-        m_isEdittingText = !m_isEdittingText;
       }
       ImGui::EndDisabled();
       ImGui::SameLine();
@@ -201,18 +238,24 @@ void DBDocTab::draw() {
         ImGui::PopTextWrapPos();
         ImGui::EndTooltip();
       }
-
       ImGui::EndGroup();
     }
     // Editor
     ImGui::BeginChild("##orpg_docs_editor_text", ImVec2(0, 0), 0, ImGuiWindowFlags_NoScrollbar);
     {
-      if (m_isEdittingText) {
+      if (m_isEdittingHeader) {
+        std::string text = headerText;
+        // headerTexts.at(m_selectedHeader);
+        if (ImGui::InputTextMultiline("##orpg_docs_text", &text, ImVec2{ImGui::GetContentRegionMax().x, ImGui::GetContentRegionMax().y - 30})) {
+          headerText = text;
+          //  m_isEdittingTexts = true;
+        }
+      } else if (m_isEdittingText) {
         // Text Editor Mode
         std::string text = m_texts.at(m_selectedCategory);
         if (ImGui::InputTextMultiline("##orpg_docs_text", &text, ImVec2{ImGui::GetContentRegionMax().x, ImGui::GetContentRegionMax().y - 30})) {
           m_texts.at(m_selectedCategory) = text;
-          m_isEdittingTexts = true;
+          // m_isEdittingTexts = true;
         }
       } else {
         // Text Viewing Mode
@@ -385,6 +428,7 @@ void DBDocTab::Save() const {
 /// ##
 void DBDocTab::createHeaders() {
   headerTexts.clear();
+  referenceHeaderTexts.clear();
   if (m_names.empty()) {
     return;
   }
@@ -399,10 +443,14 @@ void DBDocTab::createHeaders() {
       isHeaderText = true;
       headerTexts.push_back(std::vector<std::string>{});
       headerTexts.at(headerIndex).push_back(text.substr(2, text.size() - 1).data());
+
+      referenceHeaderTexts.push_back(std::vector<std::string>{});
+      referenceHeaderTexts.at(headerIndex).push_back(text.substr(2, text.size() - 1).data());
     }
     if (isHeaderText) {
       if (!text.contains("##")) {
         headerTexts.at(headerIndex).push_back(text);
+        referenceHeaderTexts.at(headerIndex).push_back(text);
       }
     }
   }

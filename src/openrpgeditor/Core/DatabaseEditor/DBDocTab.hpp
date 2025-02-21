@@ -14,13 +14,17 @@ private:
   int m_selectedHeader{0};
   int m_selectedCategory{0};
 
-  std::vector<std::vector<std::string>> headerTexts; // All categorized sections
+  std::vector<std::vector<std::string>> headerTexts;          // All categorized sections
+  std::vector<std::vector<std::string>> referenceHeaderTexts; // Referenced for replacement
   std::vector<std::string> m_names;
   std::vector<std::string> m_texts;
+  std::string headerText;
+  std::string referenceText;
 
   bool m_isEdittingText{false}; // Used to edit text by double clicking
   bool m_isEdittingNames{false};
   bool m_isEdittingTexts{false};
+  bool m_isEdittingHeader{false};
 
   bool isArrowBullet{false};
   bool isIdenting{false};

@@ -1,6 +1,6 @@
 #include "Core/EventSearcher.hpp"
+#include "Core/MainWindow.hpp"
 #include "Core/Settings.hpp"
-#include "Core\MainWindow.hpp"
 #include "Database/EventCommands/MovementRoute/Script.hpp"
 #include "ImGuiExt/ImGuiUtils.hpp"
 #include "imgui.h"
@@ -91,7 +91,7 @@ void EventSearcher::draw() {
     }
   }
 
-  if (ImGui::Begin("Event Searcher", &m_isOpen, ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::Begin("Event Searcher", &m_isOpen)) {
     type = static_cast<SearchType>(m_selectedSearchType);
     ImGui::Text("Search By:");
     ImGui::BeginGroup();
@@ -208,7 +208,7 @@ void EventSearcher::draw() {
     // Table with search results
 
     if (ImGui::BeginTable("##orpg_eventsearcher_eventlist", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                          ImVec2{ImGui::GetContentRegionMax().x - 20, ImGui::GetContentRegionMax().y - 170})) {
+                          ImVec2{0, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y})) {
       int tableIndex = 0;
 
       ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed);

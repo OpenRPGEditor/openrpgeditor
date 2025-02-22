@@ -95,7 +95,7 @@ public:
   virtual std::vector<int> getListReferences(std::string text, SearchType type) const { return {}; }
 
   virtual bool hasReference(int targetId, SearchType type) { return false; }
-  virtual bool hasStringReference(std::string text, SearchType type) { return false; }
+  virtual bool hasStringReference(const std::string& text, SearchType type) { return false; }
 
   rpgmutils::signal<void(IModifiable*)>& onModified();
 

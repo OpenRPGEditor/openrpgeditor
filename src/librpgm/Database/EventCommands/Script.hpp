@@ -66,8 +66,8 @@ struct ScriptCommand final : IEventCommand {
     }
     return false;
   };
-  bool hasStringReference(std::string text, SearchType type) {
-    if (text == "") {
+  bool hasStringReference(const std::string& text, SearchType type) override {
+    if (text.empty()) {
       return true;
     }
     if (script.contains(text)) {

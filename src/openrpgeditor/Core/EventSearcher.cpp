@@ -272,18 +272,17 @@ void EventSearcher::draw() {
           index++;
         }
       }
-      /*for (auto& commonEv : reference.getCommons()) {
+      for (auto& commonEv : reference.getCommons()) {
         if (type == SearchType::Script) {
-          CommonEvent* common = Database::instance()->commonEvents.event(commonEv);
+          CommonEvent* common = Database::instance()->commonEvents.event(commonEv.getCommonId());
           for (auto& commonCommands : common->commands()) {
             drawStringCommand(commonCommands, type, tableIndex);
           }
         } else {
-          drawTable(commonEv, totalEntries);
+          drawTable(commonEv.getCommonId(), totalEntries);
         }
         tableIndex++;
       }
-      */
       ImGui::EndTable();
     }
   }

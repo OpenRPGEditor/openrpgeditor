@@ -509,6 +509,7 @@ target_include_directories(
 target_compile_features(librpgmmovementroutecmds PRIVATE cxx_std_20)
 target_link_libraries(
         librpgmmovementroutecmds
+        PUBLIC oremath
         PRIVATE librpgm magic_enum nlohmann_json::nlohmann_json
         fmt::fmt-header-only spdlog::spdlog_header_only)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")

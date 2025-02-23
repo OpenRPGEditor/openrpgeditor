@@ -201,47 +201,50 @@ void Event::swapPages(int a, int b) {
   }
   setHasChanges();
 }
-std::vector<std::shared_ptr<const IModifiable>> Event::getConditionReferences(int targetId, SearchType type) const {
-  std::vector<std::shared_ptr<const IModifiable>> events; // Change shared_ptr to const IModifiable
+std::map<int, std::shared_ptr<const IModifiable>> Event::getConditionReferences(int targetId, SearchType type) const {
+  std::map<int, std::shared_ptr<const IModifiable>> events; // Change shared_ptr to const IModifiable
+  int pageIndex{0};
   if (type == SearchType::Variable) {
     for (auto& pages : m_pages) {
       if (pages.conditions().variableValid()) {
         if (pages.conditions().variableId() == targetId) {
-          events.emplace_back(this);
+          events.emplace(pageIndex, this);
         }
       }
+      pageIndex++;
     }
   } else if (type == SearchType::Switch) {
     for (auto& pages : m_pages) {
       if (pages.conditions().switch1Valid() || pages.conditions().switch2Valid()) {
         if (pages.conditions().switch1Id() == targetId || pages.conditions().switch2Id() == targetId) {
-          events.emplace_back(this);
+          events.emplace(pageIndex, this);
         }
       }
+      pageIndex++;
     }
   }
   return events;
 }
-std::vector<std::shared_ptr<const IModifiable>> Event::getListReferences(int targetId, SearchType type) const {
-  std::vector<std::shared_ptr<const IModifiable>> cmds; // Change shared_ptr to const IModifiable
+std::map<int, std::shared_ptr<const IModifiable>> Event::getListReferences(int targetId, SearchType type) const {
+  std::map<int, std::shared_ptr<const IModifiable>> cmds; // Change shared_ptr to const IModifiable
   for (auto& pages : m_pages) {
     for (const auto& command : pages.list()) {
       // Go through command list and find matches
       if (command->hasReference(targetId, type)) {
-        cmds.emplace_back(command);
+        cmds.emplace(0, command);
       }
     }
   }
   return cmds;
 }
 
-std::vector<std::shared_ptr<const IModifiable>> Event::getListReferences(std::string text, SearchType type) const {
-  std::vector<std::shared_ptr<const IModifiable>> cmds; // Change shared_ptr to const IModifiable
+std::map<int, std::shared_ptr<const IModifiable>> Event::getListReferences(std::string text, SearchType type) const {
+  std::map<int, std::shared_ptr<const IModifiable>> cmds; // Change shared_ptr to const IModifiable
   for (auto& pages : m_pages) {
     for (const auto& command : pages.list()) {
       // Go through command list and find matches
       if (command->hasStringReference(text, type)) {
-        cmds.emplace_back(command);
+        cmds.emplace(0, command);
       }
     }
   }

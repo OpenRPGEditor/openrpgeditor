@@ -9,9 +9,9 @@
 
 class SearchResult {
 public:
-  explicit SearchResult(int mapId, std::shared_ptr<const IModifiable> event);
+  explicit SearchResult(int mapId, const std::shared_ptr<const IModifiable>& event, int pageIndex);
   explicit SearchResult(const std::optional<CommonEvent>* event, int step);
-  explicit SearchResult(int mapId, int eventId, const IEventCommand* cmd, int step);
+  explicit SearchResult(int mapId, int eventId, std::shared_ptr<IEventCommand>& cmd, int step);
 
   [[nodiscard]] std::shared_ptr<const Event> getEvent() const { return std::dynamic_pointer_cast<const Event>(m_event); }
   [[nodiscard]] int getCommonId() const { return m_commonEvent->value().id(); }

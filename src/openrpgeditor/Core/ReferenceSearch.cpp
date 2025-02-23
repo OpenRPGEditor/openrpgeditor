@@ -9,7 +9,7 @@ void ReferenceSearch::findAllReferences(int targetId, SearchType type) {
       for (auto& event : mapInfo->map()->events()) {
         if (event) {
           for (const auto& ev : event.value().getConditionReferences(targetId, type)) {
-            m_results.emplace_back(mapInfo->id(), ev);
+            m_results.emplace_back(mapInfo->id(), ev.second, ev.first);
           }
         }
       }
@@ -24,7 +24,7 @@ void ReferenceSearch::findAllReferences(std::string text, SearchType type) {
       for (auto& event : mapInfo->map()->events()) {
         if (event) {
           for (const auto& ev : event.value().getListReferences(text, type)) {
-            m_results.emplace_back(mapInfo->id(), ev);
+            m_results.emplace_back(mapInfo->id(), ev.second, ev.first);
           }
         }
       }

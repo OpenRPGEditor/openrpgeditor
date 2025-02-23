@@ -12,7 +12,7 @@ public:
 
   const std::vector<SearchResult>& getEvents() const { return m_results; }
   const std::vector<SearchResult>& getCommands() const { return m_list; }
-  const std::vector<SearchResult> getCommons() const { return m_common; }
+  const std::vector<SearchResult>& getCommons() const { return m_common; }
   void findAllReferences(int targetId, SearchType type);
   void findAllReferences(std::string text, SearchType type);
   void searchCommonByVariable(int targetId, SearchType type);

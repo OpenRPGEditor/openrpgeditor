@@ -209,15 +209,16 @@ void DBDocTab::draw() {
               text.at(m_selectedCategory).replace(beginPos, referenceText.length(), "");
               text.at(m_selectedCategory).insert(beginPos, headerText);
               m_docs->docs.front().setTexts(text);
+              Save();
               createHeaders();
             }
             m_isEdittingHeader = false;
           }
         } else {
 
-          if (m_isEdittingTexts) {
+          if (m_isEdittingText) {
             m_docs->docs.front().setTexts(m_texts);
-            m_isEdittingTexts = false;
+            m_isEdittingText = false;
           }
           if (m_isEdittingNames) {
             m_docs->docs.front().setNames(m_names);
@@ -225,7 +226,6 @@ void DBDocTab::draw() {
           }
           Save();
           createHeaders();
-          m_isEdittingText = !m_isEdittingText;
         }
       }
       ImGui::EndDisabled();

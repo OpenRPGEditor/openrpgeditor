@@ -26,7 +26,7 @@ struct MovementScriptCommand final : IMovementRouteStep {
     }
     return false;
   };
-  bool hasStringReference(std::string text, SearchType type) {
+  bool hasStringReference(const std::string& text, SearchType type) {
     if (text == "") {
       return true;
     }

@@ -90,9 +90,9 @@ public:
   void disableSignals() { m_signalsDisabled = true; }
   void enableSignals() { m_signalsDisabled = false; }
 
-  virtual std::vector<int> getConditionReferences(int targetId, SearchType type) const { return {}; }
-  virtual std::vector<int> getListReferences(int targetId, SearchType type) const { return {}; }
-  virtual std::vector<int> getListReferences(std::string text, SearchType type) const { return {}; }
+  virtual std::vector<std::shared_ptr<const IModifiable>> getConditionReferences(int targetId, SearchType type) const { return {}; }
+  virtual std::vector<std::shared_ptr<const IModifiable>> getListReferences(int targetId, SearchType type) const { return {}; }
+  virtual std::vector<std::shared_ptr<const IModifiable>> getListReferences(std::string text, SearchType type) const { return {}; }
 
   virtual bool hasReference(int targetId, SearchType type) { return false; }
   virtual bool hasStringReference(const std::string& text, SearchType type) { return false; }

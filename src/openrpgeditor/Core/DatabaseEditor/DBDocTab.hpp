@@ -21,9 +21,9 @@ private:
   std::string headerText;
   std::string referenceText;
 
-  bool m_isEdittingText{false}; // Used to edit text by double clicking
+  bool m_isEdittingText{false};
   bool m_isEdittingNames{false};
-  bool m_isEdittingTexts{false};
+  // bool m_isEdittingTexts{false};
   bool m_isEdittingHeader{false};
 
   bool isArrowBullet{false};

@@ -152,7 +152,10 @@ add_library(
         Database/Docs.cpp
         Database/Docs.hpp
         Database/Doc.cpp
-        Database/Doc.hpp)
+        Database/Doc.hpp
+        Database/SearchResult.cpp
+        Database/SearchResult.hpp
+)
 
 target_include_directories(
         librpgm PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} nlohmann

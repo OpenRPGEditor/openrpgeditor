@@ -222,66 +222,49 @@ void EventSearcher::draw() {
       ImGui::TableNextRow();
 
       totalEntries = 0;
-
+      const int TOTAL_ENTRIES = 20;
       for (auto& results : reference.getEvents()) {
-        auto event = results.getEvent();
-        drawTable("Event Condition", results.getMapId(), event->id(), event->name(), event->x(), event->y(), results.getPage() + 1);
-
-        /*
-        int index{0};
-        for (auto& page : event->pages()) {
-          if (page.conditions().variableValid() && type == SearchType::Variable) {
-            if (page.conditions().variableId() == m_selectedData) {
-              }
-          } else if ((page.conditions().switch1Valid() || page.conditions().switch2Valid()) && type == SearchType::Switch) {
-            if (page.conditions().switch1Id() == m_selectedData || page.conditions().switch2Id() == m_selectedData) {
-              drawTable("Event Condition", results.getMapId(), event->id(), event->name(), event->x(), event->y(), index + 1);
-            }
-          } else if (page.conditions().itemValid() && type == SearchType::Variable) {
-            if (page.conditions().itemId() == m_selectedData) {
-              drawTable("Event Condition", results.getMapId(), event->id(), event->name(), event->x(), event->y(), index + 1);
-            }
-          } else if (page.conditions().actorValid() && type == SearchType::Variable) {
-            if (page.conditions().actorId() == m_selectedData) {
-              drawTable("Event Condition", results.getMapId(), event->id(), event->name(), event->x(), event->y(), index + 1);
-            }
-          }
-          index++;
-
-      }*/
+        if (totalEntries < TOTAL_ENTRIES) {
+          auto event = results.getEvent();
+          drawTable("Event Condition", results.getMapId(), event.id(), event.name(), event.x(), event.y(), results.getPage() + 1);
+          totalEntries++;
+        }
       }
       for (auto& results : reference.getCommands()) {
-        auto event = results.getEvent();
+        if (totalEntries < TOTAL_ENTRIES) {
+          auto event = results.getEvent();
 
-        int index{0};
-        for (auto& page : event->pages()) {
-          for (auto& commands : page.list()) {
-            if (type == SearchType::Script) {
-              drawStringCommand(commands, type, tableIndex);
+          if (type == SearchType::Script) {
+            drawStringCommand(results.getCommand(), type, tableIndex);
+            totalEntries++;
+          }
+          if (type == SearchType::CommonEvent || type == SearchType::Audio) {
+            if (results.getCommand()->hasStringReference(m_searchString, type)) {
+              drawTable("Command List", results.getMapId(), event.id(), event.name(), event.x(), event.y(), results.getPage() + 1);
+              totalEntries++;
             }
-            if (type == SearchType::CommonEvent || type == SearchType::Audio) {
-              if (commands->hasStringReference(m_searchString, type)) {
-                drawTable("Command List", results.getMapId(), event->id(), event->name(), event->x(), event->y(), results.getPage() + 1);
-              }
-            } else {
-              if (commands->hasReference(m_selectedData, type)) {
-                drawTable("Command List", results.getMapId(), event->id(), event->name(), event->x(), event->y(), results.getPage() + 1);
-              }
+          } else {
+            if (results.getCommand()->hasReference(m_selectedData, type)) {
+              drawTable("Command List", results.getMapId(), event.id(), event.name(), event.x(), event.y(), results.getPage() + 1);
+              totalEntries++;
             }
           }
-          index++;
         }
       }
       for (auto& commonEv : reference.getCommons()) {
-        if (type == SearchType::Script) {
-          CommonEvent* common = Database::instance()->commonEvents.event(commonEv.getCommonId());
-          for (auto& commonCommands : common->commands()) {
-            drawStringCommand(commonCommands, type, tableIndex);
+        if (totalEntries < TOTAL_ENTRIES) {
+          if (type == SearchType::Script) {
+            CommonEvent* common = Database::instance()->commonEvents.event(commonEv.getCommonId());
+            for (auto& commonCommands : common->commands()) {
+              drawStringCommand(commonCommands, type, tableIndex);
+              totalEntries++;
+            }
+          } else {
+            drawTable(commonEv.getCommonId(), totalEntries);
+            totalEntries++;
           }
-        } else {
-          drawTable(commonEv.getCommonId(), totalEntries);
+          tableIndex++;
         }
-        tableIndex++;
       }
       ImGui::EndTable();
     }
@@ -289,8 +272,6 @@ void EventSearcher::draw() {
   ImGui::End();
 }
 void EventSearcher::drawTable(std::string label, int mapId, int eventId, std::string eventName, int x, int y, int pageNo) {
-
-  totalEntries++;
   ImGui::TableNextColumn();
   const bool isSelected = (m_selectedEvent == eventId);
 
@@ -327,7 +308,6 @@ void EventSearcher::drawTable(std::string label, int mapId, int eventId, std::st
   ImGui::TableNextRow();
 }
 void EventSearcher::drawTable(int commonId, int tableIndex) {
-  totalEntries++;
   const bool isSelected = (m_selectedEvent == tableIndex);
 
   ImGui::TableNextColumn();
@@ -364,7 +344,6 @@ void EventSearcher::drawTable(int commonId, int tableIndex) {
   ImGui::TableNextRow();
 }
 void EventSearcher::drawTable(std::string text, int tableIndex) {
-  totalEntries++;
   const bool isSelected = (m_selectedEvent == tableIndex);
 
   ImGui::TableNextColumn();

@@ -201,14 +201,14 @@ void Event::swapPages(int a, int b) {
   }
   setHasChanges();
 }
-std::map<int, std::shared_ptr<const IModifiable>> Event::getConditionReferences(int targetId, SearchType type) const {
-  std::map<int, std::shared_ptr<const IModifiable>> events; // Change shared_ptr to const IModifiable
+std::map<int, bool> Event::isConditionalReference(int targetId, SearchType type) const {
+  std::map<int, bool> events; // Change shared_ptr to const IModifiable
   int pageIndex{0};
   if (type == SearchType::Variable) {
     for (auto& pages : m_pages) {
       if (pages.conditions().variableValid()) {
         if (pages.conditions().variableId() == targetId) {
-          events.emplace(pageIndex, this);
+          events.emplace(pageIndex, true);
         }
       }
       pageIndex++;
@@ -217,38 +217,13 @@ std::map<int, std::shared_ptr<const IModifiable>> Event::getConditionReferences(
     for (auto& pages : m_pages) {
       if (pages.conditions().switch1Valid() || pages.conditions().switch2Valid()) {
         if (pages.conditions().switch1Id() == targetId || pages.conditions().switch2Id() == targetId) {
-          events.emplace(pageIndex, this);
+          events.emplace(pageIndex, true);
         }
       }
       pageIndex++;
     }
   }
   return events;
-}
-std::map<int, std::shared_ptr<const IModifiable>> Event::getListReferences(int targetId, SearchType type) const {
-  std::map<int, std::shared_ptr<const IModifiable>> cmds; // Change shared_ptr to const IModifiable
-  for (auto& pages : m_pages) {
-    for (const auto& command : pages.list()) {
-      // Go through command list and find matches
-      if (command->hasReference(targetId, type)) {
-        cmds.emplace(0, command);
-      }
-    }
-  }
-  return cmds;
-}
-
-std::map<int, std::shared_ptr<const IModifiable>> Event::getListReferences(std::string text, SearchType type) const {
-  std::map<int, std::shared_ptr<const IModifiable>> cmds; // Change shared_ptr to const IModifiable
-  for (auto& pages : m_pages) {
-    for (const auto& command : pages.list()) {
-      // Go through command list and find matches
-      if (command->hasStringReference(text, type)) {
-        cmds.emplace(0, command);
-      }
-    }
-  }
-  return cmds;
 }
 
 void Event::restoreOriginal() {

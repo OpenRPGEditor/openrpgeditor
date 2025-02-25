@@ -8,31 +8,73 @@ void ReferenceSearch::findAllReferences(int targetId, SearchType type) {
     if (mapInfo->map()) {
       for (auto& event : mapInfo->map()->events()) {
         if (event) {
-          for (const auto& ev : event.value().getConditionReferences(targetId, type)) {
-            m_results.emplace_back(mapInfo->id(), ev.second, ev.first);
+          for (auto& ev : event.value().isConditionalReference(targetId, type)) {
+            if (ev.second) {
+              m_results.emplace_back(mapInfo->id(), event.value(), ev.first);
+            }
           }
         }
       }
     }
   }
-  searchCommonByVariable(targetId, type);
+  searchAllListsByTarget(targetId, type);
+  searchAllCommonByTarget(targetId, type);
 }
 void ReferenceSearch::findAllReferences(std::string text, SearchType type) {
-  m_list.clear();
+  for (auto& result : m_results) {
+    auto refEvent = result.getEvent();
+    for (auto& page : refEvent.pages()) {
+      int pageIndex{0};
+      for (auto& cmd : page.list()) {
+        if (cmd->hasStringReference(text, type)) {
+          m_list.emplace_back(result.getMapId(), result.getEvent(), cmd, pageIndex);
+        }
+        pageIndex++;
+      }
+    }
+  }
+  searchAllListsByText(text, type);
+  searchAllCommonByText(text, type);
+}
+void ReferenceSearch::searchAllListsByTarget(int targetId, SearchType type) {
   for (auto& mapInfo : m_parent->database().mapInfos.mapInfos()) {
     if (mapInfo->map()) {
       for (auto& event : mapInfo->map()->events()) {
         if (event) {
-          for (const auto& ev : event.value().getListReferences(text, type)) {
-            m_results.emplace_back(mapInfo->id(), ev.second, ev.first);
+          for (auto& page : event.value().pages()) {
+            int pageIndex{0};
+            for (auto& cmd : page.list()) {
+              if (cmd->hasReference(targetId, type)) {
+                m_list.emplace_back(mapInfo->id(), event.value(), cmd, pageIndex);
+              }
+              pageIndex++;
+            }
           }
         }
       }
     }
   }
-  searchCommonByVariable(text, type);
 }
-void ReferenceSearch::searchCommonByVariable(int targetId, SearchType type) {
+void ReferenceSearch::searchAllListsByText(std::string text, SearchType type) {
+  for (auto& mapInfo : m_parent->database().mapInfos.mapInfos()) {
+    if (mapInfo->map()) {
+      for (auto& event : mapInfo->map()->events()) {
+        if (event) {
+          for (auto& page : event.value().pages()) {
+            int pageIndex{0};
+            for (auto& cmd : page.list()) {
+              if (cmd->hasStringReference(text, type)) {
+                m_list.emplace_back(mapInfo->id(), event.value(), cmd, pageIndex);
+              }
+              pageIndex++;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+void ReferenceSearch::searchAllCommonByTarget(int targetId, SearchType type) {
   m_common.clear();
   int index{0};
   for (auto& common : m_parent->database().commonEvents.events()) {
@@ -46,7 +88,7 @@ void ReferenceSearch::searchCommonByVariable(int targetId, SearchType type) {
     }
   }
 }
-void ReferenceSearch::searchCommonByVariable(std::string text, SearchType type) {
+void ReferenceSearch::searchAllCommonByText(std::string text, SearchType type) {
   m_common.clear();
   int index{0};
   for (auto& common : m_parent->database().commonEvents.events()) {

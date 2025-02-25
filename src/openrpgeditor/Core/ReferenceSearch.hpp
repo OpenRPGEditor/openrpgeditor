@@ -15,8 +15,10 @@ public:
   const std::vector<SearchResult>& getCommons() const { return m_common; }
   void findAllReferences(int targetId, SearchType type);
   void findAllReferences(std::string text, SearchType type);
-  void searchCommonByVariable(int targetId, SearchType type);
-  void searchCommonByVariable(std::string text, SearchType type);
+  void searchAllCommonByTarget(int targetId, SearchType type);
+  void searchAllCommonByText(std::string text, SearchType type);
+  void searchAllListsByTarget(int targetId, SearchType type);
+  void searchAllListsByText(std::string text, SearchType type);
   int getCommonSize() { return m_common.size(); }
   int getListSize() { return m_list.size(); }
   // int getEventSize() { return m_event.size(); }

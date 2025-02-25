@@ -23,8 +23,8 @@ public:
 
 private:
   const Event* m_event;
-  const std::shared_ptr<IEventCommand>& m_command;
-  const std::optional<CommonEvent>* m_commonEvent;
+  std::shared_ptr<IEventCommand> m_command;
+  const std::optional<CommonEvent>* m_commonEvent = nullptr;
 
   int m_mapId{0};
   int m_step{0};

@@ -72,9 +72,7 @@ void DBMappingsTab::draw() {
         ImGui::EndChild();
         ImGui::BeginChild("##orpg_mapping_footer_panel_left", ImVec2{ImGui::GetContentRegionMax().x / 2, 60});
         {
-          char str[4096];
-          snprintf(str, 4096, "Max Switches %i", m_system.switches().size() - 1);
-          ImGui::SeparatorText(str);
+          ImGui::SeparatorText(trFormat("Max Switches {}", m_system.switches().size() - 1).c_str());
           if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
             m_changeIntDialogOpen = true;
             m_editMaxSwitches = m_system.switches().size() - 1;
@@ -85,9 +83,7 @@ void DBMappingsTab::draw() {
         ImGui::BeginChild("##orpg_mapping_footer_panel_right", ImVec2{ImGui::GetContentRegionMax().x / 2 - 10, 60});
         {
 
-          char str[4096];
-          snprintf(str, 4096, "Max Variables %i", m_system.variables().size() - 1);
-          ImGui::SeparatorText(str);
+          ImGui::SeparatorText(trFormat("Max Variables {}", m_system.switches().size() - 1).c_str());
           if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
             m_changeIntDialogOpen = true;
             m_editMaxVariables = m_system.variables().size() - 1;

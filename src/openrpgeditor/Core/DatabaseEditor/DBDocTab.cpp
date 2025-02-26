@@ -387,7 +387,7 @@ void DBDocTab::draw() {
                       if (isBulletFormat) {
                         ImGui::BulletText(text.c_str());
                       } else {
-                        ImGui::Text(text.c_str());
+                        ImGui::TextUnformatted(text.c_str());
                       }
                     }
                   }

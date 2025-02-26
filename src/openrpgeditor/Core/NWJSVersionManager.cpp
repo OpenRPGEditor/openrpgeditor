@@ -120,10 +120,10 @@ void NWJSVersionManager::draw() {
           Settings::instance()->currentNWJSVersion.clear();
         }
         int i = 0;
-        for (const auto& version : m_versions) {
-          if (ImGui::Selectable(version.c_str(), i == m_selectedVersion)) {
+        for (const auto& v : m_versions) {
+          if (ImGui::Selectable(v.c_str(), i == m_selectedVersion)) {
             m_selectedVersion = i;
-            Settings::instance()->currentNWJSVersion = version;
+            Settings::instance()->currentNWJSVersion = v;
           }
           ++i;
         }

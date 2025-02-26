@@ -21,10 +21,10 @@ public:
   void searchAllListsByText(std::string text, SearchType type);
   int getCommonSize() { return m_common.size(); }
   int getListSize() { return m_list.size(); }
-  // int getEventSize() { return m_event.size(); }
-  // int totalSize() { return getCommonSize() + getListSize() + getEventSize(); }
+  int getEventSize() { return m_results.size(); }
+  int totalSize() { return getCommonSize() + getListSize() + getEventSize(); }
   void clear() {
-    // m_event.clear();
+    m_results.clear();
     m_list.clear();
     m_common.clear();
   }

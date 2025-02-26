@@ -188,22 +188,23 @@ void EventSearcher::draw() {
         m_selectedData = m_pickedData;
         reference.findAllReferences(m_selectedData, type);
       }
+      m_maxPage = reference.totalSize() / TOTAL_ENTRIES;
     }
-    //  ImGui::SameLine();
-    //  ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 500);
-    //  if (ImGui::ArrowButton("##orpg_searchpage_left", ImGuiDir_Left)) {
-    //    if (m_currentPage > 0) {
-    //      m_currentPage--;
-    //    }
-    //  }
-    //  ImGui::SameLine();
-    //  ImGui::Text(std::format("{}/{}", m_currentPage, m_maxPage).c_str());
-    //  ImGui::SameLine();
-    //  if (ImGui::ArrowButton("##orpg_searchpage_right", ImGuiDir_Right)) {
-    //    if (m_currentPage > 0) {
-    //      m_currentPage++;
-    //    }
-    //  }
+    ImGui::SameLine();
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 500);
+    if (ImGui::ArrowButton("##orpg_searchpage_left", ImGuiDir_Left)) {
+      if (m_currentPage > 0) {
+        m_currentPage--;
+      }
+    }
+    ImGui::SameLine();
+    ImGui::Text(std::format("{}/{}", m_currentPage + 1, m_maxPage).c_str());
+    ImGui::SameLine();
+    if (ImGui::ArrowButton("##orpg_searchpage_right", ImGuiDir_Right)) {
+      if (m_currentPage < m_maxPage - 1) {
+        m_currentPage++;
+      }
+    }
 
     // Table with search results
 
@@ -222,48 +223,60 @@ void EventSearcher::draw() {
       ImGui::TableNextRow();
 
       totalEntries = 0;
-      const int TOTAL_ENTRIES = 20;
+      int resultBegin = TOTAL_ENTRIES * m_currentPage;
       for (auto& results : reference.getEvents()) {
-        if (totalEntries < TOTAL_ENTRIES) {
-          auto event = results.getEvent();
-          drawTable("Event Condition", results.getMapId(), event.id(), event.name(), event.x(), event.y(), results.getPage() + 1);
+        if (totalEntries < TOTAL_ENTRIES && resultBegin == 0) {
+          const auto& event = results.getEvent();
+          drawTable("Event Condition", results.getMapId(), event.id(), event.name(), event.x(), event.y(), results.getPage() + 1, results.getStep() + 1);
           totalEntries++;
+        }
+        if (resultBegin > 0) {
+
+          resultBegin--;
         }
       }
       for (auto& results : reference.getCommands()) {
-        if (totalEntries < TOTAL_ENTRIES) {
+        if (totalEntries < TOTAL_ENTRIES && resultBegin == 0) {
           auto event = results.getEvent();
 
           if (type == SearchType::Script) {
-            drawStringCommand(results.getCommand(), type, tableIndex);
+            drawStringCommand(results.getCommand(), type, totalEntries, results.getStep() + 1);
             totalEntries++;
           }
           if (type == SearchType::CommonEvent || type == SearchType::Audio) {
             if (results.getCommand()->hasStringReference(m_searchString, type)) {
-              drawTable("Command List", results.getMapId(), event.id(), event.name(), event.x(), event.y(), results.getPage() + 1);
+              drawTable("Command List", results.getMapId(), event.id(), event.name(), event.x(), event.y(), results.getPage() + 1, results.getStep() + 1);
               totalEntries++;
             }
           } else {
             if (results.getCommand()->hasReference(m_selectedData, type)) {
-              drawTable("Command List", results.getMapId(), event.id(), event.name(), event.x(), event.y(), results.getPage() + 1);
+              drawTable("Command List", results.getMapId(), event.id(), event.name(), event.x(), event.y(), results.getPage() + 1, results.getStep() + 1);
               totalEntries++;
             }
           }
         }
+        if (resultBegin > 0) {
+
+          resultBegin--;
+        }
       }
       for (auto& commonEv : reference.getCommons()) {
-        if (totalEntries < TOTAL_ENTRIES) {
+        if (totalEntries < TOTAL_ENTRIES && resultBegin == 0) {
           if (type == SearchType::Script) {
             CommonEvent* common = Database::instance()->commonEvents.event(commonEv.getCommonId());
             for (auto& commonCommands : common->commands()) {
-              drawStringCommand(commonCommands, type, tableIndex);
+              drawStringCommand(commonCommands, type, tableIndex, commonEv.getStep() + 1);
               totalEntries++;
             }
           } else {
-            drawTable(commonEv.getCommonId(), totalEntries);
+            drawTable(commonEv.getCommonId(), totalEntries, commonEv.getStep() + 1);
             totalEntries++;
           }
           tableIndex++;
+        }
+        if (resultBegin > 0) {
+
+          resultBegin--;
         }
       }
       ImGui::EndTable();
@@ -271,7 +284,7 @@ void EventSearcher::draw() {
   }
   ImGui::End();
 }
-void EventSearcher::drawTable(std::string label, int mapId, int eventId, std::string eventName, int x, int y, int pageNo) {
+void EventSearcher::drawTable(std::string label, int mapId, int eventId, std::string eventName, int x, int y, int pageNo, int step) {
   ImGui::TableNextColumn();
   const bool isSelected = (m_selectedEvent == eventId);
 
@@ -298,7 +311,7 @@ void EventSearcher::drawTable(std::string label, int mapId, int eventId, std::st
 
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_eventsearcher_event_step_{}_{}", eventId, pageNo).c_str());
-  ImGui::Text(std::string(std::format("-", x, y)).c_str());
+  ImGui::Text(step == 0 ? "-" : std::to_string(step).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
@@ -307,7 +320,7 @@ void EventSearcher::drawTable(std::string label, int mapId, int eventId, std::st
   ImGui::PopID();
   ImGui::TableNextRow();
 }
-void EventSearcher::drawTable(int commonId, int tableIndex) {
+void EventSearcher::drawTable(int commonId, int tableIndex, int step) {
   const bool isSelected = (m_selectedEvent == tableIndex);
 
   ImGui::TableNextColumn();
@@ -334,7 +347,7 @@ void EventSearcher::drawTable(int commonId, int tableIndex) {
 
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_eventsearcher_commonev_step_{}", commonId).c_str());
-  ImGui::Text("-");
+  ImGui::Text(step == 0 ? "-" : std::to_string(step).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
@@ -343,7 +356,7 @@ void EventSearcher::drawTable(int commonId, int tableIndex) {
   ImGui::PopID();
   ImGui::TableNextRow();
 }
-void EventSearcher::drawTable(std::string text, int tableIndex) {
+void EventSearcher::drawTable(std::string text, int tableIndex, int step) {
   const bool isSelected = (m_selectedEvent == tableIndex);
 
   ImGui::TableNextColumn();
@@ -370,7 +383,7 @@ void EventSearcher::drawTable(std::string text, int tableIndex) {
 
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_eventsearcher_script_step_{}", tableIndex).c_str());
-  ImGui::Text("-");
+  ImGui::Text(step == 0 ? "-" : std::to_string(step).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
@@ -379,19 +392,19 @@ void EventSearcher::drawTable(std::string text, int tableIndex) {
   ImGui::PopID();
   ImGui::TableNextRow();
 }
-void EventSearcher::drawStringCommand(std::shared_ptr<IEventCommand> command, SearchType type, int tableIndex) {
+void EventSearcher::drawStringCommand(std::shared_ptr<IEventCommand> command, SearchType type, int tableIndex, int step) {
   if (command->hasStringReference(m_searchString, type)) {
     if (command->code() == EventCode::Script) {
       auto cmd = std::dynamic_pointer_cast<const ScriptCommand>(command);
       if (cmd->moreScript.size() > 0) {
         for (auto& more : cmd->moreScript) {
-          drawTable(more->script, tableIndex);
+          drawTable(more->script, tableIndex, step);
         }
       }
-      drawTable(cmd->script, tableIndex);
+      drawTable(cmd->script, tableIndex, step);
     } else if (command->code() == EventCode::Script_del_Movement) {
       auto cmd = std::dynamic_pointer_cast<const MovementScriptCommand>(command);
-      drawTable(cmd->script, tableIndex);
+      drawTable(cmd->script, tableIndex, step);
     }
   }
 }

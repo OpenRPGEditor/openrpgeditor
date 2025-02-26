@@ -27,10 +27,10 @@ public:
   bool getListing();
 
   void draw();
-  void drawTable(std::string label, int mapId, int eventId, std::string eventName, int x, int y, int pageNo);
-  void drawTable(int commonId, int tableIndex);
-  void drawTable(std::string text, int tableIndex);
-  void drawStringCommand(std::shared_ptr<IEventCommand> cmd, SearchType type, int tableIndex);
+  void drawTable(std::string label, int mapId, int eventId, std::string eventName, int x, int y, int pageNo, int step);
+  void drawTable(int commonId, int tableIndex, int step);
+  void drawTable(std::string text, int tableIndex, int step);
+  void drawStringCommand(std::shared_ptr<IEventCommand> cmd, SearchType type, int tableIndex, int step);
 
   [[nodiscard]] bool isOpen() const { return m_isOpen; }
   void open() { m_isOpen = true; }
@@ -47,6 +47,7 @@ private:
   int m_maxPage{1};
   int totalEntries{0};
   bool m_isOpen = false;
+  const int TOTAL_ENTRIES = 29;
 
   // This is required so we don't update the data unless we ask to search
   int m_selectedData{1}; // Data set from picked data

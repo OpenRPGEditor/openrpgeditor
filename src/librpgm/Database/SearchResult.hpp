@@ -11,7 +11,7 @@ class SearchResult {
 public:
   explicit SearchResult(int mapId, const Event& event, int pageIndex);
   explicit SearchResult(const std::optional<CommonEvent>* event, int step);
-  explicit SearchResult(int mapId, const Event& event, const std::shared_ptr<IEventCommand>& cmd, int step);
+  explicit SearchResult(int mapId, const Event& event, const std::shared_ptr<IEventCommand>& cmd, int pageIndex, int step);
 
   [[nodiscard]] const Event& getEvent() const { return *m_event; }
   [[nodiscard]] int getCommonId() const { return m_commonEvent->value().id(); }
@@ -27,6 +27,6 @@ private:
   const std::optional<CommonEvent>* m_commonEvent;
 
   int m_mapId{0};
-  int m_step{0};
+  int m_step{-1};
   int m_page{0};
 };

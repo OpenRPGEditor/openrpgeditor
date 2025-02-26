@@ -23,14 +23,16 @@ void ReferenceSearch::findAllReferences(int targetId, SearchType type) {
 void ReferenceSearch::findAllReferences(std::string text, SearchType type) {
   for (auto& result : m_results) {
     auto refEvent = result.getEvent();
+    int pageIndex{0};
     for (auto& page : refEvent.pages()) {
-      int pageIndex{0};
+      int stepIndex{0};
       for (auto& cmd : page.list()) {
         if (cmd->hasStringReference(text, type)) {
-          m_list.emplace_back(result.getMapId(), result.getEvent(), cmd, pageIndex);
+          m_list.emplace_back(result.getMapId(), result.getEvent(), cmd, pageIndex, stepIndex);
         }
-        pageIndex++;
+        stepIndex++;
       }
+      pageIndex++;
     }
   }
   searchAllListsByText(text, type);
@@ -41,15 +43,17 @@ void ReferenceSearch::searchAllListsByTarget(int targetId, SearchType type) {
     if (mapInfo->map()) {
       for (auto& event : mapInfo->map()->events()) {
         if (event) {
+          int pageIndex{0};
           for (auto& page : event.value().pages()) {
-            int pageIndex{0};
+            int stepIndex{0};
             for (auto& cmd : page.list()) {
               if (cmd->hasReference(targetId, type)) {
-                m_list.emplace_back(mapInfo->id(), event.value(), cmd, pageIndex);
+                m_list.emplace_back(mapInfo->id(), event.value(), cmd, pageIndex, stepIndex);
               }
-              pageIndex++;
+              stepIndex++;
             }
           }
+          pageIndex++;
         }
       }
     }
@@ -60,15 +64,17 @@ void ReferenceSearch::searchAllListsByText(std::string text, SearchType type) {
     if (mapInfo->map()) {
       for (auto& event : mapInfo->map()->events()) {
         if (event) {
+          int pageIndex{0};
           for (auto& page : event.value().pages()) {
-            int pageIndex{0};
+            int stepIndex{0};
             for (auto& cmd : page.list()) {
               if (cmd->hasStringReference(text, type)) {
-                m_list.emplace_back(mapInfo->id(), event.value(), cmd, pageIndex);
+                m_list.emplace_back(mapInfo->id(), event.value(), cmd, pageIndex, stepIndex);
               }
-              pageIndex++;
+              stepIndex++;
             }
           }
+          pageIndex++;
         }
       }
     }
@@ -76,9 +82,9 @@ void ReferenceSearch::searchAllListsByText(std::string text, SearchType type) {
 }
 void ReferenceSearch::searchAllCommonByTarget(int targetId, SearchType type) {
   m_common.clear();
-  int index{0};
   for (auto& common : m_parent->database().commonEvents.events()) {
     if (common.has_value()) {
+      int index{0};
       for (auto& cmd : common.value().commands()) {
         if (cmd->hasReference(targetId, type)) {
           m_common.emplace_back(&common, index);

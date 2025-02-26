@@ -35,6 +35,8 @@ public:
 
   void addDownload(std::string_view url, std::string_view destination);
 
+  void processDownloads();
+
 private:
   CURLM* m_multiHandle;
   std::vector<DownloadEntry> m_curlHandles;

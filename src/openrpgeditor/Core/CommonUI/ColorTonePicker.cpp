@@ -8,13 +8,13 @@ bool ColorTonePicker::draw() {
     ImGui::BeginGroup();
     {
       ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 5.f);
-      ImGui::Text(trNOOP("Red:"));
+      ImGui::TextUnformatted(trNOOP("Red:"));
       ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 12.f);
-      ImGui::Text(trNOOP("Green:"));
+      ImGui::TextUnformatted(trNOOP("Green:"));
       ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 14.f);
-      ImGui::Text(trNOOP("Blue:"));
+      ImGui::TextUnformatted(trNOOP("Blue:"));
       ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 12.f);
-      ImGui::Text(trNOOP("Gray:"));
+      ImGui::TextUnformatted(trNOOP("Gray:"));
     }
     ImGui::EndGroup();
     ImGui::SameLine();

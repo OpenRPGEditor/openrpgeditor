@@ -102,7 +102,7 @@ void DBAnimationsTab::draw() {
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
             ImGui::BeginGroup();
             {
-              ImGui::Text(trNOOP("Images:"));
+              ImGui::TextUnformatted(trNOOP("Images:"));
               ImGui::PushID("##orpg_animations_name1_selection");
               if (ImGui::Button(m_selectedAnimation->animation1Name().data(), ImVec2{200, 0})) {
                 m_pickerSelection = 0;
@@ -129,7 +129,7 @@ void DBAnimationsTab::draw() {
             ImGui::EndGroup();
             ImGui::BeginGroup();
             {
-              ImGui::Text(trNOOP("Frame:"));
+              ImGui::TextUnformatted(trNOOP("Frame:"));
               ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x - 50);
               ImGui::SliderInt("##orpg_animations_frames_slider", m_isApplyingChanges ? &m_selectedFrameNumber : &m_frameCursor, 1, m_selectedAnimation->frames().size());
               ImGui::EndGroup();
@@ -471,7 +471,7 @@ void DBAnimationsTab::draw() {
     if (m_changeIntDialogOpen) {
       if (ImGui::Begin(trNOOP("Change Max Animations"), &m_changeIntDialogOpen,
                        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_Modal | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
-        ImGui::Text(
+        ImGui::TextUnformatted(
             trNOOP("Specify an amount to resize the animation list to\n"
                    "This cannot be undone!"));
         ImGui::InputInt("##value_input", &m_editMaxAnimations);
@@ -489,7 +489,7 @@ void DBAnimationsTab::draw() {
       if (m_changeConfirmDialogOpen) {
         if (ImGui::Begin(trNOOP("Confirm Change"), &m_changeConfirmDialogOpen,
                          ImGuiWindowFlags_NoResize | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking)) {
-          ImGui::Text(trNOOP("Are you sure?"));
+          ImGui::TextUnformatted(trNOOP("Are you sure?"));
           if (ImGui::Button(trNOOP("Yes"))) {
             const int tmpId = m_selectedAnimation->id();
             m_animations.resize(m_editMaxAnimations);

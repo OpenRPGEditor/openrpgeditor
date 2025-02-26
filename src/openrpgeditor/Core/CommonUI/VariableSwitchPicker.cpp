@@ -25,7 +25,7 @@ std::tuple<bool, bool> VariableSwitchPicker::draw() {
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{720, 640}, ImGuiCond_Once);
+  ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Once);
   if (ImGui::BeginPopupModal(title.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::Text("Filter");
     ImGui::SameLine();

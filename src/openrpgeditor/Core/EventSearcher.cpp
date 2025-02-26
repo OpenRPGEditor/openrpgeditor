@@ -296,27 +296,27 @@ void EventSearcher::drawTable(std::string label, int mapId, int eventId, std::st
   }
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_table_map_entry{}_{}", eventId, pageNo).c_str());
-  ImGui::Text(std::format("{:03}:{}", mapId, Database::instance()->mapName(mapId)).c_str());
+  ImGui::TextUnformatted(std::format("{:03}:{}", mapId, Database::instance()->mapName(mapId)).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_eventsearcher_event_data_{}_{}", eventId, pageNo).c_str());
-  ImGui::Text(std::format("{:03}:{}", eventId, eventName).c_str());
+  ImGui::TextUnformatted(std::format("{:03}:{}", eventId, eventName).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_eventsearcher_event_pageNo_{}_{}", eventId, pageNo).c_str());
-  ImGui::Text(std::to_string(pageNo).c_str());
+  ImGui::TextUnformatted(std::to_string(pageNo).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_eventsearcher_event_step_{}_{}", eventId, pageNo).c_str());
-  ImGui::Text(step == 0 ? "-" : std::to_string(step).c_str());
+  ImGui::TextUnformatted(step == 0 ? "-" : std::to_string(step).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_eventsearcher_event_pos_{}_{}", eventId, pageNo).c_str());
-  ImGui::Text(std::string(std::format("({},{})", x, y)).c_str());
+  ImGui::TextUnformatted(std::string(std::format("({},{})", x, y)).c_str());
   ImGui::PopID();
   ImGui::TableNextRow();
 }
@@ -337,7 +337,7 @@ void EventSearcher::drawTable(int commonId, int tableIndex, int step) {
 
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_eventsearcher_commonev_data_{}", commonId).c_str());
-  ImGui::Text(std::format("{:03}:{}", commonId, Database::instance()->commonEventName(commonId)).c_str());
+  ImGui::TextUnformatted(std::format("{:03}:{}", commonId, Database::instance()->commonEventName(commonId)).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
@@ -347,7 +347,7 @@ void EventSearcher::drawTable(int commonId, int tableIndex, int step) {
 
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_eventsearcher_commonev_step_{}", commonId).c_str());
-  ImGui::Text(step == 0 ? "-" : std::to_string(step).c_str());
+  ImGui::TextUnformatted(step == 0 ? "-" : std::to_string(step).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
@@ -383,7 +383,7 @@ void EventSearcher::drawTable(std::string text, int tableIndex, int step) {
 
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_eventsearcher_script_step_{}", tableIndex).c_str());
-  ImGui::Text(step == 0 ? "-" : std::to_string(step).c_str());
+  ImGui::TextUnformatted(step == 0 ? "-" : std::to_string(step).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
@@ -395,7 +395,7 @@ void EventSearcher::drawTable(std::string text, int tableIndex, int step) {
 void EventSearcher::drawStringCommand(std::shared_ptr<IEventCommand> command, SearchType type, int tableIndex, int step) {
   if (command->hasStringReference(m_searchString, type)) {
     if (command->code() == EventCode::Script) {
-      auto cmd = std::dynamic_pointer_cast<const ScriptCommand>(command);
+      const auto cmd = std::dynamic_pointer_cast<const ScriptCommand>(command);
       if (cmd->moreScript.size() > 0) {
         for (auto& more : cmd->moreScript) {
           drawTable(more->script, tableIndex, step);

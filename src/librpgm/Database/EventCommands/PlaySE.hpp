@@ -15,7 +15,11 @@ struct PlaySECommand final : IEventCommand {
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<PlaySECommand>(*this); }
   bool hasStringReference(const std::string& text, SearchType type) override {
     if (type == SearchType::Audio) {
-      return text.contains(audio.name());
+      if (!text.empty()) {
+        if (audio.name().contains(text)) {
+          return text.contains(audio.name());
+        }
+      }
     }
     return false;
   };

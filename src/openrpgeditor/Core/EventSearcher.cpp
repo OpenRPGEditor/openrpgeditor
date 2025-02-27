@@ -92,95 +92,93 @@ void EventSearcher::draw() {
   }
 
   if (ImGui::Begin("Event Searcher", &m_isOpen)) {
-    type = static_cast<SearchType>(m_selectedSearchType);
     ImGui::Text("Search By:");
     ImGui::BeginGroup();
     {
-      if (ImGui::BeginCombo("##orpg_search_combobox", DecodeEnumName(static_cast<SearchType>(m_selectedSearchType)).c_str())) {
+      if (ImGui::BeginCombo("##orpg_search_combobox", DecodeEnumName(static_cast<SearchType>(m_pickedSearchType)).c_str())) {
         for (auto v : magic_enum::enum_values<SearchType>()) {
-          if (ImGui::Selectable(DecodeEnumName(v).c_str(), static_cast<SearchType>(m_selectedSearchType) == v)) {
-            m_selectedSearchType = static_cast<int>(v);
+          if (ImGui::Selectable(DecodeEnumName(v).c_str(), static_cast<SearchType>(m_pickedSearchType) == v)) {
+            m_pickedSearchType = static_cast<int>(v);
+            m_valueSelected = false;
           }
         }
         ImGui::EndCombo();
       }
-      if (type == SearchType::Variable) { // Variable
+      pickedType = static_cast<SearchType>(m_pickedSearchType);
+      if (pickedType == SearchType::Variable) { // Variable
         if (ImGui::Button(Database::instance()->variableNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
           picker.emplace("Variables", Database::instance()->system.variables(), m_selectedData);
           picker->setOpen(true);
         }
-      } else if (type == SearchType::Switch) {
+      } else if (pickedType == SearchType::Switch) {
         // Switch
         if (ImGui::Button(Database::instance()->switchNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
           picker.emplace("Switches", Database::instance()->system.switches(), m_selectedData);
           picker->setOpen(true);
         }
-      } else if (type == SearchType::Animation) {
+      } else if (pickedType == SearchType::Animation) {
         if (ImGui::Button(Database::instance()->animationNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
           m_animationPicker.emplace("Animations"sv, Database::instance()->animations.animations(), m_selectedData);
           m_animationPicker->setOpen(true);
         }
-      } else if (type == SearchType::Armors) {
+      } else if (pickedType == SearchType::Armors) {
         if (ImGui::Button(Database::instance()->armorNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
           m_armorPicker.emplace("Armors"sv, Database::instance()->armors.armors(), m_selectedData);
           m_armorPicker->setOpen(true);
         }
-      } else if (type == SearchType::Audio) {
+      } else if (pickedType == SearchType::Audio) {
         ImGui::InputText("##orpg_search_textInput_audio", &m_pickedString);
-      } else if (type == SearchType::CommonEvent) {
+      } else if (pickedType == SearchType::CommonEvent) {
         if (ImGui::Button(Database::instance()->commonEventNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
           m_commonPicker = ObjectPicker("Common Events"sv, Database::instance()->commonEvents.events(), m_selectedData);
           m_commonPicker->setOpen(true);
         }
-      } else if (type == SearchType::Class) {
+      } else if (pickedType == SearchType::Class) {
         if (ImGui::Button(Database::instance()->classNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
           m_classPicker.emplace("Classes"sv, Database::instance()->classes.classes(), m_selectedData);
           m_classPicker->setOpen(true);
         }
-      } else if (type == SearchType::Enemy) {
+      } else if (pickedType == SearchType::Enemy) {
         if (ImGui::Button(Database::instance()->enemyNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
           m_enemyPicker.emplace("Enemies"sv, Database::instance()->enemies.enemies(), m_selectedData);
           m_enemyPicker->setOpen(true);
         }
-      } else if (type == SearchType::Items) {
+      } else if (pickedType == SearchType::Items) {
         if (ImGui::Button(Database::instance()->itemNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
           m_itemPicker.emplace("Items"sv, Database::instance()->items.items(), m_selectedData);
           m_itemPicker->setOpen(true);
         }
-      } else if (type == SearchType::Skill) {
+      } else if (pickedType == SearchType::Skill) {
         if (ImGui::Button(Database::instance()->skillNameOrId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
           m_skillPicker.emplace("Skills"sv, Database::instance()->skills.skills(), m_selectedData);
           m_skillPicker->setOpen(true);
         }
-      } else if (type == SearchType::State) {
+      } else if (pickedType == SearchType::State) {
         if (ImGui::Button(Database::instance()->stateNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
           m_statePicker.emplace("States"sv, Database::instance()->states.states(), m_selectedData);
           m_statePicker->setOpen(true);
         }
-      } else if (type == SearchType::Weapons) {
+      } else if (pickedType == SearchType::Weapons) {
         if (ImGui::Button(Database::instance()->weaponNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
           m_weaponPicker.emplace("Weapons"sv, Database::instance()->weapons.weapons(), m_selectedData);
           m_weaponPicker->setOpen(true);
         }
-      } else if (type == SearchType::Actor) {
+      } else if (pickedType == SearchType::Actor) {
 
         if (ImGui::Button(Database::instance()->actorNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
           m_actorPicker.emplace("Actors"sv, Database::instance()->actors.actorList(), m_selectedData);
           m_actorPicker->setOpen(true);
         }
-      } else if (type == SearchType::Script) {
+      } else if (pickedType == SearchType::Script) {
         ImGui::InputText("##orpg_search_textInput_script", &m_pickedString);
       } else {
         ImGui::Text("Not implemented");
       }
       ImGui::EndGroup();
     }
-    // TODO: Audio is giving weird results
-    // TODO: Start working on reference mapping -- search results should be accurate.
-    // TODO: Start with common event swaps first, maybe animations? This would be a good start
-    // TODO: Database reorganization, favorites, animation preview, liblcf impl
     if (ImGui::Button("Search")) {
       m_valueSelected = true;
+      type = pickedType;
       if (type == SearchType::Script || type == SearchType::Audio) {
         m_searchString = m_pickedString;
         reference.findAllReferences(m_searchString, type);
@@ -188,6 +186,8 @@ void EventSearcher::draw() {
         m_selectedData = m_pickedData;
         reference.findAllReferences(m_selectedData, type);
       }
+      m_selectedSearchType = m_pickedSearchType;
+      m_currentPage = 0;
       m_maxPage = reference.totalSize() / TOTAL_ENTRIES;
     }
     ImGui::SameLine();
@@ -198,7 +198,7 @@ void EventSearcher::draw() {
       }
     }
     ImGui::SameLine();
-    ImGui::Text(std::format("{}/{}", m_currentPage + 1, m_maxPage).c_str());
+    ImGui::Text(std::format("{}/{}", m_currentPage + 1, m_maxPage == 0 ? 1 : m_maxPage).c_str());
     ImGui::SameLine();
     if (ImGui::ArrowButton("##orpg_searchpage_right", ImGuiDir_Right)) {
       if (m_currentPage < m_maxPage - 1) {
@@ -240,7 +240,7 @@ void EventSearcher::draw() {
           auto event = results.getEvent();
 
           if (type == SearchType::Script) {
-            drawStringCommand(results.getCommand(), type, totalEntries, results.getStep() + 1);
+            drawStringCommand(results, type, totalEntries, results.getStep() + 1);
             totalEntries++;
           }
           if (type == SearchType::CommonEvent || type == SearchType::Audio) {
@@ -263,11 +263,10 @@ void EventSearcher::draw() {
       for (auto& commonEv : reference.getCommons()) {
         if (totalEntries < TOTAL_ENTRIES && resultBegin == 0) {
           if (type == SearchType::Script) {
-            CommonEvent* common = Database::instance()->commonEvents.event(commonEv.getCommonId());
-            for (auto& commonCommands : common->commands()) {
-              drawStringCommand(commonCommands, type, tableIndex, commonEv.getStep() + 1);
-              totalEntries++;
-            }
+            drawStringCommand(commonEv, type, tableIndex, commonEv.getStep() + 1);
+            totalEntries++;
+            // CommonEvent* common = Database::instance()->commonEvents.event(commonEv.getCommonId());
+            // for (auto& commonCommands : common->commands()) {}
           } else {
             drawTable(commonEv.getCommonId(), totalEntries, commonEv.getStep() + 1);
             totalEntries++;
@@ -286,11 +285,11 @@ void EventSearcher::draw() {
 }
 void EventSearcher::drawTable(std::string label, int mapId, int eventId, std::string eventName, int x, int y, int pageNo, int step) {
   ImGui::TableNextColumn();
-  const bool isSelected = (m_selectedEvent == eventId);
+  const bool isSelected = (m_selectedResult == totalEntries);
 
   if (ImGui::SelectableWithBorder(std::format("{}##orpg_table_event_type_entry{}_{}_{}_{}", label, mapId, eventId, pageNo, totalEntries).c_str(), isSelected,
                                   ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
-
+    m_selectedResult = totalEntries;
     if (isSelected)
       ImGui::SetItemDefaultFocus();
   }
@@ -321,12 +320,12 @@ void EventSearcher::drawTable(std::string label, int mapId, int eventId, std::st
   ImGui::TableNextRow();
 }
 void EventSearcher::drawTable(int commonId, int tableIndex, int step) {
-  const bool isSelected = (m_selectedEvent == tableIndex);
+  const bool isSelected = (m_selectedResult == totalEntries);
 
   ImGui::TableNextColumn();
   if (ImGui::SelectableWithBorder(std::format("{}##orpg_table_type_common_entry{}", "Common Event", commonId).c_str(), isSelected,
                                   ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
-
+    m_selectedResult = totalEntries;
     if (isSelected)
       ImGui::SetItemDefaultFocus();
   }
@@ -356,29 +355,28 @@ void EventSearcher::drawTable(int commonId, int tableIndex, int step) {
   ImGui::PopID();
   ImGui::TableNextRow();
 }
-void EventSearcher::drawTable(std::string text, int tableIndex, int step) {
-  const bool isSelected = (m_selectedEvent == tableIndex);
-
+void EventSearcher::drawTable(std::string text, int tableIndex, int step, int eventId, int mapId, int pageId, int pos) {
+  const bool isSelected = (m_selectedResult == totalEntries);
   ImGui::TableNextColumn();
   if (ImGui::SelectableWithBorder(std::format("{}##orpg_table_type_script_entry{}_{}", text, tableIndex, totalEntries).c_str(), isSelected,
                                   ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
-
+    m_selectedResult = totalEntries;
     if (isSelected)
       ImGui::SetItemDefaultFocus();
   }
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_table_script_entry{}", tableIndex).c_str());
-  ImGui::Text("-");
+  ImGui::TextUnformatted(std::to_string(mapId).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_eventsearcher_script_data_{}", tableIndex).c_str());
-  ImGui::Text("-");
+  ImGui::TextUnformatted(std::to_string(eventId).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_eventsearcher_script_pageNo_{}", tableIndex).c_str());
-  ImGui::Text("-");
+  ImGui::TextUnformatted(std::to_string(pageId).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
@@ -388,23 +386,23 @@ void EventSearcher::drawTable(std::string text, int tableIndex, int step) {
 
   ImGui::TableNextColumn();
   ImGui::PushID(std::format("##orpg_eventsearcher_script_pos_{}", tableIndex).c_str());
-  ImGui::Text("-");
+  ImGui::TextUnformatted(std::to_string(pos).c_str());
   ImGui::PopID();
   ImGui::TableNextRow();
 }
-void EventSearcher::drawStringCommand(std::shared_ptr<IEventCommand> command, SearchType type, int tableIndex, int step) {
-  if (command->hasStringReference(m_searchString, type)) {
-    if (command->code() == EventCode::Script) {
-      const auto cmd = std::dynamic_pointer_cast<const ScriptCommand>(command);
+void EventSearcher::drawStringCommand(const SearchResult& result, SearchType type, int tableIndex, int step) {
+  if (result.getCommand()->hasStringReference(m_searchString, type)) {
+    if (result.getCommand()->code() == EventCode::Script) {
+      const auto cmd = std::dynamic_pointer_cast<const ScriptCommand>(result.getCommand());
       if (cmd->moreScript.size() > 0) {
         for (auto& more : cmd->moreScript) {
-          drawTable(more->script, tableIndex, step);
+          drawTable(more->script, tableIndex, step, result.getEvent().id(), result.getMapId(), result.getPage(), result.getTile());
         }
       }
-      drawTable(cmd->script, tableIndex, step);
-    } else if (command->code() == EventCode::Script_del_Movement) {
-      auto cmd = std::dynamic_pointer_cast<const MovementScriptCommand>(command);
-      drawTable(cmd->script, tableIndex, step);
+      drawTable(cmd->script, tableIndex, step, result.getEvent().id(), result.getMapId(), result.getPage(), result.getTile());
+    } else if (result.getCommand()->code() == EventCode::Script_del_Movement) {
+      auto cmd = std::dynamic_pointer_cast<const MovementScriptCommand>(result.getCommand());
+      drawTable(cmd->script, tableIndex, step, result.getEvent().id(), result.getMapId(), result.getPage(), result.getTile());
     }
   }
 }

@@ -29,8 +29,8 @@ public:
   void draw();
   void drawTable(std::string label, int mapId, int eventId, std::string eventName, int x, int y, int pageNo, int step);
   void drawTable(int commonId, int tableIndex, int step);
-  void drawTable(std::string text, int tableIndex, int step);
-  void drawStringCommand(std::shared_ptr<IEventCommand> cmd, SearchType type, int tableIndex, int step);
+  void drawTable(std::string text, int tableIndex, int step, int eventId, int mapId, int pageId, int pos);
+  void drawStringCommand(const SearchResult& result, SearchType type, int tableIndex, int step);
 
   [[nodiscard]] bool isOpen() const { return m_isOpen; }
   void open() { m_isOpen = true; }
@@ -41,8 +41,10 @@ private:
   std::optional<VariableSwitchPicker> picker;
   MainWindow* m_parent;
   int m_selectedVersion = -1;
+  int m_pickedSearchType{0};
+
   int m_selectedSearchType{0};
-  int m_selectedEvent{1}; // For table selection
+  int m_selectedResult{0}; // For table selection
   int m_currentPage{0};
   int m_maxPage{1};
   int totalEntries{0};
@@ -58,6 +60,7 @@ private:
   bool m_valueSelected{false};
 
   SearchType type{SearchType::Variable};
+  SearchType pickedType{SearchType::Variable};
 
   std::optional<ObjectPicker<Animation>> m_animationPicker;
   std::optional<ObjectPicker<Class>> m_classPicker;

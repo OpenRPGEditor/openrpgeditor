@@ -21,6 +21,7 @@ void ReferenceSearch::findAllReferences(int targetId, SearchType type) {
   searchAllCommonByTarget(targetId, type);
 }
 void ReferenceSearch::findAllReferences(std::string text, SearchType type) {
+  m_results.clear();
   for (auto& result : m_results) {
     auto refEvent = result.getEvent();
     int pageIndex{0};
@@ -39,6 +40,7 @@ void ReferenceSearch::findAllReferences(std::string text, SearchType type) {
   searchAllCommonByText(text, type);
 }
 void ReferenceSearch::searchAllListsByTarget(int targetId, SearchType type) {
+  m_list.clear();
   for (auto& mapInfo : m_parent->database().mapInfos.mapInfos()) {
     if (mapInfo->map()) {
       for (auto& event : mapInfo->map()->events()) {
@@ -60,6 +62,7 @@ void ReferenceSearch::searchAllListsByTarget(int targetId, SearchType type) {
   }
 }
 void ReferenceSearch::searchAllListsByText(std::string text, SearchType type) {
+  m_list.clear();
   for (auto& mapInfo : m_parent->database().mapInfos.mapInfos()) {
     if (mapInfo->map()) {
       for (auto& event : mapInfo->map()->events()) {

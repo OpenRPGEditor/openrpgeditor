@@ -3,7 +3,6 @@
 #include "Database/EventPage.hpp"
 #include "Database/Globals.hpp"
 #include "Database/IEventEditor.hpp"
-#include "SearchResult.hpp"
 #include <string>
 #include <vector>
 

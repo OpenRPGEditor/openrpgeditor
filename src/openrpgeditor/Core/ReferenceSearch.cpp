@@ -10,7 +10,7 @@ void ReferenceSearch::findAllReferences(int targetId, SearchType type) {
         if (event) {
           for (auto& ev : event.value().isConditionalReference(targetId, type)) {
             if (ev.second) {
-              m_results.emplace_back(mapInfo->id(), event.value(), ev.first);
+              m_results.emplace_back(mapInfo->id(), event.value().id(), ev.first);
             }
           }
         }
@@ -29,7 +29,7 @@ void ReferenceSearch::findAllReferences(std::string text, SearchType type) {
       int stepIndex{0};
       for (auto& cmd : page.list()) {
         if (cmd->hasStringReference(text, type)) {
-          m_list.emplace_back(result.getMapId(), result.getEvent(), cmd, pageIndex, stepIndex);
+          m_list.emplace_back(result.getMapId(), result.getEventId(), cmd, pageIndex, stepIndex);
         }
         stepIndex++;
       }
@@ -50,7 +50,7 @@ void ReferenceSearch::searchAllListsByTarget(int targetId, SearchType type) {
             int stepIndex{0};
             for (auto& cmd : page.list()) {
               if (cmd->hasReference(targetId, type)) {
-                m_list.emplace_back(mapInfo->id(), event.value(), cmd, pageIndex, stepIndex);
+                m_list.emplace_back(mapInfo->id(), event.value().id(), cmd, pageIndex, stepIndex);
               }
               stepIndex++;
             }
@@ -72,7 +72,7 @@ void ReferenceSearch::searchAllListsByText(std::string text, SearchType type) {
             int stepIndex{0};
             for (auto& cmd : page.list()) {
               if (cmd->hasStringReference(text, type)) {
-                m_list.emplace_back(mapInfo->id(), event.value(), cmd, pageIndex, stepIndex);
+                m_list.emplace_back(mapInfo->id(), event.value().id(), cmd, pageIndex, stepIndex);
               }
               stepIndex++;
             }
@@ -90,7 +90,7 @@ void ReferenceSearch::searchAllCommonByTarget(int targetId, SearchType type) {
       int index{0};
       for (auto& cmd : common.value().commands()) {
         if (cmd->hasReference(targetId, type)) {
-          m_common.emplace_back(&common, index);
+          m_common.emplace_back(common.value().id(), index);
         }
         index++;
       }
@@ -105,7 +105,7 @@ void ReferenceSearch::searchAllCommonByText(std::string text, SearchType type) {
       bool resultFound{false};
       for (auto& cmd : common.value().commands()) {
         if (cmd->hasStringReference(text, type)) {
-          m_common.emplace_back(&common, index);
+          m_common.emplace_back(common.value().id(), index);
         }
         index++;
       }

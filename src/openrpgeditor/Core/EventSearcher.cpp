@@ -231,19 +231,18 @@ void EventSearcher::draw() {
           totalEntries++;
         }
         if (resultBegin > 0) {
-
           resultBegin--;
         }
       }
       for (auto& results : reference.getCommands()) {
         if (totalEntries < TOTAL_ENTRIES && resultBegin == 0) {
-          auto event = results.getEvent();
+          const auto& event = results.getEvent();
 
           if (type == SearchType::Script) {
             drawStringCommand(results, type, totalEntries, results.getStep() + 1);
             totalEntries++;
           }
-          if (type == SearchType::CommonEvent || type == SearchType::Audio) {
+          if (type == SearchType::Audio) {
             if (results.getCommand()->hasStringReference(m_searchString, type)) {
               drawTable("Command List", results.getMapId(), event.id(), event.name(), event.x(), event.y(), results.getPage() + 1, results.getStep() + 1);
               totalEntries++;
@@ -256,7 +255,6 @@ void EventSearcher::draw() {
           }
         }
         if (resultBegin > 0) {
-
           resultBegin--;
         }
       }
@@ -265,16 +263,13 @@ void EventSearcher::draw() {
           if (type == SearchType::Script) {
             drawStringCommand(commonEv, type, tableIndex, commonEv.getStep() + 1);
             totalEntries++;
-            // CommonEvent* common = Database::instance()->commonEvents.event(commonEv.getCommonId());
-            // for (auto& commonCommands : common->commands()) {}
           } else {
-            drawTable(commonEv.getCommonId(), totalEntries, commonEv.getStep() + 1);
+            drawTable(commonEv.getCommonEvent().id(), totalEntries, commonEv.getStep() + 1);
             totalEntries++;
           }
           tableIndex++;
         }
         if (resultBegin > 0) {
-
           resultBegin--;
         }
       }

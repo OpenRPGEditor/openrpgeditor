@@ -202,7 +202,7 @@ void Event::swapPages(int a, int b) {
   setHasChanges();
 }
 std::map<int, bool> Event::isConditionalReference(int targetId, SearchType type) const {
-  std::map<int, bool> events; // Change shared_ptr to const IModifiable
+  std::map<int, bool> events;
   int pageIndex{0};
   if (type == SearchType::Variable) {
     for (auto& pages : m_pages) {

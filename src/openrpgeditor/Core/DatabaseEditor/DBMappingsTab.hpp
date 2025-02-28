@@ -10,8 +10,8 @@ public:
 
 private:
   System& m_system;
-  int m_selectedVariable{1};
-  int m_selectedSwitch{1};
+  int m_selectedVariable{0};
+  int m_selectedSwitch{0};
 
   std::string m_switch_string;
   std::string m_variable_string;

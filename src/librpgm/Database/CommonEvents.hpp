@@ -41,6 +41,11 @@ public:
       }
     }
   }
+  void swapReference(int targetId, int newId) {
+    if (targetId >= 0 && targetId < m_events.size() && newId >= 0 && newId < m_events.size()) {
+      std::swap(m_events[targetId], m_events[newId]);
+    }
+  }
 
 private:
   std::vector<std::optional<CommonEvent>> m_events;

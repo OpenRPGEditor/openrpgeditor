@@ -15,6 +15,15 @@ struct ChangePartyMemberCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (type == SearchType::Actor) {
+        member = newId;
+      }
+      return true;
+    }
+    return false;
+  }
   int member = 1;
   PartyMemberOperation operation = PartyMemberOperation::_plu__del_Add;
   bool initialize = false;

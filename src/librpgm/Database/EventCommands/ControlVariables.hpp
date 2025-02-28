@@ -21,6 +21,17 @@ struct ControlVariables : IEventCommand {
     return false;
   };
 
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (start == targetId && end == targetId) {
+        start = newId;
+        end = newId;
+      }
+      return true;
+    }
+    return false;
+  }
+
   int start{1};
   int end{1};
   VariableControlOperation operation = VariableControlOperation::_set__del_Set;

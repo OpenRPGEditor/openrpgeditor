@@ -16,5 +16,14 @@ struct ErasePictureCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (type == SearchType::PictureId) {
+        picture = newId;
+      }
+      return true;
+    }
+    return false;
+  }
   int picture;
 };

@@ -19,6 +19,20 @@ struct ChangeEnemyHPCommand final : IEventCommand {
     }
     return false;
   };
+
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (quantitySource == QuantityChangeSource::Variable && quantity == targetId) {
+        quantity = newId;
+      }
+      if (type == SearchType::Enemy) {
+        enemy = newId;
+      }
+
+      return true;
+    }
+    return false;
+  }
   int enemy{-1};
   QuantityChangeOp enemyOp = QuantityChangeOp::_plu__del_Increase;
   QuantityChangeSource quantitySource = QuantityChangeSource::Constant;

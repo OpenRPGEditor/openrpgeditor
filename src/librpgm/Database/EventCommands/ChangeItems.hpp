@@ -18,6 +18,19 @@ struct ChangeItemsCommand final : IEventCommand {
     }
     return false;
   };
+
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (operandSource == QuantityChangeSource::Variable && operand == targetId) {
+        operand = newId;
+      }
+      if (type == SearchType::Items) {
+        item = newId;
+      }
+      return true;
+    }
+    return false;
+  }
   int item{1};
   QuantityChangeOp operation = QuantityChangeOp::_plu__del_Increase;
   QuantityChangeSource operandSource = QuantityChangeSource::Constant;

@@ -19,6 +19,13 @@ struct ShowBattleAnimationCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      animation = newId;
+      return true;
+    }
+    return false;
+  }
   int enemy = 1; // equals 0 if bool is true
   int animation = 1;
   bool targetAllEnemies = false;

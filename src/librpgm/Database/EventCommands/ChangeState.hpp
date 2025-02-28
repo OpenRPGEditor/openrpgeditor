@@ -19,6 +19,18 @@ struct ChangeStateCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (comparison == ActorComparisonSource::Variable && value == targetId) {
+        value = newId;
+      }
+      if (type == SearchType::State) {
+        state = newId;
+      }
+      return true;
+    }
+    return false;
+  }
   ActorComparisonSource comparison = ActorComparisonSource::Fixed;
   int value{1};
   PartyMemberOperation stateOp = PartyMemberOperation::_plu__del_Add;

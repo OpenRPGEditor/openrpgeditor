@@ -18,6 +18,13 @@ struct MovementSwitchONCommand final : IMovementRouteStep {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      id = newId;
+      return true;
+    }
+    return false;
+  }
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<MovementSwitchONCommand>(*this); }
 };

@@ -16,6 +16,13 @@ struct ShowAnimationCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      animation = newId;
+      return true;
+    }
+    return false;
+  }
   int character = -1;
   int animation = 1;
   bool waitForCompletion = false;

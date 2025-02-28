@@ -19,6 +19,18 @@ struct ChangeSkillCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (comparison == ActorComparisonSource::Variable && value == targetId) {
+        value = newId;
+      }
+      if (type == SearchType::Skill) {
+        skill = newId;
+      }
+      return true;
+    }
+    return false;
+  }
   ActorComparisonSource comparison = ActorComparisonSource::Fixed;
   int value{1};
   SkillOperation skillOp = SkillOperation::_plu__del_Learn;

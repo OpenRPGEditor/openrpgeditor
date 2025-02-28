@@ -16,6 +16,18 @@ struct ControlSwitches : IEventCommand {
     }
     return false;
   };
+
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (start == targetId && end == targetId) {
+        start = newId;
+        end = newId;
+      }
+      return true;
+    }
+    return false;
+  }
+
   int start{1};
   int end{1};
   ValueControl turnOff = ValueControl::ON;

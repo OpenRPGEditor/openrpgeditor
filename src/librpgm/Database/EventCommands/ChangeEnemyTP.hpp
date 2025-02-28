@@ -20,8 +20,21 @@ struct ChangeEnemyTPCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (type == SearchType::Enemy) {
+        enemy = newId;
+      }
+      if (quantitySource == QuantityChangeSource::Variable && quantity == targetId) {
+        quantity = newId;
+      }
 
-   int enemy{-1};
+      return true;
+    }
+    return false;
+  }
+
+  int enemy{-1};
   QuantityChangeOp enemyOp = QuantityChangeOp::_plu__del_Increase;
   QuantityChangeSource quantitySource = QuantityChangeSource::Constant;
   int quantity{1};

@@ -15,6 +15,13 @@ struct InputNumberCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      variable = newId;
+      return true;
+    }
+    return false;
+  }
   int variable = 1;
   int digits = 1;
 };

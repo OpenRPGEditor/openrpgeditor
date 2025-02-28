@@ -15,6 +15,15 @@ struct ChangeGoldCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (operandSource == QuantityChangeSource::Variable && operand == targetId) {
+        operand = newId;
+      }
+      return true;
+    }
+    return false;
+  }
   QuantityChangeOp operation = QuantityChangeOp::_plu__del_Increase;
   QuantityChangeSource operandSource = QuantityChangeSource::Constant;
   int operand = 1;

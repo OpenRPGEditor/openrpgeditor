@@ -16,6 +16,13 @@ struct NameInputCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      actorId = newId;
+      return true;
+    }
+    return false;
+  }
   int actorId{1};
   int maxChar{8};
 };

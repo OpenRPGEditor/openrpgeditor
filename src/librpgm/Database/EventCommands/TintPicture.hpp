@@ -16,6 +16,13 @@ struct TintPictureCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      picture = newId;
+      return true;
+    }
+    return false;
+  }
   int picture{1};
 
   struct {

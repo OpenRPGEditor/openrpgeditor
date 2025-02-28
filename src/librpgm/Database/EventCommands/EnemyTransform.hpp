@@ -17,6 +17,15 @@ struct EnemyTransformCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (type == SearchType::Enemy) {
+        enemy = newId;
+      }
+      return true;
+    }
+    return false;
+  }
   int enemy;
   int transform;
 };

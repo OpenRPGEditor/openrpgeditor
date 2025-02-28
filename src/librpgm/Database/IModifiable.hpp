@@ -93,6 +93,7 @@ public:
   virtual std::map<int, bool> isConditionalReference(int targetId, SearchType type) const { return {}; }
 
   virtual bool hasReference(int targetId, SearchType type) { return false; }
+  virtual bool setReference(int targetId, int newId, SearchType type) { return false; }
   virtual bool hasStringReference(const std::string& text, SearchType type) { return false; }
 
   rpgmutils::signal<void(IModifiable*)>& onModified();

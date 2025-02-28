@@ -16,6 +16,18 @@ struct ChangeParameterCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (quantitySource == QuantityChangeSource::Variable && quantity == targetId) {
+        quantity = newId;
+      }
+      if (comparison == ActorComparisonSource::Variable && value == targetId) {
+        value = newId;
+      }
+      return true;
+    }
+    return false;
+  }
   ActorComparisonSource comparison = ActorComparisonSource::Fixed;
   int value{1};
   ParameterSource param = ParameterSource::Max_HP;

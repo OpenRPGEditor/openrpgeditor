@@ -16,6 +16,15 @@ struct ChangeNameCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (type == SearchType::Actor) {
+        actor = newId;
+      }
+      return true;
+    }
+    return false;
+  }
   int actor = 1;
   std::string name;
 };

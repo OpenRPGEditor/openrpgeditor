@@ -19,6 +19,17 @@ struct ChangeClassCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (type == SearchType::Actor) {
+        actor = newId;
+      } else if (type == SearchType::Class) {
+        classId = newId;
+      }
+      return true;
+    }
+    return false;
+  }
   int actor;
   int classId;
   bool saveLevel;

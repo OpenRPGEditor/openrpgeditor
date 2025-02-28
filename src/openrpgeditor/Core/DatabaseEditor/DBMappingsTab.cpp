@@ -20,7 +20,8 @@ void DBMappingsTab::draw() {
         ImGui::BeginChild("##orpg_mapping_header",
                           ImVec2{ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y - (calc.y * 3 + ImGui::GetStyle().ItemSpacing.y * 3 + ImGui::GetStyle().FramePadding.y)});
         {
-          ImGui::BeginChild("##orpg_mapping_header_panel_left", ImVec2{ImGui::GetContentRegionAvail().x / 2, calc.y * 3 + ImGui::GetStyle().ItemSpacing.y}, ImGuiChildFlags_AlwaysAutoResize);
+          ImGui::BeginChild("##orpg_mapping_header_panel_left", ImVec2{ImGui::GetContentRegionAvail().x / 2, calc.y * 3 + ImGui::GetStyle().ItemSpacing.y},
+                            ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
           {
             ImGui::SeparatorText("Variables");
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x);
@@ -47,7 +48,8 @@ void DBMappingsTab::draw() {
             int index{0};
             for (auto& variable : m_system.variables()) {
               if (index > 0) {
-                if (ImGui::Selectable(std::format("{}##orpg_mappings_variable_{}", variable, index).c_str(), m_selectedVariable == index || (ImGui::IsItemFocused() && m_selectedVariable != index))) {
+                if (ImGui::Selectable(std::format("{}##orpg_mappings_variable_{}", variable, index).c_str(),
+                                      m_selectedVariable == index - 1 || (ImGui::IsItemFocused() && m_selectedVariable != index))) {
                   m_selectedVariable = index;
                   m_variable_string = variable;
                 }
@@ -64,7 +66,7 @@ void DBMappingsTab::draw() {
             int index{0};
             for (auto& sw : m_system.switches()) {
               if (index > 0) {
-                if (ImGui::Selectable(std::format("{}##orpg_mappings_switch_{}", sw, index).c_str(), m_selectedSwitch == index || (ImGui::IsItemFocused() && m_selectedSwitch != index))) {
+                if (ImGui::Selectable(std::format("{}##orpg_mappings_switch_{}", sw, index).c_str(), m_selectedSwitch == index - 1 || (ImGui::IsItemFocused() && m_selectedSwitch != index))) {
                   m_selectedSwitch = index;
                   m_switch_string = sw;
                 }

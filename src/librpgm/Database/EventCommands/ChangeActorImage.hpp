@@ -16,6 +16,13 @@ struct ChangeActorImageCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      actor = newId;
+      return true;
+    }
+    return false;
+  }
   int actor{1};
   std::string charPicture;
   int charIndex;

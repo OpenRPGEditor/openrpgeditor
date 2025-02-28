@@ -18,6 +18,19 @@ struct ChangeArmorsCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (type == SearchType::Variable) {
+        if (operandSource == QuantityChangeSource::Variable && operand == targetId) {
+          operand = newId;
+        }
+      } else if (type == SearchType::Armors) {
+        item = newId;
+      }
+      return true;
+    }
+    return false;
+  }
   int item{1};
 
   QuantityChangeOp operation = QuantityChangeOp::_plu__del_Increase;

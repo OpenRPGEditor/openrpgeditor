@@ -18,6 +18,13 @@ struct SelectItemCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      item = newId;
+      return true;
+    }
+    return false;
+  }
   int item = 1;
   ItemType type = ItemType::Key_Item;
 };

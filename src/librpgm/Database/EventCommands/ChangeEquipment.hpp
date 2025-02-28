@@ -19,6 +19,19 @@ struct ChangeEquipmentCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (type == SearchType::Actor) {
+        actorId = newId;
+      }
+      if (type == SearchType::Equipment) {
+        equipment = newId;
+      }
+
+      return true;
+    }
+    return false;
+  }
   int actorId{1};
   int equipType{0};
   int equipment{0};

@@ -15,5 +15,12 @@ struct CommonEventCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      event = newId;
+      return true;
+    }
+    return false;
+  }
   int event = 1;
 };

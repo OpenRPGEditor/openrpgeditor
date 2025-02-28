@@ -16,6 +16,13 @@ struct ShowPictureCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      number = newId;
+      return true;
+    }
+    return false;
+  }
   int number{1};
   std::string imageName;
   PictureOrigin origin = PictureOrigin::Upper_Left;

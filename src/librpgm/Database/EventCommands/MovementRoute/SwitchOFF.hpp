@@ -16,5 +16,12 @@ struct MovementSwitchOFFCommand final : IMovementRouteStep {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      id = newId;
+      return true;
+    }
+    return false;
+  }
   int id{1};
 };

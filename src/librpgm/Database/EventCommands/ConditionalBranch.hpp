@@ -84,6 +84,76 @@ struct ConditionalBranchCommand final : IEventCommand {
     return false;
   };
 
+  bool setReference(int targetId, int newId, SearchType searchType) override {
+    if (hasReference(targetId, searchType)) {
+
+      if (searchType == SearchType::Variable) {
+        if (type == ConditionType::Variable) {
+          if (variable.id == targetId) {
+            variable.id = newId;
+          }
+          if (variable.source == VariableComparisonSource::Variable && variable.otherId == targetId) {
+            variable.id = newId;
+          }
+          return true;
+        }
+      }
+      if (searchType == SearchType::Switch) {
+        if (type == ConditionType::Switch && globalSwitch.switchIdx == targetId) {
+          globalSwitch.switchIdx = newId;
+        }
+        return true;
+      }
+      if (searchType == SearchType::Armors || searchType == SearchType::Weapons) {
+        if (equip.equipId == targetId) {
+          equip.equipId = newId;
+        }
+      }
+      if (searchType == SearchType::Items) {
+        if (type == ConditionType::Item && item.id == targetId) {
+          item.id = newId;
+        }
+      }
+      if (searchType == SearchType::Enemy) {
+        if (type == ConditionType::Enemy && enemy.id == targetId) {
+          enemy.id = newId;
+        }
+      }
+      if (searchType == SearchType::State) {
+        if (type == ConditionType::Actor) {
+          if (actor.type == ActorConditionType::State && actor.checkId == targetId) {
+            actor.checkId = newId;
+          }
+        }
+        if (type == ConditionType::Enemy && enemy.stateId == targetId) {
+          enemy.id = newId;
+        }
+      }
+
+      if (searchType == SearchType::Actor) {
+        if (actor.id == targetId) {
+          actor.id = newId;
+        }
+      }
+      if (searchType == SearchType::Skill) {
+        if (type == ConditionType::Actor) {
+          if (actor.type == ActorConditionType::Skill && actor.checkId == targetId) {
+            actor.checkId = newId;
+          }
+        }
+      }
+      if (searchType == SearchType::Class) {
+        if (type == ConditionType::Actor) {
+          if (actor.type == ActorConditionType::Class && actor.checkId == targetId) {
+            actor.checkId = newId;
+          }
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
   ConditionType type{};
   struct {
     int switchIdx{1};

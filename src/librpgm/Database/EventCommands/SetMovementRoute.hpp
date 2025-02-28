@@ -34,6 +34,12 @@ struct SetMovementRouteCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    for (auto& nextCmd : editNodes) {
+      nextCmd->hasReference(targetId, type);
+    }
+    return false;
+  }
   int character{-1};
   MovementRoute route;
   std::vector<std::shared_ptr<MovementRouteStepCommand>> editNodes;

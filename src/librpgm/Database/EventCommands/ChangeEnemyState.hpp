@@ -20,6 +20,19 @@ struct ChangeEnemyStateCommand final : IEventCommand {
     }
     return false;
   };
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (hasReference(targetId, type)) {
+      if (type == SearchType::Enemy) {
+        enemy = newId;
+      }
+      if (type == SearchType::State) {
+        state = newId;
+      }
+
+      return true;
+    }
+    return false;
+  }
   int enemy;
   PartyMemberOperation enemyOp;
   int state;

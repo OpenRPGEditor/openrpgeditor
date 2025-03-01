@@ -84,10 +84,16 @@ void EventSearcher::draw() {
       m_skillPicker.reset();
     }
   }
-  if (m_commonPicker) {
-    if (m_commonPicker->drawPicker(m_pickedData)) {
-      m_valueSelected = false;
-      m_commonPicker.reset();
+
+  if (Database::instance()->commonEvents.isUpdating()) {
+    m_commonPicker.reset();
+    Database::instance()->commonEvents.setUpdate(false);
+  } else {
+    if (m_commonPicker) {
+      if (m_commonPicker->drawPicker(m_pickedData)) {
+        m_valueSelected = false;
+        m_commonPicker.reset();
+      }
     }
   }
 

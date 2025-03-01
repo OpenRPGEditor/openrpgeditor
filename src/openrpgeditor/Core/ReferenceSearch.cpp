@@ -1,10 +1,10 @@
 #include "Core/ReferenceSearch.hpp"
 
 #include "MainWindow.hpp"
-ReferenceSearch::ReferenceSearch(MainWindow* parent) : m_parent(parent) {}
+ReferenceSearch::ReferenceSearch() {}
 void ReferenceSearch::findAllReferences(int targetId, SearchType type) {
   m_results.clear();
-  for (auto& mapInfo : m_parent->database().mapInfos.mapInfos()) {
+  for (auto& mapInfo : Database::instance()->mapInfos.mapInfos()) {
     if (mapInfo->map()) {
       for (auto& event : mapInfo->map()->events()) {
         if (event) {
@@ -41,7 +41,7 @@ void ReferenceSearch::findAllReferences(std::string text, SearchType type) {
 }
 void ReferenceSearch::searchAllListsByTarget(int targetId, SearchType type) {
   m_list.clear();
-  for (auto& mapInfo : m_parent->database().mapInfos.mapInfos()) {
+  for (auto& mapInfo : Database::instance()->mapInfos.mapInfos()) {
     if (mapInfo->map()) {
       for (auto& event : mapInfo->map()->events()) {
         if (event) {
@@ -63,7 +63,7 @@ void ReferenceSearch::searchAllListsByTarget(int targetId, SearchType type) {
 }
 void ReferenceSearch::searchAllListsByText(std::string text, SearchType type) {
   m_list.clear();
-  for (auto& mapInfo : m_parent->database().mapInfos.mapInfos()) {
+  for (auto& mapInfo : Database::instance()->mapInfos.mapInfos()) {
     if (mapInfo->map()) {
       for (auto& event : mapInfo->map()->events()) {
         if (event) {
@@ -85,7 +85,7 @@ void ReferenceSearch::searchAllListsByText(std::string text, SearchType type) {
 }
 void ReferenceSearch::searchAllCommonByTarget(int targetId, SearchType type) {
   m_common.clear();
-  for (auto& common : m_parent->database().commonEvents.events()) {
+  for (auto& common : Database::instance()->commonEvents.events()) {
     if (common.has_value()) {
       int index{0};
       for (auto& cmd : common.value().commands()) {
@@ -100,7 +100,7 @@ void ReferenceSearch::searchAllCommonByTarget(int targetId, SearchType type) {
 void ReferenceSearch::searchAllCommonByText(std::string text, SearchType type) {
   m_common.clear();
   int index{0};
-  for (auto& common : m_parent->database().commonEvents.events()) {
+  for (auto& common : Database::instance()->commonEvents.events()) {
     if (common.has_value()) {
       bool resultFound{false};
       for (auto& cmd : common.value().commands()) {

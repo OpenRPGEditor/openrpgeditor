@@ -8,7 +8,7 @@
 struct MainWindow;
 class ReferenceSearch {
 public:
-  explicit ReferenceSearch(MainWindow* parent);
+  explicit ReferenceSearch();
 
   const std::vector<SearchResult>& getEvents() const { return m_results; }
   const std::vector<SearchResult>& getCommands() const { return m_list; }
@@ -33,5 +33,4 @@ private:
   std::vector<SearchResult> m_results;
   std::vector<SearchResult> m_list;
   std::vector<SearchResult> m_common;
-  MainWindow* m_parent; // Common Event Results
 };

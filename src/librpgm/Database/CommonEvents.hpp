@@ -44,9 +44,13 @@ public:
   void swapReference(int targetId, int newId) {
     if (targetId >= 0 && targetId < m_events.size() && newId >= 0 && newId < m_events.size()) {
       std::swap(m_events[targetId], m_events[newId]);
+      m_isUpdating = true;
     }
   }
+  [[nodiscard]] bool isUpdating() const { return m_isUpdating; }
+  void setUpdate() { m_isUpdating = false; }
 
 private:
   std::vector<std::optional<CommonEvent>> m_events;
+  bool m_isUpdating{false};
 };

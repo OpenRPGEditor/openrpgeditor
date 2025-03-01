@@ -389,7 +389,6 @@ struct Database {
     }
     return 0;
   }
-
   [[nodiscard]] bool isDualWield(const int actorId) const { return slotType(actorId) == 1; }
 
   [[nodiscard]] int slotIdToEquipId(const int actorId, const int slotId) const { return slotId == 1 && isDualWield(actorId) ? 1 : slotId + 1; }

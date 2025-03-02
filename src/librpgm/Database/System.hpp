@@ -177,6 +177,11 @@ public:
 
   [[nodiscard]] std::string switche(int id) const;
   void setSwitch(int id, const std::string& value);
+  void swapSwitchReference(int targetId, int newId) {
+    if (targetId >= 0 && targetId < m_switches.size() && newId >= 0 && newId < m_switches.size()) {
+      std::swap(m_switches[targetId], m_switches[newId]);
+    }
+  }
 
   Terms& terms();
   const Terms& terms() const;
@@ -202,6 +207,11 @@ public:
   [[nodiscard]] std::string variable(int id) const;
   void setVariable(int id, const std::string& value);
 
+  void swapVariableReference(int targetId, int newId) {
+    if (targetId >= 0 && targetId < m_variables.size() && newId >= 0 && newId < m_variables.size()) {
+      std::swap(m_variables[targetId], m_variables[newId]);
+    }
+  }
   int tileSize() const;
   void setTileSize(int value);
 

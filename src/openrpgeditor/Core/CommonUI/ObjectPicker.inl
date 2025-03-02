@@ -95,6 +95,10 @@ std::tuple<bool, bool> ObjectPicker<T>::draw() {
           }
           if (m_selection == getId(*value)) {
             ImGui::SetItemDefaultFocus();
+            if (m_navigateOnOpen) {
+              ImGui::SetScrollHereY();
+              m_navigateOnOpen = false;
+            }
           }
         }
         /* Name */

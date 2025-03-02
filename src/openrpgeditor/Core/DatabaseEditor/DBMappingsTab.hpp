@@ -7,6 +7,8 @@ class DBMappingsTab final : public IDBEditorTab {
 public:
   DBMappingsTab() = delete;
   explicit DBMappingsTab(System& system, DatabaseEditor* parent);
+
+  bool isUnicodeFormatting(const std::string& text);
   void draw() override;
   void drawVariables();
   void drawSwitches();
@@ -22,9 +24,13 @@ private:
 
   std::string m_switch_string;
   std::string m_variable_string;
+  std::string m_common_string;
 
   ReferenceSearch reference_from;
   ReferenceSearch reference_to;
+
+  std::vector<int> m_reference_left{};
+  std::vector<int> m_reference_right{};
 
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;

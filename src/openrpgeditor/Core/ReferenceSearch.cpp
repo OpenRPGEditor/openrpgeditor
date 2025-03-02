@@ -54,8 +54,8 @@ void ReferenceSearch::searchAllListsByTarget(int targetId, SearchType type) {
               }
               stepIndex++;
             }
+            pageIndex++;
           }
-          pageIndex++;
         }
       }
     }
@@ -76,8 +76,8 @@ void ReferenceSearch::searchAllListsByText(std::string text, SearchType type) {
               }
               stepIndex++;
             }
+            pageIndex++;
           }
-          pageIndex++;
         }
       }
     }
@@ -90,7 +90,7 @@ void ReferenceSearch::searchAllCommonByTarget(int targetId, SearchType type) {
       int index{0};
       for (auto& cmd : common.value().commands()) {
         if (cmd->hasReference(targetId, type)) {
-          m_common.emplace_back(common.value().id(), index);
+          m_common.emplace_back(common.value().id(), cmd, index);
         }
         index++;
       }
@@ -105,7 +105,7 @@ void ReferenceSearch::searchAllCommonByText(std::string text, SearchType type) {
       bool resultFound{false};
       for (auto& cmd : common.value().commands()) {
         if (cmd->hasStringReference(text, type)) {
-          m_common.emplace_back(common.value().id(), index);
+          m_common.emplace_back(common.value().id(), cmd, index);
         }
         index++;
       }

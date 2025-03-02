@@ -11,7 +11,7 @@
 class SearchResult {
 public:
   explicit SearchResult(int mapId, int eventId, int pageIndex);
-  explicit SearchResult(int commonEventId, int step);
+  explicit SearchResult(int commonEventId, const std::shared_ptr<IEventCommand>& cmd, int step);
   explicit SearchResult(int mapId, int eventId, const std::shared_ptr<IEventCommand>& cmd, int pageIndex, int step);
 
   [[nodiscard]] Event& getEvent() const { return *Database::instance()->mapInfos.map(m_mapId)->event(m_eventId); }

@@ -15,7 +15,11 @@
 template <typename T>
 class ObjectPicker {
 public:
-  ObjectPicker(const std::string_view name, std::vector<T>& list, const int initialSelection) : m_name(name), m_list(&list), m_selection(initialSelection) {}
+  ObjectPicker(const std::string_view name, std::vector<T>& list, const int initialSelection) : m_name(name), m_list(&list), m_selection(initialSelection) {
+    if (m_selection > 0) {
+      m_navigateOnOpen = true;
+    }
+  }
 
   std::tuple<bool, bool> draw();
 
@@ -51,6 +55,7 @@ private:
   std::string m_name;
   std::vector<T>* m_list;
   bool m_confirmed{false};
+  bool m_navigateOnOpen{false};
   int m_selection{0};
   bool m_open{false};
   bool m_noSelectionMeansAdd{false};

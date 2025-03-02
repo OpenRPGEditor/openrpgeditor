@@ -30,20 +30,35 @@ void DBCommonEventsTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            for (auto& event : m_events.events()) {
-              if (!event) {
-                continue;
-              }
+            ImGuiListClipper clipper;
+            clipper.Begin(m_events.count() + 1, 22.f); // The number of items to clip (the total number of events)
+            while (clipper.Step()) {
+              for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
+                auto& event = m_events.events()[i];
+                if (!event) {
+                  continue;
+                }
 
-              CommonEvent& commonEvent = event.value();
-              std::string id = "##orpg_commonevent_editor_unnamed_commonevent_" + std::to_string(commonEvent.id());
-              ImGui::PushID(id.c_str());
-              if (ImGui::Selectable(Database::instance()->commonEventNameAndId(commonEvent.id()).c_str(), &commonEvent == m_selectedCommonEvent) ||
-                  (ImGui::IsItemFocused() && m_selectedCommonEvent != &commonEvent)) {
-                m_selectedCommonEvent = &commonEvent;
-                m_commandEditor.setCommands(&m_selectedCommonEvent->commands());
+                CommonEvent& commonEvent = event.value();
+                std::string id = "##orpg_commonevent_editor_unnamed_commonevent_" + std::to_string(commonEvent.id());
+                ImGui::PushID(id.c_str());
+
+                bool isFormatted{false};
+                if (commonEvent.name().contains('▼')) {
+                  ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.110f, 0.153f, 0.173f, 1.0f));
+                  ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.110f, 0.153f, 0.173f, 1.0f));
+                  ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.110f, 0.153f, 0.173f, 1.0f));
+                  isFormatted = true;
+                }
+                if (ImGui::Selectable(Database::instance()->commonEventNameAndId(commonEvent.id()).c_str(), &commonEvent == m_selectedCommonEvent || isFormatted) ||
+                    (ImGui::IsItemFocused() && m_selectedCommonEvent != &commonEvent)) {
+                  m_selectedCommonEvent = &commonEvent;
+                  m_commandEditor.setCommands(&m_selectedCommonEvent->commands());
+                }
+                ImGui::PopStyleColor(3);
+
+                ImGui::PopID();
               }
-              ImGui::PopID();
             }
           }
           ImGui::EndGroup();

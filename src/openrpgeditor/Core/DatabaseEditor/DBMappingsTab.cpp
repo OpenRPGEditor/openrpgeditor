@@ -441,7 +441,7 @@ void DBMappingsTab::drawVariables() {
   ImGui::EndChild();
 }
 bool DBMappingsTab::isUnicodeFormatting(const std::string& text) {
-  if (text.contains('▼')) {
+  if (text.contains("\u25bc")) {
     return true;
   }
   return false;

@@ -44,7 +44,7 @@ void DBCommonEventsTab::draw() {
                 ImGui::PushID(id.c_str());
 
                 bool isFormatted{false};
-                if (commonEvent.name().contains('▼')) {
+                if (commonEvent.name().contains("\u25bc")) {
                   ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.110f, 0.153f, 0.173f, 1.0f));
                   ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.110f, 0.153f, 0.173f, 1.0f));
                   ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.110f, 0.153f, 0.173f, 1.0f));

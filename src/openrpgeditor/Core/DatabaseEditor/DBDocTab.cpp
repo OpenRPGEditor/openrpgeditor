@@ -47,7 +47,7 @@ void DBDocTab::draw() {
           if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
             {
-              ImGui::Text(trNOOP("Adds a new category."));
+              ImGui::TextUnformatted(trNOOP("Adds a new category."));
               ImGui::EndTooltip();
             }
           }
@@ -72,7 +72,7 @@ void DBDocTab::draw() {
           if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
             {
-              ImGui::Text(trNOOP("Removes a category."));
+              ImGui::TextUnformatted(trNOOP("Removes a category."));
               ImGui::EndTooltip();
             }
           }
@@ -89,7 +89,7 @@ void DBDocTab::draw() {
           if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
             {
-              ImGui::Text(trNOOP("Moves the selected category up by one on its index."));
+              ImGui::TextUnformatted(trNOOP("Moves the selected category up by one on its index."));
               ImGui::EndTooltip();
             }
           }
@@ -107,7 +107,7 @@ void DBDocTab::draw() {
           if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
             {
-              ImGui::Text(trNOOP("Moves the selected category down by one on its index."));
+              ImGui::TextUnformatted(trNOOP("Moves the selected category down by one on its index."));
               ImGui::EndTooltip();
             }
           }
@@ -128,7 +128,7 @@ void DBDocTab::draw() {
           }
           ImGui::SeparatorText("Headers");
           if (headerTexts.size() == 0) {
-            ImGui::Text(trNOOP("No headers available"));
+            ImGui::TextUnformatted(trNOOP("No headers available"));
           } else {
             int index{0};
             for (auto& header : headerTexts) {
@@ -165,7 +165,7 @@ void DBDocTab::draw() {
     ImGui::BeginGroup();
     {
       ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.f);
-      ImGui::Text(trNOOP("Name:"));
+      ImGui::TextUnformatted(trNOOP("Name:"));
       ImGui::SameLine();
       ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
       char name[4096];
@@ -261,7 +261,7 @@ void DBDocTab::draw() {
         // Text Viewing Mode
 
         if (m_docs->docs.at(0).texts().empty()) {
-          ImGui::Text(trNOOP("\tNo documentation available."));
+          ImGui::TextUnformatted(trNOOP("\tNo documentation available."));
         } else {
           // Documentation available
 
@@ -308,9 +308,9 @@ void DBDocTab::draw() {
                         ImGui::Image(texture, ImVec2{static_cast<float>(texture.width()), static_cast<float>(texture.height())}, ImVec2{0, 0}, ImVec2{1, 1});
                       } else {
                         if (isBulletFormat) {
-                          ImGui::BulletText(itText.c_str());
+                          ImGui::BulletText("%s", itText.c_str());
                         } else {
-                          ImGui::Text(itText.c_str());
+                          ImGui::Text("%s", itText.c_str());
                         }
                       }
                       ImGui::PopFont();
@@ -322,9 +322,9 @@ void DBDocTab::draw() {
 
                       } else {
                         if (isBulletFormat) {
-                          ImGui::BulletText(itText.c_str());
+                          ImGui::BulletText("%s", itText.c_str());
                         } else {
-                          ImGui::Text(itText.c_str());
+                          ImGui::Text("%s", itText.c_str());
                         }
                       }
                     }
@@ -371,9 +371,9 @@ void DBDocTab::draw() {
                       ImGui::Image(texture, ImVec2{static_cast<float>(texture.width()), static_cast<float>(texture.height())}, ImVec2{0, 0}, ImVec2{1, 1});
                     } else {
                       if (isBulletFormat) {
-                        ImGui::BulletText(text.c_str());
+                        ImGui::BulletText("%s", text.c_str());
                       } else {
-                        ImGui::Text(text.c_str());
+                        ImGui::Text("%s", text.c_str());
                       }
                     }
                     ImGui::PopFont();
@@ -385,9 +385,9 @@ void DBDocTab::draw() {
 
                     } else {
                       if (isBulletFormat) {
-                        ImGui::BulletText(text.c_str());
+                        ImGui::BulletText("%s", text.c_str());
                       } else {
-                        ImGui::TextUnformatted(text.c_str());
+                        ImGui::Text("%s", text.c_str());
                       }
                     }
                   }

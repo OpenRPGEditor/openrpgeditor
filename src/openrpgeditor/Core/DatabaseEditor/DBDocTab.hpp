@@ -6,8 +6,20 @@ struct DBDocTab : IDBEditorTab {
   DBDocTab() = delete;
   explicit DBDocTab(Docs& docs, DatabaseEditor* parent);
   void draw() override;
+  std::vector<int>& getHeaders() override { return m_headers; }
+  int getHeader(int index) override { return m_headers.at(index); }
+  bool hasHeader() override { return !m_headers.empty(); }
+  void setHeaderRange(int start, int end) override {
+    m_categoryStart = start;
+    m_categoryEnd = end;
+  }
+  std::string getName(int index) override { return ""; }
+  int getCount() override { return 0; }
 
 private:
+  int m_categoryStart;
+  int m_categoryEnd;
+  std::vector<int> m_headers;
   Docs* m_docs = nullptr;
   int m_id{0};
   bool inHeader{false};

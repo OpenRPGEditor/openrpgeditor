@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/CommonUI/TraitsEditor.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include "DBCommonEventsTab.hpp"
 #include "Database/States.hpp"
 
 struct DBStatesTab : IDBEditorTab {
@@ -13,8 +14,21 @@ struct DBStatesTab : IDBEditorTab {
 
   [[nodiscard]] States& states() { return m_states; }
   [[nodiscard]] const States& states() const { return m_states; }
+  std::vector<int>& getHeaders() override { return m_headers; }
+  int getHeader(int index) override { return m_headers.at(index); }
+  bool hasHeader() override { return !m_headers.empty(); }
+  void setHeaderRange(int start, int end) override {
+    m_categoryStart = start;
+    m_categoryEnd = end;
+  }
+
+  std::string getName(int index) override { return m_states.state(index)->name(); }
+  int getCount() override { return m_states.count(); }
 
 private:
+  int m_categoryStart;
+  int m_categoryEnd;
+  std::vector<int> m_headers;
   States& m_states;
   State* m_selectedState{};
   int m_editMaxStates;

@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/CommonUI/TraitsEditor.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include "DBCommonEventsTab.hpp"
 
 #include "Database/Classes.hpp"
 
@@ -21,8 +22,20 @@ struct DBClassesTab : IDBEditorTab {
 
   Class* classType(int id) { return m_classes.classType(id); }
   const Class* classType(int id) const { return m_classes.classType(id); }
+  std::vector<int>& getHeaders() override { return m_headers; }
+  int getHeader(int index) override { return m_headers.at(index); }
+  bool hasHeader() override { return !m_headers.empty(); }
+  void setHeaderRange(int start, int end) override {
+    m_categoryStart = start;
+    m_categoryEnd = end;
+  }
+  std::string getName(int index) override { return m_classes.classType(index)->name(); }
+  int getCount() override { return m_classes.count(); }
 
 private:
+  int m_categoryStart;
+  int m_categoryEnd;
+  std::vector<int> m_headers;
   void drawExperienceGraph(ExperienceGraphMode mode) const;
   void drawExpPopup();
   Classes& m_classes;

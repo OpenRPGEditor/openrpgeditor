@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/ReferenceSearch.hpp"
+#include "DBCommonEventsTab.hpp"
 #include "Database/System.hpp"
 
 class DBMappingsTab final : public IDBEditorTab {
@@ -13,8 +14,21 @@ public:
   void drawVariables();
   void drawSwitches();
   void drawCommons();
+  std::vector<int>& getHeaders() override { return m_headers; }
+  int getHeader(int index) override { return m_headers.at(index); }
+  bool hasHeader() override { return !m_headers.empty(); }
+  void setHeaderRange(int start, int end) override {
+    m_categoryStart = start;
+    m_categoryEnd = end;
+  }
+
+  std::string getName(int index) override { return ""; }
+  int getCount() override { return 0; }
 
 private:
+  int m_categoryStart;
+  int m_categoryEnd;
+  std::vector<int> m_headers;
   System& m_system;
   int m_selectedVariable{0};
   int m_selectedSwitch{0};

@@ -3,6 +3,7 @@
 #include "Core/CommonUI/ImagePicker.hpp"
 #include "Core/CommonUI/SoundPicker.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include "DBCommonEventsTab.hpp"
 #include "Database/Animations.hpp"
 
 class DatabaseEditor;
@@ -17,8 +18,20 @@ public:
   [[nodiscard]] const std::vector<Animation>& animations() const { return m_animations.animations(); }
   [[nodiscard]] Animation* animation(int id) { return m_animations.animation(id); }
   [[nodiscard]] const Animation* animation(int id) const { return m_animations.animation(id); }
+  std::vector<int>& getHeaders() override { return m_headers; }
+  int getHeader(int index) override { return m_headers.at(index); }
+  bool hasHeader() override { return !m_headers.empty(); }
+  void setHeaderRange(int start, int end) override {
+    m_categoryStart = start;
+    m_categoryEnd = end;
+  }
+  std::string getName(int index) override { return m_animations.animation(index)->name(); }
+  int getCount() override { return m_animations.count(); }
 
 private:
+  int m_categoryStart;
+  int m_categoryEnd;
+  std::vector<int> m_headers;
   Animations& m_animations;
   Animation* m_selectedAnimation{};
   int m_editMaxAnimations{};

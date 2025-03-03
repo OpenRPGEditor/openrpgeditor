@@ -7,6 +7,7 @@
 #include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/Graphics/CheckeredCompositeTexture.hpp"
 #include "Core/Graphics/GameWindowBackground.hpp"
+#include "DBCommonEventsTab.hpp"
 
 #include "Database/Actor.hpp"
 #include "Database/System.hpp"
@@ -23,8 +24,21 @@ struct DBSystemTab : IDBEditorTab {
   DBSystemTab() = delete;
   explicit DBSystemTab(System& system, DatabaseEditor* parent);
   void draw() override;
+  std::vector<int>& getHeaders() override { return m_headers; }
+  int getHeader(int index) override { return m_headers.at(index); }
+  bool hasHeader() override { return !m_headers.empty(); }
+  void setHeaderRange(int start, int end) override {
+    m_categoryStart = start;
+    m_categoryEnd = end;
+  }
+
+  std::string getName(int index) override { return ""; }
+  int getCount() override { return 0; }
 
 private:
+  int m_categoryStart;
+  int m_categoryEnd;
+  std::vector<int> m_headers;
   void addAudioRow(const Audio& audio, const std::string& type, AudioType audioType);
 
   System& m_system;

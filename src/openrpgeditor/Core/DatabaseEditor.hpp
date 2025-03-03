@@ -64,6 +64,9 @@ public:
   }
   const IconSheet* getIconSheet();
 
+  std::string& getFilterString() { return m_searchString; } // TODO: Search by string
+  bool isFilteredByCategory() const { return m_filterByHeader && m_selectedHeaderIndex != -1; }
+
   rpgmutils::signal<void()> onReady;
 
 private:
@@ -88,6 +91,12 @@ private:
   std::optional<DBDocTab> m_docs;
   std::optional<DBMappingsTab> m_mappings;
   std::optional<IconSheet> m_iconSheet;
+
+  std::string m_searchString;
+  bool m_filterByHeader{false};
+  int m_selectedHeaderIndex{-1};
+  std::vector<std::string> m_headers;
+
   IDBEditorTab* m_currentTab = nullptr;
   bool m_isOpen{};
 };

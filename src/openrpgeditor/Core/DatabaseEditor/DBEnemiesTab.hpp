@@ -4,6 +4,7 @@
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/Graphics/CheckeredCompositeTexture.hpp"
+#include "DBCommonEventsTab.hpp"
 #include "Database/Armors.hpp"
 #include "Database/Enemies.hpp"
 #include "Database/Items.hpp"
@@ -20,8 +21,20 @@ struct DBEnemiesTab : IDBEditorTab {
 
   [[nodiscard]] Enemy* enemy(int id) { return m_enemies.enemy(id); }
   [[nodiscard]] const Enemy* enemy(int id) const { return m_enemies.enemy(id); }
+  std::vector<int>& getHeaders() override { return m_headers; }
+  int getHeader(int index) override { return m_headers.at(index); }
+  bool hasHeader() override { return !m_headers.empty(); }
+  void setHeaderRange(int start, int end) override {
+    m_categoryStart = start;
+    m_categoryEnd = end;
+  }
+  std::string getName(int index) override { return m_enemies.enemy(index)->name(); }
+  int getCount() override { return m_enemies.count(); }
 
 private:
+  int m_categoryStart;
+  int m_categoryEnd;
+  std::vector<int> m_headers;
   void drawPopup();
   std::string getDropString(int dropIndex, int kindId) const;
   Enemies& m_enemies;

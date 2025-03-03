@@ -5,6 +5,7 @@
 #include "Core/TemplateEditor/TemplatesCommand.hpp"
 #include "Core/TemplateEditor/TemplatesEventProperties.hpp"
 #include "Core/TemplateEditor/TemplatesTint.hpp"
+#include "DBCommonEventsTab.hpp"
 #include "Database/Templates.hpp"
 
 #include <optional>
@@ -39,8 +40,20 @@ struct DBTemplatesTab : IDBEditorTab {
   }
   void draw() override;
   std::vector<Templates*>& templates() { return m_template; }
+  std::vector<int>& getHeaders() override { return m_headers; }
+  int getHeader(int index) override { return m_headers.at(index); }
+  bool hasHeader() override { return !m_headers.empty(); }
+  void setHeaderRange(int start, int end) override {
+    m_categoryStart = start;
+    m_categoryEnd = end;
+  }
+  std::string getName(int index) override { return ""; }
+  int getCount() override { return 0; }
 
 private:
+  int m_categoryStart;
+  int m_categoryEnd;
+  std::vector<int> m_headers;
   Templates* m_templates = nullptr;
   std::vector<Templates*> m_template;
   std::vector<std::shared_ptr<IEventCommand>> m_currentCommands;

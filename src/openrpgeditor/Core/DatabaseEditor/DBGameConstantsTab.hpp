@@ -2,6 +2,7 @@
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include "DBCommonEventsTab.hpp"
 #include "Database/GameConstants.hpp"
 
 #include <optional>
@@ -25,8 +26,20 @@ public:
   explicit DBGameConstantsTab(GameConstants& constants, DatabaseEditor* parent) : IDBEditorTab(parent), m_constants(&constants) {}
 
   void draw() override;
+  std::vector<int>& getHeaders() override { return m_headers; }
+  int getHeader(int index) override { return m_headers.at(index); }
+  bool hasHeader() override { return !m_headers.empty(); }
+  void setHeaderRange(int start, int end) override {
+    m_categoryStart = start;
+    m_categoryEnd = end;
+  }
+  std::string getName(int index) override { return ""; }
+  int getCount() override { return 0; }
 
 private:
+  int m_categoryStart;
+  int m_categoryEnd;
+  std::vector<int> m_headers;
   void drawAliasModal(GameConstants::Type type);
   static void setupTableHeaders();
   bool drawSelectable(int id, bool selected);

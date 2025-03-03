@@ -2,6 +2,7 @@
 #include "Core/CommonUI/ImagePicker.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/TileMarker.hpp"
+#include "DBCommonEventsTab.hpp"
 #include "Database/Tilesets.hpp"
 
 class DBTilesetsTab final : public IDBEditorTab {
@@ -15,8 +16,21 @@ public:
 
   [[nodiscard]] Tileset* tileset(const int id) { return m_tilesets.tileset(id); }
   [[nodiscard]] const Tileset* tileset(const int id) const { return m_tilesets.tileset(id); }
+  std::vector<int>& getHeaders() override { return m_headers; }
+  int getHeader(int index) override { return m_headers.at(index); }
+  bool hasHeader() override { return !m_headers.empty(); }
+  void setHeaderRange(int start, int end) override {
+    m_categoryStart = start;
+    m_categoryEnd = end;
+  }
+
+  std::string getName(int index) override { return m_tilesets.tileset(index)->name(); }
+  int getCount() override { return m_tilesets.count(); }
 
 private:
+  int m_categoryStart;
+  int m_categoryEnd;
+  std::vector<int> m_headers;
   Tilesets& m_tilesets;
   Tileset* m_selectedTileset{};
   int m_maxTilesets{};

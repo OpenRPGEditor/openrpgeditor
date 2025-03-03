@@ -5,6 +5,7 @@
 #include "Core/Graphics/CheckeredCompositeTexture.hpp"
 #include "Core/Graphics/FaceSheet.hpp"
 #include "Core/Graphics/SideViewBattlerSheet.hpp"
+#include "DBCommonEventsTab.hpp"
 
 #include "Database/Actors.hpp"
 
@@ -23,10 +24,23 @@ struct DBActorsTab : IDBEditorTab {
 
   bool isModified() const { return m_actors.isModified(); }
 
+  std::vector<int>& getHeaders() override { return m_headers; }
+  int getHeader(int index) override { return m_headers.at(index); }
+  bool hasHeader() override { return !m_headers.empty(); }
+  void setHeaderRange(int start, int end) override {
+    m_categoryStart = start;
+    m_categoryEnd = end;
+  }
+  std::string getName(int index) override { return m_actors.actor(index)->name(); }
+  int getCount() override { return m_actors.count(); }
+
 private:
+  int m_categoryStart;
+  int m_categoryEnd;
   bool checkEquipable(int etypeId, int dataId) const;
   static std::string itemDisplayName(bool isWeapon, int dataId);
 
+  std::vector<int> m_headers;
   Actors& m_actors;
   Actor* m_selectedActor{};
   int m_editMaxActors{};

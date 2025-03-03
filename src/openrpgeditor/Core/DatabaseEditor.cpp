@@ -26,6 +26,37 @@ void DatabaseEditor::draw() {
     ImGui::SetNextItemWidth(100.f);
     const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQR").x;
     ImGui::BeginChild("##orpg_database_editor_tab_buttons", ImVec2{calc + ImGui::GetStyle().ItemSpacing.x, 0}, 0, ImGuiWindowFlags_NoBackground);
+
+    ImGui::SetNextItemWidth(160.f);
+    int index{0};
+    if (m_filterByHeader) {
+      if (ImGui::BeginCombo("##orpg_database_editor_header_list", m_selectedHeaderIndex == -1 ? "" : m_currentTab->getName(m_currentTab->getHeader(m_selectedHeaderIndex)).c_str())) {
+        char buf[1024];
+        for (int v : m_currentTab->getHeaders()) {
+          strncpy(buf, m_commonEvents.value().event(v)->name().c_str(), 1024);
+          if (ImGui::Selectable(buf, m_selectedHeaderIndex == index)) {
+            m_selectedHeaderIndex = index;
+            m_currentTab->setHeaderRange(m_currentTab->getHeader(m_selectedHeaderIndex),
+                                         m_selectedHeaderIndex + 1 >= m_currentTab->getHeaders().size() ? m_currentTab->getCount() + 1 : m_currentTab->getHeader(m_selectedHeaderIndex + 1));
+          }
+          index++;
+        }
+        ImGui::EndCombo();
+      }
+    } else {
+      ImGui::InputText("##orpg_database_editor_search_filter", &m_searchString);
+    }
+    ImGui::BeginDisabled(m_currentTab->hasHeader() == 0 ? true : !m_currentTab->hasHeader());
+    if (ImGui::Checkbox("By header##orpg_database_editor_filterbyheader_check", &m_filterByHeader)) {
+      if (m_filterByHeader) {
+        m_currentTab->setHeaderRange(m_currentTab->getHeader(m_selectedHeaderIndex),
+                                     m_selectedHeaderIndex + 1 >= m_currentTab->getHeaders().size() ? -1 : m_currentTab->getHeader(m_selectedHeaderIndex + 1));
+      } else {
+        m_selectedHeaderIndex = -1;
+      }
+    }
+    ImGui::EndDisabled();
+
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 100);
     if (ImGui::SelectableWithBorder(trNOOP("Actors"), m_currentTab == &m_actors.value())) {
       m_currentTab = &m_actors.value();
@@ -101,3 +132,5 @@ const IconSheet* DatabaseEditor::getIconSheet() {
   }
   return &m_iconSheet.value();
 }
+
+std::string DatabaseEditor::getFilterString() { return m_searchString; }

@@ -15,6 +15,14 @@
 DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor* parent) : IDBEditorTab(parent), m_events(commonEvents) {
   m_selectedCommonEvent = m_events.event(1);
   m_commandEditor.setCommands(&m_selectedCommonEvent->commands());
+
+  for (const auto& cmn : m_events.events()) {
+    if (cmn.has_value()) {
+      if (hasUnicodeFormatting(cmn.value().name())) {
+        m_headers.push_back(cmn.value().id());
+      }
+    }
+  }
 }
 
 void DBCommonEventsTab::draw() {
@@ -31,20 +39,50 @@ void DBCommonEventsTab::draw() {
           ImGui::BeginGroup();
           {
             ImGuiListClipper clipper;
-            clipper.Begin(m_events.count() + 1, 22.f); // The number of items to clip (the total number of events)
+            int itemCount = m_events.count() + 1;
+            // if (m_parent->isFilteredByCategory()) {
+            //   // if (commonEvent.id() <= m_categoryStart || m_categoryEnd == -1 ? true : commonEvent.id() >= m_categoryEnd) {
+            //   //   continue;
+            //   // }
+            // } else {
+            //   std::string searchString = m_parent->getFilterString();
+            //   if (!searchString.empty()) {
+            //     if (commonEvent.name().contains(searchString)) {
+            //       continue;
+            //     }
+            //   }
+            // }
+
+            if (m_parent->isFilteredByCategory()) {
+              // clipper.ForceDisplayRangeByIndices(m_categoryStart, m_categoryEnd);
+              itemCount = (m_categoryEnd - m_categoryStart);
+            } else {
+              if (m_categoryStart > 0 || m_categoryEnd > 0) {
+                m_categoryEnd = 0;
+                m_categoryStart = 0;
+              }
+            }
+            clipper.Begin(itemCount, 22.f);
             while (clipper.Step()) {
+
               for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
-                auto& event = m_events.events()[i];
+                if (m_parent->isFilteredByCategory()) {
+                  if (i + m_categoryStart > m_categoryEnd || i + m_categoryStart > m_events.count()) {
+                    continue;
+                  }
+                }
+                auto& event = m_events.events()[i + m_categoryStart];
+
                 if (!event) {
                   continue;
                 }
-
                 CommonEvent& commonEvent = event.value();
+
                 std::string id = "##orpg_commonevent_editor_unnamed_commonevent_" + std::to_string(commonEvent.id());
                 ImGui::PushID(id.c_str());
 
                 bool isFormatted{false};
-                if (commonEvent.name().contains("\u25bc")) {
+                if (hasUnicodeFormatting(commonEvent.name())) {
                   ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.110f, 0.153f, 0.173f, 1.0f));
                   ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.110f, 0.153f, 0.173f, 1.0f));
                   ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.110f, 0.153f, 0.173f, 1.0f));
@@ -55,7 +93,9 @@ void DBCommonEventsTab::draw() {
                   m_selectedCommonEvent = &commonEvent;
                   m_commandEditor.setCommands(&m_selectedCommonEvent->commands());
                 }
-                ImGui::PopStyleColor(3);
+                if (isFormatted) {
+                  ImGui::PopStyleColor(3);
+                }
 
                 ImGui::PopID();
               }

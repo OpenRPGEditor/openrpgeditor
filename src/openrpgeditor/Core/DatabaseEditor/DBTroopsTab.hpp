@@ -3,6 +3,7 @@
 #include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/Graphics/CheckeredCompositeTexture.hpp"
 #include "Core/TroopsEventEditor/TroopsEVEditor.hpp"
+#include "DBCommonEventsTab.hpp"
 #include "Database/Actor.hpp"
 #include "Database/Enemies.hpp"
 #include "Database/Enemy.hpp"
@@ -19,8 +20,21 @@ struct DBTroopsTab : IDBEditorTab {
 
   [[nodiscard]] Troop* troop(const int id) { return m_troops.troop(id); }
   [[nodiscard]] const Troop* troop(const int id) const { return m_troops.troop(id); }
+  std::vector<int>& getHeaders() override { return m_headers; }
+  int getHeader(int index) override { return m_headers.at(index); }
+  bool hasHeader() override { return !m_headers.empty(); }
+  void setHeaderRange(int start, int end) override {
+    m_categoryStart = start;
+    m_categoryEnd = end;
+  }
+
+  std::string getName(int index) override { return m_troops.troop(index)->name(); }
+  int getCount() override { return m_troops.count(); }
 
 private:
+  int m_categoryStart;
+  int m_categoryEnd;
+  std::vector<int> m_headers;
   Troops& m_troops;
   Troop* m_selectedTroop{};
   int m_maxTroops{};

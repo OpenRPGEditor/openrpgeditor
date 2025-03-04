@@ -449,6 +449,8 @@ add_library(
         Core/ReferenceSearch.hpp
         Core/DatabaseEditor/DBMappingsTab.cpp
         Core/DatabaseEditor/DBMappingsTab.hpp
+        Core/CommonUI/Preview.cpp
+        Core/CommonUI/Preview.hpp
 )
 
 target_include_directories(

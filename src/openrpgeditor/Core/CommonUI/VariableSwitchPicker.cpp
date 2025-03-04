@@ -15,6 +15,9 @@ VariableSwitchPicker::VariableSwitchPicker(const std::string_view name, const st
   for (int i = rangeStart; i < m_list->size(); ++i) {
     m_trackedValues.emplace_back(i, &(*m_list)[i]);
   }
+  if (m_selection > 0) {
+    m_navigateOnOpen = true;
+  }
 }
 
 std::tuple<bool, bool> VariableSwitchPicker::draw() {
@@ -86,6 +89,10 @@ std::tuple<bool, bool> VariableSwitchPicker::draw() {
           }
           if (m_selection == id) {
             ImGui::SetItemDefaultFocus();
+            if (m_navigateOnOpen) {
+              ImGui::SetScrollHereY();
+              m_navigateOnOpen = false;
+            }
           }
         }
         /* Name */

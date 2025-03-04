@@ -14,6 +14,11 @@ struct ControlSwitches : IEventCommand {
     if (type == SearchType::Switch) {
       return start == targetId && end == targetId;
     }
+    if (type == SearchType::Range) {
+      if (start != end) {
+        return true; // within range
+      }
+    }
     return false;
   };
 

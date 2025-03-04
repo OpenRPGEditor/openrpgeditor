@@ -18,5 +18,6 @@ private:
   const std::vector<std::string>* m_list;
   std::vector<std::pair<int, const std::string*>> m_trackedValues;
   int m_selection{1};
+  bool m_navigateOnOpen{false};
   std::string m_filter;
 };

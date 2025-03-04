@@ -21,7 +21,7 @@ public:
     m_categoryStart = start;
     m_categoryEnd = end;
   }
-
+  std::string GetFormattingHelpText() { return "Reference updating does not support:\n- Ranges\n- Data without game constants\nThese must be updated manually."; }
   std::string getName(int index) override { return ""; }
   int getCount() override { return 0; }
 
@@ -33,8 +33,7 @@ private:
   int m_selectedVariable{0};
   int m_selectedSwitch{0};
   int m_selectedCommon{0};
-  int move_to;
-  int move_from;
+  int m_selectedTab{0};
 
   std::string m_switch_string;
   std::string m_variable_string;
@@ -51,4 +50,6 @@ private:
   bool m_changeConfirmDialogOpen = false;
   int m_editMaxVariables{};
   int m_editMaxSwitches{};
+  int m_selectedUnicode{0};
+  std::vector<std::string> m_unicodes;
 };

@@ -16,6 +16,7 @@ public:
   virtual std::string getName(int index) = 0;
   virtual int getCount() = 0;
 
+  std::vector<std::string> getUnicodeFormatters() { return {"\u0D9E", "\u21C4", "\u2318", "\u2248", "\u221E", "\u25bc"}; }
   bool hasUnicodeFormatting(const std::string& text) { return text.contains("\u25bc"); }
 
   /* TODO: Make pure */

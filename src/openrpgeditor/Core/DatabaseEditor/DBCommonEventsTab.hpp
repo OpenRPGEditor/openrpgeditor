@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/CommonUI/EventCommandEditor.hpp"
+#include "Core/CommonUI/Preview.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Database/CommonEvents.hpp"
 
@@ -27,6 +28,8 @@ private:
   CommonEvents& m_events;
   CommonEvent* m_selectedCommonEvent{};
   EventCommandEditor m_commandEditor;
+  std::optional<VariableSwitchPicker> picker;
+  std::optional<Preview> preview;
 
   std::vector<int> m_headers;
   int m_categoryStart{0};

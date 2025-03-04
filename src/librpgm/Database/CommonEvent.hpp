@@ -32,6 +32,14 @@ public:
   CommonEventTriggerType trigger() const;
   void setTrigger(CommonEventTriggerType trigger);
 
+  bool setReference(int targetId, int newId, SearchType type) override {
+    if (targetId == switchId()) {
+      setSwitchId(newId);
+      return true;
+    }
+    return false;
+  }
+
   void restoreOriginal() override;
   void acceptChanges() override;
   nlohmann::ordered_json serializeOldValues() const override;

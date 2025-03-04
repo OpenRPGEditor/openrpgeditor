@@ -1,4 +1,5 @@
 #pragma once
+#include "Database/Database.hpp"
 #include "Database/EventCommands/IEventCommand.hpp"
 
 struct ConditionalBranchCommand final : IEventCommand {
@@ -33,8 +34,27 @@ struct ConditionalBranchCommand final : IEventCommand {
         }
         return variable.source == VariableComparisonSource::Variable && variable.otherId == targetId;
       }
+      if (type == ConditionType::Script) {
+        std::string cnst = Database::instance()->gameConstants.variables[targetId];
+        if (cnst.empty()) {
+          return false;
+        }
+        if (script.contains("gameVariables") && script.contains(cnst)) {
+          return true;
+        }
+      }
     }
     if (searchType == SearchType::Switch) {
+      if (type == ConditionType::Script) {
+        std::string cnst = Database::instance()->gameConstants.switches[targetId];
+        if (cnst.empty()) {
+          // Return a warning, we want everything to have a constant
+          return false;
+        }
+        if (script.contains("gameSwitches") && script.contains(cnst)) {
+          return true;
+        }
+      }
       return type == ConditionType::Switch && globalSwitch.switchIdx == targetId;
     }
     if (searchType == SearchType::Armors || searchType == SearchType::Weapons) {
@@ -81,6 +101,7 @@ struct ConditionalBranchCommand final : IEventCommand {
         }
       }
     }
+
     return false;
   };
 
@@ -97,10 +118,29 @@ struct ConditionalBranchCommand final : IEventCommand {
           }
           return true;
         }
+        if (type == ConditionType::Script) {
+          std::string cnst = Database::instance()->gameConstants.variables[targetId];
+          if (cnst.empty()) {
+            return false;
+          }
+          // Update game constants with the new values. We don't need to change the script directly -- game constants help us map these values out.
+          std::string constantString = Database::instance()->gameConstants.variables[targetId];
+          Database::instance()->gameConstants.variables.erase(targetId);
+          Database::instance()->gameConstants.variables[newId] = constantString;
+        }
       }
       if (searchType == SearchType::Switch) {
         if (type == ConditionType::Switch && globalSwitch.switchIdx == targetId) {
           globalSwitch.switchIdx = newId;
+        }
+        if (type == ConditionType::Script) {
+          std::string cnst = Database::instance()->gameConstants.switches[targetId];
+          if (cnst.empty()) {
+            return false;
+          }
+          std::string constantString = Database::instance()->gameConstants.switches[targetId];
+          Database::instance()->gameConstants.switches.erase(targetId);
+          Database::instance()->gameConstants.switches[newId] = constantString;
         }
         return true;
       }

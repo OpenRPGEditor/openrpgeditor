@@ -1,4 +1,5 @@
 #pragma once
+#include "Database/Database.hpp"
 #include "Database/EventCommands/IEventCommand.hpp"
 #include <format>
 
@@ -13,19 +14,64 @@ struct ControlVariables : IEventCommand {
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ControlVariables>(*this); }
   bool hasReference(int targetId, SearchType type) override {
     if (type == SearchType::Variable) {
-      if (start == targetId) {
+      if (start == targetId && end == targetId) {
         return true;
       }
+      if (operand == VariableControlOperand::Script) {
+        std::string cnst = Database::instance()->gameConstants.variables[targetId];
+        if (cnst.empty()) {
+          return false;
+        }
+        if (script.contains("gameVariables") && script.contains(cnst)) {
+          return true;
+        }
+      }
       return (variable == targetId && operand == VariableControlOperand::Variable);
+    }
+    // ControlVariables can change switches by using scripts
+    if (type == SearchType::Switch) {
+      if (operand == VariableControlOperand::Script) {
+        std::string cnst = Database::instance()->gameConstants.switches[targetId];
+        if (cnst.empty()) {
+          return false;
+        }
+        if (script.contains("gameSwitches") && script.contains(cnst)) {
+          return true;
+        }
+      }
+    }
+    if (type == SearchType::Range) {
+      if (start != end) {
+        return true;
+      }
     }
     return false;
   };
 
   bool setReference(int targetId, int newId, SearchType type) override {
     if (hasReference(targetId, type)) {
-      if (start == targetId && end == targetId) {
-        start = newId;
-        end = newId;
+      if (operand == VariableControlOperand::Script) {
+        if (type == SearchType::Variable) {
+
+          std::string cnst = Database::instance()->gameConstants.variables[targetId];
+          if (cnst.empty()) {
+            return false;
+          }
+          // Update game constants with the new values. We don't need to change the script directly -- game constants help us map these values out.
+          std::string constantString = Database::instance()->gameConstants.variables[targetId];
+          Database::instance()->gameConstants.variables.erase(targetId);
+          Database::instance()->gameConstants.variables[newId] = constantString;
+        }
+        if (type == SearchType::Switch) {
+          std::string constantString = Database::instance()->gameConstants.switches[targetId];
+          Database::instance()->gameConstants.switches.erase(targetId);
+          Database::instance()->gameConstants.switches[newId] = constantString;
+        }
+      } else {
+        if (start == targetId && end == targetId) {
+          start = newId;
+          end = newId;
+        }
       }
       return true;
     }

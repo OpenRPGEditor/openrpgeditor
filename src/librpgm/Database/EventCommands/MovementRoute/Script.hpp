@@ -15,12 +15,20 @@ struct MovementScriptCommand final : IMovementRouteStep {
   std::string script;
   bool hasReference(int targetId, SearchType type) override {
     if (type == SearchType::Variable) {
-      if (script.contains("gameVariables") && script.contains(Database::instance()->gameConstants.variables[targetId])) {
+      std::string cnst = Database::instance()->gameConstants.variables[targetId];
+      if (cnst.empty()) {
+        return false;
+      }
+      if (script.contains("gameVariables") && script.contains(cnst)) {
         return true;
       }
     }
     if (type == SearchType::Switch) {
-      if (script.contains("gameSwitches") && script.contains(Database::instance()->gameConstants.switches[targetId])) {
+      std::string cnst = Database::instance()->gameConstants.switches[targetId];
+      if (cnst.empty()) {
+        return false;
+      }
+      if (script.contains("gameSwitches") && script.contains(cnst)) {
         return true;
       }
     }
@@ -29,7 +37,24 @@ struct MovementScriptCommand final : IMovementRouteStep {
 
   bool setReference(int targetId, int newId, SearchType type) override {
     if (hasReference(targetId, type)) {
-      // TODO
+      if (type == SearchType::Variable) {
+        std::string cnst = Database::instance()->gameConstants.variables[targetId];
+        if (cnst.empty()) {
+          return false;
+        }
+        std::string constantString = Database::instance()->gameConstants.variables[targetId];
+        Database::instance()->gameConstants.variables.erase(targetId);
+        Database::instance()->gameConstants.variables[newId] = constantString;
+      }
+      if (type == SearchType::Switch) {
+        std::string cnst = Database::instance()->gameConstants.switches[targetId];
+        if (cnst.empty()) {
+          return false;
+        }
+        std::string constantString = Database::instance()->gameConstants.switches[targetId];
+        Database::instance()->gameConstants.switches.erase(targetId);
+        Database::instance()->gameConstants.switches[newId] = constantString;
+      }
       return true;
     }
     return false;

@@ -225,6 +225,26 @@ std::map<int, bool> Event::isConditionalReference(int targetId, SearchType type)
   }
   return events;
 }
+void Event::setEventReference(int pageId, int targetId, int newId, SearchType type) {
+
+  if (type == SearchType::Variable) {
+    if (page(pageId)->conditions().variableValid()) {
+      if (targetId == page(pageId)->conditions().variableId()) {
+        page(pageId)->conditions().setVariableId(newId);
+      }
+    }
+  }
+  if (type == SearchType::Switch) {
+    if (page(pageId)->conditions().switch1Valid() || page(pageId)->conditions().switch2Valid()) {
+      if (targetId == page(pageId)->conditions().switch1Id()) {
+        page(pageId)->conditions().setSwitch1Id(newId);
+      }
+      if (targetId == page(pageId)->conditions().switch2Id()) {
+        page(pageId)->conditions().setSwitch2Id(newId);
+      }
+    }
+  }
+}
 
 void Event::restoreOriginal() {
   IModifiable::restoreOriginal();

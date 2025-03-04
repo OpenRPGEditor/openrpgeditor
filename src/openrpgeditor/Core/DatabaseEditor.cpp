@@ -49,6 +49,7 @@ void DatabaseEditor::draw() {
     ImGui::BeginDisabled(m_currentTab->hasHeader() == 0 ? true : !m_currentTab->hasHeader());
     if (ImGui::Checkbox("By header##orpg_database_editor_filterbyheader_check", &m_filterByHeader)) {
       if (m_filterByHeader) {
+        m_selectedHeaderIndex = 0;
         m_currentTab->setHeaderRange(m_currentTab->getHeader(m_selectedHeaderIndex),
                                      m_selectedHeaderIndex + 1 >= m_currentTab->getHeaders().size() ? -1 : m_currentTab->getHeader(m_selectedHeaderIndex + 1));
       } else {
@@ -132,5 +133,3 @@ const IconSheet* DatabaseEditor::getIconSheet() {
   }
   return &m_iconSheet.value();
 }
-
-std::string DatabaseEditor::getFilterString() { return m_searchString; }

@@ -295,27 +295,27 @@ void EventSearcher::drawTable(std::string label, int mapId, int eventId, std::st
       ImGui::SetItemDefaultFocus();
   }
   ImGui::TableNextColumn();
-  ImGui::PushID(std::format("##orpg_table_map_entry{}_{}", eventId, pageNo).c_str());
+  ImGui::PushID(std::format("##orpg_table_map_entry{}_{}_{}", eventId, pageNo, totalEntries).c_str());
   ImGui::TextUnformatted(std::format("{:03}:{}", mapId, Database::instance()->mapName(mapId)).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
-  ImGui::PushID(std::format("##orpg_eventsearcher_event_data_{}_{}", eventId, pageNo).c_str());
+  ImGui::PushID(std::format("##orpg_eventsearcher_event_data_{}_{}_{}", eventId, pageNo, totalEntries).c_str());
   ImGui::TextUnformatted(std::format("{:03}:{}", eventId, eventName).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
-  ImGui::PushID(std::format("##orpg_eventsearcher_event_pageNo_{}_{}", eventId, pageNo).c_str());
+  ImGui::PushID(std::format("##orpg_eventsearcher_event_pageNo_{}_{}_{}", eventId, pageNo, totalEntries).c_str());
   ImGui::TextUnformatted(std::to_string(pageNo).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
-  ImGui::PushID(std::format("##orpg_eventsearcher_event_step_{}_{}", eventId, pageNo).c_str());
+  ImGui::PushID(std::format("##orpg_eventsearcher_event_step_{}_{}_{}", eventId, pageNo, totalEntries).c_str());
   ImGui::TextUnformatted(step == 0 ? "-" : std::to_string(step).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
-  ImGui::PushID(std::format("##orpg_eventsearcher_event_pos_{}_{}", eventId, pageNo).c_str());
+  ImGui::PushID(std::format("##orpg_eventsearcher_event_pos_{}_{}_{}", eventId, pageNo, totalEntries).c_str());
   ImGui::TextUnformatted(std::string(std::format("({},{})", x, y)).c_str());
   ImGui::PopID();
   ImGui::TableNextRow();
@@ -331,27 +331,27 @@ void EventSearcher::drawTable(int commonId, int tableIndex, int step) {
       ImGui::SetItemDefaultFocus();
   }
   ImGui::TableNextColumn();
-  ImGui::PushID(std::format("##orpg_table_commonev_entry{}", commonId).c_str());
+  ImGui::PushID(std::format("##orpg_table_commonev_entry{}_{}", commonId, totalEntries).c_str());
   ImGui::Text("-");
   ImGui::PopID();
 
   ImGui::TableNextColumn();
-  ImGui::PushID(std::format("##orpg_eventsearcher_commonev_data_{}", commonId).c_str());
+  ImGui::PushID(std::format("##orpg_eventsearcher_commonev_data_{}_{}", commonId, totalEntries).c_str());
   ImGui::TextUnformatted(std::format("{:03}:{}", commonId, Database::instance()->commonEventName(commonId)).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
-  ImGui::PushID(std::format("##orpg_eventsearcher_commonev_pageNo_{}", commonId).c_str());
+  ImGui::PushID(std::format("##orpg_eventsearcher_commonev_pageNo_{}_{}", commonId, totalEntries).c_str());
   ImGui::Text("-");
   ImGui::PopID();
 
   ImGui::TableNextColumn();
-  ImGui::PushID(std::format("##orpg_eventsearcher_commonev_step_{}", commonId).c_str());
+  ImGui::PushID(std::format("##orpg_eventsearcher_commonev_step_{}_{}", commonId, totalEntries).c_str());
   ImGui::TextUnformatted(step == 0 ? "-" : std::to_string(step).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
-  ImGui::PushID(std::format("##orpg_eventsearcher_commonev_pos_{}", commonId).c_str());
+  ImGui::PushID(std::format("##orpg_eventsearcher_commonev_pos_{}_{}", commonId, totalEntries).c_str());
   ImGui::Text("-");
   ImGui::PopID();
   ImGui::TableNextRow();
@@ -366,27 +366,27 @@ void EventSearcher::drawTable(std::string text, int tableIndex, int step, int ev
       ImGui::SetItemDefaultFocus();
   }
   ImGui::TableNextColumn();
-  ImGui::PushID(std::format("##orpg_table_script_entry{}", tableIndex).c_str());
+  ImGui::PushID(std::format("##orpg_table_script_entry{}_{}", tableIndex, totalEntries).c_str());
   ImGui::TextUnformatted(std::to_string(mapId).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
-  ImGui::PushID(std::format("##orpg_eventsearcher_script_data_{}", tableIndex).c_str());
+  ImGui::PushID(std::format("##orpg_eventsearcher_script_data_{}_{}", tableIndex, totalEntries).c_str());
   ImGui::TextUnformatted(std::to_string(eventId).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
-  ImGui::PushID(std::format("##orpg_eventsearcher_script_pageNo_{}", tableIndex).c_str());
+  ImGui::PushID(std::format("##orpg_eventsearcher_script_pageNo_{}_{}", tableIndex, totalEntries).c_str());
   ImGui::TextUnformatted(std::to_string(pageId).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
-  ImGui::PushID(std::format("##orpg_eventsearcher_script_step_{}", tableIndex).c_str());
+  ImGui::PushID(std::format("##orpg_eventsearcher_script_step_{}", tableIndex, totalEntries).c_str());
   ImGui::TextUnformatted(step == 0 ? "-" : std::to_string(step).c_str());
   ImGui::PopID();
 
   ImGui::TableNextColumn();
-  ImGui::PushID(std::format("##orpg_eventsearcher_script_pos_{}", tableIndex).c_str());
+  ImGui::PushID(std::format("##orpg_eventsearcher_script_pos_{}_{}", tableIndex, totalEntries).c_str());
   ImGui::TextUnformatted(std::to_string(pos).c_str());
   ImGui::PopID();
   ImGui::TableNextRow();

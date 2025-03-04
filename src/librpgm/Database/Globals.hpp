@@ -905,9 +905,19 @@ enum class SearchType {
   trENUM("Skill", Skill),
   trENUM("State", State),
   trENUM("Animation", Animation),
-  trENUM("Script", Script)
+  trENUM("Script", Script),
+  trENUM("Ranges", Range)
 
 };
+enum class SpecialDataParent {
+  trENUM("Skills", Skills),
+  trENUM("Items", Items),
+  trENUM("States", States),
+  trENUM("Weapon", Weapon),
+  trENUM("Armor", Armor),
+  trENUM("Equip", Equip),
+};
+enum class PreviewType { trENUM("Animation", Animation) };
 /**
  * @name Flags
  * @brief Allows the developer to set specific tile behaviors

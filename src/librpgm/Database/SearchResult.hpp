@@ -10,9 +10,11 @@
 
 class SearchResult {
 public:
+  explicit SearchResult(int commonId, int step);
   explicit SearchResult(int mapId, int eventId, int pageIndex);
   explicit SearchResult(int commonEventId, const std::shared_ptr<IEventCommand>& cmd, int step);
   explicit SearchResult(int mapId, int eventId, const std::shared_ptr<IEventCommand>& cmd, int pageIndex, int step);
+  explicit SearchResult(SpecialDataParent type, int parentId, int dataId); // For effects and traits
 
   [[nodiscard]] Event& getEvent() const { return *Database::instance()->mapInfos.map(m_mapId)->event(m_eventId); }
   [[nodiscard]] CommonEvent& getCommonEvent() const { return *Database::instance()->commonEvents.event(m_commonEventId); }
@@ -31,4 +33,7 @@ private:
   int m_mapId{0};
   int m_step{-1};
   int m_page{0};
+  SpecialDataParent m_type;
+  int m_parentId{0}; // Parent id
+  int m_dataId{0};   // Effect/Trait id
 };

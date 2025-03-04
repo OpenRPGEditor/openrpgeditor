@@ -26,6 +26,16 @@ DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor*
 }
 
 void DBCommonEventsTab::draw() {
+  if (picker) {
+    auto [closed, confirmed] = picker->draw();
+    if (closed) {
+      if (confirmed) {
+        m_selectedCommonEvent->setSwitchId(picker->selection());
+      }
+      picker.reset();
+    }
+  }
+
   ImGui::BeginChild("##orpg_commonevents_editor");
   {
     const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUV");
@@ -54,7 +64,6 @@ void DBCommonEventsTab::draw() {
             // }
 
             if (m_parent->isFilteredByCategory()) {
-              // clipper.ForceDisplayRangeByIndices(m_categoryStart, m_categoryEnd);
               itemCount = (m_categoryEnd - m_categoryStart);
             } else {
               if (m_categoryStart > 0 || m_categoryEnd > 0) {
@@ -154,19 +163,26 @@ void DBCommonEventsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Switch:");
-              // snprintf(buf, 4096, "%04i %s", m_selectedCommonEvent->switchId,
-              // m_parent->switches(m_selectedCommonEvent->switchId)); strncpy(buf,
-              // m_mapInfos.map(m_selectedCommonEvent.id)->name.c_str(), 4096);
               const bool isSwitchEnabled = m_selectedCommonEvent->trigger() == CommonEventTriggerType::None;
               const std::string text = isSwitchEnabled ? "##commonevent_switch_empty" : Database::instance()->system.switche(m_selectedCommonEvent->switchId());
               ImGui::PushID("##commonevent_button");
               ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2 / 2 - 16);
               ImGui::BeginDisabled(isSwitchEnabled);
               if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 2 / 2 - 15, 0})) {
-                // Open Menu to select switch
+                picker.emplace("Switches", Database::instance()->system.switches(), m_selectedCommonEvent->switchId());
+                picker->setOpen(true);
               }
               ImGui::PopID();
               ImGui::EndDisabled();
+            }
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
+            ImGui::BeginGroup();
+            {
+              ImGui::Text("Preview:");
+              if (ImGui::Button("\u25B6", ImVec2{ImGui::GetWindowContentRegionMax().x / 2 / 2 - 15, 0})) {
+                preview.emplace("Switches", Database::instance()->system.switches(), m_selectedCommonEvent->switchId());
+                preview->setOpen(true);
+              }
             }
             ImGui::EndGroup();
             m_commandEditor.draw();

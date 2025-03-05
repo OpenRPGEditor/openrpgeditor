@@ -33,8 +33,8 @@ bool TroopsEVEditor::draw() {
       ImGui::EndDisabled();
       ImGui::BeginDisabled(m_pages.size() <= 1);
       if (ImGui::Button("Delete\nEvent Page")) {
-        erased = true;
-        erasedIdx = m_selectedPage;
+        m_erased = true;
+        m_erasedIdx = m_selectedPage;
       }
       ImGui::EndDisabled();
       if (ImGui::Button("Clear\nEvent Page")) {
@@ -70,13 +70,13 @@ bool TroopsEVEditor::draw() {
       ImGui::EndChild();
     }
 
-    if (erased) {
-      m_troop->pages().erase(m_troop->pages().begin() + erasedIdx);
-      if (erasedIdx == m_selectedPage) {
+    if (m_erased) {
+      m_troop->pages().erase(m_troop->pages().begin() + m_erasedIdx);
+      if (m_erasedIdx == m_selectedPage) {
         m_selectedPage = -1;
       }
       fixupPages();
-      erased = false;
+      m_erased = false;
     }
   }
   return m_isOpen;

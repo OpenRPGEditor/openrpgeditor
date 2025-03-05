@@ -385,6 +385,7 @@ void MainWindow::draw() {
   }
 
   m_nwjsVersionManager.draw();
+  EditorPluginManager::instance()->draw();
 
   if (DeserializationQueue::instance().hasTasks()) {
     ImGui::Begin(trNOOP("Loading Project...."), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
@@ -844,7 +845,7 @@ void MainWindow::drawMenu() {
       ImGui::EndMenu();
     }
 
-    if (ImGui::BeginMenu("Tools")) {
+    if (ImGui::BeginMenu(trNOOP("Tools"))) {
       if (ImGui::MenuItem(trNOOP("Settings"), "F8", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
         m_settingsDialog.setOpen(true);
       }
@@ -854,8 +855,11 @@ void MainWindow::drawMenu() {
       if (ImGui::MenuItem(trNOOP("NWJS Version Manager"), "F10", false)) {
         m_nwjsVersionManager.open();
       }
-      if (ImGui::MenuItem(trNOOP("Event Searcher..."), "", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
+      if (ImGui::MenuItem(trNOOP("Event Searcher..."), "F11", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
         m_eventSearcher.open();
+      }
+      if (ImGui::MenuItem(trNOOP("Editor Plugins..."), "F12")) {
+        EditorPluginManager::instance()->setOpen(true);
       }
 
       /* Add tools above this */
@@ -997,6 +1001,12 @@ void MainWindow::handleKeyboardShortcuts() {
   }
   if (ImGui::IsKeyReleased(ImGuiKey_F10)) {
     m_nwjsVersionManager.open();
+  }
+  if (ImGui::IsKeyReleased(ImGuiKey_F11)) {
+    m_eventSearcher.open();
+  }
+  if (ImGui::IsKeyReleased(ImGuiKey_F12)) {
+    EditorPluginManager::instance()->setOpen();
   }
 
   // TODO: Add missing tools

@@ -21,7 +21,7 @@ void ReferenceSearch::findAllReferences(int targetId, SearchType type) {
   searchAllCommonByTarget(targetId, type);
   searchAllEffectsByTarget(targetId, type);
 }
-void ReferenceSearch::findAllReferences(std::string text, SearchType type) {
+void ReferenceSearch::findAllReferences(const std::string& text, SearchType type) {
   m_results.clear();
   for (auto& result : m_results) {
     auto refEvent = result.getEvent();
@@ -62,7 +62,7 @@ void ReferenceSearch::searchAllListsByTarget(int targetId, SearchType type) {
     }
   }
 }
-void ReferenceSearch::searchAllListsByText(std::string text, SearchType type) {
+void ReferenceSearch::searchAllListsByText(const std::string& text, SearchType type) {
   m_list.clear();
   for (auto& mapInfo : Database::instance()->mapInfos.mapInfos()) {
     if (mapInfo->map()) {
@@ -103,7 +103,7 @@ void ReferenceSearch::searchAllCommonByTarget(int targetId, SearchType type) {
     }
   }
 }
-void ReferenceSearch::searchAllCommonByText(std::string text, SearchType type) {
+void ReferenceSearch::searchAllCommonByText(const std::string& text, SearchType type) {
   m_common.clear();
   int index{0};
   for (auto& common : Database::instance()->commonEvents.events()) {

@@ -10,10 +10,12 @@ struct MainWindow;
 
 struct TroopsEVEditor {
   TroopsEVEditor(MainWindow* parent, Troop* troop) : m_parent(parent), m_troop(troop) {
-    for (auto& page : troop->pages()) {
-      m_pages.emplace_back(this, &page);
+    if (m_troop) {
+      for (auto& page : troop->pages()) {
+        m_pages.emplace_back(this, &page);
+      }
+      m_id = troop->id();
     }
-    m_id = troop->id();
   }
   void fixupPages();
 
@@ -35,10 +37,10 @@ struct TroopsEVEditor {
 private:
   MainWindow* m_parent = nullptr;
   Troop* m_troop = nullptr;
-  int m_id;
+  int m_id = 0;
   std::vector<TroopsEVPage> m_pages;
   int m_selectedPage = 0;
   bool m_isOpen = true;
-  bool erased{false};
-  int erasedIdx{-1};
+  bool m_erased{false};
+  int m_erasedIdx{-1};
 };

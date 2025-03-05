@@ -204,7 +204,7 @@ void EventSearcher::draw() {
       }
     }
     ImGui::SameLine();
-    ImGui::Text(std::format("{}/{}", m_currentPage + 1, m_maxPage == 0 ? 1 : m_maxPage).c_str());
+    ImGui::TextUnformatted(std::format("{}/{}", m_currentPage + 1, m_maxPage == 0 ? 1 : m_maxPage).c_str());
     ImGui::SameLine();
     if (ImGui::ArrowButton("##orpg_searchpage_right", ImGuiDir_Right)) {
       if (m_currentPage < m_maxPage - 1) {

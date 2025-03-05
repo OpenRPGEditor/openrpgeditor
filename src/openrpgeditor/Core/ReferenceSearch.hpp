@@ -16,11 +16,11 @@ public:
   [[nodiscard]] const std::vector<SearchResult>& getEffects() const { return m_effects; }
   [[nodiscard]] const std::vector<SearchResult>& getTraits() const { return m_traits; }
   void findAllReferences(int targetId, SearchType type);
-  void findAllReferences(std::string text, SearchType type);
+  void findAllReferences(const std::string& text, SearchType type);
   void searchAllCommonByTarget(int targetId, SearchType type);
-  void searchAllCommonByText(std::string text, SearchType type);
+  void searchAllCommonByText(const std::string& text, SearchType type);
   void searchAllListsByTarget(int targetId, SearchType type);
-  void searchAllListsByText(std::string text, SearchType type);
+  void searchAllListsByText(const std::string& text, SearchType type);
   void searchAllEffectsByTarget(int targetId, SearchType type);
   void searchAllTraitsByTarget(int targetId, SearchType type);
   int getCommonSize() { return m_common.size(); }

@@ -1,12 +1,25 @@
 #pragma once
 
+#include "Core/Interpreter.hpp"
+#include "Database/EventCommands/IEventCommand.hpp"
 #include "IDialogController.hpp"
 
-#include <string>
 #include <vector>
 
 class Preview : public IDialogController {
 public:
-  Preview(const std::string_view name, const std::vector<std::string>& values, int selection, int rangeStart = 1);
+  Preview(int commonId);
   std::tuple<bool, bool> draw() override;
+
+private:
+  std::optional<Interpreter> m_interpreter;
+
+  bool m_isPaused{false};
+  bool m_isFastForward{false};
+  int m_selectedKeyFrame{1};
+  int m_inputInt{0};
+
+  std::vector<int> m_keyFrames;
+  std::map<int, int> m_variables;
+  std::map<int, bool> m_switches;
 };

@@ -35,6 +35,13 @@ void DBCommonEventsTab::draw() {
       picker.reset();
     }
   }
+  if (preview) {
+    auto [closed, confirmed] = preview->draw();
+    if (closed) {
+      if (confirmed) {}
+      preview.reset();
+    }
+  }
 
   ImGui::BeginChild("##orpg_commonevents_editor");
   {
@@ -175,15 +182,16 @@ void DBCommonEventsTab::draw() {
               ImGui::PopID();
               ImGui::EndDisabled();
             }
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
+            ImGui::SameLine();
+            // ImGui::SetCursorPosY(ImGui::GetCursorPosY());
             ImGui::BeginGroup();
             {
-              ImGui::Text("Preview:");
-              if (ImGui::Button("\u25B6", ImVec2{ImGui::GetWindowContentRegionMax().x / 2 / 2 - 15, 0})) {
-                preview.emplace("Switches", Database::instance()->system.switches(), m_selectedCommonEvent->switchId());
+              if (ImGui::Button("\u25B6", ImVec2{50.f, 0})) {
+                preview.emplace(m_selectedCommonEvent->id());
                 preview->setOpen(true);
               }
             }
+            ImGui::EndGroup();
             ImGui::EndGroup();
             m_commandEditor.draw();
           }

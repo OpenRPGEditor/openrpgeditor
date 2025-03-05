@@ -451,6 +451,8 @@ add_library(
         Core/DatabaseEditor/DBMappingsTab.hpp
         Core/CommonUI/Preview.cpp
         Core/CommonUI/Preview.hpp
+        Core/Interpreter.cpp
+        Core/Interpreter.hpp
 )
 
 target_include_directories(

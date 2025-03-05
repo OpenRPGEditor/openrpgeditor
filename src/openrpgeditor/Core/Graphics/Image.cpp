@@ -28,7 +28,9 @@ Image::Image(const std::string_view imageName, const int pickType, const bool se
   } else if (pickType == 5) {
     m_imageTexture = ResourceManager::instance()->loadAnimationImage(imageName);
   }
+  m_imageName = imageName;
 }
 
 int Image::imageWidth() const { return m_imageTexture.width(); }
 int Image::imageHeight() const { return m_imageTexture.height(); }
+std::string Image::imageName() const { return m_imageName; }

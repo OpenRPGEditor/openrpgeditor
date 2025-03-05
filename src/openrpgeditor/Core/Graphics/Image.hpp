@@ -9,10 +9,12 @@ struct Image {
   explicit Image(std::string_view imageName, int pickType, bool secondImage);
   int imageWidth() const;
   int imageHeight() const;
+  std::string imageName() const;
 
   explicit operator bool() const { return m_imageTexture.operator bool(); }
   const Texture& texture() const { return m_imageTexture; }
 
 private:
+  std::string m_imageName;
   Texture m_imageTexture;
 };

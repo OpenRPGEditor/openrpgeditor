@@ -2,6 +2,7 @@
 
 #include "Core/Log.hpp"
 #include "imgui.h"
+#include "misc/cpp/imgui_stdlib.h"
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_Comment::draw() {
@@ -15,9 +16,9 @@ std::tuple<bool, bool> Dialog_Comment::draw() {
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
-    if (ImGui::InputTextMultiline("##source", script, IM_ARRAYSIZE(script), ImVec2{575, 550}, flags)) {}
+    if (ImGui::InputTextMultiline("##source", &comment, ImVec2{575, 550}, flags)) {}
     if (ImGui::Button("OK")) {
-      std::vector<std::string> texts = splitString(script, '\n');
+      std::vector<std::string> texts = splitString(comment, '\n');
       if (texts.size() > 1)
         m_isNext = true;
 

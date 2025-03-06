@@ -10,6 +10,7 @@
 #include "Core/ResourceManager.hpp"
 #include "Core/UndoStack.hpp"
 #include "EventSearcher.hpp"
+#include "LibLCF.hpp"
 #include "SettingsDialog.hpp"
 #include "angelscript.h"
 
@@ -177,6 +178,7 @@ private:
   TilesetPicker m_tilesetPicker;
   NWJSVersionManager m_nwjsVersionManager;
   EventSearcher m_eventSearcher;
+  LibLCF m_libLCF;
   UndoStack m_undoStack;
   UndoStack m_redoStack;
   bool m_isValid = false;

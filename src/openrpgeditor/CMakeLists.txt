@@ -453,6 +453,8 @@ add_library(
         Core/CommonUI/Preview.hpp
         Core/Interpreter.cpp
         Core/Interpreter.hpp
+        Core/LibLCF.cpp
+        Core/LibLCF.hpp
 )
 
 target_include_directories(

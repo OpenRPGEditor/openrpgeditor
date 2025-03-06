@@ -38,7 +38,7 @@
 using namespace std::literals::string_view_literals;
 
 MainWindow* MainWindow::m_instance = nullptr;
-MainWindow::MainWindow() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this), m_nwjsVersionManager("https://dl.nwjs.io"), m_eventSearcher(this) {
+MainWindow::MainWindow() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this), m_nwjsVersionManager("https://dl.nwjs.io"), m_eventSearcher(this), m_libLCF(this) {
   m_settingsDialog.addTab(new GeneralSettingsTab());
   m_settingsDialog.addTab(new UISettingsTab());
   m_instance = this;
@@ -357,6 +357,7 @@ void MainWindow::draw() {
   m_settingsDialog.draw();
   m_mapEditor.draw();
   m_eventSearcher.draw();
+  m_libLCF.draw();
 
   if (m_databaseEditor) {
     m_databaseEditor->draw();
@@ -421,136 +422,6 @@ void MainWindow::draw() {
   drawCreateNewProjectPopup();
 
   EditorPluginManager::instance()->callDraws();
-
-  // static LCF_Importer test;
-  // static std::unique_ptr<lcf::rpg::Map> map;
-  // static int selectedMapIndex = -1;
-  // static int selectedEvent = -1;
-  // static int selectedPage = -1;
-  //
-  // if (ImGui::Begin("LCF Test")) {
-  //   if (ImGui::Button("Select an RPG Maker 2000 project...")) {
-  //     nfdu8char_t* loc;
-  //     const auto result = NFD_PickFolder(&loc, !Settings::instance()->lastDirectory.empty() ? Settings::instance()->lastDirectory.c_str() : nullptr);
-  //     if (result == NFD_OKAY) {
-  //       const std::filesystem::path path{loc};
-  //       test.setProject(path);
-  //       test.loadProject();
-  //       selectedMapIndex = -1;
-  //       selectedPage = -1;
-  //       NFD_FreePathU8(loc);
-  //     }
-  //   }
-  //
-  //   if (ImGui::BeginListBox("##lcf_map_list", ImVec2(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.x * 2, 0))) {
-  //     if (test.treeMap()) {
-  //       for (int i = 1; i < test.treeMap()->maps.size(); i++) {
-  //         if (ImGui::Selectable(test.treeMap()->maps[i].name.c_str(), selectedMapIndex == i)) {
-  //           selectedMapIndex = i;
-  //           selectedPage = -1;
-  //           selectedEvent = -1;
-  //           map = std::move(test.loadMap(i));
-  //         }
-  //       }
-  //     }
-  //     ImGui::EndListBox();
-  //   }
-  //   std::string preview =
-  //       map && selectedEvent != -1 ? std::format("{} {}x{}", map->events[selectedEvent].name.c_str(), map->events[selectedEvent].x, map->events[selectedEvent].y) : "No Event Selected";
-  //   ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2);
-  //   if (ImGui::BeginCombo("##map_event_combo", preview.c_str())) {
-  //     if (map) {
-  //       for (int i = 0; i < map->events.size(); i++) {
-  //         if (ImGui::Selectable(std::format("{} {}x{}", map->events[i].name.c_str(), map->events[i].x, map->events[i].y).c_str(), selectedEvent == i)) {
-  //           selectedEvent = i;
-  //           selectedPage = 0;
-  //         }
-  //         if (i == selectedEvent) {
-  //           ImGui::SetItemDefaultFocus();
-  //         }
-  //       }
-  //     }
-  //     ImGui::EndCombo();
-  //   }
-  //   ImGui::SameLine();
-  //   ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - ImGui::GetStyle().FramePadding.x);
-  //   if (ImGui::BeginCombo("##map_event_page_combo", map && selectedEvent != -1 && selectedPage != -1 ? std::format("Page {}", selectedPage + 1).c_str() : "No Page Selected")) {
-  //     if (map && selectedEvent != -1) {
-  //       for (int i = 0; i < map->events[selectedEvent].pages.size(); i++) {
-  //         if (ImGui::Selectable(std::format("Page {}", i + 1).c_str(), selectedPage == i)) {
-  //           selectedPage = i;
-  //         }
-  //         if (i == selectedPage) {
-  //           ImGui::SetItemDefaultFocus();
-  //         }
-  //       }
-  //     }
-  //     ImGui::EndCombo();
-  //   }
-  //   if (ImGui::BeginListBox("##lcf_event", ImVec2(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.x * 2, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y * 2)))
-  //   {
-  //     if (map) {
-  //       ImGui::Text("Event %s", selectedEvent != -1 ? map->events[selectedEvent].name.c_str() : "");
-  //       ImGui::Text("Commands:");
-  //       if (selectedEvent != -1 && selectedPage != -1) {
-  //         for (int step = 0; const auto& cmd : map->events[selectedEvent].pages[selectedPage].event_commands) {
-  //           switch (static_cast<lcf::rpg::EventCommand::Code>(cmd.code)) {
-  //           case lcf::rpg::EventCommand::Code::CallEvent: {
-  //             const auto type = cmd.parameters[0];
-  //             std::string rep = std::string(cmd.indent * 2, ' ') + "@> Call Event: ";
-  //             switch (type) {
-  //             case 0: {
-  //               // Common Event
-  //               auto id = cmd.parameters[1];
-  //               auto event = std::ranges::find_if(test.database()->commonevents, [&](const auto& e) { return e.ID == id; });
-  //               if (event != test.database()->commonevents.end()) {
-  //                 rep += event->name.c_str();
-  //               }
-  //             } break;
-  //             case 1: {
-  //               // Map Event
-  //               const auto id = cmd.parameters[1];
-  //               const auto event = std::ranges::find_if(map->events, [&](const auto& e) { return e.ID == id; });
-  //               if (event != map->events.end()) {
-  //                 rep += std::format("[{}][{}]", event->name.c_str(), cmd.parameters[2]);
-  //               }
-  //             } break;
-  //             case 2: {
-  //               // Map Event (Variable)
-  //               const auto eventId = cmd.parameters[1];
-  //               const auto event = std::ranges::find_if(test.database()->variables, [&](const auto& e) { return e.ID == eventId; });
-  //               const auto pageId = cmd.parameters[2];
-  //               const auto page = std::ranges::find_if(test.database()->variables, [&](const auto& e) { return e.ID == pageId; });
-  //               if (event != test.database()->variables.end() && page != test.database()->variables.end()) {
-  //                 rep += std::format("[{}][{}]", event->name.c_str(), page->name.c_str());
-  //               }
-  //             } break;
-  //             default:
-  //               break;
-  //             }
-  //             ImGui::Selectable(rep.c_str());
-  //           } break;
-  //           default: {
-  //             std::string parameters = "[";
-  //             for (int i = 0; const auto parameter : cmd.parameters) {
-  //               parameters += (i == 0) ? std::to_string(parameter) : ", " + std::to_string(parameter);
-  //               ++i;
-  //             }
-  //             parameters += "]";
-  //             if (ImGui::Selectable(std::format("{}{:05}-{}: {}, {}, {}###{}", std::string(cmd.indent * 4, ' '), cmd.code, lcf::rpg::EventCommand::kCodeTags[cmd.code], cmd.indent,
-  //             cmd.string.c_str(),
-  //                                               parameters, step)
-  //                                       .c_str())) {}
-  //           } break;
-  //           }
-  //           step++;
-  //         }
-  //       }
-  //     }
-  //     ImGui::EndListBox();
-  //   }
-  // }
-  // ImGui::End();
 }
 
 void MainWindow::drawCreateNewProjectPopup() {
@@ -860,6 +731,9 @@ void MainWindow::drawMenu() {
       }
       if (ImGui::MenuItem(trNOOP("Editor Plugins..."), "F12")) {
         EditorPluginManager::instance()->setOpen(true);
+      }
+      if (ImGui::MenuItem(trNOOP("LibLCF"), "", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
+        m_libLCF.open();
       }
 
       /* Add tools above this */

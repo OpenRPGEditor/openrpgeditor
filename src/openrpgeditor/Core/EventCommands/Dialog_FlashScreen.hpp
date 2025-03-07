@@ -15,6 +15,8 @@ struct Dialog_FlashScreen : IEventDialogController {
     m_intensity = command->color.intensity;
     m_duration = command->duration;
     m_waitForCompletion = command->waitForCompletion;
+
+    color_picker.setValues(r, g, b, m_intensity);
   }
   std::tuple<bool, bool> draw() override;
 

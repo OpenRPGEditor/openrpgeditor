@@ -243,7 +243,8 @@ void EventCommandEditor::draw() {
                 } else {
                   m_isNewEntry = false;
                   /* These are generated automatically based on their related event command dialogs */
-                  if (m_commands->at(n)->code() != EventCode::Repeat_Above && m_commands->at(n)->code() != EventCode::Else && m_commands->at(n)->code() != EventCode::End) {
+                  if (m_commands->at(n)->code() != EventCode::Repeat_Above && m_commands->at(n)->code() != EventCode::When_Selected && m_commands->at(n)->code() != EventCode::When_Cancel &&
+                      m_commands->at(n)->code() != EventCode::Else && m_commands->at(n)->code() != EventCode::End) {
                     commandDialog = CreateCommandDialog(m_commands->at(n)->code(), m_commands->at(n));
                     commandDialog->setOpen(true);
                     // ImGui::OpenPopup("Command Window");

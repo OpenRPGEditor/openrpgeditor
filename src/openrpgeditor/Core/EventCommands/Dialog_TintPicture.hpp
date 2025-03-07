@@ -16,6 +16,7 @@ struct Dialog_TintPicture : IEventDialogController {
     gray = command->color.gray;
     m_duration = command->duration;
     m_waitForCompletion = command->waitForCompletion;
+    color_picker.setValues(r, g, b, gray);
   }
   std::tuple<bool, bool> draw() override;
 

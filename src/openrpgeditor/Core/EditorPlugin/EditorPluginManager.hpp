@@ -50,4 +50,5 @@ private:
   void onFileDeleted(const std::filesystem::path& path);
 
   bool m_open = false;
+  std::string m_selectedIdentifier;
 };

@@ -213,6 +213,9 @@ void EventCommandEditor::draw() {
       if (m_commands) {
         ImGui::PushFont(App::APP->getMonoFont());
         for (int n = 0; n < m_commands->size(); n++) {
+          if (!m_commands->at(n)) {
+            continue;
+          }
           const bool isSelected = (m_selectedCommand == n || (m_selectedEnd != -1 && n > m_selectedCommand && n <= m_selectedEnd));
           std::string indentPad = m_commands->at(n)->stringRep(*Database::instance());
           auto str = splitString(indentPad, '\n');

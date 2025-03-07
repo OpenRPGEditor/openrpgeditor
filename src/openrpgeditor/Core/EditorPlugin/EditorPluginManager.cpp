@@ -1,7 +1,10 @@
 #include "Core/EditorPlugin/EditorPluginManager.hpp"
 
 #include "Core/Application.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Script/ScriptEngine.hpp"
+
+#include "misc/cpp/imgui_stdlib.h"
 
 #include <iostream>
 
@@ -35,15 +38,72 @@ void EditorPluginManager::draw() {
     return;
   }
 
-  ImGui::SetNextWindowSizeConstraints({640.f, 640.f}, {FLT_MAX, FLT_MAX});
-  if (ImGui::Begin("Plugin Manager", &m_open)) {
-    if (ImGui::BeginListBox("##pluginList",
-                            ImVec2(std::max(240.f, ImGui::GetContentRegionAvail().x / 3), ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y))) {
+  const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUV");
+  // ImGui::SetNextWindowSizeConstraints({640.f, 640.f}, {FLT_MAX, FLT_MAX});
+  if (ImGui::Begin(trNOOP("Plugin Manager"), &m_open)) {
+    ImGui::BeginChild("##plugins_left_panel", {calc.x, 0}, ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
+    {
+      ImGui::TextUnformatted(trNOOP("Plugins"));
+      ImGui::Separator();
       for (const auto& plugin : m_plugins | std::views::values) {
-        ImGui::Selectable(std::format("{} - {}", plugin.identifier, plugin.name).c_str());
+        if (ImGui::Selectable(std::format("{}##plugin_{}", plugin.name, plugin.identifier).c_str(), plugin.identifier == m_selectedIdentifier)) {
+          m_selectedIdentifier = plugin.identifier;
+        }
+        ImGui::SetItemTooltip("%s", plugin.identifier.c_str());
       }
-      ImGui::EndListBox();
     }
+    ImGui::EndChild();
+    ImGui::SameLine();
+    ImGui::BeginChild("##plugins_middle_panel", {calc.x, 0}, ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
+    {
+      ImGui::TextUnformatted(trNOOP("File Listing"));
+      ImGui::Separator();
+      if (m_pluginInfoIdentifierMapping.contains(m_selectedIdentifier)) {
+        const auto& plugin = m_pluginInfoIdentifierMapping.at(m_selectedIdentifier);
+        for (const auto& file : plugin->files | std::views::values) {
+          ImGui::Selectable(file.generic_string().c_str());
+        }
+      }
+    }
+    ImGui::EndChild();
+    ImGui::SameLine();
+    ImGui::BeginChild("##plugins_right_panel");
+    {
+      ImGui::TextUnformatted(trNOOP("Information"));
+      ImGui::Separator();
+      if (m_pluginInfoIdentifierMapping.contains(m_selectedIdentifier)) {
+        auto& plugin = m_pluginInfoIdentifierMapping.at(m_selectedIdentifier);
+        char tmp[4096]{};
+        strncpy(tmp, plugin->name.c_str(), 4096);
+        if (ImGui::LabelOverLineEdit("##plugin_name", trNOOP("Name"), tmp, 4096, ImGui::CalcTextSize("ABCDEFGKLMNOPQRSTUVWXYZ01").x)) {
+          plugin->name = tmp;
+        }
+
+        memset(tmp, 0, sizeof(tmp));
+        strncpy(tmp, plugin->author.c_str(), 4096);
+        if (ImGui::LabelOverLineEdit("##plugin_author", trNOOP("Author"), tmp, 4096, ImGui::CalcTextSize("ABCDEFGKLMNOPQRSTUVWXYZ01").x)) {
+          plugin->author = tmp;
+        }
+
+        memset(tmp, 0, sizeof(tmp));
+        strncpy(tmp, plugin->email.c_str(), 4096);
+        if (ImGui::LabelOverLineEdit("##plugin_author_email", trNOOP("Email"), tmp, 4096, ImGui::CalcTextSize("ABCDEFGKLMNOPQRSTUVWXYZ01").x)) {
+          plugin->email = tmp;
+        }
+
+        // TODO(phil): Properly display dates
+        ImGui::TextUnformatted(trNOOP("Date Created"));
+        ImGui::TextUnformatted(plugin->dateCreated.c_str());
+        ImGui::TextUnformatted(trNOOP("Last Modified"));
+        ImGui::TextUnformatted(plugin->lastModified.c_str());
+
+        ImGui::TextUnformatted(trNOOP("Description"));
+        ImGui::InputTextMultiline("##plugin_description", &plugin->description, ImGui::GetContentRegionAvail() - ImGui::GetStyle().FramePadding);
+      } else {
+        ImGui::TextUnformatted(trNOOP("Select a Plugin"));
+      }
+    }
+    ImGui::EndChild();
   }
   ImGui::End();
 }

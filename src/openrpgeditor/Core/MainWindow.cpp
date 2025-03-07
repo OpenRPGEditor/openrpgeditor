@@ -370,7 +370,6 @@ void MainWindow::draw() {
   }
 
   m_mapListView.draw();
-  EditorPluginManager::instance()->draw();
 
   if (const auto [closed, confirmed] = m_mapProperties.draw(); closed) {
     // TODO: handle revert?

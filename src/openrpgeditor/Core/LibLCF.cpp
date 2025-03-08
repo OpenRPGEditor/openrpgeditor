@@ -1,8 +1,41 @@
 #include "Core/LibLCF.hpp"
+#include "Database/EventCommands/MovementRoute/ChangeImage.hpp"
+#include "Database/EventCommands/MovementRoute/DirectionFixOFF.hpp"
+#include "Database/EventCommands/MovementRoute/DirectionFixON.hpp"
+#include "Database/EventCommands/MovementRoute/Move1StepForward.hpp"
+#include "Database/EventCommands/MovementRoute/MoveAtRandom.hpp"
+#include "Database/EventCommands/MovementRoute/MoveAwayFromPlayer.hpp"
+#include "Database/EventCommands/MovementRoute/MoveDown.hpp"
+#include "Database/EventCommands/MovementRoute/MoveLeft.hpp"
+#include "Database/EventCommands/MovementRoute/MoveLowerLeft.hpp"
+#include "Database/EventCommands/MovementRoute/MoveLowerRight.hpp"
+#include "Database/EventCommands/MovementRoute/MoveRight.hpp"
+#include "Database/EventCommands/MovementRoute/MoveTowardPlayer.hpp"
+#include "Database/EventCommands/MovementRoute/MoveUp.hpp"
+#include "Database/EventCommands/MovementRoute/MoveUpperLeft.hpp"
+#include "Database/EventCommands/MovementRoute/MoveUpperRight.hpp"
+#include "Database/EventCommands/MovementRoute/Script.hpp"
+#include "Database/EventCommands/MovementRoute/SteppingAnimationOFF.hpp"
+#include "Database/EventCommands/MovementRoute/SteppingAnimationON.hpp"
+#include "Database/EventCommands/MovementRoute/ThroughOFF.hpp"
+#include "Database/EventCommands/MovementRoute/ThroughON.hpp"
+#include "Database/EventCommands/MovementRoute/Turn180Deg.hpp"
+#include "Database/EventCommands/MovementRoute/Turn90DegLeft.hpp"
+#include "Database/EventCommands/MovementRoute/Turn90DegLeftOrRight.hpp"
+#include "Database/EventCommands/MovementRoute/Turn90DegRight.hpp"
+#include "Database/EventCommands/MovementRoute/TurnAtRandom.hpp"
+#include "Database/EventCommands/MovementRoute/TurnAwayFromPlayer.hpp"
+#include "Database/EventCommands/MovementRoute/TurnDown.hpp"
+#include "Database/EventCommands/MovementRoute/TurnLeft.hpp"
+#include "Database/EventCommands/MovementRoute/TurnRight.hpp"
+#include "Database/EventCommands/MovementRoute/TurnTowardPlayer.hpp"
+#include "Database/EventCommands/MovementRoute/TurnUp.hpp"
+#include "Database/EventCommands/MovementRoute/Wait.hpp"
 #include "ImGuiExt/ImGuiUtils.hpp"
 #include "MainWindow.hpp"
 #include "Settings.hpp"
 #include "imgui.h"
+#include "lcf/reader_util.h"
 #include "nfd.h"
 
 void LibLCF::draw() {
@@ -160,15 +193,13 @@ void LibLCF::draw() {
   }
   ImGui::End();
 }
-std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t indent, lcf::DBArray<int32_t> data, const std::string& strData) {
+std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t indent, const lcf::DBArray<int32_t> data, const std::string& strData) {
 
   auto codeEnum = static_cast<lcf::rpg::EventCommand::Code>(code);
 
-  int32_t* dataPtr = data.data();
-
   std::vector<int> parameters;
-  for (int i = 0; i < data.size(); ++i) {
-    parameters.push_back(dataPtr[i]);
+  for (auto it = data.begin(); it < data.end(); it++) {
+    parameters.push_back(*it);
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ControlVars)) {
     if (parameters.at(1) == parameters.at(2) && parameters.at(0) == 0) {
@@ -257,26 +288,22 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     return std::make_shared<BreakLoopCommand>(newCmd);
   }
 
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::CallCommonEvent)) { // TODO
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::CallCommonEvent)) {
+    return Comment(lcf::rpg::EventCommand::kCodeTags[code], "Call Common Event ID: " + std::to_string(parameters.at(0)), indent);
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ForceFlee)) { // TODO
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ForceFlee)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EnableCombo)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeClass)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeBattleCommands)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::OpenLoadMenu)) {
+    OpenMenuCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<OpenMenuCommand>(newCmd);
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EnableCombo)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeClass)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeBattleCommands)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::OpenLoadMenu)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ExitGame)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ToggleAtbMode)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ToggleFullscreen)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::OpenVideoOptions)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ExitGame)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ToggleAtbMode)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ToggleFullscreen)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::OpenVideoOptions)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ShowMessage)) {
     ShowTextCommand newCmd;
     newCmd.setIndent(indent);
@@ -300,7 +327,6 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     return nullptr;
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeFaceGraphic)) {
-
     PluginCommandMV newCmd;
     newCmd.setIndent(indent);
 
@@ -333,10 +359,8 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     }
     return std::make_shared<ShowChoiceCommand>(newCmd);
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::InputNumber)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::TimerOperation)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::InputNumber)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::TimerOperation)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeGold)) {
     ChangeGoldCommand newCmd;
     newCmd.setIndent(indent);
@@ -358,8 +382,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
 
     return std::make_shared<ChangeItemsCommand>(newCmd);
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangePartyMembers)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangePartyMembers)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeExp)) {
     ChangeEXPCommand newCmd;
     newCmd.setIndent(indent);
@@ -377,77 +400,53 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
 
     return std::make_shared<ChangeEXPCommand>(newCmd);
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeLevel)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeParameters)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeSkills)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeEquipment)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeHP)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeSP)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeCondition)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::FullHeal)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::SimulatedAttack)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeHeroName)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeHeroTitle)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeSpriteAssociation)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeActorFace)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeLevel)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeParameters)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeSkills)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeEquipment)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeHP)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeSP)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeCondition)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::FullHeal)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::SimulatedAttack)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeHeroName)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeHeroTitle)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeSpriteAssociation)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeActorFace)) {}
 
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeVehicleGraphic)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeVehicleGraphic)) {}
 
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeSystemBGM)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeSystemBGM)) {}
 
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeSystemSFX)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeSystemSFX)) {}
 
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeSystemGraphics)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeSystemGraphics)) {}
 
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeScreenTransitions)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeScreenTransitions)) {}
 
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EnemyEncounter)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::OpenShop)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ShowInn)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EnterHeroName)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EnemyEncounter)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::OpenShop)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ShowInn)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EnterHeroName)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::Teleport)) {
     attachToCommand("MapID: " + std::to_string(parameters.at(0)));
     attachToCommand("X: " + std::to_string(parameters.at(1)));
     attachToCommand("Y: " + std::to_string(parameters.at(2)));
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::MemorizeLocation)) { // TODO
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::MemorizeLocation)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::RecallToLocation)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EnterExitVehicle)) {
+    GetOnOffVehicleCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<GetOnOffVehicleCommand>(newCmd);
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::RecallToLocation)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EnterExitVehicle)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::SetVehicleLocation)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::SetVehicleLocation)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeEventLocation)) { // TODO
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::TradeEventLocations)) { // TODO
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::StoreTerrainID)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::StoreEventID)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::StoreTerrainID)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::StoreEventID)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EraseScreen)) {
     // TODO: These have unique fade-outs not supported by modern versions
     FadeoutScreenCommand newCmd;
@@ -534,8 +533,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
 
     return std::make_shared<PluginCommandMV>(newCmd);
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::WeatherEffects)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::WeatherEffects)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ShowPicture)) {
     return Comment(lcf::rpg::EventCommand::kCodeTags[code], strData, indent);
   }
@@ -593,11 +591,79 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
 
     return std::make_shared<ShowAnimationCommand>(newCmd);
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::MoveEvent)) { // TODO - Movement Route
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::MoveEvent)) {
+    SetMovementRouteCommand newCmd;
+    newCmd.setIndent(indent);
+
+    if (parameters.at(0) == 10001) {
+      newCmd.character = -1;
+    } // Hero
+    else if (parameters.at(0) == 10005) { // This Event
+      newCmd.character = 0;
+    } else {
+      if (parameters.at(0) > 0) {
+        newCmd.character = 0;
+        attachToCommand("Manual event ID needed: " + std::to_string(parameters.at(0)));
+      }
+    }
+    // parameters.at(1) => Movement Frequency (Not supported)
+    // parameters.at(2) => Repeat Movements
+    // parameters.at(3) => Skip if cannot move
+    // Wait For Completion (MV) => Halt All Movement (manual action required)
+    newCmd.route.setRepeat(parameters.at(2) != 0);
+    newCmd.route.setSkippable(parameters.at(3) != 0);
+    newCmd.route.setWait(false);
+
+    std::vector<int> parametersTest;
+    for (auto itt = data.begin() + 4; itt < data.end();) {
+
+      if (m_jumpProcessing) {
+        // Process commands through jump processing if it was activated from StartJump
+        processJumpParameters(*itt, newCmd.route.list().back());
+        itt++;
+      } else {
+        std::shared_ptr<IEventCommand> moveCmd = convertMovementCommand(DecodeMove(itt), indent);
+        if (moveCmd != nullptr) {
+          newCmd.route.list().push_back(moveCmd);
+        }
+      }
+      // lcf::rpg::MoveCommand baseCmd;
+      // baseCmd.command_id = *itt;
+      //// Normal processing or if after EndJump
+      // if (baseCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::switch_off) || baseCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::switch_on)) {
+      //   baseCmd.parameter_a = DecodeInt(itt);
+      // }
+      // if (baseCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::change_graphic)) {
+      //   baseCmd.parameter_string = lcf::DBString(DecodeString(itt));
+      //   baseCmd.parameter_a = DecodeInt(itt);
+      //   std::string test = ToString(baseCmd.parameter_string);
+      // }
+      // if (baseCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::play_sound_effect)) {
+      //   baseCmd.parameter_string = lcf::DBString(DecodeString(itt));
+      //   baseCmd.parameter_a = DecodeInt(itt);
+      //   baseCmd.parameter_b = DecodeInt(itt);
+      //   baseCmd.parameter_c = DecodeInt(itt);
+      // }
+      // parametersTest.push_back(*itt);
+    }
+
+    for (auto& stepCmd : newCmd.route.list()) {
+      MovementRouteStepCommand cmd;
+      cmd.step = stepCmd;
+
+      newCmd.editNodes.push_back(std::make_shared<MovementRouteStepCommand>(cmd));
+    }
+    newCmd.route.list().push_back(std::make_shared<EventDummy>(EventDummy()));
+    // Process commands after returning the route command
+    // m_movementProcessing = true;
+
+    return std::make_shared<SetMovementRouteCommand>(newCmd);
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ProceedWithMovement)) { // TODO
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ProceedWithMovement)) {
+    return Comment(lcf::rpg::EventCommand::kCodeTags[code], "( Wait for Completion )", indent);
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::HaltAllMovement)) { // TODO
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::HaltAllMovement)) {
+    return Comment(lcf::rpg::EventCommand::kCodeTags[code], "", indent);
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::Wait)) {
     WaitCommand newCmd;
@@ -645,26 +711,16 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
 
     return std::make_shared<PlaySECommand>(newCmd);
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::PlayMovie)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::KeyInputProc)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeMapTileset)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangePBG)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeEncounterSteps)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::TileSubstitution)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::TeleportTargets)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeTeleportAccess)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EscapeTarget)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeEscapeAccess)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::PlayMovie)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::KeyInputProc)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeMapTileset)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangePBG)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeEncounterSteps)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::TileSubstitution)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::TeleportTargets)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeTeleportAccess)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EscapeTarget)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeEscapeAccess)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::OpenSaveMenu)) {
     OpenSaveCommand newCmd;
     newCmd.setIndent(indent);
@@ -807,22 +863,14 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     newCmd.setIndent(indent);
     return std::make_shared<ReturnToTitleCommand>(newCmd);
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeMonsterHP)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeMonsterMP)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeMonsterCondition)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ShowHiddenMonster)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeBattleBG)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ShowBattleAnimation_B)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ConditionalBranch_B)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::TerminateBattle)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeMonsterHP)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeMonsterMP)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeMonsterCondition)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ShowHiddenMonster)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeBattleBG)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ShowBattleAnimation_B)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ConditionalBranch_B)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::TerminateBattle)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ShowMessage_2)) {
     // Skip this
     return nullptr;
@@ -840,30 +888,21 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     newCmd.setIndent(indent);
     return std::make_shared<ShowChoicesEndCommand>(newCmd);
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::VictoryHandler)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EscapeHandler)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::DefeatHandler)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EndBattle)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::Transaction)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::NoTransaction)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::VictoryHandler)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EscapeHandler)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::DefeatHandler)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EndBattle)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::Transaction)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::NoTransaction)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EndShop)) {
     EndCommand newCmd;
     newCmd.setIndent(indent);
     m_attachDummy = true;
     return std::make_shared<EndCommand>(newCmd);
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::Stay)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::NoStay)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EndInn)) { // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::Stay)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::NoStay)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EndInn)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ElseBranch)) {
     ElseCommand newCmd;
     newCmd.setIndent(indent);
@@ -875,11 +914,8 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     m_attachDummy = true;
     return std::make_shared<EndCommand>(newCmd);
   }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ElseBranch_B)) { // TODO
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EndBranch_B)) {
-    // TODO
-  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ElseBranch_B)) {}
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EndBranch_B)) {}
   // EasyRpg_TriggerEventAt
   // EasyRpg_SmartMoveRoute
   // EasyRpg_SmartStepToward
@@ -930,7 +966,7 @@ std::shared_ptr<IEventCommand> LibLCF::Comment(std::string codeName, std::string
   return std::make_shared<CommentCommand>(newCmd);
 }
 void LibLCF::attachToCommand(std::string text) {
-  m_commandLogger.push_back("\u272A " + text);
+  m_commandLogger.push_back("\u2605 " + text);
   m_attachToCommand = true;
 }
 void LibLCF::convertEvent(Event* event, const lcf::rpg::Event& ev) {
@@ -1001,16 +1037,92 @@ void LibLCF::convertPage(EventPage* page, const lcf::rpg::EventPage& evPage) {
   m_lcfLogger.clear();
 
   // Data structures
+  if (evPage.condition.flags.switch_a) {
+    // Switch 1
+    page->conditions().setSwitch1Valid(true);
+    page->conditions().setSwitch1Id(evPage.condition.switch_a_id); // TODO: Needs mapping
+  }
+  if (evPage.condition.flags.switch_b) {
+    page->conditions().setSwitch2Valid(true);
+    page->conditions().setSwitch2Id(evPage.condition.switch_b_id); // TODO: Needs mapping
+  }
+  if (evPage.condition.flags.variable) {
+    page->conditions().setVariableValid(true);
+    page->conditions().setVariableId(evPage.condition.variable_id); // TODO: Needs mapping
+    page->conditions().setVariableValue(evPage.condition.variable_value);
+  }
+  if (evPage.condition.flags.item) {
+    attachToCommand("Item Condition");
+  }
+  if (evPage.condition.flags.actor) {
+    attachToCommand("Actor Condition");
+  }
+  if (evPage.condition.flags.timer || evPage.condition.flags.timer2) {
+    attachToCommand("Timer Page Condition");
+  }
   convertCommands(&page->list(), evPage.event_commands);
-  // page->setCondition(EventCondition()); // TODO
-  // page->setMoveRoute() // TODO: Need to parse this
-  // page->setList() // TODO: Need to parse this
 
+  if (page->moveType() == MoveType::Custom) {
+    int index{0};
+    page->moveRoute().setRepeat(evPage.move_route.repeat != 0);
+    page->moveRoute().setSkippable(evPage.move_route.skippable != 0);
+    page->moveRoute().setWait(false);
+    for (auto& rpgMoveCmd : evPage.move_route.move_commands) {
+      page->moveRoute().addCommand(convertMovementCommand(rpgMoveCmd, 0), index);
+      index++;
+    }
+  }
   // page->setName() // RPG2000 doesn't have page names; ORE does
 
   // These variables are reset per page. The scope doesn't exist outside of it.
   m_windowTransparent = false;
   m_windowPosition = 2;
+}
+void LibLCF::processJumpParameters(int32_t code, std::shared_ptr<IEventCommand>& cmd) {
+  std::shared_ptr<MovementJumpCommand> jumpCmd = static_pointer_cast<MovementJumpCommand>(cmd);
+
+  if (code == static_cast<int>(lcf::rpg::MoveCommand::Code::move_right)) {
+    jumpCmd->x += 1;
+    return;
+  }
+  if (code == static_cast<int>(lcf::rpg::MoveCommand::Code::move_up)) {
+    jumpCmd->y -= 1;
+    return;
+  }
+  if (code == static_cast<int>(lcf::rpg::MoveCommand::Code::move_down)) {
+    jumpCmd->y += 1;
+    return;
+  }
+  if (code == static_cast<int>(lcf::rpg::MoveCommand::Code::move_left)) {
+    jumpCmd->x -= 1;
+    return;
+  }
+  if (code == static_cast<int>(lcf::rpg::MoveCommand::Code::move_upright)) {
+    jumpCmd->x -= 1;
+    jumpCmd->y += 1;
+    return;
+  }
+  if (code == static_cast<int>(lcf::rpg::MoveCommand::Code::move_downright)) {
+    jumpCmd->x += 1;
+    jumpCmd->y += 1;
+    return;
+  }
+  if (code == static_cast<int>(lcf::rpg::MoveCommand::Code::move_downleft)) {
+    jumpCmd->y += 1;
+    jumpCmd->x -= 1;
+    return;
+  }
+  if (code == static_cast<int>(lcf::rpg::MoveCommand::Code::move_upleft)) {
+    jumpCmd->y -= 1;
+    jumpCmd->x -= 1;
+    return;
+  }
+  if (code == static_cast<int>(lcf::rpg::MoveCommand::Code::end_jump)) {
+    m_jumpProcessing = false;
+    return;
+  }
+  jumpCmd->x = 99; // Unrecognized commands
+  jumpCmd->y = 99; // Unrecognized commands
 }
 void LibLCF::convertCommands(std::vector<std::shared_ptr<IEventCommand>>* r_cmds, const std::vector<lcf::rpg::EventCommand>& s_cmds) {
   for (auto& cmd : s_cmds) {
@@ -1040,6 +1152,239 @@ void LibLCF::convertCommands(std::vector<std::shared_ptr<IEventCommand>>* r_cmds
     //   m_attachDummy = false;
     // }
   }
+}
+std::shared_ptr<IEventCommand> LibLCF::convertMovementCommand(lcf::rpg::MoveCommand moveCmd, int32_t indent) {
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::begin_jump)) {
+    MovementJumpCommand newCmd;
+    newCmd.setIndent(indent);
+    m_jumpProcessing = true;
+    return std::make_shared<MovementJumpCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::move_right)) {
+    MovementMoveRightCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementMoveRightCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::move_up)) {
+    MovementMoveUpCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementMoveUpCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::move_down)) {
+    MovementMoveDownCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementMoveDownCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::move_left)) {
+    MovementMoveLeftCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementMoveLeftCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::move_upright)) {
+    MovementMoveUpperRightCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementMoveUpperRightCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::move_downright)) {
+    MovementMoveLowerRightCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementMoveLowerRightCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::move_downleft)) {
+    MovementMoveLowerLeftCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementMoveLowerLeftCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::move_upleft)) {
+    MovementMoveUpperLeftCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementMoveUpperLeftCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::move_random)) {
+    MovementMoveAtRandomCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementMoveAtRandomCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::move_towards_hero)) {
+    MovementMoveTowardPlayerCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementMoveTowardPlayerCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::move_away_from_hero)) {
+    MovementMoveAwayFromPlayerCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementMoveAwayFromPlayerCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::move_forward)) {
+    MovementMove1StepForwardCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementMove1StepForwardCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::face_up)) {
+    MovementTurnUpCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementTurnUpCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::face_right)) {
+    MovementTurnRightCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementTurnRightCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::face_down)) {
+    MovementTurnDownCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementTurnDownCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::face_left)) {
+    MovementTurnLeftCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementTurnLeftCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::turn_90_degree_right)) {
+    MovementTurn90DegRightCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementTurn90DegRightCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::turn_90_degree_left)) {
+    MovementTurn90DegLeftCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementTurn90DegLeftCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::turn_180_degree)) {
+    MovementTurn180DegCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementTurn180DegCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::turn_90_degree_random)) {
+    MovementTurn90DegLeftOrRightCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementTurn90DegLeftOrRightCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::face_random_direction)) {
+    MovementTurnAtRandomCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementTurnAtRandomCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::face_hero)) {
+    MovementTurnTowardPlayerCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementTurnTowardPlayerCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::face_away_from_hero)) {
+    MovementTurnAwayFromPlayerCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementTurnAwayFromPlayerCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::wait)) {
+    MovementWaitCommand newCmd;
+    newCmd.setIndent(indent);
+    newCmd.duration = 6;
+    return std::make_shared<MovementWaitCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::end_jump)) {
+    m_jumpProcessing = false;
+    return nullptr;
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::lock_facing)) {
+    MovementDirectionFixONCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementDirectionFixONCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::unlock_facing)) {
+    MovementDirectionFixOFFCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementDirectionFixOFFCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::increase_movement_speed)) {
+    MovementScriptCommand newCmd;
+    newCmd.setIndent(indent);
+    newCmd.script = "this.increaseSpeed();";
+    return std::make_shared<MovementScriptCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::decrease_movement_speed)) {
+    MovementScriptCommand newCmd;
+    newCmd.setIndent(indent);
+    newCmd.script = "this.decreaseSpeed();";
+    return std::make_shared<MovementScriptCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::increase_movement_frequence)) {
+    MovementScriptCommand newCmd;
+    newCmd.setIndent(indent);
+    newCmd.script = "this.increaseFrequency();";
+    return std::make_shared<MovementScriptCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::decrease_movement_frequence)) {
+    MovementScriptCommand newCmd;
+    newCmd.setIndent(indent);
+    newCmd.script = "this.decreaseFrequency();";
+    return std::make_shared<MovementScriptCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::switch_on)) {
+    MovementScriptCommand newCmd;
+    newCmd.setIndent(indent);
+    newCmd.script = "SWITCH ON: " + std::to_string(moveCmd.parameter_a); // TODO: Needs mapping
+    return std::make_shared<MovementScriptCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::switch_off)) {
+    MovementScriptCommand newCmd;
+    newCmd.setIndent(indent);
+    newCmd.script = "SWITCH OFF " + std::to_string(moveCmd.parameter_a); // TODO: Needs mapping
+    return std::make_shared<MovementScriptCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::change_graphic)) {
+    if (moveCmd.parameter_string == "AAA") {
+      MovementChangeImageCommand imageCmd;
+      imageCmd.setIndent(indent);
+      return std::make_shared<MovementChangeImageCommand>(imageCmd);
+    }
+    MovementScriptCommand newCmd;
+    newCmd.setIndent(indent);
+    newCmd.script = std::format("IMAGE: {}, Index: {}", ToString(moveCmd.parameter_string), std::to_string(moveCmd.parameter_a)); // TODO: Needs mapping
+    return std::make_shared<MovementScriptCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::play_sound_effect)) {
+    MovementScriptCommand newCmd;
+    newCmd.setIndent(indent);
+    newCmd.script = std::format("SOUND: {}, ({},{},{})", ToString(moveCmd.parameter_string), std::to_string(moveCmd.parameter_a), std::to_string(moveCmd.parameter_b),
+                                std::to_string(moveCmd.parameter_c)); // TODO: Needs mapping
+    return std::make_shared<MovementScriptCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::walk_everywhere_on)) {
+    MovementThroughONCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementThroughONCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::walk_everywhere_off)) {
+    MovementThroughOFFCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementThroughOFFCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::stop_animation)) {
+    MovementSteppingAnimationOFFCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementSteppingAnimationOFFCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::start_animation)) {
+    MovementSteppingAnimationONCommand newCmd;
+    newCmd.setIndent(indent);
+    return std::make_shared<MovementSteppingAnimationONCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::increase_transp)) {
+    MovementScriptCommand newCmd;
+    newCmd.setIndent(indent);
+    newCmd.script = "this.increaseTransparency();";
+    return std::make_shared<MovementScriptCommand>(newCmd);
+  }
+  if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::decrease_transp)) {
+    MovementScriptCommand newCmd;
+    newCmd.setIndent(indent);
+    newCmd.script = "this.decreaseTransparency();";
+    return std::make_shared<MovementScriptCommand>(newCmd);
+  }
+  MovementScriptCommand newCmd;
+  newCmd.setIndent(indent);
+  newCmd.script = std::format("Unrecognized command: {}", std::to_string(moveCmd.command_id));
+  return std::make_shared<MovementScriptCommand>(newCmd);
 }
 MoveType LibLCF::getMoveType(int32_t move_type) {
   if (move_type == lcf::rpg::EventPage::MoveType::MoveType_stationary) {
@@ -1074,4 +1419,53 @@ Direction LibLCF::getDirection(int32_t direction) {
     return Direction::Left;
   }
   return Direction::Right;
+}
+lcf::rpg::MoveCommand LibLCF::DecodeMove(lcf::DBArray<int32_t>::const_iterator& it) {
+  lcf::rpg::MoveCommand cmd;
+  cmd.command_id = *it++;
+
+  switch (cmd.command_id) {
+  case 32: // Switch ON
+  case 33: // Switch OFF
+    cmd.parameter_a = DecodeInt(it);
+    break;
+  case 34: // Change Graphic
+    cmd.parameter_string = lcf::DBString(DecodeString(it));
+    cmd.parameter_a = DecodeInt(it);
+    break;
+  case 35: // Play Sound Effect
+    cmd.parameter_string = lcf::DBString(DecodeString(it));
+    cmd.parameter_a = DecodeInt(it);
+    cmd.parameter_b = DecodeInt(it);
+    cmd.parameter_c = DecodeInt(it);
+    break;
+  }
+
+  return cmd;
+}
+
+int LibLCF::DecodeInt(lcf::DBArray<int32_t>::const_iterator& it) {
+  int value = 0;
+
+  for (;;) {
+    int x = *it++;
+    value <<= 7;
+    value |= x & 0x7F;
+    if (!(x & 0x80))
+      break;
+  }
+
+  return value;
+}
+
+const std::string LibLCF::DecodeString(lcf::DBArray<int32_t>::const_iterator& it) {
+  std::ostringstream out;
+  int len = DecodeInt(it);
+
+  for (int i = 0; i < len; i++)
+    out << (char)*it++;
+
+  std::string result = lcf::ReaderUtil::Recode(out.str(), "UTF-8");
+
+  return result;
 }

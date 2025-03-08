@@ -1,5 +1,6 @@
 #pragma once
 #include "Database/Event.hpp"
+#include "Database/EventCommands/MovementRoute/Jump.hpp"
 #include "Database/Map.hpp"
 #include "LCF_Importer/LCF_Importer.hpp"
 #include "imgui.h"
@@ -17,12 +18,18 @@ public:
 
   void convertEvent(Event* event, const lcf::rpg::Event& ev);
   void convertPage(EventPage* page, const lcf::rpg::EventPage& evPage);
+  void processJumpParameters(int32_t code, std::shared_ptr<IEventCommand>& list);
   std::shared_ptr<IEventCommand> createCommand(int32_t code, int32_t indent, lcf::DBArray<int32_t> data, const std::string& string);
   void convertCommands(std::vector<std::shared_ptr<IEventCommand>>* r_cmds, const std::vector<lcf::rpg::EventCommand>& s_cmds);
+  std::shared_ptr<IEventCommand> convertMovementCommand(lcf::rpg::MoveCommand moveCmd, int32_t indent);
+  void convertPageConditions();
 
   MoveType getMoveType(int32_t move_type);
   MovementFrequency getMoveFrequency(int32_t move_freq);
   Direction getDirection(int32_t direction);
+  lcf::rpg::MoveCommand DecodeMove(lcf::DBArray<int32_t>::const_iterator& it);
+  int DecodeInt(lcf::DBArray<int32_t>::const_iterator& it);
+  const std::string DecodeString(lcf::DBArray<int32_t>::const_iterator& it);
 
 private:
   MainWindow* m_parent;
@@ -37,6 +44,8 @@ private:
   bool m_navigate{false};
   bool m_attachToCommand{false};
   bool m_attachDummy{false};
+  bool m_movementProcessing{false};
+  bool m_jumpProcessing{false};
 
   // For Message Options
   bool m_windowTransparent{false};

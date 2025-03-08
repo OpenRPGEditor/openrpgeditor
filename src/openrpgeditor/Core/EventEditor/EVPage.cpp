@@ -22,6 +22,10 @@ EVPage::EVPage(EventPage* page) : IPageEditor(page), m_characterSheet(page->imag
 }
 
 std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
+  if (commandDialog) {
+    commandDialog->draw();
+  }
+
   if (!m_actorButton) {
     m_actorButton.emplace();
     m_actorButton->setSize(80, 102);
@@ -226,7 +230,8 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
 
             ImGui::BeginDisabled(m_page->moveType() != MoveType::Custom);
             if (ImGui::Button("Route...", {ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-              // TODO: Set Movement Route editor
+              commandDialog = std::make_shared<Dialog_SetMovementRoute>(DecodeEnumName(EventCode::Set_Movement_Route), *m_page);
+              commandDialog->setOpen(true);
             }
             ImGui::EndDisabled();
             ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x);

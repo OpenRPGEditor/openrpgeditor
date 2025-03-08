@@ -65,7 +65,8 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     // Character Selection
     const ImVec2 cursorPos = ImGui::GetCursorPos();
     ImGui::PushItemWidth(160);
-    if (ImGui::BeginCombo("##showroute_character", Database::instance()->eventNameOrId(m_character).c_str())) {
+    ImGui::BeginDisabled(m_isEventRoute);
+    if (ImGui::BeginCombo("##showroute_character", m_isEventRoute ? "" : Database::instance()->eventNameOrId(m_character).c_str())) {
 
       if (ImGui::Selectable("Player", m_character == -1)) {
         m_character = -1;
@@ -89,6 +90,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
       }
       ImGui::EndCombo();
     }
+    ImGui::EndDisabled();
 
     // Step Table
     auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNO");
@@ -127,9 +129,11 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
       m_route.setSkippable(tmp);
     }
     tmp = m_route.wait();
+    ImGui::BeginDisabled(m_isEventRoute);
     if (ImGui::Checkbox("Wait for Completion", &tmp)) {
       m_route.setWait(tmp);
     }
+    ImGui::EndDisabled();
     ImGui::SetCursorPos(ImVec2{cursorPos.x + 180, cursorPos.y - 10});
     ImGui::SeparatorText("Movement Commands");
     ImGui::SetCursorPos(ImVec2{cursorPos.x + 180, cursorPos.y + 10});
@@ -296,12 +300,16 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 712);
     if (ImGui::Button("OK")) {
       m_confirmed = true;
-      command->character = m_character;
-      command->route = m_route;
-      for (const auto& cmd : m_route.list()) {
-        if (cmd->code() != EventCode::Event_Dummy) {
-          command->editNodes.push_back(std::make_shared<MovementRouteStepCommand>());
-          command->editNodes.back()->step = cmd;
+      if (m_isEventRoute) {
+        m_page.setMoveRoute(m_route);
+      } else {
+        command->character = m_character;
+        command->route = m_route;
+        for (const auto& cmd : m_route.list()) {
+          if (cmd->code() != EventCode::Event_Dummy) {
+            command->editNodes.push_back(std::make_shared<MovementRouteStepCommand>());
+            command->editNodes.back()->step = cmd;
+          }
         }
       }
       ImGui::CloseCurrentPopup();

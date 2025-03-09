@@ -42,7 +42,6 @@ void LibLCF::draw() {
   if (!m_isOpen) {
     return;
   }
-
   if (ImGui::Begin("LCF")) {
     if (ImGui::Button("Select an RPG Maker 2000 project...")) {
       nfdu8char_t* loc;
@@ -60,17 +59,31 @@ void LibLCF::draw() {
     if (ImGui::Button("...")) {}
     if (ImGui::BeginPopupContextItem()) // <-- use last item id as popup id
     {
-      if (ImGui::Button("Create Placeholder Events")) {
+      ImGui::BeginDisabled(m_unresolvedError);
+      if (ImGui::Button("Create Events")) {
         // LibLCF => Map
+        if (m_unresolvedError) {
+          m_unresolvedError = lcf.mapper()->hasUnresolvedPairs();
+        }
         if (m_parent->currentMap() != nullptr) {
           for (auto& ev : map->events) {
-            convertEvent(m_parent->currentMap()->createNewEvent(), ev);
+            if (!lcf.mapper()->isUnresolved()) {
+              convertEvent(m_parent->currentMap()->createNewEvent(), ev);
+            } else {
+              m_unresolvedError = true;
+            }
           }
-          // m_parent->currentMapInfo()->map()->setEvents(events);
-          //  m_parent->mapEditor()->setMap(m_parent->currentMapInfo());
+          if (m_unresolvedError) {
+            lcf.mapper()->save(Database::instance()->basePath);
+          }
         }
       }
+      ImGui::EndDisabled();
       ImGui::EndPopup();
+    }
+    if (m_unresolvedError) {
+      ImGui::SameLine();
+      ImGui::TextUnformatted("Unresolved mappings pending!");
     }
     ImGui::SameLine();
     if (ImGui::Button("\u2316")) {
@@ -191,6 +204,56 @@ void LibLCF::draw() {
       ImGui::EndListBox();
     }
   }
+  if (ImGui::Begin("Mapping")) {
+
+    auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNO");
+    calc.y *= 16;
+    calc.y += ImGui::GetStyle().ItemSpacing.y * 32;
+
+    if (ImGui::BeginTabBar("##lcf_mapping_tabbar")) {
+      if (lcf.treeMap()) {
+        if (ImGui::BeginTabItem("Switches##lcf_mapping_switches")) {
+          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
+                                ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
+
+            ImGui::TableSetupColumn("RPG2000");
+            ImGui::TableSetupColumn("MV/MZ");
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+
+            int index{0};
+            for (auto& pair : lcf.mapper()->switch_mapping) {
+              ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
+              // ImGui::TextUnformatted(std::to_string(pair.first).c_str());
+              ImGui::TextUnformatted(std::format("{} ({})", ToString(lcf.database()->switches.at(pair.first).name), pair.first).c_str());
+              ImGui::PopID();
+              ImGui::TableNextColumn();
+              ImGui::PushID(std::format("{}_data_{}", pair.second, index).c_str());
+              ImGui::TextUnformatted(Database::instance()->switchName(pair.second).c_str());
+              ImGui::PopID();
+              ImGui::InputInt(std::format("##lcf_mapping_text_{}", index).c_str(), &m_int_switch_mapping[pair.first], 0);
+              ImGui::TableNextColumn();
+              index++;
+            }
+            ImGui::EndTable();
+          }
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Variables##lcf_mapping_variables")) {}
+        if (ImGui::BeginTabItem("Sounds##lcf_mapping_sound_effects")) {}
+        if (ImGui::BeginTabItem("Images##lcf_mapping_switches")) {}
+      }
+      if (lcf.treeMap()) {
+        if (ImGui::TabItemButton("(Save Changes)##lcf_mapping_save_all")) {
+          // Save and double-check all unresolved
+          lcf.mapper()->save(Database::instance()->basePath);
+          m_unresolvedError = lcf.mapper()->hasUnresolvedPairs();
+        }
+      }
+      ImGui::EndTabBar();
+    }
+  }
+  ImGui::End();
   ImGui::End();
 }
 std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t indent, const lcf::DBArray<int32_t> data, const std::string& strData) {
@@ -271,7 +334,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     return std::make_shared<CommentCommand>(newCmd);
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::Comment_2)) {
-    // TODO: How does this even work with _2, probably NextComment?
+    // Note: This is used to build a comment command but we're just keeping them seperate
     CommentCommand newCmd;
     newCmd.setIndent(indent);
     newCmd.text = strData;
@@ -767,7 +830,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     if (parameters.at(0) == 0) { // Switch
       newCmd.type = ConditionType::Switch;
 
-      newCmd.globalSwitch.switchIdx = parameters.at(1); // TODO: Needs mapping
+      newCmd.globalSwitch.switchIdx = lcf.mapper()->switchValue(parameters.at(1));
       newCmd.globalSwitch.checkIfOn = static_cast<ValueControl>(parameters.at(2));
     }
     if (parameters.at(0) == 1) { // Variable
@@ -826,13 +889,13 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::Label)) {
     LabelCommand newCmd;
     newCmd.setIndent(indent);
-    newCmd.label = strData;
+    newCmd.label = std::to_string(parameters.at(0));
     return std::make_shared<LabelCommand>(newCmd);
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::JumpToLabel)) {
     JumpToLabelCommand newCmd;
     newCmd.setIndent(indent);
-    newCmd.label = strData;
+    newCmd.label = std::to_string(parameters.at(0));
     return std::make_shared<JumpToLabelCommand>(newCmd);
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::EndEventProcessing)) {

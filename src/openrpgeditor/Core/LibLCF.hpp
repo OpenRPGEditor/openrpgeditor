@@ -47,6 +47,8 @@ private:
   bool m_movementProcessing{false};
   bool m_jumpProcessing{false};
 
+  bool m_unresolvedError{false};
+
   // For Message Options
   bool m_windowTransparent{false};
   int m_windowPosition{2}; // 0 = up; 1 = middle; 2 = down (default)
@@ -54,6 +56,12 @@ private:
   int selectedMapIndex = -1;
   int selectedEvent = -1;
   int selectedPage = -1;
+
+  // Data mapping
+  std::map<int, int> m_variable_mapping;
+  std::map<int, int> m_int_switch_mapping;
+  std::map<std::string, std::string> m_image_mapping;
+  std::map<std::string, std::string> m_sound_mapping;
 
   std::vector<std::string> m_lcfLogger;
   std::vector<std::string> m_commandLogger;

@@ -1,4 +1,7 @@
 #include "Core/LCF_Importer/LCF_Importer.hpp"
+#include "Database/Database.hpp"
+#include "LCF_Mapping.hpp"
+
 #include <algorithm>
 
 bool startsWithInsensitive(const std::string& str, const std::string& prefix) {
@@ -29,6 +32,13 @@ bool LCF_Importer::loadProject() {
 
   m_database = lcf::LDB_Reader::Load((m_projectPath / "RPG_RT.ldb").generic_string(), "SJIS");
   m_treeMap = lcf::LMT_Reader::Load((m_projectPath / "RPG_RT.lmt").generic_string(), "SJIS");
+
+  if (!std::filesystem::exists(Database::instance()->basePath + "editor/LCFMapping.json")) {
+    m_mapper.serialize(Database::instance()->basePath + "editor/LCFMapping.json"); // Make new file if it doesn't exist
+  } else {
+    m_mapper.load(Database::instance()->basePath + "editor/LCFMapping.json");
+  }
+
   return m_database && m_treeMap;
 }
 

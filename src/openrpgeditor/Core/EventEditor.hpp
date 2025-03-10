@@ -19,7 +19,7 @@ public:
       m_event->acceptChanges();
     }
   }
-
+  int getSelectedPage() const override { return m_selectedPage; }
   std::tuple<bool, bool> draw() override;
 
 protected:

@@ -75,7 +75,7 @@ void DBMappingsTab::drawCommons() {
       ImGui::TextDisabled("(?)");
       if (ImGui::BeginItemTooltip()) {
         ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-        ImGui::TextUnformatted(GetFormattingHelpText().c_str());
+        ImGui::TextUnformatted(GetFormattingHelpText().data());
         ImGui::PopTextWrapPos();
         ImGui::EndTooltip();
       }
@@ -93,7 +93,7 @@ void DBMappingsTab::drawCommons() {
       if (ImGui::BeginPopup("unicodePopup")) {
         ImGui::SeparatorText("Unicodes");
         for (int i = 0; i < m_unicodes.size(); i++) {
-          if (ImGui::Selectable(m_unicodes.at(i).c_str())) {
+          if (ImGui::Selectable(m_unicodes.at(i).data())) {
             m_selectedUnicode = i;
           }
         }
@@ -212,6 +212,7 @@ void DBMappingsTab::drawCommons() {
               cmd.getCommand()->setReference(-1, move_to, SearchType::CommonEvent);
             }
             Database::instance()->commonEvents.swapReference(move_from, move_to);
+            Database::instance()->gameConstants.swap(move_from, move_to, Database::instance()->gameConstants.commonEvents);
           }
           ImGui::EndDragDropTarget();
         }
@@ -242,7 +243,7 @@ void DBMappingsTab::drawSwitches() {
       ImGui::TextDisabled("(?)");
       if (ImGui::BeginItemTooltip()) {
         ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-        ImGui::TextUnformatted(GetFormattingHelpText().c_str());
+        ImGui::TextUnformatted(GetFormattingHelpText().data());
         ImGui::PopTextWrapPos();
         ImGui::EndTooltip();
       }
@@ -263,7 +264,7 @@ void DBMappingsTab::drawSwitches() {
       if (ImGui::BeginPopup("unicodePopup")) {
         ImGui::SeparatorText("Unicodes");
         for (int i = 0; i < m_unicodes.size(); i++) {
-          if (ImGui::Selectable(m_unicodes.at(i).c_str())) {
+          if (ImGui::Selectable(m_unicodes.at(i).data())) {
             m_selectedUnicode = i;
           }
         }
@@ -404,6 +405,7 @@ void DBMappingsTab::drawSwitches() {
             }
 
             Database::instance()->system.swapSwitchReference(move_from, move_to);
+            Database::instance()->gameConstants.swap(move_from, move_to, Database::instance()->gameConstants.switches);
           }
           ImGui::EndDragDropTarget();
         }
@@ -458,7 +460,7 @@ void DBMappingsTab::drawVariables() {
       ImGui::TextDisabled("(?)");
       if (ImGui::BeginItemTooltip()) {
         ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-        ImGui::TextUnformatted(GetFormattingHelpText().c_str());
+        ImGui::TextUnformatted(GetFormattingHelpText().data());
         ImGui::PopTextWrapPos();
         ImGui::EndTooltip();
       }
@@ -479,7 +481,7 @@ void DBMappingsTab::drawVariables() {
       if (ImGui::BeginPopup("unicodePopup")) {
         ImGui::SeparatorText("Unicodes");
         for (int i = 0; i < m_unicodes.size(); i++) {
-          if (ImGui::Selectable(m_unicodes.at(i).c_str())) {
+          if (ImGui::Selectable(m_unicodes.at(i).data())) {
             m_selectedUnicode = i;
           }
         }
@@ -593,6 +595,7 @@ void DBMappingsTab::drawVariables() {
             }
 
             Database::instance()->system.swapVariableReference(move_from, move_to);
+            Database::instance()->gameConstants.swap(move_from, move_to, Database::instance()->gameConstants.variables);
           }
           ImGui::EndDragDropTarget();
         }

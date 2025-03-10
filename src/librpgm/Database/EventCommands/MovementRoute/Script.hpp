@@ -35,31 +35,6 @@ struct MovementScriptCommand final : IMovementRouteStep {
     return false;
   };
 
-  bool setReference(int targetId, int newId, SearchType type) override {
-    if (hasReference(targetId, type)) {
-      if (type == SearchType::Variable) {
-        std::string cnst = Database::instance()->gameConstants.variables[targetId];
-        if (cnst.empty()) {
-          return false;
-        }
-        std::string constantString = Database::instance()->gameConstants.variables[targetId];
-        Database::instance()->gameConstants.variables.erase(targetId);
-        Database::instance()->gameConstants.variables[newId] = constantString;
-      }
-      if (type == SearchType::Switch) {
-        std::string cnst = Database::instance()->gameConstants.switches[targetId];
-        if (cnst.empty()) {
-          return false;
-        }
-        std::string constantString = Database::instance()->gameConstants.switches[targetId];
-        Database::instance()->gameConstants.switches.erase(targetId);
-        Database::instance()->gameConstants.switches[newId] = constantString;
-      }
-      return true;
-    }
-    return false;
-  }
-
   bool hasStringReference(const std::string& text, SearchType type) override {
     if (text == "") {
       return true;

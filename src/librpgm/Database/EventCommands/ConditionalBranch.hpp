@@ -118,29 +118,10 @@ struct ConditionalBranchCommand final : IEventCommand {
           }
           return true;
         }
-        if (type == ConditionType::Script) {
-          std::string cnst = Database::instance()->gameConstants.variables[targetId];
-          if (cnst.empty()) {
-            return false;
-          }
-          // Update game constants with the new values. We don't need to change the script directly -- game constants help us map these values out.
-          std::string constantString = Database::instance()->gameConstants.variables[targetId];
-          Database::instance()->gameConstants.variables.erase(targetId);
-          Database::instance()->gameConstants.variables[newId] = constantString;
-        }
       }
       if (searchType == SearchType::Switch) {
         if (type == ConditionType::Switch && globalSwitch.switchIdx == targetId) {
           globalSwitch.switchIdx = newId;
-        }
-        if (type == ConditionType::Script) {
-          std::string cnst = Database::instance()->gameConstants.switches[targetId];
-          if (cnst.empty()) {
-            return false;
-          }
-          std::string constantString = Database::instance()->gameConstants.switches[targetId];
-          Database::instance()->gameConstants.switches.erase(targetId);
-          Database::instance()->gameConstants.switches[newId] = constantString;
         }
         return true;
       }

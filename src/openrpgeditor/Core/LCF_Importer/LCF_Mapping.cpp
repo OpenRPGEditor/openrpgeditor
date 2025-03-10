@@ -2,14 +2,16 @@
 #include <fstream>
 void to_json(nlohmann::ordered_json& json, const LCF_Mapping& mapping) {
   json = {
-      {"switch_mapping", mapping.switch_mapping}, {"variable_mapping", mapping.variable_mapping}, {"animation_mapping", mapping.animation_mapping},
-      {"image_mapping", mapping.image_mapping},   {"sound_mapping", mapping.sound_mapping},
+      {"switch_mapping", mapping.switch_mapping}, {"variable_mapping", mapping.variable_mapping}, {"common_mapping", mapping.common_mapping}, {"actor_mapping", mapping.actor_mapping},
+      {"state_mapping", mapping.state_mapping},   {"image_mapping", mapping.image_mapping},       {"sound_mapping", mapping.sound_mapping},
   };
 }
 void from_json(const nlohmann::ordered_json& json, LCF_Mapping& mapping) {
   mapping.switch_mapping = json.value("switch_mapping", mapping.switch_mapping);
   mapping.variable_mapping = json.value("variable_mapping", mapping.variable_mapping);
-  mapping.animation_mapping = json.value("animation_mapping", mapping.animation_mapping);
+  mapping.common_mapping = json.value("animation_mapping", mapping.common_mapping);
+  mapping.actor_mapping = json.value("actor_mapping", mapping.actor_mapping);
+  mapping.state_mapping = json.value("state_mapping", mapping.state_mapping);
   mapping.image_mapping = json.value("image_mapping", mapping.image_mapping);
   mapping.sound_mapping = json.value("sound_mapping", mapping.sound_mapping);
 }
@@ -51,7 +53,17 @@ bool LCF_Mapping::hasUnresolvedPairs() {
       result = true;
     }
   }
-  for (auto& val : animation_mapping) {
+  for (auto& val : common_mapping) {
+    if (val.second == 0) {
+      result = true;
+    }
+  }
+  for (auto& val : actor_mapping) {
+    if (val.second == 0) {
+      result = true;
+    }
+  }
+  for (auto& val : state_mapping) {
     if (val.second == 0) {
       result = true;
     }
@@ -78,8 +90,16 @@ void LCF_Mapping::addEmptyVariable(int id) {
   variable_mapping.insert(std::make_pair(id, 0));
   m_hasUnresolved = true;
 }
-void LCF_Mapping::addEmptyAnimation(int id) {
-  animation_mapping.insert(std::make_pair(id, 0));
+void LCF_Mapping::addEmptyCommonEvent(int id) {
+  common_mapping.insert(std::make_pair(id, 0));
+  m_hasUnresolved = true;
+}
+void LCF_Mapping::addEmptyActor(int id) {
+  actor_mapping.insert(std::make_pair(id, 0));
+  m_hasUnresolved = true;
+}
+void LCF_Mapping::addEmptyState(int id) {
+  state_mapping.insert(std::make_pair(id, 0));
   m_hasUnresolved = true;
 }
 void LCF_Mapping::addEmptySound(std::string name) {
@@ -93,43 +113,67 @@ void LCF_Mapping::addEmptyImage(std::string name) {
 int LCF_Mapping::switchValue(int key) {
   if (switch_mapping.empty() || !switch_mapping.contains(key)) {
     addEmptySwitch(key);
-    return 1;
+    return key;
   }
   int ret = switch_mapping.at(key);
   if (ret == 0) {
     m_hasUnresolved = true;
-    return 1;
+    return key;
   }
   return ret;
 }
 int LCF_Mapping::variableValue(int key) {
   if (variable_mapping.empty() || !variable_mapping.contains(key)) {
     addEmptyVariable(key);
-    return 1;
+    return key;
   }
   int ret = variable_mapping.at(key);
   if (ret == 0) {
     m_hasUnresolved = true;
-    return 1;
+    return key;
   }
   return ret;
 }
-int LCF_Mapping::animationValue(int key) {
-  if (animation_mapping.empty() || !animation_mapping.contains(key)) {
-    addEmptyAnimation(key);
-    return 1;
+int LCF_Mapping::commonEventValue(int key) {
+  if (common_mapping.empty() || !common_mapping.contains(key)) {
+    addEmptyCommonEvent(key);
+    return key;
   }
-  int ret = animation_mapping.at(key);
+  int ret = common_mapping.at(key);
   if (ret == 0) {
     m_hasUnresolved = true;
-    return 1;
+    return key;
+  }
+  return ret;
+}
+int LCF_Mapping::actorValue(int key) {
+  if (actor_mapping.empty() || !actor_mapping.contains(key)) {
+    addEmptyCommonEvent(key);
+    return key;
+  }
+  int ret = actor_mapping.at(key);
+  if (ret == 0) {
+    m_hasUnresolved = true;
+    return key;
+  }
+  return ret;
+}
+int LCF_Mapping::stateValue(int key) {
+  if (state_mapping.empty() || !state_mapping.contains(key)) {
+    addEmptyCommonEvent(key);
+    return key;
+  }
+  int ret = state_mapping.at(key);
+  if (ret == 0) {
+    m_hasUnresolved = true;
+    return key;
   }
   return ret;
 }
 std::string LCF_Mapping::soundValue(std::string key) {
   if (sound_mapping.empty() || !sound_mapping.contains(key)) {
     addEmptySound(key);
-    return "";
+    return key;
   }
   std::string ret = sound_mapping.at(key);
   if (ret.empty()) {
@@ -141,7 +185,7 @@ std::string LCF_Mapping::soundValue(std::string key) {
 std::string LCF_Mapping::imageValue(std::string key) {
   if (image_mapping.empty() || !image_mapping.contains(key)) {
     addEmptyImage(key);
-    return "";
+    return key;
   }
   std::string ret = image_mapping.at(key);
   if (ret.empty()) {

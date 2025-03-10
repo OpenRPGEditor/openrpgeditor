@@ -43,15 +43,28 @@ std::tuple<bool, bool> EventEditor::draw() {
     ImGui::SameLine();
     ImGui::BeginGroup();
     {
-      if (ImGui::Button("Copy\nEvent Page")) {}
+      if (ImGui::Button(trNOOP("Copy\nEvent Page"))) {}
       ImGui::SameLine();
       /* TODO: Undo/Clipboard stack */
       ImGui::BeginDisabled(true);
-      if (ImGui::Button("Paste\nEvent Page")) {}
+      if (ImGui::Button(trNOOP("Paste\nEvent Page"))) {}
       ImGui::EndDisabled();
       ImGui::SameLine();
-      if (ImGui::Button("Save as\nTemplate")) {
+      if (ImGui::Button(trNOOP("Save as\nTemplate"))) {
         m_templatePicker = ObjectPicker(tr("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+      }
+      ImGui::SameLine();
+      if (ImGui::Button(trNOOP("Insert\n Locale Keys"))) {
+        // Open Localization Window
+      }
+      if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        {
+          ImGui::TextUnformatted(trNOOP(
+              "Inserts string keys into all ShowText or ShowChoice commands on the page.\n- Keys must be seperated by line.\n- Key total must equal dialogue total.\nThis feature is temporary until "
+              "a proper feature is introduced."));
+          ImGui::EndTooltip();
+        }
       }
     }
     if (m_templatePicker) {

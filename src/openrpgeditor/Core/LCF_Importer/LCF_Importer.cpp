@@ -36,7 +36,8 @@ bool LCF_Importer::loadProject() {
   if (!std::filesystem::exists(Database::instance()->basePath + "editor/LCFMapping.json")) {
     m_mapper.serialize(Database::instance()->basePath + "editor/LCFMapping.json"); // Make new file if it doesn't exist
   } else {
-    m_mapper.load(Database::instance()->basePath + "editor/LCFMapping.json");
+    m_mapper = LCF_Mapping::load(Database::instance()->basePath + "editor/LCFMapping.json");
+    m_mapper.hasUnresolvedPairs();
   }
 
   return m_database && m_treeMap;

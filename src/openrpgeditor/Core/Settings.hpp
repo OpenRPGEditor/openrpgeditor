@@ -34,6 +34,7 @@ struct Settings {
   std::string lastDirectory;
   std::string lastProject;
   std::string projectBaseDirectory;
+  std::string lcfProjectDirectory;
   std::string rpgMakerLocation;
   std::string locale;
   int rpgMakerVersion{-1};

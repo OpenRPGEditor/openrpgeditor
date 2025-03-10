@@ -1,7 +1,11 @@
 #pragma once
+#include "CommonUI/ObjectPicker.hpp"
+#include "CommonUI/VariableSwitchPicker.hpp"
+#include "Database/Actor.hpp"
 #include "Database/Event.hpp"
 #include "Database/EventCommands/MovementRoute/Jump.hpp"
 #include "Database/Map.hpp"
+#include "Database/State.hpp"
 #include "LCF_Importer/LCF_Importer.hpp"
 #include "imgui.h"
 
@@ -48,6 +52,7 @@ private:
   bool m_jumpProcessing{false};
 
   bool m_unresolvedError{false};
+  bool m_firstOpen{true};
 
   // For Message Options
   bool m_windowTransparent{false};
@@ -57,12 +62,12 @@ private:
   int selectedEvent = -1;
   int selectedPage = -1;
 
-  // Data mapping
-  std::map<int, int> m_variable_mapping;
-  std::map<int, int> m_int_switch_mapping;
-  std::map<std::string, std::string> m_image_mapping;
-  std::map<std::string, std::string> m_sound_mapping;
-
   std::vector<std::string> m_lcfLogger;
   std::vector<std::string> m_commandLogger;
+
+  std::optional<VariableSwitchPicker> m_picker;
+
+  std::optional<ObjectPicker<std::optional<CommonEvent>>> m_commonPicker;
+  std::optional<ObjectPicker<State>> m_statePicker;
+  std::optional<ObjectPicker<Actor>> m_actorPicker;
 };

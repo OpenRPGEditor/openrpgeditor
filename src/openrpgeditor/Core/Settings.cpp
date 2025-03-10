@@ -49,6 +49,7 @@ bool Settings::loadFromJson(const nlohmann::ordered_json& parser) {
     lastDirectory = parser.value("lastDirectory", lastDirectory);
     lastProject = parser.value("lastProject", lastProject);
     projectBaseDirectory = parser.value("projectBaseDirectory", projectBaseDirectory);
+    lcfProjectDirectory = parser.value("lcfProjectDirectory", lcfProjectDirectory);
     rpgMakerLocation = parser.value("rpgMakerLocation", rpgMakerLocation);
     rpgMakerVersion = parser.value("rpgMakerVersion", rpgMakerVersion);
     locale = parser.value("locale", locale);
@@ -78,6 +79,7 @@ nlohmann::ordered_json Settings::serializeToJson() {
       {"lastDirectory", lastDirectory},               //
       {"lastProject", lastProject},                   //
       {"projectBaseDirectory", projectBaseDirectory}, //
+      {"lcfProjectDirectory", lcfProjectDirectory},   //
       {"rpgMakerLocation", rpgMakerLocation},         //
       {"rpgMakerVersion", rpgMakerVersion},           //
       {"locale", locale},                             //

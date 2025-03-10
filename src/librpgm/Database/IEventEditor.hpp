@@ -14,6 +14,7 @@ public:
   virtual void open() = 0;
   virtual bool confirmed() const = 0;
   virtual void accept() const = 0;
+  virtual int getSelectedPage() const = 0;
 
   int id() const;
 

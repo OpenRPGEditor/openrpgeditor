@@ -41,6 +41,32 @@ void GeneralSettingsTab::draw() {
       ImGui::SetItemTooltip("Select a directory to store RPG Maker game projects");
     }
     ImGui::EndGroup();
+
+    strncpy(location, Settings::instance()->lcfProjectDirectory.c_str(), 4096);
+    ImGui::LabelOverLineEdit("##lcf_location_line_edit", "LCF Base Project Directory", location, sizeof(location), 0.f, "Sets the base directory where LCF will import from");
+    if (ImGui::IsItemDeactivatedAfterEdit()) {
+      Settings::instance()->lcfProjectDirectory = location;
+      onValueChanged.fire();
+    }
+    ImGui::SameLine();
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().FramePadding.y);
+    ImGui::BeginGroup();
+    {
+      ImGui::NewLine();
+      ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y);
+      if (ImGui::Button("Choose...##2")) {
+        nfdu8char_t* loc;
+        if (NFD_PickFolder(&loc, !Settings::instance()->lcfProjectDirectory.empty() ? Settings::instance()->lcfProjectDirectory.c_str() : nullptr) == NFD_OKAY) {
+          const std::filesystem::path path{loc};
+          Settings::instance()->lcfProjectDirectory = absolute(path).generic_string();
+          onValueChanged.fire();
+          NFD_FreePathU8(loc);
+        }
+      }
+      ImGui::SetItemTooltip("Select a directory where LCF will import from");
+    }
+    ImGui::EndGroup();
+
     ImGui::EndTabItem();
   }
 }

@@ -17,13 +17,17 @@ public:
 
   void addEmptySwitch(int id);
   void addEmptyVariable(int id);
-  void addEmptyAnimation(int id);
+  void addEmptyCommonEvent(int id);
+  void addEmptyActor(int id);
+  void addEmptyState(int id);
   void addEmptySound(std::string name);
   void addEmptyImage(std::string name);
 
   int switchValue(int key);
   int variableValue(int key);
-  int animationValue(int key);
+  int commonEventValue(int key);
+  int actorValue(int key);
+  int stateValue(int key);
 
   std::string soundValue(std::string key);
   std::string imageValue(std::string key);
@@ -33,7 +37,9 @@ public:
 
   std::map<int, int> switch_mapping;
   std::map<int, int> variable_mapping;
-  std::map<int, int> animation_mapping;
+  std::map<int, int> common_mapping;
+  std::map<int, int> actor_mapping;
+  std::map<int, int> state_mapping;
   std::map<std::string, std::string> image_mapping;
   std::map<std::string, std::string> sound_mapping;
 

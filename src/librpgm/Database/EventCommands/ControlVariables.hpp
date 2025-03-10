@@ -50,28 +50,9 @@ struct ControlVariables : IEventCommand {
 
   bool setReference(int targetId, int newId, SearchType type) override {
     if (hasReference(targetId, type)) {
-      if (operand == VariableControlOperand::Script) {
-        if (type == SearchType::Variable) {
-
-          std::string cnst = Database::instance()->gameConstants.variables[targetId];
-          if (cnst.empty()) {
-            return false;
-          }
-          // Update game constants with the new values. We don't need to change the script directly -- game constants help us map these values out.
-          std::string constantString = Database::instance()->gameConstants.variables[targetId];
-          Database::instance()->gameConstants.variables.erase(targetId);
-          Database::instance()->gameConstants.variables[newId] = constantString;
-        }
-        if (type == SearchType::Switch) {
-          std::string constantString = Database::instance()->gameConstants.switches[targetId];
-          Database::instance()->gameConstants.switches.erase(targetId);
-          Database::instance()->gameConstants.switches[newId] = constantString;
-        }
-      } else {
-        if (start == targetId && end == targetId) {
-          start = newId;
-          end = newId;
-        }
+      if (start == targetId && end == targetId) {
+        start = newId;
+        end = newId;
       }
       return true;
     }

@@ -31,6 +31,13 @@ struct GameConstants {
   bool generateConstantsJS(std::string_view path);
 
   bool isValidName(Type type, int id, const std::string& constant);
+
+  void swap(int keyOne, int keyTwo, std::map<int, std::string>& keyList) {
+    std::string keyOneString = keyList.at(keyOne);
+    std::string keyTwoString = keyList.at(keyTwo);
+    keyList.at(keyOne) = keyTwoString;
+    keyList.at(keyTwo) = keyOneString;
+  }
 };
 void to_json(nlohmann::ordered_json& json, const GameConstants& constants);
 void from_json(const nlohmann::ordered_json& json, GameConstants& constants);

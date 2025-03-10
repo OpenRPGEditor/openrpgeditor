@@ -21,7 +21,7 @@ public:
     m_categoryStart = start;
     m_categoryEnd = end;
   }
-  std::string GetFormattingHelpText() { return "Reference updating does not support:\n- Ranges\n- Data without game constants\nThese must be updated manually."; }
+  std::string_view GetFormattingHelpText() { return trNOOP("Reference updating does not support:\n- Ranges\n- Data without game constants\nThese must be updated manually."); }
   std::string getName(int index) override { return ""; }
   int getCount() override { return 0; }
 
@@ -51,5 +51,5 @@ private:
   int m_editMaxVariables{};
   int m_editMaxSwitches{};
   int m_selectedUnicode{0};
-  std::vector<std::string> m_unicodes;
+  std::vector<std::string_view> m_unicodes;
 };

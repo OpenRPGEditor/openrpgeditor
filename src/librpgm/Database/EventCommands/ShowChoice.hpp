@@ -10,6 +10,23 @@ struct ShowChoiceCommand final : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowChoiceCommand>(*this); }
 
+  [[nodiscard]] constexpr bool collapsable() const override { return true; }
+  [[nodiscard]] bool isCollapsed() const override { return m_collapsed; }
+  void setCollapsed(const bool collapsed) override { m_collapsed = collapsed; }
+  bool isPartner(const EventCode code, const std::optional<int>& codeIndent) override {
+    if (!codeIndent) {
+      return false;
+    }
+
+    return (code == EventCode::End_del_ShowChoices) && *codeIndent == indent();
+  }
+
+  [[nodiscard]] constexpr int partnerCount() const override { return 1; }
+
+  [[nodiscard]] constexpr bool hasPartner() const override { return true; }
+
+  bool m_collapsed{false};
+
   TextBackground background = TextBackground::Window;
   ChoiceWindowPosition positionType = ChoiceWindowPosition::Right;
   std::vector<std::string> choices{"Yes", "No"};
@@ -50,6 +67,24 @@ struct WhenSelectedCommand final : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<WhenSelectedCommand>(*this); }
 
+  [[nodiscard]] constexpr bool collapsable() const override { return true; }
+  [[nodiscard]] bool isCollapsed() const override { return m_collapsed; }
+  [[nodiscard]] bool isCollapseEnd() const override { return false; }
+  void setCollapsed(const bool collapsed) override { m_collapsed = collapsed; }
+  bool isPartner(const EventCode code, const std::optional<int>& codeIndent) override {
+    if (!codeIndent) {
+      return false;
+    }
+
+    return (code == EventCode::When_Selected || code == EventCode::When_Cancel || code == EventCode::End_del_ShowChoices) && *codeIndent == indent();
+  }
+  [[nodiscard]] constexpr bool hasPartner() const override { return true; }
+  [[nodiscard]] constexpr int partnerCount() const override { return 3; }
+  [[nodiscard]] bool reverseSelection() const override { return m_reverseSelection; }
+  void setReverseSelection(const bool reverseSelection) override { m_reverseSelection = reverseSelection; }
+  bool m_reverseSelection = false;
+  bool m_collapsed{false};
+
   int param1;
   std::string choice;
 
@@ -73,6 +108,24 @@ struct WhenCancelCommand final : IEventCommand {
   ~WhenCancelCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::When_Cancel; }
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<WhenCancelCommand>(*this); }
+
+  [[nodiscard]] constexpr bool collapsable() const override { return true; }
+  [[nodiscard]] bool isCollapsed() const override { return m_collapsed; }
+  [[nodiscard]] bool isCollapseEnd() const override { return false; }
+  void setCollapsed(const bool collapsed) override { m_collapsed = collapsed; }
+  bool isPartner(const EventCode code, const std::optional<int>& codeIndent) override {
+    if (!codeIndent) {
+      return false;
+    }
+
+    return (code == EventCode::End_del_ShowChoices) && *codeIndent == indent();
+  }
+  [[nodiscard]] constexpr bool hasPartner() const override { return true; }
+  [[nodiscard]] constexpr int partnerCount() const override { return 1; }
+  [[nodiscard]] bool reverseSelection() const override { return m_reverseSelection; }
+  void setReverseSelection(const bool reverseSelection) override { m_reverseSelection = reverseSelection; }
+  bool m_reverseSelection = false;
+  bool m_collapsed{false};
 };
 
 struct ShowChoicesEndCommand final : IEventCommand {

@@ -205,29 +205,41 @@ void EventEditor::drawLocalization() {
         for (auto& cmd : m_event->page(m_selectedPage)->list()) {
           if (cmd->code() == EventCode::Show_Choices) {
             if (cmd->hasStringReference("{}", SearchType::Text)) {
-              m_choiceParsing = true;
+              if (!m_choiceParsing) {
+                m_choiceParsing = true;
+              }
+
               std::shared_ptr<ShowChoiceCommand> choiceCmd = std::static_pointer_cast<ShowChoiceCommand>(cmd);
               int showChoiceIndex{0};
               for (auto& choiceStr : choiceCmd->choices) {
                 // choiceCmd->choices.at(setStringReference("{}", lines.at(index), SearchType::Text);
-                choiceCmd->choices.at(showChoiceIndex) = lines.at(index);
-                choiceLines.push_back(choiceStr);
+                choiceCmd->choices.at(showChoiceIndex) = trim(lines.at(index));
+                if (m_choiceParsing) {
+                  choiceLines.insert(choiceLines.begin() + showChoiceIndex, choiceStr);
+                } else {
+                  choiceLines.push_back(choiceStr);
+                }
                 showChoiceIndex++;
                 index++;
               }
             }
-          } else if (cmd->hasStringReference("{}", SearchType::Text)) {
-            cmd->setStringReference("{}", lines.at(index), SearchType::Text);
-            index++;
+          } else if (cmd->code() == EventCode::Show_Text) {
+            if (cmd->hasStringReference("{}", SearchType::Text)) {
+              cmd->setStringReference("{}", trim(lines.at(index)), SearchType::Text);
+              index++;
+            }
           }
-
           if (cmd->code() == EventCode::When_Selected) {
             if (cmd->hasStringReference("{}", SearchType::Text)) {
               cmd->setStringReference("", choiceLines.at(0), SearchType::Text);
               choiceLines.erase(choiceLines.begin(), choiceLines.begin() + 1);
             }
           }
+          if (cmd->code() == EventCode::End_del_ShowChoices && m_choiceParsing) {
+            m_choiceParsing = false;
+          }
         }
+        m_choiceParsing = false;
         m_maxLocaleLines = 0;
         m_localeLinesRequired = 0;
         m_localizationInput.clear();

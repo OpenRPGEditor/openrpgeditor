@@ -67,6 +67,10 @@ public:
   std::string& getFilterString() { return m_searchString; } // TODO: Search by string
   bool isFilteredByCategory() const { return m_filterByHeader && m_selectedHeaderIndex != -1; }
 
+  bool isOpen() { return m_isOpen; }
+  DBCommonEventsTab* commonEvents() { return m_commonEvents.has_value() ? &m_commonEvents.value() : nullptr; }
+  IDBEditorTab* getCurrentTab() { return m_currentTab; }
+
   rpgmutils::signal<void()> onReady;
 
 private:

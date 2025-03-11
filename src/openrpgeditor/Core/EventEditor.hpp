@@ -21,6 +21,7 @@ public:
   }
   int getSelectedPage() const override { return m_selectedPage; }
   std::tuple<bool, bool> draw() override;
+  void drawLocalization();
 
 protected:
   friend IEventEditor* IEventEditor::create(Event* ev);
@@ -29,6 +30,13 @@ protected:
 
 private:
   std::optional<ObjectPicker<Template>> m_templatePicker;
+
+  std::string m_localizationInput;
+  int m_localeLinesRequired{0};
+  int m_maxLocaleLines{10};
+  bool m_localeConfirm{false};
+  bool m_choiceParsing{true};
+
   int m_selectedPage = 0;
   bool m_open{false};
   bool m_confirmed{false};

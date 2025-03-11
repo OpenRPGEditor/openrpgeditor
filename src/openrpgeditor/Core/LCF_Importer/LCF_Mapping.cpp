@@ -81,7 +81,34 @@ bool LCF_Mapping::hasUnresolvedPairs() {
   m_hasUnresolved = result;
   return result;
 }
-bool LCF_Mapping::isUnresolved() { return m_hasUnresolved; };
+bool LCF_Mapping::isUnresolved() { return m_hasUnresolved; }
+void LCF_Mapping::loadDatabase(const lcf::rpg::Database* database) {
+  for (auto& val : database->switches) {
+    if (!val.name.empty() && !switch_mapping.contains(val.ID)) {
+      switch_mapping.insert(std::make_pair(val.ID, 0));
+    }
+  }
+  for (auto& val : database->variables) {
+    if (!val.name.empty() && !variable_mapping.contains(val.ID)) {
+      variable_mapping.insert(std::make_pair(val.ID, 0));
+    }
+  }
+  for (auto& val : database->commonevents) {
+    if (!val.name.empty() && !common_mapping.contains(val.ID)) {
+      common_mapping.insert(std::make_pair(val.ID, 0));
+    }
+  }
+  for (auto& val : database->actors) {
+    if (!val.name.empty() && !actor_mapping.contains(val.ID)) {
+      actor_mapping.insert(std::make_pair(val.ID, 0));
+    }
+  }
+  for (auto& val : database->states) {
+    if (!val.name.empty() && !state_mapping.contains(val.ID)) {
+      state_mapping.insert(std::make_pair(val.ID, 0));
+    }
+  }
+};
 void LCF_Mapping::addEmptySwitch(int id) {
   switch_mapping.insert(std::make_pair(id, 0));
   m_hasUnresolved = true;

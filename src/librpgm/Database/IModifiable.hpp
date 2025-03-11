@@ -95,6 +95,7 @@ public:
   virtual bool hasReference(int targetId, SearchType type) { return false; }
   virtual bool setReference(int targetId, int newId, SearchType type) { return false; }
   virtual bool hasStringReference(const std::string& text, SearchType type) { return false; }
+  virtual bool setStringReference(const std::string& replaceStr, const std::string& text, SearchType type) { return false; }
 
   rpgmutils::signal<void(IModifiable*)>& onModified();
 

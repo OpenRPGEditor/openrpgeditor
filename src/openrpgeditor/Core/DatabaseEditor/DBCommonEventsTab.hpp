@@ -23,6 +23,7 @@ struct DBCommonEventsTab : IDBEditorTab {
   }
   std::string getName(int index) override { return m_events.event(index)->name(); }
   int getCount() override { return m_events.count(); }
+  int getSelectedIndex() { return m_selectedCommonEvent ? m_selectedCommonEvent->id() : 0; }
 
 private:
   CommonEvents& m_events;

@@ -122,6 +122,9 @@ public:
 
   const Map* currentMap() const { return m_mapEditor.map(); }
 
+  DatabaseEditor* databaseEditor() { return m_databaseEditor.has_value() ? &m_databaseEditor.value() : nullptr; }
+  const DatabaseEditor* databaseEditor() const { return m_databaseEditor.has_value() ? &m_databaseEditor.value() : nullptr; }
+
   void addUndo(const std::weak_ptr<IUndoCommand>& cmd) {
     m_undoStack.push(cmd);
     /* Clear the redo stack since adding a new undo command invalidates the redo state */

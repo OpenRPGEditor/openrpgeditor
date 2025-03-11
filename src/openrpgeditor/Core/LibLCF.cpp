@@ -32,12 +32,10 @@
 #include "Database/EventCommands/MovementRoute/TurnTowardPlayer.hpp"
 #include "Database/EventCommands/MovementRoute/TurnUp.hpp"
 #include "Database/EventCommands/MovementRoute/Wait.hpp"
-#include "ImGuiExt/ImGuiUtils.hpp"
 #include "MainWindow.hpp"
 #include "Settings.hpp"
 #include "imgui.h"
 #include "lcf/reader_util.h"
-#include "nfd.h"
 
 void LibLCF::draw() {
   if (!m_isOpen) {
@@ -54,6 +52,7 @@ void LibLCF::draw() {
         lcf.setProject(lcfPath);
         lcf.loadProject();
         m_unresolvedError = lcf.mapper()->isUnresolved();
+        selectedCommon = -1;
         selectedMapIndex = -1;
         selectedPage = -1;
       }
@@ -149,6 +148,31 @@ void LibLCF::draw() {
           ImGui::EndTooltip();
         }
       }
+      // Convert common events
+      ImGui::BeginDisabled(selectedCommon == -1 || (m_parent->databaseEditor()->isOpen() == false && m_parent->databaseEditor()->getCurrentTab() != m_parent->databaseEditor()->commonEvents()));
+      if (ImGui::Button("Convert Selected Common")) {
+        if (m_parent->databaseEditor()->isOpen()) {
+          if (selectedCommon > -1) {
+            int selectedCommon = m_parent->databaseEditor()->commonEvents()->getSelectedIndex();
+            m_parent->databaseEditor()->commonEvents()->event(selectedCommon)->setName(ToString(lcf.database()->commonevents.at(selectedCommon).name));
+            m_parent->databaseEditor()->commonEvents()->event(selectedCommon)->setSwitchId(lcf.mapper()->switchValue(lcf.database()->commonevents.at(selectedCommon).switch_id));
+            m_parent->databaseEditor()->commonEvents()->event(selectedCommon)->setTrigger(static_cast<CommonEventTriggerType>(lcf.database()->commonevents.at(selectedCommon).trigger));
+            convertCommands(&m_parent->databaseEditor()->commonEvents()->event(selectedCommon)->commands(), lcf.database()->commonevents.at(selectedCommon).event_commands);
+            if (lcf.mapper()->isUnresolved()) {
+              lcf.mapper()->save(Database::instance()->basePath);
+            }
+          }
+        }
+      }
+      ImGui::EndDisabled();
+      if (ImGui::IsItemHovered()) {
+
+        if (ImGui::BeginTooltip()) {
+          ImGui::TextUnformatted(trNOOP("Converts the commands into the current selected page."));
+          ImGui::EndTooltip();
+        }
+      }
+
       ImGui::EndPopup();
     }
     ImGui::SameLine();
@@ -178,6 +202,7 @@ void LibLCF::draw() {
             for (int i = 1; i < lcf.treeMap()->maps.size(); i++) {
               if (ImGui::Selectable(lcf.treeMap()->maps[i].name.c_str(), selectedMapIndex == i)) {
                 selectedMapIndex = i;
+                selectedCommon = -1;
                 selectedPage = -1;
                 selectedEvent = -1;
                 map = std::move(lcf.loadMap(i));
@@ -286,6 +311,24 @@ void LibLCF::draw() {
         ImGui::EndTabItem();
       }
       if (ImGui::BeginTabItem("Common Events")) {
+        if (ImGui::BeginListBox("##lcf_common_list",
+                                ImVec2(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.x * 2, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().ItemSpacing.y))) {
+          if (lcf.database()) {
+            for (int i = 0; i < lcf.database()->commonevents.size(); i++) {
+              std::string commonName = ToString(lcf.database()->commonevents.at(i).name);
+              if (!commonName.empty()) {
+                if (ImGui::Selectable(std::format("{}##common{}", commonName.c_str(), i).c_str(), selectedCommon == i)) {
+                  selectedCommon = i;
+                  selectedMapIndex = -1;
+                  selectedPage = -1;
+                  selectedEvent = -1;
+                }
+              }
+            }
+          }
+          ImGui::EndListBox();
+        }
+
         ImGui::EndTabItem();
       }
       ImGui::EndTabBar();
@@ -300,7 +343,7 @@ void LibLCF::draw() {
     if (ImGui::BeginTabBar("##lcf_mapping_tabbar")) {
       if (lcf.treeMap()) {
         if (ImGui::BeginTabItem("Switches##lcf_mapping_switches")) {
-          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableRowFlags_Headers | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
+          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
                                 ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
 
             ImGui::TableSetupColumn("RPG2000");
@@ -330,7 +373,7 @@ void LibLCF::draw() {
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Variables##lcf_mapping_variables")) {
-          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableRowFlags_Headers | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
+          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
                                 ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
 
             ImGui::TableSetupColumn("RPG2000");
@@ -362,7 +405,7 @@ void LibLCF::draw() {
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Common Events##lcf_mapping_commons")) {
-          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableRowFlags_Headers | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
+          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
                                 ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
 
             ImGui::TableSetupColumn("RPG2000");
@@ -392,7 +435,7 @@ void LibLCF::draw() {
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Actor##lcf_mapping_actors")) {
-          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableRowFlags_Headers | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
+          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
                                 ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
 
             ImGui::TableSetupColumn("RPG2000");
@@ -422,7 +465,7 @@ void LibLCF::draw() {
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("State##lcf_mapping_state")) {
-          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableRowFlags_Headers | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
+          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
                                 ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
 
             ImGui::TableSetupColumn("RPG2000");
@@ -436,6 +479,7 @@ void LibLCF::draw() {
               // ImGui::TextUnformatted(std::to_string(pair.first).c_str());
               ImGui::TextUnformatted(std::format("{} ({})", ToString(lcf.database()->states.at(pair.first - 1).name), pair.first).c_str());
               ImGui::PopID();
+              ImGui::TableNextColumn();
               ImGui::PushID(std::format("lcf_state_data_{}", index).c_str());
               if (ImGui::Button(lcf.mapper()->state_mapping[pair.first] == 0 ? "Click here to start mapping!" : Database::instance()->stateNameAndId(lcf.mapper()->actor_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
@@ -451,7 +495,7 @@ void LibLCF::draw() {
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Sounds##lcf_mapping_sound_effects")) {
-          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableRowFlags_Headers | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
+          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
                                 ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
 
             ImGui::TableSetupColumn("RPG2000");
@@ -476,7 +520,7 @@ void LibLCF::draw() {
           ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Images##lcf_mapping_images")) {
-          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableRowFlags_Headers | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
+          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
                                 ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
 
             ImGui::TableSetupColumn("RPG2000");
@@ -525,7 +569,7 @@ void LibLCF::draw() {
         if (ImGui::BeginPopupContextItem()) // <-- use last item id as popup id
         {
           if (ImGui::Button("Map entire database")) {
-            // TODO
+            lcf.mapper()->loadDatabase(lcf.database());
           }
           ImGui::EndPopup();
         }
@@ -537,7 +581,7 @@ void LibLCF::draw() {
   ImGui::End();
 }
 
-std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t indent, const lcf::DBArray<int32_t> data, const std::string& strData) {
+std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t indent, const lcf::DBArray<int32_t>& data, const std::string& strData) {
 
   auto codeEnum = static_cast<lcf::rpg::EventCommand::Code>(code);
 
@@ -687,7 +731,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
 
     newCmd.choices.clear();
     for (auto& str : splitString(strData, '/')) {
-      newCmd.choices.push_back(str);
+      newCmd.choices.push_back("{}");
     }
 
     // parameters.at(1) =>
@@ -1030,8 +1074,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     double rgbVal = 255.0 / 31.0;
 
     attachToCommand(std::format("{}, {}, {}, {}, {}", static_cast<double>(parameters.at(0)) * rgbVal, static_cast<double>(parameters.at(1)) * rgbVal, static_cast<double>(parameters.at(2)) * rgbVal,
-                                static_cast<double>(parameters.at(3)) * rgbVal, parameters.at(4) != 0 ? "wait: true" : "wait: false")
-                        .c_str());
+                                static_cast<double>(parameters.at(3)) * rgbVal, parameters.at(4) != 0 ? "wait: true" : "wait: false"));
 
     ShowAnimationCommand newCmd;
     newCmd.setIndent(indent);
@@ -1303,7 +1346,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
 
     } else {
       if (parameters.at(0) == 1) {
-        return Comment(lcf::rpg::EventCommand::kCodeTags[code], std::format("CallEvent {}, Page {}", parameters.at(1), parameters.at(2)).c_str(), indent);
+        return Comment(lcf::rpg::EventCommand::kCodeTags[code], std::format("CallEvent {}, Page {}", parameters.at(1), parameters.at(2)), indent);
       }
       return Comment(lcf::rpg::EventCommand::kCodeTags[code], "CallEvent Variable", indent);
     }
@@ -1336,7 +1379,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     WhenSelectedCommand newCmd;
     newCmd.setIndent(indent);
 
-    newCmd.choice = strData;
+    newCmd.choice = "{}";
     newCmd.param1 = parameters.at(0);
     return std::make_shared<WhenSelectedCommand>(newCmd);
   }
@@ -1422,7 +1465,7 @@ std::shared_ptr<IEventCommand> LibLCF::Comment(std::string codeName, std::string
   newCmd.text = std::format("({}) {}", codeName, text);
   return std::make_shared<CommentCommand>(newCmd);
 }
-void LibLCF::attachToCommand(std::string text) {
+void LibLCF::attachToCommand(const std::string& text) {
   m_commandLogger.push_back("\u2605 " + text);
   m_attachToCommand = true;
 }
@@ -1440,7 +1483,7 @@ void LibLCF::convertEvent(Event* event, const lcf::rpg::Event& ev) {
 }
 void LibLCF::convertPage(EventPage* page, const lcf::rpg::EventPage& evPage) {
   // Image
-  page->image().setCharacterName("001_AAA"); // Temporary for now. Maybe we add mapping?
+  page->image().setCharacterName("001_AAA"); // Temporary for now. Maybe we add mapping? // TODO
   page->image().setDirection(getDirection(evPage.character_direction));
   page->image().setCharacterIndex(evPage.character_index);
 

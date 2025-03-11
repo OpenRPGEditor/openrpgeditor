@@ -15,6 +15,30 @@ struct ShowChoiceCommand final : IEventCommand {
   std::vector<std::string> choices{"Yes", "No"};
   int cancelType{1};  // < 0 == disallow/branch
   int defaultType{0}; // -1 is none
+
+  bool hasStringReference(const std::string& str, SearchType type) override {
+    if (type == SearchType::Text) {
+      for (auto& cmd : choices) {
+        if (cmd.contains(str)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  bool setStringReference(const std::string& replaceStr, const std::string& str, SearchType type) override {
+    if (type == SearchType::Text) {
+      for (auto& cmd : choices) {
+        if (cmd.contains(str)) {
+          size_t pos = str.find(replaceStr);
+          if (pos != std::string::npos) {
+            cmd.replace(pos, replaceStr.size(), str);
+          }
+        }
+      }
+    }
+    return true;
+  }
 };
 
 struct WhenSelectedCommand final : IEventCommand {
@@ -28,6 +52,19 @@ struct WhenSelectedCommand final : IEventCommand {
 
   int param1;
   std::string choice;
+
+  bool hasStringReference(const std::string& str, SearchType type) override {
+    if (type == SearchType::Text) {
+      return true;
+    }
+    return false;
+  }
+  bool setStringReference(const std::string& replaceStr, const std::string& str, SearchType type) override {
+    if (type == SearchType::Text) {
+      choice = str;
+    }
+    return true;
+  }
 };
 
 struct WhenCancelCommand final : IEventCommand {
@@ -44,4 +81,11 @@ struct ShowChoicesEndCommand final : IEventCommand {
   ~ShowChoicesEndCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::End_del_ShowChoices; }
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowChoicesEndCommand>(*this); }
+
+  bool hasStringReference(const std::string& str, SearchType type) override {
+    if (type == SearchType::Text) {
+      return true;
+    }
+    return false;
+  }
 };

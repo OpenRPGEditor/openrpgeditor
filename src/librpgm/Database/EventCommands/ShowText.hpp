@@ -30,4 +30,28 @@ struct ShowTextCommand final : IEventCommand {
   TextWindowPosition position = TextWindowPosition::Bottom;
   std::string textLine;
   std::vector<std::shared_ptr<NextTextCommand>> text;
+
+  bool hasStringReference(const std::string& str, SearchType type) override {
+    if (type == SearchType::Text) {
+      for (auto& cmd : text) {
+        if (cmd->text.contains(str)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  bool setStringReference(const std::string& replaceStr, const std::string& str, SearchType type) override {
+    if (type == SearchType::Text) {
+      for (auto& cmd : text) {
+        if (cmd->text.contains(replaceStr)) {
+          size_t pos = cmd->text.find(replaceStr);
+          if (pos != std::string::npos) {
+            cmd->text.replace(pos, replaceStr.size(), str);
+          }
+        }
+      }
+    }
+    return true;
+  }
 };

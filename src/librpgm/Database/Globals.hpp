@@ -906,7 +906,8 @@ enum class SearchType {
   trENUM("State", State),
   trENUM("Animation", Animation),
   trENUM("Script", Script),
-  trENUM("Range", Range)
+  trENUM("Range", Range),
+  trENUM("Text", Text)
 
 };
 enum class SpecialDataParent {

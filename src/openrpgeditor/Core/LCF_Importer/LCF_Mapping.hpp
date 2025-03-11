@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Core/LCF_Importer/LCF_Mapping.hpp"
+#include "lcf/rpg/database.h"
+
 #include <nlohmann/json.hpp>
 
 #include <filesystem>
@@ -34,6 +36,7 @@ public:
 
   bool hasUnresolvedPairs();
   bool isUnresolved();
+  void loadDatabase(const lcf::rpg::Database* database);
 
   std::map<int, int> switch_mapping;
   std::map<int, int> variable_mapping;

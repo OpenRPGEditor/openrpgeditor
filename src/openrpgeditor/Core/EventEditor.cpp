@@ -19,7 +19,6 @@ std::tuple<bool, bool> EventEditor::draw() {
   if (!m_event || !m_open) {
     return {!m_open, m_confirmed};
   }
-
   std::string title = std::format("Event {} - ID {}##event_editor_{}_{}", m_event->name(), m_event->id(), Database::instance()->mapInfos.currentMap()->id(), m_event->id());
   ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Once);
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Once, {0.5f, 0.5f});
@@ -55,7 +54,13 @@ std::tuple<bool, bool> EventEditor::draw() {
       }
       ImGui::SameLine();
       if (ImGui::Button(trNOOP("Insert\n Locale Keys"))) {
-        // Open Localization Window
+        m_maxLocaleLines = 0;
+        for (auto& cmd : m_event->page(m_selectedPage)->list()) {
+          if (cmd->hasStringReference("{}", SearchType::Text)) {
+            m_maxLocaleLines++;
+          }
+        }
+        ImGui::OpenPopup("Localization");
       }
       if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
@@ -165,10 +170,79 @@ std::tuple<bool, bool> EventEditor::draw() {
       ImGui::EndTabBar();
     }
     ImGui::EndGroup();
+    drawLocalization();
   }
   ImGui::End();
 
   return {!m_open, m_confirmed};
 }
+void EventEditor::drawLocalization() {
+  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  ImGui::SetNextWindowSize(ImVec2{750, 650}, ImGuiCond_Appearing);
+  if (ImGui::BeginPopupModal("Localization", NULL, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
+    ImGui::TextUnformatted(m_maxLocaleLines == 0 ? trNOOP("No text found") : std::format("{} / {} keys required", m_localeLinesRequired, m_maxLocaleLines).c_str());
+    if (ImGui::InputTextMultiline("##orpg_eventeditor_localization_multiline", &m_localizationInput,
+                                  ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y * 5}))
 
+    {
+      int count = 0;
+      for (char c : m_localizationInput) {
+        if (c == '\n') {
+          ++count;
+        }
+      }
+      m_localeLinesRequired = count;
+    }
+    ImGui::BeginGroup();
+    {
+      ImGui::BeginDisabled(m_localeLinesRequired > m_maxLocaleLines || m_localeLinesRequired < m_maxLocaleLines);
+      if (ImGui::Button("OK")) {
+        m_localeConfirm = true;
+        int index{0};
+        std::vector<std::string> lines = splitString(m_localizationInput, '\n');
+        std::vector<std::string> choiceLines;
+        for (auto& cmd : m_event->page(m_selectedPage)->list()) {
+          if (cmd->code() == EventCode::Show_Choices) {
+            if (cmd->hasStringReference("{}", SearchType::Text)) {
+              m_choiceParsing = true;
+              std::shared_ptr<ShowChoiceCommand> choiceCmd = std::static_pointer_cast<ShowChoiceCommand>(cmd);
+              int showChoiceIndex{0};
+              for (auto& choiceStr : choiceCmd->choices) {
+                // choiceCmd->choices.at(setStringReference("{}", lines.at(index), SearchType::Text);
+                choiceCmd->choices.at(showChoiceIndex) = lines.at(index);
+                choiceLines.push_back(choiceStr);
+                showChoiceIndex++;
+                index++;
+              }
+            }
+          } else if (cmd->hasStringReference("{}", SearchType::Text)) {
+            cmd->setStringReference("{}", lines.at(index), SearchType::Text);
+            index++;
+          }
+
+          if (cmd->code() == EventCode::When_Selected) {
+            if (cmd->hasStringReference("{}", SearchType::Text)) {
+              cmd->setStringReference("", choiceLines.at(0), SearchType::Text);
+              choiceLines.erase(choiceLines.begin(), choiceLines.begin() + 1);
+            }
+          }
+        }
+        m_maxLocaleLines = 0;
+        m_localeLinesRequired = 0;
+        m_localizationInput.clear();
+        ImGui::CloseCurrentPopup();
+      }
+      ImGui::EndDisabled();
+      ImGui::SameLine();
+      if (ImGui::Button("Cancel")) {
+        m_localeConfirm = false;
+        m_localizationInput.clear();
+        ImGui::CloseCurrentPopup();
+      }
+      ImGui::EndGroup();
+    }
+    ImGui::EndPopup();
+  }
+}
 IEventEditor* IEventEditor::create(Event* ev) { return new EventEditor(ev); }

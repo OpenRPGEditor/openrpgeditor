@@ -731,7 +731,7 @@ void MainWindow::drawMenu() {
       if (ImGui::MenuItem(trNOOP("Editor Plugins..."), "F12")) {
         EditorPluginManager::instance()->setOpen(true);
       }
-      if (ImGui::MenuItem(trNOOP("LibLCF"), "", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
+      if (ImGui::MenuItem(trNOOP("LibLCF..."), "", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
         m_libLCF.open();
       }
 

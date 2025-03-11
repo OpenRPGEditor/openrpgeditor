@@ -18,12 +18,12 @@ public:
   void open() { m_isOpen = true; }
 
   std::shared_ptr<IEventCommand> Comment(std::string codeName, std::string text, int indent);
-  void attachToCommand(std::string text);
+  void attachToCommand(const std::string& text);
 
   void convertEvent(Event* event, const lcf::rpg::Event& ev);
   void convertPage(EventPage* page, const lcf::rpg::EventPage& evPage);
   void processJumpParameters(int32_t code, std::shared_ptr<IEventCommand>& list);
-  std::shared_ptr<IEventCommand> createCommand(int32_t code, int32_t indent, lcf::DBArray<int32_t> data, const std::string& string);
+  std::shared_ptr<IEventCommand> createCommand(int32_t code, int32_t indent, const lcf::DBArray<int32_t>& data, const std::string& string);
   void convertCommands(std::vector<std::shared_ptr<IEventCommand>>* r_cmds, const std::vector<lcf::rpg::EventCommand>& s_cmds);
   std::shared_ptr<IEventCommand> convertMovementCommand(lcf::rpg::MoveCommand moveCmd, int32_t indent);
   void convertPageConditions();
@@ -61,6 +61,7 @@ private:
   int selectedMapIndex = -1;
   int selectedEvent = -1;
   int selectedPage = -1;
+  int selectedCommon = -1;
 
   std::vector<std::string> m_lcfLogger;
   std::vector<std::string> m_commandLogger;

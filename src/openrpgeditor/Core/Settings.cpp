@@ -64,7 +64,6 @@ bool Settings::loadFromJson(const nlohmann::ordered_json& parser) {
 
   return false;
 }
-
 void Settings::serialize(const std::string_view path) {
   if (std::ofstream f(path.data()); f.is_open()) {
     f << serializeToJson().dump(4);

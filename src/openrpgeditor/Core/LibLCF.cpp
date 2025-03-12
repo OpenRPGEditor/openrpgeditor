@@ -36,6 +36,7 @@
 #include "Settings.hpp"
 #include "imgui.h"
 #include "lcf/reader_util.h"
+#include "nfd.h"
 
 void LibLCF::draw() {
   if (!m_isOpen) {
@@ -46,15 +47,21 @@ void LibLCF::draw() {
     m_firstOpen = false;
   }
   if (ImGui::Begin("LCF")) {
-    if (ImGui::Button("Load configured project")) {
-      std::string lcfPath = Settings::instance()->lcfProjectDirectory;
-      if (!lcfPath.empty()) {
-        lcf.setProject(lcfPath);
+    if (ImGui::Button("Select an RPG Maker 2000 project...")) {
+      nfdu8char_t* loc;
+      const auto result = NFD_PickFolder(&loc, Settings::instance()->lcfProjectDirectory.empty() ? Settings::instance()->lcfProjectDirectory.c_str()
+                                               : !Settings::instance()->lastDirectory.empty()    ? Settings::instance()->lastDirectory.c_str()
+                                                                                                 : nullptr);
+      if (result == NFD_OKAY) {
+        const std::filesystem::path path{loc};
+        lcf.setProject(path);
         lcf.loadProject();
         m_unresolvedError = lcf.mapper()->isUnresolved();
         selectedCommon = -1;
         selectedMapIndex = -1;
         selectedPage = -1;
+        Settings::instance()->lcfProjectDirectory = absolute(path).generic_string();
+        NFD_FreePathU8(loc);
       }
     }
     ImGui::SameLine();
@@ -1141,6 +1148,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
 
     for (auto& stepCmd : newCmd.route.list()) {
       MovementRouteStepCommand cmd;
+      cmd.setIndent(stepCmd->indent().value());
       cmd.step = stepCmd;
 
       newCmd.editNodes.push_back(std::make_shared<MovementRouteStepCommand>(cmd));
@@ -1970,7 +1978,7 @@ const std::string LibLCF::DecodeString(lcf::DBArray<int32_t>::const_iterator& it
   for (int i = 0; i < len; i++)
     out << (char)*it++;
 
-  std::string result = lcf::ReaderUtil::Recode(out.str(), "UTF-8");
+  std::string result = lcf::ReaderUtil::Recode(out.str(), "SJIS");
 
   return result;
 }

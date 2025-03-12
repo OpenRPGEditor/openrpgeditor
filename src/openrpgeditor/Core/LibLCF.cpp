@@ -49,9 +49,9 @@ void LibLCF::draw() {
   if (ImGui::Begin("LCF")) {
     if (ImGui::Button("Select an RPG Maker 2000 project...")) {
       nfdu8char_t* loc;
-      const auto result = NFD_PickFolder(&loc, Settings::instance()->lcfProjectDirectory.empty() ? Settings::instance()->lcfProjectDirectory.c_str()
-                                               : !Settings::instance()->lastDirectory.empty()    ? Settings::instance()->lastDirectory.c_str()
-                                                                                                 : nullptr);
+      const auto result = NFD_PickFolder(&loc, !Settings::instance()->lcfProjectDirectory.empty() ? Settings::instance()->lcfProjectDirectory.c_str()
+                                               : !Settings::instance()->lastDirectory.empty()     ? Settings::instance()->lastDirectory.c_str()
+                                                                                                  : nullptr);
       if (result == NFD_OKAY) {
         const std::filesystem::path path{loc};
         lcf.setProject(path);

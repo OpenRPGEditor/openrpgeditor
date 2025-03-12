@@ -25,7 +25,7 @@ struct ConditionalBranchCommand final : IEventCommand {
   [[nodiscard]] constexpr int partnerCount() const override { return 2; }
 
   [[nodiscard]] constexpr bool hasPartner() const override { return true; }
-  [[nodiscard]] virtual bool isParent() const { return true; }
+  [[nodiscard]] constexpr bool isParent() const override { return true; }
 
   bool hasReference(int targetId, SearchType searchType) override {
     if (searchType == SearchType::Variable) {

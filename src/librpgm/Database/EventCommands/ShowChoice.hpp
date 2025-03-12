@@ -24,7 +24,7 @@ struct ShowChoiceCommand final : IEventCommand {
   [[nodiscard]] constexpr int partnerCount() const override { return 1; }
 
   [[nodiscard]] constexpr bool hasPartner() const override { return true; }
-  [[nodiscard]] virtual bool isParent() const { return true; }
+  [[nodiscard]] constexpr bool isParent() const override { return true; }
 
   bool m_collapsed{false};
 

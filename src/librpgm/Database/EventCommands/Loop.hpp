@@ -11,6 +11,7 @@ struct LoopCommand final : IEventCommand {
   void setCollapsed(const bool collapsed) override { m_collapsed = collapsed; }
   [[nodiscard]] constexpr bool hasPartner() const override { return true; }
   [[nodiscard]] constexpr int partnerCount() const override { return 1; }
+  [[nodiscard]] virtual bool isParent() const { return true; }
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<LoopCommand>(*this); }
 
   [[nodiscard]] bool isPartner(const EventCode code, const std::optional<int>& codeIndent) override {

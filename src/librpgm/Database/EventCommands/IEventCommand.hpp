@@ -39,6 +39,7 @@ public:
   [[nodiscard]] virtual constexpr bool hasPartner() const { return false; }
   [[nodiscard]] virtual constexpr int partnerCount() const { return 0; }
   [[nodiscard]] virtual bool reverseSelection() const { return false; }
+  [[nodiscard]] virtual bool isParent() const { return false; }
   virtual void setReverseSelection(bool reverseSelection) {}
 
   std::optional<int> indent() const { return m_indent; }

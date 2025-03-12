@@ -53,6 +53,7 @@ private:
 
   bool m_unresolvedError{false};
   bool m_firstOpen{true};
+  bool m_textParsing{false};
 
   // For Message Options
   bool m_windowTransparent{false};
@@ -62,9 +63,11 @@ private:
   int selectedEvent = -1;
   int selectedPage = -1;
   int selectedCommon = -1;
+  int m_stringIndex{0};
 
   std::vector<std::string> m_lcfLogger;
   std::vector<std::string> m_commandLogger;
+  std::vector<std::string> stringBuilder;
 
   std::optional<VariableSwitchPicker> m_picker;
 

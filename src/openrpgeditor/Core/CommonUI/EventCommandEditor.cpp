@@ -326,10 +326,16 @@ void EventCommandEditor::draw() {
       ImGui::EndTable();
     }
     if (ImGui::IsKeyPressed((ImGuiKey_Delete)) && m_hasFocus) {
-      if (m_commands->at(m_selectedCommand)->code() != EventCode::Event_Dummy) {
-        int start = m_selectedCommand;
-        int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd;
-        m_commands->erase(m_commands->begin() + start, m_commands->begin() + end);
+      if (m_commands->at(m_selectedCommand)->isParent()) {
+        blockSelect(m_selectedCommand);
+        m_commands->erase(m_commands->begin() + m_selectedCommand, m_commands->begin() + m_selectedEnd + 1);
+        m_selectedEnd = -1;
+      } else {
+        if (m_commands->at(m_selectedCommand)->code() != EventCode::Event_Dummy) {
+          int start = m_selectedCommand;
+          int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd;
+          m_commands->erase(m_commands->begin() + start, m_commands->begin() + end);
+        }
       }
     }
     handleClipboardInteraction();

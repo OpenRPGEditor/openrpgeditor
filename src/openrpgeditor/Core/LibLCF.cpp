@@ -590,6 +590,10 @@ void LibLCF::draw() {
 
 std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t indent, const lcf::DBArray<int32_t>& data, const std::string& strData) {
 
+  if (m_textParsing && code != static_cast<int>(lcf::rpg::EventCommand::Code::ShowMessage_2)) {
+    m_stringIndex++;       // Increase the string index for the next ShowMessage code
+    m_textParsing = false; // Turn off text parsing into stringBuilder once ShowMessage_2 ends
+  }
   auto codeEnum = static_cast<lcf::rpg::EventCommand::Code>(code);
 
   std::vector<int> parameters;
@@ -700,6 +704,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ToggleFullscreen)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::OpenVideoOptions)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ShowMessage)) {
+    m_textParsing = true;
     ShowTextCommand newCmd;
     newCmd.setIndent(indent);
 
@@ -712,6 +717,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     nextText.setIndent(indent);
     // newCmd.addText(&nextText);
     newCmd.text.push_back(std::make_shared<NextTextCommand>(nextText));
+    stringBuilder.push_back(strData);
     return std::make_shared<ShowTextCommand>(newCmd);
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::MessageOptions)) {
@@ -739,6 +745,8 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     newCmd.choices.clear();
     for (auto& str : splitString(strData, '/')) {
       newCmd.choices.push_back("{}");
+      stringBuilder.push_back(str); // Push_back each choice string into string builder
+      m_stringIndex++;              // Advance the index for other commands
     }
 
     // parameters.at(1) =>
@@ -1380,7 +1388,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ConditionalBranch_B)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::TerminateBattle)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ShowMessage_2)) {
-    // Skip this
+    stringBuilder.at(m_stringIndex) += '\n' + strData;
     return nullptr;
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ShowChoiceOption)) {

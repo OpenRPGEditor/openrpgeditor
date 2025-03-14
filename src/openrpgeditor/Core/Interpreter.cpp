@@ -35,12 +35,12 @@ bool Interpreter::update() {
       if (!m_isSkip) {
         if (m_commands.at(m_index)->code() == EventCode::Show_Picture) {
           std::shared_ptr<ShowPictureCommand> cmd = std::dynamic_pointer_cast<ShowPictureCommand>(m_commands.at(m_index));
-          m_image.emplace(cmd->imageName, 2, false);
+          m_image.emplace(cmd->imageName, Image::Mode::Picture, false);
           m_keyFrame++;
         }
         if (m_commands.at(m_index)->code() == EventCode::Script) {
           std::shared_ptr<ScriptCommand> cmd = std::dynamic_pointer_cast<ScriptCommand>(m_commands.at(m_index));
-          m_image.emplace(findStringMatch(cmd->script), 2, false);
+          m_image.emplace(findStringMatch(cmd->script), Image::Mode::Picture, false);
           m_keyFrame++;
         }
         if (m_commands.at(m_index)->code() == EventCode::Wait) {
@@ -126,11 +126,11 @@ void Interpreter::setIndex(int index, int keyFrame) {
   m_keyFrame = keyFrame;
   if (m_commands.at(m_index)->code() == EventCode::Show_Picture) {
     std::shared_ptr<ShowPictureCommand> cmd = std::dynamic_pointer_cast<ShowPictureCommand>(m_commands.at(m_index));
-    m_image.emplace(cmd->imageName, 2, false);
+    m_image.emplace(cmd->imageName, Image::Mode::Picture, false);
   }
   if (m_commands.at(m_index)->code() == EventCode::Script) {
     std::shared_ptr<ScriptCommand> cmd = std::dynamic_pointer_cast<ScriptCommand>(m_commands.at(m_index));
-    m_image.emplace(findStringMatch(cmd->script), 2, false);
+    m_image.emplace(findStringMatch(cmd->script), Image::Mode::Picture, false);
   }
 }
 std::string Interpreter::findStringMatch(std::string text) {

@@ -2,33 +2,40 @@
 
 #include "Core/ResourceManager.hpp"
 
-Image::Image(const std::string_view imageName, const int pickType, const bool secondImage = false) {
+Image::Image(const std::string_view imageName, const Mode pickType, const bool secondImage = false) {
   if (imageName.empty()) {
     return;
   }
-  if (pickType == 0) {
+  switch (pickType) {
+  case Mode::Battleback:
     if (secondImage) {
       m_imageTexture = ResourceManager::instance()->loadBattlebacks2Image(imageName);
     } else {
       m_imageTexture = ResourceManager::instance()->loadBattlebacks1Image(imageName);
     }
-
-  } else if (pickType == 1) {
+    break;
+  case Mode::Parallax:
     m_imageTexture = ResourceManager::instance()->loadParallaxImage(imageName);
-  } else if (pickType == 2) {
+    break;
+  case Mode::Picture:
     m_imageTexture = ResourceManager::instance()->loadPictureImage(imageName);
-  } else if (pickType == 3) {
+    break;
+  case Mode::Title:
     if (secondImage) {
       m_imageTexture = ResourceManager::instance()->loadTitle2Image(imageName);
     } else {
       m_imageTexture = ResourceManager::instance()->loadTitle1Image(imageName);
     }
-  } else if (pickType == 4) {
+    break;
+  case Mode::Tileset:
     m_imageTexture = ResourceManager::instance()->loadTilesetImage(imageName);
-  } else if (pickType == 5) {
+    break;
+  case Mode::Animation:
     m_imageTexture = ResourceManager::instance()->loadAnimationImage(imageName);
-  } else if (pickType == 6) {
+    break;
+  case Mode::SVBattler:
     m_imageTexture = ResourceManager::instance()->loadSVActorImage(imageName);
+    break;
   }
   m_imageName = imageName;
 }

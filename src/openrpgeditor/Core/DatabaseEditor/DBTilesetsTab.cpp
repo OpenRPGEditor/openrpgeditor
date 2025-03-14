@@ -523,7 +523,7 @@ void DBTilesetsTab::drawA1() {
 
   // Constants and data
   std::vector<std::array<int, 4>> tileData;
-  m_image.emplace(m_selectedTileset->tilesetNames().at(0), static_cast<int>(ImagePicker::PickerMode::Tileset), false);
+  m_image.emplace(m_selectedTileset->tilesetNames().at(0), ImagePicker::PickerMode::Tileset, false);
   const int tilesetWidth = m_image->imageWidth();
   const int tilesetHeight = m_image->imageHeight();
   int tileIndex{TileHelper::TILE_ID_A1};
@@ -768,7 +768,7 @@ void DBTilesetsTab::drawA2() {
   if (m_selectedTileset->tilesetName(1) == "")
     return;
 
-  m_image.emplace(m_selectedTileset->tilesetNames().at(1), static_cast<int>(ImagePicker::PickerMode::Tileset), false);
+  m_image.emplace(m_selectedTileset->tilesetNames().at(1), ImagePicker::PickerMode::Tileset, false);
   const int tilesetWidth = m_image->imageWidth();
   const int tilesetHeight = m_image->imageHeight();
   int tileIndex{TileHelper::TILE_ID_A2};
@@ -823,7 +823,7 @@ void DBTilesetsTab::drawA3() {
   if (m_selectedTileset->tilesetName(2) == "")
     return;
 
-  m_image.emplace(m_selectedTileset->tilesetNames().at(2), static_cast<int>(ImagePicker::PickerMode::Tileset), false);
+  m_image.emplace(m_selectedTileset->tilesetNames().at(2), ImagePicker::PickerMode::Tileset, false);
 
   int xTile{0};
   int yTile{6};
@@ -876,7 +876,7 @@ void DBTilesetsTab::drawA4() {
   if (m_selectedTileset->tilesetName(3) == "")
     return;
 
-  m_image.emplace(m_selectedTileset->tilesetNames().at(3), static_cast<int>(ImagePicker::PickerMode::Tileset), false);
+  m_image.emplace(m_selectedTileset->tilesetNames().at(3), ImagePicker::PickerMode::Tileset, false);
   int xTile{0};
   int yTile{10};
   const int tilesetWidth = m_image->imageWidth();
@@ -935,7 +935,7 @@ void DBTilesetsTab::drawA5() {
   if (m_selectedTileset->tilesetName(4) == "")
     return;
 
-  m_image.emplace(m_selectedTileset->tilesetNames().at(4), static_cast<int>(ImagePicker::PickerMode::Tileset), false);
+  m_image.emplace(m_selectedTileset->tilesetNames().at(4), ImagePicker::PickerMode::Tileset, false);
   int xTile{0};
   int yTile{16};
   const int tilesetWidth = m_image->imageWidth();
@@ -991,7 +991,7 @@ void DBTilesetsTab::drawTileset(int type) {
   if (m_selectedTileset->tilesetName(type) == "")
     return;
 
-  m_image.emplace(m_selectedTileset->tilesetNames().at(type), static_cast<int>(ImagePicker::PickerMode::Tileset), false);
+  m_image.emplace(m_selectedTileset->tilesetNames().at(type), ImagePicker::PickerMode::Tileset, false);
   m_tileMarker.emplace(TileFlags::None, 1, 256, 320);
   const int tilesetWidth = m_image->imageWidth();
   const int tilesetHeight = m_image->imageHeight();

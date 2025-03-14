@@ -97,7 +97,7 @@ std::tuple<bool, bool> ImagePicker::draw() {
             ImGui::TableNextColumn();
             if (ImGui::Selectable(sheet.c_str(), m_selectedImage == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
               m_selectedImage = i;
-              m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), static_cast<int>(m_pickType), false);
+              m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), m_pickType, false);
               if (ImGui::IsItemHovered()) {
                 ImGui::SetTooltip("%s", sheet.c_str());
               }
@@ -125,7 +125,7 @@ std::tuple<bool, bool> ImagePicker::draw() {
                 ImGui::TableNextColumn();
                 if (ImGui::Selectable(sheet2.c_str(), m_selectedImage2 == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
                   m_selectedImage2 = i;
-                  m_image2.emplace(m_selectedImage2 == -1 ? "" : m_images_2.at(m_selectedImage2), static_cast<int>(m_pickType), true);
+                  m_image2.emplace(m_selectedImage2 == -1 ? "" : m_images_2.at(m_selectedImage2), m_pickType, true);
                   if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("%s", sheet2.c_str());
                   }
@@ -141,10 +141,10 @@ std::tuple<bool, bool> ImagePicker::draw() {
         ImGui::BeginChild("##image_picker_image_panel", ImVec2{894, 784}, ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
         {
           if (!m_image && m_selectedImage != -1) {
-            m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), static_cast<int>(m_pickType), false);
+            m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), m_pickType, false);
           }
           if (!m_image2 && m_selectedImage2 != -1) {
-            m_image2.emplace(m_selectedImage2 == -1 ? "" : m_images.at(m_selectedImage2), static_cast<int>(m_pickType), false);
+            m_image2.emplace(m_selectedImage2 == -1 ? "" : m_images.at(m_selectedImage2), m_pickType, false);
           }
 
           auto win = ImGui::GetCurrentWindow();

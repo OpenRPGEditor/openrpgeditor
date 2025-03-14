@@ -57,7 +57,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
 
         ImGui::Text("Face:");
         auto cursorPos = ImGui::GetCursorPos();
-        if (ImGui::ImageButton("##svbattler_image", static_cast<ImTextureID>(m_buttonBack), ImVec2{80.f, 102.f})) {
+        if (ImGui::ImageButton("##face_image", static_cast<ImTextureID>(m_buttonBack), ImVec2{80.f, 102.f})) {
           m_image_selection = 0;
           m_characterPicker.setCharacterInfo(m_charPicture, m_actor);
           m_characterPicker.setOpen(true);
@@ -89,8 +89,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
 
           const auto [min, max] = m_characterSheet->getRectForCharacter(m_charIndex);
 
-          ImGui::Image(m_characterSheet->texture(),
-                       ImVec2{static_cast<float>(m_characterSheet->characterWidth()), static_cast<float>(m_characterSheet->characterHeight())}, min, max);
+          ImGui::Image(m_characterSheet->texture(), ImVec2{static_cast<float>(m_characterSheet->characterWidth()), static_cast<float>(m_characterSheet->characterHeight())}, min, max);
         }
       }
       ImGui::EndGroup();
@@ -113,6 +112,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
       }
       ImGui::EndGroup();
     }
+    ImGui::EndGroup();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.f);
     ImGui::BeginGroup();
     {
@@ -132,8 +132,8 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
         ImGui::CloseCurrentPopup();
         setOpen(false);
       }
-      ImGui::EndGroup();
     }
+    ImGui::EndGroup();
     ImGui::EndPopup();
   }
 

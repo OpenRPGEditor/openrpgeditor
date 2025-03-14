@@ -170,6 +170,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
         ImGui::EndCombo();
       }
     }
+    ImGui::EndGroup();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 20);
     if (ImGui::Button("OK")) {
       m_confirmed = true;

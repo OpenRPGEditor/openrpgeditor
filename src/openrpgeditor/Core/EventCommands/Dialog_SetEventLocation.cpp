@@ -60,6 +60,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
     if (ImGui::Button(m_mode == 0 ? std::format("Current Map ({}, {})", m_x, m_y).c_str() : "", ImVec2{300, 0})) {
       // TODO: Coordinate selector
     }
+    ImGui::PopID();
     ImGui::EndDisabled();
 
     ImGui::RadioButton("Designation with variables", &m_mode, 1);
@@ -90,9 +91,10 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
         picker->setOpen(true);
       }
       ImGui::PopID();
-      ImGui::EndDisabled();
-      ImGui::EndGroup();
+      // FIXME: What's the intent here?
+      // ImGui::EndDisabled();
     }
+    ImGui::EndGroup();
 
     ImGui::RadioButton("Exchange with another event", &m_mode, 2);
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);

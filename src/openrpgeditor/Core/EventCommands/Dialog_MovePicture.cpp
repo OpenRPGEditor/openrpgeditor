@@ -167,6 +167,7 @@ std::tuple<bool, bool> Dialog_MovePicture::draw() {
         ImGui::EndCombo();
       }
     }
+    ImGui::EndGroup();
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 80);
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 100);
     if (ImGui::Button("OK")) {

@@ -27,6 +27,10 @@ std::tuple<bool, bool> Dialog_ChangeParallax::draw() {
     ImGui::Text("Image:");
     ImGui::PushID("#parallax_image_selection");
     if (ImGui::Button(m_image.c_str(), ImVec2{300, 0})) {
+      if (!m_imagePicker) {
+        m_imagePicker.emplace(ImagePicker::PickerMode::Parallax, m_image);
+      }
+      m_imagePicker->setImageInfo(m_image);
       m_imagePicker->setOpen(true);
     }
     ImGui::PopID();

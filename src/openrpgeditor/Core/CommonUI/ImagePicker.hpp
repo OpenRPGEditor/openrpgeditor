@@ -19,7 +19,7 @@ struct ImagePicker : IDialogController {
     APP_INFO(std::to_string(m_selectedImage2));
     return m_selectedImage2 >= 0 ? m_images_2[m_selectedImage2] : "";
   }
-  void setImageInfo(std::string_view imageName, std::string_view image2Name);
+  void setImageInfo(std::string_view imageName, std::string_view image2Name = {});
 
 private:
   std::optional<Image> m_image;

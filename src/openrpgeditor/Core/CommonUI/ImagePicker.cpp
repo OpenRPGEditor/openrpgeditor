@@ -28,6 +28,9 @@ ImagePicker::ImagePicker(PickerMode mode, const std::string_view imageName, cons
   case PickerMode::Animation:
     m_images = ResourceManager::instance()->getDirectoryContents("img/animations/", ".png");
     break;
+  case PickerMode::SVBattler:
+    m_images = ResourceManager::instance()->getDirectoryContents("img/sv_actors/", ".png");
+    break;
   }
   setImageInfo(imageName, image2Name);
 }

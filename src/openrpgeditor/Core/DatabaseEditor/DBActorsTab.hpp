@@ -55,6 +55,8 @@ private:
   std::optional<SideViewBattlerSheet> m_battlerSheet;
   std::optional<CheckeredCompositeTexture> m_faceButton;
   std::optional<CheckeredCompositeTexture> m_actorButton;
+  std::optional<CharacterPicker> m_actorPicker;
   std::optional<CheckeredCompositeTexture> m_battlerButton;
+  std::optional<ImagePicker> m_battlerPicker;
   TraitsEditor m_traitsEditor;
 };

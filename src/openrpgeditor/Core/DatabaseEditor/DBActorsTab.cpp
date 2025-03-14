@@ -17,10 +17,16 @@ DBActorsTab::DBActorsTab(Actors& actors, DatabaseEditor* parent) : IDBEditorTab(
 }
 
 void DBActorsTab::draw() {
-  if (m_selectedActor != nullptr && !m_characterSheet && !m_battlerSheet && !m_faceSheet) {
-    m_faceSheet.emplace(m_selectedActor->faceName());
-    m_characterSheet.emplace(m_selectedActor->characterName());
-    m_battlerSheet.emplace(m_selectedActor->battlerName());
+  if (m_selectedActor != nullptr) {
+    if (!m_faceSheet) {
+      m_faceSheet.emplace(m_selectedActor->faceName());
+    }
+    if (!m_characterSheet) {
+      m_characterSheet.emplace(m_selectedActor->characterName());
+    }
+    if (!m_battlerSheet) {
+      m_battlerSheet.emplace(m_selectedActor->battlerName());
+    }
   }
 
   if (!m_faceButton) {
@@ -191,7 +197,9 @@ void DBActorsTab::draw() {
             {
               ImGui::Text("Face:");
               if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_actors_face_image"), m_faceButton->get(), ImVec2{m_faceButton->size()}, {0.f, 0.f}, {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f},
-                                       ImGuiButtonFlags_PressedOnDoubleClick)) {}
+                                       ImGuiButtonFlags_PressedOnDoubleClick)) {
+                // TODO: Implement face picker
+              }
             }
             ImGui::EndGroup();
             ImGui::SameLine();
@@ -199,7 +207,13 @@ void DBActorsTab::draw() {
             {
               ImGui::Text("Character:");
               if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_actors_character_image"), m_actorButton->get(), ImVec2{m_actorButton->size()}, {0.f, 0.f}, {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f},
-                                       ImGuiButtonFlags_PressedOnDoubleClick)) {}
+                                       ImGuiButtonFlags_PressedOnDoubleClick)) {
+                if (!m_actorPicker) {
+                  m_actorPicker.emplace(CharacterPicker::PickerMode::Character);
+                }
+                m_actorPicker->setCharacterInfo(m_selectedActor->characterName(), m_selectedActor->characterIndex());
+                m_actorPicker->setOpen(true);
+              }
             }
             ImGui::EndGroup();
             ImGui::SameLine();
@@ -207,7 +221,13 @@ void DBActorsTab::draw() {
             {
               ImGui::Text("[SV] Battler:");
               if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_actors_battler_image"), m_battlerButton->get(), ImVec2{m_battlerButton->size()}, {0.f, 0.f}, {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f},
-                                       ImGuiButtonFlags_PressedOnDoubleClick)) {}
+                                       ImGuiButtonFlags_PressedOnDoubleClick)) {
+                if (!m_battlerPicker) {
+                  m_battlerPicker.emplace(ImagePicker::PickerMode::SVBattler, m_selectedActor->battlerName());
+                }
+                m_battlerPicker->setImageInfo(m_selectedActor->battlerName());
+                m_battlerPicker->setOpen(true);
+              }
             }
             ImGui::EndGroup();
           }
@@ -330,6 +350,29 @@ void DBActorsTab::draw() {
           m_showEquipEdit = false;
         }
         ImGui::End();
+      }
+    }
+  }
+
+  if (m_actorPicker) {
+    if (const auto& [closed, confirmed] = m_actorPicker->draw(); closed) {
+      if (confirmed) {
+        m_selectedActor->setCharacterName(m_actorPicker->selectedSheet());
+        m_selectedActor->setCharacterIndex(m_actorPicker->character());
+        m_actorButton.reset();
+        m_characterSheet.reset();
+        m_actorPicker->accept();
+      }
+    }
+  }
+
+  if (m_battlerPicker) {
+    if (const auto& [closed, confirmed] = m_battlerPicker->draw(); closed) {
+      if (confirmed) {
+        m_selectedActor->setBattlerName(m_battlerPicker->selectedImage());
+        m_battlerButton.reset();
+        m_battlerSheet.reset();
+        m_battlerPicker->accept();
       }
     }
   }

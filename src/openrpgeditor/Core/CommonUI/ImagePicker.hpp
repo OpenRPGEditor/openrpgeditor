@@ -10,7 +10,15 @@
 
 struct Image;
 struct ImagePicker : IDialogController {
-  enum class PickerMode { Battleback, Parallax, Picture, Title, Tileset, Animation };
+  enum class PickerMode {
+    Battleback,
+    Parallax,
+    Picture,
+    Title,
+    Tileset,
+    Animation,
+    SVBattler,
+  };
 
   explicit ImagePicker(PickerMode mode, std::string_view imageName = {}, std::string_view image2Name = {});
   std::tuple<bool, bool> draw() override;

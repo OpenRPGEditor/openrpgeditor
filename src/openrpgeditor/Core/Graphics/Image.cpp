@@ -27,6 +27,8 @@ Image::Image(const std::string_view imageName, const int pickType, const bool se
     m_imageTexture = ResourceManager::instance()->loadTilesetImage(imageName);
   } else if (pickType == 5) {
     m_imageTexture = ResourceManager::instance()->loadAnimationImage(imageName);
+  } else if (pickType == 6) {
+    m_imageTexture = ResourceManager::instance()->loadSVActorImage(imageName);
   }
   m_imageName = imageName;
 }

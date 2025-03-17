@@ -119,6 +119,7 @@ bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
   m_database->gameConstantsLoaded().connect<&MainWindow::onGameConstantsLoaded>(this);
   m_database->templatesLoaded().connect<&MainWindow::onTemplatesLoaded>(this);
   m_database->docsLoaded().connect<&MainWindow::onDocsLoaded>(this);
+  m_database->localesLoaded().connect<&MainWindow::onLocalesLoaded>(this);
   m_database->load();
   return true;
 }
@@ -931,6 +932,7 @@ void MainWindow::onSystemLoaded() { m_databaseEditor->setSystem(m_database->syst
 void MainWindow::onGameConstantsLoaded() { m_databaseEditor->setGameConstants(m_database->gameConstants); }
 void MainWindow::onTemplatesLoaded() { m_databaseEditor->setTemplates(m_database->templates); }
 void MainWindow::onDocsLoaded() { m_databaseEditor->setDocs(m_database->docs); }
+void MainWindow::onLocalesLoaded() { m_databaseEditor->setLocales(m_database->locales); }
 
 void MainWindow::onDatabaseReady() {
   MapInfo* info = m_database->mapInfos.map(0);

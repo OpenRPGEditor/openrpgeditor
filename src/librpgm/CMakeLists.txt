@@ -155,6 +155,8 @@ add_library(
         Database/Doc.hpp
         Database/SearchResult.cpp
         Database/SearchResult.hpp
+        Database/Locales.cpp
+        Database/Locales.hpp
 )
 
 target_include_directories(

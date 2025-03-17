@@ -166,6 +166,7 @@ private:
   void onGameConstantsLoaded();
   void onTemplatesLoaded();
   void onDocsLoaded();
+  void onLocalesLoaded();
   void onDatabaseReady();
 
   void drawMenu();

@@ -180,7 +180,7 @@ void EventEditor::drawLocalization() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{750, 650}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal("Localization", NULL, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
+  if (ImGui::BeginPopupModal("Localization", NULL, ImGuiWindowFlags_NoScrollbar)) {
     ImGui::TextUnformatted(m_maxLocaleLines == 0 ? trNOOP("No text found") : std::format("{} / {} keys required", m_localeLinesRequired, m_maxLocaleLines).c_str());
     if (ImGui::InputTextMultiline("##orpg_eventeditor_localization_multiline", &m_localizationInput,
                                   ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y * 5}))
@@ -200,8 +200,27 @@ void EventEditor::drawLocalization() {
       if (ImGui::Button("OK")) {
         m_localeConfirm = true;
         int index{0};
+
+        int mapId = Database::instance()->mapInfos.currentMap()->id();
+        int eventId = id();
+        int pageId = m_selectedPage + 1;
+
+        Database::instance()->locales.loadMap(Database::instance()->basePath + std::format("locales/en/Map0{:03}.json", mapId));
+
         std::vector<std::string> lines = splitString(m_localizationInput, '\n');
         std::vector<std::string> choiceLines;
+
+        int localeIndex{1};
+        for (auto& line : lines) {
+          for (int i = 0; i < Database::instance()->locales.locales.size(); i++) {
+            if (Database::instance()->locales.locales.at(i).first == line) {
+              line = std::format("Map{}-EV{}-Page{}-{}", mapId, eventId, pageId, localeIndex);
+              Database::instance()->locales.locales.at(i).first = line;
+              localeIndex++;
+            }
+          }
+        }
+
         for (auto& cmd : m_event->page(m_selectedPage)->list()) {
           if (cmd->code() == EventCode::Show_Choices) {
             if (cmd->hasStringReference("{}", SearchType::Text)) {
@@ -215,7 +234,7 @@ void EventEditor::drawLocalization() {
                 // choiceCmd->choices.at(setStringReference("{}", lines.at(index), SearchType::Text);
                 choiceCmd->choices.at(showChoiceIndex) = trim(lines.at(index));
                 if (m_choiceParsing) {
-                  choiceLines.insert(choiceLines.begin() + showChoiceIndex, choiceStr);
+                  choiceLines.insert(choiceLines.begin() + showChoiceIndex, "{" + choiceStr + "}");
                 } else {
                   choiceLines.push_back(choiceStr);
                 }
@@ -225,13 +244,13 @@ void EventEditor::drawLocalization() {
             }
           } else if (cmd->code() == EventCode::Show_Text) {
             if (cmd->hasStringReference("{}", SearchType::Text)) {
-              cmd->setStringReference("{}", trim(lines.at(index)), SearchType::Text);
+              cmd->setStringReference("{}", "{" + trim(lines.at(index)) + "}", SearchType::Text);
               index++;
             }
           }
           if (cmd->code() == EventCode::When_Selected) {
             if (cmd->hasStringReference("{}", SearchType::Text)) {
-              cmd->setStringReference("", choiceLines.at(0), SearchType::Text);
+              cmd->setStringReference("", "{" + choiceLines.at(0) + "}", SearchType::Text);
               choiceLines.erase(choiceLines.begin(), choiceLines.begin() + 1);
             }
           }
@@ -242,6 +261,8 @@ void EventEditor::drawLocalization() {
         m_choiceParsing = false;
         m_maxLocaleLines = 0;
         m_localeLinesRequired = 0;
+
+        Database::instance()->locales.saveCurrentLocale();
         m_localizationInput.clear();
         ImGui::CloseCurrentPopup();
       }

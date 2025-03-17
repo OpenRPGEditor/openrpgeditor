@@ -80,6 +80,8 @@ void LibLCF::draw() {
       if (ImGui::Button("Convert Selected Map")) {
         // LibLCF => Map
         if (m_parent->currentMap() != nullptr) {
+          Database::instance()->locales.loadMap(Database::instance()->basePath + std::format("locales/en/Map0{:03}.json", m_parent->currentMapInfo()->id()));
+          m_convertMap = m_parent->currentMapInfo()->id();
           for (auto& ev : map->events) {
             convertEvent(m_parent->currentMap()->createNewEvent(), ev);
           }
@@ -590,10 +592,12 @@ void LibLCF::draw() {
 
 std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t indent, const lcf::DBArray<int32_t>& data, const std::string& strData) {
 
-  if (m_textParsing && code != static_cast<int>(lcf::rpg::EventCommand::Code::ShowMessage_2)) {
-    m_stringIndex++;       // Increase the string index for the next ShowMessage code
-    m_textParsing = false; // Turn off text parsing into stringBuilder once ShowMessage_2 ends
-  }
+  // if (m_textParsing && code != static_cast<int>(lcf::rpg::EventCommand::Code::ShowMessage_2)) {
+  //   stringBuilder.at(m_stringIndex) += '\n';
+  //   m_stringIndex++;       // Increase the string index for the next ShowMessage code
+  //   m_textParsing = false; // Turn off text parsing into stringBuilder once ShowMessage_2 ends
+  //   // lcf.mapper()->localeValue(stringBuilder.at(m_stringIndex - 1), m_convertMap, m_convertEventId, m_convertPage);
+  // }
   auto codeEnum = static_cast<lcf::rpg::EventCommand::Code>(code);
 
   std::vector<int> parameters;
@@ -715,7 +719,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     NextTextCommand nextText;
     nextText.text = "{}";
     nextText.setIndent(indent);
-    // newCmd.addText(&nextText);
+    //// newCmd.addText(&nextText);
     newCmd.text.push_back(std::make_shared<NextTextCommand>(nextText));
     stringBuilder.push_back(strData);
     return std::make_shared<ShowTextCommand>(newCmd);
@@ -744,9 +748,11 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
 
     newCmd.choices.clear();
     for (auto& str : splitString(strData, '/')) {
-      newCmd.choices.push_back("{}");
-      stringBuilder.push_back(str); // Push_back each choice string into string builder
-      m_stringIndex++;              // Advance the index for other commands
+      newCmd.choices.push_back(lcf.mapper()->localeValue(str + '\n', m_convertMap, m_convertEventId, m_convertPage + 1, m_commandIndex));
+      m_commandIndex++;
+      // stringBuilder.push_back(str); // Push_back each choice string into string builder
+
+      // m_stringIndex++;              // Advance the index for other commands
     }
 
     // parameters.at(1) =>
@@ -1388,14 +1394,14 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ConditionalBranch_B)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::TerminateBattle)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ShowMessage_2)) {
-    stringBuilder.at(m_stringIndex) += '\n' + strData;
+    stringBuilder.back() += '\n' + strData;
     return nullptr;
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ShowChoiceOption)) {
     WhenSelectedCommand newCmd;
     newCmd.setIndent(indent);
 
-    newCmd.choice = "{}";
+    newCmd.choice = lcf.mapper()->localeValue(strData + '\n', -1, -1, -1, -1);
     newCmd.param1 = parameters.at(0);
     return std::make_shared<WhenSelectedCommand>(newCmd);
   }
@@ -1487,6 +1493,7 @@ void LibLCF::attachToCommand(const std::string& text) {
 }
 void LibLCF::convertEvent(Event* event, const lcf::rpg::Event& ev) {
   // event->setName(ev.name.data()); Name field, not entirely needed
+  m_convertEventId = event->id();
   event->setX(ev.x);
   event->setY(ev.y);
 
@@ -1494,7 +1501,9 @@ void LibLCF::convertEvent(Event* event, const lcf::rpg::Event& ev) {
     if (event->pages().size() - 1 < i) {
       event->pages().emplace_back();
     }
+    m_convertPage = i;
     convertPage(event->page(i), ev.pages[i]);
+    m_textParsing = false;
   }
 }
 void LibLCF::convertPage(EventPage* page, const lcf::rpg::EventPage& evPage) {
@@ -1641,10 +1650,19 @@ void LibLCF::processJumpParameters(int32_t code, std::shared_ptr<IEventCommand>&
   jumpCmd->y = 99; // Unrecognized commands
 }
 void LibLCF::convertCommands(std::vector<std::shared_ptr<IEventCommand>>* r_cmds, const std::vector<lcf::rpg::EventCommand>& s_cmds) {
+  m_commandIndex = 1;
   for (auto& cmd : s_cmds) {
+    if (m_textParsing && cmd.code != static_cast<int>(lcf::rpg::EventCommand::Code::ShowMessage_2)) {
+      stringBuilder.at(m_stringIndex) += '\n';
+      m_stringIndex++;       // Increase the string index for the next ShowMessage code
+      m_textParsing = false; // Turn off text parsing into stringBuilder once ShowMessage_2 ends
 
+      auto it = r_cmds->end() - 2;
+      std::shared_ptr<ShowTextCommand> textCmd = std::static_pointer_cast<ShowTextCommand>(*it);
+      textCmd->text.back()->text = lcf.mapper()->localeValue(stringBuilder.at(m_stringIndex - 1), m_convertMap, m_convertEventId, m_convertPage + 1, m_commandIndex);
+      m_commandIndex++;
+    }
     std::shared_ptr<IEventCommand> newCmd = createCommand(cmd.code, cmd.indent, cmd.parameters, ToString(cmd.string));
-
     if (newCmd == nullptr) {
       continue; // Skip commands if null
     }

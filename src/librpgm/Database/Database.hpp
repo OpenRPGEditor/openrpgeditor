@@ -19,6 +19,7 @@
 #include "Database/Tilesets.hpp"
 #include "Database/Troops.hpp"
 #include "Database/Weapons.hpp"
+#include "Locales.hpp"
 #include "Utils/SignalSlot.hpp"
 
 #include <string_view>
@@ -51,6 +52,7 @@ struct Database {
   MapInfos mapInfos{};
   GameConstants gameConstants{};
   Templates templates{};
+  Locales locales{};
   Docs docs{};
   std::string projectVersion; // As stored in the .rpgproject file
   std::string projectFilePath;
@@ -415,6 +417,7 @@ struct Database {
   rpgmutils::signal<void()>& gameConstantsLoaded() { return m_gameConstantsLoaded; }
   rpgmutils::signal<void()>& templatesLoaded() { return m_templatesLoaded; }
   rpgmutils::signal<void()>& docsLoaded() { return m_docsLoaded; }
+  rpgmutils::signal<void()>& localesLoaded() { return m_localesLoaded; }
 
 private:
   rpgmutils::signal<void()> m_actorsLoaded;
@@ -435,5 +438,6 @@ private:
   rpgmutils::signal<void()> m_gameConstantsLoaded;
   rpgmutils::signal<void()> m_templatesLoaded;
   rpgmutils::signal<void()> m_docsLoaded;
+  rpgmutils::signal<void()> m_localesLoaded;
   static Database* m_instance;
 };

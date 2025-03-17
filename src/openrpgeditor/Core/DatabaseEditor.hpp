@@ -21,6 +21,7 @@
 #include "Core/Graphics/IconSheet.hpp"
 
 #include "Database/Class.hpp"
+#include "DatabaseEditor/DBLocaleTab.hpp"
 #include "DatabaseEditor/DBMappingsTab.hpp"
 
 struct MainWindow;
@@ -57,10 +58,11 @@ public:
   void setGameConstants(GameConstants& gameConstants) { m_gameConstants.emplace(gameConstants, this); }
   void setTemplates(Templates& templates) { m_templates.emplace(templates, this); }
   void setDocs(Docs& docs) { m_docs.emplace(docs, this); }
+  void setLocales(Locales& locales) { m_locales.emplace(locales, this); }
 
   bool isReady() const {
     return m_actors && m_classes && m_skills && m_items && m_weapons && m_armors && m_enemies && m_troops && m_states && m_animations && m_tilesets && m_commonEvents && m_system && m_terms &&
-           m_types && m_gameConstants && m_templates && m_docs && m_mappings;
+           m_types && m_gameConstants && m_templates && m_docs && m_mappings && m_locales;
   }
   const IconSheet* getIconSheet();
 
@@ -93,6 +95,7 @@ private:
   std::optional<DBGameConstantsTab> m_gameConstants;
   std::optional<DBTemplatesTab> m_templates;
   std::optional<DBDocTab> m_docs;
+  std::optional<DBLocaleTab> m_locales;
   std::optional<DBMappingsTab> m_mappings;
   std::optional<IconSheet> m_iconSheet;
 

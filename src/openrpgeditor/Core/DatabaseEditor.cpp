@@ -116,6 +116,9 @@ void DatabaseEditor::draw() {
     if (ImGui::SelectableWithBorder(trNOOP("Documentation"), m_currentTab == &m_docs.value())) {
       m_currentTab = &m_docs.value();
     }
+    if (ImGui::SelectableWithBorder(trNOOP("Localization"), m_currentTab == &m_locales.value())) {
+      m_currentTab = &m_locales.value();
+    }
     ImGui::EndChild();
     ImGui::SameLine();
     if (m_currentTab) {

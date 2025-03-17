@@ -65,6 +65,11 @@ private:
   int selectedCommon = -1;
   int m_stringIndex{0};
 
+  int m_convertMap;
+  int m_convertEventId;
+  int m_convertPage;
+  int m_commandIndex;
+
   std::vector<std::string> m_lcfLogger;
   std::vector<std::string> m_commandLogger;
   std::vector<std::string> stringBuilder;

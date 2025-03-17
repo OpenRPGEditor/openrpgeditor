@@ -106,6 +106,11 @@ void Database::load() {
     commonEventsLoaded().fire();
     RPGM_INFO("CommonEvent definitions loaded");
   });
+  RPGM_INFO("Queue Map001 localization file...");
+  locales = Locales();
+  locales.loadMap(basePath + "locales/en/Map0001.json");
+  localesLoaded().fire();
+
   mapInfos = MapInfos::load(basePath + "/data/MapInfos.json");
   mapInfos.loadAllMaps();
   mapInfos.buildTree(true);

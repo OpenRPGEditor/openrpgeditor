@@ -25,18 +25,25 @@ public:
   void addEmptySound(std::string name);
   void addEmptyImage(std::string name);
 
+  std::string replaceText(std::string text);
+  bool checkAllCharacters(std::string text1, std::string text2);
+
   int switchValue(int key);
   int variableValue(int key);
   int commonEventValue(int key);
   int actorValue(int key);
   int stateValue(int key);
 
+  std::string localeValue(std::string text, int mapId, int evId, int page, int command);
   std::string soundValue(std::string key);
   std::string imageValue(std::string key);
 
   bool hasUnresolvedPairs();
   bool isUnresolved();
   void loadDatabase(const lcf::rpg::Database* database);
+  std::string removeSurrogators(std::string text);
+  std::string checkParenthesis(std::string text);
+  int findTextMatch(std::string text);
 
   std::map<int, int> switch_mapping;
   std::map<int, int> variable_mapping;
@@ -45,6 +52,9 @@ public:
   std::map<int, int> state_mapping;
   std::map<std::string, std::string> image_mapping;
   std::map<std::string, std::string> sound_mapping;
+
+  std::map<std::string, std::string> dialogue_errors;
+  int keyCount{0};
 
 private:
   bool m_hasUnresolved{false};

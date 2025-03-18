@@ -98,7 +98,7 @@ std::tuple<bool, bool> EventEditor::draw() {
     }
     ImGui::EndGroup();
     ImGui::BeginGroup();
-    if (ImGui::BeginTabBar("##orpg_event_editor_page", ImGuiTabBarFlags_Reorderable)) {
+    if (ImGui::BeginTabBar("##orpg_event_editor_page", ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_TabListPopupButton | ImGuiTabBarFlags_FittingPolicyScroll)) {
       int erasedIdx = 0;
       bool erased = false;
       for (int i = 0; i < m_event->pageCount(); ++i) {

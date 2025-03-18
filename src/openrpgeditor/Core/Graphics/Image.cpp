@@ -36,6 +36,9 @@ Image::Image(const std::string_view imageName, const Mode pickType, const bool s
   case Mode::SVBattler:
     m_imageTexture = ResourceManager::instance()->loadSVActorImage(imageName);
     break;
+  case Mode::Window:
+    m_imageTexture = ResourceManager::instance()->loadSystemImage("Window.png");
+    break;
   }
   m_imageName = imageName;
 }

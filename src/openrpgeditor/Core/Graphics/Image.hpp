@@ -12,6 +12,7 @@ struct Image {
     Tileset,
     Animation,
     SVBattler,
+    Window,
   };
 
   Image() = delete;

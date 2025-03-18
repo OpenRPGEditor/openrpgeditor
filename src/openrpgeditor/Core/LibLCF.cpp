@@ -590,7 +590,7 @@ void LibLCF::draw() {
   ImGui::End();
 }
 
-std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t indent, const lcf::DBArray<int32_t>& data, const std::string& strData) {
+std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t indent, const lcf::DBArray<int32_t>& data, std::string& strData) {
 
   // if (m_textParsing && code != static_cast<int>(lcf::rpg::EventCommand::Code::ShowMessage_2)) {
   //   stringBuilder.at(m_stringIndex) += '\n';
@@ -748,7 +748,8 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
 
     newCmd.choices.clear();
     for (auto& str : splitString(strData, '/')) {
-      newCmd.choices.push_back(lcf.mapper()->localeValue(str + '\n', m_convertMap, m_convertEventId, m_convertPage + 1, m_commandIndex));
+      str += '\n';
+      newCmd.choices.push_back(lcf.mapper()->localeValue(str, m_convertMap, m_convertEventId, m_convertPage + 1, m_commandIndex));
       m_commandIndex++;
       // stringBuilder.push_back(str); // Push_back each choice string into string builder
 
@@ -1401,7 +1402,8 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     WhenSelectedCommand newCmd;
     newCmd.setIndent(indent);
 
-    newCmd.choice = lcf.mapper()->localeValue(strData + '\n', -1, -1, -1, -1);
+    strData += '\n';
+    newCmd.choice = lcf.mapper()->localeValue(strData, -1, -1, -1, -1);
     newCmd.param1 = parameters.at(0);
     return std::make_shared<WhenSelectedCommand>(newCmd);
   }
@@ -1662,7 +1664,8 @@ void LibLCF::convertCommands(std::vector<std::shared_ptr<IEventCommand>>* r_cmds
       textCmd->text.back()->text = lcf.mapper()->localeValue(stringBuilder.at(m_stringIndex - 1), m_convertMap, m_convertEventId, m_convertPage + 1, m_commandIndex);
       m_commandIndex++;
     }
-    std::shared_ptr<IEventCommand> newCmd = createCommand(cmd.code, cmd.indent, cmd.parameters, ToString(cmd.string));
+    std::string str = ToString(cmd.string);
+    std::shared_ptr<IEventCommand> newCmd = createCommand(cmd.code, cmd.indent, cmd.parameters, str);
     if (newCmd == nullptr) {
       continue; // Skip commands if null
     }

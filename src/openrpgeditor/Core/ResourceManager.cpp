@@ -164,3 +164,14 @@ std::vector<std::string> ResourceManager::getDirectoryContents(const std::string
   }
   return fileNames;
 }
+std::vector<std::string> ResourceManager::getDirectories(const std::string& directoryPath) const {
+  std::vector<std::string> fileNames;
+  for (const auto& entry : fs::directory_iterator(m_basePath / directoryPath)) {
+    if (!entry.is_directory()) {
+      continue;
+    }
+    const auto path = entry.path().filename().generic_string();
+    fileNames.emplace_back(path);
+  }
+  return fileNames;
+}

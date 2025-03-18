@@ -45,6 +45,7 @@ public:
   }
 
   [[nodiscard]] std::vector<std::string> getDirectoryContents(const std::string& directoryPath, std::string_view filter = {}) const;
+  std::vector<std::string> getDirectories(const std::string& directoryPath) const;
 
 private:
   ResourceManager() = default;

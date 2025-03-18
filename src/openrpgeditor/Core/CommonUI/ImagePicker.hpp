@@ -8,6 +8,7 @@
 
 #include "Database/Globals.hpp"
 
+namespace fs = std::filesystem;
 struct Image;
 struct ImagePicker : IDialogController {
   using PickerMode = Image::Mode;
@@ -26,6 +27,8 @@ private:
   std::optional<Image> m_image2;
   std::vector<std::string> m_images;
   std::vector<std::string> m_images_2;
+  std::vector<std::string> m_folderDir;
+  std::vector<std::string> m_folderDir_2;
   PickerMode m_pickType;
   CheckerboardTexture m_checkerboardTexture{};
   int m_selectedImage{-1};

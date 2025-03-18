@@ -10,26 +10,35 @@ ImagePicker::ImagePicker(PickerMode mode, const std::string_view imageName, cons
   switch (m_pickType) {
   case PickerMode::Parallax:
     m_images = ResourceManager::instance()->getDirectoryContents("img/parallaxes/", ".png");
+    m_folderDir = ResourceManager::instance()->getDirectories("img/parallaxes/");
     break;
   case PickerMode::Picture:
     m_images = ResourceManager::instance()->getDirectoryContents("img/pictures/", ".png");
+    m_folderDir = ResourceManager::instance()->getDirectories("img/pictures/");
     break;
   case PickerMode::Battleback:
     m_images = ResourceManager::instance()->getDirectoryContents("img/battlebacks1/", ".png");
     m_images_2 = ResourceManager::instance()->getDirectoryContents("img/battlebacks2/", ".png");
+    m_folderDir = ResourceManager::instance()->getDirectories("img/battlebacks1/");
+    m_folderDir_2 = ResourceManager::instance()->getDirectories("img/battlebacks2/");
     break;
   case PickerMode::Title:
     m_images = ResourceManager::instance()->getDirectoryContents("img/titles1/", ".png");
     m_images_2 = ResourceManager::instance()->getDirectoryContents("img/titles2/", ".png");
+    m_folderDir = ResourceManager::instance()->getDirectories("img/titles1/");
+    m_folderDir_2 = ResourceManager::instance()->getDirectories("img/titles2/");
     break;
   case PickerMode::Tileset:
     m_images = ResourceManager::instance()->getDirectoryContents("img/tilesets/", ".png");
+    m_folderDir = ResourceManager::instance()->getDirectories("img/tilesets/");
     break;
   case PickerMode::Animation:
     m_images = ResourceManager::instance()->getDirectoryContents("img/animations/", ".png");
+    m_folderDir = ResourceManager::instance()->getDirectories("img/animations/");
     break;
   case PickerMode::SVBattler:
     m_images = ResourceManager::instance()->getDirectoryContents("img/sv_actors/", ".png");
+    m_folderDir = ResourceManager::instance()->getDirectories("img/sv_actors/");
     break;
   }
   setImageInfo(imageName, image2Name);

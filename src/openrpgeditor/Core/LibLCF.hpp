@@ -23,7 +23,7 @@ public:
   void convertEvent(Event* event, const lcf::rpg::Event& ev);
   void convertPage(EventPage* page, const lcf::rpg::EventPage& evPage);
   void processJumpParameters(int32_t code, std::shared_ptr<IEventCommand>& list);
-  std::shared_ptr<IEventCommand> createCommand(int32_t code, int32_t indent, const lcf::DBArray<int32_t>& data, const std::string& string);
+  std::shared_ptr<IEventCommand> createCommand(int32_t code, int32_t indent, const lcf::DBArray<int32_t>& data, std::string& string);
   void convertCommands(std::vector<std::shared_ptr<IEventCommand>>* r_cmds, const std::vector<lcf::rpg::EventCommand>& s_cmds);
   std::shared_ptr<IEventCommand> convertMovementCommand(lcf::rpg::MoveCommand moveCmd, int32_t indent);
   void convertPageConditions();

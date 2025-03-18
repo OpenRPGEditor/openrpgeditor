@@ -132,15 +132,15 @@ void LCF_Mapping::addEmptyState(int id) {
   state_mapping.insert(std::make_pair(id, 0));
   m_hasUnresolved = true;
 }
-void LCF_Mapping::addEmptySound(std::string name) {
+void LCF_Mapping::addEmptySound(std::string& name) {
   image_mapping.insert(std::make_pair(name, ""));
   m_hasUnresolved = true;
 }
-void LCF_Mapping::addEmptyImage(std::string name) {
+void LCF_Mapping::addEmptyImage(std::string& name) {
   sound_mapping.insert(std::make_pair(name, ""));
   m_hasUnresolved = true;
 }
-std::string LCF_Mapping::replaceText(std::string text) {
+std::string LCF_Mapping::replaceText(std::string& text) {
   if (text.contains("N[0]")) {
     text.replace(text.find("N[0]"), 4, "V[111]");
   }
@@ -229,7 +229,7 @@ std::string LCF_Mapping::replaceText(std::string text) {
   return text;
 }
 
-std::string LCF_Mapping::checkParenthesis(std::string text) {
+std::string LCF_Mapping::checkParenthesis(std::string& text) {
   auto pos3 = text.find('(');
   auto pos4 = text.find(')');
 
@@ -245,7 +245,7 @@ std::string LCF_Mapping::checkParenthesis(std::string text) {
   return text;
 }
 
-std::string LCF_Mapping::removeSurrogators(std::string substring) {
+std::string LCF_Mapping::removeSurrogators(std::string& substring) {
 
   while (substring.find("―") != std::string::npos) {
     substring = substring.replace(substring.find("―"), 1, "");
@@ -273,7 +273,7 @@ std::string LCF_Mapping::removeSurrogators(std::string substring) {
   return substring;
 };
 
-bool LCF_Mapping::checkAllCharacters(std::string text1, std::string text2) {
+bool LCF_Mapping::checkAllCharacters(std::string& text1, std::string text2) {
   int count{0};
   bool resultInvalid{false};
   if (text1.size() == text2.size()) {
@@ -403,7 +403,7 @@ int LCF_Mapping::findTextMatch(std::string text) {
   }
   return highestIndex; // Return the highest index if the comparison is close enough or equal to
 }
-std::string LCF_Mapping::localeValue(std::string text, int mapId, int evId, int page, int command) {
+std::string LCF_Mapping::localeValue(std::string& text, int mapId, int evId, int page, int command) {
 
   return "{}";
 
@@ -446,7 +446,7 @@ std::string LCF_Mapping::soundValue(std::string key) {
   }
   return ret;
 }
-std::string LCF_Mapping::imageValue(std::string key) {
+std::string LCF_Mapping::imageValue(std::string& key) {
   if (image_mapping.empty() || !image_mapping.contains(key)) {
     addEmptyImage(key);
     return key;

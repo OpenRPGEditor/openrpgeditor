@@ -22,11 +22,11 @@ public:
   void addEmptyCommonEvent(int id);
   void addEmptyActor(int id);
   void addEmptyState(int id);
-  void addEmptySound(std::string name);
-  void addEmptyImage(std::string name);
+  void addEmptySound(std::string& name);
+  void addEmptyImage(std::string& name);
 
-  std::string replaceText(std::string text);
-  bool checkAllCharacters(std::string text1, std::string text2);
+  std::string replaceText(std::string& text);
+  bool checkAllCharacters(std::string& text1, std::string text2);
 
   int switchValue(int key);
   int variableValue(int key);
@@ -34,15 +34,15 @@ public:
   int actorValue(int key);
   int stateValue(int key);
 
-  std::string localeValue(std::string text, int mapId, int evId, int page, int command);
+  std::string localeValue(std::string& text, int mapId, int evId, int page, int command);
   std::string soundValue(std::string key);
-  std::string imageValue(std::string key);
+  std::string imageValue(std::string& key);
 
   bool hasUnresolvedPairs();
   bool isUnresolved();
   void loadDatabase(const lcf::rpg::Database* database);
-  std::string removeSurrogators(std::string text);
-  std::string checkParenthesis(std::string text);
+  std::string removeSurrogators(std::string& text);
+  std::string checkParenthesis(std::string& text);
   int findTextMatch(std::string text);
 
   std::map<int, int> switch_mapping;

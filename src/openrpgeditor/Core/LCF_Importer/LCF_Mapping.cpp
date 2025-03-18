@@ -247,14 +247,14 @@ std::string LCF_Mapping::checkParenthesis(std::string text) {
 
 std::string LCF_Mapping::removeSurrogators(std::string substring) {
 
-  while (substring.find('―') != std::string::npos) {
-    substring = substring.replace(substring.find('―'), 1, "");
+  while (substring.find("―") != std::string::npos) {
+    substring = substring.replace(substring.find("―"), 1, "");
   }
-  while (substring.find('　') != std::string::npos) {
-    substring = substring.replace(substring.find('　'), 1, "");
+  while (substring.find("　") != std::string::npos) {
+    substring = substring.replace(substring.find("　"), 1, "");
   }
-  while (substring.find('～') != std::string::npos) {
-    substring = substring.replace(substring.find('～'), 1, "~");
+  while (substring.find("～") != std::string::npos) {
+    substring = substring.replace(substring.find("～"), 1, "~");
   }
   for (auto& chr : substring) {
     if (static_cast<int>(chr) < 0) {

@@ -8,7 +8,7 @@ struct DBLocaleTab : IDBEditorTab {
   void draw() override;
   int getHeader(int index) override { return 0; }
   std::vector<int>& getHeaders() override {
-    std::vector<int> none;
+    static std::vector<int> none;
     return none;
   }
   bool hasHeader() override { return false; }

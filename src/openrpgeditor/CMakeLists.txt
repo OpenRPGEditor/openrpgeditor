@@ -457,6 +457,8 @@ add_library(
         Core/LibLCF.hpp
         Core/DatabaseEditor/DBLocaleTab.cpp
         Core/DatabaseEditor/DBLocaleTab.hpp
+        Core/CommonUI/Directory.cpp
+        Core/CommonUI/Directory.hpp
 )
 
 target_include_directories(

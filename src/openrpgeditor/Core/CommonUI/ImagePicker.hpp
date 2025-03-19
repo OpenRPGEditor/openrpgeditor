@@ -5,6 +5,7 @@
 #include "Core/Graphics/Image.hpp"
 #include "Core/Graphics/Texture.hpp"
 #include "Core/Log.hpp"
+#include "Directory.hpp"
 
 #include "Database/Globals.hpp"
 
@@ -15,10 +16,12 @@ struct ImagePicker : IDialogController {
 
   explicit ImagePicker(PickerMode mode, std::string_view imageName = {}, std::string_view image2Name = {});
   std::tuple<bool, bool> draw() override;
-  [[nodiscard]] std::string selectedImage() const { return m_selectedImage >= 0 ? m_images[m_selectedImage] : ""; }
+  [[nodiscard]] std::string selectedImage() const {
+    return m_selectedImage >= 0 ? m_imageDir.value().isParentDirectory() ? m_images[m_selectedImage] : m_imageDir.value().pathPrefix + '\\' + m_images[m_selectedImage] : "";
+  }
+
   [[nodiscard]] std::string selectedImage2() const {
-    APP_INFO(std::to_string(m_selectedImage2));
-    return m_selectedImage2 >= 0 ? m_images_2[m_selectedImage2] : "";
+    return m_selectedImage2 >= 0 ? m_imageDir2.value().isParentDirectory() ? m_images_2[m_selectedImage2] : m_imageDir2.value().pathPrefix + '\\' + m_images_2[m_selectedImage2] : "";
   }
   void setImageInfo(std::string_view imageName, std::string_view image2Name = {});
 
@@ -33,4 +36,9 @@ private:
   CheckerboardTexture m_checkerboardTexture{};
   int m_selectedImage{-1};
   int m_selectedImage2{-1};
+  int m_selectedFolder{-1};
+  int m_selectedFolder2{-1};
+
+  std::optional<Directory> m_imageDir;
+  std::optional<Directory> m_imageDir2;
 };

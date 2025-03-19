@@ -70,7 +70,7 @@ void Directory::moveUp() {
 bool Directory::isParentDirectory() const { return m_isParentDir; }
 
 std::vector<std::string>& Directory::getDirectories() { return m_subDirectories; }
-std::string& Directory::getFileName(std::string name) {
+std::string Directory::getFileName(std::string name) {
   if (name.find('/') != std::string::npos) {
     name = name.substr(name.find_last_of('/') + 1, name.size());
   }

@@ -10,7 +10,7 @@ public:
 
   void setMapInfo(MapInfo* mapInfo) {
     m_mapInfo = mapInfo;
-    if (m_mapInfo) {
+    if (m_mapInfo && map()) {
       m_tempWidth = map()->width();
       m_tempHeight = map()->height();
     }

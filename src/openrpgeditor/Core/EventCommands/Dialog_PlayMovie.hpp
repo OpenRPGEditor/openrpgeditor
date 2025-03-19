@@ -27,6 +27,7 @@ struct Dialog_PlayMovie : IEventDialogController {
     //   // error loading file
     //   return false;
     // }
+    return false;
   }
 
 private:

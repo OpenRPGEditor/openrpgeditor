@@ -10,7 +10,6 @@ std::tuple<bool, bool> Dialog_InputNumber::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{200, 140}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (picker) {
@@ -23,15 +22,14 @@ std::tuple<bool, bool> Dialog_InputNumber::draw() {
       }
     }
     ImGui::SeparatorText("Variable");
-    ImGui::SetNextItemWidth(100);
     ImGui::PushID("##inputnumber_variable");
-    if (ImGui::Button(Database::instance()->variableNameOrId(m_variable).c_str(), ImVec2{180, 0})) {
+    if (ImGui::Button(Database::instance()->variableNameOrId(m_variable).c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
       picker.emplace("Variables", Database::instance()->system.variables(), m_variable);
       picker->setOpen(true);
     }
     ImGui::PopID();
     ImGui::SeparatorText("Digits");
-    ImGui::SetNextItemWidth(80);
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x);
     if (ImGui::InputInt("##inputnumber_digits", &m_digits)) {
       if (m_digits > 9) {
         m_digits = 9;

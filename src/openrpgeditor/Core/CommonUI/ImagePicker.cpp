@@ -56,6 +56,8 @@ ImagePicker::ImagePicker(PickerMode mode, const std::string_view imageName, cons
     m_images = m_imageDir.value().getDirectoryContents();
     m_folderDir = m_imageDir.value().getDirectories();
     break;
+  default:
+    break;
   }
   setImageInfo(imageName, image2Name);
 }
@@ -103,12 +105,13 @@ std::tuple<bool, bool> ImagePicker::draw() {
   }
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{894, 768}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
-    ImGui::BeginGroup();
+  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing);
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoSavedSettings)) {
+    const auto calc = ImGui::CalcTextSize("OKCANCEL");
+    ImGui::BeginChild("##top_child", {0, ImGui::GetContentRegionAvail().y - (calc.y + (ImGui::GetStyle().ItemSpacing.y * 3) + ImGui::GetStyle().FramePadding.y)});
     {
-      ImGui::BeginChild("##image_picker_list", ImVec2{200, 768}, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
+      ImGui::BeginChild("##image_picker_list##1", ImVec2{200, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y}, ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX);
       {
         if (ImGui::BeginTable("##image_picker.tablelist", 1)) {
           ImGui::TableNextRow();
@@ -164,106 +167,113 @@ std::tuple<bool, bool> ImagePicker::draw() {
           }
           ImGui::EndTable();
         }
-        ImGui::EndChild();
-        ImGui::SameLine();
-        ImGui::BeginChild("##image_picker_list##2", ImVec2{200, 768}, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
-        {
-          if (m_pickType == PickerMode::Battleback || m_pickType == PickerMode::Title) {
-            if (ImGui::BeginTable("##image_picker.tablelist##2", 1)) {
-              ImGui::TableNextRow();
-              ImGui::TableNextColumn();
+      }
+      ImGui::EndChild();
+      ImGui::SameLine();
+      ImGui::BeginChild("##image_picker_list##2", ImVec2{200, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y}, ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX);
+      {
+        if (m_pickType == PickerMode::Battleback || m_pickType == PickerMode::Title) {
+          if (ImGui::BeginTable("##image_picker.tablelist##2", 1)) {
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
 
-              ImGui::BeginDisabled(m_imageDir2.value().isParentDirectory());
-              if (ImGui::Selectable("\u21B0 ..##2", false, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
-                if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                  m_imageDir2.value().moveUp();
-                  m_images_2 = m_imageDir2->getDirectoryContents();
-                  m_folderDir_2 = m_imageDir2.value().getDirectories();
-                }
+            ImGui::BeginDisabled(m_imageDir2.value().isParentDirectory());
+            if (ImGui::Selectable("\u21B0 ..##2", false, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+              if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                m_imageDir2.value().moveUp();
+                m_images_2 = m_imageDir2->getDirectoryContents();
+                m_folderDir_2 = m_imageDir2.value().getDirectories();
               }
-              ImGui::EndDisabled();
-              for (int i = 0; i < m_folderDir_2.size(); ++i) {
-                const auto& folderName = std::format("{} {}##2", ICON_FA_FOLDER_OPEN, m_folderDir_2[i]);
-                if (ImGui::Selectable(folderName.c_str(), m_selectedFolder2 == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
-                  m_selectedFolder2 = i;
-                }
-                if (m_selectedFolder2 == i && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                  m_imageDir2->setDirectory(i);
-                  m_folderDir_2 = m_imageDir2.value().getDirectories();
-                  m_images_2 = m_imageDir2.value().getDirectoryContents();
-                  m_selectedImage2 = -1;
-                  m_selectedFolder2 = -1;
-                  m_image2.reset();
-                }
+            }
+            ImGui::EndDisabled();
+            for (int i = 0; i < m_folderDir_2.size(); ++i) {
+              const auto& folderName = std::format("{} {}##2", ICON_FA_FOLDER_OPEN, m_folderDir_2[i]);
+              if (ImGui::Selectable(folderName.c_str(), m_selectedFolder2 == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+                m_selectedFolder2 = i;
               }
-
-              if (ImGui::Selectable("(None)##2", m_selectedImage2 < 0, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+              if (m_selectedFolder2 == i && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                m_imageDir2->setDirectory(i);
+                m_folderDir_2 = m_imageDir2.value().getDirectories();
+                m_images_2 = m_imageDir2.value().getDirectoryContents();
                 m_selectedImage2 = -1;
+                m_selectedFolder2 = -1;
                 m_image2.reset();
               }
-              for (int i = 0; i < m_images_2.size(); ++i) {
-                const auto& sheet2 = m_images_2[i];
-                ImGui::TableNextColumn();
-                if (ImGui::Selectable(sheet2.c_str(), m_selectedImage2 == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
-                  m_selectedImage2 = i;
-                  m_image2.emplace(m_selectedImage2 == -1                    ? ""
-                                   : m_imageDir2.value().isParentDirectory() ? m_images_2.at(m_selectedImage2)
-                                                                             : m_imageDir2.value().pathPrefix + '/' + m_images_2.at(m_selectedImage2),
-                                   m_pickType, true);
-                  if (ImGui::IsItemHovered()) {
-                    ImGui::SetTooltip("%s", sheet2.c_str());
-                  }
+            }
+
+            if (ImGui::Selectable("(None)##2", m_selectedImage2 < 0, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+              m_selectedImage2 = -1;
+              m_image2.reset();
+            }
+            for (int i = 0; i < m_images_2.size(); ++i) {
+              const auto& sheet2 = m_images_2[i];
+              ImGui::TableNextColumn();
+              if (ImGui::Selectable(sheet2.c_str(), m_selectedImage2 == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+                m_selectedImage2 = i;
+                m_image2.emplace(m_selectedImage2 == -1                    ? ""
+                                 : m_imageDir2.value().isParentDirectory() ? m_images_2.at(m_selectedImage2)
+                                                                           : m_imageDir2.value().pathPrefix + '/' + m_images_2.at(m_selectedImage2),
+                                 m_pickType, true);
+                if (ImGui::IsItemHovered()) {
+                  ImGui::SetTooltip("%s", sheet2.c_str());
                 }
               }
-              ImGui::EndTable();
             }
-          }
-
-          ImGui::EndChild();
-        }
-        ImGui::SameLine();
-        ImGui::BeginChild("##image_picker_image_panel", ImVec2{894, 784}, ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
-        {
-          if (!m_image && m_selectedImage != -1) {
-            m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), m_pickType, false);
-          }
-          if (!m_image2 && m_selectedImage2 != -1) {
-            m_image2.emplace(m_selectedImage2 == -1 ? "" : m_images.at(m_selectedImage2), m_pickType, false);
-          }
-
-          auto win = ImGui::GetCurrentWindow();
-          if (m_image) {
-            const auto imageRect = ImVec2{static_cast<float>(m_image->imageWidth()), static_cast<float>(m_image->imageHeight())};
-            ImGui::GetWindowDrawList()->AddImage(static_cast<ImTextureID>(m_checkerboardTexture), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
-                                                 win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_image->texture().width()), static_cast<float>(m_image->texture().height())}));
-
-            ImGui::Image(m_image->texture(), imageRect);
-          }
-          if (m_image2) {
-            ImGui::GetWindowDrawList()->AddImage(m_image2->texture(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
-                                                 win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_image2->texture().width()), static_cast<float>(m_image2->texture().height())}));
+            ImGui::EndTable();
           }
         }
-        ImGui::EndChild();
       }
-      ImGui::EndGroup();
-      ImGui::BeginGroup();
+      ImGui::EndChild();
+      ImGui::SameLine();
+      ImGui::BeginChild("##image_picker_image_panel", ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y},
+                        ImGuiChildFlags_Border, ImGuiWindowFlags_HorizontalScrollbar);
       {
-        if (ImGui::Button("OK")) {
-          m_confirmed = true;
-          m_open = false;
-          ImGui::CloseCurrentPopup();
+        if (!m_image && m_selectedImage != -1) {
+          m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), m_pickType, false);
         }
-        ImGui::SameLine();
-        if (ImGui::Button("Cancel")) {
-          m_confirmed = false;
-          m_open = false;
-          ImGui::CloseCurrentPopup();
+        if (!m_image2 && m_selectedImage2 != -1) {
+          m_image2.emplace(m_selectedImage2 == -1 ? "" : m_images.at(m_selectedImage2), m_pickType, false);
+        }
+
+        const auto win = ImGui::GetCurrentWindow();
+        const int dummyWidth = std::max(m_image ? m_image->imageWidth() : 0, m_image2 ? m_image2->imageWidth() : 0);
+        const int dummyHeight = std::max(m_image ? m_image->imageHeight() : 0, m_image2 ? m_image2->imageHeight() : 0);
+        if (dummyWidth > 0 && dummyHeight > 0) {
+          ImGui::Dummy({static_cast<float>(dummyWidth), static_cast<float>(dummyHeight)});
+        }
+
+        if (m_image) {
+          ImGui::GetWindowDrawList()->AddImage(static_cast<ImTextureID>(m_checkerboardTexture), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
+                                               win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_image->texture().width()), static_cast<float>(m_image->texture().height())}));
+
+          ImGui::GetWindowDrawList()->AddImage(m_image->texture(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
+                                               win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_image->texture().width()), static_cast<float>(m_image->texture().height())}));
+        }
+        if (m_image2) {
+          ImGui::GetWindowDrawList()->AddImage(m_image2->texture(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
+                                               win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_image2->texture().width()), static_cast<float>(m_image2->texture().height())}));
         }
       }
-      ImGui::EndGroup();
-      ImGui::EndPopup();
+      ImGui::EndChild();
     }
+    ImGui::EndChild();
+    ImGui::BeginChild("##bottom_child");
+    {
+      ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x - (calc.x + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().ItemSpacing.x));
+      if (ImGui::Button("OK")) {
+        m_confirmed = true;
+        m_open = false;
+        ImGui::CloseCurrentPopup();
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("Cancel")) {
+        m_confirmed = false;
+        m_open = false;
+        ImGui::CloseCurrentPopup();
+      }
+    }
+    ImGui::EndChild();
+    ImGui::EndPopup();
   }
   return {!m_open, m_confirmed};
 }

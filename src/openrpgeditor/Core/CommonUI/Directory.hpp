@@ -12,7 +12,7 @@ struct Directory {
 
   std::vector<std::string>& getDirectoryContents();
   std::vector<std::string>& getDirectories();
-  std::string& getFileName(std::string name);
+  std::string getFileName(std::string name);
 
   void setSubDirectories();
   void setDirectoryContents(std::string_view filter);

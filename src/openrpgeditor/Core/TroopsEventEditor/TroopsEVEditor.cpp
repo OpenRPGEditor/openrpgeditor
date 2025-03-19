@@ -27,17 +27,17 @@ bool TroopsEVEditor::draw() {
   if (m_troop) {
     ImGui::BeginGroup();
     {
-      if (ImGui::Button("Copy\nEvent Page")) {}
+      if (ImGui::Button(trNOOP("Copy\nEvent Page"))) {}
       ImGui::BeginDisabled(true);
-      if (ImGui::Button("Paste\nEvent Page")) {}
+      if (ImGui::Button(trNOOP("Paste\nEvent Page"))) {}
       ImGui::EndDisabled();
       ImGui::BeginDisabled(m_pages.size() <= 1);
-      if (ImGui::Button("Delete\nEvent Page")) {
+      if (ImGui::Button(trNOOP("Delete\nEvent Page"))) {
         m_erased = true;
         m_erasedIdx = m_selectedPage;
       }
       ImGui::EndDisabled();
-      if (ImGui::Button("Clear\nEvent Page")) {
+      if (ImGui::Button(trNOOP("Clear\nEvent Page"))) {
         if (m_selectedPage != -1) {
           m_pages[m_selectedPage].clearPage();
         }
@@ -47,7 +47,7 @@ bool TroopsEVEditor::draw() {
 
     ImGui::SameLine();
     if (ImGui::BeginChild("##orpg_troop_editor_page_content", ImVec2(0, 0), false)) {
-      if (ImGui::BeginTabBar("##orpg_troop_editor_page", ImGuiTabBarFlags_AutoSelectNewTabs)) {
+      if (ImGui::BeginTabBar("##orpg_troop_editor_page", ImGuiTabBarFlags_AutoSelectNewTabs | ImGuiTabBarFlags_TabListPopupButton | ImGuiTabBarFlags_FittingPolicyScroll)) {
         for (int i = 0; i < m_troop->pages().size(); ++i) {
           if (ImGui::BeginTabItem(std::to_string(i + 1).c_str())) { // Check if BeginTabItem is successful
             m_selectedPage = i;

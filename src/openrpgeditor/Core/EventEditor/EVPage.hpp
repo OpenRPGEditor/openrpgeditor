@@ -44,7 +44,7 @@ private:
   char m_pageNameBuf[4096]{};
   EventCommandEditor m_commandEditor;
   CharacterSheet m_characterSheet;
-  std::shared_ptr<IEventDialogController> commandDialog;
+  std::optional<Dialog_SetMovementRoute> m_routeDialog;
   VariableSwitchSelection m_variableSwitchSelection{Variable};
   std::optional<VariableSwitchPicker> m_variableSwitchPicker;
   std::optional<ObjectPicker<Actor>> m_actorPicker;

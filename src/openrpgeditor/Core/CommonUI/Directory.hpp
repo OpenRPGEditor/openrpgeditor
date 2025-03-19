@@ -22,7 +22,7 @@ struct Directory {
   std::string pathPrefix;
 
 private:
-  bool isParentDir;
+  bool m_isParentDir{true};
 
   std::string m_filter;
 

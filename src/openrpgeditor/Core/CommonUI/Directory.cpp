@@ -37,13 +37,13 @@ void Directory::setSubDirectories() {
 void Directory::setDirectory(int index) {
   m_currentPath.append(m_subDirectories[index]);
   pathPrefix += pathPrefix.empty() ? m_subDirectories[index] : '\\' + m_subDirectories[index];
-  isParentDir = equivalent(m_path, m_currentPath);
+  m_isParentDir = equivalent(m_path, m_currentPath);
   setDirectoryContents(m_filter);
   setSubDirectories();
 }
 void Directory::home() {
   m_currentPath = m_path;
-  isParentDir = equivalent(m_path, m_currentPath);
+  m_isParentDir = equivalent(m_path, m_currentPath);
   setDirectoryContents(m_filter);
   setSubDirectories();
 }
@@ -54,11 +54,11 @@ void Directory::moveUp() {
     pathPrefix = pathPrefix.substr(0, pathPrefix.find_last_of('\\'));
   }
   m_currentPath = m_currentPath.parent_path();
-  isParentDir = equivalent(m_path, m_currentPath);
+  m_isParentDir = equivalent(m_path, m_currentPath);
   setDirectoryContents(m_filter);
   setSubDirectories();
 }
-bool Directory::isParentDirectory() const { return isParentDir; }
+bool Directory::isParentDirectory() const { return m_isParentDir; }
 
 std::vector<std::string>& Directory::getDirectories() { return m_subDirectories; }
 std::vector<std::string>& Directory::getDirectoryContents() { return m_contents; }

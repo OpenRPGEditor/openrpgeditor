@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Core/Graphics/CharacterSheet.hpp"
-
 #include "Database/Event.hpp"
 
 struct MapEditor;
@@ -278,4 +277,6 @@ private:
   int m_jumpPeak = 0;
   int m_jumpCount = 0;
   bool m_prisonMode{false};
+
+  void onCharacterImageModified(EventImage*, const std::string&);
 };

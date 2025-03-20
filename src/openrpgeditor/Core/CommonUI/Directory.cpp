@@ -3,12 +3,12 @@
 #include "Core/CommonUI/ImagePicker.hpp"
 #include "Database/Database.hpp"
 
-Directory::Directory(std::string path, std::string filter, std::string selectedPath) {
-  m_path = Database::instance()->basePath + path;
+Directory::Directory(std::string_view path, std::string_view filter, std::string_view selectedPath) {
+  m_path = Database::instance()->basePath + path.data();
   if (!selectedPath.empty()) {
     // Navigate to contents
     selectedPath = selectedPath.substr(0, selectedPath.find_last_of('/'));
-    m_currentPath.assign(Database::instance()->basePath + path + "/" + selectedPath);
+    m_currentPath.assign(Database::instance()->basePath + path.data() + "/" + selectedPath.data());
   } else {
     m_currentPath.assign(m_path);
   }
@@ -29,7 +29,7 @@ void Directory::setDirectoryContents(std::string_view filter) {
     auto filename = entry.path().filename();
     filename = filename.replace_extension();
     const auto path = filename.generic_string();
-    extFilter = filter;
+    m_extFilter = filter;
     m_contents.emplace_back(path);
   }
 }
@@ -45,26 +45,26 @@ void Directory::setSubDirectories() {
 }
 void Directory::setDirectory(int index) {
   m_currentPath.append(m_subDirectories[index]);
-  pathPrefix += pathPrefix.empty() ? m_subDirectories[index] : '/' + m_subDirectories[index];
+  m_pathPrefix += m_pathPrefix.empty() ? m_subDirectories[index] : '/' + m_subDirectories[index];
   m_isParentDir = equivalent(m_path, m_currentPath);
-  setDirectoryContents(extFilter);
+  setDirectoryContents(m_extFilter);
   setSubDirectories();
 }
 void Directory::home() {
   m_currentPath = m_path;
   m_isParentDir = equivalent(m_path, m_currentPath);
-  setDirectoryContents(extFilter);
+  setDirectoryContents(m_extFilter);
   setSubDirectories();
 }
 void Directory::moveUp() {
-  if (pathPrefix.find('/') == std::string::npos) {
-    pathPrefix.clear();
+  if (m_pathPrefix.find('/') == std::string::npos) {
+    m_pathPrefix.clear();
   } else {
-    pathPrefix = pathPrefix.substr(0, pathPrefix.find_last_of('/'));
+    m_pathPrefix = m_pathPrefix.substr(0, m_pathPrefix.find_last_of('/'));
   }
   m_currentPath = m_currentPath.parent_path();
   m_isParentDir = equivalent(m_path, m_currentPath);
-  setDirectoryContents(extFilter);
+  setDirectoryContents(m_extFilter);
   setSubDirectories();
 }
 bool Directory::isParentDirectory() const { return m_isParentDir; }
@@ -76,4 +76,11 @@ std::string Directory::getFileName(std::string name) {
   }
   return name;
 }
+
+std::string& Directory::getPathPrefix() { return m_pathPrefix; }
+const std::string& Directory::getPathPrefix() const { return m_pathPrefix; }
+
+std::string& Directory::getExt() { return m_extFilter; }
+const std::string& Directory::getExt() const { return m_extFilter; }
+
 std::vector<std::string>& Directory::getDirectoryContents() { return m_contents; }

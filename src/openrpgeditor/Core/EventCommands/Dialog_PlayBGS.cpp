@@ -65,7 +65,7 @@ std::tuple<bool, bool> Dialog_PlayBGS::draw() {
               playAudio(m_audio.name().c_str());
             }
             m_selected = n + 1;
-            m_audio.setName(m_audioDir.value().isParentDirectory() ? m_audios.at(m_selected - 1) : m_audioDir.value().pathPrefix + '/' + m_audios.at(m_selected - 1));
+            m_audio.setName(m_audioDir.value().isParentDirectory() ? m_audios.at(m_selected - 1) : m_audioDir.value().getPathPrefix() + '/' + m_audios.at(m_selected - 1));
             if (isSelected)
               ImGui::SetItemDefaultFocus();
           }

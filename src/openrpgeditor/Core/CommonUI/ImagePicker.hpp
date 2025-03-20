@@ -17,11 +17,11 @@ struct ImagePicker : IDialogController {
   explicit ImagePicker(PickerMode mode, std::string_view imageName = {}, std::string_view image2Name = {});
   std::tuple<bool, bool> draw() override;
   [[nodiscard]] std::string selectedImage() const {
-    return m_selectedImage >= 0 ? m_imageDir.value().isParentDirectory() ? m_images[m_selectedImage] : m_imageDir.value().pathPrefix + '/' + m_images[m_selectedImage] : "";
+    return m_selectedImage >= 0 ? m_imageDir.value().isParentDirectory() ? m_images[m_selectedImage] : m_imageDir.value().getPathPrefix() + '/' + m_images[m_selectedImage] : "";
   }
 
   [[nodiscard]] std::string selectedImage2() const {
-    return m_selectedImage2 >= 0 ? m_imageDir2.value().isParentDirectory() ? m_images_2[m_selectedImage2] : m_imageDir2.value().pathPrefix + '/' + m_images_2[m_selectedImage2] : "";
+    return m_selectedImage2 >= 0 ? m_imageDir2.value().isParentDirectory() ? m_images_2[m_selectedImage2] : m_imageDir2.value().getPathPrefix() + '/' + m_images_2[m_selectedImage2] : "";
   }
   void setImageInfo(std::string_view imageName, std::string_view image2Name = {});
 

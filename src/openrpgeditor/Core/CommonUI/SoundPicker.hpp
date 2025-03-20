@@ -49,7 +49,7 @@ private:
 
   bool playAudio(const char* path) {
     // Load and play music
-    if (!buffer.loadFromFile(Database::instance()->basePath + path + m_audioDir.value().extFilter)) {
+    if (!buffer.loadFromFile(Database::instance()->basePath + path + m_audioDir.value().getExt())) {
       // error loading file
       return false;
     }

@@ -66,7 +66,7 @@ std::tuple<bool, bool> Dialog_PlaySE::draw() {
           if (ImGui::SelectableWithBorder(m_audios.at(n).c_str(), isSelected, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
 
             m_selected = n + 1;
-            m_audio.setName(m_audioDir.value().isParentDirectory() ? m_audios.at(m_selected - 1) : m_audioDir.value().pathPrefix + '/' + m_audios.at(m_selected - 1));
+            m_audio.setName(m_audioDir.value().isParentDirectory() ? m_audios.at(m_selected - 1) : m_audioDir.value().getPathPrefix() + '/' + m_audios.at(m_selected - 1));
             if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
               playAudio(m_audio.name().c_str());
             }

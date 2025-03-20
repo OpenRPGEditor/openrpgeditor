@@ -155,7 +155,7 @@ std::tuple<bool, bool> ImagePicker::draw() {
               m_selectedImage = i;
               m_image.emplace(m_selectedImage == -1                    ? ""
                               : m_imageDir.value().isParentDirectory() ? m_images.at(m_selectedImage)
-                                                                       : m_imageDir.value().pathPrefix + '/' + m_images.at(m_selectedImage),
+                                                                       : m_imageDir.value().getPathPrefix() + '/' + m_images.at(m_selectedImage),
                               m_pickType, false);
               if (ImGui::IsItemHovered()) {
                 ImGui::SetTooltip("%s", sheet.c_str());
@@ -212,7 +212,7 @@ std::tuple<bool, bool> ImagePicker::draw() {
                 m_selectedImage2 = i;
                 m_image2.emplace(m_selectedImage2 == -1                    ? ""
                                  : m_imageDir2.value().isParentDirectory() ? m_images_2.at(m_selectedImage2)
-                                                                           : m_imageDir2.value().pathPrefix + '/' + m_images_2.at(m_selectedImage2),
+                                                                           : m_imageDir2.value().getPathPrefix() + '/' + m_images_2.at(m_selectedImage2),
                                  m_pickType, true);
                 if (ImGui::IsItemHovered()) {
                   ImGui::SetTooltip("%s", sheet2.c_str());

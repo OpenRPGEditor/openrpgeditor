@@ -27,12 +27,12 @@ CharacterPicker::CharacterPicker(const PickerMode mode, const std::string_view s
 
   setCharacterInfo(sheetName, character, pattern, direction);
 
-  std::string charName = m_charDir->getFileName(static_cast<std::string>(sheetName));
-  for (int i = 0; i < m_characterSheets.size(); ++i) {
-    if (charName == m_characterSheets[i]) {
-      m_selectedSheet = i;
-    }
-  }
+  // std::string charName = m_charDir->getFileName(static_cast<std::string>(sheetName));
+  // for (int i = 0; i < m_characterSheets.size(); ++i) {
+  //   if (charName == m_characterSheets[i]) {
+  //     m_selectedSheet = i;
+  //   }
+  // }
 }
 
 void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const int character, const int pattern, const Direction direction) {
@@ -40,10 +40,12 @@ void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const i
   m_characterIndex = character;
   m_pattern = pattern;
   m_direction = direction;
-  if (!sheetName.empty()) {
+
+  std::string imageName = m_charDir.value().getFileName(static_cast<std::string>(sheetName));
+  if (!imageName.empty()) {
     bool found = false;
     for (int i = 0; i < m_characterSheets.size(); ++i) {
-      if (!m_characterSheets[i].compare(sheetName)) {
+      if (!m_characterSheets[i].compare(imageName)) {
         found = true;
         m_selectedSheet = i;
         break;
@@ -134,7 +136,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
             ImGui::TableNextColumn();
             if (ImGui::Selectable(std::format("{0}##sheet_{0}", sheet).c_str(), m_selectedSheet == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
               if (m_selectedSheet != i) {
-                m_characterSheet.emplace(m_charDir.value().isParentDirectory() ? sheet : m_charDir.value().pathPrefix + '/' + sheet);
+                m_characterSheet.emplace(m_charDir.value().isParentDirectory() ? sheet : m_charDir.value().getPathPrefix() + '/' + sheet);
                 if (m_pickerMode == PickerMode::Character) {
                   m_selectionWidth = m_characterSheet->characterAtlasWidth();
                   m_selectionHeight = m_characterSheet->characterAtlasHeight();

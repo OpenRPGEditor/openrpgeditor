@@ -17,6 +17,8 @@ struct DBLocaleTab : IDBEditorTab {
   std::string getName(int index) override { return ""; }
   int getCount() override { return 0; }
 
+  // TODO: Fuzzy searching
+
 private:
   Locales* m_locales = nullptr;
   Locales m_jpLocales;

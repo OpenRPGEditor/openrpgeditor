@@ -4,6 +4,8 @@
 #include "Core/ImGuiExt/imgui-knobs.h"
 #include "Core/Log.hpp"
 #include "imgui.h"
+#include "imgui_internal.h"
+#include <IconsFontAwesome6.h>
 using namespace std::string_view_literals;
 std::tuple<bool, bool> Dialog_PlayBGS::draw() {
 
@@ -24,11 +26,35 @@ std::tuple<bool, bool> Dialog_PlayBGS::draw() {
         ImGui::TableSetupColumn("File");
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
+
+        ImGui::BeginDisabled(m_audioDir.value().isParentDirectory());
+        if (ImGui::Selectable("\u21B0 ..", false, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnClick)) {
+          if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+            m_audioDir.value().moveUp();
+            m_audios = m_audioDir->getDirectoryContents();
+            m_folders = m_audioDir.value().getDirectories();
+            m_selected = 0;
+            m_selectedFolder = -1;
+          }
+        }
+        ImGui::EndDisabled();
+        for (int i = 0; i < m_folders.size(); ++i) {
+          const auto& folderName = std::format("{} {}", ICON_FA_FOLDER_OPEN, m_folders[i]);
+          if (ImGui::Selectable(folderName.c_str(), m_selectedFolder == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnClick)) {
+            m_selectedFolder = i;
+          }
+          if (m_selectedFolder == i && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+            m_audioDir->setDirectory(i);
+            m_folders = m_audioDir.value().getDirectories();
+            m_audios = m_audioDir.value().getDirectoryContents();
+            m_selected = 0;
+            m_selectedFolder = -1;
+          }
+        }
+
         if (ImGui::SelectableWithBorder("None", m_selected == 0, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
           m_selected = 0;
           m_audio.setName("");
-          if (m_selected == 0)
-            ImGui::SetItemDefaultFocus();
         }
 
         for (int n = 0; n < m_audios.size(); n++) {
@@ -36,10 +62,10 @@ std::tuple<bool, bool> Dialog_PlayBGS::draw() {
           const bool isSelected = (m_selected == n + 1);
           if (ImGui::SelectableWithBorder(m_audios.at(n).c_str(), isSelected, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
             if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-              playAudio((Database::instance()->basePath + "audio/bgs/" + m_audios.at(m_selected - 1) + ".ogg").c_str());
+              playAudio(m_audio.name().c_str());
             }
             m_selected = n + 1;
-            m_audio.setName(m_audios.at(m_selected - 1));
+            m_audio.setName(m_audioDir.value().isParentDirectory() ? m_audios.at(m_selected - 1) : m_audioDir.value().pathPrefix + '/' + m_audios.at(m_selected - 1));
             if (isSelected)
               ImGui::SetItemDefaultFocus();
           }
@@ -53,7 +79,7 @@ std::tuple<bool, bool> Dialog_PlayBGS::draw() {
     {
       if (ImGui::Button("Play", ImVec2(100, 0))) {
         if (m_selected > 0)
-          playAudio((Database::instance()->basePath + "audio/bgs/" + m_audios.at(m_selected) + ".ogg").c_str());
+          playAudio(m_audio.name().c_str());
       }
       if (ImGui::Button("Stop", ImVec2(100, 0))) {
         stopAudio();

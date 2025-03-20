@@ -1,6 +1,7 @@
 #pragma once
 #include "Database/Audio.hpp"
 #include "Database/Database.hpp"
+#include "Directory.hpp"
 
 #include <SFML/Audio.hpp>
 #include <iostream>
@@ -22,16 +23,11 @@ public:
    */
   bool draw();
   void show(SEType type) {
+    m_audios = m_audioDir.value().getDirectoryContents();
+    m_folders = m_audioDir.value().getDirectories();
     m_type = type;
-    try {
-      auto files = getFileNames(Database::instance()->basePath + getDirectoryString());
-
-      for (const auto& file : files) {
-        m_audios.push_back(file);
-      }
-    } catch (const std::filesystem::filesystem_error& e) { std::cerr << "Error accessing directory: " << e.what() << std::endl; }
-
     m_open = true;
+    m_audioDir.emplace("audio/se", ".ogg", m_audio.name());
   };
 
 private:
@@ -47,43 +43,13 @@ private:
   sf::SoundBuffer buffer;
   sf::Sound sound;
 
-  std::string getDirectoryString() {
-    if (m_type == SEType::ME) {
-      return "audio/me/";
-    }
-    if (m_type == SEType::SE) {
-      return "audio/se/";
-    }
-    if (m_type == SEType::BGS) {
-      return "audio/bgs/";
-    }
-    if (m_type == SEType::BGM) {
-      return "audio/bgm/";
-    }
-    return {};
-  }
-  std::vector<std::string> getFileNames(const std::string& directoryPath) {
-    std::vector<std::string> fileNames;
-
-    for (const auto& entry : fs::directory_iterator(directoryPath)) {
-      if (entry.path().extension() != ".ogg")
-        continue;
-
-      std::string filename = entry.path().filename().string();
-      size_t lastDotPos = filename.find_last_of(".");
-      if (lastDotPos != std::string::npos) {
-        std::string str = filename.substr(0, lastDotPos);
-        fileNames.push_back(str);
-      } else {
-        fileNames.push_back(filename);
-      }
-    }
-    return fileNames;
-  }
+  int m_selectedFolder{-1};
+  std::optional<Directory> m_audioDir;
+  std::vector<std::string> m_folders;
 
   bool playAudio(const char* path) {
     // Load and play music
-    if (!buffer.loadFromFile(path)) {
+    if (!buffer.loadFromFile(Database::instance()->basePath + path + m_audioDir.value().extFilter)) {
       // error loading file
       return false;
     }

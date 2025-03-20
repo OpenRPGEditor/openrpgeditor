@@ -2,6 +2,8 @@
 #include "Core/ResourceManager.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
+
+#include <IconsFontAwesome6.h>
 #include <iostream>
 
 inline int roundUp(int numToRound, int multiple) {
@@ -19,8 +21,18 @@ int alignCoord(int value, int size) { return roundUp(value - (value % (static_ca
 
 CharacterPicker::CharacterPicker(const PickerMode mode, const std::string_view sheetName, const int character, const int pattern, const Direction direction)
 : IDialogController("Select an Image##character_picker"), m_pickerMode(mode), m_characterIndex(character), m_checkerboardTexture(4096, 4096), m_pattern(pattern), m_direction(direction) {
-  m_characterSheets = ResourceManager::instance()->getDirectoryContents("img/characters/", ".png");
+  m_charDir.emplace("img/characters/", ".png", static_cast<std::string>(sheetName));
+  m_characterSheets = m_charDir.value().getDirectoryContents();
+  m_folders = m_charDir.value().getDirectories();
+
   setCharacterInfo(sheetName, character, pattern, direction);
+
+  std::string charName = m_charDir->getFileName(static_cast<std::string>(sheetName));
+  for (int i = 0; i < m_characterSheets.size(); ++i) {
+    if (charName == m_characterSheets[i]) {
+      m_selectedSheet = i;
+    }
+  }
 }
 
 void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const int character, const int pattern, const Direction direction) {
@@ -76,12 +88,40 @@ std::tuple<bool, bool> CharacterPicker::draw() {
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::BeginGroup();
     {
-      ImGui::Text("Selected Sheet: %s", m_selectedSheet == -1 ? "(None)" : m_characterSheets[m_selectedSheet].c_str());
+      ImGui::Text("Selected Sheet: %s", m_selectedSheet == -1 ? "(None)" : m_characterSheets.size() > 0 ? m_characterSheets[m_selectedSheet].c_str() : "(None)");
       ImGui::BeginChild("##character_picker_sheet_list", ImVec2{ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRS").x, 768}, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
       {
         if (ImGui::BeginTable("##character_picker.characterlist", 1)) {
           ImGui::TableNextRow();
           ImGui::TableNextColumn();
+
+          ImGui::BeginDisabled(m_charDir.value().isParentDirectory());
+          if (ImGui::Selectable("\u21B0 ..", false, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+            if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+              m_charDir.value().moveUp();
+              m_characterSheets = m_charDir->getDirectoryContents();
+              m_folders = m_charDir.value().getDirectories();
+              m_characterSheet.reset();
+              m_selectedSheet = -1;
+              m_selectedFolder = -1;
+            }
+          }
+          ImGui::EndDisabled();
+          for (int i = 0; i < m_folders.size(); ++i) {
+            const auto& folderName = std::format("{} {}", ICON_FA_FOLDER_OPEN, m_folders[i]);
+            if (ImGui::Selectable(folderName.c_str(), m_selectedFolder == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+              m_selectedFolder = i;
+            }
+            if (m_selectedFolder == i && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+              m_charDir->setDirectory(i);
+              m_folders = m_charDir.value().getDirectories();
+              m_characterSheets = m_charDir.value().getDirectoryContents();
+              m_selectedSheet = -1;
+              m_selectedFolder = -1;
+              m_characterSheet.reset();
+            }
+          }
+
           if (ImGui::Selectable("(None)", m_selectedSheet < 0, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
             m_selectedSheet = -1;
             m_characterSheet.reset();
@@ -94,7 +134,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
             ImGui::TableNextColumn();
             if (ImGui::Selectable(std::format("{0}##sheet_{0}", sheet).c_str(), m_selectedSheet == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
               if (m_selectedSheet != i) {
-                m_characterSheet.emplace(sheet);
+                m_characterSheet.emplace(m_charDir.value().isParentDirectory() ? sheet : m_charDir.value().pathPrefix + '/' + sheet);
                 if (m_pickerMode == PickerMode::Character) {
                   m_selectionWidth = m_characterSheet->characterAtlasWidth();
                   m_selectionHeight = m_characterSheet->characterAtlasHeight();

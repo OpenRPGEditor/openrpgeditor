@@ -21,7 +21,7 @@ struct Dialog_ShowPicture : IEventDialogController {
     m_opacityValue = command->opacityValue;
     m_blendMode = static_cast<int>(command->blendMode);
 
-    m_imagePicker.emplace(ImagePicker::PickerMode::Picture, m_imageName, "");
+    m_imagePicker.emplace(ImagePicker::PickerMode::Picture, m_imageName, m_imageName);
     m_imagePicker->setOpen(true);
   }
   std::tuple<bool, bool> draw() override;

@@ -1,4 +1,5 @@
 #pragma once
+#include "Core/CommonUI/Directory.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/Log.hpp"
 #include "Core/Settings.hpp"
@@ -11,20 +12,22 @@ namespace fs = std::filesystem;
 struct Dialog_PlayMovie : IEventDialogController {
   Dialog_PlayMovie() = delete;
   explicit Dialog_PlayMovie(const std::string& name, const std::shared_ptr<PlayMovieCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
-    if (cmd == nullptr) {
-      command.reset(new PlayMovieCommand());
-    }
-    m_movie = command->name;
-    try {
-      auto files = getFileNames(Database::instance()->basePath + "movies/");
-      for (const auto& file : files) {
-        m_movies.push_back(file);
-      }
-    } catch (const std::filesystem::filesystem_error& e) { std::cerr << "Error accessing directory: " << e.what() << std::endl; }
-    m_movie = "";
+    m_movies = m_movieDir.value().getDirectoryContents();
+    m_folders = m_movieDir.value().getDirectories();
+    m_movieDir.emplace("movies", ".mp4", command->name); // TODO: Add multiple filter format, include .webm
   }
   std::tuple<bool, bool> draw() override;
   [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return command; }
+
+  bool playMovie(const char* path) {
+
+    // TODO
+
+    // if (!buffer.loadFromFile(Database::instance()->basePath + path + m_movieDir.value().extFilter)) {
+    //   // error loading file
+    //   return false;
+    // }
+  }
 
 private:
   bool m_confirmed{false};
@@ -35,19 +38,8 @@ private:
   std::shared_ptr<PlayMovieCommand> command;
   std::tuple<bool, bool> result;
   std::vector<std::string> m_movies;
-  std::vector<std::string> getFileNames(const std::string& directoryPath) {
-    std::vector<std::string> fileNames;
 
-    for (const auto& entry : fs::directory_iterator(directoryPath)) {
-      std::string filename = entry.path().filename().string();
-      size_t lastDotPos = filename.find_last_of(".");
-      if (lastDotPos != std::string::npos) {
-        std::string str = filename.substr(0, lastDotPos);
-        fileNames.push_back(str);
-      } else {
-        fileNames.push_back(filename);
-      }
-    }
-    return fileNames;
-  }
+  int m_selectedFolder{-1};
+  std::optional<Directory> m_movieDir;
+  std::vector<std::string> m_folders;
 };

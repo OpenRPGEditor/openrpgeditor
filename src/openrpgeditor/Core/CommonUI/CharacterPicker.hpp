@@ -4,6 +4,7 @@
 #include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/Graphics/CheckerboardTexture.hpp"
 #include "Database/Globals.hpp"
+#include "Directory.hpp"
 
 struct CharacterPicker : IDialogController {
   enum class PickerMode {
@@ -17,11 +18,17 @@ struct CharacterPicker : IDialogController {
   [[nodiscard]] int selectedPattern() const { return m_pattern; }
   [[nodiscard]] Direction selectedDirection() const { return m_direction; }
   [[nodiscard]] int character() const { return m_characterIndex; }
-  [[nodiscard]] std::string selectedSheet() const { return m_selectedSheet >= 0 ? m_characterSheets[m_selectedSheet] : ""; }
+  [[nodiscard]] std::string selectedSheet() const {
+    return m_selectedSheet >= 0 ? m_charDir.value().isParentDirectory() ? m_characterSheets[m_selectedSheet] : m_charDir.value().pathPrefix + '/' + m_characterSheets[m_selectedSheet] : "";
+  }
 
   void setCharacterInfo(std::string_view sheetName, int character = 0, int pattern = 0, Direction direction = Direction::Down);
 
 private:
+  std::optional<Directory> m_charDir;
+  std::vector<std::string> m_folders;
+  int m_selectedFolder{-1};
+
   std::optional<CharacterSheet> m_characterSheet;
   std::vector<std::string> m_characterSheets;
   PickerMode m_pickerMode;

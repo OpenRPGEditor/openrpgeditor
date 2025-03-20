@@ -7,24 +7,22 @@
 
 ImagePicker::ImagePicker(PickerMode mode, const std::string_view imageName, const std::string_view image2Name) : IDialogController("Select an Image##image_picker"), m_checkerboardTexture(864, 768) {
   m_pickType = mode;
-  std::string path;
-  std::string path2;
   switch (m_pickType) {
   case PickerMode::Parallax:
-    m_imageDir.emplace("img/parallaxes/", ".png");
+    m_imageDir.emplace("img/parallaxes/", ".png", std::string(imageName));
 
     m_images = m_imageDir.value().getDirectoryContents();
     m_folderDir = m_imageDir.value().getDirectories();
     break;
   case PickerMode::Picture:
-    m_imageDir.emplace("img/pictures/", ".png");
+    m_imageDir.emplace("img/pictures/", ".png", std::string(imageName));
 
     m_images = m_imageDir.value().getDirectoryContents();
     m_folderDir = m_imageDir.value().getDirectories();
     break;
   case PickerMode::Battleback:
-    m_imageDir.emplace("img/battlebacks1/", ".png");
-    m_imageDir2.emplace("img/battlebacks2/", ".png");
+    m_imageDir.emplace("img/battlebacks1/", ".png", std::string(imageName));
+    m_imageDir2.emplace("img/battlebacks2/", ".png", std::string(image2Name));
 
     m_images = m_imageDir.value().getDirectoryContents();
     m_images_2 = m_imageDir2.value().getDirectoryContents();
@@ -32,8 +30,8 @@ ImagePicker::ImagePicker(PickerMode mode, const std::string_view imageName, cons
     m_folderDir_2 = m_imageDir2.value().getDirectories();
     break;
   case PickerMode::Title:
-    m_imageDir.emplace("img/titles1/", ".png");
-    m_imageDir2.emplace("img/titles2/", ".png");
+    m_imageDir.emplace("img/titles1/", ".png", std::string(imageName));
+    m_imageDir2.emplace("img/titles2/", ".png", std::string(image2Name));
 
     m_images = m_imageDir.value().getDirectoryContents();
     m_images_2 = m_imageDir2.value().getDirectoryContents();
@@ -41,19 +39,19 @@ ImagePicker::ImagePicker(PickerMode mode, const std::string_view imageName, cons
     m_folderDir_2 = m_imageDir2.value().getDirectories();
     break;
   case PickerMode::Tileset:
-    m_imageDir.emplace("img/tilesets/", ".png");
+    m_imageDir.emplace("img/tilesets/", ".png", std::string(imageName));
 
     m_images = m_imageDir.value().getDirectoryContents();
     m_folderDir = m_imageDir.value().getDirectories();
     break;
   case PickerMode::Animation:
-    m_imageDir.emplace("img/animations/", ".png");
+    m_imageDir.emplace("img/animations/", ".png", std::string(imageName));
 
     m_images = m_imageDir.value().getDirectoryContents();
     m_folderDir = m_imageDir.value().getDirectories();
     break;
   case PickerMode::SVBattler:
-    m_imageDir.emplace("img/sv_actors/", ".png");
+    m_imageDir.emplace("img/sv_actors/", ".png", std::string(imageName));
 
     m_images = m_imageDir.value().getDirectoryContents();
     m_folderDir = m_imageDir.value().getDirectories();
@@ -122,6 +120,9 @@ std::tuple<bool, bool> ImagePicker::draw() {
               m_imageDir.value().moveUp();
               m_images = m_imageDir->getDirectoryContents();
               m_folderDir = m_imageDir.value().getDirectories();
+              m_selectedImage = -1;
+              m_selectedFolder = -1;
+              m_image.reset();
             }
           }
           ImGui::EndDisabled();
@@ -134,8 +135,8 @@ std::tuple<bool, bool> ImagePicker::draw() {
               m_imageDir->setDirectory(i);
               m_folderDir = m_imageDir.value().getDirectories();
               m_images = m_imageDir.value().getDirectoryContents();
-              m_selectedFolder = -1;
               m_selectedImage = -1;
+              m_selectedFolder = -1;
               m_image.reset();
             }
           }
@@ -151,7 +152,7 @@ std::tuple<bool, bool> ImagePicker::draw() {
               m_selectedImage = i;
               m_image.emplace(m_selectedImage == -1                    ? ""
                               : m_imageDir.value().isParentDirectory() ? m_images.at(m_selectedImage)
-                                                                       : m_imageDir.value().pathPrefix + '\\' + m_images.at(m_selectedImage),
+                                                                       : m_imageDir.value().pathPrefix + '/' + m_images.at(m_selectedImage),
                               m_pickType, false);
               if (ImGui::IsItemHovered()) {
                 ImGui::SetTooltip("%s", sheet.c_str());
@@ -190,8 +191,8 @@ std::tuple<bool, bool> ImagePicker::draw() {
                   m_imageDir2->setDirectory(i);
                   m_folderDir_2 = m_imageDir2.value().getDirectories();
                   m_images_2 = m_imageDir2.value().getDirectoryContents();
-                  m_selectedFolder2 = -1;
                   m_selectedImage2 = -1;
+                  m_selectedFolder2 = -1;
                   m_image2.reset();
                 }
               }
@@ -207,7 +208,7 @@ std::tuple<bool, bool> ImagePicker::draw() {
                   m_selectedImage2 = i;
                   m_image2.emplace(m_selectedImage2 == -1                    ? ""
                                    : m_imageDir2.value().isParentDirectory() ? m_images_2.at(m_selectedImage2)
-                                                                             : m_imageDir2.value().pathPrefix + '\\' + m_images_2.at(m_selectedImage2),
+                                                                             : m_imageDir2.value().pathPrefix + '/' + m_images_2.at(m_selectedImage2),
                                    m_pickType, true);
                   if (ImGui::IsItemHovered()) {
                     ImGui::SetTooltip("%s", sheet2.c_str());

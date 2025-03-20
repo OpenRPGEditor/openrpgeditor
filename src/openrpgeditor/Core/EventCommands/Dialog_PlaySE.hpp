@@ -1,4 +1,5 @@
 #pragma once
+#include "Core/CommonUI/Directory.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/Log.hpp"
 #include "Core/Settings.hpp"
@@ -15,12 +16,16 @@ struct Dialog_PlaySE : IEventDialogController {
       command.reset(new PlaySECommand());
     }
     m_audio = command->audio;
-    try {
-      auto files = getFileNames(Database::instance()->basePath + "audio/se/");
-      for (const auto& file : files) {
-        m_audios.push_back(file);
+    m_audioDir.emplace("audio/se", ".ogg", m_audio.name());
+    m_audios = m_audioDir.value().getDirectoryContents();
+    m_folders = m_audioDir.value().getDirectories();
+
+    std::string audioName = m_audioDir->getFileName(m_audio.name());
+    for (int i = 0; i < m_audios.size(); ++i) {
+      if (audioName == m_audios[i]) {
+        m_selected = i + 1;
       }
-    } catch (const std::filesystem::filesystem_error& e) { std::cerr << "Error accessing directory: " << e.what() << std::endl; }
+    }
   }
   std::tuple<bool, bool> draw() override;
   [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return command; }
@@ -34,32 +39,18 @@ private:
   sf::SoundBuffer buffer;
   sf::Sound sound;
 
+  int m_selectedFolder{-1};
+  std::optional<Directory> m_audioDir;
+  std::vector<std::string> m_folders;
+
   std::shared_ptr<PlaySECommand> command;
   std::tuple<bool, bool> result;
   std::vector<std::string> m_audios;
-  std::vector<std::string> getFileNames(const std::string& directoryPath) {
-    std::vector<std::string> fileNames;
-
-    for (const auto& entry : fs::directory_iterator(directoryPath)) {
-      if (entry.path().extension() != ".ogg")
-        continue;
-
-      std::string filename = entry.path().filename().string();
-      size_t lastDotPos = filename.find_last_of(".");
-      if (lastDotPos != std::string::npos) {
-        std::string str = filename.substr(0, lastDotPos);
-        fileNames.push_back(str);
-      } else {
-        fileNames.push_back(filename);
-      }
-    }
-    return fileNames;
-  }
 
   bool playAudio(const char* path) {
     // Load and play music
     APP_INFO(path);
-    if (!buffer.loadFromFile(path)) {
+    if (!buffer.loadFromFile(Database::instance()->basePath + path + m_audioDir.value().extFilter)) {
       // error loading file
       return false;
     }

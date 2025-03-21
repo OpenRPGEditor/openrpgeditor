@@ -12,7 +12,7 @@ void GeneralSettingsTab::draw() {
     // TR-NOTE: "I Know What I'm Doing" should *not* be localized
     ImGui::LabelOverLineEdit("##experimental_features_confirmation", trNOOP("Type \"I Know What I'm Doing\" to enable features."), m_confirmationText, sizeof(m_confirmationText), 0.f, nullptr,
                              ImGuiInputTextFlags_None);
-    constexpr bool confirmed = !!strncasecmp(m_confirmationText, "i know what i'm doing", sizeof(m_confirmationText));
+    const bool confirmed = !!strncasecmp(m_confirmationText, "i know what i'm doing", sizeof(m_confirmationText));
     ImGui::BeginDisabled(confirmed && !Settings::instance()->enableExperimentalFeatures);
     ImGui::Checkbox(trNOOP("Experimental"), &Settings::instance()->enableExperimentalFeatures);
     ImGui::EndDisabled();

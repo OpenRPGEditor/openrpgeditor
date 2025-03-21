@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/CommonUI/IDialogController.hpp"
+#include "Core/Graphics/CheckerboardTexture.hpp"
 #include "Core/Graphics/FaceSheet.hpp"
 #include "Directory.hpp"
 
@@ -17,20 +18,17 @@ public:
 
   [[nodiscard]] int setFaceIndex() const { return m_faceIndex; }
 
-  void setFaceInfo(const std::string_view faceName, const int faceIndex) {
-    m_faceName = faceName;
-    m_faceIndex = faceIndex;
-    setSelectedSheet();
-  }
+  void setFaceInfo(std::string_view faceName, int faceIndex);
 
 private:
-  void setSelectedSheet();
   std::optional<FaceSheet> m_faceSheet;
-  std::string m_faceName;
   std::vector<std::string> m_faceSheets;
   std::vector<std::string> m_folderDir;
   Directory m_faceDirectory;
+  CheckerboardTexture m_checkerboardTexture;
   int m_selectedFolder{-1};
   int m_selectedSheet{-1};
+  int m_selectionX{0};
+  int m_selectionY{0};
   int m_faceIndex{0};
 };

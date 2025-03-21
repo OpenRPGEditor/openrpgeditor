@@ -8,10 +8,21 @@ Directory::Directory(std::string_view path, std::string_view filter, std::string
   if (!selectedPath.empty()) {
     // Navigate to contents
     selectedPath = selectedPath.substr(0, selectedPath.find_last_of('/'));
-    m_currentPath.assign(Database::instance()->basePath + path.data() + "/" + selectedPath.data());
+    if (!path.ends_with('/')) {
+      m_currentPath.assign(Database::instance()->basePath + path.data() + "/" + selectedPath.data());
+    } else {
+      m_currentPath.assign(Database::instance()->basePath + path.data() + selectedPath.data());
+    }
+    if (!filter.empty() && !is_directory(m_currentPath)) {
+      m_currentPath.replace_extension(filter);
+    }
+    if (is_regular_file(m_currentPath)) {
+      m_currentPath = m_currentPath.parent_path();
+    }
   } else {
     m_currentPath.assign(m_path);
   }
+
   m_isParentDir = equivalent(m_path, m_currentPath);
   setDirectoryContents(filter);
   setSubDirectories();

@@ -9,7 +9,7 @@
 void GeneralSettingsTab::draw() {
   if (ImGui::BeginTabItem(trNOOP("General"))) {
     ImGui::TextUnformatted(trNOOP("Debug & Experimental Features"));
-    // TR-NOTE: "I Know What I'm Doing" should *not* be localized
+    // TL-NOTE: "I Know What I'm Doing" should *not* be localized
     ImGui::LabelOverLineEdit("##experimental_features_confirmation", trNOOP("Type \"I Know What I'm Doing\" to enable features."), m_confirmationText, sizeof(m_confirmationText), 0.f, nullptr,
                              ImGuiInputTextFlags_None);
     const bool confirmed = !!strncasecmp(m_confirmationText, "i know what i'm doing", sizeof(m_confirmationText));

@@ -5,13 +5,46 @@
 
 #include <IconsFontAwesome6.h>
 
-FacePicker::FacePicker(const std::string_view sheetName, const int faceIndex)
-: IDialogController("Face"), m_faceSheet(sheetName), m_faceDirectory("img/faces/", ".png", std::string(sheetName)), m_faceIndex(faceIndex) {
+FacePicker::FacePicker(const std::string_view sheetName, const int faceIndex) : IDialogController("Face"), m_faceDirectory("img/faces/", ".png", std::string(sheetName)) {
+  if (!sheetName.empty()) {
+    m_faceSheet.emplace(sheetName);
+  }
+
   m_faceSheets = m_faceDirectory.getDirectoryContents();
   m_folderDir = m_faceDirectory.getDirectories();
+  setFaceInfo(sheetName, faceIndex);
 }
 
-void FacePicker::setSelectedSheet() {}
+void FacePicker::setFaceInfo(const std::string_view sheetName, const int faceIndex) {
+  m_faceSheet.emplace(sheetName);
+  m_faceIndex = faceIndex;
+  const std::string imageName = m_faceDirectory.getFileName(static_cast<std::string>(sheetName));
+
+  if (!imageName.empty()) {
+    bool found = false;
+    for (int i = 0; i < m_faceSheets.size(); ++i) {
+      if (!m_faceSheets[i].compare(sheetName)) {
+        found = true;
+        m_selectedSheet = i;
+        break;
+      }
+    }
+
+    if (!found) {
+      m_faceSheet.reset();
+      m_selectedSheet = -1;
+      return;
+    }
+
+    const auto [min, _] = m_faceSheet->getFaceRect(m_faceIndex);
+    m_selectionX = min.x() * m_faceSheet->texture().width();
+    m_selectionY = min.y() * m_faceSheet->texture().height();
+  }
+
+  if (m_faceSheet) {
+    m_checkerboardTexture.setSize(m_faceSheet->texture().width(), m_faceSheet->texture().height());
+  }
+}
 
 std::tuple<bool, bool> FacePicker::draw() {
   if (isOpen()) {
@@ -71,6 +104,8 @@ std::tuple<bool, bool> FacePicker::draw() {
               m_faceSheet.emplace(m_selectedSheet == -1                 ? ""
                                   : m_faceDirectory.isParentDirectory() ? m_faceSheets.at(m_selectedSheet)
                                                                         : m_faceDirectory.getPathPrefix() + '/' + m_faceSheets.at(m_selectedSheet));
+              m_checkerboardTexture.setSize(m_faceSheet->texture().width(), m_faceSheet->texture().height());
+
               if (ImGui::IsItemHovered()) {
                 ImGui::SetTooltip("%s", sheet.c_str());
               }
@@ -91,6 +126,33 @@ std::tuple<bool, bool> FacePicker::draw() {
             mouseCursor -= win->ContentRegionRect.Min;
             int x = alignValue(mouseCursor.x, FaceSheet::faceWidth());
             int y = alignValue(mouseCursor.y, FaceSheet::faceHeight());
+            if ((x >= 0 && x < m_faceSheet->texture().width()) && (y >= 0 && y < m_faceSheet->texture().height())) {
+              x /= FaceSheet::faceWidth();
+              y /= FaceSheet::faceHeight();
+
+              m_faceIndex = (y * (m_faceSheet->texture().width() / FaceSheet::faceWidth())) + x;
+              const auto [min, _] = m_faceSheet->getFaceRect(m_faceIndex);
+              m_selectionX = min.x() * m_faceSheet->texture().width();
+              m_selectionY = min.y() * m_faceSheet->texture().height();
+
+              printf("%i\n", m_faceIndex);
+            }
+          }
+
+          if (m_faceSheet) {
+            ImGui::Dummy({static_cast<float>(m_faceSheet->texture().width()), static_cast<float>(m_faceSheet->texture().height())});
+            win->DrawList->AddImage(static_cast<ImTextureID>(m_checkerboardTexture), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
+                                    win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_checkerboardTexture.width()), static_cast<float>(m_checkerboardTexture.height())}));
+            win->DrawList->AddImage(m_faceSheet->texture(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
+                                    win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_faceSheet->texture().width()), static_cast<float>(m_faceSheet->texture().height())}));
+            win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_selectionX), static_cast<float>(m_selectionY)}),
+                                   win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_selectionX) + static_cast<float>(FaceSheet::faceWidth()),
+                                                                        static_cast<float>(m_selectionY) + static_cast<float>(FaceSheet::faceHeight())}),
+                                   0xFF000000, 0.f, 0, 7.f);
+            win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_selectionX), static_cast<float>(m_selectionY)}),
+                                   win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_selectionX) + static_cast<float>(FaceSheet::faceWidth()),
+                                                                        static_cast<float>(m_selectionY) + static_cast<float>(FaceSheet::faceHeight())}),
+                                   0xFFFFFFFF, 0.f, 0, 3.f);
           }
         }
         ImGui::EndChild();

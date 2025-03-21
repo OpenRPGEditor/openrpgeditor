@@ -13,13 +13,6 @@ CharacterPicker::CharacterPicker(const PickerMode mode, const std::string_view s
   m_folders = m_charDir.value().getDirectories();
 
   setCharacterInfo(sheetName, character, pattern, direction);
-
-  // std::string charName = m_charDir->getFileName(static_cast<std::string>(sheetName));
-  // for (int i = 0; i < m_characterSheets.size(); ++i) {
-  //   if (charName == m_characterSheets[i]) {
-  //     m_selectedSheet = i;
-  //   }
-  // }
 }
 
 void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const int character, const int pattern, const Direction direction) {
@@ -39,6 +32,7 @@ void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const i
       }
     }
     if (!found) {
+      m_characterSheet.reset();
       m_selectedSheet = -1;
       return;
     }

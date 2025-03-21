@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenRPG Editor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-18 14:01-0700\n"
+"POT-Creation-Date: 2025-03-21 13:12-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -429,6 +429,7 @@ msgid "Up"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:163 src/librpgm/Database/Globals.hpp:861
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:311
 msgid "OK"
 msgstr ""
 
@@ -437,8 +438,9 @@ msgstr ""
 #: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:297
 #: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:483
 #: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:501
-#: src/openrpgeditor/Core/MainWindow.cpp:397
-#: src/openrpgeditor/Core/MainWindow.cpp:411
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:329
+#: src/openrpgeditor/Core/MainWindow.cpp:407
+#: src/openrpgeditor/Core/MainWindow.cpp:421
 msgid "Cancel"
 msgstr ""
 
@@ -730,6 +732,7 @@ msgstr ""
 #: src/librpgm/Database/Globals.hpp:276 src/librpgm/Database/Globals.hpp:344
 #: src/librpgm/Database/Globals.hpp:526 src/librpgm/Database/Globals.hpp:630
 #: src/librpgm/Database/Globals.hpp:908
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:299
 msgid "Script"
 msgstr ""
 
@@ -1135,78 +1138,97 @@ msgid "Designation with variables"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:482
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:146
 msgid "Move Down"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:483
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:149
 msgid "Move Left"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:484
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:152
 msgid "Move Right"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:485
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:155
 msgid "Move Up"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:486
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:158
 msgid "Move Lower Left"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:487
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:161
 msgid "Move Lower Right"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:488
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:164
 msgid "Move Upper Left"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:489
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:167
 msgid "Move Upper Right"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:490
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:170
 msgid "Move at Random"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:491
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:173
 msgid "Move toward Player"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:492
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:176
 msgid "Move away from Player"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:493
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:179
 msgid "1 Step Forward"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:494
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:182
 msgid "1 Step Backward"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:495
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:186
 msgid "Jump"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:496 src/librpgm/Database/Globals.hpp:575
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:190
 msgid "Wait"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:497
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:198
 msgid "Turn Down"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:498
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:201
 msgid "Turn Left"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:499
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:204
 msgid "Turn Right"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:500
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:207
 msgid "Turn Up"
 msgstr ""
 
@@ -1215,6 +1237,7 @@ msgid "Turn 90 Right"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:501
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:210
 msgid "Turn 90° Right"
 msgstr ""
 
@@ -1223,6 +1246,7 @@ msgid "Turn 90 Left"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:502
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:213
 msgid "Turn 90° Left"
 msgstr ""
 
@@ -1231,6 +1255,7 @@ msgid "Turn 180"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:503
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:216
 msgid "Turn 180°"
 msgstr ""
 
@@ -1243,22 +1268,27 @@ msgid "Turn 90° Left or Right"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:505
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:222
 msgid "Turn at Random"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:506
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:225
 msgid "Turn toward Player"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:507
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:228
 msgid "Turn away from Player"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:508
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:232
 msgid "Switch ON"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:509
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:236
 msgid "Switch OFF"
 msgstr ""
 
@@ -1272,42 +1302,52 @@ msgid "Frequency"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:512
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:252
 msgid "Walking Animation ON"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:513
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:255
 msgid "Walking Animation OFF"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:514
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:258
 msgid "Stepping Animation ON"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:515
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:261
 msgid "Stepping Animation OFF"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:516
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:264
 msgid "Direction Fix ON"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:517
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:267
 msgid "Direction Fix OFF"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:518
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:270
 msgid "Through ON"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:519
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:273
 msgid "Through OFF"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:520
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:276
 msgid "Transparent ON"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:521
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:279
 msgid "Transparent OFF"
 msgstr ""
 
@@ -1324,6 +1364,7 @@ msgid "Change Blend Mode"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:525 src/librpgm/Database/Globals.hpp:589
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:295
 msgid "Play SE"
 msgstr ""
 
@@ -1967,7 +2008,7 @@ msgid "Lowest"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:761
-#: src/openrpgeditor/Core/MainWindow.cpp:523
+#: src/openrpgeditor/Core/MainWindow.cpp:533
 msgid "Lower"
 msgstr ""
 
@@ -2381,7 +2422,8 @@ msgstr ""
 
 #: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:160
 #: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:267
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:268
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:123
+#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:271
 msgid "Options"
 msgstr ""
 
@@ -2397,7 +2439,7 @@ msgstr ""
 
 #: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:184
 #: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:285
-#: src/openrpgeditor/Core/MainWindow.cpp:599
+#: src/openrpgeditor/Core/MainWindow.cpp:609
 msgid "Clear"
 msgstr ""
 
@@ -2491,7 +2533,7 @@ msgid "Load Message"
 msgstr ""
 
 #: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:359
-#: src/openrpgeditor/Core/MainWindow.cpp:584
+#: src/openrpgeditor/Core/MainWindow.cpp:594
 msgid "File"
 msgstr ""
 
@@ -2702,7 +2744,7 @@ msgid "No headers available"
 msgstr ""
 
 #: src/openrpgeditor/Core/DatabaseEditor/DBDocTab.cpp:184
-#: src/openrpgeditor/Core/MainWindow.cpp:639
+#: src/openrpgeditor/Core/MainWindow.cpp:649
 msgid "Edit"
 msgstr ""
 
@@ -2830,6 +2872,99 @@ msgstr ""
 msgid "Shows only untranslated pairs or cancels untranslated navigation."
 msgstr ""
 
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:75
+msgid "Player"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:79
+msgid "This Event"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:102
+msgid "Step"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:125
+msgid "Repeat Movements"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:129
+msgid "Skip If Cannot Move"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:134
+msgid "Wait for Completion"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:185
+msgid "Jump..."
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:189
+msgid "Wait..."
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:219
+msgid "Turn 90° Right or Left"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:231
+msgid "Switch ON..."
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:235
+msgid "Switch OFF..."
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:239
+msgid "Change Speed..."
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:240
+msgid "Change Speed"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:243
+msgid "Change Frequency..."
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:244
+msgid "Change Frequency"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:282
+msgid "Change Image..."
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:283
+#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:196
+msgid "Image"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:286
+msgid "Change Opacity..."
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:287
+msgid "Opacity"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:290
+msgid "Change Blend Mode..."
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:291
+msgid "Blend"
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:294
+msgid "Play SE..."
+msgstr ""
+
+#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:298
+msgid "Script..."
+msgstr ""
+
 #: src/openrpgeditor/Core/EventEditor/EVPage.cpp:63
 msgid "Page Name:"
 msgstr ""
@@ -2853,10 +2988,6 @@ msgstr ""
 msgid "Actors"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:196
-msgid "Image"
-msgstr ""
-
 #: src/openrpgeditor/Core/EventEditor/EVPage.cpp:206
 msgid "Autonomous Movement"
 msgstr ""
@@ -2873,27 +3004,27 @@ msgstr ""
 msgid "Route..."
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:270
+#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:273
 msgid "Walking"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:274
+#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:277
 msgid "Stepping"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:278
+#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:281
 msgid "Direction Fix"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:282
+#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:285
 msgid "Through"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:292
+#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:295
 msgid "Priority"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:307
+#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:310
 msgid "Trigger"
 msgstr ""
 
@@ -2956,6 +3087,47 @@ msgstr ""
 
 #: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:265
 msgid "Note"
+msgstr ""
+
+#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:10
+msgid "General"
+msgstr ""
+
+#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:11
+msgid "Debug & Experimental Features"
+msgstr ""
+
+#. TL-NOTE: "I Know What I'm Doing" should *not* be localized
+#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:13
+msgid "Type \"I Know What I'm Doing\" to enable features."
+msgstr ""
+
+#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:17
+msgid "Experimental"
+msgstr ""
+
+#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:20
+msgid "Debug"
+msgstr ""
+
+#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:23
+msgid "Max Recent Projects"
+msgstr ""
+
+#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:33
+msgid "Project Base Directory Location"
+msgstr ""
+
+#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:33
+msgid "Sets the directory where projects are stored"
+msgstr ""
+
+#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:44
+msgid "Choose..."
+msgstr ""
+
+#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:53
+msgid "Select a directory to store RPG Maker game projects"
 msgstr ""
 
 #: src/openrpgeditor/Core/TroopsEventEditor/TroopsEVEditor.cpp:30
@@ -3142,99 +3314,99 @@ msgstr ""
 msgid "No text found"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:219
+#: src/openrpgeditor/Core/MainWindow.cpp:220
 msgid "New Project"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:219
-msgid "Creates a new project."
+#: src/openrpgeditor/Core/MainWindow.cpp:220
+msgid "Creates a new project. [EXPERIMENTAL]"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:226
+#: src/openrpgeditor/Core/MainWindow.cpp:228
 msgid "Open Project"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:226
+#: src/openrpgeditor/Core/MainWindow.cpp:228
 msgid "Opens an existing project."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:234
+#: src/openrpgeditor/Core/MainWindow.cpp:237
 msgid "Save Project"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:234
-msgid "Saves the project."
+#: src/openrpgeditor/Core/MainWindow.cpp:237
+msgid "Saves the project. [EXPERIMENTAL]"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:279
-#: src/openrpgeditor/Core/MainWindow.cpp:680
+#: src/openrpgeditor/Core/MainWindow.cpp:286
+#: src/openrpgeditor/Core/MainWindow.cpp:690
 msgid "Map"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:279
+#: src/openrpgeditor/Core/MainWindow.cpp:286
 msgid "Switch to Map Edit mode."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:290
-#: src/openrpgeditor/Core/MainWindow.cpp:683
+#: src/openrpgeditor/Core/MainWindow.cpp:297
+#: src/openrpgeditor/Core/MainWindow.cpp:693
 msgid "Event"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:290
+#: src/openrpgeditor/Core/MainWindow.cpp:297
 msgid "Switch to Event Edit mode."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:298
-#: src/openrpgeditor/Core/MainWindow.cpp:687
+#: src/openrpgeditor/Core/MainWindow.cpp:305
+#: src/openrpgeditor/Core/MainWindow.cpp:697
 msgid "Game Preview"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:298
+#: src/openrpgeditor/Core/MainWindow.cpp:305
 msgid "Toggles Game Preview mode."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:334
+#: src/openrpgeditor/Core/MainWindow.cpp:341
 msgid "Shadow Pen"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:334
+#: src/openrpgeditor/Core/MainWindow.cpp:341
 msgid "Adds or removes shadows of walls"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:345
+#: src/openrpgeditor/Core/MainWindow.cpp:352
 msgid "Eraser"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:345
+#: src/openrpgeditor/Core/MainWindow.cpp:352
 msgid "Erases tiles at a given point"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:392
+#: src/openrpgeditor/Core/MainWindow.cpp:402
 msgid "Loading Project...."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:393
+#: src/openrpgeditor/Core/MainWindow.cpp:403
 #, c++-format
 msgid "Loading {0} ({1} of {2})...."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:406
+#: src/openrpgeditor/Core/MainWindow.cpp:416
 msgid "Saving Project...."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:407
+#: src/openrpgeditor/Core/MainWindow.cpp:417
 #, c++-format
 msgid "Saving {0} ({1} of {2})...."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:498
+#: src/openrpgeditor/Core/MainWindow.cpp:508
 #, c++-format
 msgid ""
 "Sheet: {} ({}), ID: {}, x: {}, y: {}, z: {},  width: {}, height: {}, u: {}, "
 "v: {}"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:502
+#: src/openrpgeditor/Core/MainWindow.cpp:512
 #, c++-format
 msgid ""
 "\n"
@@ -3244,155 +3416,155 @@ msgid ""
 "WallSide: {}, WallTop: {}, FloorTypeAutoTile: {}, WallTypeAutoTile: {}\n"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:521
+#: src/openrpgeditor/Core/MainWindow.cpp:531
 msgid "Tile Debug"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:529
+#: src/openrpgeditor/Core/MainWindow.cpp:539
 msgid "Upper"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:543
+#: src/openrpgeditor/Core/MainWindow.cpp:553
 msgid "RPG Maker Projects"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:585
+#: src/openrpgeditor/Core/MainWindow.cpp:595
 msgid "New Project..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:588
+#: src/openrpgeditor/Core/MainWindow.cpp:598
 msgid "Open Project..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:591
+#: src/openrpgeditor/Core/MainWindow.cpp:601
 msgid "Close Project..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:594
+#: src/openrpgeditor/Core/MainWindow.cpp:604
 msgid "Save Project..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:598
+#: src/openrpgeditor/Core/MainWindow.cpp:608
 msgid "Recent Projects"
 msgstr ""
 
 #. TL-NOTE: Use ellipses character appropriate for your language
 #. Deployment is referring to preparing a game for distribution to end users, exporting all related assets into an easily distributable form
-#: src/openrpgeditor/Core/MainWindow.cpp:620
+#: src/openrpgeditor/Core/MainWindow.cpp:630
 msgid "Deployment..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:630
+#: src/openrpgeditor/Core/MainWindow.cpp:640
 msgid "Exit"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:640
+#: src/openrpgeditor/Core/MainWindow.cpp:650
 msgid "Undo"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:647
+#: src/openrpgeditor/Core/MainWindow.cpp:657
 msgid "Redo"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:654
+#: src/openrpgeditor/Core/MainWindow.cpp:664
 msgid "Cut"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:657
+#: src/openrpgeditor/Core/MainWindow.cpp:667
 msgid "Copy"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:660
+#: src/openrpgeditor/Core/MainWindow.cpp:670
 msgid "Paste"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:663
+#: src/openrpgeditor/Core/MainWindow.cpp:673
 msgid "Delete"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:667
+#: src/openrpgeditor/Core/MainWindow.cpp:677
 msgid "Find"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:670
+#: src/openrpgeditor/Core/MainWindow.cpp:680
 msgid "Find Next"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:673
+#: src/openrpgeditor/Core/MainWindow.cpp:683
 msgid "Find Previous"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:679
+#: src/openrpgeditor/Core/MainWindow.cpp:689
 msgid "Mode"
 msgstr ""
 
 #. TL-NOTE: Refers to Game Preview mode and is in reference to how events are drawn to the screen.
 #. Displays as a tooltip.
-#: src/openrpgeditor/Core/MainWindow.cpp:693
+#: src/openrpgeditor/Core/MainWindow.cpp:703
 msgid "Toggles event borders, layer render order, and animations."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:697
+#: src/openrpgeditor/Core/MainWindow.cpp:707
 msgid "Draw"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:706
+#: src/openrpgeditor/Core/MainWindow.cpp:716
 msgid "Scale"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:707
+#: src/openrpgeditor/Core/MainWindow.cpp:717
 msgid "Zoom In"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:710
+#: src/openrpgeditor/Core/MainWindow.cpp:720
 msgid "Zoom Out"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:713
+#: src/openrpgeditor/Core/MainWindow.cpp:723
 msgid "Actual Size"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:719
+#: src/openrpgeditor/Core/MainWindow.cpp:729
 msgid "Tools"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:720
+#: src/openrpgeditor/Core/MainWindow.cpp:730
 msgid "Settings"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:723
+#: src/openrpgeditor/Core/MainWindow.cpp:733
 msgid "Database"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:726
+#: src/openrpgeditor/Core/MainWindow.cpp:736
 msgid "NWJS Version Manager"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:729
+#: src/openrpgeditor/Core/MainWindow.cpp:739
 msgid "Event Searcher..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:732
+#: src/openrpgeditor/Core/MainWindow.cpp:742
 msgid "Editor Plugins..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:735
+#: src/openrpgeditor/Core/MainWindow.cpp:745
 msgid "LibLCF..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:741
+#: src/openrpgeditor/Core/MainWindow.cpp:751
 msgid "Reset Window Layout"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:746
+#: src/openrpgeditor/Core/MainWindow.cpp:756
 msgid "Game"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:747
+#: src/openrpgeditor/Core/MainWindow.cpp:757
 msgid "Play Test"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:751
+#: src/openrpgeditor/Core/MainWindow.cpp:761
 msgid "Open Folder"
 msgstr ""
 

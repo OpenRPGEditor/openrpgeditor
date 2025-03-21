@@ -56,7 +56,7 @@ void EventCommandEditor::blockSelect(const int n) {
           }
           ++j;
         }
-        if (j >= m_commands->size() - 1 || (m_commands->at(j) && m_commands->at(j)->code() == EventCode::Event_Dummy)) {
+        if (j >= m_commands->size() - 1 || (m_commands->at(j) && m_commands->at(j)->code() == EventCode::Event_Dummy)) { // ???
           j--;
         }
       }
@@ -233,6 +233,7 @@ void EventCommandEditor::draw() {
             const int stepPadding = (totalPadding - static_cast<int>(std::floor(std::log10(step)))) + 1;
             if (ImGui::SelectableWithBorder((std::string(stepPadding, ' ') + std::to_string(step)).c_str(), isSelected,
                                             ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick, ImVec2(0, height))) {
+
               if (ImGui::IsKeyDown(ImGuiKey_LeftAlt) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) {
                 /* If a command has a partner try to flip the selection around, no-op for commands that don't support this */
                 if (m_commands->at(n)->hasPartner()) {
@@ -272,6 +273,9 @@ void EventCommandEditor::draw() {
                 }
               } else {
                 m_selectedEnd = -1;
+              }
+              if (m_commands->at(n)->code() == EventCode::Show_Choices) {
+                blockSelect(n);
               }
             }
             if (ImGui::IsItemHovered()) {
@@ -385,38 +389,51 @@ void EventCommandEditor::drawCommandDialog() {
               int when{0};
               int m_choiceEnd{0};
               bool skip{false};
+              bool endChoice{false};
               std::vector<std::shared_ptr<IEventCommand>> whenList;
-              for (int i = m_selectedCommand + 2; m_commands->at(i)->code() != EventCode::End_del_ShowChoices; i++) {
-                if (m_commands->at(i)->code() == EventCode::When_Selected) {
-                  skip = true;
-                  std::shared_ptr<WhenSelectedCommand> whenCmd = std::dynamic_pointer_cast<WhenSelectedCommand>(m_commands->at(i));
-                  if (whenCmd->choice == pointerCmd->choices.at(when)) {
-                    tmp.push_back(whenList);
-                    whenList.clear();
-                    skip = false;
-                    when++;
+              for (int i = m_selectedCommand + 2; i < m_commands->size(); i++) {
+                if (!endChoice) {
+                  if (m_commands->at(i)->code() == EventCode::End_del_ShowChoices && m_commands->at(i)->indent() == pointerCmd->indent()) {
+                    endChoice = true;
                   }
+                  if (m_commands->at(i)->code() == EventCode::When_Selected && m_commands->at(i)->indent() == pointerCmd->indent()) {
+                    skip = true;
+                    std::shared_ptr<WhenSelectedCommand> whenCmd = std::dynamic_pointer_cast<WhenSelectedCommand>(m_commands->at(i));
+                    if (whenCmd->choice == pointerCmd->choices.at(when)) {
+                      tmp.push_back(whenList);
+                      whenList.clear();
+                      skip = false;
+                      when++;
+                    }
+                  }
+                  if (!skip) {
+                    whenList.push_back(m_commands->at(i));
+                  }
+                  m_choiceEnd = i + 2;
                 }
-                if (!skip) {
-                  whenList.push_back(m_commands->at(i));
-                }
-                m_choiceEnd = i;
               }
               if (tmp.empty() && whenList.size() > 0) {
                 tmp.push_back(whenList);
               }
               cmdList.push_back(pointerCmd);
               for (int i = 0; i < pointerCmd->choices.size(); i++) {
-                cmdList.insert_range(cmdList.end(), commandDialog->getTemplateCommands(EventCode::When_Selected, i));
-                cmdList.insert_range(cmdList.end(), tmp.at(i));
+                std::shared_ptr<WhenSelectedCommand> whenCmd = std::make_shared<WhenSelectedCommand>();
+                whenCmd->setIndent(commandDialog->getParentIndent().value());
+                whenCmd->choice = pointerCmd->choices.at(i);
+                cmdList.insert(cmdList.end(), whenCmd);
+
+                if (i < tmp.size()) {
+                  cmdList.insert_range(cmdList.end(), tmp.at(i));
+                }
               }
-              //if (pointerCmd->cancelType >= pointerCmd->choices.size()) {
-              //  cmdList.push_back(std::make_shared<WhenCancelCommand>());
-              //  cmdList.back()->setIndent(commandDialog->getParentIndent().value());
-              //  cmdList.insert_range(cmdList.end(), tmp.at(pointerCmd->choices.size() + 1));
-              //}
-              cmdList.push_back(std::make_shared<ShowChoicesEndCommand>());
-              cmdList.back()->setIndent(commandDialog->getParentIndent().value());
+              // if (pointerCmd->cancelType >= pointerCmd->choices.size()) {
+              //   cmdList.push_back(std::make_shared<WhenCancelCommand>());
+              //   cmdList.back()->setIndent(commandDialog->getParentIndent().value());
+              //   cmdList.insert_range(cmdList.end(), tmp.at(pointerCmd->choices.size() + 1));
+              // }
+              std::shared_ptr<ShowChoicesEndCommand> endCmd = std::make_shared<ShowChoicesEndCommand>();
+              endCmd->setIndent(commandDialog->getParentIndent().value());
+              cmdList.push_back(endCmd);
 
               m_commands->erase(m_commands->begin() + m_selectedCommand, m_commands->begin() + m_choiceEnd);
               m_commands->insert(m_commands->begin() + m_selectedCommand, cmdList.begin(), cmdList.end());

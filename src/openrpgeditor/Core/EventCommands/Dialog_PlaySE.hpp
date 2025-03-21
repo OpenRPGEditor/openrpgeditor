@@ -2,7 +2,9 @@
 #include "Core/CommonUI/Directory.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/Log.hpp"
+#include "Core/ResourceManager.hpp"
 #include "Core/Settings.hpp"
+#include "Core/Sound.hpp"
 #include "Database/Database.hpp"
 #include "Database/EventCommands/PlaySE.hpp"
 #include <SFML/Audio.hpp>
@@ -36,8 +38,7 @@ private:
   int m_selected = 0;
   Audio m_audio;
 
-  sf::SoundBuffer buffer;
-  sf::Sound sound;
+  Sound m_sound;
 
   int m_selectedFolder{-1};
   std::optional<Directory> m_audioDir;
@@ -47,40 +48,19 @@ private:
   std::tuple<bool, bool> result;
   std::vector<std::string> m_audios;
 
-  bool playAudio(const char* path) {
+  bool playAudio(const std::string& path) {
     // Load and play music
-    APP_INFO(path);
-    if (!buffer.loadFromFile(Database::instance()->basePath + path + m_audioDir.value().getExt())) {
-      // error loading file
-      return false;
-    }
-    sf::Listener::setPosition(0.f, 0.f, 0.f); // Set listener position
-    sound.setRelativeToListener(true);        // Ensure sound is not relative to listener
-    sound.setBuffer(buffer);
-    sound.play();
+    m_sound = Sound(ResourceManager::instance()->loadBGM(Database::instance()->basePath + path + m_audioDir.value().getExt()));
+    m_sound.play();
+    setVolume(m_audio.volume());
+    setPanning(m_audio.pan());
+    setPitch(m_audio.pitch());
     return true;
   }
   void setVolume(int volume) {
-    sound.setVolume(volume); // 0% to 100%
+    m_sound.setVolume(static_cast<float>(volume)); // 0% to 100%
   }
-  void setPanning(int value) {
-    // TODO -- how can we pan this thing
-    /*
-    *(-1,0,0)' is to the left of the listener
-    (1,0,0)' is to the right of the listener
-    (0,0,1)' is in front of the listener
-    (0,0,-1)' is behind the listener
-    */
-    if (value > 0) {
-      // To the right (+)
-      // sound.setPosition(sf::Vector3f{ static_cast<float>(value), 0.f, 0.f});
-      sound.setPosition(sf::Vector3f(static_cast<float>(value) / 100.f, 0, 0));
-    } else { // To the left (-)
-      sound.setPosition(sf::Vector3f(static_cast<float>(value) / 100.f, 0, 0));
-    }
-    APP_INFO("Listener: " + std::to_string(sf::Listener::getPosition().x) + " " + std::to_string(sf::Listener::getPosition().y));
-    APP_INFO("Sound: " + std::to_string(sound.getPosition().x) + " " + std::to_string(sound.getPosition().y));
-  }
-  void setPitch(int value) { sound.setPitch(value / 100.f); }
-  void stopAudio() { sound.stop(); }
+  void setPanning(int value) { m_sound.setPan(static_cast<float>(value) / 100.0f); }
+  void setPitch(int value) { m_sound.setPitch(value / 100.f); }
+  void stopAudio() { m_sound.stop(); }
 };

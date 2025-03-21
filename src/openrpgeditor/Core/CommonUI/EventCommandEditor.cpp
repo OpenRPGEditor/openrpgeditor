@@ -366,9 +366,63 @@ void EventCommandEditor::drawCommandDialog() {
           }
           m_isNewEntry = false;
         } else {
-          if (std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand())) {
-            std::shared_ptr<ShowChoiceCommand> commandPointer = std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand());
+          if (commandDialog->getCommand()->code() == EventCode::Show_Choices) {
+            std::shared_ptr<ShowChoiceCommand> pointerCmd = std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand());
+            int totalChoices{0};
+            for (int i = m_selectedCommand + 1; m_commands->at(i)->code() != EventCode::End_del_ShowChoices; i++) {
+              if (m_commands->at(i)->code() == EventCode::When_Selected) {
+                totalChoices++;
+              }
+              if (m_commands->at(i)->code() == EventCode::When_Cancel) {
+                totalChoices++;
+              }
+            }
 
+            if (totalChoices != pointerCmd->choices.size()) {
+              std::vector<std::shared_ptr<IEventCommand>> cmdList;
+              std::vector<std::vector<std::shared_ptr<IEventCommand>>> tmp;
+
+              int when{0};
+              int m_choiceEnd{0};
+              bool skip{false};
+              std::vector<std::shared_ptr<IEventCommand>> whenList;
+              for (int i = m_selectedCommand + 2; m_commands->at(i)->code() != EventCode::End_del_ShowChoices; i++) {
+                if (m_commands->at(i)->code() == EventCode::When_Selected) {
+                  skip = true;
+                  std::shared_ptr<WhenSelectedCommand> whenCmd = std::dynamic_pointer_cast<WhenSelectedCommand>(m_commands->at(i));
+                  if (whenCmd->choice == pointerCmd->choices.at(when)) {
+                    tmp.push_back(whenList);
+                    whenList.clear();
+                    skip = false;
+                    when++;
+                  }
+                }
+                if (!skip) {
+                  whenList.push_back(m_commands->at(i));
+                }
+                m_choiceEnd = i;
+              }
+              if (tmp.empty() && whenList.size() > 0) {
+                tmp.push_back(whenList);
+              }
+              cmdList.push_back(pointerCmd);
+              for (int i = 0; i < pointerCmd->choices.size(); i++) {
+                cmdList.insert_range(cmdList.end(), commandDialog->getTemplateCommands(EventCode::When_Selected, i));
+                cmdList.insert_range(cmdList.end(), tmp.at(i));
+              }
+              //if (pointerCmd->cancelType >= pointerCmd->choices.size()) {
+              //  cmdList.push_back(std::make_shared<WhenCancelCommand>());
+              //  cmdList.back()->setIndent(commandDialog->getParentIndent().value());
+              //  cmdList.insert_range(cmdList.end(), tmp.at(pointerCmd->choices.size() + 1));
+              //}
+              cmdList.push_back(std::make_shared<ShowChoicesEndCommand>());
+              cmdList.back()->setIndent(commandDialog->getParentIndent().value());
+
+              m_commands->erase(m_commands->begin() + m_selectedCommand, m_commands->begin() + m_choiceEnd);
+              m_commands->insert(m_commands->begin() + m_selectedCommand, cmdList.begin(), cmdList.end());
+            }
+
+            /*
             for (auto choice : commandPointer->choices) {
               APP_INFO("Choice Print: " + choice);
             }
@@ -415,7 +469,7 @@ void EventCommandEditor::drawCommandDialog() {
                   }
                 }
               }
-            }
+            }*/
           }
         }
       }

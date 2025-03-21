@@ -22,7 +22,9 @@ std::tuple<bool, bool> Dialog_Comment::draw() {
       if (texts.size() > 1)
         m_isNext = true;
 
-      command->text = texts.front();
+      if (texts.size() > 0) {
+        command->text = texts.front();
+      }
       if (m_isNext) {
         command->nextComments.clear();
         command->nextComments.reserve(texts.size());

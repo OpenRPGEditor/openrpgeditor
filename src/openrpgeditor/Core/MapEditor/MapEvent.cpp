@@ -28,11 +28,7 @@ MapEvent::MapEvent(Event* event) : IEventRenderer(event) {
   page()->image().characterNameModified().connect<&MapEvent::onCharacterImageModified>(this);
 }
 
-void MapEvent::onCharacterImageModified(EventImage* evImage, const std::string& characterName) {
-  int test = 1;
-
-  m_event->page(m_page)->image().setCharacterName(characterName);
-}
+void MapEvent::onCharacterImageModified(EventImage* evImage, const std::string& characterName) { m_characterSheet = CharacterSheet(characterName); }
 
 double oscillate(const double minValue, const double maxValue, const double period, const double currentTime) {
   const double rangeDelta = maxValue - minValue;

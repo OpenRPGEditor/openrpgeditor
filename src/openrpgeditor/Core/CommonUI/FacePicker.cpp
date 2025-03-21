@@ -84,7 +84,15 @@ std::tuple<bool, bool> FacePicker::draw() {
         ImGui::EndChild();
         ImGui::SameLine();
         ImGui::BeginChild("##image_picker_image_panel");
-        {}
+        {
+          auto win = ImGui::GetCurrentWindow();
+          if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered()) {
+            auto mouseCursor = ImGui::GetMousePos();
+            mouseCursor -= win->ContentRegionRect.Min;
+            int x = alignValue(mouseCursor.x, FaceSheet::faceWidth());
+            int y = alignValue(mouseCursor.y, FaceSheet::faceHeight());
+          }
+        }
         ImGui::EndChild();
       }
       ImGui::EndChild();

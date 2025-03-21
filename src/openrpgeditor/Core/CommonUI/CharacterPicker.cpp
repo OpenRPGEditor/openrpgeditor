@@ -6,21 +6,8 @@
 #include <IconsFontAwesome6.h>
 #include <iostream>
 
-inline int roundUp(int numToRound, int multiple) {
-  if (multiple == 0)
-    return numToRound;
-
-  int remainder = numToRound % multiple;
-  if (remainder == 0)
-    return numToRound;
-
-  return numToRound + multiple - remainder;
-}
-
-int alignCoord(int value, int size) { return roundUp(value - (value % (static_cast<int>(size))), size); }
-
 CharacterPicker::CharacterPicker(const PickerMode mode, const std::string_view sheetName, const int character, const int pattern, const Direction direction)
-: IDialogController("Select an Image##character_picker"), m_pickerMode(mode), m_characterIndex(character), m_checkerboardTexture(4096, 4096), m_pattern(pattern), m_direction(direction) {
+: IDialogController("Select an Image##character_picker"), m_pickerMode(mode), m_characterIndex(character), m_pattern(pattern), m_direction(direction) {
   m_charDir.emplace("img/characters/", ".png", static_cast<std::string>(sheetName));
   m_characterSheets = m_charDir.value().getDirectoryContents();
   m_folders = m_charDir.value().getDirectories();
@@ -77,6 +64,7 @@ void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const i
   } else {
     m_selectedSheet = -1;
   }
+  m_checkerboardTexture.setSize(m_characterSheet->texture().width(), m_characterSheet->texture().height());
 }
 
 std::tuple<bool, bool> CharacterPicker::draw() {
@@ -86,8 +74,9 @@ std::tuple<bool, bool> CharacterPicker::draw() {
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  ImGui::SetNextWindowSizeConstraints(ImGui::GetMainViewport()->Size / 6, {FLT_MAX, FLT_MAX});
   ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 3, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoSavedSettings)) {
     const auto calc = ImGui::CalcTextSize("OKCANCEL");
     ImGui::BeginChild("##top_child", {0, ImGui::GetContentRegionAvail().y - (calc.y + (ImGui::GetStyle().ItemSpacing.y * 3) + ImGui::GetStyle().FramePadding.y)});
     {
@@ -139,6 +128,9 @@ std::tuple<bool, bool> CharacterPicker::draw() {
             if (ImGui::Selectable(std::format("{0}##sheet_{0}", sheet).c_str(), m_selectedSheet == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
               if (m_selectedSheet != i) {
                 m_characterSheet.emplace(m_charDir.value().isParentDirectory() ? sheet : m_charDir.value().getPathPrefix() + '/' + sheet);
+                if (m_characterSheet->texture()) {
+                  m_checkerboardTexture.setSize(m_characterSheet->texture().width(), m_characterSheet->texture().height());
+                }
                 if (m_pickerMode == PickerMode::Character) {
                   m_selectionWidth = m_characterSheet->characterAtlasWidth();
                   m_selectionHeight = m_characterSheet->characterAtlasHeight();
@@ -163,14 +155,14 @@ std::tuple<bool, bool> CharacterPicker::draw() {
       }
       ImGui::EndChild();
       ImGui::SameLine();
-      ImGui::BeginChild("##character_picker_sheet_panel", ImVec2{894, 784}, ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
+      ImGui::BeginChild("##character_picker_sheet_panel", {}, ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
       {
         auto win = ImGui::GetCurrentWindow();
         if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered()) {
           auto mouseCursor = ImGui::GetMousePos();
           mouseCursor -= win->ContentRegionRect.Min;
-          int x = alignCoord(mouseCursor.x, m_selectionWidth);
-          int y = alignCoord(mouseCursor.y, m_selectionHeight);
+          int x = alignValue(mouseCursor.x, m_selectionWidth);
+          int y = alignValue(mouseCursor.y, m_selectionHeight);
           if ((x >= 0 && x < m_characterSheet->texture().width()) && (y >= 0 && y < m_characterSheet->texture().height())) {
             m_selectionX = x;
             m_selectionY = y;
@@ -194,8 +186,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
         if (m_characterSheet) {
           ImGui::Dummy(ImVec2{static_cast<float>(m_characterSheet->texture().width()), static_cast<float>(m_characterSheet->texture().height())});
           win->DrawList->AddImage(static_cast<ImTextureID>(m_checkerboardTexture), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
-                                  win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_characterSheet->texture().width()), static_cast<float>(m_characterSheet->texture().height())}),
-                                  ImVec2{0.f, 0.f}, {m_characterSheet->texture().width() / 4096.f, m_characterSheet->texture().height() / 4096.f});
+                                  win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_checkerboardTexture.width()), static_cast<float>(m_checkerboardTexture.height())}));
           win->DrawList->AddImage(m_characterSheet->texture(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
                                   win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_characterSheet->texture().width()), static_cast<float>(m_characterSheet->texture().height())}));
 

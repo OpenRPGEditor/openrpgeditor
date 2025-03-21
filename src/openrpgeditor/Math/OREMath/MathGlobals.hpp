@@ -46,3 +46,15 @@ constexpr int64_t oRound(const double d) {
   return d >= 0.0 ? static_cast<int64_t>(d + 0.5) : static_cast<int64_t>(d - static_cast<double>(static_cast<int64_t>(d - 1)) + 0.5) + static_cast<int64_t>(d - 1);
 }
 constexpr int oRound(const float d) { return d >= 0.0f ? static_cast<int>(d + 0.5f) : static_cast<int>(d - static_cast<float>(static_cast<int>(d - 1)) + 0.5f) + static_cast<int>(d - 1); }
+
+constexpr int alignValue(int value, const int size) {
+  value = value - (value % static_cast<int>(size));
+  if (size == 0)
+    return value;
+
+  const int remainder = value % size;
+  if (remainder == 0)
+    return value;
+
+  return value + size - remainder;
+}

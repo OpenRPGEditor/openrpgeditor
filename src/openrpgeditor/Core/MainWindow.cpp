@@ -212,12 +212,14 @@ void MainWindow::drawToolbar() {
   ImGui::Begin("##ore_toolbar", nullptr, window_flags);
   ImGui::PopStyleVar();
 
+  ORE_DISABLE_EXPERIMENTAL_BEGIN();
   if (ImGui::Button(ICON_FA_FILE, ButtonSize)) {
     handleCreateNewProject();
   }
   if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-    ImGui::ActionTooltip(trNOOP("New Project"), trNOOP("Creates a new project."));
+    ImGui::ActionTooltip(trNOOP("New Project"), trNOOP("Creates a new project. [EXPERIMENTAL]"));
   }
+  ORE_DISABLE_EXPERIMENTAL_END();
   ImGui::SameLine();
   if (ImGui::Button(ICON_FA_FOLDER_OPEN, ButtonSize)) {
     handleOpenFile();
@@ -226,20 +228,25 @@ void MainWindow::drawToolbar() {
     ImGui::ActionTooltip(trNOOP("Open Project"), trNOOP("Opens an existing project."));
   }
   ImGui::SameLine();
+  ORE_DISABLE_EXPERIMENTAL_BEGIN();
   if (ImGui::Button(ICON_FA_FLOPPY_DISK, ButtonSize)) {
     save();
   }
   ImGui::SameLine();
   if (ImGui::IsItemHovered()) {
-    ImGui::ActionTooltip(trNOOP("Save Project"), trNOOP("Saves the project."));
+    ImGui::ActionTooltip(trNOOP("Save Project"), trNOOP("Saves the project. [EXPERIMENTAL]"));
   }
+  ORE_DISABLE_EXPERIMENTAL_END();
 
+  ORE_CHECK_EXPERIMENTAL_BEGIN()
   for (const auto& button : m_toolbarButtons[ToolbarCategory::File]) {
     ImGui::SameLine();
     if (ImGui::Button(button.id().c_str(), ButtonSize)) {
       button.callOnClicked();
     }
   }
+  ORE_CHECK_EXPERIMENTAL_END()
+
   ImGui::SameLine();
   ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
   ImGui::SameLine();
@@ -375,12 +382,15 @@ void MainWindow::draw() {
   if (const auto [closed, confirmed] = m_mapProperties.draw(); closed) {
     // TODO: handle revert?
   }
+  ORE_CHECK_DEBUG_BEGIN()
 
   drawTileDebugger();
 
   if (m_showDemoWindow) {
     ImGui::ShowDemoWindow(&m_showDemoWindow);
   }
+  ORE_CHECK_DEBUG_END()
+
   if (m_showAboutWindow) {
     ImGui::ShowAboutWindow(&m_showAboutWindow);
   }
@@ -774,8 +784,10 @@ void MainWindow::drawMenu() {
       if (ImGui::MenuItem("Tutorials...")) {}
       ImGui::Separator();
       if (ImGui::MenuItem("About", nullptr, &m_showAboutWindow)) {}
+      ORE_CHECK_DEBUG_BEGIN()
       if (ImGui::MenuItem("Show Tile Debugger", nullptr, &m_showTileDebug)) {}
       if (ImGui::MenuItem("Show Demo", nullptr, &m_showDemoWindow)) {}
+      ORE_CHECK_DEBUG_END()
       ImGui::EndMenu();
     }
 

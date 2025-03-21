@@ -5,6 +5,16 @@
 
 #include <deque>
 
+#define ORE_CHECK_DEBUG_BEGIN() if (Settings::instance()->enableDebugFeatures) {
+#define ORE_CHECK_DEBUG_END() }
+
+#define ORE_CHECK_EXPERIMENTAL_BEGIN() if (Settings::instance()->enableExperimentalFeatures) {
+#define ORE_CHECK_EXPERIMENTAL_END() }
+
+#define ORE_DISABLE_EXPERIMENTAL_BEGIN() ImGui::BeginDisabled(!Settings::instance()->enableExperimentalFeatures)
+
+#define ORE_DISABLE_EXPERIMENTAL_END() ImGui::EndDisabled()
+
 struct Settings {
   struct WindowRect {
     friend void to_json(nlohmann::ordered_json& j, const WindowRect& r);
@@ -44,6 +54,15 @@ struct Settings {
   int maxMru{10};
   std::string currentNWJSVersion;
   bool ranFirstBootWizard{false};
+
+  bool enableExperimentalFeatures{false};
+  bool enableDebugFeatures
+  // We want this enabled by default in debug builds
+#ifndef NDEBUG
+      {true};
+#else
+      {false};
+#endif
 
   [[nodiscard]] static Settings* instance() { return m_instance; }
 

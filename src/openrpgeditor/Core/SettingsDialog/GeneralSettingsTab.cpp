@@ -7,8 +7,20 @@
 #include <nfd.h>
 
 void GeneralSettingsTab::draw() {
-  if (ImGui::BeginTabItem("General")) {
-    ImGui::TextUnformatted("Max Recent Projects");
+  if (ImGui::BeginTabItem(trNOOP("General"))) {
+    ImGui::TextUnformatted(trNOOP("Debug & Experimental Features"));
+    // TR-NOTE: "I Know What I'm Doing" should *not* be localized
+    ImGui::LabelOverLineEdit("##experimental_features_confirmation", trNOOP("Type \"I Know What I'm Doing\" to enable features."), m_confirmationText, sizeof(m_confirmationText), 0.f, nullptr,
+                             ImGuiInputTextFlags_None);
+    constexpr bool confirmed = !!strncasecmp(m_confirmationText, "i know what i'm doing", sizeof(m_confirmationText));
+    ImGui::BeginDisabled(confirmed && !Settings::instance()->enableExperimentalFeatures);
+    ImGui::Checkbox(trNOOP("Experimental"), &Settings::instance()->enableExperimentalFeatures);
+    ImGui::EndDisabled();
+    ImGui::BeginDisabled(confirmed && !Settings::instance()->enableDebugFeatures);
+    ImGui::Checkbox(trNOOP("Debug"), &Settings::instance()->enableDebugFeatures);
+    ImGui::EndDisabled();
+    ImGui::Separator();
+    ImGui::TextUnformatted(trNOOP("Max Recent Projects"));
     ImGui::SliderInt("##mru_max", &Settings::instance()->maxMru, 1, 20);
     if (ImGui::IsItemDeactivatedAfterEdit()) {
       Settings::instance()->maxMru = std::clamp(Settings::instance()->maxMru, 1, 20);
@@ -18,7 +30,7 @@ void GeneralSettingsTab::draw() {
 
     char location[4096];
     strncpy(location, Settings::instance()->projectBaseDirectory.c_str(), 4096);
-    ImGui::LabelOverLineEdit("##project_location_line_edit", "Project Base Directory Location", location, sizeof(location), 0.f, "Sets the directory where projects are stored");
+    ImGui::LabelOverLineEdit("##project_location_line_edit", trNOOP("Project Base Directory Location"), location, sizeof(location), 0.f, trNOOP("Sets the directory where projects are stored"));
     if (ImGui::IsItemDeactivatedAfterEdit()) {
       Settings::instance()->projectBaseDirectory = location;
       onValueChanged.fire();
@@ -29,7 +41,7 @@ void GeneralSettingsTab::draw() {
     {
       ImGui::NewLine();
       ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y);
-      if (ImGui::Button("Choose...")) {
+      if (ImGui::Button(trNOOP("Choose..."))) {
         nfdu8char_t* loc;
         if (NFD_PickFolder(&loc, !Settings::instance()->projectBaseDirectory.empty() ? Settings::instance()->projectBaseDirectory.c_str() : nullptr) == NFD_OKAY) {
           const std::filesystem::path path{loc};
@@ -38,7 +50,7 @@ void GeneralSettingsTab::draw() {
           NFD_FreePathU8(loc);
         }
       }
-      ImGui::SetItemTooltip("Select a directory to store RPG Maker game projects");
+      ImGui::SetItemTooltip(trNOOP("Select a directory to store RPG Maker game projects"));
     }
     ImGui::EndGroup();
 

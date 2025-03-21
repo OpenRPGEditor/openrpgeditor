@@ -59,6 +59,8 @@ bool Settings::loadFromJson(const nlohmann::ordered_json& parser) {
     maxMru = parser.value("maxMru", maxMru);
     currentNWJSVersion = parser.value("currentNWJSVersion", currentNWJSVersion);
     ranFirstBootWizard = parser.value("ranFirstBootWizard", ranFirstBootWizard);
+    enableExperimentalFeatures = parser.value("enableExperimentalFeatures", enableExperimentalFeatures);
+    enableDebugFeatures = parser.value("enableDebugFeatures", enableDebugFeatures);
     return true;
   } catch (...) {}
 
@@ -72,21 +74,23 @@ void Settings::serialize(const std::string_view path) {
 
 nlohmann::ordered_json Settings::serializeToJson() {
   return {
-      {"window", window},                             //
-      {"mru", mru},                                   //
-      {"plugins", plugins},                           //
-      {"lastDirectory", lastDirectory},               //
-      {"lastProject", lastProject},                   //
-      {"projectBaseDirectory", projectBaseDirectory}, //
-      {"lcfProjectDirectory", lcfProjectDirectory},   //
-      {"rpgMakerLocation", rpgMakerLocation},         //
-      {"rpgMakerVersion", rpgMakerVersion},           //
-      {"locale", locale},                             //
-      {"uiScale", uiScale},                           //
-      {"fontSize", fontSize},                         //
-      {"monoFontSize", monoFontSize},                 //
-      {"maxMru", maxMru},                             //
-      {"currentNWJSVersion", currentNWJSVersion},     //
-      {"ranFirstBootWizard", ranFirstBootWizard},     //
+      {"window", window},                                         //
+      {"mru", mru},                                               //
+      {"plugins", plugins},                                       //
+      {"lastDirectory", lastDirectory},                           //
+      {"lastProject", lastProject},                               //
+      {"projectBaseDirectory", projectBaseDirectory},             //
+      {"lcfProjectDirectory", lcfProjectDirectory},               //
+      {"rpgMakerLocation", rpgMakerLocation},                     //
+      {"rpgMakerVersion", rpgMakerVersion},                       //
+      {"locale", locale},                                         //
+      {"uiScale", uiScale},                                       //
+      {"fontSize", fontSize},                                     //
+      {"monoFontSize", monoFontSize},                             //
+      {"maxMru", maxMru},                                         //
+      {"currentNWJSVersion", currentNWJSVersion},                 //
+      {"ranFirstBootWizard", ranFirstBootWizard},                 //
+      {"enableExperimentalFeatures", enableExperimentalFeatures}, //
+      {"enableDebugFeatures", enableDebugFeatures},               //
   };
 }

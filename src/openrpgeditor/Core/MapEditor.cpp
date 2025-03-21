@@ -515,8 +515,8 @@ void MapEditor::draw() {
   if (ImGui::Begin(trNOOP("Map Editor"), nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoTitleBar)) {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - (ImGui::CalcTextSize("S").y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)), 0,
                       ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
-    // ImGui::SetScrollX(m_tileCursor.alignCoord(ImGui::GetScrollX()));
-    // ImGui::SetScrollY(m_tileCursor.alignCoord(ImGui::GetScrollY()));
+    // ImGui::SetScrollX(m_tileCursor.alignValue(ImGui::GetScrollX()));
+    // ImGui::SetScrollY(m_tileCursor.alignValue(ImGui::GetScrollY()));
     if (map()) {
       ImGuiWindow* win = ImGui::GetCurrentWindow();
       ImGui::Dummy(ImVec2{(map()->width() * Database::instance()->system.tileSize() * m_mapScale), (map()->height() * Database::instance()->system.tileSize() * m_mapScale)});

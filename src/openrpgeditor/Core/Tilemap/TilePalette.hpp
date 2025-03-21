@@ -92,6 +92,7 @@ public:
   void onCursorDrag(const PointF& point);
   void onCursorClicked(const PointF& point);
   void onCursorReleased();
+  void invalidateCursor() { setCursorRect({}); }
 
 private:
   void updateMaxRows();

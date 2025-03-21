@@ -19,6 +19,7 @@ void TilesetPicker::drawPageButton(const std::string_view pageStr, const int pag
   ImGui::PushStyleColor(ImGuiCol_Button, m_page == page ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
   if (ImGui::Button(std::format("  {}  ", pageStr).c_str())) {
     setPage(page);
+    m_palette.invalidateCursor();
   }
   ImGui::PopStyleColor();
 }
@@ -40,8 +41,9 @@ void TilesetPicker::draw() {
   m_palette.paintTiles();
 
   if (ImGui::Begin("Tilesets")) {
-    const auto height = ImGui::CalcTextSize("A").y + (ImGui::GetStyle().FramePadding.y + (ImGui::GetStyle().ItemSpacing.y * 2));
-    ImGui::BeginChild("##tileset", {0, ImGui::GetContentRegionAvail().y - height}, 0, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
+    const auto calc = ImGui::CalcTextSize("A");
+    ImGui::BeginChild("##tileset", {0, ImGui::GetContentRegionAvail().y - (calc.y + (ImGui::GetStyle().ItemSpacing.y * 3) + ImGui::GetStyle().FramePadding.y)}, 0,
+                      ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
     {
       // We want to always render region tiles
       const ImVec2 cursorPos = (ImGui::GetMousePos() - ImGui::GetCurrentWindow()->ContentRegionRect.Min);
@@ -49,34 +51,36 @@ void TilesetPicker::draw() {
         ImGui::Image(static_cast<ImTextureID>(m_palette), static_cast<ImVec2>(m_palette.imageSize()));
         if ((ImGui::IsWindowFocused() || ImGui::IsWindowHovered()) && ImGui::IsItemHovered()) {
           if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
-            printf("Pick start!");
+            // printf("Pick start!");
             m_palette.onCursorClicked({cursorPos.x, cursorPos.y});
-            printf(" %i %i\n", m_palette.cursorRect().x(), m_palette.cursorRect().y());
+            // printf(" %i %i\n", m_palette.cursorRect().x(), m_palette.cursorRect().y());
           }
 
           if (ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
-            printf("Cursor Drag!");
+            // printf("Cursor Drag!");
             m_palette.onCursorDrag({cursorPos.x, cursorPos.y});
-            printf(" %i %i %i %i\n", m_palette.cursorRect().x(), m_palette.cursorRect().y(), m_palette.cursorRect().width(), m_palette.cursorRect().height());
+            // printf(" %i %i %i %i\n", m_palette.cursorRect().x(), m_palette.cursorRect().y(), m_palette.cursorRect().width(), m_palette.cursorRect().height());
           }
 
           if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
-            printf("Cursor Release!\n");
+            // printf("Cursor Release!\n");
             m_palette.onCursorReleased();
             auto penData = m_palette.penData();
             // auto size = m_palette.penSize();
             for (; const auto& pen : penData) {
-              printf("%4i, %4i, %4i, %4i\n", pen[0], pen[1], pen[2], pen[3]);
+              // printf("%4i, %4i, %4i, %4i\n", pen[0], pen[1], pen[2], pen[3]);
             }
           }
         }
 
-        const auto* win = ImGui::GetCurrentWindow();
-        const auto rect = m_palette.cursorPixelRect();
-        const auto min = static_cast<ImVec2>(rect.topLeft());
-        const auto max = static_cast<ImVec2>(rect.bottomRight());
-        win->DrawList->AddRect(win->ContentRegionRect.Min + (min + ImVec2{3.f, 3.f}), win->ContentRegionRect.Min + (max - ImVec2{3.f, 3.f}), 0xFF000000, 0.f, 0, 5.f);
-        win->DrawList->AddRect(win->ContentRegionRect.Min + (min + ImVec2{3.f, 3.f}), win->ContentRegionRect.Min + (max - ImVec2{3.f, 3.f}), 0xFFFFFFFF, 0.f, 0, 3.f);
+        if (m_palette.cursorRect().isValid()) {
+          const auto* win = ImGui::GetCurrentWindow();
+          const auto rect = m_palette.cursorPixelRect();
+          const auto min = static_cast<ImVec2>(rect.topLeft());
+          const auto max = static_cast<ImVec2>(rect.bottomRight());
+          win->DrawList->AddRect(win->ContentRegionRect.Min + (min + ImVec2{3.f, 3.f}), win->ContentRegionRect.Min + (max - ImVec2{3.f, 3.f}), 0xFF000000, 0.f, 0, 5.f);
+          win->DrawList->AddRect(win->ContentRegionRect.Min + (min + ImVec2{3.f, 3.f}), win->ContentRegionRect.Min + (max - ImVec2{3.f, 3.f}), 0xFFFFFFFF, 0.f, 0, 3.f);
+        }
       }
     }
     ImGui::EndChild();

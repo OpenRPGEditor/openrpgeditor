@@ -88,10 +88,12 @@ std::tuple<bool, bool> CharacterPicker::draw() {
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 3, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
-    ImGui::BeginGroup();
+    const auto calc = ImGui::CalcTextSize("OKCANCEL");
+    ImGui::BeginChild("##top_child", {0, ImGui::GetContentRegionAvail().y - (calc.y + (ImGui::GetStyle().ItemSpacing.y * 3) + ImGui::GetStyle().FramePadding.y)});
     {
       ImGui::Text("Selected Sheet: %s", m_selectedSheet == -1 ? "(None)" : m_characterSheets.size() > 0 ? m_characterSheets[m_selectedSheet].c_str() : "(None)");
-      ImGui::BeginChild("##character_picker_sheet_list", ImVec2{ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRS").x, 768}, ImGuiChildFlags_None, ImGuiWindowFlags_NoBackground);
+      ImGui::BeginChild("##character_picker_sheet_list", ImVec2{ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRS").x, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y},
+                        ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX);
       {
         if (ImGui::BeginTable("##character_picker.characterlist", 1)) {
           ImGui::TableNextRow();
@@ -209,9 +211,10 @@ std::tuple<bool, bool> CharacterPicker::draw() {
       }
       ImGui::EndChild();
     }
-    ImGui::EndGroup();
-    ImGui::BeginGroup();
+    ImGui::EndChild();
+    ImGui::BeginChild("##bottom_child");
     {
+      ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x - (calc.x + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().ItemSpacing.x));
       if (ImGui::Button("OK")) {
         m_confirmed = true;
         m_open = false;
@@ -224,7 +227,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
         ImGui::CloseCurrentPopup();
       }
     }
-    ImGui::EndGroup();
+    ImGui::EndChild();
     ImGui::EndPopup();
   }
 

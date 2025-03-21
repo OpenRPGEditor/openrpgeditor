@@ -423,7 +423,10 @@ void EventCommandEditor::drawCommandDialog() {
                 cmdList.insert(cmdList.end(), whenCmd);
 
                 if (i < tmp.size()) {
+                  /* TODO: this doesn't work! */
+#if 0
                   cmdList.insert_range(cmdList.end(), tmp.at(i));
+#endif
                 }
               }
               // if (pointerCmd->cancelType >= pointerCmd->choices.size()) {

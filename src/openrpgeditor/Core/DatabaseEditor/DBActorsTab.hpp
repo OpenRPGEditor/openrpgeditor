@@ -1,4 +1,5 @@
 #pragma once
+#include "Core/CommonUI/FacePicker.hpp"
 #include "Core/CommonUI/TraitsEditor.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/CharacterSheet.hpp"
@@ -58,5 +59,6 @@ private:
   std::optional<CharacterPicker> m_actorPicker;
   std::optional<CheckeredCompositeTexture> m_battlerButton;
   std::optional<ImagePicker> m_battlerPicker;
+  std::optional<FacePicker> m_facePicker;
   TraitsEditor m_traitsEditor;
 };

@@ -459,6 +459,8 @@ add_library(
         Core/DatabaseEditor/DBLocaleTab.hpp
         Core/CommonUI/Directory.cpp
         Core/CommonUI/Directory.hpp
+        Core/CommonUI/FacePicker.cpp
+        Core/CommonUI/FacePicker.hpp
 )
 
 target_include_directories(

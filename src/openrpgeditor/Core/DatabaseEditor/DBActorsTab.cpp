@@ -198,7 +198,12 @@ void DBActorsTab::draw() {
               ImGui::Text("Face:");
               if (ImGui::ImageButtonEx(ImGui::GetID("##orpg_actors_face_image"), m_faceButton->get(), ImVec2{m_faceButton->size()}, {0.f, 0.f}, {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f},
                                        ImGuiButtonFlags_PressedOnDoubleClick)) {
-                // TODO: Implement face picker
+                if (!m_facePicker) {
+                  m_facePicker.emplace(m_selectedActor->faceName(), m_selectedActor->faceIndex());
+                } else {
+                  m_facePicker->setFaceInfo(m_selectedActor->faceName(), m_selectedActor->faceIndex());
+                }
+                m_facePicker->setOpen(true);
               }
             }
             ImGui::EndGroup();
@@ -373,6 +378,17 @@ void DBActorsTab::draw() {
         m_battlerButton.reset();
         m_battlerSheet.reset();
         m_battlerPicker->accept();
+      }
+    }
+  }
+  if (m_facePicker) {
+    if (const auto& [closed, confirmed] = m_facePicker->draw(); closed) {
+      if (confirmed) {
+        m_selectedActor->setFaceName(m_facePicker->selectedSheet());
+        m_selectedActor->setFaceIndex(m_facePicker->setFaceIndex());
+        m_faceButton.reset();
+        m_faceSheet.reset();
+        m_facePicker->accept();
       }
     }
   }

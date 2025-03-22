@@ -134,8 +134,6 @@ std::tuple<bool, bool> FacePicker::draw() {
               const auto [min, _] = m_faceSheet->getFaceRect(m_faceIndex);
               m_selectionX = min.x() * m_faceSheet->texture().width();
               m_selectionY = min.y() * m_faceSheet->texture().height();
-
-              printf("%i\n", m_faceIndex);
             }
           }
 

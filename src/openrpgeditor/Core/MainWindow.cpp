@@ -505,7 +505,7 @@ void MainWindow::drawCreateNewProjectPopup() {
           }
         }
         if (!copyExampleProject) {
-          m_database.emplace(projectPath.generic_string(), projectFilePath.generic_string(), KnownRPGMVVersions[KnownRPGMVVersions.size() - 2], isMZ);
+          m_database.emplace(projectPath.generic_string(), projectFilePath.generic_string(), version, isMZ);
           m_database->system.setGameTitle(gameTitle.data());
           m_database->system.setLocale("en_US");
           m_database->system.setVersionId(floor(rand() * 100000000));

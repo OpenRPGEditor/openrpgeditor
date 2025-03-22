@@ -12,7 +12,7 @@ void RPGMakerLocationAndVersionPage::draw() {
   ImGui::BeginChild("RPGMakerLocationAndVersionPage", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiWindowFlags_AlwaysAutoResize, ImGuiWindowFlags_NoBackground);
   char location[4096];
   strncpy(location, Settings::instance()->rpgMakerMVLocation.c_str(), 4096);
-  if (ImGui::LabelOverLineEdit("##rpgmaker_location_line_edit", trNOOP("RPG Maker MV Location(*)"), location, sizeof(location), 0.f)) {
+  if (ImGui::LabelOverLineEdit("##rpgmakermv_location_line_edit", trNOOP("RPG Maker MV Location(*)"), location, sizeof(location), 0.f)) {
     Settings::instance()->rpgMakerMVLocation = location;
   }
   ImGui::SameLine();
@@ -32,11 +32,30 @@ void RPGMakerLocationAndVersionPage::draw() {
     }
   }
   ImGui::EndGroup();
-
+  ImGui::BeginGroup();
+  {
+    ImGui::Text("RPG Maker MV Version");
+    if (ImGui::BeginCombo("##rpgmakermv_version_combo", Settings::instance()->rpgMakerMVVersion != -1 ? KnownRPGMVVersions[Settings::instance()->rpgMakerMVVersion].data() : "Latest")) {
+      if (ImGui::Selectable("Latest", Settings::instance()->rpgMakerMVVersion == -1)) {
+        Settings::instance()->rpgMakerMVVersion = -1;
+      }
+      for (int i = 0; i < KnownRPGMVVersions.size(); ++i) {
+        if (ImGui::Selectable(KnownRPGMVVersions[i].data(), i == Settings::instance()->rpgMakerMVVersion)) {
+          Settings::instance()->rpgMakerMVVersion = i;
+        }
+        if (Settings::instance()->rpgMakerMVVersion == i) {
+          ImGui::SetItemDefaultFocus();
+        }
+      }
+      ImGui::EndCombo();
+    }
+  }
+  ImGui::EndGroup();
+  ImGui::Separator();
   char location2[4096];
-  strncpy(location, Settings::instance()->rpgMakerMZLocation.c_str(), 4096);
-  if (ImGui::LabelOverLineEdit("##rpgmaker_location_line_edit", "RPG Maker MZ Location(*)", location2, sizeof(location2), 0.f)) {
-    Settings::instance()->rpgMakerMZLocation = location;
+  strncpy(location2, Settings::instance()->rpgMakerMZLocation.c_str(), 4096);
+  if (ImGui::LabelOverLineEdit("##rpgmakermz_location_line_edit", "RPG Maker MZ Location(*)", location2, sizeof(location2), 0.f)) {
+    Settings::instance()->rpgMakerMZLocation = location2;
   }
   ImGui::SameLine();
   ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().FramePadding.y);
@@ -57,22 +76,6 @@ void RPGMakerLocationAndVersionPage::draw() {
   ImGui::EndGroup();
   ImGui::BeginGroup();
   {
-    ImGui::Text("RPG Maker MV Version");
-    if (ImGui::BeginCombo("##rpgmakermv_version_combo", Settings::instance()->rpgMakerMVVersion != -1 ? KnownRPGMVVersions[Settings::instance()->rpgMakerMVVersion].data() : "Latest")) {
-      for (int i = 0; i < KnownRPGMVVersions.size(); ++i) {
-        if (ImGui::Selectable("Latest", Settings::instance()->rpgMakerMVVersion == -1)) {
-          Settings::instance()->rpgMakerMVVersion = -1;
-        }
-        if (ImGui::Selectable(KnownRPGMVVersions[i].data(), i == Settings::instance()->rpgMakerMVVersion)) {
-          Settings::instance()->rpgMakerMVVersion = i;
-        }
-        if (Settings::instance()->rpgMakerMVVersion == i) {
-          ImGui::SetItemDefaultFocus();
-        }
-      }
-      ImGui::EndCombo();
-    }
-
     ImGui::Text("RPG Maker MZ Version");
     if (ImGui::BeginCombo("##rpgmakermz_version_combo", Settings::instance()->rpgMakerMZVersion != -1 ? KnownRPGMZVersions[Settings::instance()->rpgMakerMZVersion].data() : "Latest")) {
       if (ImGui::Selectable("Latest", Settings::instance()->rpgMakerMZVersion == -1)) {

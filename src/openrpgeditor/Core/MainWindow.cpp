@@ -82,13 +82,25 @@ void MainWindow::ToolbarButton::callOnClicked() const {
 }
 
 bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
+  if (!std::filesystem::exists(filePath)) {
+    if (const auto it = std::ranges::find_if(Settings::instance()->mru, [&filePath](const auto& pair) { return pair.first == filePath; }); it != Settings::instance()->mru.end()) {
+      ImGui::InsertNotification({ImGuiToastType::Error, trNOOP("Unable to open project:\n%s"), filePath.data()});
+      Settings::instance()->mru.erase(it);
+    }
+    return false;
+  }
   close();
   std::string version;
   std::ifstream file(filePath.data());
   std::getline(file, version);
   Utils::trim(version);
 
+  bool isMZ = false;
   m_isValid = std::ranges::find(KnownRPGMVVersions, version) != KnownRPGMVVersions.end();
+  if (!m_isValid) {
+    m_isValid = std::ranges::find(KnownRPGMZVersions, version) != KnownRPGMZVersions.end();
+    isMZ = true;
+  }
   if (!m_isValid) {
     APP_ERROR("Invalid project version {}", version);
     return false;
@@ -102,7 +114,7 @@ bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
   m_databaseEditor.emplace(this);
   m_databaseEditor->onReady.connect<&MainWindow::onDatabaseReady>(this);
 
-  m_database.emplace(basePath, filePath, version);
+  m_database.emplace(basePath, filePath, version, isMZ);
   m_database->actorsLoaded().connect<&MainWindow::onActorsLoaded>(this);
   m_database->classesLoaded().connect<&MainWindow::onClassesLoaded>(this);
   m_database->skillsLoaded().connect<&MainWindow::onSkillsLoaded>(this);
@@ -435,14 +447,17 @@ void MainWindow::draw() {
 }
 
 void MainWindow::drawCreateNewProjectPopup() {
-  static constexpr std::array<std::string_view, 23> directoryList{
-      {"data"sv,           "fonts"sv,       "audio/bgm"sv, "audio/bgs"sv,      "audio/me"sv,     "audio/se"sv,      "img/animations"sv, "img/battlebacks1"sv, "img/battlebacks2"sv,
-       "img/characters"sv, "img/enemies"sv, "img/faces"sv, "img/parallaxes"sv, "img/pictures"sv, "img/sv_actors"sv, "img/sv_enemies"sv, "img/system"sv,       "img/tilesets"sv,
-       "img/titles1"sv,    "img/titles2"sv, "js/libs"sv,   "js/plugins"sv,     "movies"sv}};
+  static constexpr std::array<std::string_view, 23> directoryList{{
+      "data"sv,           "fonts"sv,       "audio/bgm"sv, "audio/bgs"sv,      "audio/me"sv,     "audio/se"sv,      "img/animations"sv, "img/battlebacks1"sv, "img/battlebacks2"sv,
+      "img/characters"sv, "img/enemies"sv, "img/faces"sv, "img/parallaxes"sv, "img/pictures"sv, "img/sv_actors"sv, "img/sv_enemies"sv, "img/system"sv,       "img/tilesets"sv,
+      "img/titles1"sv,    "img/titles2"sv, "js/libs"sv,   "js/plugins"sv,     "movies"sv,
+  }};
 
   const auto [closed, confirmed] = m_createNewProject.draw();
   if (closed) {
     if (confirmed) {
+      // TODO: Add RPGMaker MZ example copy
+      const auto isMZ = m_createNewProject.projectType() == CreateNewProjectDialog::ProjectType::RPGMZ;
       const auto projectName = m_createNewProject.projectName();
       const auto gameTitle = m_createNewProject.gameTitle();
       const auto copyExampleProject = m_createNewProject.copyExample();
@@ -454,13 +469,27 @@ void MainWindow::drawCreateNewProjectPopup() {
           create_directories(projectPath / directory);
         }
 
-        auto projectFilePath = projectPath / std::filesystem::path("Game.rpgproject");
+        auto projectFilePath = projectPath / (isMZ ? std::filesystem::path("Game.rmmzproject") : std::filesystem::path("Game.rpgproject"));
         std::ofstream projectFile(projectFilePath);
-        projectFile << KnownRPGMVVersions[KnownRPGMVVersions.size() - 2] << std::endl;
+        std::string version;
+        if (isMZ) {
+          version = Settings::instance()->rpgMakerMZVersion != -1 ? KnownRPGMZVersions[Settings::instance()->rpgMakerMZVersion] : KnownRPGMZVersions[KnownRPGMZVersions.size() - 1];
+        } else {
+          version = Settings::instance()->rpgMakerMVVersion != -1 ? KnownRPGMVVersions[Settings::instance()->rpgMakerMVVersion] : KnownRPGMVVersions[KnownRPGMVVersions.size() - 1];
+        }
+        projectFile << version << std::endl;
         SerializationQueue::instance().setBasepath(projectPath.generic_string());
         if (copyExampleProject) {
           // TODO: Locale
-          std::filesystem::path examplePath = std::filesystem::path(Settings::instance()->rpgMakerLocation) / "NewData";
+          std::filesystem::path examplePath;
+          if (!isMZ) {
+            std::filesystem::path(Settings::instance()->rpgMakerMVLocation) / "NewData";
+          } else {
+            // This newdata needs to be lowercase when copying an RPG Maker MZ example project
+            std::filesystem::path(Settings::instance()->rpgMakerMZLocation) / "newdata";
+          }
+          // TODO: MZ corescripts selection
+
           examplePath.make_preferred();
           if (exists(examplePath)) {
             for (const auto& entry : std::filesystem::recursive_directory_iterator(examplePath)) {
@@ -476,7 +505,7 @@ void MainWindow::drawCreateNewProjectPopup() {
           }
         }
         if (!copyExampleProject) {
-          m_database.emplace(projectPath.generic_string(), projectFilePath.generic_string(), KnownRPGMVVersions[KnownRPGMVVersions.size() - 2]);
+          m_database.emplace(projectPath.generic_string(), projectFilePath.generic_string(), KnownRPGMVVersions[KnownRPGMVVersions.size() - 2], isMZ);
           m_database->system.setGameTitle(gameTitle.data());
           m_database->system.setLocale("en_US");
           m_database->system.setVersionId(floor(rand() * 100000000));

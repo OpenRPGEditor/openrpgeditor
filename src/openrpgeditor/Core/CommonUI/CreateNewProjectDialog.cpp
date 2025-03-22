@@ -32,49 +32,68 @@ std::tuple<bool, bool> CreateNewProjectDialog::draw() {
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::BeginGroup();
     {
-      ImGui::BeginGroup();
-      {
-        char name[256]{};
-        strncpy(name, m_projectName.c_str(), sizeof(name));
-        if (ImGui::LabelOverLineEdit("##project_name_label", "Name:", name, sizeof(name), 0.f, nullptr, ImGuiInputTextFlags_None)) {
-          m_projectName = name;
-        }
-        ImGui::SameLine();
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().FramePadding.y);
-        char title[4096]{};
-        strncpy(title, m_gameTitle.c_str(), sizeof(title));
-        if (ImGui::LabelOverLineEdit("##project_title_label", "Game Title:", title, sizeof(title), 0.f, nullptr, ImGuiInputTextFlags_None)) {
-          m_gameTitle = title;
-        }
-      }
-      ImGui::EndGroup();
-      ImGui::BeginGroup();
-      {
-        char location[4096];
-        strncpy(location, Settings::instance()->projectBaseDirectory.c_str(), 4096);
-        if (ImGui::LabelOverLineEdit("##project_location_label", "Location:", location, 4096, 0.f, nullptr, ImGuiInputTextFlags_None)) {
-          Settings::instance()->projectBaseDirectory = location;
-        }
-        ImGui::SameLine();
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().FramePadding.y);
+      if (!Settings::instance()->rpgMakerMVLocation.empty() || !Settings::instance()->rpgMakerMZLocation.empty()) {
         ImGui::BeginGroup();
         {
-          ImGui::NewLine();
-          ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y);
-          if (ImGui::Button("Choose...")) {
-            nfdu8char_t* loc;
-            const auto result = NFD_PickFolder(&loc, !Settings::instance()->projectBaseDirectory.empty() ? Settings::instance()->projectBaseDirectory.c_str() : nullptr);
-            if (result == NFD_OKAY) {
-              const std::filesystem::path path{loc};
-              Settings::instance()->projectBaseDirectory = absolute(path).generic_string();
-              NFD_FreePathU8(loc);
-            }
+          ImGui::BeginDisabled(Settings::instance()->rpgMakerMZLocation.empty());
+          if (ImGui::RadioButton(trNOOP("RPG Maker MV"), m_projectType == ProjectType::RPGMV)) {
+            m_projectType = ProjectType::RPGMV;
+          }
+          ImGui::EndDisabled();
+          ImGui::SameLine();
+          ImGui::BeginDisabled(Settings::instance()->rpgMakerMZLocation.empty());
+          if (ImGui::RadioButton(trNOOP("RPG Maker MZ"), m_projectType == ProjectType::RPGMZ)) {
+            m_projectType = ProjectType::RPGMZ;
+          }
+          // TODO: corescripts combo
+          ImGui::EndDisabled();
+          char name[256]{};
+          strncpy(name, m_projectName.c_str(), sizeof(name));
+          if (ImGui::LabelOverLineEdit("##project_name_label", "Name:", name, sizeof(name), 0.f, nullptr, ImGuiInputTextFlags_None)) {
+            m_projectName = name;
+          }
+          ImGui::SameLine();
+          ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().FramePadding.y);
+          char title[4096]{};
+          strncpy(title, m_gameTitle.c_str(), sizeof(title));
+          if (ImGui::LabelOverLineEdit("##project_title_label", "Game Title:", title, sizeof(title), 0.f, nullptr, ImGuiInputTextFlags_None)) {
+            m_gameTitle = title;
           }
         }
         ImGui::EndGroup();
-        ImGui::Checkbox("Copy example project from RPG Maker", &m_copyExample);
+        ImGui::BeginGroup();
+        {
+          char location[4096];
+          strncpy(location, Settings::instance()->projectBaseDirectory.c_str(), 4096);
+          if (ImGui::LabelOverLineEdit("##project_location_label", "Location:", location, 4096, 0.f, nullptr, ImGuiInputTextFlags_None)) {
+            Settings::instance()->projectBaseDirectory = location;
+          }
+          ImGui::SameLine();
+          ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().FramePadding.y);
+          ImGui::BeginGroup();
+          {
+            ImGui::NewLine();
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y);
+            if (ImGui::Button("Choose...")) {
+              nfdu8char_t* loc;
+              const auto result = NFD_PickFolder(&loc, !Settings::instance()->projectBaseDirectory.empty() ? Settings::instance()->projectBaseDirectory.c_str() : nullptr);
+              if (result == NFD_OKAY) {
+                const std::filesystem::path path{loc};
+                Settings::instance()->projectBaseDirectory = absolute(path).generic_string();
+                NFD_FreePathU8(loc);
+              }
+            }
+          }
+          ImGui::EndGroup();
+          ImGui::Checkbox("Copy example project from RPG Maker", &m_copyExample);
+        }
+        ImGui::EndGroup();
+      } else {
+        ImGui::TextUnformatted(
+            trNOOP("RPG Maker Locations have not been specified!\n"
+                   "You need to specify either an RPG Maker MV or MZ directory.\n"
+                   "You can, optionally, specify both."));
       }
-      ImGui::EndGroup();
     }
     ImGui::EndGroup();
     ImGui::BeginGroup();

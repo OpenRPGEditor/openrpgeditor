@@ -50,8 +50,10 @@ bool Settings::loadFromJson(const nlohmann::ordered_json& parser) {
     lastProject = parser.value("lastProject", lastProject);
     projectBaseDirectory = parser.value("projectBaseDirectory", projectBaseDirectory);
     lcfProjectDirectory = parser.value("lcfProjectDirectory", lcfProjectDirectory);
-    rpgMakerLocation = parser.value("rpgMakerLocation", rpgMakerLocation);
-    rpgMakerVersion = parser.value("rpgMakerVersion", rpgMakerVersion);
+    rpgMakerMVLocation = parser.value("rpgMakerMVLocation", rpgMakerMVLocation);
+    rpgMakerMZLocation = parser.value("rpgMakerMZLocation", rpgMakerMZLocation);
+    rpgMakerMVVersion = parser.value("rpgMakerMVVersion", rpgMakerMVVersion);
+    rpgMakerMZVersion = parser.value("rpgMakerMZVersion", rpgMakerMZVersion);
     locale = parser.value("locale", locale);
     uiScale = parser.value("uiScale", uiScale);
     fontSize = parser.value("fontSize", fontSize);
@@ -81,8 +83,10 @@ nlohmann::ordered_json Settings::serializeToJson() {
       {"lastProject", lastProject},                               //
       {"projectBaseDirectory", projectBaseDirectory},             //
       {"lcfProjectDirectory", lcfProjectDirectory},               //
-      {"rpgMakerLocation", rpgMakerLocation},                     //
-      {"rpgMakerVersion", rpgMakerVersion},                       //
+      {"rpgMakerMVLocation", rpgMakerMVLocation},                 //
+      {"rpgMakerMZLocation", rpgMakerMZLocation},                 //
+      {"rpgMakerMVVersion", rpgMakerMVVersion},                   //
+      {"rpgMakerMZVersion", rpgMakerMZVersion},                   //
       {"locale", locale},                                         //
       {"uiScale", uiScale},                                       //
       {"fontSize", fontSize},                                     //

@@ -110,7 +110,7 @@ void DatabaseEditor::draw() {
     if (ImGui::SelectableWithBorder(trNOOP("Templates"), m_currentTab == &m_templates.value())) {
       m_currentTab = &m_templates.value();
     }
-    if (ImGui::SelectableWithBorder(trNOOP("Switches & Variables"), m_currentTab == &m_mappings.value())) {
+    if (ImGui::SelectableWithBorder(trNOOP("Data Sorting"), m_currentTab == &m_mappings.value())) {
       m_currentTab = &m_mappings.value();
     }
     if (ImGui::SelectableWithBorder(trNOOP("Documentation"), m_currentTab == &m_docs.value())) {

@@ -68,12 +68,12 @@ void DBActorsTab::draw() {
   {
 
     const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUV");
-    ImGui::BeginChild("##orpg_actors_editor_actors", ImVec2{calc.x + (ImGui::GetStyle().ItemSpacing.x * 2), 0}, ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX, ImGuiWindowFlags_NoScrollbar);
+    ImGui::BeginChild("##orpg_actors_editor_actors", ImVec2{calc.x + (ImGui::GetStyle().ItemSpacing.x * 2), 0}, ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX, ImGuiWindowFlags_NoScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Actors");
-        ImGui::BeginChild("##orpg_actors_editor_actor_list", ImVec2{0, ImGui::GetContentRegionMax().y - ((calc.y + ImGui::GetStyle().ItemSpacing.y) * 4)}, ImGuiChildFlags_Border);
+        ImGui::BeginChild("##orpg_actors_editor_actor_list", ImVec2{0, ImGui::GetContentRegionMax().y - ((calc.y + ImGui::GetStyle().ItemSpacing.y) * 4)}, ImGuiChildFlags_Borders);
         {
           ImGui::BeginGroup();
           {

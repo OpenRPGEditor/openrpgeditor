@@ -27,7 +27,7 @@ using namespace std::string_view_literals;
 
 struct Database {
   static constexpr auto InvalidDataName = "?"sv;
-  Database(std::string_view projectBasePath, std::string_view projectFilePath, std::string_view projectVersion);
+  Database(std::string_view projectBasePath, std::string_view projectFilePath, std::string_view projectVersion, bool isMZ = false);
   ~Database() { m_instance = nullptr; }
   Database(Database&) = delete;
   Database(Database&&) = delete;
@@ -419,7 +419,11 @@ struct Database {
   rpgmutils::signal<void()>& docsLoaded() { return m_docsLoaded; }
   rpgmutils::signal<void()>& localesLoaded() { return m_localesLoaded; }
 
+  bool isMZ() const { return m_isMZ; }
+  bool isMV() const { return !m_isMZ; }
+
 private:
+  bool m_isMZ;
   rpgmutils::signal<void()> m_actorsLoaded;
   rpgmutils::signal<void()> m_classesLoaded;
   rpgmutils::signal<void()> m_skillsLoaded;

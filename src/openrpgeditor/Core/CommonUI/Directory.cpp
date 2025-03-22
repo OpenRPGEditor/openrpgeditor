@@ -16,14 +16,22 @@ Directory::Directory(std::string_view path, std::string_view filter, std::string
     if (!filter.empty() && !is_directory(m_currentPath)) {
       m_currentPath.replace_extension(filter);
     }
-    if (is_regular_file(m_currentPath)) {
-      m_currentPath = m_currentPath.parent_path();
-    }
   } else {
     m_currentPath.assign(m_path);
   }
 
-  m_isParentDir = equivalent(m_path, m_currentPath);
+  /* Find the first valid directory */
+  while (!is_directory(m_currentPath) && !m_currentPath.empty()) {
+    m_currentPath = m_currentPath.parent_path();
+  }
+
+  try {
+    m_isParentDir = equivalent(m_path, m_currentPath);
+  } catch (const std::exception&) {
+    /* If we encounter an exception assume something crazy happened and use the specified path as the current path */
+    m_isParentDir = false;
+    m_currentPath = m_path;
+  }
   setDirectoryContents(filter);
   setSubDirectories();
 

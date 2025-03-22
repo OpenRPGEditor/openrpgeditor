@@ -24,12 +24,12 @@ void DBSkillsTab::draw() {
   ImGui::BeginChild("#orpg_skills_editor");
   {
     const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUV");
-    ImGui::BeginChild("##orpg_skills_editor_skills", ImVec2{calc.x + (ImGui::GetStyle().ItemSpacing.x * 2), 0}, 0, ImGuiWindowFlags_NoScrollbar);
+    ImGui::BeginChild("##orpg_skills_editor_skills", ImVec2{calc.x + (ImGui::GetStyle().ItemSpacing.x * 2), 0}, ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX, ImGuiWindowFlags_NoScrollbar);
     {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Skills");
-        ImGui::BeginChild("##orpg_skills_editor_skills_list", ImVec2{0, ImGui::GetContentRegionMax().y - ((calc.y + ImGui::GetStyle().ItemSpacing.y) * 4)});
+        ImGui::BeginChild("##orpg_skills_editor_skills_list", ImVec2{0, ImGui::GetContentRegionMax().y - ((calc.y + ImGui::GetStyle().ItemSpacing.y) * 4)}, ImGuiChildFlags_Borders);
         {
           ImGui::BeginGroup();
           {
@@ -61,10 +61,10 @@ void DBSkillsTab::draw() {
     }
     ImGui::EndChild();
     ImGui::SameLine();
-    ImGui::BeginChild("##orpg_skills_editor_skills_skill_properties");
+    ImGui::BeginChild("##orpg_skills_editor_skills_skill_properties", {}, ImGuiChildFlags_Borders);
     {
       if (m_selectedSkill) {
-        ImGui::BeginChild("##orpg_skills_skill_panel_left", ImVec2{ImGui::GetContentRegionMax().x / 2, 0.f});
+        ImGui::BeginChild("##orpg_skills_skill_panel_left", ImVec2{ImGui::GetContentRegionMax().x / 2, 0.f}, ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX);
         {
           ImGui::BeginGroup();
           {
@@ -388,9 +388,8 @@ void DBSkillsTab::draw() {
           ImGui::EndGroup();
         }
         ImGui::EndChild();
-
         ImGui::SameLine();
-        ImGui::BeginChild("####orpg_skills_skill_panel_right");
+        ImGui::BeginChild("####orpg_skills_skill_panel_right", {}, ImGuiChildFlags_Borders);
         {
           ImGui::SeparatorText("Damage");
           ImGui::BeginGroup();
@@ -400,13 +399,13 @@ void DBSkillsTab::draw() {
               ImGui::BeginGroup();
               {
                 ImGui::Text("Type:");
-                ImGui::SetNextItemWidth(200);
+                ImGui::SetNextItemWidth((ImGui::GetContentRegionAvail().x / 2) - ImGui::GetStyle().FramePadding.x);
                 if (ImGui::BeginCombo("##orpg_database_skills_damage_type", DecodeEnumName(magic_enum::enum_name(m_selectedSkill->damage().type())).c_str())) {
                   int index{0};
                   for (auto& dir : magic_enum::enum_values<DamageType>()) {
-                    if (const bool is_selected = m_selectedSkill->damage().type() == dir; ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
+                    if (const bool isSelected = m_selectedSkill->damage().type() == dir; ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), isSelected)) {
                       m_selectedSkill->damage().setType(dir);
-                      if (is_selected)
+                      if (isSelected)
                         ImGui::SetItemDefaultFocus();
                     }
                     index++;
@@ -419,33 +418,31 @@ void DBSkillsTab::draw() {
               ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.f);
               ImGui::BeginGroup();
               {
-                ImGui::Text("Element:");
-                ImGui::SetNextItemWidth(200);
-                if (ImGui::BeginCombo("##orpg_database_skills_damage_element", m_selectedSkill->damage().elementId() == -1 ? "Normal Attack"
-                                                                               : m_selectedSkill->damage().elementId() == 0
-                                                                                   ? "None"
-                                                                                   : Database::instance()->system.element(m_selectedSkill->damage().elementId()).c_str())) {
+                ImGui::TextUnformatted(trNOOP("Element:"));
+                ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x);
+                if (ImGui::BeginCombo("##orpg_database_skills_damage_element",
+                                      m_selectedSkill->damage().elementId() == -1 ? trNOOP("Normal Attack")
+                                      : m_selectedSkill->damage().elementId() == 0
+                                          ? trNOOP("None")
+                                          : (Database::instance()->elementNameOrId(m_selectedSkill->damage().elementId()) + "##" + std::to_string(m_selectedSkill->damage().elementId())).c_str())) {
                   int index{-1};
-                  for (auto& _ : Database::instance()->system.elements()) {
-                    const bool is_selected = m_selectedSkill->damage().elementId() == index;
+                  for (auto& elem : Database::instance()->system.elements()) {
+                    const bool isSelected = m_selectedSkill->damage().elementId() == index;
                     if (index == -1) {
-                      if (ImGui::Selectable("Normal Attack", is_selected)) {
+                      if (ImGui::Selectable(trNOOP("Normal Attack"), isSelected)) {
                         m_selectedSkill->damage().setElementId(index);
-                        if (is_selected)
-                          ImGui::SetItemDefaultFocus();
                       }
                     } else if (index == 0) {
-                      if (ImGui::Selectable("None", is_selected)) {
+                      if (ImGui::Selectable(trNOOP("None"), isSelected)) {
                         m_selectedSkill->damage().setElementId(index);
-                        if (is_selected)
-                          ImGui::SetItemDefaultFocus();
                       }
                     } else {
-                      if (ImGui::Selectable(Database::instance()->system.element(m_selectedSkill->damage().elementId()).c_str(), is_selected)) {
+                      if (ImGui::Selectable(std::format("{}##{}", elem, index).c_str(), isSelected)) {
                         m_selectedSkill->damage().setElementId(index);
-                        if (is_selected)
-                          ImGui::SetItemDefaultFocus();
                       }
+                    }
+                    if (isSelected) {
+                      ImGui::SetItemDefaultFocus();
                     }
                     index++;
                   }
@@ -455,7 +452,7 @@ void DBSkillsTab::draw() {
               ImGui::EndGroup();
               char formula[4096];
               strncpy(formula, m_selectedSkill->damage().formula().c_str(), 4096);
-              ImGui::LabelOverLineEdit("##orpg_database_skills_formula", "Formula", formula, 4096, 400.f);
+              ImGui::LabelOverLineEdit("##orpg_database_skills_formula", trNOOP("Formula"), formula, 4096, ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x);
               ImGui::BeginGroup();
               {
                 ImGui::TextUnformatted("Variance:");

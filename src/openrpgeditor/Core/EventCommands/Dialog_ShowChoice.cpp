@@ -163,6 +163,9 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
             command->choices.push_back(str);
         }
 
+        if (command->choices.empty()) {
+          command->choices.push_back("");
+        }
         /*
         // Validation
         int index{0};

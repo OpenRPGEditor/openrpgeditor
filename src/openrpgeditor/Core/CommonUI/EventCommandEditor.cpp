@@ -372,124 +372,156 @@ void EventCommandEditor::drawCommandDialog() {
         } else {
           if (commandDialog->getCommand()->code() == EventCode::Show_Choices) {
             std::shared_ptr<ShowChoiceCommand> pointerCmd = std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand());
+            std::shared_ptr<ShowChoiceCommand> selectedCmd = std::dynamic_pointer_cast<ShowChoiceCommand>(m_commands->at(m_selectedCommand));
+
+            int choicesTotal{0};
             int totalChoices{0};
-            for (int i = m_selectedCommand + 1; m_commands->at(i)->code() != EventCode::End_del_ShowChoices; i++) {
-              if (m_commands->at(i)->code() == EventCode::When_Selected) {
-                totalChoices++;
-              }
-              if (m_commands->at(i)->code() == EventCode::When_Cancel) {
-                totalChoices++;
+            int m_choiceEnd{0};
+            int m_choiceStart{0};
+            std::vector<std::shared_ptr<IEventCommand>> whenList;
+            std::vector<std::shared_ptr<IEventCommand>> cmdList;
+            std::map<int, std::vector<std::shared_ptr<IEventCommand>>> tmp;
+
+            std::vector<std::string> listChoices;
+            std::vector<std::string> finalChoices;
+
+            for (int i = m_selectedCommand + 1; i < m_commands->size(); i++) {
+              if (m_commands->at(i)->code() == EventCode::When_Selected && m_commands->at(i)->indent() == pointerCmd->indent().value()) {
+                choicesTotal++;
+              } else if (m_commands->at(i)->code() == EventCode::When_Cancel && m_commands->at(i)->indent() == pointerCmd->indent().value()) {
+                choicesTotal++;
               }
             }
 
-            if (totalChoices != pointerCmd->choices.size()) {
-              std::vector<std::shared_ptr<IEventCommand>> cmdList;
-              std::vector<std::vector<std::shared_ptr<IEventCommand>>> tmp;
+            int choiceDifference = pointerCmd->choices.size() - choicesTotal;
+            choiceDifference = abs(choiceDifference);
 
-              int when{0};
-              int m_choiceEnd{0};
-              bool skip{false};
-              bool endChoice{false};
-              std::vector<std::shared_ptr<IEventCommand>> whenList;
-              for (int i = m_selectedCommand + 2; i < m_commands->size(); i++) {
-                if (!endChoice) {
-                  if (m_commands->at(i)->code() == EventCode::End_del_ShowChoices && m_commands->at(i)->indent() == pointerCmd->indent()) {
-                    endChoice = true;
+            bool cancelFound{false};
+            bool cancelCreate{false};
+            bool cancelDelete{false};
+            bool choiceEnd{false};
+            if (choiceDifference == 0) {
+              // just update the names
+              int updateIndex{0};
+              for (int i = m_selectedCommand + 1; i < m_commands->size(); i++) {
+                if (!choiceEnd) {
+                  if (m_commands->at(i)->code() == EventCode::End_del_ShowChoices && m_commands->at(i)->indent() == pointerCmd->indent().value()) {
+                    choiceEnd = true;
                   }
-                  if (m_commands->at(i)->code() == EventCode::When_Selected && m_commands->at(i)->indent() == pointerCmd->indent()) {
-                    skip = true;
-                    std::shared_ptr<WhenSelectedCommand> whenCmd = std::dynamic_pointer_cast<WhenSelectedCommand>(m_commands->at(i));
-                    if (whenCmd->choice == pointerCmd->choices.at(when)) {
-                      tmp.push_back(whenList);
-                      whenList.clear();
-                      skip = false;
-                      when++;
+                  if (m_commands->at(i)->code() == EventCode::When_Selected && m_commands->at(i)->indent() == pointerCmd->indent().value()) {
+                    std::shared_ptr<WhenSelectedCommand> cmd = std::dynamic_pointer_cast<WhenSelectedCommand>(m_commands->at(i));
+                    cmd->choice = pointerCmd->choices.at(updateIndex);
+                    updateIndex++;
+                  }
+                  if (m_commands->at(i)->code() == EventCode::When_Cancel && m_commands->at(i)->indent() == pointerCmd->indent().value()) {
+                    cancelFound = true;
+                  }
+                  if (pointerCmd->cancelType == -2) {
+                    if (cancelFound) {
+                      // Nothing
+                    } else {
+                      // No cancel and cancelType is set. We need to make a cancel
+                      cancelCreate = true;
+                    }
+                  } else {
+                    if (cancelFound) {
+                      // Needs to be removed
+                      cancelDelete = true;
+                    } else {
+                      // Nothing
                     }
                   }
-                  if (!skip) {
-                    whenList.push_back(m_commands->at(i));
-                  }
-                  m_choiceEnd = i + 2;
+                  m_choiceEnd = i;
                 }
               }
-              if (tmp.empty() && whenList.size() > 0) {
-                tmp.push_back(whenList);
+              if (cancelCreate) {
+                std::shared_ptr<EventDummy> dummy = std::make_shared<EventDummy>();
+                dummy->setIndent(pointerCmd->indent().value() + 1);
+                m_commands->insert(m_commands->begin() + m_choiceEnd, dummy);
+
+                std::shared_ptr<WhenCancelCommand> whenCmd = std::make_shared<WhenCancelCommand>();
+                whenCmd->setIndent(commandDialog->getParentIndent().value());
+                m_commands->insert(m_commands->begin() + m_choiceEnd, whenCmd);
+              } else if (cancelDelete) {
+                m_commands->erase(m_commands->begin() + m_choiceStart, m_commands->begin() + m_choiceEnd - 1);
               }
+            } else {
+              for (int i = m_selectedCommand + 1; i < m_commands->size(); i++) {
+                if (!choiceEnd) {
+                  if (m_commands->at(i)->code() == EventCode::End_del_ShowChoices && m_commands->at(i)->indent() == pointerCmd->indent().value()) {
+                    choiceEnd = true;
+                  }
+                  if (m_commands->at(i)->code() == EventCode::When_Selected && m_commands->at(i)->indent() == pointerCmd->indent().value()) {
+                    std::shared_ptr<WhenSelectedCommand> cmd = std::dynamic_pointer_cast<WhenSelectedCommand>(m_commands->at(i));
+                    if (!whenList.empty()) {
+                      tmp.insert(std::make_pair(totalChoices, whenList)); // Adds any existing when commands into tmp as index
+                      whenList.clear();
+                      totalChoices++;
+                    }
+                    listChoices.push_back(cmd->choice);
+                  } else if (m_commands->at(i)->code() == EventCode::When_Cancel && m_commands->at(i)->indent() == pointerCmd->indent().value()) {
+                    if (!whenList.empty()) {
+                      tmp.insert(std::make_pair(totalChoices, whenList)); // Adds any existing when commands into tmp as index
+                      whenList.clear();
+                      totalChoices++;
+                    }
+                    listChoices.push_back("\\CANCEL");
+                  } else {
+                    if (!choiceEnd) {
+                      whenList.push_back(m_commands->at(i));
+                    }
+                  }
+                  m_choiceEnd = i;
+                }
+              }
+              if (!whenList.empty()) {
+                tmp.insert(std::make_pair(totalChoices, whenList)); // Adds any existing when commands into tmp as index
+                whenList.clear();
+              }
+
+              // Construct the final show choice branches
               cmdList.push_back(pointerCmd);
-              for (int i = 0; i < pointerCmd->choices.size(); i++) {
+              int tempIndex{0};
+              for (auto& str : pointerCmd->choices) {
                 std::shared_ptr<WhenSelectedCommand> whenCmd = std::make_shared<WhenSelectedCommand>();
                 whenCmd->setIndent(commandDialog->getParentIndent().value());
-                whenCmd->choice = pointerCmd->choices.at(i);
+                whenCmd->choice = str;
                 cmdList.insert(cmdList.end(), whenCmd);
-
-                if (i < tmp.size()) {
-                  /* TODO: this doesn't work! */
-#if 0
-                  cmdList.insert_range(cmdList.end(), tmp.at(i));
-#endif
+                if (tempIndex < tmp.size()) {
+                  for (auto& listCmd : tmp[tempIndex]) {
+                    cmdList.insert(cmdList.end(), listCmd);
+                  }
+                } else {
+                  // Insert event dummy, no commands
+                  std::shared_ptr<EventDummy> dummy = std::make_shared<EventDummy>();
+                  dummy->setIndent(pointerCmd->indent().value() + 1);
+                  cmdList.insert(cmdList.end(), dummy);
+                }
+                tempIndex++;
+              }
+              if (pointerCmd->cancelType == -2) {
+                std::shared_ptr<WhenCancelCommand> endCmd = std::make_shared<WhenCancelCommand>();
+                endCmd->setIndent(commandDialog->getParentIndent().value());
+                cmdList.push_back(endCmd);
+                if (tempIndex < tmp.size()) {
+                  for (auto& listCmd : tmp[tempIndex]) {
+                    cmdList.insert(cmdList.end(), listCmd);
+                  }
+                } else {
+                  // Insert event dummy, no commands
+                  std::shared_ptr<EventDummy> dummy = std::make_shared<EventDummy>();
+                  dummy->setIndent(pointerCmd->indent().value() + 1);
+                  cmdList.insert(cmdList.end(), dummy);
                 }
               }
-              // if (pointerCmd->cancelType >= pointerCmd->choices.size()) {
-              //   cmdList.push_back(std::make_shared<WhenCancelCommand>());
-              //   cmdList.back()->setIndent(commandDialog->getParentIndent().value());
-              //   cmdList.insert_range(cmdList.end(), tmp.at(pointerCmd->choices.size() + 1));
-              // }
+
               std::shared_ptr<ShowChoicesEndCommand> endCmd = std::make_shared<ShowChoicesEndCommand>();
               endCmd->setIndent(commandDialog->getParentIndent().value());
               cmdList.push_back(endCmd);
 
-              m_commands->erase(m_commands->begin() + m_selectedCommand, m_commands->begin() + m_choiceEnd);
+              m_commands->erase(m_commands->begin() + m_selectedCommand, m_commands->begin() + m_choiceEnd + 1);
               m_commands->insert(m_commands->begin() + m_selectedCommand, cmdList.begin(), cmdList.end());
             }
-
-            /*
-            for (auto choice : commandPointer->choices) {
-              APP_INFO("Choice Print: " + choice);
-            }
-            EventCode code = commandDialog->getCommand()->code();
-            int whenIndex{0};
-            int deletionIndex{0};
-            bool isDeletion{false};
-            int choiceSize = commandPointer->choices.size();
-            APP_INFO(std::to_string(choiceSize));
-            for (int i = m_selectedCommand; i < m_commands->size(); i++) {
-              if (m_commands->at(i)->code() == EventCode::End_del_ShowChoices) {
-                if (choiceSize > whenIndex) {
-                  int numberOfWhens = choiceSize - whenIndex;
-                  APP_INFO("Found more options... need to make more whens: " + std::to_string(numberOfWhens));
-                  for (int z{0}; z < numberOfWhens; z++) {
-                    for (auto cmd : commandDialog->getTemplateCommands(EventCode::When_Selected, whenIndex)) {
-                      m_commands->insert(m_commands->begin() + (i - 1), cmd);
-                    }
-                  }
-                }
-
-                if (isDeletion) {
-                  APP_INFO("isDeletion...");
-                  APP_INFO("Deletion index... " + std::to_string(deletionIndex));
-                  APP_INFO(DecodeEnumName(m_commands->at(deletionIndex)->code()));
-                  APP_INFO(DecodeEnumName(m_commands->at(i - 1)->code()));
-                  m_commands->erase(m_commands->begin() + (deletionIndex - 1), m_commands->begin() + (i - 1));
-                  break;
-                }
-              }
-
-              if (m_commands->at(i)->code() == EventCode::When_Selected) {
-                if (whenIndex < commandPointer->choices.size()) {
-                  std::shared_ptr<WhenSelectedCommand> when = std::static_pointer_cast<WhenSelectedCommand>(m_commands->at(i));
-
-                  when->choice = commandPointer->choices.at(whenIndex);
-                  when->param1 = whenIndex;
-
-                  whenIndex++;
-                } else {
-                  if (!isDeletion) {
-                    isDeletion = true;
-                    deletionIndex = i;
-                  }
-                }
-              }
-            }*/
           }
         }
       }

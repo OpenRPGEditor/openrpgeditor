@@ -6,6 +6,14 @@
 #include <imgui.h>
 #include <nfd.h>
 
+#if defined(_WIN32) || defined(_WIN64)
+#include <string.h>
+#define strcasecmp _stricmp
+#define strncasecmp _strnicmp
+#else
+#include <strings.h>
+#endif
+
 void GeneralSettingsTab::draw() {
   if (ImGui::BeginTabItem(trNOOP("General"))) {
     ImGui::TextUnformatted(trNOOP("Debug & Experimental Features"));

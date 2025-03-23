@@ -8,7 +8,7 @@ struct Dialog_BreakLoop : IEventDialogController {
     if (cmd == nullptr) {
       command.reset(new BreakLoopCommand());
     }
-    m_open = true;
+    m_open = false;
   }
   std::tuple<bool, bool> draw() override;
 

@@ -8,7 +8,7 @@ struct Dialog_ReturnToTitle : IEventDialogController {
     if (cmd == nullptr) {
       command.reset(new ReturnToTitleCommand());
     }
-    m_open = true;
+    m_open = false;
   }
   std::tuple<bool, bool> draw() override;
 

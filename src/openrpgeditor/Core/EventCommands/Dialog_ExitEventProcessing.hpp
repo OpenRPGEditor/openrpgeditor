@@ -8,7 +8,7 @@ struct Dialog_ExitEventProcessing : IEventDialogController {
     if (cmd == nullptr) {
       command.reset(new ExitEventProcessingCommand());
     }
-    m_open = true;
+    m_open = false;
   }
   std::tuple<bool, bool> draw() override;
 

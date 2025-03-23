@@ -58,6 +58,15 @@ struct ConditionalBranchCommand final : IEventCommand {
       }
       return type == ConditionType::Switch && globalSwitch.switchIdx == targetId;
     }
+
+    if (searchType == SearchType::ConditionSwitchOFF) {
+      if (type == ConditionType::Switch) {
+        if (globalSwitch.checkIfOn == ValueControl::OFF) {
+          return true;
+        }
+      }
+    }
+
     if (searchType == SearchType::Armors || searchType == SearchType::Weapons) {
       if (type == ConditionType::Armor || type == ConditionType::Weapon) {
         return equip.equipId == targetId;

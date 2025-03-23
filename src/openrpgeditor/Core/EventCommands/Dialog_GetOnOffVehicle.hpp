@@ -8,7 +8,7 @@ struct Dialog_GetOnOffVehicle : IEventDialogController {
     if (cmd == nullptr) {
       command.reset(new GetOnOffVehicleCommand());
     }
-    m_open = true;
+    m_open = false;
   }
   std::tuple<bool, bool> draw() override;
 

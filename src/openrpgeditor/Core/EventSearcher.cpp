@@ -178,7 +178,7 @@ void EventSearcher::draw() {
       } else if (pickedType == SearchType::Script) {
         ImGui::InputText("##orpg_search_textInput_script", &m_pickedString);
       } else {
-        ImGui::Text("Not implemented");
+        ImGui::Text("No options available");
       }
       ImGui::EndGroup();
     }

@@ -8,7 +8,7 @@ struct Dialog_FadeoutScreen : IEventDialogController {
     if (cmd == nullptr) {
       command.reset(new FadeoutScreenCommand());
     }
-    m_open = true;
+    m_open = false;
   }
   std::tuple<bool, bool> draw() override;
 

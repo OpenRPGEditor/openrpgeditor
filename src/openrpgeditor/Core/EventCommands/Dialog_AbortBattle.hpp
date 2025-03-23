@@ -8,7 +8,7 @@ struct Dialog_AbortBattle : IEventDialogController {
     if (cmd == nullptr) {
       command.reset(new AbortBattleCommand());
     }
-    m_open = true;
+    m_open = false;
   }
   std::tuple<bool, bool> draw() override;
 

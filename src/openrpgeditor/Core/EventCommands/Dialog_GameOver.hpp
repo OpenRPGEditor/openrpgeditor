@@ -8,7 +8,7 @@ struct Dialog_GameOver : IEventDialogController {
     if (cmd == nullptr) {
       command.reset(new GameOverCommand());
     }
-    m_open = true;
+    m_open = false;
   }
   std::tuple<bool, bool> draw() override;
   std::shared_ptr<IEventCommand> getCommand() override { return command; };

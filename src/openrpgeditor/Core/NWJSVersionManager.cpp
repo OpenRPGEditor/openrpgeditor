@@ -4,6 +4,8 @@
 #include "App/ProjectInfo.hpp"
 #include "Database/EventCommands/ChangeVictoryME.hpp"
 #include "imgui.h"
+#include "imgui_internal.h"
+
 #include <cstring>
 #include <curl/curl.h>
 #include <iostream>
@@ -49,52 +51,49 @@ std::string extractVersionFromHtml(const std::string& html) {
   return ""; // Return an empty string if no match is found
 }
 
-NWJSVersionManager::NWJSVersionManager(std::string_view nwjsPath) : m_NWJSPath(nwjsPath) {}
-
-size_t NWJSVersionManager::indexWriteCallback(const void* contents, const size_t size, const size_t nmemb, std::vector<char>* userp) {
-  const auto* buf = static_cast<const char*>(contents);
-  for (size_t i = 0; i < size * nmemb; ++i) {
-    userp->push_back(buf[i]);
-  }
-  return size * nmemb;
+NWJSVersionManager::NWJSVersionManager(std::string_view nwjsPath) : m_NWJSPath(nwjsPath) {
+  m_versionDownloadHandle = m_downloadManager.addDownload(m_NWJSPath + "/index.html", (std::filesystem::temp_directory_path() / "nwjs_versions.html").generic_string());
 }
 
-size_t NWJSVersionManager::payloadWriteCallback(const void* content, const size_t size, const size_t nmemb, FILE* userp) { return fwrite(content, size, nmemb, userp); }
-
 bool NWJSVersionManager::getListing() {
-  CURL* curl = curl_easy_init();
-  CURLcode res = CURLE_FAILED_INIT;
-
-  if (curl) {
-    curl_easy_setopt(curl, CURLOPT_URL, (m_NWJSPath + "/index.html").c_str());
-    std::vector<char> buffer;
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, indexWriteCallback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
-    res = curl_easy_perform(curl);
-    curl_easy_cleanup(curl);
-
-    std::string index(buffer.begin(), buffer.end());
-    std::vector<std::string> lines = splitString(index, '\n');
-    for (const auto& line : lines) {
-      const auto& version = extractVersionFromHtml(line);
-      if (version.empty() || version[0] != 'v') {
-        continue;
-      }
-
-      m_versions.push_back(version);
-    }
-
-    /* Sort versions in descending order to the latest (largest version number) is the first in the list */
-    std::sort(m_versions.begin(), m_versions.end(), versionCompare);
+  std::filesystem::path path = std::filesystem::temp_directory_path() / "nwjs_versions.html";
+  if (!(m_versionDownloadHandle != -1 && m_downloadManager.transferComplete(m_versionDownloadHandle)) || !exists(path)) {
+    return false;
   }
 
-  return res == CURLE_OK;
+  std::ifstream file(path.generic_string(), std::ios::binary);
+
+  if (!file.is_open()) {
+    return false;
+  }
+
+  std::vector<std::string> lines;
+  std::string line;
+  while (std::getline(file, line)) {
+    lines.push_back(line);
+  }
+
+  for (const auto& l : lines) {
+    const auto& version = extractVersionFromHtml(l);
+    if (version.empty() || version[0] != 'v') {
+      continue;
+    }
+
+    m_versions.push_back(version);
+  }
+
+  /* Sort versions in descending order to the latest (largest version number) is the first in the list */
+  std::ranges::sort(m_versions, versionCompare);
+  remove(path);
+  return !m_versions.empty();
 }
 
 void NWJSVersionManager::draw() {
   if (!m_isOpen) {
     return;
   }
+
+  m_downloadManager.processDownloads();
 
   if (m_versions.empty()) {
     if (getListing() && !Settings::instance()->currentNWJSVersion.empty()) {
@@ -106,16 +105,17 @@ void NWJSVersionManager::draw() {
     }
   }
 
-  if (ImGui::Begin("NWJS Version Manager", &m_isOpen, ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::Begin("NWJS Version Manager", &m_isOpen)) {
     if (m_versions.empty()) {
-      ImGui::Text("Unable to get version list!");
+      ImGui::TextUnformatted((m_versionDownloadHandle == -1 || m_downloadManager.transferComplete(m_versionDownloadHandle)) ? trNOOP("Unable to get version list!")
+                                                                                                                            : trNOOP("Retrieving version listing..."));
     } else {
-      ImGui::Text("Current Version: %s", Settings::instance()->currentNWJSVersion.empty() ? "None" : Settings::instance()->currentNWJSVersion.c_str());
-      ImGui::Text("Latest Version: %s", m_versions[0].c_str());
-      ImGui::SeparatorText("Available Versions");
-      std::string version = m_selectedVersion < 0 ? "None" : m_versions[m_selectedVersion];
+      ImGui::Text(trNOOP("Current Version: %s"), Settings::instance()->currentNWJSVersion.empty() ? trNOOP("None") : Settings::instance()->currentNWJSVersion.c_str());
+      ImGui::Text(trNOOP("Latest Version: %s"), m_versions[0].c_str());
+      ImGui::SeparatorText(trNOOP("Available Versions"));
+      std::string version = m_selectedVersion < 0 ? trNOOP("None") : m_versions[m_selectedVersion];
       if (ImGui::BeginCombo("##NWJSVersion", version.c_str())) {
-        if (ImGui::Selectable("None", m_selectedVersion == -1)) {
+        if (ImGui::Selectable(trNOOP("None"), m_selectedVersion == -1)) {
           m_selectedVersion = -1;
           Settings::instance()->currentNWJSVersion.clear();
         }
@@ -129,38 +129,71 @@ void NWJSVersionManager::draw() {
         }
         ImGui::EndCombo();
       }
+      ImGui::Checkbox(trNOOP("Windows"), &m_downloadWindows);
+      ImGui::SameLine();
+      ImGui::Checkbox(trNOOP("macOS"), &m_downloadMacOS);
+      ImGui::SameLine();
+      ImGui::Checkbox(trNOOP("Linux"), &m_downloadLinux);
+      ImGui::SameLine();
+      ImGui::Checkbox(trNOOP("SDK"), &m_downloadSDK);
       ImGui::SameLine();
       ImGui::BeginDisabled(m_selectedVersion == -1);
-      if (ImGui::Button("Download")) {
-        CURL* curl = curl_easy_init();
-        curl_off_t length = 0;
-        std::string versionPath = (m_NWJSPath + "/" + m_versions[m_selectedVersion] + "/nwjs-sdk-" + m_versions[m_selectedVersion] + "-linux-x64.tar.gz");
-        curl_easy_setopt(curl, CURLOPT_URL, versionPath.c_str());
-        curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
-        curl_easy_setopt(curl, CURLOPT_HEADER, 1);
-        curl_easy_perform(curl);
-        curl_easy_getinfo(curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, &length);
-        std::cout << "Downloading NWJS version " << versionPath << std::endl;
-        std::cout << "length = " << length << std::endl;
+      // TODO: Add ia32, x64, and arm64 checkboxes for each applicable platform
+      // TODO: Figure out issues with DownloadManager
+      if (ImGui::Button(trNOOP("Download"))) {
+#if 0
+        const char* confPath = SDL_GetPrefPath(App::COMPANY_NAMESPACE, App::APP_NAME);
+        if (m_downloadWindows) {
+          m_downloadManager.addDownload(std::format("{0}/{1}/nwjs-{1}-win-x64.zip", m_NWJSPath, m_versions[m_selectedVersion]),
+                                        std::format("{0}/nwjs-{1}-win-x64.zip", confPath, m_versions[m_selectedVersion]));
+          if (m_downloadSDK) {
+            m_downloadManager.addDownload(std::format("{0}/{1}/nwjs-sdk-{1}-win-x64.zip", m_NWJSPath, m_versions[m_selectedVersion]),
+                                          std::format("{0}/nwjs-sdk-{1}-win-x64.zip", confPath, m_versions[m_selectedVersion]));
+          }
+        }
 
-        const char* conf_path = SDL_GetPrefPath(App::COMPANY_NAMESPACE, App::APP_NAME);
-        std::string user_config_path{conf_path};
-        SDL_free((void*)conf_path);
+        if (m_downloadMacOS) {
+          m_downloadManager.addDownload(std::format("{0}/{1}/nwjs-{1}-osx-x64.zip", m_NWJSPath, m_versions[m_selectedVersion]),
+                                        std::format("{0}/nwjs-{1}-osx-x64.zip", confPath, m_versions[m_selectedVersion]));
+          m_downloadManager.addDownload(std::format("{0}/{1}/nwjs-{1}-osx-x64.zip", m_NWJSPath, m_versions[m_selectedVersion]),
+                                        std::format("{0}/nwjs-{1}-osx-x64.zip", confPath, m_versions[m_selectedVersion]));
+          if (m_downloadSDK) {
+            m_downloadManager.addDownload(std::format("{0}/{1}/nwjs-sdk-{1}-osx-x64.zip", m_NWJSPath, m_versions[m_selectedVersion]),
+                                          std::format("{0}/{1}/nwjs-sdk-{1}-osx-x64.zip", confPath, m_versions[m_selectedVersion]));
+            m_downloadManager.addDownload(std::format("{0}/{1}/nwjs-sdk-{1}-osx-arm64.zip", m_NWJSPath, m_versions[m_selectedVersion]),
+                                          std::format("{0}/nwjs-sdk-{1}-osx-arm64.zip", confPath, m_versions[m_selectedVersion]));
+          }
+        }
 
-        user_config_path += std::string("/nwjs-sdk-") + m_versions[m_selectedVersion] + "-linux-x64.tar.gz";
-
-        FILE* f = fopen(user_config_path.c_str(), "wb");
-
-        curl_easy_setopt(curl, CURLOPT_NOBODY, 0);
-        curl_easy_setopt(curl, CURLOPT_HEADER, 0);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, payloadWriteCallback);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, f);
-        curl_easy_perform(curl);
-        curl_easy_cleanup(curl);
-        fclose(f);
+        if (m_downloadLinux) {
+          m_downloadManager.addDownload(std::format("{0}/{1}/nwjs-{1}-linux-x64.tar.gz", m_NWJSPath, m_versions[m_selectedVersion]),
+                                        std::format("{0}/nwjs-{1}-linux-x64.tar.gz", confPath, m_versions[m_selectedVersion]));
+          if (m_downloadSDK) {
+            m_downloadManager.addDownload(std::format("{0}/{1}/nwjs-sdk-{1}-linux-x64.tar.gz", m_NWJSPath, m_versions[m_selectedVersion]),
+                                          std::format("{0}/nwjs-sdk-{1}-linux-x64.tar.gz", confPath, m_versions[m_selectedVersion]));
+          }
+        }
+        SDL_free((void*)confPath);
+#endif
       }
       ImGui::EndDisabled();
     }
+#if 0
+    ImGui::BeginChild("##progress_list", ImGui::GetContentRegionAvail() - ImGui::GetStyle().FramePadding, ImGuiChildFlags_Borders, ImGuiWindowFlags_HorizontalScrollbar);
+    {
+      ImGui::BeginColumns("##progress_columns", 2);
+      for (const auto& handle : m_downloadManager.handles()) {
+        ImGui::TextUnformatted(handle.url().data());
+        ImGui::NextColumn();
+        printf("%ld, %ld, %g\n", handle.bytesTotal(), handle.bytesDownloaded(), handle.percent());
+
+        ImGui::ProgressBar(handle.percent());
+        ImGui::NextColumn();
+      }
+      ImGui::EndColumns();
+    }
+    ImGui::EndChild();
+#endif
   }
   ImGui::End();
 }

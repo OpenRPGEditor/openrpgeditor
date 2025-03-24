@@ -1,9 +1,14 @@
 #include "Core/DownloadManager.hpp"
 
-void writeCallback(char* ptr, size_t size, size_t nmemb, void* userdata) {
+#include "EventCommands/Dialog_EnemyRecoverAll.hpp"
+
+// TODO: For some reason this doesn't work when multiple downloads are active, there is also a random crash on exit related to the destination file handle
+int writeCallback(char* ptr, size_t size, size_t nmemb, void* userdata) {
   const auto entry = static_cast<DownloadManager::DownloadEntry*>(userdata);
-  fwrite(ptr, size, nmemb, entry->fileHandle());
-  entry->addBytesDownloaded(size * nmemb);
+  const auto written = fwrite(ptr, size, nmemb, entry->fileHandle());
+  fflush(entry->fileHandle());
+  entry->addBytesDownloaded(written);
+  return written;
 }
 
 DownloadManager::DownloadEntry::DownloadEntry(const std::string_view url, const std::string_view destination) : m_url(url), m_destinationPath(destination) {
@@ -15,13 +20,31 @@ DownloadManager::DownloadEntry::DownloadEntry(const std::string_view url, const 
     curl_easy_setopt(m_curlHandle, CURLOPT_URL, m_url.data());
     curl_easy_setopt(m_curlHandle, CURLOPT_WRITEFUNCTION, writeCallback);
     curl_easy_setopt(m_curlHandle, CURLOPT_WRITEDATA, this);
+    curl_easy_setopt(m_curlHandle, CURLOPT_NOPROGRESS, 0L);
+    curl_easy_setopt(m_curlHandle, CURLOPT_XFERINFOFUNCTION, progressCallback);
+    curl_easy_setopt(m_curlHandle, CURLOPT_XFERINFODATA, this);
   }
+}
+
+void DownloadManager::DownloadEntry::updateInfo(const curl_off_t dltotal, const curl_off_t dlnow) {
+  if (!m_bytesTotal && dltotal) {
+    m_bytesTotal = dltotal;
+  }
+  // printf("%s %ld %ld\n", m_url.data(), dltotal, dlnow);
+}
+
+int DownloadManager::DownloadEntry::progressCallback(void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow) {
+  const auto self = static_cast<DownloadEntry*>(clientp);
+  self->updateInfo(dltotal, dlnow);
+  return CURLE_OK;
 }
 
 DownloadManager::DownloadEntry::~DownloadEntry() {
   curl_easy_cleanup(m_curlHandle);
   m_curlHandle = nullptr;
-  fclose(m_destination);
+  if (m_destination) {
+    fclose(m_destination);
+  }
   m_destination = nullptr;
 }
 
@@ -31,15 +54,37 @@ DownloadManager::DownloadManager() {
 }
 
 DownloadManager::~DownloadManager() {
+  for (const auto& handle : m_curlHandles) {
+    curl_multi_remove_handle(m_multiHandle, handle.handle());
+  }
+  m_curlHandles.clear();
   curl_multi_cleanup(m_multiHandle);
   curl_global_cleanup();
 }
 
-void DownloadManager::addDownload(const std::string_view url, const std::string_view destination) {
+int DownloadManager::addDownload(const std::string_view url, const std::string_view destination) {
   m_curlHandles.emplace_back(url, destination);
   curl_multi_add_handle(m_multiHandle, m_curlHandles.back().handle());
+  return m_curlHandles.size() - 1;
 }
 
 void DownloadManager::processDownloads() {
-  // TODO
+  int stillRunning;
+  do {
+    curl_multi_perform(m_multiHandle, &stillRunning);
+  } while (stillRunning);
+
+  CURLMsg* msg = nullptr;
+  while ((msg = curl_multi_info_read(m_multiHandle, &stillRunning))) {
+    if (msg->msg == CURLMSG_DONE) {
+      if (auto it = std::ranges::find_if(m_curlHandles, [&msg](const DownloadEntry& entry) { return msg->easy_handle == entry.handle(); }); it != m_curlHandles.end()) {
+        it->setCompleted();
+        curl_multi_remove_handle(m_multiHandle, it->handle());
+      }
+    }
+  }
+
+  if (std::ranges::all_of(m_curlHandles, [](const DownloadEntry& entry) { return entry.completed(); })) {
+    m_curlHandles.clear();
+  }
 }

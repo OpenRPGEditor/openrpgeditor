@@ -1,4 +1,6 @@
 #include "Core/MapListView.hpp"
+
+#include "Application.hpp"
 #include "Core/MainWindow.hpp"
 #include "Database/MapInfos.hpp"
 
@@ -6,10 +8,20 @@
 
 void MapListView::recursiveDrawTree(MapInfo& in) {
   const std::string id = ("#orpg_map_" + std::to_string(in.id()) + in.name());
+  bool isStyle{false};
+  if (Settings::instance()->mapStateList.contains(in.id())) {
+    if (Settings::instance()->mapStateList.at(in.id()) == MapStateType::WorkInProgress) {
+      ImGui::PushStyleColor(ImGuiCol_Text, ImVec4{1.0f, 0.0f, 0.0f, 1.0f});
+      isStyle = true;
+    }
+  }
   const bool open = ImGui::TreeNodeEx(id.c_str(),
                                       (in.expanded() ? ImGuiTreeNodeFlags_DefaultOpen : 0) | (in.children().empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
                                           (m_selectedMapId == in.id() ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick,
                                       "%s", in.name().c_str());
+  if (isStyle) {
+    ImGui::PopStyleColor();
+  }
   if (m_selectedMapId == in.id() && m_needsScroll) {
     ImGui::SetScrollHereY();
     m_needsScroll = false;
@@ -55,6 +67,34 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
     if (m_selectedMapId != in.id()) {
       m_selectedMapId = in.id();
       m_parent->setMap(in);
+    }
+    if (ImGui::BeginMenu("State")) {
+      bool isChecked{false};
+      if (Settings::instance()->mapStateList.contains(m_selectedMapId)) {
+        if (Settings::instance()->mapStateList.at(m_selectedMapId) == MapStateType::WorkInProgress) {
+          isChecked = true;
+        } else {
+          isChecked = false;
+        }
+      } else {
+        isChecked = false;
+      }
+      if (ImGui::Checkbox("Work in Progress##orpg_mapview_toggle_wip", &isChecked)) {
+        if (isChecked) {
+          if (Settings::instance()->mapStateList.contains(m_selectedMapId)) {
+            Settings::instance()->mapStateList.at(m_selectedMapId) = MapStateType::WorkInProgress;
+          } else {
+            Settings::instance()->mapStateList.insert(std::make_pair(m_selectedMapId, MapStateType::WorkInProgress));
+          }
+        } else {
+          if (Settings::instance()->mapStateList.contains(m_selectedMapId)) {
+            Settings::instance()->mapStateList.at(m_selectedMapId) = MapStateType::None;
+          } else {
+            Settings::instance()->mapStateList.insert(std::make_pair(m_selectedMapId, MapStateType::None));
+          }
+        }
+      }
+      ImGui::EndMenu();
     }
     if (ImGui::MenuItem("Edit...")) {
       m_parent->openMapProperties(&in);

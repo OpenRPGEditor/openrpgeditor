@@ -249,7 +249,6 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
 
 void MapEditor::handleKeyboardShortcuts() {
   /* General */
-  return;
   if (ImGui::IsKeyPressed(ImGuiKey_Delete) || ImGui::IsKeyPressed(ImGuiKey_Backspace)) {
     // TODO: Undo command
     if (ImGui::IsWindowFocused() && selectedEvent()) {
@@ -529,6 +528,7 @@ void MapEditor::draw() {
                               ImVec2{u1, v1});
 
       handleMouseInput(win);
+      handleKeyboardShortcuts();
 
       if (m_selectedEvent) {
         if (ImGui::BeginPopupContextWindow()) {

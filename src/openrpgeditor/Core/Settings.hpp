@@ -41,6 +41,7 @@ struct Settings {
   WindowRect window{};
   std::deque<std::pair<std::string, std::string>> mru;
   std::map<std::string, Plugin> plugins; // Base directory -> settings
+  std::map<int, MapStateType> mapStateList;
   std::string lastDirectory;
   std::string lastProject;
   std::string projectBaseDirectory;

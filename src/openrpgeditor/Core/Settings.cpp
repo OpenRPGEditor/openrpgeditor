@@ -63,6 +63,7 @@ bool Settings::loadFromJson(const nlohmann::ordered_json& parser) {
     ranFirstBootWizard = parser.value("ranFirstBootWizard", ranFirstBootWizard);
     enableExperimentalFeatures = parser.value("enableExperimentalFeatures", enableExperimentalFeatures);
     enableDebugFeatures = parser.value("enableDebugFeatures", enableDebugFeatures);
+    mapStateList = parser.value("mapStateList", mapStateList);
     return true;
   } catch (...) {}
 
@@ -96,5 +97,7 @@ nlohmann::ordered_json Settings::serializeToJson() {
       {"ranFirstBootWizard", ranFirstBootWizard},                 //
       {"enableExperimentalFeatures", enableExperimentalFeatures}, //
       {"enableDebugFeatures", enableDebugFeatures},               //
+      {"mapStateList", mapStateList},                             //
+
   };
 }

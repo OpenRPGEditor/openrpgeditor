@@ -910,6 +910,11 @@ enum class SearchType {
   trENUM("Text", Text),
   trENUM("ConditionSwitchOFF", ConditionSwitchOFF),
 };
+
+enum class MapStateType {
+  trENUM("None", None),
+  trENUM("Work in Progress", WorkInProgress),
+};
 enum class SpecialDataParent {
   trENUM("Skills", Skills),
   trENUM("Items", Items),

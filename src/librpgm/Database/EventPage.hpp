@@ -300,6 +300,8 @@ private:
     m_moveFrequency = other.m_moveFrequency;
     m_moveType = other.m_moveType;
     m_priorityType = other.m_priorityType;
+    m_stepAnime = other.m_stepAnime;
+    m_through = other.m_through;
     m_trigger = other.m_trigger;
     m_walkAnime = other.m_walkAnime;
     m_name = other.m_name;

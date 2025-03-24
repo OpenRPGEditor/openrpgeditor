@@ -758,13 +758,13 @@ void MainWindow::drawMenu() {
     }
 
     if (ImGui::BeginMenu(trNOOP("Tools"))) {
-      if (ImGui::MenuItem(trNOOP("Settings"), "F8", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
+      if (ImGui::MenuItem(trNOOP("Settings"), "F8")) {
         m_settingsDialog.setOpen(true);
       }
       if (ImGui::MenuItem(trNOOP("Database"), "F9", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
         m_databaseEditor->open();
       }
-      if (ImGui::MenuItem(trNOOP("NWJS Version Manager"), "F10", false)) {
+      if (ImGui::MenuItem(trNOOP("NWJS Version Manager"), "F10")) {
         m_nwjsVersionManager.open();
       }
       if (ImGui::MenuItem(trNOOP("Event Searcher..."), "F11", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {

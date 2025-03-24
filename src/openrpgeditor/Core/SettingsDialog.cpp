@@ -76,6 +76,7 @@ std::tuple<bool, bool> SettingsDialog::draw() {
         m_open = false;
         m_hasChangedSettings = false;
         Settings::instance()->loadFromJson(m_tempSettings);
+        m_uiRefreshRequested = true;
         m_tempSettings.clear();
         if (m_wasUIRefreshRequested) {
           App::APP->requestFontUpdate();

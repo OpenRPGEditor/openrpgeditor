@@ -27,6 +27,7 @@
 #include "EditorPlugin/EditorPluginManager.hpp"
 #include "LCF_Importer/LCF_Importer.hpp"
 #include "Script/ScriptEngine.hpp"
+#include "SettingsDialog/RPGMakerLocationAndVersionTab.hpp"
 #include "SettingsDialog/UISettingsTab.hpp"
 
 #include <array>
@@ -41,6 +42,7 @@ MainWindow* MainWindow::m_instance = nullptr;
 MainWindow::MainWindow() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this), m_nwjsVersionManager("https://dl.nwjs.io"), m_eventSearcher(this), m_libLCF(this) {
   m_settingsDialog.addTab(new GeneralSettingsTab());
   m_settingsDialog.addTab(new UISettingsTab());
+  m_settingsDialog.addTab(new RPGMakerLocationAndVersionTab());
   m_instance = this;
 }
 
@@ -51,8 +53,8 @@ MainWindow::ToolbarButton::ToolbarButton(const std::string& id, const ToolbarCat
     m_callbackObjectType = func->GetDelegateObjectType();
     m_func = func->GetDelegateFunction();
     ScriptEngine::instance()->engine()->AddRefScriptObject(m_callbackObject, m_callbackObjectType);
-    m_func->AddRef();
-    func->Release();
+    (void)m_func->AddRef();
+    (void)func->Release();
   } else {
     m_func = func;
   }
@@ -63,7 +65,7 @@ MainWindow::ToolbarButton::~ToolbarButton() {
     if (m_callbackObject && m_callbackObjectType) {
       ScriptEngine::instance()->engine()->ReleaseScriptObject(m_callbackObject, m_callbackObjectType);
     }
-    m_func->Release();
+    (void)m_func->Release();
   }
 }
 

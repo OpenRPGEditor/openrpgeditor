@@ -1060,7 +1060,7 @@ void EventCommandEditor::drawPopup() {
   }
   const auto windowSize = (ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
   ImGui::SetNextWindowSize(ImVec2{windowSize.x * 4, windowSize.y * 17}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal("Command Window", nullptr, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
+  if (ImGui::BeginPopupModal("Command Window", nullptr, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginGroup();
     {
       // Event Templates

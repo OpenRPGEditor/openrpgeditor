@@ -11,6 +11,7 @@ void UISettingsTab::draw() {
     if (ImGui::IsItemDeactivatedAfterEdit()) {
       App::APP->requestFontUpdate();
       m_fontSizeChanged = true;
+      onValueChanged.fire();
     }
     ImGui::PushFont(App::APP->getMonoFont());
     ImGui::Text("Monospace Font Size");
@@ -18,11 +19,13 @@ void UISettingsTab::draw() {
     if (ImGui::IsItemDeactivatedAfterEdit()) {
       App::APP->requestFontUpdate();
       m_fontSizeChanged = true;
+      onValueChanged.fire();
     }
     ImGui::PopFont();
     if (m_fontSizeChanged) {
       ImGui::Text("Reloading fonts....");
       m_fontSizeChanged = !App::APP->fontUpdateRequestPerformed();
+      onValueChanged.fire();
     }
     ImGui::EndTabItem();
   }

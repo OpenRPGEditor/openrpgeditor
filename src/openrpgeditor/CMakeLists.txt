@@ -388,6 +388,8 @@ add_library(
         Core/SettingsDialog.hpp
         Core/SettingsDialog/GeneralSettingsTab.cpp
         Core/SettingsDialog/GeneralSettingsTab.hpp
+        Core/SettingsDialog/RPGMakerLocationAndVersionTab.cpp
+        Core/SettingsDialog/RPGMakerLocationAndVersionTab.hpp
         Core/SettingsDialog/ISettingsTab.hpp
         Core/Sound.cpp
         Core/Sound.hpp

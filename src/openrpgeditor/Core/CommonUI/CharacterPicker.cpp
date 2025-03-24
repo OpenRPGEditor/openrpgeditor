@@ -94,6 +94,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
       ImGui::Text("Filter");
       ImGui::SameLine();
       if (ImGui::InputText("##object_selection_filter_input", &m_filter)) {
+        m_selectedSheet = -1;
         if (m_filter.empty()) {
           m_sortedList.clear();
         } else {
@@ -105,8 +106,13 @@ std::tuple<bool, bool> CharacterPicker::draw() {
         m_filter.clear();
         m_sortedList.clear();
       }
-
-      ImGui::Text("Selected Sheet: %s", m_selectedSheet == -1 ? "(None)" : m_characterSheets.size() > 0 ? m_characterSheets[m_selectedSheet].c_str() : "(None)");
+      std::string selectedSheet = m_filter.empty()          ? (m_selectedSheet == -1          ? "(None)"
+                                                               : m_characterSheets.size() > 0 ? m_characterSheets[m_selectedSheet]
+                                                                                              : "(None)")
+                                  : m_selectedSheet == -1   ? "(None)"
+                                  : m_sortedList.size() > 0 ? m_sortedList[m_selectedSheet]
+                                                            : "(None)";
+      ImGui::Text("Selected Sheet: %s", selectedSheet.c_str());
       ImGui::BeginChild("##character_picker_sheet_list", ImVec2{ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRS").x, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y},
                         ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX);
       {

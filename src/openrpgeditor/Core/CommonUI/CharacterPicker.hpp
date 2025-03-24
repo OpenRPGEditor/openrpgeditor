@@ -20,7 +20,10 @@ struct CharacterPicker : IDialogController {
   [[nodiscard]] Direction selectedDirection() const { return m_direction; }
   [[nodiscard]] int character() const { return m_characterIndex; }
   [[nodiscard]] std::string selectedSheet() const {
-    return m_selectedSheet >= 0 ? m_charDir.value().isParentDirectory() ? m_characterSheets[m_selectedSheet] : m_charDir.value().getPathPrefix() + '/' + m_characterSheets[m_selectedSheet] : "";
+    if (m_filter.empty()) {
+      return m_selectedSheet >= 0 ? m_charDir.value().isParentDirectory() ? m_characterSheets[m_selectedSheet] : m_charDir.value().getPathPrefix() + '/' + m_characterSheets[m_selectedSheet] : "";
+    }
+    return m_selectedSheet >= 0 ? m_charDir.value().isParentDirectory() ? m_sortedList[m_selectedSheet] : m_charDir.value().getPathPrefix() + '/' + m_sortedList[m_selectedSheet] : "";
   }
 
   void setCharacterInfo(std::string_view sheetName, int character = 0, int pattern = 0, Direction direction = Direction::Down);

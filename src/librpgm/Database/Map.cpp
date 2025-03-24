@@ -1057,12 +1057,17 @@ Event* Map::createEventFromTemplate(const Event& ev) {
   if (ev.id() == m_events.size()) {
     m_events.emplace_back(ev);
   } else {
-    m_events.insert(m_events.begin() + ev.id(), ev);
+    if (m_events.at(ev.id()).has_value()) {
+      m_events.insert(m_events.begin() + ev.id(), ev);
+    }
+    else {
+      m_events.at(ev.id()) = ev;
+    }
   }
   // Resort and rename
   for (int i = ev.id() + 1; i < m_events.size(); ++i) {
     if (m_events.at(i).has_value()) {
-      m_events.at(i)->setId(i + 1);
+      // m_events.at(i)->setId(i + 1);
       if (m_events.at(i)->name().contains("EV")) {
         m_events.at(i)->setName(std::format("EV{:03} ", i));
       }

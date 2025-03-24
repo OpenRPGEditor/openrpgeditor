@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DownloadManager.hpp"
+
 #include <string>
 #include <vector>
 
@@ -17,11 +19,34 @@ public:
   void open() { m_isOpen = true; }
 
 private:
-  static size_t indexWriteCallback(const void* contents, const size_t size, const size_t nmemb, std::vector<char>* userp);
-  static size_t payloadWriteCallback(const void* content, const size_t size, const size_t nmemb, FILE* userp);
+  DownloadManager m_downloadManager;
 
+  int m_versionDownloadHandle = -1;
   std::string m_NWJSPath;
   std::vector<std::string> m_versions;
   int m_selectedVersion = -1;
+  bool m_downloadWindows
+#ifdef _WIN32
+      {true};
+#else
+      {false};
+#endif
+
+  bool m_downloadMacOS
+#ifdef __APPLE__
+      {true};
+#else
+      {false};
+#endif
+
+  bool m_downloadLinux
+#ifdef __linux__
+      {true};
+#else
+      {false};
+#endif
+
+  bool m_downloadSDK{true};
+
   bool m_isOpen = false;
 };

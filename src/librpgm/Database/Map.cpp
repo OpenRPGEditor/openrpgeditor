@@ -1061,9 +1061,11 @@ Event* Map::createEventFromTemplate(const Event& ev) {
   }
   // Resort and rename
   for (int i = ev.id() + 1; i < m_events.size(); ++i) {
-    m_events.at(i)->setId(i + 1);
-    if (m_events.at(i)->name().contains("EV")) {
-      m_events.at(i)->setName(std::format("EV{:03} ", i));
+    if (m_events.at(i).has_value()) {
+      m_events.at(i)->setId(i + 1);
+      if (m_events.at(i)->name().contains("EV")) {
+        m_events.at(i)->setName(std::format("EV{:03} ", i));
+      }
     }
   }
   return &*m_events.at(ev.id());

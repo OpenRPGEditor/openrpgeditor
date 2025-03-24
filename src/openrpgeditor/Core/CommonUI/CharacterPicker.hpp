@@ -13,6 +13,7 @@ struct CharacterPicker : IDialogController {
   };
 
   explicit CharacterPicker(const PickerMode mode = PickerMode::Character, std::string_view sheetName = {}, int character = 0, int pattern = 0, Direction direction = Direction::Down);
+
   std::tuple<bool, bool> draw() override;
   [[nodiscard]] PickerMode pickerMode() const { return m_pickerMode; }
   [[nodiscard]] int selectedPattern() const { return m_pattern; }
@@ -28,6 +29,10 @@ private:
   std::optional<Directory> m_charDir;
   std::vector<std::string> m_folders;
   int m_selectedFolder{-1};
+
+  std::string m_filter;
+  std::vector<std::string> m_sortedList;
+  bool m_sortRequest{false};
 
   std::optional<CharacterSheet> m_characterSheet;
   std::vector<std::string> m_characterSheets;

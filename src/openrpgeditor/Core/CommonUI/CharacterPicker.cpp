@@ -2,10 +2,13 @@
 #include "Core/ResourceManager.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
+#include "misc/cpp/imgui_stdlib.h"
 
 #include <IconsFontAwesome6.h>
 #include <iostream>
-
+static bool ContainsCaseInsensitive(std::string_view str, std::string_view val) {
+  return std::search(str.begin(), str.end(), val.begin(), val.end(), [](char ch1, char ch2) { return std::toupper(ch1) == std::toupper(ch2); }) != str.end();
+}
 CharacterPicker::CharacterPicker(const PickerMode mode, const std::string_view sheetName, const int character, const int pattern, const Direction direction)
 : IDialogController("Select an Image##character_picker"), m_pickerMode(mode), m_characterIndex(character), m_pattern(pattern), m_direction(direction) {
   m_charDir.emplace("img/characters/", ".png", static_cast<std::string>(sheetName));
@@ -66,6 +69,20 @@ std::tuple<bool, bool> CharacterPicker::draw() {
     ImGui::OpenPopup(m_name.c_str());
   }
 
+  if (m_sortRequest) {
+    m_sortedList.clear();
+    for (auto& str : m_characterSheets) {
+      if (!m_filter.empty()) {
+        if (ContainsCaseInsensitive(str, m_filter)) {
+          m_sortedList.push_back(str);
+        }
+      } else {
+        m_sortedList.push_back(str);
+      }
+    }
+    m_sortRequest = false;
+  }
+
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSizeConstraints(ImGui::GetMainViewport()->Size / 6, {FLT_MAX, FLT_MAX});
@@ -74,11 +91,26 @@ std::tuple<bool, bool> CharacterPicker::draw() {
     const auto calc = ImGui::CalcTextSize("OKCANCEL");
     ImGui::BeginChild("##top_child", {0, ImGui::GetContentRegionAvail().y - (calc.y + (ImGui::GetStyle().ItemSpacing.y * 3) + ImGui::GetStyle().FramePadding.y)});
     {
+      ImGui::Text("Filter");
+      ImGui::SameLine();
+      if (ImGui::InputText("##object_selection_filter_input", &m_filter)) {
+        if (m_filter.empty()) {
+          m_sortedList.clear();
+        } else {
+          m_sortRequest = true;
+        }
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("Clear")) {
+        m_filter.clear();
+        m_sortedList.clear();
+      }
+
       ImGui::Text("Selected Sheet: %s", m_selectedSheet == -1 ? "(None)" : m_characterSheets.size() > 0 ? m_characterSheets[m_selectedSheet].c_str() : "(None)");
       ImGui::BeginChild("##character_picker_sheet_list", ImVec2{ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRS").x, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y},
                         ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX);
       {
-        if (ImGui::BeginTable("##character_picker.characterlist", 1)) {
+        if (ImGui::BeginTable("##character_picker.characterlist", 1, ImGuiTableFlags_Resizable)) {
           ImGui::TableNextRow();
           ImGui::TableNextColumn();
 
@@ -116,8 +148,9 @@ std::tuple<bool, bool> CharacterPicker::draw() {
           if (m_selectedSheet == -1) {
             ImGui::SetItemDefaultFocus();
           }
-          for (int i = 0; i < m_characterSheets.size(); ++i) {
-            const auto& sheet = m_characterSheets[i];
+
+          for (int i = 0; m_filter.empty() ? i < m_characterSheets.size() : i < m_sortedList.size(); ++i) {
+            const auto& sheet = m_filter.empty() ? m_characterSheets[i] : m_sortedList[i];
             ImGui::TableNextColumn();
             if (ImGui::Selectable(std::format("{0}##sheet_{0}", sheet).c_str(), m_selectedSheet == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
               if (m_selectedSheet != i) {

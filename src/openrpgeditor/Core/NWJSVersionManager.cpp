@@ -129,13 +129,6 @@ void NWJSVersionManager::draw() {
         }
         ImGui::EndCombo();
       }
-      ImGui::Checkbox(trNOOP("Windows"), &m_downloadWindows);
-      ImGui::SameLine();
-      ImGui::Checkbox(trNOOP("macOS"), &m_downloadMacOS);
-      ImGui::SameLine();
-      ImGui::Checkbox(trNOOP("Linux"), &m_downloadLinux);
-      ImGui::SameLine();
-      ImGui::Checkbox(trNOOP("SDK"), &m_downloadSDK);
       ImGui::SameLine();
       ImGui::BeginDisabled(m_selectedVersion == -1);
       // TODO: Add ia32, x64, and arm64 checkboxes for each applicable platform
@@ -177,6 +170,13 @@ void NWJSVersionManager::draw() {
 #endif
       }
       ImGui::EndDisabled();
+      ImGui::Checkbox(trNOOP("Windows"), &m_downloadWindows);
+      ImGui::SameLine();
+      ImGui::Checkbox(trNOOP("macOS"), &m_downloadMacOS);
+      ImGui::SameLine();
+      ImGui::Checkbox(trNOOP("Linux"), &m_downloadLinux);
+      ImGui::SameLine();
+      ImGui::Checkbox(trNOOP("SDK"), &m_downloadSDK);
     }
 #if 0
     ImGui::BeginChild("##progress_list", ImGui::GetContentRegionAvail() - ImGui::GetStyle().FramePadding, ImGuiChildFlags_Borders, ImGuiWindowFlags_HorizontalScrollbar);

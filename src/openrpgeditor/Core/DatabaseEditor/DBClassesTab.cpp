@@ -162,7 +162,8 @@ void DBClassesTab::draw() {
               }
 
               if (ImGui::Selectable(Database::instance()->classNameAndId(class_.id()).c_str(), &class_ == m_selectedClass) || (ImGui::IsItemFocused() && m_selectedClass != &class_)) {
-                ImGui::ClearActiveID();m_selectedClass = &class_;
+                ImGui::ClearActiveID();
+                m_selectedClass = &class_;
                 m_traitsEditor.setTraits(&m_selectedClass->traits());
               }
             }
@@ -192,7 +193,7 @@ void DBClassesTab::draw() {
             ImGui::SeparatorText("General Settings");
             char name[4096];
             strncpy(name, m_selectedClass->name().c_str(), 4096);
-            if (ImGui::LabelOverLineEdit("##orpg_classes_editor_actors_actor_name", "Name:", name, 4096, (ImGui::GetContentRegionMax().x / 2) - 16),nullptr, ImGuiInputTextFlags_None) {
+            if (ImGui::LabelOverLineEdit("##orpg_classes_editor_actors_actor_name", "Name:", name, 4096, (ImGui::GetContentRegionMax().x / 2) - 16, nullptr, ImGuiInputTextFlags_None)) {
               m_selectedClass->setName(name);
             }
             ImGui::SameLine();

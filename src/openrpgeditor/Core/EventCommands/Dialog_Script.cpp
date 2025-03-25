@@ -16,10 +16,13 @@ std::tuple<bool, bool> Dialog_Script::draw() {
   ImGui::SetNextWindowSize(ImVec2{600, 600}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open)) {
 
-    static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
     ImGui::PushFont(App::APP->getMonoFont());
     auto size = ImGui::CalcTextSize("OKCANCEL");
-    m_textEditor.Render("##no_title", {0, ImGui::GetContentRegionAvail().y - (size.y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)});
+    ImGui::InputTextMultiline(
+        "##no_title", &m_Text,
+        {ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, ImGui::GetContentRegionAvail().y - (size.y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)},
+        ImGuiInputTextFlags_AllowTabInput);
+    // m_textEditor.Render("##no_title", {0, ImGui::GetContentRegionAvail().y - (size.y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)});
     ImGui::PopFont();
 
     if (ImGui::Button("OK")) {

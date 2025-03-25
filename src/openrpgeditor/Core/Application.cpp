@@ -249,6 +249,7 @@ ExitStatus Application::run() {
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_NavEnableGamepad | ImGuiConfigFlags_DpiEnableScaleFonts |
                     ImGuiConfigFlags_DpiEnableScaleViewports;
   io.ConfigWindowsMoveFromTitleBarOnly = true;
+  io.ConfigInputTrickleEventQueue = false;
 
   // Absolute imgui.ini path to preserve settings independent of app location.
   static const std::string imgui_ini_filename{m_userConfigPath + "imgui.ini"};

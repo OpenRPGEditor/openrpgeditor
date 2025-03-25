@@ -1029,8 +1029,8 @@ void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder) {
     ImGui::BeginChild(aTitle, aSize, aBorder, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoMove);
 
   if (mHandleKeyboardInputs) {
-    HandleKeyboardInputs();
     ImGui::PushAllowKeyboardFocus(true);
+    HandleKeyboardInputs();
   }
 
   if (mHandleMouseInputs)

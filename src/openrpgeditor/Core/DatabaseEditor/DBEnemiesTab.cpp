@@ -5,8 +5,6 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-#include "imgui.h"
-
 DBEnemiesTab::DBEnemiesTab(Enemies& Enemies, DatabaseEditor* parent) : IDBEditorTab(parent), m_enemies(Enemies) {
   m_selectedEnemy = m_enemies.enemy(1);
   if (m_selectedEnemy) {
@@ -51,6 +49,7 @@ void DBEnemiesTab::draw() {
                 continue;
               }
               if (ImGui::Selectable(Database::instance()->enemyNameAndId(enemy.id()).c_str(), &enemy == m_selectedEnemy) || (ImGui::IsItemFocused() && m_selectedEnemy != &enemy)) {
+                ImGui::ClearActiveID();
                 m_selectedEnemy = &enemy;
                 m_traitsEditor.setTraits(&m_selectedEnemy->traits());
                 m_actionsEditor.setActions(&m_selectedEnemy->actions());
@@ -86,8 +85,11 @@ void DBEnemiesTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedEnemy->name().c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_enemies_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2)) {
+              if (ImGui::LabelOverLineEdit("##orpg_enemies_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2, nullptr, ImGuiInputTextFlags_None)) {
                 m_selectedEnemy->setName(name);
+              }
+              if (ImGui::IsItemDeactivatedAfterEdit()) {
+                int test = 1;
               }
             }
             ImGui::EndGroup();

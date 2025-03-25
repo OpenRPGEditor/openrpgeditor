@@ -142,7 +142,8 @@ void DBCommonEventsTab::draw() {
             ImGui::SeparatorText("General Settings");
             char name[4096];
             strncpy(name, m_selectedCommonEvent->name().c_str(), 4096);
-            if (ImGui::LabelOverLineEdit("##orpg_commonevents_editor_commonevents_commonevent_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 / 2 - 16)) {
+            if (ImGui::LabelOverLineEdit("##orpg_commonevents_editor_commonevents_commonevent_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 / 2 - 16, nullptr,
+                                         ImGuiInputTextFlags_None)) {
               m_selectedCommonEvent->setName(name);
             }
             ImGui::SameLine();

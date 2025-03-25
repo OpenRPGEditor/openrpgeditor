@@ -43,7 +43,7 @@ void DBArmorsTab::draw() {
 
               char name[4096];
               snprintf(name, 4096, "%04i %s", armor.id(), armor.name().c_str());
-              if (ImGui::Selectable(name, &armor == m_selectedArmor) || (ImGui::IsItemFocused() && m_selectedArmor != &armor)) {
+              if (ImGui::Selectable(name, &armor == m_selectedArmor) || (ImGui::IsItemFocused() && m_selectedArmor != &armor)) {ImGui::ClearActiveID();
                 m_selectedArmor = &armor;
                 m_traitsEditor.setTraits(&m_selectedArmor->traits());
               }
@@ -77,7 +77,7 @@ void DBArmorsTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedArmor->name().c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_armors_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - 16)) {
+              if (ImGui::LabelOverLineEdit("##orpg_armors_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - 16),nullptr, ImGuiInputTextFlags_None) {
                 m_selectedArmor->setName(name);
               }
             }

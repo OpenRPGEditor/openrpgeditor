@@ -28,7 +28,7 @@ std::tuple<bool, bool> EventEditor::draw() {
       char tmpName[4096];
       float oldY = ImGui::GetCursorPosY();
       strncpy(tmpName, m_event->name().c_str(), 4096);
-      if (ImGui::LabelOverLineEdit("##orpg_event_editor_event_name", "Name:", tmpName, 4096, (200))) {
+      if (ImGui::LabelOverLineEdit("##orpg_event_editor_event_name", "Name:", tmpName, 4096, (200), nullptr, ImGuiInputTextFlags_None)) {
         m_event->setName(tmpName);
       }
       ImGui::SameLine();

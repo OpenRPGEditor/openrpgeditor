@@ -56,7 +56,7 @@ void DBItemsTab::draw() {
               char name[4096];
               snprintf(name, 4096, "%04i %s", skill_.id(), skill_.name().c_str());
               if (ImGui::Selectable(name, &skill_ == m_selectedItem) || (ImGui::IsItemFocused() && m_selectedItem != &skill_)) {
-                if (m_selectedItem != &skill_) {
+                if (m_selectedItem != &skill_) {ImGui::ClearActiveID();
                   m_selectedItem = &skill_;
                   m_effectsEditor.setEffects(&m_selectedItem->effects());
                   m_itemButtonTexture->clear();
@@ -92,7 +92,7 @@ void DBItemsTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedItem->name().c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_items_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - 16)) {
+              if (ImGui::LabelOverLineEdit("##orpg_items_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - 16,nullptr, ImGuiInputTextFlags_None)) {
                 m_selectedItem->setName(name);
               }
             }

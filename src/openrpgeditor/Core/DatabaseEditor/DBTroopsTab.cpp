@@ -43,7 +43,7 @@ void DBTroopsTab::draw() {
               }
 
               if (ImGui::Selectable(Database::instance()->troopNameAndId(troop.id()).c_str(), &troop == m_selectedTroop) || (ImGui::IsItemFocused() && m_selectedTroop != &troop)) {
-                m_selectedTroop = &troop;
+                ImGui::ClearActiveID();m_selectedTroop = &troop;
                 m_troopsEditor.setTroop(m_selectedTroop);
               }
             }
@@ -76,7 +76,8 @@ void DBTroopsTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedTroop->name().c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_troops_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2)) {
+              if (ImGui::LabelOverLineEdit("##orpg_troops_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2, nullptr,
+                                         ImGuiInputTextFlags_None)) {
                 m_selectedTroop->setName(name);
               }
               ImGui::SameLine();

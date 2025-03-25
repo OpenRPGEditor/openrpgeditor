@@ -17,7 +17,8 @@ std::tuple<bool, bool> DBTermsTab::drawAbbreviatedString(const float width, std:
     ImGui::TextUnformatted(label.data());
     char levelStr[256];
     strncpy(levelStr, full.c_str(), 256);
-    if (ImGui::LabelOverLineEdit(std::format("##{}_term", label).c_str(), trNOOP("Full"), levelStr, 256, width)) {
+    if (ImGui::LabelOverLineEdit(std::format("##{}_term", label).c_str(), trNOOP("Full"), levelStr, 256, width, nullptr,
+                                         ImGuiInputTextFlags_None)) {
       full = levelStr;
       fullModified = true;
     }
@@ -25,7 +26,8 @@ std::tuple<bool, bool> DBTermsTab::drawAbbreviatedString(const float width, std:
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().ItemSpacing.y);
     char abvrStr[256];
     strncpy(abvrStr, abbrv.c_str(), 256);
-    if (ImGui::LabelOverLineEdit(std::format("##{}_abbreviation_term", label).c_str(), trNOOP("Abbreviation"), abvrStr, 256, width)) {
+    if (ImGui::LabelOverLineEdit(std::format("##{}_abbreviation_term", label).c_str(), trNOOP("Abbreviation"), abvrStr, 256, width, nullptr,
+                                         ImGuiInputTextFlags_None)) {
       abbrv = abvrStr;
       abbrvModified = true;
     }
@@ -43,7 +45,8 @@ bool DBTermsTab::drawString(const float width, const std::string_view label, std
     ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetStyleColorVec4(ImGuiCol_ChildBg));
     char levelStr[256];
     strncpy(levelStr, full.c_str(), 256);
-    if (ImGui::LabelOverLineEdit(std::format("##{}_term", label).c_str(), label.data(), levelStr, 256, width)) {
+    if (ImGui::LabelOverLineEdit(std::format("##{}_term", label).c_str(), label.data(), levelStr, 256, width, nullptr,
+                                         ImGuiInputTextFlags_None)) {
       full = levelStr;
       result = true;
     }

@@ -38,6 +38,7 @@
 #include "lcf/reader_util.h"
 #include "nfd.h"
 
+#undef PlaySound
 void LibLCF::draw() {
   if (!m_isOpen) {
     return;

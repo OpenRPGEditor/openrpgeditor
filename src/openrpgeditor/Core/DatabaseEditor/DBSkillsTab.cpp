@@ -3,6 +3,7 @@
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Database/Skills.hpp"
 
+#include "imgui_internal.h"
 #include "imgui.h"
 DBSkillsTab::DBSkillsTab(Skills& skills, DatabaseEditor* parent) : IDBEditorTab(parent), m_skills(skills) {
   m_selectedSkill = m_skills.skill(1);
@@ -40,7 +41,7 @@ void DBSkillsTab::draw() {
 
               char name[4096];
               snprintf(name, 4096, "%04i %s", skill_.id(), skill_.name().c_str());
-              if (ImGui::Selectable(name, &skill_ == m_selectedSkill) || (ImGui::IsItemFocused() && m_selectedSkill != &skill_)) {
+              if (ImGui::Selectable(name, &skill_ == m_selectedSkill) || (ImGui::IsItemFocused() && m_selectedSkill != &skill_)) {ImGui::ClearActiveID();
                 m_selectedSkill = &skill_;
                 m_effectsEditor.setEffects(&m_selectedSkill->effects());
               }
@@ -74,7 +75,8 @@ void DBSkillsTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedSkill->name().c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_skills_editor_skills_skill_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - 16)) {
+              if (ImGui::LabelOverLineEdit("##orpg_skills_editor_skills_skill_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - 16, nullptr,
+                                         ImGuiInputTextFlags_None)) {
                 m_selectedSkill->setName(name);
               }
             }
@@ -452,7 +454,8 @@ void DBSkillsTab::draw() {
               ImGui::EndGroup();
               char formula[4096];
               strncpy(formula, m_selectedSkill->damage().formula().c_str(), 4096);
-              ImGui::LabelOverLineEdit("##orpg_database_skills_formula", trNOOP("Formula"), formula, 4096, ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x);
+              ImGui::LabelOverLineEdit("##orpg_database_skills_formula", trNOOP("Formula"), formula, 4096, ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, nullptr,
+                                         ImGuiInputTextFlags_None);
               ImGui::BeginGroup();
               {
                 ImGui::TextUnformatted("Variance:");

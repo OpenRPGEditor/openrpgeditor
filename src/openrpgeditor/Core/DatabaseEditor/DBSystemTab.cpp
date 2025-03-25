@@ -126,7 +126,8 @@ void DBSystemTab::draw() {
           char tmp[4096]{};
           strncpy(tmp, m_system.gameTitle().c_str(), 4096);
           ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetStyleColorVec4(ImGuiCol_ChildBg));
-          if (ImGui::LabelOverLineEdit("##orpg_system_tab_game_title", "Game Title", tmp, 4096, 0)) {
+          if (ImGui::LabelOverLineEdit("##orpg_system_tab_game_title", "Game Title", tmp, 4096, 0, nullptr,
+                                         ImGuiInputTextFlags_None)) {
             m_system.setGameTitle(tmp);
           }
           ImGui::PopStyleColor();
@@ -139,7 +140,8 @@ void DBSystemTab::draw() {
           char tmp[4096]{};
           strncpy(tmp, m_system.currencyUnit().c_str(), 4096);
           ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetStyleColorVec4(ImGuiCol_ChildBg));
-          if (ImGui::LabelOverLineEdit("##orpg_system_tab_game_currency", "Currency", tmp, 4096, ImGui::CalcTextSize("ABCDEFGKLMNOPQRSTUVWXYZ01").x)) {
+          if (ImGui::LabelOverLineEdit("##orpg_system_tab_game_currency", "Currency", tmp, 4096, ImGui::CalcTextSize("ABCDEFGKLMNOPQRSTUVWXYZ01").x, nullptr,
+                                         ImGuiInputTextFlags_None)) {
             m_system.setCurrencyUnit(tmp);
           }
           ImGui::PopStyleColor();

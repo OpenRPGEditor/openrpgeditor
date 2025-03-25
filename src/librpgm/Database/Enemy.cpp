@@ -62,7 +62,7 @@ void Enemy::Action::setConditionParam1(const float conditionParam1) {
   if (!signalsDisabled()) {
     conditionParam1Modified().fire(this, conditionParam1);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 float Enemy::Action::conditionParam2() const { return m_conditionParam2; }
@@ -72,7 +72,7 @@ void Enemy::Action::setConditionParam2(const float conditionParam2) {
   if (!signalsDisabled()) {
     conditionParam2Modified().fire(this, conditionParam2);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 ActionCondition Enemy::Action::conditionType() const { return m_conditionType; }
@@ -82,7 +82,7 @@ void Enemy::Action::setConditionType(const ActionCondition conditionType) {
   if (!signalsDisabled()) {
     conditionTypeModified().fire(this, conditionType);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 int Enemy::Action::rating() const { return m_rating; }
@@ -92,7 +92,7 @@ void Enemy::Action::setRating(const int rating) {
   if (!signalsDisabled()) {
     ratingModified().fire(this, rating);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 int Enemy::Action::skillId() const { return m_skillId; }
@@ -102,7 +102,7 @@ void Enemy::Action::setSkillId(int skillId) {
   if (!signalsDisabled()) {
     skillIdModified().fire(this, skillId);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 void Enemy::Action::restoreOriginal() {
@@ -210,7 +210,7 @@ void Enemy::DropItem::setDataId(const int dataId) {
   if (!signalsDisabled()) {
     dataIdModified().fire(this, dataId);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 int Enemy::DropItem::denominator() const { return m_denominator; }
@@ -220,7 +220,7 @@ void Enemy::DropItem::setDenominator(const int denominator) {
   if (!signalsDisabled()) {
     denominatorModified().fire(this, denominator);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 int Enemy::DropItem::kind() const { return m_kind; }
@@ -230,7 +230,7 @@ void Enemy::DropItem::setKind(const int kind) {
   if (!signalsDisabled()) {
     kindModified().fire(this, kind);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 void Enemy::DropItem::restoreOriginal() {
@@ -381,7 +381,7 @@ void Enemy::setId(const int id) {
   if (!signalsDisabled()) {
     idModified().fire(this, id);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 std::vector<Enemy::Action>& Enemy::actions() { return m_actions; }
@@ -392,7 +392,7 @@ void Enemy::setActions(const std::vector<Action>& actions) {
   if (!signalsDisabled()) {
     actionsModified().fire(this, actions);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] int Enemy::battlerHue() const { return m_battlerHue; }
@@ -402,7 +402,7 @@ void Enemy::setBattlerHue(const int battlerHue) {
   if (!signalsDisabled()) {
     battlerHueModified().fire(this, battlerHue);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 const std::string& Enemy::battlerName() const { return m_battlerName; }
@@ -412,7 +412,7 @@ void Enemy::setBattlerName(const std::string& battlerName) {
   if (!signalsDisabled()) {
     battlerNameModified().fire(this, battlerName);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 std::vector<Enemy::DropItem>& Enemy::dropItems() { return m_dropItems; }
@@ -423,7 +423,7 @@ void Enemy::setDropItems(const std::vector<DropItem>& dropItems) {
   if (!signalsDisabled()) {
     dropItemsModified().fire(this, dropItems);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] int Enemy::exp() const { return m_exp; }
@@ -433,7 +433,7 @@ void Enemy::setExp(const int exp) {
   if (!signalsDisabled()) {
     expModified().fire(this, exp);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 std::vector<Trait>& Enemy::traits() { return m_traits; }
@@ -443,7 +443,7 @@ void Enemy::setTraits(const std::vector<Trait>& traits) {
   if (!signalsDisabled()) {
     traitsModified().fire(this, traits);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] int Enemy::gold() const { return m_gold; }
@@ -453,7 +453,7 @@ void Enemy::setGold(const int gold) {
   if (!signalsDisabled()) {
     goldModified().fire(this, gold);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 const std::string& Enemy::name() const { return m_name; }
@@ -463,7 +463,7 @@ void Enemy::setName(const std::string& name) {
   if (!signalsDisabled()) {
     nameModified().fire(this, name);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 const std::string& Enemy::note() const { return m_note; }
@@ -473,7 +473,7 @@ void Enemy::setNote(const std::string& note) {
   if (!signalsDisabled()) {
     noteModified().fire(this, note);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 const std::array<int, 8>& Enemy::params() const { return m_params; }
@@ -483,20 +483,20 @@ void Enemy::setParams(const std::array<int, 8>& params) {
   if (!signalsDisabled()) {
     paramsModified().fire(this, params);
   }
-setHasChanges();
+  setHasChanges();
 }
 [[nodiscard]] int Enemy::param(const int idx) const {
   assert(idx >= 0 && idx < m_params.size());
   return m_params[idx];
 }
 void Enemy::setParam(const int idx, const int param) {
-  assert(param >= 0 && param < m_params.size());
+  assert(idx >= 0 && idx < m_params.size());
   MODIFIABLE_SET_OLD_VALUE(params);
   m_params[idx] = param;
   if (!signalsDisabled()) {
     paramModified().fire(this, idx, param);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 bool Enemy::isValid() const { return m_isValid; }

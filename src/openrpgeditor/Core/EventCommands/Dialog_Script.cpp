@@ -21,6 +21,7 @@ std::tuple<bool, bool> Dialog_Script::draw() {
     auto size = ImGui::CalcTextSize("OKCANCEL");
     m_textEditor.Render("##no_title", {0, ImGui::GetContentRegionAvail().y - (size.y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)});
     ImGui::PopFont();
+
     if (ImGui::Button("OK")) {
       auto script = m_textEditor.GetText();
       std::vector<std::string> scripts = splitString(script, '\n');

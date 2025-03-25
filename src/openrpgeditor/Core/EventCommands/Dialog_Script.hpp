@@ -17,6 +17,7 @@ struct Dialog_Script : IEventDialogController {
       m_textEditor.SetText(m_Text);
     }
     m_textEditor.SetLanguageDefinition(TextEditor::LanguageDefinition::Javascript());
+    m_textEditor.SetHandleKeyboardInputs(true);
   }
   std::tuple<bool, bool> draw() override;
 

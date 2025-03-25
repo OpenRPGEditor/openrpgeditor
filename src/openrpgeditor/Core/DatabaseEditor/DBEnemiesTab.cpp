@@ -260,20 +260,20 @@ void DBEnemiesTab::draw() {
         }
         ImGui::EndChild();
         ImGui::SameLine();
-        ImGui::BeginChild("##orpg_weapons_weapon_panel_right");
+        ImGui::BeginChild("##orpg_enemies_enemy_panel_right");
         {
           m_actionsEditor.draw(m_parent);
           m_traitsEditor.draw(m_parent);
-          ImGui::BeginGroup();
-          {
-            ImGui::SeparatorText("Note:");
-            char note[8192];
-            strncpy(note, m_selectedEnemy->note().c_str(), IM_ARRAYSIZE(note));
-            if (ImGui::InputTextMultiline("##orpg_database_enemies_note", note, IM_ARRAYSIZE(note), ImVec2{ImGui::GetContentRegionMax().x - 16, ImGui::GetContentRegionAvail().y - 16})) {
-              m_selectedEnemy->setNote(note);
-            }
+        }
+        ImGui::EndChild();
+        ImGui::BeginChild("##orpg_weapons_weapon_panel_bottomright");
+        {
+          ImGui::SeparatorText("Note:");
+          char note[8192];
+          strncpy(note, m_selectedEnemy->note().c_str(), IM_ARRAYSIZE(note));
+          if (ImGui::InputTextMultiline("##orpg_database_enemies_note", note, IM_ARRAYSIZE(note), ImVec2{ImGui::GetContentRegionMax().x - 16, 400})) {
+            m_selectedEnemy->setNote(note);
           }
-          ImGui::EndGroup();
         }
         ImGui::EndChild();
       }

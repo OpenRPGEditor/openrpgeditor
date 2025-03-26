@@ -12,7 +12,7 @@ void to_json(nlohmann::ordered_json& json, const LCF_Mapping& mapping) {
 void from_json(const nlohmann::ordered_json& json, LCF_Mapping& mapping) {
   mapping.switch_mapping = json.value("switch_mapping", mapping.switch_mapping);
   mapping.variable_mapping = json.value("variable_mapping", mapping.variable_mapping);
-  mapping.common_mapping = json.value("animation_mapping", mapping.common_mapping);
+  mapping.common_mapping = json.value("common_mapping", mapping.common_mapping);
   mapping.actor_mapping = json.value("actor_mapping", mapping.actor_mapping);
   mapping.state_mapping = json.value("state_mapping", mapping.state_mapping);
   mapping.image_mapping = json.value("image_mapping", mapping.image_mapping);
@@ -139,11 +139,11 @@ void LCF_Mapping::addEmptyState(int id) {
   m_hasUnresolved = true;
 }
 void LCF_Mapping::addEmptySound(std::string& name) {
-  image_mapping.insert(std::make_pair(name, ""));
+  sound_mapping.insert(std::make_pair(name, ""));
   m_hasUnresolved = true;
 }
 void LCF_Mapping::addEmptyImage(std::string& name) {
-  sound_mapping.insert(std::make_pair(name, ""));
+  image_mapping.insert(std::make_pair(name, ""));
   m_hasUnresolved = true;
 }
 void LCF_Mapping::addEmptyCharacterName(std::string& name) {

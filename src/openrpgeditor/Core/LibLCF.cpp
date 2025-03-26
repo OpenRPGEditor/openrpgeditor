@@ -84,6 +84,20 @@ void LibLCF::draw() {
       m_actorPicker.reset();
     }
   }
+  if (m_picker) {
+    auto [closed, confirmed] = m_picker->draw();
+    if (closed) {
+      if (confirmed) {
+        if (m_variableIndex == -1) {
+          // Switch
+          lcf.mapper()->switch_mapping[m_switchIndex] = m_picker->selection();
+        } else {
+          lcf.mapper()->variable_mapping[m_variableIndex] = m_picker->selection();
+        }
+      }
+      m_picker.reset();
+    }
+  }
   if (ImGui::Begin("LCF")) {
     if (ImGui::Button("Select an RPG Maker 2000 project...")) {
       nfdu8char_t* loc;
@@ -408,6 +422,8 @@ void LibLCF::draw() {
               if (ImGui::Button(lcf.mapper()->switch_mapping[pair.first] == 0 ? "Click here to start mapping!"
                                                                               : Database::instance()->switchNameAndId(lcf.mapper()->switch_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
+                m_switchIndex = pair.first;
+                m_variableIndex = -1;
                 m_picker.emplace("Switches", Database::instance()->system.switches(), lcf.mapper()->switch_mapping[pair.first]);
                 m_picker->setOpen(true);
               }
@@ -439,6 +455,8 @@ void LibLCF::draw() {
               if (ImGui::Button(lcf.mapper()->variable_mapping[pair.first] == 0 ? "Click here to start mapping!"
                                                                                 : Database::instance()->variableNameAndId(lcf.mapper()->variable_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
+                m_switchIndex = -1;
+                m_variableIndex = pair.first;
                 m_picker.emplace("Variables", Database::instance()->system.variables(), lcf.mapper()->variable_mapping[pair.first]);
                 m_picker->setOpen(true);
               }
@@ -1233,10 +1251,10 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     PlayBGMCommand newCmd;
     newCmd.setIndent(indent);
 
-    newCmd.audio.setName(strData);
+    newCmd.audio.setName(lcf.mapper()->soundValue(lcf::ToString(strData)));
     newCmd.audio.setVolume(parameters.at(0));
-    newCmd.audio.setPan(parameters.at(1));
-    newCmd.audio.setPitch(parameters.at(2));
+    newCmd.audio.setPitch(parameters.at(1));
+    newCmd.audio.setPan(parameters.at(2));
 
     return std::make_shared<PlayBGMCommand>(newCmd);
   }
@@ -1259,11 +1277,10 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::PlaySound)) {
     PlaySECommand newCmd;
     newCmd.setIndent(indent);
-
-    newCmd.audio.setName(strData);
+    newCmd.audio.setName(lcf.mapper()->soundValue(lcf::ToString(strData)));
     newCmd.audio.setVolume(parameters.at(0));
-    newCmd.audio.setPan(parameters.at(1));
-    newCmd.audio.setPitch(parameters.at(2));
+    newCmd.audio.setPitch(parameters.at(1));
+    newCmd.audio.setPan(parameters.at(2));
 
     return std::make_shared<PlaySECommand>(newCmd);
   }
@@ -1927,8 +1944,8 @@ std::shared_ptr<IEventCommand> LibLCF::convertMovementCommand(lcf::rpg::MoveComm
 
     playSECmd.se.setName(lcf.mapper()->soundValue(ToString(moveCmd.parameter_string)));
     playSECmd.se.setVolume(moveCmd.parameter_a);
-    playSECmd.se.setPan(moveCmd.parameter_b);
-    playSECmd.se.setPitch(moveCmd.parameter_c);
+    playSECmd.se.setPitch(moveCmd.parameter_b);
+    playSECmd.se.setPan(moveCmd.parameter_c);
     // newCmd.script = std::format("SOUND: {}, ({},{},{})", ToString(moveCmd.parameter_string), std::to_string(moveCmd.parameter_a), std::to_string(moveCmd.parameter_b),
     //                             std::to_string(moveCmd.parameter_c));
     return std::make_shared<MovementPlaySECommand>(playSECmd);

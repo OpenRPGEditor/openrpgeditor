@@ -97,7 +97,7 @@ std::tuple<bool, bool> Dialog_PlaySE::draw() {
       }
       ImGui::Separator();
       int pitch = m_audio.pitch();
-      if (ImGuiKnobs::KnobInt("Pitch", &pitch, 0, 100, 1, "%d%", ImGuiKnobVariant_WiperDot, 200.f, ImGuiKnobFlags_AlwaysClamp)) {
+      if (ImGuiKnobs::KnobInt("Pitch", &pitch, 50, 150, 1, "%d%", ImGuiKnobVariant_WiperDot, 200.f, ImGuiKnobFlags_AlwaysClamp)) {
         m_audio.setPitch(pitch);
         setPitch(m_audio.pitch());
       }

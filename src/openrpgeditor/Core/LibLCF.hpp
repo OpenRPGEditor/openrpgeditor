@@ -83,4 +83,6 @@ private:
   int m_commonIndex;
   int m_stateIndex;
   int m_actorIndex;
+  int m_variableIndex;
+  int m_switchIndex;
 };

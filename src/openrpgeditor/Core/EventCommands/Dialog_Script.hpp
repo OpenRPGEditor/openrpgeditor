@@ -13,11 +13,11 @@ struct Dialog_Script : IEventDialogController {
     for (const auto& next : command->moreScript) {
       m_Text += !m_Text.empty() ? "\n" + next->script : next->script;
     }
-    // if (!m_Text.empty()) {
-    //   m_textEditor.SetText(m_Text);
-    // }
-    // m_textEditor.SetLanguageDefinition(TextEditor::LanguageDefinition::Javascript());
-    // m_textEditor.SetHandleKeyboardInputs(true);
+    if (!m_Text.empty()) {
+      m_textEditor.SetText(m_Text);
+    }
+    m_textEditor.SetLanguageDefinition(TextEditor::LanguageDefinition::Javascript());
+    m_textEditor.SetHandleKeyboardInputs(true);
   }
   std::tuple<bool, bool> draw() override;
 

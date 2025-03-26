@@ -39,6 +39,16 @@
 #include "nfd.h"
 
 #undef PlaySound
+template <>
+inline int ObjectPicker<std::optional<CommonEvent>>::getId(const std::optional<CommonEvent>& value) {
+  return value ? value->id() : 0;
+}
+static const std::string InvalidCommonEvent = "Invalid Common Event";
+template <>
+inline const std::string& ObjectPicker<std::optional<CommonEvent>>::getName(const std::optional<CommonEvent>& value) {
+  return value ? value->name() : InvalidCommonEvent;
+}
+
 void LibLCF::draw() {
   if (!m_isOpen) {
     return;
@@ -46,6 +56,33 @@ void LibLCF::draw() {
   if (m_firstOpen) {
     ImGui::SetNextWindowFocus();
     m_firstOpen = false;
+  }
+  if (m_commonPicker) {
+    auto [closed, confirmed] = m_commonPicker->draw();
+    if (closed) {
+      if (confirmed) {
+        lcf.mapper()->common_mapping[m_commonIndex] = m_commonPicker->selection();
+      }
+      m_commonPicker.reset();
+    }
+  }
+  if (m_statePicker) {
+    auto [closed, confirmed] = m_statePicker->draw();
+    if (closed) {
+      if (confirmed) {
+        lcf.mapper()->state_mapping[m_stateIndex] = m_statePicker->selection();
+      }
+      m_statePicker.reset();
+    }
+  }
+  if (m_actorPicker) {
+    auto [closed, confirmed] = m_actorPicker->draw();
+    if (closed) {
+      if (confirmed) {
+        lcf.mapper()->actor_mapping[m_actorIndex] = m_actorPicker->selection();
+      }
+      m_actorPicker.reset();
+    }
   }
   if (ImGui::Begin("LCF")) {
     if (ImGui::Button("Select an RPG Maker 2000 project...")) {
@@ -433,6 +470,7 @@ void LibLCF::draw() {
               if (ImGui::Button(lcf.mapper()->common_mapping[pair.first] == 0 ? "Click here to start mapping!"
                                                                               : Database::instance()->commonEventNameAndId(lcf.mapper()->common_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
+                m_commonIndex = pair.first;
                 m_commonPicker = ObjectPicker("Common Events"sv, Database::instance()->commonEvents.events(), lcf.mapper()->common_mapping[pair.first]);
                 m_commonPicker->setOpen(true);
               }
@@ -463,6 +501,7 @@ void LibLCF::draw() {
               ImGui::PushID(std::format("lcf_actor_data_{}", index).c_str());
               if (ImGui::Button(lcf.mapper()->actor_mapping[pair.first] == 0 ? "Click here to start mapping!" : Database::instance()->actorNameAndId(lcf.mapper()->actor_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
+                m_actorIndex = pair.first;
                 m_actorPicker = ObjectPicker("Actors"sv, Database::instance()->actors.actorList(), lcf.mapper()->actor_mapping[pair.first]);
                 m_actorPicker->setOpen(true);
               }
@@ -493,6 +532,7 @@ void LibLCF::draw() {
               ImGui::PushID(std::format("lcf_state_data_{}", index).c_str());
               if (ImGui::Button(lcf.mapper()->state_mapping[pair.first] == 0 ? "Click here to start mapping!" : Database::instance()->stateNameAndId(lcf.mapper()->actor_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
+                m_stateIndex = pair.first;
                 m_statePicker = ObjectPicker("States"sv, Database::instance()->states.states(), lcf.mapper()->state_mapping[pair.first]);
                 m_statePicker->setOpen(true);
               }
@@ -1511,7 +1551,8 @@ void LibLCF::convertEvent(Event* event, const lcf::rpg::Event& ev) {
 }
 void LibLCF::convertPage(EventPage* page, const lcf::rpg::EventPage& evPage) {
   // Image
-  page->image().setCharacterName("001_AAA"); // Temporary for now. Maybe we add mapping? // TODO
+  std::string test = ToString(evPage.character_name);
+  page->image().setCharacterName(lcf.mapper()->characterNameValue(test)); // Temporary for now. Maybe we add mapping? // TODO
   page->image().setDirection(getDirection(evPage.character_direction));
   page->image().setCharacterIndex(evPage.character_index);
 

@@ -79,4 +79,8 @@ private:
   std::optional<ObjectPicker<std::optional<CommonEvent>>> m_commonPicker;
   std::optional<ObjectPicker<State>> m_statePicker;
   std::optional<ObjectPicker<Actor>> m_actorPicker;
+
+  int m_commonIndex;
+  int m_stateIndex;
+  int m_actorIndex;
 };

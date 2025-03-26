@@ -6,7 +6,7 @@
 void to_json(nlohmann::ordered_json& json, const LCF_Mapping& mapping) {
   json = {
       {"switch_mapping", mapping.switch_mapping}, {"variable_mapping", mapping.variable_mapping}, {"common_mapping", mapping.common_mapping}, {"actor_mapping", mapping.actor_mapping},
-      {"state_mapping", mapping.state_mapping},   {"image_mapping", mapping.image_mapping},       {"sound_mapping", mapping.sound_mapping},
+      {"state_mapping", mapping.state_mapping},   {"image_mapping", mapping.image_mapping},       {"sound_mapping", mapping.sound_mapping},   {"characterName_mapping", mapping.characterName_mapping},
   };
 }
 void from_json(const nlohmann::ordered_json& json, LCF_Mapping& mapping) {
@@ -17,6 +17,7 @@ void from_json(const nlohmann::ordered_json& json, LCF_Mapping& mapping) {
   mapping.state_mapping = json.value("state_mapping", mapping.state_mapping);
   mapping.image_mapping = json.value("image_mapping", mapping.image_mapping);
   mapping.sound_mapping = json.value("sound_mapping", mapping.sound_mapping);
+  mapping.characterName_mapping = json.value("characterName_mapping", mapping.characterName_mapping);
 }
 
 LCF_Mapping LCF_Mapping::load(std::string_view path) {
@@ -81,6 +82,11 @@ bool LCF_Mapping::hasUnresolvedPairs() {
       result = true;
     }
   }
+  for (auto& val : characterName_mapping) {
+    if (val.second.empty()) {
+      result = true;
+    }
+  }
   m_hasUnresolved = result;
   return result;
 }
@@ -138,6 +144,10 @@ void LCF_Mapping::addEmptySound(std::string& name) {
 }
 void LCF_Mapping::addEmptyImage(std::string& name) {
   sound_mapping.insert(std::make_pair(name, ""));
+  m_hasUnresolved = true;
+}
+void LCF_Mapping::addEmptyCharacterName(std::string& name) {
+  characterName_mapping.insert(std::make_pair(name, ""));
   m_hasUnresolved = true;
 }
 std::string LCF_Mapping::replaceText(std::string& text) {
@@ -452,6 +462,18 @@ std::string LCF_Mapping::imageValue(std::string& key) {
     return key;
   }
   std::string ret = image_mapping.at(key);
+  if (ret.empty()) {
+    m_hasUnresolved = true;
+    return ret;
+  }
+  return ret;
+}
+std::string LCF_Mapping::characterNameValue(std::string& key) {
+  if (characterName_mapping.empty() || !characterName_mapping.contains(key)) {
+    addEmptyCharacterName(key);
+    return key;
+  }
+  std::string ret = characterName_mapping.at(key);
   if (ret.empty()) {
     m_hasUnresolved = true;
     return ret;

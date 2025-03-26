@@ -24,6 +24,7 @@ public:
   void addEmptyState(int id);
   void addEmptySound(std::string& name);
   void addEmptyImage(std::string& name);
+  void addEmptyCharacterName(std::string& name);
 
   std::string replaceText(std::string& text);
   bool checkAllCharacters(std::string& text1, std::string text2);
@@ -37,6 +38,7 @@ public:
   std::string localeValue(std::string& text, int mapId, int evId, int page, int command);
   std::string soundValue(std::string key);
   std::string imageValue(std::string& key);
+  std::string characterNameValue(std::string& key);
 
   bool hasUnresolvedPairs();
   bool isUnresolved();
@@ -52,6 +54,7 @@ public:
   std::map<int, int> state_mapping;
   std::map<std::string, std::string> image_mapping;
   std::map<std::string, std::string> sound_mapping;
+  std::map<std::string, std::string> characterName_mapping;
 
   std::map<std::string, std::string> dialogue_errors;
   int keyCount{0};

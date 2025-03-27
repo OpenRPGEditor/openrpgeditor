@@ -47,7 +47,10 @@ private:
   int m_selectionHeight{48};
   int m_selectionX{0};
   int m_selectionY{0};
+  int originalSelection{0};
   // For PatternAndDirection mode
   int m_pattern{0};
   Direction m_direction{Direction::Down};
+
+  int sheetIndexOf(std::string& str);
 };

@@ -469,6 +469,9 @@ std::string LCF_Mapping::imageValue(std::string& key) {
   return ret;
 }
 std::string LCF_Mapping::characterNameValue(std::string& key) {
+  if (key.empty()) {
+    return key;
+  }
   if (characterName_mapping.empty() || !characterName_mapping.contains(key)) {
     addEmptyCharacterName(key);
     return key;

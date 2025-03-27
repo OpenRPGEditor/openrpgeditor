@@ -26,19 +26,7 @@ void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const i
 
   std::string imageName = m_charDir.value().getFileName(static_cast<std::string>(sheetName));
   if (!imageName.empty()) {
-    bool found = false;
-    for (int i = 0; i < m_characterSheets.size(); ++i) {
-      if (!m_characterSheets[i].compare(imageName)) {
-        found = true;
-        m_selectedSheet = i;
-        break;
-      }
-    }
-    if (!found) {
-      m_characterSheet.reset();
-      m_selectedSheet = -1;
-      return;
-    }
+    originalSelection = sheetIndexOf(imageName);
 
     const float charX = static_cast<float>((character % (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) * m_characterSheet->characterAtlasWidth());
     const float charY = static_cast<float>((character / (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) * m_characterSheet->characterAtlasHeight());
@@ -62,6 +50,21 @@ void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const i
     m_selectedSheet = -1;
   }
   m_checkerboardTexture.setSize(m_characterSheet->texture().width(), m_characterSheet->texture().height());
+}
+int CharacterPicker::sheetIndexOf(std::string& str) {
+  bool found = false;
+  for (int i = 0; i < m_characterSheets.size(); ++i) {
+    if (!m_characterSheets[i].compare(str)) {
+      found = true;
+      m_selectedSheet = i;
+    }
+  }
+  if (!found) {
+    m_characterSheet.reset();
+    m_selectedSheet = -1;
+    return -1;
+  }
+  return m_selectedSheet;
 }
 
 std::tuple<bool, bool> CharacterPicker::draw() {
@@ -240,12 +243,16 @@ std::tuple<bool, bool> CharacterPicker::draw() {
     {
       ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x - (calc.x + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().ItemSpacing.x));
       if (ImGui::Button("OK")) {
-        m_confirmed = true;
+        m_filter.clear();
+        m_selectedSheet = originalSelection;
+        m_selectedSheet = m_confirmed = true;
         m_open = false;
         ImGui::CloseCurrentPopup();
       }
       ImGui::SameLine();
       if (ImGui::Button("Cancel")) {
+        m_filter.clear();
+        m_selectedSheet = originalSelection;
         m_confirmed = false;
         m_open = false;
         ImGui::CloseCurrentPopup();

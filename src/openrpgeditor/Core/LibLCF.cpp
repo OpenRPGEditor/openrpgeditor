@@ -577,9 +577,30 @@ void LibLCF::draw() {
               ImGui::TextUnformatted(pair.first.c_str());
               ImGui::PopID();
               ImGui::TableNextColumn();
-              ImGui::PushID(std::format("{}_data_{}", pair.second, index).c_str());
               ImGui::InputText(std::format("##lcf_mapping_sound_string{}", index).c_str(), &lcf.mapper()->sound_mapping[pair.first]);
+              ImGui::TableNextColumn();
+              index++;
+            }
+            ImGui::EndTable();
+          }
+          ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Character Names##lcf_mapping_character_names")) {
+          if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
+                                ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
+
+            ImGui::TableSetupColumn("RPG2000");
+            ImGui::TableSetupColumn("MV/MZ");
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+
+            int index{0};
+            for (auto& pair : lcf.mapper()->characterName_mapping) {
+              ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
+              ImGui::TextUnformatted(pair.first.c_str());
               ImGui::PopID();
+              ImGui::TableNextColumn();
+              ImGui::InputText(std::format("##lcf_mapping_characterName_string{}", index).c_str(), &lcf.mapper()->characterName_mapping[pair.first]);
               ImGui::TableNextColumn();
               index++;
             }
@@ -602,9 +623,8 @@ void LibLCF::draw() {
               ImGui::TextUnformatted(pair.first.c_str());
               ImGui::PopID();
               ImGui::TableNextColumn();
-              ImGui::PushID(std::format("{}_data_{}", pair.second, index).c_str());
               ImGui::InputText(std::format("##lcf_mapping_image_string{}", index).c_str(), &lcf.mapper()->image_mapping[pair.first]);
-              ImGui::PopID();
+
               ImGui::TableNextColumn();
               index++;
             }
@@ -1254,7 +1274,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     newCmd.audio.setName(lcf.mapper()->soundValue(lcf::ToString(strData)));
     newCmd.audio.setVolume(parameters.at(0));
     newCmd.audio.setPitch(parameters.at(1));
-    newCmd.audio.setPan(parameters.at(2));
+    newCmd.audio.setPan(0);
 
     return std::make_shared<PlayBGMCommand>(newCmd);
   }
@@ -1280,7 +1300,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     newCmd.audio.setName(lcf.mapper()->soundValue(lcf::ToString(strData)));
     newCmd.audio.setVolume(parameters.at(0));
     newCmd.audio.setPitch(parameters.at(1));
-    newCmd.audio.setPan(parameters.at(2));
+    newCmd.audio.setPan(0);
 
     return std::make_shared<PlaySECommand>(newCmd);
   }
@@ -1945,7 +1965,7 @@ std::shared_ptr<IEventCommand> LibLCF::convertMovementCommand(lcf::rpg::MoveComm
     playSECmd.se.setName(lcf.mapper()->soundValue(ToString(moveCmd.parameter_string)));
     playSECmd.se.setVolume(moveCmd.parameter_a);
     playSECmd.se.setPitch(moveCmd.parameter_b);
-    playSECmd.se.setPan(moveCmd.parameter_c);
+    playSECmd.se.setPan(0);
     // newCmd.script = std::format("SOUND: {}, ({},{},{})", ToString(moveCmd.parameter_string), std::to_string(moveCmd.parameter_a), std::to_string(moveCmd.parameter_b),
     //                             std::to_string(moveCmd.parameter_c));
     return std::make_shared<MovementPlaySECommand>(playSECmd);

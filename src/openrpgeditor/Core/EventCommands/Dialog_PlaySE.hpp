@@ -50,11 +50,11 @@ private:
 
   bool playAudio(const std::string& path) {
     // Load and play music
-    m_sound = Sound(ResourceManager::instance()->loadBGM(Database::instance()->basePath + path + m_audioDir.value().getExt()));
-    m_sound.play();
+    m_sound = Sound(ResourceManager::instance()->loadSE(path));
     setVolume(m_audio.volume());
     setPanning(m_audio.pan());
     setPitch(m_audio.pitch());
+    m_sound.play();
     return true;
   }
   void setVolume(int volume) {

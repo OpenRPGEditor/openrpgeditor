@@ -20,10 +20,7 @@ struct CharacterPicker : IDialogController {
   [[nodiscard]] Direction selectedDirection() const { return m_direction; }
   [[nodiscard]] int character() const { return m_characterIndex; }
   [[nodiscard]] std::string selectedSheet() const {
-    if (m_filter.empty()) {
-      return m_selectedSheet >= 0 ? m_charDir.value().isParentDirectory() ? m_characterSheets[m_selectedSheet] : m_charDir.value().getPathPrefix() + '/' + m_characterSheets[m_selectedSheet] : "";
-    }
-    return m_selectedSheet >= 0 ? m_charDir.value().isParentDirectory() ? m_sortedList[m_selectedSheet] : m_charDir.value().getPathPrefix() + '/' + m_sortedList[m_selectedSheet] : "";
+    return m_selectedSheet >= 0 ? m_charDir.value().isParentDirectory() ? m_characterSheets[m_selectedSheet] : m_charDir.value().getPathPrefix() + '/' + m_characterSheets[m_selectedSheet] : "";
   }
 
   void setCharacterInfo(std::string_view sheetName, int character = 0, int pattern = 0, Direction direction = Direction::Down);
@@ -34,7 +31,7 @@ private:
   int m_selectedFolder{-1};
 
   std::string m_filter;
-  std::vector<std::string> m_sortedList;
+  std::map<int, std::string> m_sortedIndexes;
   bool m_sortRequest{false};
 
   std::optional<CharacterSheet> m_characterSheet;
@@ -47,7 +44,6 @@ private:
   int m_selectionHeight{48};
   int m_selectionX{0};
   int m_selectionY{0};
-  int originalSelection{0};
   // For PatternAndDirection mode
   int m_pattern{0};
   Direction m_direction{Direction::Down};

@@ -530,34 +530,28 @@ void MapEditor::draw() {
       handleMouseInput(win);
       handleKeyboardShortcuts();
 
-      if (m_selectedEvent) {
-        if (ImGui::BeginPopupContextWindow()) {
-          ImGui::BeginDisabled(true);
-          if (ImGui::MenuItem(trNOOP("Insert template..."))) {}
-          ImGui::EndDisabled();
-          if (ImGui::MenuItem(trNOOP("Save as template..."))) {
-            m_templateSaving = true;
-            template_picker = ObjectPicker(trNOOP("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
-            template_picker->setNoSelectionMeansAdd(true);
-            template_picker->setOpen(true);
-          }
-          ImGui::EndPopup();
+      if (ImGui::BeginPopupContextWindow()) {
+        if (ImGui::MenuItem(trNOOP("Change event id..."))) {}
+        ImGui::SeparatorText("Templates");
+        ImGui::BeginDisabled(m_selectedEvent);
+        if (ImGui::MenuItem(trNOOP("Insert..."))) {
+          m_templateSaving = false;
+          template_picker = ObjectPicker(trNOOP("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+          template_picker->setNoSelectionMeansAdd(false);
+          template_picker->setOpen(true);
         }
-      } else {
-        // No event selected, but it should still show if the map cursor is on the screen
-        if (ImGui::BeginPopupContextWindow()) {
-          if (ImGui::MenuItem(trNOOP("Insert template..."))) {
-            m_templateSaving = false;
-            template_picker = ObjectPicker(trNOOP("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
-            template_picker->setNoSelectionMeansAdd(false);
-            template_picker->setOpen(true);
-          }
-          ImGui::BeginDisabled(true);
-          if (ImGui::MenuItem(trNOOP("Save as template..."))) {}
-          ImGui::EndDisabled();
-          ImGui::EndPopup();
+        ImGui::EndDisabled();
+        ImGui::BeginDisabled(m_selectedEvent == nullptr);
+        if (ImGui::MenuItem(trNOOP("Save as..."))) {
+          m_templateSaving = true;
+          template_picker = ObjectPicker(trNOOP("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+          template_picker->setNoSelectionMeansAdd(true);
+          template_picker->setOpen(true);
         }
+        ImGui::EndDisabled();
+        ImGui::EndPopup();
       }
+
       if (template_picker) {
         auto [closed, confirmed] = template_picker->draw();
         if (closed) {

@@ -26,7 +26,7 @@ void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const i
 
   std::string imageName = m_charDir.value().getFileName(static_cast<std::string>(sheetName));
   if (!imageName.empty()) {
-    originalSelection = sheetIndexOf(imageName);
+    m_selectedSheet = sheetIndexOf(imageName);
 
     const float charX = static_cast<float>((character % (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) * m_characterSheet->characterAtlasWidth());
     const float charY = static_cast<float>((character / (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) * m_characterSheet->characterAtlasHeight());
@@ -72,16 +72,20 @@ std::tuple<bool, bool> CharacterPicker::draw() {
     ImGui::OpenPopup(m_name.c_str());
   }
 
+  int index{0};
   if (m_sortRequest) {
-    m_sortedList.clear();
+    m_sortedIndexes.clear();
     for (auto& str : m_characterSheets) {
       if (!m_filter.empty()) {
         if (ContainsCaseInsensitive(str, m_filter)) {
-          m_sortedList.push_back(str);
+          m_sortedIndexes.insert(std::make_pair(index, ""));
+          // m_sortedList.push_back(str);
         }
       } else {
-        m_sortedList.push_back(str);
+        m_sortedIndexes.insert(std::make_pair(index, ""));
+        // m_sortedList.push_back(str);
       }
+      index++;
     }
     m_sortRequest = false;
   }
@@ -99,7 +103,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
       if (ImGui::InputText("##object_selection_filter_input", &m_filter)) {
         m_selectedSheet = -1;
         if (m_filter.empty()) {
-          m_sortedList.clear();
+          m_sortedIndexes.clear();
         } else {
           m_sortRequest = true;
         }
@@ -107,14 +111,9 @@ std::tuple<bool, bool> CharacterPicker::draw() {
       ImGui::SameLine();
       if (ImGui::Button("Clear")) {
         m_filter.clear();
-        m_sortedList.clear();
+        m_sortedIndexes.clear();
       }
-      std::string selectedSheet = m_filter.empty()          ? (m_selectedSheet == -1          ? "(None)"
-                                                               : m_characterSheets.size() > 0 ? m_characterSheets[m_selectedSheet]
-                                                                                              : "(None)")
-                                  : m_selectedSheet == -1   ? "(None)"
-                                  : m_sortedList.size() > 0 ? m_sortedList[m_selectedSheet]
-                                                            : "(None)";
+      std::string selectedSheet = m_selectedSheet == -1 ? "(None)" : m_characterSheets.size() > 0 ? m_characterSheets[m_selectedSheet] : "(None)";
       ImGui::Text("Selected Sheet: %s", selectedSheet.c_str());
       ImGui::BeginChild("##character_picker_sheet_list", ImVec2{ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRS").x, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y},
                         ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX);
@@ -158,8 +157,11 @@ std::tuple<bool, bool> CharacterPicker::draw() {
             ImGui::SetItemDefaultFocus();
           }
 
-          for (int i = 0; m_filter.empty() ? i < m_characterSheets.size() : i < m_sortedList.size(); ++i) {
-            const auto& sheet = m_filter.empty() ? m_characterSheets[i] : m_sortedList[i];
+          for (int i = 0; i < m_characterSheets.size(); ++i) {
+            if (m_filter.empty() == false && m_sortedIndexes.contains(i) == false) {
+              continue;
+            }
+            const auto& sheet = m_characterSheets[i];
             ImGui::TableNextColumn();
             if (ImGui::Selectable(std::format("{0}##sheet_{0}", sheet).c_str(), m_selectedSheet == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
               if (m_selectedSheet != i) {
@@ -244,15 +246,15 @@ std::tuple<bool, bool> CharacterPicker::draw() {
       ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x - (calc.x + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().ItemSpacing.x));
       if (ImGui::Button("OK")) {
         m_filter.clear();
-        m_selectedSheet = originalSelection;
-        m_selectedSheet = m_confirmed = true;
+        m_sortedIndexes.clear();
+        m_confirmed = true;
         m_open = false;
         ImGui::CloseCurrentPopup();
       }
       ImGui::SameLine();
       if (ImGui::Button("Cancel")) {
         m_filter.clear();
-        m_selectedSheet = originalSelection;
+        m_sortedIndexes.clear();
         m_confirmed = false;
         m_open = false;
         ImGui::CloseCurrentPopup();

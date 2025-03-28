@@ -13,6 +13,8 @@ void EventListView::draw() {
   if (ImGui::Begin("Events")) {
     Map* map = m_parent->currentMap();
     if (map) {
+      // HACK: This is necessary for now until we can figure out what is causing an assert in ImGui::MarkItemEdited()
+      ImGui::ClearActiveID();
       for (auto& event : map->events()) {
         if (event) {
           bool selectedHere = false;

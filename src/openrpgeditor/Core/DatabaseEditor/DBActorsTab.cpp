@@ -122,16 +122,14 @@ void DBActorsTab::draw() {
             ImGui::SeparatorText("General Settings");
             char name[4096];
             strncpy(name, m_selectedActor->name().c_str(), 4096);
-            if (ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_name", "Name:", name, 4096, (ImGui::GetContentRegionAvail().x / 2) - ImGui::GetStyle().FramePadding.x, nullptr,
-                                         ImGuiInputTextFlags_None)) {
+            if (ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_name", "Name:", name, 4096, (ImGui::GetContentRegionAvail().x / 2) - ImGui::GetStyle().FramePadding.x)) {
 
               m_selectedActor->setName(name);
             }
             ImGui::SameLine();
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4);
             strncpy(name, m_selectedActor->nickname().c_str(), 4096);
-            if (ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_nickname", "Nickname:", name, 4096, (ImGui::GetContentRegionAvail().x / 2) - ImGui::GetStyle().FramePadding.x, nullptr,
-                                         ImGuiInputTextFlags_None)) {
+            if (ImGui::LabelOverLineEdit("##orpg_actors_editor_actors_actor_nickname", "Nickname:", name, 4096, (ImGui::GetContentRegionAvail().x / 2) - ImGui::GetStyle().FramePadding.x)) {
 
               m_selectedActor->setNickname(name);
             }
@@ -146,7 +144,7 @@ void DBActorsTab::draw() {
                     continue;
                   }
                   if (ImGui::Selectable(Database::instance()->classNameAndId(c.id()).c_str(), c.id() == m_selectedActor->classId())) {
-                    ImGui::ClearActiveID();
+
                     m_selectedActor->setClassId(c.id());
                     m_selectedActor->setValid(true);
                   }

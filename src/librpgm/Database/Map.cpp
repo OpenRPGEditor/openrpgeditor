@@ -1058,6 +1058,11 @@ Event* Map::createEventFromTemplate(const Event& ev) {
   if (ev.id() == m_events.size()) {
     m_events.emplace_back(ev);
   } else {
+    if (m_events.size() < ev.id()) {
+      while (m_events.size() <= ev.id()) {
+        m_events.emplace_back(std::nullopt);
+      }
+    }
     if (m_events.at(ev.id()).has_value()) {
       m_events.insert(m_events.begin() + ev.id(), ev);
     } else {

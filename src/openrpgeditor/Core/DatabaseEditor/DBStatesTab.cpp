@@ -32,7 +32,7 @@ void DBStatesTab::draw() {
               }
 
               if (ImGui::Selectable(Database::instance()->stateNameAndId(state.id()).c_str(), &state == m_selectedState) || (ImGui::IsItemFocused() && m_selectedState != &state)) {
-               ImGui::ClearActiveID(); m_selectedState = &state;
+               m_selectedState = &state;
                 m_traitsEditor.setTraits(&m_selectedState->traits());
               }
             }

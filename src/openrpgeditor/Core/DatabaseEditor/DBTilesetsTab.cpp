@@ -48,7 +48,7 @@ void DBTilesetsTab::draw() {
               }
 
               if (ImGui::Selectable(Database::instance()->tilesetNameAndId(tileset.id()).c_str(), &tileset == m_selectedTileset) || (ImGui::IsItemFocused() && m_selectedTileset != &tileset)) {
-                ImGui::ClearActiveID();m_selectedTileset = &tileset;
+                m_selectedTileset = &tileset;
               }
             }
           }
@@ -80,7 +80,7 @@ void DBTilesetsTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedTileset->name().c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_tilesets_tileset_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x, nullptr, ImGuiInputTextFlags_None)) {
+              if (ImGui::LabelOverLineEdit("##orpg_tilesets_tileset_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x)) {
                 m_selectedTileset->setName(name);
               }
             }

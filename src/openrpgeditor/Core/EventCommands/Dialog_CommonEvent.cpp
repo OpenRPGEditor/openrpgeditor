@@ -19,6 +19,9 @@ std::tuple<bool, bool> Dialog_CommonEvent::draw() {
     if (closed) {
       if (confirmed) {
         command->event = m_picker->selection();
+        m_confirmed = true;
+        setOpen(false);
+        ImGui::CloseCurrentPopup();
       }
       m_picker.reset();
     }

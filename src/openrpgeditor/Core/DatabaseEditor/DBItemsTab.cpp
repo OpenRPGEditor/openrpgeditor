@@ -56,7 +56,7 @@ void DBItemsTab::draw() {
               char name[4096];
               snprintf(name, 4096, "%04i %s", skill_.id(), skill_.name().c_str());
               if (ImGui::Selectable(name, &skill_ == m_selectedItem) || (ImGui::IsItemFocused() && m_selectedItem != &skill_)) {
-                if (m_selectedItem != &skill_) {ImGui::ClearActiveID();
+                if (m_selectedItem != &skill_) {
                   m_selectedItem = &skill_;
                   m_effectsEditor.setEffects(&m_selectedItem->effects());
                   m_itemButtonTexture->clear();

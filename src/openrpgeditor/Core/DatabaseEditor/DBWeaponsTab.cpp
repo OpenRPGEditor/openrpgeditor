@@ -51,7 +51,7 @@ void DBWeaponsTab::draw() {
               }
 
               if (ImGui::Selectable(Database::instance()->weaponNameAndId(weapon.id()).c_str(), &weapon == m_selectedWeapon) || (ImGui::IsItemFocused() && m_selectedWeapon != &weapon)) {
-                ImGui::ClearActiveID();m_selectedWeapon = &weapon;
+                m_selectedWeapon = &weapon;
                 m_traitsEditor.setTraits(&m_selectedWeapon->traits());
               }
             }
@@ -84,7 +84,7 @@ void DBWeaponsTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedWeapon->name().c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_weapons_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - 16, nullptr, ImGuiInputTextFlags_None)) {
+              if (ImGui::LabelOverLineEdit("##orpg_weapons_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - 16)) {
                 m_selectedWeapon->setName(name);
               }
             }

@@ -62,7 +62,7 @@ void DBAnimationsTab::draw() {
               }
               if (ImGui::Selectable(Database::instance()->animationNameAndId(animation.id()).c_str(), &animation == m_selectedAnimation) ||
                   (ImGui::IsItemFocused() && m_selectedAnimation != &animation)) {
-                ImGui::ClearActiveID();
+
                 m_selectedAnimation = &animation;
                 m_frameCursor = 0; // Reset cursor on animation change
                 m_selectedTimings = m_selectedAnimation->timings();
@@ -95,7 +95,7 @@ void DBAnimationsTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedAnimation->name().c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_animations_editor_name", trNOOP("Name:"), name, 4096, 200, nullptr, ImGuiInputTextFlags_None)) {
+              if (ImGui::LabelOverLineEdit("##orpg_animations_editor_name", trNOOP("Name:"), name, 4096, 200)) {
                 m_selectedAnimation->setName(name);
               }
             }

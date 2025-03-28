@@ -43,7 +43,7 @@ void DBTroopsTab::draw() {
               }
 
               if (ImGui::Selectable(Database::instance()->troopNameAndId(troop.id()).c_str(), &troop == m_selectedTroop) || (ImGui::IsItemFocused() && m_selectedTroop != &troop)) {
-                ImGui::ClearActiveID();m_selectedTroop = &troop;
+                m_selectedTroop = &troop;
                 m_troopsEditor.setTroop(m_selectedTroop);
               }
             }

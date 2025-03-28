@@ -20,7 +20,6 @@
 #include "Core/DatabaseEditor/DBWeaponsTab.hpp"
 #include "Core/Graphics/IconSheet.hpp"
 
-#include "Database/Class.hpp"
 #include "DatabaseEditor/DBLocaleTab.hpp"
 #include "DatabaseEditor/DBMappingsTab.hpp"
 

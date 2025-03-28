@@ -27,7 +27,6 @@ public:
   void addEmptyCharacterName(std::string& name);
 
   std::string replaceText(std::string& text);
-  bool checkAllCharacters(std::string& text1, std::string text2);
 
   int switchValue(int key);
   int variableValue(int key);
@@ -43,9 +42,6 @@ public:
   bool hasUnresolvedPairs();
   bool isUnresolved();
   void loadDatabase(const lcf::rpg::Database* database);
-  std::string removeSurrogators(std::string& text);
-  std::string checkParenthesis(std::string& text);
-  int findTextMatch(std::string text);
 
   std::map<int, int> switch_mapping;
   std::map<int, int> variable_mapping;

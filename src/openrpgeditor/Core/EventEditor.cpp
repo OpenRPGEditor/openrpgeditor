@@ -213,7 +213,7 @@ void EventEditor::drawLocalization() {
         int localeIndex{1};
         for (auto& line : lines) {
           for (int i = 0; i < Database::instance()->locales.locales.size(); i++) {
-            if (Database::instance()->locales.locales.at(i).first == line) {
+            if (Database::instance()->locales.locales.at(i).first == trim(line)) {
               line = std::format("Map{}-EV{}-Page{}-{}", mapId, eventId, pageId, localeIndex);
               Database::instance()->locales.locales.at(i).first = line;
               localeIndex++;
@@ -271,6 +271,8 @@ void EventEditor::drawLocalization() {
       if (ImGui::Button("Cancel")) {
         m_localeConfirm = false;
         m_localizationInput.clear();
+        m_maxLocaleLines = 0;
+        m_localeLinesRequired = 0;
         ImGui::CloseCurrentPopup();
       }
       ImGui::EndGroup();

@@ -26,6 +26,7 @@ Database::Database(const std::string_view _projectBasePath, const std::string_vi
 }
 
 void Database::load() {
+  config.load(basePath + "editor/config.json");
   RPGM_INFO("Queue System definitions for load...");
   DeserializationQueue::instance().enqueue(std::make_shared<SystemSerializer>("data/System.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
     system = std::dynamic_pointer_cast<SystemSerializer>(serializer)->data();
@@ -130,6 +131,8 @@ void Database::load() {
 }
 
 void Database::serializeProject() {
+  serializeSettings();
+
   SerializationQueue::instance().enqueue(std::make_shared<CommonEventsSerializer>(commonEvents, "data/CommonEvents.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
   SerializationQueue::instance().enqueue(std::make_shared<SystemSerializer>(system, "data/System.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
   SerializationQueue::instance().enqueue(std::make_shared<ActorsSerializer>(actors, "data/Actors.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});

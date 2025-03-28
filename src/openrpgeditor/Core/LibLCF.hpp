@@ -34,6 +34,7 @@ public:
   lcf::rpg::MoveCommand DecodeMove(lcf::DBArray<int32_t>::const_iterator& it);
   int DecodeInt(lcf::DBArray<int32_t>::const_iterator& it);
   const std::string DecodeString(lcf::DBArray<int32_t>::const_iterator& it);
+  bool isNumericOnly(const std::string& str);
 
 private:
   MainWindow* m_parent;

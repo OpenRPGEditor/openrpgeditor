@@ -1129,6 +1129,55 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::WeatherEffects)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ShowPicture)) {
+
+    int type{0};
+
+    if (parameters.at(6) > 0) {
+      attachToCommand(" Transparency: " + std::to_string(parameters.at(6)));
+    }
+    ControlVariables newCmd;
+    newCmd.setIndent(indent);
+    if (strData.contains("mayu-") || strData.contains("me-") || strData.contains("kuchi-")) {
+      if (strData.contains("me-")) { // Eye
+        type = 1;
+      }
+      if (strData.contains("mayu-")) { // Brow
+        type = 0;
+      }
+      if (strData.contains("kuchi-")) { // Mouth
+        type = 2;
+      }
+      // Specific case handling
+
+      switch (type) {
+      case 0:
+        newCmd.start = 801;
+        newCmd.end = 801;
+        break;
+      case 1:
+        newCmd.start = 802;
+        newCmd.end = 802;
+        break;
+      case 2:
+        newCmd.start = 803;
+        newCmd.end = 803;
+        break;
+      }
+
+      newCmd.operand = VariableControlOperand::Constant;
+      newCmd.operation = VariableControlOperation::_set__del_Set;
+
+      int idx = strData.find('-') + 1;
+      std::string suffix = strData.substr(idx, strData.size());
+
+      if (isNumericOnly(suffix)) {
+        newCmd.constant = stoi(suffix);
+      } else {
+        newCmd.script = strData.substr(idx, strData.size());
+      }
+
+      return std::make_shared<ControlVariables>(newCmd);
+    }
     return Comment(lcf::rpg::EventCommand::kCodeTags[code], strData, indent);
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::MovePicture)) {
@@ -2089,4 +2138,10 @@ const std::string LibLCF::DecodeString(lcf::DBArray<int32_t>::const_iterator& it
   std::string result = lcf::ReaderUtil::Recode(out.str(), "SJIS");
 
   return result;
+}
+bool LibLCF::isNumericOnly(const std::string& str) {
+  // Check if all characters in the string are alphabetic
+  return std::all_of(str.begin(), str.end(), [](char c) {
+    return std::isdigit(c); // Returns true if c is an alphabetic character
+  });
 }

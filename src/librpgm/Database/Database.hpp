@@ -12,6 +12,7 @@
 #include "Database/Map.hpp"
 #include "Database/MapInfos.hpp"
 #include "Database/Plugins.hpp"
+#include "Database/ProjectConfig.hpp"
 #include "Database/Skills.hpp"
 #include "Database/States.hpp"
 #include "Database/System.hpp"
@@ -57,8 +58,11 @@ struct Database {
   std::string projectVersion; // As stored in the .rpgproject file
   std::string projectFilePath;
   std::string basePath;
+  ProjectConfig config;
 
   void serializeProject();
+
+  void serializeSettings() { config.serialize(basePath + "/editor/config.json"); }
 
   static std::string framesText(const int frames) { return std::to_string(frames) + (frames > 1 ? " frames" : " frame"); }
 

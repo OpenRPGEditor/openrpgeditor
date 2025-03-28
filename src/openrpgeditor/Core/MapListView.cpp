@@ -9,8 +9,8 @@
 void MapListView::recursiveDrawTree(MapInfo& in) {
   const std::string id = ("#orpg_map_" + std::to_string(in.id()) + in.name());
   bool isStyle{false};
-  if (Settings::instance()->mapStateList.contains(in.id())) {
-    if (Settings::instance()->mapStateList.at(in.id()) == MapStateType::WorkInProgress) {
+  if (Database::instance()->config.mapStateList.contains(in.id())) {
+    if (Database::instance()->config.mapStateList.at(in.id()) == MapStateType::WorkInProgress) {
       ImGui::PushStyleColor(ImGuiCol_Text, ImVec4{1.0f, 0.0f, 0.0f, 1.0f});
       isStyle = true;
     }
@@ -70,8 +70,8 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
     }
     if (ImGui::BeginMenu("State")) {
       bool isChecked{false};
-      if (Settings::instance()->mapStateList.contains(m_selectedMapId)) {
-        if (Settings::instance()->mapStateList.at(m_selectedMapId) == MapStateType::WorkInProgress) {
+      if (Database::instance()->config.mapStateList.contains(m_selectedMapId)) {
+        if (Database::instance()->config.mapStateList.at(m_selectedMapId) == MapStateType::WorkInProgress) {
           isChecked = true;
         } else {
           isChecked = false;
@@ -81,16 +81,16 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
       }
       if (ImGui::Checkbox("Work in Progress##orpg_mapview_toggle_wip", &isChecked)) {
         if (isChecked) {
-          if (Settings::instance()->mapStateList.contains(m_selectedMapId)) {
-            Settings::instance()->mapStateList.at(m_selectedMapId) = MapStateType::WorkInProgress;
+          if (Database::instance()->config.mapStateList.contains(m_selectedMapId)) {
+            Database::instance()->config.mapStateList.at(m_selectedMapId) = MapStateType::WorkInProgress;
           } else {
-            Settings::instance()->mapStateList.insert(std::make_pair(m_selectedMapId, MapStateType::WorkInProgress));
+            Database::instance()->config.mapStateList.insert(std::make_pair(m_selectedMapId, MapStateType::WorkInProgress));
           }
         } else {
-          if (Settings::instance()->mapStateList.contains(m_selectedMapId)) {
-            Settings::instance()->mapStateList.at(m_selectedMapId) = MapStateType::None;
+          if (Database::instance()->config.mapStateList.contains(m_selectedMapId)) {
+            Database::instance()->config.mapStateList.at(m_selectedMapId) = MapStateType::None;
           } else {
-            Settings::instance()->mapStateList.insert(std::make_pair(m_selectedMapId, MapStateType::None));
+            Database::instance()->config.mapStateList.insert(std::make_pair(m_selectedMapId, MapStateType::None));
           }
         }
       }

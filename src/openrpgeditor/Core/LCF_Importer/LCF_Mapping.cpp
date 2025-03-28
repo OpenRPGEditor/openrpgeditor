@@ -221,9 +221,7 @@ std::string LCF_Mapping::replaceText(std::string& text) {
     std::string suffix = text.substr(pos2);
     std::string substring = text.substr(pos1 + 3, text.size() - (prefix.size() + suffix.size()));
 
-    std::string finalText = prefix + removeSurrogators(substring) + suffix;
-    finalText = checkParenthesis(finalText);
-    return finalText;
+    return "";
   }
   auto pos3 = text.find('(');
   auto pos4 = text.find(')');
@@ -232,121 +230,44 @@ std::string LCF_Mapping::replaceText(std::string& text) {
     std::string prefix = text.substr(0, pos3);
     std::string substring = text.substr(pos3, text.size() - prefix.size());
 
-    substring = removeSurrogators(substring);
-
     return prefix + substring;
   }
   return text;
 }
 
-std::string LCF_Mapping::checkParenthesis(std::string& text) {
-  auto pos3 = text.find('(');
-  auto pos4 = text.find(')');
-
-  if (pos3 != std::string::npos && pos4 != std::string::npos) {
-    std::string prefix = text.substr(0, pos3);
-    // std::string suffix = text.substr(text.size());
-    std::string substring = text.substr(pos3, text.size() - prefix.size());
-
-    substring = removeSurrogators(substring);
-
-    return prefix + substring;
-  }
-  return text;
-}
-
-std::string LCF_Mapping::removeSurrogators(std::string& substring) {
-
-  while (substring.find("―") != std::string::npos) {
-    substring = substring.replace(substring.find("―"), 1, "");
-  }
-  while (substring.find("　") != std::string::npos) {
-    substring = substring.replace(substring.find("　"), 1, "");
-  }
-  while (substring.find("～") != std::string::npos) {
-    substring = substring.replace(substring.find("～"), 1, "~");
-  }
-  for (auto& chr : substring) {
-    if (static_cast<int>(chr) < 0) {
-      if (static_cast<int>(chr) == -29) {
-        substring = substring.replace(substring.find(chr), 1, " ");
-      } else if (static_cast<int>(chr) == -86 || static_cast<int>(chr) == -103 || static_cast<int>(chr) == -30) {
-        // Music note
-      } else {
-        substring = substring.replace(substring.find(chr), 1, "`");
-      }
-    }
-  }
-  while (substring.find('`') != std::string::npos) {
-    substring = substring.replace(substring.find('`'), 1, "");
-  }
-  return substring;
-};
-
-bool LCF_Mapping::checkAllCharacters(std::string& text1, std::string text2) {
-  int count{0};
-  bool resultInvalid{false};
-  if (text1.size() == text2.size()) {
-    for (int i = 0; i < text1.size() - 1; i++) {
-      if (text1.at(i) != text2.at(i)) {
-        resultInvalid = true;
-      }
-      if (!resultInvalid) {
-        count++;
-      }
-    }
-  } else {
-    resultInvalid = true;
-  }
-  if (count >= text1.size() - 5 && count > 0) {
-
-    if (count == text1.size() - 1) {
-      // Count exact
-      int test = 2;
-    } else {
-      int test = 2;
-      // Some missing
-    }
-  }
-
-  if (resultInvalid) {
-    return false;
-  }
-  return true;
-}
 int LCF_Mapping::switchValue(int key) {
   if (switch_mapping.empty() || !switch_mapping.contains(key)) {
     addEmptySwitch(key);
-    return key;
+    return 5000;
   }
   int ret = switch_mapping.at(key);
   if (ret == 0) {
     m_hasUnresolved = true;
-    return key;
+    return 5000;
   }
   return ret;
 }
 int LCF_Mapping::variableValue(int key) {
   if (variable_mapping.empty() || !variable_mapping.contains(key)) {
     addEmptyVariable(key);
-    return key;
+    return 5000;
   }
   int ret = variable_mapping.at(key);
   if (ret == 0) {
     m_hasUnresolved = true;
-    return key;
+    return 5000;
   }
   return ret;
 }
 int LCF_Mapping::commonEventValue(int key) {
   if (common_mapping.empty() || !common_mapping.contains(key)) {
     addEmptyCommonEvent(key);
-    return key;
+    return 1;
   }
   int ret = common_mapping.at(key);
   if (ret == 0) {
     m_hasUnresolved = true;
-    return key;
+    return 1;
   }
   return ret;
 }
@@ -374,76 +295,7 @@ int LCF_Mapping::stateValue(int key) {
   }
   return ret;
 }
-int LCF_Mapping::findTextMatch(std::string text) {
-
-  int highestMatch{0};
-  int highestIndex{-1};
-  int pairIndex{0};
-  for (auto& pair : Database::instance()->locales.locales) {
-    int count{0};
-    bool isMismatch{false}; // Boolean to check if the current iteration is a match or not. This will be enabled if it fails so it doesn't continue unnecessarily processing.
-    // 1. Iterate through text and compare it to the current locale pair
-    // if (text.size() == pair.second.size()) {
-    //
-    //}
-    if (text.size() <= pair.second.size()) {
-      for (int i = 0; i < text.size(); i++) {
-        if (!isMismatch) {
-          if (text.at(i) != pair.second.at(i)) {
-            isMismatch = true;
-            highestMatch = count;
-            highestIndex = pairIndex;
-          }
-          count++;
-          if (count > highestMatch) {
-            highestMatch = count;
-            highestIndex = pairIndex;
-          }
-        }
-      }
-      keyCount++;
-      if (highestMatch == text.size()) {
-        return highestIndex;
-      }
-    }
-    pairIndex++; // The index of the pair we're comparing. Increment for every end of pair until the end of processing.
-  }
-  if ((text.size() - 1) - highestMatch > 3) {
-    return -1; // If the difference is bigger than 5 characters, then it's likely not the match. (Going to reduce this to 2 or 3)
-  }
-  return highestIndex; // Return the highest index if the comparison is close enough or equal to
-}
-std::string LCF_Mapping::localeValue(std::string& text, int mapId, int evId, int page, int command) {
-
-  return "{}";
-
-  text = replaceText(text);
-  int key = findTextMatch(text);
-  if (key != -1) {
-    if (mapId == -1) {
-      return Database::instance()->locales.locales.at(key).first;
-    }
-    std::string pair = Database::instance()->locales.locales.at(key).first;
-    if (!pair.contains('{')) {
-      std::string newKey = "{" + std::format("Map{}-EV{}-Page{}-{}", mapId, evId, page, command) + "}";
-      Database::instance()->locales.locales.at(key).first = newKey;
-      return newKey; // Result found
-    }
-    return Database::instance()->locales.locales.at(key).first;
-  }
-  return "Verify key";
-
-  // std::string compareString;
-  // for (auto& pair : Database::instance()->locales.locales) {
-  //   compareString = pair.second;
-  //   bool isMatch = checkAllCharacters(text, pair.second);
-  //   if (isMatch) {
-  //
-  //     // Don't replace key if it already is formatted -- just use it.
-  //     return pair.first;
-  //   }
-  // }
-}
+std::string LCF_Mapping::localeValue(std::string& text, int mapId, int evId, int page, int command) { return "{}"; }
 std::string LCF_Mapping::soundValue(std::string key) {
   if (sound_mapping.empty() || !sound_mapping.contains(key)) {
     addEmptySound(key);

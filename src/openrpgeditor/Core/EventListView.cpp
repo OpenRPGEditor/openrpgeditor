@@ -13,25 +13,27 @@ void EventListView::draw() {
   if (ImGui::Begin("Events")) {
     Map* map = m_parent->currentMap();
     if (map) {
-      // HACK: This is necessary for now until we can figure out what is causing an assert in ImGui::MarkItemEdited()
-      ImGui::ClearActiveID();
-      for (auto& event : map->events()) {
-        if (event) {
-          bool selectedHere = false;
-          sprintf(eventNameBuf, "%s (%i, %i)", Database::instance()->eventNameOrId(event->id()).c_str(), event->x(), event->y());
-          if (ImGui::Selectable(eventNameBuf, m_parent->mapEditor()->selectedEvent() == &*event, ImGuiSelectableFlags_AllowDoubleClick | static_cast<int>(ImGuiSelectableFlags_SelectOnNav))) {
-            m_parent->mapEditor()->setSelectedEvent(const_cast<Event*>(&*event));
-            selectedHere = true;
-            if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-              event->editor()->open();
+      ImGui::BeginChild("##event_list");
+      {
+        for (auto& event : map->events()) {
+          if (event) {
+            bool selectedHere = false;
+            sprintf(eventNameBuf, "%s (%i, %i)", Database::instance()->eventNameOrId(event->id()).c_str(), event->x(), event->y());
+            if (ImGui::Selectable(eventNameBuf, m_parent->mapEditor()->selectedEvent() == &*event, ImGuiSelectableFlags_AllowDoubleClick | static_cast<int>(ImGuiSelectableFlags_SelectOnNav))) {
+              m_parent->mapEditor()->setSelectedEvent(const_cast<Event*>(&*event));
+              selectedHere = true;
+              if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                event->editor()->open();
+              }
             }
-          }
 
-          if (m_parent->mapEditor()->selectedEvent() == &event.value() && !selectedHere && !m_parent->mapEditor()->scrolledToEvent()) {
-            ImGui::SetScrollHereY();
+            if (m_parent->mapEditor()->selectedEvent() == &event.value() && !selectedHere && !m_parent->mapEditor()->scrolledToEvent()) {
+              ImGui::SetScrollHereY();
+            }
           }
         }
       }
+      ImGui::EndChild();
     }
   }
   ImGui::End();

@@ -59,7 +59,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize({ImGui::GetMainViewport()->Size.x / 3, ImGui::GetMainViewport()->Size.y / 2}, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize({ImGui::GetMainViewport()->Size.x / 2, ImGui::GetMainViewport()->Size.y / 2}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     const auto buttonsSize = ImGui::CalcTextSize("OKCANCEL");
     // Character Selection
@@ -307,7 +307,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     ImGui::EndChild();
     ImGui::BeginChild("##movementroute_bottom_child");
     {
-      ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x - (buttonsSize.x + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().ItemSpacing.x));
+      ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x - (buttonsSize.x + (ImGui::GetStyle().FramePadding.x * 3) + ImGui::GetStyle().ItemSpacing.x));
       if (ImGui::Button(trNOOP("OK"))) {
         m_confirmed = true;
         if (m_isEventRoute) {

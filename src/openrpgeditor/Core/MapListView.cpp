@@ -14,6 +14,10 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
       ImGui::PushStyleColor(ImGuiCol_Text, ImVec4{1.0f, 0.0f, 0.0f, 1.0f});
       isStyle = true;
     }
+    if (Database::instance()->config.mapStateList.at(in.id()) == MapStateType::LowPriority) {
+      ImGui::PushStyleColor(ImGuiCol_Text, ImVec4{1.0f, 0.5f, 0.0f, 1.0f});
+      isStyle = true;
+    }
   }
   const bool open = ImGui::TreeNodeEx(id.c_str(),
                                       (in.expanded() ? ImGuiTreeNodeFlags_DefaultOpen : 0) | (in.children().empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
@@ -74,7 +78,12 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
         if (Database::instance()->config.mapStateList.at(m_selectedMapId) == MapStateType::WorkInProgress) {
           isChecked = true;
         } else {
-          isChecked = false;
+          if (Database::instance()->config.mapStateList.at(m_selectedMapId) == MapStateType::LowPriority) {
+            isChecked = true;
+          } else {
+
+            isChecked = false;
+          }
         }
       } else {
         isChecked = false;
@@ -85,6 +94,21 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
             Database::instance()->config.mapStateList.at(m_selectedMapId) = MapStateType::WorkInProgress;
           } else {
             Database::instance()->config.mapStateList.insert(std::make_pair(m_selectedMapId, MapStateType::WorkInProgress));
+          }
+        } else {
+          if (Database::instance()->config.mapStateList.contains(m_selectedMapId)) {
+            Database::instance()->config.mapStateList.at(m_selectedMapId) = MapStateType::None;
+          } else {
+            Database::instance()->config.mapStateList.insert(std::make_pair(m_selectedMapId, MapStateType::None));
+          }
+        }
+      }
+      if (ImGui::Checkbox("Work in Progress##orpg_mapview_toggle_lowprio", &isChecked)) {
+        if (isChecked) {
+          if (Database::instance()->config.mapStateList.contains(m_selectedMapId)) {
+            Database::instance()->config.mapStateList.at(m_selectedMapId) = MapStateType::LowPriority;
+          } else {
+            Database::instance()->config.mapStateList.insert(std::make_pair(m_selectedMapId, MapStateType::LowPriority));
           }
         } else {
           if (Database::instance()->config.mapStateList.contains(m_selectedMapId)) {

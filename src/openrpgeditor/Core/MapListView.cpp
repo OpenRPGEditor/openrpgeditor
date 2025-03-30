@@ -73,21 +73,12 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
       m_parent->setMap(in);
     }
     if (ImGui::BeginMenu("State")) {
-      bool isChecked{false};
-      if (Database::instance()->config.mapStateList.contains(m_selectedMapId)) {
-        if (Database::instance()->config.mapStateList.at(m_selectedMapId) == MapStateType::WorkInProgress) {
-          isChecked = true;
-        } else {
-          if (Database::instance()->config.mapStateList.at(m_selectedMapId) == MapStateType::LowPriority) {
-            isChecked = true;
-          } else {
 
-            isChecked = false;
-          }
-        }
-      } else {
-        isChecked = false;
+      if (!Database::instance()->config.mapStateList.contains(m_selectedMapId)) {
+        Database::instance()->config.mapStateList.insert(std::make_pair(m_selectedMapId, MapStateType::None));
       }
+      bool isChecked = Database::instance()->config.mapStateList.at(m_selectedMapId) == MapStateType::WorkInProgress;
+      bool isChecked_2 = Database::instance()->config.mapStateList.at(m_selectedMapId) == MapStateType::LowPriority;
       if (ImGui::Checkbox("Work in Progress##orpg_mapview_toggle_wip", &isChecked)) {
         if (isChecked) {
           if (Database::instance()->config.mapStateList.contains(m_selectedMapId)) {
@@ -103,8 +94,8 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
           }
         }
       }
-      if (ImGui::Checkbox("Work in Progress##orpg_mapview_toggle_lowprio", &isChecked)) {
-        if (isChecked) {
+      if (ImGui::Checkbox("Low Priority##orpg_mapview_toggle_lowprio", &isChecked_2)) {
+        if (isChecked_2) {
           if (Database::instance()->config.mapStateList.contains(m_selectedMapId)) {
             Database::instance()->config.mapStateList.at(m_selectedMapId) = MapStateType::LowPriority;
           } else {

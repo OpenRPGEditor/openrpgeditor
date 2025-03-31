@@ -21,6 +21,7 @@ public:
   sf::SoundBuffer loadBGM(std::string_view path) const;
   sf::SoundBuffer loadBGS(std::string_view path) const;
   sf::SoundBuffer loadSE(std::string_view path) const;
+  sf::SoundBuffer loadME(std::string_view path) const;
   Texture loadImage(std::string_view path);
   Texture loadAnimationImage(std::string_view path);
   Texture loadBattlebacks1Image(std::string_view path);
@@ -59,6 +60,7 @@ private:
   std::filesystem::path m_bgmPath{};
   std::filesystem::path m_bgsPath{};
   std::filesystem::path m_sePath{};
+  std::filesystem::path m_mePath{};
   std::filesystem::path m_imgPath{};
   std::filesystem::path m_animationsPath{};
   std::filesystem::path m_battlebacks1Path{};

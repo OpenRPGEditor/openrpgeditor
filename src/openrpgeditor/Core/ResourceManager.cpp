@@ -18,6 +18,7 @@ void ResourceManager::setBasepath(const std::string_view basepath) {
   m_bgmPath = m_basePath / "audio/bgm/";
   m_bgsPath = m_basePath / "audio/bgs/";
   m_sePath = m_basePath / "audio/se/";
+  m_mePath = m_basePath / "audio/me/";
   m_imgPath = m_basePath / "img/";
   m_animationsPath = m_basePath / "img/animations/";
   m_battlebacks1Path = m_basePath / "img/battlebacks1/";
@@ -77,6 +78,8 @@ sf::SoundBuffer ResourceManager::loadBGM(const std::string_view path) const { re
 sf::SoundBuffer ResourceManager::loadBGS(const std::string_view path) const { return loadSound((m_bgsPath / path).replace_extension(".ogg")); }
 
 sf::SoundBuffer ResourceManager::loadSE(const std::string_view path) const { return loadSound((m_sePath / path.data()).replace_extension(".ogg")); }
+
+sf::SoundBuffer ResourceManager::loadME(const std::string_view path) const { return loadSound((m_mePath / path.data()).replace_extension(".ogg")); }
 
 Texture ResourceManager::loadTexture(std::filesystem::path path) {
 #ifndef _WIN32

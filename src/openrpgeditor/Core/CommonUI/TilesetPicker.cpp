@@ -67,7 +67,7 @@ void TilesetPicker::draw() {
             m_palette.onCursorReleased();
             auto penData = m_palette.penData();
             // auto size = m_palette.penSize();
-            for (; const auto& pen : penData) {
+            for (const auto& pen : penData) {
               // printf("%4i, %4i, %4i, %4i\n", pen[0], pen[1], pen[2], pen[3]);
             }
           }

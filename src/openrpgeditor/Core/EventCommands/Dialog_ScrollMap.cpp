@@ -9,9 +9,9 @@ std::tuple<bool, bool> Dialog_ScrollMap::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{200, 140}, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{0,0}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-
+    const auto buttonsSize = ImGui::CalcTextSize("OKCANCEL");
     ImGui::SeparatorText("Direction                Distance");
 
     ImGui::PushItemWidth(ImGui::GetContentRegionMax().x / 2);
@@ -32,8 +32,9 @@ std::tuple<bool, bool> Dialog_ScrollMap::draw() {
       ImGui::EndCombo();
     }
     ImGui::SameLine();
-    ImGui::SetNextItemWidth(80);
-    if (ImGui::InputInt("##scrollmap_distance", &m_distance)) {
+
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x - ImGui::GetStyle().FramePadding.x * 14);
+    if (ImGui::InputInt("##scrollmap_distance", &m_distance, 0)) {
       if (m_distance > 100) {
         m_distance = 100;
       } else if (m_distance < 1)
@@ -55,21 +56,25 @@ std::tuple<bool, bool> Dialog_ScrollMap::draw() {
       }
       ImGui::EndCombo();
     }
+    ImGui::BeginGroup();
+    {
+      ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x - (buttonsSize.x + (ImGui::GetStyle().FramePadding.x * 4) + ImGui::GetStyle().ItemSpacing.x));
+      if (ImGui::Button("OK")) {
+        m_confirmed = true;
+        command->direction = static_cast<Direction>(m_direction);
+        command->distance = m_distance;
+        command->speed = static_cast<MovementSpeed>(m_speed);
 
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->direction = static_cast<Direction>(m_direction);
-      command->distance = m_distance;
-      command->speed = static_cast<MovementSpeed>(m_speed);
-
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
+        ImGui::CloseCurrentPopup();
+        setOpen(false);
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("Cancel")) {
+        ImGui::CloseCurrentPopup();
+        setOpen(false);
+      }
     }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
+    ImGui::EndGroup();
     ImGui::EndPopup();
   }
 

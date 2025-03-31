@@ -24,7 +24,7 @@ std::string TransferPlayerCommand::stringRep(const Database& db) const {
   std::string suffix;
 
   if (direction != Direction::Retain || fade != Fade::Black) {
-    suffix += ColorFormatter::getColor(FormatColor::Gray) + "(";
+    suffix += ColorFormatter::getColor(FormatColor::Gray) + " (";
   }
   if (direction != Direction::Retain) {
     suffix += "Direction: " + DecodeEnumName(direction);

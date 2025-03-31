@@ -10,7 +10,7 @@ struct Dialog_SetEventLocation : IEventDialogController {
       command.reset(new SetEventLocationCommand());
     }
     m_mode = static_cast<int>(command->mode);
-    m_event = static_cast<int>(command->event);
+    m_event = command->event;
 
     if (command->mode == TransferMode::Variable_Designation) {
       m_x_var = command->x;

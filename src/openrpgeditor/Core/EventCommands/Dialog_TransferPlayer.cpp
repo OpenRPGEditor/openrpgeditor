@@ -95,6 +95,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
       ImGui::Text("Direction:");
       ImGui::PushItemWidth(180);
       auto dir = magic_enum::enum_cast<Direction>(m_direction);
+      std::string test = DecodeEnumName(magic_enum::enum_name(dir.value()));
       if (ImGui::BeginCombo("##direction_selection", DecodeEnumName(magic_enum::enum_name(dir.value())).c_str())) {
         for (auto& direction : magic_enum::enum_values<Direction>()) {
           bool is_selected = m_direction == magic_enum::enum_integer(direction);
@@ -140,7 +141,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
         command->x = m_x;
         command->y = m_y;
       }
-      command->direction = static_cast<Direction>((m_direction * 2) + 2);
+      command->direction = static_cast<Direction>(m_direction);
       command->fade = static_cast<Fade>(m_fade);
 
       ImGui::CloseCurrentPopup();

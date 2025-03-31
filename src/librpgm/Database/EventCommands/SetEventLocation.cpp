@@ -20,7 +20,7 @@ void SetEventLocationCommand::serializeParameters(nlohmann::ordered_json& out) c
 std::string SetEventLocationCommand::stringRep(const Database& db) const {
   const auto evName = db.eventNameOrId(event);
   const auto prefix = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Set Event Location" + colon.data() + (event > 0 ? evName : "This Event");
-  const auto suffix = " (Direction: " + DecodeEnumName(direction) + ")" + ColorFormatter::popColor();
+  const auto suffix = ColorFormatter::getColor(FormatColor::Gray) + " (Direction: " + DecodeEnumName(direction) + ")" + ColorFormatter::popColor();
 
   if (mode == TransferMode::Variable_Designation) {
     return prefix + std::format(", ({{{}}},{{{}}})", db.variableNameOrId(x), db.variableNameOrId(y)) + suffix;

@@ -337,7 +337,7 @@ void EventCommandEditor::draw() {
       } else {
         if (m_commands->at(m_selectedCommand)->code() != EventCode::Event_Dummy) {
           int start = m_selectedCommand;
-          int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd;
+          int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd + 1;
           m_commands->erase(m_commands->begin() + start, m_commands->begin() + end);
         }
       }

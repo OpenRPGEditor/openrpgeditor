@@ -94,11 +94,12 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
     {
       ImGui::Text("Direction:");
       ImGui::PushItemWidth(180);
-      if (ImGui::BeginCombo("##direction_selection", DecodeEnumName(magic_enum::enum_value<Direction>(m_direction)).c_str())) {
-        for (auto& dir : magic_enum::enum_values<Direction>()) {
-          bool is_selected = m_direction == magic_enum::enum_index(dir).value();
-          if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
-            m_direction = magic_enum::enum_index(dir).value();
+      auto dir = magic_enum::enum_cast<Direction>(m_direction);
+      if (ImGui::BeginCombo("##direction_selection", DecodeEnumName(magic_enum::enum_name(dir.value())).c_str())) {
+        for (auto& direction : magic_enum::enum_values<Direction>()) {
+          bool is_selected = m_direction == magic_enum::enum_integer(direction);
+          if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(direction)).c_str(), is_selected)) {
+            m_direction = magic_enum::enum_integer(direction);
             if (is_selected)
               ImGui::SetItemDefaultFocus();
           }

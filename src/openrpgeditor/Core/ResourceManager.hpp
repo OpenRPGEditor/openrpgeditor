@@ -20,7 +20,7 @@ public:
   void setBasepath(const std::string_view basepath);
   sf::SoundBuffer loadBGM(std::string_view path) const;
   sf::SoundBuffer loadBGS(std::string_view path) const;
-  sf::SoundBuffer loadSE(std::string_view path) const;]
+  sf::SoundBuffer loadSE(std::string_view path) const;
   sf::SoundBuffer loadME(std::string_view path) const;
   Texture loadImage(std::string_view path);
   Texture loadAnimationImage(std::string_view path);

@@ -56,7 +56,7 @@ std::tuple<bool, bool> EventEditor::draw() {
       if (ImGui::Button(trNOOP("Insert\n Locale Keys"))) {
         m_maxLocaleLines = 0;
         for (auto& cmd : m_event->page(m_selectedPage)->list()) {
-          if (cmd->hasStringReference("{}", SearchType::Text)) {
+          if (cmd->hasStringReference("{}", SearchType::Text) && cmd->code() != EventCode::When_Selected) {
             m_maxLocaleLines++;
           }
         }
@@ -232,9 +232,9 @@ void EventEditor::drawLocalization() {
               int showChoiceIndex{0};
               for (auto& choiceStr : choiceCmd->choices) {
                 // choiceCmd->choices.at(setStringReference("{}", lines.at(index), SearchType::Text);
-                choiceCmd->choices.at(showChoiceIndex) = trim(lines.at(index));
+                choiceCmd->choices.at(showChoiceIndex) = "{" +  trim(lines.at(index))+ "}";
                 if (m_choiceParsing) {
-                  choiceLines.insert(choiceLines.begin() + showChoiceIndex, "{" + choiceStr + "}");
+                  choiceLines.insert(choiceLines.begin() + showChoiceIndex, choiceStr);
                 } else {
                   choiceLines.push_back(choiceStr);
                 }
@@ -250,7 +250,7 @@ void EventEditor::drawLocalization() {
           }
           if (cmd->code() == EventCode::When_Selected) {
             if (cmd->hasStringReference("{}", SearchType::Text)) {
-              cmd->setStringReference("", "{" + choiceLines.at(0) + "}", SearchType::Text);
+              cmd->setStringReference("", choiceLines.at(0), SearchType::Text);
               choiceLines.erase(choiceLines.begin(), choiceLines.begin() + 1);
             }
           }

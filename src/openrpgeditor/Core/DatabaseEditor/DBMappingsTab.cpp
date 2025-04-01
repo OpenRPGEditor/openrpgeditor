@@ -452,9 +452,9 @@ void DBMappingsTab::drawVariables() {
       ImGui::SetNextItemAllowOverlap();
       ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x);
       float pos = ImGui::GetCursorPosX();
-      ImGui::BeginDisabled(m_selectedSwitch == 0);
-      if (ImGui::InputText("##orpg_mapping_variable_name", &m_switch_string)) {
-        Database::instance()->system.setSwitch(m_selectedSwitch, m_switch_string);
+      ImGui::BeginDisabled(m_selectedVariable == 0);
+      if (ImGui::InputText("##orpg_mapping_variable_name", &m_variable_string)) {
+        Database::instance()->system.setVariable(m_selectedVariable, m_variable_string);
       }
       ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionAvail().x - (ImGui::GetStyle().FramePadding.x * 8) + 4, pos + 4.f});
       ImGui::TextDisabled("(?)");
@@ -467,8 +467,8 @@ void DBMappingsTab::drawVariables() {
       ImGui::SameLine();
       ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
       if (ImGui::Button(std::format("{}##{}", m_unicodes.at(m_selectedUnicode), "_variable").c_str(), ImVec2(30, 30))) {
-        m_switch_string += m_unicodes.at(m_selectedUnicode);
-        Database::instance()->system.setSwitch(m_selectedSwitch, m_switch_string);
+        m_variable_string += m_unicodes.at(m_selectedUnicode);
+        Database::instance()->system.setSwitch(m_selectedVariable, m_variable_string);
       }
       if (ImGui::IsItemHovered()) {
         if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {

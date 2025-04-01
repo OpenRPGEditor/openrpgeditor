@@ -1139,10 +1139,10 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     newCmd.setIndent(indent);
     if (strData.contains("mayu-") || strData.contains("me-") || strData.contains("kuchi-")) {
       if (strData.contains("me-")) { // Eye
-        type = 1;
+        type = 0;
       }
       if (strData.contains("mayu-")) { // Brow
-        type = 0;
+        type = 1;
       }
       if (strData.contains("kuchi-")) { // Mouth
         type = 2;

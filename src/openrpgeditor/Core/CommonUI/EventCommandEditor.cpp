@@ -92,7 +92,7 @@ void EventCommandEditor::handleClipboardInteraction() const {
   }
 
   if (RPGMVEventCommandFormat == -1) {
-    RPGMVEventCommandFormat = clip::register_format("application/rpgmv-EventCommand");
+    RPGMVEventCommandFormat = clip::register_format("application/ore-EventCommand");
   }
   if (ImGui::IsKeyPressed(ImGuiKey_V) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
     clip::lock l;
@@ -372,7 +372,7 @@ void EventCommandEditor::drawCommandDialog() {
         } else {
           if (commandDialog->getCommand()->code() == EventCode::Show_Choices) {
             std::shared_ptr<ShowChoiceCommand> pointerCmd = std::dynamic_pointer_cast<ShowChoiceCommand>(commandDialog->getCommand());
-            //std::shared_ptr<ShowChoiceCommand> selectedCmd = std::dynamic_pointer_cast<ShowChoiceCommand>(m_commands->at(m_selectedCommand));
+            // std::shared_ptr<ShowChoiceCommand> selectedCmd = std::dynamic_pointer_cast<ShowChoiceCommand>(m_commands->at(m_selectedCommand));
 
             int choicesTotal{0};
             int totalChoices{0};
@@ -382,7 +382,7 @@ void EventCommandEditor::drawCommandDialog() {
             std::vector<std::shared_ptr<IEventCommand>> cmdList;
             std::map<int, std::vector<std::shared_ptr<IEventCommand>>> tmp;
 
-            //std::vector<std::string> listChoices;
+            // std::vector<std::string> listChoices;
             std::vector<std::string> finalChoices;
 
             for (int i = m_selectedCommand + 1; i < m_commands->size(); i++) {
@@ -458,14 +458,14 @@ void EventCommandEditor::drawCommandDialog() {
                       whenList.clear();
                       totalChoices++;
                     }
-                    //listChoices.push_back(cmd->choice);
+                    // listChoices.push_back(cmd->choice);
                   } else if (m_commands->at(i)->code() == EventCode::When_Cancel && m_commands->at(i)->indent() == pointerCmd->indent().value()) {
                     if (!whenList.empty()) {
                       tmp.insert(std::make_pair(totalChoices, whenList)); // Adds any existing when commands into tmp as index
                       whenList.clear();
                       totalChoices++;
                     }
-                    //listChoices.push_back("\\CANCEL");
+                    // listChoices.push_back("\\CANCEL");
                   } else {
                     if (!choiceEnd) {
                       whenList.push_back(m_commands->at(i));

@@ -94,7 +94,7 @@ void DBLocaleTab::draw() {
           m_compareLanguageDirty = false;
           m_mainLanguageDirty = false;
         }
-        ImGui::SetItemTooltip(trNOOP("Save pending changes if you are editing text."));
+        ImGui::SetItemTooltip("%s", trNOOP("Save pending changes if you are editing text."));
         ImGui::SameLine();
         if (ImGui::Button("S", {30, 30})) {
           if (m_mainLanguageEdit && m_editingIndex > -1) {
@@ -103,7 +103,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\S[value]\\S[value]";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Sets the speed at which the text displays."));
+        ImGui::SetItemTooltip("%s", trNOOP("Sets the speed at which the text displays."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button("V", {30, 30})) {
@@ -113,7 +113,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\V[value]";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Displays the value of a variable."));
+        ImGui::SetItemTooltip("%s", trNOOP("Displays the value of a variable."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button("N", {30, 30})) {
@@ -123,7 +123,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\N[value]";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Display the name of the actor by index."));
+        ImGui::SetItemTooltip("%s", trNOOP("Display the name of the actor by index."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button("P", {30, 30})) {
@@ -133,7 +133,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\P[value]";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Display the name of the party member by index."));
+        ImGui::SetItemTooltip("%s", trNOOP("Display the name of the party member by index."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button("C", {30, 30})) {
@@ -143,7 +143,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\C[value]";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Draw the text following in the specificed color index. Text color is based off Window.png system image."));
+        ImGui::SetItemTooltip("%s", trNOOP("Draw the text following in the specified color index. Text color is based off Window.png system image."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button("G", {30, 30})) {
@@ -153,7 +153,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\G[value]";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Shows the currency unit."));
+        ImGui::SetItemTooltip("%s", trNOOP("Shows the currency unit."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button("I", {30, 30})) {
@@ -163,7 +163,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\I[value]";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Displays an icon by its index."));
+        ImGui::SetItemTooltip("%s", trNOOP("Displays an icon by its index."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button("{", {30, 30})) {
@@ -173,7 +173,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\{";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Increase the text by 1 step."));
+        ImGui::SetItemTooltip("%s", trNOOP("Increase the text by 1 step."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button("}", {30, 30})) {
@@ -183,7 +183,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\}";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Decrease the text by 1 step."));
+        ImGui::SetItemTooltip("%s", trNOOP("Decrease the text by 1 step."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button("$", {30, 30})) {
@@ -193,7 +193,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\$";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Open the gold window."));
+        ImGui::SetItemTooltip("%s", trNOOP("Open the gold window."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button(".", {30, 30})) {
@@ -203,7 +203,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\.";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Wait for 1/4 second."));
+        ImGui::SetItemTooltip("%s", trNOOP("Wait for 1/4 second."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button("|", {30, 30})) {
@@ -213,7 +213,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\|";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Wait for 1 second."));
+        ImGui::SetItemTooltip("%s", trNOOP("Wait for 1 second."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button("!", {30, 30})) {
@@ -223,7 +223,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\!";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Wait for button input."));
+        ImGui::SetItemTooltip("%s", trNOOP("Wait for button input."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button(">", {30, 30})) {
@@ -233,7 +233,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\>";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Display remaining text on the same line all at once."));
+        ImGui::SetItemTooltip("%s", trNOOP("Display remaining text on the same line all at once."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button("<", {30, 30})) {
@@ -243,7 +243,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\<";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Cancels display all effect."));
+        ImGui::SetItemTooltip("%s", trNOOP("Cancels display all effect."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button("^", {30, 30})) {
@@ -253,7 +253,7 @@ void DBLocaleTab::draw() {
             m_jpLocales.locales.at(m_editingIndex).second += "\\^";
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Do not wait for input after text display."));
+        ImGui::SetItemTooltip("%s", trNOOP("Do not wait for input after text display."));
         ImGui::SameLine();
 
         ImGui::SetNextItemWidth(100);
@@ -286,7 +286,7 @@ void DBLocaleTab::draw() {
             m_navigator = true;
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Navigates to the previous untranslated pair."));
+        ImGui::SetItemTooltip("%s", trNOOP("Navigates to the previous untranslated pair."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button("\u21E8", {30, 30})) {
@@ -300,7 +300,7 @@ void DBLocaleTab::draw() {
             m_navigator = true;
           }
         }
-        ImGui::SetItemTooltip(trNOOP("Navigates to the next untranslated pair."));
+        ImGui::SetItemTooltip("%s", trNOOP("Navigates to the next untranslated pair."));
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 8.f);
         if (ImGui::Button("\u24E4", {30, 30})) {
@@ -309,7 +309,7 @@ void DBLocaleTab::draw() {
           m_selectedIndex = -1;
           m_navigator = false;
         }
-        ImGui::SetItemTooltip(trNOOP("Shows only untranslated pairs or cancels untranslated navigation."));
+        ImGui::SetItemTooltip("%s", trNOOP("Shows only untranslated pairs or cancels untranslated navigation."));
         ImGui::SameLine();
         ImGui::SetNextItemWidth(400);
         ImGui::InputText("##orpg_locales_search_bar", &m_searchString);

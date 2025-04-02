@@ -183,10 +183,7 @@ void Application::updateGuiColors() {
 void Application::updateFonts() {
   ImGuiIO& io{ImGui::GetIO()};
   // ImGUI font
-  float scale = std::max(1.f, SDL_GetWindowPixelDensity(m_window->getNativeWindow()));
-  if (scale > 1.f) {
-    scale *= 2.f;
-  }
+  const float scale = std::max(1.f, SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
   const float font_size = m_settings.fontSize * scale;
   const float mono_font_size = m_settings.monoFontSize * scale;
   const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
@@ -224,7 +221,7 @@ void Application::updateFonts() {
   io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->Build();
-  io.FontGlobalScale = scale == 1.f ? scale : 1.f / scale;
+  io.FontGlobalScale = 1.f / scale;
 
   updateScale();
 }
@@ -406,6 +403,8 @@ void Application::onEvent(const SDL_WindowEvent& event) {
     break;
   }
   case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED: {
+    requestFontUpdate();
+    updateScale();
     // TODO: We should probably handle this
     break;
   }

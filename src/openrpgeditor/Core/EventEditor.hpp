@@ -43,4 +43,5 @@ private:
   bool m_doSwap{false};
   int m_swapTarget{-1};
   int m_swapDestination{-1};
+
 };

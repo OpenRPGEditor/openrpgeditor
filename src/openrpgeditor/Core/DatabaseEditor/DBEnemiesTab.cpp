@@ -84,7 +84,7 @@ void DBEnemiesTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedEnemy->name().c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_enemies_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2)) {
+              if (ImGui::LabelOverLineEdit(std::format("##orpg_enemies_editor_name{}", m_selectedEnemy->id()).c_str(), "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2)) {
                 m_selectedEnemy->setName(name);
               }
             }
@@ -107,7 +107,7 @@ void DBEnemiesTab::draw() {
               ImGui::Text("Max HP:");
               ImGui::SetNextItemWidth(170);
               int param = m_selectedEnemy->param(0);
-              if (ImGui::InputInt("##orpg_database_enemy_maxhp", &param, 1, 100)) {
+              if (ImGui::InputInt(std::format("##orpg_database_enemy_maxhp{}", m_selectedEnemy->id()).c_str(), &param, 1, 100)) {
                 m_selectedEnemy->setParam(0, std::clamp(param, -999, 999));
               }
             }
@@ -119,7 +119,7 @@ void DBEnemiesTab::draw() {
               ImGui::Text("Max MP:");
               ImGui::SetNextItemWidth(170);
               int param = m_selectedEnemy->param(1);
-              if (ImGui::InputInt("##orpg_database_enemy_maxmp", &param, 1, 100)) {
+              if (ImGui::InputInt(std::format("##orpg_database_enemy_maxmp{}", m_selectedEnemy->id()).c_str(), &param, 1, 100)) {
                 m_selectedEnemy->setParam(1, std::clamp(param, -999, 999));
               }
             }
@@ -129,7 +129,7 @@ void DBEnemiesTab::draw() {
               ImGui::Text("Attack:");
               ImGui::SetNextItemWidth(170);
               int param = m_selectedEnemy->param(2);
-              if (ImGui::InputInt("##orpg_database_enemy_attack", &param, 1, 100)) {
+              if (ImGui::InputInt(std::format("##orpg_database_enemy_attack{}", m_selectedEnemy->id()).c_str(), &param, 1, 100)) {
                 m_selectedEnemy->setParam(2, std::clamp(param, -999, 999));
               }
             }
@@ -141,7 +141,7 @@ void DBEnemiesTab::draw() {
               ImGui::Text("Defense:");
               ImGui::SetNextItemWidth(170);
               int param = m_selectedEnemy->param(3);
-              if (ImGui::InputInt("##orpg_database_enemy_defense", &param, 1, 100)) {
+              if (ImGui::InputInt(std::format("##orpg_database_enemy_defense{}", m_selectedEnemy->id()).c_str(), &param, 1, 100)) {
                 m_selectedEnemy->setParam(3, std::clamp(param, -999, 999));
               }
             }
@@ -151,7 +151,7 @@ void DBEnemiesTab::draw() {
               ImGui::Text("M.Attack:");
               ImGui::SetNextItemWidth(170);
               int param = m_selectedEnemy->param(4);
-              if (ImGui::InputInt("##orpg_database_enemy_mattack", &param, 1, 100)) {
+              if (ImGui::InputInt(std::format("##orpg_database_enemy_mattack{}", m_selectedEnemy->id()).c_str(), &param, 1, 100)) {
                 m_selectedEnemy->setParam(4, std::clamp(param, -999, 999));
               }
             }
@@ -163,7 +163,7 @@ void DBEnemiesTab::draw() {
               ImGui::Text("M.Defense:");
               ImGui::SetNextItemWidth(170);
               int param = m_selectedEnemy->param(5);
-              if (ImGui::InputInt("##orpg_database_enemy_mdefense", &param, 1, 100)) {
+              if (ImGui::InputInt(std::format("##orpg_database_enemy_mdefense{}", m_selectedEnemy->id()).c_str(), &param, 1, 100)) {
                 m_selectedEnemy->setParam(5, std::clamp(param, -999, 999));
               }
             }
@@ -173,7 +173,7 @@ void DBEnemiesTab::draw() {
               ImGui::Text("Agility:");
               ImGui::SetNextItemWidth(170);
               int param = m_selectedEnemy->param(6);
-              if (ImGui::InputInt("##orpg_database_enemy_agility", &param, 1, 100)) {
+              if (ImGui::InputInt(std::format("##orpg_database_enemy_agility{}", m_selectedEnemy->id()).c_str(), &param, 1, 100)) {
                 m_selectedEnemy->setParam(6, std::clamp(param, -9999, 9999));
               }
             }
@@ -185,7 +185,7 @@ void DBEnemiesTab::draw() {
               ImGui::Text("Luck:");
               ImGui::SetNextItemWidth(170);
               int param = m_selectedEnemy->param(7);
-              if (ImGui::InputInt("##orpg_database_enemy_luck", &param, 1, 100)) {
+              if (ImGui::InputInt(std::format("##orpg_database_enemy_luck{}", m_selectedEnemy->id()).c_str(), &param, 1, 100)) {
                 m_selectedEnemy->setParam(7, std::clamp(param, -9999, 9999));
               }
             }
@@ -196,7 +196,7 @@ void DBEnemiesTab::draw() {
               ImGui::Text("EXP:");
               ImGui::SetNextItemWidth(170);
               int exp = m_selectedEnemy->exp();
-              if (ImGui::InputInt("##orpg_database_enemy_exp", &exp, 1, 100)) {
+              if (ImGui::InputInt(std::format("##orpg_database_enemy_exp{}", m_selectedEnemy->id()).c_str(), &exp, 1, 100)) {
                 m_selectedEnemy->setExp(std::clamp(exp, 0, 9999999));
               }
             }
@@ -208,7 +208,7 @@ void DBEnemiesTab::draw() {
               ImGui::Text("Gold:");
               ImGui::SetNextItemWidth(170);
               int gold = m_selectedEnemy->gold();
-              if (ImGui::InputInt("##orpg_database_enemy_gold", &gold, 1, 100)) {
+              if (ImGui::InputInt(std::format("##orpg_database_enemy_gold{}", m_selectedEnemy->id()).c_str(), &gold, 1, 100)) {
                 m_selectedEnemy->setGold(std::clamp(gold, 0, 9999999));
               }
             }
@@ -218,7 +218,7 @@ void DBEnemiesTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::SetNextItemWidth(160);
-              ImGui::PushID("##orpg_database_enemy_drops_1");
+              ImGui::PushID(std::format("##orpg_database_enemy_drops_1{}", m_selectedEnemy->id()).c_str());
               if (ImGui::Button(m_selectedEnemy->dropItems().at(0).kind() > 0 ? getDropString(0, m_selectedEnemy->dropItems().at(0).kind()).c_str() : "", ImVec2{ImGui::GetContentRegionMax().x, 0})) {
                 m_dropIndex = 0;
                 m_isOpen = true;
@@ -230,7 +230,7 @@ void DBEnemiesTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::SetNextItemWidth(160);
-              ImGui::PushID("##orpg_database_enemy_drops_2");
+              ImGui::PushID(std::format("##orpg_database_enemy_drops_2{}", m_selectedEnemy->id()).c_str());
               if (ImGui::Button(m_selectedEnemy->dropItems().at(1).kind() > 0 ? getDropString(1, m_selectedEnemy->dropItems().at(1).kind()).c_str() : "", ImVec2{ImGui::GetContentRegionMax().x, 0})) {
                 m_dropIndex = 1;
                 m_isOpen = true;
@@ -242,7 +242,7 @@ void DBEnemiesTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::SetNextItemWidth(160);
-              ImGui::PushID("##orpg_database_enemy_drops_3");
+              ImGui::PushID(std::format("##orpg_database_enemy_drops_3{}", m_selectedEnemy->id()).c_str());
               if (ImGui::Button(m_selectedEnemy->dropItems().at(2).kind() > 0 ? getDropString(2, m_selectedEnemy->dropItems().at(2).kind()).c_str() : "", ImVec2{ImGui::GetContentRegionMax().x, 0})) {
                 m_dropIndex = 2;
                 m_isOpen = true;
@@ -267,7 +267,7 @@ void DBEnemiesTab::draw() {
           ImGui::SeparatorText("Note:");
           char note[8192];
           strncpy(note, m_selectedEnemy->note().c_str(), IM_ARRAYSIZE(note));
-          if (ImGui::InputTextMultiline("##orpg_database_enemies_note", note, IM_ARRAYSIZE(note), ImVec2{ImGui::GetContentRegionMax().x - 16, 400})) {
+          if (ImGui::InputTextMultiline(std::format("##orpg_database_enemies_note{}", m_selectedEnemy->id()).c_str(), note, IM_ARRAYSIZE(note), ImVec2{ImGui::GetContentRegionMax().x - 16, 400})) {
             m_selectedEnemy->setNote(note);
           }
         }

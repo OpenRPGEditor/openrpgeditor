@@ -14,8 +14,15 @@
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
+#include <clip.h>
 
+
+static clip::format OREEventPageFormat = -1;
 std::tuple<bool, bool> EventEditor::draw() {
+  if (OREEventPageFormat == -1) {
+    OREEventPageFormat = clip::register_format("application/ore-EventPage");
+  }
+
   if (!m_event || !m_open) {
     return {!m_open, m_confirmed};
   }
@@ -42,11 +49,29 @@ std::tuple<bool, bool> EventEditor::draw() {
     ImGui::SameLine();
     ImGui::BeginGroup();
     {
-      if (ImGui::Button(trNOOP("Copy\nEvent Page"))) {}
+      if (ImGui::Button(trNOOP("Copy\nEvent Page"))) {
+        clip::lock l;
+        nlohmann::ordered_json pageJson = *m_event->page(m_selectedPage);
+        auto v = pageJson.dump();
+        l.set_data(OREEventPageFormat, v.data(), v.size());
+      }
       ImGui::SameLine();
       /* TODO: Undo/Clipboard stack */
-      ImGui::BeginDisabled(true);
-      if (ImGui::Button(trNOOP("Paste\nEvent Page"))) {}
+      ImGui::BeginDisabled(!clip::has(OREEventPageFormat));
+      if (ImGui::Button(trNOOP("Paste\nEvent Page"))) {
+        clip::lock l;
+        if (l.is_convertible(OREEventPageFormat)) {
+          auto len = l.get_data_length(OREEventPageFormat);
+          std::string page;
+          page.resize(len);
+          if (l.get_data(OREEventPageFormat, page.data(), len)) {
+            nlohmann::ordered_json pageJson = nlohmann::ordered_json::parse(page);
+            EventPage pastedPage = pageJson.get<EventPage>();
+            m_event->addPage(pastedPage);
+          }
+        }
+
+      }
       ImGui::EndDisabled();
       ImGui::SameLine();
       if (ImGui::Button(trNOOP("Save as\nTemplate"))) {

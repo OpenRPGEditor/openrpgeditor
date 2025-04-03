@@ -206,7 +206,7 @@ void Application::updateFonts() {
   ImFontConfig config;
   io.Fonts->Clear();
   config.MergeMode = false;
-  config.FontBuilderFlags |= ImGuiFreeTypeBuilderFlags_ForceAutoHint | ImGuiFreeTypeBuilderFlags_LoadColor;
+  config.FontBuilderFlags |= ImGuiFreeTypeBuilderFlags_LoadColor;
   m_mainFont = io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, &config, ranges.Data);
   config.MergeMode = true;
   io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);

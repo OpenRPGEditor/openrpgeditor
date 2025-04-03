@@ -1,7 +1,6 @@
 
 #include "Database/Map.hpp"
 
-#include "../../../cmake-build-relwithdebinfo/_deps/sdl3-src/src/video/khronos/vulkan/vulkan_core.h"
 #include "Database/Event.hpp"
 #include "Database/EventPage.hpp"
 #include <fstream>

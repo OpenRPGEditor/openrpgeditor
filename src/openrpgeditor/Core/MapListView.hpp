@@ -22,10 +22,12 @@ struct MapListView {
 
 private:
   void recursiveExpandParents(MapInfo& in);
+  void drawContextMenu(MapInfo& in);
   void recursiveDrawTree(MapInfo& in);
   MainWindow* m_parent = nullptr;
   MapInfos* m_mapInfos = nullptr;
   int m_selectedMapId = -1;
   bool m_mapTreeStale{false};
   bool m_needsScroll{false};
+  bool m_listMode{false};
 };

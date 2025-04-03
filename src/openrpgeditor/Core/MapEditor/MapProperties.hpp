@@ -9,6 +9,10 @@ public:
   MapProperties() : IDialogController("Map Properties") {}
 
   void setMapInfo(MapInfo* mapInfo) {
+    if (m_mapInfo == mapInfo) {
+      return;
+    }
+
     m_mapInfo = mapInfo;
     if (m_mapInfo && map()) {
       m_tempWidth = map()->width();

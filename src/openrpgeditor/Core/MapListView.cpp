@@ -6,66 +6,7 @@
 
 #include "imgui.h"
 
-void MapListView::recursiveDrawTree(MapInfo& in) {
-  const std::string id = ("#orpg_map_" + std::to_string(in.id()) + in.name());
-  bool isStyle{false};
-  if (Database::instance()->config.mapStateList.contains(in.id())) {
-    if (Database::instance()->config.mapStateList.at(in.id()) == MapStateType::WorkInProgress) {
-      ImGui::PushStyleColor(ImGuiCol_Text, ImVec4{1.0f, 0.0f, 0.0f, 1.0f});
-      isStyle = true;
-    }
-    if (Database::instance()->config.mapStateList.at(in.id()) == MapStateType::LowPriority) {
-      ImGui::PushStyleColor(ImGuiCol_Text, ImVec4{1.0f, 0.5f, 0.0f, 1.0f});
-      isStyle = true;
-    }
-  }
-  const bool open = ImGui::TreeNodeEx(id.c_str(),
-                                      (in.expanded() ? ImGuiTreeNodeFlags_DefaultOpen : 0) | (in.children().empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
-                                          (m_selectedMapId == in.id() ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick,
-                                      "%s", in.name().c_str());
-  if (isStyle) {
-    ImGui::PopStyleColor();
-  }
-  if (m_selectedMapId == in.id() && m_needsScroll) {
-    ImGui::SetScrollHereY();
-    m_needsScroll = false;
-  }
-
-  if ((ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemFocused()) && m_selectedMapId != in.id()) {
-    m_selectedMapId = in.id();
-    m_parent->setMap(*m_mapInfos->map(in.id()));
-  }
-
-  if (ImGui::BeginDragDropSource()) {
-    if (in.id() != 0) {
-      const auto payload = m_mapInfos->map(in.id());
-      ImGui::SetDragDropPayload("##orpg_dnd_mapinfo", payload, sizeof(uintptr_t));
-      ImGui::Text("%s", payload->name().c_str());
-    }
-    ImGui::EndDragDropSource();
-  }
-
-  if (ImGui::BeginDragDropTarget()) {
-    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("##orpg_dnd_mapinfo")) {
-      if (const auto* src = static_cast<MapInfo*>(payload->Data)) {
-        // Are we trying to put our parent into ourselves?
-        if (in.parentId() != src->id()) {
-          // Nope, we can just safely set the parent id without worry
-          m_mapInfos->map(src->id())->setParentId(in.id());
-        } else {
-          // Yes, we have to swap parents, and assign the new parent
-          m_mapInfos->map(in.id())->setParentId(m_mapInfos->map(src->id())->parentId());
-          m_mapInfos->map(src->id())->setParentId(in.id());
-        }
-        /* Set ordering to force it at the end */
-        if (!in.children().empty()) {
-          m_mapInfos->map(src->id())->setOrder(in.children().back()->order() + 1);
-        }
-        m_mapTreeStale = true;
-      }
-    }
-    ImGui::EndDragDropTarget();
-  }
+void MapListView::drawContextMenu(MapInfo& in) {
   if (ImGui::BeginPopupContextItem()) {
     // Ensure we have the right-clicked map selected
     if (m_selectedMapId != in.id()) {
@@ -161,6 +102,68 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
     }
     ImGui::EndPopup();
   }
+}
+void MapListView::recursiveDrawTree(MapInfo& in) {
+  const std::string id = ("#orpg_map_" + std::to_string(in.id()) + in.name());
+  bool isStyle{false};
+  if (Database::instance()->config.mapStateList.contains(in.id())) {
+    if (Database::instance()->config.mapStateList.at(in.id()) == MapStateType::WorkInProgress) {
+      ImGui::PushStyleColor(ImGuiCol_Text, ImVec4{1.0f, 0.0f, 0.0f, 1.0f});
+      isStyle = true;
+    }
+    if (Database::instance()->config.mapStateList.at(in.id()) == MapStateType::LowPriority) {
+      ImGui::PushStyleColor(ImGuiCol_Text, ImVec4{1.0f, 0.5f, 0.0f, 1.0f});
+      isStyle = true;
+    }
+  }
+  const bool open = ImGui::TreeNodeEx(id.c_str(),
+                                      (in.expanded() ? ImGuiTreeNodeFlags_DefaultOpen : 0) | (in.children().empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
+                                          (m_selectedMapId == in.id() ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick,
+                                      "%s", in.name().c_str());
+  if (isStyle) {
+    ImGui::PopStyleColor();
+  }
+  if (m_selectedMapId == in.id() && m_needsScroll) {
+    ImGui::SetScrollHereY();
+    m_needsScroll = false;
+  }
+
+  if ((ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemFocused()) && m_selectedMapId != in.id()) {
+    m_selectedMapId = in.id();
+    m_parent->setMap(*m_mapInfos->map(in.id()));
+  }
+
+  if (ImGui::BeginDragDropSource()) {
+    if (in.id() != 0) {
+      const auto payload = m_mapInfos->map(in.id());
+      ImGui::SetDragDropPayload("##orpg_dnd_mapinfo", payload, sizeof(uintptr_t));
+      ImGui::Text("%s", payload->name().c_str());
+    }
+    ImGui::EndDragDropSource();
+  }
+
+  if (ImGui::BeginDragDropTarget()) {
+    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("##orpg_dnd_mapinfo")) {
+      if (const auto* src = static_cast<MapInfo*>(payload->Data)) {
+        // Are we trying to put our parent into ourselves?
+        if (in.parentId() != src->id()) {
+          // Nope, we can just safely set the parent id without worry
+          m_mapInfos->map(src->id())->setParentId(in.id());
+        } else {
+          // Yes, we have to swap parents, and assign the new parent
+          m_mapInfos->map(in.id())->setParentId(m_mapInfos->map(src->id())->parentId());
+          m_mapInfos->map(src->id())->setParentId(in.id());
+        }
+        /* Set ordering to force it at the end */
+        if (!in.children().empty()) {
+          m_mapInfos->map(src->id())->setOrder(in.children().back()->order() + 1);
+        }
+        m_mapTreeStale = true;
+      }
+    }
+    ImGui::EndDragDropTarget();
+  }
+  drawContextMenu(in);
 
   if (open) {
     for (const auto& mapInfo : in.children()) {
@@ -191,9 +194,34 @@ void recursivePrintOrdering(const MapInfo& in) {
 
 void MapListView::draw() {
   if (ImGui::Begin("Maps", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
-    if (m_mapInfos && !m_mapInfos->empty()) {
-      recursiveDrawTree(m_mapInfos->root());
+    if (ImGui::Checkbox(trNOOP("Display as list"), &m_listMode)) {
+      m_needsScroll = true;
     }
+    ImGui::BeginChild("##maplist");
+    {
+      if (m_mapInfos && !m_mapInfos->empty()) {
+        if (!m_listMode) {
+          recursiveDrawTree(m_mapInfos->root());
+        } else {
+          for (auto& mapInfo : m_mapInfos->mapInfos()) {
+            if (!mapInfo || mapInfo->id() == 0) {
+              continue;
+            }
+
+            if (ImGui::Selectable(std::format("{}##map{}", mapInfo->name(), mapInfo->id()).c_str(), m_selectedMapId == mapInfo->id())) {
+              m_selectedMapId = mapInfo->id();
+              m_parent->setMap(*mapInfo);
+            }
+            if (m_selectedMapId == mapInfo->id() && m_needsScroll) {
+              ImGui::SetScrollHereY();
+              m_needsScroll = false;
+            }
+            drawContextMenu(*mapInfo);
+          }
+        }
+      }
+    }
+    ImGui::EndChild();
   }
   ImGui::End();
 

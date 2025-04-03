@@ -245,6 +245,7 @@ private:
     m_parallaxLoopX = other.m_parallaxLoopX;
     m_parallaxLoopY = other.m_parallaxLoopY;
     m_parallaxName = other.m_parallaxName;
+    m_parallaxShow = other.m_parallaxShow;
     m_parallaxSx = other.m_parallaxSx;
     m_parallaxSy = other.m_parallaxSy;
     m_scrollType = other.m_scrollType;

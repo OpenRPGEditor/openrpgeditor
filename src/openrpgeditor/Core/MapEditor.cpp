@@ -54,11 +54,18 @@ private:
 void MapEditor::setMap(MapInfo* info) {
   m_mapRenderer.setMap(nullptr, nullptr);
   m_mapInfo = info;
+  m_parent->openMapProperties(m_mapInfo);
 }
 
 int MapEditor::tileSize() const { return Database::instance()->system.tileSize(); }
 
 void MapEditor::drawParallax(ImGuiWindow* win) {
+  if (map()->parallaxShow() && !map()->parallaxName().empty()) {
+    m_parallaxTexture = ResourceManager::instance()->loadParallaxImage(map()->parallaxName());
+  } else {
+    m_parallaxTexture = Texture();
+  }
+
   if (!m_parallaxTexture) {
     return;
   }
@@ -560,11 +567,6 @@ void MapEditor::draw() {
       map()->setDummyEvent(image, Database::instance()->system.startX(), Database::instance()->system.startY());
     }
 
-    if (map()->parallaxShow() && !map()->parallaxName().empty()) {
-      m_parallaxTexture = ResourceManager::instance()->loadParallaxImage(map()->parallaxName());
-    } else {
-      m_parallaxTexture = Texture();
-    }
     m_mapRenderer.setMap(m_mapInfo->map(), Database::instance()->tilesets.tileset(m_mapInfo->map()->tilesetId()));
     m_tempMapWidth = m_mapInfo->map()->width();
     m_tempMapHeight = m_mapInfo->map()->height();

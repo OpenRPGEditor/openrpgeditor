@@ -70,7 +70,6 @@ std::tuple<bool, bool> EventEditor::draw() {
             m_event->addPage(pastedPage);
           }
         }
-
       }
       ImGui::EndDisabled();
       ImGui::SameLine();

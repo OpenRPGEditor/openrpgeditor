@@ -6,19 +6,34 @@
 
 #include <IconsFontAwesome6.h>
 #include <iostream>
+
+#include "Database/Database.hpp"
+
 static bool ContainsCaseInsensitive(std::string_view str, std::string_view val) {
-  return std::search(str.begin(), str.end(), val.begin(), val.end(), [](char ch1, char ch2) { return std::toupper(ch1) == std::toupper(ch2); }) != str.end();
+  return std::search(str.begin(), str.end(), val.begin(), val.end(), [](char ch1, char ch2) {
+    return std::toupper(ch1) == std::toupper(ch2);
+  }) != str.end();
 }
-CharacterPicker::CharacterPicker(const PickerMode mode, const std::string_view sheetName, const int character, const int pattern, const Direction direction)
-: IDialogController("Select an Image##character_picker"), m_pickerMode(mode), m_characterIndex(character), m_pattern(pattern), m_direction(direction) {
+
+CharacterPicker::CharacterPicker(const PickerMode mode, const bool useTileset, const std::string_view sheetName,
+                                 const int character,
+                                 const int pattern, const Direction direction)
+  : IDialogController("Select an Image##character_picker"), m_pickerMode(mode), m_characterIndex(character),
+    m_pattern(pattern), m_direction(direction) {
   m_charDir.emplace("img/characters/", ".png", static_cast<std::string>(sheetName));
   m_characterSheets = m_charDir.value().getDirectoryContents();
+  if (useTileset) {
+    int mapId = Database::instance()->mapInfos.currentMap()->id();
+    m_tileSheets = Database::instance()->tilesets.tileset(Database::instance()->mapInfos.map(mapId)->map()->tilesetId())
+        ->tilesetNames();
+  }
   m_folders = m_charDir.value().getDirectories();
 
   setCharacterInfo(sheetName, character, pattern, direction);
 }
 
-void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const int character, const int pattern, const Direction direction) {
+void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const int character, const int pattern,
+                                       const Direction direction) {
   m_characterSheet.emplace(sheetName);
   m_characterIndex = character;
   m_pattern = pattern;
@@ -28,8 +43,12 @@ void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const i
   if (!imageName.empty()) {
     m_selectedSheet = sheetIndexOf(imageName);
 
-    const float charX = static_cast<float>((character % (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) * m_characterSheet->characterAtlasWidth());
-    const float charY = static_cast<float>((character / (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) * m_characterSheet->characterAtlasHeight());
+    const float charX = static_cast<float>(
+      (character % (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) * m_characterSheet->
+      characterAtlasWidth());
+    const float charY = static_cast<float>(
+      (character / (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) * m_characterSheet->
+      characterAtlasHeight());
 
     if (m_pickerMode == PickerMode::PatternAndDirection) {
       m_selectionX = charX + (pattern * m_characterSheet->characterWidth());
@@ -47,11 +66,48 @@ void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const i
     // m_selectionY =
     //     std::clamp(m_selectionY, 0, m_characterSheet->texture().height() - m_characterSheet->characterHeight());
   } else {
-    m_selectedSheet = -1;
+    m_selectedSheet = -5;
   }
   m_checkerboardTexture.setSize(m_characterSheet->texture().width(), m_characterSheet->texture().height());
 }
-int CharacterPicker::sheetIndexOf(std::string& str) {
+
+void CharacterPicker::setTileId(int tileId) {
+  if (m_tileSheets.empty()) {
+    int mapId = Database::instance()->mapInfos.currentMap()->id();
+    m_tileSheets = Database::instance()->tilesets.tileset(Database::instance()->mapInfos.map(mapId)->map()->tilesetId())
+        ->tilesetNames();
+  }
+
+  m_tileId = tileId;
+  if (m_tileId < 256) {
+    // Tile B (0 - 255)
+    m_selectedSheet = -4;
+    m_selectionX = (tileId % 16) * 48;
+    m_selectionY = (tileId / 16) * 48;
+  } else if (m_tileId < 512) {
+    // Tile C (256 - 511)
+    m_selectedSheet = -3;
+  } else if (m_tileId < 768) {
+    // Tile D (512 - 767)
+    m_selectedSheet = -2;
+  } else if (m_tileId < 1024) {
+    // Tile E (768 - 1023)
+    m_selectedSheet = -1;
+  }
+  std::string tileSheet = m_tileSheets[m_selectedSheet + 9];
+
+
+  m_characterSheet.emplace(tileSheet, true, m_tileId);
+  m_characterIndex = 0;
+  m_pattern = 0;
+  m_direction = Direction::Retain;
+  m_selectionWidth = 48;
+  m_selectionHeight = 48;
+
+  m_checkerboardTexture.setSize(m_characterSheet->texture().width(), m_characterSheet->texture().height());
+}
+
+int CharacterPicker::sheetIndexOf(std::string &str) {
   bool found = false;
   for (int i = 0; i < m_characterSheets.size(); ++i) {
     if (!m_characterSheets[i].compare(str)) {
@@ -61,8 +117,8 @@ int CharacterPicker::sheetIndexOf(std::string& str) {
   }
   if (!found) {
     m_characterSheet.reset();
-    m_selectedSheet = -1;
-    return -1;
+    m_selectedSheet = -5;
+    return -4;
   }
   return m_selectedSheet;
 }
@@ -75,7 +131,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
   int index{0};
   if (m_sortRequest) {
     m_sortedIndexes.clear();
-    for (auto& str : m_characterSheets) {
+    for (auto &str: m_characterSheets) {
       if (!m_filter.empty()) {
         if (ContainsCaseInsensitive(str, m_filter)) {
           m_sortedIndexes.insert(std::make_pair(index, ""));
@@ -96,12 +152,15 @@ std::tuple<bool, bool> CharacterPicker::draw() {
   ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 3, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoSavedSettings)) {
     const auto calc = ImGui::CalcTextSize("OKCANCEL");
-    ImGui::BeginChild("##top_child", {0, ImGui::GetContentRegionAvail().y - (calc.y + (ImGui::GetStyle().ItemSpacing.y * 3) + ImGui::GetStyle().FramePadding.y)});
-    {
+    ImGui::BeginChild("##top_child", {
+                        0,
+                        ImGui::GetContentRegionAvail().y - (
+                          calc.y + (ImGui::GetStyle().ItemSpacing.y * 3) + ImGui::GetStyle().FramePadding.y)
+                      }); {
       ImGui::Text("Filter");
       ImGui::SameLine();
       if (ImGui::InputText("##object_selection_filter_input", &m_filter)) {
-        m_selectedSheet = -1;
+        m_selectedSheet = -5;
         if (m_filter.empty()) {
           m_sortedIndexes.clear();
         } else {
@@ -113,44 +172,91 @@ std::tuple<bool, bool> CharacterPicker::draw() {
         m_filter.clear();
         m_sortedIndexes.clear();
       }
-      std::string selectedSheet = m_selectedSheet == -1 ? "(None)" : m_characterSheets.size() > 0 ? m_characterSheets[m_selectedSheet] : "(None)";
+      std::string selectedTileSheet = m_selectedSheet == -5
+                                        ? "(None)"
+                                        : m_selectedSheet < 0
+                                            ? m_tileSheets[m_selectedSheet + 9]
+                                            : "(None)";
+      std::string selectedSheet = m_selectedSheet == -5
+                                    ? "(None)"
+                                    : m_characterSheets.size() > 0 && m_selectedSheet > -1
+                                        ? m_characterSheets[m_selectedSheet]
+                                        : "(None)";
       ImGui::Text("Selected Sheet: %s", selectedSheet.c_str());
-      ImGui::BeginChild("##character_picker_sheet_list", ImVec2{ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRS").x, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y},
-                        ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX);
-      {
+      ImGui::BeginChild("##character_picker_sheet_list", ImVec2{
+                          ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRS").x,
+                          ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y
+                        },
+                        ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX); {
         if (ImGui::BeginTable("##character_picker.characterlist", 1, ImGuiTableFlags_Resizable)) {
           ImGui::TableNextRow();
           ImGui::TableNextColumn();
 
+          for (int z = -4; z < 0; ++z) {
+            const auto &sheet = m_tileSheets[z + 9];
+            if (!sheet.empty()) {
+              if (ImGui::Selectable(std::format("{0}##sheet_{0}", sheet).c_str(), m_selectedSheet == z,
+                                    ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+                if (m_selectedSheet != z) {
+                  m_characterSheet.emplace(sheet, true);
+                  m_isTile = true;
+                  if (m_characterSheet->texture()) {
+                    m_checkerboardTexture.setSize(m_characterSheet->texture().width(),
+                                                  m_characterSheet->texture().height());
+                  }
+                  if (m_pickerMode == PickerMode::Character) {
+                    m_selectionWidth = m_characterSheet->characterAtlasWidth();
+                    m_selectionHeight = m_characterSheet->characterAtlasHeight();
+                  } else {
+                    m_selectionWidth = m_characterSheet->characterWidth();
+                    m_selectionHeight = m_characterSheet->characterHeight();
+                  }
+                  m_selectionX = 0;
+                  m_selectionY = 0;
+                }
+                m_selectedSheet = z;
+              }
+              if (m_selectedSheet == z && ImGui::IsWindowAppearing()) {
+                ImGui::SetScrollHereY();
+              }
+            }
+          }
+
           ImGui::BeginDisabled(m_charDir.value().isParentDirectory());
-          if (ImGui::Selectable("\u21B0 ..", false, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+          if (ImGui::Selectable("\u21B0 ..", false,
+                                ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
             if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
               m_charDir.value().moveUp();
               m_characterSheets = m_charDir->getDirectoryContents();
               m_folders = m_charDir.value().getDirectories();
               m_characterSheet.reset();
-              m_selectedSheet = -1;
+              m_selectedSheet = -5;
               m_selectedFolder = -1;
+              m_isTile = false;
             }
           }
           ImGui::EndDisabled();
           for (int i = 0; i < m_folders.size(); ++i) {
-            const auto& folderName = std::format("{} {}", ICON_FA_FOLDER_OPEN, m_folders[i]);
-            if (ImGui::Selectable(folderName.c_str(), m_selectedFolder == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+            const auto &folderName = std::format("{} {}", ICON_FA_FOLDER_OPEN, m_folders[i]);
+            if (ImGui::Selectable(folderName.c_str(), m_selectedFolder == i,
+                                  ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
               m_selectedFolder = i;
             }
             if (m_selectedFolder == i && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
               m_charDir->setDirectory(i);
               m_folders = m_charDir.value().getDirectories();
               m_characterSheets = m_charDir.value().getDirectoryContents();
-              m_selectedSheet = -1;
+              m_selectedSheet = -5;
               m_selectedFolder = -1;
+              m_isTile = false;
               m_characterSheet.reset();
             }
           }
 
-          if (ImGui::Selectable("(None)", m_selectedSheet < 0, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
-            m_selectedSheet = -1;
+          if (ImGui::Selectable("(None)", m_selectedSheet < 0,
+                                ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+            m_selectedSheet = -5;
+            m_isTile = false;
             m_characterSheet.reset();
           }
           if (m_selectedSheet == -1) {
@@ -161,13 +267,17 @@ std::tuple<bool, bool> CharacterPicker::draw() {
             if (m_filter.empty() == false && m_sortedIndexes.contains(i) == false) {
               continue;
             }
-            const auto& sheet = m_characterSheets[i];
+            const auto &sheet = m_characterSheets[i];
             ImGui::TableNextColumn();
-            if (ImGui::Selectable(std::format("{0}##sheet_{0}", sheet).c_str(), m_selectedSheet == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+            if (ImGui::Selectable(std::format("{0}##sheet_{0}", sheet).c_str(), m_selectedSheet == i,
+                                  ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
               if (m_selectedSheet != i) {
-                m_characterSheet.emplace(m_charDir.value().isParentDirectory() ? sheet : m_charDir.value().getPathPrefix() + '/' + sheet);
+                m_characterSheet.emplace(m_charDir.value().isParentDirectory()
+                                           ? sheet
+                                           : m_charDir.value().getPathPrefix() + '/' + sheet);
                 if (m_characterSheet->texture()) {
-                  m_checkerboardTexture.setSize(m_characterSheet->texture().width(), m_characterSheet->texture().height());
+                  m_checkerboardTexture.setSize(m_characterSheet->texture().width(),
+                                                m_characterSheet->texture().height());
                 }
                 if (m_pickerMode == PickerMode::Character) {
                   m_selectionWidth = m_characterSheet->characterAtlasWidth();
@@ -179,6 +289,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
                 m_selectionX = 0;
                 m_selectionY = 0;
               }
+              m_isTile = false;
               m_selectedSheet = i;
             }
             if (m_selectedSheet == i && ImGui::IsWindowAppearing()) {
@@ -193,58 +304,102 @@ std::tuple<bool, bool> CharacterPicker::draw() {
       }
       ImGui::EndChild();
       ImGui::SameLine();
-      ImGui::BeginChild("##character_picker_sheet_panel", {}, ImGuiChildFlags_Border, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
-      {
+      ImGui::BeginChild("##character_picker_sheet_panel", {}, ImGuiChildFlags_Border,
+                        ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar); {
         auto win = ImGui::GetCurrentWindow();
         if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) && ImGui::IsWindowHovered()) {
           auto mouseCursor = ImGui::GetMousePos();
           mouseCursor -= win->ContentRegionRect.Min;
           int x = alignValue(mouseCursor.x, m_selectionWidth);
           int y = alignValue(mouseCursor.y, m_selectionHeight);
-          if ((x >= 0 && x < m_characterSheet->texture().width()) && (y >= 0 && y < m_characterSheet->texture().height())) {
+          if ((x >= 0 && x < m_characterSheet->texture().width()) && (
+                y >= 0 && y < m_characterSheet->texture().height())) {
             m_selectionX = x;
             m_selectionY = y;
+            if (m_isTile) {
+              int xCount = m_selectionX / 48;
+              int yCount = m_selectionY / 48;
+              m_tileId = xCount + (yCount * 16);
+            }
             if (m_pickerMode == PickerMode::Character) {
-              m_selectionX = std::clamp(m_selectionX, 0, m_characterSheet->texture().width() - m_characterSheet->characterAtlasWidth());
-              m_selectionY = std::clamp(m_selectionY, 0, m_characterSheet->texture().height() - m_characterSheet->characterAtlasHeight());
+              m_selectionX = std::clamp(m_selectionX, 0,
+                                        m_characterSheet->texture().width() - m_characterSheet->characterAtlasWidth());
+              m_selectionY = std::clamp(m_selectionY, 0,
+                                        m_characterSheet->texture().height() - m_characterSheet->
+                                        characterAtlasHeight());
             } else {
-              m_selectionX = std::clamp(m_selectionX, 0, m_characterSheet->texture().width() - m_characterSheet->characterWidth());
-              m_selectionY = std::clamp(m_selectionY, 0, m_characterSheet->texture().height() - m_characterSheet->characterHeight());
+              m_selectionX = std::clamp(m_selectionX, 0,
+                                        m_characterSheet->texture().width() - m_characterSheet->characterWidth());
+              m_selectionY = std::clamp(m_selectionY, 0,
+                                        m_characterSheet->texture().height() - m_characterSheet->characterHeight());
             }
 
             x = m_selectionX / m_characterSheet->characterAtlasWidth();
             y = m_selectionY / m_characterSheet->characterAtlasHeight();
-            m_pattern = (m_selectionX / m_characterSheet->characterWidth()) % m_characterSheet->patternCountForCharacter();
-            const int direction = (m_selectionY / m_characterSheet->characterHeight()) % m_characterSheet->directionCountForCharacter();
+            m_pattern = (m_selectionX / m_characterSheet->characterWidth()) % m_characterSheet->
+                        patternCountForCharacter();
+            const int direction = (m_selectionY / m_characterSheet->characterHeight()) % m_characterSheet->
+                                  directionCountForCharacter();
             m_direction = static_cast<Direction>((direction * 2) + 2);
 
-            m_characterIndex = (y * (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) + x;
+            m_characterIndex = (y * (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) +
+                               x;
           }
         }
         if (m_characterSheet) {
-          ImGui::Dummy(ImVec2{static_cast<float>(m_characterSheet->texture().width()), static_cast<float>(m_characterSheet->texture().height())});
-          win->DrawList->AddImage(static_cast<ImTextureID>(m_checkerboardTexture), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
-                                  win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_checkerboardTexture.width()), static_cast<float>(m_checkerboardTexture.height())}));
+          ImGui::Dummy(ImVec2{
+            static_cast<float>(m_characterSheet->texture().width()),
+            static_cast<float>(m_characterSheet->texture().height())
+          });
+          win->DrawList->AddImage(static_cast<ImTextureID>(m_checkerboardTexture),
+                                  win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
+                                  win->ContentRegionRect.Min + (ImVec2{
+                                    static_cast<float>(m_checkerboardTexture.width()),
+                                    static_cast<float>(m_checkerboardTexture.height())
+                                  }));
           win->DrawList->AddImage(m_characterSheet->texture(), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
-                                  win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_characterSheet->texture().width()), static_cast<float>(m_characterSheet->texture().height())}));
+                                  win->ContentRegionRect.Min + (ImVec2{
+                                    static_cast<float>(m_characterSheet->texture().width()),
+                                    static_cast<float>(m_characterSheet->texture().height())
+                                  }));
 
-          win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_selectionX), static_cast<float>(m_selectionY)}),
+          win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{
+                                   static_cast<float>(m_selectionX), static_cast<float>(m_selectionY)
+                                 }),
                                  win->ContentRegionRect.Min +
-                                     (ImVec2{static_cast<float>(m_selectionX) + static_cast<float>(m_selectionWidth), static_cast<float>(m_selectionY) + static_cast<float>(m_selectionHeight)}),
+                                 (ImVec2{
+                                   static_cast<float>(m_selectionX) + static_cast<float>(m_selectionWidth),
+                                   static_cast<float>(m_selectionY) + static_cast<float>(m_selectionHeight)
+                                 }),
                                  0xFF000000, 0.f, 0, 7.f);
-          win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_selectionX), static_cast<float>(m_selectionY)}),
+          win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{
+                                   static_cast<float>(m_selectionX), static_cast<float>(m_selectionY)
+                                 }),
                                  win->ContentRegionRect.Min +
-                                     (ImVec2{static_cast<float>(m_selectionX) + static_cast<float>(m_selectionWidth), static_cast<float>(m_selectionY) + static_cast<float>(m_selectionHeight)}),
+                                 (ImVec2{
+                                   static_cast<float>(m_selectionX) + static_cast<float>(m_selectionWidth),
+                                   static_cast<float>(m_selectionY) + static_cast<float>(m_selectionHeight)
+                                 }),
                                  0xFFFFFFFF, 0.f, 0, 3.f);
         }
       }
       ImGui::EndChild();
     }
     ImGui::EndChild();
-    ImGui::BeginChild("##bottom_child");
-    {
-      ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x - (calc.x + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().ItemSpacing.x));
+    ImGui::BeginChild("##bottom_child"); {
+      ImGui::SetCursorPosX(
+        ImGui::GetContentRegionMax().x - (calc.x + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().
+                                          ItemSpacing.x));
       if (ImGui::Button("OK")) {
+        if (m_selectedSheet == -3) {
+          m_tileId += 256;
+        }
+        if (m_selectedSheet == -2) {
+          m_tileId += 512;
+        }
+        if (m_selectedSheet == -1) {
+          m_tileId += 768;
+        }
         m_filter.clear();
         m_sortedIndexes.clear();
         m_confirmed = true;

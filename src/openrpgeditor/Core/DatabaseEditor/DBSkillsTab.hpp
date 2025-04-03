@@ -1,8 +1,10 @@
 #pragma once
 #include "Core/CommonUI/EffectsEditor.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
+#include "Core/DatabaseEditor/DBCommonEventsTab.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
-#include "DBCommonEventsTab.hpp"
+#include "Core/Graphics/CheckeredCompositeTexture.hpp"
+
 #include "Database/Animation.hpp"
 #include "Database/Skills.hpp"
 
@@ -43,4 +45,5 @@ private:
   int m_message_template{0};
   std::vector<std::string> m_message_templateList{"casts %1!", "does %1!", "uses %1"};
   std::optional<ObjectPicker<Animation>> m_animationPicker;
+  std::optional<CheckeredCompositeTexture> m_iconButtonTexture;
 };

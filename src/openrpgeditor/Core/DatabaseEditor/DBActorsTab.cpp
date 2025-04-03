@@ -260,11 +260,12 @@ void DBActorsTab::draw() {
                   dataId = 0;
                 }
 
-                if (ImGui::Selectable(etypeName.c_str(), m_selectedEquip == i, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
+                if (ImGui::Selectable(std::format("{}##{}", etypeName, i).c_str(), m_selectedEquip == i, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
                   m_selectedEquip = i;
                   if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
                     m_showEquipEdit = true;
-                    m_chosenEquip = m_selectedEquip < m_selectedActor->equips().size() ? m_selectedActor->equips()[m_selectedEquip] : 0;
+                    m_chosenDataId = dataId;
+                    m_chosenEquipId = etypeId;
                   }
                 }
 
@@ -343,21 +344,52 @@ void DBActorsTab::draw() {
 
   if (m_showEquipEdit) {
     if (ImGui::Begin("Select Equipment...", &m_showEquipEdit, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoCollapse)) {
-      ImGui::SameLine();
+      ImGui::TextUnformatted(m_chosenEquipId <= 1 ? trNOOP("Weapon:") : trNOOP("Armor:"));
+
+      std::vector<int> equipList;
+
+      if (!Database::instance()->isEquipTypeSealed(m_selectedActor->id(), m_chosenEquipId)) {
+        if (m_chosenEquipId <= 1) {
+          for (int i = 0; const auto& wp : Database::instance()->weapons.weapons()) {
+            if (Database::instance()->isEquipWeaponTypeOk(m_selectedActor->id(), wp.wtypeId())) {
+              equipList.push_back(i);
+            }
+            ++i;
+          }
+        } else {
+          for (int i = 0; const auto& ar : Database::instance()->armors.armors()) {
+            if (m_chosenEquipId == ar.etypeId() && Database::instance()->isEquipArmorTypeOk(m_selectedActor->id(), ar.atypeId())) {
+              equipList.push_back(i);
+            }
+            ++i;
+          }
+        }
+      }
+
+      const auto preview = m_chosenDataId == 0 ? "None" : itemDisplayName(m_chosenEquipId <= 1, m_chosenDataId);
+      if (ImGui::BeginCombo("##equip_combo", preview.c_str())) {
+        if (ImGui::Selectable("None", m_chosenDataId == 0)) {
+          m_chosenDataId = 0;
+        }
+
+        for (const auto& equip : equipList) {
+          if (ImGui::Selectable(std::format("{}##_{}", itemDisplayName(m_chosenEquipId <= 1, equip), equip).c_str(), m_chosenDataId == equip)) {
+            m_chosenDataId = equip;
+          }
+        }
+        ImGui::EndCombo();
+      }
+
       if (ImGui::Button("OK")) {
         m_showEquipEdit = false;
-        if (m_selectedEquip >= m_selectedActor->equips().size()) {
-          m_selectedActor->addEquip(m_chosenEquip);
-        } else {
-          m_selectedActor->setEquip(m_selectedEquip, m_chosenEquip);
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Cancel")) {
-          m_showEquipEdit = false;
-        }
-        ImGui::End();
+        m_selectedActor->setEquip(m_selectedEquip, m_chosenDataId);
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("Cancel")) {
+        m_showEquipEdit = false;
       }
     }
+    ImGui::End();
   }
 
   if (m_actorPicker) {

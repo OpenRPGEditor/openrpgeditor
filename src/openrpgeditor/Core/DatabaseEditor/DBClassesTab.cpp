@@ -304,14 +304,14 @@ void DBClassesTab::draw() {
               ImGui::TableSetupColumn("Note");
               ImGui::TableHeadersRow();
 
-              for (auto& learning : m_selectedClass->learnings()) {
+              for (int i = 0; auto& learning : m_selectedClass->learnings()) {
                 const auto skill = Database::instance()->skills.skill(learning.skillId());
                 if (!skill) {
                   continue;
                 }
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn();
-                if (ImGui::Selectable(std::format("Lv {:3}", learning.level()).c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
+                if (ImGui::Selectable(std::format("Lv {:3}##{}", learning.level(), i).c_str(), false, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
                   if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
                     // open learning skill modal
                   }
@@ -320,6 +320,7 @@ void DBClassesTab::draw() {
                 ImGui::Text("%s", skill->name().c_str());
                 ImGui::TableNextColumn();
                 ImGui::Text("%s", learning.note().c_str());
+                ++i;
               }
 
               ImGui::TableNextRow();

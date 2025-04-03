@@ -50,7 +50,8 @@ private:
   bool m_changeConfirmDialogOpen = false;
   bool m_showEquipEdit = false;
   int m_selectedEquip = 0;
-  int m_chosenEquip = 0;
+  int m_chosenDataId = 0;
+  int m_chosenEquipId = 0;
   std::optional<FaceSheet> m_faceSheet;
   std::optional<CharacterSheet> m_characterSheet;
   std::optional<SideViewBattlerSheet> m_battlerSheet;

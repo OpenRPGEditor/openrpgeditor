@@ -512,7 +512,7 @@ void DBSkillsTab::draw() {
           }
           ImGui::EndChild();
           // Begin effects drawing
-          ImGui::BeginChild(std::format("##effects_{}", m_selectedSkill->id()).c_str(), {}, ImGuiChildFlags_ResizeY | ImGuiChildFlags_Borders);
+          ImGui::BeginChild("##effects", {}, ImGuiChildFlags_ResizeY | ImGuiChildFlags_Borders);
           { m_effectsEditor.draw(m_parent); }
           ImGui::EndChild();
 
@@ -522,7 +522,7 @@ void DBSkillsTab::draw() {
             char note[8192];
             strncpy(note, m_selectedSkill->note().c_str(), IM_ARRAYSIZE(note));
             if (ImGui::InputTextMultiline(std::format("##orpg_database_skills_note_{}", m_selectedSkill->id()).c_str(), note, IM_ARRAYSIZE(note),
-                                          ImVec2{ImGui::GetContentRegionMax().x - 16, ImGui::GetContentRegionAvail().y - 16})) {
+                                          ImGui::GetContentRegionAvail() - ImGui::GetStyle().FramePadding)) {
               m_selectedSkill->setNote(note);
             }
           }

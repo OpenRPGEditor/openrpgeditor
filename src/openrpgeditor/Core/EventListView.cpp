@@ -16,9 +16,10 @@ void EventListView::draw() {
       ImGui::BeginChild("##event_list");
       {
         for (auto& event : map->events()) {
-          if (event && event->id() != 0) {
+          if (event) {
             bool selectedHere = false;
-            sprintf(eventNameBuf, "%s (%i, %i)", Database::instance()->eventNameOrId(event->id()).c_str(), event->x(), event->y());
+            ImGui::BeginDisabled(event->id() == 0);
+            sprintf(eventNameBuf, "%s (%i, %i)", event->id() == 0 ? trNOOP("Player Start") : Database::instance()->eventNameOrId(event->id()).c_str(), event->x(), event->y());
             if (ImGui::Selectable(eventNameBuf, m_parent->mapEditor()->selectedEvent() == &*event, ImGuiSelectableFlags_AllowDoubleClick | static_cast<int>(ImGuiSelectableFlags_SelectOnNav))) {
               m_parent->mapEditor()->setSelectedEvent(const_cast<Event*>(&*event));
               selectedHere = true;
@@ -26,6 +27,7 @@ void EventListView::draw() {
                 event->editor()->open();
               }
             }
+            ImGui::EndDisabled();
 
             if (m_parent->mapEditor()->selectedEvent() == &event.value() && !selectedHere && !m_parent->mapEditor()->scrolledToEvent()) {
               ImGui::SetScrollHereY();

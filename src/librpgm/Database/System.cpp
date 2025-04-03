@@ -94,6 +94,7 @@ System::System(const System& other)
 , m_editMapId(other.m_editMapId)
 , m_elements(other.m_elements)
 , m_equipTypes(other.m_equipTypes)
+, m_gameTitle(other.m_gameTitle)
 , m_gameoverMe(other.m_gameoverMe)
 , m_locale(other.m_locale)
 , m_magicSkills(other.m_magicSkills)
@@ -141,6 +142,7 @@ System::System(const System& other)
 , m_oldeditMapId(other.m_oldeditMapId)
 , m_oldelements(other.m_oldelements)
 , m_oldequipTypes(other.m_oldequipTypes)
+, m_oldgameTitle(other.m_oldgameTitle)
 , m_oldgameoverMe(other.m_oldgameoverMe)
 , m_oldlocale(other.m_oldlocale)
 , m_oldmagicSkills(other.m_oldmagicSkills)
@@ -190,6 +192,7 @@ System& System::operator=(const System& other) {
   m_editMapId = other.m_editMapId;
   m_elements = other.m_elements;
   m_equipTypes = other.m_equipTypes;
+  m_gameTitle = other.m_gameTitle;
   m_gameoverMe = other.m_gameoverMe;
   m_locale = other.m_locale;
   m_magicSkills = other.m_magicSkills;
@@ -237,6 +240,7 @@ System& System::operator=(const System& other) {
   m_oldeditMapId = other.m_oldeditMapId;
   m_oldelements = other.m_oldelements;
   m_oldequipTypes = other.m_oldequipTypes;
+  m_oldgameTitle = other.m_oldgameTitle;
   m_oldgameoverMe = other.m_oldgameoverMe;
   m_oldlocale = other.m_oldlocale;
   m_oldmagicSkills = other.m_oldmagicSkills;
@@ -384,6 +388,7 @@ System& System::operator=(System&& other) noexcept {
   m_editMapId = other.m_editMapId;
   m_elements = std::move(other.m_elements);
   m_equipTypes = std::move(other.m_equipTypes);
+  m_gameTitle = std::move(other.m_gameTitle);
   m_gameoverMe = std::move(other.m_gameoverMe);
   m_locale = std::move(other.m_locale);
   m_magicSkills = std::move(other.m_magicSkills);
@@ -431,6 +436,7 @@ System& System::operator=(System&& other) noexcept {
   m_oldeditMapId = other.m_oldeditMapId;
   m_oldelements = std::move(other.m_oldelements);
   m_oldequipTypes = std::move(other.m_oldequipTypes);
+  m_oldgameTitle = std::move(other.m_oldgameTitle);
   m_oldgameoverMe = std::move(other.m_oldgameoverMe);
   m_oldlocale = std::move(other.m_oldlocale);
   m_oldmagicSkills = std::move(other.m_oldmagicSkills);

@@ -157,6 +157,7 @@ Map::Map(const Map& other)
 , m_parallaxLoopX(other.m_parallaxLoopX)
 , m_parallaxLoopY(other.m_parallaxLoopY)
 , m_parallaxName(other.m_parallaxName)
+, m_parallaxShow(other.m_parallaxShow)
 , m_parallaxSx(other.m_parallaxSx)
 , m_parallaxSy(other.m_parallaxSy)
 , m_scrollType(other.m_scrollType)
@@ -179,6 +180,7 @@ Map::Map(const Map& other)
 , m_oldparallaxLoopX(other.m_oldparallaxLoopX)
 , m_oldparallaxLoopY(other.m_oldparallaxLoopY)
 , m_oldparallaxName(other.m_oldparallaxName)
+, m_oldparallaxShow(other.m_oldparallaxShow)
 , m_oldparallaxSx(other.m_oldparallaxSx)
 , m_oldparallaxSy(other.m_oldparallaxSy)
 , m_oldscrollType(other.m_oldscrollType)
@@ -204,6 +206,7 @@ Map& Map::operator=(const Map& other) {
   m_parallaxLoopX = other.m_parallaxLoopX;
   m_parallaxLoopY = other.m_parallaxLoopY;
   m_parallaxName = other.m_parallaxName;
+  m_parallaxShow = other.m_parallaxShow;
   m_parallaxSx = other.m_parallaxSx;
   m_parallaxSy = other.m_parallaxSy;
   m_scrollType = other.m_scrollType;
@@ -226,6 +229,7 @@ Map& Map::operator=(const Map& other) {
   m_oldparallaxLoopX = other.m_oldparallaxLoopX;
   m_oldparallaxLoopY = other.m_oldparallaxLoopY;
   m_oldparallaxName = other.m_oldparallaxName;
+  m_oldparallaxShow = other.m_oldparallaxShow;
   m_oldparallaxSx = other.m_oldparallaxSx;
   m_oldparallaxSy = other.m_oldparallaxSy;
   m_oldscrollType = other.m_oldscrollType;
@@ -251,6 +255,7 @@ Map::Map(Map&& other) noexcept
 , m_parallaxLoopX(other.m_parallaxLoopX)
 , m_parallaxLoopY(other.m_parallaxLoopY)
 , m_parallaxName(std::move(other.m_parallaxName))
+, m_parallaxShow(other.m_parallaxShow)
 , m_parallaxSx(other.m_parallaxSx)
 , m_parallaxSy(other.m_parallaxSy)
 , m_scrollType(other.m_scrollType)
@@ -273,6 +278,7 @@ Map::Map(Map&& other) noexcept
 , m_oldparallaxLoopX(other.m_oldparallaxLoopX)
 , m_oldparallaxLoopY(other.m_oldparallaxLoopY)
 , m_oldparallaxName(std::move(other.m_oldparallaxName))
+, m_oldparallaxShow(other.m_oldparallaxShow)
 , m_oldparallaxSx(other.m_oldparallaxSx)
 , m_oldparallaxSy(other.m_oldparallaxSy)
 , m_oldscrollType(other.m_oldscrollType)
@@ -297,6 +303,7 @@ Map& Map::operator=(Map&& other) noexcept {
   m_parallaxLoopX = other.m_parallaxLoopX;
   m_parallaxLoopY = other.m_parallaxLoopY;
   m_parallaxName = std::move(other.m_parallaxName);
+  m_parallaxShow = other.m_parallaxShow;
   m_parallaxSx = other.m_parallaxSx;
   m_parallaxSy = other.m_parallaxSy;
   m_scrollType = other.m_scrollType;
@@ -319,6 +326,7 @@ Map& Map::operator=(Map&& other) noexcept {
   m_oldparallaxLoopX = other.m_oldparallaxLoopX;
   m_oldparallaxLoopY = other.m_oldparallaxLoopY;
   m_oldparallaxName = std::move(other.m_oldparallaxName);
+  m_oldparallaxShow = other.m_oldparallaxShow;
   m_oldparallaxSx = other.m_oldparallaxSx;
   m_oldparallaxSy = other.m_oldparallaxSy;
   m_oldscrollType = other.m_oldscrollType;

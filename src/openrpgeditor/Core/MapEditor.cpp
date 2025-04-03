@@ -554,7 +554,7 @@ void MapEditor::renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer
 
 void MapEditor::draw() {
   if (m_mapInfo != nullptr && m_mapInfo->map() != nullptr && m_mapRenderer.map() != m_mapInfo->map()) {
-    if (m_mapInfo->id() == Database::instance()->system.editMapId()) {
+    if (m_mapInfo->id() == Database::instance()->system.startMapId()) {
       const auto& party = Database::instance()->system.partyMembers();
       const auto* actor = Database::instance()->actors.actor(!party.empty() ? party[0] : 1);
       EventImage image;

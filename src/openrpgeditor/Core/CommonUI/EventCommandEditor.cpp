@@ -285,11 +285,11 @@ void EventCommandEditor::draw() {
           if (ImGui::TableNextColumn()) {
             auto cmd = m_commands->at(n);
             if (cmd->collapsable()) {
-              if (ImGui::Selectable(std::format("{}##orpg_command_collapse_btn_{}", cmd->isCollapsed() ? "+" : "-", n).c_str(), false, ImGuiSelectableFlags_AllowOverlap)) {
+              if (ImGui::Selectable(std::format("{}##orpg_command_collapse_btn_{}", cmd->isCollapsed() ? " + " : " - ", n).c_str(), false, ImGuiSelectableFlags_AllowOverlap)) {
                 cmd->setCollapsed(!cmd->isCollapsed());
               }
             } else {
-              ImGui::Text(" ");
+              ImGui::Text("   ");
             }
           }
           if (ImGui::TableNextColumn()) {

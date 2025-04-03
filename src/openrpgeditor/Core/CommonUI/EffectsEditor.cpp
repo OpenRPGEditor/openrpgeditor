@@ -28,8 +28,7 @@ void EffectsEditor::draw(DatabaseEditor* dbEditor) {
   ImGui::BeginGroup();
   {
     ImGui::SeparatorText("Effects");
-    if (ImGui::BeginTable("##orpg_effects_editor", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollY | ImGuiTableFlags_ScrollY,
-                          ImVec2{ImGui::GetContentRegionMax().x - 15, ImGui::GetContentRegionMax().y - 600})) {
+    if (ImGui::BeginTable("##orpg_effects_editor", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollY | ImGuiTableFlags_ScrollY)) {
       ImGui::TableSetupColumn("Type");
       ImGui::TableSetupColumn("Content");
       ImGui::TableHeadersRow();

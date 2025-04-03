@@ -66,7 +66,7 @@ FetchContent_Declare(magic_enum
 
 FetchContent_Declare(freetype2
         GIT_REPOSITORY "https://github.com/freetype/freetype"
-        GIT_TAG 2.6.5
+        GIT_TAG VER-2-13-3
 )
 
 FetchContent_Declare(

@@ -79,7 +79,7 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
     imageColor |= (127 << 24);
   }
 
-  if (!m_mapEditor->prisonMode()) {
+  if (!m_mapEditor->prisonMode() && m_event->id() != 0) {
     if (isStopping()) {
       updateStop();
     }
@@ -101,12 +101,12 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
   const auto eventS = m_mapEditor->tileSize() * mapScale;
   auto evMin = ImVec2{eventX, eventY};
   auto evMax = ImVec2{(eventX + eventS), (eventY + eventS)};
-  if (m_mapEditor->prisonMode() || (((!hasCharacterSheet || !m_characterSheet) && !isTile) && !m_mapEditor->prisonMode())) {
+  if (m_mapEditor->prisonMode() || m_event->id() == 0 || (((!hasCharacterSheet || !m_characterSheet) && !isTile) && !m_mapEditor->prisonMode())) {
     win->DrawList->AddRectFilled(evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, bgColor);
   }
 
   if (hasCharacterSheet && !isTile && m_characterSheet) {
-    if (!m_mapEditor->prisonMode()) {
+    if (!m_mapEditor->prisonMode() && m_event->id() != 0) {
       auto [min, max] = m_characterSheet.getRectForCharacter(characterIndex, pattern(), direction);
 
       evMin.x -= ((static_cast<float>(m_characterSheet.characterWidth()) - m_mapEditor->tileSize()) / 2.f) * mapScale;
@@ -169,7 +169,7 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
       win->DrawList->AddImage(tex, evMin, evMax, ImVec2{tileU0, tileV0}, ImVec2{tileU1, tileV1}, imageColor);
     }
   }
-  if (m_mapEditor->prisonMode() || (((!hasCharacterSheet || !m_characterSheet) && !isTile) && !m_mapEditor->prisonMode())) {
+  if (m_mapEditor->prisonMode() || m_event->id() == 0 || (((!hasCharacterSheet || !m_characterSheet) && !isTile) && !m_mapEditor->prisonMode())) {
     win->DrawList->AddRect(evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, outlineCol, 0, 0, 5.f);
     win->DrawList->AddRect(evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, borderCol, 0, 0, 3.f);
   }

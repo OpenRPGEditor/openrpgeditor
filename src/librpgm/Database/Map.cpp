@@ -1,5 +1,7 @@
 
 #include "Database/Map.hpp"
+
+#include "../../../cmake-build-relwithdebinfo/_deps/sdl3-src/src/video/khronos/vulkan/vulkan_core.h"
 #include "Database/Event.hpp"
 #include "Database/EventPage.hpp"
 #include <fstream>
@@ -1007,6 +1009,20 @@ std::vector<Event*> Map::eventsAtRenderPosNoThrough(const int x, const int y) {
   return ret;
 }
 
+void Map::setDummyEvent(const EventImage& image, const int x, const int y) {
+  if (!m_events.empty() && !m_events[0]) {
+    m_events[0].emplace();
+  }
+  EventPage page;
+  /* We don't care about the state of this object, so disable signals */
+  m_events[0]->disableSignals();
+  page.setImage(image);
+  m_events[0]->setId(0);
+  m_events[0]->setPages({page});
+  m_events[0]->setX(x);
+  m_events[0]->setY(y);
+}
+
 Event* Map::event(int id) {
 
   if (const auto it = std::ranges::find_if(m_events, [&id](const auto& ev) { return ev && ev->id() == id; }); it != m_events.end()) {
@@ -1132,7 +1148,7 @@ void to_json(nlohmann::ordered_json& json, const Map& map) {
       {"data", map.m_data},
   };
   for (const auto& event : map.m_events) {
-    if (!event) {
+    if (!event || event->id() == 0) {
       json["events"].push_back(nullptr);
     } else {
       json["events"].push_back(event->clone());

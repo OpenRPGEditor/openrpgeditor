@@ -10,6 +10,7 @@
 
 #include "nlohmann/json.hpp"
 
+class EventImage;
 /**
  * @class Map
  * A discrete map unit, contains all information for a given area such as events, tiles, and encounters
@@ -205,6 +206,7 @@ public:
 
   [[nodiscard]] std::vector<Event*> getRenderSorted();
 
+  void setDummyEvent(const EventImage& image, int x, int y);
   Event* event(int id);
 
   Event* eventAt(int x, int y);

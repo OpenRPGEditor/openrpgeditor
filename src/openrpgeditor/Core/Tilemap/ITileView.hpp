@@ -7,8 +7,7 @@
 
 class ITileView {
 public:
-  ITileView(const int tileWidth, const int tileHeight, const int blockWidth, const int blockHeight)
-  : m_tileWidth(tileWidth), m_tileHeight(tileHeight), m_blockWidth(blockWidth), m_blockHeight(blockHeight) {}
+  ITileView(const int tileWidth, const int tileHeight) : m_tileWidth(tileWidth), m_tileHeight(tileHeight) {}
 
   static RenderImage createRenderTexture(int width, int height);
   static void clearRect(RenderImage& painter, const RectF& rect);
@@ -57,8 +56,6 @@ private:
   int m_tileWidth{48};
   int m_tileHeight{48};
   bool m_tileSizeChanged{false};
-  int m_blockWidth{96};
-  int m_blockHeight{96};
   RectF m_viewport;
   Rect m_dirtyRect;
 };

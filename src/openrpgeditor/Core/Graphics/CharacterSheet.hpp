@@ -13,20 +13,15 @@ struct CharacterSheet {
 
   int characterHeight() const;
 
-  int characterAtlasWidth() const {
-    return characterWidth() * (m_isTileId ? patternCountForTile() : patternCountForCharacter());
-  }
+  int characterAtlasWidth() const { return characterWidth() * (m_isTileId ? patternCountForTile() : patternCountForCharacter()); }
 
-  int characterAtlasHeight() const {
-    return characterHeight() * (m_isTileId ? directionCountForTile() : directionCountForCharacter());
-  }
+  int characterAtlasHeight() const { return characterHeight() * (m_isTileId ? directionCountForTile() : directionCountForCharacter()); }
 
   [[nodiscard]] bool isSingleCharacter() const { return m_isSingleCharacter; }
   [[nodiscard]] bool isNoShift() const { return m_noShift6_noHalfTransInBush; }
   [[nodiscard]] bool isNoHalfTransparentInBush() const { return m_noShift6_noHalfTransInBush; }
 
-  [[nodiscard]] SimpleRect getRectForCharacter(int character, int pattern = 0,
-                                               Direction direction = Direction::Down) const;
+  [[nodiscard]] SimpleRect getRectForCharacter(int character, int pattern = 0, Direction direction = Direction::Down) const;
 
   [[nodiscard]] SimpleRect getRectForTile(int tileId);
 
@@ -40,13 +35,10 @@ struct CharacterSheet {
   [[nodiscard]] static constexpr int directionCountForTile() { return 16; }
 
   [[nodiscard]] bool isTileSheet() { return m_isTileId; }
-  [[nodiscard]] int tileId() { return m_tileId; }
 
-  const Texture &texture() const { return m_sheetTexture; }
+  const Texture& texture() const { return m_sheetTexture; }
 
-  int numCharacters() const {
-    return (m_sheetTexture.width() / characterWidth()) + (m_sheetTexture.height() / characterHeight());
-  }
+  int numCharacters() const { return (m_sheetTexture.width() / characterWidth()) + (m_sheetTexture.height() / characterHeight()); }
 
   std::string_view characterName() const { return m_characterName; }
 
@@ -54,7 +46,6 @@ struct CharacterSheet {
 
 private:
   bool m_isTileId{false};
-  int m_tileId{0};
 
   bool m_isSingleCharacter = false;
   bool m_noShift6_noHalfTransInBush = false;

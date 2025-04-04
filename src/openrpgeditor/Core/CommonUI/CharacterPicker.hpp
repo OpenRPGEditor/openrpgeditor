@@ -5,6 +5,7 @@
 #include "Core/Graphics/CheckerboardTexture.hpp"
 #include "Database/Globals.hpp"
 #include "Directory.hpp"
+#include "Core/Tilemap/TilePalette.hpp"
 
 struct CharacterPicker : IDialogController {
   enum class PickerMode {
@@ -12,7 +13,7 @@ struct CharacterPicker : IDialogController {
     PatternAndDirection,
   };
 
-  explicit CharacterPicker(const PickerMode mode = PickerMode::Character, bool useMapTiles = false,
+  explicit CharacterPicker(PickerMode mode = PickerMode::Character, bool useMapTiles = false, int tileId = 0,
                            std::string_view sheetName = {}, int character = 0, int pattern = 0,
                            Direction direction = Direction::Down);
 
@@ -42,11 +43,18 @@ struct CharacterPicker : IDialogController {
 
   void setTileId(int tileId);
 
+  Rect getTilesetRect();
+
 private:
   std::optional<Directory> m_charDir;
   std::vector<std::string> m_folders;
   int m_selectedFolder{-1};
+
   bool m_isTile{false};
+  int m_tileId{0};
+  TilePalette m_palette;
+  int m_tileX{0};
+  int m_tileY{0};
 
   std::string m_filter;
   std::map<int, std::string> m_sortedIndexes;
@@ -59,7 +67,6 @@ private:
   int m_characterIndex{0};
   CheckerboardTexture m_checkerboardTexture{};
   int m_selectedSheet{-1};
-  int m_tileId{0};
   int m_selectionWidth{48};
   int m_selectionHeight{48};
   int m_selectionX{0};

@@ -15,7 +15,8 @@ static bool ContainsCaseInsensitive(std::string_view str, std::string_view val) 
   }) != str.end();
 }
 
-CharacterPicker::CharacterPicker(const PickerMode mode, const bool useTileset, const std::string_view sheetName,
+CharacterPicker::CharacterPicker(const PickerMode mode, const bool useTileset, const int tileId,
+                                 const std::string_view sheetName,
                                  const int character,
                                  const int pattern, const Direction direction)
   : IDialogController("Select an Image##character_picker"), m_pickerMode(mode), m_characterIndex(character),
@@ -26,10 +27,34 @@ CharacterPicker::CharacterPicker(const PickerMode mode, const bool useTileset, c
     int mapId = Database::instance()->mapInfos.currentMap()->id();
     m_tileSheets = Database::instance()->tilesets.tileset(Database::instance()->mapInfos.map(mapId)->map()->tilesetId())
         ->tilesetNames();
+    m_palette.setPageIndex(5);
+    m_palette.setTilesetNames(m_tileSheets);
   }
   m_folders = m_charDir.value().getDirectories();
 
-  setCharacterInfo(sheetName, character, pattern, direction);
+  if (useTileset) {
+    setTileId(tileId);
+  } else {
+    setCharacterInfo(sheetName, character, pattern, direction);
+  }
+  m_tileX = m_tileId % 16;
+  m_tileY = m_tileId / 16;
+
+  //int mapId = Database::instance()->mapInfos.currentMap()->id();
+  //std::array<int, 4> test = TilePalette::paletteTiles(m_tileId % 16, m_tileId / 16, 1,
+  //                                                    Database::instance()->tilesets.tileset(
+  //                                                      Database::instance()->mapInfos.map(mapId)->map()->tilesetId())->
+  //                                                    tilesetNames(),
+  //                                                    Tileset::Mode::Area,
+  //                                                    true);
+  //std::array<int, 4> test3 = TilePalette::paletteTiles(m_tileId % 16, m_tileId / 16, 6,
+  //                                                     Database::instance()->tilesets.tileset(
+  //                                                       Database::instance()->mapInfos.map(mapId)->map()->tilesetId())
+  //                                                     ->
+  //                                                     tilesetNames(),
+  //                                                     Tileset::Mode::Area,
+  //                                                     true);
+  //int test2 = 2;
 }
 
 void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const int character, const int pattern,
@@ -79,21 +104,6 @@ void CharacterPicker::setTileId(int tileId) {
   }
 
   m_tileId = tileId;
-  if (m_tileId < 256) {
-    // Tile B (0 - 255)
-    m_selectedSheet = -4;
-    m_selectionX = (tileId % 16) * 48;
-    m_selectionY = (tileId / 16) * 48;
-  } else if (m_tileId < 512) {
-    // Tile C (256 - 511)
-    m_selectedSheet = -3;
-  } else if (m_tileId < 768) {
-    // Tile D (512 - 767)
-    m_selectedSheet = -2;
-  } else if (m_tileId < 1024) {
-    // Tile E (768 - 1023)
-    m_selectedSheet = -1;
-  }
   std::string tileSheet = m_tileSheets[m_selectedSheet + 9];
 
 
@@ -105,6 +115,10 @@ void CharacterPicker::setTileId(int tileId) {
   m_selectionHeight = 48;
 
   m_checkerboardTexture.setSize(m_characterSheet->texture().width(), m_characterSheet->texture().height());
+}
+
+Rect CharacterPicker::getTilesetRect() {
+  return m_palette.cursorPixelRect();
 }
 
 int CharacterPicker::sheetIndexOf(std::string &str) {
@@ -200,6 +214,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
                 if (m_selectedSheet != z) {
                   m_characterSheet.emplace(sheet, true);
                   m_isTile = true;
+                  m_palette.setPageIndex(z + 5);
                   if (m_characterSheet->texture()) {
                     m_checkerboardTexture.setSize(m_characterSheet->texture().width(),
                                                   m_characterSheet->texture().height());
@@ -317,13 +332,17 @@ std::tuple<bool, bool> CharacterPicker::draw() {
             m_selectionX = x;
             m_selectionY = y;
             if (m_isTile) {
-              int xCount = m_selectionX / 48;
-              int yCount = m_selectionY / 48;
-              m_tileId = xCount + (yCount * 16);
+              m_palette.onCursorClicked({mouseCursor.x, mouseCursor.y});
+              //Point point = {static_cast<int>(mouseCursor.x), static_cast<int>(mouseCursor.y)};
+              //m_palette.setCursorRect(TilePalette::createRect({0, 0}, m_palette.pixelPointToTilePoint(point)));
+              //int xCount = m_selectionX / 48;
+              //int yCount = m_selectionY / 48;
+              //m_tileId = xCount + (yCount * 16);
             }
             if (m_pickerMode == PickerMode::Character) {
               m_selectionX = std::clamp(m_selectionX, 0,
-                                        m_characterSheet->texture().width() - m_characterSheet->characterAtlasWidth());
+                                        m_characterSheet->texture().width() - m_characterSheet->
+                                        characterAtlasWidth());
               m_selectionY = std::clamp(m_selectionY, 0,
                                         m_characterSheet->texture().height() - m_characterSheet->
                                         characterAtlasHeight());
@@ -346,6 +365,57 @@ std::tuple<bool, bool> CharacterPicker::draw() {
                                x;
           }
         }
+        if (ImGui::IsMouseReleased(ImGuiMouseButton_Left) && ImGui::IsWindowHovered()) {
+          m_palette.onCursorReleased();
+          auto penData = m_palette.penData();
+          m_tileId = penData.front().at(2);
+          int test = 1;
+        }
+        /*if (m_selectedSheet < 0 && m_selectedSheet != 5) {
+          const ImVec2 cursorPos = (ImGui::GetMousePos() - ImGui::GetCurrentWindow()->ContentRegionRect.Min);
+          if (m_palette.isPageValid(m_selectedSheet + 5)) {
+            ImGui::Image(static_cast<ImTextureID>(m_palette), static_cast<ImVec2>(m_palette.imageSize()));
+            if ((ImGui::IsWindowFocused() || ImGui::IsWindowHovered()) && ImGui::IsItemHovered()) {
+              if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {
+                // printf("Pick start!");
+                m_palette.onCursorClicked({cursorPos.x, cursorPos.y});
+                // printf(" %i %i\n", m_palette.cursorRect().x(), m_palette.cursorRect().y());
+                int x = alignValue(cursorPos.x, m_selectionWidth);
+                int y = alignValue(cursorPos.y, m_selectionHeight);
+                m_selectionX = x;
+                m_selectionY = y;
+              }
+
+              if (ImGui::IsMouseDragging(ImGuiMouseButton_Left)) {
+                // printf("Cursor Drag!");
+                m_palette.onCursorDrag({cursorPos.x, cursorPos.y});
+                // printf(" %i %i %i %i\n", m_palette.cursorRect().x(), m_palette.cursorRect().y(), m_palette.cursorRect().width(), m_palette.cursorRect().height());
+              }
+
+              if (ImGui::IsMouseReleased(ImGuiMouseButton_Left)) {
+                // printf("Cursor Release!\n");
+                m_palette.onCursorReleased();
+                auto penData = m_palette.penData();
+                // auto size = m_palette.penSize();
+                for (const auto &pen: penData) {
+                  // printf("%4i, %4i, %4i, %4i\n", pen[0], pen[1], pen[2], pen[3]);
+                }
+              }
+            }
+
+            if (m_palette.cursorRect().isValid()) {
+              const auto *win = ImGui::GetCurrentWindow();
+              const auto rect = m_palette.cursorPixelRect();
+              const auto min = static_cast<ImVec2>(rect.topLeft());
+              const auto max = static_cast<ImVec2>(rect.bottomRight());
+              win->DrawList->AddRect(win->ContentRegionRect.Min + (min + ImVec2{3.f, 3.f}),
+                                     win->ContentRegionRect.Min + (max - ImVec2{3.f, 3.f}), 0xFF000000, 0.f, 0, 5.f);
+              win->DrawList->AddRect(win->ContentRegionRect.Min + (min + ImVec2{3.f, 3.f}),
+                                     win->ContentRegionRect.Min + (max - ImVec2{3.f, 3.f}), 0xFFFFFFFF, 0.f, 0, 3.f);
+            }
+          }
+        }*/
+
         if (m_characterSheet) {
           ImGui::Dummy(ImVec2{
             static_cast<float>(m_characterSheet->texture().width()),
@@ -391,15 +461,6 @@ std::tuple<bool, bool> CharacterPicker::draw() {
         ImGui::GetContentRegionMax().x - (calc.x + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().
                                           ItemSpacing.x));
       if (ImGui::Button("OK")) {
-        if (m_selectedSheet == -3) {
-          m_tileId += 256;
-        }
-        if (m_selectedSheet == -2) {
-          m_tileId += 512;
-        }
-        if (m_selectedSheet == -1) {
-          m_tileId += 768;
-        }
         m_filter.clear();
         m_sortedIndexes.clear();
         m_confirmed = true;

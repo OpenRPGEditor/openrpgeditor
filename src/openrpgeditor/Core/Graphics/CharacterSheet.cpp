@@ -87,36 +87,20 @@ SimpleRect CharacterSheet::getRectForTile(int tileId) {
   if (!m_sheetTexture) {
     return {};
   }
-  if (tileId < 256) {
-  } else if (tileId < 512) {
-    // Tile C (256 - 511)
-    tileId -= 256;
-  } else if (tileId < 768) {
-    // Tile D (512 - 767)
-    tileId -= 512;
-  } else if (tileId < 1024) {
-    // Tile E (768 - 1023)
-    tileId -= 768;
-  }
   const int CharacterSpriteWidth = 48;
   const int CharacterSpriteHeight = 48;
-  const int GridSize = 16;
-  const int AtlasWidth = GridSize * CharacterSpriteWidth;
-  const int AtlasHeight = GridSize * CharacterSpriteHeight;
 
-  // Extract column and row from tileId
-  const int tileColumn = tileId % GridSize;
-  const int tileRow = tileId / GridSize;
+  float tileU0 = (fmodf(floorf(tileId / 128), 2) * 8 + (tileId % 8)) * CharacterSpriteWidth;
+  float tileV0 = fmodf(floorf(tileId % 256 / 8), 16) * CharacterSpriteHeight;
+  float tileU1 = tileU0 + static_cast<float>(CharacterSpriteWidth);
+  float tileV1 = tileV0 + static_cast<float>(CharacterSpriteHeight);
 
-  // Compute pixel position
-  const int tileX = tileColumn * CharacterSpriteWidth;
-  const int tileY = tileRow * CharacterSpriteHeight;
 
   return {
-    PointF{static_cast<float>(tileX) / AtlasWidth, static_cast<float>(tileY) / AtlasHeight},
+    PointF{tileU0, tileV0},
     PointF{
-      static_cast<float>(tileX + CharacterSpriteWidth) / AtlasWidth,
-      static_cast<float>(tileY + CharacterSpriteHeight) / AtlasHeight
+      tileU1,
+      tileV1
     }
   };
 }

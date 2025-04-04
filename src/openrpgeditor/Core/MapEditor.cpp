@@ -570,6 +570,20 @@ void MapEditor::draw() {
     m_mapRenderer.setMap(m_mapInfo->map(), Database::instance()->tilesets.tileset(m_mapInfo->map()->tilesetId()));
     m_tempMapWidth = m_mapInfo->map()->width();
     m_tempMapHeight = m_mapInfo->map()->height();
+    m_initialScrollX = m_mapInfo->scrollX();
+    m_initialScrollY = m_mapInfo->scrollY();
+    m_initialScrollSet = true;
+    const float mapW = (m_tempMapWidth * tileSize());
+    const float mapH = (m_tempMapHeight * tileSize());
+    float zoomX = m_mapScale;
+    float zoomY = m_mapScale;
+    if (m_initialScrollX > mapW) {
+      zoomX = m_initialScrollX / mapW;
+    }
+    if (m_initialScrollY > mapH) {
+      zoomY = m_initialScrollY / mapH;
+    }
+    m_mapScale = std::max(zoomX, zoomY);
   }
 
   if (!m_checkeredBack) {

@@ -2142,7 +2142,14 @@ int TextEditor::GetPageSize() const {
 
 TextEditor::UndoRecord::UndoRecord(const std::string& aAdded, const TextEditor::Coordinates aAddedStart, const TextEditor::Coordinates aAddedEnd, const std::string& aRemoved,
                                    const TextEditor::Coordinates aRemovedStart, const TextEditor::Coordinates aRemovedEnd, TextEditor::EditorState& aBefore, TextEditor::EditorState& aAfter)
-: mAdded(aAdded), mAddedStart(aAddedStart), mAddedEnd(aAddedEnd), mRemoved(aRemoved), mRemovedStart(aRemovedStart), mRemovedEnd(aRemovedEnd), mBefore(aBefore), mAfter(aAfter) {
+: mAdded(aAdded)
+, mAddedStart(aAddedStart)
+, mAddedEnd(aAddedEnd)
+, mRemoved(aRemoved)
+, mRemovedStart(aRemovedStart)
+, mRemovedEnd(aRemovedEnd)
+, mBefore(aBefore)
+, mAfter(aAfter) {
   assert(mAddedStart <= mAddedEnd);
   assert(mRemovedStart <= mRemovedEnd);
 }

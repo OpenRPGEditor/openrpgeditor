@@ -1,6 +1,7 @@
 #include "ShowChoice.hpp"
 
-ShowChoiceCommand::ShowChoiceCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters) : IEventCommand(_indent, parameters) {
+ShowChoiceCommand::ShowChoiceCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(_indent, parameters) {
   parameters.at(0).get_to(choices);
   parameters.at(1).get_to(cancelType);
   if (parameters.size() > 2) {
@@ -50,7 +51,8 @@ std::string ShowChoiceCommand::stringRep(const Database& db) const {
   return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Show Choices" + colon.data() + choiceList + ColorFormatter::popColor() + suffix;
 }
 
-WhenSelectedCommand::WhenSelectedCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters) : IEventCommand(_indent, parameters) {
+WhenSelectedCommand::WhenSelectedCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(_indent, parameters) {
   parameters.at(0).get_to(param1);
   parameters.at(1).get_to(choice);
 }

@@ -20,7 +20,8 @@ public:
   bool isSelected() const { return m_selected; }
 
 protected:
-  explicit IPageEditor(EventPage* page) : m_page(page) {}
+  explicit IPageEditor(EventPage* page)
+  : m_page(page) {}
   void setPagePtr(EventPage* page) {
     m_page = page;
     pagePointerInvalidated();

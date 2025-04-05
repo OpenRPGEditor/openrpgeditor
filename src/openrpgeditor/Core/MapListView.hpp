@@ -4,7 +4,8 @@ struct MainWindow;
 struct MapInfos;
 struct MapInfo;
 struct MapListView {
-  MapListView(MainWindow* parent) : m_parent(parent) {}
+  MapListView(MainWindow* parent)
+  : m_parent(parent) {}
 
   void setMapInfos(MapInfos* mapInfos) { m_mapInfos = mapInfos; }
 

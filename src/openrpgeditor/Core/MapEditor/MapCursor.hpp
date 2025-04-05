@@ -13,7 +13,8 @@ enum class MapCursorMode {
 struct MapCursor {
   MapCursor() = delete;
 
-  MapCursor(MapEditor* parent) : m_parent(parent) {}
+  MapCursor(MapEditor* parent)
+  : m_parent(parent) {}
 
   void update(float mapScale, int mapWidth, int mapHeight, int tileSize, ImGuiWindow* win);
 

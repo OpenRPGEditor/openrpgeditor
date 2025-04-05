@@ -5,7 +5,9 @@
 
 #include <IconsFontAwesome6.h>
 
-ImagePicker::ImagePicker(PickerMode mode, const std::string_view imageName, const std::string_view image2Name) : IDialogController("Select an Image##image_picker"), m_checkerboardTexture(864, 768) {
+ImagePicker::ImagePicker(PickerMode mode, const std::string_view imageName, const std::string_view image2Name)
+: IDialogController("Select an Image##image_picker")
+, m_checkerboardTexture(864, 768) {
   m_pickType = mode;
   switch (m_pickType) {
   case PickerMode::Parallax:

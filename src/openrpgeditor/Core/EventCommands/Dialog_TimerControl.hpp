@@ -6,7 +6,9 @@
 
 struct Dialog_TimerControl : IEventDialogController {
   Dialog_TimerControl() = delete;
-  explicit Dialog_TimerControl(const std::string& name, const std::shared_ptr<ControlTimerCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_TimerControl(const std::string& name, const std::shared_ptr<ControlTimerCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ControlTimerCommand());
     }

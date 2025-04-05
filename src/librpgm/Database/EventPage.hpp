@@ -287,7 +287,8 @@ public:
   }
 
 private:
-  EventPage(const EventPage& other, int) : IModifiable(other) {
+  EventPage(const EventPage& other, int)
+  : IModifiable(other) {
     m_conditions = other.m_conditions;
     m_directionFix = other.m_directionFix;
     m_image = other.m_image;

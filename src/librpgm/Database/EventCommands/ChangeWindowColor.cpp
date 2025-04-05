@@ -1,6 +1,7 @@
 #include "Database/EventCommands/ChangeWindowColor.hpp"
 
-ChangeWindowColorCommand::ChangeWindowColorCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ChangeWindowColorCommand::ChangeWindowColorCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   auto colors = parameters.at(0);
   colors[0].get_to(r);
   colors[1].get_to(g);

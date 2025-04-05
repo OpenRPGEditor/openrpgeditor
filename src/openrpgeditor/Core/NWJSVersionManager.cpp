@@ -51,7 +51,8 @@ std::string extractVersionFromHtml(const std::string& html) {
   return ""; // Return an empty string if no match is found
 }
 
-NWJSVersionManager::NWJSVersionManager(std::string_view nwjsPath) : m_NWJSPath(nwjsPath) {
+NWJSVersionManager::NWJSVersionManager(std::string_view nwjsPath)
+: m_NWJSPath(nwjsPath) {
   m_versionDownloadHandle = m_downloadManager.addDownload(m_NWJSPath + "/index.html", (std::filesystem::temp_directory_path() / "nwjs_versions.html").generic_string());
 }
 

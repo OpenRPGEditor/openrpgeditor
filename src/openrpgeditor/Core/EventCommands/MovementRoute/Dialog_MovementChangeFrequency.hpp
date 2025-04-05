@@ -6,7 +6,8 @@
 struct MainWindow;
 struct Dialog_MovementChangeFrequency : IEventDialogController {
   Dialog_MovementChangeFrequency() = delete;
-  explicit Dialog_MovementChangeFrequency(const std::string& name) : IEventDialogController(name) {
+  explicit Dialog_MovementChangeFrequency(const std::string& name)
+  : IEventDialogController(name) {
     command.reset(new MovementFrequencyCommand());
     m_frequency = command->frequency;
   }

@@ -20,7 +20,8 @@ struct BattleProcessingCommand final : IEventCommand {
 
 struct IfWinCommand final : IEventCommand {
   IfWinCommand() = default;
-  explicit IfWinCommand(const std::optional<int>& indent, const nlohmann::json& parameters) : IEventCommand(indent, parameters) {}
+  explicit IfWinCommand(const std::optional<int>& indent, const nlohmann::json& parameters)
+  : IEventCommand(indent, parameters) {}
   ~IfWinCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::If_Win; }
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<IfWinCommand>(*this); }
@@ -28,7 +29,8 @@ struct IfWinCommand final : IEventCommand {
 
 struct IfEscapeCommand final : IEventCommand {
   IfEscapeCommand() = default;
-  explicit IfEscapeCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {}
+  explicit IfEscapeCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+  : IEventCommand(indent, parameters) {}
   ~IfEscapeCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::If_Escape; }
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<IfEscapeCommand>(*this); }
@@ -36,7 +38,8 @@ struct IfEscapeCommand final : IEventCommand {
 
 struct IfLoseCommand final : IEventCommand {
   IfLoseCommand() = default;
-  explicit IfLoseCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {}
+  explicit IfLoseCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+  : IEventCommand(indent, parameters) {}
   ~IfLoseCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::If_Lose; }
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<IfLoseCommand>(*this); }
@@ -44,7 +47,8 @@ struct IfLoseCommand final : IEventCommand {
 
 struct EndBattleProcessingCommand final : IEventCommand {
   EndBattleProcessingCommand() = default;
-  explicit EndBattleProcessingCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {}
+  explicit EndBattleProcessingCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+  : IEventCommand(indent, parameters) {}
   ~EndBattleProcessingCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::End_del_Battle_Processing; }
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<EndBattleProcessingCommand>(*this); }

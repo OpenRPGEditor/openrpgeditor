@@ -7,7 +7,9 @@
 
 struct Dialog_ChangeEnemyTP : IEventDialogController {
   Dialog_ChangeEnemyTP() = delete;
-  explicit Dialog_ChangeEnemyTP(const std::string& name, const std::shared_ptr<ChangeEnemyTPCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeEnemyTP(const std::string& name, const std::shared_ptr<ChangeEnemyTPCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeEnemyTPCommand());
     }

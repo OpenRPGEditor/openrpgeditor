@@ -5,8 +5,10 @@
 
 class SystemSerializer final : public ITypedSerializable<System> {
 public:
-  explicit SystemSerializer(const std::string_view filepath) : ITypedSerializable(filepath) {}
-  SystemSerializer(const System& system, const std::string_view filepath) : ITypedSerializable(system, filepath) {}
+  explicit SystemSerializer(const std::string_view filepath)
+  : ITypedSerializable(filepath) {}
+  SystemSerializer(const System& system, const std::string_view filepath)
+  : ITypedSerializable(system, filepath) {}
   void serialize(std::ofstream& os) const override;
   void deserialize(std::ifstream& is) override;
 };

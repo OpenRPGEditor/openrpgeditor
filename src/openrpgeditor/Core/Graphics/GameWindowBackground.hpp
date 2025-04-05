@@ -7,7 +7,9 @@
 class GameWindowBackground {
 public:
   GameWindowBackground() = default;
-  GameWindowBackground(const int width, const int height) : m_width(width), m_height(height) {}
+  GameWindowBackground(const int width, const int height)
+  : m_width(width)
+  , m_height(height) {}
   void update(int r, int g, int b);
 
   operator ImTextureID() const { return reinterpret_cast<ImTextureID>(m_resultTexture); }

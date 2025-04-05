@@ -6,7 +6,8 @@
 struct MainWindow;
 struct Dialog_MovementScript : IEventDialogController {
   Dialog_MovementScript() = delete;
-  explicit Dialog_MovementScript(const std::string& name) : IEventDialogController(name) {
+  explicit Dialog_MovementScript(const std::string& name)
+  : IEventDialogController(name) {
     command.reset(new MovementScriptCommand());
     m_Text = command->script;
     m_textEditor.SetLanguageDefinition(TextEditor::LanguageDefinition::Javascript());

@@ -2,11 +2,15 @@
 
 #include "Database/Database.hpp"
 
-NextTextCommand::NextTextCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters) : IEventCommand(_indent, parameters) { parameters.at(0).get_to(text); }
+NextTextCommand::NextTextCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(_indent, parameters) {
+  parameters.at(0).get_to(text);
+}
 
 void NextTextCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(text); }
 
-ShowTextCommand::ShowTextCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters) : IEventCommand(_indent, parameters) {
+ShowTextCommand::ShowTextCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(_indent, parameters) {
   parameters.at(0).get_to(faceImage);
   parameters.at(1).get_to(faceIndex);
   parameters.at(2).get_to(background);

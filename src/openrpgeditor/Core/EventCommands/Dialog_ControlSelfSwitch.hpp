@@ -5,7 +5,9 @@
 
 struct Dialog_ControlSelfSwitch : IEventDialogController {
   Dialog_ControlSelfSwitch() = delete;
-  explicit Dialog_ControlSelfSwitch(const std::string& name, const std::shared_ptr<ControlSelfSwitchCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ControlSelfSwitch(const std::string& name, const std::shared_ptr<ControlSelfSwitchCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ControlSelfSwitchCommand());
     }

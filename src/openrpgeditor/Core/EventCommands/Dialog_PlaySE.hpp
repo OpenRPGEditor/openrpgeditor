@@ -13,7 +13,9 @@
 namespace fs = std::filesystem;
 struct Dialog_PlaySE : IEventDialogController {
   Dialog_PlaySE() = delete;
-  explicit Dialog_PlaySE(const std::string& name, const std::shared_ptr<PlaySECommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_PlaySE(const std::string& name, const std::shared_ptr<PlaySECommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new PlaySECommand());
     }

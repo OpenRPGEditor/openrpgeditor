@@ -6,7 +6,11 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBTroopsTab::DBTroopsTab(Troops& troops, DatabaseEditor* parent) : IDBEditorTab(parent), m_troops(troops), m_enemies(Database::instance()->enemies), m_troopsEditor(nullptr, troops.troop(1)) {
+DBTroopsTab::DBTroopsTab(Troops& troops, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_troops(troops)
+, m_enemies(Database::instance()->enemies)
+, m_troopsEditor(nullptr, troops.troop(1)) {
   m_selectedTroop = m_troops.troop(1);
   if (m_selectedTroop) {
     // m_traitsEditor.setTraits(&m_selectedClass->traits);

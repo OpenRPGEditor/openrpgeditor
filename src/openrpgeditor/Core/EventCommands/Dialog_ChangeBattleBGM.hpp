@@ -13,7 +13,9 @@
 namespace fs = std::filesystem;
 struct Dialog_ChangeBattleBGM : IEventDialogController {
   Dialog_ChangeBattleBGM() = delete;
-  explicit Dialog_ChangeBattleBGM(const std::string& name, const std::shared_ptr<ChangeBattleBGMCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeBattleBGM(const std::string& name, const std::shared_ptr<ChangeBattleBGMCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeBattleBGMCommand());
     }

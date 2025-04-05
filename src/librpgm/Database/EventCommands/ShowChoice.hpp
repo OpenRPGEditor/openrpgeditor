@@ -105,7 +105,8 @@ struct WhenSelectedCommand final : IEventCommand {
 
 struct WhenCancelCommand final : IEventCommand {
   WhenCancelCommand() = default;
-  explicit WhenCancelCommand(const std::optional<int>& _indent, const nlohmann::json& parameters) : IEventCommand(_indent, parameters) {}
+  explicit WhenCancelCommand(const std::optional<int>& _indent, const nlohmann::json& parameters)
+  : IEventCommand(_indent, parameters) {}
   ~WhenCancelCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::When_Cancel; }
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<WhenCancelCommand>(*this); }
@@ -131,7 +132,8 @@ struct WhenCancelCommand final : IEventCommand {
 
 struct ShowChoicesEndCommand final : IEventCommand {
   ShowChoicesEndCommand() = default;
-  explicit ShowChoicesEndCommand(const std::optional<int>& _indent, const nlohmann::json& parameters) : IEventCommand(_indent, parameters) {}
+  explicit ShowChoicesEndCommand(const std::optional<int>& _indent, const nlohmann::json& parameters)
+  : IEventCommand(_indent, parameters) {}
   ~ShowChoicesEndCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::End_del_ShowChoices; }
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowChoicesEndCommand>(*this); }

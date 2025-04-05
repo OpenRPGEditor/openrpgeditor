@@ -38,7 +38,9 @@ Vector3D HSLtoRGB(const Vector3D& color) {
   return Vector3D{static_cast<float>(r), static_cast<float>(g), static_cast<float>(b)};
 }
 
-ColorTonePreview::ColorTonePreview(const int width, const int height) : m_textureWidth(width), m_textureHeight(height) {}
+ColorTonePreview::ColorTonePreview(const int width, const int height)
+: m_textureWidth(width)
+, m_textureHeight(height) {}
 
 ColorTonePreview::~ColorTonePreview() {
   SDL_DestroyTexture(static_cast<SDL_Texture*>(m_texture));

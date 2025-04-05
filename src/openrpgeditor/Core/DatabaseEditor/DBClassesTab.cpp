@@ -14,7 +14,9 @@
 
 constexpr ImVec2 ParameterGraphSize{128, 128};
 
-DBClassesTab::DBClassesTab(Classes& classes, DatabaseEditor* parent) : IDBEditorTab(parent), m_classes(classes) {
+DBClassesTab::DBClassesTab(Classes& classes, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_classes(classes) {
   m_selectedClass = m_classes.classType(1);
   if (m_selectedClass) {
     m_traitsEditor.setTraits(&m_selectedClass->traits());

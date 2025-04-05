@@ -6,7 +6,9 @@
 
 struct TemplatesEventProperties : IDBTemplates {
   TemplatesEventProperties() = delete;
-  explicit TemplatesEventProperties(Template* templ, DatabaseEditor* parent) : IDBTemplates(parent), m_currentTemplate(templ) {
+  explicit TemplatesEventProperties(Template* templ, DatabaseEditor* parent)
+  : IDBTemplates(parent)
+  , m_currentTemplate(templ) {
     // m_id = m_event->id;
     // m_templateName = m_currentTemplate->name;
     //_templateName = m_currentTemplate->note;

@@ -1,6 +1,7 @@
 #include "Database/EventCommands/ControlTimer.hpp"
 
-ControlTimerCommand::ControlTimerCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ControlTimerCommand::ControlTimerCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(control);
   if (control == TimerControl::Start) {
     parameters.at(1).get_to(seconds);

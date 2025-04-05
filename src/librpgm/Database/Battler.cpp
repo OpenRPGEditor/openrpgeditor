@@ -1,7 +1,13 @@
 #include "Database/Battler.hpp"
 
 Battler::Battler(const Battler& other)
-: IModifiable(other), m_actorId(other.m_actorId), m_equips(other.m_equips), m_level(other.m_level), m_oldactorId(other.m_oldactorId), m_oldequips(other.m_oldequips), m_oldlevel(other.m_oldlevel) {}
+: IModifiable(other)
+, m_actorId(other.m_actorId)
+, m_equips(other.m_equips)
+, m_level(other.m_level)
+, m_oldactorId(other.m_oldactorId)
+, m_oldequips(other.m_oldequips)
+, m_oldlevel(other.m_oldlevel) {}
 
 Battler& Battler::operator=(const Battler& other) {
   IModifiable::operator=(other);

@@ -4,7 +4,8 @@
 #include <string>
 
 struct IEventDialogController : IDialogController {
-  explicit IEventDialogController(const std::string& name) : IDialogController(name) {}
+  explicit IEventDialogController(const std::string& name)
+  : IDialogController(name) {}
   std::tuple<bool, bool> draw() override = 0;
   virtual bool ssNextFunc() const { return m_isNext; }
   virtual void setNext(const bool open) { m_isNext = open; }

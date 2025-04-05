@@ -4,7 +4,8 @@
 
 #include "Database/Database.hpp"
 
-CharacterSheet::CharacterSheet(std::string_view sheetName, bool isTileId, int tileId) : m_characterName(sheetName) {
+CharacterSheet::CharacterSheet(std::string_view sheetName, bool isTileId, int tileId)
+: m_characterName(sheetName) {
   if (isTileId) {
     const int setId = 5 + floor(tileId / 256);
     const Map* map = nullptr;

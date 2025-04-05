@@ -2,7 +2,10 @@
 
 #include "Database/Database.hpp"
 
-ChangeVictoryMECommand::ChangeVictoryMECommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) { parameters.at(0).get_to(me); }
+ChangeVictoryMECommand::ChangeVictoryMECommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters.at(0).get_to(me);
+}
 
 void ChangeVictoryMECommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(me); }
 

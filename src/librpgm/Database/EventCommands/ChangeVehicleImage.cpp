@@ -2,7 +2,8 @@
 
 #include "Database/Database.hpp"
 
-ChangeVehicleImageCommand::ChangeVehicleImageCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ChangeVehicleImageCommand::ChangeVehicleImageCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(vehicle);
   parameters.at(1).get_to(picture);
   parameters.at(2).get_to(pictureIndex);

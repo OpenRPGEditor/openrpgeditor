@@ -1,10 +1,16 @@
 #include "Database/EventCommands/Comment.hpp"
 
-NextCommentCommand::NextCommentCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) { parameters.at(0).get_to(text); }
+NextCommentCommand::NextCommentCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters.at(0).get_to(text);
+}
 
 void NextCommentCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(text); }
 
-CommentCommand::CommentCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) { parameters.at(0).get_to(text); }
+CommentCommand::CommentCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters.at(0).get_to(text);
+}
 
 void CommentCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(text); }
 

@@ -4,7 +4,9 @@
 #include "Database/Skills.hpp"
 
 #include "imgui.h"
-DBMappingsTab::DBMappingsTab(System& system, DatabaseEditor* parent) : IDBEditorTab(parent), m_system(system) {
+DBMappingsTab::DBMappingsTab(System& system, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_system(system) {
   m_switch_string = m_system.switche(m_selectedSwitch);
   m_variable_string = m_system.variable(m_selectedVariable);
   m_unicodes = getUnicodeFormatters();

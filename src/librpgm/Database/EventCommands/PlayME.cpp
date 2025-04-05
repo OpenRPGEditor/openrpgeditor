@@ -2,7 +2,10 @@
 
 #include "Database/Database.hpp"
 
-PlayMECommand::PlayMECommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) { parameters.at(0).get_to(audio); }
+PlayMECommand::PlayMECommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters.at(0).get_to(audio);
+}
 
 void PlayMECommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(audio); }
 

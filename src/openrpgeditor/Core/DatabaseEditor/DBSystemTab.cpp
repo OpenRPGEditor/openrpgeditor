@@ -8,7 +8,9 @@
 
 using namespace std::string_view_literals;
 
-DBSystemTab::DBSystemTab(System& system, DatabaseEditor* parent) : IDBEditorTab(parent), m_system(system) {}
+DBSystemTab::DBSystemTab(System& system, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_system(system) {}
 
 void DBSystemTab::addAudioRow(const Audio& audio, const std::string& type, AudioType audioType) {
   ImGui::TableNextRow();

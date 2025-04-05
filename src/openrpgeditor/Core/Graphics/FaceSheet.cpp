@@ -1,7 +1,8 @@
 #include "Core/Graphics/FaceSheet.hpp"
 #include "Core/ResourceManager.hpp"
 
-FaceSheet::FaceSheet(const std::string_view sheetName) : m_texture(ResourceManager::instance()->loadFaceImage(sheetName)) {}
+FaceSheet::FaceSheet(const std::string_view sheetName)
+: m_texture(ResourceManager::instance()->loadFaceImage(sheetName)) {}
 
 Face FaceSheet::getFaceRect(const int index) const {
   const int fx = index % 4;

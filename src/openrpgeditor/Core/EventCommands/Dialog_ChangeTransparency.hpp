@@ -4,7 +4,9 @@
 
 struct Dialog_ChangeTransparency : IEventDialogController {
   Dialog_ChangeTransparency() = delete;
-  explicit Dialog_ChangeTransparency(const std::string& name, const std::shared_ptr<ChangeTransparencyCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeTransparency(const std::string& name, const std::shared_ptr<ChangeTransparencyCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeTransparencyCommand());
     }

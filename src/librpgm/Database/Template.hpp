@@ -23,7 +23,12 @@ public:
   Template(Template&& other) noexcept;
   Template& operator=(Template&& other) noexcept;
   Template(const int id, const std::string_view name, const std::string_view note, const TemplateType type, const std::string_view commands, const std::vector<int>& parameters)
-  : m_id(id), m_name(name), m_note(note), m_type(type), m_commands(commands), m_parameters(parameters) {}
+  : m_id(id)
+  , m_name(name)
+  , m_note(note)
+  , m_type(type)
+  , m_commands(commands)
+  , m_parameters(parameters) {}
 
   [[nodiscard]] int id() const;
   void setId(int id);

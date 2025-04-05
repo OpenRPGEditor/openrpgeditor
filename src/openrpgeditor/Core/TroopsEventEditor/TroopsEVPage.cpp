@@ -9,7 +9,13 @@
 
 #include "imgui.h"
 
-TroopsEVPage::TroopsEVPage(TroopsEVEditor* parent, Troop::Page* page) : m_parent(parent), m_page(page), m_pageNameBuf{}, m_page_id(0) { m_commandEditor.setCommands(&m_page->list()); }
+TroopsEVPage::TroopsEVPage(TroopsEVEditor* parent, Troop::Page* page)
+: m_parent(parent)
+, m_page(page)
+, m_pageNameBuf{}
+, m_page_id(0) {
+  m_commandEditor.setCommands(&m_page->list());
+}
 
 std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
 

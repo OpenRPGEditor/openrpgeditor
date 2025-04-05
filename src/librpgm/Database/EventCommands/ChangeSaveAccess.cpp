@@ -1,6 +1,9 @@
 #include "Database/EventCommands/ChangeSaveAccess.hpp"
 
-ChangeSaveAccessCommand::ChangeSaveAccessCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) { parameters.at(0).get_to(access); }
+ChangeSaveAccessCommand::ChangeSaveAccessCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters.at(0).get_to(access);
+}
 
 void ChangeSaveAccessCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(access); }
 

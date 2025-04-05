@@ -8,7 +8,9 @@
 
 struct Dialog_ChangeParameter : IEventDialogController {
   Dialog_ChangeParameter() = delete;
-  explicit Dialog_ChangeParameter(const std::string& name, const std::shared_ptr<ChangeParameterCommand>& cmd = nullptr) : IEventDialogController(name), m_command(cmd) {
+  explicit Dialog_ChangeParameter(const std::string& name, const std::shared_ptr<ChangeParameterCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , m_command(cmd) {
     if (cmd == nullptr) {
       m_command.reset(new ChangeParameterCommand());
     }

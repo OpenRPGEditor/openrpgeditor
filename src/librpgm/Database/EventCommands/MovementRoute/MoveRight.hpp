@@ -4,7 +4,8 @@
 
 struct MovementMoveRightCommand final : IMovementRouteStep {
   MovementMoveRightCommand() = default;
-  explicit MovementMoveRightCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IMovementRouteStep(indent, parameters) {}
+  explicit MovementMoveRightCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+  : IMovementRouteStep(indent, parameters) {}
   ~MovementMoveRightCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Move_Right; }
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<MovementMoveRightCommand>(*this); }

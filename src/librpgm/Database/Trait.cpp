@@ -14,7 +14,11 @@ void from_json(const nlohmann::ordered_json& j, Trait& t) {
   t.m_value = j.value("value", t.m_value);
 }
 
-Trait::Trait(const Trait& trait) : IModifiable(trait), m_code(trait.m_code), m_dataId(trait.m_dataId), m_value(trait.m_value) {}
+Trait::Trait(const Trait& trait)
+: IModifiable(trait)
+, m_code(trait.m_code)
+, m_dataId(trait.m_dataId)
+, m_value(trait.m_value) {}
 Trait& Trait::operator=(const Trait& trait) {
   IModifiable::operator=(trait);
   m_code = trait.m_code;
@@ -22,7 +26,11 @@ Trait& Trait::operator=(const Trait& trait) {
   m_value = trait.m_value;
   return *this;
 }
-Trait::Trait(Trait&& trait) noexcept : m_code(trait.m_code), m_dataId(trait.m_dataId), m_value(trait.m_value), IModifiable(std::move(trait)) {}
+Trait::Trait(Trait&& trait) noexcept
+: m_code(trait.m_code)
+, m_dataId(trait.m_dataId)
+, m_value(trait.m_value)
+, IModifiable(std::move(trait)) {}
 Trait& Trait::operator=(Trait&& trait) noexcept {
   m_code = trait.m_code;
   m_dataId = trait.m_dataId;

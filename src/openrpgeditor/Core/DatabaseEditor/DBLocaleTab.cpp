@@ -8,7 +8,9 @@
 #include <cstring>
 #include <misc/cpp/imgui_stdlib.h>
 #include <numeric>
-DBLocaleTab::DBLocaleTab(Locales& locales, DatabaseEditor* parent) : IDBEditorTab(parent), m_locales(&locales) {
+DBLocaleTab::DBLocaleTab(Locales& locales, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_locales(&locales) {
   std::string path = Database::instance()->basePath + "locales/"; // Replace with your directory path
 
   try {

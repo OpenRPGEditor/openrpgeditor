@@ -8,7 +8,9 @@
 class Point {
 public:
   Point() = default;
-  Point(const int x, const int y) : mX(x), mY(y) {}
+  Point(const int x, const int y)
+  : mX(x)
+  , mY(y) {}
   [[nodiscard]] bool isNull() const { return mX == 0 && mY == 0; }
 
   explicit operator ImVec2() const { return ImVec2{static_cast<float>(mX), static_cast<float>(mY)}; }
@@ -73,7 +75,9 @@ inline Point operator/(const Point& lhs, const float rhs) { return Point{(oRound
 class PointF {
 public:
   PointF() = default;
-  PointF(const float x, const float y) : mX(x), mY(y) {}
+  PointF(const float x, const float y)
+  : mX(x)
+  , mY(y) {}
   [[nodiscard]] bool isNull() const { return mX == 0.f && mY == 0.f; }
   [[nodiscard]] float manhattanLength() const { return oAbs(mX) + oAbs(mY); }
 

@@ -8,7 +8,8 @@
 struct MainWindow;
 struct Dialog_MovementChangeImage : IEventDialogController {
   Dialog_MovementChangeImage() = delete;
-  explicit Dialog_MovementChangeImage(const std::string& name) : IEventDialogController(name) {
+  explicit Dialog_MovementChangeImage(const std::string& name)
+  : IEventDialogController(name) {
     command.reset(new MovementChangeImageCommand());
     m_image = command->image;
     m_character = command->character;

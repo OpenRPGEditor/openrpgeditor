@@ -7,7 +7,9 @@
 
 struct Dialog_ChangeTileset : IEventDialogController {
   Dialog_ChangeTileset() = delete;
-  explicit Dialog_ChangeTileset(const std::string& name, const std::shared_ptr<ChangeTilesetCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeTileset(const std::string& name, const std::shared_ptr<ChangeTilesetCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeTilesetCommand());
     }

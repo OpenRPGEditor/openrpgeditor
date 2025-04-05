@@ -11,7 +11,9 @@ using namespace std::string_view_literals;
 class Dialog_CommonEvent final : public IEventDialogController {
 public:
   Dialog_CommonEvent() = delete;
-  explicit Dialog_CommonEvent(const std::string& name, const std::shared_ptr<CommonEventCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_CommonEvent(const std::string& name, const std::shared_ptr<CommonEventCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new CommonEventCommand());
     }

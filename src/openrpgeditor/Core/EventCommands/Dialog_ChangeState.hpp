@@ -9,7 +9,9 @@
 
 struct Dialog_ChangeState : IEventDialogController {
   Dialog_ChangeState() = delete;
-  explicit Dialog_ChangeState(const std::string& name, const std::shared_ptr<ChangeStateCommand>& cmd = nullptr) : IEventDialogController(name), m_command(cmd) {
+  explicit Dialog_ChangeState(const std::string& name, const std::shared_ptr<ChangeStateCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , m_command(cmd) {
     if (cmd == nullptr) {
       m_command.reset(new ChangeStateCommand());
     }

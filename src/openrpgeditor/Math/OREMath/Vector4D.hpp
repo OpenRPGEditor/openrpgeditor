@@ -9,10 +9,26 @@ class Vector3D;
 
 class Vector4D {
 public:
-  Vector4D() : m_x(0.f), m_y(0.f), m_z(0.f), m_w(0.f) {}
-  Vector4D(float xpos, float ypos, float zpos, float wpos) : m_x(xpos), m_y(ypos), m_z(zpos), m_w(wpos) {}
-  explicit Vector4D(const Point& point) : m_x(static_cast<float>(point.x())), m_y(static_cast<float>(point.y())), m_z(0.f), m_w(0.f) {}
-  explicit Vector4D(const PointF& point) : m_x(point.x()), m_y(point.y()), m_z(0.f), m_w(0.f) {}
+  Vector4D()
+  : m_x(0.f)
+  , m_y(0.f)
+  , m_z(0.f)
+  , m_w(0.f) {}
+  Vector4D(float xpos, float ypos, float zpos, float wpos)
+  : m_x(xpos)
+  , m_y(ypos)
+  , m_z(zpos)
+  , m_w(wpos) {}
+  explicit Vector4D(const Point& point)
+  : m_x(static_cast<float>(point.x()))
+  , m_y(static_cast<float>(point.y()))
+  , m_z(0.f)
+  , m_w(0.f) {}
+  explicit Vector4D(const PointF& point)
+  : m_x(point.x())
+  , m_y(point.y())
+  , m_z(0.f)
+  , m_w(0.f) {}
 
   explicit Vector4D(const Vector2D& vector);
   Vector4D(const Vector2D& vector, float m_zos, float m_wos);

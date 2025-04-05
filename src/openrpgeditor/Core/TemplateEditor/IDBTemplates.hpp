@@ -4,7 +4,8 @@
 class DatabaseEditor;
 class IDBTemplates {
 public:
-  explicit IDBTemplates(DatabaseEditor* parent) : m_parent(parent) {}
+  explicit IDBTemplates(DatabaseEditor* parent)
+  : m_parent(parent) {}
   virtual ~IDBTemplates() = default;
   virtual std::vector<int> getData() { return {}; }
   virtual bool hasChanges() { return false; }

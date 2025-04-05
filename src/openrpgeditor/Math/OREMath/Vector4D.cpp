@@ -5,11 +5,27 @@
 
 #include <cmath>
 
-Vector4D::Vector4D(const Vector2D& vector) : m_x(vector.m_x), m_y(vector.m_y), m_z(0.f), m_w(0.f) {}
-Vector4D::Vector4D(const Vector2D& vector, const float zpos, const float wpos) : m_x(vector.m_x), m_y(vector.m_y), m_z(zpos), m_w(wpos) {}
+Vector4D::Vector4D(const Vector2D& vector)
+: m_x(vector.m_x)
+, m_y(vector.m_y)
+, m_z(0.f)
+, m_w(0.f) {}
+Vector4D::Vector4D(const Vector2D& vector, const float zpos, const float wpos)
+: m_x(vector.m_x)
+, m_y(vector.m_y)
+, m_z(zpos)
+, m_w(wpos) {}
 
-Vector4D::Vector4D(const Vector3D& vector) : m_x(vector.m_x), m_y(vector.m_y), m_z(0.f), m_w(0.f) {}
-Vector4D::Vector4D(const Vector3D& vector, const float wpos) : m_x(vector.m_x), m_y(vector.m_y), m_z(vector.m_z), m_w(wpos) {}
+Vector4D::Vector4D(const Vector3D& vector)
+: m_x(vector.m_x)
+, m_y(vector.m_y)
+, m_z(0.f)
+, m_w(0.f) {}
+Vector4D::Vector4D(const Vector3D& vector, const float wpos)
+: m_x(vector.m_x)
+, m_y(vector.m_y)
+, m_z(vector.m_z)
+, m_w(wpos) {}
 
 float Vector4D::length() const { return sqrtf(m_x * m_x + m_y * m_y + m_z * m_z); }
 

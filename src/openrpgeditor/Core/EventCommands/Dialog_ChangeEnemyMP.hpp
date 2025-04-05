@@ -7,7 +7,9 @@
 
 struct Dialog_ChangeEnemyMP : IEventDialogController {
   Dialog_ChangeEnemyMP() = delete;
-  explicit Dialog_ChangeEnemyMP(const std::string& name, const std::shared_ptr<ChangeEnemyMPCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeEnemyMP(const std::string& name, const std::shared_ptr<ChangeEnemyMPCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeEnemyMPCommand());
     }

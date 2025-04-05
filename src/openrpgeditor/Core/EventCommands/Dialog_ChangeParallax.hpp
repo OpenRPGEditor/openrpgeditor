@@ -5,7 +5,9 @@
 
 struct Dialog_ChangeParallax : IEventDialogController {
   Dialog_ChangeParallax() = delete;
-  explicit Dialog_ChangeParallax(const std::string& name, const std::shared_ptr<ChangeParallaxCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeParallax(const std::string& name, const std::shared_ptr<ChangeParallaxCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeParallaxCommand());
     }

@@ -9,7 +9,9 @@
 
 struct Dialog_ChangeSkill : IEventDialogController {
   Dialog_ChangeSkill() = delete;
-  explicit Dialog_ChangeSkill(const std::string& name, const std::shared_ptr<ChangeSkillCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeSkill(const std::string& name, const std::shared_ptr<ChangeSkillCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeSkillCommand());
     }

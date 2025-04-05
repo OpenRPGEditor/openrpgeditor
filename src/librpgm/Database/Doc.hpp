@@ -15,7 +15,9 @@ public:
   Doc& operator=(const Doc& other);
   Doc(Doc&& other) noexcept;
   Doc& operator=(Doc&& other) noexcept;
-  Doc(std::vector<std::string> texts, std::vector<std::string> names) : m_texts(texts), m_names(names) {}
+  Doc(std::vector<std::string> texts, std::vector<std::string> names)
+  : m_texts(texts)
+  , m_names(names) {}
 
   [[nodiscard]] std::vector<std::string> texts() const;
   void setTexts(std::vector<std::string> text);

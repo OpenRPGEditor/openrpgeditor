@@ -24,7 +24,8 @@ struct ProfileResult {
 
 struct InstrumentationSession {
   const std::string name;
-  explicit InstrumentationSession(std::string session_name) : name(std::move(session_name)) {}
+  explicit InstrumentationSession(std::string session_name)
+  : name(std::move(session_name)) {}
 };
 
 class Instrumentor {
@@ -90,7 +91,8 @@ public:
   }
 
 private:
-  Instrumentor() : m_current_session(nullptr) {}
+  Instrumentor()
+  : m_current_session(nullptr) {}
 
   ~Instrumentor() { end_session(); }
 
@@ -120,7 +122,9 @@ private:
 
 class InstrumentationTimer {
 public:
-  explicit InstrumentationTimer(std::string name) : m_name(std::move(name)), m_start_time_point(std::chrono::steady_clock::now()) {}
+  explicit InstrumentationTimer(std::string name)
+  : m_name(std::move(name))
+  , m_start_time_point(std::chrono::steady_clock::now()) {}
 
   InstrumentationTimer(const InstrumentationTimer&) = delete;
   InstrumentationTimer(InstrumentationTimer&&) = delete;

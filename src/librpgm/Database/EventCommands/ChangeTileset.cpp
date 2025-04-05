@@ -1,7 +1,10 @@
 #include "Database/EventCommands/ChangeTileset.hpp"
 #include "Database/Database.hpp"
 
-ChangeTilesetCommand::ChangeTilesetCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) { parameters.at(0).get_to(tileset); }
+ChangeTilesetCommand::ChangeTilesetCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters.at(0).get_to(tileset);
+}
 
 void ChangeTilesetCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(tileset); }
 

@@ -2,7 +2,8 @@
 
 #include "Database/Database.hpp"
 
-ChangeGoldCommand::ChangeGoldCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ChangeGoldCommand::ChangeGoldCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(operation);
   parameters.at(1).get_to(operandSource);
   parameters.at(2).get_to(operand);

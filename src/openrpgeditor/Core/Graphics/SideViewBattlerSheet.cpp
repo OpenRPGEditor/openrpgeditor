@@ -6,7 +6,8 @@ struct SVMotion {
   bool loop;
 };
 
-SideViewBattlerSheet::SideViewBattlerSheet(const std::string_view sheetName) : m_texture(ResourceManager::instance()->loadSVActorImage(sheetName)) {}
+SideViewBattlerSheet::SideViewBattlerSheet(const std::string_view sheetName)
+: m_texture(ResourceManager::instance()->loadSVActorImage(sheetName)) {}
 
 SideViewAction SideViewBattlerSheet::getAction(const SideViewActionType actionType) const {
   if (!m_texture) {

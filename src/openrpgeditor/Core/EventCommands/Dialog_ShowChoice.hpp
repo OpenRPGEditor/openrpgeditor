@@ -6,7 +6,9 @@
 
 struct Dialog_ShowChoice : IEventDialogController {
   Dialog_ShowChoice() = delete;
-  explicit Dialog_ShowChoice(const std::string& name, const std::shared_ptr<ShowChoiceCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ShowChoice(const std::string& name, const std::shared_ptr<ShowChoiceCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ShowChoiceCommand());
     }

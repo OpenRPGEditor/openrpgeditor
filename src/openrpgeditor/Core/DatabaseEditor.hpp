@@ -27,7 +27,8 @@ struct MainWindow;
 class DatabaseEditor {
 public:
   DatabaseEditor() = delete;
-  explicit DatabaseEditor(MainWindow* parent) : m_parent(parent) {}
+  explicit DatabaseEditor(MainWindow* parent)
+  : m_parent(parent) {}
 
   void draw();
 

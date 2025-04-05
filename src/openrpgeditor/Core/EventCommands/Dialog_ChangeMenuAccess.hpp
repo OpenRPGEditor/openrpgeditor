@@ -4,7 +4,9 @@
 
 struct Dialog_ChangeMenuAccess : IEventDialogController {
   Dialog_ChangeMenuAccess() = delete;
-  explicit Dialog_ChangeMenuAccess(const std::string& name, const std::shared_ptr<ChangeMenuAccessCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeMenuAccess(const std::string& name, const std::shared_ptr<ChangeMenuAccessCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeMenuAccessCommand());
     }

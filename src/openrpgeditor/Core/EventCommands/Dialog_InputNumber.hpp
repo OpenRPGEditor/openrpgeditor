@@ -5,7 +5,9 @@
 
 struct Dialog_InputNumber : IEventDialogController {
   Dialog_InputNumber() = delete;
-  explicit Dialog_InputNumber(const std::string& name, const std::shared_ptr<InputNumberCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_InputNumber(const std::string& name, const std::shared_ptr<InputNumberCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new InputNumberCommand());
     }

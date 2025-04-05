@@ -6,7 +6,9 @@
 
 struct Dialog_EnemyTransform : IEventDialogController {
   Dialog_EnemyTransform() = delete;
-  explicit Dialog_EnemyTransform(const std::string& name, const std::shared_ptr<EnemyTransformCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_EnemyTransform(const std::string& name, const std::shared_ptr<EnemyTransformCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new EnemyTransformCommand());
     }

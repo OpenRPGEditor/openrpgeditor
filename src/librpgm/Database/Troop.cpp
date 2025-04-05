@@ -523,7 +523,13 @@ rpgmutils::signal<void(Troop::Conditions*, bool)>& Troop::Conditions::turnValidM
 }
 
 Troop::Page::Page(const Page& other)
-: IModifiable(other), m_conditions(other.m_conditions), m_list(other.m_list), m_span(other.m_span), m_oldconditions(other.m_oldconditions), m_oldlist(other.m_oldlist), m_oldspan(other.m_oldspan) {}
+: IModifiable(other)
+, m_conditions(other.m_conditions)
+, m_list(other.m_list)
+, m_span(other.m_span)
+, m_oldconditions(other.m_oldconditions)
+, m_oldlist(other.m_oldlist)
+, m_oldspan(other.m_oldspan) {}
 Troop::Page& Troop::Page::operator=(const Page& other) {
   IModifiable::operator=(other);
   m_conditions = other.m_conditions;

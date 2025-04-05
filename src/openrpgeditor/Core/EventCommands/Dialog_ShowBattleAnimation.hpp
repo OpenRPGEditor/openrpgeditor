@@ -7,7 +7,9 @@
 
 struct Dialog_ShowBattleAnimation : IEventDialogController {
   Dialog_ShowBattleAnimation() = delete;
-  explicit Dialog_ShowBattleAnimation(const std::string& name, const std::shared_ptr<ShowBattleAnimationCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ShowBattleAnimation(const std::string& name, const std::shared_ptr<ShowBattleAnimationCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ShowBattleAnimationCommand());
     }

@@ -6,7 +6,9 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBStatesTab::DBStatesTab(States& States, DatabaseEditor* parent) : IDBEditorTab(parent), m_states(States) {
+DBStatesTab::DBStatesTab(States& States, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_states(States) {
   m_selectedState = m_states.state(1);
   if (m_selectedState) {
     m_traitsEditor.setTraits(&m_selectedState->traits());

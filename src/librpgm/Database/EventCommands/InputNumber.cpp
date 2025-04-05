@@ -2,7 +2,8 @@
 
 #include "Database/Database.hpp"
 
-InputNumberCommand::InputNumberCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+InputNumberCommand::InputNumberCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(variable);
   parameters.at(1).get_to(digits);
 }

@@ -6,7 +6,9 @@
 
 struct Dialog_SetVehicleLocation : IEventDialogController {
   Dialog_SetVehicleLocation() = delete;
-  explicit Dialog_SetVehicleLocation(const std::string& name, const std::shared_ptr<SetVehicleLocationCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_SetVehicleLocation(const std::string& name, const std::shared_ptr<SetVehicleLocationCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new SetVehicleLocationCommand());
     }

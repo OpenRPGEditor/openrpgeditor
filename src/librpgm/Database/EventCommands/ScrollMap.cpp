@@ -1,6 +1,7 @@
 #include "Database/EventCommands/ScrollMap.hpp"
 
-ScrollMapCommand::ScrollMapCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ScrollMapCommand::ScrollMapCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(direction);
   parameters.at(1).get_to(distance);
   parameters.at(2).get_to(speed);

@@ -19,7 +19,9 @@ void RenderImage::createTexture() {
   SDL_RenderPresent(renderer);
   SDL_SetRenderTarget(renderer, oldTarget);
 }
-RenderImage::RenderImage(const int width, const int height) : m_pendingWidth(width), m_pendingHeight(height) {
+RenderImage::RenderImage(const int width, const int height)
+: m_pendingWidth(width)
+, m_pendingHeight(height) {
   for (int i = 0; i < 2; ++i) {
     m_width[i] = width;
     m_height[i] = height;

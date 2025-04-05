@@ -6,7 +6,9 @@
 
 struct Dialog_FadeoutBGS : IEventDialogController {
   Dialog_FadeoutBGS() = delete;
-  explicit Dialog_FadeoutBGS(const std::string& name, const std::shared_ptr<FadeoutBGS>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_FadeoutBGS(const std::string& name, const std::shared_ptr<FadeoutBGS>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new FadeoutBGS());
     }

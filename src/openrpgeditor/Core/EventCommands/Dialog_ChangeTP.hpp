@@ -8,7 +8,9 @@
 
 struct Dialog_ChangeTP : IEventDialogController {
   Dialog_ChangeTP() = delete;
-  explicit Dialog_ChangeTP(const std::string& name, const std::shared_ptr<ChangeTPCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeTP(const std::string& name, const std::shared_ptr<ChangeTPCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeTPCommand());
     }

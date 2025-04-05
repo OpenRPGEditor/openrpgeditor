@@ -5,7 +5,9 @@
 
 struct Dialog_Script : IEventDialogController {
   Dialog_Script() = delete;
-  explicit Dialog_Script(const std::string& name, const std::shared_ptr<ScriptCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_Script(const std::string& name, const std::shared_ptr<ScriptCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ScriptCommand());
     }

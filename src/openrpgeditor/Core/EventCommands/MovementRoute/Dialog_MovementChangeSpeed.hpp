@@ -5,7 +5,8 @@
 struct MainWindow;
 struct Dialog_MovementChangeSpeed : IEventDialogController {
   Dialog_MovementChangeSpeed() = delete;
-  explicit Dialog_MovementChangeSpeed(const std::string& name) : IEventDialogController(name) {
+  explicit Dialog_MovementChangeSpeed(const std::string& name)
+  : IEventDialogController(name) {
     command.reset(new MovementSpeedCommand());
     m_speed = command->speed;
   }

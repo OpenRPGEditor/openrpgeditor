@@ -5,7 +5,9 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBEnemiesTab::DBEnemiesTab(Enemies& Enemies, DatabaseEditor* parent) : IDBEditorTab(parent), m_enemies(Enemies) {
+DBEnemiesTab::DBEnemiesTab(Enemies& Enemies, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_enemies(Enemies) {
   m_selectedEnemy = m_enemies.enemy(1);
   if (m_selectedEnemy) {
     m_traitsEditor.setTraits(&m_selectedEnemy->traits());

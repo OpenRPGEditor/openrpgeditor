@@ -67,7 +67,9 @@ public:
     bool mEnabled;
     std::string mCondition;
 
-    Breakpoint() : mLine(-1), mEnabled(false) {}
+    Breakpoint()
+    : mLine(-1)
+    , mEnabled(false) {}
   };
 
   // Represents a character coordinate from the user's point of view,
@@ -79,8 +81,12 @@ public:
   // because it is rendered as "    ABC" on the screen.
   struct Coordinates {
     int mLine, mColumn;
-    Coordinates() : mLine(0), mColumn(0) {}
-    Coordinates(int aLine, int aColumn) : mLine(aLine), mColumn(aColumn) {
+    Coordinates()
+    : mLine(0)
+    , mColumn(0) {}
+    Coordinates(int aLine, int aColumn)
+    : mLine(aLine)
+    , mColumn(aColumn) {
       assert(aLine >= 0);
       assert(aColumn >= 0);
     }
@@ -138,7 +144,12 @@ public:
     bool mMultiLineComment : 1;
     bool mPreprocessor : 1;
 
-    Glyph(Char aChar, PaletteIndex aColorIndex) : mChar(aChar), mColorIndex(aColorIndex), mComment(false), mMultiLineComment(false), mPreprocessor(false) {}
+    Glyph(Char aChar, PaletteIndex aColorIndex)
+    : mChar(aChar)
+    , mColorIndex(aColorIndex)
+    , mComment(false)
+    , mMultiLineComment(false)
+    , mPreprocessor(false) {}
   };
 
   typedef std::vector<Glyph> Line;
@@ -163,7 +174,11 @@ public:
 
     bool mCaseSensitive;
 
-    LanguageDefinition() : mPreprocChar('#'), mAutoIndentation(true), mTokenize(nullptr), mCaseSensitive(true) {}
+    LanguageDefinition()
+    : mPreprocChar('#')
+    , mAutoIndentation(true)
+    , mTokenize(nullptr)
+    , mCaseSensitive(true) {}
 
     static const LanguageDefinition& CPlusPlus();
     static const LanguageDefinition& Javascript();

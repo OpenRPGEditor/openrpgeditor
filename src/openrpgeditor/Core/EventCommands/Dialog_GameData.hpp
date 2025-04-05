@@ -8,7 +8,11 @@
 
 struct Dialog_GameData : IEventDialogController {
   Dialog_GameData() = delete;
-  explicit Dialog_GameData(const std::string& name, int type, int rawSource, int value = 0) : IEventDialogController(name), m_type(type), m_raw_source(rawSource), m_value(value) {
+  explicit Dialog_GameData(const std::string& name, int type, int rawSource, int value = 0)
+  : IEventDialogController(name)
+  , m_type(type)
+  , m_raw_source(rawSource)
+  , m_value(value) {
     command.gameData.value = 0;
   }
   std::tuple<bool, bool> draw() override;

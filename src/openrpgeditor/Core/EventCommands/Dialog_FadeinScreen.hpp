@@ -4,7 +4,9 @@
 
 struct Dialog_FadeinScreen : IEventDialogController {
   Dialog_FadeinScreen() = delete;
-  explicit Dialog_FadeinScreen(const std::string& name, const std::shared_ptr<FadeinScreenCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_FadeinScreen(const std::string& name, const std::shared_ptr<FadeinScreenCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new FadeinScreenCommand());
     }

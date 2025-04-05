@@ -23,7 +23,9 @@ struct MapInfo;
 struct GameConstants;
 class DBGameConstantsTab final : public IDBEditorTab {
 public:
-  explicit DBGameConstantsTab(GameConstants& constants, DatabaseEditor* parent) : IDBEditorTab(parent), m_constants(&constants) {}
+  explicit DBGameConstantsTab(GameConstants& constants, DatabaseEditor* parent)
+  : IDBEditorTab(parent)
+  , m_constants(&constants) {}
 
   void draw() override;
   std::vector<int>& getHeaders() override { return m_headers; }

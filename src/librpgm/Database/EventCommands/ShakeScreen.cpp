@@ -1,6 +1,7 @@
 #include "Database/EventCommands/ShakeScreen.hpp"
 
-ShakeScreenCommand::ShakeScreenCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ShakeScreenCommand::ShakeScreenCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(power);
   parameters.at(1).get_to(speed);
   parameters.at(2).get_to(duration);

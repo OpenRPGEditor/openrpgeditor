@@ -1,7 +1,8 @@
 #include "Database/EventCommands/RecoverAll.hpp"
 #include "Database/Database.hpp"
 
-RecoverAllCommand::RecoverAllCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+RecoverAllCommand::RecoverAllCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(comparison);
   parameters.at(1).get_to(value);
 }

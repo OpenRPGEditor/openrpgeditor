@@ -11,7 +11,9 @@
 
 struct Dialog_ChangeActorImages : IEventDialogController {
   Dialog_ChangeActorImages() = delete;
-  explicit Dialog_ChangeActorImages(const std::string& name, const std::shared_ptr<ChangeActorImageCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeActorImages(const std::string& name, const std::shared_ptr<ChangeActorImageCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeActorImageCommand());
     }

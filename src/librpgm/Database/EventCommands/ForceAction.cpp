@@ -2,7 +2,8 @@
 
 #include "Database/Database.hpp"
 
-ForceActionCommand::ForceActionCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ForceActionCommand::ForceActionCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(sourceComparison);
   parameters.at(1).get_to(source);
   parameters.at(2).get_to(skill);

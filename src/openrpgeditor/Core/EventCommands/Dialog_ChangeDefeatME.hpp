@@ -8,7 +8,9 @@
 namespace fs = std::filesystem;
 struct Dialog_ChangeDefeatME : IEventDialogController {
   Dialog_ChangeDefeatME() = delete;
-  explicit Dialog_ChangeDefeatME(const std::string& name, const std::shared_ptr<ChangeDefeatMECommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeDefeatME(const std::string& name, const std::shared_ptr<ChangeDefeatMECommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeDefeatMECommand());
     }

@@ -155,7 +155,8 @@
 struct IEventCommand;
 struct MainWindow;
 struct EventCommandEditor {
-  EventCommandEditor() : commandDialog(nullptr) {}
+  EventCommandEditor()
+  : commandDialog(nullptr) {}
   void blockSelect(int n);
   void handleClipboardInteraction() const;
   static void setupTableHeader();

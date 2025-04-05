@@ -22,7 +22,8 @@
 struct MainWindow;
 class EventSearcher {
 public:
-  explicit EventSearcher(MainWindow* parent) : m_parent(parent) {}
+  explicit EventSearcher(MainWindow* parent)
+  : m_parent(parent) {}
 
   bool getListing();
 

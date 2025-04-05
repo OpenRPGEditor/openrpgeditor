@@ -2,7 +2,8 @@
 
 #include "Database/Database.hpp"
 
-ConditionalBranchCommand::ConditionalBranchCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ConditionalBranchCommand::ConditionalBranchCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(type);
   switch (type) {
   case ConditionType::Switch: {

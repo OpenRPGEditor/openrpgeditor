@@ -1,6 +1,9 @@
 #include "Database/EventCommands/Plugin.hpp"
 
-PluginCommandMV::PluginCommandMV(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) { parameters.at(0).get_to(command); }
+PluginCommandMV::PluginCommandMV(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters.at(0).get_to(command);
+}
 
 void PluginCommandMV::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(command); }
 

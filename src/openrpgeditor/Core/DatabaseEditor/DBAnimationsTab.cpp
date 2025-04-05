@@ -7,7 +7,9 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent) : IDBEditorTab(parent), m_animations(animations) {
+DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_animations(animations) {
 
   m_selectedAnimation = m_animations.animation(1);
 

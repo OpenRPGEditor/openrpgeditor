@@ -5,7 +5,9 @@
 
 struct Dialog_TransferPlayer : IEventDialogController {
   Dialog_TransferPlayer() = delete;
-  explicit Dialog_TransferPlayer(const std::string& name, const std::shared_ptr<TransferPlayerCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_TransferPlayer(const std::string& name, const std::shared_ptr<TransferPlayerCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new TransferPlayerCommand());
     }

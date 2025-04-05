@@ -7,7 +7,9 @@
 
 class ITileView {
 public:
-  ITileView(const int tileWidth, const int tileHeight) : m_tileWidth(tileWidth), m_tileHeight(tileHeight) {}
+  ITileView(const int tileWidth, const int tileHeight)
+  : m_tileWidth(tileWidth)
+  , m_tileHeight(tileHeight) {}
 
   static RenderImage createRenderTexture(int width, int height);
   static void clearRect(RenderImage& painter, const RectF& rect);

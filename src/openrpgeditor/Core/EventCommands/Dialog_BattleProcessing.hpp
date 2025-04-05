@@ -7,7 +7,9 @@
 
 struct Dialog_BattleProcessing : IEventDialogController {
   Dialog_BattleProcessing() = delete;
-  explicit Dialog_BattleProcessing(const std::string& name, const std::shared_ptr<BattleProcessingCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_BattleProcessing(const std::string& name, const std::shared_ptr<BattleProcessingCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new BattleProcessingCommand());
     }

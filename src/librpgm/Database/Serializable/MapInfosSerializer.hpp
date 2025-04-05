@@ -4,8 +4,11 @@
 
 class MapInfosSerializer final : public ISerializable {
 public:
-  explicit MapInfosSerializer(const std::string_view filepath) : ISerializable{filepath} {}
-  MapInfosSerializer(MapInfos mapInfos, const std::string_view filepath) : ISerializable{filepath}, m_data(mapInfos) {}
+  explicit MapInfosSerializer(const std::string_view filepath)
+  : ISerializable{filepath} {}
+  MapInfosSerializer(MapInfos mapInfos, const std::string_view filepath)
+  : ISerializable{filepath}
+  , m_data(mapInfos) {}
 
   void serialize(std::ofstream& outFile) const override;
   void deserialize(std::ifstream& inFile) override;

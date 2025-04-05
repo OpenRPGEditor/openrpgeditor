@@ -8,9 +8,18 @@ class Vector4D;
 class Vector3D {
 public:
   Vector3D();
-  Vector3D(const float xpos, const float ypos, float zpos) : m_x(xpos), m_y(ypos), m_z(zpos) {}
-  explicit Vector3D(const Point& point) : m_x(static_cast<float>(point.x())), m_y(static_cast<float>(point.y())), m_z(0.f) {}
-  explicit Vector3D(const PointF& point) : m_x(point.x()), m_y(point.y()), m_z(0.f) {}
+  Vector3D(const float xpos, const float ypos, float zpos)
+  : m_x(xpos)
+  , m_y(ypos)
+  , m_z(zpos) {}
+  explicit Vector3D(const Point& point)
+  : m_x(static_cast<float>(point.x()))
+  , m_y(static_cast<float>(point.y()))
+  , m_z(0.f) {}
+  explicit Vector3D(const PointF& point)
+  : m_x(point.x())
+  , m_y(point.y())
+  , m_z(0.f) {}
   explicit Vector3D(const Vector2D& vector);
   Vector3D(const Vector2D& vector, float zpos);
   explicit Vector3D(const Vector4D& vector);

@@ -26,4 +26,4 @@ BinPackParameters: true
 SortIncludes: true
 AccessModifierOffset: -2
 ConstructorInitializerIndentWidth: 0
-ConstructorInitializerAllOnOneLineOrOnePerLine: true
+PackConstructorInitializers: Never

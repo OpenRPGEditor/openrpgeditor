@@ -12,7 +12,9 @@
 
 #include <string>
 
-DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor* parent) : IDBEditorTab(parent), m_events(commonEvents) {
+DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_events(commonEvents) {
   m_selectedCommonEvent = m_events.event(1);
   m_commandEditor.setCommands(&m_selectedCommonEvent->commands());
 

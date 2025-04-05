@@ -20,7 +20,10 @@ static clip::format OREMapEventFormat = -1;
 struct EventMoveUndoCommand : IUndoCommand {
   EventMoveUndoCommand() = delete;
 
-  EventMoveUndoCommand(Event* event, int x, int y) : m_event(event), m_x(x), m_y(y) {}
+  EventMoveUndoCommand(Event* event, int x, int y)
+  : m_event(event)
+  , m_x(x)
+  , m_y(y) {}
 
   int type() const override { return -1; }
 

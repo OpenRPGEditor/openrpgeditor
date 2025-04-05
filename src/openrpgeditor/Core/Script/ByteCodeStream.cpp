@@ -4,7 +4,8 @@
 
 #include <athena/Compression.hpp>
 
-ByteCodeWriter::ByteCodeWriter(const std::string& filepath) : FileWriter(filepath) {}
+ByteCodeWriter::ByteCodeWriter(const std::string& filepath)
+: FileWriter(filepath) {}
 ByteCodeWriter::~ByteCodeWriter() {
   writeUint32Big('ASC\0');
   writeUint32Little(m_writer.length());
@@ -45,7 +46,9 @@ int ByteCodeWriter::Write(const void* ptr, const asUINT size) {
 
 int ByteCodeWriter::Read(void* ptr, asUINT size) { return asNOT_SUPPORTED; }
 
-ByteCodeReader::ByteCodeReader(const std::string& filepath) : FileReader(filepath), m_reader(new atUint8[1], 1, true) {
+ByteCodeReader::ByteCodeReader(const std::string& filepath)
+: FileReader(filepath)
+, m_reader(new atUint8[1], 1, true) {
   auto magic = readUint32Big();
   if (magic != 'ASC\0') {
     setError();

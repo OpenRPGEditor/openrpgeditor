@@ -12,7 +12,9 @@
 
 struct Templates;
 struct DBTemplatesTab : IDBEditorTab {
-  explicit DBTemplatesTab(Templates& templates, DatabaseEditor* parent) : IDBEditorTab(parent), m_templates(&templates) {
+  explicit DBTemplatesTab(Templates& templates, DatabaseEditor* parent)
+  : IDBEditorTab(parent)
+  , m_templates(&templates) {
     if (!m_templates->templates.empty()) {
       if (m_templates->templates.at(m_selection).commands().empty()) {
         m_currentCommands.emplace_back(std::make_shared<EventDummy>());

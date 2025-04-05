@@ -4,7 +4,8 @@
 class Map;
 struct MainWindow;
 struct TilesetPicker {
-  explicit TilesetPicker(MainWindow* parent) : m_parent(parent) {}
+  explicit TilesetPicker(MainWindow* parent)
+  : m_parent(parent) {}
 
   void setPage(int page);
   void drawPageButton(std::string_view pageStr, int page);

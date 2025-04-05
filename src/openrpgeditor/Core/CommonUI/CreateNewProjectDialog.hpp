@@ -7,7 +7,8 @@ public:
     RPGMV,
     RPGMZ,
   };
-  explicit CreateNewProjectDialog(const std::string_view name) : IDialogController(name) {}
+  explicit CreateNewProjectDialog(const std::string_view name)
+  : IDialogController(name) {}
   std::tuple<bool, bool> draw() override;
 
   void setOpen(bool open) override;

@@ -5,11 +5,23 @@
 class Rect {
 public:
   Rect() = default;
-  Rect(const Point& topLeft, const Point& bottomRight) : mLeft(topLeft.x()), mTop(topLeft.y()), mRight(bottomRight.x()), mBottom(bottomRight.y()) {}
+  Rect(const Point& topLeft, const Point& bottomRight)
+  : mLeft(topLeft.x())
+  , mTop(topLeft.y())
+  , mRight(bottomRight.x())
+  , mBottom(bottomRight.y()) {}
 
-  Rect(const Point& topLeft, const Size& size) : mLeft(topLeft.x()), mTop(topLeft.y()), mRight(mLeft + size.width() - 1), mBottom(mTop + size.height() - 1) {}
+  Rect(const Point& topLeft, const Size& size)
+  : mLeft(topLeft.x())
+  , mTop(topLeft.y())
+  , mRight(mLeft + size.width() - 1)
+  , mBottom(mTop + size.height() - 1) {}
 
-  Rect(const int left, const int top, const int width, const int height) : mLeft(left), mTop(top), mRight(left + width - 1), mBottom(top + height - 1) {}
+  Rect(const int left, const int top, const int width, const int height)
+  : mLeft(left)
+  , mTop(top)
+  , mRight(left + width - 1)
+  , mBottom(top + height - 1) {}
 
   Rect normalized() const;
 
@@ -218,9 +230,21 @@ private:
 class RectF {
 public:
   RectF() = default;
-  RectF(const PointF& topLeft, const PointF& bottomRight) : mX(topLeft.x()), mY(topLeft.y()), mWidth(topLeft.x() - bottomRight.x()), mHeight(topLeft.y() - bottomRight.y()) {}
-  RectF(const PointF& topLeft, const SizeF& size) : mX(topLeft.x()), mY(topLeft.y()), mWidth(size.width()), mHeight(size.height()) {}
-  RectF(const float left, const float top, const float width, const float height) : mX(left), mY(top), mWidth(width), mHeight(height) {}
+  RectF(const PointF& topLeft, const PointF& bottomRight)
+  : mX(topLeft.x())
+  , mY(topLeft.y())
+  , mWidth(topLeft.x() - bottomRight.x())
+  , mHeight(topLeft.y() - bottomRight.y()) {}
+  RectF(const PointF& topLeft, const SizeF& size)
+  : mX(topLeft.x())
+  , mY(topLeft.y())
+  , mWidth(size.width())
+  , mHeight(size.height()) {}
+  RectF(const float left, const float top, const float width, const float height)
+  : mX(left)
+  , mY(top)
+  , mWidth(width)
+  , mHeight(height) {}
 
   bool isNull() const { return mWidth == 0.f && mHeight == 0.f; }
   bool isEmpty() const { return mWidth <= 0.f || mHeight <= 0.f; }

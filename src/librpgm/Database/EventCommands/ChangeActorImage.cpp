@@ -1,7 +1,8 @@
 #include "Database/EventCommands/ChangeActorImage.hpp"
 #include "Database/Database.hpp"
 
-ChangeActorImageCommand::ChangeActorImageCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ChangeActorImageCommand::ChangeActorImageCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(actor);
   parameters.at(1).get_to(charPicture);
   parameters.at(2).get_to(charIndex);

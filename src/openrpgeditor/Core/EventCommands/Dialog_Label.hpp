@@ -5,7 +5,9 @@
 
 struct Dialog_Label : IEventDialogController {
   Dialog_Label() = delete;
-  explicit Dialog_Label(const std::string& name, const std::shared_ptr<LabelCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_Label(const std::string& name, const std::shared_ptr<LabelCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new LabelCommand());
     }

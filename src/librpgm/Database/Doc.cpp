@@ -1,6 +1,9 @@
 #include "Database/Doc.hpp"
 
-Doc::Doc(const Doc& other) : IModifiable(other), m_texts(other.m_texts), m_names(other.m_names) {}
+Doc::Doc(const Doc& other)
+: IModifiable(other)
+, m_texts(other.m_texts)
+, m_names(other.m_names) {}
 
 Doc& Doc::operator=(const Doc& other) {
   IModifiable::operator=(other);
@@ -11,7 +14,12 @@ Doc& Doc::operator=(const Doc& other) {
   return *this;
 }
 
-Doc::Doc(Doc&& other) noexcept : IModifiable(std::move(other)), m_texts(other.m_texts), m_names(std::move(other.m_names)), m_oldtexts(other.m_oldtexts), m_oldnames(std::move(other.m_oldnames)) {}
+Doc::Doc(Doc&& other) noexcept
+: IModifiable(std::move(other))
+, m_texts(other.m_texts)
+, m_names(std::move(other.m_names))
+, m_oldtexts(other.m_oldtexts)
+, m_oldnames(std::move(other.m_oldnames)) {}
 
 Doc& Doc::operator=(Doc&& other) noexcept {
   IModifiable::operator=(std::move(other));

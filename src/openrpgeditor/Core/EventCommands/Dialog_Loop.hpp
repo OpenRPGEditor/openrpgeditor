@@ -6,7 +6,9 @@
 
 struct Dialog_Loop : IEventDialogController {
   Dialog_Loop() = delete;
-  explicit Dialog_Loop(const std::string& name, const std::shared_ptr<LoopCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_Loop(const std::string& name, const std::shared_ptr<LoopCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new LoopCommand());
     }

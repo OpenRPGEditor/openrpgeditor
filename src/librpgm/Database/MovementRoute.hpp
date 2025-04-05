@@ -43,7 +43,11 @@ public:
   rpgmutils::signal<void(MovementRoute*, bool)>& waitModified();
 
 private:
-  MovementRoute(const MovementRoute& other, int) : IModifiable(other), m_repeat(other.m_repeat), m_skippable(other.m_skippable), m_wait(other.m_wait) {
+  MovementRoute(const MovementRoute& other, int)
+  : IModifiable(other)
+  , m_repeat(other.m_repeat)
+  , m_skippable(other.m_skippable)
+  , m_wait(other.m_wait) {
     for (const auto& cmd : other.m_list) {
       m_list.emplace_back(cmd->clone());
     }

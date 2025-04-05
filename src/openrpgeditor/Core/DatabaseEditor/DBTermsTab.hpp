@@ -6,7 +6,9 @@
 struct System;
 class DBTermsTab final : public IDBEditorTab {
 public:
-  explicit DBTermsTab(System& system, DatabaseEditor* parent) : IDBEditorTab(parent), m_system(system) {}
+  explicit DBTermsTab(System& system, DatabaseEditor* parent)
+  : IDBEditorTab(parent)
+  , m_system(system) {}
   void draw() override;
   std::vector<int>& getHeaders() override { return m_headers; }
   int getHeader(int index) override { return m_headers.at(index); }

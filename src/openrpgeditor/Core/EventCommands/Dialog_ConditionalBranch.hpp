@@ -15,7 +15,9 @@
 
 struct Dialog_ConditionalBranch : IEventDialogController {
   Dialog_ConditionalBranch() = delete;
-  explicit Dialog_ConditionalBranch(const std::string& name, const std::shared_ptr<ConditionalBranchCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ConditionalBranch(const std::string& name, const std::shared_ptr<ConditionalBranchCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ConditionalBranchCommand());
     }

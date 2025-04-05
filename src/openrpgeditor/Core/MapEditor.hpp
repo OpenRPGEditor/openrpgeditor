@@ -18,7 +18,9 @@ struct Map;
 struct MapInfo;
 
 struct MapEditor {
-  MapEditor(MainWindow* parent) : m_parent(parent), m_tileCursor(this) {}
+  MapEditor(MainWindow* parent)
+  : m_parent(parent)
+  , m_tileCursor(this) {}
 
   void draw();
 

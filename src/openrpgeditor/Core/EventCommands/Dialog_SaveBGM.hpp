@@ -4,7 +4,9 @@
 
 struct Dialog_SaveBGM : IEventDialogController {
   Dialog_SaveBGM() = delete;
-  explicit Dialog_SaveBGM(const std::string& name, const std::shared_ptr<SaveBGMCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_SaveBGM(const std::string& name, const std::shared_ptr<SaveBGMCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new SaveBGMCommand());
     }

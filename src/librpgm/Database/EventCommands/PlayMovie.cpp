@@ -1,6 +1,9 @@
 #include "Database/EventCommands/PlayMovie.hpp"
 
-PlayMovieCommand::PlayMovieCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) { parameters.at(0).get_to(name); }
+PlayMovieCommand::PlayMovieCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
+  parameters.at(0).get_to(name);
+}
 
 void PlayMovieCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(name); }
 

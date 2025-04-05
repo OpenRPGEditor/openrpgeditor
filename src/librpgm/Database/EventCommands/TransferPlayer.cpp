@@ -2,7 +2,8 @@
 
 #include "Database/Database.hpp"
 
-TransferPlayerCommand::TransferPlayerCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+TransferPlayerCommand::TransferPlayerCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(mode);
   parameters.at(1).get_to(mapId);
   parameters.at(2).get_to(x);

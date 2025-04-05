@@ -9,7 +9,9 @@
 
 struct Dialog_ChangeVehicleImage : IEventDialogController {
   Dialog_ChangeVehicleImage() = delete;
-  explicit Dialog_ChangeVehicleImage(const std::string& name, const std::shared_ptr<ChangeVehicleImageCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeVehicleImage(const std::string& name, const std::shared_ptr<ChangeVehicleImageCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeVehicleImageCommand());
     }

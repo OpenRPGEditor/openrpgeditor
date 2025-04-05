@@ -5,7 +5,9 @@
 
 struct Dialog_ShowScrollingText : IEventDialogController {
   Dialog_ShowScrollingText() = delete;
-  explicit Dialog_ShowScrollingText(const std::string& name, const std::shared_ptr<ShowScrollTextCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ShowScrollingText(const std::string& name, const std::shared_ptr<ShowScrollTextCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ShowScrollTextCommand());
     }

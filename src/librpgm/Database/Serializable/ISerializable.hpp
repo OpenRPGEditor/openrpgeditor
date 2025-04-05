@@ -5,7 +5,8 @@
 
 class ISerializable {
 public:
-  explicit ISerializable(const std::string_view filepath) : m_filepath(filepath) {}
+  explicit ISerializable(const std::string_view filepath)
+  : m_filepath(filepath) {}
   virtual ~ISerializable() = default;
 
   // Virtual methods for serialization and deserialization
@@ -22,8 +23,11 @@ private:
 template <typename T>
 class ITypedSerializable : public ISerializable {
 public:
-  explicit ITypedSerializable(const std::string_view filepath) : ISerializable(filepath) {}
-  ITypedSerializable(const T& data, const std::string_view filepath) : ISerializable(filepath), m_data(data) {}
+  explicit ITypedSerializable(const std::string_view filepath)
+  : ISerializable(filepath) {}
+  ITypedSerializable(const T& data, const std::string_view filepath)
+  : ISerializable(filepath)
+  , m_data(data) {}
   const T& data() const { return m_data; }
 
 protected:

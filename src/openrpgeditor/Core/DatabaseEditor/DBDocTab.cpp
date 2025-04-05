@@ -8,7 +8,9 @@
 #include <cstring>
 #include <misc/cpp/imgui_stdlib.h>
 #include <numeric>
-DBDocTab::DBDocTab(Docs& docs, DatabaseEditor* parent) : IDBEditorTab(parent), m_docs(&docs) {
+DBDocTab::DBDocTab(Docs& docs, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_docs(&docs) {
   if (m_docs->docs.size() == 0) {
     Doc doc;
 

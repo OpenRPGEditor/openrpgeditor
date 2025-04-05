@@ -11,7 +11,9 @@ int writeCallback(char* ptr, size_t size, size_t nmemb, void* userdata) {
   return written;
 }
 
-DownloadManager::DownloadEntry::DownloadEntry(const std::string_view url, const std::string_view destination) : m_url(url), m_destinationPath(destination) {
+DownloadManager::DownloadEntry::DownloadEntry(const std::string_view url, const std::string_view destination)
+: m_url(url)
+, m_destinationPath(destination) {
   m_destination = fopen(m_destinationPath.data(), "wb");
   m_destinationPath = destination;
   m_curlHandle = curl_easy_init();

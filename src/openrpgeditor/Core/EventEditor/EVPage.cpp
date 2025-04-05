@@ -14,7 +14,8 @@
 
 int EVPage::mNextID = 0;
 
-EVPage::EVPage(EventPage* page) : IPageEditor(page) {
+EVPage::EVPage(EventPage* page)
+: IPageEditor(page) {
   m_commandEditor.setCommands(&m_page->list());
   if (m_page->name().empty()) {
     strncpy(m_pageNameBuf, m_page->name().data(), 4096);

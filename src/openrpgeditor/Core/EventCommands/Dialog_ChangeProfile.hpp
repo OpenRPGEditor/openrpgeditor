@@ -7,7 +7,9 @@
 
 struct Dialog_ChangeProfile : IEventDialogController {
   Dialog_ChangeProfile() = delete;
-  explicit Dialog_ChangeProfile(const std::string& name, const std::shared_ptr<ChangeProfileCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeProfile(const std::string& name, const std::shared_ptr<ChangeProfileCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeProfileCommand());
     }

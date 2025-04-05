@@ -1,6 +1,7 @@
 #include "Database/EventCommands/ChangeFormationAccess.hpp"
 
-ChangeFormationAccessCommand::ChangeFormationAccessCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ChangeFormationAccessCommand::ChangeFormationAccessCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(access);
 }
 

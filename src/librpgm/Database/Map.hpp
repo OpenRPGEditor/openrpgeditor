@@ -231,7 +231,8 @@ public:
   Map clone() const { return Map(*this, 1); }
 
 private:
-  Map(const Map& other, int i) : IModifiable(other) {
+  Map(const Map& other, int i)
+  : IModifiable(other) {
     m_autoplayBgm = other.m_autoplayBgm;
     m_autoplayBgs = other.m_autoplayBgs;
     m_battleback1Name = other.m_battleback1Name;

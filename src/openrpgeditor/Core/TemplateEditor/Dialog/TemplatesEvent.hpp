@@ -5,7 +5,12 @@
 
 struct TemplatesEvent final : IDBTemplates {
   TemplatesEvent() = delete;
-  explicit TemplatesEvent(Event* ev, Map* map, DatabaseEditor* parent, const int x, const int y) : IDBTemplates(parent), m_event(ev), m_map(map), m_tileX(x), m_tileY(y) {
+  explicit TemplatesEvent(Event* ev, Map* map, DatabaseEditor* parent, const int x, const int y)
+  : IDBTemplates(parent)
+  , m_event(ev)
+  , m_map(map)
+  , m_tileX(x)
+  , m_tileY(y) {
     m_id = m_map->findOrMakeFreeId();
     m_eventName = m_event->name();
     m_eventNote = m_event->note();

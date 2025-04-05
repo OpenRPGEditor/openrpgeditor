@@ -1,6 +1,10 @@
 ﻿#include "Database/Class.hpp"
 
-Class::Learning::Learning(const Learning& other) : IModifiable(other), m_level(other.m_level), m_note(other.m_note), m_skillId(other.m_skillId) {}
+Class::Learning::Learning(const Learning& other)
+: IModifiable(other)
+, m_level(other.m_level)
+, m_note(other.m_note)
+, m_skillId(other.m_skillId) {}
 
 Class::Learning& Class::Learning::operator=(const Learning& other) {
   IModifiable::operator=(other);
@@ -10,7 +14,11 @@ Class::Learning& Class::Learning::operator=(const Learning& other) {
   return *this;
 }
 
-Class::Learning::Learning(Learning&& other) noexcept : IModifiable(other), m_level(other.m_level), m_note(std::move(other.m_note)), m_skillId(other.m_skillId) {}
+Class::Learning::Learning(Learning&& other) noexcept
+: IModifiable(other)
+, m_level(other.m_level)
+, m_note(std::move(other.m_note))
+, m_skillId(other.m_skillId) {}
 
 int Class::Learning::level() const { return m_level; }
 void Class::Learning::setLevel(const int level) {

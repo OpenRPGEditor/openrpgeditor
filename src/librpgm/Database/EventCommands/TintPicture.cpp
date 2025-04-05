@@ -1,6 +1,7 @@
 #include "Database/EventCommands/TintPicture.hpp"
 
-TintPictureCommand::TintPictureCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+TintPictureCommand::TintPictureCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(picture);
   auto colorValues = parameters.at(1);
   colorValues[0].get_to(color.r);

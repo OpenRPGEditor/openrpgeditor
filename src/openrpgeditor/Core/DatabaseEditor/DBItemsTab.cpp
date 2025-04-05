@@ -5,7 +5,9 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBItemsTab::DBItemsTab(Items& items, DatabaseEditor* parent) : IDBEditorTab(parent), m_items(items) {
+DBItemsTab::DBItemsTab(Items& items, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_items(items) {
   m_selectedItem = m_items.item(1);
   if (m_selectedItem) {
     m_effectsEditor.setEffects(&m_selectedItem->effects());

@@ -7,7 +7,9 @@ class Vector4D;
 class Vector2D {
 public:
   Vector2D();
-  Vector2D(const float xpos, const float ypos) : m_x(xpos), m_y(ypos) {}
+  Vector2D(const float xpos, const float ypos)
+  : m_x(xpos)
+  , m_y(ypos) {}
   explicit Vector2D(const Point& point);
   explicit Vector2D(const PointF& point);
   explicit Vector2D(const Vector3D& vector);

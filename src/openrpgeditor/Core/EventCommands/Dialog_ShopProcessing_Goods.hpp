@@ -9,7 +9,9 @@
 
 struct Dialog_ShopProcessing_Goods : IEventDialogController {
   Dialog_ShopProcessing_Goods() = delete;
-  explicit Dialog_ShopProcessing_Goods(const std::string& name, const std::shared_ptr<ShopProcessingGoodCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ShopProcessing_Goods(const std::string& name, const std::shared_ptr<ShopProcessingGoodCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ShopProcessingGoodCommand());
     }
@@ -36,7 +38,8 @@ struct Dialog_ShopProcessing_Goods : IEventDialogController {
       m_price_constant = command->price;
     }
   }
-  explicit Dialog_ShopProcessing_Goods(const std::string& name, int id, const int price, const int shopType, const int priceType) : IEventDialogController(name) {
+  explicit Dialog_ShopProcessing_Goods(const std::string& name, int id, const int price, const int shopType, const int priceType)
+  : IEventDialogController(name) {
     command.reset(new ShopProcessingGoodCommand());
     if (id < 1)
       id = 1;

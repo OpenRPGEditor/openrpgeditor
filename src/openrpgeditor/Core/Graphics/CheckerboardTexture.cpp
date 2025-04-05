@@ -2,7 +2,13 @@
 #include "Core/Application.hpp"
 
 CheckerboardTexture::CheckerboardTexture(const int width, const int height, const CellSizes cellSize, const uint8_t evenColor, const uint8_t oddColor)
-: m_width(width), m_height(height), m_pendingWidth(width), m_pendingHeight(height), m_cellSize(cellSize), m_evenColor(evenColor), m_oddColor(oddColor) {}
+: m_width(width)
+, m_height(height)
+, m_pendingWidth(width)
+, m_pendingHeight(height)
+, m_cellSize(cellSize)
+, m_evenColor(evenColor)
+, m_oddColor(oddColor) {}
 
 CheckerboardTexture::CheckerboardTexture(const CheckerboardTexture& other) {
   m_width = other.m_width;

@@ -321,7 +321,10 @@ public:
    * @param format The format string for the message.
    * @param ... The variable arguments to be formatted according to the format string.
    */
-  ImGuiToast(ImGuiToastType type, const char* format, ...) : ImGuiToast(type) { NOTIFY_FORMAT(this->setContent, format); }
+  ImGuiToast(ImGuiToastType type, const char* format, ...)
+  : ImGuiToast(type) {
+    NOTIFY_FORMAT(this->setContent, format);
+  }
 
   /**
    * @brief Constructor for creating a new ImGuiToast object with a specified type, dismiss time, and content format.
@@ -331,7 +334,10 @@ public:
    * @param format The format string for the content of the toast message.
    * @param ... The variable arguments to be formatted according to the format string.
    */
-  ImGuiToast(ImGuiToastType type, int dismissTime, const char* format, ...) : ImGuiToast(type, dismissTime) { NOTIFY_FORMAT(this->setContent, format); }
+  ImGuiToast(ImGuiToastType type, int dismissTime, const char* format, ...)
+  : ImGuiToast(type, dismissTime) {
+    NOTIFY_FORMAT(this->setContent, format);
+  }
 
   /**
    * @brief Constructor for creating a new ImGuiToast object with a specified type, dismiss time, title format, content format and a button.
@@ -343,7 +349,8 @@ public:
    * @param format The format string for the content of the toast message.
    * @param ... The variable arguments to be formatted according to the format string.
    */
-  ImGuiToast(ImGuiToastType type, int dismissTime, const char* buttonLabel, const std::function<void()>& onButtonPress, const char* format, ...) : ImGuiToast(type, dismissTime) {
+  ImGuiToast(ImGuiToastType type, int dismissTime, const char* buttonLabel, const std::function<void()>& onButtonPress, const char* format, ...)
+  : ImGuiToast(type, dismissTime) {
     NOTIFY_FORMAT(this->setContent, format);
 
     this->onButtonPress = onButtonPress;

@@ -8,7 +8,9 @@
 
 struct Dialog_RecoverAll : IEventDialogController {
   Dialog_RecoverAll() = delete;
-  explicit Dialog_RecoverAll(const std::string& name, const std::shared_ptr<RecoverAllCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_RecoverAll(const std::string& name, const std::shared_ptr<RecoverAllCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new RecoverAllCommand());
     }

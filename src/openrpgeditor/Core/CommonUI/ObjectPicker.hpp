@@ -15,7 +15,10 @@
 template <typename T>
 class ObjectPicker {
 public:
-  ObjectPicker(const std::string_view name, std::vector<T>& list, const int initialSelection) : m_name(name), m_list(&list), m_selection(initialSelection) {
+  ObjectPicker(const std::string_view name, std::vector<T>& list, const int initialSelection)
+  : m_name(name)
+  , m_list(&list)
+  , m_selection(initialSelection) {
     if (m_selection > 0) {
       m_navigateOnOpen = true;
     }

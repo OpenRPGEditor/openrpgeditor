@@ -11,7 +11,9 @@ static bool ContainsCaseInsensitive(std::string_view str, std::string_view val) 
 }
 
 VariableSwitchPicker::VariableSwitchPicker(const std::string_view name, const std::vector<std::string>& values, const int initialSelection, int rangeStart)
-: IDialogController(name), m_list(&values), m_selection(initialSelection) {
+: IDialogController(name)
+, m_list(&values)
+, m_selection(initialSelection) {
   for (int i = rangeStart; i < m_list->size(); ++i) {
     m_trackedValues.emplace_back(i, &(*m_list)[i]);
   }

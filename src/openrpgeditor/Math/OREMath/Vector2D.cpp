@@ -4,8 +4,12 @@
 #include "Vector3D.hpp"
 #include "Vector4D.hpp"
 
-Vector2D::Vector2D(const Vector3D& vector) : m_x(vector.m_x), m_y(vector.m_y) {}
-Vector2D::Vector2D(const Vector4D& vector) : m_x(vector.m_x), m_y(vector.m_y) {}
+Vector2D::Vector2D(const Vector3D& vector)
+: m_x(vector.m_x)
+, m_y(vector.m_y) {}
+Vector2D::Vector2D(const Vector4D& vector)
+: m_x(vector.m_x)
+, m_y(vector.m_y) {}
 
 float Vector2D::length() const { return sqrtf(m_x * m_x + m_y * m_y); }
 

@@ -6,7 +6,9 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBArmorsTab::DBArmorsTab(Armors& Armors, DatabaseEditor* parent) : IDBEditorTab(parent), m_armors(Armors) {
+DBArmorsTab::DBArmorsTab(Armors& Armors, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_armors(Armors) {
   m_selectedArmor = m_armors.armor(1);
   if (m_selectedArmor) {
     m_traitsEditor.setTraits(&m_selectedArmor->traits());

@@ -16,7 +16,8 @@
 //   return numToRound + multiple - remainder;
 // }
 
-CheckeredCompositeTexture::CheckeredCompositeTexture() : m_checker(32, 32) {}
+CheckeredCompositeTexture::CheckeredCompositeTexture()
+: m_checker(32, 32) {}
 
 ImTextureID CheckeredCompositeTexture::get() {
   if (m_isDirty) {

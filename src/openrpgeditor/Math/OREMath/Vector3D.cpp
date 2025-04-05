@@ -3,10 +3,19 @@
 #include "Vector2D.hpp"
 #include "Vector4D.hpp"
 
-Vector3D::Vector3D(const Vector2D& vector) : m_x(vector.m_x), m_y(vector.m_y), m_z(0.f) {}
-Vector3D::Vector3D(const Vector2D& vector, const float zpos) : m_x(vector.m_x), m_y(vector.m_y), m_z(zpos) {}
+Vector3D::Vector3D(const Vector2D& vector)
+: m_x(vector.m_x)
+, m_y(vector.m_y)
+, m_z(0.f) {}
+Vector3D::Vector3D(const Vector2D& vector, const float zpos)
+: m_x(vector.m_x)
+, m_y(vector.m_y)
+, m_z(zpos) {}
 
-Vector3D::Vector3D(const Vector4D& vector) : m_x(vector.m_x), m_y(vector.m_y), m_z(vector.m_z) {}
+Vector3D::Vector3D(const Vector4D& vector)
+: m_x(vector.m_x)
+, m_y(vector.m_y)
+, m_z(vector.m_z) {}
 
 Vector3D Vector3D::normalized() const {
   double len = static_cast<double>(m_x) * static_cast<double>(m_x) + static_cast<double>(m_y) * static_cast<double>(m_y) + static_cast<double>(m_z) * static_cast<double>(m_z);

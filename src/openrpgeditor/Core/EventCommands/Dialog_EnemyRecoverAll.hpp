@@ -9,7 +9,9 @@
 
 struct Dialog_EnemyRecoverAll : IEventDialogController {
   Dialog_EnemyRecoverAll() = delete;
-  explicit Dialog_EnemyRecoverAll(const std::string& name, const std::shared_ptr<EnemyRecoverAllCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_EnemyRecoverAll(const std::string& name, const std::shared_ptr<EnemyRecoverAllCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new EnemyRecoverAllCommand());
     }

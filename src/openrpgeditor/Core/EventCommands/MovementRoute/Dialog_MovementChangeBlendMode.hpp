@@ -5,7 +5,8 @@
 
 struct Dialog_MovementChangeBlendMode : IEventDialogController {
   Dialog_MovementChangeBlendMode() = delete;
-  explicit Dialog_MovementChangeBlendMode(const std::string& name) : IEventDialogController(name) {
+  explicit Dialog_MovementChangeBlendMode(const std::string& name)
+  : IEventDialogController(name) {
     command.reset(new MovementChangeBlendModeCommand());
     m_blendMode = static_cast<int>(command->mode);
   }

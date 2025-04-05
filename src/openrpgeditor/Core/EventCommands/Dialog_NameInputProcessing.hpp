@@ -7,7 +7,9 @@
 
 struct Dialog_NameInputProcessing : IEventDialogController {
   Dialog_NameInputProcessing() = delete;
-  explicit Dialog_NameInputProcessing(const std::string& name, const std::shared_ptr<NameInputCommand>& cmd = nullptr) : IEventDialogController(name), m_command(cmd) {
+  explicit Dialog_NameInputProcessing(const std::string& name, const std::shared_ptr<NameInputCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , m_command(cmd) {
     if (cmd == nullptr) {
       m_command.reset(new NameInputCommand());
     }

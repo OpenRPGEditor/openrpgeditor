@@ -12,7 +12,8 @@
 struct MainWindow;
 class LibLCF {
 public:
-  explicit LibLCF(MainWindow* parent) : m_parent(parent) {}
+  explicit LibLCF(MainWindow* parent)
+  : m_parent(parent) {}
   void loadLCFProject(std::filesystem::path path);
   void draw();
   [[nodiscard]] bool isOpen() const { return m_isOpen; }

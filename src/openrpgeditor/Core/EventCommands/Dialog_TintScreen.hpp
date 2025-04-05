@@ -6,7 +6,9 @@
 
 struct Dialog_TintScreen : IEventDialogController {
   Dialog_TintScreen() = delete;
-  explicit Dialog_TintScreen(const std::string& name, const std::shared_ptr<TintScreenCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_TintScreen(const std::string& name, const std::shared_ptr<TintScreenCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new TintScreenCommand());
     }

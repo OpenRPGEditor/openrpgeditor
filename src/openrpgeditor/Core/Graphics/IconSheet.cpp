@@ -3,7 +3,8 @@
 #include "Core/ResourceManager.hpp"
 #include "OREMath/Size.hpp"
 
-IconSheet::IconSheet(const std::string_view gridAtlasPath) : m_texture(ResourceManager::instance()->loadImage(gridAtlasPath)) {}
+IconSheet::IconSheet(const std::string_view gridAtlasPath)
+: m_texture(ResourceManager::instance()->loadImage(gridAtlasPath)) {}
 
 SimpleRect IconSheet::rectForId(const int id) const {
   float u0 = static_cast<float>(id % columnCount() * iconWidth());

@@ -8,7 +8,9 @@
 
 struct Dialog_ShowAnimation : IEventDialogController {
   Dialog_ShowAnimation() = delete;
-  explicit Dialog_ShowAnimation(const std::string& name, const std::shared_ptr<ShowAnimationCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ShowAnimation(const std::string& name, const std::shared_ptr<ShowAnimationCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ShowAnimationCommand());
     }

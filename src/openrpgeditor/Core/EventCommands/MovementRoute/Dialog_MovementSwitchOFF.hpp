@@ -7,7 +7,9 @@
 struct MainWindow;
 struct Dialog_MovementSwitchOFF : IEventDialogController {
   Dialog_MovementSwitchOFF() = delete;
-  explicit Dialog_MovementSwitchOFF(const std::string& name, const std::shared_ptr<MovementSwitchOFFCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_MovementSwitchOFF(const std::string& name, const std::shared_ptr<MovementSwitchOFFCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new MovementSwitchOFFCommand());
     }

@@ -8,7 +8,9 @@
 
 struct Dialog_ChangeHP : IEventDialogController {
   Dialog_ChangeHP() = delete;
-  explicit Dialog_ChangeHP(const std::string& name, const std::shared_ptr<ChangeHPCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeHP(const std::string& name, const std::shared_ptr<ChangeHPCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeHPCommand());
     }

@@ -31,7 +31,8 @@ public:
 protected:
   friend IEventEditor* IEventEditor::create(Event* ev);
 
-  explicit EventEditor(Event* event) : IEventEditor(event) {}
+  explicit EventEditor(Event* event)
+  : IEventEditor(event) {}
 
   void eventPointerInvalidated() override {};
 

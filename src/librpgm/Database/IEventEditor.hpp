@@ -25,7 +25,8 @@ public:
 protected:
   friend class Event;
   virtual void eventPointerInvalidated() = 0;
-  explicit IEventEditor(Event* event) : m_event(event) {};
+  explicit IEventEditor(Event* event)
+  : m_event(event) {};
   void setEventPtr(Event* ev) {
     m_event = ev;
     eventPointerInvalidated();

@@ -8,7 +8,9 @@
 
 struct Dialog_ControlVariables : IEventDialogController {
   Dialog_ControlVariables() = delete;
-  explicit Dialog_ControlVariables(const std::string& name, const std::shared_ptr<ControlVariables>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ControlVariables(const std::string& name, const std::shared_ptr<ControlVariables>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ControlVariables());
     }

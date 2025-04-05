@@ -3,7 +3,11 @@
 #include <fstream>
 
 System::Motion::Motion(const Motion& other)
-: IModifiable(other), m_type(other.m_type), m_weaponImageId(other.m_weaponImageId), m_oldtype(other.m_oldtype), m_oldweaponImageId(other.m_oldweaponImageId) {}
+: IModifiable(other)
+, m_type(other.m_type)
+, m_weaponImageId(other.m_weaponImageId)
+, m_oldtype(other.m_oldtype)
+, m_oldweaponImageId(other.m_oldweaponImageId) {}
 System::Motion& System::Motion::operator=(const Motion& other) {
   IModifiable::operator=(other);
   m_type = other.m_type;
@@ -13,7 +17,11 @@ System::Motion& System::Motion::operator=(const Motion& other) {
   return *this;
 }
 System::Motion::Motion(Motion&& other) noexcept
-: IModifiable(other), m_type(other.m_type), m_weaponImageId(other.m_weaponImageId), m_oldtype(other.m_oldtype), m_oldweaponImageId(other.m_oldweaponImageId) {}
+: IModifiable(other)
+, m_type(other.m_type)
+, m_weaponImageId(other.m_weaponImageId)
+, m_oldtype(other.m_oldtype)
+, m_oldweaponImageId(other.m_oldweaponImageId) {}
 System::Motion& System::Motion::operator=(Motion&& other) noexcept {
   IModifiable::operator=(std::move(other));
   m_type = other.m_type;

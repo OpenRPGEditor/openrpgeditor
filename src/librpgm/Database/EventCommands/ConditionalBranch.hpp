@@ -245,7 +245,8 @@ struct ConditionalBranchCommand final : IEventCommand {
 
 struct ElseCommand final : IEventCommand {
   ElseCommand() = default;
-  explicit ElseCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {}
+  explicit ElseCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+  : IEventCommand(indent, parameters) {}
   ~ElseCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Else; }
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ElseCommand>(*this); }

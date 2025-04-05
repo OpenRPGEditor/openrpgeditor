@@ -5,7 +5,9 @@
 
 #include "imgui.h"
 #include "imgui_internal.h"
-DBSkillsTab::DBSkillsTab(Skills& skills, DatabaseEditor* parent) : IDBEditorTab(parent), m_skills(skills) {
+DBSkillsTab::DBSkillsTab(Skills& skills, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_skills(skills) {
   m_selectedSkill = m_skills.skill(1);
   if (m_selectedSkill) {
     m_effectsEditor.setEffects(&m_selectedSkill->effects());

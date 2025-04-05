@@ -4,7 +4,9 @@
 
 struct Dialog_OpenMenuScreen : IEventDialogController {
   Dialog_OpenMenuScreen() = delete;
-  explicit Dialog_OpenMenuScreen(const std::string& name, const std::shared_ptr<OpenMenuCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_OpenMenuScreen(const std::string& name, const std::shared_ptr<OpenMenuCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new OpenMenuCommand());
     }

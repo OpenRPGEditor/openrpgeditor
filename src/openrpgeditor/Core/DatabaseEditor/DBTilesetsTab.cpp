@@ -6,7 +6,9 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBTilesetsTab::DBTilesetsTab(Tilesets& tilesets, DatabaseEditor* parent) : IDBEditorTab(parent), m_tilesets(tilesets) {
+DBTilesetsTab::DBTilesetsTab(Tilesets& tilesets, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_tilesets(tilesets) {
   m_selectedTileset = m_tilesets.tileset(1);
   m_tileMarker.emplace(TileFlags::None, 1, 256, 320);
   m_maxTilesets = m_tilesets.count();

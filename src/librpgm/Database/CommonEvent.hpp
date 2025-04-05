@@ -55,7 +55,8 @@ public:
   CommonEvent clone() const { return CommonEvent(*this, 1); }
 
 private:
-  CommonEvent(const CommonEvent& other, int) : IModifiable(other) {
+  CommonEvent(const CommonEvent& other, int)
+  : IModifiable(other) {
     m_id = other.m_id;
     m_name = other.m_name;
     m_switchId = other.m_switchId;

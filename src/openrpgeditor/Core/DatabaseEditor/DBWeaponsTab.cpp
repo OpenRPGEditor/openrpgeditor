@@ -6,7 +6,9 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBWeaponsTab::DBWeaponsTab(Weapons& weapons, DatabaseEditor* parent) : IDBEditorTab(parent), m_weapons(weapons) {
+DBWeaponsTab::DBWeaponsTab(Weapons& weapons, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_weapons(weapons) {
   m_selectedWeapon = m_weapons.weapon(1);
   if (m_selectedWeapon) {
     m_traitsEditor.setTraits(&m_selectedWeapon->traits());

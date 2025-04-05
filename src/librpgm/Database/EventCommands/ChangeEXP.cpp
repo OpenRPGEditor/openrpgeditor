@@ -2,7 +2,8 @@
 
 #include "Database/Database.hpp"
 
-ChangeEXPCommand::ChangeEXPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ChangeEXPCommand::ChangeEXPCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(comparison);
   parameters.at(1).get_to(value);
   parameters.at(2).get_to(quantityOp);

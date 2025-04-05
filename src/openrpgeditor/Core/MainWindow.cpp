@@ -29,14 +29,24 @@
 using namespace std::literals::string_view_literals;
 
 MainWindow* MainWindow::m_instance = nullptr;
-MainWindow::MainWindow() : m_mapListView(this), m_mapEditor(this), m_eventListView(this), m_tilesetPicker(this), m_nwjsVersionManager("https://dl.nwjs.io"), m_eventSearcher(this), m_libLCF(this) {
+MainWindow::MainWindow()
+: m_mapListView(this)
+, m_mapEditor(this)
+, m_eventListView(this)
+, m_tilesetPicker(this)
+, m_nwjsVersionManager("https://dl.nwjs.io")
+, m_eventSearcher(this)
+, m_libLCF(this) {
   m_settingsDialog.addTab(new GeneralSettingsTab());
   m_settingsDialog.addTab(new UISettingsTab());
   m_settingsDialog.addTab(new RPGMakerLocationAndVersionTab());
   m_instance = this;
 }
 
-MainWindow::ToolbarButton::ToolbarButton(const std::string& id, const ToolbarCategory category, asIScriptFunction* func) : m_id(id), m_category(category), m_func(func) {
+MainWindow::ToolbarButton::ToolbarButton(const std::string& id, const ToolbarCategory category, asIScriptFunction* func)
+: m_id(id)
+, m_category(category)
+, m_func(func) {
 
   if (func && func->GetFuncType() == asFUNC_DELEGATE) {
     m_callbackObject = func->GetDelegateObject();

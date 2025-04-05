@@ -7,7 +7,8 @@
 struct MainWindow;
 struct Dialog_MovementChangeOpacity : IEventDialogController {
   Dialog_MovementChangeOpacity() = delete;
-  explicit Dialog_MovementChangeOpacity(const std::string& name) : IEventDialogController(name) {
+  explicit Dialog_MovementChangeOpacity(const std::string& name)
+  : IEventDialogController(name) {
     command.reset(new MovementChangeOpacityCommand());
     m_opacity = command->opacity;
   }

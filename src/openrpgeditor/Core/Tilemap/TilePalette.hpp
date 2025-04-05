@@ -15,7 +15,10 @@ public:
   static std::array<int, 4> paletteTiles(int x, int y, int page, const std::array<std::string, 9>& tilesetNames, Tileset::Mode mode, bool checkSpecial);
   static std::array<int, 4> regionTiles(const Point& point);
 
-  explicit TilePalette(const int tileWidth = 48, const int tileHeight = 48) : ITileView(tileWidth, tileHeight), m_renderHelper(tileWidth, tileHeight), m_checkerboardTexture(32, 32) {
+  explicit TilePalette(const int tileWidth = 48, const int tileHeight = 48)
+  : ITileView(tileWidth, tileHeight)
+  , m_renderHelper(tileWidth, tileHeight)
+  , m_checkerboardTexture(32, 32) {
     updateCursorPixelRect();
     updateMaxRows();
     updateRenderTexture();

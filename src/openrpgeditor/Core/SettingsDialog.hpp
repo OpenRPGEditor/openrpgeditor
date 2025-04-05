@@ -8,7 +8,8 @@
 
 class SettingsDialog final : public IDialogController {
 public:
-  SettingsDialog() : IDialogController("Settings") {}
+  SettingsDialog()
+  : IDialogController("Settings") {}
 
   std::tuple<bool, bool> draw() override;
 

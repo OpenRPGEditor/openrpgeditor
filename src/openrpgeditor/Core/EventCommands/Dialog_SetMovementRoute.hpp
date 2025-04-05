@@ -11,7 +11,9 @@
 
 struct Dialog_SetMovementRoute : IEventDialogController {
   Dialog_SetMovementRoute() = delete;
-  explicit Dialog_SetMovementRoute(const std::string& name, const std::shared_ptr<SetMovementRouteCommand>& cmd = nullptr) : IEventDialogController(name), m_command(cmd) {
+  explicit Dialog_SetMovementRoute(const std::string& name, const std::shared_ptr<SetMovementRouteCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , m_command(cmd) {
     if (cmd == nullptr) {
       m_command.reset(new SetMovementRouteCommand());
     }
@@ -22,7 +24,9 @@ struct Dialog_SetMovementRoute : IEventDialogController {
       m_route.addCommand(std::make_shared<EventDummy>(), 0);
     }
   }
-  explicit Dialog_SetMovementRoute(const std::string& name, EventPage* page) : IEventDialogController(name), m_page(page) {
+  explicit Dialog_SetMovementRoute(const std::string& name, EventPage* page)
+  : IEventDialogController(name)
+  , m_page(page) {
     m_isEventRoute = true;
     m_route = m_page->moveRoute();
     if (m_route.list().empty()) {

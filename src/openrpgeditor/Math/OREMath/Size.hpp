@@ -5,7 +5,9 @@
 class Size {
 public:
   Size() = default;
-  Size(const int width, const int height) : mWidth(width), mHeight(height) {}
+  Size(const int width, const int height)
+  : mWidth(width)
+  , mHeight(height) {}
 
   explicit operator ImVec2() const { return ImVec2{static_cast<float>(mWidth), static_cast<float>(mHeight)}; }
 
@@ -66,7 +68,9 @@ Size operator/(const Size& lhs, const float rhs) { return Size{static_cast<int>(
 class SizeF {
 public:
   SizeF() = default;
-  SizeF(const float width, const float height) : mWidth(width), mHeight(height) {}
+  SizeF(const float width, const float height)
+  : mWidth(width)
+  , mHeight(height) {}
   explicit operator ImVec2() const { return ImVec2{mWidth, mHeight}; }
 
   void transpose();

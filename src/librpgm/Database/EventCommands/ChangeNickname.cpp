@@ -1,7 +1,8 @@
 #include "Database/EventCommands/ChangeNickname.hpp"
 #include "Database/Database.hpp"
 
-ChangeNicknameCommand::ChangeNicknameCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ChangeNicknameCommand::ChangeNicknameCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(actor);
   parameters.at(1).get_to(nick);
 }

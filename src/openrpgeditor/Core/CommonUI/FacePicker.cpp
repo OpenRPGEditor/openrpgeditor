@@ -5,7 +5,9 @@
 
 #include <IconsFontAwesome6.h>
 
-FacePicker::FacePicker(const std::string_view sheetName, const int faceIndex) : IDialogController("Face"), m_faceDirectory("img/faces/", ".png", std::string(sheetName)) {
+FacePicker::FacePicker(const std::string_view sheetName, const int faceIndex)
+: IDialogController("Face")
+, m_faceDirectory("img/faces/", ".png", std::string(sheetName)) {
   if (!sheetName.empty()) {
     m_faceSheet.emplace(sheetName);
   }

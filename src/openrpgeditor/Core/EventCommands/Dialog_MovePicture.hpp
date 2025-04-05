@@ -6,7 +6,9 @@
 
 struct Dialog_MovePicture : IEventDialogController {
   Dialog_MovePicture() = delete;
-  explicit Dialog_MovePicture(const std::string& name, const std::shared_ptr<MovePictureCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_MovePicture(const std::string& name, const std::shared_ptr<MovePictureCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new MovePictureCommand());
     }

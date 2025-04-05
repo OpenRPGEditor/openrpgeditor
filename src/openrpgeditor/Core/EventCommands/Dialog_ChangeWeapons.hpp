@@ -7,7 +7,9 @@
 struct Weapon;
 struct Dialog_ChangeWeapons : IEventDialogController {
   Dialog_ChangeWeapons() = delete;
-  explicit Dialog_ChangeWeapons(const std::string& name, const std::shared_ptr<ChangeWeaponsCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeWeapons(const std::string& name, const std::shared_ptr<ChangeWeaponsCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeWeaponsCommand());
     }

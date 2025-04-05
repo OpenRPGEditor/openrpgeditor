@@ -4,7 +4,8 @@
 
 struct MovementMoveAtRandomCommand final : IMovementRouteStep {
   MovementMoveAtRandomCommand() = default;
-  explicit MovementMoveAtRandomCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IMovementRouteStep(indent, parameters) {}
+  explicit MovementMoveAtRandomCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+  : IMovementRouteStep(indent, parameters) {}
   ~MovementMoveAtRandomCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Move_at_Random; }
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<MovementMoveAtRandomCommand>(*this); }

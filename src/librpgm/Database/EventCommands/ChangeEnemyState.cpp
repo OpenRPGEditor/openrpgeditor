@@ -2,7 +2,8 @@
 
 #include "Database/Database.hpp"
 
-ChangeEnemyStateCommand::ChangeEnemyStateCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ChangeEnemyStateCommand::ChangeEnemyStateCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(enemy);
   parameters.at(1).get_to(enemyOp);
   parameters.at(2).get_to(state);

@@ -21,7 +21,10 @@
 Database* Database::m_instance = nullptr;
 
 Database::Database(const std::string_view _projectBasePath, const std::string_view _projectFilePath, const std::string_view _projectVersion, const bool isMZ)
-: projectVersion(_projectVersion), projectFilePath(_projectFilePath), basePath(_projectBasePath), m_isMZ(isMZ) {
+: projectVersion(_projectVersion)
+, projectFilePath(_projectFilePath)
+, basePath(_projectBasePath)
+, m_isMZ(isMZ) {
   m_instance = this;
 }
 

@@ -8,11 +8,13 @@ SearchResult::SearchResult(const int mapId, const int eventId, const int pageInd
   m_mapId = mapId;
   m_page = pageIndex;
 }
-SearchResult::SearchResult(const int commonEventId, const std::shared_ptr<IEventCommand>& cmd, const int step) : m_command(cmd) {
+SearchResult::SearchResult(const int commonEventId, const std::shared_ptr<IEventCommand>& cmd, const int step)
+: m_command(cmd) {
   m_commonEventId = commonEventId;
   m_step = step;
 }
-SearchResult::SearchResult(const int mapId, const int eventId, const std::shared_ptr<IEventCommand>& cmd, const int pageIndex, const int step) : m_command(cmd) {
+SearchResult::SearchResult(const int mapId, const int eventId, const std::shared_ptr<IEventCommand>& cmd, const int pageIndex, const int step)
+: m_command(cmd) {
   m_eventId = eventId;
   m_mapId = mapId;
   m_page = pageIndex;

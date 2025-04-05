@@ -6,7 +6,9 @@
 
 struct Dialog_ShopProcessing : IEventDialogController {
   Dialog_ShopProcessing() = delete;
-  explicit Dialog_ShopProcessing(const std::string& name, const std::shared_ptr<ShopProcessingCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ShopProcessing(const std::string& name, const std::shared_ptr<ShopProcessingCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ShopProcessingCommand());
     }

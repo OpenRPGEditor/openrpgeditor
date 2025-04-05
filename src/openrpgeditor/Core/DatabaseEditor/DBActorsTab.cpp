@@ -9,7 +9,9 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBActorsTab::DBActorsTab(Actors& actors, DatabaseEditor* parent) : IDBEditorTab(parent), m_actors(actors) {
+DBActorsTab::DBActorsTab(Actors& actors, DatabaseEditor* parent)
+: IDBEditorTab(parent)
+, m_actors(actors) {
   m_selectedActor = m_actors.actor(1);
   if (m_selectedActor) {
     m_traitsEditor.setTraits(&m_selectedActor->traits());

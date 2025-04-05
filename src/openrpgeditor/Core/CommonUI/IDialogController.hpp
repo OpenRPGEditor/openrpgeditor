@@ -5,7 +5,8 @@
 
 struct IDialogController {
   IDialogController() = delete;
-  explicit IDialogController(const std::string_view name) : m_name(name) {}
+  explicit IDialogController(const std::string_view name)
+  : m_name(name) {}
   virtual ~IDialogController() = default;
   virtual std::tuple<bool, bool> draw() = 0;
   [[nodiscard]] virtual bool isOpen() const { return m_open; }

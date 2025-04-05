@@ -20,7 +20,8 @@
 #include <math.h>
 
 uint32_t MapEvent::mSpriteId = 0;
-MapEvent::MapEvent(Event* event) : IEventRenderer(event) {
+MapEvent::MapEvent(Event* event)
+: IEventRenderer(event) {
   setupPageSettings();
   m_x = m_realX = m_event->x();
   m_y = m_realY = m_event->y();

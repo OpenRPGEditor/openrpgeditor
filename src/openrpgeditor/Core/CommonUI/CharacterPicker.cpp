@@ -14,7 +14,11 @@ static bool ContainsCaseInsensitive(std::string_view str, std::string_view val) 
 }
 
 CharacterPicker::CharacterPicker(const PickerMode mode, const bool useTileset, const int tileId, const std::string_view sheetName, const int character, const int pattern, const Direction direction)
-: IDialogController("Select an Image##character_picker"), m_pickerMode(mode), m_characterIndex(character), m_pattern(pattern), m_direction(direction) {
+: IDialogController("Select an Image##character_picker")
+, m_pickerMode(mode)
+, m_characterIndex(character)
+, m_pattern(pattern)
+, m_direction(direction) {
   m_charDir.emplace("img/characters/", ".png", static_cast<std::string>(sheetName));
   m_characterSheets = m_charDir.value().getDirectoryContents();
   if (useTileset) {

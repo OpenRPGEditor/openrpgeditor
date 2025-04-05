@@ -6,7 +6,8 @@ class Map;
 class MapInfo;
 class MapProperties final : public IDialogController {
 public:
-  MapProperties() : IDialogController("Map Properties") {}
+  MapProperties()
+  : IDialogController("Map Properties") {}
 
   void setMapInfo(MapInfo* mapInfo) {
     if (m_mapInfo == mapInfo) {

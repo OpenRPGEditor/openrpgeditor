@@ -2,7 +2,8 @@
 
 #include "Database/Database.hpp"
 
-ChangeBattlebackCommand::ChangeBattlebackCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ChangeBattlebackCommand::ChangeBattlebackCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(battleBack1Name);
   parameters.at(1).get_to(battleBack2Name);
 }

@@ -1,6 +1,7 @@
 #include "Database/EventCommands/ChangeTransparency.hpp"
 
-ChangeTransparencyCommand::ChangeTransparencyCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ChangeTransparencyCommand::ChangeTransparencyCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(transparency);
 }
 

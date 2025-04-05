@@ -9,7 +9,9 @@
 struct Armor;
 struct Dialog_ChangeArmors : IEventDialogController {
   Dialog_ChangeArmors() = delete;
-  explicit Dialog_ChangeArmors(const std::string& name, const std::shared_ptr<ChangeArmorsCommand>& cmd = nullptr) : IEventDialogController(name), command(cmd) {
+  explicit Dialog_ChangeArmors(const std::string& name, const std::shared_ptr<ChangeArmorsCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
     if (cmd == nullptr) {
       command.reset(new ChangeArmorsCommand());
     }

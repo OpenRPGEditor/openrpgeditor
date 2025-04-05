@@ -1,6 +1,7 @@
 #include "Database/EventCommands/ChangeMapDisplayName.hpp"
 
-ChangeMapNameDisplayCommand::ChangeMapNameDisplayCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters) : IEventCommand(indent, parameters) {
+ChangeMapNameDisplayCommand::ChangeMapNameDisplayCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
+: IEventCommand(indent, parameters) {
   parameters.at(0).get_to(checkIfOn);
 }
 

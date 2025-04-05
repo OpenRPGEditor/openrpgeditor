@@ -1,4 +1,5 @@
 #include "Core/SettingsDialog/RPGMakerLocationAndVersionTab.hpp"
+#include "Core/Application.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Settings.hpp"
 
@@ -6,8 +7,8 @@
 
 #include "orei18n.hpp"
 
+#include <SDL3/SDL_dialog.h>
 #include <imgui.h>
-#include <nfd.h>
 
 void RPGMakerLocationAndVersionTab::draw() {
   if (ImGui::BeginTabItem(trNOOP("RPG Maker Location & Version"))) {
@@ -24,14 +25,16 @@ void RPGMakerLocationAndVersionTab::draw() {
       ImGui::NewLine();
       ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y);
       if (ImGui::Button(std::format("{}##rpgmakermv", trNOOP("Choose...")).c_str())) {
-        nfdu8char_t* loc;
-        const auto result = NFD_PickFolder(&loc, !Settings::instance()->rpgMakerMVLocation.empty() ? Settings::instance()->rpgMakerMVLocation.c_str() : nullptr);
-        if (result == NFD_OKAY) {
-          const std::filesystem::path path{loc};
-          Settings::instance()->rpgMakerMVLocation = absolute(path).generic_string();
-          NFD_FreePathU8(loc);
-          onValueChanged.fire();
-        }
+        SDL_ShowOpenFolderDialog(
+            [](void* userdata, const char* const* fileList, int filter) {
+              if (!fileList || !*fileList || filter >= 1) {
+                return;
+              }
+              const std::filesystem::path path{fileList[0]};
+              Settings::instance()->rpgMakerMVLocation = absolute(path).generic_string();
+              static_cast<ISettingsTab*>(userdata)->onValueChanged.fire();
+            },
+            this, App::APP->getWindow()->getNativeWindow(), !Settings::instance()->rpgMakerMVLocation.empty() ? Settings::instance()->rpgMakerMVLocation.c_str() : nullptr, false);
       }
     }
     ImGui::EndGroup();
@@ -68,14 +71,16 @@ void RPGMakerLocationAndVersionTab::draw() {
       ImGui::NewLine();
       ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y);
       if (ImGui::Button(std::format("{}##rpgmakermz", trNOOP("Choose...")).c_str())) {
-        nfdu8char_t* loc;
-        const auto result = NFD_PickFolder(&loc, !Settings::instance()->rpgMakerMZLocation.empty() ? Settings::instance()->rpgMakerMZLocation.c_str() : nullptr);
-        if (result == NFD_OKAY) {
-          const std::filesystem::path path{loc};
-          Settings::instance()->rpgMakerMZLocation = absolute(path).generic_string();
-          NFD_FreePathU8(loc);
-          onValueChanged.fire();
-        }
+        SDL_ShowOpenFolderDialog(
+            [](void* userdata, const char* const* fileList, int filter) {
+              if (!fileList || !*fileList || filter >= 1) {
+                return;
+              }
+              const std::filesystem::path path{fileList[0]};
+              Settings::instance()->rpgMakerMZLocation = absolute(path).generic_string();
+              static_cast<ISettingsTab*>(userdata)->onValueChanged.fire();
+            },
+            this, App::APP->getWindow()->getNativeWindow(), !Settings::instance()->rpgMakerMZLocation.empty() ? Settings::instance()->rpgMakerMZLocation.c_str() : nullptr, false);
       }
     }
     ImGui::EndGroup();

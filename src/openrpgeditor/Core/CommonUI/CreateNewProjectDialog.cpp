@@ -1,12 +1,16 @@
 #include "Core/CommonUI/CreateNewProjectDialog.hpp"
+
+#include "Core/Application.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Settings.hpp"
 
 #include <filesystem>
+#include <iostream>
 #include <string_view>
 
+#include <SDL3/SDL_dialog.h>
+
 using namespace std::string_view_literals;
-#include "nfd.h"
 
 void CreateNewProjectDialog::setOpen(bool open) {
   IDialogController::setOpen(open);
@@ -75,13 +79,15 @@ std::tuple<bool, bool> CreateNewProjectDialog::draw() {
             ImGui::NewLine();
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y);
             if (ImGui::Button("Choose...")) {
-              nfdu8char_t* loc;
-              const auto result = NFD_PickFolder(&loc, !Settings::instance()->projectBaseDirectory.empty() ? Settings::instance()->projectBaseDirectory.c_str() : nullptr);
-              if (result == NFD_OKAY) {
-                const std::filesystem::path path{loc};
-                Settings::instance()->projectBaseDirectory = absolute(path).generic_string();
-                NFD_FreePathU8(loc);
-              }
+              SDL_ShowOpenFolderDialog(
+                  [](void*, const char* const* fileList, int filter) {
+                    if (!fileList || !*fileList || filter >= 1) {
+                      return;
+                    }
+                    const std::filesystem::path path{fileList[0]};
+                    Settings::instance()->projectBaseDirectory = absolute(path).generic_string();
+                  },
+                  nullptr, App::APP->getWindow()->getNativeWindow(), !Settings::instance()->projectBaseDirectory.empty() ? Settings::instance()->projectBaseDirectory.c_str() : nullptr, false);
             }
           }
           ImGui::EndGroup();

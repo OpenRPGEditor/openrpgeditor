@@ -1,4 +1,7 @@
 #include "Core/LibLCF.hpp"
+#include "Core/Application.hpp"
+#include "Core/MainWindow.hpp"
+#include "Core/Settings.hpp"
 #include "Database/EventCommands/MovementRoute/ChangeImage.hpp"
 #include "Database/EventCommands/MovementRoute/DirectionFixOFF.hpp"
 #include "Database/EventCommands/MovementRoute/DirectionFixON.hpp"
@@ -32,11 +35,10 @@
 #include "Database/EventCommands/MovementRoute/TurnTowardPlayer.hpp"
 #include "Database/EventCommands/MovementRoute/TurnUp.hpp"
 #include "Database/EventCommands/MovementRoute/Wait.hpp"
-#include "MainWindow.hpp"
-#include "Settings.hpp"
-#include "imgui.h"
 #include "lcf/reader_util.h"
-#include "nfd.h"
+
+#include <SDL3/SDL_dialog.h>
+#include <imgui.h>
 
 #undef PlaySound
 template <>
@@ -49,6 +51,15 @@ inline const std::string& ObjectPicker<std::optional<CommonEvent>>::getName(cons
   return value ? value->name() : InvalidCommonEvent;
 }
 
+void LibLCF::loadLCFProject(std::filesystem::path path) {
+  lcf.setProject(path);
+  lcf.loadProject();
+  m_unresolvedError = lcf.mapper()->isUnresolved();
+  selectedCommon = -1;
+  selectedMapIndex = -1;
+  selectedPage = -1;
+  Settings::instance()->lcfProjectDirectory = absolute(path).generic_string();
+}
 void LibLCF::draw() {
   if (!m_isOpen) {
     return;
@@ -100,21 +111,15 @@ void LibLCF::draw() {
   }
   if (ImGui::Begin("LCF")) {
     if (ImGui::Button("Select an RPG Maker 2000 project...")) {
-      nfdu8char_t* loc;
-      const auto result = NFD_PickFolder(&loc, !Settings::instance()->lcfProjectDirectory.empty() ? Settings::instance()->lcfProjectDirectory.c_str()
-                                               : !Settings::instance()->lastDirectory.empty()     ? Settings::instance()->lastDirectory.c_str()
-                                                                                                  : nullptr);
-      if (result == NFD_OKAY) {
-        const std::filesystem::path path{loc};
-        lcf.setProject(path);
-        lcf.loadProject();
-        m_unresolvedError = lcf.mapper()->isUnresolved();
-        selectedCommon = -1;
-        selectedMapIndex = -1;
-        selectedPage = -1;
-        Settings::instance()->lcfProjectDirectory = absolute(path).generic_string();
-        NFD_FreePathU8(loc);
-      }
+      SDL_ShowOpenFolderDialog(
+          [](void* userdata, const char* const* fileList, int filter) {
+            if (!fileList || !*fileList || filter >= 1) {
+              return;
+            }
+            const std::filesystem::path path{fileList[0]};
+            static_cast<LibLCF*>(userdata)->loadLCFProject(path);
+          },
+          this, App::APP->getWindow()->getNativeWindow(), !Settings::instance()->lcfProjectDirectory.empty() ? Settings::instance()->lcfProjectDirectory.c_str() : nullptr, false);
     }
     ImGui::SameLine();
     if (ImGui::Button("...")) {}

@@ -3,8 +3,10 @@
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Settings.hpp"
 
+#include "Core/Application.hpp"
+
+#include <SDL3/SDL_dialog.h>
 #include <imgui.h>
-#include <nfd.h>
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <string.h>
@@ -50,13 +52,16 @@ void GeneralSettingsTab::draw() {
       ImGui::NewLine();
       ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y);
       if (ImGui::Button(trNOOP("Choose..."))) {
-        nfdu8char_t* loc;
-        if (NFD_PickFolder(&loc, !Settings::instance()->projectBaseDirectory.empty() ? Settings::instance()->projectBaseDirectory.c_str() : nullptr) == NFD_OKAY) {
-          const std::filesystem::path path{loc};
-          Settings::instance()->projectBaseDirectory = absolute(path).generic_string();
-          onValueChanged.fire();
-          NFD_FreePathU8(loc);
-        }
+        SDL_ShowOpenFolderDialog(
+            [](void* userdata, const char* const* fileList, int filter) {
+              if (!fileList || !*fileList || filter >= 1) {
+                return;
+              }
+              const std::filesystem::path path{fileList[0]};
+              Settings::instance()->projectBaseDirectory = absolute(path).generic_string();
+              static_cast<ISettingsTab*>(userdata)->onValueChanged.fire();
+            },
+            this, App::APP->getWindow()->getNativeWindow(), !Settings::instance()->projectBaseDirectory.empty() ? Settings::instance()->projectBaseDirectory.c_str() : nullptr, false);
       }
       ImGui::SetItemTooltip(trNOOP("Select a directory to store RPG Maker game projects"));
     }

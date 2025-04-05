@@ -484,7 +484,6 @@ target_link_libraries(
         SDL3::SDL3
         SDL3_image::SDL3_image
         imgui-setup
-        nfd
         magic_enum
         nlohmann_json::nlohmann_json
         librpgm
@@ -551,7 +550,6 @@ target_link_libraries(
         SDL3::SDL3
         SDL3_image::SDL3_image
         imgui-setup
-        nfd
         magic_enum
         nlohmann_json::nlohmann_json
         librpgm

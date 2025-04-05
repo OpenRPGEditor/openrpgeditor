@@ -30,7 +30,7 @@
 #include <libcpuid/libcpuid.h>
 #include <memory>
 #include <moloader/moloader.hpp>
-#include <nfd.h>
+
 #include <orei18n.hpp>
 #include <string>
 
@@ -228,7 +228,6 @@ void Application::updateFonts() {
 
 void Application::serializeSettings() { m_settings.serialize(m_userConfigPath + SettingsFilename.data()); }
 ExitStatus Application::run() {
-  NFD_Init();
   /* Do an initial clear */
   SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 28, 38, 43, 255);
   SDL_RenderClear(m_window->getNativeRenderer());
@@ -374,7 +373,6 @@ ExitStatus Application::run() {
   serializeSettings();
   SerializationQueue::instance().terminate();
   DeserializationQueue::instance().terminate();
-  NFD_Quit();
   return m_exitStatus;
 }
 

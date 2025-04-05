@@ -25,12 +25,6 @@ FetchContent_Declare(
 #)
 
 FetchContent_Declare(
-        nfd
-        GIT_REPOSITORY "https://github.com/btzy/nativefiledialog-extended.git"
-        GIT_TAG v1.2.0
-)
-
-FetchContent_Declare(
         clip
         GIT_REPOSITORY "https://github.com/dacap/clip.git"
         GIT_TAG v1.9
@@ -45,12 +39,12 @@ FetchContent_Declare(
 FetchContent_Declare(
         SDL3
         GIT_REPOSITORY "https://github.com/libsdl-org/SDL.git"
-        GIT_TAG release-3.2.0)
+        GIT_TAG release-3.2.x)
 
 FetchContent_Declare(
         SDL3_image
         GIT_REPOSITORY https://github.com/libsdl-org/SDL_image
-        GIT_TAG preview-3.1.0)
+        GIT_TAG release-3.2.x)
 
 FetchContent_Declare(
         spdlog
@@ -124,7 +118,6 @@ set(LIBLCF_WITH_INI OFF)
 FetchContent_MakeAvailable(
         doctest
         fmt
-        nfd
         SDL3
         SDL3_image
         spdlog

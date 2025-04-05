@@ -33,7 +33,6 @@
 #include <array>
 #include <clip.h>
 #include <fstream>
-#include <nfd.h>
 #include <string_view>
 
 using namespace std::literals::string_view_literals;
@@ -580,16 +579,22 @@ void MainWindow::drawTileDebugger() {
 }
 
 void MainWindow::handleOpenFile() {
-  nfdu8char_t* outPath;
-  const nfdu8filteritem_t filters = {trNOOP("RPG Maker Projects"), "rpgproject,rmmzproject"};
+  static constexpr SDL_DialogFileFilter filters{
+      "RPG Maker Projects",
+      "rpgproject;rmmzproject",
+  };
   const std::string directory = Settings::instance()->lastDirectory.empty() ? std::filesystem::current_path().generic_string() : Settings::instance()->lastDirectory;
-  const auto result = NFD_OpenDialogU8(&outPath, &filters, 1, directory.c_str());
-  if (result == NFD_OKAY) {
-    const std::filesystem::path path{outPath};
-    Settings::instance()->lastDirectory = absolute(path).remove_filename().generic_string();
-    load(absolute(path).generic_string(), Settings::instance()->lastDirectory);
-    NFD_FreePathU8(outPath);
-  }
+  SDL_ShowOpenFileDialog(
+      [](void* userdata, const char* const* filelist, int filter) {
+        if (!filelist || !*filelist || filter >= 1) {
+          return;
+        }
+        auto* window = static_cast<MainWindow*>(userdata);
+        const std::filesystem::path path{filelist[0]};
+        Settings::instance()->lastDirectory = absolute(path).remove_filename().generic_string();
+        window->load(absolute(path).generic_string(), Settings::instance()->lastDirectory);
+      },
+      this, App::APP->getWindow()->getNativeWindow(), &filters, 1, directory.c_str(), false);
 }
 
 void MainWindow::handleCreateNewProject() { m_createNewProject.setOpen(true); }

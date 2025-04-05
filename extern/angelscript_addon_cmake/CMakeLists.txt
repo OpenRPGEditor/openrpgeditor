@@ -26,6 +26,8 @@ add_library(angelscript_addons STATIC
         ../angelscript/add_on/scriptstdstring/scriptstdstring.h
         ../angelscript/add_on/scriptstdstring/scriptstdstring.cpp
         ../angelscript/add_on/scriptstdstring/scriptstdstring_utils.cpp
+        ../angelscript/add_on/scriptjson/scriptjson.h
+        ../angelscript/add_on/scriptjson/scriptjson.cpp
         ../angelscript/add_on/serializer/serializer.h
         ../angelscript/add_on/serializer/serializer.cpp
         ../angelscript/add_on/weakref/weakref.cpp

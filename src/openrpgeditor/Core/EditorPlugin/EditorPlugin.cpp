@@ -50,7 +50,7 @@ void EditorPlugin::callInitialize() {
   }
 }
 void EditorPlugin::callDraw() const {
-  if (!m_drawFunction) {
+  if (!m_drawFunction || !m_initialized) {
     return;
   }
   if (const auto ctx = ScriptEngine::instance()->prepareContextFromPool(m_drawFunction)) {

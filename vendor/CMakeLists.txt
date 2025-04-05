@@ -3,11 +3,6 @@ include(FetchContent)
 # Dependencies
 
 FetchContent_Declare(
-        doctest
-        GIT_REPOSITORY "https://github.com/onqtam/doctest.git"
-        GIT_TAG v2.4.11)
-
-FetchContent_Declare(
         fmt
         GIT_REPOSITORY "https://github.com/fmtlib/fmt.git"
         GIT_TAG 10.2.1)
@@ -116,7 +111,6 @@ set(LIBLCF_WITH_INI OFF)
 # Populate
 
 FetchContent_MakeAvailable(
-        doctest
         fmt
         SDL3
         SDL3_image

@@ -3,6 +3,7 @@
 #include "Bindings.hpp"
 #include "Core/Log.hpp"
 #include "Core/Script/ByteCodeStream.hpp"
+#include "scriptdictionary/scriptdictionary.h"
 
 #include <angelscript.h>
 #include <scriptbuilder/scriptbuilder.h>
@@ -13,9 +14,11 @@
 #include <ranges>
 #include <scriptarray/scriptarray.h>
 #include <scripthandle/scripthandle.h>
+#include <scriptjson/scriptjson.h>
 #include <scriptmath/scriptmath.h>
 #include <scriptmath/scriptmathcomplex.h>
 #include <scriptstdstring/scriptstdstring.h>
+
 #include <weakref/weakref.h>
 ScriptEngine::~ScriptEngine() {
   for (const auto& context : m_contexts) {
@@ -84,6 +87,8 @@ bool ScriptEngine::initialize() {
   RegisterScriptWeakRef(m_engine);
   RegisterScriptMath(m_engine);
   RegisterScriptMathComplex(m_engine);
+  RegisterScriptDictionary(m_engine);
+  RegisterScriptJson(m_engine);
 
   r = m_engine->RegisterEnum("LogLevel");
   assert(r >= 0);
@@ -102,50 +107,50 @@ bool ScriptEngine::initialize() {
   assert(r >= 0);
   RegisterBindings();
 
-  // int processedCount = 0;
-  // std::vector<const char*> processedNamespaces;
+  int processedCount = 0;
+  std::vector<const char*> processedNamespaces;
 
-  // while (processedCount < m_engine->GetGlobalFunctionCount()) {
-  //   const char* ns = nullptr;
-  //   int depth = 0;
-  //   for (int i = 0; i < m_engine->GetGlobalFunctionCount(); i++) {
-  //     auto func = m_engine->GetGlobalFunctionByIndex(i);
-  //     if (func->GetNamespace() != ns && ns != nullptr) {
-  //       continue;
-  //     }
-  //
-  //     if (ns == nullptr) {
-  //       const auto thisns = func->GetNamespace();
-  //       if (thisns != nullptr) {
-  //         if (std::ranges::find(processedNamespaces, thisns) != processedNamespaces.end()) {
-  //           continue;
-  //         }
-  //         ns = thisns;
-  //         if (strlen(ns) > 0) {
-  //           const auto spaces = splitByDoubleColons(ns);
-  //           for (const auto& space : spaces) {
-  //             std::cout << std::string(depth * 2, ' ') + "namespace " + space + " {" << std::endl;
-  //             depth++;
-  //           }
-  //         }
-  //       }
-  //     }
-  //
-  //     std::cout << std::string(depth * 2, ' ') + func->GetDeclaration(true, false, true) << std::endl;
-  //     ++processedCount;
-  //   }
-  //
-  //   if (ns != nullptr) {
-  //     if (strlen(ns) > 0) {
-  //       const auto spaces = splitByDoubleColons(ns);
-  //       for (const auto& space : spaces | std::views::reverse) {
-  //         depth--;
-  //         std::cout << std::string(depth * 2, ' ') + "} // " + space << std::endl;
-  //       }
-  //     }
-  //     processedNamespaces.push_back(ns);
-  //   }
-  // }
+  while (processedCount < m_engine->GetGlobalFunctionCount()) {
+    const char* ns = nullptr;
+    int depth = 0;
+    for (int i = 0; i < m_engine->GetGlobalFunctionCount(); i++) {
+      auto func = m_engine->GetGlobalFunctionByIndex(i);
+      if (func->GetNamespace() != ns && ns != nullptr) {
+        continue;
+      }
+
+      if (ns == nullptr) {
+        const auto thisns = func->GetNamespace();
+        if (thisns != nullptr) {
+          if (std::ranges::find(processedNamespaces, thisns) != processedNamespaces.end()) {
+            continue;
+          }
+          ns = thisns;
+          if (strlen(ns) > 0) {
+            const auto spaces = splitByDoubleColons(ns);
+            for (const auto& space : spaces) {
+              std::cout << std::string(depth * 2, ' ') + "namespace " + space + " {" << std::endl;
+              depth++;
+            }
+          }
+        }
+      }
+
+      std::cout << std::string(depth * 2, ' ') + func->GetDeclaration(true, false, true) << std::endl;
+      ++processedCount;
+    }
+
+    if (ns != nullptr) {
+      if (strlen(ns) > 0) {
+        const auto spaces = splitByDoubleColons(ns);
+        for (const auto& space : spaces | std::views::reverse) {
+          depth--;
+          std::cout << std::string(depth * 2, ' ') + "} // " + space << std::endl;
+        }
+      }
+      processedNamespaces.push_back(ns);
+    }
+  }
   return r >= 0;
 }
 

@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ChangePartyMember.hpp"
 
-
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>

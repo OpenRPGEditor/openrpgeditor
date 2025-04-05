@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ChangePlayerFollowers.hpp"
 
-
 #include "imgui.h"
 #include <tuple>
 

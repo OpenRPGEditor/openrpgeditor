@@ -1,8 +1,8 @@
 #pragma once
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
-#include "Database/Class.hpp"
 #include "Database/Animation.hpp"
+#include "Database/Class.hpp"
 #include "Database/EventCommands/ShowBattleAnimation.hpp"
 
 struct Dialog_ShowBattleAnimation : IEventDialogController {

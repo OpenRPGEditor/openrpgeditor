@@ -76,8 +76,7 @@ void DBTroopsTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedTroop->name().c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_troops_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2, nullptr,
-                                         ImGuiInputTextFlags_None)) {
+              if (ImGui::LabelOverLineEdit("##orpg_troops_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2, nullptr, ImGuiInputTextFlags_None)) {
                 m_selectedTroop->setName(name);
               }
               ImGui::SameLine();

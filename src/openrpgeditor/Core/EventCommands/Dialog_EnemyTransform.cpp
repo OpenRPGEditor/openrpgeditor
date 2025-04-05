@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_EnemyTransform.hpp"
 
-
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>

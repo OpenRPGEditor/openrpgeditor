@@ -1,10 +1,10 @@
 #pragma once
 
+#include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/EventEditor/EVPage.hpp"
 #include "Database/Event.hpp"
 #include "Database/IEventEditor.hpp"
 #include "Database/Template.hpp"
-#include "Core/CommonUI/ObjectPicker.hpp"
 
 #include <vector>
 
@@ -29,16 +29,14 @@ public:
   void drawLocalization();
 
 protected:
-  friend IEventEditor *IEventEditor::create(Event *ev);
+  friend IEventEditor* IEventEditor::create(Event* ev);
 
-  explicit EventEditor(Event *event) : IEventEditor(event) {
-  }
+  explicit EventEditor(Event* event) : IEventEditor(event) {}
 
-  void eventPointerInvalidated() override {
-  };
+  void eventPointerInvalidated() override {};
 
 private:
-  std::optional<ObjectPicker<Template> > m_templatePicker;
+  std::optional<ObjectPicker<Template>> m_templatePicker;
 
   std::string m_localizationInput;
   int m_localeLinesRequired{0};

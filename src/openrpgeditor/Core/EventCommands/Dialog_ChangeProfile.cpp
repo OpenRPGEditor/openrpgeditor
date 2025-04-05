@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ChangeProfile.hpp"
 
-
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>

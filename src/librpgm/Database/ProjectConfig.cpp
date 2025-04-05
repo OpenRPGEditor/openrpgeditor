@@ -32,7 +32,7 @@ void ProjectConfig::serialize(const std::string_view path) {
 
 nlohmann::ordered_json ProjectConfig::serializeToJson() {
   return {
-        {"mapStateList", mapStateList}, //
+      {"mapStateList", mapStateList}, //
 
-    };
+  };
 }

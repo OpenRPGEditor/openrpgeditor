@@ -92,7 +92,7 @@ void DBItemsTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedItem->name().c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_items_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - 16,nullptr, ImGuiInputTextFlags_None)) {
+              if (ImGui::LabelOverLineEdit("##orpg_items_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2 - 16, nullptr, ImGuiInputTextFlags_None)) {
                 m_selectedItem->setName(name);
               }
             }

@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ChangeNickname.hpp"
 
-
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>

@@ -18,8 +18,7 @@ std::tuple<bool, bool> Dialog_MovementScript::draw() {
 
     static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
     ImGui::PushFont(App::APP->getMonoFont());
-    m_textEditor.Render("##no_title", ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x,
-                                             ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y});
+    m_textEditor.Render("##no_title", ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y});
     ImGui::PopFont();
     if (ImGui::Button("OK")) {
       auto script = m_textEditor.GetText();

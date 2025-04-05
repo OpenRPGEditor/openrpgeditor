@@ -1,9 +1,9 @@
 #pragma once
-#include "Core/EventEditor.hpp"
 #include "Core/CommonUI/CharacterPicker.hpp"
 #include "Core/CommonUI/EventCommandEditor.hpp"
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
+#include "Core/EventEditor.hpp"
 #include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/Graphics/CheckeredCompositeTexture.hpp"
 
@@ -21,19 +21,19 @@ public:
 
   void clearPage() const;
 
-  void setPage(EventPage *page) {
+  void setPage(EventPage* page) {
     m_page = page;
     m_commandEditor.setCommands(&m_page->list());
   }
 
-  void setParent(EventEditor *parent) { m_parent = parent; }
-  ImGuiTabItem *tabItem() const { return m_tabItem; }
+  void setParent(EventEditor* parent) { m_parent = parent; }
+  ImGuiTabItem* tabItem() const { return m_tabItem; }
   int layoutIndex() const { return m_layoutIndex; }
 
 protected:
-  friend IPageEditor *IPageEditor::create(EventPage *page);
+  friend IPageEditor* IPageEditor::create(EventPage* page);
 
-  explicit EVPage(EventPage *page);
+  explicit EVPage(EventPage* page);
 
   void pagePointerInvalidated() override;
 
@@ -46,18 +46,18 @@ private:
     Switch2,
   };
 
-  EventEditor *m_parent = nullptr;
+  EventEditor* m_parent = nullptr;
   char m_pageNameBuf[4096]{};
   EventCommandEditor m_commandEditor;
   CharacterSheet m_characterSheet;
   std::optional<Dialog_SetMovementRoute> m_routeDialog;
   VariableSwitchSelection m_variableSwitchSelection{Variable};
   std::optional<VariableSwitchPicker> m_variableSwitchPicker;
-  std::optional<ObjectPicker<Actor> > m_actorPicker;
-  std::optional<ObjectPicker<Item> > m_itemPicker;
+  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::optional<ObjectPicker<Item>> m_itemPicker;
   CharacterPicker m_characterPicker{CharacterPicker::PickerMode::PatternAndDirection, true};
   std::optional<CheckeredCompositeTexture> m_actorButton;
-  ImGuiTabItem *m_tabItem = nullptr;
+  ImGuiTabItem* m_tabItem = nullptr;
   int m_layoutIndex = 0;
 
   int m_uid;

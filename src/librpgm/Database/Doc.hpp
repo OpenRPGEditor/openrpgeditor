@@ -35,7 +35,7 @@ public:
 
 private:
   std::vector<std::string> m_names; // Names of categories
-  std::vector<std::string> m_texts;         // All text for a given category
+  std::vector<std::string> m_texts; // All text for a given category
 
   std::optional<std::vector<std::string>> m_oldnames;
   std::optional<std::vector<std::string>> m_oldtexts;

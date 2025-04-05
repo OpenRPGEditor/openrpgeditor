@@ -49,7 +49,7 @@ void DBEnemiesTab::draw() {
                 continue;
               }
               if (ImGui::Selectable(Database::instance()->enemyNameAndId(enemy.id()).c_str(), &enemy == m_selectedEnemy) || (ImGui::IsItemFocused() && m_selectedEnemy != &enemy)) {
-                                m_selectedEnemy = &enemy;
+                m_selectedEnemy = &enemy;
                 m_traitsEditor.setTraits(&m_selectedEnemy->traits());
                 m_actionsEditor.setActions(&m_selectedEnemy->actions());
               }

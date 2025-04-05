@@ -59,8 +59,7 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
           ImGui::SetCursorPos(cursorPos);
         }
         const auto [min, max] = m_characterSheet->getRectForCharacter(m_character);
-        ImGui::Image(m_characterSheet->texture(),
-                     ImVec2{static_cast<float>(m_characterSheet->characterWidth()), static_cast<float>(m_characterSheet->characterHeight())}, min, max);
+        ImGui::Image(m_characterSheet->texture(), ImVec2{static_cast<float>(m_characterSheet->characterWidth()), static_cast<float>(m_characterSheet->characterHeight())}, min, max);
       }
     }
     ImGui::SameLine();

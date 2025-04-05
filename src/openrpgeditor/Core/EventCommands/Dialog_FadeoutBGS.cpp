@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_FadeoutBGS.hpp"
 
-
 #include "imgui.h"
 #include <tuple>
 

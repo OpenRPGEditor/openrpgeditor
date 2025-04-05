@@ -32,7 +32,7 @@ void DBStatesTab::draw() {
               }
 
               if (ImGui::Selectable(Database::instance()->stateNameAndId(state.id()).c_str(), &state == m_selectedState) || (ImGui::IsItemFocused() && m_selectedState != &state)) {
-               m_selectedState = &state;
+                m_selectedState = &state;
                 m_traitsEditor.setTraits(&m_selectedState->traits());
               }
             }
@@ -65,8 +65,7 @@ void DBStatesTab::draw() {
             {
               char name[4096];
               strncpy(name, m_selectedState->name().c_str(), 4096);
-              if (ImGui::LabelOverLineEdit("##orpg_states_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2, nullptr,
-                                         ImGuiInputTextFlags_None)) {
+              if (ImGui::LabelOverLineEdit("##orpg_states_editor_name", "Name:", name, 4096, ImGui::GetContentRegionMax().x / 2, nullptr, ImGuiInputTextFlags_None)) {
                 m_selectedState->setName(name);
               }
             }

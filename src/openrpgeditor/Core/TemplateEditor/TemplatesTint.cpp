@@ -1,6 +1,6 @@
 #include "Core/TemplateEditor/TemplatesTint.hpp"
-#include "Database/Templates.hpp"
 #include "Core/Application.hpp"
+#include "Database/Templates.hpp"
 
 #include "imgui.h"
 

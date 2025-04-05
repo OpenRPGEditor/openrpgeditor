@@ -16,7 +16,6 @@
 #include "imgui_internal.h"
 #include <clip.h>
 
-
 static clip::format OREEventPageFormat = -1;
 std::tuple<bool, bool> EventEditor::draw() {
   if (OREEventPageFormat == -1) {
@@ -256,7 +255,7 @@ void EventEditor::drawLocalization() {
               int showChoiceIndex{0};
               for (auto& choiceStr : choiceCmd->choices) {
                 // choiceCmd->choices.at(setStringReference("{}", lines.at(index), SearchType::Text);
-                choiceCmd->choices.at(showChoiceIndex) = "{" +  trim(lines.at(index))+ "}";
+                choiceCmd->choices.at(showChoiceIndex) = "{" + trim(lines.at(index)) + "}";
                 if (m_choiceParsing) {
                   choiceLines.insert(choiceLines.begin() + showChoiceIndex, choiceStr);
                 } else {

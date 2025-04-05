@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_RotatePicture.hpp"
 
-
 #include "imgui.h"
 #include <tuple>
 

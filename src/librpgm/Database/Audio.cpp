@@ -50,7 +50,7 @@ void Audio::setName(const std::string& name) {
   if (!signalsDisabled()) {
     nameModified().fire(this, name);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 int Audio::pan() const { return m_pan; }
@@ -60,7 +60,7 @@ void Audio::setPan(int pan) {
   if (!signalsDisabled()) {
     panModified().fire(this, pan);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 int Audio::pitch() const { return m_pitch; }
@@ -70,7 +70,7 @@ void Audio::setPitch(int pitch) {
   if (!signalsDisabled()) {
     pitchModified().fire(this, pitch);
   }
-setHasChanges();
+  setHasChanges();
 }
 int Audio::volume() const { return m_volume; }
 void Audio::setVolume(int volume) {
@@ -79,7 +79,7 @@ void Audio::setVolume(int volume) {
   if (!signalsDisabled()) {
     volumeModified().fire(this, volume);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 void Audio::restoreOriginal() {

@@ -1,6 +1,5 @@
 #include "Core/EventCommands/Dialog_ShowBalloonIcon.hpp"
 
-
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include <tuple>

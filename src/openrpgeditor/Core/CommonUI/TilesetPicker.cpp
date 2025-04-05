@@ -47,7 +47,7 @@ void TilesetPicker::draw() {
     {
       // We want to always render region tiles
       const ImVec2 cursorPos = (ImGui::GetMousePos() - ImGui::GetCurrentWindow()->ContentRegionRect.Min);
-      if (m_palette.isPageValid(m_page) || m_page == -1) { 
+      if (m_palette.isPageValid(m_page) || m_page == -1) {
         ImGui::Image(static_cast<ImTextureID>(m_palette), static_cast<ImVec2>(m_palette.imageSize()));
         if ((ImGui::IsWindowFocused() || ImGui::IsWindowHovered()) && ImGui::IsItemHovered()) {
           if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) {

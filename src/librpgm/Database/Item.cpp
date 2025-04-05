@@ -170,7 +170,7 @@ void Item::setId(const int id) {
   if (!signalsDisabled()) {
     idModified().fire(this, id);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] int Item::animationId() const { return m_animationId; }
@@ -183,7 +183,7 @@ void Item::setAnimationId(const int animationId) {
   if (!signalsDisabled()) {
     animationIdModified().fire(this, animationId);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] bool Item::consumable() const { return m_consumable; }
@@ -196,7 +196,7 @@ void Item::setConsumable(const bool consumable) {
   if (!signalsDisabled()) {
     idModified().fire(this, m_consumable);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 Damage& Item::damage() { return m_damage; }
@@ -208,7 +208,7 @@ void Item::setDamage(const Damage& damage) {
   if (!signalsDisabled()) {
     damageModified().fire(this, m_damage);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] const std::string& Item::description() const { return m_description; }
@@ -221,7 +221,7 @@ void Item::setDescription(const std::string& description) {
   if (!signalsDisabled()) {
     descriptionModified().fire(this, m_description);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 std::vector<Effect>& Item::effects() { return m_effects; }
@@ -234,7 +234,7 @@ void Item::setEffects(const std::vector<Effect>& effects) {
   if (!signalsDisabled()) {
     effectsModified().fire(this, m_effects);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] HitType Item::hitType() const { return m_hitType; }
@@ -247,7 +247,7 @@ void Item::setHitType(const HitType hitType) {
   if (!signalsDisabled()) {
     hitTypeModified().fire(this, m_hitType);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] int Item::iconIndex() const { return m_iconIndex; }
@@ -259,7 +259,7 @@ void Item::setIconIndex(const int iconIndex) {
   if (!signalsDisabled()) {
     iconIndexModified().fire(this, m_iconIndex);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] int Item::itypeId() const { return m_itypeId; }
@@ -272,7 +272,7 @@ void Item::setItypeId(const int itypeId) {
   if (!signalsDisabled()) {
     itypeIdModified().fire(this, m_itypeId);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] const std::string& Item::name() const { return m_name; }
@@ -285,7 +285,7 @@ void Item::setName(const std::string& name) {
   if (!signalsDisabled()) {
     nameModified().fire(this, m_name);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] const std::string& Item::note() const { return m_note; }
@@ -298,7 +298,7 @@ void Item::setNote(const std::string& note) {
   if (!signalsDisabled()) {
     noteModified().fire(this, m_note);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] Occasion Item::occasion() const { return m_occasion; }
@@ -311,7 +311,7 @@ void Item::setOccasion(const Occasion occasion) {
   if (!signalsDisabled()) {
     occasionModified().fire(this, m_occasion);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] int Item::price() const { return m_price; }
@@ -324,7 +324,7 @@ void Item::setPrice(const int price) {
   if (!signalsDisabled()) {
     priceModified().fire(this, m_price);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] int Item::repeats() const { return m_repeats; }
@@ -337,7 +337,7 @@ void Item::setRepeats(const int repeats) {
   if (!signalsDisabled()) {
     repeatsModified().fire(this, m_repeats);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] Scope Item::scope() const { return m_scope; }
@@ -350,7 +350,7 @@ void Item::setScope(const Scope scope) {
   if (!signalsDisabled()) {
     scopeModified().fire(this, m_scope);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] int Item::speed() const { return m_speed; }
@@ -363,7 +363,7 @@ void Item::setSpeed(const int speed) {
   if (!signalsDisabled()) {
     speedModified().fire(this, m_speed);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] int Item::successRate() const { return m_successRate; }
@@ -376,7 +376,7 @@ void Item::setSuccessRate(const int successRate) {
   if (!signalsDisabled()) {
     successRateModified().fire(this, m_successRate);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 [[nodiscard]] int Item::tpGain() const { return m_tpGain; }
@@ -389,7 +389,7 @@ void Item::setTpGain(const int tpGain) {
   if (!signalsDisabled()) {
     tpGainModified().fire(this, m_tpGain);
   }
-setHasChanges();
+  setHasChanges();
 }
 
 void Item::restoreOriginal() {

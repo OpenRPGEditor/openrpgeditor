@@ -15,15 +15,6 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-#if _WIN32
-/* clang-format off */
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <shellapi.h>
-#include <winuser.h>
-/* clang-format on */
-#endif
-
 #include "EditorPlugin/EditorPluginManager.hpp"
 #include "LCF_Importer/LCF_Importer.hpp"
 #include "Script/ScriptEngine.hpp"
@@ -795,22 +786,7 @@ void MainWindow::drawMenu() {
       }
       ImGui::Separator();
       if (ImGui::MenuItem(trNOOP("Open Folder"), nullptr, false, m_databaseEditor != std::nullopt)) {
-        /* is there a better way to do this? */
-#if __APPLE__
-        char buff[4096]{};
-        snprintf(buff, 4096, "open \"%s\"", m_database->basePath.c_str());
-        if (strlen(buff) > 0) {
-          ::system(buff);
-        }
-#elif _WIN32
-        ShellExecute(NULL, "open", m_database->basePath.c_str(), NULL, NULL, SW_SHOWDEFAULT);
-#else
-        char buff[4096]{};
-        snprintf(buff, 4096, "xdg-open \"%s\"", m_database->basePath.c_str());
-        if (strlen(buff) > 0) {
-          ::system(buff);
-        }
-#endif
+        SDL_OpenURL(std::format("file://{}", m_database->basePath).c_str());
       }
       ImGui::EndMenu();
     }

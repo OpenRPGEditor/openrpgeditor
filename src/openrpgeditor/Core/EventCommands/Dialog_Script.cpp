@@ -22,7 +22,7 @@ std::tuple<bool, bool> Dialog_Script::draw() {
     //     "##no_title", &m_Text,
     //     {ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, ImGui::GetContentRegionAvail().y - (size.y + (ImGui::GetStyle().FramePadding.y * 2) +
     //     ImGui::GetStyle().ItemSpacing.y)}, ImGuiInputTextFlags_AllowTabInput);
-    m_textEditor.Render("TextEditor", {0, ImGui::GetContentRegionAvail().y - (size.y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)});
+    m_textEditor.Render("TextEditor", {0, ImGui::GetContentRegionAvail().y - (size.y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)}, true);
 
     ImGui::PopFont();
 

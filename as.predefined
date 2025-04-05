@@ -1,0 +1,388 @@
+typedef uint ImGuiID;
+typedef int8 ImS8;
+typedef uint8 ImU8;
+typedef int16 ImS16;
+typedef uint16 ImU16;
+typedef int ImS32;
+typedef uint ImU32;
+typedef int64 ImS64;
+typedef uint64 ImU64;
+typedef int ImGuiCol;
+typedef int ImGuiCond;
+typedef int ImGuiDataType;
+typedef int ImGuiMouseButton;
+typedef int ImGuiMouseCursor;
+typedef int ImGuiStyleVar;
+typedef int ImGuiTableBgTarget;
+typedef int ImDrawFlags;
+typedef int ImDrawListFlags;
+typedef int ImFontAtlasFlags;
+typedef int ImGuiBackendFlags;
+typedef int ImGuiChildFlags;
+typedef int ImGuiColorEditFlags;
+typedef int ImGuiConfigFlags;
+typedef int ImGuiComboFlags;
+typedef int ImGuiDockNodeFlags;
+typedef int ImGuiDragDropFlags;
+typedef int ImGuiFocusedFlags;
+typedef int ImGuiHoveredFlags;
+typedef int ImGuiInputFlags;
+typedef int ImGuiInputTextFlags;
+typedef int ImGuiItemFlags;
+typedef int ImGuiKeyChord;
+typedef int ImGuiPopupFlags;
+typedef int ImGuiMultiSelectFlags;
+typedef int ImGuiSelectableFlags;
+typedef int ImGuiSliderFlags;
+typedef int ImGuiTabBarFlags;
+typedef int ImGuiTabItemFlags;
+typedef int ImGuiTableFlags;
+typedef int ImGuiTableColumnFlags;
+typedef int ImGuiTableRowFlags;
+typedef int ImGuiTreeNodeFlags;
+typedef int ImGuiViewportFlags;
+typedef int ImGuiWindowFlags;
+typedef uint64 ImTextureID;
+typedef uint ImWchar32;
+typedef uint16 ImWchar16;
+typedef uint16 ImWchar;
+typedef int64 ImGuiSelectionUserData;
+
+enum jsonType {
+	OBJECT_VALUE,
+	ARRAY_VALUE,
+	BOOLEAN_VALUE,
+	STRING_VALUE,
+	NUMBER_VALUE,
+	REAL_VALUE,
+	NULL_VALUE
+}
+enum LogLevel {
+	Message,
+	Info,
+	Warning,
+	Error,
+	Fatal
+}
+enum ToolbarCategory {
+	File,
+	UI,
+	MapOperation
+}
+class array<T>{
+	T& opIndex(uint index);
+	const T& opIndex(uint index) const;
+	T[]& opAssign(const T[]&in);
+	void insertAt(uint index, const T&in value);
+	void insertAt(uint index, const T[]&inout arr);
+	void insertLast(const T&in value);
+	void removeAt(uint index);
+	void removeLast();
+	void removeRange(uint start, uint count);
+	uint length() const;
+	void reserve(uint length);
+	void resize(uint length);
+	void sortAsc();
+	void sortAsc(uint startAt, uint count);
+	void sortDesc();
+	void sortDesc(uint startAt, uint count);
+	void reverse();
+	int find(const T&in value) const;
+	int find(uint startAt, const T&in value) const;
+	int findByRef(const T&in value) const;
+	int findByRef(uint startAt, const T&in value) const;
+	bool opEquals(const T[]&in) const;
+	bool isEmpty() const;
+	void sort(T[]::less&in, uint startAt = 0, uint count = uint ( - 1 ));
+	funcdef bool less(const T&in, const T&in);
+}
+class string{
+	~string();
+	string();
+	string(const string&in);
+	string& opAssign(const string&in);
+	string& opAddAssign(const string&in);
+	bool opEquals(const string&in) const;
+	int opCmp(const string&in) const;
+	string opAdd(const string&in) const;
+	uint length() const;
+	void resize(uint);
+	bool isEmpty() const;
+	uint8& opIndex(uint);
+	const uint8& opIndex(uint) const;
+	string& opAssign(double);
+	string& opAddAssign(double);
+	string opAdd(double) const;
+	string opAdd_r(double) const;
+	string& opAssign(float);
+	string& opAddAssign(float);
+	string opAdd(float) const;
+	string opAdd_r(float) const;
+	string& opAssign(int64);
+	string& opAddAssign(int64);
+	string opAdd(int64) const;
+	string opAdd_r(int64) const;
+	string& opAssign(uint64);
+	string& opAddAssign(uint64);
+	string opAdd(uint64) const;
+	string opAdd_r(uint64) const;
+	string& opAssign(bool);
+	string& opAddAssign(bool);
+	string opAdd(bool) const;
+	string opAdd_r(bool) const;
+	string substr(uint start = 0, int count = - 1) const;
+	int findFirst(const string&in, uint start = 0) const;
+	int findFirstOf(const string&in, uint start = 0) const;
+	int findFirstNotOf(const string&in, uint start = 0) const;
+	int findLast(const string&in, int start = - 1) const;
+	int findLastOf(const string&in, int start = - 1) const;
+	int findLastNotOf(const string&in, int start = - 1) const;
+	void insert(uint pos, const string&in other);
+	void erase(uint pos, int count = - 1);
+	string[]@ split(const string&in) const;
+}
+class ref{
+	~ref();
+	ref();
+	ref(const ref&in);
+	ref(const ?&in);
+	void opCast(?&out);
+	ref& opHndlAssign(const ref&in);
+	ref& opHndlAssign(const ?&in);
+	bool opEquals(const ref&in) const;
+	bool opEquals(const ?&in) const;
+}
+class weakref<T>{
+	~weakref();
+	weakref(int&in);
+	weakref(int&in, T@);
+	T@ opImplCast();
+	T@ get() const;
+	weakref<T>& opHndlAssign(const weakref<T>&in);
+	weakref<T>& opAssign(const weakref<T>&in);
+	bool opEquals(const weakref<T>&in) const;
+	weakref<T>& opHndlAssign(T@);
+	bool opEquals(const T@) const;
+}
+class const_weakref<T>{
+	~const_weakref();
+	const_weakref(int&in);
+	const_weakref(int&in, const T@);
+	const T@ opImplCast() const;
+	const T@ get() const;
+	const_weakref<T>& opHndlAssign(const const_weakref<T>&in);
+	const_weakref<T>& opAssign(const const_weakref<T>&in);
+	bool opEquals(const const_weakref<T>&in) const;
+	const_weakref<T>& opHndlAssign(const T@);
+	bool opEquals(const T@) const;
+	const_weakref<T>& opHndlAssign(const weakref<T>&in);
+	bool opEquals(const weakref<T>&in) const;
+}
+class complex{
+	complex();
+	complex(const complex&in);
+	complex(float);
+	complex(float, float);
+	complex& opAddAssign(const complex&in);
+	complex& opSubAssign(const complex&in);
+	complex& opMulAssign(const complex&in);
+	complex& opDivAssign(const complex&in);
+	bool opEquals(const complex&in) const;
+	complex opAdd(const complex&in) const;
+	complex opSub(const complex&in) const;
+	complex opMul(const complex&in) const;
+	complex opDiv(const complex&in) const;
+	float abs() const;
+	complex get_ri() const;
+	complex get_ir() const;
+	void set_ri(const complex&in);
+	void set_ir(const complex&in);
+	float r;
+	float i;
+}
+class dictionaryValue{
+	~dictionaryValue();
+	dictionaryValue();
+	dictionaryValue& opAssign(const dictionaryValue&in);
+	dictionaryValue& opHndlAssign(const ?&in);
+	dictionaryValue& opHndlAssign(const dictionaryValue&in);
+	dictionaryValue& opAssign(const ?&in);
+	dictionaryValue& opAssign(double);
+	dictionaryValue& opAssign(int64);
+	void opCast(?&out);
+	void opConv(?&out);
+	int64 opConv();
+	double opConv();
+}
+class dictionary{
+	dictionary& opAssign(const dictionary&in);
+	void set(const string&in, const ?&in);
+	bool get(const string&in, ?&out) const;
+	void set(const string&in, const int64&in);
+	bool get(const string&in, int64&out) const;
+	void set(const string&in, const double&in);
+	bool get(const string&in, double&out) const;
+	bool exists(const string&in) const;
+	bool isEmpty() const;
+	uint getSize() const;
+	bool delete(const string&in);
+	void deleteAll();
+	string[]@ getKeys() const;
+	dictionaryValue& opIndex(const string&in);
+	const dictionaryValue& opIndex(const string&in) const;
+}
+class json{
+    json();
+    json(bool v);
+    json(int64 v);
+    json(double v);
+    json(const ?&in v);
+	json& opAssign(bool);
+	json& opAssign(int64);
+	json& opAssign(double);
+	json& opAssign(const string&in);
+	json& opAssign(const json@[]&in);
+	json& opAssign(const json&in);
+	void set(const string&in, const bool&in);
+	bool get(const string&in, bool&out) const;
+	void set(const string&in, const int64&in);
+	bool get(const string&in, int64&out) const;
+	void set(const string&in, const double&in);
+	bool get(const string&in, double&out) const;
+	void set(const string&in, const string&in);
+	bool get(const string&in, string&out) const;
+	void set(const string&in, const json@[]&in);
+	bool get(const string&in, json@[]&out) const;
+	bool exists(const string&in) const;
+	bool isEmpty() const;
+	uint getSize() const;
+	void clear();
+	jsonType getType();
+	json& opIndex(const string&in);
+	const json& opIndex(const string&in) const;
+	json& opIndex(uint64);
+	const json& opIndex(uint64) const;
+	void push_back(json&in) const;
+	bool opConv();
+	string opConv();
+	int opConv();
+	double opConv();
+	json@[]& opConv();
+	string dump(int depth = - 1);
+}
+class ImVec2{
+	~ImVec2();
+	ImVec2();
+	ImVec2(float, float);
+	ImVec2& opAssign(const ImVec2&in);
+	float& opIndex(uint index);
+	ImVec2 opMul(const float);
+	ImVec2 opMul(const ImVec2&in);
+	ImVec2 opDiv(const float);
+	ImVec2 opAdd(const ImVec2&in);
+	ImVec2 opSub(const ImVec2&in);
+	ImVec2 opDiv(const ImVec2&in);
+	ImVec2 opNeg();
+	ImVec2& opMulAssign(const float);
+	ImVec2& opDivAssign(const float);
+	ImVec2& opAddAssign(const ImVec2&in);
+	ImVec2& opSubAssign(const ImVec2&in);
+	ImVec2& opMulAssign(const ImVec2&in);
+	ImVec2& opDivAssign(const ImVec2&in);
+	ImVec2 opEquals(const ImVec2&in);
+	float x;
+	float y;
+}
+class ImVec4{
+	~ImVec4();
+	ImVec4();
+	ImVec4(float, float, float, float);
+	ImVec4& opAssign(const ImVec4&in);
+	ImVec4 opMul(const ImVec4&in);
+	ImVec4 opSub(const ImVec4&in);
+	ImVec4 opEquals(const ImVec4&in);
+	float x;
+	float y;
+	float z;
+	float w;
+}
+string formatInt(int64 val, const string&in options = "", uint width = 0);
+string formatUInt(uint64 val, const string&in options = "", uint width = 0);
+string formatFloat(double val, const string&in options = "", uint width = 0, uint precision = 0);
+int64 parseInt(const string&in, uint base = 10, uint&out byteCount = 0);
+uint64 parseUInt(const string&in, uint base = 10, uint&out byteCount = 0);
+double parseFloat(const string&in, uint&out byteCount = 0);
+string join(const string[]&in, const string&in);
+float fpFromIEEE(uint);
+uint fpToIEEE(float);
+double fpFromIEEE(uint64);
+uint64 fpToIEEE(double);
+bool closeTo(float, float, float = 0.00001f);
+bool closeTo(double, double, double = 0.0000000001);
+float cos(float);
+float sin(float);
+float tan(float);
+float acos(float);
+float asin(float);
+float atan(float);
+float atan2(float, float);
+float cosh(float);
+float sinh(float);
+float tanh(float);
+float log(float);
+float log10(float);
+float pow(float, float);
+float sqrt(float);
+float ceil(float);
+float abs(float);
+float floor(float);
+float fraction(float);
+json@ jsonParseFile(const string&in);
+json@ jsonParse(const string&in);
+bool jsonWriteFile(const json&in json, const string&in);
+bool jsonWrite(const json&in json, string&out);
+void print(LogLevel level, const string&in);
+void addToolbarButton(const string&in, ToolbarCategory category, ToolBarButtonClicked@const cb);
+namespace ImGui { string GetVersion(); }
+namespace ImGui { bool Begin(const string&in id, bool show_close_button = false, bool&out p_open = false, int window_flags = 0); }
+namespace ImGui { void End(); }
+namespace ImGui { bool BeginChild(const string&in id, const ImVec2&in size = ImVec2 ( ), int child_flags = 0, int window_flags = 0); }
+namespace ImGui { bool BeginChild(uint id, const ImVec2&in size = ImVec2 ( ), int child_flags = 0, int window_flags = 0); }
+namespace ImGui { void EndChild(); }
+namespace ImGui { bool IsWindowAppearing(); }
+namespace ImGui { bool IsWindowCollapsed(); }
+namespace ImGui { bool IsWindowFocused(int flags = 0); }
+namespace ImGui { bool IsWindowHovered(int flags = 0); }
+namespace ImGui { float GetDpiScale(); }
+namespace ImGui { void SetNextWindowPos(const ImVec2&in pos, int cond = 0, const ImVec2&in pivot = ImVec2 ( )); }
+namespace ImGui { void SetNextWindowSize(const ImVec2&in size, int cond = 0); }
+namespace ImGui { void SetNextWindowSizeConstraints(const ImVec2&in size_min, const ImVec2&in size_max, int cond = 0); }
+namespace ImGui { void SetNextWindowContentSize(const ImVec2&in size, int cond = 0); }
+namespace ImGui { void SetNextWindowCollapsed(bool collapsed, int cond = 0); }
+namespace ImGui { void SetNextWindowFocus(); }
+namespace ImGui { void SetNextWindowScroll(const ImVec2&in scroll); }
+namespace ImGui { void SetNextWindowBgAlpha(float alpha); }
+namespace ImGui { void SetNextWindowViewport(uint viewport_id); }
+namespace ImGui { void SetWindowPos(const ImVec2&in pos, int cond = 0); }
+namespace ImGui { void SetWindowSize(const ImVec2&in size, int cond = 0); }
+namespace ImGui { void SetWindowCollapsed(bool collapsed, int cond = 0); }
+namespace ImGui { void SetWindowFocus(); }
+namespace ImGui { void SetWindowFontScale(float scale); }
+namespace ImGui { void SetWindowPos(const string&in name, const ImVec2&in pos, int cond = 0); }
+namespace ImGui { void SetWindowSize(const string&in name, const ImVec2&in size, int cond = 0); }
+namespace ImGui { void SetWindowCollapsed(const string&in name, bool collapsed, int cond = 0); }
+namespace ImGui { void SetWindowFocus(const string&in name); }
+namespace ImGui { float GetScrollX(); }
+namespace ImGui { float GetScrollY(); }
+namespace ImGui { void SetScrollX(float scroll_x); }
+namespace ImGui { void SetScrollY(float scroll_y); }
+namespace ImGui { float GetScrollMaxX(); }
+namespace ImGui { float GetScrollMaxY(); }
+namespace ImGui { void SetScrollHereX(float center_x_ratio = 0.5f); }
+namespace ImGui { void SetScrollHereY(float center_y_ratio = 0.5f); }
+namespace ImGui { void SetScrollFromPosX(float local_x, float center_x_ratio = 0.5f); }
+namespace ImGui { void SetScrollFromPosY(float local_y, float center_y_ratio = 0.5f); }
+namespace ImGui { void Text(const string&in); }
+namespace ImGui { double GetTime(); }
+namespace ImGui { int GetFrameCount(); }
+

@@ -154,7 +154,7 @@ void CScriptJson::Set(const jsonKey_t& key, const CScriptArray& value) {
 bool CScriptJson::Get(const jsonKey_t& key, bool& value) const {
   if (js_info->contains(key)) {
     if (js_info->is_boolean()) {
-      value = (*js_info)[key];
+      value = static_cast<bool>((*js_info)[key]);
       return true;
     }
   }
@@ -164,7 +164,7 @@ bool CScriptJson::Get(const jsonKey_t& key, bool& value) const {
 bool CScriptJson::Get(const jsonKey_t& key, asINT64& value) const {
   if (js_info->contains(key)) {
     if (js_info->is_number()) {
-      value = (*js_info)[key];
+      value = static_cast<asINT64>((*js_info)[key]);
       return true;
     }
   }
@@ -174,7 +174,7 @@ bool CScriptJson::Get(const jsonKey_t& key, asINT64& value) const {
 bool CScriptJson::Get(const jsonKey_t& key, double& value) const {
   if (js_info->contains(key)) {
     if (js_info->is_number()) {
-      value = (*js_info)[key];
+      value = static_cast<double>((*js_info)[key]);
       return true;
     }
   }
@@ -184,7 +184,7 @@ bool CScriptJson::Get(const jsonKey_t& key, double& value) const {
 bool CScriptJson::Get(const jsonKey_t& key, std::string& value) const {
   if (js_info->contains(key)) {
     if (js_info->is_string()) {
-      value = (*js_info)[key];
+      value = static_cast<std::string>((*js_info)[key]);
       return true;
     }
   }
@@ -207,13 +207,13 @@ bool CScriptJson::Get(const jsonKey_t& key, CScriptArray& value) const {
   return true;
 }
 
-bool CScriptJson::GetBool() { return *js_info; }
+bool CScriptJson::GetBool() { return static_cast<bool>(*js_info); }
 
-int CScriptJson::GetNumber() { return *js_info; }
+int CScriptJson::GetNumber() { return static_cast<int>(*js_info); }
 
-double CScriptJson::GetReal() { return *js_info; }
+double CScriptJson::GetReal() { return static_cast<double>(*js_info); }
 
-std::string CScriptJson::GetString() { return *js_info; }
+std::string CScriptJson::GetString() { return static_cast<std::string>(*js_info); }
 
 std::string CScriptJson::Dump(int indent) { return js_info->dump(indent); }
 
@@ -692,9 +692,9 @@ void RegisterScriptJson_Native(asIScriptEngine* engine) {
   r = engine->RegisterObjectMethod("json", "const json &opIndex(const string &in) const", asMETHODPR(CScriptJson, operator[], (const jsonKey_t&) const, const CScriptJson*), asCALL_THISCALL);
   assert(r >= 0);
 
-  r = engine->RegisterObjectMethod("json", "json &opIndex(uint64)", asMETHODPR(CScriptJson, operator[], (size_t), CScriptJson*), asCALL_THISCALL);
+  r = engine->RegisterObjectMethod("json", "json &opIndex(uint)", asMETHODPR(CScriptJson, operator[], (size_t), CScriptJson*), asCALL_THISCALL);
   assert(r >= 0);
-  r = engine->RegisterObjectMethod("json", "const json &opIndex(uint64) const", asMETHODPR(CScriptJson, operator[], (size_t) const, const CScriptJson*), asCALL_THISCALL);
+  r = engine->RegisterObjectMethod("json", "const json &opIndex(uint) const", asMETHODPR(CScriptJson, operator[], (size_t) const, const CScriptJson*), asCALL_THISCALL);
   assert(r >= 0);
 
   r = engine->RegisterObjectMethod("json", "void push_back(json& in) const", asMETHODPR(CScriptJson, push_back, (CScriptJson*), void), asCALL_THISCALL);

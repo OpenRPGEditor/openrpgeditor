@@ -1,5 +1,9 @@
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
+#include "imgui.h"
 #include "imgui_internal.h"
+#include "OREMath/Size.hpp"
+
+#include <format>
 
 namespace ImGui {
 void BeginGroupPanel(const char* name, const ImVec2& size) {
@@ -303,6 +307,43 @@ void ActionTooltip(const char* action, const char* fmt, ...) {
     va_end(args);
     EndTooltip();
   }
+}
+
+int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const bool isVertical) {
+  int ret = -1;
+
+  if (isVertical) {
+    BeginVertical(id);
+  } else {
+    BeginHorizontal(id);
+  }
+
+  const auto& style = GetStyle();
+  ImVec2 size;
+
+  // First get the largest button size
+  for (const auto& btn : buttons) {
+    const auto sz = CalcTextSize(btn.c_str(), nullptr, true);
+    if (sz.x > size.x || sz.y > size.y) {
+      size = sz;
+    }
+  }
+
+  // Make sure the button size can fit the text
+  size += style.FramePadding * 2.f;
+
+  for (int i = 0; i < buttons.size(); i++) {
+    if (Button(std::format("{}##{}_button_{}", buttons[i], id, i).c_str(), size)) {
+      ret = i;
+    }
+  }
+  if (isVertical) {
+    EndVertical();
+  } else {
+    EndHorizontal();
+  }
+
+  return ret;
 }
 
 } // namespace ImGui

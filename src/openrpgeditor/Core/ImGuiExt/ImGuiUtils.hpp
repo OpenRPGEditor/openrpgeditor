@@ -1,5 +1,8 @@
 #pragma once
 #include "imgui.h"
+#include <string>
+#include <vector>
+
 namespace ImGui {
 void BeginGroupPanel(const char* name = "", const ImVec2& size = ImVec2(-1.0f, -1.0f));
 void EndGroupPanel();
@@ -9,4 +12,6 @@ bool LabelOverLineEdit(const char* id, const char* label, char* string, int len,
 bool SelectableWithBorder(const char* label, bool selected = false, ImGuiSelectableFlags flags = 0, const ImVec2& size = ImVec2(0, 0));
 
 void ActionTooltip(const char* action, const char* fmt, ...);
+
+int ButtonGroup(const char* id, const std::vector<std::string>& buttons, bool isVertical = false);
 } // namespace ImGui

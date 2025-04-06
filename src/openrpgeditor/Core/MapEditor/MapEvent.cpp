@@ -20,8 +20,9 @@
 #include <math.h>
 
 uint32_t MapEvent::mSpriteId = 0;
-MapEvent::MapEvent(Event* event)
-: IEventRenderer(event) {
+
+MapEvent::MapEvent(Event *event)
+  : IEventRenderer(event) {
   setupPageSettings();
   m_x = m_realX = m_event->x();
   m_y = m_realY = m_event->y();
@@ -29,7 +30,9 @@ MapEvent::MapEvent(Event* event)
   page()->image().characterNameModified().connect<&MapEvent::onCharacterImageModified>(this);
 }
 
-void MapEvent::onCharacterImageModified(EventImage* evImage, const std::string& characterName) { m_characterSheet = CharacterSheet(characterName); }
+void MapEvent::onCharacterImageModified(EventImage *evImage, const std::string &characterName) {
+  m_characterSheet = CharacterSheet(characterName);
+}
 
 double oscillate(const double minValue, const double maxValue, const double period, const double currentTime) {
   const double rangeDelta = maxValue - minValue;
@@ -50,7 +53,7 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
   const bool isTile = page()->image().tileId() > 0;
   const int characterIndex = page()->image().characterIndex();
   const Direction direction = m_direction;
-  const ImGuiWindow* win = ImGui::GetCurrentWindow();
+  const ImGuiWindow *win = ImGui::GetCurrentWindow();
   constexpr ImU32 NormalOutlineCol = 0xFF000000;
   constexpr ImU32 NormalBorderCol = 0xFFFFFFFF;
   constexpr ImU32 HoveredOutlineCol = 0xFFFFFF00;
@@ -102,7 +105,8 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
   const auto eventS = m_mapEditor->tileSize() * mapScale;
   auto evMin = ImVec2{eventX, eventY};
   auto evMax = ImVec2{(eventX + eventS), (eventY + eventS)};
-  if (m_mapEditor->prisonMode() || m_event->id() == 0 || (((!hasCharacterSheet || !m_characterSheet) && !isTile) && !m_mapEditor->prisonMode())) {
+  if (m_mapEditor->prisonMode() || m_event->id() == 0 || (
+        ((!hasCharacterSheet || !m_characterSheet) && !isTile) && !m_mapEditor->prisonMode())) {
     win->DrawList->AddRectFilled(evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, bgColor);
   }
 
@@ -115,7 +119,7 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
       evMin.y -= (static_cast<float>(m_characterSheet.characterHeight()) - m_mapEditor->tileSize()) * mapScale;
       win->DrawList->AddImage(m_characterSheet.texture(), evMin, evMax, min, max, imageColor);
     } else {
-      const Texture& tex = m_characterSheet.texture();
+      const Texture &tex = m_characterSheet.texture();
       auto [min, max] = m_characterSheet.getRectForCharacter(characterIndex, m_originalPattern, direction);
 
       if (m_characterSheet.characterWidth() == 72) {
@@ -150,13 +154,13 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
       setId = 5 + floor(tileId / 256);
     }
 
-    const auto& tex = ResourceManager::instance()->loadTilesetImage(tileset->tilesetName(setId));
+    const auto &tex = ResourceManager::instance()->loadTilesetImage(tileset->tilesetName(setId));
     if (!tex) {
       return;
     }
 
-    float tileU0 = (fmodf(floorf(tileId / 128), 2) * 8 + (tileId % 8)) * m_mapEditor->tileSize();
-    float tileV0 = fmodf(floorf(tileId % 256 / 8), 16) * m_mapEditor->tileSize();
+    float tileU0 = (fmodf(floorf(tileId / 128), 2) * 16 + (tileId % 16)) * m_mapEditor->tileSize();
+    float tileV0 = fmodf(floorf(tileId % 256 / 16), 16) * m_mapEditor->tileSize();
     float tileU1 = tileU0 + static_cast<float>(m_mapEditor->tileSize());
     float tileV1 = tileV0 + static_cast<float>(m_mapEditor->tileSize());
     tileU0 /= static_cast<float>(tex.width());
@@ -165,18 +169,20 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
     tileV1 /= static_cast<float>(tex.height());
 
     if (m_mapEditor->prisonMode()) {
-      win->DrawList->AddImage(tex, evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, ImVec2{tileU0, tileV0}, ImVec2{tileU1, tileV1}, imageColor);
+      win->DrawList->AddImage(tex, evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, ImVec2{tileU0, tileV0},
+                              ImVec2{tileU1, tileV1}, imageColor);
     } else {
       win->DrawList->AddImage(tex, evMin, evMax, ImVec2{tileU0, tileV0}, ImVec2{tileU1, tileV1}, imageColor);
     }
   }
-  if (m_mapEditor->prisonMode() || m_event->id() == 0 || (((!hasCharacterSheet || !m_characterSheet) && !isTile) && !m_mapEditor->prisonMode())) {
+  if (m_mapEditor->prisonMode() || m_event->id() == 0 || (
+        ((!hasCharacterSheet || !m_characterSheet) && !isTile) && !m_mapEditor->prisonMode())) {
     win->DrawList->AddRect(evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, outlineCol, 0, 0, 5.f);
     win->DrawList->AddRect(evMin + ImVec2{3.f, 3.f}, evMax - ImVec2{3.f, 3.f}, borderCol, 0, 0, 3.f);
   }
 }
 
-void MapEvent::setMapEditor(MapEditor* mapEditor) {
+void MapEvent::setMapEditor(MapEditor *mapEditor) {
   m_mapEditor = mapEditor;
   m_prisonMode = !m_mapEditor || m_mapEditor->prisonMode();
 }
@@ -222,61 +228,63 @@ double MapEvent::deltaYFrom(double y) const { return m_mapEditor->deltaY(m_y, y)
 void MapEvent::updateSelfMove() {
   if (/*!m_locked &&*/ isNearTheScreen() && checkStop(stopCountThreshold())) {
     switch (m_moveType) {
-    case MoveType::Random:
-      moveTypeRandom();
-      break;
-    case MoveType::Approach:
-      moveTypeTowardPlayer();
-      break;
-    case MoveType::Custom:
-      moveTypeCustom();
-      break;
-    default:
-      break;
+      case MoveType::Random:
+        moveTypeRandom();
+        break;
+      case MoveType::Approach:
+        moveTypeTowardPlayer();
+        break;
+      case MoveType::Custom:
+        moveTypeCustom();
+        break;
+      default:
+        break;
     }
   }
 }
 
 void MapEvent::moveTypeRandom() {
   switch (Math::randomInt(6)) {
-  case 0:
-  case 1:
-    moveRandom();
-    break;
-  case 2:
-  case 3:
-  case 4:
-    moveForward();
-    break;
-  case 5:
-    resetStopCount();
-    break;
-  default:
-    break;
-  }
-}
-void MapEvent::moveTypeTowardPlayer() {
-  if (isNearThePlayer()) {
-    switch (Math::randomInt(6)) {
     case 0:
     case 1:
-    case 2:
-    case 3:
-      moveTowardPlayer();
-      break;
-    case 4:
       moveRandom();
       break;
-    case 5:
+    case 2:
+    case 3:
+    case 4:
       moveForward();
+      break;
+    case 5:
+      resetStopCount();
       break;
     default:
       break;
+  }
+}
+
+void MapEvent::moveTypeTowardPlayer() {
+  if (isNearThePlayer()) {
+    switch (Math::randomInt(6)) {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+        moveTowardPlayer();
+        break;
+      case 4:
+        moveRandom();
+        break;
+      case 5:
+        moveForward();
+        break;
+      default:
+        break;
     }
   } else {
     moveRandom();
   }
 }
+
 void MapEvent::moveTypeCustom() { updateMoveRoute(); }
 
 void MapEvent::moveRandom() {
@@ -284,7 +292,9 @@ void MapEvent::moveRandom() {
     moveStraight(d);
   }
 }
+
 void MapEvent::moveForward() { moveStraight(m_direction); }
+
 void MapEvent::moveBackward() {
   const auto lastDirectionFix = directionFix();
   setDirectionFix(true);
@@ -362,6 +372,7 @@ void MapEvent::moveAwayFromCharacter(const double x, const double y) {
 void MapEvent::moveTowardPlayer() { moveTowardCharacter(m_mapEditor->tileCellX(), m_mapEditor->tileCellY()); }
 
 void MapEvent::moveAwayFromPlayer() { moveAwayFromCharacter(m_mapEditor->tileCellX(), m_mapEditor->tileCellY()); }
+
 void MapEvent::jump(const double x, const double y) {
   if (std::abs(x) > std::abs(y)) {
     if (x != 0) {
@@ -389,38 +400,39 @@ void MapEvent::straighten() {
 
 void MapEvent::turnRight90() {
   switch (m_direction) {
-  case Direction::Down:
-    setDirection(Direction::Left);
-    break;
-  case Direction::Left:
-    setDirection(Direction::Up);
-    break;
-  case Direction::Right:
-    setDirection(Direction::Down);
-    break;
-  case Direction::Up:
-    setDirection(Direction::Right);
-    break;
-  default:
-    break;
+    case Direction::Down:
+      setDirection(Direction::Left);
+      break;
+    case Direction::Left:
+      setDirection(Direction::Up);
+      break;
+    case Direction::Right:
+      setDirection(Direction::Down);
+      break;
+    case Direction::Up:
+      setDirection(Direction::Right);
+      break;
+    default:
+      break;
   }
 }
+
 void MapEvent::turnLeft90() {
   switch (m_direction) {
-  case Direction::Down:
-    setDirection(Direction::Right);
-    break;
-  case Direction::Left:
-    setDirection(Direction::Down);
-    break;
-  case Direction::Right:
-    setDirection(Direction::Up);
-    break;
-  case Direction::Up:
-    setDirection(Direction::Left);
-    break;
-  default:
-    break;
+    case Direction::Down:
+      setDirection(Direction::Right);
+      break;
+    case Direction::Left:
+      setDirection(Direction::Down);
+      break;
+    case Direction::Right:
+      setDirection(Direction::Up);
+      break;
+    case Direction::Up:
+      setDirection(Direction::Left);
+      break;
+    default:
+      break;
   }
 }
 
@@ -428,17 +440,19 @@ void MapEvent::turn180() { setDirection(reverseDir(m_direction)); }
 
 void MapEvent::turnLeftOrRight90() {
   switch (Math::randomInt(2)) {
-  case 0:
-    turnRight90();
-    break;
-  case 1:
-    turnLeft90();
-    break;
-  default:
-    break;
+    case 0:
+      turnRight90();
+      break;
+    case 1:
+      turnLeft90();
+      break;
+    default:
+      break;
   }
 }
+
 void MapEvent::turnRandom() { setDirection(static_cast<Direction>(2 + Math::randomInt(4) * 2)); }
+
 void MapEvent::turnTowardCharacter(const double x, const double y) {
   double sx = deltaXFrom(x);
   double sy = deltaYFrom(y);
@@ -450,6 +464,7 @@ void MapEvent::turnTowardCharacter(const double x, const double y) {
 }
 
 void MapEvent::turnTowardPlayer() { turnTowardCharacter(m_mapEditor->tileCellX(), m_mapEditor->tileCellY()); }
+
 void MapEvent::turnAwayFromCharacter(const double x, const double y) {
   const double sx = deltaXFrom(x);
   const double sy = deltaYFrom(y);
@@ -461,6 +476,7 @@ void MapEvent::turnAwayFromCharacter(const double x, const double y) {
 }
 
 void MapEvent::turnAwayFromPlayer() { turnAwayFromCharacter(m_mapEditor->tileCellX(), m_mapEditor->tileCellY()); }
+
 void MapEvent::restoreMoveRoute() {
   m_moveRoute = m_originalMoveRoute;
   m_moveRouteIndex = m_originalMoveRouteIndex;
@@ -485,6 +501,7 @@ bool MapEvent::canPass(const double x, const double y, const Direction d) {
 
   return !isCollidedWithCharacters(x2, y2);
 }
+
 bool MapEvent::canPassDiagonally(const double x, const double y, const Direction horz, const Direction vert) {
   const double x2 = m_mapEditor->roundXWithDirection(x, horz);
   const double y2 = m_mapEditor->roundYWithDirection(y, vert);
@@ -528,151 +545,157 @@ void MapEvent::updateMove() {
   }
 }
 
-void MapEvent::processMoveCommand(const std::shared_ptr<IEventCommand>& command) {
+void MapEvent::processMoveCommand(const std::shared_ptr<IEventCommand> &command) {
   switch (command->code()) {
-  case EventCode::Event_Dummy:
-    processRouteEnd();
+    case EventCode::Event_Dummy:
+      processRouteEnd();
+      break;
+    case EventCode::Move_Down:
+      moveStraight(Direction::Down);
+      break;
+    case EventCode::Move_Left:
+      moveStraight(Direction::Left);
+      break;
+    case EventCode::Move_Right:
+      moveStraight(Direction::Right);
+      break;
+    case EventCode::Move_Up:
+      moveStraight(Direction::Up);
+      break;
+    case EventCode::Move_Lower_Left:
+      moveDiagonally(Direction::Left, Direction::Down);
+      break;
+    case EventCode::Move_Lower_Right:
+      moveDiagonally(Direction::Right, Direction::Down);
+      break;
+    case EventCode::Move_Upper_Left:
+      moveDiagonally(Direction::Left, Direction::Up);
+      break;
+    case EventCode::Move_Upper_Right:
+      moveDiagonally(Direction::Right, Direction::Up);
+      break;
+    case EventCode::Move_at_Random:
+      moveRandom();
+      break;
+    case EventCode::Move_toward_Player:
+      moveTowardPlayer();
+      break;
+    case EventCode::Move_away_from_Player:
+      moveAwayFromPlayer();
+      break;
+    case EventCode::_1_Step_Forward:
+      moveForward();
+      break;
+    case EventCode::_1_Step_Backward:
+      moveBackward();
+      break;
+    case EventCode::Jump: {
+      const auto jumpCmd = std::dynamic_pointer_cast<MovementJumpCommand>(command);
+      jump(jumpCmd->x, jumpCmd->y);
+    }
     break;
-  case EventCode::Move_Down:
-    moveStraight(Direction::Down);
+    case EventCode::Wait_del_Movement: {
+      const auto waitCmd = std::dynamic_pointer_cast<MovementWaitCommand>(command);
+      m_waitCount = waitCmd->duration - 1;
+    }
     break;
-  case EventCode::Move_Left:
-    moveStraight(Direction::Left);
+    case EventCode::Turn_Down:
+      setDirection(Direction::Down);
+      break;
+    case EventCode::Turn_Left:
+      setDirection(Direction::Left);
+      break;
+    case EventCode::Turn_Right:
+      setDirection(Direction::Right);
+      break;
+    case EventCode::Turn_Up:
+      setDirection(Direction::Up);
+      break;
+    case EventCode::Turn_90_deg_Right:
+      turnRight90();
+      break;
+    case EventCode::Turn_90_deg_Left:
+      turnLeft90();
+      break;
+    case EventCode::Turn_180_deg:
+      turn180();
+      break;
+    case EventCode::Turn_90_deg_Left_or_Right:
+      turnLeftOrRight90();
+      break;
+    case EventCode::Turn_at_Random:
+      turnRandom();
+      break;
+    case EventCode::Turn_toward_Player:
+      turnTowardPlayer();
+      break;
+    case EventCode::Turn_away_from_Player:
+      turnAwayFromPlayer();
+      break;
+    case EventCode::Switch_ON:
+      // TODO: Event/Variable state?
+      break;
+    case EventCode::Switch_OFF:
+      break;
+    case EventCode::Speed: {
+      const auto speedCmd = std::dynamic_pointer_cast<MovementSpeedCommand>(command);
+      setMoveSpeed(speedCmd->speed);
+    }
     break;
-  case EventCode::Move_Right:
-    moveStraight(Direction::Right);
+    case EventCode::Frequency: {
+      const auto freqCmd = std::dynamic_pointer_cast<MovementFrequencyCommand>(command);
+      setMoveFrequency(freqCmd->frequency);
+    }
     break;
-  case EventCode::Move_Up:
-    moveStraight(Direction::Up);
+    case EventCode::Walking_Animation_ON:
+      setWalkAnime(true);
+      break;
+    case EventCode::Walking_Animation_OFF:
+      setWalkAnime(false);
+      break;
+    case EventCode::Stepping_Animation_ON:
+      setStepAnime(true);
+      break;
+    case EventCode::Stepping_Animation_OFF:
+      setStepAnime(false);
+      break;
+    case EventCode::Direction_Fix_ON:
+      setDirectionFix(true);
+      break;
+    case EventCode::Direction_Fix_OFF:
+      setDirectionFix(false);
+      break;
+    case EventCode::Through_ON:
+      setThrough(true);
+      break;
+    case EventCode::Through_OFF:
+      setThrough(false);
+      break;
+    case EventCode::Transparent_ON:
+      setTransparent(true);
+      break;
+    case EventCode::Transparent_OFF:
+      setTransparent(false);
+      break;
+    case EventCode::Change_Opacity: {
+      const auto opacityCmd = std::dynamic_pointer_cast<MovementChangeOpacityCommand>(command);
+      setOpacity(opacityCmd->opacity);
+    }
     break;
-  case EventCode::Move_Lower_Left:
-    moveDiagonally(Direction::Left, Direction::Down);
+    case EventCode::Change_Blend_Mode: {
+      const auto blendModeCmd = std::dynamic_pointer_cast<MovementChangeBlendModeCommand>(command);
+      setBlendMode(blendModeCmd->mode);
+    }
     break;
-  case EventCode::Move_Lower_Right:
-    moveDiagonally(Direction::Right, Direction::Down);
-    break;
-  case EventCode::Move_Upper_Left:
-    moveDiagonally(Direction::Left, Direction::Up);
-    break;
-  case EventCode::Move_Upper_Right:
-    moveDiagonally(Direction::Right, Direction::Up);
-    break;
-  case EventCode::Move_at_Random:
-    moveRandom();
-    break;
-  case EventCode::Move_toward_Player:
-    moveTowardPlayer();
-    break;
-  case EventCode::Move_away_from_Player:
-    moveAwayFromPlayer();
-    break;
-  case EventCode::_1_Step_Forward:
-    moveForward();
-    break;
-  case EventCode::_1_Step_Backward:
-    moveBackward();
-    break;
-  case EventCode::Jump: {
-    const auto jumpCmd = std::dynamic_pointer_cast<MovementJumpCommand>(command);
-    jump(jumpCmd->x, jumpCmd->y);
-  } break;
-  case EventCode::Wait_del_Movement: {
-    const auto waitCmd = std::dynamic_pointer_cast<MovementWaitCommand>(command);
-    m_waitCount = waitCmd->duration - 1;
-  } break;
-  case EventCode::Turn_Down:
-    setDirection(Direction::Down);
-    break;
-  case EventCode::Turn_Left:
-    setDirection(Direction::Left);
-    break;
-  case EventCode::Turn_Right:
-    setDirection(Direction::Right);
-    break;
-  case EventCode::Turn_Up:
-    setDirection(Direction::Up);
-    break;
-  case EventCode::Turn_90_deg_Right:
-    turnRight90();
-    break;
-  case EventCode::Turn_90_deg_Left:
-    turnLeft90();
-    break;
-  case EventCode::Turn_180_deg:
-    turn180();
-    break;
-  case EventCode::Turn_90_deg_Left_or_Right:
-    turnLeftOrRight90();
-    break;
-  case EventCode::Turn_at_Random:
-    turnRandom();
-    break;
-  case EventCode::Turn_toward_Player:
-    turnTowardPlayer();
-    break;
-  case EventCode::Turn_away_from_Player:
-    turnAwayFromPlayer();
-    break;
-  case EventCode::Switch_ON:
-    // TODO: Event/Variable state?
-    break;
-  case EventCode::Switch_OFF:
-    break;
-  case EventCode::Speed: {
-    const auto speedCmd = std::dynamic_pointer_cast<MovementSpeedCommand>(command);
-    setMoveSpeed(speedCmd->speed);
-  } break;
-  case EventCode::Frequency: {
-    const auto freqCmd = std::dynamic_pointer_cast<MovementFrequencyCommand>(command);
-    setMoveFrequency(freqCmd->frequency);
-  } break;
-  case EventCode::Walking_Animation_ON:
-    setWalkAnime(true);
-    break;
-  case EventCode::Walking_Animation_OFF:
-    setWalkAnime(false);
-    break;
-  case EventCode::Stepping_Animation_ON:
-    setStepAnime(true);
-    break;
-  case EventCode::Stepping_Animation_OFF:
-    setStepAnime(false);
-    break;
-  case EventCode::Direction_Fix_ON:
-    setDirectionFix(true);
-    break;
-  case EventCode::Direction_Fix_OFF:
-    setDirectionFix(false);
-    break;
-  case EventCode::Through_ON:
-    setThrough(true);
-    break;
-  case EventCode::Through_OFF:
-    setThrough(false);
-    break;
-  case EventCode::Transparent_ON:
-    setTransparent(true);
-    break;
-  case EventCode::Transparent_OFF:
-    setTransparent(false);
-    break;
-  case EventCode::Change_Opacity: {
-    const auto opacityCmd = std::dynamic_pointer_cast<MovementChangeOpacityCommand>(command);
-    setOpacity(opacityCmd->opacity);
-  } break;
-  case EventCode::Change_Blend_Mode: {
-    const auto blendModeCmd = std::dynamic_pointer_cast<MovementChangeBlendModeCommand>(command);
-    setBlendMode(blendModeCmd->mode);
-  } break;
-  case EventCode::Play_SE_del_Movement:
-    // const auto seCmd = std::dynamic_pointer_cast<MovementPlaySECommand>(command);
-    //  TODO: SE audio
-    break;
-  case EventCode::Script_del_Movement:
-    // TODO: How to handle being unable to run Javascript?
-    break;
-  default:
-    break;
+    case EventCode::Play_SE_del_Movement:
+      // const auto seCmd = std::dynamic_pointer_cast<MovementPlaySECommand>(command);
+      //  TODO: SE audio
+      break;
+    case EventCode::Script_del_Movement:
+      // TODO: How to handle being unable to run Javascript?
+      break;
+    default:
+      break;
   }
 }
 
@@ -687,23 +710,27 @@ void MapEvent::processRouteEnd() {
 
 bool MapEvent::isCollidedWithEvents(double x, double y) {
   auto events = m_mapEditor->eventsAtNoThrough(x, y);
-  return std::ranges::any_of(events, [&](auto& e) { return e != m_event && e->renderer()->page()->priorityType() == EventPriority::Same_as_characters; });
+  return std::ranges::any_of(events, [&](auto &e) {
+    return e != m_event && e->renderer()->page()->priorityType() == EventPriority::Same_as_characters;
+  });
 }
 
-bool MapEvent::isCollidedWithCharacters(const double x, const double y) { return isCollidedWithEvents(x, y) /*|| isCollidedWithVehicles(x, y)*/; }
+bool MapEvent::isCollidedWithCharacters(const double x, const double y) {
+  return isCollidedWithEvents(x, y) /*|| isCollidedWithVehicles(x, y)*/;
+}
 
 Direction MapEvent::reverseDir(const Direction d) {
   switch (d) {
-  case Direction::Up:
-    return Direction::Down;
-  case Direction::Down:
-    return Direction::Up;
-  case Direction::Left:
-    return Direction::Right;
-  case Direction::Right:
-    return Direction::Left;
-  default:
-    return d;
+    case Direction::Up:
+      return Direction::Down;
+    case Direction::Down:
+      return Direction::Up;
+    case Direction::Left:
+      return Direction::Right;
+    case Direction::Right:
+      return Direction::Left;
+    default:
+      return d;
   }
 }
 
@@ -727,7 +754,7 @@ void MapEvent::eventPointerInvalidated() {
   setPage(page);
 }
 
-IEventRenderer* IEventRenderer::create(Event* ev) { return new MapEvent(ev); }
+IEventRenderer *IEventRenderer::create(Event *ev) { return new MapEvent(ev); }
 
 double MapEvent::scrolledX() const { return m_mapEditor->adjustX(m_realX); }
 double MapEvent::scrolledY() const { return m_mapEditor->adjustY(m_realY); }

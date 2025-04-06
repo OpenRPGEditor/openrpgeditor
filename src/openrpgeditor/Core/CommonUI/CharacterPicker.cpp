@@ -148,8 +148,8 @@ std::tuple<bool, bool> CharacterPicker::draw() {
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSizeConstraints(ImGui::GetMainViewport()->Size / 6, {FLT_MAX, FLT_MAX});
-  ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 3, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoSavedSettings)) {
+  ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing);
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open)) {
     const auto calc = ImGui::CalcTextSize("OKCANCEL");
     ImGui::BeginChild("##top_child", {
                         0,
@@ -197,13 +197,18 @@ std::tuple<bool, bool> CharacterPicker::draw() {
               if (ImGui::Selectable(std::format("{0}##sheet_{0}", sheet).c_str(), m_selectedSheet == z,
                                     ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
                 if (m_selectedSheet != z) {
+                  // -4 = B
+                  // -3 = C
+                  // -2 = D
+                  // -1 = E
                   int tileOffset = tileId() % 256;
                   m_characterSheet.emplace(sheet, true, ((z + 4) * 256) + tileOffset);
                   m_isTile = true;
-                  //m_palette.setPageIndex(z + 5);
                   Point pos = setCursorByTile(tileId());
                   m_selectionX = pos.x();
                   m_selectionY = pos.y();
+
+
                   if (m_characterSheet->texture()) {
                     m_checkerboardTexture.setSize(m_characterSheet->texture().width(),
                                                   m_characterSheet->texture().height());
@@ -219,6 +224,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
                   m_selectionY = 0;
                 }
                 m_selectedSheet = z;
+                m_tileId = (m_selectionX / 48) + (((m_selectedSheet + 5) - 1) * 16 + (m_selectionY / 48)) * 16;
               }
               if (m_selectedSheet == z && ImGui::IsWindowAppearing()) {
                 ImGui::SetScrollHereY();
@@ -257,7 +263,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
             }
           }
 
-          if (ImGui::Selectable("(None)", m_selectedSheet < 0,
+          if (ImGui::Selectable("(None)", m_selectedSheet == -5,
                                 ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
             m_selectedSheet = -5;
             m_isTile = false;
@@ -321,7 +327,8 @@ std::tuple<bool, bool> CharacterPicker::draw() {
             m_selectionX = x;
             m_selectionY = y;
             if (m_isTile) {
-              m_tileId = x + (((m_selectedSheet + 5) - 1) * 32 + y) * 8;
+              // On selection, set the tileId
+              m_tileId = (x / 48) + (((m_selectedSheet + 5) - 1) * 16 + (y / 48)) * 16;
             }
             if (m_pickerMode == PickerMode::Character) {
               m_selectionX = std::clamp(m_selectionX, 0,
@@ -393,7 +400,12 @@ std::tuple<bool, bool> CharacterPicker::draw() {
       ImGui::SetCursorPosX(
         ImGui::GetContentRegionMax().x - (calc.x + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().
                                           ItemSpacing.x));
+      //ImGui::TextUnformatted(std::format("X/Y: {}, {}", m_selectionX / 48, m_selectionY / 48).c_str());
       if (ImGui::Button("OK")) {
+        if (m_selectedSheet == -5 || m_selectedSheet >= 0) {
+          m_tileId = 0;
+          m_isTile = false;
+        }
         m_filter.clear();
         m_sortedIndexes.clear();
         m_confirmed = true;
@@ -418,8 +430,8 @@ std::tuple<bool, bool> CharacterPicker::draw() {
 
 Point CharacterPicker::setCursorByTile(const int tileId) {
   if (tileId > 0) {
-    int tileX = ((tileId / 128) % 2) * 8 + (tileId % 8);
-    int tileY = ((tileId % 256) / 8) % 16;
+    int tileX = (tileId % 256) % 16;
+    int tileY = (tileId % 256) / 16;
     return {tileX, tileY};
   }
   return {0, 0};

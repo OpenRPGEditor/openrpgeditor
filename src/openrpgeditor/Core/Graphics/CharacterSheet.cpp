@@ -78,13 +78,22 @@ SimpleRect CharacterSheet::getRectForTile(int tileId) {
   if (!m_sheetTexture) {
     return {};
   }
+
   const int CharacterSpriteWidth = 48;
   const int CharacterSpriteHeight = 48;
 
-  float tileU0 = (fmodf(floorf(tileId / 128), 2) * 8 + (tileId % 8)) * CharacterSpriteWidth;
-  float tileV0 = fmodf(floorf(tileId % 256 / 8), 16) * CharacterSpriteHeight;
+  // Use 256-tile pages, assuming 16x16 tiles per page
+  int localId = tileId % 256;
+  int tileX = localId % 16;
+  int tileY = localId / 16;
+
+  // Compute pixel coordinates
+  float tileU0 = tileX * CharacterSpriteWidth;
+  float tileV0 = tileY * CharacterSpriteHeight;
   float tileU1 = tileU0 + static_cast<float>(CharacterSpriteWidth);
   float tileV1 = tileV0 + static_cast<float>(CharacterSpriteHeight);
+
+  // Normalize UVs
   tileU0 /= m_sheetTexture.width();
   tileV0 /= m_sheetTexture.height();
   tileU1 /= m_sheetTexture.width();

@@ -118,7 +118,11 @@ std::tuple<bool, bool> ImagePicker::draw() {
         if (ImGui::BeginTable("##image_picker.tablelist", 1)) {
           ImGui::TableNextRow();
           ImGui::TableNextColumn();
-
+          if (ImGui::Selectable("(None)", m_selectedImage < 0, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+            m_selectedImage = -1;
+            m_image.reset();
+          }
+          ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 4);
           ImGui::BeginDisabled(m_imageDir.value().isParentDirectory());
           if (ImGui::Selectable("\u21B0 ..", false, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
             if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
@@ -131,42 +135,48 @@ std::tuple<bool, bool> ImagePicker::draw() {
             }
           }
           ImGui::EndDisabled();
-          for (int i = 0; i < m_folderDir.size(); ++i) {
-            const auto& folderName = std::format("{} {}", ICON_FA_FOLDER_OPEN, m_folderDir[i]);
-            if (ImGui::Selectable(folderName.c_str(), m_selectedFolder == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
-              m_selectedFolder = i;
-            }
-            if (m_selectedFolder == i && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-              m_imageDir->setDirectory(i);
-              m_folderDir = m_imageDir.value().getDirectories();
-              m_images = m_imageDir.value().getDirectoryContents();
-              m_selectedImage = -1;
-              m_selectedFolder = -1;
-              m_image.reset();
-            }
-          }
-          if (ImGui::Selectable("(None)", m_selectedImage < 0, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
-            m_selectedImage = -1;
-            m_image.reset();
-          }
-
-          for (int i = 0; i < m_images.size(); ++i) {
-            const auto& sheet = m_images[i];
-            ImGui::TableNextColumn();
-            if (ImGui::Selectable(sheet.c_str(), m_selectedImage == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
-              m_selectedImage = i;
-              m_image.emplace(m_selectedImage == -1                    ? ""
-                              : m_imageDir.value().isParentDirectory() ? m_images.at(m_selectedImage)
-                                                                       : m_imageDir.value().getPathPrefix() + '/' + m_images.at(m_selectedImage),
-                              m_pickType, false);
-              if (ImGui::IsItemHovered()) {
-                ImGui::SetTooltip("%s", sheet.c_str());
+          ImGui::BeginChild("##dir_list", {0, (ImGui::CalcTextSize("A").y * 5) + (ImGui::GetStyle().ItemSpacing.y * 2)}, ImGuiChildFlags_ResizeY,
+                            ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
+          {
+            for (int i = 0; i < m_folderDir.size(); ++i) {
+              const auto& folderName = std::format("{} {}", ICON_FA_FOLDER_OPEN, m_folderDir[i]);
+              if (ImGui::Selectable(folderName.c_str(), m_selectedFolder == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+                m_selectedFolder = i;
+              }
+              if (m_selectedFolder == i && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                m_imageDir->setDirectory(i);
+                m_folderDir = m_imageDir.value().getDirectories();
+                m_images = m_imageDir.value().getDirectoryContents();
+                m_selectedImage = -1;
+                m_selectedFolder = -1;
+                m_image.reset();
               }
             }
-            if (m_selectedImage == i && ImGui::IsWindowAppearing()) {
-              ImGui::SetScrollHereY();
+          }
+          ImGui::EndChild();
+          ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 4);
+
+          ImGui::BeginChild("##image_list", {}, 0, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
+          {
+            for (int i = 0; i < m_images.size(); ++i) {
+              const auto& sheet = m_images[i];
+              ImGui::TableNextColumn();
+              if (ImGui::Selectable(sheet.c_str(), m_selectedImage == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+                m_selectedImage = i;
+                m_image.emplace(m_selectedImage == -1                    ? ""
+                                : m_imageDir.value().isParentDirectory() ? m_images.at(m_selectedImage)
+                                                                         : m_imageDir.value().getPathPrefix() + '/' + m_images.at(m_selectedImage),
+                                m_pickType, false);
+                if (ImGui::IsItemHovered()) {
+                  ImGui::SetTooltip("%s", sheet.c_str());
+                }
+              }
+              if (m_selectedImage == i && ImGui::IsWindowAppearing()) {
+                ImGui::SetScrollHereY();
+              }
             }
           }
+          ImGui::EndChild();
           ImGui::EndTable();
         }
       }
@@ -178,7 +188,11 @@ std::tuple<bool, bool> ImagePicker::draw() {
           if (ImGui::BeginTable("##image_picker.tablelist##2", 1)) {
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
-
+            if (ImGui::Selectable("(None)##2", m_selectedImage2 < 0, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+              m_selectedImage2 = -1;
+              m_image2.reset();
+            }
+            ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 4);
             ImGui::BeginDisabled(m_imageDir2.value().isParentDirectory());
             if (ImGui::Selectable("\u21B0 ..##2", false, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
               if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
@@ -188,39 +202,45 @@ std::tuple<bool, bool> ImagePicker::draw() {
               }
             }
             ImGui::EndDisabled();
-            for (int i = 0; i < m_folderDir_2.size(); ++i) {
-              const auto& folderName = std::format("{} {}##2", ICON_FA_FOLDER_OPEN, m_folderDir_2[i]);
-              if (ImGui::Selectable(folderName.c_str(), m_selectedFolder2 == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
-                m_selectedFolder2 = i;
-              }
-              if (m_selectedFolder2 == i && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                m_imageDir2->setDirectory(i);
-                m_folderDir_2 = m_imageDir2.value().getDirectories();
-                m_images_2 = m_imageDir2.value().getDirectoryContents();
-                m_selectedImage2 = -1;
-                m_selectedFolder2 = -1;
-                m_image2.reset();
-              }
-            }
-
-            if (ImGui::Selectable("(None)##2", m_selectedImage2 < 0, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
-              m_selectedImage2 = -1;
-              m_image2.reset();
-            }
-            for (int i = 0; i < m_images_2.size(); ++i) {
-              const auto& sheet2 = m_images_2[i];
-              ImGui::TableNextColumn();
-              if (ImGui::Selectable(sheet2.c_str(), m_selectedImage2 == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
-                m_selectedImage2 = i;
-                m_image2.emplace(m_selectedImage2 == -1                    ? ""
-                                 : m_imageDir2.value().isParentDirectory() ? m_images_2.at(m_selectedImage2)
-                                                                           : m_imageDir2.value().getPathPrefix() + '/' + m_images_2.at(m_selectedImage2),
-                                 m_pickType, true);
-                if (ImGui::IsItemHovered()) {
-                  ImGui::SetTooltip("%s", sheet2.c_str());
+            ImGui::BeginChild("##dir_list", {0, (ImGui::CalcTextSize("A").y * 5) + (ImGui::GetStyle().ItemSpacing.y * 2)}, ImGuiChildFlags_ResizeY,
+                              ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
+            {
+              for (int i = 0; i < m_folderDir_2.size(); ++i) {
+                const auto& folderName = std::format("{} {}##2", ICON_FA_FOLDER_OPEN, m_folderDir_2[i]);
+                if (ImGui::Selectable(folderName.c_str(), m_selectedFolder2 == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+                  m_selectedFolder2 = i;
+                }
+                if (m_selectedFolder2 == i && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
+                  m_imageDir2->setDirectory(i);
+                  m_folderDir_2 = m_imageDir2.value().getDirectories();
+                  m_images_2 = m_imageDir2.value().getDirectoryContents();
+                  m_selectedImage2 = -1;
+                  m_selectedFolder2 = -1;
+                  m_image2.reset();
                 }
               }
             }
+            ImGui::EndChild();
+            ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 4);
+
+            ImGui::BeginChild("##image_list", {}, 0, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
+            {
+              for (int i = 0; i < m_images_2.size(); ++i) {
+                const auto& sheet2 = m_images_2[i];
+                ImGui::TableNextColumn();
+                if (ImGui::Selectable(sheet2.c_str(), m_selectedImage2 == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+                  m_selectedImage2 = i;
+                  m_image2.emplace(m_selectedImage2 == -1                    ? ""
+                                   : m_imageDir2.value().isParentDirectory() ? m_images_2.at(m_selectedImage2)
+                                                                             : m_imageDir2.value().getPathPrefix() + '/' + m_images_2.at(m_selectedImage2),
+                                   m_pickType, true);
+                  if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("%s", sheet2.c_str());
+                  }
+                }
+              }
+            }
+            ImGui::EndChild();
             ImGui::EndTable();
           }
         }

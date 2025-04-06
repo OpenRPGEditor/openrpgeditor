@@ -20,7 +20,6 @@
 #include "Script/Bindings.hpp"
 #include "Utils/JavaMath.hpp"
 
-#include <SDL3/SDL.h>
 #include <backends/imgui_impl_sdl3.h>
 #include <backends/imgui_impl_sdlrenderer3.h>
 #include <imgui.h>
@@ -30,6 +29,7 @@
 #include <libcpuid/libcpuid.h>
 #include <memory>
 #include <moloader/moloader.hpp>
+#include <SDL3/SDL.h>
 
 #include <orei18n.hpp>
 #include <string>
@@ -400,6 +400,7 @@ void Application::onEvent(const SDL_WindowEvent& event) {
     Settings::instance()->window.maximized = SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED;
     break;
   }
+  case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
   case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED: {
     requestFontUpdate();
     updateScale();

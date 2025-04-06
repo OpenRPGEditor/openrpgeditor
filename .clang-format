@@ -23,7 +23,7 @@ Cpp11BracedListStyle: true
 NamespaceIndentation: None
 BinPackArguments: true
 BinPackParameters: true
-SortIncludes: true
+SortIncludes: CaseInsensitive
 AccessModifierOffset: -2
 ConstructorInitializerIndentWidth: 0
 PackConstructorInitializers: Never

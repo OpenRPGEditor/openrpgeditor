@@ -242,11 +242,6 @@ const CScriptJson* CScriptJson::operator[](const jsonKey_t& key) const {
     return retVal;
   }
 
-  // Else raise an exception
-  asIScriptContext* ctx = asGetActiveContext();
-  if (ctx)
-    ctx->SetException("Invalid access to non-existing value");
-
   return 0;
 }
 
@@ -281,11 +276,6 @@ const CScriptJson* CScriptJson::operator[](size_t idx) const {
     *(retVal->js_info) = (*js_info)[idx];
     return retVal;
   }
-
-  // Else raise an exception
-  asIScriptContext* ctx = asGetActiveContext();
-  if (ctx)
-    ctx->SetException("Invalid access to non-existing value");
 
   return 0;
 }
@@ -516,6 +506,9 @@ static void CScriptJson_opIndex_const_Generic(asIScriptGeneric* gen) {
 
 static CScriptJson* JsonParseFile(const std::string& file) {
   std::ifstream inputFile(file.c_str());
+  if (!inputFile.is_open()) {
+    return nullptr;
+  }
 
   asIScriptContext* currentContext = asGetActiveContext();
   if (currentContext) {

@@ -8,6 +8,8 @@ add_library(imgui-setup STATIC
         ${implot_SOURCE_DIR}/implot_demo.cpp
         ${implot_SOURCE_DIR}/implot_internal.h ${implot_SOURCE_DIR}/implot_items.cpp
         ${imgui_SOURCE_DIR}/imgui.cpp ${imgui_SOURCE_DIR}/imgui.h
+        ${imgui_SOURCE_DIR}/imgui_stacklayout.cpp ${imgui_SOURCE_DIR}/imgui_stacklayout.h
+        ${imgui_SOURCE_DIR}/imgui_stacklayout_internal.h
         ${imgui_SOURCE_DIR}/imconfig.h ${imgui_SOURCE_DIR}/imgui_demo.cpp
         ${imgui_SOURCE_DIR}/imgui_draw.cpp ${imgui_SOURCE_DIR}/imgui_internal.h
         ${imgui_SOURCE_DIR}/imgui_tables.cpp ${imgui_SOURCE_DIR}/imgui_widgets.cpp

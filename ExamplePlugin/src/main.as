@@ -9,8 +9,8 @@ json@ nullJsonObject() {
 class TestChild {
     TestChild() {
     }
-    TestChild(const json& j) {
-        m_child = bool(j["child"]);
+    TestChild(const json&in j) {
+        m_child = bool(j is null ? false : j["child"] is null ? false : j["child"]);
     }
     json opImplConv() {
         json@ j = json();
@@ -27,7 +27,7 @@ class TestChild {
 class TestJSON {
     TestJSON() {
     }
-    TestJSON(const json& j) {
+    TestJSON(const json&in j) {
         m_child = j["child"];
         m_test = double(j["test"]);
         m_isOpen = bool(j["isOpen"]);
@@ -60,7 +60,9 @@ class TestJSON {
 
 void initialize() {
     print(LogLevel::Info, "Initialize");
-    TestJSON test = jsonParseFile("test.json");
+    json@ j = jsonParseFile("test.json");
+
+    TestJSON test = j is null ? TestJSON() : j;
     json@ js = test;
     print(LogLevel::Info, "\n" + js.dump(4));
     jsonWriteFile(js, "test.json");

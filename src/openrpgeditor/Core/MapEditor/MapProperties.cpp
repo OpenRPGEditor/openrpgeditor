@@ -13,19 +13,6 @@ Map* MapProperties::map() const { return m_mapInfo->map(); }
 void MapProperties::resizeMap(const int width, const int height) const {
   if (map()) {
     map()->resize(width, height);
-    /*! TODO: IEventEditor in Database with client implementation in Core
-     * This will allow us to give Event a pointer to an editor object
-     * without having the implementation in Database itself
-     * it also gives us the ability to maintain the editor instance *with* the event
-     * keeping allowing us to properly implement animations
-     */
-    // for (auto it = m_eventEditors.begin(); it != m_eventEditors.end();) {
-    //   if (map()->event(it->id()) == nullptr) {
-    //     it = m_eventEditors.erase(it);
-    //   } else {
-    //     ++it;
-    //   }
-    // }
   }
 }
 
@@ -39,10 +26,11 @@ std::tuple<bool, bool> MapProperties::draw() {
     ImGui::BeginGroupPanel();
     {
       ImGui::SeparatorText(trNOOP("General Settings"));
+      ImGui::AlignTextToFramePadding();
       ImGui::BeginGroup();
       {
         ImGui::Text("%s", trFormat("Name - ID: {}", m_mapInfo->id()).c_str());
-        ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x / 2);
         strncpy(buf, m_mapInfo->name().c_str(), 4096);
         if (ImGui::InputText("##map_name", buf, 4096)) {
           m_mapInfo->setName(buf);
@@ -52,59 +40,46 @@ std::tuple<bool, bool> MapProperties::draw() {
       ImGui::SameLine();
       ImGui::BeginGroup();
       {
-        ImVec2 cursorPos = ImGui::GetCursorPos();
-        // Move back up a couple couple pixels
-        cursorPos.y -= 4.f;
-        ImGui::SetCursorPos(cursorPos);
         ImGui::Text("%s", trNOOP("Display Name"));
-        ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         strncpy(buf, map()->displayName().c_str(), 4096);
         if (ImGui::InputText("##map_display_name", buf, 4096)) {
           map()->setDisplayName(buf);
         }
       }
       ImGui::EndGroup();
+      ImGui::AlignTextToFramePadding();
       ImGui::BeginGroup();
       {
         ImGui::Text("%s", trNOOP("Tileset"));
         strncpy(buf, m_mapInfo->name().c_str(), 4096);
         const auto& tilesetName = Database::instance()->tilesets.tileset(map()->tilesetId())->name();
         ImGui::PushID("##map_tileset_button");
-        if (ImGui::Button((tilesetName.empty() ? "##map_tileset_button_empty" : tilesetName).c_str(), ImVec2{ImGui::GetContentRegionMax().x / 2 - 15, 0})) {}
+        if (ImGui::Button((tilesetName.empty() ? "##map_tileset_button_empty" : tilesetName).c_str(), ImVec2{ImGui::GetContentRegionAvail().x / 2, 0})) {}
         ImGui::PopID();
       }
       ImGui::EndGroup();
       ImGui::SameLine();
       ImGui::BeginGroup();
       {
-        ImVec2 cursorPos = ImGui::GetCursorPos();
-        // Move back up a couple pixels
-        cursorPos.y -= 4.f;
-        ImGui::SetCursorPos(cursorPos);
         ImGui::Text("%s", trNOOP("Width"));
-        ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - 15);
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x / 2);
         ImGui::DragInt("##map_width", &m_tempWidth, 0, 0, 256);
       }
       ImGui::EndGroup();
       ImGui::SameLine();
       ImGui::BeginGroup();
       {
-        ImVec2 cursorPos = ImGui::GetCursorPos();
-        // Move back up a couple pixels
-        cursorPos.y -= 4.f;
-        ImGui::SetCursorPos(cursorPos);
         ImGui::Text("%s", trNOOP("Height"));
-        ImGui::SetNextItemWidth(((ImGui::GetContentRegionMax().x / 2) / 2) - 15);
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::DragInt("##map_height", &m_tempHeight, 0, 0, 256);
       }
       ImGui::EndGroup();
+      ImGui::AlignTextToFramePadding();
       ImGui::BeginGroup();
       {
-        const auto cursorPos = ImGui::GetCursorPos();
-        // Move back up a couple pixels
-        ImGui::SetCursorPos(cursorPos);
         ImGui::Text("%s", trNOOP("Scroll Type"));
-        ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x / 2);
         if (ImGui::BeginCombo("##map_scroll_type", DecodeEnumName(magic_enum::enum_name(map()->scrollType())).c_str())) {
           for (const auto& e : magic_enum::enum_values<ScrollType>()) {
             if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(e)).c_str(), e == map()->scrollType())) {
@@ -121,12 +96,8 @@ std::tuple<bool, bool> MapProperties::draw() {
       ImGui::SameLine();
       ImGui::BeginGroup();
       {
-        ImVec2 cursorPos = ImGui::GetCursorPos();
-        // Move back up a couple pixels
-        cursorPos.y -= 4.f;
-        ImGui::SetCursorPos(cursorPos);
         ImGui::Text("%s", trNOOP("Enc. Steps"));
-        ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 15);
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x / 2);
         auto encounterStep = map()->encounterStep();
         if (ImGui::DragInt("##map_enc_steps", &encounterStep, 0, 0, 999)) {
           map()->setEncounterStep(encounterStep);
@@ -136,6 +107,7 @@ std::tuple<bool, bool> MapProperties::draw() {
     }
     ImGui::Separator();
     {
+      ImGui::AlignTextToFramePadding();
       ImGui::BeginGroup();
       {
         bool autoplayBgm = map()->autoplayBgm();
@@ -145,9 +117,9 @@ std::tuple<bool, bool> MapProperties::draw() {
         ImGui::PushItemFlag(ImGuiItemFlags_Disabled, !map()->autoplayBgm());
         {
           ImGui::PushID("##map_bgm_button");
-          ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - 30);
+          ImGui::SetNextItemWidth((ImGui::GetContentRegionAvail().x / 2));
           const std::string text = map()->bgm().name().empty() ? "##map_bgm_button_empty" : map()->bgm().name();
-          if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetContentRegionMax().x / 2) - 15, 0})) {}
+          if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetContentRegionAvail().x / 2, 0})) {}
           ImGui::PopID();
         }
         ImGui::PopItemFlag();
@@ -164,12 +136,13 @@ std::tuple<bool, bool> MapProperties::draw() {
         {
           ImGui::PushID("##map_bgs_button");
           const std::string text = map()->bgs().name().empty() ? "##map_bgs_button_empty" : map()->bgs().name();
-          if (ImGui::Button(text.c_str(), ImVec2{(ImGui::GetContentRegionMax().x / 2) - 15, 0})) {}
+          if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetContentRegionAvail().x, 0})) {}
           ImGui::PopID();
         }
         ImGui::PopItemFlag();
       }
       ImGui::EndGroup();
+      ImGui::AlignTextToFramePadding();
       ImGui::BeginGroup();
       {
         bool specifyBattleback = map()->specifyBattleback();
@@ -201,6 +174,7 @@ std::tuple<bool, bool> MapProperties::draw() {
     }
     ImGui::Separator();
     {
+      ImGui::AlignTextToFramePadding();
       ImGui::BeginGroup();
       {
         ImGui::Text("%s", trNOOP("Parallax Background"));
@@ -210,6 +184,7 @@ std::tuple<bool, bool> MapProperties::draw() {
         ImGui::PopID();
       }
       ImGui::EndGroup();
+      ImGui::AlignTextToFramePadding();
       ImGui::BeginGroup();
       {
         bool parallaxLoopX = map()->parallaxLoopX();
@@ -245,6 +220,7 @@ std::tuple<bool, bool> MapProperties::draw() {
         ImGui::PopItemFlag();
       }
       ImGui::EndGroup();
+      ImGui::AlignTextToFramePadding();
       ImGui::BeginGroup();
       {
         bool parallaxShow = map()->parallaxShow();
@@ -257,19 +233,13 @@ std::tuple<bool, bool> MapProperties::draw() {
       ImGui::EndGroup();
       ImGui::BeginGroup();
       {
-        ImVec2 cursorPos = ImGui::GetCursorPos();
-        constexpr ImGuiInputTextFlags flags = ImGuiInputTextFlags_CtrlEnterForNewLine;
-        // Move back up a couple pixels
-        cursorPos.y -= 4.f;
-        ImGui::SetCursorPos(cursorPos);
         ImGui::Text("%s", trNOOP("Note"));
 
         strncpy(buf, map()->note().c_str(), 4096);
-        if (ImGui::InputTextMultiline("##map_note", buf, 2048, ImVec2(ImGui::GetContentRegionMax().x - 15, 400), flags)) {
+        if (ImGui::InputTextMultiline("##map_note", buf, 4096, ImGui::GetContentRegionAvail())) {
           map()->setNote(buf);
         }
       }
-      ImGui::Dummy(ImVec2(0.0f, 15.0f));
       ImGui::EndGroup();
     }
     ImGui::EndGroupPanel();

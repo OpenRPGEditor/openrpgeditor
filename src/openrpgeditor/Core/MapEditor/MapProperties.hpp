@@ -24,6 +24,14 @@ public:
 
   [[nodiscard]] Map* map() const;
 
+  void setOpen(const bool open) override {
+    IDialogController::setOpen(open);
+    if (m_mapInfo && map()) {
+      m_tempWidth = map()->width();
+      m_tempHeight = map()->height();
+    }
+  }
+
 private:
   void resizeMap(int width, int height) const;
   MapInfo* m_mapInfo{nullptr};

@@ -4,6 +4,7 @@
 #include "Bindings.hpp"
 #include "Core/Log.hpp"
 #include "Core/Script/ByteCodeStream.hpp"
+#include "scriptany/scriptany.h"
 #include "scriptdictionary/scriptdictionary.h"
 
 #include <angelscript.h>
@@ -235,6 +236,7 @@ bool ScriptEngine::initialize() {
   RegisterScriptMathComplex(m_engine);
   RegisterScriptDictionary(m_engine);
   RegisterScriptJson(m_engine);
+  RegisterScriptAny(m_engine);
 
   r = m_engine->RegisterEnum("LogLevel");
   assert(r >= 0);
@@ -253,7 +255,7 @@ bool ScriptEngine::initialize() {
   assert(r >= 0);
   RegisterBindings();
 
-  // GenerateScriptPredefined(m_engine, "as.predefined");
+  GenerateScriptPredefined(m_engine, "as.predefined");
   return r >= 0;
 }
 

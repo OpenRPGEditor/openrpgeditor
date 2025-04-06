@@ -1,53 +1,3 @@
-typedef uint ImGuiID;
-typedef int8 ImS8;
-typedef uint8 ImU8;
-typedef int16 ImS16;
-typedef uint16 ImU16;
-typedef int ImS32;
-typedef uint ImU32;
-typedef int64 ImS64;
-typedef uint64 ImU64;
-typedef int ImGuiCol;
-typedef int ImGuiCond;
-typedef int ImGuiDataType;
-typedef int ImGuiMouseButton;
-typedef int ImGuiMouseCursor;
-typedef int ImGuiStyleVar;
-typedef int ImGuiTableBgTarget;
-typedef int ImDrawFlags;
-typedef int ImDrawListFlags;
-typedef int ImFontAtlasFlags;
-typedef int ImGuiBackendFlags;
-typedef int ImGuiChildFlags;
-typedef int ImGuiColorEditFlags;
-typedef int ImGuiConfigFlags;
-typedef int ImGuiComboFlags;
-typedef int ImGuiDockNodeFlags;
-typedef int ImGuiDragDropFlags;
-typedef int ImGuiFocusedFlags;
-typedef int ImGuiHoveredFlags;
-typedef int ImGuiInputFlags;
-typedef int ImGuiInputTextFlags;
-typedef int ImGuiItemFlags;
-typedef int ImGuiKeyChord;
-typedef int ImGuiPopupFlags;
-typedef int ImGuiMultiSelectFlags;
-typedef int ImGuiSelectableFlags;
-typedef int ImGuiSliderFlags;
-typedef int ImGuiTabBarFlags;
-typedef int ImGuiTabItemFlags;
-typedef int ImGuiTableFlags;
-typedef int ImGuiTableColumnFlags;
-typedef int ImGuiTableRowFlags;
-typedef int ImGuiTreeNodeFlags;
-typedef int ImGuiViewportFlags;
-typedef int ImGuiWindowFlags;
-typedef uint64 ImTextureID;
-typedef uint ImWchar32;
-typedef uint16 ImWchar16;
-typedef uint16 ImWchar;
-typedef int64 ImGuiSelectionUserData;
-
 enum jsonType {
 	OBJECT_VALUE,
 	ARRAY_VALUE,
@@ -72,6 +22,11 @@ enum ToolbarCategory {
 class array<T>{
 	T& opIndex(uint index);
 	const T& opIndex(uint index) const;
+	uint opForBegin() const;
+	bool opForEnd(uint) const;
+	uint opForNext(uint) const;
+	const T& opForValue0(uint index) const;
+	uint opForValue1(uint index) const;
 	T[]& opAssign(const T[]&in);
 	void insertAt(uint index, const T&in value);
 	void insertAt(uint index, const T[]&inout arr);
@@ -93,7 +48,7 @@ class array<T>{
 	int findByRef(uint startAt, const T&in value) const;
 	bool opEquals(const T[]&in) const;
 	bool isEmpty() const;
-	void sort(T[]::less&in, uint startAt = 0, uint count = uint ( - 1 ));
+	void sort(T[]::less&in, uint startAt = 0, uint count = uint(-1));
 	funcdef bool less(const T&in, const T&in);
 }
 class string{
@@ -130,15 +85,16 @@ class string{
 	string& opAddAssign(bool);
 	string opAdd(bool) const;
 	string opAdd_r(bool) const;
-	string substr(uint start = 0, int count = - 1) const;
+	string substr(uint start = 0, int count = -1) const;
 	int findFirst(const string&in, uint start = 0) const;
 	int findFirstOf(const string&in, uint start = 0) const;
 	int findFirstNotOf(const string&in, uint start = 0) const;
-	int findLast(const string&in, int start = - 1) const;
-	int findLastOf(const string&in, int start = - 1) const;
-	int findLastNotOf(const string&in, int start = - 1) const;
+	int findLast(const string&in, int start = -1) const;
+	int findLastOf(const string&in, int start = -1) const;
+	int findLastNotOf(const string&in, int start = -1) const;
 	void insert(uint pos, const string&in other);
-	void erase(uint pos, int count = - 1);
+	void erase(uint pos, int count = -1);
+	int regexFind(const string&in regex, uint start = 0, uint&out lengthOfMatch = void) const;
 	string[]@ split(const string&in) const;
 }
 class ref{
@@ -230,13 +186,15 @@ class dictionary{
 	string[]@ getKeys() const;
 	dictionaryValue& opIndex(const string&in);
 	const dictionaryValue& opIndex(const string&in) const;
+	dictionaryIter@ opForBegin() const;
+	bool opForEnd(dictionaryIter@) const;
+	dictionaryIter@ opForNext(dictionaryIter@) const;
+	const dictionaryValue& opForValue0(dictionaryIter@) const;
+	const string& opForValue1(dictionaryIter@) const;
+}
+class dictionaryIter{
 }
 class json{
-    json();
-    json(bool v);
-    json(int64 v);
-    json(double v);
-    json(const ?&in v);
 	json& opAssign(bool);
 	json& opAssign(int64);
 	json& opAssign(double);
@@ -260,15 +218,24 @@ class json{
 	jsonType getType();
 	json& opIndex(const string&in);
 	const json& opIndex(const string&in) const;
-	json& opIndex(uint64);
-	const json& opIndex(uint64) const;
+	json& opIndex(uint);
+	const json& opIndex(uint) const;
 	void push_back(json&in) const;
 	bool opConv();
 	string opConv();
 	int opConv();
 	double opConv();
 	json@[]& opConv();
-	string dump(int depth = - 1);
+	string dump(int depth = -1);
+}
+class any{
+	any& opAssign(any&in);
+	void store(?&in);
+	void store(const int64&in);
+	void store(const double&in);
+	bool retrieve(?&out) const;
+	bool retrieve(int64&out) const;
+	bool retrieve(double&out) const;
 }
 class ImVec2{
 	~ImVec2();
@@ -306,6 +273,8 @@ class ImVec4{
 	float z;
 	float w;
 }
+uint scan(const string&in str, ?&out...);
+string format(const string&in fmt, const ?&in...);
 string formatInt(int64 val, const string&in options = "", uint width = 0);
 string formatUInt(uint64 val, const string&in options = "", uint width = 0);
 string formatFloat(double val, const string&in options = "", uint width = 0, uint precision = 0);
@@ -346,15 +315,15 @@ void addToolbarButton(const string&in, ToolbarCategory category, ToolBarButtonCl
 namespace ImGui { string GetVersion(); }
 namespace ImGui { bool Begin(const string&in id, bool show_close_button = false, bool&out p_open = false, int window_flags = 0); }
 namespace ImGui { void End(); }
-namespace ImGui { bool BeginChild(const string&in id, const ImVec2&in size = ImVec2 ( ), int child_flags = 0, int window_flags = 0); }
-namespace ImGui { bool BeginChild(uint id, const ImVec2&in size = ImVec2 ( ), int child_flags = 0, int window_flags = 0); }
+namespace ImGui { bool BeginChild(const string&in id, const ImVec2&in size = ImVec2(), int child_flags = 0, int window_flags = 0); }
+namespace ImGui { bool BeginChild(uint id, const ImVec2&in size = ImVec2(), int child_flags = 0, int window_flags = 0); }
 namespace ImGui { void EndChild(); }
 namespace ImGui { bool IsWindowAppearing(); }
 namespace ImGui { bool IsWindowCollapsed(); }
 namespace ImGui { bool IsWindowFocused(int flags = 0); }
 namespace ImGui { bool IsWindowHovered(int flags = 0); }
 namespace ImGui { float GetDpiScale(); }
-namespace ImGui { void SetNextWindowPos(const ImVec2&in pos, int cond = 0, const ImVec2&in pivot = ImVec2 ( )); }
+namespace ImGui { void SetNextWindowPos(const ImVec2&in pos, int cond = 0, const ImVec2&in pivot = ImVec2()); }
 namespace ImGui { void SetNextWindowSize(const ImVec2&in size, int cond = 0); }
 namespace ImGui { void SetNextWindowSizeConstraints(const ImVec2&in size_min, const ImVec2&in size_max, int cond = 0); }
 namespace ImGui { void SetNextWindowContentSize(const ImVec2&in size, int cond = 0); }
@@ -385,4 +354,52 @@ namespace ImGui { void SetScrollFromPosY(float local_y, float center_y_ratio = 0
 namespace ImGui { void Text(const string&in); }
 namespace ImGui { double GetTime(); }
 namespace ImGui { int GetFrameCount(); }
-
+typedef uint ImGuiID;
+typedef int8 ImS8;
+typedef uint8 ImU8;
+typedef int16 ImS16;
+typedef uint16 ImU16;
+typedef int ImS32;
+typedef uint ImU32;
+typedef int64 ImS64;
+typedef uint64 ImU64;
+typedef int ImGuiCol;
+typedef int ImGuiCond;
+typedef int ImGuiDataType;
+typedef int ImGuiMouseButton;
+typedef int ImGuiMouseCursor;
+typedef int ImGuiStyleVar;
+typedef int ImGuiTableBgTarget;
+typedef int ImDrawFlags;
+typedef int ImDrawListFlags;
+typedef int ImFontAtlasFlags;
+typedef int ImGuiBackendFlags;
+typedef int ImGuiChildFlags;
+typedef int ImGuiColorEditFlags;
+typedef int ImGuiConfigFlags;
+typedef int ImGuiComboFlags;
+typedef int ImGuiDockNodeFlags;
+typedef int ImGuiDragDropFlags;
+typedef int ImGuiFocusedFlags;
+typedef int ImGuiHoveredFlags;
+typedef int ImGuiInputFlags;
+typedef int ImGuiInputTextFlags;
+typedef int ImGuiItemFlags;
+typedef int ImGuiKeyChord;
+typedef int ImGuiPopupFlags;
+typedef int ImGuiMultiSelectFlags;
+typedef int ImGuiSelectableFlags;
+typedef int ImGuiSliderFlags;
+typedef int ImGuiTabBarFlags;
+typedef int ImGuiTabItemFlags;
+typedef int ImGuiTableFlags;
+typedef int ImGuiTableColumnFlags;
+typedef int ImGuiTableRowFlags;
+typedef int ImGuiTreeNodeFlags;
+typedef int ImGuiViewportFlags;
+typedef int ImGuiWindowFlags;
+typedef uint64 ImTextureID;
+typedef uint ImWchar32;
+typedef uint16 ImWchar16;
+typedef uint16 ImWchar;
+typedef int64 ImGuiSelectionUserData;

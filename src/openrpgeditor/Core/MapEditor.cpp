@@ -57,7 +57,6 @@ private:
 void MapEditor::setMap(MapInfo* info) {
   m_mapRenderer.setMap(nullptr, nullptr);
   m_mapInfo = info;
-  m_parent->openMapProperties(m_mapInfo);
 }
 
 int MapEditor::tileSize() const { return Database::instance()->system.tileSize(); }

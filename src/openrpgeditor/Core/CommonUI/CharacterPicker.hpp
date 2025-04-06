@@ -13,10 +13,13 @@ struct CharacterPicker : IDialogController {
     PatternAndDirection,
   };
 
-  explicit CharacterPicker(PickerMode mode = PickerMode::Character, bool useMapTiles = false, int tileId = 0, std::string_view sheetName = {}, int character = 0, int pattern = 0,
+  explicit CharacterPicker(PickerMode mode = PickerMode::Character, bool useMapTiles = false, int tileId = 0,
+                           std::string_view sheetName = {}, int character = 0, int pattern = 0,
                            Direction direction = Direction::Down);
 
   std::tuple<bool, bool> draw() override;
+
+  Point setCursorByTile(int tileId);
 
   [[nodiscard]] PickerMode pickerMode() const { return m_pickerMode; }
   [[nodiscard]] int selectedPattern() const { return m_pattern; }
@@ -26,14 +29,21 @@ struct CharacterPicker : IDialogController {
   [[nodiscard]] int tileId() const { return m_tileId; }
 
   [[nodiscard]] std::string selectedSheet() const {
-    return m_selectedSheet >= 0 ? m_charDir.value().isParentDirectory() ? m_characterSheets[m_selectedSheet] : m_charDir.value().getPathPrefix() + '/' + m_characterSheets[m_selectedSheet] : "";
+    return m_selectedSheet >= 0
+             ? m_charDir.value().isParentDirectory()
+                 ? m_characterSheets[m_selectedSheet]
+                 : m_charDir.value().getPathPrefix() + '/' + m_characterSheets[m_selectedSheet]
+             : "";
   }
 
   [[nodiscard]] std::string selectedTileSheet() const { return m_tileSheets[m_selectedSheet + 9]; }
 
-  void setCharacterInfo(std::string_view sheetName, int character = 0, int pattern = 0, Direction direction = Direction::Down);
+  void setCharacterInfo(std::string_view sheetName, int character = 0, int pattern = 0,
+                        Direction direction = Direction::Down);
 
   void setTileId(int tileId);
+
+  void setCursorPos(Point pos);
 
   Rect getTilesetRect();
 
@@ -44,7 +54,7 @@ private:
 
   bool m_isTile{false};
   int m_tileId{0};
-  TilePalette m_palette;
+  //TilePalette m_palette;
   int m_tileX{0};
   int m_tileY{0};
 
@@ -67,5 +77,5 @@ private:
   int m_pattern{0};
   Direction m_direction{Direction::Down};
 
-  int sheetIndexOf(std::string& str);
+  int sheetIndexOf(std::string &str);
 };

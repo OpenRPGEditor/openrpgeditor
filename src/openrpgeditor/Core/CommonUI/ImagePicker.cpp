@@ -2,6 +2,7 @@
 #include "Core/ResourceManager.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
+#include "misc/cpp/imgui_stdlib.h"
 
 #include <IconsFontAwesome6.h>
 
@@ -64,6 +65,10 @@ ImagePicker::ImagePicker(PickerMode mode, const std::string_view imageName, cons
   setImageInfo(imageName, image2Name);
 }
 
+static bool ContainsCaseInsensitive(std::string_view str, std::string_view val) {
+  return std::search(str.begin(), str.end(), val.begin(), val.end(), [](char ch1, char ch2) { return std::toupper(ch1) == std::toupper(ch2); }) != str.end();
+}
+
 void ImagePicker::setImageInfo(std::string_view imageName, std::string_view image2Name) {
   if (!imageName.empty()) {
     bool found = false;
@@ -106,6 +111,24 @@ std::tuple<bool, bool> ImagePicker::draw() {
     ImGui::OpenPopup(m_name.c_str());
   }
 
+  int index{0};
+  if (m_sortRequest) {
+    m_sortedIndexes.clear();
+    for (auto& str : m_images) {
+      if (!m_filter.empty()) {
+        if (ContainsCaseInsensitive(str, m_filter)) {
+          m_sortedIndexes.insert(std::make_pair(index, ""));
+          // m_sortedList.push_back(str);
+        }
+      } else {
+        m_sortedIndexes.insert(std::make_pair(index, ""));
+        // m_sortedList.push_back(str);
+      }
+      index++;
+    }
+    m_sortRequest = false;
+  }
+
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing);
@@ -113,6 +136,20 @@ std::tuple<bool, bool> ImagePicker::draw() {
     const auto calc = ImGui::CalcTextSize("OKCANCEL");
     ImGui::BeginChild("##top_child", {0, ImGui::GetContentRegionAvail().y - (calc.y + (ImGui::GetStyle().ItemSpacing.y * 3) + ImGui::GetStyle().FramePadding.y)});
     {
+      ImGui::Text("Filter");
+      ImGui::SameLine();
+      if (ImGui::InputText("##object_selection_filter_input", &m_filter)) {
+        if (m_filter.empty()) {
+          m_sortedIndexes.clear();
+        } else {
+          m_sortRequest = true;
+        }
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("Clear")) {
+        m_filter.clear();
+        m_sortedIndexes.clear();
+      }
       ImGui::BeginChild("##image_picker_list##1", ImVec2{200, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y}, ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX);
       {
         if (ImGui::BeginTable("##image_picker.tablelist", 1)) {
@@ -159,6 +196,9 @@ std::tuple<bool, bool> ImagePicker::draw() {
           ImGui::BeginChild("##image_list", {}, 0, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
           {
             for (int i = 0; i < m_images.size(); ++i) {
+              if (m_filter.empty() == false && m_sortedIndexes.contains(i) == false) {
+                continue;
+              }
               const auto& sheet = m_images[i];
               ImGui::TableNextColumn();
               if (ImGui::Selectable(sheet.c_str(), m_selectedImage == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
@@ -283,12 +323,16 @@ std::tuple<bool, bool> ImagePicker::draw() {
     {
       ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x - (calc.x + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().ItemSpacing.x));
       if (ImGui::Button("OK")) {
+        m_filter.clear();
+        m_sortedIndexes.clear();
         m_confirmed = true;
         m_open = false;
         ImGui::CloseCurrentPopup();
       }
       ImGui::SameLine();
       if (ImGui::Button("Cancel")) {
+        m_filter.clear();
+        m_sortedIndexes.clear();
         m_confirmed = false;
         m_open = false;
         ImGui::CloseCurrentPopup();

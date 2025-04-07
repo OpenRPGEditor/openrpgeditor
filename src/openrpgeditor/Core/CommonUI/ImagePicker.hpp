@@ -41,4 +41,8 @@ private:
 
   std::optional<Directory> m_imageDir;
   std::optional<Directory> m_imageDir2;
+
+  std::string m_filter;
+  std::map<int, std::string> m_sortedIndexes;
+  bool m_sortRequest{false};
 };

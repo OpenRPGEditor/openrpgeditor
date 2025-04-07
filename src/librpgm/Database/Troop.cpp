@@ -59,7 +59,7 @@ void Troop::Member::setEnemyId(int value) {
   if (!signalsDisabled()) {
     enemyIdModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Troop::Member::x() const { return m_x; }
@@ -72,7 +72,7 @@ void Troop::Member::setX(int value) {
   if (!signalsDisabled()) {
     xModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Troop::Member::y() const { return m_y; }
@@ -85,7 +85,7 @@ void Troop::Member::setY(int value) {
   if (!signalsDisabled()) {
     yModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool Troop::Member::hidden() const { return m_hidden; }
@@ -98,7 +98,7 @@ void Troop::Member::setHidden(bool value) {
   if (!signalsDisabled()) {
     hiddenModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Troop::Member::restoreOriginal() {
@@ -270,7 +270,7 @@ void Troop::Conditions::setActorHp(int value) {
   if (!signalsDisabled()) {
     actorHpModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Troop::Conditions::actorId() const { return m_actorId; }
@@ -283,7 +283,7 @@ void Troop::Conditions::setActorId(int value) {
   if (!signalsDisabled()) {
     actorIdModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool Troop::Conditions::actorValid() const { return m_actorValid; }
@@ -292,6 +292,11 @@ void Troop::Conditions::setActorValid(const bool value) {
     return;
   }
   MODIFIABLE_SET_OLD_VALUE(actorValid);
+  m_actorValid = value;
+  if (!signalsDisabled()) {
+    actorValidModified().fire(this, value);
+  }
+  setModified();
 }
 
 int Troop::Conditions::enemyIndex() const { return m_enemyIndex; }
@@ -304,7 +309,7 @@ void Troop::Conditions::setEnemyIndex(const int value) {
   if (!signalsDisabled()) {
     enemyIndexModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Troop::Conditions::enemyHp() const { return m_enemyHp; }
@@ -317,7 +322,7 @@ void Troop::Conditions::setEnemyHp(const int value) {
   if (!signalsDisabled()) {
     enemyHpModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool Troop::Conditions::enemyValid() const { return m_enemyValid; }
@@ -330,7 +335,7 @@ void Troop::Conditions::setEnemyValid(const bool value) {
   if (!signalsDisabled()) {
     enemyValidModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Troop::Conditions::switchId() const { return m_switchId; }
@@ -343,7 +348,7 @@ void Troop::Conditions::setSwitchId(const int value) {
   if (!signalsDisabled()) {
     switchIdModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool Troop::Conditions::switchValid() const { return m_switchValid; }
@@ -356,7 +361,7 @@ void Troop::Conditions::setSwitchValid(const bool value) {
   if (!signalsDisabled()) {
     switchValidModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Troop::Conditions::turnA() const { return m_turnA; }
@@ -369,7 +374,7 @@ void Troop::Conditions::setTurnA(const int value) {
   if (!signalsDisabled()) {
     turnAModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Troop::Conditions::turnB() const { return m_turnB; }
@@ -382,7 +387,7 @@ void Troop::Conditions::setTurnB(const int value) {
   if (!signalsDisabled()) {
     turnBModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool Troop::Conditions::turnEnding() const { return m_turnEnding; }
@@ -395,7 +400,7 @@ void Troop::Conditions::setTurnEnding(const bool value) {
   if (!signalsDisabled()) {
     turnEndingModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool Troop::Conditions::turnValid() const { return m_turnValid; }
@@ -408,7 +413,7 @@ void Troop::Conditions::setTurnValid(const bool value) {
   if (!signalsDisabled()) {
     turnValidModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Troop::Conditions::restoreOriginal() {
@@ -571,7 +576,7 @@ void Troop::Page::setConditions(const Conditions& value) {
   if (!signalsDisabled()) {
     conditionsModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 std::vector<std::shared_ptr<IEventCommand>>& Troop::Page::list() { return m_list; }
@@ -585,7 +590,7 @@ void Troop::Page::setList(const std::vector<std::shared_ptr<IEventCommand>>& val
   if (!signalsDisabled()) {
     listModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Troop::Page::span() const { return m_span; }
@@ -598,7 +603,7 @@ void Troop::Page::setSpan(int value) {
   if (!signalsDisabled()) {
     spanModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Troop::Page::restoreOriginal() {
@@ -726,7 +731,7 @@ void Troop::setId(const int id) {
   if (!signalsDisabled()) {
     idModified().fire(this, id);
   }
-  setHasChanges();
+  setModified();
 }
 std::vector<Troop::Member>& Troop::members() { return m_members; }
 const std::vector<Troop::Member>& Troop::members() const { return m_members; }
@@ -739,7 +744,7 @@ void Troop::setMembers(const std::vector<Member>& value) {
   if (!signalsDisabled()) {
     membersModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& Troop::name() const { return m_name; }
@@ -752,7 +757,7 @@ void Troop::setName(const std::string& name) {
   if (!signalsDisabled()) {
     nameModified().fire(this, name);
   }
-  setHasChanges();
+  setModified();
 }
 
 std::vector<Troop::Page>& Troop::pages() { return m_pages; }
@@ -766,7 +771,7 @@ void Troop::setPages(const std::vector<Page>& value) {
   if (!signalsDisabled()) {
     pagesModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Troop::restoreOriginal() {

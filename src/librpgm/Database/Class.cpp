@@ -27,7 +27,7 @@ void Class::Learning::setLevel(const int level) {
   if (!signalsDisabled()) {
     levelModified().fire(this, level);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& Class::Learning::note() const { return m_note; }
@@ -38,7 +38,7 @@ void Class::Learning::setNote(const std::string& note) {
   if (!signalsDisabled()) {
     noteModified().fire(this, note);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Class::Learning::skillId() const { return m_skillId; }
@@ -49,7 +49,7 @@ void Class::Learning::setSkillId(const int skillId) {
   if (!signalsDisabled()) {
     skillIdModified().fire(this, skillId);
   }
-  setHasChanges();
+  setModified();
 }
 void Class::Learning::restoreOriginal() {
   IModifiable::restoreOriginal();
@@ -183,7 +183,7 @@ void Class::setId(const int id) {
   if (!signalsDisabled()) {
     idModified().fire(this, id);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::array<int, 4>& Class::expParams() const { return m_expParams; }
@@ -193,7 +193,7 @@ void Class::setExpParams(const std::array<int, 4>& expParams) {
   if (!signalsDisabled()) {
     expParamsModified().fire(this, expParams);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Class::setExpParam(const int index, const int value) {
@@ -203,7 +203,7 @@ void Class::setExpParam(const int index, const int value) {
   if (!signalsDisabled()) {
     expParamModified().fire(this, index, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 std::vector<Trait>& Class::traits() { return m_traits; }
@@ -214,7 +214,7 @@ void Class::setTraits(const std::vector<Trait>& traits) {
   if (!signalsDisabled()) {
     traitsModified().fire(this, traits);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::vector<Class::Learning>& Class::learnings() const { return m_learnings; }
@@ -224,7 +224,7 @@ void Class::setLearnings(const std::vector<Learning>& learnings) {
   if (!signalsDisabled()) {
     learningsModified().fire(this, learnings);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& Class::name() const { return m_name; }
@@ -234,7 +234,7 @@ void Class::setName(const std::string& name) {
   if (!signalsDisabled()) {
     nameModified().fire(this, name);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& Class::note() const { return m_note; }
@@ -244,7 +244,7 @@ void Class::setNote(const std::string& note) {
   if (!signalsDisabled()) {
     noteModified().fire(this, note);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::array<std::array<int, 99>, 8>& Class::params() const { return m_params; }
@@ -254,7 +254,7 @@ void Class::setParams(const std::array<std::array<int, 99>, 8>& params) {
   if (!signalsDisabled()) {
     paramsModified().fire(this, params);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool Class::isValid() const { return m_isValid; }

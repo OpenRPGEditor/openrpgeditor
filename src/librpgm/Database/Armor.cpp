@@ -106,7 +106,7 @@ void Armor::setId(const int id) {
   if (!signalsDisabled()) {
     idModified().fire(this, m_id);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] int Armor::atypeId() const { return m_atypeId; }
@@ -116,7 +116,7 @@ void Armor::setAtypeId(const int atypeId) {
   if (!signalsDisabled()) {
     atypeModified().fire(this, m_atypeId);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::string& Armor::description() const { return m_description; }
@@ -126,7 +126,7 @@ void Armor::setDescription(const std::string& description) {
   if (!signalsDisabled()) {
     descriptionModified().fire(this, m_description);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] int Armor::etypeId() const { return m_etypeId; }
@@ -136,7 +136,7 @@ void Armor::setEtypeId(const int etypeId) {
   if (!signalsDisabled()) {
     etypeModified().fire(this, m_etypeId);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] std::vector<Trait>& Armor::traits() { return m_traits; }
@@ -147,7 +147,7 @@ void Armor::setTraits(const std::vector<Trait>& traits) {
   if (!signalsDisabled()) {
     traitsModified().fire(this, m_traits);
   }
-  setHasChanges();
+  setModified();
 }
 
 Trait& Armor::trait(const int index) {
@@ -167,7 +167,7 @@ void Armor::setTrait(const int index, const Trait& trait) {
   if (!signalsDisabled()) {
     traitModified().fire(this, index, trait);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] int Armor::iconIndex() const { return m_iconIndex; }
@@ -177,7 +177,7 @@ void Armor::setIconIndex(const int iconIndex) {
   if (!signalsDisabled()) {
     iconIndexModified().fire(this, m_iconIndex);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::string& Armor::name() const { return m_name; }
@@ -187,7 +187,7 @@ void Armor::setName(const std::string& name) {
   if (!signalsDisabled()) {
     nameModified().fire(this, m_name);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::string& Armor::note() const { return m_note; }
@@ -197,7 +197,7 @@ void Armor::setNote(const std::string& note) {
   if (!signalsDisabled()) {
     noteModified().fire(this, m_note);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::array<int, 8>& Armor::params() const { return m_params; }
@@ -207,7 +207,7 @@ void Armor::setParams(const std::array<int, 8>& params) {
   if (!signalsDisabled()) {
     paramsModified().fire(this, m_params);
   }
-  setHasChanges();
+  setModified();
 }
 [[nodiscard]] int Armor::param(const int index) const {
   assert(index >= 0 && index < m_params.size());
@@ -221,7 +221,7 @@ void Armor::setParam(const int index, const int param) {
   if (!signalsDisabled()) {
     paramModified().fire(this, index, param);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] int Armor::price() const { return m_price; }
@@ -231,7 +231,7 @@ void Armor::setPrice(const int price) {
   if (!signalsDisabled()) {
     priceModified().fire(this, m_price);
   }
-  setHasChanges();
+  setModified();
 }
 [[nodiscard]] bool Armor::isValid() const { return m_isValid; }
 void Armor::setValid(const bool isValid) { m_isValid = isValid; }

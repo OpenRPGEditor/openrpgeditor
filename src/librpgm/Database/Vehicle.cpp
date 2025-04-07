@@ -75,7 +75,7 @@ void Vehicle::setBgm(const Audio& bgm) {
   if (!signalsDisabled()) {
     bgmModified().fire(this, bgm);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Vehicle::characterIndex() const { return m_characterIndex; }
@@ -88,7 +88,7 @@ void Vehicle::setCharacterIndex(int characterIndex) {
   if (!signalsDisabled()) {
     characterIndexModified().fire(this, characterIndex);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& Vehicle::characterName() const { return m_characterName; }
@@ -101,7 +101,7 @@ void Vehicle::setCharacterName(const std::string& characterName) {
   if (!signalsDisabled()) {
     characterNameModified().fire(this, characterName);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Vehicle::startMapId() const { return m_startMapId; }
@@ -114,7 +114,7 @@ void Vehicle::setStartMapId(int startMapId) {
   if (!signalsDisabled()) {
     startMapIdModified().fire(this, startMapId);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Vehicle::startX() const { return m_startX; }
@@ -127,7 +127,7 @@ void Vehicle::setStartX(int startX) {
   if (!signalsDisabled()) {
     startXModified().fire(this, startX);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Vehicle::startY() const { return m_startY; }
@@ -140,7 +140,7 @@ void Vehicle::setStartY(int startY) {
   if (!signalsDisabled()) {
     startYModified().fire(this, startY);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Vehicle::restoreOriginal() {

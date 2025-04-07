@@ -201,7 +201,7 @@ void Skill::setId(const int id) {
   if (!signalsDisabled()) {
     idModified().fire(this, id);
   }
-  setHasChanges();
+  setModified(true);
 }
 
 [[nodiscard]] int Skill::animationId() const { return m_animationId; }
@@ -214,7 +214,7 @@ void Skill::setAnimationId(int id) {
   if (!signalsDisabled()) {
     animationIdModified().fire(this, id);
   }
-  setHasChanges();
+  setModified();
 }
 
 Damage& Skill::damage() { return m_damage; }
@@ -227,7 +227,7 @@ void Skill::setDamage(const Damage& damage) {
   if (!signalsDisabled()) {
     damageModified().fire(this, damage);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::string& Skill::description() const { return m_description; }
@@ -240,7 +240,7 @@ void Skill::setDescription(const std::string& description) {
   if (!signalsDisabled()) {
     descriptionModified().fire(this, m_description);
   }
-  setHasChanges();
+  setModified();
 }
 
 std::vector<Effect>& Skill::effects() { return m_effects; }
@@ -253,7 +253,7 @@ void Skill::setEffects(const std::vector<Effect>& effects) {
   if (!signalsDisabled()) {
     effectsModified().fire(this, m_effects);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] int Skill::iconIndex() const { return m_iconIndex; }
@@ -266,7 +266,7 @@ void Skill::setIconIndex(int iconIndex) {
   if (!signalsDisabled()) {
     iconIndexModified().fire(this, m_iconIndex);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::string& Skill::message1() const { return m_message1; }
@@ -279,7 +279,7 @@ void Skill::setMessage1(const std::string& message1) {
   if (!signalsDisabled()) {
     message1Modified().fire(this, m_message1);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::string& Skill::message2() const { return m_message2; }
@@ -292,7 +292,7 @@ void Skill::setMessage2(const std::string& message2) {
   if (!signalsDisabled()) {
     message2Modified().fire(this, m_message2);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] int Skill::mpCost() const { return m_mpCost; }
@@ -305,7 +305,7 @@ void Skill::setMpCost(int mpCost) {
   if (!signalsDisabled()) {
     mpCostModified().fire(this, m_mpCost);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::string& Skill::name() const { return m_name; }
@@ -318,7 +318,7 @@ void Skill::setName(const std::string& name) {
   if (!signalsDisabled()) {
     nameModified().fire(this, m_name);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::string& Skill::note() const { return m_note; }
@@ -331,7 +331,7 @@ void Skill::setNote(const std::string& note) {
   if (!signalsDisabled()) {
     noteModified().fire(this, m_note);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] Occasion Skill::occasion() const { return m_occasion; }
@@ -344,7 +344,7 @@ void Skill::setOccasion(Occasion occasion) {
   if (!signalsDisabled()) {
     occasionModified().fire(this, m_occasion);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] HitType Skill::hitType() const { return m_hitType; }
@@ -357,7 +357,7 @@ void Skill::setHitType(HitType hitType) {
   if (!signalsDisabled()) {
     hitTypeModified().fire(this, m_hitType);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] int Skill::repeats() const { return m_repeats; }
@@ -370,7 +370,7 @@ void Skill::setRepeats(int repeats) {
   if (!signalsDisabled()) {
     repeatsModified().fire(this, m_repeats);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] int Skill::requiredWtypeId1() const { return m_requiredWtypeId1; }
@@ -383,7 +383,7 @@ void Skill::setRequiredWtypeId1(int requiredWtypeId1) {
   if (!signalsDisabled()) {
     requiredWtypeId1Modified().fire(this, m_requiredWtypeId1);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] int Skill::requiredWtypeId2() const { return m_requiredWtypeId2; }
@@ -396,7 +396,7 @@ void Skill::setRequiredWtypeId2(int requiredWtypeId2) {
   if (!signalsDisabled()) {
     requiredWtypeId2Modified().fire(this, m_requiredWtypeId2);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] Scope Skill::scope() const { return m_scope; }
@@ -409,7 +409,7 @@ void Skill::setScope(Scope scope) {
   if (!signalsDisabled()) {
     scopeModified().fire(this, m_scope);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] int Skill::speed() const { return m_speed; }
@@ -422,7 +422,7 @@ void Skill::setSpeed(int speed) {
   if (!signalsDisabled()) {
     speedModified().fire(this, m_speed);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] int Skill::stypeId() const { return m_stypeId; }
@@ -435,7 +435,7 @@ void Skill::setStypeId(int stypeId) {
   if (!signalsDisabled()) {
     stypeIdModified().fire(this, m_stypeId);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] int Skill::successRate() const { return m_successRate; }
@@ -448,7 +448,7 @@ void Skill::setSuccessRate(int successRate) {
   if (!signalsDisabled()) {
     successRateModified().fire(this, m_successRate);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] int Skill::tpCost() const { return m_tpCost; }
@@ -461,7 +461,7 @@ void Skill::setTpCost(int tpCost) {
   if (!signalsDisabled()) {
     tpCostModified().fire(this, m_tpCost);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] int Skill::tpGain() const { return m_tpGain; }
@@ -474,7 +474,7 @@ void Skill::setTpGain(int tpGain) {
   if (!signalsDisabled()) {
     tpGainModified().fire(this, m_tpGain);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] bool Skill::isValid() const { return m_isValid; }

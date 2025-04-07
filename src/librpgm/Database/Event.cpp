@@ -106,7 +106,7 @@ void Event::setId(const int id) {
   if (!signalsDisabled()) {
     idModified().fire(this, id);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& Event::name() const { return m_name; }
@@ -116,7 +116,7 @@ void Event::setName(const std::string& name) {
   if (!signalsDisabled()) {
     nameModified().fire(this, name);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& Event::note() const { return m_note; }
@@ -126,7 +126,7 @@ void Event::setNote(const std::string& note) {
   if (!signalsDisabled()) {
     noteModified().fire(this, note);
   }
-  setHasChanges();
+  setModified();
 }
 
 std::vector<EventPage>& Event::pages() { return m_pages; }
@@ -137,7 +137,7 @@ void Event::setPages(const std::vector<EventPage>& pages) {
   if (!signalsDisabled()) {
     pagesModified().fire(this, pages);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Event::addPage(const EventPage& page) {
@@ -151,7 +151,7 @@ void Event::insertPage(const EventPage& page, int index) {
   if (!signalsDisabled()) {
     pageInserted().fire(this, &m_pages[index], index);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Event::removePage(const int index) {
@@ -163,7 +163,7 @@ void Event::removePage(const int index) {
   if (!signalsDisabled()) {
     pageRemoved().fire(this);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Event::x() const { return m_x; }
@@ -173,7 +173,7 @@ void Event::setX(const int x) {
   if (!signalsDisabled()) {
     xModified().fire(this, m_x);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Event::y() const { return m_y; }
@@ -183,7 +183,7 @@ void Event::setY(const int y) {
   if (!signalsDisabled()) {
     yModified().fire(this, m_y);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Event::swapPages(int a, int b) {
@@ -199,7 +199,7 @@ void Event::swapPages(int a, int b) {
   if (!signalsDisabled()) {
     pagesModified().fire(this, m_pages);
   }
-  setHasChanges();
+  setModified();
 }
 std::map<int, bool> Event::isConditionalReference(int targetId, SearchType type) const {
   std::map<int, bool> events;

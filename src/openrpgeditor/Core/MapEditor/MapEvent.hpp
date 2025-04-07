@@ -34,8 +34,8 @@ public:
       setMoveRoute(&page()->moveRoute());
       m_moveType = page()->moveType();
       m_trigger = page()->trigger();
-      page()->image().characterNameModified().connect<&MapEvent::onCharacterImageModified>(this);
-      page()->image().tileIdModified().connect<&MapEvent::onTileIdModified>(this);
+      page()->image().onModified().connect<&MapEvent::onModified>(this);
+      page()->onModified().connect<&MapEvent::onModified>(this);
     }
   }
   void setPage(const int idx) override {
@@ -44,8 +44,8 @@ public:
     }
 
     if (page()) {
-      page()->image().characterNameModified().disconnect<&MapEvent::onCharacterImageModified>(this);
-      page()->image().tileIdModified().disconnect<&MapEvent::onTileIdModified>(this);
+      page()->image().onModified().disconnect<&MapEvent::onModified>(this);
+      page()->onModified().disconnect<&MapEvent::onModified>(this);
     }
     m_page = idx;
     setupPageSettings();
@@ -285,6 +285,5 @@ private:
   bool m_prisonMode{false};
 
   float m_lastFrameTime = 0.f;
-  void onCharacterImageModified(EventImage*, const std::string&);
-  void onTileIdModified(EventImage*, int tileId);
+  void onModified(IModifiable*) { setupPageSettings(); }
 };

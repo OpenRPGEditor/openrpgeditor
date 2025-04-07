@@ -479,7 +479,7 @@ void EventImage::setTileId(int tileId) {
   if (!signalsDisabled()) {
     tileIdModified().fire(this, tileId);
   }
-  setHasChanges();
+  setModified();
 }
 
 std::string_view EventImage::characterName() const { return m_characterName; }
@@ -492,7 +492,7 @@ void EventImage::setCharacterName(std::string_view characterName) {
   if (!signalsDisabled()) {
     characterNameModified().fire(this, m_characterName);
   }
-  setHasChanges();
+  setModified();
 }
 Direction EventImage::direction() const { return m_direction; }
 void EventImage::setDirection(const Direction direction) {
@@ -504,7 +504,7 @@ void EventImage::setDirection(const Direction direction) {
   if (!signalsDisabled()) {
     directionModified().fire(this, m_direction);
   }
-  setHasChanges();
+  setModified();
 }
 
 int EventImage::pattern() const { return m_pattern; }
@@ -517,7 +517,7 @@ void EventImage::setPattern(const int pattern) {
   if (!signalsDisabled()) {
     patternModified().fire(this, m_pattern);
   }
-  setHasChanges();
+  setModified();
 }
 
 int EventImage::characterIndex() const { return m_characterIndex; }
@@ -530,7 +530,7 @@ void EventImage::setCharacterIndex(const int characterIndex) {
   if (!signalsDisabled()) {
     characterIndexModified().fire(this, m_characterIndex);
   }
-  setHasChanges();
+  setModified();
 }
 
 void EventImage::restoreOriginal() {

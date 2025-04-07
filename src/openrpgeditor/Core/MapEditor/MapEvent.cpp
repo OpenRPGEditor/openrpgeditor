@@ -28,16 +28,7 @@ MapEvent::MapEvent(Event* event)
   setupPageSettings();
   m_x = m_realX = m_event->x();
   m_y = m_realY = m_event->y();
-}
-
-void MapEvent::onCharacterImageModified(EventImage* evImage, const std::string& characterName) {
-  //
-  m_characterSheet = CharacterSheet(characterName, evImage->tileId() > 0, evImage->tileId());
-}
-
-void MapEvent::onTileIdModified(EventImage* evImage, int tileId) {
-  //
-  m_characterSheet = CharacterSheet(evImage->characterName(), tileId > 0, tileId);
+  m_event->onModified().connect<&MapEvent::onModified>(this);
 }
 
 double oscillate(const double minValue, const double maxValue, const double period, const double currentTime) {

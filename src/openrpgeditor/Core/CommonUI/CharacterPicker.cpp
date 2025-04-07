@@ -142,7 +142,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(320, 320), {FLT_MAX, FLT_MAX});
-  ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(320, 320), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(320, 320), ImGuiCond_Once);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open)) {
     const auto calc = ImGui::CalcTextSize("OKCANCEL");
     ImGui::BeginChild("##top_child", {0, ImGui::GetContentRegionAvail().y - (calc.y + (ImGui::GetStyle().ItemSpacing.y * 2) + ImGui::GetStyle().FramePadding.y)});

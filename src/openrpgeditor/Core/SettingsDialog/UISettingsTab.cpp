@@ -7,7 +7,7 @@ static inline float roundToNearestQuarter(float num) { return static_cast<float>
 void UISettingsTab::draw() {
   if (ImGui::BeginTabItem("UI")) {
     ImGui::Text("Font Size");
-    ImGui::SliderInt("##ui_font_size", &Settings::instance()->fontSize, 8, 21);
+    ImGui::SliderInt("##ui_font_size", &Settings::instance()->fontSize, 8, 48);
     if (ImGui::IsItemDeactivatedAfterEdit()) {
       App::APP->requestFontUpdate();
       m_fontSizeChanged = true;
@@ -15,7 +15,7 @@ void UISettingsTab::draw() {
     }
     ImGui::PushFont(App::APP->getMonoFont());
     ImGui::Text("Monospace Font Size");
-    ImGui::SliderInt("##ui_mono_font_size", &Settings::instance()->monoFontSize, 7, 20);
+    ImGui::SliderInt("##ui_mono_font_size", &Settings::instance()->monoFontSize, 8, 48);
     if (ImGui::IsItemDeactivatedAfterEdit()) {
       App::APP->requestFontUpdate();
       m_fontSizeChanged = true;

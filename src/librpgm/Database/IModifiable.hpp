@@ -69,7 +69,7 @@ public:
   IModifiable(IModifiable&& other) noexcept;
   IModifiable& operator=(IModifiable&& other) noexcept;
   virtual ~IModifiable();
-  [[nodiscard]] virtual bool isModified() const { return m_modified | m_hasChanges; }
+  [[nodiscard]] virtual bool isModified() const { return m_modified; }
   void setModified(const bool modified = true) {
     m_modified = modified;
     if (m_modified && !signalsDisabled()) {
@@ -79,11 +79,11 @@ public:
 
   virtual void restoreOriginal() { m_hasChanges = false; }
   virtual void acceptChanges() {
-    m_hasChanges = false;
-    setModified(true);
+    m_modified = false;
+    setHasChanges(true);
   }
   virtual nlohmann::ordered_json serializeOldValues() const { return {}; }
-  bool hasChanges() const { return m_hasChanges; };
+  bool hasChanges() const { return m_hasChanges | m_modified; };
   void setHasChanges(const bool hasChanges = true) { m_hasChanges = hasChanges; }
 
   bool signalsDisabled() const { return m_signalsDisabled; }

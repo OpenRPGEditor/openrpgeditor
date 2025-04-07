@@ -63,7 +63,7 @@ void Damage::setCritical(const bool critical) {
   if (!signalsDisabled()) {
     criticalModified().fire(this, critical);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Damage::elementId() const { return m_elementId; }
@@ -73,6 +73,7 @@ void Damage::setElementId(const int elementId) {
   if (!signalsDisabled()) {
     elementIdModified().fire(this, elementId);
   }
+  setModified();
 }
 
 const std::string& Damage::formula() const { return m_formula; }
@@ -82,7 +83,7 @@ void Damage::setFormula(const std::string& formula) {
   if (!signalsDisabled()) {
     formulaModified().fire(this, formula);
   }
-  setHasChanges();
+  setModified();
 }
 
 DamageType Damage::type() const { return m_type; }
@@ -92,7 +93,7 @@ void Damage::setType(const DamageType type) {
   if (!signalsDisabled()) {
     typeModified().fire(this, type);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Damage::variance() const { return m_variance; }
@@ -103,7 +104,7 @@ void Damage::setVariance(const int variance) {
   if (!signalsDisabled()) {
     varianceModified().fire(this, variance);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Damage::restoreOriginal() {

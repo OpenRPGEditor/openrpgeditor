@@ -185,8 +185,8 @@ void Application::updateFonts() {
   ImGuiIO& io{ImGui::GetIO()};
   // ImGUI font
   const float scale = std::max(SDL_GetWindowPixelDensity(m_window->getNativeWindow()), SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
-  const float font_size = m_settings.fontSize * scale;
-  const float mono_font_size = m_settings.monoFontSize * scale;
+  const float font_size = m_settings.fontSize;
+  const float mono_font_size = m_settings.monoFontSize;
   const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
   const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf").generic_string()};
   const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf").generic_string()};
@@ -205,6 +205,7 @@ void Application::updateFonts() {
   builder.AddRanges(specialChar);
   builder.BuildRanges(&ranges);
   ImFontConfig config;
+  config.RasterizerDensity = scale;
   io.Fonts->Clear();
   config.MergeMode = false;
   config.FontBuilderFlags |= ImGuiFreeTypeBuilderFlags_LoadColor;

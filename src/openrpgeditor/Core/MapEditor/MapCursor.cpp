@@ -46,7 +46,8 @@ void MapCursor::update(float mapScale, int mapWidth, int mapHeight, int tileSize
   m_tileSize = tileSize;
 
   /* Keyboard mode is disabled until scrolling can be figured out */
-  if ((ImGui::IsKeyPressed(ImGuiKey_LeftArrow) || ImGui::IsKeyPressed(ImGuiKey_RightArrow) || ImGui::IsKeyPressed(ImGuiKey_UpArrow) || ImGui::IsKeyPressed(ImGuiKey_DownArrow))) {
+  if (ImGui::IsWindowHovered() && ImGui::IsWindowFocused() &&
+      (ImGui::IsKeyPressed(ImGuiKey_LeftArrow) || ImGui::IsKeyPressed(ImGuiKey_RightArrow) || ImGui::IsKeyPressed(ImGuiKey_UpArrow) || ImGui::IsKeyPressed(ImGuiKey_DownArrow))) {
     m_mode = MapCursorMode::Keyboard;
 
     if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {

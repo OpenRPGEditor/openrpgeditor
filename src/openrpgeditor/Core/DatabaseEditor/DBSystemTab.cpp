@@ -29,7 +29,7 @@ void DBSystemTab::draw() {
 
   if (!m_boatButtonTexture) {
     m_boatButtonTexture.emplace();
-    m_boatButtonTexture->setSize(144, 144);
+    m_boatButtonTexture->setSize(ImGui::GetDPIScaledValue(48), ImGui::GetDPIScaledValue(48));
     if (!m_boatSheet) {
       m_boatSheet.emplace(m_system.boat().characterName());
     }
@@ -39,7 +39,7 @@ void DBSystemTab::draw() {
   }
   if (!m_shipButtonTexture) {
     m_shipButtonTexture.emplace();
-    m_shipButtonTexture->setSize(144, 144);
+    m_shipButtonTexture->setSize(ImGui::GetDPIScaledValue(48), ImGui::GetDPIScaledValue(48));
     if (!m_shipSheet) {
       m_shipSheet.emplace(m_system.ship().characterName());
     }
@@ -49,7 +49,7 @@ void DBSystemTab::draw() {
   }
   if (!m_airshipButtonTexture) {
     m_airshipButtonTexture.emplace();
-    m_airshipButtonTexture->setSize(144, 144);
+    m_airshipButtonTexture->setSize(ImGui::GetDPIScaledValue(48), ImGui::GetDPIScaledValue(48));
     if (!m_airshipSheet) {
       m_airshipSheet.emplace(m_system.airship().characterName());
     }
@@ -62,8 +62,8 @@ void DBSystemTab::draw() {
     m_gameWindowBackground.emplace();
   }
 
-  if (m_gameWindowBackground->width() != 164 || m_gameWindowBackground->height() != 164) {
-    m_gameWindowBackground->setSize(164, 164);
+  if (m_gameWindowBackground->width() != ImGui::GetDPIScaledValue(94) || m_gameWindowBackground->height() != ImGui::GetDPIScaledValue(94)) {
+    m_gameWindowBackground->setSize(ImGui::GetDPIScaledValue(94), ImGui::GetDPIScaledValue(94));
   }
   {
     ImGui::BeginGroup();

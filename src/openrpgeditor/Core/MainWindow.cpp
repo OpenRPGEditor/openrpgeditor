@@ -213,9 +213,24 @@ void MainWindow::setupDocking() {
   ImGui::PopStyleVar(3);
 }
 
+unsigned long nextPowerOfTwo(unsigned long n) {
+  if (n == 0) {
+    return 1;
+  }
+  if ((n & (n - 1)) == 0) {
+    return n;
+  }
+
+  return std::pow(2, std::ceil(std::log2(n)));
+}
+
 void MainWindow::drawToolbar() {
-  const ImVec2 ButtonSize = {48, 48};
-  ImGuiViewport* viewport = ImGui::GetMainViewport();
+  m_toolbarButtonSize = nextPowerOfTwo(ImGui::CalcTextSize("#").y);
+  m_toolbarSize = m_toolbarButtonSize + ImGui::GetStyle().FramePadding.y * 4 + ImGui::GetStyle().ItemSpacing.x * 2;
+  const ImVec2 ButtonSize{m_toolbarButtonSize + ImGui::GetStyle().ItemSpacing.x * 2, m_toolbarButtonSize + ImGui::GetStyle().ItemSpacing.x * 2};
+  const ImVec2 ImageButtonSize = ButtonSize - ImVec2{ImGui::GetStyle().FramePadding.y * 2, ImGui::GetStyle().FramePadding.y * 2};
+
+  const ImGuiViewport* viewport = ImGui::GetMainViewport();
   ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + m_menuBarHeight));
   ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, m_toolbarSize));
   ImGui::SetNextWindowViewport(viewport->ID);
@@ -292,7 +307,7 @@ void MainWindow::drawToolbar() {
   ImGui::SameLine();
   ImGui::BeginDisabled(m_editMode == EditMode::Map);
   {
-    if (ImGui::ImageButton("map_button", ResourceManager::instance()->loadEditorTexture(std::format("icons/map/map_128x128.png")), ButtonSize)) {
+    if (ImGui::ImageButton("map_button", ResourceManager::instance()->loadEditorTexture(std::format("icons/map/map_{0}x{0}.png", m_toolbarButtonSize)), ImageButtonSize)) {
       enterMapEditMode();
     }
   }
@@ -303,7 +318,7 @@ void MainWindow::drawToolbar() {
   ImGui::SameLine();
   ImGui::BeginDisabled(m_editMode == EditMode::Event);
   {
-    if (ImGui::ImageButton("event_button", ResourceManager::instance()->loadEditorTexture(std::format("icons/map/event_128x128.png")), ButtonSize)) {
+    if (ImGui::ImageButton("event_button", ResourceManager::instance()->loadEditorTexture(std::format("icons/map/event_{0}x{0}.png", m_toolbarButtonSize)), ImageButtonSize)) {
       enterEventEditMode();
     }
   }
@@ -312,7 +327,9 @@ void MainWindow::drawToolbar() {
   }
   ImGui::EndDisabled();
   ImGui::SameLine();
-  if (ImGui::ImageButton("preview_button", ResourceManager::instance()->loadEditorTexture(std::format("icons/map/preview{}_128x128.png", !m_mapEditor.prisonMode() ? "-off" : "")), ButtonSize)) {
+  if (ImGui::ImageButton("preview_button",
+                         ResourceManager::instance()->loadEditorTexture(std::format("icons/map/preview{0}_{1}x{1}.png", !m_mapEditor.prisonMode() ? "-off" : "", m_toolbarButtonSize)),
+                         ImageButtonSize)) {
     m_mapEditor.setPrisonMode(!m_mapEditor.prisonMode());
   }
   if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
@@ -370,9 +387,6 @@ void MainWindow::drawToolbar() {
 }
 
 void MainWindow::draw() {
-  m_toolbarButtonSize = ImGui::GetDPIScaledValue(32);
-  m_toolbarSize = m_toolbarButtonSize + (ImGui::GetStyle().ItemSpacing.y * 4) + (ImGui::GetStyle().FramePadding.y * 4);
-  m_toolbarButtonSize += ImGui::GetStyle().ItemSpacing.x * 2;
   drawMenu();
   drawToolbar();
   setupDocking();

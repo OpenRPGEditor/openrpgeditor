@@ -1,6 +1,6 @@
 #pragma once
-#include "OREMath/MathGlobals.hpp"
 #include "imgui.h"
+#include "OREMath/MathGlobals.hpp"
 
 class Size {
 public:
@@ -8,6 +8,9 @@ public:
   Size(const int width, const int height)
   : mWidth(width)
   , mHeight(height) {}
+  explicit Size(const ImVec2& size)
+  : mWidth(size.x)
+  , mHeight(size.y) {}
 
   explicit operator ImVec2() const { return ImVec2{static_cast<float>(mWidth), static_cast<float>(mHeight)}; }
 
@@ -71,6 +74,9 @@ public:
   SizeF(const float width, const float height)
   : mWidth(width)
   , mHeight(height) {}
+  explicit SizeF(const ImVec2& size)
+  : mWidth(size.x)
+  , mHeight(size.y) {}
   explicit operator ImVec2() const { return ImVec2{mWidth, mHeight}; }
 
   void transpose();

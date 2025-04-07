@@ -10,6 +10,7 @@
 
 #include "imgui.h"
 #include "imgui_internal.h"
+#include "ImGuiExt/ImGuiUtils.hpp"
 
 #include <clip.h>
 
@@ -77,15 +78,15 @@ void MapEditor::drawParallax(ImGuiWindow* win) {
 }
 
 void MapEditor::drawGrid(ImGuiWindow* win) {
-  for (int y = tileSize() * m_mapScale; y < (map()->height() * tileSize()) * m_mapScale; y += tileSize() * m_mapScale) {
-    win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)}, win->ContentRegionRect.Min + ImVec2{(map()->width() * tileSize()) * m_mapScale, static_cast<float>(y)},
-                           0x7f0a0a0a, 3.f);
-  }
-
-  for (int x = tileSize() * m_mapScale; x < (map()->width() * tileSize()) * m_mapScale; x += tileSize() * m_mapScale) {
-    win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), 0.f}, win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), (map()->height() * tileSize()) * m_mapScale},
-                           0x7f0a0a0a, 3.f);
-  }
+  // for (int y = tileSize() * m_mapScale; y < (map()->height() * tileSize()) * m_mapScale; y += tileSize() * m_mapScale) {
+  //   win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)}, win->ContentRegionRect.Min + ImVec2{(map()->width() * tileSize()) * m_mapScale, static_cast<float>(y)},
+  //                          IM_COL32(10, 10, 10, 240), ImGui::GetDPIScaledValue(1.5f));
+  // }
+  //
+  // for (int x = tileSize() * m_mapScale; x < (map()->width() * tileSize()) * m_mapScale; x += tileSize() * m_mapScale) {
+  //   win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), 0.f}, win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), (map()->height() * tileSize()) * m_mapScale},
+  //                          IM_COL32(10, 10, 10, 240), ImGui::GetDPIScaledValue(1.5f));
+  // }
 }
 
 float roundToNearestQuarter(float num) { return static_cast<float>(static_cast<int>(num * 4)) / 4; }
@@ -113,6 +114,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
   //   map()->data[(tileCellY() * map()->width) + tileCellX()] = 2086;
   //   updateAutotilesAroundPoint(Point{tileCellX(), tileCellY()}, 0);
   // }
+  const bool wasCursorVisible = m_tileCursor.visible();
 
   if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow) || ImGui::IsKeyPressed(ImGuiKey_RightArrow) || ImGui::IsKeyPressed(ImGuiKey_UpArrow) || ImGui::IsKeyPressed(ImGuiKey_DownArrow)) {
     m_tileCursor.setKeyboardMode();
@@ -125,10 +127,15 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
   } else if (ImGui::IsWindowHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left) && (m_parent->editMode() == EditMode::Event || m_movingEvent)) {
     m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system.tileSize(), win);
     handleEventDrag();
-    m_scaleChanged = false;
   } else if (m_scaleChanged || m_tileCursor.mode() == MapCursorMode::Keyboard) {
     m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system.tileSize(), win);
     handleEventDrag();
+  }
+
+  if (m_scaleChanged) {
+    ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + ((m_tileCursor.absoluteX() * m_mapScale) - (win->ContentRegionRect.Max.x / 2)));
+    ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + ((m_tileCursor.absoluteY() * m_mapScale) - (win->ContentRegionRect.Max.y / 2)));
+    m_tileCursor.setVisible(wasCursorVisible);
     m_scaleChanged = false;
   }
 
@@ -538,7 +545,18 @@ void MapEditor::renderLayerTex(ImGuiWindow* win, const MapRenderer::TileLayer& t
     const float u1 = (tile.u + tile.tileWidth) / tLayer.tex.width();
     const float v0 = tile.v / tLayer.tex.height();
     const float v1 = (tile.v + tile.tileHeight) / tLayer.tex.height();
-    win->DrawList->AddImage(tLayer.tex, win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale), win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), ImVec2{u0, v0}, ImVec2{u1, v1});
+
+    const auto minPos = win->WorkRect.Min + (ImVec2{x0, y0} * m_mapScale);
+    const auto maxPos = win->WorkRect.Min + (ImVec2{x1, y1} * m_mapScale);
+    const float w = tile.tileWidth * m_mapScale;
+    const float h = tile.tileHeight * m_mapScale;
+    if (minPos.x < win->ClipRect.Min.x - w || maxPos.x > win->ClipRect.Max.x + w) {
+      continue;
+    }
+    if (minPos.y < win->ClipRect.Min.y - h || maxPos.y > win->ClipRect.Max.y + h) {
+      continue;
+    }
+    win->DrawList->AddImage(tLayer.tex, minPos, maxPos, ImVec2{u0, v0}, ImVec2{u1, v1});
   }
 }
 
@@ -556,6 +574,9 @@ void MapEditor::renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer
 }
 
 void MapEditor::draw() {
+  if (!m_checkeredBack) {
+    m_checkeredBack = CheckerboardTexture(64, 64, CellSizes::_48, 255, 220);
+  }
   if (m_mapInfo != nullptr && m_mapInfo->map() != nullptr && m_mapRenderer.map() != m_mapInfo->map()) {
     if (m_mapInfo->id() == Database::instance()->system.startMapId()) {
       const auto& party = Database::instance()->system.partyMembers();
@@ -577,6 +598,15 @@ void MapEditor::draw() {
     m_initialScrollSet = true;
     const float mapW = (m_tempMapWidth * tileSize());
     const float mapH = (m_tempMapHeight * tileSize());
+
+    if (m_checkeredBack.width() != mapW) {
+      m_checkeredBack.setWidth(mapW);
+    }
+
+    if (m_checkeredBack.height() != mapH) {
+      m_checkeredBack.setHeight(mapH);
+    }
+
     float zoomX = m_mapScale;
     float zoomY = m_mapScale;
     if (m_initialScrollX > mapW) {
@@ -588,9 +618,6 @@ void MapEditor::draw() {
     m_mapScale = std::max(zoomX, zoomY);
   }
 
-  if (!m_checkeredBack) {
-    m_checkeredBack = CheckerboardTexture(8192 * 2, 8192 * 2, CellSizes::_48, 255, 220);
-  }
   // Keep mapScale to a quarter step
   if (ImGui::IsKeyDown(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
     m_mapScale += ImGui::GetIO().MouseWheel * 0.25f;
@@ -612,21 +639,15 @@ void MapEditor::draw() {
   if (ImGui::Begin(trNOOP("Map Editor"), nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoTitleBar)) {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - (ImGui::CalcTextSize("S").y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)), 0,
                       ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
-    // ImGui::SetScrollX(m_tileCursor.alignValue(ImGui::GetScrollX()));
-    // ImGui::SetScrollY(m_tileCursor.alignValue(ImGui::GetScrollY()));
+    // We don't want to align the scroll position while the cursor is in keyboard mode otherwise the view won't track the tile cursor
     if (map()) {
       ImGuiWindow* win = ImGui::GetCurrentWindow();
-      ImGui::Dummy(ImVec2{(map()->width() * Database::instance()->system.tileSize() * m_mapScale), (map()->height() * Database::instance()->system.tileSize() * m_mapScale)});
-
-      const float u1 = std::clamp((static_cast<float>(map()->width() * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
-      const float v1 = std::clamp((static_cast<float>(map()->height() * tileSize()) * m_mapScale) / (8192 * 2), 0.f, 1.f);
-
-      win->DrawList->AddImage(static_cast<ImTextureID>(m_checkeredBack), win->ClipRect.Min + ImVec2{0, 0},
-                              win->ClipRect.Min + (ImVec2{static_cast<float>(map()->width() * tileSize()), static_cast<float>(map()->height() * tileSize())} * m_mapScale), ImVec2{0, 0},
-                              ImVec2{u1, v1});
-
       handleMouseInput(win);
       handleKeyboardShortcuts();
+      const auto mapSize = ImVec2{(map()->width() * Database::instance()->system.tileSize()) * m_mapScale, (map()->height() * Database::instance()->system.tileSize()) * m_mapScale};
+      ImGui::Dummy(mapSize);
+
+      win->DrawList->AddImage(static_cast<ImTextureID>(m_checkeredBack), win->WorkRect.Min, win->WorkRect.Min + mapSize);
 
       if (ImGui::BeginPopupContextWindow()) {
         if (ImGui::MenuItem(trNOOP("Change event id..."))) {}
@@ -708,9 +729,6 @@ void MapEditor::draw() {
         m_initialScrollSet = false;
       }
 
-      if (ImGui::GetScrollX() != m_mapInfo->scrollX() || ImGui::GetScrollY() != m_mapInfo->scrollY()) {
-        m_tileCursor.setVisible(false);
-      }
       m_mapInfo->setScrollX(ImGui::GetScrollX());
       m_mapInfo->setScrollY(ImGui::GetScrollY());
 
@@ -726,6 +744,7 @@ void MapEditor::draw() {
       }
 
       for (int y = 0; y < map()->height(); ++y) {
+        continue;
         for (int x = 0; x < map()->width(); ++x) {
           auto tile = map()->data()[m_mapRenderer.tileIdFromCoords(x, y, 4)];
           if (!tile) {
@@ -749,13 +768,6 @@ void MapEditor::draw() {
             win->DrawList->AddRectFilled(win->ContentRegionRect.Min + (ImVec2{dx1, dy1} * m_mapScale), win->ContentRegionRect.Min + (ImVec2{dx1 + w1, dy1 + h1} * m_mapScale), 0x7F000000);
           }
         }
-      }
-
-      if (m_prisonMode) {
-        // drawGrid(win);
-      }
-      if (ImGui::IsWindowHovered() || m_parent->editMode() == EditMode::Event) {
-        m_tileCursor.draw(win);
       }
 
       auto sortedEvents = prisonMode() ? map()->getSorted() : map()->getRenderSorted();
@@ -782,15 +794,20 @@ void MapEditor::draw() {
         if (!event /*|| page->priorityType != EventPriority::Same_as_characters*/) {
           continue;
         }
+        const auto evX = (event->x() * tileSize()) * m_mapScale;
+        const auto evY = (event->y() * tileSize()) * m_mapScale;
+        const auto tileSize = m_tileCursor.tileSize() * m_mapScale;
         if (m_selectedEvent == event && !m_hasScrolled) {
-          ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + (((event->x() * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.x / 2)));
-          ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + (((event->y() * tileSize()) * m_mapScale) - (win->ContentRegionRect.Max.y / 2)));
+          ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + (evX - (win->ContentRegionRect.Max.x / 2)));
+          ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + (evY - (win->ContentRegionRect.Max.y / 2)));
           m_hasScrolled = true;
         }
-        bool isHovered = event->x() == tileCellX() && event->y() == tileCellY();
+        const bool isHovered = event->x() == tileCellX() && event->y() == tileCellY();
+        const bool updateOnly = (win->ContentRegionRect.Min.x + evX < win->ClipRect.Min.x - tileSize || win->ContentRegionRect.Min.x + evX > win->ClipRect.Max.x + tileSize) ||
+                                (win->ContentRegionRect.Min.y + evY < win->ClipRect.Min.y - tileSize || win->ContentRegionRect.Min.y + evY > win->ClipRect.Max.y + tileSize);
         if (auto* renderer = static_cast<MapEvent*>(event->renderer())) {
           renderer->setMapEditor(this);
-          renderer->draw(m_mapScale, isHovered, m_selectedEvent == event, m_parent->editMode() != EditMode::Event);
+          renderer->draw(m_mapScale, isHovered, m_selectedEvent == event, m_parent->editMode() != EditMode::Event, updateOnly);
         }
       }
 
@@ -815,6 +832,31 @@ void MapEditor::draw() {
       //   if (auto* renderer = static_cast<MapEvent*>(event->renderer())) {
       //     renderer->setMapEditor(this);
       //     renderer->draw(m_mapScale, isHovered, m_selectedEvent == realEvent, m_parent->editMode() != EditMode::Event);
+      //   }
+      // }
+
+      if (m_prisonMode) {
+        drawGrid(win);
+      }
+      if (ImGui::IsWindowHovered() || m_parent->editMode() == EditMode::Event) {
+        m_tileCursor.draw(win);
+      }
+      // TODO: See if we can come up with a more reliable way to increment scroll position based on the tile size
+      // if (m_tileCursor.mode() != MapCursorMode::Keyboard && !m_scaleChanged) {
+      //   static float tempX = win->Scroll.x;
+      //   if (fabs(win->Scroll.x - tempX) > (m_tileCursor.tileSize() * m_mapScale) / 2 || !ImGui::IsKeyDown(ImGuiKey_MouseWheelX)) {
+      //     printf("TargX before: %g\n", win->Scroll.x);
+      //     win->Scroll.x = m_tileCursor.alignCoord(win->Scroll.x + (m_tileCursor.tileSize() * m_mapScale) / 2);
+      //     tempX = win->Scroll.x;
+      //     printf("TargX after: %g\n", win->Scroll.x);
+      //     tempX = win->Scroll.x;
+      //   }
+      //   static float tempY = win->Scroll.x;
+      //   if (fabs(win->Scroll.y - tempY) > (m_tileCursor.tileSize() * m_mapScale) / 2 || !ImGui::IsKeyDown(ImGuiKey_MouseWheelY)) {
+      //     printf("TargY before: %g\n", win->Scroll.y);
+      //     win->Scroll.y = m_tileCursor.alignCoord(win->Scroll.y + (m_tileCursor.tileSize() * m_mapScale) / 2);
+      //     printf("TargY after: %g\n", win->Scroll.y);
+      //     tempY = win->Scroll.y;
       //   }
       // }
     }

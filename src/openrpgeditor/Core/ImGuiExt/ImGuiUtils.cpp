@@ -347,4 +347,6 @@ int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const b
 }
 
 ImVec2 GetDPIScaledSize(const ImVec2& size) { return size * GetCurrentContext()->CurrentDpiScale; }
+
+float GetDPIScaledValue(const float value) { return value * GetCurrentContext()->CurrentDpiScale; }
 } // namespace ImGui

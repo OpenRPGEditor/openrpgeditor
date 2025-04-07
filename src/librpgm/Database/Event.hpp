@@ -12,7 +12,7 @@ public:
   IEventRenderer() = delete;
   virtual ~IEventRenderer() = default;
 
-  virtual void draw(float mapScale, bool isHovered, bool selected, bool halfAlpha) = 0;
+  virtual void draw(float mapScale, bool isHovered, bool selected, bool halfAlpha, bool updateOnly) = 0;
   virtual void setPage(int page) = 0;
   virtual EventPage* page() const = 0;
   virtual int pageIndex() const = 0;

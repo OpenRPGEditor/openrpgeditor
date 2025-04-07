@@ -1,6 +1,7 @@
 #include "Core/CommonUI/TilesetPicker.hpp"
 #include "Core/MainWindow.hpp"
 
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
 
@@ -78,27 +79,25 @@ void TilesetPicker::draw() {
           const auto rect = m_palette.cursorPixelRect();
           const auto min = static_cast<ImVec2>(rect.topLeft());
           const auto max = static_cast<ImVec2>(rect.bottomRight());
-          win->DrawList->AddRect(win->ContentRegionRect.Min + (min + ImVec2{3.f, 3.f}), win->ContentRegionRect.Min + (max - ImVec2{3.f, 3.f}), 0xFF000000, 0.f, 0, 5.f);
-          win->DrawList->AddRect(win->ContentRegionRect.Min + (min + ImVec2{3.f, 3.f}), win->ContentRegionRect.Min + (max - ImVec2{3.f, 3.f}), 0xFFFFFFFF, 0.f, 0, 3.f);
+          const auto contraction = ImGui::GetDPIScaledSize(1.5f, 1.5f);
+          win->DrawList->AddRect(win->ContentRegionRect.Min + (min + contraction), win->ContentRegionRect.Min + (max - contraction), 0xFF000000, 0.f, 0, ImGui::GetDPIScaledValue(2.5f));
+          win->DrawList->AddRect(win->ContentRegionRect.Min + (min + contraction), win->ContentRegionRect.Min + (max - contraction), 0xFFFFFFFF, 0.f, 0, ImGui::GetDPIScaledValue(1.5f));
         }
       }
     }
     ImGui::EndChild();
-    ImGui::BeginChild("##tileset_buttons", {}, 0, ImGuiWindowFlags_NoBackground);
+    ImGui::BeginHorizontal("##tileset_buttons", ImGui::GetContentRegionAvail());
     {
+      ImGui::Spring(0.5f);
       drawPageButton("A"sv, 0);
-      ImGui::SameLine(0.f, 0.f);
       drawPageButton("B"sv, 1);
-      ImGui::SameLine(0.f, 0.f);
       drawPageButton("C"sv, 2);
-      ImGui::SameLine(0.f, 0.f);
       drawPageButton("D"sv, 3);
-      ImGui::SameLine(0.f, 0.f);
       drawPageButton("E"sv, 4);
-      ImGui::SameLine(0.f, 0.f);
       drawPageButton("R"sv, -1);
+      ImGui::Spring(0.5f);
     }
-    ImGui::EndChild();
+    ImGui::EndHorizontal();
   }
 
   ImGui::End();

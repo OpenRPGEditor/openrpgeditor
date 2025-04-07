@@ -18,4 +18,6 @@ int ButtonGroup(const char* id, const std::vector<std::string>& buttons, bool is
 ImVec2 GetDPIScaledSize(const ImVec2& size);
 inline ImVec2 GetDPIScaledSize(const float w, const float h) { return GetDPIScaledSize(ImVec2(w, h)); }
 
+float GetDPIScaledValue(float value);
+
 } // namespace ImGui

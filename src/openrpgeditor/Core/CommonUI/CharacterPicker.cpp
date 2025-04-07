@@ -1,4 +1,5 @@
 #include "Core/CommonUI/CharacterPicker.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/ResourceManager.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -13,6 +14,7 @@ static bool ContainsCaseInsensitive(std::string_view str, std::string_view val) 
   return std::search(str.begin(), str.end(), val.begin(), val.end(), [](char ch1, char ch2) { return std::toupper(ch1) == std::toupper(ch2); }) != str.end();
 }
 
+static int makeTileId(const int n, const int x, const int y) { return n * 256 + floor(x / 8) * 128 + y * 8 + x % 8; }
 CharacterPicker::CharacterPicker(const PickerMode mode, const bool useTileset, const int tileId, const std::string_view sheetName, const int character, const int pattern, const Direction direction)
 : IDialogController("Select an Image##character_picker")
 , m_pickerMode(mode)
@@ -79,6 +81,7 @@ void CharacterPicker::setTileId(int tileId) {
   if (m_tileId > 0) {
     m_isTile = true;
   }
+  m_selectedSheet = -5 + floor(m_tileId / 256);
   std::string tileSheet = m_tileSheets[m_selectedSheet + 9];
   setCursorPos(setCursorByTile(m_tileId));
   m_selectedSheet = m_tileId < 256 ? -4 : m_tileId < 512 ? -3 : m_tileId < 768 ? -2 : -1;
@@ -86,8 +89,8 @@ void CharacterPicker::setTileId(int tileId) {
   m_characterIndex = 0;
   m_pattern = 0;
   m_direction = Direction::Retain;
-  m_selectionWidth = 48;
-  m_selectionHeight = 48;
+  m_selectionWidth = Database::instance()->system.tileSize();
+  m_selectionHeight = Database::instance()->system.tileSize();
 
   m_checkerboardTexture.setSize(m_characterSheet->texture().width(), m_characterSheet->texture().height());
 }
@@ -138,30 +141,36 @@ std::tuple<bool, bool> CharacterPicker::draw() {
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSizeConstraints(ImGui::GetMainViewport()->Size / 6, {FLT_MAX, FLT_MAX});
-  ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(320, 320), {FLT_MAX, FLT_MAX});
+  ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(320, 320), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open)) {
     const auto calc = ImGui::CalcTextSize("OKCANCEL");
-    ImGui::BeginChild("##top_child", {0, ImGui::GetContentRegionAvail().y - (calc.y + (ImGui::GetStyle().ItemSpacing.y * 3) + ImGui::GetStyle().FramePadding.y)});
+    ImGui::BeginChild("##top_child", {0, ImGui::GetContentRegionAvail().y - (calc.y + (ImGui::GetStyle().ItemSpacing.y * 2) + ImGui::GetStyle().FramePadding.y)});
     {
-      ImGui::Text("Filter");
-      ImGui::SameLine();
-      if (ImGui::InputText("##object_selection_filter_input", &m_filter)) {
-        m_selectedSheet = -5;
-        if (m_filter.empty()) {
-          m_sortedIndexes.clear();
-        } else {
-          m_sortRequest = true;
+      ImGui::BeginVertical("selection_status_layout");
+      {
+        ImGui::BeginHorizontal("filter_layout");
+        {
+          ImGui::Text("Filter");
+          if (ImGui::InputText("##object_selection_filter_input", &m_filter)) {
+            m_selectedSheet = -5;
+            if (m_filter.empty()) {
+              m_sortedIndexes.clear();
+            } else {
+              m_sortRequest = true;
+            }
+          }
+          if (ImGui::Button("Clear")) {
+            m_filter.clear();
+            m_sortedIndexes.clear();
+          }
         }
+        ImGui::EndHorizontal();
+        std::string selectedTileSheet = m_selectedSheet == -5 ? "(None)" : m_selectedSheet < 0 ? m_tileSheets[m_selectedSheet + 9] : "(None)";
+        std::string selectedSheet = m_selectedSheet == -5 ? "(None)" : m_characterSheets.size() > 0 && m_selectedSheet > -1 ? m_characterSheets[m_selectedSheet] : "(None)";
+        ImGui::Text("Selected Sheet: %s", selectedSheet.c_str());
       }
-      ImGui::SameLine();
-      if (ImGui::Button("Clear")) {
-        m_filter.clear();
-        m_sortedIndexes.clear();
-      }
-      std::string selectedTileSheet = m_selectedSheet == -5 ? "(None)" : m_selectedSheet < 0 ? m_tileSheets[m_selectedSheet + 9] : "(None)";
-      std::string selectedSheet = m_selectedSheet == -5 ? "(None)" : m_characterSheets.size() > 0 && m_selectedSheet > -1 ? m_characterSheets[m_selectedSheet] : "(None)";
-      ImGui::Text("Selected Sheet: %s", selectedSheet.c_str());
+      ImGui::EndVertical();
       ImGui::BeginChild("##character_picker_sheet_list", ImVec2{ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRS").x, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y},
                         ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX);
       {
@@ -184,39 +193,18 @@ std::tuple<bool, bool> CharacterPicker::draw() {
           for (int z = -4; z < 0; ++z) {
             auto& sheet = m_tileSheets[z + 9];
             if (!sheet.empty()) {
-              if (ImGui::Selectable(std::format("Tileset {}", z == -4   ? "B"
-                                                              : z == -3 ? "C"
-                                                              : z == -2 ? "D"
-                                                                        : "E")
-                                        .c_str(),
-                                    m_selectedSheet == z, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
+              if (ImGui::Selectable(std::format("Tileset {}", static_cast<char>('A' + (z + 5))).c_str(), m_selectedSheet == z, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
                 if (m_selectedSheet != z) {
-                  // -4 = B
-                  // -3 = C
-                  // -2 = D
-                  // -1 = E
-                  int tileOffset = tileId() % 256;
-                  m_characterSheet.emplace(sheet, true, ((z + 4) * 256) + tileOffset);
-                  m_isTile = true;
-                  Point pos = setCursorByTile(tileId());
-                  m_selectionX = pos.x();
-                  m_selectionY = pos.y();
-
+                  m_selectedSheet = z;
+                  m_selectionWidth = Database::instance()->system.tileSize();
+                  m_selectionHeight = Database::instance()->system.tileSize();
+                  m_tileId = makeTileId(m_selectedSheet + 4, m_selectionX / m_selectionWidth, m_selectionY / m_selectionHeight);
+                  m_characterSheet.emplace(sheet, true, m_tileId);
                   if (m_characterSheet->texture()) {
                     m_checkerboardTexture.setSize(m_characterSheet->texture().width(), m_characterSheet->texture().height());
                   }
-                  if (m_pickerMode == PickerMode::Character) {
-                    m_selectionWidth = m_characterSheet->characterAtlasWidth();
-                    m_selectionHeight = m_characterSheet->characterAtlasHeight();
-                  } else {
-                    m_selectionWidth = m_characterSheet->characterWidth();
-                    m_selectionHeight = m_characterSheet->characterHeight();
-                  }
-                  m_selectionX = 0;
-                  m_selectionY = 0;
+                  m_isTile = true;
                 }
-                m_selectedSheet = z;
-                m_tileId = (m_selectionX / 48) + (((m_selectedSheet + 5) - 1) * 16 + (m_selectionY / 48)) * 16;
               }
               if (m_selectedSheet == z && ImGui::IsWindowAppearing()) {
                 ImGui::SetScrollHereY();
@@ -231,7 +219,6 @@ std::tuple<bool, bool> CharacterPicker::draw() {
               m_charDir.value().moveUp();
               m_characterSheets = m_charDir->getDirectoryContents();
               m_folders = m_charDir.value().getDirectories();
-              m_characterSheet.reset();
               m_selectedSheet = -5;
               m_selectedFolder = -1;
               m_isTile = false;
@@ -253,7 +240,6 @@ std::tuple<bool, bool> CharacterPicker::draw() {
                 m_selectedSheet = -5;
                 m_selectedFolder = -1;
                 m_isTile = false;
-                m_characterSheet.reset();
               }
             }
           }
@@ -276,12 +262,10 @@ std::tuple<bool, bool> CharacterPicker::draw() {
                   if (m_pickerMode == PickerMode::Character) {
                     m_selectionWidth = m_characterSheet->characterAtlasWidth();
                     m_selectionHeight = m_characterSheet->characterAtlasHeight();
-                  } else {
+                  } else if (m_pickerMode == PickerMode::PatternAndDirection) {
                     m_selectionWidth = m_characterSheet->characterWidth();
                     m_selectionHeight = m_characterSheet->characterHeight();
                   }
-                  m_selectionX = 0;
-                  m_selectionY = 0;
                 }
                 m_isTile = false;
                 m_selectedSheet = i;
@@ -313,23 +297,24 @@ std::tuple<bool, bool> CharacterPicker::draw() {
             m_selectionY = y;
             if (m_isTile) {
               // On selection, set the tileId
-              m_tileId = (x / 48) + (((m_selectedSheet + 5) - 1) * 16 + (y / 48)) * 16;
-            }
-            if (m_pickerMode == PickerMode::Character) {
-              m_selectionX = std::clamp(m_selectionX, 0, m_characterSheet->texture().width() - m_characterSheet->characterAtlasWidth());
-              m_selectionY = std::clamp(m_selectionY, 0, m_characterSheet->texture().height() - m_characterSheet->characterAtlasHeight());
+              m_tileId = makeTileId(m_selectedSheet + 4, x / Database::instance()->system.tileSize(), y / Database::instance()->system.tileSize());
             } else {
-              m_selectionX = std::clamp(m_selectionX, 0, m_characterSheet->texture().width() - m_characterSheet->characterWidth());
-              m_selectionY = std::clamp(m_selectionY, 0, m_characterSheet->texture().height() - m_characterSheet->characterHeight());
+              if (m_pickerMode == PickerMode::Character) {
+                m_selectionX = std::clamp(m_selectionX, 0, m_characterSheet->texture().width() - m_characterSheet->characterAtlasWidth());
+                m_selectionY = std::clamp(m_selectionY, 0, m_characterSheet->texture().height() - m_characterSheet->characterAtlasHeight());
+              } else {
+                m_selectionX = std::clamp(m_selectionX, 0, m_characterSheet->texture().width() - m_characterSheet->characterWidth());
+                m_selectionY = std::clamp(m_selectionY, 0, m_characterSheet->texture().height() - m_characterSheet->characterHeight());
+              }
+
+              x = m_selectionX / m_characterSheet->characterAtlasWidth();
+              y = m_selectionY / m_characterSheet->characterAtlasHeight();
+              m_pattern = (m_selectionX / m_characterSheet->characterWidth()) % m_characterSheet->patternCountForCharacter();
+              const int direction = (m_selectionY / m_characterSheet->characterHeight()) % m_characterSheet->directionCountForCharacter();
+              m_direction = static_cast<Direction>((direction * 2) + 2);
+
+              m_characterIndex = (y * (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) + x;
             }
-
-            x = m_selectionX / m_characterSheet->characterAtlasWidth();
-            y = m_selectionY / m_characterSheet->characterAtlasHeight();
-            m_pattern = (m_selectionX / m_characterSheet->characterWidth()) % m_characterSheet->patternCountForCharacter();
-            const int direction = (m_selectionY / m_characterSheet->characterHeight()) % m_characterSheet->directionCountForCharacter();
-            m_direction = static_cast<Direction>((direction * 2) + 2);
-
-            m_characterIndex = (y * (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) + x;
           }
         }
         if (m_characterSheet) {
@@ -352,11 +337,14 @@ std::tuple<bool, bool> CharacterPicker::draw() {
       ImGui::EndChild();
     }
     ImGui::EndChild();
-    ImGui::BeginChild("##bottom_child");
+    ImGui::BeginHorizontal(std::format("##buttons_character_picker{}", reinterpret_cast<uintptr_t>(this)).c_str(), ImGui::GetContentRegionAvail());
     {
-      ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x - (calc.x + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().ItemSpacing.x));
-      // ImGui::TextUnformatted(std::format("X/Y: {}, {}", m_selectionX / 48, m_selectionY / 48).c_str());
-      if (ImGui::Button("OK")) {
+      ImGui::Spring();
+      const int ret = ImGui::ButtonGroup(std::format("##ok_cancel_character_picker{}", reinterpret_cast<uintptr_t>(this)).c_str(), {
+                                                                                                                                       trNOOP("OK"),
+                                                                                                                                       trNOOP("Cancel"),
+                                                                                                                                   });
+      if (ret == 0) { // OK
         if (m_selectedSheet == -5 || m_selectedSheet >= 0) {
           m_tileId = 0;
           m_isTile = false;
@@ -366,9 +354,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
         m_confirmed = true;
         m_open = false;
         ImGui::CloseCurrentPopup();
-      }
-      ImGui::SameLine();
-      if (ImGui::Button("Cancel")) {
+      } else if (ret == 1) { // Cancel
         m_filter.clear();
         m_sortedIndexes.clear();
         m_confirmed = false;
@@ -376,7 +362,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
         ImGui::CloseCurrentPopup();
       }
     }
-    ImGui::EndChild();
+    ImGui::EndHorizontal();
     ImGui::EndPopup();
   }
 
@@ -385,8 +371,8 @@ std::tuple<bool, bool> CharacterPicker::draw() {
 
 Point CharacterPicker::setCursorByTile(const int tileId) {
   if (tileId > 0) {
-    int tileX = (tileId % 256) % 16;
-    int tileY = (tileId % 256) / 16;
+    int tileX = floor(tileId % 256 / 128) * 8 + tileId % 8;
+    int tileY = floor(tileId % 128 / 8);
     return {tileX, tileY};
   }
   return {0, 0};

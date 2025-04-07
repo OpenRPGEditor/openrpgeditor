@@ -106,18 +106,19 @@ void Application::updateScale() {
   ImGui::GetStyle() = ImGuiStyle();
   updateGuiColors();
   ImGuiStyle& style = ImGui::GetStyle();
-  style.WindowRounding = 6.f;
-  style.FrameRounding = 2.0f;
-  // style.ScrollbarSize = 18.f;
-  style.GrabMinSize = 9.0f;
-  style.GrabRounding = 4.0f;
-  style.PopupRounding = 7.0;
-  style.TabBorderSize = 3.f;
-  style.TabRounding = 6.5f;
-  style.DockingSeparatorSize = 6.f;
+  style.WindowRounding = 3.f;
+  style.FrameRounding = 1.0f;
+  style.GrabMinSize = 4.5f;
+  style.GrabRounding = 2.0f;
+  style.PopupRounding = 3.5;
+  style.TabBorderSize = 1.5f;
+  style.TabRounding = 3.25f;
+  style.DockingSeparatorSize = 3.f;
   style.FrameBorderSize = 1.f;
-  style.FramePadding = ImVec2(8, 6);
-  style.ScrollbarSize = 18.f;
+  style.FramePadding = ImVec2(4, 3);
+  style.ScrollbarSize = 10.f;
+  const auto scale = std::max(SDL_GetWindowPixelDensity(m_window->getNativeWindow()), SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
+  style.ScaleAllSizes(scale);
 }
 
 void Application::updateGuiColors() {
@@ -183,7 +184,7 @@ void Application::updateGuiColors() {
 void Application::updateFonts() {
   ImGuiIO& io{ImGui::GetIO()};
   // ImGUI font
-  const float scale = std::max(1.f, SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
+  const float scale = std::max(SDL_GetWindowPixelDensity(m_window->getNativeWindow()), SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
   const float font_size = m_settings.fontSize * scale;
   const float mono_font_size = m_settings.monoFontSize * scale;
   const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
@@ -262,9 +263,6 @@ ExitStatus Application::run() {
   SDL_GL_SetSwapInterval(0);
 
   m_running = true;
-  uint32_t a = SDL_GetTicks();
-  double delta = 0;
-  bool warmup = true;
 
   m_project.emplace();
   bool needsInitialProjectLoad =
@@ -278,7 +276,6 @@ ExitStatus Application::run() {
     m_firstBootWizard->addPage(std::make_shared<RPGMakerLocationAndVersionPage>());
     m_firstBootWizard->addPage(std::make_shared<ProjectLocationPage>());
   }
-  int warmupFrames = 0;
 
   while (true) {
     EditorPluginManager::instance()->initializeAllPlugins();
@@ -286,6 +283,7 @@ ExitStatus Application::run() {
       ImGui_ImplSDLRenderer3_Shutdown();
       ImGui_ImplSDL3_Shutdown();
       updateFonts();
+      updateScale();
       ImGui_ImplSDL3_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
       ImGui_ImplSDLRenderer3_Init(m_window->getNativeRenderer());
       m_fontUpdateRequested = false;
@@ -298,7 +296,6 @@ ExitStatus Application::run() {
       }
       break;
     }
-    delta = SDL_GetTicks() - a;
 
     SDL_Event event{};
     while (SDL_PollEvent(&event) == 1) {
@@ -313,60 +310,46 @@ ExitStatus Application::run() {
       }
     }
 
-    if (delta >= 1000.0 / 60.0 || warmup) {
-
-      if (m_fontUpdateRequested && m_fontUpdateDelay > 0) {
-        m_fontUpdateDelay--;
-      }
-
-      if (warmup && delta >= 1000.0 / 60.0) {
-        a = SDL_GetTicks();
-        ++warmupFrames;
-      } else if (!warmup) {
-        a = SDL_GetTicks();
-      }
-
-      if (warmupFrames == 60) {
-        warmup = false;
-      }
-
-      // Start the Dear ImGui frame
-      ImGui_ImplSDLRenderer3_NewFrame();
-      ImGui_ImplSDL3_NewFrame();
-
-      // FIXME: Fixup monitors
-      // //  Currently crashes for some reason, copying MainPos and MainSize is recommended by the assert, so here we are
-      // for (ImGuiPlatformMonitor& mon : ImGui::GetPlatformIO().Monitors) {
-      //   mon.WorkPos = mon.MainPos;
-      //   mon.WorkSize = mon.MainSize;
-      // }
-
-      ImGui::NewFrame();
-
-      if (m_firstBootWizard && m_firstBootWizard->draw()) {
-        Settings::instance()->ranFirstBootWizard = true;
-        m_firstBootWizard.reset();
-      }
-
-      if (!m_firstBootWizard) {
-        m_project->draw();
-        if (needsInitialProjectLoad) {
-          m_project->load(Settings::instance()->lastProject, std::filesystem::path(Settings::instance()->lastProject).remove_filename().generic_string());
-          needsInitialProjectLoad = false;
-        }
-      }
-
-      // Rendering
-      ImGui::Render();
-
-      ImGui::EndFrame();
-      ImGui::UpdatePlatformWindows();
-
-      SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 28, 38, 43, 255);
-      SDL_RenderClear(m_window->getNativeRenderer());
-      ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), m_window->getNativeRenderer());
-      SDL_RenderPresent(m_window->getNativeRenderer());
+    if (m_fontUpdateRequested && m_fontUpdateDelay > 0) {
+      m_fontUpdateDelay--;
     }
+
+    // Start the Dear ImGui frame
+    ImGui_ImplSDLRenderer3_NewFrame();
+    ImGui_ImplSDL3_NewFrame();
+
+    // FIXME: Fixup monitors
+    // //  Currently crashes for some reason, copying MainPos and MainSize is recommended by the assert, so here we are
+    // for (ImGuiPlatformMonitor& mon : ImGui::GetPlatformIO().Monitors) {
+    //   mon.WorkPos = mon.MainPos;
+    //   mon.WorkSize = mon.MainSize;
+    // }
+
+    ImGui::NewFrame();
+
+    if (m_firstBootWizard && m_firstBootWizard->draw()) {
+      Settings::instance()->ranFirstBootWizard = true;
+      m_firstBootWizard.reset();
+    }
+
+    if (!m_firstBootWizard) {
+      m_project->draw();
+      if (needsInitialProjectLoad) {
+        m_project->load(Settings::instance()->lastProject, std::filesystem::path(Settings::instance()->lastProject).remove_filename().generic_string());
+        needsInitialProjectLoad = false;
+      }
+    }
+
+    // Rendering
+    ImGui::Render();
+
+    ImGui::EndFrame();
+    ImGui::UpdatePlatformWindows();
+
+    SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 28, 38, 43, 255);
+    SDL_RenderClear(m_window->getNativeRenderer());
+    ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), m_window->getNativeRenderer());
+    SDL_RenderPresent(m_window->getNativeRenderer());
   }
 
   EditorPluginManager::instance()->shutdownAllPlugins();

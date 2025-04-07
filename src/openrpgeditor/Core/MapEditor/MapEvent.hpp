@@ -8,10 +8,10 @@ struct MapEditor;
 class MapEvent final : public IEventRenderer {
 public:
   MapEvent() = delete;
-  void draw(float mapScale, bool isHovered, bool selected, bool halfAlpha) override;
+  void draw(float mapScale, bool isHovered, bool selected, bool halfAlpha, bool updateOnly) override;
   void setupPageSettings() {
     if (page()) {
-      m_characterSheet = CharacterSheet(page()->image().characterName());
+      m_characterSheet = CharacterSheet(page()->image().characterName(), page()->image().tileId() > 0, page()->image().tileId());
       if (m_originalDirection != page()->image().direction()) {
         m_originalDirection = page()->image().direction();
         m_prelockDirection = Direction::Retain;
@@ -34,6 +34,8 @@ public:
       setMoveRoute(&page()->moveRoute());
       m_moveType = page()->moveType();
       m_trigger = page()->trigger();
+      page()->image().characterNameModified().connect<&MapEvent::onCharacterImageModified>(this);
+      page()->image().tileIdModified().connect<&MapEvent::onTileIdModified>(this);
     }
   }
   void setPage(const int idx) override {
@@ -41,6 +43,10 @@ public:
       return;
     }
 
+    if (page()) {
+      page()->image().characterNameModified().disconnect<&MapEvent::onCharacterImageModified>(this);
+      page()->image().tileIdModified().disconnect<&MapEvent::onTileIdModified>(this);
+    }
     m_page = idx;
     setupPageSettings();
   }
@@ -278,5 +284,7 @@ private:
   int m_jumpCount = 0;
   bool m_prisonMode{false};
 
+  float m_lastFrameTime = 0.f;
   void onCharacterImageModified(EventImage*, const std::string&);
+  void onTileIdModified(EventImage*, int tileId);
 };

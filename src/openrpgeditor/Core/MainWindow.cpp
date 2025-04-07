@@ -370,7 +370,7 @@ void MainWindow::drawToolbar() {
 }
 
 void MainWindow::draw() {
-  m_toolbarButtonSize = 64;
+  m_toolbarButtonSize = ImGui::GetDPIScaledValue(32);
   m_toolbarSize = m_toolbarButtonSize + (ImGui::GetStyle().ItemSpacing.y * 4) + (ImGui::GetStyle().FramePadding.y * 4);
   m_toolbarButtonSize += ImGui::GetStyle().ItemSpacing.x * 2;
   drawMenu();
@@ -446,6 +446,50 @@ void MainWindow::draw() {
   drawCreateNewProjectPopup();
 
   EditorPluginManager::instance()->callDraws();
+  ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(250, 180), {FLT_MAX, FLT_MAX});
+  ImGui::Begin("Layout Test", nullptr, ImGuiWindowFlags_NoSavedSettings);
+  {
+    ImGui::BeginVertical("##v", ImGui::GetContentRegionAvail());
+    {
+      ImGui::BeginHorizontal("##layout_test");
+      {
+        ImGui::BeginVertical("inner_layout_top");
+        {
+          ImGui::Text("Layout Test");
+          ImGui::NewLine();
+          ImGui::Text("Show DemoWindow");
+        }
+        ImGui::EndVertical();
+        ImGui::BeginVertical("##inter_layou_bottom");
+        {
+          ImGui::Text("Weee!");
+          ImGui::Text("New Line!");
+          ImGui::Checkbox("##showDemo", &m_showDemoWindow);
+        }
+        ImGui::EndVertical();
+        ImGui::Spring();
+      }
+      ImGui::EndHorizontal();
+      ImGui::Spring(1, 2);
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 4);
+      ImGui::BeginHorizontal("##layout_test2", {ImGui::GetContentRegionAvail().x, 0});
+      {
+        ImGui::Spring(.5);
+        if (const auto tmp = ImGui::ButtonGroup("ok_cancel2",
+                                                {
+                                                    trNOOP("OK"),
+                                                    trNOOP("Apply"),
+                                                    trNOOP("Cancel"),
+                                                },
+                                                false);
+            tmp != -1) {}
+        ImGui::Spring(.5, 2);
+      }
+      ImGui::EndHorizontal();
+    }
+    ImGui::EndVertical();
+  }
+  ImGui::End();
 }
 
 void MainWindow::drawCreateNewProjectPopup() {

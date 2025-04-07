@@ -28,11 +28,11 @@ struct MapCursor {
     m_tileY = y;
   }
 
-  int alignCoord(int value);
+  float alignCoord(float value) const;
 
   int absoluteX() const { return m_tileX * m_tileSize; }
   int absoluteY() const { return m_tileY * m_tileSize; }
-  void setFromAbsolute(float x, float y, ImGuiWindow* win);
+  void setFromAbsolute(float x, float y);
 
   int tileSize() const { return m_tileSize; }
   void setTileSize(int tileSize) { m_tileSize = tileSize; }
@@ -41,12 +41,15 @@ struct MapCursor {
   void setMouseMode() { m_mode = MapCursorMode::Mouse; }
   void setKeyboardMode() {
     // Disabled due to issues with scrolling
-    // m_mode = MapCursorMode::Keyboard;
+    m_mode = MapCursorMode::Keyboard;
   }
 
   void setVisible(bool visible) { m_visible = visible; }
+  bool visible() const { return m_visible; }
 
 private:
+  void setCursorPositionFromTilePosition();
+
   MapEditor* m_parent = nullptr;
   float m_mapScale{1.f};
   int m_mapHeight{0};

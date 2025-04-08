@@ -42,7 +42,7 @@ public:
   }
 
   bool isModified() const override {
-    return IModifiable::isModified() | std::ranges::any_of(m_states, [](const State& state) { return state.isValid(); });
+    return IModifiable::isModified() | std::ranges::any_of(m_states, [](const State& state) { return state.isModified(); });
   }
 
 private:

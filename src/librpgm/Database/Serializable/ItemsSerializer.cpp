@@ -26,6 +26,7 @@ void ItemsSerializer::deserialize(std::ifstream& is) {
   try {
     nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
     m_data.items().reserve(data.size());
+    m_data.disableSignals();
 
     int i = 0;
     for (const auto& [_, value] : data.items()) {
@@ -37,6 +38,7 @@ void ItemsSerializer::deserialize(std::ifstream& is) {
         item.m_id = i;
       }
       ++i;
+      m_data.enableSignals();
     }
   } catch (...) {}
 }

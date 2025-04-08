@@ -16,6 +16,7 @@ struct ImFont;
 class MainWindow;
 
 namespace App {
+#define kApplicationTitle trNOOP("Open RPG Editor")
 
 enum class ExitStatus : int { Success = 0, Failure = 1 };
 
@@ -23,7 +24,7 @@ class Application {
 public:
   void loadSettings();
   void serializeSettings();
-  explicit Application(const std::string& title);
+  explicit Application();
   ~Application();
   void updateScale();
   void updateGuiColors();

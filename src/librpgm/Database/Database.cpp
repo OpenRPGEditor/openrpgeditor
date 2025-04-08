@@ -131,6 +131,8 @@ void Database::load() {
   RPGM_INFO("Loading Documentation");
   docs = Docs::load(basePath + "/editor/Documentation.json");
   docsLoaded().fire();
+
+  connectAllSignals();
 }
 
 void Database::serializeProject() {
@@ -161,4 +163,26 @@ void Database::serializeProject() {
                                              [this](const std::shared_ptr<ISerializable>& serializer) {});
     }
   }
+}
+
+void Database::connectAllSignals() {
+  actors.onModified().connect<&Database::onAnyModifiableModified>(this);
+  classes.onModified().connect<&Database::onAnyModifiableModified>(this);
+  skills.onModified().connect<&Database::onAnyModifiableModified>(this);
+  items.onModified().connect<&Database::onAnyModifiableModified>(this);
+  weapons.onModified().connect<&Database::onAnyModifiableModified>(this);
+  armors.onModified().connect<&Database::onAnyModifiableModified>(this);
+  enemies.onModified().connect<&Database::onAnyModifiableModified>(this);
+  troops.onModified().connect<&Database::onAnyModifiableModified>(this);
+  states.onModified().connect<&Database::onAnyModifiableModified>(this);
+  animations.onModified().connect<&Database::onAnyModifiableModified>(this);
+  tilesets.onModified().connect<&Database::onAnyModifiableModified>(this);
+  commonEvents.onModified().connect<&Database::onAnyModifiableModified>(this);
+  system.onModified().connect<&Database::onAnyModifiableModified>(this);
+  // plugins.onModified().connect<&Database::onAnyModifiableModified>(this);
+  mapInfos.onModified().connect<&Database::onAnyModifiableModified>(this);
+  // gameConstants.onModified().connect<&Database::onAnyModifiableModified>(this);
+  templates.onModified().connect<&Database::onAnyModifiableModified>(this);
+  // locales.onModified().connect<&Database::onAnyModifiableModified>(this);
+  docs.onModified().connect<&Database::onAnyModifiableModified>(this);
 }

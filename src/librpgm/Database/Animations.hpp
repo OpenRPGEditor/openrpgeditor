@@ -3,7 +3,7 @@
 
 #include "Database/Animation.hpp"
 
-class Animations final : IModifiable {
+class Animations final : public IModifiable {
 public:
   std::vector<Animation>& animations() { return m_animations; }
   const std::vector<Animation>& animations() const { return m_animations; }

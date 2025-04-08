@@ -25,17 +25,21 @@ void StatesSerializer::deserialize(std::ifstream& is) {
   try {
     nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
     m_data.states().reserve(data.size());
+    m_data.disableSignals();
 
     int i = 0;
     for (const auto& [_, value] : data.items()) {
       State& state = m_data.states().emplace_back();
       state.m_isValid = value != nullptr;
+      state.disableSignals();
       if (state.isValid()) {
         value.get_to(state);
       } else {
         state.m_id = i;
       }
       ++i;
+      state.enableSignals();
     }
+    m_data.disableSignals();
   } catch (...) {}
 }

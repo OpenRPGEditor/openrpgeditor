@@ -4,7 +4,7 @@
 
 #include "nlohmann/json.hpp"
 
-class Troops final : IModifiable {
+class Troops final : public IModifiable {
 public:
   static Troops load(std::string_view filepath);
 
@@ -41,6 +41,7 @@ public:
         m_troops[i].setId(i);
       }
     }
+    setModified(true);
   }
 
   bool isModified() const override {

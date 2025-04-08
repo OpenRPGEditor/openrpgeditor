@@ -21,6 +21,8 @@
 #include "SettingsDialog/RPGMakerLocationAndVersionTab.hpp"
 #include "SettingsDialog/UISettingsTab.hpp"
 
+#include "Core/Window.hpp"
+
 #include <array>
 #include <clip.h>
 #include <fstream>
@@ -135,6 +137,7 @@ bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
   m_database->docsLoaded().connect<&MainWindow::onDocsLoaded>(this);
   m_database->localesLoaded().connect<&MainWindow::onLocalesLoaded>(this);
   m_database->load();
+
   return true;
 }
 
@@ -164,6 +167,8 @@ bool MainWindow::close(bool promptSave) {
   m_mapEditor.setMap(nullptr);
   m_mapListView.reset();
   m_isLoaded = false;
+
+  App::APP->getWindow()->setTitle(kApplicationTitle);
 
   return true;
 }
@@ -396,6 +401,12 @@ void MainWindow::draw() {
   m_libLCF.draw();
 
   if (m_databaseEditor) {
+    if (m_database && m_database->isModified()) {
+      const auto title = std::format("{} - [{}*]", kApplicationTitle, m_database->system.gameTitle());
+      if (title != App::APP->getWindow()->getTitle()) {
+        App::APP->getWindow()->setTitle(title);
+      }
+    }
     m_databaseEditor->draw();
   }
 
@@ -1010,6 +1021,8 @@ void MainWindow::onDatabaseReady() {
   m_isLoaded = true;
   /* Disconnect the signal so we don't get spammed */
   m_databaseEditor->onReady.disconnect<&MainWindow::onDatabaseReady>(this);
+
+  App::APP->getWindow()->setTitle(std::format("{} - [{}]", kApplicationTitle, Database::instance()->system.gameTitle()));
 }
 
 void MainWindow::addToolbarButton(const std::string& id, ToolbarCategory category, asIScriptFunction* func) { m_toolbarButtons[category].emplace_back(id, category, func); }

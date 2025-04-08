@@ -422,12 +422,39 @@ struct Database {
   rpgmutils::signal<void()>& templatesLoaded() { return m_templatesLoaded; }
   rpgmutils::signal<void()>& docsLoaded() { return m_docsLoaded; }
   rpgmutils::signal<void()>& localesLoaded() { return m_localesLoaded; }
+  rpgmutils::signal<void()>& databaseModified() { return m_databaseModified; }
 
   bool isMZ() const { return m_isMZ; }
   bool isMV() const { return !m_isMZ; }
 
+  bool isModified() const {
+    bool isModified = false;
+    isModified |= actors.isModified();
+    isModified |= classes.isModified();
+    isModified |= skills.isModified();
+    isModified |= items.isModified();
+    isModified |= weapons.isModified();
+    isModified |= armors.isModified();
+    isModified |= enemies.isModified();
+    isModified |= troops.isModified();
+    isModified |= states.isModified();
+    isModified |= animations.isModified();
+    isModified |= tilesets.isModified();
+    isModified |= commonEvents.isModified();
+    isModified |= system.isModified();
+    // isModified |= plugins.isModified();
+    // isModified |= gameConstants.isModified();
+    isModified |= templates.isModified();
+    isModified |= docs.isModified();
+    return isModified;
+  }
+
 private:
   bool m_isMZ;
+  void connectAllSignals();
+  void onAnyModifiableModified(IModifiable*) { databaseModified().fire(); }
+  void onAnyNonModifiableModified() { databaseModified().fire(); }
+
   rpgmutils::signal<void()> m_actorsLoaded;
   rpgmutils::signal<void()> m_classesLoaded;
   rpgmutils::signal<void()> m_skillsLoaded;
@@ -447,5 +474,7 @@ private:
   rpgmutils::signal<void()> m_templatesLoaded;
   rpgmutils::signal<void()> m_docsLoaded;
   rpgmutils::signal<void()> m_localesLoaded;
+  rpgmutils::signal<void()> m_databaseModified;
+
   static Database* m_instance;
 };

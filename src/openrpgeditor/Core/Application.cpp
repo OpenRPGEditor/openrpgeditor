@@ -37,16 +37,9 @@
 namespace App {
 constexpr auto SettingsFilename = "config.json"sv;
 Application* APP = nullptr;
-void Application::loadSettings() {
-  if (m_settings.load(m_userConfigPath + SettingsFilename.data())) {
-    m_window->setWindowSize(m_settings.window.w, m_settings.window.h);
-    m_window->setWindowPosition(m_settings.window.x, m_settings.window.y);
-    if (m_settings.window.maximized) {
-      m_window->setMaximized();
-    }
-  }
-}
-Application::Application(const std::string& title) {
+void Application::loadSettings() { m_settings.load(m_userConfigPath + SettingsFilename.data()); }
+
+Application::Application() {
   const auto curlocale = std::locale("en_US.UTF-8");
   std::cout << "System locale: " << curlocale.name() << std::endl;
   std::locale::global(curlocale);
@@ -69,8 +62,6 @@ Application::Application(const std::string& title) {
     m_exitStatus = ExitStatus::Failure;
   }
 
-  m_window = std::make_unique<Window>(Window::Settings{title});
-
   const char* conf_path = SDL_GetPrefPath(COMPANY_NAMESPACE, APP_NAME);
   m_userConfigPath = std::string{conf_path};
   SDL_free((void*)conf_path);
@@ -85,6 +76,8 @@ Application::Application(const std::string& title) {
   APP_DEBUG("User config path: {}", m_userConfigPath);
   // TODO: Detect system locale and automatically use that on first boot
   moloader::load(m_userConfigPath + "/locales/" + m_settings.locale + ".mo");
+
+  m_window = std::make_unique<Window>(Window::Settings{kApplicationTitle, m_settings.window.w, m_settings.window.h, m_settings.window.x, m_settings.window.y, m_settings.window.maximized});
   APP = this;
   if (!ScriptEngine::instance()->initialize()) {
     APP_FATAL("Failed to initialize script manager");

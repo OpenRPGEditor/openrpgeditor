@@ -83,7 +83,7 @@ int main() {
 #endif
     // APP_PROFILE_BEGIN_SESSION_WITH_FILE("App", "profile.json");
     {
-      App::Application app{"OpenRPGEditor"};
+      App::Application app;
       app.run();
     }
 

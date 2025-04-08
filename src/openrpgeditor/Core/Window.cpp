@@ -8,9 +8,9 @@
 namespace App {
 
 Window::Window(const Settings& settings) {
-  const auto window_flags{static_cast<SDL_WindowFlags>(SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY)};
-
-  m_window = SDL_CreateWindow(settings.title.c_str(), settings.width, settings.height, window_flags);
+  m_window = SDL_CreateWindow(settings.title.c_str(), settings.width, settings.height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY | (settings.maximized ? SDL_WINDOW_MAXIMIZED : 0));
+  setWindowPosition(settings.x, settings.y);
+  m_title = settings.title;
 
   m_renderer = SDL_CreateRenderer(m_window, nullptr);
 

@@ -2,7 +2,7 @@
 
 #include "Database/CommonEvent.hpp"
 
-class CommonEvents {
+class CommonEvents final : public IModifiable {
 public:
   std::vector<std::optional<CommonEvent>>& events() { return m_events; }
   const std::vector<std::optional<CommonEvent>>& events() const { return m_events; }
@@ -50,6 +50,10 @@ public:
   }
   [[nodiscard]] bool isUpdating() const { return m_isUpdating; }
   void setUpdate(bool update) { m_isUpdating = update; }
+
+  bool isModified() const {
+    return std::ranges::any_of(m_events, [](const auto& event) { return event && event->isModified(); });
+  }
 
 private:
   std::vector<std::optional<CommonEvent>> m_events;

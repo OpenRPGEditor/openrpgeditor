@@ -7,4 +7,4 @@ MovementScriptCommand::MovementScriptCommand(const std::optional<int>& indent, c
 
 void MovementScriptCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(script); }
 
-std::string MovementScriptCommand::stringRep(const Database& db) const { return symbol(code()) + DecodeEnumName(code()) + colon.data() + script; }
+std::string MovementScriptCommand::stringRep(const Database& db, const bool colored) const { return symbol(code()) + DecodeEnumName(code()) + colon.data() + script; }

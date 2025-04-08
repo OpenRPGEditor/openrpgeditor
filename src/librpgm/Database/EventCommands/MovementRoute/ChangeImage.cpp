@@ -11,6 +11,6 @@ void MovementChangeImageCommand::serializeParameters(nlohmann::ordered_json& out
   out.push_back(character);
 }
 
-std::string MovementChangeImageCommand::stringRep(const Database& db) const {
+std::string MovementChangeImageCommand::stringRep(const Database& db, const bool colored) const {
   return symbol(code()) + std::string("Image") + colon.data() + db.imageText(image) + " " + db.parentheses(std::to_string(character));
 }

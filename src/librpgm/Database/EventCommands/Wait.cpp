@@ -1,5 +1,7 @@
 #include "Database/EventCommands/Wait.hpp"
 
+#include "Database/Database.hpp"
+
 WaitCommand::WaitCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   parameters.at(0).get_to(duration);
@@ -7,6 +9,6 @@ WaitCommand::WaitCommand(const std::optional<int>& indent, const nlohmann::order
 
 void WaitCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(duration); }
 
-std::string WaitCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Wait : " + std::to_string(duration) + " frames" + ColorFormatter::popColor();
+std::string WaitCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Wait") + colon.data() + db.framesText(duration) + ColorFormatter::popColor(colored);
 }

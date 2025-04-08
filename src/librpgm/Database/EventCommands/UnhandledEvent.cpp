@@ -4,4 +4,6 @@ void UnhandledEventCommand::serialize(nlohmann::ordered_json& out, [[maybe_unuse
   out.push_back(data);
 }
 
-std::string UnhandledEventCommand::stringRep(const Database& db) const { return IEventCommand::stringRep(db) + ColorFormatter::getColor(FormatColor::Red) + " UNHANDLED" + ColorFormatter::popColor(); }
+std::string UnhandledEventCommand::stringRep(const Database& db, const bool colored) const {
+  return IEventCommand::stringRep(db) + ColorFormatter::getColor(FormatColor::Red, colored) + " UNHANDLED" + ColorFormatter::popColor(colored);
+}

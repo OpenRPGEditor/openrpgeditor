@@ -8,7 +8,7 @@ struct ChangeClassCommand final : IEventCommand {
   ~ChangeClassCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Class; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeClassCommand>(*this); }
   bool hasReference(int targetId, SearchType type) override {
     if (type == SearchType::Actor) {

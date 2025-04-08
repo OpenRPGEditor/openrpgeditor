@@ -7,7 +7,7 @@ struct ShowChoiceCommand final : IEventCommand {
   ~ShowChoiceCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Choices; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowChoiceCommand>(*this); }
 
   [[nodiscard]] constexpr bool collapsable() const override { return true; }
@@ -65,7 +65,7 @@ struct WhenSelectedCommand final : IEventCommand {
   ~WhenSelectedCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::When_Selected; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<WhenSelectedCommand>(*this); }
 
   [[nodiscard]] constexpr bool collapsable() const override { return true; }

@@ -20,12 +20,12 @@ void ChangeActorImageCommand::serializeParameters(nlohmann::ordered_json& out) c
   out.push_back(battlerPicture);
 }
 
-std::string ChangeActorImageCommand::stringRep(const Database& db) const {
+std::string ChangeActorImageCommand::stringRep(const Database& db, const bool colored) const {
   std::string charString = db.imageText(charPicture, charIndex);
   std::string faceString = db.imageText(facePicture, faceIndex);
   std::string battlerString = db.imageText(battlerPicture);
 
   const auto actName = db.actorNameOrId(actor);
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Actor Images" + colon.data() + actName + ", " + charString + ", " + faceString + ", " + battlerString +
-         ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Actor Images") + colon.data() + actName + ", " + charString + ", " + faceString + ", " +
+         battlerString + ColorFormatter::popColor(colored);
 }

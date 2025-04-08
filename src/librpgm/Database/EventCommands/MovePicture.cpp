@@ -32,17 +32,21 @@ void MovePictureCommand::serializeParameters(nlohmann::ordered_json& out) const 
   out.push_back(waitForCompletion);
 }
 
-std::string MovePictureCommand::stringRep(const Database& db) const {
+std::string MovePictureCommand::stringRep(const Database& db, const bool colored) const {
+  std::string suffix;
+  if (waitForCompletion) {
+    suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " " + db.parentheses(trNOOP("Wait")) + ColorFormatter::popColor(colored);
+  }
   if (pictureLocation == PictureDesignationSource::Designation_with_variables) {
     std::string varX = db.system.variable(x);
     std::string varY = db.system.variable(y);
     varX = varX.empty() ? std::format("#{:04}", x) : varX;
     varY = varY.empty() ? std::format("#{:04}", y) : varY;
-    return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Move Picture" + colon.data() +
-           std::format("#{}, {} ({{{}}},{{{}}}), ({}%, {}%), {}, {}, {} frames", picture, DecodeEnumName(origin), varX, varY, width, height, opacity, DecodeEnumName(blendMode), duration) +
-           ColorFormatter::popColor() + (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
+    return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Move Picture") + colon.data() +
+           std::format("#{}, {} ({{{}}},{{{}}}), ({}%, {}%), {}, {}, {}", picture, DecodeEnumName(origin), varX, varY, width, height, opacity, DecodeEnumName(blendMode), db.framesText(duration)) +
+           ColorFormatter::popColor(colored) + suffix;
   }
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Move Picture" + colon.data() +
-         std::format("#{}, {} ({},{}), ({}%, {}%), {}, {}, {} frames", picture, DecodeEnumName(origin), x, y, width, height, opacity, DecodeEnumName(blendMode), duration) +
-         ColorFormatter::popColor() + (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Move Picture") + colon.data() +
+         std::format("#{}, {} ({},{}), ({}%, {}%), {}, {}, {}", picture, DecodeEnumName(origin), x, y, width, height, opacity, DecodeEnumName(blendMode), db.framesText(duration)) +
+         ColorFormatter::popColor(colored) + suffix;
 }

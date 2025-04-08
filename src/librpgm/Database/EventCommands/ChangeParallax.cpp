@@ -19,21 +19,21 @@ void ChangeParallaxCommand::serializeParameters(nlohmann::ordered_json& out) con
   out.push_back(scrollY);
 }
 
-std::string ChangeParallaxCommand::stringRep(const Database& db) const {
-  auto rep = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Parallax" + colon.data() + db.imageText(image) + ColorFormatter::popColor();
+std::string ChangeParallaxCommand::stringRep(const Database& db, const bool colored) const {
+  auto rep = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Parallax") + colon.data() + db.imageText(image) + ColorFormatter::popColor(colored);
   if (loopHorizontally || loopVertically) {
-    rep += ColorFormatter::getColor(FormatColor::Gray) + " (";
+    rep += ColorFormatter::getColor(FormatColor::Gray, colored) + " (";
 
     if (loopHorizontally) {
-      rep += "Loop Horizontally";
+      rep += trNOOP("Loop Horizontally");
     }
     if (loopVertically) {
       if (loopHorizontally) {
         rep += ", ";
       }
-      rep += "Loop Vertically";
+      rep += trNOOP("Loop Vertically");
     }
-    rep = rep + ")" + ColorFormatter::popColor();
+    rep = rep + ")" + ColorFormatter::popColor(colored);
   }
 
   return rep;

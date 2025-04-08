@@ -1,4 +1,5 @@
 #include "Database/EventCommands/TintPicture.hpp"
+#include "Database/Database.hpp"
 
 TintPictureCommand::TintPictureCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
@@ -24,8 +25,11 @@ void TintPictureCommand::serializeParameters(nlohmann::ordered_json& out) const 
   out.push_back(waitForCompletion);
 }
 
-std::string TintPictureCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Tint Picture" + colon.data() +
-         std::format("#{}, ({},{},{},{}), {} frames", picture, color.r, color.g, color.b, color.gray, duration) + ColorFormatter::popColor() +
-         (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
+std::string TintPictureCommand::stringRep(const Database& db, const bool colored) const {
+  std::string suffix;
+  if (waitForCompletion) {
+    suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " " + db.parentheses(trNOOP("Wait")) + ColorFormatter::popColor(colored);
+  }
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Tint Picture") + colon.data() +
+         std::format("#{}, ({},{},{},{}), {}", picture, color.r, color.g, color.b, color.gray, db.framesText(duration)) + ColorFormatter::popColor(colored) + suffix;
 }

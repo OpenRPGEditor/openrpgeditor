@@ -25,6 +25,6 @@ struct MovementSwitchONCommand final : IMovementRouteStep {
     }
     return false;
   }
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<MovementSwitchONCommand>(*this); }
 };

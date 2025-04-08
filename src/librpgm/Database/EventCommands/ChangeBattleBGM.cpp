@@ -9,6 +9,6 @@ ChangeBattleBGMCommand::ChangeBattleBGMCommand(const std::optional<int>& indent,
 
 void ChangeBattleBGMCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(bgm); }
 
-std::string ChangeBattleBGMCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Battle BGM" + colon.data() + db.audioText(bgm) + ColorFormatter::popColor();
+std::string ChangeBattleBGMCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Battle BGM") + colon.data() + db.audioText(bgm) + ColorFormatter::popColor(colored);
 }

@@ -179,9 +179,14 @@ static std::map<EventCode, std::string_view> CommandColors{
 /**
  *
  * @param command
+ * @param color
  * @return Returns an ImGui formatted string for the specific command name.
  */
-std::string ColorFormatter::getColorCode(EventCode command) {
+std::string ColorFormatter::getColorCode(const EventCode command, const bool color) {
+  if (!color) {
+    return "";
+  }
+
   if (CommandColors.contains(command)) {
     return CommandColors[command].data();
   }
@@ -191,15 +196,19 @@ std::string ColorFormatter::getColorCode(EventCode command) {
  *
  * @return Returns Pop() for ImGui color encoding. Used at the end of color encoding to indicate the end of it.
  */
-std::string ColorFormatter::popColor() {
-  return "&pop-color;"; // Default to no color
+std::string ColorFormatter::popColor(const bool color) {
+  return color ? "&pop-color;" : ""; // Default to no color
 }
 /**
  *
  * @param preset
+ * @param color
  * @return Input: Color enum, returns an ImGui formatted string based off the enum.
  */
-std::string ColorFormatter::getColor(FormatColor preset) {
+std::string ColorFormatter::getColor(const FormatColor preset, const bool color) {
+  if (!color) {
+    return "";
+  }
   switch (preset) {
   case FormatColor::Gray:
     return raw::gray.data();

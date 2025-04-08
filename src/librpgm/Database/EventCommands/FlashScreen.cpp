@@ -1,5 +1,7 @@
 #include "Database/EventCommands/FlashScreen.hpp"
 
+#include "Database/Database.hpp"
+
 FlashScreenCommand::FlashScreenCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   auto colorValue = parameters.at(0);
@@ -26,8 +28,11 @@ void FlashScreenCommand::serializeParameters(nlohmann::ordered_json& out) const 
   out.push_back(waitForCompletion);
 }
 
-std::string FlashScreenCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Flash Screen" + colon.data() +
-         std::format("({},{},{},{}), {} frames", color.r, color.g, color.b, color.intensity, duration) + ColorFormatter::popColor() +
-         (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
+std::string FlashScreenCommand::stringRep(const Database& db, const bool colored) const {
+  std::string suffix;
+  if (waitForCompletion) {
+    suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " " + db.parentheses(trNOOP("Wait")) + ColorFormatter::popColor(colored);
+  }
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Flash Screen") + colon.data() +
+         std::format("({},{},{},{}), {} {}", color.r, color.g, color.b, color.intensity, duration, db.framesText(duration)) + ColorFormatter::popColor(colored) + suffix;
 }

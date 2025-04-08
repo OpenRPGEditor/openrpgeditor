@@ -10,7 +10,7 @@ struct ChangeDefeatMECommand final : IEventCommand {
   ~ChangeDefeatMECommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Defeat_ME; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeDefeatMECommand>(*this); }
   bool hasStringReference(const std::string& text, SearchType type) override {
     if (type == SearchType::Audio) {

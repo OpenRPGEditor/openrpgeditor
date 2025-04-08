@@ -6,4 +6,4 @@ MovementFrequencyCommand::MovementFrequencyCommand(const std::optional<int>& ind
 }
 void MovementFrequencyCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(frequency); }
 
-std::string MovementFrequencyCommand::stringRep(const Database& db) const { return symbol(code()) + std::string("Frequency") + colon.data() + std::to_string(frequency); }
+std::string MovementFrequencyCommand::stringRep(const Database& db, const bool colored) const { return symbol(code()) + std::string("Frequency") + colon.data() + std::to_string(frequency); }

@@ -14,14 +14,14 @@ ScriptCommand::ScriptCommand(const std::optional<int>& indent, const nlohmann::o
 
 void ScriptCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(script); }
 
-std::string ScriptCommand::stringRep(const Database& db) const {
+std::string ScriptCommand::stringRep(const Database& db, const bool colored) const {
   const auto name = UndectorateEnumName(code());
-  std::string ret = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + name + colon.data() + script + ColorFormatter::popColor();
+  std::string ret = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + name + colon.data() + script + ColorFormatter::popColor(colored);
   for (const auto& t : moreScript) {
     if (!ret.empty()) {
       ret += "\n";
     }
-    ret += indentText(indent()) + symbol(t->code()) + ColorFormatter::getColorCode(t->code()) + std::string(name.length(), ' ') + colon.data() + t->script + ColorFormatter::popColor();
+    ret += indentText(indent()) + symbol(t->code()) + ColorFormatter::getColorCode(t->code(), colored) + std::string(name.length(), ' ') + colon.data() + t->script + ColorFormatter::popColor(colored);
   }
 
   return ret;

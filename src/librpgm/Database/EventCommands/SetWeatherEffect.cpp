@@ -1,5 +1,7 @@
 #include "Database/EventCommands/SetWeatherEffect.hpp"
 
+#include "Database/Database.hpp"
+
 SetWeatherEffectCommand::SetWeatherEffectCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   std::string eff;
@@ -19,7 +21,12 @@ void SetWeatherEffectCommand::serializeParameters(nlohmann::ordered_json& out) c
   out.push_back(waitForCompletion);
 }
 
-std::string SetWeatherEffectCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Set Weather Effect" + colon.data() + DecodeEnumName(effect) + ", " + std::to_string(power) + ", " +
-         std::to_string(duration) + " frames" + ColorFormatter::popColor() + (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
+std::string SetWeatherEffectCommand::stringRep(const Database& db, const bool colored) const {
+
+  std::string suffix;
+  if (waitForCompletion) {
+    suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " " + db.parentheses(trNOOP("Wait")) + ColorFormatter::popColor(colored);
+  }
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Set Weather Effect") + colon.data() + DecodeEnumName(effect) + ", " + std::to_string(power) +
+         ", " + db.framesText(duration) + ColorFormatter::popColor(colored) + suffix;
 }

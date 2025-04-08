@@ -16,6 +16,7 @@ void ChangeWindowColorCommand::serializeParameters(nlohmann::ordered_json& out) 
   out.push_back(colors);
 }
 
-std::string ChangeWindowColorCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Window Color" + colon.data() + std::format("({}, {}, {})", r, g, b) + ColorFormatter::popColor();
+std::string ChangeWindowColorCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Window Color") + colon.data() + std::format("({}, {}, {})", r, g, b) +
+         ColorFormatter::popColor(colored);
 }

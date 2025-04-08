@@ -7,4 +7,4 @@ MovementChangeOpacityCommand::MovementChangeOpacityCommand(const std::optional<i
 
 void MovementChangeOpacityCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(opacity); }
 
-std::string MovementChangeOpacityCommand::stringRep(const Database& db) const { return symbol(code()) + std::string("Opacity") + colon.data() + std::to_string(opacity); }
+std::string MovementChangeOpacityCommand::stringRep(const Database& db, const bool colored) const { return symbol(code()) + std::string("Opacity") + colon.data() + std::to_string(opacity); }

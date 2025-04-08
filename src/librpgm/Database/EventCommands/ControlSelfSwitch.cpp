@@ -11,6 +11,7 @@ void ControlSelfSwitchCommand::serializeParameters(nlohmann::ordered_json& out) 
   out.push_back(turnOff);
 }
 
-std::string ControlSelfSwitchCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Control Self Switch" + colon.data() + selfSw + " = " + DecodeEnumName(turnOff) + ColorFormatter::popColor();
+std::string ControlSelfSwitchCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Control Self Switch") + colon.data() + selfSw + " = " + DecodeEnumName(turnOff) +
+         ColorFormatter::popColor(colored);
 }

@@ -10,7 +10,7 @@ struct EnemyRecoverAllCommand final : IEventCommand {
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<EnemyRecoverAllCommand>(*this); }
 
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
 
   int troop;
 };

@@ -14,7 +14,7 @@ void ChangeEquipmentCommand::serializeParameters(nlohmann::ordered_json& out) co
   out.push_back(equipment);
 }
 
-std::string ChangeEquipmentCommand::stringRep(const Database& db) const {
+std::string ChangeEquipmentCommand::stringRep(const Database& db, const bool colored) const {
   const auto actorName = db.actorNameOrId(actorId);
   const auto isDualWield = db.isDualWield(actorId);
   auto eType = equipType;
@@ -22,7 +22,7 @@ std::string ChangeEquipmentCommand::stringRep(const Database& db) const {
     eType = 1;
   }
   const auto equipTypeName = db.equipTypeName(equipType);
-  const auto equipName = equipment == 0 ? "None" : eType <= 1 ? db.weaponNameOrId(equipment) : db.armorNameOrId(equipment);
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Equipment" + colon.data() + std::format("{}, {} = {}", actorName, equipTypeName, equipName) +
-         ColorFormatter::popColor();
+  const auto equipName = equipment == 0 ? trNOOP("None") : eType <= 1 ? db.weaponNameOrId(equipment) : db.armorNameOrId(equipment);
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Equipment") + colon.data() +
+         std::format("{}, {} = {}", actorName, equipTypeName, equipName) + ColorFormatter::popColor(colored);
 }

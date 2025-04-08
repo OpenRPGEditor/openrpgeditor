@@ -21,11 +21,11 @@ void ChangeHPCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(allowKnockout);
 }
 
-std::string ChangeHPCommand::stringRep(const Database& db) const {
+std::string ChangeHPCommand::stringRep(const Database& db, const bool colored) const {
   std::string actName;
   if (comparison == ActorComparisonSource::Fixed) {
     if (value <= 0) {
-      actName = "Entire Party";
+      actName = trNOOP("Entire Party");
     } else {
       actName = db.actorNameOrId(value);
     }
@@ -42,8 +42,8 @@ std::string ChangeHPCommand::stringRep(const Database& db) const {
 
   std::string suffix;
   if (allowKnockout) {
-    suffix = ColorFormatter::getColor(FormatColor::Gray) + " " + db.parentheses("Allow Knockout") + ColorFormatter::popColor();
+    suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " " + db.parentheses(trNOOP("Allow Knockout")) + ColorFormatter::popColor(colored);
   }
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change HP" + colon.data() + actName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr +
-         ColorFormatter::popColor() + suffix;
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change HP") + colon.data() + actName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr +
+         ColorFormatter::popColor(colored) + suffix;
 }

@@ -15,7 +15,7 @@ void ChangeVehicleImageCommand::serializeParameters(nlohmann::ordered_json& out)
   out.push_back(pictureIndex);
 }
 
-std::string ChangeVehicleImageCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Vehicle Image" + colon.data() + DecodeEnumName(vehicle) + ", " + db.imageText(picture, pictureIndex) +
-         ColorFormatter::popColor();
+std::string ChangeVehicleImageCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Vehicle Image") + colon.data() + DecodeEnumName(vehicle) + ", " +
+         db.imageText(picture, pictureIndex) + ColorFormatter::popColor(colored);
 }

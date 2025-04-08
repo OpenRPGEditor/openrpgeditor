@@ -21,12 +21,12 @@ void ChangeEXPCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(showLevelUp);
 }
 
-std::string ChangeEXPCommand::stringRep(const Database& db) const {
+std::string ChangeEXPCommand::stringRep(const Database& db, const bool colored) const {
 
   std::string actorName;
   if (comparison == ActorComparisonSource::Fixed) {
     if (value <= 0) {
-      actorName = "Entire Party";
+      actorName = trNOOP("Entire Party");
     } else {
       actorName = db.actorNameOrId(value);
     }
@@ -43,9 +43,9 @@ std::string ChangeEXPCommand::stringRep(const Database& db) const {
 
   std::string suffix;
   if (showLevelUp) {
-    suffix = ColorFormatter::getColor(FormatColor::Gray) + " " + db.parentheses("Show Level Up") + ColorFormatter::popColor();
+    suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " " + db.parentheses(trNOOP("Show Level Up")) + ColorFormatter::popColor(colored);
   }
 
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change EXP" + colon.data() + actorName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr +
-         ColorFormatter::popColor() + suffix;
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change EXP") + colon.data() + actorName + ", " + DecodeEnumName(quantityOp) + " " +
+         quantityStr + ColorFormatter::popColor(colored) + suffix;
 }

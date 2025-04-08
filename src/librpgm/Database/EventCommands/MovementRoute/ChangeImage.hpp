@@ -9,7 +9,7 @@ struct MovementChangeImageCommand final : IMovementRouteStep {
   ~MovementChangeImageCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Image; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<MovementChangeImageCommand>(*this); }
 
   std::string image;

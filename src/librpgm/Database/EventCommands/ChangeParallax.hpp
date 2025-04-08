@@ -16,5 +16,5 @@ struct ChangeParallaxCommand final : IEventCommand {
   int scrollX{0};
   int scrollY{0};
 
-  std::string stringRep(const Database& db) const override;
+  std::string stringRep(const Database& db, bool colored = true) const override;
 };

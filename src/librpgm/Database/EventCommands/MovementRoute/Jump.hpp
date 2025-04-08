@@ -13,5 +13,5 @@ struct MovementJumpCommand final : IMovementRouteStep {
   int y{0};
 
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
 };

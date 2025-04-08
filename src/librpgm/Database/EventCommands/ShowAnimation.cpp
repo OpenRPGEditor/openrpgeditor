@@ -15,10 +15,15 @@ void ShowAnimationCommand::serializeParameters(nlohmann::ordered_json& out) cons
   out.push_back(waitForCompletion);
 }
 
-std::string ShowAnimationCommand::stringRep(const Database& db) const {
+std::string ShowAnimationCommand::stringRep(const Database& db, const bool colored) const {
   const auto evName = db.eventNameOrId(character);
   const auto animName = db.animationNameOrId(animation);
 
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Show Animation" + colon.data() + evName + ", " + animName + " " + ColorFormatter::popColor() +
-         (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + "(Wait)" + ColorFormatter::popColor() : "");
+  std::string suffix;
+  if (waitForCompletion) {
+    suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " " + db.parentheses(trNOOP("Wait")) + ColorFormatter::popColor(colored);
+  }
+
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Show Animation") + colon.data() + evName + ", " + animName +
+         ColorFormatter::popColor(colored) + suffix;
 }

@@ -24,16 +24,17 @@ void ShowTextCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(position);
 }
 
-std::string ShowTextCommand::stringRep(const Database& db) const {
+std::string ShowTextCommand::stringRep(const Database& db, const bool colored) const {
   const auto name = UndectorateEnumName(code());
-  std::string ret = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + name + colon.data() + ColorFormatter::popColor() + ColorFormatter::getColor(FormatColor::Gray) +
-                    db.imageText(faceImage, faceIndex) + ", " + DecodeEnumName(background) + ", " + DecodeEnumName(position) + ColorFormatter::popColor();
+  std::string ret = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + name + colon.data() + ColorFormatter::popColor(colored) +
+                    ColorFormatter::getColor(FormatColor::Gray, colored) + db.imageText(faceImage, faceIndex) + ", " + DecodeEnumName(background) + ", " + DecodeEnumName(position) +
+                    ColorFormatter::popColor(colored);
 
   for (const auto& t : text) {
     if (!ret.empty()) {
       ret += "\n";
     }
-    ret += indentText(indent()) + symbol(t->code()) + ColorFormatter::getColorCode(t->code()) + std::string(name.length(), ' ') + colon.data() + t->text + ColorFormatter::popColor();
+    ret += indentText(indent()) + symbol(t->code()) + ColorFormatter::getColorCode(t->code(), colored) + std::string(name.length(), ' ') + colon.data() + t->text + ColorFormatter::popColor(colored);
   }
   return ret;
 }

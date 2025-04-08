@@ -13,7 +13,7 @@ struct MovementRouteStepCommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<MovementRouteStepCommand>(*this); }
 
-  [[nodiscard]] std::string stringRep(const Database& db) const override { return step->stringRep(db); }
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override { return step->stringRep(db); }
 };
 
 struct SetMovementRouteCommand final : IEventCommand {
@@ -24,7 +24,7 @@ struct SetMovementRouteCommand final : IEventCommand {
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<SetMovementRouteCommand>(*this); }
 
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   void addStep(MovementRouteStepCommand* step) { editNodes.emplace_back(step); }
   bool hasReference(int targetId, SearchType type) override {
     for (auto& nextCmd : editNodes) {

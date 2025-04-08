@@ -16,10 +16,10 @@ void ChangeEnemyMPCommand::serializeParameters(nlohmann::ordered_json& out) cons
   out.push_back(quantity);
 }
 
-std::string ChangeEnemyMPCommand::stringRep(const Database& db) const {
+std::string ChangeEnemyMPCommand::stringRep(const Database& db, const bool colored) const {
   std::string enemyStr;
   if (enemy < 0) {
-    enemyStr = "Entire Troop, ";
+    enemyStr = trNOOP("Entire Troop, ");
   } else {
     enemyStr = std::format("#{}, ", enemy + 1);
   }
@@ -31,6 +31,6 @@ std::string ChangeEnemyMPCommand::stringRep(const Database& db) const {
     quantityStr = std::format("{}", quantity);
   }
 
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Enemy MP" + colon.data() + enemyStr + DecodeEnumName(enemyOp) + " " + quantityStr +
-         ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Enemy MP") + colon.data() + enemyStr + DecodeEnumName(enemyOp) + " " + quantityStr +
+         ColorFormatter::popColor(colored);
 }

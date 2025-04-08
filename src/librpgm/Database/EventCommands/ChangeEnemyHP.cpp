@@ -18,10 +18,10 @@ void ChangeEnemyHPCommand::serializeParameters(nlohmann::ordered_json& out) cons
   out.push_back(allowKnockOut);
 }
 
-std::string ChangeEnemyHPCommand::stringRep(const Database& db) const {
+std::string ChangeEnemyHPCommand::stringRep(const Database& db, const bool colored) const {
   std::string enemyStr;
   if (enemy < 0) {
-    enemyStr = "Entire Troop, ";
+    enemyStr = tr("Entire Troop") + ", ";
   } else {
     enemyStr = std::format("#{}, ", enemy + 1);
   }
@@ -35,8 +35,8 @@ std::string ChangeEnemyHPCommand::stringRep(const Database& db) const {
 
   std::string suffix;
   if (allowKnockOut) {
-    suffix = ColorFormatter::getColor(FormatColor::Gray) + " " + db.parentheses("Allow Knockout") + ColorFormatter::popColor();
+    suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " " + db.parentheses(trNOOP("Allow Knockout")) + ColorFormatter::popColor(colored);
   }
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Enemy HP" + colon.data() + enemyStr + DecodeEnumName(enemyOp) + " " + quantityStr +
-         ColorFormatter::popColor() + suffix;
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Enemy HP") + colon.data() + enemyStr + DecodeEnumName(enemyOp) + " " + quantityStr +
+         ColorFormatter::popColor(colored) + suffix;
 }

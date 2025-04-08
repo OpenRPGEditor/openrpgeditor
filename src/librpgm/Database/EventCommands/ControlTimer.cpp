@@ -15,7 +15,7 @@ void ControlTimerCommand::serializeParameters(nlohmann::ordered_json& out) const
   }
 }
 
-std::string ControlTimerCommand::stringRep(const Database& db) const {
+std::string ControlTimerCommand::stringRep(const Database& db, const bool colored) const {
   std::string min;
   std::string sec;
 
@@ -26,6 +26,7 @@ std::string ControlTimerCommand::stringRep(const Database& db) const {
     min = "0";
     sec = std::to_string(seconds);
   }
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Control Timer" + colon.data() + DecodeEnumName(control) + ", " + min + " min " + sec + " sec" +
-         ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Control Timer") + colon.data() + DecodeEnumName(control) + ", " +
+         // TL-NOTE: Minutes and Seconds
+         trFormat("{} min {} sec", min, sec) + ColorFormatter::popColor(colored);
 }

@@ -7,5 +7,5 @@ struct IMovementRouteStep : IEventCommand {
   explicit IMovementRouteStep(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
   : IEventCommand(indent, parameters) {}
   [[nodiscard]] EventCode code() const override = 0;
-  [[nodiscard]] std::string stringRep(const Database& db) const override { return symbol(code()) + DecodeEnumName(code()); }
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override { return symbol(code()) + DecodeEnumName(code()); }
 };

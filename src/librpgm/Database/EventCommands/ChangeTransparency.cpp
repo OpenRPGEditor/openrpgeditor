@@ -7,6 +7,7 @@ ChangeTransparencyCommand::ChangeTransparencyCommand(const std::optional<int>& i
 
 void ChangeTransparencyCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(transparency); }
 
-std::string ChangeTransparencyCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Transparency" + colon.data() + DecodeEnumName(transparency) + ColorFormatter::popColor();
+std::string ChangeTransparencyCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Transparency") + colon.data() + DecodeEnumName(transparency) +
+         ColorFormatter::popColor(colored);
 }

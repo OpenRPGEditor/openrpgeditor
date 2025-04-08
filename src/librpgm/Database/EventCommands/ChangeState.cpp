@@ -17,11 +17,11 @@ void ChangeStateCommand::serializeParameters(nlohmann::ordered_json& out) const 
   out.push_back(state);
 }
 
-std::string ChangeStateCommand::stringRep(const Database& db) const {
+std::string ChangeStateCommand::stringRep(const Database& db, const bool colored) const {
   std::string actorName;
   if (comparison == ActorComparisonSource::Fixed) {
     if (value == 0) {
-      actorName = "Entire Party";
+      actorName = trNOOP("Entire Party");
     } else {
       actorName = db.actorNameOrId(value);
     }
@@ -30,7 +30,7 @@ std::string ChangeStateCommand::stringRep(const Database& db) const {
     actorName = std::format("{{{}}}", db.variableNameOrId(value));
   }
 
-  std::string stateName = db.stateNameOrId(state);
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change State" + colon.data() + actorName + ", " + DecodeEnumName(stateOp) + " " + stateName +
-         ColorFormatter::popColor();
+  const auto stateName = db.stateNameOrId(state);
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change State") + colon.data() + actorName + ", " + DecodeEnumName(stateOp) + " " + stateName +
+         ColorFormatter::popColor(colored);
 }

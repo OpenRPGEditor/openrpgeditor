@@ -64,9 +64,9 @@ struct Database {
 
   void serializeSettings() { config.serialize(basePath + "/editor/config.json"); }
 
-  static std::string framesText(const int frames) { return std::to_string(frames) + (frames > 1 ? " frames" : " frame"); }
+  static std::string framesText(const int frames) { return std::to_string(frames) + " " + (frames == 0 || frames > 1 ? trNOOP("frames") : trNOOP("frame")); }
 
-  static std::string secondsText(const int seconds) { return std::to_string(seconds) + (seconds > 1 ? " seconds" : " second"); }
+  static std::string secondsText(const int seconds) { return std::to_string(seconds) + " " + (seconds > 1 ? trNOOP("seconds") : trNOOP("second")); }
 
   static std::string parentheses(const std::string& text) { return "(" + text + ")"; }
 
@@ -78,15 +78,15 @@ struct Database {
       return name;
     }
 
-    return "None";
+    return trNOOP("None");
   }
 
   static std::string dualImageText(const std::string& name1, const std::string& name2) {
     if (name1.empty() && name2.empty()) {
-      return "None";
+      return trNOOP("None");
     }
 
-    std::string text = name1.empty() ? "None" : name1;
+    std::string text = name1.empty() ? trNOOP("None") : name1;
     if (!name2.empty()) {
       text += " & " + name2;
     }
@@ -99,7 +99,7 @@ struct Database {
       return audio.name() + " " + parentheses(std::format("{}, {}, {}", audio.volume(), audio.pitch(), audio.pan()));
     }
 
-    return "None";
+    return trNOOP("None");
   }
 
   static std::string movieText(const std::string& name) {
@@ -107,7 +107,7 @@ struct Database {
       return name;
     }
 
-    return "None";
+    return trNOOP("None");
   }
 
   [[nodiscard]] std::string eventName(const int id) const {
@@ -156,7 +156,7 @@ struct Database {
 
   [[nodiscard]] std::string stateName(const int id) const {
     if (id == 0) {
-      return "Normal Attack";
+      return trNOOP("Normal Attack");
     }
 
     const auto object = states.state(id);
@@ -229,7 +229,7 @@ struct Database {
 
   [[nodiscard]] std::string troopMemberName(const int id, const int index) const {
     if (index < 0) {
-      return "Entire Troop";
+      return trNOOP("Entire Troop");
     }
     const auto object = troops.troop(id);
     const auto member = object ? object->member(index) : nullptr;
@@ -264,10 +264,10 @@ struct Database {
 
   [[nodiscard]] std::string eventNameOrId(const int id) const {
     if (id == -1) {
-      return "Player";
+      return trNOOP("Player");
     }
     if (id == 0) {
-      return "This Event";
+      return trNOOP("This Event");
     }
     return nameOrId(eventName(id), id, 3);
   }
@@ -286,13 +286,13 @@ struct Database {
   [[nodiscard]] std::string enemyNameAndId(const int id) const { return nameAndId(enemyName(id), id); }
   [[nodiscard]] std::string troopNameOrId(const int id) const {
     if (id == -1) {
-      return "Entire Troop";
+      return trNOOP("Entire Troop");
     }
     return nameOrId(troopName(id), id);
   }
   [[nodiscard]] std::string troopNameAndId(const int id) const {
     if (id == -1) {
-      return "Entire Troop";
+      return trNOOP("Entire Troop");
     }
     return nameAndId(troopName(id), id);
   }

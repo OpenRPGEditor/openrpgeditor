@@ -13,7 +13,7 @@ void ChangeVehicleBGMCommand::serializeParameters(nlohmann::ordered_json& out) c
   out.push_back(bgm);
 }
 
-std::string ChangeVehicleBGMCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Vehicle BGM" + colon.data() + DecodeEnumName(vehicle) + ", " + Database::audioText(bgm) +
-         ColorFormatter::popColor();
+std::string ChangeVehicleBGMCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Vehicle BGM") + colon.data() + DecodeEnumName(vehicle) + ", " +
+         Database::audioText(bgm) + ColorFormatter::popColor(colored);
 }

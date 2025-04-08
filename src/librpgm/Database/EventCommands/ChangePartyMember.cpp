@@ -15,12 +15,12 @@ void ChangePartyMemberCommand::serializeParameters(nlohmann::ordered_json& out) 
   out.push_back(initialize);
 }
 
-std::string ChangePartyMemberCommand::stringRep(const Database& db) const {
+std::string ChangePartyMemberCommand::stringRep(const Database& db, const bool colored) const {
   const auto actName = db.actorNameOrId(member);
   std::string suffix;
   if (initialize) {
-    suffix = ColorFormatter::getColor(FormatColor::Gray) + " (Initialize)" + ColorFormatter::popColor();
+    suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " " + db.parentheses(trNOOP("Initialize")) + ColorFormatter::popColor(colored);
   }
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Party Member" + colon.data() +
-         (operation == PartyMemberOperation::_daa__del_Remove ? "Remove " : "Add ") + actName + ColorFormatter::popColor() + suffix;
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Party Member") + colon.data() +
+         (operation == PartyMemberOperation::_daa__del_Remove ? trNOOP("Remove") : trNOOP("Add")) + " " + actName + ColorFormatter::popColor(colored) + suffix;
 }

@@ -10,6 +10,7 @@
 #include "imgui_internal.h"
 #include <clip.h>
 
+#include <Core/Utils.hpp>
 #include <iostream>
 #include <vector>
 
@@ -180,7 +181,7 @@ void EventCommandEditor::handleBlockCollapse(int& n) const {
         }
         n++;
 
-        auto rep = next->stringRep(*Database::instance());
+        auto rep = next->stringRep(*Database::instance(), false);
         if (next->code() != EventCode::Event_Dummy) {
           if (std::ranges::count(tooltip.begin(), tooltip.end(), '\n') < 5) {
             tooltip += rep + "\n";
@@ -192,7 +193,7 @@ void EventCommandEditor::handleBlockCollapse(int& n) const {
         next = m_commands->at(n + 1);
       }
       if (m_hoveringCommand == oldN && !tooltip.empty() && ImGui::BeginTooltip()) {
-        ImGui::TextParsed("%s", tooltip.c_str());
+        ImGui::Text("%s", tooltip.c_str());
         ImGui::EndTooltip();
       }
     }

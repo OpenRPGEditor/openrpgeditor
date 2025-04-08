@@ -9,6 +9,6 @@ PlayBGSCommand::PlayBGSCommand(const std::optional<int>& indent, const nlohmann:
 
 void PlayBGSCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(audio); }
 
-std::string PlayBGSCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Play BGS" + colon.data() + db.audioText(audio) + ColorFormatter::popColor();
+std::string PlayBGSCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Play BGS") + colon.data() + db.audioText(audio) + ColorFormatter::popColor(colored);
 }

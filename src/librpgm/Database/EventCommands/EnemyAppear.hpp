@@ -10,7 +10,7 @@ struct EnemyAppearCommand final : IEventCommand {
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<EnemyAppearCommand>(*this); }
 
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   bool hasReference(int targetId, SearchType type) override {
     if (type == SearchType::Enemy) {
       return targetId == enemy;

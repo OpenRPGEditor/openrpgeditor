@@ -9,8 +9,8 @@ struct ConditionalBranchCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Conditional_Branch; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ConditionalBranchCommand>(*this); }
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
-  [[nodiscard]] std::string conditionalFormat(const std::string& text) const;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
+  [[nodiscard]] std::string conditionalFormat(const std::string& text, bool colored) const;
   [[nodiscard]] constexpr bool collapsable() const override { return true; }
   [[nodiscard]] bool isCollapsed() const override { return m_collapsed; }
   void setCollapsed(const bool collapsed) override { m_collapsed = collapsed; }

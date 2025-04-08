@@ -18,9 +18,9 @@ void SetVehicleLocationCommand::serializeParameters(nlohmann::ordered_json& out)
   out.push_back(y);
 }
 
-std::string SetVehicleLocationCommand::stringRep(const Database& db) const {
-  const auto prefix = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Set Vehicle Location" + colon.data() + DecodeEnumName(vehicle) + ",";
-  const auto suffix = ColorFormatter::popColor();
+std::string SetVehicleLocationCommand::stringRep(const Database& db, const bool colored) const {
+  const auto prefix = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Set Vehicle Location") + colon.data() + DecodeEnumName(vehicle) + ",";
+  const auto suffix = ColorFormatter::popColor(colored);
 
   if (mode == TransferMode::Variable_Designation) {
     auto varMap = db.system.variable(mapId);

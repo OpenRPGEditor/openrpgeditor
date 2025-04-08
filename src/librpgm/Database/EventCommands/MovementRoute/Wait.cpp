@@ -7,4 +7,4 @@ MovementWaitCommand::MovementWaitCommand(const std::optional<int>& indent, const
 
 void MovementWaitCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(duration); }
 
-std::string MovementWaitCommand::stringRep(const Database& db) const { return symbol(code()) + std::string("Wait") + colon.data() + std::to_string(duration) + " frames"; }
+std::string MovementWaitCommand::stringRep(const Database& db, const bool colored) const { return symbol(code()) + std::string("Wait") + colon.data() + std::to_string(duration) + " frames"; }

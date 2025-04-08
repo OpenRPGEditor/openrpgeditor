@@ -12,6 +12,7 @@ void ChangeNicknameCommand::serializeParameters(nlohmann::ordered_json& out) con
   out.push_back(nick);
 }
 
-std::string ChangeNicknameCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Nickname" + colon.data() + db.actorNameOrId(actor) + ", " + nick + ColorFormatter::popColor();
+std::string ChangeNicknameCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Nickname") + colon.data() + db.actorNameOrId(actor) + ", " + nick +
+         ColorFormatter::popColor(colored);
 }

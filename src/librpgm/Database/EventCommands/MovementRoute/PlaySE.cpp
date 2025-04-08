@@ -8,4 +8,4 @@ MovementPlaySECommand::MovementPlaySECommand(const std::optional<int>& indent, c
 
 void MovementPlaySECommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(se); }
 
-std::string MovementPlaySECommand::stringRep(const Database& db) const { return symbol(code()) + std::string("SE") + colon.data() + db.audioText(se); }
+std::string MovementPlaySECommand::stringRep(const Database& db, const bool colored) const { return symbol(code()) + std::string("SE") + colon.data() + db.audioText(se); }

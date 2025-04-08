@@ -9,6 +9,6 @@ PlayMECommand::PlayMECommand(const std::optional<int>& indent, const nlohmann::o
 
 void PlayMECommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(audio); }
 
-std::string PlayMECommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Play ME" + colon.data() + db.audioText(audio) + ColorFormatter::popColor();
+std::string PlayMECommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Play ME") + colon.data() + db.audioText(audio) + ColorFormatter::popColor(colored);
 }

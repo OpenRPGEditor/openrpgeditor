@@ -12,7 +12,7 @@ void EnemyTransformCommand::serializeParameters(nlohmann::ordered_json& out) con
   out.push_back(transform);
 }
 
-std::string EnemyTransformCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Enemy Transform" + colon.data() + " #" + std::to_string(enemy + 1) + ", " + db.enemyNameOrId(transform) +
-         ColorFormatter::popColor();
+std::string EnemyTransformCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Enemy Transform") + colon.data() + " #" + std::to_string(enemy + 1) + ", " +
+         db.enemyNameOrId(transform) + ColorFormatter::popColor(colored);
 }

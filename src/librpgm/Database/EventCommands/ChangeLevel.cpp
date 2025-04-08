@@ -21,11 +21,11 @@ void ChangeLevelCommand::serializeParameters(nlohmann::ordered_json& out) const 
   out.push_back(showLevelUp);
 }
 
-std::string ChangeLevelCommand::stringRep(const Database& db) const {
+std::string ChangeLevelCommand::stringRep(const Database& db, const bool colored) const {
   std::string actName;
   if (comparison == ActorComparisonSource::Fixed) {
     if (value <= 0) {
-      actName = "Entire Party";
+      actName = trNOOP("Entire Party");
     } else {
       actName = db.actorNameOrId(value);
     }
@@ -42,9 +42,9 @@ std::string ChangeLevelCommand::stringRep(const Database& db) const {
 
   std::string suffix;
   if (showLevelUp) {
-    suffix = ColorFormatter::getColor(FormatColor::Gray) + " (Show Level Up)" + ColorFormatter::popColor();
+    suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " " + db.parentheses(trNOOP("Show Level Up")) + ColorFormatter::popColor(colored);
   }
 
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Level" + colon.data() + actName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr +
-         ColorFormatter::popColor() + suffix;
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Level") + colon.data() + actName + ", " + DecodeEnumName(quantityOp) + " " +
+         quantityStr + ColorFormatter::popColor(colored) + suffix;
 }

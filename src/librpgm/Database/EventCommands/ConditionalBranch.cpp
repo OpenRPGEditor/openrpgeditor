@@ -199,31 +199,30 @@ void ConditionalBranchCommand::serializeParameters(nlohmann::ordered_json& out) 
   }
 }
 
-std::string ConditionalBranchCommand::conditionalFormat(const std::string& text) const {
-  return std::format("{}{}{}If{}{}{}", indentText(indent()), symbol(code()), ColorFormatter::getColorCode(code()), colon, text, ColorFormatter::popColor());
+std::string ConditionalBranchCommand::conditionalFormat(const std::string& text, const bool colored) const {
+  return std::format("{}{}{}If{}{}{}", indentText(indent()), symbol(code()), ColorFormatter::getColorCode(code(), colored), colon, text, ColorFormatter::popColor(colored));
 }
 
-std::string ConditionalBranchCommand::stringRep(const Database& db) const {
+std::string ConditionalBranchCommand::stringRep(const Database& db, const bool colored) const {
   std::string strBuild;
   if (type == ConditionType::Variable) {
     std::string var = db.system.variable(variable.id);
     std::string other;
     if (variable.source == VariableComparisonSource::Variable) {
-      other = db.system.variable(variable.otherId);
-      other = other.empty() ? std::format("#{:04}", variable.otherId) : other;
+      other = db.variableNameOrId(variable.otherId);
     } else {
       other = std::to_string(variable.otherId);
     }
     var = var.empty() ? std::format("#{:04}", variable.id) : var;
-    return conditionalFormat(std::format("{} {} {}", var, DecodeEnumName(variable.comparison), other));
+    return conditionalFormat(std::format("{} {} {}", var, DecodeEnumName(variable.comparison), other), colored);
   }
   if (type == ConditionType::Switch) {
-    std::string sw = db.system.switche(globalSwitch.switchIdx);
-    sw = sw.empty() ? std::format("#{:04}", globalSwitch.switchIdx) : sw;
-    return conditionalFormat(std::format("{} is {}", sw, DecodeEnumName(globalSwitch.checkIfOn)));
+    // TL-NOTE: Equivalence, a == b
+    return conditionalFormat(trFormat("{0} is {1}", db.switchNameOrId(globalSwitch.switchIdx), DecodeEnumName(globalSwitch.checkIfOn)), colored);
   }
   if (type == ConditionType::Self_Switch) {
-    return conditionalFormat(std::format("Self Switch {} is {}", selfSw, DecodeEnumName(selfSwitch.checkIfOn)));
+    // TL-NOTE: Equivalence, a == b
+    return conditionalFormat(trFormat("Self Switch {0} is {1}", selfSw, DecodeEnumName(selfSwitch.checkIfOn)), colored);
   }
   if (type == ConditionType::Timer) {
     std::string min;
@@ -236,81 +235,74 @@ std::string ConditionalBranchCommand::stringRep(const Database& db) const {
       min = "0";
       sec = std::to_string(timer.sec);
     }
-    return conditionalFormat(std::format("Timer {} {} min {} sec", DecodeEnumName(timer.comparison), min, sec));
+    // TL-NOTE: Comparison operator, minutes, seconds
+    return conditionalFormat(trFormat("Timer {0} {1} min {1} sec", DecodeEnumName(timer.comparison), min, sec), colored);
   }
   if (type == ConditionType::Actor) {
-    const auto act = db.actors.actor(actor.id);
+    const auto act = db.actorNameOrId(actor.id);
     switch (actor.type) {
     case ActorConditionType::Name: {
-      return conditionalFormat(std::format("Name of {} is {}", act->name(), name));
+      return conditionalFormat(trFormat("Name of {0} is {1}", act, name), colored);
     }
     case ActorConditionType::Class: {
-      const auto cls = db.classes.classType(actor.checkId);
-      return conditionalFormat(std::format("Class of {} is {}", act->name(), cls->name()));
+      return conditionalFormat(trFormat("Class of {0} is {1}", act, db.classNameOrId(actor.checkId)), colored);
     }
     case ActorConditionType::Skill: {
-      const auto skill = db.skills.skill(actor.checkId);
-      return conditionalFormat(std::format("{} has learned {}", act->name(), skill->name()));
+      return conditionalFormat(trFormat("{0} has learned {1}", act, db.skillNameOrId(actor.checkId)), colored);
     }
     case ActorConditionType::Weapon: {
-      const auto weapon = db.weapons.weapon(actor.checkId);
-      return conditionalFormat(std::format("{} has equipped {}", act->name(), weapon->name()));
+      return conditionalFormat(trFormat("{0} has equipped {1}", act, db.weaponNameOrId(actor.checkId)), colored);
     }
     case ActorConditionType::Armor: {
-      const auto armor = db.armors.armor(actor.checkId);
-      return conditionalFormat(std::format("{} has equipped {}", act->name(), armor->name()));
+      return conditionalFormat(trFormat("{0} has equipped {1}", act, db.armorNameOrId(actor.checkId)), colored);
     }
     case ActorConditionType::State: {
-      const auto state = db.states.state(actor.checkId);
-      return conditionalFormat(std::format("{} is affected by {}", act->name(), state->name()));
+      return conditionalFormat(trFormat("{0} is affected by {1}", act, db.stateNameOrId(actor.checkId)), colored);
     }
     case ActorConditionType::In_The_Party: {
-      return conditionalFormat(std::format("{} is in the party", act->name()));
+      return conditionalFormat(trFormat("{0} is in the party", act), colored);
     }
     }
   }
   if (type == ConditionType::Enemy) {
     if (enemy.type == EnemyConditionType::State) {
       auto state = db.states.state(enemy.stateId);
-      return conditionalFormat(std::format("#{} is affected by {}", std::to_string(enemy.id + 1), state->name()));
+      return conditionalFormat(trFormat("#{0} is affected by {1}", std::to_string(enemy.id + 1), db.stateNameOrId(enemy.stateId)), colored);
     }
-    return conditionalFormat(std::format("#{} is appeared", std::to_string(enemy.id + 1)));
+    return conditionalFormat(trFormat("#{0} is appeared", std::to_string(enemy.id + 1)), colored);
   }
   if (type == ConditionType::Character) {
-    const auto map = db.mapInfos.currentMap();
-    const Event* event = map != nullptr ? map->event(character.id) : nullptr;
-    std::string name = character.id == -1 ? "Player" : character.id == 0 ? "This Event" : event->name().empty() ? std::format("Unnamed Event #{:03}", character.id) : event->name();
-    return conditionalFormat(std::format("{} is facing {}", name, DecodeEnumName(character.facing)));
+    std::string name = db.eventNameOrId(character.id);
+    return conditionalFormat(trFormat("{0} is facing {1}", name, DecodeEnumName(character.facing)), colored);
   }
   if (type == ConditionType::Vehicle) {
-    return conditionalFormat(std::format("{} is driven", DecodeEnumName(vehicle.id)));
+    return conditionalFormat(trFormat("{0} is driven", DecodeEnumName(vehicle.id)), colored);
   }
   if (type == ConditionType::Gold) {
-    return conditionalFormat(std::format("Gold {} {}", DecodeEnumName(gold.type), gold.value));
+    return conditionalFormat(std::format("Gold {0} {1}", DecodeEnumName(gold.type), gold.value), colored);
   }
   if (type == ConditionType::Item) {
-    const auto itm = db.items.item(item.id);
-    return conditionalFormat(std::format("Party has {}", itm->name()));
+    return conditionalFormat(trFormat("Party has {0}", db.itemNameOrId(item.id)), colored);
   }
   if (type == ConditionType::Weapon) {
-    std::string ret = conditionalFormat(std::format("Party has {}", db.weapons.weapon(equip.equipId)->name()));
+    std::string ret = conditionalFormat(trFormat("Party has {0}", db.weaponNameOrId(equip.equipId)), colored);
     if (equip.includeEquipment) {
-      ret += ColorFormatter::getColor(FormatColor::Gray) + "(Include Equipment)" + ColorFormatter::popColor();
+      ret += ColorFormatter::getColor(FormatColor::Gray, colored) + db.parentheses(trNOOP("Include Equipment")) + ColorFormatter::popColor(colored);
     }
     return ret;
   }
   if (type == ConditionType::Armor) {
-    std::string ret = conditionalFormat(std::format("Party has {}", db.armors.armor(equip.equipId)->name()));
+    std::string ret = conditionalFormat(trFormat("Party has {0}", db.armorNameOrId(equip.equipId)), colored);
     if (equip.includeEquipment) {
-      ret += ColorFormatter::getColor(FormatColor::Gray) + "(Include Equipment)" + ColorFormatter::popColor();
+      ret += ColorFormatter::getColor(FormatColor::Gray, colored) + db.parentheses(trNOOP("Include Equipment")) + ColorFormatter::popColor(colored);
     }
     return ret;
   }
   if (type == ConditionType::Button) {
-    return conditionalFormat(std::format("Button [{}] is pressed down", DecodeEnumName(button)));
+    return conditionalFormat(trFormat("Button [{0}] is pressed down", DecodeEnumName(button)), colored);
   }
   if (type == ConditionType::Script) {
-    return conditionalFormat(std::format("Script: {}", script));
+    return conditionalFormat(tr("Script") + ": " + script, colored);
   }
-  return indentText(indent()) + diamond.data() + "&push-color=255,0,255;Condition&pop-color; &push-color=0,255,0;TBD&pop-color;";
+  return indentText(indent()) + diamond.data() + (colored ? "&push-color=255,0,255;Condition&pop-color;&push-color=0,255,0;TBD&pop-color;" : "ConditionType TBD");
 }

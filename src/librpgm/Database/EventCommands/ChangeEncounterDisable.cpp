@@ -7,6 +7,6 @@ ChangeEncounterDisableCommand::ChangeEncounterDisableCommand(const std::optional
 
 void ChangeEncounterDisableCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(access); }
 
-std::string ChangeEncounterDisableCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Encounter" + colon.data() + DecodeEnumName(access) + ColorFormatter::popColor();
+std::string ChangeEncounterDisableCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Encounter") + colon.data() + DecodeEnumName(access) + ColorFormatter::popColor(colored);
 }

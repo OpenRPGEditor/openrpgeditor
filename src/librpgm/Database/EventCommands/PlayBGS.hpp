@@ -10,7 +10,7 @@ struct PlayBGSCommand final : IEventCommand {
   ~PlayBGSCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Play_BGS; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<PlayBGSCommand>(*this); }
   bool hasStringReference(const std::string& text, SearchType type) override {
     if (type == SearchType::Audio) {

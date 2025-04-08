@@ -58,7 +58,7 @@ std::string DecodeEnumName(std::string_view str) {
 
 std::string UndectorateEnumName(std::string_view str) {
   if (str.size() <= 0) {
-    return "UNKOWN_ENUM";
+    return "UNKNOWN_ENUM";
   }
   std::string result = str.data();
 

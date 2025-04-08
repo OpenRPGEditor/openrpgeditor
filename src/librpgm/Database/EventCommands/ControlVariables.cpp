@@ -56,13 +56,11 @@ void ControlVariables::serializeParameters(nlohmann::ordered_json& out) const {
   }
 }
 
-std::string ControlVariables::variableFormat(const std::string& text) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + DecodeEnumName(code()) + colon.data() + text + ColorFormatter::popColor();
+std::string ControlVariables::variableFormat(const std::string& text, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + DecodeEnumName(code()) + colon.data() + text + ColorFormatter::popColor(colored);
 }
 
-std::string ControlVariables::stringRep(const Database& db) const {
-  static constexpr std::string_view numberOf("{} The number of {}");
-  static constexpr std::string_view AOfB("{} {} of {}");
+std::string ControlVariables::stringRep(const Database& db, const bool colored) const {
   std::string varText;
   if (start != end) {
     varText = std::format("#{:04}..#{:04} {}", start, end, DecodeEnumName(operation));
@@ -72,43 +70,44 @@ std::string ControlVariables::stringRep(const Database& db) const {
 
   switch (operand) {
   case VariableControlOperand::Constant:
-    return variableFormat(std::format("{} {}", varText, constant));
+    return variableFormat(std::format("{} {}", varText, constant), colored);
   case VariableControlOperand::Random: {
-    return variableFormat(std::format("{} Random {}..{}", varText, random.min, random.max));
+    return variableFormat(std::format("{} {} {}..{}", varText, trNOOP("Random"), random.min, random.max), colored);
   }
   case VariableControlOperand::Variable: {
-    return variableFormat(std::format("{} {}", varText, db.variableNameOrId(variable)));
+    return variableFormat(std::format("{} {}", varText, db.variableNameOrId(variable)), colored);
   }
   case VariableControlOperand::Game_Data: {
     switch (gameData.type) {
     case GameDataType::Item: {
-      return variableFormat(std::format(numberOf, varText, db.itemNameOrId(gameData.rawSource)));
+      return variableFormat(varText + " " + trFormat("The number of {0}", varText, db.itemNameOrId(gameData.rawSource)), colored);
     }
     case GameDataType::Weapon: {
-      return variableFormat(std::format(numberOf, varText, db.weaponNameOrId(gameData.rawSource)));
+      return variableFormat(varText + " " + trFormat("The number of {0}", varText, db.weaponNameOrId(gameData.rawSource)), colored);
     }
     case GameDataType::Armor: {
-      return variableFormat(std::format(numberOf, varText, db.armorNameOrId(gameData.rawSource)));
+      return variableFormat(varText + " " + trFormat("The number of {0}", varText, db.armorNameOrId(gameData.rawSource)), colored);
     }
     case GameDataType::Actor: {
-      return variableFormat(std::format(AOfB, varText, DecodeEnumName(static_cast<ActorDataSource>(gameData.value)), db.actorNameOrId(gameData.rawSource)));
+      // TL-NOTE: <attribute> of <object>
+      return variableFormat(varText + " " + trFormat("{0} of {1}", DecodeEnumName(static_cast<ActorDataSource>(gameData.value)), db.actorNameOrId(gameData.rawSource)), colored);
     }
     case GameDataType::Enemy: {
-      return variableFormat(std::format(AOfB, varText, DecodeEnumName(static_cast<EnemyDataSource>(gameData.value)), std::format("#{}", gameData.rawSource)));
+      return variableFormat(varText + " " + trFormat("{0} of {1}", DecodeEnumName(static_cast<EnemyDataSource>(gameData.value)), std::format("#{}", gameData.rawSource)), colored);
     }
     case GameDataType::Character: {
-      return variableFormat(std::format(AOfB, varText, DecodeEnumName(static_cast<CharacterDataSource>(gameData.value)), db.eventNameOrId(gameData.rawSource)));
+      return variableFormat(varText + " " + trFormat("{0} of {1}", DecodeEnumName(static_cast<CharacterDataSource>(gameData.value)), db.eventNameOrId(gameData.rawSource)), colored);
     }
     case GameDataType::Party: {
-      return variableFormat(std::format("{} Actor ID of the party member #{}", varText, gameData.rawSource));
+      return variableFormat(varText + " " + trFormat("Actor ID of the party member #{0}", gameData.rawSource), colored);
     }
     case GameDataType::Other: {
-      return variableFormat(std::format("{} {}", varText, DecodeEnumName(gameData.otherSource)));
+      return variableFormat(std::format("{} {}", varText, DecodeEnumName(gameData.otherSource)), colored);
     }
     }
   }
   case VariableControlOperand::Script:
-    return variableFormat(std::format("{} {}", varText, script));
+    return variableFormat(std::format("{} {}", varText, script), colored);
   }
 
   return "ERROR!";

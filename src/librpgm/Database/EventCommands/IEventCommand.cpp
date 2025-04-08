@@ -16,8 +16,8 @@ void IEventCommand::serialize(nlohmann::ordered_json& out, const bool doIndent, 
   }
 }
 
-std::string IEventCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + DecodeEnumName(code()) + ColorFormatter::popColor();
+std::string IEventCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + DecodeEnumName(code()) + ColorFormatter::popColor(colored);
 }
 
 std::string IEventCommand::symbol(EventCode code) const { return static_cast<int>(code) < 400 ? diamond.data() : colon.data(); }

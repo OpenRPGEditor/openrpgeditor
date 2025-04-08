@@ -21,33 +21,34 @@ void TransferPlayerCommand::serializeParameters(nlohmann::ordered_json& out) con
   out.push_back(fade);
 }
 
-std::string TransferPlayerCommand::stringRep(const Database& db) const {
+std::string TransferPlayerCommand::stringRep(const Database& db, const bool colored) const {
   std::string suffix;
 
   if (direction != Direction::Retain || fade != Fade::Black) {
-    suffix += ColorFormatter::getColor(FormatColor::Gray) + " (";
+    suffix += ColorFormatter::getColor(FormatColor::Gray, colored) + " (";
   }
   if (direction != Direction::Retain) {
-    suffix += "Direction: " + DecodeEnumName(direction);
+    suffix += tr("Direction") + ": " + DecodeEnumName(direction);
   }
 
   if (fade != Fade::Black) {
     if (direction != Direction::Retain) {
       suffix += ", ";
     }
-    suffix += "Fade: " + DecodeEnumName(fade);
+    suffix += tr("Fade") + ": " + DecodeEnumName(fade);
   }
   if (direction != Direction::Retain || fade != Fade::Black) {
-    suffix += ")" + ColorFormatter::popColor();
+    suffix += ")" + ColorFormatter::popColor(colored);
   }
 
   if (mode == TransferMode::Variable_Designation) {
     auto varMap = db.variableNameOrId(mapId);
     auto varX = db.variableNameOrId(x);
     auto varY = db.variableNameOrId(y);
-    return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Transfer Player" + colon.data() + std::format("{{{}}} ({{{}}},{{{}}})", varMap, varX, varY) + suffix;
+    return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Transfer Player") + colon.data() +
+           std::format("{{{}}} ({{{}}},{{{}}})", varMap, varX, varY) + suffix;
   }
   const auto mapName = db.mapNameOrId(mapId);
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Transfer Player" + colon.data() + mapName + std::format(" ({},{})", x, y) + ColorFormatter::popColor() +
-         suffix;
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Transfer Player") + colon.data() + mapName + std::format(" ({},{})", x, y) +
+         ColorFormatter::popColor(colored) + suffix;
 }

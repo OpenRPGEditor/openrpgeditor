@@ -1,5 +1,7 @@
 #include "Database/EventCommands/TintScreen.hpp"
 
+#include "Database/Database.hpp"
+
 TintScreenCommand::TintScreenCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
   auto colorValues = parameters.at(0);
@@ -22,8 +24,11 @@ void TintScreenCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(waitForCompletion);
 }
 
-std::string TintScreenCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Tint Screen" + colon.data() +
-         std::format("({},{},{},{}), {} frames", color.r, color.g, color.b, color.gray, duration) + ColorFormatter::popColor() +
-         (waitForCompletion == true ? ColorFormatter::getColor(FormatColor::Gray) + " (Wait)" + ColorFormatter::popColor() : "");
+std::string TintScreenCommand::stringRep(const Database& db, const bool colored) const {
+  std::string suffix;
+  if (waitForCompletion) {
+    suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " " + db.parentheses(trNOOP("Wait")) + ColorFormatter::popColor(colored);
+  }
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Tint Screen") + colon.data() +
+         std::format("({},{},{},{}), {}", color.r, color.g, color.b, color.gray, db.framesText(duration)) + ColorFormatter::popColor(colored) + suffix;
 }

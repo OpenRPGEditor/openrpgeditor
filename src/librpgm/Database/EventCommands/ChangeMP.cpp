@@ -18,11 +18,11 @@ void ChangeMPCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(quantity);
 }
 
-std::string ChangeMPCommand::stringRep(const Database& db) const {
+std::string ChangeMPCommand::stringRep(const Database& db, const bool colored) const {
   std::string actName;
   if (comparison == ActorComparisonSource::Fixed) {
     if (value <= 0) {
-      actName = "Entire Party";
+      actName = trNOOP("Entire Party");
     } else {
       actName = db.actorNameOrId(value);
     }
@@ -37,6 +37,6 @@ std::string ChangeMPCommand::stringRep(const Database& db) const {
     quantityStr = std::format("{{{}}}", db.variableNameOrId(quantity));
   }
 
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change MP" + colon.data() + actName + ", " + DecodeEnumName(quantityOp) + quantityStr +
-         ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change MP") + colon.data() + actName + ", " + DecodeEnumName(quantityOp) + quantityStr +
+         ColorFormatter::popColor(colored);
 }

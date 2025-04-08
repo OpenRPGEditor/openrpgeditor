@@ -8,7 +8,7 @@ struct ShowPictureCommand final : IEventCommand {
   ~ShowPictureCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Picture; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowPictureCommand>(*this); }
   bool hasReference(int targetId, SearchType type) override {
     if (type == SearchType::PictureId) {

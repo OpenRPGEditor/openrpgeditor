@@ -13,7 +13,7 @@ void ScrollMapCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(speed);
 }
 
-std::string ScrollMapCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) +
-         std::format("Scroll Map{}{}, {}, {}", colon.data(), DecodeEnumName(direction), distance, DecodeEnumName(speed)) + ColorFormatter::popColor();
+std::string ScrollMapCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) +
+         std::format("{}{}{}, {}, {}", trNOOP("Scroll Map"), colon.data(), DecodeEnumName(direction), distance, DecodeEnumName(speed)) + ColorFormatter::popColor(colored);
 }

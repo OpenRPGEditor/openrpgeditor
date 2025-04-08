@@ -8,7 +8,7 @@ struct BattleProcessingCommand final : IEventCommand {
   ~BattleProcessingCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Battle_Processing; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
 
   BattleProcessType type = BattleProcessType::Direct_designation;
   int id{1}; // troop id if type == 0; variable id if type == 2

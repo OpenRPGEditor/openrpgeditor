@@ -9,6 +9,6 @@ ChangeDefeatMECommand::ChangeDefeatMECommand(const std::optional<int>& indent, c
 
 void ChangeDefeatMECommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(me); }
 
-std::string ChangeDefeatMECommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Defeat ME" + colon.data() + db.audioText(me) + ColorFormatter::popColor();
+std::string ChangeDefeatMECommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Defeat ME") + colon.data() + db.audioText(me) + ColorFormatter::popColor(colored);
 }

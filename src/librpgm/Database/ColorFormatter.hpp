@@ -6,9 +6,9 @@
 #include <string>
 
 struct ColorFormatter {
-  static std::string getColorCode(EventCode command);
-  static std::string popColor();
-  static std::string getColor(FormatColor preset);
+  static std::string getColorCode(EventCode command, bool color = true);
+  static std::string popColor(bool color = true);
+  static std::string getColor(FormatColor preset, bool color = true);
 };
 
 #endif // COLOR_FORMATTER_H

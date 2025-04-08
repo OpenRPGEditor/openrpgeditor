@@ -9,8 +9,8 @@ struct ControlVariables : IEventCommand {
   ~ControlVariables() override {};
   [[nodiscard]] EventCode code() const override { return EventCode::Control_Variables; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
-  [[nodiscard]] std::string variableFormat(const std::string& text) const;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
+  [[nodiscard]] std::string variableFormat(const std::string& text, bool colored) const;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ControlVariables>(*this); }
   bool hasReference(int targetId, SearchType type) override {
     if (type == SearchType::Variable) {

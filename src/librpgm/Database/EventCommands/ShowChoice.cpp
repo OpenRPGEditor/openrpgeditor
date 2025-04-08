@@ -41,14 +41,14 @@ void ShowChoiceCommand::serializeParameters(nlohmann::ordered_json& out) const {
   }
 }
 
-std::string ShowChoiceCommand::stringRep(const Database& db) const {
-  std::string suffix = ColorFormatter::getColor(FormatColor::Gray) + " (" + DecodeEnumName(background) + ", " + DecodeEnumName(positionType);
+std::string ShowChoiceCommand::stringRep(const Database& db, const bool colored) const {
+  std::string suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " (" + DecodeEnumName(background) + ", " + DecodeEnumName(positionType);
   suffix += (defaultType < 0 ? ", -" : ", #" + std::to_string(defaultType + 1));
-  suffix += (cancelType < 0 ? ", -" : ", #" + std::to_string(cancelType + 1)) + ")" + ColorFormatter::popColor();
+  suffix += (cancelType < 0 ? ", -" : ", #" + std::to_string(cancelType + 1)) + ")" + ColorFormatter::popColor(colored);
 
   std::string choiceList = std::accumulate(std::next(choices.begin()), choices.end(), *choices.begin(), [](const std::string& a, const std::string& b) { return a + ", " + b; });
 
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Show Choices" + colon.data() + choiceList + ColorFormatter::popColor() + suffix;
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Show Choices") + colon.data() + choiceList + ColorFormatter::popColor(colored) + suffix;
 }
 
 WhenSelectedCommand::WhenSelectedCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters)
@@ -62,6 +62,6 @@ void WhenSelectedCommand::serializeParameters(nlohmann::ordered_json& out) const
   out.push_back(choice);
 }
 
-std::string WhenSelectedCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "When " + choice + ColorFormatter::popColor();
+std::string WhenSelectedCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("When") + " " + choice + ColorFormatter::popColor(colored);
 }

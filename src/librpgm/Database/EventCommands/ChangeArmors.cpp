@@ -19,7 +19,7 @@ void ChangeArmorsCommand::serializeParameters(nlohmann::ordered_json& out) const
   out.push_back(includeEquipment);
 }
 
-std::string ChangeArmorsCommand::stringRep(const Database& db) const {
+std::string ChangeArmorsCommand::stringRep(const Database& db, const bool colored) const {
   const auto armorName = db.armorNameOrId(item);
   std::string oper;
   if (operandSource == QuantityChangeSource::Variable) {
@@ -29,9 +29,9 @@ std::string ChangeArmorsCommand::stringRep(const Database& db) const {
   }
   std::string suffix;
   if (includeEquipment) {
-    suffix = ColorFormatter::getColor(FormatColor::Gray) + db.parentheses("Include Equipment") + ColorFormatter::popColor();
+    suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + db.parentheses(trNOOP("Include Equipment")) + ColorFormatter::popColor(colored);
   }
 
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Armors" + colon.data() + armorName + " " + DecodeEnumName(operation) + " " + oper +
-         ColorFormatter::popColor() + suffix;
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Armors") + colon.data() + armorName + " " + DecodeEnumName(operation) + " " + oper +
+         ColorFormatter::popColor(colored) + suffix;
 }

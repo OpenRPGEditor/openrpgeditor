@@ -19,11 +19,11 @@ void ChangeTPCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(quantity);
 }
 
-std::string ChangeTPCommand::stringRep(const Database& db) const {
+std::string ChangeTPCommand::stringRep(const Database& db, const bool colored) const {
   std::string actorName;
   if (comparison == ActorComparisonSource::Fixed) {
     if (value <= 0) {
-      actorName = "Entire Party";
+      actorName = trNOOP("Entire Party");
     } else {
       actorName = db.actorNameOrId(value);
     }
@@ -38,6 +38,6 @@ std::string ChangeTPCommand::stringRep(const Database& db) const {
     quantityStr = std::to_string(quantity);
   }
 
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change TP" + colon.data() + actorName + ", " + DecodeEnumName(quantityOp) + " " + quantityStr +
-         ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change TP") + colon.data() + actorName + ", " + DecodeEnumName(quantityOp) + " " +
+         quantityStr + ColorFormatter::popColor(colored);
 }

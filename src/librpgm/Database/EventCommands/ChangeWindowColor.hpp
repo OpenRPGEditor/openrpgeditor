@@ -8,7 +8,7 @@ struct ChangeWindowColorCommand final : IEventCommand {
   ~ChangeWindowColorCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Window_Color; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeWindowColorCommand>(*this); }
 
   int r = 255;

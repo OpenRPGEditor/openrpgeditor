@@ -9,6 +9,7 @@ ChangeVictoryMECommand::ChangeVictoryMECommand(const std::optional<int>& indent,
 
 void ChangeVictoryMECommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(me); }
 
-std::string ChangeVictoryMECommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Change Victory ME" + colon.data() + Database::audioText(me) + ColorFormatter::popColor();
+std::string ChangeVictoryMECommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Victory ME") + colon.data() + Database::audioText(me) +
+         ColorFormatter::popColor(colored);
 }

@@ -16,7 +16,7 @@ void ShopProcessingGoodCommand::serializeParameters(nlohmann::ordered_json& out)
   out.push_back(price);
 }
 
-std::string ShopProcessingGoodCommand::stringRep(const Database& db) const {
+std::string ShopProcessingGoodCommand::stringRep(const Database& db, const bool colored) const {
   std::string good;
   switch (type) {
   case ShopType::Item:
@@ -29,7 +29,8 @@ std::string ShopProcessingGoodCommand::stringRep(const Database& db) const {
     good = db.weaponNameOrId(id);
     break;
   }
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "               " + colon.data() + good + ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + std::string(tr("Shop Processing").length(), ' ') + colon.data() + good +
+         ColorFormatter::popColor(colored);
 }
 
 ShopProcessingCommand::ShopProcessingCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
@@ -49,7 +50,7 @@ void ShopProcessingCommand::serializeParameters(nlohmann::ordered_json& out) con
   out.push_back(purchaseOnly);
 }
 
-std::string ShopProcessingCommand::stringRep(const Database& db) const {
+std::string ShopProcessingCommand::stringRep(const Database& db, const bool colored) const {
   std::string good;
   switch (type) {
   case ShopType::Item:
@@ -62,7 +63,7 @@ std::string ShopProcessingCommand::stringRep(const Database& db) const {
     good = db.weaponNameOrId(id);
     break;
   }
-  std::string ret = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Shop Processing" + colon.data() + good + ColorFormatter::popColor();
+  std::string ret = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Shop Processing") + colon.data() + good + ColorFormatter::popColor(colored);
 
   for (const auto& g : goods) {
     ret += "\n" + g->stringRep(db);

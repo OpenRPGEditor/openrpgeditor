@@ -17,14 +17,14 @@ void BattleProcessingCommand::serializeParameters(nlohmann::ordered_json& out) c
   out.push_back(canLose);
 }
 
-std::string BattleProcessingCommand::stringRep(const Database& db) const {
+std::string BattleProcessingCommand::stringRep(const Database& db, const bool colored) const {
   std::string enemy;
   if (type == BattleProcessType::Direct_designation) {
     enemy = db.troopNameOrId(id);
   } else if (type == BattleProcessType::Designation_with_variables) {
     enemy = std::format("{{{}}}", db.variableNameOrId(id));
   } else {
-    enemy = "Same as Random Encounter";
+    enemy = trNOOP("Same as Random Encounter");
   }
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Battle Processing" + colon.data() + enemy + ColorFormatter::popColor();
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Battle Processing") + colon.data() + enemy + ColorFormatter::popColor(colored);
 }

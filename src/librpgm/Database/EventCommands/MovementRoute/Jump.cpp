@@ -11,4 +11,4 @@ void MovementJumpCommand::serializeParameters(nlohmann::ordered_json& out) const
   out.push_back(y);
 }
 
-std::string MovementJumpCommand::stringRep(const Database& db) const { return std::format("{}Jump{}{}, {}", symbol((code())), colon, x, y); }
+std::string MovementJumpCommand::stringRep(const Database& db, const bool colored) const { return std::format("{}Jump{}{}, {}", symbol((code())), colon, x, y); }

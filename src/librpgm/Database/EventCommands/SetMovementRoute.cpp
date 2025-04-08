@@ -27,47 +27,38 @@ void SetMovementRouteCommand::serializeParameters(nlohmann::ordered_json& out) c
   out.push_back(route);
 }
 
-std::string SetMovementRouteCommand::stringRep(const Database& db) const {
+std::string SetMovementRouteCommand::stringRep(const Database& db, const bool colored) const {
   const auto name = DecodeEnumName(code());
-  auto map = db.mapInfos.currentMap();
-  const Event* event = map ? map->event(character) : nullptr;
-  std::string characterName = character == -1 ? "Player" : character == 0 ? "This Event" : event ? event->name() : std::to_string(character);
 
-  std::string stringSuffix = "";
+  std::string stringSuffix;
 
-  if (route.skippable() == true && route.wait() == true && route.repeat() == true) {
-    stringSuffix = std::format(" ({}, {}, {})", "Repeat", "Skip", "Wait");
-  } else {
-    if (route.repeat() == true && route.skippable() == true) {
-      stringSuffix = std::format(" ({}, {})", "Repeat", "Skip");
-    } else if (route.repeat() == true && route.wait() == true) {
-      stringSuffix = std::format(" ({}, {})", "Repeat", "Wait");
-    } else {
-      if (route.skippable() == true && route.wait() == true) {
-        stringSuffix = std::format(" ({}, {})", "Skip", "Wait");
-      } else if (route.skippable() == true && route.repeat() == true) {
-        stringSuffix = std::format(" ({}, {})", "Repeat", "Skip");
-      } else {
-        if (route.skippable() == true) {
-          stringSuffix = std::format(" ({})", "Skip");
-        }
-        if (route.wait() == true) {
-          stringSuffix = std::format(" ({})", "Wait");
-        }
-        if (route.repeat() == true) {
-          stringSuffix = std::format(" ({})", "Repeat");
-        }
-      }
+  if (route.skippable() == true || route.wait() == true || route.repeat() == true) {
+    stringSuffix += "(";
+    if (route.repeat() == true) {
+      stringSuffix += trNOOP("Repeat");
     }
+    if (route.skippable() == true) {
+      if (route.repeat() == true) {
+        stringSuffix += ", ";
+      }
+      stringSuffix += trNOOP("Skip");
+    }
+    if (route.wait() == true) {
+      if (route.repeat() == true || route.skippable() == true) {
+        stringSuffix += ", ";
+      }
+      stringSuffix += trNOOP("Wait");
+    }
+    stringSuffix += ")";
   }
 
-  std::string moveRoute = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + name + colon.data() + characterName + ColorFormatter::popColor() +
-                          ColorFormatter::getColor(FormatColor::Gray) + stringSuffix + ColorFormatter::popColor();
+  std::string moveRoute = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + name + colon.data() + db.eventNameOrId(character) +
+                          ColorFormatter::popColor(colored) + ColorFormatter::getColor(FormatColor::Gray, colored) + stringSuffix + ColorFormatter::popColor(colored);
 
-  const std::string stepColor = ColorFormatter::getColorCode(EventCode::Movement_Route_Step);
+  const std::string stepColor = ColorFormatter::getColorCode(EventCode::Movement_Route_Step, colored);
   const std::string stepSymbol = symbol(EventCode::Movement_Route_Step);
-  const std::string stepSpacing = std::string(name.length(), ' ');
-  const std::string popColor = ColorFormatter::popColor();
+  const auto stepSpacing = std::string(name.length(), ' ');
+  const std::string popColor = ColorFormatter::popColor(colored);
   for (const auto& t : editNodes) {
     if (t->code() != EventCode::Event_Dummy) {
       moveRoute += "\n" + indentText(t->indent()) + stepSymbol + stepColor + stepSpacing + colon.data() + t->stringRep(db) + popColor;

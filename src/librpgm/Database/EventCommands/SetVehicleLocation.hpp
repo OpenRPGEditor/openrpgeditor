@@ -9,7 +9,7 @@ struct SetVehicleLocationCommand final : IEventCommand {
   ~SetVehicleLocationCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Set_Vehicle_Location; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<SetVehicleLocationCommand>(*this); }
 
   VehicleType vehicle = VehicleType::Boat;

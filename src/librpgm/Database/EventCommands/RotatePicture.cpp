@@ -11,7 +11,7 @@ void RotatePictureCommand::serializeParameters(nlohmann::ordered_json& out) cons
   out.push_back(rotation);
 }
 
-std::string RotatePictureCommand::stringRep(const Database& db) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Rotate Picture" + colon.data() + "#" + std::to_string(picture) + ", " + std::to_string(rotation) +
-         ColorFormatter::popColor();
+std::string RotatePictureCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Rotate Picture") + colon.data() + "#" + std::to_string(picture) + ", " +
+         std::to_string(rotation) + ColorFormatter::popColor(colored);
 }

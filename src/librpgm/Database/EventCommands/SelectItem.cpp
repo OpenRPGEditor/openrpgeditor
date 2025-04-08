@@ -13,8 +13,7 @@ void SelectItemCommand::serializeParameters(nlohmann::ordered_json& out) const {
   out.push_back(type);
 }
 
-std::string SelectItemCommand::stringRep(const Database& db) const {
-  std::string itm = db.system.variable(item);
-  itm = itm.empty() ? std::format("#{:04}", item) : itm;
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code()) + "Select Item" + colon.data() + itm + ", " + DecodeEnumName(type) + ColorFormatter::popColor();
+std::string SelectItemCommand::stringRep(const Database& db, const bool colored) const {
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Select Item") + colon.data() + db.variableNameOrId(item) + ", " + DecodeEnumName(type) +
+         ColorFormatter::popColor(colored);
 }

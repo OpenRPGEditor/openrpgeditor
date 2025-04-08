@@ -9,7 +9,7 @@ struct ShopProcessingGoodCommand final : IEventCommand {
   ~ShopProcessingGoodCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Shop_Processing_Good; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShopProcessingGoodCommand>(*this); }
   bool hasReference(int targetId, SearchType searchType) override {
     if (searchType == SearchType::Items && type == ShopType::Item) {
@@ -43,7 +43,7 @@ struct ShopProcessingCommand final : IEventCommand {
   ~ShopProcessingCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Shop_Processing; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  [[nodiscard]] std::string stringRep(const Database& db) const override;
+  [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShopProcessingCommand>(*this); }
 
   void addGood(ShopProcessingGoodCommand* good) { goods.emplace_back(good); }

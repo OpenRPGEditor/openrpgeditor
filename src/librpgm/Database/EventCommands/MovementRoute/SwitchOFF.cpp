@@ -8,4 +8,4 @@ MovementSwitchOFFCommand::MovementSwitchOFFCommand(const std::optional<int>& ind
 
 void MovementSwitchOFFCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(id); }
 
-std::string MovementSwitchOFFCommand::stringRep(const Database& db) const { return symbol(code()) + DecodeEnumName(code()) + colon.data() + std::format("{:04}", id); }
+std::string MovementSwitchOFFCommand::stringRep(const Database& db, const bool colored) const { return symbol(code()) + DecodeEnumName(code()) + colon.data() + std::format("{:04}", id); }

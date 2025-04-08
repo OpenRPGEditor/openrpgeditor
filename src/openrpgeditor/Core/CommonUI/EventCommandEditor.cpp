@@ -212,6 +212,9 @@ void EventCommandEditor::handleBlockCollapse(int& n) const {
   }
 }
 void EventCommandEditor::draw() {
+  if (!ImGui::IsWindowHovered()) {
+    m_hoveringCommand = -1;
+  }
 
   ImGui::BeginChild("##event_command_editor");
   {

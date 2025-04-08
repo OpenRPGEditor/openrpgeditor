@@ -40,7 +40,7 @@ void Doc::setTexts(const std::vector<std::string> texts) {
   if (!signalsDisabled()) {
     textsModified().fire(this, texts);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::vector<std::string>& Doc::names() const { return m_names; }
@@ -53,7 +53,7 @@ void Doc::setNames(const std::vector<std::string>& names) {
   if (!signalsDisabled()) {
     namesModified().fire(this, names);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Doc::restoreOriginal() {

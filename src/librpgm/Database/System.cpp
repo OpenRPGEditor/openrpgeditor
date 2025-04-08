@@ -41,7 +41,7 @@ void System::Motion::setType(MotionType value) {
   if (!signalsDisabled()) {
     typeModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 MotionImage System::Motion::weaponImageId() const { return m_weaponImageId; }
@@ -54,7 +54,7 @@ void System::Motion::setWeaponImageId(MotionImage value) {
   if (!signalsDisabled()) {
     weaponImageIdModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 void System::Motion::restoreOriginal() {
@@ -492,7 +492,7 @@ void System::setAirship(const Vehicle& airship) {
   if (!signalsDisabled()) {
     airshipModified().fire(this, airship);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::vector<std::string>& System::armorTypes() const { return m_armorTypes; }
@@ -514,7 +514,7 @@ void System::setArmorType(int id, const std::string& value) {
   if (!signalsDisabled()) {
     armorTypesModified().fire(this, m_armorTypes);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::vector<System::Motion>& System::attackMotions() const { return m_attackMotions; }
@@ -527,7 +527,7 @@ void System::setAttackMotions(const std::vector<Motion>& value) {
   if (!signalsDisabled()) {
     attackMotionsModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 const Audio& System::battleBgm() const { return m_battleBgm; }
@@ -540,7 +540,7 @@ void System::setBattleBgm(const Audio& battleBgm) {
   if (!signalsDisabled()) {
     battleBgmModified().fire(this, m_battleBgm);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& System::battleback1Name() const { return m_battleback1Name; }
@@ -553,7 +553,7 @@ void System::setBattleback1Name(const std::string& value) {
   if (!signalsDisabled()) {
     battleback1NameModified().fire(this, m_battleback1Name);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& System::battleback2Name() const { return m_battleback2Name; }
@@ -566,7 +566,7 @@ void System::setBattleback2Name(const std::string& value) {
   if (!signalsDisabled()) {
     battleback2NameModified().fire(this, m_battleback2Name);
   }
-  setHasChanges();
+  setModified();
 }
 
 int System::battlerHue() const { return m_battlerHue; }
@@ -579,7 +579,7 @@ void System::setBattlerHue(int value) {
   if (!signalsDisabled()) {
     battlerHueModified().fire(this, m_battlerHue);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& System::battlerName() const { return m_battlerName; }
@@ -592,7 +592,7 @@ void System::setBattlerName(const std::string& value) {
   if (!signalsDisabled()) {
     battlerNameModified().fire(this, m_battlerName);
   }
-  setHasChanges();
+  setModified();
 }
 
 Vehicle& System::boat() { return m_boat; }
@@ -608,7 +608,7 @@ void System::setCurrencyUnit(const std::string& value) {
   if (!signalsDisabled()) {
     currencyUnitModified().fire(this, m_currencyUnit);
   }
-  setHasChanges();
+  setModified();
 }
 
 Audio& System::defeatMe() { return m_defeatMe; }
@@ -622,7 +622,7 @@ void System::setDefeatMe(const Audio& value) {
   if (!signalsDisabled()) {
     defeatMeModified().fire(this, m_defeatMe);
   }
-  setHasChanges();
+  setModified();
 }
 
 int System::editMapId() const { return m_editMapId; }
@@ -635,7 +635,7 @@ void System::setEditMapId(int value) {
   if (!signalsDisabled()) {
     editMapIdModified().fire(this, m_editMapId);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::vector<std::string>& System::elements() const { return m_elements; }
@@ -648,7 +648,7 @@ void System::setElements(const std::vector<std::string>& value) {
   if (!signalsDisabled()) {
     elementsModified().fire(this, m_elements);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] std::string System::element(const int id) const {
@@ -670,7 +670,7 @@ void System::setElement(int id, const std::string& value) {
   if (!signalsDisabled()) {
     elementsModified().fire(this, m_elements);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::vector<std::string>& System::equipTypes() const { return m_equipTypes; }
@@ -683,7 +683,7 @@ void System::setEquipTypes(const std::vector<std::string>& value) {
   if (!signalsDisabled()) {
     equipTypesModified().fire(this, m_equipTypes);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] std::string System::equipType(const int id) const {
@@ -705,7 +705,7 @@ void System::setEquipType(int id, const std::string& value) {
   if (!signalsDisabled()) {
     equipTypesModified().fire(this, m_equipTypes);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& System::gameTitle() const { return m_gameTitle; }
@@ -718,7 +718,7 @@ void System::setGameTitle(const std::string& value) {
   if (!signalsDisabled()) {
     gameTitleModified().fire(this, m_gameTitle);
   }
-  setHasChanges();
+  setModified();
 }
 
 Audio& System::gameoverMe() { return m_gameoverMe; }
@@ -732,7 +732,7 @@ void System::setGameoverMe(const Audio& value) {
   if (!signalsDisabled()) {
     gameoverMeModified().fire(this, m_gameoverMe);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& System::locale() const { return m_locale; }
@@ -745,7 +745,7 @@ void System::setLocale(const std::string& value) {
   if (!signalsDisabled()) {
     localeModified().fire(this, m_locale);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::vector<int>& System::magicSkills() const { return m_magicSkills; }
@@ -758,7 +758,7 @@ void System::setMagicSkills(const std::vector<int>& value) {
   if (!signalsDisabled()) {
     magicSkillsModified().fire(this, m_magicSkills);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::array<bool, 6>& System::menuCommands() const { return m_menuCommands; }
@@ -771,7 +771,7 @@ void System::setMenuCommands(const std::array<bool, 6>& value) {
   if (!signalsDisabled()) {
     menuCommandsModified().fire(this, m_menuCommands);
   }
-  setHasChanges();
+  setModified();
 }
 void System::setMenuCommand(int idx, bool value) {
   if (idx < 0 || idx >= m_menuCommands.size()) {
@@ -785,7 +785,7 @@ void System::setMenuCommand(int idx, bool value) {
   if (!signalsDisabled()) {
     menuCommandsModified().fire(this, m_menuCommands);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool System::optDisplayTp() const { return m_optDisplayTp; }
@@ -798,7 +798,7 @@ void System::setOptDisplayTp(bool value) {
   if (!signalsDisabled()) {
     optDisplayTpModified().fire(this, m_optDisplayTp);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool System::optDrawTitle() const { return m_optDrawTitle; }
@@ -811,7 +811,7 @@ void System::setOptDrawTitle(bool value) {
   if (!signalsDisabled()) {
     optDrawTitleModified().fire(this, m_optDrawTitle);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool System::optExtraExp() const { return m_optExtraExp; }
@@ -824,7 +824,7 @@ void System::setOptExtraExp(bool value) {
   if (!signalsDisabled()) {
     optExtraExpModified().fire(this, m_optExtraExp);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool System::optFloorDeath() const { return m_optFloorDeath; }
@@ -837,7 +837,7 @@ void System::setOptFloorDeath(bool value) {
   if (!signalsDisabled()) {
     optFloorDeathModified().fire(this, m_optFloorDeath);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool System::optFollowers() const { return m_optFollowers; }
@@ -850,7 +850,7 @@ void System::setOptFollowers(bool value) {
   if (!signalsDisabled()) {
     optFollowersModified().fire(this, m_optFollowers);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool System::optSideView() const { return m_optSideView; }
@@ -863,7 +863,7 @@ void System::setOptSideView(bool value) {
   if (!signalsDisabled()) {
     optSideViewModified().fire(this, m_optSideView);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool System::optSlipDeath() const { return m_optSlipDeath; }
@@ -876,7 +876,7 @@ void System::setOptSlipDeath(bool value) {
   if (!signalsDisabled()) {
     optSlipDeathModified().fire(this, m_optSlipDeath);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool System::optTransparent() const { return m_optTransparent; }
@@ -889,7 +889,7 @@ void System::setOptTransparent(bool value) {
   if (!signalsDisabled()) {
     optTransparentModified().fire(this, m_optTransparent);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::vector<int>& System::partyMembers() const { return m_partyMembers; }
@@ -902,7 +902,7 @@ void System::setPartyMembers(const std::vector<int>& value) {
   if (!signalsDisabled()) {
     partyMembersModified().fire(this, m_partyMembers);
   }
-  setHasChanges();
+  setModified();
 }
 
 void System::setPartyMember(int id, int value) {
@@ -917,7 +917,7 @@ void System::setPartyMember(int id, int value) {
   if (!signalsDisabled()) {
     partyMembersModified().fire(this, m_partyMembers);
   }
-  setHasChanges();
+  setModified();
 }
 void System::addPartyMember(int id) {
   MODIFIABLE_SET_OLD_VALUE(partyMembers);
@@ -925,7 +925,7 @@ void System::addPartyMember(int id) {
   if (!signalsDisabled()) {
     partyMembersModified().fire(this, m_partyMembers);
   }
-  setHasChanges();
+  setModified();
 }
 
 Vehicle& System::ship() { return m_ship; }
@@ -939,7 +939,7 @@ void System::setShip(const Vehicle& ship) {
   if (!signalsDisabled()) {
     shipModified().fire(this, m_ship);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::vector<std::string>& System::skillTypes() const { return m_skillTypes; }
@@ -952,7 +952,7 @@ void System::setSkillTypes(const std::vector<std::string>& value) {
   if (!signalsDisabled()) {
     skillTypesModified().fire(this, m_skillTypes);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] std::string System::skillType(const int id) const {
@@ -974,7 +974,7 @@ void System::setSkillType(int id, const std::string& value) {
   if (!signalsDisabled()) {
     skillTypesModified().fire(this, m_skillTypes);
   }
-  setHasChanges();
+  setModified();
 }
 
 std::vector<Audio>& System::sounds() { return m_sounds; }
@@ -988,7 +988,7 @@ void System::setSounds(const std::vector<Audio>& value) {
   if (!signalsDisabled()) {
     soundsModified().fire(this, m_sounds);
   }
-  setHasChanges();
+  setModified();
 }
 
 int System::startMapId() const { return m_startMapId; }
@@ -1001,7 +1001,7 @@ void System::setStartMapId(int value) {
   if (!signalsDisabled()) {
     startMapIdModified().fire(this, m_startMapId);
   }
-  setHasChanges();
+  setModified();
 }
 
 int System::startX() const { return m_startX; }
@@ -1014,7 +1014,7 @@ void System::setStartX(int value) {
   if (!signalsDisabled()) {
     startXModified().fire(this, m_startX);
   }
-  setHasChanges();
+  setModified();
 }
 
 int System::startY() const { return m_startY; }
@@ -1027,7 +1027,7 @@ void System::setStartY(int value) {
   if (!signalsDisabled()) {
     startYModified().fire(this, m_startY);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::vector<std::string>& System::switches() const { return m_switches; }
@@ -1040,7 +1040,7 @@ void System::setSwitches(const std::vector<std::string>& value) {
   if (!signalsDisabled()) {
     switchesModified().fire(this, m_switches);
   }
-  setHasChanges();
+  setModified();
 }
 
 std::string System::switche(const int id) const {
@@ -1062,7 +1062,7 @@ void System::setSwitch(int id, const std::string& value) {
   if (!signalsDisabled()) {
     switchesModified().fire(this, m_switches);
   }
-  setHasChanges();
+  setModified();
 }
 
 Terms& System::terms() { return m_terms; }
@@ -1076,7 +1076,7 @@ void System::setTerms(const Terms& value) {
   if (!signalsDisabled()) {
     termsModified().fire(this, m_terms);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::vector<Battler>& System::testBattlers() const { return m_testBattlers; }
@@ -1089,7 +1089,7 @@ void System::setTestBattlers(const std::vector<Battler>& value) {
   if (!signalsDisabled()) {
     testBattlersModified().fire(this, m_testBattlers);
   }
-  setHasChanges();
+  setModified();
 }
 
 int System::testTroopId() const { return m_testTroopId; }
@@ -1102,7 +1102,7 @@ void System::setTroopTestId(const int value) {
   if (!signalsDisabled()) {
     testTroopIdModified().fire(this, m_testTroopId);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& System::title1Name() const { return m_title1Name; }
@@ -1115,7 +1115,7 @@ void System::setTitle1Name(const std::string& value) {
   if (!signalsDisabled()) {
     title1NameModified().fire(this, m_title1Name);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& System::title2Name() const { return m_title2Name; }
@@ -1128,7 +1128,7 @@ void System::setTitle2Name(const std::string& value) {
   if (!signalsDisabled()) {
     title2NameModified().fire(this, m_title2Name);
   }
-  setHasChanges();
+  setModified();
 }
 
 Audio& System::titleBgm() { return m_titleBgm; }
@@ -1142,7 +1142,7 @@ void System::setTitleBgm(const Audio& value) {
   if (!signalsDisabled()) {
     titleBgmModified().fire(this, m_titleBgm);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::vector<std::string>& System::variables() const { return m_variables; }
@@ -1165,7 +1165,7 @@ void System::setVariable(int id, const std::string& value) {
   if (!signalsDisabled()) {
     variablesModified().fire(this, m_variables);
   }
-  setHasChanges();
+  setModified();
 }
 
 int System::tileSize() const { return m_tileSize; }
@@ -1178,7 +1178,7 @@ void System::setTileSize(const int value) {
   if (!signalsDisabled()) {
     tileSizeModified().fire(this, m_tileSize);
   }
-  setHasChanges();
+  setModified();
 }
 
 uint32_t System::versionId() { return m_versionId; }
@@ -1191,7 +1191,7 @@ void System::setVersionId(const uint32_t value) {
   if (!signalsDisabled()) {
     versionIdModified().fire(this, m_versionId);
   }
-  setHasChanges();
+  setModified();
 }
 
 Audio& System::victoryMe() { return m_victoryMe; }
@@ -1205,7 +1205,7 @@ void System::setVictoryMe(const Audio& value) {
   if (!signalsDisabled()) {
     victoryMeModified().fire(this, m_victoryMe);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::vector<std::string>& System::weaponTypes() const { return m_weaponTypes; }
@@ -1215,6 +1215,10 @@ void System::setWeaponTypes(const std::vector<std::string>& value) {
   }
   MODIFIABLE_SET_OLD_VALUE(weaponTypes);
   m_weaponTypes = value;
+  if (!signalsDisabled()) {
+    weaponTypesModified().fire(this, value);
+  }
+  setModified();
 }
 
 [[nodiscard]] std::string System::weaponType(const int id) const {
@@ -1236,7 +1240,7 @@ void System::setWeaponType(int id, std::string_view value) {
   if (!signalsDisabled()) {
     weaponTypesModified().fire(this, m_weaponTypes);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::array<int, 3>& System::windowTone() const { return m_windowTone; }
@@ -1249,7 +1253,7 @@ void System::setWindowTone(const std::array<int, 3>& value) {
   if (!signalsDisabled()) {
     windowToneModified().fire(this, m_windowTone);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool System::hasEncryptedImages() const { return m_hasEncryptedImages ? *m_hasEncryptedImages : false; }
@@ -1262,6 +1266,7 @@ void System::setHasEncryptedImages(bool value) {
   if (!signalsDisabled()) {
     hasEncryptedImagesModified().fire(this, value);
   }
+  setModified();
 }
 bool System::hasEncryptedAudio() const { return m_hasEncryptedAudio ? *m_hasEncryptedAudio : false; }
 void System::setHasEncryptedAudio(bool value) {
@@ -1273,7 +1278,7 @@ void System::setHasEncryptedAudio(bool value) {
   if (!signalsDisabled()) {
     hasEncryptedAudioModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 std::string System::encryptionKey() const { return m_encryptionKey ? *m_encryptionKey : std::string(); }
 void System::setEncryptionKey(const std::string& value) {
@@ -1285,7 +1290,7 @@ void System::setEncryptionKey(const std::string& value) {
   if (!signalsDisabled()) {
     encryptionKeyModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] std::vector<char> System::encryptionKeyAsBytes() const {

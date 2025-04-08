@@ -28,16 +28,7 @@ MapEvent::MapEvent(Event* event)
   setupPageSettings();
   m_x = m_realX = m_event->x();
   m_y = m_realY = m_event->y();
-}
-
-void MapEvent::onCharacterImageModified(EventImage* evImage, const std::string& characterName) {
-  //
-  m_characterSheet = CharacterSheet(characterName, evImage->tileId() > 0, evImage->tileId());
-}
-
-void MapEvent::onTileIdModified(EventImage* evImage, int tileId) {
-  //
-  m_characterSheet = CharacterSheet(evImage->characterName(), tileId > 0, tileId);
+  m_event->onModified().connect<&MapEvent::onModified>(this);
 }
 
 double oscillate(const double minValue, const double maxValue, const double period, const double currentTime) {
@@ -122,46 +113,48 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
   const auto innerThickness = ImGui::GetDPIScaledValue(1.5f);
   const auto contraction = ImGui::GetDPIScaledSize(4, 4);
 
-  if (m_mapEditor->prisonMode() || m_event->id() == 0 || (((!hasCharacterSheet || !m_characterSheet) && !isTile) && !m_mapEditor->prisonMode())) {
-    win->DrawList->AddRectFilled(evMin + contraction, evMax - contraction, bgColor);
-  }
-
-  if (hasCharacterSheet && !isTile && m_characterSheet) {
-    if (!m_mapEditor->prisonMode() && m_event->id() != 0) {
-      auto [min, max] = m_characterSheet.getRectForCharacter(characterIndex, pattern(), direction);
-
-      evMin.x -= ((static_cast<float>(m_characterSheet.characterWidth()) - m_mapEditor->tileSize()) / 2.f) * mapScale;
-      evMax.x += ((static_cast<float>(m_characterSheet.characterWidth()) - m_mapEditor->tileSize()) / 2.f) * mapScale;
-      evMin.y -= (static_cast<float>(m_characterSheet.characterHeight()) - m_mapEditor->tileSize()) * mapScale;
-      win->DrawList->AddImage(m_characterSheet.texture(), evMin, evMax, min, max, imageColor);
-    } else {
-      auto [min, max] = m_characterSheet.getRectForCharacter(characterIndex, m_originalPattern, direction);
-
-      if (m_characterSheet.characterWidth() == 72) {
-        min.xr() *= m_characterSheet.texture().width();
-        max.xr() *= m_characterSheet.texture().width();
-        min.xr() += 16;
-        max.xr() -= 16;
-        min.xr() /= m_characterSheet.texture().width();
-        max.xr() /= m_characterSheet.texture().width();
-      }
-
-      if (m_characterSheet.characterHeight() == 96) {
-        min.yr() *= m_characterSheet.texture().height();
-        max.yr() *= m_characterSheet.texture().height();
-        min.yr() += 24;
-        max.yr() -= 32;
-        min.yr() /= m_characterSheet.texture().height();
-        max.yr() /= m_characterSheet.texture().height();
-      }
-      win->DrawList->AddImage(m_characterSheet, evMin + contraction, evMax - contraction, min, max, imageColor);
+  if (mapScale > 0.5f) {
+    if (m_mapEditor->prisonMode() || m_event->id() == 0 || (((!hasCharacterSheet || !m_characterSheet) && !isTile) && !m_mapEditor->prisonMode())) {
+      win->DrawList->AddRectFilled(evMin + contraction, evMax - contraction, bgColor);
     }
-  } else if (m_mapEditor->map() && isTile) {
-    const auto& [min, max] = m_characterSheet.getRectForTile(page()->image().tileId());
-    if (m_mapEditor->prisonMode()) {
-      win->DrawList->AddImage(m_characterSheet, evMin + contraction, evMax - contraction, min, max, imageColor);
-    } else {
-      win->DrawList->AddImage(m_characterSheet, evMin, evMax, min, max, imageColor);
+
+    if (hasCharacterSheet && !isTile && m_characterSheet) {
+      if (!m_mapEditor->prisonMode() && m_event->id() != 0) {
+        auto [min, max] = m_characterSheet.getRectForCharacter(characterIndex, pattern(), direction);
+
+        evMin.x -= ((static_cast<float>(m_characterSheet.characterWidth()) - m_mapEditor->tileSize()) / 2.f) * mapScale;
+        evMax.x += ((static_cast<float>(m_characterSheet.characterWidth()) - m_mapEditor->tileSize()) / 2.f) * mapScale;
+        evMin.y -= (static_cast<float>(m_characterSheet.characterHeight()) - m_mapEditor->tileSize()) * mapScale;
+        win->DrawList->AddImage(m_characterSheet.texture(), evMin, evMax, min, max, imageColor);
+      } else {
+        auto [min, max] = m_characterSheet.getRectForCharacter(characterIndex, m_originalPattern, direction);
+
+        if (m_characterSheet.characterWidth() == 72) {
+          min.xr() *= m_characterSheet.texture().width();
+          max.xr() *= m_characterSheet.texture().width();
+          min.xr() += 16;
+          max.xr() -= 16;
+          min.xr() /= m_characterSheet.texture().width();
+          max.xr() /= m_characterSheet.texture().width();
+        }
+
+        if (m_characterSheet.characterHeight() == 96) {
+          min.yr() *= m_characterSheet.texture().height();
+          max.yr() *= m_characterSheet.texture().height();
+          min.yr() += 24;
+          max.yr() -= 32;
+          min.yr() /= m_characterSheet.texture().height();
+          max.yr() /= m_characterSheet.texture().height();
+        }
+        win->DrawList->AddImage(m_characterSheet, evMin + contraction, evMax - contraction, min, max, imageColor);
+      }
+    } else if (m_mapEditor->map() && isTile) {
+      const auto& [min, max] = m_characterSheet.getRectForTile(page()->image().tileId());
+      if (m_mapEditor->prisonMode()) {
+        win->DrawList->AddImage(m_characterSheet, evMin + contraction, evMax - contraction, min, max, imageColor);
+      } else {
+        win->DrawList->AddImage(m_characterSheet, evMin, evMax, min, max, imageColor);
+      }
     }
   }
   if (m_mapEditor->prisonMode() || m_event->id() == 0 || (((!hasCharacterSheet || !m_characterSheet) && !isTile) && !m_mapEditor->prisonMode())) {

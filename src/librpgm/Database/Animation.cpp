@@ -56,7 +56,7 @@ void Animation::Color::setR(const int r) {
   if (!signalsDisabled()) {
     rModified().fire(this, r);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 int Animation::Color::g() const { return m_g; }
@@ -67,7 +67,7 @@ void Animation::Color::setG(const int g) {
   if (!signalsDisabled()) {
     gModified().fire(this, g);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 int Animation::Color::b() const { return m_b; }
@@ -78,7 +78,7 @@ void Animation::Color::setB(const int b) {
   if (!signalsDisabled()) {
     bModified().fire(this, b);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 int Animation::Color::intensity() const { return m_intensity; }
@@ -89,7 +89,7 @@ void Animation::Color::setIntensity(const int intensity) {
   if (!signalsDisabled()) {
     intensityModified().fire(this, intensity);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 rpgmutils::signal<void(Animation::Color*, int)>& Animation::Color::rModified() {
@@ -234,7 +234,7 @@ void Animation::FramePart::setPattern(const int pattern) {
   if (!signalsDisabled()) {
     patternModified().fire(this, pattern);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 int Animation::FramePart::x() const { return m_x; }
@@ -245,7 +245,7 @@ void Animation::FramePart::setX(const int x) {
   if (!signalsDisabled()) {
     xModified().fire(this, x);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 int Animation::FramePart::y() const { return m_y; }
@@ -256,7 +256,7 @@ void Animation::FramePart::setY(const int y) {
   if (!signalsDisabled()) {
     yModified().fire(this, y);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 int Animation::FramePart::scale() const { return m_scale; }
@@ -267,7 +267,7 @@ void Animation::FramePart::setScale(const int scale) {
   if (!signalsDisabled()) {
     scaleModified().fire(this, scale);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 int Animation::FramePart::rotation() const { return m_rotation; }
@@ -278,7 +278,7 @@ void Animation::FramePart::setRotation(const int rotation) {
   if (!signalsDisabled()) {
     rotationModified().fire(this, rotation);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 Mirror Animation::FramePart::mirror() const { return m_mirror; }
@@ -289,7 +289,7 @@ void Animation::FramePart::setMirror(const Mirror mirror) {
   if (!signalsDisabled()) {
     mirrorModified().fire(this, mirror);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 int Animation::FramePart::opacity() const { return m_opacity; }
@@ -300,7 +300,7 @@ void Animation::FramePart::setOpacity(const int opacity) {
   if (!signalsDisabled()) {
     opacityModified().fire(this, opacity);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 Blend Animation::FramePart::blend() const { return m_blend; }
@@ -311,7 +311,7 @@ void Animation::FramePart::setBlend(const Blend blend) {
   if (!signalsDisabled()) {
     blendModified().fire(this, blend);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 bool Animation::FramePart::showTimeLine() const { return m_show; }
 void Animation::FramePart::setShowTimeLine(const bool show) { m_show = show; }
@@ -477,7 +477,7 @@ void Animation::Timing::setFlashColor(const Color& color) {
   if (!signalsDisabled()) {
     flashColorModified().fire(this, color);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 int Animation::Timing::flashDuration() const { return m_flashDuration; }
@@ -487,7 +487,7 @@ void Animation::Timing::setFlashDuration(int duration) {
   if (!signalsDisabled()) {
     flashDurationModified().fire(this, duration);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 FlashScope Animation::Timing::flashScope() const { return m_flashScope; }
@@ -497,7 +497,7 @@ void Animation::Timing::setFlashScope(FlashScope scope) {
   if (!signalsDisabled()) {
     flashScopeModified().fire(this, scope);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 int Animation::Timing::frame() const { return m_frame; }
@@ -507,7 +507,7 @@ void Animation::Timing::setFrame(int frame) {
   if (!signalsDisabled()) {
     frameModified().fire(this, frame);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 Audio* Animation::Timing::se() {
@@ -524,7 +524,7 @@ void Animation::Timing::setSe(const Audio& se) {
   if (!signalsDisabled()) {
     seModified().fire(this, se);
   }
-  setHasChanges(true);
+  setModified(true);
 }
 
 bool Animation::Timing::showTimeLine() const { return m_show; }
@@ -692,7 +692,7 @@ void Animation::setId(const int id) {
   if (!signalsDisabled()) {
     idModified().fire(this, id);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Animation::animation1Hue() const { return m_animation1Hue; }
@@ -702,7 +702,7 @@ void Animation::setAnimation1Hue(const int animation1Hue) {
   if (!signalsDisabled()) {
     animation1HueModified().fire(this, animation1Hue);
   }
-  setHasChanges();
+  setModified();
 }
 
 std::string_view Animation::animation1Name() const { return m_animation1Name; }
@@ -712,7 +712,7 @@ void Animation::setAnimation1Name(const std::string_view animation1Name) {
   if (!signalsDisabled()) {
     animation1NameModified().fire(this, m_animation1Name);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Animation::animation2Hue() const { return m_animation2Hue; }
@@ -722,7 +722,7 @@ void Animation::setAnimation2Hue(const int animation2Hue) {
   if (!signalsDisabled()) {
     animation2HueModified().fire(this, animation2Hue);
   }
-  setHasChanges();
+  setModified();
 }
 
 std::string_view Animation::animation2Name() const { return m_animation2Name; }
@@ -732,7 +732,7 @@ void Animation::setAnimation2Name(const std::string_view animation2Name) {
   if (!signalsDisabled()) {
     animation2NameModified().fire(this, m_animation2Name);
   }
-  setHasChanges();
+  setModified();
 }
 
 std::vector<std::vector<Animation::FramePart>>& Animation::frames() { return m_frames; }
@@ -743,7 +743,7 @@ void Animation::setFrames(const std::vector<std::vector<FramePart>>& frames) {
   if (!signalsDisabled()) {
     framesModified().fire(this, m_frames);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::vector<Animation::FramePart>& Animation::frame(const int index) const {
@@ -758,7 +758,7 @@ void Animation::setFrame(const int index, const std::vector<FramePart>& frame) {
   if (!signalsDisabled()) {
     frameModified().fire(this, index, frame);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool Animation::showTimeLine(int index) { return m_shows.at(index); }
@@ -773,7 +773,7 @@ void Animation::setName(const std::string_view name) {
   if (!signalsDisabled()) {
     nameModified().fire(this, m_name);
   }
-  setHasChanges();
+  setModified();
 }
 
 Position Animation::position() const { return m_position; }
@@ -783,7 +783,7 @@ void Animation::setPosition(const Position position) {
   if (!signalsDisabled()) {
     positionModified().fire(this, m_position);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::vector<Animation::Timing>& Animation::timings() const { return m_timings; }
@@ -793,7 +793,7 @@ void Animation::setTimings(const std::vector<Timing>& timings) {
   if (!signalsDisabled()) {
     timingsModified().fire(this, m_timings);
   }
-  setHasChanges();
+  setModified();
 }
 
 Animation::Timing& Animation::timing(const int index) {
@@ -813,7 +813,7 @@ void Animation::setTiming(const int index, const Timing& timing) {
   if (!signalsDisabled()) {
     timingModified().fire(this, index, timing);
   }
-  setHasChanges();
+  setModified();
 }
 // SIGNALS
 rpgmutils::signal<void(Animation*, int)>& Animation::idModified() {

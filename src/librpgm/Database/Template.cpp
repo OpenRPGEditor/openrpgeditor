@@ -70,7 +70,7 @@ void Template::setId(const int id) {
   if (!signalsDisabled()) {
     idModified().fire(this, id);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::string& Template::name() const { return m_name; }
@@ -83,7 +83,7 @@ void Template::setName(const std::string& name) {
   if (!signalsDisabled()) {
     nameModified().fire(this, name);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& Template::note() const { return m_note; }
@@ -96,7 +96,7 @@ void Template::setNote(const std::string& note) {
   if (!signalsDisabled()) {
     noteModified().fire(this, note);
   }
-  setHasChanges();
+  setModified();
 }
 
 Template::TemplateType Template::type() const { return m_type; }
@@ -109,7 +109,7 @@ void Template::setType(const TemplateType type) {
   if (!signalsDisabled()) {
     typeModified().fire(this, type);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& Template::commands() const { return m_commands; }
@@ -122,7 +122,7 @@ void Template::setCommands(const std::string& commands) {
   if (!signalsDisabled()) {
     commandsModified().fire(this, commands);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] std::vector<int>& Template::parameters() { return m_parameters; }
@@ -136,7 +136,7 @@ void Template::setParameters(const std::vector<int>& parameters) {
   if (!signalsDisabled()) {
     parametersModified().fire(this, parameters);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Template::restoreOriginal() {

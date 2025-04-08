@@ -132,7 +132,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     handleEventDrag();
   }
 
-  if (m_scaleChanged) {
+  if (m_scaleChanged && ImGui::IsWindowHovered()) {
     ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + ((m_tileCursor.absoluteX() * m_mapScale) - (win->ContentRegionRect.Max.x / 2)));
     ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + ((m_tileCursor.absoluteY() * m_mapScale) - (win->ContentRegionRect.Max.y / 2)));
     m_tileCursor.setVisible(wasCursorVisible);
@@ -718,10 +718,6 @@ void MapEditor::draw() {
         }
       }
 
-      if (m_tileCursor.mode() == MapCursorMode::Keyboard && !ImGui::IsWindowFocused()) {
-        ImGui::FocusWindow(win, ImGuiFocusRequestFlags_UnlessBelowModal | ImGuiFocusRequestFlags_RestoreFocusedChild);
-      }
-
       if (m_initialScrollSet) {
         ImGui::SetScrollX(m_initialScrollX);
         ImGui::SetScrollY(m_initialScrollY);
@@ -842,23 +838,18 @@ void MapEditor::draw() {
         m_tileCursor.draw(win);
       }
       // TODO: See if we can come up with a more reliable way to increment scroll position based on the tile size
-      // if (m_tileCursor.mode() != MapCursorMode::Keyboard && !m_scaleChanged) {
-      //   static float tempX = win->Scroll.x;
-      //   if (fabs(win->Scroll.x - tempX) > (m_tileCursor.tileSize() * m_mapScale) / 2 || !ImGui::IsKeyDown(ImGuiKey_MouseWheelX)) {
-      //     printf("TargX before: %g\n", win->Scroll.x);
-      //     win->Scroll.x = m_tileCursor.alignCoord(win->Scroll.x + (m_tileCursor.tileSize() * m_mapScale) / 2);
-      //     tempX = win->Scroll.x;
-      //     printf("TargX after: %g\n", win->Scroll.x);
-      //     tempX = win->Scroll.x;
-      //   }
-      //   static float tempY = win->Scroll.x;
-      //   if (fabs(win->Scroll.y - tempY) > (m_tileCursor.tileSize() * m_mapScale) / 2 || !ImGui::IsKeyDown(ImGuiKey_MouseWheelY)) {
-      //     printf("TargY before: %g\n", win->Scroll.y);
-      //     win->Scroll.y = m_tileCursor.alignCoord(win->Scroll.y + (m_tileCursor.tileSize() * m_mapScale) / 2);
-      //     printf("TargY after: %g\n", win->Scroll.y);
-      //     tempY = win->Scroll.y;
-      //   }
-      // }
+      if (m_tileCursor.mode() != MapCursorMode::Keyboard && !m_scaleChanged) {
+        static float tempX = win->Scroll.x;
+        if (fabs(win->Scroll.x - tempX) > (m_tileCursor.tileSize() * m_mapScale) / 2 || !ImGui::IsKeyDown(ImGuiKey_MouseWheelX)) {
+          win->Scroll.x = m_tileCursor.alignCoord(win->Scroll.x + (m_tileCursor.tileSize() * m_mapScale) / 2);
+          tempX = win->Scroll.x;
+        }
+        static float tempY = win->Scroll.y;
+        if (fabs(win->Scroll.y - tempY) > (m_tileCursor.tileSize() * m_mapScale) / 2 || !ImGui::IsKeyDown(ImGuiKey_MouseWheelY)) {
+          win->Scroll.y = m_tileCursor.alignCoord(win->Scroll.y + (m_tileCursor.tileSize() * m_mapScale) / 2);
+          tempY = win->Scroll.y;
+        }
+      }
     }
     ImGui::EndChild();
     ImGui::BeginChild("##map_editor_bottom_panel", ImVec2{}, 0, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);

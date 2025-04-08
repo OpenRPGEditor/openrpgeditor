@@ -430,7 +430,7 @@ void Messages::setActionFailure(const std::string& value) {
   if (!signalsDisabled()) {
     actionFailureModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::actorDamage() { return m_actorDamage; }
 void Messages::setActorDamage(const std::string& value) {
@@ -442,7 +442,7 @@ void Messages::setActorDamage(const std::string& value) {
   if (!signalsDisabled()) {
     actorDamageModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::actorDrain() { return m_actorDrain; }
 void Messages::setActorDrain(const std::string& value) {
@@ -454,7 +454,7 @@ void Messages::setActorDrain(const std::string& value) {
   if (!signalsDisabled()) {
     actorDrainModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::actorGain() { return m_actorGain; }
 void Messages::setActorGain(const std::string& value) {
@@ -466,7 +466,7 @@ void Messages::setActorGain(const std::string& value) {
   if (!signalsDisabled()) {
     actorGainModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::actorLoss() { return m_actorLoss; }
 void Messages::setActorLoss(const std::string& value) {
@@ -478,7 +478,7 @@ void Messages::setActorLoss(const std::string& value) {
   if (!signalsDisabled()) {
     actorLossModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::actorNoDamage() { return m_actorNoDamage; }
 void Messages::setActorNoDamage(const std::string& value) {
@@ -490,7 +490,7 @@ void Messages::setActorNoDamage(const std::string& value) {
   if (!signalsDisabled()) {
     actorNoDamageModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::actorNoHit() { return m_actorNoHit; }
 void Messages::setActorNoHit(const std::string& value) {
@@ -502,7 +502,7 @@ void Messages::setActorNoHit(const std::string& value) {
   if (!signalsDisabled()) {
     actorNoHitModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::actorRecovery() { return m_actorRecovery; }
 void Messages::setActorRecovery(const std::string& value) {
@@ -514,7 +514,7 @@ void Messages::setActorRecovery(const std::string& value) {
   if (!signalsDisabled()) {
     actorRecoveryModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::alwaysDash() { return m_alwaysDash; }
 void Messages::setAlwaysDash(const std::string& value) {
@@ -526,7 +526,7 @@ void Messages::setAlwaysDash(const std::string& value) {
   if (!signalsDisabled()) {
     alwaysDashModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::bgmVolume() { return m_bgmVolume; }
 void Messages::setBgmVolume(const std::string& value) {
@@ -538,7 +538,7 @@ void Messages::setBgmVolume(const std::string& value) {
   if (!signalsDisabled()) {
     bgmVolumeModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::bgsVolume() { return m_bgsVolume; }
 void Messages::setBgsVolume(const std::string& value) {
@@ -550,7 +550,7 @@ void Messages::setBgsVolume(const std::string& value) {
   if (!signalsDisabled()) {
     bgsVolumeModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::buffAdd() { return m_buffAdd; }
 void Messages::setBuffAdd(const std::string& value) {
@@ -562,7 +562,7 @@ void Messages::setBuffAdd(const std::string& value) {
   if (!signalsDisabled()) {
     buffAddModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::buffRemove() { return m_buffRemove; }
 void Messages::setBuffRemove(const std::string& value) {
@@ -574,7 +574,7 @@ void Messages::setBuffRemove(const std::string& value) {
   if (!signalsDisabled()) {
     buffRemoveModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::commandRemember() { return m_commandRemember; }
 void Messages::setCommandRemember(const std::string& value) {
@@ -586,7 +586,7 @@ void Messages::setCommandRemember(const std::string& value) {
   if (!signalsDisabled()) {
     commandRememberModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::counterAttack() { return m_counterAttack; }
 void Messages::setCounterAttack(const std::string& value) {
@@ -598,7 +598,7 @@ void Messages::setCounterAttack(const std::string& value) {
   if (!signalsDisabled()) {
     counterAttackModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::criticalToActor() { return m_criticalToActor; }
 void Messages::setCriticalToActor(const std::string& value) {
@@ -610,7 +610,7 @@ void Messages::setCriticalToActor(const std::string& value) {
   if (!signalsDisabled()) {
     criticalToActorModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::criticalToEnemy() { return m_criticalToEnemy; }
 void Messages::setCriticalToEnemy(const std::string& value) {
@@ -622,7 +622,7 @@ void Messages::setCriticalToEnemy(const std::string& value) {
   if (!signalsDisabled()) {
     criticalToEnemyModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::debuffAdd() { return m_debuffAdd; }
 void Messages::setDebuffAdd(const std::string& value) {
@@ -634,7 +634,7 @@ void Messages::setDebuffAdd(const std::string& value) {
   if (!signalsDisabled()) {
     debuffAddModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::defeat() { return m_defeat; }
 void Messages::setDefeat(const std::string& value) {
@@ -646,7 +646,7 @@ void Messages::setDefeat(const std::string& value) {
   if (!signalsDisabled()) {
     defeatModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::emerge() { return m_emerge; }
 void Messages::setEmerge(const std::string& value) {
@@ -658,7 +658,7 @@ void Messages::setEmerge(const std::string& value) {
   if (!signalsDisabled()) {
     emergeModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::enemyDamage() { return m_enemyDamage; }
 void Messages::setEnemyDamage(const std::string& value) {
@@ -670,7 +670,7 @@ void Messages::setEnemyDamage(const std::string& value) {
   if (!signalsDisabled()) {
     enemyDamageModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::enemyDrain() { return m_enemyDrain; }
 void Messages::setEnemyDrain(const std::string& value) {
@@ -682,7 +682,7 @@ void Messages::setEnemyDrain(const std::string& value) {
   if (!signalsDisabled()) {
     enemyDrainModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::enemyGain() { return m_enemyGain; }
 void Messages::setEnemyGain(const std::string& value) {
@@ -694,7 +694,7 @@ void Messages::setEnemyGain(const std::string& value) {
   if (!signalsDisabled()) {
     enemyGainModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::enemyLoss() { return m_enemyLoss; }
 void Messages::setEnemyLoss(const std::string& value) {
@@ -706,7 +706,7 @@ void Messages::setEnemyLoss(const std::string& value) {
   if (!signalsDisabled()) {
     enemyLossModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::enemyNoDamage() { return m_enemyNoDamage; }
 void Messages::setEnemyNoDamage(const std::string& value) {
@@ -718,7 +718,7 @@ void Messages::setEnemyNoDamage(const std::string& value) {
   if (!signalsDisabled()) {
     enemyNoDamageModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::enemyNoHit() { return m_enemyNoHit; }
 void Messages::setEnemyNoHit(const std::string& value) {
@@ -730,7 +730,7 @@ void Messages::setEnemyNoHit(const std::string& value) {
   if (!signalsDisabled()) {
     enemyNoHitModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::enemyRecovery() { return m_enemyRecovery; }
 void Messages::setEnemyRecovery(const std::string& value) {
@@ -742,7 +742,7 @@ void Messages::setEnemyRecovery(const std::string& value) {
   if (!signalsDisabled()) {
     enemyRecoveryModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::escapeFailure() { return m_escapeFailure; }
 void Messages::setEscapeFailure(const std::string& value) {
@@ -754,7 +754,7 @@ void Messages::setEscapeFailure(const std::string& value) {
   if (!signalsDisabled()) {
     escapeFailureModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::escapeStart() { return m_escapeStart; }
 void Messages::setEscapeStart(const std::string& value) {
@@ -766,7 +766,7 @@ void Messages::setEscapeStart(const std::string& value) {
   if (!signalsDisabled()) {
     escapeStartModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::evasion() { return m_evasion; }
 void Messages::setEvasion(const std::string& value) {
@@ -778,7 +778,7 @@ void Messages::setEvasion(const std::string& value) {
   if (!signalsDisabled()) {
     evasionModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::expNext() { return m_expNext; }
 void Messages::setExpNext(const std::string& value) {
@@ -790,7 +790,7 @@ void Messages::setExpNext(const std::string& value) {
   if (!signalsDisabled()) {
     expNextModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::expTotal() { return m_expTotal; }
 void Messages::setExpTotal(const std::string& value) {
@@ -802,7 +802,7 @@ void Messages::setExpTotal(const std::string& value) {
   if (!signalsDisabled()) {
     expTotalModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::file() { return m_file; }
 void Messages::setFile(const std::string& value) {
@@ -814,7 +814,7 @@ void Messages::setFile(const std::string& value) {
   if (!signalsDisabled()) {
     fileModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::levelUp() { return m_levelUp; }
 void Messages::setLevelUp(const std::string& value) {
@@ -826,7 +826,7 @@ void Messages::setLevelUp(const std::string& value) {
   if (!signalsDisabled()) {
     levelUpModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::loadMessage() { return m_loadMessage; }
 void Messages::setLoadMessage(const std::string& value) {
@@ -838,7 +838,7 @@ void Messages::setLoadMessage(const std::string& value) {
   if (!signalsDisabled()) {
     loadMessageModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::magicEvasion() { return m_magicEvasion; }
 void Messages::setMagicEvasion(const std::string& value) {
@@ -850,7 +850,7 @@ void Messages::setMagicEvasion(const std::string& value) {
   if (!signalsDisabled()) {
     magicEvasionModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::magicReflection() { return m_magicReflection; }
 void Messages::setMagicReflection(const std::string& value) {
@@ -862,7 +862,7 @@ void Messages::setMagicReflection(const std::string& value) {
   if (!signalsDisabled()) {
     magicReflectionModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::meVolume() { return m_meVolume; }
 void Messages::setMeVolume(const std::string& value) {
@@ -874,7 +874,7 @@ void Messages::setMeVolume(const std::string& value) {
   if (!signalsDisabled()) {
     meVolumeModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::obtainExp() { return m_obtainExp; }
 void Messages::setObtainExp(const std::string& value) {
@@ -886,7 +886,7 @@ void Messages::setObtainExp(const std::string& value) {
   if (!signalsDisabled()) {
     obtainExpModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::obtainGold() { return m_obtainGold; }
 void Messages::setObtainGold(const std::string& value) {
@@ -898,7 +898,7 @@ void Messages::setObtainGold(const std::string& value) {
   if (!signalsDisabled()) {
     obtainGoldModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::obtainItem() { return m_obtainItem; }
 void Messages::setObtainItem(const std::string& value) {
@@ -910,7 +910,7 @@ void Messages::setObtainItem(const std::string& value) {
   if (!signalsDisabled()) {
     obtainItemModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::obtainSkill() { return m_obtainSkill; }
 void Messages::setObtainSkill(const std::string& value) {
@@ -922,7 +922,7 @@ void Messages::setObtainSkill(const std::string& value) {
   if (!signalsDisabled()) {
     obtainSkillModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::partyName() { return m_partyName; }
 void Messages::setPartyName(const std::string& value) {
@@ -930,6 +930,11 @@ void Messages::setPartyName(const std::string& value) {
     return;
   }
   MODIFIABLE_SET_OLD_VALUE(partyName);
+  m_partyName = value;
+  if (!signalsDisabled()) {
+    partyNameModified().fire(this, value);
+  }
+  setModified();
 }
 const std::string& Messages::possession() { return m_possession; }
 void Messages::setPossession(const std::string& value) {
@@ -941,7 +946,7 @@ void Messages::setPossession(const std::string& value) {
   if (!signalsDisabled()) {
     possessionModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::preemptive() { return m_preemptive; }
 void Messages::setPreemptive(const std::string& value) {
@@ -953,7 +958,7 @@ void Messages::setPreemptive(const std::string& value) {
   if (!signalsDisabled()) {
     preemptiveModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::saveMessage() { return m_saveMessage; }
 void Messages::setSaveMessage(const std::string& value) {
@@ -965,7 +970,7 @@ void Messages::setSaveMessage(const std::string& value) {
   if (!signalsDisabled()) {
     saveMessageModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::seVolume() { return m_seVolume; }
 void Messages::setSeVolume(const std::string& value) {
@@ -977,7 +982,7 @@ void Messages::setSeVolume(const std::string& value) {
   if (!signalsDisabled()) {
     seVolumeModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::substitute() { return m_substitute; }
 void Messages::setSubstitute(const std::string& value) {
@@ -989,7 +994,7 @@ void Messages::setSubstitute(const std::string& value) {
   if (!signalsDisabled()) {
     substituteModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::surprise() { return m_surprise; }
 void Messages::setSurprise(const std::string& value) {
@@ -1001,7 +1006,7 @@ void Messages::setSurprise(const std::string& value) {
   if (!signalsDisabled()) {
     surpriseModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::useItem() { return m_useItem; }
 void Messages::setUseItem(const std::string& value) {
@@ -1013,7 +1018,7 @@ void Messages::setUseItem(const std::string& value) {
   if (!signalsDisabled()) {
     useItemModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Messages::victory() { return m_victory; }
 void Messages::setVictory(const std::string& value) {
@@ -1025,7 +1030,7 @@ void Messages::setVictory(const std::string& value) {
   if (!signalsDisabled()) {
     victoryModified().fire(this, value);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Messages::restoreOriginal() {

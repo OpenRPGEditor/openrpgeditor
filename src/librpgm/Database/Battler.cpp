@@ -46,7 +46,7 @@ void Battler::setActorId(int actorId) {
   if (!signalsDisabled()) {
     actorIdModified().fire(this, actorId);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::vector<int>& Battler::equips() const { return m_equips; }
@@ -56,7 +56,7 @@ void Battler::setEquips(const std::vector<int>& equips) {
   if (!signalsDisabled()) {
     equipsModified().fire(this, m_equips);
   }
-  setHasChanges();
+  setModified();
 }
 void Battler::setEquip(int index, int equip) {
   assert(index >= 0 && index < m_equips.size());
@@ -65,7 +65,7 @@ void Battler::setEquip(int index, int equip) {
   if (!signalsDisabled()) {
     equipModified().fire(this, index, equip);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Battler::level() const { return m_level; }
@@ -75,7 +75,7 @@ void Battler::setLevel(int level) {
   if (!signalsDisabled()) {
     levelModified().fire(this, level);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Battler::restoreOriginal() {

@@ -46,6 +46,7 @@ void Trait::setCode(const TraitCode code) {
   if (!signalsDisabled()) {
     codeModified().fire(this, code);
   }
+  setModified();
 }
 
 [[nodiscard]] int Trait::dataId() const { return m_dataId; }
@@ -55,6 +56,7 @@ void Trait::setDataId(const int dataId) {
   if (!signalsDisabled()) {
     dataIdModified().fire(this, dataId);
   }
+  setModified();
 }
 
 [[nodiscard]] double Trait::value() const { return m_value; }
@@ -64,6 +66,7 @@ void Trait::setValue(const double value) {
   if (!signalsDisabled()) {
     valueModified().fire(this, value);
   }
+  setModified();
 }
 
 void Trait::restoreOriginal() {

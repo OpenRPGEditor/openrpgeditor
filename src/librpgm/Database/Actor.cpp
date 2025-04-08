@@ -150,7 +150,7 @@ void Actor::setId(const int id) {
   if (!signalsDisabled()) {
     idModified().fire(this, id);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& Actor::battlerName() const { return m_battlerName; }
@@ -160,7 +160,7 @@ void Actor::setBattlerName(const std::string& battlerName) {
   if (!signalsDisabled()) {
     battlerNameModified().fire(this, m_battlerName);
   }
-  setHasChanges();
+  setModified();
 }
 int Actor::characterIndex() const { return m_characterIndex; }
 void Actor::setCharacterIndex(const int characterIndex) {
@@ -169,7 +169,7 @@ void Actor::setCharacterIndex(const int characterIndex) {
   if (!signalsDisabled()) {
     characterIndexModified().fire(this, m_characterIndex);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Actor::characterName() const { return m_characterName; }
 void Actor::setCharacterName(const std::string& characterName) {
@@ -178,7 +178,7 @@ void Actor::setCharacterName(const std::string& characterName) {
   if (!signalsDisabled()) {
     characterNameModified().fire(this, m_characterName);
   }
-  setHasChanges();
+  setModified();
 }
 int Actor::classId() const { return m_classId; }
 void Actor::setClassId(const int classId) {
@@ -187,7 +187,7 @@ void Actor::setClassId(const int classId) {
   if (!signalsDisabled()) {
     classIdModified().fire(this, m_classId);
   }
-  setHasChanges();
+  setModified();
 }
 const std::vector<int>& Actor::equips() const { return m_equips; }
 void Actor::setEquips(const std::vector<int>& equips) {
@@ -196,7 +196,7 @@ void Actor::setEquips(const std::vector<int>& equips) {
   if (!signalsDisabled()) {
     equipsModified().fire(this, m_equips);
   }
-  setHasChanges();
+  setModified();
 }
 void Actor::addEquip(const int equip) {
   MODIFIABLE_SET_OLD_VALUE(equips);
@@ -204,7 +204,7 @@ void Actor::addEquip(const int equip) {
   if (!signalsDisabled()) {
     equipAdded().fire(this, m_equips.size() - 1, equip);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Actor::setEquip(const int index, const int equip) {
@@ -217,7 +217,7 @@ void Actor::setEquip(const int index, const int equip) {
   if (!signalsDisabled()) {
     equipAdded().fire(this, index, index);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Actor::removeEquip(const int index) {
@@ -228,7 +228,7 @@ void Actor::removeEquip(const int index) {
   if (!signalsDisabled()) {
     equipRemoved().fire(this, index, oldEquip);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Actor::faceIndex() const { return m_faceIndex; }
@@ -238,7 +238,7 @@ void Actor::setFaceIndex(const int faceIndex) {
   if (!signalsDisabled()) {
     faceIndexModified().fire(this, m_faceIndex);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& Actor::faceName() const { return m_faceName; }
@@ -248,7 +248,7 @@ void Actor::setFaceName(const std::string& faceName) {
   if (!signalsDisabled()) {
     faceNameModified().fire(this, m_faceName);
   }
-  setHasChanges();
+  setModified();
 }
 
 std::vector<Trait>& Actor::traits() { return m_traits; }
@@ -258,7 +258,7 @@ void Actor::setTraits(const std::vector<Trait>& traits) {
   if (!signalsDisabled()) {
     traitsModified().fire(this, m_traits);
   }
-  setHasChanges();
+  setModified();
 }
 
 Trait& Actor::trait(const int index) {
@@ -274,7 +274,7 @@ void Actor::setInitialLevel(const int initialLevel) {
   if (!signalsDisabled()) {
     initialLevelModified().fire(this, m_initialLevel);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Actor::maxLevel() const { return m_maxLevel; }
@@ -284,7 +284,7 @@ void Actor::setMaxLevel(const int maxLevel) {
   if (!signalsDisabled()) {
     maxLevelModified().fire(this, m_maxLevel);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& Actor::name() const { return m_name; }
@@ -294,7 +294,7 @@ void Actor::setName(const std::string& name) {
   if (!signalsDisabled()) {
     nameModified().fire(this, m_name);
   }
-  setHasChanges();
+  setModified();
 }
 const std::string& Actor::nickname() const { return m_nickname; }
 void Actor::setNickname(const std::string& nickname) {
@@ -304,7 +304,7 @@ void Actor::setNickname(const std::string& nickname) {
   if (!signalsDisabled()) {
     nicknameModified().fire(this, m_nickname);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& Actor::note() const { return m_note; }
@@ -314,7 +314,7 @@ void Actor::setNote(const std::string& note) {
   if (!signalsDisabled()) {
     noteModified().fire(this, m_note);
   }
-  setHasChanges();
+  setModified();
 }
 
 const std::string& Actor::profile() const { return m_profile; }
@@ -324,7 +324,7 @@ void Actor::setProfile(const std::string& profile) {
   if (!signalsDisabled()) {
     profileModified().fire(this, m_profile);
   }
-  setHasChanges();
+  setModified();
 }
 
 bool Actor::isValid() const { return m_isValid; }

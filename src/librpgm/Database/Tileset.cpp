@@ -80,7 +80,7 @@ void Tileset::setId(const int id) {
   if (!signalsDisabled()) {
     idModified().fire(this, id);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::vector<std::optional<int>>& Tileset::flags() const { return m_flags; }
@@ -126,7 +126,7 @@ void Tileset::setFlags(const std::vector<std::optional<int>>& flags) {
   if (!signalsDisabled()) {
     flagsModified().fire(this, flags);
   }
-  setHasChanges();
+  setModified();
 }
 void Tileset::setFlag(const int idx, const int flag, const bool enabled) {
   MODIFIABLE_SET_OLD_VALUE(flags);
@@ -150,7 +150,7 @@ void Tileset::setFlag(const int idx, const int flag, const bool enabled) {
   if (!signalsDisabled()) {
     flagsModified().fire(this, m_flags);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Tileset::setTerrainTag(const int idx, const int tag) {
@@ -171,7 +171,7 @@ void Tileset::setTerrainTag(const int idx, const int tag) {
   if (!signalsDisabled()) {
     flagsModified().fire(this, m_flags);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] Tileset::Mode Tileset::mode() const { return m_mode; }
@@ -184,7 +184,7 @@ void Tileset::setMode(const Mode mode) {
   if (!signalsDisabled()) {
     modeModified().fire(this, mode);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::string& Tileset::name() const { return m_name; }
@@ -197,7 +197,7 @@ void Tileset::setName(const std::string& name) {
   if (!signalsDisabled()) {
     nameModified().fire(this, name);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::string& Tileset::note() const { return m_note; }
@@ -210,7 +210,7 @@ void Tileset::setNote(const std::string& note) {
   if (!signalsDisabled()) {
     noteModified().fire(this, note);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::array<std::string, 9>& Tileset::tilesetNames() const { return m_tilesetNames; }
@@ -223,7 +223,7 @@ void Tileset::setTilesetNames(const std::array<std::string, 9>& tilesetNames) {
   if (!signalsDisabled()) {
     tilesetNamesModified().fire(this, tilesetNames);
   }
-  setHasChanges();
+  setModified();
 }
 [[nodiscard]] const std::string& Tileset::tilesetName(const int idx) const {
   assert(idx >= 0 && idx < m_tilesetNames.size());
@@ -239,7 +239,7 @@ void Tileset::setTilesetName(const int idx, const std::string& name) {
   if (!signalsDisabled()) {
     tilesetNamesModified().fire(this, m_tilesetNames);
   }
-  setHasChanges();
+  setModified();
 }
 
 void Tileset::restoreOriginal() {

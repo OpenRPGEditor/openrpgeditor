@@ -21,6 +21,8 @@
 #include "Database/EventCommands/MovementRoute/Script.hpp"
 #include "Database/EventCommands/MovementRoute/SteppingAnimationOFF.hpp"
 #include "Database/EventCommands/MovementRoute/SteppingAnimationON.hpp"
+#include "Database/EventCommands/MovementRoute/SwitchOFF.hpp"
+#include "Database/EventCommands/MovementRoute/SwitchON.hpp"
 #include "Database/EventCommands/MovementRoute/ThroughOFF.hpp"
 #include "Database/EventCommands/MovementRoute/ThroughON.hpp"
 #include "Database/EventCommands/MovementRoute/Turn180Deg.hpp"
@@ -37,8 +39,8 @@
 #include "Database/EventCommands/MovementRoute/Wait.hpp"
 #include "lcf/reader_util.h"
 
-#include <SDL3/SDL_dialog.h>
 #include <imgui.h>
+#include <SDL3/SDL_dialog.h>
 
 #undef PlaySound
 template <>
@@ -1026,11 +1028,6 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::SetVehicleLocation)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeEventLocation)) {
-    attachToCommand(
-        std::format("{} Swap with {}", parameters.at(0) == 10005 ? "This Event" : std::to_string(parameters.at(0)), parameters.at(1) == 10005 ? "This Event" : std::to_string(parameters.at(1))));
-  }
-  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::TradeEventLocations)) {
-
     if (parameters.at(0) == 10005) {
       // This Event
       attachToCommand("Event: This Event");
@@ -1043,6 +1040,10 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     } else {
       attachToCommand("By Variable");
     }
+  }
+  if (code == static_cast<int>(lcf::rpg::EventCommand::Code::TradeEventLocations)) {
+    attachToCommand(
+        std::format("{} Swap with {}", parameters.at(0) == 10005 ? "This Event" : std::to_string(parameters.at(0)), parameters.at(1) == 10005 ? "This Event" : std::to_string(parameters.at(1))));
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::StoreTerrainID)) {}
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::StoreEventID)) {}
@@ -1990,27 +1991,27 @@ std::shared_ptr<IEventCommand> LibLCF::convertMovementCommand(lcf::rpg::MoveComm
     return std::make_shared<MovementScriptCommand>(newCmd);
   }
   if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::switch_on)) {
-    MovementScriptCommand newCmd;
+    MovementSwitchONCommand newCmd;
     newCmd.setIndent(indent);
-    newCmd.script = "SWITCH ON: " + std::to_string(moveCmd.parameter_a); // TODO: Needs mapping
-    return std::make_shared<MovementScriptCommand>(newCmd);
+    newCmd.id = lcf.mapper()->switchValue(moveCmd.parameter_a);
+    return std::make_shared<MovementSwitchONCommand>(newCmd);
   }
   if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::switch_off)) {
-    MovementScriptCommand newCmd;
+    MovementSwitchOFFCommand newCmd;
     newCmd.setIndent(indent);
-    newCmd.script = "SWITCH OFF " + std::to_string(moveCmd.parameter_a); // TODO: Needs mapping
-    return std::make_shared<MovementScriptCommand>(newCmd);
+    newCmd.id = lcf.mapper()->switchValue(moveCmd.parameter_a);
+    return std::make_shared<MovementSwitchOFFCommand>(newCmd);
   }
   if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::change_graphic)) {
+    MovementChangeImageCommand imageCmd;
+    imageCmd.setIndent(indent);
     if (moveCmd.parameter_string == "AAA") {
-      MovementChangeImageCommand imageCmd;
-      imageCmd.setIndent(indent);
       return std::make_shared<MovementChangeImageCommand>(imageCmd);
     }
-    MovementScriptCommand newCmd;
-    newCmd.setIndent(indent);
-    newCmd.script = std::format("IMAGE: {}, Index: {}", ToString(moveCmd.parameter_string), std::to_string(moveCmd.parameter_a)); // TODO: Needs mapping
-    return std::make_shared<MovementScriptCommand>(newCmd);
+    std::string charName = ToString(moveCmd.parameter_string);
+    imageCmd.image = lcf.mapper()->characterNameValue(charName);
+    imageCmd.character = moveCmd.parameter_a - 1;
+    return std::make_shared<MovementChangeImageCommand>(imageCmd);
   }
   if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::play_sound_effect)) {
     MovementPlaySECommand playSECmd;

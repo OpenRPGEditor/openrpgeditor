@@ -242,7 +242,7 @@ void State::setIconIndex(int iconIndex) {
   if (!signalsDisabled()) {
     iconIndexModified().fire(this, iconIndex);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] int State::minTurns() const { return m_minTurns; }
@@ -268,7 +268,7 @@ void State::setMaxTurns(int maxTurns) {
   if (!signalsDisabled()) {
     maxTurnsModified().fire(this, m_maxTurns);
   }
-  setHasChanges();
+  setModified();
 }
 
 [[nodiscard]] const std::string& State::message1() const { return m_message1; }

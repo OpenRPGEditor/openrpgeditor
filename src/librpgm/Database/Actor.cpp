@@ -178,7 +178,7 @@ void Actor::setCharacterName(const std::string& characterName) {
   if (!signalsDisabled()) {
     characterNameModified().fire(this, m_characterName);
   }
-  setHasChanges();
+  setModified();
 }
 int Actor::classId() const { return m_classId; }
 void Actor::setClassId(const int classId) {

@@ -37,7 +37,7 @@ public:
         m_animations[i].setId(i);
       }
     }
-    setHasChanges();
+    setModified();
   }
 
   bool isModified() const override {

@@ -38,7 +38,7 @@ public:
         m_classes[i].setId(i);
       }
     }
-    setHasChanges();
+    setModified();
   }
 
   bool isModified() const override {

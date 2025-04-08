@@ -53,12 +53,7 @@ void GameWindowBackground::update(const int r, const int g, const int b) {
     SDL_RenderTexture(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_windowTexture.get()), &screct, &dstrect);
 
     screct = {0, 96, 96, 96};
-    for (int i = 0; i < rows; i++) {
-      for (int j = 0; j < cols; j++) {
-        dstrect = {j * 96.f, i * 96.f, 96.f, 96.f};
-        SDL_RenderTexture(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_windowTexture.get()), &screct, &dstrect);
-      }
-    }
+    SDL_RenderTextureTiled(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_windowTexture.get()), &screct, 1.f, nullptr);
     SDL_RenderPresent(App::APP->getWindow()->getNativeRenderer());
     m_sizeChanged = false;
     m_isInitialized = true;

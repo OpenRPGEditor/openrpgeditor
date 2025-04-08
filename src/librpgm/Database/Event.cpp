@@ -143,6 +143,10 @@ void Event::setPages(const std::vector<EventPage>& pages) {
 void Event::addPage(const EventPage& page) {
   MODIFIABLE_SET_OLD_VALUE(pages);
   m_pages.emplace_back(page);
+  if (!signalsDisabled()) {
+    pageAdded().fire(this, &m_pages.back(), m_pages.size() - 1);
+  }
+  setModified();
 }
 
 void Event::insertPage(const EventPage& page, int index) {

@@ -109,16 +109,8 @@ void CheckerboardTexture::update() const {
   SDL_SetRenderTarget(renderer, static_cast<SDL_Texture*>(m_workTexture));
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
   SDL_RenderClear(renderer);
-  const int cols = std::ceil(static_cast<float>(m_pendingWidth) / static_cast<float>(m_checkerSize));
-  const int rows = std::ceil(static_cast<float>(m_pendingHeight) / static_cast<float>(m_checkerSize));
 
-  const SDL_FRect screct{0, 0, static_cast<float>(m_checkerSize), static_cast<float>(m_checkerSize)};
-  for (int i = 0; i < rows; ++i) {
-    for (int j = 0; j < cols; ++j) {
-      const SDL_FRect dstrect{static_cast<float>(j * m_checkerSize), static_cast<float>(i * m_checkerSize), static_cast<float>(m_checkerSize), static_cast<float>(m_checkerSize)};
-      SDL_RenderTexture(renderer, static_cast<SDL_Texture*>(m_checkerTexture), &screct, &dstrect);
-    }
-  }
+  SDL_RenderTextureTiled(renderer, static_cast<SDL_Texture*>(m_checkerTexture), nullptr, 1.f, nullptr);
 
   SDL_SetRenderTarget(renderer, oldTarget);
   m_workDone = true;

@@ -50,7 +50,7 @@ void Audio::setName(const std::string& name) {
   if (!signalsDisabled()) {
     nameModified().fire(this, name);
   }
-  setHasChanges();
+  setModified();
 }
 
 int Audio::pan() const { return m_pan; }

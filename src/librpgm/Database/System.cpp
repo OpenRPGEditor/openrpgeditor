@@ -636,6 +636,12 @@ void System::setEditMapId(int value) {
     editMapIdModified().fire(this, m_editMapId);
   }
   setModified();
+  /* Hack to prevent project from being marked as dirty, but still notify hooked functions if System is modified */
+  // TODO: Better dirty handling for transient editor state
+  m_hasChanges = false;
+  disableSignals();
+  setModified(false);
+  enableSignals();
 }
 
 const std::vector<std::string>& System::elements() const { return m_elements; }

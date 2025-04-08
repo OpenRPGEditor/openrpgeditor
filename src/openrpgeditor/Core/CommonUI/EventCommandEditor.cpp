@@ -4,10 +4,12 @@
 
 #include "Core/Application.hpp"
 
+#include "../../../../cmake-build-relwithdebinfo/_deps/cpuid-src/libcpuid/libcpuid.h"
 #include "Core/Log.hpp"
 #include "Database/EventCommands/RepeatAbove.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
+
 #include <clip.h>
 
 #include <Core/Utils.hpp>
@@ -169,11 +171,12 @@ void EventCommandEditor::setupTableColors() {
 }
 void EventCommandEditor::handleBlockCollapse(int& n) const {
   if (m_commands->at(n)->collapsable()) {
-    int oldN = n;
-    auto cmd = m_commands->at(n);
-    std::string tooltip;
-    if (cmd->isCollapsed()) {
+    const int oldN = n;
+    if (const auto& cmd = m_commands->at(n); cmd->isCollapsed()) {
+      std::vector<std::string> tooltip;
+      int tooltipCmdCount = 0;
       auto next = m_commands->at(n + 1);
+      const int indent = next->indent().value_or(0);
       bool addedElipses = false;
       while (!cmd->isPartner(next->code(), next->indent())) {
         if ((n + 1) >= m_commands->size() - 1) {
@@ -183,17 +186,26 @@ void EventCommandEditor::handleBlockCollapse(int& n) const {
 
         auto rep = next->stringRep(*Database::instance(), false);
         if (next->code() != EventCode::Event_Dummy) {
-          if (std::ranges::count(tooltip.begin(), tooltip.end(), '\n') < 5) {
-            tooltip += rep + "\n";
+          if (tooltipCmdCount < 5) {
+            auto splitRep = splitString(rep, '\n');
+            for (std::string s : splitRep) {
+              tooltip.push_back(s.erase(0, indent * 2));
+            }
           } else if (!addedElipses) {
-            tooltip += next->indentText(*next->indent()) + "\u2026";
+            auto tmp = *next->indent() - indent;
+            // If we're at the same indent we don't want to drop down a level
+            if (tmp <= 0) {
+              tmp = indent;
+            }
+            tooltip.push_back(next->indentText(tmp) + "\u2026");
             addedElipses = true;
           }
+          ++tooltipCmdCount;
         }
         next = m_commands->at(n + 1);
       }
       if (m_hoveringCommand == oldN && !tooltip.empty() && ImGui::BeginTooltip()) {
-        ImGui::Text("%s", tooltip.c_str());
+        ImGui::Text("%s", std::accumulate(std::next(tooltip.begin()), tooltip.end(), tooltip[0], [](const std::string& a, const std::string& b) { return a + "\n" + b; }).c_str());
         ImGui::EndTooltip();
       }
     }

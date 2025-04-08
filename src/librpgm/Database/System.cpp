@@ -635,10 +635,11 @@ void System::setEditMapId(int value) {
   if (!signalsDisabled()) {
     editMapIdModified().fire(this, m_editMapId);
   }
+  const auto oldChanges = m_hasChanges;
   setModified();
   /* Hack to prevent project from being marked as dirty, but still notify hooked functions if System is modified */
   // TODO: Better dirty handling for transient editor state
-  m_hasChanges = false;
+  m_hasChanges = oldChanges;
   disableSignals();
   setModified(false);
   enableSignals();

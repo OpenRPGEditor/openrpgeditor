@@ -157,9 +157,9 @@ void EventCommandEditor::handleClipboardInteraction() const {
 }
 void EventCommandEditor::setupTableHeader() {
   ImGui::TableSetupColumn("Step##command_selectable_column", ImGuiTableFlags_SizingFixedFit);
-  ImGui::TableSetupColumn("##command_collapse_column", ImGuiTableFlags_SizingFixedFit);
+  ImGui::TableSetupColumn("##collapse", ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoBordersInBody);
   ImGui::TableSetupColumn("Command Operation");
-  ImGui::TableSetupScrollFreeze(3, 1);
+  ImGui::TableSetupScrollFreeze(2, 1);
   ImGui::TableHeadersRow();
 }
 void EventCommandEditor::setupTableColors() {
@@ -222,7 +222,7 @@ void EventCommandEditor::draw() {
       setupTableColors();
       setupTableHeader();
 
-      const int totalPadding = std::max(static_cast<int>(std::floor(std::log10(m_commands->size()))), 4);
+      const int totalPadding = static_cast<int>(std::floor(std::log10(m_commands->size())));
       if (m_commands) {
         ImGui::PushFont(App::APP->getMonoFont());
         for (int n = 0; n < m_commands->size(); n++) {
@@ -245,7 +245,8 @@ void EventCommandEditor::draw() {
             const int step = n + 1;
             const int stepPadding = (totalPadding - static_cast<int>(std::floor(std::log10(step)))) + 1;
             if (ImGui::SelectableWithBorder((std::string(stepPadding, ' ') + std::to_string(step)).c_str(), isSelected,
-                                            ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick, ImVec2(0, height))) {
+                                            ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick | ImGuiSelectableFlags_AllowOverlap,
+                                            ImVec2(0, height))) {
 
               if (ImGui::IsKeyDown(ImGuiKey_LeftAlt) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) {
                 /* If a command has a partner try to flip the selection around, no-op for commands that don't support this */
@@ -296,14 +297,19 @@ void EventCommandEditor::draw() {
             }
           }
           if (ImGui::TableNextColumn()) {
-            auto cmd = m_commands->at(n);
-            if (cmd->collapsable()) {
-              if (ImGui::Selectable(std::format("{}##orpg_command_collapse_btn_{}", cmd->isCollapsed() ? " + " : " - ", n).c_str(), false, ImGuiSelectableFlags_AllowOverlap)) {
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+            auto size = ImGui::CalcTextSize("+");
+            size.x = size.y;
+            size = ImGui::CalcItemSize(size, ImGui::GetFont()->FontSize, ImGui::GetFont()->FontSize);
+            if (const auto cmd = m_commands->at(n); cmd->collapsable()) {
+              if (ImGui::Button(std::format("{}##orpg_command_collapse_btn_{}", cmd->isCollapsed() ? "+" : "-", n).c_str(), size)) {
                 cmd->setCollapsed(!cmd->isCollapsed());
               }
             } else {
-              ImGui::Text("   ");
+              /* Use a dummy to keep consistent sizing */
+              ImGui::Dummy(size);
             }
+            ImGui::PopStyleVar();
           }
           if (ImGui::TableNextColumn()) {
             for (const auto& s : str) {

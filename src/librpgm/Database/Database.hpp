@@ -442,6 +442,7 @@ struct Database {
     isModified |= tilesets.isModified();
     isModified |= commonEvents.isModified();
     isModified |= system.isModified();
+    isModified |= mapInfos.isModified();
     // isModified |= plugins.isModified();
     // isModified |= gameConstants.isModified();
     isModified |= templates.isModified();

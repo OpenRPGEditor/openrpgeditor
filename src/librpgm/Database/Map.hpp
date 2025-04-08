@@ -169,7 +169,10 @@ public:
   nlohmann::ordered_json serializeOldValues() const override;
   bool isModified() const override {
     bool isModified = IModifiable::isModified();
-    isModified |= std::ranges::any_of(m_events, [](const std::optional<Event>& value) { return value && value->isModified(); });
+    isModified |= std::ranges::any_of(m_events, [](const std::optional<Event>& value) {
+      /* Ignore the dummy added to the start map to avoid reporting as dirty when we're not */
+      return value && value->id() != 0 && value->isModified();
+    });
     isModified |= std::ranges::any_of(m_encounterList, [](const Encounter& value) { return value.isModified(); });
     isModified |= m_bgm.isModified();
     isModified |= m_bgs.isModified();

@@ -4,7 +4,6 @@
 
 #include "Core/Application.hpp"
 
-#include "../../../../cmake-build-relwithdebinfo/_deps/cpuid-src/libcpuid/libcpuid.h"
 #include "Core/Log.hpp"
 #include "Database/EventCommands/RepeatAbove.hpp"
 #include "imgui.h"
@@ -1132,7 +1131,7 @@ void EventCommandEditor::drawPopup() {
         ImGui::EndCombo();
       }
       if (ImGui::BeginTabBar("##orpg_command_window")) {
-        ImVec2 size = ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0};
+        ImVec2 size = ImVec2{(ImGui::GetContentRegionMax().x / 3) - (ImGui::GetStyle().FramePadding.x * 2), 0};
 
         drawActorTab(size);
         drawAudioTab(size);

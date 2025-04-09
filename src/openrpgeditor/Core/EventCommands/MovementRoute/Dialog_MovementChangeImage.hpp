@@ -20,11 +20,11 @@ struct Dialog_MovementChangeImage : IEventDialogController {
 
 private:
   std::string m_image;
-  int m_character;
+  int m_character{0};
 
   std::optional<CharacterSheet> m_characterSheet;
   CheckerboardTexture m_buttonBack{80, 102, CellSizes::_64, 255, 200};
-  CharacterPicker m_characterPicker{CharacterPicker::PickerMode::Character};
+  CharacterPicker m_characterPicker;
 
   bool m_confirmed{false};
   std::shared_ptr<MovementChangeImageCommand> command;

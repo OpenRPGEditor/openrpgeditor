@@ -1,8 +1,10 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeImage.hpp"
 #include "Core/Application.hpp"
 
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Log.hpp"
 #include "imgui.h"
+
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_MovementChangeImage::draw() {
@@ -11,23 +13,18 @@ std::tuple<bool, bool> Dialog_MovementChangeImage::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{115, 167}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
-    if (const auto [closed, confirmed] = m_characterPicker.draw(); closed) {
-      if (closed) {
-        if (confirmed) {
-          m_characterPicker.accept();
-          m_character = m_characterPicker.character();
-          m_image = m_characterPicker.selectedSheet();
-          m_characterSheet = CharacterSheet(m_image);
-        }
+    auto [closed, confirmed] = m_characterPicker.draw();
+    if (closed) {
+      if (confirmed) {
+        m_characterPicker.accept();
+        m_character = m_characterPicker.character();
+        m_image = m_characterPicker.selectedSheet();
+        m_characterSheet = CharacterSheet(m_image);
       }
     }
-
-    const auto buttonSize = ImVec2{144, 144};
-    const auto buttonCenter = (buttonSize / 2);
-    ImGui::BeginGroup();
+    ImGui::BeginHorizontal("##changeimage_main");
     {
       auto cursorPos = ImGui::GetCursorPos();
       if (ImGui::ImageButton("##event_image", static_cast<ImTextureID>(m_buttonBack), ImVec2{80.f, 102.f})) {
@@ -44,23 +41,27 @@ std::tuple<bool, bool> Dialog_MovementChangeImage::draw() {
         ImGui::Image(m_characterSheet->texture(), ImVec2{static_cast<float>(m_characterSheet->characterWidth()), static_cast<float>(m_characterSheet->characterHeight())}, min, max);
       }
     }
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.f);
-    ImGui::BeginGroup();
+    ImGui::EndHorizontal();
+
+    ImGui::BeginHorizontal(std::format("##buttons_character_picker{}", reinterpret_cast<uintptr_t>(this)).c_str(), ImGui::GetContentRegionAvail());
     {
-      if (ImGui::Button("OK")) {
+      ImGui::Spring();
+      const int ret = ImGui::ButtonGroup(std::format("##ok_cancel_character_picker{}", reinterpret_cast<uintptr_t>(this)).c_str(), {
+                                                                                                                                       trNOOP("OK"),
+                                                                                                                                       trNOOP("Cancel"),
+                                                                                                                                   });
+      if (ret == 0) {
         m_confirmed = true;
         command->image = m_image;
         command->character = m_character;
         ImGui::CloseCurrentPopup();
         setOpen(false);
-      }
-      ImGui::SameLine();
-      if (ImGui::Button("Cancel")) {
+      } else if (ret == 1) {
         ImGui::CloseCurrentPopup();
         setOpen(false);
       }
-      ImGui::EndGroup();
     }
+    ImGui::EndHorizontal();
 
     ImGui::EndPopup();
   }

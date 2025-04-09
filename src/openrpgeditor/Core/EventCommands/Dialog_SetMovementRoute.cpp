@@ -51,8 +51,11 @@
 #include "Database/EventCommands/MovementRoute/WalkingAnimationOFF.hpp"
 #include "Database/EventCommands/MovementRoute/WalkingAnimationON.hpp"
 #include "imgui.h"
+
+#include <clip.h>
 #include <tuple>
 
+static clip::format RPGMVEventCommandFormat = -1;
 std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
   if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
@@ -60,11 +63,12 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize({ImGui::GetMainViewport()->Size.x / 2, ImGui::GetMainViewport()->Size.y / 2}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar)) {
     const auto buttonsSize = ImGui::CalcTextSize("OKCANCEL");
     // Character Selection
     ImGui::BeginChild("##movementroute_top_child", {0, ImGui::GetContentRegionAvail().y - (buttonsSize.y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)});
     {
+      m_hasFocus = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_NoPopupHierarchy);
       const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNO");
       ImGui::BeginChild("##movementroute_inner_left_child", ImVec2{calc.x, 0}, ImGuiChildFlags_ResizeX | ImGuiChildFlags_Borders);
       {
@@ -113,13 +117,31 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
                 // Edit node
               }
               m_selected = n;
+
               if (isSelected)
                 ImGui::SetItemDefaultFocus();
+
+              if (ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) {
+
+                if (n < m_selectedEnd) {
+                  m_selected = n;
+                } else {
+                  m_selectedEnd = n;
+                }
+              } else {
+                m_selectedEnd = -1;
+              }
             }
           }
           ImGui::EndTable();
         }
-
+        if (ImGui::IsKeyPressed((ImGuiKey_Delete)) && m_hasFocus) {
+          if (m_route.list().at(m_selected)->code() != EventCode::Event_Dummy) {
+            int start = m_selected;
+            // int end = m_selectedEnd == -1 ? m_selected + 1 : m_selectedEnd + 1;
+            m_route.list().erase(m_route.list().begin() + start, m_route.list().begin() + (start + 1));
+          }
+        }
         ImGui::TextUnformatted(trNOOP("Options"));
         bool tmp = m_route.repeat();
         if (ImGui::Checkbox(trNOOP("Repeat Movements"), &tmp)) {
@@ -315,6 +337,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
         } else {
           m_command->character = m_character;
           m_command->route = m_route;
+          m_command->editNodes.clear();
           for (const auto& cmd : m_route.list()) {
             if (cmd->code() != EventCode::Event_Dummy) {
               m_command->editNodes.push_back(std::make_shared<MovementRouteStepCommand>());
@@ -345,4 +368,16 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
   }
 
   return std::make_tuple(!m_open, m_confirmed);
+}
+void Dialog_SetMovementRoute::handleClipboardInteraction() const {
+  if (!m_hasFocus) {
+    return;
+  }
+  if (RPGMVEventCommandFormat == -1) {
+    RPGMVEventCommandFormat = clip::register_format("application/ore-EventCommand");
+  }
+  if (ImGui::IsKeyPressed(ImGuiKey_V) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
+  } else if (ImGui::IsKeyPressed(ImGuiKey_C) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
+  } else if (ImGui::IsKeyPressed(ImGuiKey_X) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
+  }
 }

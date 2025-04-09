@@ -34,6 +34,7 @@ struct Dialog_SetMovementRoute : IEventDialogController {
     }
   }
   std::tuple<bool, bool> draw() override;
+  void handleClipboardInteraction() const;
 
   std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
@@ -48,6 +49,7 @@ struct Dialog_SetMovementRoute : IEventDialogController {
 private:
   int m_character{-1};
   int m_selected{0};
+  int m_selectedEnd{0};
 
   EventPage* m_page = nullptr; // For event routes only
   MovementRoute m_route;
@@ -59,4 +61,5 @@ private:
   std::shared_ptr<IEventDialogController> m_movementRouteDialog;
   std::optional<VariableSwitchPicker> picker;
   std::tuple<bool, bool> result;
+  bool m_hasFocus{false};
 };

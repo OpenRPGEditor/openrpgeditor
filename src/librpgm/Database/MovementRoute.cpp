@@ -112,7 +112,7 @@ int MovementRoute::addCommand(const std::shared_ptr<IEventCommand>& command, int
   auto select = m_list.insert(m_list.begin() + position, command);
   listModified().fire(this, m_list);
   setModified(true);
-  return select - m_list.begin();
+  return select - m_list.begin() + 1;
 }
 
 void MovementRoute::restoreOriginal() {

@@ -3,16 +3,16 @@
 
 #include "imgui_internal.h"
 
+#include <memory>
+
 namespace ImGui {
 static const int kMaxChar = 10000;
-static char char_buf[kMaxChar];
-static ImU32 col_buf[kMaxChar];
-static bool char_skip[kMaxChar];
 
 void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVec2 pos, ImU32 col, const ImVec4& clip_rect, const char* text_begin, const char* text_end, float wrap_width = 0.0f,
                            bool cpu_fine_clip = false) {
   if (!text_end)
     text_end = text_begin + strlen(text_begin); // ImGui functions generally already provides a valid text_end,
+
   // so this is merely to handle direct calls.
 
   // Align to be pixel perfect
@@ -23,11 +23,13 @@ void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVe
   if (y > clip_rect.w)
     return;
 
+  std::unique_ptr<char> char_buf(new char[strlen(text_begin) + 1]);
+  std::unique_ptr<ImU32> col_buf(new ImU32[strlen(text_begin) + 1]);
+
   const float scale = size / font->FontSize;
   const float line_height = font->FontSize * scale;
   const bool word_wrap_enabled = (wrap_width > 0.0f);
   const char* word_wrap_eol = NULL;
-
   // Fast-forward to first visible line
   const char* s = text_begin;
   if (y + line_height < clip_rect.y && !word_wrap_enabled)
@@ -36,6 +38,35 @@ void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVe
       s = s ? s + 1 : text_end;
       y += line_height;
     }
+
+  {
+    int index = 0;
+    int skipChars = 0;
+    const char* sLocal = s;
+    ImU32 temp_col = col;
+    while (sLocal < text_end) {
+      if (sLocal < text_end && ParseColor(sLocal, &temp_col, &skipChars)) {
+        sLocal += skipChars;
+      } else {
+        col_buf.get()[index] = temp_col;
+        char_buf.get()[index] = *sLocal;
+        ++index;
+        ++sLocal;
+      }
+    }
+    char_buf.get()[index] = '\0';
+  }
+
+  text_begin = char_buf.get();
+  text_end = char_buf.get() + strlen(text_begin);
+  s = text_begin;
+
+  const ImVec2 text_size = CalcTextSize(text_begin, text_end, false, wrap_width);
+  // Account of baseline offset
+  ImRect bb(pos, pos + text_size);
+  ItemSize(text_size);
+  if (!ItemAdd(bb, 0))
+    return;
 
   // For large text, scan for the last visible line in order to avoid over-reserving in the call to PrimReserve()
   // Note that very large horizontal line will still be affected by the issue (e.g. a one megabyte string buffer
@@ -63,36 +94,7 @@ void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVe
   ImDrawIdx* idx_write = draw_list->_IdxWritePtr;
   unsigned int vtx_current_idx = draw_list->_VtxCurrentIdx;
 
-  {
-    for (int i = 0; i < text_end - text_begin; i++) {
-      char_skip[i] = false;
-    }
-    int index = 0;
-    int skipChars = 0;
-    const char* sLocal = s;
-    ImU32 temp_col = col;
-    while (sLocal < text_end) {
-      if (sLocal < text_end - 4 && ParseColor(sLocal, &temp_col, &skipChars)) {
-        sLocal += skipChars;
-        for (int i = 0; i < skipChars; i++) {
-          char_skip[index + i] = true;
-        }
-        index += skipChars;
-      } else {
-        col_buf[index] = temp_col;
-        char_skip[index] = false;
-        ++index;
-        ++sLocal;
-      }
-    }
-  }
-
-  const char* s1 = s;
   while (s < text_end) {
-    if (char_skip[s - s1]) {
-      s++;
-      continue;
-    }
     if (word_wrap_enabled) {
       // Calculate how far we can render. Requires two passes on the string data but keeps the code simple and
       // not intrusive for what's essentially an uncommon feature.
@@ -193,7 +195,7 @@ void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVe
 
           // We are NOT calling PrimRectUV() here because non-inlined causes too much overhead in a debug
           // builds. Inlined here:
-          ImU32 temp_col = col_buf[s - text_begin - 1];
+          ImU32 temp_col = col_buf.get()[s - text_begin - 1];
           {
             idx_write[0] = (ImDrawIdx)(vtx_current_idx);
             idx_write[1] = (ImDrawIdx)(vtx_current_idx + 1);
@@ -393,16 +395,8 @@ void TextParsedUnformatted(const char* text, const char* text_end) {
     ItemAdd(bb, 0);
   } else {
     const float wrap_width = wrap_enabled ? CalcWrapWidthForPos(window->DC.CursorPos, wrap_pos_x) : 0.0f;
-    const ImVec2 text_size = CalcTextSize(text_begin, text_end, false, wrap_width);
-
-    // Account of baseline offset
-    ImRect bb(text_pos, text_pos + text_size);
-    ItemSize(text_size);
-    if (!ItemAdd(bb, 0))
-      return;
-
     // Render (we don't hide text after ## in this end-user function)
-    RenderParsedTextWrapped(bb.Min, text_begin, text_end, wrap_width);
+    RenderParsedTextWrapped(text_pos, text_begin, text_end, wrap_width);
   }
 }
 void TextParsedV(const char* fmt, va_list args) {

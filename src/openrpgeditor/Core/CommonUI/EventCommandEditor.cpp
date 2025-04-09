@@ -158,10 +158,11 @@ void EventCommandEditor::handleClipboardInteraction() const {
 void EventCommandEditor::setupTableHeader() {
   ImGui::TableSetupColumn("Step##command_selectable_column", ImGuiTableFlags_SizingFixedFit);
   ImGui::TableSetupColumn("##collapse", ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoBordersInBody);
-  ImGui::TableSetupColumn("Command Operation");
+  ImGui::TableSetupColumn("Command Operation", ImGuiTableFlags_SizingFixedFit);
   ImGui::TableSetupScrollFreeze(2, 1);
   ImGui::TableHeadersRow();
 }
+
 void EventCommandEditor::setupTableColors() {
   ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.37f, 0.37f, 0.37f, 0.43f));
   ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.37f, 0.37f, 0.37f, 0.78f));
@@ -220,14 +221,12 @@ void EventCommandEditor::draw() {
   {
     m_hasFocus = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_NoPopupHierarchy);
     ImGui::Text("Content:");
-    if (ImGui::BeginTable("##commonevent_code_contents", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                          ImVec2{0, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y})) {
+    ImGui::PushFont(App::APP->getMonoFont());
+    if (ImGui::BeginTable("##commonevent_code_contents", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY, ImGui::GetContentRegionAvail())) {
       setupTableColors();
       setupTableHeader();
-
-      const int totalPadding = static_cast<int>(std::floor(std::log10(m_commands->size())));
+      const int totalPadding = std::max(static_cast<int>(std::floor(std::log10(m_commands->size()))), 3);
       if (m_commands) {
-        ImGui::PushFont(App::APP->getMonoFont());
         for (int n = 0; n < m_commands->size(); n++) {
           if (!m_commands->at(n)) {
             continue;
@@ -246,7 +245,7 @@ void EventCommandEditor::draw() {
           ImGui::TableNextRow();
           if (ImGui::TableNextColumn()) {
             const int step = n + 1;
-            const int stepPadding = (totalPadding - static_cast<int>(std::floor(std::log10(step)))) + 1;
+            const int stepPadding = (totalPadding - static_cast<int>(std::floor(std::log10(step))));
             if (ImGui::SelectableWithBorder((std::string(stepPadding, ' ') + std::to_string(step)).c_str(), isSelected,
                                             ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick | ImGuiSelectableFlags_AllowOverlap,
                                             ImVec2(0, height))) {
@@ -325,8 +324,8 @@ void EventCommandEditor::draw() {
             ImGui::SetItemDefaultFocus();
           handleBlockCollapse(n);
         }
-        ImGui::PopFont();
       }
+      ImGui::PopFont();
       ImGui::PopStyleColor(5);
 
       if (ImGui::BeginPopupContextWindow()) {
@@ -350,6 +349,8 @@ void EventCommandEditor::draw() {
       }
 
       ImGui::EndTable();
+    } else {
+      ImGui::PopFont();
     }
     if (ImGui::IsKeyPressed((ImGuiKey_Delete)) && m_hasFocus) {
       if (m_commands->at(m_selectedCommand)->isParent()) {

@@ -185,7 +185,7 @@ void EventCommandEditor::handleBlockCollapse(int& n) const {
         }
         n++;
 
-        auto rep = next->stringRep(*Database::instance(), false);
+        auto rep = next->stringRep(*Database::instance(), true);
         if (next->code() != EventCode::Event_Dummy) {
           if (tooltipCmdCount < 5) {
             auto splitRep = splitString(rep, '\n');
@@ -206,7 +206,7 @@ void EventCommandEditor::handleBlockCollapse(int& n) const {
         next = m_commands->at(n + 1);
       }
       if (m_hoveringCommand == oldN && !tooltip.empty() && ImGui::BeginTooltip()) {
-        ImGui::Text("%s", std::accumulate(std::next(tooltip.begin()), tooltip.end(), tooltip[0], [](const std::string& a, const std::string& b) { return a + "\n" + b; }).c_str());
+        ImGui::TextParsed("%s", std::accumulate(std::next(tooltip.begin()), tooltip.end(), tooltip[0], [](const std::string& a, const std::string& b) { return a + "\n" + b; }).c_str());
         ImGui::EndTooltip();
       }
     }
@@ -219,7 +219,6 @@ void EventCommandEditor::draw() {
 
   ImGui::BeginChild("##event_command_editor");
   {
-    m_hasFocus = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_NoPopupHierarchy);
     ImGui::Text("Content:");
     ImGui::PushFont(App::APP->getMonoFont());
     if (ImGui::BeginTable("##commonevent_code_contents", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY, ImGui::GetContentRegionAvail())) {
@@ -227,6 +226,16 @@ void EventCommandEditor::draw() {
       setupTableHeader();
       const int totalPadding = std::max(static_cast<int>(std::floor(std::log10(m_commands->size()))), 3);
       if (m_commands) {
+        float maxWidth = 0.f;
+        // Unfortunately ImGui's table doesn't take into account all items, only the visible ones, we want to take into account all commands so the table doesn't jitter around as the user scrolls
+        // vertically, this is a bit expensive, but doesn't seem to greatly impact performance, if there is a better way in the future this should be removed/replaced
+        for (const auto& cmd : *m_commands) {
+          if (!cmd) {
+            continue;
+          }
+          maxWidth = std::max(maxWidth, ImGui::CalcItemSize(ImGui::CalcTextSize(cmd->stringRep(*Database::instance(), false).c_str()), 0.f, 0.f).x);
+        }
+
         for (int n = 0; n < m_commands->size(); n++) {
           if (!m_commands->at(n)) {
             continue;
@@ -316,6 +325,10 @@ void EventCommandEditor::draw() {
           if (ImGui::TableNextColumn()) {
             for (const auto& s : str) {
               const auto col = ImGui::GetStyleColorVec4(ImGuiCol_Text);
+              // Hack to keep scrollbar sizing consistent
+              const auto oldPos = ImGui::GetCursorPos();
+              ImGui::Dummy({maxWidth, 1.f});
+              ImGui::SetCursorPos(oldPos);
               ImGui::TextParsed(std::format("&push-color={},{},{};{}&pop-color;", static_cast<uint8_t>(col.x * 255), static_cast<uint8_t>(col.y * 255), static_cast<uint8_t>(col.z * 255), s).c_str());
             }
           }

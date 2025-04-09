@@ -6,7 +6,6 @@
 #include <memory>
 
 namespace ImGui {
-static const int kMaxChar = 10000;
 
 void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVec2 pos, ImU32 col, const ImVec4& clip_rect, const char* text_begin, const char* text_end, float wrap_width = 0.0f,
                            bool cpu_fine_clip = false) {

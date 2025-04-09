@@ -19,3 +19,17 @@ struct ProjectConfig {
 private:
   static ProjectConfig* m_instance;
 };
+
+struct TransientConfig {
+  TransientConfig();
+  bool load(std::string_view path);
+  bool loadFromJson(const nlohmann::ordered_json& parser);
+  void serialize(std::string_view path);
+  nlohmann::ordered_json serializeToJson();
+  std::string imguiState;
+
+  [[nodiscard]] static TransientConfig* instance() { return m_instance; }
+
+private:
+  static TransientConfig* m_instance;
+};

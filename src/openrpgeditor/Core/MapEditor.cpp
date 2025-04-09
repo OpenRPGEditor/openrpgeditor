@@ -636,7 +636,7 @@ void MapEditor::draw() {
     });
   }
 
-  if (ImGui::Begin(trNOOP("Map Editor"), nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoTitleBar)) {
+  if (ImGui::Begin((tr("Map Editor") + "###mapeditor").c_str(), nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoTitleBar)) {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - (ImGui::CalcTextSize("S").y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)), 0,
                       ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
     // We don't want to align the scroll position while the cursor is in keyboard mode otherwise the view won't track the tile cursor
@@ -790,17 +790,19 @@ void MapEditor::draw() {
         if (!event /*|| page->priorityType != EventPriority::Same_as_characters*/) {
           continue;
         }
-        const auto evX = (event->x() * tileSize()) * m_mapScale;
-        const auto evY = (event->y() * tileSize()) * m_mapScale;
+        const auto evX = (event->renderer()->x() * tileSize()) * m_mapScale;
+        const auto evY = (event->renderer()->y() * tileSize()) * m_mapScale;
         const auto tileSize = m_tileCursor.tileSize() * m_mapScale;
         if (m_selectedEvent == event && !m_hasScrolled) {
           ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + (evX - (win->ContentRegionRect.Max.x / 2)));
           ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + (evY - (win->ContentRegionRect.Max.y / 2)));
           m_hasScrolled = true;
         }
+        const auto min = win->ContentRegionRect.Min + ImVec2{static_cast<float>(evX), static_cast<float>(evY)};
+        const auto max = min + ImVec2{tileSize, tileSize};
         const bool isHovered = event->x() == tileCellX() && event->y() == tileCellY();
-        const bool updateOnly = (win->ContentRegionRect.Min.x + evX < win->ClipRect.Min.x - tileSize || win->ContentRegionRect.Min.x + evX > win->ClipRect.Max.x + tileSize) ||
-                                (win->ContentRegionRect.Min.y + evY < win->ClipRect.Min.y - tileSize || win->ContentRegionRect.Min.y + evY > win->ClipRect.Max.y + tileSize);
+        const bool updateOnly =
+            !((min.x > win->ClipRect.Min.x - tileSize && max.x < win->ClipRect.Max.x + tileSize) || (min.y > win->ClipRect.Min.y - tileSize && max.y < win->ClipRect.Max.y + tileSize));
         if (auto* renderer = static_cast<MapEvent*>(event->renderer())) {
           renderer->setMapEditor(this);
           renderer->draw(m_mapScale, isHovered, m_selectedEvent == event, m_parent->editMode() != EditMode::Event, updateOnly);
@@ -874,9 +876,9 @@ void MapEditor::draw() {
   ImGui::End();
 }
 
-double MapEditor::adjustX(double x) { return x + ((ImGui::GetCurrentWindow()->ContentRegionRect.Min.x / tileSize()) * m_mapScale); }
+double MapEditor::adjustX(double x) { return x + ((ImGui::GetCurrentWindow()->ContentRegionRect.Min.x / (tileSize() * m_mapScale))); }
 
-double MapEditor::adjustY(double y) { return y + ((ImGui::GetCurrentWindow()->ContentRegionRect.Min.y / tileSize()) * m_mapScale); }
+double MapEditor::adjustY(double y) { return y + ((ImGui::GetCurrentWindow()->ContentRegionRect.Min.y / (tileSize() * m_mapScale))); }
 
 double MapEditor::roundX(const double x) { return isLoopHorizontally() ? Math::mod(x, map()->width()) : x; }
 double MapEditor::roundY(const double y) { return isLoopVertically() ? Math::mod(y, map()->height()) : y; }

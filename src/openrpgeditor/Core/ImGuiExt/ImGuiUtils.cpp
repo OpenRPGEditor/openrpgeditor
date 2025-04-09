@@ -349,4 +349,99 @@ int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const b
 ImVec2 GetDPIScaledSize(const ImVec2& size) { return size * GetCurrentContext()->CurrentDpiScale; }
 
 float GetDPIScaledValue(const float value) { return value * GetCurrentContext()->CurrentDpiScale; }
+
+static bool IsRootOfOpenMenuSet() {
+  ImGuiContext& g = *GImGui;
+  ImGuiWindow* window = g.CurrentWindow;
+  if ((g.OpenPopupStack.Size <= g.BeginPopupStack.Size) || (window->Flags & ImGuiWindowFlags_ChildMenu))
+    return false;
+
+  // Initially we used 'upper_popup->OpenParentId == window->IDStack.back()' to differentiate multiple menu sets from each others
+  // (e.g. inside menu bar vs loose menu items) based on parent ID.
+  // This would however prevent the use of e.g. PushID() user code submitting menus.
+  // Previously this worked between popup and a first child menu because the first child menu always had the _ChildWindow flag,
+  // making hovering on parent popup possible while first child menu was focused - but this was generally a bug with other side effects.
+  // Instead we don't treat Popup specifically (in order to consistently support menu features in them), maybe the first child menu of a Popup
+  // doesn't have the _ChildWindow flag, and we rely on this IsRootOfOpenMenuSet() check to allow hovering between root window/popup and first child menu.
+  // In the end, lack of ID check made it so we could no longer differentiate between separate menu sets. To compensate for that, we at least check parent window nav layer.
+  // This fixes the most common case of menu opening on hover when moving between window content and menu bar. Multiple different menu sets in same nav layer would still
+  // open on hover, but that should be a lesser problem, because if such menus are close in proximity in window content then it won't feel weird and if they are far apart
+  // it likely won't be a problem anyone runs into.
+  const ImGuiPopupData* upper_popup = &g.OpenPopupStack[g.BeginPopupStack.Size];
+  if (window->DC.NavLayerCurrent != upper_popup->ParentNavLayer)
+    return false;
+  return upper_popup->Window && (upper_popup->Window->Flags & ImGuiWindowFlags_ChildMenu) && ImGui::IsWindowChildOf(upper_popup->Window, window, true, false);
+}
+
+bool MenuItemNoCheck(const char* label, const char* icon, const char* shortcut, bool selected, bool enabled) {
+  ImGuiWindow* window = GetCurrentWindow();
+  if (window->SkipItems)
+    return false;
+
+  ImGuiContext& g = *GImGui;
+  ImGuiStyle& style = g.Style;
+  ImVec2 pos = window->DC.CursorPos;
+  ImVec2 label_size = CalcTextSize(label, NULL, true);
+
+  // See BeginMenuEx() for comments about this.
+  const bool menuset_is_open = IsRootOfOpenMenuSet();
+  if (menuset_is_open)
+    PushItemFlag(ImGuiItemFlags_NoWindowHoverableCheck, true);
+
+  // We've been using the equivalent of ImGuiSelectableFlags_SetNavIdOnHover on all Selectable() since early Nav system days (commit 43ee5d73),
+  // but I am unsure whether this should be kept at all. For now moved it to be an opt-in feature used by menus only.
+  bool pressed;
+  PushID(label);
+  if (!enabled)
+    BeginDisabled();
+
+  // We use ImGuiSelectableFlags_NoSetKeyOwner to allow down on one menu item, move, up on another.
+  const ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SelectOnRelease | ImGuiSelectableFlags_NoSetKeyOwner | ImGuiSelectableFlags_SetNavIdOnHover;
+  const ImGuiMenuColumns* offsets = &window->DC.MenuColumns;
+  if (window->DC.LayoutType == ImGuiLayoutType_Horizontal) {
+    // Mimic the exact layout spacing of BeginMenu() to allow MenuItem() inside a menu bar, which is a little misleading but may be useful
+    // Note that in this situation: we don't render the shortcut, we render a highlight instead of the selected tick mark.
+    float w = label_size.x;
+    window->DC.CursorPos.x += IM_TRUNC(style.ItemSpacing.x * 0.5f);
+    ImVec2 text_pos(window->DC.CursorPos.x + offsets->OffsetLabel, window->DC.CursorPos.y + window->DC.CurrLineTextBaseOffset);
+    PushStyleVarX(ImGuiStyleVar_ItemSpacing, style.ItemSpacing.x * 2.0f);
+    pressed = Selectable("", selected, selectable_flags, ImVec2(w, 0.0f));
+    PopStyleVar();
+    if (g.LastItemData.StatusFlags & ImGuiItemStatusFlags_Visible)
+      RenderText(text_pos, label);
+    window->DC.CursorPos.x +=
+        IM_TRUNC(style.ItemSpacing.x *
+                 (-1.0f + 0.5f)); // -1 spacing to compensate the spacing added when Selectable() did a SameLine(). It would also work to call SameLine() ourselves after the PopStyleVar().
+  } else {
+    // Menu item inside a vertical menu
+    // (In a typical menu window where all items are BeginMenu() or MenuItem() calls, extra_w will always be 0.0f.
+    //  Only when they are other items sticking out we're going to add spacing, yet only register minimum width into the layout system.
+    float icon_w = (icon && icon[0]) ? CalcTextSize(icon, NULL).x : 0.0f;
+    float shortcut_w = (shortcut && shortcut[0]) ? CalcTextSize(shortcut, NULL).x : 0.0f;
+    float min_w = window->DC.MenuColumns.DeclColumns(icon_w, label_size.x, 0.f, 0.f); // Feedback for next frame
+    float stretch_w = ImMax(0.0f, GetContentRegionAvail().x - min_w);
+    window->DC.MenuColumns.OffsetMark = window->DC.MenuColumns.OffsetShortcut;
+    pressed = Selectable("", false, selectable_flags | ImGuiSelectableFlags_SpanAvailWidth, ImVec2(min_w, label_size.y));
+    if (g.LastItemData.StatusFlags & ImGuiItemStatusFlags_Visible) {
+      RenderText(pos + ImVec2(offsets->OffsetLabel, 0.0f), label);
+      if (icon_w > 0.0f)
+        RenderText(pos + ImVec2(offsets->OffsetIcon, 0.0f), icon);
+      if (shortcut_w > 0.0f) {
+        // PushStyleColor(ImGuiCol_Text, style.Colors[ImGuiCol_TextDisabled]);
+        LogSetNextTextDecoration("(", ")");
+        RenderText(pos + ImVec2(offsets->OffsetShortcut + stretch_w, 0.0f), shortcut, NULL, false);
+        // PopStyleColor();
+      }
+    }
+  }
+  IMGUI_TEST_ENGINE_ITEM_INFO(g.LastItemData.ID, label, g.LastItemData.StatusFlags | ImGuiItemStatusFlags_Checkable | (selected ? ImGuiItemStatusFlags_Checked : 0));
+  if (!enabled)
+    EndDisabled();
+  PopID();
+  if (menuset_is_open)
+    PopItemFlag();
+
+  return pressed;
+}
+
 } // namespace ImGui

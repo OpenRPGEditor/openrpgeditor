@@ -54,11 +54,11 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
       if (isStopping()) {
         updateStop();
       }
-      /*
+
       if (isJumping()) {
         updateJump();
       }
-      */
+
       if (isMoving()) {
         updateMove();
       }
@@ -321,23 +321,6 @@ void MapEvent::moveTowardCharacter(const double x, const double y) {
   const double sy = deltaYFrom(y);
 
   if (std::abs(sx) > std::abs(sy)) {
-    moveStraight(sx > 0 ? Direction::Right : Direction::Left);
-    if (!isMovementSucceeded() && sy != 0) {
-      moveStraight(sy > 0 ? Direction::Down : Direction::Up);
-    }
-  } else if (sy != 0) {
-    moveStraight(sy > 0 ? Direction::Down : Direction::Up);
-    if (!isMovementSucceeded() && sx != 0) {
-      moveStraight(sx > 0 ? Direction::Right : Direction::Left);
-    }
-  }
-}
-
-void MapEvent::moveAwayFromCharacter(const double x, const double y) {
-  const double sx = deltaXFrom(x);
-  const double sy = deltaYFrom(y);
-
-  if (std::abs(sx) > std::abs(sy)) {
     moveStraight(sx > 0 ? Direction::Left : Direction::Right);
     if (!isMovementSucceeded() && sy != 0) {
       moveStraight(sy > 0 ? Direction::Up : Direction::Down);
@@ -350,7 +333,27 @@ void MapEvent::moveAwayFromCharacter(const double x, const double y) {
   }
 }
 
-void MapEvent::moveTowardPlayer() { moveTowardCharacter(m_mapEditor->tileCellX(), m_mapEditor->tileCellY()); }
+void MapEvent::moveAwayFromCharacter(const double x, const double y) {
+  const double sx = deltaXFrom(x);
+  const double sy = deltaYFrom(y);
+
+  if (std::abs(sx) > std::abs(sy)) {
+    moveStraight(sx > 0 ? Direction::Right : Direction::Left);
+    if (!isMovementSucceeded() && sy != 0) {
+      moveStraight(sy > 0 ? Direction::Down : Direction::Up);
+    }
+  } else if (sy != 0) {
+    moveStraight(sy > 0 ? Direction::Down : Direction::Up);
+    if (!isMovementSucceeded() && sx != 0) {
+      moveStraight(sx > 0 ? Direction::Right : Direction::Left);
+    }
+  }
+}
+
+void MapEvent::moveTowardPlayer() {
+  printf("%s approaching player\n", m_event->name().c_str());
+  moveTowardCharacter(m_mapEditor->tileCellX(), m_mapEditor->tileCellY());
+}
 
 void MapEvent::moveAwayFromPlayer() { moveAwayFromCharacter(m_mapEditor->tileCellX(), m_mapEditor->tileCellY()); }
 
@@ -497,7 +500,16 @@ bool MapEvent::canPassDiagonally(const double x, const double y, const Direction
 
   return false;
 }
-
+void MapEvent::updateJump() {
+  m_jumpCount--;
+  m_realX = (m_realX * m_jumpCount + m_x) / (m_jumpCount + 1.0);
+  m_realY = (m_realY * m_jumpCount + m_y) / (m_jumpCount + 1.0);
+  // refreshBushDepth();
+  if (m_jumpCount == 0) {
+    m_realX = m_x = m_mapEditor->roundX(m_x);
+    m_realY = m_y = m_mapEditor->roundY(m_y);
+  }
+}
 void MapEvent::updateMove() {
   if (m_event->id() == 21) {
     // printf("BEFORE %s %i %.03f %.03f %.03f %.03f %s\n", m_event->name().c_str(), m_event->id(), m_x, m_y, m_realX, m_realY, magic_enum::enum_name(m_direction).data());

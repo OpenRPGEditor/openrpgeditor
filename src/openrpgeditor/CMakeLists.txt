@@ -463,6 +463,14 @@ add_library(
         Core/CommonUI/Directory.hpp
         Core/CommonUI/FacePicker.cpp
         Core/CommonUI/FacePicker.hpp
+        Core/Script/ImGui/ImGuiMath.cpp
+        Core/Script/ImGui/ImGuiMath.hpp
+        Core/Script/ImGui/ImGuiCoreOperations.cpp
+        Core/Script/ImGui/ImGuiCoreOperations.hpp
+        Core/LCF_Importer/LCF_Importer.cpp
+        Core/LCF_Importer/LCF_Importer.hpp
+        Core/LCF_Importer/LCF_Mapping.cpp
+        Core/LCF_Importer/LCF_Mapping.hpp
 )
 
 target_include_directories(
@@ -473,6 +481,7 @@ target_include_directories(
         ${athena_SOURCE_DIR}/include
         ${cpuid_SOURCE_DIR}
         ${CMAKE_SOURCE_DIR}/extern/angelscript/angelscript/include
+        ${CMAKE_SOURCE_DIR}/extern/inih
         ${CMAKE_SOURCE_DIR}/extern/angelscript/add_on
         "${CMAKE_SOURCE_DIR}/extern/nano-signal-slot"
 )
@@ -497,6 +506,7 @@ target_link_libraries(
         angelscript_addons
         athena-core
         lcf
+        inih
 )
 target_compile_definitions(orecore PUBLIC GETTEXT_DOMAIN="${GETTEXT_DOMAIN}" GETTEXT_OUTPUT_DIR="${GETTEXT_OUTPUT_DIR}")
 
@@ -514,15 +524,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 endif ()
 
 add_executable(${NAME} WIN32 MACOSX_BUNDLE App/Main.cpp App/ProjectInfo.cpp
-        App/ProjectInfo.hpp
-        Core/Script/ImGui/ImGuiMath.cpp
-        Core/Script/ImGui/ImGuiMath.hpp
-        Core/Script/ImGui/ImGuiCoreOperations.cpp
-        Core/Script/ImGui/ImGuiCoreOperations.hpp
-        Core/LCF_Importer/LCF_Importer.cpp
-        Core/LCF_Importer/LCF_Importer.hpp
-        Core/LCF_Importer/LCF_Mapping.cpp
-        Core/LCF_Importer/LCF_Mapping.hpp)
+        App/ProjectInfo.hpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(${NAME} PRIVATE /utf-8)
@@ -537,6 +539,7 @@ target_include_directories(
         PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
         ${SFML_SOURCE_DIR}/include/SFML
         ${cpuid_SOURCE_DIR}
+        ${CMAKE_SOURCE_DIR}/extern/inih
         ${CMAKE_SOURCE_DIR}/extern/angelscript/angelscript/include
         ${CMAKE_SOURCE_DIR}/extern/angelscript/add_on
         "${CMAKE_SOURCE_DIR}/extern/nano-signal-slot")
@@ -561,6 +564,7 @@ target_link_libraries(
         angelscript
         angelscript_addons
         athena-core
+        inih
 )
 target_compile_definitions(${NAME} PUBLIC GETTEXT_DOMAIN="${GETTEXT_DOMAIN}" GETTEXT_OUTPUT_DIR="${GETTEXT_OUTPUT_DIR}")
 

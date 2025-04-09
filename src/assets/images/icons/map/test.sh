@@ -15,9 +15,9 @@ function divide_floats() {
   echo "scale=2; $1 / $2" | bc
 }
 
-baseWidth=16
-baseHeight=16
-baseDPI=96
+baseWidth=8
+baseHeight=8
+baseDPI=48
 
 for i in {1..8} ;
 do

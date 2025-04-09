@@ -11,6 +11,8 @@
 #define ICON_MIN_FA 0xe005
 #define ICON_MAX_16_FA 0xf8ff
 #define ICON_MAX_FA 0xf8ff
+#define ICON_BLANK 0xf8fe
+#define ICON_FA_BLANK "\xEF\xA3\xBE"
 
 #define ICON_FA_0 "0"                                                 // U+0030
 #define ICON_FA_1 "1"                                                 // U+0031

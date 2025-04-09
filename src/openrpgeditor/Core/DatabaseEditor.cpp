@@ -1,7 +1,7 @@
 #include "Core/DatabaseEditor.hpp"
 
-#include "ImGuiExt/ImGuiUtils.hpp"
 #include "imgui.h"
+#include "ImGuiExt/ImGuiUtils.hpp"
 
 void DatabaseEditor::draw() {
   if (isReady() && !onReady.is_empty()) {
@@ -21,8 +21,7 @@ void DatabaseEditor::draw() {
   ImGui::SetNextWindowSizeConstraints(ImVec2{800, 720}, ImVec2{FLT_MAX, FLT_MAX});
   ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing);
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, {0.5, 0.5});
-  ImGui::PushID("##orpg_database_editor");
-  if (ImGui::Begin("Database", &m_isOpen)) {
+  if (ImGui::Begin(std::format("{}###databaseeditor", trNOOP("Database")).c_str(), &m_isOpen)) {
     ImGui::SetNextItemWidth(100.f);
     const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQR").x;
     ImGui::BeginChild("##orpg_database_editor_tab_buttons", ImVec2{calc + ImGui::GetStyle().ItemSpacing.x, 0}, 0, ImGuiWindowFlags_NoBackground);
@@ -127,7 +126,6 @@ void DatabaseEditor::draw() {
   }
 
   ImGui::End();
-  ImGui::PopID();
 }
 
 const IconSheet* DatabaseEditor::getIconSheet() {

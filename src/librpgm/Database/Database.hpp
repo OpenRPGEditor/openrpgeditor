@@ -59,10 +59,14 @@ struct Database {
   std::string projectFilePath;
   std::string basePath;
   ProjectConfig config;
+  TransientConfig transient;
 
   void serializeProject();
 
-  void serializeSettings() { config.serialize(basePath + "/editor/config.json"); }
+  void serializeSettings() {
+    config.serialize(basePath + "/editor/config.json");
+    transient.serialize(basePath + "/.ore/transient.json");
+  }
 
   static std::string framesText(const int frames) { return std::to_string(frames) + " " + (frames == 0 || frames > 1 ? trNOOP("frames") : trNOOP("frame")); }
 

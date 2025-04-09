@@ -30,6 +30,8 @@ Database::Database(const std::string_view _projectBasePath, const std::string_vi
 
 void Database::load() {
   config.load(basePath + "editor/config.json");
+  transient.load(basePath + ".ore/transient.json");
+
   RPGM_INFO("Queue System definitions for load...");
   DeserializationQueue::instance().enqueue(std::make_shared<SystemSerializer>("data/System.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
     system = std::dynamic_pointer_cast<SystemSerializer>(serializer)->data();

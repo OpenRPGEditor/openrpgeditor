@@ -35,6 +35,7 @@ add_subdirectory(vendor)
 add_subdirectory(src)
 add_subdirectory(extern/angelscript/angelscript/projects/cmake)
 add_subdirectory(extern/angelscript_addon_cmake)
+add_subdirectory(extern/inih)
 add_subdirectory(i18n)
 
 target_link_libraries(librpgm PRIVATE

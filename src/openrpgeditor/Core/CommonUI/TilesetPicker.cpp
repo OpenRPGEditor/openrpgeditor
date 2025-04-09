@@ -41,7 +41,7 @@ void TilesetPicker::draw() {
 
   m_palette.paintTiles();
 
-  if (ImGui::Begin("Tilesets")) {
+  if (ImGui::Begin(std::format("{}###tilesets", trNOOP("Tilesets")).c_str())) {
     const auto calc = ImGui::CalcTextSize("A");
     ImGui::BeginChild("##tileset", {0, ImGui::GetContentRegionAvail().y - (calc.y + (ImGui::GetStyle().ItemSpacing.y * 3) + ImGui::GetStyle().FramePadding.y)}, 0,
                       ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
@@ -86,6 +86,7 @@ void TilesetPicker::draw() {
       }
     }
     ImGui::EndChild();
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {1.f, 1.f});
     ImGui::BeginHorizontal("##tileset_buttons", ImGui::GetContentRegionAvail());
     {
       ImGui::Spring(0.5f);
@@ -98,6 +99,7 @@ void TilesetPicker::draw() {
       ImGui::Spring(0.5f);
     }
     ImGui::EndHorizontal();
+    ImGui::PopStyleVar();
   }
 
   ImGui::End();

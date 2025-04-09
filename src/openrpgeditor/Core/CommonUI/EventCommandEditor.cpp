@@ -157,7 +157,7 @@ void EventCommandEditor::handleClipboardInteraction() const {
 void EventCommandEditor::setupTableHeader() {
   ImGui::TableSetupColumn("Step##command_selectable_column", ImGuiTableFlags_SizingFixedFit);
   ImGui::TableSetupColumn("##collapse", ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoBordersInBody);
-  ImGui::TableSetupColumn("Command Operation", ImGuiTableFlags_SizingFixedFit);
+  ImGui::TableSetupColumn("Command Operation");
   ImGui::TableSetupScrollFreeze(2, 1);
   ImGui::TableHeadersRow();
 }

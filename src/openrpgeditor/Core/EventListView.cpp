@@ -10,7 +10,7 @@
 
 void EventListView::draw() {
   char eventNameBuf[4096]{};
-  if (ImGui::Begin("Events")) {
+  if (ImGui::Begin(std::format("{}###events", trNOOP("Events")).c_str())) {
     Map* map = m_parent->currentMap();
     if (map) {
       ImGui::BeginChild("##event_list");

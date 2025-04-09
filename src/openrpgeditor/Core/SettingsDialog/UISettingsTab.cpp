@@ -2,12 +2,12 @@
 #include "Core/Application.hpp"
 #include "Core/Settings.hpp"
 #include <imgui.h>
-static inline float roundToNearestQuarter(float num) { return static_cast<float>(static_cast<int>(num * 4)) / 4; }
 
 void UISettingsTab::draw() {
   if (ImGui::BeginTabItem("UI")) {
     ImGui::Text("Font Size");
-    ImGui::SliderInt("##ui_font_size", &Settings::instance()->fontSize, 8, 48);
+    ImGui::SliderInt("##ui_font_size", &Settings::instance()->fontSize, 16, 48);
+    Settings::instance()->fontSize = nextMultipleOf8(Settings::instance()->fontSize);
     if (ImGui::IsItemDeactivatedAfterEdit()) {
       App::APP->requestFontUpdate();
       m_fontSizeChanged = true;
@@ -15,7 +15,8 @@ void UISettingsTab::draw() {
     }
     ImGui::PushFont(App::APP->getMonoFont());
     ImGui::Text("Monospace Font Size");
-    ImGui::SliderInt("##ui_mono_font_size", &Settings::instance()->monoFontSize, 8, 48);
+    ImGui::SliderInt("##ui_mono_font_size", &Settings::instance()->monoFontSize, 16, 48);
+    Settings::instance()->monoFontSize = nextMultipleOf8(Settings::instance()->monoFontSize);
     if (ImGui::IsItemDeactivatedAfterEdit()) {
       App::APP->requestFontUpdate();
       m_fontSizeChanged = true;

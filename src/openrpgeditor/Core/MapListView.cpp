@@ -116,10 +116,14 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
       isStyle = true;
     }
   }
+  std::string nameStr = in.id() == 0 ? Database::instance()->system.gameTitle() : in.name();
+  if (nameStr.empty()) {
+    nameStr = in.name();
+  }
   const bool open = ImGui::TreeNodeEx(id.c_str(),
                                       (in.expanded() ? ImGuiTreeNodeFlags_DefaultOpen : 0) | (in.children().empty() ? ImGuiTreeNodeFlags_Leaf : 0) |
                                           (m_selectedMapId == in.id() ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick,
-                                      "%s", in.name().c_str());
+                                      "%s", nameStr.c_str());
   if (isStyle) {
     ImGui::PopStyleColor();
   }
@@ -193,7 +197,7 @@ void recursivePrintOrdering(const MapInfo& in) {
 #endif
 
 void MapListView::draw() {
-  if (ImGui::Begin("Maps", nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
+  if (ImGui::Begin((tr("Maps") + "###maps").c_str(), nullptr, ImGuiWindowFlags_HorizontalScrollbar)) {
     if (ImGui::Checkbox(trNOOP("Display as list"), &m_listMode)) {
       m_needsScroll = true;
     }

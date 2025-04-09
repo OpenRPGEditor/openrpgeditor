@@ -19,5 +19,5 @@ ImVec2 GetDPIScaledSize(const ImVec2& size);
 inline ImVec2 GetDPIScaledSize(const float w, const float h) { return GetDPIScaledSize(ImVec2(w, h)); }
 
 float GetDPIScaledValue(float value);
-
+bool MenuItemNoCheck(const char* label, const char* icon, const char* shortcut = NULL, bool selected = false, bool enabled = true);
 } // namespace ImGui

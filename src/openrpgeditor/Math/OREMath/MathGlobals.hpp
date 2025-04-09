@@ -58,3 +58,16 @@ constexpr int alignValue(int value, const int size) {
 
   return value + size - remainder;
 }
+
+inline uint32_t nextPowerOfTwo(const uint32_t n) {
+  if (n == 0) {
+    return 1;
+  }
+  if ((n & (n - 1)) == 0) {
+    return n;
+  }
+
+  return std::pow(2, std::ceil(std::log2(n)));
+}
+
+static constexpr int nextMultipleOf8(const int num) { return (num + 7) & ~7; }

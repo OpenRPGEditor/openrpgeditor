@@ -28,7 +28,7 @@ class TestJSON {
     TestJSON() {
     }
     TestJSON(const json&in j) {
-        m_child = j["child"];
+        m_child = j["child"] ;
         m_test = double(j["test"]);
         m_isOpen = bool(j["isOpen"]);
         json testArray = j["testArray"];
@@ -59,13 +59,14 @@ class TestJSON {
 }
 
 void initialize() {
-    print(LogLevel::Info, "Initialize");
-    json@ j = jsonParseFile("test.json");
+    return;
+    // print(LogLevel::Info, "Initialize");
+    // json@ j = jsonParseFile("test.json");
 
-    TestJSON test = j is null ? TestJSON() : j;
-    json@ js = test;
-    print(LogLevel::Info, "\n" + js.dump(4));
-    jsonWriteFile(js, "test.json");
+    // TestJSON test = j is null ? TestJSON() : j;
+    // json@ js = test;
+    // print(LogLevel::Info, "\n" + js.dump(4));
+    // jsonWriteFile(js, "test.json");
 }
 
 bool didDraw = false;

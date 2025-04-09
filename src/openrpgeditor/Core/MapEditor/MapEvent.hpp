@@ -118,6 +118,7 @@ public:
     m_waitCount = 0;
   }
 
+  void updateJump();
   void updateMoveRoute() {
     if (m_waitCount > 0) {
       m_waitCount--;
@@ -210,9 +211,8 @@ protected:
 
   int moveFrequency() const { return m_moveFrequency; }
 
-  bool isStopping() const {
-    return !isMoving(); // && !isJumping();
-  }
+  bool isJumping() const { return m_jumpCount > 0; }
+  bool isStopping() const { return !isMoving() && !isJumping(); }
 
   void updateStop() {
     m_stopCount++;

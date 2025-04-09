@@ -6,13 +6,13 @@
 #include <random>
 
 namespace Math {
-static auto gen = std::mt19937(std::time(nullptr) & 0xFFFFFFFF);
+static auto gen = std::mt19937(std::time(nullptr) & 0x7FFFFFFF);
 static bool use2k = false;
 
 void use2kRandom(bool use) { use2k = use; }
 
 double random() {
-  auto ret = randomInt(0xFFFFFFFF) / static_cast<double>(0xFFFFFFFF);
+  auto ret = randomInt(0x7FFFFFFF) / static_cast<double>(0x7FFFFFFF);
   return ret;
 }
 
@@ -22,7 +22,7 @@ uint32_t randomInt(const uint32_t max) {
   }
 
   if (max == 0xFFFFFFFF) {
-    return gen();
+    return gen() & 0x7FFFFFFF;
   }
 
   uint32_t rem = -max % max;

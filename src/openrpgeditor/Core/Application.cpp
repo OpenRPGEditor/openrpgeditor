@@ -22,6 +22,7 @@
 
 #include <backends/imgui_impl_sdl3.h>
 #include <backends/imgui_impl_sdlrenderer3.h>
+#include <IconsFontAwesome6.h>
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <implot.h>
@@ -201,20 +202,28 @@ void Application::updateFonts() {
   config.RasterizerDensity = scale;
   io.Fonts->Clear();
   config.MergeMode = false;
-  config.FontBuilderFlags |= ImGuiFreeTypeBuilderFlags_LoadColor;
   m_mainFont = io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, &config, ranges.Data);
+  io.Fonts->Build();
   config.MergeMode = true;
   io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), font_size, &config, ranges.Data);
+  io.Fonts->Build();
   io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), font_size, &config, ranges.Data);
   io.Fonts->Build();
+  config.GlyphMinAdvanceX = font_size;
+  io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), font_size, &config, ranges.Data);
+  io.Fonts->AddCustomRectFontGlyph(m_mainFont, ICON_BLANK, font_size, font_size, font_size);
+  io.Fonts->Build();
 
-  config.MergeMode = false;
+  config = ImFontConfig();
   config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_Bold;
   m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_mono.c_str(), mono_font_size, &config, ranges.Data);
+  io.Fonts->Build();
   config.MergeMode = true;
   io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), mono_font_size, &config, ranges.Data);
+  io.Fonts->Build();
+  config.GlyphMinAdvanceX = mono_font_size;
   io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), mono_font_size, &config, ranges.Data);
+  io.Fonts->AddCustomRectFontGlyph(m_monoFont, ICON_BLANK, mono_font_size, mono_font_size, mono_font_size);
   io.Fonts->Build();
   io.FontGlobalScale = 1.f / scale;
 
@@ -271,6 +280,7 @@ ExitStatus Application::run() {
     m_firstBootWizard->addPage(std::make_shared<ProjectLocationPage>());
   }
 
+  SDL_ShowWindow(m_window->getNativeWindow());
   while (true) {
     EditorPluginManager::instance()->initializeAllPlugins();
     if (m_fontUpdateRequested && m_fontUpdateDelay <= 0) {
@@ -337,7 +347,6 @@ ExitStatus Application::run() {
     // Rendering
     ImGui::Render();
 
-    ImGui::EndFrame();
     ImGui::UpdatePlatformWindows();
 
     SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 28, 38, 43, 255);
@@ -379,9 +388,12 @@ void Application::onEvent(const SDL_WindowEvent& event) {
   }
   case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
   case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED: {
-    requestFontUpdate();
-    updateScale();
-    // TODO: We should probably handle this
+    const auto scale = SDL_GetWindowDisplayScale(m_window->getNativeWindow());
+    const auto pixelDensity = SDL_GetWindowPixelDensity(m_window->getNativeWindow());
+    if (ImGui::GetWindowDpiScale() != scale && ImGui::GetWindowDpiScale() != pixelDensity) {
+      requestFontUpdate();
+      updateScale();
+    }
     break;
   }
   case SDL_EVENT_WINDOW_MAXIMIZED: {

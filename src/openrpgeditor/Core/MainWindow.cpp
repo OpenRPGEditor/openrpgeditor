@@ -94,6 +94,7 @@ bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
     return false;
   }
   close();
+
   std::string version;
   std::ifstream file(filePath.data());
   std::getline(file, version);
@@ -138,10 +139,20 @@ bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
   m_database->localesLoaded().connect<&MainWindow::onLocalesLoaded>(this);
   m_database->load();
 
+  /* Restore the user's stored session */
+  if (!m_database->transient.imguiState.empty()) {
+    ImGui::LoadIniSettingsFromMemory(m_database->transient.imguiState.c_str(), m_database->transient.imguiState.length());
+  }
+
   return true;
 }
 
-void MainWindow::save() { m_database->serializeProject(); }
+void MainWindow::save() {
+  size_t len = 0;
+  const auto state = ImGui::SaveIniSettingsToMemory(&len);
+  m_database->transient.imguiState = std::string(state, len);
+  m_database->serializeProject();
+}
 
 bool MainWindow::close(bool promptSave) {
   if (promptSave) {
@@ -170,13 +181,15 @@ bool MainWindow::close(bool promptSave) {
 
   App::APP->getWindow()->setTitle(kApplicationTitle);
 
+  ImGui::ClearIniSettings();
+  ImGui::LoadIniSettingsFromMemory(Settings::instance()->imguiState.c_str(), Settings::instance()->imguiState.length());
   return true;
 }
 
 void MainWindow::setupDocking() {
   ImGuiViewport* viewport = ImGui::GetMainViewport();
-  ImGui::SetNextWindowPos(viewport->Pos + ImVec2(0, m_toolbarSize));
-  ImGui::SetNextWindowSize(viewport->Size - ImVec2(0, m_toolbarSize));
+  ImGui::SetNextWindowPos(viewport->Pos + ImVec2(0, m_menuBarHeight + m_toolbarSize));
+  ImGui::SetNextWindowSize(viewport->Size - ImVec2(0, m_menuBarHeight + m_toolbarSize));
   ImGui::SetNextWindowViewport(viewport->ID);
   ImGuiWindowFlags window_flags = 0 | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
                                   ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
@@ -184,7 +197,7 @@ void MainWindow::setupDocking() {
   ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
   ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
   ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-  ImGui::Begin("Master DockSpace", nullptr, window_flags);
+  ImGui::Begin("MasterDockSpace", nullptr, window_flags);
   ImGuiID mainWindowGroup = ImGui::GetID("MainWindowGroup");
 
   // Save off menu bar height for later.
@@ -199,55 +212,49 @@ void MainWindow::setupDocking() {
 
     ImGui::DockBuilderSetNodeSize(mainWindowGroup, workSize);
     ImGui::DockBuilderSetNodePos(mainWindowGroup, workPos);
-    ImGuiID dock1 = ImGui::DockBuilderSplitNode(mainWindowGroup, ImGuiDir_Left, 0.25f, nullptr, &mainWindowGroup);
-    ImGuiID dock2 = ImGui::DockBuilderSplitNode(dock1, ImGuiDir_Down, 0.5f, nullptr, &dock1);
-    ImGuiID dock3 = ImGui::DockBuilderSplitNode(mainWindowGroup, ImGuiDir_Right, 0.5f, nullptr, &mainWindowGroup);
-    ImGuiID dock4 = ImGui::DockBuilderSplitNode(dock3, ImGuiDir_Right, 0.175f, nullptr, &dock3);
+    ImGuiID upperDock;
+    ImGuiID lowerDock = ImGui::DockBuilderSplitNode(mainWindowGroup, ImGuiDir_Down, 0.10f, nullptr, &upperDock);
+    ImGuiID leftDock;
+    ImGuiID middleDock = ImGui::DockBuilderSplitNode(upperDock, ImGuiDir_Right, .90f, nullptr, &leftDock);
+    ImGuiID leftLowerDock = ImGui::DockBuilderSplitNode(leftDock, ImGuiDir_Down, 0.60f, nullptr, &leftDock);
+    ImGuiID rightDock = ImGui::DockBuilderSplitNode(middleDock, ImGuiDir_Right, .20f, nullptr, &middleDock);
     // 6. Add windows to each docking space:
-    ImGui::DockBuilderDockWindow("Events", dock1);
-    ImGui::DockBuilderDockWindow("Tilesets", dock1);
-    ImGui::DockBuilderDockWindow("Maps", dock2);
-    ImGui::DockBuilderDockWindow("Map Editor", dock3);
-    ImGui::DockBuilderDockWindow("Map Properties", dock4);
-    ImGui::DockBuilderGetNode(dock3)->SetLocalFlags(static_cast<int>(ImGuiDockNodeFlags_NoUndocking) | static_cast<int>(ImGuiDockNodeFlags_NoDocking));
-    // 7. We're done setting up our docking configuration:
+    ImGui::DockBuilderDockWindow("###events", leftDock);
+    ImGui::DockBuilderDockWindow("###tilesets", leftDock);
+    ImGui::DockBuilderDockWindow("###maps", leftLowerDock);
+    ImGui::DockBuilderDockWindow("###mapeditor", middleDock);
+    ImGui::DockBuilderDockWindow("###databaseeditor", middleDock);
+    ImGui::DockBuilderDockWindow("###mapproperties", rightDock);
+    ImGui::DockBuilderDockWindow("###projectloadstatus", lowerDock);
+    ImGui::DockBuilderDockWindow("###projectsavestatus", lowerDock);
+    ImGui::DockBuilderGetNode(leftDock)->SetLocalFlags(static_cast<int>(ImGuiDockNodeFlags_NoUndocking) | static_cast<int>(ImGuiDockNodeFlags_NoDocking));
+    ImGui::DockBuilderGetNode(leftLowerDock)->SetLocalFlags(static_cast<int>(ImGuiDockNodeFlags_NoUndocking) | static_cast<int>(ImGuiDockNodeFlags_NoDocking));
+    ImGui::DockBuilderGetNode(middleDock)->SetLocalFlags(static_cast<int>(ImGuiDockNodeFlags_NoUndocking) | static_cast<int>(ImGuiDockNodeFlags_NoDocking));
     ImGui::DockBuilderFinish(mainWindowGroup);
   }
-  ImGui::DockSpace(ImGui::GetID("MainWindowGroup"));
+  ImGui::DockSpace(mainWindowGroup);
   ImGui::End();
   ImGui::PopStyleVar(3);
 }
 
-unsigned long nextPowerOfTwo(unsigned long n) {
-  if (n == 0) {
-    return 1;
-  }
-  if ((n & (n - 1)) == 0) {
-    return n;
-  }
-
-  return std::pow(2, std::ceil(std::log2(n)));
-}
-
 void MainWindow::drawToolbar() {
-  m_toolbarButtonSize = nextPowerOfTwo(ImGui::CalcTextSize("#").y);
-  m_toolbarSize = m_toolbarButtonSize + ImGui::GetStyle().FramePadding.y * 4 + ImGui::GetStyle().ItemSpacing.x * 2;
-  const ImVec2 ButtonSize{m_toolbarButtonSize + ImGui::GetStyle().ItemSpacing.x * 2, m_toolbarButtonSize + ImGui::GetStyle().ItemSpacing.x * 2};
-  const ImVec2 ImageButtonSize = ButtonSize - ImVec2{ImGui::GetStyle().FramePadding.y * 2, ImGui::GetStyle().FramePadding.y * 2};
-
+  m_toolbarButtonSize = nextMultipleOf8(Settings::instance()->fontSize);
   const ImGuiViewport* viewport = ImGui::GetMainViewport();
   ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + m_menuBarHeight));
-  ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, m_toolbarSize));
+  ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, m_toolbarButtonSize));
   ImGui::SetNextWindowViewport(viewport->ID);
 
   ImGuiWindowFlags window_flags = 0 | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar |
                                   ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBringToFrontOnFocus;
   ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+  ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0.f, 0.f});
   ImGui::Begin("##ore_toolbar", nullptr, window_flags);
-  ImGui::PopStyleVar();
+  ImGui::PopStyleVar(2);
+  ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImGui::GetDPIScaledSize(5.f, 5.f));
+  ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {1.f, 1.f});
 
   ORE_DISABLE_EXPERIMENTAL_BEGIN();
-  if (ImGui::Button(ICON_FA_FILE, ButtonSize)) {
+  if (ImGui::Button(ICON_FA_FILE)) {
     handleCreateNewProject();
   }
   if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
@@ -255,7 +262,7 @@ void MainWindow::drawToolbar() {
   }
   ORE_DISABLE_EXPERIMENTAL_END();
   ImGui::SameLine();
-  if (ImGui::Button(ICON_FA_FOLDER_OPEN, ButtonSize)) {
+  if (ImGui::Button(ICON_FA_FOLDER_OPEN)) {
     handleOpenFile();
   }
   if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
@@ -263,7 +270,7 @@ void MainWindow::drawToolbar() {
   }
   ImGui::SameLine();
   ORE_DISABLE_EXPERIMENTAL_BEGIN();
-  if (ImGui::Button(ICON_FA_FLOPPY_DISK, ButtonSize)) {
+  if (ImGui::Button(ICON_FA_FLOPPY_DISK)) {
     save();
   }
   ImGui::SameLine();
@@ -275,7 +282,7 @@ void MainWindow::drawToolbar() {
   ORE_CHECK_EXPERIMENTAL_BEGIN()
   for (const auto& button : m_toolbarButtons[ToolbarCategory::File]) {
     ImGui::SameLine();
-    if (ImGui::Button(button.id().c_str(), ButtonSize)) {
+    if (ImGui::Button(button.id().c_str())) {
       button.callOnClicked();
     }
   }
@@ -284,17 +291,17 @@ void MainWindow::drawToolbar() {
   ImGui::SameLine();
   ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
   ImGui::SameLine();
-  if (ImGui::Button(ICON_FA_SCISSORS, ButtonSize)) {}
+  if (ImGui::Button(ICON_FA_SCISSORS)) {}
   ImGui::SameLine();
-  if (ImGui::Button(ICON_FA_COPY, ButtonSize)) {}
+  if (ImGui::Button(ICON_FA_COPY)) {}
   ImGui::SameLine();
-  if (ImGui::Button(ICON_FA_PASTE, ButtonSize)) {}
+  if (ImGui::Button(ICON_FA_PASTE)) {}
   ImGui::SameLine();
   ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
   ImGui::SameLine();
   ImGui::BeginDisabled(!m_undoStack.hasCommands());
   {
-    if (ImGui::Button(ICON_FA_ARROW_ROTATE_LEFT, ButtonSize)) {
+    if (ImGui::Button(ICON_FA_ARROW_ROTATE_LEFT)) {
       handleUndo();
     }
   }
@@ -302,7 +309,7 @@ void MainWindow::drawToolbar() {
   ImGui::SameLine();
   ImGui::BeginDisabled(!m_redoStack.hasCommands());
   {
-    if (ImGui::Button(ICON_FA_ARROW_ROTATE_RIGHT, ButtonSize)) {
+    if (ImGui::Button(ICON_FA_ARROW_ROTATE_RIGHT)) {
       handleRedo();
     }
   }
@@ -312,7 +319,8 @@ void MainWindow::drawToolbar() {
   ImGui::SameLine();
   ImGui::BeginDisabled(m_editMode == EditMode::Map);
   {
-    if (ImGui::ImageButton("map_button", ResourceManager::instance()->loadEditorTexture(std::format("icons/map/map_{0}x{0}.png", m_toolbarButtonSize)), ImageButtonSize)) {
+    const auto tex = ResourceManager::instance()->loadEditorTexture(std::format("icons/map/map_{0}x{0}.png", m_toolbarButtonSize));
+    if (ImGui::ImageButton("map_button", tex, static_cast<ImVec2>(Point{tex.width(), tex.height()}))) {
       enterMapEditMode();
     }
   }
@@ -323,7 +331,9 @@ void MainWindow::drawToolbar() {
   ImGui::SameLine();
   ImGui::BeginDisabled(m_editMode == EditMode::Event);
   {
-    if (ImGui::ImageButton("event_button", ResourceManager::instance()->loadEditorTexture(std::format("icons/map/event_{0}x{0}.png", m_toolbarButtonSize)), ImageButtonSize)) {
+    const auto tex = ResourceManager::instance()->loadEditorTexture(std::format("icons/map/event_{0}x{0}.png", m_toolbarButtonSize));
+    if (ImGui::ImageButton("event_button", tex, static_cast<ImVec2>(Point{tex.width(), tex.height()}))) {
+
       enterEventEditMode();
     }
   }
@@ -332,9 +342,8 @@ void MainWindow::drawToolbar() {
   }
   ImGui::EndDisabled();
   ImGui::SameLine();
-  if (ImGui::ImageButton("preview_button",
-                         ResourceManager::instance()->loadEditorTexture(std::format("icons/map/preview{0}_{1}x{1}.png", !m_mapEditor.prisonMode() ? "-off" : "", m_toolbarButtonSize)),
-                         ImageButtonSize)) {
+  const auto tex = ResourceManager::instance()->loadEditorTexture(std::format("icons/map/preview{0}_{1}x{1}.png", !m_mapEditor.prisonMode() ? "-off" : "", m_toolbarButtonSize));
+  if (ImGui::ImageButton("preview_button", tex, static_cast<ImVec2>(Point{tex.width(), tex.height()}))) {
     m_mapEditor.setPrisonMode(!m_mapEditor.prisonMode());
   }
   if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
@@ -345,7 +354,7 @@ void MainWindow::drawToolbar() {
   ImGui::SameLine();
   ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Pencil);
   {
-    if (ImGui::Button(ICON_FA_PENCIL, ButtonSize)) {
+    if (ImGui::Button(ICON_FA_PENCIL)) {
       setDrawTool(DrawTool::Pencil);
     }
   }
@@ -353,7 +362,7 @@ void MainWindow::drawToolbar() {
   ImGui::SameLine();
   ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Rectangle);
   {
-    if (ImGui::Button(ICON_FA_SQUARE, ButtonSize)) {
+    if (ImGui::Button(ICON_FA_SQUARE)) {
       setDrawTool(DrawTool::Rectangle);
     }
   }
@@ -361,7 +370,7 @@ void MainWindow::drawToolbar() {
   ImGui::SameLine();
   ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Flood_Fill);
   {
-    if (ImGui::Button(ICON_FA_BUCKET, ButtonSize)) {
+    if (ImGui::Button(ICON_FA_BUCKET)) {
       setDrawTool(DrawTool::Flood_Fill);
     }
   }
@@ -369,7 +378,7 @@ void MainWindow::drawToolbar() {
   ImGui::SameLine();
   ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Shadow_Pen);
   {
-    if (ImGui::Button(ICON_FA_PEN, ButtonSize)) {
+    if (ImGui::Button(ICON_FA_PEN)) {
       setDrawTool(DrawTool::Shadow_Pen);
     }
   }
@@ -380,7 +389,7 @@ void MainWindow::drawToolbar() {
   ImGui::SameLine();
   ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Eraser);
   {
-    if (ImGui::Button(ICON_FA_ERASER, ButtonSize)) {
+    if (ImGui::Button(ICON_FA_ERASER)) {
       setDrawTool(DrawTool::Eraser);
     }
   }
@@ -389,12 +398,14 @@ void MainWindow::drawToolbar() {
   }
   ImGui::EndDisabled();
   ImGui::End();
+  ImGui::PopStyleVar(2);
 }
 
 void MainWindow::draw() {
   drawMenu();
   drawToolbar();
   setupDocking();
+
   m_settingsDialog.draw();
   m_mapEditor.draw();
   m_eventSearcher.draw();
@@ -441,7 +452,7 @@ void MainWindow::draw() {
   EditorPluginManager::instance()->draw();
 
   if (DeserializationQueue::instance().hasTasks()) {
-    ImGui::Begin(trNOOP("Loading Project...."), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Begin(std::format("{}###projectloadstatus", trNOOP("Loading Project....")).c_str(), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::Text("%s", trFormat("Loading {0} ({1} of {2})....", DeserializationQueue::instance().getCurrentFile().data(), DeserializationQueue::instance().currentTaskIndex(),
                                DeserializationQueue::instance().totalTasks())
                           .c_str());
@@ -455,7 +466,7 @@ void MainWindow::draw() {
     DeserializationQueue::instance().reset();
   }
   if (SerializationQueue::instance().hasTasks()) {
-    ImGui::Begin(trNOOP("Saving Project...."), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::Begin(std::format("{}###projectsavestatus", trNOOP("Saving Project....")).c_str(), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::Text("%s", trFormat("Saving {0} ({1} of {2})....", SerializationQueue::instance().getCurrentFile().data(), SerializationQueue::instance().currentTaskIndex(),
                                SerializationQueue::instance().totalTasks())
                           .c_str());
@@ -657,21 +668,22 @@ void MainWindow::drawMenu() {
   std::string loadFilepath;
   if (ImGui::BeginMainMenuBar()) {
     if (ImGui::BeginMenu(trNOOP("File"))) {
-      if (ImGui::MenuItem(std::format("{} {}", ICON_FA_FILE, tr("New Project...")).c_str(), "Ctrl+N")) {
+      if (ImGui::MenuItemEx(trNOOP("New Project..."), ICON_FA_FILE, "Ctrl+N")) {
+
         handleCreateNewProject();
       }
-      if (ImGui::MenuItem(std::format("{} {}", ICON_FA_FOLDER, tr("Open Project...")).c_str(), "Ctrl+O")) {
+      if (ImGui::MenuItemEx(trNOOP("Open Project..."), ICON_FA_FOLDER, "Ctrl+O")) {
         handleOpenFile();
       }
-      if (ImGui::MenuItem(std::format("{} {}", ICON_FA_FOLDER_CLOSED, tr("Close Project...")).c_str())) {
+      if (ImGui::MenuItemEx(trNOOP("Close Project..."), ICON_FA_FOLDER_CLOSED)) {
         close();
       }
-      if (ImGui::MenuItem(std::format("{} {}", ICON_FA_FLOPPY_DISK, tr("Save Project...")).c_str(), "Ctlr+S")) {
+      if (ImGui::MenuItemEx(trNOOP("Save Project..."), ICON_FA_FLOPPY_DISK, "Ctrl+S")) {
         save();
       }
       ImGui::Separator();
-      if (ImGui::BeginMenu(trNOOP("Recent Projects"), !Settings::instance()->mru.empty())) {
-        if (ImGui::MenuItem(std::format("{} {}", ICON_FA_BRUSH, tr("Clear")).c_str())) {
+      if (ImGui::BeginMenuEx(trNOOP("Recent Projects"), ICON_FA_BLANK, !Settings::instance()->mru.empty())) {
+        if (ImGui::MenuItemNoCheck(tr("Clear").c_str(), nullptr, ICON_FA_DELETE_LEFT)) {
           Settings::instance()->mru.clear();
         }
         if (!Settings::instance()->mru.empty()) {
@@ -692,7 +704,7 @@ void MainWindow::drawMenu() {
       ImGui::Separator();
       // TL-NOTE: Use ellipses character appropriate for your language
       // Deployment is referring to preparing a game for distribution to end users, exporting all related assets into an easily distributable form
-      if (ImGui::MenuItem(std::format("{} {}", ICON_FA_BOXES_PACKING, tr("Deployment...")).c_str(), " ")) {
+      if (ImGui::MenuItemEx(trNOOP("Deployment..."), ICON_FA_BOXES_PACKING " ")) {
         // TODO: Implement game deployment
       }
       /*
@@ -702,7 +714,7 @@ void MainWindow::drawMenu() {
       */
       ImGui::Separator();
       // We're using std::format here instead of trFORMAT because we don't want to risk someone localizing the icon after the text
-      if (ImGui::MenuItem(std::format("{} {}", ICON_FA_DOOR_CLOSED, tr("Exit")).c_str(), "Ctrl+Q")) {
+      if (ImGui::MenuItemEx(trNOOP("Exit"), ICON_FA_DOOR_CLOSED, "Ctrl+Q")) {
         App::APP->stop();
       }
       ImGui::EndMenu();

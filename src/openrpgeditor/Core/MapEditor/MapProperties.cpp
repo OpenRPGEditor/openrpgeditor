@@ -21,7 +21,7 @@ std::tuple<bool, bool> MapProperties::draw() {
     return {!m_open, m_confirmed};
   }
 
-  if (ImGui::Begin(std::format("{}###map_properties", trNOOP("Map Properties")).c_str(), &m_open)) {
+  if (ImGui::Begin(std::format("{}###mapproperties", trNOOP("Map Properties")).c_str(), &m_open)) {
     char buf[4096]{};
     ImGui::BeginGroupPanel();
     {

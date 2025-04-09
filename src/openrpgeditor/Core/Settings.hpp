@@ -4,6 +4,7 @@
 #include "nlohmann/json.hpp"
 
 #include <deque>
+#include <SDL3/SDL_video.h>
 
 #define ORE_CHECK_DEBUG_BEGIN() if (Settings::instance()->enableDebugFeatures) {
 #define ORE_CHECK_DEBUG_END() }
@@ -19,8 +20,8 @@ struct Settings {
   struct WindowRect {
     friend void to_json(nlohmann::ordered_json& j, const WindowRect& r);
     friend void from_json(const nlohmann::ordered_json& j, WindowRect& r);
-    int x{};
-    int y{};
+    int x{SDL_WINDOWPOS_CENTERED};
+    int y{SDL_WINDOWPOS_CENTERED};
     int w{1920};
     int h{1080};
     bool maximized{false};
@@ -41,7 +42,6 @@ struct Settings {
   WindowRect window{};
   std::deque<std::pair<std::string, std::string>> mru;
   std::map<std::string, Plugin> plugins; // Base directory -> settings
-  std::map<int, MapStateType> mapStateList;
   std::string lastDirectory;
   std::string lastProject;
   std::string projectBaseDirectory;
@@ -68,6 +68,8 @@ struct Settings {
 #endif
 
   [[nodiscard]] static Settings* instance() { return m_instance; }
+
+  std::string imguiState;
 
 private:
   static Settings* m_instance;

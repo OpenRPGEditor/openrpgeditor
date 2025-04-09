@@ -9,8 +9,9 @@ namespace ImGui {
 
 void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVec2 pos, ImU32 col, const ImVec4& clip_rect, const char* text_begin, const char* text_end, float wrap_width = 0.0f,
                            bool cpu_fine_clip = false) {
+  const int len = strlen(text_begin);
   if (!text_end)
-    text_end = text_begin + strlen(text_begin); // ImGui functions generally already provides a valid text_end,
+    text_end = text_begin + len; // ImGui functions generally already provides a valid text_end,
 
   // so this is merely to handle direct calls.
 
@@ -22,8 +23,8 @@ void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVe
   if (y > clip_rect.w)
     return;
 
-  std::unique_ptr<char> char_buf(new char[strlen(text_begin) + 1]);
-  std::unique_ptr<ImU32> col_buf(new ImU32[strlen(text_begin) + 1]);
+  std::unique_ptr<char> char_buf(new char[len + 1]);
+  std::unique_ptr<ImU32> col_buf(new ImU32[len + 1]);
 
   const float scale = size / font->FontSize;
   const float line_height = font->FontSize * scale;
@@ -38,8 +39,8 @@ void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVe
       y += line_height;
     }
 
+  int index = 0;
   {
-    int index = 0;
     int skipChars = 0;
     const char* sLocal = s;
     ImU32 temp_col = col;
@@ -57,10 +58,10 @@ void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVe
   }
 
   text_begin = char_buf.get();
-  text_end = char_buf.get() + strlen(text_begin);
+  text_end = text_begin + index;
   s = text_begin;
 
-  const ImVec2 text_size = CalcTextSize(text_begin, text_end, false, wrap_width);
+  const ImVec2 text_size = CalcTextSize(text_begin, text_end, false, word_wrap_enabled ? CalcWrapWidthForPos(GetCurrentWindow()->DC.CursorPos, GetCurrentWindow()->DC.TextWrapPos) : 0.0f);
   // Account of baseline offset
   ImRect bb(pos, pos + text_size);
   ItemSize(text_size);
@@ -322,82 +323,11 @@ void TextParsedUnformatted(const char* text, const char* text_end) {
   const ImVec2 text_pos(window->DC.CursorPos.x, window->DC.CursorPos.y + window->DC.CurrLineTextBaseOffset);
   const float wrap_pos_x = window->DC.TextWrapPos;
   const bool wrap_enabled = wrap_pos_x >= 0.0f;
-  if (text_end - text > 1000 && !wrap_enabled) {
-    // Long text!
-    // Perform manual coarse clipping to optimize for long multi-line text
-    // - From this point we will only compute the width of lines that are visible. Optimization only available
-    // when word-wrapping is disabled.
-    // - We also don't vertically center the text within the line full height, which is unlikely to matter
-    // because we are likely the biggest and only item on the line.
-    // - We use memchr(), pay attention that well optimized versions of those str/mem functions are much faster
-    // than a casually written loop.
-    const char* line = text;
-    const float line_height = GetTextLineHeight();
-    const ImRect clip_rect = window->ClipRect;
-    ImVec2 text_size(0, 0);
-
-    if (text_pos.y <= clip_rect.Max.y) {
-      ImVec2 pos = text_pos;
-
-      // Lines to skip (can't skip when logging text)
-      if (!g.LogEnabled) {
-        int lines_skippable = (int)((clip_rect.Min.y - text_pos.y) / line_height);
-        if (lines_skippable > 0) {
-          int lines_skipped = 0;
-          while (line < text_end && lines_skipped < lines_skippable) {
-            const char* line_end = (const char*)memchr(line, '\n', text_end - line);
-            if (!line_end)
-              line_end = text_end;
-            line = line_end + 1;
-            lines_skipped++;
-          }
-          pos.y += lines_skipped * line_height;
-        }
-      }
-
-      // Lines to render
-      if (line < text_end) {
-        ImRect line_rect(pos, pos + ImVec2(FLT_MAX, line_height));
-        while (line < text_end) {
-          if (IsClippedEx(line_rect, 0))
-            break;
-
-          const char* line_end = (const char*)memchr(line, '\n', text_end - line);
-          if (!line_end)
-            line_end = text_end;
-          const ImVec2 line_size = CalcTextSize(line, line_end, false);
-          text_size.x = ImMax(text_size.x, line_size.x);
-          RenderParsedText(pos, line, line_end, false);
-          line = line_end + 1;
-          line_rect.Min.y += line_height;
-          line_rect.Max.y += line_height;
-          pos.y += line_height;
-        }
-
-        // Count remaining lines
-        int lines_skipped = 0;
-        while (line < text_end) {
-          const char* line_end = (const char*)memchr(line, '\n', text_end - line);
-          if (!line_end)
-            line_end = text_end;
-          line = line_end + 1;
-          lines_skipped++;
-        }
-        pos.y += lines_skipped * line_height;
-      }
-
-      text_size.y += (pos - text_pos).y;
-    }
-
-    ImRect bb(text_pos, text_pos + text_size);
-    ItemSize(bb);
-    ItemAdd(bb, 0);
-  } else {
-    const float wrap_width = wrap_enabled ? CalcWrapWidthForPos(window->DC.CursorPos, wrap_pos_x) : 0.0f;
-    // Render (we don't hide text after ## in this end-user function)
-    RenderParsedTextWrapped(text_pos, text_begin, text_end, wrap_width);
-  }
+  const float wrap_width = wrap_enabled ? CalcWrapWidthForPos(window->DC.CursorPos, wrap_pos_x) : 0.0f;
+  // Render (we don't hide text after ## in this end-user function)
+  RenderParsedTextWrapped(text_pos, text_begin, text_end, wrap_width);
 }
+
 void TextParsedV(const char* fmt, va_list args) {
   ImGuiWindow* window = GetCurrentWindow();
   if (window->SkipItems)
@@ -406,6 +336,7 @@ void TextParsedV(const char* fmt, va_list args) {
   ImGuiContext& g = *GImGui;
   const char* text_end = g.TempBuffer.Data + ImFormatStringV(g.TempBuffer.Data, g.TempBuffer.size(), fmt, args);
   TextParsedUnformatted(g.TempBuffer.Data, text_end);
+  assert(ParseGetStackSize() == 1 && "Color stack not exhausted!");
 }
 
 void TextParsed(const char* fmt, ...) {

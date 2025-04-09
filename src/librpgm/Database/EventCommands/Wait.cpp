@@ -10,5 +10,6 @@ WaitCommand::WaitCommand(const std::optional<int>& indent, const nlohmann::order
 void WaitCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(duration); }
 
 std::string WaitCommand::stringRep(const Database& db, const bool colored) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Wait") + colon.data() + db.framesText(duration) + ColorFormatter::popColor(colored);
+  auto ret = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Wait") + colon.data() + db.framesText(duration) + ColorFormatter::popColor(colored);
+  return ret;
 }

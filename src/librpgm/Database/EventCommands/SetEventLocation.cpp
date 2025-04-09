@@ -21,15 +21,15 @@ void SetEventLocationCommand::serializeParameters(nlohmann::ordered_json& out) c
 std::string SetEventLocationCommand::stringRep(const Database& db, const bool colored) const {
   const auto evName = db.eventNameOrId(event);
   const auto prefix = indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Set Event Location") + colon.data() + evName;
-  const auto suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " (Direction: " + DecodeEnumName(direction) + ")" + ColorFormatter::popColor(colored);
+  const auto suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " (" + tr("Direction") + ": " + DecodeEnumName(direction) + ")" + ColorFormatter::popColor(colored);
 
   if (mode == TransferMode::Variable_Designation) {
-    return prefix + std::format(", ({{{}}},{{{}}})", db.variableNameOrId(x), db.variableNameOrId(y)) + suffix;
+    return prefix + std::format(", ({{{}}},{{{}}})", db.variableNameOrId(x), db.variableNameOrId(y)) + ColorFormatter::popColor() + suffix;
   }
 
   if (mode == TransferMode::Exchange_With_Another_Event) {
-    return prefix + ", " + trNOOP("Exchange with") + " " + Database::instance()->eventNameOrId(x) + suffix;
+    return prefix + ", " + trNOOP("Exchange with") + " " + Database::instance()->eventNameOrId(x) + ColorFormatter::popColor() + suffix;
   }
 
-  return prefix + std::format(", ({}, {})", x, y) + suffix;
+  return prefix + std::format(", ({}, {})", x, y) + ColorFormatter::popColor() + suffix;
 }

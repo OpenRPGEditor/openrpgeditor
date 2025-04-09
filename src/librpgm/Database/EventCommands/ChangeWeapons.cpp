@@ -23,7 +23,7 @@ std::string ChangeWeaponsCommand::stringRep(const Database& db, const bool color
   const auto var = db.system.variable(operand);
   std::string suffix;
   if (includeEquipment) {
-    suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " " + db.parentheses(trNOOP("Include Equipment"));
+    suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " " + db.parentheses(trNOOP("Include Equipment")) + ColorFormatter::popColor(colored);
   }
 
   return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Change Weapons") + colon.data() + db.weaponNameOrId(item) + DecodeEnumName(operation) +

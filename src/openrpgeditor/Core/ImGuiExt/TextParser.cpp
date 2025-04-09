@@ -108,4 +108,6 @@ ImU32 ParseGetCurrentColor() {
   Color color = colors.top();
   return *(int*)(&color.r);
 }
+
+int ParseGetStackSize() { return colors.size(); }
 } // namespace ImGui

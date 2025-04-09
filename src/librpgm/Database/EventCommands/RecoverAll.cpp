@@ -13,6 +13,6 @@ void RecoverAllCommand::serializeParameters(nlohmann::ordered_json& out) const {
 }
 
 std::string RecoverAllCommand::stringRep(const Database& db, const bool colored) const {
-  const std::string source = comparison == ActorComparisonSource::Fixed ? value == 0 ? trNOOP("Entire Party") : db.actorNameOrId(value) : "{" + db.system.variable(value) + "}";
+  const std::string source = comparison == ActorComparisonSource::Fixed ? value == 0 ? trNOOP("Entire Party") : db.actorNameOrId(value) : "{" + db.variableNameOrId(value) + "}";
   return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Recover All") + colon.data() + source + ColorFormatter::popColor(colored);
 }

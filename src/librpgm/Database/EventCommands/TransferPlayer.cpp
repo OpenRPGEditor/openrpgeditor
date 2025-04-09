@@ -46,7 +46,7 @@ std::string TransferPlayerCommand::stringRep(const Database& db, const bool colo
     auto varX = db.variableNameOrId(x);
     auto varY = db.variableNameOrId(y);
     return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Transfer Player") + colon.data() +
-           std::format("{{{}}} ({{{}}},{{{}}})", varMap, varX, varY) + suffix;
+           std::format("{{{}}} ({{{}}},{{{}}})", varMap, varX, varY) + ColorFormatter::popColor(colored) + suffix;
   }
   const auto mapName = db.mapNameOrId(mapId);
   return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Transfer Player") + colon.data() + mapName + std::format(" ({},{})", x, y) +

@@ -175,7 +175,6 @@ void EventCommandEditor::handleBlockCollapse(int& n) const {
     const int oldN = n;
     if (const auto& cmd = m_commands->at(n); cmd->isCollapsed()) {
       std::vector<std::string> tooltip;
-      int tooltipCmdCount = 0;
       auto next = m_commands->at(n + 1);
       const int indent = next->indent().value_or(0);
       bool addedElipses = false;
@@ -185,11 +184,13 @@ void EventCommandEditor::handleBlockCollapse(int& n) const {
         }
         n++;
 
-        auto rep = next->stringRep(*Database::instance(), true);
         if (next->code() != EventCode::Event_Dummy) {
-          if (tooltipCmdCount < 5) {
-            auto splitRep = splitString(rep, '\n');
+          if (tooltip.size() < 5) {
+            auto splitRep = splitString(next->stringRep(*Database::instance(), true), '\n');
             for (std::string s : splitRep) {
+              if (tooltip.size() >= 5) {
+                break;
+              }
               tooltip.push_back(s.erase(0, indent * 2));
             }
           } else if (!addedElipses) {
@@ -201,11 +202,11 @@ void EventCommandEditor::handleBlockCollapse(int& n) const {
             tooltip.push_back(next->indentText(tmp) + "\u2026");
             addedElipses = true;
           }
-          ++tooltipCmdCount;
         }
         next = m_commands->at(n + 1);
       }
-      if (m_hoveringCommand == oldN && !tooltip.empty() && ImGui::BeginTooltip()) {
+      ImGui::SetNextWindowSizeConstraints({}, ImGui::GetDPIScaledSize(640, 640));
+      if (m_hoveringCommand == oldN && !tooltip.empty() && ImGui::BeginTooltipEx(ImGuiTooltipFlags_None, ImGuiWindowFlags_NoScrollbar)) {
         ImGui::TextParsed("%s", std::accumulate(std::next(tooltip.begin()), tooltip.end(), tooltip[0], [](const std::string& a, const std::string& b) { return a + "\n" + b; }).c_str());
         ImGui::EndTooltip();
       }
@@ -324,12 +325,11 @@ void EventCommandEditor::draw() {
           }
           if (ImGui::TableNextColumn()) {
             for (const auto& s : str) {
-              const auto col = ImGui::GetStyleColorVec4(ImGuiCol_Text);
               // Hack to keep scrollbar sizing consistent
               const auto oldPos = ImGui::GetCursorPos();
               ImGui::Dummy({maxWidth, 1.f});
               ImGui::SetCursorPos(oldPos);
-              ImGui::TextParsed(std::format("&push-color={},{},{};{}&pop-color;", static_cast<uint8_t>(col.x * 255), static_cast<uint8_t>(col.y * 255), static_cast<uint8_t>(col.z * 255), s).c_str());
+              ImGui::TextParsed("%s", s.c_str());
             }
           }
 
@@ -345,7 +345,7 @@ void EventCommandEditor::draw() {
         if (m_selectedCommand != m_hoveringCommand) {
           m_selectedCommand = m_hoveringCommand;
         }
-        if (ImGui::Button("New...", ImVec2(200.0f, 0.0f))) {
+        if (ImGui::MenuItem("New...")) {
           m_isRequested = true;
           m_isNewEntry = true;
         }

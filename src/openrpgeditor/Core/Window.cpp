@@ -26,6 +26,10 @@ Window::Window(const Settings& settings) {
     APP_ERROR("Error creating SDL_Renderer!");
     return;
   }
+  // We want all textures to wrap
+#ifdef SDL_SetRenderTextureAddressMode
+  SDL_SetRenderTextureAddressMode(m_renderer, SDL_TEXTURE_ADDRESS_WRAP, SDL_TEXTURE_ADDRESS_WRAP);
+#endif
 
   APP_DEBUG("Current SDL_Renderer: {}", SDL_GetRendererName(m_renderer));
 }

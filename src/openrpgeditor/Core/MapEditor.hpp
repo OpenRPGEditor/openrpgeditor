@@ -7,6 +7,7 @@
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/EventEditor.hpp"
 #include "Database/MapInfos.hpp"
+#include "Graphics/ParallaxTexture.hpp"
 #include "MapEditor/MapCursor.hpp"
 #include "MapEditor/MapProperties.hpp"
 #include "OREMath/Rect.hpp"
@@ -232,7 +233,7 @@ private:
   MapCursor m_tileCursor;
 
   int m_tileId{};
-  Texture m_parallaxTexture;
+  ParallaxTexture m_parallaxTexture;
   MapRenderer m_mapRenderer;
   CheckerboardTexture m_checkeredBack;
   Event* m_movingEvent = nullptr;
@@ -242,9 +243,9 @@ private:
   bool m_regionMode{false};
   bool m_templateSaving{false};
 
-  std::optional<ObjectPicker<Template>> template_picker;
-  std::optional<TemplatesEvent> eventProperties;
-  std::optional<TemplateName> templateName_picker;
+  std::optional<ObjectPicker<Template>> m_templatePicker;
+  std::optional<TemplatesEvent> m_eventProperties;
+  std::optional<TemplateName> m_templateNamePicker;
   std::optional<Event> m_templateEvent;
 
   int m_movingEventX = -1;

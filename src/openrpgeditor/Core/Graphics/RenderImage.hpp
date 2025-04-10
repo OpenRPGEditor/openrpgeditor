@@ -42,6 +42,8 @@ public:
   CompositionMode compositionMode() const { return m_compositionMode; }
   void setCompositionMode(const CompositionMode mode) { m_compositionMode = mode; }
 
+  explicit operator bool() const { return get() != nullptr; }
+
 private:
   void createTexture();
   void setCurrentCompositionMode() const;

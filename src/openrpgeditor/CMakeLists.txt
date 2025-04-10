@@ -354,6 +354,8 @@ add_library(
         Core/Graphics/stb_image.h
         Core/Graphics/Texture.cpp
         Core/Graphics/Texture.hpp
+        Core/Graphics/ParallaxTexture.cpp
+        Core/Graphics/ParallaxTexture.hpp
         Core/ImGuiExt/ImGuiNotify.hpp
         Core/ImGuiExt/ImGuiParsedText.cpp
         Core/ImGuiExt/ImGuiParsedText.hpp

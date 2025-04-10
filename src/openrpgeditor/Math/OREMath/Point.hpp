@@ -1,6 +1,6 @@
 #pragma once
-#include "MathGlobals.hpp"
 #include "imgui.h"
+#include "MathGlobals.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -13,8 +13,9 @@ public:
   , mY(y) {}
   [[nodiscard]] bool isNull() const { return mX == 0 && mY == 0; }
 
-  explicit operator ImVec2() const { return ImVec2{static_cast<float>(mX), static_cast<float>(mY)}; }
-
+#ifdef IMGUI_VERSION
+  operator ImVec2() const { return ImVec2{static_cast<float>(mX), static_cast<float>(mY)}; }
+#endif
   [[nodiscard]] int manhattanLength() const { return std::abs(mX) + std::abs(mY); }
 
   [[nodiscard]] int x() const { return mX; }
@@ -78,6 +79,13 @@ public:
   PointF(const float x, const float y)
   : mX(x)
   , mY(y) {}
+
+  PointF(const int x, const int y)
+  : PointF(static_cast<float>(x), static_cast<float>(y)) {}
+
+  explicit PointF(const Point& point)
+  : PointF(point.x(), point.y()) {}
+
   [[nodiscard]] bool isNull() const { return mX == 0.f && mY == 0.f; }
   [[nodiscard]] float manhattanLength() const { return oAbs(mX) + oAbs(mY); }
 

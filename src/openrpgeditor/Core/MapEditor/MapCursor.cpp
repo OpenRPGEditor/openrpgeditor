@@ -87,6 +87,7 @@ void MapCursor::update(float mapScale, int mapWidth, int mapHeight, int tileSize
   } else if (m_mode == MapCursorMode::Mouse) {
     // Is the user attempting to zoom in?
     if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) && ImGui::IsKeyDown(ImGuiKey_MouseWheelY)) {
+      setFromAbsolute(ImGui::GetIO().MousePos.x - win->ContentRegionRect.Min.x, ImGui::GetIO().MousePos.y - win->ContentRegionRect.Min.y);
       setCursorPositionFromTilePosition();
     } else {
       ImVec2 cursorPos = ImGui::GetIO().MousePos - win->ContentRegionRect.Min;

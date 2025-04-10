@@ -412,15 +412,15 @@ void MainWindow::draw() {
   m_libLCF.draw();
 
   if (m_databaseEditor) {
-    ORE_CHECK_EXPERIMENTAL_BEGIN();
-    // TODO(phil): This is slow on large projects, we need to wire up all of the isModified signals and report in a granular fashion rather than checking the whole project every frame
-    if (m_database && m_database->isModified()) {
-      const auto title = std::format("{} - [{}*]", kApplicationTitle, m_database->system.gameTitle());
-      if (title != App::APP->getWindow()->getTitle()) {
-        App::APP->getWindow()->setTitle(title);
-      }
-    }
-    ORE_CHECK_EXPERIMENTAL_END();
+    // ORE_CHECK_EXPERIMENTAL_BEGIN();
+    // // TODO(phil): This is slow on large projects, we need to wire up all of the isModified signals and report in a granular fashion rather than checking the whole project every frame
+    // if (m_database && m_database->isModified()) {
+    //   const auto title = std::format("{} - [{}*]", kApplicationTitle, m_database->system.gameTitle());
+    //   if (title != App::APP->getWindow()->getTitle()) {
+    //     App::APP->getWindow()->setTitle(title);
+    //   }
+    // }
+    // ORE_CHECK_EXPERIMENTAL_END();
     m_databaseEditor->draw();
   }
 

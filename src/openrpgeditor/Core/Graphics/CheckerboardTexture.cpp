@@ -107,9 +107,6 @@ void CheckerboardTexture::update() const {
   SDL_SetTextureBlendMode(static_cast<SDL_Texture*>(m_workTexture), SDL_BLENDMODE_BLEND);
   auto* oldTarget = SDL_GetRenderTarget(renderer);
   SDL_SetRenderTarget(renderer, static_cast<SDL_Texture*>(m_workTexture));
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-  SDL_RenderClear(renderer);
-
   SDL_RenderTextureTiled(renderer, static_cast<SDL_Texture*>(m_checkerTexture), nullptr, 1.f, nullptr);
 
   SDL_SetRenderTarget(renderer, oldTarget);

@@ -189,7 +189,8 @@ void Application::updateFonts() {
 
   static constexpr ImWchar specialChar[] = {
       /* clang-format off */
-      0x0001, 0xFFFF,
+      ICON_MIN_FA, ICON_MAX_FA,
+      //0x0001, 0xFFFF,
       0
       /* clang-format on */
   };
@@ -197,6 +198,8 @@ void Application::updateFonts() {
   ImVector<ImWchar> ranges;
   ImFontGlyphRangesBuilder builder;
   builder.AddRanges(specialChar);
+  builder.AddRanges(io.Fonts->GetGlyphRangesDefault());
+  builder.AddRanges(io.Fonts->GetGlyphRangesJapanese());
   builder.BuildRanges(&ranges);
   ImFontConfig config;
   config.RasterizerDensity = scale;
@@ -215,7 +218,7 @@ void Application::updateFonts() {
   io.Fonts->Build();
 
   config = ImFontConfig();
-  config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_Bold;
+  // config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_Bold;
   m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_mono.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->Build();
   config.MergeMode = true;
@@ -253,6 +256,7 @@ ExitStatus Application::run() {
                     ImGuiConfigFlags_DpiEnableScaleViewports;
   io.ConfigWindowsMoveFromTitleBarOnly = true;
   io.ConfigInputTrickleEventQueue = false;
+  io.ConfigDockingWithShift = true;
 
   // Absolute imgui.ini path to preserve settings independent of app location.
   static const std::string imgui_ini_filename{m_userConfigPath + "imgui.ini"};

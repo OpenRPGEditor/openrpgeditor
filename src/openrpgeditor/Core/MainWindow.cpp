@@ -152,7 +152,7 @@ void MainWindow::save() {
 }
 
 std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
-  if (promptSave && m_database->isModified()) {
+  if (promptSave && m_database && m_database->isModified()) {
     ImGui::OpenPopup("###save_changes");
 
     ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing, {.5f, .5f});

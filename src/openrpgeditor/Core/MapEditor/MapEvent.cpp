@@ -48,7 +48,7 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
   }
 
   if (!m_mapEditor->prisonMode() && m_event->id() != 0) {
-    m_lastFrameTime += ImGui::GetIO().DeltaTime;
+    m_lastFrameTime += 1.f * ImGui::GetIO().DeltaTime;
     /* Only process event logic once every frame at 60FPS */
     if (m_lastFrameTime >= (1.f / 60.f)) {
       if (isStopping()) {

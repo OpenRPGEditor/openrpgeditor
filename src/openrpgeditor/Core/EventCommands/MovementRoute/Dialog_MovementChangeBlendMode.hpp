@@ -5,9 +5,12 @@
 
 struct Dialog_MovementChangeBlendMode : IEventDialogController {
   Dialog_MovementChangeBlendMode() = delete;
-  explicit Dialog_MovementChangeBlendMode(const std::string& name)
-  : IEventDialogController(name) {
-    command.reset(new MovementChangeBlendModeCommand());
+  explicit Dialog_MovementChangeBlendMode(const std::string& name, const std::shared_ptr<MovementChangeBlendModeCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
+    if (command == nullptr) {
+      command.reset(new MovementChangeBlendModeCommand());
+    }
     m_blendMode = static_cast<int>(command->mode);
   }
   std::tuple<bool, bool> draw() override;

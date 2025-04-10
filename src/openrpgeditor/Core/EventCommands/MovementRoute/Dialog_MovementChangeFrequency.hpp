@@ -6,9 +6,13 @@
 struct MainWindow;
 struct Dialog_MovementChangeFrequency : IEventDialogController {
   Dialog_MovementChangeFrequency() = delete;
-  explicit Dialog_MovementChangeFrequency(const std::string& name)
-  : IEventDialogController(name) {
-    command.reset(new MovementFrequencyCommand());
+  explicit Dialog_MovementChangeFrequency(const std::string& name, const std::shared_ptr<MovementFrequencyCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
+    if (command == nullptr) {
+
+      command.reset(new MovementFrequencyCommand());
+    }
     m_frequency = command->frequency;
   }
   std::tuple<bool, bool> draw() override;

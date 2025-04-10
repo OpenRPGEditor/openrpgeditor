@@ -7,9 +7,12 @@
 struct MainWindow;
 struct Dialog_MovementChangeOpacity : IEventDialogController {
   Dialog_MovementChangeOpacity() = delete;
-  explicit Dialog_MovementChangeOpacity(const std::string& name)
-  : IEventDialogController(name) {
-    command.reset(new MovementChangeOpacityCommand());
+  explicit Dialog_MovementChangeOpacity(const std::string& name, const std::shared_ptr<MovementChangeOpacityCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
+    if (command == nullptr) {
+      command.reset(new MovementChangeOpacityCommand());
+    }
     m_opacity = command->opacity;
   }
   std::tuple<bool, bool> draw() override;

@@ -6,9 +6,12 @@
 struct MainWindow;
 struct Dialog_MovementWait : IEventDialogController {
   Dialog_MovementWait() = delete;
-  explicit Dialog_MovementWait(const std::string& name)
-  : IEventDialogController(name) {
-    command.reset(new MovementWaitCommand());
+  explicit Dialog_MovementWait(const std::string& name, const std::shared_ptr<MovementWaitCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
+    if (command == nullptr) {
+      command.reset(new MovementWaitCommand());
+    }
     m_waitDuration = command->duration;
   }
   std::tuple<bool, bool> draw() override;

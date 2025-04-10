@@ -109,12 +109,55 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
 
           for (int n = 0; n < m_route.list().size(); n++) {
             ImGui::TableNextColumn();
-            const bool isSelected = m_selected == n;
+            const bool isSelected = m_selected == n || (m_selectedEnd != -1 && n > m_selected && n <= m_selectedEnd);
             char text[4096];
             sprintf(text, "%s##cmd%i", m_route.list().at(n)->stringRep(*Database::instance()).c_str(), n);
             if (ImGui::SelectableWithBorder(text, isSelected, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
               if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                // Edit node
+                if (m_route.list().at(m_selected)->code() == EventCode::Jump) {
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementJump>(trNOOP("Jump"), &m_route.list.at(m_selected));
+                  m_movementRouteDialog->setOpen(true);
+                }
+                if (m_route.list().at(m_selected)->code() == EventCode::Wait_del_Movement) {
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementWait>(trNOOP("Wait"), &m_route.list.at(m_selected));
+                  m_movementRouteDialog->setOpen(true);
+                }
+                if (m_route.list().at(m_selected)->code() == EventCode::Switch_ON) {
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementSwitchON>(trNOOP("Switch ON"), &m_route.list.at(m_selected));
+                  m_movementRouteDialog->setOpen(true);
+                }
+                if (m_route.list().at(m_selected)->code() == EventCode::Switch_OFF) {
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementSwitchOFF>(trNOOP("Switch OFF"), &m_route.list.at(m_selected));
+                  m_movementRouteDialog->setOpen(true);
+                }
+                if (m_route.list().at(m_selected)->code() == EventCode::Speed) {
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementChangeSpeed>(trNOOP("Change Speed"), &m_route.list.at(m_selected));
+                  m_movementRouteDialog->setOpen(true);
+                }
+                if (m_route.list().at(m_selected)->code() == EventCode::Frequency) {
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementChangeFrequency>(trNOOP("Change Frequency"), &m_route.list.at(m_selected));
+                  m_movementRouteDialog->setOpen(true);
+                }
+                if (m_route.list().at(m_selected)->code() == EventCode::Change_Image) {
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementChangeImage>(trNOOP("Image"), &m_route.list.at(m_selected));
+                  m_movementRouteDialog->setOpen(true);
+                }
+                if (m_route.list().at(m_selected)->code() == EventCode::Change_Opacity) {
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementChangeOpacity>(trNOOP("Opacity"), &m_route.list.at(m_selected));
+                  m_movementRouteDialog->setOpen(true);
+                }
+                if (m_route.list().at(m_selected)->code() == EventCode::Change_Blend_Mode) {
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementChangeBlendMode>(trNOOP("Blend"), &m_route.list.at(m_selected));
+                  m_movementRouteDialog->setOpen(true);
+                }
+                if (m_route.list().at(m_selected)->code() == EventCode::Play_SE_del_Movement) {
+                  m_movementRouteDialog = std::make_shared<Dialog_PlaySE>(trNOOP("Play SE"), &m_route.list.at(m_selected));
+                  m_movementRouteDialog->setOpen(true);
+                }
+                if (m_route.list().at(m_selected)->code() == EventCode::Script_del_Movement) {
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementScript>(trNOOP("Script"), &m_route.list.at(m_selected));
+                  m_movementRouteDialog->setOpen(true);
+                }
               }
               m_selected = n;
 

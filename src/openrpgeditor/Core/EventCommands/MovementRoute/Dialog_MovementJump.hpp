@@ -6,9 +6,12 @@
 struct MainWindow;
 struct Dialog_MovementJump : IEventDialogController {
   Dialog_MovementJump() = delete;
-  explicit Dialog_MovementJump(const std::string& name)
-  : IEventDialogController(name) {
-    command.reset(new MovementJumpCommand());
+  explicit Dialog_MovementJump(const std::string& name, const std::shared_ptr<MovementJumpCommand>& cmd = nullptr)
+  : IEventDialogController(name)
+  , command(cmd) {
+    if (command == nullptr) {
+      command.reset(new MovementJumpCommand());
+    }
     m_jump_x = command->x;
     m_jump_y = command->y;
   }

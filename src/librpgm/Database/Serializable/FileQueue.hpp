@@ -39,6 +39,10 @@ public:
   int totalTasks() const { return m_totalTasks; }
   std::string_view currentTaskName() const { return m_currentFilePath; }
 
+  bool hasTask(const std::string_view path) const {
+    return std::ranges::find_if(m_taskQueue, [&path](const Task& task) { return task.filepath() == path; }) != m_taskQueue.end();
+  }
+
   // The worker thread method
   void proc();
 

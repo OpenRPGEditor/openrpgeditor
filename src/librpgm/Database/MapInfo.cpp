@@ -4,10 +4,13 @@
 
 Map* MapInfo::map() {
   if (!m_map) {
-    FileQueue::instance().enqueue(std::make_shared<MapSerializer>(std::format("data/Map{:03}.json", id()), id()), [this](const std::shared_ptr<ISerializable>& serializer) {
-      m_map = std::make_unique<Map>(std::dynamic_pointer_cast<MapSerializer>(serializer)->data());
-      RPGM_INFO("Map{:03} loaded", id());
-    });
+    const auto path = std::format("data/Map{:03}.json", id());
+    if (!FileQueue::instance().hasTask(path)) {
+      FileQueue::instance().enqueue(std::make_shared<MapSerializer>(path, id()), [this](const std::shared_ptr<ISerializable>& serializer) {
+        m_map = std::make_unique<Map>(std::dynamic_pointer_cast<MapSerializer>(serializer)->data());
+        RPGM_INFO("Map{:03} loaded", id());
+      });
+    }
     return nullptr;
   }
   return m_map.get();

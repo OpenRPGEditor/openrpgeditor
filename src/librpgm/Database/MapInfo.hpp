@@ -106,6 +106,12 @@ public:
 
   bool isModified() const override { return IModifiable::isModified() | (m_map ? m_map->isModified() : 0); }
 
+  void closeIfNotModified() {
+    if (!isModified()) {
+      m_map.reset();
+    }
+  }
+
 private:
   MapInfo(const MapInfo& other, int)
   : IModifiable(other)

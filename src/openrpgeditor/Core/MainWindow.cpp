@@ -962,6 +962,10 @@ void MainWindow::handleKeyboardShortcuts() {
 }
 
 void MainWindow::setMap(MapInfo& in) {
+  if (currentMapInfo()) {
+    currentMapInfo()->closeIfNotModified();
+  }
+
   if (in.id() == 0) {
     m_mapListView.setCurrentMapId(0);
     m_mapEditor.setMap(nullptr);

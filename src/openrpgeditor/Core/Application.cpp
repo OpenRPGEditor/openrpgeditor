@@ -231,7 +231,14 @@ void Application::updateFonts() {
   updateScale();
 }
 
-void Application::serializeSettings() { m_settings.serialize(m_userConfigPath + SettingsFilename.data()); }
+void Application::serializeSettings() {
+  if (!Database::instance()) {
+    size_t len = 0;
+    const char* state = ImGui::SaveIniSettingsToMemory(&len);
+    m_settings.imguiState = {state, len};
+  }
+  m_settings.serialize(m_userConfigPath + SettingsFilename.data());
+}
 ExitStatus Application::run() {
   /* Do an initial clear */
   SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 28, 38, 43, 255);
@@ -255,11 +262,9 @@ ExitStatus Application::run() {
   io.ConfigWindowsMoveFromTitleBarOnly = true;
   io.ConfigInputTrickleEventQueue = false;
   io.ConfigDockingWithShift = true;
+  io.IniFilename = nullptr;
 
-  // Absolute imgui.ini path to preserve settings independent of app location.
-  static const std::string imgui_ini_filename{m_userConfigPath + "imgui.ini"};
-  io.IniFilename = imgui_ini_filename.c_str();
-
+  ImGui::LoadIniSettingsFromMemory(m_settings.imguiState.c_str(), m_settings.imguiState.length());
   updateFonts();
 
   //  Setup Platform/Renderer backends
@@ -284,6 +289,7 @@ ExitStatus Application::run() {
 
   SDL_ShowWindow(m_window->getNativeWindow());
   float frameTime = 0.f;
+  float saveTime = 0.f;
   while (true) {
     EditorPluginManager::instance()->initializeAllPlugins();
     if (m_fontUpdateRequested && m_fontUpdateDelay <= 0) {
@@ -332,6 +338,7 @@ ExitStatus Application::run() {
 
     ImGui::NewFrame();
     frameTime += ImGui::GetIO().DeltaTime;
+    saveTime += ImGui::GetIO().DeltaTime;
 
     if (m_firstBootWizard && m_firstBootWizard->draw()) {
       Settings::instance()->ranFirstBootWizard = true;
@@ -364,6 +371,11 @@ ExitStatus Application::run() {
 #endif
       FileQueue::instance().proc();
       frameTime = 0.f;
+    }
+
+    if (io.WantSaveIniSettings && saveTime >= (1.f / 60.f)) {
+      serializeSettings();
+      saveTime = 0.f;
     }
   }
 

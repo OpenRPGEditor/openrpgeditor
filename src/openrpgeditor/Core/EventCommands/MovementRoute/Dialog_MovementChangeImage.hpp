@@ -10,12 +10,21 @@ struct MainWindow;
 struct Dialog_MovementChangeImage : IEventDialogController {
   Dialog_MovementChangeImage() = delete;
   explicit Dialog_MovementChangeImage(const std::string& name, const std::shared_ptr<MovementChangeImageCommand>& cmd = nullptr)
-  : IEventDialogController(name), command(cmd) {
+  : IEventDialogController(name)
+  , command(cmd) {
     if (command == nullptr) {
       command.reset(new MovementChangeImageCommand());
     }
     m_image = command->image;
     m_character = command->character;
+    m_characterSheet = CharacterSheet(m_image);
+    if (!m_actorButton->hasCompositeTextures() && m_characterSheet) {
+      auto [min, max] = m_characterSheet.value().getRectForCharacter(m_character, 1);
+
+      m_actorButton->setTexturesToComposite({{m_characterSheet->texture(),
+                                              {m_characterSheet->characterWidth(), m_characterSheet->characterHeight()},
+                                              {static_cast<int>(min.x() * m_characterSheet->texture().width()), static_cast<int>(min.y() * m_characterSheet->texture().height())}}});
+    }
   }
   std::tuple<bool, bool> draw() override;
 

@@ -68,7 +68,7 @@ void Template::setId(const int id) {
   MODIFIABLE_SET_OLD_VALUE(id);
   m_id = id;
   if (!signalsDisabled()) {
-    idModified().fire(this, id);
+    emit_signal(idModified(), this, id);
   }
   setModified();
 }
@@ -81,7 +81,7 @@ void Template::setName(const std::string& name) {
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
-    nameModified().fire(this, name);
+    emit_signal(nameModified(), this, name);
   }
   setModified();
 }
@@ -94,7 +94,7 @@ void Template::setNote(const std::string& note) {
   MODIFIABLE_SET_OLD_VALUE(note);
   m_note = note;
   if (!signalsDisabled()) {
-    noteModified().fire(this, note);
+   emit_signal( noteModified(), this, note);
   }
   setModified();
 }
@@ -107,7 +107,7 @@ void Template::setType(const TemplateType type) {
   MODIFIABLE_SET_OLD_VALUE(type);
   m_type = type;
   if (!signalsDisabled()) {
-    typeModified().fire(this, type);
+    emit_signal(typeModified(), this, type);
   }
   setModified();
 }
@@ -120,7 +120,7 @@ void Template::setCommands(const std::string& commands) {
   MODIFIABLE_SET_OLD_VALUE(commands);
   m_commands = commands;
   if (!signalsDisabled()) {
-    commandsModified().fire(this, commands);
+    emit_signal(commandsModified(), this, commands);
   }
   setModified();
 }
@@ -134,7 +134,7 @@ void Template::setParameters(const std::vector<int>& parameters) {
   MODIFIABLE_SET_OLD_VALUE(parameters);
   m_parameters = parameters;
   if (!signalsDisabled()) {
-    parametersModified().fire(this, parameters);
+    emit_signal(parametersModified(), this, parameters);
   }
   setModified();
 }

@@ -44,7 +44,7 @@ void Battler::setActorId(int actorId) {
   MODIFIABLE_SET_OLD_VALUE(actorId);
   m_actorId = actorId;
   if (!signalsDisabled()) {
-    actorIdModified().fire(this, actorId);
+    emit_signal(actorIdModified(), this, actorId);
   }
   setModified();
 }
@@ -54,7 +54,7 @@ void Battler::setEquips(const std::vector<int>& equips) {
   MODIFIABLE_SET_OLD_VALUE(equips);
   m_equips = equips;
   if (!signalsDisabled()) {
-    equipsModified().fire(this, m_equips);
+    emit_signal(equipsModified(), this, m_equips);
   }
   setModified();
 }
@@ -63,7 +63,7 @@ void Battler::setEquip(int index, int equip) {
   MODIFIABLE_SET_OLD_VALUE(equips);
   m_equips[index] = equip;
   if (!signalsDisabled()) {
-    equipModified().fire(this, index, equip);
+    emit_signal(equipModified(), this, index, equip);
   }
   setModified();
 }
@@ -73,7 +73,7 @@ void Battler::setLevel(int level) {
   MODIFIABLE_SET_OLD_VALUE(level);
   m_level = level;
   if (!signalsDisabled()) {
-    levelModified().fire(this, level);
+    emit_signal(levelModified(), this, level);
   }
   setModified();
 }

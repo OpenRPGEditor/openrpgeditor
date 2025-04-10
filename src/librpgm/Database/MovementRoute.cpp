@@ -57,7 +57,7 @@ void MovementRoute::setList(const std::vector<std::shared_ptr<IEventCommand>>& l
   MODIFIABLE_SET_OLD_VALUE(list);
   m_list = list;
   if (!signalsDisabled()) {
-    listModified().fire(this, list);
+  emit_signal(listModified(), this, list);
   }
   setModified();
 }
@@ -71,7 +71,7 @@ void MovementRoute::setRepeat(bool repeat) {
   MODIFIABLE_SET_OLD_VALUE(repeat);
   m_repeat = repeat;
   if (!signalsDisabled()) {
-    repeatModified().fire(this, repeat);
+  emit_signal(repeatModified(), this, repeat);
   }
   setModified();
 }
@@ -85,7 +85,7 @@ void MovementRoute::setSkippable(bool skippable) {
   MODIFIABLE_SET_OLD_VALUE(skippable);
   m_skippable = skippable;
   if (!signalsDisabled()) {
-    skippableModified().fire(this, skippable);
+  emit_signal(skippableModified(), this, skippable);
   }
   setModified();
 }
@@ -97,7 +97,7 @@ void MovementRoute::setWait(bool wait) {
   MODIFIABLE_SET_OLD_VALUE(wait);
   m_wait = wait;
   if (!signalsDisabled()) {
-    waitModified().fire(this, wait);
+  emit_signal(waitModified(), this, wait);
   }
   setModified();
 }
@@ -110,7 +110,7 @@ int MovementRoute::addCommand(const std::shared_ptr<IEventCommand>& command, int
   if (position < 0)
     position = 0;
   auto select = m_list.insert(m_list.begin() + position, command);
-  listModified().fire(this, m_list);
+emit_signal(listModified(), this, m_list);
   setModified(true);
   return select - m_list.begin() + 1;
 }

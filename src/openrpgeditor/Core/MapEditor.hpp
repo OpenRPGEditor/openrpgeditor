@@ -252,4 +252,6 @@ private:
   int m_movingEventY = -1;
   int m_tempMapWidth = 0;
   int m_tempMapHeight = 0;
+
+  void onParallaxNameModified(Map* info, const std::string& name);
 };

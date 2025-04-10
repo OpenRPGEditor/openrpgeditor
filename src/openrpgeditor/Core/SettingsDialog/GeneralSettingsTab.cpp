@@ -34,7 +34,7 @@ void GeneralSettingsTab::draw() {
     ImGui::SliderInt("##mru_max", &Settings::instance()->maxMru, 1, 20);
     if (ImGui::IsItemDeactivatedAfterEdit()) {
       Settings::instance()->maxMru = std::clamp(Settings::instance()->maxMru, 1, 20);
-      onValueChanged.fire();
+      emit_signal(onValueChanged);
     }
     // TODO: Undo/Redo stack settings
 
@@ -43,7 +43,7 @@ void GeneralSettingsTab::draw() {
     ImGui::LabelOverLineEdit("##project_location_line_edit", trNOOP("Project Base Directory Location"), location, sizeof(location), 0.f, trNOOP("Sets the directory where projects are stored"));
     if (ImGui::IsItemDeactivatedAfterEdit()) {
       Settings::instance()->projectBaseDirectory = location;
-      onValueChanged.fire();
+      emit_signal(onValueChanged);
     }
     ImGui::SameLine();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().FramePadding.y);
@@ -59,7 +59,7 @@ void GeneralSettingsTab::draw() {
               }
               const std::filesystem::path path{fileList[0]};
               Settings::instance()->projectBaseDirectory = absolute(path).generic_string();
-              static_cast<ISettingsTab*>(userdata)->onValueChanged.fire();
+              emit_signal(static_cast<ISettingsTab*>(userdata)->onValueChanged);
             },
             this, App::APP->getWindow()->getNativeWindow(), !Settings::instance()->projectBaseDirectory.empty() ? Settings::instance()->projectBaseDirectory.c_str() : nullptr, false);
       }

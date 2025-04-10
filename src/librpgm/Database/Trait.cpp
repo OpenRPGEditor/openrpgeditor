@@ -44,7 +44,7 @@ void Trait::setCode(const TraitCode code) {
   MODIFIABLE_SET_OLD_VALUE(code);
   m_code = code;
   if (!signalsDisabled()) {
-    codeModified().fire(this, code);
+  emit_signal(codeModified(), this, code);
   }
   setModified();
 }
@@ -54,7 +54,7 @@ void Trait::setDataId(const int dataId) {
   MODIFIABLE_SET_OLD_VALUE(dataId);
   m_dataId = dataId;
   if (!signalsDisabled()) {
-    dataIdModified().fire(this, dataId);
+  emit_signal(dataIdModified(), this, dataId);
   }
   setModified();
 }
@@ -64,7 +64,7 @@ void Trait::setValue(const double value) {
   MODIFIABLE_SET_OLD_VALUE(value);
   m_value = value;
   if (!signalsDisabled()) {
-    valueModified().fire(this, value);
+  emit_signal(valueModified(), this, value);
   }
   setModified();
 }

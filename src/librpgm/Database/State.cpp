@@ -201,7 +201,7 @@ void State::setId(int id) {
   MODIFIABLE_SET_OLD_VALUE(id);
   m_id = id;
   if (!signalsDisabled()) {
-    idModified().fire(this, id);
+  emit_signal(idModified(), this, id);
   }
   setModified();
 }
@@ -214,7 +214,7 @@ void State::setAutoRemovalTiming(AutoRemovalTiming autoRemovalTiming) {
   MODIFIABLE_SET_OLD_VALUE(autoRemovalTiming);
   m_autoRemovalTiming = autoRemovalTiming;
   if (!signalsDisabled()) {
-    autoRemovalTimingModified().fire(this, autoRemovalTiming);
+  emit_signal(autoRemovalTimingModified(), this, autoRemovalTiming);
   }
   setModified();
 }
@@ -227,7 +227,7 @@ void State::setChanceByDamage(int chanceByDamage) {
   MODIFIABLE_SET_OLD_VALUE(chanceByDamage);
   m_chanceByDamage = chanceByDamage;
   if (!signalsDisabled()) {
-    chanceByDamageModified().fire(this, chanceByDamage);
+  emit_signal(chanceByDamageModified(), this, chanceByDamage);
   }
   setModified();
 }
@@ -240,7 +240,7 @@ void State::setIconIndex(int iconIndex) {
   MODIFIABLE_SET_OLD_VALUE(iconIndex);
   m_iconIndex = iconIndex;
   if (!signalsDisabled()) {
-    iconIndexModified().fire(this, iconIndex);
+  emit_signal(iconIndexModified(), this, iconIndex);
   }
   setModified();
 }
@@ -253,7 +253,7 @@ void State::setMinTurns(int minTurns) {
   MODIFIABLE_SET_OLD_VALUE(minTurns);
   m_minTurns = minTurns;
   if (!signalsDisabled()) {
-    minTurnsModified().fire(this, m_minTurns);
+  emit_signal(minTurnsModified(), this, m_minTurns);
   }
   setModified();
 }
@@ -266,7 +266,7 @@ void State::setMaxTurns(int maxTurns) {
   MODIFIABLE_SET_OLD_VALUE(maxTurns);
   m_maxTurns = maxTurns;
   if (!signalsDisabled()) {
-    maxTurnsModified().fire(this, m_maxTurns);
+  emit_signal(maxTurnsModified(), this, m_maxTurns);
   }
   setModified();
 }
@@ -279,7 +279,7 @@ void State::setMessage1(const std::string& message1) {
   MODIFIABLE_SET_OLD_VALUE(message1);
   m_message1 = message1;
   if (!signalsDisabled()) {
-    message1Modified().fire(this, m_message1);
+  emit_signal(message1Modified(), this, m_message1);
   }
   setModified();
 }
@@ -292,7 +292,7 @@ void State::setMessage2(const std::string& message2) {
   MODIFIABLE_SET_OLD_VALUE(message2);
   m_message2 = message2;
   if (!signalsDisabled()) {
-    message2Modified().fire(this, m_message2);
+  emit_signal(message2Modified(), this, m_message2);
   }
   setModified();
 }
@@ -304,7 +304,7 @@ void State::setMessage3(const std::string& message3) {
   MODIFIABLE_SET_OLD_VALUE(message3);
   m_message3 = message3;
   if (!signalsDisabled()) {
-    message3Modified().fire(this, m_message3);
+  emit_signal(message3Modified(), this, m_message3);
   }
   setModified();
 }
@@ -317,7 +317,7 @@ void State::setMessage4(const std::string& message4) {
   MODIFIABLE_SET_OLD_VALUE(message4);
   m_message4 = message4;
   if (!signalsDisabled()) {
-    message4Modified().fire(this, m_message4);
+  emit_signal(message4Modified(), this, m_message4);
   }
   setModified();
 }
@@ -330,7 +330,7 @@ void State::setMotion(StateMotion motion) {
   MODIFIABLE_SET_OLD_VALUE(motion);
   m_motion = motion;
   if (!signalsDisabled()) {
-    motionModified().fire(this, m_motion);
+  emit_signal(motionModified(), this, m_motion);
   }
   setModified();
 }
@@ -343,7 +343,7 @@ void State::setName(const std::string& name) {
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
-    nameModified().fire(this, m_name);
+  emit_signal(nameModified(), this, m_name);
   }
   setModified();
 }
@@ -356,7 +356,7 @@ void State::setNote(const std::string& note) {
   MODIFIABLE_SET_OLD_VALUE(note);
   m_note = note;
   if (!signalsDisabled()) {
-    noteModified().fire(this, m_note);
+  emit_signal(noteModified(), this, m_note);
   }
   setModified();
 }
@@ -369,7 +369,7 @@ void State::setOverlay(StateOverlay overlay) {
   MODIFIABLE_SET_OLD_VALUE(overlay);
   m_overlay = overlay;
   if (!signalsDisabled()) {
-    overlayModified().fire(this, m_overlay);
+  emit_signal(overlayModified(), this, m_overlay);
   }
   setModified();
 }
@@ -382,7 +382,7 @@ void State::setPriority(int priority) {
   MODIFIABLE_SET_OLD_VALUE(priority);
   m_priority = priority;
   if (!signalsDisabled()) {
-    priorityModified().fire(this, m_priority);
+  emit_signal(priorityModified(), this, m_priority);
   }
   setModified();
 }
@@ -395,7 +395,7 @@ void State::setReleaseByDamage(bool releaseByDamage) {
   MODIFIABLE_SET_OLD_VALUE(releaseByDamage);
   m_releaseByDamage = releaseByDamage;
   if (!signalsDisabled()) {
-    releaseByDamageModified().fire(this, m_releaseByDamage);
+  emit_signal(releaseByDamageModified(), this, m_releaseByDamage);
   }
   setModified();
 }
@@ -408,7 +408,7 @@ void State::setRemoveAtBattleEnd(bool removeAtBattleEnd) {
   MODIFIABLE_SET_OLD_VALUE(removeAtBattleEnd);
   m_removeAtBattleEnd = removeAtBattleEnd;
   if (!signalsDisabled()) {
-    removeAtBattleEndModified().fire(this, m_removeAtBattleEnd);
+  emit_signal(removeAtBattleEndModified(), this, m_removeAtBattleEnd);
   }
   setModified();
 }
@@ -421,7 +421,7 @@ void State::setRemoveByDamage(bool removeByDamage) {
   MODIFIABLE_SET_OLD_VALUE(removeByDamage);
   m_removeByDamage = removeByDamage;
   if (!signalsDisabled()) {
-    removeByDamageModified().fire(this, m_removeByDamage);
+  emit_signal(removeByDamageModified(), this, m_removeByDamage);
   }
   setModified();
 }
@@ -434,7 +434,7 @@ void State::setRemoveByRestriction(bool removeByRestriction) {
   MODIFIABLE_SET_OLD_VALUE(removeByRestriction);
   m_removeByRestriction = removeByRestriction;
   if (!signalsDisabled()) {
-    removeByRestrictionModified().fire(this, m_removeByRestriction);
+  emit_signal(removeByRestrictionModified(), this, m_removeByRestriction);
   }
   setModified();
 }
@@ -447,7 +447,7 @@ void State::setRemoveByWalking(bool removeByWalking) {
   MODIFIABLE_SET_OLD_VALUE(removeByWalking);
   m_removeByWalking = removeByWalking;
   if (!signalsDisabled()) {
-    removeByWalkingModified().fire(this, m_removeByWalking);
+  emit_signal(removeByWalkingModified(), this, m_removeByWalking);
   }
   setModified();
 }
@@ -460,7 +460,7 @@ void State::setRestriction(StateRestriction restriction) {
   MODIFIABLE_SET_OLD_VALUE(restriction);
   m_restriction = restriction;
   if (!signalsDisabled()) {
-    restrictionModified().fire(this, m_restriction);
+  emit_signal(restrictionModified(), this, m_restriction);
   }
   setModified();
 }
@@ -473,7 +473,7 @@ void State::setStepsToRemove(int stepsToRemove) {
   MODIFIABLE_SET_OLD_VALUE(stepsToRemove);
   m_stepsToRemove = stepsToRemove;
   if (!signalsDisabled()) {
-    stepsToRemoveModified().fire(this, m_stepsToRemove);
+  emit_signal(stepsToRemoveModified(), this, m_stepsToRemove);
   }
   setModified();
 }
@@ -486,7 +486,7 @@ void State::setTraits(const std::vector<Trait>& traits) {
   MODIFIABLE_SET_OLD_VALUE(traits);
   m_traits = traits;
   if (!signalsDisabled()) {
-    traitsModified().fire(this, m_traits);
+  emit_signal(traitsModified(), this, m_traits);
   }
   setModified();
 }

@@ -78,7 +78,7 @@ void Tileset::setId(const int id) {
   MODIFIABLE_SET_OLD_VALUE(id);
   m_id = id;
   if (!signalsDisabled()) {
-    idModified().fire(this, id);
+  emit_signal(idModified(), this, id);
   }
   setModified();
 }
@@ -124,7 +124,7 @@ void Tileset::setFlags(const std::vector<std::optional<int>>& flags) {
   MODIFIABLE_SET_OLD_VALUE(flags);
   m_flags = flags;
   if (!signalsDisabled()) {
-    flagsModified().fire(this, flags);
+  emit_signal(flagsModified(), this, flags);
   }
   setModified();
 }
@@ -148,7 +148,7 @@ void Tileset::setFlag(const int idx, const int flag, const bool enabled) {
     *m_flags[idx] &= ~flag;
   }
   if (!signalsDisabled()) {
-    flagsModified().fire(this, m_flags);
+  emit_signal(flagsModified(), this, m_flags);
   }
   setModified();
 }
@@ -169,7 +169,7 @@ void Tileset::setTerrainTag(const int idx, const int tag) {
 
   *m_flags[idx] = ((tag & 0xFFFFF) << 12) | (*m_flags[idx] & 0xFFF);
   if (!signalsDisabled()) {
-    flagsModified().fire(this, m_flags);
+  emit_signal(flagsModified(), this, m_flags);
   }
   setModified();
 }
@@ -182,7 +182,7 @@ void Tileset::setMode(const Mode mode) {
   MODIFIABLE_SET_OLD_VALUE(mode);
   m_mode = mode;
   if (!signalsDisabled()) {
-    modeModified().fire(this, mode);
+  emit_signal(modeModified(), this, mode);
   }
   setModified();
 }
@@ -195,7 +195,7 @@ void Tileset::setName(const std::string& name) {
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
-    nameModified().fire(this, name);
+  emit_signal(nameModified(), this, name);
   }
   setModified();
 }
@@ -208,7 +208,7 @@ void Tileset::setNote(const std::string& note) {
   MODIFIABLE_SET_OLD_VALUE(note);
   m_note = note;
   if (!signalsDisabled()) {
-    noteModified().fire(this, note);
+  emit_signal(noteModified(), this, note);
   }
   setModified();
 }
@@ -221,7 +221,7 @@ void Tileset::setTilesetNames(const std::array<std::string, 9>& tilesetNames) {
   MODIFIABLE_SET_OLD_VALUE(tilesetNames);
   m_tilesetNames = tilesetNames;
   if (!signalsDisabled()) {
-    tilesetNamesModified().fire(this, tilesetNames);
+  emit_signal(tilesetNamesModified(), this, tilesetNames);
   }
   setModified();
 }
@@ -237,7 +237,7 @@ void Tileset::setTilesetName(const int idx, const std::string& name) {
   MODIFIABLE_SET_OLD_VALUE(tilesetNames);
   m_tilesetNames[idx] = name;
   if (!signalsDisabled()) {
-    tilesetNamesModified().fire(this, m_tilesetNames);
+  emit_signal(tilesetNamesModified(), this, m_tilesetNames);
   }
   setModified();
 }

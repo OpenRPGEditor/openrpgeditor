@@ -137,7 +137,7 @@ void EventCondition::setActorId(const int actorId) {
   MODIFIABLE_SET_OLD_VALUE(actorId);
   m_actorId = actorId;
   if (!signalsDisabled()) {
-    actorIdModified().fire(this, actorId);
+    emit_signal(actorIdModified(), this, actorId);
   }
   setModified();
 }
@@ -150,7 +150,7 @@ void EventCondition::setActorValid(const bool actorValid) {
   MODIFIABLE_SET_OLD_VALUE(actorValid);
   m_actorValid = actorValid;
   if (!signalsDisabled()) {
-    actorValidModified().fire(this, actorValid);
+    emit_signal(actorValidModified(), this, actorValid);
   }
   setModified();
 }
@@ -163,7 +163,7 @@ void EventCondition::setItemId(const int itemId) {
   MODIFIABLE_SET_OLD_VALUE(itemId);
   m_itemId = itemId;
   if (!signalsDisabled()) {
-    itemIdModified().fire(this, itemId);
+    emit_signal(itemIdModified(), this, itemId);
   }
   setModified();
 }
@@ -176,7 +176,7 @@ void EventCondition::setItemValid(const bool itemValid) {
   MODIFIABLE_SET_OLD_VALUE(itemValid);
   m_itemValid = itemValid;
   if (!signalsDisabled()) {
-    itemValidModified().fire(this, itemValid);
+    emit_signal(itemValidModified(), this, itemValid);
   }
   setModified();
 }
@@ -189,7 +189,7 @@ void EventCondition::setSelfSwitchCh(const std::string_view selfSwitchCh) {
   MODIFIABLE_SET_OLD_VALUE(selfSwitchCh);
   m_selfSwitchCh = selfSwitchCh;
   if (!signalsDisabled()) {
-    selfSwitchModified().fire(this, m_selfSwitchCh);
+  emit_signal(selfSwitchModified(), this, m_selfSwitchCh);
   }
   setModified();
 }
@@ -202,7 +202,7 @@ void EventCondition::setSelfSwitchValid(const bool selfSwitchValid) {
   MODIFIABLE_SET_OLD_VALUE(selfSwitchValid);
   m_selfSwitchValid = selfSwitchValid;
   if (!signalsDisabled()) {
-    selfSwitchValidModified().fire(this, m_selfSwitchValid);
+  emit_signal(selfSwitchValidModified(), this, m_selfSwitchValid);
   }
   setModified();
 }
@@ -216,7 +216,7 @@ void EventCondition::setSwitch1Id(const int switch1Id) {
   MODIFIABLE_SET_OLD_VALUE(switch1Id);
   m_switch1Id = switch1Id;
   if (!signalsDisabled()) {
-    switch1IdModified().fire(this, m_switch1Id);
+  emit_signal(switch1IdModified(), this, m_switch1Id);
   }
   setModified();
 }
@@ -229,7 +229,7 @@ void EventCondition::setSwitch1Valid(const bool switch1Valid) {
   MODIFIABLE_SET_OLD_VALUE(switch1Valid);
   m_switch1Valid = switch1Valid;
   if (!signalsDisabled()) {
-    switch1ValidModified().fire(this, m_switch1Valid);
+  emit_signal(switch1ValidModified(), this, m_switch1Valid);
   }
   setModified();
 }
@@ -242,7 +242,7 @@ void EventCondition::setSwitch2Id(const int switch2Id) {
   MODIFIABLE_SET_OLD_VALUE(switch2Id);
   m_switch2Id = switch2Id;
   if (!signalsDisabled()) {
-    switch2IdModified().fire(this, m_switch2Id);
+  emit_signal(switch2IdModified(), this, m_switch2Id);
   }
   setModified();
 }
@@ -254,7 +254,7 @@ void EventCondition::setSwitch2Valid(const bool switch2Valid) {
   MODIFIABLE_SET_OLD_VALUE(switch2Valid);
   m_switch2Valid = switch2Valid;
   if (!signalsDisabled()) {
-    switch2ValidModified().fire(this, m_switch2Valid);
+  emit_signal(switch2ValidModified(), this, m_switch2Valid);
   }
   setModified();
 }
@@ -267,7 +267,7 @@ void EventCondition::setVariableId(const int variableId) {
   MODIFIABLE_SET_OLD_VALUE(variableId);
   m_variableId = variableId;
   if (!signalsDisabled()) {
-    variableIdModified().fire(this, m_variableId);
+  emit_signal(variableIdModified(), this, m_variableId);
   }
   setModified();
 }
@@ -280,7 +280,7 @@ void EventCondition::setVariableValid(const bool variableValid) {
   MODIFIABLE_SET_OLD_VALUE(variableValid);
   m_variableValid = variableValid;
   if (!signalsDisabled()) {
-    variableValidModified().fire(this, m_variableValid);
+  emit_signal(variableValidModified(), this, m_variableValid);
   }
   setModified();
 }
@@ -293,7 +293,7 @@ void EventCondition::setVariableValue(const int variableValue) {
   MODIFIABLE_SET_OLD_VALUE(variableValue);
   m_variableValue = variableValue;
   if (!signalsDisabled()) {
-    variableValueModified().fire(this, m_variableValue);
+  emit_signal(variableValueModified(), this, m_variableValue);
   }
   setModified();
 }
@@ -477,7 +477,7 @@ void EventImage::setTileId(int tileId) {
   MODIFIABLE_SET_OLD_VALUE(tileId);
   m_tileId = tileId;
   if (!signalsDisabled()) {
-    tileIdModified().fire(this, tileId);
+  emit_signal(tileIdModified(), this, tileId);
   }
   setModified();
 }
@@ -490,7 +490,7 @@ void EventImage::setCharacterName(std::string_view characterName) {
   MODIFIABLE_SET_OLD_VALUE(characterName);
   m_characterName = characterName;
   if (!signalsDisabled()) {
-    characterNameModified().fire(this, m_characterName);
+  emit_signal(characterNameModified(), this, m_characterName);
   }
   setModified();
 }
@@ -502,7 +502,7 @@ void EventImage::setDirection(const Direction direction) {
   MODIFIABLE_SET_OLD_VALUE(direction);
   m_direction = direction;
   if (!signalsDisabled()) {
-    directionModified().fire(this, m_direction);
+  emit_signal(directionModified(), this, m_direction);
   }
   setModified();
 }
@@ -515,7 +515,7 @@ void EventImage::setPattern(const int pattern) {
   MODIFIABLE_SET_OLD_VALUE(pattern);
   m_pattern = pattern;
   if (!signalsDisabled()) {
-    patternModified().fire(this, m_pattern);
+  emit_signal(patternModified(), this, m_pattern);
   }
   setModified();
 }
@@ -528,7 +528,7 @@ void EventImage::setCharacterIndex(const int characterIndex) {
   MODIFIABLE_SET_OLD_VALUE(characterIndex);
   m_characterIndex = characterIndex;
   if (!signalsDisabled()) {
-    characterIndexModified().fire(this, m_characterIndex);
+  emit_signal(characterIndexModified(), this, m_characterIndex);
   }
   setModified();
 }
@@ -739,7 +739,7 @@ void EventPage::setCondition(const EventCondition& condition) {
   MODIFIABLE_SET_OLD_VALUE(conditions);
   m_conditions = condition;
   if (!signalsDisabled()) {
-    conditionsModified().fire(this, condition);
+  emit_signal(conditionsModified(), this, condition);
   }
   setModified();
 }
@@ -752,7 +752,7 @@ void EventPage::setDirectionFix(const bool directionFix) {
   MODIFIABLE_SET_OLD_VALUE(directionFix);
   m_directionFix = directionFix;
   if (!signalsDisabled()) {
-    directionFixModified().fire(this, m_directionFix);
+  emit_signal(directionFixModified(), this, m_directionFix);
   }
   setModified();
 }
@@ -766,7 +766,7 @@ void EventPage::setImage(const EventImage& image) {
   MODIFIABLE_SET_OLD_VALUE(image);
   m_image = image;
   if (!signalsDisabled()) {
-    imageModified().fire(this, m_image);
+  emit_signal(imageModified(), this, m_image);
   }
   setModified();
 }
@@ -780,7 +780,7 @@ void EventPage::setList(const std::vector<std::shared_ptr<IEventCommand>>& list)
   MODIFIABLE_SET_OLD_VALUE(list);
   m_list = list;
   if (!signalsDisabled()) {
-    listModified().fire(this, m_list);
+  emit_signal(listModified(), this, m_list);
   }
   setModified();
 }
@@ -794,7 +794,7 @@ void EventPage::setMoveRoute(const MovementRoute& moveRoute) {
   MODIFIABLE_SET_OLD_VALUE(moveRoute);
   m_moveRoute = moveRoute;
   if (!signalsDisabled()) {
-    moveRouteModified().fire(this, m_moveRoute);
+  emit_signal(moveRouteModified(), this, m_moveRoute);
   }
   setModified();
 }
@@ -807,7 +807,7 @@ void EventPage::setMoveSpeed(const MovementSpeed movementSpeed) {
   MODIFIABLE_SET_OLD_VALUE(moveSpeed);
   m_moveSpeed = movementSpeed;
   if (!signalsDisabled()) {
-    moveSpeedModified().fire(this, m_moveSpeed);
+  emit_signal(moveSpeedModified(), this, m_moveSpeed);
   }
   setModified();
 }
@@ -820,7 +820,7 @@ void EventPage::setMoveFrequency(const MovementFrequency moveFrequency) {
   MODIFIABLE_SET_OLD_VALUE(moveFrequency);
   m_moveFrequency = moveFrequency;
   if (!signalsDisabled()) {
-    moveFrequencyModified().fire(this, m_moveFrequency);
+  emit_signal(moveFrequencyModified(), this, m_moveFrequency);
   }
   setModified();
 }
@@ -833,7 +833,7 @@ void EventPage::setMoveType(const MoveType movementType) {
   MODIFIABLE_SET_OLD_VALUE(moveType);
   m_moveType = movementType;
   if (!signalsDisabled()) {
-    moveTypeModified().fire(this, m_moveType);
+  emit_signal(moveTypeModified(), this, m_moveType);
   }
   setModified();
 }
@@ -846,7 +846,7 @@ void EventPage::setPriorityType(const EventPriority priority) {
   MODIFIABLE_SET_OLD_VALUE(priorityType);
   m_priorityType = priority;
   if (!signalsDisabled()) {
-    priorityTypeModified().fire(this, m_priorityType);
+  emit_signal(priorityTypeModified(), this, m_priorityType);
   }
   setModified();
 }
@@ -859,7 +859,7 @@ void EventPage::setStepAnime(const bool stepAnime) {
   MODIFIABLE_SET_OLD_VALUE(stepAnime);
   m_stepAnime = stepAnime;
   if (!signalsDisabled()) {
-    stepAnimeModified().fire(this, m_stepAnime);
+  emit_signal(stepAnimeModified(), this, m_stepAnime);
   }
   setModified();
 }
@@ -872,7 +872,7 @@ void EventPage::setThrough(const bool through) {
   MODIFIABLE_SET_OLD_VALUE(through);
   m_through = through;
   if (!signalsDisabled()) {
-    throughModified().fire(this, m_through);
+  emit_signal(throughModified(), this, m_through);
   }
   setModified();
 }
@@ -885,7 +885,7 @@ void EventPage::setTrigger(const EventTriggerType trigger) {
   MODIFIABLE_SET_OLD_VALUE(trigger);
   m_trigger = trigger;
   if (!signalsDisabled()) {
-    triggerModified().fire(this, m_trigger);
+  emit_signal(triggerModified(), this, m_trigger);
   }
   setModified();
 }
@@ -898,7 +898,7 @@ void EventPage::setWalkAnime(const bool walkAnime) {
   MODIFIABLE_SET_OLD_VALUE(walkAnime);
   m_walkAnime = walkAnime;
   if (!signalsDisabled()) {
-    walkAnimeModified().fire(this, m_walkAnime);
+  emit_signal(walkAnimeModified(), this, m_walkAnime);
   }
   setModified();
 }
@@ -911,7 +911,7 @@ void EventPage::setName(std::string_view name) {
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
-    nameModified().fire(this, name.data());
+  emit_signal(nameModified(), this, name.data());
   }
   setModified();
 }

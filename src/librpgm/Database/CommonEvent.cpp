@@ -66,7 +66,7 @@ void CommonEvent::setCommands(const std::vector<std::shared_ptr<IEventCommand>>&
   MODIFIABLE_SET_OLD_VALUE(commands);
   m_commands = commands;
   if (!signalsDisabled()) {
-    commandsModified().fire(this, commands);
+  emit_signal(commandsModified(), this, commands);
   }
   setModified(true);
 }
@@ -79,7 +79,7 @@ void CommonEvent::setName(const std::string& name) {
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
-    nameModified().fire(this, name);
+  emit_signal(nameModified(), this, name);
   }
   setModified(true);
 }
@@ -92,7 +92,7 @@ void CommonEvent::setSwitchId(const int id) {
   MODIFIABLE_SET_OLD_VALUE(id);
   m_switchId = id;
   if (!signalsDisabled()) {
-    switchIdModified().fire(this, id);
+  emit_signal(switchIdModified(), this, id);
   }
   setModified(true);
 }
@@ -105,7 +105,7 @@ void CommonEvent::setTrigger(const CommonEventTriggerType trigger) {
   MODIFIABLE_SET_OLD_VALUE(trigger);
   m_trigger = trigger;
   if (!signalsDisabled()) {
-    triggerModified().fire(this, trigger);
+  emit_signal(triggerModified(), this, trigger);
   }
   setModified(true);
 }

@@ -168,7 +168,7 @@ void Item::setId(const int id) {
   MODIFIABLE_SET_OLD_VALUE(id);
   m_id = id;
   if (!signalsDisabled()) {
-    idModified().fire(this, id);
+  emit_signal(idModified(), this, id);
   }
   setModified();
 }
@@ -181,7 +181,7 @@ void Item::setAnimationId(const int animationId) {
   MODIFIABLE_SET_OLD_VALUE(animationId);
   m_animationId = animationId;
   if (!signalsDisabled()) {
-    animationIdModified().fire(this, animationId);
+  emit_signal(animationIdModified(), this, animationId);
   }
   setModified();
 }
@@ -194,7 +194,7 @@ void Item::setConsumable(const bool consumable) {
   MODIFIABLE_SET_OLD_VALUE(consumable);
   m_consumable = consumable;
   if (!signalsDisabled()) {
-    idModified().fire(this, m_consumable);
+  emit_signal(idModified(), this, m_consumable);
   }
   setModified();
 }
@@ -206,7 +206,7 @@ void Item::setDamage(const Damage& damage) {
   }
   m_damage = damage;
   if (!signalsDisabled()) {
-    damageModified().fire(this, m_damage);
+  emit_signal(damageModified(), this, m_damage);
   }
   setModified();
 }
@@ -219,7 +219,7 @@ void Item::setDescription(const std::string& description) {
   MODIFIABLE_SET_OLD_VALUE(description);
   m_description = description;
   if (!signalsDisabled()) {
-    descriptionModified().fire(this, m_description);
+  emit_signal(descriptionModified(), this, m_description);
   }
   setModified();
 }
@@ -232,7 +232,7 @@ void Item::setEffects(const std::vector<Effect>& effects) {
   MODIFIABLE_SET_OLD_VALUE(effects);
   m_effects = effects;
   if (!signalsDisabled()) {
-    effectsModified().fire(this, m_effects);
+  emit_signal(effectsModified(), this, m_effects);
   }
   setModified();
 }
@@ -245,7 +245,7 @@ void Item::setHitType(const HitType hitType) {
   MODIFIABLE_SET_OLD_VALUE(hitType);
   m_hitType = hitType;
   if (!signalsDisabled()) {
-    hitTypeModified().fire(this, m_hitType);
+  emit_signal(hitTypeModified(), this, m_hitType);
   }
   setModified();
 }
@@ -257,7 +257,7 @@ void Item::setIconIndex(const int iconIndex) {
   }
   m_iconIndex = iconIndex;
   if (!signalsDisabled()) {
-    iconIndexModified().fire(this, m_iconIndex);
+  emit_signal(iconIndexModified(), this, m_iconIndex);
   }
   setModified();
 }
@@ -270,7 +270,7 @@ void Item::setItypeId(const int itypeId) {
   MODIFIABLE_SET_OLD_VALUE(itypeId);
   m_itypeId = itypeId;
   if (!signalsDisabled()) {
-    itypeIdModified().fire(this, m_itypeId);
+  emit_signal(itypeIdModified(), this, m_itypeId);
   }
   setModified();
 }
@@ -283,7 +283,7 @@ void Item::setName(const std::string& name) {
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
-    nameModified().fire(this, m_name);
+  emit_signal(nameModified(), this, m_name);
   }
   setModified();
 }
@@ -296,7 +296,7 @@ void Item::setNote(const std::string& note) {
   MODIFIABLE_SET_OLD_VALUE(note);
   m_note = note;
   if (!signalsDisabled()) {
-    noteModified().fire(this, m_note);
+  emit_signal(noteModified(), this, m_note);
   }
   setModified();
 }
@@ -309,7 +309,7 @@ void Item::setOccasion(const Occasion occasion) {
   MODIFIABLE_SET_OLD_VALUE(occasion);
   m_occasion = occasion;
   if (!signalsDisabled()) {
-    occasionModified().fire(this, m_occasion);
+  emit_signal(occasionModified(), this, m_occasion);
   }
   setModified();
 }
@@ -322,7 +322,7 @@ void Item::setPrice(const int price) {
   MODIFIABLE_SET_OLD_VALUE(price);
   m_price = price;
   if (!signalsDisabled()) {
-    priceModified().fire(this, m_price);
+  emit_signal(priceModified(), this, m_price);
   }
   setModified();
 }
@@ -335,7 +335,7 @@ void Item::setRepeats(const int repeats) {
   MODIFIABLE_SET_OLD_VALUE(repeats);
   m_repeats = repeats;
   if (!signalsDisabled()) {
-    repeatsModified().fire(this, m_repeats);
+  emit_signal(repeatsModified(), this, m_repeats);
   }
   setModified();
 }
@@ -348,7 +348,7 @@ void Item::setScope(const Scope scope) {
   MODIFIABLE_SET_OLD_VALUE(scope);
   m_scope = scope;
   if (!signalsDisabled()) {
-    scopeModified().fire(this, m_scope);
+  emit_signal(scopeModified(), this, m_scope);
   }
   setModified();
 }
@@ -361,7 +361,7 @@ void Item::setSpeed(const int speed) {
   MODIFIABLE_SET_OLD_VALUE(speed);
   m_speed = speed;
   if (!signalsDisabled()) {
-    speedModified().fire(this, m_speed);
+  emit_signal(speedModified(), this, m_speed);
   }
   setModified();
 }
@@ -374,7 +374,7 @@ void Item::setSuccessRate(const int successRate) {
   MODIFIABLE_SET_OLD_VALUE(successRate);
   m_successRate = successRate;
   if (!signalsDisabled()) {
-    successRateModified().fire(this, m_successRate);
+  emit_signal(successRateModified(), this, m_successRate);
   }
   setModified();
 }
@@ -387,7 +387,7 @@ void Item::setTpGain(const int tpGain) {
   MODIFIABLE_SET_OLD_VALUE(tpGain);
   m_tpGain = tpGain;
   if (!signalsDisabled()) {
-    tpGainModified().fire(this, m_tpGain);
+  emit_signal(tpGainModified(), this, m_tpGain);
   }
   setModified();
 }

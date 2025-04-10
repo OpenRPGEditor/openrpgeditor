@@ -57,7 +57,7 @@ void Troop::Member::setEnemyId(int value) {
   MODIFIABLE_SET_OLD_VALUE(enemyId);
   m_enemyId = value;
   if (!signalsDisabled()) {
-    enemyIdModified().fire(this, value);
+  emit_signal(enemyIdModified(), this, value);
   }
   setModified();
 }
@@ -70,7 +70,7 @@ void Troop::Member::setX(int value) {
   MODIFIABLE_SET_OLD_VALUE(x);
   m_x = value;
   if (!signalsDisabled()) {
-    xModified().fire(this, value);
+  emit_signal(xModified(), this, value);
   }
   setModified();
 }
@@ -83,7 +83,7 @@ void Troop::Member::setY(int value) {
   MODIFIABLE_SET_OLD_VALUE(y);
   m_y = value;
   if (!signalsDisabled()) {
-    yModified().fire(this, value);
+  emit_signal(yModified(), this, value);
   }
   setModified();
 }
@@ -96,7 +96,7 @@ void Troop::Member::setHidden(bool value) {
   MODIFIABLE_SET_OLD_VALUE(hidden);
   m_hidden = value;
   if (!signalsDisabled()) {
-    hiddenModified().fire(this, value);
+  emit_signal(hiddenModified(), this, value);
   }
   setModified();
 }
@@ -268,7 +268,7 @@ void Troop::Conditions::setActorHp(int value) {
   MODIFIABLE_SET_OLD_VALUE(actorHp);
   m_actorHp = value;
   if (!signalsDisabled()) {
-    actorHpModified().fire(this, value);
+  emit_signal(actorHpModified(), this, value);
   }
   setModified();
 }
@@ -281,7 +281,7 @@ void Troop::Conditions::setActorId(int value) {
   MODIFIABLE_SET_OLD_VALUE(actorId);
   m_actorId = value;
   if (!signalsDisabled()) {
-    actorIdModified().fire(this, value);
+  emit_signal(actorIdModified(), this, value);
   }
   setModified();
 }
@@ -294,7 +294,7 @@ void Troop::Conditions::setActorValid(const bool value) {
   MODIFIABLE_SET_OLD_VALUE(actorValid);
   m_actorValid = value;
   if (!signalsDisabled()) {
-    actorValidModified().fire(this, value);
+  emit_signal(actorValidModified(), this, value);
   }
   setModified();
 }
@@ -307,7 +307,7 @@ void Troop::Conditions::setEnemyIndex(const int value) {
   MODIFIABLE_SET_OLD_VALUE(enemyIndex);
   m_enemyIndex = value;
   if (!signalsDisabled()) {
-    enemyIndexModified().fire(this, value);
+  emit_signal(enemyIndexModified(), this, value);
   }
   setModified();
 }
@@ -320,7 +320,7 @@ void Troop::Conditions::setEnemyHp(const int value) {
   MODIFIABLE_SET_OLD_VALUE(enemyHp);
   m_enemyHp = value;
   if (!signalsDisabled()) {
-    enemyHpModified().fire(this, value);
+  emit_signal(enemyHpModified(), this, value);
   }
   setModified();
 }
@@ -333,7 +333,7 @@ void Troop::Conditions::setEnemyValid(const bool value) {
   MODIFIABLE_SET_OLD_VALUE(enemyValid);
   m_enemyValid = value;
   if (!signalsDisabled()) {
-    enemyValidModified().fire(this, value);
+  emit_signal(enemyValidModified(), this, value);
   }
   setModified();
 }
@@ -346,7 +346,7 @@ void Troop::Conditions::setSwitchId(const int value) {
   MODIFIABLE_SET_OLD_VALUE(switchId);
   m_switchId = value;
   if (!signalsDisabled()) {
-    switchIdModified().fire(this, value);
+  emit_signal(switchIdModified(), this, value);
   }
   setModified();
 }
@@ -359,7 +359,7 @@ void Troop::Conditions::setSwitchValid(const bool value) {
   MODIFIABLE_SET_OLD_VALUE(switchValid);
   m_switchValid = value;
   if (!signalsDisabled()) {
-    switchValidModified().fire(this, value);
+  emit_signal(switchValidModified(), this, value);
   }
   setModified();
 }
@@ -372,7 +372,7 @@ void Troop::Conditions::setTurnA(const int value) {
   MODIFIABLE_SET_OLD_VALUE(turnA);
   m_turnA = value;
   if (!signalsDisabled()) {
-    turnAModified().fire(this, value);
+  emit_signal(turnAModified(), this, value);
   }
   setModified();
 }
@@ -385,7 +385,7 @@ void Troop::Conditions::setTurnB(const int value) {
   MODIFIABLE_SET_OLD_VALUE(turnB);
   m_turnB = value;
   if (!signalsDisabled()) {
-    turnBModified().fire(this, value);
+  emit_signal(turnBModified(), this, value);
   }
   setModified();
 }
@@ -398,7 +398,7 @@ void Troop::Conditions::setTurnEnding(const bool value) {
   MODIFIABLE_SET_OLD_VALUE(turnEnding);
   m_turnEnding = value;
   if (!signalsDisabled()) {
-    turnEndingModified().fire(this, value);
+  emit_signal(turnEndingModified(), this, value);
   }
   setModified();
 }
@@ -411,7 +411,7 @@ void Troop::Conditions::setTurnValid(const bool value) {
   MODIFIABLE_SET_OLD_VALUE(turnValid);
   m_turnValid = value;
   if (!signalsDisabled()) {
-    turnValidModified().fire(this, value);
+  emit_signal(turnValidModified(), this, value);
   }
   setModified();
 }
@@ -574,7 +574,7 @@ void Troop::Page::setConditions(const Conditions& value) {
   MODIFIABLE_SET_OLD_VALUE(conditions);
   m_conditions = value;
   if (!signalsDisabled()) {
-    conditionsModified().fire(this, value);
+  emit_signal(conditionsModified(), this, value);
   }
   setModified();
 }
@@ -588,7 +588,7 @@ void Troop::Page::setList(const std::vector<std::shared_ptr<IEventCommand>>& val
   MODIFIABLE_SET_OLD_VALUE(list);
   m_list = value;
   if (!signalsDisabled()) {
-    listModified().fire(this, value);
+  emit_signal(listModified(), this, value);
   }
   setModified();
 }
@@ -601,7 +601,7 @@ void Troop::Page::setSpan(int value) {
   MODIFIABLE_SET_OLD_VALUE(span);
   m_span = value;
   if (!signalsDisabled()) {
-    spanModified().fire(this, value);
+  emit_signal(spanModified(), this, value);
   }
   setModified();
 }
@@ -729,7 +729,7 @@ void Troop::setId(const int id) {
   MODIFIABLE_SET_OLD_VALUE(id);
   m_id = id;
   if (!signalsDisabled()) {
-    idModified().fire(this, id);
+  emit_signal(idModified(), this, id);
   }
   setModified();
 }
@@ -742,7 +742,7 @@ void Troop::setMembers(const std::vector<Member>& value) {
   MODIFIABLE_SET_OLD_VALUE(members);
   m_members = value;
   if (!signalsDisabled()) {
-    membersModified().fire(this, value);
+  emit_signal(membersModified(), this, value);
   }
   setModified();
 }
@@ -755,7 +755,7 @@ void Troop::setName(const std::string& name) {
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
-    nameModified().fire(this, name);
+  emit_signal(nameModified(), this, name);
   }
   setModified();
 }
@@ -769,7 +769,7 @@ void Troop::setPages(const std::vector<Page>& value) {
   MODIFIABLE_SET_OLD_VALUE(pages);
   m_pages = value;
   if (!signalsDisabled()) {
-    pagesModified().fire(this, value);
+  emit_signal(pagesModified(), this, value);
   }
   setModified();
 }

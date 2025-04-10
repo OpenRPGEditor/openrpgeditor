@@ -360,7 +360,9 @@ ExitStatus Application::run() {
         m_projectSerialize = false;
       } else if (m_userClosed && m_projectCloseRequest) {
         // Actually close the project to revert active state
-        m_project->close();
+        if (m_project) {
+          m_project->close();
+        }
         m_projectCloseRequest = false;
         m_userClosed = false;
       }

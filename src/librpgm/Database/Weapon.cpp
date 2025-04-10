@@ -117,7 +117,7 @@ void Weapon::setId(const int id) {
   MODIFIABLE_SET_OLD_VALUE(id);
   m_id = id;
   if (!signalsDisabled()) {
-    idModified().fire(this, id);
+    emit_signal(idModified(), this, id);
   }
   setModified();
 }
@@ -130,7 +130,7 @@ void Weapon::setAnimationId(const int animationId) {
   MODIFIABLE_SET_OLD_VALUE(animationId);
   m_animationId = animationId;
   if (!signalsDisabled()) {
-    animationIdModified().fire(this, animationId);
+    emit_signal(animationIdModified(), this, animationId);
   }
   setModified();
 }
@@ -143,7 +143,7 @@ void Weapon::setDescription(const std::string& description) {
   MODIFIABLE_SET_OLD_VALUE(description);
   m_description = description;
   if (!signalsDisabled()) {
-    descriptionModified().fire(this, description);
+  emit_signal(descriptionModified(), this, description);
   }
   setModified();
 }
@@ -156,7 +156,7 @@ void Weapon::setEtypeId(const int etypeId) {
   MODIFIABLE_SET_OLD_VALUE(etypeId);
   m_etypeId = etypeId;
   if (!signalsDisabled()) {
-    etypeIdModified().fire(this, etypeId);
+  emit_signal(etypeIdModified(), this, etypeId);
   }
   setModified();
 }
@@ -169,7 +169,7 @@ void Weapon::setTraits(const std::vector<Trait>& traits) {
   MODIFIABLE_SET_OLD_VALUE(traits);
   m_traits = traits;
   if (!signalsDisabled()) {
-    traitsModified().fire(this, m_traits);
+  emit_signal(traitsModified(), this, m_traits);
   }
   setModified();
 }
@@ -182,7 +182,7 @@ void Weapon::setIconIndex(const int iconIndex) {
   MODIFIABLE_SET_OLD_VALUE(iconIndex);
   m_iconIndex = iconIndex;
   if (!signalsDisabled()) {
-    iconIndexModified().fire(this, m_iconIndex);
+  emit_signal(iconIndexModified(), this, m_iconIndex);
   }
   setModified();
 }
@@ -195,7 +195,7 @@ void Weapon::setName(const std::string& name) {
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
-    nameModified().fire(this, m_name);
+  emit_signal(nameModified(), this, m_name);
   }
   setModified();
 }
@@ -208,7 +208,7 @@ void Weapon::setNote(const std::string& note) {
   MODIFIABLE_SET_OLD_VALUE(note);
   m_note = note;
   if (!signalsDisabled()) {
-    noteModified().fire(this, m_note);
+  emit_signal(noteModified(), this, m_note);
   }
   setModified();
 }
@@ -221,7 +221,7 @@ void Weapon::setParams(const std::array<int, 8>& params) {
   MODIFIABLE_SET_OLD_VALUE(params);
   m_params = params;
   if (!signalsDisabled()) {
-    paramsModified().fire(this, m_params);
+  emit_signal(paramsModified(), this, m_params);
   }
   setModified();
 }
@@ -237,7 +237,7 @@ void Weapon::setParam(const int idx, const int param) {
   MODIFIABLE_SET_OLD_VALUE(params);
   m_params[idx] = param;
   if (!signalsDisabled()) {
-    paramsModified().fire(this, m_params);
+  emit_signal(paramsModified(), this, m_params);
   }
   setModified();
 }
@@ -250,7 +250,7 @@ void Weapon::setPrice(const int price) {
   MODIFIABLE_SET_OLD_VALUE(price);
   m_price = price;
   if (!signalsDisabled()) {
-    priceModified().fire(this, m_price);
+  emit_signal(priceModified(), this, m_price);
   }
   setModified();
 }
@@ -263,7 +263,7 @@ void Weapon::setWtypeId(const int wtypeId) {
   MODIFIABLE_SET_OLD_VALUE(wtypeId);
   m_wtypeId = wtypeId;
   if (!signalsDisabled()) {
-    wtypeIdModified().fire(this, m_wtypeId);
+  emit_signal(wtypeIdModified(), this, m_wtypeId);
   }
   setModified();
 }

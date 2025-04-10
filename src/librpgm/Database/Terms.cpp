@@ -57,7 +57,7 @@ void Terms::setBasic(std::vector<std::optional<std::string>>& value) {
   MODIFIABLE_SET_OLD_VALUE(basic);
   m_basic = value;
   if (!signalsDisabled()) {
-    basicModified().fire(this, value);
+   emit_signal( basicModified(), this, value);
   }
   setModified();
 }
@@ -71,7 +71,7 @@ void Terms::setCommands(std::vector<std::optional<std::string>>& value) {
   MODIFIABLE_SET_OLD_VALUE(commands);
   m_commands = value;
   if (!signalsDisabled()) {
-    commandsModified().fire(this, value);
+    emit_signal(commandsModified(), this, value);
   }
   setModified();
 }
@@ -85,7 +85,7 @@ void Terms::setMessages(const Messages& value) {
   MODIFIABLE_SET_OLD_VALUE(messages);
   m_messages = value;
   if (!signalsDisabled()) {
-    messagesModified().fire(this, value);
+    emit_signal(messagesModified(), this, value);
   }
   setModified();
 }
@@ -99,7 +99,7 @@ void Terms::setParams(std::vector<std::optional<std::string>>& value) {
   MODIFIABLE_SET_OLD_VALUE(params);
   m_params = value;
   if (!signalsDisabled()) {
-    paramsModified().fire(this, value);
+    emit_signal(paramsModified(), this, value);
   }
   setModified();
 }

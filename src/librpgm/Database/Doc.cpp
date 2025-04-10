@@ -38,7 +38,7 @@ void Doc::setTexts(const std::vector<std::string> texts) {
   MODIFIABLE_SET_OLD_VALUE(texts);
   m_texts = texts;
   if (!signalsDisabled()) {
-    textsModified().fire(this, texts);
+   emit_signal(textsModified(), this, texts);
   }
   setModified();
 }
@@ -51,7 +51,7 @@ void Doc::setNames(const std::vector<std::string>& names) {
   MODIFIABLE_SET_OLD_VALUE(names);
   m_names = names;
   if (!signalsDisabled()) {
-    namesModified().fire(this, names);
+   emit_signal(namesModified(), this, names);
   }
   setModified();
 }

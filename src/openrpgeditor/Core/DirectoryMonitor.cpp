@@ -25,15 +25,15 @@ void DirectoryMonitor::watchDirectory() {
       auto it = lastWriteTimes.find(entry);
       if (it == lastWriteTimes.end()) {
         if (is_directory(entry)) {
-          m_directoryAdded.fire(entry);
+          emit_signal(m_directoryAdded, entry);
         } else if (is_regular_file(entry)) {
-          m_fileAdded.fire(entry);
+          emit_signal(m_fileAdded, entry);
         }
       } else if (it->second != lastWriteTime) {
         if (is_directory(entry)) {
-          m_directoryChanged.fire(entry.path());
+          emit_signal(m_directoryChanged, entry.path());
         } else if (is_regular_file(entry)) {
-          m_fileChanged.fire(entry);
+          emit_signal(m_fileChanged, entry);
         }
       }
 
@@ -43,10 +43,10 @@ void DirectoryMonitor::watchDirectory() {
     for (auto it = lastWriteTimes.begin(); it != lastWriteTimes.end();) {
       if (!is_regular_file(it->first) && !is_directory(it->first)) {
         if (!is_regular_file(it->first)) {
-          m_fileDeleted.fire(it->first);
+          emit_signal(m_fileDeleted, it->first);
           it = lastWriteTimes.erase(it);
         } else if (!is_directory(it->first)) {
-          m_directoryDeleted.fire(it->first);
+          emit_signal(m_directoryDeleted, it->first);
           it = lastWriteTimes.erase(it);
         } else {
           ++it;

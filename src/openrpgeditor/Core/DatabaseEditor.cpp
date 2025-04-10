@@ -5,7 +5,7 @@
 
 void DatabaseEditor::draw() {
   if (isReady() && !onReady.is_empty()) {
-    onReady.fire();
+    emit_signal(onReady);
   } else if (!isReady()) {
     return;
   }

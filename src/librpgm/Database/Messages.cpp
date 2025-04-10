@@ -428,7 +428,7 @@ void Messages::setActionFailure(const std::string& value) {
   }
   MODIFIABLE_SET_OLD_VALUE(actionFailure);
   if (!signalsDisabled()) {
-    actionFailureModified().fire(this, value);
+  emit_signal(actionFailureModified(), this, value);
   }
   setModified();
 }
@@ -440,7 +440,7 @@ void Messages::setActorDamage(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(actorDamage);
   m_actorDamage = value;
   if (!signalsDisabled()) {
-    actorDamageModified().fire(this, value);
+  emit_signal(actorDamageModified(), this, value);
   }
   setModified();
 }
@@ -452,7 +452,7 @@ void Messages::setActorDrain(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(actorDrain);
   m_actorDrain = value;
   if (!signalsDisabled()) {
-    actorDrainModified().fire(this, value);
+  emit_signal(actorDrainModified(), this, value);
   }
   setModified();
 }
@@ -464,7 +464,7 @@ void Messages::setActorGain(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(actorGain);
   m_actorGain = value;
   if (!signalsDisabled()) {
-    actorGainModified().fire(this, value);
+  emit_signal(actorGainModified(), this, value);
   }
   setModified();
 }
@@ -476,7 +476,7 @@ void Messages::setActorLoss(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(actorLoss);
   m_actorLoss = value;
   if (!signalsDisabled()) {
-    actorLossModified().fire(this, value);
+  emit_signal(actorLossModified(), this, value);
   }
   setModified();
 }
@@ -488,7 +488,7 @@ void Messages::setActorNoDamage(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(actorNoDamage);
   m_actorNoDamage = value;
   if (!signalsDisabled()) {
-    actorNoDamageModified().fire(this, value);
+  emit_signal(actorNoDamageModified(), this, value);
   }
   setModified();
 }
@@ -500,7 +500,7 @@ void Messages::setActorNoHit(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(actorNoHit);
   m_actorNoHit = value;
   if (!signalsDisabled()) {
-    actorNoHitModified().fire(this, value);
+  emit_signal(actorNoHitModified(), this, value);
   }
   setModified();
 }
@@ -512,7 +512,7 @@ void Messages::setActorRecovery(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(actorRecovery);
   m_actorRecovery = value;
   if (!signalsDisabled()) {
-    actorRecoveryModified().fire(this, value);
+  emit_signal(actorRecoveryModified(), this, value);
   }
   setModified();
 }
@@ -524,7 +524,7 @@ void Messages::setAlwaysDash(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(alwaysDash);
   m_alwaysDash = value;
   if (!signalsDisabled()) {
-    alwaysDashModified().fire(this, value);
+  emit_signal(alwaysDashModified(), this, value);
   }
   setModified();
 }
@@ -536,7 +536,7 @@ void Messages::setBgmVolume(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(bgmVolume);
   m_bgmVolume = value;
   if (!signalsDisabled()) {
-    bgmVolumeModified().fire(this, value);
+  emit_signal(bgmVolumeModified(), this, value);
   }
   setModified();
 }
@@ -548,7 +548,7 @@ void Messages::setBgsVolume(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(bgsVolume);
   m_bgsVolume = value;
   if (!signalsDisabled()) {
-    bgsVolumeModified().fire(this, value);
+  emit_signal(bgsVolumeModified(), this, value);
   }
   setModified();
 }
@@ -560,7 +560,7 @@ void Messages::setBuffAdd(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(buffAdd);
   m_buffAdd = value;
   if (!signalsDisabled()) {
-    buffAddModified().fire(this, value);
+  emit_signal(buffAddModified(), this, value);
   }
   setModified();
 }
@@ -572,7 +572,7 @@ void Messages::setBuffRemove(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(buffRemove);
   m_buffRemove = value;
   if (!signalsDisabled()) {
-    buffRemoveModified().fire(this, value);
+  emit_signal(buffRemoveModified(), this, value);
   }
   setModified();
 }
@@ -584,7 +584,7 @@ void Messages::setCommandRemember(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(commandRemember);
   m_commandRemember = value;
   if (!signalsDisabled()) {
-    commandRememberModified().fire(this, value);
+  emit_signal(commandRememberModified(), this, value);
   }
   setModified();
 }
@@ -596,7 +596,7 @@ void Messages::setCounterAttack(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(counterAttack);
   m_counterAttack = value;
   if (!signalsDisabled()) {
-    counterAttackModified().fire(this, value);
+  emit_signal(counterAttackModified(), this, value);
   }
   setModified();
 }
@@ -608,7 +608,7 @@ void Messages::setCriticalToActor(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(criticalToActor);
   m_criticalToActor = value;
   if (!signalsDisabled()) {
-    criticalToActorModified().fire(this, value);
+  emit_signal(criticalToActorModified(), this, value);
   }
   setModified();
 }
@@ -620,7 +620,7 @@ void Messages::setCriticalToEnemy(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(criticalToEnemy);
   m_criticalToEnemy = value;
   if (!signalsDisabled()) {
-    criticalToEnemyModified().fire(this, value);
+  emit_signal(criticalToEnemyModified(), this, value);
   }
   setModified();
 }
@@ -632,7 +632,7 @@ void Messages::setDebuffAdd(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(debuffAdd);
   m_debuffAdd = value;
   if (!signalsDisabled()) {
-    debuffAddModified().fire(this, value);
+  emit_signal(debuffAddModified(), this, value);
   }
   setModified();
 }
@@ -644,7 +644,7 @@ void Messages::setDefeat(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(defeat);
   m_defeat = value;
   if (!signalsDisabled()) {
-    defeatModified().fire(this, value);
+  emit_signal(defeatModified(), this, value);
   }
   setModified();
 }
@@ -656,7 +656,7 @@ void Messages::setEmerge(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(emerge);
   m_emerge = value;
   if (!signalsDisabled()) {
-    emergeModified().fire(this, value);
+  emit_signal(emergeModified(), this, value);
   }
   setModified();
 }
@@ -668,7 +668,7 @@ void Messages::setEnemyDamage(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(enemyDamage);
   m_enemyDamage = value;
   if (!signalsDisabled()) {
-    enemyDamageModified().fire(this, value);
+  emit_signal(enemyDamageModified(), this, value);
   }
   setModified();
 }
@@ -680,7 +680,7 @@ void Messages::setEnemyDrain(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(enemyDrain);
   m_enemyDrain = value;
   if (!signalsDisabled()) {
-    enemyDrainModified().fire(this, value);
+  emit_signal(enemyDrainModified(), this, value);
   }
   setModified();
 }
@@ -692,7 +692,7 @@ void Messages::setEnemyGain(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(enemyGain);
   m_enemyGain = value;
   if (!signalsDisabled()) {
-    enemyGainModified().fire(this, value);
+  emit_signal(enemyGainModified(), this, value);
   }
   setModified();
 }
@@ -704,7 +704,7 @@ void Messages::setEnemyLoss(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(enemyLoss);
   m_enemyLoss = value;
   if (!signalsDisabled()) {
-    enemyLossModified().fire(this, value);
+  emit_signal(enemyLossModified(), this, value);
   }
   setModified();
 }
@@ -716,7 +716,7 @@ void Messages::setEnemyNoDamage(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(enemyNoDamage);
   m_enemyNoDamage = value;
   if (!signalsDisabled()) {
-    enemyNoDamageModified().fire(this, value);
+  emit_signal(enemyNoDamageModified(), this, value);
   }
   setModified();
 }
@@ -728,7 +728,7 @@ void Messages::setEnemyNoHit(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(enemyNoHit);
   m_enemyNoHit = value;
   if (!signalsDisabled()) {
-    enemyNoHitModified().fire(this, value);
+  emit_signal(enemyNoHitModified(), this, value);
   }
   setModified();
 }
@@ -740,7 +740,7 @@ void Messages::setEnemyRecovery(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(enemyRecovery);
   m_enemyRecovery = value;
   if (!signalsDisabled()) {
-    enemyRecoveryModified().fire(this, value);
+  emit_signal(enemyRecoveryModified(), this, value);
   }
   setModified();
 }
@@ -752,7 +752,7 @@ void Messages::setEscapeFailure(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(escapeFailure);
   m_escapeFailure = value;
   if (!signalsDisabled()) {
-    escapeFailureModified().fire(this, value);
+  emit_signal(escapeFailureModified(), this, value);
   }
   setModified();
 }
@@ -764,7 +764,7 @@ void Messages::setEscapeStart(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(escapeStart);
   m_escapeStart = value;
   if (!signalsDisabled()) {
-    escapeStartModified().fire(this, value);
+  emit_signal(escapeStartModified(), this, value);
   }
   setModified();
 }
@@ -776,7 +776,7 @@ void Messages::setEvasion(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(evasion);
   m_evasion = value;
   if (!signalsDisabled()) {
-    evasionModified().fire(this, value);
+  emit_signal(evasionModified(), this, value);
   }
   setModified();
 }
@@ -788,7 +788,7 @@ void Messages::setExpNext(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(expNext);
   m_expNext = value;
   if (!signalsDisabled()) {
-    expNextModified().fire(this, value);
+  emit_signal(expNextModified(), this, value);
   }
   setModified();
 }
@@ -800,7 +800,7 @@ void Messages::setExpTotal(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(expTotal);
   m_expTotal = value;
   if (!signalsDisabled()) {
-    expTotalModified().fire(this, value);
+  emit_signal(expTotalModified(), this, value);
   }
   setModified();
 }
@@ -812,7 +812,7 @@ void Messages::setFile(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(file);
   m_file = value;
   if (!signalsDisabled()) {
-    fileModified().fire(this, value);
+  emit_signal(fileModified(), this, value);
   }
   setModified();
 }
@@ -824,7 +824,7 @@ void Messages::setLevelUp(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(levelUp);
   m_levelUp = value;
   if (!signalsDisabled()) {
-    levelUpModified().fire(this, value);
+  emit_signal(levelUpModified(), this, value);
   }
   setModified();
 }
@@ -836,7 +836,7 @@ void Messages::setLoadMessage(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(loadMessage);
   m_loadMessage = value;
   if (!signalsDisabled()) {
-    loadMessageModified().fire(this, value);
+  emit_signal(loadMessageModified(), this, value);
   }
   setModified();
 }
@@ -848,7 +848,7 @@ void Messages::setMagicEvasion(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(magicEvasion);
   m_magicEvasion = value;
   if (!signalsDisabled()) {
-    magicEvasionModified().fire(this, value);
+  emit_signal(magicEvasionModified(), this, value);
   }
   setModified();
 }
@@ -860,7 +860,7 @@ void Messages::setMagicReflection(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(magicReflection);
   m_magicReflection = value;
   if (!signalsDisabled()) {
-    magicReflectionModified().fire(this, value);
+  emit_signal(magicReflectionModified(), this, value);
   }
   setModified();
 }
@@ -872,7 +872,7 @@ void Messages::setMeVolume(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(meVolume);
   m_meVolume = value;
   if (!signalsDisabled()) {
-    meVolumeModified().fire(this, value);
+  emit_signal(meVolumeModified(), this, value);
   }
   setModified();
 }
@@ -884,7 +884,7 @@ void Messages::setObtainExp(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(obtainExp);
   m_obtainExp = value;
   if (!signalsDisabled()) {
-    obtainExpModified().fire(this, value);
+  emit_signal(obtainExpModified(), this, value);
   }
   setModified();
 }
@@ -896,7 +896,7 @@ void Messages::setObtainGold(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(obtainGold);
   m_obtainGold = value;
   if (!signalsDisabled()) {
-    obtainGoldModified().fire(this, value);
+  emit_signal(obtainGoldModified(), this, value);
   }
   setModified();
 }
@@ -908,7 +908,7 @@ void Messages::setObtainItem(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(obtainItem);
   m_obtainItem = value;
   if (!signalsDisabled()) {
-    obtainItemModified().fire(this, value);
+  emit_signal(obtainItemModified(), this, value);
   }
   setModified();
 }
@@ -920,7 +920,7 @@ void Messages::setObtainSkill(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(obtainSkill);
   m_obtainSkill = value;
   if (!signalsDisabled()) {
-    obtainSkillModified().fire(this, value);
+  emit_signal(obtainSkillModified(), this, value);
   }
   setModified();
 }
@@ -932,7 +932,7 @@ void Messages::setPartyName(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(partyName);
   m_partyName = value;
   if (!signalsDisabled()) {
-    partyNameModified().fire(this, value);
+  emit_signal(partyNameModified(), this, value);
   }
   setModified();
 }
@@ -944,7 +944,7 @@ void Messages::setPossession(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(possession);
   m_possession = value;
   if (!signalsDisabled()) {
-    possessionModified().fire(this, value);
+  emit_signal(possessionModified(), this, value);
   }
   setModified();
 }
@@ -956,7 +956,7 @@ void Messages::setPreemptive(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(preemptive);
   m_preemptive = value;
   if (!signalsDisabled()) {
-    preemptiveModified().fire(this, value);
+  emit_signal(preemptiveModified(), this, value);
   }
   setModified();
 }
@@ -968,7 +968,7 @@ void Messages::setSaveMessage(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(saveMessage);
   m_saveMessage = value;
   if (!signalsDisabled()) {
-    saveMessageModified().fire(this, value);
+  emit_signal(saveMessageModified(), this, value);
   }
   setModified();
 }
@@ -980,7 +980,7 @@ void Messages::setSeVolume(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(seVolume);
   m_seVolume = value;
   if (!signalsDisabled()) {
-    seVolumeModified().fire(this, value);
+  emit_signal(seVolumeModified(), this, value);
   }
   setModified();
 }
@@ -992,7 +992,7 @@ void Messages::setSubstitute(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(substitute);
   m_substitute = value;
   if (!signalsDisabled()) {
-    substituteModified().fire(this, value);
+  emit_signal(substituteModified(), this, value);
   }
   setModified();
 }
@@ -1004,7 +1004,7 @@ void Messages::setSurprise(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(surprise);
   m_surprise = value;
   if (!signalsDisabled()) {
-    surpriseModified().fire(this, value);
+  emit_signal(surpriseModified(), this, value);
   }
   setModified();
 }
@@ -1016,7 +1016,7 @@ void Messages::setUseItem(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(useItem);
   m_useItem = value;
   if (!signalsDisabled()) {
-    useItemModified().fire(this, value);
+  emit_signal(useItemModified(), this, value);
   }
   setModified();
 }
@@ -1028,7 +1028,7 @@ void Messages::setVictory(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(victory);
   m_victory = value;
   if (!signalsDisabled()) {
-    victoryModified().fire(this, value);
+  emit_signal(victoryModified(), this, value);
   }
   setModified();
 }

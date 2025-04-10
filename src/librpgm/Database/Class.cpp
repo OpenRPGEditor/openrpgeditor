@@ -25,7 +25,7 @@ void Class::Learning::setLevel(const int level) {
   MODIFIABLE_SET_OLD_VALUE(level);
   m_level = level;
   if (!signalsDisabled()) {
-    levelModified().fire(this, level);
+    emit_signal(levelModified(), this, level);
   }
   setModified();
 }
@@ -36,7 +36,7 @@ void Class::Learning::setNote(const std::string& note) {
   MODIFIABLE_SET_OLD_VALUE(note);
   m_note = note;
   if (!signalsDisabled()) {
-    noteModified().fire(this, note);
+    emit_signal(noteModified(), this, note);
   }
   setModified();
 }
@@ -47,7 +47,7 @@ void Class::Learning::setSkillId(const int skillId) {
   MODIFIABLE_SET_OLD_VALUE(skillId);
   m_skillId = skillId;
   if (!signalsDisabled()) {
-    skillIdModified().fire(this, skillId);
+    emit_signal(skillIdModified(), this, skillId);
   }
   setModified();
 }
@@ -181,7 +181,7 @@ void Class::setId(const int id) {
   MODIFIABLE_SET_OLD_VALUE(id);
   m_id = id;
   if (!signalsDisabled()) {
-    idModified().fire(this, id);
+   emit_signal(idModified(), this, id);
   }
   setModified();
 }
@@ -191,7 +191,7 @@ void Class::setExpParams(const std::array<int, 4>& expParams) {
   MODIFIABLE_SET_OLD_VALUE(expParams);
   m_expParams = expParams;
   if (!signalsDisabled()) {
-    expParamsModified().fire(this, expParams);
+   emit_signal( expParamsModified(), this, expParams);
   }
   setModified();
 }
@@ -201,7 +201,7 @@ void Class::setExpParam(const int index, const int value) {
   MODIFIABLE_SET_OLD_VALUE(expParams);
   m_expParams[index] = value;
   if (!signalsDisabled()) {
-    expParamModified().fire(this, index, value);
+    emit_signal(expParamModified(), this, index, value);
   }
   setModified();
 }
@@ -212,7 +212,7 @@ void Class::setTraits(const std::vector<Trait>& traits) {
   MODIFIABLE_SET_OLD_VALUE(traits);
   m_traits = traits;
   if (!signalsDisabled()) {
-    traitsModified().fire(this, traits);
+    emit_signal(traitsModified(), this, traits);
   }
   setModified();
 }
@@ -222,7 +222,7 @@ void Class::setLearnings(const std::vector<Learning>& learnings) {
   MODIFIABLE_SET_OLD_VALUE(learnings);
   m_learnings = learnings;
   if (!signalsDisabled()) {
-    learningsModified().fire(this, learnings);
+    emit_signal(learningsModified(), this, learnings);
   }
   setModified();
 }
@@ -232,7 +232,7 @@ void Class::setName(const std::string& name) {
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
-    nameModified().fire(this, name);
+    emit_signal(nameModified(), this, name);
   }
   setModified();
 }
@@ -242,7 +242,7 @@ void Class::setNote(const std::string& note) {
   MODIFIABLE_SET_OLD_VALUE(note);
   m_note = note;
   if (!signalsDisabled()) {
-    noteModified().fire(this, note);
+    emit_signal(noteModified(), this, note);
   }
   setModified();
 }
@@ -252,7 +252,7 @@ void Class::setParams(const std::array<std::array<int, 99>, 8>& params) {
   MODIFIABLE_SET_OLD_VALUE(params);
   m_params = params;
   if (!signalsDisabled()) {
-    paramsModified().fire(this, params);
+    emit_signal(paramsModified(), this, params);
   }
   setModified();
 }

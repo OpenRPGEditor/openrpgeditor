@@ -104,7 +104,7 @@ void Armor::setId(const int id) {
   MODIFIABLE_SET_OLD_VALUE(id);
   m_id = id;
   if (!signalsDisabled()) {
-    idModified().fire(this, m_id);
+    emit_signal(idModified(), this, m_id);
   }
   setModified();
 }
@@ -114,7 +114,7 @@ void Armor::setAtypeId(const int atypeId) {
   MODIFIABLE_SET_OLD_VALUE(atypeId);
   m_atypeId = atypeId;
   if (!signalsDisabled()) {
-    atypeModified().fire(this, m_atypeId);
+   emit_signal(atypeModified(), this, m_atypeId);
   }
   setModified();
 }
@@ -124,7 +124,7 @@ void Armor::setDescription(const std::string& description) {
   MODIFIABLE_SET_OLD_VALUE(description);
   m_description = description;
   if (!signalsDisabled()) {
-    descriptionModified().fire(this, m_description);
+   emit_signal(descriptionModified(), this, m_description);
   }
   setModified();
 }
@@ -134,7 +134,7 @@ void Armor::setEtypeId(const int etypeId) {
   MODIFIABLE_SET_OLD_VALUE(etypeId);
   m_etypeId = etypeId;
   if (!signalsDisabled()) {
-    etypeModified().fire(this, m_etypeId);
+   emit_signal(etypeModified(), this, m_etypeId);
   }
   setModified();
 }
@@ -145,7 +145,7 @@ void Armor::setTraits(const std::vector<Trait>& traits) {
   MODIFIABLE_SET_OLD_VALUE(traits);
   m_traits = traits;
   if (!signalsDisabled()) {
-    traitsModified().fire(this, m_traits);
+   emit_signal(traitsModified(), this, m_traits);
   }
   setModified();
 }
@@ -165,7 +165,7 @@ void Armor::setTrait(const int index, const Trait& trait) {
   MODIFIABLE_SET_OLD_VALUE(traits);
   m_traits[index] = trait;
   if (!signalsDisabled()) {
-    traitModified().fire(this, index, trait);
+   emit_signal(traitModified(), this, index, trait);
   }
   setModified();
 }
@@ -175,7 +175,7 @@ void Armor::setIconIndex(const int iconIndex) {
   MODIFIABLE_SET_OLD_VALUE(iconIndex);
   m_iconIndex = iconIndex;
   if (!signalsDisabled()) {
-    iconIndexModified().fire(this, m_iconIndex);
+   emit_signal(iconIndexModified(), this, m_iconIndex);
   }
   setModified();
 }
@@ -185,7 +185,7 @@ void Armor::setName(const std::string& name) {
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
-    nameModified().fire(this, m_name);
+   emit_signal(nameModified(), this, m_name);
   }
   setModified();
 }
@@ -195,7 +195,7 @@ void Armor::setNote(const std::string& note) {
   MODIFIABLE_SET_OLD_VALUE(note);
   m_note = note;
   if (!signalsDisabled()) {
-    noteModified().fire(this, m_note);
+   emit_signal(noteModified(), this, m_note);
   }
   setModified();
 }
@@ -205,7 +205,7 @@ void Armor::setParams(const std::array<int, 8>& params) {
   MODIFIABLE_SET_OLD_VALUE(params);
   m_params = params;
   if (!signalsDisabled()) {
-    paramsModified().fire(this, m_params);
+   emit_signal(paramsModified(), this, m_params);
   }
   setModified();
 }
@@ -219,7 +219,7 @@ void Armor::setParam(const int index, const int param) {
   MODIFIABLE_SET_OLD_VALUE(params);
   m_params[index] = param;
   if (!signalsDisabled()) {
-    paramModified().fire(this, index, param);
+   emit_signal(paramModified(), this, index, param);
   }
   setModified();
 }
@@ -229,7 +229,7 @@ void Armor::setPrice(const int price) {
   MODIFIABLE_SET_OLD_VALUE(price);
   m_price = price;
   if (!signalsDisabled()) {
-    priceModified().fire(this, m_price);
+   emit_signal(priceModified(), this, m_price);
   }
   setModified();
 }

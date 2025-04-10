@@ -73,7 +73,7 @@ public:
   void setModified(const bool modified = true) {
     m_modified = modified;
     if (m_modified && !signalsDisabled()) {
-      onModified().fire(this);
+      emit_signal(onModified(), this);
     }
   }
 

@@ -199,7 +199,7 @@ void Skill::setId(const int id) {
   MODIFIABLE_SET_OLD_VALUE(id);
   m_id = id;
   if (!signalsDisabled()) {
-    idModified().fire(this, id);
+  emit_signal(idModified(), this, id);
   }
   setModified(true);
 }
@@ -212,7 +212,7 @@ void Skill::setAnimationId(int id) {
   MODIFIABLE_SET_OLD_VALUE(animationId);
   m_animationId = id;
   if (!signalsDisabled()) {
-    animationIdModified().fire(this, id);
+  emit_signal(animationIdModified(), this, id);
   }
   setModified();
 }
@@ -225,7 +225,7 @@ void Skill::setDamage(const Damage& damage) {
   MODIFIABLE_SET_OLD_VALUE(damage);
   m_damage = damage;
   if (!signalsDisabled()) {
-    damageModified().fire(this, damage);
+  emit_signal(damageModified(), this, damage);
   }
   setModified();
 }
@@ -238,7 +238,7 @@ void Skill::setDescription(const std::string& description) {
   MODIFIABLE_SET_OLD_VALUE(description);
   m_description = description;
   if (!signalsDisabled()) {
-    descriptionModified().fire(this, m_description);
+  emit_signal(descriptionModified(), this, m_description);
   }
   setModified();
 }
@@ -251,7 +251,7 @@ void Skill::setEffects(const std::vector<Effect>& effects) {
   MODIFIABLE_SET_OLD_VALUE(effects);
   m_effects = effects;
   if (!signalsDisabled()) {
-    effectsModified().fire(this, m_effects);
+  emit_signal(effectsModified(), this, m_effects);
   }
   setModified();
 }
@@ -264,7 +264,7 @@ void Skill::setIconIndex(int iconIndex) {
   MODIFIABLE_SET_OLD_VALUE(iconIndex);
   m_iconIndex = iconIndex;
   if (!signalsDisabled()) {
-    iconIndexModified().fire(this, m_iconIndex);
+  emit_signal(iconIndexModified(), this, m_iconIndex);
   }
   setModified();
 }
@@ -277,7 +277,7 @@ void Skill::setMessage1(const std::string& message1) {
   MODIFIABLE_SET_OLD_VALUE(message1);
   m_message1 = message1;
   if (!signalsDisabled()) {
-    message1Modified().fire(this, m_message1);
+  emit_signal(message1Modified(), this, m_message1);
   }
   setModified();
 }
@@ -290,7 +290,7 @@ void Skill::setMessage2(const std::string& message2) {
   MODIFIABLE_SET_OLD_VALUE(message2);
   m_message2 = message2;
   if (!signalsDisabled()) {
-    message2Modified().fire(this, m_message2);
+  emit_signal(message2Modified(), this, m_message2);
   }
   setModified();
 }
@@ -303,7 +303,7 @@ void Skill::setMpCost(int mpCost) {
   MODIFIABLE_SET_OLD_VALUE(mpCost);
   m_mpCost = mpCost;
   if (!signalsDisabled()) {
-    mpCostModified().fire(this, m_mpCost);
+  emit_signal(mpCostModified(), this, m_mpCost);
   }
   setModified();
 }
@@ -316,7 +316,7 @@ void Skill::setName(const std::string& name) {
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
-    nameModified().fire(this, m_name);
+  emit_signal(nameModified(), this, m_name);
   }
   setModified();
 }
@@ -329,7 +329,7 @@ void Skill::setNote(const std::string& note) {
   MODIFIABLE_SET_OLD_VALUE(note);
   m_note = note;
   if (!signalsDisabled()) {
-    noteModified().fire(this, m_note);
+  emit_signal(noteModified(), this, m_note);
   }
   setModified();
 }
@@ -342,7 +342,7 @@ void Skill::setOccasion(Occasion occasion) {
   MODIFIABLE_SET_OLD_VALUE(occasion);
   m_occasion = occasion;
   if (!signalsDisabled()) {
-    occasionModified().fire(this, m_occasion);
+  emit_signal(occasionModified(), this, m_occasion);
   }
   setModified();
 }
@@ -355,7 +355,7 @@ void Skill::setHitType(HitType hitType) {
   MODIFIABLE_SET_OLD_VALUE(hitType);
   m_hitType = hitType;
   if (!signalsDisabled()) {
-    hitTypeModified().fire(this, m_hitType);
+  emit_signal(hitTypeModified(), this, m_hitType);
   }
   setModified();
 }
@@ -368,7 +368,7 @@ void Skill::setRepeats(int repeats) {
   MODIFIABLE_SET_OLD_VALUE(repeats);
   m_repeats = repeats;
   if (!signalsDisabled()) {
-    repeatsModified().fire(this, m_repeats);
+  emit_signal(repeatsModified(), this, m_repeats);
   }
   setModified();
 }
@@ -381,7 +381,7 @@ void Skill::setRequiredWtypeId1(int requiredWtypeId1) {
   MODIFIABLE_SET_OLD_VALUE(requiredWtypeId1);
   m_requiredWtypeId1 = requiredWtypeId1;
   if (!signalsDisabled()) {
-    requiredWtypeId1Modified().fire(this, m_requiredWtypeId1);
+  emit_signal(requiredWtypeId1Modified(), this, m_requiredWtypeId1);
   }
   setModified();
 }
@@ -394,7 +394,7 @@ void Skill::setRequiredWtypeId2(int requiredWtypeId2) {
   MODIFIABLE_SET_OLD_VALUE(requiredWtypeId2);
   m_requiredWtypeId2 = requiredWtypeId2;
   if (!signalsDisabled()) {
-    requiredWtypeId2Modified().fire(this, m_requiredWtypeId2);
+  emit_signal(requiredWtypeId2Modified(), this, m_requiredWtypeId2);
   }
   setModified();
 }
@@ -407,7 +407,7 @@ void Skill::setScope(Scope scope) {
   MODIFIABLE_SET_OLD_VALUE(scope);
   m_scope = scope;
   if (!signalsDisabled()) {
-    scopeModified().fire(this, m_scope);
+  emit_signal(scopeModified(), this, m_scope);
   }
   setModified();
 }
@@ -420,7 +420,7 @@ void Skill::setSpeed(int speed) {
   MODIFIABLE_SET_OLD_VALUE(speed);
   m_speed = speed;
   if (!signalsDisabled()) {
-    speedModified().fire(this, m_speed);
+  emit_signal(speedModified(), this, m_speed);
   }
   setModified();
 }
@@ -433,7 +433,7 @@ void Skill::setStypeId(int stypeId) {
   MODIFIABLE_SET_OLD_VALUE(stypeId);
   m_stypeId = stypeId;
   if (!signalsDisabled()) {
-    stypeIdModified().fire(this, m_stypeId);
+  emit_signal(stypeIdModified(), this, m_stypeId);
   }
   setModified();
 }
@@ -446,7 +446,7 @@ void Skill::setSuccessRate(int successRate) {
   MODIFIABLE_SET_OLD_VALUE(successRate);
   m_successRate = successRate;
   if (!signalsDisabled()) {
-    successRateModified().fire(this, m_successRate);
+  emit_signal(successRateModified(), this, m_successRate);
   }
   setModified();
 }
@@ -459,7 +459,7 @@ void Skill::setTpCost(int tpCost) {
   MODIFIABLE_SET_OLD_VALUE(tpCost);
   m_tpCost = tpCost;
   if (!signalsDisabled()) {
-    tpCostModified().fire(this, m_tpCost);
+  emit_signal(tpCostModified(), this, m_tpCost);
   }
   setModified();
 }
@@ -472,7 +472,7 @@ void Skill::setTpGain(int tpGain) {
   MODIFIABLE_SET_OLD_VALUE(tpGain);
   m_tpGain = tpGain;
   if (!signalsDisabled()) {
-    tpGainModified().fire(this, m_tpGain);
+  emit_signal(tpGainModified(), this, m_tpGain);
   }
   setModified();
 }

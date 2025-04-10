@@ -60,7 +60,7 @@ void Enemy::Action::setConditionParam1(const float conditionParam1) {
   MODIFIABLE_SET_OLD_VALUE(conditionParam1);
   m_conditionParam1 = conditionParam1;
   if (!signalsDisabled()) {
-    conditionParam1Modified().fire(this, conditionParam1);
+   emit_signal(conditionParam1Modified(), this, conditionParam1);
   }
   setModified();
 }
@@ -70,7 +70,7 @@ void Enemy::Action::setConditionParam2(const float conditionParam2) {
   MODIFIABLE_SET_OLD_VALUE(conditionParam2);
   m_conditionParam2 = conditionParam2;
   if (!signalsDisabled()) {
-    conditionParam2Modified().fire(this, conditionParam2);
+   emit_signal(conditionParam2Modified(), this, conditionParam2);
   }
   setModified();
 }
@@ -80,7 +80,7 @@ void Enemy::Action::setConditionType(const ActionCondition conditionType) {
   MODIFIABLE_SET_OLD_VALUE(conditionType);
   m_conditionType = conditionType;
   if (!signalsDisabled()) {
-    conditionTypeModified().fire(this, conditionType);
+   emit_signal(conditionTypeModified(), this, conditionType);
   }
   setModified();
 }
@@ -90,7 +90,7 @@ void Enemy::Action::setRating(const int rating) {
   MODIFIABLE_SET_OLD_VALUE(rating);
   m_rating = rating;
   if (!signalsDisabled()) {
-    ratingModified().fire(this, rating);
+  emit_signal(ratingModified(), this, rating);
   }
   setModified();
 }
@@ -100,7 +100,7 @@ void Enemy::Action::setSkillId(int skillId) {
   MODIFIABLE_SET_OLD_VALUE(skillId);
   m_skillId = skillId;
   if (!signalsDisabled()) {
-    skillIdModified().fire(this, skillId);
+  emit_signal(skillIdModified(), this, skillId);
   }
   setModified();
 }
@@ -208,7 +208,7 @@ void Enemy::DropItem::setDataId(const int dataId) {
   MODIFIABLE_SET_OLD_VALUE(dataId);
   m_dataId = dataId;
   if (!signalsDisabled()) {
-    dataIdModified().fire(this, dataId);
+  emit_signal(dataIdModified(), this, dataId);
   }
   setModified();
 }
@@ -218,7 +218,7 @@ void Enemy::DropItem::setDenominator(const int denominator) {
   MODIFIABLE_SET_OLD_VALUE(denominator);
   m_denominator = denominator;
   if (!signalsDisabled()) {
-    denominatorModified().fire(this, denominator);
+  emit_signal(denominatorModified(), this, denominator);
   }
   setModified();
 }
@@ -228,7 +228,7 @@ void Enemy::DropItem::setKind(const int kind) {
   MODIFIABLE_SET_OLD_VALUE(kind);
   m_kind = kind;
   if (!signalsDisabled()) {
-    kindModified().fire(this, kind);
+  emit_signal(kindModified(), this, kind);
   }
   setModified();
 }
@@ -379,7 +379,7 @@ void Enemy::setId(const int id) {
   MODIFIABLE_SET_OLD_VALUE(id);
   m_id = id;
   if (!signalsDisabled()) {
-    idModified().fire(this, id);
+  emit_signal(idModified(), this, id);
   }
   setModified();
 }
@@ -390,7 +390,7 @@ void Enemy::setActions(const std::vector<Action>& actions) {
   MODIFIABLE_SET_OLD_VALUE(actions);
   m_actions = actions;
   if (!signalsDisabled()) {
-    actionsModified().fire(this, actions);
+  emit_signal(actionsModified(), this, actions);
   }
   setModified();
 }
@@ -400,7 +400,7 @@ void Enemy::setBattlerHue(const int battlerHue) {
   MODIFIABLE_SET_OLD_VALUE(battlerHue);
   m_battlerHue = battlerHue;
   if (!signalsDisabled()) {
-    battlerHueModified().fire(this, battlerHue);
+  emit_signal(battlerHueModified(), this, battlerHue);
   }
   setModified();
 }
@@ -410,7 +410,7 @@ void Enemy::setBattlerName(const std::string& battlerName) {
   MODIFIABLE_SET_OLD_VALUE(battlerName);
   m_battlerName = battlerName;
   if (!signalsDisabled()) {
-    battlerNameModified().fire(this, battlerName);
+  emit_signal(battlerNameModified(), this, battlerName);
   }
   setModified();
 }
@@ -421,7 +421,7 @@ void Enemy::setDropItems(const std::vector<DropItem>& dropItems) {
   MODIFIABLE_SET_OLD_VALUE(dropItems);
   m_dropItems = dropItems;
   if (!signalsDisabled()) {
-    dropItemsModified().fire(this, dropItems);
+  emit_signal(dropItemsModified(), this, dropItems);
   }
   setModified();
 }
@@ -431,7 +431,7 @@ void Enemy::setExp(const int exp) {
   MODIFIABLE_SET_OLD_VALUE(exp);
   m_exp = exp;
   if (!signalsDisabled()) {
-    expModified().fire(this, exp);
+  emit_signal(expModified(), this, exp);
   }
   setModified();
 }
@@ -441,7 +441,7 @@ void Enemy::setTraits(const std::vector<Trait>& traits) {
   MODIFIABLE_SET_OLD_VALUE(traits);
   m_traits = traits;
   if (!signalsDisabled()) {
-    traitsModified().fire(this, traits);
+  emit_signal(traitsModified(), this, traits);
   }
   setModified();
 }
@@ -451,7 +451,7 @@ void Enemy::setGold(const int gold) {
   MODIFIABLE_SET_OLD_VALUE(gold);
   m_gold = gold;
   if (!signalsDisabled()) {
-    goldModified().fire(this, gold);
+  emit_signal(goldModified(), this, gold);
   }
   setModified();
 }
@@ -461,7 +461,7 @@ void Enemy::setName(const std::string& name) {
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
-    nameModified().fire(this, name);
+  emit_signal(nameModified(), this, name);
   }
   setModified();
 }
@@ -471,7 +471,7 @@ void Enemy::setNote(const std::string& note) {
   MODIFIABLE_SET_OLD_VALUE(note);
   m_note = note;
   if (!signalsDisabled()) {
-    noteModified().fire(this, note);
+  emit_signal(noteModified(), this, note);
   }
   setModified();
 }
@@ -481,7 +481,7 @@ void Enemy::setParams(const std::array<int, 8>& params) {
   MODIFIABLE_SET_OLD_VALUE(params);
   m_params = params;
   if (!signalsDisabled()) {
-    paramsModified().fire(this, params);
+  emit_signal(paramsModified(), this, params);
   }
   setModified();
 }
@@ -494,7 +494,7 @@ void Enemy::setParam(const int idx, const int param) {
   MODIFIABLE_SET_OLD_VALUE(params);
   m_params[idx] = param;
   if (!signalsDisabled()) {
-    paramModified().fire(this, idx, param);
+  emit_signal(paramModified(), this, idx, param);
   }
   setModified();
 }

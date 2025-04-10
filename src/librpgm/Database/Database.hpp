@@ -457,8 +457,8 @@ struct Database {
 private:
   bool m_isMZ;
   void connectAllSignals();
-  void onAnyModifiableModified(IModifiable*) { databaseModified().fire(); }
-  void onAnyNonModifiableModified() { databaseModified().fire(); }
+  void onAnyModifiableModified(IModifiable*) { emit_signal(databaseModified()); }
+  void onAnyNonModifiableModified() { emit_signal(databaseModified()); }
 
   rpgmutils::signal<void()> m_actorsLoaded;
   rpgmutils::signal<void()> m_classesLoaded;

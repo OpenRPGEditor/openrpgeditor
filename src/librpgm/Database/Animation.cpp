@@ -54,7 +54,7 @@ void Animation::Color::setR(const int r) {
   MODIFIABLE_SET_OLD_VALUE(r);
   m_r = r;
   if (!signalsDisabled()) {
-    rModified().fire(this, r);
+    emit_signal(rModified(), this, r);
   }
   setModified(true);
 }
@@ -65,7 +65,7 @@ void Animation::Color::setG(const int g) {
   MODIFIABLE_SET_OLD_VALUE(g);
   m_g = g;
   if (!signalsDisabled()) {
-    gModified().fire(this, g);
+    emit_signal(gModified(), this, g);
   }
   setModified(true);
 }
@@ -76,7 +76,7 @@ void Animation::Color::setB(const int b) {
   MODIFIABLE_SET_OLD_VALUE(b);
   m_b = b;
   if (!signalsDisabled()) {
-    bModified().fire(this, b);
+    emit_signal(bModified(), this, b);
   }
   setModified(true);
 }
@@ -87,7 +87,7 @@ void Animation::Color::setIntensity(const int intensity) {
   MODIFIABLE_SET_OLD_VALUE(intensity);
   m_intensity = intensity;
   if (!signalsDisabled()) {
-    intensityModified().fire(this, intensity);
+    emit_signal(intensityModified(), this, intensity);
   }
   setModified(true);
 }
@@ -232,7 +232,7 @@ void Animation::FramePart::setPattern(const int pattern) {
   MODIFIABLE_SET_OLD_VALUE(pattern);
   m_pattern = pattern;
   if (!signalsDisabled()) {
-    patternModified().fire(this, pattern);
+    emit_signal(patternModified(), this, pattern);
   }
   setModified(true);
 }
@@ -243,7 +243,7 @@ void Animation::FramePart::setX(const int x) {
   MODIFIABLE_SET_OLD_VALUE(x);
   m_x = x;
   if (!signalsDisabled()) {
-    xModified().fire(this, x);
+    emit_signal(xModified(), this, x);
   }
   setModified(true);
 }
@@ -254,7 +254,7 @@ void Animation::FramePart::setY(const int y) {
   MODIFIABLE_SET_OLD_VALUE(y);
   m_y = y;
   if (!signalsDisabled()) {
-    yModified().fire(this, y);
+    emit_signal(yModified(), this, y);
   }
   setModified(true);
 }
@@ -265,7 +265,7 @@ void Animation::FramePart::setScale(const int scale) {
   MODIFIABLE_SET_OLD_VALUE(scale);
   m_scale = scale;
   if (!signalsDisabled()) {
-    scaleModified().fire(this, scale);
+    emit_signal(scaleModified(), this, scale);
   }
   setModified(true);
 }
@@ -276,7 +276,7 @@ void Animation::FramePart::setRotation(const int rotation) {
   MODIFIABLE_SET_OLD_VALUE(rotation);
   m_rotation = rotation;
   if (!signalsDisabled()) {
-    rotationModified().fire(this, rotation);
+    emit_signal(rotationModified(), this, rotation);
   }
   setModified(true);
 }
@@ -287,7 +287,7 @@ void Animation::FramePart::setMirror(const Mirror mirror) {
   MODIFIABLE_SET_OLD_VALUE(mirror);
   m_mirror = mirror;
   if (!signalsDisabled()) {
-    mirrorModified().fire(this, mirror);
+    emit_signal(mirrorModified(), this, mirror);
   }
   setModified(true);
 }
@@ -298,7 +298,7 @@ void Animation::FramePart::setOpacity(const int opacity) {
   MODIFIABLE_SET_OLD_VALUE(opacity);
   m_opacity = opacity;
   if (!signalsDisabled()) {
-    opacityModified().fire(this, opacity);
+    emit_signal(opacityModified(), this, opacity);
   }
   setModified(true);
 }
@@ -309,7 +309,7 @@ void Animation::FramePart::setBlend(const Blend blend) {
   MODIFIABLE_SET_OLD_VALUE(blend);
   m_blend = blend;
   if (!signalsDisabled()) {
-    blendModified().fire(this, blend);
+    emit_signal(blendModified(), this, blend);
   }
   setModified(true);
 }
@@ -475,7 +475,7 @@ void Animation::Timing::setFlashColor(const Color& color) {
   MODIFIABLE_SET_OLD_VALUE(flashColor);
   m_flashColor = color;
   if (!signalsDisabled()) {
-    flashColorModified().fire(this, color);
+  emit_signal(flashColorModified(), this, color);
   }
   setModified(true);
 }
@@ -485,7 +485,7 @@ void Animation::Timing::setFlashDuration(int duration) {
   MODIFIABLE_SET_OLD_VALUE(flashDuration);
   m_flashDuration = duration;
   if (!signalsDisabled()) {
-    flashDurationModified().fire(this, duration);
+  emit_signal(flashDurationModified(), this, duration);
   }
   setModified(true);
 }
@@ -495,7 +495,7 @@ void Animation::Timing::setFlashScope(FlashScope scope) {
   MODIFIABLE_SET_OLD_VALUE(flashScope);
   m_flashScope = scope;
   if (!signalsDisabled()) {
-    flashScopeModified().fire(this, scope);
+  emit_signal(flashScopeModified(), this, scope);
   }
   setModified(true);
 }
@@ -505,7 +505,7 @@ void Animation::Timing::setFrame(int frame) {
   MODIFIABLE_SET_OLD_VALUE(frame);
   m_frame = frame;
   if (!signalsDisabled()) {
-    frameModified().fire(this, frame);
+  emit_signal(frameModified(), this, frame);
   }
   setModified(true);
 }
@@ -522,7 +522,7 @@ void Animation::Timing::setSe(const Audio& se) {
   MODIFIABLE_SET_OLD_VALUE(se);
   m_se = se;
   if (!signalsDisabled()) {
-    seModified().fire(this, se);
+  emit_signal(seModified(), this, se);
   }
   setModified(true);
 }
@@ -690,7 +690,7 @@ void Animation::setId(const int id) {
   MODIFIABLE_SET_OLD_VALUE(id);
   m_id = id;
   if (!signalsDisabled()) {
-    idModified().fire(this, id);
+  emit_signal(idModified(), this, id);
   }
   setModified();
 }
@@ -700,7 +700,7 @@ void Animation::setAnimation1Hue(const int animation1Hue) {
   MODIFIABLE_SET_OLD_VALUE(animation1Hue);
   m_animation1Hue = animation1Hue;
   if (!signalsDisabled()) {
-    animation1HueModified().fire(this, animation1Hue);
+  emit_signal(animation1HueModified(), this, animation1Hue);
   }
   setModified();
 }
@@ -710,7 +710,7 @@ void Animation::setAnimation1Name(const std::string_view animation1Name) {
   MODIFIABLE_SET_OLD_VALUE(animation1Name);
   m_animation1Name = animation1Name;
   if (!signalsDisabled()) {
-    animation1NameModified().fire(this, m_animation1Name);
+  emit_signal(animation1NameModified(), this, m_animation1Name);
   }
   setModified();
 }
@@ -720,7 +720,7 @@ void Animation::setAnimation2Hue(const int animation2Hue) {
   MODIFIABLE_SET_OLD_VALUE(animation2Hue);
   m_animation2Hue = animation2Hue;
   if (!signalsDisabled()) {
-    animation2HueModified().fire(this, animation2Hue);
+  emit_signal(animation2HueModified(), this, animation2Hue);
   }
   setModified();
 }
@@ -730,7 +730,7 @@ void Animation::setAnimation2Name(const std::string_view animation2Name) {
   MODIFIABLE_SET_OLD_VALUE(animation2Name);
   m_animation2Name = animation2Name;
   if (!signalsDisabled()) {
-    animation2NameModified().fire(this, m_animation2Name);
+  emit_signal(animation2NameModified(), this, m_animation2Name);
   }
   setModified();
 }
@@ -741,7 +741,7 @@ void Animation::setFrames(const std::vector<std::vector<FramePart>>& frames) {
   MODIFIABLE_SET_OLD_VALUE(frames);
   m_frames = frames;
   if (!signalsDisabled()) {
-    framesModified().fire(this, m_frames);
+  emit_signal(framesModified(), this, m_frames);
   }
   setModified();
 }
@@ -756,7 +756,7 @@ void Animation::setFrame(const int index, const std::vector<FramePart>& frame) {
   MODIFIABLE_SET_OLD_VALUE(frames);
   m_frames[index] = frame;
   if (!signalsDisabled()) {
-    frameModified().fire(this, index, frame);
+  emit_signal(frameModified(), this, index, frame);
   }
   setModified();
 }
@@ -771,7 +771,7 @@ void Animation::setName(const std::string_view name) {
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
-    nameModified().fire(this, m_name);
+  emit_signal(nameModified(), this, m_name);
   }
   setModified();
 }
@@ -781,7 +781,7 @@ void Animation::setPosition(const Position position) {
   MODIFIABLE_SET_OLD_VALUE(position);
   m_position = position;
   if (!signalsDisabled()) {
-    positionModified().fire(this, m_position);
+  emit_signal(positionModified(), this, m_position);
   }
   setModified();
 }
@@ -791,7 +791,7 @@ void Animation::setTimings(const std::vector<Timing>& timings) {
   MODIFIABLE_SET_OLD_VALUE(timings);
   m_timings = timings;
   if (!signalsDisabled()) {
-    timingsModified().fire(this, m_timings);
+  emit_signal(timingsModified(), this, m_timings);
   }
   setModified();
 }
@@ -811,7 +811,7 @@ void Animation::setTiming(const int index, const Timing& timing) {
   MODIFIABLE_SET_OLD_VALUE(timings);
   m_timings[index] = timing;
   if (!signalsDisabled()) {
-    timingModified().fire(this, index, timing);
+  emit_signal(timingModified(), this, index, timing);
   }
   setModified();
 }

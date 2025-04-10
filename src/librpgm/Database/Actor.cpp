@@ -148,7 +148,7 @@ void Actor::setId(const int id) {
   MODIFIABLE_SET_OLD_VALUE(id);
   m_id = id;
   if (!signalsDisabled()) {
-    idModified().fire(this, id);
+    emit_signal(idModified(), this, id);
   }
   setModified();
 }
@@ -158,7 +158,7 @@ void Actor::setBattlerName(const std::string& battlerName) {
   MODIFIABLE_SET_OLD_VALUE(battlerName);
   m_battlerName = battlerName;
   if (!signalsDisabled()) {
-    battlerNameModified().fire(this, m_battlerName);
+    emit_signal(battlerNameModified(), this, m_battlerName);
   }
   setModified();
 }
@@ -167,7 +167,7 @@ void Actor::setCharacterIndex(const int characterIndex) {
   MODIFIABLE_SET_OLD_VALUE(characterIndex);
   m_characterIndex = characterIndex;
   if (!signalsDisabled()) {
-    characterIndexModified().fire(this, m_characterIndex);
+    emit_signal(characterIndexModified(), this, m_characterIndex);
   }
   setModified();
 }
@@ -176,7 +176,7 @@ void Actor::setCharacterName(const std::string& characterName) {
   MODIFIABLE_SET_OLD_VALUE(characterName);
   m_characterName = characterName;
   if (!signalsDisabled()) {
-    characterNameModified().fire(this, m_characterName);
+    emit_signal(characterNameModified(), this, m_characterName);
   }
   setModified();
 }
@@ -185,7 +185,7 @@ void Actor::setClassId(const int classId) {
   MODIFIABLE_SET_OLD_VALUE(classId);
   m_classId = classId;
   if (!signalsDisabled()) {
-    classIdModified().fire(this, m_classId);
+    emit_signal(classIdModified(), this, m_classId);
   }
   setModified();
 }
@@ -194,7 +194,7 @@ void Actor::setEquips(const std::vector<int>& equips) {
   MODIFIABLE_SET_OLD_VALUE(equips);
   m_equips = equips;
   if (!signalsDisabled()) {
-    equipsModified().fire(this, m_equips);
+    emit_signal(equipsModified(), this, m_equips);
   }
   setModified();
 }
@@ -202,7 +202,7 @@ void Actor::addEquip(const int equip) {
   MODIFIABLE_SET_OLD_VALUE(equips);
   m_equips.push_back(equip);
   if (!signalsDisabled()) {
-    equipAdded().fire(this, m_equips.size() - 1, equip);
+    emit_signal(equipAdded(), this, m_equips.size() - 1, equip);
   }
   setModified();
 }
@@ -215,7 +215,7 @@ void Actor::setEquip(const int index, const int equip) {
   }
   m_equips[index] = equip;
   if (!signalsDisabled()) {
-    equipAdded().fire(this, index, index);
+    emit_signal(equipAdded(), this, index, index);
   }
   setModified();
 }
@@ -226,7 +226,7 @@ void Actor::removeEquip(const int index) {
   int oldEquip = m_equips[index];
   m_equips.erase(m_equips.begin() + index);
   if (!signalsDisabled()) {
-    equipRemoved().fire(this, index, oldEquip);
+    emit_signal(equipRemoved(), this, index, oldEquip);
   }
   setModified();
 }
@@ -236,7 +236,7 @@ void Actor::setFaceIndex(const int faceIndex) {
   MODIFIABLE_SET_OLD_VALUE(faceIndex);
   m_faceIndex = faceIndex;
   if (!signalsDisabled()) {
-    faceIndexModified().fire(this, m_faceIndex);
+    emit_signal(faceIndexModified(), this, m_faceIndex);
   }
   setModified();
 }
@@ -246,7 +246,7 @@ void Actor::setFaceName(const std::string& faceName) {
   MODIFIABLE_SET_OLD_VALUE(faceName);
   m_faceName = faceName;
   if (!signalsDisabled()) {
-    faceNameModified().fire(this, m_faceName);
+    emit_signal(faceNameModified(), this, m_faceName);
   }
   setModified();
 }
@@ -256,7 +256,7 @@ void Actor::setTraits(const std::vector<Trait>& traits) {
   MODIFIABLE_SET_OLD_VALUE(traits);
   m_traits = traits;
   if (!signalsDisabled()) {
-    traitsModified().fire(this, m_traits);
+    emit_signal(traitsModified(), this, m_traits);
   }
   setModified();
 }
@@ -272,7 +272,7 @@ void Actor::setInitialLevel(const int initialLevel) {
   MODIFIABLE_SET_OLD_VALUE(initialLevel);
   m_initialLevel = initialLevel;
   if (!signalsDisabled()) {
-    initialLevelModified().fire(this, m_initialLevel);
+    emit_signal(initialLevelModified(), this, m_initialLevel);
   }
   setModified();
 }
@@ -282,7 +282,7 @@ void Actor::setMaxLevel(const int maxLevel) {
   MODIFIABLE_SET_OLD_VALUE(maxLevel);
   m_maxLevel = maxLevel;
   if (!signalsDisabled()) {
-    maxLevelModified().fire(this, m_maxLevel);
+    emit_signal(maxLevelModified(), this, m_maxLevel);
   }
   setModified();
 }
@@ -292,7 +292,7 @@ void Actor::setName(const std::string& name) {
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
-    nameModified().fire(this, m_name);
+    emit_signal(nameModified(), this, m_name);
   }
   setModified();
 }
@@ -302,7 +302,7 @@ void Actor::setNickname(const std::string& nickname) {
   m_nickname = nickname;
 
   if (!signalsDisabled()) {
-    nicknameModified().fire(this, m_nickname);
+    emit_signal(nicknameModified(), this, m_nickname);
   }
   setModified();
 }
@@ -312,7 +312,7 @@ void Actor::setNote(const std::string& note) {
   MODIFIABLE_SET_OLD_VALUE(note);
   m_note = note;
   if (!signalsDisabled()) {
-    noteModified().fire(this, m_note);
+    emit_signal(noteModified(), this, m_note);
   }
   setModified();
 }
@@ -322,7 +322,7 @@ void Actor::setProfile(const std::string& profile) {
   MODIFIABLE_SET_OLD_VALUE(profile);
   m_profile = profile;
   if (!signalsDisabled()) {
-    profileModified().fire(this, m_profile);
+    emit_signal(profileModified(), this, m_profile);
   }
   setModified();
 }

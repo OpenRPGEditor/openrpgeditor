@@ -104,7 +104,7 @@ void Event::setId(const int id) {
   MODIFIABLE_SET_OLD_VALUE(id);
   m_id = id;
   if (!signalsDisabled()) {
-    idModified().fire(this, id);
+    emit_signal(idModified(), this, id);
   }
   setModified();
 }
@@ -114,7 +114,7 @@ void Event::setName(const std::string& name) {
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
-    nameModified().fire(this, name);
+    emit_signal(nameModified(), this, name);
   }
   setModified();
 }
@@ -124,7 +124,7 @@ void Event::setNote(const std::string& note) {
   MODIFIABLE_SET_OLD_VALUE(note);
   m_note = note;
   if (!signalsDisabled()) {
-    noteModified().fire(this, note);
+    emit_signal(noteModified(), this, note);
   }
   setModified();
 }
@@ -135,7 +135,7 @@ void Event::setPages(const std::vector<EventPage>& pages) {
   MODIFIABLE_SET_OLD_VALUE(pages);
   m_pages = pages;
   if (!signalsDisabled()) {
-    pagesModified().fire(this, pages);
+    emit_signal(pagesModified(), this, pages);
   }
   setModified();
 }
@@ -144,7 +144,7 @@ void Event::addPage(const EventPage& page) {
   MODIFIABLE_SET_OLD_VALUE(pages);
   m_pages.emplace_back(page);
   if (!signalsDisabled()) {
-    pageAdded().fire(this, &m_pages.back(), m_pages.size() - 1);
+    emit_signal(pageAdded(), this, &m_pages.back(), m_pages.size() - 1);
   }
   setModified();
 }
@@ -153,7 +153,7 @@ void Event::insertPage(const EventPage& page, int index) {
   MODIFIABLE_SET_OLD_VALUE(pages);
   m_pages.insert(m_pages.begin() + index, page);
   if (!signalsDisabled()) {
-    pageInserted().fire(this, &m_pages[index], index);
+    emit_signal(pageInserted(), this, &m_pages[index], index);
   }
   setModified();
 }
@@ -165,7 +165,7 @@ void Event::removePage(const int index) {
   MODIFIABLE_SET_OLD_VALUE(pages);
   m_pages.erase(m_pages.begin() + index);
   if (!signalsDisabled()) {
-    pageRemoved().fire(this);
+    emit_signal(pageRemoved(), this);
   }
   setModified();
 }
@@ -175,7 +175,7 @@ void Event::setX(const int x) {
   MODIFIABLE_SET_OLD_VALUE(x);
   m_x = x;
   if (!signalsDisabled()) {
-    xModified().fire(this, m_x);
+    emit_signal(xModified(), this, m_x);
   }
   setModified();
 }
@@ -185,7 +185,7 @@ void Event::setY(const int y) {
   MODIFIABLE_SET_OLD_VALUE(y);
   m_y = y;
   if (!signalsDisabled()) {
-    yModified().fire(this, m_y);
+    emit_signal(yModified(), this, m_y);
   }
   setModified();
 }
@@ -201,7 +201,7 @@ void Event::swapPages(int a, int b) {
   MODIFIABLE_SET_OLD_VALUE(pages);
   std::swap(m_pages.at(a), m_pages.at(b));
   if (!signalsDisabled()) {
-    pagesModified().fire(this, m_pages);
+    emit_signal(pagesModified(), this, m_pages);
   }
   setModified();
 }

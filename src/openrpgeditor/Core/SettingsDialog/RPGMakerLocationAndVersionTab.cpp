@@ -7,8 +7,8 @@
 
 #include "orei18n.hpp"
 
-#include <SDL3/SDL_dialog.h>
 #include <imgui.h>
+#include <SDL3/SDL_dialog.h>
 
 void RPGMakerLocationAndVersionTab::draw() {
   if (ImGui::BeginTabItem(trNOOP("RPG Maker Location & Version"))) {
@@ -16,7 +16,7 @@ void RPGMakerLocationAndVersionTab::draw() {
     strncpy(location, Settings::instance()->rpgMakerMVLocation.c_str(), 4096);
     if (ImGui::LabelOverLineEdit("##rpgmakermv_location_line_edit", trNOOP("RPG Maker MV Location"), location, sizeof(location), 0.f)) {
       Settings::instance()->rpgMakerMVLocation = location;
-      onValueChanged.fire();
+      emit_signal(onValueChanged);
     }
     ImGui::SameLine();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().FramePadding.y);
@@ -32,7 +32,7 @@ void RPGMakerLocationAndVersionTab::draw() {
               }
               const std::filesystem::path path{fileList[0]};
               Settings::instance()->rpgMakerMVLocation = absolute(path).generic_string();
-              static_cast<ISettingsTab*>(userdata)->onValueChanged.fire();
+              emit_signal(static_cast<ISettingsTab*>(userdata)->onValueChanged);
             },
             this, App::APP->getWindow()->getNativeWindow(), !Settings::instance()->rpgMakerMVLocation.empty() ? Settings::instance()->rpgMakerMVLocation.c_str() : nullptr, false);
       }
@@ -48,7 +48,7 @@ void RPGMakerLocationAndVersionTab::draw() {
         for (int i = 0; i < KnownRPGMVVersions.size(); ++i) {
           if (ImGui::Selectable(KnownRPGMVVersions[i].data(), i == Settings::instance()->rpgMakerMVVersion)) {
             Settings::instance()->rpgMakerMVVersion = i;
-            onValueChanged.fire();
+            emit_signal(onValueChanged);
           }
           if (Settings::instance()->rpgMakerMVVersion == i) {
             ImGui::SetItemDefaultFocus();
@@ -78,7 +78,7 @@ void RPGMakerLocationAndVersionTab::draw() {
               }
               const std::filesystem::path path{fileList[0]};
               Settings::instance()->rpgMakerMZLocation = absolute(path).generic_string();
-              static_cast<ISettingsTab*>(userdata)->onValueChanged.fire();
+              emit_signal(static_cast<ISettingsTab*>(userdata)->onValueChanged);
             },
             this, App::APP->getWindow()->getNativeWindow(), !Settings::instance()->rpgMakerMZLocation.empty() ? Settings::instance()->rpgMakerMZLocation.c_str() : nullptr, false);
       }
@@ -94,7 +94,7 @@ void RPGMakerLocationAndVersionTab::draw() {
         for (int i = 0; i < KnownRPGMZVersions.size(); ++i) {
           if (ImGui::Selectable(KnownRPGMZVersions[i].data(), i == Settings::instance()->rpgMakerMZVersion)) {
             Settings::instance()->rpgMakerMZVersion = i;
-            onValueChanged.fire();
+            emit_signal(onValueChanged);
           }
           if (Settings::instance()->rpgMakerMZVersion == i) {
             ImGui::SetItemDefaultFocus();

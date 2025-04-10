@@ -56,6 +56,9 @@ private:
 };
 
 void MapEditor::setMap(MapInfo* info) {
+  if (m_mapInfo && m_mapInfo->mapLoaded()) {
+    m_mapInfo->map()->parallaxNameModified().disconnect<&MapEditor::onParallaxNameModified>(this);
+  }
   m_mapRenderer.setMap(nullptr, nullptr);
   m_mapInfo = info;
   m_parallaxTexture = ParallaxTexture();
@@ -63,9 +66,16 @@ void MapEditor::setMap(MapInfo* info) {
 
 int MapEditor::tileSize() const { return Database::instance()->system.tileSize(); }
 
+void MapEditor::onParallaxNameModified(Map* info, const std::string& name) { m_parallaxTexture.setTexture(name); }
+
 void MapEditor::drawParallax(ImGuiWindow* win) {
+  if (!map()) {
+    return;
+  }
+
   if (map()->parallaxShow() && !map()->parallaxName().empty() && !m_parallaxTexture) {
     m_parallaxTexture = ParallaxTexture(map()->parallaxName(), {map()->width(), map()->height()}, {map()->parallaxSx(), map()->parallaxSy()}, map()->parallaxLoopX(), map()->parallaxLoopY());
+    map()->parallaxNameModified().connect<&MapEditor::onParallaxNameModified>(this);
     // m_parallaxTexture.enableUpdates();
   } else if (map() && (!map()->parallaxShow() || map()->parallaxName().empty())) {
     m_parallaxTexture = ParallaxTexture();
@@ -74,6 +84,24 @@ void MapEditor::drawParallax(ImGuiWindow* win) {
   if (!m_parallaxTexture) {
     return;
   }
+
+  if (m_prisonMode != !m_parallaxTexture.areUpdatesEnabled()) {
+    m_parallaxTexture.setUpdatesEnabled(!m_prisonMode);
+  }
+
+  if (m_parallaxTexture.width() != map()->width() || m_parallaxTexture.height() != map()->height()) {
+    m_parallaxTexture.setSize(map()->width(), map()->height());
+  }
+
+  if (m_parallaxTexture.scroll().x() != map()->parallaxSx() || m_parallaxTexture.scroll().y() != map()->parallaxSy()) {
+    m_parallaxTexture.setScroll(map()->parallaxSx(), map()->parallaxSy());
+  }
+
+  if (m_parallaxTexture.loopX() != map()->parallaxLoopX() || m_parallaxTexture.loopY() != map()->parallaxLoopY()) {
+    m_parallaxTexture.setLoopX(map()->parallaxLoopX());
+    m_parallaxTexture.setLoopY(map()->parallaxLoopY());
+  }
+
   // TODO: Proper parallax implementation
   win->DrawList->AddImage(static_cast<ImTextureID>(m_parallaxTexture), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
                           win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_parallaxTexture.pixelWidth()), static_cast<float>(m_parallaxTexture.pixelHeight())} * m_mapScale));

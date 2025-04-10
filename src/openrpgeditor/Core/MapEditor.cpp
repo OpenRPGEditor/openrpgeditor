@@ -66,7 +66,7 @@ int MapEditor::tileSize() const { return Database::instance()->system.tileSize()
 void MapEditor::drawParallax(ImGuiWindow* win) {
   if (map()->parallaxShow() && !map()->parallaxName().empty() && !m_parallaxTexture) {
     m_parallaxTexture = ParallaxTexture(map()->parallaxName(), {map()->width(), map()->height()}, {map()->parallaxSx(), map()->parallaxSy()}, map()->parallaxLoopX(), map()->parallaxLoopY());
-    m_parallaxTexture.enableUpdates();
+    // m_parallaxTexture.enableUpdates();
   } else if (map() && (!map()->parallaxShow() || map()->parallaxName().empty())) {
     m_parallaxTexture = ParallaxTexture();
   }

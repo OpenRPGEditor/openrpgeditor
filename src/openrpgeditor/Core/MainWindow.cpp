@@ -8,8 +8,7 @@
 #include "Core/Log.hpp"
 #include "Core/SettingsDialog/GeneralSettingsTab.hpp"
 #include "Core/Utils.hpp"
-#include "Database/Serializable/DeserializationQueue.hpp"
-#include "Database/Serializable/SerializationQueue.hpp"
+#include "Database/Serializable/FileQueue.hpp"
 #include "Database/Versions.hpp"
 #include "IconsFontAwesome6.h"
 #include "imgui.h"
@@ -111,10 +110,8 @@ bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
     return false;
   }
   APP_INFO("Got project for {}", version);
-  SerializationQueue::instance().reset();
-  DeserializationQueue::instance().reset();
-  SerializationQueue::instance().setBasepath(basePath);
-  DeserializationQueue::instance().setBasepath(basePath);
+  FileQueue::instance().reset();
+  FileQueue::instance().setBasepath(basePath);
   ResourceManager::instance()->setBasepath(basePath);
   m_databaseEditor.emplace(this);
   m_databaseEditor->onReady.connect<&MainWindow::onDatabaseReady>(this);
@@ -165,8 +162,7 @@ bool MainWindow::close(bool promptSave) {
     }
   }
 
-  SerializationQueue::instance().reset();
-  DeserializationQueue::instance().reset();
+  FileQueue::instance().reset();
 
   m_undoStack.clear();
   m_redoStack.clear();
@@ -225,8 +221,7 @@ void MainWindow::setupDocking() {
     ImGui::DockBuilderDockWindow("###mapeditor", middleDock);
     ImGui::DockBuilderDockWindow("###databaseeditor", middleDock);
     ImGui::DockBuilderDockWindow("###mapproperties", rightDock);
-    ImGui::DockBuilderDockWindow("###projectloadstatus", lowerDock);
-    ImGui::DockBuilderDockWindow("###projectsavestatus", lowerDock);
+    ImGui::DockBuilderDockWindow("###filequeuestatus", lowerDock);
     ImGui::DockBuilderGetNode(leftDock)->SetLocalFlags(static_cast<int>(ImGuiDockNodeFlags_NoUndocking) | static_cast<int>(ImGuiDockNodeFlags_NoDocking));
     ImGui::DockBuilderGetNode(leftLowerDock)->SetLocalFlags(static_cast<int>(ImGuiDockNodeFlags_NoUndocking) | static_cast<int>(ImGuiDockNodeFlags_NoDocking));
     ImGui::DockBuilderGetNode(middleDock)->SetLocalFlags(static_cast<int>(ImGuiDockNodeFlags_NoUndocking) | static_cast<int>(ImGuiDockNodeFlags_NoDocking));
@@ -451,33 +446,27 @@ void MainWindow::draw() {
   m_nwjsVersionManager.draw();
   EditorPluginManager::instance()->draw();
 
-  if (DeserializationQueue::instance().hasTasks()) {
-    ImGui::Begin(std::format("{}###projectloadstatus", trNOOP("Loading Project....")).c_str(), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text("%s", trFormat("Loading {0} ({1} of {2})....", DeserializationQueue::instance().getCurrentFile().data(), DeserializationQueue::instance().currentTaskIndex(),
-                               DeserializationQueue::instance().totalTasks())
-                          .c_str());
-    ImGui::ProgressBar(DeserializationQueue::instance().getProgress() / 100.f);
+  if (FileQueue::instance().hasTasks()) {
+    ImGui::Begin(std::format("{}###filequeuestatus", FileQueue::instance().operationType() == ISerializable::Operation::Read ? trNOOP("Loading Project....") : trNOOP("Saving Project....")).c_str(),
+                 nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
+    std::string message;
+    if (FileQueue::instance().operationType() == ISerializable::Operation::Read) {
+      message = trFormat("Loading {0} ({1} of {2})....", FileQueue::instance().currentTaskName(), FileQueue::instance().currentTaskNumber(), FileQueue::instance().totalTasks());
+    } else if (FileQueue::instance().operationType() == ISerializable::Operation::Write) {
+      message = trFormat("Saving {0} ({1} of {2})....", FileQueue::instance().currentTaskName(), FileQueue::instance().currentTaskNumber(), FileQueue::instance().totalTasks());
+    }
+    ImGui::TextUnformatted(message.c_str());
+    ImGui::ProgressBar(FileQueue::instance().progress() / 100.f);
     if (ImGui::Button(trNOOP("Cancel"))) {
-      DeserializationQueue::instance().reset();
-      close();
+      FileQueue::instance().reset();
+      // If we haven't finished loading the database, close the project
+      if (FileQueue::instance().operationType() == ISerializable::Operation::Read && (!m_databaseEditor || !m_databaseEditor->isReady())) {
+        close();
+      }
     }
     ImGui::End();
-  } else if (DeserializationQueue::instance().getProgress() >= 100.f) {
-    DeserializationQueue::instance().reset();
-  }
-  if (SerializationQueue::instance().hasTasks()) {
-    ImGui::Begin(std::format("{}###projectsavestatus", trNOOP("Saving Project....")).c_str(), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::Text("%s", trFormat("Saving {0} ({1} of {2})....", SerializationQueue::instance().getCurrentFile().data(), SerializationQueue::instance().currentTaskIndex(),
-                               SerializationQueue::instance().totalTasks())
-                          .c_str());
-    ImGui::ProgressBar(SerializationQueue::instance().getProgress() / 100.f);
-    if (ImGui::Button(trNOOP("Cancel"))) {
-      SerializationQueue::instance().reset();
-      close();
-    }
-    ImGui::End();
-  } else if (SerializationQueue::instance().getProgress() >= 100.f) {
-    SerializationQueue::instance().reset();
+  } else if (FileQueue::instance().progress() >= 100.f) {
+    FileQueue::instance().reset();
   }
 
   ImGui::RenderNotifications();
@@ -519,7 +508,8 @@ void MainWindow::drawCreateNewProjectPopup() {
           version = Settings::instance()->rpgMakerMVVersion != -1 ? KnownRPGMVVersions[Settings::instance()->rpgMakerMVVersion] : KnownRPGMVVersions[KnownRPGMVVersions.size() - 1];
         }
         projectFile << version << std::endl;
-        SerializationQueue::instance().setBasepath(projectPath.generic_string());
+        FileQueue::instance().reset();
+        FileQueue::instance().setBasepath(projectPath.generic_string());
         if (copyExampleProject) {
           // TODO: Locale
           std::filesystem::path examplePath;
@@ -552,7 +542,9 @@ void MainWindow::drawCreateNewProjectPopup() {
           m_database->system.setVersionId(floor(rand() * 100000000));
           m_database->serializeProject();
         }
-        while (SerializationQueue::instance().hasTasks()) {}
+        while (FileQueue::instance().hasTasks()) {
+          FileQueue::instance().proc();
+        }
         load(projectFilePath.generic_string(), projectPath.generic_string());
       }
     }

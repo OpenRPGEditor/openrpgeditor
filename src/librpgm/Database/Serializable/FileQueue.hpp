@@ -3,20 +3,20 @@
 #include "Database/Serializable/ISerializable.hpp"
 #include "Database/Serializable/Task.hpp"
 #include <condition_variable>
+#include <deque>
 #include <functional>
 #include <memory>
 #include <mutex>
-#include <queue>
 #include <string>
 #include <thread>
 
 // Base class for a threaded file queue (for serialization and deserialization).
-class ThreadedFileQueue {
+class FileQueue {
 public:
   using TaskCallback = std::function<void(std::shared_ptr<ISerializable>)>;
 
-  ThreadedFileQueue();
-  virtual ~ThreadedFileQueue();
+  FileQueue();
+  virtual ~FileQueue();
 
   // Set the base path for file operations
   void setBasepath(const std::string_view basePath);
@@ -27,31 +27,32 @@ public:
   // Enqueue a task to the queue
   bool enqueue(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback);
 
-  // Get the current progress (0 to 100)
-  float getProgress() const;
-
-  // Get the current file being processed
-  std::string_view getCurrentFile() const;
-
-  // Abort current processing
-  void abort();
-
-  void terminate();
-
   // Reset and clear the queue, also aborts current tasks
   void reset();
 
   bool hasTasks() const { return !m_taskQueue.empty(); }
 
-  int currentTaskIndex() const { return m_completedTasks; }
+  // Get the current progress (0 to 100)
+  float progress() const;
+
+  int currentTaskNumber() const { return m_completedTasks + 1; }
   int totalTasks() const { return m_totalTasks; }
+  std::string_view currentTaskName() const { return m_currentFilePath; }
+
+  // The worker thread method
+  void proc();
+
+  static FileQueue& instance() {
+    static FileQueue instance;
+    return instance;
+  }
+
+  ISerializable::Operation operationType() const { return m_currentOperation; }
 
 protected:
   // The worker loop, to be implemented in subclasses (serialization/deserialization)
-  virtual void processTask(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback) = 0;
-
-  // The worker thread method
-  void workerLoop();
+  void processReadTask(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback) const;
+  void processWriteTask(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback) const;
 
   // Current base path for file operations
   std::string m_basePath;
@@ -61,18 +62,8 @@ protected:
   int m_completedTasks = 0;
 
   // Task queue
-  std::queue<Task> m_taskQueue;
+  std::deque<Task> m_taskQueue;
 
-  // Worker thread
-  std::thread m_workerThread;
-
-  // Mutex and condition variable for thread synchronization
-  mutable std::mutex m_mutex;
-  std::condition_variable m_cv;
-
-  // Current file being processed
-  std::string m_currentFile;
-
-  // Abort flag
-  bool m_abortRequested = false;
+  ISerializable::Operation m_currentOperation = ISerializable::Operation::Read;
+  std::string m_currentFilePath;
 };

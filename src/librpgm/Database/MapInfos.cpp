@@ -2,7 +2,7 @@
 
 #include "Database/Database.hpp"
 #include "Database/Map.hpp"
-#include "Serializable/DeserializationQueue.hpp"
+#include "Serializable/FileQueue.hpp"
 #include "Serializable/MapSerializer.hpp"
 
 #include <fstream>
@@ -93,8 +93,8 @@ void MapInfos::loadAllMaps() {
       //      if (auto map = Database::instance()->loadMap(mapinfo->id); map.m_isValid) {
       //        mapinfo->m_map = std::make_unique<Map>(map);
       //      }
-      DeserializationQueue::instance().enqueue(std::make_shared<MapSerializer>(std::format("data/Map{:03}.json", mapinfo->id()), mapinfo->id()),
-                                               [this]<typename T>(T&& handle) { mapLoadCallback(std::forward<T>(handle)); });
+      FileQueue::instance().enqueue(std::make_shared<MapSerializer>(std::format("data/Map{:03}.json", mapinfo->id()), mapinfo->id()),
+                                    [this]<typename T>(T&& handle) { mapLoadCallback(std::forward<T>(handle)); });
     }
   }
 }

@@ -96,8 +96,8 @@ public:
   std::vector<MapInfo*>& children() { return m_children; }
   [[nodiscard]] const std::vector<MapInfo*>& children() const { return m_children; }
 
-  Map* map() { return m_map.get(); }
-  [[nodiscard]] const Map* map() const { return m_map.get(); }
+  Map* map();
+  [[nodiscard]] const Map* map() const;
 
   Event* event(const int id) { return m_map ? m_map->event(id) : nullptr; }
   [[nodiscard]] const Event* event(const int id) const { return m_map ? m_map->event(id) : nullptr; }

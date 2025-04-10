@@ -1,8 +1,19 @@
-﻿//
-// Created by antidote on 12/7/24.
-//
+﻿#include "Database/MapInfo.hpp"
+#include "Database/Serializable/MapSerializer.hpp"
+#include "Serializable/FileQueue.hpp"
 
-#include "Database/MapInfo.hpp"
+Map* MapInfo::map() {
+  if (!m_map) {
+    FileQueue::instance().enqueue(std::make_shared<MapSerializer>(std::format("data/Map{:03}.json", id()), id()), [this](const std::shared_ptr<ISerializable>& serializer) {
+      m_map = std::make_unique<Map>(std::dynamic_pointer_cast<MapSerializer>(serializer)->data());
+      RPGM_INFO("Map{:03} loaded", id());
+    });
+    return nullptr;
+  }
+  return m_map.get();
+}
+
+[[nodiscard]] const Map* MapInfo::map() const { return const_cast<MapInfo*>(this)->map(); }
 
 void to_json(nlohmann::ordered_json& json, const MapInfo& mapinfo) {
   json = {

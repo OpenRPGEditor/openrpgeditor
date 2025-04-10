@@ -18,15 +18,15 @@ void DatabaseEditor::draw() {
     m_currentTab = &m_actors.value();
   }
 
-  ImGui::SetNextWindowSizeConstraints(ImVec2{800, 720}, ImVec2{FLT_MAX, FLT_MAX});
+  ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(800, 720), ImVec2{FLT_MAX, FLT_MAX});
   ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing);
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, {0.5, 0.5});
   if (ImGui::Begin(std::format("{}###databaseeditor", trNOOP("Database")).c_str(), &m_isOpen)) {
-    ImGui::SetNextItemWidth(100.f);
+    ImGui::SetNextItemWidth(ImGui::GetDPIScaledValue(100.f));
     const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQR").x;
     ImGui::BeginChild("##orpg_database_editor_tab_buttons", ImVec2{calc + ImGui::GetStyle().ItemSpacing.x, 0}, 0, ImGuiWindowFlags_NoBackground);
 
-    ImGui::SetNextItemWidth(160.f);
+    ImGui::SetNextItemWidth(ImGui::GetDPIScaledValue(160.f));
     int index{0};
     if (m_filterByHeader) {
       if (ImGui::BeginCombo("##orpg_database_editor_header_list", m_selectedHeaderIndex == -1 ? "" : m_currentTab->getName(m_currentTab->getHeader(m_selectedHeaderIndex)).c_str())) {
@@ -57,7 +57,7 @@ void DatabaseEditor::draw() {
     }
     ImGui::EndDisabled();
 
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 100);
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetDPIScaledValue(100));
     if (ImGui::SelectableWithBorder(trNOOP("Actors"), m_currentTab == &m_actors.value())) {
       m_currentTab = &m_actors.value();
     }

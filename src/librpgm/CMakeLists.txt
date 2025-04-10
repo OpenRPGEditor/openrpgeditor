@@ -81,8 +81,6 @@ add_library(
         Database/Serializable/ClassesSerializer.hpp
         Database/Serializable/CommonEventsSerializer.cpp
         Database/Serializable/CommonEventsSerializer.hpp
-        Database/Serializable/DeserializationQueue.cpp
-        Database/Serializable/DeserializationQueue.hpp
         Database/Serializable/EnemiesSerializer.cpp
         Database/Serializable/EnemiesSerializer.hpp
         Database/Serializable/ISerializable.hpp
@@ -90,8 +88,6 @@ add_library(
         Database/Serializable/ItemsSerializer.hpp
         Database/Serializable/MapSerializer.cpp
         Database/Serializable/MapSerializer.hpp
-        Database/Serializable/SerializationQueue.cpp
-        Database/Serializable/SerializationQueue.hpp
         Database/Serializable/SkillsSerializer.cpp
         Database/Serializable/SkillsSerializer.hpp
         Database/Serializable/StatesSerializer.cpp
@@ -99,8 +95,8 @@ add_library(
         Database/Serializable/SystemSerializer.cpp
         Database/Serializable/SystemSerializer.hpp
         Database/Serializable/Task.hpp
-        Database/Serializable/ThreadedFileQueue.cpp
-        Database/Serializable/ThreadedFileQueue.hpp
+        Database/Serializable/FileQueue.cpp
+        Database/Serializable/FileQueue.hpp
         Database/Serializable/TilesetsSerializer.cpp
         Database/Serializable/TilesetsSerializer.hpp
         Database/Serializable/TroopsSerializer.cpp

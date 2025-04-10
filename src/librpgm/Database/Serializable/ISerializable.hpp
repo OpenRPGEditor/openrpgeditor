@@ -5,8 +5,14 @@
 
 class ISerializable {
 public:
-  explicit ISerializable(const std::string_view filepath)
-  : m_filepath(filepath) {}
+  enum class Operation {
+    Read,
+    Write,
+  };
+  explicit ISerializable(const std::string_view filepath, Operation operation)
+  : m_filepath(filepath)
+  , m_operation(operation) {}
+
   virtual ~ISerializable() = default;
 
   // Virtual methods for serialization and deserialization
@@ -16,18 +22,22 @@ public:
   // Getter for the file path associated with this object
   [[nodiscard]] virtual std::string_view filepath() const { return m_filepath; }
 
+  [[nodiscard]] Operation operation() const { return m_operation; }
+
 private:
   std::string m_filepath;
+  Operation m_operation;
 };
 
 template <typename T>
 class ITypedSerializable : public ISerializable {
 public:
   explicit ITypedSerializable(const std::string_view filepath)
-  : ISerializable(filepath) {}
+  : ISerializable(filepath, Operation::Read) {}
   ITypedSerializable(const T& data, const std::string_view filepath)
-  : ISerializable(filepath)
+  : ISerializable(filepath, Operation::Write)
   , m_data(data) {}
+
   const T& data() const { return m_data; }
 
 protected:

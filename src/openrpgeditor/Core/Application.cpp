@@ -11,8 +11,7 @@
 #include "Core/Window.hpp"
 #include "misc/freetype/imgui_freetype.h"
 
-#include "Database/Serializable/DeserializationQueue.hpp"
-#include "Database/Serializable/SerializationQueue.hpp"
+#include "Database/Serializable/FileQueue.hpp"
 #include "FirstBootWizard/ProjectLocationPage.hpp"
 #include "FirstBootWizard/RPGMakerLocationAndVersionPage.hpp"
 #include "FirstBootWizard/UISettingsPage.hpp"
@@ -189,8 +188,7 @@ void Application::updateFonts() {
 
   static constexpr ImWchar specialChar[] = {
       /* clang-format off */
-      ICON_MIN_FA, ICON_MAX_FA,
-      //0x0001, 0xFFFF,
+      0x0001, 0xFFFF,
       0
       /* clang-format on */
   };
@@ -285,6 +283,7 @@ ExitStatus Application::run() {
   }
 
   SDL_ShowWindow(m_window->getNativeWindow());
+  float frameTime = 0.f;
   while (true) {
     EditorPluginManager::instance()->initializeAllPlugins();
     if (m_fontUpdateRequested && m_fontUpdateDelay <= 0) {
@@ -297,8 +296,6 @@ ExitStatus Application::run() {
       m_fontUpdateRequested = false;
     }
     if (!m_running) {
-      DeserializationQueue::instance().abort();
-      SerializationQueue::instance().abort();
       if (m_project) {
         m_project->close();
       }
@@ -334,6 +331,7 @@ ExitStatus Application::run() {
     // }
 
     ImGui::NewFrame();
+    frameTime += ImGui::GetIO().DeltaTime;
 
     if (m_firstBootWizard && m_firstBootWizard->draw()) {
       Settings::instance()->ranFirstBootWizard = true;
@@ -357,12 +355,21 @@ ExitStatus Application::run() {
     SDL_RenderClear(m_window->getNativeRenderer());
     ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), m_window->getNativeRenderer());
     SDL_RenderPresent(m_window->getNativeRenderer());
+
+    // Process file queues at every 1000th of a second to prevent UI stalls
+#ifndef DEBUG
+    if (frameTime >= (1.f / 1000.f)) {
+#else
+    if (frameTime >= (1.f / 60.f)) {
+#endif
+      FileQueue::instance().proc();
+      frameTime = 0.f;
+    }
   }
 
   EditorPluginManager::instance()->shutdownAllPlugins();
   serializeSettings();
-  SerializationQueue::instance().terminate();
-  DeserializationQueue::instance().terminate();
+  FileQueue::instance().reset();
   return m_exitStatus;
 }
 

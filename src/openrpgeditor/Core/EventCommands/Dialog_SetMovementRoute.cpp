@@ -1,6 +1,4 @@
 #include "Core/EventCommands/Dialog_SetMovementRoute.hpp"
-
-#include "Core/EventCommands/Dialog_PlaySE.hpp"
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeBlendMode.hpp"
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.hpp"
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeImage.hpp"
@@ -12,11 +10,9 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementSwitchON.hpp"
 #include "Core/EventCommands/MovementRoute/Dialog_MovementWait.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
-
 #include "Database/Database.hpp"
 #include "Database/EventCommands/MovementRoute/DirectionFixOFF.hpp"
 #include "Database/EventCommands/MovementRoute/DirectionFixON.hpp"
-// #include "Database/EventCommands/MovementRoute/Jump.hpp"
 #include "Database/EventCommands/MovementRoute/Move1StepBackward.hpp"
 #include "Database/EventCommands/MovementRoute/Move1StepForward.hpp"
 #include "Database/EventCommands/MovementRoute/MoveAtRandom.hpp"
@@ -30,6 +26,7 @@
 #include "Database/EventCommands/MovementRoute/MoveUp.hpp"
 #include "Database/EventCommands/MovementRoute/MoveUpperLeft.hpp"
 #include "Database/EventCommands/MovementRoute/MoveUpperRight.hpp"
+#include "Database/EventCommands/MovementRoute/PlaySE.hpp"
 #include "Database/EventCommands/MovementRoute/SteppingAnimationOFF.hpp"
 #include "Database/EventCommands/MovementRoute/SteppingAnimationON.hpp"
 #include "Database/EventCommands/MovementRoute/ThroughOFF.hpp"
@@ -47,10 +44,10 @@
 #include "Database/EventCommands/MovementRoute/TurnRight.hpp"
 #include "Database/EventCommands/MovementRoute/TurnTowardPlayer.hpp"
 #include "Database/EventCommands/MovementRoute/TurnUp.hpp"
-// #include "Database/EventCommands/MovementRoute/Wait.hpp"
 #include "Database/EventCommands/MovementRoute/WalkingAnimationOFF.hpp"
 #include "Database/EventCommands/MovementRoute/WalkingAnimationON.hpp"
 #include "imgui.h"
+#include "MovementRoute/Dialogue_MovementPlaySE.hpp"
 
 #include <clip.h>
 #include <tuple>
@@ -115,47 +112,58 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
             if (ImGui::SelectableWithBorder(text, isSelected, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
               if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
                 if (m_route.list().at(m_selected)->code() == EventCode::Jump) {
-                  m_movementRouteDialog = std::make_shared<Dialog_MovementJump>(trNOOP("Jump"), &m_route.list.at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementJumpCommand>(m_route.list().at(m_selected));
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementJump>(trNOOP("Jump"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
                 if (m_route.list().at(m_selected)->code() == EventCode::Wait_del_Movement) {
-                  m_movementRouteDialog = std::make_shared<Dialog_MovementWait>(trNOOP("Wait"), &m_route.list.at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementWaitCommand>(m_route.list().at(m_selected));
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementWait>(trNOOP("Wait"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
                 if (m_route.list().at(m_selected)->code() == EventCode::Switch_ON) {
-                  m_movementRouteDialog = std::make_shared<Dialog_MovementSwitchON>(trNOOP("Switch ON"), &m_route.list.at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementSwitchONCommand>(m_route.list().at(m_selected));
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementSwitchON>(trNOOP("Switch ON"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
                 if (m_route.list().at(m_selected)->code() == EventCode::Switch_OFF) {
-                  m_movementRouteDialog = std::make_shared<Dialog_MovementSwitchOFF>(trNOOP("Switch OFF"), &m_route.list.at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementSwitchOFFCommand>(m_route.list().at(m_selected));
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementSwitchOFF>(trNOOP("Switch OFF"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
                 if (m_route.list().at(m_selected)->code() == EventCode::Speed) {
-                  m_movementRouteDialog = std::make_shared<Dialog_MovementChangeSpeed>(trNOOP("Change Speed"), &m_route.list.at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementSpeedCommand>(m_route.list().at(m_selected));
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementChangeSpeed>(trNOOP("Change Speed"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
                 if (m_route.list().at(m_selected)->code() == EventCode::Frequency) {
-                  m_movementRouteDialog = std::make_shared<Dialog_MovementChangeFrequency>(trNOOP("Change Frequency"), &m_route.list.at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementFrequencyCommand>(m_route.list().at(m_selected));
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementChangeFrequency>(trNOOP("Change Frequency"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
                 if (m_route.list().at(m_selected)->code() == EventCode::Change_Image) {
-                  m_movementRouteDialog = std::make_shared<Dialog_MovementChangeImage>(trNOOP("Image"), &m_route.list.at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementChangeImageCommand>(m_route.list().at(m_selected));
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementChangeImage>(trNOOP("Image"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
                 if (m_route.list().at(m_selected)->code() == EventCode::Change_Opacity) {
-                  m_movementRouteDialog = std::make_shared<Dialog_MovementChangeOpacity>(trNOOP("Opacity"), &m_route.list.at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementChangeOpacityCommand>(m_route.list().at(m_selected));
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementChangeOpacity>(trNOOP("Opacity"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
                 if (m_route.list().at(m_selected)->code() == EventCode::Change_Blend_Mode) {
-                  m_movementRouteDialog = std::make_shared<Dialog_MovementChangeBlendMode>(trNOOP("Blend"), &m_route.list.at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementChangeBlendModeCommand>(m_route.list().at(m_selected));
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementChangeBlendMode>(trNOOP("Blend"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
                 if (m_route.list().at(m_selected)->code() == EventCode::Play_SE_del_Movement) {
-                  m_movementRouteDialog = std::make_shared<Dialog_PlaySE>(trNOOP("Play SE"), &m_route.list.at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementPlaySECommand>(m_route.list().at(m_selected));
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementPlaySE>(trNOOP("Play SE"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
                 if (m_route.list().at(m_selected)->code() == EventCode::Script_del_Movement) {
-                  m_movementRouteDialog = std::make_shared<Dialog_MovementScript>(trNOOP("Script"), &m_route.list.at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementScriptCommand>(m_route.list().at(m_selected));
+                  m_movementRouteDialog = std::make_shared<Dialog_MovementScript>(trNOOP("Script"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
               }
@@ -357,7 +365,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
             m_movementRouteDialog->setOpen(true);
           }
           if (ImGui::Button(trNOOP("Play SE..."), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_movementRouteDialog = std::make_shared<Dialog_PlaySE>(trNOOP("Play SE"));
+            m_movementRouteDialog = std::make_shared<Dialog_MovementPlaySE>(trNOOP("Play SE"));
             m_movementRouteDialog->setOpen(true);
           }
           if (ImGui::Button(trNOOP("Script..."), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {

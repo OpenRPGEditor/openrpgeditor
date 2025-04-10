@@ -471,6 +471,8 @@ add_library(
         Core/LCF_Importer/LCF_Importer.hpp
         Core/LCF_Importer/LCF_Mapping.cpp
         Core/LCF_Importer/LCF_Mapping.hpp
+        Core/EventCommands/MovementRoute/Dialogue_MovementPlaySE.cpp
+        Core/EventCommands/MovementRoute/Dialogue_MovementPlaySE.hpp
 )
 
 target_include_directories(

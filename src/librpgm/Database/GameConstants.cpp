@@ -322,16 +322,16 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
 
   file << "\n/* -------------------MAPS-------------------- */\n";
   for (const auto& [id, alias] : maps) {
-    auto map = Database::instance()->mapInfos.map(id);
+    auto mapInfo = Database::instance()->mapInfos.map(id);
     file << std::format(
         "\n"
         "/*\n"
         " * @name MAP_{}\n"
         " * @summary Exported Map \"{}\" ({})\n"
         " * @readonly\n",
-        alias, map->name(), id);
-    if (!map->map()->note().empty()) {
-      auto lines = splitString(map->map()->note(), '\n');
+        alias, mapInfo->name(), id);
+    if (const auto map = mapInfo->map(); map && !map->note().empty()) {
+      auto lines = splitString(map->note(), '\n');
       file << " * @description\n";
       for (auto line : lines) {
         file << std::format(" * {}\n", line);
@@ -339,6 +339,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
     }
     file << " */\n";
     file << std::format("const MAP_{} = {};\n", alias, id);
+    mapInfo->closeIfNotModified();
   }
   return true;
 }

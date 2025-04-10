@@ -20,9 +20,18 @@ void FileQueue::setBasepath(const std::string_view basePath) { m_basePath = base
 
 std::string FileQueue::getBasepath() const { return m_basePath; }
 
-bool FileQueue::enqueue(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback) {
+bool FileQueue::enqueue(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback, const bool sync) {
   if (m_basePath.empty()) {
     return false;
+  }
+
+  if (sync) {
+    if (fileData->operation() == ISerializable::Operation::Read) {
+      processReadTask(fileData, callback);
+    } else if (fileData->operation() == ISerializable::Operation::Write) {
+      processWriteTask(fileData, callback);
+    }
+    return true;
   }
 
   if (!m_taskQueue.empty() && m_currentOperation != fileData->operation()) {
@@ -47,7 +56,7 @@ float FileQueue::progress() const { return m_totalTasks == 0 ? 0.f : (static_cas
 void FileQueue::reset() {
   m_totalTasks = 0;
   m_completedTasks = 0;
-  m_taskQueue.clear();
+  m_taskQueue = {};
 }
 
 void FileQueue::proc() {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "angelscript.h"
 #include "CommonUI/CreateNewProjectDialog.hpp"
 #include "Core/DatabaseEditor.hpp"
 #include "Core/EventEditor.hpp"
@@ -12,7 +13,6 @@
 #include "EventSearcher.hpp"
 #include "LibLCF.hpp"
 #include "SettingsDialog.hpp"
-#include "angelscript.h"
 
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/TextEditor.hpp"
@@ -68,7 +68,7 @@ public:
 
   bool load(std::string_view filePath, std::string_view basePath);
   void save();
-  bool close(bool promptSave = false);
+  std::tuple<bool, bool, bool> close(bool promptSave = false);
   void setupDocking();
 
   [[nodiscard]] bool isLoaded() const { return m_isLoaded; }
@@ -79,7 +79,7 @@ public:
   // this keeps things simple and avoids delegate overhead
   [[nodiscard]] bool modified() { return m_isModified; }
 
-  void draw();
+  void draw(bool shuttingDown = false);
   void drawTileInfo(MapRenderer::MapLayer& mapLayer, int z);
   void handleOpenFile();
   void handleCreateNewProject();
@@ -171,6 +171,7 @@ private:
 
   void drawMenu();
   void drawToolbar();
+  void drawQueueStatus(bool shuttingDown);
   void drawCreateNewProjectPopup();
   void drawTileDebugger();
   void handleKeyboardShortcuts();

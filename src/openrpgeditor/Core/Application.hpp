@@ -55,6 +55,13 @@ public:
 
   std::string_view userConfigPath() const { return m_userConfigPath; };
 
+  void cancelShutdown() {
+    m_running = true;
+    m_userClosed = false;
+    m_projectSerialize = false;
+    m_shutdownDelay = 0.f;
+  }
+
 private:
   void updateFonts();
   ExitStatus m_exitStatus{ExitStatus::Success};
@@ -70,6 +77,9 @@ private:
   std::optional<FirstBootWizard> m_firstBootWizard;
   bool m_fontUpdateRequested{false};
   int m_fontUpdateDelay = 1;
+  float m_shutdownDelay = 0.0f;
+  bool m_userClosed{false};
+  bool m_projectSerialize{false};
 };
 
 extern Application* APP;

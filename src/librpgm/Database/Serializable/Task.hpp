@@ -9,9 +9,11 @@ class ISerializable;
 // Task metadata and associated callback
 class Task {
 public:
-  Task() = delete;
-  Task(const Task&) = delete;
-  Task& operator=(const Task&) = delete;
+  Task() = default;
+  Task(const Task&) = default;
+  Task& operator=(const Task&) = default;
+  Task(Task&&) = default;
+  Task& operator=(Task&&) = default;
 
   Task(const std::shared_ptr<ISerializable>& fileData, const std::function<void(std::shared_ptr<ISerializable>)>& callback)
   : m_fileData(fileData)
@@ -23,9 +25,6 @@ public:
   std::function<void(std::shared_ptr<ISerializable>)> callback() const { return m_callback; }
 
 private:
-  friend class FileQueue;
-  Task(Task&&) = default;
-  Task& operator=(Task&&) = default;
   std::shared_ptr<ISerializable> m_fileData;                      // The file data (serializable object)
   std::function<void(std::shared_ptr<ISerializable>)> m_callback; // Callback when the task is complete
 };

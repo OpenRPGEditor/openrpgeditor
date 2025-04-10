@@ -48,6 +48,15 @@ public:
     return std::ranges::any_of(m_mapinfos, [](const auto& item) { return item->isModified(); });
   }
 
+  void closeAllUnmodified() {
+    for (auto& info : m_mapinfos) {
+      if (!info) {
+        continue;
+      }
+      info->closeIfNotModified();
+    }
+  }
+
 private:
   std::vector<std::optional<MapInfo>> m_mapinfos;
   MapInfo* m_currentMap = nullptr;

@@ -25,7 +25,7 @@ public:
   std::string getBasepath() const;
 
   // Enqueue a task to the queue
-  bool enqueue(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback);
+  bool enqueue(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback, bool sync = false);
 
   // Reset and clear the queue, also aborts current tasks
   void reset();

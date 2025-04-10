@@ -2,21 +2,24 @@
 #include "Database/Serializable/MapSerializer.hpp"
 #include "Serializable/FileQueue.hpp"
 
-Map* MapInfo::map() {
+Map* MapInfo::map(const bool loadSync) {
   if (!m_map) {
     const auto path = std::format("data/Map{:03}.json", id());
-    if (!FileQueue::instance().hasTask(path)) {
-      FileQueue::instance().enqueue(std::make_shared<MapSerializer>(path, id()), [this](const std::shared_ptr<ISerializable>& serializer) {
-        m_map = std::make_unique<Map>(std::dynamic_pointer_cast<MapSerializer>(serializer)->data());
-        RPGM_INFO("Map{:03} loaded", id());
-      });
+    if (loadSync || !FileQueue::instance().hasTask(path)) {
+      FileQueue::instance().enqueue(
+          std::make_shared<MapSerializer>(path, id()),
+          [this, &loadSync](const std::shared_ptr<ISerializable>& serializer) {
+            m_map = std::make_unique<Map>(std::dynamic_pointer_cast<MapSerializer>(serializer)->data());
+            RPGM_INFO("Map{:03} loaded{}", id(), loadSync ? " (SYNC)" : "");
+          },
+          loadSync);
     }
     return nullptr;
   }
   return m_map.get();
 }
 
-[[nodiscard]] const Map* MapInfo::map() const { return const_cast<MapInfo*>(this)->map(); }
+[[nodiscard]] const Map* MapInfo::map(const bool loadSync) const { return const_cast<MapInfo*>(this)->map(loadSync); }
 
 void to_json(nlohmann::ordered_json& json, const MapInfo& mapinfo) {
   json = {

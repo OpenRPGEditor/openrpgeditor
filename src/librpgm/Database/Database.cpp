@@ -138,6 +138,9 @@ void Database::load() {
 
 void Database::serializeProject() {
   serializeSettings();
+  if (gameConstants.generateJS) {
+    gameConstants.generateConstantsJS(basePath + "/js/Constants.js");
+  }
 
   FileQueue::instance().enqueue(std::make_shared<CommonEventsSerializer>(commonEvents, "data/CommonEvents.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
   FileQueue::instance().enqueue(std::make_shared<SystemSerializer>(system, "data/System.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
@@ -159,7 +162,7 @@ void Database::serializeProject() {
   gameConstants.serialize(basePath + "/data/Constants.json");
 
   for (const auto& map : mapInfos.mapInfos()) {
-    if (map->map()) {
+    if (map->mapLoaded() && map->isModified()) {
       FileQueue::instance().enqueue(std::make_shared<MapSerializer>(map->map()->clone(), std::format("data/Map{:03}.json", map->id())), [this](const std::shared_ptr<ISerializable>& serializer) {});
     }
   }

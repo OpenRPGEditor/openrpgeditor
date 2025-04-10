@@ -151,14 +151,51 @@ void MainWindow::save() {
   m_database->serializeProject();
 }
 
-bool MainWindow::close(bool promptSave) {
-  if (promptSave) {
-    // TODO: Implement when safe to do so
-    if (m_database) {
-      // m_database->gameConstants.serialize(m_database->basePath + "/data/Constants.json");
-      // if (m_database->gameConstants.generateJS) {
-      //   m_database->gameConstants.generateConstantsJS(m_database->basePath + "/js/Constants.js");
-      // }
+std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
+  if (promptSave && m_database->isModified()) {
+    ImGui::OpenPopup("###save_changes");
+
+    ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing, {.5f, .5f});
+    int ret = -1;
+    if (ImGui::BeginPopupModal(std::format("{}###save_changes", trNOOP("Save changes?")).c_str(), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
+      ImGui::BeginVertical("##save_changes_inner");
+      {
+        ImGui::TextUnformatted(trFormat("\"{0}\" at \"{1}\"\n"
+                                        "Has unsaved changes, would you like to save?",
+                                        m_database->system.gameTitle().empty() ? trNOOP("Untitled Project") : m_database->system.gameTitle(), m_database->basePath)
+                                   .c_str());
+        ImGui::BeginHorizontal("###save_changes_buttons_outer");
+        {
+          ImGui::Checkbox(trNOOP("Generate `js/Constants.js`"), &m_database->gameConstants.generateJS);
+          ImGui::SetItemTooltip("%s", trNOOP("Generates a Javascript file with constants for any element defined\n"
+                                             "`Database Editor -> Game Constants`\n"
+                                             "This could take a few minutes."));
+          ImGui::Spring();
+          ret = ImGui::ButtonGroup("###save_changes_buttons", {trNOOP("Yes"), trNOOP("No"), trNOOP("Cancel")});
+        }
+        ImGui::EndHorizontal();
+      }
+      ImGui::EndVertical();
+      ImGui::EndPopup();
+    }
+
+    if (ret == 0) { // Yes
+      if (m_database && m_database->gameConstants.generateJS) {
+        /* Clear any loading files */
+        FileQueue::instance().reset();
+        m_database->mapInfos.loadAllMaps();
+      }
+      m_database->serializeSettings();
+      return {true, true, true};
+    }
+    if (ret == 1) { // No
+      return {true, true, false};
+    }
+    if (ret == 2) { // Cancel
+      return {true, false, false};
+    }
+    if (ret == -1) { // No input this frame
+      return {false, false, false};
     }
   }
 
@@ -179,7 +216,7 @@ bool MainWindow::close(bool promptSave) {
 
   ImGui::ClearIniSettings();
   ImGui::LoadIniSettingsFromMemory(Settings::instance()->imguiState.c_str(), Settings::instance()->imguiState.length());
-  return true;
+  return {true, true, false};
 }
 
 void MainWindow::setupDocking() {
@@ -396,11 +433,56 @@ void MainWindow::drawToolbar() {
   ImGui::PopStyleVar(2);
 }
 
-void MainWindow::draw() {
+void MainWindow::drawQueueStatus(const bool shuttingDown) {
+  ImGui::BeginVertical("##filequeue_status_layout");
+  {
+    ImGui::BeginHorizontal("##filequeue_status_text");
+    {
+      if (shuttingDown) {
+        ImGui::Spring(0.5f);
+      }
+      std::string message;
+      if (FileQueue::instance().operationType() == ISerializable::Operation::Read && !shuttingDown) {
+        message = trFormat("Loading {0} ({1} of {2})....", FileQueue::instance().currentTaskName(), FileQueue::instance().currentTaskNumber(), FileQueue::instance().totalTasks());
+      } else if (FileQueue::instance().operationType() == ISerializable::Operation::Read) {
+        message = trFormat("Proccessing {0} ({1} of {2}) for constants....", FileQueue::instance().currentTaskName(), FileQueue::instance().currentTaskNumber(), FileQueue::instance().totalTasks());
+      } else if (FileQueue::instance().operationType() == ISerializable::Operation::Write) {
+        message = trFormat("Saving {0} ({1} of {2})....", FileQueue::instance().currentTaskName(), FileQueue::instance().currentTaskNumber(), FileQueue::instance().totalTasks());
+      }
+      ImGui::TextUnformatted(message.c_str());
+      if (shuttingDown) {
+        ImGui::Spring(0.5f);
+      }
+    }
+    ImGui::EndHorizontal();
+    ImGui::BeginHorizontal("##filequeue_status_progress");
+    {
+      if (shuttingDown) {
+        ImGui::Spring(0.5f);
+      }
+      ImGui::ProgressBar(FileQueue::instance().progress() / 100.f, {-FLT_MIN, 0}, nullptr);
+      if (shuttingDown) {
+        ImGui::Spring(0.5f);
+      }
+    }
+    ImGui::EndHorizontal();
+    if (!shuttingDown) {
+      if (ImGui::Button(trNOOP("Cancel"))) {
+        FileQueue::instance().reset();
+        // If we haven't finished loading the database, close the project
+        if (FileQueue::instance().operationType() == ISerializable::Operation::Read && (!m_databaseEditor || !m_databaseEditor->isReady())) {
+          close();
+        }
+      }
+    }
+  }
+  ImGui::EndVertical();
+}
+void MainWindow::draw(const bool shuttingDown) {
+  ImGui::BeginDisabled(shuttingDown);
   drawMenu();
   drawToolbar();
   setupDocking();
-
   m_settingsDialog.draw();
   m_mapEditor.draw();
   m_eventSearcher.draw();
@@ -446,24 +528,10 @@ void MainWindow::draw() {
   m_nwjsVersionManager.draw();
   EditorPluginManager::instance()->draw();
 
-  if (FileQueue::instance().hasTasks()) {
+  if (FileQueue::instance().hasTasks() && !shuttingDown) {
     ImGui::Begin(std::format("{}###filequeuestatus", FileQueue::instance().operationType() == ISerializable::Operation::Read ? trNOOP("Loading Project....") : trNOOP("Saving Project....")).c_str(),
                  nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-    std::string message;
-    if (FileQueue::instance().operationType() == ISerializable::Operation::Read) {
-      message = trFormat("Loading {0} ({1} of {2})....", FileQueue::instance().currentTaskName(), FileQueue::instance().currentTaskNumber(), FileQueue::instance().totalTasks());
-    } else if (FileQueue::instance().operationType() == ISerializable::Operation::Write) {
-      message = trFormat("Saving {0} ({1} of {2})....", FileQueue::instance().currentTaskName(), FileQueue::instance().currentTaskNumber(), FileQueue::instance().totalTasks());
-    }
-    ImGui::TextUnformatted(message.c_str());
-    ImGui::ProgressBar(FileQueue::instance().progress() / 100.f);
-    if (ImGui::Button(trNOOP("Cancel"))) {
-      FileQueue::instance().reset();
-      // If we haven't finished loading the database, close the project
-      if (FileQueue::instance().operationType() == ISerializable::Operation::Read && (!m_databaseEditor || !m_databaseEditor->isReady())) {
-        close();
-      }
-    }
+    drawQueueStatus(false);
     ImGui::End();
   } else if (FileQueue::instance().progress() >= 100.f) {
     FileQueue::instance().reset();
@@ -474,6 +542,48 @@ void MainWindow::draw() {
   drawCreateNewProjectPopup();
 
   EditorPluginManager::instance()->callDraws();
+  ImGui::EndDisabled();
+
+  if (shuttingDown) {
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImGui::GetStyleColorVec4(ImGuiCol_PopupBg));
+    ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Always, ImVec2(0.5, 0.5));
+    ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(512, 512), ImGuiCond_Always);
+    ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(512, 512), {FLT_MAX, FLT_MAX});
+    ImGui::Begin(trNOOP("##shutdownsplash"), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
+    {
+      ImGui::BeginVertical("##shutdownsplash_layout", ImGui::GetContentRegionAvail());
+      {
+        ImGui::Spring(.5);
+        ImGui::BeginHorizontal("##shutdownsplash_layout_text");
+        {
+          ImGui::Spring(.5);
+          ImGui::TextUnformatted(trNOOP("Saving and shutting down please wait...."));
+          ImGui::Spring(.5);
+        }
+        ImGui::EndHorizontal();
+        ImGui::BeginHorizontal("##shutdownsplash_layout");
+        {
+          ImGui::Spring(0.5f);
+          drawQueueStatus(shuttingDown);
+        }
+        ImGui::EndHorizontal();
+        ImGui::BeginHorizontal("##shutdownsplash_layout_inner");
+        {
+          ImGui::Spring(.5);
+          if (ImGui::Button(trNOOP("Cancel"))) {
+            FileQueue::instance().reset();
+            App::APP->cancelShutdown();
+          }
+          ImGui::Spring(.5);
+        }
+        ImGui::EndHorizontal();
+        ImGui::Spring(.5);
+      }
+      ImGui::EndVertical();
+    }
+    ImGui::End();
+    ImGui::PopStyleColor();
+  }
 }
 
 void MainWindow::drawCreateNewProjectPopup() {
@@ -969,6 +1079,7 @@ void MainWindow::setMap(MapInfo& in) {
   if (in.id() == 0) {
     m_mapListView.setCurrentMapId(0);
     m_mapEditor.setMap(nullptr);
+    m_mapProperties.setMapInfo(nullptr);
     return;
   }
 
@@ -976,9 +1087,11 @@ void MainWindow::setMap(MapInfo& in) {
   if (m_mapListView.currentMapInfo()) {
     m_mapEditor.setMap(&in);
     m_database->mapInfos.setCurrentMap(&in);
+    m_mapProperties.setMapInfo(&in);
   } else {
     m_mapEditor.setMap(nullptr);
     m_database->mapInfos.setCurrentMap(nullptr);
+    m_mapProperties.setMapInfo(nullptr);
   }
 
   m_database->system.setEditMapId(in.id());

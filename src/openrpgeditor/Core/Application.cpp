@@ -290,7 +290,7 @@ ExitStatus Application::run() {
   SDL_ShowWindow(m_window->getNativeWindow());
   float frameTime = 0.f;
   float saveTime = 0.f;
-  while (true) {
+  while (m_running || m_shutdownDelay > 0.f || FileQueue::instance().hasTasks()) {
     EditorPluginManager::instance()->initializeAllPlugins();
     if (m_fontUpdateRequested && m_fontUpdateDelay <= 0) {
       ImGui_ImplSDLRenderer3_Shutdown();
@@ -300,12 +300,6 @@ ExitStatus Application::run() {
       ImGui_ImplSDL3_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
       ImGui_ImplSDLRenderer3_Init(m_window->getNativeRenderer());
       m_fontUpdateRequested = false;
-    }
-    if (!m_running) {
-      if (m_project) {
-        m_project->close();
-      }
-      break;
     }
 
     SDL_Event event{};
@@ -329,13 +323,6 @@ ExitStatus Application::run() {
     ImGui_ImplSDLRenderer3_NewFrame();
     ImGui_ImplSDL3_NewFrame();
 
-    // FIXME: Fixup monitors
-    // //  Currently crashes for some reason, copying MainPos and MainSize is recommended by the assert, so here we are
-    // for (ImGuiPlatformMonitor& mon : ImGui::GetPlatformIO().Monitors) {
-    //   mon.WorkPos = mon.MainPos;
-    //   mon.WorkSize = mon.MainSize;
-    // }
-
     ImGui::NewFrame();
     frameTime += ImGui::GetIO().DeltaTime;
     saveTime += ImGui::GetIO().DeltaTime;
@@ -346,10 +333,40 @@ ExitStatus Application::run() {
     }
 
     if (!m_firstBootWizard) {
-      m_project->draw();
+      m_project->draw(m_userClosed);
       if (needsInitialProjectLoad) {
         m_project->load(Settings::instance()->lastProject, std::filesystem::path(Settings::instance()->lastProject).remove_filename().generic_string());
         needsInitialProjectLoad = false;
+      }
+      if (!m_running || m_shutdownDelay > 0.f) {
+        m_shutdownDelay -= ImGui::GetIO().DeltaTime;
+        if (m_project) {
+          if (!m_userClosed) {
+            const auto [closed, terminated, serialize] = m_project->close(true);
+            m_projectSerialize = serialize;
+            m_running = !terminated;
+            if (closed && !terminated) {
+              m_shutdownDelay = 0.f;
+            } else if (!closed) {
+              m_shutdownDelay = 5.f;
+            } else {
+              m_shutdownDelay = 0.f;
+            }
+            m_userClosed = closed && terminated;
+          }
+        } else {
+          m_shutdownDelay = 0.f;
+        }
+        saveTime = 0.f;
+      }
+
+      if (m_userClosed && !FileQueue::instance().hasTasks() && m_projectSerialize) {
+        Database::instance()->serializeProject();
+        m_projectSerialize = false;
+      } else if (m_userClosed && m_projectSerialize) {
+        m_shutdownDelay = 5.f;
+      } else if (m_projectSerialize) {
+        m_projectSerialize = false;
       }
     }
 
@@ -380,12 +397,15 @@ ExitStatus Application::run() {
   }
 
   EditorPluginManager::instance()->shutdownAllPlugins();
-  serializeSettings();
+  assert(!FileQueue::instance().hasTasks());
   FileQueue::instance().reset();
   return m_exitStatus;
 }
 
-void Application::stop() { m_running = false; }
+void Application::stop() {
+  m_running = false;
+  m_shutdownDelay = 5.f;
+}
 
 void Application::onEvent(const SDL_WindowEvent& event) {
   switch (event.type) {
@@ -433,11 +453,6 @@ void Application::onMinimize() { m_minimized = true; }
 
 void Application::onShown() { m_minimized = false; }
 
-void Application::onClose() {
-  if (m_project) {
-    m_project->close(true);
-  }
-  stop();
-}
+void Application::onClose() { stop(); }
 
 } // namespace App

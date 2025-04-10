@@ -57,6 +57,14 @@ bool GameConstants::serialize(const std::string_view path) {
   return false;
 }
 
+void GameConstants::requestMaps() {
+  for (const auto& id : maps | std::views::keys) {
+    if (Database::instance()->mapInfos.map(id)) {
+      Database::instance()->mapInfos.map(id)->map();
+    }
+  }
+}
+
 bool GameConstants::generateConstantsJS(std::string_view path) {
   std::ofstream file(path.data());
   if (!file.is_open()) {

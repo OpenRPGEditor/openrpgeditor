@@ -43,8 +43,6 @@ add_library(
         Database/EventPage.hpp
         Database/EventParser.cpp
         Database/EventParser.hpp
-        # Database/Serializable/MapInfosSerializer.cpp
-        # Database/Serializable/MapInfosSerializer.hpp
         Database/GameConstants.cpp
         Database/GameConstants.hpp
         Database/Globals.cpp
@@ -103,6 +101,8 @@ add_library(
         Database/Serializable/TroopsSerializer.hpp
         Database/Serializable/WeaponsSerializer.cpp
         Database/Serializable/WeaponsSerializer.hpp
+        Database/Serializable/MapInfosSerializer.cpp
+        Database/Serializable/MapInfosSerializer.hpp
         Database/Skill.cpp
         Database/Skill.hpp
         Database/Skills.cpp

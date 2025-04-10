@@ -57,6 +57,7 @@ protected:
   // The worker loop, to be implemented in subclasses (serialization/deserialization)
   void processReadTask(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback) const;
   void processWriteTask(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback) const;
+  static bool pushTask(const std::shared_ptr<ISerializable>& fileData, const std::deque<Task>& queue);
 
   // Current base path for file operations
   std::string m_basePath;
@@ -67,7 +68,9 @@ protected:
 
   // Task queue
   std::deque<Task> m_taskQueue;
+  std::deque<Task> m_pendingQueue;
 
   ISerializable::Operation m_currentOperation = ISerializable::Operation::Read;
+  ISerializable::Operation m_pendingOperation = ISerializable::Operation::Write;
   std::string m_currentFilePath;
 };

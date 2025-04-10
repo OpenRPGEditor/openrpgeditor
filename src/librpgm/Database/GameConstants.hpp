@@ -38,6 +38,8 @@ struct GameConstants {
     keyList.at(keyOne) = keyTwoString;
     keyList.at(keyTwo) = keyOneString;
   }
+
+  void requestMaps();
 };
 void to_json(nlohmann::ordered_json& json, const GameConstants& constants);
 void from_json(const nlohmann::ordered_json& json, GameConstants& constants);

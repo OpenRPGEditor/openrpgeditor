@@ -20,6 +20,13 @@ void FileQueue::setBasepath(const std::string_view basePath) { m_basePath = base
 
 std::string FileQueue::getBasepath() const { return m_basePath; }
 
+bool FileQueue::pushTask(const std::shared_ptr<ISerializable>& fileData, const std::deque<Task>& queue) {
+  if (const auto& it = std::ranges::find_if(queue, [&fileData](const Task& task) { return task.filepath() == fileData->filepath(); }); it != queue.end()) {
+    RPGM_WARN("Adding a new {} task for {} which is already in the queue for {}!", magic_enum::enum_name(fileData->operation()), fileData->filepath(), magic_enum::enum_name(it->operation()));
+    return false;
+  }
+  return true;
+}
 bool FileQueue::enqueue(const std::shared_ptr<ISerializable>& fileData, const TaskCallback& callback, const bool sync) {
   if (m_basePath.empty()) {
     return false;
@@ -35,14 +42,14 @@ bool FileQueue::enqueue(const std::shared_ptr<ISerializable>& fileData, const Ta
   }
 
   if (!m_taskQueue.empty() && m_currentOperation != fileData->operation()) {
-    RPGM_WARN("Cannot add {} tasks while {} tasks are pending!", magic_enum::enum_name(fileData->operation()), magic_enum::enum_name(m_currentOperation));
-    return false;
+    if (pushTask(fileData, m_pendingQueue)) {
+      m_pendingOperation = fileData->operation();
+      m_totalTasks++;
+      return true;
+    }
   }
-
-  if (const auto& it = std::ranges::find_if(m_taskQueue, [&fileData](const Task& task) { return task.filepath() == fileData->filepath(); }); it != m_taskQueue.end()) {
-    RPGM_WARN("Adding a new {} task for {} which is already in the queue for {}!", magic_enum::enum_name(fileData->operation()), fileData->filepath(), magic_enum::enum_name(it->operation()));
+  if (!pushTask(fileData, m_taskQueue))
     return false;
-  }
 
   m_taskQueue.emplace_back(fileData, callback);
   m_totalTasks++;
@@ -74,6 +81,13 @@ void FileQueue::proc() {
     processWriteTask(task.fileData(), task.callback());
   }
   m_completedTasks++;
+
+  // If we run out of tasks switch to the pending tasks, if any
+  if (m_taskQueue.empty()) {
+    m_taskQueue = m_pendingQueue;
+    m_pendingQueue = {};
+    m_currentOperation = m_pendingOperation;
+  }
 }
 
 namespace fs = std::filesystem;

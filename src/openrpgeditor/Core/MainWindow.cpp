@@ -778,7 +778,7 @@ void MainWindow::drawMenu() {
         handleOpenFile();
       }
       if (ImGui::MenuItemEx(trNOOP("Close Project..."), ICON_FA_FOLDER_CLOSED)) {
-        close();
+        App::APP->closeProject();
       }
       if (ImGui::MenuItemEx(trNOOP("Save Project..."), ICON_FA_FLOPPY_DISK, "Ctrl+S")) {
         save();

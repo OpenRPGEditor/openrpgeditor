@@ -59,7 +59,12 @@ public:
     m_running = true;
     m_userClosed = false;
     m_projectSerialize = false;
-    m_shutdownDelay = 0.f;
+    m_projectCloseRequest = 0.f;
+  }
+
+  void closeProject() {
+    m_userClosed = false;
+    m_projectCloseRequest = true;
   }
 
 private:
@@ -77,9 +82,10 @@ private:
   std::optional<FirstBootWizard> m_firstBootWizard;
   bool m_fontUpdateRequested{false};
   int m_fontUpdateDelay = 1;
-  float m_shutdownDelay = 0.0f;
+  bool m_projectCloseRequest{false};
   bool m_userClosed{false};
   bool m_projectSerialize{false};
+  bool m_doQuit{false};
 };
 
 extern Application* APP;

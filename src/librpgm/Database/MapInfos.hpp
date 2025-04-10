@@ -4,6 +4,7 @@
 
 class MapInfos final : public IModifiable {
 public:
+  friend class MapInfosSerializer;
   static MapInfos load(std::string_view filepath);
   bool serialize(std::string_view filename);
 

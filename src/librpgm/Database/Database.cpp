@@ -15,6 +15,7 @@
 #include "Database/Serializable/TilesetsSerializer.hpp"
 #include "Database/Serializable/TroopsSerializer.hpp"
 #include "Database/Serializable/WeaponsSerializer.hpp"
+#include "Serializable/MapInfosSerializer.hpp"
 #include "Serializable/MapSerializer.hpp"
 
 Database* Database::m_instance = nullptr;
@@ -36,6 +37,13 @@ void Database::load() {
     system = std::dynamic_pointer_cast<SystemSerializer>(serializer)->data();
     systemLoaded().fire();
     RPGM_INFO("System definitions loaded");
+  });
+  RPGM_INFO("Queue MapInfo definitions for load...");
+  FileQueue::instance().enqueue(std::make_shared<MapInfosSerializer>("data/MapInfos.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
+    mapInfos = std::dynamic_pointer_cast<MapInfosSerializer>(serializer)->data();
+    mapInfos.buildTree(true);
+    mapInfosLoaded().fire();
+    RPGM_INFO("MapInfo definitions loaded");
   });
   RPGM_INFO("Queue Actor definitions for load...");
   FileQueue::instance().enqueue(std::make_shared<ActorsSerializer>("data/Actors.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
@@ -114,11 +122,6 @@ void Database::load() {
   locales.loadMap(basePath + "locales/en/Map0001.json");
   localesLoaded().fire();
 
-  mapInfos = MapInfos::load(basePath + "/data/MapInfos.json");
-  // mapInfos.loadAllMaps();
-  mapInfos.buildTree(true);
-  mapInfosLoaded().fire();
-
   RPGM_INFO("Loading Plugins...");
   plugins = Plugins::load(basePath + "js/plugins.js");
   pluginsLoaded().fire();
@@ -142,28 +145,30 @@ void Database::serializeProject() {
     gameConstants.generateConstantsJS(basePath + "/js/Constants.js");
   }
 
-  FileQueue::instance().enqueue(std::make_shared<CommonEventsSerializer>(commonEvents, "data/CommonEvents.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
-  FileQueue::instance().enqueue(std::make_shared<SystemSerializer>(system, "data/System.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
-  FileQueue::instance().enqueue(std::make_shared<ActorsSerializer>(actors, "data/Actors.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
-  FileQueue::instance().enqueue(std::make_shared<ClassesSerializer>(classes, "data/Classes.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
-  FileQueue::instance().enqueue(std::make_shared<SkillsSerializer>(skills, "data/Skills.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
-  FileQueue::instance().enqueue(std::make_shared<ItemsSerializer>(items, "data/Items.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
-  FileQueue::instance().enqueue(std::make_shared<WeaponsSerializer>(weapons, "data/Weapons.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
-  FileQueue::instance().enqueue(std::make_shared<ArmorsSerializer>(armors, "data/Armors.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
-  FileQueue::instance().enqueue(std::make_shared<EnemiesSerializer>(enemies, "data/Enemies.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
-  FileQueue::instance().enqueue(std::make_shared<TroopsSerializer>(troops, "data/Troops.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
-  FileQueue::instance().enqueue(std::make_shared<StatesSerializer>(states, "data/States.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
-  FileQueue::instance().enqueue(std::make_shared<AnimationsSerializer>(animations, "data/Animations.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
-  FileQueue::instance().enqueue(std::make_shared<TilesetsSerializer>(tilesets, "data/Tilesets.json"), [this](const std::shared_ptr<ISerializable>& serializer) {});
+  FileQueue::instance().enqueue(std::make_shared<CommonEventsSerializer>(commonEvents, "data/CommonEvents.json"),
+                                [this](const std::shared_ptr<ISerializable>& serializer) { commonEvents.acceptChanges(); });
+  FileQueue::instance().enqueue(std::make_shared<SystemSerializer>(system, "data/System.json"), [this](const std::shared_ptr<ISerializable>& serializer) { system.acceptChanges(); });
+  FileQueue::instance().enqueue(std::make_shared<MapInfosSerializer>(mapInfos, "data/MapInfos.json"), [this](const std::shared_ptr<ISerializable>& serializer) { mapInfos.acceptChanges(); });
+  FileQueue::instance().enqueue(std::make_shared<ActorsSerializer>(actors, "data/Actors.json"), [this](const std::shared_ptr<ISerializable>& serializer) { actors.acceptChanges(); });
+  FileQueue::instance().enqueue(std::make_shared<ClassesSerializer>(classes, "data/Classes.json"), [this](const std::shared_ptr<ISerializable>& serializer) { classes.acceptChanges(); });
+  FileQueue::instance().enqueue(std::make_shared<SkillsSerializer>(skills, "data/Skills.json"), [this](const std::shared_ptr<ISerializable>& serializer) { skills.acceptChanges(); });
+  FileQueue::instance().enqueue(std::make_shared<ItemsSerializer>(items, "data/Items.json"), [this](const std::shared_ptr<ISerializable>& serializer) { items.acceptChanges(); });
+  FileQueue::instance().enqueue(std::make_shared<WeaponsSerializer>(weapons, "data/Weapons.json"), [this](const std::shared_ptr<ISerializable>& serializer) { weapons.acceptChanges(); });
+  FileQueue::instance().enqueue(std::make_shared<ArmorsSerializer>(armors, "data/Armors.json"), [this](const std::shared_ptr<ISerializable>& serializer) { armors.acceptChanges(); });
+  FileQueue::instance().enqueue(std::make_shared<EnemiesSerializer>(enemies, "data/Enemies.json"), [this](const std::shared_ptr<ISerializable>& serializer) { enemies.acceptChanges(); });
+  FileQueue::instance().enqueue(std::make_shared<TroopsSerializer>(troops, "data/Troops.json"), [this](const std::shared_ptr<ISerializable>& serializer) { troops.acceptChanges(); });
+  FileQueue::instance().enqueue(std::make_shared<StatesSerializer>(states, "data/States.json"), [this](const std::shared_ptr<ISerializable>& serializer) { states.acceptChanges(); });
+  FileQueue::instance().enqueue(std::make_shared<AnimationsSerializer>(animations, "data/Animations.json"), [this](const std::shared_ptr<ISerializable>& serializer) { animations.acceptChanges(); });
+  FileQueue::instance().enqueue(std::make_shared<TilesetsSerializer>(tilesets, "data/Tilesets.json"), [this](const std::shared_ptr<ISerializable>& serializer) { tilesets.acceptChanges(); });
 
   /* TODO: Implement Serializers */
   plugins.serialize(basePath + "/js/plugins.js");
-  mapInfos.serialize(basePath + "/data/MapInfos.json");
   gameConstants.serialize(basePath + "/data/Constants.json");
 
   for (const auto& map : mapInfos.mapInfos()) {
     if (map->mapLoaded() && map->isModified()) {
-      FileQueue::instance().enqueue(std::make_shared<MapSerializer>(map->map()->clone(), std::format("data/Map{:03}.json", map->id())), [this](const std::shared_ptr<ISerializable>& serializer) {});
+      FileQueue::instance().enqueue(std::make_shared<MapSerializer>(map->map()->clone(), std::format("data/Map{:03}.json", map->id())),
+                                    [this](const std::shared_ptr<ISerializable>& serializer) { this->mapInfos.map(std::dynamic_pointer_cast<MapSerializer>(serializer)->mapId())->acceptChanges(); });
     }
   }
 }

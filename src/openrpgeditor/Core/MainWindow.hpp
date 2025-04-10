@@ -75,10 +75,6 @@ public:
   [[nodiscard]] bool isValid() const { return m_isValid; }
   [[nodiscard]] const std::string& version() const { return m_database->projectVersion; }
 
-  // Files will inform Project of that they've been modified via a callback,
-  // this keeps things simple and avoids delegate overhead
-  [[nodiscard]] bool modified() { return m_isModified; }
-
   void draw(bool shuttingDown = false);
   void drawTileInfo(MapRenderer::MapLayer& mapLayer, int z);
   void handleOpenFile();

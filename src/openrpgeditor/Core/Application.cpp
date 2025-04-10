@@ -288,9 +288,12 @@ ExitStatus Application::run() {
   }
 
   SDL_ShowWindow(m_window->getNativeWindow());
+  SDL_RaiseWindow(m_window->getNativeWindow());
+  SDL_FlashWindow(m_window->getNativeWindow(), SDL_FLASH_UNTIL_FOCUSED);
+
   float frameTime = 0.f;
   float saveTime = 0.f;
-  while (m_running || m_shutdownDelay > 0.f || FileQueue::instance().hasTasks()) {
+  while (m_running || FileQueue::instance().hasTasks()) {
     EditorPluginManager::instance()->initializeAllPlugins();
     if (m_fontUpdateRequested && m_fontUpdateDelay <= 0) {
       ImGui_ImplSDLRenderer3_Shutdown();
@@ -333,29 +336,21 @@ ExitStatus Application::run() {
     }
 
     if (!m_firstBootWizard) {
-      m_project->draw(m_userClosed);
+      m_project->draw(!m_running);
       if (needsInitialProjectLoad) {
         m_project->load(Settings::instance()->lastProject, std::filesystem::path(Settings::instance()->lastProject).remove_filename().generic_string());
         needsInitialProjectLoad = false;
       }
-      if (!m_running || m_shutdownDelay > 0.f) {
-        m_shutdownDelay -= ImGui::GetIO().DeltaTime;
+      if (m_doQuit || m_projectCloseRequest) {
         if (m_project) {
           if (!m_userClosed) {
             const auto [closed, terminated, serialize] = m_project->close(true);
             m_projectSerialize = serialize;
-            m_running = !terminated;
-            if (closed && !terminated) {
-              m_shutdownDelay = 0.f;
-            } else if (!closed) {
-              m_shutdownDelay = 5.f;
-            } else {
-              m_shutdownDelay = 0.f;
+            if (m_doQuit) {
+              m_running = !terminated;
             }
             m_userClosed = closed && terminated;
           }
-        } else {
-          m_shutdownDelay = 0.f;
         }
         saveTime = 0.f;
       }
@@ -363,10 +358,11 @@ ExitStatus Application::run() {
       if (m_userClosed && !FileQueue::instance().hasTasks() && m_projectSerialize) {
         Database::instance()->serializeProject();
         m_projectSerialize = false;
-      } else if (m_userClosed && m_projectSerialize) {
-        m_shutdownDelay = 5.f;
-      } else if (m_projectSerialize) {
-        m_projectSerialize = false;
+      } else if (m_userClosed && m_projectCloseRequest) {
+        // Actually close the project to revert active state
+        m_project->close();
+        m_projectCloseRequest = false;
+        m_userClosed = false;
       }
     }
 
@@ -403,8 +399,8 @@ ExitStatus Application::run() {
 }
 
 void Application::stop() {
-  m_running = false;
-  m_shutdownDelay = 5.f;
+  m_doQuit = true;
+  m_projectCloseRequest = true;
 }
 
 void Application::onEvent(const SDL_WindowEvent& event) {

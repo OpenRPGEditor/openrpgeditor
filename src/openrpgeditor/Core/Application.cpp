@@ -485,7 +485,10 @@ ExitStatus Application::run() {
 
     ImGui::UpdatePlatformWindows();
 
-    SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 28, 38, 43, 255);
+    SDL_SetRenderDrawColor(m_window->getNativeRenderer(),                       //
+                           ImGui::GetStyleColorVec4(ImGuiCol_WindowBg).x * 255, //
+                           ImGui::GetStyleColorVec4(ImGuiCol_WindowBg).y * 255, //
+                           ImGui::GetStyleColorVec4(ImGuiCol_WindowBg).z * 255, 255);
     SDL_RenderClear(m_window->getNativeRenderer());
     ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), m_window->getNativeRenderer());
     SDL_RenderPresent(m_window->getNativeRenderer());

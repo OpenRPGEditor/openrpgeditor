@@ -348,8 +348,7 @@ void MainWindow::drawToolbar() {
   ImGui::SameLine();
   ImGui::BeginDisabled(m_editMode == EditMode::Map);
   {
-    const auto tex = ResourceManager::instance()->loadEditorTexture(std::format("icons/map/map_{0}x{0}.png", m_toolbarButtonSize));
-    if (ImGui::ImageButton("map_button", tex, static_cast<ImVec2>(Point{tex.width(), tex.height()}))) {
+    if (ImGui::Button(ICON_FA_MAP)) {
       enterMapEditMode();
     }
   }
@@ -778,7 +777,7 @@ void MainWindow::drawMenu() {
         save();
       }
       ImGui::Separator();
-      if (ImGui::BeginMenuEx(trNOOP("Recent Projects"), ICON_FA_BLANK, !Settings::instance()->mru.empty())) {
+      if (ImGui::BeginMenuEx(trNOOP("Recent Projects"), "", !Settings::instance()->mru.empty())) {
         if (ImGui::MenuItemNoCheck(tr("Clear").c_str(), nullptr, ICON_FA_DELETE_LEFT)) {
           Settings::instance()->mru.clear();
         }

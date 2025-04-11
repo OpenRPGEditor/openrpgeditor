@@ -521,6 +521,7 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_sources(orecore PRIVATE Platform/Mac/Resources.cpp)
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_sources(orecore PRIVATE Platform/Linux/Resources.cpp)
+    target_compile_options(orecore PRIVATE "-fsanitize=address")
 endif ()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")

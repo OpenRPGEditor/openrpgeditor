@@ -9,8 +9,8 @@ Map* MapInfo::map(const bool loadSync) {
       FileQueue::instance().enqueue(
           std::make_shared<MapSerializer>(path, id()),
           [this, &loadSync](const std::shared_ptr<ISerializable>& serializer) {
-            m_map = std::make_unique<Map>(std::dynamic_pointer_cast<MapSerializer>(serializer)->data());
-            RPGM_INFO("Map{:03} loaded{}", id(), loadSync ? " (SYNC)" : "");
+            m_map = std::make_unique<Map>(std::dynamic_pointer_cast<MapSerializer>(serializer)->data().clone());
+            // RPGM_INFO("Map{:03} loaded{}", id(), loadSync ? " (SYNC)" : "");
           },
           loadSync);
     }

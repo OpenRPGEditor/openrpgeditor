@@ -206,10 +206,11 @@ std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
 
   /* Default initialize all of these */
   m_databaseEditor.reset();
-  m_database.reset();
 
   m_mapEditor.setMap(nullptr);
   m_mapListView.reset();
+  m_database.reset();
+
   m_isLoaded = false;
 
   App::APP->getWindow()->setTitle(kApplicationTitle);

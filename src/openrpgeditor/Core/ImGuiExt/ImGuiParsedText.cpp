@@ -23,8 +23,8 @@ void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVe
   if (y > clip_rect.w)
     return;
 
-  std::unique_ptr<char> char_buf(new char[len + 1]);
-  std::unique_ptr<ImU32> col_buf(new ImU32[len + 1]);
+  std::unique_ptr<char[]> char_buf(new char[len + 1]);
+  std::unique_ptr<ImU32[]> col_buf(new ImU32[len + 1]);
 
   const float scale = font->Scale;
   const float line_height = font->LastBaked->Size * scale;

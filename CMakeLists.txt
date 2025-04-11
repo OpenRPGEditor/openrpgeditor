@@ -22,6 +22,9 @@ set(PROJECT_COMPANY_NAMESPACE "io.gitgud.antidote.openrgpeditor") # Reverse
 # domain name
 # notation
 
+#add_compile_options(-fsanitize=address)
+#add_link_options(-fsanitize=address)
+
 include(cmake/StandardProjectSettings.cmake)
 include(GNUInstallDirs)
 

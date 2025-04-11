@@ -475,6 +475,9 @@ ExitStatus Application::run() {
         if (m_project) {
           m_project->close();
         }
+        if (m_doQuit) {
+          m_project.reset();
+        }
         m_projectCloseRequest = false;
         m_userClosed = false;
       }

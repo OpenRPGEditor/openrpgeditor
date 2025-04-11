@@ -11,7 +11,6 @@
 #include <filesystem>
 #include <iostream>
 #include <magic_enum/magic_enum.hpp>
-#include <oneapi/tbb/detail/_template_helpers.h>
 #include <ranges>
 
 FileQueue::FileQueue() {}

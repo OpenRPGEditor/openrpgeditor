@@ -259,9 +259,6 @@ void MainWindow::setupDocking() {
     ImGui::DockBuilderDockWindow("###databaseeditor", middleDock);
     ImGui::DockBuilderDockWindow("###mapproperties", rightDock);
     ImGui::DockBuilderDockWindow("###filequeuestatus", lowerDock);
-    ImGui::DockBuilderGetNode(leftDock)->SetLocalFlags(static_cast<int>(ImGuiDockNodeFlags_NoUndocking) | static_cast<int>(ImGuiDockNodeFlags_NoDocking));
-    ImGui::DockBuilderGetNode(leftLowerDock)->SetLocalFlags(static_cast<int>(ImGuiDockNodeFlags_NoUndocking) | static_cast<int>(ImGuiDockNodeFlags_NoDocking));
-    ImGui::DockBuilderGetNode(middleDock)->SetLocalFlags(static_cast<int>(ImGuiDockNodeFlags_NoUndocking) | static_cast<int>(ImGuiDockNodeFlags_NoDocking));
     ImGui::DockBuilderFinish(mainWindowGroup);
   }
   ImGui::DockSpace(mainWindowGroup);

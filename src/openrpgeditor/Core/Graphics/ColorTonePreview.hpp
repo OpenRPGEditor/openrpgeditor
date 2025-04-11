@@ -8,7 +8,7 @@ public:
   ~ColorTonePreview();
   void update(float r, float g, float b, float gray);
 
-  operator ImTextureID() { return reinterpret_cast<ImTextureID>(m_texture); }
+  operator ImTextureRef() { return ImTextureRef(m_texture); }
 
   int width() const { return m_textureWidth; }
   int height() const { return m_textureHeight; }

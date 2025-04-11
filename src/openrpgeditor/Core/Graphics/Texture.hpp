@@ -31,7 +31,7 @@ public:
   [[nodiscard]] int height() const { return m_height; }
 
   operator bool() const { return m_texture != nullptr; }
-  operator ImTextureID() const { return reinterpret_cast<ImTextureID>(m_texture); }
+  operator ImTextureRef() const { return ImTextureRef(m_texture); }
 
   void invalidate() {
     m_texture = nullptr;

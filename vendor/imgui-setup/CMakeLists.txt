@@ -23,5 +23,5 @@ add_library(imgui-setup STATIC
 
 target_include_directories(imgui-setup PUBLIC ${imgui_SOURCE_DIR} ${implot_SOURCE_DIR} "${freetype2_SOURCE_DIR}/include")
 target_compile_features(imgui-setup PRIVATE cxx_std_20)
-target_compile_definitions(imgui-setup PUBLIC IMGUI_DEFINE_MATH_OPERATORS IMGUI_ENABLE_FREETYPE)
+target_compile_definitions(imgui-setup PUBLIC IMGUI_HAS_STACK_LAYOUT IMGUI_DEFINE_MATH_OPERATORS IMGUI_ENABLE_FREETYPE)
 target_link_libraries(imgui-setup PUBLIC SDL3::SDL3 freetype)

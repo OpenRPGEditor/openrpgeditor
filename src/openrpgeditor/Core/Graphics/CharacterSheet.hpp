@@ -42,7 +42,7 @@ struct CharacterSheet {
 
   std::string_view characterName() const { return m_characterName; }
 
-  operator ImTextureID() const { return m_sheetTexture.operator ImTextureID(); }
+  operator ImTextureRef() const { return m_sheetTexture.operator ImTextureRef(); }
 
 private:
   bool m_isTileId{false};

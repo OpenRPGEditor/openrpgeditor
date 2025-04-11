@@ -20,7 +20,7 @@ Window::Window(const Settings& settings) {
 
   m_title = settings.title;
 
-  m_renderer = SDL_CreateRenderer(m_window, nullptr);
+  m_renderer = SDL_CreateRenderer(m_window, "vulkan");
 
   if (m_renderer == nullptr) {
     APP_ERROR("Error creating SDL_Renderer!");
@@ -31,7 +31,7 @@ Window::Window(const Settings& settings) {
   SDL_SetRenderTextureAddressMode(m_renderer, SDL_TEXTURE_ADDRESS_WRAP, SDL_TEXTURE_ADDRESS_WRAP);
 #endif
 
-  APP_DEBUG("Current SDL_Renderer: {}", SDL_GetRendererName(m_renderer));
+  APP_INFO("Current SDL_Renderer: {}", SDL_GetRendererName(m_renderer));
 }
 
 Window::~Window() {

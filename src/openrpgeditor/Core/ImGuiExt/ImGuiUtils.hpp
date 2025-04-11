@@ -20,4 +20,6 @@ inline ImVec2 GetDPIScaledSize(const float w, const float h) { return GetDPIScal
 
 float GetDPIScaledValue(float value);
 bool MenuItemNoCheck(const char* label, const char* icon, const char* shortcut = NULL, bool selected = false, bool enabled = true);
+
+float GetPanelHeight();
 } // namespace ImGui

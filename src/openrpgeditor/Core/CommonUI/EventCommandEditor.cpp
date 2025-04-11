@@ -311,7 +311,7 @@ void EventCommandEditor::draw() {
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
             auto size = ImGui::CalcTextSize("+");
             size.x = size.y;
-            size = ImGui::CalcItemSize(size, ImGui::GetFont()->FontSize, ImGui::GetFont()->FontSize);
+            size = ImGui::CalcItemSize(size, 0, 0);
             if (const auto cmd = m_commands->at(n); cmd->collapsable()) {
               if (ImGui::Button(std::format("{}##orpg_command_collapse_btn_{}", cmd->isCollapsed() ? "+" : "-", n).c_str(), size)) {
                 cmd->setCollapsed(!cmd->isCollapsed());

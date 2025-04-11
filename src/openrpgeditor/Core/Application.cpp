@@ -170,8 +170,8 @@ void Application::updateGuiColors() {
     colors[ImGuiCol_ButtonHovered] = ImVec4(0.30f, 0.30f, 0.30f, 1.00f);    // Button hover state
     colors[ImGuiCol_ButtonActive] = ImVec4(0.35f, 0.35f, 0.35f, 1.00f);     // Button active state
     colors[ImGuiCol_Header] = ImVec4(0.40f, 0.40f, 0.40f, 1.00f);           // Dark gray for menu headers
-    colors[ImGuiCol_HeaderHovered] = ImVec4(0.45f, 0.45f, 0.45f, 1.00f);    // Slightly lighter on hover
-    colors[ImGuiCol_HeaderActive] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);     // Lighter gray when active
+    colors[ImGuiCol_HeaderHovered] = ImVec4(0.35, 0.35, 0.35, 1.00f);       // Slightly darker on hover
+    colors[ImGuiCol_HeaderActive] = ImVec4(0.30f, 0.30f, 0.30f, 1.00f);     // Darker gray when active
     colors[ImGuiCol_Separator] = ImVec4(0.30f, 0.30f, 0.30f, 1.00f);        // Separators in dark gray
     colors[ImGuiCol_SeparatorHovered] = ImVec4(0.35f, 0.35f, 0.35f, 1.00f);
     colors[ImGuiCol_SeparatorActive] = ImVec4(0.40f, 0.40f, 0.40f, 1.00f);
@@ -183,6 +183,9 @@ void Application::updateGuiColors() {
     colors[ImGuiCol_TabActive] = ImVec4(0.40f, 0.40f, 0.40f, 1.00f);
     colors[ImGuiCol_TabUnfocused] = ImVec4(0.18f, 0.18f, 0.18f, 1.00f);
     colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.40f, 0.40f, 0.40f, 1.00f);
+    colors[ImGuiCol_TableHeaderBg] = ImVec4(0.19f, 0.19f, 0.20f, 1.00f);
+    colors[ImGuiCol_TableBorderStrong] = ImVec4(0.31f, 0.31f, 0.35f, 1.00f);
+    colors[ImGuiCol_TableBorderLight] = ImVec4(0.23f, 0.23f, 0.25f, 1.00f);
     colors[ImGuiCol_DockingPreview] = ImVec4(0.45f, 0.45f, 0.45f, 1.00f); // Docking preview in gray
     colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.18f, 0.18f, 0.18f, 1.00f); // Empty dock background
   } else if (theme == SDL_SYSTEM_THEME_LIGHT) {
@@ -375,16 +378,16 @@ ExitStatus Application::run() {
                     ImGuiConfigFlags_DpiEnableScaleViewports;
   io.ConfigWindowsMoveFromTitleBarOnly = true;
   io.ConfigInputTrickleEventQueue = false;
-  io.ConfigDockingWithShift = true;
+  // io.ConfigDockingWithShift = true;
   io.IniFilename = nullptr;
-
-  ImGui::LoadIniSettingsFromMemory(m_settings.imguiState.c_str(), m_settings.imguiState.length());
-  updateFonts();
 
   //  Setup Platform/Renderer backends
   ImGui_ImplSDL3_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
   ImGui_ImplSDLRenderer3_Init(m_window->getNativeRenderer());
   SDL_GL_SetSwapInterval(0);
+
+  ImGui::LoadIniSettingsFromMemory(m_settings.imguiState.c_str(), m_settings.imguiState.length());
+  updateFonts();
 
   m_running = true;
 
@@ -409,17 +412,9 @@ ExitStatus Application::run() {
   float saveTime = 0.f;
   while (m_running || FileQueue::instance().hasTasks() || m_projectSerialize || m_projectCloseRequest) {
     EditorPluginManager::instance()->initializeAllPlugins();
-    if (m_fontUpdateRequested && m_fontUpdateDelay <= 0) {
-      ImGui_ImplSDLRenderer3_Shutdown();
-      ImGui_ImplSDL3_Shutdown();
-      updateFonts();
-      updateScale();
-      ImGui_ImplSDL3_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
-      ImGui_ImplSDLRenderer3_Init(m_window->getNativeRenderer());
-      m_fontUpdateRequested = false;
-    }
 
     SDL_Event event{};
+    SDL_PumpEvents();
     while (SDL_PollEvent(&event) == 1) {
       ImGui_ImplSDL3_ProcessEvent(&event);
 
@@ -434,10 +429,6 @@ ExitStatus Application::run() {
       if (event.type >= SDL_EVENT_WINDOW_SHOWN && event.type <= SDL_EVENT_WINDOW_HDR_STATE_CHANGED && event.window.windowID == SDL_GetWindowID(m_window->getNativeWindow())) {
         onEvent(event.window);
       }
-    }
-
-    if (m_fontUpdateRequested && m_fontUpdateDelay > 0) {
-      m_fontUpdateDelay--;
     }
 
     // Start the Dear ImGui frame

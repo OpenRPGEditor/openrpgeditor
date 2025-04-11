@@ -12,7 +12,7 @@ public:
   , m_height(height) {}
   void update(int r, int g, int b);
 
-  operator ImTextureID() const { return reinterpret_cast<ImTextureID>(m_resultTexture); }
+  operator ImTextureRef() const { return ImTextureRef(m_resultTexture); }
 
   int width() const { return m_width; }
   int height() const { return m_height; }

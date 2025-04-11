@@ -444,4 +444,5 @@ bool MenuItemNoCheck(const char* label, const char* icon, const char* shortcut, 
   return pressed;
 }
 
+float GetPanelHeight() { return (ImGui::GetFrameHeight() + ImGui::GetStyle().WindowPadding.y + ImGui::GetStyle().ItemSpacing.y); }
 } // namespace ImGui

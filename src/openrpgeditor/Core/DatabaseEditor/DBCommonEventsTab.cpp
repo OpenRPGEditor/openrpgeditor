@@ -101,9 +101,14 @@ void DBCommonEventsTab::draw() {
 
                 bool isFormatted{false};
                 if (hasUnicodeFormatting(commonEvent.name())) {
-                  ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.110f, 0.153f, 0.173f, 1.0f));
-                  ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.110f, 0.153f, 0.173f, 1.0f));
-                  ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.110f, 0.153f, 0.173f, 1.0f));
+                  auto col = ImGui::GetStyleColorVec4(ImGuiCol_Text);
+                  ImGui::PushStyleColor(ImGuiCol_Text, ImColor(1.f - col.x, 1.f - col.y, 1.f - col.z, col.w).Value);
+                  col = ImGui::GetStyleColorVec4(ImGuiCol_Header);
+                  ImGui::PushStyleColor(ImGuiCol_Header, ImColor(1.f - col.x, 1.f - col.y, 1.f - col.z, col.w * .75f).Value);
+                  col = ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered);
+                  ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImColor(1.f - col.x, 1.f - col.y, 1.f - col.z, col.w * .75f).Value);
+                  col = ImGui::GetStyleColorVec4(ImGuiCol_HeaderActive);
+                  ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImColor(1.f - col.x, 1.f - col.y, 1.f - col.z, col.w * .75f).Value);
                   isFormatted = true;
                 }
                 if (ImGui::Selectable(Database::instance()->commonEventNameAndId(commonEvent.id()).c_str(), &commonEvent == m_selectedCommonEvent || isFormatted) ||
@@ -112,7 +117,7 @@ void DBCommonEventsTab::draw() {
                   m_commandEditor.setCommands(&m_selectedCommonEvent->commands());
                 }
                 if (isFormatted) {
-                  ImGui::PopStyleColor(3);
+                  ImGui::PopStyleColor(4);
                 }
 
                 ImGui::PopID();

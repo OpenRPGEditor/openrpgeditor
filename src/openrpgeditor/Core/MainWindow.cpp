@@ -360,9 +360,7 @@ void MainWindow::drawToolbar() {
   ImGui::SameLine();
   ImGui::BeginDisabled(m_editMode == EditMode::Event);
   {
-    const auto tex = ResourceManager::instance()->loadEditorTexture(std::format("icons/map/event_{0}x{0}.png", m_toolbarButtonSize));
-    if (ImGui::ImageButton("event_button", tex, static_cast<ImVec2>(Point{tex.width(), tex.height()}))) {
-
+    if (ImGui::Button(ICON_FA_CHESS_PAWN)) {
       enterEventEditMode();
     }
   }
@@ -371,8 +369,7 @@ void MainWindow::drawToolbar() {
   }
   ImGui::EndDisabled();
   ImGui::SameLine();
-  const auto tex = ResourceManager::instance()->loadEditorTexture(std::format("icons/map/preview{0}_{1}x{1}.png", !m_mapEditor.prisonMode() ? "-off" : "", m_toolbarButtonSize));
-  if (ImGui::ImageButton("preview_button", tex, static_cast<ImVec2>(Point{tex.width(), tex.height()}))) {
+  if (ImGui::Button(m_mapEditor.prisonMode() ? ICON_FA_EYE : ICON_FA_EYE_SLASH)) {
     m_mapEditor.setPrisonMode(!m_mapEditor.prisonMode());
   }
   if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {

@@ -26,8 +26,8 @@ void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVe
   std::unique_ptr<char> char_buf(new char[len + 1]);
   std::unique_ptr<ImU32> col_buf(new ImU32[len + 1]);
 
-  const float scale = size / font->FontSize;
-  const float line_height = font->FontSize * scale;
+  const float scale = font->Scale;
+  const float line_height = font->LastBaked->Size * scale;
   const bool word_wrap_enabled = (wrap_width > 0.0f);
   const char* word_wrap_eol = NULL;
   // Fast-forward to first visible line
@@ -150,7 +150,7 @@ void ImFont_RenderAnsiText(ImFont* font, ImDrawList* draw_list, float size, ImVe
     }
 
     float char_width = 0.0f;
-    if (const ImFontGlyph* glyph = font->FindGlyph((ImWchar)c)) {
+    if (const ImFontGlyph* glyph = font->LastBaked->FindGlyph((ImWchar)c)) {
       char_width = glyph->AdvanceX * scale;
 
       // Arbitrarily assume that both space and tabs are empty glyphs as an optimization
@@ -259,10 +259,10 @@ void ImDrawList_AddAnsiText(ImDrawList* drawList, ImFont* font, float font_size,
   if (font_size == 0.0f)
     font_size = drawList->_Data->FontSize;
 
-  IM_ASSERT(font->ContainerAtlas->TexID == drawList->_TextureIdStack.back()); // Use high-level ImGui::PushFont()
-  // or low-level
-  // ImDrawList::PushTextureId() to
-  // change font.
+  // IM_ASSERT(font->ContainerAtlas->TexID == drawList->_TextureStack.back().GetTexID()); // Use high-level ImGui::PushFont()
+  //  or low-level
+  //  ImDrawList::PushTextureId() to
+  //  change font.
 
   ImVec4 clip_rect = drawList->_ClipRectStack.back();
   if (cpu_fine_clip_rect) {

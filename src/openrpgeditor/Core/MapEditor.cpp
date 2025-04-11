@@ -667,218 +667,228 @@ void MapEditor::draw() {
     }
   }
 
-  if (ImGui::Begin((tr("Map Editor") + "###mapeditor").c_str(), nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoTitleBar)) {
-    ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - (ImGui::CalcTextSize("S").y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)), 0,
+  ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(320, 240 + ImGui::GetPanelHeight()), {FLT_MAX, FLT_MAX});
+  if (ImGui::Begin((tr("Map Editor") + "###mapeditor").c_str(), nullptr, ImGuiWindowFlags_NoScrollbar)) {
+    ImGui::BeginChild("##mapcontent_child", {ImGui::GetContentRegionAvail().x, std::max(ImGui::GetPanelHeight(), ImGui::GetContentRegionAvail().y - ImGui::GetPanelHeight())}, 0,
                       ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
-    // Keep mapScale to a quarter step
-    if (m_scaleChanged) {
-      m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system.tileSize(), ImGui::GetCurrentWindow());
-    }
-    // We don't want to align the scroll position while the cursor is in keyboard mode otherwise the view won't track the tile cursor
-    if (map()) {
-      const float mapW = (m_tempMapWidth * tileSize()) * m_mapScale;
-      const float mapH = (m_tempMapHeight * tileSize()) * m_mapScale;
-
-      if (m_checkeredBack.width() != mapW && m_scaleChanged) {
-        m_checkeredBack.setWidth(mapW);
+    {
+      // Keep mapScale to a quarter step
+      if (m_scaleChanged) {
+        m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system.tileSize(), ImGui::GetCurrentWindow());
       }
+      // We don't want to align the scroll position while the cursor is in keyboard mode otherwise the view won't track the tile cursor
+      if (map()) {
+        const float mapW = (m_tempMapWidth * tileSize()) * m_mapScale;
+        const float mapH = (m_tempMapHeight * tileSize()) * m_mapScale;
 
-      if (m_checkeredBack.height() != mapH && m_scaleChanged) {
-        m_checkeredBack.setHeight(mapH);
-      }
-
-      ImGuiWindow* win = ImGui::GetCurrentWindow();
-      handleMouseInput(win);
-      handleKeyboardShortcuts();
-      const auto mapSize = ImVec2{mapW, mapH};
-      ImGui::Dummy(mapSize);
-
-      win->DrawList->AddImage(static_cast<ImTextureID>(m_checkeredBack), win->WorkRect.Min, win->WorkRect.Min + mapSize);
-
-      if (ImGui::BeginPopupContextWindow()) {
-        if (ImGui::MenuItem(trNOOP("Change event id..."))) {}
-        ImGui::SeparatorText("Templates");
-        ImGui::BeginDisabled(m_selectedEvent);
-        if (ImGui::MenuItem(trNOOP("Insert..."))) {
-          m_templateSaving = false;
-          m_templatePicker = ObjectPicker(trNOOP("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
-          m_templatePicker->setNoSelectionMeansAdd(false);
-          m_templatePicker->setOpen(true);
+        if (m_checkeredBack.width() != mapW && m_scaleChanged) {
+          m_checkeredBack.setWidth(mapW);
         }
-        ImGui::EndDisabled();
-        ImGui::BeginDisabled(m_selectedEvent == nullptr);
-        if (ImGui::MenuItem(trNOOP("Save as..."))) {
-          m_templateSaving = true;
-          m_templatePicker = ObjectPicker(trNOOP("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
-          m_templatePicker->setNoSelectionMeansAdd(true);
-          m_templatePicker->setOpen(true);
-        }
-        ImGui::EndDisabled();
-        ImGui::EndPopup();
-      }
 
-      if (m_templatePicker) {
-        auto [closed, confirmed] = m_templatePicker->draw();
-        if (closed) {
-          if (confirmed) {
-            if (m_templateSaving) {
-              nlohmann::ordered_json eventJson;
-              EventParser::serialize(eventJson, *m_selectedEvent);
-              if (m_templatePicker.value().selection() == 0) {
-                Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
-                                                                     tr("New Event Template") + " " + std::to_string(Database::instance()->templates.templates.size() + 1), "",
-                                                                     Template::TemplateType::Event, eventJson.dump(), {}));
-                m_templateNamePicker = TemplateName(&Database::instance()->templates.templates.back(), nullptr);
+        if (m_checkeredBack.height() != mapH && m_scaleChanged) {
+          m_checkeredBack.setHeight(mapH);
+        }
+
+        ImGuiWindow* win = ImGui::GetCurrentWindow();
+        handleMouseInput(win);
+        handleKeyboardShortcuts();
+        const auto mapSize = ImVec2{mapW, mapH};
+        ImGui::Dummy(mapSize);
+
+        win->DrawList->AddImage(static_cast<ImTextureID>(m_checkeredBack), win->WorkRect.Min, win->WorkRect.Min + mapSize);
+
+        if (ImGui::BeginPopupContextWindow()) {
+          if (ImGui::MenuItem(trNOOP("Change event id..."))) {}
+          ImGui::SeparatorText("Templates");
+          ImGui::BeginDisabled(m_selectedEvent);
+          if (ImGui::MenuItem(trNOOP("Insert..."))) {
+            m_templateSaving = false;
+            m_templatePicker = ObjectPicker(trNOOP("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+            m_templatePicker->setNoSelectionMeansAdd(false);
+            m_templatePicker->setOpen(true);
+          }
+          ImGui::EndDisabled();
+          ImGui::BeginDisabled(m_selectedEvent == nullptr);
+          if (ImGui::MenuItem(trNOOP("Save as..."))) {
+            m_templateSaving = true;
+            m_templatePicker = ObjectPicker(trNOOP("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+            m_templatePicker->setNoSelectionMeansAdd(true);
+            m_templatePicker->setOpen(true);
+          }
+          ImGui::EndDisabled();
+          ImGui::EndPopup();
+        }
+
+        if (m_templatePicker) {
+          auto [closed, confirmed] = m_templatePicker->draw();
+          if (closed) {
+            if (confirmed) {
+              if (m_templateSaving) {
+                nlohmann::ordered_json eventJson;
+                EventParser::serialize(eventJson, *m_selectedEvent);
+                if (m_templatePicker.value().selection() == 0) {
+                  Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
+                                                                       tr("New Event Template") + " " + std::to_string(Database::instance()->templates.templates.size() + 1), "",
+                                                                       Template::TemplateType::Event, eventJson.dump(), {}));
+                  m_templateNamePicker = TemplateName(&Database::instance()->templates.templates.back(), nullptr);
+                } else {
+                  Database::instance()->templates.templates.at(m_templatePicker.value().selection() - 1).setCommands(eventJson.dump());
+                  m_templateNamePicker = TemplateName(&Database::instance()->templates.templates.at(m_templatePicker.value().selection() - 1), nullptr);
+                }
+                Database::instance()->templates.templates.back().setCommands(eventJson.dump());
               } else {
-                Database::instance()->templates.templates.at(m_templatePicker.value().selection() - 1).setCommands(eventJson.dump());
-                m_templateNamePicker = TemplateName(&Database::instance()->templates.templates.at(m_templatePicker.value().selection() - 1), nullptr);
+                EventParser parser;
+                nlohmann::ordered_json eventJson = nlohmann::ordered_json::parse(Database::instance()->templates.templates.at(m_templatePicker->selection() - 1).commands());
+
+                m_templateEvent.emplace(parser.parse(eventJson));
+                m_templateEvent.value().setId(map()->events().size() - 1);
+                m_eventProperties = TemplatesEvent(&m_templateEvent.value(), map(), nullptr, tileCellX(), tileCellY());
               }
-              Database::instance()->templates.templates.back().setCommands(eventJson.dump());
-            } else {
-              EventParser parser;
-              nlohmann::ordered_json eventJson = nlohmann::ordered_json::parse(Database::instance()->templates.templates.at(m_templatePicker->selection() - 1).commands());
-
-              m_templateEvent.emplace(parser.parse(eventJson));
-              m_templateEvent.value().setId(map()->events().size() - 1);
-              m_eventProperties = TemplatesEvent(&m_templateEvent.value(), map(), nullptr, tileCellX(), tileCellY());
             }
+            m_templatePicker.reset();
           }
-          m_templatePicker.reset();
         }
-      }
-      if (m_eventProperties) {
-        m_eventProperties->draw();
-        if (m_eventProperties->hasChanges()) {
-          m_eventProperties.reset();
-        }
-      }
-      if (m_templateNamePicker) {
-        m_templateNamePicker->draw();
-        if (m_templateNamePicker->hasChanges()) {
-          if (Database::instance()->templates.serialize(Database::instance()->basePath + "data/Templates.json")) {
-            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, trNOOP("Saved event as template successfully!")});
-          } else {
-            ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, trNOOP("Failed to saved event as template!")});
+        if (m_eventProperties) {
+          m_eventProperties->draw();
+          if (m_eventProperties->hasChanges()) {
+            m_eventProperties.reset();
           }
-          m_templateNamePicker.reset();
         }
-      }
-
-      if (m_initialScrollSet) {
-        ImGui::SetScrollX(m_initialScrollX);
-        ImGui::SetScrollY(m_initialScrollY);
-        m_initialScrollX = m_initialScrollY = 0.0;
-        m_initialScrollSet = false;
-      }
-
-      m_mapInfo->setScrollX(ImGui::GetScrollX());
-      m_mapInfo->setScrollY(ImGui::GetScrollY());
-
-      m_mapRenderer.update();
-
-      drawParallax(win);
-
-      for (int z = 0; z < 4; ++z) {
-        renderLayer(win, m_mapRenderer.m_lowerLayers[z]);
-        if (m_prisonMode) {
-          renderLayer(win, m_mapRenderer.m_upperLayers[z]);
+        if (m_templateNamePicker) {
+          m_templateNamePicker->draw();
+          if (m_templateNamePicker->hasChanges()) {
+            if (Database::instance()->templates.serialize(Database::instance()->basePath + "data/Templates.json")) {
+              ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, trNOOP("Saved event as template successfully!")});
+            } else {
+              ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, trNOOP("Failed to saved event as template!")});
+            }
+            m_templateNamePicker.reset();
+          }
         }
-      }
 
-      for (int y = 0; y < map()->height(); ++y) {
-        for (int x = 0; x < map()->width(); ++x) {
-          auto tile = map()->data()[m_mapRenderer.tileIdFromCoords(x, y, 4)];
-          if (!tile) {
-            continue;
-          }
-          const float dx = x * tileSize();
-          const float dy = y * tileSize();
-          const int bits = *tile;
-          if (!(bits & 0x0F)) {
-            continue;
-          }
+        if (m_initialScrollSet) {
+          ImGui::SetScrollX(m_initialScrollX);
+          ImGui::SetScrollY(m_initialScrollY);
+          m_initialScrollX = m_initialScrollY = 0.0;
+          m_initialScrollSet = false;
+        }
 
-          const float w1 = tileSize() / 2;
-          const float h1 = tileSize() / 2;
-          for (int i = 0; i < 4; ++i) {
-            if (!(bits & (1 << i))) {
+        m_mapInfo->setScrollX(ImGui::GetScrollX());
+        m_mapInfo->setScrollY(ImGui::GetScrollY());
+
+        m_mapRenderer.update();
+
+        drawParallax(win);
+
+        for (int z = 0; z < 4; ++z) {
+          renderLayer(win, m_mapRenderer.m_lowerLayers[z]);
+          if (m_prisonMode) {
+            renderLayer(win, m_mapRenderer.m_upperLayers[z]);
+          }
+        }
+
+        for (int y = 0; y < map()->height(); ++y) {
+          for (int x = 0; x < map()->width(); ++x) {
+            auto tile = map()->data()[m_mapRenderer.tileIdFromCoords(x, y, 4)];
+            if (!tile) {
               continue;
             }
-            const float dx1 = dx + ((i % 2) * w1);
-            const float dy1 = dy + (std::floor(i / 2) * h1);
-            win->DrawList->AddRectFilled(win->ContentRegionRect.Min + (ImVec2{dx1, dy1} * m_mapScale), win->ContentRegionRect.Min + (ImVec2{dx1 + w1, dy1 + h1} * m_mapScale), 0x7F000000);
+            const float dx = x * tileSize();
+            const float dy = y * tileSize();
+            const int bits = *tile;
+            if (!(bits & 0x0F)) {
+              continue;
+            }
+
+            const float w1 = tileSize() / 2;
+            const float h1 = tileSize() / 2;
+            for (int i = 0; i < 4; ++i) {
+              if (!(bits & (1 << i))) {
+                continue;
+              }
+              const float dx1 = dx + ((i % 2) * w1);
+              const float dy1 = dy + (std::floor(i / 2) * h1);
+              win->DrawList->AddRectFilled(win->ContentRegionRect.Min + (ImVec2{dx1, dy1} * m_mapScale), win->ContentRegionRect.Min + (ImVec2{dx1 + w1, dy1 + h1} * m_mapScale), 0x7F000000);
+            }
           }
         }
-      }
 
-      auto sortedEvents = prisonMode() ? map()->getSorted() : map()->getRenderSorted();
-      for (const auto& event : sortedEvents) {
-        if (!event) {
-          continue;
+        auto sortedEvents = prisonMode() ? map()->getSorted() : map()->getRenderSorted();
+        for (const auto& event : sortedEvents) {
+          if (!event) {
+            continue;
+          }
+
+          const auto evX = (event->renderer()->x() * tileSize()) * m_mapScale;
+          const auto evY = (event->renderer()->y() * tileSize()) * m_mapScale;
+          const auto tileSize = m_tileCursor.tileSize() * m_mapScale;
+          if (m_selectedEvent == event && !m_hasScrolled) {
+            ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + (evX - (win->ContentRegionRect.Max.x / 2)));
+            ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + (evY - (win->ContentRegionRect.Max.y / 2)));
+            m_hasScrolled = true;
+          }
+          const auto min = win->ContentRegionRect.Min + ImVec2{static_cast<float>(evX), static_cast<float>(evY)};
+          const auto max = min + ImVec2{tileSize, tileSize};
+          const bool isHovered = event->x() == tileCellX() && event->y() == tileCellY();
+          const bool updateOnly =
+              !((min.x > win->ClipRect.Min.x - tileSize && max.x < win->ClipRect.Max.x + tileSize) || (min.y > win->ClipRect.Min.y - tileSize && max.y < win->ClipRect.Max.y + tileSize));
+          if (auto* renderer = static_cast<MapEvent*>(event->renderer())) {
+            renderer->setMapEditor(this);
+            renderer->draw(m_mapScale, isHovered, m_selectedEvent == event, m_parent->editMode() != EditMode::Event, updateOnly);
+          }
         }
 
-        const auto evX = (event->renderer()->x() * tileSize()) * m_mapScale;
-        const auto evY = (event->renderer()->y() * tileSize()) * m_mapScale;
-        const auto tileSize = m_tileCursor.tileSize() * m_mapScale;
-        if (m_selectedEvent == event && !m_hasScrolled) {
-          ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + (evX - (win->ContentRegionRect.Max.x / 2)));
-          ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + (evY - (win->ContentRegionRect.Max.y / 2)));
-          m_hasScrolled = true;
+        if (!m_prisonMode) {
+          for (int z = 0; z < 6; z++) {
+            renderLayer(win, m_mapRenderer.m_upperLayers[z]);
+          }
         }
-        const auto min = win->ContentRegionRect.Min + ImVec2{static_cast<float>(evX), static_cast<float>(evY)};
-        const auto max = min + ImVec2{tileSize, tileSize};
-        const bool isHovered = event->x() == tileCellX() && event->y() == tileCellY();
-        const bool updateOnly =
-            !((min.x > win->ClipRect.Min.x - tileSize && max.x < win->ClipRect.Max.x + tileSize) || (min.y > win->ClipRect.Min.y - tileSize && max.y < win->ClipRect.Max.y + tileSize));
-        if (auto* renderer = static_cast<MapEvent*>(event->renderer())) {
-          renderer->setMapEditor(this);
-          renderer->draw(m_mapScale, isHovered, m_selectedEvent == event, m_parent->editMode() != EditMode::Event, updateOnly);
-        }
-      }
 
-      if (!m_prisonMode) {
-        for (int z = 0; z < 6; z++) {
-          renderLayer(win, m_mapRenderer.m_upperLayers[z]);
+        if (m_prisonMode) {
+          drawGrid(win);
         }
-      }
+        if (ImGui::IsWindowHovered() || m_parent->editMode() == EditMode::Event) {
+          m_tileCursor.draw(win);
+        }
 
-      if (m_prisonMode) {
-        drawGrid(win);
-      }
-      if (ImGui::IsWindowHovered() || m_parent->editMode() == EditMode::Event) {
-        m_tileCursor.draw(win);
-      }
-
-      if (m_tileCursor.mode() != MapCursorMode::Keyboard && !m_scaleChanged) {
-        static float tempX = win->Scroll.x;
-        if (fabs(win->Scroll.x - tempX) > (m_tileCursor.tileSize() * m_mapScale) / 2 || !ImGui::IsKeyDown(ImGuiKey_MouseWheelX)) {
-          win->Scroll.x = m_tileCursor.alignCoord(win->Scroll.x + (m_tileCursor.tileSize() * m_mapScale) / 2);
-          tempX = win->Scroll.x;
-        }
-        static float tempY = win->Scroll.y;
-        if (fabs(win->Scroll.y - tempY) > (m_tileCursor.tileSize() * m_mapScale) / 2 || !ImGui::IsKeyDown(ImGuiKey_MouseWheelY)) {
-          win->Scroll.y = m_tileCursor.alignCoord(win->Scroll.y + (m_tileCursor.tileSize() * m_mapScale) / 2);
-          tempY = win->Scroll.y;
-        }
+        // if (m_tileCursor.mode() != MapCursorMode::Keyboard && !m_scaleChanged) {
+        //   static float tempX = win->Scroll.x;
+        //   if (fabs(win->Scroll.x - tempX) > (m_tileCursor.tileSize() * m_mapScale) / 2 || !ImGui::IsKeyDown(ImGuiKey_MouseWheelX)) {
+        //     win->Scroll.x = m_tileCursor.alignCoord(win->Scroll.x + (m_tileCursor.tileSize() * m_mapScale) / 2);
+        //     tempX = win->Scroll.x;
+        //   }
+        //   static float tempY = win->Scroll.y;
+        //   if (fabs(win->Scroll.y - tempY) > (m_tileCursor.tileSize() * m_mapScale) / 2 || !ImGui::IsKeyDown(ImGuiKey_MouseWheelY)) {
+        //     win->Scroll.y = m_tileCursor.alignCoord(win->Scroll.y + (m_tileCursor.tileSize() * m_mapScale) / 2);
+        //     tempY = win->Scroll.y;
+        //   }
+        // }
       }
     }
     ImGui::EndChild();
-    ImGui::BeginChild("##map_editor_bottom_panel", ImVec2{}, 0, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+    ImGui::BeginChild("##map_editor_bottom_panel", ImVec2{}, ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysUseWindowPadding,
+                      ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
     {
-      ImGui::Separator();
-      ImGui::Text("%s", trNOOP("Scale:"));
-      ImGui::SameLine();
-      ImGui::SliderFloat("##map_scale", &m_mapScale, 0.25f, 4.f);
-      ImGui::SameLine();
-      // TL-NOTE: The braces denote the tile ID x and y positions, they get replaced at runtime with those values
-      std::string fmt = trFormat("Tile {}, ({}, {})", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0), m_tileCursor.tileX(), m_tileCursor.tileY());
-      if (map()) {
-        if (const auto ev = std::ranges::find_if(map()->events(), [&](const std::optional<Event>& e) { return e && e->id() != 0 && m_tileCursor.tileX() == e->x() && m_tileCursor.tileY() == e->y(); });
-            ev != map()->events().end()) {
-          fmt += std::format(" {} ({:03})", (*ev)->name(), (*ev)->id());
+      // height = ImGui::GetCursorPosY() + ;
+      ImGui::BeginHorizontal("##map_editor_bottom_panel_layout", ImGui::GetContentRegionAvail());
+      {
+        ImGui::AlignTextToFramePadding();
+        ImGui::Spring(0.5f);
+        ImGui::TextUnformatted(trNOOP("Scale:"));
+        ImGui::SliderFloat("##map_scale", &m_mapScale, 0.25f, 4.f, "%.02f");
+        // TL-NOTE: The braces denote the tile ID x and y positions, they get replaced at runtime with those values
+        std::string fmt = trFormat("Tile {}, ({}, {})", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0), m_tileCursor.tileX(), m_tileCursor.tileY());
+        if (map()) {
+          if (const auto ev =
+                  std::ranges::find_if(map()->events(), [&](const std::optional<Event>& e) { return e && e->id() != 0 && m_tileCursor.tileX() == e->x() && m_tileCursor.tileY() == e->y(); });
+              ev != map()->events().end()) {
+            fmt += std::format(" {} ({:03})", (*ev)->name(), (*ev)->id());
+          }
         }
+        ImGui::TextUnformatted(fmt.c_str());
+        ImGui::Spring(0.5f);
       }
-      ImGui::Text("%s", fmt.c_str());
+      ImGui::EndHorizontal();
     }
     ImGui::EndChild();
   }

@@ -89,7 +89,7 @@ void MapInfos::rebuildOrdering() {
 
 void MapInfos::loadAllMaps() {
   for (const auto& mapinfo : m_mapinfos) {
-    if (mapinfo && mapinfo->id() != 0) {
+    if (mapinfo && mapinfo->id() != 0 && !mapinfo->mapLoaded()) {
       //      if (auto map = Database::instance()->loadMap(mapinfo->id); map.m_isValid) {
       //        mapinfo->m_map = std::make_unique<Map>(map);
       //      }

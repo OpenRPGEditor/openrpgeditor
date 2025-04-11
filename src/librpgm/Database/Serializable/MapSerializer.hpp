@@ -5,11 +5,12 @@
 
 class MapSerializer final : public ITypedSerializable<Map> {
 public:
-  explicit MapSerializer(const std::string_view filename, int mapId)
+  explicit MapSerializer(const std::string_view filename, const int mapId)
   : ITypedSerializable(filename)
   , m_mapId(mapId) {}
-  MapSerializer(const Map& map, const std::string_view filename)
-  : ITypedSerializable(map, filename) {}
+  MapSerializer(const Map& map, const int mapId, const std::string_view filename)
+  : ITypedSerializable(map, filename)
+  , m_mapId(mapId) {}
 
   void serialize(std::ofstream& os) const override;
   void deserialize(std::ifstream& is) override;

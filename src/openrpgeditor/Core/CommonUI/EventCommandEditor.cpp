@@ -155,9 +155,9 @@ void EventCommandEditor::handleClipboardInteraction() const {
   }
 }
 void EventCommandEditor::setupTableHeader() {
-  ImGui::TableSetupColumn("Step##command_selectable_column", ImGuiTableFlags_SizingFixedFit);
-  ImGui::TableSetupColumn("##collapse", ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoBordersInBody);
-  ImGui::TableSetupColumn("Command Operation");
+  ImGui::TableSetupColumn("Step##command_selectable_column", ImGuiTableColumnFlags_WidthFixed);
+  ImGui::TableSetupColumn("##collapse", ImGuiTableColumnFlags_WidthFixed);
+  ImGui::TableSetupColumn("Command Operation", ImGuiTableColumnFlags_WidthFixed);
   ImGui::TableSetupScrollFreeze(2, 1);
   ImGui::TableHeadersRow();
 }

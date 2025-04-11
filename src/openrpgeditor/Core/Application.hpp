@@ -55,12 +55,7 @@ public:
 
   std::string_view userConfigPath() const { return m_userConfigPath; };
 
-  void cancelShutdown() {
-    m_running = true;
-    m_userClosed = false;
-    m_projectSerialize = false;
-    m_projectCloseRequest = 0.f;
-  }
+  void cancelShutdown();
 
   void closeProject() {
     m_userClosed = false;

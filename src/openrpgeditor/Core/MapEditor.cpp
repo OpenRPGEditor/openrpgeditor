@@ -658,6 +658,15 @@ void MapEditor::draw() {
   m_mapScale = roundToNearestQuarter(m_mapScale);
   m_mapScale = std::clamp(m_mapScale, .25f, 4.f);
 
+  if (map()) {
+    for (auto& event : map()->events()) {
+      if (!event || event->id() == 0) {
+        continue;
+      }
+      event->editor()->draw();
+    }
+  }
+
   if (ImGui::Begin((tr("Map Editor") + "###mapeditor").c_str(), nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoTitleBar)) {
     ImGui::BeginChild("##mapcontents", ImVec2(0, ImGui::GetContentRegionAvail().y - (ImGui::CalcTextSize("S").y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)), 0,
                       ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
@@ -824,10 +833,6 @@ void MapEditor::draw() {
         if (auto* renderer = static_cast<MapEvent*>(event->renderer())) {
           renderer->setMapEditor(this);
           renderer->draw(m_mapScale, isHovered, m_selectedEvent == event, m_parent->editMode() != EditMode::Event, updateOnly);
-        }
-
-        if (auto* editor = event->editor()) {
-          editor->draw();
         }
       }
 

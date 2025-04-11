@@ -157,8 +157,8 @@ std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
 
     ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing, {.5f, .5f});
     int ret = -1;
-    if (ImGui::BeginPopupModal(std::format("{}###save_changes", trNOOP("Save changes?")).c_str(), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove)) {
-      ImGui::BeginVertical("##save_changes_inner");
+    if (ImGui::BeginPopupModal(std::format("{}###save_changes", trNOOP("Save changes?")).c_str(), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove)) {
+      ImGui::BeginVertical("##save_changes_inner", ImGui::GetContentRegionAvail());
       {
         ImGui::TextUnformatted(trFormat("\"{0}\" at \"{1}\"\n"
                                         "Has unsaved changes, would you like to save?",
@@ -457,7 +457,7 @@ void MainWindow::drawQueueStatus(const bool shuttingDown) {
       if (shuttingDown) {
         ImGui::Spring(0.5f);
       }
-      ImGui::ProgressBar(FileQueue::instance().progress() / 100.f, {-FLT_MIN, 0}, nullptr);
+      ImGui::ProgressBar(FileQueue::instance().progress() / 100.f, {-FLT_MIN, 0}, "");
       if (shuttingDown) {
         ImGui::Spring(0.5f);
       }
@@ -544,7 +544,7 @@ void MainWindow::draw(const bool shuttingDown) {
   if (shuttingDown) {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImGui::GetStyleColorVec4(ImGuiCol_PopupBg));
     ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Always, ImVec2(0.5, 0.5));
-    ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(512, 512), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(512, 512), ImGuiCond_Appearing);
     ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(512, 512), {FLT_MAX, FLT_MAX});
     ImGui::Begin(trNOOP("##shutdownsplash"), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
     {

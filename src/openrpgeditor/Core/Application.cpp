@@ -407,7 +407,7 @@ ExitStatus Application::run() {
 
   float frameTime = 0.f;
   float saveTime = 0.f;
-  while (m_running || FileQueue::instance().hasTasks()) {
+  while (m_running || FileQueue::instance().hasTasks() || m_projectSerialize || m_projectCloseRequest) {
     EditorPluginManager::instance()->initializeAllPlugins();
     if (m_fontUpdateRequested && m_fontUpdateDelay <= 0) {
       ImGui_ImplSDLRenderer3_Shutdown();
@@ -454,24 +454,26 @@ ExitStatus Application::run() {
     }
 
     if (!m_firstBootWizard) {
-      m_project->draw(!m_running);
+      m_project->draw(m_doQuit && m_userClosed);
       if (needsInitialProjectLoad) {
         m_project->load(Settings::instance()->lastProject, std::filesystem::path(Settings::instance()->lastProject).remove_filename().generic_string());
         needsInitialProjectLoad = false;
       }
       if (m_doQuit || m_projectCloseRequest) {
-        if (m_project) {
-          if (!m_userClosed) {
-            const auto [closed, terminated, serialize] = m_project->close(true);
-            m_projectSerialize = serialize;
-            if (m_projectSerialize) {
-              Database::instance()->serializeProject();
-            }
-
-            if (m_doQuit) {
-              m_running = !terminated;
-            }
-            m_userClosed = closed;
+        if (m_project && !m_userClosed) {
+          const auto [closed, quit, serialize] = m_project->close(true);
+          if (closed && quit) {
+            m_running = !m_doQuit;
+            m_userClosed = true;
+          } else if (closed) {
+            m_doQuit = false;
+            m_running = true;
+            m_projectCloseRequest = false;
+            m_userClosed = false;
+          }
+          m_projectSerialize = serialize;
+          if (m_projectSerialize) {
+            Database::instance()->serializeProject();
           }
         }
         saveTime = 0.f;
@@ -501,7 +503,7 @@ ExitStatus Application::run() {
 #ifndef DEBUG
     if (frameTime >= (1.f / 1000.f)) {
 #else
-    if (frameTime >= (1.f / 60.f)) {
+    if (frameTime >= (1.f / 20.f)) {
 #endif
       FileQueue::instance().proc();
       frameTime = 0.f;
@@ -571,5 +573,14 @@ void Application::onMinimize() { m_minimized = true; }
 void Application::onShown() { m_minimized = false; }
 
 void Application::onClose() { stop(); }
+
+void Application::cancelShutdown() {
+  FileQueue::instance().reset();
+  m_running = true;
+  m_userClosed = false;
+  m_projectSerialize = false;
+  m_projectCloseRequest = false;
+  m_doQuit = false;
+}
 
 } // namespace App

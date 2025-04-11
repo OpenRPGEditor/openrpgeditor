@@ -13,6 +13,7 @@
 #include "IconsFontAwesome6.h"
 #include "imgui.h"
 #include "imgui_internal.h"
+#include "imgui_stacklayout.h"
 
 #include "EditorPlugin/EditorPluginManager.hpp"
 #include "LCF_Importer/LCF_Importer.hpp"

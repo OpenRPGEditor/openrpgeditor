@@ -1,6 +1,7 @@
 #include "Core/DatabaseEditor.hpp"
 
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "ImGuiExt/ImGuiUtils.hpp"
 
 void DatabaseEditor::draw() {

@@ -444,5 +444,86 @@ bool MenuItemNoCheck(const char* label, const char* icon, const char* shortcut, 
   return pressed;
 }
 
-float GetPanelHeight() { return (ImGui::GetFrameHeight() + ImGui::GetStyle().WindowPadding.y + ImGui::GetStyle().ItemSpacing.y); }
+float GetMinimumPanelHeight() { return (GetFrameHeight() + ImGui::GetStyle().WindowPadding.y + ImGui::GetStyle().ItemSpacing.y); }
+
+struct GroupBoxStack;
+struct GroupBoxStack {
+  GroupBoxStack* PrevGroup = nullptr;
+  ImVec2 GroupStart;
+  ImVec2 ContentStart;
+};
+static GroupBoxStack* GGroupStack = nullptr;
+
+bool BeginGroupBox(const char* str_id, const char* title, const ImVec2& size, ImGuiChildFlags child_flags, ImGuiWindowFlags window_flags) {
+  auto* gs = static_cast<GroupBoxStack*>(IM_ALLOC(sizeof(GroupBoxStack)));
+  new (gs) GroupBoxStack();
+  if (GGroupStack != nullptr) {
+    GGroupStack->PrevGroup = gs;
+  }
+  GGroupStack = gs;
+
+  gs->GroupStart = GetCursorPos();
+  SetCursorPosY(gs->GroupStart.y + (GetFontSize() / 2) + ImGui::GetStyle().ItemSpacing.y);
+  bool ret = BeginChild(str_id, size, child_flags | ImGuiChildFlags_FrameStyle, window_flags);
+  if (ret) {
+    const auto innerStart = gs->ContentStart.y;
+    SetCursorPosY(innerStart - (GetFontSize() / 2));
+    const auto clipRect = GetCurrentWindow()->ClipRect;
+    PushClipRect({clipRect.Min.x, clipRect.Min.y - GetFontSize() / 2}, clipRect.Max, false);
+    {
+      ret |= BeginChild("##test_inner", {}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle,
+                        ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoInputs);
+      if (ret) {
+        // Group Header text
+        TextUnformatted(title);
+      }
+      EndChild();
+    }
+    PopClipRect();
+  }
+  return ret;
+}
+void EndGroupBox() {
+  IM_ASSERT(GGroupStack != nullptr && "EndGroupBox Called without BeginGroupBox!");
+  EndChild();
+  GroupBoxStack* gs = GGroupStack;
+  GGroupStack = gs->PrevGroup;
+  IM_FREE(gs);
+}
+void ItemLabel(const char* title, const ImGuiItemLabelFlags flags) {
+  ImGuiWindow* window = GetCurrentWindow();
+  const ImVec2 lineStart = GetCursorScreenPos();
+  const ImGuiStyle& style = GetStyle();
+  float fullWidth = GetContentRegionAvail().x;
+  float itemWidth = CalcItemWidth() + style.ItemSpacing.x;
+  ImVec2 textSize = CalcTextSize(title);
+  ImRect textRect;
+  textRect.Min = ImGui::GetCursorScreenPos();
+  if (flags & ImGuiItemLabelFlags_Right)
+    textRect.Min.x = textRect.Min.x + itemWidth;
+  textRect.Max = textRect.Min;
+  textRect.Max.x += fullWidth - itemWidth;
+  textRect.Max.y += textSize.y;
+
+  SetCursorScreenPos(textRect.Min);
+
+  AlignTextToFramePadding();
+  // Adjust text rect manually because we render it directly into a drawlist instead of using public functions.
+  textRect.Min.y += window->DC.CurrLineTextBaseOffset;
+  textRect.Max.y += window->DC.CurrLineTextBaseOffset;
+
+  ItemSize(textRect);
+  if (ItemAdd(textRect, window->GetID(title))) {
+    RenderTextEllipsis(ImGui::GetWindowDrawList(), textRect.Min, textRect.Max, textRect.Max.x, textRect.Max.x, title, nullptr, &textSize);
+
+    if (textRect.GetWidth() < textSize.x && ImGui::IsItemHovered())
+      ImGui::SetTooltip("%.*s", strlen(title), title);
+  }
+  if (flags & ImGuiItemLabelFlags_Left) {
+    SetCursorScreenPos(textRect.Max - ImVec2{0, textSize.y + window->DC.CurrLineTextBaseOffset});
+    SameLine();
+  } else if (flags & ImGuiItemLabelFlags_Right)
+    SetCursorScreenPos(lineStart);
+}
+
 } // namespace ImGui

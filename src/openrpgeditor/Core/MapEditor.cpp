@@ -667,9 +667,9 @@ void MapEditor::draw() {
     }
   }
 
-  ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(320, 240 + ImGui::GetPanelHeight()), {FLT_MAX, FLT_MAX});
+  ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(320, 240 + ImGui::GetMinimumPanelHeight()), {FLT_MAX, FLT_MAX});
   if (ImGui::Begin((tr("Map Editor") + "###mapeditor").c_str(), nullptr, ImGuiWindowFlags_NoScrollbar)) {
-    ImGui::BeginChild("##mapcontent_child", {ImGui::GetContentRegionAvail().x, std::max(ImGui::GetPanelHeight(), ImGui::GetContentRegionAvail().y - ImGui::GetPanelHeight())}, 0,
+    ImGui::BeginChild("##mapcontent_child", {ImGui::GetContentRegionAvail().x, std::max(ImGui::GetMinimumPanelHeight(), ImGui::GetContentRegionAvail().y - ImGui::GetMinimumPanelHeight())}, 0,
                       ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
     {
       // Keep mapScale to a quarter step

@@ -3,6 +3,12 @@
 #include <string>
 #include <vector>
 
+enum ImGuiItemLabelFlags {
+  ImGuiItemLabelFlags_Left = 1u << 0u,
+  ImGuiItemLabelFlags_Right = 1u << 1u,
+  ImGuiItemLabelFlags_Default = ImGuiItemLabelFlags_Left,
+};
+
 namespace ImGui {
 void BeginGroupPanel(const char* name = "", const ImVec2& size = ImVec2(-1.0f, -1.0f));
 void EndGroupPanel();
@@ -21,5 +27,10 @@ inline ImVec2 GetDPIScaledSize(const float w, const float h) { return GetDPIScal
 float GetDPIScaledValue(float value);
 bool MenuItemNoCheck(const char* label, const char* icon, const char* shortcut = NULL, bool selected = false, bool enabled = true);
 
-float GetPanelHeight();
+float GetMinimumPanelHeight();
+
+bool BeginGroupBox(const char* str_id, const char* title, const ImVec2& size = {0, 0}, ImGuiChildFlags child_flags = 0, ImGuiWindowFlags window_flags = 0);
+void EndGroupBox();
+
+void ItemLabel(const char* title, ImGuiItemLabelFlags flags = ImGuiItemLabelFlags_Default);
 } // namespace ImGui

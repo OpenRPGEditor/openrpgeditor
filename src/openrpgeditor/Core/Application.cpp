@@ -130,8 +130,9 @@ void Application::updateScale() {
   style.ItemSpacing = ImVec2(4.0f, 3.f);
   style.IndentSpacing = 10.0f;
   style.ScrollbarSize = 12.f;
-
   const auto scale = std::max(SDL_GetWindowPixelDensity(m_window->getNativeWindow()), SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
+  style.CurveTessellationTol *= scale;
+  style.CircleTessellationMaxError *= scale;
   style.ScaleAllSizes(scale);
 }
 

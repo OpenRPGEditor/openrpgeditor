@@ -23,6 +23,10 @@ Window::Window(const Settings& settings) {
   m_renderer = SDL_CreateRenderer(m_window, "vulkan");
 
   if (m_renderer == nullptr) {
+    m_renderer = SDL_CreateRenderer(m_window, nullptr);
+  }
+
+  if (m_renderer == nullptr) {
     APP_ERROR("Error creating SDL_Renderer!");
     return;
   }

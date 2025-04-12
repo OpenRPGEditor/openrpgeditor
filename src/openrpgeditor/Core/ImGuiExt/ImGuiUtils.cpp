@@ -347,9 +347,9 @@ int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const b
   return ret;
 }
 
-ImVec2 GetDPIScaledSize(const ImVec2& size) { return size * GetCurrentContext()->FontScale; }
+ImVec2 GetDPIScaledSize(const ImVec2& size) { return size * (GetIO().FontGlobalScale * GetCurrentContext()->FontScale * GetCurrentWindow()->FontWindowScale); }
 
-float GetDPIScaledValue(const float value) { return value * GetCurrentContext()->FontScale; }
+float GetDPIScaledValue(const float value) { return value * (GetIO().FontGlobalScale * GetCurrentContext()->FontScale * GetCurrentWindow()->FontWindowScale); }
 
 static bool IsRootOfOpenMenuSet() {
   ImGuiContext& g = *GImGui;
@@ -487,7 +487,7 @@ bool BeginGroupBox(const char* str_id, const char* title, const ImVec2& size) {
     realSize.x += GetStyle().FramePadding.x + GetStyle().FrameBorderSize + GetStyle().WindowPadding.x;
   }
 
-  gs->visible = BeginChild(gs->id, realSize, ImGuiChildFlags_FrameStyle | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY, ImGuiWindowFlags_NoScrollbar);
+  gs->visible = BeginChild(gs->id, realSize, ImGuiChildFlags_FrameStyle, ImGuiWindowFlags_NoScrollbar);
   gs->GroupStart.x = groupPos.x = GetCursorScreenPos().x;
   SetCursorScreenPos(groupPos);
   return gs->visible;

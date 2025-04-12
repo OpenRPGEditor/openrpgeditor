@@ -347,9 +347,9 @@ int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const b
   return ret;
 }
 
-ImVec2 GetDPIScaledSize(const ImVec2& size) { return size * (1.f / GetFontSize()); }
+ImVec2 GetDPIScaledSize(const ImVec2& size) { return size * GetCurrentContext()->FontScale; }
 
-float GetDPIScaledValue(const float value) { return value * (1.f / GetFontSize()); }
+float GetDPIScaledValue(const float value) { return value * GetCurrentContext()->FontScale; }
 
 static bool IsRootOfOpenMenuSet() {
   ImGuiContext& g = *GImGui;

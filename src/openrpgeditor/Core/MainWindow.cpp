@@ -579,6 +579,80 @@ void MainWindow::draw(const bool shuttingDown) {
     ImGui::End();
     ImGui::PopStyleColor();
   }
+  ImGui::Begin("This is a layout test");
+  {
+    static float halign = 0.f;
+    static float valign = 0.f;
+    ImGui::SliderFloat("Horizontal Alignment", &halign, 0.f, 1.f);
+    ImGui::SliderFloat("Vertical Alignment", &valign, 0.f, 1.f);
+
+    ImGui::BeginVertical("##layout_test", {}, halign);
+    {
+      ImGui::Spring(valign);
+      if (ImGui::BeginGroupBox("##event_conditions_panel", "Conditions", {})) {
+        /* Lock the contents to the top left of the panel */
+        ImGui::BeginHorizontal("##event_conditions_panel_layout", {}, 0.f);
+        {
+          ImGui::BeginVertical("##event_conditions_left", {}, 0.f);
+          {
+            bool check1 = false;
+            ImGui::Checkbox("Switch##switch1", &check1);
+            bool check2 = true;
+            ImGui::Checkbox("Switch##switch2", &check2);
+            bool check3 = false;
+            ImGui::Checkbox("Variable", &check3);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetFrameHeightWithSpacing());
+            bool check4 = true;
+            ImGui::Checkbox("Self Switch", &check4);
+            bool check5 = false;
+            ImGui::Checkbox("Item", &check5);
+            bool check6 = true;
+            ImGui::Checkbox("Actor", &check6);
+          }
+          ImGui::EndVertical();
+          ImGui::BeginVertical("##event_conditions_right", {}, 0.f);
+          {
+            ImGui::Button("###test1", ImGui::GetDPIScaledSize(200.f, 0.f));
+            ImGui::Button("###test2", ImGui::GetDPIScaledSize(200.f, 0.f));
+            ImGui::Button("###test3", ImGui::GetDPIScaledSize(200.f, 0.f));
+            ImGui::BeginHorizontal("##value_slider");
+            {
+              static int v = 0;
+              ImGui::TextDisabled("≥");
+              ImGui::SetNextItemWidth(ImGui::GetDPIScaledValue(200.f) - (ImGui::GetItemRectSize().x + ImGui::GetStyle().FramePadding.x));
+              ImGui::SliderInt("##value", &v, 0, 9999, "%d");
+            }
+            ImGui::EndHorizontal();
+            ImGui::SetNextItemWidth(ImGui::GetDPIScaledValue(200.f));
+            if (ImGui::BeginCombo("##selfswitch", "A")) {
+              ImGui::Selectable("A");
+              ImGui::EndCombo();
+            }
+
+            ImGui::SetNextItemWidth(ImGui::GetDPIScaledValue(200.f));
+            if (ImGui::BeginCombo("##actor", "Actor1")) {
+              ImGui::Selectable("Actor1");
+              ImGui::EndCombo();
+            }
+          }
+          ImGui::EndVertical();
+        }
+        ImGui::EndHorizontal();
+      }
+      ImGui::EndGroupBox();
+      ImGui::BeginHorizontal("##image_autonomous_movement_layout");
+      {
+        if (ImGui::BeginGroupBox("##image_group", "Image")) {
+          ImGui::Text("Test");
+        }
+        ImGui::EndGroupBox();
+      }
+      ImGui::EndHorizontal();
+      ImGui::Spring(1.f - valign);
+    }
+    ImGui::EndVertical();
+  }
+  ImGui::End();
 }
 
 void MainWindow::drawCreateNewProjectPopup() {

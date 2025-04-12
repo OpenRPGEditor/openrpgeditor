@@ -800,8 +800,8 @@ void EventCommandEditor::drawSceneTab(ImVec2 size) {
       ImGui::EndVertical();
     }
     ImGui::EndHorizontal();
+    ImGui::EndTabItem();
   }
-  ImGui::EndTabItem();
 }
 void EventCommandEditor::drawFlowControlTab(ImVec2 size) {
   if (ImGui::BeginTabItem("Flow")) {
@@ -1097,11 +1097,10 @@ void EventCommandEditor::drawPopup() {
   if (!m_isRequested) {
     return;
   }
-  const auto windowSize = (ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
-  ImGui::SetNextWindowSize(ImVec2{windowSize.x * 4, windowSize.y * 17}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal("Command Window", nullptr, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize)) {
+  ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(1024, 512), ImGuiCond_Appearing);
+  if (ImGui::BeginPopupModal("Command Window", nullptr, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
     // Event Templates
-    ImGui::PushItemWidth(500);
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     if (ImGui::BeginCombo("##eventcommand_editor_presets", "Select a preset to insert into selection...")) {
       int index{0};
       for (auto& templ : Database::instance()->templates.templates) {

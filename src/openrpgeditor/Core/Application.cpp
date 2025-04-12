@@ -131,8 +131,9 @@ void Application::updateScale() {
   style.IndentSpacing = 10.0f;
   style.ScrollbarSize = 12.f;
   const auto scale = std::max(SDL_GetWindowPixelDensity(m_window->getNativeWindow()), SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
-  style.CurveTessellationTol *= scale;
-  style.CircleTessellationMaxError *= scale;
+  ImGui::GetCurrentContext()->CurrentDpiScale = scale;
+  style.CurveTessellationTol = 1;
+  style.CircleTessellationMaxError = 1;
   style.ScaleAllSizes(scale);
 }
 
@@ -325,26 +326,20 @@ void Application::updateFonts() {
   io.Fonts->Build();
   config.MergeMode = true;
   io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
-  io.Fonts->Build();
   io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), font_size, &config, ranges.Data);
-  io.Fonts->Build();
-  config.GlyphMinAdvanceX = font_size;
   io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), font_size, &config, ranges.Data);
-  io.Fonts->AddCustomRectFontGlyph(m_mainFont, ICON_BLANK, font_size, font_size, font_size);
   io.Fonts->Build();
 
   config = ImFontConfig();
   // config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_Bold;
+  config.MergeMode = false;
   m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_mono.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->Build();
   config.MergeMode = true;
   io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), mono_font_size, &config, ranges.Data);
-  io.Fonts->Build();
-  config.GlyphMinAdvanceX = mono_font_size;
+  io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), mono_font_size, &config, ranges.Data);
   io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), mono_font_size, &config, ranges.Data);
-  io.Fonts->AddCustomRectFontGlyph(m_monoFont, ICON_BLANK, mono_font_size, mono_font_size, mono_font_size);
   io.Fonts->Build();
-  io.FontGlobalScale = 1.f / scale;
 
   updateScale();
 }
@@ -443,6 +438,7 @@ ExitStatus Application::run() {
     ImGui_ImplSDL3_NewFrame();
 
     ImGui::NewFrame();
+    updateScale();
 
     frameTime += ImGui::GetIO().DeltaTime;
     saveTime += ImGui::GetIO().DeltaTime;
@@ -555,12 +551,6 @@ void Application::onEvent(const SDL_WindowEvent& event) {
   }
   case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
   case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED: {
-    const auto scale = SDL_GetWindowDisplayScale(m_window->getNativeWindow());
-    const auto pixelDensity = SDL_GetWindowPixelDensity(m_window->getNativeWindow());
-    if (ImGui::GetWindowDpiScale() != scale && ImGui::GetWindowDpiScale() != pixelDensity) {
-      requestFontUpdate();
-      updateScale();
-    }
     break;
   }
   case SDL_EVENT_WINDOW_MAXIMIZED: {

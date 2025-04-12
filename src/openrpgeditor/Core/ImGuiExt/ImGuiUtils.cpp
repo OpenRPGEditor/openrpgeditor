@@ -487,7 +487,7 @@ bool BeginGroupBox(const char* str_id, const char* title, const ImVec2& size) {
     realSize.x += GetStyle().FramePadding.x + GetStyle().FrameBorderSize + GetStyle().WindowPadding.x;
   }
 
-  gs->visible = BeginChild(gs->id, realSize, ImGuiChildFlags_FrameStyle, ImGuiWindowFlags_NoScrollbar);
+  gs->visible = BeginChild(gs->id, realSize, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle, ImGuiWindowFlags_NoScrollbar);
   gs->GroupStart.x = groupPos.x = GetCursorScreenPos().x;
   SetCursorScreenPos(groupPos);
   return gs->visible;

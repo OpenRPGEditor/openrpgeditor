@@ -6,10 +6,10 @@
 
 void UISettingsTab::draw() {
   if (ImGui::BeginTabItem("UI")) {
-    ImGui::SliderFloat("##ui_scale", &Settings::instance()->uiScale, 1, 5);
+    ImGui::SliderFloat("##ui_scale", &Settings::instance()->uiScale, 0.5, 5);
     ImGui::PushFont(App::APP->getMainFont(), Settings::instance()->fontSize);
     ImGui::Text("Font Size");
-    ImGui::SliderInt("##ui_font_size", &Settings::instance()->fontSize, 16, 48);
+    ImGui::SliderInt("##ui_font_size", &Settings::instance()->fontSize, 8, 48);
     // Settings::instance()->fontSize = nextMultipleOf8(Settings::instance()->fontSize);
     if (ImGui::IsItemDeactivatedAfterEdit()) {
       App::APP->requestFontUpdate();
@@ -19,7 +19,7 @@ void UISettingsTab::draw() {
     ImGui::PopFont();
     ImGui::PushFont(App::APP->getMonoFont(), Settings::instance()->monoFontSize);
     ImGui::Text("Monospace Font Size");
-    ImGui::SliderInt("##ui_mono_font_size", &Settings::instance()->monoFontSize, 16, 48);
+    ImGui::SliderInt("##ui_mono_font_size", &Settings::instance()->monoFontSize, 8, 48);
     // Settings::instance()->monoFontSize = nextMultipleOf8(Settings::instance()->monoFontSize);
     if (ImGui::IsItemDeactivatedAfterEdit()) {
       App::APP->requestFontUpdate();

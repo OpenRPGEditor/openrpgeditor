@@ -412,6 +412,12 @@ ExitStatus Application::run() {
   float frameTime = 0.f;
   float saveTime = 0.f;
   while (m_running || FileQueue::instance().hasTasks() || m_projectSerialize || m_projectCloseRequest) {
+    io.FontGlobalScale = m_settings.uiScale;
+    if (m_fontUpdateRequested) {
+      updateFonts();
+      m_fontUpdateRequested = !m_fontUpdateDelay;
+      m_fontUpdateDelay = 0;
+    }
     EditorPluginManager::instance()->initializeAllPlugins();
 
     SDL_Event event{};
@@ -437,6 +443,7 @@ ExitStatus Application::run() {
     ImGui_ImplSDL3_NewFrame();
 
     ImGui::NewFrame();
+
     frameTime += ImGui::GetIO().DeltaTime;
     saveTime += ImGui::GetIO().DeltaTime;
 

@@ -4,6 +4,46 @@ configure_file(App/ProjectInfo.cpp.in App/ProjectInfo.cpp @ONLY)
 
 add_subdirectory(Math)
 
+add_library(CommonUI STATIC
+        Core/CommonUI/IWidget.hpp
+)
+
+target_include_directories(
+        CommonUI
+        PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+        ${SFML_SOURCE_DIR}/include/SFML
+        ${clip_SOURCE_DIR}
+        ${athena_SOURCE_DIR}/include
+        ${cpuid_SOURCE_DIR}
+        ${CMAKE_SOURCE_DIR}/extern/angelscript/angelscript/include
+        ${CMAKE_SOURCE_DIR}/extern/inih
+        ${CMAKE_SOURCE_DIR}/extern/angelscript/add_on
+        "${CMAKE_SOURCE_DIR}/extern/nano-signal-slot"
+)
+target_compile_features(CommonUI PRIVATE cxx_std_23)
+target_link_libraries(
+        CommonUI
+        PUBLIC fmt::fmt-header-only
+        spdlog::spdlog
+        SDL3::SDL3
+        SDL3_image::SDL3_image
+        imgui-setup
+        magic_enum
+        nlohmann_json::nlohmann_json
+        librpgm
+        freetype
+        clip
+        sfml-audio
+        oremath
+        libcurl
+        cpuid
+        angelscript
+        angelscript_addons
+        athena-core
+        lcf
+        inih
+)
+
 add_library(
         orecore STATIC
         Core/Application.cpp
@@ -39,6 +79,10 @@ add_library(
         Core/CommonUI/TraitsEditor.hpp
         Core/CommonUI/VariableSwitchPicker.cpp
         Core/CommonUI/VariableSwitchPicker.hpp
+        Core/CommonUI/Directory.cpp
+        Core/CommonUI/Directory.hpp
+        Core/CommonUI/FacePicker.cpp
+        Core/CommonUI/FacePicker.hpp
         Core/DatabaseEditor.cpp
         Core/DatabaseEditor.hpp
         Core/DatabaseEditor/DBActorsTab.cpp
@@ -461,10 +505,7 @@ add_library(
         Core/LibLCF.hpp
         Core/DatabaseEditor/DBLocaleTab.cpp
         Core/DatabaseEditor/DBLocaleTab.hpp
-        Core/CommonUI/Directory.cpp
-        Core/CommonUI/Directory.hpp
-        Core/CommonUI/FacePicker.cpp
-        Core/CommonUI/FacePicker.hpp
+
         Core/Script/ImGui/ImGuiMath.cpp
         Core/Script/ImGui/ImGuiMath.hpp
         Core/Script/ImGui/ImGuiCoreOperations.cpp
@@ -493,6 +534,7 @@ target_compile_features(orecore PRIVATE cxx_std_23)
 target_link_libraries(
         orecore
         PUBLIC fmt::fmt-header-only
+        CommonUI
         spdlog::spdlog
         SDL3::SDL3
         SDL3_image::SDL3_image
@@ -553,6 +595,7 @@ target_link_libraries(
         ${NAME}
         PUBLIC fmt::fmt-header-only
         spdlog::spdlog
+        CommonUI
         orecore
         SDL3::SDL3
         SDL3_image::SDL3_image

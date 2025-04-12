@@ -1,6 +1,7 @@
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
+#include "imgui_stacklayout.h"
 #include "OREMath/Size.hpp"
 
 #include <format>
@@ -346,9 +347,9 @@ int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const b
   return ret;
 }
 
-ImVec2 GetDPIScaledSize(const ImVec2& size) { return size * GetCurrentContext()->CurrentDpiScale; }
+ImVec2 GetDPIScaledSize(const ImVec2& size) { return size * (1.f / GetFontSize()); }
 
-float GetDPIScaledValue(const float value) { return value * GetCurrentContext()->CurrentDpiScale; }
+float GetDPIScaledValue(const float value) { return value * (1.f / GetFontSize()); }
 
 static bool IsRootOfOpenMenuSet() {
   ImGuiContext& g = *GImGui;
@@ -449,47 +450,78 @@ float GetMinimumPanelHeight() { return (GetFrameHeight() + ImGui::GetStyle().Win
 struct GroupBoxStack;
 struct GroupBoxStack {
   GroupBoxStack* PrevGroup = nullptr;
+  const char* label;
+  ImGuiID id;
+  ImGuiID labelId;
   ImVec2 GroupStart;
-  ImVec2 ContentStart;
+  ImVec2 ClipMin;
+  bool visible = false;
 };
 static GroupBoxStack* GGroupStack = nullptr;
 
-bool BeginGroupBox(const char* str_id, const char* title, const ImVec2& size, ImGuiChildFlags child_flags, ImGuiWindowFlags window_flags) {
+bool BeginGroupBox(const char* str_id, const char* title, const ImVec2& size) {
   auto* gs = static_cast<GroupBoxStack*>(IM_ALLOC(sizeof(GroupBoxStack)));
   new (gs) GroupBoxStack();
+  gs->label = title;
+
   if (GGroupStack != nullptr) {
     GGroupStack->PrevGroup = gs;
   }
   GGroupStack = gs;
 
-  gs->GroupStart = GetCursorPos();
-  SetCursorPosY(gs->GroupStart.y + (GetFontSize() / 2) + ImGui::GetStyle().ItemSpacing.y);
-  bool ret = BeginChild(str_id, size, child_flags | ImGuiChildFlags_FrameStyle, window_flags);
-  if (ret) {
-    const auto innerStart = gs->ContentStart.y;
-    SetCursorPosY(innerStart - (GetFontSize() / 2));
-    const auto clipRect = GetCurrentWindow()->ClipRect;
-    PushClipRect({clipRect.Min.x, clipRect.Min.y - GetFontSize() / 2}, clipRect.Max, false);
-    {
-      ret |= BeginChild("##test_inner", {}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle,
-                        ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoInputs);
-      if (ret) {
-        // Group Header text
-        TextUnformatted(title);
-      }
-      EndChild();
-    }
-    PopClipRect();
+  ImVec2 realSize = size;
+  gs->id = GetID(str_id);
+  gs->labelId = GetID(title);
+  auto groupPos = GetCursorScreenPos();
+  gs->GroupStart = groupPos;
+  gs->ClipMin = GetCursorPos(); // We need the local pos so we can clip the header later
+  groupPos.y += (GetFontSize() / 2);
+  SetCursorScreenPos(groupPos);
+  groupPos.y += GetFrameHeight();
+
+  /* Pad the size to fit the header */
+  if (size.y > 0.f) {
+    realSize.y += (GetFontSize() / 2) + GetFrameHeight();
   }
-  return ret;
+  if (size.x > 0.f) {
+    realSize.x += GetStyle().FramePadding.x + GetStyle().FrameBorderSize + GetStyle().WindowPadding.x;
+  }
+
+  gs->visible = BeginChild(gs->id, realSize, ImGuiChildFlags_FrameStyle | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY, ImGuiWindowFlags_NoScrollbar);
+  gs->GroupStart.x = groupPos.x = GetCursorScreenPos().x;
+  SetCursorScreenPos(groupPos);
+  return gs->visible;
 }
+
 void EndGroupBox() {
   IM_ASSERT(GGroupStack != nullptr && "EndGroupBox Called without BeginGroupBox!");
-  EndChild();
   GroupBoxStack* gs = GGroupStack;
+  if (gs->visible) {
+    SetCursorScreenPos(GetCursorScreenPos() - ImVec2{0.f, GetFrameHeight()});
+    SetCursorScreenPos(GetCursorScreenPos() + ImVec2{std::min(GetCurrentWindow()->ContentRegionRect.Max.x - GetCurrentWindow()->ContentRegionRect.Min.x, CalcTextSize(gs->label, nullptr, true).x) +
+                                                         (GetStyle().FramePadding.x + GetStyle().FrameBorderSize + GetStyle().WindowPadding.x) * 2,
+                                                     0.f});
+  }
+  //  Get the total region
+  const auto clip = GetCurrentWindow()->ClipRect.Max;
+  EndChild();
+  if (gs->visible) {
+    auto oldPos = GetCursorScreenPos();
+    SetCursorScreenPos({gs->GroupStart.x + GetStyle().FramePadding.x + GetStyle().FrameBorderSize, gs->GroupStart.y});
+    PushClipRect({0.f, 0.f}, clip, false);
+    if (BeginChild(gs->labelId, {}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle,
+                   ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoInputs)) {
+      // Group Header text
+      TextUnformatted(gs->label);
+    }
+    EndChild();
+    PopClipRect();
+    SetCursorScreenPos(oldPos);
+  }
   GGroupStack = gs->PrevGroup;
   IM_FREE(gs);
 }
+
 void ItemLabel(const char* title, const ImGuiItemLabelFlags flags) {
   ImGuiWindow* window = GetCurrentWindow();
   const ImVec2 lineStart = GetCursorScreenPos();
@@ -517,7 +549,7 @@ void ItemLabel(const char* title, const ImGuiItemLabelFlags flags) {
     RenderTextEllipsis(ImGui::GetWindowDrawList(), textRect.Min, textRect.Max, textRect.Max.x, textRect.Max.x, title, nullptr, &textSize);
 
     if (textRect.GetWidth() < textSize.x && ImGui::IsItemHovered())
-      ImGui::SetTooltip("%.*s", strlen(title), title);
+      ImGui::SetTooltip("%s", title);
   }
   if (flags & ImGuiItemLabelFlags_Left) {
     SetCursorScreenPos(textRect.Max - ImVec2{0, textSize.y + window->DC.CurrLineTextBaseOffset});

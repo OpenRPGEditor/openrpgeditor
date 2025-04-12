@@ -39,6 +39,7 @@ std::tuple<bool, bool> Dialog_MovementChangeImage::draw() {
         m_character = m_characterPicker.character();
         m_image = m_characterPicker.selectedSheet();
         m_characterSheet = CharacterSheet(m_image);
+        m_actorButton->clear();
       }
     }
     ImGui::BeginVertical("changeimage_vertical", ImVec2{ImGui::GetDPIScaledValue(200.f), ImGui::GetDPIScaledValue(150.f)});

@@ -62,4 +62,6 @@ private:
   std::optional<VariableSwitchPicker> picker;
   std::tuple<bool, bool> result;
   bool m_hasFocus{false};
+
+  bool m_isNewEntry{true};
 };

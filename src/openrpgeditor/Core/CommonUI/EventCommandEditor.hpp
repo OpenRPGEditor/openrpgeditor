@@ -182,7 +182,7 @@ private:
   bool m_needsUpdate{false};
   bool m_isRequested{false};
   int m_currentTemplate{-1};
-  int m_selectedCommand = -1;
+  int m_selectedCommand = {-1};
   int m_selectedEnd = -1;
   int m_hoveringCommand = -1;
   int m_hoveringEnd = -1;

@@ -43,7 +43,8 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
         if (!dataSource.has_value())
           continue;
 
-        if (const bool is_selected = m_event == dataSource->id(); ImGui::Selectable(("EV" + std::format("{:03} ", dataSource->id())).c_str(), is_selected)) {
+        if (const bool is_selected = m_event == dataSource->id();
+            ImGui::Selectable(dataSource->name().empty() ? std::format("EV {:03} ", dataSource->id()).c_str() : dataSource->name().c_str(), is_selected)) {
           m_event = dataSource->id();
           if (is_selected)
             ImGui::SetItemDefaultFocus();

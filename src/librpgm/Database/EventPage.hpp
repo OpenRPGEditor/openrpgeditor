@@ -313,7 +313,7 @@ private:
   std::vector<std::shared_ptr<IEventCommand>> m_list;
   MovementFrequency m_moveFrequency{MovementFrequency::Normal};
   MovementRoute m_moveRoute{};
-  MovementSpeed m_moveSpeed{MovementSpeed::Normal};
+  MovementSpeed m_moveSpeed{MovementSpeed::x2_Slower};
   MoveType m_moveType{MoveType::Fixed};
   EventPriority m_priorityType{};
   bool m_stepAnime = false;

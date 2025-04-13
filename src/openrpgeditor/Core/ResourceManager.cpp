@@ -6,9 +6,9 @@
 #include "Resources.hpp"
 #include "SDL3/SDL.h"
 #include "SFML/Audio/SoundBuffer.hpp"
-#include <SDL3/SDL_hints.h>
 #include <exception>
 #include <iostream>
+#include <SDL3/SDL_hints.h>
 namespace fs = std::filesystem;
 
 void ResourceManager::setBasepath(const std::string_view basepath) {
@@ -73,9 +73,9 @@ sf::SoundBuffer ResourceManager::loadSound(std::filesystem::path path) {
   buffer.loadFromFile(path.generic_string());
   return buffer;
 }
-sf::SoundBuffer ResourceManager::loadBGM(const std::string_view path) const { return loadSound((m_bgmPath / path).replace_extension(".ogg")); }
+sf::SoundBuffer ResourceManager::loadBGM(const std::string_view path) const { return loadSound((m_bgmPath / path.data()).replace_extension(".ogg")); }
 
-sf::SoundBuffer ResourceManager::loadBGS(const std::string_view path) const { return loadSound((m_bgsPath / path).replace_extension(".ogg")); }
+sf::SoundBuffer ResourceManager::loadBGS(const std::string_view path) const { return loadSound((m_bgsPath / path.data()).replace_extension(".ogg")); }
 
 sf::SoundBuffer ResourceManager::loadSE(const std::string_view path) const { return loadSound((m_sePath / path.data()).replace_extension(".ogg")); }
 

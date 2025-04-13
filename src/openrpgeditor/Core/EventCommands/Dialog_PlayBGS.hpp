@@ -7,8 +7,8 @@
 #include "Core/Sound.hpp"
 #include "Database/Database.hpp"
 #include "Database/EventCommands/PlayBGS.hpp"
-#include <SFML/Audio.hpp>
 #include <iostream>
+#include <SFML/Audio.hpp>
 
 namespace fs = std::filesystem;
 struct Dialog_PlayBGS : IEventDialogController {
@@ -51,11 +51,11 @@ private:
 
   bool playAudio(const std::string& path) {
     // Load and play music
-    m_sound = Sound(ResourceManager::instance()->loadBGS(Database::instance()->basePath + path + m_audioDir.value().getExt()));
-    m_sound.play();
+    m_sound = Sound(ResourceManager::instance()->loadBGS(path));
     setVolume(m_audio.volume());
     setPanning(m_audio.pan());
     setPitch(m_audio.pitch());
+    m_sound.play();
     return true;
   }
   void setVolume(int volume) {

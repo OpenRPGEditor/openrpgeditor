@@ -7,8 +7,8 @@
 #include "Core/Sound.hpp"
 #include "Database/Database.hpp"
 #include "Database/EventCommands/PlayME.hpp"
-#include <SFML/Audio.hpp>
 #include <iostream>
+#include <SFML/Audio.hpp>
 
 namespace fs = std::filesystem;
 struct Dialog_PlayME : IEventDialogController {
@@ -52,10 +52,10 @@ private:
   bool playAudio(const std::string& path) {
     // Load and play music
     m_sound = Sound(ResourceManager::instance()->loadME(path));
-    m_sound.play();
     setVolume(m_audio.volume());
     setPanning(m_audio.pan());
     setPitch(m_audio.pitch());
+    m_sound.play();
     return true;
   }
   void setVolume(int volume) {

@@ -35,10 +35,6 @@ static bool isNestableEnd(const std::shared_ptr<IEventCommand>& selectedCmd) {
          selectedCmd->code() == EventCode::When_Selected || selectedCmd->code() == EventCode::When_Cancel;
 }
 void EventCommandEditor::blockSelect(const int n) {
-  if (!m_hasFocus) {
-    return;
-  }
-
   if (m_commands->at(n)->hasPartner()) {
     if (!m_commands->at(n)->reverseSelection()) {
       int j = n + 1;
@@ -89,7 +85,7 @@ void EventCommandEditor::blockSelect(const int n) {
 }
 
 void EventCommandEditor::handleClipboardInteraction() const {
-  if (!m_hasFocus) {
+  if (!ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_NoPopupHierarchy)) {
     return;
   }
 
@@ -131,7 +127,8 @@ void EventCommandEditor::handleClipboardInteraction() const {
         m_commands->insert(m_commands->begin() + m_selectedCommand, commands.begin(), commands.end());
       }
     }
-  } else if (ImGui::IsKeyPressed(ImGuiKey_C) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
+  }
+  if (ImGui::IsKeyPressed(ImGuiKey_C) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
     clip::lock l;
     int start = m_selectedCommand;
     int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd + 1;
@@ -140,7 +137,8 @@ void EventCommandEditor::handleClipboardInteraction() const {
     CommandParser::serialize(cmdJson, commands);
     auto v = cmdJson.dump();
     l.set_data(RPGMVEventCommandFormat, v.data(), v.size());
-  } else if (ImGui::IsKeyPressed(ImGuiKey_X) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
+  }
+  if (ImGui::IsKeyPressed(ImGuiKey_X) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
     if (m_commands->at(m_selectedCommand)->code() != EventCode::Event_Dummy) {
       clip::lock l;
       int start = m_selectedCommand;
@@ -364,7 +362,7 @@ void EventCommandEditor::draw() {
     } else {
       ImGui::PopFont();
     }
-    if (ImGui::IsKeyDown((ImGuiKey_Delete)) && ImGui::IsWindowFocused()) {
+    if (ImGui::IsKeyPressed((ImGuiKey_Delete)) && ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_NoPopupHierarchy)) {
       if (m_commands->at(m_selectedCommand)->isParent()) {
         blockSelect(m_selectedCommand);
         m_commands->erase(m_commands->begin() + m_selectedCommand, m_commands->begin() + m_selectedEnd + 1);
@@ -374,12 +372,13 @@ void EventCommandEditor::draw() {
           int start = m_selectedCommand;
           int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd + 1;
           m_commands->erase(m_commands->begin() + start, m_commands->begin() + end);
+          m_selectedEnd = -1;
         }
       }
     }
-    handleClipboardInteraction();
   }
   ImGui::EndChild();
+  handleClipboardInteraction();
 }
 
 void EventCommandEditor::drawCommandDialog() {

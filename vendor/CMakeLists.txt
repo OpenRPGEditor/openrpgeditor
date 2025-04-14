@@ -58,7 +58,7 @@ FetchContent_Declare(magic_enum
 FetchContent_Declare(
         SFML
         GIT_REPOSITORY https://github.com/SFML/SFML.git
-        GIT_TAG master)
+        GIT_TAG 2.6.2)
 FetchContent_MakeAvailable(
         SFML
 )
@@ -71,7 +71,7 @@ if (NOT TARGET freetype)
     FetchContent_MakeAvailable(
             freetype2
     )
-endif()
+endif ()
 
 FetchContent_Declare(curl
         GIT_REPOSITORY "https://github.com/curl/curl.git"
@@ -119,7 +119,7 @@ set(JSON_ImplicitConversions OFF)
 set(LIBLCF_WITH_INI OFF)
 if (APPLE)
     set(LIBLCF_WITH_ICU OFF)
-endif()
+endif ()
 # Populate
 
 FetchContent_MakeAvailable(

@@ -304,7 +304,7 @@ std::string LCF_Mapping::soundValue(std::string key) {
   std::string ret = sound_mapping.at(key);
   if (ret.empty()) {
     m_hasUnresolved = true;
-    return ret;
+    return key;
   }
   return ret;
 }

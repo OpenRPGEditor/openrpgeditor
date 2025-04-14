@@ -237,8 +237,7 @@ void EventEditor::drawLocalization() {
         for (auto& line : lines) {
           for (int i = 0; i < Database::instance()->locales.locales.size(); i++) {
             if (Database::instance()->locales.locales.at(i).first == trim(line)) {
-              line = std::format("Map{}-EV{}-Page{}-{}", mapId, eventId, pageId, localeIndex);
-              Database::instance()->locales.locales.at(i).first = line;
+              Database::instance()->locales.locales.at(i).first = std::format("Map{}-EV{}-Page{}-{}", mapId, eventId, pageId, localeIndex);
               localeIndex++;
             }
           }
@@ -267,7 +266,10 @@ void EventEditor::drawLocalization() {
             }
           } else if (cmd->code() == EventCode::Show_Text) {
             if (cmd->hasStringReference("{}", SearchType::Text)) {
-              cmd->setStringReference("{}", "{" + trim(lines.at(index)) + "}", SearchType::Text);
+              int idx = stoi(lines.at(index));
+              if (idx < Database::instance()->locales.locales.size()) {
+                cmd->setStringReference("{}", "{" + trim(Database::instance()->locales.locales.at(idx).first) + "}", SearchType::Text);
+              }
               index++;
             }
           }

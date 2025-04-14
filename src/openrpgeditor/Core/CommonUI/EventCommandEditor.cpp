@@ -5,14 +5,12 @@
 #include "Core/Application.hpp"
 
 #include "Core/Log.hpp"
-#include "Database/EventCommands/RepeatAbove.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
 
 #include <clip.h>
 
 #include <Core/Utils.hpp>
-#include <iostream>
 #include <vector>
 
 static clip::format RPGMVEventCommandFormat = -1;
@@ -34,11 +32,15 @@ static bool isNestableEnd(const std::shared_ptr<IEventCommand>& selectedCmd) {
          selectedCmd->code() == EventCode::End_del_ShowChoices || selectedCmd->code() == EventCode::Else || selectedCmd->code() == EventCode::If_Lose || selectedCmd->code() == EventCode::If_Escape ||
          selectedCmd->code() == EventCode::When_Selected || selectedCmd->code() == EventCode::When_Cancel;
 }
-void EventCommandEditor::blockSelect(const int n) {
+void EventCommandEditor::blockSelect(const int n, const bool isDelete = false) {
   if (m_commands->at(n)->hasPartner()) {
     if (!m_commands->at(n)->reverseSelection()) {
       int j = n + 1;
       int partnerCount = ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl) || m_commands->at(n)->isCollapsed() ? m_commands->at(n)->partnerCount() : 1;
+
+      if (isDelete) {
+        partnerCount = m_commands->at(n)->partnerCount();
+      }
       while (partnerCount) {
         if (j >= m_commands->size() || *m_commands->at(j)->indent() < *m_commands->at(n)->indent()) {
           break;
@@ -47,6 +49,9 @@ void EventCommandEditor::blockSelect(const int n) {
         while (true) {
           if (j >= m_commands->size() || m_commands->at(n)->isPartner(m_commands->at(j)->code(), m_commands->at(j)->indent())) {
             partnerCount--;
+            if (m_commands->at(n)->isTerminatingPartner(m_commands->at(j)->code(), m_commands->at(j)->indent())) {
+              break;
+            }
             if (partnerCount > 0) {
               ++j;
             }
@@ -55,7 +60,7 @@ void EventCommandEditor::blockSelect(const int n) {
           ++j;
         }
         if (j >= m_commands->size() - 1 || (m_commands->at(j) && m_commands->at(j)->code() == EventCode::Event_Dummy)) { // ???
-          j--;
+          j++;
         }
       }
       m_selectedEnd = j;
@@ -84,7 +89,7 @@ void EventCommandEditor::blockSelect(const int n) {
   }
 }
 
-void EventCommandEditor::handleClipboardInteraction() const {
+void EventCommandEditor::handleClipboardInteraction() {
   if (!ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_NoPopupHierarchy)) {
     return;
   }
@@ -148,7 +153,13 @@ void EventCommandEditor::handleClipboardInteraction() const {
       CommandParser::serialize(cmdJson, commands);
       auto v = cmdJson.dump();
       l.set_data(RPGMVEventCommandFormat, v.data(), v.size());
-      m_commands->erase(m_commands->begin() + start, m_commands->begin() + end);
+      if (m_commands->at(m_selectedCommand)->isParent()) {
+        blockSelect(m_selectedCommand);
+        m_commands->erase(m_commands->begin() + m_selectedCommand, m_commands->begin() + m_selectedEnd + 1);
+        m_selectedEnd = -1;
+      } else {
+        m_commands->erase(m_commands->begin() + start, m_commands->begin() + end);
+      }
     }
   }
 }
@@ -364,7 +375,7 @@ void EventCommandEditor::draw() {
     }
     if (ImGui::IsKeyPressed((ImGuiKey_Delete)) && ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_NoPopupHierarchy)) {
       if (m_commands->at(m_selectedCommand)->isParent()) {
-        blockSelect(m_selectedCommand);
+        blockSelect(m_selectedCommand, true);
         m_commands->erase(m_commands->begin() + m_selectedCommand, m_commands->begin() + m_selectedEnd + 1);
         m_selectedEnd = -1;
       } else {

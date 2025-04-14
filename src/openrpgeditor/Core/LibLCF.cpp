@@ -404,15 +404,11 @@ void LibLCF::draw() {
   }
   if (ImGui::Begin("Mapping")) {
 
-    auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNO");
-    calc.y *= 16;
-    calc.y += ImGui::GetStyle().ItemSpacing.y * 32;
-
     if (ImGui::BeginTabBar("##lcf_mapping_tabbar")) {
       if (lcf.treeMap()) {
         if (ImGui::BeginTabItem("Switches##lcf_mapping_switches")) {
           if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
-                                ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
+                                ImVec2{ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y})) {
 
             ImGui::TableSetupColumn("RPG2000");
             ImGui::TableSetupColumn("MV/MZ");
@@ -444,7 +440,7 @@ void LibLCF::draw() {
         }
         if (ImGui::BeginTabItem("Variables##lcf_mapping_variables")) {
           if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
-                                ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
+                                ImVec2{ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y})) {
 
             ImGui::TableSetupColumn("RPG2000");
             ImGui::TableSetupColumn("MV/MZ");
@@ -478,7 +474,7 @@ void LibLCF::draw() {
         }
         if (ImGui::BeginTabItem("Common Events##lcf_mapping_commons")) {
           if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
-                                ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
+                                ImVec2{ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y})) {
 
             ImGui::TableSetupColumn("RPG2000");
             ImGui::TableSetupColumn("MV/MZ");
@@ -509,7 +505,7 @@ void LibLCF::draw() {
         }
         if (ImGui::BeginTabItem("Actor##lcf_mapping_actors")) {
           if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
-                                ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
+                                ImVec2{ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y})) {
 
             ImGui::TableSetupColumn("RPG2000");
             ImGui::TableSetupColumn("MV/MZ");
@@ -540,7 +536,7 @@ void LibLCF::draw() {
         }
         if (ImGui::BeginTabItem("State##lcf_mapping_state")) {
           if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
-                                ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
+                                ImVec2{ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y})) {
 
             ImGui::TableSetupColumn("RPG2000");
             ImGui::TableSetupColumn("MV/MZ");
@@ -571,7 +567,7 @@ void LibLCF::draw() {
         }
         if (ImGui::BeginTabItem("Sounds##lcf_mapping_sound_effects")) {
           if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
-                                ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
+                                ImVec2{ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y})) {
 
             ImGui::TableSetupColumn("RPG2000");
             ImGui::TableSetupColumn("MV/MZ");
@@ -594,7 +590,7 @@ void LibLCF::draw() {
         }
         if (ImGui::BeginTabItem("Character Names##lcf_mapping_character_names")) {
           if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
-                                ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
+                                ImVec2{ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y})) {
 
             ImGui::TableSetupColumn("RPG2000");
             ImGui::TableSetupColumn("MV/MZ");
@@ -617,7 +613,7 @@ void LibLCF::draw() {
         }
         if (ImGui::BeginTabItem("Images##lcf_mapping_images")) {
           if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
-                                ImVec2{ImGui::GetContentRegionAvail().x, calc.y})) {
+                                ImVec2{ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y})) {
 
             ImGui::TableSetupColumn("RPG2000");
             ImGui::TableSetupColumn("MV/MZ");

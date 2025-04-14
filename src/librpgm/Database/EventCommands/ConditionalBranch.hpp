@@ -22,6 +22,12 @@ struct ConditionalBranchCommand final : IEventCommand {
     return (code == EventCode::Else || code == EventCode::End) && *codeIndent == indent();
   }
 
+  bool isTerminatingPartner(const EventCode code, const std::optional<int>& codeIndent) const override {
+    if (!codeIndent) {
+      return false;
+    }
+    return (code == EventCode::End) && *codeIndent == indent();
+  }
   [[nodiscard]] constexpr int partnerCount() const override { return 2; }
 
   [[nodiscard]] constexpr bool hasPartner() const override { return true; }
@@ -261,6 +267,12 @@ struct ElseCommand final : IEventCommand {
     }
 
     return (code == EventCode::Conditional_Branch || code == EventCode::End) && *codeIndent == indent();
+  }
+  bool isTerminatingPartner(const EventCode code, const std::optional<int>& codeIndent) const override {
+    if (!codeIndent) {
+      return false;
+    }
+    return (code == EventCode::End) && *codeIndent == indent();
   }
   [[nodiscard]] constexpr bool hasPartner() const override { return true; }
   [[nodiscard]] constexpr int partnerCount() const override { return 2; }

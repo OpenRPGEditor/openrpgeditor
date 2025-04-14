@@ -9,7 +9,7 @@
 #include <mutex>
 #include <string>
 #include <thread>
-
+#include <ranges>
 // Base class for a threaded file queue (for serialization and deserialization).
 class FileQueue {
 public:

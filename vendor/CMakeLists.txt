@@ -24,7 +24,7 @@ FetchContent_Declare(
 FetchContent_Declare(
         clip
         GIT_REPOSITORY "https://github.com/dacap/clip.git"
-        GIT_TAG v1.9
+        GIT_TAG main
 )
 
 FetchContent_Declare(
@@ -55,15 +55,23 @@ FetchContent_Declare(json
 FetchContent_Declare(magic_enum
         GIT_REPOSITORY "https://github.com/Neargye/magic_enum.git")
 
-FetchContent_Declare(freetype2
-        GIT_REPOSITORY "https://github.com/freetype/freetype"
-        GIT_TAG VER-2-13-3
-)
-
 FetchContent_Declare(
         SFML
         GIT_REPOSITORY https://github.com/SFML/SFML.git
-        GIT_TAG 2.6.1)
+        GIT_TAG master)
+FetchContent_MakeAvailable(
+        SFML
+)
+
+if (NOT TARGET freetype)
+    FetchContent_Declare(freetype2
+            GIT_REPOSITORY "https://github.com/freetype/freetype"
+            GIT_TAG VER-2-13-3
+    )
+    FetchContent_MakeAvailable(
+            freetype2
+    )
+endif()
 
 FetchContent_Declare(curl
         GIT_REPOSITORY "https://github.com/curl/curl.git"
@@ -109,7 +117,9 @@ set(SDLIMAGE_VENDORED OFF)
 set(LIBLCF_WITH_XML OFF)
 set(JSON_ImplicitConversions OFF)
 set(LIBLCF_WITH_INI OFF)
-
+if (APPLE)
+    set(LIBLCF_WITH_ICU OFF)
+endif()
 # Populate
 
 FetchContent_MakeAvailable(
@@ -119,11 +129,9 @@ FetchContent_MakeAvailable(
         spdlog
         json
         magic_enum
-        freetype2
         clip
         curl
         liblcf
-        SFML
         imgui
         implot
         cpuid

@@ -1,5 +1,6 @@
 #include "Core/CommonUI/FacePicker.hpp"
 
+#include <format>
 #include <imgui.h>
 #include <imgui_internal.h>
 

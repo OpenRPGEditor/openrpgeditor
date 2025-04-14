@@ -39,6 +39,7 @@
 #include "Database/EventCommands/MovementRoute/Wait.hpp"
 #include "lcf/reader_util.h"
 
+#include <clip.h>
 #include <imgui.h>
 #include <SDL3/SDL_dialog.h>
 
@@ -419,9 +420,16 @@ void LibLCF::draw() {
             for (auto& pair : lcf.mapper()->switch_mapping) {
               ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
               ImGui::TextUnformatted(std::format("{} ({})", ToString(lcf.database()->switches.at(pair.first - 1).name), pair.first).c_str());
+              if (ImGui::IsItemHovered()) {
+                if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+                  clip::lock l;
+                  l.set_data(clip::text_format(), lcf.database()->switches.at(pair.first - 1).name.c_str(), lcf.database()->switches.at(pair.first - 1).name.size());
+                }
+              }
               ImGui::PopID();
               ImGui::TableNextColumn();
               ImGui::PushID(std::format("lcf_switches_data_{}", index).c_str());
+              ImGui::PushStyleColor(ImGuiCol_Button, lcf.mapper()->switch_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
               if (ImGui::Button(lcf.mapper()->switch_mapping[pair.first] == 0 ? "Click here to start mapping!"
                                                                               : Database::instance()->switchNameAndId(lcf.mapper()->switch_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
@@ -430,6 +438,7 @@ void LibLCF::draw() {
                 m_picker.emplace("Switches", Database::instance()->system.switches(), lcf.mapper()->switch_mapping[pair.first]);
                 m_picker->setOpen(true);
               }
+              ImGui::PopStyleColor();
               ImGui::PopID();
               ImGui::TableNextColumn();
               index++;
@@ -452,9 +461,16 @@ void LibLCF::draw() {
               ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
               // ImGui::TextUnformatted(std::to_string(pair.first).c_str());
               ImGui::TextUnformatted(std::format("{} ({})", ToString(lcf.database()->variables.at(pair.first - 1).name), pair.first).c_str());
+              if (ImGui::IsItemHovered()) {
+                if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+                  clip::lock l;
+                  l.set_data(clip::text_format(), lcf.database()->variables.at(pair.first - 1).name.c_str(), lcf.database()->variables.at(pair.first - 1).name.size());
+                }
+              }
               ImGui::PopID();
               ImGui::TableNextColumn();
               ImGui::PushID(std::format("lcf_variables_data_{}", index).c_str());
+              ImGui::PushStyleColor(ImGuiCol_Button, lcf.mapper()->variable_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
               if (ImGui::Button(lcf.mapper()->variable_mapping[pair.first] == 0 ? "Click here to start mapping!"
                                                                                 : Database::instance()->variableNameAndId(lcf.mapper()->variable_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
@@ -463,6 +479,7 @@ void LibLCF::draw() {
                 m_picker.emplace("Variables", Database::instance()->system.variables(), lcf.mapper()->variable_mapping[pair.first]);
                 m_picker->setOpen(true);
               }
+              ImGui::PopStyleColor();
               ImGui::PopID();
               ImGui::TableNextColumn();
               index++;
@@ -485,9 +502,16 @@ void LibLCF::draw() {
             for (auto& pair : lcf.mapper()->common_mapping) {
               ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
               ImGui::TextUnformatted(std::format("{} ({})", ToString(lcf.database()->commonevents.at(pair.first - 1).name), pair.first).c_str());
+              if (ImGui::IsItemHovered()) {
+                if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+                  clip::lock l;
+                  l.set_data(clip::text_format(), lcf.database()->commonevents.at(pair.first - 1).name.c_str(), lcf.database()->commonevents.at(pair.first - 1).name.size());
+                }
+              }
               ImGui::PopID();
               ImGui::TableNextColumn();
               ImGui::PushID(std::format("lcf_common_data_{}", index).c_str());
+              ImGui::PushStyleColor(ImGuiCol_Button, lcf.mapper()->common_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
               if (ImGui::Button(lcf.mapper()->common_mapping[pair.first] == 0 ? "Click here to start mapping!"
                                                                               : Database::instance()->commonEventNameAndId(lcf.mapper()->common_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
@@ -495,6 +519,7 @@ void LibLCF::draw() {
                 m_commonPicker = ObjectPicker("Common Events"sv, Database::instance()->commonEvents.events(), lcf.mapper()->common_mapping[pair.first]);
                 m_commonPicker->setOpen(true);
               }
+              ImGui::PopStyleColor();
               ImGui::PopID();
               ImGui::TableNextColumn();
               index++;
@@ -520,12 +545,14 @@ void LibLCF::draw() {
               ImGui::PopID();
               ImGui::TableNextColumn();
               ImGui::PushID(std::format("lcf_actor_data_{}", index).c_str());
+              ImGui::PushStyleColor(ImGuiCol_Button, lcf.mapper()->actor_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
               if (ImGui::Button(lcf.mapper()->actor_mapping[pair.first] == 0 ? "Click here to start mapping!" : Database::instance()->actorNameAndId(lcf.mapper()->actor_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
                 m_actorIndex = pair.first;
                 m_actorPicker = ObjectPicker("Actors"sv, Database::instance()->actors.actorList(), lcf.mapper()->actor_mapping[pair.first]);
                 m_actorPicker->setOpen(true);
               }
+              ImGui::PopStyleColor();
               ImGui::PopID();
               ImGui::TableNextColumn();
               index++;
@@ -551,12 +578,14 @@ void LibLCF::draw() {
               ImGui::PopID();
               ImGui::TableNextColumn();
               ImGui::PushID(std::format("lcf_state_data_{}", index).c_str());
+              ImGui::PushStyleColor(ImGuiCol_Button, lcf.mapper()->state_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
               if (ImGui::Button(lcf.mapper()->state_mapping[pair.first] == 0 ? "Click here to start mapping!" : Database::instance()->stateNameAndId(lcf.mapper()->actor_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
                 m_stateIndex = pair.first;
                 m_statePicker = ObjectPicker("States"sv, Database::instance()->states.states(), lcf.mapper()->state_mapping[pair.first]);
                 m_statePicker->setOpen(true);
               }
+              ImGui::PopStyleColor();
               ImGui::PopID();
               ImGui::TableNextColumn();
               index++;
@@ -578,6 +607,12 @@ void LibLCF::draw() {
             for (auto& pair : lcf.mapper()->sound_mapping) {
               ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
               ImGui::TextUnformatted(pair.first.c_str());
+              if (ImGui::IsItemHovered()) {
+                if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+                  clip::lock l;
+                  l.set_data(clip::text_format(), pair.first.c_str(), pair.first.size());
+                }
+              }
               ImGui::PopID();
               ImGui::TableNextColumn();
               ImGui::InputText(std::format("##lcf_mapping_sound_string{}", index).c_str(), &lcf.mapper()->sound_mapping[pair.first]);
@@ -601,6 +636,12 @@ void LibLCF::draw() {
             for (auto& pair : lcf.mapper()->characterName_mapping) {
               ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
               ImGui::TextUnformatted(pair.first.c_str());
+              if (ImGui::IsItemHovered()) {
+                if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+                  clip::lock l;
+                  l.set_data(clip::text_format(), pair.first.c_str(), pair.first.size());
+                }
+              }
               ImGui::PopID();
               ImGui::TableNextColumn();
               ImGui::InputText(std::format("##lcf_mapping_characterName_string{}", index).c_str(), &lcf.mapper()->characterName_mapping[pair.first]);
@@ -624,6 +665,12 @@ void LibLCF::draw() {
             for (auto& pair : lcf.mapper()->image_mapping) {
               ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
               ImGui::TextUnformatted(pair.first.c_str());
+              if (ImGui::IsItemHovered()) {
+                if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+                  clip::lock l;
+                  l.set_data(clip::text_format(), pair.first.c_str(), pair.first.size());
+                }
+              }
               ImGui::PopID();
               ImGui::TableNextColumn();
               ImGui::InputText(std::format("##lcf_mapping_image_string{}", index).c_str(), &lcf.mapper()->image_mapping[pair.first]);

@@ -534,7 +534,7 @@ target_compile_features(orecore PRIVATE cxx_std_23)
 target_link_libraries(
         orecore
         PUBLIC fmt::fmt-header-only
-        CommonUI
+        # CommonUI
         spdlog::spdlog
         SDL3::SDL3
         SDL3_image::SDL3_image
@@ -595,7 +595,7 @@ target_link_libraries(
         ${NAME}
         PUBLIC fmt::fmt-header-only
         spdlog::spdlog
- #       CommonUI
+        #       CommonUI
         orecore
         SDL3::SDL3
         SDL3_image::SDL3_image

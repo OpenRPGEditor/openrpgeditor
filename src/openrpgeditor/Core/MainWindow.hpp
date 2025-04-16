@@ -168,6 +168,7 @@ private:
   void drawMenu();
   void drawToolbar();
   void drawQueueStatus(bool shuttingDown);
+  void drawShutdownSplash(bool shuttingDown);
   void drawCreateNewProjectPopup();
   void drawTileDebugger();
   void handleKeyboardShortcuts();

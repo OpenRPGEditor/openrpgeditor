@@ -222,19 +222,7 @@ std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
 }
 
 void MainWindow::setupDocking() {
-
-  drawToolbar();
-
-  ImGuiViewport* viewport = ImGui::GetMainViewport();
-  ImGui::SetNextWindowPos(viewport->Pos + ImVec2(0, m_menuBarHeight + m_toolbarSize));
-  ImGui::SetNextWindowSize(viewport->Size - ImVec2(0, m_menuBarHeight + m_toolbarSize));
-  ImGui::SetNextWindowViewport(viewport->ID);
-
-  ImGui::Begin("MasterDockSpace", nullptr,
-               ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
-                   ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground);
   ImGuiID mainWindowGroup = ImGui::GetID("MainWindowGroup");
-  drawMenu();
 
   // Save off menu bar height for later.
   m_menuBarHeight = ImGui::GetCurrentWindow()->MenuBarHeight;
@@ -265,22 +253,23 @@ void MainWindow::setupDocking() {
     ImGui::DockBuilderFinish(mainWindowGroup);
   }
   ImGui::DockSpace(mainWindowGroup);
-  ImGui::End();
 }
 
 void MainWindow::drawToolbar() {
   m_toolbarSize = ImGui::GetFrameHeightWithSpacing();
   m_toolbarButtonSize = ImGui::GetFrameHeightWithSpacing();
-  auto ButtonSize = ImVec2{m_toolbarButtonSize, m_toolbarButtonSize};
+  const auto ButtonSize = ImVec2{m_toolbarButtonSize, m_toolbarButtonSize};
   const ImGuiViewport* viewport = ImGui::GetMainViewport();
   ImGui::SetNextWindowPos(viewport->Pos + ImVec2{ImGui::GetStyle().FramePadding.x, viewport->Pos.y + m_menuBarHeight + ImGui::GetStyle().ItemSpacing.y});
   ImGui::SetNextWindowSize(ImVec2{viewport->Size.x - ImGui::GetStyle().FramePadding.x * 2, m_toolbarSize + (ImGui::GetStyle().ItemSpacing.y * 2) + (ImGui::GetStyle().FramePadding.y * 2)});
   ImGui::SetNextWindowViewport(viewport->ID);
 
-  ImGui::Begin("##ore_toolbar", nullptr,
-               ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings |
-                   ImGuiWindowFlags_NoBringToFrontOnFocus);
-  {
+  if (ImGui::Begin("##ore_toolbar", nullptr,
+                   ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings |
+                       ImGuiWindowFlags_NoBringToFrontOnFocus)) {
+    if (ImGui::IsWindowAppearing()) {
+      ImGui::BringWindowToDisplayFront(ImGui::GetCurrentWindow());
+    }
     ORE_DISABLE_EXPERIMENTAL_BEGIN();
     if (ImGui::Button(ICON_FA_FILE, ButtonSize)) {
       handleCreateNewProject();
@@ -470,167 +459,185 @@ void MainWindow::drawQueueStatus(const bool shuttingDown) {
   }
   ImGui::EndVertical();
 }
-void MainWindow::draw(const bool shuttingDown) {
-  ImGui::BeginDisabled(shuttingDown);
-  setupDocking();
-  m_settingsDialog.draw();
-  m_mapEditor.draw();
-  m_eventSearcher.draw();
-  m_libLCF.draw();
-
-  if (m_databaseEditor) {
-    // ORE_CHECK_EXPERIMENTAL_BEGIN();
-    // // TODO(phil): This is slow on large projects, we need to wire up all of the isModified signals and report in a granular fashion rather than checking the whole project every frame
-    // if (m_database && m_database->isModified()) {
-    //   const auto title = std::format("{} - [{}*]", kApplicationTitle, m_database->system.gameTitle());
-    //   if (title != App::APP->getWindow()->getTitle()) {
-    //     App::APP->getWindow()->setTitle(title);
-    //   }
-    // }
-    // ORE_CHECK_EXPERIMENTAL_END();
-    m_databaseEditor->draw();
+void MainWindow::drawShutdownSplash(const bool shuttingDown) {
+  if (!shuttingDown) {
+    return;
   }
 
-  if (m_editMode == EditMode::Map) {
-    m_tilesetPicker.draw();
-  } else {
-    m_eventListView.draw();
-  }
-
-  m_mapListView.draw();
-
-  if (const auto [closed, confirmed] = m_mapProperties.draw(); closed) {
-    // TODO: handle revert?
-  }
-  ORE_CHECK_DEBUG_BEGIN()
-
-  drawTileDebugger();
-
-  if (m_showDemoWindow) {
-    ImGui::ShowDemoWindow(&m_showDemoWindow);
-  }
-  ORE_CHECK_DEBUG_END()
-
-  if (m_showAboutWindow) {
-    ImGui::ShowAboutWindow(&m_showAboutWindow);
-  }
-
-  m_nwjsVersionManager.draw();
-  EditorPluginManager::instance()->draw();
-
-  if (FileQueue::instance().hasTasks() && !shuttingDown) {
-    ImGui::Begin(std::format("{}###filequeuestatus", FileQueue::instance().operationType() == ISerializable::Operation::Read ? trNOOP("Loading Project....") : trNOOP("Saving Project....")).c_str(),
-                 nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
-    drawQueueStatus(false);
-    ImGui::End();
-  } else if (FileQueue::instance().progress() >= 100.f) {
-    FileQueue::instance().reset();
-  }
-
-  ImGui::RenderNotifications();
-
-  drawCreateNewProjectPopup();
-
-  EditorPluginManager::instance()->callDraws();
-  ImGui::EndDisabled();
-
-  if (shuttingDown) {
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImGui::GetStyleColorVec4(ImGuiCol_PopupBg));
-    ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Always, ImVec2(0.5, 0.5));
-    ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(512, 512), ImGuiCond_Appearing);
-    ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(512, 512), {FLT_MAX, FLT_MAX});
-    ImGui::Begin(trNOOP("##shutdownsplash"), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
-    {
-      ImGui::BeginVertical("##shutdownsplash_layout", ImGui::GetContentRegionAvail());
-      {
-        ImGui::Spring(.5);
-        ImGui::BeginHorizontal("##shutdownsplash_layout_text");
-        {
-          ImGui::Spring(.5);
-          ImGui::TextUnformatted(trNOOP("Saving and shutting down please wait...."));
-          ImGui::Spring(.5);
-        }
-        ImGui::EndHorizontal();
-        ImGui::BeginHorizontal("##shutdownsplash_layout");
-        {
-          ImGui::Spring(0.5f);
-          drawQueueStatus(shuttingDown);
-        }
-        ImGui::EndHorizontal();
-        ImGui::BeginHorizontal("##shutdownsplash_layout_inner");
-        {
-          ImGui::Spring(.5);
-          if (ImGui::Button(trNOOP("Cancel"))) {
-            FileQueue::instance().reset();
-            App::APP->cancelShutdown();
-          }
-          ImGui::Spring(.5);
-        }
-        ImGui::EndHorizontal();
-        ImGui::Spring(.5);
-      }
-      ImGui::EndVertical();
-    }
-    ImGui::End();
-    ImGui::PopStyleColor();
-  }
-
-  ImGui::Begin("Layout test");
+  ImGui::PushStyleColor(ImGuiCol_WindowBg, ImGui::GetStyleColorVec4(ImGuiCol_PopupBg));
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Always, ImVec2(0.5, 0.5));
+  ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(512, 512), ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(512, 512), {FLT_MAX, FLT_MAX});
+  ImGui::Begin(trNOOP("##shutdownsplash"), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
   {
-    static bool selected = false;
-    bool clicked = false;
-    if (ImGui::BeginGroupBox("Conditions", {-1, -1}, &selected, &clicked)) {
-      /* Lock the contents to the top left of the panel */
-      ImGui::BeginHorizontal("##event_conditions_panel_layout", {}, 0.f);
+    ImGui::BeginVertical("##shutdownsplash_layout", ImGui::GetContentRegionAvail());
+    {
+      ImGui::Spring(.5);
+      ImGui::BeginHorizontal("##shutdownsplash_layout_text");
       {
-        ImGui::BeginVertical("##event_conditions_left", {}, 0.f);
-        {
-          bool check1 = false;
-          ImGui::Checkbox("Switch##switch1", &check1);
-          bool check2 = true;
-          ImGui::Checkbox("Switch##switch2", &check2);
-          bool check3 = false;
-          ImGui::Checkbox("Variable", &check3);
-          ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetFrameHeightWithSpacing());
-          bool check4 = true;
-          ImGui::Checkbox("Self Switch", &check4);
-          bool check5 = false;
-          ImGui::Checkbox("Item", &check5);
-          bool check6 = true;
-          ImGui::Checkbox("Actor", &check6);
-        }
-        ImGui::EndVertical();
-        ImGui::BeginVertical("##event_conditions_right", {}, 0.f);
-        {
-          const auto width = ImGui::GetContentRegionAvail().x;
-          ImGui::Button("###test1", {width, 0});
-          ImGui::Button("###test2", {width, 0});
-          ImGui::Button("###test3", {width, 0});
-          ImGui::BeginHorizontal("##value_slider");
-          {
-            static int v = 0;
-            ImGui::TextDisabled("≥");
-            ImGui::SetNextItemWidth(std::clamp(ImGui::GetContentRegionAvail().x, ImGui::GetFontSize() * 5, ImGui::GetContentRegionAvail().x));
-            ImGui::SliderInt("##value", &v, 0, 9999, "%d");
-          }
-          ImGui::EndHorizontal();
-          ImGui::SetNextItemWidth(width);
-          if (ImGui::BeginCombo("##selfswitch", "A")) {
-            ImGui::Selectable("A");
-            ImGui::EndCombo();
-          }
-
-          ImGui::SetNextItemWidth(width);
-          if (ImGui::BeginCombo("##actor", "Actor1")) {
-            ImGui::Selectable("Actor1");
-            ImGui::EndCombo();
-          }
-        }
-        ImGui::EndVertical();
+        ImGui::Spring(.5);
+        ImGui::TextUnformatted(trNOOP("Saving and shutting down please wait...."));
+        ImGui::Spring(.5);
       }
       ImGui::EndHorizontal();
+      ImGui::BeginHorizontal("##shutdownsplash_layout");
+      {
+        ImGui::Spring(0.5f);
+        drawQueueStatus(shuttingDown);
+      }
+      ImGui::EndHorizontal();
+      ImGui::BeginHorizontal("##shutdownsplash_layout_inner");
+      {
+        ImGui::Spring(.5);
+        if (ImGui::Button(trNOOP("Cancel"))) {
+          FileQueue::instance().reset();
+          App::APP->cancelShutdown();
+        }
+        ImGui::Spring(.5);
+      }
+      ImGui::EndHorizontal();
+      ImGui::Spring(.5);
     }
-    ImGui::EndGroupBox();
+    ImGui::EndVertical();
+  }
+  ImGui::End();
+  ImGui::PopStyleColor();
+}
+void MainWindow::draw(const bool shuttingDown) {
+
+  ImGuiViewport* viewport = ImGui::GetMainViewport();
+  ImGui::SetNextWindowPos(viewport->Pos + ImVec2(0, m_menuBarHeight + m_toolbarSize));
+  ImGui::SetNextWindowSize(viewport->Size - ImVec2(0, m_menuBarHeight + m_toolbarSize));
+  ImGui::SetNextWindowViewport(viewport->ID);
+
+  if (ImGui::Begin("MasterDockSpace", nullptr,
+                   ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+                       ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground)) {
+    setupDocking();
+    ImGui::BeginDisabled(shuttingDown);
+    drawToolbar();
+    drawMenu();
+    m_settingsDialog.draw();
+    m_mapEditor.draw();
+    m_eventSearcher.draw();
+    m_libLCF.draw();
+
+    if (m_databaseEditor) {
+      // ORE_CHECK_EXPERIMENTAL_BEGIN();
+      // // TODO(phil): This is slow on large projects, we need to wire up all of the isModified signals and report in a granular fashion rather than checking the whole project every frame
+      // if (m_database && m_database->isModified()) {
+      //   const auto title = std::format("{} - [{}*]", kApplicationTitle, m_database->system.gameTitle());
+      //   if (title != App::APP->getWindow()->getTitle()) {
+      //     App::APP->getWindow()->setTitle(title);
+      //   }
+      // }
+      // ORE_CHECK_EXPERIMENTAL_END();
+      m_databaseEditor->draw();
+    }
+
+    if (m_editMode == EditMode::Map) {
+      m_tilesetPicker.draw();
+    } else {
+      m_eventListView.draw();
+    }
+
+    m_mapListView.draw();
+
+    if (const auto [closed, confirmed] = m_mapProperties.draw(); closed) {
+      // TODO: handle revert?
+    }
+    ORE_CHECK_DEBUG_BEGIN()
+
+    drawTileDebugger();
+
+    if (m_showDemoWindow) {
+      ImGui::ShowDemoWindow(&m_showDemoWindow);
+    }
+    ORE_CHECK_DEBUG_END()
+
+    if (m_showAboutWindow) {
+      ImGui::ShowAboutWindow(&m_showAboutWindow);
+    }
+
+    m_nwjsVersionManager.draw();
+    EditorPluginManager::instance()->draw();
+
+    if (FileQueue::instance().hasTasks() && !shuttingDown) {
+      ImGui::Begin(std::format("{}###filequeuestatus", FileQueue::instance().operationType() == ISerializable::Operation::Read ? trNOOP("Loading Project....") : trNOOP("Saving Project....")).c_str(),
+                   nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
+      drawQueueStatus(false);
+      ImGui::End();
+    } else if (FileQueue::instance().progress() >= 100.f) {
+      FileQueue::instance().reset();
+    }
+
+    ImGui::RenderNotifications();
+
+    drawCreateNewProjectPopup();
+
+    EditorPluginManager::instance()->callDraws();
+    ImGui::EndDisabled();
+
+    drawShutdownSplash(shuttingDown);
+
+    ImGui::Begin("Layout test");
+    {
+      static bool selected = false;
+      bool clicked = false;
+      if (ImGui::BeginGroupBox("Conditions", {-1, -1}, &selected, &clicked)) {
+        /* Lock the contents to the top left of the panel */
+        ImGui::BeginHorizontal("##event_conditions_panel_layout", {}, 0.f);
+        {
+          ImGui::BeginVertical("##event_conditions_left", {}, 0.f);
+          {
+            bool check1 = false;
+            ImGui::Checkbox("Switch##switch1", &check1);
+            bool check2 = true;
+            ImGui::Checkbox("Switch##switch2", &check2);
+            bool check3 = false;
+            ImGui::Checkbox("Variable", &check3);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetFrameHeightWithSpacing());
+            bool check4 = true;
+            ImGui::Checkbox("Self Switch", &check4);
+            bool check5 = false;
+            ImGui::Checkbox("Item", &check5);
+            bool check6 = true;
+            ImGui::Checkbox("Actor", &check6);
+          }
+          ImGui::EndVertical();
+          ImGui::BeginVertical("##event_conditions_right", {}, 0.f);
+          {
+            const auto width = ImGui::GetContentRegionAvail().x;
+            ImGui::Button("###test1", {width, 0});
+            ImGui::Button("###test2", {width, 0});
+            ImGui::Button("###test3", {width, 0});
+            ImGui::BeginHorizontal("##value_slider");
+            {
+              static int v = 0;
+              ImGui::TextDisabled("≥");
+              ImGui::SetNextItemWidth(std::clamp(ImGui::GetContentRegionAvail().x, ImGui::GetFontSize() * 5, ImGui::GetContentRegionAvail().x));
+              ImGui::SliderInt("##value", &v, 0, 9999, "%d");
+            }
+            ImGui::EndHorizontal();
+            ImGui::SetNextItemWidth(width);
+            if (ImGui::BeginCombo("##selfswitch", "A")) {
+              ImGui::Selectable("A");
+              ImGui::EndCombo();
+            }
+
+            ImGui::SetNextItemWidth(width);
+            if (ImGui::BeginCombo("##actor", "Actor1")) {
+              ImGui::Selectable("Actor1");
+              ImGui::EndCombo();
+            }
+          }
+          ImGui::EndVertical();
+        }
+        ImGui::EndHorizontal();
+      }
+      ImGui::EndGroupBox();
+    }
+    ImGui::End();
   }
   ImGui::End();
 }

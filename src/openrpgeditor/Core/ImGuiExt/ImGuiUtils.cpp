@@ -531,7 +531,8 @@ bool BeginGroupBox(const char* label, const ImVec2& size, bool* selected, bool* 
   auto labelId = GetID(idString);
   auto groupPos = GetCursorScreenPos();
   auto groupStart = groupPos;
-  groupPos.y += GetFontSize();
+  PushStyleVarY(ImGuiStyleVar_FramePadding, GetStyle().FramePadding.y * 0.5);
+  groupPos.y += (GetFontSize() / 2) + GetStyle().ItemSpacing.y;
   SetCursorScreenPos(groupPos);
   groupPos.y += (GetFrameHeight() / 2);
 
@@ -540,7 +541,7 @@ bool BeginGroupBox(const char* label, const ImVec2& size, bool* selected, bool* 
   if (size.x > 0.f) {
     realSize.x += GetStyle().FramePadding.x + GetStyle().FrameBorderSize + GetStyle().WindowPadding.x;
   } else if (size.x <= -1.f) {
-    realSize.x = (GetFontSize() / 2) + GetFrameHeight();
+    realSize.x = (GetFontSize() / 2) + GetStyle().FrameBorderSize;
     fillRegion = true;
   }
 
@@ -550,6 +551,7 @@ bool BeginGroupBox(const char* label, const ImVec2& size, bool* selected, bool* 
     realSize.y = (GetFontSize() / 2) + GetFrameHeight();
     fillRegion = true;
   }
+  PopStyleVar();
 
   if (clicked) {
     *clicked = false;
@@ -567,7 +569,7 @@ bool BeginGroupBox(const char* label, const ImVec2& size, bool* selected, bool* 
     if (!selected) {
       TextUnformatted(label);
     } else {
-      PushStyleVarY(ImGuiStyleVar_FramePadding, GetStyle().FramePadding.y * 0.75);
+      PushStyleVarY(ImGuiStyleVar_FramePadding, GetStyle().FramePadding.y * 0.5);
       const bool isClicked = SizeableCheckbox(label, selected, GetFrameHeight() * 0.45f);
       if (clicked) {
         *clicked = isClicked;

@@ -29,7 +29,7 @@ bool MenuItemNoCheck(const char* label, const char* icon, const char* shortcut =
 
 float GetMinimumPanelHeight();
 
-bool BeginGroupBox(const char* str_id, const char* title, const ImVec2& size = {0, 0});
+bool BeginGroupBox(const char* label, const ImVec2& size = {0, 0}, bool* selected = nullptr, bool* clicked = nullptr, ImGuiChildFlags child_flags = 0, ImGuiWindowFlags window_flags= 0);
 void EndGroupBox();
 
 void ItemLabel(const char* title, ImGuiItemLabelFlags flags = ImGuiItemLabelFlags_Default);

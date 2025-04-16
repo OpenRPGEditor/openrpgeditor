@@ -5,6 +5,7 @@
 #include "OREMath/Size.hpp"
 
 #include <format>
+#include <cstdio>
 
 namespace ImGui {
 void BeginGroupPanel(const char* name, const ImVec2& size) {
@@ -447,80 +448,143 @@ bool MenuItemNoCheck(const char* label, const char* icon, const char* shortcut, 
 
 float GetMinimumPanelHeight() { return (GetFrameHeight() + ImGui::GetStyle().WindowPadding.y + ImGui::GetStyle().ItemSpacing.y); }
 
-struct GroupBoxStack;
-struct GroupBoxStack {
-  GroupBoxStack* PrevGroup = nullptr;
-  const char* label;
-  ImGuiID id;
-  ImGuiID labelId;
-  ImVec2 GroupStart;
-  ImVec2 ClipMin;
-  bool visible = false;
-};
-static GroupBoxStack* GGroupStack = nullptr;
+bool SizeableCheckbox(const char* label, bool* v, float height)
+{
+    ImGuiWindow* window = GetCurrentWindow();
+    if (window->SkipItems)
+        return false;
 
-bool BeginGroupBox(const char* str_id, const char* title, const ImVec2& size) {
-  auto* gs = static_cast<GroupBoxStack*>(IM_ALLOC(sizeof(GroupBoxStack)));
-  new (gs) GroupBoxStack();
-  gs->label = title;
+    ImGuiContext& g = *GImGui;
+    const ImGuiStyle& style = g.Style;
+    const ImGuiID id = window->GetID(label);
+    const ImVec2 label_size = CalcTextSize(label, NULL, true);
 
-  if (GGroupStack != nullptr) {
-    GGroupStack->PrevGroup = gs;
-  }
-  GGroupStack = gs;
+    float square_sz = height >= 0.f ? GetFrameHeight() : height;
+    const ImVec2 pos = window->DC.CursorPos;
+    const ImRect total_bb(pos, pos + ImVec2(square_sz + (label_size.x > 0.0f ? style.ItemInnerSpacing.x + label_size.x : 0.0f), label_size.y + style.FramePadding.y * 2.0f));
+    ItemSize(total_bb, style.FramePadding.y);
+    const bool is_visible = ItemAdd(total_bb, id);
+    const bool is_multi_select = (g.LastItemData.ItemFlags & ImGuiItemFlags_IsMultiSelect) != 0;
+    if (!is_visible)
+        if (!is_multi_select || !g.BoxSelectState.UnclipMode || !g.BoxSelectState.UnclipRect.Overlaps(total_bb)) // Extra layer of "no logic clip" for box-select support
+        {
+            IMGUI_TEST_ENGINE_ITEM_INFO(id, label, g.LastItemData.StatusFlags | ImGuiItemStatusFlags_Checkable | (*v ? ImGuiItemStatusFlags_Checked : 0));
+            return false;
+        }
 
+    // Range-Selection/Multi-selection support (header)
+    bool checked = *v;
+    if (is_multi_select)
+        MultiSelectItemHeader(id, &checked, NULL);
+
+    bool hovered, held;
+    bool pressed = ButtonBehavior(total_bb, id, &hovered, &held);
+
+    // Range-Selection/Multi-selection support (footer)
+    if (is_multi_select)
+        MultiSelectItemFooter(id, &checked, &pressed);
+    else if (pressed)
+        checked = !checked;
+
+    if (*v != checked)
+    {
+        *v = checked;
+        pressed = true; // return value
+        MarkItemEdited(id);
+    }
+
+    const ImRect check_bb(pos, pos + ImVec2(square_sz, square_sz));
+    const bool mixed_value = (g.LastItemData.ItemFlags & ImGuiItemFlags_MixedValue) != 0;
+    if (is_visible)
+    {
+        RenderNavCursor(total_bb, id);
+        RenderFrame(check_bb.Min, check_bb.Max, GetColorU32((held && hovered) ? ImGuiCol_FrameBgActive : hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg), true, style.FrameRounding);
+        ImU32 check_col = GetColorU32(ImGuiCol_CheckMark);
+        if (mixed_value)
+        {
+            // Undocumented tristate/mixed/indeterminate checkbox (#2644)
+            // This may seem awkwardly designed because the aim is to make ImGuiItemFlags_MixedValue supported by all widgets (not just checkbox)
+            ImVec2 pad(ImMax(1.0f, IM_TRUNC(square_sz / 3.6f)), ImMax(1.0f, IM_TRUNC(square_sz / 3.6f)));
+            window->DrawList->AddRectFilled(check_bb.Min + pad, check_bb.Max - pad, check_col, style.FrameRounding);
+        }
+        else if (*v)
+        {
+            const float pad = ImMax(1.0f, IM_TRUNC(square_sz / 6.0f));
+            RenderCheckMark(window->DrawList, check_bb.Min + ImVec2(pad, pad), check_col, square_sz - pad * 2.0f);
+        }
+    }
+    const ImVec2 label_pos = ImVec2(check_bb.Max.x + style.ItemInnerSpacing.x, check_bb.Min.y + style.FramePadding.y);
+    if (g.LogEnabled)
+        LogRenderedText(&label_pos, mixed_value ? "[~]" : *v ? "[x]" : "[ ]");
+    if (is_visible && label_size.x > 0.0f)
+        RenderText(label_pos, label);
+
+    IMGUI_TEST_ENGINE_ITEM_INFO(id, label, g.LastItemData.StatusFlags | ImGuiItemStatusFlags_Checkable | (*v ? ImGuiItemStatusFlags_Checked : 0));
+    return pressed;
+}
+
+
+bool BeginGroupBox(const char* label, const ImVec2& size, bool* selected, bool* clicked, const ImGuiChildFlags child_flags, const ImGuiWindowFlags window_flags) {
   ImVec2 realSize = size;
-  gs->id = GetID(str_id);
-  gs->labelId = GetID(title);
+  char idString[4096];
+  snprintf(idString, 4096, "%s_checkbox", label);
+  auto id = GetID(label);
+  auto labelId = GetID(idString);
   auto groupPos = GetCursorScreenPos();
-  gs->GroupStart = groupPos;
-  gs->ClipMin = GetCursorPos(); // We need the local pos so we can clip the header later
-  groupPos.y += (GetFontSize() / 2);
+  auto groupStart = groupPos;
+  groupPos.y += GetFontSize();
   SetCursorScreenPos(groupPos);
-  groupPos.y += GetFrameHeight();
+  groupPos.y += (GetFrameHeight() / 2);
 
   /* Pad the size to fit the header */
-  if (size.y > 0.f) {
-    realSize.y += (GetFontSize() / 2) + GetFrameHeight();
-  }
+  bool fillRegion = false;
   if (size.x > 0.f) {
     realSize.x += GetStyle().FramePadding.x + GetStyle().FrameBorderSize + GetStyle().WindowPadding.x;
+  } else if (size.x <= -1.f) {
+    realSize.x = (GetFontSize() / 2) + GetFrameHeight();
+    fillRegion = true;
   }
 
-  gs->visible = BeginChild(gs->id, realSize, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle, ImGuiWindowFlags_NoScrollbar);
-  gs->GroupStart.x = groupPos.x = GetCursorScreenPos().x;
-  SetCursorScreenPos(groupPos);
-  return gs->visible;
-}
-
-void EndGroupBox() {
-  IM_ASSERT(GGroupStack != nullptr && "EndGroupBox Called without BeginGroupBox!");
-  GroupBoxStack* gs = GGroupStack;
-  if (gs->visible) {
-    SetCursorScreenPos(GetCursorScreenPos() - ImVec2{0.f, GetFrameHeight()});
-    SetCursorScreenPos(GetCursorScreenPos() + ImVec2{std::min(GetCurrentWindow()->ContentRegionRect.Max.x - GetCurrentWindow()->ContentRegionRect.Min.x, CalcTextSize(gs->label, nullptr, true).x) +
-                                                         (GetStyle().FramePadding.x + GetStyle().FrameBorderSize + GetStyle().WindowPadding.x) * 2,
-                                                     0.f});
+  if (size.y > 0.f) {
+    realSize.y += (GetFontSize() / 2) + GetFrameHeight();
+  } else if (size.y <= -1.f) {
+    realSize.y = (GetFontSize() / 2) + GetFrameHeight();
+    fillRegion = true;
   }
-  //  Get the total region
-  const auto clip = GetCurrentWindow()->ClipRect.Max;
-  EndChild();
-  if (gs->visible) {
-    auto oldPos = GetCursorScreenPos();
-    SetCursorScreenPos({gs->GroupStart.x + GetStyle().FramePadding.x + GetStyle().FrameBorderSize, gs->GroupStart.y});
-    PushClipRect({0.f, 0.f}, clip, false);
-    if (BeginChild(gs->labelId, {}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle,
-                   ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoInputs)) {
-      // Group Header text
-      TextUnformatted(gs->label);
+
+  if (clicked) {
+    *clicked = false;
+  }
+
+  const auto visible = BeginChild(id, fillRegion ? size : realSize, child_flags | ImGuiChildFlags_FrameStyle, window_flags);
+
+  auto oldPos = GetCursorScreenPos();
+  SetCursorScreenPos({groupStart.x + GetStyle().FramePadding.x + GetStyle().FrameBorderSize, groupStart.y});
+  auto clip = GetCurrentWindow()->ClipRect;
+  clip.Min.y -= realSize.y;
+  PushClipRect(clip.Min, clip.Max, false);
+  if (visible && BeginChild(labelId, {}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle, ImGuiWindowFlags_NoScrollbar)) {
+    // Group Header text
+    if (!selected) {
+      TextUnformatted(label);
+    } else {
+      PushStyleVarY(ImGuiStyleVar_FramePadding, GetStyle().FramePadding.y * 0.75);
+      const bool isClicked = SizeableCheckbox(label, selected, GetFrameHeight() * 0.45f);
+      if (clicked) {
+        *clicked = isClicked;
+      }
+      PopStyleVar();
     }
     EndChild();
-    PopClipRect();
-    SetCursorScreenPos(oldPos);
   }
-  GGroupStack = gs->PrevGroup;
-  IM_FREE(gs);
+  PopClipRect();
+  oldPos.y += (realSize.y / 2);
+  SetCursorScreenPos(oldPos);
+
+  return visible;
 }
+
+void EndGroupBox() { EndChild(); }
 
 void ItemLabel(const char* title, const ImGuiItemLabelFlags flags) {
   ImGuiWindow* window = GetCurrentWindow();

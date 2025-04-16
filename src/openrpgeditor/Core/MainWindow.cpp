@@ -222,18 +222,19 @@ std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
 }
 
 void MainWindow::setupDocking() {
+
+  drawToolbar();
+
   ImGuiViewport* viewport = ImGui::GetMainViewport();
   ImGui::SetNextWindowPos(viewport->Pos + ImVec2(0, m_menuBarHeight + m_toolbarSize));
   ImGui::SetNextWindowSize(viewport->Size - ImVec2(0, m_menuBarHeight + m_toolbarSize));
   ImGui::SetNextWindowViewport(viewport->ID);
-  ImGuiWindowFlags window_flags = 0 | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-                                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
-  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-  ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-  ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-  ImGui::Begin("MasterDockSpace", nullptr, window_flags);
+  ImGui::Begin("MasterDockSpace", nullptr,
+               ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+                   ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground);
   ImGuiID mainWindowGroup = ImGui::GetID("MainWindowGroup");
+  drawMenu();
 
   // Save off menu bar height for later.
   m_menuBarHeight = ImGui::GetCurrentWindow()->MenuBarHeight;
@@ -265,167 +266,163 @@ void MainWindow::setupDocking() {
   }
   ImGui::DockSpace(mainWindowGroup);
   ImGui::End();
-  ImGui::PopStyleVar(3);
 }
 
 void MainWindow::drawToolbar() {
-  m_toolbarButtonSize = nextMultipleOf8(Settings::instance()->fontSize);
+  m_toolbarSize = ImGui::GetFrameHeightWithSpacing();
+  m_toolbarButtonSize = ImGui::GetFrameHeightWithSpacing();
+  auto ButtonSize = ImVec2{m_toolbarButtonSize, m_toolbarButtonSize};
   const ImGuiViewport* viewport = ImGui::GetMainViewport();
-  ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + m_menuBarHeight));
-  ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, m_toolbarButtonSize));
+  ImGui::SetNextWindowPos(viewport->Pos + ImVec2{ImGui::GetStyle().FramePadding.x, viewport->Pos.y + m_menuBarHeight + ImGui::GetStyle().ItemSpacing.y});
+  ImGui::SetNextWindowSize(ImVec2{viewport->Size.x - ImGui::GetStyle().FramePadding.x * 2, m_toolbarSize + (ImGui::GetStyle().ItemSpacing.y * 2) + (ImGui::GetStyle().FramePadding.y * 2)});
   ImGui::SetNextWindowViewport(viewport->ID);
 
-  ImGuiWindowFlags window_flags = 0 | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar |
-                                  ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBringToFrontOnFocus;
-  ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
-  ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, {0.f, 0.f});
-  ImGui::Begin("##ore_toolbar", nullptr, window_flags);
-  ImGui::PopStyleVar(2);
-  ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImGui::GetDPIScaledSize(5.f, 5.f));
-  ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {1.f, 1.f});
-
-  ORE_DISABLE_EXPERIMENTAL_BEGIN();
-  if (ImGui::Button(ICON_FA_FILE)) {
-    handleCreateNewProject();
-  }
-  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-    ImGui::ActionTooltip(trNOOP("New Project"), trNOOP("Creates a new project. [EXPERIMENTAL]"));
-  }
-  ORE_DISABLE_EXPERIMENTAL_END();
-  ImGui::SameLine();
-  if (ImGui::Button(ICON_FA_FOLDER_OPEN)) {
-    handleOpenFile();
-  }
-  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-    ImGui::ActionTooltip(trNOOP("Open Project"), trNOOP("Opens an existing project."));
-  }
-  ImGui::SameLine();
-  ORE_DISABLE_EXPERIMENTAL_BEGIN();
-  if (ImGui::Button(ICON_FA_FLOPPY_DISK)) {
-    save();
-  }
-  ImGui::SameLine();
-  if (ImGui::IsItemHovered()) {
-    ImGui::ActionTooltip(trNOOP("Save Project"), trNOOP("Saves the project. [EXPERIMENTAL]"));
-  }
-  ORE_DISABLE_EXPERIMENTAL_END();
-
-  ORE_CHECK_EXPERIMENTAL_BEGIN()
-  for (const auto& button : m_toolbarButtons[ToolbarCategory::File]) {
+  ImGui::Begin("##ore_toolbar", nullptr,
+               ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings |
+                   ImGuiWindowFlags_NoBringToFrontOnFocus);
+  {
+    ORE_DISABLE_EXPERIMENTAL_BEGIN();
+    if (ImGui::Button(ICON_FA_FILE, ButtonSize)) {
+      handleCreateNewProject();
+    }
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+      ImGui::ActionTooltip(trNOOP("New Project"), trNOOP("Creates a new project. [EXPERIMENTAL]"));
+    }
+    ORE_DISABLE_EXPERIMENTAL_END();
     ImGui::SameLine();
-    if (ImGui::Button(button.id().c_str())) {
-      button.callOnClicked();
+    if (ImGui::Button(ICON_FA_FOLDER_OPEN, ButtonSize)) {
+      handleOpenFile();
     }
-  }
-  ORE_CHECK_EXPERIMENTAL_END()
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+      ImGui::ActionTooltip(trNOOP("Open Project"), trNOOP("Opens an existing project."));
+    }
+    ImGui::SameLine();
+    ORE_DISABLE_EXPERIMENTAL_BEGIN();
+    if (ImGui::Button(ICON_FA_FLOPPY_DISK, ButtonSize)) {
+      save();
+    }
+    ImGui::SameLine();
+    if (ImGui::IsItemHovered()) {
+      ImGui::ActionTooltip(trNOOP("Save Project"), trNOOP("Saves the project. [EXPERIMENTAL]"));
+    }
+    ORE_DISABLE_EXPERIMENTAL_END();
 
-  ImGui::SameLine();
-  ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
-  ImGui::SameLine();
-  if (ImGui::Button(ICON_FA_SCISSORS)) {}
-  ImGui::SameLine();
-  if (ImGui::Button(ICON_FA_COPY)) {}
-  ImGui::SameLine();
-  if (ImGui::Button(ICON_FA_PASTE)) {}
-  ImGui::SameLine();
-  ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
-  ImGui::SameLine();
-  ImGui::BeginDisabled(!m_undoStack.hasCommands());
-  {
-    if (ImGui::Button(ICON_FA_ARROW_ROTATE_LEFT)) {
-      handleUndo();
+    ORE_CHECK_EXPERIMENTAL_BEGIN()
+    for (const auto& button : m_toolbarButtons[ToolbarCategory::File]) {
+      ImGui::SameLine();
+      if (ImGui::Button(button.id().c_str())) {
+        button.callOnClicked();
+      }
     }
-  }
-  ImGui::EndDisabled();
-  ImGui::SameLine();
-  ImGui::BeginDisabled(!m_redoStack.hasCommands());
-  {
-    if (ImGui::Button(ICON_FA_ARROW_ROTATE_RIGHT)) {
-      handleRedo();
+    ORE_CHECK_EXPERIMENTAL_END()
+
+    ImGui::SameLine();
+    ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+    ImGui::SameLine();
+    if (ImGui::Button(ICON_FA_SCISSORS, ButtonSize)) {}
+    ImGui::SameLine();
+    if (ImGui::Button(ICON_FA_COPY, ButtonSize)) {}
+    ImGui::SameLine();
+    if (ImGui::Button(ICON_FA_PASTE, ButtonSize)) {}
+    ImGui::SameLine();
+    ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+    ImGui::SameLine();
+    ImGui::BeginDisabled(!m_undoStack.hasCommands());
+    {
+      if (ImGui::Button(ICON_FA_ARROW_ROTATE_LEFT, ButtonSize)) {
+        handleUndo();
+      }
     }
-  }
-  ImGui::EndDisabled();
-  ImGui::SameLine();
-  ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
-  ImGui::SameLine();
-  ImGui::BeginDisabled(m_editMode == EditMode::Map);
-  {
-    if (ImGui::Button(ICON_FA_MAP)) {
-      enterMapEditMode();
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    ImGui::BeginDisabled(!m_redoStack.hasCommands());
+    {
+      if (ImGui::Button(ICON_FA_ARROW_ROTATE_RIGHT, ButtonSize)) {
+        handleRedo();
+      }
     }
-  }
-  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-    ImGui::ActionTooltip(trNOOP("Map"), trNOOP("Switch to Map Edit mode."));
-  }
-  ImGui::EndDisabled();
-  ImGui::SameLine();
-  ImGui::BeginDisabled(m_editMode == EditMode::Event);
-  {
-    if (ImGui::Button(ICON_FA_CHESS_PAWN)) {
-      enterEventEditMode();
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+    ImGui::SameLine();
+    ImGui::BeginDisabled(m_editMode == EditMode::Map);
+    {
+      if (ImGui::Button(ICON_FA_MAP, ButtonSize)) {
+        enterMapEditMode();
+      }
     }
-  }
-  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-    ImGui::ActionTooltip(trNOOP("Event"), trNOOP("Switch to Event Edit mode."));
-  }
-  ImGui::EndDisabled();
-  ImGui::SameLine();
-  if (ImGui::Button(m_mapEditor.prisonMode() ? ICON_FA_EYE : ICON_FA_EYE_SLASH)) {
-    m_mapEditor.setPrisonMode(!m_mapEditor.prisonMode());
-  }
-  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-    ImGui::ActionTooltip(trNOOP("Game Preview"), trNOOP("Toggles Game Preview mode."));
-  }
-  ImGui::SameLine();
-  ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
-  ImGui::SameLine();
-  ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Pencil);
-  {
-    if (ImGui::Button(ICON_FA_PENCIL)) {
-      setDrawTool(DrawTool::Pencil);
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+      ImGui::ActionTooltip(trNOOP("Map"), trNOOP("Switch to Map Edit mode."));
     }
-  }
-  ImGui::EndDisabled();
-  ImGui::SameLine();
-  ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Rectangle);
-  {
-    if (ImGui::Button(ICON_FA_SQUARE)) {
-      setDrawTool(DrawTool::Rectangle);
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    ImGui::BeginDisabled(m_editMode == EditMode::Event);
+    {
+      if (ImGui::Button(ICON_FA_CHESS_PAWN, ButtonSize)) {
+        enterEventEditMode();
+      }
     }
-  }
-  ImGui::EndDisabled();
-  ImGui::SameLine();
-  ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Flood_Fill);
-  {
-    if (ImGui::Button(ICON_FA_BUCKET)) {
-      setDrawTool(DrawTool::Flood_Fill);
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+      ImGui::ActionTooltip(trNOOP("Event"), trNOOP("Switch to Event Edit mode."));
     }
-  }
-  ImGui::EndDisabled();
-  ImGui::SameLine();
-  ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Shadow_Pen);
-  {
-    if (ImGui::Button(ICON_FA_PEN)) {
-      setDrawTool(DrawTool::Shadow_Pen);
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    if (ImGui::Button(m_mapEditor.prisonMode() ? ICON_FA_EYE : ICON_FA_EYE_SLASH, ButtonSize)) {
+      m_mapEditor.setPrisonMode(!m_mapEditor.prisonMode());
     }
-  }
-  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-    ImGui::ActionTooltip(trNOOP("Shadow Pen"), trNOOP("Adds or removes shadows of walls"));
-  }
-  ImGui::EndDisabled();
-  ImGui::SameLine();
-  ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Eraser);
-  {
-    if (ImGui::Button(ICON_FA_ERASER)) {
-      setDrawTool(DrawTool::Eraser);
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+      ImGui::ActionTooltip(trNOOP("Game Preview"), trNOOP("Toggles Game Preview mode."));
     }
+    ImGui::SameLine();
+    ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+    ImGui::SameLine();
+    ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Pencil);
+    {
+      if (ImGui::Button(ICON_FA_PENCIL, ButtonSize)) {
+        setDrawTool(DrawTool::Pencil);
+      }
+    }
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Rectangle);
+    {
+      if (ImGui::Button(ICON_FA_SQUARE, ButtonSize)) {
+        setDrawTool(DrawTool::Rectangle);
+      }
+    }
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Flood_Fill);
+    {
+      if (ImGui::Button(ICON_FA_BUCKET, ButtonSize)) {
+        setDrawTool(DrawTool::Flood_Fill);
+      }
+    }
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Shadow_Pen);
+    {
+      if (ImGui::Button(ICON_FA_PEN, ButtonSize)) {
+        setDrawTool(DrawTool::Shadow_Pen);
+      }
+    }
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+      ImGui::ActionTooltip(trNOOP("Shadow Pen"), trNOOP("Adds or removes shadows of walls"));
+    }
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    ImGui::BeginDisabled(editMode() != EditMode::Map || m_drawTool == DrawTool::Eraser);
+    {
+      if (ImGui::Button(ICON_FA_ERASER, ButtonSize)) {
+        setDrawTool(DrawTool::Eraser);
+      }
+    }
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+      ImGui::ActionTooltip(trNOOP("Eraser"), trNOOP("Erases tiles at a given point"));
+    }
+    ImGui::EndDisabled();
   }
-  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
-    ImGui::ActionTooltip(trNOOP("Eraser"), trNOOP("Erases tiles at a given point"));
-  }
-  ImGui::EndDisabled();
   ImGui::End();
-  ImGui::PopStyleVar(2);
 }
 
 void MainWindow::drawQueueStatus(const bool shuttingDown) {
@@ -475,8 +472,6 @@ void MainWindow::drawQueueStatus(const bool shuttingDown) {
 }
 void MainWindow::draw(const bool shuttingDown) {
   ImGui::BeginDisabled(shuttingDown);
-  drawMenu();
-  drawToolbar();
   setupDocking();
   m_settingsDialog.draw();
   m_mapEditor.draw();
@@ -580,60 +575,64 @@ void MainWindow::draw(const bool shuttingDown) {
     ImGui::PopStyleColor();
   }
 
-  static bool selected = false;
-  bool clicked = false;
-  if (ImGui::BeginGroupBox("Conditions", {-1, -1}, &selected, &clicked)) {
-    /* Lock the contents to the top left of the panel */
-    ImGui::BeginHorizontal("##event_conditions_panel_layout", {}, 0.f);
-    {
-      ImGui::BeginVertical("##event_conditions_left", {}, 0.f);
+  ImGui::Begin("Layout test");
+  {
+    static bool selected = false;
+    bool clicked = false;
+    if (ImGui::BeginGroupBox("Conditions", {-1, -1}, &selected, &clicked)) {
+      /* Lock the contents to the top left of the panel */
+      ImGui::BeginHorizontal("##event_conditions_panel_layout", {}, 0.f);
       {
-        bool check1 = false;
-        ImGui::Checkbox("Switch##switch1", &check1);
-        bool check2 = true;
-        ImGui::Checkbox("Switch##switch2", &check2);
-        bool check3 = false;
-        ImGui::Checkbox("Variable", &check3);
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetFrameHeightWithSpacing());
-        bool check4 = true;
-        ImGui::Checkbox("Self Switch", &check4);
-        bool check5 = false;
-        ImGui::Checkbox("Item", &check5);
-        bool check6 = true;
-        ImGui::Checkbox("Actor", &check6);
-      }
-      ImGui::EndVertical();
-      ImGui::BeginVertical("##event_conditions_right", {}, 0.f);
-      {
-        const auto width = ImGui::GetContentRegionAvail().x;
-        ImGui::Button("###test1", {width, 0});
-        ImGui::Button("###test2", {width, 0});
-        ImGui::Button("###test3", {width, 0});
-        ImGui::BeginHorizontal("##value_slider");
+        ImGui::BeginVertical("##event_conditions_left", {}, 0.f);
         {
-          static int v = 0;
-          ImGui::TextDisabled("≥");
-          ImGui::SetNextItemWidth(std::clamp(ImGui::GetContentRegionAvail().x, ImGui::GetFontSize() * 5, ImGui::GetContentRegionAvail().x));
-          ImGui::SliderInt("##value", &v, 0, 9999, "%d");
+          bool check1 = false;
+          ImGui::Checkbox("Switch##switch1", &check1);
+          bool check2 = true;
+          ImGui::Checkbox("Switch##switch2", &check2);
+          bool check3 = false;
+          ImGui::Checkbox("Variable", &check3);
+          ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetFrameHeightWithSpacing());
+          bool check4 = true;
+          ImGui::Checkbox("Self Switch", &check4);
+          bool check5 = false;
+          ImGui::Checkbox("Item", &check5);
+          bool check6 = true;
+          ImGui::Checkbox("Actor", &check6);
         }
-        ImGui::EndHorizontal();
-        ImGui::SetNextItemWidth(width);
-        if (ImGui::BeginCombo("##selfswitch", "A")) {
-          ImGui::Selectable("A");
-          ImGui::EndCombo();
-        }
+        ImGui::EndVertical();
+        ImGui::BeginVertical("##event_conditions_right", {}, 0.f);
+        {
+          const auto width = ImGui::GetContentRegionAvail().x;
+          ImGui::Button("###test1", {width, 0});
+          ImGui::Button("###test2", {width, 0});
+          ImGui::Button("###test3", {width, 0});
+          ImGui::BeginHorizontal("##value_slider");
+          {
+            static int v = 0;
+            ImGui::TextDisabled("≥");
+            ImGui::SetNextItemWidth(std::clamp(ImGui::GetContentRegionAvail().x, ImGui::GetFontSize() * 5, ImGui::GetContentRegionAvail().x));
+            ImGui::SliderInt("##value", &v, 0, 9999, "%d");
+          }
+          ImGui::EndHorizontal();
+          ImGui::SetNextItemWidth(width);
+          if (ImGui::BeginCombo("##selfswitch", "A")) {
+            ImGui::Selectable("A");
+            ImGui::EndCombo();
+          }
 
-        ImGui::SetNextItemWidth(width);
-        if (ImGui::BeginCombo("##actor", "Actor1")) {
-          ImGui::Selectable("Actor1");
-          ImGui::EndCombo();
+          ImGui::SetNextItemWidth(width);
+          if (ImGui::BeginCombo("##actor", "Actor1")) {
+            ImGui::Selectable("Actor1");
+            ImGui::EndCombo();
+          }
         }
+        ImGui::EndVertical();
       }
-      ImGui::EndVertical();
+      ImGui::EndHorizontal();
     }
-    ImGui::EndHorizontal();
+    ImGui::EndGroupBox();
   }
-  ImGui::EndGroupBox();
+  ImGui::End();
 }
 
 void MainWindow::drawCreateNewProjectPopup() {

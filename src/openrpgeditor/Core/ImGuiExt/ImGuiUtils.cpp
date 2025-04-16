@@ -4,8 +4,8 @@
 #include "imgui_stacklayout.h"
 #include "OREMath/Size.hpp"
 
-#include <format>
 #include <cstdio>
+#include <format>
 
 namespace ImGui {
 void BeginGroupPanel(const char* name, const ImVec2& size) {
@@ -448,81 +448,80 @@ bool MenuItemNoCheck(const char* label, const char* icon, const char* shortcut, 
 
 float GetMinimumPanelHeight() { return (GetFrameHeight() + ImGui::GetStyle().WindowPadding.y + ImGui::GetStyle().ItemSpacing.y); }
 
-bool SizeableCheckbox(const char* label, bool* v, float height)
-{
-    ImGuiWindow* window = GetCurrentWindow();
-    if (window->SkipItems)
-        return false;
+bool SizeableCheckbox(const char* label, bool* v, float height) {
+  ImGuiWindow* window = GetCurrentWindow();
+  if (window->SkipItems)
+    return false;
 
-    ImGuiContext& g = *GImGui;
-    const ImGuiStyle& style = g.Style;
-    const ImGuiID id = window->GetID(label);
-    const ImVec2 label_size = CalcTextSize(label, NULL, true);
+  ImGuiContext& g = *GImGui;
+  const ImGuiStyle& style = g.Style;
+  const ImGuiID id = window->GetID(label);
+  const ImVec2 label_size = CalcTextSize(label, NULL, true);
 
-    float square_sz = height >= 0.f ? GetFrameHeight() : height;
-    const ImVec2 pos = window->DC.CursorPos;
-    const ImRect total_bb(pos, pos + ImVec2(square_sz + (label_size.x > 0.0f ? style.ItemInnerSpacing.x + label_size.x : 0.0f), label_size.y + style.FramePadding.y * 2.0f));
-    ItemSize(total_bb, style.FramePadding.y);
-    const bool is_visible = ItemAdd(total_bb, id);
-    const bool is_multi_select = (g.LastItemData.ItemFlags & ImGuiItemFlags_IsMultiSelect) != 0;
-    if (!is_visible)
-        if (!is_multi_select || !g.BoxSelectState.UnclipMode || !g.BoxSelectState.UnclipRect.Overlaps(total_bb)) // Extra layer of "no logic clip" for box-select support
-        {
-            IMGUI_TEST_ENGINE_ITEM_INFO(id, label, g.LastItemData.StatusFlags | ImGuiItemStatusFlags_Checkable | (*v ? ImGuiItemStatusFlags_Checked : 0));
-            return false;
-        }
-
-    // Range-Selection/Multi-selection support (header)
-    bool checked = *v;
-    if (is_multi_select)
-        MultiSelectItemHeader(id, &checked, NULL);
-
-    bool hovered, held;
-    bool pressed = ButtonBehavior(total_bb, id, &hovered, &held);
-
-    // Range-Selection/Multi-selection support (footer)
-    if (is_multi_select)
-        MultiSelectItemFooter(id, &checked, &pressed);
-    else if (pressed)
-        checked = !checked;
-
-    if (*v != checked)
+  const float square_sz = height >= 0.f ? height : GetFrameHeight();
+  const ImVec2 pos = window->DC.CursorPos;
+  const ImRect total_bb(pos, pos + ImVec2(square_sz + (label_size.x > 0.0f ? style.ItemInnerSpacing.x + label_size.x : 0.0f), label_size.y + style.FramePadding.y * 2.0f));
+  ItemSize(total_bb, style.FramePadding.y);
+  const bool is_visible = ItemAdd(total_bb, id);
+  const bool is_multi_select = (g.LastItemData.ItemFlags & ImGuiItemFlags_IsMultiSelect) != 0;
+  if (!is_visible)
+    if (!is_multi_select || !g.BoxSelectState.UnclipMode || !g.BoxSelectState.UnclipRect.Overlaps(total_bb)) // Extra layer of "no logic clip" for box-select support
     {
-        *v = checked;
-        pressed = true; // return value
-        MarkItemEdited(id);
+      IMGUI_TEST_ENGINE_ITEM_INFO(id, label, g.LastItemData.StatusFlags | ImGuiItemStatusFlags_Checkable | (*v ? ImGuiItemStatusFlags_Checked : 0));
+      return false;
     }
 
-    const ImRect check_bb(pos, pos + ImVec2(square_sz, square_sz));
-    const bool mixed_value = (g.LastItemData.ItemFlags & ImGuiItemFlags_MixedValue) != 0;
-    if (is_visible)
-    {
-        RenderNavCursor(total_bb, id);
-        RenderFrame(check_bb.Min, check_bb.Max, GetColorU32((held && hovered) ? ImGuiCol_FrameBgActive : hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg), true, style.FrameRounding);
-        ImU32 check_col = GetColorU32(ImGuiCol_CheckMark);
-        if (mixed_value)
-        {
-            // Undocumented tristate/mixed/indeterminate checkbox (#2644)
-            // This may seem awkwardly designed because the aim is to make ImGuiItemFlags_MixedValue supported by all widgets (not just checkbox)
-            ImVec2 pad(ImMax(1.0f, IM_TRUNC(square_sz / 3.6f)), ImMax(1.0f, IM_TRUNC(square_sz / 3.6f)));
-            window->DrawList->AddRectFilled(check_bb.Min + pad, check_bb.Max - pad, check_col, style.FrameRounding);
-        }
-        else if (*v)
-        {
-            const float pad = ImMax(1.0f, IM_TRUNC(square_sz / 6.0f));
-            RenderCheckMark(window->DrawList, check_bb.Min + ImVec2(pad, pad), check_col, square_sz - pad * 2.0f);
-        }
-    }
-    const ImVec2 label_pos = ImVec2(check_bb.Max.x + style.ItemInnerSpacing.x, check_bb.Min.y + style.FramePadding.y);
-    if (g.LogEnabled)
-        LogRenderedText(&label_pos, mixed_value ? "[~]" : *v ? "[x]" : "[ ]");
-    if (is_visible && label_size.x > 0.0f)
-        RenderText(label_pos, label);
+  // Range-Selection/Multi-selection support (header)
+  bool checked = *v;
+  if (is_multi_select)
+    MultiSelectItemHeader(id, &checked, NULL);
 
-    IMGUI_TEST_ENGINE_ITEM_INFO(id, label, g.LastItemData.StatusFlags | ImGuiItemStatusFlags_Checkable | (*v ? ImGuiItemStatusFlags_Checked : 0));
-    return pressed;
+  bool hovered, held;
+  bool pressed = ButtonBehavior(total_bb, id, &hovered, &held);
+
+  // Range-Selection/Multi-selection support (footer)
+  if (is_multi_select)
+    MultiSelectItemFooter(id, &checked, &pressed);
+  else if (pressed)
+    checked = !checked;
+
+  if (*v != checked) {
+    *v = checked;
+    pressed = true; // return value
+    MarkItemEdited(id);
+  }
+
+  ImRect check_bb(pos, pos + ImVec2(square_sz, square_sz));
+  const float left = ImMax(square_sz / 2, GetFrameHeight() / 2);
+  const float right = ImMin(square_sz / 2, GetFrameHeight() / 2);
+  check_bb.Min.y += left - right;
+  check_bb.Max.y += left - right;
+  const bool mixed_value = (g.LastItemData.ItemFlags & ImGuiItemFlags_MixedValue) != 0;
+  if (is_visible) {
+    RenderNavCursor(total_bb, id);
+    RenderFrame(check_bb.Min, check_bb.Max, GetColorU32((held && hovered) ? ImGuiCol_FrameBgActive : hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg), true, style.FrameRounding);
+    ImU32 check_col = GetColorU32(ImGuiCol_CheckMark);
+    if (mixed_value) {
+      // Undocumented tristate/mixed/indeterminate checkbox (#2644)
+      // This may seem awkwardly designed because the aim is to make ImGuiItemFlags_MixedValue supported by all widgets (not just checkbox)
+      ImVec2 pad(ImMax(1.0f, IM_TRUNC(square_sz / 3.6f)), ImMax(1.0f, IM_TRUNC(square_sz / 3.6f)));
+      window->DrawList->AddRectFilled(check_bb.Min + pad, check_bb.Max - pad, check_col, style.FrameRounding);
+    } else if (*v) {
+      const float pad = ImMax(1.0f, IM_TRUNC(square_sz / 6.0f));
+      RenderCheckMark(window->DrawList, check_bb.Min + ImVec2(pad, pad), check_col, square_sz - pad * 2.0f);
+    }
+  }
+  check_bb.Min.y -= left - right;
+  check_bb.Max.y -= left - right;
+  const ImVec2 label_pos = ImVec2(check_bb.Max.x + style.ItemInnerSpacing.x, check_bb.Min.y + style.FramePadding.y);
+  if (g.LogEnabled)
+    LogRenderedText(&label_pos, mixed_value ? "[~]" : *v ? "[x]" : "[ ]");
+  if (is_visible && label_size.x > 0.0f)
+    RenderText(label_pos, label);
+
+  IMGUI_TEST_ENGINE_ITEM_INFO(id, label, g.LastItemData.StatusFlags | ImGuiItemStatusFlags_Checkable | (*v ? ImGuiItemStatusFlags_Checked : 0));
+  return pressed;
 }
-
 
 bool BeginGroupBox(const char* label, const ImVec2& size, bool* selected, bool* clicked, const ImGuiChildFlags child_flags, const ImGuiWindowFlags window_flags) {
   ImVec2 realSize = size;
@@ -581,10 +580,14 @@ bool BeginGroupBox(const char* label, const ImVec2& size, bool* selected, bool* 
   oldPos.y += (realSize.y / 2);
   SetCursorScreenPos(oldPos);
 
+  BeginDisabled(selected && !*selected);
   return visible;
 }
 
-void EndGroupBox() { EndChild(); }
+void EndGroupBox() {
+  EndDisabled();
+  EndChild();
+}
 
 void ItemLabel(const char* title, const ImGuiItemLabelFlags flags) {
   ImGuiWindow* window = GetCurrentWindow();

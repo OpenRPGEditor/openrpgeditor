@@ -254,7 +254,8 @@ void EventEditor::drawLocalization() {
               int showChoiceIndex{0};
               for (auto& choiceStr : choiceCmd->choices) {
                 // choiceCmd->choices.at(setStringReference("{}", lines.at(index), SearchType::Text);
-                choiceCmd->choices.at(showChoiceIndex) = "{" + trim(lines.at(index)) + "}";
+                int idx = stoi(lines.at(index));
+                choiceCmd->choices.at(showChoiceIndex) = "{" + trim(Database::instance()->locales.locales.at(idx).first) + "}";
                 if (m_choiceParsing) {
                   choiceLines.insert(choiceLines.begin() + showChoiceIndex, choiceStr);
                 } else {

@@ -8,42 +8,42 @@
 using namespace std::string_view_literals;
 // clang-format off
 namespace solarized {
-constexpr auto indigo  = "&push-color=0x8d,0x66,0xc6;"sv;
-constexpr auto blue    = "&push-color=0x26,0x8B,0xD2;"sv;
-constexpr auto red     = "&push-color=0xcb,0x6a,0x6a;"sv;
-constexpr auto yellow  = "&push-color=0xB5,0x89,0x00;"sv;
-constexpr auto orange  = "&push-color=0xCB,0x4B,0x16;"sv;
-constexpr auto magenta = "&push-color=0xD3,0x36,0x82;"sv;
-constexpr auto cyan    = "&push-color=0x2A,0xA1,0x98;"sv;
-constexpr auto violet  = "&push-color=0x6C,0x71,0xC4;"sv;
-constexpr auto base00  = "&push-color=0x65,0x7B,0x83;"sv;
-constexpr auto base01  = "&push-color=0x58,0x6E,0x75;"sv;
-constexpr auto base02  = "&push-color=0x07,0x36,0x42;"sv;
-constexpr auto base03  = "&push-color=0x00,0x02,0x36;"sv;
-constexpr auto base0   = "&push-color=0x83,0x94,0x96;"sv;
-constexpr auto base1   = "&push-color=0x96,0xA1,0xA1;"sv;
-constexpr auto base2   = "&push-color=0xEE,0xE8,0xD5;"sv;
-constexpr auto base3   = "&push-color=0xFD,0xF6,0xE3;"sv;
-constexpr auto purple  = "&push-color=0x81,0x7D,0xFF;"sv;
-constexpr auto maroon  = "&push-color=0xc8,0x7a,0x7a;"sv;
+constexpr auto indigo  = "&push-color=#8d66c6;"sv;
+constexpr auto blue    = "&push-color=#268BD2;"sv;
+constexpr auto red     = "&push-color=#cb6a6a;"sv;
+constexpr auto yellow  = "&push-color=#B58900;"sv;
+constexpr auto orange  = "&push-color=#CB4B16;"sv;
+constexpr auto magenta = "&push-color=#D33682;"sv;
+constexpr auto cyan    = "&push-color=#2AA198;"sv;
+constexpr auto violet  = "&push-color=#6C71C4;"sv;
+constexpr auto base00  = "&push-color=#657B83;"sv;
+constexpr auto base01  = "&push-color=#586E75;"sv;
+constexpr auto base02  = "&push-color=#073642;"sv;
+constexpr auto base03  = "&push-color=#000236;"sv;
+constexpr auto base0   = "&push-color=#839496;"sv;
+constexpr auto base1   = "&push-color=#96A1A1;"sv;
+constexpr auto base2   = "&push-color=#EEE8D5;"sv;
+constexpr auto base3   = "&push-color=#FDF6E3;"sv;
+constexpr auto purple  = "&push-color=#817DFF;"sv;
+constexpr auto maroon  = "&push-color=#c87a7a;"sv;
 }
 namespace raw {
-constexpr auto indigo      = "&push-color=0x4b,0x00,0x82;"sv;
-constexpr auto blue        = "&push-color=0x00,0x00,0xff;"sv;
-constexpr auto red         = "&push-color=0xff,0x00,0x00;"sv;
-constexpr auto darkorange  = "&push-color=0xff,0x8c,0x00;"sv;
-constexpr auto magenta     = "&push-color=0xff,0x00,0xff;"sv;
-constexpr auto maroon      = "&push-color=0x80,0x00,0x00;"sv;
-constexpr auto olive       = "&push-color=0x80,0x80,0x00;"sv;
-constexpr auto crimson     = "&push-color=0xdc,0x14,0x3c;"sv;
-constexpr auto purple      = "&push-color=0x80,0x00,0x80;"sv;
-constexpr auto teal        = "&push-color=0x00,0x80,0x80;"sv;
-constexpr auto deeppink    = "&push-color=0xff,0x14,0x93;"sv;
-constexpr auto dodgerblue  = "&push-color=0x1e,0x90,0xff;"sv;
-constexpr auto darkviolet  = "&push-color=0x94,0x00,0xd3;"sv;
-constexpr auto gray        = "&push-color=0x80,0x80,0x80;"sv;
-constexpr auto green       = "&push-color=0x00,0x80,0x00;"sv;
-constexpr auto white       = "&push-color=0xFF,0xFF,0xFF;"sv;
+constexpr auto indigo      = "&push-color=#4b0082;"sv;
+constexpr auto blue        = "&push-color=#0000ff;"sv;
+constexpr auto red         = "&push-color=#ff0000;"sv;
+constexpr auto darkorange  = "&push-color=#ff8c00;"sv;
+constexpr auto magenta     = "&push-color=#ff00ff;"sv;
+constexpr auto maroon      = "&push-color=#800000;"sv;
+constexpr auto olive       = "&push-color=#808000;"sv;
+constexpr auto crimson     = "&push-color=#dc143c;"sv;
+constexpr auto purple      = "&push-color=#800080;"sv;
+constexpr auto teal        = "&push-color=#008080;"sv;
+constexpr auto deeppink    = "&push-color=#ff1493;"sv;
+constexpr auto dodgerblue  = "&push-color=#1e90ff;"sv;
+constexpr auto darkviolet  = "&push-color=#9400d3;"sv;
+constexpr auto gray        = "&push-color=#808080;"sv;
+constexpr auto green       = "&push-color=#008000;"sv;
+constexpr auto white       = "&push-color=#FFFFFF;"sv;
 }
 // clang-format on
 
@@ -207,7 +207,7 @@ std::string ColorFormatter::popColor(const bool color) {
  */
 std::string ColorFormatter::getColor(const FormatColor preset, const bool color) {
   if (!color) {
-    return "";
+    return {};
   }
   switch (preset) {
   case FormatColor::Gray:
@@ -216,6 +216,6 @@ std::string ColorFormatter::getColor(const FormatColor preset, const bool color)
     return solarized::red.data();
   case FormatColor::Default:
   default:
-    return "&push-color=255,255,0;";
+    return "&push-color=#FFFF00;";
   }
 }

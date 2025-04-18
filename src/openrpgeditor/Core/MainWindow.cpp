@@ -579,65 +579,6 @@ void MainWindow::draw(const bool shuttingDown) {
     ImGui::EndDisabled();
 
     drawShutdownSplash(shuttingDown);
-
-    ImGui::Begin("Layout test");
-    {
-      static bool selected = false;
-      bool clicked = false;
-      if (ImGui::BeginGroupBox("Conditions", {-1, -1}, &selected, &clicked)) {
-        /* Lock the contents to the top left of the panel */
-        ImGui::BeginHorizontal("##event_conditions_panel_layout", {}, 0.f);
-        {
-          ImGui::BeginVertical("##event_conditions_left", {}, 0.f);
-          {
-            bool check1 = false;
-            ImGui::Checkbox("Switch##switch1", &check1);
-            bool check2 = true;
-            ImGui::Checkbox("Switch##switch2", &check2);
-            bool check3 = false;
-            ImGui::Checkbox("Variable", &check3);
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetFrameHeightWithSpacing());
-            bool check4 = true;
-            ImGui::Checkbox("Self Switch", &check4);
-            bool check5 = false;
-            ImGui::Checkbox("Item", &check5);
-            bool check6 = true;
-            ImGui::Checkbox("Actor", &check6);
-          }
-          ImGui::EndVertical();
-          ImGui::BeginVertical("##event_conditions_right", {}, 0.f);
-          {
-            const auto width = ImGui::GetContentRegionAvail().x;
-            ImGui::Button("###test1", {width, 0});
-            ImGui::Button("###test2", {width, 0});
-            ImGui::Button("###test3", {width, 0});
-            ImGui::BeginHorizontal("##value_slider");
-            {
-              static int v = 0;
-              ImGui::TextDisabled("≥");
-              ImGui::SetNextItemWidth(std::clamp(ImGui::GetContentRegionAvail().x, ImGui::GetFontSize() * 5, ImGui::GetContentRegionAvail().x));
-              ImGui::SliderInt("##value", &v, 0, 9999, "%d");
-            }
-            ImGui::EndHorizontal();
-            ImGui::SetNextItemWidth(width);
-            if (ImGui::BeginCombo("##selfswitch", "A")) {
-              ImGui::Selectable("A");
-              ImGui::EndCombo();
-            }
-
-            ImGui::SetNextItemWidth(width);
-            if (ImGui::BeginCombo("##actor", "Actor1")) {
-              ImGui::Selectable("Actor1");
-              ImGui::EndCombo();
-            }
-          }
-          ImGui::EndVertical();
-        }
-        ImGui::EndHorizontal();
-      }
-      ImGui::EndGroupBox();
-    }
-    ImGui::End();
   }
   ImGui::End();
 }

@@ -20,7 +20,7 @@ Window::Window(const Settings& settings) {
 
   m_title = settings.title;
 
-  m_renderer = SDL_CreateRenderer(m_window, "vulkan");
+  m_renderer = SDL_CreateRenderer(m_window, "direct3d,d3d11,vulkan,opengl");
 
   if (m_renderer == nullptr) {
     m_renderer = SDL_CreateRenderer(m_window, nullptr);

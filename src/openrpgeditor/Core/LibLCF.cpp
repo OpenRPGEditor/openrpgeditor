@@ -1361,7 +1361,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     WaitCommand newCmd;
     newCmd.setIndent(indent);
 
-    newCmd.duration = parameters.at(0) * 6;
+    newCmd.duration = parameters.at(0) == 0 ? 1 : parameters.at(0) * 6;
 
     return std::make_shared<WaitCommand>(newCmd);
   }
@@ -1431,7 +1431,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ChangeMainMenuAccess)) {
     ChangeMenuAccessCommand newCmd;
     newCmd.setIndent(indent);
-    newCmd.access = static_cast<AccessMode>(parameters.at(0));
+    newCmd.access = parameters.at(0) == 0 ? AccessMode::Enable : AccessMode::Disable;
     return std::make_shared<ChangeMenuAccessCommand>(newCmd);
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::ConditionalBranch)) {
@@ -1772,7 +1772,7 @@ void LibLCF::convertPage(EventPage* page, const lcf::rpg::EventPage& evPage) {
     page->moveRoute().setSkippable(evPage.move_route.skippable != 0);
     page->moveRoute().setWait(false);
     for (auto& rpgMoveCmd : evPage.move_route.move_commands) {
-      page->moveRoute().addCommand(convertMovementCommand(rpgMoveCmd, 0), index);
+      page->moveRoute().list().push_back(convertMovementCommand(rpgMoveCmd, 0));
       index++;
     }
   }

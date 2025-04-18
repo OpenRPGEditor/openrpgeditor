@@ -18,19 +18,23 @@ struct Dialog_SetMovementRoute : IEventDialogController {
       m_command.reset(new SetMovementRouteCommand());
     }
     m_character = m_command->character;
-    m_route = m_command->route;
+    m_route = &m_command->route;
     m_editNodes = m_command->editNodes;
-    if (m_route.list().empty()) {
-      m_route.addCommand(std::make_shared<EventDummy>(), 0);
+    if (m_route->list().empty()) {
+      m_route->addCommand(std::make_shared<EventDummy>(), 0);
     }
   }
   explicit Dialog_SetMovementRoute(const std::string& name, EventPage* page)
   : IEventDialogController(name)
   , m_page(page) {
     m_isEventRoute = true;
-    m_route = m_page->moveRoute();
-    if (m_route.list().empty()) {
-      m_route.addCommand(std::make_shared<EventDummy>(), 0);
+    m_route = &m_page->moveRoute();
+    if (m_route->list().empty()) {
+      m_route->addCommand(std::make_shared<EventDummy>(), 0);
+    } else {
+      if (m_route->list().back()->code() != EventCode::Event_Dummy) {
+        m_route->addCommand(std::make_shared<EventDummy>(), m_route->list().size());
+      }
     }
   }
   std::tuple<bool, bool> draw() override;
@@ -40,9 +44,9 @@ struct Dialog_SetMovementRoute : IEventDialogController {
 
   void setPage(EventPage* page) {
     m_isEventRoute = true;
-    m_route = m_page->moveRoute();
-    if (m_route.list().empty()) {
-      m_route.addCommand(std::make_shared<EventDummy>(), 0);
+    m_route = &m_page->moveRoute();
+    if (m_route->list().empty()) {
+      m_route->addCommand(std::make_shared<EventDummy>(), 0);
     }
   }
 
@@ -52,7 +56,7 @@ private:
   int m_selectedEnd{0};
 
   EventPage* m_page = nullptr; // For event routes only
-  MovementRoute m_route;
+  MovementRoute* m_route;
   std::vector<std::shared_ptr<MovementRouteStepCommand>> m_editNodes;
 
   bool m_confirmed{false};

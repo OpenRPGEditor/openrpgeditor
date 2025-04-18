@@ -53,10 +53,11 @@ std::tuple<bool, bool> EventEditor::draw() {
         nlohmann::ordered_json pageJson = *m_event->page(m_selectedPage);
         auto v = pageJson.dump();
         l.set_data(OREEventPageFormat, v.data(), v.size());
+        m_hasFormat = true;
       }
       ImGui::SameLine();
       /* TODO: Undo/Clipboard stack */
-      ImGui::BeginDisabled(!clip::has(OREEventPageFormat));
+      ImGui::BeginDisabled(!m_hasFormat);
       if (ImGui::Button(trNOOP("Paste\nEvent Page"))) {
         clip::lock l;
         if (l.is_convertible(OREEventPageFormat)) {
@@ -69,6 +70,7 @@ std::tuple<bool, bool> EventEditor::draw() {
             m_event->addPage(pastedPage);
           }
         }
+        m_hasFormat = false;
       }
       ImGui::EndDisabled();
       ImGui::SameLine();

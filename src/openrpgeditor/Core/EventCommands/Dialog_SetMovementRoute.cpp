@@ -52,7 +52,7 @@
 #include <clip.h>
 #include <tuple>
 
-static clip::format RPGMVEventCommandFormat = -1;
+static clip::format OREMovementCommand = -1;
 std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
   if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
@@ -104,91 +104,103 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
           ImGui::TableNextRow();
           ImGui::TableNextColumn();
 
-          for (int n = 0; n < m_route.list().size(); n++) {
+          for (int n = 0; n < m_route->list().size(); n++) {
             ImGui::TableNextColumn();
             const bool isSelected = m_selected == n || (m_selectedEnd != -1 && n > m_selected && n <= m_selectedEnd);
             char text[4096];
-            sprintf(text, "%s##cmd%i", m_route.list().at(n)->stringRep(*Database::instance()).c_str(), n);
+            sprintf(text, "%s##cmd%i", m_route->list().at(n)->stringRep(*Database::instance()).c_str(), n);
             if (ImGui::SelectableWithBorder(text, isSelected, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
               if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
-                if (m_route.list().at(m_selected)->code() == EventCode::Jump) {
+                if (m_route->list().at(m_selected)->code() == EventCode::Jump) {
                   m_isNewEntry = false;
-                  auto movementCmd = std::dynamic_pointer_cast<MovementJumpCommand>(m_route.list().at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementJumpCommand>(m_route->list().at(m_selected));
                   m_movementRouteDialog = std::make_shared<Dialog_MovementJump>(trNOOP("Jump"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
-                if (m_route.list().at(m_selected)->code() == EventCode::Wait_del_Movement) {
+                if (m_route->list().at(m_selected)->code() == EventCode::Wait_del_Movement) {
                   m_isNewEntry = false;
-                  auto movementCmd = std::dynamic_pointer_cast<MovementWaitCommand>(m_route.list().at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementWaitCommand>(m_route->list().at(m_selected));
                   m_movementRouteDialog = std::make_shared<Dialog_MovementWait>(trNOOP("Wait"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
-                if (m_route.list().at(m_selected)->code() == EventCode::Switch_ON) {
+                if (m_route->list().at(m_selected)->code() == EventCode::Switch_ON) {
                   m_isNewEntry = false;
-                  auto movementCmd = std::dynamic_pointer_cast<MovementSwitchONCommand>(m_route.list().at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementSwitchONCommand>(m_route->list().at(m_selected));
                   m_movementRouteDialog = std::make_shared<Dialog_MovementSwitchON>(trNOOP("Switch ON"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
-                if (m_route.list().at(m_selected)->code() == EventCode::Switch_OFF) {
+                if (m_route->list().at(m_selected)->code() == EventCode::Switch_OFF) {
                   m_isNewEntry = false;
-                  auto movementCmd = std::dynamic_pointer_cast<MovementSwitchOFFCommand>(m_route.list().at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementSwitchOFFCommand>(m_route->list().at(m_selected));
                   m_movementRouteDialog = std::make_shared<Dialog_MovementSwitchOFF>(trNOOP("Switch OFF"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
-                if (m_route.list().at(m_selected)->code() == EventCode::Speed) {
+                if (m_route->list().at(m_selected)->code() == EventCode::Speed) {
                   m_isNewEntry = false;
-                  auto movementCmd = std::dynamic_pointer_cast<MovementSpeedCommand>(m_route.list().at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementSpeedCommand>(m_route->list().at(m_selected));
                   m_movementRouteDialog = std::make_shared<Dialog_MovementChangeSpeed>(trNOOP("Change Speed"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
-                if (m_route.list().at(m_selected)->code() == EventCode::Frequency) {
+                if (m_route->list().at(m_selected)->code() == EventCode::Frequency) {
                   m_isNewEntry = false;
-                  auto movementCmd = std::dynamic_pointer_cast<MovementFrequencyCommand>(m_route.list().at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementFrequencyCommand>(m_route->list().at(m_selected));
                   m_movementRouteDialog = std::make_shared<Dialog_MovementChangeFrequency>(trNOOP("Change Frequency"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
-                if (m_route.list().at(m_selected)->code() == EventCode::Change_Image) {
+                if (m_route->list().at(m_selected)->code() == EventCode::Change_Image) {
                   m_isNewEntry = false;
-                  auto movementCmd = std::dynamic_pointer_cast<MovementChangeImageCommand>(m_route.list().at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementChangeImageCommand>(m_route->list().at(m_selected));
                   m_movementRouteDialog = std::make_shared<Dialog_MovementChangeImage>(trNOOP("Image"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
-                if (m_route.list().at(m_selected)->code() == EventCode::Change_Opacity) {
+                if (m_route->list().at(m_selected)->code() == EventCode::Change_Opacity) {
                   m_isNewEntry = false;
-                  auto movementCmd = std::dynamic_pointer_cast<MovementChangeOpacityCommand>(m_route.list().at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementChangeOpacityCommand>(m_route->list().at(m_selected));
                   m_movementRouteDialog = std::make_shared<Dialog_MovementChangeOpacity>(trNOOP("Opacity"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
-                if (m_route.list().at(m_selected)->code() == EventCode::Change_Blend_Mode) {
+                if (m_route->list().at(m_selected)->code() == EventCode::Change_Blend_Mode) {
                   m_isNewEntry = false;
-                  auto movementCmd = std::dynamic_pointer_cast<MovementChangeBlendModeCommand>(m_route.list().at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementChangeBlendModeCommand>(m_route->list().at(m_selected));
                   m_movementRouteDialog = std::make_shared<Dialog_MovementChangeBlendMode>(trNOOP("Blend"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
-                if (m_route.list().at(m_selected)->code() == EventCode::Play_SE_del_Movement) {
+                if (m_route->list().at(m_selected)->code() == EventCode::Play_SE_del_Movement) {
                   m_isNewEntry = false;
-                  auto movementCmd = std::dynamic_pointer_cast<MovementPlaySECommand>(m_route.list().at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementPlaySECommand>(m_route->list().at(m_selected));
                   m_movementRouteDialog = std::make_shared<Dialog_MovementPlaySE>(trNOOP("Play SE"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
-                if (m_route.list().at(m_selected)->code() == EventCode::Script_del_Movement) {
+                if (m_route->list().at(m_selected)->code() == EventCode::Script_del_Movement) {
                   m_isNewEntry = false;
-                  auto movementCmd = std::dynamic_pointer_cast<MovementScriptCommand>(m_route.list().at(m_selected));
+                  auto movementCmd = std::dynamic_pointer_cast<MovementScriptCommand>(m_route->list().at(m_selected));
                   m_movementRouteDialog = std::make_shared<Dialog_MovementScript>(trNOOP("Script"), movementCmd);
                   m_movementRouteDialog->setOpen(true);
                 }
               }
-              m_selected = n;
+
+              if (!ImGui::IsKeyDown(ImGuiKey_LeftShift) && !ImGui::IsKeyDown(ImGuiKey_RightShift)) {
+                m_selected = n;
+              }
 
               if (isSelected)
                 ImGui::SetItemDefaultFocus();
 
               if (ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) {
-
-                if (n < m_selectedEnd) {
+                if (m_selected == -1) {
                   m_selected = n;
+                }
+                if (n < m_selected) {
+                  // m_selected = n;
+                  if (m_selectedEnd == -1) {
+                    m_selectedEnd = m_selected;
+                    m_selected = n;
+                  } else {
+                    m_selected = n;
+                  }
                 } else {
                   m_selectedEnd = n;
+                  // m_selected = m_selected;
                 }
               } else {
                 m_selectedEnd = -1;
@@ -197,26 +209,27 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
           }
           ImGui::EndTable();
         }
+        handleClipboardInteraction();
         if (ImGui::IsKeyPressed((ImGuiKey_Delete)) && m_hasFocus) {
-          if (m_route.list().at(m_selected)->code() != EventCode::Event_Dummy) {
+          if (m_route->list().at(m_selected)->code() != EventCode::Event_Dummy) {
             int start = m_selected;
             // int end = m_selectedEnd == -1 ? m_selected + 1 : m_selectedEnd + 1;
-            m_route.list().erase(m_route.list().begin() + start, m_route.list().begin() + (start + 1));
+            m_route->list().erase(m_route->list().begin() + start, m_route->list().begin() + (start + 1));
           }
         }
         ImGui::TextUnformatted(trNOOP("Options"));
-        bool tmp = m_route.repeat();
+        bool tmp = m_route->repeat();
         if (ImGui::Checkbox(trNOOP("Repeat Movements"), &tmp)) {
-          m_route.setRepeat(tmp);
+          m_route->setRepeat(tmp);
         }
-        tmp = m_route.skippable();
+        tmp = m_route->skippable();
         if (ImGui::Checkbox(trNOOP("Skip If Cannot Move"), &tmp)) {
-          m_route.setSkippable(tmp);
+          m_route->setSkippable(tmp);
         }
-        tmp = m_route.wait();
+        tmp = m_route->wait();
         ImGui::BeginDisabled(m_isEventRoute);
         if (ImGui::Checkbox(trNOOP("Wait for Completion"), &tmp)) {
-          m_route.setWait(tmp);
+          m_route->setWait(tmp);
         }
         ImGui::EndDisabled();
       }
@@ -228,43 +241,43 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
         ImGui::BeginGroup();
         {
           if (ImGui::Button(trNOOP("Move Down"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementMoveDownCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementMoveDownCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Move Left"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementMoveLeftCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementMoveLeftCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Move Right"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementMoveRightCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementMoveRightCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Move Up"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementMoveUpCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementMoveUpCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Move Lower Left"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementMoveLowerLeftCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementMoveLowerLeftCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Move Lower Right"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementMoveLowerRightCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementMoveLowerRightCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Move Upper Left"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementMoveUpperLeftCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementMoveUpperLeftCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Move Upper Right"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementMoveUpperRightCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementMoveUpperRightCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Move at Random"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementMoveAtRandomCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementMoveAtRandomCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Move toward Player"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementMoveTowardPlayerCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementMoveTowardPlayerCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Move away from Player"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementMoveAwayFromPlayerCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementMoveAwayFromPlayerCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("1 Step Forward"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementMove1StepForwardCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementMove1StepForwardCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("1 Step Backward"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementMove1StepBackwardCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementMove1StepBackwardCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Jump..."), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
             m_movementRouteDialog = std::make_shared<Dialog_MovementJump>(trNOOP("Jump"));
@@ -280,37 +293,37 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
         ImGui::BeginGroup();
         {
           if (ImGui::Button(trNOOP("Turn Down"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementTurnDownCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementTurnDownCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Turn Left"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementTurnLeftCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementTurnLeftCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Turn Right"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementTurnRightCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementTurnRightCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Turn Up"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementTurnUpCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementTurnUpCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Turn 90° Right"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementTurn90DegRightCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementTurn90DegRightCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Turn 90° Left"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementTurn90DegLeftCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementTurn90DegLeftCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Turn 180°"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementTurn180DegCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementTurn180DegCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Turn 90° Right or Left"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementTurn90DegLeftOrRightCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementTurn90DegLeftOrRightCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Turn at Random"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementTurnAtRandomCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementTurnAtRandomCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Turn toward Player"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementTurnTowardPlayerCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementTurnTowardPlayerCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Turn away from Player"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementTurnAwayFromPlayerCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementTurnAwayFromPlayerCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Switch ON..."), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
             m_movementRouteDialog = std::make_shared<Dialog_MovementSwitchON>(trNOOP("Switch ON"));
@@ -334,34 +347,34 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
         ImGui::BeginGroup();
         {
           if (ImGui::Button(trNOOP("Walking Animation ON"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementWalkingAnimationONCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementWalkingAnimationONCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Walking Animation OFF"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementWalkingAnimationOFFCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementWalkingAnimationOFFCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Stepping Animation ON"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementSteppingAnimationONCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementSteppingAnimationONCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Stepping Animation OFF"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementSteppingAnimationOFFCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementSteppingAnimationOFFCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Direction Fix ON"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementDirectionFixONCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementDirectionFixONCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Direction Fix OFF"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementDirectionFixOFFCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementDirectionFixOFFCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Through ON"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementThroughONCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementThroughONCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Through OFF"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementThroughOFFCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementThroughOFFCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Transparent ON"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementTransparentONCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementTransparentONCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Transparent OFF"), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
-            m_selected = m_route.addCommand(std::make_shared<MovementTransparentOFFCommand>(), m_selected);
+            m_selected = m_route->addCommand(std::make_shared<MovementTransparentOFFCommand>(), m_selected);
           }
           if (ImGui::Button(trNOOP("Change Image..."), ImVec2{(ImGui::GetContentRegionMax().x / 3) - ImGui::GetStyle().FramePadding.x, 0})) {
             m_movementRouteDialog = std::make_shared<Dialog_MovementChangeImage>(trNOOP("Image"));
@@ -395,12 +408,12 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
       if (ImGui::Button(trNOOP("OK"))) {
         m_confirmed = true;
         if (m_isEventRoute) {
-          m_page->setMoveRoute(m_route);
+          m_page->setMoveRoute(*m_route);
         } else {
           m_command->character = m_character;
-          m_command->route = m_route;
+          // m_command->route = m_route;
           m_command->editNodes.clear();
-          for (const auto& cmd : m_route.list()) {
+          for (const auto& cmd : m_route->list()) {
             if (cmd->code() != EventCode::Event_Dummy) {
               m_command->editNodes.push_back(std::make_shared<MovementRouteStepCommand>());
               m_command->editNodes.back()->step = cmd;
@@ -422,9 +435,9 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
       if (const auto [closed, confirmed] = m_movementRouteDialog->draw(); closed) {
         if (confirmed) {
           if (m_isNewEntry) {
-            m_selected = m_route.addCommand(m_movementRouteDialog->getCommand(), m_selected);
+            m_selected = m_route->addCommand(m_movementRouteDialog->getCommand(), m_selected);
           } else {
-            m_route.list().at(m_selected) = m_movementRouteDialog->getCommand();
+            m_route->list().at(m_selected) = m_movementRouteDialog->getCommand();
           }
           m_isNewEntry = true;
         }
@@ -440,31 +453,60 @@ void Dialog_SetMovementRoute::handleClipboardInteraction() const {
   if (!m_hasFocus) {
     return;
   }
-  if (RPGMVEventCommandFormat == -1) {
-    RPGMVEventCommandFormat = clip::register_format("application/ore-EventCommand");
+  if (OREMovementCommand == -1) {
+    OREMovementCommand = clip::register_format("application/ore-MovementCommand");
   }
   if (ImGui::IsKeyPressed(ImGuiKey_V) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
+
+    clip::lock l;
+    if (l.is_convertible(OREMovementCommand)) {
+      auto len = l.get_data_length(OREMovementCommand);
+      std::string cmd;
+      cmd.resize(len);
+      if (l.get_data(OREMovementCommand, cmd.data(), len)) {
+        nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(cmd);
+        CommandParser parser;
+        auto commands = parser.parse(cmdJson);
+        int curIndent = m_selected > 0 ? *m_route->list().at(m_selected)->indent() : 0;
+        int nestedCount = 0;
+
+        for (auto& command : commands) {
+          if (!command->indent()) {
+            command->setIndent(0);
+          }
+
+          command->setIndent(curIndent);
+        }
+        m_route->list().insert(m_route->list().begin() + m_selected, commands.begin(), commands.end());
+      }
+    }
+
   } else if (ImGui::IsKeyPressed(ImGuiKey_C) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
     clip::lock l;
     int start = m_selected;
     int end = m_selectedEnd == -1 ? m_selected + 1 : m_selectedEnd + 1;
-    std::vector<std::shared_ptr<IEventCommand>> commands(m_route.list().begin() + start, m_route.list().begin() + end);
+    if (m_route->list().at(end - 1)->code() == EventCode::Event_Dummy) {
+      end -= 1; // We don't want to copy or cut a dummy
+    }
+    std::vector<std::shared_ptr<IEventCommand>> commands(m_route->list().begin() + start, m_route->list().begin() + end);
     nlohmann::ordered_json cmdJson;
     CommandParser::serialize(cmdJson, commands);
     auto v = cmdJson.dump();
-    l.set_data(RPGMVEventCommandFormat, v.data(), v.size());
+    l.set_data(OREMovementCommand, v.data(), v.size());
   } else if (ImGui::IsKeyPressed(ImGuiKey_X) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
-    if (m_route.list().at(m_selected)->code() != EventCode::Event_Dummy) {
+    if (m_route->list().at(m_selected)->code() != EventCode::Event_Dummy) {
       clip::lock l;
       int start = m_selected;
       int end = m_selectedEnd == -1 ? m_selected + 1 : m_selectedEnd + 1;
-      std::vector<std::shared_ptr<IEventCommand>> commands(m_route.list().begin() + start, m_route.list().begin() + end);
+      if (m_route->list().at(end - 1)->code() == EventCode::Event_Dummy) {
+        end -= 1; // We don't want to copy or cut a dummy
+      }
+      std::vector<std::shared_ptr<IEventCommand>> commands(m_route->list().begin() + start, m_route->list().begin() + end);
       nlohmann::ordered_json cmdJson;
       CommandParser::serialize(cmdJson, commands);
       auto v = cmdJson.dump();
-      l.set_data(RPGMVEventCommandFormat, v.data(), v.size());
-
-      // m_route.list().erase(m_route.list().begin() + start, m_route.list().begin() + end);
+      l.set_data(OREMovementCommand, v.data(), v.size());
+      m_route->list().erase(m_route->list().begin() + start, m_route->list().begin() + end);
     }
   }
 }

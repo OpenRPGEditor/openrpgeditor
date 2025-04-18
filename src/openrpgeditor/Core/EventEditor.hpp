@@ -49,6 +49,7 @@ private:
   bool m_open{false};
   bool m_confirmed{false};
   bool m_doSwap{false};
+  bool m_hasFormat{false};
   int m_swapTarget{-1};
   int m_swapDestination{-1};
 };

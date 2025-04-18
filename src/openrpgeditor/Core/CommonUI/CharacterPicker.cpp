@@ -40,36 +40,38 @@ CharacterPicker::CharacterPicker(const PickerMode mode, const bool useTileset, c
 
 void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const int character, const int pattern, const Direction direction) {
   m_characterSheet.emplace(sheetName);
-  m_characterIndex = character;
-  m_pattern = pattern;
-  m_direction = direction;
+  if (m_characterSheet.has_value()) {
+    m_characterIndex = character;
+    m_pattern = pattern;
+    m_direction = direction;
 
-  std::string imageName = m_charDir.value().getFileName(static_cast<std::string>(sheetName));
-  if (!imageName.empty()) {
-    m_selectedSheet = sheetIndexOf(imageName);
+    std::string imageName = m_charDir.value().getFileName(static_cast<std::string>(sheetName));
+    if (!imageName.empty()) {
+      m_selectedSheet = sheetIndexOf(imageName);
 
-    const float charX = static_cast<float>((character % (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) * m_characterSheet->characterAtlasWidth());
-    const float charY = static_cast<float>((character / (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) * m_characterSheet->characterAtlasHeight());
+      const float charX = static_cast<float>((character % (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) * m_characterSheet->characterAtlasWidth());
+      const float charY = static_cast<float>((character / (m_characterSheet->texture().width() / m_characterSheet->characterAtlasWidth())) * m_characterSheet->characterAtlasHeight());
 
-    if (m_pickerMode == PickerMode::PatternAndDirection) {
-      m_selectionX = charX + (pattern * m_characterSheet->characterWidth());
-      m_selectionY = charY + (((static_cast<int>(m_direction) - 2) / 2) * m_characterSheet->characterHeight());
-      m_selectionWidth = m_characterSheet->characterWidth();
-      m_selectionHeight = m_characterSheet->characterHeight();
+      if (m_pickerMode == PickerMode::PatternAndDirection) {
+        m_selectionX = charX + (pattern * m_characterSheet->characterWidth());
+        m_selectionY = charY + (((static_cast<int>(m_direction) - 2) / 2) * m_characterSheet->characterHeight());
+        m_selectionWidth = m_characterSheet->characterWidth();
+        m_selectionHeight = m_characterSheet->characterHeight();
+      } else {
+        m_selectionX = charX;
+        m_selectionY = charY;
+        m_selectionWidth = m_characterSheet->characterAtlasWidth();
+        m_selectionHeight = m_characterSheet->characterAtlasHeight();
+      }
+      // m_selectionX =
+      //     std::clamp(m_selectionX, 0, m_characterSheet->texture().width() - m_characterSheet->characterWidth());
+      // m_selectionY =
+      //     std::clamp(m_selectionY, 0, m_characterSheet->texture().height() - m_characterSheet->characterHeight());
     } else {
-      m_selectionX = charX;
-      m_selectionY = charY;
-      m_selectionWidth = m_characterSheet->characterAtlasWidth();
-      m_selectionHeight = m_characterSheet->characterAtlasHeight();
+      m_selectedSheet = -5;
     }
-    // m_selectionX =
-    //     std::clamp(m_selectionX, 0, m_characterSheet->texture().width() - m_characterSheet->characterWidth());
-    // m_selectionY =
-    //     std::clamp(m_selectionY, 0, m_characterSheet->texture().height() - m_characterSheet->characterHeight());
-  } else {
-    m_selectedSheet = -5;
+    m_checkerboardTexture.setSize(m_characterSheet->texture().width(), m_characterSheet->texture().height());
   }
-  m_checkerboardTexture.setSize(m_characterSheet->texture().width(), m_characterSheet->texture().height());
 }
 
 void CharacterPicker::setTileId(int tileId) {

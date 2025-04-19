@@ -40,7 +40,7 @@ CharacterPicker::CharacterPicker(const PickerMode mode, const bool useTileset, c
 
 void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const int character, const int pattern, const Direction direction) {
   m_characterSheet.emplace(sheetName);
-  if (m_characterSheet.has_value()) {
+  if (m_characterSheet->texture()) {
     m_characterIndex = character;
     m_pattern = pattern;
     m_direction = direction;

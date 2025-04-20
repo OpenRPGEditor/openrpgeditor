@@ -34,7 +34,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
       auto [closed, confirmed] = actor_picker->draw();
       if (closed) {
         if (confirmed) {
-          m_actor_sub_selection = actor_picker->selection();
+          m_actor_selection = actor_picker->selection();
         }
         actor_picker.reset();
       }

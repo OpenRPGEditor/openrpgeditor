@@ -38,7 +38,21 @@ void DBTypesTab::drawTypeTable(const std::string_view id, const std::string_view
         }
       }
       if (ImGui::IsKeyPressed(ImGuiKey_Delete) && ImGui::IsWindowFocused() && selected > 0 && selected < list.size()) {
-        // list[selected].clear();
+        if (editType == EditType::Element) {
+          m_system.setElement(selected, "");
+        }
+        if (editType == EditType::Skill) {
+          m_system.setSkillType(selected, "");
+        }
+        if (editType == EditType::Weapon) {
+          m_system.setWeaponType(selected, "");
+        }
+        if (editType == EditType::Armor) {
+          m_system.setArmorType(selected, "");
+        }
+        if (editType == EditType::Equipment) {
+          m_system.setEquipType(selected, "");
+        }
       }
       ImGui::EndTable();
     }
@@ -47,7 +61,22 @@ void DBTypesTab::drawTypeTable(const std::string_view id, const std::string_view
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetStyleColorVec4(ImGuiCol_ChildBg));
     if (ImGui::InputText(std::format("{}_edit", listId).c_str(), &buffer) && selected > 0 && selected < list.size()) {
-      // list[selected] = buffer;
+
+      if (editType == EditType::Element) {
+        m_system.setElement(selected, buffer);
+      }
+      if (editType == EditType::Skill) {
+        m_system.setSkillType(selected, buffer);
+      }
+      if (editType == EditType::Weapon) {
+        m_system.setWeaponType(selected, buffer);
+      }
+      if (editType == EditType::Armor) {
+        m_system.setArmorType(selected, buffer);
+      }
+      if (editType == EditType::Equipment) {
+        m_system.setEquipType(selected, buffer);
+      }
     }
     ImGui::PopStyleColor();
 

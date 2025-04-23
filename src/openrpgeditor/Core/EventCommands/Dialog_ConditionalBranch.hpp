@@ -94,10 +94,42 @@ struct Dialog_ConditionalBranch : IEventDialogController {
       m_script = command->script;
     }
     m_conditionType = static_cast<int>(command->type);
+
+    if (m_conditionType == 4) {
+      m_selectedTab = 1;
+    }
+    if (m_conditionType == 5 || m_conditionType == 6 || m_conditionType == 13) {
+      m_selectedTab = 2;
+    }
+    if (m_conditionType < 13 && m_conditionType > 6) {
+      m_selectedTab = 3;
+    }
+
+    // if (command->isPartner(EventCode::Else, command->indent())) {
+    //   m_else = true;
+    //   m_elseBranch = true;
+    // }
   }
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::vector<std::shared_ptr<IEventCommand>> getBatchCommands(std::vector<std::shared_ptr<IEventCommand>>& list) override {
+    std::vector<std::shared_ptr<IEventCommand>> eventCommands;
+    std::shared_ptr<IEventCommand> sharedCommand = getCommand();
+    eventCommands.push_back(sharedCommand);
+
+    eventCommands.back()->setIndent(getParentIndent().value());
+    eventCommands.insert(eventCommands.end(), list.begin(), list.end());
+    if (m_elseBranch) {
+      eventCommands.push_back(std::make_shared<ElseCommand>());
+      eventCommands.back()->setIndent(getParentIndent().value());
+      eventCommands.push_back(std::make_shared<EventDummy>());
+      eventCommands.back()->setIndent(getParentIndent().value() + 1);
+    }
+    eventCommands.push_back(std::make_shared<EndCommand>());
+    eventCommands.back()->setIndent(getParentIndent().value());
+    return eventCommands;
+  };
   std::vector<std::shared_ptr<IEventCommand>> getBatchCommands() override {
     std::vector<std::shared_ptr<IEventCommand>> eventCommands;
     std::shared_ptr<IEventCommand> sharedCommand = getCommand();
@@ -116,8 +148,15 @@ struct Dialog_ConditionalBranch : IEventDialogController {
     eventCommands.back()->setIndent(getParentIndent().value());
     return eventCommands;
   };
+  bool isCurrentElseBranch() override { return m_else == m_elseBranch; }
+  void setCurrentElseBranch() override { m_else = m_elseBranch; }
+  void setElse(bool cond) override {
+    m_else = cond;
+    m_elseBranch = cond;
+  }
 
 private:
+  int m_selectedTab{0};
   int m_conditionType{0};
   int m_switch_id{1};
   int m_switch_value{0};
@@ -158,7 +197,8 @@ private:
   bool m_armor_include{false};
   int m_button_selection{0};
   std::string m_script;
-  bool m_elseBranch{false};
+  bool m_elseBranch{false}; // determines future else (the option)
+  bool m_else{false};       // determines current else
   std::shared_ptr<ConditionalBranchCommand> command;
   std::optional<VariableSwitchPicker> picker;
   std::optional<ObjectPicker<Actor>> actor_picker;

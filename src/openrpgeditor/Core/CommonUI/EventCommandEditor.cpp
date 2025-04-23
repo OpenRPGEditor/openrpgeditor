@@ -284,6 +284,14 @@ void EventCommandEditor::draw() {
                   if (m_commands->at(n)->code() != EventCode::Repeat_Above && m_commands->at(n)->code() != EventCode::When_Selected && m_commands->at(n)->code() != EventCode::When_Cancel &&
                       m_commands->at(n)->code() != EventCode::Else && m_commands->at(n)->code() != EventCode::End) {
                     commandDialog = CreateCommandDialog(m_commands->at(n)->code(), m_commands->at(n));
+                    if (m_commands->at(n)->code() == EventCode::Conditional_Branch) {
+                      blockSelect(n, true);
+                      for (int i = n; i < m_selectedEnd; i++) {
+                        if (m_commands->at(n)->isPartner(m_commands->at(i)->code(), m_commands->at(n)->indent())) {
+                          commandDialog->setElse(true); // Has an else, set to true.
+                        }
+                      }
+                    }
                     commandDialog->setOpen(true);
                     // ImGui::OpenPopup("Command Window");
                   }
@@ -566,6 +574,28 @@ void EventCommandEditor::drawCommandDialog() {
 
               m_commands->erase(m_commands->begin() + m_selectedCommand, m_commands->begin() + m_choiceEnd + 1);
               m_commands->insert(m_commands->begin() + m_selectedCommand, cmdList.begin(), cmdList.end());
+            }
+          }
+          if (commandDialog->getCommand()->code() == EventCode::Conditional_Branch) {
+            if (!commandDialog->isCurrentElseBranch()) {
+              std::vector<std::shared_ptr<IEventCommand>> tempCmds;
+
+              for (int i = m_selectedCommand + 1; i < m_commands->size(); i++) {
+                if (m_commands->at(m_selectedCommand)->isTerminatingPartner(m_commands->at(i)->code(), m_commands->at(i)->indent())) {
+                  break;
+                }
+                if (m_commands->at(i)->code() == EventCode::Else) {
+                  break;
+                }
+                tempCmds.push_back(m_commands->at(i));
+              }
+              std::vector<std::shared_ptr<IEventCommand>> commandCmds = commandDialog->getBatchCommands(tempCmds);
+              blockSelect(m_selectedCommand, true);
+              m_commands->erase(m_commands->begin() + m_selectedCommand, m_commands->begin() + m_selectedEnd + 1);
+              m_commands->insert(m_commands->begin() + m_selectedCommand, commandCmds.begin(), commandCmds.end());
+              // Delete branch, store contents, redraw and insert
+              commandDialog->setCurrentElseBranch();
+              m_selectedEnd = -1;
             }
           }
         }

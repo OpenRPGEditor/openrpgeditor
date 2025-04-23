@@ -110,7 +110,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
 
       // ImVec2 size = ImVec2{((ImGui::GetContentRegionAvail().x / 2) / 2) + 50, 0};
 
-      if (ImGui::BeginTabItem("Data")) {
+      if (ImGui::BeginTabItem("Data", nullptr, m_selectedTab == 0 ? ImGuiTabItemFlags_SetSelected : 0)) {
         ImGui::BeginGroup();
         {
           ImGui::RadioButton("Switch", &m_conditionType, 0);
@@ -281,7 +281,11 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
         }
         ImGui::EndTabItem();
       }
-      if (ImGui::BeginTabItem("Actor")) {
+      if (ImGui::IsItemClicked()) {
+        m_selectedTab = 0;
+      }
+
+      if (ImGui::BeginTabItem("Actor", nullptr, m_selectedTab == 1 ? ImGuiTabItemFlags_SetSelected : 0)) {
         ImGui::BeginGroup();
         {
           ImGui::RadioButton("Actor", &m_conditionType, 4);
@@ -382,7 +386,10 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
         }
         ImGui::EndTabItem();
       }
-      if (ImGui::BeginTabItem("Entity")) {
+      if (ImGui::IsItemClicked()) {
+        m_selectedTab = 1;
+      }
+      if (ImGui::BeginTabItem("Entity", nullptr, m_selectedTab == 2 ? ImGuiTabItemFlags_SetSelected : 0)) {
         ImGui::BeginGroup();
         {
           ImGui::RadioButton("Enemy", &m_conditionType, 5);
@@ -491,7 +498,10 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
         }
         ImGui::EndTabItem();
       }
-      if (ImGui::BeginTabItem("Misc")) {
+      if (ImGui::IsItemClicked()) {
+        m_selectedTab = 2;
+      }
+      if (ImGui::BeginTabItem("Misc", nullptr, m_selectedTab == 3 ? ImGuiTabItemFlags_SetSelected : 0)) {
         ImGui::BeginGroup();
         {
           ImGui::RadioButton("Gold", &m_conditionType, 7);
@@ -597,6 +607,9 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
           ImGui::EndGroup();
         }
         ImGui::EndTabItem();
+      }
+      if (ImGui::IsItemClicked()) {
+        m_selectedTab = 3;
       }
       ImGui::SetCursorPosY(ImGui::GetContentRegionMax().y - (30 + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y));
       ImGui::Separator();

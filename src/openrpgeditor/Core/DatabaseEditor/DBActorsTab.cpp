@@ -281,22 +281,17 @@ void DBActorsTab::draw() {
         }
         ImGui::EndChild();
         ImGui::SameLine();
-        ImGui::BeginChild("##orpg_actors_actor_panel_right", {}, ImGuiChildFlags_Border);
+        ImGui::BeginChild("##orpg_actors_actors_panel_right");
+        { m_traitsEditor.draw(m_parent); }
+        ImGui::EndChild();
+        ImGui::BeginChild("##orpg_actors_actors_panel_bottomright");
         {
-          ImGui::BeginChild("##traits_editor", {0, ImGui::GetContentRegionAvail().y / 2}, ImGuiChildFlags_ResizeY);
-          { m_traitsEditor.draw(m_parent); }
-          ImGui::EndChild();
-          ImGui::BeginChild("##note", {});
-          {
-            ImGui::SeparatorText("Note:");
-            char note[8192];
-            strncpy(note, m_selectedActor->note().c_str(), IM_ARRAYSIZE(note));
-            if (ImGui::InputTextMultiline("##orpg_actors_note", note, IM_ARRAYSIZE(note),
-                                          ImVec2{ImGui::GetContentRegionMax().x - ImGui::GetStyle().FramePadding.x, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y})) {
-              m_selectedActor->setNote(note);
-            }
+          ImGui::SeparatorText("Note:");
+          char note[8192];
+          strncpy(note, m_selectedActor->note().c_str(), IM_ARRAYSIZE(note));
+          if (ImGui::InputTextMultiline(std::format("##orpg_database_actor_note{}", m_selectedActor->id()).c_str(), note, IM_ARRAYSIZE(note), ImVec2{ImGui::GetContentRegionMax().x - 16, 400})) {
+            m_selectedActor->setNote(note);
           }
-          ImGui::EndChild();
         }
         ImGui::EndChild();
       }

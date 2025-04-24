@@ -298,19 +298,17 @@ void DBItemsTab::draw() {
         ImGui::EndChild();
 
         ImGui::SameLine();
-        ImGui::BeginChild("####orpg_items_item_panel_right");
+        ImGui::BeginChild("##orpg_items_item_panel_right");
+        { m_effectsEditor.draw(m_parent); }
+        ImGui::EndChild();
+        ImGui::BeginChild("##orpg_items_item_panel_bottomright");
         {
-          m_effectsEditor.draw(m_parent);
-          ImGui::BeginGroup();
-          {
-            ImGui::SeparatorText("Note:");
-            char note[8192];
-            strncpy(note, m_selectedItem->note().c_str(), IM_ARRAYSIZE(note));
-            if (ImGui::InputTextMultiline("##orpg_database_items_note", note, IM_ARRAYSIZE(note), ImVec2{ImGui::GetContentRegionMax().x - 16, ImGui::GetContentRegionAvail().y - 16})) {
-              m_selectedItem->setNote(note);
-            }
+          ImGui::SeparatorText("Note:");
+          char note[8192];
+          strncpy(note, m_selectedItem->note().c_str(), IM_ARRAYSIZE(note));
+          if (ImGui::InputTextMultiline(std::format("##orpg_database_item_note{}", m_selectedItem->id()).c_str(), note, IM_ARRAYSIZE(note), ImVec2{ImGui::GetContentRegionMax().x - 16, 400})) {
+            m_selectedItem->setNote(note);
           }
-          ImGui::EndGroup();
         }
         ImGui::EndChild();
       }

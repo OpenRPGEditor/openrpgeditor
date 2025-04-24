@@ -252,20 +252,17 @@ void DBArmorsTab::draw() {
         }
         ImGui::EndChild();
         ImGui::SameLine();
-        ImGui::BeginChild("##orpg_weapons_armor_panel_right");
+        ImGui::BeginChild("##orpg_armors_armor_panel_right");
+        { m_traitsEditor.draw(m_parent); }
+        ImGui::EndChild();
+        ImGui::BeginChild("##orpg_armors_armor_panel_bottomright");
         {
-
-          m_traitsEditor.draw(m_parent);
-          ImGui::BeginGroup();
-          {
-            ImGui::SeparatorText("Note:");
-            char note[8192];
-            strncpy(note, m_selectedArmor->note().c_str(), IM_ARRAYSIZE(note));
-            if (ImGui::InputTextMultiline("##orpg_database_armors_note", note, IM_ARRAYSIZE(note), ImVec2{ImGui::GetContentRegionMax().x - 16, ImGui::GetContentRegionAvail().y - 16})) {
-              m_selectedArmor->setNote(note);
-            }
+          ImGui::SeparatorText("Note:");
+          char note[8192];
+          strncpy(note, m_selectedArmor->note().c_str(), IM_ARRAYSIZE(note));
+          if (ImGui::InputTextMultiline(std::format("##orpg_database_armor_note{}", m_selectedArmor->id()).c_str(), note, IM_ARRAYSIZE(note), ImVec2{ImGui::GetContentRegionMax().x - 16, 400})) {
+            m_selectedArmor->setNote(note);
           }
-          ImGui::EndGroup();
         }
         ImGui::EndChild();
       }

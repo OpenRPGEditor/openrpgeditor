@@ -27,7 +27,7 @@ std::tuple<bool, bool> Dialog_PlayMovie::draw() {
         ImGui::TableNextColumn();
 
         ImGui::BeginDisabled(m_movieDir.value().isParentDirectory());
-        if (ImGui::Selectable("\u21B0 ..", false, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnClick)) {
+        if (ImGui::Selectable("\u21B0 ..", false, static_cast<int>(ImGuiSelectableFlags_SelectOnNav) | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnClick)) {
           if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
             m_movieDir.value().moveUp();
             m_movies = m_movieDir->getDirectoryContents();
@@ -39,7 +39,7 @@ std::tuple<bool, bool> Dialog_PlayMovie::draw() {
         ImGui::EndDisabled();
         for (int i = 0; i < m_folders.size(); ++i) {
           const auto& folderName = std::format("{} {}", ICON_FA_FOLDER_OPEN, m_folders[i]);
-          if (ImGui::Selectable(folderName.c_str(), m_selectedFolder == i, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnClick)) {
+          if (ImGui::Selectable(folderName.c_str(), m_selectedFolder == i, static_cast<int>(ImGuiSelectableFlags_SelectOnNav) | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnClick)) {
             m_selectedFolder = i;
           }
           if (m_selectedFolder == i && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {

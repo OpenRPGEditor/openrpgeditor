@@ -28,10 +28,10 @@ ByteCodeWriter::~ByteCodeWriter() {
 
   writeUint32Little(0);
   const auto realLen = ROUND_UP_32(m_writer.length());
-  std::unique_ptr<atUint8[]> realData(new atUint8[realLen]);
+  std::unique_ptr<uint8_t[]> realData(new uint8_t[realLen]);
   athena::utility::fillRandom(realData.get(), realLen);
   memcpy(realData.get(), data, m_writer.length());
-  std::unique_ptr<atUint8[]> sha1(getSha1(realData.get(), realLen));
+  std::unique_ptr<uint8_t[]> sha1(getSha1(realData.get(), realLen));
   FileWriter::writeUBytes(sha1.get(), 20);
   FileWriter::writeUBytes(realData.get(), realLen);
 }
@@ -40,7 +40,7 @@ int ByteCodeWriter::Write(const void* ptr, const asUINT size) {
   if (!size)
     return asERROR;
 
-  m_writer.writeUBytes(static_cast<const atUint8*>(ptr), size);
+  m_writer.writeUBytes(static_cast<const uint8_t*>(ptr), size);
   return asSUCCESS;
 }
 
@@ -48,7 +48,7 @@ int ByteCodeWriter::Read(void* ptr, asUINT size) { return asNOT_SUPPORTED; }
 
 ByteCodeReader::ByteCodeReader(const std::string& filepath)
 : FileReader(filepath)
-, m_reader(new atUint8[1], 1, true) {
+, m_reader(new uint8_t[1], 1, true) {
   auto magic = readUint32Big();
   if (magic != 'ASC\0') {
     setError();
@@ -58,16 +58,16 @@ ByteCodeReader::ByteCodeReader(const std::string& filepath)
   auto uncompLen = readUint32Little();
   auto compLen = readUint32Little();
   auto sha1Hash = readUBytes(20);
-  atUint32 realLen = 0;
+  uint32_t realLen = 0;
   if (compLen != 0) {
     realLen = ROUND_UP_32(compLen);
   } else {
     realLen = ROUND_UP_32(uncompLen);
   }
 
-  atUint8* data = new atUint8[realLen];
+  uint8_t* data = new uint8_t[realLen];
   FileReader::readUBytesToBuf(data, realLen);
-  std::unique_ptr<atUint8[]> calculatedHash(getSha1(data, realLen));
+  std::unique_ptr<uint8_t[]> calculatedHash(getSha1(data, realLen));
 
   if (memcmp(sha1Hash.get(), calculatedHash.get(), 20) != 0) {
     setError();
@@ -75,7 +75,7 @@ ByteCodeReader::ByteCodeReader(const std::string& filepath)
   }
 
   if (compLen != 0) {
-    const auto byteCode(new atUint8[uncompLen]);
+    const auto byteCode(new uint8_t[uncompLen]);
     if (auto outSize = athena::io::Compression::decompressZlib(data, compLen, byteCode, uncompLen); outSize != uncompLen) {
       setError();
       return;

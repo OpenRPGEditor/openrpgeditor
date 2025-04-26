@@ -533,9 +533,11 @@ target_include_directories(
 target_compile_features(orecore PRIVATE cxx_std_23)
 target_link_libraries(
         orecore
-        PUBLIC fmt::fmt-header-only
+        PRIVATE
+        fmt::fmt-header-only
+        spdlog::spdlog_header_only
+        PUBLIC
         # CommonUI
-        spdlog::spdlog
         SDL3::SDL3
         SDL3_image::SDL3_image
         imgui-setup
@@ -565,14 +567,22 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_sources(orecore PRIVATE Platform/Linux/Resources.cpp)
 endif ()
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GCC")
+    target_compile_options(orecore PRIVATE -Wno-deprecated-enum-enum-conversion)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "CLANG")
+    target_compile_options(orecore PRIVATE -Wno-deprecated-enum-enum-conversion)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(orecore PRIVATE /utf-8)
 endif ()
 
 add_executable(${NAME} WIN32 MACOSX_BUNDLE App/Main.cpp App/ProjectInfo.cpp
         App/ProjectInfo.hpp)
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GCC")
+    target_compile_options(${NAME} PRIVATE -Wno-deprecated-enum-enum-conversion)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "CLANG")
+    target_compile_options(${NAME} PRIVATE -Wno-deprecated-enum-enum-conversion)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(${NAME} PRIVATE /utf-8)
 endif ()
 
@@ -593,8 +603,10 @@ target_include_directories(
 target_compile_features(${NAME} PRIVATE cxx_std_23)
 target_link_libraries(
         ${NAME}
-        PUBLIC fmt::fmt-header-only
-        spdlog::spdlog
+        PRIVATE
+        fmt::fmt-header-only
+        spdlog::spdlog_header_only
+        PUBLIC
         #       CommonUI
         orecore
         SDL3::SDL3
@@ -623,3 +635,7 @@ endif ()
 if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
     add_compile_definitions(_DEBUG DEBUG)
 endif ()
+
+if(WIN32)
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS=1)
+endif()

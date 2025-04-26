@@ -621,10 +621,10 @@ void MainWindow::drawCreateNewProjectPopup() {
           // TODO: Locale
           std::filesystem::path examplePath;
           if (!isMZ) {
-            std::filesystem::path(Settings::instance()->rpgMakerMVLocation) / "NewData";
+            examplePath = std::filesystem::path(Settings::instance()->rpgMakerMVLocation) / "NewData";
           } else {
             // This newdata needs to be lowercase when copying an RPG Maker MZ example project
-            std::filesystem::path(Settings::instance()->rpgMakerMZLocation) / "newdata";
+            examplePath = std::filesystem::path(Settings::instance()->rpgMakerMZLocation) / "newdata";
           }
           // TODO: MZ corescripts selection
 

@@ -3,6 +3,8 @@
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Log.hpp"
 #include "imgui.h"
+#include "imgui_internal.h"
+#include "misc/cpp/imgui_stdlib.h"
 
 #include <tuple>
 
@@ -10,121 +12,153 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
   if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
   }
+  const auto imageSize = ImGui::GetDPIScaledSize(144, 144);
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(551, 260), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-    const auto buttonSize = ImGui::GetDPIScaledSize(144, 144);
-    const auto buttonCenter = (buttonSize / 2);
-    ImGui::BeginGroup();
+  const auto minimumWidth = ImGui::CalcTextSize("#").x * 60;
+  const auto minimumWindowSize = ImVec2{imageSize.x + minimumWidth + (ImGui::GetStyle().FramePadding.x * 2), imageSize.y + (ImGui::GetTextLineHeight() * 8) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSizeConstraints(minimumWindowSize, {FLT_MAX, FLT_MAX});
+  ImGui::SetNextWindowSize(minimumWindowSize, ImGuiCond_Appearing);
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
+    ImGui::BeginVertical("##show_text_layout", {-1, -1});
     {
-      ImGui::TextUnformatted(trNOOP("Window Position:"));
-      ImGui::Text("Face:");
-      auto cursorPos = ImGui::GetCursorPos();
-      if (ImGui::ImageButton("##svbattler_image", static_cast<ImTextureID>(m_buttonBack), ImGui::GetDPIScaledSize(80.f, 102.f))) {
-        m_characterPicker.setCharacterInfo(m_faceImage, m_faceIndex);
-        m_characterPicker.setOpen(true);
+      ImGui::BeginHorizontal("##show_text_layout_upper", {-1, -1});
+      {
+        ImGui::BeginVertical("##show_text_layout_face", {-1, -1});
+        {
+          ImGui::TextUnformatted("Face:");
+          ImGui::ImageButton("##face_button", static_cast<ImTextureID>(m_buttonBack), imageSize);
+        }
+        ImGui::EndVertical();
+        ImGui::BeginVertical("##show_text_layout_text", {-1, -1});
+        {
+          ImGui::Text("Text:");
+          ImGui::InputTextMultiline("##show_text_multiline", &m_textLine, ImVec2{ImGui::GetContentRegionAvail().x, (ImGui::GetTextLineHeight() * 4) + (ImGui::GetStyle().FramePadding.y * 2)});
+          const auto itemMin = ImGui::GetItemRectMin();
+          const auto itemSize = ImGui::GetItemRectSize();
+          const float lineX = (ImGui::CalcTextSize("#").x * (m_faceImage.length() > 0 ? 43 : 55));
+          ImGui::GetCurrentWindow()->DrawList->AddLine(itemMin + ImVec2{lineX, 0}, itemMin + ImVec2{lineX, itemSize.y}, IM_COL32(0, 0, 0, 255), ImGui::GetDPIScaledValue(2.f));
+          ImGui::BeginHorizontal("##show_text_window_settings", {-1, -1});
+          {
+            ImGui::BeginVertical("##show_text_background", {-1, -1});
+            {
+              ImGui::Text("Background:");
+              ImGui::SetNextItemWidth(ImGui::CalcTextSize("############").x);
+              if (ImGui::BeginCombo("##showtext_background", DecodeEnumName(m_background).c_str())) {
+                for (auto& bg : magic_enum::enum_values<TextBackground>()) {
+                  if (ImGui::Selectable(DecodeEnumName(bg).c_str(), m_background == bg)) {
+                    m_background = bg;
+                    if (m_background == bg)
+                      ImGui::SetItemDefaultFocus();
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            ImGui::EndVertical();
+            ImGui::BeginVertical("##show_text_window_position", {-1, -1});
+            {
+              ImGui::TextUnformatted(trNOOP("Window Position:"));
+              ImGui::SetNextItemWidth(ImGui::CalcTextSize("############").x);
+              if (ImGui::BeginCombo("##show_text_windowpos", DecodeEnumName(m_position).c_str())) {
+                for (auto& pos : magic_enum::enum_values<TextWindowPosition>()) {
+                  if (ImGui::Selectable(DecodeEnumName(pos).c_str(), m_position == pos)) {
+                    m_position = pos;
+                    if (m_position == pos)
+                      ImGui::SetItemDefaultFocus();
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            ImGui::EndVertical();
+            ImGui::Spring();
+            ImGui::BeginVertical("##preview_button");
+            {
+              ImGui::NewLine();
+              if (ImGui::Button(trNOOP("Preview..."), {ImGui::CalcTextSize("############").x, 0})) {
+                // TODO
+              }
+            }
+            ImGui::EndVertical();
+          }
+          ImGui::EndHorizontal();
+        }
+        ImGui::EndVertical();
       }
-      // if (m_faceSheet && m_faceSheet->texture()) {
-      //   const auto faceRect = ImVec2{static_cast<float>(m_faceSheet->faceWidth()), static_cast<float>(m_faceSheet->faceHeight())};
-      //   ImGui::SetCursorPos(((cursorPos + buttonCenter) - (faceRect / 2)) + (ImGui::GetStyle().ItemInnerSpacing - ImVec2{0.f, 1.f}));
-      //   const auto rect = m_faceSheet->getFaceRect(m_faceIndex);
-      //   ImGui::Image(m_faceSheet->texture(), faceRect, rect.min, rect.max);
-      // }
-    }
-    ImGui::EndGroup();
-    ImGui::SameLine();
-    ImGui::BeginGroup();
-    {
-      ImGui::TextUnformatted(trNOOP("Window Position:"));
-      ImGui::Text("Text:");
-      ImGui::InputTextMultiline("##showtext_multiline", m_textLine, 4096, ImVec2{437.f, 107.f});
-      ImGui::EndGroup();
-    }
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetDPIScaledValue(100.f));
-    ImGui::BeginGroup();
-    {
-      ImGui::Text("Background:");
-      ImGui::PushItemWidth(ImGui::GetDPIScaledValue(120));
-      if (ImGui::BeginCombo("##showtext_background", DecodeEnumName(magic_enum::enum_value<TextBackground>(m_background)).c_str())) {
-        for (auto& bg : magic_enum::enum_values<TextBackground>()) {
-          bool is_selected = m_background == magic_enum::enum_index(bg).value();
-          if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(bg)).c_str(), is_selected)) {
-            m_background = magic_enum::enum_index(bg).value();
-            if (is_selected)
-              ImGui::SetItemDefaultFocus();
+      ImGui::EndHorizontal();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##show_text_buttons", {-1, -1});
+      {
+        if (ImGui::Checkbox(trNOOP("Batch Entry"), &m_batchEntry)) {
+          if (!m_batchEntry && std::ranges::count(m_textLine, '\n') >= 4) {
+            int newlineCount = 0;
+            size_t pos = 0;
+            while ((pos = m_textLine.find('\n', pos)) != std::string::npos) {
+              newlineCount++;
+              if (newlineCount == 4) {
+                m_textLine.erase(pos, m_textLine.length() - pos);
+                break;
+              }
+              pos++;
+            }
           }
         }
-        ImGui::EndCombo();
-      }
-      ImGui::EndGroup();
-    }
-    ImGui::SameLine();
-    ImGui::BeginGroup();
-    {
-      ImGui::AlignTextToFramePadding();
-      ImGui::TextUnformatted(trNOOP("Window Position:"));
-      ImGui::PushItemWidth((120));
-      if (ImGui::BeginCombo("##showtext_windowpos", DecodeEnumName(magic_enum::enum_value<TextWindowPosition>(m_position)).c_str())) {
-        for (auto& bg : magic_enum::enum_values<TextWindowPosition>()) {
-          bool is_selected = m_background == magic_enum::enum_index(bg).value();
-          if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(bg)).c_str(), is_selected)) {
-            m_background = magic_enum::enum_index(bg).value();
-            if (is_selected)
-              ImGui::SetItemDefaultFocus();
-          }
+        ImGui::Spring();
+        auto ret = ImGui::ButtonGroup("##show_text_buttons", {trNOOP("OK"), trNOOP("Cancel")});
+        if ((ImGui::IsKeyDown(ImGuiKey_Enter) || ImGui::IsKeyDown(ImGuiKey_KeypadEnter)) && !m_batchEntry && std::ranges::count(m_textLine, '\n') >= 4) {
+          ret = 0;
         }
-        ImGui::EndCombo();
-      }
-      ImGui::SameLine();
-      if (ImGui::Button(trNOOP("Preview..."))) {
-        // TODO
-      }
-      ImGui::EndGroup();
-    }
-    // ImGui::SetCursorPos(ImVec2(ImGui::GetContentRegionMax().x - 78, ImGui::GetCursorPosY()));
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->faceImage = m_faceImage;
-      command->faceIndex = m_faceIndex;
-      command->background = static_cast<TextBackground>(m_background);
-      command->position = static_cast<TextWindowPosition>(m_position);
-      command->textLine = m_textLine;
-      std::vector<std::string> split = splitString(m_textLine, '\n');
-      int index{0};
-      for (auto str : split) {
-        if (split.size() > 4) {
-          if (textIndex == 0) {
-            moreCommands.push_back(command);
+        if (ret == 0) {
+          // OK
+          m_confirmed = true;
+          m_command->faceImage = m_faceImage;
+          m_command->faceIndex = m_faceIndex;
+          m_command->background = m_background;
+          m_command->position = m_position;
+          m_command->textLine = m_textLine;
+          auto split = splitString(m_textLine, '\n');
+          while (split.size() > 1 && split[split.size() - 1].empty()) {
+            split.pop_back();
           }
-          moreCommands.back()->text.push_back(std::make_shared<NextTextCommand>());
-          moreCommands.back()->text.back()->text = str;
-          textIndex++;
-          if (moreCommands.back()->text.size() > 3 && textIndex < split.size()) {
-            moreCommands.push_back(std::make_shared<ShowTextCommand>());
-            moreCommands.back()->faceImage = m_faceImage;
-            moreCommands.back()->faceIndex = m_faceIndex;
-            moreCommands.back()->background = static_cast<TextBackground>(m_background);
-            moreCommands.back()->position = static_cast<TextWindowPosition>(m_position);
-          }
-        } else {
-          if (index == 0) {
-            command->text.clear();
-          }
+          int index{0};
+          int textIndex{0};
+          for (const auto& str : split) {
+            if (split.size() > 4) {
+              if (textIndex == 0) {
+                m_moreCommands.push_back(m_command);
+              }
+              m_moreCommands.back()->text.push_back(std::make_shared<NextTextCommand>());
+              m_moreCommands.back()->text.back()->text = str;
+              textIndex++;
+              if (m_moreCommands.back()->text.size() >= 4 && textIndex < split.size()) {
+                m_moreCommands.push_back(std::make_shared<ShowTextCommand>());
+                m_moreCommands.back()->faceImage = m_faceImage;
+                m_moreCommands.back()->faceIndex = m_faceIndex;
+                m_moreCommands.back()->background = m_background;
+                m_moreCommands.back()->position = m_position;
+              }
+            } else {
+              if (index == 0) {
+                m_command->text.clear();
+              }
 
-          command->text.push_back(std::make_shared<NextTextCommand>());
-          command->text.back()->text = str;
+              m_command->text.push_back(std::make_shared<NextTextCommand>());
+              m_command->text.back()->text = str;
+            }
+            index++;
+          }
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) { // Cancel
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
         }
-        index++;
       }
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
+      ImGui::EndHorizontal();
     }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
   return std::make_tuple(!m_open, m_confirmed);

@@ -11,50 +11,45 @@ struct Dialog_ShowText : IEventDialogController {
   Dialog_ShowText() = delete;
   explicit Dialog_ShowText(const std::string& name, const std::shared_ptr<ShowTextCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ShowTextCommand());
+      m_command.reset(new ShowTextCommand());
     }
-    m_faceImage = command->faceImage;
-    m_faceIndex = command->faceIndex;
-    m_background = static_cast<int>(command->background);
-    m_position = static_cast<int>(command->position);
-    std::string textStr;
-    for (auto& str : command->text) {
-      textStr += str->text + "\n";
-    }
-    APP_INFO("(loading): " + textStr);
-    std::strcpy(m_textLine, textStr.c_str());
-    // strncpy(m_textLine, command->textLine.c_str(), 4096);
+    m_faceImage = m_command->faceImage;
+    m_faceIndex = m_command->faceIndex;
+    m_background = m_command->background;
+    m_position = m_command->position;
+    for (const auto& str : m_command->text) {
+      m_textLine += (m_textLine.empty() ? "" : "\n") + str->text;
+    };
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
   std::vector<std::shared_ptr<IEventCommand>> getBatchCommands() override {
-    for (auto& commands : moreCommands) {
+    for (auto& commands : m_moreCommands) {
       std::shared_ptr<IEventCommand> sharedCommand = commands;
-      eventCommands.push_back(sharedCommand);
+      m_eventCommands.push_back(sharedCommand);
     }
-    return eventCommands;
+    return m_eventCommands;
   };
 
 private:
   std::string m_faceImage;
   int m_faceIndex;
-  int m_background;
-  int m_position;
-  char m_textLine[4096];
-  int textIndex{0};
+  TextBackground m_background;
+  TextWindowPosition m_position;
+  std::string m_textLine;
 
   bool m_batchEntry{false};
   CheckerboardTexture m_buttonBack{80, 102, CellSizes::_64, 255, 200};
   CharacterPicker m_characterPicker{CharacterPicker::PickerMode::Character};
 
   std::optional<FaceSheet> m_faceSheet;
-  std::vector<std::shared_ptr<ShowTextCommand>> moreCommands;
-  std::vector<std::shared_ptr<IEventCommand>> eventCommands;
+  std::vector<std::shared_ptr<ShowTextCommand>> m_moreCommands;
+  std::vector<std::shared_ptr<IEventCommand>> m_eventCommands;
 
   bool m_confirmed{false};
-  std::shared_ptr<ShowTextCommand> command;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<ShowTextCommand> m_command;
+  std::tuple<bool, bool> m_result;
 };

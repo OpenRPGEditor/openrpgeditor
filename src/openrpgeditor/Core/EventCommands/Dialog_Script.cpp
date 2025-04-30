@@ -1,6 +1,7 @@
 #include "Core/EventCommands/Dialog_Script.hpp"
 #include "Core/Application.hpp"
 
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Log.hpp"
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
@@ -13,7 +14,7 @@ std::tuple<bool, bool> Dialog_Script::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{600, 600}, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSize(ImVec2{ImGui::GetDPIScaledValue(1400), 600}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open)) {
 
     ImGui::PushFont(App::APP->getMonoFont());
@@ -38,6 +39,7 @@ std::tuple<bool, bool> Dialog_Script::draw() {
         command->moreScript.reserve(scripts.size());
         for (auto str = std::next(scripts.begin()); str != scripts.end(); ++str) {
           command->moreScript.emplace_back(std::make_shared<NextScriptCommand>())->script = *str;
+          command->moreScript.back()->setIndent(command->indent().value());
         }
         command->moreScript.shrink_to_fit();
       }

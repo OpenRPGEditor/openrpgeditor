@@ -9,6 +9,7 @@
 #include "imgui_internal.h"
 
 #include <clip.h>
+#include <list>
 
 #include <Core/Utils.hpp>
 #include <vector>
@@ -277,7 +278,7 @@ void EventCommandEditor::draw() {
                 m_isRequested = true;
                 if (m_commands->at(n)->code() == EventCode::Event_Dummy) {
                   m_isNewEntry = true;
-                  ImGui::OpenPopup("Command Window");
+                  ImGui::OpenPopup("###command_picker");
                 } else {
                   m_isNewEntry = false;
                   /* These are generated automatically based on their related event command dialogs */
@@ -293,7 +294,7 @@ void EventCommandEditor::draw() {
                       }
                     }
                     commandDialog->setOpen(true);
-                    // ImGui::OpenPopup("Command Window");
+                    // ImGui::OpenPopup("###command_picker");
                   }
                 }
               }
@@ -361,19 +362,19 @@ void EventCommandEditor::draw() {
         if (m_selectedCommand != m_hoveringCommand) {
           m_selectedCommand = m_hoveringCommand;
         }
-        if (ImGui::MenuItem("New...")) {
+        if (ImGui::MenuItem(trNOOP("New..."))) {
           m_isRequested = true;
           m_isNewEntry = true;
         }
         ImGui::EndPopup();
       }
       if (m_isNewEntry)
-        ImGui::OpenPopup("Command Window");
+        ImGui::OpenPopup("###command_picker");
 
       drawPopup();
 
       // We don't want to draw this if the command window is open, or they'll conflict with each other
-      if (!ImGui::IsPopupOpen("Command Window")) {
+      if (!ImGui::IsPopupOpen("###command_picker")) {
         drawCommandDialog();
       }
 
@@ -605,539 +606,226 @@ void EventCommandEditor::drawCommandDialog() {
     }
   }
 }
-void EventCommandEditor::drawSystemTab(ImVec2 size) {
-  if (ImGui::BeginTabItem("System")) {
-    ImGui::BeginHorizontal("commandDialog_system_horizontal");
-    {
-      ImGui::BeginVertical("commandDialog_system_vertical_1");
-      {
-        if (ImGui::Button("Open Menu Screen", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Open_Menu_Screen);
-        }
-        if (ImGui::Button("Open Save Screen", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Open_Save_Screen);
-        }
-        if (ImGui::Button("Change Menu Access...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Menu_Access);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Save Access...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Save_Access);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Formation Access...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Formation_Access);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Encounter...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Encounter_Disable);
-          commandDialog->setOpen(true);
-        }
-      }
-      ImGui::EndVertical();
-      ImGui::BeginVertical("commandDialog_system_vertical_2");
-      {
-        if (ImGui::Button("Change Battle BGM...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Battle_BGM);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Vehicle BGM...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Vechicle_BGM);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Victory ME...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Victory_ME);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Defeat ME...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Defeat_ME);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Map Display Name...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Map_Name_Display);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Parallax...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Parallax);
-          commandDialog->setOpen(true);
-        }
-      }
-      ImGui::EndVertical();
-      ImGui::BeginVertical("commandDialog_system_vertical_3");
-      {
-        if (ImGui::Button("Change Actor Images...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Actor_Images);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Tileset...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Tileset);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Battle Back...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Battle_Back);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Vehicle Image...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Vehicle_Image);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Player Followers...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Player_Followers);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Window Color...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Window_Color);
-          commandDialog->setOpen(true);
-        }
-      }
-      ImGui::EndVertical();
-    }
-    ImGui::EndHorizontal();
 
-    ImGui::EndTabItem();
-  }
-}
-void EventCommandEditor::drawScreenTab(ImVec2 size) {
-  if (ImGui::BeginTabItem("Screen")) {
-    ImGui::BeginHorizontal("commandDialog_screen_horizontal");
+void EventCommandEditor::drawCommandTab(const EventCommandTab& tab, const std::string& id, ImVec2 size) {
+  if (ImGui::BeginTabItem(std::format("{}###{}", tab.title, id).c_str())) {
+    ImGui::BeginHorizontal(std::format("commandDialog_{}_horizontal", tab.title).c_str(), {-1, -1});
     {
-      ImGui::BeginVertical("commandDialog_screen_vertical_1");
-      {
-        if (ImGui::Button("Show Picture...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Show_Picture);
-          commandDialog->setOpen(true);
+      for (int i = 0; const auto& column : tab.buttonColumns) {
+        ImGui::BeginVertical(std::format("commandDialog_{}_{}", tab.title, i).c_str(), {-1, -1});
+        {
+          for (const auto& [code, needsElipses, override, forMV, forMZ] : column) {
+            const auto label = (override.empty() ? DecodeEnumName(code) : override) + (needsElipses ? "..." : "");
+            if ((forMV && Database::instance()->isMV()) || (forMZ && Database::instance()->isMZ())) {
+              if (ImGui::Button(label.c_str(), size)) {
+                commandDialog = CreateCommandDialog(code);
+              }
+            }
+          }
         }
-        if (ImGui::Button("Move Picture...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Move_Picture);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Rotate Picture...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Rotate_Picture);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Tint Picture...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Tint_Picture);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Erase Picture...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Erase_Picture);
-          commandDialog->setOpen(true);
-        }
+        ImGui::EndVertical();
+        ++i;
       }
-      ImGui::EndVertical();
-      ImGui::BeginVertical("commandDialog_screen_vertical_2");
-      {
-        if (ImGui::Button("Tint Screen...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Tint_Screen);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Flash Screen...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Flash_Screen);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Shake Screen...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Shake_Screen);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Fadeout Screen...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Fadeout_Screen);
-        }
-        if (ImGui::Button("Fadein Screen...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Fadein_Screen);
-        }
-      }
-      ImGui::EndVertical();
-      ImGui::BeginVertical("commandDialog_screen_vertical_3");
-      {
-        if (ImGui::Button("Set Weather Effect...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Set_Weather_Effect);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Scroll Map...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Scroll_Map);
-          commandDialog->setOpen(true);
-        }
-      }
-      ImGui::EndVertical();
     }
     ImGui::EndHorizontal();
     ImGui::EndTabItem();
   }
 }
-void EventCommandEditor::drawSceneTab(ImVec2 size) {
-  if (ImGui::BeginTabItem("Scene")) {
-    ImGui::BeginHorizontal("commandDialog_scene_horizontal");
-    {
-      ImGui::BeginVertical("commandDialog_scene_1");
-      {
-        if (ImGui::Button("Show Text...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Show_Text);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Show Choices...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Show_Choices);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Show Scrolling Text...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Show_Scrolling_Text);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Input Number...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Input_Number);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Select Item...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Select_Item);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Set Movement Route...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Set_Movement_Route);
-          commandDialog->setOpen(true);
-        }
-      }
-      ImGui::EndVertical();
-      ImGui::BeginVertical("commandDialog_scene_2");
-      {
-        if (ImGui::Button("Show Animation...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Show_Animation);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Show Battle Animation...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Show_Battle_Animation);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Show Balloon Icon...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Show_Balloon_Icon);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Shop Processing...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Shop_Processing);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Battle Processing...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Battle_Processing);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Name Input Processing...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Name_Input_Processing);
-          commandDialog->setOpen(true);
-        }
-      }
-      ImGui::EndVertical();
-      ImGui::BeginVertical("commandDialog_scene_3");
-      {
-        if (ImGui::Button("Change Transparency...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Transparency);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Get on/off Vehicle", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Get_On_Off_Vehicle);
-        }
-        if (ImGui::Button("Abort Battle", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Abort_Battle);
-        }
-        if (ImGui::Button("Gather Followers", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Gather_Followers);
-        }
-      }
-      ImGui::EndVertical();
-    }
-    ImGui::EndHorizontal();
-    ImGui::EndTabItem();
-  }
+
+std::list<EventCommandEditor::EventCommandTab> EventCommandEditor::buildTabList() {
+  return {
+      EventCommandTab{
+          tr("Actor"),
+          {
+              {
+                  {EventCode::Change_HP, true},
+                  {EventCode::Change_MP, true},
+                  {EventCode::Change_TP, true},
+                  {EventCode::Change_EXP, true},
+                  {EventCode::Change_Level, true},
+                  {EventCode::Change_Skill, true},
+              },
+              {
+                  {EventCode::Change_Gold, true},
+                  {EventCode::Change_State, true},
+                  {EventCode::Change_Equipment, true},
+                  {EventCode::Change_Name, true},
+                  {EventCode::Change_Class, true},
+                  {EventCode::Recover_All, true},
+              },
+              {
+                  {EventCode::Change_Items, true},
+                  {EventCode::Change_Weapons, true},
+                  {EventCode::Change_Armors, true},
+                  {EventCode::Change_Party_Member, true},
+                  {EventCode::Change_Nickname, true},
+                  {EventCode::Change_Profile, true},
+                  {EventCode::Change_Parameter, true},
+              },
+              {
+                  {EventCode::Enemy_Recover_All, true},
+                  {EventCode::Enemy_Appear, true},
+                  {EventCode::Enemy_Transform, true},
+                  {EventCode::Change_Enemy_HP, true},
+                  {EventCode::Change_Enemy_MP, true},
+                  {EventCode::Change_Enemy_TP, true},
+                  {EventCode::Change_Enemy_State, true},
+              },
+          },
+      },
+      EventCommandTab{
+          tr("Audio"),
+          {
+              {
+                  {EventCode::Play_BGM, true},
+                  {EventCode::Save_BGM, false},
+                  {EventCode::Fadeout_BGM, true},
+                  {EventCode::Resume_BGM, false, trNOOP("Resume BGM")},
+              },
+              {
+                  {EventCode::Play_BGS, true},
+                  {EventCode::Fadeout_BGS, true},
+                  {EventCode::Play_Movie, true},
+              },
+              {
+                  {EventCode::Play_ME, true},
+                  {EventCode::Play_SE, true},
+                  {EventCode::Stop_SE, false},
+              },
+          },
+      },
+      EventCommandTab{
+          tr("Flow Control"),
+          {
+              {
+                  {EventCode::Comment, true},
+                  {EventCode::Conditional_Branch, true},
+                  {EventCode::Loop, false},
+                  {EventCode::Jump_To_Label, true},
+                  {EventCode::Label, true},
+                  {EventCode::Break_Loop, false},
+                  {EventCode::Wait, true},
+              },
+              {
+                  {EventCode::Control_Switches, true},
+                  {EventCode::Control_Self_Switch, true},
+                  {EventCode::Control_Variables, true},
+                  {EventCode::Common_Event, true},
+                  {EventCode::Control_Timer, true},
+                  {EventCode::Erase_Event, false},
+                  {EventCode::Exit_Event_Processing, false},
+              },
+              {
+                  {EventCode::Transfer_Player, true},
+                  {EventCode::Set_Event_Location, true},
+                  {EventCode::Set_Vehicle_Location, true},
+                  {EventCode::Script, true},
+                  {EventCode::Plugin_Command_del_MV, true, {}, true, false},
+                  {EventCode::Plugin_Command_del_MZ, true, {}, false, true},
+                  {EventCode::Game_Over, false},
+                  {EventCode::Return_To_Title_Screen, false},
+              },
+          },
+      },
+      EventCommandTab{
+          tr("Scene"),
+          {
+              {
+                  {EventCode::Show_Text, true},
+                  {EventCode::Show_Choices, true},
+                  {EventCode::Show_Scrolling_Text, true},
+                  {EventCode::Input_Number, true},
+                  {EventCode::Select_Item, true},
+                  {EventCode::Set_Movement_Route, true},
+              },
+              {
+                  {EventCode::Show_Animation, true},
+                  {EventCode::Show_Battle_Animation, true},
+                  {EventCode::Show_Balloon_Icon, true},
+                  {EventCode::Shop_Processing, true},
+                  {EventCode::Battle_Processing, true},
+                  {EventCode::Name_Input_Processing, true},
+              },
+              {
+                  {EventCode::Change_Transparency, true},
+                  {EventCode::Get_on_fwsl_off_Vehicle},
+                  {EventCode::Abort_Battle, false},
+                  {EventCode::Gather_Followers, false},
+              },
+          },
+      },
+      EventCommandTab{
+          trNOOP("Screen"),
+          {
+              {
+                  {EventCode::Show_Picture, true},
+                  {EventCode::Rotate_Picture, true},
+                  {EventCode::Rotate_Picture, true},
+                  {EventCode::Tint_Picture, true},
+                  {EventCode::Erase_Picture, true},
+              },
+              {
+                  {EventCode::Tint_Screen, true},
+                  {EventCode::Flash_Screen, true},
+                  {EventCode::Shake_Screen, true},
+                  {EventCode::Fadeout_Screen, true},
+                  {EventCode::Fadein_Screen, true},
+              },
+              {
+                  {EventCode::Set_Weather_Effect, true},
+                  {EventCode::Scroll_Map, true},
+              },
+          },
+      },
+      EventCommandTab{
+          tr("System"),
+          {
+              {
+                  {EventCode::Open_Menu_Screen, false},
+                  {EventCode::Open_Save_Screen, false},
+                  {EventCode::Change_Menu_Access, true},
+                  {EventCode::Change_Save_Access, true},
+                  {EventCode::Change_Formation_Access, true},
+                  {EventCode::Change_Encounter, true},
+              },
+              {
+                  {EventCode::Change_Battle_BGM, true},
+                  {EventCode::Change_Vechicle_BGM, true},
+                  {EventCode::Change_Victory_ME, true},
+                  {EventCode::Change_Defeat_ME, true},
+                  {EventCode::Change_Map_Display_Name, true},
+                  {EventCode::Change_Parallax, true},
+              },
+              {
+                  {EventCode::Change_Actor_Images, true},
+                  {EventCode::Change_Tileset, true},
+                  {EventCode::Change_Battle_Back, true},
+                  {EventCode::Change_Vehicle_Image, true},
+                  {EventCode::Change_Player_Followers, true},
+                  {EventCode::Change_Window_Color, true},
+              },
+          },
+      },
+  };
 }
-void EventCommandEditor::drawFlowControlTab(ImVec2 size) {
-  if (ImGui::BeginTabItem("Flow")) {
-    ImGui::BeginHorizontal("commandDialog_flow_horizontal");
-    {
-      ImGui::BeginVertical("commandDialog_flow_vertical_1");
-      {
-        if (ImGui::Button("Comment...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Comment);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Conditional Branch...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Conditional_Branch);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Loop", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Loop);
-        }
-        if (ImGui::Button("Jump to Label...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Jump_To_Label);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Label...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Label);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Break Loop", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Break_Loop);
-        }
-        if (ImGui::Button("Wait...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Wait);
-          commandDialog->setOpen(true);
+
+float EventCommandEditor::findLargestButtonWidth(const std::list<EventCommandTab>& tabs) {
+  float maxWidth = 0;
+
+  for (const auto& [_, buttonColumns] : tabs) {
+    for (const auto& column : buttonColumns) {
+      for (const auto& button : column) {
+        const auto label = (button.override.empty() ? DecodeEnumName(button.code) : button.override) + (button.needsElipses ? "..." : "");
+        if (const auto width = ImGui::CalcTextSize(label.c_str()).x; width > maxWidth) {
+          maxWidth = width;
         }
       }
-      ImGui::EndVertical();
-      ImGui::BeginVertical("commandDialog_flow_vertical_2");
-      {
-        if (ImGui::Button("Control Switches...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Control_Switches);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Control Self Switch...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Control_Self_Switch);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Control Variables...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Control_Variables);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Common Event...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Common_Event);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Control Timer...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Control_Timer);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Erase Event", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Erase_Event);
-        }
-        if (ImGui::Button("Exit Event Processing", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Exit_Event_Processing);
-        }
-      }
-      ImGui::EndVertical();
-      ImGui::BeginVertical("commandDialog_flow_vertical_3");
-      {
-        if (ImGui::Button("Transfer Player...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Transfer_Player);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Set Event Location...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Set_Event_Location);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Set Vehicle Location...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Set_Vehicle_Location);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Script...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Script);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Plugin Command...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::PluginMV_Command);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Game Over", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Game_Over);
-        }
-        if (ImGui::Button("Return To Title Screen", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Return_To_Title_Screen);
-        }
-      }
-      ImGui::EndVertical();
     }
-    ImGui::EndHorizontal();
-    ImGui::EndTabItem();
   }
+
+  return maxWidth + (ImGui::GetStyle().ItemInnerSpacing.x * 2);
 }
-void EventCommandEditor::drawAudioTab(ImVec2 size) {
 
-  if (ImGui::BeginTabItem("Audio")) {
-    ImGui::BeginHorizontal("commandDialog_audio_horizontal");
-    {
-      ImGui::BeginVertical("commandDialog_audio_vertical_1");
-      {
-        if (ImGui::Button("Play BGM...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Play_BGM);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Save BGM", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Save_BGM);
-        }
-        if (ImGui::Button("Fadeout BGM...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Fadeout_BGM);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Replay BGM", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Resume_BGM);
-        }
-      }
-      ImGui::EndVertical();
-      ImGui::BeginVertical("commandDialog_audio_vertical_2");
-      {
-        if (ImGui::Button("Play BGS...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Play_BGS);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Fadeout BGS...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Fadeout_BGS);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Play Movie...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Play_Movie);
-          commandDialog->setOpen(true);
-        }
-      }
-      ImGui::EndVertical();
-      ImGui::BeginVertical("commandDialog_audio_vertical_3");
-      {
-        if (ImGui::Button("Play ME...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Play_ME);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Play SE...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Play_SE);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Stop SE", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Stop_SE);
-        }
-      }
-      ImGui::EndVertical();
-    }
-    ImGui::EndHorizontal();
-    ImGui::EndTabItem();
-  }
-}
-void EventCommandEditor::drawActorTab(ImVec2 size) {
-
-  if (ImGui::BeginTabItem("Actor")) {
-
-    ImGui::BeginHorizontal("commandDialog_actor_horizontal");
-    {
-      ImGui::BeginVertical("commandDialog_actor_vertical_1");
-      {
-        if (ImGui::Button("Change HP...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_HP);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change MP...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_MP);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change TP...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_TP);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change EXP...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_EXP);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Level...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Level);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Skill...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Skill);
-          commandDialog->setOpen(true);
-        }
-      }
-      ImGui::EndVertical();
-      ImGui::BeginVertical("commandDialog_actor_vertical_2");
-      {
-        if (ImGui::Button("Change Gold...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Gold);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change State...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_State);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Equipment...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Equipment);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Name...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Name);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Class...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Class);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Recover All...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Recover_All);
-          commandDialog->setOpen(true);
-        }
-      }
-      ImGui::EndVertical();
-      ImGui::BeginVertical("commandDialog_actor_vertical_3");
-      {
-        if (ImGui::Button("Change Items...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Items);
-          commandDialog->setOpen(true);
-        }
-
-        if (ImGui::Button("Change Weapons...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Weapons);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Armors...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Armors);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Party Member...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Party_Member);
-          commandDialog->setOpen(true);
-        }
-
-        if (ImGui::Button("Change Nickname...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Nickname);
-          commandDialog->setOpen(true);
-        }
-
-        if (ImGui::Button("Change Profile...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Profile);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Parameter...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Parameter);
-          commandDialog->setOpen(true);
-        }
-      }
-      ImGui::EndVertical();
-      ImGui::BeginVertical("commandDialog_actor_vertical_4");
-      {
-        if (ImGui::Button("Enemy Recover All...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Enemy_Recover_All);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Enemy Appear...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Enemy_Appear);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Enemy Transform...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Enemy_Transform);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Enemy HP...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Enemy_HP);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Enemy MP...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Enemy_MP);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Enemy TP...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Enemy_TP);
-          commandDialog->setOpen(true);
-        }
-        if (ImGui::Button("Change Enemy State...", size)) {
-          commandDialog = CreateCommandDialog(EventCode::Change_Enemy_State);
-          commandDialog->setOpen(true);
-        }
-      }
-      ImGui::EndVertical();
-    }
-    ImGui::EndHorizontal();
-    ImGui::EndTabItem();
-  }
-}
 void EventCommandEditor::drawPopup() {
   if (m_selectedCommand < 0) {
     return;
@@ -1145,55 +833,94 @@ void EventCommandEditor::drawPopup() {
   if (!m_isRequested) {
     return;
   }
-  ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(1024, 512), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal("Command Window", nullptr, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
-    // Event Templates
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    if (ImGui::BeginCombo("##eventcommand_editor_presets", "Select a preset to insert into selection...")) {
-      int index{0};
-      for (auto& templ : Database::instance()->templates.templates) {
-        if (templ.type() == Template::TemplateType::Command) {
-          if (!templ.commands().empty()) {
-            if (ImGui::Selectable(templ.name().c_str(), false)) {
 
-              CommandParser parser;
-              nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(templ.commands());
-              std::vector<std::shared_ptr<IEventCommand>> parsed = parser.parse(cmdJson);
-              for (const auto& command : parsed) {
-                if (command) {
-                  command->adjustIndent(m_commands->at(m_selectedCommand)->indent().value());
-                }
-              }
-              if ((parsed.size() == 1 && parsed.at(0)->code() == EventCode::Event_Dummy) == false) {
-                m_commands->insert(m_commands->begin() + m_selectedCommand, parsed.begin(), parsed.end() - 1);
-              }
-              m_isNewEntry = false;
-              m_isRequested = false;
-              // ImGui::CloseCurrentPopup();
-            }
-            index++;
-          } else {
-            if (ImGui::Selectable(("Error loading template: " + templ.name()).c_str(), false)) {}
-          }
+  const auto commandTabs = buildTabList();
+  int numColumns = 0;
+  int numButtons = 0;
+  for (const auto& [_, buttonColumns] : commandTabs) {
+    if (buttonColumns.size() > numColumns) {
+      numColumns = buttonColumns.size();
+      for (const auto& buttons : buttonColumns) {
+        if (buttons.size() > numButtons) {
+          numButtons = buttons.size();
         }
       }
-      ImGui::EndCombo();
     }
-    if (ImGui::BeginTabBar("##orpg_command_window")) {
-      ImVec2 size = ImVec2{ImGui::GetDPIScaledValue(200.f), 0};
+  }
 
-      drawActorTab(size);
-      drawAudioTab(size);
-      drawFlowControlTab(size);
-      drawSceneTab(size);
-      drawScreenTab(size);
-      drawSystemTab(size);
-      drawCommandDialog();
+  // numColumns++;
+  const auto buttonWidth = findLargestButtonWidth(commandTabs);
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, {0.5f, 0.5f});
+  ImGui::SetNextWindowSize(
+      {buttonWidth * numColumns + (ImGui::GetStyle().FramePadding.x * (numColumns + 2)), ImGui::GetTextLineHeightWithSpacing() * (numButtons + 10) + (ImGui::GetStyle().FramePadding.y * 2)},
+      ImGuiCond_Appearing);
+  if (ImGui::BeginPopupModal(std::format("{}###command_picker", trNOOP("Command Window")).c_str(), nullptr,
+                             ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize)) {
+    bool close = false;
+    ImGui::BeginVertical("##command_picker", ImGui::GetContentRegionAvail());
+    {
+      ImGui::BeginVertical("##command_picker_upper", {-1, -1});
+      {
+        // Event Templates
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        if (ImGui::BeginCombo("##eventcommand_editor_presets", trNOOP("Select a preset to insert into selection..."))) {
+          int index{0};
+          for (auto& templ : Database::instance()->templates.templates) {
+            if (templ.type() == Template::TemplateType::Command) {
+              if (!templ.commands().empty()) {
+                if (ImGui::Selectable(templ.name().c_str(), false)) {
 
-      ImGui::EndTabBar();
+                  CommandParser parser;
+                  nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(templ.commands());
+                  std::vector<std::shared_ptr<IEventCommand>> parsed = parser.parse(cmdJson);
+                  for (const auto& command : parsed) {
+                    if (command) {
+                      command->adjustIndent(m_commands->at(m_selectedCommand)->indent().value());
+                    }
+                  }
+                  if ((parsed.size() == 1 && parsed.at(0)->code() == EventCode::Event_Dummy) == false) {
+                    m_commands->insert(m_commands->begin() + m_selectedCommand, parsed.begin(), parsed.end() - 1);
+                  }
+                  m_isNewEntry = false;
+                  m_isRequested = false;
+                  // ImGui::CloseCurrentPopup();
+                }
+                index++;
+              } else {
+                if (ImGui::Selectable(tr("Error loading template: " + templ.name()).c_str(), false)) {}
+              }
+            }
+          }
+          ImGui::EndCombo();
+        }
+        if (ImGui::BeginTabBar("##orpg_command_window")) {
+          const auto size = ImVec2{buttonWidth, 0};
+
+          for (int i = 0; const auto& tab : commandTabs) {
+            drawCommandTab(tab, std::format("commandDialog_tab{}", i), size);
+            ++i;
+          }
+
+          ImGui::EndTabBar();
+        }
+      }
+      ImGui::EndVertical();
+      ImGui::Spring();
+      ImGui::BeginVertical("##command_picker_lower", {-1, -1});
+      {
+        ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+        ImGui::BeginHorizontal("##buttons", {-1, -1});
+        {
+          ImGui::Spring();
+          const int ret = ImGui::ButtonGroup("##action_buttons", {trNOOP("Cancel")});
+          close = ret == 0;
+        }
+        ImGui::EndHorizontal();
+      }
+      ImGui::EndVertical();
     }
-
-    if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+    ImGui::EndVertical();
+    if (ImGui::IsKeyPressed(ImGuiKey_Escape) || close) {
       if (commandDialog) {
         commandDialog.reset();
       } else {

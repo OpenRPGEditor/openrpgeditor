@@ -43,6 +43,8 @@ std::string DecodeEnumName(std::string_view str) {
   ReplaceStr(result, "_gt_", ">");
   ReplaceStr(result, "_gteq_", "\u2265");
   ReplaceStr(result, "_not_", "!");
+  ReplaceStr(result, "_basl_", "\\");
+  ReplaceStr(result, "_fwsl_", "/");
 
   // Remove the leading underscore if it exists
   if (result.front() == '_')
@@ -85,6 +87,8 @@ std::string UndectorateEnumName(std::string_view str) {
   ReplaceStr(result, "_gt_", "");
   ReplaceStr(result, "_gteq_", "");
   ReplaceStr(result, "_not_", "");
+  ReplaceStr(result, "_bacsl_", " ");
+  ReplaceStr(result, "_fwsl_", " ");
 
   // Remove the leading underscore if it exists
   if (result.front() == '_')

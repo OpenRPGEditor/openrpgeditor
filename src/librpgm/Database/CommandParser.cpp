@@ -136,7 +136,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
     case EventCode::Change_Menu_Access:
       ret.emplace_back(new ChangeMenuAccessCommand(indent, parameters));
       break;
-    case EventCode::Change_Encounter_Disable:
+    case EventCode::Change_Encounter:
       ret.emplace_back(new ChangeEncounterDisableCommand(indent, parameters));
       break;
     case EventCode::Change_Formation_Access:
@@ -173,7 +173,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       }
       break;
     }
-    case EventCode::Get_On_Off_Vehicle:
+    case EventCode::Get_on_fwsl_off_Vehicle:
       ret.emplace_back(new GetOnOffVehicleCommand(indent, parameters));
       break;
     case EventCode::Change_Transparency:
@@ -260,7 +260,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
     case EventCode::Play_Movie:
       ret.emplace_back(new PlayMovieCommand(indent, parameters));
       break;
-    case EventCode::Change_Map_Name_Display:
+    case EventCode::Change_Map_Display_Name:
       ret.emplace_back(new ChangeMapNameDisplayCommand(indent, parameters));
       break;
     case EventCode::Change_Tileset:
@@ -403,7 +403,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       }
       break;
     }
-    case EventCode::PluginMV_Command:
+    case EventCode::Plugin_Command_del_MV:
       ret.emplace_back(new PluginCommandMV(indent, parameters));
       break;
     case EventCode::End:

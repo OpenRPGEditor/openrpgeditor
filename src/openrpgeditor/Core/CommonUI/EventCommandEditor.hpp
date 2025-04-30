@@ -149,12 +149,26 @@
 #include "Database/EventCommands/ShowBattleAnimation.hpp"
 #include "Database/EventCommands/TransferPlayer.hpp"
 
+#include <list>
 #include <memory>
 #include <vector>
 
 struct IEventCommand;
 struct MainWindow;
 struct EventCommandEditor {
+  struct EventCommandButton {
+    EventCode code;
+    bool needsElipses;
+    std::string override;
+    bool forMV = true;
+    bool forMZ = true;
+  };
+
+  struct EventCommandTab {
+    std::string title;
+    std::list<std::list<EventCommandButton>> buttonColumns;
+  };
+
   EventCommandEditor()
   : commandDialog(nullptr) {}
   void blockSelect(int n, bool isDelete);
@@ -170,14 +184,12 @@ struct EventCommandEditor {
   }
 
 private:
+  static std::list<EventCommandTab> buildTabList();
+  static float findLargestButtonWidth(const std::list<EventCommandTab>& tabs);
   void drawPopup();
   void drawCommandDialog();
-  void drawSystemTab(ImVec2 size);
-  void drawScreenTab(ImVec2 size);
-  void drawSceneTab(ImVec2 size);
-  void drawFlowControlTab(ImVec2 size);
-  void drawAudioTab(ImVec2 size);
-  void drawActorTab(ImVec2 size);
+  void drawCommandTab(const EventCommandTab& tab, const std::string&, ImVec2 size);
+
   bool m_isNewEntry{false};
   bool m_needsUpdate{false};
   bool m_isRequested{false};
@@ -267,7 +279,7 @@ private:
       return std::make_shared<Dialog_ChangeSaveAccess>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeSaveAccessCommand>(cmd));
     case EventCode::Change_Menu_Access:
       return std::make_shared<Dialog_ChangeMenuAccess>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeMenuAccessCommand>(cmd));
-    case EventCode::Change_Encounter_Disable:
+    case EventCode::Change_Encounter:
       return std::make_shared<Dialog_ChangeEncounter>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEncounterDisableCommand>(cmd));
     case EventCode::Change_Formation_Access:
       return std::make_shared<Dialog_ChangeFormationAccess>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeFormationAccessCommand>(cmd));
@@ -289,7 +301,7 @@ private:
       return std::make_shared<Dialog_SetMovementRoute>(DecodeEnumName(code), std::dynamic_pointer_cast<SetMovementRouteCommand>(cmd));
     case EventCode::Movement_Route_Step:
       break;
-    case EventCode::Get_On_Off_Vehicle:
+    case EventCode::Get_on_fwsl_off_Vehicle:
       return std::make_shared<Dialog_GetOnOffVehicle>(DecodeEnumName(code), std::dynamic_pointer_cast<GetOnOffVehicleCommand>(cmd));
     case EventCode::Change_Transparency:
       return std::make_shared<Dialog_ChangeTransparency>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeTransparencyCommand>(cmd));
@@ -347,7 +359,7 @@ private:
       return std::make_shared<Dialog_StopSE>(DecodeEnumName(code), std::dynamic_pointer_cast<StopSECommand>(cmd));
     case EventCode::Play_Movie:
       return std::make_shared<Dialog_PlayMovie>(DecodeEnumName(code), std::dynamic_pointer_cast<PlayMovieCommand>(cmd));
-    case EventCode::Change_Map_Name_Display:
+    case EventCode::Change_Map_Display_Name:
       return std::make_shared<Dialog_ChangeMapDisplayName>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeMapNameDisplayCommand>(cmd));
     case EventCode::Change_Tileset:
       return std::make_shared<Dialog_ChangeTileset>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeTilesetCommand>(cmd));
@@ -439,9 +451,9 @@ private:
       return std::make_shared<Dialog_Script>(DecodeEnumName(code), std::dynamic_pointer_cast<ScriptCommand>(cmd));
     case EventCode::Next_Script:
       break;
-    case EventCode::PluginMV_Command:
+    case EventCode::Plugin_Command_del_MV:
       return std::make_shared<Dialog_ChangePluginCommand>(DecodeEnumName(code), std::dynamic_pointer_cast<PluginCommandMV>(cmd));
-    case EventCode::PluginMZ_Command:
+    case EventCode::Plugin_Command_del_MZ:
       break;
     case EventCode::Next_PluginMZ_Command:
       break;

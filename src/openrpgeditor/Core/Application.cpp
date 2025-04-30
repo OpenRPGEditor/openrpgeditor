@@ -132,9 +132,9 @@ void Application::updateScale() {
   style.ScrollbarSize = 12.f;
   const auto scale = std::max(SDL_GetWindowPixelDensity(m_window->getNativeWindow()), SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
   ImGui::GetCurrentContext()->CurrentDpiScale = scale;
-  style.CurveTessellationTol = 1;
-  style.CircleTessellationMaxError = 1;
   style.ScaleAllSizes(scale);
+  style.CurveTessellationTol = 0.1f;
+  style.CircleTessellationMaxError = 0.1f;
 }
 
 void Application::updateGuiColors() {
@@ -438,7 +438,6 @@ ExitStatus Application::run() {
     ImGui_ImplSDL3_NewFrame();
 
     ImGui::NewFrame();
-    updateScale();
 
     frameTime += ImGui::GetIO().DeltaTime;
     saveTime += ImGui::GetIO().DeltaTime;
@@ -552,6 +551,7 @@ void Application::onEvent(const SDL_WindowEvent& event) {
   }
   case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
   case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED: {
+    updateScale();
     break;
   }
   case SDL_EVENT_WINDOW_MAXIMIZED: {

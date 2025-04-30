@@ -6,6 +6,7 @@
 #include "imgui_internal.h"
 #include "misc/cpp/imgui_stdlib.h"
 
+#include <iostream>
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ShowText::draw() {
@@ -19,7 +20,7 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
   const auto minimumWindowSize = ImVec2{imageSize.x + minimumWidth + (ImGui::GetStyle().FramePadding.x * 2), imageSize.y + (ImGui::GetTextLineHeight() * 8) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSizeConstraints(minimumWindowSize, {FLT_MAX, FLT_MAX});
   ImGui::SetNextWindowSize(minimumWindowSize, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar)) {
     ImGui::BeginVertical("##show_text_layout", {-1, -1});
     {
       ImGui::BeginHorizontal("##show_text_layout_upper", {-1, -1});
@@ -33,9 +34,11 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
         ImGui::BeginVertical("##show_text_layout_text", {-1, -1});
         {
           ImGui::Text("Text:");
-          ImGui::InputTextMultiline("##show_text_multiline", &m_textLine, ImVec2{ImGui::GetContentRegionAvail().x, (ImGui::GetTextLineHeight() * 4) + (ImGui::GetStyle().FramePadding.y * 2)});
+          ImGui::InputTextMultiline("##show_text_multiline", &m_textLine, ImVec2{ImGui::GetContentRegionAvail().x, (ImGui::GetTextLineHeight() * 4) + (ImGui::GetStyle().FramePadding.y * 2)},
+                                    ImGuiInputTextFlags_CallbackAlways);
           const auto itemMin = ImGui::GetItemRectMin();
           const auto itemSize = ImGui::GetItemRectSize();
+          const auto itemID = ImGui::GetItemID();
           const float lineX = (ImGui::CalcTextSize("#").x * (m_faceImage.length() > 0 ? 43 : 55));
           ImGui::GetCurrentWindow()->DrawList->AddLine(itemMin + ImVec2{lineX, 0}, itemMin + ImVec2{lineX, itemSize.y}, IM_COL32(0, 0, 0, 255), ImGui::GetDPIScaledValue(2.f));
           ImGui::BeginHorizontal("##show_text_window_settings", {-1, -1});

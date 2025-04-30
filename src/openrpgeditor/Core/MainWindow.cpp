@@ -159,6 +159,7 @@ std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
     ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing, {.5f, .5f});
     int ret = -1;
     if (ImGui::BeginPopupModal(std::format("{}###save_changes", trNOOP("Save changes?")).c_str(), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove)) {
+      ImGui::BringWindowToDisplayFront(ImGui::GetCurrentWindow());
       ImGui::BeginVertical("##save_changes_inner", ImGui::GetContentRegionAvail());
       {
         ImGui::TextUnformatted(trFormat("\"{0}\" at \"{1}\"\n"
@@ -503,7 +504,7 @@ void MainWindow::drawShutdownSplash(const bool shuttingDown) {
   ImGui::End();
   ImGui::PopStyleColor();
 }
-void MainWindow::draw(const bool shuttingDown) {
+void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
 
   ImGuiViewport* viewport = ImGui::GetMainViewport();
   ImGui::SetNextWindowPos(viewport->Pos + ImVec2(0, m_menuBarHeight + m_toolbarSize));
@@ -517,12 +518,15 @@ void MainWindow::draw(const bool shuttingDown) {
     ImGui::BeginDisabled(shuttingDown);
     drawToolbar();
     drawMenu();
-    m_settingsDialog.draw();
-    m_mapEditor.draw();
-    m_eventSearcher.draw();
-    m_libLCF.draw();
+    if (!closeRequested) {
+      m_settingsDialog.draw();
+      m_eventSearcher.draw();
+      m_libLCF.draw();
+    }
 
-    if (m_databaseEditor) {
+    m_mapEditor.draw(closeRequested);
+
+    if (m_databaseEditor && !closeRequested) {
       // ORE_CHECK_EXPERIMENTAL_BEGIN();
       // // TODO(phil): This is slow on large projects, we need to wire up all of the isModified signals and report in a granular fashion rather than checking the whole project every frame
       // if (m_database && m_database->isModified()) {
@@ -547,7 +551,6 @@ void MainWindow::draw(const bool shuttingDown) {
       // TODO: handle revert?
     }
     ORE_CHECK_DEBUG_BEGIN()
-
     drawTileDebugger();
 
     if (m_showDemoWindow) {
@@ -559,8 +562,10 @@ void MainWindow::draw(const bool shuttingDown) {
       ImGui::ShowAboutWindow(&m_showAboutWindow);
     }
 
-    m_nwjsVersionManager.draw();
-    EditorPluginManager::instance()->draw();
+    if (!closeRequested) {
+      m_nwjsVersionManager.draw();
+      EditorPluginManager::instance()->draw();
+    }
 
     if (FileQueue::instance().hasTasks() && !shuttingDown) {
       ImGui::Begin(std::format("{}###filequeuestatus", FileQueue::instance().operationType() == ISerializable::Operation::Read ? trNOOP("Loading Project....") : trNOOP("Saving Project....")).c_str(),
@@ -573,9 +578,10 @@ void MainWindow::draw(const bool shuttingDown) {
 
     ImGui::RenderNotifications();
 
-    drawCreateNewProjectPopup();
-
-    EditorPluginManager::instance()->callDraws();
+    if (!closeRequested) {
+      drawCreateNewProjectPopup();
+      EditorPluginManager::instance()->callDraws();
+    }
     ImGui::EndDisabled();
 
     drawShutdownSplash(shuttingDown);

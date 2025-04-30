@@ -604,7 +604,7 @@ void MapEditor::renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer
   // renderLayerRects(win, layer);
 }
 
-void MapEditor::draw() {
+void MapEditor::draw(const bool closeRequested) {
   if (!m_checkeredBack) {
     m_checkeredBack = CheckerboardTexture(64, 64, CellSizes::_48, 255, 220);
   }
@@ -658,7 +658,7 @@ void MapEditor::draw() {
   m_mapScale = roundToNearestQuarter(m_mapScale);
   m_mapScale = std::clamp(m_mapScale, .25f, 4.f);
 
-  if (map()) {
+  if (map() && !closeRequested) {
     for (auto& event : map()->events()) {
       if (!event || event->id() == 0) {
         continue;

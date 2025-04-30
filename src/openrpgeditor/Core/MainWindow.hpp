@@ -75,7 +75,7 @@ public:
   [[nodiscard]] bool isValid() const { return m_isValid; }
   [[nodiscard]] const std::string& version() const { return m_database->projectVersion; }
 
-  void draw(bool shuttingDown = false);
+  void draw(bool shuttingDown = false, bool closeRequested = false);
   void drawTileInfo(MapRenderer::MapLayer& mapLayer, int z);
   void handleOpenFile();
   void handleCreateNewProject();

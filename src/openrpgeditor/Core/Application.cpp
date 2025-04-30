@@ -449,7 +449,8 @@ ExitStatus Application::run() {
     }
 
     if (!m_firstBootWizard) {
-      m_project->draw(m_doQuit && m_userClosed);
+      m_project->draw(m_doQuit && m_userClosed, m_projectCloseRequest);
+
       if (needsInitialProjectLoad) {
         m_project->load(Settings::instance()->lastProject, std::filesystem::path(Settings::instance()->lastProject).remove_filename().generic_string());
         needsInitialProjectLoad = false;

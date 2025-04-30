@@ -23,7 +23,7 @@ struct MapEditor {
   : m_parent(parent)
   , m_tileCursor(this) {}
 
-  void draw();
+  void draw(bool closeRequested = false);
 
   void setMap(MapInfo* info);
 

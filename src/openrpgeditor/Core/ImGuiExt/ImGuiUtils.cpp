@@ -538,14 +538,14 @@ bool BeginGroupBox(const char* label, const ImVec2& size, bool* selected, bool* 
 
   /* Pad the size to fit the header */
   bool fillRegion = false;
-  if (size.x > 0.f) {
+  if (size.x >= 0.f) {
     realSize.x += GetStyle().FramePadding.x + GetStyle().FrameBorderSize + GetStyle().WindowPadding.x;
   } else if (size.x <= -1.f) {
     realSize.x = (GetFontSize() / 2) + GetStyle().FrameBorderSize;
     fillRegion = true;
   }
 
-  if (size.y > 0.f) {
+  if (size.y >= 0.f) {
     realSize.y += (GetFontSize() / 2) + GetFrameHeight();
   } else if (size.y <= -1.f) {
     realSize.y = (GetFontSize() / 2) + GetFrameHeight();
@@ -558,29 +558,30 @@ bool BeginGroupBox(const char* label, const ImVec2& size, bool* selected, bool* 
   }
 
   const auto visible = BeginChild(id, fillRegion ? size : realSize, child_flags | ImGuiChildFlags_FrameStyle, window_flags);
-
-  auto oldPos = GetCursorScreenPos();
-  SetCursorScreenPos({groupStart.x + GetStyle().FramePadding.x + GetStyle().FrameBorderSize, groupStart.y});
-  auto clip = GetCurrentWindow()->ClipRect;
-  clip.Min.y -= realSize.y;
-  PushClipRect(clip.Min, clip.Max, false);
-  if (visible && BeginChild(labelId, {}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle, ImGuiWindowFlags_NoScrollbar)) {
-    // Group Header text
-    if (!selected) {
-      TextUnformatted(label);
-    } else {
-      PushStyleVarY(ImGuiStyleVar_FramePadding, GetStyle().FramePadding.y * 0.5);
-      const bool isClicked = SizeableCheckbox(label, selected, GetFrameHeight() * 0.45f);
-      if (clicked) {
-        *clicked = isClicked;
+  if (visible) {
+    auto oldPos = GetCursorScreenPos();
+    SetCursorScreenPos({groupStart.x + GetStyle().FramePadding.x + GetStyle().FrameBorderSize, groupStart.y});
+    auto clip = GetCurrentWindow()->ClipRect;
+    clip.Min.y -= realSize.y;
+    PushClipRect(clip.Min, clip.Max, false);
+    if (BeginChild(labelId, {}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle, ImGuiWindowFlags_NoScrollbar)) {
+      // Group Header text
+      if (!selected) {
+        TextUnformatted(label);
+      } else {
+        PushStyleVarY(ImGuiStyleVar_FramePadding, GetStyle().FramePadding.y * 0.5);
+        const bool isClicked = SizeableCheckbox(label, selected, GetFrameHeight() * 0.45f);
+        if (clicked) {
+          *clicked = isClicked;
+        }
+        PopStyleVar();
       }
-      PopStyleVar();
+      EndChild();
     }
-    EndChild();
+    PopClipRect();
+    oldPos.y += (realSize.y / 2);
+    SetCursorScreenPos(oldPos);
   }
-  PopClipRect();
-  oldPos.y += (realSize.y / 2);
-  SetCursorScreenPos(oldPos);
 
   BeginDisabled(selected && !*selected);
   return visible;

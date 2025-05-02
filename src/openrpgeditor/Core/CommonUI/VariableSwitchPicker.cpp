@@ -23,9 +23,9 @@ VariableSwitchPicker::VariableSwitchPicker(const std::string_view name, const st
 }
 
 std::tuple<bool, bool> VariableSwitchPicker::draw() {
-  const std::string title = std::format("{} Selection##{}", m_name, reinterpret_cast<uintptr_t>(this));
+  const std::string title = std::format("{} Selection###variable_switch_picker", m_name);
   if (isOpen()) {
-    ImGui::OpenPopup(title.c_str());
+    ImGui::OpenPopup("###variable_switch_picker");
   }
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();

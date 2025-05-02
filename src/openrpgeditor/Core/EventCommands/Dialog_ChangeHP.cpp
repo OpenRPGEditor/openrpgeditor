@@ -16,7 +16,7 @@ std::tuple<bool, bool> Dialog_ChangeHP::draw() {
   }
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   const auto maxSize =
-      ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetTextLineHeightWithSpacing() * 16) + (ImGui::GetStyle().FramePadding.y * 2)};
+      ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetTextLineHeightWithSpacing() * 14) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
   if (ImGui::BeginPopupModal(std::format("{}###ChangeHP", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
@@ -109,13 +109,13 @@ std::tuple<bool, bool> Dialog_ChangeHP::draw() {
         ImGui::EndHorizontal();
       }
       operandGroupBox.end();
-      ImGui::BeginDisabled(m_quantityOp != 1);
-      ImGui::Checkbox("Allow Knockout", &m_allowKnockout);
-      ImGui::EndDisabled();
       ImGui::Spring();
       ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5));
       ImGui::BeginHorizontal("##change_hp_dialog_buttons", {-1, -1});
       {
+        ImGui::BeginDisabled(m_quantityOp != 1);
+        ImGui::Checkbox("Allow Knockout", &m_allowKnockout);
+        ImGui::EndDisabled();
         ImGui::Spring();
         if (const auto ret = ImGui::ButtonGroup("##change_hp_dialog_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
           m_confirmed = true;

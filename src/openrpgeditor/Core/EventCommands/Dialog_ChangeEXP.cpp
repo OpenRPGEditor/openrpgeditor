@@ -4,142 +4,174 @@
 #include "imgui.h"
 #include <tuple>
 
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+
+#include "Database/Database.hpp"
+
+#include <imgui.h>
+#include <imgui_internal.h>
+
+#include <tuple>
+
 std::tuple<bool, bool> Dialog_ChangeEXP::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###ChangeEXP");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{254, 250}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-
-    if (actor_picker) {
-      auto [closed, confirmed] = actor_picker->draw();
-      if (closed) {
-        if (confirmed) {
-          m_value = actor_picker->selection();
-        }
-        actor_picker.reset();
-      }
-    }
-    if (picker) {
-      auto [closed, confirmed] = picker->draw();
-      if (closed) {
-        if (confirmed) {
-          if (isOperand) {
-            m_quantity_var = picker->selection();
-          } else {
-            m_value_var = picker->selection();
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize =
+      ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetTextLineHeightWithSpacing() * 14) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
+  if (ImGui::BeginPopupModal(std::format("{}###ChangeEXP", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    drawPickers();
+    ImGui::BeginVertical("##change_exp_main_layout", ImGui::GetContentRegionAvail());
+    {
+      GroupBox actorGroupBox(trNOOP("Actor"), "##change_exp_actor_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (actorGroupBox.begin()) {
+        ImGui::BeginHorizontal("##change_exp_actor_group_horizontal", {-1, -1});
+        {
+          ImGui::BeginVertical("##change_exp_actor_group_radios", {-1, -1});
+          {
+            ImGui::RadioButton(trNOOP("Fixed"), &m_comparison, 0);
+            ImGui::RadioButton(trNOOP("Variable"), &m_comparison, 1);
           }
+          ImGui::EndVertical();
+          ImGui::Spring();
+          ImGui::BeginVertical("##change_exp_actor_group_buttons", {-1, -1});
+          {
+            ImGui::BeginDisabled(m_comparison != 0);
+            ImGui::PushID("##change_exp_actor_group_fixed_button");
+            if (ImGui::Button(m_comparison == 0 ? Database::instance()->actorNameAndId(m_value).c_str() : "", {-1, 0})) {
+              m_actorPicker = ObjectPicker(trNOOP("Actor"), Database::instance()->actors.actorList(), m_value);
+              m_actorPicker->setOpen(true);
+            }
+            ImGui::PopID();
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_comparison != 1);
+            ImGui::PushID("##change_exp_actor_group_var");
+            if (ImGui::Button(m_comparison == 1 ? Database::instance()->variableNameAndId(m_value).c_str() : "", {-1, 0})) {
+              m_isOperand = false;
+              m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_value);
+              m_variablePicker->setOpen(true);
+            }
+            ImGui::PopID();
+            ImGui::EndDisabled();
+          }
+          ImGui::EndVertical();
         }
-        picker.reset();
+        ImGui::EndHorizontal();
       }
-    }
-    // Section 1 (Actor: Fixed/Variable)
-    ImGui::SeparatorText("Actor");
-    ImGui::BeginGroup();
-    {
-      ImGui::RadioButton("Fixed", &m_comparison, 0);
-      ImGui::RadioButton("Variable", &m_comparison, 1);
-      ImGui::EndGroup();
-    }
-    ImGui::SameLine();
-    ImGui::BeginGroup();
-    {
-      ImGui::BeginDisabled(m_comparison != 0);
-      ImGui::PushID("##changehp_actor");
-      if (ImGui::Button(m_comparison == 0 ? Database::instance()->actorNameAndId(m_value).c_str() : "", ImVec2{200 - 15, 0})) {
-        actor_picker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_value);
-        actor_picker->setOpen(true);
+      actorGroupBox.end();
+      GroupBox operationGroupBox(trNOOP("Operation"), "##change_exp_operation_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (operationGroupBox.begin()) {
+        ImGui::BeginHorizontal("##change_exp_operation_group_horizontal", {ImGui::GetContentRegionAvail().x, -1});
+        {
+          ImGui::Spring(.5);
+          ImGui::RadioButton(trNOOP("Increase"), &m_quantityOp, 0);
+          ImGui::RadioButton(trNOOP("Decrease"), &m_quantityOp, 1);
+          ImGui::Spring(.5);
+        }
+        ImGui::EndHorizontal();
       }
-      ImGui::PopID();
-      ImGui::EndDisabled();
+      operationGroupBox.end();
+      GroupBox operandGroupBox(trNOOP("Operand"), "##change_exp_operand", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (operandGroupBox.begin()) {
+        ImGui::BeginHorizontal("##change_exp_operand_horizontal", {-1, -1});
+        {
+          ImGui::BeginVertical("##change_exp_operand_radios", {-1, -1});
+          {
+            ImGui::RadioButton(trNOOP("Constant"), &m_quantitySource, 0);
+            ImGui::RadioButton(std::format("{}##operand", tr("Variable")).c_str(), &m_quantitySource, 1);
+          }
+          ImGui::EndVertical();
+          ImGui::Spring();
+          ImGui::BeginVertical("##change_exp_operand_buttons", {-1, -1});
+          {
+            ImGui::BeginDisabled(m_quantitySource != 0);
+            ImGui::SetNextItemWidth(-1);
+            if (ImGui::SpinInt("##change_exp_operand_constant", &m_quantity, 1, 100, m_quantitySource == 0 ? "%d" : "")) {
+              if (m_quantity > 100)
+                m_quantity = 100;
+              if (m_quantity < 1)
+                m_quantity = 1;
+            }
+            ImGui::EndDisabled();
 
-      ImGui::BeginDisabled(m_comparison != 1);
-      ImGui::PushID("##changehp_var");
-      if (ImGui::Button(m_comparison == 1 ? Database::instance()->variableNameAndId(m_value_var).c_str() : "", ImVec2{200 - 15, 0})) {
-        isOperand = false;
-        picker.emplace("Variables", Database::instance()->system.variables(), m_value_var);
-        picker->setOpen(true);
+            ImGui::BeginDisabled(m_quantitySource != 1);
+            ImGui::PushID("##change_exp_operand_quantity_variable");
+            if (ImGui::Button(m_quantitySource == 1 ? Database::instance()->variableNameAndId(m_quantityVar).c_str() : "", ImVec2{-1, 0})) {
+              m_isOperand = true;
+              m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_quantityVar);
+              m_variablePicker->setOpen(true);
+            }
+            ImGui::PopID();
+            ImGui::EndDisabled();
+          }
+          ImGui::EndVertical();
+        }
+        ImGui::EndHorizontal();
       }
-      ImGui::PopID();
-      ImGui::EndDisabled();
+      operandGroupBox.end();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5));
+      ImGui::BeginHorizontal("##change_exp_dialog_buttons", {-1, -1});
+      {
+        ImGui::BeginDisabled(m_quantitySource != 0);
+        ImGui::Checkbox(trNOOP("Show Level Up"), &m_showLevelUp);
+        ImGui::EndDisabled();
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##change_exp_dialog_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+          m_command->comparison = static_cast<ActorComparisonSource>(m_comparison);
+          m_command->quantityOp = static_cast<QuantityChangeOp>(m_quantityOp);
+          m_command->quantitySource = static_cast<QuantityChangeSource>(m_quantitySource);
+          if (m_command->comparison == ActorComparisonSource::Fixed) {
+            m_command->value = m_value;
+          } else {
+            m_command->value = m_valueVar;
+          }
+          if (m_command->quantitySource == QuantityChangeSource::Constant) {
+            m_command->quantity = m_quantity;
+          } else {
+            m_command->quantity = m_quantityVar;
+          }
 
-      ImGui::EndGroup();
-    }
-
-    // Section 2 (Operation: Increase/Decrease)
-    ImGui::SeparatorText("Operation");
-    ImGui::RadioButton("Increase", &m_quantityOp, 0);
-    ImGui::SameLine();
-    ImGui::RadioButton("Decrease", &m_quantityOp, 1);
-
-    // Section 3 (Operand: Constant/Variable)
-    ImGui::SeparatorText("Operand");
-    ImGui::BeginGroup();
-    {
-      ImGui::RadioButton("Constant", &m_quantitySource, 0);
-      ImGui::RadioButton("Variable##2", &m_quantitySource, 1);
-      ImGui::EndGroup();
-    }
-    ImGui::SameLine();
-    ImGui::BeginGroup();
-    {
-      ImGui::BeginDisabled(m_quantitySource != 0);
-      ImGui::SetNextItemWidth(100);
-      if (ImGui::InputInt("##changehp_constant", &m_quantity)) {
-        if (m_quantity > 9999)
-          m_quantity = 9999;
-        if (m_quantity < 0)
-          m_quantity = 0;
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
       }
-      ImGui::EndDisabled();
-
-      ImGui::BeginDisabled(m_quantitySource != 1);
-      ImGui::PushID("##changehp_quant_var");
-      if (ImGui::Button(m_quantitySource == 1 ? Database::instance()->variableNameAndId(m_quantity_var).c_str() : "", ImVec2{200 - 15, 0})) {
-        isOperand = true;
-        picker.emplace("Variables", Database::instance()->system.variables(), m_quantity_var);
-        picker->setOpen(true);
-      }
-      ImGui::PopID();
-      ImGui::EndDisabled();
-
-      ImGui::EndGroup();
+      ImGui::EndHorizontal();
     }
-    ImGui::BeginDisabled(m_quantityOp == 1);
-    ImGui::Checkbox("Show Level Up", &m_showLevelUp);
-    ImGui::EndDisabled();
-
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-
-      command->comparison = static_cast<ActorComparisonSource>(m_comparison);
-      command->quantityOp = static_cast<QuantityChangeOp>(m_quantityOp);
-      command->quantitySource = static_cast<QuantityChangeSource>(m_quantitySource);
-      command->showLevelUp = m_showLevelUp;
-
-      if (command->comparison == ActorComparisonSource::Variable)
-        command->value = m_value_var;
-      else
-        command->value = m_value;
-
-      if (command->quantitySource == QuantityChangeSource::Variable)
-        command->quantity = m_quantity_var;
-      else
-        command->quantity = m_quantity;
-
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);
+}
+
+void Dialog_ChangeEXP::drawPickers() {
+  if (m_actorPicker) {
+    if (const auto [closed, confirmed] = m_actorPicker->draw(); closed) {
+      if (confirmed) {
+        m_value = m_actorPicker->selection();
+      }
+      m_actorPicker.reset();
+    }
+  }
+  if (m_variablePicker) {
+    if (const auto [closed, confirmed] = m_variablePicker->draw(); closed) {
+      if (confirmed) {
+        if (m_isOperand) {
+          m_quantityVar = m_variablePicker->selection();
+        } else {
+          m_valueVar = m_variablePicker->selection();
+        }
+      }
+      m_variablePicker.reset();
+    }
+  }
 }

@@ -649,15 +649,6 @@ void MapEditor::draw(const bool closeRequested) {
     m_mapScale = std::max(zoomX, zoomY);
   }
 
-  // Keep mapScale to a quarter step
-  if (ImGui::IsKeyDown(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
-    m_mapScale += ImGui::GetIO().MouseWheel * 0.25f;
-    m_scaleChanged = true;
-  }
-
-  m_mapScale = roundToNearestQuarter(m_mapScale);
-  m_mapScale = std::clamp(m_mapScale, .25f, 4.f);
-
   if (map() && !closeRequested) {
     for (auto& event : map()->events()) {
       if (!event || event->id() == 0) {
@@ -671,6 +662,17 @@ void MapEditor::draw(const bool closeRequested) {
   if (ImGui::Begin((tr("Map Editor") + "###mapeditor").c_str(), nullptr, ImGuiWindowFlags_NoScrollbar)) {
     ImGui::BeginChild("##mapcontent_child", {ImGui::GetContentRegionAvail().x, std::max(ImGui::GetMinimumPanelHeight(), ImGui::GetContentRegionAvail().y - ImGui::GetMinimumPanelHeight())}, 0,
                       ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
+    if (ImGui::IsWindowHovered()) {
+      // Keep mapScale to a quarter step
+      if (ImGui::IsKeyDown(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
+        m_mapScale += ImGui::GetIO().MouseWheel * 0.25f;
+        m_scaleChanged = true;
+      }
+
+      m_mapScale = roundToNearestQuarter(m_mapScale);
+      m_mapScale = std::clamp(m_mapScale, .25f, 4.f);
+    }
+
     {
       // Keep mapScale to a quarter step
       if (m_scaleChanged) {

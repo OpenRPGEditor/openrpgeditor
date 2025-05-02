@@ -10,42 +10,43 @@ struct Dialog_ChangeMP : IEventDialogController {
   Dialog_ChangeMP() = delete;
   explicit Dialog_ChangeMP(const std::string& name, const std::shared_ptr<ChangeMPCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ChangeMPCommand());
+      m_command.reset(new ChangeMPCommand());
     }
 
-    m_comparison = static_cast<int>(command->comparison);
-    m_quantityOp = static_cast<int>(command->quantityOp);
-    m_quantitySource = static_cast<int>(command->quantitySource);
+    m_comparison = static_cast<int>(m_command->comparison);
+    m_quantityOp = static_cast<int>(m_command->quantityOp);
+    m_quantitySource = static_cast<int>(m_command->quantitySource);
 
-    if (command->comparison == ActorComparisonSource::Variable)
-      m_value_var = command->value;
-    else
-      m_value = command->value;
-
-    if (command->quantitySource == QuantityChangeSource::Variable)
-      m_quantity_var = command->quantity;
-    else
-      m_quantity = command->quantity;
+    if (m_command->comparison == ActorComparisonSource::Fixed) {
+      m_value = m_command->value;
+    } else {
+      m_valueVar = m_command->value;
+    }
+    if (m_command->quantitySource == QuantityChangeSource::Constant) {
+      m_quantity = m_command->quantity;
+    } else {
+      m_quantityVar = m_command->quantity;
+    }
   }
+  void drawPickers();
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
   int m_comparison;
   int m_value{1};
-  int m_value_var{1};
+  int m_valueVar{1};
   int m_quantityOp;
   int m_quantitySource;
   int m_quantity{1};
-  int m_quantity_var{1};
-  bool isOperand{false};
+  int m_quantityVar{1};
+  bool m_isOperand{false};
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Actor>> actor_picker;
-  std::optional<VariableSwitchPicker> picker;
-  std::shared_ptr<ChangeMPCommand> command;
-  std::tuple<bool, bool> result;
+  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::optional<VariableSwitchPicker> m_variablePicker;
+  std::shared_ptr<ChangeMPCommand> m_command;
 };

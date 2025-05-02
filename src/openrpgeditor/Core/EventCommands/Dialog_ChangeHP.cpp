@@ -1,7 +1,10 @@
 #include "Core/EventCommands/Dialog_ChangeHP.hpp"
 
-#include "Database/Database.hpp"
-#include "imgui.h"
+#include <Database/Database.hpp>
+
+#include <imgui.h>
+#include <imgui_internal.h>
+
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeHP::draw() {
@@ -12,7 +15,8 @@ std::tuple<bool, bool> Dialog_ChangeHP::draw() {
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{254, 250}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-
+    ImGui::BringWindowToFocusFront(ImGui::GetCurrentWindow());
+    ImGui::BringWindowToDisplayFront(ImGui::GetCurrentWindow());
     if (actor_picker) {
       auto [closed, confirmed] = actor_picker->draw();
       if (closed) {

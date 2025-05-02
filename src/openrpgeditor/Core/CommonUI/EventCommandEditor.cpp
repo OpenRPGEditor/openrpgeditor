@@ -619,6 +619,9 @@ void EventCommandEditor::drawCommandTab(const EventCommandTab& tab, const std::s
             if ((forMV && Database::instance()->isMV()) || (forMZ && Database::instance()->isMZ())) {
               if (ImGui::Button(label.c_str(), size)) {
                 commandDialog = CreateCommandDialog(code);
+                if (commandDialog) {
+                  commandDialog->setOpen(true);
+                }
               }
             }
           }
@@ -901,6 +904,7 @@ void EventCommandEditor::drawPopup() {
             ++i;
           }
 
+          drawCommandDialog();
           ImGui::EndTabBar();
         }
       }

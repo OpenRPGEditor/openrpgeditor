@@ -616,7 +616,7 @@ void ItemLabel(const char* title, const ImGuiItemLabelFlags flags) {
 
   ItemSize(textRect);
   if (ItemAdd(textRect, window->GetID(title))) {
-    RenderTextEllipsis(ImGui::GetWindowDrawList(), textRect.Min, textRect.Max, textRect.Max.x, textRect.Max.x, title, nullptr, &textSize);
+    RenderTextEllipsis(ImGui::GetWindowDrawList(), textRect.Min, textRect.Max, textRect.Max.x, title, nullptr, &textSize);
 
     if (textRect.GetWidth() < textSize.x && ImGui::IsItemHovered())
       ImGui::SetTooltip("%s", title);

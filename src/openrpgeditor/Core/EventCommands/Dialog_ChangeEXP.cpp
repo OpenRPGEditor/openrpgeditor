@@ -117,7 +117,7 @@ std::tuple<bool, bool> Dialog_ChangeEXP::draw() {
       ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5));
       ImGui::BeginHorizontal("##change_exp_dialog_buttons", {-1, -1});
       {
-        ImGui::BeginDisabled(m_quantitySource != 0);
+        ImGui::BeginDisabled(m_quantityOp != 0);
         ImGui::Checkbox(trNOOP("Show Level Up"), &m_showLevelUp);
         ImGui::EndDisabled();
         ImGui::Spring();

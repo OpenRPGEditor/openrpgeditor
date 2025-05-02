@@ -5,8 +5,8 @@
 
 #include "Core/Application.hpp"
 
-#include <SDL3/SDL_dialog.h>
 #include <imgui.h>
+#include <SDL3/SDL_dialog.h>
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <string.h>
@@ -63,7 +63,7 @@ void GeneralSettingsTab::draw() {
             },
             this, App::APP->getWindow()->getNativeWindow(), !Settings::instance()->projectBaseDirectory.empty() ? Settings::instance()->projectBaseDirectory.c_str() : nullptr, false);
       }
-      ImGui::SetItemTooltip(trNOOP("Select a directory to store RPG Maker game projects"));
+      ImGui::SetItemTooltip("%s", trNOOP("Select a directory to store RPG Maker game projects"));
     }
     ImGui::EndGroup();
 

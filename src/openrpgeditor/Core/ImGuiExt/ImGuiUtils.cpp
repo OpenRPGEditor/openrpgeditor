@@ -648,7 +648,13 @@ bool SpinScaler(const char* label, ImGuiDataType data_type, void* p_data, const 
     if (InputText("", buf, IM_ARRAYSIZE(buf), flags)) // PushId(label) + "" gives us the expected ID from outside point of view
       value_changed = DataTypeApplyFromText(buf, data_type, p_data, format, (flags & ImGuiInputTextFlags_ParseEmptyRefVal) ? p_data_default : NULL);
 
-    bool hovered = IsItemHovered();
+    bool hovered = false; // IsItemHovered() || IsItemActive() || IsItemActiveAsInputText() || IsItemFocused();
+    if (hovered && (g.IO.MouseWheel > 0.f || g.IO.MouseWheel < 0.f)) {
+      if (!IsItemFocused()) {
+        FocusItem();
+      }
+    }
+
     // Step buttons    // Step buttons
     const ImVec2 backup_frame_padding = style.FramePadding;
     style.FramePadding.x = style.FramePadding.y;
@@ -709,87 +715,6 @@ bool SpinScaler(const char* label, ImGuiDataType data_type, void* p_data, const 
     MarkItemEdited(g.LastItemData.ID);
 
   return value_changed;
-#if 0
-  ImGuiWindow* window = GetCurrentWindow();
-  if (window->SkipItems)
-    return false;
-
-  ImGuiContext& g = *GImGui;
-  ImGuiStyle& style = g.Style;
-
-  if (format == NULL)
-    format = DataTypeGetInfo(data_type)->PrintFmt;
-
-  char buf[64];
-  DataTypeFormatString(buf, IM_ARRAYSIZE(buf), data_type, data_ptr, format);
-
-  bool value_changed = false;
-  if ((flags & (ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_CharsScientific)) == 0)
-    flags |= ImGuiInputTextFlags_CharsDecimal;
-  flags |= ImGuiInputTextFlags_AutoSelectAll;
-
-  if (step != NULL) {
-    const float button_size = GetFrameHeight();
-
-    BeginGroup(); // The only purpose of the group here is to allow the caller to query item data e.g. IsItemActive()
-    PushID(label);
-    SetNextItemWidth(ImMax(1.0f, CalcItemWidth() - (button_size + style.ItemInnerSpacing.x) * 2));
-    if (InputText("", buf, IM_ARRAYSIZE(buf), flags)) // PushId(label) + "" gives us the expected ID from outside point of view
-      value_changed = DataTypeApplyFromText(buf, g.InputTextState.TextA.Data, data_type, data_ptr, format);
-
-    // Step buttons
-    const ImVec2 backup_frame_padding = style.FramePadding;
-    style.FramePadding.x = style.FramePadding.y;
-    ImGuiButtonFlags button_flags = ImGuiButtonFlags_Repeat | ImGuiButtonFlags_DontClosePopups;
-    SameLine(0, style.ItemInnerSpacing.x);
-
-    // start diffs
-    float frame_height = GetFrameHeight();
-    float arrow_size = std::floor(frame_height * .45f);
-    float arrow_spacing = frame_height - 2.0f * arrow_size;
-
-    BeginGroup();
-    PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{g.Style.ItemSpacing.x, arrow_spacing});
-
-    // save/change font size to draw arrow buttons correctly
-    float org_font_size = GetDrawListSharedData()->FontSize;
-    GetDrawListSharedData()->FontSize = arrow_size;
-
-    if (ArrowButtonEx("+", ImGuiDir_Up, ImVec2(arrow_size, arrow_size), button_flags)) {
-      DataTypeApplyOp(data_type, '+', data_ptr, data_ptr, g.IO.KeyCtrl && step_fast ? step_fast : step);
-      value_changed = true;
-    }
-
-    if (ArrowButtonEx("-", ImGuiDir_Down, ImVec2(arrow_size, arrow_size), button_flags)) {
-      DataTypeApplyOp(data_type, '-', data_ptr, data_ptr, g.IO.KeyCtrl && step_fast ? step_fast : step);
-      value_changed = true;
-    }
-
-    // restore font size
-    GetDrawListSharedData()->FontSize = org_font_size;
-
-    PopStyleVar(1);
-    EndGroup();
-    // end diffs
-
-    const char* label_end = FindRenderedTextEnd(label);
-    if (label != label_end) {
-      SameLine(0, style.ItemInnerSpacing.x);
-      TextEx(label, label_end);
-    }
-    style.FramePadding = backup_frame_padding;
-
-    PopID();
-    EndGroup();
-  } else {
-    if (InputText(label, buf, IM_ARRAYSIZE(buf), flags))
-      value_changed = DataTypeApplyOpFromText(buf, g.InputTextState.TextA.Data, data_type, data_ptr, format);
-  }
-  if (value_changed)
-    MarkItemEdited(window->DC);
-
-  return value_changed;
-#endif
 }
 
 bool SpinInt(const char* label, int* v, int step, int step_fast, const char* format, ImGuiInputTextFlags flags) {

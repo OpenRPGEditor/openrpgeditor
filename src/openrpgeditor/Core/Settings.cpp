@@ -55,7 +55,6 @@ bool Settings::loadFromJson(const nlohmann::ordered_json& parser) {
     rpgMakerMVVersion = parser.value("rpgMakerMVVersion", rpgMakerMVVersion);
     rpgMakerMZVersion = parser.value("rpgMakerMZVersion", rpgMakerMZVersion);
     locale = parser.value("locale", locale);
-    uiScale = parser.value("uiScale", uiScale);
     fontSize = parser.value("fontSize", fontSize);
     monoFontSize = parser.value("monoFontSize", monoFontSize);
     maxMru = parser.value("maxMru", maxMru);
@@ -89,7 +88,6 @@ nlohmann::ordered_json Settings::serializeToJson() {
       {"rpgMakerMVVersion", rpgMakerMVVersion},                   //
       {"rpgMakerMZVersion", rpgMakerMZVersion},                   //
       {"locale", locale},                                         //
-      {"uiScale", uiScale},                                       //
       {"fontSize", fontSize},                                     //
       {"monoFontSize", monoFontSize},                             //
       {"maxMru", maxMru},                                         //

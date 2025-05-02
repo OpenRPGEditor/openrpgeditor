@@ -348,9 +348,9 @@ int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const b
   return ret;
 }
 
-ImVec2 GetDPIScaledSize(const ImVec2& size) { return size * (GetIO().FontGlobalScale * GetCurrentContext()->FontScale * GetCurrentWindow()->FontWindowScale); }
+ImVec2 GetDPIScaledSize(const ImVec2& size) { return size * GetCurrentContext()->FontScale * GetCurrentWindow()->FontWindowScale; }
 
-float GetDPIScaledValue(const float value) { return value * (GetIO().FontGlobalScale * GetCurrentContext()->FontScale * GetCurrentWindow()->FontWindowScale); }
+float GetDPIScaledValue(const float value) { return value * GetCurrentContext()->FontScale * GetCurrentWindow()->FontWindowScale; }
 
 static bool IsRootOfOpenMenuSet() {
   ImGuiContext& g = *GImGui;
@@ -458,7 +458,7 @@ bool SizeableCheckbox(const char* label, bool* v, float height) {
   const ImGuiID id = window->GetID(label);
   const ImVec2 label_size = CalcTextSize(label, NULL, true);
 
-  const float square_sz = height >= 0.f ? height : GetFrameHeight();
+  const float square_sz = height > 0.f ? height : GetFrameHeight();
   const ImVec2 pos = window->DC.CursorPos;
   const ImRect total_bb(pos, pos + ImVec2(square_sz + (label_size.x > 0.0f ? style.ItemInnerSpacing.x + label_size.x : 0.0f), label_size.y + style.FramePadding.y * 2.0f));
   ItemSize(total_bb, style.FramePadding.y);
@@ -558,30 +558,7 @@ bool BeginGroupBox(const char* label, const ImVec2& size, bool* selected, bool* 
   }
 
   const auto visible = BeginChild(id, fillRegion ? size : realSize, child_flags | ImGuiChildFlags_FrameStyle, window_flags);
-  if (visible) {
-    auto oldPos = GetCursorScreenPos();
-    SetCursorScreenPos({groupStart.x + GetStyle().FramePadding.x + GetStyle().FrameBorderSize, groupStart.y});
-    auto clip = GetCurrentWindow()->ClipRect;
-    clip.Min.y -= realSize.y;
-    PushClipRect(clip.Min, clip.Max, false);
-    if (BeginChild(labelId, {}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle, ImGuiWindowFlags_NoScrollbar)) {
-      // Group Header text
-      if (!selected) {
-        TextUnformatted(label);
-      } else {
-        PushStyleVarY(ImGuiStyleVar_FramePadding, GetStyle().FramePadding.y * 0.5);
-        const bool isClicked = SizeableCheckbox(label, selected, GetFrameHeight() * 0.45f);
-        if (clicked) {
-          *clicked = isClicked;
-        }
-        PopStyleVar();
-      }
-      EndChild();
-    }
-    PopClipRect();
-    oldPos.y += (realSize.y / 2);
-    SetCursorScreenPos(oldPos);
-  }
+  if (visible) {}
 
   BeginDisabled(selected && !*selected);
   return visible;

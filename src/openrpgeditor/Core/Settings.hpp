@@ -51,7 +51,6 @@ struct Settings {
   std::string locale;
   int rpgMakerMVVersion{-1};
   int rpgMakerMZVersion{-1};
-  float uiScale{1.0};
   int fontSize{12};
   int monoFontSize{12};
   int maxMru{10};

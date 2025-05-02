@@ -516,6 +516,8 @@ add_library(
         Core/LCF_Importer/LCF_Mapping.hpp
         Core/EventCommands/MovementRoute/Dialogue_MovementPlaySE.cpp
         Core/EventCommands/MovementRoute/Dialogue_MovementPlaySE.hpp
+        Core/CommonUI/GroupBox.cpp
+        Core/CommonUI/GroupBox.hpp
 )
 
 target_include_directories(
@@ -636,6 +638,6 @@ if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
     add_compile_definitions(_DEBUG DEBUG)
 endif ()
 
-if(WIN32)
+if (WIN32)
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS=1)
-endif()
+endif ()

@@ -101,18 +101,6 @@ void Application::updateScale() {
 
   ImGuiStyle& style = ImGui::GetStyle();
 
-  // style.WindowRounding = 3.f;
-  // style.FrameRounding = 1.0f;
-  // style.GrabMinSize = 4.5f;
-  // style.GrabRounding = 2.0f;
-  // style.PopupRounding = 3.5;
-  // style.TabBorderSize = 1.5f;
-  // style.TabRounding = 3.25f;
-  // style.DockingSeparatorSize = 3.f;
-  // style.FrameBorderSize = 1.f;
-  // style.FramePadding = ImVec2(4, 3);
-  // style.ScrollbarSize = 10.f;
-
   // General window settings
   style.WindowPadding = ImVec2(6, 6);
   style.WindowRounding = 2.5f;
@@ -131,7 +119,6 @@ void Application::updateScale() {
   style.IndentSpacing = 10.0f;
   style.ScrollbarSize = 12.f;
   const auto scale = std::max(SDL_GetWindowPixelDensity(m_window->getNativeWindow()), SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
-  ImGui::GetCurrentContext()->CurrentDpiScale = scale;
   style.ScaleAllSizes(scale);
   style.CurveTessellationTol = 0.1f;
   style.CircleTessellationMaxError = 0.1f;
@@ -407,7 +394,6 @@ ExitStatus Application::run() {
   float frameTime = 0.f;
   float saveTime = 0.f;
   while (m_running || FileQueue::instance().hasTasks() || m_projectSerialize || m_projectCloseRequest) {
-    io.FontGlobalScale = m_settings.uiScale;
     if (m_fontUpdateRequested) {
       updateFonts();
       m_fontUpdateRequested = !m_fontUpdateDelay;
@@ -438,6 +424,7 @@ ExitStatus Application::run() {
     ImGui_ImplSDL3_NewFrame();
 
     ImGui::NewFrame();
+    ImGui::GetCurrentContext()->CurrentDpiScale = std::max(SDL_GetWindowPixelDensity(m_window->getNativeWindow()), SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
 
     frameTime += ImGui::GetIO().DeltaTime;
     saveTime += ImGui::GetIO().DeltaTime;

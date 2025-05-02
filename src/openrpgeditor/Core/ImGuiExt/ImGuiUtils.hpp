@@ -28,8 +28,8 @@ float GetDPIScaledValue(float value);
 bool MenuItemNoCheck(const char* label, const char* icon, const char* shortcut = NULL, bool selected = false, bool enabled = true);
 
 float GetMinimumPanelHeight();
-
-bool BeginGroupBox(const char* label, const ImVec2& size = {0, 0}, bool* selected = nullptr, bool* clicked = nullptr, ImGuiChildFlags child_flags = 0, ImGuiWindowFlags window_flags= 0);
+bool SizeableCheckbox(const char* label, bool* v, float height = 0);
+bool BeginGroupBox(const char* label, const ImVec2& size = {0, 0}, bool* selected = nullptr, bool* clicked = nullptr, ImGuiChildFlags child_flags = 0, ImGuiWindowFlags window_flags = 0);
 void EndGroupBox();
 
 void ItemLabel(const char* title, ImGuiItemLabelFlags flags = ImGuiItemLabelFlags_Default);

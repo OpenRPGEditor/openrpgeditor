@@ -6,7 +6,6 @@
 
 void UISettingsTab::draw() {
   if (ImGui::BeginTabItem("UI")) {
-    ImGui::SliderFloat("##ui_scale", &Settings::instance()->uiScale, 0.5, 5);
     ImGui::PushFont(App::APP->getMainFont(), Settings::instance()->fontSize);
     ImGui::Text("Font Size");
     ImGui::SliderInt("##ui_font_size", &Settings::instance()->fontSize, 8, 48);

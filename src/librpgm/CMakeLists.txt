@@ -155,6 +155,7 @@ add_library(
         Database/Locales.hpp
         Database/ProjectConfig.cpp
         Database/ProjectConfig.hpp
+        Utils/Typename.hpp
 )
 
 target_include_directories(

@@ -7,6 +7,10 @@
 #include <string>
 #include <vector>
 
+#include <string_view>
+
+#include <Utils/Typename.hpp>
+
 /*!
  * @struct ObjectPicker
  * @details Provides a pickable list broken up into groups of 100
@@ -14,6 +18,8 @@
  */
 template <typename T>
 class ObjectPicker {
+  static constexpr std::string_view Name = type_name<T>();
+
 public:
   ObjectPicker(const std::string_view name, std::vector<T>& list, const int initialSelection)
   : m_name(name)

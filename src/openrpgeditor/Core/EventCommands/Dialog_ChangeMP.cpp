@@ -118,8 +118,16 @@ std::tuple<bool, bool> Dialog_ChangeMP::draw() {
           m_command->comparison = static_cast<ActorComparisonSource>(m_comparison);
           m_command->quantityOp = static_cast<QuantityChangeOp>(m_quantityOp);
           m_command->quantitySource = static_cast<QuantityChangeSource>(m_quantitySource);
-          m_command->value = m_value;
-          m_command->quantity = m_quantity;
+
+          if (m_command->comparison == ActorComparisonSource::Variable)
+            m_command->value = m_valueVar;
+          else
+            m_command->value = m_value;
+
+          if (m_command->quantitySource == QuantityChangeSource::Variable)
+            m_command->quantity = m_quantityVar;
+          else
+            m_command->quantity = m_quantity;
 
           ImGui::CloseCurrentPopup();
           setOpen(false);

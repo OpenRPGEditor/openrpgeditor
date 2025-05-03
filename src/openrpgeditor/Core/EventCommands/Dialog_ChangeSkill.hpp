@@ -11,18 +11,19 @@ struct Dialog_ChangeSkill : IEventDialogController {
   Dialog_ChangeSkill() = delete;
   explicit Dialog_ChangeSkill(const std::string& name, const std::shared_ptr<ChangeSkillCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ChangeSkillCommand());
+      m_command.reset(new ChangeSkillCommand());
     }
-    m_comparison = static_cast<int>(command->comparison);
-    m_value = command->value;
-    m_skillOp = static_cast<int>(command->skillOp);
-    m_skill = command->skill;
+    m_comparison = static_cast<int>(m_command->comparison);
+    m_value = m_command->value;
+    m_skillOp = static_cast<int>(m_command->skillOp);
+    m_skill = m_command->skill;
   }
+  void drawPickers();
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
   int m_comparison;
@@ -33,9 +34,8 @@ private:
   int m_var{1};
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Actor>> actor_picker;
-  std::optional<ObjectPicker<Skill>> skill_picker;
-  std::optional<VariableSwitchPicker> picker;
-  std::shared_ptr<ChangeSkillCommand> command;
-  std::tuple<bool, bool> result;
+  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::optional<ObjectPicker<Skill>> m_skillPicker;
+  std::optional<VariableSwitchPicker> m_variablePicker;
+  std::shared_ptr<ChangeSkillCommand> m_command;
 };

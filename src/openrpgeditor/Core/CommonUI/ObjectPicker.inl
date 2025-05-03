@@ -1,16 +1,18 @@
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
+#include <cxxabi.h>
 #include <format>
 
 static bool ContainsCaseInsensitive(std::string_view str, std::string_view val) {
-  return std::search(str.begin(), str.end(), val.begin(), val.end(), [](char ch1, char ch2) { return std::toupper(ch1) == std::toupper(ch2); }) != str.end();
+  return std::ranges::search(str, val, [](char ch1, char ch2) { return std::toupper(ch1) == std::toupper(ch2); }).begin() != str.end();
 }
 
 template <typename T>
 std::tuple<bool, bool> ObjectPicker<T>::draw() {
-  const std::string title = std::format("{} Selection##{}", m_name, reinterpret_cast<uintptr_t>(this));
+  const std::string id = std::format("###ObjectPicker{}", std::string(Name));
+  const std::string title = std::format("{} Selection{}", m_name, id);
   if (isOpen()) {
-    ImGui::OpenPopup(title.c_str());
+    ImGui::OpenPopup(id.c_str());
   }
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();

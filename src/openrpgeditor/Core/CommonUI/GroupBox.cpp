@@ -10,7 +10,8 @@ GroupBox::GroupBox(const std::string_view title, const std::string_view id, cons
 , m_size(size)
 , m_childFlags(childFlags)
 , m_windowFlags(windowFlags)
-, m_checked(checked) {}
+, m_checked(checked)
+, m_visible(false) {}
 
 bool GroupBox::begin() {
   const auto id = ImGui::GetID(m_id.c_str());
@@ -27,13 +28,15 @@ bool GroupBox::begin() {
 
   m_visible = ImGui::BeginChild(id, m_size, m_childFlags | ImGuiChildFlags_FrameStyle, m_windowFlags);
   if (m_visible) {
-    auto size = ImGui::CalcItemSize(ImGui::CalcTextSize(m_title.c_str()), 0, 0);
-    if (m_checked) {
-      ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, ImGui::GetStyle().FramePadding.y * 0.5);
-      size.x += (ImGui::GetFrameHeightWithSpacing() * 0.45f) * 2;
-      ImGui::PopStyleVar();
+    if (!m_wasHeaderDrawn) {
+      auto size = ImGui::CalcItemSize(ImGui::CalcTextSize(m_title.c_str()), 0, 0);
+      if (m_checked) {
+        ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, ImGui::GetStyle().FramePadding.y * 0.5);
+        size.x += (ImGui::GetFrameHeightWithSpacing() * 0.45f) * 2;
+        ImGui::PopStyleVar();
+      }
+      ImGui::Dummy({size.x, size.y / 2});
     }
-    ImGui::Dummy({size.x, size.y / 2});
     ImGui::BeginDisabled(m_checked && !*m_checked);
   }
 
@@ -48,7 +51,7 @@ void GroupBox::end() {
   }
   ImGui::EndChild();
 
-  if (m_visible) {
+  if (m_visible && !m_wasHeaderDrawn) {
     const auto labelId = ImGui::GetID(std::format("{}_checkbox", m_id).c_str());
     const auto oldPos = ImGui::GetCursorScreenPos();
     ImGui::SetCursorScreenPos({m_groupStart.x + ImGui::GetStyle().FramePadding.x + ImGui::GetStyle().FrameBorderSize, m_groupStart.y});
@@ -68,5 +71,6 @@ void GroupBox::end() {
     }
     ImGui::PopClipRect();
     ImGui::SetCursorScreenPos(oldPos);
+    m_wasHeaderDrawn = true;
   }
 }

@@ -118,6 +118,8 @@ void Dialog_ChangeEquipment::makeEquipableItemList() {
 void Dialog_ChangeEquipment::makeEquipTypeList() {
   m_equipmentTypes.clear();
   if (!Database::instance()->actors.actor(m_actor)) {
+    m_equipableItems.clear();
+    m_equipableItems.emplace_back(0);
     return;
   }
 

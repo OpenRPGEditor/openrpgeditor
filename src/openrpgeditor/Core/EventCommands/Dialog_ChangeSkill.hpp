@@ -16,7 +16,10 @@ struct Dialog_ChangeSkill : IEventDialogController {
       m_command.reset(new ChangeSkillCommand());
     }
     m_comparison = static_cast<int>(m_command->comparison);
-    m_value = m_command->value;
+    if (m_command->comparison == ActorComparisonSource::Variable)
+      m_var = m_command->value;
+    else
+      m_actor = m_command->value;
     m_skillOp = static_cast<int>(m_command->skillOp);
     m_skill = m_command->skill;
   }
@@ -27,9 +30,9 @@ struct Dialog_ChangeSkill : IEventDialogController {
 
 private:
   int m_comparison;
-  int m_value;
+  int m_actor{1};
   int m_skillOp;
-  int m_skill;
+  int m_skill{1};
 
   int m_var{1};
 

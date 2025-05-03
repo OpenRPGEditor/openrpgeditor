@@ -10,7 +10,7 @@ struct ChangeSkillCommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeSkillCommand>(*this); }
-  bool hasReference(int targetId, SearchType type) override {
+  bool hasReference(const int targetId, const SearchType type) override {
     if (type == SearchType::Variable) {
       return comparison == ActorComparisonSource::Variable && value == targetId;
     }
@@ -19,7 +19,7 @@ struct ChangeSkillCommand final : IEventCommand {
     }
     return false;
   };
-  bool setReference(int targetId, int newId, SearchType type) override {
+  bool setReference(const int targetId, const int newId, const SearchType type) override {
     if (hasReference(targetId, type)) {
       if (comparison == ActorComparisonSource::Variable && value == targetId) {
         value = newId;

@@ -16,12 +16,12 @@ struct Dialog_ChangeState : IEventDialogController {
       m_command.reset(new ChangeStateCommand());
     }
 
-    m_state = static_cast<int>(m_command->state);
+    m_state = m_command->state;
     m_stateOp = static_cast<int>(m_command->stateOp);
     m_comparison = static_cast<int>(m_command->comparison);
 
     if (m_command->comparison == ActorComparisonSource::Variable)
-      m_actorVar = m_command->value;
+      m_var = m_command->value;
     else
       m_actor = m_command->value;
   }
@@ -30,16 +30,16 @@ struct Dialog_ChangeState : IEventDialogController {
   std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
+  void drawPickers();
   int m_state;
   int m_stateOp;
   int m_comparison;
   int m_actor{1};
-  int m_actorVar{1};
+  int m_var{1};
 
   bool m_confirmed{false};
   std::optional<ObjectPicker<Actor>> m_actorPicker;
   std::optional<ObjectPicker<State>> m_statePicker;
-  std::optional<VariableSwitchPicker> m_picker;
+  std::optional<VariableSwitchPicker> m_variablePicker;
   std::shared_ptr<ChangeStateCommand> m_command;
-  std::tuple<bool, bool> m_result;
 };

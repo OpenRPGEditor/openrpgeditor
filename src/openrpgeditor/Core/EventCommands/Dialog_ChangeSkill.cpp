@@ -11,7 +11,7 @@
 
 std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###ChangeSkill");
   }
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   const auto maxSize =
@@ -19,7 +19,7 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ChangeSkill", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     drawPickers();
     ImGui::BeginVertical("##change_skill_main_layout", ImGui::GetContentRegionAvail());
     {
@@ -38,16 +38,16 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
           {
             ImGui::BeginDisabled(m_comparison != 0);
             ImGui::PushID("##change_skill_actor_group_fixed_button");
-            if (ImGui::Button(m_comparison == 0 ? Database::instance()->actorNameAndId(m_value).c_str() : "", {-1, 0})) {
-              m_actorPicker = ObjectPicker(trNOOP("Actor"), Database::instance()->actors.actorList(), m_value);
+            if (ImGui::Button(m_comparison == 0 ? Database::instance()->actorNameAndId(m_actor).c_str() : "", {-1, 0})) {
+              m_actorPicker = ObjectPicker(trNOOP("Actor"), Database::instance()->actors.actorList(), m_actor);
               m_actorPicker->setOpen(true);
             }
             ImGui::PopID();
             ImGui::EndDisabled();
             ImGui::BeginDisabled(m_comparison != 1);
             ImGui::PushID("##change_skill_actor_group_var");
-            if (ImGui::Button(m_comparison == 1 ? Database::instance()->variableNameAndId(m_value).c_str() : "", {-1, 0})) {
-              m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_value);
+            if (ImGui::Button(m_comparison == 1 ? Database::instance()->variableNameAndId(m_var).c_str() : "", {-1, 0})) {
+              m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_var);
               m_variablePicker->setOpen(true);
             }
             ImGui::PopID();
@@ -92,7 +92,7 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
           m_command->skill = m_skill;
           m_command->skillOp = static_cast<SkillOperation>(m_skillOp);
           if (m_command->comparison == ActorComparisonSource::Fixed) {
-            m_command->value = m_value;
+            m_command->value = m_actor;
           } else {
             m_command->value = m_var;
           }
@@ -115,10 +115,9 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
 
 void Dialog_ChangeSkill::drawPickers() {
   if (m_actorPicker) {
-    auto [closed, confirmed] = m_actorPicker->draw();
-    if (closed) {
+    if (const auto [closed, confirmed] = m_actorPicker->draw(); closed) {
       if (confirmed) {
-        m_value = m_actorPicker->selection();
+        m_actor = m_actorPicker->selection();
       }
       m_actorPicker.reset();
     }

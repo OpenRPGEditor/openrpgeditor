@@ -31,12 +31,13 @@ struct Dialog_ChangeHP : IEventDialogController {
     else
       m_quantity = m_command->quantity;
   }
-  void drawPickers();
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
+  void drawPickers();
+
   int m_comparison;
   int m_value;
   int m_valueVar{1};

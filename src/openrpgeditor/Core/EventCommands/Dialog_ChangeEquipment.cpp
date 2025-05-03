@@ -58,7 +58,7 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
         const int etypeId = Database::instance()->slotIdToEquipId(m_actor, m_equipmentType);
         if (ImGui::BeginCombo("##equip_item_list", Database::instance()->itemDisplayName(etypeId <= 1, m_equipmentItem).c_str())) {
           for (const auto item : m_equipableItems) {
-            if (ImGui::Selectable(Database::instance()->itemDisplayName(m_equipmentType <= 1, item).c_str(), item == m_equipmentItem)) {
+            if (ImGui::Selectable(Database::instance()->itemDisplayName(etypeId <= 1, item).c_str(), item == m_equipmentItem)) {
               m_equipmentItem = item;
             }
           }

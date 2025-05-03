@@ -258,7 +258,7 @@ void DBActorsTab::draw() {
                 const int etypeId = Database::instance()->slotIdToEquipId(m_selectedActor->id(), i);
                 auto etypeName = equipTypes[etypeId];
                 int dataId = i < m_selectedActor->equips().size() ? m_selectedActor->equips()[i] : 0;
-                if (!checkEquipable(etypeId, dataId)) {
+                if (!Database::instance()->checkEquipable(m_selectedActor->id(), etypeId, dataId)) {
                   dataId = 0;
                 }
 
@@ -272,7 +272,7 @@ void DBActorsTab::draw() {
                 }
 
                 ImGui::TableNextColumn();
-                ImGui::Text("%s", itemDisplayName(etypeId <= 1, dataId).c_str());
+                ImGui::TextUnformatted(Database::instance()->itemDisplayName(etypeId <= 1, dataId).c_str());
               }
               ImGui::EndTable();
             }
@@ -363,14 +363,10 @@ void DBActorsTab::draw() {
         }
       }
 
-      const auto preview = m_chosenDataId == 0 ? "None" : itemDisplayName(m_chosenEquipId <= 1, m_chosenDataId);
+      const auto preview = m_chosenDataId == 0 ? "None" : Database::instance()->itemDisplayName(m_chosenEquipId <= 1, m_chosenDataId);
       if (ImGui::BeginCombo("##equip_combo", preview.c_str())) {
-        if (ImGui::Selectable("None", m_chosenDataId == 0)) {
-          m_chosenDataId = 0;
-        }
-
         for (const auto& equip : equipList) {
-          if (ImGui::Selectable(std::format("{}##_{}", itemDisplayName(m_chosenEquipId <= 1, equip), equip).c_str(), m_chosenDataId == equip)) {
+          if (ImGui::Selectable(std::format("{}##_{}", Database::instance()->itemDisplayName(m_chosenEquipId <= 1, equip), equip).c_str(), m_chosenDataId == equip)) {
             m_chosenDataId = equip;
           }
         }
@@ -422,32 +418,4 @@ void DBActorsTab::draw() {
       }
     }
   }
-}
-
-bool DBActorsTab::checkEquipable(const int etypeId, const int dataId) const {
-  if (dataId <= 0 || Database::instance()->isEquipTypeSealed(m_selectedActor->id(), etypeId)) {
-    return false;
-  }
-
-  if (etypeId <= 1) {
-    if (const auto& weapon = Database::instance()->weapons.weapon(dataId); weapon && Database::instance()->isEquipWeaponTypeOk(m_selectedActor->id(), weapon->wtypeId())) {
-      return true;
-    }
-  } else if (const auto& armor = Database::instance()->armors.armor(dataId);
-             armor && armor->etypeId() == etypeId && Database::instance()->isEquipArmorTypeOk(m_selectedActor->id(), armor->atypeId())) {
-    return true;
-  }
-
-  return false;
-}
-
-std::string DBActorsTab::itemDisplayName(const bool isWeapon, const int dataId) {
-  if (dataId <= 0) {
-    return "None";
-  }
-  if (isWeapon) {
-    return Database::instance()->weaponNameOrId(dataId);
-  }
-
-  return Database::instance()->armorNameOrId(dataId);
 }

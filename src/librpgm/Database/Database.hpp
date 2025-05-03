@@ -454,6 +454,33 @@ struct Database {
     return isModified;
   }
 
+  bool checkEquipable(const int actorId, const int etypeId, const int dataId) const {
+    if (dataId <= 0 || isEquipTypeSealed(actorId, etypeId)) {
+      return false;
+    }
+
+    if (etypeId <= 1) {
+      if (const auto& weapon = weapons.weapon(dataId); weapon && isEquipWeaponTypeOk(actorId, weapon->wtypeId())) {
+        return true;
+      }
+    } else if (const auto& armor = armors.armor(dataId); armor && armor->etypeId() == etypeId && isEquipArmorTypeOk(actorId, armor->atypeId())) {
+      return true;
+    }
+
+    return false;
+  }
+
+  std::string itemDisplayName(const bool isWeapon, const int dataId) const {
+    if (dataId <= 0) {
+      return trNOOP("None");
+    }
+    if (isWeapon) {
+      return weaponNameOrId(dataId);
+    }
+
+    return armorNameOrId(dataId);
+  }
+
 private:
   bool m_isMZ;
   void connectAllSignals();

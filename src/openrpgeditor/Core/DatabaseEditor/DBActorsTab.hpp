@@ -38,8 +38,6 @@ struct DBActorsTab : IDBEditorTab {
 private:
   int m_categoryStart;
   int m_categoryEnd;
-  bool checkEquipable(int etypeId, int dataId) const;
-  static std::string itemDisplayName(bool isWeapon, int dataId);
 
   std::vector<int> m_headers;
   Actors& m_actors;

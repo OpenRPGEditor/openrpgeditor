@@ -733,4 +733,52 @@ bool SpinDouble(const char* label, double* v, double step, double step_fast, con
   return SpinScaler(label, ImGuiDataType_Double, (void*)v, (void*)(step > 0.0 ? &step : NULL), (void*)(step_fast > 0.0 ? &step_fast : NULL), format, flags);
 }
 
+bool EllipsesButtonEx(const char* label, const ImVec2& size_arg, ImGuiButtonFlags flags) {
+
+  ImGuiWindow* window = GetCurrentWindow();
+  if (window->SkipItems)
+    return false;
+
+  ImGuiContext& g = *GImGui;
+  const ImGuiStyle& style = g.Style;
+  const ImGuiID id = window->GetID(label);
+  const ImVec2 label_size = CalcTextSize(label, NULL, true);
+
+  ImVec2 pos = window->DC.CursorPos;
+  if ((flags & ImGuiButtonFlags_AlignTextBaseLine) &&
+      style.FramePadding.y <
+          window->DC.CurrLineTextBaseOffset) // Try to vertically align buttons that are smaller/have no padding so that text baseline matches (bit hacky, since it shouldn't be a flag)
+    pos.y += window->DC.CurrLineTextBaseOffset - style.FramePadding.y;
+  ImVec2 size = CalcItemSize(size_arg, label_size.x + style.FramePadding.x * 2.0f, label_size.y + style.FramePadding.y * 2.0f);
+
+  const ImRect bb(pos, pos + size);
+  ItemSize(size, style.FramePadding.y);
+  if (!ItemAdd(bb, id))
+    return false;
+
+  bool hovered, held;
+  bool pressed = ButtonBehavior(bb, id, &hovered, &held, flags);
+
+  // Render
+  const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_ButtonActive : hovered ? ImGuiCol_ButtonHovered : ImGuiCol_Button);
+  RenderNavCursor(bb, id);
+  RenderFrame(bb.Min, bb.Max, col, true, style.FrameRounding);
+  const char* ellipses = "\xE2\x80\xA6";
+  const ImVec2 ellipses_size = CalcTextSize(ellipses);
+
+  if (g.LogEnabled)
+    LogSetNextTextDecoration("[", "]");
+  RenderTextClipped(bb.Min + style.FramePadding, {bb.Max.x - (ellipses_size.x + style.FramePadding.x), bb.Max.y - style.FramePadding.y}, label, NULL, &label_size, style.ButtonTextAlign, &bb);
+  RenderTextClipped({bb.Max.x - (ellipses_size.x + style.FramePadding.x), bb.Min.y + style.FramePadding.y}, bb.Max - style.FramePadding, ellipses, NULL, &ellipses_size, style.ButtonTextAlign, &bb);
+
+  // Automatically close popups
+  // if (pressed && !(flags & ImGuiButtonFlags_DontClosePopups) && (window->Flags & ImGuiWindowFlags_Popup))
+  //    CloseCurrentPopup();
+
+  IMGUI_TEST_ENGINE_ITEM_INFO(id, label, g.LastItemData.StatusFlags);
+  return pressed;
+}
+
+bool EllipsesButton(const char* label, const ImVec2& size_arg) { return EllipsesButtonEx(label, size_arg, ImGuiButtonFlags_None); }
+
 } // namespace ImGui

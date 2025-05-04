@@ -60,11 +60,18 @@ bool ParseColor(const char* s, ImU32* col, int* skipChars) {
   std::string inputString{s};
   std::string token;
   std::string value;
-  bool parsed = false;
   if (s[0] == '&') {
+    bool parsed = false;
     int len = 1;
+    bool foundEnd = false;
     while (s[len] != ';' && s[len] != '\0') {
+      if (s[len + 1] != '\0' && s[len + 1] == ';') {
+        foundEnd = true;
+      }
       len++;
+    }
+    if (!foundEnd) {
+      return false;
     }
     ++s;
 

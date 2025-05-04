@@ -518,6 +518,8 @@ add_library(
         Core/EventCommands/MovementRoute/Dialogue_MovementPlaySE.hpp
         Core/CommonUI/GroupBox.cpp
         Core/CommonUI/GroupBox.hpp
+        Core/CommonUI/AudioEditor.cpp
+        Core/CommonUI/AudioEditor.hpp
 )
 
 target_include_directories(

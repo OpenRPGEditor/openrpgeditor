@@ -4,6 +4,7 @@
 #include "Core/ResourceManager.hpp"
 #include "Core/Settings.hpp"
 
+#include "Core/CommonUI/AudioEditor.hpp"
 #include "Core/Sound.hpp"
 #include "Database/Database.hpp"
 #include "Database/EventCommands/ChangeBattleBGM.hpp"
@@ -19,40 +20,14 @@ struct Dialog_ChangeBattleBGM : IEventDialogController {
     if (cmd == nullptr) {
       command.reset(new ChangeBattleBGMCommand());
     }
-    m_audio = command->bgm;
-    try {
-      m_audios = ResourceManager::instance()->getDirectoryContents("audio/bgm/", ".ogg");
-    } catch (const std::filesystem::filesystem_error& e) { std::cerr << "Error accessing directory: " << e.what() << std::endl; }
-    m_audio.setName("");
+    m_audioRenderer.emplace(command->code(), command->bgm);
   }
   std::tuple<bool, bool> draw() override;
   [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return command; }
 
 private:
   bool m_confirmed{false};
-
-  int m_selected = 0;
-  Audio m_audio;
-
-  Sound m_sound;
-
+  std::optional<AudioEditor> m_audioRenderer;
   std::shared_ptr<ChangeBattleBGMCommand> command;
   std::tuple<bool, bool> result;
-  std::vector<std::string> m_audios;
-
-  bool playAudio(const std::string& path) {
-    // Load and play music
-    m_sound = Sound(ResourceManager::instance()->loadBGM(path));
-    m_sound.play();
-    setVolume(m_audio.volume());
-    setPanning(m_audio.pan());
-    setPitch(m_audio.pitch());
-    return true;
-  }
-  void setVolume(int volume) {
-    m_sound.setVolume(static_cast<float>(volume)); // 0% to 100%
-  }
-  void setPanning(int value) { m_sound.setPan(static_cast<float>(value) / 100.0f); }
-  void setPitch(int value) { m_sound.setPitch(value / 100.f); }
-  void stopAudio() { m_sound.stop(); }
 };

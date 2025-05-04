@@ -28,7 +28,7 @@ std::tuple<bool, bool> Dialog_ChangeClass::draw() {
       GroupBox actorGroupBox(trNOOP("Actor"), "##change_class_actor_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
       if (actorGroupBox.begin()) {
         ImGui::PushID("##change_class_actor");
-        if (ImGui::Button(Database::instance()->actorNameAndId(m_actor).c_str(), ImVec2{-1, 0})) {
+        if (ImGui::EllipsesButton(Database::instance()->actorNameAndId(m_actor).c_str(), ImVec2{-1, 0})) {
           m_actorPicker = ObjectPicker(trNOOP("Actor"), Database::instance()->actors.actorList(), m_actor);
           m_actorPicker->setOpen(true);
         }
@@ -39,7 +39,7 @@ std::tuple<bool, bool> Dialog_ChangeClass::draw() {
       GroupBox classGroupBox(trNOOP("Class"), "##change_class_class_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
       if (classGroupBox.begin()) {
         ImGui::PushID("##change_class_classid");
-        if (ImGui::Button(Database::instance()->classNameAndId(m_class).c_str(), ImVec2{-1, 0})) {
+        if (ImGui::EllipsesButton(Database::instance()->classNameAndId(m_class).c_str(), ImVec2{-1, 0})) {
           m_classPicker = ObjectPicker(trNOOP("Class"), Database::instance()->classes.classes(), m_class);
           m_classPicker->setOpen(true);
         }

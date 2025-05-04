@@ -38,7 +38,7 @@ std::tuple<bool, bool> Dialog_ChangeTP::draw() {
           {
             ImGui::BeginDisabled(m_comparison != 0);
             ImGui::PushID("##change_tp_actor_group_fixed_button");
-            if (ImGui::Button(m_comparison == 0 ? Database::instance()->actorNameAndId(m_value).c_str() : "", {-1, 0})) {
+            if (ImGui::EllipsesButton(m_comparison == 0 ? Database::instance()->actorNameAndId(m_value).c_str() : "", {-1, 0})) {
               m_actorPicker = ObjectPicker(trNOOP("Actor"), Database::instance()->actors.actorList(), m_value);
               m_actorPicker->setOpen(true);
             }
@@ -46,7 +46,7 @@ std::tuple<bool, bool> Dialog_ChangeTP::draw() {
             ImGui::EndDisabled();
             ImGui::BeginDisabled(m_comparison != 1);
             ImGui::PushID("##change_tp_actor_group_var");
-            if (ImGui::Button(m_comparison == 1 ? Database::instance()->variableNameAndId(m_value).c_str() : "", {-1, 0})) {
+            if (ImGui::EllipsesButton(m_comparison == 1 ? Database::instance()->variableNameAndId(m_value).c_str() : "", {-1, 0})) {
               m_isOperand = false;
               m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_value);
               m_variablePicker->setOpen(true);
@@ -88,16 +88,13 @@ std::tuple<bool, bool> Dialog_ChangeTP::draw() {
             ImGui::BeginDisabled(m_quantitySource != 0);
             ImGui::SetNextItemWidth(-1);
             if (ImGui::SpinInt("##change_tp_operand_constant", &m_quantity, 1, 100, m_quantitySource == 0 ? nullptr : "")) {
-              if (m_quantity > 100)
-                m_quantity = 100;
-              if (m_quantity < 1)
-                m_quantity = 1;
+              m_quantity = std::clamp(m_quantitySource, 1, 100);
             }
             ImGui::EndDisabled();
 
             ImGui::BeginDisabled(m_quantitySource != 1);
             ImGui::PushID("##change_tp_operand_quantity_variable");
-            if (ImGui::Button(m_quantitySource == 1 ? Database::instance()->variableNameAndId(m_quantityVar).c_str() : "", ImVec2{-1, 0})) {
+            if (ImGui::EllipsesButton(m_quantitySource == 1 ? Database::instance()->variableNameAndId(m_quantityVar).c_str() : "", ImVec2{-1, 0})) {
               m_isOperand = true;
               m_variablePicker.emplace("Variables", Database::instance()->system.variables(), m_quantityVar);
               m_variablePicker->setOpen(true);

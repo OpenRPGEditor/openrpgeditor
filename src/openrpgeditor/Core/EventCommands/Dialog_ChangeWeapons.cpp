@@ -28,7 +28,7 @@ std::tuple<bool, bool> Dialog_ChangeWeapons::draw() {
       GroupBox weaponGroupBox(trNOOP("Weapon"), "##change_weapons_item_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
       if (weaponGroupBox.begin()) {
         ImGui::PushID("##change_weapons_item");
-        if (ImGui::Button(Database::instance()->weaponNameAndId(m_item).c_str(), ImVec2{-1, 0})) {
+        if (ImGui::EllipsesButton(Database::instance()->weaponNameAndId(m_item).c_str(), ImVec2{-1, 0})) {
           m_weaponPicker = ObjectPicker(trNOOP("Weapon"), Database::instance()->weapons.weaponList(), m_item);
           m_weaponPicker->setOpen(true);
         }
@@ -72,7 +72,7 @@ std::tuple<bool, bool> Dialog_ChangeWeapons::draw() {
 
             ImGui::BeginDisabled(m_operandSource != 1);
             ImGui::PushID("##change_weapons_quant_var");
-            if (ImGui::Button(m_operandSource == 1 ? Database::instance()->variableNameAndId(m_quantityVar).c_str() : "", ImVec2{-1, 0})) {
+            if (ImGui::EllipsesButton(m_operandSource == 1 ? Database::instance()->variableNameAndId(m_quantityVar).c_str() : "", ImVec2{-1, 0})) {
               m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_quantityVar);
               m_variablePicker->setOpen(true);
             }

@@ -38,7 +38,7 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
           {
             ImGui::BeginDisabled(m_comparison != 0);
             ImGui::PushID("##change_state_actor_group_fixed_button");
-            if (ImGui::Button(m_comparison == 0 ? Database::instance()->actorNameAndId(m_actor).c_str() : "", {-1, 0})) {
+            if (ImGui::EllipsesButton(m_comparison == 0 ? Database::instance()->actorNameAndId(m_actor).c_str() : "", {-1, 0})) {
               m_actorPicker = ObjectPicker(trNOOP("Actor"), Database::instance()->actors.actorList(), m_actor);
               m_actorPicker->setOpen(true);
             }
@@ -46,7 +46,7 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
             ImGui::EndDisabled();
             ImGui::BeginDisabled(m_comparison != 1);
             ImGui::PushID("##change_state_actor_group_var");
-            if (ImGui::Button(m_comparison == 1 ? Database::instance()->variableNameAndId(m_var).c_str() : "", {-1, 0})) {
+            if (ImGui::EllipsesButton(m_comparison == 1 ? Database::instance()->variableNameAndId(m_var).c_str() : "", {-1, 0})) {
               m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_var);
               m_variablePicker->setOpen(true);
             }
@@ -74,7 +74,7 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
       GroupBox skillGroupBox(trNOOP("Skill"), "##change_state_state_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
       if (skillGroupBox.begin()) {
         ImGui::PushID("##change_state_state_selection");
-        if (ImGui::Button(Database::instance()->stateNameAndId(m_state).c_str(), ImVec2{-1, 0})) {
+        if (ImGui::EllipsesButton(Database::instance()->stateNameAndId(m_state).c_str(), ImVec2{-1, 0})) {
           m_statePicker = ObjectPicker(trNOOP("State"), Database::instance()->states.states(), m_state);
           m_statePicker->setOpen(true);
         }

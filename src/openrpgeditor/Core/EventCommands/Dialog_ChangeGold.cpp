@@ -62,7 +62,7 @@ std::tuple<bool, bool> Dialog_ChangeGold::draw() {
             ImGui::BeginDisabled(m_operandSource != 1);
             const std::string text = m_operandSource != 1 ? "##change_gold_variable_empty" : Database::instance()->variableNameOrId(m_variable);
             ImGui::PushID("##change_gold_variable_input");
-            if (ImGui::Button(text.c_str(), ImVec2{-1, 0})) {
+            if (ImGui::EllipsesButton(text.c_str(), ImVec2{-1, 0})) {
               m_variablePicker.emplace("Variables", Database::instance()->system.variables(), m_variable);
               m_variablePicker->setOpen(true);
             }

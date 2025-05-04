@@ -27,7 +27,7 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
       GroupBox itemGroupBox(trNOOP("Item"), "##change_items_item_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
       if (itemGroupBox.begin()) {
         ImGui::PushID("##change_items_item");
-        if (ImGui::Button(Database::instance()->itemNameAndId(m_item).c_str(), ImVec2{-1, 0})) {
+        if (ImGui::EllipsesButton(Database::instance()->itemNameAndId(m_item).c_str(), ImVec2{-1, 0})) {
           m_itemPicker = ObjectPicker(trNOOP("Items"), Database::instance()->items.items(), m_item);
           m_itemPicker->setOpen(true);
         }
@@ -69,7 +69,7 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
             ImGui::EndDisabled();
             ImGui::BeginDisabled(m_operandSource != 1);
             ImGui::PushID("###change_items_quant_var");
-            if (ImGui::Button(m_operandSource == 1 ? Database::instance()->variableNameAndId(m_quantityVar).c_str() : "", ImVec2{-1, 0})) {
+            if (ImGui::EllipsesButton(m_operandSource == 1 ? Database::instance()->variableNameAndId(m_quantityVar).c_str() : "", ImVec2{-1, 0})) {
               m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_quantityVar);
               m_variablePicker->setOpen(true);
             }

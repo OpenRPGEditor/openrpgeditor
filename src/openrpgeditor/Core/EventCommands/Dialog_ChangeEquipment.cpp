@@ -27,7 +27,7 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
       GroupBox actorGroupBox(trNOOP("Actor"), "##change_equipment_actor_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
       if (actorGroupBox.begin()) {
         ImGui::PushID("##change_equip_actor_selection");
-        if (ImGui::Button(Database::instance()->actorNameAndId(m_actor).c_str(), ImVec2{-1, 0})) {
+        if (ImGui::EllipsesButton(Database::instance()->actorNameAndId(m_actor).c_str(), ImVec2{-1, 0})) {
           m_actorPicker = ObjectPicker(trNOOP("Actor"), Database::instance()->actors.actorList(), m_actor);
           m_actorPicker->setOpen(true);
         }

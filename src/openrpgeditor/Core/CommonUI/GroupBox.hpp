@@ -28,4 +28,5 @@ private:
   bool m_visible;
   ImVec2 m_groupStart;
   bool m_wasHeaderDrawn{false};
+  bool m_beginCalled{false};
 };

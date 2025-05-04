@@ -9,23 +9,23 @@ struct Dialog_ChangeNickname : IEventDialogController {
   Dialog_ChangeNickname() = delete;
   explicit Dialog_ChangeNickname(const std::string& name, const std::shared_ptr<ChangeNicknameCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ChangeNicknameCommand());
+      m_command.reset(new ChangeNicknameCommand());
     }
-    m_actor = command->actor;
-    m_nickname = command->nick;
+    m_actor = m_command->actor;
+    m_actorNickname = m_command->nick;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
+  void drawPickers();
   int m_actor = 1;
-  std::string m_nickname = "";
+  std::string m_actorNickname;
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Actor>> actor_picker;
-  std::shared_ptr<ChangeNicknameCommand> command;
-  std::tuple<bool, bool> result;
+  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::shared_ptr<ChangeNicknameCommand> m_command;
 };

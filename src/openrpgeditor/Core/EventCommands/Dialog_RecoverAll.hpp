@@ -10,26 +10,26 @@ struct Dialog_RecoverAll : IEventDialogController {
   Dialog_RecoverAll() = delete;
   explicit Dialog_RecoverAll(const std::string& name, const std::shared_ptr<RecoverAllCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new RecoverAllCommand());
+      m_command.reset(new RecoverAllCommand());
     }
-    m_actor = command->value;
-    m_variable = command->value;
-    m_Source = static_cast<int>(command->comparison);
+    m_actor = m_command->value;
+    m_variable = m_command->value;
+    m_source = static_cast<int>(m_command->comparison);
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
+  void drawPickers();
   int m_actor;
   int m_variable;
-  int m_Source;
+  int m_source;
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Actor>> actor_picker;
-  std::optional<VariableSwitchPicker> picker;
-  std::shared_ptr<RecoverAllCommand> command;
-  std::tuple<bool, bool> result;
+  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::optional<VariableSwitchPicker> m_variablePicker;
+  std::shared_ptr<RecoverAllCommand> m_command;
 };

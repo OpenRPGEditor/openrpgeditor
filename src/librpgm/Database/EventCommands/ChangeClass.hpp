@@ -30,7 +30,7 @@ struct ChangeClassCommand final : IEventCommand {
     }
     return false;
   }
-  int actor;
-  int classId;
-  bool saveLevel;
+  int actor{1};
+  int classId{1};
+  bool saveLevel{false};
 };

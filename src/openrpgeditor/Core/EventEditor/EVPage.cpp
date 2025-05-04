@@ -165,7 +165,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
               ImGui::SameLine();
               int v = m_page->conditions().variableValue();
               ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x);
-              if (ImGui::SpinInt("##event_page_variable_value_input_text", &v, 1, 100, m_page->conditions().variableValid() ? "%d" : "")) {
+              if (ImGui::SpinInt("##event_page_variable_value_input_text", &v, 1, 100, m_page->conditions().variableValid() ? nullptr : "")) {
                 m_page->conditions().setVariableValue(std::clamp(v, 0, 99999999));
               }
             }

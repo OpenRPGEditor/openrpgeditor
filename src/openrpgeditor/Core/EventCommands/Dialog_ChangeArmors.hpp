@@ -11,36 +11,36 @@ struct Dialog_ChangeArmors : IEventDialogController {
   Dialog_ChangeArmors() = delete;
   explicit Dialog_ChangeArmors(const std::string& name, const std::shared_ptr<ChangeArmorsCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ChangeArmorsCommand());
+      m_command.reset(new ChangeArmorsCommand());
     }
 
-    m_item = static_cast<int>(command->item);
-    m_operation = static_cast<int>(command->operation);
-    m_operandSource = static_cast<int>(command->operandSource);
-    m_includeEquipment = command->includeEquipment;
+    m_item = m_command->item;
+    m_operation = static_cast<int>(m_command->operation);
+    m_operandSource = static_cast<int>(m_command->operandSource);
+    m_includeEquipment = m_command->includeEquipment;
 
-    if (command->operandSource == QuantityChangeSource::Variable)
-      m_quantity_var = command->operand;
+    if (m_command->operandSource == QuantityChangeSource::Variable)
+      m_quantityVar = m_command->operand;
     else
-      m_quantity = command->operand;
+      m_quantity = m_command->operand;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
+  void drawPickers();
   int m_item;
   int m_operation;
   int m_operandSource;
   int m_quantity{1};
-  int m_quantity_var{1};
+  int m_quantityVar{1};
   bool m_includeEquipment{false};
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Armor>> armor_picker;
-  std::optional<VariableSwitchPicker> picker;
-  std::shared_ptr<ChangeArmorsCommand> command;
-  std::tuple<bool, bool> result;
+  std::optional<ObjectPicker<Armor>> m_armorPicker;
+  std::optional<VariableSwitchPicker> m_variablePicker;
+  std::shared_ptr<ChangeArmorsCommand> m_command;
 };

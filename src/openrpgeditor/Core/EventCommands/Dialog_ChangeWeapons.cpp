@@ -2,113 +2,141 @@
 
 #include "Database/Database.hpp"
 #include "Database/Weapons.hpp"
-#include "imgui.h"
+
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+
+#include <imgui.h>
+#include <imgui_internal.h>
+
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeWeapons::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###ChangeWeapons");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{254, 225}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize =
+      ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 10) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-    if (picker) {
-      auto [closed, confirmed] = picker->draw();
-      if (closed) {
-        if (confirmed) {
-          m_quantity_var = picker->selection();
-        }
-        picker.reset();
-      }
-    }
-
-    if (weapon_picker) {
-      auto [closed, confirmed] = weapon_picker->draw();
-      if (closed) {
-        if (confirmed) {
-          m_item = weapon_picker->selection();
-        }
-        weapon_picker.reset();
-      }
-    }
-
-    // Section 1 Armor
-    ImGui::SeparatorText("Weapon");
-    ImGui::PushID("##changeweapons_item");
-    if (ImGui::Button(Database::instance()->weaponNameOrId(m_item).c_str(), ImVec2{200 - 15, 0})) {
-      weapon_picker = ObjectPicker<Weapon>("Weapon"sv, Database::instance()->weapons.weaponList(), m_item);
-      weapon_picker->setOpen(true);
-    }
-    ImGui::PopID();
-
-    // Section 2 (Operation: Increase/Decrease)
-    ImGui::SeparatorText("Operation");
-    ImGui::RadioButton("Increase", &m_operation, 0);
-    ImGui::SameLine();
-    ImGui::RadioButton("Decrease", &m_operation, 1);
-
-    // Section 3 (Operand: Constant/Variable)
-    ImGui::SeparatorText("Operand");
-    ImGui::BeginGroup();
+  if (ImGui::BeginPopupModal(std::format("{}###ChangeWeapons", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    drawPickers();
+    ImGui::BeginVertical("##change_weapons_main_layout", ImGui::GetContentRegionAvail());
     {
-      ImGui::RadioButton("Constant", &m_operandSource, 0);
-      ImGui::RadioButton("Variable", &m_operandSource, 1);
-      ImGui::EndGroup();
-    }
-    ImGui::SameLine();
-    ImGui::BeginGroup();
-    {
-      ImGui::BeginDisabled(m_operandSource != 0);
-      ImGui::SetNextItemWidth(100);
-      if (ImGui::InputInt("##changeenemyhp_constant", &m_quantity)) {
-        if (m_quantity > 9999)
-          m_quantity = 9999;
-        if (m_quantity < 0)
-          m_quantity = 0;
+      GroupBox weaponGroupBox(trNOOP("Weapon"), "##change_weapons_item_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (weaponGroupBox.begin()) {
+        ImGui::PushID("##change_weapons_item");
+        if (ImGui::Button(Database::instance()->weaponNameAndId(m_item).c_str(), ImVec2{-1, 0})) {
+          m_weaponPicker = ObjectPicker(trNOOP("Weapon"), Database::instance()->weapons.weaponList(), m_item);
+          m_weaponPicker->setOpen(true);
+        }
+        ImGui::PopID();
       }
-      ImGui::EndDisabled();
+      weaponGroupBox.end();
 
-      ImGui::BeginDisabled(m_operandSource != 1);
-      ImGui::PushID("##changeenemyhp_quant_var");
-      if (ImGui::Button(m_operandSource == 1 ? Database::instance()->variableNameAndId(m_quantity_var).c_str() : "", ImVec2{200 - 15, 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables(), m_quantity_var);
-        picker->setOpen(true);
+      GroupBox operationGroupBox(trNOOP("Operation"), "##change_weapons_operation_group", {-1, 0}, nullptr,
+                                 ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (operationGroupBox.begin()) {
+        ImGui::BeginHorizontal("##change_weapons_operation_group_layout", {ImGui::GetContentRegionAvail().x, -1});
+        {
+          ImGui::Spring(.33);
+          ImGui::RadioButton("Increase", &m_operation, 0);
+          ImGui::Spring(.33);
+          ImGui::RadioButton("Decrease", &m_operation, 1);
+          ImGui::Spring(.33);
+        }
+        ImGui::EndHorizontal();
       }
-      ImGui::PopID();
-      ImGui::EndDisabled();
+      operationGroupBox.end();
 
-      ImGui::EndGroup();
+      GroupBox operandGroupBox(trNOOP("Operand"), "##change_weapons_operand_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (operandGroupBox.begin()) {
+        ImGui::BeginHorizontal("##change_weapons_operand_group_layout", {ImGui::GetContentRegionAvail().x, -1});
+        {
+          ImGui::BeginVertical("##change_weapons_operand_source", {-1, -1});
+          {
+            ImGui::RadioButton(trNOOP("Constant"), &m_operandSource, 0);
+            ImGui::RadioButton(trNOOP("Variable"), &m_operandSource, 1);
+          }
+          ImGui::EndVertical();
+          ImGui::BeginVertical("##change_weapons_operand_value", {-1, -1});
+          {
+            ImGui::BeginDisabled(m_operandSource != 0);
+            ImGui::SetNextItemWidth(-1);
+            if (ImGui::SpinInt("##change_weapons_constant", &m_quantity, 1, 100, m_operandSource == 0 ? nullptr : "")) {
+              m_quantity = std::clamp(m_quantity, 1, 9999);
+            }
+            ImGui::EndDisabled();
+
+            ImGui::BeginDisabled(m_operandSource != 1);
+            ImGui::PushID("##change_weapons_quant_var");
+            if (ImGui::Button(m_operandSource == 1 ? Database::instance()->variableNameAndId(m_quantityVar).c_str() : "", ImVec2{-1, 0})) {
+              m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_quantityVar);
+              m_variablePicker->setOpen(true);
+            }
+            ImGui::PopID();
+            ImGui::EndDisabled();
+          }
+          ImGui::EndVertical();
+        }
+        ImGui::EndHorizontal();
+      }
+      operandGroupBox.end();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5));
+      ImGui::BeginHorizontal("##change_weapons_buttons", {-1, -1});
+      {
+        ImGui::BeginDisabled(m_operation == 0);
+        ImGui::Checkbox(trNOOP("Include Equipment"), &m_includeEquipment);
+        ImGui::EndDisabled();
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##change_weapons_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+
+          m_command->item = m_item;
+          m_command->operation = static_cast<QuantityChangeOp>(m_operation);
+          m_command->operandSource = static_cast<QuantityChangeSource>(m_operandSource);
+          m_command->includeEquipment = m_includeEquipment;
+
+          if (m_command->operandSource == QuantityChangeSource::Variable)
+            m_command->operand = m_quantityVar;
+          else
+            m_command->operand = m_quantity;
+
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
+      }
+      ImGui::EndHorizontal();
     }
-    ImGui::BeginDisabled(m_operation == 0);
-    ImGui::Checkbox("Include Equipment", &m_includeEquipment);
-    ImGui::EndDisabled();
-
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-
-      command->item = m_item;
-      command->operation = static_cast<QuantityChangeOp>(m_operation);
-      command->operandSource = static_cast<QuantityChangeSource>(m_operandSource);
-      command->includeEquipment = m_includeEquipment;
-
-      if (command->operandSource == QuantityChangeSource::Variable)
-        command->operand = m_quantity_var;
-      else
-        command->operand = m_quantity;
-
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);
+}
+
+void Dialog_ChangeWeapons::drawPickers() {
+  if (m_variablePicker) {
+    if (const auto [closed, confirmed] = m_variablePicker->draw(); closed) {
+      if (confirmed) {
+        m_quantityVar = m_variablePicker->selection();
+      }
+      m_variablePicker.reset();
+    }
+  }
+
+  if (m_weaponPicker) {
+    if (const auto [closed, confirmed] = m_weaponPicker->draw(); closed) {
+      if (confirmed) {
+        m_item = m_weaponPicker->selection();
+      }
+      m_weaponPicker.reset();
+    }
+  }
 }

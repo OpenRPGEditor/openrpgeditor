@@ -25,6 +25,6 @@ struct ChangeNicknameCommand final : IEventCommand {
     }
     return false;
   }
-  int actor;
+  int actor{1};
   std::string nick;
 };

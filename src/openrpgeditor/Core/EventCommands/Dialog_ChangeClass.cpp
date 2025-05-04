@@ -1,75 +1,94 @@
 #include "Core/EventCommands/Dialog_ChangeClass.hpp"
 
 #include "Database/Database.hpp"
-#include "imgui.h"
+
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+
+#include <imgui.h>
+#include <imgui_internal.h>
+
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeClass::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###ChangeClass");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{183, 160}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize =
+      ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 7) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-    if (actor_picker) {
-      auto [closed, confirmed] = actor_picker->draw();
-      if (closed) {
-        if (confirmed) {
-          m_actor = actor_picker->selection();
+  if (ImGui::BeginPopupModal(std::format("{}###ChangeClass", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    drawPickers();
+
+    ImGui::BeginVertical("##change_class_main_layout", ImGui::GetContentRegionAvail());
+    {
+      GroupBox actorGroupBox(trNOOP("Actor"), "##change_class_actor_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (actorGroupBox.begin()) {
+        ImGui::PushID("##change_class_actor");
+        if (ImGui::Button(Database::instance()->actorNameAndId(m_actor).c_str(), ImVec2{-1, 0})) {
+          m_actorPicker = ObjectPicker(trNOOP("Actor"), Database::instance()->actors.actorList(), m_actor);
+          m_actorPicker->setOpen(true);
         }
-        actor_picker.reset();
+        ImGui::PopID();
       }
-    }
-    if (class_picker) {
-      auto [closed, confirmed] = class_picker->draw();
-      if (closed) {
-        if (confirmed) {
-          m_class = class_picker->selection();
+      actorGroupBox.end();
+
+      GroupBox classGroupBox(trNOOP("Class"), "##change_class_class_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (classGroupBox.begin()) {
+        ImGui::PushID("##change_class_classid");
+        if (ImGui::Button(Database::instance()->classNameAndId(m_class).c_str(), ImVec2{-1, 0})) {
+          m_classPicker = ObjectPicker(trNOOP("Class"), Database::instance()->classes.classes(), m_class);
+          m_classPicker->setOpen(true);
         }
-        class_picker.reset();
+        ImGui::PopID();
       }
+      classGroupBox.end();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5));
+      ImGui::BeginHorizontal("##change_class_buttons");
+      {
+        // saveLevel checkbox
+        ImGui::Checkbox("Save Level", &m_saveLevel);
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##change_class_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+          m_command->actor = m_actor;
+          m_command->classId = m_class;
+          m_command->saveLevel = m_saveLevel;
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
+      }
+      ImGui::EndHorizontal();
     }
-
-    ImGui::SeparatorText("Actor");
-
-    // Actor Button
-    ImGui::PushID("##change_class_actor");
-    if (ImGui::Button(Database::instance()->actorName(m_actor).c_str(), ImVec2{200 - 15, 0})) {
-      actor_picker = ObjectPicker("Actor"sv, Database::instance()->actors.actorList(), m_actor);
-      actor_picker->setOpen(true);
-    }
-    ImGui::PopID();
-
-    ImGui::SeparatorText("Class");
-
-    // Actor Button
-    ImGui::PushID("##change_class_classid");
-    if (ImGui::Button(Database::instance()->className(m_class).c_str(), ImVec2{200 - 15, 0})) {
-      class_picker = ObjectPicker<Class>("Class"sv, Database::instance()->classes.classes(), m_class);
-      class_picker->setOpen(true);
-    }
-    ImGui::PopID();
-
-    // saveLevel checkbox
-    ImGui::Checkbox("Save Level", &m_saveLevel);
-
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->actor = m_actor;
-      command->classId = m_class;
-      command->saveLevel = m_saveLevel;
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);
+}
+
+void Dialog_ChangeClass::drawPickers() {
+  if (m_actorPicker) {
+    if (const auto [closed, confirmed] = m_actorPicker->draw(); closed) {
+      if (confirmed) {
+        m_actor = m_actorPicker->selection();
+      }
+      m_actorPicker.reset();
+    }
+  }
+  if (m_classPicker) {
+    if (const auto [closed, confirmed] = m_classPicker->draw(); closed) {
+      if (confirmed) {
+        m_class = m_classPicker->selection();
+      }
+      m_classPicker.reset();
+    }
+  }
 }

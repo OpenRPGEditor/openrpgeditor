@@ -20,7 +20,7 @@ std::tuple<bool, bool> Dialog_ChangeGold::draw() {
   }
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   const auto maxSize =
-      ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 12) + (ImGui::GetStyle().FramePadding.y * 2)};
+      ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 8) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
   if (ImGui::BeginPopupModal(std::format("{}###ChangeGold", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
@@ -32,10 +32,11 @@ std::tuple<bool, bool> Dialog_ChangeGold::draw() {
       if (operationGroupBox.begin()) {
         ImGui::BeginHorizontal("##change_exp_operation_group_horizontal", {ImGui::GetContentRegionAvail().x, -1});
         {
-          ImGui::Spring(.5);
+          ImGui::Spring(0.33f);
           ImGui::RadioButton(trNOOP("Increase"), &m_operation, 0);
+          ImGui::Spring(0.33f);
           ImGui::RadioButton(trNOOP("Decrease"), &m_operation, 1);
-          ImGui::Spring(.5);
+          ImGui::Spring(0.33f);
         }
         ImGui::EndHorizontal();
       }
@@ -55,7 +56,7 @@ std::tuple<bool, bool> Dialog_ChangeGold::draw() {
           {
             ImGui::BeginDisabled(m_operandSource != 0);
             ImGui::SetNextItemWidth(-1);
-            ImGui::SpinInt("##change_gold_constant_input", &m_constant, 1, 100, m_operandSource == 0 ? "%d" : "");
+            ImGui::SpinInt("##change_gold_constant_input", &m_constant, 1, 100, m_operandSource == 0 ? nullptr : "");
             ImGui::EndDisabled();
 
             ImGui::BeginDisabled(m_operandSource != 1);

@@ -1,108 +1,135 @@
 #include "Core/EventCommands/Dialog_ChangeItems.hpp"
 
 #include "Database/Database.hpp"
-#include "imgui.h"
+
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+
+#include <imgui.h>
+#include <imgui_internal.h>
+
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeItems::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###ChangeItems");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{254, 205}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize =
+      ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 10) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-    if (picker) {
-      auto [closed, confirmed] = picker->draw();
-      if (closed) {
-        if (confirmed) {
-          m_quantity_var = picker->selection();
-        }
-        picker.reset();
-      }
-    }
-
-    if (item_picker) {
-      auto [closed, confirmed] = item_picker->draw();
-      if (closed) {
-        if (confirmed) {
-          m_item = item_picker->selection();
-        }
-        item_picker.reset();
-      }
-    }
-
-    // Section 1 Armor
-    ImGui::SeparatorText("Item");
-    ImGui::PushID("##changeitems_item");
-    if (ImGui::Button(Database::instance()->itemNameOrId(m_item).c_str(), ImVec2{200 - 15, 0})) {
-      item_picker = ObjectPicker<Item>("Items"sv, Database::instance()->items.items(), m_item);
-      item_picker->setOpen(true);
-    }
-    ImGui::PopID();
-
-    // Section 2 (Operation: Increase/Decrease)
-    ImGui::SeparatorText("Operation");
-    ImGui::RadioButton("Increase", &m_operation, 0);
-    ImGui::SameLine();
-    ImGui::RadioButton("Decrease", &m_operation, 1);
-
-    // Section 3 (Operand: Constant/Variable)
-    ImGui::SeparatorText("Operand");
-    ImGui::BeginGroup();
+  if (ImGui::BeginPopupModal(std::format("{}###ChangeItems", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    drawPickers();
+    ImGui::BeginVertical("##change_items_main_layout", ImGui::GetContentRegionAvail());
     {
-      ImGui::RadioButton("Constant", &m_operandSource, 0);
-      ImGui::RadioButton("Variable", &m_operandSource, 1);
-      ImGui::EndGroup();
-    }
-    ImGui::SameLine();
-    ImGui::BeginGroup();
-    {
-      ImGui::BeginDisabled(m_operandSource != 0);
-      ImGui::SetNextItemWidth(100);
-      if (ImGui::InputInt("##changeenemyhp_constant", &m_quantity)) {
-        if (m_quantity > 9999)
-          m_quantity = 9999;
-        if (m_quantity < 0)
-          m_quantity = 0;
+      GroupBox itemGroupBox(trNOOP("Item"), "##change_items_item_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (itemGroupBox.begin()) {
+        ImGui::PushID("##change_items_item");
+        if (ImGui::Button(Database::instance()->itemNameAndId(m_item).c_str(), ImVec2{-1, 0})) {
+          m_itemPicker = ObjectPicker(trNOOP("Items"), Database::instance()->items.items(), m_item);
+          m_itemPicker->setOpen(true);
+        }
+        ImGui::PopID();
       }
-      ImGui::EndDisabled();
+      itemGroupBox.end();
 
-      ImGui::BeginDisabled(m_operandSource != 1);
-      ImGui::PushID("##changeenemyhp_quant_var");
-      if (ImGui::Button(m_operandSource == 1 ? Database::instance()->variableNameAndId(m_quantity_var).c_str() : "", ImVec2{200 - 15, 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables(), m_quantity_var);
-        picker->setOpen(true);
+      GroupBox operationGroupBox(trNOOP("Operation"), "##change_items_operation_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (operationGroupBox.begin()) {
+        ImGui::BeginHorizontal("##change_items_operation_layout", {ImGui::GetContentRegionAvail().x, -1});
+        {
+          ImGui::Spring(0.33f);
+          ImGui::RadioButton(trNOOP("Increase"), &m_operation, 0);
+          ImGui::Spring(0.33f);
+          ImGui::RadioButton(trNOOP("Decrease"), &m_operation, 1);
+          ImGui::Spring(0.33f);
+        }
+        ImGui::EndHorizontal();
       }
-      ImGui::PopID();
-      ImGui::EndDisabled();
+      operationGroupBox.end();
 
-      ImGui::EndGroup();
+      GroupBox operandroupBox(trNOOP("Operand"), "##change_items_operand_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (operandroupBox.begin()) {
+        ImGui::BeginHorizontal("##change_items_operand_layout");
+        {
+          ImGui::BeginVertical("##change_items_operand_source");
+          {
+            ImGui::RadioButton(trNOOP("Constant"), &m_operandSource, 0);
+            ImGui::RadioButton(trNOOP("Variable"), &m_operandSource, 1);
+          }
+          ImGui::EndVertical();
+          ImGui::BeginVertical("##change_items_operand_value");
+          {
+            ImGui::BeginDisabled(m_operandSource != 0);
+            ImGui::SetNextItemWidth(-1);
+            if (ImGui::SpinInt("###change_items_constant", &m_quantity, 1, 100, m_operandSource == 0 ? nullptr : "")) {
+              m_quantity = std::clamp(m_quantity, 1, 9999);
+            }
+            ImGui::EndDisabled();
+            ImGui::BeginDisabled(m_operandSource != 1);
+            ImGui::PushID("###change_items_quant_var");
+            if (ImGui::Button(m_operandSource == 1 ? Database::instance()->variableNameAndId(m_quantityVar).c_str() : "", ImVec2{-1, 0})) {
+              m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_quantityVar);
+              m_variablePicker->setOpen(true);
+            }
+            ImGui::PopID();
+            ImGui::EndDisabled();
+          }
+          ImGui::EndVertical();
+        }
+        ImGui::EndHorizontal();
+      }
+      operandroupBox.end();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5));
+      ImGui::BeginHorizontal("##change_items_buttons");
+      {
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##recover_all_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+
+          command->item = m_item;
+          command->operation = static_cast<QuantityChangeOp>(m_operation);
+          command->operandSource = static_cast<QuantityChangeSource>(m_operandSource);
+
+          if (command->operandSource == QuantityChangeSource::Variable)
+            command->operand = m_quantityVar;
+          else
+            command->operand = m_quantity;
+
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
+      }
+      ImGui::EndHorizontal();
     }
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-
-      command->item = m_item;
-      command->operation = static_cast<QuantityChangeOp>(m_operation);
-      command->operandSource = static_cast<QuantityChangeSource>(m_operandSource);
-
-      if (command->operandSource == QuantityChangeSource::Variable)
-        command->operand = m_quantity_var;
-      else
-        command->operand = m_quantity;
-
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);
+}
+
+void Dialog_ChangeItems::drawPickers() {
+  if (m_variablePicker) {
+    if (const auto [closed, confirmed] = m_variablePicker->draw(); closed) {
+      if (confirmed) {
+        m_quantityVar = m_variablePicker->selection();
+      }
+      m_variablePicker.reset();
+    }
+  }
+
+  if (m_itemPicker) {
+    if (const auto [closed, confirmed] = m_itemPicker->draw(); closed) {
+      if (confirmed) {
+        m_item = m_itemPicker->selection();
+      }
+      m_itemPicker.reset();
+    }
+  }
 }

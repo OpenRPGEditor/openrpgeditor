@@ -10,17 +10,18 @@ struct Dialog_ChangePartyMember : IEventDialogController {
   Dialog_ChangePartyMember() = delete;
   explicit Dialog_ChangePartyMember(const std::string& name, const std::shared_ptr<ChangePartyMemberCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ChangePartyMemberCommand());
+      m_command.reset(new ChangePartyMemberCommand());
     }
-    m_actor = command->member;
-    m_operation = static_cast<int>(command->operation);
-    m_isInit = command->initialize;
+    m_actor = m_command->member;
+    m_operation = static_cast<int>(m_command->operation);
+    m_isInit = m_command->initialize;
   }
+  void drawPickers();
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
   int m_actor;
@@ -28,7 +29,6 @@ private:
   bool m_isInit;
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Actor>> actor_picker;
-  std::shared_ptr<ChangePartyMemberCommand> command;
-  std::tuple<bool, bool> result;
+  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::shared_ptr<ChangePartyMemberCommand> m_command;
 };

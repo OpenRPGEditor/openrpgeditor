@@ -19,10 +19,11 @@ struct Dialog_ChangeItems : IEventDialogController {
     m_operandSource = static_cast<int>(command->operandSource);
 
     if (command->operandSource == QuantityChangeSource::Variable)
-      m_quantity_var = command->operand;
+      m_quantityVar = command->operand;
     else
       m_quantity = command->operand;
   }
+  void drawPickers();
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
@@ -32,12 +33,12 @@ private:
   int m_operation;
   int m_operandSource;
   int m_quantity{1};
-  int m_quantity_var{1};
+  int m_quantityVar{1};
   bool m_includeEquipment{false};
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Item>> item_picker;
-  std::optional<VariableSwitchPicker> picker;
+  std::optional<ObjectPicker<Item>> m_itemPicker;
+  std::optional<VariableSwitchPicker> m_variablePicker;
   std::shared_ptr<ChangeItemsCommand> command;
   std::tuple<bool, bool> result;
 };

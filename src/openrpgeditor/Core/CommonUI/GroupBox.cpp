@@ -14,6 +14,7 @@ GroupBox::GroupBox(const std::string_view title, const std::string_view id, cons
 , m_visible(false) {}
 
 bool GroupBox::begin() {
+  m_beginCalled = true;
   const auto id = ImGui::GetID(m_id.c_str());
   auto groupPos = ImGui::GetCursorScreenPos();
   m_groupStart = groupPos;
@@ -44,6 +45,8 @@ bool GroupBox::begin() {
 }
 
 void GroupBox::end() {
+  assert(m_beginCalled && "GroupBox::begin not called");
+
   ImRect clip;
   if (m_visible) {
     ImGui::EndDisabled();
@@ -73,4 +76,5 @@ void GroupBox::end() {
     ImGui::SetCursorScreenPos(oldPos);
     m_wasHeaderDrawn = true;
   }
+  m_beginCalled = false;
 }

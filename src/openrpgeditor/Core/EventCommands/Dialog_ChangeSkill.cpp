@@ -15,7 +15,7 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
   }
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   const auto maxSize =
-      ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 12) + (ImGui::GetStyle().FramePadding.y * 2)};
+      ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 10) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
@@ -62,10 +62,11 @@ std::tuple<bool, bool> Dialog_ChangeSkill::draw() {
       if (operationGroupBox.begin()) {
         ImGui::BeginHorizontal("##change_skill_operation_group_horizontal", {ImGui::GetContentRegionAvail().x, -1});
         {
-          ImGui::Spring(.5);
+          ImGui::Spring(0.33f);
           ImGui::RadioButton(trNOOP("Forget"), &m_skillOp, 0);
+          ImGui::Spring(0.33f);
           ImGui::RadioButton(trNOOP("Learn"), &m_skillOp, 1);
-          ImGui::Spring(.5);
+          ImGui::Spring(0.33f);
         }
         ImGui::EndHorizontal();
       }

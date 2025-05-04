@@ -787,7 +787,7 @@ std::list<EventCommandEditor::EventCommandTab> EventCommandEditor::buildTabList(
           {
               {
                   {EventCode::Show_Picture, true},
-                  {EventCode::Rotate_Picture, true},
+                  {EventCode::Move_Picture, true},
                   {EventCode::Rotate_Picture, true},
                   {EventCode::Tint_Picture, true},
                   {EventCode::Erase_Picture, true},

@@ -768,7 +768,9 @@ bool EllipsesButtonEx(const char* label, const ImVec2& size_arg, ImGuiButtonFlag
 
   if (g.LogEnabled)
     LogSetNextTextDecoration("[", "]");
-  RenderTextClipped(bb.Min + style.FramePadding, {bb.Max.x - (ellipses_size.x + style.FramePadding.x), bb.Max.y - style.FramePadding.y}, label, NULL, &label_size, style.ButtonTextAlign, &bb);
+  ImRect bb_label = bb;
+  bb_label.Max.x -= ellipses_size.x + style.FramePadding.x;
+  RenderTextClipped(bb_label.Min + style.FramePadding, bb_label.Max - style.FramePadding, label, NULL, &label_size, style.ButtonTextAlign, &bb_label);
   RenderTextClipped({bb.Max.x - (ellipses_size.x + style.FramePadding.x), bb.Min.y + style.FramePadding.y}, bb.Max - style.FramePadding, ellipses, NULL, &ellipses_size, style.ButtonTextAlign, &bb);
 
   // Automatically close popups

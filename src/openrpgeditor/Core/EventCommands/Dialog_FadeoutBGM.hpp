@@ -8,19 +8,18 @@ struct Dialog_FadeoutBGM : IEventDialogController {
   Dialog_FadeoutBGM() = delete;
   explicit Dialog_FadeoutBGM(const std::string& name, const std::shared_ptr<FadeoutBGM>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new FadeoutBGM());
+      m_command.reset(new FadeoutBGM());
     }
-    m_duration = command->duration;
+    m_duration = m_command->duration;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
   int m_duration;
   bool m_confirmed{false};
-  std::shared_ptr<FadeoutBGM> command;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<FadeoutBGM> m_command;
 };

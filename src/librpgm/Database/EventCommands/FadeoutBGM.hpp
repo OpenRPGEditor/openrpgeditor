@@ -11,5 +11,5 @@ struct FadeoutBGM : IEventCommand {
   std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<FadeoutBGM>(*this); }
 
-  int duration;
+  int duration{10};
 };

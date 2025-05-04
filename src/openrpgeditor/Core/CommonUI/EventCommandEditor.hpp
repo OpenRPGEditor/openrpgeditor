@@ -170,7 +170,7 @@ struct EventCommandEditor {
   };
 
   EventCommandEditor()
-  : commandDialog(nullptr) {}
+  : m_commandDialog(nullptr) {}
   void blockSelect(int n, bool isDelete);
   void handleClipboardInteraction();
   static void setupTableHeader();
@@ -182,6 +182,8 @@ struct EventCommandEditor {
     m_commands = commands;
     m_selectedCommand = -1;
   }
+
+  void setTroopId(int troopId) { m_troopId = troopId; }
 
 private:
   static std::list<EventCommandTab> buildTabList();
@@ -199,8 +201,9 @@ private:
   int m_hoveringCommand = -1;
   int m_hoveringEnd = -1;
   bool m_hasFocus{false};
+  int m_troopId = 0;
 
-  std::shared_ptr<IEventDialogController> commandDialog;
+  std::shared_ptr<IEventDialogController> m_commandDialog;
   std::vector<std::shared_ptr<IEventCommand>>* m_commands = nullptr;
 
   std::shared_ptr<IEventDialogController> CreateCommandDialog(EventCode code, std::shared_ptr<IEventCommand> cmd = nullptr) {
@@ -424,11 +427,11 @@ private:
     case EventCode::Change_Enemy_State:
       return std::make_shared<Dialog_ChangeEnemyState>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEnemyStateCommand>(cmd));
     case EventCode::Enemy_Recover_All:
-      return std::make_shared<Dialog_EnemyRecoverAll>(DecodeEnumName(code), std::dynamic_pointer_cast<EnemyRecoverAllCommand>(cmd));
+      return std::make_shared<Dialog_EnemyRecoverAll>(DecodeEnumName(code), std::dynamic_pointer_cast<EnemyRecoverAllCommand>(cmd), m_troopId);
     case EventCode::Enemy_Appear:
-      return std::make_shared<Dialog_EnemyAppear>(DecodeEnumName(code), std::dynamic_pointer_cast<EnemyAppearCommand>(cmd));
+      return std::make_shared<Dialog_EnemyAppear>(DecodeEnumName(code), std::dynamic_pointer_cast<EnemyAppearCommand>(cmd), m_troopId);
     case EventCode::Enemy_Transform:
-      return std::make_shared<Dialog_EnemyTransform>(DecodeEnumName(code), std::dynamic_pointer_cast<EnemyTransformCommand>(cmd));
+      return std::make_shared<Dialog_EnemyTransform>(DecodeEnumName(code), std::dynamic_pointer_cast<EnemyTransformCommand>(cmd), m_troopId);
     case EventCode::Show_Battle_Animation:
       return std::make_shared<Dialog_ShowBattleAnimation>(DecodeEnumName(code), std::dynamic_pointer_cast<ShowBattleAnimationCommand>(cmd));
     case EventCode::Force_Action:

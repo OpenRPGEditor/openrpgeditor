@@ -7,7 +7,7 @@
 
 struct TroopsEVEditor;
 struct TroopsEVPage {
-  TroopsEVPage(TroopsEVEditor* parent, Troop::Page* page);
+  TroopsEVPage(TroopsEVEditor* parent, Troop::Page* page, int m_troopId);
 
   /* Returns true when closed, closing is the equivelant of deleting */
   std::tuple<bool, bool> draw(bool canDelete, int index);

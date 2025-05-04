@@ -472,6 +472,11 @@ ExitStatus Application::run() {
         m_projectCloseRequest = false;
         m_userClosed = false;
       }
+
+      if (ImGui::GetIO().WantSaveIniSettings && saveTime >= 5.f) {
+        serializeSettings();
+        saveTime = 0.f;
+      }
     }
 
     // Rendering

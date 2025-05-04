@@ -1,45 +1,66 @@
 #include "Core/EventCommands/Dialog_EnemyRecoverAll.hpp"
 
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Database/Database.hpp"
-#include "imgui.h"
+
+#include <imgui.h>
+#include <imgui_internal.h>
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_EnemyRecoverAll::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###EnemyRecoverAll");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{181, 94}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 32) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 4) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
+  if (ImGui::BeginPopupModal(std::format("{}###EnemyRecoverAll", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    ImGui::BeginVertical("##enemy_recover_all_main_layout");
+    {
+      GroupBox enemyGroupBox(trNOOP("Enemy"), "##enemy_recover_all_enemy_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (enemyGroupBox.begin()) {
+        ImGui::SetNextItemWidth(-1);
 
-    ImGui::SeparatorText("Enemy");
-    ImGui::SetNextItemWidth(160);
+        auto preview = Database::instance()->troopMemberName(m_troopId, m_troopMemberSelection);
+        if (m_troopMemberSelection >= 0) {
+          preview = std::format("#{} {}", m_troopMemberSelection + 1, preview);
+        }
 
-    if (ImGui::BeginCombo("##enemystate_change_list", m_troop_selection == 0 ? "Entire Troop" : ("#" + std::to_string(m_troop_selection) + " ?").c_str())) {
-      if (ImGui::Selectable("Entire Troop", m_troop_selection == 0)) {
-        m_troop_selection = 0;
-      }
-      for (int i = 1; i < 9; ++i) {
-        std::string text = "#" + std::to_string(i) + " ?";
-        if (ImGui::Selectable(text.c_str(), i == m_troop_selection)) {
-          m_troop_selection = i;
+        if (ImGui::BeginCombo("##enemy_recover_all_change_list", preview.c_str())) {
+          for (int i = -1; i < 8; ++i) {
+            auto name = Database::instance()->troopMemberName(m_troopId, i);
+            if (i >= 0) {
+              name = std::format("#{} {}", i + 1, name);
+            }
+
+            if (ImGui::Selectable(name.c_str(), i == m_troopMemberSelection)) {
+              m_troopMemberSelection = i;
+            }
+          }
+          ImGui::EndCombo();
         }
       }
-      ImGui::EndCombo();
+      enemyGroupBox.end();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##enemy_recover_all_buttons_layout");
+      {
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##enemy_recover_all_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+          m_command->troopMember = m_troopMemberSelection;
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
+      }
+      ImGui::EndHorizontal();
     }
-
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->troop = m_troop_selection - 1;
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 

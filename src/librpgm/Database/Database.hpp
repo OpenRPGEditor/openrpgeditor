@@ -288,18 +288,8 @@ struct Database {
   [[nodiscard]] std::string armorNameAndId(const int id) const { return nameAndId(armorName(id), id); }
   [[nodiscard]] std::string enemyNameOrId(const int id) const { return nameOrId(enemyName(id), id); }
   [[nodiscard]] std::string enemyNameAndId(const int id) const { return nameAndId(enemyName(id), id); }
-  [[nodiscard]] std::string troopNameOrId(const int id) const {
-    if (id == -1) {
-      return trNOOP("Entire Troop");
-    }
-    return nameOrId(troopName(id), id);
-  }
-  [[nodiscard]] std::string troopNameAndId(const int id) const {
-    if (id == -1) {
-      return trNOOP("Entire Troop");
-    }
-    return nameAndId(troopName(id), id);
-  }
+  [[nodiscard]] std::string troopNameOrId(const int id) const { return nameOrId(troopName(id), id); }
+  [[nodiscard]] std::string troopNameAndId(const int id) const { return nameAndId(troopName(id), id); }
 
   [[nodiscard]] std::string stateNameOrId(const int id) const { return nameOrId(stateName(id), id); }
   [[nodiscard]] std::string stateNameAndId(const int id) const { return nameAndId(stateName(id), id); }

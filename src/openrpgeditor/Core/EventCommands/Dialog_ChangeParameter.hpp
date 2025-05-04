@@ -26,10 +26,11 @@ struct Dialog_ChangeParameter : IEventDialogController {
       m_value = m_command->value;
 
     if (m_command->quantitySource == QuantityChangeSource::Variable)
-      m_quantity_var = m_command->quantity;
+      m_quantityVar = m_command->quantity;
     else
       m_quantity = m_command->quantity;
   }
+  void drawPickers();
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
@@ -41,13 +42,13 @@ private:
   int m_quantityOp;
   int m_quantitySource;
   int m_quantity{1};
-  int m_quantity_var{1};
+  int m_quantityVar{1};
   bool m_isOperand{false};
   int m_parameterSource;
 
   bool m_confirmed{false};
   std::optional<ObjectPicker<Actor>> m_actorPicker;
-  std::optional<VariableSwitchPicker> m_picker;
+  std::optional<VariableSwitchPicker> m_variablePicker;
   std::shared_ptr<ChangeParameterCommand> m_command;
   std::tuple<bool, bool> m_result;
 };

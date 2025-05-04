@@ -9,12 +9,11 @@
 struct MainWindow;
 
 struct TroopsEVEditor {
-  TroopsEVEditor(MainWindow* parent, Troop* troop)
-  : m_parent(parent)
-  , m_troop(troop) {
+  explicit TroopsEVEditor(Troop* troop)
+  : m_troop(troop) {
     if (m_troop) {
       for (auto& page : troop->pages()) {
-        m_pages.emplace_back(this, &page);
+        m_pages.emplace_back(this, &page, m_troop->id());
       }
       m_id = troop->id();
     }
@@ -31,13 +30,9 @@ struct TroopsEVEditor {
     fixupPages();
   }
 
-  MainWindow* project() { return m_parent; }
-  const MainWindow* project() const { return m_parent; }
-
   int id() const { return m_id; }
 
 private:
-  MainWindow* m_parent = nullptr;
   Troop* m_troop = nullptr;
   int m_id = 0;
   std::vector<TroopsEVPage> m_pages;

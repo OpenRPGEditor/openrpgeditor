@@ -12,5 +12,7 @@ struct EnemyRecoverAllCommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
 
-  int troop;
+  int troopMember{-1};
+
+  int m_troopId = 0;
 };

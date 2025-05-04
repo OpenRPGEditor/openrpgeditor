@@ -7,22 +7,24 @@
 
 struct Dialog_EnemyAppear : IEventDialogController {
   Dialog_EnemyAppear() = delete;
-  explicit Dialog_EnemyAppear(const std::string& name, const std::shared_ptr<EnemyAppearCommand>& cmd = nullptr)
+  explicit Dialog_EnemyAppear(const std::string& name, const std::shared_ptr<EnemyAppearCommand>& cmd = nullptr, const int troopId = 0)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_troopId(troopId)
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new EnemyAppearCommand());
+      m_command.reset(new EnemyAppearCommand());
     }
-    m_troop_selection = command->enemy;
+    m_troopMemberSelection = m_command->troopMember;
+    m_command->m_troopId = m_troopId;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
-  int m_troop_selection;
+  int m_troopId = 0;
+  int m_troopMemberSelection;
 
   bool m_confirmed{false};
-  std::shared_ptr<EnemyAppearCommand> command;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<EnemyAppearCommand> m_command;
 };

@@ -3,28 +3,32 @@
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/Class.hpp"
-#include "Database/EventCommands/ChangeGold.hpp"
 #include "Database/EventCommands/EnemyRecoverAll.hpp"
-#include "Database/EventCommands/RecoverAll.hpp"
 
 struct Dialog_EnemyRecoverAll : IEventDialogController {
   Dialog_EnemyRecoverAll() = delete;
-  explicit Dialog_EnemyRecoverAll(const std::string& name, const std::shared_ptr<EnemyRecoverAllCommand>& cmd = nullptr)
+  explicit Dialog_EnemyRecoverAll(const std::string& name, const std::shared_ptr<EnemyRecoverAllCommand>& cmd = nullptr, int troopId = 0)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_troopId(troopId)
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new EnemyRecoverAllCommand());
+      m_command.reset(new EnemyRecoverAllCommand());
     }
-    m_troop_selection = command->troop;
+    m_troopMemberSelection = m_command->troopMember;
+    m_command->m_troopId = m_troopId;
   }
+
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
+
+  void setTroopId(const int troopId) { m_troopId = troopId; }
 
 private:
-  int m_troop_selection = 0;
+  int m_troopId = 0;
+  int m_troopMemberSelection = 0;
 
   bool m_confirmed{false};
-  std::shared_ptr<EnemyRecoverAllCommand> command;
+  std::shared_ptr<EnemyRecoverAllCommand> m_command;
   std::tuple<bool, bool> result;
 };

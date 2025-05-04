@@ -17,6 +17,11 @@
 #include "imgui_internal.h"
 
 void TroopsEVEditor::fixupPages() {
+  if (!m_troop) {
+    m_pages.clear();
+    return;
+  }
+
   for (int i = 0; i < m_troop->pages().size(); ++i) {
     m_pages[i].setPage(&m_troop->pages()[i], i + 1);
     m_pages[i].setParent(this);
@@ -60,7 +65,7 @@ bool TroopsEVEditor::draw() {
         if (ImGui::TabItemButton(" + ")) {
           Troop::Page* page = &m_troop->pages().emplace_back();
           page->list().emplace_back(new EventDummy());
-          m_pages.emplace_back(this, page);
+          m_pages.emplace_back(this, page, m_troop->id());
           fixupPages();
           m_selectedPage = m_pages.size() - 1;
         }

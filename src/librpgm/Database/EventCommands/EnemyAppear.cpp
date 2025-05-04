@@ -1,13 +1,19 @@
 #include "Database/EventCommands/EnemyAppear.hpp"
+#include "Database/Database.hpp"
 
 EnemyAppearCommand::EnemyAppearCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
 : IEventCommand(indent, parameters) {
-  parameters.at(0).get_to(enemy);
+  parameters.at(0).get_to(troopMember);
 }
 
-void EnemyAppearCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(enemy); }
+void EnemyAppearCommand::serializeParameters(nlohmann::ordered_json& out) const { out.push_back(troopMember); }
 
 std::string EnemyAppearCommand::stringRep(const Database& db, const bool colored) const {
-  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Enemy Appear") + colon.data() + "#" + std::to_string(enemy + 1) +
-         ColorFormatter::popColor(colored);
+
+  std::string name = db.troopMemberName(m_troopId, troopMember);
+  if (troopMember >= 0) {
+    name = std::format("#{} {}", troopMember + 1, name);
+  }
+
+  return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Enemy Appear") + colon.data() + name + ColorFormatter::popColor(colored);
 }

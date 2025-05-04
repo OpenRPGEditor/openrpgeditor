@@ -132,16 +132,16 @@ public:
   private:
     int m_actorHp{50};
     int m_actorId{1};
-    bool m_actorValid;
+    bool m_actorValid{false};
     int m_enemyIndex{0};
     int m_enemyHp{50};
-    bool m_enemyValid;
+    bool m_enemyValid{false};
     int m_switchId{1};
-    bool m_switchValid;
+    bool m_switchValid{false};
     int m_turnA{0};
     int m_turnB{0};
-    bool m_turnEnding;
-    bool m_turnValid;
+    bool m_turnEnding{false};
+    bool m_turnValid{false};
 
     std::optional<int> m_oldactorHp;
     std::optional<int> m_oldactorId;

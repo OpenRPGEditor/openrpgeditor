@@ -250,17 +250,30 @@ void EventCommandEditor::draw() {
           if (!m_commands->at(n)) {
             continue;
           }
-          if (m_commands->at(n)->code() == EventCode::Enemy_Recover_All || m_commands->at(n)->code() == EventCode::Enemy_Appear) {
-            switch (const auto& cmd = m_commands->at(n); cmd->code()) {
-            case EventCode::Enemy_Recover_All:
-              std::dynamic_pointer_cast<EnemyRecoverAllCommand>(cmd)->m_troopId = m_troopId;
-              break;
-            case EventCode::Enemy_Appear:
-              std::dynamic_pointer_cast<EnemyAppearCommand>(cmd)->m_troopId = m_troopId;
-              break;
-            default:
-              break;
-            }
+          switch (const auto& cmd = m_commands->at(n); cmd->code()) {
+          case EventCode::Enemy_Recover_All:
+            std::dynamic_pointer_cast<EnemyRecoverAllCommand>(cmd)->m_troopId = m_troopId;
+            break;
+          case EventCode::Enemy_Appear:
+            std::dynamic_pointer_cast<EnemyAppearCommand>(cmd)->m_troopId = m_troopId;
+            break;
+          case EventCode::Enemy_Transform:
+            std::dynamic_pointer_cast<EnemyTransformCommand>(cmd)->m_troopId = m_troopId;
+            break;
+          case EventCode::Change_Enemy_HP:
+            std::dynamic_pointer_cast<ChangeEnemyHPCommand>(cmd)->m_troopId = m_troopId;
+            break;
+          case EventCode::Change_Enemy_MP:
+            std::dynamic_pointer_cast<ChangeEnemyMPCommand>(cmd)->m_troopId = m_troopId;
+            break;
+          case EventCode::Change_Enemy_TP:
+            std::dynamic_pointer_cast<ChangeEnemyTPCommand>(cmd)->m_troopId = m_troopId;
+            break;
+          case EventCode::Change_Enemy_State:
+            std::dynamic_pointer_cast<ChangeEnemyStateCommand>(cmd)->m_troopId = m_troopId;
+            break;
+          default:
+            break;
           }
           const bool isSelected = (m_selectedCommand == n || (m_selectedEnd != -1 && n > m_selectedCommand && n <= m_selectedEnd));
           std::string indentPad = m_commands->at(n)->stringRep(*Database::instance());

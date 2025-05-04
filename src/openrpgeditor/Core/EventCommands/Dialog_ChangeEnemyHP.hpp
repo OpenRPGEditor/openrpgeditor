@@ -7,38 +7,40 @@
 
 struct Dialog_ChangeEnemyHP : IEventDialogController {
   Dialog_ChangeEnemyHP() = delete;
-  explicit Dialog_ChangeEnemyHP(const std::string& name, const std::shared_ptr<ChangeEnemyHPCommand>& cmd = nullptr)
+  explicit Dialog_ChangeEnemyHP(const std::string& name, const std::shared_ptr<ChangeEnemyHPCommand>& cmd = nullptr, const int troopId = 0)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_troopId(troopId)
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ChangeEnemyHPCommand());
+      m_command.reset(new ChangeEnemyHPCommand());
     }
 
-    m_enemy = static_cast<int>(command->enemy);
-    m_enemyOp = static_cast<int>(command->enemyOp);
-    m_quantitySource = static_cast<int>(command->quantitySource);
-    m_allowKnockout = command->allowKnockOut;
+    m_troopMemberSelection = static_cast<int>(m_command->troopMember);
+    m_troopMemberOp = static_cast<int>(m_command->troopMemberOp);
+    m_quantitySource = static_cast<int>(m_command->quantitySource);
+    m_allowKnockout = m_command->allowKnockOut;
 
-    if (command->quantitySource == QuantityChangeSource::Variable)
-      m_quantity_var = command->quantity;
+    if (m_command->quantitySource == QuantityChangeSource::Variable)
+      m_quantityVar = m_command->quantity;
     else
-      m_quantity = command->quantity;
+      m_quantity = m_command->quantity;
   }
+  void drawPickers();
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
-  int m_enemy;
-  int m_enemyOp;
-  int m_quantitySource;
+  int m_troopId{0};
+  int m_troopMemberSelection{0};
+  int m_troopMemberOp{0};
+  int m_quantitySource{0};
   int m_quantity{1};
-  int m_quantity_var{1};
+  int m_quantityVar{1};
   bool m_allowKnockout{false};
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Troop>> actor_picker;
-  std::optional<VariableSwitchPicker> picker;
-  std::shared_ptr<ChangeEnemyHPCommand> command;
-  std::tuple<bool, bool> result;
+  std::optional<ObjectPicker<Troop>> m_actorPicker;
+  std::optional<VariableSwitchPicker> m_variablePicker;
+  std::shared_ptr<ChangeEnemyHPCommand> m_command;
 };

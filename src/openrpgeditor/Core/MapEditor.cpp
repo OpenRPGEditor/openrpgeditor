@@ -642,11 +642,19 @@ void MapEditor::draw(const bool closeRequested) {
     float zoomY = m_mapScale;
     if (m_initialScrollX > mapW) {
       zoomX = m_initialScrollX / mapW;
+      // give it a little nudge
+      if (zoomX - std::trunc(zoomX) > 0.f) {
+        zoomX += 0.2;
+      }
     }
     if (m_initialScrollY > mapH) {
       zoomY = m_initialScrollY / mapH;
+      // give it a little nudge
+      if (zoomY - std::trunc(zoomY) > 0.f) {
+        zoomY += 0.2;
+      }
     }
-    m_mapScale = std::max(zoomX, zoomY);
+    m_mapScale = roundToNearestQuarter(std::max(zoomX, zoomY));
   }
 
   if (map() && !closeRequested) {
@@ -877,7 +885,9 @@ void MapEditor::draw(const bool closeRequested) {
         ImGui::AlignTextToFramePadding();
         ImGui::Spring(0.5f);
         ImGui::TextUnformatted(trNOOP("Scale:"));
-        ImGui::SliderFloat("##map_scale", &m_mapScale, 0.25f, 4.f, "%.02f");
+        if (ImGui::SliderFloat("##map_scale", &m_mapScale, 0.25f, 4.f, "%.02f")) {
+          m_mapScale = roundToNearestQuarter(m_mapScale);
+        }
         // TL-NOTE: The braces denote the tile ID x and y positions, they get replaced at runtime with those values
         std::string fmt = trFormat("Tile {}, ({}, {})", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0), m_tileCursor.tileX(), m_tileCursor.tileY());
         if (map()) {

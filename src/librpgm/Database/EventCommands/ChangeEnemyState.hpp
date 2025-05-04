@@ -11,20 +11,15 @@ struct ChangeEnemyStateCommand final : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
 
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeEnemyStateCommand>(*this); }
-  bool hasReference(int targetId, SearchType type) override {
-    if (type == SearchType::Enemy) {
-      return enemy == targetId;
-    }
+  bool hasReference(const int targetId, const SearchType type) override {
     if (type == SearchType::State) {
       return targetId == state;
     }
     return false;
-  };
-  bool setReference(int targetId, int newId, SearchType type) override {
+  }
+
+  bool setReference(const int targetId, const int newId, const SearchType type) override {
     if (hasReference(targetId, type)) {
-      if (type == SearchType::Enemy) {
-        enemy = newId;
-      }
       if (type == SearchType::State) {
         state = newId;
       }
@@ -33,7 +28,9 @@ struct ChangeEnemyStateCommand final : IEventCommand {
     }
     return false;
   }
-  int enemy;
-  PartyMemberOperation enemyOp;
-  int state;
+
+  int troopMember{-1};
+  PartyMemberOperation troopMemberOp{};
+  int state{1};
+  int m_troopId{0};
 };

@@ -1,108 +1,144 @@
 #include "Core/EventCommands/Dialog_ChangeEnemyHP.hpp"
 
 #include "Database/Database.hpp"
-#include "imgui.h"
-#include <tuple>
 
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+
+#include <imgui.h>
+#include <imgui_internal.h>
+
+#include <tuple>
 std::tuple<bool, bool> Dialog_ChangeEnemyHP::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###ChangeEnemyHP");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{254, 250}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize =
+      ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 10) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-    if (picker) {
-      auto [closed, confirmed] = picker->draw();
-      if (closed) {
-        if (confirmed) {
-          m_quantity_var = picker->selection();
-        }
-        picker.reset();
-      }
-    }
-    // Section 1 Enemy
-    ImGui::SeparatorText("Enemy");
-    ImGui::PushItemWidth(200);
-    if (ImGui::BeginCombo("##changeenemyhp_list", (m_enemy > -1 ? "#" + std::to_string(m_enemy + 1) : "" + Database::instance()->troopMemberName(0, m_enemy)).c_str())) {
-      if (ImGui::Selectable("Entire Troop", m_enemy == -1)) {
-        m_enemy = -1;
-      }
-      for (int i = 0; i < 8; ++i) {
-        if (ImGui::Selectable((i > -1 ? "#" + std::to_string(i + 1) : "" + Database::instance()->troopMemberName(0, i)).c_str(), i == m_enemy)) {
-          m_enemy = i;
-        }
-      }
-      ImGui::EndCombo();
-    }
-
-    // Section 2 (Operation: Increase/Decrease)
-    ImGui::SeparatorText("Operation");
-    ImGui::RadioButton("Increase", &m_enemyOp, 0);
-    ImGui::SameLine();
-    ImGui::RadioButton("Decrease", &m_enemyOp, 1);
-
-    // Section 3 (Operand: Constant/Variable)
-    ImGui::SeparatorText("Operand");
-    ImGui::BeginGroup();
+  if (ImGui::BeginPopupModal(std::format("{}###ChangeEnemyHP", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    drawPickers();
+    ImGui::BeginVertical("##change_enemy_hp_main_layout", ImGui::GetContentRegionAvail());
     {
-      ImGui::RadioButton("Constant", &m_quantitySource, 0);
-      ImGui::RadioButton("Variable", &m_quantitySource, 1);
-      ImGui::EndGroup();
-    }
-    ImGui::SameLine();
-    ImGui::BeginGroup();
-    {
-      ImGui::BeginDisabled(m_quantitySource != 0);
-      ImGui::SetNextItemWidth(100);
-      if (ImGui::InputInt("##changeenemyhp_constant", &m_quantity)) {
-        if (m_quantity > 9999)
-          m_quantity = 9999;
-        if (m_quantity < 0)
-          m_quantity = 0;
+      GroupBox enemyGroupBox(trNOOP("Enemy"), "##change_enemy_hp_enemy_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (enemyGroupBox.begin()) {
+        ImGui::SetNextItemWidth(-1);
+
+        auto preview = Database::instance()->troopMemberName(m_troopId, m_troopMemberSelection);
+        if (m_troopMemberSelection >= 0) {
+          preview = std::format("#{} {}", m_troopMemberSelection + 1, preview);
+        }
+
+        if (ImGui::BeginCombo("##enemy_recover_all_change_list", preview.c_str())) {
+          for (int i = -1; i < 8; ++i) {
+            auto name = Database::instance()->troopMemberName(m_troopId, i);
+            if (i >= 0) {
+              name = std::format("#{} {}", i + 1, name);
+            }
+
+            if (ImGui::Selectable(name.c_str(), i == m_troopMemberSelection)) {
+              m_troopMemberSelection = i;
+            }
+          }
+          ImGui::EndCombo();
+        }
       }
-      ImGui::EndDisabled();
+      enemyGroupBox.end();
 
-      ImGui::BeginDisabled(m_quantitySource != 1);
-      ImGui::PushID("##changeenemyhp_quant_var");
-      if (ImGui::Button(m_quantitySource == 1 ? Database::instance()->variableNameAndId(m_quantity_var).c_str() : "", ImVec2{200 - 15, 0})) {
-        picker.emplace("Variables", Database::instance()->system.variables(), m_quantity_var);
-        picker->setOpen(true);
+      GroupBox operationGroupBox(trNOOP("Operation"), "##change_enemy_hp_operation_group", {-1, 0}, nullptr,
+                                 ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (operationGroupBox.begin()) {
+        ImGui::BeginHorizontal("##change_enemy_hp_operation_group_layout", {ImGui::GetContentRegionAvail().x, -1});
+        {
+          ImGui::Spring(0.33);
+          ImGui::RadioButton(trNOOP("Increase"), &m_troopMemberOp, 0);
+          ImGui::Spring(0.33);
+          ImGui::RadioButton(trNOOP("Decrease"), &m_troopMemberOp, 1);
+          ImGui::Spring(0.33);
+        }
+        ImGui::EndHorizontal();
       }
-      ImGui::PopID();
-      ImGui::EndDisabled();
+      operationGroupBox.end();
+      GroupBox operandGroupBox(trNOOP("Operand"), "##change_enemy_hp_operand_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (operandGroupBox.begin()) {
+        ImGui::BeginHorizontal("##change_enemy_hp_operand_group_layout", {-1, -1});
+        {
+          ImGui::BeginVertical("##change_enemy_hp_operand_group_source_layout", {-1, -1});
+          {
+            ImGui::RadioButton("Constant", &m_quantitySource, 0);
+            ImGui::RadioButton("Variable", &m_quantitySource, 1);
+          }
+          ImGui::EndVertical();
+          ImGui::BeginVertical("##change_enemy_hp_operand_group_value_layout", {-1, -1});
+          {
+            ImGui::BeginDisabled(m_quantitySource != 0);
+            ImGui::SetNextItemWidth(-1);
+            if (ImGui::SpinInt("##change_enemy_hp_constant", &m_quantity, 1, 100, m_quantitySource == 0 ? nullptr : "")) {
+              m_quantity = std::clamp(m_quantity, 1, 9999);
+            }
+            ImGui::EndDisabled();
 
-      ImGui::EndGroup();
+            ImGui::BeginDisabled(m_quantitySource != 1);
+            ImGui::PushID("##change_enemy_hp_quant_var");
+            if (ImGui::EllipsesButton(m_quantitySource == 1 ? Database::instance()->variableNameAndId(m_quantityVar).c_str() : "", ImVec2{-1, 0})) {
+              m_variablePicker.emplace("Variables", Database::instance()->system.variables(), m_quantityVar);
+              m_variablePicker->setOpen(true);
+            }
+            ImGui::PopID();
+            ImGui::EndDisabled();
+          }
+          ImGui::EndVertical();
+        }
+        ImGui::EndHorizontal();
+      }
+      operandGroupBox.end();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##change_enemy_hp_buttons_layout", {-1, -1});
+      {
+        ImGui::BeginDisabled(m_troopMemberOp == 0);
+        ImGui::Checkbox("Allow Knockout", &m_allowKnockout);
+        ImGui::EndDisabled();
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##change_enemy_hp_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+
+          m_command->troopMember = m_troopMemberSelection;
+          m_command->troopMemberOp = static_cast<QuantityChangeOp>(m_troopMemberOp);
+          m_command->quantitySource = static_cast<QuantityChangeSource>(m_quantitySource);
+          m_command->allowKnockOut = m_allowKnockout;
+
+          if (m_command->quantitySource == QuantityChangeSource::Variable)
+            m_command->quantity = m_quantityVar;
+          else
+            m_command->quantity = m_quantity;
+
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
+      }
+      ImGui::EndHorizontal();
     }
-    ImGui::BeginDisabled(m_enemyOp == 0);
-    ImGui::Checkbox("Allow Knockout", &m_allowKnockout);
-    ImGui::EndDisabled();
-
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-
-      command->enemy = m_enemy;
-      command->enemyOp = static_cast<QuantityChangeOp>(m_enemyOp);
-      command->quantitySource = static_cast<QuantityChangeSource>(m_quantitySource);
-      command->allowKnockOut = m_allowKnockout;
-
-      if (command->quantitySource == QuantityChangeSource::Variable)
-        command->quantity = m_quantity_var;
-      else
-        command->quantity = m_quantity;
-
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);
+}
+
+void Dialog_ChangeEnemyHP::drawPickers() {
+  if (m_variablePicker) {
+    if (const auto [closed, confirmed] = m_variablePicker->draw(); closed) {
+      if (confirmed) {
+        m_quantityVar = m_variablePicker->selection();
+      }
+      m_variablePicker.reset();
+    }
+  }
 }

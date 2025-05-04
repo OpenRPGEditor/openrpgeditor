@@ -13,13 +13,16 @@ struct Dialog_PlayMovie : IEventDialogController {
   Dialog_PlayMovie() = delete;
   explicit Dialog_PlayMovie(const std::string& name, const std::shared_ptr<PlayMovieCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
+    if (!m_command) {
+      m_command = std::make_shared<PlayMovieCommand>();
+    }
+    m_movieDir.emplace("movies", ".mp4", m_command->name); // TODO: Add multiple filter format, include .webm
     m_movies = m_movieDir.value().getDirectoryContents();
     m_folders = m_movieDir.value().getDirectories();
-    m_movieDir.emplace("movies", ".mp4", command->name); // TODO: Add multiple filter format, include .webm
   }
   std::tuple<bool, bool> draw() override;
-  [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return command; }
+  [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return m_command; }
 
   bool playMovie(const char* path) {
 
@@ -38,7 +41,7 @@ private:
   int m_selected = 0;
   std::string m_movie;
 
-  std::shared_ptr<PlayMovieCommand> command;
+  std::shared_ptr<PlayMovieCommand> m_command;
   std::tuple<bool, bool> result;
   std::vector<std::string> m_movies;
 

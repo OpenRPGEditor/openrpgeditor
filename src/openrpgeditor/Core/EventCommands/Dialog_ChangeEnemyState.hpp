@@ -6,27 +6,29 @@
 
 struct Dialog_ChangeEnemyState : IEventDialogController {
   Dialog_ChangeEnemyState() = delete;
-  explicit Dialog_ChangeEnemyState(const std::string& name, const std::shared_ptr<ChangeEnemyStateCommand>& cmd = nullptr)
+  explicit Dialog_ChangeEnemyState(const std::string& name, const std::shared_ptr<ChangeEnemyStateCommand>& cmd = nullptr, const int troopId = 0)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_troopId(troopId)
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ChangeEnemyStateCommand());
+      m_command.reset(new ChangeEnemyStateCommand());
     }
-    m_troop_selection = command->enemy;
-    m_operation = static_cast<int>(command->enemyOp);
-    m_state = command->state;
+    m_troopMemberSelection = m_command->troopMember;
+    m_troopMemberOp = static_cast<int>(m_command->troopMemberOp);
+    m_state = m_command->state;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
-  int m_troop_selection;
-  int m_operation; // Party Member Operation
+  void drawPickers();
+  int m_troopId;
+  int m_troopMemberSelection;
+  int m_troopMemberOp; // Party Member Operation
   int m_state;
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<State>> state_picker;
-  std::shared_ptr<ChangeEnemyStateCommand> command;
-  std::tuple<bool, bool> result;
+  std::optional<ObjectPicker<State>> m_statePicker;
+  std::shared_ptr<ChangeEnemyStateCommand> m_command;
 };

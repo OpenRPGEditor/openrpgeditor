@@ -54,7 +54,10 @@ std::tuple<bool, bool> Dialog_ChangePartyMember::draw() {
       ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5));
       ImGui::BeginHorizontal("##change_party_member_buttons", {-1, -1});
       {
+        ImGui::BeginDisabled(m_operation != 0);
         ImGui::Checkbox("Initialize", &m_isInit);
+        ImGui::EndDisabled();
+
         ImGui::Spring();
         if (const auto ret = ImGui::ButtonGroup("##change_party_member_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
           m_confirmed = true;

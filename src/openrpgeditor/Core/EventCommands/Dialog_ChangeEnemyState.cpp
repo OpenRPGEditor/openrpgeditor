@@ -1,75 +1,116 @@
 #include "Core/EventCommands/Dialog_ChangeEnemyState.hpp"
 
 #include "Database/Database.hpp"
-#include "imgui.h"
+
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+
+#include <imgui.h>
+#include <imgui_internal.h>
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ChangeEnemyState::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###ChangeEnemyState");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{248, 182}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize =
+      ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 9) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-    if (state_picker) {
-      auto [closed, confirmed] = state_picker->draw();
-      if (closed) {
-        if (confirmed) {
-          m_state = state_picker->selection();
+  if (ImGui::BeginPopupModal(std::format("{}###ChangeEnemyState", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    drawPickers();
+    ImGui::BeginVertical("##change_enemy_state_main_layout", ImGui::GetContentRegionAvail());
+    {
+      GroupBox enemyGroupBox(trNOOP("Enemy"), "##change_enemy_tp_enemy_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (enemyGroupBox.begin()) {
+        ImGui::SetNextItemWidth(-1);
+
+        auto preview = Database::instance()->troopMemberName(m_troopId, m_troopMemberSelection);
+        if (m_troopMemberSelection >= 0) {
+          preview = std::format("#{} {}", m_troopMemberSelection + 1, preview);
         }
-        state_picker.reset();
-      }
-    }
 
-    ImGui::SeparatorText("Enemy");
+        if (ImGui::BeginCombo("##enemy_recover_all_change_list", preview.c_str())) {
+          for (int i = -1; i < 8; ++i) {
+            auto name = Database::instance()->troopMemberName(m_troopId, i);
+            if (i >= 0) {
+              name = std::format("#{} {}", i + 1, name);
+            }
 
-    ImGui::SetNextItemWidth(160);
-
-    if (ImGui::BeginCombo("##enemystate_change_list", m_troop_selection == 0 ? "Entire Troop" : ("#" + std::to_string(m_troop_selection) + " ?").c_str())) {
-      if (ImGui::Selectable("Entire Troop", m_troop_selection == 0)) {
-        m_troop_selection = 0;
-      }
-      for (int i = 1; i < 9; ++i) {
-        std::string text = "#" + std::to_string(i) + " ?";
-        if (ImGui::Selectable(text.c_str(), i == m_troop_selection)) {
-          m_troop_selection = i;
+            if (ImGui::Selectable(name.c_str(), i == m_troopMemberSelection)) {
+              m_troopMemberSelection = i;
+            }
+          }
+          ImGui::EndCombo();
         }
       }
-      ImGui::EndCombo();
-    }
+      enemyGroupBox.end();
 
-    ImGui::SeparatorText("Operation");
-    ImGui::RadioButton("Increase", &m_operation, 0);
-    ImGui::SameLine();
-    ImGui::RadioButton("Decrease", &m_operation, 1);
+      GroupBox operationGroupBox(trNOOP("Operation"), "##change_enemy_state_operation_group", {-1, 0}, nullptr,
+                                 ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (operationGroupBox.begin()) {
+        ImGui::BeginHorizontal("##change_enemy_state_operation_group_layout", {ImGui::GetContentRegionAvail().x, -1});
+        {
+          ImGui::Spring(0.33);
+          ImGui::RadioButton(trNOOP("Add"), &m_troopMemberOp, 0);
+          ImGui::Spring(0.33);
+          ImGui::RadioButton(trNOOP("Remove"), &m_troopMemberOp, 1);
+          ImGui::Spring(0.33);
+        }
+        ImGui::EndHorizontal();
+      }
+      operationGroupBox.end();
 
-    ImGui::SeparatorText("State");
-    ImGui::SetNextItemWidth(100);
-    std::string text = Database::instance()->stateName(m_state);
-    ImGui::PushID("##enemystate_change");
-    if (ImGui::Button(text.c_str(), ImVec2{200 - 15, 0})) {
-      state_picker = ObjectPicker<State>("State"sv, Database::instance()->states.states(), m_state);
-      state_picker->setOpen(true);
-    }
-    ImGui::PopID();
+      GroupBox stateGroupBox(trNOOP("State"), "##change_enemy_state_state_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      if (stateGroupBox.begin()) {
+        ImGui::SetNextItemWidth(-1);
+        std::string text = Database::instance()->stateNameAndId(m_state);
+        ImGui::PushID("##change_enemy_state_state_value");
+        if (ImGui::EllipsesButton(text.c_str(), ImVec2{-1, 0})) {
+          m_statePicker = ObjectPicker(trNOOP("State"), Database::instance()->states.states(), m_state);
+          m_statePicker->setOpen(true);
+        }
+        ImGui::PopID();
+      }
+      stateGroupBox.end();
 
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->enemy = m_troop_selection - 1;
-      command->enemyOp = static_cast<PartyMemberOperation>(m_operation);
-      command->state = m_state;
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##change_enemy_tp_buttons_layout", {-1, -1});
+      {
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##change_enemy_tp_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+
+          m_command->troopMember = m_troopMemberSelection;
+          m_command->troopMemberOp = static_cast<PartyMemberOperation>(m_troopMemberOp);
+          m_command->state = m_state;
+
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
+      }
+      ImGui::EndHorizontal();
     }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);
+}
+
+void Dialog_ChangeEnemyState::drawPickers() {
+  if (m_statePicker) {
+    if (const auto [closed, confirmed] = m_statePicker->draw(); closed) {
+      if (confirmed) {
+        m_state = m_statePicker->selection();
+      }
+      m_statePicker.reset();
+    }
+  }
 }

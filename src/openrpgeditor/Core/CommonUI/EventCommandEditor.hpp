@@ -420,18 +420,20 @@ private:
       return std::make_shared<Dialog_ChangeProfile>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeProfileCommand>(cmd));
     case EventCode::Change_TP:
       return std::make_shared<Dialog_ChangeTP>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeTPCommand>(cmd));
-    case EventCode::Change_Enemy_HP:
-      return std::make_shared<Dialog_ChangeEnemyHP>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEnemyHPCommand>(cmd));
-    case EventCode::Change_Enemy_MP:
-      return std::make_shared<Dialog_ChangeEnemyMP>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEnemyMPCommand>(cmd));
-    case EventCode::Change_Enemy_State:
-      return std::make_shared<Dialog_ChangeEnemyState>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEnemyStateCommand>(cmd));
     case EventCode::Enemy_Recover_All:
       return std::make_shared<Dialog_EnemyRecoverAll>(DecodeEnumName(code), std::dynamic_pointer_cast<EnemyRecoverAllCommand>(cmd), m_troopId);
     case EventCode::Enemy_Appear:
       return std::make_shared<Dialog_EnemyAppear>(DecodeEnumName(code), std::dynamic_pointer_cast<EnemyAppearCommand>(cmd), m_troopId);
     case EventCode::Enemy_Transform:
       return std::make_shared<Dialog_EnemyTransform>(DecodeEnumName(code), std::dynamic_pointer_cast<EnemyTransformCommand>(cmd), m_troopId);
+    case EventCode::Change_Enemy_HP:
+      return std::make_shared<Dialog_ChangeEnemyHP>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEnemyHPCommand>(cmd), m_troopId);
+    case EventCode::Change_Enemy_MP:
+      return std::make_shared<Dialog_ChangeEnemyMP>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEnemyMPCommand>(cmd), m_troopId);
+    case EventCode::Change_Enemy_TP:
+      return std::make_shared<Dialog_ChangeEnemyTP>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEnemyTPCommand>(cmd), m_troopId);
+    case EventCode::Change_Enemy_State:
+      return std::make_shared<Dialog_ChangeEnemyState>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEnemyStateCommand>(cmd), m_troopId);
     case EventCode::Show_Battle_Animation:
       return std::make_shared<Dialog_ShowBattleAnimation>(DecodeEnumName(code), std::dynamic_pointer_cast<ShowBattleAnimationCommand>(cmd));
     case EventCode::Force_Action:
@@ -440,8 +442,6 @@ private:
       break;
     case EventCode::Abort_Battle:
       return std::make_shared<Dialog_AbortBattle>(DecodeEnumName(code), std::dynamic_pointer_cast<AbortBattleCommand>(cmd));
-    case EventCode::Change_Enemy_TP:
-      return std::make_shared<Dialog_ChangeEnemyTP>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEnemyTPCommand>(cmd));
     case EventCode::Open_Menu_Screen:
       return std::make_shared<Dialog_OpenMenuScreen>(DecodeEnumName(code), std::dynamic_pointer_cast<OpenMenuCommand>(cmd));
     case EventCode::Open_Save_Screen:

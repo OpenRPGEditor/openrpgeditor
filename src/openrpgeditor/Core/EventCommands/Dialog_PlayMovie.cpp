@@ -54,7 +54,7 @@ std::tuple<bool, bool> Dialog_PlayMovie::draw() {
         if (ImGui::SelectableWithBorder("(None)", m_selected == 0, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
           if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
             m_confirmed = true;
-            command->name = m_movie;
+            m_command->name = m_movie;
             ImGui::CloseCurrentPopup();
             setOpen(false);
           }
@@ -69,7 +69,7 @@ std::tuple<bool, bool> Dialog_PlayMovie::draw() {
           if (ImGui::SelectableWithBorder(m_movies.at(n).c_str(), isSelected, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
             if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
               m_confirmed = true;
-              command->name = m_movie;
+              m_command->name = m_movie;
               ImGui::CloseCurrentPopup();
               setOpen(false);
             }
@@ -86,7 +86,7 @@ std::tuple<bool, bool> Dialog_PlayMovie::draw() {
 
     if (ImGui::Button("OK")) {
       m_confirmed = true;
-      command->name = m_movie;
+      m_command->name = m_movie;
       ImGui::CloseCurrentPopup();
       setOpen(false);
     }

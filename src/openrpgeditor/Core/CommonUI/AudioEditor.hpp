@@ -10,17 +10,28 @@
 
 namespace fs = std::filesystem;
 struct AudioEditor {
+  enum class AudioType {
+    SE,
+    BGM,
+    ME,
+    BGS,
+    Vocals,
+  };
   AudioEditor() = delete;
-  explicit AudioEditor(EventCode code, Audio& audio)
+  explicit AudioEditor(const EventCode code, Audio& audio)
   : m_audio(audio) {
     if (code == EventCode::Play_SE) {
       m_audioDir.emplace("audio/se", ".ogg", m_audio.name());
+      m_audioType = AudioType::SE;
     } else if (code == EventCode::Play_BGM || code == EventCode::Change_Battle_BGM || code == EventCode::Change_Vechicle_BGM) {
       m_audioDir.emplace("audio/bgm", ".ogg", m_audio.name());
+      m_audioType = AudioType::BGM;
     } else if (code == EventCode::Change_Defeat_ME || code == EventCode::Change_Victory_ME || code == EventCode::Play_ME) {
       m_audioDir.emplace("audio/me", ".ogg", m_audio.name());
+      m_audioType = AudioType::ME;
     } else if (code == EventCode::Play_BGS) {
       m_audioDir.emplace("audio/bgs", ".ogg", m_audio.name());
+      m_audioType = AudioType::BGS;
     } else {
       APP_INFO("Audio code not implemented");
     }
@@ -33,10 +44,17 @@ struct AudioEditor {
       }
     }
   }
-  bool draw();
+  std::tuple<bool, bool> draw(std::string_view title, std::string_view className);
+
+  void setOpen(const bool open) {
+    m_open = open;
+    m_confirmed = false;
+  }
 
 private:
   bool m_confirmed{false};
+  bool m_open{false};
+  AudioType m_audioType;
 
   int m_selected = 0;
   Audio& m_audio;
@@ -52,7 +70,23 @@ private:
 
   bool playAudio(const std::string& path) {
     // Load and play music
-    m_sound = Sound(ResourceManager::instance()->loadBGM(path));
+    switch (m_audioType) {
+    case AudioType::SE:
+      m_sound = Sound(ResourceManager::instance()->loadSE(path));
+      break;
+    case AudioType::BGM:
+      m_sound = Sound(ResourceManager::instance()->loadBGM(path));
+      break;
+    case AudioType::ME:
+      m_sound = Sound(ResourceManager::instance()->loadME(path));
+      break;
+    case AudioType::BGS:
+      m_sound = Sound(ResourceManager::instance()->loadBGS(path));
+      break;
+    case AudioType::Vocals:
+      // TODO
+      break;
+    }
 
     setVolume(m_audio.volume());
     setPanning(m_audio.pan());
@@ -60,10 +94,10 @@ private:
     m_sound.play();
     return true;
   }
-  void setVolume(int volume) {
+  void setVolume(const int volume) {
     m_sound.setVolume(static_cast<float>(volume)); // 0% to 100%
   }
-  void setPanning(int value) { m_sound.setPan(static_cast<float>(value) / 100.0f); }
-  void setPitch(int value) { m_sound.setPitch(value / 100.f); }
+  void setPanning(const int value) { m_sound.setPan(static_cast<float>(value) / 100.0f); }
+  void setPitch(const int value) { m_sound.setPitch(value / 100.f); }
   void stopAudio() { m_sound.stop(); }
 };

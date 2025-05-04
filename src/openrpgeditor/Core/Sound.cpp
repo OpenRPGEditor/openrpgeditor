@@ -50,10 +50,14 @@ Sound::Sound(const sf::SoundBuffer& buffer) {
   m_pitch = m_leftSound.getPitch();
   m_relativeToListener = false;
   m_leftSound.setRelativeToListener(m_relativeToListener);
-  m_rightSound.setVolume(m_volume);
-  m_rightSound.setMinDistance(m_minDistance);
-  m_rightSound.setPitch(m_pitch);
-  m_rightSound.setRelativeToListener(m_relativeToListener);
+
+  if (m_numChannels == 2) {
+    m_rightSound.setVolume(m_volume);
+    m_rightSound.setMinDistance(m_minDistance);
+    m_rightSound.setPitch(m_pitch);
+    m_rightSound.setRelativeToListener(m_relativeToListener);
+  }
+
   m_pan = 0.f;
   setPan(m_pan);
 }
@@ -109,31 +113,43 @@ Sound& Sound::operator=(const Sound& other) {
 
 void Sound::play() {
   m_leftSound.play();
-  m_rightSound.play();
+  if (m_numChannels == 2) {
+    m_rightSound.play();
+  }
 }
 
 void Sound::pause() {
   m_leftSound.pause();
-  m_rightSound.pause();
+  if (m_numChannels == 2) {
+    m_rightSound.pause();
+  }
 }
 
 void Sound::stop() {
   m_leftSound.stop();
-  m_rightSound.stop();
+  if (m_numChannels) {
+    m_rightSound.stop();
+  }
 }
 
 void Sound::setBuffers(const sf::SoundBuffer& leftBuffer, const sf::SoundBuffer& rightBuffer) {
   m_leftSound.setBuffer(leftBuffer);
-  m_rightSound.setBuffer(rightBuffer);
+  if (m_numChannels == 2) {
+    m_rightSound.setBuffer(rightBuffer);
+  }
 }
 
 void Sound::setLoop(const bool loop) {
   m_leftSound.setLoop(loop);
-  m_rightSound.setLoop(loop);
+  if (m_numChannels == 2) {
+    m_rightSound.setLoop(loop);
+  }
 }
 void Sound::setPlayingOffset(const sf::Time offset) {
   m_leftSound.setPlayingOffset(offset);
-  m_rightSound.setPlayingOffset(offset);
+  if (m_numChannels == 2) {
+    m_rightSound.setPlayingOffset(offset);
+  }
 }
 
 [[nodiscard]] const sf::SoundBuffer* Sound::getLeftBuffer() const { return m_leftSound.getBuffer(); }
@@ -145,13 +161,17 @@ void Sound::setPlayingOffset(const sf::Time offset) {
 
 void Sound::setPan(const float amount) {
   m_leftSound.setPosition(stereoPanPosition(amount));
-  m_rightSound.setPosition(stereoPanPosition(amount));
+  if (m_numChannels) {
+    m_rightSound.setPosition(stereoPanPosition(amount));
+  }
   m_pan = amount;
 }
 
 void Sound::setVolume(const float volume) {
   m_leftSound.setVolume(volume);
-  m_rightSound.setVolume(volume);
+  if (m_numChannels == 2) {
+    m_rightSound.setVolume(volume);
+  }
   m_volume = volume;
 }
 
@@ -159,7 +179,9 @@ float Sound::getVolume() const { return m_volume; }
 
 void Sound::setPitch(const float pitch) {
   m_leftSound.setPitch(pitch);
-  m_rightSound.setPitch(pitch);
+  if (m_numChannels == 2) {
+    m_rightSound.setPitch(pitch);
+  }
   m_pitch = pitch;
 }
 
@@ -177,7 +199,9 @@ sf::Vector3f Sound::getRightPosition() const { return m_rightSound.getPosition()
 
 void Sound::setRelativeToListener(const bool relative) {
   m_leftSound.setRelativeToListener(relative);
-  m_rightSound.setRelativeToListener(relative);
+  if (m_numChannels == 2) {
+    m_rightSound.setRelativeToListener(relative);
+  }
   m_relativeToListener = relative;
 }
 
@@ -185,7 +209,9 @@ bool Sound::isRelativeToListener() const { return m_relativeToListener; }
 
 void Sound::setMinDistance(float distance) {
   m_leftSound.setMinDistance(distance);
-  m_rightSound.setMinDistance(distance);
+  if (m_numChannels == 2) {
+    m_rightSound.setMinDistance(distance);
+  }
   m_minDistance = distance;
 }
 
@@ -193,7 +219,9 @@ float Sound::getMinDistance() const { return m_minDistance; }
 
 void Sound::setAttenuation(const float attenuation) {
   m_leftSound.setAttenuation(attenuation);
-  m_rightSound.setAttenuation(attenuation);
+  if (m_numChannels == 2) {
+    m_rightSound.setAttenuation(attenuation);
+  }
   m_attenuation = attenuation;
 }
 

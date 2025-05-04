@@ -16,18 +16,22 @@ struct Dialog_PlayME : IEventDialogController {
   Dialog_PlayME() = delete;
   explicit Dialog_PlayME(const std::string& name, const std::shared_ptr<PlayMECommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new PlayMECommand());
+      m_command.reset(new PlayMECommand());
     }
-    m_audioRenderer.emplace(command->code(), command->audio);
+    m_audioRenderer.emplace(m_command->code(), m_command->audio);
   }
   std::tuple<bool, bool> draw() override;
-  [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return command; }
+  [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return m_command; }
+
+  void setOpen(const bool open) override {
+    IEventDialogController::setOpen(open);
+    m_audioRenderer->setOpen(open);
+  }
 
 private:
   bool m_confirmed{false};
-  std::tuple<bool, bool> result;
-  std::shared_ptr<PlayMECommand> command;
+  std::shared_ptr<PlayMECommand> m_command;
   std::optional<AudioEditor> m_audioRenderer;
 };

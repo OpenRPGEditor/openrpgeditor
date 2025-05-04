@@ -335,7 +335,7 @@ int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const b
   size += style.FramePadding * 2.f;
 
   for (int i = 0; i < buttons.size(); i++) {
-    if (Button(std::format("{}##{}_button_{}", buttons[i], id, i).c_str(), size)) {
+    if (ButtonEx(std::format("{}##{}_button_{}", buttons[i], id, i).c_str(), size, ImGuiButtonFlags_AlignTextBaseLine)) {
       ret = i;
     }
   }

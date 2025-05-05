@@ -593,8 +593,7 @@ void Dialog_ConditionalBranch::drawMiscTab() {
       ImGui::BeginDisabled(m_conditionType != 12);
       {
         if (ImGui::BeginChild("##source_text_child", {-1, ImGui::GetContentRegionAvail().y - ImGui::GetFrameHeightWithSpacing()},
-                              ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_NavFlattened,
-                              ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoMove)) {
+                              ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoMove)) {
           m_script.SetImGuiChildIgnored(true);
           m_script.SetHandleKeyboardInputs(m_conditionType == 12);
           m_script.SetHandleMouseInputs(m_conditionType == 12);

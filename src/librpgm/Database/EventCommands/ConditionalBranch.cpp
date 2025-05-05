@@ -305,7 +305,10 @@ std::string ConditionalBranchCommand::stringRep(const Database& db, const bool c
     return conditionalFormat(trFormat("Button [{0}] is pressed down", DecodeEnumName(button)), colored);
   }
   if (type == ConditionType::Script) {
-    return conditionalFormat(tr("Script") + ": " + script, colored);
+    std::string tmpScript = script;
+    std::ranges::replace(tmpScript, '\n', ' ');
+    tmpScript.erase(std::ranges::remove_if(tmpScript, ::isspace).begin(), tmpScript.end());
+    return conditionalFormat(tr("Script") + ": " + tmpScript.substr(0, std::min<size_t>(80, tmpScript.length())), colored);
   }
   return indentText(indent()) + diamond.data() + (colored ? "&push-color=255,0,255;Condition&pop-color;&push-color=0,255,0;TBD&pop-color;" : "ConditionType TBD");
 }

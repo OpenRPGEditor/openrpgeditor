@@ -307,8 +307,7 @@ std::string ConditionalBranchCommand::stringRep(const Database& db, const bool c
   if (type == ConditionType::Script) {
     std::string tmpScript = script;
     std::ranges::replace(tmpScript, '\n', ' ');
-    tmpScript.erase(std::ranges::remove_if(tmpScript, ::isspace).begin(), tmpScript.end());
-    return conditionalFormat(tr("Script") + ": " + tmpScript.substr(0, std::min<size_t>(80, tmpScript.length())), colored);
+    return conditionalFormat(tr("Script") + ": " + tmpScript.substr(0, std::min<size_t>(80, tmpScript.length())) + (tmpScript.length() >= 80 ? "..." : ""), colored);
   }
   return indentText(indent()) + diamond.data() + (colored ? "&push-color=255,0,255;Condition&pop-color;&push-color=0,255,0;TBD&pop-color;" : "ConditionType TBD");
 }

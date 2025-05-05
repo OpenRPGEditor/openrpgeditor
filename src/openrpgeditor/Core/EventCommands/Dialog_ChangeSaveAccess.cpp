@@ -25,8 +25,8 @@ std::tuple<bool, bool> Dialog_ChangeSaveAccess::draw() {
         ImGui::BeginHorizontal("##change_save_access_group_horizontal", {ImGui::GetContentRegionAvail().x, -1});
         {
           ImGui::Spring(.5);
-          ImGui::RadioButton("OFF", &isDisabled, 0);
-          ImGui::RadioButton("ON", &isDisabled, 1);
+          ImGui::RadioButton(trNOOP("OFF"), &isDisabled, 0);
+          ImGui::RadioButton(trNOOP("ON"), &isDisabled, 1);
           ImGui::Spring(.5);
         }
         ImGui::EndHorizontal();

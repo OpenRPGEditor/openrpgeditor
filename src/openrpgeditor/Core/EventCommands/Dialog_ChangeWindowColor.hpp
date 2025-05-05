@@ -1,4 +1,5 @@
 #pragma once
+#include "Core/CommonUI/GameWindowColorPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/ChangeWindowColor.hpp"
 
@@ -13,6 +14,7 @@ struct Dialog_ChangeWindowColor : IEventDialogController {
     red = command->r;
     green = command->g;
     blue = command->b;
+    m_colorPicker.setValues(red, green, blue);
   }
   std::tuple<bool, bool> draw() override;
 
@@ -26,4 +28,5 @@ private:
   bool m_confirmed{false};
   std::shared_ptr<ChangeWindowColorCommand> command;
   std::tuple<bool, bool> result;
+  GameWindowColorPicker m_colorPicker;
 };

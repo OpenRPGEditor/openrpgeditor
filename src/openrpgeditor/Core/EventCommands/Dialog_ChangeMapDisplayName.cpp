@@ -25,8 +25,8 @@ std::tuple<bool, bool> Dialog_ChangeMapDisplayName::draw() {
         ImGui::BeginHorizontal("##change_map_display_group_horizontal", {ImGui::GetContentRegionAvail().x, -1});
         {
           ImGui::Spring(.5);
-          ImGui::RadioButton("ON", &m_checkIfOn, 0);
-          ImGui::RadioButton("OFF", &m_checkIfOn, 1);
+          ImGui::RadioButton(trNOOP("ON"), &m_checkIfOn, 0);
+          ImGui::RadioButton(trNOOP("OFF"), &m_checkIfOn, 1);
           ImGui::Spring(.5);
         }
         ImGui::EndHorizontal();

@@ -14,11 +14,11 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
     ImGui::OpenPopup("###ConditionalBranch");
   }
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 58) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 16) + (ImGui::GetStyle().FramePadding.y * 2)};
+  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 58) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 18) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-  if (ImGui::BeginPopupModal(std::format("{}###ConditionalBranch", m_name).c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ConditionalBranch", m_name).c_str(), &m_open)) {
     drawPickers();
     ImGui::BeginVertical("##conditional_branch_main_layout", ImGui::GetContentRegionAvail(), 0);
     {

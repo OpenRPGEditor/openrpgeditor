@@ -8,123 +8,78 @@
 
 #include <format>
 
-bool GameWindowColorPicker::draw() {
+void GameWindowColorPicker::draw(ImVec2 size) {
 
-  ImGui::BeginVertical("##window_color_vert_layout", ImGui::GetContentRegionAvail());
+  ImGui::BeginHorizontal("##window_color_horz_layout", size);
   {
-    GroupBox operationRedGroupBox(trNOOP("Red"), "##change_window_redlayout", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
-    ImGui::BeginVertical("##window_color_horz_layout_sliders", {-1, -1});
+    ImGui::BeginVertical("##window_col_sliders", {size.x * .6f, 0});
     {
+      GroupBox operationRedGroupBox(trNOOP("Red"), "##window_col_red_group", {size.x * .6f, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
       if (operationRedGroupBox.begin()) {
 
-        ImGui::SetNextItemWidth(130);
-        if (ImGui::SliderInt(std::format("##window_color_red_{}", reinterpret_cast<intptr_t>(this)).data(), &m_r, -255, 255)) {
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * .8f);
+        if (ImGui::SliderInt("##window_color_red_slider", &m_r, -255, 255)) {
           m_backgroundInvalid = m_modified = true;
         }
         ImGui::SameLine();
-        ImGui::SetNextItemWidth(100);
-        if (ImGui::InputInt(std::format("##window_color_red_int_{}", reinterpret_cast<intptr_t>(this)).data(), &m_r, 1, 100)) {
+        ImGui::SetNextItemWidth(-1);
+        if (ImGui::SpinInt("##window_color_red_spinbox", &m_r, 1, 100)) {
+          m_r = std::clamp(m_r, -255, 255);
           m_backgroundInvalid = m_modified = true;
         }
       }
       operationRedGroupBox.end();
-      GroupBox operationGreenGroupBox(trNOOP("Green"), "##change_window_greenlayout", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      ImGui::Spring(.50f);
+      GroupBox operationGreenGroupBox(trNOOP("Green"), "##change_window_green_group", {size.x * .6f, 0}, nullptr,
+                                      ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
 
       if (operationGreenGroupBox.begin()) {
 
-        ImGui::SetNextItemWidth(130);
-        if (ImGui::SliderInt(std::format("##window_color_green_{}", reinterpret_cast<intptr_t>(this)).data(), &m_g, -255, 255)) {
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * .8f);
+        if (ImGui::SliderInt("##window_color_green_slider", &m_g, -255, 255)) {
           m_backgroundInvalid = m_modified = true;
         }
         ImGui::SameLine();
-        ImGui::SetNextItemWidth(100);
-        if (ImGui::InputInt(std::format("##window_color_green_int_{}", reinterpret_cast<intptr_t>(this)).data(), &m_g, 1, 100)) {
+        ImGui::SetNextItemWidth(-1);
+        if (ImGui::SpinInt("##window_color_green_spinbox", &m_g, 1, 100)) {
+          m_g = std::clamp(m_g, -255, 255);
           m_backgroundInvalid = m_modified = true;
         }
       }
       operationGreenGroupBox.end();
-      GroupBox operationBlueGroupBox(trNOOP("Blue"), "##change_window_blue_layout", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
+      ImGui::Spring(.50f);
+      GroupBox operationBlueGroupBox(trNOOP("Blue"), "##change_window_blue_layout", {size.x * .6f, 0}, nullptr,
+                                     ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);
 
       if (operationBlueGroupBox.begin()) {
 
-        ImGui::SetNextItemWidth(130);
-        if (ImGui::SliderInt(std::format("##window_color_blue_{}", reinterpret_cast<intptr_t>(this)).data(), &m_b, -255, 255)) {
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * .8f);
+        if (ImGui::SliderInt("##window_color_blue_slider", &m_b, -255, 255)) {
           m_backgroundInvalid = m_modified = true;
         }
         ImGui::SameLine();
-        ImGui::SetNextItemWidth(100);
-        if (ImGui::InputInt(std::format("##window_color_blue_int_{}", reinterpret_cast<intptr_t>(this)).data(), &m_b, 1, 100)) {
+        ImGui::SetNextItemWidth(-1);
+        if (ImGui::SpinInt("##window_color_blue_spinbox", &m_b, 1, 100)) {
+          m_b = std::clamp(m_b, -255, 255);
           m_backgroundInvalid = m_modified = true;
         }
       }
       operationBlueGroupBox.end();
     }
     ImGui::EndVertical();
-    // ImGui::BeginHorizontal("change_window_image", {-1, -1});
-    //{ ImGui::Image(m_background, {static_cast<float>(m_background.width()), static_cast<float>(m_background.height())}); }
-    // ImGui::EndHorizontal();
-    ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5));
-    ImGui::BeginHorizontal("##change_formation_dialog_buttons", {-1, -1});
+    ImGui::BeginChild(ImGui::GetID("##window_color_preview"), {size.x * .4f, size.y},
+                      ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle);
     {
-      ImGui::Spring();
-      if (const auto ret = ImGui::ButtonGroup("##change_formation_dialog_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
-
-        // m_confirmed = true;
-        // command->r = red;
-        // command->g = green;
-        // command->b = blue;
-        // ImGui::CloseCurrentPopup();
-        // setOpen(false);
-      } else if (ret == 1) {
-        // ImGui::CloseCurrentPopup();
-        // setOpen(false);
-      }
-    }
-    ImGui::EndHorizontal();
-  }
-  ImGui::EndVertical();
-
-  /*
-  ImGui::BeginGroup();
-  {
-    ImGui::BeginGroup();
-    {
-      ImGui::NewLine();
-      ImGui::BeginGroup();
-      {
-        ImGui::Text("Red");
-        ImGui::Spacing();
-        ImGui::Text("Green");
-        ImGui::Spacing();
-        ImGui::Text("Blue");
-      }
-      ImGui::EndGroup();
-      ImGui::SameLine();
-      ImGui::BeginGroup();
-      {
-        if (ImGui::SliderInt(std::format("##window_color_red_{}", reinterpret_cast<intptr_t>(this)).data(), &m_r, -255, 255)) {
-          m_backgroundInvalid = m_modified = true;
-        }
-        if (ImGui::SliderInt(std::format("##window_color_green_{}", reinterpret_cast<intptr_t>(this)).data(), &m_g, -255, 255)) {
-          m_backgroundInvalid = m_modified = true;
-        }
-        if (ImGui::SliderInt(std::format("##window_color_blue_{}", reinterpret_cast<intptr_t>(this)).data(), &m_b, -255, 255)) {
-          m_backgroundInvalid = m_modified = true;
-        }
-      }
-      ImGui::EndGroup();
-
       if (m_backgroundInvalid) {
         m_background.update(m_r, m_g, m_b);
+        m_background.setSize(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
         m_backgroundInvalid = false;
       }
+      ImGui::Image(m_background, {static_cast<float>(m_background.width()), static_cast<float>(m_background.height())});
     }
-    ImGui::EndGroup();
-
+    ImGui::EndChildFrame();
   }
-  ImGui::EndGroup();
-*/
-  return m_modified;
+  ImGui::EndHorizontal();
 }
 
 void GameWindowColorPicker::setPreviewSize(int width, int height) {

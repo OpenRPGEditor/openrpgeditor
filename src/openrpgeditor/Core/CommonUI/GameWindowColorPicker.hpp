@@ -36,7 +36,7 @@ public:
    * Draws the GameWindowColorPicker elements.
    * @return True if any of the values were modified, false otherwise
    */
-  bool draw();
+  void draw(ImVec2 size);
 
 private:
   GameWindowBackground m_background;
@@ -44,5 +44,5 @@ private:
   int m_g{0};
   int m_b{0};
   int m_modified{false};
-  int m_backgroundInvalid{false};
+  int m_backgroundInvalid{true};
 };

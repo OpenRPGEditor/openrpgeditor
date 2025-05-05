@@ -94,7 +94,7 @@ struct Dialog_ConditionalBranch : IEventDialogController {
     } else if (m_command->type == ConditionType::Button) {
       m_buttonSelection = static_cast<int>(m_command->button);
     } else if (m_command->type == ConditionType::Script) {
-      m_script.SetText(m_command->script);
+      m_script.SetTextLines(splitString(m_command->script, '\n'));
     }
     m_conditionType = static_cast<int>(m_command->type);
 

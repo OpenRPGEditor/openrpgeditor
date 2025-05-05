@@ -72,10 +72,9 @@ void GameWindowColorPicker::draw(ImVec2 size) {
     {
       if (m_backgroundInvalid) {
         m_background.update(m_r, m_g, m_b);
-        m_background.setSize(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y);
         m_backgroundInvalid = false;
       }
-      ImGui::Image(m_background, {static_cast<float>(m_background.width()), static_cast<float>(m_background.height())});
+      ImGui::Image(m_background, ImGui::GetContentRegionAvail());
     }
     ImGui::EndChildFrame();
   }

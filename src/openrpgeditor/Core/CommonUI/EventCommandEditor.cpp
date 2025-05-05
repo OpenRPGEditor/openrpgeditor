@@ -272,6 +272,9 @@ void EventCommandEditor::draw() {
           case EventCode::Change_Enemy_State:
             std::dynamic_pointer_cast<ChangeEnemyStateCommand>(cmd)->m_troopId = m_troopId;
             break;
+          case EventCode::Conditional_Branch:
+            std::dynamic_pointer_cast<ConditionalBranchCommand>(cmd)->m_troopId = m_troopId;
+            break;
           default:
             break;
           }

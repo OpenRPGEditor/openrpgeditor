@@ -265,11 +265,14 @@ std::string ConditionalBranchCommand::stringRep(const Database& db, const bool c
     }
   }
   if (type == ConditionType::Enemy) {
-    if (enemy.type == EnemyConditionType::State) {
-      auto state = db.states.state(enemy.stateId);
-      return conditionalFormat(trFormat("#{0} is affected by {1}", std::to_string(enemy.id + 1), db.stateNameOrId(enemy.stateId)), colored);
+    auto name = db.troopMemberName(m_troopId, enemy.id);
+    if (enemy.id >= 0) {
+      name = std::format("#{} {}", enemy.id + 1, name);
     }
-    return conditionalFormat(trFormat("#{0} is appeared", std::to_string(enemy.id + 1)), colored);
+    if (enemy.type == EnemyConditionType::State) {
+      return conditionalFormat(trFormat("{0} is affected by {1}", name, db.stateNameOrId(enemy.stateId)), colored);
+    }
+    return conditionalFormat(trFormat("{0} is appeared", name), colored);
   }
   if (type == ConditionType::Character) {
     std::string name = db.eventNameOrId(character.id);

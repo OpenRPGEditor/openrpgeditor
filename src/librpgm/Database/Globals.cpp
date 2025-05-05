@@ -112,9 +112,6 @@ std::vector<std::string> splitString(const std::string& str, char delimiter) {
     index++;
     tokens.push_back(token);
   }
-  if (!str.empty() && str.back() == '\n') {
-    tokens.push_back("");
-  }
   return tokens;
 }
 

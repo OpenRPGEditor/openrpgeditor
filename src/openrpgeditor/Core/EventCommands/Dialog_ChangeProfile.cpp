@@ -83,7 +83,7 @@ int Dialog_ChangeProfile::multilineTextCallback(ImGuiInputTextCallbackData* data
   auto profileLines = splitString(multilineText, '\n');
   multilineText.clear();
   bool dirty = false;
-  if (profileLines.size() > 2) {
+  if (profileLines.size() >= 2) {
     profileLines.resize(2);
     dirty = true;
   }

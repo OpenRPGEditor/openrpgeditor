@@ -237,7 +237,7 @@ private:
     case EventCode::Next_Comment:
       break;
     case EventCode::Conditional_Branch:
-      return std::make_shared<Dialog_ConditionalBranch>(DecodeEnumName(code), std::dynamic_pointer_cast<ConditionalBranchCommand>(cmd));
+      return std::make_shared<Dialog_ConditionalBranch>(DecodeEnumName(code), std::dynamic_pointer_cast<ConditionalBranchCommand>(cmd), m_troopId);
     case EventCode::Else:
       break;
     case EventCode::End:

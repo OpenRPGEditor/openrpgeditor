@@ -9,12 +9,12 @@
 
 std::tuple<bool, bool> Dialog_ChangeWindowColor::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###ChangeWindowColor");
   }
   const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 60) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 10) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ChangeWindowColor", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginVertical("##change_window_color_main_layout", ImGui::GetContentRegionAvail());
     {
       m_colorPicker.draw({ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, (ImGui::GetContentRegionAvail().y * .8f)});

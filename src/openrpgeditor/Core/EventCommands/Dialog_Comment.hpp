@@ -1,24 +1,25 @@
 #pragma once
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/Comment.hpp"
+#include "imgui.h"
 
 struct Dialog_Comment : IEventDialogController {
   Dialog_Comment() = delete;
   explicit Dialog_Comment(const std::string& name, const std::shared_ptr<CommentCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new CommentCommand());
+      m_command.reset(new CommentCommand());
     }
-    comment = command->text.c_str();
+    m_comment = m_command->text.c_str();
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
-  std::string comment;
+  std::string m_comment;
   bool m_confirmed{false};
-  std::shared_ptr<CommentCommand> command;
+  std::shared_ptr<CommentCommand> m_command;
   std::tuple<bool, bool> result;
 };

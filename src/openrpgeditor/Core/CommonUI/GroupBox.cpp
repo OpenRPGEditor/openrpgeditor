@@ -27,7 +27,7 @@ bool GroupBox::begin() {
 
   m_clicked = false;
 
-  m_visible = ImGui::BeginChild(id, m_size, m_childFlags | ImGuiChildFlags_FrameStyle, m_windowFlags);
+  m_visible = ImGui::BeginChild(id, m_size, m_childFlags | ImGuiChildFlags_FrameStyle | ImGuiChildFlags_NavFlattened, m_windowFlags);
   if (m_visible) {
     if (!m_wasHeaderDrawn) {
       auto size = ImGui::CalcItemSize(ImGui::CalcTextSize(m_title.c_str()), 0, 0);
@@ -60,7 +60,8 @@ void GroupBox::end() {
     ImGui::SetCursorScreenPos({m_groupStart.x + ImGui::GetStyle().FramePadding.x + ImGui::GetStyle().FrameBorderSize, m_groupStart.y});
     clip.Min.y -= ImGui::GetFrameHeightWithSpacing() / 2;
     ImGui::PushClipRect(clip.Min, clip.Max, false);
-    if (ImGui::BeginChild(labelId, {}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle, ImGuiWindowFlags_NoScrollbar)) {
+    if (ImGui::BeginChild(labelId, {}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle | ImGuiChildFlags_NavFlattened,
+                          ImGuiWindowFlags_NoScrollbar | (m_checked ? ImGuiWindowFlags_NoNav : 0))) {
       // Group Header text
       if (!m_checked) {
         ImGui::TextUnformatted(m_title.c_str());

@@ -280,6 +280,7 @@ struct Database {
   [[nodiscard]] std::string classNameOrId(const int id) const { return nameOrId(className(id), id); }
   [[nodiscard]] std::string classNameAndId(const int id) const { return nameAndId(className(id), id); }
   [[nodiscard]] std::string skillNameOrId(const int id) const { return nameOrId(skillName(id), id); }
+  [[nodiscard]] std::string skillNameAndId(const int id) const { return nameAndId(skillName(id), id); }
   [[nodiscard]] std::string itemNameOrId(const int id) const { return nameOrId(itemName(id), id); }
   [[nodiscard]] std::string itemNameAndId(const int id) const { return nameAndId(itemName(id), id); }
   [[nodiscard]] std::string weaponNameOrId(const int id) const { return nameOrId(weaponName(id), id); }

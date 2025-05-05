@@ -247,6 +247,7 @@ struct ConditionalBranchCommand final : IEventCommand {
   std::string script;
 
   bool m_collapsed{false};
+  int m_troopId{0};
 };
 
 struct ElseCommand final : IEventCommand {

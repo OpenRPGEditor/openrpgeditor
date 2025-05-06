@@ -72,42 +72,49 @@ std::string ControlVariables::stringRep(const Database& db, const bool colored) 
   case VariableControlOperand::Constant:
     return variableFormat(std::format("{} {}", varText, constant), colored);
   case VariableControlOperand::Random: {
-    return variableFormat(std::format("{} {} {}..{}", varText, trNOOP("Random"), random.min, random.max), colored);
+    return variableFormat(varText + " " + trNOOP("Random") + std::format(" {}..{}", random.min, random.max), colored);
   }
   case VariableControlOperand::Variable: {
-    return variableFormat(std::format("{} {}", varText, db.variableNameOrId(variable)), colored);
+    return variableFormat(varText + " " + db.variableNameOrId(variable), colored);
   }
   case VariableControlOperand::Game_Data: {
     switch (gameData.type) {
     case GameDataType::Item: {
-      return variableFormat(varText + " " + trFormat("The number of {0}", varText, db.itemNameOrId(gameData.rawSource)), colored);
+      return variableFormat(varText + " " + Database::theNumberOf(db.itemNameOrId(gameData.value)), colored);
     }
     case GameDataType::Weapon: {
-      return variableFormat(varText + " " + trFormat("The number of {0}", varText, db.weaponNameOrId(gameData.rawSource)), colored);
+      return variableFormat(varText + " " + Database::theNumberOf(db.weaponNameOrId(gameData.value)), colored);
     }
     case GameDataType::Armor: {
-      return variableFormat(varText + " " + trFormat("The number of {0}", varText, db.armorNameOrId(gameData.rawSource)), colored);
+      return variableFormat(varText + " " + Database::theNumberOf(db.armorNameOrId(gameData.value)), colored);
     }
     case GameDataType::Actor: {
-      // TL-NOTE: <attribute> of <object>
-      return variableFormat(varText + " " + trFormat("{0} of {1}", DecodeEnumName(static_cast<ActorDataSource>(gameData.value)), db.actorNameOrId(gameData.rawSource)), colored);
+      return variableFormat(varText + " " + Database::AOfB(DecodeEnumName(gameData.actorSource), db.actorNameOrId(gameData.value)), colored);
     }
     case GameDataType::Enemy: {
-      return variableFormat(varText + " " + trFormat("{0} of {1}", DecodeEnumName(static_cast<EnemyDataSource>(gameData.value)), std::format("#{}", gameData.rawSource)), colored);
+      std::string enemyName;
+      if (m_troopId == 0) {
+        enemyName = std::format("#{}", gameData.value + 1);
+      } else {
+        enemyName = db.troopMemberName(m_troopId, gameData.value);
+      }
+      return variableFormat(varText + " " + Database::AOfB(DecodeEnumName(gameData.enemySource), enemyName), colored);
     }
     case GameDataType::Character: {
-      return variableFormat(varText + " " + trFormat("{0} of {1}", DecodeEnumName(static_cast<CharacterDataSource>(gameData.value)), db.eventNameOrId(gameData.rawSource)), colored);
+      return variableFormat(varText + " " + Database::AOfB(DecodeEnumName(gameData.characterSource), db.eventNameOrId(gameData.value)), colored);
     }
     case GameDataType::Party: {
-      return variableFormat(varText + " " + trFormat("Actor ID of the party member #{0}", gameData.rawSource), colored);
+      return variableFormat(varText + " " + trFormat("Actor ID of the party member #{0}", gameData.value + 1), colored);
     }
     case GameDataType::Other: {
-      return variableFormat(std::format("{} {}", varText, DecodeEnumName(gameData.otherSource)), colored);
+      return variableFormat(varText + " " + DecodeEnumName(gameData.otherSource), colored);
     }
     }
   }
   case VariableControlOperand::Script:
-    return variableFormat(std::format("{} {}", varText, script), colored);
+    std::string tmpScript = script;
+    std::ranges::replace(tmpScript, '\n', ' ');
+    return variableFormat(varText + " " + tmpScript.substr(0, std::min<size_t>(80, tmpScript.length())) + (tmpScript.length() >= 80 ? "..." : ""), colored);
   }
 
   return "ERROR!";

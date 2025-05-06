@@ -18,20 +18,20 @@ bool GroupBox::begin() {
   const auto id = ImGui::GetID(m_id.c_str());
   auto groupPos = ImGui::GetCursorScreenPos();
   m_groupStart = groupPos;
-  ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, ImGui::GetStyle().FramePadding.y * 0.5);
-  groupPos.y += (ImGui::GetFontSize() / 2) + ImGui::GetStyle().ItemSpacing.y;
-  ImGui::SetCursorScreenPos(groupPos);
-  groupPos.y += (ImGui::GetFrameHeight() / 2);
-
-  ImGui::PopStyleVar();
-
+  if (!m_title.empty()) {
+    ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, ImGui::GetStyle().FramePadding.y * 0.5);
+    groupPos.y += (ImGui::GetFontSize() / 2) + ImGui::GetStyle().ItemSpacing.y;
+    ImGui::SetCursorScreenPos(groupPos);
+    groupPos.y += (ImGui::GetFrameHeight() / 2);
+    ImGui::PopStyleVar();
+  }
   m_clicked = false;
 
   m_visible = ImGui::BeginChild(id, m_size,
                                 m_childFlags | ImGuiChildFlags_FrameStyle | ImGuiChildFlags_NavFlattened | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
                                 m_windowFlags);
   if (m_visible) {
-    if (!m_wasHeaderDrawn) {
+    if (!m_wasHeaderDrawn && !m_title.empty()) {
       auto size = ImGui::CalcItemSize(ImGui::CalcTextSize(m_title.c_str()), 0, 0);
       if (m_checked) {
         ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, ImGui::GetStyle().FramePadding.y * 0.5);
@@ -56,7 +56,7 @@ void GroupBox::end() {
   }
   ImGui::EndChild();
 
-  if (m_visible && !m_wasHeaderDrawn) {
+  if (m_visible && !m_wasHeaderDrawn && !m_title.empty()) {
     const auto labelId = ImGui::GetID(std::format("{}_checkbox", m_id).c_str());
     const auto oldPos = ImGui::GetCursorScreenPos();
     ImGui::SetCursorScreenPos({m_groupStart.x + ImGui::GetStyle().FramePadding.x + ImGui::GetStyle().FrameBorderSize, m_groupStart.y});
@@ -69,8 +69,7 @@ void GroupBox::end() {
         ImGui::TextUnformatted(m_title.c_str());
       } else {
         ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, ImGui::GetStyle().FramePadding.y * 0.5);
-        const bool isClicked = ImGui::SizeableCheckbox(m_title.c_str(), m_checked, ImGui::GetFrameHeight() * 0.45f);
-        m_clicked = isClicked;
+        m_clicked = ImGui::SizeableCheckbox(m_title.c_str(), m_checked, ImGui::GetFrameHeight() * 0.45f);
         ImGui::PopStyleVar();
       }
       ImGui::EndChild();

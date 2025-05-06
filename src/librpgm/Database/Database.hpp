@@ -472,6 +472,9 @@ struct Database {
     return armorNameOrId(dataId);
   }
 
+  static std::string theNumberOf(const std::string& name) { return trFormat("The number of {}", name); }
+  static std::string AOfB(const std::string& a, const std::string& b) { return trFormat("{0} of {1}", a, b); }
+
 private:
   bool m_isMZ;
   void connectAllSignals();

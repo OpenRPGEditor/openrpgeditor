@@ -63,25 +63,27 @@ struct ControlVariables : IEventCommand {
   int end{1};
   VariableControlOperation operation = VariableControlOperation::_set__del_Set;
   VariableControlOperand operand = VariableControlOperand::Constant;
-  union {
-    int constant;
-    int variable;
-    struct {
-      int min;
-      int max;
-    } random;
-    struct {
-      GameDataType type = GameDataType::Other;
-      int value;
-      union {
-        ActorDataSource actorSource;
-        EnemyDataSource enemySource;
-        CharacterDataSource characterSource;
-        OtherDataSource otherSource;
-        int rawSource{0};
-      };
-    } gameData;
-    int raw[4]{};
-  };
+  int constant{0};
+  int variable{0};
+  struct {
+    int min{0};
+    int max{0};
+  } random;
+
+  struct {
+    GameDataType type = GameDataType::Other;
+    union {
+      OtherDataSource otherSource;
+      int value{0};
+    };
+    union {
+      ActorDataSource actorSource;
+      EnemyDataSource enemySource;
+      CharacterDataSource characterSource;
+      int rawSource{0};
+    };
+  } gameData;
+
   std::string script{};
+  int m_troopId{0};
 };

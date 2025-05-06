@@ -275,6 +275,9 @@ void EventCommandEditor::draw() {
           case EventCode::Conditional_Branch:
             std::dynamic_pointer_cast<ConditionalBranchCommand>(cmd)->m_troopId = m_troopId;
             break;
+          case EventCode::Control_Variables:
+            std::dynamic_pointer_cast<ControlVariables>(cmd)->m_troopId = m_troopId;
+            break;
           default:
             break;
           }

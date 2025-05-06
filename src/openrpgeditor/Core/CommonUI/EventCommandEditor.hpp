@@ -259,7 +259,7 @@ private:
     case EventCode::Control_Switches:
       return std::make_shared<Dialog_ControlSwitches>(DecodeEnumName(code), std::dynamic_pointer_cast<ControlSwitches>(cmd));
     case EventCode::Control_Variables:
-      return std::make_shared<Dialog_ControlVariables>(DecodeEnumName(code), std::dynamic_pointer_cast<ControlVariables>(cmd));
+      return std::make_shared<Dialog_ControlVariables>(DecodeEnumName(code), std::dynamic_pointer_cast<ControlVariables>(cmd), m_troopId);
     case EventCode::Control_Self_Switch:
       return std::make_shared<Dialog_ControlSelfSwitch>(DecodeEnumName(code), std::dynamic_pointer_cast<ControlSelfSwitchCommand>(cmd));
     case EventCode::Control_Timer:

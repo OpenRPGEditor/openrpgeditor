@@ -34,13 +34,7 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
         ImGui::BeginVertical("##show_text_layout_text", {-1, -1});
         {
           ImGui::Text("Text:");
-          ImGui::InputTextMultiline("##show_text_multiline", &m_textLine, ImVec2{ImGui::GetContentRegionAvail().x, (ImGui::GetTextLineHeight() * 4) + (ImGui::GetStyle().FramePadding.y * 2)},
-                                    ImGuiInputTextFlags_CallbackAlways);
-          const auto itemMin = ImGui::GetItemRectMin();
-          const auto itemSize = ImGui::GetItemRectSize();
-          const auto itemID = ImGui::GetItemID();
-          const float lineX = (ImGui::CalcTextSize("#").x * (m_faceImage.length() > 0 ? 43 : 55));
-          ImGui::GetCurrentWindow()->DrawList->AddLine(itemMin + ImVec2{lineX, 0}, itemMin + ImVec2{lineX, itemSize.y}, IM_COL32(0, 0, 0, 255), ImGui::GetDPIScaledValue(2.f));
+          ImGui::InputTextMultiline("##show_text_multiline", &m_textLine, ImVec2{ImGui::GetContentRegionAvail().x, (ImGui::GetTextLineHeight() * 4) + (ImGui::GetStyle().FramePadding.y * 2)});
           ImGui::BeginHorizontal("##show_text_window_settings", {-1, -1});
           {
             ImGui::BeginVertical("##show_text_background", {-1, -1});

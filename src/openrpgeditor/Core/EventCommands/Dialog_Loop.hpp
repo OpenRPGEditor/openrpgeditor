@@ -8,15 +8,15 @@ struct Dialog_Loop : IEventDialogController {
   Dialog_Loop() = delete;
   explicit Dialog_Loop(const std::string& name, const std::shared_ptr<LoopCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new LoopCommand());
+      m_command.reset(new LoopCommand());
     }
     m_open = false;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; }
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; }
 
   std::vector<std::shared_ptr<IEventCommand>> getBatchCommands() override {
     std::vector<std::shared_ptr<IEventCommand>> eventCommands;
@@ -32,6 +32,5 @@ struct Dialog_Loop : IEventDialogController {
 
 private:
   bool m_confirmed{true};
-  std::shared_ptr<LoopCommand> command;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<LoopCommand> m_command;
 };

@@ -27,7 +27,9 @@ bool GroupBox::begin() {
 
   m_clicked = false;
 
-  m_visible = ImGui::BeginChild(id, m_size, m_childFlags | ImGuiChildFlags_FrameStyle | ImGuiChildFlags_NavFlattened, m_windowFlags);
+  m_visible = ImGui::BeginChild(id, m_size,
+                                m_childFlags | ImGuiChildFlags_FrameStyle | ImGuiChildFlags_NavFlattened | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
+                                m_windowFlags);
   if (m_visible) {
     if (!m_wasHeaderDrawn) {
       auto size = ImGui::CalcItemSize(ImGui::CalcTextSize(m_title.c_str()), 0, 0);

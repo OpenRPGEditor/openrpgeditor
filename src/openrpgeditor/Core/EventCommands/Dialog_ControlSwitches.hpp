@@ -20,10 +20,12 @@ struct Dialog_ControlSwitches : IEventDialogController {
   std::shared_ptr<IEventCommand> getCommand() override { return command; };
 
 private:
+  void drawPickers();
+
   int m_start;
   int m_end;
-  int m_rand_1{1};
-  int m_rand_2{1};
+  int m_rangeMin{1};
+  int m_rangeMax{1};
   int m_isDisabled;
   int m_operation{0};
 

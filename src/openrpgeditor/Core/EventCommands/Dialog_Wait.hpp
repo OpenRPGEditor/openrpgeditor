@@ -9,19 +9,18 @@ struct Dialog_Wait : IEventDialogController {
   Dialog_Wait() = delete;
   explicit Dialog_Wait(const std::string& name, const std::shared_ptr<WaitCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new WaitCommand());
+      m_command.reset(new WaitCommand());
     }
-    m_waitDuration = command->duration;
+    m_waitDuration = m_command->duration;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
   int m_waitDuration;
   bool m_confirmed{false};
-  std::shared_ptr<WaitCommand> command;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<WaitCommand> m_command;
 };

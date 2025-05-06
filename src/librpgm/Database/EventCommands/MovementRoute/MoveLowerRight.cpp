@@ -1,5 +1,1 @@
-//
-// Created by antidote on 6/28/24.
-//
-
-#include "MoveLowerRight.hpp"
+#include "Database/EventCommands/MovementRoute/MoveLowerRight.hpp"

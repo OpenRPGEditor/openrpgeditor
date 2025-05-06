@@ -1,6 +1,6 @@
 ﻿#include "Database/EventCommands/IEventCommand.hpp"
 
-IEventCommand::IEventCommand(const std::optional<int>& _indent, [[maybe_unused]] const nlohmann::ordered_json& parameters)
+IEventCommand::IEventCommand(const std::optional<int>& _indent)
 : m_indent(_indent) {}
 
 void IEventCommand::serialize(nlohmann::ordered_json& out, const bool doIndent, const bool doParameters, bool oldValues) const {

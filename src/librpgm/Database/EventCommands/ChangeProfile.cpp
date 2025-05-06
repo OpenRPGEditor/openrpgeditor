@@ -2,7 +2,7 @@
 #include "Database/Database.hpp"
 
 ChangeProfileCommand::ChangeProfileCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+: IEventCommand(indent) {
   parameters.at(0).get_to(actor);
   parameters.at(1).get_to(profile);
 }

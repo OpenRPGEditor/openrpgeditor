@@ -1,7 +1,7 @@
 #include "Database/EventCommands/MovementRoute/Jump.hpp"
 
 MovementJumpCommand::MovementJumpCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IMovementRouteStep(indent, parameters) {
+: IMovementRouteStep(indent) {
   parameters.at(0).get_to(x);
   parameters.at(1).get_to(y);
 }

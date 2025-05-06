@@ -1,5 +1,1 @@
-//
-// Created by antidote on 6/28/24.
-//
-
-#include "OpenMenu.hpp"
+#include "Database/EventCommands/OpenMenu.hpp"

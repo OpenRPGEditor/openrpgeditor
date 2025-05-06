@@ -3,7 +3,7 @@
 #include "Database/Database.hpp"
 
 ShowBalloonIconCommand::ShowBalloonIconCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+: IEventCommand(indent) {
   parameters.at(0).get_to(id);
   parameters.at(1).get_to(index);
   parameters.at(2).get_to(waitForCompletion);

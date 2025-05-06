@@ -4,8 +4,8 @@
 
 struct EndCommand final : IEventCommand {
   EndCommand() = default;
-  explicit EndCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-  : IEventCommand(indent, parameters) {}
+  explicit EndCommand(const std::optional<int>& indent)
+  : IEventCommand(indent) {}
   ~EndCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::End; }
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<EndCommand>(*this); }

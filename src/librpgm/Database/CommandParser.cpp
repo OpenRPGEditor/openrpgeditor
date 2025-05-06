@@ -19,7 +19,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
     // std::cout << "Processing: " << magic_enum::enum_name(code) << " (" << static_cast<int>(code) << ")" << std::endl;
     switch (code) {
     case EventCode::Event_Dummy:
-      ret.emplace_back(new EventDummy(indent, parameters));
+      ret.emplace_back(new EventDummy(indent));
       break;
     case EventCode::Show_Text: {
       auto text = dynamic_cast<ShowTextCommand*>(ret.emplace_back(new ShowTextCommand(indent, parameters)).get());
@@ -39,10 +39,10 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ret.emplace_back(new WhenSelectedCommand(indent, parameters));
       break;
     case EventCode::When_Cancel:
-      ret.emplace_back(new WhenCancelCommand(indent, parameters));
+      ret.emplace_back(new WhenCancelCommand(indent));
       break;
     case EventCode::End_del_ShowChoices:
-      ret.emplace_back(new ShowChoicesEndCommand(indent, parameters));
+      ret.emplace_back(new ShowChoicesEndCommand(indent));
       break;
     case EventCode::Input_Number:
       ret.emplace_back(new InputNumberCommand(indent, parameters));
@@ -74,19 +74,19 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ret.emplace_back(new ConditionalBranchCommand(indent, parameters));
       break;
     case EventCode::Else:
-      ret.emplace_back(new ElseCommand(indent, parameters));
+      ret.emplace_back(new ElseCommand(indent));
       break;
     case EventCode::Loop:
       ret.emplace_back(new LoopCommand(indent, parameters));
       break;
     case EventCode::Repeat_Above:
-      ret.emplace_back(new RepeatAboveCommand(indent, parameters));
+      ret.emplace_back(new RepeatAboveCommand(indent));
       break;
     case EventCode::Break_Loop:
-      ret.emplace_back(new BreakLoopCommand(indent, parameters));
+      ret.emplace_back(new BreakLoopCommand(indent));
       break;
     case EventCode::Exit_Event_Processing:
-      ret.emplace_back(new ExitEventProcessingCommand(indent, parameters));
+      ret.emplace_back(new ExitEventProcessingCommand(indent));
       break;
     case EventCode::Common_Event:
       ret.emplace_back(new CommonEventCommand(indent, parameters));
@@ -174,7 +174,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       break;
     }
     case EventCode::Get_on_fwsl_off_Vehicle:
-      ret.emplace_back(new GetOnOffVehicleCommand(indent, parameters));
+      ret.emplace_back(new GetOnOffVehicleCommand(indent));
       break;
     case EventCode::Change_Transparency:
       ret.emplace_back(new ChangeTransparencyCommand(indent, parameters));
@@ -186,19 +186,19 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ret.emplace_back(new ShowBalloonIconCommand(indent, parameters));
       break;
     case EventCode::Erase_Event:
-      ret.emplace_back(new EraseEventCommand(indent, parameters));
+      ret.emplace_back(new EraseEventCommand(indent));
       break;
     case EventCode::Change_Player_Followers:
       ret.emplace_back(new ChangePlayerFollowersCommand(indent, parameters));
       break;
     case EventCode::Gather_Followers:
-      ret.emplace_back(new GatherFollowersCommand(indent, parameters));
+      ret.emplace_back(new GatherFollowersCommand(indent));
       break;
     case EventCode::Fadeout_Screen:
-      ret.emplace_back(new FadeoutScreenCommand(indent, parameters));
+      ret.emplace_back(new FadeoutScreenCommand(indent));
       break;
     case EventCode::Fadein_Screen:
-      ret.emplace_back(new FadeinScreenCommand(indent, parameters));
+      ret.emplace_back(new FadeinScreenCommand(indent));
       break;
     case EventCode::Tint_Screen:
       ret.emplace_back(new TintScreenCommand(indent, parameters));
@@ -237,10 +237,10 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ret.emplace_back(new FadeoutBGM(indent, parameters));
       break;
     case EventCode::Save_BGM:
-      ret.emplace_back(new SaveBGMCommand(indent, parameters));
+      ret.emplace_back(new SaveBGMCommand(indent));
       break;
     case EventCode::Resume_BGM:
-      ret.emplace_back(new ResumeBGMCommand(indent, parameters));
+      ret.emplace_back(new ResumeBGMCommand(indent));
       break;
     case EventCode::Play_BGS:
       ret.emplace_back(new PlayBGSCommand(indent, parameters));
@@ -255,7 +255,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ret.emplace_back(new PlaySECommand(indent, parameters));
       break;
     case EventCode::Stop_SE:
-      ret.emplace_back(new StopSECommand(indent, parameters));
+      ret.emplace_back(new StopSECommand(indent));
       break;
     case EventCode::Play_Movie:
       ret.emplace_back(new PlayMovieCommand(indent, parameters));
@@ -279,16 +279,16 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ret.emplace_back(new BattleProcessingCommand(indent, parameters));
       break;
     case EventCode::If_Win:
-      ret.emplace_back(new IfWinCommand(indent, parameters));
+      ret.emplace_back(new IfWinCommand(indent));
       break;
     case EventCode::If_Escape:
-      ret.emplace_back(new IfEscapeCommand(indent, parameters));
+      ret.emplace_back(new IfEscapeCommand(indent));
       break;
     case EventCode::If_Lose:
-      ret.emplace_back(new IfLoseCommand(indent, parameters));
+      ret.emplace_back(new IfLoseCommand(indent));
       break;
     case EventCode::End_del_Battle_Processing:
-      ret.emplace_back(new EndBattleProcessingCommand(indent, parameters));
+      ret.emplace_back(new EndBattleProcessingCommand(indent));
       break;
     case EventCode::Shop_Processing: {
       auto* shop = dynamic_cast<ShopProcessingCommand*>(ret.emplace_back(new ShopProcessingCommand(indent, parameters)).get());
@@ -346,19 +346,19 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ret.emplace_back(new ChangeNicknameCommand(indent, parameters));
       break;
     case EventCode::Game_Over:
-      ret.emplace_back(new GameOverCommand(indent, parameters));
+      ret.emplace_back(new GameOverCommand(indent));
       break;
     case EventCode::Return_To_Title_Screen:
-      ret.emplace_back(new ReturnToTitleCommand(indent, parameters));
+      ret.emplace_back(new ReturnToTitleCommand(indent));
       break;
     case EventCode::Open_Menu_Screen:
-      ret.emplace_back(new OpenMenuCommand(indent, parameters));
+      ret.emplace_back(new OpenMenuCommand(indent));
       break;
     case EventCode::Open_Save_Screen:
-      ret.emplace_back(new OpenSaveCommand(indent, parameters));
+      ret.emplace_back(new OpenSaveCommand(indent));
       break;
     case EventCode::Abort_Battle:
-      ret.emplace_back(new AbortBattleCommand(indent, parameters));
+      ret.emplace_back(new AbortBattleCommand(indent));
       break;
     case EventCode::Enemy_Recover_All:
       ret.emplace_back(new EnemyRecoverAllCommand(indent, parameters));
@@ -407,47 +407,47 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ret.emplace_back(new PluginCommandMV(indent, parameters));
       break;
     case EventCode::End:
-      ret.emplace_back(new EndCommand(indent, parameters));
+      ret.emplace_back(new EndCommand(indent));
       break;
       // MovementRoute commands
     case EventCode::Move_Down:
-      ret.emplace_back(new MovementMoveDownCommand(indent, parameters));
+      ret.emplace_back(new MovementMoveDownCommand(indent));
       break;
     case EventCode::Move_Left:
-      ret.emplace_back(new MovementMoveLeftCommand(indent, parameters));
+      ret.emplace_back(new MovementMoveLeftCommand(indent));
       break;
     case EventCode::Move_Right:
-      ret.emplace_back(new MovementMoveRightCommand(indent, parameters));
+      ret.emplace_back(new MovementMoveRightCommand(indent));
       break;
     case EventCode::Move_Up:
-      ret.emplace_back(new MovementMoveUpCommand(indent, parameters));
+      ret.emplace_back(new MovementMoveUpCommand(indent));
       break;
     case EventCode::Move_Lower_Left:
-      ret.emplace_back(new MovementMoveLowerLeftCommand(indent, parameters));
+      ret.emplace_back(new MovementMoveLowerLeftCommand(indent));
       break;
     case EventCode::Move_Lower_Right:
-      ret.emplace_back(new MovementMoveLowerRightCommand(indent, parameters));
+      ret.emplace_back(new MovementMoveLowerRightCommand(indent));
       break;
     case EventCode::Move_Upper_Left:
-      ret.emplace_back(new MovementMoveUpperLeftCommand(indent, parameters));
+      ret.emplace_back(new MovementMoveUpperLeftCommand(indent));
       break;
     case EventCode::Move_Upper_Right:
-      ret.emplace_back(new MovementMoveUpperRightCommand(indent, parameters));
+      ret.emplace_back(new MovementMoveUpperRightCommand(indent));
       break;
     case EventCode::Move_at_Random:
-      ret.emplace_back(new MovementMoveAtRandomCommand(indent, parameters));
+      ret.emplace_back(new MovementMoveAtRandomCommand(indent));
       break;
     case EventCode::Move_toward_Player:
-      ret.emplace_back(new MovementMoveTowardPlayerCommand(indent, parameters));
+      ret.emplace_back(new MovementMoveTowardPlayerCommand(indent));
       break;
     case EventCode::Move_away_from_Player:
-      ret.emplace_back(new MovementMoveAwayFromPlayerCommand(indent, parameters));
+      ret.emplace_back(new MovementMoveAwayFromPlayerCommand(indent));
       break;
     case EventCode::_1_Step_Forward:
-      ret.emplace_back(new MovementMove1StepForwardCommand(indent, parameters));
+      ret.emplace_back(new MovementMove1StepForwardCommand(indent));
       break;
     case EventCode::_1_Step_Backward:
-      ret.emplace_back(new MovementMove1StepBackwardCommand(indent, parameters));
+      ret.emplace_back(new MovementMove1StepBackwardCommand(indent));
       break;
     case EventCode::Jump:
       ret.emplace_back(new MovementJumpCommand(indent, parameters));
@@ -456,34 +456,34 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ret.emplace_back(new MovementWaitCommand(indent, parameters));
       break;
     case EventCode::Turn_Down:
-      ret.emplace_back(new MovementTurnDownCommand(indent, parameters));
+      ret.emplace_back(new MovementTurnDownCommand(indent));
       break;
     case EventCode::Turn_Left:
-      ret.emplace_back(new MovementTurnLeftCommand(indent, parameters));
+      ret.emplace_back(new MovementTurnLeftCommand(indent));
       break;
     case EventCode::Turn_Right:
-      ret.emplace_back(new MovementTurnRightCommand(indent, parameters));
+      ret.emplace_back(new MovementTurnRightCommand(indent));
       break;
     case EventCode::Turn_Up:
-      ret.emplace_back(new MovementTurnUpCommand(indent, parameters));
+      ret.emplace_back(new MovementTurnUpCommand(indent));
       break;
     case EventCode::Turn_90_deg_Right:
-      ret.emplace_back(new MovementTurn90DegRightCommand(indent, parameters));
+      ret.emplace_back(new MovementTurn90DegRightCommand(indent));
       break;
     case EventCode::Turn_90_deg_Left:
-      ret.emplace_back(new MovementTurn90DegLeftCommand(indent, parameters));
+      ret.emplace_back(new MovementTurn90DegLeftCommand(indent));
       break;
     case EventCode::Turn_180_deg:
-      ret.emplace_back(new MovementTurn180DegCommand(indent, parameters));
+      ret.emplace_back(new MovementTurn180DegCommand(indent));
       break;
     case EventCode::Turn_90_deg_Left_or_Right:
-      ret.emplace_back(new MovementTurn90DegLeftOrRightCommand(indent, parameters));
+      ret.emplace_back(new MovementTurn90DegLeftOrRightCommand(indent));
       break;
     case EventCode::Turn_at_Random:
-      ret.emplace_back(new MovementTurnAtRandomCommand(indent, parameters));
+      ret.emplace_back(new MovementTurnAtRandomCommand(indent));
       break;
     case EventCode::Turn_toward_Player:
-      ret.emplace_back(new MovementTurnTowardPlayerCommand(indent, parameters));
+      ret.emplace_back(new MovementTurnTowardPlayerCommand(indent));
       break;
     case EventCode::Turn_away_from_Player:
       ret.emplace_back(new MovementTurnAwayFromPlayerCommand(indent, parameters));
@@ -501,34 +501,34 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
       ret.emplace_back(new MovementFrequencyCommand(indent, parameters));
       break;
     case EventCode::Walking_Animation_ON:
-      ret.emplace_back(new MovementWalkingAnimationONCommand(indent, parameters));
+      ret.emplace_back(new MovementWalkingAnimationONCommand(indent));
       break;
     case EventCode::Walking_Animation_OFF:
-      ret.emplace_back(new MovementWalkingAnimationOFFCommand(indent, parameters));
+      ret.emplace_back(new MovementWalkingAnimationOFFCommand(indent));
       break;
     case EventCode::Stepping_Animation_ON:
-      ret.emplace_back(new MovementSteppingAnimationONCommand(indent, parameters));
+      ret.emplace_back(new MovementSteppingAnimationONCommand(indent));
       break;
     case EventCode::Stepping_Animation_OFF:
       ret.emplace_back(new MovementSteppingAnimationOFFCommand(indent, parameters));
       break;
     case EventCode::Direction_Fix_ON:
-      ret.emplace_back(new MovementDirectionFixONCommand(indent, parameters));
+      ret.emplace_back(new MovementDirectionFixONCommand(indent));
       break;
     case EventCode::Direction_Fix_OFF:
-      ret.emplace_back(new MovementDirectionFixOFFCommand(indent, parameters));
+      ret.emplace_back(new MovementDirectionFixOFFCommand(indent));
       break;
     case EventCode::Through_ON:
-      ret.emplace_back(new MovementThroughONCommand(indent, parameters));
+      ret.emplace_back(new MovementThroughONCommand(indent));
       break;
     case EventCode::Through_OFF:
-      ret.emplace_back(new MovementThroughOFFCommand(indent, parameters));
+      ret.emplace_back(new MovementThroughOFFCommand(indent));
       break;
     case EventCode::Transparent_ON:
-      ret.emplace_back(new MovementTransparentONCommand(indent, parameters));
+      ret.emplace_back(new MovementTransparentONCommand(indent));
       break;
     case EventCode::Transparent_OFF:
-      ret.emplace_back(new MovementTransparentOFFCommand(indent, parameters));
+      ret.emplace_back(new MovementTransparentOFFCommand(indent));
       break;
     case EventCode::Change_Image:
       ret.emplace_back(new MovementChangeImageCommand(indent, parameters));

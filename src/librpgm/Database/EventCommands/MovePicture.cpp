@@ -2,7 +2,7 @@
 #include "Database/Database.hpp"
 
 MovePictureCommand::MovePictureCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+: IEventCommand(indent) {
   parameters.at(0).get_to(picture);
   // param[1] is not used
   parameters.at(2).get_to(origin);

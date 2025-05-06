@@ -4,7 +4,7 @@
 #include <format>
 
 struct ControlVariables : IEventCommand {
-  ControlVariables() = default;
+  ControlVariables() {};
   explicit ControlVariables(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
   ~ControlVariables() override {};
   [[nodiscard]] EventCode code() const override { return EventCode::Control_Variables; }
@@ -12,17 +12,17 @@ struct ControlVariables : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   [[nodiscard]] std::string variableFormat(const std::string& text, bool colored) const;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ControlVariables>(*this); }
-  bool hasReference(int targetId, SearchType type) override {
+  bool hasReference(const int targetId, const SearchType type) override {
     if (type == SearchType::Variable) {
       if (start == targetId && end == targetId) {
         return true;
       }
       if (operand == VariableControlOperand::Script) {
-        std::string cnst = Database::instance()->gameConstants.variables[targetId];
-        if (cnst.empty()) {
+        const std::string constVal = Database::instance()->gameConstants.variables[targetId];
+        if (constVal.empty()) {
           return false;
         }
-        if (script.contains("gameVariables") && script.contains(cnst)) {
+        if (script.contains("gameVariables") && script.contains(constVal)) {
           return true;
         }
       }
@@ -31,11 +31,11 @@ struct ControlVariables : IEventCommand {
     // ControlVariables can change switches by using scripts
     if (type == SearchType::Switch) {
       if (operand == VariableControlOperand::Script) {
-        std::string cnst = Database::instance()->gameConstants.switches[targetId];
-        if (cnst.empty()) {
+        const std::string constVal = Database::instance()->gameConstants.switches[targetId];
+        if (constVal.empty()) {
           return false;
         }
-        if (script.contains("gameSwitches") && script.contains(cnst)) {
+        if (script.contains("gameSwitches") && script.contains(constVal)) {
           return true;
         }
       }
@@ -48,7 +48,7 @@ struct ControlVariables : IEventCommand {
     return false;
   };
 
-  bool setReference(int targetId, int newId, SearchType type) override {
+  bool setReference(const int targetId, const int newId, const SearchType type) override {
     if (hasReference(targetId, type)) {
       if (start == targetId && end == targetId) {
         start = newId;

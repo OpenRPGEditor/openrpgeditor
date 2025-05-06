@@ -3,7 +3,7 @@
 #include "Database/Database.hpp"
 
 MovementRouteStepCommand::MovementRouteStepCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+: IEventCommand(indent) {
   CommandParser p;
   step = p.parse(parameters)[0];
 }
@@ -17,7 +17,7 @@ void MovementRouteStepCommand::serializeParameters(nlohmann::ordered_json& out) 
 }
 
 SetMovementRouteCommand::SetMovementRouteCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+: IEventCommand(indent) {
   parameters.at(0).get_to(character);
   parameters.at(1).get_to(route);
 }

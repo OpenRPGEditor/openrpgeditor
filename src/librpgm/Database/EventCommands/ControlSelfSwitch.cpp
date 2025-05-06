@@ -1,7 +1,7 @@
 #include "Database/EventCommands/ControlSelfSwitch.hpp"
 
 ControlSelfSwitchCommand::ControlSelfSwitchCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+: IEventCommand(indent) {
   parameters.at(0).get_to(selfSw);
   parameters.at(1).get_to(turnOff);
 }

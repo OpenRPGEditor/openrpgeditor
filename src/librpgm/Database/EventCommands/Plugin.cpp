@@ -1,7 +1,7 @@
 #include "Database/EventCommands/Plugin.hpp"
 
 PluginCommandMV::PluginCommandMV(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+: IEventCommand(indent) {
   parameters.at(0).get_to(command);
 }
 

@@ -3,7 +3,7 @@
 #include "Database/Database.hpp"
 
 TintScreenCommand::TintScreenCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+: IEventCommand(indent) {
   auto colorValues = parameters.at(0);
   colorValues[0].get_to(color.r);
   colorValues[1].get_to(color.g);

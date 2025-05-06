@@ -2,7 +2,7 @@
 #include "Database/Database.hpp"
 
 ShowBattleAnimationCommand::ShowBattleAnimationCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+: IEventCommand(indent) {
   parameters.at(0).get_to(enemy);
   parameters.at(1).get_to(animation);
   parameters.at(2).get_to(targetAllEnemies);

@@ -3,7 +3,7 @@
 #include "Database/Database.hpp"
 
 ChangeParallaxCommand::ChangeParallaxCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+: IEventCommand(indent) {
   parameters.at(0).get_to(image);
   parameters.at(1).get_to(loopHorizontally);
   parameters.at(2).get_to(loopVertically);

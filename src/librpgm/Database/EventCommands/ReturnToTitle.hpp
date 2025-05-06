@@ -4,8 +4,8 @@
 
 struct ReturnToTitleCommand final : IEventCommand {
   ReturnToTitleCommand() = default;
-  explicit ReturnToTitleCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-  : IEventCommand(indent, parameters) {}
+  explicit ReturnToTitleCommand(const std::optional<int>& indent)
+  : IEventCommand(indent) {}
   ~ReturnToTitleCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Return_To_Title_Screen; }
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;

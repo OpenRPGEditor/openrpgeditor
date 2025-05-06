@@ -13,7 +13,26 @@ public:
   static constexpr std::string_view colon = "\uff1a";
 
   IEventCommand() = default;
-  explicit IEventCommand(const std::optional<int>& _indent, [[maybe_unused]] const nlohmann::ordered_json& parameters);
+  explicit IEventCommand(const std::optional<int>& _indent);
+
+  IEventCommand(const IEventCommand& other)
+  : IModifiable(other)
+  , m_indent(other.m_indent) {}
+  IEventCommand& operator=(const IEventCommand& other) {
+    IModifiable::operator=(other);
+    m_indent = other.m_indent;
+    return *this;
+  }
+  IEventCommand(IEventCommand&& other) noexcept
+  : IModifiable(std::move(other))
+  , m_indent(std::move(other.m_indent)) {}
+
+  IEventCommand& operator=(IEventCommand&& other) noexcept {
+    IModifiable::operator=(std::move(other));
+    m_indent = std::move(other.m_indent);
+    return *this;
+  }
+
   ~IEventCommand() override = default;
   [[nodiscard]] virtual EventCode code() const = 0;
   virtual void serializeParameters(nlohmann::ordered_json& out) const {}

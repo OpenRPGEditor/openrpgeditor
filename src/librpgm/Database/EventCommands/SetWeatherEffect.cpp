@@ -3,7 +3,7 @@
 #include "Database/Database.hpp"
 
 SetWeatherEffectCommand::SetWeatherEffectCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+: IEventCommand(indent) {
   std::string eff;
   parameters.at(0).get_to(eff);
   effect = magic_enum::enum_cast<WeatherEffect>(eff, magic_enum::case_insensitive).value();

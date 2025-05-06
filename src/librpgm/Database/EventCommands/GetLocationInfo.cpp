@@ -2,7 +2,7 @@
 #include "Database/Database.hpp"
 
 GetLocationInfoCommand::GetLocationInfoCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+: IEventCommand(indent) {
   parameters.at(0).get_to(variable);
   parameters.at(1).get_to(type);
   parameters.at(2).get_to(source);

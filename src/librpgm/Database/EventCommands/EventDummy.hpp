@@ -4,8 +4,8 @@
 
 struct EventDummy : IEventCommand {
   EventDummy() = default;
-  explicit EventDummy(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters)
-  : IEventCommand(_indent, parameters) {}
+  explicit EventDummy(const std::optional<int>& _indent)
+  : IEventCommand(_indent) {}
   ~EventDummy() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Event_Dummy; }
   [[nodiscard]] std::string stringRep(const Database& db, const bool colored = true) const override { return indentText(indent()) + symbol(code()); }

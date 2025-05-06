@@ -3,7 +3,7 @@
 #include "Database/Database.hpp"
 
 FlashScreenCommand::FlashScreenCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(indent, parameters) {
+: IEventCommand(indent) {
   auto colorValue = parameters.at(0);
 
   colorValue[0].get_to(color.r);

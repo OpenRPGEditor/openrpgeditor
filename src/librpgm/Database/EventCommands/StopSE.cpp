@@ -1,5 +1,1 @@
-//
-// Created by antidote on 6/28/24.
-//
-
-#include "StopSE.hpp"
+#include "Database/EventCommands/StopSE.hpp"

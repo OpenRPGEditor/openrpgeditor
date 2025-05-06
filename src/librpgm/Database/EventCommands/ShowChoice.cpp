@@ -1,7 +1,7 @@
 #include "ShowChoice.hpp"
 
 ShowChoiceCommand::ShowChoiceCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(_indent, parameters) {
+: IEventCommand(_indent) {
   parameters.at(0).get_to(choices);
   parameters.at(1).get_to(cancelType);
   if (parameters.size() > 2) {
@@ -52,7 +52,7 @@ std::string ShowChoiceCommand::stringRep(const Database& db, const bool colored)
 }
 
 WhenSelectedCommand::WhenSelectedCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters)
-: IEventCommand(_indent, parameters) {
+: IEventCommand(_indent) {
   parameters.at(0).get_to(param1);
   parameters.at(1).get_to(choice);
 }

@@ -71,13 +71,12 @@ public:
   }
 
   [[nodiscard]] int id() const { return m_id; }
-  void setId(const int id) { m_id = id; }
-
+  void setId(const int id);
   [[nodiscard]] bool expanded() const { return m_expanded; }
   void setExpanded(const bool expanded) { m_expanded = expanded; }
 
   [[nodiscard]] const std::string& name() const { return m_name; }
-  void setName(const std::string& name) { m_name = name; }
+  void setName(const std::string& name);
 
   [[nodiscard]] int order() const { return m_order; }
   void setOrder(const int order) { m_order = order; }
@@ -114,6 +113,8 @@ public:
     }
   }
 
+  rpgmutils::signal<void(MapInfo*, Map*)>& mapInfoModified();
+
 private:
   MapInfo(const MapInfo& other, int)
   : IModifiable(other)
@@ -138,6 +139,9 @@ private:
 
   std::vector<MapInfo*> m_children;
   std::unique_ptr<Map> m_map;
+
+  std::optional<rpgmutils::signal<void(MapInfo*, Map*)>> m_mapInfoModified;
+  void onMapModified(IModifiable* map);
 };
 void to_json(nlohmann::ordered_json& json, const MapInfo& mapinfo);
 void from_json(const nlohmann::ordered_json& json, MapInfo& mapinfo);

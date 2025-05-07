@@ -28,7 +28,7 @@ MapEvent::MapEvent(Event* event)
   setupPageSettings();
   m_x = m_realX = m_event->x();
   m_y = m_realY = m_event->y();
-  m_event->onModified().connect<&MapEvent::onModified>(this);
+  m_event->modified().connect<&MapEvent::onModified>(this);
 }
 
 double oscillate(const double minValue, const double maxValue, const double period, const double currentTime) {

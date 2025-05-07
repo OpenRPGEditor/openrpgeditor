@@ -10,6 +10,8 @@ Map* MapInfo::map(const bool loadSync) {
           std::make_shared<MapSerializer>(path, id()),
           [this, &loadSync](const std::shared_ptr<ISerializable>& serializer) {
             m_map = std::make_unique<Map>(std::dynamic_pointer_cast<MapSerializer>(serializer)->data().clone());
+            m_map->modified().connect<&MapInfo::onMapModified>(this);
+            m_map->connectAllEvents();
             // RPGM_INFO("Map{:03} loaded{}", id(), loadSync ? " (SYNC)" : "");
           },
           loadSync);
@@ -19,7 +21,33 @@ Map* MapInfo::map(const bool loadSync) {
   return m_map.get();
 }
 
+void MapInfo::setId(const int id) {
+  m_id = id;
+  emit_signal(mapInfoModified(), this, m_map.get());
+}
+
+void MapInfo::setName(const std::string& name) {
+  m_name = name;
+  emit_signal(mapInfoModified(), this, m_map.get());
+}
+
 [[nodiscard]] const Map* MapInfo::map(const bool loadSync) const { return const_cast<MapInfo*>(this)->map(loadSync); }
+
+rpgmutils::signal<void(MapInfo*, Map*)>& MapInfo::mapInfoModified() {
+  if (!m_mapInfoModified) {
+    m_mapInfoModified.emplace();
+  }
+  return *m_mapInfoModified;
+}
+
+void MapInfo::onMapModified(IModifiable* map) {
+  const auto mapPtr = dynamic_cast<Map*>(map);
+  if (!mapPtr) {
+    RPGM_ERROR("Unable to cast modifiable to map in MapInfo, how??");
+    return;
+  }
+  emit_signal(mapInfoModified(), this, mapPtr);
+}
 
 void to_json(nlohmann::ordered_json& json, const MapInfo& mapinfo) {
   json = {
@@ -27,6 +55,7 @@ void to_json(nlohmann::ordered_json& json, const MapInfo& mapinfo) {
       {"scrollX", mapinfo.m_scrollX}, {"scrollY", mapinfo.m_scrollY},
   };
 }
+
 void from_json(const nlohmann::ordered_json& json, MapInfo& mapinfo) {
   mapinfo.m_id = json.value("id", mapinfo.m_id);
   mapinfo.m_expanded = json.value("expanded", mapinfo.m_expanded);

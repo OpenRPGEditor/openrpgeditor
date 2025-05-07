@@ -101,6 +101,9 @@ Event& Event::operator=(Event&& other) noexcept {
 
 int Event::id() const { return m_id; }
 void Event::setId(const int id) {
+  if (m_id == id) {
+    return;
+  }
   MODIFIABLE_SET_OLD_VALUE(id);
   m_id = id;
   if (!signalsDisabled()) {
@@ -111,6 +114,9 @@ void Event::setId(const int id) {
 
 const std::string& Event::name() const { return m_name; }
 void Event::setName(const std::string& name) {
+  if (m_name == name) {
+    return;
+  }
   MODIFIABLE_SET_OLD_VALUE(name);
   m_name = name;
   if (!signalsDisabled()) {
@@ -121,6 +127,9 @@ void Event::setName(const std::string& name) {
 
 const std::string& Event::note() const { return m_note; }
 void Event::setNote(const std::string& note) {
+  if (m_note == note) {
+    return;
+  }
   MODIFIABLE_SET_OLD_VALUE(note);
   m_note = note;
   if (!signalsDisabled()) {
@@ -143,6 +152,9 @@ void Event::setPages(const std::vector<EventPage>& pages) {
 void Event::addPage(const EventPage& page) {
   MODIFIABLE_SET_OLD_VALUE(pages);
   m_pages.emplace_back(page);
+  m_pages.back().modified().connect<&Event::onPageModified>(this);
+  m_pages.back().connectAllSignals();
+
   if (!signalsDisabled()) {
     emit_signal(pageAdded(), this, &m_pages.back(), m_pages.size() - 1);
   }
@@ -172,6 +184,9 @@ void Event::removePage(const int index) {
 
 int Event::x() const { return m_x; }
 void Event::setX(const int x) {
+  if (m_x == x) {
+    return;
+  }
   MODIFIABLE_SET_OLD_VALUE(x);
   m_x = x;
   if (!signalsDisabled()) {
@@ -182,6 +197,9 @@ void Event::setX(const int x) {
 
 int Event::y() const { return m_y; }
 void Event::setY(const int y) {
+  if (m_y == y) {
+    return;
+  }
   MODIFIABLE_SET_OLD_VALUE(y);
   m_y = y;
   if (!signalsDisabled()) {
@@ -190,7 +208,7 @@ void Event::setY(const int y) {
   setModified();
 }
 
-void Event::swapPages(int a, int b) {
+void Event::swapPages(const int a, const int b) {
   if (a < 0 || a >= m_pages.size()) {
     return;
   }
@@ -331,6 +349,17 @@ rpgmutils::signal<void(Event*, int)>& Event::yModified() {
   }
   return *m_yModified;
 }
+
+void Event::connectAllSignals() {
+  for (auto& page : m_pages) {
+    // Disconnect just in case
+    page.modified().disconnect<&Event::onPageModified>(this);
+    page.modified().connect<&Event::onPageModified>(this);
+    m_pages.back().connectAllSignals();
+  }
+}
+
+void Event::onPageModified(IModifiable* p) { emit_signal(modified(), p); }
 
 void to_json(nlohmann::ordered_json& to, const Event& event) {
   to["id"] = event.m_id;

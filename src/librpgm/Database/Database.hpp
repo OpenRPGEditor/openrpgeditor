@@ -477,7 +477,6 @@ struct Database {
 
 private:
   bool m_isMZ;
-  void connectAllSignals();
   void onAnyModifiableModified(IModifiable*) { emit_signal(databaseModified()); }
   void onAnyNonModifiableModified() { emit_signal(databaseModified()); }
 

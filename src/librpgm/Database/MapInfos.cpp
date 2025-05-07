@@ -109,3 +109,16 @@ void MapInfos::mapLoadCallback(const std::shared_ptr<ISerializable>& data) {
     }
   }
 }
+
+void MapInfos::connectSignals() {
+  for (auto& mapinfo : m_mapinfos) {
+    if (!mapinfo) {
+      continue;
+    }
+    // Disconnect just in case we already have a connection
+    mapinfo->mapInfoModified().disconnect<&MapInfos::onMapInfoModified>(this);
+    mapinfo->mapInfoModified().connect<&MapInfos::onMapInfoModified>(this);
+  }
+}
+
+void MapInfos::onMapInfoModified(MapInfo* mapInfo, Map* map) { emit_signal(modified(), this); }

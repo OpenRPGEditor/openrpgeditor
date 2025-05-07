@@ -286,6 +286,8 @@ public:
     ;
   }
 
+  void connectAllSignals();
+
 private:
   EventPage(const EventPage& other, int)
   : IModifiable(other) {
@@ -355,6 +357,8 @@ private:
   std::optional<rpgmutils::signal<void(EventPage*, const std::string&)>> m_nameModified;
 
   mutable std::shared_ptr<IPageEditor> m_editor;
+
+  void onValueModified(IModifiable* v);
 };
 void to_json(nlohmann::ordered_json& json, const EventPage& eventPage);
 void from_json(const nlohmann::ordered_json& json, EventPage& eventPage);

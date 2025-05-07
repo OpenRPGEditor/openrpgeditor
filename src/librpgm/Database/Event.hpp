@@ -124,6 +124,8 @@ public:
   std::map<int, bool> isConditionalReference(int targetId, SearchType type) const override;
   void setEventReference(int pageId, int targetId, int newId, SearchType type);
 
+  void connectAllSignals();
+
 private:
   Event(const Event& other, int)
   : IModifiable(other)
@@ -162,6 +164,8 @@ private:
   std::optional<rpgmutils::signal<void(Event*, int)>> m_yModified;
   mutable std::shared_ptr<IEventEditor> m_editor;
   mutable std::shared_ptr<IEventRenderer> m_renderer;
+
+  void onPageModified(IModifiable* p);
 };
 
 void to_json(nlohmann::ordered_json& to, const Event& event);

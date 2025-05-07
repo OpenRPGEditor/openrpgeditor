@@ -25,8 +25,8 @@ std::tuple<bool, bool> EventEditor::draw() {
   if (!m_event || !m_open) {
     return {!m_open, m_confirmed};
   }
-  std::string title = std::format("Event {} - ID {}##event_editor_{}_{}", m_event->name(), m_event->id(), Database::instance()->mapInfos.currentMap()->id(), m_event->id());
-  ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Once);
+  std::string title = std::format("{}###event_editor_{}_{}", trFormat("Event {} - ID {}", m_event->name(), m_event->id()), Database::instance()->mapInfos.currentMap()->id(), m_event->id());
+  ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(1024, 1024), ImGuiCond_Once);
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Once, {0.5f, 0.5f});
   if (ImGui::Begin(title.c_str(), &m_open)) {
     ImGui::BeginGroup();
@@ -170,6 +170,8 @@ std::tuple<bool, bool> EventEditor::draw() {
           return itA->second < itB->second;
         });
         m_event->renderer()->setPage(m_selectedPage);
+        // We need to let the event know it's been modified since we did it ourselves.
+        m_event->setModified();
       }
 
       if (ImGui::TabItemButton(" + ", ImGuiTabItemFlags_Trailing | ImGuiTabItemFlags_NoReorder)) {
@@ -202,9 +204,8 @@ std::tuple<bool, bool> EventEditor::draw() {
   return {!m_open, m_confirmed};
 }
 void EventEditor::drawLocalization() {
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{750, 650}, ImGuiCond_Appearing);
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(750, 650), ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal("Localization", NULL, ImGuiWindowFlags_NoScrollbar)) {
     ImGui::TextUnformatted(m_maxLocaleLines == 0 ? trNOOP("No text found") : std::format("{} / {} keys required", m_localeLinesRequired, m_maxLocaleLines).c_str());
     if (ImGui::InputTextMultiline("##orpg_eventeditor_localization_multiline", &m_localizationInput,

@@ -58,9 +58,12 @@ public:
     }
   }
 
+  void connectSignals();
+
 private:
   std::vector<std::optional<MapInfo>> m_mapinfos;
   MapInfo* m_currentMap = nullptr;
 
   void mapLoadCallback(const std::shared_ptr<ISerializable>& data);
+  void onMapInfoModified(MapInfo* mapInfo, Map* map);
 };

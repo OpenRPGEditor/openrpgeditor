@@ -34,8 +34,8 @@ public:
       setMoveRoute(&page()->moveRoute());
       m_moveType = page()->moveType();
       m_trigger = page()->trigger();
-      page()->image().onModified().connect<&MapEvent::onModified>(this);
-      page()->onModified().connect<&MapEvent::onModified>(this);
+      page()->image().modified().connect<&MapEvent::onModified>(this);
+      page()->modified().connect<&MapEvent::onModified>(this);
     }
   }
   void setPage(const int idx) override {
@@ -44,8 +44,8 @@ public:
     }
 
     if (page()) {
-      page()->image().onModified().disconnect<&MapEvent::onModified>(this);
-      page()->onModified().disconnect<&MapEvent::onModified>(this);
+      page()->image().modified().disconnect<&MapEvent::onModified>(this);
+      page()->modified().disconnect<&MapEvent::onModified>(this);
     }
     m_page = idx;
     setupPageSettings();

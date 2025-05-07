@@ -70,10 +70,10 @@ public:
   IModifiable& operator=(IModifiable&& other) noexcept;
   virtual ~IModifiable();
   [[nodiscard]] virtual bool isModified() const { return m_modified; }
-  void setModified(const bool modified = true) {
-    m_modified = modified;
+  void setModified(const bool _modified = true) {
+    m_modified = _modified;
     if (m_modified && !signalsDisabled()) {
-      emit_signal(onModified(), this);
+      emit_signal(modified(), this);
     }
   }
 
@@ -97,13 +97,13 @@ public:
   virtual bool hasStringReference(const std::string& text, SearchType type) { return false; }
   virtual bool setStringReference(const std::string& replaceStr, const std::string& text, SearchType type) { return false; }
 
-  rpgmutils::signal<void(IModifiable*)>& onModified();
+  rpgmutils::signal<void(IModifiable*)>& modified();
 
 protected:
   bool m_hasChanges{false};
 
 private:
-  std::optional<rpgmutils::signal<void(IModifiable*)>> m_onModified;
+  std::optional<rpgmutils::signal<void(IModifiable*)>> m_modifiedSignal;
   bool m_modified{false};
   bool m_signalsDisabled{false};
 };

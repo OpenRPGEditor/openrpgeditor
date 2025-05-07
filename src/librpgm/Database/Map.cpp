@@ -52,7 +52,7 @@ void Map::Encounter::setTroopId(int id) {
   MODIFIABLE_SET_OLD_VALUE(troopId);
   m_troopId = id;
   if (!signalsDisabled()) {
-  emit_signal(troopIdModified(), this, id);
+    emit_signal(troopIdModified(), this, id);
   }
   setModified();
 }
@@ -65,7 +65,7 @@ void Map::Encounter::setWeight(int weight) {
   MODIFIABLE_SET_OLD_VALUE(weight);
   m_weight = weight;
   if (!signalsDisabled()) {
-  emit_signal(weightModified(), this, weight);
+    emit_signal(weightModified(), this, weight);
   }
   setModified();
 }
@@ -78,7 +78,7 @@ void Map::Encounter::setRegionSet(const std::vector<int>& regionSet) {
   MODIFIABLE_SET_OLD_VALUE(regionSet);
   m_regionSet = regionSet;
   if (!signalsDisabled()) {
-  emit_signal(regionSetModified(), this, regionSet);
+    emit_signal(regionSetModified(), this, regionSet);
   }
   setModified();
 }
@@ -92,7 +92,7 @@ void Map::Encounter::setRegion(int idx, int region) {
   MODIFIABLE_SET_OLD_VALUE(regionSet);
   m_regionSet[idx] = region;
   if (!signalsDisabled()) {
-  emit_signal(regionModified(), this, idx, region);
+    emit_signal(regionModified(), this, idx, region);
   }
   setModified();
 }
@@ -345,7 +345,7 @@ void Map::setAutoplayBgm(const bool value) {
   MODIFIABLE_SET_OLD_VALUE(autoplayBgm);
   m_autoplayBgm = value;
   if (!signalsDisabled()) {
-  emit_signal(autoplayBgmModified(), this, value);
+    emit_signal(autoplayBgmModified(), this, value);
   }
   setModified();
 }
@@ -358,7 +358,7 @@ void Map::setAutoplayBgs(const bool value) {
   MODIFIABLE_SET_OLD_VALUE(autoplayBgs);
   m_autoplayBgs = value;
   if (!signalsDisabled()) {
-  emit_signal(autoplayBgsModified(), this, value);
+    emit_signal(autoplayBgsModified(), this, value);
   }
   setModified();
 }
@@ -371,7 +371,7 @@ void Map::setBattleback1Name(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(battleback1Name);
   m_battleback1Name = value;
   if (!signalsDisabled()) {
-  emit_signal(battleback1NameModified(), this, value);
+    emit_signal(battleback1NameModified(), this, value);
   }
   setModified();
 }
@@ -384,7 +384,7 @@ void Map::setBattleback2Name(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(battleback2Name);
   m_battleback2Name = value;
   if (!signalsDisabled()) {
-  emit_signal(battleback2NameModified(), this, value);
+    emit_signal(battleback2NameModified(), this, value);
   }
   setModified();
 }
@@ -397,7 +397,7 @@ void Map::setBgm(const Audio& bgm) {
   MODIFIABLE_SET_OLD_VALUE(bgm);
   m_bgm = bgm;
   if (!signalsDisabled()) {
-  emit_signal(bgmModified(), this, bgm);
+    emit_signal(bgmModified(), this, bgm);
   }
   setModified();
 }
@@ -410,7 +410,7 @@ void Map::setBgs(const Audio& bgs) {
   MODIFIABLE_SET_OLD_VALUE(bgs);
   m_bgs = bgs;
   if (!signalsDisabled()) {
-  emit_signal(bgsModified(), this, bgs);
+    emit_signal(bgsModified(), this, bgs);
   }
   setModified();
 }
@@ -423,7 +423,7 @@ void Map::setDisableDashing(bool value) {
   MODIFIABLE_SET_OLD_VALUE(disableDashing);
   m_disableDashing = value;
   if (!signalsDisabled()) {
-  emit_signal(disableDashingModified(), this, value);
+    emit_signal(disableDashingModified(), this, value);
   }
   setModified();
 }
@@ -436,7 +436,7 @@ void Map::setDisplayName(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(displayName);
   m_displayName = value;
   if (!signalsDisabled()) {
-  emit_signal(displayNameModified(), this, value);
+    emit_signal(displayNameModified(), this, value);
   }
   setModified();
 }
@@ -449,7 +449,7 @@ void Map::setEncounterList(const std::vector<Encounter>& value) {
   MODIFIABLE_SET_OLD_VALUE(encounterList);
   m_encounterList = value;
   if (!signalsDisabled()) {
-  emit_signal(encounterListModified(), this, value);
+    emit_signal(encounterListModified(), this, value);
   }
   setModified();
 }
@@ -467,7 +467,7 @@ void Map::setEncounter(int id, const Encounter& encounter) {
   MODIFIABLE_SET_OLD_VALUE(encounterList);
   m_encounterList[id] = encounter;
   if (!signalsDisabled()) {
-  emit_signal(encounterListModified(), this, m_encounterList);
+    emit_signal(encounterListModified(), this, m_encounterList);
   }
   setModified();
 }
@@ -480,7 +480,7 @@ void Map::setEncounterStep(int value) {
   MODIFIABLE_SET_OLD_VALUE(encounterStep);
   m_encounterStep = value;
   if (!signalsDisabled()) {
-  emit_signal(encounterStepModified(), this, value);
+    emit_signal(encounterStepModified(), this, value);
   }
   setModified();
 }
@@ -493,7 +493,7 @@ void Map::setNote(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(note);
   m_note = value;
   if (!signalsDisabled()) {
-  emit_signal(noteModified(), this, m_note);
+    emit_signal(noteModified(), this, m_note);
   }
   setModified();
 }
@@ -506,7 +506,7 @@ void Map::setParallaxLoopX(bool value) {
   MODIFIABLE_SET_OLD_VALUE(parallaxLoopX);
   m_parallaxLoopX = value;
   if (!signalsDisabled()) {
-  emit_signal(parallaxLoopXModified(), this, value);
+    emit_signal(parallaxLoopXModified(), this, value);
   }
   setModified();
 }
@@ -519,7 +519,7 @@ void Map::setParallaxLoopY(bool value) {
   MODIFIABLE_SET_OLD_VALUE(parallaxLoopY);
   m_parallaxLoopY = value;
   if (!signalsDisabled()) {
-  emit_signal(parallaxLoopYModified(), this, value);
+    emit_signal(parallaxLoopYModified(), this, value);
   }
   setModified();
 }
@@ -532,7 +532,7 @@ void Map::setParallaxName(const std::string& value) {
   MODIFIABLE_SET_OLD_VALUE(parallaxName);
   m_parallaxName = value;
   if (!signalsDisabled()) {
-  emit_signal(parallaxNameModified(), this, value);
+    emit_signal(parallaxNameModified(), this, value);
   }
   setModified();
 }
@@ -545,7 +545,7 @@ void Map::setParallaxShow(bool value) {
   MODIFIABLE_SET_OLD_VALUE(parallaxShow);
   m_parallaxShow = value;
   if (!signalsDisabled()) {
-  emit_signal(parallaxShowModified(), this, value);
+    emit_signal(parallaxShowModified(), this, value);
   }
   setModified();
 }
@@ -558,7 +558,7 @@ void Map::setParallaxSx(int value) {
   MODIFIABLE_SET_OLD_VALUE(parallaxSx);
   m_parallaxSx = value;
   if (!signalsDisabled()) {
-  emit_signal(parallaxSxModified(), this, value);
+    emit_signal(parallaxSxModified(), this, value);
   }
   setModified();
 }
@@ -571,7 +571,7 @@ void Map::setParallaxSy(int value) {
   MODIFIABLE_SET_OLD_VALUE(parallaxSy);
   m_parallaxSy = value;
   if (!signalsDisabled()) {
-  emit_signal(parallaxSyModified(), this, value);
+    emit_signal(parallaxSyModified(), this, value);
   }
   setModified();
 }
@@ -584,7 +584,7 @@ void Map::setScrollType(ScrollType value) {
   MODIFIABLE_SET_OLD_VALUE(scrollType);
   m_scrollType = value;
   if (!signalsDisabled()) {
-  emit_signal(scrollTypeModified(), this, value);
+    emit_signal(scrollTypeModified(), this, value);
   }
   setModified();
 }
@@ -597,7 +597,7 @@ void Map::setSpecifyBattleback(bool value) {
   MODIFIABLE_SET_OLD_VALUE(specifyBattleback);
   m_specifyBattleback = value;
   if (!signalsDisabled()) {
-  emit_signal(specifyBattlebackModified(), this, value);
+    emit_signal(specifyBattlebackModified(), this, value);
   }
   setModified();
 }
@@ -610,7 +610,7 @@ void Map::setTilesetId(int value) {
   MODIFIABLE_SET_OLD_VALUE(tilesetId);
   m_tilesetId = value;
   if (!signalsDisabled()) {
-  emit_signal(tilesetIdModified(), this, value);
+    emit_signal(tilesetIdModified(), this, value);
   }
   setModified();
 }
@@ -623,7 +623,7 @@ void Map::setWidth(int value) {
   MODIFIABLE_SET_OLD_VALUE(width);
   m_width = value;
   if (!signalsDisabled()) {
-  emit_signal(widthModified(), this, value);
+    emit_signal(widthModified(), this, value);
   }
   setModified();
 }
@@ -636,7 +636,7 @@ void Map::setHeight(int value) {
   MODIFIABLE_SET_OLD_VALUE(height);
   m_height = value;
   if (!signalsDisabled()) {
-  emit_signal(heightModified(), this, value);
+    emit_signal(heightModified(), this, value);
   }
   setModified();
 }
@@ -649,7 +649,7 @@ void Map::setData(const std::vector<std::optional<int>>& value) {
   MODIFIABLE_SET_OLD_VALUE(data);
   m_data = value;
   if (!signalsDisabled()) {
-  emit_signal(dataModified(), this, value);
+    emit_signal(dataModified(), this, value);
   }
   setModified();
 }
@@ -669,7 +669,7 @@ void Map::setTileAt(const int id, const int x, const int y, const int layer) {
   }
   tile = id;
   if (!signalsDisabled()) {
-  emit_signal(dataModified(), this, m_data);
+    emit_signal(dataModified(), this, m_data);
   }
   setModified();
 }
@@ -682,7 +682,7 @@ void Map::setEvents(const std::vector<std::optional<Event>>& value) {
   MODIFIABLE_SET_OLD_VALUE(events);
   m_events = value;
   if (!signalsDisabled()) {
-  emit_signal(eventsModified(), this, value);
+    emit_signal(eventsModified(), this, value);
   }
   setModified();
 }
@@ -1072,6 +1072,9 @@ Event* Map::createNewEvent() {
   }
   ret->setName(std::format("EV{:03}", ret->id()));
   ret->addPage({});
+  ret->modified().connect<&Map::onEventModified>(this);
+  ret->connectAllSignals();
+
   m_isDirty = true;
   return ret;
 }
@@ -1127,6 +1130,21 @@ int Map::findOrMakeFreeId() const {
 
   return m_events.size();
 }
+
+void Map::connectAllEvents() {
+  for (auto& ev : m_events) {
+    if (!ev || ev->id() == 0) {
+      continue;
+    }
+
+    // Disconnect just in case
+    ev->modified().disconnect<&Map::onEventModified>(this);
+    ev->modified().connect<&Map::onEventModified>(this);
+    ev->connectAllSignals();
+  }
+}
+
+void Map::onEventModified(IModifiable*) { emit_signal(modified(), this); }
 
 void to_json(nlohmann::ordered_json& json, const Map& map) {
   json = {

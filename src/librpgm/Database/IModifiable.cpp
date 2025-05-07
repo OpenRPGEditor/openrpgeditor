@@ -28,9 +28,9 @@ IModifiable& IModifiable::operator=(IModifiable&& other) noexcept {
 
 IModifiable::~IModifiable() {}
 
-rpgmutils::signal<void(IModifiable*)>& IModifiable::onModified() {
-  if (!m_onModified) {
-    m_onModified.emplace();
+rpgmutils::signal<void(IModifiable*)>& IModifiable::modified() {
+  if (!m_modifiedSignal) {
+    m_modifiedSignal.emplace();
   }
-  return *m_onModified;
+  return *m_modifiedSignal;
 }

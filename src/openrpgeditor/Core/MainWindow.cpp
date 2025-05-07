@@ -135,6 +135,7 @@ bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
   m_database->templatesLoaded().connect<&MainWindow::onTemplatesLoaded>(this);
   m_database->docsLoaded().connect<&MainWindow::onDocsLoaded>(this);
   m_database->localesLoaded().connect<&MainWindow::onLocalesLoaded>(this);
+  m_database->databaseModified().connect<&MainWindow::onDatabaseModified>(this);
   m_database->load();
 
   /* Restore the user's stored session */
@@ -527,15 +528,6 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
     m_mapEditor.draw(closeRequested);
 
     if (m_databaseEditor && !closeRequested) {
-      // ORE_CHECK_EXPERIMENTAL_BEGIN();
-      // // TODO(phil): This is slow on large projects, we need to wire up all of the isModified signals and report in a granular fashion rather than checking the whole project every frame
-      // if (m_database && m_database->isModified()) {
-      //   const auto title = std::format("{} - [{}*]", kApplicationTitle, m_database->system.gameTitle());
-      //   if (title != App::APP->getWindow()->getTitle()) {
-      //     App::APP->getWindow()->setTitle(title);
-      //   }
-      // }
-      // ORE_CHECK_EXPERIMENTAL_END();
       m_databaseEditor->draw();
     }
 
@@ -1149,7 +1141,18 @@ void MainWindow::onDatabaseReady() {
   /* Disconnect the signal so we don't get spammed */
   m_databaseEditor->onReady.disconnect<&MainWindow::onDatabaseReady>(this);
 
-  App::APP->getWindow()->setTitle(std::format("{} - [{}]", kApplicationTitle, Database::instance()->system.gameTitle()));
+  const auto gameTitle =
+      Database::instance()->system.gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().replace_extension().generic_string() : m_database->system.gameTitle();
+  App::APP->getWindow()->setTitle(std::format("{} - [{}]", kApplicationTitle, gameTitle));
+}
+
+void MainWindow::onDatabaseModified() {
+  const auto gameTitle =
+      Database::instance()->system.gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().replace_extension().generic_string() : m_database->system.gameTitle();
+  const auto title = std::format("{} - [{}*]", kApplicationTitle, gameTitle);
+  if (title != App::APP->getWindow()->getTitle()) {
+    App::APP->getWindow()->setTitle(title);
+  }
 }
 
 void MainWindow::addToolbarButton(const std::string& id, ToolbarCategory category, asIScriptFunction* func) { m_toolbarButtons[category].emplace_back(id, category, func); }

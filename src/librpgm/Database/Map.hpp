@@ -15,7 +15,7 @@ class EventImage;
  * @class Map
  * A discrete map unit, contains all information for a given area such as events, tiles, and encounters
  */
-class Map final : IModifiable {
+class Map final : public IModifiable {
   friend class MapSerializer;
 
 public:
@@ -233,6 +233,8 @@ public:
 
   Map clone() const { return Map(*this, 1); }
 
+  void connectAllEvents();
+
 private:
   Map(const Map& other, int i)
   : IModifiable(other) {
@@ -343,6 +345,8 @@ private:
 
   bool m_isDirty = false;
   bool m_isValid{false};
+
+  void onEventModified(IModifiable* event);
 };
 
 void to_json(nlohmann::ordered_json& json, const Map& map);

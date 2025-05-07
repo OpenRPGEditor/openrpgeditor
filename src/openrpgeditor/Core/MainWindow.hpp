@@ -164,6 +164,7 @@ private:
   void onDocsLoaded();
   void onLocalesLoaded();
   void onDatabaseReady();
+  void onDatabaseModified();
 
   void drawMenu();
   void drawToolbar();

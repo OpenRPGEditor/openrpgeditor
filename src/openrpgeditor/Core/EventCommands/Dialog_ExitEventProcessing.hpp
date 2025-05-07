@@ -6,18 +6,17 @@ struct Dialog_ExitEventProcessing : IEventDialogController {
   Dialog_ExitEventProcessing() = delete;
   explicit Dialog_ExitEventProcessing(const std::string& name, const std::shared_ptr<ExitEventProcessingCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ExitEventProcessingCommand());
+      m_command.reset(new ExitEventProcessingCommand());
     }
     m_open = false;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
   bool m_confirmed{true};
-  std::shared_ptr<ExitEventProcessingCommand> command;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<ExitEventProcessingCommand> m_command;
 };

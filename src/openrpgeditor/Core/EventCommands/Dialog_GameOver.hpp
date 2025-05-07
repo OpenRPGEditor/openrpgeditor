@@ -6,17 +6,16 @@ struct Dialog_GameOver : IEventDialogController {
   Dialog_GameOver() = delete;
   explicit Dialog_GameOver(const std::string& name, const std::shared_ptr<GameOverCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new GameOverCommand());
+      m_command.reset(new GameOverCommand());
     }
     m_open = false;
   }
   std::tuple<bool, bool> draw() override;
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
   bool m_confirmed{true};
-  std::shared_ptr<GameOverCommand> command;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<GameOverCommand> m_command;
 };

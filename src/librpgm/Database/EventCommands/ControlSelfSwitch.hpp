@@ -10,6 +10,6 @@ struct ControlSelfSwitchCommand final : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ControlSelfSwitchCommand>(*this); }
 
-  std::string selfSw; // A, B, C, D
-  ValueControl turnOff;
+  std::string selfSw = "A"; // A, B, C, D
+  ValueControl turnOff{};
 };

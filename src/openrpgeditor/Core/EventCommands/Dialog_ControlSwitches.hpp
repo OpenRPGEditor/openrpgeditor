@@ -31,5 +31,4 @@ private:
 
   std::shared_ptr<ControlSwitches> command;
   std::optional<VariableSwitchPicker> picker;
-  std::tuple<bool, bool> result;
 };

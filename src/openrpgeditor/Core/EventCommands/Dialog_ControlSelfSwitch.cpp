@@ -1,46 +1,75 @@
 #include "Core/EventCommands/Dialog_ControlSelfSwitch.hpp"
 
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+#include "Core/Log.hpp"
+
 #include "Database/Database.hpp"
+
+#include "Core/CommonUI/GroupBox.hpp"
 #include "imgui.h"
-#include <tuple>
+
+#include <imgui_internal.h>
 
 std::tuple<bool, bool> Dialog_ControlSelfSwitch::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###ControlSelfSwitch");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{168, 140}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-
-    ImGui::SeparatorText("Self Switch");
-
-    ImGui::SetNextItemWidth(148);
-    if (ImGui::BeginCombo("##selfswitch_list", m_selfSw.c_str())) {
-      for (const auto self : {"A", "B", "C", "D"}) {
-        if (ImGui::Selectable(self, self == m_selfSw)) {
-          m_selfSw = self;
+  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 20) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetTextLineHeightWithSpacing() * 10) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
+  if (ImGui::BeginPopupModal(std::format("{}###ControlSelfSwitch", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    ImGui::BeginVertical("##control_self_switch_main_layout", ImGui::GetContentRegionAvail(), 0.f);
+    {
+      GroupBox selfSwitchGroup(trNOOP("Self Switch"), "##control_self_switch_self_switch_group", {-1, 0});
+      if (selfSwitchGroup.begin()) {
+        ImGui::SetNextItemWidth(-1);
+        if (ImGui::BeginCombo("###control_self_switch_self_switch_list", m_selfSw.c_str())) {
+          for (const auto self : {"A", "B", "C", "D"}) {
+            const bool selected = self == m_selfSw;
+            if (ImGui::Selectable(self, self == m_selfSw)) {
+              m_selfSw = self;
+            }
+            if (selected) {
+              ImGui::SetItemDefaultFocus();
+            }
+          }
+          ImGui::EndCombo();
         }
       }
-      ImGui::EndCombo();
-    }
-    ImGui::SeparatorText("Operation");
-    ImGui::RadioButton("ON", &m_turnOff, 0);
-    ImGui::SameLine();
-    ImGui::RadioButton("OFF", &m_turnOff, 1);
+      selfSwitchGroup.end();
 
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->selfSw = m_selfSw;
-      command->turnOff = static_cast<ValueControl>(m_turnOff);
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
+      GroupBox operationGroup(trNOOP("Operation"), "##control_self_switch_self_operation_group", {-1, 0});
+      if (operationGroup.begin()) {
+        ImGui::BeginHorizontal("##control_self_switch_self_operation_group_layout", ImGui::GetContentRegionAvail(), 0.f);
+        {
+          ImGui::Spring(0.5f);
+          ImGui::RadioButton(trNOOP("ON"), &m_turnOff, 0);
+          ImGui::Spring(0.33f);
+          ImGui::RadioButton(trNOOP("OFF"), &m_turnOff, 1);
+          ImGui::Spring(0.5f);
+        }
+        ImGui::EndHorizontal();
+      }
+      operationGroup.end();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##control_self_switch_button_layout", {-1, -1}, 0.f);
+      {
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##control_self_switch_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+          m_command->selfSw = m_selfSw;
+          m_command->turnOff = static_cast<ValueControl>(m_turnOff);
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
+      }
+      ImGui::EndHorizontal();
     }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 

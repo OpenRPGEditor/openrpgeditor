@@ -7,23 +7,22 @@ struct Dialog_ControlSelfSwitch : IEventDialogController {
   Dialog_ControlSelfSwitch() = delete;
   explicit Dialog_ControlSelfSwitch(const std::string& name, const std::shared_ptr<ControlSelfSwitchCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ControlSelfSwitchCommand());
+      m_command.reset(new ControlSelfSwitchCommand());
     }
-    command.reset(new ControlSelfSwitchCommand());
-    m_selfSw = command->selfSw;
-    m_turnOff = static_cast<int>(command->turnOff);
+    m_command.reset(new ControlSelfSwitchCommand());
+    m_selfSw = m_command->selfSw;
+    m_turnOff = static_cast<int>(m_command->turnOff);
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
   std::string m_selfSw; // A, B, C, D
   int m_turnOff;
 
   bool m_confirmed{false};
-  std::shared_ptr<ControlSelfSwitchCommand> command;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<ControlSelfSwitchCommand> m_command;
 };

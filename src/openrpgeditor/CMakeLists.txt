@@ -324,8 +324,8 @@ add_library(
         Core/EventCommands/Dialog_ShowText.hpp
         Core/EventCommands/Dialog_StopSE.cpp
         Core/EventCommands/Dialog_StopSE.hpp
-        Core/EventCommands/Dialog_TimerControl.cpp
-        Core/EventCommands/Dialog_TimerControl.hpp
+        Core/EventCommands/Dialog_ControlTimer.cpp
+        Core/EventCommands/Dialog_ControlTimer.hpp
         Core/EventCommands/Dialog_TintPicture.cpp
         Core/EventCommands/Dialog_TintPicture.hpp
         Core/EventCommands/Dialog_TintScreen.cpp

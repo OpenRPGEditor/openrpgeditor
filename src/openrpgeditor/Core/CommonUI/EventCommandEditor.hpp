@@ -48,6 +48,7 @@
 #include "Core/EventCommands/Dialog_ConditionalBranch.hpp"
 #include "Core/EventCommands/Dialog_ControlSelfSwitch.hpp"
 #include "Core/EventCommands/Dialog_ControlSwitches.hpp"
+#include "Core/EventCommands/Dialog_ControlTimer.hpp"
 #include "Core/EventCommands/Dialog_ControlVariables.hpp"
 #include "Core/EventCommands/Dialog_EnemyAppear.hpp"
 #include "Core/EventCommands/Dialog_EnemyRecoverAll.hpp"
@@ -98,7 +99,6 @@
 #include "Core/EventCommands/Dialog_ShowScrollingText.hpp"
 #include "Core/EventCommands/Dialog_ShowText.hpp"
 #include "Core/EventCommands/Dialog_StopSE.hpp"
-#include "Core/EventCommands/Dialog_TimerControl.hpp"
 #include "Core/EventCommands/Dialog_TintPicture.hpp"
 #include "Core/EventCommands/Dialog_TintScreen.hpp"
 #include "Core/EventCommands/Dialog_TransferPlayer.hpp"
@@ -263,7 +263,7 @@ private:
     case EventCode::Control_Self_Switch:
       return std::make_shared<Dialog_ControlSelfSwitch>(DecodeEnumName(code), std::dynamic_pointer_cast<ControlSelfSwitchCommand>(cmd));
     case EventCode::Control_Timer:
-      return std::make_shared<Dialog_TimerControl>(DecodeEnumName(code), std::dynamic_pointer_cast<ControlTimerCommand>(cmd));
+      return std::make_shared<Dialog_ControlTimer>(DecodeEnumName(code), std::dynamic_pointer_cast<ControlTimerCommand>(cmd));
     case EventCode::Change_Gold:
       return std::make_shared<Dialog_ChangeGold>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeGoldCommand>(cmd));
     case EventCode::Change_Items:

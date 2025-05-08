@@ -1072,6 +1072,7 @@ void EventPage::clear() {
 }
 
 void EventPage::connectAllSignals() {
+  return;
   m_conditions.modified().disconnect<&EventPage::onValueModified>(this);
   m_conditions.modified().connect<&EventPage::onValueModified>(this);
   m_image.modified().disconnect<&EventPage::onValueModified>(this);

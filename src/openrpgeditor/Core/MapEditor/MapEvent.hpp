@@ -8,6 +8,10 @@ struct MapEditor;
 class MapEvent final : public IEventRenderer {
 public:
   MapEvent() = delete;
+  MapEvent(const MapEvent&) = delete;
+  MapEvent(MapEvent&&) = delete;
+  MapEvent& operator=(const MapEvent&) = delete;
+  MapEvent& operator=(MapEvent&&) = delete;
   void draw(float mapScale, bool isHovered, bool selected, bool halfAlpha, bool updateOnly) override;
   void setupPageSettings() {
     if (page()) {
@@ -286,4 +290,6 @@ private:
 
   float m_lastFrameTime = 0.f;
   void onModified(IModifiable*) { setupPageSettings(); }
+
+  bool m_signalConnected{false};
 };

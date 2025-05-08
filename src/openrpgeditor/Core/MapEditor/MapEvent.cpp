@@ -28,7 +28,6 @@ MapEvent::MapEvent(Event* event)
   setupPageSettings();
   m_x = m_realX = m_event->x();
   m_y = m_realY = m_event->y();
-  m_event->modified().connect<&MapEvent::onModified>(this);
 }
 
 double oscillate(const double minValue, const double maxValue, const double period, const double currentTime) {
@@ -41,6 +40,11 @@ void MapEvent::draw(const float mapScale, const bool isHovered, const bool selec
   if (!m_mapEditor) {
     return;
   }
+  if (!m_signalConnected) {
+    m_event->modified().connect<&MapEvent::onModified>(this);
+    m_signalConnected = true;
+  }
+
   if ((!page()->walkAnime() && page()->moveType() != MoveType::Custom) || m_mapEditor->prisonMode()) {
     m_x = m_realX = m_event->x();
     m_y = m_realY = m_event->y();

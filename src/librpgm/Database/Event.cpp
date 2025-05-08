@@ -152,8 +152,8 @@ void Event::setPages(const std::vector<EventPage>& pages) {
 void Event::addPage(const EventPage& page) {
   MODIFIABLE_SET_OLD_VALUE(pages);
   m_pages.emplace_back(page);
-  m_pages.back().modified().connect<&Event::onPageModified>(this);
-  m_pages.back().connectAllSignals();
+  // m_pages.back().modified().connect<&Event::onPageModified>(this);
+  // m_pages.back().connectAllSignals();
 
   if (!signalsDisabled()) {
     emit_signal(pageAdded(), this, &m_pages.back(), m_pages.size() - 1);
@@ -351,11 +351,12 @@ rpgmutils::signal<void(Event*, int)>& Event::yModified() {
 }
 
 void Event::connectAllSignals() {
+  return;
   for (auto& page : m_pages) {
     // Disconnect just in case
     page.modified().disconnect<&Event::onPageModified>(this);
     page.modified().connect<&Event::onPageModified>(this);
-    m_pages.back().connectAllSignals();
+    page.connectAllSignals();
   }
 }
 

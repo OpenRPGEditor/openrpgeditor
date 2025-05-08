@@ -50,15 +50,16 @@ void GroupBox::end() {
   assert(m_beginCalled && "GroupBox::begin not called");
 
   ImRect clip;
+
   if (m_visible) {
     ImGui::EndDisabled();
     clip = ImGui::GetCurrentWindow()->ClipRect;
   }
-  ImGui::EndChild();
 
   if (m_visible && !m_wasHeaderDrawn && !m_title.empty()) {
     const auto labelId = ImGui::GetID(std::format("{}_checkbox", m_id).c_str());
     const auto oldPos = ImGui::GetCursorScreenPos();
+    const auto oldX = ImGui::GetCursorPosX();
     ImGui::SetCursorScreenPos({m_groupStart.x + ImGui::GetStyle().FramePadding.x + ImGui::GetStyle().FrameBorderSize, m_groupStart.y});
     clip.Min.y -= ImGui::GetFrameHeightWithSpacing() / 2;
     ImGui::PushClipRect(clip.Min, clip.Max, false);
@@ -76,7 +77,9 @@ void GroupBox::end() {
     }
     ImGui::PopClipRect();
     ImGui::SetCursorScreenPos(oldPos);
+    ImGui::SetCursorPosX(oldX);
     m_wasHeaderDrawn = true;
   }
+  ImGui::EndChild();
   m_beginCalled = false;
 }

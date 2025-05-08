@@ -5,14 +5,20 @@ ReferenceSearch::ReferenceSearch() {}
 void ReferenceSearch::findAllReferences(int targetId, SearchType type) {
   m_results.clear();
   for (auto& mapInfo : Database::instance()->mapInfos.mapInfos()) {
+    if (!mapInfo || mapInfo->id() == 0) {
+      continue;
+    }
+
     if (mapInfo->map()) {
       for (auto& event : mapInfo->map()->events()) {
-        if (event) {
-          for (auto& ev : event.value().isConditionalReference(targetId, type)) {
-            if (ev.second) {
-              m_results.emplace_back(mapInfo->id(), event.value().id(), ev.first);
-            }
+        if (!event) {
+          continue;
+        }
+        for (auto& [ref, cond] : event->isConditionalReference(targetId, type)) {
+          if (!ref) {
+            continue;
           }
+          m_results.emplace_back(mapInfo->id(), event->id(), ref);
         }
       }
     }
@@ -43,6 +49,9 @@ void ReferenceSearch::findAllReferences(const std::string& text, SearchType type
 void ReferenceSearch::searchAllListsByTarget(int targetId, SearchType type) {
   m_list.clear();
   for (auto& mapInfo : Database::instance()->mapInfos.mapInfos()) {
+    if (!mapInfo || mapInfo->id() == 0) {
+      continue;
+    }
     if (mapInfo->map()) {
       for (auto& event : mapInfo->map()->events()) {
         if (event) {
@@ -65,6 +74,9 @@ void ReferenceSearch::searchAllListsByTarget(int targetId, SearchType type) {
 void ReferenceSearch::searchAllListsByText(const std::string& text, SearchType type) {
   m_list.clear();
   for (auto& mapInfo : Database::instance()->mapInfos.mapInfos()) {
+    if (!mapInfo || mapInfo->id() == 0) {
+      continue;
+    }
     if (mapInfo->map()) {
       for (auto& event : mapInfo->map()->events()) {
         if (event) {

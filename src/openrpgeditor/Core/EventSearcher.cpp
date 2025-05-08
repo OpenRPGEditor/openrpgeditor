@@ -2,8 +2,8 @@
 #include "Core/MainWindow.hpp"
 #include "Core/Settings.hpp"
 #include "Database/EventCommands/MovementRoute/Script.hpp"
-#include "ImGuiExt/ImGuiUtils.hpp"
 #include "imgui.h"
+#include "ImGuiExt/ImGuiUtils.hpp"
 template <>
 inline int ObjectPicker<std::optional<CommonEvent>>::getId(const std::optional<CommonEvent>& value) {
   return value ? value->id() : 0;
@@ -230,7 +230,8 @@ void EventSearcher::draw() {
 
       totalEntries = 0;
       int resultBegin = TOTAL_ENTRIES * m_currentPage;
-      for (auto& results : reference.getEvents()) {
+      for (int i = 0; auto& results : reference.getEvents()) {
+        ImGui::PushID(std::format("##event_condition_result_{}", i).c_str());
         if (totalEntries < TOTAL_ENTRIES && resultBegin == 0) {
           const auto& event = results.getEvent();
           drawTable("Event Condition", results.getMapId(), event.id(), event.name(), event.x(), event.y(), results.getPage() + 1, results.getStep() + 1);
@@ -239,9 +240,12 @@ void EventSearcher::draw() {
         if (resultBegin > 0) {
           resultBegin--;
         }
+        ImGui::PopID();
+        ++i;
       }
-      for (auto& results : reference.getCommands()) {
+      for (int i = 0; auto& results : reference.getCommands()) {
         if (totalEntries < TOTAL_ENTRIES && resultBegin == 0) {
+          ImGui::PushID(std::format("##command_list_result_{}", i).c_str());
           const auto& event = results.getEvent();
 
           if (type == SearchType::Script) {
@@ -259,13 +263,16 @@ void EventSearcher::draw() {
               totalEntries++;
             }
           }
+          ImGui::PopID();
+          ++i;
         }
         if (resultBegin > 0) {
           resultBegin--;
         }
       }
-      for (auto& commonEv : reference.getCommons()) {
+      for (int i = 0; auto& commonEv : reference.getCommons()) {
         if (totalEntries < TOTAL_ENTRIES && resultBegin == 0) {
+          ImGui::PushID(std::format("##command_list_result_{}", i).c_str());
           if (type == SearchType::Script) {
             drawStringCommand(commonEv, type, tableIndex, commonEv.getStep() + 1);
             totalEntries++;
@@ -274,6 +281,8 @@ void EventSearcher::draw() {
             totalEntries++;
           }
           tableIndex++;
+          ImGui::PopID();
+          ++i;
         }
         if (resultBegin > 0) {
           resultBegin--;

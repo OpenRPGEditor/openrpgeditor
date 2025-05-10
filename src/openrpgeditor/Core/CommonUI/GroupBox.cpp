@@ -15,6 +15,8 @@ GroupBox::GroupBox(const std::string_view title, const std::string_view id, cons
 
 bool GroupBox::begin() {
   m_beginCalled = true;
+  ImGui::BeginChild(std::format("{}_outer", m_id).c_str(), m_size, ImGuiChildFlags_NavFlattened | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
+                    ImGuiWindowFlags_NoBackground);
   const auto id = ImGui::GetID(m_id.c_str());
   auto groupPos = ImGui::GetCursorScreenPos();
   m_groupStart = groupPos;
@@ -54,6 +56,7 @@ void GroupBox::end() {
   if (m_visible) {
     ImGui::EndDisabled();
     clip = ImGui::GetCurrentWindow()->ClipRect;
+    ImGui::EndChild();
   }
 
   if (m_visible && !m_wasHeaderDrawn && !m_title.empty()) {

@@ -9,9 +9,10 @@
 #include <Database/MapInfos.hpp>
 #include <imgui.h>
 #include <imgui_internal.h>
-EventTilePicker::EventTilePicker(const int mapId)
+EventTilePicker::EventTilePicker(const int mapId, const bool showTree)
 : IDialogController(trNOOP("Select Location"))
-, m_currentMap(mapId) {
+, m_currentMap(mapId)
+, m_showTree(showTree) {
 
   for (const auto& mapInfo : Database::instance()->mapInfos.mapInfos()) {
     if (!mapInfo) {
@@ -37,10 +38,12 @@ std::tuple<bool, bool> EventTilePicker::draw() {
     {
       ImGui::BeginHorizontal("##event_tile_picker_main_layout", {-1, 0});
       {
-        ImGui::BeginChild("##event_tile_picker_map_tree", {ImGui::GetContentRegionAvail().x * .30f, ImGui::GetContentRegionAvail().y - ImGui::GetFrameHeightWithSpacing()},
-                          ImGuiChildFlags_ResizeX | ImGuiChildFlags_Borders, ImGuiWindowFlags_NoBackground);
-        { drawMapTreeRecursive(Database::instance()->mapInfos.root()); }
-        ImGui::EndChild();
+        if (m_showTree) {
+          ImGui::BeginChild("##event_tile_picker_map_tree", {ImGui::GetContentRegionAvail().x * .30f, ImGui::GetContentRegionAvail().y - ImGui::GetFrameHeightWithSpacing()},
+                            ImGuiChildFlags_ResizeX | ImGuiChildFlags_Borders, ImGuiWindowFlags_NoBackground);
+          { drawMapTreeRecursive(Database::instance()->mapInfos.root()); }
+          ImGui::EndChild();
+        }
         ImGui::BeginChild("##event_tile_picker_map_canvas", {-1, ImGui::GetContentRegionAvail().y - ImGui::GetFrameHeightWithSpacing()}, ImGuiChildFlags_Borders,
                           ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
         {
@@ -70,7 +73,7 @@ std::tuple<bool, bool> EventTilePicker::draw() {
                 GroupBox x("X", "##event_tile_picker_position_y", {0, 0});
                 if (x.begin()) {
                   if (ImGui::SpinInt("##event_tile_picker_x", &m_selectedTile.xr(), 1, 1)) {
-                    m_selectedTile.xr() = std::clamp(m_selectedTile.xr(), 0, map->map()->width());
+                    m_selectedTile.xr() = std::clamp(m_selectedTile.xr(), 0, map ? map->map()->width() : 0);
                   }
                 }
                 x.end();
@@ -81,7 +84,7 @@ std::tuple<bool, bool> EventTilePicker::draw() {
                 GroupBox y("Y", "##event_tile_picker_position_y", {0, 0});
                 if (y.begin()) {
                   if (ImGui::SpinInt("##event_tile_picker_y", &m_selectedTile.yr(), 1, 1)) {
-                    m_selectedTile.yr() = std::clamp(m_selectedTile.yr(), 0, map->map()->height());
+                    m_selectedTile.yr() = std::clamp(m_selectedTile.yr(), 0, map ? map->map()->height() : 0);
                   }
                 }
                 y.end();

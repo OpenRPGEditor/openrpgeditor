@@ -85,8 +85,6 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
         ImGui::EndDisabled();
         ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
         GroupBox directionGroup(trNOOP("Direction"), "##transfer_player_direction", {ImGui::GetContentRegionAvail().x * 0.5f, 0});
-        // Store the current Y position so we can restore it later to work around an ImGui bug
-        const auto cursorY = ImGui::GetCursorPosY();
         if (directionGroup.begin()) {
           ImGui::PushItemWidth(-1);
           if (ImGui::BeginCombo("##direction_selection", DecodeEnumName(magic_enum::enum_cast<Direction>(m_direction).value_or(Direction::Retain)).c_str())) {
@@ -104,8 +102,6 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
         }
         directionGroup.end();
         ImGui::SameLine();
-        // Set the cursor Y position so the fade group is in the correct spot
-        ImGui::SetCursorPosY(cursorY);
         GroupBox fadeGroup(trNOOP("Fade"), "##transfer_player_fade", {ImGui::GetContentRegionAvail().x, 0});
         if (fadeGroup.begin()) {
           ImGui::PushItemWidth(-1);
@@ -189,9 +185,10 @@ void Dialog_TransferPlayer::drawPickers() {
   if (m_eventTilePicker) {
     if (const auto [closed, confirmed] = m_eventTilePicker->draw(); closed) {
       if (confirmed) {
-        // TODO: Get mapId and event X/Y
+        m_mapId = m_eventTilePicker->selectedMap();
+        m_x = m_eventTilePicker->selectedTile().x();
+        m_y = m_eventTilePicker->selectedTile().y();
       }
-
       m_eventTilePicker.reset();
     }
   }

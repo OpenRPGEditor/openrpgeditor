@@ -7,7 +7,7 @@
 class MapInfo;
 class EventTilePicker final : public IDialogController {
 public:
-  explicit EventTilePicker(int mapId);
+  explicit EventTilePicker(int mapId, bool showTree = true);
 
   std::tuple<bool, bool> draw() override;
 
@@ -16,10 +16,10 @@ public:
 
 private:
   void drawMapTreeRecursive(MapInfo& info);
-  void drawMapTree();
 
   int m_currentMap;
   Point m_selectedTile;
+  bool m_showTree{true};
 
   std::map<int, bool> m_expandedState; // mapId -> expanded
 };

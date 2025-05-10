@@ -1,136 +1,174 @@
 #include "Core/EventCommands/Dialog_SetVehicleLocation.hpp"
 
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Database/Database.hpp"
-#include "imgui.h"
+#include <imgui.h>
+#include <imgui_internal.h>
+
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_SetVehicleLocation::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###SetVehicleLocation");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{380, 242}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 40) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 16) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-    if (picker) {
-      auto [closed, confirmed] = picker->draw();
-      if (closed) {
-        if (confirmed) {
-          switch (m_var_selection) {
-          case 0:
-            m_mapId_var = picker->selection();
-            break;
-          case 1:
-            m_x_var = picker->selection();
-            break;
-          case 2:
-            m_y_var = picker->selection();
-            break;
-          default:
-            break;
-          }
-        }
-        picker.reset();
-      }
-    }
-    ImGui::BeginGroup();
+  if (ImGui::BeginPopupModal(std::format("{}###SetVehicleLocation", m_name).c_str(), &m_open, ImGuiWindowFlags_NoResize)) {
+    drawPickers();
+    ImGui::BeginVertical("##set_vehicle_location_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
-      ImGui::Text("Vehicle:");
-      ImGui::PushItemWidth(180);
-      if (ImGui::BeginCombo("##vehicle_location_selection", DecodeEnumName(magic_enum::enum_value<VehicleType>(m_vehicle)).c_str())) {
-        for (auto& vehicle : magic_enum::enum_values<VehicleType>()) {
-          bool is_selected = m_vehicle == magic_enum::enum_index(vehicle).value();
-          if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(vehicle)).c_str(), is_selected)) {
-            m_vehicle = magic_enum::enum_index(vehicle).value();
-            if (is_selected)
+      GroupBox vehicleGroupBox(trNOOP("Vehicle"), "##set_vehicle_location_vehicle_group", {-1, 0});
+      if (vehicleGroupBox.begin()) {
+        ImGui::PushItemWidth(-1);
+        if (ImGui::BeginCombo("##set_vehicle_location_vehicle_selection", DecodeEnumName(magic_enum::enum_cast<VehicleType>(m_vehicle).value_or(VehicleType::Boat)).c_str())) {
+          for (auto& vehicle : magic_enum::enum_values<VehicleType>()) {
+            bool selected = m_vehicle == static_cast<int>(vehicle);
+            if (ImGui::Selectable(DecodeEnumName(vehicle).c_str(), selected)) {
+              m_vehicle = static_cast<int>(vehicle);
+            }
+            if (selected) {
               ImGui::SetItemDefaultFocus();
+            }
           }
+          ImGui::EndCombo();
         }
-        ImGui::EndCombo();
       }
-      ImGui::EndGroup();
-    }
+      vehicleGroupBox.end();
+      GroupBox locationGroupBox(trNOOP("Location"), "##set_vehicle_location_location_group", {-1, 0});
+      if (locationGroupBox.begin()) {
+        ImGui::RadioButton(trNOOP("Direct Designation"), &m_mode, 0);
+        ImGui::Dummy({ImGui::GetFrameHeight(), ImGui::GetFrameHeight()});
+        ImGui::SameLine();
+        ImGui::BeginDisabled(m_mode != 0);
+        {
+          ImGui::PushID("#transfer_coord_selection");
+          if (ImGui::EllipsesButton(m_mode == 0 ? std::format("{} ({},{})", Database::instance()->mapNameOrId(Database::instance()->mapInfos.currentMap()->id()), m_x, m_y).c_str() : "",
+                                    ImVec2{-1, 0})) {
+            m_eventTilePicker.emplace(Database::instance()->mapInfos.currentMap()->id());
+            m_eventTilePicker->setOpen(true);
+          }
+          ImGui::PopID();
+        }
+        ImGui::EndDisabled();
+        ImGui::RadioButton(trNOOP("Designation with variables"), &m_mode, 1);
+        ImGui::BeginDisabled(m_mode != 1);
+        {
+          ImGui::BeginHorizontal("##set_vehicle_location_location_variables", {-1, 0}, 0);
+          {
+            ImGui::Dummy({ImGui::GetFrameHeight(), ImGui::GetFrameHeight()});
+            ImGui::BeginVertical("##set_vehicle_location_location_variables_inner", {-1, 0}, 0);
+            {
 
-    ImGui::SeparatorText("Location");
-    ImGui::RadioButton("Direct designation", &m_mode, 0);
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
-    ImGui::BeginDisabled(m_mode != 0);
-    ImGui::PushID("#transfer_coord_selection");
-    if (ImGui::Button(m_mode == 0 ? Database::instance()->mapNameOrId(m_mapId).c_str() : "", ImVec2{300, 0})) {
-      // TODO: Coordinate selector
-    }
-    ImGui::PopID();
-    ImGui::EndDisabled();
+              GroupBox idPosGroup("ID", "##set_vehicle_location_location_variables_id", {-1, 0});
+              if (idPosGroup.begin()) {
+                ImGui::PushID("##set_vehicle_location_variables_id");
+                if (ImGui::EllipsesButton(m_mode == 1 ? Database::instance()->variableNameAndId(m_mapIdVar).c_str() : "", {-1, 0})) {
+                  m_variableSelection = 0;
+                  m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_mapIdVar);
+                  m_variablePicker->setOpen(true);
+                }
+                ImGui::PopID();
+              }
+              idPosGroup.end();
 
-    ImGui::RadioButton("Designation with variables", &m_mode, 1);
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 30);
-    ImGui::BeginGroup();
-    {
-      ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 2.f);
-      ImGui::Text("ID:");
-      ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 6.f);
-      ImGui::Text("X:");
-      ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 6.f);
-      ImGui::Text("Y:");
-    }
-    ImGui::EndGroup();
-    ImGui::SameLine();
-    ImGui::BeginGroup();
-    {
-      ImGui::BeginDisabled(m_mode != 1);
-      ImGui::PushID("##transfer_var_mapId");
-      if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_mapId_var).c_str() : "", ImVec2{(280), 0})) {
-        m_var_selection = 0;
-        picker.emplace("Variables", Database::instance()->system.variables(), m_mapId_var);
-        picker->setOpen(true);
+              GroupBox xPosGroup("X", "##set_vehicle_location_location_variables_x", {-1, 0});
+              if (xPosGroup.begin()) {
+                ImGui::PushID("##set_vehicle_location_variables_x");
+                if (ImGui::EllipsesButton(m_mode == 1 ? Database::instance()->variableNameAndId(m_xVar).c_str() : "", {-1, 0})) {
+                  m_variableSelection = 1;
+                  m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_xVar);
+                  m_variablePicker->setOpen(true);
+                }
+                ImGui::PopID();
+              }
+              xPosGroup.end();
+              GroupBox yPosGroup("Y", "##set_vehicle_location_location_variables_y", {-1, 0});
+              if (yPosGroup.begin()) {
+                ImGui::PushID("##set_vehicle_location_variables_y");
+                if (ImGui::EllipsesButton(m_mode == 1 ? Database::instance()->variableNameAndId(m_yVar).c_str() : "", {-1, 0})) {
+                  m_variableSelection = 2;
+                  m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_yVar);
+                  m_variablePicker->setOpen(true);
+                }
+                ImGui::PopID();
+              }
+              yPosGroup.end();
+            }
+            ImGui::EndVertical();
+          }
+          ImGui::EndHorizontal();
+        }
+        ImGui::EndDisabled();
       }
-      ImGui::PopID();
+      locationGroupBox.end();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##set_vehicle_location_button_layout", {-1, 0}, 0);
+      {
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##set_vehicle_location_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+          m_command->vehicle = static_cast<VehicleType>(m_vehicle);
+          m_command->mode = static_cast<TransferMode>(m_mode);
+          if (m_command->mode == TransferMode::Variable_Designation) {
+            m_command->mapId = m_mapIdVar;
+            m_command->x = m_xVar;
+            m_command->y = m_yVar;
+          } else {
+            m_command->mapId = m_mapId;
+            m_command->x = m_x;
+            m_command->y = m_y;
+          }
 
-      ImGui::PushID("##transfer_var_x");
-      if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_x_var).c_str() : "", ImVec2{(280), 0})) {
-        m_var_selection = 1;
-        picker.emplace("Variables", Database::instance()->system.variables(), m_x_var);
-        picker->setOpen(true);
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
       }
-      ImGui::PopID();
-
-      ImGui::PushID("##transfer_var_y");
-      if (ImGui::Button(m_mode == 1 ? Database::instance()->variableNameAndId(m_y_var).c_str() : "", ImVec2{(280), 0})) {
-        m_var_selection = 2;
-        picker.emplace("Variables", Database::instance()->system.variables(), m_y_var);
-        picker->setOpen(true);
-      }
-      ImGui::PopID();
-      ImGui::EndDisabled();
+      ImGui::EndHorizontal();
     }
-    ImGui::EndGroup();
-
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->vehicle = static_cast<VehicleType>(m_vehicle);
-      command->mode = static_cast<TransferMode>(m_mode);
-      if (command->mode == TransferMode::Variable_Designation) {
-        command->mapId = m_mapId_var;
-        command->x = m_x_var;
-        command->y = m_y_var;
-      } else {
-        command->mapId = m_mapId;
-        command->x = m_x;
-        command->y = m_y;
-      }
-
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);
+}
+
+void Dialog_SetVehicleLocation::drawPickers() {
+  if (m_variablePicker) {
+    if (const auto [closed, confirmed] = m_variablePicker->draw(); closed) {
+      if (confirmed) {
+        switch (m_variableSelection) {
+        case 0:
+          m_mapIdVar = m_variablePicker->selection();
+          break;
+        case 1:
+          m_xVar = m_variablePicker->selection();
+          break;
+        case 2:
+          m_yVar = m_variablePicker->selection();
+          break;
+        default:
+          break;
+        }
+      }
+      m_variablePicker.reset();
+    }
+  }
+  if (m_eventTilePicker) {
+    if (const auto [closed, confirmed] = m_eventTilePicker->draw(); closed) {
+      if (confirmed) {
+        m_x = m_eventTilePicker->selectedTile().x();
+        m_y = m_eventTilePicker->selectedTile().y();
+      }
+
+      m_eventTilePicker.reset();
+    }
+  }
 }

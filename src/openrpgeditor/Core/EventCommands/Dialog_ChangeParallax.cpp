@@ -12,9 +12,8 @@ std::tuple<bool, bool> Dialog_ChangeParallax::draw() {
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{400, 400}, ImGuiCond_Appearing);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-
-    if (const auto [closed, confirmed] = m_imagePicker->draw(); closed) {
-      if (closed) {
+    if (m_imagePicker) {
+      if (const auto [closed, confirmed] = m_imagePicker->draw(); closed) {
         if (confirmed) {
           m_imagePicker->accept();
           m_image = m_imagePicker->selectedImage();

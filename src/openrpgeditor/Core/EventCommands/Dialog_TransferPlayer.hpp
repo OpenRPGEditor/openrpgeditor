@@ -1,4 +1,5 @@
 #pragma once
+#include "Core/CommonUI/EventTilePicker.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/TransferPlayer.hpp"
@@ -46,4 +47,5 @@ private:
   bool m_confirmed{false};
   std::shared_ptr<TransferPlayerCommand> m_command;
   std::optional<VariableSwitchPicker> m_variablePicker;
+  std::optional<EventTilePicker> m_eventTilePicker;
 };

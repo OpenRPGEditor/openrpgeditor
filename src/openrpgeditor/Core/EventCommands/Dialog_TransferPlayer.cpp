@@ -30,7 +30,8 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
         {
           ImGui::PushID("#transfer_coord_selection");
           if (ImGui::EllipsesButton(m_mode == 0 ? std::format("{} ({},{})", Database::instance()->mapNameOrId(m_mapId), m_x, m_y).c_str() : "", ImVec2{-1, 0})) {
-            // TODO: Coordinate selector
+            m_eventTilePicker.emplace(Database::instance()->mapInfos.currentMap()->id());
+            m_eventTilePicker->setOpen(true);
           }
           ImGui::PopID();
         }
@@ -182,6 +183,16 @@ void Dialog_TransferPlayer::drawPickers() {
         }
       }
       m_variablePicker.reset();
+    }
+  }
+
+  if (m_eventTilePicker) {
+    if (const auto [closed, confirmed] = m_eventTilePicker->draw(); closed) {
+      if (confirmed) {
+        // TODO: Get mapId and event X/Y
+      }
+
+      m_eventTilePicker.reset();
     }
   }
 }

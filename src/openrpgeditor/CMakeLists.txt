@@ -520,6 +520,8 @@ add_library(
         Core/CommonUI/GroupBox.hpp
         Core/CommonUI/AudioEditor.cpp
         Core/CommonUI/AudioEditor.hpp
+        Core/CommonUI/EventTilePicker.cpp
+        Core/CommonUI/EventTilePicker.hpp
 )
 
 target_include_directories(

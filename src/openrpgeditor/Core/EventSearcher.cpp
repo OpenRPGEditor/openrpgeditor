@@ -406,13 +406,21 @@ void EventSearcher::drawStringCommand(const SearchResult& result, SearchType typ
       const auto cmd = std::dynamic_pointer_cast<const ScriptCommand>(result.getCommand());
       if (cmd->moreScript.size() > 0) {
         for (auto& more : cmd->moreScript) {
-          drawTable(more->script, tableIndex, step, result.getEvent().id(), result.getMapId(), result.getPage(), result.getTile());
+          if (result.resultSource() == SearchResult::ResultSource::Event) {
+            drawTable(more->script, tableIndex, step, result.getEventId(), result.getMapId(), result.getPage(), result.getTile());
+          } else if (result.resultSource() == SearchResult::ResultSource::CommonEvent) {
+            drawTable(more->script, tableIndex, step, result.getCommonEventId(), -1, -1, -1);
+          }
         }
       }
       drawTable(cmd->script, tableIndex, step, result.getEvent().id(), result.getMapId(), result.getPage(), result.getTile());
     } else if (result.getCommand()->code() == EventCode::Script_del_Movement) {
       auto cmd = std::dynamic_pointer_cast<const MovementScriptCommand>(result.getCommand());
-      drawTable(cmd->script, tableIndex, step, result.getEvent().id(), result.getMapId(), result.getPage(), result.getTile());
+      if (result.resultSource() == SearchResult::ResultSource::Event) {
+        drawTable(cmd->script, tableIndex, step, result.getEventId(), result.getMapId(), result.getPage(), result.getTile());
+      } else if (result.resultSource() == SearchResult::ResultSource::CommonEvent) {
+        drawTable(cmd->script, tableIndex, step, result.getCommonEventId(), -1, -1, -1);
+      }
     }
   }
 }

@@ -1017,7 +1017,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     }
 
     newCmd.stateOp = static_cast<PartyMemberOperation>(parameters.at(2));
-    newCmd.state = lcf.mapper()->stateValue(parameters.at(4));
+    newCmd.state = lcf.mapper()->stateValue(parameters.at(3));
 
     return std::make_shared<ChangeStateCommand>(newCmd);
   }

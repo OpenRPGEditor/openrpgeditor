@@ -10,21 +10,20 @@
 
 std::tuple<bool, bool> Dialog_ChangeTileset::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###ChangeTileset");
   }
   const auto maxSize =
       ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 5) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ChangeTileset", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
-    if (tileset_picker) {
-      auto [closed, confirmed] = tileset_picker->draw();
-      if (closed) {
+    if (m_tilesetPicker) {
+      if (const auto [closed, confirmed] = m_tilesetPicker->draw(); closed) {
         if (confirmed) {
-          m_tileset = tileset_picker->selection();
+          m_tileset = m_tilesetPicker->selection();
         }
-        tileset_picker.reset();
+        m_tilesetPicker.reset();
       }
     }
 
@@ -36,9 +35,9 @@ std::tuple<bool, bool> Dialog_ChangeTileset::draw() {
         {
           ImGui::Spring(.5);
           ImGui::PushID("##tileset_selection");
-          if (ImGui::Button((std::format("{:04}", m_tileset) + Database::instance()->tilesetName(m_tileset)).c_str(), ImVec2{-1, 0})) {
-            tileset_picker = ObjectPicker<Tileset>("Tileset"sv, Database::instance()->tilesets.tilesets(), m_tileset);
-            tileset_picker->setOpen(true);
+          if (ImGui::EllipsesButton(Database::instance()->tilesetNameAndId(m_tileset).c_str(), ImVec2{-1, 0})) {
+            m_tilesetPicker = ObjectPicker(trNOOP("Tileset"), Database::instance()->tilesets.tilesets(), m_tileset);
+            m_tilesetPicker->setOpen(true);
           }
           ImGui::PopID();
           ImGui::Spring(.5);
@@ -53,7 +52,7 @@ std::tuple<bool, bool> Dialog_ChangeTileset::draw() {
         ImGui::Spring();
         if (const auto ret = ImGui::ButtonGroup("##change_tileset_dialog_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
           m_confirmed = true;
-          command->tileset = m_tileset;
+          m_command->tileset = m_tileset;
           ImGui::CloseCurrentPopup();
           setOpen(false);
         } else if (ret == 1) {

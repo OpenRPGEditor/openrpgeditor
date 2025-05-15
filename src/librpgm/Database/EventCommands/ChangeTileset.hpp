@@ -11,5 +11,5 @@ struct ChangeTilesetCommand final : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeTilesetCommand>(*this); }
 
-  int tileset;
+  int tileset{1};
 };

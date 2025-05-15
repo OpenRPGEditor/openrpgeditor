@@ -28,7 +28,11 @@ ImTextureID CheckeredCompositeTexture::get() {
 }
 
 void CheckeredCompositeTexture::setSize(const int finalWidth, const int finalHeight) {
-  m_finalSize = Point(finalWidth, finalHeight);
+  const auto tmp = Point(finalWidth, finalHeight);
+  if (tmp == m_finalSize) {
+    return;
+  }
+  m_finalSize = tmp;
   m_isDirty = true;
 }
 

@@ -140,7 +140,7 @@ std::tuple<bool, bool> FacePicker::draw() {
             }
           }
 
-          if (m_faceSheet) {
+          if (m_faceSheet && m_selectedSheet >= 0) {
             ImGui::Dummy({static_cast<float>(m_faceSheet->texture().width()), static_cast<float>(m_faceSheet->texture().height())});
             win->DrawList->AddImage(static_cast<ImTextureID>(m_checkerboardTexture), win->ContentRegionRect.Min + ImVec2{0.f, 0.f},
                                     win->ContentRegionRect.Min + (ImVec2{static_cast<float>(m_checkerboardTexture.width()), static_cast<float>(m_checkerboardTexture.height())}));

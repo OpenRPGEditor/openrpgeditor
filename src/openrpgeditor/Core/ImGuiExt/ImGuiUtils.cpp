@@ -311,7 +311,7 @@ void ActionTooltip(const char* action, const char* fmt, ...) {
   }
 }
 
-int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const bool isVertical) {
+int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const bool isVertical, const std::vector<std::string>& tooltips) {
   int ret = -1;
 
   if (isVertical) {
@@ -337,6 +337,9 @@ int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const b
   for (int i = 0; i < buttons.size(); i++) {
     if (ButtonEx(std::format("{}##{}_button_{}", buttons[i], id, i).c_str(), size, ImGuiButtonFlags_AlignTextBaseLine)) {
       ret = i;
+    }
+    if (i < tooltips.size()) {
+      SetItemTooltip("%s", tooltips[i].c_str());
     }
   }
   if (isVertical) {

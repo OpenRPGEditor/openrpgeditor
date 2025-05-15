@@ -73,6 +73,9 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
     flags |= ImGuiTabItemFlags_SetSelected;
     m_selectedDirty = false;
   }
+  if (m_page->isModified()) {
+    flags |= ImGuiTabItemFlags_UnsavedDocument;
+  }
   bool selected = ImGui::BeginTabItem(title.c_str(), p_open, flags);
   m_tabItem = ImGui::TabBarGetCurrentTab(ImGui::GetCurrentTabBar());
   m_layoutIndex = m_tabItem->IndexDuringLayout;

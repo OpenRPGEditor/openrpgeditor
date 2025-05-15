@@ -1,7 +1,9 @@
 #pragma once
 #include "Core/CommonUI/CharacterPicker.hpp"
+#include "Core/CommonUI/FacePicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Core/Graphics/CheckerboardTexture.hpp"
+#include "Core/Graphics/CheckeredCompositeTexture.hpp"
 #include "Core/Graphics/FaceSheet.hpp"
 #include "Core/Log.hpp"
 #include "Database/EventCommands/Plugin.hpp"
@@ -35,6 +37,7 @@ struct Dialog_ShowText : IEventDialogController {
   };
 
 private:
+  void drawPickers();
   std::string m_faceImage;
   int m_faceIndex;
   TextBackground m_background;
@@ -42,14 +45,14 @@ private:
   std::string m_textLine;
 
   bool m_batchEntry{false};
-  CheckerboardTexture m_buttonBack{80, 102, CellSizes::_64, 255, 200};
   CharacterPicker m_characterPicker{CharacterPicker::PickerMode::Character};
+  CheckeredCompositeTexture m_faceButtonTexture;
 
   std::optional<FaceSheet> m_faceSheet;
+  std::optional<FacePicker> m_facePicker;
   std::vector<std::shared_ptr<ShowTextCommand>> m_moreCommands;
   std::vector<std::shared_ptr<IEventCommand>> m_eventCommands;
 
   bool m_confirmed{false};
   std::shared_ptr<ShowTextCommand> m_command;
-  std::tuple<bool, bool> m_result;
 };

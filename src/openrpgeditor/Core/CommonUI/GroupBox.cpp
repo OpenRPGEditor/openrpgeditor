@@ -67,7 +67,7 @@ void GroupBox::end() {
     clip.Min.y -= ImGui::GetFrameHeightWithSpacing() / 2;
     ImGui::PushClipRect(clip.Min, clip.Max, false);
     if (ImGui::BeginChild(labelId, {}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle | ImGuiChildFlags_NavFlattened,
-                          ImGuiWindowFlags_NoScrollbar | (m_checked ? ImGuiWindowFlags_NoNav : 0))) {
+                          ImGuiWindowFlags_NoScrollbar | (!m_checked ? ImGuiWindowFlags_NoNav : 0))) {
       // Group Header text
       if (!m_checked) {
         ImGui::TextUnformatted(m_title.c_str());

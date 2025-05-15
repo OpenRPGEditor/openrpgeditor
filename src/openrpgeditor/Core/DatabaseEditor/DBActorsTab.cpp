@@ -411,7 +411,7 @@ void DBActorsTab::draw() {
     if (const auto& [closed, confirmed] = m_facePicker->draw(); closed) {
       if (confirmed) {
         m_selectedActor->setFaceName(m_facePicker->selectedSheet());
-        m_selectedActor->setFaceIndex(m_facePicker->setFaceIndex());
+        m_selectedActor->setFaceIndex(m_facePicker->faceIndex());
         m_faceButton.reset();
         m_faceSheet.reset();
         m_facePicker->accept();

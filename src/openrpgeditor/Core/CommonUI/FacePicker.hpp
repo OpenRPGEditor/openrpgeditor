@@ -16,7 +16,7 @@ public:
     return m_selectedSheet >= 0 ? m_faceDirectory.isParentDirectory() ? m_faceSheets[m_selectedSheet] : m_faceDirectory.getPathPrefix() + '/' + m_faceSheets[m_selectedSheet] : "";
   }
 
-  [[nodiscard]] int setFaceIndex() const { return m_faceIndex; }
+  [[nodiscard]] int faceIndex() const { return m_faceIndex; }
 
   void setFaceInfo(std::string_view faceName, int faceIndex);
 

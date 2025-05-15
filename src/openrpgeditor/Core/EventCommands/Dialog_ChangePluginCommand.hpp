@@ -6,20 +6,19 @@ struct Dialog_ChangePluginCommand : IEventDialogController {
   Dialog_ChangePluginCommand() = delete;
   explicit Dialog_ChangePluginCommand(const std::string& name, const std::shared_ptr<PluginCommandMV>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new PluginCommandMV());
+      m_command.reset(new PluginCommandMV());
     }
-    strncpy(m_command, command->command.c_str(), 4096);
+    m_pluginText = m_command->command;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
-  char m_command[4096];
+  std::string m_pluginText;
 
   bool m_confirmed{false};
-  std::shared_ptr<PluginCommandMV> command;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<PluginCommandMV> m_command;
 };

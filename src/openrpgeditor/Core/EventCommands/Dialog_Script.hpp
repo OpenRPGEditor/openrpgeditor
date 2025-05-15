@@ -7,28 +7,26 @@ struct Dialog_Script : IEventDialogController {
   Dialog_Script() = delete;
   explicit Dialog_Script(const std::string& name, const std::shared_ptr<ScriptCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ScriptCommand());
+      m_command.reset(new ScriptCommand());
     }
-    m_Text = command->script;
-    for (const auto& next : command->moreScript) {
-      m_Text += !m_Text.empty() ? "\n" + next->script : next->script;
+    std::string text = m_command->script;
+    for (const auto& next : m_command->moreScript) {
+      text += !text.empty() ? "\n" + next->script : next->script;
     }
-    if (!m_Text.empty()) {
-      m_textEditor.SetText(m_Text);
+    if (!text.empty()) {
+      m_textEditor.SetText(text);
     }
     m_textEditor.SetLanguageDefinition(TextEditor::LanguageDefinition::Javascript());
     m_textEditor.SetHandleKeyboardInputs(true);
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
   TextEditor m_textEditor;
-  std::string m_Text;
   bool m_confirmed{false};
-  std::shared_ptr<ScriptCommand> command;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<ScriptCommand> m_command;
 };

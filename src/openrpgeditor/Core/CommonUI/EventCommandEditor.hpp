@@ -290,7 +290,7 @@ private:
       return std::make_shared<Dialog_ChangeWindowColor>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeWindowColorCommand>(cmd));
     case EventCode::Change_Defeat_ME:
       return std::make_shared<Dialog_ChangeDefeatME>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeDefeatMECommand>(cmd));
-    case EventCode::Change_Vechicle_BGM:
+    case EventCode::Change_Vehicle_BGM:
       return std::make_shared<Dialog_ChangeVehicleBGM>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeVehicleBGMCommand>(cmd));
     case EventCode::Transfer_Player:
       return std::make_shared<Dialog_TransferPlayer>(DecodeEnumName(code), std::dynamic_pointer_cast<TransferPlayerCommand>(cmd));

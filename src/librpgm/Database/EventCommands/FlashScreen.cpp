@@ -34,5 +34,5 @@ std::string FlashScreenCommand::stringRep(const Database& db, const bool colored
     suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " " + db.parentheses(trNOOP("Wait")) + ColorFormatter::popColor(colored);
   }
   return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Flash Screen") + colon.data() +
-         std::format("({},{},{},{}), {} {}", color.r, color.g, color.b, color.intensity, duration, db.framesText(duration)) + ColorFormatter::popColor(colored) + suffix;
+         std::format("({},{},{},{}), {}", color.r, color.g, color.b, color.intensity, db.framesText(duration)) + ColorFormatter::popColor(colored) + suffix;
 }

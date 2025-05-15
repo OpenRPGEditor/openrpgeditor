@@ -824,7 +824,7 @@ std::list<EventCommandEditor::EventCommandTab> EventCommandEditor::buildTabList(
               },
               {
                   {EventCode::Change_Battle_BGM, true},
-                  {EventCode::Change_Vechicle_BGM, true},
+                  {EventCode::Change_Vehicle_BGM, true},
                   {EventCode::Change_Victory_ME, true},
                   {EventCode::Change_Defeat_ME, true},
                   {EventCode::Change_Map_Display_Name, true},

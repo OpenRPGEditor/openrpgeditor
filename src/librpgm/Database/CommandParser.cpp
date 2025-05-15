@@ -148,7 +148,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
     case EventCode::Change_Defeat_ME:
       ret.emplace_back(new ChangeDefeatMECommand(indent, parameters));
       break;
-    case EventCode::Change_Vechicle_BGM:
+    case EventCode::Change_Vehicle_BGM:
       ret.emplace_back(new ChangeVehicleBGMCommand(indent, parameters));
       break;
     case EventCode::Transfer_Player:

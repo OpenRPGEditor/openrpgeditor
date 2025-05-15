@@ -23,7 +23,7 @@ struct AudioEditor {
     if (code == EventCode::Play_SE) {
       m_audioDir.emplace("audio/se", ".ogg", m_audio.name());
       m_audioType = AudioType::SE;
-    } else if (code == EventCode::Play_BGM || code == EventCode::Change_Battle_BGM || code == EventCode::Change_Vechicle_BGM) {
+    } else if (code == EventCode::Play_BGM || code == EventCode::Change_Battle_BGM || code == EventCode::Change_Vehicle_BGM) {
       m_audioDir.emplace("audio/bgm", ".ogg", m_audio.name());
       m_audioType = AudioType::BGM;
     } else if (code == EventCode::Change_Defeat_ME || code == EventCode::Change_Victory_ME || code == EventCode::Play_ME) {

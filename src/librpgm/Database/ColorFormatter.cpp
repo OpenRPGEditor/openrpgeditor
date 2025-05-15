@@ -90,7 +90,7 @@ static std::map<EventCode, std::string_view> CommandColors{
   {EventCode::Change_Formation_Access,  solarized::magenta},
   {EventCode::Change_Window_Color,      solarized::magenta},
   {EventCode::Change_Defeat_ME,         solarized::magenta},
-  {EventCode::Change_Vechicle_BGM,      solarized::magenta},
+  {EventCode::Change_Vehicle_BGM,      solarized::magenta},
   {EventCode::Transfer_Player,          solarized::maroon},
   {EventCode::Set_Vehicle_Location,     solarized::maroon},
   {EventCode::Set_Event_Location,       solarized::maroon},

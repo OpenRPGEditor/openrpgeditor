@@ -554,7 +554,7 @@ enum class EventCode : int {
   trENUM("Change Formation Access", Change_Formation_Access) = 137,
   trENUM("Change Window Color", Change_Window_Color) = 138,
   trENUM("Change Defeat ME", Change_Defeat_ME) = 139,
-  trENUM("Change Vechicle BGM", Change_Vechicle_BGM) = 140,
+  trENUM("Change Vehicle BGM", Change_Vehicle_BGM) = 140,
   trENUM("Transfer Player", Transfer_Player) = 201,
   trENUM("Set Vehicle Location", Set_Vehicle_Location) = 202,
   trENUM("Set Event Location", Set_Event_Location) = 203,

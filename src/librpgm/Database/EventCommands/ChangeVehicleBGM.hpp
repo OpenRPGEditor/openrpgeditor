@@ -6,7 +6,7 @@ struct ChangeVehicleBGMCommand final : IEventCommand {
   ChangeVehicleBGMCommand() = default;
   explicit ChangeVehicleBGMCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
   ~ChangeVehicleBGMCommand() override = default;
-  [[nodiscard]] EventCode code() const override { return EventCode::Change_Vechicle_BGM; }
+  [[nodiscard]] EventCode code() const override { return EventCode::Change_Vehicle_BGM; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeVehicleBGMCommand>(*this); }

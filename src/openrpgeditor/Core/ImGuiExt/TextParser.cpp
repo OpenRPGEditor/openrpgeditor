@@ -51,10 +51,10 @@ Color _ParseColor(const char* s, const int len) {
 }
 
 bool ParseColor(const char* s, ImU32* col, int* skipChars) {
-  if (colors.empty()) {
-    Color col;
-    *((int*)(&col.r)) = GetColorU32(ImGuiCol_Text);
-    colors.push(col);
+  if (colors.size() < 1) {
+    Color tmp;
+    *reinterpret_cast<int*>(&tmp.r) = GetColorU32(ImGuiCol_Text);
+    colors.push(tmp);
   }
 
   std::string inputString{s};
@@ -101,14 +101,14 @@ bool ParseColor(const char* s, ImU32* col, int* skipChars) {
 }
 
 ImU32 ParseGetCurrentColor() {
-  if (colors.empty()) {
+  if (colors.size() < 1) {
     Color col;
-    *((int*)(&col.r)) = GetColorU32(ImGuiCol_Text);
+    *reinterpret_cast<int*>(&col.r) = GetColorU32(ImGuiCol_Text);
     colors.push(col);
   }
 
   Color color = colors.top();
-  return *(int*)(&color.r);
+  return *reinterpret_cast<int*>(&color.r);
 }
 
 int ParseGetStackSize() { return colors.size(); }

@@ -150,6 +150,7 @@ void MainWindow::save() {
   size_t len = 0;
   const auto state = ImGui::SaveIniSettingsToMemory(&len);
   m_database->transient.imguiState = std::string(state, len);
+  m_database->system.setVersionId(floor(rand() * 100000000));
   m_database->serializeProject();
 }
 
@@ -188,7 +189,7 @@ std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
         FileQueue::instance().reset();
         m_database->mapInfos.loadAllMaps();
       }
-      m_database->serializeSettings();
+      save();
       return {true, true, true};
     }
     if (ret == 1) { // No

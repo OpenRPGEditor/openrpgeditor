@@ -1730,7 +1730,11 @@ void LibLCF::convertPage(EventPage* page, const lcf::rpg::EventPage& evPage) {
   } else if (evPage.animation_type == lcf::rpg::EventPage::AnimType::AnimType_step_frame_fix) {
     log("Animation Type: Step Frame Fix (not implemented)");
   } else if (evPage.animation_type == lcf::rpg::EventPage::AnimType::AnimType_spin) {
-    log("Animation Type: Spin (not implemented)");
+    page->setMoveType(MoveType::Custom);
+    MovementScriptCommand newCmd;
+    newCmd.setIndent(0);
+    newCmd.script = "this.spin(true);";
+    page->list().insert(page->list().end() - 1, std::make_shared<MovementScriptCommand>(newCmd));
   }
   for (auto& str : m_lcfLogger) {
     CommentCommand cmd = CommentCommand();

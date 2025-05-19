@@ -187,11 +187,11 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
         if (const auto ret = ImGui::ButtonGroup("##control_variables_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
           m_confirmed = true;
           if (m_isRange) {
-            m_command->start = m_variableVar;
-            m_command->end = m_variableVar;
-          } else {
             m_command->start = m_start;
             m_command->end = m_end;
+          } else {
+            m_command->start = m_variableVar;
+            m_command->end = m_variableVar;
           }
           m_command->operation = static_cast<VariableControlOperation>(m_operation);
           m_command->operand = static_cast<VariableControlOperand>(m_operandType);

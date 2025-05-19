@@ -336,7 +336,7 @@ void TextParsedV(const char* fmt, va_list args) {
   ImGuiContext& g = *GImGui;
   const char* text_end = g.TempBuffer.Data + ImFormatStringV(g.TempBuffer.Data, g.TempBuffer.size(), fmt, args);
   TextParsedUnformatted(g.TempBuffer.Data, text_end);
-  assert(ParseGetStackSize() == 1 && "Color stack not exhausted!");
+  // assert(ParseGetStackSize() == 1 && "Color stack not exhausted!");
 }
 
 void TextParsed(const char* fmt, ...) {

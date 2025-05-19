@@ -1,6 +1,7 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementScript.hpp"
 #include "Core/Application.hpp"
 
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/Log.hpp"
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
@@ -13,8 +14,8 @@ std::tuple<bool, bool> Dialog_MovementScript::draw() {
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{600, 600}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  ImGui::SetNextWindowSize(ImVec2{ImGui::GetDPIScaledValue(1400), 600}, ImGuiCond_Appearing);
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open)) {
 
     static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
     ImGui::PushFont(App::APP->getMonoFont());

@@ -724,8 +724,8 @@ enum class TextBackground {
 
 enum class TextWindowPosition {
   trENUM("Top", Top),
-  trENUM("Bottom", Bottom),
   trENUM("Middle", Middle),
+  trENUM("Bottom", Bottom),
 };
 
 enum class ChoiceWindowPosition {

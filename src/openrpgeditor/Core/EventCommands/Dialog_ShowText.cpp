@@ -141,6 +141,7 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
                 m_moreCommands.push_back(m_command);
               }
               m_moreCommands.back()->text.push_back(std::make_shared<NextTextCommand>());
+              m_moreCommands.back()->text.back()->indent() = m_command->indent().value();
               m_moreCommands.back()->text.back()->text = str;
               textIndex++;
               if (m_moreCommands.back()->text.size() >= 4 && textIndex < split.size()) {

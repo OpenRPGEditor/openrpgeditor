@@ -1340,7 +1340,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
 
     for (auto& stepCmd : newCmd.route.list()) {
       MovementRouteStepCommand cmd;
-      cmd.setIndent(stepCmd->indent().value());
+      cmd.setIndent(newCmd.indent().value());
       cmd.step = stepCmd;
 
       newCmd.editNodes.push_back(std::make_shared<MovementRouteStepCommand>(cmd));
@@ -1699,6 +1699,9 @@ void LibLCF::convertPage(EventPage* page, const lcf::rpg::EventPage& evPage) {
   page->setMoveFrequency(getMoveFrequency(evPage.move_frequency));
   page->setPriorityType(static_cast<EventPriority>(evPage.layer));
   page->setMoveType(getMoveType(evPage.move_type));
+
+  EventDummy dummyRoute;
+  page->list().push_back(std::make_shared<EventDummy>(dummyRoute));
 
   // Animation
   // page->setThrough(false); // RPG2000 does not support Through on event pages

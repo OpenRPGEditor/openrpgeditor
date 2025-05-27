@@ -8,39 +8,32 @@ struct Dialog_ShowChoice : IEventDialogController {
   Dialog_ShowChoice() = delete;
   explicit Dialog_ShowChoice(const std::string& name, const std::shared_ptr<ShowChoiceCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ShowChoiceCommand());
+      m_command.reset(new ShowChoiceCommand());
     }
 
-    int index{0};
-    for (auto& str : command->choices) {
-      m_choices[index] = str;
+    for (int index{0}; const auto& string : m_command->choices) {
+      m_choices[index] = string;
       index++;
     }
-    m_choice_1 = m_choices.at(0);
-    m_choice_2 = m_choices.at(1);
-    m_choice_3 = m_choices.at(2);
-    m_choice_4 = m_choices.at(3);
-    m_choice_5 = m_choices.at(4);
-    m_choice_6 = m_choices.at(5);
 
-    m_background = static_cast<int>(command->background);
-    m_position = static_cast<int>(command->positionType);
-    m_cancelType = command->cancelType;
-    m_defaultType = command->defaultType;
+    m_background = static_cast<int>(m_command->background);
+    m_position = static_cast<int>(m_command->positionType);
+    m_cancelType = m_command->cancelType;
+    m_defaultType = m_command->defaultType;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
-  std::vector<std::shared_ptr<IEventCommand>> getTemplateCommands(EventCode code, int intParam1 = 0) override {
+  std::vector<std::shared_ptr<IEventCommand>> getTemplateCommands(const EventCode code, const int intParam1 = 0) override {
     std::vector<std::shared_ptr<IEventCommand>> commandList;
     if (code == EventCode::When_Selected) {
       commandList.push_back(std::make_shared<WhenSelectedCommand>());
       commandList.back()->setIndent(getParentIndent().value());
       const auto when = static_pointer_cast<WhenSelectedCommand>(commandList.back());
-      when->choice = command->choices.at(intParam1);
+      when->choice = m_command->choices.at(intParam1);
       when->param1 = intParam1;
       commandList.push_back(std::make_shared<EventDummy>());
       commandList.back()->setIndent(getParentIndent().value() + 1);
@@ -50,55 +43,43 @@ struct Dialog_ShowChoice : IEventDialogController {
 
   std::vector<std::shared_ptr<IEventCommand>> getBatchCommands() override {
 
-    std::shared_ptr<WhenSelectedCommand> when;
+    const std::shared_ptr<IEventCommand> sharedCommand = getCommand();
+    m_eventCommands.push_back(sharedCommand);
+    m_eventCommands.back()->setIndent(getParentIndent().value());
 
-    std::shared_ptr<IEventCommand> sharedCommand = getCommand();
-    eventCommands.push_back(sharedCommand);
-    eventCommands.back()->setIndent(getParentIndent().value());
-
-    for (int i{0}; i < command->choices.size(); i++) {
+    for (int i{0}; i < m_command->choices.size(); i++) {
       // When "Choice"
-      eventCommands.push_back(std::make_shared<WhenSelectedCommand>());
-      eventCommands.back()->setIndent(getParentIndent().value());
-      when = static_pointer_cast<WhenSelectedCommand>(eventCommands.back());
-      when->choice = command->choices.at(i);
+      m_eventCommands.push_back(std::make_shared<WhenSelectedCommand>());
+      m_eventCommands.back()->setIndent(getParentIndent().value());
+      const auto when = static_pointer_cast<WhenSelectedCommand>(m_eventCommands.back());
+      when->choice = m_command->choices.at(i);
       when->param1 = i;
-      eventCommands.push_back(std::make_shared<EventDummy>());
+      m_eventCommands.push_back(std::make_shared<EventDummy>());
       // When "Cancel"
-      eventCommands.back()->setIndent(getParentIndent().value() + 1);
-      if (command->cancelType == -2 && i == command->choices.size() - 1) {
-        eventCommands.push_back(std::make_shared<WhenCancelCommand>());
-        eventCommands.back()->setIndent(getParentIndent().value());
-        eventCommands.push_back(std::make_shared<EventDummy>());
-        eventCommands.back()->setIndent(getParentIndent().value() + 1);
+      m_eventCommands.back()->setIndent(getParentIndent().value() + 1);
+      if (m_command->cancelType == -2 && i == m_command->choices.size() - 1) {
+        m_eventCommands.push_back(std::make_shared<WhenCancelCommand>());
+        m_eventCommands.back()->setIndent(getParentIndent().value());
+        m_eventCommands.push_back(std::make_shared<EventDummy>());
+        m_eventCommands.back()->setIndent(getParentIndent().value() + 1);
       }
       // Show Choices End
-      if (i == command->choices.size() - 1) {
-        eventCommands.push_back(std::make_shared<ShowChoicesEndCommand>());
-        eventCommands.back()->setIndent(getParentIndent().value());
+      if (i == m_command->choices.size() - 1) {
+        m_eventCommands.push_back(std::make_shared<ShowChoicesEndCommand>());
+        m_eventCommands.back()->setIndent(getParentIndent().value());
       }
     }
-    return eventCommands;
+    return m_eventCommands;
   };
 
 private:
-  std::vector<std::string> m_choices{6};
+  std::array<std::string, 6> m_choices;
   int m_background;
   int m_position;
   int m_defaultType;
   int m_cancelType;
 
-  std::string m_choice_1;
-  std::string m_choice_2;
-  std::string m_choice_3;
-  std::string m_choice_4;
-  std::string m_choice_5;
-  std::string m_choice_6;
+  std::vector<std::shared_ptr<IEventCommand>> m_eventCommands;
 
-  bool m_batchEntry{false};
-  std::vector<std::shared_ptr<IEventCommand>> eventCommands;
-
-  bool m_confirmed{false};
-  std::shared_ptr<ShowChoiceCommand> command;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<ShowChoiceCommand> m_command;
 };

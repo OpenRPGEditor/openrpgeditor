@@ -1339,15 +1339,12 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     }
 
     for (auto& stepCmd : newCmd.route.list()) {
-      MovementRouteStepCommand cmd;
-      cmd.setIndent(newCmd.indent().value());
-      cmd.step = stepCmd;
-
-      newCmd.editNodes.push_back(std::make_shared<MovementRouteStepCommand>(cmd));
+      newCmd.editNodes.emplace_back(std::make_shared<MovementRouteStepCommand>(newCmd.indent().value()));
+      newCmd.editNodes.back()->step = stepCmd;
     }
-    newCmd.route.list().push_back(std::make_shared<EventDummy>(EventDummy()));
-    // Process commands after returning the route command
-    // m_movementProcessing = true;
+    // newCmd.route.list().push_back(std::make_shared<EventDummy>(EventDummy()));
+    //  Process commands after returning the route command
+    //  m_movementProcessing = true;
 
     return std::make_shared<SetMovementRouteCommand>(newCmd);
   }
@@ -1700,8 +1697,8 @@ void LibLCF::convertPage(EventPage* page, const lcf::rpg::EventPage& evPage) {
   page->setPriorityType(static_cast<EventPriority>(evPage.layer));
   page->setMoveType(getMoveType(evPage.move_type));
 
-  EventDummy dummyRoute;
-  page->list().push_back(std::make_shared<EventDummy>(dummyRoute));
+  // EventDummy dummyRoute;
+  // page->list().push_back(std::make_shared<EventDummy>(dummyRoute));
 
   // Animation
   // page->setThrough(false); // RPG2000 does not support Through on event pages
@@ -1737,7 +1734,7 @@ void LibLCF::convertPage(EventPage* page, const lcf::rpg::EventPage& evPage) {
     MovementScriptCommand newCmd;
     newCmd.setIndent(0);
     newCmd.script = "this.spin(true);";
-    page->list().insert(page->list().end() - 1, std::make_shared<MovementScriptCommand>(newCmd));
+    page->moveRoute().list().insert(page->list().end() - 1, std::make_shared<MovementScriptCommand>(newCmd));
   }
   for (auto& str : m_lcfLogger) {
     CommentCommand cmd = CommentCommand();

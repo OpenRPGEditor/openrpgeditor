@@ -412,13 +412,6 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
         } else {
           m_command->character = m_character;
           // m_command->route = m_route;
-          m_command->editNodes.clear();
-          for (const auto& cmd : m_route->list()) {
-            if (cmd->code() != EventCode::Event_Dummy) {
-              m_command->editNodes.push_back(std::make_shared<MovementRouteStepCommand>());
-              m_command->editNodes.back()->step = cmd;
-            }
-          }
         }
         ImGui::CloseCurrentPopup();
         setOpen(false);

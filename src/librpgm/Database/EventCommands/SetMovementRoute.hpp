@@ -6,6 +6,7 @@
 struct MovementRouteStepCommand final : IEventCommand {
   MovementRouteStepCommand() = default;
   explicit MovementRouteStepCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
+  explicit MovementRouteStepCommand(const std::optional<int>& indent) { setIndent(indent.value()); }
   ~MovementRouteStepCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Movement_Route_Step; }
   std::shared_ptr<IEventCommand> step;

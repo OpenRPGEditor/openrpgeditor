@@ -631,6 +631,18 @@ void EventCommandEditor::drawCommandDialog() {
             }
           }
         }
+
+        if (m_commands->at(m_selectedCommand)->code() == EventCode::Set_Movement_Route) {
+          std::shared_ptr<SetMovementRouteCommand> routeCmd = std::dynamic_pointer_cast<SetMovementRouteCommand>(m_commands->at(m_selectedCommand));
+
+          routeCmd->editNodes.clear();
+          for (const auto& cmd : routeCmd->route.list()) {
+            if (cmd->code() != EventCode::Event_Dummy) {
+              routeCmd->editNodes.emplace_back(std::make_shared<MovementRouteStepCommand>(m_commands->at(m_selectedCommand)->indent()));
+              routeCmd->editNodes.back()->step = cmd;
+            }
+          }
+        }
       }
       m_commandDialog.reset();
       ImGui::CloseCurrentPopup();

@@ -1,58 +1,63 @@
 #include "Core/EventCommands/Dialog_ShowScrollingText.hpp"
 
-#include "Core/Log.hpp"
-#include "imgui.h"
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+
+#include <imgui.h>
+#include <imgui_internal.h>
+#include <misc/cpp/imgui_stdlib.h>
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ShowScrollingText::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###ShowScrollingText");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{551, 280}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-    ImGui::SeparatorText("Text");
-    ImGui::InputTextMultiline("##showscrolling_text", m_textLine, 4096, ImVec2{537, 107});
-    ImGui::Text("Speed: ");
-    ImGui::SameLine();
-    ImGui::PushItemWidth(50);
-    if (ImGui::InputInt("##showscrolling_speed", &m_speed, 0)) {
-      if (m_speed > 8)
-        m_speed = 8;
-      if (m_speed < 1)
-        m_speed = 1;
-    }
-    ImGui::SameLine();
-    ImGui::Checkbox("No Fast Forward", &m_noFast);
-    ImGui::SameLine();
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 190);
-    if (ImGui::Button("Preview...", ImVec2{100, 0})) {
-      // TODO
-    }
-    ImGui::BeginGroup();
+  const auto maxSize = ImVec2{ImGui::CalcTextSize("#").x * 64 + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 12) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
+  if (ImGui::BeginPopupModal(std::format("{}###ShowScrollingText", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    ImGui::BeginVertical("##show_scrolling_text_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
-      if (ImGui::Button("OK")) {
-        m_confirmed = true;
-        command->speed = m_speed;
-        command->noFast = m_noFast;
-        std::vector<std::string> split = splitString(m_textLine, '\n');
-        for (auto str : split) {
-          command->text.push_back(std::make_shared<NextScrollingTextCommand>());
-          command->text.back()->text = str;
+      GroupBox textGroupBox(trNOOP("Text"), "##text_group", {-1, 0});
+      if (textGroupBox.begin()) {
+        ImGui::InputTextMultiline("##show_scrolling_text_input", &m_textLine, {-1, ImGui::GetTextLineHeightWithSpacing() * 7 + ImGui::GetStyle().FramePadding.y});
+      }
+      textGroupBox.end();
+      ImGui::Spring();
+      GroupBox speedGroupBox(trNOOP("Speed"), "##speed_group", {-1, 0});
+      if (speedGroupBox.begin()) {
+        ImGui::SetNextItemWidth(-1);
+        if (ImGui::SpinInt("##show_scrolling_text_speed", &m_speed)) {
+          m_speed = std::clamp(m_speed, 1, 8);
         }
-        ImGui::CloseCurrentPopup();
-        setOpen(false);
       }
-      ImGui::SameLine();
-      if (ImGui::Button("Cancel")) {
-        ImGui::CloseCurrentPopup();
-        setOpen(false);
+      speedGroupBox.end();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##show_scrolling_text_button_layout", {-1, 0}, 0);
+      {
+        ImGui::Checkbox(trNOOP("No Fast Forward"), &m_noFast);
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##show_text_buttons", {trNOOP("Preview..."), trNOOP("OK"), trNOOP("Cancel")}, false, {trNOOP("UNIMPLEMENTED")}); ret == 0) {
+
+        } else if (ret == 1) {
+          m_confirmed = true;
+          m_command->speed = m_speed;
+          m_command->noFast = m_noFast;
+          for (const auto split = splitString(m_textLine, '\n'); const auto& str : split) {
+            m_command->text.emplace_back();
+            m_command->text.back()->text = str;
+          }
+          setOpen(false);
+        } else if (ret == 2) {
+          setOpen(false);
+        }
       }
-      ImGui::EndGroup();
+      ImGui::EndHorizontal();
     }
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 
-  return std::make_tuple(!m_open, m_confirmed);
+  return {!m_open, m_confirmed};
 }

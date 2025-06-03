@@ -164,5 +164,5 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
     ImGui::EndPopup();
   }
 
-  return std::make_tuple(!m_open, m_confirmed);
+  return {!m_open, m_confirmed};
 }

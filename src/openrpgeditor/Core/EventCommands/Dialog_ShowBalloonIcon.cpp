@@ -42,11 +42,11 @@ std::tuple<bool, bool> Dialog_ShowBalloonIcon::draw() {
 
     ImGui::SeparatorText("Balloon Icon");
     ImGui::PushItemWidth((160));
-    if (ImGui::BeginCombo("##balloon_selection", DecodeEnumName(magic_enum::enum_value<BalloonIcon>(m_balloonIndex)).c_str())) {
-      for (auto& balloons : magic_enum::enum_values<BalloonIcon>()) {
-        bool is_selected = m_balloonIndex == magic_enum::enum_index(balloons).value();
-        if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(balloons)).c_str(), is_selected)) {
-          m_balloonIndex = magic_enum::enum_index(balloons).value();
+    if (ImGui::BeginCombo("##balloon_selection", DecodeEnumName(static_cast<BalloonIcon>(m_balloonIndex)).c_str())) {
+      for (auto& balloon : magic_enum::enum_values<BalloonIcon>()) {
+        bool is_selected = (m_balloonIndex == static_cast<int>(balloon));
+        if (ImGui::Selectable(DecodeEnumName(balloon).c_str(), is_selected)) {
+          m_balloonIndex = static_cast<int>(balloon);
           if (is_selected)
             ImGui::SetItemDefaultFocus();
         }

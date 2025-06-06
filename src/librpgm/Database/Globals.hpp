@@ -443,7 +443,7 @@ enum class Fade {
 };
 
 enum class BalloonIcon {
-  trENUM("Exclamation", Exclamation),
+  trENUM("Exclamation", Exclamation) = 1,
   trENUM("Question", Question),
   trENUM("Music Note", Music_Note),
   trENUM("Heart", Heart),

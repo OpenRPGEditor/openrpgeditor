@@ -129,38 +129,6 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
           m_command->background = m_background;
           m_command->position = m_position;
           m_command->textLine = m_textLine;
-          auto split = splitString(m_textLine, '\n');
-          while (split.size() > 1 && split[split.size() - 1].empty()) {
-            split.pop_back();
-          }
-          int index{0};
-          int textIndex{0};
-          for (const auto& str : split) {
-            if (split.size() > 4) {
-              if (textIndex == 0) {
-                m_moreCommands.push_back(m_command);
-              }
-              m_moreCommands.back()->text.push_back(std::make_shared<NextTextCommand>());
-              m_moreCommands.back()->text.back()->indent() = m_command->indent().value();
-              m_moreCommands.back()->text.back()->text = str;
-              textIndex++;
-              if (m_moreCommands.back()->text.size() >= 4 && textIndex < split.size()) {
-                m_moreCommands.push_back(std::make_shared<ShowTextCommand>());
-                m_moreCommands.back()->faceImage = m_faceImage;
-                m_moreCommands.back()->faceIndex = m_faceIndex;
-                m_moreCommands.back()->background = m_background;
-                m_moreCommands.back()->position = m_position;
-              }
-            } else {
-              if (index == 0) {
-                m_command->text.clear();
-              }
-
-              m_command->text.push_back(std::make_shared<NextTextCommand>());
-              m_command->text.back()->text = str;
-            }
-            index++;
-          }
           ImGui::CloseCurrentPopup();
           setOpen(false);
         } else if (ret == 2) { // Cancel

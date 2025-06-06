@@ -643,6 +643,56 @@ void EventCommandEditor::drawCommandDialog() {
             }
           }
         }
+        if (m_commands->at(m_selectedCommand)->code() == EventCode::Show_Text) {
+          std::shared_ptr<ShowTextCommand> showCmd = std::dynamic_pointer_cast<ShowTextCommand>(m_commands->at(m_selectedCommand));
+
+          auto split = splitString(showCmd->textLine, '\n');
+          while (split.size() > 1 && split[split.size() - 1].empty()) {
+            split.pop_back();
+          }
+          int index{0};
+          int textIndex{0};
+          for (const auto& str : split) {
+            if (split.size() > 4) {
+              if (textIndex == 0) {
+
+                // auto selection = m_commands->insert(m_commands->begin() + m_selectedCommand, cmd);
+                // m_selectedCommand = (selection + 1) - m_commands->begin();
+
+                // m_moreCommands.push_back(m_command);
+              }
+              /*
+              auto selection = m_commands->insert(m_commands->begin() + m_selectedCommand, std::make_shared<NextTextCommand>());
+              m_selectedCommand = (selection + 1) - m_commands->begin();
+
+              m_commands->at(m_selectedCommand).
+              showCmd.back()->text.push_back(std::make_shared<NextTextCommand>());
+              showCmd.back()->text.back()->indent() = m_command->indent().value();
+              m_moreCommands.back()->text.back()->text = str;
+              textIndex++;
+              if (m_moreCommands.back()->text.size() >= 4 && textIndex < split.size()) {
+                m_moreCommands.push_back(std::make_shared<ShowTextCommand>());
+                m_moreCommands.back()->faceImage = m_faceImage;
+                m_moreCommands.back()->faceIndex = m_faceIndex;
+                m_moreCommands.back()->background = m_background;
+                m_moreCommands.back()->position = m_position;
+              }
+
+              for (auto cmd : cmds) {
+                auto selection = m_commands->insert(m_commands->begin() + m_selectedCommand, cmd);
+                m_selectedCommand = (selection + 1) - m_commands->begin();
+              }
+              */
+            } else {
+              if (index == 0) {
+                showCmd->text.clear();
+              }
+              showCmd->text.emplace_back(std::make_shared<NextTextCommand>(m_commands->at(m_selectedCommand)->indent()));
+              showCmd->text.back()->text = str;
+            }
+            index++;
+          }
+        }
       }
       m_commandDialog.reset();
       ImGui::CloseCurrentPopup();

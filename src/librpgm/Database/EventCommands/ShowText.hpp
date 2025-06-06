@@ -5,6 +5,7 @@
 struct NextTextCommand final : IEventCommand {
   NextTextCommand() = default;
   NextTextCommand(const std::optional<int>& _indent, const nlohmann::ordered_json& parameters);
+  explicit NextTextCommand(const std::optional<int>& indent) { setIndent(indent.value()); }
   ~NextTextCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Next_Text; }
   void serializeParameters(nlohmann::ordered_json& out) const override;

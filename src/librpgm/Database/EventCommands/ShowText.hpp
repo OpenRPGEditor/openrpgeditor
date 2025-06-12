@@ -25,6 +25,24 @@ struct ShowTextCommand final : IEventCommand {
 
   void addText(NextTextCommand* nextText) { text.emplace_back(nextText); }
 
+  void adjustIndent(const int offset) override {
+    int originalIndent = this->indent().value();
+
+    this->setIndent(originalIndent + offset);
+
+    if (!text.empty()) {
+      for (const auto& nextText : text) {
+        nextText->setIndent(originalIndent + offset);
+      }
+    }
+    // if (this->indent()) {
+    //   this->setIndent(originalIndent + offset);
+    // } else {
+    //  m_indent.emplace(0);
+    //}
+    setModified();
+  }
+
   std::string faceImage;
   int faceIndex{0};
   TextBackground background = TextBackground::Window;

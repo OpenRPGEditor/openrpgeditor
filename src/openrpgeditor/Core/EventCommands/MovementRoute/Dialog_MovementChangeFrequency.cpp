@@ -17,8 +17,8 @@ std::tuple<bool, bool> Dialog_MovementChangeFrequency::draw() {
     ImGui::PushItemWidth((100));
     if (ImGui::BeginCombo("##movement_frequency_selection", DecodeEnumName(static_cast<MovementFrequency>(m_frequency)).c_str())) {
       for (auto& freq : magic_enum::enum_values<MovementFrequency>()) {
-        bool is_selected = m_frequency == static_cast<int>(freq);
-        if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(freq)).c_str(), is_selected)) {
+        bool is_selected = (m_frequency == static_cast<int>(freq));
+        if (ImGui::Selectable(DecodeEnumName(freq).c_str(), is_selected)) {
           m_frequency = static_cast<int>(freq);
           if (is_selected)
             ImGui::SetItemDefaultFocus();

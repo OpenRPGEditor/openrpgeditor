@@ -1,79 +1,88 @@
 #include "Core/EventCommands/Dialog_ShowAnimation.hpp"
 
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Database/Database.hpp"
-#include "imgui.h"
+#include <imgui.h>
+#include <imgui_internal.h>
+
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###ShowAnimation");
   }
-  const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(windowSize, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 36) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 7) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
+  if (ImGui::BeginPopupModal(std::format("{}###ShowAnimation", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    drawPickers();
 
-    if (animation_picker) {
-      if (const auto [closed, confirmed] = animation_picker->draw(); closed) {
-        if (confirmed) {
-          m_animation = animation_picker->selection();
-        }
-        animation_picker.reset();
-      }
-    }
-    ImGui::SeparatorText("Character");
-    ImGui::PushItemWidth(160);
-    if (ImGui::BeginCombo("##showanim_character", Database::instance()->eventNameOrId(m_character).c_str())) {
-
-      if (ImGui::Selectable("Player", m_character == -1)) {
-        m_character = -1;
-        ImGui::SetItemDefaultFocus();
-      }
-      if (ImGui::Selectable("This Event", m_character == 0)) {
-        m_character = 0;
-        ImGui::SetItemDefaultFocus();
-      }
-
-      for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events()) {
-        if (!dataSource.has_value())
-          continue;
-
-        if (const bool is_selected = m_character == dataSource->id();
-            ImGui::Selectable(dataSource->name().empty() ? std::format("EV {:03} ", dataSource->id()).c_str() : dataSource->name().c_str(), is_selected)) {
-          m_character = dataSource->id();
-          if (is_selected)
-            ImGui::SetItemDefaultFocus();
+    ImGui::BeginVertical("##show_animation_main_layout", ImGui::GetContentRegionAvail(), 0);
+    {
+      GroupBox characterGroupBox(trNOOP("Character"), "##show_animation_character_group", {-1, 0});
+      if (characterGroupBox.begin()) {
+        ImGui::SetNextItemWidth(-1);
+        if (ImGui::BeginCombo("##show_animation_character_combo", Database::instance()->eventNameOrId(m_character).c_str())) {
+          const auto currentMap = Database::instance()->mapInfos.currentMap();
+          for (int i = -1; i < static_cast<int>(currentMap->map()->events().size()); ++i) {
+            if (i > 0 && !currentMap->event(i)) {
+              continue;
+            }
+            const auto name = Database::instance()->eventNameOrId(i);
+            const auto selected = m_character == i;
+            if (ImGui::Selectable(name.c_str(), selected)) {
+              m_character = i;
+            }
+            if (selected) {
+              ImGui::SetItemDefaultFocus();
+            }
+          }
+          ImGui::EndCombo();
         }
       }
-      ImGui::EndCombo();
+      characterGroupBox.end();
+      GroupBox animationGroupBox(trNOOP("Animation"), "##show_animation_animation_group", {-1, 0});
+      if (animationGroupBox.begin()) {
+        if (ImGui::EllipsesButton(Database::instance()->animationNameAndId(m_animation).c_str(), {-1, 0})) {
+          m_animationPicker.emplace(trNOOP("Animations"), Database::instance()->animations.animations(), m_animation);
+          m_animationPicker->setOpen(true);
+        }
+      }
+      animationGroupBox.end();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##show_animation_button_layout", {-1, 0}, 0);
+      {
+        ImGui::Checkbox(trNOOP("Wait for Completion"), &m_waitCompletion);
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##show_animation_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+          m_command->character = m_character;
+          m_command->animation = m_animation;
+          m_command->waitForCompletion = m_waitCompletion;
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
+      }
+      ImGui::EndHorizontal();
     }
-
-    // Animation Button
-    ImGui::PushID("##showanim_animation_select");
-    if (ImGui::Button(Database::instance()->animationName(m_animation).c_str(), ImVec2{200 - 15, 0})) {
-      animation_picker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), m_animation);
-      animation_picker->setOpen(true);
-    }
-    ImGui::PopID();
-    // Wait for completion
-    ImGui::Checkbox("Wait for Completion", &m_waitCompletion);
-
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->character = m_character;
-      command->animation = m_animation;
-      command->waitForCompletion = m_waitCompletion;
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-    windowSize = ImVec2{ImGui::GetContentRegionMax().x, ImGui::GetContentRegionMax().y};
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);
+}
+
+void Dialog_ShowAnimation::drawPickers() {
+  if (m_animationPicker) {
+    if (const auto [closed, confirmed] = m_animationPicker->draw(); closed) {
+      if (confirmed) {
+        m_animation = m_animationPicker->selection();
+      }
+      m_animationPicker.reset();
+    }
+  }
 }

@@ -10,26 +10,24 @@ struct Dialog_ShowAnimation : IEventDialogController {
   Dialog_ShowAnimation() = delete;
   explicit Dialog_ShowAnimation(const std::string& name, const std::shared_ptr<ShowAnimationCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ShowAnimationCommand());
+      m_command.reset(new ShowAnimationCommand());
     }
-    m_character = command->character;
-    m_animation = command->animation;
-    m_waitCompletion = command->waitForCompletion;
+    m_character = m_command->character;
+    m_animation = m_command->animation;
+    m_waitCompletion = m_command->waitForCompletion;
   }
+  void drawPickers();
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
   bool m_waitCompletion;
   int m_animation;
   int m_character;
-  ImVec2 windowSize{183, 141};
 
-  bool m_confirmed{false};
-  std::optional<ObjectPicker<Animation>> animation_picker;
-  std::shared_ptr<ShowAnimationCommand> command;
-  std::tuple<bool, bool> result;
+  std::optional<ObjectPicker<Animation>> m_animationPicker;
+  std::shared_ptr<ShowAnimationCommand> m_command;
 };

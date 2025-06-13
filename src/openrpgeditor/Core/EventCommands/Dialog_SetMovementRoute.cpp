@@ -66,7 +66,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
     ImGui::BeginChild("##movementroute_top_child", {0, ImGui::GetContentRegionAvail().y - (buttonsSize.y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)});
     {
       m_hasFocus = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_NoPopupHierarchy);
-      const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNO");
+      const auto calc = ImGui::CalcTextSize("#######################");
       ImGui::BeginChild("##movementroute_inner_left_child", ImVec2{calc.x, 0}, ImGuiChildFlags_ResizeX | ImGuiChildFlags_Borders);
       {
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x);
@@ -83,7 +83,7 @@ std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
           }
 
           for (auto& dataSource : Database::instance()->mapInfos.currentMap()->map()->events()) {
-            if (!dataSource.has_value())
+            if (!dataSource)
               continue;
 
             bool is_selected = m_character == dataSource->id();

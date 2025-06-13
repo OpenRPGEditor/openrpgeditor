@@ -206,7 +206,7 @@ enum class AutoRemovalTiming {
 };
 
 enum class ItemType {
-  trENUM("Regular Item", Regular_Item),
+  trENUM("Regular Item", Regular_Item) = 1,
   trENUM("Key Item", Key_Item),
   trENUM("Hidden Item A", Hidden_Item_A),
   trENUM("Hidden Item B", Hidden_Item_B),

@@ -7,23 +7,23 @@ struct Dialog_InputNumber : IEventDialogController {
   Dialog_InputNumber() = delete;
   explicit Dialog_InputNumber(const std::string& name, const std::shared_ptr<InputNumberCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new InputNumberCommand());
+      m_command.reset(new InputNumberCommand());
     }
-    m_variable = command->variable;
-    m_digits = command->digits;
+    m_variable = m_command->variable;
+    m_digits = m_command->digits;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
+  void drawPickers();
   int m_variable;
   int m_digits;
 
   bool m_confirmed{false};
-  std::optional<VariableSwitchPicker> picker;
-  std::shared_ptr<InputNumberCommand> command;
-  std::tuple<bool, bool> result;
+  std::optional<VariableSwitchPicker> m_variablePicker;
+  std::shared_ptr<InputNumberCommand> m_command;
 };

@@ -1,69 +1,88 @@
 #include "Core/EventCommands/Dialog_ShowBattleAnimation.hpp"
 
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Database/Database.hpp"
-#include "imgui.h"
-#include <tuple>
+#include <imgui.h>
+#include <imgui_internal.h>
 
+#include <tuple>
 std::tuple<bool, bool> Dialog_ShowBattleAnimation::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###ShowBattleAnimation");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{183, 159}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-
-    if (animation_picker) {
-      auto [closed, confirmed] = animation_picker->draw();
-      if (closed) {
-        if (confirmed) {
-          m_animation = animation_picker->selection();
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 36) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 8) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
+  if (ImGui::BeginPopupModal(std::format("{}###ShowBattleAnimation", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    drawPickers();
+    ImGui::BeginVertical("##show_battle_animation_main_layout", ImGui::GetContentRegionAvail(), 0);
+    {
+      GroupBox enemyGroupBox(trNOOP("Enemy"), "##show_battle_animation_enemy_group_box", {-1, 0});
+      if (enemyGroupBox.begin()) {
+        ImGui::BeginDisabled(m_targetAllEnemies);
+        {
+          ImGui::SetNextItemWidth(-1);
+          if (ImGui::BeginCombo("##show_battle_animation_enemy_combo", m_targetAllEnemies ? "" : std::format("#{} {}", m_enemy + 1, Database::instance()->troopMemberName(m_troop, m_enemy)).c_str())) {
+            for (int i = 0; i < 8; ++i) {
+              const auto selected = i == m_enemy;
+              if (ImGui::Selectable(std::format("#{} {}", i + 1, Database::instance()->troopMemberName(m_troop, m_enemy)).c_str(), selected)) {
+                m_enemy = i;
+              }
+              if (selected) {
+                ImGui::SetItemDefaultFocus();
+              }
+            }
+            ImGui::EndCombo();
+          }
         }
-        animation_picker.reset();
+        ImGui::EndDisabled();
+        ImGui::Checkbox(trNOOP("Target all enemies in troop?"), &m_targetAllEnemies);
       }
-    }
-    ImGui::SeparatorText("Enemy");
-    ImGui::PushItemWidth((160));
-    if (ImGui::BeginCombo("##enemyanimation_list", ("#" + std::to_string(m_enemy) + " " + Database::instance()->troopMemberName(0, m_enemy)).c_str())) {
-      for (int i = 1; i < 9; ++i) {
-        if (ImGui::Selectable(("#" + std::to_string(i) + " " + Database::instance()->troopMemberName(0, i)).c_str(), i == m_enemy)) {
-          m_enemy = i;
+      enemyGroupBox.end();
+      GroupBox animationGroupBox(trNOOP("Animation"), "##show_battle_animation_animation_group_box", {-1, 0});
+      if (animationGroupBox.begin()) {
+        if (ImGui::EllipsesButton(Database::instance()->animationNameAndId(m_animation).c_str(), {-1, 0})) {
+          m_animationPicker.emplace(trNOOP("Animations"), Database::instance()->animations.animations(), m_animation);
+          m_animationPicker->setOpen(true);
         }
       }
-      ImGui::EndCombo();
+      animationGroupBox.end();
+
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##show_battle_animation_button_layout");
+      {
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##show_battle_animation_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+          m_command->targetAllEnemies = m_targetAllEnemies;
+          m_command->enemy = m_enemy;
+          m_command->animation = m_animation;
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
+      }
+      ImGui::EndHorizontal();
     }
-    ImGui::Checkbox("Target all enemies in troop?", &m_targetAllEnemies);
-
-    // Animation Button
-    ImGui::SeparatorText("Animation");
-    ImGui::PushID("##showanim_animation_select");
-    if (ImGui::Button(Database::instance()->animationName(m_animation).c_str(), ImVec2{200 - 15, 0})) {
-      animation_picker = ObjectPicker<Animation>("Animation"sv, Database::instance()->animations.animations(), m_animation);
-      animation_picker->setOpen(true);
-    }
-    ImGui::PopID();
-
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->targetAllEnemies = m_targetAllEnemies;
-
-      if (m_targetAllEnemies)
-        command->enemy = 0;
-      else
-        command->enemy = m_enemy;
-
-      command->animation = m_animation;
-
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);
+}
+
+void Dialog_ShowBattleAnimation::drawPickers() {
+  if (m_animationPicker) {
+    if (const auto [closed, confirmed] = m_animationPicker->draw(); closed) {
+      if (confirmed) {
+        m_animation = m_animationPicker->selection();
+      }
+      m_animationPicker.reset();
+    }
+  }
 }

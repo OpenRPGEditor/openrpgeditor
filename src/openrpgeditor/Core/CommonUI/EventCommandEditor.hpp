@@ -435,7 +435,7 @@ private:
     case EventCode::Change_Enemy_State:
       return std::make_shared<Dialog_ChangeEnemyState>(DecodeEnumName(code), std::dynamic_pointer_cast<ChangeEnemyStateCommand>(cmd), m_troopId);
     case EventCode::Show_Battle_Animation:
-      return std::make_shared<Dialog_ShowBattleAnimation>(DecodeEnumName(code), std::dynamic_pointer_cast<ShowBattleAnimationCommand>(cmd));
+      return std::make_shared<Dialog_ShowBattleAnimation>(DecodeEnumName(code), std::dynamic_pointer_cast<ShowBattleAnimationCommand>(cmd), m_troopId);
     case EventCode::Force_Action:
       // return std::make_shared<Dialog_ForceAction>(DecodeEnumName(code),
       // std::dynamic_pointer_cast<ForceActionCommand>(cmd));

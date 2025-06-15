@@ -278,6 +278,8 @@ void EventCommandEditor::draw() {
           case EventCode::Control_Variables:
             std::dynamic_pointer_cast<ControlVariables>(cmd)->m_troopId = m_troopId;
             break;
+          case EventCode::Show_Battle_Animation:
+            std::dynamic_pointer_cast<ShowBattleAnimationCommand>(cmd)->m_troopId = m_troopId;
           default:
             break;
           }

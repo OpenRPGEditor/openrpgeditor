@@ -7,27 +7,29 @@
 
 struct Dialog_ShowBattleAnimation : IEventDialogController {
   Dialog_ShowBattleAnimation() = delete;
-  explicit Dialog_ShowBattleAnimation(const std::string& name, const std::shared_ptr<ShowBattleAnimationCommand>& cmd = nullptr)
+  explicit Dialog_ShowBattleAnimation(const std::string& name, const std::shared_ptr<ShowBattleAnimationCommand>& cmd = nullptr, const int troopId = 0)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_troop(troopId)
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ShowBattleAnimationCommand());
+      m_command.reset(new ShowBattleAnimationCommand());
     }
-    m_enemy = command->enemy;
-    m_animation = command->animation;
-    m_targetAllEnemies = command->targetAllEnemies;
+    m_enemy = m_command->enemy;
+    m_animation = m_command->animation;
+    m_targetAllEnemies = m_command->targetAllEnemies;
   }
+  void drawPickers();
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
+  int m_troop{0};
   bool m_targetAllEnemies;
   int m_animation;
   int m_enemy;
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Animation>> animation_picker;
-  std::shared_ptr<ShowBattleAnimationCommand> command;
-  std::tuple<bool, bool> result;
+  std::optional<ObjectPicker<Animation>> m_animationPicker;
+  std::shared_ptr<ShowBattleAnimationCommand> m_command;
 };

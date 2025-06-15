@@ -17,5 +17,6 @@ void ShowBattleAnimationCommand::serializeParameters(nlohmann::ordered_json& out
 std::string ShowBattleAnimationCommand::stringRep(const Database& db, const bool colored) const {
   const auto animName = db.animationNameOrId(animation);
   return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Show Battle Animation") + colon.data() +
-         (targetAllEnemies == true ? tr("Entire Troop") + ", " : std::format("#{}, ", enemy)) + animName + ColorFormatter::popColor(colored);
+         (targetAllEnemies == true ? tr("Entire Troop") + ", " : std::format("#{}{}, ", enemy + 1, m_troopId <= 0 ? "" : Database::instance()->troopMemberName(m_troopId, enemy))) + animName +
+         ColorFormatter::popColor(colored);
 }

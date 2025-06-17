@@ -11,80 +11,80 @@ struct Dialog_ShopProcessing_Goods : IEventDialogController {
   Dialog_ShopProcessing_Goods() = delete;
   explicit Dialog_ShopProcessing_Goods(const std::string& name, const std::shared_ptr<ShopProcessingGoodCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ShopProcessingGoodCommand());
+      m_command.reset(new ShopProcessingGoodCommand());
     }
-    m_type_selection = static_cast<int>(command->type);
-    m_price_operation = static_cast<int>(command->priceType);
+    m_typeSelection = static_cast<int>(m_command->type);
+    m_priceOperation = static_cast<int>(m_command->priceType);
     // ID
-    if (command->type == ShopType::Armor) {
-      m_armor_selection = command->id;
-    } else if (command->type == ShopType::Weapon) {
-      m_weapon_selection = command->id;
+    if (m_command->type == ShopType::Armor) {
+      m_armorSelection = m_command->id;
+    } else if (m_command->type == ShopType::Weapon) {
+      m_weaponSelection = m_command->id;
     } else {
-      m_item_selection = command->id;
+      m_itemSelection = m_command->id;
     }
     // Price
-    if (m_price_operation == 0) {
-      if (command->type == ShopType::Armor) {
-        m_price_constant = Database::instance()->armors.armor(m_armor_selection)->price();
-      } else if (command->type == ShopType::Weapon) {
-        m_price_constant = Database::instance()->weapons.weapon(m_weapon_selection)->price();
+    if (m_priceOperation == 0) {
+      if (m_command->type == ShopType::Armor) {
+        m_priceConstant = Database::instance()->armors.armor(m_armorSelection)->price();
+      } else if (m_command->type == ShopType::Weapon) {
+        m_priceConstant = Database::instance()->weapons.weapon(m_weaponSelection)->price();
       } else {
-        m_price_constant = Database::instance()->items.item(m_item_selection)->price();
+        m_priceConstant = Database::instance()->items.item(m_itemSelection)->price();
       }
     } else {
-      m_price_constant = command->price;
+      m_priceConstant = m_command->price;
     }
   }
   explicit Dialog_ShopProcessing_Goods(const std::string& name, int id, const int price, const int shopType, const int priceType)
   : IEventDialogController(name) {
-    command.reset(new ShopProcessingGoodCommand());
+    m_command.reset(new ShopProcessingGoodCommand());
     if (id < 1)
       id = 1;
 
-    m_type_selection = shopType;
-    m_price_operation = priceType;
+    m_typeSelection = shopType;
+    m_priceOperation = priceType;
     // ID
     if (shopType == 2) {
-      m_armor_selection = id;
+      m_armorSelection = id;
     } else if (shopType == 1) {
-      m_weapon_selection = id;
+      m_weaponSelection = id;
     } else if (shopType == 0) {
-      m_item_selection = id;
+      m_itemSelection = id;
     }
 
     // Price
     if (priceType == 0) {
       if (shopType == 2) {
-        m_price_constant = Database::instance()->armors.armor(m_armor_selection)->price();
+        m_priceConstant = Database::instance()->armors.armor(m_armorSelection)->price();
       } else if (shopType == 1) {
-        m_price_constant = Database::instance()->weapons.weapon(m_weapon_selection)->price();
+        m_priceConstant = Database::instance()->weapons.weapon(m_weaponSelection)->price();
       } else if (shopType == 0) {
-        m_price_constant = Database::instance()->items.item(m_item_selection)->price();
+        m_priceConstant = Database::instance()->items.item(m_itemSelection)->price();
       }
     } else {
-      m_price_constant = price;
+      m_priceConstant = price;
     }
   }
 
+  void drawPickers();
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
-  int m_type_selection{0};
-  int m_item_selection{1};
-  int m_weapon_selection{1};
-  int m_armor_selection{1};
-  int m_price_operation{0};
-  int m_price_constant{0};
+  int m_typeSelection{0};
+  int m_itemSelection{1};
+  int m_weaponSelection{1};
+  int m_armorSelection{1};
+  int m_priceOperation{0};
+  int m_priceConstant{0};
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Item>> item_picker;
-  std::optional<ObjectPicker<Weapon>> weapon_picker;
-  std::optional<ObjectPicker<Armor>> armor_picker;
-  std::shared_ptr<ShopProcessingGoodCommand> command;
-  std::tuple<bool, bool> result;
+  std::optional<ObjectPicker<Item>> m_itemPicker;
+  std::optional<ObjectPicker<Weapon>> m_weaponPicker;
+  std::optional<ObjectPicker<Armor>> m_armorPicker;
+  std::shared_ptr<ShopProcessingGoodCommand> m_command;
 };

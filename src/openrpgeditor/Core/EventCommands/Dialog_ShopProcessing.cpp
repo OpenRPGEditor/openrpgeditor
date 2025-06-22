@@ -65,7 +65,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
 
         ImGui::TableNextRow();
         if (ImGui::TableNextColumn()) {
-          const auto selected = m_selection == m_goods.size();
+          const auto selected = m_selection == -1;
           if (ImGui::SelectableWithBorder("##dummy_shop_processing_selection", selected,
                                           ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
 

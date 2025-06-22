@@ -63,7 +63,7 @@ public:
   virtual void setReverseSelection(bool reverseSelection) {}
 
   std::optional<int> indent() const { return m_indent; }
-  void setIndent(int indent) {
+  virtual void setIndent(int indent) {
     m_indent = indent;
     setModified();
   }

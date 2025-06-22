@@ -296,7 +296,7 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
         ++index;
         auto nextIndent = currentCommand().value("indent", std::optional<int>{});
         auto nextParameters = currentCommand().value("parameters", nlohmann::json{});
-        shop->addGood(new ShopProcessingGoodCommand(nextIndent, nextParameters));
+        shop->addGood(std::make_shared<ShopProcessingGoodCommand>(nextIndent, nextParameters));
       }
       break;
     }

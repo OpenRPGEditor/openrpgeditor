@@ -8,37 +8,33 @@ struct Dialog_ShopProcessing : IEventDialogController {
   Dialog_ShopProcessing() = delete;
   explicit Dialog_ShopProcessing(const std::string& name, const std::shared_ptr<ShopProcessingCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ShopProcessingCommand());
+      m_command.reset(new ShopProcessingCommand());
+    } else {
+      const auto& good = m_goods.emplace_back(new ShopProcessingGoodCommand());
+      good->id = m_command->id;
+      good->type = m_command->type;
+      good->price = m_command->price;
+      good->priceType = m_command->priceType;
+      for (const auto& g : m_command->goods) {
+        m_goods.emplace_back(std::dynamic_pointer_cast<ShopProcessingGoodCommand>(g->clone()));
+      }
     }
-    m_id = command->id;
-    m_type = static_cast<int>(command->type);
-    m_priceType = static_cast<int>(command->priceType);
-    m_price = command->price;
-
-    m_goods = command->goods;
-    m_purchaseOnly = command->purchaseOnly;
+    m_purchaseOnly = m_command->purchaseOnly;
   }
 
+  void drawPickers();
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
-  int m_goods_selection{0};
+  int m_selection{0};
   std::vector<std::shared_ptr<ShopProcessingGoodCommand>> m_goods;
   bool m_purchaseOnly;
 
-  int m_type;
-  int m_priceType;
-  int m_id;
-  int m_price;
-  int m_selection_type;
-
   bool m_confirmed{false};
-  std::shared_ptr<ShopProcessingCommand> command;
-
-  std::optional<Dialog_ShopProcessing_Goods> goodsDialog;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<ShopProcessingCommand> m_command;
+  std::optional<Dialog_ShopProcessing_Goods> m_goodsDialog;
 };

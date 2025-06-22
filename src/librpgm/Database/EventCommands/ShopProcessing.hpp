@@ -3,8 +3,9 @@
 #include <format>
 
 struct ShopProcessingGoodCommand final : IEventCommand {
-  ShopProcessingGoodCommand() = default;
-  explicit ShopProcessingGoodCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
+  explicit ShopProcessingGoodCommand(const std::optional<int>& indent = std::nullopt)
+  : IEventCommand(indent) {}
+  ShopProcessingGoodCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
 
   ~ShopProcessingGoodCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Shop_Processing_Good; }
@@ -46,7 +47,14 @@ struct ShopProcessingCommand final : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShopProcessingCommand>(*this); }
 
-  void addGood(ShopProcessingGoodCommand* good) { goods.emplace_back(good); }
+  void setIndent(const int indent) override {
+    IEventCommand::setIndent(indent);
+    for (const auto& good : goods) {
+      good->setIndent(indent);
+    }
+  }
+
+  void addGood(const std::shared_ptr<ShopProcessingGoodCommand>& good) { goods.emplace_back(good); }
 
   ShopType type{};
   int id{0};

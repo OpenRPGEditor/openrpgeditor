@@ -19,11 +19,10 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
     drawPickers();
     ImGui::BeginVertical("##shop_processing_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
-      if (ImGui::IsKeyPressed(ImGuiKey_Delete)) {
-        if (m_selection > 0) {
-          m_goods.erase(m_goods.begin() + m_selection);
-        } else {
-          m_goods.erase(m_goods.begin());
+      if (ImGui::IsKeyPressed(ImGuiKey_Delete) && !m_goods.empty() && m_selection >= 0) {
+        m_goods.erase(m_goods.begin() + m_selection);
+        if (m_selection >= m_goods.size()) {
+          m_selection = std::max<int>(-1, m_goods.size() - 1);
         }
       }
 
@@ -74,7 +73,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
               m_goodsDialog.emplace(trNOOP("Goods Processing"));
               m_goodsDialog->setOpen(true);
             }
-            m_selection = m_goods.size();
+            m_selection = -1;
           }
           if (selected) {
             ImGui::SetItemDefaultFocus();
@@ -126,7 +125,7 @@ void Dialog_ShopProcessing::drawPickers() {
   if (m_goodsDialog) {
     if (const auto [closed, confirmed] = m_goodsDialog->draw(); closed) {
       if (confirmed) {
-        if (m_selection == m_goods.size()) {
+        if (m_selection == -1) {
           m_goods.emplace_back(std::dynamic_pointer_cast<ShopProcessingGoodCommand>(m_goodsDialog->getCommand()->clone()));
           m_selection = std::max<int>(0, m_goods.size() - 1);
         }

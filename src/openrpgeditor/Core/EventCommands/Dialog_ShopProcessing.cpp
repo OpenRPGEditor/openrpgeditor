@@ -27,7 +27,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing::draw() {
       }
 
       if (ImGui::BeginTable("##shop_processing_main", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                            ImVec2{-1, ImGui::GetContentRegionAvail().y - ImGui::GetFrameHeightWithSpacing()})) {
+                            ImVec2{-1, ImGui::GetContentRegionAvail().y - (ImGui::GetFrameHeightWithSpacing() + (ImGui::GetStyle().FramePadding.y * 2))})) {
         ImGui::TableSetupScrollFreeze(2, 1);
         ImGui::TableSetupColumn(trNOOP("Merchandise"), ImGuiTableColumnFlags_WidthStretch, 0.5f);
         ImGui::TableSetupColumn(trNOOP("Price"), ImGuiTableColumnFlags_WidthStretch, 0.5f);

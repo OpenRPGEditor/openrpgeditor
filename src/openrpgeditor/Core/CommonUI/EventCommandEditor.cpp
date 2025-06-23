@@ -322,7 +322,6 @@ void EventCommandEditor::draw() {
                       blockSelect(n, true);
                       for (int i = n; i < m_selectedEnd; i++) {
                         if (m_commands->at(n)->isPartner(m_commands->at(i)->code(), m_commands->at(n)->indent())) {
-                          m_commandDialog->setElse(true); // Has an else, set to true.
                         }
                       }
                     }

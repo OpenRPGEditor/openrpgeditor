@@ -36,14 +36,11 @@ std::tuple<bool, bool> Dialog_Comment::draw() {
           if (texts.size() > 6) {
             texts.resize(6);
           }
-          if (texts.size() > 1) {
-            m_isNext = true;
-          }
-
+          
           if (texts.size() > 0) {
             m_command->text = texts.front();
           }
-          if (m_isNext) {
+          if (texts.size() > 1) {
             m_command->nextComments.clear();
             m_command->nextComments.reserve(texts.size());
             for (auto str = std::next(texts.begin()); str != texts.end(); ++str) {

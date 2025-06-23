@@ -159,12 +159,6 @@ struct Dialog_ConditionalBranch : IEventDialogController {
     eventCommands.back()->setIndent(getParentIndent().value());
     return eventCommands;
   };
-  bool isCurrentElseBranch() override { return m_else == m_elseBranch; }
-  void setCurrentElseBranch() override { m_else = m_elseBranch; }
-  void setElse(const bool cond) override {
-    m_else = cond;
-    m_elseBranch = cond;
-  }
 
 private:
   int m_troopId = 0;

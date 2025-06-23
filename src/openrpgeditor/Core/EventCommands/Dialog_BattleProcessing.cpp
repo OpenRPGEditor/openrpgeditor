@@ -1,83 +1,97 @@
 #include "Core/EventCommands/Dialog_BattleProcessing.hpp"
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 
-#include "Database/Database.hpp"
-#include "imgui.h"
+#include <Database/Database.hpp>
+
+#include <imgui.h>
+#include <imgui_internal.h>
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_BattleProcessing::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###BattleProcessing");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{194, 230}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-
-    if (enemy_picker) {
-      auto [closed, confirmed] = enemy_picker->draw();
-      if (closed) {
-        if (confirmed) {
-          m_id = enemy_picker->selection();
+  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 40) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetTextLineHeightWithSpacing() * 16) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
+  if (ImGui::BeginPopupModal(std::format("{}###BattleProcessing", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    drawPickers();
+    ImGui::BeginVertical("##battle_processing_main_layout", ImGui::GetContentRegionAvail(), 0);
+    {
+      GroupBox troopGroupBox(trNOOP("Troop"), "##battle_processing_troop_group_box", {-1, 0});
+      if (troopGroupBox.begin()) {
+        ImGui::RadioButton(trNOOP("Direct designation"), &m_type, 0);
+        ImGui::Dummy({ImGui::GetFrameHeightWithSpacing(), ImGui::GetFrameHeightWithSpacing()});
+        ImGui::SameLine();
+        ImGui::BeginDisabled(m_type != 0);
+        {
+          if (ImGui::EllipsesButton(m_type == 0 ? Database::instance()->troopNameOrId(m_id).c_str() : "##battle_processing_troop_direct", {-1, 0})) {
+            m_enemyPicker = ObjectPicker(trNOOP("Troop"), Database::instance()->troops.troops(), m_id);
+            m_enemyPicker->setOpen(true);
+          }
         }
-        enemy_picker.reset();
-      }
-    }
-
-    if (picker) {
-      auto [closed, confirmed] = picker->draw();
-      if (closed) {
-        if (confirmed) {
-          m_var_selection = picker->selection();
+        ImGui::EndDisabled();
+        ImGui::RadioButton(trNOOP("Designation with variable"), &m_type, 1);
+        ImGui::Dummy({ImGui::GetFrameHeightWithSpacing(), ImGui::GetFrameHeightWithSpacing()});
+        ImGui::SameLine();
+        ImGui::BeginDisabled(m_type != 1);
+        {
+          if (ImGui::EllipsesButton(m_type == 1 ? Database::instance()->variableNameAndId(m_varSelection).c_str() : "##battle_processing_troop_variable", {-1, 0})) {
+            m_variablePicker = VariableSwitchPicker(trNOOP("Variables"), Database::instance()->system.variables(), m_varSelection);
+            m_variablePicker->setOpen(true);
+          }
         }
-        picker.reset();
+        ImGui::EndDisabled();
+        ImGui::RadioButton(trNOOP("Same as Random Encounter"), &m_type, 2);
       }
+      troopGroupBox.end();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##battle_processing_button_layout", {-1, 0}, 0);
+      {
+        ImGui::Checkbox(trNOOP("Can Escape"), &m_canEscape);
+        ImGui::Spring();
+        ImGui::Checkbox(trNOOP("Can Lose"), &m_canLose);
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##battle_processing_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+          m_command->type = static_cast<BattleProcessType>(m_type);
+          m_command->id = m_id;
+          m_command->canEscape = m_canEscape;
+          m_command->canLose = m_canLose;
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
+      }
+      ImGui::EndHorizontal();
     }
-    ImGui::SeparatorText("Troop");
-    // Direct Designation
-    ImGui::RadioButton("Direct Designation", &m_type, 0);
-    ImGui::BeginDisabled(m_type != 0);
-    ImGui::PushID("##battleprocess_direct");
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
-    if (ImGui::Button(m_type == 0 ? Database::instance()->troopNameOrId(m_id).c_str() : "", {160, 0})) {
-
-      enemy_picker = ObjectPicker<Troop>("Troop"sv, Database::instance()->troops.troops(), m_id);
-      enemy_picker->setOpen(true);
-    }
-    ImGui::PopID();
-    ImGui::EndDisabled();
-
-    // Designation with variable
-    ImGui::RadioButton("Designation with variable", &m_type, 1);
-    ImGui::BeginDisabled(m_type != 1);
-    ImGui::PushID("##battleprocess_var");
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
-    if (ImGui::Button(m_type == 1 ? Database::instance()->variableNameOrId(m_var_selection).c_str() : "", ImVec2{200 - 15, 0})) {
-      picker.emplace("Variables", Database::instance()->system.variables(), m_var_selection);
-      picker->setOpen(true);
-    }
-    ImGui::PopID();
-    ImGui::EndDisabled();
-    ImGui::RadioButton("Same as Random Encounter", &m_type, 2);
-    ImGui::Checkbox("Can Escape", &m_canEscape);
-    ImGui::Checkbox("Can Lose", &m_canLose);
-
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->type = static_cast<BattleProcessType>(m_type);
-      command->id = m_id;
-      command->canEscape = m_canEscape;
-      command->canLose = m_canLose;
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);
+}
+
+void Dialog_BattleProcessing::drawPickers() {
+  if (m_enemyPicker) {
+    if (const auto [closed, confirmed] = m_enemyPicker->draw(); closed) {
+      if (confirmed) {
+        m_id = m_enemyPicker->selection();
+      }
+      m_enemyPicker.reset();
+    }
+  }
+
+  if (m_variablePicker) {
+    if (const auto [closed, confirmed] = m_variablePicker->draw(); closed) {
+      if (confirmed) {
+        m_varSelection = m_variablePicker->selection();
+      }
+      m_variablePicker.reset();
+    }
+  }
 }

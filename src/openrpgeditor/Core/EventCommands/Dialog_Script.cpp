@@ -28,12 +28,9 @@ std::tuple<bool, bool> Dialog_Script::draw() {
         if (const auto ret = ImGui::ButtonGroup("##script_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
           const auto script = m_textEditor.GetText();
           std::vector<std::string> scripts = splitString(script, '\n');
-          if (scripts.size() > 1) {
-            m_isNext = true;
-          }
 
           m_command->script = scripts.front();
-          if (m_isNext) {
+          if (scripts.size() > 1) {
             m_command->moreScript.clear();
             m_command->moreScript.reserve(scripts.size());
             for (auto str = std::next(scripts.begin()); str != scripts.end(); ++str) {

@@ -24,20 +24,8 @@ std::tuple<bool, bool> Dialog_MovementScript::draw() {
     if (ImGui::Button("OK")) {
       auto script = m_textEditor.GetText();
       std::vector<std::string> scripts = splitString(script, '\n');
-      if (scripts.size() > 1)
-        m_isNext = true;
 
       command->script = scripts.front();
-      /*
-      if (m_isNext) {
-        command->moreScript.clear();
-        command->moreScript.reserve(scripts.size());
-        for (auto str = std::next(scripts.begin()); str != scripts.end(); ++str) {
-          command->moreScript.emplace_back(std::make_shared<NextScriptCommand>())->script = *str;
-        }
-        command->moreScript.shrink_to_fit();
-      }
-      */
       ImGui::CloseCurrentPopup();
       setOpen(false);
       m_confirmed = true;

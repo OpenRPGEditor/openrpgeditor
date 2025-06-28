@@ -21,6 +21,8 @@ struct Dialog_NameInputProcessing : IEventDialogController {
   std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
+  void drawPickers();
+
   int m_actor;
   int m_maxChar;
 

@@ -1,57 +1,74 @@
 #include "Core/EventCommands/Dialog_NameInputProcessing.hpp"
 
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Database/Database.hpp"
-#include "imgui.h"
+
+#include <imgui.h>
+#include <imgui_internal.h>
 #include <tuple>
 
+void Dialog_NameInputProcessing::drawPickers() {
+  if (m_actorPicker) {
+    if (const auto [closed, confirmed] = m_actorPicker->draw(); closed) {
+      if (confirmed) {
+        m_actor = m_actorPicker->selection();
+      }
+      m_actorPicker.reset();
+    }
+  }
+}
 std::tuple<bool, bool> Dialog_NameInputProcessing::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###NameInputProcessing");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{200, 140}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 30) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 7) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-    if (m_actorPicker) {
-      auto [closed, confirmed] = m_actorPicker->draw();
-      if (closed) {
-        if (confirmed) {
-          m_actor = m_actorPicker->selection();
+  if (ImGui::BeginPopupModal(std::format("{}###NameInputProcessing", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    drawPickers();
+
+    ImGui::BeginVertical("##name_input_processing_main_layout", ImGui::GetContentRegionAvail(), 0);
+    {
+      GroupBox actorGroupBox(trNOOP("Actor"), "##name_input_processing_actor_group", {-1, 0});
+      if (actorGroupBox.begin()) {
+        if (ImGui::EllipsesButton(Database::instance()->actorNameAndId(m_actor).c_str(), ImVec2{-1, 0})) {
+          m_actorPicker = ObjectPicker(trNOOP("Actor"), Database::instance()->actors.actorList(), m_actor);
+          m_actorPicker->setOpen(true);
         }
-        m_actorPicker.reset();
       }
-    }
+      actorGroupBox.end();
+      GroupBox maxCharGroupBox(trNOOP("Max characters"), "##name_input_processing_max_char_group", {-1, 0});
+      if (maxCharGroupBox.begin()) {
+        ImGui::SetNextItemWidth(-1);
+        if (ImGui::SpinInt("##name_input_processing_max_chars", &m_maxChar, 1, 1)) {
+          m_maxChar = std::clamp(m_maxChar, 1, 16);
+        }
+      }
+      maxCharGroupBox.end();
 
-    ImGui::SeparatorText("Actor");
-    ImGui::SetNextItemWidth(100);
-    ImGui::PushID("##nameinput_actor");
-    if (ImGui::Button(Database::instance()->actorNameOrId(m_actor).c_str(), ImVec2{180, 0})) {
-      m_actorPicker = ObjectPicker<Actor>("Actor"sv, Database::instance()->actors.actorList(), m_actor);
-      m_actorPicker->setOpen(true);
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##name_input_processing_button_layout", {-1, 0}, 0);
+      {
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##name_input_processing_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+          m_command->actorId = m_actor;
+          m_command->maxChar = m_maxChar;
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
+      }
+      ImGui::EndHorizontal();
     }
-    ImGui::PopID();
-    ImGui::SeparatorText("Max characters");
-    ImGui::SetNextItemWidth(80);
-    if (ImGui::InputInt("##inputnumber_digits", &m_maxChar)) {
-      if (m_maxChar > 16) {
-        m_maxChar = 16;
-      } else if (m_maxChar < 1)
-        m_maxChar = 1;
-    }
+    ImGui::EndVertical();
 
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      m_command->actorId = m_actor;
-      m_command->maxChar = m_maxChar;
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
     ImGui::EndPopup();
   }
 

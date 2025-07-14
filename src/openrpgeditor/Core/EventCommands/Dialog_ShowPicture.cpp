@@ -1,204 +1,195 @@
 #include "Core/EventCommands/Dialog_ShowPicture.hpp"
 
-#include "Core/Log.hpp"
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Database/Database.hpp"
-#include "imgui.h"
+
+#include <imgui.h>
+#include <imgui_internal.h>
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ShowPicture::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###ShowPicture");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{400, 305}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 60) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 16) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-    if (picker) {
-      auto [closed, confirmed] = picker->draw();
-      if (closed) {
-        if (confirmed) {
-          if (xOrY)
-            m_value2 = picker->selection();
-          else
-            m_value1 = picker->selection();
-        }
-        picker.reset();
-      }
-    }
-
-    if (const auto [closed, confirmed] = m_imagePicker->draw(); closed) {
-      if (closed) {
-        if (confirmed) {
-          m_imagePicker->accept();
-          m_imageName = m_imagePicker->selectedImage();
-        }
-      }
-    }
-
-    ImGui::SeparatorText("Picture");
-    ImGui::BeginGroup();
+  if (ImGui::BeginPopupModal(std::format("{}###ShowPicture", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    drawPickers();
+    ImGui::BeginVertical("##show_picture_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
-      ImGui::Text("Number:");
-      ImGui::SetNextItemWidth(100);
-      if (ImGui::InputInt("##showpicture_id", &m_number, 1, 100)) {
-        if (m_number < 1)
-          m_number = 1;
-        if (m_number > 999)
-          m_number = 999;
-      }
-      ImGui::EndGroup();
-    }
-    ImGui::SameLine();
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 3.f);
-    ImGui::BeginGroup();
-    {
-      // Actor Button
-      ImGui::Text("Image:");
-      ImGui::PushID("##showpicture_image_selection");
-      if (ImGui::Button(m_imageName.c_str(), ImVec2{220, 0})) {
-        m_imagePicker->setOpen(true);
-      }
-      ImGui::PopID();
-      ImGui::EndGroup();
-    }
-    ImVec2 cursorPos = ImGui::GetCursorPos();
-    ImGui::SeparatorText("Position and Scale");
-    ImGui::Text("Origin:");
-    ImGui::PushItemWidth((160));
-    if (ImGui::BeginCombo("##showpicture_origin", DecodeEnumName(magic_enum::enum_value<PictureOrigin>(m_origin)).c_str())) {
-      for (auto& origin : magic_enum::enum_values<PictureOrigin>()) {
-        bool is_selected = m_origin == magic_enum::enum_index(origin).value();
-        if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(origin)).c_str(), is_selected)) {
-          m_origin = magic_enum::enum_index(origin).value();
-          if (is_selected)
-            ImGui::SetItemDefaultFocus();
-        }
-      }
-      ImGui::EndCombo();
-    }
-    // Direct Designation: Type 0
-    ImGui::RadioButton("Direct Designation", &m_type, 0);
-    ImGui::BeginGroup();
-    {
-      ImGui::Text("X:");
-      ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 8.f);
-      ImGui::Text("Y:");
-      ImGui::EndGroup();
-    }
-    ImGui::SameLine();
-    ImGui::BeginGroup();
-    {
-      ImGui::BeginDisabled(m_type != 0);
-      ImGui::SetNextItemWidth(100);
-      ImGui::InputInt("##showpicture_directdesig_x", &m_constant1, 1, 100);
-      ImGui::SetNextItemWidth(100);
-      ImGui::InputInt("##showpicture_directdesig_y", &m_constant2, 1, 100);
-      ImGui::EndDisabled();
-      ImGui::EndGroup();
-    }
-    // Designation with Variables Type 1
-    ImGui::RadioButton("Designation with variables", &m_type, 1);
-    ImGui::BeginGroup();
-    {
-      ImGui::Text("X:");
-      ImGui::SetCursorPosY(ImGui::GetCursorPos().y + 8.f);
-      ImGui::Text("Y:");
-      ImGui::EndGroup();
-    }
-    ImGui::SameLine();
-    ImGui::BeginGroup();
-    {
-      ImGui::BeginDisabled(m_type != 1);
-      ImGui::PushID("##showpicture_vardesig_x");
-      if (ImGui::Button(m_type == 1 ? Database::instance()->variableNameOrId(m_value1).c_str() : "", ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - 15, 0})) {
-        xOrY = false;
-        picker.emplace("Variables", Database::instance()->system.variables(), m_value1);
-        picker->setOpen(true);
-      }
-      ImGui::PopID();
-      ImGui::PushID("##showpicture_vardesig_y");
-      if (ImGui::Button(m_type == 1 ? Database::instance()->variableNameOrId(m_value2).c_str() : "", ImVec2{((ImGui::GetWindowContentRegionMax().x / 2)) - 15, 0})) {
-        xOrY = true;
-        picker.emplace("Variables", Database::instance()->system.variables(), m_value2);
-        picker->setOpen(true);
-      }
-      ImGui::PopID();
-      ImGui::EndDisabled();
-      ImGui::EndGroup();
-    }
-    // Set Cursor
-    ImGui::SetCursorPos(ImVec2(cursorPos.x + 235, cursorPos.y));
-    ImGui::BeginGroup();
-    {
-      ImGui::SeparatorText("");
-      ImGui::Text("Width %%");
-      ImGui::SetNextItemWidth(100);
-      if (ImGui::InputInt("##showpicture_width", &m_zoomX, 1, 100)) {
-        if (m_zoomX < -2000)
-          m_zoomX = -2000;
-        if (m_zoomX > 2000)
-          m_zoomX = 2000;
-      }
-      ImGui::Text("Height %%");
-      ImGui::SetNextItemWidth(100);
-      if (ImGui::InputInt("##showpicture_height", &m_zoomY, 1, 100)) {
-        if (m_zoomY < -2000)
-          m_zoomY = -2000;
-        if (m_zoomY > 2000)
-          m_zoomY = 2000;
-      }
-      ImGui::SeparatorText("Blend");
-      ImGui::Text("Opacity:");
-      ImGui::SetNextItemWidth(100);
-      if (ImGui::InputInt("##showpicture_opacity", &m_opacityValue, 1, 100)) {
-        if (m_opacityValue < 0)
-          m_opacityValue = -0;
-        if (m_opacityValue > 255)
-          m_opacityValue = 255;
-      }
-      ImGui::PushItemWidth((75));
-      if (ImGui::BeginCombo("##showpicture_blendmode", DecodeEnumName(magic_enum::enum_value<Blend>(m_blendMode)).c_str())) {
-        for (auto& blend : magic_enum::enum_values<Blend>()) {
-          bool is_selected = m_blendMode == magic_enum::enum_index(blend).value();
-          if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(blend)).c_str(), is_selected)) {
-            m_blendMode = magic_enum::enum_index(blend).value();
-            if (is_selected)
-              ImGui::SetItemDefaultFocus();
+      ImGui::BeginVertical("##show_picture_inner_layout", {-1, 0}, 0);
+      {
+        GroupBox pictureGroup(trNOOP("Picture"), "##show_picture_image_group", {-1, 0});
+        if (pictureGroup.begin()) {
+          GroupBox numberGroupBox(trNOOP("Number"), "##show_picture_number", {ImGui::GetContentRegionAvail().x * 0.25f, 0});
+          if (numberGroupBox.begin()) {
+            ImGui::SetNextItemWidth(-1.f);
+            if (ImGui::SpinInt("##show_picture_number_input", &m_number, 1, 100)) {
+              m_number = std::clamp(m_number, 1, 999);
+            }
           }
+          numberGroupBox.end();
+          ImGui::SameLine();
+          GroupBox imageGroupBox(trNOOP("Image"), "##show_picture_image", {-1, 0});
+          if (imageGroupBox.begin()) {
+            if (ImGui::EllipsesButton(std::format("{}##show_picture_image_button", Database::imageText(m_imageName)).c_str(), {-1, 0})) {
+              m_imagePicker->setImageInfo(m_imageName);
+              m_imagePicker->setOpen(true);
+            }
+          }
+          imageGroupBox.end();
         }
-        ImGui::EndCombo();
+        pictureGroup.end();
+        GroupBox positionGroup(trNOOP("Position"), "##show_picture_position", {-1, 0});
+        if (positionGroup.begin()) {
+          ImGui::BeginVertical("##show_picture_position_layout", {-1, 0});
+          {
+            GroupBox originGroup(trNOOP("Origin"), "##show_picture_origin", {-1, 0});
+            if (originGroup.begin()) {
+              ImGui::SetNextItemWidth(-1.f);
+              if (ImGui::BeginCombo("##show_picture_origin", DecodeEnumName(magic_enum::enum_value<PictureOrigin>(m_origin)).c_str())) {
+                for (auto origin : magic_enum::enum_values<PictureOrigin>()) {
+                  bool selected = m_origin == static_cast<int>(origin);
+                  if (ImGui::Selectable(DecodeEnumName(origin).c_str(), selected)) {
+                    m_origin = static_cast<int>(origin);
+                  }
+                  if (selected) {
+                    ImGui::SetItemDefaultFocus();
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            originGroup.end();
+            ImGui::RadioButton(trNOOP("Direct designation"), &m_type, 0);
+            ImGui::BeginHorizontal("##show_picture_position_direct_desig_layout", {-1, 0});
+            {
+              ImGui::Dummy({ImGui::GetFrameHeightWithSpacing(), 0});
+              ImGui::BeginHorizontal("##show_picture_position_direct_desig_right_layout", {-1, 0});
+              {
+                ImGui::BeginDisabled(m_type != 0);
+                {
+
+                  GroupBox directDesigXGroup(trNOOP("X"), "##show_picture_direct_desig_x_group", {ImGui::GetContentRegionAvail().x * 0.5f, 0});
+                  if (directDesigXGroup.begin()) {
+                    ImGui::SetNextItemWidth(-1.f);
+                    ImGui::SpinInt("##show_picture_direct_desig_x", &m_xConstant, 1, 100, m_type == 0 ? nullptr : "");
+                  }
+                  directDesigXGroup.end();
+                  GroupBox directDesigYGroup(trNOOP("Y"), "##show_picture_direct_desig_y_group", {ImGui::GetContentRegionAvail().x, 0});
+                  if (directDesigYGroup.begin()) {
+                    ImGui::SetNextItemWidth(-1.f);
+                    ImGui::SpinInt("##show_picture_direct_desig_y", &m_yConstant, 1, 100, m_type == 0 ? nullptr : "");
+                  }
+                  directDesigYGroup.end();
+                }
+                ImGui::EndDisabled();
+              }
+              ImGui::EndHorizontal();
+            }
+            ImGui::EndHorizontal();
+            ImGui::RadioButton(trNOOP("Designation with variables"), &m_type, 1);
+            ImGui::BeginHorizontal("##show_picture_position_var_desig_layout", {-1, 0});
+            {
+              ImGui::Dummy({ImGui::GetFrameHeightWithSpacing(), 0});
+              ImGui::BeginHorizontal("##show_picture_position_var_desig_right_layout", {-1, 0});
+              {
+                ImGui::BeginDisabled(m_type != 1);
+                {
+
+                  GroupBox varDesigXGroup(trNOOP("X"), "##show_picture_var_desig_x_group", {ImGui::GetContentRegionAvail().x * 0.5f, 0});
+                  if (varDesigXGroup.begin()) {
+                    ImGui::SetNextItemWidth(-1.f);
+                    if (ImGui::EllipsesButton(std::format("{}##show_picture_direct_var_x", m_type == 1 ? Database::instance()->variableNameAndId(m_xVariable) : "").c_str(), {-1, 0})) {
+                      m_isPickingY = false;
+                      m_varPicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_xVariable);
+                      m_varPicker->setOpen(true);
+                    }
+                  }
+                  varDesigXGroup.end();
+                  GroupBox varDesigYGroup(trNOOP("Y"), "##show_picture_var_desig_y_group", {ImGui::GetContentRegionAvail().x, 0});
+                  if (varDesigYGroup.begin()) {
+                    ImGui::SetNextItemWidth(-1.f);
+                    if (ImGui::EllipsesButton(std::format("{}##show_picture_direct_var_y", m_type == 1 ? Database::instance()->variableNameAndId(m_yVariable) : "").c_str(), {-1, 0})) {
+                      m_isPickingY = true;
+                      m_varPicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_yVariable);
+                      m_varPicker->setOpen(true);
+                    }
+                  }
+                  varDesigYGroup.end();
+                }
+                ImGui::EndDisabled();
+              }
+              ImGui::EndHorizontal();
+            }
+            ImGui::EndHorizontal();
+          }
+          ImGui::EndVertical();
+        }
+        positionGroup.end();
       }
-    }
-    ImGui::EndGroup();
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 20);
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->number = m_number;
-      command->imageName = m_imageName;
-      command->origin = static_cast<PictureOrigin>(m_origin);
-      command->type = static_cast<PictureDesignationSource>(m_type);
-      if (command->type == PictureDesignationSource::Direct_designation) {
-        command->value1 = m_constant1;
-        command->value2 = m_constant2;
-      } else {
-        command->value1 = m_value1;
-        command->value2 = m_value2;
+      ImGui::EndVertical();
+
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##show_picture_button_layout", {-1, 0}, 0);
+      {
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##show_picture_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+          m_command->number = m_number;
+          m_command->imageName = m_imageName;
+          m_command->origin = static_cast<PictureOrigin>(m_origin);
+          m_command->type = static_cast<PictureDesignationSource>(m_type);
+          if (m_command->type == PictureDesignationSource::Direct_designation) {
+            m_command->value1 = m_xConstant;
+            m_command->value2 = m_yConstant;
+          } else {
+            m_command->value1 = m_xVariable;
+            m_command->value2 = m_yVariable;
+          }
+          m_command->zoomX = m_zoomX;
+          m_command->zoomY = m_zoomY;
+          m_command->opacityValue = m_opacityValue;
+          m_command->blendMode = static_cast<Blend>(m_blendMode);
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
       }
-      command->zoomX = m_zoomX;
-      command->zoomY = m_zoomY;
-      command->opacityValue = m_opacityValue;
-      command->blendMode = static_cast<Blend>(m_blendMode);
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
+      ImGui::EndHorizontal();
     }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 
   return std::make_tuple(!m_open, m_confirmed);
+}
+
+void Dialog_ShowPicture::drawPickers() {
+  if (m_varPicker) {
+    if (const auto [closed, confirmed] = m_varPicker->draw(); closed) {
+      if (confirmed) {
+        if (m_isPickingY) {
+          m_yVariable = m_varPicker->selection();
+        } else {
+          m_xVariable = m_varPicker->selection();
+        }
+      }
+      m_varPicker.reset();
+    }
+  }
+
+  if (const auto [closed, confirmed] = m_imagePicker->draw(); closed) {
+    if (confirmed) {
+      m_imagePicker->accept();
+      m_imageName = m_imagePicker->selectedImage();
+    }
+  }
 }

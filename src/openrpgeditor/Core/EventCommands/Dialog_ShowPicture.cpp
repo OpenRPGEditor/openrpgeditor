@@ -13,7 +13,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
     ImGui::OpenPopup("###ShowPicture");
   }
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 60) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 16) + (ImGui::GetStyle().FramePadding.y * 2)};
+  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 60) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 17) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
@@ -21,30 +21,31 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
     drawPickers();
     ImGui::BeginVertical("##show_picture_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
-      ImGui::BeginVertical("##show_picture_inner_layout", {-1, 0}, 0);
-      {
-        GroupBox pictureGroup(trNOOP("Picture"), "##show_picture_image_group", {-1, 0});
-        if (pictureGroup.begin()) {
-          GroupBox numberGroupBox(trNOOP("Number"), "##show_picture_number", {ImGui::GetContentRegionAvail().x * 0.25f, 0});
-          if (numberGroupBox.begin()) {
-            ImGui::SetNextItemWidth(-1.f);
-            if (ImGui::SpinInt("##show_picture_number_input", &m_number, 1, 100)) {
-              m_number = std::clamp(m_number, 1, 999);
-            }
+
+      GroupBox pictureGroup(trNOOP("Picture"), "##show_picture_image_group", {-1, 0});
+      if (pictureGroup.begin()) {
+        GroupBox numberGroupBox(trNOOP("Number"), "##show_picture_number", {ImGui::GetContentRegionAvail().x * 0.25f, 0});
+        if (numberGroupBox.begin()) {
+          ImGui::SetNextItemWidth(-1.f);
+          if (ImGui::SpinInt("##show_picture_number_input", &m_number, 1, 100)) {
+            m_number = std::clamp(m_number, 1, 999);
           }
-          numberGroupBox.end();
-          ImGui::SameLine();
-          GroupBox imageGroupBox(trNOOP("Image"), "##show_picture_image", {-1, 0});
-          if (imageGroupBox.begin()) {
-            if (ImGui::EllipsesButton(std::format("{}##show_picture_image_button", Database::imageText(m_imageName)).c_str(), {-1, 0})) {
-              m_imagePicker->setImageInfo(m_imageName);
-              m_imagePicker->setOpen(true);
-            }
-          }
-          imageGroupBox.end();
         }
-        pictureGroup.end();
-        GroupBox positionGroup(trNOOP("Position"), "##show_picture_position", {-1, 0});
+        numberGroupBox.end();
+        ImGui::SameLine();
+        GroupBox imageGroupBox(trNOOP("Image"), "##show_picture_image", {-1, 0});
+        if (imageGroupBox.begin()) {
+          if (ImGui::EllipsesButton(std::format("{}##show_picture_image_button", Database::imageText(m_imageName)).c_str(), {-1, 0})) {
+            m_imagePicker->setImageInfo(m_imageName);
+            m_imagePicker->setOpen(true);
+          }
+        }
+        imageGroupBox.end();
+      }
+      pictureGroup.end();
+      ImGui::BeginHorizontal("##show_picture_inner_layout", {-1, 0}, 0);
+      {
+        GroupBox positionGroup(trNOOP("Position"), "##show_picture_position", {ImGui::GetContentRegionAvail().x * .75f, 0});
         if (positionGroup.begin()) {
           ImGui::BeginVertical("##show_picture_position_layout", {-1, 0});
           {
@@ -131,8 +132,61 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
           ImGui::EndVertical();
         }
         positionGroup.end();
+                ImGui::BeginVertical("##show_picture_inner_inner", {-1, 0});
+        {
+          GroupBox scaleGroupBox(trNOOP("Scale"), "##show_picture_scale_group", {-1, 0});
+          if (scaleGroupBox.begin()) {
+            GroupBox widthGroupBox(trNOOP("Width"), "##show_picture_scale_width_group", {-1, 0});
+            if (widthGroupBox.begin()) {
+              ImGui::SetNextItemWidth(-1.f);
+              if (ImGui::SpinInt("##show_picture_scale_width", &m_zoomX, 1, 100, "%d %%")) {
+                m_zoomX = std::clamp(m_zoomX, -2000, 2000);
+              }
+            }
+            widthGroupBox.end();
+            GroupBox heightGroupBox(trNOOP("Height"), "##show_picture_scale_height_group", {-1, 0});
+            if (heightGroupBox.begin()) {
+              ImGui::SetNextItemWidth(-1.f);
+              if (ImGui::SpinInt("##show_picture_scale_height", &m_zoomY, 1, 100, "%d %%")) {
+                m_zoomY = std::clamp(m_zoomY, -2000, 2000);
+              }
+            }
+            heightGroupBox.end();
+          }
+          scaleGroupBox.end();
+          GroupBox blendGroupBox(trNOOP("Blend"), "##show_picture_blend_group", {-1, 0});
+          if (blendGroupBox.begin()) {
+            GroupBox opacityGroup(trNOOP("Opacity"), "##show_picture_blend_opacity_group", {-1, 0});
+            if (opacityGroup.begin()) {
+              ImGui::SetNextItemWidth(-1);
+              if (ImGui::SpinInt("##show_picture_blend_opacity", &m_opacityValue, 1, 100)) {
+                m_opacityValue = std::clamp(m_opacityValue, 0, 255);
+              }
+            }
+            opacityGroup.end();
+            GroupBox modeGroup(trNOOP("Mode"), "##show_picture_blend_mode_group", {-1, 0});
+            if (modeGroup.begin()) {
+              ImGui::SetNextItemWidth(-1);
+              if (ImGui::BeginCombo("##show_picture_blend_mode", DecodeEnumName(static_cast<Blend>(m_blendMode)).c_str())) {
+                for (auto& blend : magic_enum::enum_values<Blend>()) {
+                  bool selected = m_blendMode == static_cast<int>(blend);
+                  if (ImGui::Selectable(DecodeEnumName(blend).c_str(), selected)) {
+                    m_blendMode = magic_enum::enum_index(blend).value();
+                  }
+                  if (selected) {
+                    ImGui::SetItemDefaultFocus();
+                  }
+                }
+                ImGui::EndCombo();
+              }
+            }
+            modeGroup.end();
+          }
+          blendGroupBox.end();
+        }
+        ImGui::EndVertical();
       }
-      ImGui::EndVertical();
+      ImGui::EndHorizontal();
 
       ImGui::Spring();
       ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));

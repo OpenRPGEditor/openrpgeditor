@@ -1,57 +1,57 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementJump.hpp"
 #include "Core/Application.hpp"
 
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "imgui.h"
+#include "imgui_internal.h"
+
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_MovementJump::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###MovementJump");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{235, 110}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-    ImGui::SeparatorText("Offset");
-    ImGui::BeginGroup();
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize =
+      ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 7) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
+  if (ImGui::BeginPopupModal(std::format("{}###MovementJump", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    ImGui::BeginVertical("##movejump_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
-      ImGui::Text("X:");
-      ImGui::SetNextItemWidth(100);
-      if (ImGui::InputInt("##moveroute_jump_x", &m_jump_x)) {
-        if (m_jump_x < -99)
-          m_jump_x = -99;
-        if (m_jump_x > 999)
-          m_jump_x = 999;
+      GroupBox xGroupBox(trNOOP("X"), "##movejump_x_label_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiWindowFlags_AlwaysAutoResize);
+      if (xGroupBox.begin()) {
+        ImGui::SetNextItemWidth(-1);
+        ImGui::InputInt("##movejump_x", &m_jump_x);
       }
-      ImGui::EndGroup();
-    }
-    ImGui::SameLine();
-    ImGui::SetCursorPosY(ImGui::GetCursorPos().y - 3.f);
-    ImGui::BeginGroup();
-    {
-      ImGui::Text("Y:");
-      ImGui::SetNextItemWidth(100);
-      if (ImGui::InputInt("##moveroute_jump_y", &m_jump_y)) {
-        if (m_jump_x < -99)
-          m_jump_x = -99;
-        if (m_jump_x > 999)
-          m_jump_x = 999;
-      }
-      ImGui::EndGroup();
-    }
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->x = m_jump_x;
-      command->y = m_jump_y;
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
+      xGroupBox.end();
+      ImGui::Spring();
+      GroupBox yGroupBox(trNOOP("Y"), "##movejump_y_label_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiWindowFlags_AlwaysAutoResize);
 
+      if (yGroupBox.begin()) {
+        ImGui::SetNextItemWidth(-1);
+        ImGui::InputInt("##movejump_x", &m_jump_y);
+      }
+      yGroupBox.end();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##movejump_buttons_layout", {-1, -1}, 0);
+      {
+        ImGui::Spring();
+        ImGui::SetNextItemWidth(-1);
+        if (const auto ret = ImGui::ButtonGroup("##movejump_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+          command->x = m_jump_x;
+          command->y = m_jump_y;
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
+      }
+      ImGui::EndHorizontal();
+    }
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 

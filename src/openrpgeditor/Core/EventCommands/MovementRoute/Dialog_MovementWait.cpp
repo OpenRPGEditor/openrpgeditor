@@ -1,41 +1,51 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementWait.hpp"
 #include "Core/Application.hpp"
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 
 #include "imgui.h"
+#include <imgui_internal.h>
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_MovementWait::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###MovementWait");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{221, 97}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-
-    ImGui::SeparatorText("Duration");
-    ImGui::SetNextItemWidth(100);
-    if (ImGui::InputInt("##movement_wait_input", &m_waitDuration)) {
-      if (m_waitDuration < 1)
-        m_waitDuration = 1;
-      if (m_waitDuration > 999)
-        m_waitDuration = 999;
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize =
+      ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 5) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
+  if (ImGui::BeginPopupModal(std::format("{}###MovementWait", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    ImGui::BeginVertical("##movement_wait_main_layout", ImGui::GetContentRegionAvail(), 0);
+    {
+      GroupBox labelGroupBox(trNOOP("Duration"), "##movement_wait_duration_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiWindowFlags_AlwaysAutoResize);
+      if (labelGroupBox.begin()) {
+        ImGui::SetNextItemWidth(-1);
+        if (ImGui::SpinInt("##movement_wait_duration_input", &m_waitDuration, 1, 100, trNOOP("%4d frames (1/60 sec)"))) {
+          m_waitDuration = std::clamp(m_waitDuration, 1, 253);
+        }
+      }
+      labelGroupBox.end();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##movement_wait_buttons_layout", {-1, -1}, 0);
+      {
+        ImGui::Spring();
+        ImGui::SetNextItemWidth(-1);
+        if (const auto ret = ImGui::ButtonGroup("##movement_wait_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+          command->duration = m_waitDuration;
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
+      }
+      ImGui::EndHorizontal();
     }
-    ImGui::SameLine();
-    ImGui::Text("frames 1/60 sec");
-
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->duration = m_waitDuration;
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 

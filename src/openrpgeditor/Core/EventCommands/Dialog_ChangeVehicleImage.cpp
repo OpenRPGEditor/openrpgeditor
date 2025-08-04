@@ -39,8 +39,8 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
         }
         ImGui::EndCombo();
       }
-      ImGui::EndGroup();
     }
+    ImGui::EndGroup();
 
     const auto buttonSize = ImVec2{144, 144};
     const auto buttonCenter = (buttonSize / 2);
@@ -62,6 +62,7 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
         ImGui::Image(m_characterSheet->texture(), ImVec2{static_cast<float>(m_characterSheet->characterWidth()), static_cast<float>(m_characterSheet->characterHeight())}, min, max);
       }
     }
+    ImGui::EndGroup();
     ImGui::SameLine();
     ImGui::Dummy(ImVec2{20, 0});
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.f);
@@ -81,8 +82,8 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
         ImGui::CloseCurrentPopup();
         setOpen(false);
       }
-      ImGui::EndGroup();
     }
+    ImGui::EndGroup();
 
     ImGui::EndPopup();
   }

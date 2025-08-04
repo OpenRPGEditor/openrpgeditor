@@ -43,6 +43,12 @@ struct Dialog_SetMovementRoute : IEventDialogController {
   std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
   void setPage(EventPage* page) {
+    m_page = page;
+    if (!m_page) {
+      m_route = nullptr;
+      m_isEventRoute = false;
+      return;
+    }
     m_isEventRoute = true;
     m_route = &m_page->moveRoute();
     if (m_route->list().empty()) {

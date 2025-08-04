@@ -9,22 +9,21 @@ struct Dialog_MovementSwitchOFF : IEventDialogController {
   Dialog_MovementSwitchOFF() = delete;
   explicit Dialog_MovementSwitchOFF(const std::string& name, const std::shared_ptr<MovementSwitchOFFCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new MovementSwitchOFFCommand());
+      m_command.reset(new MovementSwitchOFFCommand());
     }
-    picker.emplace("Switches", Database::instance()->system.switches(), command->id);
-    picker->setOpen(true);
+    m_picker.emplace("Switches", Database::instance()->system.switches(), m_command->id);
+    m_picker->setOpen(true);
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
   MainWindow* m_project = nullptr;
 
 private:
   bool m_confirmed{false};
-  std::shared_ptr<MovementSwitchOFFCommand> command;
-  std::optional<VariableSwitchPicker> picker;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<MovementSwitchOFFCommand> m_command;
+  std::optional<VariableSwitchPicker> m_picker;
 };

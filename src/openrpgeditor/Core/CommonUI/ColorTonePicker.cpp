@@ -50,12 +50,14 @@ bool ColorTonePicker::draw() {
         if (redGroup.begin()) {
           ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.75f);
           if (ImGui::SliderInt("##colortone_preview_red_slider", &m_r, -255, 255)) {
+            m_r = std::clamp(m_r, -255, 255);
             m_toneInvalid = m_modified = true;
             m_currentTemplate = -1;
           }
           ImGui::SameLine();
           ImGui::SetNextItemWidth(-1);
           if (ImGui::SpinInt("##color_preview_int_red", &m_r, 1, 100)) {
+            m_r = std::clamp(m_r, -255, 255);
             m_toneInvalid = m_modified = true;
             m_currentTemplate = -1;
           }
@@ -66,6 +68,7 @@ bool ColorTonePicker::draw() {
         if (greenGroup.begin()) {
           ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.75f);
           if (ImGui::SliderInt("##color_preview_green_slider", &m_g, -255, 255)) {
+            m_g = std::clamp(m_g, -255, 255);
             m_toneInvalid = m_modified = true;
             m_currentTemplate = -1;
           }
@@ -81,12 +84,14 @@ bool ColorTonePicker::draw() {
         if (blueGroup.begin()) {
           ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.75f);
           if (ImGui::SliderInt("##color_preview_blue_slider", &m_b, -255, 255)) {
+            m_b = std::clamp(m_b, -255, 255);
             m_toneInvalid = m_modified = true;
             m_currentTemplate = -1;
           }
           ImGui::SameLine();
           ImGui::SetNextItemWidth(-1);
           if (ImGui::SpinInt("##color_preview_int_blue", &m_b, 1, 100)) {
+            m_b = std::clamp(m_b, -255, 255);
             m_toneInvalid = m_modified = true;
             m_currentTemplate = -1;
           }
@@ -96,12 +101,14 @@ bool ColorTonePicker::draw() {
         if (grayGroup.begin()) {
           ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.75f);
           if (ImGui::SliderInt("##color_preview_gray_slider", &m_gray, 0, 255)) {
+            m_gray = std::clamp(m_gray, 0, 255);
             m_toneInvalid = m_modified = true;
             m_currentTemplate = -1;
           }
           ImGui::SameLine();
           ImGui::SetNextItemWidth(-1);
           if (ImGui::SpinInt("##color_preview_int_gray", &m_gray, 1, 100)) {
+            m_gray = std::clamp(m_gray, 0, 255);
             m_toneInvalid = m_modified = true;
             m_currentTemplate = -1;
           }

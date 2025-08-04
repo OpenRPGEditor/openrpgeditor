@@ -15,6 +15,7 @@ public:
     Command,
     Tint,
     Event,
+    Flash,
   };
 
   Template() = default;

@@ -7,22 +7,22 @@ struct Dialog_FlashScreen : IEventDialogController {
   Dialog_FlashScreen() = delete;
   explicit Dialog_FlashScreen(const std::string& name, const std::shared_ptr<FlashScreenCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new FlashScreenCommand());
+      m_command.reset(new FlashScreenCommand());
     }
-    r = command->color.r;
-    g = command->color.g;
-    b = command->color.b;
-    m_intensity = command->color.intensity;
-    m_duration = command->duration;
-    m_waitForCompletion = command->waitForCompletion;
+    r = m_command->color.r;
+    g = m_command->color.g;
+    b = m_command->color.b;
+    m_intensity = m_command->color.intensity;
+    m_duration = m_command->duration;
+    m_waitForCompletion = m_command->waitForCompletion;
 
-    color_picker.setValues(r, g, b, m_intensity);
+    m_colorPicker.setValues(r, g, b, m_intensity);
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
   int r;
@@ -33,8 +33,8 @@ private:
   bool m_waitForCompletion;
 
   bool m_confirmed{false};
-  std::shared_ptr<FlashScreenCommand> command;
+  std::shared_ptr<FlashScreenCommand> m_command;
   std::tuple<bool, bool> result;
 
-  ColorFlashPicker color_picker;
+  ColorFlashPicker m_colorPicker;
 };

@@ -94,7 +94,7 @@ void Template::setNote(const std::string& note) {
   MODIFIABLE_SET_OLD_VALUE(note);
   m_note = note;
   if (!signalsDisabled()) {
-   emit_signal( noteModified(), this, note);
+    emit_signal(noteModified(), this, note);
   }
   setModified();
 }

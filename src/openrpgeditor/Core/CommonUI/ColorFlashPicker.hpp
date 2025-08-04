@@ -31,6 +31,7 @@ public:
 
 private:
   ColorTonePreview m_tonePreview;
+  int m_currentTemplate{-1};
   int m_r = 255;
   int m_g = 255;
   int m_b = 255;

@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+
 #include "Core/CommonUI/ColorTonePicker.hpp"
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/TintPicture.hpp"
@@ -9,16 +11,12 @@ struct Dialog_TintPicture : IEventDialogController {
   : IEventDialogController(name)
   , m_command(cmd) {
     if (cmd == nullptr) {
-      m_command.reset(new TintPictureCommand());
+      m_command = std::make_shared<TintPictureCommand>();
     }
     m_picture = m_command->picture;
-    r = m_command->color.r;
-    g = m_command->color.g;
-    b = m_command->color.b;
-    gray = m_command->color.gray;
     m_duration = m_command->duration;
     m_waitForCompletion = m_command->waitForCompletion;
-    m_colorPicker.setValues(r, g, b, gray);
+    m_colorPicker.setValues(m_command->color.r, m_command->color.g, m_command->color.b, m_command->color.gray);
   }
   std::tuple<bool, bool> draw() override;
 
@@ -26,10 +24,6 @@ struct Dialog_TintPicture : IEventDialogController {
 
 private:
   int m_picture;
-  int r;
-  int g;
-  int b;
-  int gray;
   int m_duration;
   bool m_waitForCompletion;
 

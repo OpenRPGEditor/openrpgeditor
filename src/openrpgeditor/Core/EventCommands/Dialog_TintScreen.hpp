@@ -3,40 +3,32 @@
 #include "Core/EventCommands/IEventDialogController.hpp"
 #include "Database/EventCommands/TintScreen.hpp"
 #include <algorithm>
+#include <memory>
 
 struct Dialog_TintScreen : IEventDialogController {
   Dialog_TintScreen() = delete;
   explicit Dialog_TintScreen(const std::string& name, const std::shared_ptr<TintScreenCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new TintScreenCommand());
+      m_command = std::make_shared<TintScreenCommand>();
     }
-    r = command->color.r;
-    g = command->color.g;
-    b = command->color.b;
-    gray = command->color.gray;
-    m_duration = command->duration;
-    m_waitForCompletion = command->waitForCompletion;
+    m_duration = m_command->duration;
+    m_waitForCompletion = m_command->waitForCompletion;
 
-    color_picker.setValues(r, g, b, gray);
+    m_colorPicker.setValues(m_command->color.r, m_command->color.g, m_command->color.b, m_command->color.gray);
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
-  int r;
-  int g;
-  int b;
-  int gray;
   int m_duration;
   int m_currentTemplate{-1};
   bool m_waitForCompletion;
 
   bool m_confirmed{false};
-  std::shared_ptr<TintScreenCommand> command;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<TintScreenCommand> m_command;
 
-  ColorTonePicker color_picker;
+  ColorTonePicker m_colorPicker;
 };

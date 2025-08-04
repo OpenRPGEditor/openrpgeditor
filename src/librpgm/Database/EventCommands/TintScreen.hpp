@@ -12,11 +12,11 @@ struct TintScreenCommand final : IEventCommand {
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<TintScreenCommand>(*this); }
 
   struct {
-    int r;
-    int g;
-    int b;
-    int gray;
+    int r = 0;
+    int g = 0;
+    int b = 0;
+    int gray = 0;
   } color;
-  int duration;
+  int duration = 60;
   bool waitForCompletion;
 };

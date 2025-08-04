@@ -46,6 +46,7 @@ public:
 
 private:
   ColorTonePreview m_tonePreview;
+  int m_currentTemplate = -1;
   int m_r = 0;
   int m_g = 0;
   int m_b = 0;

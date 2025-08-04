@@ -11,8 +11,8 @@ struct ShakeScreenCommand final : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShakeScreenCommand>(*this); }
 
-  int power;
-  int speed;
-  int duration;
-  bool waitForCompletion;
+  int power = 5;
+  int speed = 5;
+  int duration = 60;
+  bool waitForCompletion{true};
 };

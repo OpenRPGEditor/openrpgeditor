@@ -6,18 +6,18 @@ struct Dialog_ShakeScreen : IEventDialogController {
   Dialog_ShakeScreen() = delete;
   explicit Dialog_ShakeScreen(const std::string& name, const std::shared_ptr<ShakeScreenCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new ShakeScreenCommand());
+      m_command.reset(new ShakeScreenCommand());
     }
-    m_power = command->power;
-    m_speed = command->speed;
-    m_duration = command->duration;
-    m_waitForCompletion = command->waitForCompletion;
+    m_power = m_command->power;
+    m_speed = m_command->speed;
+    m_duration = m_command->duration;
+    m_waitForCompletion = m_command->waitForCompletion;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
   int m_power;
@@ -26,6 +26,6 @@ private:
   bool m_waitForCompletion;
 
   bool m_confirmed{false};
-  std::shared_ptr<ShakeScreenCommand> command;
+  std::shared_ptr<ShakeScreenCommand> m_command;
   std::tuple<bool, bool> result;
 };

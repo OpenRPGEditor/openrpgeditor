@@ -23,6 +23,6 @@ struct RotatePictureCommand final : IEventCommand {
     }
     return false;
   }
-  int picture;
-  int rotation;
+  int picture = 1;
+  int rotation = 0;
 };

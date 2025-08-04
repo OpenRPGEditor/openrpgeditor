@@ -25,5 +25,5 @@ struct ErasePictureCommand final : IEventCommand {
     }
     return false;
   }
-  int picture;
+  int picture = 1;
 };

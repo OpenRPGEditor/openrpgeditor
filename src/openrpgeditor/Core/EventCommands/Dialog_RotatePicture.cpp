@@ -1,46 +1,63 @@
 #include "Core/EventCommands/Dialog_RotatePicture.hpp"
 
-#include "imgui.h"
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+#include "Database/Database.hpp"
+
+#include <imgui.h>
+#include <imgui_internal.h>
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_RotatePicture::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###RotatePicture");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{131, 140}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 32) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 7) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-    ImGui::SeparatorText("Picture Number");
-    ImGui::SetNextItemWidth(120);
-    if (ImGui::InputInt("##rotatepicture_id", &m_picture)) {
-      if (m_picture > 999) {
-        m_picture = 999;
-      } else if (m_picture < 1)
-        m_picture = 1;
-    }
-    ImGui::SeparatorText("Rotation Speed   ");
-    ImGui::SetNextItemWidth(120);
-    if (ImGui::InputInt("##rotatepicture_speed", &m_rotation)) {
-      if (m_rotation > 999) {
-        m_rotation = 999;
-      } else if (m_rotation < 1)
-        m_rotation = 1;
-    }
+  if (ImGui::BeginPopupModal(std::format("{}###RotatePicture", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    ImGui::BeginVertical("##rotate_picture_main_layout", ImGui::GetContentRegionAvail(), 0.f);
+    {
+      GroupBox pictureGroup(trNOOP("Picture Number"), "##rotate_picture_picture_number_group", {-1, 0});
+      if (pictureGroup.begin()) {
+        ImGui::SetNextItemWidth(-1);
+        if (ImGui::SpinInt("##rotate_picture_picture_number", &m_picture)) {
+          m_picture = std::clamp(m_picture, 1, 999);
+        }
+      }
+      pictureGroup.end();
+      GroupBox rotationGroup(trNOOP("Rotation"), "##rotate_picture_rotation_group", {-1, 0});
+      if (rotationGroup.begin()) {
+        ImGui::SetNextItemWidth(-1);
+        if (ImGui::SpinInt("##rotate_picture_rotation", &m_rotation)) {
+          m_rotation = std::clamp(m_rotation, 0, 90);
+        }
+      }
+      rotationGroup.end();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##rotate_picture_button_layout");
+      {
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##rotate_picture_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
 
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->picture = m_picture;
-      command->rotation = m_rotation;
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
+          m_command->picture = m_picture;
+          m_command->rotation = m_rotation;
+
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
+      }
+      ImGui::EndHorizontal();
     }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
+    ImGui::EndVertical();
+
     ImGui::EndPopup();
   }
 

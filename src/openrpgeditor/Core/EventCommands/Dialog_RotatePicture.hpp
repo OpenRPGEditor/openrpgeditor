@@ -6,21 +6,20 @@ struct Dialog_RotatePicture : IEventDialogController {
   Dialog_RotatePicture() = delete;
   explicit Dialog_RotatePicture(const std::string& name, const std::shared_ptr<RotatePictureCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new RotatePictureCommand());
+      m_command.reset(new RotatePictureCommand());
     }
-    m_picture = command->picture;
-    m_rotation = command->rotation;
+    m_picture = m_command->picture;
+    m_rotation = m_command->rotation;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
   bool m_confirmed{false};
   int m_picture;
   int m_rotation;
-  std::shared_ptr<RotatePictureCommand> command;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<RotatePictureCommand> m_command;
 };

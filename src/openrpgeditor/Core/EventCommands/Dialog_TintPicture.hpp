@@ -7,22 +7,22 @@ struct Dialog_TintPicture : IEventDialogController {
   Dialog_TintPicture() = delete;
   explicit Dialog_TintPicture(const std::string& name, const std::shared_ptr<TintPictureCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
+  , m_command(cmd) {
     if (cmd == nullptr) {
-      command.reset(new TintPictureCommand());
+      m_command.reset(new TintPictureCommand());
     }
-    m_picture = command->picture;
-    r = command->color.r;
-    g = command->color.g;
-    b = command->color.b;
-    gray = command->color.gray;
-    m_duration = command->duration;
-    m_waitForCompletion = command->waitForCompletion;
-    color_picker.setValues(r, g, b, gray);
+    m_picture = m_command->picture;
+    r = m_command->color.r;
+    g = m_command->color.g;
+    b = m_command->color.b;
+    gray = m_command->color.gray;
+    m_duration = m_command->duration;
+    m_waitForCompletion = m_command->waitForCompletion;
+    m_colorPicker.setValues(r, g, b, gray);
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
   int m_picture;
@@ -34,8 +34,8 @@ private:
   bool m_waitForCompletion;
 
   bool m_confirmed{false};
-  std::shared_ptr<TintPictureCommand> command;
+  std::shared_ptr<TintPictureCommand> m_command;
   std::tuple<bool, bool> result;
 
-  ColorTonePicker color_picker;
+  ColorTonePicker m_colorPicker;
 };

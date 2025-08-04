@@ -321,8 +321,7 @@ void EventCommandEditor::draw() {
                     if (m_commands->at(n)->code() == EventCode::Conditional_Branch) {
                       blockSelect(n, true);
                       for (int i = n; i < m_selectedEnd; i++) {
-                        if (m_commands->at(n)->isPartner(m_commands->at(i)->code(), m_commands->at(n)->indent())) {
-                        }
+                        if (m_commands->at(n)->isPartner(m_commands->at(i)->code(), m_commands->at(n)->indent())) {}
                       }
                     }
                     m_commandDialog->setOpen(true);
@@ -865,8 +864,8 @@ std::list<EventCommandEditor::EventCommandTab> EventCommandEditor::buildTabList(
                   {EventCode::Tint_Screen, true},
                   {EventCode::Flash_Screen, true},
                   {EventCode::Shake_Screen, true},
-                  {EventCode::Fadeout_Screen, true},
-                  {EventCode::Fadein_Screen, true},
+                  {EventCode::Fadeout_Screen, false},
+                  {EventCode::Fadein_Screen, false},
               },
               {
                   {EventCode::Set_Weather_Effect, true},

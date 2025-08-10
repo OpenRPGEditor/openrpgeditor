@@ -8,20 +8,18 @@ struct Dialog_MovementChangeFrequency : IEventDialogController {
   Dialog_MovementChangeFrequency() = delete;
   explicit Dialog_MovementChangeFrequency(const std::string& name, const std::shared_ptr<MovementFrequencyCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
-    if (command == nullptr) {
+  , m_command(cmd) {
+    if (m_command == nullptr) {
 
-      command.reset(new MovementFrequencyCommand());
+      m_command.reset(new MovementFrequencyCommand());
     }
-    m_frequency = command->frequency;
+    m_frequency = m_command->frequency;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
   int m_frequency;
-  bool m_confirmed{false};
-  std::shared_ptr<MovementFrequencyCommand> command;
-  std::tuple<bool, bool> result;
+  std::shared_ptr<MovementFrequencyCommand> m_command;
 };

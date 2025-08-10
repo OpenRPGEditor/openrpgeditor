@@ -1,44 +1,61 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.hpp"
 #include "Core/Application.hpp"
 
-#include "imgui.h"
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+
+#include <imgui.h>
+#include <imgui_internal.h>
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_MovementChangeFrequency::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###MovementChangeFrequency");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{140, 97}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 20) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 5) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-    ImGui::SeparatorText("Frequency");
-    ImGui::PushItemWidth((100));
-    if (ImGui::BeginCombo("##movement_frequency_selection", DecodeEnumName(static_cast<MovementFrequency>(m_frequency)).c_str())) {
-      for (auto& freq : magic_enum::enum_values<MovementFrequency>()) {
-        bool is_selected = (m_frequency == static_cast<int>(freq));
-        if (ImGui::Selectable(DecodeEnumName(freq).c_str(), is_selected)) {
-          m_frequency = static_cast<int>(freq);
-          if (is_selected)
-            ImGui::SetItemDefaultFocus();
+  if (ImGui::BeginPopupModal(std::format("{}###MovementChangeFrequency", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+    ImGui::BeginVertical("##movement_change_frequency_main_layout", ImGui::GetContentRegionAvail(), 0);
+    {
+      GroupBox speedGroup(trNOOP("Frequency"), "##movement_change_frequency_speed_group", {-1, 0});
+      if (speedGroup.begin()) {
+        ImGui::SetNextItemWidth(-1);
+
+        if (ImGui::BeginCombo("##movement_frequency_selection", DecodeEnumName(static_cast<MovementFrequency>(m_frequency)).c_str())) {
+          for (auto& frequency : magic_enum::enum_values<MovementFrequency>()) {
+            const auto selected = (m_frequency == static_cast<int>(frequency));
+            if (ImGui::Selectable(DecodeEnumName(frequency).c_str(), selected)) {
+              m_frequency = static_cast<int>(frequency);
+            }
+            if (selected) {
+              ImGui::SetItemDefaultFocus();
+            }
+          }
+          ImGui::EndCombo();
         }
       }
-      ImGui::EndCombo();
+      speedGroup.end();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##movement_change_frequency_button_layout", {-1, 0}, 0);
+      {
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##movement_change_frequency_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+          m_command->frequency = m_frequency;
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
+      }
+      ImGui::EndHorizontal();
     }
-
-    if (ImGui::Button("OK")) {
-      m_confirmed = true;
-      command->frequency = m_frequency;
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Cancel")) {
-      ImGui::CloseCurrentPopup();
-      setOpen(false);
-    }
-
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 

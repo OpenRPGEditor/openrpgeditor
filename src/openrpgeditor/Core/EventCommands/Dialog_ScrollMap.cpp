@@ -1,80 +1,95 @@
 #include "Core/EventCommands/Dialog_ScrollMap.hpp"
 
-#include "imgui.h"
+#include "Core/CommonUI/GroupBox.hpp"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+#include "Database/Database.hpp"
+#include <imgui.h>
+#include <imgui_internal.h>
+
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_ScrollMap::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###ScrollMap");
   }
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImVec2{0, 0}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-    const auto buttonsSize = ImGui::CalcTextSize("OKCANCEL");
-    ImGui::SeparatorText("Direction                Distance");
-
-    ImGui::PushItemWidth(ImGui::GetContentRegionMax().x / 2);
-
-    auto dir = magic_enum::enum_cast<Direction>(m_direction);
-    if (ImGui::BeginCombo("##scrollmap_direction", DecodeEnumName(magic_enum::enum_name(dir.value())).c_str())) {
-      for (auto& direction : magic_enum::enum_values<Direction>()) {
-        if (magic_enum::enum_integer(direction) == 0)
-          continue;
-
-        bool is_selected = m_direction == magic_enum::enum_integer(direction);
-        if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(direction)).c_str(), is_selected)) {
-          m_direction = magic_enum::enum_integer(direction);
-          if (is_selected)
-            ImGui::SetItemDefaultFocus();
-        }
-      }
-      ImGui::EndCombo();
-    }
-    ImGui::SameLine();
-
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x - ImGui::GetStyle().FramePadding.x * 14);
-    if (ImGui::InputInt("##scrollmap_distance", &m_distance, 0)) {
-      if (m_distance > 100) {
-        m_distance = 100;
-      } else if (m_distance < 1)
-        m_distance = 1;
-    }
-
-    ImGui::SeparatorText("Speed");
-    ImGui::PushItemWidth(180);
-
-    if (ImGui::BeginCombo("##scrollmap_speed", DecodeEnumName(static_cast<MovementSpeed>(m_speed)).c_str())) {
-      for (auto& speed : magic_enum::enum_values<MovementSpeed>()) {
-
-        bool is_selected = m_speed == magic_enum::enum_integer(speed);
-        if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(speed)).c_str(), is_selected)) {
-          m_speed = magic_enum::enum_integer(speed);
-          if (is_selected)
-            ImGui::SetItemDefaultFocus();
-        }
-      }
-      ImGui::EndCombo();
-    }
-    ImGui::BeginGroup();
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 60) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 5) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
+  if (ImGui::BeginPopupModal(std::format("{}###ScrollMap", m_name).c_str(), &m_open, ImGuiWindowFlags_NoResize)) {
+    ImGui::BeginVertical("##scroll_map_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
-      ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x - (buttonsSize.x + (ImGui::GetStyle().FramePadding.x * 4) + ImGui::GetStyle().ItemSpacing.x));
-      if (ImGui::Button("OK")) {
-        m_confirmed = true;
-        command->direction = static_cast<Direction>(m_direction);
-        command->distance = m_distance;
-        command->speed = static_cast<MovementSpeed>(m_speed);
+      ImGui::BeginHorizontal("##scroll_map_inner_layout", {-1, 0}, 0);
+      {
+        GroupBox directionGroup(trNOOP("Direction"), "##scroll_map_direction_group", {ImGui::GetContentRegionAvail().x * .33f, 0.f});
+        if (directionGroup.begin()) {
+          ImGui::SetNextItemWidth(-1);
+          if (ImGui::BeginCombo("##scroll_map_direction", DecodeEnumName(static_cast<Direction>(m_direction)).c_str())) {
+            for (auto& direction : magic_enum::enum_values<Direction>()) {
+              if (direction == Direction::Retain) {
+                continue;
+              }
 
-        ImGui::CloseCurrentPopup();
-        setOpen(false);
+              bool selected = m_direction == static_cast<int>(direction);
+              if (ImGui::Selectable(DecodeEnumName(direction).c_str(), selected)) {
+                m_direction = static_cast<int>(direction);
+              }
+              if (selected) {
+                ImGui::SetItemDefaultFocus();
+              }
+            }
+            ImGui::EndCombo();
+          }
+        }
+        directionGroup.end();
+        GroupBox distanceGroup(trNOOP("Distance"), "##scroll_map_distance_group", {ImGui::GetContentRegionAvail().x * 0.5f, 0.f});
+        if (distanceGroup.begin()) {
+          ImGui::SetNextItemWidth(-1);
+          if (ImGui::SpinInt("##scroll_map_distance", &m_distance)) {
+            m_distance = std::clamp(m_distance, 1, 100);
+          }
+        }
+        distanceGroup.end();
+        GroupBox speedGroup(trNOOP("Speed"), "##scroll_map_speed_group", {-1.f, 0.f});
+        if (speedGroup.begin()) {
+          ImGui::SetNextItemWidth(-1);
+
+          if (ImGui::BeginCombo("##scrollmap_speed", DecodeEnumName(static_cast<MovementSpeed>(m_speed)).c_str())) {
+            for (auto& speed : magic_enum::enum_values<MovementSpeed>()) {
+              const auto selected = m_speed == magic_enum::enum_integer(speed);
+              if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(speed)).c_str(), selected)) {
+                m_speed = magic_enum::enum_integer(speed);
+              }
+              if (selected)
+                ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+          }
+        }
+        speedGroup.end();
       }
-      ImGui::SameLine();
-      if (ImGui::Button("Cancel")) {
-        ImGui::CloseCurrentPopup();
-        setOpen(false);
+      ImGui::EndHorizontal();
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##scroll_map_button_layout", {-1, 0}, 0);
+      {
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##scroll_map_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          m_confirmed = true;
+          m_command->direction = static_cast<Direction>(m_direction);
+          m_command->distance = m_distance;
+          m_command->speed = static_cast<MovementSpeed>(m_speed);
+
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        } else if (ret == 1) {
+          ImGui::CloseCurrentPopup();
+          setOpen(false);
+        }
       }
+      ImGui::EndHorizontal();
     }
-    ImGui::EndGroup();
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 

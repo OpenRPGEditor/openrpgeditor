@@ -1,75 +1,67 @@
 #include "Core/EventCommands/MovementRoute/Dialog_MovementChangeImage.hpp"
 #include "Core/Application.hpp"
 
+#include "Core/CommonUI/GroupBox.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
-#include "Core/Log.hpp"
-#include "imgui.h"
+#include "Database/Database.hpp"
+#include <imgui.h>
+#include <imgui_internal.h>
 
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_MovementChangeImage::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup("###MovementChangeImage");
   }
+  const auto imageSize = ImGui::GetDPIScaledSize(FaceSheet::faceWidth(), FaceSheet::faceHeight());
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  const auto maxSize = ImVec2{(imageSize.x * 2) + (ImGui::GetStyle().FramePadding.x * 2), imageSize.y + (ImGui::GetFrameHeightWithSpacing() * 4) + (ImGui::GetStyle().FramePadding.y * 2)};
+  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
+  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-  if (!m_actorButton) {
-    m_actorButton.emplace();
-    m_actorButton->setSize(80, 102);
-  }
+  m_actorButton.setSize(imageSize.x, imageSize.y);
 
-  if (!m_actorButton->hasCompositeTextures() && m_characterSheet) {
+  if (!m_characterSheet && !m_image.empty() && !m_actorButton.hasCompositeTextures()) {
+    m_characterSheet = CharacterSheet(m_image);
     auto [min, max] = m_characterSheet.value().getRectForCharacter(m_character, 1);
 
-    m_actorButton->setTexturesToComposite({{m_characterSheet->texture(),
-                                            {m_characterSheet->characterWidth(), m_characterSheet->characterHeight()},
-                                            {static_cast<int>(min.x() * m_characterSheet->texture().width()), static_cast<int>(min.y() * m_characterSheet->texture().height())}}});
-  } else if (!m_characterSheet) {
-    m_actorButton->clear();
+    m_actorButton.setTexturesToComposite({
+        {
+            m_characterSheet->texture(),
+            {m_characterSheet->characterWidth(), m_characterSheet->characterHeight()},
+            {static_cast<int>(min.x() * m_characterSheet->texture().width()), static_cast<int>(min.y() * m_characterSheet->texture().height())},
+        },
+    });
   }
 
-  ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowSize(ImVec2{ImGui::GetDPIScaledValue(200), ImGui::GetDPIScaledValue(200)}, ImGuiCond_Appearing);
-  ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize)) {
-
-    auto [closed, confirmed] = m_characterPicker.draw();
-    if (closed) {
-      if (confirmed) {
-        m_characterPicker.accept();
-        m_character = m_characterPicker.character();
-        m_image = m_characterPicker.selectedSheet();
-        m_characterSheet = CharacterSheet(m_image);
-        m_actorButton->clear();
-      }
-    }
-    ImGui::BeginVertical("changeimage_vertical", ImVec2{ImGui::GetDPIScaledValue(200.f), ImGui::GetDPIScaledValue(150.f)});
+  if (ImGui::BeginPopupModal(std::format("{}###MovementChangeImage", m_name).c_str(), &m_open, ImGuiWindowFlags_NoResize)) {
+    drawPickers();
+    ImGui::BeginVertical("##movement_change_image_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
-      ImGui::Spring();
-      auto cursorPos = ImGui::GetCursorPos();
-      if (ImGui::ImageButton("##event_image", m_actorButton->get(), static_cast<ImVec2>(m_actorButton->size()))) {
-        m_characterPicker.setCharacterInfo(m_image, m_character);
-        m_characterPicker.setOpen(true);
+      GroupBox imageGroup(trNOOP("Image"), "##movement_change_image_image_group", {-1, 0});
+      if (imageGroup.begin()) {
+        ImGui::BeginHorizontal("##movement_route_change_image_image_layout", ImGui::GetContentRegionAvail(), 0);
+        {
+          ImGui::Spring(0.5f);
+          if (ImGui::ImageButtonEx(ImGui::GetID("##event_image"), m_actorButton.get(), m_actorButton.size(), {0.f, 0.f}, {1.f, 1.f}, {}, {1.f, 1.f, 1.f, 1.f}, ImGuiButtonFlags_PressedOnDoubleClick)) {
+            m_characterPicker.setCharacterInfo(m_image, m_character);
+            m_characterPicker.setOpen(true);
+          }
+          ImGui::Spring(0.5f);
+        }
+        ImGui::EndHorizontal();
       }
-      // if (m_characterSheet->texture()) {
-      //   if (m_characterSheet->characterWidth() < 72 || m_characterSheet->characterHeight() < 96) {
-      //     ImGui::SetCursorPos(cursorPos + (ImVec2{m_characterSheet->characterWidth() / 2.f, m_characterSheet->characterHeight() / 2.f}));
-      //   } else {
-      //     ImGui::SetCursorPos(cursorPos);
-      //   }
-      //   const auto [min, max] = m_characterSheet->getRectForCharacter(m_character);
-      // ImGui::Image(m_characterSheet->texture(), ImVec2{static_cast<float>(m_characterSheet->characterWidth()), static_cast<float>(m_characterSheet->characterHeight())}, min, max);
-      //  }
-      ImGui::BeginHorizontal(std::format("##buttons_character_picker{}", reinterpret_cast<uintptr_t>(this)).c_str(), ImGui::GetContentRegionAvail());
+      imageGroup.end();
+
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##buttons_character_picker", {-1, 0}, 0);
       {
         ImGui::Spring();
-        const int ret = ImGui::ButtonGroup(std::format("##ok_cancel_character_picker{}", reinterpret_cast<uintptr_t>(this)).c_str(), {
-                                                                                                                                         trNOOP("OK"),
-                                                                                                                                         trNOOP("Cancel"),
-                                                                                                                                     });
-        if (ret == 0) {
+        if (const auto ret = ImGui::ButtonGroup("##ok_cancel_character_picker", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
           m_confirmed = true;
-          command->image = m_image;
-          command->character = m_character;
+          m_command->image = m_image;
+          m_command->character = m_character;
           ImGui::CloseCurrentPopup();
           setOpen(false);
         } else if (ret == 1) {
@@ -85,4 +77,15 @@ std::tuple<bool, bool> Dialog_MovementChangeImage::draw() {
   }
 
   return std::make_tuple(!m_open, m_confirmed);
+}
+void Dialog_MovementChangeImage::drawPickers() {
+  if (const auto [closed, confirmed] = m_characterPicker.draw(); closed) {
+    if (confirmed) {
+      m_characterPicker.accept();
+      m_character = m_characterPicker.character();
+      m_image = m_characterPicker.selectedSheet();
+      m_characterSheet.reset();
+      m_actorButton.clear();
+    }
+  }
 }

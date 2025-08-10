@@ -62,8 +62,8 @@ void CheckeredCompositeTexture::update() {
 
   {
     const SDL_FRect screct{0, 0, static_cast<float>(m_checker.width()), static_cast<float>(m_checker.height())};
-    for (int i = 0; i < rows; ++i) {
-      for (int j = 0; j < cols; ++j) {
+    for (int i = 0; i <= rows; ++i) {
+      for (int j = 0; j <= cols; ++j) {
         const SDL_FRect dstrect{static_cast<float>(j * m_checker.width()), static_cast<float>(i * m_checker.height()), static_cast<float>(m_checker.width()), static_cast<float>(m_checker.height())};
         SDL_RenderTexture(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_checker.get()), &screct, &dstrect);
       }

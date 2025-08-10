@@ -19,6 +19,5 @@ struct Dialog_MovementChangeSpeed final : IEventDialogController {
 
 private:
   int m_speed;
-  bool m_confirmed{false};
   std::shared_ptr<MovementSpeedCommand> m_command;
 };

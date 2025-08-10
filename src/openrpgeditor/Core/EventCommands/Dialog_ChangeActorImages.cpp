@@ -81,7 +81,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
           if (characterGroup.begin()) {
             if (ImGui::ImageButtonEx(ImGui::GetID("##char_image"), m_characterButton.get(), imageSize, {0.f, 0.f}, {1.f, 1.f}, {0.f, 0.f, 0.f, 0.f}, {1.f, 1.f, 1.f, 1.f},
                                      ImGuiButtonFlags_PressedOnDoubleClick)) {
-              m_characterPicker.setCharacterInfo(m_facePicture, m_charIndex);
+              m_characterPicker.setCharacterInfo(m_charPicture, m_charIndex);
               m_characterPicker.setOpen(true);
             }
           }

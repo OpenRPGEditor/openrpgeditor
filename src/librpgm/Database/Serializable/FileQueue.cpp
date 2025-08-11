@@ -73,6 +73,7 @@ void FileQueue::proc() {
     m_pendingQueue = {};
     m_currentOperation = m_pendingOperation;
     m_totalTasks = m_taskQueue.size();
+    m_completedTasks = 0;
   }
 
   if (m_taskQueue.empty()) {

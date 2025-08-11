@@ -7,9 +7,9 @@
 #include <functional>
 #include <memory>
 #include <mutex>
+#include <ranges>
 #include <string>
 #include <thread>
-#include <ranges>
 // Base class for a threaded file queue (for serialization and deserialization).
 class FileQueue {
 public:
@@ -30,7 +30,7 @@ public:
   // Reset and clear the queue, also aborts current tasks
   void reset();
 
-  bool hasTasks() const { return !m_taskQueue.empty(); }
+  bool hasTasks() const { return !(m_taskQueue.empty() && m_pendingQueue.empty()); }
 
   // Get the current progress (0 to 100)
   float progress() const;

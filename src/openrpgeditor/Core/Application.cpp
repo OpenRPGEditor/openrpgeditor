@@ -435,12 +435,17 @@ ExitStatus Application::run() {
     }
 
     if (!m_firstBootWizard) {
-      m_project->draw(m_doQuit && m_userClosed, m_projectCloseRequest);
+      if (m_project) {
+        m_project->draw(m_doQuit && m_userClosed, m_projectCloseRequest);
+      } else if (!FileQueue::instance().hasTasks()) {
+        m_projectSerialize = false;
+      }
 
-      if (needsInitialProjectLoad) {
+      if (needsInitialProjectLoad && m_project) {
         m_project->load(Settings::instance()->lastProject, std::filesystem::path(Settings::instance()->lastProject).remove_filename().generic_string());
         needsInitialProjectLoad = false;
       }
+
       if (m_doQuit || m_projectCloseRequest) {
         if (m_project && !m_userClosed) {
           const auto [closed, quit, serialize] = m_project->close(true);

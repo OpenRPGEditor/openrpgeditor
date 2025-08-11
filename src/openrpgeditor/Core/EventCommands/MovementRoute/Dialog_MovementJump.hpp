@@ -8,21 +8,19 @@ struct Dialog_MovementJump : IEventDialogController {
   Dialog_MovementJump() = delete;
   explicit Dialog_MovementJump(const std::string& name, const std::shared_ptr<MovementJumpCommand>& cmd = nullptr)
   : IEventDialogController(name)
-  , command(cmd) {
-    if (command == nullptr) {
-      command.reset(new MovementJumpCommand());
+  , m_command(cmd) {
+    if (m_command == nullptr) {
+      m_command.reset(new MovementJumpCommand());
     }
-    m_jump_x = command->x;
-    m_jump_y = command->y;
+    m_jumpX = m_command->x;
+    m_jumpY = m_command->y;
   }
   std::tuple<bool, bool> draw() override;
 
-  std::shared_ptr<IEventCommand> getCommand() override { return command; };
+  std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
 
 private:
-  int m_jump_x;
-  int m_jump_y;
-  bool m_confirmed{false};
-  std::shared_ptr<MovementJumpCommand> command;
-  std::tuple<bool, bool> result;
+  int m_jumpX;
+  int m_jumpY;
+  std::shared_ptr<MovementJumpCommand> m_command;
 };

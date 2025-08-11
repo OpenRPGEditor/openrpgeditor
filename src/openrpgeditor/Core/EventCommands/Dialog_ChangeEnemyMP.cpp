@@ -1,10 +1,6 @@
 #include "Core/EventCommands/Dialog_ChangeEnemyMP.hpp"
 
 #include "Database/Database.hpp"
-#include "imgui.h"
-#include <tuple>
-
-#include "Database/Database.hpp"
 
 #include "Core/CommonUI/GroupBox.hpp"
 #include "Core/ImGuiExt/ImGuiUtils.hpp"

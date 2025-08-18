@@ -332,10 +332,14 @@ void Application::updateFonts() {
 }
 
 void Application::serializeSettings() {
+  size_t len = 0;
+  const char* state = ImGui::SaveIniSettingsToMemory(&len);
   if (!Database::instance()) {
-    size_t len = 0;
-    const char* state = ImGui::SaveIniSettingsToMemory(&len);
+
     m_settings.imguiState = {state, len};
+  } else {
+    Database::instance()->transient.imguiState = {state, len};
+    Database::instance()->serializeSettings();
   }
   m_settings.serialize(m_userConfigPath + SettingsFilename.data());
 }
@@ -393,6 +397,7 @@ ExitStatus Application::run() {
 
   float frameTime = 0.f;
   float saveTime = 0.f;
+  bool resetLayout = false;
   while (m_running || FileQueue::instance().hasTasks() || m_projectSerialize || m_projectCloseRequest) {
     if (m_fontUpdateRequested) {
       updateFonts();
@@ -476,11 +481,7 @@ ExitStatus Application::run() {
         }
         m_projectCloseRequest = false;
         m_userClosed = false;
-      }
-
-      if (ImGui::GetIO().WantSaveIniSettings && saveTime >= 5.f) {
-        serializeSettings();
-        saveTime = 0.f;
+        resetLayout = true;
       }
     }
 
@@ -489,6 +490,16 @@ ExitStatus Application::run() {
 
     ImGui::UpdatePlatformWindows();
 
+    if (m_project && m_project->databaseValid() && !m_project->transientSettingsLoaded()) {
+      m_project->loadTransientSettings();
+    }
+
+    if (resetLayout) {
+      ImGui::ClearIniSettings();
+      ImGui::LoadIniSettingsFromMemory(m_settings.imguiState.c_str(), m_settings.imguiState.length());
+      resetLayout = false;
+    }
+    
     SDL_SetRenderDrawColor(m_window->getNativeRenderer(),                       //
                            ImGui::GetStyleColorVec4(ImGuiCol_WindowBg).x * 255, //
                            ImGui::GetStyleColorVec4(ImGuiCol_WindowBg).y * 255, //

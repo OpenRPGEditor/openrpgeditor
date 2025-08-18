@@ -87,8 +87,8 @@ void MainWindow::ToolbarButton::callOnClicked() const {
 
 bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
   if (!std::filesystem::exists(filePath)) {
+    ImGui::InsertNotification({ImGuiToastType::Error, trNOOP("Unable to open project:\n%s"), filePath.data()});
     if (const auto it = std::ranges::find_if(Settings::instance()->mru, [&filePath](const auto& pair) { return pair.first == filePath; }); it != Settings::instance()->mru.end()) {
-      ImGui::InsertNotification({ImGuiToastType::Error, trNOOP("Unable to open project:\n%s"), filePath.data()});
       Settings::instance()->mru.erase(it);
     }
     return false;
@@ -137,11 +137,6 @@ bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
   m_database->localesLoaded().connect<&MainWindow::onLocalesLoaded>(this);
   m_database->databaseModified().connect<&MainWindow::onDatabaseModified>(this);
   m_database->load();
-
-  /* Restore the user's stored session */
-  if (!m_database->transient.imguiState.empty()) {
-    ImGui::LoadIniSettingsFromMemory(m_database->transient.imguiState.c_str(), m_database->transient.imguiState.length());
-  }
 
   return true;
 }
@@ -216,11 +211,10 @@ std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
   m_database.reset();
 
   m_isLoaded = false;
+  m_transientSettingsLoaded = false;
 
   App::APP->getWindow()->setTitle(kApplicationTitle);
 
-  ImGui::ClearIniSettings();
-  ImGui::LoadIniSettingsFromMemory(Settings::instance()->imguiState.c_str(), Settings::instance()->imguiState.length());
   return {true, true, false};
 }
 
@@ -1157,6 +1151,18 @@ void MainWindow::onDatabaseModified() {
 }
 
 void MainWindow::addToolbarButton(const std::string& id, ToolbarCategory category, asIScriptFunction* func) { m_toolbarButtons[category].emplace_back(id, category, func); }
+
+void MainWindow::loadTransientSettings() {
+  if (m_transientSettingsLoaded) {
+    return;
+  }
+  /* Restore the user's stored session */
+  if (!m_database->transient.imguiState.empty()) {
+    ImGui::ClearIniSettings();
+    ImGui::LoadIniSettingsFromMemory(m_database->transient.imguiState.c_str(), m_database->transient.imguiState.length());
+  }
+  m_transientSettingsLoaded = true;
+}
 
 void AddToolbarButton(asIScriptGeneric* generic) {
   const std::string name = *static_cast<std::string*>(generic->GetArgAddress(0));

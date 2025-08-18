@@ -145,6 +145,11 @@ public:
 
   static MainWindow* instance() { return m_instance; }
 
+  void loadTransientSettings();
+
+  bool transientSettingsLoaded() const { return m_transientSettingsLoaded; }
+  bool databaseValid() const { return m_database.has_value(); }
+
 private:
   void onActorsLoaded();
   void onClassesLoaded();
@@ -187,6 +192,7 @@ private:
   bool m_isValid = false;
   bool m_isLoaded = false;
   bool m_isModified = false;
+  bool m_transientSettingsLoaded = false;
 
   std::unordered_map<ToolbarCategory, std::vector<ToolbarButton>> m_toolbarButtons;
   CreateNewProjectDialog m_createNewProject = CreateNewProjectDialog("Create New Project");

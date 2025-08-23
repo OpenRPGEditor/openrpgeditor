@@ -86,9 +86,11 @@ void DatabaseEditor::draw() {
     if (ImGui::SelectableWithBorder(trNOOP("States"), m_currentTab == &m_states.value())) {
       m_currentTab = &m_states.value();
     }
+    ORE_DISABLE_EXPERIMENTAL_BEGIN();
     if (ImGui::SelectableWithBorder(trNOOP("Animations"), m_currentTab == &m_animations.value())) {
       m_currentTab = &m_animations.value();
     }
+    ORE_DISABLE_EXPERIMENTAL_END();
     if (ImGui::SelectableWithBorder(trNOOP("Tilesets"), m_currentTab == &m_tilesets.value())) {
       m_currentTab = &m_tilesets.value();
     }

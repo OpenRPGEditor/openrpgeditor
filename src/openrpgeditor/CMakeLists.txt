@@ -522,6 +522,8 @@ add_library(
         Core/CommonUI/AudioEditor.hpp
         Core/CommonUI/EventTilePicker.cpp
         Core/CommonUI/EventTilePicker.hpp
+        Core/FirstBootWizard/ExperimentalWarning.cpp
+        Core/FirstBootWizard/ExperimentalWarning.hpp
 )
 
 target_include_directories(

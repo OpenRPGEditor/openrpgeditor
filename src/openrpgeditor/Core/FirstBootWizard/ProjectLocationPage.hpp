@@ -1,10 +1,10 @@
 #pragma once
 #include "Core/FirstBootWizard/IWizardPage.hpp"
 
-class ProjectLocationPage : public IWizardPage {
+class ProjectLocationPage final : public IWizardPage {
 public:
   void draw() override;
-  [[nodiscard]] constexpr std::string_view pageTitle() const override { return "Specify Default Project Location"sv; }
+  [[nodiscard]] const std::string pageTitle() const override { return tr("Specify Default Project Location"); }
   [[nodiscard]] bool allRequiredFieldsAreSet() const override { return m_allRequiredFieldsAreSet; }
 
 private:

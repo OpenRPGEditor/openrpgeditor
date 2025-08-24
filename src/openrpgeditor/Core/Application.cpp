@@ -12,6 +12,7 @@
 #include "misc/freetype/imgui_freetype.h"
 
 #include "Database/Serializable/FileQueue.hpp"
+#include "FirstBootWizard/ExperimentalWarning.hpp"
 #include "FirstBootWizard/ProjectLocationPage.hpp"
 #include "FirstBootWizard/RPGMakerLocationAndVersionPage.hpp"
 #include "FirstBootWizard/UISettingsPage.hpp"
@@ -385,8 +386,11 @@ ExitStatus Application::run() {
   // Check if we need to run the FirstBoot wizard
   if (!Settings::instance()->ranFirstBootWizard) {
     m_firstBootWizard.emplace();
+    m_firstBootWizard->addPage(std::make_shared<ExperimentalWarning>());
     m_firstBootWizard->addPage(std::make_shared<WelcomePage>());
+#if 0
     m_firstBootWizard->addPage(std::make_shared<UISettingsPage>());
+#endif
     m_firstBootWizard->addPage(std::make_shared<RPGMakerLocationAndVersionPage>());
     m_firstBootWizard->addPage(std::make_shared<ProjectLocationPage>());
   }
@@ -450,39 +454,42 @@ ExitStatus Application::run() {
         m_project->load(Settings::instance()->lastProject, std::filesystem::path(Settings::instance()->lastProject).remove_filename().generic_string());
         needsInitialProjectLoad = false;
       }
+    }
 
-      if (m_doQuit || m_projectCloseRequest) {
-        if (m_project && !m_userClosed) {
-          const auto [closed, quit, serialize] = m_project->close(true);
-          if (closed && quit) {
-            m_running = !m_doQuit;
-            m_userClosed = true;
-          } else if (closed) {
-            m_doQuit = false;
-            m_running = true;
-            m_projectCloseRequest = false;
-            m_userClosed = false;
-          }
-          m_projectSerialize = serialize;
-          if (m_projectSerialize) {
-            Database::instance()->serializeProject();
-          }
+    if (m_doQuit || m_projectCloseRequest) {
+      if (m_project && !m_userClosed) {
+        const auto [closed, quit, serialize] = m_project->close(true);
+        if (closed && quit) {
+          m_running = !m_doQuit;
+          m_userClosed = true;
+        } else if (closed) {
+          m_doQuit = false;
+          m_running = true;
+          m_projectCloseRequest = false;
+          m_userClosed = false;
         }
-        saveTime = 0.f;
-      }
-
-      if (!FileQueue::instance().hasTasks() && m_userClosed && m_projectCloseRequest) {
-        // Actually close the project to revert active state
-        if (m_project) {
-          m_project->close();
+        m_projectSerialize = serialize;
+        if (m_projectSerialize) {
+          Database::instance()->serializeProject();
         }
-        if (m_doQuit) {
-          m_project.reset();
-        }
+      } else if (m_firstBootWizard) {
+        m_running = false;
         m_projectCloseRequest = false;
-        m_userClosed = false;
-        resetLayout = true;
       }
+      saveTime = 0.f;
+    }
+
+    if (!FileQueue::instance().hasTasks() && m_userClosed && m_projectCloseRequest) {
+      // Actually close the project to revert active state
+      if (m_project) {
+        m_project->close();
+      }
+      if (m_doQuit) {
+        m_project.reset();
+      }
+      m_projectCloseRequest = false;
+      m_userClosed = false;
+      resetLayout = true;
     }
 
     // Rendering
@@ -499,7 +506,7 @@ ExitStatus Application::run() {
       ImGui::LoadIniSettingsFromMemory(m_settings.imguiState.c_str(), m_settings.imguiState.length());
       resetLayout = false;
     }
-    
+
     SDL_SetRenderDrawColor(m_window->getNativeRenderer(),                       //
                            ImGui::GetStyleColorVec4(ImGuiCol_WindowBg).x * 255, //
                            ImGui::GetStyleColorVec4(ImGuiCol_WindowBg).y * 255, //

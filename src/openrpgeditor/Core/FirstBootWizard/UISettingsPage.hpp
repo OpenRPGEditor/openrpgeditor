@@ -1,10 +1,10 @@
 #pragma once
 #include "Core/FirstBootWizard/IWizardPage.hpp"
 
-class UISettingsPage : public IWizardPage {
+class UISettingsPage final : public IWizardPage {
 public:
   void draw() override;
-  [[nodiscard]] constexpr std::string_view pageTitle() const override { return "UI Settings"sv; }
+  [[nodiscard]] const std::string pageTitle() const override { return tr("UI Settings"); }
 
 private:
   bool m_fontSizeChanged{false};

@@ -1,10 +1,10 @@
 #pragma once
 #include "Core/FirstBootWizard/IWizardPage.hpp"
 
-class RPGMakerLocationAndVersionPage : public IWizardPage {
+class RPGMakerLocationAndVersionPage final : public IWizardPage {
 public:
   void draw() override;
-  [[nodiscard]] constexpr std::string_view pageTitle() const override { return "Specify RPG Maker MV/MZ Location and Version"sv; }
+  [[nodiscard]] const std::string pageTitle() const override { return tr("Specify RPG Maker MV/MZ Location and Version"); }
   [[nodiscard]] bool allRequiredFieldsAreSet() const override { return m_allRequiredFieldsAreSet; }
 
 private:

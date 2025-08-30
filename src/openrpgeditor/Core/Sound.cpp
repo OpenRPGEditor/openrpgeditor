@@ -2,6 +2,7 @@
 
 #include "Log.hpp"
 
+// TODO(phil): Rewrite to use either SDL3_Mixer or SFML3
 sf::Vector3f stereoPanPosition(float panAmount) {
   // make sure that panAmount is in the range [-1, 1] (-1 is left; 1 is right)
   panAmount = std::clamp(panAmount, -1.f, 1.f);

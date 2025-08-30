@@ -10,6 +10,7 @@
 #include <imgui.h>
 
 void RPGMakerLocationAndVersionPage::draw() {
+  // TODO: Rewrite layout
   ImGui::BeginChild("RPGMakerLocationAndVersionPage", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiWindowFlags_AlwaysAutoResize, ImGuiWindowFlags_NoBackground);
   char location[4096];
   strncpy(location, Settings::instance()->rpgMakerMVLocation.c_str(), 4096);
@@ -54,6 +55,7 @@ void RPGMakerLocationAndVersionPage::draw() {
     }
   }
   ImGui::EndGroup();
+  ORE_DISABLE_EXPERIMENTAL_BEGIN();
   ImGui::Separator();
   char location2[4096];
   strncpy(location2, Settings::instance()->rpgMakerMZLocation.c_str(), 4096);
@@ -98,6 +100,7 @@ void RPGMakerLocationAndVersionPage::draw() {
     }
   }
   ImGui::EndGroup();
+  ORE_DISABLE_EXPERIMENTAL_END();
   ImGui::EndChild();
 
   m_allRequiredFieldsAreSet = std::filesystem::is_directory(Settings::instance()->rpgMakerMVLocation) || std::filesystem::is_directory(Settings::instance()->rpgMakerMZLocation);

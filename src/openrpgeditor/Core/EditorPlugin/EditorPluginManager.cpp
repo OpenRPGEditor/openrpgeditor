@@ -34,6 +34,7 @@ EditorPluginManager::EditorPluginManager() {
 static bool PluginLoaded(const std::string& identifier) { return EditorPluginManager::instance()->pluginLoaded(identifier); }
 
 void EditorPluginManager::draw() {
+#if !ORE_DISABLE_SCRIPTING
   if (!m_open) {
     return;
   }
@@ -106,6 +107,7 @@ void EditorPluginManager::draw() {
     ImGui::EndChild();
   }
   ImGui::End();
+#endif
 }
 bool EditorPluginManager::pluginLoaded(const std::string& identifier) {
   auto it = m_plugins.begin();
@@ -120,35 +122,48 @@ bool EditorPluginManager::pluginLoaded(const std::string& identifier) {
   return false;
 }
 bool EditorPluginManager::initialize() {
+#if !ORE_DISABLE_SCRIPTING
   int ret = ScriptEngine::instance()->engine()->RegisterGlobalFunction("bool pluginAvailable(const string& in)", asFUNCTION(PluginLoaded), asCALL_CDECL);
   return ret >= asSUCCESS;
+#else
+  return false;
+#endif
 }
 
 void EditorPluginManager::initializeAllPlugins() {
+#if !ORE_DISABLE_SCRIPTING
   for (auto& plugin : m_pluginInstances | std::views::values) {
     plugin.callInitialize();
   }
+#endif
 }
 
 void EditorPluginManager::initializePluginById(const std::string_view identifier) {
+#if !ORE_DISABLE_SCRIPTING
   if (m_pluginInstanceIdentifierMapping.contains(identifier.data())) {
     m_pluginInstanceIdentifierMapping[identifier.data()]->callInitialize();
   }
+#endif
 }
 
 void EditorPluginManager::callDraws() {
+#if !ORE_DISABLE_SCRIPTING
   for (auto& plugin : m_pluginInstances | std::views::values) {
     plugin.callDraw();
   }
+#endif
 }
 
 void EditorPluginManager::shutdownAllPlugins() {
+#if !ORE_DISABLE_SCRIPTING
   for (auto& plugin : m_pluginInstances | std::views::values) {
     plugin.callShutdown();
   }
+#endif
 }
 
 void EditorPluginManager::shutdownPluginById(const std::string_view identifier, bool dependencies) {
+#if !ORE_DISABLE_SCRIPTING
   if (m_pluginInstanceIdentifierMapping.contains(identifier.data())) {
     auto plugin = m_pluginInstanceIdentifierMapping[identifier.data()];
     /* Remove ourselves from the list so we don't have an infinite loop in case of cyclical dependencies */
@@ -160,9 +175,11 @@ void EditorPluginManager::shutdownPluginById(const std::string_view identifier, 
     }
     plugin->callShutdown();
   }
+#endif
 }
 
 void EditorPluginManager::onDirectoryAdded(const std::filesystem::path& path) {
+#if !ORE_DISABLE_SCRIPTING
   if (!is_regular_file(path / "meta.json")) {
     return;
   }
@@ -192,6 +209,7 @@ void EditorPluginManager::onDirectoryAdded(const std::filesystem::path& path) {
       APP_ERROR("Duplicate plugin identifier: {}", plugin.identifier);
     }
   } catch (std::exception& e) { APP_ERROR("Could not parse meta.json"); }
+#endif
 }
 
 void EditorPluginManager::onDirectoryModified(const std::filesystem::path& path) {}
@@ -201,6 +219,7 @@ void EditorPluginManager::onDirectoryDeleted(const std::filesystem::path& path) 
 void EditorPluginManager::onFileAdded(const std::filesystem::path& path) {}
 
 void EditorPluginManager::registerPluginFiles(const std::filesystem::path& path, EditorPlugin::PluginInfo& plugin) {
+#if !ORE_DISABLE_SCRIPTING
   for (const auto& entry : std::filesystem::recursive_directory_iterator(path)) {
     const auto& rel = relative(entry.path(), path);
     if (entry.is_regular_file() && std::ranges::find(kFileBlacklist, rel.filename()) == kFileBlacklist.end()) {
@@ -208,9 +227,11 @@ void EditorPluginManager::registerPluginFiles(const std::filesystem::path& path,
       plugin.files[entry.path()] = rel;
     }
   }
+#endif
 }
 
 void EditorPluginManager::onFileModified(const std::filesystem::path& path) {
+#if !ORE_DISABLE_SCRIPTING
   if (path.filename() == "meta.json") {
     try {
       std::ifstream jsonFile(path);
@@ -244,6 +265,7 @@ void EditorPluginManager::onFileModified(const std::filesystem::path& path) {
 
     } catch (const std::exception& e) { APP_ERROR("Could not parse meta.json"); }
   }
+#endif
 }
 
 void EditorPluginManager::onFileDeleted(const std::filesystem::path& path) {}

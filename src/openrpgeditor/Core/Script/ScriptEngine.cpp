@@ -23,6 +23,7 @@
 
 #include <weakref/weakref.h>
 ScriptEngine::~ScriptEngine() {
+#if !ORE_DISABLE_SCRIPTING
   for (const auto& context : m_contexts) {
     (void)context->Release();
   }
@@ -30,6 +31,7 @@ ScriptEngine::~ScriptEngine() {
   if (m_engine) {
     m_engine->ShutDownAndRelease();
   }
+#endif
 }
 
 std::vector<std::string> splitByDoubleColons(const std::string& str) {
@@ -220,6 +222,7 @@ void GenerateScriptPredefined(const asIScriptEngine* engine, const std::string& 
 }
 bool ScriptEngine::initialize() {
 
+#if !ORE_DISABLE_SCRIPTING
   m_engine = asCreateScriptEngine();
   if (!m_engine) {
     return false;
@@ -257,9 +260,13 @@ bool ScriptEngine::initialize() {
 
   GenerateScriptPredefined(m_engine, "as.predefined");
   return r >= 0;
+#else
+  return true;
+#endif
 }
 
 asIScriptModule* ScriptEngine::createModule(const std::string_view name, const std::filesystem::path& scriptPath) const {
+#if !ORE_DISABLE_SCRIPTING
 
   if (asIScriptModule* mod = m_engine->GetModule(name.data(), asGM_ONLY_IF_EXISTS)) {
     return mod;
@@ -287,10 +294,13 @@ asIScriptModule* ScriptEngine::createModule(const std::string_view name, const s
   }
 
   return m_engine->GetModule(name.data(), asGM_ONLY_IF_EXISTS);
+#else
+  return nullptr;
+#endif
 }
 
 asIScriptModule* ScriptEngine::createModule(const std::string_view name, ByteCodeReader& reader) const {
-
+#if !ORE_DISABLE_SCRIPTING
   if (asIScriptModule* mod = m_engine->GetModule(name.data(), asGM_ONLY_IF_EXISTS)) {
     return mod;
   }
@@ -298,9 +308,13 @@ asIScriptModule* ScriptEngine::createModule(const std::string_view name, ByteCod
   asIScriptModule* mod = m_engine->GetModule(name.data(), asGM_CREATE_IF_NOT_EXISTS);
   mod->LoadByteCode(&reader);
   return mod;
+#else
+  return nullptr;
+#endif
 }
 
 void ScriptEngine::messageCallback(const asSMessageInfo& msg) {
+#if !ORE_DISABLE_SCRIPTING
   if (msg.type == asMSGTYPE_WARNING) {
     APP_WARN("{} ({}, {}) : {}", msg.section, msg.row, msg.col, msg.message);
   } else if (msg.type == asMSGTYPE_ERROR) {
@@ -312,9 +326,11 @@ void ScriptEngine::messageCallback(const asSMessageInfo& msg) {
   if (msg.type == asMSGTYPE_ERROR) {
     m_hasCompilerErrors = true;
   }
+#endif
 }
 
 asIScriptContext* ScriptEngine::prepareContextFromPool(asIScriptFunction* func) {
+#if !ORE_DISABLE_SCRIPTING
   asIScriptContext* ctx = nullptr;
   if (!m_contexts.empty()) {
     ctx = *m_contexts.rbegin();
@@ -326,9 +342,13 @@ asIScriptContext* ScriptEngine::prepareContextFromPool(asIScriptFunction* func) 
   int ret = ctx->Prepare(func);
   assert(ret >= 0);
   return ctx;
+#else
+  return nullptr;
+#endif
 }
 
 int ScriptEngine::executeCall(asIScriptContext* ctx) {
+#if !ORE_DISABLE_SCRIPTING
   int r = ctx->Execute();
   if (r != asEXECUTION_FINISHED) {
     if (r == asEXECUTION_EXCEPTION) {
@@ -338,11 +358,16 @@ int ScriptEngine::executeCall(asIScriptContext* ctx) {
   }
 
   return r;
+#else
+  return 0;
+#endif
 }
 
 void ScriptEngine::returnContextToPool(asIScriptContext* ctx) {
+#if !ORE_DISABLE_SCRIPTING
   m_contexts.push_back(ctx);
   ctx->Unprepare();
+#endif
 }
 
 ScriptEngine* ScriptEngine::instance() {

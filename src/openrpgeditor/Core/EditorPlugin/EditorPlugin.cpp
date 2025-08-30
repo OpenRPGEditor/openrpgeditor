@@ -1,12 +1,13 @@
 #include "Core/EditorPlugin/EditorPlugin.hpp"
 #include "Core/Script/ScriptEngine.hpp"
 
-#include "Core/Script/ByteCodeStream.hpp"
 #include "angelscript.h"
+#include "Core/Script/ByteCodeStream.hpp"
 
 #include <nlohmann/json.hpp>
 
 bool EditorPlugin::load(const std::filesystem::path& pluginBasedir, const PluginInfo& info) {
+#if !ORE_DISABLE_SCRIPTING
   std::filesystem::path binFilename = info.mainScript;
   binFilename.replace_extension("plug");
   std::filesystem::path scriptFilename = info.mainScript;
@@ -33,10 +34,12 @@ bool EditorPlugin::load(const std::filesystem::path& pluginBasedir, const Plugin
     m_shutdownFunction = m_module->GetFunctionByDecl("void shutdown()");
     return true;
   }
+#endif
   return false;
 }
 
 void EditorPlugin::callInitialize() {
+#if !ORE_DISABLE_SCRIPTING
   if (!m_initializeFunction) {
     return;
   }
@@ -48,8 +51,10 @@ void EditorPlugin::callInitialize() {
     }
     m_initialized = true;
   }
+#endif
 }
 void EditorPlugin::callDraw() const {
+#if !ORE_DISABLE_SCRIPTING
   if (!m_drawFunction || !m_initialized) {
     return;
   }
@@ -57,9 +62,11 @@ void EditorPlugin::callDraw() const {
     ScriptEngine::executeCall(ctx);
     ScriptEngine::instance()->returnContextToPool(ctx);
   }
+#endif
 }
 
 void EditorPlugin::callShutdown() {
+#if !ORE_DISABLE_SCRIPTING
   m_initialized = false;
   if (!m_shutdownFunction) {
     return;
@@ -68,6 +75,7 @@ void EditorPlugin::callShutdown() {
     ScriptEngine::executeCall(ctx);
     ScriptEngine::instance()->returnContextToPool(ctx);
   }
+#endif
 }
 
 void to_json(nlohmann::ordered_json& j, const EditorPlugin::PluginInfo& p) {

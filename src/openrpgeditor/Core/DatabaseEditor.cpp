@@ -5,6 +5,7 @@
 #include "ImGuiExt/ImGuiUtils.hpp"
 
 void DatabaseEditor::draw() {
+  // TODO: Rewrite layout
   if (isReady() && !onReady.is_empty()) {
     emit_signal(onReady);
   } else if (!isReady()) {
@@ -90,10 +91,10 @@ void DatabaseEditor::draw() {
     if (ImGui::SelectableWithBorder(trNOOP("Animations"), m_currentTab == &m_animations.value())) {
       m_currentTab = &m_animations.value();
     }
-    ORE_DISABLE_EXPERIMENTAL_END();
     if (ImGui::SelectableWithBorder(trNOOP("Tilesets"), m_currentTab == &m_tilesets.value())) {
       m_currentTab = &m_tilesets.value();
     }
+    ORE_DISABLE_EXPERIMENTAL_END();
     if (ImGui::SelectableWithBorder(trNOOP("Common Events"), m_currentTab == &m_commonEvents.value())) {
       m_currentTab = &m_commonEvents.value();
     }
@@ -109,6 +110,7 @@ void DatabaseEditor::draw() {
     if (ImGui::SelectableWithBorder(trNOOP("Exported Constants"), m_currentTab == &m_gameConstants.value())) {
       m_currentTab = &m_gameConstants.value();
     }
+    ORE_DISABLE_EXPERIMENTAL_BEGIN();
     if (ImGui::SelectableWithBorder(trNOOP("Templates"), m_currentTab == &m_templates.value())) {
       m_currentTab = &m_templates.value();
     }
@@ -121,6 +123,7 @@ void DatabaseEditor::draw() {
     if (ImGui::SelectableWithBorder(trNOOP("Localization"), m_currentTab == &m_locales.value())) {
       m_currentTab = &m_locales.value();
     }
+    ORE_DISABLE_EXPERIMENTAL_END();
     ImGui::EndChild();
     ImGui::SameLine();
     if (m_currentTab) {

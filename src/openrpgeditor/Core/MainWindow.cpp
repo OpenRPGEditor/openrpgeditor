@@ -908,13 +908,16 @@ void MainWindow::drawMenu() {
       if (ImGui::MenuItem(trNOOP("Event Searcher..."), "F11", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
         m_eventSearcher.open();
       }
+#if !ORE_DISABLE_SCRIPTING
       if (ImGui::MenuItem(trNOOP("Editor Plugins..."), "F12")) {
         EditorPluginManager::instance()->setOpen(true);
       }
+#endif
+      ORE_DISABLE_EXPERIMENTAL_BEGIN();
       if (ImGui::MenuItem(trNOOP("LibLCF..."), "", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
         m_libLCF.open();
       }
-
+      ORE_DISABLE_EXPERIMENTAL_END();
       /* Add tools above this */
       ImGui::Separator();
       if (ImGui::MenuItem(trNOOP("Reset Window Layout"))) {
@@ -1039,15 +1042,19 @@ void MainWindow::handleKeyboardShortcuts() {
   if (ImGui::IsKeyReleased(ImGuiKey_F9)) {
     m_databaseEditor->open();
   }
+  ORE_CHECK_EXPERIMENTAL_BEGIN()
   if (ImGui::IsKeyReleased(ImGuiKey_F10)) {
     m_nwjsVersionManager.open();
   }
+  ORE_CHECK_EXPERIMENTAL_END();
   if (ImGui::IsKeyReleased(ImGuiKey_F11)) {
     m_eventSearcher.open();
   }
+#if !ORE_DISABLE_SCRIPTING
   if (ImGui::IsKeyReleased(ImGuiKey_F12)) {
     EditorPluginManager::instance()->setOpen();
   }
+#endif
 
   // TODO: Add missing tools
   /* Game */

@@ -545,10 +545,6 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
     }
     ORE_CHECK_DEBUG_END()
 
-    if (m_showAboutWindow) {
-      ImGui::ShowAboutWindow(&m_showAboutWindow);
-    }
-
     if (!closeRequested) {
       m_nwjsVersionManager.draw();
       EditorPluginManager::instance()->draw();
@@ -572,6 +568,7 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
     ImGui::EndDisabled();
 
     drawShutdownSplash(shuttingDown);
+    m_aboutDialog.draw();
   }
   ImGui::End();
 }
@@ -940,7 +937,9 @@ void MainWindow::drawMenu() {
       if (ImGui::MenuItem("Contents", "F1")) {}
       if (ImGui::MenuItem("Tutorials...")) {}
       ImGui::Separator();
-      if (ImGui::MenuItem("About", nullptr, &m_showAboutWindow)) {}
+      if (ImGui::MenuItem(trNOOP("About"))) {
+        m_aboutDialog.setOpen(true);
+      }
       ORE_CHECK_DEBUG_BEGIN()
       if (ImGui::MenuItem("Show Tile Debugger", nullptr, &m_showTileDebug)) {}
       if (ImGui::MenuItem("Show Demo", nullptr, &m_showDemoWindow)) {}

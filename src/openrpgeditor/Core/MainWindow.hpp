@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AboutDialog.hpp"
 #include "angelscript.h"
 #include "CommonUI/CreateNewProjectDialog.hpp"
 #include "Core/DatabaseEditor.hpp"
@@ -196,6 +197,8 @@ private:
 
   std::unordered_map<ToolbarCategory, std::vector<ToolbarButton>> m_toolbarButtons;
   CreateNewProjectDialog m_createNewProject = CreateNewProjectDialog("Create New Project");
+  AboutDialog m_aboutDialog;
+  
   std::optional<Database> m_database;
 
   std::optional<DatabaseEditor> m_databaseEditor;

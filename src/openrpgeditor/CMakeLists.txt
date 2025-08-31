@@ -524,6 +524,8 @@ add_library(
         Core/CommonUI/EventTilePicker.hpp
         Core/FirstBootWizard/ExperimentalWarning.cpp
         Core/FirstBootWizard/ExperimentalWarning.hpp
+        Core/AboutDialog.cpp
+        Core/AboutDialog.hpp
 )
 
 target_include_directories(

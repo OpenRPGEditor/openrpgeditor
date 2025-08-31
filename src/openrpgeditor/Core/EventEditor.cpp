@@ -78,6 +78,7 @@ std::tuple<bool, bool> EventEditor::draw() {
         m_templatePicker = ObjectPicker(tr("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
       }
       ImGui::SameLine();
+      ORE_DISABLE_EXPERIMENTAL_BEGIN();
       if (ImGui::Button(trNOOP("Insert\n Locale Keys"))) {
         m_maxLocaleLines = 0;
         for (auto& cmd : m_event->page(m_selectedPage)->list()) {
@@ -96,6 +97,7 @@ std::tuple<bool, bool> EventEditor::draw() {
           ImGui::EndTooltip();
         }
       }
+      ORE_DISABLE_EXPERIMENTAL_END();
     }
     if (m_templatePicker) {
       auto [closed, confirmed] = m_templatePicker->draw();

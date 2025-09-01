@@ -566,7 +566,7 @@ target_link_libraries(
         inih
         magic_enum
 )
-target_compile_definitions(orecore PUBLIC GETTEXT_DOMAIN="${GETTEXT_DOMAIN}" GETTEXT_OUTPUT_DIR="${GETTEXT_OUTPUT_DIR}" PUBLIC ORE_DISABLE_SCRIPTING=1)
+target_compile_definitions(orecore PUBLIC GETTEXT_DOMAIN="${GETTEXT_DOMAIN}" GETTEXT_OUTPUT_DIR="${GETTEXT_OUTPUT_DIR}" PUBLIC ORE_DISABLE_SCRIPTING=0)
 
 # Define set of OS specific files to include
 if (CMAKE_SYSTEM_NAME STREQUAL "Windows")

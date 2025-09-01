@@ -1,6 +1,5 @@
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
-#include <cxxabi.h>
 #include <format>
 
 static bool ContainsCaseInsensitive(std::string_view str, std::string_view val) {

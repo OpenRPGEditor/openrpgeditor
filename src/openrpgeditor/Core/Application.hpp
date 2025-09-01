@@ -8,12 +8,11 @@
 #include <string>
 
 #include "Core/Window.hpp"
-#include "MainWindow.hpp"
+#include "Core/MainWindow.hpp"
 
 #include <optional>
 
 struct ImFont;
-class MainWindow;
 
 namespace App {
 #define kApplicationTitle trNOOP("Open RPG Editor")

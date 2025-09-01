@@ -11,11 +11,7 @@
 #endif
 
 #include "Core/Application.hpp"
-#include "Core/Debug/Instrumentor.hpp"
 #include "Core/Log.hpp"
-#include <orei18n.hpp>
-
-#include "Database/Globals.hpp"
 
 #if defined(_WIN32) && defined(ZLIB_DEBUG)
 // This is needed due to freetype's gzip not defining these

@@ -551,7 +551,6 @@ target_link_libraries(
         SDL3::SDL3
         SDL3_image::SDL3_image
         imgui-setup
-        magic_enum
         nlohmann_json::nlohmann_json
         librpgm
         freetype
@@ -565,6 +564,7 @@ target_link_libraries(
         athena-core
         lcf
         inih
+        magic_enum
 )
 target_compile_definitions(orecore PUBLIC GETTEXT_DOMAIN="${GETTEXT_DOMAIN}" GETTEXT_OUTPUT_DIR="${GETTEXT_OUTPUT_DIR}" PUBLIC ORE_DISABLE_SCRIPTING=1)
 
@@ -594,6 +594,8 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "CLANG")
     target_compile_options(${NAME} PRIVATE -Wno-deprecated-enum-enum-conversion)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(${NAME} PRIVATE /utf-8)
+    target_link_libraries(${NAME} PRIVATE ucrt)
+    target_link_options(${NAME} PRIVATE /FORCE)
 endif ()
 
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/AppAssets.cmake)
@@ -622,7 +624,6 @@ target_link_libraries(
         SDL3::SDL3
         SDL3_image::SDL3_image
         imgui-setup
-        magic_enum
         nlohmann_json::nlohmann_json
         librpgm
         librpgmeventcmds

@@ -7,6 +7,7 @@
 #include "imgui_internal.h"
 
 #include <format>
+#include <algorithm>
 
 void GameWindowColorPicker::draw(ImVec2 size) {
 

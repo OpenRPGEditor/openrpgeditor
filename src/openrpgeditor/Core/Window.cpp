@@ -9,7 +9,7 @@ namespace App {
 
 Window::Window(const Settings& settings) {
   /* Create the window as hidden so we can secretly configure it */
-  m_window = SDL_CreateWindow(settings.title.c_str(), settings.width, settings.height, SDL_WINDOW_TRANSPARENT | SDL_WINDOW_HIDDEN | SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_RESIZABLE);
+  m_window = SDL_CreateWindow(settings.title.c_str(), settings.width, settings.height, SDL_WINDOW_HIDDEN | SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_RESIZABLE);
 
   /* Set the size from the settings scaled to the user's DPI settings */
   setWindowPosition(settings.x, settings.y);

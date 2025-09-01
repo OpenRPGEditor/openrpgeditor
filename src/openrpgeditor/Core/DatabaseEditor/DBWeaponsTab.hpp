@@ -26,6 +26,8 @@ struct DBWeaponsTab : IDBEditorTab {
   std::string getName(int index) override { return m_weapons.weapon(index)->name(); }
   int getCount() override { return m_weapons.count(); }
 
+  [[nodiscard]] std::string tabName() const override { return tr("Weapons"); }
+  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBWeaponsTab"sv; };
 private:
   int m_categoryStart;
   int m_categoryEnd;

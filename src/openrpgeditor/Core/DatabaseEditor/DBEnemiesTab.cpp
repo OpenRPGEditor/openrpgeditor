@@ -261,7 +261,7 @@ void DBEnemiesTab::draw() {
         ImGui::BeginChild("##orpg_enemies_enemy_panel_right");
         {
           m_actionsEditor.draw(m_parent);
-          m_traitsEditor.draw(m_parent);
+          m_traitsEditor.draw();
         }
         ImGui::EndChild();
         ImGui::BeginChild("##orpg_weapons_weapon_panel_bottomright");

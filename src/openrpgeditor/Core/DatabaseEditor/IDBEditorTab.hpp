@@ -4,6 +4,7 @@
 #include <vector>
 
 class DatabaseEditor;
+using std::string_view_literals::operator ""sv;
 class IDBEditorTab {
 public:
   explicit IDBEditorTab(DatabaseEditor* parent)
@@ -16,12 +17,13 @@ public:
   virtual void setHeaderRange(int start, int end) = 0;
   virtual std::string getName(int index) = 0;
   virtual int getCount() = 0;
+  [[nodiscard]] virtual bool isReady() const { return true; }
+  [[nodiscard]] virtual bool isExperimental() const { return false; }
+  [[nodiscard]] virtual std::string tabName() const = 0;
+  [[nodiscard]] virtual constexpr std::string_view tabId() const = 0;
 
-  constexpr std::vector<std::string_view> getUnicodeFormatters() { return {"\u0D9E", "\u21C4", "\u2318", "\u2248", "\u221E", "\u25bc"}; }
-  bool hasUnicodeFormatting(const std::string& text) { return text.contains("\u25bc"); }
-
-  /* TODO: Make pure */
-  virtual bool isModified() { return false; };
+  static constexpr std::vector<std::string_view> getUnicodeFormatters() { return {"\u0D9E", "\u21C4", "\u2318", "\u2248", "\u221E", "\u25bc"}; }
+  static bool hasUnicodeFormatting(const std::string& text) { return text.contains("\u25bc"); }
 
 protected:
   DatabaseEditor* m_parent;

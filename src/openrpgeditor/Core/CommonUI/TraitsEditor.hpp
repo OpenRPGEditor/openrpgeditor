@@ -7,16 +7,15 @@
 
 class State;
 class Skill;
-class DatabaseEditor;
 
 class TraitsEditor final {
 public:
   void setTraits(std::vector<Trait>* traits) { m_traits = traits; }
-  void draw(DatabaseEditor* dbEditor);
+  void draw();
   void drawRadioButton(std::string_view name, TraitCode code, int dataId, double initialValue) const;
 
 private:
-  void drawPopup(DatabaseEditor* dbEditor);
+  void drawPopup();
   std::vector<Trait>* m_traits = nullptr;
   Trait* m_selectedTrait = nullptr;
   bool m_updateTab{false};

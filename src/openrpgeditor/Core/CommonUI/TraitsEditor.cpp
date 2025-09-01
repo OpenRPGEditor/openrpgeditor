@@ -9,7 +9,7 @@ using namespace std::string_view_literals;
 
 static constexpr auto TraitsEditorPopupId = "Traits Edit"sv;
 
-void TraitsEditor::draw(DatabaseEditor* dbEditor) {
+void TraitsEditor::draw() {
   if (m_traits == nullptr) {
     return;
   }
@@ -40,7 +40,7 @@ void TraitsEditor::draw(DatabaseEditor* dbEditor) {
             m_deletingTrait = &trait;
             m_selectedTrait = nullptr;
           }
-          drawPopup(dbEditor);
+          drawPopup();
         }
 
         if (ImGui::TableNextColumn()) {
@@ -140,7 +140,7 @@ void TraitsEditor::draw(DatabaseEditor* dbEditor) {
           }
         }
       }
-      drawPopup(dbEditor);
+      drawPopup();
       ImGui::EndTable();
     }
   }
@@ -162,7 +162,7 @@ void TraitsEditor::drawRadioButton(const std::string_view name, const TraitCode 
   }
 }
 
-void TraitsEditor::drawPopup(DatabaseEditor* dbEditor) {
+void TraitsEditor::drawPopup() {
   if (m_selectedTrait == nullptr || m_traits == nullptr) {
     return;
   }

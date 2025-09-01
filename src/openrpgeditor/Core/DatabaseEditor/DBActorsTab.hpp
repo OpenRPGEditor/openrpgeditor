@@ -17,14 +17,6 @@ struct DBActorsTab : IDBEditorTab {
   explicit DBActorsTab(Actors& actors, DatabaseEditor* parent);
   void draw() override;
 
-  Actors& actors() { return m_actors; }
-  const Actors& actors() const { return m_actors; }
-
-  Actor* actor(int id) { return m_actors.actor(id); }
-  const Actor* actor(int id) const { return m_actors.actor(id); }
-
-  bool isModified() const { return m_actors.isModified(); }
-
   std::vector<int>& getHeaders() override { return m_headers; }
   int getHeader(int index) override { return m_headers.at(index); }
   bool hasHeader() override { return !m_headers.empty(); }
@@ -35,6 +27,9 @@ struct DBActorsTab : IDBEditorTab {
   std::string getName(int index) override { return m_actors.actor(index)->name(); }
   int getCount() override { return m_actors.count(); }
 
+  [[nodiscard]] std::string tabName() const override { return tr("Actors"); }
+  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBActorsTab"sv; };
+
 private:
   int m_categoryStart;
   int m_categoryEnd;
@@ -43,7 +38,6 @@ private:
   Actors& m_actors;
   Actor* m_selectedActor{};
   int m_editMaxActors{};
-  float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
   bool m_showEquipEdit = false;

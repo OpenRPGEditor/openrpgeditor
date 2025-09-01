@@ -32,13 +32,6 @@ void Database::load() {
   config.load(basePath + "editor/config.json");
   transient.load(basePath + ".ore/transient.json");
 
-  RPGM_INFO("Queue System definitions for load...");
-  FileQueue::instance().enqueue(std::make_shared<SystemSerializer>("data/System.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
-    system = std::dynamic_pointer_cast<SystemSerializer>(serializer)->data();
-    system.modified().connect<&Database::onAnyModifiableModified>(this);
-    emit_signal(systemLoaded());
-    RPGM_INFO("System definitions loaded");
-  });
   RPGM_INFO("Queue MapInfo definitions for load...");
   FileQueue::instance().enqueue(std::make_shared<MapInfosSerializer>("data/MapInfos.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
     mapInfos = std::dynamic_pointer_cast<MapInfosSerializer>(serializer)->data();
@@ -48,6 +41,7 @@ void Database::load() {
     emit_signal(mapInfosLoaded());
     RPGM_INFO("MapInfo definitions loaded");
   });
+
   RPGM_INFO("Queue Actor definitions for load...");
   FileQueue::instance().enqueue(std::make_shared<ActorsSerializer>("data/Actors.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
     actors = std::dynamic_pointer_cast<ActorsSerializer>(serializer)->data();
@@ -55,6 +49,7 @@ void Database::load() {
     emit_signal(actorsLoaded());
     RPGM_INFO("Actor definitions loaded");
   });
+
   RPGM_INFO("Queue Class definitions for load...");
   FileQueue::instance().enqueue(std::make_shared<ClassesSerializer>("data/Classes.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
     classes = std::dynamic_pointer_cast<ClassesSerializer>(serializer)->data();
@@ -62,6 +57,7 @@ void Database::load() {
     emit_signal(classesLoaded());
     RPGM_INFO("Class definitions loaded");
   });
+
   RPGM_INFO("Queue Skill definitions for load...");
   FileQueue::instance().enqueue(std::make_shared<SkillsSerializer>("data/Skills.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
     skills = std::dynamic_pointer_cast<SkillsSerializer>(serializer)->data();
@@ -69,6 +65,7 @@ void Database::load() {
     emit_signal(skillsLoaded());
     RPGM_INFO("Skill definitions loaded");
   });
+
   RPGM_INFO("Queue Item definitions for load...");
   FileQueue::instance().enqueue(std::make_shared<ItemsSerializer>("data/Items.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
     items = std::dynamic_pointer_cast<ItemsSerializer>(serializer)->data();
@@ -76,6 +73,7 @@ void Database::load() {
     emit_signal(itemsLoaded());
     RPGM_INFO("Item definitions loaded");
   });
+  
   RPGM_INFO("Queue Weapon definitions for load...");
   FileQueue::instance().enqueue(std::make_shared<WeaponsSerializer>("data/Weapons.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
     weapons = std::dynamic_pointer_cast<WeaponsSerializer>(serializer)->data();
@@ -83,6 +81,7 @@ void Database::load() {
     emit_signal(weaponsLoaded());
     RPGM_INFO("Weapon definitions loaded");
   });
+
   RPGM_INFO("Queue Armor definitions for load...");
   FileQueue::instance().enqueue(std::make_shared<ArmorsSerializer>("data/Armors.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
     armors = std::dynamic_pointer_cast<ArmorsSerializer>(serializer)->data();
@@ -90,6 +89,7 @@ void Database::load() {
     emit_signal(armorsLoaded());
     RPGM_INFO("Armor definitions loaded");
   });
+
   RPGM_INFO("Queue Enemy definitions for load...");
   FileQueue::instance().enqueue(std::make_shared<EnemiesSerializer>("data/Enemies.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
     enemies = std::dynamic_pointer_cast<EnemiesSerializer>(serializer)->data();
@@ -97,6 +97,7 @@ void Database::load() {
     emit_signal(enemiesLoaded());
     RPGM_INFO("Enemy definitions loaded");
   });
+
   RPGM_INFO("Queue Troop definitions for load...");
   FileQueue::instance().enqueue(std::make_shared<TroopsSerializer>("data/Troops.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
     troops = std::dynamic_pointer_cast<TroopsSerializer>(serializer)->data();
@@ -104,6 +105,7 @@ void Database::load() {
     emit_signal(troopsLoaded());
     RPGM_INFO("Troop definitions loaded");
   });
+
   RPGM_INFO("Queue State definitions for load...");
   FileQueue::instance().enqueue(std::make_shared<StatesSerializer>("data/States.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
     states = std::dynamic_pointer_cast<StatesSerializer>(serializer)->data();
@@ -111,6 +113,7 @@ void Database::load() {
     emit_signal(statesLoaded());
     RPGM_INFO("State definitions loaded");
   });
+
   RPGM_INFO("Queue Animation definitions for load...");
   FileQueue::instance().enqueue(std::make_shared<AnimationsSerializer>("data/Animations.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
     animations = std::dynamic_pointer_cast<AnimationsSerializer>(serializer)->data();
@@ -118,6 +121,7 @@ void Database::load() {
     emit_signal(animationsLoaded());
     RPGM_INFO("Animation definitions loaded");
   });
+
   RPGM_INFO("Queue Tileset definitions for load...");
   FileQueue::instance().enqueue(std::make_shared<TilesetsSerializer>("data/Tilesets.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
     tilesets = std::dynamic_pointer_cast<TilesetsSerializer>(serializer)->data();
@@ -125,6 +129,7 @@ void Database::load() {
     emit_signal(tilesetsLoaded());
     RPGM_INFO("Tileset definitions loaded");
   });
+
   RPGM_INFO("Queue CommonEvent definitions for load...");
   FileQueue::instance().enqueue(std::make_shared<CommonEventsSerializer>("data/CommonEvents.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
     commonEvents = std::dynamic_pointer_cast<CommonEventsSerializer>(serializer)->data();
@@ -132,6 +137,15 @@ void Database::load() {
     emit_signal(commonEventsLoaded());
     RPGM_INFO("CommonEvent definitions loaded");
   });
+
+  RPGM_INFO("Queue System definitions for load...");
+  FileQueue::instance().enqueue(std::make_shared<SystemSerializer>("data/System.json"), [this](const std::shared_ptr<ISerializable>& serializer) {
+    system = std::dynamic_pointer_cast<SystemSerializer>(serializer)->data();
+    system.modified().connect<&Database::onAnyModifiableModified>(this);
+    emit_signal(systemLoaded());
+    RPGM_INFO("System definitions loaded");
+  });
+
   RPGM_INFO("Queue Map001 localization file...");
   locales = Locales();
   locales.loadMap(basePath + "locales/en/Map0001.json");

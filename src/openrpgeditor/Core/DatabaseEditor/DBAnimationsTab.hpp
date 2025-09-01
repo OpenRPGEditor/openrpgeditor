@@ -28,6 +28,9 @@ public:
   std::string getName(int index) override { return m_animations.animation(index)->name(); }
   int getCount() override { return m_animations.count(); }
 
+  [[nodiscard]] std::string tabName() const override { return tr("Animations"); }
+  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBAnimationsTab"sv; };
+
 private:
   int m_categoryStart;
   int m_categoryEnd;

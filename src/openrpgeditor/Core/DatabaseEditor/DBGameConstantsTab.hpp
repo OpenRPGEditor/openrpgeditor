@@ -38,6 +38,9 @@ public:
   std::string getName(int index) override { return ""; }
   int getCount() override { return 0; }
 
+  [[nodiscard]] std::string tabName() const override { return tr("Game Constants"); }
+  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBGameConstantsTab"sv; };
+
 private:
   int m_categoryStart;
   int m_categoryEnd;

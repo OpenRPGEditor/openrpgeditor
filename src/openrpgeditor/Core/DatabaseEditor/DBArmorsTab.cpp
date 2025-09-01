@@ -253,7 +253,7 @@ void DBArmorsTab::draw() {
         ImGui::EndChild();
         ImGui::SameLine();
         ImGui::BeginChild("##orpg_armors_armor_panel_right");
-        { m_traitsEditor.draw(m_parent); }
+        { m_traitsEditor.draw(); }
         ImGui::EndChild();
         ImGui::BeginChild("##orpg_armors_armor_panel_bottomright");
         {

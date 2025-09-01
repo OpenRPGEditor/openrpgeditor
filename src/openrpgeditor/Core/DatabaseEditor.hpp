@@ -30,6 +30,7 @@ public:
   explicit DatabaseEditor(MainWindow* parent)
   : m_parent(parent) {}
 
+  void drawCategoryHeaders();
   void draw();
 
   void open() { m_isOpen = true; }
@@ -37,30 +38,84 @@ public:
   MainWindow* project() { return m_parent; }
   const MainWindow* project() const { return m_parent; }
 
-  void setActors(Actors& actors) { m_actors.emplace(actors, this); }
-  void setClasses(Classes& classes) { m_classes.emplace(classes, this); }
-  void setSkills(Skills& skills) { m_skills.emplace(skills, this); }
-  void setItems(Items& items) { m_items.emplace(items, this); }
-  void setWeapons(Weapons& weapons) { m_weapons.emplace(weapons, this); }
-  void setArmors(Armors& armors) { m_armors.emplace(armors, this); }
-  void setEnemies(Enemies& enemies) { m_enemies.emplace(enemies, this); }
-  void setTroops(Troops& troops) { m_troops.emplace(troops, this); }
-  void setStates(States& states) { m_states.emplace(states, this); }
-  void setAnimations(Animations& animations) { m_animations.emplace(animations, this); }
-  void setTilesets(Tilesets& tilesets) { m_tilesets.emplace(tilesets, this); }
-  void setCommonEvents(CommonEvents& commonEvents) { m_commonEvents.emplace(commonEvents, this); }
-  void setSystem(System& system) {
-    m_system.emplace(system, this);
-    m_types.emplace(system, this);
-    m_terms.emplace(system, this);
-    m_mappings.emplace(system, this);
+  void setActors(Actors& actors) {
+    m_actors = std::make_shared<DBActorsTab>(actors, this);
+    m_editorTabs.emplace_back(m_actors);
   }
-  void setGameConstants(GameConstants& gameConstants) { m_gameConstants.emplace(gameConstants, this); }
-  void setTemplates(Templates& templates) { m_templates.emplace(templates, this); }
-  void setDocs(Docs& docs) { m_docs.emplace(docs, this); }
-  void setLocales(Locales& locales) { m_locales.emplace(locales, this); }
+  void setClasses(Classes& classes) {
+    m_classes = std::make_shared<DBClassesTab>(classes, this);
+    m_editorTabs.emplace_back(m_classes);
+  }
+  void setSkills(Skills& skills) {
+    m_skills = std::make_shared<DBSkillsTab>(skills, this);
+    m_editorTabs.emplace_back(m_skills);
+  }
+  void setItems(Items& items) {
+    m_items = std::make_shared<DBItemsTab>(items, this);
+    m_editorTabs.emplace_back(m_items);
+  }
+  void setWeapons(Weapons& weapons) {
+    m_weapons = std::make_shared<DBWeaponsTab>(weapons, this);
+    m_editorTabs.emplace_back(m_weapons);
+  }
+  void setArmors(Armors& armors) {
+    m_armors = std::make_shared<DBArmorsTab>(armors, this);
+    m_editorTabs.emplace_back(m_armors);
+  }
+  void setEnemies(Enemies& enemies) {
+    m_enemies = std::make_shared<DBEnemiesTab>(enemies, this);
+    m_editorTabs.emplace_back(m_enemies);
+  }
+  void setTroops(Troops& troops) {
+    m_troops = std::make_shared<DBTroopsTab>(troops, this);
+    m_editorTabs.emplace_back(m_troops);
+  }
+  void setStates(States& states) {
+    m_states = std::make_shared<DBStatesTab>(states, this);
+    m_editorTabs.emplace_back(m_states);
+  }
+  void setAnimations(Animations& animations) {
+    m_animations = std::make_shared<DBAnimationsTab>(animations, this);
+    m_editorTabs.emplace_back(m_animations);
+  }
+  void setTilesets(Tilesets& tilesets) {
+    m_tilesets = std::make_shared<DBTilesetsTab>(tilesets, this);
+    m_editorTabs.emplace_back(m_tilesets);
+  }
+  void setCommonEvents(CommonEvents& commonEvents) {
+    m_commonEvents = std::make_shared<DBCommonEventsTab>(commonEvents, this);
+    m_editorTabs.emplace_back(m_commonEvents);
+  }
+  void setSystem(System& system) {
+    m_system = std::make_shared<DBSystemTab>(system, this);
+    m_editorTabs.emplace_back(m_system);
+    m_types = std::make_shared<DBTypesTab>(system, this);
+    m_editorTabs.emplace_back(m_types);
+    m_terms = std::make_shared<DBTermsTab>(system, this);
+    m_editorTabs.emplace_back(m_terms);
+    m_mappings = std::make_shared<DBMappingsTab>(system, this);
+    m_editorTabs.emplace_back(m_mappings);
+  }
+  void setGameConstants(GameConstants& gameConstants) {
+    m_gameConstants = std::make_shared<DBGameConstantsTab>(gameConstants, this);
+    m_editorTabs.emplace_back(m_gameConstants);
+  }
+  void setTemplates(Templates& templates) {
+    m_templates = std::make_shared<DBTemplatesTab>(templates, this);
+    m_editorTabs.emplace_back(m_templates);
+  }
+  void setDocs(Docs& docs) {
+    m_docs = std::make_shared<DBDocTab>(docs, this);
+    m_editorTabs.emplace_back(m_docs);
+  }
+  void setLocales(Locales& locales) {
+    m_locales = std::make_shared<DBLocaleTab>(locales, this);
+    m_editorTabs.emplace_back(m_locales);
+  }
 
   bool isReady() const {
+    // TODO: Clean up initial database status so we can get rid of the individual class variables
+    // return std::ranges::all_of(m_editorTabs, [](const auto& v) { return v->isReady(); });
     return m_actors && m_classes && m_skills && m_items && m_weapons && m_armors && m_enemies && m_troops && m_states && m_animations && m_tilesets && m_commonEvents && m_system && m_terms &&
            m_types && m_gameConstants && m_templates && m_docs && m_mappings && m_locales;
   }
@@ -70,33 +125,37 @@ public:
   bool isFilteredByCategory() const { return m_filterByHeader && m_selectedHeaderIndex != -1; }
 
   bool isOpen() { return m_isOpen; }
-  DBCommonEventsTab* commonEvents() { return m_commonEvents.has_value() ? &m_commonEvents.value() : nullptr; }
+  DBCommonEventsTab* commonEvents() { return m_commonEvents.get(); }
   IDBEditorTab* getCurrentTab() { return m_currentTab; }
 
   rpgmutils::signal<void()> onReady;
 
+  void addTab(const std::shared_ptr<IDBEditorTab>& tab) { m_editorTabs.emplace_back(tab); }
+
 private:
   MainWindow* m_parent;
-  std::optional<DBActorsTab> m_actors;
-  std::optional<DBClassesTab> m_classes;
-  std::optional<DBSkillsTab> m_skills;
-  std::optional<DBItemsTab> m_items;
-  std::optional<DBWeaponsTab> m_weapons;
-  std::optional<DBArmorsTab> m_armors;
-  std::optional<DBEnemiesTab> m_enemies;
-  std::optional<DBTroopsTab> m_troops;
-  std::optional<DBStatesTab> m_states;
-  std::optional<DBAnimationsTab> m_animations;
-  std::optional<DBTilesetsTab> m_tilesets;
-  std::optional<DBCommonEventsTab> m_commonEvents;
-  std::optional<DBSystemTab> m_system;
-  std::optional<DBTypesTab> m_types;
-  std::optional<DBTermsTab> m_terms;
-  std::optional<DBGameConstantsTab> m_gameConstants;
-  std::optional<DBTemplatesTab> m_templates;
-  std::optional<DBDocTab> m_docs;
-  std::optional<DBLocaleTab> m_locales;
-  std::optional<DBMappingsTab> m_mappings;
+  std::vector<std::shared_ptr<IDBEditorTab>> m_editorTabs;
+  std::shared_ptr<DBActorsTab> m_actors;
+  std::shared_ptr<DBClassesTab> m_classes;
+  std::shared_ptr<DBSkillsTab> m_skills;
+  std::shared_ptr<DBItemsTab> m_items;
+  std::shared_ptr<DBWeaponsTab> m_weapons;
+  std::shared_ptr<DBArmorsTab> m_armors;
+  std::shared_ptr<DBEnemiesTab> m_enemies;
+  std::shared_ptr<DBTroopsTab> m_troops;
+  std::shared_ptr<DBStatesTab> m_states;
+  std::shared_ptr<DBAnimationsTab> m_animations;
+  std::shared_ptr<DBTilesetsTab> m_tilesets;
+  std::shared_ptr<DBCommonEventsTab> m_commonEvents;
+  std::shared_ptr<DBSystemTab> m_system;
+  std::shared_ptr<DBTypesTab> m_types;
+  std::shared_ptr<DBTermsTab> m_terms;
+  std::shared_ptr<DBGameConstantsTab> m_gameConstants;
+  std::shared_ptr<DBTemplatesTab> m_templates;
+  std::shared_ptr<DBDocTab> m_docs;
+  std::shared_ptr<DBLocaleTab> m_locales;
+  std::shared_ptr<DBMappingsTab> m_mappings;
+
   std::optional<IconSheet> m_iconSheet;
 
   std::string m_searchString;

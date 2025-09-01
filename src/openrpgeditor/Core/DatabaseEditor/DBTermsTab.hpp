@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include <orei18n.hpp>
 
 #include <string>
 
@@ -20,6 +21,9 @@ public:
 
   std::string getName(int index) override { return ""; }
   int getCount() override { return 0; }
+
+  [[nodiscard]] std::string tabName() const override { return tr("Terms"); }
+  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTermsTab"sv; };
 
 private:
   int m_categoryStart;

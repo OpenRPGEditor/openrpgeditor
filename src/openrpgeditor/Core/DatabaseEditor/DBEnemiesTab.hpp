@@ -31,6 +31,9 @@ struct DBEnemiesTab : IDBEditorTab {
   std::string getName(int index) override { return m_enemies.enemy(index)->name(); }
   int getCount() override { return m_enemies.count(); }
 
+  [[nodiscard]] std::string tabName() const override { return tr("Enemies"); }
+  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBEnemiesTab"sv; };
+
 private:
   int m_categoryStart;
   int m_categoryEnd;

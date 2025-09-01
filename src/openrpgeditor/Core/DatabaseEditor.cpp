@@ -16,25 +16,135 @@ void DatabaseEditor::draw() {
     return;
   }
 
-  if (m_currentTab == nullptr && m_actors) {
-    m_currentTab = &m_actors.value();
+  if (m_currentTab == nullptr && !m_editorTabs.empty()) {
+    m_currentTab = m_editorTabs.front().get();
   }
 
   ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(800, 720), ImVec2{FLT_MAX, FLT_MAX});
   ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing);
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, {0.5, 0.5});
   if (ImGui::Begin(std::format("{}###databaseeditor", trNOOP("Database")).c_str(), &m_isOpen)) {
-    ImGui::SetNextItemWidth(ImGui::GetDPIScaledValue(100.f));
-    const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQR").x;
-    ImGui::BeginChild("##orpg_database_editor_tab_buttons", ImVec2{calc + ImGui::GetStyle().ItemSpacing.x, 0}, 0, ImGuiWindowFlags_NoBackground);
+    ImGui::BeginHorizontal("##database_editor_main_layout", ImGui::GetContentRegionAvail(), 0);
+    {
+      // TODO: Calculate necessary width
+      const auto calc = ImGui::CalcTextSize("#").x * 32;
+      ImGui::BeginChild("##orpg_database_editor_tab_buttons", ImVec2{calc + ImGui::GetStyle().ItemSpacing.x, 0}, 0, ImGuiWindowFlags_NoBackground);
+      {
+        drawCategoryHeaders();
+        ImGui::BeginVertical("##database_editor_tab_layout", ImGui::GetContentRegionAvail(), 0);
+        {
+          ImGui::Spring(0.25f);
+          for (const auto& tab : m_editorTabs) {
+            if (tab->isExperimental()) {
+              ORE_DISABLE_EXPERIMENTAL_BEGIN();
+            }
 
-    ImGui::SetNextItemWidth(ImGui::GetDPIScaledValue(160.f));
+            if (ImGui::SelectableWithBorder(std::format("{}{}", tab->tabName(), tab->tabId()).c_str(), m_currentTab == tab.get())) {
+              m_currentTab = tab.get();
+            }
+
+            if (tab->isExperimental()) {
+              ORE_DISABLE_EXPERIMENTAL_END();
+            }
+          }
+#if 0
+          if (ImGui::SelectableWithBorder(trNOOP("Actors"), m_currentTab == &m_actors.value())) {
+            m_currentTab = &m_actors.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("Classes"), m_currentTab == &m_classes.value())) {
+            m_currentTab = &m_classes.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("Skills"), m_currentTab == &m_skills.value())) {
+            m_currentTab = &m_skills.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("Items"), m_currentTab == &m_items.value())) {
+            m_currentTab = &m_items.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("Weapons"), m_currentTab == &m_weapons.value())) {
+            m_currentTab = &m_weapons.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("Armors"), m_currentTab == &m_armors.value())) {
+            m_currentTab = &m_armors.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("Enemies"), m_currentTab == &m_enemies.value())) {
+            m_currentTab = &m_enemies.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("Troops"), m_currentTab == &m_troops.value())) {
+            m_currentTab = &m_troops.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("States"), m_currentTab == &m_states.value())) {
+            m_currentTab = &m_states.value();
+          }
+          ORE_DISABLE_EXPERIMENTAL_BEGIN();
+          if (ImGui::SelectableWithBorder(trNOOP("Animations"), m_currentTab == &m_animations.value())) {
+            m_currentTab = &m_animations.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("Tilesets"), m_currentTab == &m_tilesets.value())) {
+            m_currentTab = &m_tilesets.value();
+          }
+          ORE_DISABLE_EXPERIMENTAL_END();
+          if (ImGui::SelectableWithBorder(trNOOP("Common Events"), m_currentTab == &m_commonEvents.value())) {
+            m_currentTab = &m_commonEvents.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("System"), m_currentTab == &m_system.value())) {
+            m_currentTab = &m_system.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("Types"), m_currentTab == &m_types.value())) {
+            m_currentTab = &m_types.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("Terms"), m_currentTab == &m_terms.value())) {
+            m_currentTab = &m_terms.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("Exported Constants"), m_currentTab == &m_gameConstants.value())) {
+            m_currentTab = &m_gameConstants.value();
+          }
+          ORE_DISABLE_EXPERIMENTAL_BEGIN();
+          if (ImGui::SelectableWithBorder(trNOOP("Templates"), m_currentTab == &m_templates.value())) {
+            m_currentTab = &m_templates.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("Data Sorting"), m_currentTab == &m_mappings.value())) {
+            m_currentTab = &m_mappings.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("Documentation"), m_currentTab == &m_docs.value())) {
+            m_currentTab = &m_docs.value();
+          }
+          if (ImGui::SelectableWithBorder(trNOOP("Localization"), m_currentTab == &m_locales.value())) {
+            m_currentTab = &m_locales.value();
+          }
+          ORE_DISABLE_EXPERIMENTAL_END();
+#endif
+          ImGui::Spring(0.75f);
+        }
+        ImGui::EndVertical();
+      }
+      ImGui::EndChild();
+      if (m_currentTab) {
+        m_currentTab->draw();
+      }
+    }
+    ImGui::EndHorizontal();
+  }
+
+  ImGui::End();
+}
+
+const IconSheet* DatabaseEditor::getIconSheet() {
+  if (!m_iconSheet) {
+    m_iconSheet.emplace("system/IconSet"sv);
+  }
+  return &m_iconSheet.value();
+}
+
+void DatabaseEditor::drawCategoryHeaders() {
+  ImGui::BeginVertical("##database_category_headers", {-1, 0}, 0);
+  {
+    ImGui::SetNextItemWidth(-1);
     int index{0};
     if (m_filterByHeader) {
       if (ImGui::BeginCombo("##orpg_database_editor_header_list", m_selectedHeaderIndex == -1 ? "" : m_currentTab->getName(m_currentTab->getHeader(m_selectedHeaderIndex)).c_str())) {
         char buf[1024];
         for (int v : m_currentTab->getHeaders()) {
-          strncpy(buf, m_commonEvents.value().event(v)->name().c_str(), 1024);
+          strncpy(buf, m_currentTab->getName(v).c_str(), 1024);
           if (ImGui::Selectable(buf, m_selectedHeaderIndex == index)) {
             m_selectedHeaderIndex = index;
             m_currentTab->setHeaderRange(m_currentTab->getHeader(m_selectedHeaderIndex),
@@ -47,7 +157,7 @@ void DatabaseEditor::draw() {
     } else {
       ImGui::InputText("##orpg_database_editor_search_filter", &m_searchString);
     }
-    ImGui::BeginDisabled(m_currentTab->hasHeader() == 0 ? true : !m_currentTab->hasHeader());
+    ImGui::BeginDisabled(!m_currentTab->hasHeader());
     if (ImGui::Checkbox("By header##orpg_database_editor_filterbyheader_check", &m_filterByHeader)) {
       if (m_filterByHeader) {
         m_selectedHeaderIndex = 0;
@@ -58,85 +168,6 @@ void DatabaseEditor::draw() {
       }
     }
     ImGui::EndDisabled();
-
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetDPIScaledValue(100));
-    if (ImGui::SelectableWithBorder(trNOOP("Actors"), m_currentTab == &m_actors.value())) {
-      m_currentTab = &m_actors.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("Classes"), m_currentTab == &m_classes.value())) {
-      m_currentTab = &m_classes.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("Skills"), m_currentTab == &m_skills.value())) {
-      m_currentTab = &m_skills.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("Items"), m_currentTab == &m_items.value())) {
-      m_currentTab = &m_items.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("Weapons"), m_currentTab == &m_weapons.value())) {
-      m_currentTab = &m_weapons.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("Armors"), m_currentTab == &m_armors.value())) {
-      m_currentTab = &m_armors.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("Enemies"), m_currentTab == &m_enemies.value())) {
-      m_currentTab = &m_enemies.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("Troops"), m_currentTab == &m_troops.value())) {
-      m_currentTab = &m_troops.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("States"), m_currentTab == &m_states.value())) {
-      m_currentTab = &m_states.value();
-    }
-    ORE_DISABLE_EXPERIMENTAL_BEGIN();
-    if (ImGui::SelectableWithBorder(trNOOP("Animations"), m_currentTab == &m_animations.value())) {
-      m_currentTab = &m_animations.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("Tilesets"), m_currentTab == &m_tilesets.value())) {
-      m_currentTab = &m_tilesets.value();
-    }
-    ORE_DISABLE_EXPERIMENTAL_END();
-    if (ImGui::SelectableWithBorder(trNOOP("Common Events"), m_currentTab == &m_commonEvents.value())) {
-      m_currentTab = &m_commonEvents.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("System"), m_currentTab == &m_system.value())) {
-      m_currentTab = &m_system.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("Types"), m_currentTab == &m_types.value())) {
-      m_currentTab = &m_types.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("Terms"), m_currentTab == &m_terms.value())) {
-      m_currentTab = &m_terms.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("Exported Constants"), m_currentTab == &m_gameConstants.value())) {
-      m_currentTab = &m_gameConstants.value();
-    }
-    ORE_DISABLE_EXPERIMENTAL_BEGIN();
-    if (ImGui::SelectableWithBorder(trNOOP("Templates"), m_currentTab == &m_templates.value())) {
-      m_currentTab = &m_templates.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("Data Sorting"), m_currentTab == &m_mappings.value())) {
-      m_currentTab = &m_mappings.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("Documentation"), m_currentTab == &m_docs.value())) {
-      m_currentTab = &m_docs.value();
-    }
-    if (ImGui::SelectableWithBorder(trNOOP("Localization"), m_currentTab == &m_locales.value())) {
-      m_currentTab = &m_locales.value();
-    }
-    ORE_DISABLE_EXPERIMENTAL_END();
-    ImGui::EndChild();
-    ImGui::SameLine();
-    if (m_currentTab) {
-      m_currentTab->draw();
-    }
   }
-
-  ImGui::End();
-}
-
-const IconSheet* DatabaseEditor::getIconSheet() {
-  if (!m_iconSheet) {
-    m_iconSheet.emplace("system/IconSet"sv);
-  }
-  return &m_iconSheet.value();
+  ImGui::EndVertical();
 }

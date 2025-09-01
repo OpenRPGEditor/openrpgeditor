@@ -32,6 +32,9 @@ struct DBClassesTab : IDBEditorTab {
   std::string getName(int index) override { return m_classes.classType(index)->name(); }
   int getCount() override { return m_classes.count(); }
 
+  [[nodiscard]] std::string tabName() const override { return tr("Classes"); }
+  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBClassesTab"sv; };
+
 private:
   int m_categoryStart;
   int m_categoryEnd;

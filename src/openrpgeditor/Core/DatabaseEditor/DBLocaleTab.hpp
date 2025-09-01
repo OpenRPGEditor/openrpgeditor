@@ -19,6 +19,9 @@ struct DBLocaleTab : IDBEditorTab {
 
   // TODO: Fuzzy searching
 
+  [[nodiscard]] std::string tabName() const override { return tr("Locales"); }
+  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBLocaleTab"sv; };
+
 private:
   Locales* m_locales = nullptr;
   Locales m_jpLocales;

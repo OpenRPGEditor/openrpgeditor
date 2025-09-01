@@ -352,7 +352,7 @@ void DBClassesTab::draw() {
         ImGui::BeginChild("##orpg_classes_class_panel_right");
         {
           ImGui::BeginChild("##traits_editor", {0, ImGui::GetContentRegionAvail().y / 2}, ImGuiChildFlags_ResizeY);
-          m_traitsEditor.draw(m_parent);
+          m_traitsEditor.draw();
           ImGui::EndChild();
           ImGui::BeginChild("##note");
           {

@@ -52,6 +52,9 @@ struct DBTemplatesTab : IDBEditorTab {
   std::string getName(int index) override { return ""; }
   int getCount() override { return 0; }
 
+  [[nodiscard]] std::string tabName() const override { return tr("Templates"); }
+  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTemplatesTab"sv; };
+
 private:
   int m_categoryStart;
   int m_categoryEnd;

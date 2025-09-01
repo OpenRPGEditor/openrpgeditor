@@ -25,6 +25,9 @@ struct DBStatesTab : IDBEditorTab {
   std::string getName(int index) override { return m_states.state(index)->name(); }
   int getCount() override { return m_states.count(); }
 
+  [[nodiscard]] std::string tabName() const override { return tr("States"); }
+  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBStatesTab"sv; };
+
 private:
   int m_categoryStart;
   int m_categoryEnd;

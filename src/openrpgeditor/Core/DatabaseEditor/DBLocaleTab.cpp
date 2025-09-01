@@ -259,7 +259,7 @@ void DBLocaleTab::draw() {
         ImGui::SameLine();
 
         ImGui::SetNextItemWidth(100);
-        if (ImGui::BeginCombo("##orpg_locales_language_selection", m_localeList.at(m_selectedLanguage).c_str())) {
+        if (ImGui::BeginCombo("##orpg_locales_language_selection", m_localeList.empty() || m_selectedLanguage >= m_localeList.size() ? "" : m_localeList.at(m_selectedLanguage).c_str())) {
           int localeIndex{0};
           for (auto& locale : m_localeList) {
             bool is_selected = m_selectedLanguage == localeIndex;

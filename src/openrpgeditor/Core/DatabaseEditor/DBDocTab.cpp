@@ -419,7 +419,7 @@ void DBDocTab::Save() const {
     create_directories(editorPath);
   }
 
-  if (m_docs->serialize(Database::instance()->basePath + "editor/Documentation.json")) {
+  if (m_docs->serialize((editorPath /"Documentation.json").generic_string())) {
     ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Serialized editor/Documentation.json successfully!"});
   } else {
     ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to serialize editor/Documentation.json!"});

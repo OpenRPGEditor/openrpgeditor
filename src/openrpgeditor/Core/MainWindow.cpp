@@ -574,10 +574,10 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
 }
 
 void MainWindow::drawCreateNewProjectPopup() {
-  static constexpr std::array<std::string_view, 23> directoryList{{
-      "data"sv,           "fonts"sv,       "audio/bgm"sv, "audio/bgs"sv,      "audio/me"sv,     "audio/se"sv,      "img/animations"sv, "img/battlebacks1"sv, "img/battlebacks2"sv,
-      "img/characters"sv, "img/enemies"sv, "img/faces"sv, "img/parallaxes"sv, "img/pictures"sv, "img/sv_actors"sv, "img/sv_enemies"sv, "img/system"sv,       "img/tilesets"sv,
-      "img/titles1"sv,    "img/titles2"sv, "js/libs"sv,   "js/plugins"sv,     "movies"sv,
+  static constexpr std::array<std::string_view, 24> directoryList{{
+      "data"sv,           "editor"sv,      "fonts"sv,      "audio/bgm"sv,      "audio/bgs"sv,    "audio/me"sv,      "audio/se"sv,       "img/animations"sv, "img/battlebacks1"sv, "img/battlebacks2"sv,
+      "img/characters"sv, "img/enemies"sv, "img/faces"sv,  "img/parallaxes"sv, "img/pictures"sv, "img/sv_actors"sv, "img/sv_enemies"sv, "img/system"sv,     "img/tilesets"sv,     "img/titles1"sv,
+      "img/titles2"sv,    "js/libs"sv,     "js/plugins"sv, "movies"sv,
   }};
 
   const auto [closed, confirmed] = m_createNewProject.draw();

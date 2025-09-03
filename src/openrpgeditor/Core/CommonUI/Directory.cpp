@@ -87,12 +87,7 @@ void Directory::moveUp() {
 bool Directory::isParentDirectory() const { return m_isParentDir; }
 
 std::vector<std::string>& Directory::getDirectories() { return m_subDirectories; }
-std::string Directory::getFileName(std::string name) {
-  if (name.find('/') != std::string::npos) {
-    name = name.substr(name.find_last_of('/') + 1, name.size());
-  }
-  return name;
-}
+std::string Directory::getFileName(const std::string& name) { return std::filesystem::path(name).filename().generic_string(); }
 
 std::string& Directory::getPathPrefix() { return m_pathPrefix; }
 const std::string& Directory::getPathPrefix() const { return m_pathPrefix; }

@@ -12,7 +12,7 @@ struct Directory {
 
   std::vector<std::string>& getDirectoryContents();
   std::vector<std::string>& getDirectories();
-  std::string getFileName(std::string name);
+  static std::string getFileName(const std::string& name);
 
   std::string& getPathPrefix();
   const std::string& getPathPrefix() const;

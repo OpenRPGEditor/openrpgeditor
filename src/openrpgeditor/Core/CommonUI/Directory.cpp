@@ -40,6 +40,9 @@ Directory::Directory(std::string_view path, std::string_view filter, std::string
 
 void Directory::setDirectoryContents(std::string_view filter) {
   m_contents.clear();
+  if (!is_directory(m_currentPath)) {
+    return;
+  }
   for (const auto& entry : fs::directory_iterator(m_currentPath)) {
     if (!filter.empty() && entry.path().extension().compare(filter) != 0) {
       continue;
@@ -54,6 +57,9 @@ void Directory::setDirectoryContents(std::string_view filter) {
 }
 void Directory::setSubDirectories() {
   m_subDirectories.clear();
+  if (!is_directory(m_currentPath)) {
+    return;
+  }
   for (const auto& entry : fs::directory_iterator(m_currentPath)) {
     if (!entry.is_directory()) {
       continue;

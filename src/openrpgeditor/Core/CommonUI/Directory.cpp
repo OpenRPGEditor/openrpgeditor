@@ -30,7 +30,7 @@ Directory::Directory(const std::string_view path, const std::string_view filter,
   setSubDirectories();
 }
 
-void Directory::setDirectoryContents(std::string_view filter) {
+void Directory::setDirectoryContents(const std::string_view filter) {
   m_contents.clear();
   if (!is_directory(m_currentPath)) {
     return;
@@ -60,7 +60,7 @@ void Directory::setSubDirectories() {
     m_subDirectories.emplace_back(path);
   }
 }
-void Directory::setDirectory(int index) {
+void Directory::setDirectory(const int index) {
   m_currentPath.append(m_subDirectories[index]);
   m_pathPrefix += m_pathPrefix.empty() ? m_subDirectories[index] : '/' + m_subDirectories[index];
   m_isParentDir = equivalent(m_path, m_currentPath);

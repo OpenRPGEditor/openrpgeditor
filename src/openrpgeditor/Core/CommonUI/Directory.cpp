@@ -3,21 +3,15 @@
 #include "Core/CommonUI/ImagePicker.hpp"
 #include "Database/Database.hpp"
 
-Directory::Directory(std::string_view path, std::string_view filter, std::string_view selectedPath) {
-  m_path = Database::instance()->basePath + path.data();
+Directory::Directory(const std::string_view path, const std::string_view filter, const std::string_view selectedPath) {
+  m_path = std::filesystem::path(Database::instance()->basePath) / path;
   if (!selectedPath.empty()) {
-    // Navigate to contents
-    selectedPath = selectedPath.substr(0, selectedPath.find_last_of('/'));
-    if (!path.ends_with('/')) {
-      m_currentPath.assign(Database::instance()->basePath + path.data() + "/" + selectedPath.data());
-    } else {
-      m_currentPath.assign(Database::instance()->basePath + path.data() + selectedPath.data());
-    }
+    m_currentPath = m_path / selectedPath;
     if (!filter.empty() && !is_directory(m_currentPath)) {
       m_currentPath.replace_extension(filter);
     }
   } else {
-    m_currentPath.assign(m_path);
+    m_currentPath = m_path;
   }
 
   /* Find the first valid directory */
@@ -34,8 +28,6 @@ Directory::Directory(std::string_view path, std::string_view filter, std::string
   }
   setDirectoryContents(filter);
   setSubDirectories();
-
-  // TODO: *nix path handling
 }
 
 void Directory::setDirectoryContents(std::string_view filter) {

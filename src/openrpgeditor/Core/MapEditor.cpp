@@ -844,7 +844,7 @@ void MapEditor::draw(const bool closeRequested) {
               !((min.x > win->ClipRect.Min.x - tileSize && max.x < win->ClipRect.Max.x + tileSize) || (min.y > win->ClipRect.Min.y - tileSize && max.y < win->ClipRect.Max.y + tileSize));
           if (auto* renderer = static_cast<MapEvent*>(event->renderer())) {
             renderer->setMapEditor(this);
-            renderer->draw(m_mapScale, isHovered, m_selectedEvent == event, m_parent->editMode() != EditMode::Event, updateOnly);
+            renderer->draw(m_mapScale, isHovered, m_selectedEvent == event, m_parent->editMode() != EditMode::Event || event->id() == 0, updateOnly);
           }
         }
 

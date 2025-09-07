@@ -27,12 +27,9 @@ public:
   ~Application();
   void updateScale();
   void updateGuiColors();
-  void requestFontUpdate() {
-    m_fontUpdateRequested = true;
-    m_fontUpdateDelay = 1;
+  void requestScaleUpdate() {
+    m_requestScaleUpdate = true;
   }
-
-  bool fontUpdateRequestPerformed() const { return m_fontUpdateDelay <= 0 && !m_fontUpdateRequested; }
 
   Application(const Application&) = delete;
   Application(Application&&) = delete;
@@ -74,8 +71,7 @@ private:
   ImFont* m_mainFont{};
   ImFont* m_monoFont{};
   std::optional<FirstBootWizard> m_firstBootWizard;
-  bool m_fontUpdateRequested{false};
-  int m_fontUpdateDelay = 1;
+  bool m_requestScaleUpdate{false};
   bool m_projectCloseRequest{false};
   bool m_userClosed{false};
   bool m_projectSerialize{false};

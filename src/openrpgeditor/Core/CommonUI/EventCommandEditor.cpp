@@ -230,7 +230,7 @@ void EventCommandEditor::draw() {
   ImGui::BeginChild("##event_command_editor");
   {
     ImGui::Text("Content:");
-    ImGui::PushFont(App::APP->getMonoFont(), Settings::instance()->monoFontSize);
+    ImGui::PushFont(App::APP->getMonoFont());
     if (ImGui::BeginTable("##commonevent_code_contents", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY, ImGui::GetContentRegionAvail())) {
       setupTableColors();
       setupTableHeader();

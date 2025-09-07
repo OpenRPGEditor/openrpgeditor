@@ -7,5 +7,5 @@ public:
   [[nodiscard]] const std::string pageTitle() const override { return tr("UI Settings"); }
 
 private:
-  bool m_fontSizeChanged{false};
+  bool m_uiScaleChanged{false};
 };

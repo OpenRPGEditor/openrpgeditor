@@ -51,8 +51,7 @@ struct Settings {
   std::string locale;
   int rpgMakerMVVersion{-1};
   int rpgMakerMZVersion{-1};
-  int fontSize{12};
-  int monoFontSize{12};
+  float uiScale{1.0f};
   int maxMru{10};
   std::string currentNWJSVersion;
   bool ranFirstBootWizard{false};

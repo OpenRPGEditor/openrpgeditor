@@ -19,7 +19,7 @@ bool SelectableWithBorder(const char* label, bool selected = false, ImGuiSelecta
 
 void ActionTooltip(const char* action, const char* fmt, ...);
 
-int ButtonGroup(const char* id, const std::vector<std::string>& buttons, bool isVertical = false, const std::vector<std::string>& tooltips = {});
+int ButtonGroup(const char* id, const std::vector<std::string>& buttons, bool isVertical = false, const std::vector<std::string>& tooltips = {}, const std::vector<bool>& disabled = {});
 
 ImVec2 GetDPIScaledSize(const ImVec2& size);
 inline ImVec2 GetDPIScaledSize(const float w, const float h) { return GetDPIScaledSize(ImVec2(w, h)); }

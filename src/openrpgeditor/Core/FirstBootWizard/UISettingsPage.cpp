@@ -9,23 +9,12 @@ static inline float roundToNearestQuarter(float num) { return static_cast<float>
 
 void UISettingsPage::draw() {
   ImGui::BeginChild("UISettingsPage", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiWindowFlags_AlwaysAutoResize, ImGuiWindowFlags_NoBackground);
-  ImGui::Text("Font Size");
-  ImGui::SliderInt("##ui_font_size", &Settings::instance()->fontSize, 8, 48);
-  if (ImGui::IsItemDeactivatedAfterEdit()) {
-    App::APP->requestFontUpdate();
-    m_fontSizeChanged = true;
+  ImGui::Text("UI Scale");
+  ImGui::SetNextItemWidth(-1);
+  if (ImGui::SliderFloat("##ui_scale", &Settings::instance()->uiScale, 0.5f, 2.f)) {
+    App::APP->requestScaleUpdate();
+    m_uiScaleChanged = true;
   }
-  ImGui::PushFont(App::APP->getMonoFont());
-  ImGui::Text("Monospace Font Size");
-  ImGui::SliderInt("##ui_mono_font_size", &Settings::instance()->monoFontSize, 8, 48);
-  if (ImGui::IsItemDeactivatedAfterEdit()) {
-    App::APP->requestFontUpdate();
-    m_fontSizeChanged = true;
-  }
-  ImGui::PopFont();
-  if (m_fontSizeChanged) {
-    ImGui::Text("Reloading fonts....");
-    m_fontSizeChanged = !App::APP->fontUpdateRequestPerformed();
-  }
+  
   ImGui::EndChild();
 }

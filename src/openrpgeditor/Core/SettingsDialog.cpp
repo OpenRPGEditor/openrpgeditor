@@ -2,11 +2,14 @@
 
 #include "Core/Application.hpp"
 #include "Core/Settings.hpp"
-#include "imgui.h"
+#include "ImGuiExt/ImGuiUtils.hpp"
+
+#include <imgui.h>
+#include <imgui_internal.h>
 
 std::tuple<bool, bool> SettingsDialog::draw() {
   if (m_uiRefreshRequested) {
-    App::APP->requestFontUpdate();
+    App::APP->requestScaleUpdate();
     m_uiRefreshRequested = false;
     m_wasUIRefreshRequested = true;
   }
@@ -19,81 +22,83 @@ std::tuple<bool, bool> SettingsDialog::draw() {
   }
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-  ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 3, ImGuiCond_Always);
+  ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f));
+  ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(1024, 960), ImGuiCond_Once);
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings)) {
-    ImGui::BeginGroup();
+    ImGui::BeginVertical("##settings_dialog_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
       if (ImGui::BeginTabBar("##settings_tabbar")) {
         for (const auto& tab : m_tabs) {
-          tab->draw();
+          if (ImGui::BeginTabItem(std::format("{}###{}", tab->title(), tab->id()).c_str())) {
+            ImVec2 tmpSize = {-1,  ImGui::GetDPIScaledValue(1.5f)};
+            ImGui::ItemSize(tmpSize);
+            if (ImGui::BeginChild(std::format("##{}", tab->id()).c_str(), {-1, ImGui::GetContentRegionAvail().y - (ImGui::GetFrameHeightWithSpacing() + tmpSize.y)}, 0,
+                                  ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoBackground)) {
+              tab->draw();
+            }
+            ImGui::EndChild();
+            ImGui::EndTabItem();
+          }
         }
         ImGui::EndTabBar();
       }
-    }
-    ImGui::EndGroup();
-    const auto textSize = ImGui::CalcTextSize("OKAPPLYCANCEL");
-    ImGui::BeginGroup();
-    ImGui::SetCursorPosY(ImGui::GetContentRegionMax().y - (textSize.y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y));
-    ImGui::Separator();
-    ImGui::SetCursorPosX(ImGui::GetContentRegionMax().x - (textSize.x + (ImGui::GetStyle().FramePadding.x * 2) + (ImGui::GetStyle().ItemSpacing.x * 4)));
-    {
-      if (ImGui::Button("OK")) {
-        m_confirmed = true;
-        m_open = false;
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##settings_dialog_button_layout", {-1, 0}, 0);
+      {
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##settings_dialog_buttons", {trNOOP("OK"), trNOOP("Apply"), trNOOP("Cancel")}, false, {}, {false, !m_hasChangedSettings, false}); ret == 0) {
+          m_confirmed = true;
+          m_open = false;
 
-        m_wasUIRefreshRequested = false;
-        m_tempSettings.clear();
-        ImGui::CloseCurrentPopup();
-        if (m_hasChangedSettings) {
-          App::APP->serializeSettings();
-        }
-        m_uiRefreshRequested = false;
-        m_hasChangedSettings = false;
-        m_closedHere = true;
-      }
-      ImGui::SameLine();
-      ImGui::BeginDisabled(!m_hasChangedSettings);
-      if (ImGui::Button("Apply")) {
-        m_confirmed = false;
-        m_open = true;
-
-        m_tempSettings = Settings::instance()->serializeToJson();
-        if (m_wasUIRefreshRequested) {
-          App::APP->requestFontUpdate();
           m_wasUIRefreshRequested = false;
-        }
-
-        if (m_hasChangedSettings) {
-          App::APP->serializeSettings();
+          m_tempSettings.clear();
+          ImGui::CloseCurrentPopup();
+          if (m_hasChangedSettings) {
+            App::APP->serializeSettings();
+          }
+          m_uiRefreshRequested = false;
           m_hasChangedSettings = false;
+          m_closedHere = true;
+        } else if (ret == 1) {
+          m_confirmed = false;
+          m_open = true;
+
+          m_tempSettings = Settings::instance()->serializeToJson();
+          if (m_wasUIRefreshRequested) {
+            App::APP->requestScaleUpdate();
+            m_wasUIRefreshRequested = false;
+          }
+
+          if (m_hasChangedSettings) {
+            App::APP->serializeSettings();
+            m_hasChangedSettings = false;
+          }
+        } else if (ret == 2) {
+          m_confirmed = false;
+          m_open = false;
+          m_hasChangedSettings = false;
+          Settings::instance()->loadFromJson(m_tempSettings);
+          m_uiRefreshRequested = true;
+          m_tempSettings.clear();
+          if (m_wasUIRefreshRequested) {
+            App::APP->requestScaleUpdate();
+            m_wasUIRefreshRequested = false;
+          }
+          ImGui::CloseCurrentPopup();
+          m_closedHere = true;
         }
       }
-      ImGui::EndDisabled();
-      ImGui::SameLine();
-      if (ImGui::Button("Cancel")) {
-        m_confirmed = false;
-        m_open = false;
-        m_hasChangedSettings = false;
-        Settings::instance()->loadFromJson(m_tempSettings);
-        m_uiRefreshRequested = true;
-        m_tempSettings.clear();
-        if (m_wasUIRefreshRequested) {
-          App::APP->requestFontUpdate();
-          m_wasUIRefreshRequested = false;
-        }
-        ImGui::CloseCurrentPopup();
-        m_closedHere = true;
-      }
+      ImGui::EndHorizontal();
     }
-    ImGui::EndGroup();
+    ImGui::EndVertical();
     ImGui::EndPopup();
 
     if (!m_open && !m_closedHere) {
       Settings::instance()->loadFromJson(m_tempSettings);
       m_tempSettings.clear();
       if (m_wasUIRefreshRequested) {
-        App::APP->requestFontUpdate();
+        App::APP->requestScaleUpdate();
         m_wasUIRefreshRequested = false;
       }
       m_closedHere = false;

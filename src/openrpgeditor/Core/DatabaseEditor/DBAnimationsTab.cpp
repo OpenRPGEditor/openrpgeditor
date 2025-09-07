@@ -13,14 +13,18 @@ DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent)
 
   m_selectedAnimation = m_animations.animation(1);
 
-  m_selectedTimings = m_selectedAnimation->timings();
+  if (m_selectedAnimation) {
+    m_selectedTimings = m_selectedAnimation->timings();
+  }
   m_colorPicker.setValues(255, 255, 255, 255);
   m_selectedAudio.setName("");
   m_selectedAudio.setVolume(100);
   m_selectedAudio.setPan(0);
   m_selectedAudio.setPitch(100);
 
-  m_selectedAnimation->setTimeLine(std::vector(m_selectedAnimation->frames().size(), false));
+  if (m_selectedAnimation) {
+    m_selectedAnimation->setTimeLine(std::vector(m_selectedAnimation->frames().size(), false));
+  }
 
   m_soundPicker.selectedAudio().nameModified().connect<&DBAnimationsTab::onNameModified>(this);
   m_soundPicker.selectedAudio().volumeModified().connect<&DBAnimationsTab::onVolModified>(this);

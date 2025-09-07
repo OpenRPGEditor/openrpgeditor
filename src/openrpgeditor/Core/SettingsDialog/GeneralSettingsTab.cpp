@@ -17,11 +17,15 @@
 #endif
 
 void GeneralSettingsTab::draw() {
-  if (ImGui::BeginTabItem(trNOOP("General"))) {
-    ImGui::TextUnformatted(trNOOP("Debug & Experimental Features"));
+  GroupBox experimentalFeatures(trNOOP("Debug & Experimental Features"), "##experimental_features", {-1, 0});
+  if (experimentalFeatures.begin()) {
     // TL-NOTE: "I Know What I'm Doing" should *not* be localized
-    ImGui::LabelOverLineEdit("##experimental_features_confirmation", trNOOP("Type \"I Know What I'm Doing\" to enable features."), m_confirmationText, sizeof(m_confirmationText), 0.f, nullptr,
-                             ImGuiInputTextFlags_None);
+    GroupBox experimentalFeaturesConfirmation(trNOOP("Type \"I Know What I'm Doing\" to enable features."), "##experimental_features_confirmation", {-1, 0});
+    if (experimentalFeaturesConfirmation.begin()) {
+      ImGui::SetNextItemWidth(-1);
+      ImGui::InputText("##experimental_features_confirmation_input", m_confirmationText, sizeof(m_confirmationText));
+    }
+    experimentalFeaturesConfirmation.end();
     const bool confirmed = !!strncasecmp(m_confirmationText, "i know what i'm doing", sizeof(m_confirmationText));
     ImGui::BeginDisabled(confirmed && !Settings::instance()->enableExperimentalFeatures);
     ImGui::Checkbox(trNOOP("Experimental"), &Settings::instance()->enableExperimentalFeatures);
@@ -29,29 +33,35 @@ void GeneralSettingsTab::draw() {
     ImGui::BeginDisabled(confirmed && !Settings::instance()->enableDebugFeatures);
     ImGui::Checkbox(trNOOP("Debug"), &Settings::instance()->enableDebugFeatures);
     ImGui::EndDisabled();
-    ImGui::Separator();
-    ImGui::TextUnformatted(trNOOP("Max Recent Projects"));
+  }
+  experimentalFeatures.end();
+  GroupBox mruGroupBox(trNOOP("Max Recent Projects"), "##mru_group_box", {-1, 0});
+  if (mruGroupBox.begin()) {
+    ImGui::SetNextItemWidth(-1);
     ImGui::SliderInt("##mru_max", &Settings::instance()->maxMru, 1, 20);
     if (ImGui::IsItemDeactivatedAfterEdit()) {
       Settings::instance()->maxMru = std::clamp(Settings::instance()->maxMru, 1, 20);
       emit_signal(onValueChanged);
     }
-    // TODO: Undo/Redo stack settings
+  }
+  mruGroupBox.end();
+  // TODO: Undo/Redo stack settings
 
-    char location[4096];
-    strncpy(location, Settings::instance()->projectBaseDirectory.c_str(), 4096);
-    ImGui::LabelOverLineEdit("##project_location_line_edit", trNOOP("Project Base Directory Location"), location, sizeof(location), 0.f, trNOOP("Sets the directory where projects are stored"));
-    if (ImGui::IsItemDeactivatedAfterEdit()) {
-      Settings::instance()->projectBaseDirectory = location;
-      emit_signal(onValueChanged);
-    }
-    ImGui::SameLine();
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().FramePadding.y);
-    ImGui::BeginGroup();
+  GroupBox baseDirectoryGroupBox(trNOOP("Project Base Directory Location"), "##project_location_line_edit", {-1, 0});
+  if (baseDirectoryGroupBox.begin()) {
+    ImGui::BeginHorizontal("##general_settings_project_base_location_layout", {-1, 0}, 0);
     {
-      ImGui::NewLine();
-      ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y);
-      if (ImGui::Button(trNOOP("Choose..."))) {
+      char location[4096];
+      strncpy(location, Settings::instance()->projectBaseDirectory.c_str(), 4096);
+      const auto chooseText = trNOOP("Choose...");
+      ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.75f);
+      ImGui::InputText("##project_location_line_edit", location, sizeof(location), 0.f);
+      if (ImGui::IsItemDeactivatedAfterEdit()) {
+        Settings::instance()->projectBaseDirectory = location;
+        emit_signal(onValueChanged);
+      }
+      ImGui::SetItemTooltip("%s", trNOOP("Sets the directory where projects are stored"));
+      if (ImGui::Button(chooseText, {-1, 0})) {
         SDL_ShowOpenFolderDialog(
             [](void* userdata, const char* const* fileList, int filter) {
               if (!fileList || !*fileList || filter >= 1) {
@@ -65,8 +75,7 @@ void GeneralSettingsTab::draw() {
       }
       ImGui::SetItemTooltip("%s", trNOOP("Select a directory to store RPG Maker game projects"));
     }
-    ImGui::EndGroup();
-
-    ImGui::EndTabItem();
+    ImGui::EndHorizontal();
   }
+  baseDirectoryGroupBox.end();
 }

@@ -75,7 +75,6 @@ Application::Application() {
     m_settings.locale = curlocale.name();
   }
   APP_DEBUG("User config path: {}", m_userConfigPath);
-  // TODO: Detect system locale and automatically use that on first boot
   moloader::load(m_userConfigPath + "/locales/" + m_settings.locale + ".mo");
 
   m_window = std::make_unique<Window>(Window::Settings{kApplicationTitle, m_settings.window.w, m_settings.window.h, m_settings.window.x, m_settings.window.y, m_settings.window.maximized});
@@ -119,8 +118,7 @@ void Application::updateScale() {
   style.ItemSpacing = ImVec2(4.0f, 3.f);
   style.IndentSpacing = 10.0f;
   style.ScrollbarSize = 12.f;
-  const auto scale = std::max(SDL_GetWindowPixelDensity(m_window->getNativeWindow()), SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
-  style.ScaleAllSizes(scale);
+  style.ScaleAllSizes(m_settings.uiScale);
   style.CurveTessellationTol = 0.1f;
   style.CircleTessellationMaxError = 0.1f;
 }
@@ -285,8 +283,7 @@ void Application::updateFonts() {
   ImGuiIO& io{ImGui::GetIO()};
   // ImGUI font
   const float scale = std::max(SDL_GetWindowPixelDensity(m_window->getNativeWindow()), SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
-  const float font_size = m_settings.fontSize;
-  const float mono_font_size = m_settings.monoFontSize;
+  constexpr float fontSize = 12.f;
   const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
   const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf").generic_string()};
   const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf").generic_string()};
@@ -310,24 +307,25 @@ void Application::updateFonts() {
   config.RasterizerDensity = scale;
   io.Fonts->Clear();
   config.MergeMode = false;
-  m_mainFont = io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), font_size, &config, ranges.Data);
+  m_mainFont = io.FontDefault = io.Fonts->AddFontFromFileTTF(font_path.c_str(), fontSize, &config, ranges.Data);
   io.Fonts->Build();
   config.MergeMode = true;
-  io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), fontSize, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), fontSize, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), fontSize, &config, ranges.Data);
   io.Fonts->Build();
 
   config = ImFontConfig();
   // config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_Bold;
   config.MergeMode = false;
-  m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_mono.c_str(), mono_font_size, &config, ranges.Data);
+  m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_mono.c_str(), fontSize, &config, ranges.Data);
   io.Fonts->Build();
   config.MergeMode = true;
-  io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), mono_font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), mono_font_size, &config, ranges.Data);
-  io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), mono_font_size, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_sinhala.c_str(), fontSize, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), fontSize, &config, ranges.Data);
+  io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), fontSize, &config, ranges.Data);
   io.Fonts->Build();
+  io.FontGlobalScale = m_settings.uiScale;
 
   updateScale();
 }
@@ -403,10 +401,9 @@ ExitStatus Application::run() {
   float saveTime = 0.f;
   bool resetLayout = false;
   while (m_running || FileQueue::instance().hasTasks() || m_projectSerialize || m_projectCloseRequest) {
-    if (m_fontUpdateRequested) {
+    if (m_requestScaleUpdate) {
       updateFonts();
-      m_fontUpdateRequested = !m_fontUpdateDelay;
-      m_fontUpdateDelay = 0;
+      m_requestScaleUpdate = false;
     }
     EditorPluginManager::instance()->initializeAllPlugins();
 

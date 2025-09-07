@@ -142,11 +142,31 @@ bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
 }
 
 void MainWindow::save() {
+  if (!m_database) {
+    return;
+  }
   size_t len = 0;
   const auto state = ImGui::SaveIniSettingsToMemory(&len);
   m_database->transient.imguiState = std::string(state, len);
   m_database->system.setVersionId(floor(rand() * 100000000));
   m_database->serializeProject();
+  if (const auto projectPath = std::filesystem::path(m_database->basePath) / "package.json"; exists(projectPath)) {
+    nlohmann::ordered_json package;
+    if (std::ifstream file(projectPath); file.good()) {
+      package = nlohmann::ordered_json::parse(file);
+    }
+          
+    if (!package.empty()) {
+      package["name"] = m_database->system.gameTitle();
+      if (package.contains("window") && package["window"].is_object()) {
+        package["window"]["title"] = m_database->system.gameTitle();
+      }
+
+      if (std::ofstream file(projectPath); file.good()) {
+        file << package.dump(4);
+      }
+    }
+  }
 }
 
 std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
@@ -284,9 +304,11 @@ void MainWindow::drawToolbar() {
     }
     ImGui::SameLine();
     ORE_DISABLE_EXPERIMENTAL_BEGIN();
+    ImGui::BeginDisabled(!m_database);
     if (ImGui::Button(ICON_FA_FLOPPY_DISK, ButtonSize)) {
       save();
     }
+    ImGui::EndDisabled();
     ImGui::SameLine();
     if (ImGui::IsItemHovered()) {
       ImGui::ActionTooltip(trNOOP("Save Project"), trNOOP("Saves the project. [EXPERIMENTAL]"));
@@ -580,8 +602,7 @@ void MainWindow::drawCreateNewProjectPopup() {
       "img/titles2"sv,    "js/libs"sv,     "js/plugins"sv, "movies"sv,
   }};
 
-  const auto [closed, confirmed] = m_createNewProject.draw();
-  if (closed) {
+  if (const auto [closed, confirmed] = m_createNewProject.draw(); closed) {
     if (confirmed) {
       // TODO: Add RPGMaker MZ example copy
       const auto isMZ = m_createNewProject.projectType() == CreateNewProjectDialog::ProjectType::RPGMZ;
@@ -632,13 +653,8 @@ void MainWindow::drawCreateNewProjectPopup() {
             }
           }
         }
-        if (!copyExampleProject) {
-          m_database.emplace(projectPath.generic_string(), projectFilePath.generic_string(), version, isMZ);
-          m_database->system.setGameTitle(gameTitle.data());
-          m_database->system.setLocale("en_US");
-          m_database->system.setVersionId(floor(rand() * 100000000));
-          m_database->serializeProject();
-        }
+
+        save();
         while (FileQueue::instance().hasTasks()) {
           FileQueue::instance().proc();
         }

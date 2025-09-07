@@ -53,9 +53,7 @@ FetchContent_Declare(json
 )
 
 FetchContent_Declare(magic_enum
-        #GIT_REPOSITORY "https://github.com/Neargye/magic_enum.git"
-        GIT_REPOSITORY "https://github.com/Antidote/magic_enum"
-        GIT_TAG adl_info_definition_failure
+        GIT_REPOSITORY "https://github.com/Neargye/magic_enum.git"
 )
 
 FetchContent_Declare(

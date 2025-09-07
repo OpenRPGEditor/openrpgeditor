@@ -32,6 +32,7 @@
 #include <moloader/moloader.hpp>
 #include <SDL3/SDL.h>
 
+#include "Core/ApplicationTheme.hpp"
 #include <orei18n.hpp>
 #include <string>
 
@@ -103,15 +104,15 @@ void Application::updateScale() {
 
   // General window settings
   style.WindowPadding = ImVec2(6, 6);
-  style.WindowRounding = 2.5f;
-  style.FrameRounding = 2.5f;
-  style.ScrollbarRounding = 2.5f;
-  style.GrabRounding = 2.5f;
-  style.TabRounding = 2.5f;
-  style.WindowBorderSize = 0.5f;
+  style.WindowRounding = 3.f;
+  style.FrameRounding = 3.f;
+  style.ScrollbarRounding = 3.f;
+  style.GrabRounding = 3.f;
+  style.TabRounding = 3.f;
+  style.WindowBorderSize = 1.f;
   style.FrameBorderSize = 1.0f;
   style.PopupBorderSize = 1.0f;
-  style.PopupRounding = 2.5f;
+  style.PopupRounding = 3.f;
 
   // Additional styles
   style.FramePadding = ImVec2(4.0f, 3.f);
@@ -378,6 +379,7 @@ ExitStatus Application::run() {
   m_running = true;
 
   m_project.emplace();
+  ApplicationTheme::createFromStyle(std::filesystem::path(m_userConfigPath) / "Dark.json");
   bool needsInitialProjectLoad =
       !Settings::instance()->lastProject.empty() && std::filesystem::is_regular_file(Settings::instance()->lastProject) &&
       (std::filesystem::path(Settings::instance()->lastProject).extension() == ".rpgproject" || std::filesystem::path(Settings::instance()->lastProject).extension() == ".rmmzproject");

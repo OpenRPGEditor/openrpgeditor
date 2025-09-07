@@ -526,6 +526,8 @@ add_library(
         Core/FirstBootWizard/ExperimentalWarning.hpp
         Core/AboutDialog.cpp
         Core/AboutDialog.hpp
+        Core/ApplicationTheme.cpp
+        Core/ApplicationTheme.hpp
 )
 
 target_include_directories(

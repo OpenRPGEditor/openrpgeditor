@@ -55,9 +55,9 @@ private:
   std::optional<CharacterSheet> m_characterPicker;
   TraitsEditor m_traitsEditor;
   ActionsEditor m_actionsEditor;
-  std::optional<ObjectPicker<Item>> item_picker;
-  std::optional<ObjectPicker<Armor>> armor_picker;
-  std::optional<ObjectPicker<Weapon>> weapon_picker;
+  std::optional<ItemPicker> item_picker;
+  std::optional<ArmorPicker> armor_picker;
+  std::optional<WeaponPicker> weapon_picker;
   std::vector<int> m_item{1, 1, 1};
 
   int m_dropIndex{0};

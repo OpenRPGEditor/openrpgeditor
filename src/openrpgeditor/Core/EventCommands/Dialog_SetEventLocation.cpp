@@ -71,7 +71,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
                 ImGui::PushID("##set_event_location_variables_x");
                 if (ImGui::EllipsesButton(m_mode == 1 ? Database::instance()->variableNameAndId(m_xVar).c_str() : "", {-1, 0})) {
                   m_variableSelection = 0;
-                  m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_xVar);
+                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_xVar);
                   m_variablePicker->setOpen(true);
                 }
                 ImGui::PopID();
@@ -82,7 +82,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
                 ImGui::PushID("##set_event_location_variables_y");
                 if (ImGui::EllipsesButton(m_mode == 1 ? Database::instance()->variableNameAndId(m_yVar).c_str() : "", {-1, 0})) {
                   m_variableSelection = 1;
-                  m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_yVar);
+                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_yVar);
                   m_variablePicker->setOpen(true);
                 }
                 ImGui::PopID();

@@ -53,19 +53,19 @@ private:
 
   GameConstants* m_constants = nullptr;
   std::optional<VariableSwitchPicker> m_switchVariablePicker;
-  std::optional<ObjectPicker<Actor>> m_actorsPicker;
-  std::optional<ObjectPicker<Class>> m_classesPicker;
-  std::optional<ObjectPicker<Skill>> m_skillsPicker;
-  std::optional<ObjectPicker<Item>> m_itemsPicker;
-  std::optional<ObjectPicker<Weapon>> m_weaponsPicker;
-  std::optional<ObjectPicker<Armor>> m_armorsPicker;
-  std::optional<ObjectPicker<Enemy>> m_enemiesPicker;
-  std::optional<ObjectPicker<Troop>> m_troopsPicker;
-  std::optional<ObjectPicker<State>> m_statesPicker;
-  std::optional<ObjectPicker<Animation>> m_animationPicker;
-  std::optional<ObjectPicker<Tileset>> m_tilesetPicker;
-  std::optional<ObjectPicker<std::optional<CommonEvent>>> m_commonEventPicker;
-  std::optional<ObjectPicker<std::optional<MapInfo>>> m_mapsPicker;
+  std::optional<ActorPicker> m_actorsPicker;
+  std::optional<ClassPicker> m_classesPicker;
+  std::optional<SkillPicker> m_skillsPicker;
+  std::optional<ItemPicker> m_itemsPicker;
+  std::optional<WeaponPicker> m_weaponsPicker;
+  std::optional<ArmorPicker> m_armorsPicker;
+  std::optional<EnemyPicker> m_enemiesPicker;
+  std::optional<TroopPicker> m_troopsPicker;
+  std::optional<StatePicker> m_statesPicker;
+  std::optional<AnimationPicker> m_animationPicker;
+  std::optional<TilesetPicker> m_tilesetPicker;
+  std::optional<CommonEventPicker> m_commonEventPicker;
+  std::optional<MapInfoPicker> m_mapsPicker;
 
   int m_selection = -1;
   std::optional<std::string> m_currentAlias;

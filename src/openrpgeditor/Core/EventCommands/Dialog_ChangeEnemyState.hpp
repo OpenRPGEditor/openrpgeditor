@@ -29,6 +29,6 @@ private:
   int m_state;
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<State>> m_statePicker;
+  std::optional<StatePicker> m_statePicker;
   std::shared_ptr<ChangeEnemyStateCommand> m_command;
 };

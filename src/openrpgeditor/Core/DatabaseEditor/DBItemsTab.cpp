@@ -169,11 +169,10 @@ void DBItemsTab::draw() {
             {
               ImGui::Text("Scope:");
               ImGui::SetNextItemWidth(170);
-              if (ImGui::BeginCombo("##orpg_database_items_scopelist", DecodeEnumName(magic_enum::enum_name(m_selectedItem->scope())).c_str())) {
+              if (ImGui::BeginCombo("##orpg_database_items_scopelist", DecodeEnumName(m_selectedItem->scope()).c_str())) {
                 int index{0};
                 for (auto& dir : magic_enum::enum_values<Scope>()) {
-                  if (const bool is_selected = m_selectedItem->scope() == static_cast<Scope>(magic_enum::enum_index(dir).value());
-                      ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
+                  if (const bool is_selected = m_selectedItem->scope() == dir; ImGui::Selectable(DecodeEnumName(dir).c_str(), is_selected)) {
                     m_selectedItem->setScope(dir);
                     if (is_selected)
                       ImGui::SetItemDefaultFocus();
@@ -193,8 +192,7 @@ void DBItemsTab::draw() {
               if (ImGui::BeginCombo("##orpg_database_items_occasionlist", DecodeEnumName(magic_enum::enum_name(m_selectedItem->occasion())).c_str())) {
                 int index{0};
                 for (auto& dir : magic_enum::enum_values<Occasion>()) {
-                  if (const bool is_selected = m_selectedItem->occasion() == static_cast<Occasion>(magic_enum::enum_index(dir).value());
-                      ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
+                  if (const bool is_selected = m_selectedItem->occasion() == dir; ImGui::Selectable(DecodeEnumName(dir).c_str(), is_selected)) {
                     m_selectedItem->setOccasion(dir);
                     if (is_selected)
                       ImGui::SetItemDefaultFocus();
@@ -256,11 +254,10 @@ void DBItemsTab::draw() {
               {
                 ImGui::Text("Hit Type:");
                 ImGui::SetNextItemWidth(160);
-                if (ImGui::BeginCombo("##orpg_database_items_hitType", DecodeEnumName(magic_enum::enum_name(m_selectedItem->hitType())).c_str())) {
+                if (ImGui::BeginCombo("##orpg_database_items_hitType", DecodeEnumName(m_selectedItem->hitType()).c_str())) {
                   int index{0};
                   for (auto& dir : magic_enum::enum_values<HitType>()) {
-                    if (const bool is_selected = m_selectedItem->hitType() == static_cast<HitType>(magic_enum::enum_index(dir).value());
-                        ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
+                    if (const bool is_selected = m_selectedItem->hitType() == dir; ImGui::Selectable(DecodeEnumName(dir).c_str(), is_selected)) {
                       m_selectedItem->setHitType(dir);
                       if (is_selected)
                         ImGui::SetItemDefaultFocus();
@@ -284,7 +281,7 @@ void DBItemsTab::draw() {
                                   : m_selectedItem->animationId() == 0 ? "None"
                                                                        : Database::instance()->animationName(m_selectedItem->animationId()).c_str(),
                                   ImVec2{200 - 15, 0})) {
-                  m_animationPicker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), m_selectedItem->animationId());
+                  m_animationPicker = AnimationPicker(Database::instance()->animations.animations(), m_selectedItem->animationId());
                   m_animationPicker->setOpen(true);
                 }
                 ImGui::PopID();

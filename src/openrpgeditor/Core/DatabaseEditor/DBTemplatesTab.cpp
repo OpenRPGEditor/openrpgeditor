@@ -99,22 +99,22 @@ void DBTemplatesTab::draw() {
           int index{0};
           for (auto& dir : magic_enum::enum_values<Template::TemplateType>()) {
 
-            if (magic_enum::enum_index(dir).value() == 2) {
+            if (dir == Template::TemplateType::Event) {
               continue;
             } // Skip event val
 
-            bool is_selected = m_templateType == magic_enum::enum_index(dir).value();
-            if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
-              m_templateType = magic_enum::enum_index(dir).value();
+            bool is_selected = m_templateType == static_cast<int>(dir);
+            if (ImGui::Selectable(DecodeEnumName(dir).c_str(), is_selected)) {
+              m_templateType = static_cast<int>(dir);
               m_currentTemplate = CreateTemplateDialog(static_cast<Template::TemplateType>(m_templateType));
               if (m_templateType == static_cast<int>(m_templates->templates.at(m_selection).type())) {
                 m_hasChanges = false;
               } else {
                 m_hasChanges = true;
               }
-              if (is_selected)
-                ImGui::SetItemDefaultFocus();
             }
+            if (is_selected)
+              ImGui::SetItemDefaultFocus();
             index++;
           }
           ImGui::EndCombo();

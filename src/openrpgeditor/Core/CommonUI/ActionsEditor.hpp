@@ -25,7 +25,7 @@ private:
   bool m_tempEffectAssigned{false};
   Enemy::Action m_tempAction;
   Enemy::Action* m_deletingAction = nullptr;
-  std::optional<ObjectPicker<State>> m_statePicker;
-  std::optional<ObjectPicker<Skill>> m_skillPicker;
+  std::optional<StatePicker> m_statePicker;
+  std::optional<SkillPicker> m_skillPicker;
   std::optional<VariableSwitchPicker> picker;
 };

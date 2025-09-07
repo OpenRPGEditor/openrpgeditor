@@ -17,9 +17,9 @@ std::tuple<bool, bool> Dialog_MovementChangeBlendMode::draw() {
     ImGui::PushItemWidth((75));
     if (ImGui::BeginCombo("##showpicture_blendmode", DecodeEnumName(magic_enum::enum_value<Blend>(m_blendMode)).c_str())) {
       for (auto& blend : magic_enum::enum_values<Blend>()) {
-        bool is_selected = m_blendMode == magic_enum::enum_index(blend).value();
-        if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(blend)).c_str(), is_selected)) {
-          m_blendMode = magic_enum::enum_index(blend).value();
+        bool is_selected = m_blendMode == static_cast<int>(blend);
+        if (ImGui::Selectable(DecodeEnumName(blend).c_str(), is_selected)) {
+          m_blendMode = static_cast<int>(blend);
           if (is_selected)
             ImGui::SetItemDefaultFocus();
         }

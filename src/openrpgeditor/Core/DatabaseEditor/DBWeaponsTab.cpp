@@ -161,7 +161,7 @@ void DBWeaponsTab::draw() {
                                 : m_selectedWeapon->animationId() == 0 ? "None"
                                                                        : Database::instance()->animationName(m_selectedWeapon->animationId()).c_str(),
                                 ImVec2{200 - 15, 0})) {
-                m_animationPicker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), m_selectedWeapon->animationId());
+                m_animationPicker = AnimationPicker(Database::instance()->animations.animations(), m_selectedWeapon->animationId());
                 m_animationPicker->setOpen(true);
               }
               ImGui::PopID();

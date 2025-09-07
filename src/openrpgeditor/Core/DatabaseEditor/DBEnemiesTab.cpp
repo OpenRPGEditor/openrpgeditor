@@ -381,7 +381,7 @@ void DBEnemiesTab::drawPopup() {
       {
         ImGui::PushID("##orpg_dropitem_item");
         if (ImGui::Button(m_dropSelection != 1 ? "" : Database::instance()->itemNameOrId(m_item.at(0)).c_str(), ImVec2{200 - 15, 0})) {
-          item_picker = ObjectPicker("Item"sv, Database::instance()->items.items(), m_item.at(0));
+          item_picker = ItemPicker(Database::instance()->items.items(), m_item.at(0));
           item_picker->setOpen(true);
         }
         ImGui::PopID();
@@ -392,7 +392,7 @@ void DBEnemiesTab::drawPopup() {
       {
         ImGui::PushID("##orpg_dropitem_weapon");
         if (ImGui::Button(m_dropSelection != 2 ? "" : Database::instance()->weaponNameOrId(m_item.at(1)).c_str(), ImVec2{200 - 15, 0})) {
-          weapon_picker = ObjectPicker("Weapon"sv, Database::instance()->weapons.weaponList(), m_item.at(1));
+          weapon_picker = WeaponPicker(Database::instance()->weapons.weaponList(), m_item.at(1));
           weapon_picker->setOpen(true);
         }
         ImGui::PopID();
@@ -403,7 +403,7 @@ void DBEnemiesTab::drawPopup() {
       {
         ImGui::PushID("##orpg_dropitem_armor");
         if (ImGui::Button(m_dropSelection != 3 ? "" : Database::instance()->armorNameOrId(m_item.at(2)).c_str(), ImVec2{200 - 15, 0})) {
-          armor_picker = ObjectPicker("Armor"sv, Database::instance()->armors.armorList(), m_item.at(2));
+          armor_picker = ArmorPicker(Database::instance()->armors.armorList(), m_item.at(2));
           armor_picker->setOpen(true);
         }
         ImGui::PopID();

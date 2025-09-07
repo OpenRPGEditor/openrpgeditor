@@ -37,8 +37,8 @@ private:
   int m_var{1};
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
-  std::optional<ObjectPicker<Skill>> m_skillPicker;
+  std::optional<ActorPicker> m_actorPicker;
+  std::optional<SkillPicker> m_skillPicker;
   std::optional<VariableSwitchPicker> m_variablePicker;
   std::shared_ptr<ChangeSkillCommand> m_command;
 };

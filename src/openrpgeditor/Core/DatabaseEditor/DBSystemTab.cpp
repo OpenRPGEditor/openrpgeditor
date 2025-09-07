@@ -89,7 +89,7 @@ void DBSystemTab::draw() {
                 m_selectedActor = i;
                 if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
                   if (!m_actorsPicker) {
-                    m_actorsPicker.emplace("Party Member"sv, Database::instance()->actors.actorList(), m_selectedActor);
+                    m_actorsPicker.emplace(trNOOP("Party Member"), Database::instance()->actors.actorList(), m_selectedActor);
                   }
                   m_actorsPicker->setOpen(true);
                 }
@@ -102,7 +102,7 @@ void DBSystemTab::draw() {
               m_selectedActor = -1;
               if (ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {
                 if (!m_actorsPicker) {
-                  m_actorsPicker.emplace("Party Member"sv, Database::instance()->actors.actorList(), 1);
+                  m_actorsPicker.emplace(trNOOP("Party Member"), Database::instance()->actors.actorList(), 1);
                 }
                 m_actorsPicker->setOpen(true);
               }

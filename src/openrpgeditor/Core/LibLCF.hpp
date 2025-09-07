@@ -79,9 +79,9 @@ private:
 
   std::optional<VariableSwitchPicker> m_picker;
 
-  std::optional<ObjectPicker<std::optional<CommonEvent>>> m_commonPicker;
-  std::optional<ObjectPicker<State>> m_statePicker;
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::optional<CommonEventPicker> m_commonPicker;
+  std::optional<StatePicker> m_statePicker;
+  std::optional<ActorPicker> m_actorPicker;
 
   int m_commonIndex;
   int m_stateIndex;

@@ -29,7 +29,7 @@ private:
   int m_source;
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::optional<ActorPicker> m_actorPicker;
   std::optional<VariableSwitchPicker> m_variablePicker;
   std::shared_ptr<RecoverAllCommand> m_command;
 };

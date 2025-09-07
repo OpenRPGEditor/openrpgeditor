@@ -37,7 +37,7 @@ protected:
   void eventPointerInvalidated() override {};
 
 private:
-  std::optional<ObjectPicker<Template>> m_templatePicker;
+  std::optional<TemplatePicker> m_templatePicker;
 
   std::string m_localizationInput;
   int m_localeLinesRequired{0};

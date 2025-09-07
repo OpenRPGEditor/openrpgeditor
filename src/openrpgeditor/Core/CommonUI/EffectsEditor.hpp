@@ -23,7 +23,7 @@ private:
   bool m_tempEffectAssigned{false};
   Effect m_tempEffect;
   Effect* m_deletingEffect = nullptr;
-  std::optional<ObjectPicker<State>> m_statePicker;
-  std::optional<ObjectPicker<Skill>> m_skillPicker;
-  std::optional<ObjectPicker<std::optional<CommonEvent>>> m_commonEventPicker;
+  std::optional<StatePicker> m_statePicker;
+  std::optional<SkillPicker> m_skillPicker;
+  std::optional<CommonEventPicker> m_commonEventPicker;
 };

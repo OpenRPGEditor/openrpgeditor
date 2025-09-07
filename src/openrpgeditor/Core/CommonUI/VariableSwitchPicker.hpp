@@ -7,7 +7,12 @@
 
 class VariableSwitchPicker : public IDialogController {
 public:
-  VariableSwitchPicker(const std::string_view name, const std::vector<std::string>& values, int selection, int rangeStart = 1);
+  enum class Type {
+    Variable,
+    Switch,
+  };
+  VariableSwitchPicker(Type, const std::vector<std::string>& values, int initialSelection, int rangeStart = 1);
+  VariableSwitchPicker(std::string_view title, const std::vector<std::string>& values, int initialSelection, int rangeStart = 1);
 
   int selection() const { return m_selection; }
   void setSelection(const int selection) { m_selection = selection; }

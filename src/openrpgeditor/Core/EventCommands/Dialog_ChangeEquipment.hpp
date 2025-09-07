@@ -32,7 +32,7 @@ private:
 
   bool m_confirmed{false};
   std::shared_ptr<ChangeEquipmentCommand> m_command;
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::optional<ActorPicker> m_actorPicker;
   std::vector<int> m_equipableItems;
   std::vector<std::string> m_equipmentTypes;
 };

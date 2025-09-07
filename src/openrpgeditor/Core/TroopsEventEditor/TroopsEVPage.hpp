@@ -25,7 +25,7 @@ private:
   Troop::Page* m_page;
   char m_pageNameBuf[4096];
   EventCommandEditor m_commandEditor;
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::optional<ActorPicker> m_actorPicker;
   std::optional<VariableSwitchPicker> picker;
   int m_page_id;
 };

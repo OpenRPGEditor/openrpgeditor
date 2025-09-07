@@ -73,8 +73,8 @@ private:
   static constexpr auto OtherSource = magic_enum::enum_values<OtherDataSource>();
 
   ControlVariables m_command;
-  std::optional<ObjectPicker<Item>> m_itemPicker;
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
-  std::optional<ObjectPicker<Armor>> m_armorPicker;
-  std::optional<ObjectPicker<Weapon>> m_weaponPicker;
+  std::optional<ItemPicker> m_itemPicker;
+  std::optional<ActorPicker> m_actorPicker;
+  std::optional<ArmorPicker> m_armorPicker;
+  std::optional<WeaponPicker> m_weaponPicker;
 };

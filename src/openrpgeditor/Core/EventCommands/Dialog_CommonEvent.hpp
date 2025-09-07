@@ -18,7 +18,7 @@ public:
       command.reset(new CommonEventCommand());
     }
     eventId = command->event;
-    m_picker = ObjectPicker("Common Events"sv, Database::instance()->commonEvents.events(), eventId);
+    m_picker = CommonEventPicker(Database::instance()->commonEvents.events(), eventId);
     m_picker->setOpen(true);
   }
   std::tuple<bool, bool> draw() override;
@@ -29,6 +29,6 @@ private:
   int eventId;
   bool m_confirmed{false};
   std::shared_ptr<CommonEventCommand> command;
-  std::optional<ObjectPicker<std::optional<CommonEvent>>> m_picker;
+  std::optional<CommonEventPicker> m_picker;
   std::tuple<bool, bool> result;
 };

@@ -44,7 +44,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
               {
                 ImGui::PushID("##game_data_item_id");
                 if (ImGui::EllipsesButton(m_type != 0 ? "" : Database::instance()->itemNameAndId(m_itemValue).c_str(), ImVec2{ImGui::GetContentRegionAvail().x * .55f, 0})) {
-                  m_itemPicker = ObjectPicker(trNOOP("Items"), Database::instance()->items.items(), m_itemValue);
+                  m_itemPicker = ItemPicker(Database::instance()->items.items(), m_itemValue);
                   m_itemPicker->setOpen(true);
                 }
                 ImGui::PopID();
@@ -59,7 +59,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
               {
                 ImGui::PushID("##game_data_weapon_id");
                 if (ImGui::EllipsesButton(m_type != 1 ? "" : Database::instance()->weaponNameAndId(m_weaponValue).c_str(), ImVec2{ImGui::GetContentRegionAvail().x * .55f, 0})) {
-                  m_weaponPicker = ObjectPicker(trNOOP("Weapons"), Database::instance()->weapons.weapons(), m_weaponValue);
+                  m_weaponPicker = WeaponPicker(Database::instance()->weapons.weapons(), m_weaponValue);
                   m_weaponPicker->setOpen(true);
                 }
                 ImGui::PopID();
@@ -74,7 +74,7 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
               {
                 ImGui::PushID("##game_data_weapon_id");
                 if (ImGui::EllipsesButton(m_type != 2 ? "" : Database::instance()->armorNameAndId(m_armorValue).c_str(), ImVec2{ImGui::GetContentRegionAvail().x * .55f, 0})) {
-                  m_armorPicker = ObjectPicker(trNOOP("Armors"), Database::instance()->armors.armors(), m_armorValue);
+                  m_armorPicker = ArmorPicker(Database::instance()->armors.armors(), m_armorValue);
                   m_armorPicker->setOpen(true);
                 }
                 ImGui::PopID();
@@ -89,12 +89,12 @@ std::tuple<bool, bool> Dialog_GameData::draw() {
               {
                 ImGui::PushID("##game_data_actor_id");
                 if (ImGui::EllipsesButton(m_type != 3 ? "" : Database::instance()->actorNameAndId(m_actorValue).c_str(), ImVec2{ImGui::GetContentRegionAvail().x * .55f, 0})) {
-                  m_actorPicker = ObjectPicker(trNOOP("Actors"), Database::instance()->actors.actorList(), m_actorValue);
+                  m_actorPicker = ActorPicker(Database::instance()->actors.actorList(), m_actorValue);
                   m_actorPicker->setOpen(true);
                 }
                 ImGui::PopID();
                 ImGui::SetNextItemWidth(-1);
-                if (ImGui::BeginCombo("##game_data_actor_combo", m_type != 3 ? "" : magic_enum::enum_name(static_cast<ActorDataSource>(m_actorSource)).data())) {
+                if (ImGui::BeginCombo("##game_data_actor_combo", m_type != 3 ? "" : DecodeEnumName(static_cast<ActorDataSource>(m_actorSource)).c_str())) {
                   for (auto dataSource : ActorData) {
                     const bool isSelected = m_actorSource == static_cast<int>(dataSource);
                     if (ImGui::Selectable(DecodeEnumName(dataSource).c_str(), isSelected)) {

@@ -32,7 +32,7 @@ private:
   int m_varSelection{1};
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Troop>> m_enemyPicker;
+  std::optional<TroopPicker> m_enemyPicker;
   std::optional<VariableSwitchPicker> m_variablePicker;
   std::shared_ptr<BattleProcessingCommand> m_command;
 };

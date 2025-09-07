@@ -47,7 +47,7 @@ private:
   bool m_isOperand{false};
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::optional<ActorPicker> m_actorPicker;
   std::optional<VariableSwitchPicker> m_variablePicker;
   std::shared_ptr<ChangeEXPCommand> m_command;
 };

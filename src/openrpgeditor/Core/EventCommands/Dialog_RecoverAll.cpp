@@ -43,7 +43,7 @@ std::tuple<bool, bool> Dialog_RecoverAll::draw() {
             std::string text = m_source != 0 ? "##recover_all_actor_empty" : Database::instance()->actorNameAndId(m_actor);
             ImGui::PushID("##recover_all_selection_actor");
             if (ImGui::EllipsesButton(text.c_str(), ImVec2{-1, 0})) {
-              m_actorPicker = ObjectPicker(trNOOP("Actor"), Database::instance()->actors.actorList(), m_actor);
+              m_actorPicker = ActorPicker( Database::instance()->actors.actorList(), m_actor);
               m_actorPicker->setUseDummyEntry(trNOOP("Entire Party"));
               m_actorPicker->setOpen(true);
             }
@@ -56,7 +56,7 @@ std::tuple<bool, bool> Dialog_RecoverAll::draw() {
             text = m_source != 1 ? "##recover_all_variable_empty" : Database::instance()->variableNameAndId(m_variable);
             ImGui::PushID("##recover_all_variable");
             if (ImGui::EllipsesButton(text.c_str(), ImVec2{-1, 0})) {
-              m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_variable);
+              m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_variable);
               m_variablePicker->setOpen(true);
             }
             ImGui::PopID();

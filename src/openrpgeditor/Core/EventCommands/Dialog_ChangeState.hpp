@@ -38,8 +38,8 @@ private:
   int m_var{1};
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
-  std::optional<ObjectPicker<State>> m_statePicker;
+  std::optional<ActorPicker> m_actorPicker;
+  std::optional<StatePicker> m_statePicker;
   std::optional<VariableSwitchPicker> m_variablePicker;
   std::shared_ptr<ChangeStateCommand> m_command;
 };

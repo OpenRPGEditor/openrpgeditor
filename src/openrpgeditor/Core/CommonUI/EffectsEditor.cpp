@@ -287,7 +287,7 @@ void EffectsEditor::drawPopup(DatabaseEditor* dbEditor) {
               // State Button - Picker
               if (ImGui::Button(m_selectedEffect->code() == EffectCode::Add_State ? Database::instance()->stateNameOrId(m_selectedEffect->dataId()).c_str() : "##effects_state_add_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x, 0})) {
-                m_statePicker.emplace("States"sv, Database::instance()->states.states(), m_selectedEffect->dataId());
+                m_statePicker.emplace(Database::instance()->states.states(), m_selectedEffect->dataId());
                 m_statePicker->setOpen(true);
               }
               // State %
@@ -305,7 +305,7 @@ void EffectsEditor::drawPopup(DatabaseEditor* dbEditor) {
               // State Button - Picker
               if (ImGui::Button(m_selectedEffect->code() == EffectCode::Remove_State ? Database::instance()->stateNameOrId(m_selectedEffect->dataId()).c_str() : "##effects_state_remove_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x, 0})) {
-                m_statePicker.emplace("States"sv, Database::instance()->states.states(), m_selectedEffect->dataId());
+                m_statePicker.emplace(Database::instance()->states.states(), m_selectedEffect->dataId());
                 m_statePicker->setOpen(true);
               }
               // State %;
@@ -555,7 +555,7 @@ void EffectsEditor::drawPopup(DatabaseEditor* dbEditor) {
               // Skill Button - Picker
               if (ImGui::Button(m_selectedEffect->code() == EffectCode::Learn_Skill ? Database::instance()->skillNameOrId(m_selectedEffect->dataId()).c_str() : "##effects_learn_skill_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x, 0})) {
-                m_skillPicker.emplace("Skill"sv, Database::instance()->skills.skills(), m_selectedEffect->dataId());
+                m_skillPicker.emplace(Database::instance()->skills.skills(), m_selectedEffect->dataId());
                 m_skillPicker->setOpen(true);
               }
             }
@@ -568,7 +568,7 @@ void EffectsEditor::drawPopup(DatabaseEditor* dbEditor) {
                                                                                      : "##effects_common_event_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x, 0})) {
 
-                m_commonEventPicker.emplace("Common Event"sv, Database::instance()->commonEvents.events(), m_selectedEffect->dataId());
+                m_commonEventPicker.emplace(Database::instance()->commonEvents.events(), m_selectedEffect->dataId());
                 m_commonEventPicker->setOpen(true);
               }
             }

@@ -216,7 +216,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_switchVariablePicker.emplace("Variables", Database::instance()->system.variables(), 1);
+        m_switchVariablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), 1);
         m_switchVariablePicker->setOpen(true);
       }
 
@@ -264,7 +264,7 @@ void DBGameConstantsTab::draw() {
         ImGui::EndTable();
       }
       if (ImGui::Button("Add")) {
-        m_switchVariablePicker.emplace("Switches", Database::instance()->system.switches(), 1);
+        m_switchVariablePicker.emplace(VariableSwitchPicker::Type::Switch, Database::instance()->system.switches(), 1);
         m_switchVariablePicker->setOpen(true);
       }
       if (m_switchVariablePicker) {
@@ -308,7 +308,7 @@ void DBGameConstantsTab::draw() {
         ImGui::EndTable();
       }
       if (ImGui::Button("Add")) {
-        m_actorsPicker.emplace("Actors", Database::instance()->actors.actorList(), m_selection);
+        m_actorsPicker.emplace(Database::instance()->actors.actorList(), m_selection);
         m_actorsPicker->setOpen(true);
       }
       if (m_actorsPicker) {
@@ -353,7 +353,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_classesPicker.emplace("Classes", Database::instance()->classes.classes(), m_selection);
+        m_classesPicker.emplace(Database::instance()->classes.classes(), m_selection);
         m_classesPicker->setOpen(true);
       }
       if (m_classesPicker) {
@@ -399,7 +399,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_skillsPicker.emplace("Skills", Database::instance()->skills.skills(), m_selection);
+        m_skillsPicker.emplace(Database::instance()->skills.skills(), m_selection);
         m_skillsPicker->setOpen(true);
       }
       if (m_skillsPicker) {
@@ -445,7 +445,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_itemsPicker.emplace("Items", Database::instance()->items.items(), m_selection);
+        m_itemsPicker.emplace(Database::instance()->items.items(), m_selection);
         m_itemsPicker->setOpen(true);
       }
       if (m_itemsPicker) {
@@ -491,7 +491,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_weaponsPicker.emplace("Weapons", Database::instance()->weapons.weapons(), m_selection);
+        m_weaponsPicker.emplace(Database::instance()->weapons.weapons(), m_selection);
         m_weaponsPicker->setOpen(true);
       }
       if (m_weaponsPicker) {
@@ -537,7 +537,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_armorsPicker.emplace("Armors", Database::instance()->armors.armors(), m_selection);
+        m_armorsPicker.emplace(Database::instance()->armors.armors(), m_selection);
         m_armorsPicker->setOpen(true);
       }
       if (m_armorsPicker) {
@@ -583,7 +583,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_enemiesPicker.emplace("Enemies", Database::instance()->enemies.enemies(), m_selection);
+        m_enemiesPicker.emplace(Database::instance()->enemies.enemies(), m_selection);
         m_enemiesPicker->setOpen(true);
       }
       if (m_enemiesPicker) {
@@ -629,7 +629,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_troopsPicker.emplace("Troops", Database::instance()->troops.troops(), m_selection);
+        m_troopsPicker.emplace(Database::instance()->troops.troops(), m_selection);
         m_troopsPicker->setOpen(true);
       }
       if (m_troopsPicker) {
@@ -675,7 +675,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_statesPicker.emplace("States", Database::instance()->states.states(), m_selection);
+        m_statesPicker.emplace(Database::instance()->states.states(), m_selection);
         m_statesPicker->setOpen(true);
       }
       if (m_statesPicker) {
@@ -721,7 +721,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_animationPicker.emplace("Animations", Database::instance()->animations.animations(), m_selection);
+        m_animationPicker.emplace(Database::instance()->animations.animations(), m_selection);
         m_animationPicker->setOpen(true);
       }
       if (m_animationPicker) {
@@ -767,7 +767,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_tilesetPicker.emplace("Tilesets", Database::instance()->tilesets.tilesets(), m_selection);
+        m_tilesetPicker.emplace(Database::instance()->tilesets.tilesets(), m_selection);
         m_tilesetPicker->setOpen(true);
       }
       if (m_tilesetPicker) {
@@ -813,7 +813,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_commonEventPicker.emplace("Common Events", Database::instance()->commonEvents.events(), m_selection);
+        m_commonEventPicker.emplace(Database::instance()->commonEvents.events(), m_selection);
         m_commonEventPicker->setOpen(true);
       }
       if (m_commonEventPicker) {
@@ -859,7 +859,7 @@ void DBGameConstantsTab::draw() {
       }
 
       if (ImGui::Button("Add")) {
-        m_mapsPicker.emplace("Maps", Database::instance()->mapInfos.mapInfos(), m_selection);
+        m_mapsPicker.emplace(Database::instance()->mapInfos.mapInfos(), m_selection);
         m_mapsPicker->setOpen(true);
       }
       if (m_mapsPicker) {

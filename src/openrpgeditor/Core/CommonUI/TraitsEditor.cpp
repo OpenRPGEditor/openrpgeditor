@@ -152,8 +152,8 @@ void TraitsEditor::draw() {
   }
 }
 
-void TraitsEditor::drawRadioButton(const std::string_view name, const TraitCode code, const int dataId, const double initialValue) const {
-  if (ImGui::RadioButton(name.data(), m_selectedTrait->code() == code)) {
+void TraitsEditor::drawRadioButton(const TraitCode code, const int dataId, const double initialValue) const {
+  if (ImGui::RadioButton(DecodeEnumName(code).c_str(), m_selectedTrait->code() == code)) {
     if (m_selectedTrait->code() != code) {
       m_selectedTrait->setDataId(dataId);
       m_selectedTrait->setValue(initialValue);
@@ -256,7 +256,7 @@ void TraitsEditor::drawPopup() {
             {
               if (ImGui::Button(m_selectedTrait->code() == TraitCode::State_Rate ? Database::instance()->stateNameOrId(m_selectedTrait->dataId()).c_str() : "##trait_state_rate_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_statePicker.emplace("States"sv, Database::instance()->states.states(), m_selectedTrait->dataId());
+                m_statePicker.emplace(Database::instance()->states.states(), m_selectedTrait->dataId());
                 m_statePicker->setOpen(true);
               }
               int tmpInt = m_selectedTrait->code() == TraitCode::State_Rate ? static_cast<int>(m_selectedTrait->value() * 100) : 0;
@@ -269,7 +269,7 @@ void TraitsEditor::drawPopup() {
             {
               if (ImGui::Button(m_selectedTrait->code() == TraitCode::State_Resist ? Database::instance()->stateNameOrId(m_selectedTrait->dataId()).c_str() : "##trait_state_resist_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_statePicker.emplace("States"sv, Database::instance()->states.states(), m_selectedTrait->dataId());
+                m_statePicker.emplace(Database::instance()->states.states(), m_selectedTrait->dataId());
                 m_statePicker->setOpen(true);
               }
             }
@@ -283,13 +283,13 @@ void TraitsEditor::drawPopup() {
           ImGui::BeginChild("##orpg_traits_param_left_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
                             ImGuiWindowFlags_NoBackground);
           {
-            drawRadioButton("Parameter"sv, TraitCode::Parameter, static_cast<int>(ParameterSource::Max_HP), 1);
+            drawRadioButton(TraitCode::Parameter, static_cast<int>(ParameterSource::Max_HP), 1);
             ImGui::NewLine();
             ImGui::Spacing();
-            drawRadioButton("Ex-Parameter"sv, TraitCode::Ex_daa_Parameter, static_cast<int>(EXParameterSource::Hit_Rate), 0);
+            drawRadioButton(TraitCode::Ex_daa_Parameter, static_cast<int>(EXParameterSource::Hit_Rate), 0);
             ImGui::NewLine();
             ImGui::Spacing();
-            drawRadioButton("Sp-Parameter"sv, TraitCode::Sp_daa_Parameter, static_cast<int>(SPParameterSource::Target_Rate), 1);
+            drawRadioButton(TraitCode::Sp_daa_Parameter, static_cast<int>(SPParameterSource::Target_Rate), 1);
           }
           ImGui::EndChild();
           ImGui::SameLine();
@@ -356,12 +356,12 @@ void TraitsEditor::drawPopup() {
           ImGui::BeginChild("##orpg_traits_attack_left_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
                             ImGuiWindowFlags_NoBackground);
           {
-            drawRadioButton("Attack Element"sv, TraitCode::Attack_Element, 1, 0);
-            drawRadioButton("Attack State"sv, TraitCode::Attack_State, 1, 1);
+            drawRadioButton(TraitCode::Attack_Element, 1, 0);
+            drawRadioButton(TraitCode::Attack_State, 1, 1);
             ImGui::NewLine();
             ImGui::Spacing();
-            drawRadioButton("Attack Speed"sv, TraitCode::Attack_Speed, 1, 0);
-            drawRadioButton("Attack Times +"sv, TraitCode::Attack_Times__plu_, 1, 0);
+            drawRadioButton(TraitCode::Attack_Speed, 1, 0);
+            drawRadioButton(TraitCode::Attack_Times__plu_, 1, 0);
           }
           ImGui::EndChild();
           ImGui::SameLine();
@@ -386,7 +386,7 @@ void TraitsEditor::drawPopup() {
             {
               if (ImGui::Button(m_selectedTrait->code() == TraitCode::Attack_State ? Database::instance()->stateNameOrId(m_selectedTrait->dataId()).c_str() : "##trait_attack_state_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_statePicker.emplace("States"sv, Database::instance()->states.states(), m_selectedTrait->dataId());
+                m_statePicker.emplace(Database::instance()->states.states(), m_selectedTrait->dataId());
                 m_statePicker->setOpen(true);
               }
 
@@ -421,10 +421,10 @@ void TraitsEditor::drawPopup() {
           ImGui::BeginChild("##orpg_traits_skill_left_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
                             ImGuiWindowFlags_NoBackground);
           {
-            drawRadioButton("Add Skill Type"sv, TraitCode::Add_Skill_Type, 1, 0);
-            drawRadioButton("Seal Skill Type"sv, TraitCode::Seal_Skill_Type, 1, 0);
-            drawRadioButton("Add Skill"sv, TraitCode::Add_Skill, 1, 0);
-            drawRadioButton("Seal Skill"sv, TraitCode::Seal_Skill, 1, 0);
+            drawRadioButton(TraitCode::Add_Skill_Type, 1, 0);
+            drawRadioButton(TraitCode::Seal_Skill_Type, 1, 0);
+            drawRadioButton(TraitCode::Add_Skill, 1, 0);
+            drawRadioButton(TraitCode::Seal_Skill, 1, 0);
           }
           ImGui::EndChild();
           ImGui::SameLine();
@@ -461,7 +461,7 @@ void TraitsEditor::drawPopup() {
             {
               if (ImGui::Button(m_selectedTrait->code() == TraitCode::Add_Skill ? Database::instance()->skillNameOrId(m_selectedTrait->dataId()).c_str() : "##trait_add_skill_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_skillPicker.emplace("Skills"sv, Database::instance()->skills.skills(), m_selectedTrait->dataId());
+                m_skillPicker.emplace(Database::instance()->skills.skills(), m_selectedTrait->dataId());
                 m_skillPicker->setOpen(true);
               }
             }
@@ -470,7 +470,7 @@ void TraitsEditor::drawPopup() {
             {
               if (ImGui::Button(m_selectedTrait->code() == TraitCode::Seal_Skill ? Database::instance()->skillNameOrId(m_selectedTrait->dataId()).c_str() : "##trait_seal_skill_selection",
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_skillPicker.emplace("Skills"sv, Database::instance()->skills.skills(), m_selectedTrait->dataId());
+                m_skillPicker.emplace(Database::instance()->skills.skills(), m_selectedTrait->dataId());
                 m_skillPicker->setOpen(true);
               }
             }
@@ -484,11 +484,11 @@ void TraitsEditor::drawPopup() {
           ImGui::BeginChild("##orpg_traits_equip_left_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
                             ImGuiWindowFlags_NoBackground);
           {
-            drawRadioButton("Equip Weapon"sv, TraitCode::Equip_Weapon, 1, 0);
-            drawRadioButton("Equip Armor"sv, TraitCode::Equip_Armor, 1, 0);
-            drawRadioButton("Lock Equip"sv, TraitCode::Lock_Equip, 1, 0);
-            drawRadioButton("Seal Equip"sv, TraitCode::Seal_Equip, 1, 0);
-            drawRadioButton("Slot Type"sv, TraitCode::Slot_Type, 1, 0);
+            drawRadioButton(TraitCode::Equip_Weapon, 1, 0);
+            drawRadioButton(TraitCode::Equip_Armor, 1, 0);
+            drawRadioButton(TraitCode::Lock_Equip, 1, 0);
+            drawRadioButton(TraitCode::Seal_Equip, 1, 0);
+            drawRadioButton(TraitCode::Slot_Type, 1, 0);
           }
           ImGui::EndChild();
           ImGui::SameLine();
@@ -569,10 +569,10 @@ void TraitsEditor::drawPopup() {
           ImGui::BeginChild("##orpg_traits_other_left_child", ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
                             ImGuiWindowFlags_NoBackground);
           {
-            drawRadioButton("Action Times +", TraitCode::Action_Times__plu_, 0, 1);
-            drawRadioButton("Special Flags"sv, TraitCode::Action_Times__plu_, 0, 0);
-            drawRadioButton("Collapse Effect"sv, TraitCode::Collapse_Effect, 0, 0);
-            drawRadioButton("Party Ability"sv, TraitCode::Party_Ability, 0, 0);
+            drawRadioButton(TraitCode::Action_Times__plu_, 0, 1);
+            drawRadioButton(TraitCode::Action_Times__plu_, 0, 0);
+            drawRadioButton(TraitCode::Collapse_Effect, 0, 0);
+            drawRadioButton(TraitCode::Party_Ability, 0, 0);
           }
           ImGui::EndChild();
           ImGui::SameLine();

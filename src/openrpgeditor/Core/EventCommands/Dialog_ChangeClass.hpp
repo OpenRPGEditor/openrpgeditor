@@ -29,7 +29,7 @@ private:
   bool m_saveLevel;
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
-  std::optional<ObjectPicker<Class>> m_classPicker;
+  std::optional<ActorPicker> m_actorPicker;
+  std::optional<ClassPicker> m_classPicker;
   std::shared_ptr<ChangeClassCommand> m_command;
 };

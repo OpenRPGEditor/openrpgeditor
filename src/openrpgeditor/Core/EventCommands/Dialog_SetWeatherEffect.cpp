@@ -29,9 +29,9 @@ std::tuple<bool, bool> Dialog_SetWeatherEffect::draw() {
             ImGui::SetNextItemWidth(-1);
             if (ImGui::BeginCombo("##set_weather_effect_type_selection", DecodeEnumName(static_cast<WeatherEffect>(m_effect)).c_str())) {
               for (auto& effect : magic_enum::enum_values<WeatherEffect>()) {
-                bool selected = m_effect == magic_enum::enum_index(effect).value();
-                if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(effect)).c_str(), selected)) {
-                  m_effect = magic_enum::enum_index(effect).value();
+                bool selected = m_effect == static_cast<int>(effect);
+                if (ImGui::Selectable(DecodeEnumName(effect).c_str(), selected)) {
+                  m_effect = static_cast<int>(effect);
                 }
                 if (selected) {
                   ImGui::SetItemDefaultFocus();

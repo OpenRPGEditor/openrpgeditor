@@ -75,7 +75,7 @@ std::tuple<bool, bool> EventEditor::draw() {
       ImGui::EndDisabled();
       ImGui::SameLine();
       if (ImGui::Button(trNOOP("Save as\nTemplate"))) {
-        m_templatePicker = ObjectPicker(tr("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+        m_templatePicker = TemplatePicker(Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
       }
       ImGui::SameLine();
       ORE_DISABLE_EXPERIMENTAL_BEGIN();

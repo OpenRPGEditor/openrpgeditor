@@ -26,6 +26,6 @@ private:
   std::string m_actorName;
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::optional<ActorPicker> m_actorPicker;
   std::shared_ptr<ChangeNameCommand> m_command;
 };

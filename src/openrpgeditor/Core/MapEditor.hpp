@@ -243,7 +243,7 @@ private:
   bool m_regionMode{false};
   bool m_templateSaving{false};
 
-  std::optional<ObjectPicker<Template>> m_templatePicker;
+  std::optional<TemplatePicker> m_templatePicker;
   std::optional<TemplatesEvent> m_eventProperties;
   std::optional<TemplateName> m_templateNamePicker;
   std::optional<Event> m_templateEvent;

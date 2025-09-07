@@ -207,12 +207,12 @@ private:
   bool m_else{false};       // determines current else
   std::shared_ptr<ConditionalBranchCommand> m_command;
   std::optional<VariableSwitchPicker> m_variablePicker;
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
-  std::optional<ObjectPicker<State>> m_statePicker;
-  std::optional<ObjectPicker<Weapon>> m_weaponPicker;
-  std::optional<ObjectPicker<Armor>> m_armorPicker;
-  std::optional<ObjectPicker<Skill>> m_skillPicker;
-  std::optional<ObjectPicker<Class>> m_classPicker;
-  std::optional<ObjectPicker<Item>> m_itemPicker;
+  std::optional<ActorPicker> m_actorPicker;
+  std::optional<StatePicker> m_statePicker;
+  std::optional<WeaponPicker> m_weaponPicker;
+  std::optional<ArmorPicker> m_armorPicker;
+  std::optional<SkillPicker> m_skillPicker;
+  std::optional<ClassPicker> m_classPicker;
+  std::optional<ItemPicker> m_itemPicker;
   bool m_confirmed{false};
 };

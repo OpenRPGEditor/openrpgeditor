@@ -713,7 +713,7 @@ void MapEditor::draw(const bool closeRequested) {
           ImGui::BeginDisabled(m_selectedEvent);
           if (ImGui::MenuItem(trNOOP("Insert..."))) {
             m_templateSaving = false;
-            m_templatePicker = ObjectPicker(trNOOP("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+            m_templatePicker = TemplatePicker( Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
             m_templatePicker->setNoSelectionMeansAdd(false);
             m_templatePicker->setOpen(true);
           }
@@ -721,7 +721,7 @@ void MapEditor::draw(const bool closeRequested) {
           ImGui::BeginDisabled(m_selectedEvent == nullptr);
           if (ImGui::MenuItem(trNOOP("Save as..."))) {
             m_templateSaving = true;
-            m_templatePicker = ObjectPicker(trNOOP("Templates"), Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+            m_templatePicker = TemplatePicker( Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
             m_templatePicker->setNoSelectionMeansAdd(true);
             m_templatePicker->setOpen(true);
           }

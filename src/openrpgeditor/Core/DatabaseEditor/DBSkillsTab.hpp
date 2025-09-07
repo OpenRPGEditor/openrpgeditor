@@ -47,6 +47,6 @@ private:
   EffectsEditor m_effectsEditor;
   int m_message_template{0};
   std::vector<std::string> m_message_templateList{"casts %1!", "does %1!", "uses %1"};
-  std::optional<ObjectPicker<Animation>> m_animationPicker;
+  std::optional<AnimationPicker> m_animationPicker;
   std::optional<CheckeredCompositeTexture> m_iconButtonTexture;
 };

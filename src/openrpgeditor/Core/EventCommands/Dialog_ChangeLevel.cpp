@@ -39,7 +39,7 @@ std::tuple<bool, bool> Dialog_ChangeLevel::draw() {
             ImGui::BeginDisabled(m_comparison != 0);
             ImGui::PushID("##change_level_actor_group_fixed_button");
             if (ImGui::EllipsesButton(m_comparison == 0 ? Database::instance()->actorNameAndId(m_value).c_str() : "", {-1, 0})) {
-              m_actorPicker = ObjectPicker(trNOOP("Actor"), Database::instance()->actors.actorList(), m_value);
+              m_actorPicker = ActorPicker(Database::instance()->actors.actorList(), m_value);
               m_actorPicker->setOpen(true);
             }
             ImGui::PopID();
@@ -48,7 +48,7 @@ std::tuple<bool, bool> Dialog_ChangeLevel::draw() {
             ImGui::PushID("##change_level_actor_group_var");
             if (ImGui::EllipsesButton(m_comparison == 1 ? Database::instance()->variableNameAndId(m_value).c_str() : "", {-1, 0})) {
               m_isOperand = false;
-              m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_value);
+              m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_value);
               m_variablePicker->setOpen(true);
             }
             ImGui::PopID();
@@ -99,7 +99,7 @@ std::tuple<bool, bool> Dialog_ChangeLevel::draw() {
             ImGui::PushID("##change_level_operand_quantity_variable");
             if (ImGui::EllipsesButton(m_quantitySource == 1 ? Database::instance()->variableNameAndId(m_quantityVar).c_str() : "", ImVec2{-1, 0})) {
               m_isOperand = true;
-              m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_quantityVar);
+              m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_quantityVar);
               m_variablePicker->setOpen(true);
             }
             ImGui::PopID();

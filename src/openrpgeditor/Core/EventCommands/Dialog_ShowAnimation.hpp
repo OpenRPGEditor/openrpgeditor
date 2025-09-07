@@ -28,6 +28,6 @@ private:
   int m_animation;
   int m_character;
 
-  std::optional<ObjectPicker<Animation>> m_animationPicker;
+  std::optional<AnimationPicker> m_animationPicker;
   std::shared_ptr<ShowAnimationCommand> m_command;
 };

@@ -30,6 +30,6 @@ private:
   int m_enemy;
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Animation>> m_animationPicker;
+  std::optional<AnimationPicker> m_animationPicker;
   std::shared_ptr<ShowBattleAnimationCommand> m_command;
 };

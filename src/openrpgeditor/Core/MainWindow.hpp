@@ -17,7 +17,7 @@
 
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/TextEditor.hpp"
-#include "Core/CommonUI/TilesetPicker.hpp"
+#include "Core/CommonUI/TilesetTilePicker.hpp"
 
 #include "Database/Database.hpp"
 #include "Database/MapInfos.hpp"
@@ -134,7 +134,7 @@ public:
   Database& database() { return m_database.value(); }
   const Database& database() const { return m_database.value(); }
 
-  const TilesetPicker& tilesetPicker() const { return m_tilesetPicker; }
+  const TilesetTilePicker& tilesetPicker() const { return m_tilesetPicker; }
 
   void openMapProperties(MapInfo* mapInfo) {
     m_mapProperties.setMapInfo(mapInfo);
@@ -184,7 +184,7 @@ private:
   MapProperties m_mapProperties;
   MapEditor m_mapEditor;
   EventListView m_eventListView;
-  TilesetPicker m_tilesetPicker;
+  TilesetTilePicker m_tilesetPicker;
   NWJSVersionManager m_nwjsVersionManager;
   EventSearcher m_eventSearcher;
   LibLCF m_libLCF;
@@ -198,7 +198,7 @@ private:
   std::unordered_map<ToolbarCategory, std::vector<ToolbarButton>> m_toolbarButtons;
   CreateNewProjectDialog m_createNewProject = CreateNewProjectDialog("Create New Project");
   AboutDialog m_aboutDialog;
-  
+
   std::optional<Database> m_database;
 
   std::optional<DatabaseEditor> m_databaseEditor;

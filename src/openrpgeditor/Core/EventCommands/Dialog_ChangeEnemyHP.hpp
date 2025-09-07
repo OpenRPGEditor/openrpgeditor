@@ -40,7 +40,7 @@ private:
   bool m_allowKnockout{false};
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Troop>> m_actorPicker;
+  std::optional<TroopPicker> m_actorPicker;
   std::optional<VariableSwitchPicker> m_variablePicker;
   std::shared_ptr<ChangeEnemyHPCommand> m_command;
 };

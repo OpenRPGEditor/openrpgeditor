@@ -37,7 +37,7 @@ private:
   bool m_includeEquipment{false};
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Item>> m_itemPicker;
+  std::optional<ItemPicker> m_itemPicker;
   std::optional<VariableSwitchPicker> m_variablePicker;
   std::shared_ptr<ChangeItemsCommand> command;
   std::tuple<bool, bool> result;

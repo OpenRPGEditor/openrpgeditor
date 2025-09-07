@@ -25,7 +25,7 @@ std::tuple<bool, bool> Dialog_InputNumber::draw() {
       GroupBox variableGroupBox(trNOOP("Variable"), "##input_number_variable_group_box", {-1, 0});
       if (variableGroupBox.begin()) {
         if (ImGui::EllipsesButton(Database::instance()->variableNameAndId(m_variable).c_str(), {-1, 0})) {
-          m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_variable);
+          m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_variable);
           m_variablePicker->setOpen(true);
         }
       }

@@ -190,9 +190,8 @@ void DBSkillsTab::draw() {
                 if (ImGui::BeginCombo(std::format("##orpg_database_skills_scopelist_{}", m_selectedSkill->id()).c_str(), DecodeEnumName(magic_enum::enum_name(m_selectedSkill->scope())).c_str())) {
                   int index{0};
                   for (auto& dir : magic_enum::enum_values<Scope>()) {
-                    if (const bool is_selected = m_selectedSkill->scope() == static_cast<Scope>(magic_enum::enum_index(dir).value());
-                        ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
-                      m_selectedSkill->setScope(static_cast<Scope>(magic_enum::enum_index(dir).value()));
+                    if (const bool is_selected = m_selectedSkill->scope() == dir; ImGui::Selectable(DecodeEnumName(dir).c_str(), is_selected)) {
+                      m_selectedSkill->setScope(dir);
                       if (is_selected)
                         ImGui::SetItemDefaultFocus();
                     }
@@ -212,8 +211,7 @@ void DBSkillsTab::draw() {
                                       DecodeEnumName(magic_enum::enum_name(m_selectedSkill->occasion())).c_str())) {
                   int index{0};
                   for (auto& dir : magic_enum::enum_values<Occasion>()) {
-                    if (const bool is_selected = m_selectedSkill->occasion() == static_cast<Occasion>(magic_enum::enum_index(dir).value());
-                        ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
+                    if (const bool is_selected = m_selectedSkill->occasion() == dir; ImGui::Selectable(DecodeEnumName(dir).c_str(), is_selected)) {
                       m_selectedSkill->setOccasion(dir);
                       if (is_selected)
                         ImGui::SetItemDefaultFocus();
@@ -285,12 +283,12 @@ void DBSkillsTab::draw() {
               ImGui::SetNextItemWidth((ImGui::GetContentRegionAvail().x / 2) - ImGui::GetStyle().FramePadding.x);
               if (ImGui::BeginCombo(std::format("##orpg_database_skills_hitType_{}", m_selectedSkill->id()).c_str(), DecodeEnumName(magic_enum::enum_name(m_selectedSkill->hitType())).c_str())) {
                 for (auto& dir : magic_enum::enum_values<HitType>()) {
-                  if (const bool is_selected = m_selectedSkill->hitType() == static_cast<HitType>(magic_enum::enum_index(dir).value());
-                      ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), is_selected)) {
+                  const bool is_selected = m_selectedSkill->hitType() == static_cast<HitType>(dir);
+                  if (ImGui::Selectable(DecodeEnumName(dir).c_str(), is_selected)) {
                     m_selectedSkill->setHitType(dir);
-                    if (is_selected)
-                      ImGui::SetItemDefaultFocus();
                   }
+                  if (is_selected)
+                    ImGui::SetItemDefaultFocus();
                 }
                 ImGui::EndCombo();
               }
@@ -308,7 +306,7 @@ void DBSkillsTab::draw() {
                                 : m_selectedSkill->animationId() == 0 ? "None"
                                                                       : Database::instance()->animationName(m_selectedSkill->animationId()).c_str(),
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_animationPicker = ObjectPicker("Animation"sv, Database::instance()->animations.animations(), m_selectedSkill->animationId());
+                m_animationPicker = AnimationPicker(Database::instance()->animations.animations(), m_selectedSkill->animationId());
                 m_animationPicker->setOpen(true);
               }
               ImGui::PopID();

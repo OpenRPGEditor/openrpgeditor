@@ -3,8 +3,8 @@
 
 class Map;
 struct MainWindow;
-struct TilesetPicker {
-  explicit TilesetPicker(MainWindow* parent)
+struct TilesetTilePicker {
+  explicit TilesetTilePicker(MainWindow* parent)
   : m_parent(parent) {}
 
   void setPage(int page);

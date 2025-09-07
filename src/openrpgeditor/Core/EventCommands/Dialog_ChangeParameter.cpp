@@ -37,7 +37,7 @@ std::tuple<bool, bool> Dialog_ChangeParameter::draw() {
             ImGui::BeginDisabled(m_comparison != 0);
             ImGui::PushID("##change_parameter_actor");
             if (ImGui::EllipsesButton(m_comparison == 0 ? Database::instance()->actorNameAndId(m_value).c_str() : "", ImVec2{-1, 0})) {
-              m_actorPicker = ObjectPicker("Actor"sv, Database::instance()->actors.actorList(), m_value);
+              m_actorPicker = ActorPicker(Database::instance()->actors.actorList(), m_value);
               m_actorPicker->setOpen(true);
             }
             ImGui::PopID();
@@ -47,7 +47,7 @@ std::tuple<bool, bool> Dialog_ChangeParameter::draw() {
             ImGui::PushID("##change_parameter_var");
             if (ImGui::EllipsesButton(m_comparison == 1 ? Database::instance()->variableNameAndId(m_value_var).c_str() : "", ImVec2{-1, 0})) {
               m_isOperand = false;
-              m_variablePicker.emplace("Variables", Database::instance()->system.variables(), m_value_var);
+              m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_value_var);
               m_variablePicker->setOpen(true);
             }
             ImGui::PopID();
@@ -64,11 +64,12 @@ std::tuple<bool, bool> Dialog_ChangeParameter::draw() {
         ImGui::SetNextItemWidth(-1);
         if (ImGui::BeginCombo("##parameter_selection", DecodeEnumName(magic_enum::enum_value<ParameterSource>(m_parameterSource)).c_str())) {
           for (auto& parameter : magic_enum::enum_values<ParameterSource>()) {
-            if (bool isSelected = m_parameterSource == magic_enum::enum_index(parameter).value(); ImGui::Selectable(DecodeEnumName(parameter).c_str(), isSelected)) {
+            bool isSelected = m_parameterSource == static_cast<int>(parameter);
+            if ( ImGui::Selectable(DecodeEnumName(parameter).c_str(), isSelected)) {
               m_parameterSource = static_cast<int>(parameter);
-              if (isSelected)
-                ImGui::SetItemDefaultFocus();
             }
+            if (isSelected)
+              ImGui::SetItemDefaultFocus();
           }
           ImGui::EndCombo();
         }
@@ -113,7 +114,7 @@ std::tuple<bool, bool> Dialog_ChangeParameter::draw() {
             ImGui::PushID("##change_parameter_quant_var");
             if (ImGui::EllipsesButton(m_quantitySource == 1 ? Database::instance()->variableNameAndId(m_quantityVar).c_str() : "", ImVec2{-1, 0})) {
               m_isOperand = true;
-              m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_quantityVar);
+              m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_quantityVar);
               m_variablePicker->setOpen(true);
             }
             ImGui::PopID();

@@ -39,7 +39,7 @@ private:
   bool m_includeEquipment{false};
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Weapon>> m_weaponPicker;
+  std::optional<WeaponPicker> m_weaponPicker;
   std::optional<VariableSwitchPicker> m_variablePicker;
   std::shared_ptr<ChangeWeaponsCommand> m_command;
 };

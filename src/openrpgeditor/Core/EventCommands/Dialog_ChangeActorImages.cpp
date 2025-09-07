@@ -59,7 +59,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
       GroupBox actorGroupBox(trNOOP("Actor"), "##change_actor_images_actor_group", {-1, 0});
       if (actorGroupBox.begin()) {
         if (ImGui::EllipsesButton(std::format("{}##change_actor_iamges_actor", Database::instance()->actorNameAndId(m_actor)).c_str(), {-1, 0})) {
-          m_actorPicker = ObjectPicker(trNOOP("Actors"), Database::instance()->actors.actorList(), m_actor);
+          m_actorPicker = ActorPicker(Database::instance()->actors.actorList(), m_actor);
           m_actorPicker->setOpen(true);
         }
       }

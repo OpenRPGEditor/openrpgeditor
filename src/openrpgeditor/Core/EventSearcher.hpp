@@ -63,14 +63,14 @@ private:
   SearchType type{SearchType::Variable};
   SearchType pickedType{SearchType::Variable};
 
-  std::optional<ObjectPicker<Animation>> m_animationPicker;
-  std::optional<ObjectPicker<Class>> m_classPicker;
-  std::optional<ObjectPicker<State>> m_statePicker;
-  std::optional<ObjectPicker<std::optional<CommonEvent>>> m_commonPicker;
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
-  std::optional<ObjectPicker<Weapon>> m_weaponPicker;
-  std::optional<ObjectPicker<Armor>> m_armorPicker;
-  std::optional<ObjectPicker<Item>> m_itemPicker;
-  std::optional<ObjectPicker<Enemy>> m_enemyPicker;
-  std::optional<ObjectPicker<Skill>> m_skillPicker;
+  std::optional<AnimationPicker> m_animationPicker;
+  std::optional<ClassPicker> m_classPicker;
+  std::optional<StatePicker> m_statePicker;
+  std::optional<CommonEventPicker> m_commonPicker;
+  std::optional<ActorPicker> m_actorPicker;
+  std::optional<WeaponPicker> m_weaponPicker;
+  std::optional<ArmorPicker> m_armorPicker;
+  std::optional<ItemPicker> m_itemPicker;
+  std::optional<EnemyPicker> m_enemyPicker;
+  std::optional<SkillPicker> m_skillPicker;
 };

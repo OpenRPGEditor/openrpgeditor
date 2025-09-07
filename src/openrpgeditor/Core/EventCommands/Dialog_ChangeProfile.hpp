@@ -30,6 +30,6 @@ private:
   std::string m_profile;
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::optional<ActorPicker> m_actorPicker;
   std::shared_ptr<ChangeProfileCommand> m_command;
 };

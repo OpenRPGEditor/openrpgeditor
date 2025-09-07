@@ -40,7 +40,7 @@ private:
   bool m_includeEquipment{false};
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Armor>> m_armorPicker;
+  std::optional<ArmorPicker> m_armorPicker;
   std::optional<VariableSwitchPicker> m_variablePicker;
   std::shared_ptr<ChangeArmorsCommand> m_command;
 };

@@ -53,8 +53,8 @@ private:
   std::optional<Dialog_SetMovementRoute> m_routeDialog;
   VariableSwitchSelection m_variableSwitchSelection{Variable};
   std::optional<VariableSwitchPicker> m_variableSwitchPicker;
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
-  std::optional<ObjectPicker<Item>> m_itemPicker;
+  std::optional<ActorPicker> m_actorPicker;
+  std::optional<ItemPicker> m_itemPicker;
   CharacterPicker m_characterPicker{CharacterPicker::PickerMode::PatternAndDirection, true};
   std::optional<CheckeredCompositeTexture> m_actorButton;
   ImGuiTabItem* m_tabItem = nullptr;

@@ -93,7 +93,7 @@ std::tuple<bool, bool> Dialog_MovePicture::draw() {
                     ImGui::SetNextItemWidth(-1.f);
                     if (ImGui::EllipsesButton(std::format("{}##show_picture_direct_var_x", m_type == 1 ? Database::instance()->variableNameAndId(m_xVariable) : "").c_str(), {-1, 0})) {
                       m_isPickingY = false;
-                      m_varPicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_xVariable);
+                      m_varPicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_xVariable);
                       m_varPicker->setOpen(true);
                     }
                   }
@@ -103,7 +103,7 @@ std::tuple<bool, bool> Dialog_MovePicture::draw() {
                     ImGui::SetNextItemWidth(-1.f);
                     if (ImGui::EllipsesButton(std::format("{}##show_picture_direct_var_y", m_type == 1 ? Database::instance()->variableNameAndId(m_yVariable) : "").c_str(), {-1, 0})) {
                       m_isPickingY = true;
-                      m_varPicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_yVariable);
+                      m_varPicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_yVariable);
                       m_varPicker->setOpen(true);
                     }
                   }
@@ -157,7 +157,7 @@ std::tuple<bool, bool> Dialog_MovePicture::draw() {
                 for (auto& blend : magic_enum::enum_values<Blend>()) {
                   bool selected = m_blendMode == static_cast<int>(blend);
                   if (ImGui::Selectable(DecodeEnumName(blend).c_str(), selected)) {
-                    m_blendMode = magic_enum::enum_index(blend).value();
+                    m_blendMode = static_cast<int>(blend);
                   }
                   if (selected) {
                     ImGui::SetItemDefaultFocus();

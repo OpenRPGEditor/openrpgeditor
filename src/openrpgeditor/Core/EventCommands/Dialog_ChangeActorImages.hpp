@@ -62,6 +62,6 @@ private:
   std::optional<SideViewBattlerSheet> m_battlerSheet;
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::optional<ActorPicker> m_actorPicker;
   std::shared_ptr<ChangeActorImageCommand> m_command;
 };

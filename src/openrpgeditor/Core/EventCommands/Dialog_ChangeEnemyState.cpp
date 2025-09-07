@@ -69,7 +69,7 @@ std::tuple<bool, bool> Dialog_ChangeEnemyState::draw() {
         std::string text = Database::instance()->stateNameAndId(m_state);
         ImGui::PushID("##change_enemy_state_state_value");
         if (ImGui::EllipsesButton(text.c_str(), ImVec2{-1, 0})) {
-          m_statePicker = ObjectPicker(trNOOP("State"), Database::instance()->states.states(), m_state);
+          m_statePicker = StatePicker(Database::instance()->states.states(), m_state);
           m_statePicker->setOpen(true);
         }
         ImGui::PopID();

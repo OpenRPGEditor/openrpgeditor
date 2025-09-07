@@ -66,14 +66,14 @@ void Dialog_ConditionalBranch::drawDataTab() {
           if (ImGui::EllipsesButton((m_conditionType != 0 ? "##conditional_switch_empty" : Database::instance()->switchNameAndId(m_switchId)).c_str(),
                                     ImVec2{ImGui::GetContentRegionAvail().x * .7f, 0})) {
             m_pickerType = 0;
-            m_variablePicker.emplace(trNOOP("Switches"), Database::instance()->system.switches(), m_switchId);
+            m_variablePicker.emplace(VariableSwitchPicker::Type::Switch, Database::instance()->system.switches(), m_switchId);
             m_variablePicker->setOpen(true);
           }
           ImGui::TextUnformatted(trNOOP("is"));
           ImGui::PushItemWidth(-1);
-          if (ImGui::BeginCombo("##conditional_switch_sub_selection", DecodeEnumName(magic_enum::enum_value<ValueControl>(m_switchValue)).c_str())) {
+          if (ImGui::BeginCombo("##conditional_switch_sub_selection", DecodeEnumName(static_cast<ValueControl>(m_switchValue)).c_str())) {
             for (auto& val : magic_enum::enum_values<ValueControl>()) {
-              if (const bool isSelected = m_switchValue == magic_enum::enum_index(val).value(); ImGui::Selectable(DecodeEnumName(val).c_str(), isSelected)) {
+              if (const bool isSelected = m_switchValue == static_cast<int>(val); ImGui::Selectable(DecodeEnumName(val).c_str(), isSelected)) {
                 m_switchValue = static_cast<int>(val);
                 if (isSelected)
                   ImGui::SetItemDefaultFocus();
@@ -94,7 +94,7 @@ void Dialog_ConditionalBranch::drawDataTab() {
               if (ImGui::EllipsesButton((m_conditionType != 1 ? "##conditional_variable_id" : Database::instance()->variableNameAndId(m_variableId)).c_str(),
                                         ImVec2{ImGui::GetContentRegionAvail().x * .7f, 0})) {
                 m_pickerType = 1;
-                m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_variableId);
+                m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_variableId);
                 m_variablePicker->setOpen(true);
               }
 
@@ -132,7 +132,7 @@ void Dialog_ConditionalBranch::drawDataTab() {
                 ImGui::PushID("##conditional_var_sub_variable");
                 if (ImGui::EllipsesButton(m_variableSubSource != 1 ? "" : Database::instance()->variableNameAndId(m_subVariableId).c_str(), ImVec2{-1, 0})) {
                   m_pickerType = 2;
-                  m_variablePicker.emplace(trNOOP("Variables"), Database::instance()->system.variables(), m_subVariableId);
+                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_subVariableId);
                   m_variablePicker->setOpen(true);
                 }
                 ImGui::PopID();
@@ -182,11 +182,12 @@ void Dialog_ConditionalBranch::drawDataTab() {
             ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * .33f);
             if (ImGui::BeginCombo("##conditional_branch_timer_comparison", DecodeEnumName(magic_enum::enum_value<TimerComparisonType>(m_timerOperation)).c_str())) {
               for (auto& dir : magic_enum::enum_values<TimerComparisonType>()) {
-                if (bool isSelected = m_selfSwValue == magic_enum::enum_index(dir).value(); ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(dir)).c_str(), isSelected)) {
-                  m_timerOperation = magic_enum::enum_index(dir).value();
-                  if (isSelected)
-                    ImGui::SetItemDefaultFocus();
+                bool isSelected = m_selfSwValue == static_cast<int>(dir);
+                if (ImGui::Selectable(DecodeEnumName(dir).c_str(), isSelected)) {
+                  m_timerOperation = static_cast<int>(dir);
                 }
+                if (isSelected)
+                  ImGui::SetItemDefaultFocus();
               }
               ImGui::EndCombo();
             }
@@ -235,7 +236,7 @@ void Dialog_ConditionalBranch::drawActorTab() {
           ImGui::PushID("##conditional_actor_condition");
           if (ImGui::EllipsesButton(m_conditionType != 4 ? "" : Database::instance()->actorNameAndId(m_actorSelection).c_str(), {-1, 0})) {
 
-            m_actorPicker = ObjectPicker(trNOOP("Actor"), Database::instance()->actors.actorList(), m_actorSelection);
+            m_actorPicker = ActorPicker(Database::instance()->actors.actorList(), m_actorSelection);
             m_actorPicker->setOpen(true);
           }
           ImGui::PopID();
@@ -265,7 +266,7 @@ void Dialog_ConditionalBranch::drawActorTab() {
               ImGui::BeginDisabled(m_actorSubSelection != 2);
               ImGui::PushID("##change_class_selection");
               if (ImGui::EllipsesButton(m_actorSubSelection != 2 ? "" : Database::instance()->classNameAndId(m_actorClass).c_str(), ImVec2{-1, 0})) {
-                m_classPicker = ObjectPicker(trNOOP("Class"), Database::instance()->classes.classes(), m_actorClass);
+                m_classPicker = ClassPicker(Database::instance()->classes.classes(), m_actorClass);
                 m_classPicker->setOpen(true);
               }
               ImGui::PopID();
@@ -275,7 +276,7 @@ void Dialog_ConditionalBranch::drawActorTab() {
               ImGui::BeginDisabled(m_actorSubSelection != 3);
               ImGui::PushID("##change_skill_selection");
               if (ImGui::EllipsesButton(m_actorSubSelection != 3 ? "" : Database::instance()->skillNameAndId(m_actorSkill).c_str(), ImVec2{-1, 0})) {
-                m_skillPicker = ObjectPicker(trNOOP("Skill"), Database::instance()->skills.skills(), m_actorSkill);
+                m_skillPicker = SkillPicker(Database::instance()->skills.skills(), m_actorSkill);
                 m_skillPicker->setOpen(true);
               }
               ImGui::PopID();
@@ -286,7 +287,7 @@ void Dialog_ConditionalBranch::drawActorTab() {
               ImGui::PushID("##change_weapons_selection");
               if (ImGui::EllipsesButton(m_actorSubSelection != 4 ? "" : Database::instance()->weaponNameOrId(m_actorWeapon).c_str(), {-1, 0})) {
                 m_weaponType = 0;
-                m_weaponPicker = ObjectPicker(trNOOP("Weapon"), Database::instance()->weapons.weaponList(), m_actorWeapon);
+                m_weaponPicker = WeaponPicker(Database::instance()->weapons.weaponList(), m_actorWeapon);
                 m_weaponPicker->setOpen(true);
               }
               ImGui::PopID();
@@ -297,7 +298,7 @@ void Dialog_ConditionalBranch::drawActorTab() {
               ImGui::PushID("##change_armors_selection");
               if (ImGui::EllipsesButton(m_actorSubSelection != 5 ? "" : Database::instance()->armorNameAndId(m_actorArmor).c_str(), {-1, 0})) {
                 m_armorType = 0;
-                m_armorPicker = ObjectPicker(trNOOP("Armor"), Database::instance()->armors.armorList(), m_actorArmor);
+                m_armorPicker = ArmorPicker(Database::instance()->armors.armorList(), m_actorArmor);
                 m_actorPicker->setOpen(true);
               }
               ImGui::PopID();
@@ -308,7 +309,7 @@ void Dialog_ConditionalBranch::drawActorTab() {
               ImGui::PushID("##change_state_selection");
               if (ImGui::EllipsesButton(m_actorSubSelection != 6 ? "" : Database::instance()->stateNameAndId(m_actorState).c_str(), {-1, 0})) {
                 m_stateType = 0;
-                m_statePicker = ObjectPicker(trNOOP("States"), Database::instance()->states.states(), m_actorState);
+                m_statePicker = StatePicker(Database::instance()->states.states(), m_actorState);
                 m_statePicker->setOpen(true);
               }
               ImGui::PopID();
@@ -374,7 +375,7 @@ void Dialog_ConditionalBranch::drawEntityTab() {
                 ImGui::PushID("##change_state_selection");
                 if (ImGui::EllipsesButton(m_enemySubSelection != 1 ? "" : Database::instance()->stateNameAndId(m_actorState).c_str(), {-1, 0})) {
                   m_stateType = 1;
-                  m_statePicker = ObjectPicker(trNOOP("States"), Database::instance()->states.states(), m_actorState);
+                  m_statePicker = StatePicker(Database::instance()->states.states(), m_actorState);
                   m_statePicker->setOpen(true);
                 }
                 ImGui::PopID();
@@ -411,15 +412,14 @@ void Dialog_ConditionalBranch::drawEntityTab() {
             }
             ImGui::TextUnformatted(label);
             ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - (ImGui::CalcTextSize(label).x + ImGui::GetStyle().FramePadding.x));
-            if (ImGui::BeginCombo("##conditional_branch_entity_tab_main_right_direction_selection",
-                                  m_conditionType != 6 ? "" : DecodeEnumName(magic_enum::enum_value<Direction>(m_characterDirection)).c_str())) {
+            if (ImGui::BeginCombo("##conditional_branch_entity_tab_main_right_direction_selection", m_conditionType != 6 ? "" : DecodeEnumName(static_cast<Direction>(m_characterDirection)).c_str())) {
               for (auto& dir : magic_enum::enum_values<Direction>()) {
                 if (dir == Direction::Retain) {
                   continue;
                 }
 
                 if (bool is_selected = m_characterDirection == static_cast<int>(dir); ImGui::Selectable(DecodeEnumName(dir).c_str(), is_selected)) {
-                  m_characterDirection = magic_enum::enum_index(dir).value();
+                  m_characterDirection = static_cast<int>(dir);
                   if (is_selected)
                     ImGui::SetItemDefaultFocus();
                 }
@@ -437,11 +437,11 @@ void Dialog_ConditionalBranch::drawEntityTab() {
             const auto label = trNOOP("is driven");
             ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * .5f);
             if (ImGui::BeginCombo("##conditional_branch_entity_tab_main_right_vehicle_location_selection",
-                                  m_conditionType != 13 ? "" : DecodeEnumName(magic_enum::enum_value<VehicleType>(m_vehicleSelection)).c_str())) {
+                                  m_conditionType != 13 ? "" : DecodeEnumName(static_cast<VehicleType>(m_vehicleSelection)).c_str())) {
               for (auto& vehicle : magic_enum::enum_values<VehicleType>()) {
-                const bool isSelected = m_vehicleSelection == magic_enum::enum_index(vehicle).value();
-                if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(vehicle)).c_str(), isSelected)) {
-                  m_vehicleSelection = magic_enum::enum_index(vehicle).value();
+                const bool isSelected = m_vehicleSelection == static_cast<int>(vehicle);
+                if (ImGui::Selectable(DecodeEnumName(vehicle).c_str(), isSelected)) {
+                  m_vehicleSelection = static_cast<int>(vehicle);
                 }
                 if (isSelected) {
                   ImGui::SetItemDefaultFocus();
@@ -490,11 +490,11 @@ void Dialog_ConditionalBranch::drawMiscTab() {
             ImGui::BeginDisabled(m_conditionType != 7);
             {
               ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * .33f);
-              if (ImGui::BeginCombo("##conditional_gold_operation", m_conditionType != 7 ? "" : DecodeEnumName(magic_enum::enum_value<GoldComparisonType>(m_goldOperation)).c_str())) {
+              if (ImGui::BeginCombo("##conditional_gold_operation", m_conditionType != 7 ? "" : DecodeEnumName(static_cast<GoldComparisonType>(m_goldOperation)).c_str())) {
                 for (auto& operation : magic_enum::enum_values<GoldComparisonType>()) {
-                  bool isSelected = m_goldOperation == magic_enum::enum_index(operation).value();
+                  bool isSelected = m_goldOperation == static_cast<int>(operation);
                   if (ImGui::Selectable(DecodeEnumName(magic_enum::enum_name(operation)).c_str(), isSelected)) {
-                    m_goldOperation = magic_enum::enum_index(operation).value();
+                    m_goldOperation = static_cast<int>(operation);
                   }
                   if (isSelected) {
                     ImGui::SetItemDefaultFocus();
@@ -521,7 +521,7 @@ void Dialog_ConditionalBranch::drawMiscTab() {
             {
               ImGui::PushID("##conditional_item_selection");
               if (ImGui::EllipsesButton(m_conditionType != 8 ? "" : Database::instance()->itemNameOrId(m_itemSelection).c_str(), {-1, 0})) {
-                m_itemPicker = ObjectPicker<Item>("Items"sv, Database::instance()->items.items(), m_itemSelection);
+                m_itemPicker = ItemPicker(Database::instance()->items.items(), m_itemSelection);
                 m_itemPicker->setOpen(true);
               }
               ImGui::PopID();
@@ -537,7 +537,7 @@ void Dialog_ConditionalBranch::drawMiscTab() {
               ImGui::PushID("##conditional_weapon_selection");
               if (ImGui::EllipsesButton(m_conditionType != 9 ? "" : Database::instance()->weaponNameOrId(m_weaponSelection).c_str(), {-1, 0})) {
                 m_weaponType = 1;
-                m_weaponPicker = ObjectPicker(trNOOP("Weapons"), Database::instance()->weapons.weapons(), m_weaponSelection);
+                m_weaponPicker = WeaponPicker(Database::instance()->weapons.weapons(), m_weaponSelection);
                 m_weaponPicker->setOpen(true);
               }
               ImGui::PopID();
@@ -554,7 +554,7 @@ void Dialog_ConditionalBranch::drawMiscTab() {
               ImGui::PushID("##conditional_armor_selection");
               if (ImGui::EllipsesButton(m_conditionType != 10 ? "" : Database::instance()->armorNameOrId(m_armorSelection).c_str(), {-1, 0})) {
                 m_armorType = 1;
-                m_armorPicker = ObjectPicker(trNOOP("Armors"), Database::instance()->armors.armors(), m_armorSelection);
+                m_armorPicker = ArmorPicker(Database::instance()->armors.armors(), m_armorSelection);
                 m_armorPicker->setOpen(true);
               }
               ImGui::PopID();

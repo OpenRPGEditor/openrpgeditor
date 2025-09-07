@@ -184,7 +184,7 @@ void DBCommonEventsTab::draw() {
               ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2 / 2 - 16);
               ImGui::BeginDisabled(isSwitchEnabled);
               if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 2 / 2 - 15, 0})) {
-                picker.emplace("Switches", Database::instance()->system.switches(), m_selectedCommonEvent->switchId());
+                picker.emplace(VariableSwitchPicker::Type::Switch,  Database::instance()->system.switches(), m_selectedCommonEvent->switchId());
                 picker->setOpen(true);
               }
               ImGui::PopID();

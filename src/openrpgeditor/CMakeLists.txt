@@ -73,8 +73,8 @@ add_library(
         Core/CommonUI/ObjectPicker.inl
         Core/CommonUI/TextEditor.cpp
         Core/CommonUI/TextEditor.hpp
-        Core/CommonUI/TilesetPicker.cpp
-        Core/CommonUI/TilesetPicker.hpp
+        Core/CommonUI/TilesetTilePicker.cpp
+        Core/CommonUI/TilesetTilePicker.hpp
         Core/CommonUI/TraitsEditor.cpp
         Core/CommonUI/TraitsEditor.hpp
         Core/CommonUI/VariableSwitchPicker.cpp

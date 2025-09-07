@@ -23,6 +23,6 @@ private:
   int m_tileset;
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Tileset>> m_tilesetPicker;
+  std::optional<TilesetPicker> m_tilesetPicker;
   std::shared_ptr<ChangeTilesetCommand> m_command;
 };

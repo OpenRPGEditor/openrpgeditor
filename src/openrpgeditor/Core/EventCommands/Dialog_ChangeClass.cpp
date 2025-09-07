@@ -29,7 +29,7 @@ std::tuple<bool, bool> Dialog_ChangeClass::draw() {
       if (actorGroupBox.begin()) {
         ImGui::PushID("##change_class_actor");
         if (ImGui::EllipsesButton(Database::instance()->actorNameAndId(m_actor).c_str(), ImVec2{-1, 0})) {
-          m_actorPicker = ObjectPicker(trNOOP("Actor"), Database::instance()->actors.actorList(), m_actor);
+          m_actorPicker = ActorPicker(Database::instance()->actors.actorList(), m_actor);
           m_actorPicker->setOpen(true);
         }
         ImGui::PopID();
@@ -40,7 +40,7 @@ std::tuple<bool, bool> Dialog_ChangeClass::draw() {
       if (classGroupBox.begin()) {
         ImGui::PushID("##change_class_classid");
         if (ImGui::EllipsesButton(Database::instance()->classNameAndId(m_class).c_str(), ImVec2{-1, 0})) {
-          m_classPicker = ObjectPicker(trNOOP("Class"), Database::instance()->classes.classes(), m_class);
+          m_classPicker = ClassPicker(Database::instance()->classes.classes(), m_class);
           m_classPicker->setOpen(true);
         }
         ImGui::PopID();

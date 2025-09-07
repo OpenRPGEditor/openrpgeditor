@@ -435,7 +435,7 @@ void LibLCF::draw() {
                                 ImVec2{290, 0})) {
                 m_switchIndex = pair.first;
                 m_variableIndex = -1;
-                m_picker.emplace("Switches", Database::instance()->system.switches(), lcf.mapper()->switch_mapping[pair.first]);
+                m_picker.emplace(VariableSwitchPicker::Type::Switch, Database::instance()->system.switches(), lcf.mapper()->switch_mapping[pair.first]);
                 m_picker->setOpen(true);
               }
               ImGui::PopStyleColor();
@@ -476,7 +476,7 @@ void LibLCF::draw() {
                                 ImVec2{290, 0})) {
                 m_switchIndex = -1;
                 m_variableIndex = pair.first;
-                m_picker.emplace("Variables", Database::instance()->system.variables(), lcf.mapper()->variable_mapping[pair.first]);
+                m_picker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), lcf.mapper()->variable_mapping[pair.first]);
                 m_picker->setOpen(true);
               }
               ImGui::PopStyleColor();
@@ -516,7 +516,7 @@ void LibLCF::draw() {
                                                                               : Database::instance()->commonEventNameAndId(lcf.mapper()->common_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
                 m_commonIndex = pair.first;
-                m_commonPicker = ObjectPicker("Common Events"sv, Database::instance()->commonEvents.events(), lcf.mapper()->common_mapping[pair.first]);
+                m_commonPicker = CommonEventPicker(Database::instance()->commonEvents.events(), lcf.mapper()->common_mapping[pair.first]);
                 m_commonPicker->setOpen(true);
               }
               ImGui::PopStyleColor();
@@ -549,7 +549,7 @@ void LibLCF::draw() {
               if (ImGui::Button(lcf.mapper()->actor_mapping[pair.first] == 0 ? "Click here to start mapping!" : Database::instance()->actorNameAndId(lcf.mapper()->actor_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
                 m_actorIndex = pair.first;
-                m_actorPicker = ObjectPicker("Actors"sv, Database::instance()->actors.actorList(), lcf.mapper()->actor_mapping[pair.first]);
+                m_actorPicker = ActorPicker(Database::instance()->actors.actorList(), lcf.mapper()->actor_mapping[pair.first]);
                 m_actorPicker->setOpen(true);
               }
               ImGui::PopStyleColor();
@@ -582,7 +582,7 @@ void LibLCF::draw() {
               if (ImGui::Button(lcf.mapper()->state_mapping[pair.first] == 0 ? "Click here to start mapping!" : Database::instance()->stateNameAndId(lcf.mapper()->actor_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
                 m_stateIndex = pair.first;
-                m_statePicker = ObjectPicker("States"sv, Database::instance()->states.states(), lcf.mapper()->state_mapping[pair.first]);
+                m_statePicker = StatePicker(Database::instance()->states.states(), lcf.mapper()->state_mapping[pair.first]);
                 m_statePicker->setOpen(true);
               }
               ImGui::PopStyleColor();

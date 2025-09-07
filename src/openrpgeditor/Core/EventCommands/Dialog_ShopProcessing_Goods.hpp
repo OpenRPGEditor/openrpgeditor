@@ -83,8 +83,8 @@ private:
   int m_priceConstant{0};
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Item>> m_itemPicker;
-  std::optional<ObjectPicker<Weapon>> m_weaponPicker;
-  std::optional<ObjectPicker<Armor>> m_armorPicker;
+  std::optional<ItemPicker> m_itemPicker;
+  std::optional<WeaponPicker> m_weaponPicker;
+  std::optional<ArmorPicker> m_armorPicker;
   std::shared_ptr<ShopProcessingGoodCommand> m_command;
 };

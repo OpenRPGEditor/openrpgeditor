@@ -54,7 +54,7 @@ private:
   std::optional<CheckeredCompositeTexture> m_boatButtonTexture;
   std::optional<CheckeredCompositeTexture> m_shipButtonTexture;
   std::optional<CheckeredCompositeTexture> m_airshipButtonTexture;
-  std::optional<ObjectPicker<Actor>> m_actorsPicker;
+  std::optional<ActorPicker> m_actorsPicker;
   std::optional<VariableSwitchPicker> m_skillTypePicker;
   std::optional<ImagePicker> m_titleImagePicker;
   int m_selectedActor = -1;

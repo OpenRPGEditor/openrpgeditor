@@ -12,7 +12,7 @@ class TraitsEditor final {
 public:
   void setTraits(std::vector<Trait>* traits) { m_traits = traits; }
   void draw();
-  void drawRadioButton(std::string_view name, TraitCode code, int dataId, double initialValue) const;
+  void drawRadioButton(TraitCode code, int dataId, double initialValue) const;
 
 private:
   void drawPopup();
@@ -23,6 +23,6 @@ private:
   bool m_tempTraitAssigned{false};
   Trait m_tempTrait;
   Trait* m_deletingTrait = nullptr;
-  std::optional<ObjectPicker<State>> m_statePicker;
-  std::optional<ObjectPicker<Skill>> m_skillPicker;
+  std::optional<StatePicker> m_statePicker;
+  std::optional<SkillPicker> m_skillPicker;
 };

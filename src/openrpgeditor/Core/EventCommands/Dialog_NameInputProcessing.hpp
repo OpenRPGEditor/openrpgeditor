@@ -27,7 +27,7 @@ private:
   int m_maxChar;
 
   bool m_confirmed{false};
-  std::optional<ObjectPicker<Actor>> m_actorPicker;
+  std::optional<ActorPicker> m_actorPicker;
   std::shared_ptr<NameInputCommand> m_command;
   std::tuple<bool, bool> m_result;
 };

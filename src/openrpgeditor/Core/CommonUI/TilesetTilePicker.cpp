@@ -1,17 +1,15 @@
-#include "Core/CommonUI/TilesetPicker.hpp"
+#include "Core/CommonUI/TilesetTilePicker.hpp"
 #include "Core/MainWindow.hpp"
 
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
 
-#include <complex.h>
-
-void TilesetPicker::setPage(int page) {
+void TilesetTilePicker::setPage(int page) {
   m_page = page;
   m_palette.setPageIndex(m_page);
 }
-void TilesetPicker::drawPageButton(const std::string_view pageStr, const int page) {
+void TilesetTilePicker::drawPageButton(const std::string_view pageStr, const int page) {
   // For buttons, we always want to render autotiles and region tiles
   if (page != 0 && page != -1 && !m_palette.isPageValid(page)) {
     return;
@@ -25,7 +23,7 @@ void TilesetPicker::drawPageButton(const std::string_view pageStr, const int pag
   ImGui::PopStyleColor();
 }
 
-void TilesetPicker::draw() {
+void TilesetTilePicker::draw() {
   if (m_map != m_parent->currentMap()) {
     m_map = m_parent->currentMap();
     if (m_map != nullptr) {

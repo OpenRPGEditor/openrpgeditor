@@ -29,7 +29,7 @@ std::tuple<bool, bool> Dialog_ChangePartyMember::draw() {
         ImGui::SetNextItemWidth(-1);
         ImGui::PushID("##change_party_member_actor_selection");
         if (ImGui::EllipsesButton(Database::instance()->actorNameAndId(m_actor).c_str(), ImVec2{-1, 0})) {
-          m_actorPicker = ObjectPicker(trNOOP("Actor"), Database::instance()->actors.actorList(), m_actor);
+          m_actorPicker = ActorPicker( Database::instance()->actors.actorList(), m_actor);
           m_actorPicker->setOpen(true);
         }
         ImGui::PopID();

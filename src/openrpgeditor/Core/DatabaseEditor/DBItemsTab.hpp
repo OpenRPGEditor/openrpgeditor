@@ -48,5 +48,5 @@ private:
   std::optional<IconSheet> m_itemSheet;
   std::optional<IconSheet> m_itemPicker;
   EffectsEditor m_effectsEditor;
-  std::optional<ObjectPicker<Animation>> m_animationPicker;
+  std::optional<AnimationPicker> m_animationPicker;
 };

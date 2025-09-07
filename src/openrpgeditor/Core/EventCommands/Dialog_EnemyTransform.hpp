@@ -28,6 +28,6 @@ private:
 
   bool m_confirmed{false};
   std::shared_ptr<EnemyTransformCommand> m_command;
-  std::optional<ObjectPicker<Enemy>> m_enemyPicker;
+  std::optional<EnemyPicker> m_enemyPicker;
   std::tuple<bool, bool> result;
 };

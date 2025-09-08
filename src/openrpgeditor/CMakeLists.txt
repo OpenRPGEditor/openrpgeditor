@@ -528,6 +528,8 @@ add_library(
         Core/AboutDialog.hpp
         Core/ApplicationTheme.cpp
         Core/ApplicationTheme.hpp
+        Core/ApplicationThemeManager.cpp
+        Core/ApplicationThemeManager.hpp
 )
 
 target_include_directories(

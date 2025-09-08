@@ -1,14 +1,15 @@
 #pragma once
 
-#include "FirstBootWizard.hpp"
+#include "Core/ApplicationThemeManager.hpp"
+#include "Core/FirstBootWizard.hpp"
 
 #include <SDL3/SDL.h>
 
 #include <memory>
 #include <string>
 
-#include "Core/Window.hpp"
 #include "Core/MainWindow.hpp"
+#include "Core/Window.hpp"
 
 #include <optional>
 
@@ -27,9 +28,7 @@ public:
   ~Application();
   void updateScale();
   void updateGuiColors();
-  void requestScaleUpdate() {
-    m_requestScaleUpdate = true;
-  }
+  void requestScaleUpdate() { m_requestScaleUpdate = true; }
 
   Application(const Application&) = delete;
   Application(Application&&) = delete;
@@ -67,10 +66,11 @@ private:
   bool m_minimized{false};
   std::string m_userConfigPath;
   Settings m_settings;
-  std::optional<MainWindow> m_project;
+  std::optional<MainWindow> m_mainWindow;
   ImFont* m_mainFont{};
   ImFont* m_monoFont{};
   std::optional<FirstBootWizard> m_firstBootWizard;
+  ApplicationThemeManager m_themeManager;
   bool m_requestScaleUpdate{false};
   bool m_projectCloseRequest{false};
   bool m_userClosed{false};

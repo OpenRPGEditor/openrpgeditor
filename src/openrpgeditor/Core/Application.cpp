@@ -120,10 +120,11 @@ void Application::updateScale() {
   style.IndentSpacing = 10.0f;
   style.ScrollbarSize = 12.f;
   style.ScaleAllSizes(m_settings.uiScale);
-  style.CurveTessellationTol = 0.1f;
-  style.CircleTessellationMaxError = 0.1f;
+  // style.CurveTessellationTol = 0.1f;
+  // style.CircleTessellationMaxError = 0.1f;
 }
 
+/* TODO: Convert the fallback style to a custom theme */
 void Application::updateGuiColors() {
   ImGuiStyle& style = ImGui::GetStyle();
   ImVec4* colors = style.Colors;
@@ -317,7 +318,7 @@ void Application::updateFonts() {
   io.Fonts->Build();
 
   config = ImFontConfig();
-  // config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_Bold;
+  config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_Bold;
   config.MergeMode = false;
   m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_mono.c_str(), fontSize, &config, ranges.Data);
   io.Fonts->Build();
@@ -327,8 +328,6 @@ void Application::updateFonts() {
   io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), fontSize, &config, ranges.Data);
   io.Fonts->Build();
   io.FontGlobalScale = m_settings.uiScale;
-
-  updateScale();
 }
 
 void Application::serializeSettings() {
@@ -378,8 +377,11 @@ ExitStatus Application::run() {
 
   m_running = true;
 
-  m_project.emplace();
-  ApplicationTheme::createFromStyle(std::filesystem::path(m_userConfigPath) / "Dark.json");
+  m_mainWindow.emplace();
+  m_themeManager.initialize(std::filesystem::path(m_userConfigPath) / "themes", SDL_GetSystemTheme() == SDL_SYSTEM_THEME_DARK);
+  m_themeManager.serializeAllThemes();
+  m_themeManager.applyMainTheme(m_settings.uiScale);
+
   bool needsInitialProjectLoad =
       !Settings::instance()->lastProject.empty() && std::filesystem::is_regular_file(Settings::instance()->lastProject) &&
       (std::filesystem::path(Settings::instance()->lastProject).extension() == ".rpgproject" || std::filesystem::path(Settings::instance()->lastProject).extension() == ".rmmzproject");
@@ -405,7 +407,7 @@ ExitStatus Application::run() {
   while (m_running || FileQueue::instance().hasTasks() || m_projectSerialize || m_projectCloseRequest) {
     if (m_requestScaleUpdate) {
       updateFonts();
-      m_requestScaleUpdate = false;
+      m_themeManager.applyMainTheme(m_settings.uiScale);
     }
     EditorPluginManager::instance()->initializeAllPlugins();
 
@@ -419,7 +421,8 @@ ExitStatus Application::run() {
       }
 
       if (event.type == SDL_EVENT_SYSTEM_THEME_CHANGED) {
-        updateGuiColors();
+        m_themeManager.setSystemDark(SDL_GetSystemTheme() == SDL_SYSTEM_THEME_DARK);
+        m_requestScaleUpdate = true;
       }
 
       if (event.type >= SDL_EVENT_WINDOW_SHOWN && event.type <= SDL_EVENT_WINDOW_HDR_STATE_CHANGED && event.window.windowID == SDL_GetWindowID(m_window->getNativeWindow())) {
@@ -443,21 +446,21 @@ ExitStatus Application::run() {
     }
 
     if (!m_firstBootWizard) {
-      if (m_project) {
-        m_project->draw(m_doQuit && m_userClosed, m_projectCloseRequest);
+      if (m_mainWindow) {
+        m_mainWindow->draw(m_doQuit && m_userClosed, m_projectCloseRequest);
       } else if (!FileQueue::instance().hasTasks()) {
         m_projectSerialize = false;
       }
 
-      if (needsInitialProjectLoad && m_project) {
-        m_project->load(Settings::instance()->lastProject, std::filesystem::path(Settings::instance()->lastProject).remove_filename().generic_string());
+      if (needsInitialProjectLoad && m_mainWindow) {
+        m_mainWindow->load(Settings::instance()->lastProject, std::filesystem::path(Settings::instance()->lastProject).remove_filename().generic_string());
         needsInitialProjectLoad = false;
       }
     }
 
     if (m_doQuit || m_projectCloseRequest) {
-      if (m_project && !m_userClosed) {
-        const auto [closed, quit, serialize] = m_project->close(true);
+      if (m_mainWindow && !m_userClosed) {
+        const auto [closed, quit, serialize] = m_mainWindow->close(true);
         if (closed && quit) {
           m_running = !m_doQuit;
           m_userClosed = true;
@@ -480,11 +483,11 @@ ExitStatus Application::run() {
 
     if (!FileQueue::instance().hasTasks() && m_userClosed && m_projectCloseRequest) {
       // Actually close the project to revert active state
-      if (m_project) {
-        m_project->close();
+      if (m_mainWindow) {
+        m_mainWindow->close();
       }
       if (m_doQuit) {
-        m_project.reset();
+        m_mainWindow.reset();
       }
       m_projectCloseRequest = false;
       m_userClosed = false;
@@ -496,8 +499,8 @@ ExitStatus Application::run() {
 
     ImGui::UpdatePlatformWindows();
 
-    if (m_project && m_project->databaseValid() && !m_project->transientSettingsLoaded()) {
-      m_project->loadTransientSettings();
+    if (m_mainWindow && m_mainWindow->databaseValid() && !m_mainWindow->transientSettingsLoaded()) {
+      m_mainWindow->loadTransientSettings();
     }
 
     if (resetLayout) {

@@ -173,7 +173,8 @@ void from_json(const nlohmann::ordered_json& j, ImGuiStyle& style) {
 bool ApplicationTheme::serialize(const std::filesystem::path& path) {
   nlohmann::ordered_json out;
   out["Name"] = m_themeName;
-  out["Main"] = m_style;
+  out["DarkTheme"] = m_isDark;
+  out["Main"] = m_mainStyle;
   out["CommandEditor"] = m_commandEditor;
   std::ofstream outStream(path);
   outStream << out.dump(4);
@@ -182,29 +183,26 @@ bool ApplicationTheme::serialize(const std::filesystem::path& path) {
 
 std::shared_ptr<ApplicationTheme> ApplicationTheme::loadTheme(const std::filesystem::path& path) {
   ApplicationTheme theme;
-  std::ifstream file(path);
-  if (file.good()) {
+  if (std::ifstream file(path); file.good()) {
     const auto in = nlohmann::json::parse(file);
     theme.m_themeName = in.value("Name", theme.m_themeName);
-    theme.m_style = in.value("Main", theme.m_style);
+    theme.m_isDark = in.value("DarkTheme", theme.m_isDark);
+    theme.m_mainStyle = in.value("Main", theme.m_mainStyle);
     theme.m_commandEditor = in.value("CommandEditor", theme.m_commandEditor);
   }
   return std::make_shared<ApplicationTheme>(theme);
 }
 
-std::shared_ptr<ApplicationTheme> ApplicationTheme::createFromStyle(const std::filesystem::path& path, const std::string& name, ImGuiStyle style) {
+std::shared_ptr<ApplicationTheme> ApplicationTheme::createFromStyle(const std::string_view name, ImGuiStyle style, const bool dark, const bool scaled) {
   ApplicationTheme theme;
-  const float curveTess = style.CurveTessellationTol;
-  const float circTessMaxErr = style.CircleTessellationMaxError;
 
-  style.ScaleAllSizes(1.f / Settings::instance()->uiScale);
-  style.CurveTessellationTol = curveTess;
-  style.CircleTessellationMaxError = circTessMaxErr;
+  if (scaled) {
+    style.ScaleAllSizes(1.f / Settings::instance()->uiScale);
+  }
 
+  theme.m_isDark = dark;
   theme.m_themeName = name;
-  theme.m_style = style;
-  theme.serialize(path);
+  theme.m_mainStyle = style;
 
-  loadTheme(path);
   return std::make_shared<ApplicationTheme>(theme);
 }

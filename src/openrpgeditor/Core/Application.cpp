@@ -362,7 +362,7 @@ ExitStatus Application::run() {
 
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_NavEnableGamepad | ImGuiConfigFlags_DpiEnableScaleFonts |
                     ImGuiConfigFlags_DpiEnableScaleViewports;
-  io.ConfigWindowsMoveFromTitleBarOnly = true;
+  //io.ConfigWindowsMoveFromTitleBarOnly = true;
   io.ConfigInputTrickleEventQueue = false;
   // io.ConfigDockingWithShift = true;
   // io.ConfigDpiScaleFonts = true;

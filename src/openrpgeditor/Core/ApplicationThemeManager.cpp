@@ -31,10 +31,14 @@ void AssignDefaultGeometrySettings(ImGuiStyle& style) {
   // Additional styles
   style.FramePadding = ImVec2(4.0f, 3.f);
   style.ItemSpacing = ImVec2(4.0f, 3.f);
-  style.IndentSpacing = 10.0f;
+  style.IndentSpacing = 21.0f;
   style.ScrollbarSize = 12.f;
   style.CurveTessellationTol = 0.1f;
   style.CircleTessellationMaxError = 0.1f;
+  style.TreeLinesFlags = ImGuiTreeNodeFlags_DrawLinesToNodes;
+  style.TreeLinesSize = 2.f;
+  style.TreeLinesRounding = 12.f;
+  style.LayoutAlign = 0.f;
 }
 
 ImGuiStyle CreateLightTheme() {
@@ -199,10 +203,22 @@ void ApplicationThemeManager::applyMainTheme(const float uiScale) {
   }
   ImGui::GetStyle() = m_currentTheme->mainStyle();
   ImGui::GetStyle().ScaleAllSizes(uiScale);
+  ImGui::GetStyle().FontSizeBase = 12.f * uiScale;
+  ImGui::GetStyle().FontScaleMain = uiScale;
+  ImGui::GetStyle().FontScaleDpi = 1.f;
+  // This is a hack
+  ImGui::GetStyle()._MainScale = uiScale;
+  ImGui::GetStyle()._NextFrameFontSizeBase = 12.f * uiScale;
 }
 
 void ApplicationThemeManager::restoreDefaultTheme(const float uiScale) {
   m_currentTheme = m_isSystemDark ? m_defaultDarkTheme : m_defaultLightTheme;
   ImGui::GetStyle() = m_currentTheme->mainStyle();
   ImGui::GetStyle().ScaleAllSizes(uiScale);
+  ImGui::GetStyle().FontSizeBase = 12.f * uiScale;
+  ImGui::GetStyle().FontScaleMain = uiScale;
+  ImGui::GetStyle().FontScaleDpi = 1.f;
+  // This is a hack
+  ImGui::GetStyle()._MainScale = uiScale;
+  ImGui::GetStyle()._NextFrameFontSizeBase = 12.f * uiScale;
 }

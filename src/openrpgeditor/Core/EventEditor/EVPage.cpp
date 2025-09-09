@@ -80,11 +80,12 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
   m_tabItem = ImGui::TabBarGetCurrentTab(ImGui::GetCurrentTabBar());
   m_layoutIndex = m_tabItem->IndexDuringLayout;
   if (selected) {
-    if (ImGui::BeginChild("##event_page_settings_panel", {ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHI").x + (ImGui::GetStyle().FramePadding.x * 2) + ImGui::GetStyle().ItemSpacing.x, 0},
-                          ImGuiChildFlags_ResizeX, 0)) {
-      if (ImGui::LabelOverLineEdit("##event_page_name_edit", trNOOP("Page Name:"), m_pageNameBuf, 4096,
-                                   std::max(ImGui::GetContentRegionAvail().x - (ImGui::CalcTextSize(trNOOP("Clear Page")).x + ImGui::GetStyle().FramePadding.x * 4), ImGui::GetDPIScaledValue(200.f)),
-                                   trNOOP("Page names are an Open RPG Editor addition and will not be viewable in RPG Maker MV/MZ"), ImGuiInputTextFlags_None)) {
+    if (ImGui::BeginChild("##event_page_settings_panel", {ImGui::GetDPIScaledValue(160), 0}, ImGuiChildFlags_ResizeX, ImGuiWindowFlags_HorizontalScrollbar)) {
+      if (ImGui::LabelOverLineEdit(
+              "##event_page_name_edit", trNOOP("Page Name:"), m_pageNameBuf, 4096,
+              std::max(ImGui::GetContentRegionAvail().x - (ImGui::CalcTextSize(trNOOP("Clear Page")).x + ImGui::GetStyle().FramePadding.x * 4 + ImGui::GetStyle().ItemSpacing.x * 2),
+                       ImGui::GetDPIScaledValue(150.f)),
+              trNOOP("Page names are an Open RPG Editor addition and will not be viewable in RPG Maker MV/MZ"), ImGuiInputTextFlags_None)) {
         m_page->setName(m_pageNameBuf);
       }
       ImGui::SameLine();

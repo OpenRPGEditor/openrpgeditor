@@ -81,6 +81,7 @@ void GroupBox::end() {
     ImGui::PopClipRect();
     ImGui::SetCursorScreenPos(oldPos);
     ImGui::SetCursorPosX(oldX);
+    ImGui::Dummy({0, 0});
     m_wasHeaderDrawn = true;
   }
   ImGui::EndChild();

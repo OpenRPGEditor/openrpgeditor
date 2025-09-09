@@ -151,6 +151,8 @@ public:
   bool transientSettingsLoaded() const { return m_transientSettingsLoaded; }
   bool databaseValid() const { return m_database.has_value(); }
 
+  ImGuiID mapDockID() const { return m_middleDock; }
+
 private:
   void onActorsLoaded();
   void onClassesLoaded();
@@ -214,4 +216,9 @@ private:
   float m_toolbarButtonSize{};
   float m_toolbarSize = 32;
   static MainWindow* m_instance;
+  ImGuiID m_mainWindowGroup;
+  ImGuiID m_leftUpper;
+  ImGuiID m_leftLower;
+  ImGuiID m_middleDock;
+  ImGuiID m_rightDock;
 };

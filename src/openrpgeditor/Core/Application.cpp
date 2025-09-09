@@ -126,6 +126,7 @@ void Application::updateScale() {
 
 /* TODO: Convert the fallback style to a custom theme */
 void Application::updateGuiColors() {
+  return;
   ImGuiStyle& style = ImGui::GetStyle();
   ImVec4* colors = style.Colors;
 
@@ -285,7 +286,7 @@ void Application::updateFonts() {
   ImGuiIO& io{ImGui::GetIO()};
   // ImGUI font
   const float scale = std::max(SDL_GetWindowPixelDensity(m_window->getNativeWindow()), SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
-  constexpr float fontSize = 12.f;
+  const auto fontSize = 12.f * m_settings.uiScale;
   const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
   const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf").generic_string()};
   const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf").generic_string()};
@@ -318,7 +319,7 @@ void Application::updateFonts() {
   io.Fonts->Build();
 
   config = ImFontConfig();
-  config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_Bold;
+  config.FontLoaderFlags = ImGuiFreeTypeBuilderFlags_Bold;
   config.MergeMode = false;
   m_monoFont = io.Fonts->AddFontFromFileTTF(font_path_mono.c_str(), fontSize, &config, ranges.Data);
   io.Fonts->Build();
@@ -327,7 +328,6 @@ void Application::updateFonts() {
   io.Fonts->AddFontFromFileTTF(font_path_jetbrains.c_str(), fontSize, &config, ranges.Data);
   io.Fonts->AddFontFromFileTTF(font_path_awesome.c_str(), fontSize, &config, ranges.Data);
   io.Fonts->Build();
-  io.FontGlobalScale = m_settings.uiScale;
 }
 
 void Application::serializeSettings() {
@@ -365,6 +365,8 @@ ExitStatus Application::run() {
   io.ConfigWindowsMoveFromTitleBarOnly = true;
   io.ConfigInputTrickleEventQueue = false;
   // io.ConfigDockingWithShift = true;
+  // io.ConfigDpiScaleFonts = true;
+  // io.ConfigDpiScaleViewports = true;
   io.IniFilename = nullptr;
 
   //  Setup Platform/Renderer backends
@@ -376,6 +378,7 @@ ExitStatus Application::run() {
   updateFonts();
 
   m_running = true;
+  m_requestScaleUpdate = true;
 
   m_mainWindow.emplace();
   m_themeManager.initialize(std::filesystem::path(m_userConfigPath) / "themes", SDL_GetSystemTheme() == SDL_SYSTEM_THEME_DARK);
@@ -408,6 +411,7 @@ ExitStatus Application::run() {
     if (m_requestScaleUpdate) {
       updateFonts();
       m_themeManager.applyMainTheme(m_settings.uiScale);
+      m_requestScaleUpdate = false;
     }
     EditorPluginManager::instance()->initializeAllPlugins();
 
@@ -568,7 +572,7 @@ void Application::onEvent(const SDL_WindowEvent& event) {
   }
   case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
   case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED: {
-    updateScale();
+    m_requestScaleUpdate = true;
     break;
   }
   case SDL_EVENT_WINDOW_MAXIMIZED: {

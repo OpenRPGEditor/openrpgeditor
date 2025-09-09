@@ -155,7 +155,7 @@ void MainWindow::save() {
     if (std::ifstream file(projectPath); file.good()) {
       package = nlohmann::ordered_json::parse(file);
     }
-          
+
     if (!package.empty()) {
       package["name"] = m_database->system.gameTitle();
       if (package.contains("window") && package["window"].is_object()) {
@@ -239,37 +239,35 @@ std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
 }
 
 void MainWindow::setupDocking() {
-  ImGuiID mainWindowGroup = ImGui::GetID("MainWindowGroup");
+  m_mainWindowGroup = ImGui::GetID("MainWindowGroup");
 
   // Save off menu bar height for later.
   m_menuBarHeight = ImGui::GetCurrentWindow()->MenuBarHeight;
 
-  if (ImGui::DockBuilderGetNode(mainWindowGroup) == nullptr) {
-    ImVec2 workPos = ImGui::GetMainViewport()->WorkPos;
-    ImVec2 workSize = ImGui::GetMainViewport()->WorkSize;
+  if (ImGui::DockBuilderGetNode(m_mainWindowGroup) == nullptr) {
+    const auto workPos = ImGui::GetMainViewport()->WorkPos;
+    const auto workSize = ImGui::GetMainViewport()->WorkSize;
 
-    ImGui::DockBuilderRemoveNode(mainWindowGroup);
-    ImGui::DockBuilderAddNode(mainWindowGroup);
+    ImGui::DockBuilderRemoveNode(m_mainWindowGroup);
+    ImGui::DockBuilderAddNode(m_mainWindowGroup);
 
-    ImGui::DockBuilderSetNodeSize(mainWindowGroup, workSize);
-    ImGui::DockBuilderSetNodePos(mainWindowGroup, workPos);
-    ImGuiID upperDock;
-    ImGuiID lowerDock = ImGui::DockBuilderSplitNode(mainWindowGroup, ImGuiDir_Down, 0.10f, nullptr, &upperDock);
-    ImGuiID leftDock;
-    ImGuiID middleDock = ImGui::DockBuilderSplitNode(upperDock, ImGuiDir_Right, .90f, nullptr, &leftDock);
-    ImGuiID leftLowerDock = ImGui::DockBuilderSplitNode(leftDock, ImGuiDir_Down, 0.60f, nullptr, &leftDock);
-    ImGuiID rightDock = ImGui::DockBuilderSplitNode(middleDock, ImGuiDir_Right, .20f, nullptr, &middleDock);
+    ImGui::DockBuilderSetNodeSize(m_mainWindowGroup, workSize);
+    ImGui::DockBuilderSetNodePos(m_mainWindowGroup, workPos);
+    ImGui::DockBuilderSplitNode(m_mainWindowGroup, ImGuiDir_Right, .80f, &m_middleDock, &m_leftUpper);
+    ImGui::DockBuilderSplitNode(m_middleDock, ImGuiDir_Right, .20f, &m_rightDock, &m_middleDock);
+    ImGui::DockBuilderSplitNode(m_leftUpper, ImGuiDir_Down, 0.60f, &m_leftLower, &m_leftUpper);
     // 6. Add windows to each docking space:
-    ImGui::DockBuilderDockWindow("###events", leftDock);
-    ImGui::DockBuilderDockWindow("###tilesets", leftDock);
-    ImGui::DockBuilderDockWindow("###maps", leftLowerDock);
-    ImGui::DockBuilderDockWindow("###mapeditor", middleDock);
-    ImGui::DockBuilderDockWindow("###databaseeditor", middleDock);
-    ImGui::DockBuilderDockWindow("###mapproperties", rightDock);
-    ImGui::DockBuilderDockWindow("###filequeuestatus", lowerDock);
-    ImGui::DockBuilderFinish(mainWindowGroup);
+    ImGui::DockBuilderDockWindow("###events", m_leftUpper);
+    ImGui::DockBuilderDockWindow("###tilesets", m_leftUpper);
+    ImGui::DockBuilderDockWindow("###maps", m_leftLower);
+    ImGui::DockBuilderDockWindow("###mapeditor", m_middleDock);
+    ImGui::DockBuilderDockWindow("###databaseeditor", m_middleDock);
+    ImGui::DockBuilderDockWindow("###mapproperties", m_rightDock);
+    ImGui::DockBuilderFinish(m_mainWindowGroup);
+  } else {
+    ImGui::DockBuilderSetNodeSize(m_leftUpper, {1000, 1000});
   }
-  ImGui::DockSpace(mainWindowGroup);
+  ImGui::DockSpace(m_mainWindowGroup);
 }
 
 void MainWindow::drawToolbar() {
@@ -277,7 +275,7 @@ void MainWindow::drawToolbar() {
   m_toolbarButtonSize = ImGui::GetFrameHeightWithSpacing();
   const auto ButtonSize = ImVec2{m_toolbarButtonSize, m_toolbarButtonSize};
   const ImGuiViewport* viewport = ImGui::GetMainViewport();
-  ImGui::SetNextWindowPos(viewport->Pos + ImVec2{ImGui::GetStyle().FramePadding.x, viewport->Pos.y + m_menuBarHeight + ImGui::GetStyle().ItemSpacing.y});
+  ImGui::SetNextWindowPos(viewport->Pos + ImVec2{ImGui::GetStyle().FramePadding.x, viewport->Pos.y + m_menuBarHeight + ImGui::GetStyle().FramePadding.y * 3});
   ImGui::SetNextWindowSize(ImVec2{viewport->Size.x - ImGui::GetStyle().FramePadding.x * 2, m_toolbarSize + (ImGui::GetStyle().ItemSpacing.y * 2) + (ImGui::GetStyle().FramePadding.y * 2)});
   ImGui::SetNextWindowViewport(viewport->ID);
 

@@ -14,10 +14,8 @@ std::tuple<bool, bool> AudioEditor::draw(const std::string_view title, const std
   }
 
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 60) + (ImGui::GetStyle().FramePadding.x * 4), (ImGui::GetTextLineHeightWithSpacing() * 30) + (ImGui::GetStyle().FramePadding.y * 4)};
-  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
-  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
-  if (ImGui::BeginPopupModal(std::format("{}###{}", title, className).c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_AlwaysAutoResize)) {
+  ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(640, 800), ImGuiCond_Appearing);
+  if (ImGui::BeginPopupModal(std::format("{}###{}", title, className).c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar)) {
     ImGui::BeginHorizontal("##audioRenderer_layout", ImGui::GetContentRegionAvail());
     {
       if (ImGui::BeginTable("##bgm_audio_contents", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
@@ -80,9 +78,10 @@ std::tuple<bool, bool> AudioEditor::draw(const std::string_view title, const std
         ImGui::BeginHorizontal("##audioRenderer_play_stop", {-1, -1});
         {
           ImGui::Spring(0.5f);
-          if (const auto ret = ImGui::ButtonGroup("##audioRenderer_play_stop", {ICON_FA_PLAY, ICON_FA_STOP}); ret == 0 && m_selected > 0) {
+          if (ImGui::Button(ICON_FA_PLAY, {ImGui::GetFrameHeight(), ImGui::GetFrameHeight()})) {
             playAudio(m_audio.name().c_str());
-          } else if (ret == 1) {
+          }
+          if (ImGui::Button(ICON_FA_STOP, {ImGui::GetFrameHeight(), ImGui::GetFrameHeight()})) {
             stopAudio();
           }
           ImGui::Spring(0.5f);
@@ -91,19 +90,19 @@ std::tuple<bool, bool> AudioEditor::draw(const std::string_view title, const std
 
         ImGui::Separator();
         int volume = m_audio.volume();
-        if (ImGuiKnobs::KnobInt(trNOOP("Volume"), &volume, 0, 100, 1, "%d%%", ImGuiKnobVariant_WiperDot, ImGui::GetContentRegionAvail().x, ImGuiKnobFlags_AlwaysClamp)) {
+        if (ImGuiKnobs::KnobInt(trNOOP("Volume"), &volume, 0, 100, 1, "%d%%", ImGuiKnobVariant_WiperDot, ImGui::GetContentRegionAvail().x / 2, ImGuiKnobFlags_AlwaysClamp)) {
           m_audio.setVolume(volume);
           setVolume(m_audio.volume());
         }
         ImGui::Separator();
         int pitch = m_audio.pitch();
-        if (ImGuiKnobs::KnobInt(trNOOP("Pitch"), &pitch, 50, 150, 1, "%d%%", ImGuiKnobVariant_WiperDot, ImGui::GetContentRegionAvail().x, ImGuiKnobFlags_AlwaysClamp)) {
+        if (ImGuiKnobs::KnobInt(trNOOP("Pitch"), &pitch, 50, 150, 1, "%d%%", ImGuiKnobVariant_WiperDot, ImGui::GetContentRegionAvail().x / 2, ImGuiKnobFlags_AlwaysClamp)) {
           m_audio.setPitch(pitch);
           setPitch(m_audio.pitch());
         }
         ImGui::Separator();
         int pan = m_audio.pan();
-        if (ImGuiKnobs::KnobInt(trNOOP("Pan"), &pan, -100, 100, 1, "%d", ImGuiKnobVariant_WiperDot, ImGui::GetContentRegionAvail().x, ImGuiKnobFlags_AlwaysClamp)) {
+        if (ImGuiKnobs::KnobInt(trNOOP("Pan"), &pan, -100, 100, 1, "%d", ImGuiKnobVariant_WiperDot, ImGui::GetContentRegionAvail().x / 2, ImGuiKnobFlags_AlwaysClamp)) {
           m_audio.setPan(pan);
           setPanning(m_audio.pan());
         }

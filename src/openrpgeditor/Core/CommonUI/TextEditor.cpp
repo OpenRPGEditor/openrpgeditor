@@ -928,7 +928,7 @@ void TextEditor::Render() {
               g.PlatformImeData.WantVisible = true;
               g.PlatformImeData.InputPos = ImVec2(textScreenPos.x - 1.0f, textScreenPos.y - fontSize);
               g.PlatformImeData.InputLineHeight = fontSize;
-              g.PlatformImeViewport = window->Viewport->ID;
+              g.PlatformImeData.ViewportId = window->Viewport->ID;
             }
           }
         }
@@ -1036,7 +1036,7 @@ void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder) {
     ImGui::BeginChild(aTitle, aSize, aBorder ? ImGuiChildFlags_Borders : 0, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoMove);
 
   if (mHandleKeyboardInputs) {
-    ImGui::PushAllowKeyboardFocus(true);
+    ImGui::SetKeyboardFocusHere();
     HandleKeyboardInputs();
   }
 
@@ -1045,9 +1045,6 @@ void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder) {
 
   ColorizeInternal();
   Render();
-
-  if (mHandleKeyboardInputs)
-    ImGui::PopAllowKeyboardFocus();
 
   if (!mIgnoreImGuiChild)
     ImGui::EndChild();

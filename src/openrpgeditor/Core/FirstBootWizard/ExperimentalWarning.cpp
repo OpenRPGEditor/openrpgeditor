@@ -7,13 +7,13 @@
 void ExperimentalWarning::draw() {
   ImGui::BeginHorizontal("##wizard_experimental_page_warning", {-1, 0}, 0);
   {
-    ImGui::PushFontSize(ImGui::GetFontSize() * 2);
+    ImGui::PushFont(ImGui::GetFont(), ImGui::GetCurrentContext()->FontSizeBase * 2);
     ImGui::PushStyleColor(ImGuiCol_Text, {1, 0, 0, 1});
     ImGui::Spring(0.5f);
     ImGui::TextUnformatted(trNOOP("⚠ EXPERIMENTAL ⚠"));
     ImGui::Spring(0.5f);
     ImGui::PopStyleColor();
-    ImGui::PopFontSize();
+    ImGui::PopFont();
   }
   ImGui::EndHorizontal();
   ImGui::TextUnformatted(

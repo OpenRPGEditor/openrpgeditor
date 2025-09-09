@@ -667,8 +667,8 @@ void MapEditor::draw(const bool closeRequested) {
   }
 
   ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(320, 240 + ImGui::GetMinimumPanelHeight()), {FLT_MAX, FLT_MAX});
-  if (ImGui::Begin((tr("Map Editor") + "###mapeditor").c_str(), nullptr, ImGuiWindowFlags_NoScrollbar)) {
-    ImGui::BeginChild("##mapcontent_child", {ImGui::GetContentRegionAvail().x, std::max(ImGui::GetMinimumPanelHeight(), ImGui::GetContentRegionAvail().y - ImGui::GetMinimumPanelHeight())}, 0,
+  if (ImGui::Begin((tr("Map Editor") + "###mapeditor").c_str(), nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse)) {
+    ImGui::BeginChild("##mapcontent_child", {ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y - (ImGui::GetFrameHeightWithSpacing() * 1.5f)}, 0,
                       ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
     if (ImGui::IsWindowHovered()) {
       // Keep mapScale to a quarter step
@@ -713,7 +713,7 @@ void MapEditor::draw(const bool closeRequested) {
           ImGui::BeginDisabled(m_selectedEvent);
           if (ImGui::MenuItem(trNOOP("Insert..."))) {
             m_templateSaving = false;
-            m_templatePicker = TemplatePicker( Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+            m_templatePicker = TemplatePicker(Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
             m_templatePicker->setNoSelectionMeansAdd(false);
             m_templatePicker->setOpen(true);
           }
@@ -721,7 +721,7 @@ void MapEditor::draw(const bool closeRequested) {
           ImGui::BeginDisabled(m_selectedEvent == nullptr);
           if (ImGui::MenuItem(trNOOP("Save as..."))) {
             m_templateSaving = true;
-            m_templatePicker = TemplatePicker( Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+            m_templatePicker = TemplatePicker(Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
             m_templatePicker->setNoSelectionMeansAdd(true);
             m_templatePicker->setOpen(true);
           }
@@ -879,28 +879,32 @@ void MapEditor::draw(const bool closeRequested) {
     ImGui::BeginChild("##map_editor_bottom_panel", ImVec2{}, ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysUseWindowPadding,
                       ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
     {
-      // height = ImGui::GetCursorPosY() + ;
-      ImGui::BeginHorizontal("##map_editor_bottom_panel_layout", ImGui::GetContentRegionAvail());
+      ImGui::BeginVertical("##map_editor_bottom_panel_layout", ImGui::GetContentRegionAvail(), 0);
       {
-        ImGui::AlignTextToFramePadding();
         ImGui::Spring(0.5f);
-        ImGui::TextUnformatted(trNOOP("Scale:"));
-        if (ImGui::SliderFloat("##map_scale", &m_mapScale, 0.25f, 4.f, "%.02f")) {
-          m_mapScale = roundToNearestQuarter(m_mapScale);
-        }
-        // TL-NOTE: The braces denote the tile ID x and y positions, they get replaced at runtime with those values
-        std::string fmt = trFormat("Tile {}, ({}, {})", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0), m_tileCursor.tileX(), m_tileCursor.tileY());
-        if (map()) {
-          if (const auto ev =
-                  std::ranges::find_if(map()->events(), [&](const std::optional<Event>& e) { return e && e->id() != 0 && m_tileCursor.tileX() == e->x() && m_tileCursor.tileY() == e->y(); });
-              ev != map()->events().end()) {
-            fmt += std::format(" {} ({:03})", (*ev)->name(), (*ev)->id());
+        ImGui::BeginHorizontal("##map_editor_bottom_panel_inner_layout", {-1, 0}, 0);
+        {
+          ImGui::AlignTextToFramePadding();
+          ImGui::TextUnformatted(trNOOP("Scale:"));
+          if (ImGui::SliderFloat("##map_scale", &m_mapScale, 0.25f, 4.f, "%.02f")) {
+            m_mapScale = roundToNearestQuarter(m_mapScale);
           }
+          ImGui::Spring();
+          // TL-NOTE: The braces denote the tile ID x and y positions, they get replaced at runtime with those values
+          std::string fmt = trFormat("Tile {}, ({}, {})", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0), m_tileCursor.tileX(), m_tileCursor.tileY());
+          if (map()) {
+            if (const auto ev =
+                    std::ranges::find_if(map()->events(), [&](const std::optional<Event>& e) { return e && e->id() != 0 && m_tileCursor.tileX() == e->x() && m_tileCursor.tileY() == e->y(); });
+                ev != map()->events().end()) {
+              fmt += std::format(" {} ({:03})", (*ev)->name(), (*ev)->id());
+            }
+          }
+          ImGui::TextUnformatted(fmt.c_str());
         }
-        ImGui::TextUnformatted(fmt.c_str());
+        ImGui::EndHorizontal();
         ImGui::Spring(0.5f);
       }
-      ImGui::EndHorizontal();
+      ImGui::EndVertical();
     }
     ImGui::EndChild();
   }

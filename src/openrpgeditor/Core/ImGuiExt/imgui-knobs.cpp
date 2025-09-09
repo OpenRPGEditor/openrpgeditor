@@ -122,7 +122,7 @@ knob<DataType> knob_with_drag(const char* label, ImGuiDataType data_type, DataTy
 
   auto speed = _speed == 0 ? (v_max - v_min) / 250.f : _speed;
   ImGui::PushID(label);
-  auto width = size == 0 ? ImGui::GetTextLineHeight() * 4.0f : size * ImGui::GetIO().FontGlobalScale;
+  auto width = size == 0 ? ImGui::GetTextLineHeight() * 4.0f : size * ImGui::GetStyle().FontScaleMain;
   ImGui::PushItemWidth(width);
 
   ImGui::BeginGroup();

@@ -21,7 +21,7 @@ bool GroupBox::begin() {
   auto groupPos = ImGui::GetCursorScreenPos();
   m_groupStart = groupPos;
   if (!m_title.empty()) {
-    ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, ImGui::GetStyle().FramePadding.y * 0.5);
+    ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, ImGui::GetStyle().FramePadding.y * 0.70f);
     groupPos.y += (ImGui::GetFontSize() / 2) + ImGui::GetStyle().ItemSpacing.y;
     ImGui::SetCursorScreenPos(groupPos);
     groupPos.y += (ImGui::GetFrameHeight() / 2);
@@ -33,11 +33,34 @@ bool GroupBox::begin() {
                                 m_childFlags | ImGuiChildFlags_FrameStyle | ImGuiChildFlags_NavFlattened | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
                                 m_windowFlags);
   if (m_visible) {
+    auto clip = ImGui::GetCurrentWindow()->ClipRect;
+
+    if (!m_wasHeaderDrawn && !m_title.empty()) {
+      const auto labelId = ImGui::GetID(std::format("{}_checkbox", m_id).c_str());
+      ImGui::SetCursorScreenPos({m_groupStart.x + ImGui::GetStyle().FramePadding.x + ImGui::GetStyle().FrameBorderSize, m_groupStart.y});
+      clip.Min.y -= ImGui::GetFrameHeightWithSpacing() / 2;
+      ImGui::PushClipRect(clip.Min, clip.Max, false);
+      if (ImGui::BeginChild(labelId, {}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle | ImGuiChildFlags_NavFlattened,
+                            ImGuiWindowFlags_NoScrollbar | (!m_checked ? ImGuiWindowFlags_NoNav : 0))) {
+        // Group Header text
+        if (!m_checked) {
+          ImGui::TextUnformatted(m_title.c_str());
+        } else {
+          ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, ImGui::GetStyle().FramePadding.y * 0.70f);
+          m_clicked = ImGui::SizeableCheckbox(m_title.c_str(), m_checked, ImGui::GetFrameHeight() * 0.65f);
+          ImGui::PopStyleVar();
+        }
+        ImGui::EndChild();
+      }
+      ImGui::PopClipRect();
+      m_wasHeaderDrawn = true;
+    }
+
     if (!m_wasHeaderDrawn && !m_title.empty()) {
       auto size = ImGui::CalcItemSize(ImGui::CalcTextSize(m_title.c_str()), 0, 0);
       if (m_checked) {
-        ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, ImGui::GetStyle().FramePadding.y * 0.5);
-        size.x += (ImGui::GetFrameHeightWithSpacing() * 0.45f) * 2;
+        ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, ImGui::GetStyle().FramePadding.y * 0.70f);
+        size.x += (ImGui::GetFrameHeightWithSpacing() * 0.65f) * 2;
         ImGui::PopStyleVar();
       }
       ImGui::Dummy({size.x, size.y / 2});
@@ -51,38 +74,9 @@ bool GroupBox::begin() {
 void GroupBox::end() {
   assert(m_beginCalled && "GroupBox::begin not called");
 
-  ImRect clip;
-
   if (m_visible) {
     ImGui::EndDisabled();
-    clip = ImGui::GetCurrentWindow()->ClipRect;
     ImGui::EndChild();
-  }
-
-  if (m_visible && !m_wasHeaderDrawn && !m_title.empty()) {
-    const auto labelId = ImGui::GetID(std::format("{}_checkbox", m_id).c_str());
-    const auto oldPos = ImGui::GetCursorScreenPos();
-    const auto oldX = ImGui::GetCursorPosX();
-    ImGui::SetCursorScreenPos({m_groupStart.x + ImGui::GetStyle().FramePadding.x + ImGui::GetStyle().FrameBorderSize, m_groupStart.y});
-    clip.Min.y -= ImGui::GetFrameHeightWithSpacing() / 2;
-    ImGui::PushClipRect(clip.Min, clip.Max, false);
-    if (ImGui::BeginChild(labelId, {}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize | ImGuiChildFlags_FrameStyle | ImGuiChildFlags_NavFlattened,
-                          ImGuiWindowFlags_NoScrollbar | (!m_checked ? ImGuiWindowFlags_NoNav : 0))) {
-      // Group Header text
-      if (!m_checked) {
-        ImGui::TextUnformatted(m_title.c_str());
-      } else {
-        ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, ImGui::GetStyle().FramePadding.y * 0.5);
-        m_clicked = ImGui::SizeableCheckbox(m_title.c_str(), m_checked, ImGui::GetFrameHeight() * 0.45f);
-        ImGui::PopStyleVar();
-      }
-      ImGui::EndChild();
-    }
-    ImGui::PopClipRect();
-    ImGui::SetCursorScreenPos(oldPos);
-    ImGui::SetCursorPosX(oldX);
-    ImGui::Dummy({0, 0});
-    m_wasHeaderDrawn = true;
   }
   ImGui::EndChild();
   m_beginCalled = false;

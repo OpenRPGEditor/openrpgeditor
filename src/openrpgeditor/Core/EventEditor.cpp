@@ -27,7 +27,7 @@ std::tuple<bool, bool> EventEditor::draw() {
   }
   std::string title = std::format("{}###event_editor_{}_{}", trFormat("Event {} - ID {}", m_event->name(), m_event->id()), Database::instance()->mapInfos.currentMap()->id(), m_event->id());
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Once, {0.5f, 0.5f});
-  ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(720, 960), ImGuiCond_Once);
+  ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(960, 820), ImGuiCond_Once);
   ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(320, 240), {FLT_MAX, FLT_MAX});
   if (ImGui::Begin(title.c_str(), &m_open)) {
     ImGui::BeginGroup();

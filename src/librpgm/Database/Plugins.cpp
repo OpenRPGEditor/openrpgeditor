@@ -28,6 +28,7 @@ void from_json(const nlohmann::ordered_json& from, Plugin& plugin) {
 Plugins Plugins::load(std::string_view path) {
   std::ifstream file(path.data());
   Plugins ret;
+  return ret;
   if (file.is_open()) {
     std::string line;
     std::string content;

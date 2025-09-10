@@ -14,12 +14,12 @@ public:
   static RenderImage createRenderTexture(int width, int height);
   static void clearRect(RenderImage& painter, const RectF& rect);
 
-  [[nodiscard]] float realTileWidth() const { return static_cast<float>(m_tileWidth); }
-  [[nodiscard]] float realTileHeight() const { return static_cast<float>(m_tileHeight); }
-
-  [[nodiscard]] bool isTileDirty(int x, int y) const { return m_dirtyRect.contains({x, y}); }
-  void clearDirtyRect() { m_dirtyRect = Rect(); }
-  void setDirtyRect(const int x, const int y, const int width, const int height) { m_dirtyRect |= Rect(x, y, width, height); }
+  [[nodiscard]] float realTileWidth() const { return static_cast<float>(m_tileWidth) * m_scale; }
+  [[nodiscard]] float realTileHeight() const { return static_cast<float>(m_tileHeight) * m_scale; }
+  void setTileSize(const int width = 48, const int height = 48) {
+    m_tileWidth = width;
+    m_tileHeight = height;
+  }
 
   static Rect createRect(const Point& min, const Point& max) {
     Rect ret;
@@ -55,9 +55,8 @@ public:
   }
 
 private:
+  float m_scale = 1.f;
   int m_tileWidth{48};
   int m_tileHeight{48};
   bool m_tileSizeChanged{false};
-  RectF m_viewport;
-  Rect m_dirtyRect;
 };

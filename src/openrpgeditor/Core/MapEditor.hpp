@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Core/Graphics/CheckerboardTexture.hpp"
-#include "Core/MapEditor/MapEvent.hpp"
-#include "Core/MapEditor/MapRenderer.hpp"
 
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/EventEditor.hpp"
@@ -13,6 +11,7 @@
 #include "OREMath/Rect.hpp"
 #include "TemplateEditor/Dialog/TemplateName.hpp"
 #include "TemplateEditor/Dialog/TemplatesEvent.hpp"
+#include "Tilemap/TilemapView.hpp"
 
 struct MainWindow;
 struct Map;
@@ -65,8 +64,8 @@ struct MapEditor {
   const Event* movingEvent() const { return m_movingEvent; }
   void setMovingEvent(Event* event) { m_movingEvent = event; }
 
-  MapRenderer& mapRenderer() { return m_mapRenderer; }
-  const MapRenderer& mapRenderer() const { return m_mapRenderer; }
+  TilemapView& tilemapView() { return m_tilemapView; }
+  const TilemapView& tilemapView() const { return m_tilemapView; }
 
   bool prisonMode() const { return m_prisonMode; }
   void togglePrisonMode() { m_prisonMode ^= 1; }
@@ -91,13 +90,19 @@ struct MapEditor {
   bool isMapPointValid(const Point& point) const { return mapRect().contains(point); }
   bool isRegionMode() const { return m_regionMode; }
 
-  int readMapData(const Point& point, const int layer) const { return m_mapRenderer.tileId(point.x(), point.y(), layer); }
+  int readMapData(const Point& point, const int layer) const {
+    if (!map()) {
+      return 0;
+    }
+    return map()->tileAt(point.x(), point.y(), layer);
+  }
 
   void writeMapData(const Point& point, const int layer, const int tileId) {
     if (!map()) {
       return;
     }
     map()->setTileAt(tileId, point.x(), point.y(), layer);
+    m_tilemapView.setTileDirty(point.x(), point.y());
   }
 
   double adjustX(double x);
@@ -124,7 +129,7 @@ struct MapEditor {
     return mapRect().contains(x, y);
   }
 
-  bool isPassable(const double x, const double y, Direction d) const { return m_mapRenderer.isPassable(x, y, static_cast<int>(d)); }
+  bool isPassable(const double x, const double y, Direction d) const { return m_tilemapView.isPassable(x, y, static_cast<int>(d)); }
 
   std::vector<Event*> eventsAtNoThrough(int x, int y) {
     if (!map()) {
@@ -180,6 +185,8 @@ struct MapEditor {
     return map()->scrollType() == ScrollType::Loop_Vertically || map()->scrollType() == ScrollType::Loop_Both;
   }
 
+  void preRender() { m_tilemapView.render(); }
+
 private:
   void drawParallax(ImGuiWindow* win);
 
@@ -188,12 +195,6 @@ private:
   void handleEventDrag();
 
   void handleMouseInput(ImGuiWindow* win);
-
-  void renderLayerRects(ImGuiWindow* win, const MapRenderer::MapLayer& layer);
-
-  void renderLayerTex(ImGuiWindow* win, const MapRenderer::TileLayer& tLayer);
-
-  void renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer);
 
   void handleKeyboardShortcuts();
 
@@ -234,7 +235,6 @@ private:
 
   int m_tileId{};
   ParallaxTexture m_parallaxTexture;
-  MapRenderer m_mapRenderer;
   CheckerboardTexture m_checkeredBack;
   Event* m_movingEvent = nullptr;
   Event* m_selectedEvent = nullptr;
@@ -247,6 +247,7 @@ private:
   std::optional<TemplatesEvent> m_eventProperties;
   std::optional<TemplateName> m_templateNamePicker;
   std::optional<Event> m_templateEvent;
+  TilemapView m_tilemapView{48, 48};
 
   int m_movingEventX = -1;
   int m_movingEventY = -1;

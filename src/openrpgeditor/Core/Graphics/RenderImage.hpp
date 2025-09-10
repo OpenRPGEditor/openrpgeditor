@@ -25,8 +25,13 @@ public:
     Xor,
     Plus,
   };
+  enum class FilterMode {
+    Linear,
+    Nearest,
+  };
   RenderImage() = default;
-  RenderImage(int width, int height);
+  RenderImage(int width, int height, bool doubleBuffered = true);
+  ~RenderImage();
 
   void* get() const { return m_renderImage[m_currentBuffer]; }
   explicit operator ImTextureID() const { return reinterpret_cast<ImTextureID>(get()); }
@@ -44,6 +49,8 @@ public:
 
   explicit operator bool() const { return get() != nullptr; }
 
+  void setFilterMode(const FilterMode filterMode) { m_filterMode = filterMode; }
+
 private:
   void createTexture();
   void setCurrentCompositionMode() const;
@@ -59,4 +66,6 @@ private:
   int m_oldBlend = 0;
   void* m_oldTarget{nullptr};
   bool m_locked{false};
+  bool m_doubleBuffered{true};
+  FilterMode m_filterMode{FilterMode::Linear};
 };

@@ -360,13 +360,12 @@ ExitStatus Application::run() {
   ImPlot::CreateContext();
   ImGuiIO& io{ImGui::GetIO()};
 
-  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_NavEnableGamepad | ImGuiConfigFlags_DpiEnableScaleFonts |
-                    ImGuiConfigFlags_DpiEnableScaleViewports;
-  //io.ConfigWindowsMoveFromTitleBarOnly = true;
+  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_NavEnableGamepad;
+  // io.ConfigWindowsMoveFromTitleBarOnly = true;
   io.ConfigInputTrickleEventQueue = false;
   // io.ConfigDockingWithShift = true;
-  // io.ConfigDpiScaleFonts = true;
-  // io.ConfigDpiScaleViewports = true;
+  io.ConfigDpiScaleFonts = true;
+  io.ConfigDpiScaleViewports = true;
   io.IniFilename = nullptr;
 
   //  Setup Platform/Renderer backends
@@ -434,12 +433,16 @@ ExitStatus Application::run() {
       }
     }
 
+    if (m_mainWindow) {
+      m_mainWindow->preRender();
+    }
+
     // Start the Dear ImGui frame
     ImGui_ImplSDLRenderer3_NewFrame();
     ImGui_ImplSDL3_NewFrame();
 
     ImGui::NewFrame();
-    ImGui::GetCurrentContext()->CurrentDpiScale = std::max(SDL_GetWindowPixelDensity(m_window->getNativeWindow()), SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
+    // ImGui::GetCurrentContext()->CurrentDpiScale = std::max(SDL_GetWindowPixelDensity(m_window->getNativeWindow()), SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
 
     frameTime += ImGui::GetIO().DeltaTime;
     saveTime += ImGui::GetIO().DeltaTime;

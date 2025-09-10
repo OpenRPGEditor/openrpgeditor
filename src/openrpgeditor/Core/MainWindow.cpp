@@ -662,6 +662,7 @@ void MainWindow::drawCreateNewProjectPopup() {
   }
 }
 
+#if 0
 void MainWindow::drawTileInfo(MapRenderer::MapLayer& mapLayer, int z) {
   static constexpr std::array LayerNames{"A1"sv, "A2"sv, "A3"sv, "A4"sv, "A5"sv, "B"sv, "C"sv, "D"sv, "E"sv};
   for (const auto& layer : mapLayer.tileLayers) {
@@ -678,7 +679,7 @@ void MainWindow::drawTileInfo(MapRenderer::MapLayer& mapLayer, int z) {
         u1 /= layer.tex.width();
         v1 /= layer.tex.height();
         ImGui::Image(layer.tex, {static_cast<float>(m_mapEditor.tileSize()), static_cast<float>(m_mapEditor.tileSize())}, ImVec2{u0, v0}, ImVec2{u1, v1});
-        std::string info = trFormat("Sheet: {} ({}), ID: {}, x: {}, y: {}, z: {},  width: {}, height: {}, u: {}, v: {}", m_mapEditor.mapRenderer().tileset()->tilesetName(tile.tileSheet),
+        std::string info = trFormat("Sheet: {} ({}), ID: {}, x: {}, y: {}, z: {},  width: {}, height: {}, u: {}, v: {}", m_mapEditor.tilemapView().tileset()->tilesetName(tile.tileSheet),
                                     LayerNames[tile.tileSheet], tile.tileId, tile.x, tile.y, z, tile.tileWidth, tile.tileHeight, tile.u, tile.v);
         if (TileHelper::isAutoTile(tile.tileId)) {
           info += trFormat(
@@ -695,6 +696,7 @@ void MainWindow::drawTileInfo(MapRenderer::MapLayer& mapLayer, int z) {
     }
   }
 }
+#endif
 
 void MainWindow::drawTileDebugger() {
   if (!m_showTileDebug || !m_mapEditor.map()) {
@@ -702,21 +704,22 @@ void MainWindow::drawTileDebugger() {
   }
 
   if (ImGui::Begin(trNOOP("Tile Debug"), &m_showTileDebug)) {
-    if (ImGui::BeginTabBar("##tiledebugger")) {
-      if (ImGui::BeginTabItem(trNOOP("Lower"))) {
-        for (int z = 0; z < 6; ++z) {
-          drawTileInfo(m_mapEditor.mapRenderer().m_lowerLayers[z], z);
-        }
-        ImGui::EndTabItem();
-      }
-      if (ImGui::BeginTabItem(trNOOP("Upper"))) {
-        for (int z = 0; z < 6; ++z) {
-          drawTileInfo(m_mapEditor.mapRenderer().m_upperLayers[z], z);
-        }
-        ImGui::EndTabItem();
-      }
-      ImGui::EndTabBar();
-    }
+    // TODO: Rewrite
+    // if (ImGui::BeginTabBar("##tiledebugger")) {
+    //   if (ImGui::BeginTabItem(trNOOP("Lower"))) {
+    //     for (int z = 0; z < 6; ++z) {
+    //       drawTileInfo(m_mapEditor.mapRenderer().m_lowerLayers[z], z);
+    //     }
+    //     ImGui::EndTabItem();
+    //   }
+    //   if (ImGui::BeginTabItem(trNOOP("Upper"))) {
+    //     for (int z = 0; z < 6; ++z) {
+    //       drawTileInfo(m_mapEditor.mapRenderer().m_upperLayers[z], z);
+    //     }
+    //     ImGui::EndTabItem();
+    //   }
+    //   ImGui::EndTabBar();
+    // }
   }
   ImGui::End();
 }

@@ -23,8 +23,8 @@ std::tuple<bool, bool> SettingsDialog::draw() {
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(512, 500), ImGuiCond_Always);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings)) {
+  ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(512, 500), ImGuiCond_Appearing);
+  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::BeginVertical("##settings_dialog_main_layout", {-1, -1}, 0);
     {
       if (ImGui::BeginTabBar("##settings_tabbar")) {
@@ -32,7 +32,7 @@ std::tuple<bool, bool> SettingsDialog::draw() {
           if (ImGui::BeginTabItem(std::format("{}###{}", tab->title(), tab->id()).c_str())) {
             ImVec2 tmpSize = {-1, ImGui::GetDPIScaledValue(1.5f)};
             ImGui::ItemSize(tmpSize);
-            if (ImGui::BeginChild(std::format("##{}", tab->id()).c_str(), {-1, ImGui::GetContentRegionAvail().y - (ImGui::GetFrameHeightWithSpacing() + tmpSize.y * 4)}, 0,
+            if (ImGui::BeginChild(std::format("##{}", tab->id()).c_str(), {-1, 0}, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
                                   ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoBackground)) {
               tab->draw();
             }

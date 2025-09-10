@@ -417,8 +417,6 @@ add_library(
         Core/MapEditor/MapEvent.hpp
         Core/MapEditor/MapProperties.cpp
         Core/MapEditor/MapProperties.hpp
-        Core/MapEditor/MapRenderer.cpp
-        Core/MapEditor/MapRenderer.hpp
         Core/MapListView.cpp
         Core/MapListView.hpp
         Core/NWJSVersionManager.cpp

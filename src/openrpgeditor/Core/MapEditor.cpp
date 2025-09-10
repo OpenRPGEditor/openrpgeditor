@@ -3,6 +3,7 @@
 #include "Core/MainWindow.hpp"
 
 #include "Core/ImGuiExt/ImGuiNotify.hpp"
+#include "Core/MapEditor/MapEvent.hpp"
 #include "Core/Tilemap/TilePalette.hpp"
 
 #include "Database/EventParser.hpp"
@@ -11,6 +12,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "ImGuiExt/ImGuiUtils.hpp"
+#include "Tilemap/TilemapView.hpp"
 
 #include <clip.h>
 
@@ -59,7 +61,7 @@ void MapEditor::setMap(MapInfo* info) {
   if (m_mapInfo && m_mapInfo->mapLoaded()) {
     m_mapInfo->map()->parallaxNameModified().disconnect<&MapEditor::onParallaxNameModified>(this);
   }
-  m_mapRenderer.setMap(nullptr, nullptr);
+  m_tilemapView.setMap(nullptr);
   m_mapInfo = info;
   m_parallaxTexture = ParallaxTexture();
 }
@@ -237,6 +239,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     const auto& penData = m_parent->tilesetPicker().penData();
     int layer = -2;
     if (!penData.empty()) {
+      m_tilemapView.setTileDirty(0, 0);
       if (m_parent->tilesetPicker().isRegionMode()) {
         map()->setTileAt(penData[0][0], m_tileCursor.tileX(), m_tileCursor.tileY(), 5);
       } else {
@@ -547,68 +550,11 @@ bool MapEditor::isShadowingTile(const Point& p, const int layer) const { return 
 
 bool MapEditor::isSameKindTile(const Point& p, const int layer, const int tileId) const { return TileHelper::isSameKindTile(readMapData(p, layer), tileId); }
 
-void MapEditor::renderLayerRects(ImGuiWindow* win, const MapRenderer::MapLayer& layer) {
-  for (const auto& l : layer.tileLayers) {
-    for (const auto& tile : l.rects) {
-      if (!TileHelper::isAutoTile(tile.tileId)) {
-        continue;
-      }
-      const float x0 = tile.x;
-      const float x1 = tile.x + tile.tileWidth;
-      const float y0 = tile.y;
-      const float y1 = tile.y + tile.tileHeight;
-      win->DrawList->AddRect(win->ContentRegionRect.Min + (ImVec2{x0, y0} * m_mapScale), win->ContentRegionRect.Min + (ImVec2{x1, y1} * m_mapScale), 0xFF000000, 0, 0, 2.f);
-    }
-  }
-}
-
-void MapEditor::renderLayerTex(ImGuiWindow* win, const MapRenderer::TileLayer& tLayer) {
-  if (!tLayer.tex) {
-    return;
-  }
-
-  for (const TileRect& tile : tLayer.rects) {
-    const float x0 = tile.x;
-    const float x1 = tile.x + tile.tileWidth;
-    const float y0 = tile.y;
-    const float y1 = tile.y + tile.tileHeight;
-    const float u0 = tile.u / tLayer.tex.width();
-    const float u1 = (tile.u + tile.tileWidth) / tLayer.tex.width();
-    const float v0 = tile.v / tLayer.tex.height();
-    const float v1 = (tile.v + tile.tileHeight) / tLayer.tex.height();
-
-    const auto minPos = win->WorkRect.Min + (ImVec2{x0, y0} * m_mapScale);
-    const auto maxPos = win->WorkRect.Min + (ImVec2{x1, y1} * m_mapScale);
-    const float w = tile.tileWidth * m_mapScale;
-    const float h = tile.tileHeight * m_mapScale;
-    if (minPos.x < win->ClipRect.Min.x - w || maxPos.x > win->ClipRect.Max.x + w) {
-      continue;
-    }
-    if (minPos.y < win->ClipRect.Min.y - h || maxPos.y > win->ClipRect.Max.y + h) {
-      continue;
-    }
-    win->DrawList->AddImage(tLayer.tex, minPos, maxPos, ImVec2{u0, v0}, ImVec2{u1, v1});
-  }
-}
-
-void MapEditor::renderLayer(ImGuiWindow* win, const MapRenderer::MapLayer& layer) {
-  renderLayerTex(win, layer.tileLayers[0]); // A1
-  renderLayerTex(win, layer.tileLayers[1]); // A2
-  renderLayerTex(win, layer.tileLayers[2]); // A3
-  renderLayerTex(win, layer.tileLayers[3]); // A4
-  renderLayerTex(win, layer.tileLayers[4]); // A5
-  renderLayerTex(win, layer.tileLayers[5]); // B
-  renderLayerTex(win, layer.tileLayers[6]); // C
-  renderLayerTex(win, layer.tileLayers[7]); // D
-  renderLayerTex(win, layer.tileLayers[8]); // E
-  // renderLayerRects(win, layer);
-}
-
 void MapEditor::draw(const bool closeRequested) {
   if (!m_checkeredBack) {
     m_checkeredBack = CheckerboardTexture(64, 64, CellSizes::_48, 255, 220);
   }
-  if (m_mapInfo != nullptr && m_mapInfo->map() != nullptr && m_mapRenderer.map() != m_mapInfo->map()) {
+  if (m_mapInfo != nullptr && m_mapInfo->map() != nullptr && m_tilemapView.map() != m_mapInfo->map()) {
     if (m_mapInfo->id() == Database::instance()->system.startMapId()) {
       const auto& party = Database::instance()->system.partyMembers();
       const auto* actor = Database::instance()->actors.actor(!party.empty() ? party[0] : 1);
@@ -621,7 +567,7 @@ void MapEditor::draw(const bool closeRequested) {
       map()->setDummyEvent(image, Database::instance()->system.startX(), Database::instance()->system.startY());
     }
 
-    m_mapRenderer.setMap(m_mapInfo->map(), Database::instance()->tilesets.tileset(m_mapInfo->map()->tilesetId()));
+    m_tilemapView.setMap(map());
     m_tempMapWidth = m_mapInfo->map()->width();
     m_tempMapHeight = m_mapInfo->map()->height();
     m_initialScrollX = m_mapInfo->scrollX();
@@ -670,18 +616,18 @@ void MapEditor::draw(const bool closeRequested) {
   if (ImGui::Begin((tr("Map Editor") + "###mapeditor").c_str(), nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse)) {
     ImGui::BeginChild("##mapcontent_child", {ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y - (ImGui::GetFrameHeightWithSpacing() * 1.5f)}, 0,
                       ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoNav);
-    if (ImGui::IsWindowHovered()) {
-      // Keep mapScale to a quarter step
-      if (ImGui::IsKeyDown(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
-        m_mapScale += ImGui::GetIO().MouseWheel * 0.25f;
-        m_scaleChanged = true;
+    {
+      if (ImGui::IsWindowHovered()) {
+        // Keep mapScale to a quarter step
+        if (ImGui::IsKeyDown(ImGuiKey_MouseWheelY) && ImGui::IsKeyDown(ImGuiKey_LeftCtrl)) {
+          m_mapScale += ImGui::GetIO().MouseWheel * 0.25f;
+          m_scaleChanged = true;
+        }
+
+        m_mapScale = roundToNearestQuarter(m_mapScale);
+        m_mapScale = std::clamp(m_mapScale, .25f, 4.f);
       }
 
-      m_mapScale = roundToNearestQuarter(m_mapScale);
-      m_mapScale = std::clamp(m_mapScale, .25f, 4.f);
-    }
-
-    {
       // Keep mapScale to a quarter step
       if (m_scaleChanged) {
         m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system.tileSize(), ImGui::GetCurrentWindow());
@@ -786,43 +732,39 @@ void MapEditor::draw(const bool closeRequested) {
         m_mapInfo->setScrollX(ImGui::GetScrollX());
         m_mapInfo->setScrollY(ImGui::GetScrollY());
 
-        m_mapRenderer.update();
-
         drawParallax(win);
-
-        for (int z = 0; z < 4; ++z) {
-          renderLayer(win, m_mapRenderer.m_lowerLayers[z]);
-          if (m_prisonMode) {
-            renderLayer(win, m_mapRenderer.m_upperLayers[z]);
-          }
+        const auto size = ImVec2{map()->width() * m_tilemapView.realTileWidth(), map()->height() * m_tilemapView.realTileHeight()} * m_mapScale;
+        win->DrawList->AddImage(m_tilemapView.lowerTiles().get(), win->WorkRect.Min + ImVec2{0, 0}, win->WorkRect.Min + size);
+        if (prisonMode()) {
+          win->DrawList->AddImage(m_tilemapView.upperTiles().get(), win->WorkRect.Min + ImVec2{0, 0}, win->WorkRect.Min + size);
         }
 
-        for (int y = 0; y < map()->height(); ++y) {
-          for (int x = 0; x < map()->width(); ++x) {
-            auto tile = map()->data()[m_mapRenderer.tileIdFromCoords(x, y, 4)];
-            if (!tile) {
-              continue;
-            }
-            const float dx = x * tileSize();
-            const float dy = y * tileSize();
-            const int bits = *tile;
-            if (!(bits & 0x0F)) {
-              continue;
-            }
-
-            const float w1 = tileSize() / 2;
-            const float h1 = tileSize() / 2;
-            for (int i = 0; i < 4; ++i) {
-              if (!(bits & (1 << i))) {
-                continue;
-              }
-              const float dx1 = dx + ((i % 2) * w1);
-              const float dy1 = dy + (std::floor(i / 2) * h1);
-              win->DrawList->AddRectFilled(win->ContentRegionRect.Min + (ImVec2{dx1, dy1} * m_mapScale), win->ContentRegionRect.Min + (ImVec2{dx1 + w1, dy1 + h1} * m_mapScale), 0x7F000000);
-            }
-          }
-        }
-
+        // for (int y = 0; y < map()->height(); ++y) {
+        //   for (int x = 0; x < map()->width(); ++x) {
+        //     auto tile = map()->data()[m_mapRenderer.tileIdFromCoords(x, y, 4)];
+        //     if (!tile) {
+        //       continue;
+        //     }
+        //     const float dx = x * tileSize();
+        //     const float dy = y * tileSize();
+        //     const int bits = *tile;
+        //     if (!(bits & 0x0F)) {
+        //       continue;
+        //     }
+        //
+        //     const float w1 = tileSize() / 2;
+        //     const float h1 = tileSize() / 2;
+        //     for (int i = 0; i < 4; ++i) {
+        //       if (!(bits & (1 << i))) {
+        //         continue;
+        //       }
+        //       const float dx1 = dx + ((i % 2) * w1);
+        //       const float dy1 = dy + (std::floor(i / 2) * h1);
+        //       win->DrawList->AddRectFilled(win->ContentRegionRect.Min + (ImVec2{dx1, dy1} * m_mapScale), win->ContentRegionRect.Min + (ImVec2{dx1 + w1, dy1 + h1} * m_mapScale), 0x7F000000);
+        //     }
+        //   }
+        // }
+        //
         auto sortedEvents = prisonMode() ? map()->getSorted() : map()->getRenderSorted();
         for (const auto& event : sortedEvents) {
           if (!event) {
@@ -849,9 +791,7 @@ void MapEditor::draw(const bool closeRequested) {
         }
 
         if (!m_prisonMode) {
-          for (int z = 0; z < 6; z++) {
-            renderLayer(win, m_mapRenderer.m_upperLayers[z]);
-          }
+          win->DrawList->AddImage(m_tilemapView.upperTiles().get(), win->ContentRegionRect.Min + ImVec2{0, 0}, win->ContentRegionRect.Min + size);
         }
 
         if (m_prisonMode) {
@@ -891,7 +831,7 @@ void MapEditor::draw(const bool closeRequested) {
           }
           ImGui::Spring();
           // TL-NOTE: The braces denote the tile ID x and y positions, they get replaced at runtime with those values
-          std::string fmt = trFormat("Tile {}, ({}, {})", m_mapRenderer.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0), m_tileCursor.tileX(), m_tileCursor.tileY());
+          std::string fmt = trFormat("Tile {}, ({}, {})", m_tilemapView.tileId(m_tileCursor.tileX(), m_tileCursor.tileY(), 0), m_tileCursor.tileX(), m_tileCursor.tileY());
           if (map()) {
             if (const auto ev =
                     std::ranges::find_if(map()->events(), [&](const std::optional<Event>& e) { return e && e->id() != 0 && m_tileCursor.tileX() == e->x() && m_tileCursor.tileY() == e->y(); });

@@ -674,6 +674,20 @@ void Map::setTileAt(const int id, const int x, const int y, const int layer) {
   setModified();
 }
 
+int Map::tileAt(const int x, const int y, const int layer) const {
+  if (x < 0 || x >= m_width) {
+    return 0;
+  }
+  if (y < 0 || y >= m_height) {
+    return 0;
+  }
+  if (layer >= 6) {
+    return 0;
+  }
+  auto& tile = m_data[(layer * m_height + y) * m_width + x];
+  return tile ? *tile : 0;
+}
+
 const std::vector<std::optional<Event>>& Map::events() const { return m_events; }
 void Map::setEvents(const std::vector<std::optional<Event>>& value) {
   if (value == m_events) {

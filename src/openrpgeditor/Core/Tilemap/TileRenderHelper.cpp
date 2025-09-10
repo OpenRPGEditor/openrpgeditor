@@ -44,6 +44,10 @@ constexpr std::array<std::array<std::array<int, 2>, 4>, 48> WaterfallAutoTileTab
 }};
 } // namespace
 
+void TileRenderHelper::drawShadowTile(RenderImage& painter, const RectF& rect, const int flags) const {
+  painter.fillRect(rect, Color(0, 0, 0, 127));
+}
+
 void TileRenderHelper::drawTile(RenderImage& painter, const RectF& rect, const int tileId, const std::array<Texture, 9>& images, const bool isTable) const {
   if (!TileHelper::isVisibleTile(tileId)) {
     return;
@@ -174,6 +178,6 @@ void TileRenderHelper::drawRegionTile(RenderImage& painter, const RectF& rect, i
 void TileRenderHelper::clearRect(RenderImage& painter, const RectF& rect) const {
   const auto oldMode = painter.compositionMode();
   painter.setCompositionMode(RenderImage::CompositionMode::Clear);
-  painter.eraseRect(rect);
+  painter.fillRect(rect, Color(255, 255, 255, 255));
   painter.setCompositionMode(oldMode);
 }

@@ -19,12 +19,24 @@ void RenderImage::createTexture() {
   SDL_RenderPresent(renderer);
   SDL_SetRenderTarget(renderer, oldTarget);
 }
-RenderImage::RenderImage(const int width, const int height)
+RenderImage::RenderImage(const int width, const int height, const bool doubleBuffered)
 : m_pendingWidth(width)
-, m_pendingHeight(height) {
+, m_pendingHeight(height)
+, m_doubleBuffered(doubleBuffered) {
   for (int i = 0; i < 2; ++i) {
     m_width[i] = width;
     m_height[i] = height;
+  }
+
+  if (!m_doubleBuffered) {
+    m_workBuffer = m_currentBuffer = 0;
+  }
+}
+
+RenderImage::~RenderImage() {
+  for (auto& tex : m_renderImage) {
+    SDL_DestroyTexture(static_cast<SDL_Texture*>(tex));
+    tex = nullptr;
   }
 }
 
@@ -129,6 +141,13 @@ void RenderImage::unlock() {
     return;
   }
 
+  SDL_ScaleMode scaleMode;
+  const auto curScaleMode = m_filterMode == FilterMode::Nearest ? SDL_SCALEMODE_NEAREST : SDL_SCALEMODE_LINEAR;
+  SDL_GetTextureScaleMode(static_cast<SDL_Texture*>(m_renderImage[m_workBuffer]), &scaleMode);
+
+  if (scaleMode != curScaleMode) {
+    SDL_SetTextureScaleMode(static_cast<SDL_Texture*>(m_renderImage[m_workBuffer]), curScaleMode);
+  }
   SDL_SetRenderDrawBlendMode(renderer, static_cast<SDL_BlendMode>(m_oldBlend));
   SDL_SetRenderTarget(renderer, static_cast<SDL_Texture*>(m_oldTarget));
   m_locked = false;

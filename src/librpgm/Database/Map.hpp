@@ -160,6 +160,7 @@ public:
   const std::vector<std::optional<int>>& data() const;
   void setData(const std::vector<std::optional<int>>& value);
   void setTileAt(int id, int x, int y, int layer);
+  int tileAt(int x, int y, int layer) const;
 
   const std::vector<std::optional<Event>>& events() const;
   void setEvents(const std::vector<std::optional<Event>>& value);

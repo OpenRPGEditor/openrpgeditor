@@ -77,7 +77,9 @@ public:
   [[nodiscard]] const std::string& version() const { return m_database->projectVersion; }
 
   void draw(bool shuttingDown = false, bool closeRequested = false);
+#if 0
   void drawTileInfo(MapRenderer::MapLayer& mapLayer, int z);
+#endif
   void handleOpenFile();
   void handleCreateNewProject();
   void handleUndo();
@@ -152,6 +154,8 @@ public:
   bool databaseValid() const { return m_database.has_value(); }
 
   ImGuiID mapDockID() const { return m_middleDock; }
+
+  void preRender() { m_mapEditor.preRender(); }
 
 private:
   void onActorsLoaded();

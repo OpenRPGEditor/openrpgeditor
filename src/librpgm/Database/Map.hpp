@@ -216,6 +216,7 @@ public:
   Event* eventAt(int x, int y);
 
   std::vector<Event*> eventsAt(const int x, const int y);
+  const std::vector<const Event*> eventsAt(const int x, const int y) const;
 
   std::vector<Event*> eventsAtNoThrough(int x, int y);
   std::vector<Event*> eventsAtRenderPosNoThrough(int x, int y);

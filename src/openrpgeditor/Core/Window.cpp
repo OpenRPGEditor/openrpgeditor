@@ -19,8 +19,12 @@ Window::Window(const Settings& settings) {
   }
 
   m_title = settings.title;
-
+  // SDL currently has a bug on backends other than metal and openGL that causes graphical artifacting
+#if 0
   m_renderer = SDL_CreateRenderer(m_window, "direct3d,d3d11,metal,vulkan,opengl");
+#else
+  m_renderer = SDL_CreateRenderer(m_window, "metal,opengl");
+#endif
 
   if (m_renderer == nullptr) {
     APP_ERROR("Error creating SDL_Renderer!");

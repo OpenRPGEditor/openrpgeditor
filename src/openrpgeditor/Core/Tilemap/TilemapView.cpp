@@ -188,9 +188,27 @@ std::vector<std::optional<int>> TilemapView::tilesetFlags() const {
 }
 
 std::vector<int> TilemapView::allTiles(const int x, const int y) const {
-  // TODO: Add event tiles?
-  return layeredTiles(x, y);
+  if (!m_map) {
+    return {};
+  }
+
+  std::vector<int> ret = layeredTiles(x, y);
+  for (const auto eventsAt = m_map->eventsAt(x, y); const auto& event : eventsAt) {
+    if (!event || !event->editor()) {
+      continue;
+    }
+
+    const auto page = event->page(event->editor()->getSelectedPage());
+    if (!page) {
+      continue;
+    }
+    if (page->image().tileId() > 0) {
+      ret.emplace_back(page->image().tileId());
+    }
+  }
+  return ret;
 }
+
 bool TilemapView::checkPassage(const int x, const int y, const int bit) const {
   const auto& flags = tilesetFlags();
   const auto tiles = allTiles(x, y);

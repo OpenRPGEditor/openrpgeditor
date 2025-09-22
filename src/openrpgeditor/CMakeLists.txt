@@ -596,8 +596,6 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "CLANG")
     target_compile_options(${NAME} PRIVATE -Wno-deprecated-enum-enum-conversion)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(${NAME} PRIVATE /utf-8)
-    target_link_libraries(${NAME} PRIVATE ucrt)
-    target_link_options(${NAME} PRIVATE /FORCE)
 endif ()
 
 include(${PROJECT_SOURCE_DIR}/src/openrpgeditor/cmake/AppAssets.cmake)

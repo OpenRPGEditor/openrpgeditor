@@ -1070,6 +1070,16 @@ std::vector<Event*> Map::eventsAt(const int x, const int y) {
   return ret;
 }
 
+const std::vector<const Event*> Map::eventsAt(const int x, const int y) const {
+  std::vector<const Event*> ret;
+  std::ranges::for_each(m_events, [&ret, &x, &y](auto& ev) {
+    if (ev && ev->x() == x && ev->y() == y) {
+      ret.push_back(&ev.value());
+    }
+  });
+  return ret;
+}
+
 Event* Map::createNewEvent() {
   if (m_events.empty()) {
     m_events.emplace_back();

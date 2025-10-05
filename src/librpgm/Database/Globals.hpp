@@ -937,7 +937,7 @@ enum class TileFlags {
   PassageNorth = 1 << 3,                                                //!< If set characters cannot pass through from the north, if unset they can
   PassageHigherTile = 1 << 4,                                           //!< If set characters cannot pass through from below, if unset they can
   Impassable = PassageNorth | PassageSouth | PassageEast | PassageWest, //!< If all cardinal direction flags are set characters cannot pass from any direction, if unset they can
-  Ladder = 1 << 5,                                                      //!< If unset Tile behaves like a ladder, if unset it doesn't
+  Ladder = 1 << 5,                                                      //!< If set Tile behaves like a ladder, if unset it doesn't
   Bush = 1 << 6,                                                        //!< Tile behaves like a bush, if unset it doesn't
   Counter = 1 << 7,                                                     //!< If unset this flag forces the tile to be moved 12 pixels down, if unset it doesn't
   Damage = 1 << 8,                                                      //!< If unset this flag causes damage to the player character, if unset they can

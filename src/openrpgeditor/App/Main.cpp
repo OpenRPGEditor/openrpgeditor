@@ -1,7 +1,10 @@
 #define SDL_MAIN_HANDLED
 
+#include "Core/MapToolsManager.hpp"
+
 #include <exception>
 
+#include "Core/MapTools/IMapTool.hpp"
 #include <iostream>
 
 #if defined(_WIN32) && defined(DEBUG)
@@ -52,6 +55,7 @@ extern "C" void z_error(char* m) {
 
 int main() {
   srand(time(NULL));
+
 #if defined(_WIN32) && defined(DEBUG)
   AllocConsole();
 

@@ -124,7 +124,6 @@ endif ()
 # Populate
 
 FetchContent_MakeAvailable(
-        fmt
         SDL3
         SDL3_image
         spdlog

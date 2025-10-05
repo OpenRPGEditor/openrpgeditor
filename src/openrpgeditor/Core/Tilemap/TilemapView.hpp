@@ -37,6 +37,7 @@ public:
   [[nodiscard]] const RenderImage& sameAsCharacterEvents() const { return m_sameAsCharacterEvents; }
   [[nodiscard]] const RenderImage& aboveCharacterEvents() const { return m_belowCharacterEvents; }
   [[nodiscard]] const RenderImage& upperTiles() const { return m_upperTiles; }
+  [[nodiscard]] const RenderImage& debugTexture() const { return m_debugTexture; }
 
   [[nodiscard]] bool isTileDirty(int x, int y) const { return m_dirtyRect.contains({x, y}); }
   void setTileDirty(const int x, const int y) { m_dirtyRect |= Rect(x, y, 1, 1); }
@@ -72,6 +73,7 @@ private:
   RenderImage m_belowCharacterEvents;
   RenderImage m_sameAsCharacterEvents;
   RenderImage m_aboveCharacterEvents;
+  RenderImage m_debugTexture;
   Rect m_dirtyRect;
   std::vector<TileInfo> m_lowerTileIds;
   std::vector<TileInfo> m_upperTileIds;

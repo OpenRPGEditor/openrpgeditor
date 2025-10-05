@@ -12,7 +12,7 @@ Map* MapInfo::map(const bool loadSync) {
             m_map = std::make_unique<Map>(std::dynamic_pointer_cast<MapSerializer>(serializer)->data().clone());
             m_map->modified().connect<&MapInfo::onMapModified>(this);
             m_map->connectAllEvents();
-            // RPGM_INFO("Map{:03} loaded{}", id(), loadSync ? " (SYNC)" : "");
+            RPGM_INFO("Map{:03} loaded{}", id(), loadSync ? " (SYNC)" : "");
           },
           loadSync);
     }

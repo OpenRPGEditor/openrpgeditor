@@ -1345,6 +1345,9 @@ asCScriptFunction *asCReader::ReadFunction(bool &isNew, bool addToModule, bool a
 						// The program position must be adjusted to be in number of instructions
 						func->scriptData->tryCatchInfo[i].tryPos = SanityCheck(ReadEncodedUInt(), 1000000);
 						func->scriptData->tryCatchInfo[i].catchPos = SanityCheck(ReadEncodedUInt(), 1000000);
+						
+						// The stack position must be adjusted to be according to the size of the variables
+						func->scriptData->tryCatchInfo[i].stackSize = SanityCheck(ReadEncodedUInt(), 100000);
 					}
 				}
 
@@ -3277,6 +3280,7 @@ void asCReader::TranslateFunction(asCScriptFunction *func)
 	{
 		func->scriptData->tryCatchInfo[n].tryPos = instructionNbrToPos[func->scriptData->tryCatchInfo[n].tryPos];
 		func->scriptData->tryCatchInfo[n].catchPos = instructionNbrToPos[func->scriptData->tryCatchInfo[n].catchPos];
+		func->scriptData->tryCatchInfo[n].stackSize = AdjustStackPosition(func->scriptData->tryCatchInfo[n].stackSize);
 	}
 
 	// The program position (every even number) needs to be adjusted
@@ -3290,7 +3294,7 @@ void asCReader::TranslateFunction(asCScriptFunction *func)
 }
 
 asCReader::SListAdjuster::SListAdjuster(asCReader* rd, asDWORD* bc, asCObjectType* listType) :
-	reader(rd), allocMemBC(bc), maxOffset(0), patternType(listType), repeatCount(0), lastOffset(-1), nextOffset(0), nextTypeId(-1), patternNode(0)
+	reader(rd), allocMemBC(bc), maxOffset(0), patternType(listType), repeatCount(0), lastOffset(-1), nextOffset(0), patternNode(0), nextTypeId(-1)
 {
 	asASSERT( patternType && (patternType->flags & asOBJ_LIST_PATTERN) );
 
@@ -3827,6 +3831,8 @@ int asCReader::AdjustGetOffset(int offset, asCScriptFunction *func, asDWORD prog
 			currOffset++;
 #endif
 	}
+	if (offset > currOffset && calledFunc->IsVariadic())
+		currOffset++;
 	for( asUINT p = 0; p < calledFunc->parameterTypes.GetLength(); p++ )
 	{
 		if( offset <= currOffset ) break;
@@ -3853,6 +3859,38 @@ int asCReader::AdjustGetOffset(int offset, asCScriptFunction *func, asDWORD prog
 			// Enums or built-in primitives are passed by value
 			asASSERT( calledFunc->parameterTypes[p].IsPrimitive() );
 			currOffset += calledFunc->parameterTypes[p].GetSizeOnStackDWords();
+		}
+	}
+	if (offset > currOffset && calledFunc->IsVariadic())
+	{
+		asCDataType variadicType = calledFunc->parameterTypes[calledFunc->parameterTypes.GetLength() - 1];
+		for (;;)
+		{
+			if (offset <= currOffset) break;
+
+			if (!variadicType.IsPrimitive() ||
+				variadicType.IsReference())
+			{
+				// objects and references are passed by pointer
+				currOffset++;
+				if (currOffset > 0)
+					numPtrs++;
+#if AS_PTR_SIZE == 2
+				// For 64bit platforms it is necessary to increment the currOffset by one more
+				// DWORD since the stackDelta was counting the full 64bit size of the pointer
+				else if (stackDelta)
+					currOffset++;
+#endif
+				// The variable arg ? has an additional 32bit int with the typeid
+				if (variadicType.IsAnyType())
+					currOffset += 1;
+			}
+			else
+			{
+				// built-in primitives or enums are passed by value
+				asASSERT(variadicType.IsPrimitive());
+				currOffset += variadicType.GetSizeOnStackDWords();
+			}
 		}
 	}
 
@@ -4348,6 +4386,8 @@ void asCWriter::WriteFunction(asCScriptFunction* func)
 				// The program position must be adjusted to be in number of instructions
 				WriteEncodedInt64(bytecodeNbrByPos[func->scriptData->tryCatchInfo[i].tryPos]);
 				WriteEncodedInt64(bytecodeNbrByPos[func->scriptData->tryCatchInfo[i].catchPos]);
+				// The stack size must be adjusted to be according to variable sizes
+				WriteEncodedInt64(AdjustStackPosition(func->scriptData->tryCatchInfo[i].stackSize));
 			}
 		}
 
@@ -5051,6 +5091,8 @@ int asCWriter::AdjustGetOffset(int offset, asCScriptFunction *func, asDWORD prog
 		if( currOffset > 0 )
 			numPtrs++;
 	}
+	if (offset > currOffset && calledFunc->IsVariadic())
+		currOffset++;
 	for( asUINT p = 0; p < calledFunc->parameterTypes.GetLength(); p++ )
 	{
 		if( offset <= currOffset ) break;
@@ -5072,6 +5114,33 @@ int asCWriter::AdjustGetOffset(int offset, asCScriptFunction *func, asDWORD prog
 			// built-in primitives or enums are passed by value
 			asASSERT( calledFunc->parameterTypes[p].IsPrimitive() );
 			currOffset += calledFunc->parameterTypes[p].GetSizeOnStackDWords();
+		}
+	}
+	if (offset > currOffset && calledFunc->IsVariadic())
+	{
+		asCDataType variadicType = calledFunc->parameterTypes[calledFunc->parameterTypes.GetLength() - 1];
+		for (;;)
+		{
+			if (offset <= currOffset) break;
+
+			if(!variadicType.IsPrimitive() ||
+				variadicType.IsReference())
+			{
+				// objects and references are passed by pointer
+				currOffset += AS_PTR_SIZE;
+				if (currOffset > 0)
+					numPtrs++;
+
+				// The variable arg ? has an additional 32bit int with the typeid
+				if (variadicType.IsAnyType())
+					currOffset += 1;
+			}
+			else
+			{
+				// built-in primitives or enums are passed by value
+				asASSERT(variadicType.IsPrimitive());
+				currOffset += variadicType.GetSizeOnStackDWords();
+			}
 		}
 	}
 

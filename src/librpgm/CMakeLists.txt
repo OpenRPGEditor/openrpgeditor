@@ -163,8 +163,7 @@ target_include_directories(
         "${CMAKE_SOURCE_DIR}/extern/nano-signal-slot")
 target_compile_features(librpgm PRIVATE cxx_std_20)
 target_link_libraries(
-        librpgm PRIVATE nlohmann_json::nlohmann_json
-        fmt::fmt-header-only spdlog::spdlog_header_only PUBLIC magic_enum)
+        librpgm PRIVATE nlohmann_json::nlohmann_json spdlog::spdlog_header_only PUBLIC magic_enum)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(librpgm PRIVATE /utf-8)
 endif ()
@@ -404,7 +403,7 @@ target_compile_features(librpgmeventcmds PRIVATE cxx_std_20)
 target_link_libraries(
         librpgmeventcmds
         PRIVATE librpgm nlohmann_json::nlohmann_json
-        fmt::fmt-header-only spdlog::spdlog_header_only PUBLIC magic_enum)
+        spdlog::spdlog_header_only PUBLIC magic_enum)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(librpgmeventcmds PRIVATE /utf-8)
 endif ()
@@ -512,7 +511,7 @@ target_link_libraries(
         librpgmmovementroutecmds
         PUBLIC oremath
         PRIVATE librpgm nlohmann_json::nlohmann_json
-        fmt::fmt-header-only spdlog::spdlog_header_only PUBLIC magic_enum)
+        spdlog::spdlog_header_only PUBLIC magic_enum)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(librpgmmovementroutecmds PRIVATE /utf-8)
 endif ()

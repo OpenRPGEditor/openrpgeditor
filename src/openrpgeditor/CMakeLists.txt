@@ -528,6 +528,8 @@ add_library(
         Core/ApplicationTheme.hpp
         Core/ApplicationThemeManager.cpp
         Core/ApplicationThemeManager.hpp
+        Core/MapToolsManager.hpp
+        Core/MapToolsManager.cpp
 )
 
 target_include_directories(
@@ -546,7 +548,6 @@ target_compile_features(orecore PRIVATE cxx_std_23)
 target_link_libraries(
         orecore
         PRIVATE
-        fmt::fmt-header-only
         spdlog::spdlog_header_only
         PUBLIC
         # CommonUI
@@ -588,7 +589,8 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 endif ()
 
 add_executable(${NAME} WIN32 MACOSX_BUNDLE App/Main.cpp App/ProjectInfo.cpp
-        App/ProjectInfo.hpp)
+        App/ProjectInfo.hpp
+        Core/MapTools/IMapTool.hpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GCC")
     target_compile_options(${NAME} PRIVATE -Wno-deprecated-enum-enum-conversion)
@@ -616,7 +618,6 @@ target_compile_features(${NAME} PRIVATE cxx_std_23)
 target_link_libraries(
         ${NAME}
         PRIVATE
-        fmt::fmt-header-only
         spdlog::spdlog_header_only
         PUBLIC
         #       CommonUI

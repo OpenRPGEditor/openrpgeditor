@@ -5,7 +5,7 @@
 class Size {
 public:
   Size() = default;
-  Size(const int width, const int height)
+  constexpr Size(const int width, const int height)
   : mWidth(width)
   , mHeight(height) {}
   explicit Size(const ImVec2& size)

@@ -24,21 +24,25 @@
 
 BEGIN_AS_NAMESPACE
 
+#ifdef _WIN32
+
 class CScriptSocket
 {
 public:
 	CScriptSocket();
 
+	// Memory management
 	void AddRef() const;
 	void Release() const;
 
+	// Methods
 	int            Listen(asWORD port);
 	int            Close();
 	CScriptSocket* Accept(asINT64 timeoutMicrosec = 0);
 	int            Connect(asUINT ipv4Address, asWORD port);
 	int            Send(const std::string& data);
 	std::string    Receive(asINT64 timeoutMicrosec = 0);
-
+	bool           IsActive() const;
 
 protected:
 	~CScriptSocket();
@@ -50,6 +54,8 @@ protected:
 	int m_socket;
 	bool m_isListening;
 };
+
+#endif
 
 int RegisterScriptSocket(asIScriptEngine* engine);
 

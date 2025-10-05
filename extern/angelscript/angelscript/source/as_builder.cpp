@@ -907,8 +907,8 @@ void asCBuilder::RegisterNamespaceVisibility(asCScriptNode* node, asCScriptCode*
 		node = next;
 	}
 }
+#endif
 
-// TODO: using: review
 void asCBuilder::AddVisibleNamespaces(asSNameSpace *ns, const asCArray<asSNameSpace*>& visited, asCArray<asSNameSpace*>& pending)
 {
 	asSMapNode<asSNameSpace*, asCArray<asSNameSpace*>>* cursor = 0;
@@ -929,7 +929,6 @@ void asCBuilder::AddVisibleNamespaces(asSNameSpace *ns, const asCArray<asSNameSp
 	}
 }
 
-// TODO: using: review
 asSNameSpace *asCBuilder::FindNextVisibleNamespace(const asCArray<asSNameSpace*>& visited, asCArray<asSNameSpace*>& pending, asSNameSpace *parentNs, bool* checkAmbiguous)
 {
 	// First iterate through all pending namespaces that have been included with 'using namespace'
@@ -954,6 +953,7 @@ asSNameSpace *asCBuilder::FindNextVisibleNamespace(const asCArray<asSNameSpace*>
 	return nextNs;
 }
 
+#ifndef AS_NO_COMPILER
 void asCBuilder::RegisterNonTypesFromScript(asCScriptNode *node, asCScriptCode *script, asSNameSpace *ns)
 {
 	node = node->firstChild;
@@ -5626,7 +5626,7 @@ int asCBuilder::RegisterScriptFunction(asCScriptNode *node, asCScriptCode *file,
 					defaultArgs[n] = asNEW(asCString)(*defaultArgs[n]);
 
 			asCDataType dt = asCDataType::CreateObjectHandle(objType, false);
-			module->AddScriptFunction(file->idx, engine->scriptFunctions[funcId]->scriptData->declaredAt, factoryId, name, dt, parameterTypes, parameterNames, inOutFlags, defaultArgs, false, 0, false, funcTraits);
+			module->AddScriptFunction(file->idx, engine->scriptFunctions[funcId]->scriptData->declaredAt, factoryId, name, dt, parameterTypes, parameterNames, inOutFlags, defaultArgs, false, 0, false, funcTraits, objType->nameSpace);
 
 			// If the object is shared, then the factory must also be marked as shared
 			if( objType->flags & asOBJ_SHARED )
@@ -6123,8 +6123,10 @@ bool asCBuilder::FindObjectTypeOrMixinInNsHierarchy(const asCString& name, asSNa
 			if (!checkAmbiguousSymbols)
 			{
 				objType = GetObjectType(name.AddressOf(), ns);
+#ifndef AS_NO_COMPILER
 				if (objType == 0 && outMixin)
 					mixin = GetMixinClass(name.AddressOf(), ns);
+#endif
 
 				if (objType || mixin)
 					break;
@@ -6133,18 +6135,23 @@ bool asCBuilder::FindObjectTypeOrMixinInNsHierarchy(const asCString& name, asSNa
 			{
 				asCObjectType* ot = GetObjectType(name.AddressOf(), ns);
 				sMixinClass* m = 0;
+#ifndef AS_NO_COMPILER
 				if (ot == 0 && outMixin)
 					m = GetMixinClass(name.AddressOf(), ns);
-				if ((objType || mixin) && (ot || m))
+#endif
+				if (ot || m)
 				{
-					asCString msg;
-					msg.Format(TXT_AMBIGUOUS_SYMBOL_NAME_s, name.AddressOf());
-					WriteError(msg, script, errNode);
-					return false;
-				}
+					if (objType || mixin)
+					{
+						asCString msg;
+						msg.Format(TXT_AMBIGUOUS_SYMBOL_NAME_s, name.AddressOf());
+						WriteError(msg, script, errNode);
+						return false;
+					}
 
-				objType = ot;
-				mixin = m;
+					objType = ot;
+					mixin = m;
+				}
 			}
 		}
 

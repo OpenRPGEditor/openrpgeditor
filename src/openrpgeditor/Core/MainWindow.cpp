@@ -770,12 +770,43 @@ void MainWindow::handleRedo() {
     m_undoStack.push(cmd);
   }
 }
+
+static std::string drawSubMenuItems(int currentMenu, const std::vector<std::vector<std::pair<std::string, std::string>>>& menus) {
+  if (currentMenu >= menus.size()) {
+    return {};
+  }
+
+  std::string loadFilepath;
+
+  for (const std::vector<std::pair<std::string, std::string>>& menu = menus[currentMenu]; const auto& [path, title] : menu) {
+    ImGui::PushID(path.c_str());
+    if (ImGui::MenuItem(title.c_str())) {
+      loadFilepath = path;
+    }
+    ImGui::PopID();
+    ImGui::SetItemTooltip("%s", path.c_str());
+  }
+  if (!loadFilepath.empty()) {
+    return loadFilepath;
+  }
+  ++currentMenu;
+  if (currentMenu >= menus.size() || menus[currentMenu].empty()) {
+    return loadFilepath;
+  }
+  if (ImGui::BeginMenu(std::format("##mru_menu_{}", currentMenu).c_str())) {
+    loadFilepath = drawSubMenuItems(currentMenu, menus);
+    ImGui::EndMenu();
+  }
+  return loadFilepath;
+}
+
+static constexpr auto kMaxItemsPerMRUMenu = 5;
+
 void MainWindow::drawMenu() {
   std::string loadFilepath;
   if (ImGui::BeginMainMenuBar()) {
     if (ImGui::BeginMenu(trNOOP("File"))) {
       if (ImGui::MenuItemEx(trNOOP("New Project..."), ICON_FA_FILE, "Ctrl+N")) {
-
         handleCreateNewProject();
       }
       if (ImGui::MenuItemEx(trNOOP("Open Project..."), ICON_FA_FOLDER, "Ctrl+O")) {
@@ -788,6 +819,7 @@ void MainWindow::drawMenu() {
         save();
       }
       ImGui::Separator();
+
       if (ImGui::BeginMenuEx(trNOOP("Recent Projects"), "", !Settings::instance()->mru.empty())) {
         if (ImGui::MenuItemNoCheck(tr("Clear").c_str(), nullptr, ICON_FA_DELETE_LEFT)) {
           Settings::instance()->mru.clear();
@@ -795,16 +827,16 @@ void MainWindow::drawMenu() {
         if (!Settings::instance()->mru.empty()) {
           ImGui::Separator();
         }
-        for (const auto& s : Settings::instance()->mru) {
-          ImGui::PushID(s.first.c_str());
-          if (ImGui::MenuItem(s.second.c_str())) {
-            loadFilepath = s.first;
+        std::vector<std::vector<std::pair<std::string, std::string>>> menus;
+        menus.emplace_back();
+        for (int currentMenu = 0; const auto& s : Settings::instance()->mru) {
+          if (menus[currentMenu].size() >= kMaxItemsPerMRUMenu) {
+            menus.emplace_back();
+            ++currentMenu;
           }
-          ImGui::PopID();
-          if (ImGui::IsItemHovered()) {
-            ImGui::SetTooltip("%s", s.first.c_str());
-          }
+          menus[currentMenu].emplace_back(s);
         }
+        drawSubMenuItems(0, menus);
         ImGui::EndMenu();
       }
       ImGui::Separator();

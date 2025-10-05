@@ -685,7 +685,7 @@ int Map::tileAt(const int x, const int y, const int layer) const {
     return 0;
   }
   auto& tile = m_data[(layer * m_height + y) * m_width + x];
-  return tile ? *tile : 0;
+  return tile.value_or(0);
 }
 
 const std::vector<std::optional<Event>>& Map::events() const { return m_events; }

@@ -37,6 +37,12 @@
 
 #include <math.h> // fmodf() pow()
 
+#ifdef _MSC_VER
+// Apparently a bug in MSVC (or perhaps Windows SDK) caused use HUGE_VALF to issue a warning
+// ref: https://developercommunity.visualstudio.com/t/C4756-related-issues-in-VS-2022/10697767
+#pragma warning(disable:4756)
+#endif
+
 #include "as_config.h"
 
 #ifndef AS_NO_COMPILER
@@ -5367,9 +5373,8 @@ void asCCompiler::CompileForEachStatement(asCScriptNode* node, asCByteCode* bc)
 					int retTid = engine->scriptFunctions[opForValueIdN]->GetReturnTypeId(&retFlags);
 
 					bool isConst = itemDataTypes[i].IsReadOnly() || (retFlags & asTM_CONST);
-					bool isHandle = itemDataTypes[i].IsObjectHandle() ;
 					asCDataType dt = asCDataType::CreateById(engine, retTid, isConst);
-					dt.MakeHandle(isHandle);
+					dt.MakeHandle(true); // Always use handle for auto if possible
 					itemDataTypes[i] = dt;
 				}
 			}
@@ -8625,7 +8630,7 @@ asUINT asCCompiler::ImplicitConvObjectToObject(asCExprContext *ctx, const asCDat
 				// correct, so nothing should be done other than remove the mark as reference.
 				// For types allocated on the heap, it is necessary to dereference the pointer
 				// that is currently on the stack
-				if( IsVariableOnHeap(ctx->type.stackOffset) )
+				if( !(ctx->type.isVariable || ctx->type.isTemporary) || IsVariableOnHeap(ctx->type.stackOffset) )
 					Dereference(ctx, generateCode);
 				else
 					ctx->type.dataType.MakeReference(false);
@@ -12626,9 +12631,12 @@ int asCCompiler::CompileConstructCall(asCScriptNode *node, asCExprContext *ctx)
 
 			if( r == asSUCCESS )
 			{
-				asCByteCode objBC(engine);
-
 				PrepareFunctionCall(funcs[0], &ctx->bc, args);
+				if (builder->GetFunctionDescription(funcs[0])->IsVariadic())
+				{
+					// Argument count
+					ctx->bc.InstrDWORD(asBC_PshC4, (asDWORD)args.GetLength());
+				}
 
 				MoveArgsToStack(funcs[0], &ctx->bc, args, false);
 
@@ -14799,70 +14807,86 @@ int asCCompiler::MatchArgument(asCScriptFunction *desc, const asCExprContext *ar
 		return 0;
 	}
 
+	// For &out references, ensure no match is given for impossible conversion from param type to arg type
+	// The cost for this conversion is not used, as we still want to use the same order of prioritization as for input arguments
+	if (desc->parameterTypes[paramNum].IsReference() && desc->inOutFlags[paramNum] == asTM_OUTREF && 
+		desc->parameterTypes[paramNum].GetTokenType() != ttQuestion &&
+		!argExpr->type.IsNullConstant() && !argExpr->IsVoidExpression() )
+	{
+		// For out references that are not vartype, the type of argument must be convertible to the type of the argument
+		asCExprContext ti(engine);
+		asCExprValue type;
+		type.dataType = desc->parameterTypes[paramNum];
+		ti.type = type;
+		ti.exprNode = argExpr->exprNode;
+
+		ImplicitConversion(&ti, argExpr->type.dataType, 0, asIC_IMPLICIT_CONV, false, allowObjectConstruct);
+		if (!argExpr->type.dataType.IsEqualExceptRef(ti.type.dataType))
+			return -1;
+	}
+
 	// Can we make the match by implicit conversion?
+	int cost = -1;
 	asCExprContext ti(engine);
 	ti.type = argExpr->type;
 	ti.methodName = argExpr->methodName;
 	ti.enumValue = argExpr->enumValue;
 	ti.exprNode = argExpr->exprNode;
-	if( argExpr->type.dataType.IsPrimitive() )
+	if (argExpr->type.dataType.IsPrimitive())
 		ti.type.dataType.MakeReference(false);
 
 	// Don't allow the implicit conversion to make a copy in case the argument is expecting a reference to the true value
 	if (desc->parameterTypes[paramNum].IsReference() && desc->inOutFlags[paramNum] == asTM_INOUTREF)
 		allowObjectConstruct = false;
 
-	int cost = ImplicitConversion(&ti, desc->parameterTypes[paramNum], 0, asIC_IMPLICIT_CONV, false, allowObjectConstruct);
+	cost = ImplicitConversion(&ti, desc->parameterTypes[paramNum], 0, asIC_IMPLICIT_CONV, false, allowObjectConstruct);
+	if (!desc->parameterTypes[paramNum].IsEqualExceptRef(ti.type.dataType))
+		return -1;
 
 	// If the function parameter is an inout-reference then it must not be possible to call the
 	// function with an incorrect argument type, even though the type can normally be converted.
-	if( desc->parameterTypes[paramNum].IsReference() &&
+	if (desc->parameterTypes[paramNum].IsReference() &&
 		desc->inOutFlags[paramNum] == asTM_INOUTREF &&
-		desc->parameterTypes[paramNum].GetTokenType() != ttQuestion )
+		desc->parameterTypes[paramNum].GetTokenType() != ttQuestion)
 	{
 		// Observe, that the below checks are only necessary for when unsafe references have been
 		// enabled by the application. Without this the &inout reference form wouldn't be allowed
 		// for these value types.
 
 		// Don't allow a primitive to be converted to a reference of another primitive type
-		if( desc->parameterTypes[paramNum].IsPrimitive() &&
-			desc->parameterTypes[paramNum].GetTokenType() != argExpr->type.dataType.GetTokenType() )
+		if (desc->parameterTypes[paramNum].IsPrimitive() &&
+			desc->parameterTypes[paramNum].GetTokenType() != argExpr->type.dataType.GetTokenType())
 		{
-			asASSERT( engine->ep.allowUnsafeReferences );
+			asASSERT(engine->ep.allowUnsafeReferences);
 			return -1;
 		}
 
 		// Don't allow an enum to be converted to a reference of another enum type
-		if( desc->parameterTypes[paramNum].IsEnumType() &&
-			desc->parameterTypes[paramNum].GetTypeInfo() != argExpr->type.dataType.GetTypeInfo() )
+		if (desc->parameterTypes[paramNum].IsEnumType() &&
+			desc->parameterTypes[paramNum].GetTypeInfo() != argExpr->type.dataType.GetTypeInfo())
 		{
-			asASSERT( engine->ep.allowUnsafeReferences );
+			asASSERT(engine->ep.allowUnsafeReferences);
 			return -1;
 		}
 
 		// Don't allow a non-handle expression to be converted to a reference to a handle
-		if( desc->parameterTypes[paramNum].IsObjectHandle() &&
-			!argExpr->type.dataType.IsObjectHandle() )
+		if (desc->parameterTypes[paramNum].IsObjectHandle() &&
+			!argExpr->type.dataType.IsObjectHandle())
 		{
-			asASSERT( engine->ep.allowUnsafeReferences );
+			asASSERT(engine->ep.allowUnsafeReferences);
 			return -1;
 		}
 
 		// Don't allow a value type to be converted
-		if( (desc->parameterTypes[paramNum].GetTypeInfo() && (desc->parameterTypes[paramNum].GetTypeInfo()->GetFlags() & asOBJ_VALUE)) &&
-			(desc->parameterTypes[paramNum].GetTypeInfo() != argExpr->type.dataType.GetTypeInfo()) )
+		if ((desc->parameterTypes[paramNum].GetTypeInfo() && (desc->parameterTypes[paramNum].GetTypeInfo()->GetFlags() & asOBJ_VALUE)) &&
+			(desc->parameterTypes[paramNum].GetTypeInfo() != argExpr->type.dataType.GetTypeInfo()))
 		{
-			asASSERT( engine->ep.allowUnsafeReferences );
+			asASSERT(engine->ep.allowUnsafeReferences);
 			return -1;
 		}
 	}
 
-	// How well does the argument match the function parameter?
-	if( desc->parameterTypes[paramNum].IsEqualExceptRef(ti.type.dataType) )
-		return cost;
-
-	// No match is available
-	return -1;
+	return cost;
 }
 
 int asCCompiler::PrepareArgument2(asCExprContext *ctx, asCExprContext *arg, asCDataType *paramType, bool isFunction, int refType, bool isMakingCopy)
@@ -15324,13 +15348,14 @@ int asCCompiler::MakeFunctionCall(asCExprContext *ctx, int funcId, asCObjectType
 	objBC.AddCode(&ctx->bc);
 
 	int r = PrepareFunctionCall(funcId, &ctx->bc, args);
+	if (r < 0)
+		return r;
+
 	if (descr->IsVariadic())
 	{
 		// Argument count
 		ctx->bc.InstrDWORD(asBC_PshC4, (asDWORD)args.GetLength());
 	}
-	if (r < 0)
-		return r;
 
 	// Verify if any of the args variable offsets are used in the other code.
 	// If they are exchange the offset for a new one
@@ -16099,8 +16124,7 @@ void asCCompiler::CompileMathOperator(asCScriptNode *node, asCExprContext *lctx,
 			else if( op == ttStarStar )
 			{
 				v = powf(lctx->type.GetConstantF(), rctx->type.GetConstantF());
-
-				if( v == HUGE_VAL )
+				if( v == HUGE_VALF || isinf(v) )
 					Error(TXT_POW_OVERFLOW, node);
 			}
 
@@ -16116,7 +16140,7 @@ void asCCompiler::CompileMathOperator(asCScriptNode *node, asCExprContext *lctx,
 				if( op == ttStarStar || op == ttPowAssign )
 				{
 					v = pow(lctx->type.GetConstantD(), int(rctx->type.GetConstantDW()));
-					if( v == HUGE_VAL )
+					if( v == HUGE_VAL || isinf(v) )
 						Error(TXT_POW_OVERFLOW, node);
 				}
 				else
@@ -16147,7 +16171,7 @@ void asCCompiler::CompileMathOperator(asCScriptNode *node, asCExprContext *lctx,
 				else if( op == ttStarStar )
 				{
 					v = pow(lctx->type.GetConstantD(), rctx->type.GetConstantD());
-					if( v == HUGE_VAL )
+					if( v == HUGE_VAL || isinf(v))
 						Error(TXT_POW_OVERFLOW, node);
 				}
 			}

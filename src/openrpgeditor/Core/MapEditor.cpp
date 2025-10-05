@@ -110,16 +110,16 @@ void MapEditor::drawParallax(ImGuiWindow* win) {
 }
 
 void MapEditor::drawGrid(ImGuiWindow* win) {
-  // for (int y = tileSize() * m_mapScale; y < (map()->height() * tileSize()) * m_mapScale; y += tileSize() * m_mapScale) {
-  //   win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)}, win->ContentRegionRect.Min + ImVec2{(map()->width() * tileSize()) * m_mapScale, static_cast<float>(y)},
-  //                          IM_COL32(10, 10, 10, 240), ImGui::GetDPIScaledValue(1.5f));
-  // }
-  //
-  // for (int x = tileSize() * m_mapScale; x < (map()->width() * tileSize()) * m_mapScale; x += tileSize() * m_mapScale) {
-  //   win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), 0.f}, win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), (map()->height() * tileSize()) *
-  //   m_mapScale},
-  //                          IM_COL32(10, 10, 10, 240), ImGui::GetDPIScaledValue(1.5f));
-  // }
+  for (int y = tileSize() * m_mapScale; y < (map()->height() * tileSize()) * m_mapScale; y += tileSize() * m_mapScale) {
+    win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)}, win->ContentRegionRect.Min + ImVec2{(map()->width() * tileSize()) * m_mapScale, static_cast<float>(y)},
+                           IM_COL32(10, 10, 10, 240), ImGui::GetDPIScaledValue(1.5f));
+  }
+  
+  for (int x = tileSize() * m_mapScale; x < (map()->width() * tileSize()) * m_mapScale; x += tileSize() * m_mapScale) {
+    win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), 0.f}, win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), (map()->height() * tileSize()) *
+    m_mapScale},
+                           IM_COL32(10, 10, 10, 240), ImGui::GetDPIScaledValue(1.5f));
+  }
 }
 
 float roundToNearestQuarter(float num) { return static_cast<float>(static_cast<int>(num * 4)) / 4; }
@@ -370,7 +370,7 @@ void MapEditor::handleKeyboardShortcuts() {
 }
 
 void MapEditor::updateAllAutotiles() {
-  const auto rect = Rect(0, 0, map()->width(), map()->height());
+  const auto rect = mapRect();
   updateAutotilesInRect(rect, 0);
   updateAutotilesInRect(rect, 1);
 }
@@ -765,37 +765,39 @@ void MapEditor::draw(const bool closeRequested) {
         //   }
         // }
         //
-        auto sortedEvents = prisonMode() ? map()->getSorted() : map()->getRenderSorted();
-        for (const auto& event : sortedEvents) {
-          if (!event) {
-            continue;
-          }
-
-          const auto evX = (event->renderer()->x() * tileSize()) * m_mapScale;
-          const auto evY = (event->renderer()->y() * tileSize()) * m_mapScale;
-          const auto tileSize = m_tileCursor.tileSize() * m_mapScale;
-          if (m_selectedEvent == event && !m_hasScrolled) {
-            ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + (evX - (win->ContentRegionRect.Max.x / 2)));
-            ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + (evY - (win->ContentRegionRect.Max.y / 2)));
-            m_hasScrolled = true;
-          }
-          const auto min = win->ContentRegionRect.Min + ImVec2{static_cast<float>(evX), static_cast<float>(evY)};
-          const auto max = min + ImVec2{tileSize, tileSize};
-          const bool isHovered = event->x() == tileCellX() && event->y() == tileCellY();
-          const bool updateOnly =
-              !((min.x > win->ClipRect.Min.x - tileSize && max.x < win->ClipRect.Max.x + tileSize) || (min.y > win->ClipRect.Min.y - tileSize && max.y < win->ClipRect.Max.y + tileSize));
-          if (auto* renderer = static_cast<MapEvent*>(event->renderer())) {
-            renderer->setMapEditor(this);
-            renderer->draw(m_mapScale, isHovered, m_selectedEvent == event, m_parent->editMode() != EditMode::Event || event->id() == 0, updateOnly);
-          }
-        }
+        // auto sortedEvents = prisonMode() ? map()->getSorted() : map()->getRenderSorted();
+        // for (const auto& event : sortedEvents) {
+        //   if (!event) {
+        //     continue;
+        //   }
+        //
+        //   const auto evX = (event->renderer()->x() * tileSize()) * m_mapScale;
+        //   const auto evY = (event->renderer()->y() * tileSize()) * m_mapScale;
+        //   const auto tileSize = m_tileCursor.tileSize() * m_mapScale;
+        //   if (m_selectedEvent == event && !m_hasScrolled) {
+        //     ImGui::SetScrollX((win->ContentRegionRect.Min.x / 2) + (evX - (win->ContentRegionRect.Max.x / 2)));
+        //     ImGui::SetScrollY((win->ContentRegionRect.Min.y / 2) + (evY - (win->ContentRegionRect.Max.y / 2)));
+        //     m_hasScrolled = true;
+        //   }
+        //   const auto min = win->ContentRegionRect.Min + ImVec2{static_cast<float>(evX), static_cast<float>(evY)};
+        //   const auto max = min + ImVec2{tileSize, tileSize};
+        //   const bool isHovered = event->x() == tileCellX() && event->y() == tileCellY();
+        //   const bool updateOnly =
+        //       !((min.x > win->ClipRect.Min.x - tileSize && max.x < win->ClipRect.Max.x + tileSize) || (min.y > win->ClipRect.Min.y - tileSize && max.y < win->ClipRect.Max.y + tileSize));
+        //   if (auto* renderer = static_cast<MapEvent*>(event->renderer())) {
+        //     renderer->setMapEditor(this);
+        //     renderer->draw(m_mapScale, isHovered, m_selectedEvent == event, m_parent->editMode() != EditMode::Event || event->id() == 0, updateOnly);
+        //   }
+        // }
 
         if (!m_prisonMode) {
           win->DrawList->AddImage(m_tilemapView.upperTiles().get(), win->ContentRegionRect.Min + ImVec2{0, 0}, win->ContentRegionRect.Min + size);
         }
 
+        win->DrawList->AddImage(m_tilemapView.debugTexture().get(), win->ContentRegionRect.Min + ImVec2{0, 0}, win->ContentRegionRect.Min + size);
+
         if (m_prisonMode) {
-          drawGrid(win);
+          //drawGrid(win);
         }
         if (ImGui::IsWindowHovered() || m_parent->editMode() == EditMode::Event) {
           m_tileCursor.draw(win);

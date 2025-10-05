@@ -106,9 +106,22 @@ void TilemapView::render() {
     }
     m_upperTiles.unlock();
   }
+
   if (m_frameDelay > 0) {
     m_frameDelay--;
   } else {
+    if (m_debugTexture.lock()) {
+      m_renderHelper.clearRect(m_debugTexture, {0, 0, m_map->width() * realTileWidth(), m_map->height() * realTileHeight()});
+      for (int y = 0; y < m_map->height(); ++y) {
+        for (int x = 0; x < m_map->width(); ++x) {
+          if (!isTileDirty(x, y)) {
+            continue;
+          }
+          m_debugTexture.fillRect({static_cast<float>(x) * realTileWidth(), static_cast<float>(y) * realTileHeight(), realTileWidth(), realTileHeight()}, Color(0, 0, 0, 127));
+        }
+      }
+      m_debugTexture.unlock();
+    }
     clearDirtyRect();
   }
 }
@@ -245,4 +258,5 @@ void TilemapView::createRenderImages() {
   m_sameAsCharacterEvents = createRenderTexture(realWidth, realHeight);
   m_aboveCharacterEvents = createRenderTexture(realWidth, realHeight);
   m_upperTiles = createRenderTexture(realWidth, realHeight);
+  m_debugTexture = createRenderTexture(realWidth, realHeight);
 }

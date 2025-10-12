@@ -45,7 +45,23 @@ constexpr std::array<std::array<std::array<int, 2>, 4>, 48> WaterfallAutoTileTab
 } // namespace
 
 void TileRenderHelper::drawShadowTile(RenderImage& painter, const RectF& rect, const int flags) const {
-  painter.fillRect(rect, Color(0, 0, 0, 127));
+
+  if (!(flags & 0xF)) {
+    return;
+  }
+
+  const float w1 = m_tileWidth / 2;
+  const float h1 = m_tileHeight / 2;
+
+  for (int i = 0; i < 4; ++i) {
+    if (!(flags & (1 << i))) {
+      continue;
+    }
+
+    const float dx1 = rect.x() + ((i % 2) * w1);
+    const float dy1 = rect.y() + (std::floor(i / 2) * h1);
+    painter.fillRect({dx1, dy1, w1, h1}, Color(0, 0, 0, 127));
+  }
 }
 
 void TileRenderHelper::drawTile(RenderImage& painter, const RectF& rect, const int tileId, const std::array<Texture, 9>& images, const bool isTable) const {

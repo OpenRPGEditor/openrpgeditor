@@ -1031,7 +1031,10 @@ std::vector<Event*> Map::eventsAtRenderPosNoThrough(const int x, const int y) {
 }
 
 void Map::setDummyEvent(const EventImage& image, const int x, const int y) {
-  if (!m_events.empty() && !m_events[0]) {
+  if (m_events.empty()) {
+    m_events.emplace_back();
+  }
+  if (!m_events[0]) {
     m_events[0].emplace();
   }
   EventPage page;

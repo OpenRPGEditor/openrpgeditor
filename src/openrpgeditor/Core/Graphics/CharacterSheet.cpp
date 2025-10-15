@@ -10,12 +10,12 @@ CharacterSheet::CharacterSheet(std::string_view sheetName, bool isTileId, int ti
     m_isTileId = isTileId;
     const int setId = 5 + floor(tileId / 256);
     const Map* map = nullptr;
-    if (Database::instance()->mapInfos.currentMap() && Database::instance()->mapInfos.currentMap()->map()) {
-      map = Database::instance()->mapInfos.currentMap()->map();
+    if (Database::instance()->mapInfos->currentMap() && Database::instance()->mapInfos->currentMap()->map()) {
+      map = Database::instance()->mapInfos->currentMap()->map();
     }
     const Tileset* tileset = nullptr;
     if (map) {
-      tileset = Database::instance()->tilesets.tileset(map->tilesetId());
+      tileset = Database::instance()->tilesets->tileset(map->tilesetId());
     }
     if (tileset) {
       sheetName = tileset->tilesetName(setId);

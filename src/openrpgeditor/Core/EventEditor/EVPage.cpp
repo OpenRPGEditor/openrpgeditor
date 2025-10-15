@@ -137,7 +137,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
             const std::string label = m_page->conditions().switch1Valid() ? Database::instance()->switchNameOrId(m_page->conditions().switch1Id()) : "";
             if (ImGui::Button((label + "##event_page_switch1_selection_button").c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
               m_variableSwitchSelection = Switch1;
-              m_variableSwitchPicker.emplace(VariableSwitchPicker::Type::Switch, Database::instance()->system.switches(), m_page->conditions().switch1Id());
+              m_variableSwitchPicker.emplace(VariableSwitchPicker::Type::Switch, Database::instance()->system->switches(), m_page->conditions().switch1Id());
               m_variableSwitchPicker->setOpen(true);
             }
           }
@@ -147,7 +147,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
             const std::string label = m_page->conditions().switch2Valid() ? Database::instance()->switchNameOrId(m_page->conditions().switch2Id()) : "";
             if (ImGui::Button((label + "##event_page_switch2_selection_button").c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
               m_variableSwitchSelection = Switch2;
-              m_variableSwitchPicker.emplace(VariableSwitchPicker::Type::Switch, Database::instance()->system.switches(), m_page->conditions().switch2Id());
+              m_variableSwitchPicker.emplace(VariableSwitchPicker::Type::Switch, Database::instance()->system->switches(), m_page->conditions().switch2Id());
               m_variableSwitchPicker->setOpen(true);
             }
           }
@@ -159,7 +159,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
               const std::string label = m_page->conditions().variableValid() ? Database::instance()->variableNameOrId(m_page->conditions().variableId()) : "";
               if (ImGui::Button((label + "##event_page_variable_selection_button").c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
                 m_variableSwitchSelection = Variable;
-                m_variableSwitchPicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_page->conditions().variableId());
+                m_variableSwitchPicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_page->conditions().variableId());
                 m_variableSwitchPicker->setOpen(true);
               }
               auto oldX = ImGui::GetCursorPosX();
@@ -191,20 +191,20 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
             ImGui::EndDisabled();
             ImGui::BeginDisabled(!m_page->conditions().itemValid());
             {
-              auto it = Database::instance()->items.item(m_page->conditions().itemId());
+              auto it = Database::instance()->items->item(m_page->conditions().itemId());
               const std::string item = m_page->conditions().itemValid() && it != nullptr ? it->name() : "";
               if (ImGui::Button(std::format("{}##event_page_item_selection_button_text", item).c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_itemPicker.emplace(Database::instance()->items.items(), m_page->conditions().itemId());
+                m_itemPicker.emplace(Database::instance()->items->items(), m_page->conditions().itemId());
                 m_itemPicker->setOpen(true);
               }
             }
             ImGui::EndDisabled();
             ImGui::BeginDisabled(!m_page->conditions().actorValid());
             {
-              auto ac = Database::instance()->actors.actor(m_page->conditions().actorId());
+              auto ac = Database::instance()->actors->actor(m_page->conditions().actorId());
               const std::string actor = m_page->conditions().actorValid() && ac != nullptr ? ac->name() : "";
               if (ImGui::Button(std::format("{}##event_page_actor_selection_button_text", actor).c_str(), ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_actorPicker.emplace(Database::instance()->actors.actorList(), m_page->conditions().actorId());
+                m_actorPicker.emplace(Database::instance()->actors->actorList(), m_page->conditions().actorId());
                 m_actorPicker->setOpen(true);
               }
             }

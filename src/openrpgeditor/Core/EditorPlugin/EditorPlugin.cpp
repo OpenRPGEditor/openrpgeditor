@@ -13,18 +13,22 @@ bool EditorPlugin::load(const std::filesystem::path& pluginBasedir, const Plugin
   std::filesystem::path scriptFilename = info.mainScript;
   scriptFilename.replace_extension("as");
 
-  bool saveBinary = true;
-  // if (info.compiled || exists(pluginBasedir / "bin" / binFilename)) {
-  //   ByteCodeReader reader((pluginBasedir / "bin" / binFilename).generic_string());
-  //   m_module = ScriptEngine::instance()->createModule(info.identifier, reader);
-  // } else {
-  //   saveBinary = true;
-  // }
+  bool saveBinary = false;
+  if (info.compiled && exists(pluginBasedir / "bin" / binFilename)) {
+    ByteCodeReader reader((pluginBasedir / "bin" / binFilename).generic_string());
+    m_module = ScriptEngine::instance()->createModule(info.identifier, reader);
+  } else {
+#ifndef NDEBUG
+    saveBinary = true;
+#else
+    saveBinary = info.compiled;
+#endif
+  }
   if (!m_module && exists(pluginBasedir / "src" / scriptFilename)) {
     m_module = ScriptEngine::instance()->createModule(info.identifier, pluginBasedir / "src" / scriptFilename);
     if (saveBinary && m_module) {
       ByteCodeWriter writer((pluginBasedir / "bin" / binFilename).generic_string());
-      m_module->SaveByteCode(&writer);
+      m_module->SaveByteCode(&writer, true);
     }
   }
 

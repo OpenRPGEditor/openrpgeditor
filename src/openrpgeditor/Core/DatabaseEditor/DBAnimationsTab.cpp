@@ -2,20 +2,13 @@
 #include "Core/Application.hpp"
 #include "Database/Animations.hpp"
 
-#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/ImGuiExt/imgui_neo_sequencer.h"
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent)
-: IDBEditorTab(parent)
-, m_animations(animations) {
-
-  m_selectedAnimation = m_animations.animation(1);
-
-  if (m_selectedAnimation) {
-    m_selectedTimings = m_selectedAnimation->timings();
-  }
+DBAnimationsTab::DBAnimationsTab(DatabaseEditor* parent)
+: IDBEditorTab(parent) {
   m_colorPicker.setValues(255, 255, 255, 255);
   m_selectedAudio.setName("");
   m_selectedAudio.setVolume(100);
@@ -33,6 +26,7 @@ DBAnimationsTab::DBAnimationsTab(Animations& animations, DatabaseEditor* parent)
 }
 
 void DBAnimationsTab::draw() {
+
   if (m_selectedAnimation) {
     if (!m_imagePicker) {
       m_imagePicker.emplace(ImagePicker::PickerMode::Animation, "", "");
@@ -62,7 +56,7 @@ void DBAnimationsTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            for (auto& animation : m_animations.animations()) {
+            for (auto& animation : m_animations->animations()) {
               if (animation.id() == 0) {
                 continue;
               }
@@ -78,10 +72,10 @@ void DBAnimationsTab::draw() {
           ImGui::EndGroup();
         }
         ImGui::EndChild();
-        ImGui::SeparatorText(trFormat("Max Animations {}", m_animations.count()).c_str());
+        ImGui::SeparatorText(trFormat("Max Animations {}", m_animations->count()).c_str());
         if (ImGui::Button(trNOOP("Change Max"), ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
           m_changeIntDialogOpen = true;
-          m_editMaxAnimations = m_animations.count();
+          m_editMaxAnimations = m_animations->count();
         }
       }
       ImGui::EndGroup();
@@ -152,6 +146,7 @@ void DBAnimationsTab::draw() {
           ImGui::Dummy(ImVec2{ImGui::GetContentRegionMax().x, 300});
           ImGui::BeginGroup();
           {
+            /*
             int currentFrame = 1;
             int startFrame = 1;
             int endFrame = m_selectedAnimation->frames().size();
@@ -237,8 +232,9 @@ void DBAnimationsTab::draw() {
               }
               ImGui::EndNeoSequencer();
             }
-            ImGui::EndGroup();
+            */
           }
+          ImGui::EndGroup();
         }
         ImGui::EndChild();
         /*
@@ -500,8 +496,8 @@ void DBAnimationsTab::draw() {
           ImGui::TextUnformatted(trNOOP("Are you sure?"));
           if (ImGui::Button(trNOOP("Yes"))) {
             const int tmpId = m_selectedAnimation->id();
-            m_animations.resize(m_editMaxAnimations);
-            m_selectedAnimation = m_animations.animation(tmpId);
+            m_animations->resize(m_editMaxAnimations);
+            m_selectedAnimation = m_animations->animation(tmpId);
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }

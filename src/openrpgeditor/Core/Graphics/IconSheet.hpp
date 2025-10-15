@@ -6,8 +6,7 @@
 
 class IconSheet {
 public:
-  IconSheet() = delete;
-  explicit IconSheet(std::string_view gridAtlasPath);
+  explicit IconSheet(std::string_view sheetName);
 
   [[nodiscard]] static constexpr int iconWidth() { return 32; }
   [[nodiscard]] static constexpr int iconHeight() { return 32; }

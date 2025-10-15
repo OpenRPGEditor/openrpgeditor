@@ -4,7 +4,7 @@
 ReferenceSearch::ReferenceSearch() {}
 void ReferenceSearch::findAllReferences(int targetId, SearchType type) {
   m_results.clear();
-  for (auto& mapInfo : Database::instance()->mapInfos.mapInfos()) {
+  for (auto& mapInfo : Database::instance()->mapInfos->mapInfos()) {
     if (!mapInfo || mapInfo->id() == 0) {
       continue;
     }
@@ -48,7 +48,7 @@ void ReferenceSearch::findAllReferences(const std::string& text, SearchType type
 }
 void ReferenceSearch::searchAllListsByTarget(int targetId, SearchType type) {
   m_list.clear();
-  for (auto& mapInfo : Database::instance()->mapInfos.mapInfos()) {
+  for (auto& mapInfo : Database::instance()->mapInfos->mapInfos()) {
     if (!mapInfo || mapInfo->id() == 0) {
       continue;
     }
@@ -73,7 +73,7 @@ void ReferenceSearch::searchAllListsByTarget(int targetId, SearchType type) {
 }
 void ReferenceSearch::searchAllListsByText(const std::string& text, SearchType type) {
   m_list.clear();
-  for (auto& mapInfo : Database::instance()->mapInfos.mapInfos()) {
+  for (auto& mapInfo : Database::instance()->mapInfos->mapInfos()) {
     if (!mapInfo || mapInfo->id() == 0) {
       continue;
     }
@@ -98,7 +98,7 @@ void ReferenceSearch::searchAllListsByText(const std::string& text, SearchType t
 }
 void ReferenceSearch::searchAllCommonByTarget(int targetId, SearchType type) {
   m_common.clear();
-  for (auto& common : Database::instance()->commonEvents.events()) {
+  for (auto& common : Database::instance()->commonEvents->events()) {
     if (common.has_value()) {
       int index{0};
       for (auto& cmd : common.value().commands()) {
@@ -118,7 +118,7 @@ void ReferenceSearch::searchAllCommonByTarget(int targetId, SearchType type) {
 void ReferenceSearch::searchAllCommonByText(const std::string& text, SearchType type) {
   m_common.clear();
   int index{0};
-  for (auto& common : Database::instance()->commonEvents.events()) {
+  for (auto& common : Database::instance()->commonEvents->events()) {
     if (common.has_value()) {
       for (auto& cmd : common.value().commands()) {
         if (cmd->hasStringReference(text, type)) {
@@ -135,7 +135,7 @@ void ReferenceSearch::searchAllEffectsByTarget(int targetId, SearchType type) {
   int index{0};
   if (type == SearchType::CommonEvent) {
     // Skills
-    for (auto& skill : Database::instance()->skills.skills()) {
+    for (auto& skill : Database::instance()->skills->skills()) {
       for (auto& effect : skill.effects()) {
         if (effect.code() == EffectCode::Common_Event) {
           if (effect.value1() == targetId) {
@@ -147,7 +147,7 @@ void ReferenceSearch::searchAllEffectsByTarget(int targetId, SearchType type) {
     }
     // Items
     index = 0;
-    for (auto& item : Database::instance()->items.items()) {
+    for (auto& item : Database::instance()->items->items()) {
       for (auto& effect : item.effects()) {
         if (effect.code() == EffectCode::Common_Event) {
           if (effect.value1() == targetId) {
@@ -159,7 +159,7 @@ void ReferenceSearch::searchAllEffectsByTarget(int targetId, SearchType type) {
     }
   }
   if (type == SearchType::State) {
-    for (auto& skill : Database::instance()->skills.skills()) {
+    for (auto& skill : Database::instance()->skills->skills()) {
       for (auto& effect : skill.effects()) {
         if (effect.code() == EffectCode::Add_State) {
           if (effect.value1() == targetId) {
@@ -176,7 +176,7 @@ void ReferenceSearch::searchAllEffectsByTarget(int targetId, SearchType type) {
     }
     // Items
     index = 0;
-    for (auto& item : Database::instance()->items.items()) {
+    for (auto& item : Database::instance()->items->items()) {
       for (auto& effect : item.effects()) {
         if (effect.code() == EffectCode::Add_State) {
           if (effect.value1() == targetId) {
@@ -193,7 +193,7 @@ void ReferenceSearch::searchAllEffectsByTarget(int targetId, SearchType type) {
     }
   }
   if (type == SearchType::Skill) {
-    for (auto& skill : Database::instance()->skills.skills()) {
+    for (auto& skill : Database::instance()->skills->skills()) {
       for (auto& effect : skill.effects()) {
         index++;
         if (effect.code() == EffectCode::Learn_Skill) {
@@ -204,7 +204,7 @@ void ReferenceSearch::searchAllEffectsByTarget(int targetId, SearchType type) {
       }
     } // Items
     index = 0;
-    for (auto& item : Database::instance()->items.items()) {
+    for (auto& item : Database::instance()->items->items()) {
       for (auto& effect : item.effects()) {
         if (effect.code() == EffectCode::Learn_Skill) {
           if (effect.value1() == targetId) {

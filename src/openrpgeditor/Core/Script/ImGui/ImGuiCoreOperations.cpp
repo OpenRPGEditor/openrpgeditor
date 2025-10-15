@@ -1,4 +1,7 @@
 #include "Core/Script/ImGui/ImGuiCoreOperations.hpp"
+
+#include "Core/ImGuiExt/ImGuiUtils.hpp"
+
 #include <angelscript.h>
 #include <cassert>
 #include <imgui.h>
@@ -23,6 +26,27 @@ void ImGui_Window_Collapsed_Named_Wrapper(const std::string& id, bool collapsed,
 void ImGui_Window_Focus_Named_Wrapper(const std::string& id) { ImGui::SetWindowFocus(id.c_str()); }
 
 void ImGui_Text_Wrapper(const std::string& text) { ImGui::TextUnformatted(text.c_str()); }
+
+void ImGui_CalcTextSize_Wrapper_Generic(asIScriptGeneric* gen) {
+  // Use a pointer to the string to reduce copies
+  const std::string* text = static_cast<const std::string*>(gen->GetArgAddress(0));
+  const int text_end = *static_cast<int*>(gen->GetAddressOfArg(1));
+  const bool hide_text_after_double_hash = *static_cast<bool*>(gen->GetAddressOfArg(2));
+  const float wrap_width = *static_cast<float*>(gen->GetAddressOfArg(3));
+  const ImVec2 ret = ImGui::CalcTextSize(text->c_str(), text_end == -1 ? nullptr : text->c_str() + text_end, hide_text_after_double_hash, wrap_width);
+  *static_cast<ImVec2*>(gen->GetAddressOfReturnLocation()) = ret;
+}
+
+void ImGui_GetDPIScaledSize_Float_Wrapper(asIScriptGeneric* gen) {
+  const float width = *static_cast<float*>(gen->GetAddressOfArg(0));
+  const float height = *static_cast<float*>(gen->GetAddressOfArg(1));
+  *static_cast<ImVec2*>(gen->GetAddressOfReturnLocation()) = ImGui::GetDPIScaledSize(width, height);
+}
+
+void ImGui_GetDPIScaledSize_ImVec_Wrapper(asIScriptGeneric* gen) {
+  const ImVec2* size = static_cast<ImVec2*>(gen->GetArgAddress(0));
+  *static_cast<ImVec2*>(gen->GetAddressOfReturnLocation()) = ImGui::GetDPIScaledSize(*size);
+}
 std::string ImGui_GetVersion() { return ImGui::GetVersion(); }
 
 void ImGuiRegisterTypedefs(asIScriptEngine* engine) {
@@ -110,17 +134,23 @@ void ImGuiCoreOperationBindings(asIScriptEngine* engine) {
   assert(r >= 0);
   // r = engine->RegisterGlobalFunction("ImDrawList& GetWindowDrawList()", asFUNCTION(ImGui::GetWindowDrawList), asCALL_CDECL);
   // assert(r >= 0);
-  r = engine->RegisterGlobalFunction("float GetDpiScale()", asFUNCTION(ImGui::IsWindowAppearing), asCALL_CDECL);
+  r = engine->RegisterGlobalFunction("float GetWindowDpiScale()", asFUNCTION(ImGui::GetWindowDpiScale), asCALL_CDECL);
   assert(r >= 0);
-  r = engine->RegisterGlobalFunction("void SetNextWindowPos(const ImVec2&in pos, ImGuiCond cond = 0, const ImVec2&in pivot = ImVec2())", asFunctionPtr(ImGui::SetNextWindowPos), asCALL_CDECL);
+  r = engine->RegisterGlobalFunction("float GetDPIScaledValue(float v)", asFUNCTION(ImGui::GetDPIScaledValue), asCALL_CDECL);
   assert(r >= 0);
-  r = engine->RegisterGlobalFunction("void SetNextWindowSize(const ImVec2&in size, ImGuiCond cond = 0)", asFunctionPtr(ImGui::SetNextWindowSize), asCALL_CDECL);
+  r = engine->RegisterGlobalFunction("ImVec2 GetDPIScaledSize(const ImVec2& in size)", asFUNCTION(ImGui_GetDPIScaledSize_ImVec_Wrapper), asCALL_GENERIC);
+  assert(r >= 0);
+  r = engine->RegisterGlobalFunction("ImVec2 GetDPIScaledSize(const float w, const float h)", asFUNCTION(ImGui_GetDPIScaledSize_Float_Wrapper), asCALL_GENERIC);
+  assert(r >= 0);
+  r = engine->RegisterGlobalFunction("void SetNextWindowPos(const ImVec2&in pos, ImGuiCond cond = 0, const ImVec2&in pivot = ImVec2())", asFUNCTION(ImGui::SetNextWindowPos), asCALL_CDECL);
+  assert(r >= 0);
+  r = engine->RegisterGlobalFunction("void SetNextWindowSize(const ImVec2&in size, ImGuiCond cond = 0)", asFUNCTION(ImGui::SetNextWindowSize), asCALL_CDECL);
   assert(r >= 0);
   // TODO: Constraints callback?
-  r = engine->RegisterGlobalFunction("void SetNextWindowSizeConstraints(const ImVec2&in size_min, const ImVec2&in size_max, ImGuiCond cond = 0)", asFunctionPtr(ImGui::SetNextWindowSizeConstraints),
+  r = engine->RegisterGlobalFunction("void SetNextWindowSizeConstraints(const ImVec2&in size_min, const ImVec2&in size_max, ImGuiCond cond = 0)", asFUNCTION(ImGui::SetNextWindowSizeConstraints),
                                      asCALL_CDECL);
   assert(r >= 0);
-  r = engine->RegisterGlobalFunction("void SetNextWindowContentSize(const ImVec2&in size, ImGuiCond cond = 0)", asFunctionPtr(ImGui::SetNextWindowSizeConstraints), asCALL_CDECL);
+  r = engine->RegisterGlobalFunction("void SetNextWindowContentSize(const ImVec2&in size, ImGuiCond cond = 0)", asFUNCTION(ImGui::SetNextWindowSizeConstraints), asCALL_CDECL);
   assert(r >= 0);
   r = engine->RegisterGlobalFunction("void SetNextWindowCollapsed(bool collapsed, ImGuiCond cond = 0)", asFUNCTION(ImGui::SetNextWindowCollapsed), asCALL_CDECL);
   assert(r >= 0);
@@ -170,11 +200,15 @@ void ImGuiCoreOperationBindings(asIScriptEngine* engine) {
   assert(r >= 0);
   r = engine->RegisterGlobalFunction("void SetScrollFromPosY(float local_y, float center_y_ratio = 0.5f)", asFUNCTIONPR(ImGui::SetScrollFromPosY, (float, float), void), asCALL_CDECL);
   assert(r >= 0);
-  r = engine->RegisterGlobalFunction("void Text(const string& in)", asFUNCTION(ImGui_Text_Wrapper), asCALL_CDECL);
+  r = engine->RegisterGlobalFunction("void Text(const string& in text)", asFUNCTION(ImGui_Text_Wrapper), asCALL_CDECL);
   assert(r >= 0);
   r = engine->RegisterGlobalFunction("double GetTime()", asFUNCTION(ImGui::GetTime), asCALL_CDECL);
   assert(r >= 0);
   r = engine->RegisterGlobalFunction("int GetFrameCount()", asFUNCTION(ImGui::GetFrameCount), asCALL_CDECL);
   assert(r >= 0);
+  r = engine->RegisterGlobalFunction("ImVec2 CalcTextSize(const string& in text, const int text_end = -1, const bool hide_text_after_double_hash = false, const float wrap_width = -1.0f)",
+                                     asFUNCTION(ImGui_CalcTextSize_Wrapper_Generic), asCALL_GENERIC);
+  assert(r >= 0);
+
   engine->SetDefaultNamespace(def);
 }

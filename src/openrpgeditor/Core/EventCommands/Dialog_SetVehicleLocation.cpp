@@ -46,9 +46,9 @@ std::tuple<bool, bool> Dialog_SetVehicleLocation::draw() {
         ImGui::BeginDisabled(m_mode != 0);
         {
           ImGui::PushID("#transfer_coord_selection");
-          if (ImGui::EllipsesButton(m_mode == 0 ? std::format("{} ({},{})", Database::instance()->mapNameOrId(Database::instance()->mapInfos.currentMap()->id()), m_x, m_y).c_str() : "",
+          if (ImGui::EllipsesButton(m_mode == 0 ? std::format("{} ({},{})", Database::instance()->mapNameOrId(Database::instance()->mapInfos->currentMap()->id()), m_x, m_y).c_str() : "",
                                     ImVec2{-1, 0})) {
-            m_eventTilePicker.emplace(Database::instance()->mapInfos.currentMap()->id());
+            m_eventTilePicker.emplace(Database::instance()->mapInfos->currentMap()->id());
             m_eventTilePicker->setOpen(true);
           }
           ImGui::PopID();
@@ -68,7 +68,7 @@ std::tuple<bool, bool> Dialog_SetVehicleLocation::draw() {
                 ImGui::PushID("##set_vehicle_location_variables_id");
                 if (ImGui::EllipsesButton(m_mode == 1 ? Database::instance()->variableNameAndId(m_mapIdVar).c_str() : "", {-1, 0})) {
                   m_variableSelection = 0;
-                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_mapIdVar);
+                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_mapIdVar);
                   m_variablePicker->setOpen(true);
                 }
                 ImGui::PopID();
@@ -80,7 +80,7 @@ std::tuple<bool, bool> Dialog_SetVehicleLocation::draw() {
                 ImGui::PushID("##set_vehicle_location_variables_x");
                 if (ImGui::EllipsesButton(m_mode == 1 ? Database::instance()->variableNameAndId(m_xVar).c_str() : "", {-1, 0})) {
                   m_variableSelection = 1;
-                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_xVar);
+                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_xVar);
                   m_variablePicker->setOpen(true);
                 }
                 ImGui::PopID();
@@ -91,7 +91,7 @@ std::tuple<bool, bool> Dialog_SetVehicleLocation::draw() {
                 ImGui::PushID("##set_vehicle_location_variables_y");
                 if (ImGui::EllipsesButton(m_mode == 1 ? Database::instance()->variableNameAndId(m_yVar).c_str() : "", {-1, 0})) {
                   m_variableSelection = 2;
-                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_yVar);
+                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_yVar);
                   m_variablePicker->setOpen(true);
                 }
                 ImGui::PopID();

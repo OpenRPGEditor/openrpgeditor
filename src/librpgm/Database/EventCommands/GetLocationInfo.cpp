@@ -19,11 +19,11 @@ void GetLocationInfoCommand::serializeParameters(nlohmann::ordered_json& out) co
 }
 
 std::string GetLocationInfoCommand::stringRep(const Database& db, const bool colored) const {
-  std::string var = db.system.variable(variable);
+  std::string var = db.system->variable(variable);
   var = var.empty() ? std::format("#{:04}", variable) : var;
   if (source == LocationSource::Designation_with_variables) {
-    auto varX = db.system.variable(x);
-    auto varY = db.system.variable(y);
+    auto varX = db.system->variable(x);
+    auto varY = db.system->variable(y);
     varX = varX.empty() ? std::format("#{:04}", x) : varX;
     varY = varY.empty() ? std::format("#{:04}", y) : varY;
     return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Get Location Info") + colon.data() + var + ", " + DecodeEnumName(type) +

@@ -10,8 +10,8 @@ public:
   friend void from_json(const nlohmann::ordered_json& j, Templates& templ);
   std::vector<Template> templates;
 
-  static Templates load(std::string_view path);
-  bool serialize(std::string_view path);
+  static Templates load(const std::filesystem::path& path);
+  bool serialize(const std::filesystem::path& path);
 
   bool isModified() const override {
     return IModifiable::isModified() | std::ranges::any_of(templates, [](const Template& t) { return t.isModified(); });

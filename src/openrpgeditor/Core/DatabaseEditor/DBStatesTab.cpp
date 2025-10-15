@@ -6,14 +6,8 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBStatesTab::DBStatesTab(States& States, DatabaseEditor* parent)
-: IDBEditorTab(parent)
-, m_states(States) {
-  m_selectedState = m_states.state(1);
-  if (m_selectedState) {
-    m_traitsEditor.setTraits(&m_selectedState->traits());
-  }
-}
+DBStatesTab::DBStatesTab(DatabaseEditor* parent)
+: IDBEditorTab(parent) {}
 
 void DBStatesTab::draw() {
   ImGui::BeginChild("#orpg_states_editor");
@@ -28,7 +22,7 @@ void DBStatesTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            for (auto& state : m_states.states()) {
+            for (auto& state : m_states->states()) {
               if (state.id() == 0) {
                 continue;
               }
@@ -43,11 +37,11 @@ void DBStatesTab::draw() {
         }
         ImGui::EndChild();
         char str[4096];
-        snprintf(str, 4096, "Max States %i", m_states.count());
+        snprintf(str, 4096, "Max States %i", m_states->count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - (8), 0})) {
           m_changeIntDialogOpen = true;
-          m_editMaxStates = m_states.count();
+          m_editMaxStates = m_states->count();
         }
       }
       ImGui::EndGroup();
@@ -85,10 +79,10 @@ void DBStatesTab::draw() {
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 20.f);
             ImGui::BeginGroup();
             {
-              const auto* iconSheet = m_parent->getIconSheet();
-              auto [min, max] = iconSheet->rectForId(m_selectedState->iconIndex());
-              ImGui::Image(iconSheet->texture(), ImVec2{static_cast<float>(iconSheet->iconWidth()), static_cast<float>(iconSheet->iconHeight())}, min,
-                           max); // Show icon image
+              // const auto* iconSheet = m_parent->getIconSheet();
+              // auto [min, max] = iconSheet->rectForId(m_selectedState->iconIndex());
+              // ImGui::Image(iconSheet->texture(), ImVec2{static_cast<float>(iconSheet->iconWidth()), static_cast<float>(iconSheet->iconHeight())}, min,
+              //              max); // Show icon image
               ImGui::EndGroup();
             }
             ImGui::BeginGroup();
@@ -359,14 +353,14 @@ void DBStatesTab::draw() {
           ImGui::Text("Are you sure?");
           if (ImGui::Button("Yes")) {
             const int tmpId = m_selectedState->id();
-            m_states.resize(m_editMaxStates);
-            m_selectedState = m_states.state(tmpId);
+            m_states->resize(m_editMaxStates);
+            m_selectedState = m_states->state(tmpId);
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }
           ImGui::SameLine();
           if (ImGui::Button("Cancel")) {
-            m_editMaxStates = m_states.count();
+            m_editMaxStates = m_states->count();
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }

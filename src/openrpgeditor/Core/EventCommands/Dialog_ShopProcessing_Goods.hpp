@@ -28,11 +28,11 @@ struct Dialog_ShopProcessing_Goods : IEventDialogController {
     // Price
     if (m_priceOperation == 0) {
       if (m_command->type == ShopType::Armor) {
-        m_priceConstant = Database::instance()->armors.armor(m_armorSelection)->price();
+        m_priceConstant = Database::instance()->armors->armor(m_armorSelection)->price();
       } else if (m_command->type == ShopType::Weapon) {
-        m_priceConstant = Database::instance()->weapons.weapon(m_weaponSelection)->price();
+        m_priceConstant = Database::instance()->weapons->weapon(m_weaponSelection)->price();
       } else {
-        m_priceConstant = Database::instance()->items.item(m_itemSelection)->price();
+        m_priceConstant = Database::instance()->items->item(m_itemSelection)->price();
       }
     } else {
       m_priceConstant = m_command->price;
@@ -58,11 +58,11 @@ struct Dialog_ShopProcessing_Goods : IEventDialogController {
     // Price
     if (priceType == 0) {
       if (shopType == 2) {
-        m_priceConstant = Database::instance()->armors.armor(m_armorSelection)->price();
+        m_priceConstant = Database::instance()->armors->armor(m_armorSelection)->price();
       } else if (shopType == 1) {
-        m_priceConstant = Database::instance()->weapons.weapon(m_weaponSelection)->price();
+        m_priceConstant = Database::instance()->weapons->weapon(m_weaponSelection)->price();
       } else if (shopType == 0) {
-        m_priceConstant = Database::instance()->items.item(m_itemSelection)->price();
+        m_priceConstant = Database::instance()->items->item(m_itemSelection)->price();
       }
     } else {
       m_priceConstant = price;

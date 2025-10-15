@@ -19,8 +19,8 @@ void from_json(const nlohmann::ordered_json& j, std::unordered_map<std::string, 
     }
   }
 }
-std::vector<std::pair<std::string, std::string>> Locales::load(std::string_view path) {
-  if (std::ifstream file(path.data()); file.is_open()) {
+std::vector<std::pair<std::string, std::string>> Locales::load(const std::filesystem::path& path) {
+  if (std::ifstream file(path); file.is_open()) {
     try {
       nlohmann::ordered_json data = nlohmann::ordered_json::parse(file);
       std::vector<std::pair<std::string, std::string>> ret;
@@ -37,12 +37,12 @@ std::vector<std::pair<std::string, std::string>> Locales::load(std::string_view 
 
   return {};
 }
-void Locales::loadMap(std::string_view path) {
+void Locales::loadMap(const std::filesystem::path& path) {
   m_currentPath = path;
   locales = load(path);
 }
-bool Locales::serialize(const std::string_view path) {
-  std::ofstream file(path.data());
+bool Locales::serialize(const std::filesystem::path& path) {
+  std::ofstream file(path);
   try {
     if (file.is_open()) {
       nlohmann::ordered_json data;

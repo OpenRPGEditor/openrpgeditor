@@ -59,7 +59,7 @@ std::tuple<bool, bool> Dialog_EnemyTransform::draw() {
       if (enemyGroupBox.begin()) {
         ImGui::PushID("##enemy_transform_selection");
         if (ImGui::Button(Database::instance()->enemyNameAndId(m_enemy).c_str(), ImVec2{-1, 0})) {
-          m_enemyPicker = EnemyPicker(Database::instance()->enemies.enemies(), m_enemy);
+          m_enemyPicker = EnemyPicker(Database::instance()->enemies->enemies(), m_enemy);
           m_enemyPicker->setOpen(true);
         }
         ImGui::PopID();

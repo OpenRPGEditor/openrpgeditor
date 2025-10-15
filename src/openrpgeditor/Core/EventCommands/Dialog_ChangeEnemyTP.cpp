@@ -84,7 +84,7 @@ std::tuple<bool, bool> Dialog_ChangeEnemyTP::draw() {
             ImGui::BeginDisabled(m_quantitySource != 1);
             ImGui::PushID("##change_enemy_tp_quant_var");
             if (ImGui::EllipsesButton(m_quantitySource == 1 ? Database::instance()->variableNameAndId(m_quantityVar).c_str() : "", ImVec2{-1, 0})) {
-              m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_quantityVar);
+              m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_quantityVar);
               m_variablePicker->setOpen(true);
             }
             ImGui::PopID();

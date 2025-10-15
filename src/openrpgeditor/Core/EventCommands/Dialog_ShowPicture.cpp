@@ -107,7 +107,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
                     ImGui::SetNextItemWidth(-1.f);
                     if (ImGui::EllipsesButton(std::format("{}##show_picture_direct_var_x", m_type == 1 ? Database::instance()->variableNameAndId(m_xVariable) : "").c_str(), {-1, 0})) {
                       m_isPickingY = false;
-                      m_varPicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_xVariable);
+                      m_varPicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_xVariable);
                       m_varPicker->setOpen(true);
                     }
                   }
@@ -117,7 +117,7 @@ std::tuple<bool, bool> Dialog_ShowPicture::draw() {
                     ImGui::SetNextItemWidth(-1.f);
                     if (ImGui::EllipsesButton(std::format("{}##show_picture_direct_var_y", m_type == 1 ? Database::instance()->variableNameAndId(m_yVariable) : "").c_str(), {-1, 0})) {
                       m_isPickingY = true;
-                      m_varPicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_yVariable);
+                      m_varPicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_yVariable);
                       m_varPicker->setOpen(true);
                     }
                   }

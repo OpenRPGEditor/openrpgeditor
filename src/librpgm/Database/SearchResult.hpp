@@ -22,8 +22,8 @@ public:
   explicit SearchResult(int mapId, int eventId, const std::shared_ptr<IEventCommand>& cmd, int pageIndex, int step);
   explicit SearchResult(SpecialDataParent type, int parentId, int dataId); // For effects and traits
 
-  [[nodiscard]] Event& getEvent() const { return *Database::instance()->mapInfos.map(m_mapId)->event(m_eventId); }
-  [[nodiscard]] CommonEvent& getCommonEvent() const { return *Database::instance()->commonEvents.event(m_commonEventId); }
+  [[nodiscard]] Event& getEvent() const { return *Database::instance()->mapInfos->map(m_mapId)->event(m_eventId); }
+  [[nodiscard]] CommonEvent& getCommonEvent() const { return *Database::instance()->commonEvents->event(m_commonEventId); }
   [[nodiscard]] int getEventId() const { return m_eventId; }
   [[nodiscard]] int getCommonEventId() const { return m_commonEventId; }
   [[nodiscard]] const std::shared_ptr<IEventCommand>& getCommand() const { return m_command; }

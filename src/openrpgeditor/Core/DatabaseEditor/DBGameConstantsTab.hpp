@@ -2,12 +2,12 @@
 #include "Core/CommonUI/ObjectPicker.hpp"
 #include "Core/CommonUI/VariableSwitchPicker.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
-#include "DBCommonEventsTab.hpp"
 #include "Database/GameConstants.hpp"
+#include "DBCommonEventsTab.hpp"
 
 #include <optional>
 
-struct Actor;
+class Actor;
 struct Armor;
 struct Class;
 struct Skill;
@@ -23,15 +23,14 @@ struct MapInfo;
 struct GameConstants;
 class DBGameConstantsTab final : public IDBEditorTab {
 public:
-  explicit DBGameConstantsTab(GameConstants& constants, DatabaseEditor* parent)
-  : IDBEditorTab(parent)
-  , m_constants(&constants) {}
+  explicit DBGameConstantsTab(DatabaseEditor* parent)
+  : IDBEditorTab(parent) {}
 
   void draw() override;
   std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(int index) override { return m_headers.at(index); }
+  int getHeader(const int index) override { return m_headers.at(index); }
   bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(int start, int end) override {
+  void setHeaderRange(const int start, const int end) override {
     m_categoryStart = start;
     m_categoryEnd = end;
   }
@@ -41,9 +40,26 @@ public:
   [[nodiscard]] std::string tabName() const override { return tr("Game Constants"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBGameConstantsTab"sv; };
 
+  bool isReady() const override {
+    return Database::instance()->actors && Database::instance()->classes && Database::instance()->skills && Database::instance()->items && Database::instance()->weapons &&
+           Database::instance()->armors && Database::instance()->enemies && Database::instance()->troops && Database::instance()->states && Database::instance()->animations &&
+           Database::instance()->animations && Database::instance()->tilesets && Database::instance()->commonEvents && Database::instance()->system && Database::instance()->plugins &&
+           Database::instance()->mapInfos && Database::instance()->gameConstants;
+  }
+
+  bool isInitialized() const override { return m_constants; }
+
+  void initialize() override {
+    if (!isReady()) {
+      return;
+    }
+
+    m_constants = &Database::instance()->gameConstants.value();
+  }
+
 private:
-  int m_categoryStart;
-  int m_categoryEnd;
+  int m_categoryStart{};
+  int m_categoryEnd{};
   std::vector<int> m_headers;
   void drawAliasModal(GameConstants::Type type);
   static void setupTableHeaders();

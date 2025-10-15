@@ -13,7 +13,7 @@
 
 Preview::Preview(int commonId)
 : IDialogController("Preview") {
-  m_interpreter.emplace(Database::instance()->commonEvents.event(commonId)->commands());
+  m_interpreter.emplace(Database::instance()->commonEvents->event(commonId)->commands());
   for (const int frameIndex : m_interpreter.value().getKeyFrames()) {
     m_keyFrames.push_back(frameIndex);
   }

@@ -11,6 +11,8 @@ void DBTemplatesTab::draw() {
 
   ImGui::BeginChild("##orpg_templates_editor");
   {
+    // TODO: Rewrite more cleanly using layouts, also fix pointer assumptions
+
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 10.f);
     ImGui::BeginGroup();
     {
@@ -46,10 +48,10 @@ void DBTemplatesTab::draw() {
       ImGui::EndDisabled();
       ImGui::SameLine();
 
-      ImGui::BeginDisabled(!(m_hasChanges || m_currentTemplate->hasChanges() || m_templateType == 0) || m_templates->templates.size() < 1);
+      ImGui::BeginDisabled(!(m_hasChanges || (m_currentTemplate && m_currentTemplate->hasChanges()) || m_templateType == 0) || m_templates->templates.size() < 1);
       if (ImGui::Button("Apply", ImVec2{300, 0})) {
         SaveChanges();
-        if (m_templates->serialize(m_parent->project()->database().basePath + "data/Templates.json")) {
+        if (m_templates->serialize(Database::instance()->basePath / "data/Templates.json")) {
           ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Serialized data/Templates.json successfully!"});
         } else {
           ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to serialize data/Templates.json!"});
@@ -138,7 +140,7 @@ void DBTemplatesTab::draw() {
       {
         if (m_templateType == 0) {
           m_commandEditor.draw();
-        } else {
+        } else if (m_currentTemplate) {
           m_currentTemplate->draw();
         }
         ImGui::EndGroup();
@@ -179,7 +181,7 @@ void DBTemplatesTab::SaveChanges() {
     nlohmann::ordered_json cmdJson;
     CommandParser::serialize(cmdJson, m_currentCommands);
     m_templates->templates.at(m_selection).setCommands(cmdJson.dump());
-  } else if (m_templates->templates.at(m_selection).type() == Template::TemplateType::Tint) {
+  } else if (m_templates->templates.at(m_selection).type() == Template::TemplateType::Tint && m_currentTemplate) {
     nlohmann::ordered_json cmdJson;
     CommandParser::serialize(cmdJson, m_currentCommands);
     m_templates->templates.at(m_selection).setCommands(cmdJson.dump());
@@ -205,7 +207,7 @@ void DBTemplatesTab::AddTemplate(const std::string& label, const Template::Templ
 }
 
 void DBTemplatesTab::SaveToFile() const {
-  if (m_templates->serialize(Database::instance()->basePath + "data/Templates.json")) {
+  if (m_templates->serialize(Database::instance()->basePath / "data/Templates.json")) {
     ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, "Serialized data/Templates.json successfully!"});
   } else {
     ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, "Failed to serialize data/Templates.json!"});

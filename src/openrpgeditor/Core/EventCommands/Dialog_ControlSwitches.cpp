@@ -35,7 +35,7 @@ std::tuple<bool, bool> Dialog_ControlSwitches::draw() {
             ImGui::BeginDisabled(m_operation != 0);
             {
               if (ImGui::EllipsesButton(m_operation != 0 ? "##control_switches_switch_empty" : (m_start == 0 ? "" : Database::instance()->switchNameAndId(m_start)).c_str(), ImVec2{-1, 0})) {
-                picker.emplace(VariableSwitchPicker::Type::Switch, Database::instance()->system.switches(), m_start);
+                picker.emplace(VariableSwitchPicker::Type::Switch, Database::instance()->system->switches(), m_start);
                 picker->setOpen(true);
               }
             }

@@ -42,7 +42,7 @@ struct ConditionalBranchCommand final : IEventCommand {
         return variable.source == VariableComparisonSource::Variable && variable.otherId == targetId;
       }
       if (type == ConditionType::Script) {
-        std::string cnst = Database::instance()->gameConstants.variables[targetId];
+        std::string cnst = Database::instance()->gameConstants->variables[targetId];
         if (cnst.empty()) {
           return false;
         }
@@ -53,7 +53,7 @@ struct ConditionalBranchCommand final : IEventCommand {
     }
     if (searchType == SearchType::Switch) {
       if (type == ConditionType::Script) {
-        std::string cnst = Database::instance()->gameConstants.switches[targetId];
+        std::string cnst = Database::instance()->gameConstants->switches[targetId];
         if (cnst.empty()) {
           // Return a warning, we want everything to have a constant
           return false;

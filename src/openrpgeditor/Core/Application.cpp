@@ -333,7 +333,7 @@ void Application::updateFonts() {
 void Application::serializeSettings() {
   size_t len = 0;
   const char* state = ImGui::SaveIniSettingsToMemory(&len);
-  if (!Database::instance()) {
+  if (!Database::instance() || Database::instance()->basePath.empty()) {
 
     m_settings.imguiState = {state, len};
   } else {

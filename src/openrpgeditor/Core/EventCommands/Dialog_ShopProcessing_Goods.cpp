@@ -36,7 +36,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
             ImGui::BeginDisabled(m_typeSelection != 0);
             {
               if (ImGui::EllipsesButton(m_typeSelection != 0 ? "##shop_processing_goods_merchandise_item_button" : Database::instance()->itemNameAndId(m_itemSelection).c_str(), ImVec2{-1, 0})) {
-                m_itemPicker.emplace(Database::instance()->items.items(), m_itemSelection);
+                m_itemPicker.emplace(Database::instance()->items->items(), m_itemSelection);
                 m_itemPicker->setOpen(true);
               }
             }
@@ -44,7 +44,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
             ImGui::BeginDisabled(m_typeSelection != 1);
             {
               if (ImGui::EllipsesButton(m_typeSelection != 1 ? "##shop_processing_goods_merchandise_weapon_button" : Database::instance()->weaponNameAndId(m_weaponSelection).c_str(), ImVec2{-1, 0})) {
-                m_weaponPicker.emplace(Database::instance()->weapons.weapons(), m_weaponSelection);
+                m_weaponPicker.emplace(Database::instance()->weapons->weapons(), m_weaponSelection);
                 m_weaponPicker->setOpen(true);
               }
             }
@@ -52,7 +52,7 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
             ImGui::BeginDisabled(m_typeSelection != 2);
             {
               if (ImGui::EllipsesButton(m_typeSelection != 2 ? "##shop_processing_goods_merchandise_armor_button" : Database::instance()->armorNameAndId(m_armorSelection).c_str(), ImVec2{-1, 0})) {
-                m_armorPicker.emplace(Database::instance()->armors.armors(), m_armorSelection);
+                m_armorPicker.emplace(Database::instance()->armors->armors(), m_armorSelection);
                 m_armorPicker->setOpen(true);
               }
             }
@@ -120,13 +120,13 @@ std::tuple<bool, bool> Dialog_ShopProcessing_Goods::draw() {
           if (m_command->priceType == PriceType::Standard) {
             switch (m_command->type) {
             case ShopType::Armor:
-              m_command->price = Database::instance()->armors.armor(m_command->id)->price();
+              m_command->price = Database::instance()->armors->armor(m_command->id)->price();
               break;
             case ShopType::Weapon:
-              m_command->price = Database::instance()->weapons.weapon(m_command->id)->price();
+              m_command->price = Database::instance()->weapons->weapon(m_command->id)->price();
               break;
             case ShopType::Item:
-              m_command->price = Database::instance()->items.item(m_command->id)->price();
+              m_command->price = Database::instance()->items->item(m_command->id)->price();
               break;
             }
           } else {

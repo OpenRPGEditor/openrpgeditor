@@ -5,21 +5,15 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBItemsTab::DBItemsTab(Items& items, DatabaseEditor* parent)
-: IDBEditorTab(parent)
-, m_items(items) {
-  m_selectedItem = m_items.item(1);
-  if (m_selectedItem) {
-    m_effectsEditor.setEffects(&m_selectedItem->effects());
-  }
-}
+DBItemsTab::DBItemsTab(DatabaseEditor* parent)
+: IDBEditorTab(parent) {}
 
 void DBItemsTab::draw() {
   if (!m_itemButtonTexture) {
     m_itemButtonTexture.emplace();
     m_itemButtonTexture->setSize(48, 48);
     if (!m_itemSheet) {
-      m_itemSheet.emplace(*m_parent->getIconSheet());
+      m_itemSheet.emplace("IconSheet");
     }
   }
 
@@ -50,16 +44,16 @@ void DBItemsTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            for (auto& skill_ : m_items.items()) {
-              if (skill_.id() == 0) {
+            for (auto& item : m_items->items()) {
+              if (item.id() == 0) {
                 continue;
               }
 
               char name[4096];
-              snprintf(name, 4096, "%04i %s", skill_.id(), skill_.name().c_str());
-              if (ImGui::Selectable(name, &skill_ == m_selectedItem) || (ImGui::IsItemFocused() && m_selectedItem != &skill_)) {
-                if (m_selectedItem != &skill_) {
-                  m_selectedItem = &skill_;
+              snprintf(name, 4096, "%04i %s", item.id(), item.name().c_str());
+              if (ImGui::Selectable(name, &item == m_selectedItem) || (ImGui::IsItemFocused() && m_selectedItem != &item)) {
+                if (m_selectedItem != &item) {
+                  m_selectedItem = &item;
                   m_effectsEditor.setEffects(&m_selectedItem->effects());
                   m_itemButtonTexture->clear();
                 }
@@ -70,11 +64,11 @@ void DBItemsTab::draw() {
         }
         ImGui::EndChild();
         char str[4096];
-        snprintf(str, 4096, "Max Items %i", m_items.count());
+        snprintf(str, 4096, "Max Items %i", m_items->count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
           m_changeIntDialogOpen = true;
-          m_editMaxItems = m_items.count();
+          m_editMaxItems = m_items->count();
         }
       }
       ImGui::EndGroup();
@@ -281,7 +275,7 @@ void DBItemsTab::draw() {
                                   : m_selectedItem->animationId() == 0 ? "None"
                                                                        : Database::instance()->animationName(m_selectedItem->animationId()).c_str(),
                                   ImVec2{200 - 15, 0})) {
-                  m_animationPicker = AnimationPicker(Database::instance()->animations.animations(), m_selectedItem->animationId());
+                  m_animationPicker = AnimationPicker(Database::instance()->animations->animations(), m_selectedItem->animationId());
                   m_animationPicker->setOpen(true);
                 }
                 ImGui::PopID();
@@ -338,14 +332,14 @@ void DBItemsTab::draw() {
         ImGui::Text("Are you sure?");
         if (ImGui::Button("Yes")) {
           const int tmpId = m_selectedItem->id();
-          m_items.resize(m_editMaxItems);
-          m_selectedItem = m_items.item(tmpId);
+          m_items->resize(m_editMaxItems);
+          m_selectedItem = m_items->item(tmpId);
           m_changeIntDialogOpen = false;
           m_changeConfirmDialogOpen = false;
         }
         ImGui::SameLine();
         if (ImGui::Button("Cancel")) {
-          m_editMaxItems = m_items.count();
+          m_editMaxItems = m_items->count();
           m_changeIntDialogOpen = false;
           m_changeConfirmDialogOpen = false;
         }

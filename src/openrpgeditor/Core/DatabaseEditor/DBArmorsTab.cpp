@@ -6,21 +6,17 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBArmorsTab::DBArmorsTab(Armors& Armors, DatabaseEditor* parent)
+DBArmorsTab::DBArmorsTab(DatabaseEditor* parent)
 : IDBEditorTab(parent)
-, m_armors(Armors) {
-  m_selectedArmor = m_armors.armor(1);
-  if (m_selectedArmor) {
-    m_traitsEditor.setTraits(&m_selectedArmor->traits());
-  }
-}
+, m_categoryStart(0)
+, m_categoryEnd(0) {}
 
 void DBArmorsTab::draw() {
   if (!m_itemButtonTexture) {
     m_itemButtonTexture.emplace();
     m_itemButtonTexture->setSize(38, 38);
     if (!m_itemSheet) {
-      m_itemSheet.emplace(*m_parent->getIconSheet());
+      m_itemSheet.emplace("IconSheet");
     }
     const auto& [uv0, uv1] = m_itemSheet.value().rectForId(m_selectedArmor->iconIndex());
     const Point offset{static_cast<int>(uv0.x() * m_itemSheet.value().texture().width()), static_cast<int>(uv0.y() * m_itemSheet.value().texture().height())};
@@ -38,7 +34,7 @@ void DBArmorsTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            for (auto& armor : m_armors.armors()) {
+            for (auto& armor : m_armors->armors()) {
               if (armor.id() == 0) {
                 continue;
               }
@@ -56,11 +52,11 @@ void DBArmorsTab::draw() {
         }
         ImGui::EndChild();
         char str[4096];
-        snprintf(str, 4096, "Max Armors %i", m_armors.count());
+        snprintf(str, 4096, "Max Armors %i", m_armors->count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - (8), 0})) {
           m_changeIntDialogOpen = true;
-          m_editMaxArmors = m_armors.count();
+          m_editMaxArmors = m_armors->count();
         }
       }
       ImGui::EndGroup();
@@ -113,16 +109,16 @@ void DBArmorsTab::draw() {
             {
               ImGui::Text("Armor Type:");
               ImGui::SetNextItemWidth(170);
-              if (ImGui::BeginCombo("##orpg_database_armors_atype", Database::instance()->system.armorType(m_selectedArmor->atypeId()).c_str())) {
+              if (ImGui::BeginCombo("##orpg_database_armors_atype", Database::instance()->system->armorType(m_selectedArmor->atypeId()).c_str())) {
                 int index{0};
-                for (auto v : Database::instance()->system.armorTypes()) {
+                for (auto v : Database::instance()->system->armorTypes()) {
                   bool selected = index == m_selectedArmor->atypeId();
                   if (index == 0) {
                     if (ImGui::Selectable(std::format("None##_{}", index).c_str(), selected)) {
                       m_selectedArmor->setAtypeId(index);
                     }
                   } else {
-                    if (ImGui::Selectable(Database::instance()->system.armorType(index) == "" ? std::format("#{:02}", index).c_str() : std::format("{}##_{}", v, index).c_str(), selected)) {
+                    if (ImGui::Selectable(Database::instance()->system->armorType(index) == "" ? std::format("#{:02}", index).c_str() : std::format("{}##_{}", v, index).c_str(), selected)) {
                       m_selectedArmor->setAtypeId(index);
                     }
                   }
@@ -294,8 +290,8 @@ void DBArmorsTab::draw() {
           ImGui::Text("Are you sure?");
           if (ImGui::Button("Yes")) {
             const int tmpId = m_selectedArmor->id();
-            m_armors.resize(m_editMaxArmors);
-            m_selectedArmor = m_armors.armor(tmpId);
+            m_armors->resize(m_editMaxArmors);
+            m_selectedArmor = m_armors->armor(tmpId);
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }

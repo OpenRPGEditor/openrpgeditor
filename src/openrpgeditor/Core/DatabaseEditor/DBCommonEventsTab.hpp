@@ -5,31 +5,55 @@
 #include "Database/CommonEvents.hpp"
 
 struct DBCommonEventsTab : IDBEditorTab {
-  DBCommonEventsTab() = delete;
-  explicit DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor* parent);
+  explicit DBCommonEventsTab(DatabaseEditor* parent);
+  ~DBCommonEventsTab() override {
+    if (m_instance == this) {
+      m_instance = nullptr;
+    }
+  }
   void draw() override;
 
-  [[nodiscard]] std::vector<std::optional<CommonEvent>>& events() { return m_events.events(); }
-  [[nodiscard]] const std::vector<std::optional<CommonEvent>>& events() const { return m_events.events(); }
-
-  [[nodiscard]] CommonEvent* event(int id) { return m_events.event(id); }
-  [[nodiscard]] const CommonEvent* event(int id) const { return m_events.event(id); }
   std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(int index) override { return m_headers.at(index); }
+  int getHeader(const int index) override { return m_headers.at(index); }
   bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(int start, int end) override {
+  void setHeaderRange(const int start, const int end) override {
     m_categoryStart = start;
     m_categoryEnd = end;
   }
-  std::string getName(int index) override { return m_events.event(index)->name(); }
-  int getCount() override { return m_events.count(); }
-  int getSelectedIndex() { return m_selectedCommonEvent ? m_selectedCommonEvent->id() : 0; }
+  std::string getName(const int index) override { return m_events->event(index)->name(); }
+  int getCount() override { return m_events->count(); }
+  int getSelectedIndex() const { return m_selectedCommonEvent ? m_selectedCommonEvent->id() : 0; }
 
   [[nodiscard]] std::string tabName() const override { return tr("Common Events"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBCommonEventsTab"sv; };
 
+  [[nodiscard]] bool isReady() const override { return Database::instance()->system && Database::instance()->commonEvents; }
+
+  void initialize() override {
+    if (!isReady()) {
+      return;
+    }
+
+    m_events = &Database::instance()->commonEvents.value();
+
+    m_selectedCommonEvent = m_events->event(1);
+    m_commandEditor.setCommands(&m_selectedCommonEvent->commands());
+
+    for (const auto& cmn : m_events->events()) {
+      if (cmn.has_value()) {
+        if (hasUnicodeFormatting(cmn.value().name())) {
+          m_headers.push_back(cmn.value().id());
+        }
+      }
+    }
+  }
+  bool isInitialized() const override { return m_events; }
+
+  static DBCommonEventsTab* instance() { return m_instance; }
+
 private:
-  CommonEvents& m_events;
+  static DBCommonEventsTab* m_instance;
+  CommonEvents* m_events = nullptr;
   CommonEvent* m_selectedCommonEvent{};
   EventCommandEditor m_commandEditor;
   std::optional<VariableSwitchPicker> picker;

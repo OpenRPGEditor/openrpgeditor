@@ -8,23 +8,8 @@
 #include <cstring>
 #include <misc/cpp/imgui_stdlib.h>
 #include <numeric>
-DBDocTab::DBDocTab(Docs& docs, DatabaseEditor* parent)
-: IDBEditorTab(parent)
-, m_docs(&docs) {
-  if (m_docs->docs.size() == 0) {
-    Doc doc;
-
-    doc.setNames({"Example Name 1", "Example Name 2", "Example Name 3"});
-    doc.setTexts({" Example Text 1", "Example Text 2", "Example Test 3"});
-
-    m_docs->docs.emplace_back(doc);
-
-    Save();
-  }
-  m_names = m_docs->docs.front().names();
-  m_texts = m_docs->docs.front().texts();
-
-  createHeaders();
+DBDocTab::DBDocTab(DatabaseEditor* parent)
+: IDBEditorTab(parent){
 }
 
 void DBDocTab::draw() {

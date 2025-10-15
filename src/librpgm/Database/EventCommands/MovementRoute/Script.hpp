@@ -15,7 +15,7 @@ struct MovementScriptCommand final : IMovementRouteStep {
   std::string script;
   bool hasReference(int targetId, SearchType type) override {
     if (type == SearchType::Variable) {
-      std::string cnst = Database::instance()->gameConstants.variables[targetId];
+      std::string cnst = Database::instance()->gameConstants->variables[targetId];
       if (cnst.empty()) {
         return false;
       }
@@ -24,7 +24,7 @@ struct MovementScriptCommand final : IMovementRouteStep {
       }
     }
     if (type == SearchType::Switch) {
-      std::string cnst = Database::instance()->gameConstants.switches[targetId];
+      std::string cnst = Database::instance()->gameConstants->switches[targetId];
       if (cnst.empty()) {
         return false;
       }

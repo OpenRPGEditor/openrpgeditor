@@ -14,7 +14,7 @@ struct SetVehicleLocationCommand final : IEventCommand {
 
   VehicleType vehicle = VehicleType::Boat;
   TransferMode mode = TransferMode::Direct;
-  int mapId = Database::instance()->mapInfos.currentMap() != nullptr ? Database::instance()->mapInfos.currentMap()->id() : 1;
+  int mapId = Database::instance()->mapInfos->currentMap() != nullptr ? Database::instance()->mapInfos->currentMap()->id() : 1;
   int x{0};
   int y{0};
 };

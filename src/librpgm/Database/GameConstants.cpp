@@ -32,8 +32,8 @@ void from_json(const nlohmann::ordered_json& json, GameConstants& constants) {
   constants.generateJS = json.value("generateJS", constants.generateJS);
 }
 
-GameConstants GameConstants::load(std::string_view path) {
-  if (std::ifstream file(path.data()); file.is_open()) {
+GameConstants GameConstants::load(const std::filesystem::path& path) {
+  if (std::ifstream file(path); file.is_open()) {
     try {
       nlohmann::json data = nlohmann::ordered_json::parse(file);
       GameConstants ret;
@@ -45,8 +45,8 @@ GameConstants GameConstants::load(std::string_view path) {
   return {};
 }
 
-bool GameConstants::serialize(const std::string_view path) {
-  std::ofstream file(path.data());
+bool GameConstants::serialize(const std::filesystem::path& path) {
+  std::ofstream file(path);
   try {
     if (file.is_open()) {
       const nlohmann::ordered_json data = *this;
@@ -58,15 +58,19 @@ bool GameConstants::serialize(const std::string_view path) {
 }
 
 void GameConstants::requestMaps() {
+  if (!Database::instance()->mapInfos) {
+    return;
+  }
+  
   for (const auto& id : maps | std::views::keys) {
-    if (Database::instance()->mapInfos.map(id)) {
-      Database::instance()->mapInfos.map(id)->map();
+    if (Database::instance()->mapInfos->map(id)) {
+      Database::instance()->mapInfos->map(id)->map();
     }
   }
 }
 
-bool GameConstants::generateConstantsJS(std::string_view path) {
-  std::ofstream file(path.data());
+bool GameConstants::generateConstantsJS(const std::filesystem::path& path) {
+  std::ofstream file(path);
   if (!file.is_open()) {
     return false;
   }
@@ -82,7 +86,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
         " * @summary Exported Variable \"{}\" ({})\n"
         " * @readonly\n"
         " */\n",
-        alias, Database::instance()->system.variable(id), id);
+        alias, Database::instance()->system->variable(id), id);
     file << std::format("const VAR_{} = {};\n", alias, id);
   }
   file << "\n/* -----------------SWITCHES------------------ */\n";
@@ -94,12 +98,12 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
         " * @summary Exported Switch \"{}\" ({})\n"
         " * @readonly\n"
         " */\n",
-        alias, Database::instance()->system.switche(id), id);
+        alias, Database::instance()->system->switche(id), id);
     file << std::format("const SW_{} = {};\n", alias, id);
   }
   file << "\n/* ------------------ACTORS------------------- */\n";
   for (const auto& [id, alias] : actors) {
-    auto act = Database::instance()->actors.actor(id);
+    auto act = Database::instance()->actors->actor(id);
     file << std::format(
         "\n"
         "/*\n"
@@ -127,7 +131,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
 
   file << "\n/* ------------------CLASSES------------------ */\n";
   for (const auto& [id, alias] : classes) {
-    auto cls = Database::instance()->classes.classType(id);
+    auto cls = Database::instance()->classes->classType(id);
     file << std::format(
         "\n"
         "/*\n"
@@ -148,7 +152,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
 
   file << "\n/* ------------------SKILLS------------------- */\n";
   for (const auto& [id, alias] : skills) {
-    auto skill = Database::instance()->skills.skill(id);
+    auto skill = Database::instance()->skills->skill(id);
     file << std::format(
         "\n"
         "/*\n"
@@ -169,7 +173,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
 
   file << "\n/* ------------------ITEMS-------------------- */\n";
   for (const auto& [id, alias] : items) {
-    auto itm = Database::instance()->items.item(id);
+    auto itm = Database::instance()->items->item(id);
     file << std::format(
         "\n"
         "/*\n"
@@ -190,7 +194,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
 
   file << "\n/* ------------------WEAPONS------------------ */\n";
   for (const auto& [id, alias] : weapons) {
-    auto wpn = Database::instance()->weapons.weapon(id);
+    auto wpn = Database::instance()->weapons->weapon(id);
     file << std::format(
         "\n"
         "/*\n"
@@ -210,7 +214,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
   }
   file << "\n/* ------------------ARMORS------------------- */\n";
   for (const auto& [id, alias] : armors) {
-    auto arm = Database::instance()->armors.armor(id);
+    auto arm = Database::instance()->armors->armor(id);
     file << std::format(
         "\n"
         "/* @name ARM_{}\n"
@@ -229,7 +233,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
   }
   file << "\n/* ------------------ENEMIES------------------ */\n";
   for (const auto& [id, alias] : enemies) {
-    auto enm = Database::instance()->enemies.enemy(id);
+    auto enm = Database::instance()->enemies->enemy(id);
     file << std::format(
         "\n"
         "/*\n"
@@ -249,7 +253,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
   }
   file << "\n/* ------------------TROOPS------------------- */\n";
   for (const auto& [id, alias] : troops) {
-    auto trp = Database::instance()->troops.troop(id);
+    auto trp = Database::instance()->troops->troop(id);
     file << std::format(
         "\n"
         "/*\n"
@@ -262,7 +266,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
   }
   file << "\n/* ------------------STATES------------------- */\n";
   for (const auto& [id, alias] : states) {
-    auto sta = Database::instance()->states.state(id);
+    auto sta = Database::instance()->states->state(id);
     file << std::format(
         "\n"
         "/*\n"
@@ -282,7 +286,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
   }
   file << "\n/* -----------------ANIMATIONS------------------ */\n";
   for (const auto& [id, alias] : animations) {
-    auto tls = Database::instance()->animations.animation(id);
+    auto tls = Database::instance()->animations->animation(id);
     file << std::format(
         "\n"
         "/*\n"
@@ -295,7 +299,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
   }
   file << "\n/* -----------------TILESETS------------------ */\n";
   for (const auto& [id, alias] : tilesets) {
-    auto tls = Database::instance()->tilesets.tileset(id);
+    auto tls = Database::instance()->tilesets->tileset(id);
     file << std::format(
         "\n"
         "/*\n"
@@ -316,7 +320,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
 
   file << "\n/* ---------------COMMON EVENTS--------------- */\n";
   for (const auto& [id, alias] : commonEvents) {
-    auto ce = Database::instance()->commonEvents.event(id);
+    auto ce = Database::instance()->commonEvents->event(id);
     file << std::format(
         "\n"
         "/*\n"
@@ -330,7 +334,7 @@ bool GameConstants::generateConstantsJS(std::string_view path) {
 
   file << "\n/* -------------------MAPS-------------------- */\n";
   for (const auto& [id, alias] : maps) {
-    auto mapInfo = Database::instance()->mapInfos.map(id);
+    auto mapInfo = Database::instance()->mapInfos->map(id);
     file << std::format(
         "\n"
         "/*\n"

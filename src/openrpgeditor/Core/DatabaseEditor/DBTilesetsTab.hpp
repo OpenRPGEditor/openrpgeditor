@@ -2,39 +2,48 @@
 #include "Core/CommonUI/ImagePicker.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/TileMarker.hpp"
-#include "DBCommonEventsTab.hpp"
 #include "Database/Tilesets.hpp"
+#include "DBCommonEventsTab.hpp"
 
 class DBTilesetsTab final : public IDBEditorTab {
 public:
   DBTilesetsTab() = delete;
-  explicit DBTilesetsTab(Tilesets& tilesets, DatabaseEditor* parent);
+  explicit DBTilesetsTab(DatabaseEditor* parent);
   void draw() override;
 
-  [[nodiscard]] std::vector<Tileset>& tilesets() { return m_tilesets.tilesets(); }
-  [[nodiscard]] const std::vector<Tileset>& tilesets() const { return m_tilesets.tilesets(); }
-
-  [[nodiscard]] Tileset* tileset(const int id) { return m_tilesets.tileset(id); }
-  [[nodiscard]] const Tileset* tileset(const int id) const { return m_tilesets.tileset(id); }
   std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(int index) override { return m_headers.at(index); }
+  int getHeader(const int index) override { return m_headers.at(index); }
   bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(int start, int end) override {
+  void setHeaderRange(const int start, const int end) override {
     m_categoryStart = start;
     m_categoryEnd = end;
   }
 
-  std::string getName(int index) override { return m_tilesets.tileset(index)->name(); }
-  int getCount() override { return m_tilesets.count(); }
+  std::string getName(const int index) override { return m_tilesets->tileset(index)->name(); }
+  int getCount() override { return m_tilesets->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Tilesets"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTilesetsTab"sv; };
+
+  bool isReady() const override { return !!Database::instance()->tilesets; }
+  bool isInitialized() const override { return m_tilesets; }
+
+  void initialize() override {
+    if (!isReady()) {
+      return;
+    }
+
+    m_tilesets = &Database::instance()->tilesets.value();
+    m_selectedTileset = m_tilesets->tileset(1);
+    m_tileMarker.emplace(TileFlags::None, 1, 256, 320);
+    m_maxTilesets = m_tilesets->count();
+  }
 
 private:
   int m_categoryStart;
   int m_categoryEnd;
   std::vector<int> m_headers;
-  Tilesets& m_tilesets;
+  Tilesets* m_tilesets{};
   Tileset* m_selectedTileset{};
   int m_maxTilesets{};
   int m_editMaxTilesets{};

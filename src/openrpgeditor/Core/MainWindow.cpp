@@ -114,27 +114,10 @@ bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
   FileQueue::instance().reset();
   FileQueue::instance().setBasepath(basePath);
   ResourceManager::instance()->setBasepath(basePath);
-  m_databaseEditor.emplace(this);
+  m_databaseEditor.emplace();
   m_databaseEditor->onReady.connect<&MainWindow::onDatabaseReady>(this);
 
   m_database.emplace(basePath, filePath, version, isMZ);
-  m_database->actorsLoaded().connect<&MainWindow::onActorsLoaded>(this);
-  m_database->classesLoaded().connect<&MainWindow::onClassesLoaded>(this);
-  m_database->skillsLoaded().connect<&MainWindow::onSkillsLoaded>(this);
-  m_database->itemsLoaded().connect<&MainWindow::onItemsLoaded>(this);
-  m_database->weaponsLoaded().connect<&MainWindow::onWeaponsLoaded>(this);
-  m_database->armorsLoaded().connect<&MainWindow::onArmorsLoaded>(this);
-  m_database->enemiesLoaded().connect<&MainWindow::onEnemiesLoaded>(this);
-  m_database->troopsLoaded().connect<&MainWindow::onTroopsLoaded>(this);
-  m_database->statesLoaded().connect<&MainWindow::onStatesLoaded>(this);
-  m_database->animationsLoaded().connect<&MainWindow::onAnimationsLoaded>(this);
-  m_database->tilesetsLoaded().connect<&MainWindow::onTilesetsLoaded>(this);
-  m_database->commonEventsLoaded().connect<&MainWindow::onCommonEventsLoaded>(this);
-  m_database->systemLoaded().connect<&MainWindow::onSystemLoaded>(this);
-  m_database->gameConstantsLoaded().connect<&MainWindow::onGameConstantsLoaded>(this);
-  m_database->templatesLoaded().connect<&MainWindow::onTemplatesLoaded>(this);
-  m_database->docsLoaded().connect<&MainWindow::onDocsLoaded>(this);
-  m_database->localesLoaded().connect<&MainWindow::onLocalesLoaded>(this);
   m_database->databaseModified().connect<&MainWindow::onDatabaseModified>(this);
   m_database->load();
 
@@ -148,18 +131,18 @@ void MainWindow::save() {
   size_t len = 0;
   const auto state = ImGui::SaveIniSettingsToMemory(&len);
   m_database->transient.imguiState = std::string(state, len);
-  m_database->system.setVersionId(floor(rand() * 100000000));
+  m_database->system->setVersionId(floor(rand() * 100000000));
   m_database->serializeProject();
-  if (const auto projectPath = std::filesystem::path(m_database->basePath) / "package.json"; exists(projectPath)) {
+  if (const auto projectPath = m_database->basePath / "package.json"; exists(projectPath)) {
     nlohmann::ordered_json package;
     if (std::ifstream file(projectPath); file.good()) {
       package = nlohmann::ordered_json::parse(file);
     }
 
     if (!package.empty()) {
-      package["name"] = m_database->system.gameTitle();
+      package["name"] = m_database->system->gameTitle();
       if (package.contains("window") && package["window"].is_object()) {
-        package["window"]["title"] = m_database->system.gameTitle();
+        package["window"]["title"] = m_database->system->gameTitle();
       }
 
       if (std::ofstream file(projectPath); file.good()) {
@@ -181,11 +164,11 @@ std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
       {
         ImGui::TextUnformatted(trFormat("\"{0}\" at \"{1}\"\n"
                                         "Has unsaved changes, would you like to save?",
-                                        m_database->system.gameTitle().empty() ? trNOOP("Untitled Project") : m_database->system.gameTitle(), m_database->basePath)
+                                        m_database->system->gameTitle().empty() ? trNOOP("Untitled Project") : m_database->system->gameTitle(), m_database->basePath.generic_string())
                                    .c_str());
         ImGui::BeginHorizontal("###save_changes_buttons_outer");
         {
-          ImGui::Checkbox(trNOOP("Generate `js/Constants.js`"), &m_database->gameConstants.generateJS);
+          ImGui::Checkbox(trNOOP("Generate `js/Constants.js`"), &m_database->gameConstants->generateJS);
           ImGui::SetItemTooltip("%s", trNOOP("Generates a Javascript file with constants for any element defined\n"
                                              "`Database Editor -> Game Constants`\n"
                                              "This could take a few minutes."));
@@ -199,10 +182,10 @@ std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
     }
 
     if (ret == 0) { // Yes
-      if (m_database && m_database->gameConstants.generateJS) {
+      if (m_database && m_database->gameConstants->generateJS) {
         /* Clear any loading files */
         FileQueue::instance().reset();
-        m_database->mapInfos.loadAllMaps();
+        m_database->mapInfos->loadAllMaps();
       }
       save();
       return {true, true, true};
@@ -977,7 +960,7 @@ void MainWindow::drawMenu() {
       }
       ImGui::Separator();
       if (ImGui::MenuItem(trNOOP("Open Folder"), nullptr, false, m_databaseEditor != std::nullopt)) {
-        SDL_OpenURL(std::format("file://{}", m_database->basePath).c_str());
+        SDL_OpenURL(std::format("file://{}", m_database->basePath.generic_string()).c_str());
       }
       ImGui::EndMenu();
     }
@@ -1131,58 +1114,40 @@ void MainWindow::setMap(MapInfo& in) {
   m_mapListView.setCurrentMapId(in.id(), true);
   if (m_mapListView.currentMapInfo()) {
     m_mapEditor.setMap(&in);
-    m_database->mapInfos.setCurrentMap(&in);
+    m_database->mapInfos->setCurrentMap(&in);
     m_mapProperties.setMapInfo(&in);
   } else {
     m_mapEditor.setMap(nullptr);
-    m_database->mapInfos.setCurrentMap(nullptr);
+    m_database->mapInfos->setCurrentMap(nullptr);
     m_mapProperties.setMapInfo(nullptr);
   }
 
-  m_database->system.setEditMapId(in.id());
+  m_database->system->setEditMapId(in.id());
 
   SDL_SetCursor(SDL_GetDefaultCursor());
 }
 
-void MainWindow::onActorsLoaded() { m_databaseEditor->setActors(m_database->actors); }
-void MainWindow::onClassesLoaded() { m_databaseEditor->setClasses(m_database->classes); }
-void MainWindow::onSkillsLoaded() { m_databaseEditor->setSkills(m_database->skills); }
-void MainWindow::onItemsLoaded() { m_databaseEditor->setItems(m_database->items); }
-void MainWindow::onWeaponsLoaded() { m_databaseEditor->setWeapons(m_database->weapons); }
-void MainWindow::onArmorsLoaded() { m_databaseEditor->setArmors(m_database->armors); }
-void MainWindow::onEnemiesLoaded() { m_databaseEditor->setEnemies(m_database->enemies); }
-void MainWindow::onTroopsLoaded() { m_databaseEditor->setTroops(m_database->troops); }
-void MainWindow::onStatesLoaded() { m_databaseEditor->setStates(m_database->states); }
-void MainWindow::onAnimationsLoaded() { m_databaseEditor->setAnimations(m_database->animations); }
-void MainWindow::onTilesetsLoaded() { m_databaseEditor->setTilesets(m_database->tilesets); }
-void MainWindow::onCommonEventsLoaded() { m_databaseEditor->setCommonEvents(m_database->commonEvents); }
-void MainWindow::onSystemLoaded() { m_databaseEditor->setSystem(m_database->system); }
-void MainWindow::onGameConstantsLoaded() { m_databaseEditor->setGameConstants(m_database->gameConstants); }
-void MainWindow::onTemplatesLoaded() { m_databaseEditor->setTemplates(m_database->templates); }
-void MainWindow::onDocsLoaded() { m_databaseEditor->setDocs(m_database->docs); }
-void MainWindow::onLocalesLoaded() { m_databaseEditor->setLocales(m_database->locales); }
-
 void MainWindow::onDatabaseReady() {
-  MapInfo* info = m_database->mapInfos.map(0);
+  MapInfo* info = m_database->mapInfos->map(0);
   Settings::instance()->lastProject = m_database->projectFilePath;
   info->setExpanded(true);
-  info->setName(m_database->system.gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system.gameTitle());
+  info->setName(m_database->system->gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system->gameTitle());
   APP_INFO("Loaded project!");
   // Load the previously loaded map
   m_mapEditor.clearLayers();
-  m_mapListView.setMapInfos(&m_database->mapInfos);
+  m_mapListView.setMapInfos(&m_database->mapInfos.value());
 
-  if (MapInfo* m = m_database->mapInfos.map(m_database->system.editMapId()); m != nullptr) {
+  if (MapInfo* m = m_database->mapInfos->map(m_database->system->editMapId()); m != nullptr) {
     setMap(*m);
   }
 
   if (const auto fileIt = std::ranges::find_if(Settings::instance()->mru, [this](const auto& t) { return t.first == m_database->projectFilePath; }); fileIt == Settings::instance()->mru.end()) {
     Settings::instance()->mru.emplace_front(m_database->projectFilePath,
-                                            m_database->system.gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system.gameTitle());
+                                            m_database->system->gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system->gameTitle());
   } else {
     Settings::instance()->mru.erase(fileIt);
     Settings::instance()->mru.emplace_front(m_database->projectFilePath,
-                                            m_database->system.gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system.gameTitle());
+                                            m_database->system->gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system->gameTitle());
   }
   while (Settings::instance()->mru.size() > Settings::instance()->maxMru) {
     Settings::instance()->mru.pop_back();
@@ -1192,13 +1157,13 @@ void MainWindow::onDatabaseReady() {
   m_databaseEditor->onReady.disconnect<&MainWindow::onDatabaseReady>(this);
 
   const auto gameTitle =
-      Database::instance()->system.gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().replace_extension().generic_string() : m_database->system.gameTitle();
+      Database::instance()->system->gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().replace_extension().generic_string() : m_database->system->gameTitle();
   App::APP->getWindow()->setTitle(std::format("{} - [{}]", kApplicationTitle, gameTitle));
 }
 
 void MainWindow::onDatabaseModified() {
   const auto gameTitle =
-      Database::instance()->system.gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().replace_extension().generic_string() : m_database->system.gameTitle();
+      Database::instance()->system->gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().replace_extension().generic_string() : m_database->system->gameTitle();
   const auto title = std::format("{} - [{}*]", kApplicationTitle, gameTitle);
   if (title != App::APP->getWindow()->getTitle()) {
     App::APP->getWindow()->setTitle(title);

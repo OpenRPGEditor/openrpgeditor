@@ -13,8 +13,8 @@ void to_json(nlohmann::ordered_json& j, const Docs& doc) {
 
 void from_json(const nlohmann::ordered_json& j, Docs& doc) { doc.docs = j.value("docs", doc.docs); }
 
-Docs Docs::load(std::string_view path) {
-  if (std::ifstream file(path.data()); file.is_open()) {
+Docs Docs::load(const std::filesystem::path& path) {
+  if (std::ifstream file(path); file.is_open()) {
     try {
       nlohmann::ordered_json data = nlohmann::ordered_json::parse(file);
       Docs ret;
@@ -26,8 +26,8 @@ Docs Docs::load(std::string_view path) {
   return {};
 }
 
-bool Docs::serialize(const std::string_view path) {
-  std::ofstream file(path.data());
+bool Docs::serialize(const std::filesystem::path& path) {
+  std::ofstream file(path);
   try {
     if (file.is_open()) {
       const nlohmann::ordered_json data = *this;

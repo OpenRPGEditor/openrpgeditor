@@ -112,9 +112,6 @@ public:
   MapInfo* currentMapInfo() { return m_mapListView.currentMapInfo(); }
   const MapInfo* currentMapInfo() const { return m_mapListView.currentMapInfo(); }
 
-  Troop* troop(int id) { return m_database->troops.troop(id); }
-  const Tileset* tileset(int id) const { return m_database->tilesets.tileset(id); }
-
   void setMap(MapInfo& in);
 
   Map* currentMap() { return m_mapEditor.map(); }
@@ -158,23 +155,6 @@ public:
   void preRender() { m_mapEditor.preRender(); }
 
 private:
-  void onActorsLoaded();
-  void onClassesLoaded();
-  void onSkillsLoaded();
-  void onItemsLoaded();
-  void onWeaponsLoaded();
-  void onArmorsLoaded();
-  void onEnemiesLoaded();
-  void onTroopsLoaded();
-  void onStatesLoaded();
-  void onAnimationsLoaded();
-  void onTilesetsLoaded();
-  void onCommonEventsLoaded();
-  void onSystemLoaded();
-  void onGameConstantsLoaded();
-  void onTemplatesLoaded();
-  void onDocsLoaded();
-  void onLocalesLoaded();
   void onDatabaseReady();
   void onDatabaseModified();
 

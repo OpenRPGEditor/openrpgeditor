@@ -23,14 +23,14 @@ std::string SetVehicleLocationCommand::stringRep(const Database& db, const bool 
   const auto suffix = ColorFormatter::popColor(colored);
 
   if (mode == TransferMode::Variable_Designation) {
-    auto varMap = db.system.variable(mapId);
-    auto varX = db.system.variable(x);
-    auto varY = db.system.variable(y);
+    auto varMap = db.system->variable(mapId);
+    auto varX = db.system->variable(x);
+    auto varY = db.system->variable(y);
     varMap = varMap.empty() ? std::format("#{:04}", mapId) : varMap;
     varX = varX.empty() ? std::format("#{:04}", x) : varX;
     varY = varY.empty() ? std::format("#{:04}", y) : varY;
     return prefix + std::format(" {{{}}} ({{{}}},{{{}}}) ", varMap, varX, varY) + suffix;
   }
-  const auto map = db.mapInfos.map(mapId);
+  const auto map = db.mapInfos->map(mapId);
   return prefix + std::format(" {} ({}, {})", map->name(), x, y) + suffix;
 }

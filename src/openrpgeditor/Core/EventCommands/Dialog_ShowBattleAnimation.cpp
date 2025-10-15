@@ -44,7 +44,7 @@ std::tuple<bool, bool> Dialog_ShowBattleAnimation::draw() {
       GroupBox animationGroupBox(trNOOP("Animation"), "##show_battle_animation_animation_group_box", {-1, 0});
       if (animationGroupBox.begin()) {
         if (ImGui::EllipsesButton(Database::instance()->animationNameAndId(m_animation).c_str(), {-1, 0})) {
-          m_animationPicker.emplace( Database::instance()->animations.animations(), m_animation);
+          m_animationPicker.emplace( Database::instance()->animations->animations(), m_animation);
           m_animationPicker->setOpen(true);
         }
       }

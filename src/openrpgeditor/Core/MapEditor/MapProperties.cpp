@@ -53,7 +53,7 @@ std::tuple<bool, bool> MapProperties::draw() {
       {
         ImGui::Text("%s", trNOOP("Tileset"));
         strncpy(buf, m_mapInfo->name().c_str(), 4096);
-        const auto& tilesetName = Database::instance()->tilesets.tileset(map()->tilesetId())->name();
+        const auto& tilesetName = Database::instance()->tilesets->tileset(map()->tilesetId())->name();
         ImGui::PushID("##map_tileset_button");
         if (ImGui::Button((tilesetName.empty() ? "##map_tileset_button_empty" : tilesetName).c_str(), ImVec2{ImGui::GetContentRegionAvail().x / 2, 0})) {}
         ImGui::PopID();

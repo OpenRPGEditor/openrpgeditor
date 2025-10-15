@@ -20,7 +20,7 @@ struct Dialog_ChangeActorImages : IEventDialogController {
   , m_command(cmd) {
     if (cmd == nullptr) {
       m_command.reset(new ChangeActorImageCommand());
-      const auto actor = Database::instance()->actors.actor(m_command->actor);
+      const auto actor = Database::instance()->actors->actor(m_command->actor);
       m_command->charPicture = actor->characterName();
       m_command->charIndex = actor->characterIndex();
       m_command->facePicture = actor->faceName();

@@ -20,8 +20,8 @@ void from_json(const nlohmann::ordered_json& json, LCF_Mapping& mapping) {
   mapping.characterName_mapping = json.value("characterName_mapping", mapping.characterName_mapping);
 }
 
-LCF_Mapping LCF_Mapping::load(std::string_view path) {
-  if (std::ifstream file(path.data()); file.is_open()) {
+LCF_Mapping LCF_Mapping::load(const std::filesystem::path& path) {
+  if (std::ifstream file(path); file.is_open()) {
     try {
       nlohmann::json data = nlohmann::ordered_json::parse(file);
       LCF_Mapping ret;
@@ -33,8 +33,8 @@ LCF_Mapping LCF_Mapping::load(std::string_view path) {
   return {};
 }
 
-bool LCF_Mapping::serialize(const std::string_view path) {
-  std::ofstream file(path.data());
+bool LCF_Mapping::serialize(const std::filesystem::path& path) {
+  std::ofstream file(path);
   try {
     if (file.is_open()) {
       const nlohmann::ordered_json data = *this;

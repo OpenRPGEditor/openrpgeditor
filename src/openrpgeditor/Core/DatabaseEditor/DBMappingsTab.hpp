@@ -1,13 +1,13 @@
 #pragma once
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/ReferenceSearch.hpp"
-#include "DBCommonEventsTab.hpp"
 #include "Database/System.hpp"
+#include "DBCommonEventsTab.hpp"
 
 class DBMappingsTab final : public IDBEditorTab {
 public:
   DBMappingsTab() = delete;
-  explicit DBMappingsTab(System& system, DatabaseEditor* parent);
+  explicit DBMappingsTab(DatabaseEditor* parent);
 
   bool isUnicodeFormatting(const std::string& text);
   void draw() override;
@@ -28,11 +28,26 @@ public:
   [[nodiscard]] std::string tabName() const override { return tr("Data Sorting"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBMappingsTab"sv; };
 
+  bool isReady() const override { return !!Database::instance()->system; }
+
+  bool isInitialized() const override { return m_system; }
+
+  void initialize() override {
+    if (!isReady()) {
+      return;
+    }
+
+    m_system = &Database::instance()->system.value();
+    m_switch_string = m_system->switche(m_selectedSwitch);
+    m_variable_string = m_system->variable(m_selectedVariable);
+    m_unicodes = getUnicodeFormatters();
+  }
+
 private:
   int m_categoryStart;
   int m_categoryEnd;
   std::vector<int> m_headers;
-  System& m_system;
+  System* m_system{};
   int m_selectedVariable{0};
   int m_selectedSwitch{0};
   int m_selectedCommon{0};

@@ -9,8 +9,8 @@ public:
   friend void from_json(const nlohmann::ordered_json& j, Docs& templ);
   std::vector<Doc> docs;
 
-  static Docs load(std::string_view path);
-  bool serialize(std::string_view path);
+  static Docs load(const std::filesystem::path& path);
+  bool serialize(const std::filesystem::path& path);
 
   bool isModified() const override {
     return IModifiable::isModified() | std::ranges::any_of(docs, [](const Doc& t) { return t.isModified(); });

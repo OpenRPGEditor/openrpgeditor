@@ -28,7 +28,7 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
       if (itemGroupBox.begin()) {
         ImGui::PushID("##change_items_item");
         if (ImGui::EllipsesButton(Database::instance()->itemNameAndId(m_item).c_str(), ImVec2{-1, 0})) {
-          m_itemPicker = ItemPicker(Database::instance()->items.items(), m_item);
+          m_itemPicker = ItemPicker(Database::instance()->items->items(), m_item);
           m_itemPicker->setOpen(true);
         }
         ImGui::PopID();
@@ -70,7 +70,7 @@ std::tuple<bool, bool> Dialog_ChangeItems::draw() {
             ImGui::BeginDisabled(m_operandSource != 1);
             ImGui::PushID("###change_items_quant_var");
             if (ImGui::EllipsesButton(m_operandSource == 1 ? Database::instance()->variableNameAndId(m_quantityVar).c_str() : "", ImVec2{-1, 0})) {
-              m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_quantityVar);
+              m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_quantityVar);
               m_variablePicker->setOpen(true);
             }
             ImGui::PopID();

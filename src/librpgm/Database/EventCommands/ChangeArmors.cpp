@@ -23,7 +23,7 @@ std::string ChangeArmorsCommand::stringRep(const Database& db, const bool colore
   const auto armorName = db.armorNameOrId(item);
   std::string oper;
   if (operandSource == QuantityChangeSource::Variable) {
-    oper = std::format("{{{}}}", db.system.variable(operand));
+    oper = std::format("{{{}}}", db.system->variable(operand));
   } else {
     oper = std::to_string(operand);
   }

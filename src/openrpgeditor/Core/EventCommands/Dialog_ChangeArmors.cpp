@@ -29,7 +29,7 @@ std::tuple<bool, bool> Dialog_ChangeArmors::draw() {
       if (armorGroupBox.begin()) {
         ImGui::PushID("##change_armors_item");
         if (ImGui::EllipsesButton(Database::instance()->armorNameAndId(m_item).c_str(), ImVec2{-1, 0})) {
-          m_armorPicker = ArmorPicker(Database::instance()->armors.armorList(), m_item);
+          m_armorPicker = ArmorPicker(Database::instance()->armors->armorList(), m_item);
           m_armorPicker->setOpen(true);
         }
         ImGui::PopID();
@@ -73,7 +73,7 @@ std::tuple<bool, bool> Dialog_ChangeArmors::draw() {
             ImGui::BeginDisabled(m_operandSource != 1);
             ImGui::PushID("##change_armors_quant_var");
             if (ImGui::EllipsesButton(m_operandSource == 1 ? Database::instance()->variableNameAndId(m_quantityVar).c_str() : "", ImVec2{-1, 0})) {
-              m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_quantityVar);
+              m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_quantityVar);
               m_variablePicker->setOpen(true);
             }
             ImGui::PopID();

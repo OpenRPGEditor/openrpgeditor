@@ -3,36 +3,48 @@
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/CheckeredCompositeTexture.hpp"
 #include "Core/Graphics/IconSheet.hpp"
-#include "DBCommonEventsTab.hpp"
 #include "Database/Animation.hpp"
 #include "Database/Weapons.hpp"
+#include "DBCommonEventsTab.hpp"
 struct Weapons;
 struct DBWeaponsTab : IDBEditorTab {
   DBWeaponsTab() = delete;
-  explicit DBWeaponsTab(Weapons& weapons, DatabaseEditor* parent);
+  explicit DBWeaponsTab(DatabaseEditor* parent);
   void draw() override;
 
-  [[nodiscard]] std::vector<Weapon>& weapons() { return m_weapons.weapons(); }
-  [[nodiscard]] const std::vector<Weapon>& weapons() const { return m_weapons.weapons(); }
-  [[nodiscard]] Weapon* weapon(int id) { return m_weapons.weapon(id); }
-  [[nodiscard]] const Weapon* weapon(int id) const { return m_weapons.weapon(id); }
   std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(int index) override { return m_headers.at(index); }
+  int getHeader(const int index) override { return m_headers.at(index); }
   bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(int start, int end) override {
+  void setHeaderRange(const int start, const int end) override {
     m_categoryStart = start;
     m_categoryEnd = end;
   }
-  std::string getName(int index) override { return m_weapons.weapon(index)->name(); }
-  int getCount() override { return m_weapons.count(); }
+  std::string getName(const int index) override { return m_weapons->weapon(index)->name(); }
+  int getCount() override { return m_weapons->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Weapons"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBWeaponsTab"sv; };
+
+  bool isReady() const override { return !!Database::instance()->weapons; }
+  bool isInitialized() const override { return m_weapons; }
+
+  void initialize() override {
+    if (!isReady()) {
+      return;
+    }
+    m_weapons = &Database::instance()->weapons.value();
+    m_selectedWeapon = m_weapons->weapon(1);
+    if (m_selectedWeapon) {
+      m_traitsEditor.setTraits(&m_selectedWeapon->traits());
+    }
+    m_maxWeapons = m_weapons->count();
+  }
+
 private:
-  int m_categoryStart;
-  int m_categoryEnd;
+  int m_categoryStart{};
+  int m_categoryEnd{};
   std::vector<int> m_headers;
-  Weapons& m_weapons;
+  Weapons* m_weapons{};
   Weapon* m_selectedWeapon{};
   int m_maxWeapons{};
   int m_editMaxWeapons{};

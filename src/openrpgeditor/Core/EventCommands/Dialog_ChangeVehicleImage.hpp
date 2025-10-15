@@ -19,13 +19,13 @@ struct Dialog_ChangeVehicleImage : IEventDialogController {
       const Vehicle* vehicle = nullptr;
       switch (m_command->vehicle) {
       case VehicleType::Boat:
-        vehicle = &Database::instance()->system.boat();
+        vehicle = &Database::instance()->system->boat();
         break;
       case VehicleType::Airship:
-        vehicle = &Database::instance()->system.airship();
+        vehicle = &Database::instance()->system->airship();
         break;
       case VehicleType::Ship:
-        vehicle = &Database::instance()->system.ship();
+        vehicle = &Database::instance()->system->ship();
         break;
       }
       m_command->picture = vehicle->characterName();

@@ -30,7 +30,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
         {
           ImGui::PushID("#transfer_coord_selection");
           if (ImGui::EllipsesButton(m_mode == 0 ? std::format("{} ({},{})", Database::instance()->mapNameOrId(m_mapId), m_x, m_y).c_str() : "", ImVec2{-1, 0})) {
-            m_eventTilePicker.emplace(Database::instance()->mapInfos.currentMap()->id());
+            m_eventTilePicker.emplace(Database::instance()->mapInfos->currentMap()->id());
             m_eventTilePicker->setOpen(true);
           }
           ImGui::PopID();
@@ -49,7 +49,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
                 ImGui::PushID("##transfer_player_variables_mapId");
                 if (ImGui::EllipsesButton(m_mode == 1 ? Database::instance()->variableNameAndId(m_mapIdVar).c_str() : "", {-1, 0})) {
                   m_varSelection = 0;
-                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable,  Database::instance()->system.variables(), m_mapIdVar);
+                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable,  Database::instance()->system->variables(), m_mapIdVar);
                   m_variablePicker->setOpen(true);
                 }
                 ImGui::PopID();
@@ -60,7 +60,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
                 ImGui::PushID("##transfer_player_variables_x");
                 if (ImGui::EllipsesButton(m_mode == 1 ? Database::instance()->variableNameAndId(m_xVar).c_str() : "", {-1, 0})) {
                   m_varSelection = 1;
-                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_xVar);
+                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_xVar);
                   m_variablePicker->setOpen(true);
                 }
                 ImGui::PopID();
@@ -71,7 +71,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
                 ImGui::PushID("##transfer_player_variables_y");
                 if (ImGui::EllipsesButton(m_mode == 1 ? Database::instance()->variableNameAndId(m_yVar).c_str() : "", {-1, 0})) {
                   m_varSelection = 2;
-                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_yVar);
+                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_yVar);
                   m_variablePicker->setOpen(true);
                 }
                 ImGui::PopID();

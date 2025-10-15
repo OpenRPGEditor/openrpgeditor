@@ -66,7 +66,7 @@ void MapEditor::setMap(MapInfo* info) {
   m_parallaxTexture = ParallaxTexture();
 }
 
-int MapEditor::tileSize() const { return Database::instance()->system.tileSize(); }
+int MapEditor::tileSize() const { return Database::instance()->system->tileSize(); }
 
 void MapEditor::onParallaxNameModified(Map* info, const std::string& name) { m_parallaxTexture.setTexture(name); }
 
@@ -156,12 +156,12 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
   }
 
   if (ImGui::IsWindowHovered() && m_parent->editMode() == EditMode::Map) {
-    m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system.tileSize(), win);
+    m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system->tileSize(), win);
   } else if (ImGui::IsWindowHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left) && (m_parent->editMode() == EditMode::Event || m_movingEvent)) {
-    m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system.tileSize(), win);
+    m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system->tileSize(), win);
     handleEventDrag();
   } else if (m_scaleChanged || m_tileCursor.mode() == MapCursorMode::Keyboard) {
-    m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system.tileSize(), win);
+    m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system->tileSize(), win);
     handleEventDrag();
   }
 
@@ -555,16 +555,16 @@ void MapEditor::draw(const bool closeRequested) {
     m_checkeredBack = CheckerboardTexture(64, 64, CellSizes::_48, 255, 220);
   }
   if (m_mapInfo != nullptr && m_mapInfo->map() != nullptr && m_tilemapView.map() != m_mapInfo->map()) {
-    if (m_mapInfo->id() == Database::instance()->system.startMapId()) {
-      const auto& party = Database::instance()->system.partyMembers();
-      const auto* actor = Database::instance()->actors.actor(!party.empty() ? party[0] : 1);
+    if (m_mapInfo->id() == Database::instance()->system->startMapId()) {
+      const auto& party = Database::instance()->system->partyMembers();
+      const auto* actor = Database::instance()->actors->actor(!party.empty() ? party[0] : 1);
       EventImage image;
       if (actor) {
         image.setCharacterName(actor->characterName());
         image.setCharacterIndex(actor->characterIndex());
         image.setDirection(Direction::Down);
       }
-      map()->setDummyEvent(image, Database::instance()->system.startX(), Database::instance()->system.startY());
+      map()->setDummyEvent(image, Database::instance()->system->startX(), Database::instance()->system->startY());
     }
 
     m_tilemapView.setMap(map());
@@ -630,7 +630,7 @@ void MapEditor::draw(const bool closeRequested) {
 
       // Keep mapScale to a quarter step
       if (m_scaleChanged) {
-        m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system.tileSize(), ImGui::GetCurrentWindow());
+        m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system->tileSize(), ImGui::GetCurrentWindow());
       }
       // We don't want to align the scroll position while the cursor is in keyboard mode otherwise the view won't track the tile cursor
       if (map()) {
@@ -659,7 +659,7 @@ void MapEditor::draw(const bool closeRequested) {
           ImGui::BeginDisabled(m_selectedEvent);
           if (ImGui::MenuItem(trNOOP("Insert..."))) {
             m_templateSaving = false;
-            m_templatePicker = TemplatePicker(Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+            m_templatePicker = TemplatePicker(Database::instance()->templates->templateList(Template::TemplateType::Event), 0);
             m_templatePicker->setNoSelectionMeansAdd(false);
             m_templatePicker->setOpen(true);
           }
@@ -667,7 +667,7 @@ void MapEditor::draw(const bool closeRequested) {
           ImGui::BeginDisabled(m_selectedEvent == nullptr);
           if (ImGui::MenuItem(trNOOP("Save as..."))) {
             m_templateSaving = true;
-            m_templatePicker = TemplatePicker(Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+            m_templatePicker = TemplatePicker(Database::instance()->templates->templateList(Template::TemplateType::Event), 0);
             m_templatePicker->setNoSelectionMeansAdd(true);
             m_templatePicker->setOpen(true);
           }
@@ -683,18 +683,18 @@ void MapEditor::draw(const bool closeRequested) {
                 nlohmann::ordered_json eventJson;
                 EventParser::serialize(eventJson, *m_selectedEvent);
                 if (m_templatePicker.value().selection() == 0) {
-                  Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
-                                                                       tr("New Event Template") + " " + std::to_string(Database::instance()->templates.templates.size() + 1), "",
+                  Database::instance()->templates->addTemplate(Template(Database::instance()->templates->templates.size() + 1,
+                                                                       tr("New Event Template") + " " + std::to_string(Database::instance()->templates->templates.size() + 1), "",
                                                                        Template::TemplateType::Event, eventJson.dump(), {}));
-                  m_templateNamePicker = TemplateName(&Database::instance()->templates.templates.back(), nullptr);
+                  m_templateNamePicker = TemplateName(&Database::instance()->templates->templates.back(), nullptr);
                 } else {
-                  Database::instance()->templates.templates.at(m_templatePicker.value().selection() - 1).setCommands(eventJson.dump());
-                  m_templateNamePicker = TemplateName(&Database::instance()->templates.templates.at(m_templatePicker.value().selection() - 1), nullptr);
+                  Database::instance()->templates->templates.at(m_templatePicker.value().selection() - 1).setCommands(eventJson.dump());
+                  m_templateNamePicker = TemplateName(&Database::instance()->templates->templates.at(m_templatePicker.value().selection() - 1), nullptr);
                 }
-                Database::instance()->templates.templates.back().setCommands(eventJson.dump());
+                Database::instance()->templates->templates.back().setCommands(eventJson.dump());
               } else {
                 EventParser parser;
-                nlohmann::ordered_json eventJson = nlohmann::ordered_json::parse(Database::instance()->templates.templates.at(m_templatePicker->selection() - 1).commands());
+                nlohmann::ordered_json eventJson = nlohmann::ordered_json::parse(Database::instance()->templates->templates.at(m_templatePicker->selection() - 1).commands());
 
                 m_templateEvent.emplace(parser.parse(eventJson));
                 m_templateEvent.value().setId(map()->events().size() - 1);
@@ -713,7 +713,7 @@ void MapEditor::draw(const bool closeRequested) {
         if (m_templateNamePicker) {
           m_templateNamePicker->draw();
           if (m_templateNamePicker->hasChanges()) {
-            if (Database::instance()->templates.serialize(Database::instance()->basePath + "data/Templates.json")) {
+            if (Database::instance()->templates->serialize(Database::instance()->basePath / "data/Templates.json")) {
               ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, trNOOP("Saved event as template successfully!")});
             } else {
               ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, trNOOP("Failed to saved event as template!")});

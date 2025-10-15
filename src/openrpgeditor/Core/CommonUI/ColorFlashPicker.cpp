@@ -19,8 +19,8 @@ bool ColorFlashPicker::draw() {
       ImGui::BeginHorizontal("##colorflash_picker_presets_layout", {}, 0);
       {
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * .70f);
-        if (ImGui::BeginCombo("##colorflash_presets", m_currentTemplate == -1 ? trNOOP("None") : Database::instance()->templates.templates.at(m_currentTemplate).name().c_str())) {
-          for (int index{0}; auto& templ : Database::instance()->templates.templateList(Template::TemplateType::Flash)) {
+        if (ImGui::BeginCombo("##colorflash_presets", m_currentTemplate == -1 ? trNOOP("None") : Database::instance()->templates->templates.at(m_currentTemplate).name().c_str())) {
+          for (int index{0}; auto& templ : Database::instance()->templates->templateList(Template::TemplateType::Flash)) {
             if (!templ.parameters().empty()) {
               bool selected = m_currentTemplate == index;
               if (ImGui::Selectable(templ.name().c_str(), selected)) {

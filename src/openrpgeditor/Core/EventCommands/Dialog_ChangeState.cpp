@@ -39,7 +39,7 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
             ImGui::BeginDisabled(m_comparison != 0);
             ImGui::PushID("##change_state_actor_group_fixed_button");
             if (ImGui::EllipsesButton(m_comparison == 0 ? Database::instance()->actorNameAndId(m_actor).c_str() : "", {-1, 0})) {
-              m_actorPicker = ActorPicker(Database::instance()->actors.actorList(), m_actor);
+              m_actorPicker = ActorPicker(Database::instance()->actors->actorList(), m_actor);
               m_actorPicker->setOpen(true);
             }
             ImGui::PopID();
@@ -47,7 +47,7 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
             ImGui::BeginDisabled(m_comparison != 1);
             ImGui::PushID("##change_state_actor_group_var");
             if (ImGui::EllipsesButton(m_comparison == 1 ? Database::instance()->variableNameAndId(m_var).c_str() : "", {-1, 0})) {
-              m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_var);
+              m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_var);
               m_variablePicker->setOpen(true);
             }
             ImGui::PopID();
@@ -75,7 +75,7 @@ std::tuple<bool, bool> Dialog_ChangeState::draw() {
       if (skillGroupBox.begin()) {
         ImGui::PushID("##change_state_state_selection");
         if (ImGui::EllipsesButton(Database::instance()->stateNameAndId(m_state).c_str(), ImVec2{-1, 0})) {
-          m_statePicker = StatePicker(Database::instance()->states.states(), m_state);
+          m_statePicker = StatePicker(Database::instance()->states->states(), m_state);
           m_statePicker->setOpen(true);
         }
         ImGui::PopID();

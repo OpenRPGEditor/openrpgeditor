@@ -25,10 +25,10 @@ struct GameConstants {
   std::map<int, std::string> maps;
   bool generateJS{false};
 
-  static GameConstants load(std::string_view path);
-  bool serialize(std::string_view path);
+  static GameConstants load(const std::filesystem::path& path);
+  bool serialize(const std::filesystem::path& path);
 
-  bool generateConstantsJS(std::string_view path);
+  bool generateConstantsJS(const std::filesystem::path& path);
 
   bool isValidName(Type type, int id, const std::string& constant);
 

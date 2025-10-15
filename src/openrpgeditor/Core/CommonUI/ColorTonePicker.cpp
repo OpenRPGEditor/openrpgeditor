@@ -14,8 +14,8 @@ bool ColorTonePicker::draw() {
       ImGui::BeginHorizontal("##colortone_picker_presets_layout", {}, 0);
       {
         ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * .70f);
-        if (ImGui::BeginCombo("##colortone_presets", m_currentTemplate == -1 ? trNOOP("None") : Database::instance()->templates.templates.at(m_currentTemplate).name().c_str())) {
-          for (int index{0}; auto& templ : Database::instance()->templates.templateList(Template::TemplateType::Tint)) {
+        if (ImGui::BeginCombo("##colortone_presets", m_currentTemplate == -1 ? trNOOP("None") : Database::instance()->templates->templates.at(m_currentTemplate).name().c_str())) {
+          for (int index{0}; auto& templ : Database::instance()->templates->templateList(Template::TemplateType::Tint)) {
             if (!templ.parameters().empty()) {
               bool selected = m_currentTemplate == index;
               if (ImGui::Selectable(templ.name().c_str(), selected)) {

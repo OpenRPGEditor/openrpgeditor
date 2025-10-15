@@ -4,7 +4,7 @@
 #include <vector>
 
 class DatabaseEditor;
-using std::string_view_literals::operator ""sv;
+using std::string_view_literals::operator""sv;
 class IDBEditorTab {
 public:
   explicit IDBEditorTab(DatabaseEditor* parent)
@@ -17,7 +17,9 @@ public:
   virtual void setHeaderRange(int start, int end) = 0;
   virtual std::string getName(int index) = 0;
   virtual int getCount() = 0;
-  [[nodiscard]] virtual bool isReady() const { return true; }
+  [[nodiscard]] virtual bool isReady() const = 0;
+  virtual void initialize() = 0;
+  [[nodiscard]] virtual bool isInitialized() const = 0;
   [[nodiscard]] virtual bool isExperimental() const { return false; }
   [[nodiscard]] virtual std::string tabName() const = 0;
   [[nodiscard]] virtual constexpr std::string_view tabId() const = 0;

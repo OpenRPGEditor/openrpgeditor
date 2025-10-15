@@ -5,16 +5,50 @@
 #include "Core/TemplateEditor/TemplatesCommand.hpp"
 #include "Core/TemplateEditor/TemplatesEventProperties.hpp"
 #include "Core/TemplateEditor/TemplatesTint.hpp"
-#include "DBCommonEventsTab.hpp"
 #include "Database/Templates.hpp"
+#include "DBCommonEventsTab.hpp"
 
 #include <optional>
 
 struct Templates;
 struct DBTemplatesTab : IDBEditorTab {
-  explicit DBTemplatesTab(Templates& templates, DatabaseEditor* parent)
-  : IDBEditorTab(parent)
-  , m_templates(&templates) {
+  explicit DBTemplatesTab(DatabaseEditor* parent)
+  : IDBEditorTab(parent) {}
+  void draw() override;
+  std::vector<Templates*>& templates() { return m_template; }
+  std::vector<int>& getHeaders() override { return m_headers; }
+  int getHeader(int index) override { return m_headers.at(index); }
+  bool hasHeader() override { return !m_headers.empty(); }
+  void setHeaderRange(int start, int end) override {
+    m_categoryStart = start;
+    m_categoryEnd = end;
+  }
+  std::string getName(int index) override { return ""; }
+  int getCount() override { return 0; }
+
+  [[nodiscard]] std::string tabName() const override { return tr("Templates"); }
+  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTemplatesTab"sv; };
+
+  bool isReady() const override {
+    if (m_templates) {
+      return true;
+    }
+    if (!Database::instance()->templates) {
+      return false;
+    }
+
+    const_cast<DBTemplatesTab*>(this)->m_templates = &Database::instance()->templates.value();
+    return m_templates != nullptr;
+  }
+
+  bool isInitialized() const override { return m_templates; }
+  void initialize() override {
+    if (!isReady()) {
+      return;
+    }
+
+    m_templates = &Database::instance()->templates.value();
+    
     if (!m_templates->templates.empty()) {
       if (m_templates->templates.at(m_selection).commands().empty()) {
         m_currentCommands.emplace_back(std::make_shared<EventDummy>());
@@ -22,7 +56,7 @@ struct DBTemplatesTab : IDBEditorTab {
       } else {
         if (m_templates->templates.at(m_selection).type() == Template::TemplateType::Command) {
           CommandParser parser;
-          nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(m_templates->templates.at(m_selection).commands());
+          const nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(m_templates->templates.at(m_selection).commands());
           m_currentCommands = parser.parse(cmdJson);
           m_commandEditor.setCommands(&m_currentCommands);
         } else {
@@ -40,20 +74,6 @@ struct DBTemplatesTab : IDBEditorTab {
       m_commandEditor.setCommands(&m_currentCommands);
     }
   }
-  void draw() override;
-  std::vector<Templates*>& templates() { return m_template; }
-  std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(int index) override { return m_headers.at(index); }
-  bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(int start, int end) override {
-    m_categoryStart = start;
-    m_categoryEnd = end;
-  }
-  std::string getName(int index) override { return ""; }
-  int getCount() override { return 0; }
-
-  [[nodiscard]] std::string tabName() const override { return tr("Templates"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTemplatesTab"sv; };
 
 private:
   int m_categoryStart;

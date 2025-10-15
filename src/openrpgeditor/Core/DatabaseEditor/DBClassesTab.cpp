@@ -14,17 +14,11 @@
 
 constexpr ImVec2 ParameterGraphSize{92, 92};
 
-DBClassesTab::DBClassesTab(Classes& classes, DatabaseEditor* parent)
+DBClassesTab::DBClassesTab(DatabaseEditor* parent)
 : IDBEditorTab(parent)
 , m_categoryStart(0)
 , m_categoryEnd(0)
-, m_classes(classes)
-, m_expWorkValues() {
-  m_selectedClass = m_classes.classType(1);
-  if (m_selectedClass) {
-    m_traitsEditor.setTraits(&m_selectedClass->traits());
-  }
-}
+, m_expWorkValues() {}
 
 void DBClassesTab::drawExperienceGraph(const ExperienceGraphMode mode) const {
   if (!m_selectedClass) {
@@ -149,6 +143,10 @@ void DBClassesTab::drawExpPopup() {
   }
 }
 void DBClassesTab::draw() {
+  if (!m_classes) {
+    return;
+  }
+  
   ImGui::BeginChild("#orpg_classes_editor");
   {
     const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUV");
@@ -161,7 +159,7 @@ void DBClassesTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            for (auto& class_ : m_classes.classes()) {
+            for (auto& class_ : m_classes->classes()) {
               if (class_.id() == 0) {
                 continue;
               }
@@ -177,11 +175,11 @@ void DBClassesTab::draw() {
         }
         ImGui::EndChild();
         char str[4096];
-        snprintf(str, 4096, "Max Classes %i", m_classes.count());
+        snprintf(str, 4096, "Max Classes %i", m_classes->count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - (8), 0})) {
           m_changeIntDialogOpen = true;
-          m_editMaxClasses = m_classes.count();
+          m_editMaxClasses = m_classes->count();
         }
       }
       ImGui::EndGroup();
@@ -310,7 +308,7 @@ void DBClassesTab::draw() {
               ImGui::TableHeadersRow();
 
               for (int i = 0; auto& learning : m_selectedClass->learnings()) {
-                const auto skill = Database::instance()->skills.skill(learning.skillId());
+                const auto skill = Database::instance()->skills->skill(learning.skillId());
                 if (!skill) {
                   continue;
                 }
@@ -396,8 +394,8 @@ void DBClassesTab::draw() {
         ImGui::Text("Are you sure?");
         if (ImGui::Button("Yes")) {
           const int tmpId = m_selectedClass->id();
-          m_classes.resize(m_editMaxClasses);
-          m_selectedClass = m_classes.classType(tmpId);
+          m_classes->resize(m_editMaxClasses);
+          m_selectedClass = m_classes->classType(tmpId);
           m_changeIntDialogOpen = false;
           m_changeConfirmDialogOpen = false;
         }

@@ -116,7 +116,7 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
       isStyle = true;
     }
   }
-  std::string nameStr = in.id() == 0 ? Database::instance()->system.gameTitle() : in.name();
+  std::string nameStr = in.id() == 0 ? Database::instance()->system->gameTitle() : in.name();
   if (nameStr.empty()) {
     nameStr = in.name();
   }

@@ -46,13 +46,13 @@ std::tuple<bool, bool> Dialog_ChangeVehicleImage::draw() {
                 const Vehicle* v = nullptr;
                 switch (vehicle) {
                 case VehicleType::Boat:
-                  v = &Database::instance()->system.boat();
+                  v = &Database::instance()->system->boat();
                   break;
                 case VehicleType::Airship:
-                  v = &Database::instance()->system.airship();
+                  v = &Database::instance()->system->airship();
                   break;
                 case VehicleType::Ship:
-                  v = &Database::instance()->system.ship();
+                  v = &Database::instance()->system->ship();
                   break;
                 default:;
                 }

@@ -36,7 +36,7 @@ std::tuple<bool, bool> Dialog_ChangeTileset::draw() {
           ImGui::Spring(.5);
           ImGui::PushID("##tileset_selection");
           if (ImGui::EllipsesButton(Database::instance()->tilesetNameAndId(m_tileset).c_str(), ImVec2{-1, 0})) {
-            m_tilesetPicker = TilesetPicker(Database::instance()->tilesets.tilesets(), m_tileset);
+            m_tilesetPicker = TilesetPicker(Database::instance()->tilesets->tilesets(), m_tileset);
             m_tilesetPicker->setOpen(true);
           }
           ImGui::PopID();

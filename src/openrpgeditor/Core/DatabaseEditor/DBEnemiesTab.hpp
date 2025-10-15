@@ -4,35 +4,46 @@
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/CharacterSheet.hpp"
 #include "Core/Graphics/CheckeredCompositeTexture.hpp"
-#include "DBCommonEventsTab.hpp"
 #include "Database/Armors.hpp"
 #include "Database/Enemies.hpp"
 #include "Database/Items.hpp"
 #include "Database/Weapons.hpp"
+#include "DBCommonEventsTab.hpp"
 
 struct Enemies;
 struct DBEnemiesTab : IDBEditorTab {
   DBEnemiesTab() = delete;
-  explicit DBEnemiesTab(Enemies& enemies, DatabaseEditor* parent);
+  explicit DBEnemiesTab(DatabaseEditor* parent);
   void draw() override;
 
-  [[nodiscard]] std::vector<Enemy>& enemies() { return m_enemies.enemies(); }
-  [[nodiscard]] const std::vector<Enemy>& enemies() const { return m_enemies.enemies(); }
-
-  [[nodiscard]] Enemy* enemy(int id) { return m_enemies.enemy(id); }
-  [[nodiscard]] const Enemy* enemy(int id) const { return m_enemies.enemy(id); }
   std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(int index) override { return m_headers.at(index); }
+  int getHeader(const int index) override { return m_headers.at(index); }
   bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(int start, int end) override {
+  void setHeaderRange(const int start, const int end) override {
     m_categoryStart = start;
     m_categoryEnd = end;
   }
-  std::string getName(int index) override { return m_enemies.enemy(index)->name(); }
-  int getCount() override { return m_enemies.count(); }
+  std::string getName(const int index) override { return m_enemies->enemy(index)->name(); }
+  int getCount() override { return m_enemies->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Enemies"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBEnemiesTab"sv; };
+
+  bool isReady() const override { return Database::instance()->system && Database::instance()->enemies && Database::instance()->skills && Database::instance()->states; }
+
+  void initialize() override {
+    if (!isReady()) {
+      return;
+    }
+    m_enemies = &Database::instance()->enemies.value();
+    m_selectedEnemy = m_enemies->enemy(1);
+    if (m_selectedEnemy) {
+      m_traitsEditor.setTraits(&m_selectedEnemy->traits());
+      m_actionsEditor.setActions(&m_selectedEnemy->actions());
+    }
+  }
+
+  bool isInitialized() const override { return m_enemies; }
 
 private:
   int m_categoryStart;
@@ -40,7 +51,7 @@ private:
   std::vector<int> m_headers;
   void drawPopup();
   std::string getDropString(int dropIndex, int kindId) const;
-  Enemies& m_enemies;
+  Enemies* m_enemies = nullptr;
   Enemy* m_selectedEnemy{};
   int m_editMaxEnemies{};
   float m_splitterWidth = 300.f;

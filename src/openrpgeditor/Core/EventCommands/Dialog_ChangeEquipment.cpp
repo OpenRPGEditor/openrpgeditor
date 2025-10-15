@@ -28,7 +28,7 @@ std::tuple<bool, bool> Dialog_ChangeEquipment::draw() {
       if (actorGroupBox.begin()) {
         ImGui::PushID("##change_equip_actor_selection");
         if (ImGui::EllipsesButton(Database::instance()->actorNameAndId(m_actor).c_str(), ImVec2{-1, 0})) {
-          m_actorPicker = ActorPicker( Database::instance()->actors.actorList(), m_actor);
+          m_actorPicker = ActorPicker( Database::instance()->actors->actorList(), m_actor);
           m_actorPicker->setOpen(true);
         }
         ImGui::PopID();
@@ -100,15 +100,15 @@ void Dialog_ChangeEquipment::makeEquipableItemList() {
     return;
   }
   if (etypeId <= 1) {
-    for (int i = 1; i < Database::instance()->weapons.weapons().size(); i++) {
-      if (Database::instance()->isEquipWeaponTypeOk(m_actor, Database::instance()->weapons.weapon(i)->wtypeId())) {
+    for (int i = 1; i < Database::instance()->weapons->weapons().size(); i++) {
+      if (Database::instance()->isEquipWeaponTypeOk(m_actor, Database::instance()->weapons->weapon(i)->wtypeId())) {
         m_equipableItems.emplace_back(i);
       }
     }
     return;
   }
-  for (int i = 1; i < Database::instance()->armors.armors().size(); i++) {
-    if (const auto& armor = Database::instance()->armors.armor(i); armor->etypeId() == etypeId && Database::instance()->isEquipArmorTypeOk(m_actor, armor->atypeId())) {
+  for (int i = 1; i < Database::instance()->armors->armors().size(); i++) {
+    if (const auto& armor = Database::instance()->armors->armor(i); armor->etypeId() == etypeId && Database::instance()->isEquipArmorTypeOk(m_actor, armor->atypeId())) {
       m_equipableItems.emplace_back(i);
     }
   }
@@ -116,13 +116,13 @@ void Dialog_ChangeEquipment::makeEquipableItemList() {
 
 void Dialog_ChangeEquipment::makeEquipTypeList() {
   m_equipmentTypes.clear();
-  if (!Database::instance()->actors.actor(m_actor)) {
+  if (!Database::instance()->actors->actor(m_actor)) {
     m_equipableItems.clear();
     m_equipableItems.emplace_back(0);
     return;
   }
 
-  for (int i = 0; i < Database::instance()->system.equipTypes().size() - 1; ++i) {
+  for (int i = 0; i < Database::instance()->system->equipTypes().size() - 1; ++i) {
     const std::string name = Database::instance()->instance()->equipTypeName(Database::instance()->slotIdToEquipId(m_actor, i));
     m_equipmentTypes.emplace_back(name);
   }

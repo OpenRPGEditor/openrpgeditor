@@ -12,30 +12,45 @@
 
 #include <optional>
 
-struct DBActorsTab : IDBEditorTab {
+struct DBActorsTab final : IDBEditorTab {
   DBActorsTab() = delete;
-  explicit DBActorsTab(Actors& actors, DatabaseEditor* parent);
+  explicit DBActorsTab(DatabaseEditor* parent);
   void draw() override;
 
   std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(int index) override { return m_headers.at(index); }
+  int getHeader(const int index) override { return m_headers.at(index); }
   bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(int start, int end) override {
+  void setHeaderRange(const int start, const int end) override {
     m_categoryStart = start;
     m_categoryEnd = end;
   }
-  std::string getName(int index) override { return m_actors.actor(index)->name(); }
-  int getCount() override { return m_actors.count(); }
+  std::string getName(const int index) override { return m_actors->actor(index)->name(); }
+  int getCount() override { return m_actors->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Actors"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBActorsTab"sv; };
 
+  bool isReady() const override { return Database::instance()->actors && Database::instance()->system && Database::instance()->classes; }
+  void initialize() override {
+    if (!isReady()) {
+      return;
+    }
+    m_actors = &Database::instance()->actors.value();
+
+    m_selectedActor = m_actors->actor(1);
+    if (m_selectedActor) {
+      m_traitsEditor.setTraits(&m_selectedActor->traits());
+    }
+  }
+
+  bool isInitialized() const override { return m_actors; }
+
 private:
-  int m_categoryStart;
-  int m_categoryEnd;
+  int m_categoryStart{};
+  int m_categoryEnd{};
 
   std::vector<int> m_headers;
-  Actors& m_actors;
+  Actors* m_actors = nullptr;
   Actor* m_selectedActor{};
   int m_editMaxActors{};
   bool m_changeIntDialogOpen = false;

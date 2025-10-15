@@ -19,7 +19,7 @@ void ChangeSkillCommand::serializeParameters(nlohmann::ordered_json& out) const 
 std::string ChangeSkillCommand::stringRep(const Database& db, const bool colored) const {
   std::string actorName;
   if (comparison == ActorComparisonSource::Variable) {
-    actorName = db.system.variable(value);
+    actorName = db.system->variable(value);
     actorName = actorName.empty() ? std::format("{{{:04}}}", value) : actorName;
   } else {
     actorName = value == 0 ? trNOOP("Entire Party") : db.actorNameOrId(value);

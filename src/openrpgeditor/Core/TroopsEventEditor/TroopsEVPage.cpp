@@ -1,4 +1,5 @@
 #include "Core/TroopsEventEditor/TroopsEVPage.hpp"
+#include "Core/TroopsEventEditor/TroopsEVEditor.hpp"
 
 #include "Core/ImGuiExt/ImGuiUtils.hpp"
 #include "Core/MainWindow.hpp"
@@ -132,7 +133,7 @@ std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
                                                 m_page->conditions().actorValid() ? Database::instance()->actorNameOrId(m_page->conditions().actorId()) : "", m_page_id))
                             .c_str(),
                         {(150), 0})) {
-        m_actorPicker = ActorPicker(Database::instance()->actors.actorList(), m_page->conditions().actorId());
+        m_actorPicker = ActorPicker(Database::instance()->actors->actorList(), m_page->conditions().actorId());
         m_actorPicker->setOpen(true);
       }
       ImGui::SameLine();
@@ -152,7 +153,7 @@ std::tuple<bool, bool> TroopsEVPage::draw(bool canDelete, int index) {
                                                 m_page->conditions().switchValid() ? Database::instance()->switchNameOrId(m_page->conditions().switchId()) : "", m_page_id))
                             .c_str(),
                         ImVec2{(150), 0})) {
-        picker.emplace(VariableSwitchPicker::Type::Switch, Database::instance()->system.switches(), m_page->conditions().switchId());
+        picker.emplace(VariableSwitchPicker::Type::Switch, Database::instance()->system->switches(), m_page->conditions().switchId());
         picker->setOpen(true);
       }
     }

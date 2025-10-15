@@ -8,28 +8,8 @@
 #include <cstring>
 #include <misc/cpp/imgui_stdlib.h>
 #include <numeric>
-DBLocaleTab::DBLocaleTab(Locales& locales, DatabaseEditor* parent)
-: IDBEditorTab(parent)
-, m_locales(&locales) {
-  std::string path = Database::instance()->basePath + "locales/"; // Replace with your directory path
-
-  try {
-    if (fs::exists(path) && fs::is_directory(path)) {
-      for (const auto& entry : fs::directory_iterator(path)) {
-        if (is_directory(entry.status())) {
-          m_localeList.push_back(entry.path().filename().generic_string());
-        }
-      }
-    }
-  } catch (const fs::filesystem_error& e) { std::cout << "Error: " << e.what() << std::endl; }
-
-  m_jpLocales.loadMap(Database::instance()->basePath + std::format("locales/ja/Map0{:03}.json", m_selectedMap));
-
-  for (int i = 0; i < m_locales->locales.size(); i++) {
-    if (m_locales->locales.at(i).second.empty() || m_jpLocales.locales.at(i).second.empty()) {
-      m_untranslatedIndices.push_back(i);
-    }
-  }
+DBLocaleTab::DBLocaleTab(DatabaseEditor* parent)
+: IDBEditorTab(parent){
 }
 
 void DBLocaleTab::draw() {
@@ -42,15 +22,15 @@ void DBLocaleTab::draw() {
       ImGui::BeginChild("##orpg_locales_map_navigation_bar", ImVec2{0, 30.f});
       {
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-        if (ImGui::BeginCombo("##orpg_locales_map_combo", Database::instance()->mapInfos.map(m_selectedMap)->name().c_str())) {
-          for (int i = 1; i < Database::instance()->mapInfos.mapInfos().size(); i++) {
+        if (ImGui::BeginCombo("##orpg_locales_map_combo", Database::instance()->mapInfos->map(m_selectedMap)->name().c_str())) {
+          for (int i = 1; i < Database::instance()->mapInfos->mapInfos().size(); i++) {
             bool is_selected = m_selectedMap == i;
-            if (ImGui::Selectable(std::format("{}##orpg_locales_map_selectable", Database::instance()->mapInfos.map(i)->name()).c_str(), is_selected)) {
+            if (ImGui::Selectable(std::format("{}##orpg_locales_map_selectable", Database::instance()->mapInfos->map(i)->name()).c_str(), is_selected)) {
               m_selectedMap = i;
               m_editingIndex = -1;
               m_selectedIndex = -1;
-              m_locales->loadMap(Database::instance()->basePath + std::format("locales/en/Map0{:03}.json", m_selectedMap));
-              m_jpLocales.loadMap(Database::instance()->basePath + std::format("locales/ja/Map0{:03}.json", m_selectedMap));
+              m_locales->loadMap(Database::instance()->basePath / std::format("locales/en/Map0{:03}.json", m_selectedMap));
+              m_jpLocales.loadMap(Database::instance()->basePath / std::format("locales/ja/Map0{:03}.json", m_selectedMap));
 
               m_untranslatedIndices.clear();
               for (int i = 0; i < m_locales->locales.size(); i++) {

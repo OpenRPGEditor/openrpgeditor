@@ -22,12 +22,12 @@ enum class AudioType {
 struct System;
 struct DBSystemTab : IDBEditorTab {
   DBSystemTab() = delete;
-  explicit DBSystemTab(System& system, DatabaseEditor* parent);
+  explicit DBSystemTab(DatabaseEditor* parent);
   void draw() override;
   std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(int index) override { return m_headers.at(index); }
+  int getHeader(const int index) override { return m_headers.at(index); }
   bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(int start, int end) override {
+  void setHeaderRange(const int start, const int end) override {
     m_categoryStart = start;
     m_categoryEnd = end;
   }
@@ -38,13 +38,23 @@ struct DBSystemTab : IDBEditorTab {
   [[nodiscard]] std::string tabName() const override { return tr("System"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBSystemTab"sv; };
 
+  bool isReady() const override { return !!Database::instance()->system; }
+  bool isInitialized() const override { return m_system; }
+  void initialize() override {
+    if (!isReady()) {
+      return;
+    }
+
+    m_system = &Database::instance()->system.value();
+  }
+
 private:
   int m_categoryStart;
   int m_categoryEnd;
   std::vector<int> m_headers;
-  void addAudioRow(const Audio& audio, const std::string& type, AudioType audioType);
+  static void addAudioRow(const Audio& audio, const std::string& type, AudioType audioType);
 
-  System& m_system;
+  System* m_system{};
   std::optional<CharacterSheet> m_boatSheet;
   std::optional<CharacterSheet> m_airshipSheet;
   std::optional<CharacterSheet> m_shipSheet;

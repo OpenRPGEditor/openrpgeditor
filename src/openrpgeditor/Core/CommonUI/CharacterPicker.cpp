@@ -24,8 +24,8 @@ CharacterPicker::CharacterPicker(const PickerMode mode, const bool useTileset, c
   m_charDir.emplace("img/characters/", ".png", static_cast<std::string>(sheetName));
   m_characterSheets = m_charDir.value().getDirectoryContents();
   if (useTileset) {
-    int mapId = Database::instance()->mapInfos.currentMap()->id();
-    m_tileSheets = Database::instance()->tilesets.tileset(Database::instance()->mapInfos.map(mapId)->map()->tilesetId())->tilesetNames();
+    int mapId = Database::instance()->mapInfos->currentMap()->id();
+    m_tileSheets = Database::instance()->tilesets->tileset(Database::instance()->mapInfos->map(mapId)->map()->tilesetId())->tilesetNames();
     // m_palette.setPageIndex(5);
     // m_palette.setTilesetNames(m_tileSheets);
   }
@@ -76,8 +76,8 @@ void CharacterPicker::setCharacterInfo(const std::string_view sheetName, const i
 
 void CharacterPicker::setTileId(int tileId) {
   if (m_tileSheets.empty()) {
-    int mapId = Database::instance()->mapInfos.currentMap()->id();
-    m_tileSheets = Database::instance()->tilesets.tileset(Database::instance()->mapInfos.map(mapId)->map()->tilesetId())->tilesetNames();
+    int mapId = Database::instance()->mapInfos->currentMap()->id();
+    m_tileSheets = Database::instance()->tilesets->tileset(Database::instance()->mapInfos->map(mapId)->map()->tilesetId())->tilesetNames();
   }
   m_tileId = tileId;
   if (m_tileId > 0) {
@@ -91,8 +91,8 @@ void CharacterPicker::setTileId(int tileId) {
   m_characterIndex = 0;
   m_pattern = 0;
   m_direction = Direction::Retain;
-  m_selectionWidth = Database::instance()->system.tileSize();
-  m_selectionHeight = Database::instance()->system.tileSize();
+  m_selectionWidth = Database::instance()->system->tileSize();
+  m_selectionHeight = Database::instance()->system->tileSize();
 
   m_checkerboardTexture.setSize(m_characterSheet->texture().width(), m_characterSheet->texture().height());
 }
@@ -198,8 +198,8 @@ std::tuple<bool, bool> CharacterPicker::draw() {
               if (ImGui::Selectable(std::format("Tileset {}", static_cast<char>('A' + (z + 5))).c_str(), m_selectedSheet == z, ImGuiSelectableFlags_SelectOnNav | ImGuiSelectableFlags_SelectOnClick)) {
                 if (m_selectedSheet != z) {
                   m_selectedSheet = z;
-                  m_selectionWidth = Database::instance()->system.tileSize();
-                  m_selectionHeight = Database::instance()->system.tileSize();
+                  m_selectionWidth = Database::instance()->system->tileSize();
+                  m_selectionHeight = Database::instance()->system->tileSize();
                   m_tileId = makeTileId(m_selectedSheet + 4, m_selectionX / m_selectionWidth, m_selectionY / m_selectionHeight);
                   m_characterSheet.emplace(sheet, true, m_tileId);
                   if (m_characterSheet->texture()) {
@@ -299,7 +299,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
             m_selectionY = y;
             if (m_isTile) {
               // On selection, set the tileId
-              m_tileId = makeTileId(m_selectedSheet + 4, x / Database::instance()->system.tileSize(), y / Database::instance()->system.tileSize());
+              m_tileId = makeTileId(m_selectedSheet + 4, x / Database::instance()->system->tileSize(), y / Database::instance()->system->tileSize());
             } else {
               if (m_pickerMode == PickerMode::Character) {
                 m_selectionX = std::clamp(m_selectionX, 0, m_characterSheet->texture().width() - m_characterSheet->characterAtlasWidth());

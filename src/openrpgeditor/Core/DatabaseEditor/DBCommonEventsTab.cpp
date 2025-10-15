@@ -12,19 +12,11 @@
 
 #include <string>
 
-DBCommonEventsTab::DBCommonEventsTab(CommonEvents& commonEvents, DatabaseEditor* parent)
-: IDBEditorTab(parent)
-, m_events(commonEvents) {
-  m_selectedCommonEvent = m_events.event(1);
-  m_commandEditor.setCommands(&m_selectedCommonEvent->commands());
+DBCommonEventsTab* DBCommonEventsTab::m_instance = nullptr;
 
-  for (const auto& cmn : m_events.events()) {
-    if (cmn.has_value()) {
-      if (hasUnicodeFormatting(cmn.value().name())) {
-        m_headers.push_back(cmn.value().id());
-      }
-    }
-  }
+DBCommonEventsTab::DBCommonEventsTab(DatabaseEditor* parent)
+: IDBEditorTab(parent) {
+  m_instance = this;
 }
 
 void DBCommonEventsTab::draw() {
@@ -58,7 +50,7 @@ void DBCommonEventsTab::draw() {
           ImGui::BeginGroup();
           {
             ImGuiListClipper clipper;
-            int itemCount = m_events.count() + 1;
+            int itemCount = m_events->count() + 1;
             // if (m_parent->isFilteredByCategory()) {
             //   // if (commonEvent.id() <= m_categoryStart || m_categoryEnd == -1 ? true : commonEvent.id() >= m_categoryEnd) {
             //   //   continue;
@@ -85,11 +77,11 @@ void DBCommonEventsTab::draw() {
 
               for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
                 if (m_parent->isFilteredByCategory()) {
-                  if (i + m_categoryStart > m_categoryEnd || i + m_categoryStart > m_events.count()) {
+                  if (i + m_categoryStart > m_categoryEnd || i + m_categoryStart > m_events->count()) {
                     continue;
                   }
                 }
-                auto& event = m_events.events()[i + m_categoryStart];
+                auto& event = m_events->events()[i + m_categoryStart];
 
                 if (!event) {
                   continue;
@@ -129,7 +121,7 @@ void DBCommonEventsTab::draw() {
         ImGui::EndChild();
 
         char str[4096];
-        snprintf(str, 4096, "Max Common Events %i", m_events.count());
+        snprintf(str, 4096, "Max Common Events %i", m_events->count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
           m_changeIntDialogOpen = true;
@@ -179,12 +171,12 @@ void DBCommonEventsTab::draw() {
             {
               ImGui::Text("Switch:");
               const bool isSwitchEnabled = m_selectedCommonEvent->trigger() == CommonEventTriggerType::None;
-              const std::string text = isSwitchEnabled ? "##commonevent_switch_empty" : Database::instance()->system.switche(m_selectedCommonEvent->switchId());
+              const std::string text = isSwitchEnabled ? "##commonevent_switch_empty" : Database::instance()->system->switche(m_selectedCommonEvent->switchId());
               ImGui::PushID("##commonevent_button");
               ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2 / 2 - 16);
               ImGui::BeginDisabled(isSwitchEnabled);
               if (ImGui::Button(text.c_str(), ImVec2{ImGui::GetWindowContentRegionMax().x / 2 / 2 - 15, 0})) {
-                picker.emplace(VariableSwitchPicker::Type::Switch,  Database::instance()->system.switches(), m_selectedCommonEvent->switchId());
+                picker.emplace(VariableSwitchPicker::Type::Switch, Database::instance()->system->switches(), m_selectedCommonEvent->switchId());
                 picker->setOpen(true);
               }
               ImGui::PopID();
@@ -237,8 +229,8 @@ void DBCommonEventsTab::draw() {
         ImGui::Text("Are you sure?");
         if (ImGui::Button("Yes")) {
           const int tmpId = m_selectedCommonEvent->id();
-          m_events.resize(m_editMaxCommonEvents);
-          m_selectedCommonEvent = m_events.event(tmpId);
+          m_events->resize(m_editMaxCommonEvents);
+          m_selectedCommonEvent = m_events->event(tmpId);
           m_commandEditor.setCommands(&m_selectedCommonEvent->commands());
           m_changeIntDialogOpen = false;
           m_changeConfirmDialogOpen = false;

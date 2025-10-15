@@ -22,7 +22,7 @@ std::tuple<bool, bool> Dialog_ShowBalloonIcon::draw() {
       if (characterGroupBox.begin()) {
         ImGui::SetNextItemWidth(-1);
         if (ImGui::BeginCombo("##show_balloon_icon_character_combo", Database::instance()->eventNameOrId(m_character).c_str())) {
-          const auto currentMap = Database::instance()->mapInfos.currentMap()->map();
+          const auto currentMap = Database::instance()->mapInfos->currentMap()->map();
           for (int i = -1; i < static_cast<int>(currentMap->events().size()); ++i) {
             const auto selected = i == m_character;
             if (i > 0 && !currentMap->event(i)) {

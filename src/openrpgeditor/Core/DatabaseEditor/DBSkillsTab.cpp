@@ -5,14 +5,8 @@
 
 #include "imgui.h"
 #include "imgui_internal.h"
-DBSkillsTab::DBSkillsTab(Skills& skills, DatabaseEditor* parent)
-: IDBEditorTab(parent)
-, m_skills(skills) {
-  m_selectedSkill = m_skills.skill(1);
-  if (m_selectedSkill) {
-    m_effectsEditor.setEffects(&m_selectedSkill->effects());
-  }
-  m_maxSkills = m_skills.count();
+DBSkillsTab::DBSkillsTab(DatabaseEditor* parent)
+: IDBEditorTab(parent) {
 }
 
 void DBSkillsTab::draw() {
@@ -29,10 +23,12 @@ void DBSkillsTab::draw() {
     m_iconButtonTexture->setSize(56, 56);
   }
   if (m_selectedSkill && !m_iconButtonTexture->hasCompositeTextures()) {
-    const auto* iconSheet = m_parent->getIconSheet();
-    const auto& [uv0, uv1] = iconSheet->rectForId(m_selectedSkill->iconIndex());
-    const Point offset{static_cast<int>(uv0.x() * iconSheet->texture().width()), static_cast<int>(uv0.y() * iconSheet->texture().height())};
-    m_iconButtonTexture->setTexturesToComposite({{iconSheet->texture(), {iconSheet->iconWidth(), iconSheet->iconHeight()}, offset}});
+    if (!m_itemSheet) {
+      m_itemSheet.emplace("IconSheet");
+    }
+    const auto& [uv0, uv1] = m_itemSheet->rectForId(m_selectedSkill->iconIndex());
+    const Point offset{static_cast<int>(uv0.x() * m_itemSheet->texture().width()), static_cast<int>(uv0.y() * m_itemSheet->texture().height())};
+    m_iconButtonTexture->setTexturesToComposite({{m_itemSheet->texture(), {m_itemSheet->iconWidth(), m_itemSheet->iconHeight()}, offset}});
   }
   ImGui::BeginChild("#orpg_skills_editor");
   {
@@ -46,7 +42,7 @@ void DBSkillsTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            for (auto& skill_ : m_skills.skills()) {
+            for (auto& skill_ : m_skills->skills()) {
               if (skill_.id() == 0) {
                 continue;
               }
@@ -130,9 +126,9 @@ void DBSkillsTab::draw() {
                 ImGui::Text("Skill Type:");
                 ImGui::SetNextItemWidth((ImGui::GetContentRegionAvail().x / 2) - ImGui::GetStyle().FramePadding.x);
                 if (ImGui::BeginCombo(std::format("##orpg_database_skills_skilltype_{}", m_selectedSkill->id()).c_str(),
-                                      m_selectedSkill->stypeId() == 0 ? "None" : Database::instance()->system.skillType(m_selectedSkill->stypeId()).c_str())) {
+                                      m_selectedSkill->stypeId() == 0 ? "None" : Database::instance()->system->skillType(m_selectedSkill->stypeId()).c_str())) {
                   int index{0};
-                  for (auto& dataSource : Database::instance()->system.skillTypes()) {
+                  for (auto& dataSource : Database::instance()->system->skillTypes()) {
                     const bool is_selected = m_selectedSkill->stypeId() == index;
                     if (index == 0) {
                       if (ImGui::Selectable("None", is_selected)) {
@@ -306,7 +302,7 @@ void DBSkillsTab::draw() {
                                 : m_selectedSkill->animationId() == 0 ? "None"
                                                                       : Database::instance()->animationName(m_selectedSkill->animationId()).c_str(),
                                 ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
-                m_animationPicker = AnimationPicker(Database::instance()->animations.animations(), m_selectedSkill->animationId());
+                m_animationPicker = AnimationPicker(Database::instance()->animations->animations(), m_selectedSkill->animationId());
                 m_animationPicker->setOpen(true);
               }
               ImGui::PopID();
@@ -363,8 +359,8 @@ void DBSkillsTab::draw() {
               ImGui::Text("Weapon Type 1");
               ImGui::SetNextItemWidth((ImGui::GetContentRegionAvail().x / 2) - ImGui::GetStyle().FramePadding.x);
               if (ImGui::BeginCombo(std::format("##orpg_database_reqweapon_1_{}", m_selectedSkill->id()).c_str(),
-                                    m_selectedSkill->requiredWtypeId1() == 0 ? "None" : Database::instance()->system.weaponType(m_selectedSkill->requiredWtypeId1()).c_str())) {
-                for (int index{0}; auto& _ : Database::instance()->system.weaponTypes()) {
+                                    m_selectedSkill->requiredWtypeId1() == 0 ? "None" : Database::instance()->system->weaponType(m_selectedSkill->requiredWtypeId1()).c_str())) {
+                for (int index{0}; auto& _ : Database::instance()->system->weaponTypes()) {
                   const bool is_selected = m_selectedSkill->requiredWtypeId1() == index;
                   if (index == 0) {
                     if (ImGui::Selectable("None", is_selected)) {
@@ -373,7 +369,7 @@ void DBSkillsTab::draw() {
                         ImGui::SetItemDefaultFocus();
                     }
                   } else {
-                    if (ImGui::Selectable(Database::instance()->system.weaponType(index).c_str(), is_selected)) {
+                    if (ImGui::Selectable(Database::instance()->system->weaponType(index).c_str(), is_selected)) {
                       m_selectedSkill->setRequiredWtypeId1(index);
                       if (is_selected)
                         ImGui::SetItemDefaultFocus();
@@ -393,9 +389,9 @@ void DBSkillsTab::draw() {
               ImGui::Text("Weapon Type 2");
               ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x);
               if (ImGui::BeginCombo(std::format("##orpg_database_reqweapon_2_{}", m_selectedSkill->id()).c_str(),
-                                    m_selectedSkill->requiredWtypeId2() == 0 ? "None" : Database::instance()->system.weaponType(m_selectedSkill->requiredWtypeId2()).c_str())) {
+                                    m_selectedSkill->requiredWtypeId2() == 0 ? "None" : Database::instance()->system->weaponType(m_selectedSkill->requiredWtypeId2()).c_str())) {
                 int index{0};
-                for (auto& _ : Database::instance()->system.weaponTypes()) {
+                for (auto& _ : Database::instance()->system->weaponTypes()) {
                   const bool is_selected = m_selectedSkill->requiredWtypeId2() == index;
                   if (index == 0) {
                     if (ImGui::Selectable("None", is_selected)) {
@@ -404,7 +400,7 @@ void DBSkillsTab::draw() {
                         ImGui::SetItemDefaultFocus();
                     }
                   } else {
-                    if (ImGui::Selectable(Database::instance()->system.weaponType(index).c_str(), is_selected)) {
+                    if (ImGui::Selectable(Database::instance()->system->weaponType(index).c_str(), is_selected)) {
                       m_selectedSkill->setRequiredWtypeId2(index);
                       if (is_selected)
                         ImGui::SetItemDefaultFocus();
@@ -459,7 +455,7 @@ void DBSkillsTab::draw() {
                                           ? trNOOP("None")
                                           : (Database::instance()->elementNameOrId(m_selectedSkill->damage().elementId()) + "##" + std::to_string(m_selectedSkill->damage().elementId())).c_str())) {
                   int index{-1};
-                  for (auto& elem : Database::instance()->system.elements()) {
+                  for (auto& elem : Database::instance()->system->elements()) {
                     const bool isSelected = m_selectedSkill->damage().elementId() == index;
                     if (index == -1) {
                       if (ImGui::Selectable(trNOOP("Normal Attack"), isSelected)) {
@@ -559,8 +555,8 @@ void DBSkillsTab::draw() {
         if (ImGui::Button("Yes")) {
           const int tmpId = m_selectedSkill->id();
           m_maxSkills = m_editMaxSkills;
-          m_skills.resize(m_maxSkills);
-          m_selectedSkill = m_skills.skill(tmpId);
+          m_skills->resize(m_maxSkills);
+          m_selectedSkill = m_skills->skill(tmpId);
           m_changeIntDialogOpen = false;
           m_changeConfirmDialogOpen = false;
         }

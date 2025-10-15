@@ -18,7 +18,7 @@ struct ControlVariables : IEventCommand {
         return true;
       }
       if (operand == VariableControlOperand::Script) {
-        const std::string constVal = Database::instance()->gameConstants.variables[targetId];
+        const std::string constVal = Database::instance()->gameConstants->variables[targetId];
         if (constVal.empty()) {
           return false;
         }
@@ -31,7 +31,7 @@ struct ControlVariables : IEventCommand {
     // ControlVariables can change switches by using scripts
     if (type == SearchType::Switch) {
       if (operand == VariableControlOperand::Script) {
-        const std::string constVal = Database::instance()->gameConstants.switches[targetId];
+        const std::string constVal = Database::instance()->gameConstants->switches[targetId];
         if (constVal.empty()) {
           return false;
         }

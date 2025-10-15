@@ -14,7 +14,7 @@ EventTilePicker::EventTilePicker(const int mapId, const bool showTree)
 , m_currentMap(mapId)
 , m_showTree(showTree) {
 
-  for (const auto& mapInfo : Database::instance()->mapInfos.mapInfos()) {
+  for (const auto& mapInfo : Database::instance()->mapInfos->mapInfos()) {
     if (!mapInfo) {
       continue;
     }
@@ -41,15 +41,15 @@ std::tuple<bool, bool> EventTilePicker::draw() {
         if (m_showTree) {
           ImGui::BeginChild("##event_tile_picker_map_tree", {ImGui::GetContentRegionAvail().x * .30f, ImGui::GetContentRegionAvail().y - ImGui::GetFrameHeightWithSpacing()},
                             ImGuiChildFlags_ResizeX | ImGuiChildFlags_Borders, ImGuiWindowFlags_NoBackground);
-          { drawMapTreeRecursive(Database::instance()->mapInfos.root()); }
+          { drawMapTreeRecursive(Database::instance()->mapInfos->root()); }
           ImGui::EndChild();
         }
         ImGui::BeginChild("##event_tile_picker_map_canvas", {-1, ImGui::GetContentRegionAvail().y - ImGui::GetFrameHeightWithSpacing()}, ImGuiChildFlags_Borders,
                           ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
         {
           // TODO: Replace all of this with the tilemap canvas when that is rewritten
-          const auto map = Database::instance()->mapInfos.map(m_currentMap);
-          std::string nameStr = map ? map->id() == 0 ? Database::instance()->system.gameTitle() : map->name() : "No Valid Map Selected";
+          const auto map = Database::instance()->mapInfos->map(m_currentMap);
+          std::string nameStr = map ? map->id() == 0 ? Database::instance()->system->gameTitle() : map->name() : "No Valid Map Selected";
 
           if (nameStr.empty()) {
             if (map) {
@@ -125,7 +125,7 @@ std::tuple<bool, bool> EventTilePicker::draw() {
 
 void EventTilePicker::drawMapTreeRecursive(MapInfo& info) {
   const std::string id = std::format("#event_tile_picker_map{:03}_node", info.id());
-  std::string nameStr = info.id() == 0 ? Database::instance()->system.gameTitle() : info.name();
+  std::string nameStr = info.id() == 0 ? Database::instance()->system->gameTitle() : info.name();
 
   if (nameStr.empty()) {
     nameStr = info.name();

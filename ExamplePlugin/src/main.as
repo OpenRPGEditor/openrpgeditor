@@ -59,14 +59,21 @@ class TestJSON {
 }
 
 void initialize() {
-    return;
-    // print(LogLevel::Info, "Initialize");
-    // json@ j = jsonParseFile("test.json");
+    ImVec2 t = ImGui::CalcTextSize("Test");
+    print(LogLevel::Info, format("X {}, Y {}", t.x, t.y));
+    ImVec2 u = ImGui::GetDPIScaledSize(1.f, 1.f);
+    print(LogLevel::Info, format("X {}, Y {}", u.x, u.y));
 
-    // TestJSON test = j is null ? TestJSON() : j;
-    // json@ js = test;
-    // print(LogLevel::Info, "\n" + js.dump(4));
-    // jsonWriteFile(js, "test.json");
+    ImVec2 v = ImGui::GetDPIScaledSize(ImVec2(2.f, 2.f));
+    print(LogLevel::Info, format("X {}, Y {}", v.x, v.y));
+
+     print(LogLevel::Info, "Initialize");
+     json@ j = jsonParseFile("test.json");
+
+     TestJSON test = j is null ? TestJSON() : j;
+     json@ js = test;
+     print(LogLevel::Info, "\n" + js.dump(4));
+     jsonWriteFile(js, "test.json");
 }
 
 bool didDraw = false;
@@ -75,6 +82,10 @@ void draw() {
         print(LogLevel::Info, "Draw");
         didDraw = true;
     }
+
+    ImGui::Begin("Test");
+        ImGui::Text(format("{} {}", "Test", "yay!"));
+    ImGui::End();
 }
 
 void shutdown() {

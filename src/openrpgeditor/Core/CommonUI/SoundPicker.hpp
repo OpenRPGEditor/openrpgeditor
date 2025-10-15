@@ -3,8 +3,8 @@
 #include "Database/Database.hpp"
 #include "Directory.hpp"
 
-#include <SFML/Audio.hpp>
 #include <iostream>
+#include <SFML/Audio.hpp>
 
 /**
  * @name SoundPicker
@@ -49,7 +49,7 @@ private:
 
   bool playAudio(const char* path) {
     // Load and play music
-    if (!buffer.loadFromFile(Database::instance()->basePath + path + m_audioDir.value().getExt())) {
+    if (!buffer.loadFromFile(Database::instance()->basePath / path / m_audioDir.value().getExt())) {
       // error loading file
       return false;
     }

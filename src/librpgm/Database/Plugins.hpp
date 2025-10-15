@@ -15,8 +15,8 @@ struct Plugin {
 };
 
 struct Plugins {
-  static Plugins load(std::string_view path);
-  bool serialize(std::string_view path);
+  static Plugins load(const std::filesystem::path& path);
+  bool serialize(const std::filesystem::path& path) const;
 
   std::vector<Plugin> plugins;
 };

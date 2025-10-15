@@ -4,13 +4,8 @@
 #include "Database/Skills.hpp"
 
 #include "imgui.h"
-DBMappingsTab::DBMappingsTab(System& system, DatabaseEditor* parent)
-: IDBEditorTab(parent)
-, m_system(system) {
-  m_switch_string = m_system.switche(m_selectedSwitch);
-  m_variable_string = m_system.variable(m_selectedVariable);
-  m_unicodes = getUnicodeFormatters();
-}
+DBMappingsTab::DBMappingsTab(DatabaseEditor* parent)
+: IDBEditorTab(parent) {}
 
 void DBMappingsTab::draw() {
 
@@ -71,7 +66,7 @@ void DBMappingsTab::drawCommons() {
       ImGui::BeginDisabled(m_selectedCommon == 0);
       float pos = ImGui::GetCursorPosY();
       if (ImGui::InputText("##orpg_mapping_commonevent_name", &m_common_string)) {
-        Database::instance()->commonEvents.event(m_selectedCommon)->setName(m_common_string);
+        Database::instance()->commonEvents->event(m_selectedCommon)->setName(m_common_string);
       }
       ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionAvail().x - (ImGui::GetStyle().FramePadding.x * 8) + 4, pos + 4.f});
       ImGui::TextDisabled("(?)");
@@ -85,7 +80,7 @@ void DBMappingsTab::drawCommons() {
       ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
       if (ImGui::Button(std::format("{}##{}", m_unicodes.at(m_selectedUnicode), "_commonevent").c_str(), ImVec2(30, 30))) {
         m_switch_string += m_unicodes.at(m_selectedUnicode);
-        Database::instance()->commonEvents.event(m_selectedCommon)->setName(m_common_string);
+        Database::instance()->commonEvents->event(m_selectedCommon)->setName(m_common_string);
       }
       if (ImGui::IsItemHovered()) {
         if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
@@ -109,7 +104,7 @@ void DBMappingsTab::drawCommons() {
     {
 
       int index{0};
-      for (auto& common : Database::instance()->commonEvents.events()) {
+      for (auto& common : Database::instance()->commonEvents->events()) {
         if (index > 0) {
           bool isStyle{false};
           if (std::find(m_reference_left.begin(), m_reference_left.end(), index) != m_reference_left.end()) {
@@ -155,7 +150,7 @@ void DBMappingsTab::drawCommons() {
     {
 
       int index{0};
-      for (auto& common : Database::instance()->commonEvents.events()) {
+      for (auto& common : Database::instance()->commonEvents->events()) {
         if (index > 0) {
 
           bool isStyle{false};
@@ -213,8 +208,8 @@ void DBMappingsTab::drawCommons() {
             for (auto& cmd : reference_from.getCommons()) {
               cmd.getCommand()->setReference(-1, move_to, SearchType::CommonEvent);
             }
-            Database::instance()->commonEvents.swapReference(move_from, move_to);
-            Database::instance()->gameConstants.swap(move_from, move_to, Database::instance()->gameConstants.commonEvents);
+            Database::instance()->commonEvents->swapReference(move_from, move_to);
+            Database::instance()->gameConstants->swap(move_from, move_to, Database::instance()->gameConstants->commonEvents);
           }
           ImGui::EndDragDropTarget();
         }
@@ -236,10 +231,10 @@ void DBMappingsTab::drawSwitches() {
     {
       ImGui::SetNextItemAllowOverlap();
       ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x);
-      float pos = ImGui::GetCursorPosY();
+      const float pos = ImGui::GetCursorPosY();
       ImGui::BeginDisabled(m_selectedSwitch == 0);
       if (ImGui::InputText("##orpg_mapping_switch_name", &m_switch_string)) {
-        Database::instance()->system.setSwitch(m_selectedSwitch, m_switch_string);
+        Database::instance()->system->setSwitch(m_selectedSwitch, m_switch_string);
       }
       ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionAvail().x - (ImGui::GetStyle().FramePadding.x * 8) + 4, pos + 4.f});
       ImGui::TextDisabled("(?)");
@@ -253,7 +248,7 @@ void DBMappingsTab::drawSwitches() {
       ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
       if (ImGui::Button(std::format("{}##{}", m_unicodes.at(m_selectedUnicode), "_switch").c_str(), ImVec2(30, 30))) {
         m_switch_string += m_unicodes.at(m_selectedUnicode);
-        Database::instance()->system.setSwitch(m_selectedSwitch, m_switch_string);
+        Database::instance()->system->setSwitch(m_selectedSwitch, m_switch_string);
       }
       if (ImGui::IsItemHovered()) {
         if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
@@ -278,11 +273,11 @@ void DBMappingsTab::drawSwitches() {
     {
 
       int index{0};
-      for (auto& sw : m_system.switches()) {
+      for (auto& sw : m_system->switches()) {
         if (index > 0) {
 
           bool isStyle{false};
-          if (std::find(m_reference_left.begin(), m_reference_left.end(), index) != m_reference_left.end()) {
+          if (std::ranges::find(m_reference_left, index) != m_reference_left.end()) {
             ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(1.0f, 0.0f, 0.0f, 0.43f));
             ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(1.0f, 0.0f, 0.0f, 0.43f));
             ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(1.0f, 0.0f, 0.0f, 0.43f));
@@ -323,10 +318,10 @@ void DBMappingsTab::drawSwitches() {
     {
 
       int index{0};
-      for (auto& sw : m_system.switches()) {
+      for (auto& sw : m_system->switches()) {
         if (index > 0) {
           bool isStyle{false};
-          if (std::find(m_reference_right.begin(), m_reference_right.end(), index) != m_reference_right.end()) {
+          if (std::ranges::find(m_reference_right, index) != m_reference_right.end()) {
             ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.0f, 1.0f, 0.0f, 0.43f));
             ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.0f, 1.0f, 0.0f, 0.43f));
             ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.0f, 1.0f, 0.0f, 0.43f));
@@ -368,7 +363,7 @@ void DBMappingsTab::drawSwitches() {
             }
             for (auto& cmd : reference_from.getCommons()) {
               if (cmd.getStep() == -2) {
-                Database::instance()->commonEvents.event(cmd.getCommonEventId())->setReference(move_from, -1, SearchType::Switch);
+                Database::instance()->commonEvents->event(cmd.getCommonEventId())->setReference(move_from, -1, SearchType::Switch);
               } else {
                 cmd.getCommand()->setReference(move_from, -1, SearchType::Switch);
               }
@@ -384,7 +379,7 @@ void DBMappingsTab::drawSwitches() {
             }
             for (auto& cmd : reference_to.getCommons()) {
               if (cmd.getStep() == -2) {
-                Database::instance()->commonEvents.event(cmd.getCommonEventId())->setReference(move_to, move_from, SearchType::Switch);
+                Database::instance()->commonEvents->event(cmd.getCommonEventId())->setReference(move_to, move_from, SearchType::Switch);
               } else {
                 cmd.getCommand()->setReference(move_to, move_from, SearchType::Switch);
               }
@@ -400,14 +395,14 @@ void DBMappingsTab::drawSwitches() {
             }
             for (auto& cmd : reference_from.getCommons()) {
               if (cmd.getStep() == -2) {
-                Database::instance()->commonEvents.event(cmd.getCommonEventId())->setReference(-1, move_to, SearchType::Switch);
+                Database::instance()->commonEvents->event(cmd.getCommonEventId())->setReference(-1, move_to, SearchType::Switch);
               } else {
                 cmd.getCommand()->setReference(-1, move_to, SearchType::Switch);
               }
             }
 
-            Database::instance()->system.swapSwitchReference(move_from, move_to);
-            Database::instance()->gameConstants.swap(move_from, move_to, Database::instance()->gameConstants.switches);
+            Database::instance()->system->swapSwitchReference(move_from, move_to);
+            Database::instance()->gameConstants->swap(move_from, move_to, Database::instance()->gameConstants->switches);
           }
           ImGui::EndDragDropTarget();
         }
@@ -422,10 +417,10 @@ void DBMappingsTab::drawSwitches() {
   {
     ImGui::BeginChild("##orpg_mapping2_footer_panel_left_switches", ImVec2{ImGui::GetContentRegionMax().x / 2, 0});
     {
-      ImGui::SeparatorText(trFormat("Max Switches {}", m_system.switches().size() - 1).c_str());
+      ImGui::SeparatorText(trFormat("Max Switches {}", m_system->switches().size() - 1).c_str());
       if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
         m_changeIntDialogOpen = true;
-        m_editMaxSwitches = m_system.switches().size() - 1;
+        m_editMaxSwitches = m_system->switches().size() - 1;
       }
     }
     ImGui::EndChild();
@@ -433,10 +428,10 @@ void DBMappingsTab::drawSwitches() {
     ImGui::BeginChild("##orpg_mapping2_footer_panel_right_switches", ImVec2{ImGui::GetContentRegionMax().x / 2 - 10, 0});
     {
 
-      ImGui::SeparatorText(trFormat("Max Switches {}", m_system.switches().size() - 1).c_str());
+      ImGui::SeparatorText(trFormat("Max Switches {}", m_system->switches().size() - 1).c_str());
       if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
         m_changeIntDialogOpen = true;
-        m_editMaxVariables = m_system.variables().size() - 1;
+        m_editMaxVariables = m_system->variables().size() - 1;
       }
     }
     ImGui::EndChild();
@@ -456,7 +451,7 @@ void DBMappingsTab::drawVariables() {
       float pos = ImGui::GetCursorPosX();
       ImGui::BeginDisabled(m_selectedVariable == 0);
       if (ImGui::InputText("##orpg_mapping_variable_name", &m_variable_string)) {
-        Database::instance()->system.setVariable(m_selectedVariable, m_variable_string);
+        Database::instance()->system->setVariable(m_selectedVariable, m_variable_string);
       }
       ImGui::SetCursorPos(ImVec2{ImGui::GetContentRegionAvail().x - (ImGui::GetStyle().FramePadding.x * 8) + 4, pos + 4.f});
       ImGui::TextDisabled("(?)");
@@ -470,7 +465,7 @@ void DBMappingsTab::drawVariables() {
       ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
       if (ImGui::Button(std::format("{}##{}", m_unicodes.at(m_selectedUnicode), "_variable").c_str(), ImVec2(30, 30))) {
         m_variable_string += m_unicodes.at(m_selectedUnicode);
-        Database::instance()->system.setSwitch(m_selectedVariable, m_variable_string);
+        Database::instance()->system->setSwitch(m_selectedVariable, m_variable_string);
       }
       if (ImGui::IsItemHovered()) {
         if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
@@ -495,10 +490,10 @@ void DBMappingsTab::drawVariables() {
     {
 
       int index{0};
-      for (auto& variable : m_system.variables()) {
+      for (auto& variable : m_system->variables()) {
         if (index > 0) {
           bool isStyle{false};
-          if (std::find(m_reference_left.begin(), m_reference_left.end(), index) != m_reference_left.end()) {
+          if (std::ranges::find(m_reference_left, index) != m_reference_left.end()) {
             ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(1.0f, 0.0f, 0.0f, 0.43f));
             ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(1.0f, 0.0f, 0.0f, 0.43f));
             ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(1.0f, 0.0f, 0.0f, 0.43f));
@@ -540,7 +535,7 @@ void DBMappingsTab::drawVariables() {
     {
 
       int index{0};
-      for (auto& variable : m_system.variables()) {
+      for (auto& variable : m_system->variables()) {
         if (index > 0) {
           bool isStyle{false};
           if (std::find(m_reference_right.begin(), m_reference_right.end(), index) != m_reference_right.end()) {
@@ -596,8 +591,8 @@ void DBMappingsTab::drawVariables() {
               cmd.getCommand()->setReference(-1, move_to, SearchType::Variable);
             }
 
-            Database::instance()->system.swapVariableReference(move_from, move_to);
-            Database::instance()->gameConstants.swap(move_from, move_to, Database::instance()->gameConstants.variables);
+            Database::instance()->system->swapVariableReference(move_from, move_to);
+            Database::instance()->gameConstants->swap(move_from, move_to, Database::instance()->gameConstants->variables);
           }
           ImGui::EndDragDropTarget();
         }
@@ -612,10 +607,10 @@ void DBMappingsTab::drawVariables() {
   {
     ImGui::BeginChild("##orpg_mapping2_footer_panel_left_variables", ImVec2{ImGui::GetContentRegionMax().x / 2, 0});
     {
-      ImGui::SeparatorText(trFormat("Max Variables {}", m_system.variables().size() - 1).c_str());
+      ImGui::SeparatorText(trFormat("Max Variables {}", m_system->variables().size() - 1).c_str());
       if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
         m_changeIntDialogOpen = true;
-        m_editMaxVariables = m_system.variables().size() - 1;
+        m_editMaxVariables = m_system->variables().size() - 1;
       }
     }
     ImGui::EndChild();
@@ -623,10 +618,10 @@ void DBMappingsTab::drawVariables() {
     ImGui::BeginChild("##orpg_mapping2_footer_panel_right_variables", ImVec2{ImGui::GetContentRegionMax().x / 2 - 10, 0});
     {
 
-      ImGui::SeparatorText(trFormat("Max Variables {}", m_system.variables().size() - 1).c_str());
+      ImGui::SeparatorText(trFormat("Max Variables {}", m_system->variables().size() - 1).c_str());
       if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
         m_changeIntDialogOpen = true;
-        m_editMaxVariables = m_system.variables().size() - 1;
+        m_editMaxVariables = m_system->variables().size() - 1;
       }
     }
     ImGui::EndChild();

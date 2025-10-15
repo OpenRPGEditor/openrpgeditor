@@ -38,8 +38,8 @@ std::string MovePictureCommand::stringRep(const Database& db, const bool colored
     suffix = ColorFormatter::getColor(FormatColor::Gray, colored) + " " + db.parentheses(trNOOP("Wait")) + ColorFormatter::popColor(colored);
   }
   if (pictureLocation == PictureDesignationSource::Designation_with_variables) {
-    std::string varX = db.system.variable(x);
-    std::string varY = db.system.variable(y);
+    std::string varX = db.system->variable(x);
+    std::string varY = db.system->variable(y);
     varX = varX.empty() ? std::format("#{:04}", x) : varX;
     varY = varY.empty() ? std::format("#{:04}", y) : varY;
     return indentText(indent()) + symbol(code()) + ColorFormatter::getColorCode(code(), colored) + trNOOP("Move Picture") + colon.data() +

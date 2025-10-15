@@ -25,8 +25,8 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
       if (eventGroup.begin()) {
         ImGui::SetNextItemWidth(-1);
         if (ImGui::BeginCombo("##set_event_location_event_list", Database::instance()->eventNameOrId(m_event).c_str())) {
-          for (int i = 0; i < Database::instance()->mapInfos.currentMap()->map()->events().size(); ++i) {
-            if (i > 0 && !Database::instance()->mapInfos.currentMap()->map()->event(i)) {
+          for (int i = 0; i < Database::instance()->mapInfos->currentMap()->map()->events().size(); ++i) {
+            if (i > 0 && !Database::instance()->mapInfos->currentMap()->map()->event(i)) {
               continue;
             }
 
@@ -50,9 +50,9 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
         ImGui::BeginDisabled(m_mode != 0);
         {
           ImGui::PushID("#transfer_coord_selection");
-          if (ImGui::EllipsesButton(m_mode == 0 ? std::format("{} ({},{})", Database::instance()->mapNameOrId(Database::instance()->mapInfos.currentMap()->id()), m_x, m_y).c_str() : "",
+          if (ImGui::EllipsesButton(m_mode == 0 ? std::format("{} ({},{})", Database::instance()->mapNameOrId(Database::instance()->mapInfos->currentMap()->id()), m_x, m_y).c_str() : "",
                                     ImVec2{-1, 0})) {
-            m_eventTilePicker.emplace(Database::instance()->mapInfos.currentMap()->id(), false);
+            m_eventTilePicker.emplace(Database::instance()->mapInfos->currentMap()->id(), false);
             m_eventTilePicker->setOpen(true);
           }
           ImGui::PopID();
@@ -71,7 +71,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
                 ImGui::PushID("##set_event_location_variables_x");
                 if (ImGui::EllipsesButton(m_mode == 1 ? Database::instance()->variableNameAndId(m_xVar).c_str() : "", {-1, 0})) {
                   m_variableSelection = 0;
-                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_xVar);
+                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_xVar);
                   m_variablePicker->setOpen(true);
                 }
                 ImGui::PopID();
@@ -82,7 +82,7 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
                 ImGui::PushID("##set_event_location_variables_y");
                 if (ImGui::EllipsesButton(m_mode == 1 ? Database::instance()->variableNameAndId(m_yVar).c_str() : "", {-1, 0})) {
                   m_variableSelection = 1;
-                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_yVar);
+                  m_variablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_yVar);
                   m_variablePicker->setOpen(true);
                 }
                 ImGui::PopID();
@@ -102,8 +102,8 @@ std::tuple<bool, bool> Dialog_SetEventLocation::draw() {
             ImGui::Dummy({ImGui::GetFrameHeight(), ImGui::GetFrameHeight()});
             ImGui::SetNextItemWidth(-1);
             if (ImGui::BeginCombo("##set_event_location_other_event_list", m_mode == 2 ? Database::instance()->eventNameOrId(m_otherEvent).c_str() : "")) {
-              for (int i = 0; i < Database::instance()->mapInfos.currentMap()->map()->events().size(); ++i) {
-                if (i > 0 && !Database::instance()->mapInfos.currentMap()->map()->event(i)) {
+              for (int i = 0; i < Database::instance()->mapInfos->currentMap()->map()->events().size(); ++i) {
+                if (i > 0 && !Database::instance()->mapInfos->currentMap()->map()->event(i)) {
                   continue;
                 }
 

@@ -9,16 +9,14 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBActorsTab::DBActorsTab(Actors& actors, DatabaseEditor* parent)
-: IDBEditorTab(parent)
-, m_actors(actors) {
-  m_selectedActor = m_actors.actor(1);
-  if (m_selectedActor) {
-    m_traitsEditor.setTraits(&m_selectedActor->traits());
-  }
-}
+DBActorsTab::DBActorsTab(DatabaseEditor* parent)
+: IDBEditorTab(parent) {}
 
 void DBActorsTab::draw() {
+  if (!m_actors) {
+    return;
+  }
+
   if (m_selectedActor != nullptr) {
     if (!m_faceSheet) {
       m_faceSheet.emplace(m_selectedActor->faceName());
@@ -79,7 +77,7 @@ void DBActorsTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            for (auto& actor : m_actors.m_actors) {
+            for (auto& actor : m_actors->m_actors) {
               if (actor.id() == 0) {
                 continue;
               }
@@ -103,11 +101,11 @@ void DBActorsTab::draw() {
         }
         ImGui::EndChild();
         char str[4096];
-        snprintf(str, 4096, "Max Actors %i", m_actors.count());
+        snprintf(str, 4096, "Max Actors %i", m_actors->count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, 0})) {
           m_changeIntDialogOpen = true;
-          m_editMaxActors = m_actors.count();
+          m_editMaxActors = m_actors->count();
         }
       }
       ImGui::EndGroup();
@@ -138,10 +136,10 @@ void DBActorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Class:");
-              const auto cls = Database::instance()->classes.classType(m_selectedActor->classId());
+              const auto cls = Database::instance()->classes->classType(m_selectedActor->classId());
               ImGui::SetNextItemWidth((ImGui::GetContentRegionAvail().x / 2) - ImGui::GetStyle().FramePadding.x);
               if (ImGui::BeginCombo("##orpg_actors_editor_class_combo", Database::instance()->classNameAndId(cls->id()).c_str())) {
-                for (const auto& c : Database::instance()->classes.classes()) {
+                for (const auto& c : Database::instance()->classes->classes()) {
                   if (c.id() == 0) {
                     continue;
                   }
@@ -250,7 +248,7 @@ void DBActorsTab::draw() {
               ImGui::TableSetupColumn("Type");
               ImGui::TableSetupColumn("Equipment Item");
               ImGui::TableHeadersRow();
-              const auto& equipTypes = Database::instance()->system.equipTypes();
+              const auto& equipTypes = Database::instance()->system->equipTypes();
 
               for (int i = 0; i < equipTypes.size() - 1; i++) {
                 ImGui::TableNextRow();
@@ -324,8 +322,8 @@ void DBActorsTab::draw() {
         ImGui::Text("Are you sure?");
         if (ImGui::Button("Yes")) {
           const int tmpId = m_selectedActor->id();
-          m_actors.resize(m_editMaxActors);
-          m_selectedActor = m_actors.actor(tmpId);
+          m_actors->resize(m_editMaxActors);
+          m_selectedActor = m_actors->actor(tmpId);
           m_changeIntDialogOpen = false;
           m_changeConfirmDialogOpen = false;
         }
@@ -347,14 +345,14 @@ void DBActorsTab::draw() {
 
       if (!Database::instance()->isEquipTypeSealed(m_selectedActor->id(), m_chosenEquipId)) {
         if (m_chosenEquipId <= 1) {
-          for (int i = 0; const auto& wp : Database::instance()->weapons.weapons()) {
+          for (int i = 0; const auto& wp : Database::instance()->weapons->weapons()) {
             if (Database::instance()->isEquipWeaponTypeOk(m_selectedActor->id(), wp.wtypeId())) {
               equipList.push_back(i);
             }
             ++i;
           }
         } else {
-          for (int i = 0; const auto& ar : Database::instance()->armors.armors()) {
+          for (int i = 0; const auto& ar : Database::instance()->armors->armors()) {
             if (m_chosenEquipId == ar.etypeId() && Database::instance()->isEquipArmorTypeOk(m_selectedActor->id(), ar.atypeId())) {
               equipList.push_back(i);
             }

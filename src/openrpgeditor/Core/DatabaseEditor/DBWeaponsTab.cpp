@@ -6,22 +6,15 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBWeaponsTab::DBWeaponsTab(Weapons& weapons, DatabaseEditor* parent)
-: IDBEditorTab(parent)
-, m_weapons(weapons) {
-  m_selectedWeapon = m_weapons.weapon(1);
-  if (m_selectedWeapon) {
-    m_traitsEditor.setTraits(&m_selectedWeapon->traits());
-  }
-  m_maxWeapons = m_weapons.count();
-}
+DBWeaponsTab::DBWeaponsTab(DatabaseEditor* parent)
+: IDBEditorTab(parent) {}
 
 void DBWeaponsTab::draw() {
   if (!m_itemButtonTexture) {
     m_itemButtonTexture.emplace();
     m_itemButtonTexture->setSize(38, 38);
     if (!m_itemSheet) {
-      m_itemSheet.emplace(*m_parent->getIconSheet());
+      m_itemSheet.emplace("IconSheet");
     }
     const auto& [uv0, uv1] = m_itemSheet.value().rectForId(m_selectedWeapon->iconIndex());
     const Point offset{static_cast<int>(uv0.x() * m_itemSheet.value().texture().width()), static_cast<int>(uv0.y() * m_itemSheet.value().texture().height())};
@@ -47,7 +40,7 @@ void DBWeaponsTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            for (auto& weapon : m_weapons.weapons()) {
+            for (auto& weapon : m_weapons->weapons()) {
               if (weapon.id() == 0) {
                 continue;
               }
@@ -119,16 +112,16 @@ void DBWeaponsTab::draw() {
             {
               ImGui::Text("Weapon Type:");
               ImGui::SetNextItemWidth(170);
-              if (ImGui::BeginCombo("##orpg_database_weapons_wtype", Database::instance()->system.weaponType(m_selectedWeapon->wtypeId()).c_str())) {
+              if (ImGui::BeginCombo("##orpg_database_weapons_wtype", Database::instance()->system->weaponType(m_selectedWeapon->wtypeId()).c_str())) {
                 int index{0};
-                for (auto v : Database::instance()->system.weaponTypes()) {
+                for (auto v : Database::instance()->system->weaponTypes()) {
                   bool selected = index == m_selectedWeapon->wtypeId();
                   if (index == 0) {
                     if (ImGui::Selectable(std::format("None##_{}", index).c_str(), selected)) {
                       m_selectedWeapon->setWtypeId(index);
                     }
                   } else {
-                    if (ImGui::Selectable(Database::instance()->system.weaponType(index) == "" ? std::format("#{:02}", index).c_str() : std::format("{}##_#{}", v, index).c_str(), selected)) {
+                    if (ImGui::Selectable(Database::instance()->system->weaponType(index) == "" ? std::format("#{:02}", index).c_str() : std::format("{}##_#{}", v, index).c_str(), selected)) {
                       m_selectedWeapon->setWtypeId(index);
                     }
                   }
@@ -161,7 +154,7 @@ void DBWeaponsTab::draw() {
                                 : m_selectedWeapon->animationId() == 0 ? "None"
                                                                        : Database::instance()->animationName(m_selectedWeapon->animationId()).c_str(),
                                 ImVec2{200 - 15, 0})) {
-                m_animationPicker = AnimationPicker(Database::instance()->animations.animations(), m_selectedWeapon->animationId());
+                m_animationPicker = AnimationPicker(Database::instance()->animations->animations(), m_selectedWeapon->animationId());
                 m_animationPicker->setOpen(true);
               }
               ImGui::PopID();
@@ -309,8 +302,8 @@ void DBWeaponsTab::draw() {
           if (ImGui::Button("Yes")) {
             const int tmpId = m_selectedWeapon->id();
             m_maxWeapons = m_editMaxWeapons;
-            m_weapons.resize(m_maxWeapons);
-            m_selectedWeapon = m_weapons.weapon(tmpId);
+            m_weapons->resize(m_maxWeapons);
+            m_selectedWeapon = m_weapons->weapon(tmpId);
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }

@@ -1,10 +1,11 @@
 #pragma once
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
+#include "Database/Database.hpp"
 #include "Database/Docs.hpp"
 
 struct DBDocTab : IDBEditorTab {
   DBDocTab() = delete;
-  explicit DBDocTab(Docs& docs, DatabaseEditor* parent);
+  explicit DBDocTab(DatabaseEditor* parent);
   void draw() override;
   std::vector<int>& getHeaders() override { return m_headers; }
   int getHeader(int index) override { return m_headers.at(index); }
@@ -18,6 +19,30 @@ struct DBDocTab : IDBEditorTab {
 
   [[nodiscard]] std::string tabName() const override { return tr("Documentation"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBDocTab"sv; };
+
+  bool isReady() const override { return !!Database::instance()->docs; }
+  void initialize() override {
+    if (!isReady()) {
+      return;
+    }
+    m_docs = &Database::instance()->docs.value();
+    if (m_docs->docs.size() == 0) {
+      Doc doc;
+
+      doc.setNames({"Example Name 1", "Example Name 2", "Example Name 3"});
+      doc.setTexts({" Example Text 1", "Example Text 2", "Example Test 3"});
+
+      m_docs->docs.emplace_back(doc);
+
+      Save();
+    }
+    m_names = m_docs->docs.front().names();
+    m_texts = m_docs->docs.front().texts();
+
+    createHeaders();
+  }
+
+  bool isInitialized() const override { return m_docs; }
 
 private:
   int m_categoryStart;

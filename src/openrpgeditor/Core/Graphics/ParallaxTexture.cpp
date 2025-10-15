@@ -16,8 +16,8 @@ void ParallaxTexture::setTexture(const std::string_view path) {
   update();
 }
 
-int ParallaxTexture::pixelWidth() const { return m_size.width() * Database::instance()->system.tileSize(); }
-int ParallaxTexture::pixelHeight() const { return m_size.height() * Database::instance()->system.tileSize(); }
+int ParallaxTexture::pixelWidth() const { return m_size.width() * Database::instance()->system->tileSize(); }
+int ParallaxTexture::pixelHeight() const { return m_size.height() * Database::instance()->system->tileSize(); }
 
 void ParallaxTexture::update() const {
   if (!m_texture || (!m_renderTexture && m_workDone)) {
@@ -64,8 +64,8 @@ void ParallaxTexture::update() const {
   SDL_SetRenderTarget(App::APP->getWindow()->getNativeRenderer(), static_cast<SDL_Texture*>(m_renderTexture));
 
   if (m_updateScrolling && (m_loopX || m_loopY)) {
-    const float sx = m_scrollPosition.x() * Database::instance()->system.tileSize();
-    const float sy = m_scrollPosition.y() * Database::instance()->system.tileSize();
+    const float sx = m_scrollPosition.x() * Database::instance()->system->tileSize();
+    const float sy = m_scrollPosition.y() * Database::instance()->system->tileSize();
     for (float y = -pixelHeight(); y <= pixelHeight(); y += m_texture.height()) {
       for (float x = -pixelWidth(); x <= pixelWidth(); x += m_texture.width()) {
         SDL_FRect dst{x + sx, y + sy, static_cast<float>(m_texture.width()), static_cast<float>(m_texture.height())};

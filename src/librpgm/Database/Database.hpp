@@ -36,36 +36,36 @@ struct Database {
   Database& operator=(Database&) = delete;
   Database& operator=(Database&&) = delete;
 
-  Actors actors{};
-  Classes classes{};
-  Skills skills{};
-  Items items{};
-  Weapons weapons{};
-  Armors armors{};
-  Enemies enemies{};
-  Troops troops{};
-  States states{};
-  Animations animations{};
-  Tilesets tilesets{};
-  CommonEvents commonEvents{};
-  System system{};
-  Plugins plugins{};
-  MapInfos mapInfos{};
-  GameConstants gameConstants{};
-  Templates templates{};
-  Locales locales{};
-  Docs docs{};
+  std::optional<Actors> actors;
+  std::optional<Classes> classes;
+  std::optional<Skills> skills;
+  std::optional<Items> items;
+  std::optional<Weapons> weapons;
+  std::optional<Armors> armors;
+  std::optional<Enemies> enemies;
+  std::optional<Troops> troops;
+  std::optional<States> states;
+  std::optional<Animations> animations;
+  std::optional<Tilesets> tilesets;
+  std::optional<CommonEvents> commonEvents;
+  std::optional<System> system;
+  std::optional<Plugins> plugins;
+  std::optional<MapInfos> mapInfos;
+  std::optional<GameConstants> gameConstants;
+  std::optional<Templates> templates;
+  std::optional<Locales> locales;
+  std::optional<Docs> docs;
   std::string projectVersion; // As stored in the .rpgproject file
-  std::string projectFilePath;
-  std::string basePath;
+  std::filesystem::path projectFilePath;
+  std::filesystem::path basePath;
   ProjectConfig config;
   TransientConfig transient;
 
   void serializeProject();
 
   void serializeSettings() {
-    config.serialize(basePath + "/editor/config.json");
-    transient.serialize(basePath + "/.ore/transient.json");
+    config.serialize(basePath / "editor/config.json");
+    transient.serialize(basePath / ".ore/transient.json");
   }
 
   static std::string framesText(const int frames) { return std::to_string(frames) + " " + (frames == 0 || frames > 1 ? trNOOP("frames") : trNOOP("frame")); }
@@ -115,46 +115,46 @@ struct Database {
   }
 
   [[nodiscard]] std::string eventName(const int id) const {
-    const auto map = mapInfos.currentMap();
+    const auto map = !mapInfos ? nullptr : mapInfos->currentMap();
     const auto object = map ? map->event(id) : nullptr;
     return object ? object->name() : InvalidDataName.data();
   }
   [[nodiscard]] std::string actorName(const int id) const {
-    const auto object = actors.actor(id);
+    const auto object = !actors ? nullptr : actors->actor(id);
     return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string className(const int id) const {
-    const auto object = classes.classType(id);
+    const auto object = !classes ? nullptr : classes->classType(id);
     return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string skillName(const int id) const {
-    const auto object = skills.skill(id);
+    const auto object = !skills ? nullptr : skills->skill(id);
     return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string itemName(const int id) const {
-    const auto object = items.item(id);
+    const auto object = !items ? nullptr : items->item(id);
     return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string weaponName(const int id) const {
-    const auto object = weapons.weapon(id);
+    const auto object = !weapons ? nullptr : weapons->weapon(id);
     return object ? object->name() : InvalidDataName.data();
   }
   [[nodiscard]] std::string armorName(const int id) const {
-    const auto object = armors.armor(id);
+    const auto object = !armors ? nullptr : armors->armor(id);
     return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string enemyName(const int id) const {
-    const auto object = enemies.enemy(id);
+    const auto object = !enemies ? nullptr : enemies->enemy(id);
     return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string troopName(const int id) const {
-    const auto object = troops.troop(id);
+    const auto object = !troops ? nullptr : troops->troop(id);
     return object ? object->name() : InvalidDataName.data();
   }
 
@@ -163,85 +163,85 @@ struct Database {
       return trNOOP("Normal Attack");
     }
 
-    const auto object = states.state(id);
+    const auto object = !states ? nullptr : states->state(id);
     return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string animationName(const int id) const {
-    const auto object = animations.animation(id);
+    const auto object = !animations ? nullptr : animations->animation(id);
     return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string tilesetName(const int id) const {
-    const auto object = tilesets.tileset(id);
+    const auto object = !tilesets ? nullptr : tilesets->tileset(id);
     return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string commonEventName(const int id) const {
-    const auto object = commonEvents.event(id);
+    const auto object = !commonEvents ? nullptr : commonEvents->event(id);
     return object ? object->name() : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string switchName(const int id) const {
-    if (id < 0 || id >= system.switches().size()) {
+    if (!system || id < 0 || id >= system->switches().size()) {
       return InvalidDataName.data();
     }
-    return system.switche(id);
+    return system->switche(id);
   }
 
   [[nodiscard]] std::string variableName(const int id) const {
-    if (id < 0 || id >= system.variables().size()) {
+    if (!system || id < 0 || id >= system->variables().size()) {
       return InvalidDataName.data();
     }
-    return system.variable(id);
+    return system->variable(id);
   }
 
   [[nodiscard]] std::string elementName(const int id) const {
-    if (id < 0 || id >= system.elements().size()) {
+    if (!system || id < 0 || id >= system->elements().size()) {
       return InvalidDataName.data();
     }
-    return system.element(id);
+    return system->element(id);
   }
 
   [[nodiscard]] std::string skillTypeName(const int id) const {
-    if (id < 0 || id >= system.skillTypes().size()) {
+    if (!system || id < 0 || id >= system->skillTypes().size()) {
       return InvalidDataName.data();
     }
-    return system.skillType(id);
+    return system->skillType(id);
   }
 
   [[nodiscard]] std::string weaponTypeName(const int id) const {
-    if (id < 0 || id >= system.weaponTypes().size()) {
+    if (!system || id < 0 || id >= system->weaponTypes().size()) {
       return InvalidDataName.data();
     }
-    return system.weaponType(id);
+    return system->weaponType(id);
   }
 
   [[nodiscard]] std::string armorTypeName(const int id) const {
-    if (id < 0 || id >= system.armorTypes().size()) {
+    if (!system || id < 0 || id >= system->armorTypes().size()) {
       return InvalidDataName.data();
     }
-    return system.armorType(id);
+    return system->armorType(id);
   }
 
   [[nodiscard]] std::string equipTypeName(const int id) const {
-    if (id < 0 || id >= system.equipTypes().size()) {
+    if (!system || id < 0 || id >= system->equipTypes().size()) {
       return InvalidDataName.data();
     }
-    return system.equipType(id);
+    return system->equipType(id);
   }
 
   [[nodiscard]] std::string troopMemberName(const int id, const int index) const {
     if (index < 0) {
       return trNOOP("Entire Troop");
     }
-    const auto object = troops.troop(id);
+    const auto object = !troops ? nullptr : troops->troop(id);
     const auto member = object ? object->member(index) : nullptr;
     return member ? enemyName(member->enemyId()) : InvalidDataName.data();
   }
 
   [[nodiscard]] std::string mapName(const int id) const {
-    const auto map = mapInfos.map(id);
+    const auto map = !mapInfos ? nullptr : mapInfos->map(id);
     return map ? map->name() : InvalidDataName.data();
   }
 
@@ -317,12 +317,12 @@ struct Database {
   [[nodiscard]] std::string equipTypeNameAndId(const int id) const { return nameAndId(equipTypeName(id), id, 2); }
 
   [[nodiscard]] std::pair<Actor*, Class*> featureObjects(const int actorId) const {
-    const auto actor = actors.actor(actorId);
-    if (!actor) {
+    const auto actor = actors ? nullptr : actors->actor(actorId);
+    if (!actor || !classes) {
       return {};
     }
 
-    return std::make_pair(const_cast<Actor*>(actor), const_cast<Class*>(classes.classType(actor->classId())));
+    return std::make_pair(const_cast<Actor*>(actor), const_cast<Class*>(classes->classType(actor->classId())));
   }
 
   [[nodiscard]] std::vector<const Trait*> allTraits(const int actorId) const {
@@ -394,7 +394,7 @@ struct Database {
 
   [[nodiscard]] int slotIdToEquipId(const int actorId, const int slotId) const { return slotId == 1 && isDualWield(actorId) ? 1 : slotId + 1; }
 
-  [[nodiscard]] std::vector<char> encryptionKeyAsBytes() const { return system.encryptionKeyAsBytes(); }
+  [[nodiscard]] std::vector<char> encryptionKeyAsBytes() const { return !system ? std::vector<char>() : system->encryptionKeyAsBytes(); }
 
   static Database* instance() { return m_instance; }
 
@@ -424,37 +424,41 @@ struct Database {
 
   bool isModified() const {
     bool isModified = false;
-    isModified |= actors.isModified();
-    isModified |= classes.isModified();
-    isModified |= skills.isModified();
-    isModified |= items.isModified();
-    isModified |= weapons.isModified();
-    isModified |= armors.isModified();
-    isModified |= enemies.isModified();
-    isModified |= troops.isModified();
-    isModified |= states.isModified();
-    isModified |= animations.isModified();
-    isModified |= tilesets.isModified();
-    isModified |= commonEvents.isModified();
-    isModified |= system.isModified();
-    isModified |= mapInfos.isModified();
-    // isModified |= plugins.isModified();
-    // isModified |= gameConstants.isModified();
-    isModified |= templates.isModified();
-    isModified |= docs.isModified();
+    isModified |= !actors ? false : actors->isModified();
+    isModified |= !classes ? false : classes->isModified();
+    isModified |= !skills ? false : skills->isModified();
+    isModified |= !items ? false : items->isModified();
+    isModified |= !weapons ? false : weapons->isModified();
+    isModified |= !armors ? false : armors->isModified();
+    isModified |= !enemies ? false : enemies->isModified();
+    isModified |= !troops ? false : troops->isModified();
+    isModified |= !states ? false : states->isModified();
+    isModified |= !animations ? false : animations->isModified();
+    isModified |= !tilesets ? false : tilesets->isModified();
+    isModified |= !commonEvents ? false : commonEvents->isModified();
+    isModified |= !system ? false : system->isModified();
+    isModified |= !mapInfos ? false : mapInfos->isModified();
+    // isModified |= !plugins ? false :plugins->isModified();
+    // isModified |= !gameConstants ? false :gameConstants->isModified();
+    isModified |= !templates ? false : templates->isModified();
+    isModified |= !docs ? false : docs->isModified();
     return isModified;
   }
 
   bool checkEquipable(const int actorId, const int etypeId, const int dataId) const {
+    if (!weapons || !armors) {
+      return false;
+    }
+    
     if (dataId <= 0 || isEquipTypeSealed(actorId, etypeId)) {
       return false;
     }
 
     if (etypeId <= 1) {
-      if (const auto& weapon = weapons.weapon(dataId); weapon && isEquipWeaponTypeOk(actorId, weapon->wtypeId())) {
+      if (const auto& weapon = weapons->weapon(dataId); weapon && isEquipWeaponTypeOk(actorId, weapon->wtypeId())) {
         return true;
       }
-    } else if (const auto& armor = armors.armor(dataId); armor && armor->etypeId() == etypeId && isEquipArmorTypeOk(actorId, armor->atypeId())) {
+    } else if (const auto& armor = armors->armor(dataId); armor && armor->etypeId() == etypeId && isEquipArmorTypeOk(actorId, armor->atypeId())) {
       return true;
     }
 

@@ -961,7 +961,7 @@ void EventCommandEditor::drawPopup() {
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         if (ImGui::BeginCombo("##eventcommand_editor_presets", trNOOP("Select a preset to insert into selection..."))) {
           int index{0};
-          for (auto& templ : Database::instance()->templates.templates) {
+          for (auto& templ : Database::instance()->templates->templates) {
             if (templ.type() == Template::TemplateType::Command) {
               if (!templ.commands().empty()) {
                 if (ImGui::Selectable(templ.name().c_str(), false)) {

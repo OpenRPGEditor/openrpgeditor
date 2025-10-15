@@ -1,6 +1,8 @@
 #include "Core/CommonUI/ActionsEditor.hpp"
 #include "Core/DatabaseEditor.hpp"
 
+#include "Database/Database.hpp"
+
 #include <format>
 
 #include "imgui.h"
@@ -140,7 +142,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
         {
           // Skill Button - Picker
           if (ImGui::Button(Database::instance()->skillNameOrId(m_selectedAction->skillId()).c_str(), ImVec2{200, 0})) {
-            m_skillPicker.emplace(Database::instance()->skills.skills(), m_selectedAction->skillId());
+            m_skillPicker.emplace(Database::instance()->skills->skills(), m_selectedAction->skillId());
             m_skillPicker->setOpen(true);
           }
           ImGui::SameLine();
@@ -281,7 +283,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
             if (ImGui::Button(m_selectedAction->conditionType() == ActionCondition::State ? Database::instance()->stateNameOrId(static_cast<int>(m_selectedAction->conditionParam1())).c_str()
                                                                                           : "##actions_skill_selection",
                               ImVec2{ImGui::GetContentRegionAvail().x, 0})) {
-              m_statePicker.emplace(Database::instance()->states.states(), m_selectedAction->conditionParam1());
+              m_statePicker.emplace(Database::instance()->states->states(), m_selectedAction->conditionParam1());
               m_statePicker->setOpen(true);
             }
           }
@@ -307,7 +309,7 @@ void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
             if (ImGui::Button(m_selectedAction->conditionType() == ActionCondition::Switch ? Database::instance()->switchNameOrId(static_cast<int>(m_selectedAction->conditionParam1())).c_str()
                                                                                            : "##actions_switch_selection",
                               ImVec2{ImGui::GetContentRegionAvail().x, 0})) {
-              picker.emplace(VariableSwitchPicker::Type::Switch,  Database::instance()->system.switches(), m_selectedAction->conditionParam1());
+              picker.emplace(VariableSwitchPicker::Type::Switch,  Database::instance()->system->switches(), m_selectedAction->conditionParam1());
               picker->setOpen(true);
             }
           }

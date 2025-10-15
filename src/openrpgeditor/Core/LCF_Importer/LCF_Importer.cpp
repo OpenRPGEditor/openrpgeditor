@@ -33,10 +33,10 @@ bool LCF_Importer::loadProject() {
   m_database = lcf::LDB_Reader::Load((m_projectPath / "RPG_RT.ldb").generic_string(), "SJIS");
   m_treeMap = lcf::LMT_Reader::Load((m_projectPath / "RPG_RT.lmt").generic_string(), "SJIS");
 
-  if (!std::filesystem::exists(Database::instance()->basePath + "editor/LCFMapping.json")) {
-    m_mapper.serialize(Database::instance()->basePath + "editor/LCFMapping.json"); // Make new file if it doesn't exist
+  if (!std::filesystem::exists(Database::instance()->basePath / "editor/LCFMapping.json")) {
+    m_mapper.serialize(Database::instance()->basePath / "editor/LCFMapping.json"); // Make new file if it doesn't exist
   } else {
-    m_mapper = LCF_Mapping::load(Database::instance()->basePath + "editor/LCFMapping.json");
+    m_mapper = LCF_Mapping::load(Database::instance()->basePath / "editor/LCFMapping.json");
     m_mapper.hasUnresolvedPairs();
   }
 
@@ -46,7 +46,7 @@ bool LCF_Importer::loadProject() {
 std::unique_ptr<lcf::rpg::Map> LCF_Importer::loadMap(const int id) const {
   std::string mapName = std::format("Map{:04}.lmu", id);
   if (exists(m_projectPath / mapName)) {
-    return lcf::LMU_Reader::Load((m_projectPath / mapName).generic_string().c_str(), "SJIS");
+    return lcf::LMU_Reader::Load((m_projectPath / mapName).generic_string(), "SJIS");
   }
   return nullptr;
 }

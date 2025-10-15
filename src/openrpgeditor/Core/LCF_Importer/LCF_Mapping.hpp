@@ -11,10 +11,10 @@
 
 class LCF_Mapping {
 public:
-  static LCF_Mapping load(std::string_view path);
-  bool serialize(std::string_view path);
-  void save(std::string path) {
-    serialize(path.append("editor/LCFMapping.json")); // Make new file if it doesn't exist
+  static LCF_Mapping load(const std::filesystem::path& path);
+  bool serialize(const std::filesystem::path& path);
+  void save(const std::filesystem::path& path) {
+    serialize(path / "editor/LCFMapping.json"); // Make new file if it doesn't exist
   }
 
   void addEmptySwitch(int id);

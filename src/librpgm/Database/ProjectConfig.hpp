@@ -8,9 +8,9 @@
 struct ProjectConfig {
 
   ProjectConfig();
-  bool load(std::string_view path);
+  bool load(const std::filesystem::path& path);
   bool loadFromJson(const nlohmann::ordered_json& parser);
-  void serialize(std::string_view path);
+  void serialize(const std::filesystem::path& path);
   nlohmann::ordered_json serializeToJson();
   std::map<int, MapStateType> mapStateList;
 
@@ -22,9 +22,9 @@ private:
 
 struct TransientConfig {
   TransientConfig();
-  bool load(std::string_view path);
+  bool load(const std::filesystem::path& path);
   bool loadFromJson(const nlohmann::ordered_json& parser);
-  void serialize(std::string_view path);
+  void serialize(const std::filesystem::path& path);
   nlohmann::ordered_json serializeToJson();
   std::string imguiState;
 

@@ -6,15 +6,11 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBTilesetsTab::DBTilesetsTab(Tilesets& tilesets, DatabaseEditor* parent)
-: IDBEditorTab(parent)
-, m_tilesets(tilesets) {
-  m_selectedTileset = m_tilesets.tileset(1);
-  m_tileMarker.emplace(TileFlags::None, 1, 256, 320);
-  m_maxTilesets = m_tilesets.count();
-}
+DBTilesetsTab::DBTilesetsTab(DatabaseEditor* parent)
+: IDBEditorTab(parent) {}
 
 void DBTilesetsTab::draw() {
+  //TODO: Rewrite this
   if (m_selectedTileset) {
     if (!m_imagePicker) {
       m_imagePicker.emplace(ImagePicker::PickerMode::Tileset, "", "");
@@ -44,7 +40,7 @@ void DBTilesetsTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            for (auto& tileset : m_tilesets.tilesets()) {
+            for (auto& tileset : m_tilesets->tilesets()) {
               if (tileset.id() == 0) {
                 continue;
               }
@@ -71,6 +67,8 @@ void DBTilesetsTab::draw() {
     ImGui::SameLine();
     ImGui::BeginChild("##orpg_tilesets_editor_tilesets_tileset_properties", ImVec2{0, 0}, 0, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
     {
+      // TODO:
+      m_selectedTileset = nullptr;
       if (m_selectedTileset) {
         ImGui::BeginChild("##orpg_tilesets_tileset_panel_left", ImVec2{ImGui::GetContentRegionMax().x / 4, 0.f});
         {
@@ -246,16 +244,16 @@ void DBTilesetsTab::draw() {
             if (m_selectedTileTab == 0) {
               drawA1();
               if (m_selectedTileset->tilesetName(1) != "") {
-                ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
+                //ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 4.f);
               }
               drawA2();
               drawA3();
               if (m_selectedTileset->tilesetName(3) != "") {
-                ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 1.f);
+                //ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 1.f);
               }
               drawA4();
               if (m_selectedTileset->tilesetName(4) != "") {
-                ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 1.f);
+                //ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 1.f);
               }
               drawA5();
             } else if (m_selectedTileTab > 0) {
@@ -502,8 +500,8 @@ void DBTilesetsTab::draw() {
           if (ImGui::Button("Yes")) {
             const int tmpId = m_selectedTileset->id();
             m_maxTilesets = m_editMaxTilesets;
-            m_tilesets.resize(m_maxTilesets);
-            m_selectedTileset = m_tilesets.tileset(tmpId);
+            m_tilesets->resize(m_maxTilesets);
+            m_selectedTileset = m_tilesets->tileset(tmpId);
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }

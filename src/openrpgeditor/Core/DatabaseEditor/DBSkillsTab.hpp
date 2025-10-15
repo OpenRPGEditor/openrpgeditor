@@ -4,6 +4,7 @@
 #include "Core/DatabaseEditor/DBCommonEventsTab.hpp"
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/CheckeredCompositeTexture.hpp"
+#include "Core/Graphics/IconSheet.hpp"
 
 #include "Database/Animation.hpp"
 #include "Database/Skills.hpp"
@@ -11,32 +12,40 @@
 class DBSkillsTab final : public IDBEditorTab {
 public:
   DBSkillsTab() = delete;
-  explicit DBSkillsTab(Skills& skills, DatabaseEditor* parent);
+  explicit DBSkillsTab(DatabaseEditor* parent);
   void draw() override;
 
-  [[nodiscard]] std::vector<Skill>& skills() { return m_skills.skills(); }
-  [[nodiscard]] const std::vector<Skill>& skills() const { return m_skills.skills(); }
-  [[nodiscard]] Skill* skill(const int id) { return m_skills.skill(id); }
-  [[nodiscard]] const Skill* skill(const int id) const { return m_skills.skill(id); }
   std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(int index) override { return m_headers.at(index); }
+  int getHeader(const int index) override { return m_headers.at(index); }
   bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(int start, int end) override {
+  void setHeaderRange(const int start, const int end) override {
     m_categoryStart = start;
     m_categoryEnd = end;
   }
 
-  std::string getName(int index) override { return m_skills.skill(index)->name(); }
-  int getCount() override { return m_skills.count(); }
+  std::string getName(int index) override { return m_skills->skill(index)->name(); }
+  int getCount() override { return m_skills->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Skills"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBSkillsTab"sv; };
+
+  bool isReady() const override { return !!Database::instance()->skills; }
+  bool isInitialized() const override { return m_skills; }
+  void initialize() override {
+    m_skills = &Database::instance()->skills.value();
+
+    m_selectedSkill = m_skills->skill(1);
+    if (m_selectedSkill) {
+      m_effectsEditor.setEffects(&m_selectedSkill->effects());
+    }
+    m_maxSkills = m_skills->count();
+  }
 
 private:
   int m_categoryStart;
   int m_categoryEnd;
   std::vector<int> m_headers;
-  Skills& m_skills;
+  Skills* m_skills{};
   Skill* m_selectedSkill{};
   int m_maxSkills{};
   int m_editMaxSkills{};
@@ -49,4 +58,5 @@ private:
   std::vector<std::string> m_message_templateList{"casts %1!", "does %1!", "uses %1"};
   std::optional<AnimationPicker> m_animationPicker;
   std::optional<CheckeredCompositeTexture> m_iconButtonTexture;
+  std::optional<IconSheet> m_itemSheet;
 };

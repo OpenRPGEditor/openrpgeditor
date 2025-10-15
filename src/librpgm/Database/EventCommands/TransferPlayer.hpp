@@ -13,7 +13,7 @@ struct TransferPlayerCommand final : IEventCommand {
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<TransferPlayerCommand>(*this); }
 
   TransferMode mode = TransferMode::Direct;
-  int mapId = Database::instance() != nullptr && Database::instance()->mapInfos.currentMap() != nullptr ? Database::instance()->mapInfos.currentMap()->id() : 1;
+  int mapId = Database::instance() != nullptr && Database::instance()->mapInfos->currentMap() != nullptr ? Database::instance()->mapInfos->currentMap()->id() : 1;
   int x{0};
   int y{0};
   Direction direction = Direction::Retain;

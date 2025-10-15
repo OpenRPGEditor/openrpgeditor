@@ -27,7 +27,7 @@ std::tuple<bool, bool> Dialog_BattleProcessing::draw() {
         ImGui::BeginDisabled(m_type != 0);
         {
           if (ImGui::EllipsesButton(m_type == 0 ? Database::instance()->troopNameOrId(m_id).c_str() : "##battle_processing_troop_direct", {-1, 0})) {
-            m_enemyPicker = TroopPicker(Database::instance()->troops.troops(), m_id);
+            m_enemyPicker = TroopPicker(Database::instance()->troops->troops(), m_id);
             m_enemyPicker->setOpen(true);
           }
         }
@@ -38,7 +38,7 @@ std::tuple<bool, bool> Dialog_BattleProcessing::draw() {
         ImGui::BeginDisabled(m_type != 1);
         {
           if (ImGui::EllipsesButton(m_type == 1 ? Database::instance()->variableNameAndId(m_varSelection).c_str() : "##battle_processing_troop_variable", {-1, 0})) {
-            m_variablePicker = VariableSwitchPicker(VariableSwitchPicker::Type::Variable, Database::instance()->system.variables(), m_varSelection);
+            m_variablePicker = VariableSwitchPicker(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_varSelection);
             m_variablePicker->setOpen(true);
           }
         }

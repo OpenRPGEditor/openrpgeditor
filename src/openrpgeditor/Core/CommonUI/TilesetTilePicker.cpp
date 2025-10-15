@@ -27,7 +27,7 @@ void TilesetTilePicker::draw() {
   if (m_map != m_parent->currentMap()) {
     m_map = m_parent->currentMap();
     if (m_map != nullptr) {
-      m_palette.setTilesetNames(Database::instance()->tilesets.tileset(m_map->tilesetId())->tilesetNames());
+      m_palette.setTilesetNames(Database::instance()->tilesets->tileset(m_map->tilesetId())->tilesetNames());
       while (!m_palette.isPageValid(m_page) && m_page > 0) {
         --m_page;
       }

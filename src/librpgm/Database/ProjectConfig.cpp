@@ -5,9 +5,9 @@
 ProjectConfig* ProjectConfig::m_instance = nullptr;
 
 ProjectConfig::ProjectConfig() { m_instance = this; }
-bool ProjectConfig::load(std::string_view path) {
+bool ProjectConfig::load(const std::filesystem::path& path) {
   try {
-    if (std::ifstream f(path.data()); f.is_open()) {
+    if (std::ifstream f(path); f.is_open()) {
       return loadFromJson(nlohmann::ordered_json::parse(f));
     }
   } catch (...) {
@@ -24,12 +24,12 @@ bool ProjectConfig::loadFromJson(const nlohmann::ordered_json& parser) {
 
   return false;
 }
-void ProjectConfig::serialize(const std::string_view path) {
-  if (!exists(std::filesystem::path(path).parent_path())) {
-    create_directories(std::filesystem::path(path).parent_path());
+void ProjectConfig::serialize(const std::filesystem::path& path) {
+  if (!exists(path.parent_path())) {
+    create_directories(path.parent_path());
   }
 
-  if (std::ofstream f(path.data()); f.is_open()) {
+  if (std::ofstream f(path); f.is_open()) {
     f << serializeToJson().dump(4);
   }
 }
@@ -43,9 +43,10 @@ nlohmann::ordered_json ProjectConfig::serializeToJson() {
 TransientConfig* TransientConfig::m_instance = nullptr;
 
 TransientConfig::TransientConfig() { m_instance = this; }
-bool TransientConfig::load(std::string_view path) {
+
+bool TransientConfig::load(const std::filesystem::path& path) {
   try {
-    if (std::ifstream f(path.data()); f.is_open()) {
+    if (std::ifstream f(path); f.is_open()) {
       return loadFromJson(nlohmann::ordered_json::parse(f));
     }
   } catch (...) {
@@ -62,12 +63,12 @@ bool TransientConfig::loadFromJson(const nlohmann::ordered_json& parser) {
 
   return false;
 }
-void TransientConfig::serialize(const std::string_view path) {
-  if (!exists(std::filesystem::path(path).parent_path())) {
-    create_directories(std::filesystem::path(path).parent_path());
+void TransientConfig::serialize(const std::filesystem::path& path) {
+  if (!exists(path.parent_path())) {
+    create_directories(path.parent_path());
   }
 
-  if (std::ofstream f(path.data()); f.is_open()) {
+  if (std::ofstream f(path); f.is_open()) {
     f << serializeToJson().dump(4);
   }
 }

@@ -85,9 +85,9 @@ void EventSearcher::draw() {
     }
   }
 
-  if (Database::instance()->commonEvents.isUpdating()) {
+  if (Database::instance()->commonEvents->isUpdating()) {
     m_commonPicker.reset();
-    Database::instance()->commonEvents.setUpdate(false);
+    Database::instance()->commonEvents->setUpdate(false);
   } else {
     if (m_commonPicker) {
       if (m_commonPicker->drawPicker(m_pickedData)) {
@@ -113,66 +113,66 @@ void EventSearcher::draw() {
       pickedType = static_cast<SearchType>(m_pickedSearchType);
       if (pickedType == SearchType::Variable) { // Variable
         if (ImGui::Button(Database::instance()->variableNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
-          picker.emplace(VariableSwitchPicker::Type::Variable,  Database::instance()->system.variables(), m_selectedData);
+          picker.emplace(VariableSwitchPicker::Type::Variable,  Database::instance()->system->variables(), m_selectedData);
           picker->setOpen(true);
         }
       } else if (pickedType == SearchType::Switch) {
         // Switch
         if (ImGui::Button(Database::instance()->switchNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
-          picker.emplace(VariableSwitchPicker::Type::Switch,  Database::instance()->system.switches(), m_selectedData);
+          picker.emplace(VariableSwitchPicker::Type::Switch,  Database::instance()->system->switches(), m_selectedData);
           picker->setOpen(true);
         }
       } else if (pickedType == SearchType::Animation) {
         if (ImGui::Button(Database::instance()->animationNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
-          m_animationPicker.emplace(Database::instance()->animations.animations(), m_selectedData);
+          m_animationPicker.emplace(Database::instance()->animations->animations(), m_selectedData);
           m_animationPicker->setOpen(true);
         }
       } else if (pickedType == SearchType::Armors) {
         if (ImGui::Button(Database::instance()->armorNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
-          m_armorPicker.emplace(Database::instance()->armors.armors(), m_selectedData);
+          m_armorPicker.emplace(Database::instance()->armors->armors(), m_selectedData);
           m_armorPicker->setOpen(true);
         }
       } else if (pickedType == SearchType::Audio) {
         ImGui::InputText("##orpg_search_textInput_audio", &m_pickedString);
       } else if (pickedType == SearchType::CommonEvent) {
         if (ImGui::Button(Database::instance()->commonEventNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
-          m_commonPicker = CommonEventPicker( Database::instance()->commonEvents.events(), m_selectedData);
+          m_commonPicker = CommonEventPicker( Database::instance()->commonEvents->events(), m_selectedData);
           m_commonPicker->setOpen(true);
         }
       } else if (pickedType == SearchType::Class) {
         if (ImGui::Button(Database::instance()->classNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
-          m_classPicker.emplace(Database::instance()->classes.classes(), m_selectedData);
+          m_classPicker.emplace(Database::instance()->classes->classes(), m_selectedData);
           m_classPicker->setOpen(true);
         }
       } else if (pickedType == SearchType::Enemy) {
         if (ImGui::Button(Database::instance()->enemyNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
-          m_enemyPicker.emplace(Database::instance()->enemies.enemies(), m_selectedData);
+          m_enemyPicker.emplace(Database::instance()->enemies->enemies(), m_selectedData);
           m_enemyPicker->setOpen(true);
         }
       } else if (pickedType == SearchType::Items) {
         if (ImGui::Button(Database::instance()->itemNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
-          m_itemPicker.emplace(Database::instance()->items.items(), m_selectedData);
+          m_itemPicker.emplace(Database::instance()->items->items(), m_selectedData);
           m_itemPicker->setOpen(true);
         }
       } else if (pickedType == SearchType::Skill) {
         if (ImGui::Button(Database::instance()->skillNameOrId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
-          m_skillPicker.emplace(Database::instance()->skills.skills(), m_selectedData);
+          m_skillPicker.emplace(Database::instance()->skills->skills(), m_selectedData);
           m_skillPicker->setOpen(true);
         }
       } else if (pickedType == SearchType::State) {
         if (ImGui::Button(Database::instance()->stateNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
-          m_statePicker.emplace(Database::instance()->states.states(), m_selectedData);
+          m_statePicker.emplace(Database::instance()->states->states(), m_selectedData);
           m_statePicker->setOpen(true);
         }
       } else if (pickedType == SearchType::Weapons) {
         if (ImGui::Button(Database::instance()->weaponNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
-          m_weaponPicker.emplace(Database::instance()->weapons.weapons(), m_selectedData);
+          m_weaponPicker.emplace(Database::instance()->weapons->weapons(), m_selectedData);
           m_weaponPicker->setOpen(true);
         }
       } else if (pickedType == SearchType::Actor) {
 
         if (ImGui::Button(Database::instance()->actorNameAndId(m_valueSelected ? m_selectedData : m_pickedData).c_str(), ImVec2{290, 0})) {
-          m_actorPicker.emplace(Database::instance()->actors.actorList(), m_selectedData);
+          m_actorPicker.emplace(Database::instance()->actors->actorList(), m_selectedData);
           m_actorPicker->setOpen(true);
         }
       } else if (pickedType == SearchType::Script) {

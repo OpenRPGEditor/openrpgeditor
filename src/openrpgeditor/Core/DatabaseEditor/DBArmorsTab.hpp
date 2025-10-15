@@ -3,37 +3,48 @@
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Core/Graphics/CheckeredCompositeTexture.hpp"
 #include "Core/Graphics/IconSheet.hpp"
-#include "DBCommonEventsTab.hpp"
 #include "Database/Armors.hpp"
+#include "DBCommonEventsTab.hpp"
 
 struct DBArmorsTab : IDBEditorTab {
   DBArmorsTab() = delete;
-  explicit DBArmorsTab(Armors& armors, DatabaseEditor* parent);
+  explicit DBArmorsTab(DatabaseEditor* parent);
   void draw() override;
 
-  [[nodiscard]] std::vector<Armor>& armors() { return m_armors.armors(); }
-  [[nodiscard]] const std::vector<Armor>& armors() const { return m_armors.armors(); }
-  Armor* armor(int id) { return m_armors.armor(id); }
-  const Armor* armor(int id) const { return m_armors.armor(id); }
   std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(int index) override { return m_headers.at(index); }
+  int getHeader(const int index) override { return m_headers.at(index); }
   bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(int start, int end) override {
+  void setHeaderRange(const int start, const int end) override {
     m_categoryStart = start;
     m_categoryEnd = end;
   }
 
-  std::string getName(int index) override { return m_armors.armor(index)->name(); }
-  int getCount() override { return m_armors.count(); }
+  std::string getName(const int index) override { return m_armors->armor(index)->name(); }
+  int getCount() override { return m_armors->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Armors"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBArmorsTab"sv; };
+
+  bool isReady() const override { return Database::instance()->armors && Database::instance()->system; }
+  void initialize() override {
+    if (!isReady()) {
+      return;
+    }
+
+    m_armors = &Database::instance()->armors.value();
+    m_selectedArmor = m_armors->armor(1);
+    if (m_selectedArmor) {
+      m_traitsEditor.setTraits(&m_selectedArmor->traits());
+    }
+  }
+
+  bool isInitialized() const override { return m_armors != nullptr; }
 
 private:
   int m_categoryStart;
   int m_categoryEnd;
   std::vector<int> m_headers;
-  Armors& m_armors;
+  Armors* m_armors = nullptr;
   Armor* m_selectedArmor{};
   int m_editMaxArmors{};
   float m_splitterWidth = 300.f;

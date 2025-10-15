@@ -11,7 +11,7 @@ void TilemapView::setMap(const Map* map) {
   if (!m_map) {
     return;
   }
-  setTileset(Database::instance()->tilesets.tileset(map->tilesetId()));
+  setTileset(Database::instance()->tilesets->tileset(map->tilesetId()));
   createRenderImages();
   setDirtyRect(0, 0, m_map->width() + 1, m_map->height() + 1);
   m_frameDelay = 2;

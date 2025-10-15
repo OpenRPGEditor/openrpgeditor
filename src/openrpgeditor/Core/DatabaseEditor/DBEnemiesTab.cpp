@@ -5,14 +5,8 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBEnemiesTab::DBEnemiesTab(Enemies& Enemies, DatabaseEditor* parent)
-: IDBEditorTab(parent)
-, m_enemies(Enemies) {
-  m_selectedEnemy = m_enemies.enemy(1);
-  if (m_selectedEnemy) {
-    m_traitsEditor.setTraits(&m_selectedEnemy->traits());
-    m_actionsEditor.setActions(&m_selectedEnemy->actions());
-  }
+DBEnemiesTab::DBEnemiesTab(DatabaseEditor* parent)
+: IDBEditorTab(parent) {
 }
 
 void DBEnemiesTab::draw() {
@@ -46,7 +40,7 @@ void DBEnemiesTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            for (auto& enemy : m_enemies.enemies()) {
+            for (auto& enemy : m_enemies->enemies()) {
               if (enemy.id() == 0) {
                 continue;
               }
@@ -61,11 +55,11 @@ void DBEnemiesTab::draw() {
         }
         ImGui::EndChild();
         char str[4096];
-        snprintf(str, 4096, "Max Enemies %i", m_enemies.count());
+        snprintf(str, 4096, "Max Enemies %i", m_enemies->count());
         ImGui::SeparatorText(str);
         if (ImGui::Button("Change Max", ImVec2{ImGui::GetContentRegionMax().x - 8, 0})) {
           m_changeIntDialogOpen = true;
-          m_editMaxEnemies = m_enemies.count();
+          m_editMaxEnemies = m_enemies->count();
         }
       }
       ImGui::EndGroup();
@@ -304,8 +298,8 @@ void DBEnemiesTab::draw() {
           ImGui::Text("Are you sure?");
           if (ImGui::Button("Yes")) {
             const int tmpId = m_selectedEnemy->id();
-            m_enemies.resize(m_editMaxEnemies);
-            m_selectedEnemy = m_enemies.enemy(tmpId);
+            m_enemies->resize(m_editMaxEnemies);
+            m_selectedEnemy = m_enemies->enemy(tmpId);
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }
@@ -381,7 +375,7 @@ void DBEnemiesTab::drawPopup() {
       {
         ImGui::PushID("##orpg_dropitem_item");
         if (ImGui::Button(m_dropSelection != 1 ? "" : Database::instance()->itemNameOrId(m_item.at(0)).c_str(), ImVec2{200 - 15, 0})) {
-          item_picker = ItemPicker(Database::instance()->items.items(), m_item.at(0));
+          item_picker = ItemPicker(Database::instance()->items->items(), m_item.at(0));
           item_picker->setOpen(true);
         }
         ImGui::PopID();
@@ -392,7 +386,7 @@ void DBEnemiesTab::drawPopup() {
       {
         ImGui::PushID("##orpg_dropitem_weapon");
         if (ImGui::Button(m_dropSelection != 2 ? "" : Database::instance()->weaponNameOrId(m_item.at(1)).c_str(), ImVec2{200 - 15, 0})) {
-          weapon_picker = WeaponPicker(Database::instance()->weapons.weaponList(), m_item.at(1));
+          weapon_picker = WeaponPicker(Database::instance()->weapons->weaponList(), m_item.at(1));
           weapon_picker->setOpen(true);
         }
         ImGui::PopID();
@@ -403,7 +397,7 @@ void DBEnemiesTab::drawPopup() {
       {
         ImGui::PushID("##orpg_dropitem_armor");
         if (ImGui::Button(m_dropSelection != 3 ? "" : Database::instance()->armorNameOrId(m_item.at(2)).c_str(), ImVec2{200 - 15, 0})) {
-          armor_picker = ArmorPicker(Database::instance()->armors.armorList(), m_item.at(2));
+          armor_picker = ArmorPicker(Database::instance()->armors->armorList(), m_item.at(2));
           armor_picker->setOpen(true);
         }
         ImGui::PopID();

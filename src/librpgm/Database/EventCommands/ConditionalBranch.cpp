@@ -206,7 +206,7 @@ std::string ConditionalBranchCommand::conditionalFormat(const std::string& text,
 std::string ConditionalBranchCommand::stringRep(const Database& db, const bool colored) const {
   std::string strBuild;
   if (type == ConditionType::Variable) {
-    std::string var = db.system.variable(variable.id);
+    std::string var = db.system->variable(variable.id);
     std::string other;
     if (variable.source == VariableComparisonSource::Variable) {
       other = db.variableNameOrId(variable.otherId);

@@ -25,7 +25,7 @@ std::tuple<bool, bool> EventEditor::draw() {
   if (!m_event || !m_open) {
     return {!m_open, m_confirmed};
   }
-  std::string title = std::format("{}###event_editor_{}_{}", trFormat("Event {} - ID {}", m_event->name(), m_event->id()), Database::instance()->mapInfos.currentMap()->id(), m_event->id());
+  std::string title = std::format("{}###event_editor_{}_{}", trFormat("Event {} - ID {}", m_event->name(), m_event->id()), Database::instance()->mapInfos->currentMap()->id(), m_event->id());
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Once, {0.5f, 0.5f});
   ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(960, 820), ImGuiCond_Once);
   ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(320, 240), {FLT_MAX, FLT_MAX});
@@ -76,7 +76,7 @@ std::tuple<bool, bool> EventEditor::draw() {
       ImGui::EndDisabled();
       ImGui::SameLine();
       if (ImGui::Button(trNOOP("Save as\nTemplate"))) {
-        m_templatePicker = TemplatePicker(Database::instance()->templates.templateList(Template::TemplateType::Event), 0);
+        m_templatePicker = TemplatePicker(Database::instance()->templates->templateList(Template::TemplateType::Event), 0);
       }
       ImGui::SameLine();
       ORE_DISABLE_EXPERIMENTAL_BEGIN();
@@ -108,18 +108,18 @@ std::tuple<bool, bool> EventEditor::draw() {
           EventParser parser;
           EventParser::serialize(eventJson, *m_event);
           if (m_templatePicker.value().selection() == 0) {
-            Database::instance()->templates.addTemplate(Template(Database::instance()->templates.templates.size() + 1,
-                                                                 tr("New Event Template") + " " + std::to_string(Database::instance()->templates.templates.size() + 1), "",
+            Database::instance()->templates->addTemplate(Template(Database::instance()->templates->templates.size() + 1,
+                                                                 tr("New Event Template") + " " + std::to_string(Database::instance()->templates->templates.size() + 1), "",
                                                                  Template::TemplateType::Event, eventJson.dump(), {}));
           } else {
-            Database::instance()->templates.templates.at(m_templatePicker.value().selection() - 1).setCommands(eventJson.dump());
+            Database::instance()->templates->templates.at(m_templatePicker.value().selection() - 1).setCommands(eventJson.dump());
           }
-          if (Database::instance()->templates.serialize(Database::instance()->basePath + "data/Templates.json")) {
+          if (Database::instance()->templates->serialize(Database::instance()->basePath / "data/Templates.json")) {
             ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Success, trNOOP("Saved event as template successfully!")});
           } else {
             ImGui::InsertNotification(ImGuiToast{ImGuiToastType::Error, trNOOP("Failed to saved event as template!")});
           }
-          Database::instance()->templates.templates.back().setCommands(eventJson.dump());
+          Database::instance()->templates->templates.back().setCommands(eventJson.dump());
         }
         m_templatePicker.reset();
       }
@@ -230,20 +230,20 @@ void EventEditor::drawLocalization() {
         m_localeConfirm = true;
         int index{0};
 
-        int mapId = Database::instance()->mapInfos.currentMap()->id();
+        int mapId = Database::instance()->mapInfos->currentMap()->id();
         int eventId = id();
         int pageId = m_selectedPage + 1;
 
-        Database::instance()->locales.loadMap(Database::instance()->basePath + std::format("locales/en/Map0{:03}.json", mapId));
+        Database::instance()->locales->loadMap(Database::instance()->basePath / std::format("locales/en/Map0{:03}.json", mapId));
 
         std::vector<std::string> lines = splitString(m_localizationInput, '\n');
         std::vector<std::string> choiceLines;
 
         int localeIndex{1};
         for (auto& line : lines) {
-          for (int i = 0; i < Database::instance()->locales.locales.size(); i++) {
-            if (Database::instance()->locales.locales.at(i).first == trim(line)) {
-              Database::instance()->locales.locales.at(i).first = std::format("Map{}-EV{}-Page{}-{}", mapId, eventId, pageId, localeIndex);
+          for (int i = 0; i < Database::instance()->locales->locales.size(); i++) {
+            if (Database::instance()->locales->locales.at(i).first == trim(line)) {
+              Database::instance()->locales->locales.at(i).first = std::format("Map{}-EV{}-Page{}-{}", mapId, eventId, pageId, localeIndex);
               localeIndex++;
             }
           }
@@ -261,7 +261,7 @@ void EventEditor::drawLocalization() {
               for (auto& choiceStr : choiceCmd->choices) {
                 // choiceCmd->choices.at(setStringReference("{}", lines.at(index), SearchType::Text);
                 int idx = stoi(lines.at(index));
-                choiceCmd->choices.at(showChoiceIndex) = "{" + trim(Database::instance()->locales.locales.at(idx).first) + "}";
+                choiceCmd->choices.at(showChoiceIndex) = "{" + trim(Database::instance()->locales->locales.at(idx).first) + "}";
                 if (m_choiceParsing) {
                   choiceLines.insert(choiceLines.begin() + showChoiceIndex, choiceStr);
                 } else {
@@ -274,8 +274,8 @@ void EventEditor::drawLocalization() {
           } else if (cmd->code() == EventCode::Show_Text) {
             if (cmd->hasStringReference("{}", SearchType::Text)) {
               int idx = stoi(lines.at(index));
-              if (idx < Database::instance()->locales.locales.size()) {
-                cmd->setStringReference("{}", "{" + trim(Database::instance()->locales.locales.at(idx).first) + "}", SearchType::Text);
+              if (idx < Database::instance()->locales->locales.size()) {
+                cmd->setStringReference("{}", "{" + trim(Database::instance()->locales->locales.at(idx).first) + "}", SearchType::Text);
               }
               index++;
             }
@@ -294,7 +294,7 @@ void EventEditor::drawLocalization() {
         m_maxLocaleLines = 0;
         m_localeLinesRequired = 0;
 
-        Database::instance()->locales.saveCurrentLocale();
+        Database::instance()->locales->saveCurrentLocale();
         m_localizationInput.clear();
         ImGui::CloseCurrentPopup();
       }

@@ -1,11 +1,54 @@
 #include "Core/DatabaseEditor.hpp"
 
+#include "Core/DatabaseEditor/DBActorsTab.hpp"
+#include "Core/DatabaseEditor/DBAnimationsTab.hpp"
+#include "Core/DatabaseEditor/DBArmorsTab.hpp"
+#include "Core/DatabaseEditor/DBClassesTab.hpp"
+#include "Core/DatabaseEditor/DBCommonEventsTab.hpp"
+#include "Core/DatabaseEditor/DBDocTab.hpp"
+#include "Core/DatabaseEditor/DBEnemiesTab.hpp"
+#include "Core/DatabaseEditor/DBGameConstantsTab.hpp"
+#include "Core/DatabaseEditor/DBItemsTab.hpp"
+#include "Core/DatabaseEditor/DBLocaleTab.hpp"
+#include "Core/DatabaseEditor/DBMappingsTab.hpp"
+#include "Core/DatabaseEditor/DBSkillsTab.hpp"
+#include "Core/DatabaseEditor/DBStatesTab.hpp"
+#include "Core/DatabaseEditor/DBSystemTab.hpp"
+#include "Core/DatabaseEditor/DBTemplatesTab.hpp"
+#include "Core/DatabaseEditor/DBTermsTab.hpp"
+#include "Core/DatabaseEditor/DBTilesetsTab.hpp"
+#include "Core/DatabaseEditor/DBTroopsTab.hpp"
+#include "Core/DatabaseEditor/DBTypesTab.hpp"
+#include "Core/DatabaseEditor/DBWeaponsTab.hpp"
+
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "ImGuiExt/ImGuiUtils.hpp"
 
+DatabaseEditor::DatabaseEditor() {
+  // Add Core tabs
+  addTab(std::make_shared<DBActorsTab>(this));
+  addTab(std::make_shared<DBClassesTab>(this));
+  addTab(std::make_shared<DBSkillsTab>(this));
+  addTab(std::make_shared<DBItemsTab>(this));
+  addTab(std::make_shared<DBWeaponsTab>(this));
+  addTab(std::make_shared<DBArmorsTab>(this));
+  addTab(std::make_shared<DBEnemiesTab>(this));
+  addTab(std::make_shared<DBTroopsTab>(this));
+  addTab(std::make_shared<DBStatesTab>(this));
+  addTab(std::make_shared<DBAnimationsTab>(this));
+  addTab(std::make_shared<DBTilesetsTab>(this));
+  addTab(std::make_shared<DBCommonEventsTab>(this));
+  addTab(std::make_shared<DBSystemTab>(this));
+  addTab(std::make_shared<DBTypesTab>(this));
+  addTab(std::make_shared<DBTermsTab>(this));
+  addTab(std::make_shared<DBGameConstantsTab>(this));
+  addTab(std::make_shared<DBTemplatesTab>(this));
+  addTab(std::make_shared<DBMappingsTab>(this));
+  addTab(std::make_shared<DBDocTab>(this));
+  addTab(std::make_shared<DBLocaleTab>(this));
+}
 void DatabaseEditor::draw() {
-  // TODO: Rewrite layout
   if (isReady() && !onReady.is_empty()) {
     emit_signal(onReady);
   } else if (!isReady()) {
@@ -34,7 +77,18 @@ void DatabaseEditor::draw() {
         ImGui::BeginVertical("##database_editor_tab_layout", ImGui::GetContentRegionAvail(), 0);
         {
           ImGui::Spring(0.25f);
+          // TODO: Add ability to re-sort tabs
           for (const auto& tab : m_editorTabs) {
+            // If the tab is not ready we can simply ignore it for now
+            if (!tab->isReady()) {
+              continue;
+            }
+
+            if (!tab->isInitialized()) {
+              tab->initialize();
+              continue;
+            }
+
             if (tab->isExperimental()) {
               ORE_DISABLE_EXPERIMENTAL_BEGIN();
             }
@@ -126,13 +180,6 @@ void DatabaseEditor::draw() {
   }
 
   ImGui::End();
-}
-
-const IconSheet* DatabaseEditor::getIconSheet() {
-  if (!m_iconSheet) {
-    m_iconSheet.emplace("system/IconSet"sv);
-  }
-  return &m_iconSheet.value();
 }
 
 void DatabaseEditor::drawCategoryHeaders() {

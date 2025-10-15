@@ -6,16 +6,8 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBTroopsTab::DBTroopsTab(Troops& troops, DatabaseEditor* parent)
-: IDBEditorTab(parent)
-, m_troops(troops)
-, m_enemies(Database::instance()->enemies)
-, m_troopsEditor(troops.troop(1)) {
-  m_selectedTroop = m_troops.troop(1);
-  if (m_selectedTroop) {
-    // m_traitsEditor.setTraits(&m_selectedClass->traits);
-  }
-  m_maxTroops = m_troops.count();
+DBTroopsTab::DBTroopsTab(DatabaseEditor* parent)
+: IDBEditorTab(parent){
 }
 
 void DBTroopsTab::draw() {
@@ -41,14 +33,15 @@ void DBTroopsTab::draw() {
         {
           ImGui::BeginGroup();
           {
-            for (auto& troop : m_troops.troops()) {
+            for (auto& troop : m_troops->troops()) {
               if (troop.id() == 0) {
                 continue;
               }
 
               if (ImGui::Selectable(Database::instance()->troopNameAndId(troop.id()).c_str(), &troop == m_selectedTroop) || (ImGui::IsItemFocused() && m_selectedTroop != &troop)) {
                 m_selectedTroop = &troop;
-                m_troopsEditor.setTroop(m_selectedTroop);
+                /* FIXME: Currently causes a crash */
+                //m_troopsEditor.setTroop(m_selectedTroop);
               }
             }
           }
@@ -157,7 +150,7 @@ void DBTroopsTab::draw() {
             {
               ImGui::BeginChild("##orpg_enemies_editor_troops_enemies_list", ImVec2{0, ImGui::GetContentRegionMax().y - 230});
               {
-                for (auto& enemy : m_enemies.enemies()) {
+                for (auto& enemy : m_enemies->enemies()) {
                   if (enemy.id() == 0) {
                     continue;
                   }
@@ -212,8 +205,8 @@ void DBTroopsTab::draw() {
           if (ImGui::Button("Yes")) {
             const int tmpId = m_selectedTroop->id();
             m_maxTroops = m_editMaxTroops;
-            m_troops.resize(m_maxTroops);
-            m_selectedTroop = m_troops.troop(tmpId);
+            m_troops->resize(m_maxTroops);
+            m_selectedTroop = m_troops->troop(tmpId);
             m_changeIntDialogOpen = false;
             m_changeConfirmDialogOpen = false;
           }

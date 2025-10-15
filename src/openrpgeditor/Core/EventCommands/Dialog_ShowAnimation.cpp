@@ -25,7 +25,7 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
       if (characterGroupBox.begin()) {
         ImGui::SetNextItemWidth(-1);
         if (ImGui::BeginCombo("##show_animation_character_combo", Database::instance()->eventNameOrId(m_character).c_str())) {
-          const auto currentMap = Database::instance()->mapInfos.currentMap();
+          const auto currentMap = Database::instance()->mapInfos->currentMap();
           for (int i = -1; i < static_cast<int>(currentMap->map()->events().size()); ++i) {
             if (i > 0 && !currentMap->event(i)) {
               continue;
@@ -46,7 +46,7 @@ std::tuple<bool, bool> Dialog_ShowAnimation::draw() {
       GroupBox animationGroupBox(trNOOP("Animation"), "##show_animation_animation_group", {-1, 0});
       if (animationGroupBox.begin()) {
         if (ImGui::EllipsesButton(Database::instance()->animationNameAndId(m_animation).c_str(), {-1, 0})) {
-          m_animationPicker.emplace( Database::instance()->animations.animations(), m_animation);
+          m_animationPicker.emplace( Database::instance()->animations->animations(), m_animation);
           m_animationPicker->setOpen(true);
         }
       }

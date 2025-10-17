@@ -27,7 +27,8 @@ public:
 
   [[nodiscard]] std::string tabName() const override { return tr("Data Sorting"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBMappingsTab"sv; };
-
+  bool isExperimental() const override { return true; }
+  
   bool isReady() const override { return !!Database::instance()->system; }
 
   bool isInitialized() const override { return m_system; }

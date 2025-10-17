@@ -19,7 +19,8 @@ struct DBDocTab : IDBEditorTab {
 
   [[nodiscard]] std::string tabName() const override { return tr("Documentation"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBDocTab"sv; };
-
+  bool isExperimental() const override { return true; }
+  
   bool isReady() const override { return !!Database::instance()->docs; }
   void initialize() override {
     if (!isReady()) {

@@ -28,6 +28,7 @@ struct DBTemplatesTab : IDBEditorTab {
 
   [[nodiscard]] std::string tabName() const override { return tr("Templates"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTemplatesTab"sv; };
+  bool isExperimental() const override { return true; }
 
   bool isReady() const override {
     if (m_templates) {

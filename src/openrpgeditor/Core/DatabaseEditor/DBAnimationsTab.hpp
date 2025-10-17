@@ -26,6 +26,7 @@ public:
 
   [[nodiscard]] std::string tabName() const override { return tr("Animations"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBAnimationsTab"sv; };
+  bool isExperimental() const override { return true; }
 
   [[nodiscard]] bool isReady() const override { return !!Database::instance()->animations; }
   void initialize() override {

@@ -84,6 +84,7 @@ void DatabaseEditor::draw() {
               continue;
             }
 
+            // If the tab is uninitialized attempt to initialize and skip for now, this allows tabs to acquire their required data and set up their initial states
             if (!tab->isInitialized()) {
               tab->initialize();
               continue;

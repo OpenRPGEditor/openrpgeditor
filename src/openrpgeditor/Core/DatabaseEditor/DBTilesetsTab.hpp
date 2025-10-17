@@ -24,6 +24,7 @@ public:
 
   [[nodiscard]] std::string tabName() const override { return tr("Tilesets"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTilesetsTab"sv; };
+  bool isExperimental() const override { return true; }
 
   bool isReady() const override { return !!Database::instance()->tilesets; }
   bool isInitialized() const override { return m_tilesets; }

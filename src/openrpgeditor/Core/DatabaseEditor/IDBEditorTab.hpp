@@ -1,25 +1,26 @@
 #pragma once
 
 #include <string>
+#include <Utils/Typename.hpp>
 #include <vector>
 
 class DatabaseEditor;
-using std::string_view_literals::operator""sv;
+using namespace std::string_view_literals;
 class IDBEditorTab {
 public:
-  explicit IDBEditorTab() {}
+  explicit IDBEditorTab() = default;
   virtual ~IDBEditorTab() = default;
   virtual void draw() = 0;
   std::vector<int>& getHeaders() { return m_headers; }
-  int getHeader(const int index) { return m_headers.at(index); }
-  bool hasHeader() { return !m_headers.empty(); }
+  [[nodiscard]] int getHeader(const int index) const { return m_headers.at(index); }
+  [[nodiscard]] bool hasHeader() const { return !m_headers.empty(); }
   void setHeaderRange(const int start, const int end) {
     m_categoryStart = start;
     m_categoryEnd = end;
   }
 
-  virtual std::string getName(int index) const { return {}; };
-  virtual int getCount() const { return 0; };
+  [[nodiscard]] virtual std::string getName(int index) const { return {}; }
+  [[nodiscard]] virtual int getCount() const { return 0; }
 
   [[nodiscard]] virtual bool isReady() const = 0;
   virtual void initialize() = 0;
@@ -36,3 +37,29 @@ protected:
   int m_categoryEnd{};
   std::vector<int> m_headers;
 };
+
+template <class T>
+class IDBCoreEditorTab : public IDBEditorTab {
+public:
+  IDBCoreEditorTab() { m_instance = static_cast<T*>(this); }
+  ~IDBCoreEditorTab() override {
+    if (m_instance == this) {
+      m_instance = nullptr;
+    }
+  }
+
+  static T* instance() { return m_instance; }
+
+  template <class V = T>
+  static constexpr std::string_view TabID() {
+    return type_name<V>();
+  }
+
+  constexpr std::string_view tabId() const final { return TabID(); }
+
+private:
+  static T* m_instance;
+};
+
+template <class T>
+T* IDBCoreEditorTab<T>::m_instance = nullptr;

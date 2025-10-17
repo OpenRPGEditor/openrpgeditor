@@ -12,9 +12,6 @@
 
 #include <string>
 
-DBCommonEventsTab* DBCommonEventsTab::m_instance = nullptr;
-
-DBCommonEventsTab::DBCommonEventsTab() { m_instance = this; }
 
 void DBCommonEventsTab::draw() {
   if (picker) {

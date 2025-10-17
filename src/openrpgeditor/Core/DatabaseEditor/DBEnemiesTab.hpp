@@ -10,15 +10,15 @@
 #include "Database/Weapons.hpp"
 #include "DBCommonEventsTab.hpp"
 
-struct Enemies;
-struct DBEnemiesTab : IDBEditorTab {
+class Enemies;
+class DBEnemiesTab final : public IDBCoreEditorTab<DBEnemiesTab> {
+public:
   void draw() override;
 
   std::string getName(const int index) const override { return m_enemies->enemy(index)->name(); }
   int getCount() const override { return m_enemies->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Enemies"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBEnemiesTab"sv; };
 
   bool isReady() const override { return Database::instance()->system && Database::instance()->enemies && Database::instance()->skills && Database::instance()->states; }
 

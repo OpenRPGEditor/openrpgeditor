@@ -3,12 +3,11 @@
 #include "Database/Database.hpp"
 #include "Database/Docs.hpp"
 
-class DBDocTab final : public IDBEditorTab {
+class DBDocTab final : public IDBCoreEditorTab<DBDocTab> {
 public:
   void draw() override;
 
   [[nodiscard]] std::string tabName() const override { return tr("Documentation"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBDocTab"sv; };
   bool isExperimental() const override { return true; }
 
   bool isReady() const override { return !!Database::instance()->docs; }

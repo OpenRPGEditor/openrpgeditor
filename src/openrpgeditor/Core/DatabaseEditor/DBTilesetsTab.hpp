@@ -5,7 +5,7 @@
 #include "Database/Tilesets.hpp"
 #include "DBCommonEventsTab.hpp"
 
-class DBTilesetsTab final : public IDBEditorTab {
+class DBTilesetsTab final : public IDBCoreEditorTab<DBTilesetsTab> {
 public:
   void draw() override;
 
@@ -13,7 +13,7 @@ public:
   int getCount() const override { return m_tilesets->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Tilesets"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTilesetsTab"sv; }
+
   bool isExperimental() const override { return true; }
 
   bool isReady() const override { return !!Database::instance()->tilesets; }

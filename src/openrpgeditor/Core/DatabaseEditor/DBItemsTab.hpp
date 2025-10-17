@@ -8,7 +8,7 @@
 #include "DBCommonEventsTab.hpp"
 
 class Items;
-class DBItemsTab final : public IDBEditorTab {
+class DBItemsTab final : public IDBCoreEditorTab<DBItemsTab> {
 public:
   void draw() override;
 
@@ -16,7 +16,6 @@ public:
   int getCount() const override { return m_items->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Items"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBItemsTab"sv; };
 
   bool isReady() const override { return !!Database::instance()->items; }
   bool isInitialized() const override { return m_items; }

@@ -11,13 +11,13 @@
 #include <optional>
 
 class Templates;
-class DBTemplatesTab final : public IDBEditorTab {
+class DBTemplatesTab final : public IDBCoreEditorTab<DBTemplatesTab> {
 public:
   void draw() override;
   std::vector<Templates*>& templates() { return m_template; }
 
   [[nodiscard]] std::string tabName() const override { return tr("Templates"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTemplatesTab"sv; };
+
   bool isExperimental() const override { return true; }
 
   bool isReady() const override {

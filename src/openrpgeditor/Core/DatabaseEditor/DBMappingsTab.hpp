@@ -4,7 +4,7 @@
 #include "Database/System.hpp"
 #include "DBCommonEventsTab.hpp"
 
-class DBMappingsTab final : public IDBEditorTab {
+class DBMappingsTab final : public IDBCoreEditorTab<DBMappingsTab> {
 public:
   bool isUnicodeFormatting(const std::string& text);
   void draw() override;
@@ -14,7 +14,6 @@ public:
   static std::string_view GetFormattingHelpText() { return trNOOP("Reference updating does not support:\n- Ranges\n- Data without game constants\nThese must be updated manually."); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Data Sorting"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBMappingsTab"sv; };
   bool isExperimental() const override { return true; }
 
   bool isReady() const override { return !!Database::instance()->system; }

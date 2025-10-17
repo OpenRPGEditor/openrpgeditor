@@ -20,11 +20,10 @@ enum class AudioType {
 };
 
 class System;
-struct DBSystemTab final : IDBEditorTab {
+struct DBSystemTab final : IDBCoreEditorTab<DBSystemTab> {
   void draw() override;
 
   [[nodiscard]] std::string tabName() const override { return tr("System"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBSystemTab"sv; };
 
   bool isReady() const override { return !!Database::instance()->system; }
   bool isInitialized() const override { return m_system; }

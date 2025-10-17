@@ -4,14 +4,13 @@
 #include "Database/States.hpp"
 #include "DBCommonEventsTab.hpp"
 
-struct DBStatesTab final : IDBEditorTab {
+struct DBStatesTab final : IDBCoreEditorTab<DBStatesTab> {
   void draw() override;
 
   std::string getName(const int index) const override { return m_states->state(index)->name(); }
   int getCount() const override { return m_states->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("States"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBStatesTab"sv; };
 
   bool isReady() const override { return !!Database::instance()->states; }
   bool isInitialized() const override { return m_states; }

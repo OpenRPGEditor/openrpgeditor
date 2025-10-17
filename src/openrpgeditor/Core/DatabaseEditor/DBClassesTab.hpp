@@ -7,7 +7,8 @@
 
 #include <array>
 
-struct DBClassesTab final : IDBEditorTab {
+class DBClassesTab final : public IDBCoreEditorTab<DBClassesTab> {
+public:
   enum class ExperienceGraphMode {
     Total,
     Next,
@@ -19,7 +20,6 @@ struct DBClassesTab final : IDBEditorTab {
   int getCount() const override { return m_classes->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Classes"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBClassesTab"sv; }
 
   [[nodiscard]] bool isReady() const override { return Database::instance()->system && Database::instance()->skills && Database::instance()->states && Database::instance()->classes; }
   void initialize() override {

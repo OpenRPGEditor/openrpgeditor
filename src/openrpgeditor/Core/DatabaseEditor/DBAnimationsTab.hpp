@@ -8,7 +8,7 @@
 
 class DatabaseEditor;
 class Animations;
-class DBAnimationsTab final : public IDBEditorTab {
+class DBAnimationsTab final : public IDBCoreEditorTab<DBAnimationsTab> {
 public:
   void draw() override;
 
@@ -16,7 +16,6 @@ public:
   int getCount() const override { return m_animations->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Animations"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBAnimationsTab"sv; };
   bool isExperimental() const override { return true; }
 
   [[nodiscard]] bool isReady() const override { return !!Database::instance()->animations; }

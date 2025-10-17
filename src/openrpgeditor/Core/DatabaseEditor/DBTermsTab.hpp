@@ -7,12 +7,11 @@
 #include <string>
 
 struct System;
-class DBTermsTab final : public IDBEditorTab {
+class DBTermsTab final : public IDBCoreEditorTab<DBTermsTab> {
 public:
   void draw() override;
 
   [[nodiscard]] std::string tabName() const override { return tr("Terms"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTermsTab"sv; };
 
   bool isReady() const override { return !!Database::instance()->system; }
   bool isInitialized() const override { return m_system; }

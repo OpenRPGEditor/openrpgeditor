@@ -10,14 +10,13 @@
 #include "DBCommonEventsTab.hpp"
 
 class Troops;
-struct DBTroopsTab final : IDBEditorTab {
+struct DBTroopsTab final : IDBCoreEditorTab<DBTroopsTab> {
   void draw() override;
 
   std::string getName(const int index) const override { return m_troops->troop(index)->name(); }
   int getCount() const override { return m_troops->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Troops"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTroopsTab"sv; };
 
   bool isReady() const override { return Database::instance()->enemies && Database::instance()->troops; }
 

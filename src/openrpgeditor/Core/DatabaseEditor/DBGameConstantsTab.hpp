@@ -21,12 +21,11 @@ class Tileset;
 class CommonEvent;
 class MapInfo;
 struct GameConstants;
-class DBGameConstantsTab final : public IDBEditorTab {
+class DBGameConstantsTab final : public IDBCoreEditorTab<DBGameConstantsTab> {
 public:
   void draw() override;
 
   [[nodiscard]] std::string tabName() const override { return tr("Game Constants"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBGameConstantsTab"sv; };
 
   bool isReady() const override {
     return Database::instance()->actors && Database::instance()->classes && Database::instance()->skills && Database::instance()->items && Database::instance()->weapons &&

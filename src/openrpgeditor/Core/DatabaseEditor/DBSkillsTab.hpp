@@ -9,7 +9,7 @@
 #include "Database/Animation.hpp"
 #include "Database/Skills.hpp"
 
-class DBSkillsTab final : public IDBEditorTab {
+class DBSkillsTab final : public IDBCoreEditorTab<DBSkillsTab> {
 public:
   void draw() override;
 
@@ -17,7 +17,6 @@ public:
   int getCount() const override { return m_skills->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Skills"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBSkillsTab"sv; };
 
   bool isReady() const override { return !!Database::instance()->skills; }
   bool isInitialized() const override { return m_skills; }

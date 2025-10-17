@@ -12,14 +12,14 @@
 
 #include <optional>
 
-struct DBActorsTab final : IDBEditorTab {
+class DBActorsTab final : public IDBCoreEditorTab<DBActorsTab> {
+public:
   void draw() override;
 
   std::string getName(const int index) const override { return m_actors->actor(index)->name(); }
   int getCount() const override { return m_actors->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Actors"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBActorsTab"sv; };
 
   bool isReady() const override { return Database::instance()->actors && Database::instance()->system && Database::instance()->classes; }
   void initialize() override {

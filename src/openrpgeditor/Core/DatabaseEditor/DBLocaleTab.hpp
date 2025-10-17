@@ -7,7 +7,7 @@
 
 namespace fs = std::filesystem;
 
-struct DBLocaleTab final : IDBEditorTab {
+struct DBLocaleTab final : IDBCoreEditorTab<DBLocaleTab> {
   void draw() override;
   void drawTableOne(std::string& text, int index);
   void drawTableTwo(int index);
@@ -15,7 +15,6 @@ struct DBLocaleTab final : IDBEditorTab {
   // TODO: Fuzzy searching
 
   [[nodiscard]] std::string tabName() const override { return tr("Locales"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBLocaleTab"sv; };
   bool isExperimental() const override { return true; }
 
   bool isReady() const override { return !!Database::instance()->locales; }

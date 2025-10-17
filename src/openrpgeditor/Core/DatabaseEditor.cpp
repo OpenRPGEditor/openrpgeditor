@@ -104,7 +104,7 @@ void DatabaseEditor::draw() {
               ORE_DISABLE_EXPERIMENTAL_BEGIN();
             }
 
-            if (ImGui::SelectableWithBorder(std::format("{}{}", tab->tabName(), tab->tabId()).c_str(), m_currentTab == tab.get())) {
+            if (ImGui::SelectableWithBorder(std::format("{}##{}", tab->tabName(), tab->tabId()).c_str(), m_currentTab == tab.get())) {
               m_currentTab = tab.get();
             }
 
@@ -112,6 +112,7 @@ void DatabaseEditor::draw() {
               ORE_DISABLE_EXPERIMENTAL_END();
             }
           }
+
 #if 0
           if (ImGui::SelectableWithBorder(trNOOP("Actors"), m_currentTab == &m_actors.value())) {
             m_currentTab = &m_actors.value();

@@ -6,14 +6,13 @@
 #include "Database/Armors.hpp"
 #include "DBCommonEventsTab.hpp"
 
-struct DBArmorsTab final : IDBEditorTab {
+struct DBArmorsTab final : public IDBCoreEditorTab<DBArmorsTab> {
   void draw() override;
 
   std::string getName(const int index) const override { return m_armors->armor(index)->name(); }
   int getCount() const override { return m_armors->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Armors"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBArmorsTab"sv; };
 
   bool isReady() const override { return Database::instance()->armors && Database::instance()->system; }
   void initialize() override {

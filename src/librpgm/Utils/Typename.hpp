@@ -47,3 +47,11 @@ constexpr auto type_name() -> std::string_view {
   constexpr auto& value = type_name_holder<T>::value;
   return std::string_view{value.data(), value.size()};
 }
+
+template <std::size_t N1, std::size_t N2>
+constexpr auto concat_sv(std::string_view sv1, std::string_view sv2) {
+  std::array<std::string_view::value_type, N1 + N2> buffer{};
+  std::copy(sv1.begin(), sv1.end(), buffer.begin());
+  std::copy(sv2.begin(), sv2.end(), buffer.begin() + N1);
+  return std::string_view(buffer.data(), N1 + N2);
+}

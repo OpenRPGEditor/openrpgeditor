@@ -6,13 +6,12 @@
 #include <string>
 #include <vector>
 
-struct System;
-class DBTypesTab final : public IDBEditorTab {
+class System;
+class DBTypesTab final : public IDBCoreEditorTab<DBTypesTab> {
 public:
   void draw() override;
 
   [[nodiscard]] std::string tabName() const override { return tr("Types"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTypesTab"sv; };
 
   bool isReady() const override { return !!Database::instance()->system; }
 

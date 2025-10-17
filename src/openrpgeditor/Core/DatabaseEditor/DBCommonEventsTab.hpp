@@ -4,13 +4,8 @@
 #include "Core/DatabaseEditor/IDBEditorTab.hpp"
 #include "Database/CommonEvents.hpp"
 
-struct DBCommonEventsTab : IDBEditorTab {
-  explicit DBCommonEventsTab();
-  ~DBCommonEventsTab() override {
-    if (m_instance == this) {
-      m_instance = nullptr;
-    }
-  }
+class DBCommonEventsTab final : public IDBCoreEditorTab<DBCommonEventsTab> {
+public:
   void draw() override;
 
   std::string getName(const int index) const override { return m_events->event(index)->name(); }
@@ -18,7 +13,6 @@ struct DBCommonEventsTab : IDBEditorTab {
   int getSelectedIndex() const { return m_selectedCommonEvent ? m_selectedCommonEvent->id() : 0; }
 
   [[nodiscard]] std::string tabName() const override { return tr("Common Events"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBCommonEventsTab"sv; };
 
   [[nodiscard]] bool isReady() const override { return Database::instance()->system && Database::instance()->commonEvents; }
 
@@ -42,10 +36,7 @@ struct DBCommonEventsTab : IDBEditorTab {
   }
   bool isInitialized() const override { return m_events; }
 
-  static DBCommonEventsTab* instance() { return m_instance; }
-
 private:
-  static DBCommonEventsTab* m_instance;
   CommonEvents* m_events = nullptr;
   CommonEvent* m_selectedCommonEvent{};
   EventCommandEditor m_commandEditor;

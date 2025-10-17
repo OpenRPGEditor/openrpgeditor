@@ -6,21 +6,14 @@
 #include "Database/Animation.hpp"
 #include "Database/Weapons.hpp"
 #include "DBCommonEventsTab.hpp"
-struct Weapons;
-struct DBWeaponsTab : IDBEditorTab {
-  DBWeaponsTab() = delete;
-  explicit DBWeaponsTab(DatabaseEditor* parent);
+
+class Weapons;
+struct DBWeaponsTab final : IDBEditorTab {
   void draw() override;
 
-  std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(const int index) override { return m_headers.at(index); }
-  bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(const int start, const int end) override {
-    m_categoryStart = start;
-    m_categoryEnd = end;
-  }
-  std::string getName(const int index) override { return m_weapons->weapon(index)->name(); }
-  int getCount() override { return m_weapons->count(); }
+  std::string getName(const int index) const override { return m_weapons->weapon(index)->name(); }
+
+  int getCount() const override { return m_weapons->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Weapons"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBWeaponsTab"sv; };
@@ -41,9 +34,6 @@ struct DBWeaponsTab : IDBEditorTab {
   }
 
 private:
-  int m_categoryStart{};
-  int m_categoryEnd{};
-  std::vector<int> m_headers;
   Weapons* m_weapons{};
   Weapon* m_selectedWeapon{};
   int m_maxWeapons{};

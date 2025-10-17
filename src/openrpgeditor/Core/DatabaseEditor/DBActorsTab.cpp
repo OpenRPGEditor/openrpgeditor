@@ -9,9 +9,6 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBActorsTab::DBActorsTab(DatabaseEditor* parent)
-: IDBEditorTab(parent) {}
-
 void DBActorsTab::draw() {
   if (!m_actors) {
     return;

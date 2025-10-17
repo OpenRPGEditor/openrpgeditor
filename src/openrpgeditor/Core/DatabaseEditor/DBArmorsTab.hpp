@@ -6,21 +6,11 @@
 #include "Database/Armors.hpp"
 #include "DBCommonEventsTab.hpp"
 
-struct DBArmorsTab : IDBEditorTab {
-  DBArmorsTab() = delete;
-  explicit DBArmorsTab(DatabaseEditor* parent);
+struct DBArmorsTab final : IDBEditorTab {
   void draw() override;
 
-  std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(const int index) override { return m_headers.at(index); }
-  bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(const int start, const int end) override {
-    m_categoryStart = start;
-    m_categoryEnd = end;
-  }
-
-  std::string getName(const int index) override { return m_armors->armor(index)->name(); }
-  int getCount() override { return m_armors->count(); }
+  std::string getName(const int index) const override { return m_armors->armor(index)->name(); }
+  int getCount() const override { return m_armors->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Armors"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBArmorsTab"sv; };
@@ -41,9 +31,6 @@ struct DBArmorsTab : IDBEditorTab {
   bool isInitialized() const override { return m_armors != nullptr; }
 
 private:
-  int m_categoryStart;
-  int m_categoryEnd;
-  std::vector<int> m_headers;
   Armors* m_armors = nullptr;
   Armor* m_selectedArmor{};
   int m_editMaxArmors{};

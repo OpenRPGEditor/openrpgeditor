@@ -11,20 +11,10 @@
 
 class DBSkillsTab final : public IDBEditorTab {
 public:
-  DBSkillsTab() = delete;
-  explicit DBSkillsTab(DatabaseEditor* parent);
   void draw() override;
 
-  std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(const int index) override { return m_headers.at(index); }
-  bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(const int start, const int end) override {
-    m_categoryStart = start;
-    m_categoryEnd = end;
-  }
-
-  std::string getName(int index) override { return m_skills->skill(index)->name(); }
-  int getCount() override { return m_skills->count(); }
+  std::string getName(const int index) const override { return m_skills->skill(index)->name(); }
+  int getCount() const override { return m_skills->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Skills"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBSkillsTab"sv; };
@@ -42,9 +32,6 @@ public:
   }
 
 private:
-  int m_categoryStart;
-  int m_categoryEnd;
-  std::vector<int> m_headers;
   Skills* m_skills{};
   Skill* m_selectedSkill{};
   int m_maxSkills{};

@@ -14,10 +14,10 @@ struct DatabaseEditor;
 
 struct ActionsEditor {
   void setActions(std::vector<Enemy::Action>* actions) { m_actions = actions; }
-  void draw(DatabaseEditor* dbEditor);
+  void draw();
 
 private:
-  void drawPopup(DatabaseEditor* dbEditor);
+  void drawPopup();
   std::vector<Enemy::Action>* m_actions = nullptr;
   Enemy::Action* m_selectedAction = nullptr;
   bool m_updateTab{false};

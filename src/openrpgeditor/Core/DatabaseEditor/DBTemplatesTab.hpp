@@ -10,21 +10,11 @@
 
 #include <optional>
 
-struct Templates;
-struct DBTemplatesTab : IDBEditorTab {
-  explicit DBTemplatesTab(DatabaseEditor* parent)
-  : IDBEditorTab(parent) {}
+class Templates;
+class DBTemplatesTab final : public IDBEditorTab {
+public:
   void draw() override;
   std::vector<Templates*>& templates() { return m_template; }
-  std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(int index) override { return m_headers.at(index); }
-  bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(int start, int end) override {
-    m_categoryStart = start;
-    m_categoryEnd = end;
-  }
-  std::string getName(int index) override { return ""; }
-  int getCount() override { return 0; }
 
   [[nodiscard]] std::string tabName() const override { return tr("Templates"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTemplatesTab"sv; };
@@ -49,7 +39,7 @@ struct DBTemplatesTab : IDBEditorTab {
     }
 
     m_templates = &Database::instance()->templates.value();
-    
+
     if (!m_templates->templates.empty()) {
       if (m_templates->templates.at(m_selection).commands().empty()) {
         m_currentCommands.emplace_back(std::make_shared<EventDummy>());
@@ -77,9 +67,6 @@ struct DBTemplatesTab : IDBEditorTab {
   }
 
 private:
-  int m_categoryStart;
-  int m_categoryEnd;
-  std::vector<int> m_headers;
   Templates* m_templates = nullptr;
   std::vector<Templates*> m_template;
   std::vector<std::shared_ptr<IEventCommand>> m_currentCommands;
@@ -93,17 +80,17 @@ private:
 
   std::shared_ptr<IDBTemplates> m_currentTemplate;
 
-  std::shared_ptr<IDBTemplates> CreateTemplateDialog(const Template::TemplateType type) {
+  std::shared_ptr<IDBTemplates> CreateTemplateDialog(const Template::TemplateType type) const {
     if (m_templates->templates.empty()) {
-      return std::make_shared<TemplatesCommand>(nullptr, m_parent);
+      return std::make_shared<TemplatesCommand>(nullptr);
     }
     switch (type) {
     case Template::TemplateType::Command:
-      return std::make_shared<TemplatesCommand>(&m_templates->templates.at(m_selection), m_parent);
+      return std::make_shared<TemplatesCommand>(&m_templates->templates.at(m_selection));
     case Template::TemplateType::Tint:
-      return std::make_shared<TemplatesTint>(&m_templates->templates.at(m_selection), m_parent);
+      return std::make_shared<TemplatesTint>(&m_templates->templates.at(m_selection));
     case Template::TemplateType::Event:
-      return std::make_shared<TemplatesEventProperties>(&m_templates->templates.at(m_selection), m_parent);
+      return std::make_shared<TemplatesEventProperties>(&m_templates->templates.at(m_selection));
     default:
       return nullptr;
     }

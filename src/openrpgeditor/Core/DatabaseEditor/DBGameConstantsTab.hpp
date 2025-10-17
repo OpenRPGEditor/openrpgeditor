@@ -8,34 +8,22 @@
 #include <optional>
 
 class Actor;
-struct Armor;
-struct Class;
-struct Skill;
-struct Item;
-struct Weapon;
-struct Enemy;
-struct Troop;
-struct State;
-struct Animation;
-struct Tileset;
-struct CommonEvent;
-struct MapInfo;
+class Armor;
+class Class;
+class Skill;
+class Item;
+class Weapon;
+class Enemy;
+class Troop;
+class State;
+class Animation;
+class Tileset;
+class CommonEvent;
+class MapInfo;
 struct GameConstants;
 class DBGameConstantsTab final : public IDBEditorTab {
 public:
-  explicit DBGameConstantsTab(DatabaseEditor* parent)
-  : IDBEditorTab(parent) {}
-
   void draw() override;
-  std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(const int index) override { return m_headers.at(index); }
-  bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(const int start, const int end) override {
-    m_categoryStart = start;
-    m_categoryEnd = end;
-  }
-  std::string getName(int index) override { return ""; }
-  int getCount() override { return 0; }
 
   [[nodiscard]] std::string tabName() const override { return tr("Game Constants"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBGameConstantsTab"sv; };
@@ -58,9 +46,6 @@ public:
   }
 
 private:
-  int m_categoryStart{};
-  int m_categoryEnd{};
-  std::vector<int> m_headers;
   void drawAliasModal(GameConstants::Type type);
   static void setupTableHeaders();
   bool drawSelectable(int id, bool selected);

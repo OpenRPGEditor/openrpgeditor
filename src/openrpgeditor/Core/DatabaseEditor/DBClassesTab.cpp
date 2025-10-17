@@ -14,12 +14,6 @@
 
 constexpr ImVec2 ParameterGraphSize{92, 92};
 
-DBClassesTab::DBClassesTab(DatabaseEditor* parent)
-: IDBEditorTab(parent)
-, m_categoryStart(0)
-, m_categoryEnd(0)
-, m_expWorkValues() {}
-
 void DBClassesTab::drawExperienceGraph(const ExperienceGraphMode mode) const {
   if (!m_selectedClass) {
     return;
@@ -146,7 +140,7 @@ void DBClassesTab::draw() {
   if (!m_classes) {
     return;
   }
-  
+
   ImGui::BeginChild("#orpg_classes_editor");
   {
     const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUV");

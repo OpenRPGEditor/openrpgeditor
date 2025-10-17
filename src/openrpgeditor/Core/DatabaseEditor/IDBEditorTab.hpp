@@ -7,16 +7,20 @@ class DatabaseEditor;
 using std::string_view_literals::operator""sv;
 class IDBEditorTab {
 public:
-  explicit IDBEditorTab(DatabaseEditor* parent)
-  : m_parent(parent) {}
+  explicit IDBEditorTab() {}
   virtual ~IDBEditorTab() = default;
   virtual void draw() = 0;
-  virtual int getHeader(int index) = 0;
-  virtual std::vector<int>& getHeaders() = 0;
-  virtual bool hasHeader() = 0;
-  virtual void setHeaderRange(int start, int end) = 0;
-  virtual std::string getName(int index) = 0;
-  virtual int getCount() = 0;
+  std::vector<int>& getHeaders() { return m_headers; }
+  int getHeader(const int index) { return m_headers.at(index); }
+  bool hasHeader() { return !m_headers.empty(); }
+  void setHeaderRange(const int start, const int end) {
+    m_categoryStart = start;
+    m_categoryEnd = end;
+  }
+
+  virtual std::string getName(int index) const { return {}; };
+  virtual int getCount() const { return 0; };
+
   [[nodiscard]] virtual bool isReady() const = 0;
   virtual void initialize() = 0;
   [[nodiscard]] virtual bool isInitialized() const = 0;
@@ -28,5 +32,7 @@ public:
   static bool hasUnicodeFormatting(const std::string& text) { return text.contains("\u25bc"); }
 
 protected:
-  DatabaseEditor* m_parent;
+  int m_categoryStart{};
+  int m_categoryEnd{};
+  std::vector<int> m_headers;
 };

@@ -6,9 +6,6 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBTilesetsTab::DBTilesetsTab(DatabaseEditor* parent)
-: IDBEditorTab(parent) {}
-
 void DBTilesetsTab::draw() {
   //TODO: Rewrite this
   if (m_selectedTileset) {

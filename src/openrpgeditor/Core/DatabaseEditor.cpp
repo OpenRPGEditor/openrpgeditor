@@ -25,29 +25,39 @@
 #include "imgui_internal.h"
 #include "ImGuiExt/ImGuiUtils.hpp"
 
+DatabaseEditor* DatabaseEditor::m_instance = nullptr;
+
 DatabaseEditor::DatabaseEditor() {
+  m_instance = this;
   // Add Core tabs
-  addTab(std::make_shared<DBActorsTab>(this));
-  addTab(std::make_shared<DBClassesTab>(this));
-  addTab(std::make_shared<DBSkillsTab>(this));
-  addTab(std::make_shared<DBItemsTab>(this));
-  addTab(std::make_shared<DBWeaponsTab>(this));
-  addTab(std::make_shared<DBArmorsTab>(this));
-  addTab(std::make_shared<DBEnemiesTab>(this));
-  addTab(std::make_shared<DBTroopsTab>(this));
-  addTab(std::make_shared<DBStatesTab>(this));
-  addTab(std::make_shared<DBAnimationsTab>(this));
-  addTab(std::make_shared<DBTilesetsTab>(this));
-  addTab(std::make_shared<DBCommonEventsTab>(this));
-  addTab(std::make_shared<DBSystemTab>(this));
-  addTab(std::make_shared<DBTypesTab>(this));
-  addTab(std::make_shared<DBTermsTab>(this));
-  addTab(std::make_shared<DBGameConstantsTab>(this));
-  addTab(std::make_shared<DBTemplatesTab>(this));
-  addTab(std::make_shared<DBMappingsTab>(this));
-  addTab(std::make_shared<DBDocTab>(this));
-  addTab(std::make_shared<DBLocaleTab>(this));
+  addTab(std::make_shared<DBActorsTab>());
+  addTab(std::make_shared<DBClassesTab>());
+  addTab(std::make_shared<DBSkillsTab>());
+  addTab(std::make_shared<DBItemsTab>());
+  addTab(std::make_shared<DBWeaponsTab>());
+  addTab(std::make_shared<DBArmorsTab>());
+  addTab(std::make_shared<DBEnemiesTab>());
+  addTab(std::make_shared<DBTroopsTab>());
+  addTab(std::make_shared<DBStatesTab>());
+  addTab(std::make_shared<DBAnimationsTab>());
+  addTab(std::make_shared<DBTilesetsTab>());
+  addTab(std::make_shared<DBCommonEventsTab>());
+  addTab(std::make_shared<DBSystemTab>());
+  addTab(std::make_shared<DBTypesTab>());
+  addTab(std::make_shared<DBTermsTab>());
+  addTab(std::make_shared<DBGameConstantsTab>());
+  addTab(std::make_shared<DBTemplatesTab>());
+  addTab(std::make_shared<DBMappingsTab>());
+  addTab(std::make_shared<DBDocTab>());
+  addTab(std::make_shared<DBLocaleTab>());
 }
+
+DatabaseEditor::~DatabaseEditor() {
+  if (m_instance == this) {
+    m_instance = nullptr;
+  }
+}
+
 void DatabaseEditor::draw() {
   if (isReady() && !onReady.is_empty()) {
     emit_signal(onReady);

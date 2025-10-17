@@ -6,9 +6,6 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBWeaponsTab::DBWeaponsTab(DatabaseEditor* parent)
-: IDBEditorTab(parent) {}
-
 void DBWeaponsTab::draw() {
   if (!m_itemButtonTexture) {
     m_itemButtonTexture.emplace();

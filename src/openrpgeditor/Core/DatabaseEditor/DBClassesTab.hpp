@@ -13,22 +13,13 @@ struct DBClassesTab final : IDBEditorTab {
     Next,
   };
 
-  DBClassesTab() = delete;
-  explicit DBClassesTab(DatabaseEditor* parent);
   void draw() override;
 
-  std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(const int index) override { return m_headers.at(index); }
-  bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(const int start, const int end) override {
-    m_categoryStart = start;
-    m_categoryEnd = end;
-  }
-  std::string getName(const int index) override { return m_classes->classType(index)->name(); }
-  int getCount() override { return m_classes->count(); }
+  std::string getName(const int index) const override { return m_classes->classType(index)->name(); }
+  int getCount() const override { return m_classes->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Classes"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBClassesTab"sv; };
+  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBClassesTab"sv; }
 
   [[nodiscard]] bool isReady() const override { return Database::instance()->system && Database::instance()->skills && Database::instance()->states && Database::instance()->classes; }
   void initialize() override {
@@ -45,9 +36,6 @@ struct DBClassesTab final : IDBEditorTab {
   [[nodiscard]] bool isInitialized() const override { return m_classes != nullptr; }
 
 private:
-  int m_categoryStart;
-  int m_categoryEnd;
-  std::vector<int> m_headers;
   void drawExperienceGraph(ExperienceGraphMode mode) const;
   void drawExpPopup();
   Classes* m_classes = nullptr;
@@ -58,5 +46,5 @@ private:
   bool m_changeConfirmDialogOpen = false;
   bool m_showEquipEdit = false;
   TraitsEditor m_traitsEditor;
-  std::array<int, 4> m_expWorkValues;
+  std::array<int, 4> m_expWorkValues{};
 };

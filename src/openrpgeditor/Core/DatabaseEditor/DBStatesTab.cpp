@@ -6,9 +6,6 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBStatesTab::DBStatesTab(DatabaseEditor* parent)
-: IDBEditorTab(parent) {}
-
 void DBStatesTab::draw() {
   ImGui::BeginChild("#orpg_states_editor");
   {

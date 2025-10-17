@@ -7,24 +7,6 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBAnimationsTab::DBAnimationsTab(DatabaseEditor* parent)
-: IDBEditorTab(parent) {
-  m_colorPicker.setValues(255, 255, 255, 255);
-  m_selectedAudio.setName("");
-  m_selectedAudio.setVolume(100);
-  m_selectedAudio.setPan(0);
-  m_selectedAudio.setPitch(100);
-
-  if (m_selectedAnimation) {
-    m_selectedAnimation->setTimeLine(std::vector(m_selectedAnimation->frames().size(), false));
-  }
-
-  m_soundPicker.selectedAudio().nameModified().connect<&DBAnimationsTab::onNameModified>(this);
-  m_soundPicker.selectedAudio().volumeModified().connect<&DBAnimationsTab::onVolModified>(this);
-  m_soundPicker.selectedAudio().panModified().connect<&DBAnimationsTab::onPanModified>(this);
-  m_soundPicker.selectedAudio().pitchModified().connect<&DBAnimationsTab::onPitchModified>(this);
-}
-
 void DBAnimationsTab::draw() {
 
   if (m_selectedAnimation) {

@@ -5,9 +5,8 @@
 
 struct TemplatesEvent final : IDBTemplates {
   TemplatesEvent() = delete;
-  explicit TemplatesEvent(Event* ev, Map* map, DatabaseEditor* parent, const int x, const int y)
-  : IDBTemplates(parent)
-  , m_event(ev)
+  explicit TemplatesEvent(Event* ev, Map* map, const int x, const int y)
+  : m_event(ev)
   , m_map(map)
   , m_tileX(x)
   , m_tileY(y) {

@@ -4,8 +4,6 @@
 #include "Database/Skills.hpp"
 
 #include "imgui.h"
-DBMappingsTab::DBMappingsTab(DatabaseEditor* parent)
-: IDBEditorTab(parent) {}
 
 void DBMappingsTab::draw() {
 

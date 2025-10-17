@@ -114,10 +114,9 @@ void MapEditor::drawGrid(ImGuiWindow* win) {
     win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{0.f, static_cast<float>(y)}, win->ContentRegionRect.Min + ImVec2{(map()->width() * tileSize()) * m_mapScale, static_cast<float>(y)},
                            IM_COL32(10, 10, 10, 240), ImGui::GetDPIScaledValue(1.5f));
   }
-  
+
   for (int x = tileSize() * m_mapScale; x < (map()->width() * tileSize()) * m_mapScale; x += tileSize() * m_mapScale) {
-    win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), 0.f}, win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), (map()->height() * tileSize()) *
-    m_mapScale},
+    win->DrawList->AddLine(win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), 0.f}, win->ContentRegionRect.Min + ImVec2{static_cast<float>(x), (map()->height() * tileSize()) * m_mapScale},
                            IM_COL32(10, 10, 10, 240), ImGui::GetDPIScaledValue(1.5f));
   }
 }
@@ -684,12 +683,12 @@ void MapEditor::draw(const bool closeRequested) {
                 EventParser::serialize(eventJson, *m_selectedEvent);
                 if (m_templatePicker.value().selection() == 0) {
                   Database::instance()->templates->addTemplate(Template(Database::instance()->templates->templates.size() + 1,
-                                                                       tr("New Event Template") + " " + std::to_string(Database::instance()->templates->templates.size() + 1), "",
-                                                                       Template::TemplateType::Event, eventJson.dump(), {}));
-                  m_templateNamePicker = TemplateName(&Database::instance()->templates->templates.back(), nullptr);
+                                                                        tr("New Event Template") + " " + std::to_string(Database::instance()->templates->templates.size() + 1), "",
+                                                                        Template::TemplateType::Event, eventJson.dump(), {}));
+                  m_templateNamePicker = TemplateName(&Database::instance()->templates->templates.back());
                 } else {
                   Database::instance()->templates->templates.at(m_templatePicker.value().selection() - 1).setCommands(eventJson.dump());
-                  m_templateNamePicker = TemplateName(&Database::instance()->templates->templates.at(m_templatePicker.value().selection() - 1), nullptr);
+                  m_templateNamePicker = TemplateName(&Database::instance()->templates->templates.at(m_templatePicker.value().selection() - 1));
                 }
                 Database::instance()->templates->templates.back().setCommands(eventJson.dump());
               } else {
@@ -698,7 +697,7 @@ void MapEditor::draw(const bool closeRequested) {
 
                 m_templateEvent.emplace(parser.parse(eventJson));
                 m_templateEvent.value().setId(map()->events().size() - 1);
-                m_eventProperties = TemplatesEvent(&m_templateEvent.value(), map(), nullptr, tileCellX(), tileCellY());
+                m_eventProperties = TemplatesEvent(&m_templateEvent.value(), map(), tileCellX(), tileCellY());
               }
             }
             m_templatePicker.reset();
@@ -743,7 +742,7 @@ void MapEditor::draw(const bool closeRequested) {
           if (!event) {
             continue;
           }
-        
+
           const auto evX = (event->renderer()->x() * tileSize()) * m_mapScale;
           const auto evY = (event->renderer()->y() * tileSize()) * m_mapScale;
           const auto tileSize = m_tileCursor.tileSize() * m_mapScale;
@@ -767,10 +766,10 @@ void MapEditor::draw(const bool closeRequested) {
           win->DrawList->AddImage(m_tilemapView.upperTiles().get(), win->ContentRegionRect.Min + ImVec2{0, 0}, win->ContentRegionRect.Min + size);
         }
 
-        //win->DrawList->AddImage(m_tilemapView.debugTexture().get(), win->ContentRegionRect.Min + ImVec2{0, 0}, win->ContentRegionRect.Min + size);
+        // win->DrawList->AddImage(m_tilemapView.debugTexture().get(), win->ContentRegionRect.Min + ImVec2{0, 0}, win->ContentRegionRect.Min + size);
 
         if (m_prisonMode) {
-          //drawGrid(win);
+          // drawGrid(win);
         }
         if (ImGui::IsWindowHovered() || m_parent->editMode() == EditMode::Event) {
           m_tileCursor.draw(win);

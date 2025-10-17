@@ -12,10 +12,10 @@ struct DatabaseEditor;
 
 struct EffectsEditor {
   void setEffects(std::vector<Effect>* effects) { m_effects = effects; }
-  void draw(DatabaseEditor* dbEditor);
+  void draw();
 
 private:
-  void drawPopup(DatabaseEditor* dbEditor);
+  void drawPopup();
   std::vector<Effect>* m_effects = nullptr;
   Effect* m_selectedEffect = nullptr;
   bool m_updateTab{false};

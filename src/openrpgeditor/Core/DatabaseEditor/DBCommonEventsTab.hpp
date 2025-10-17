@@ -5,7 +5,7 @@
 #include "Database/CommonEvents.hpp"
 
 struct DBCommonEventsTab : IDBEditorTab {
-  explicit DBCommonEventsTab(DatabaseEditor* parent);
+  explicit DBCommonEventsTab();
   ~DBCommonEventsTab() override {
     if (m_instance == this) {
       m_instance = nullptr;
@@ -13,15 +13,8 @@ struct DBCommonEventsTab : IDBEditorTab {
   }
   void draw() override;
 
-  std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(const int index) override { return m_headers.at(index); }
-  bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(const int start, const int end) override {
-    m_categoryStart = start;
-    m_categoryEnd = end;
-  }
-  std::string getName(const int index) override { return m_events->event(index)->name(); }
-  int getCount() override { return m_events->count(); }
+  std::string getName(const int index) const override { return m_events->event(index)->name(); }
+  int getCount() const override { return m_events->count(); }
   int getSelectedIndex() const { return m_selectedCommonEvent ? m_selectedCommonEvent->id() : 0; }
 
   [[nodiscard]] std::string tabName() const override { return tr("Common Events"); }
@@ -58,10 +51,6 @@ private:
   EventCommandEditor m_commandEditor;
   std::optional<VariableSwitchPicker> picker;
   std::optional<Preview> preview;
-
-  std::vector<int> m_headers;
-  int m_categoryStart{0};
-  int m_categoryEnd{0};
 
   int m_editMaxCommonEvents{};
   float m_splitterWidth = 300.f;

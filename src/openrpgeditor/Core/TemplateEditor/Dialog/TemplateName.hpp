@@ -5,9 +5,8 @@
 class TemplateName : public IDBTemplates {
 public:
   TemplateName() = delete;
-  explicit TemplateName(Template* templ, DatabaseEditor* parent)
-  : IDBTemplates(parent)
-  , m_template(templ) {
+  explicit TemplateName(Template* templ)
+  : m_template(templ) {
     m_templateName = m_template->name();
   }
   bool hasChanges() override { return m_hasChanges; }

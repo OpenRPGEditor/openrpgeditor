@@ -5,7 +5,7 @@
 class TemplatesCommand final : public IDBTemplates {
 public:
   TemplatesCommand() = delete;
-  explicit TemplatesCommand(Template* templ, DatabaseEditor* parent);
+  explicit TemplatesCommand(Template* templ);
   void draw() override;
   DatabaseEditor* m_parent = nullptr;
 

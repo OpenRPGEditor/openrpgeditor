@@ -8,9 +8,6 @@
 #include <cstring>
 #include <misc/cpp/imgui_stdlib.h>
 #include <numeric>
-DBLocaleTab::DBLocaleTab(DatabaseEditor* parent)
-: IDBEditorTab(parent){
-}
 
 void DBLocaleTab::draw() {
   const auto calc = ImGui::CalcTextSize("ABCDEFGHIJKLMNOPQRSTUV");

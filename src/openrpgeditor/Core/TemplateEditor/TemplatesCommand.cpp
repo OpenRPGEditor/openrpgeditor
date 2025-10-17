@@ -5,9 +5,7 @@
 
 #include "imgui.h"
 
-TemplatesCommand::TemplatesCommand(Template* templ, DatabaseEditor* parent)
-: IDBTemplates(parent)
-, m_parent(parent)
-, m_currentTemplate(templ) {}
+TemplatesCommand::TemplatesCommand(Template* templ)
+: m_currentTemplate(templ) {}
 
 void TemplatesCommand::draw() {};

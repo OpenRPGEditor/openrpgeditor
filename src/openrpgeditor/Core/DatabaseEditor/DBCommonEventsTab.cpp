@@ -14,10 +14,7 @@
 
 DBCommonEventsTab* DBCommonEventsTab::m_instance = nullptr;
 
-DBCommonEventsTab::DBCommonEventsTab(DatabaseEditor* parent)
-: IDBEditorTab(parent) {
-  m_instance = this;
-}
+DBCommonEventsTab::DBCommonEventsTab() { m_instance = this; }
 
 void DBCommonEventsTab::draw() {
   if (picker) {
@@ -64,7 +61,7 @@ void DBCommonEventsTab::draw() {
             //   }
             // }
 
-            if (m_parent->isFilteredByCategory()) {
+            if (DatabaseEditor::instance()->isFilteredByCategory()) {
               itemCount = (m_categoryEnd - m_categoryStart);
             } else {
               if (m_categoryStart > 0 || m_categoryEnd > 0) {
@@ -76,7 +73,7 @@ void DBCommonEventsTab::draw() {
             while (clipper.Step()) {
 
               for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
-                if (m_parent->isFilteredByCategory()) {
+                if (DatabaseEditor::instance()->isFilteredByCategory()) {
                   if (i + m_categoryStart > m_categoryEnd || i + m_categoryStart > m_events->count()) {
                     continue;
                   }

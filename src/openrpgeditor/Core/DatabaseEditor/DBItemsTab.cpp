@@ -5,9 +5,6 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBItemsTab::DBItemsTab(DatabaseEditor* parent)
-: IDBEditorTab(parent) {}
-
 void DBItemsTab::draw() {
   if (!m_itemButtonTexture) {
     m_itemButtonTexture.emplace();
@@ -290,7 +287,7 @@ void DBItemsTab::draw() {
 
         ImGui::SameLine();
         ImGui::BeginChild("##orpg_items_item_panel_right");
-        { m_effectsEditor.draw(m_parent); }
+        { m_effectsEditor.draw(); }
         ImGui::EndChild();
         ImGui::BeginChild("##orpg_items_item_panel_bottomright");
         {

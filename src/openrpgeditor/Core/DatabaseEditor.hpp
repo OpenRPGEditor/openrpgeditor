@@ -10,6 +10,7 @@ struct MainWindow;
 class DatabaseEditor {
 public:
   DatabaseEditor();
+  ~DatabaseEditor();
   void drawCategoryHeaders();
   void draw();
 
@@ -28,9 +29,18 @@ public:
   rpgmutils::signal<void()> onReady;
 
   void addTab(const std::shared_ptr<IDBEditorTab>& tab) { m_editorTabs.emplace_back(tab); }
+  void removeTab(IDBEditorTab* tab) {
+    // ReSharper disable once CppTooWideScopeInitStatement
+    const auto it = std::ranges::find_if(m_editorTabs, [&tab](const std::shared_ptr<IDBEditorTab>& other) { return other.get() == tab; });
+    if (it != m_editorTabs.end()) {
+      m_editorTabs.erase(it);
+    }
+  }
+
+  static DatabaseEditor* instance() { return m_instance; }
 
 private:
-  MainWindow* m_parent;
+  static DatabaseEditor* m_instance;
   std::vector<std::shared_ptr<IDBEditorTab>> m_editorTabs;
 
   std::string m_searchString;

@@ -9,19 +9,7 @@
 struct System;
 class DBTypesTab final : public IDBEditorTab {
 public:
-  explicit DBTypesTab(DatabaseEditor* parent)
-  : IDBEditorTab(parent) {}
   void draw() override;
-  std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(const int index) override { return m_headers.at(index); }
-  bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(const int start, const int end) override {
-    m_categoryStart = start;
-    m_categoryEnd = end;
-  }
-
-  std::string getName(const int index) override { return ""; }
-  int getCount() override { return 0; }
 
   [[nodiscard]] std::string tabName() const override { return tr("Types"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTypesTab"sv; };

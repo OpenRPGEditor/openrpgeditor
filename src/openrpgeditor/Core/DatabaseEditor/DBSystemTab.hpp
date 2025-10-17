@@ -19,21 +19,9 @@ enum class AudioType {
   SoundEffect,
 };
 
-struct System;
-struct DBSystemTab : IDBEditorTab {
-  DBSystemTab() = delete;
-  explicit DBSystemTab(DatabaseEditor* parent);
+class System;
+struct DBSystemTab final : IDBEditorTab {
   void draw() override;
-  std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(const int index) override { return m_headers.at(index); }
-  bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(const int start, const int end) override {
-    m_categoryStart = start;
-    m_categoryEnd = end;
-  }
-
-  std::string getName(int index) override { return ""; }
-  int getCount() override { return 0; }
 
   [[nodiscard]] std::string tabName() const override { return tr("System"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBSystemTab"sv; };
@@ -49,9 +37,6 @@ struct DBSystemTab : IDBEditorTab {
   }
 
 private:
-  int m_categoryStart;
-  int m_categoryEnd;
-  std::vector<int> m_headers;
   static void addAudioRow(const Audio& audio, const std::string& type, AudioType audioType);
 
   System* m_system{};

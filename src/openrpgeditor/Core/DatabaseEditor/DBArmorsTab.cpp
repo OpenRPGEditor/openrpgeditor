@@ -6,11 +6,6 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
-DBArmorsTab::DBArmorsTab(DatabaseEditor* parent)
-: IDBEditorTab(parent)
-, m_categoryStart(0)
-, m_categoryEnd(0) {}
-
 void DBArmorsTab::draw() {
   if (!m_itemButtonTexture) {
     m_itemButtonTexture.emplace();

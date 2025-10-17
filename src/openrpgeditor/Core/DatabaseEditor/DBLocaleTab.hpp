@@ -8,25 +8,16 @@
 namespace fs = std::filesystem;
 
 struct DBLocaleTab final : IDBEditorTab {
-  DBLocaleTab() = delete;
-  explicit DBLocaleTab(DatabaseEditor* parent);
   void draw() override;
   void drawTableOne(std::string& text, int index);
   void drawTableTwo(int index);
-  int getHeader(int index) override { return 0; }
-
-  std::vector<int>& getHeaders() override { return m_untranslatedIndices; }
-  bool hasHeader() override { return false; }
-  void setHeaderRange(int start, int end) override {}
-  std::string getName(int index) override { return ""; }
-  int getCount() override { return 0; }
 
   // TODO: Fuzzy searching
 
   [[nodiscard]] std::string tabName() const override { return tr("Locales"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBLocaleTab"sv; };
   bool isExperimental() const override { return true; }
-  
+
   bool isReady() const override { return !!Database::instance()->locales; }
   bool isInitialized() const override { return m_locales; }
   void initialize() override {

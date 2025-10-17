@@ -20,7 +20,7 @@ inline const std::string& ObjectPicker<std::optional<CommonEvent>>::getName(cons
   return value ? value->name() : InvalidCommonEvent;
 }
 
-void EffectsEditor::draw(DatabaseEditor* dbEditor) {
+void EffectsEditor::draw() {
   if (m_effects == nullptr) {
     return;
   }
@@ -51,7 +51,7 @@ void EffectsEditor::draw(DatabaseEditor* dbEditor) {
             m_deletingEffect = &effect;
             m_selectedEffect = nullptr;
           }
-          drawPopup(dbEditor);
+          drawPopup();
         }
         if (ImGui::TableNextColumn()) {
           switch (effect.code()) {
@@ -130,7 +130,7 @@ void EffectsEditor::draw(DatabaseEditor* dbEditor) {
           }
         }
       }
-      drawPopup(dbEditor);
+      drawPopup();
       ImGui::EndTable();
     }
   }
@@ -142,7 +142,7 @@ void EffectsEditor::draw(DatabaseEditor* dbEditor) {
   }
 }
 
-void EffectsEditor::drawPopup(DatabaseEditor* dbEditor) {
+void EffectsEditor::drawPopup() {
   if (m_selectedEffect == nullptr || m_effects == nullptr) {
     return;
   }

@@ -7,23 +7,13 @@
 
 class DBTilesetsTab final : public IDBEditorTab {
 public:
-  DBTilesetsTab() = delete;
-  explicit DBTilesetsTab(DatabaseEditor* parent);
   void draw() override;
 
-  std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(const int index) override { return m_headers.at(index); }
-  bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(const int start, const int end) override {
-    m_categoryStart = start;
-    m_categoryEnd = end;
-  }
-
-  std::string getName(const int index) override { return m_tilesets->tileset(index)->name(); }
-  int getCount() override { return m_tilesets->count(); }
+  std::string getName(const int index) const override { return m_tilesets->tileset(index)->name(); }
+  int getCount() const override { return m_tilesets->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Tilesets"); }
-  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTilesetsTab"sv; };
+  [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTilesetsTab"sv; }
   bool isExperimental() const override { return true; }
 
   bool isReady() const override { return !!Database::instance()->tilesets; }
@@ -41,9 +31,6 @@ public:
   }
 
 private:
-  int m_categoryStart;
-  int m_categoryEnd;
-  std::vector<int> m_headers;
   Tilesets* m_tilesets{};
   Tileset* m_selectedTileset{};
   int m_maxTilesets{};
@@ -52,7 +39,7 @@ private:
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
   int m_selectedTileTab{0};
-  int m_pickerSelection;
+  int m_pickerSelection{};
   int m_checkerBoardHeight{0};
   int m_flagSelection{0};
   bool m_updateCheckerboard{true};

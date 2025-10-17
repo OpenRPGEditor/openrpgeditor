@@ -9,22 +9,12 @@
 #include "Database/Troops.hpp"
 #include "DBCommonEventsTab.hpp"
 
-struct Troops;
-struct DBTroopsTab : IDBEditorTab {
-  DBTroopsTab() = delete;
-  explicit DBTroopsTab(DatabaseEditor* parent);
+class Troops;
+struct DBTroopsTab final : IDBEditorTab {
   void draw() override;
 
-  std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(const int index) override { return m_headers.at(index); }
-  bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(const int start, const int end) override {
-    m_categoryStart = start;
-    m_categoryEnd = end;
-  }
-
-  std::string getName(const int index) override { return m_troops->troop(index)->name(); }
-  int getCount() override { return m_troops->count(); }
+  std::string getName(const int index) const override { return m_troops->troop(index)->name(); }
+  int getCount() const override { return m_troops->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Troops"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBTroopsTab"sv; };
@@ -38,17 +28,14 @@ struct DBTroopsTab : IDBEditorTab {
     m_troops = &Database::instance()->troops.value();
     m_enemies = &Database::instance()->enemies.value();
     /* FIXME: Currently causes a crash */
-    //m_troopsEditor.setTroop(m_troops->troop(1));
-    //m_selectedTroop = m_troops->troop(1);
+    // m_troopsEditor.setTroop(m_troops->troop(1));
+    // m_selectedTroop = m_troops->troop(1);
     m_maxTroops = m_troops->count();
   }
 
   bool isInitialized() const override { return m_troops && m_enemies; }
 
 private:
-  int m_categoryStart;
-  int m_categoryEnd;
-  std::vector<int> m_headers;
   Troops* m_troops = nullptr;
   Troop* m_selectedTroop{};
   int m_maxTroops{};

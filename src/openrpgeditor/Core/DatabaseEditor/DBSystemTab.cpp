@@ -8,9 +8,6 @@
 
 using namespace std::string_view_literals;
 
-DBSystemTab::DBSystemTab(DatabaseEditor* parent)
-: IDBEditorTab(parent) {}
-
 void DBSystemTab::addAudioRow(const Audio& audio, const std::string& type, AudioType audioType) {
   ImGui::TableNextRow();
   {
@@ -462,8 +459,9 @@ void DBSystemTab::draw() {
         ImGui::BeginGroup();
         {
           ImGui::TextUnformatted("Airship");
-          const std::string label = std::format("{} ({},{})##airship_start_button", m_system->airship().startMapId() == 0 ? "None" : Database::instance()->mapNameOrId(m_system->airship().startMapId()),
-                                                m_system->airship().startX(), m_system->airship().startY());
+          const std::string label =
+              std::format("{} ({},{})##airship_start_button", m_system->airship().startMapId() == 0 ? "None" : Database::instance()->mapNameOrId(m_system->airship().startMapId()),
+                          m_system->airship().startX(), m_system->airship().startY());
           if (ImGui::Button(label.c_str(), {ImGui::GetContentRegionAvail().x, 0})) {
             // TODO: Map position picker
           }

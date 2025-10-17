@@ -11,7 +11,7 @@ using namespace std::string_view_literals;
 
 static constexpr auto ActionsEditorPopupId = "Actions Edit"sv;
 
-void ActionsEditor::draw(DatabaseEditor* dbEditor) {
+void ActionsEditor::draw() {
   if (m_actions == nullptr) {
     return;
   }
@@ -44,7 +44,7 @@ void ActionsEditor::draw(DatabaseEditor* dbEditor) {
             m_deletingAction = &action;
             m_selectedAction = nullptr;
           }
-          drawPopup(dbEditor);
+          drawPopup();
         }
         if (ImGui::TableNextColumn()) {
           switch (action.conditionType()) {
@@ -102,7 +102,7 @@ void ActionsEditor::draw(DatabaseEditor* dbEditor) {
           }
         }
       }
-      drawPopup(dbEditor);
+      drawPopup();
       ImGui::EndTable();
     }
   }
@@ -114,7 +114,7 @@ void ActionsEditor::draw(DatabaseEditor* dbEditor) {
   }
 }
 
-void ActionsEditor::drawPopup(DatabaseEditor* dbEditor) {
+void ActionsEditor::drawPopup() {
   if (m_selectedAction == nullptr || m_actions == nullptr) {
     return;
   }

@@ -530,6 +530,8 @@ add_library(
         Core/ApplicationThemeManager.hpp
         Core/MapToolsManager.hpp
         Core/MapToolsManager.cpp
+        Core/StopWatch.cpp
+        Core/StopWatch.hpp
 )
 
 target_include_directories(

@@ -10,19 +10,10 @@ class DatabaseEditor;
 class Animations;
 class DBAnimationsTab final : public IDBEditorTab {
 public:
-  DBAnimationsTab() = delete;
-  explicit DBAnimationsTab(DatabaseEditor* parent);
   void draw() override;
 
-  std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(const int index) override { return m_headers.at(index); }
-  bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(const int start, const int end) override {
-    m_categoryStart = start;
-    m_categoryEnd = end;
-  }
-  std::string getName(const int index) override { return m_animations->animation(index)->name(); }
-  int getCount() override { return m_animations->count(); }
+  std::string getName(const int index) const override { return m_animations->animation(index)->name(); }
+  int getCount() const override { return m_animations->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Animations"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBAnimationsTab"sv; };
@@ -40,14 +31,26 @@ public:
     if (m_selectedAnimation) {
       m_selectedTimings = m_selectedAnimation->timings();
     }
+
+    m_colorPicker.setValues(255, 255, 255, 255);
+    m_selectedAudio.setName("");
+    m_selectedAudio.setVolume(100);
+    m_selectedAudio.setPan(0);
+    m_selectedAudio.setPitch(100);
+
+    if (m_selectedAnimation) {
+      m_selectedAnimation->setTimeLine(std::vector(m_selectedAnimation->frames().size(), false));
+    }
+
+    m_soundPicker.selectedAudio().nameModified().connect<&DBAnimationsTab::onNameModified>(this);
+    m_soundPicker.selectedAudio().volumeModified().connect<&DBAnimationsTab::onVolModified>(this);
+    m_soundPicker.selectedAudio().panModified().connect<&DBAnimationsTab::onPanModified>(this);
+    m_soundPicker.selectedAudio().pitchModified().connect<&DBAnimationsTab::onPitchModified>(this);
   }
 
   bool isInitialized() const override { return m_animations; }
 
 private:
-  int m_categoryStart;
-  int m_categoryEnd;
-  std::vector<int> m_headers;
   Animations* m_animations = nullptr;
   Animation* m_selectedAnimation{};
   int m_editMaxAnimations{};
@@ -67,14 +70,14 @@ private:
   int m_duration{5};
   Audio m_selectedAudio;
   Animation::Color m_selectedColor;
-  int m_selectedScope;
-  int m_selectedDuration;
-  int m_selectedFrameNumber;
+  int m_selectedScope{};
+  int m_selectedDuration{};
+  int m_selectedFrameNumber{};
 
   std::optional<ImagePicker> m_imagePicker;
   ColorFlashPicker m_colorPicker;
-  int m_pickerSelection;
-  SoundPicker m_soundPicker;
+  int m_pickerSelection{};
+  SoundPicker m_soundPicker{};
 
   void onNameModified(Audio*, const std::string_view name) { m_selectedAudio.setName(name.data()); }
   void onVolModified(Audio*, const int volume) { m_selectedAudio.setVolume(volume); }

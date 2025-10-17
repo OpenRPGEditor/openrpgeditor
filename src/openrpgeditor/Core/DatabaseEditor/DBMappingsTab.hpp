@@ -6,29 +6,17 @@
 
 class DBMappingsTab final : public IDBEditorTab {
 public:
-  DBMappingsTab() = delete;
-  explicit DBMappingsTab(DatabaseEditor* parent);
-
   bool isUnicodeFormatting(const std::string& text);
   void draw() override;
   void drawVariables();
   void drawSwitches();
   void drawCommons();
-  std::vector<int>& getHeaders() override { return m_headers; }
-  int getHeader(int index) override { return m_headers.at(index); }
-  bool hasHeader() override { return !m_headers.empty(); }
-  void setHeaderRange(int start, int end) override {
-    m_categoryStart = start;
-    m_categoryEnd = end;
-  }
-  std::string_view GetFormattingHelpText() { return trNOOP("Reference updating does not support:\n- Ranges\n- Data without game constants\nThese must be updated manually."); }
-  std::string getName(int index) override { return ""; }
-  int getCount() override { return 0; }
+  static std::string_view GetFormattingHelpText() { return trNOOP("Reference updating does not support:\n- Ranges\n- Data without game constants\nThese must be updated manually."); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Data Sorting"); }
   [[nodiscard]] constexpr std::string_view tabId() const override { return "##DBMappingsTab"sv; };
   bool isExperimental() const override { return true; }
-  
+
   bool isReady() const override { return !!Database::instance()->system; }
 
   bool isInitialized() const override { return m_system; }
@@ -45,9 +33,6 @@ public:
   }
 
 private:
-  int m_categoryStart;
-  int m_categoryEnd;
-  std::vector<int> m_headers;
   System* m_system{};
   int m_selectedVariable{0};
   int m_selectedSwitch{0};

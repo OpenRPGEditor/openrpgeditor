@@ -5,9 +5,6 @@
 
 #include "imgui.h"
 #include "imgui_internal.h"
-DBSkillsTab::DBSkillsTab(DatabaseEditor* parent)
-: IDBEditorTab(parent) {
-}
 
 void DBSkillsTab::draw() {
   if (m_animationPicker) {
@@ -509,7 +506,7 @@ void DBSkillsTab::draw() {
           ImGui::EndChild();
           // Begin effects drawing
           ImGui::BeginChild("##effects", {}, ImGuiChildFlags_ResizeY | ImGuiChildFlags_Borders);
-          { m_effectsEditor.draw(m_parent); }
+          { m_effectsEditor.draw(); }
           ImGui::EndChild();
 
           ImGui::BeginChild("##note", {}, ImGuiChildFlags_Borders);

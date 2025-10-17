@@ -82,10 +82,6 @@ void draw() {
         print(LogLevel::Info, "Draw");
         didDraw = true;
     }
-
-    ImGui::Begin("Test");
-        ImGui::Text(format("{} {}", "Test", "yay!"));
-    ImGui::End();
 }
 
 void shutdown() {

@@ -12,7 +12,6 @@ std::tuple<bool, bool> AboutDialog::draw() {
   if (!isOpen()) {
     return {!m_open, m_confirmed};
   }
-  *(volatile int*)(0) = 1;
 
   if (ImGui::Begin(std::format("{}###OREAboutDialog", trNOOP("About Open RPG Editor")).c_str(), &m_open, ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginVertical("##about_dialog_main_layout", ImGui::GetContentRegionAvail(), 0);

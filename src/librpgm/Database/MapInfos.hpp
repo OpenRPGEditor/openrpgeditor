@@ -10,7 +10,7 @@ public:
 
   [[nodiscard]] MapInfo* map(int id) {
     for (auto& item : m_mapinfos) {
-      if (item->id() == id) {
+      if (item && item->id() == id) {
         return &item.value();
       }
     }
@@ -19,7 +19,7 @@ public:
 
   [[nodiscard]] const MapInfo* map(int id) const {
     for (const auto& set : m_mapinfos) {
-      if (set->id() == id) {
+      if (set && set->id() == id) {
         return &set.value();
       }
     }
@@ -46,7 +46,7 @@ public:
   void rebuildOrdering();
 
   bool isModified() const override {
-    return std::ranges::any_of(m_mapinfos, [](const auto& item) { return item->isModified(); });
+    return std::ranges::any_of(m_mapinfos, [](const auto& item) { return item && item->isModified(); });
   }
 
   void closeAllUnmodified() {

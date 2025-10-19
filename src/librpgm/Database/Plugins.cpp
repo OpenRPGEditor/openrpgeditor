@@ -1,5 +1,11 @@
 #include "Database/Plugins.hpp"
+
+#include "Database.hpp"
+
 #include <fstream>
+#include <iostream>
+#include <regex>
+#include <unicode/uchar.h>
 
 void to_json(nlohmann::ordered_json& to, const Plugin& plugin) {
   to = {{"name", plugin.name}, {"status", plugin.status}, {"description", plugin.description}, {"parameters", nlohmann::json{}}};
@@ -28,29 +34,25 @@ void from_json(const nlohmann::ordered_json& from, Plugin& plugin) {
 Plugins Plugins::load(const std::filesystem::path& path) {
   std::ifstream file(path);
   Plugins ret;
-  
+
   if (file.is_open()) {
     std::string line;
     std::string content;
     bool found = false;
     while (std::getline(file, line)) {
-      if (line.compare("var $plugins =") == 0) {
-        found = true;
-        continue;
-      }
-
+      trim(line);
       if (found) {
-        content += "\n" + line;
+        content += content.empty() ? line : "\n" + line;
+      } else if (line.starts_with("var $plugins =")) {
+        found = true;
       }
     }
-    if (content.back() == ';') {
-      content.back() = ' ';
-    }
-    nlohmann::ordered_json data = nlohmann::ordered_json::parse(content);
-
-    for (auto [_, value] : data.items()) {
-      auto& plugin = ret.plugins.emplace_back();
-      value.get_to(plugin);
+    if (!content.empty() && content.back() == ';') {
+      content.pop_back();
+      for (const auto data = nlohmann::ordered_json::parse(content); auto [_, value] : data.items()) {
+        auto& plugin = ret.plugins.emplace_back();
+        value.get_to(plugin);
+      }
     }
   }
 
@@ -76,4 +78,349 @@ bool Plugins::serialize(const std::filesystem::path& path) const {
   }
 
   return false;
+}
+
+static const std::string_view test = R"(/*:
+ * NOTE: Images are stored in the img/system folder.
+ *
+ * @plugindesc Show a Splash Screen "Made with MV" and/or a Custom Splash Screen before going to main screen.
+ * @author Dan "Liquidize" Deptula
+ *
+ * @help This plugin does not provide plugin commands.
+ *
+ * @param Show Made With MV
+ * @desc Enabled/Disables showing the "Made with MV" splash screen.
+ * OFF - false     ON - true
+ * Default: ON
+ * @default true
+ *
+ * @param Made with MV Image
+ * @desc The image to use when showing "Made with MV"
+ * Default: MadeWithMv
+ * @default MadeWithMv
+ * @require 1
+ * @dir img/system/
+ * @type file
+ *
+ * @param Show Custom Splash
+ * @desc Enabled/Disables showing the "Made with MV" splash screen.
+ * OFF - false     ON - true
+ * Default: OFF
+ * @default false
+ *
+ * @param Custom Image
+ * @desc The image to use when showing "Made with MV"
+ * Default: 
+ * @default 
+ * @require 1
+ * @dir img/system/
+ * @type file
+ *
+ * @param Fade Out Time
+ * @desc The time it takes to fade out, in frames.
+ * Default: 120
+ * @default 120
+ *
+ * @param Fade In Time
+ * @desc The time it takes to fade in, in frames.
+ * Default: 120
+ * @default 120
+ *
+ * @param Wait Time
+ * @desc The time between fading in and out, in frames.
+ * Default: 160
+ * @default 160
+ *
+ */
+/*:ja
+ * メモ: イメージはimg／systemフォルダ内に保存されます。
+ *
+ * @plugindesc メイン画面へ進む前に、"Made with MV"のスプラッシュ画面もしくはカスタマイズされたスプラッシュ画面を表示します。
+ * @author Dan "Liquidize" Deptula
+ *
+ * @help  このプラグインにはプラグインコマンドはありません。
+ *
+ * @param Show Made With MV
+ * @desc "Made with MV"のスプラッシュ画面を表示できる/できないようにします。 
+ * OFF - false     ON - true
+ * デフォルト: ON
+ * @default true
+ *
+ * @param Made with MV Image
+ * @desc "Made with MV"を表示する際に使用する画像
+ * デフォルト: MadeWithMv
+ * @default MadeWithMv
+ * @require 1
+ * @dir img/system/
+ * @type file
+ *
+ * @param Show Custom Splash
+ * @desc "Made with MV"のスプラッシュ画面を表示できる/できないようにします。 
+ * OFF - false     ON - true
+ * デフォルト: OFF
+ * @default false
+ *
+ * @param Custom Image
+ * @desc "Made with MV"を表示する際に使用する画像
+ * デフォルト: 
+ * @default 
+ * @require 1
+ * @dir img/system/
+ * @type file
+ *
+ * @param Fade Out Time
+ * @desc フェードアウトに要する時間（フレーム数）
+ * デフォルト: 120
+ * @default 120
+ *
+ * @param Fade In Time
+ * @desc フェードインに要する時間（フレーム数）
+ * デフォルト: 120
+ * @default 120
+ *
+ * @param Wait Time
+ * @desc フェードインからフェードアウトまでに要する時間（フレーム数）
+ * デフォルト: 160
+ * @default 160
+ *
+ */)";
+void Plugins::processPluginScripts(const std::filesystem::path& path) {
+  Context ctx;
+
+  std::regex kParameterRegex(R"(\*(?:~([a-zA-Z0-9~]+))?:([a-zA-Z_]*)([\s\S]*?)\*/)", std::regex::ECMAScript | std::regex::multiline);
+  const std::string locale = Database::instance()->system->locale();
+  std::string t = test.data();
+
+  std::string englishComments;
+  std::string localComments;
+  for (;;) {
+    std::smatch match;
+    std::regex_search(t, match, kParameterRegex, std::regex_constants::match_any);
+    if (match.empty()) {
+      break;
+    }
+    const std::string component = match[1].str();
+    const std::string lang = match[2].str();
+    const std::string comments = match[3].str();
+
+    if (!component.empty()) {
+      if (lang.empty() || lang == "en") {
+        ctx.components[component].englishComments = comments;
+      } else if (lang.length() >= 2 && locale.find(lang) == 0) {
+        ctx.components[component].localComments = comments;
+      }
+    } else if (lang.empty() || lang == "en") {
+      englishComments = comments;
+    } else if (lang.length() >= 2 && locale.find(lang) == 0) {
+      localComments = comments;
+    }
+    t = t.substr(match.position() + match.length());
+  }
+
+  processCommentBlock(ctx, !localComments.empty() ? localComments : englishComments);
+
+  /*
+  for (const auto& entry : std::filesystem::directory_iterator(path)) {
+    if (!entry.is_regular_file() || !entry.path().extension().compare(".json")) {
+      continue;
+    }
+
+    std::string contents;
+    {
+      std::ifstream file(entry.path());
+      if (!file.is_open()) {
+        continue;
+      }
+
+      contents.resize(entry.file_size());
+      file.read(contents.data(), contents.size());
+    }
+
+    if (contents.empty()) {
+      continue;
+    }
+
+    std::string locale;
+
+    std::vector<std::string> components;
+
+    std::smatch match;
+    std::regex_search(contents, match, kParameterRegex);
+    if (match.empty()) {
+      continue;
+    }
+  }
+  */
+}
+
+double stringToDoubleNoExcept(const std::string& str) {
+  double value = 0.0;
+  // Attempt to convert the string to a double
+  std::from_chars_result result = std::from_chars(str.data(), str.data() + str.size(), value);
+
+  // Check for errors
+  if (result.ec == std::errc::invalid_argument) {
+    // Handle case where the string is not a valid number
+    std::cerr << "Error: Invalid argument for conversion." << std::endl;
+    return 0.0; // Or handle as appropriate for your application
+  } else if (result.ec == std::errc::result_out_of_range) {
+    // Handle case where the number is too large or too small for double
+    std::cerr << "Error: Result out of range for double." << std::endl;
+    return 0.0; // Or handle as appropriate
+  }
+  // If no error, value contains the converted double
+  return value;
+}
+
+void Plugins::processCommentBlock(Context& ctx, const std::string& commentBlock) {
+  // TODO: make this more robust, it'll currently crash if the comments are ill-formed
+  std::regex kParameterRegex(R"(@(\w+)([^@]*))", std::regex::ECMAScript | std::regex::multiline);
+  std::regex kNormalizeRegex("[ ]*\\n[ ]*\\*?[ ]?", std::regex::ECMAScript | std::regex::multiline);
+
+  std::string comment = commentBlock;
+  std::string currentParam;
+  std::string currentNote;
+  for (;;) {
+    std::smatch match;
+    std::regex_search(comment, match, kParameterRegex);
+    if (match.empty()) {
+      break;
+    }
+
+    std::string keyword = match[1].str();
+    std::string text = match[2].str();
+    text = std::regex_replace(text, kNormalizeRegex, "\n");
+    trim(text);
+    std::string text2 = splitString(text, '\n')[0];
+    if (keyword == "help") {
+      ctx.pluginHelp = text;
+    } else if (keyword == "plugindesc") {
+      ctx.pluginDesc = text;
+    } else if (keyword == "author") {
+      ctx.pluginAuthor = text;
+    } else if (keyword == "param") {
+      ctx.paramNames.emplace_back(text2);
+      currentParam = text2;
+    } else if (keyword == "desc") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set param desc");
+      } else {
+        ctx.paramDescs[currentParam] = text;
+      }
+    } else if (keyword == "default") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set param default");
+      } else {
+        ctx.paramDefaults[currentParam] = text2;
+      }
+    } else if (keyword == "parent") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set param parent");
+      } else {
+        ctx.paramParents[currentParam] = text2;
+      }
+    } else if (keyword == "text") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set param text");
+      } else {
+        ctx.paramTexts[currentParam] = text2;
+      }
+    } else if (keyword == "type") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set param type");
+      } else {
+        std::ranges::transform(text2, text2.begin(), ::tolower);
+        ctx.paramTypes[currentParam].type = text2;
+      }
+    } else if (keyword == "max") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set param max");
+      } else {
+        ctx.paramTypes[currentParam].max = stringToDoubleNoExcept(text2);
+      }
+    } else if (keyword == "min") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set param min");
+      } else {
+        ctx.paramTypes[currentParam].min = stringToDoubleNoExcept(text2);
+      }
+    } else if (keyword == "decimals") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set param decimals");
+      } else {
+        ctx.paramTypes[currentParam].decimals = stringToDoubleNoExcept(text2);
+      }
+    } else if (keyword == "dir") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set param dir");
+      } else {
+        ctx.paramTypes[currentParam].dir = text2;
+      }
+    } else if (keyword == "require") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set param require");
+      } else {
+        ctx.paramTypes[currentParam].require = stringToDoubleNoExcept(text2) != 0.0;
+      }
+    } else if (keyword == "on") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set param on");
+      } else {
+        ctx.paramTypes[currentParam].on = text2;
+      }
+    } else if (keyword == "off") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set param off");
+      } else {
+        ctx.paramTypes[currentParam].off = text2;
+      }
+    } else if (keyword == "option") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set param option");
+      } else {
+        ctx.paramTypes[currentParam].options.emplace_back(text2, text2);
+      }
+    } else if (keyword == "value") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set param value");
+      } else {
+        ctx.paramTypes[currentParam].options.back().second = text2;
+      }
+    } else if (keyword == "requiredAssets") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set param requiredAssets");
+      } else {
+        ctx.requiredAssets.emplace_back(text2);
+      }
+    } else if (keyword == "noteParam") {
+      ctx.noteParamNames.emplace_back(text2);
+      currentNote = text2;
+    } else if (keyword == "noteRequire") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set noteRequire");
+      } else {
+        ctx.noteParamRequires[currentNote] = stringToDoubleNoExcept(text2) != 0.0;
+      }
+    } else if (keyword == "noteType") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set noteType");
+      } else {
+        ctx.noteParamTypes[currentNote] = text2;
+      }
+    } else if (keyword == "noteDir") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set noteDir");
+      } else {
+        ctx.noteParamDirs[currentNote] = text2;
+      }
+    } else if (keyword == "noteData") {
+      if (currentParam.empty()) {
+        RPGM_WARN("Unable to set noteData");
+      } else {
+        ctx.noteParamDatas[currentNote] = text2;
+      }
+    }
+
+    comment = comment.substr(match.position() + match.length());
+  }
 }

@@ -52,12 +52,14 @@ std::string extractVersionFromHtml(const std::string& html) {
 }
 
 NWJSVersionManager::NWJSVersionManager(std::string_view nwjsPath)
-: m_NWJSPath(nwjsPath) {
-  m_versionDownloadHandle = m_downloadManager.addDownload(m_NWJSPath + "/index.html", (std::filesystem::temp_directory_path() / "nwjs_versions.html").generic_string());
-}
+: m_NWJSPath(nwjsPath) {}
 
 bool NWJSVersionManager::getListing() {
   std::filesystem::path path = std::filesystem::temp_directory_path() / "nwjs_versions.html";
+  if (m_versionDownloadHandle == -1) {
+    m_versionDownloadHandle = m_downloadManager.addDownload(m_NWJSPath, (std::filesystem::temp_directory_path() / "nwjs_versions.html").generic_string());
+  }
+  
   if (!(m_versionDownloadHandle != -1 && m_downloadManager.transferComplete(m_versionDownloadHandle)) || !exists(path)) {
     return false;
   }
@@ -135,7 +137,6 @@ void NWJSVersionManager::draw() {
       // TODO: Add ia32, x64, and arm64 checkboxes for each applicable platform
       // TODO: Figure out issues with DownloadManager
       if (ImGui::Button(trNOOP("Download"))) {
-#if 0
         const char* confPath = SDL_GetPrefPath(App::COMPANY_NAMESPACE, App::APP_NAME);
         if (m_downloadWindows) {
           m_downloadManager.addDownload(std::format("{0}/{1}/nwjs-{1}-win-x64.zip", m_NWJSPath, m_versions[m_selectedVersion]),
@@ -149,11 +150,11 @@ void NWJSVersionManager::draw() {
         if (m_downloadMacOS) {
           m_downloadManager.addDownload(std::format("{0}/{1}/nwjs-{1}-osx-x64.zip", m_NWJSPath, m_versions[m_selectedVersion]),
                                         std::format("{0}/nwjs-{1}-osx-x64.zip", confPath, m_versions[m_selectedVersion]));
-          m_downloadManager.addDownload(std::format("{0}/{1}/nwjs-{1}-osx-x64.zip", m_NWJSPath, m_versions[m_selectedVersion]),
-                                        std::format("{0}/nwjs-{1}-osx-x64.zip", confPath, m_versions[m_selectedVersion]));
+          m_downloadManager.addDownload(std::format("{0}/{1}/nwjs-{1}-osx-arm64.zip", m_NWJSPath, m_versions[m_selectedVersion]),
+                                        std::format("{0}/nwjs-{1}-osx-arm64.zip", confPath, m_versions[m_selectedVersion]));
           if (m_downloadSDK) {
             m_downloadManager.addDownload(std::format("{0}/{1}/nwjs-sdk-{1}-osx-x64.zip", m_NWJSPath, m_versions[m_selectedVersion]),
-                                          std::format("{0}/{1}/nwjs-sdk-{1}-osx-x64.zip", confPath, m_versions[m_selectedVersion]));
+                                          std::format("{0}/nwjs-sdk-{1}-osx-x64.zip", confPath, m_versions[m_selectedVersion]));
             m_downloadManager.addDownload(std::format("{0}/{1}/nwjs-sdk-{1}-osx-arm64.zip", m_NWJSPath, m_versions[m_selectedVersion]),
                                           std::format("{0}/nwjs-sdk-{1}-osx-arm64.zip", confPath, m_versions[m_selectedVersion]));
           }
@@ -168,7 +169,6 @@ void NWJSVersionManager::draw() {
           }
         }
         SDL_free((void*)confPath);
-#endif
       }
       ImGui::EndDisabled();
       ImGui::Checkbox(trNOOP("Windows"), &m_downloadWindows);
@@ -179,15 +179,13 @@ void NWJSVersionManager::draw() {
       ImGui::SameLine();
       ImGui::Checkbox(trNOOP("SDK"), &m_downloadSDK);
     }
-#if 0
+
     ImGui::BeginChild("##progress_list", ImGui::GetContentRegionAvail() - ImGui::GetStyle().FramePadding, ImGuiChildFlags_Borders, ImGuiWindowFlags_HorizontalScrollbar);
     {
       ImGui::BeginColumns("##progress_columns", 2);
       for (const auto& handle : m_downloadManager.handles()) {
         ImGui::TextUnformatted(handle.url().data());
         ImGui::NextColumn();
-        printf("%ld, %ld, %g\n", handle.bytesTotal(), handle.bytesDownloaded(), handle.percent());
-
         ImGui::ProgressBar(handle.percent());
         ImGui::NextColumn();
       }

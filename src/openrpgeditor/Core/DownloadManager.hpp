@@ -1,7 +1,9 @@
 #pragma once
 
 #include <curl/curl.h>
+#include <deque>
 #include <fstream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -52,10 +54,10 @@ public:
     return m_curlHandles[handle].completed();
   }
 
-  const std::vector<DownloadEntry>& handles() const { return m_curlHandles; }
+  const std::deque<DownloadEntry>& handles() const { return m_curlHandles; }
 
 private:
   CURLM* m_multiHandle;
-  std::vector<DownloadEntry> m_curlHandles;
+  std::deque<DownloadEntry> m_curlHandles;
   bool m_transferComplete{false};
 };

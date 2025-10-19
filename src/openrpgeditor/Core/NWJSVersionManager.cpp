@@ -29,7 +29,9 @@ bool versionCompare(const std::string& v1, const std::string& v2) {
       token2.erase(0, 1);
     }
     int num1 = std::stoi(token1);
+    // ReSharper disable CppTooWideScopeInitStatement
     int num2 = std::stoi(token2);
+    // ReSharper restore CppTooWideScopeInitStatement
 
     if (num1 != num2) {
       return num1 > num2; // Change to '<' for ascending order
@@ -42,22 +44,21 @@ bool versionCompare(const std::string& v1, const std::string& v2) {
 
 std::string extractVersionFromHtml(const std::string& html) {
   // Regex pattern to capture the version value without the trailing slash
-  std::regex pattern(R"(href="([^/]+)/)");
-  std::smatch matches;
+  const std::regex pattern(R"(href="([^/]+)/)");
 
-  if (std::regex_search(html.begin(), html.end(), matches, pattern)) {
+  if (std::smatch matches; std::regex_search(html.begin(), html.end(), matches, pattern)) {
     return matches[1]; // Return the extracted version
   }
   return ""; // Return an empty string if no match is found
 }
 
-NWJSVersionManager::NWJSVersionManager(std::string_view nwjsPath)
+NWJSVersionManager::NWJSVersionManager(const std::string_view nwjsPath)
 : m_NWJSPath(nwjsPath) {}
 
 bool NWJSVersionManager::getListing() {
   std::filesystem::path path = std::filesystem::temp_directory_path() / "nwjs_versions.html";
   if (m_versionDownloadHandle == -1) {
-    m_versionDownloadHandle = m_downloadManager.addDownload(m_NWJSPath, (std::filesystem::temp_directory_path() / "nwjs_versions.html").generic_string());
+    m_versionDownloadHandle = m_downloadManager.addDownload(m_NWJSPath, path.generic_string());
   }
   
   if (!(m_versionDownloadHandle != -1 && m_downloadManager.transferComplete(m_versionDownloadHandle)) || !exists(path)) {
@@ -110,13 +111,13 @@ void NWJSVersionManager::draw() {
 
   if (ImGui::Begin("NWJS Version Manager", &m_isOpen)) {
     if (m_versions.empty()) {
-      ImGui::TextUnformatted((m_versionDownloadHandle == -1 || m_downloadManager.transferComplete(m_versionDownloadHandle)) ? trNOOP("Unable to get version list!")
+      ImGui::TextUnformatted(m_versionDownloadHandle == -1 || m_downloadManager.transferComplete(m_versionDownloadHandle) ? trNOOP("Unable to get version list!")
                                                                                                                             : trNOOP("Retrieving version listing..."));
     } else {
       ImGui::Text(trNOOP("Current Version: %s"), Settings::instance()->currentNWJSVersion.empty() ? trNOOP("None") : Settings::instance()->currentNWJSVersion.c_str());
       ImGui::Text(trNOOP("Latest Version: %s"), m_versions[0].c_str());
       ImGui::SeparatorText(trNOOP("Available Versions"));
-      std::string version = m_selectedVersion < 0 ? trNOOP("None") : m_versions[m_selectedVersion];
+      const std::string version = m_selectedVersion < 0 ? trNOOP("None") : m_versions[m_selectedVersion];
       if (ImGui::BeginCombo("##NWJSVersion", version.c_str())) {
         if (ImGui::Selectable(trNOOP("None"), m_selectedVersion == -1)) {
           m_selectedVersion = -1;
@@ -192,7 +193,6 @@ void NWJSVersionManager::draw() {
       ImGui::EndColumns();
     }
     ImGui::EndChild();
-#endif
   }
   ImGui::End();
 }

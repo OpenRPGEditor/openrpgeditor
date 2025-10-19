@@ -8,23 +8,24 @@
 
 class Interpreter {
 public:
-  explicit Interpreter(std::vector<std::shared_ptr<IEventCommand>> commands);
+  explicit Interpreter(const std::vector<std::shared_ptr<IEventCommand>>& commands);
   bool update();
-  Image& getImage() { return m_image.value(); }
+  [[nodiscard]] Image& getImage() { return m_image.value(); }
   [[nodiscard]] bool image() const { return m_image.has_value(); }
-  std::vector<int> getKeyFrames() const;
-  std::vector<int> getSwitches();
-  std::vector<int> getVariables();
+  [[nodiscard]] std::vector<int> getKeyFrames() const;
+  [[nodiscard]] std::vector<int> getSwitches();
+  [[nodiscard]] std::vector<int> getVariables();
 
-  bool hasVariable(int index);
-  bool hasSwitch(int index);
+  [[nodiscard]] bool hasVariable(const int index) const { return m_variableMap.contains(index); }
+  [[nodiscard]] bool hasSwitch(const int index) const { return m_switchMap.contains(index); }
+  
   void setVariable(int index, int value);
   void setSwitch(int index, bool value);
   void setIndex(int index, int keyFrame);
-  std::string findStringMatch(std::string text);
-  bool isStringMatch(std::string text) const;
-  int getKeyFrameIndex() const { return m_keyFrame; }
-  void setFastForward(bool cond) { m_isFastForward = cond; }
+  static std::string findStringMatch(const std::string& text);
+  static bool isStringMatch(const std::string& text);
+  [[nodiscard]] int getKeyFrameIndex() const { return m_keyFrame; }
+  void setFastForward(const bool cond) { m_isFastForward = cond; }
 
 private:
   int m_index{0};

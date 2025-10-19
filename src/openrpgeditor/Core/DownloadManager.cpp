@@ -1,17 +1,15 @@
 #include "Core/DownloadManager.hpp"
+#include <algorithm>
 
-#include "EventCommands/Dialog_EnemyRecoverAll.hpp"
-
-// TODO: For some reason this doesn't work when multiple downloads are active, there is also a random crash on exit related to the destination file handle
-int writeCallback(char* ptr, size_t size, size_t nmemb, void* userdata) {
+int writeCallback(const char* ptr, const size_t size, const size_t numMembers, void* userdata) {
   const auto entry = static_cast<DownloadManager::DownloadEntry*>(userdata);
   if (entry->fileHandle() == nullptr) {
     return 0;
   }
-  const auto written = fwrite(ptr, size, nmemb, entry->fileHandle());
+  const auto written = fwrite(ptr, size, numMembers, entry->fileHandle());
   fflush(entry->fileHandle());
-  entry->addBytesDownloaded(written);
-  return written;
+  entry->addBytesDownloaded(static_cast<curl_off_t>(written));
+  return static_cast<int>(written);
 }
 
 DownloadManager::DownloadEntry::DownloadEntry(const std::string_view url, const std::string_view destination)
@@ -40,16 +38,16 @@ DownloadManager::DownloadEntry::~DownloadEntry() {
   m_destination = nullptr;
 }
 
-void DownloadManager::DownloadEntry::updateInfo(const curl_off_t dltotal, const curl_off_t dlnow) {
-  if (!m_bytesTotal && dltotal) {
-    m_bytesTotal = dltotal;
+void DownloadManager::DownloadEntry::updateInfo(const curl_off_t downloadTotal, const curl_off_t downloadNow [[maybe_unused]]) {
+  if (!m_bytesTotal && downloadTotal) {
+    m_bytesTotal = downloadTotal;
   }
-  //printf("%s %ld %ld\n", m_url.data(), dltotal, dlnow);
 }
 
-int DownloadManager::DownloadEntry::progressCallback(void* clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow) {
-  const auto self = static_cast<DownloadEntry*>(clientp);
-  self->updateInfo(dltotal, dlnow);
+int DownloadManager::DownloadEntry::progressCallback(void* clientPointer, const curl_off_t downloadTotal, const curl_off_t downloadNow, const curl_off_t uploadTotal [[maybe_unused]],
+                                                     const curl_off_t uploadNow [[maybe_unused]]) {
+  const auto self = static_cast<DownloadEntry*>(clientPointer);
+  self->updateInfo(downloadTotal, downloadNow);
   return CURLE_OK;
 }
 
@@ -70,7 +68,7 @@ DownloadManager::~DownloadManager() {
 int DownloadManager::addDownload(const std::string_view url, const std::string_view destination) {
   const auto& handle = m_curlHandles.emplace_back(url, destination);
   curl_multi_add_handle(m_multiHandle, handle.handle());
-  return m_curlHandles.size() - 1;
+  return static_cast<int>(m_curlHandles.size() - 1);
 }
 
 void DownloadManager::processDownloads() {

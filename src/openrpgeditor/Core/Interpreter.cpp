@@ -1,14 +1,14 @@
 #include "Core/Interpreter.hpp"
 
 #include "Database/EventCommands/ConditionalBranch.hpp"
-#include "Database/EventCommands/ControlSwitches.hpp"
+//#include "Database/EventCommands/ControlSwitches.hpp"
 #include "Database/EventCommands/Script.hpp"
 #include "Database/EventCommands/ShowPicture.hpp"
 #include "Database/EventCommands/Wait.hpp"
 
 #include <regex>
 
-Interpreter::Interpreter(std::vector<std::shared_ptr<IEventCommand>> commands) { m_commands = commands; }
+Interpreter::Interpreter(const std::vector<std::shared_ptr<IEventCommand>>& commands) { m_commands = commands; }
 
 bool Interpreter::update() {
   if (m_wait > 0) {
@@ -16,7 +16,7 @@ bool Interpreter::update() {
   } else {
     if (m_index < m_commands.size() - 1) {
       if (m_commands.at(m_index)->code() == EventCode::Conditional_Branch) {
-        std::shared_ptr<ConditionalBranchCommand> cmd = std::dynamic_pointer_cast<ConditionalBranchCommand>(m_commands.at(m_index));
+        const std::shared_ptr<ConditionalBranchCommand> cmd = std::dynamic_pointer_cast<ConditionalBranchCommand>(m_commands.at(m_index));
         if (cmd->type == ConditionType::Switch && m_switchMap.contains(cmd->globalSwitch.switchIdx)) {
           if (m_switchMap[cmd->globalSwitch.switchIdx] == false && cmd->globalSwitch.checkIfOn == ValueControl::ON) {
             m_isSkip = true;
@@ -34,17 +34,17 @@ bool Interpreter::update() {
       }
       if (!m_isSkip) {
         if (m_commands.at(m_index)->code() == EventCode::Show_Picture) {
-          std::shared_ptr<ShowPictureCommand> cmd = std::dynamic_pointer_cast<ShowPictureCommand>(m_commands.at(m_index));
+          const std::shared_ptr<ShowPictureCommand> cmd = std::dynamic_pointer_cast<ShowPictureCommand>(m_commands.at(m_index));
           m_image.emplace(cmd->imageName, Image::Mode::Picture, false);
           m_keyFrame++;
         }
         if (m_commands.at(m_index)->code() == EventCode::Script) {
-          std::shared_ptr<ScriptCommand> cmd = std::dynamic_pointer_cast<ScriptCommand>(m_commands.at(m_index));
+          const std::shared_ptr<ScriptCommand> cmd = std::dynamic_pointer_cast<ScriptCommand>(m_commands.at(m_index));
           m_image.emplace(findStringMatch(cmd->script), Image::Mode::Picture, false);
           m_keyFrame++;
         }
         if (m_commands.at(m_index)->code() == EventCode::Wait) {
-          std::shared_ptr<WaitCommand> wait = std::dynamic_pointer_cast<WaitCommand>(m_commands.at(m_index));
+          const std::shared_ptr<WaitCommand> wait = std::dynamic_pointer_cast<WaitCommand>(m_commands.at(m_index));
           m_wait = wait->duration;
           if (m_isFastForward) {
             m_wait = m_wait / 2;
@@ -74,10 +74,10 @@ std::vector<int> Interpreter::getKeyFrames() const {
   for (int i = 0; i < m_commands.size(); i++) {
     if (m_commands.at(i)->code() == EventCode::Show_Picture) {
       keys.push_back(i);
+      continue;
     }
     if (m_commands.at(i)->code() == EventCode::Script) {
-      std::shared_ptr<ScriptCommand> cmd = std::dynamic_pointer_cast<ScriptCommand>(m_commands.at(i));
-      if (isStringMatch(cmd->script)) {
+      if (const std::shared_ptr<ScriptCommand> cmd = std::dynamic_pointer_cast<ScriptCommand>(m_commands.at(i)); isStringMatch(cmd->script)) {
         keys.push_back(i);
       }
     }
@@ -86,10 +86,9 @@ std::vector<int> Interpreter::getKeyFrames() const {
 }
 std::vector<int> Interpreter::getSwitches() {
   std::vector<int> switches;
-  for (int i = 0; i < m_commands.size(); i++) {
-    if (m_commands.at(i)->code() == EventCode::Conditional_Branch) {
-      std::shared_ptr<ConditionalBranchCommand> cmd = std::dynamic_pointer_cast<ConditionalBranchCommand>(m_commands.at(i));
-      if (cmd->type == ConditionType::Switch) {
+  for (auto& command : m_commands) {
+    if (command->code() == EventCode::Conditional_Branch) {
+      if (const std::shared_ptr<ConditionalBranchCommand> cmd = std::dynamic_pointer_cast<ConditionalBranchCommand>(command); cmd->type == ConditionType::Switch) {
         if (!m_switchMap.contains(cmd->globalSwitch.switchIdx)) {
           switches.push_back(cmd->globalSwitch.switchIdx);
           m_switchMap[cmd->globalSwitch.switchIdx] = false;
@@ -101,10 +100,10 @@ std::vector<int> Interpreter::getSwitches() {
 }
 std::vector<int> Interpreter::getVariables() {
   std::vector<int> variables;
-  for (int i = 0; i < m_commands.size(); i++) {
-    if (m_commands.at(i)->code() == EventCode::Conditional_Branch) {
-      std::shared_ptr<ConditionalBranchCommand> cmd = std::dynamic_pointer_cast<ConditionalBranchCommand>(m_commands.at(i));
-      if (cmd->type == ConditionType::Variable && cmd->variable.source == VariableComparisonSource::Constant) {
+  for (auto& command : m_commands) {
+    if (command->code() == EventCode::Conditional_Branch) {
+      if (const std::shared_ptr<ConditionalBranchCommand> cmd = std::dynamic_pointer_cast<ConditionalBranchCommand>(command);
+          cmd->type == ConditionType::Variable && cmd->variable.source == VariableComparisonSource::Constant) {
         if (!m_variableMap.contains(cmd->variable.id)) {
           m_variableMap[cmd->variable.id] = 0;
           variables.push_back(cmd->variable.id);
@@ -117,34 +116,32 @@ std::vector<int> Interpreter::getVariables() {
   }
   return variables;
 }
-void Interpreter::setVariable(int index, int value) { m_variableMap[index] = value; }
-void Interpreter::setSwitch(int index, bool value) { m_switchMap[index] = value; }
-void Interpreter::setIndex(int index, int keyFrame) {
+void Interpreter::setVariable(const int index, const int value) { m_variableMap[index] = value; }
+void Interpreter::setSwitch(const int index, const bool value) { m_switchMap[index] = value; }
+void Interpreter::setIndex(const int index, const int keyFrame) {
   // Sets the interpreter to a keyframe index and emplaces the image.
   // Keyframe indexes are built in Preview from a compiled vector based on image results in the command list
   m_index = index;
   m_keyFrame = keyFrame;
   if (m_commands.at(m_index)->code() == EventCode::Show_Picture) {
-    std::shared_ptr<ShowPictureCommand> cmd = std::dynamic_pointer_cast<ShowPictureCommand>(m_commands.at(m_index));
+    const std::shared_ptr<ShowPictureCommand> cmd = std::dynamic_pointer_cast<ShowPictureCommand>(m_commands.at(m_index));
     m_image.emplace(cmd->imageName, Image::Mode::Picture, false);
   }
   if (m_commands.at(m_index)->code() == EventCode::Script) {
-    std::shared_ptr<ScriptCommand> cmd = std::dynamic_pointer_cast<ScriptCommand>(m_commands.at(m_index));
+    const std::shared_ptr<ScriptCommand> cmd = std::dynamic_pointer_cast<ScriptCommand>(m_commands.at(m_index));
     m_image.emplace(findStringMatch(cmd->script), Image::Mode::Picture, false);
   }
 }
-std::string Interpreter::findStringMatch(std::string text) {
-  std::regex re("\"([^\"]*)\""); // Regex to match anything inside quotes
-  std::smatch match;
-  if (std::regex_search(text, match, re) && match.size() > 1) {
+static const std::regex kStringRegex{"\"([^\"]*)\""};
+
+std::string Interpreter::findStringMatch(const std::string& text) {
+  if (std::smatch match; std::regex_search(text, match, kStringRegex) && match.size() > 1) {
     return match.str(1);
   }
-  return ""; // String not found?
+  return {}; // String not found?
 }
-bool Interpreter::isStringMatch(std::string text) const {
-  std::regex re("\"([^\"]*)\""); // Regex to match anything inside quotes
-  std::smatch match;
-  if (std::regex_search(text, match, re) && match.size() > 1) {
+bool Interpreter::isStringMatch(const std::string& text) {
+  if (std::smatch match; std::regex_search(text, match, kStringRegex) && match.size() > 1) {
     return true;
   }
   return false; // String not found?

@@ -638,7 +638,19 @@ target_link_libraries(
         angelscript_addons
         athena-core
         inih
+        cpptrace::cpptrace
 )
+
+# Needed for shared library builds on windows:  copy cpptrace.dll to the same directory as the
+# executable for your_target
+if (WIN32)
+    add_custom_command(
+            TARGET ${NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:cpptrace::cpptrace>
+            $<TARGET_FILE_DIR:${NAME}>
+    )
+endif ()
 target_compile_definitions(${NAME} PUBLIC GETTEXT_DOMAIN="${GETTEXT_DOMAIN}" GETTEXT_OUTPUT_DIR="${GETTEXT_OUTPUT_DIR}")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL

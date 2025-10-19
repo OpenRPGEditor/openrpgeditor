@@ -1,10 +1,13 @@
 #define SDL_MAIN_HANDLED
 
+#include "Core/EditorPlugin/EditorPluginManager.hpp"
 #include "Core/MapToolsManager.hpp"
+#include "Core/Script/ScriptEngine.hpp"
+#include <cpptrace/cpptrace.hpp>
 
 #include <exception>
 
-#include "Core/MapTools/IMapTool.hpp"
+#include <csignal>
 #include <iostream>
 
 #if defined(_WIN32) && defined(DEBUG)
@@ -53,7 +56,31 @@ extern "C" void z_error(char* m) {
 //   std::cout << "};" << std::endl;
 // }
 
+static std::map<const int, std::string_view> kSignals{
+    {SIGFPE, "SIGFPE"},
+    {SIGILL, "SIGILL"},
+    {SIGABRT, "SIGABRT}"},
+    {SIGSEGV, "SIGSEGV"},
+};
+
+void signalHandler(const int signum) {
+  const std::string trace = cpptrace::generate_raw_trace().resolve().to_string();
+  if (App::APP) {
+    // TODO: Add more cleanup logic
+    App::APP->serializeSettings();
+    MainWindow::instance()->clearToolbarButtons();
+    EditorPluginManager::instance()->shutdownAllPlugins();
+    App::APP->handleCrash(std::format("Application received signal {}\n{}", kSignals[signum], trace));
+  }
+
+  exit(signum);
+}
 int main() {
+  signal(SIGFPE, signalHandler);
+  signal(SIGILL, signalHandler);
+  signal(SIGABRT, signalHandler);
+  signal(SIGSEGV, signalHandler);
+
   srand(time(NULL));
 
 #if defined(_WIN32) && defined(DEBUG)

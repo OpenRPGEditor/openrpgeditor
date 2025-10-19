@@ -154,6 +154,9 @@ public:
 
   void preRender() { m_mapEditor.preRender(); }
 
+  /* TODO: Proper toolbar manager */
+  void clearToolbarButtons() { m_toolbarButtons.clear(); }
+
 private:
   void onDatabaseReady();
   void onDatabaseModified();

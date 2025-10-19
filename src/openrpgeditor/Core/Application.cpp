@@ -603,4 +603,83 @@ void Application::cancelShutdown() {
   m_doQuit = false;
 }
 
+#include "misc/cpp/imgui_stdlib.h"
+
+void Application::handleCrash(std::string trace) {
+  // Shutdown normal ImGui/SDL
+  ImGui_ImplSDL3_Shutdown();
+  ImGui_ImplSDLRenderer3_Shutdown();
+  ImGui::DestroyContext();
+  m_window.reset();
+  SDL_Quit();
+
+#if !defined(WIN32) && !defined(APPLE)
+  // We want the compositor to be enabled
+  SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
+  /* TODO This needs fixes before we can switch to wayland, for now force x11 */
+  // SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "wayland");
+  SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "x11");
+#endif
+  // Create a new, minimal SDL/ImGui context for the crash screen
+  SDL_Init(SDL_INIT_VIDEO);
+  m_window = std::make_unique<Window>(Window::Settings{kApplicationTitle, m_settings.window.w, m_settings.window.h, m_settings.window.x, m_settings.window.y, m_settings.window.maximized});
+
+  ImGui::CreateContext();
+
+  ImGuiIO& io{ImGui::GetIO()};
+
+  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_NavEnableGamepad;
+  // io.ConfigWindowsMoveFromTitleBarOnly = true;
+  io.ConfigInputTrickleEventQueue = false;
+  // io.ConfigDockingWithShift = true;
+  io.ConfigDpiScaleFonts = true;
+  io.ConfigDpiScaleViewports = true;
+  io.IniFilename = nullptr;
+
+  ImGui_ImplSDL3_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
+  ImGui_ImplSDLRenderer3_Init(m_window->getNativeRenderer());
+  m_themeManager.applyMainTheme(m_settings.uiScale);
+  updateFonts();
+
+  SDL_ShowWindow(m_window->getNativeWindow());
+  SDL_RaiseWindow(m_window->getNativeWindow());
+  SDL_FlashWindow(m_window->getNativeWindow(), SDL_FLASH_UNTIL_FOCUSED);
+
+  bool should_exit = false;
+  while (!should_exit) {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+      ImGui_ImplSDL3_ProcessEvent(&event);
+      if (event.type == SDL_EVENT_QUIT) {
+        should_exit = true;
+      }
+    }
+
+    ImGui_ImplSDLRenderer3_NewFrame();
+    ImGui_ImplSDL3_NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::SetNextWindowPos(ImVec2(10, 10));
+    ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize - ImVec2(20, 20));
+    ImGui::Begin(trNOOP("Crash Report"), nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
+
+    ImGui::TextUnformatted(trNOOP("Oh no! The application has crashed."));
+    ImGui::TextWrapped("%s", trNOOP("The following report has been generated:"));
+    ImGui::Separator();
+    ImGui::InputTextMultiline("##trace", &trace,
+                              ImVec2{-1, ImGui::GetContentRegionAvail().y - (ImGui::CalcItemSize(ImGui::CalcTextSize(trNOOP("Close")), 0, 0).y + ImGui::GetStyle().FramePadding.y * 4)},
+                              ImGuiInputTextFlags_ReadOnly);
+    if (ImGui::Button(trNOOP("Close"))) {
+      should_exit = true;
+    }
+    ImGui::End();
+
+    ImGui::Render();
+    SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 0, 0, 0, 255);
+    SDL_RenderClear(m_window->getNativeRenderer());
+    ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), m_window->getNativeRenderer());
+    SDL_RenderPresent(m_window->getNativeRenderer());
+  }
+}
+
 } // namespace App

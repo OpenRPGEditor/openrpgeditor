@@ -97,6 +97,15 @@ FetchContent_Declare(moloader
         GIT_REPOSITORY "https://github.com/Antidote/moloader.git"
         GIT_TAG main
 )
+include(FetchContent)
+
+include(FetchContent)
+FetchContent_Declare(
+        cpptrace
+        GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
+        GIT_TAG        v1.0.4 # <HASH or TAG>
+)
+
 # Settings
 
 # For SDL2 to be able to override options
@@ -137,6 +146,7 @@ FetchContent_MakeAvailable(
         cpuid
         athena
         moloader
+        cpptrace
 )
 
 add_subdirectory(imgui-setup)

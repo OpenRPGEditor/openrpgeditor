@@ -57,6 +57,8 @@ public:
     m_projectCloseRequest = true;
   }
 
+  void handleCrash(std::string trace);
+
 private:
   void updateFonts();
   ExitStatus m_exitStatus{ExitStatus::Success};

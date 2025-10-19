@@ -819,7 +819,7 @@ void MainWindow::drawMenu() {
           }
           menus[currentMenu].emplace_back(s);
         }
-        drawSubMenuItems(0, menus);
+        loadFilepath = drawSubMenuItems(0, menus);
         ImGui::EndMenu();
       }
       ImGui::Separator();

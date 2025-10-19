@@ -14,7 +14,7 @@ class LibLCF {
 public:
   explicit LibLCF(MainWindow* parent)
   : m_parent(parent) {}
-  void loadLCFProject(std::filesystem::path path);
+  void loadLCFProject(const std::filesystem::path& path);
   void draw();
   [[nodiscard]] bool isOpen() const { return m_isOpen; }
   void open() { m_isOpen = true; }
@@ -44,8 +44,8 @@ private:
   void log(const std::string& text) { m_lcfLogger.push_back(text); }
 
   // LCF
-  LCF_Importer lcf;
-  std::unique_ptr<lcf::rpg::Map> map;
+  LCF_Importer m_lcf;
+  std::unique_ptr<lcf::rpg::Map> m_map;
 
   bool m_isOpen{false};
   bool m_navigate{false};
@@ -62,16 +62,16 @@ private:
   bool m_windowTransparent{false};
   int m_windowPosition{2}; // 0 = up; 1 = middle; 2 = down (default)
 
-  int selectedMapIndex = -1;
-  int selectedEvent = -1;
-  int selectedPage = -1;
-  int selectedCommon = -1;
+  int m_selectedMapIndex = -1;
+  int m_selectedEvent = -1;
+  int m_selectedPage = -1;
+  int m_selectedCommon = -1;
   int m_stringIndex{0};
 
-  int m_convertMap;
-  int m_convertEventId;
-  int m_convertPage;
-  int m_commandIndex;
+  int m_convertMap{};
+  int m_convertEventId{};
+  int m_convertPage{};
+  int m_commandIndex{};
 
   std::vector<std::string> m_lcfLogger;
   std::vector<std::string> m_commandLogger;
@@ -83,9 +83,9 @@ private:
   std::optional<StatePicker> m_statePicker;
   std::optional<ActorPicker> m_actorPicker;
 
-  int m_commonIndex;
-  int m_stateIndex;
-  int m_actorIndex;
-  int m_variableIndex;
-  int m_switchIndex;
+  int m_commonIndex{};
+  int m_stateIndex{};
+  int m_actorIndex{};
+  int m_variableIndex{};
+  int m_switchIndex{};
 };

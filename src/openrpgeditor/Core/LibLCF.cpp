@@ -55,13 +55,13 @@ inline const std::string& ObjectPicker<std::optional<CommonEvent>>::getName(cons
   return value ? value->name() : InvalidCommonEvent;
 }
 
-void LibLCF::loadLCFProject(std::filesystem::path path) {
-  lcf.setProject(path);
-  lcf.loadProject();
-  m_unresolvedError = lcf.mapper()->isUnresolved();
-  selectedCommon = -1;
-  selectedMapIndex = -1;
-  selectedPage = -1;
+void LibLCF::loadLCFProject(const std::filesystem::path& path) {
+  m_lcf.setProject(path);
+  m_lcf.loadProject();
+  m_unresolvedError = m_lcf.mapper()->isUnresolved();
+  m_selectedCommon = -1;
+  m_selectedMapIndex = -1;
+  m_selectedPage = -1;
   Settings::instance()->lcfProjectDirectory = absolute(path).generic_string();
 }
 void LibLCF::draw() {
@@ -73,41 +73,37 @@ void LibLCF::draw() {
     m_firstOpen = false;
   }
   if (m_commonPicker) {
-    auto [closed, confirmed] = m_commonPicker->draw();
-    if (closed) {
+    if (auto [closed, confirmed] = m_commonPicker->draw(); closed) {
       if (confirmed) {
-        lcf.mapper()->common_mapping[m_commonIndex] = m_commonPicker->selection();
+        m_lcf.mapper()->common_mapping[m_commonIndex] = m_commonPicker->selection();
       }
       m_commonPicker.reset();
     }
   }
   if (m_statePicker) {
-    auto [closed, confirmed] = m_statePicker->draw();
-    if (closed) {
+    if (auto [closed, confirmed] = m_statePicker->draw(); closed) {
       if (confirmed) {
-        lcf.mapper()->state_mapping[m_stateIndex] = m_statePicker->selection();
+        m_lcf.mapper()->state_mapping[m_stateIndex] = m_statePicker->selection();
       }
       m_statePicker.reset();
     }
   }
   if (m_actorPicker) {
-    auto [closed, confirmed] = m_actorPicker->draw();
-    if (closed) {
+    if (auto [closed, confirmed] = m_actorPicker->draw(); closed) {
       if (confirmed) {
-        lcf.mapper()->actor_mapping[m_actorIndex] = m_actorPicker->selection();
+        m_lcf.mapper()->actor_mapping[m_actorIndex] = m_actorPicker->selection();
       }
       m_actorPicker.reset();
     }
   }
   if (m_picker) {
-    auto [closed, confirmed] = m_picker->draw();
-    if (closed) {
+    if (auto [closed, confirmed] = m_picker->draw(); closed) {
       if (confirmed) {
         if (m_variableIndex == -1) {
           // Switch
-          lcf.mapper()->switch_mapping[m_switchIndex] = m_picker->selection();
+          m_lcf.mapper()->switch_mapping[m_switchIndex] = m_picker->selection();
         } else {
-          lcf.mapper()->variable_mapping[m_variableIndex] = m_picker->selection();
+          m_lcf.mapper()->variable_mapping[m_variableIndex] = m_picker->selection();
         }
       }
       m_picker.reset();
@@ -137,17 +133,17 @@ void LibLCF::draw() {
     if (ImGui::BeginPopupContextItem()) // <-- use last item id as popup id
     {
       // Convert selected map
-      ImGui::BeginDisabled(map == nullptr);
+      ImGui::BeginDisabled(m_map == nullptr);
       if (ImGui::Button("Convert Selected Map")) {
         // LibLCF => Map
         if (m_parent->currentMap() != nullptr) {
           Database::instance()->locales->loadMap(Database::instance()->basePath / std::format("locales/en/Map0{:03}.json", m_parent->currentMapInfo()->id()));
           m_convertMap = m_parent->currentMapInfo()->id();
-          for (auto& ev : map->events) {
+          for (auto& ev : m_map->events) {
             convertEvent(m_parent->currentMap()->createNewEvent(), ev);
           }
-          if (lcf.mapper()->isUnresolved()) {
-            lcf.mapper()->save(Database::instance()->basePath);
+          if (m_lcf.mapper()->isUnresolved()) {
+            m_lcf.mapper()->save(Database::instance()->basePath);
           }
         }
       }
@@ -159,13 +155,13 @@ void LibLCF::draw() {
         }
       }
       // Convert selected event
-      ImGui::BeginDisabled(selectedEvent == -1);
+      ImGui::BeginDisabled(m_selectedEvent == -1);
       if (ImGui::Button("Convert Selected Event")) { // TODO
         if (m_parent->currentMap() != nullptr) {
-          if (selectedEvent > -1) {
-            convertEvent(m_parent->currentMap()->createNewEvent(), map->events.at(selectedEvent));
-            if (lcf.mapper()->isUnresolved()) {
-              lcf.mapper()->save(Database::instance()->basePath);
+          if (m_selectedEvent > -1) {
+            convertEvent(m_parent->currentMap()->createNewEvent(), m_map->events.at(m_selectedEvent));
+            if (m_lcf.mapper()->isUnresolved()) {
+              m_lcf.mapper()->save(Database::instance()->basePath);
             }
           }
         }
@@ -178,14 +174,14 @@ void LibLCF::draw() {
         }
       }
       // Convert selected page
-      ImGui::BeginDisabled(selectedPage == -1);
+      ImGui::BeginDisabled(m_selectedPage == -1);
       if (ImGui::Button("Convert Selected Page")) {
         if (m_parent->currentMap() != nullptr && m_parent->mapEditor()->selectedEvent() != nullptr) {
-          if (selectedEvent > -1) {
+          if (m_selectedEvent > -1) {
             m_parent->mapEditor()->selectedEvent()->addPage(EventPage());
-            convertPage(&m_parent->mapEditor()->selectedEvent()->pages().back(), map->events.at(selectedEvent).pages.at(selectedPage));
-            if (lcf.mapper()->isUnresolved()) {
-              lcf.mapper()->save(Database::instance()->basePath);
+            convertPage(&m_parent->mapEditor()->selectedEvent()->pages().back(), m_map->events.at(m_selectedEvent).pages.at(m_selectedPage));
+            if (m_lcf.mapper()->isUnresolved()) {
+              m_lcf.mapper()->save(Database::instance()->basePath);
             }
           }
         }
@@ -198,14 +194,14 @@ void LibLCF::draw() {
         }
       }
       // Convert page commands only
-      ImGui::BeginDisabled(selectedPage == -1);
+      ImGui::BeginDisabled(m_selectedPage == -1);
       if (ImGui::Button("Convert Page Commands")) {
         if (m_parent->currentMap() != nullptr && m_parent->mapEditor()->selectedEvent() != nullptr) {
-          if (selectedEvent > -1) {
+          if (m_selectedEvent > -1) {
             convertCommands(&m_parent->mapEditor()->selectedEvent()->page(m_parent->mapEditor()->selectedEvent()->editor()->getSelectedPage())->list(),
-                            map->events.at(selectedEvent).pages.at(selectedPage).event_commands);
-            if (lcf.mapper()->isUnresolved()) {
-              lcf.mapper()->save(Database::instance()->basePath);
+                            m_map->events.at(m_selectedEvent).pages.at(m_selectedPage).event_commands);
+            if (m_lcf.mapper()->isUnresolved()) {
+              m_lcf.mapper()->save(Database::instance()->basePath);
             }
           }
         }
@@ -219,17 +215,17 @@ void LibLCF::draw() {
         }
       }
       // Convert common events
-      ImGui::BeginDisabled(selectedCommon == -1 || (m_parent->databaseEditor()->isOpen() == false && m_parent->databaseEditor()->getCurrentTab() != DBCommonEventsTab::instance()));
+      ImGui::BeginDisabled(m_selectedCommon == -1 || (m_parent->databaseEditor()->isOpen() == false && m_parent->databaseEditor()->getCurrentTab() != DBCommonEventsTab::instance()));
       if (ImGui::Button("Convert Selected Common")) {
         if (m_parent->databaseEditor()->isOpen()) {
-          if (selectedCommon > -1) {
-            int selectedCommon = DBCommonEventsTab::instance()->getSelectedIndex();
-            Database::instance()->commonEvents->event(selectedCommon)->setName(ToString(lcf.database()->commonevents.at(selectedCommon).name));
-            Database::instance()->commonEvents->event(selectedCommon)->setSwitchId(lcf.mapper()->switchValue(lcf.database()->commonevents.at(selectedCommon).switch_id));
-            Database::instance()->commonEvents->event(selectedCommon)->setTrigger(static_cast<CommonEventTriggerType>(lcf.database()->commonevents.at(selectedCommon).trigger));
-            convertCommands(&Database::instance()->commonEvents->event(selectedCommon)->commands(), lcf.database()->commonevents.at(selectedCommon).event_commands);
-            if (lcf.mapper()->isUnresolved()) {
-              lcf.mapper()->save(Database::instance()->basePath);
+          if (m_selectedCommon > -1) {
+            const int selectedCommon = DBCommonEventsTab::instance()->getSelectedIndex();
+            Database::instance()->commonEvents->event(selectedCommon)->setName(ToString(m_lcf.database()->commonevents.at(selectedCommon).name));
+            Database::instance()->commonEvents->event(selectedCommon)->setSwitchId(m_lcf.mapper()->switchValue(m_lcf.database()->commonevents.at(selectedCommon).switch_id));
+            Database::instance()->commonEvents->event(selectedCommon)->setTrigger(static_cast<CommonEventTriggerType>(m_lcf.database()->commonevents.at(selectedCommon).trigger));
+            convertCommands(&Database::instance()->commonEvents->event(selectedCommon)->commands(), m_lcf.database()->commonevents.at(selectedCommon).event_commands);
+            if (m_lcf.mapper()->isUnresolved()) {
+              m_lcf.mapper()->save(Database::instance()->basePath);
             }
           }
         }
@@ -247,10 +243,10 @@ void LibLCF::draw() {
     }
     ImGui::SameLine();
     if (ImGui::Button("\u2316")) {
-      selectedMapIndex = m_parent->currentMapInfo()->id();
-      selectedPage = -1;
-      selectedEvent = -1;
-      map = std::move(lcf.loadMap(selectedMapIndex));
+      m_selectedMapIndex = m_parent->currentMapInfo()->id();
+      m_selectedPage = -1;
+      m_selectedEvent = -1;
+      m_map = std::move(m_lcf.loadMap(m_selectedMapIndex));
       m_navigate = true;
     }
     if (ImGui::IsItemHovered()) {
@@ -268,16 +264,16 @@ void LibLCF::draw() {
     if (ImGui::BeginTabBar("##ore_lcf_tabcontrol_main")) {
       if (ImGui::BeginTabItem("Maps")) {
         if (ImGui::BeginListBox("##lcf_map_list", ImVec2(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.x * 2, 0))) {
-          if (lcf.treeMap()) {
-            for (int i = 1; i < lcf.treeMap()->maps.size(); i++) {
-              if (ImGui::Selectable(lcf.treeMap()->maps[i].name.c_str(), selectedMapIndex == i)) {
-                selectedMapIndex = i;
-                selectedCommon = -1;
-                selectedPage = -1;
-                selectedEvent = -1;
-                map = std::move(lcf.loadMap(i));
+          if (m_lcf.treeMap()) {
+            for (int i = 1; i < m_lcf.treeMap()->maps.size(); i++) {
+              if (ImGui::Selectable(m_lcf.treeMap()->maps[i].name.c_str(), m_selectedMapIndex == i)) {
+                m_selectedMapIndex = i;
+                m_selectedCommon = -1;
+                m_selectedPage = -1;
+                m_selectedEvent = -1;
+                m_map = std::move(m_lcf.loadMap(i));
               }
-              if (i == selectedMapIndex && m_navigate) {
+              if (i == m_selectedMapIndex && m_navigate) {
                 ImGui::SetScrollHereY();
                 m_navigate = false;
               }
@@ -286,16 +282,16 @@ void LibLCF::draw() {
           ImGui::EndListBox();
         }
         std::string preview =
-            map && selectedEvent != -1 ? std::format("{} {}x{}", map->events[selectedEvent].name.c_str(), map->events[selectedEvent].x, map->events[selectedEvent].y) : "No Event Selected";
+            m_map && m_selectedEvent != -1 ? std::format("{} {}x{}", m_map->events[m_selectedEvent].name.c_str(), m_map->events[m_selectedEvent].x, m_map->events[m_selectedEvent].y) : "No Event Selected";
         ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2);
         if (ImGui::BeginCombo("##map_event_combo", preview.c_str())) {
-          if (map) {
-            for (int i = 0; i < map->events.size(); i++) {
-              if (ImGui::Selectable(std::format("{} {}x{}", map->events[i].name.c_str(), map->events[i].x, map->events[i].y).c_str(), selectedEvent == i)) {
-                selectedEvent = i;
-                selectedPage = 0;
+          if (m_map) {
+            for (int i = 0; i < m_map->events.size(); i++) {
+              if (ImGui::Selectable(std::format("{} {}x{}", m_map->events[i].name.c_str(), m_map->events[i].x, m_map->events[i].y).c_str(), m_selectedEvent == i)) {
+                m_selectedEvent = i;
+                m_selectedPage = 0;
               }
-              if (i == selectedEvent) {
+              if (i == m_selectedEvent) {
                 ImGui::SetItemDefaultFocus();
               }
             }
@@ -304,13 +300,13 @@ void LibLCF::draw() {
         }
         ImGui::SameLine();
         ImGui::SetNextItemWidth((ImGui::GetContentRegionMax().x / 2) - ImGui::GetStyle().FramePadding.x);
-        if (ImGui::BeginCombo("##map_event_page_combo", map && selectedEvent != -1 && selectedPage != -1 ? std::format("Page {}", selectedPage + 1).c_str() : "No Page Selected")) {
-          if (map && selectedEvent != -1) {
-            for (int i = 0; i < map->events[selectedEvent].pages.size(); i++) {
-              if (ImGui::Selectable(std::format("Page {}", i + 1).c_str(), selectedPage == i)) {
-                selectedPage = i;
+        if (ImGui::BeginCombo("##map_event_page_combo", m_map && m_selectedEvent != -1 && m_selectedPage != -1 ? std::format("Page {}", m_selectedPage + 1).c_str() : "No Page Selected")) {
+          if (m_map && m_selectedEvent != -1) {
+            for (int i = 0; i < m_map->events[m_selectedEvent].pages.size(); i++) {
+              if (ImGui::Selectable(std::format("Page {}", i + 1).c_str(), m_selectedPage == i)) {
+                m_selectedPage = i;
               }
-              if (i == selectedPage) {
+              if (i == m_selectedPage) {
                 ImGui::SetItemDefaultFocus();
               }
             }
@@ -319,11 +315,11 @@ void LibLCF::draw() {
         }
         if (ImGui::BeginListBox("##lcf_event",
                                 ImVec2(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.x * 2, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().FramePadding.y * 2))) {
-          if (map) {
-            ImGui::Text("Event %s", selectedEvent != -1 ? map->events[selectedEvent].name.c_str() : "");
+          if (m_map) {
+            ImGui::Text("Event %s", m_selectedEvent != -1 ? m_map->events[m_selectedEvent].name.c_str() : "");
             ImGui::Text("Commands:");
-            if (selectedEvent != -1 && selectedPage != -1) {
-              for (int step = 0; const auto& cmd : map->events[selectedEvent].pages[selectedPage].event_commands) {
+            if (m_selectedEvent != -1 && m_selectedPage != -1) {
+              for (int step = 0; const auto& cmd : m_map->events[m_selectedEvent].pages[m_selectedPage].event_commands) {
                 switch (static_cast<lcf::rpg::EventCommand::Code>(cmd.code)) {
                 case lcf::rpg::EventCommand::Code::CallEvent: {
                   const auto type = cmd.parameters[0];
@@ -332,26 +328,25 @@ void LibLCF::draw() {
                   case 0: {
                     // Common Event
                     auto id = cmd.parameters[1];
-                    auto event = std::ranges::find_if(lcf.database()->commonevents, [&](const auto& e) { return e.ID == id; });
-                    if (event != lcf.database()->commonevents.end()) {
+                    auto event = std::ranges::find_if(m_lcf.database()->commonevents, [&](const auto& e) { return e.ID == id; });
+                    if (event != m_lcf.database()->commonevents.end()) {
                       rep += event->name.c_str();
                     }
                   } break;
                   case 1: {
                     // Map Event
                     const auto id = cmd.parameters[1];
-                    const auto event = std::ranges::find_if(map->events, [&](const auto& e) { return e.ID == id; });
-                    if (event != map->events.end()) {
+                    if (const auto event = std::ranges::find_if(m_map->events, [&](const auto& e) { return e.ID == id; }); event != m_map->events.end()) {
                       rep += std::format("[{}][{}]", event->name.c_str(), cmd.parameters[2]);
                     }
                   } break;
                   case 2: {
                     // Map Event (Variable)
                     const auto eventId = cmd.parameters[1];
-                    const auto event = std::ranges::find_if(lcf.database()->variables, [&](const auto& e) { return e.ID == eventId; });
+                    const auto event = std::ranges::find_if(m_lcf.database()->variables, [&](const auto& e) { return e.ID == eventId; });
                     const auto pageId = cmd.parameters[2];
-                    const auto page = std::ranges::find_if(lcf.database()->variables, [&](const auto& e) { return e.ID == pageId; });
-                    if (event != lcf.database()->variables.end() && page != lcf.database()->variables.end()) {
+                    if (const auto page = std::ranges::find_if(m_lcf.database()->variables, [&](const auto& e) { return e.ID == pageId; });
+                        event != m_lcf.database()->variables.end() && page != m_lcf.database()->variables.end()) {
                       rep += std::format("[{}][{}]", event->name.c_str(), page->name.c_str());
                     }
                   } break;
@@ -383,15 +378,15 @@ void LibLCF::draw() {
       if (ImGui::BeginTabItem("Common Events")) {
         if (ImGui::BeginListBox("##lcf_common_list",
                                 ImVec2(ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.x * 2, ImGui::GetContentRegionAvail().y - ImGui::GetStyle().ItemSpacing.y))) {
-          if (lcf.database()) {
-            for (int i = 0; i < lcf.database()->commonevents.size(); i++) {
-              std::string commonName = ToString(lcf.database()->commonevents.at(i).name);
+          if (m_lcf.database()) {
+            for (int i = 0; i < m_lcf.database()->commonevents.size(); i++) {
+              std::string commonName = ToString(m_lcf.database()->commonevents.at(i).name);
               if (!commonName.empty()) {
-                if (ImGui::Selectable(std::format("{}##common{}", commonName.c_str(), i).c_str(), selectedCommon == i)) {
-                  selectedCommon = i;
-                  selectedMapIndex = -1;
-                  selectedPage = -1;
-                  selectedEvent = -1;
+                if (ImGui::Selectable(std::format("{}##common{}", commonName.c_str(), i).c_str(), m_selectedCommon == i)) {
+                  m_selectedCommon = i;
+                  m_selectedMapIndex = -1;
+                  m_selectedPage = -1;
+                  m_selectedEvent = -1;
                 }
               }
             }
@@ -407,7 +402,7 @@ void LibLCF::draw() {
   if (ImGui::Begin("Mapping")) {
 
     if (ImGui::BeginTabBar("##lcf_mapping_tabbar")) {
-      if (lcf.treeMap()) {
+      if (m_lcf.treeMap()) {
         if (ImGui::BeginTabItem("Switches##lcf_mapping_switches")) {
           if (ImGui::BeginTable("##lcf_mapping_table", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableRowFlags_Headers | ImGuiTableFlags_ScrollY | ImGuiTableColumnFlags_WidthFixed,
                                 ImVec2{ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y})) {
@@ -418,25 +413,25 @@ void LibLCF::draw() {
             ImGui::TableNextColumn();
 
             int index{0};
-            for (auto& pair : lcf.mapper()->switch_mapping) {
+            for (auto& pair : m_lcf.mapper()->switch_mapping) {
               ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
-              ImGui::TextUnformatted(std::format("{} ({})", ToString(lcf.database()->switches.at(pair.first - 1).name), pair.first).c_str());
+              ImGui::TextUnformatted(std::format("{} ({})", ToString(m_lcf.database()->switches.at(pair.first - 1).name), pair.first).c_str());
               if (ImGui::IsItemHovered()) {
                 if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
                   clip::lock l;
-                  l.set_data(clip::text_format(), lcf.database()->switches.at(pair.first - 1).name.c_str(), lcf.database()->switches.at(pair.first - 1).name.size());
+                  l.set_data(clip::text_format(), m_lcf.database()->switches.at(pair.first - 1).name.c_str(), m_lcf.database()->switches.at(pair.first - 1).name.size());
                 }
               }
               ImGui::PopID();
               ImGui::TableNextColumn();
               ImGui::PushID(std::format("lcf_switches_data_{}", index).c_str());
-              ImGui::PushStyleColor(ImGuiCol_Button, lcf.mapper()->switch_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
-              if (ImGui::Button(lcf.mapper()->switch_mapping[pair.first] == 0 ? "Click here to start mapping!"
-                                                                              : Database::instance()->switchNameAndId(lcf.mapper()->switch_mapping[pair.first]).c_str(),
+              ImGui::PushStyleColor(ImGuiCol_Button, m_lcf.mapper()->switch_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
+              if (ImGui::Button(m_lcf.mapper()->switch_mapping[pair.first] == 0 ? "Click here to start mapping!"
+                                                                              : Database::instance()->switchNameAndId(m_lcf.mapper()->switch_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
                 m_switchIndex = pair.first;
                 m_variableIndex = -1;
-                m_picker.emplace(VariableSwitchPicker::Type::Switch, Database::instance()->system->switches(), lcf.mapper()->switch_mapping[pair.first]);
+                m_picker.emplace(VariableSwitchPicker::Type::Switch, Database::instance()->system->switches(), m_lcf.mapper()->switch_mapping[pair.first]);
                 m_picker->setOpen(true);
               }
               ImGui::PopStyleColor();
@@ -458,26 +453,26 @@ void LibLCF::draw() {
             ImGui::TableNextColumn();
 
             int index{0};
-            for (auto& pair : lcf.mapper()->variable_mapping) {
+            for (auto& pair : m_lcf.mapper()->variable_mapping) {
               ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
               // ImGui::TextUnformatted(std::to_string(pair.first).c_str());
-              ImGui::TextUnformatted(std::format("{} ({})", ToString(lcf.database()->variables.at(pair.first - 1).name), pair.first).c_str());
+              ImGui::TextUnformatted(std::format("{} ({})", ToString(m_lcf.database()->variables.at(pair.first - 1).name), pair.first).c_str());
               if (ImGui::IsItemHovered()) {
                 if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
                   clip::lock l;
-                  l.set_data(clip::text_format(), lcf.database()->variables.at(pair.first - 1).name.c_str(), lcf.database()->variables.at(pair.first - 1).name.size());
+                  l.set_data(clip::text_format(), m_lcf.database()->variables.at(pair.first - 1).name.c_str(), m_lcf.database()->variables.at(pair.first - 1).name.size());
                 }
               }
               ImGui::PopID();
               ImGui::TableNextColumn();
               ImGui::PushID(std::format("lcf_variables_data_{}", index).c_str());
-              ImGui::PushStyleColor(ImGuiCol_Button, lcf.mapper()->variable_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
-              if (ImGui::Button(lcf.mapper()->variable_mapping[pair.first] == 0 ? "Click here to start mapping!"
-                                                                                : Database::instance()->variableNameAndId(lcf.mapper()->variable_mapping[pair.first]).c_str(),
+              ImGui::PushStyleColor(ImGuiCol_Button, m_lcf.mapper()->variable_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
+              if (ImGui::Button(m_lcf.mapper()->variable_mapping[pair.first] == 0 ? "Click here to start mapping!"
+                                                                                : Database::instance()->variableNameAndId(m_lcf.mapper()->variable_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
                 m_switchIndex = -1;
                 m_variableIndex = pair.first;
-                m_picker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), lcf.mapper()->variable_mapping[pair.first]);
+                m_picker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), m_lcf.mapper()->variable_mapping[pair.first]);
                 m_picker->setOpen(true);
               }
               ImGui::PopStyleColor();
@@ -500,24 +495,24 @@ void LibLCF::draw() {
             ImGui::TableNextColumn();
 
             int index{0};
-            for (auto& pair : lcf.mapper()->common_mapping) {
-              ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
-              ImGui::TextUnformatted(std::format("{} ({})", ToString(lcf.database()->commonevents.at(pair.first - 1).name), pair.first).c_str());
+            for (const auto& key : m_lcf.mapper()->common_mapping | std::views::keys) {
+              ImGui::PushID(std::format("{}_data_{}", key, index).c_str());
+              ImGui::TextUnformatted(std::format("{} ({})", ToString(m_lcf.database()->commonevents.at(key - 1).name), key).c_str());
               if (ImGui::IsItemHovered()) {
                 if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
                   clip::lock l;
-                  l.set_data(clip::text_format(), lcf.database()->commonevents.at(pair.first - 1).name.c_str(), lcf.database()->commonevents.at(pair.first - 1).name.size());
+                  l.set_data(clip::text_format(), m_lcf.database()->commonevents.at(key - 1).name.c_str(), m_lcf.database()->commonevents.at(key - 1).name.size());
                 }
               }
               ImGui::PopID();
               ImGui::TableNextColumn();
               ImGui::PushID(std::format("lcf_common_data_{}", index).c_str());
-              ImGui::PushStyleColor(ImGuiCol_Button, lcf.mapper()->common_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
-              if (ImGui::Button(lcf.mapper()->common_mapping[pair.first] == 0 ? "Click here to start mapping!"
-                                                                              : Database::instance()->commonEventNameAndId(lcf.mapper()->common_mapping[pair.first]).c_str(),
+              ImGui::PushStyleColor(ImGuiCol_Button, m_lcf.mapper()->common_mapping[key] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
+              if (ImGui::Button(m_lcf.mapper()->common_mapping[key] == 0 ? "Click here to start mapping!"
+                                                                              : Database::instance()->commonEventNameAndId(m_lcf.mapper()->common_mapping[key]).c_str(),
                                 ImVec2{290, 0})) {
-                m_commonIndex = pair.first;
-                m_commonPicker = CommonEventPicker(Database::instance()->commonEvents->events(), lcf.mapper()->common_mapping[pair.first]);
+                m_commonIndex = key;
+                m_commonPicker = CommonEventPicker(Database::instance()->commonEvents->events(), m_lcf.mapper()->common_mapping[key]);
                 m_commonPicker->setOpen(true);
               }
               ImGui::PopStyleColor();
@@ -539,18 +534,18 @@ void LibLCF::draw() {
             ImGui::TableNextColumn();
 
             int index{0};
-            for (auto& pair : lcf.mapper()->actor_mapping) {
+            for (auto& pair : m_lcf.mapper()->actor_mapping) {
               ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
               // ImGui::TextUnformatted(std::to_string(pair.first).c_str());
-              ImGui::TextUnformatted(std::format("{} ({})", ToString(lcf.database()->actors.at(pair.first - 1).name), pair.first).c_str());
+              ImGui::TextUnformatted(std::format("{} ({})", ToString(m_lcf.database()->actors.at(pair.first - 1).name), pair.first).c_str());
               ImGui::PopID();
               ImGui::TableNextColumn();
               ImGui::PushID(std::format("lcf_actor_data_{}", index).c_str());
-              ImGui::PushStyleColor(ImGuiCol_Button, lcf.mapper()->actor_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
-              if (ImGui::Button(lcf.mapper()->actor_mapping[pair.first] == 0 ? "Click here to start mapping!" : Database::instance()->actorNameAndId(lcf.mapper()->actor_mapping[pair.first]).c_str(),
+              ImGui::PushStyleColor(ImGuiCol_Button, m_lcf.mapper()->actor_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
+              if (ImGui::Button(m_lcf.mapper()->actor_mapping[pair.first] == 0 ? "Click here to start mapping!" : Database::instance()->actorNameAndId(m_lcf.mapper()->actor_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
                 m_actorIndex = pair.first;
-                m_actorPicker = ActorPicker(Database::instance()->actors->actorList(), lcf.mapper()->actor_mapping[pair.first]);
+                m_actorPicker = ActorPicker(Database::instance()->actors->actorList(), m_lcf.mapper()->actor_mapping[pair.first]);
                 m_actorPicker->setOpen(true);
               }
               ImGui::PopStyleColor();
@@ -572,18 +567,18 @@ void LibLCF::draw() {
             ImGui::TableNextColumn();
 
             int index{0};
-            for (auto& pair : lcf.mapper()->state_mapping) {
+            for (auto& pair : m_lcf.mapper()->state_mapping) {
               ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
               // ImGui::TextUnformatted(std::to_string(pair.first).c_str());
-              ImGui::TextUnformatted(std::format("{} ({})", ToString(lcf.database()->states.at(pair.first - 1).name), pair.first).c_str());
+              ImGui::TextUnformatted(std::format("{} ({})", ToString(m_lcf.database()->states.at(pair.first - 1).name), pair.first).c_str());
               ImGui::PopID();
               ImGui::TableNextColumn();
               ImGui::PushID(std::format("lcf_state_data_{}", index).c_str());
-              ImGui::PushStyleColor(ImGuiCol_Button, lcf.mapper()->state_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
-              if (ImGui::Button(lcf.mapper()->state_mapping[pair.first] == 0 ? "Click here to start mapping!" : Database::instance()->stateNameAndId(lcf.mapper()->actor_mapping[pair.first]).c_str(),
+              ImGui::PushStyleColor(ImGuiCol_Button, m_lcf.mapper()->state_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
+              if (ImGui::Button(m_lcf.mapper()->state_mapping[pair.first] == 0 ? "Click here to start mapping!" : Database::instance()->stateNameAndId(m_lcf.mapper()->actor_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
                 m_stateIndex = pair.first;
-                m_statePicker = StatePicker(Database::instance()->states->states(), lcf.mapper()->state_mapping[pair.first]);
+                m_statePicker = StatePicker(Database::instance()->states->states(), m_lcf.mapper()->state_mapping[pair.first]);
                 m_statePicker->setOpen(true);
               }
               ImGui::PopStyleColor();
@@ -605,7 +600,7 @@ void LibLCF::draw() {
             ImGui::TableNextColumn();
 
             int index{0};
-            for (auto& pair : lcf.mapper()->sound_mapping) {
+            for (auto& pair : m_lcf.mapper()->sound_mapping) {
               ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
               ImGui::TextUnformatted(pair.first.c_str());
               if (ImGui::IsItemHovered()) {
@@ -616,7 +611,7 @@ void LibLCF::draw() {
               }
               ImGui::PopID();
               ImGui::TableNextColumn();
-              ImGui::InputText(std::format("##lcf_mapping_sound_string{}", index).c_str(), &lcf.mapper()->sound_mapping[pair.first]);
+              ImGui::InputText(std::format("##lcf_mapping_sound_string{}", index).c_str(), &m_lcf.mapper()->sound_mapping[pair.first]);
               ImGui::TableNextColumn();
               index++;
             }
@@ -634,18 +629,18 @@ void LibLCF::draw() {
             ImGui::TableNextColumn();
 
             int index{0};
-            for (auto& pair : lcf.mapper()->characterName_mapping) {
-              ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
-              ImGui::TextUnformatted(pair.first.c_str());
+            for (const auto& key : m_lcf.mapper()->characterName_mapping | std::views::keys) {
+              ImGui::PushID(std::format("{}_data_{}", key, index).c_str());
+              ImGui::TextUnformatted(key.c_str());
               if (ImGui::IsItemHovered()) {
                 if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
                   clip::lock l;
-                  l.set_data(clip::text_format(), pair.first.c_str(), pair.first.size());
+                  l.set_data(clip::text_format(), key.c_str(), key.size());
                 }
               }
               ImGui::PopID();
               ImGui::TableNextColumn();
-              ImGui::InputText(std::format("##lcf_mapping_characterName_string{}", index).c_str(), &lcf.mapper()->characterName_mapping[pair.first]);
+              ImGui::InputText(std::format("##lcf_mapping_characterName_string{}", index).c_str(), &m_lcf.mapper()->characterName_mapping[key]);
               ImGui::TableNextColumn();
               index++;
             }
@@ -663,18 +658,18 @@ void LibLCF::draw() {
             ImGui::TableNextColumn();
 
             int index{0};
-            for (auto& pair : lcf.mapper()->image_mapping) {
-              ImGui::PushID(std::format("{}_data_{}", pair.first, index).c_str());
-              ImGui::TextUnformatted(pair.first.c_str());
+            for (const auto& key : m_lcf.mapper()->image_mapping | std::views::keys) {
+              ImGui::PushID(std::format("{}_data_{}", key, index).c_str());
+              ImGui::TextUnformatted(key.c_str());
               if (ImGui::IsItemHovered()) {
                 if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
                   clip::lock l;
-                  l.set_data(clip::text_format(), pair.first.c_str(), pair.first.size());
+                  l.set_data(clip::text_format(), key.c_str(), key.size());
                 }
               }
               ImGui::PopID();
               ImGui::TableNextColumn();
-              ImGui::InputText(std::format("##lcf_mapping_image_string{}", index).c_str(), &lcf.mapper()->image_mapping[pair.first]);
+              ImGui::InputText(std::format("##lcf_mapping_image_string{}", index).c_str(), &m_lcf.mapper()->image_mapping[key]);
 
               ImGui::TableNextColumn();
               index++;
@@ -684,11 +679,11 @@ void LibLCF::draw() {
           ImGui::EndTabItem();
         }
       }
-      if (lcf.treeMap()) {
+      if (m_lcf.treeMap()) {
         if (ImGui::TabItemButton("(Save Changes)##lcf_mapping_save_all")) {
           // Save and double-check all unresolved
-          lcf.mapper()->save(Database::instance()->basePath);
-          m_unresolvedError = lcf.mapper()->hasUnresolvedPairs();
+          m_lcf.mapper()->save(Database::instance()->basePath);
+          m_unresolvedError = m_lcf.mapper()->hasUnresolvedPairs();
         }
         if (ImGui::IsItemHovered()) {
           ImGui::BeginTooltip();
@@ -708,7 +703,7 @@ void LibLCF::draw() {
         if (ImGui::BeginPopupContextItem()) // <-- use last item id as popup id
         {
           if (ImGui::Button("Map entire database")) {
-            lcf.mapper()->loadDatabase(lcf.database());
+            m_lcf.mapper()->loadDatabase(m_lcf.database());
           }
           ImGui::EndPopup();
         }
@@ -740,8 +735,8 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
       newCmd.setIndent(indent);
 
       // TODO: We want to do mapping variables between RPG2000 and ORE at this point to find the right values.
-      newCmd.start = lcf.mapper()->variableValue(parameters.at(1));
-      newCmd.end = lcf.mapper()->variableValue(parameters.at(2));
+      newCmd.start = m_lcf.mapper()->variableValue(parameters.at(1));
+      newCmd.end = m_lcf.mapper()->variableValue(parameters.at(2));
 
       // Set => + - * / Mod
       newCmd.operation = static_cast<VariableControlOperation>(parameters.at(3));
@@ -776,8 +771,8 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     ControlSwitches newCmd;
     newCmd.setIndent(indent);
 
-    newCmd.start = lcf.mapper()->switchValue(parameters.at(1));
-    newCmd.end = lcf.mapper()->switchValue(parameters.at(2));
+    newCmd.start = m_lcf.mapper()->switchValue(parameters.at(1));
+    newCmd.end = m_lcf.mapper()->switchValue(parameters.at(2));
 
     newCmd.turnOff = static_cast<ValueControl>(parameters.at(3));
 
@@ -804,7 +799,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     return std::make_shared<CommentCommand>(newCmd);
   }
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::Comment_2)) {
-    // Note: This is used to build a comment command but we're just keeping them seperate
+    // Note: This is used to build a comment command but we're just keeping them separate
     CommentCommand newCmd;
     newCmd.setIndent(indent);
     newCmd.text = strData;
@@ -879,7 +874,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     newCmd.choices.clear();
     for (auto& str : splitString(strData, '/')) {
       str += '\n';
-      newCmd.choices.push_back(lcf.mapper()->localeValue(str, m_convertMap, m_convertEventId, m_convertPage + 1, m_commandIndex));
+      newCmd.choices.push_back(m_lcf.mapper()->localeValue(str, m_convertMap, m_convertEventId, m_convertPage + 1, m_commandIndex));
       m_commandIndex++;
       // stringBuilder.push_back(str); // Push_back each choice string into string builder
 
@@ -931,10 +926,10 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
       newCmd.value = 0;
     } else if (parameters.at(0) == 1) {
       newCmd.comparison = ActorComparisonSource::Fixed;
-      newCmd.value = lcf.mapper()->actorValue(parameters.at(1));
+      newCmd.value = m_lcf.mapper()->actorValue(parameters.at(1));
     } else {
       newCmd.comparison = ActorComparisonSource::Variable;
-      newCmd.value = lcf.mapper()->variableValue(parameters.at(1));
+      newCmd.value = m_lcf.mapper()->variableValue(parameters.at(1));
     }
 
     newCmd.quantityOp = static_cast<QuantityChangeOp>(parameters.at(2));
@@ -943,7 +938,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     if (newCmd.quantitySource == QuantityChangeSource::Constant) {
       newCmd.quantity = parameters.at(4);
     } else {
-      newCmd.quantity = lcf.mapper()->variableValue(parameters.at(4));
+      newCmd.quantity = m_lcf.mapper()->variableValue(parameters.at(4));
     }
     newCmd.showLevelUp = parameters.at(5) != 0;
 
@@ -961,10 +956,10 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
       newCmd.value = 0;
     } else if (parameters.at(0) == 1) {
       newCmd.comparison = ActorComparisonSource::Fixed;
-      newCmd.value = lcf.mapper()->actorValue(parameters.at(1));
+      newCmd.value = m_lcf.mapper()->actorValue(parameters.at(1));
     } else {
       newCmd.comparison = ActorComparisonSource::Variable;
-      newCmd.value = lcf.mapper()->variableValue(parameters.at(1));
+      newCmd.value = m_lcf.mapper()->variableValue(parameters.at(1));
     }
 
     newCmd.quantityOp = static_cast<QuantityChangeOp>(parameters.at(2));
@@ -973,7 +968,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     if (newCmd.quantitySource == QuantityChangeSource::Constant) {
       newCmd.quantity = parameters.at(4);
     } else {
-      newCmd.quantity = lcf.mapper()->variableValue(parameters.at(4));
+      newCmd.quantity = m_lcf.mapper()->variableValue(parameters.at(4));
     }
     newCmd.allowKnockout = parameters.at(5) != 0;
 
@@ -987,10 +982,10 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
       newCmd.value = 0;
     } else if (parameters.at(0) == 1) {
       newCmd.comparison = ActorComparisonSource::Fixed;
-      newCmd.value = lcf.mapper()->actorValue(parameters.at(1));
+      newCmd.value = m_lcf.mapper()->actorValue(parameters.at(1));
     } else {
       newCmd.comparison = ActorComparisonSource::Variable;
-      newCmd.value = lcf.mapper()->variableValue(parameters.at(1));
+      newCmd.value = m_lcf.mapper()->variableValue(parameters.at(1));
     }
 
     newCmd.quantityOp = static_cast<QuantityChangeOp>(parameters.at(2));
@@ -999,7 +994,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     if (newCmd.quantitySource == QuantityChangeSource::Constant) {
       newCmd.quantity = parameters.at(4);
     } else {
-      newCmd.quantity = lcf.mapper()->variableValue(parameters.at(4));
+      newCmd.quantity = m_lcf.mapper()->variableValue(parameters.at(4));
     }
     return std::make_shared<ChangeMPCommand>(newCmd);
   }
@@ -1011,14 +1006,14 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
       newCmd.value = 0;
     } else if (parameters.at(0) == 1) {
       newCmd.comparison = ActorComparisonSource::Fixed;
-      newCmd.value = lcf.mapper()->actorValue(parameters.at(1));
+      newCmd.value = m_lcf.mapper()->actorValue(parameters.at(1));
     } else {
       newCmd.comparison = ActorComparisonSource::Variable;
-      newCmd.value = lcf.mapper()->variableValue(parameters.at(1));
+      newCmd.value = m_lcf.mapper()->variableValue(parameters.at(1));
     }
 
     newCmd.stateOp = static_cast<PartyMemberOperation>(parameters.at(2));
-    newCmd.state = lcf.mapper()->stateValue(parameters.at(3));
+    newCmd.state = m_lcf.mapper()->stateValue(parameters.at(3));
 
     return std::make_shared<ChangeStateCommand>(newCmd);
   }
@@ -1030,10 +1025,10 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
       newCmd.value = 0;
     } else if (parameters.at(0) == 1) {
       newCmd.comparison = ActorComparisonSource::Fixed;
-      newCmd.value = lcf.mapper()->actorValue(parameters.at(1));
+      newCmd.value = m_lcf.mapper()->actorValue(parameters.at(1));
     } else {
       newCmd.comparison = ActorComparisonSource::Variable;
-      newCmd.value = lcf.mapper()->variableValue(parameters.at(1));
+      newCmd.value = m_lcf.mapper()->variableValue(parameters.at(1));
     }
 
     return std::make_shared<RecoverAllCommand>(newCmd);
@@ -1367,7 +1362,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     PlayBGMCommand newCmd;
     newCmd.setIndent(indent);
 
-    newCmd.audio.setName(lcf.mapper()->soundValue(lcf::ToString(strData)));
+    newCmd.audio.setName(m_lcf.mapper()->soundValue(lcf::ToString(strData)));
     newCmd.audio.setVolume(parameters.at(0));
     newCmd.audio.setPitch(parameters.at(1));
     newCmd.audio.setPan(0);
@@ -1393,7 +1388,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
   if (code == static_cast<int>(lcf::rpg::EventCommand::Code::PlaySound)) {
     PlaySECommand newCmd;
     newCmd.setIndent(indent);
-    newCmd.audio.setName(lcf.mapper()->soundValue(lcf::ToString(strData)));
+    newCmd.audio.setName(m_lcf.mapper()->soundValue(lcf::ToString(strData)));
     newCmd.audio.setVolume(parameters.at(0));
     newCmd.audio.setPitch(parameters.at(1));
     newCmd.audio.setPan(0);
@@ -1456,18 +1451,18 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     if (parameters.at(0) == 0) { // Switch
       newCmd.type = ConditionType::Switch;
 
-      newCmd.globalSwitch.switchIdx = lcf.mapper()->switchValue(parameters.at(1));
+      newCmd.globalSwitch.switchIdx = m_lcf.mapper()->switchValue(parameters.at(1));
       newCmd.globalSwitch.checkIfOn = static_cast<ValueControl>(parameters.at(2));
     }
     if (parameters.at(0) == 1) { // Variable
       newCmd.type = ConditionType::Variable;
 
       newCmd.variable.comparison = static_cast<VariableComparisonType>(parameters.at(4));
-      newCmd.variable.id = lcf.mapper()->variableValue(parameters.at(1));
+      newCmd.variable.id = m_lcf.mapper()->variableValue(parameters.at(1));
       newCmd.variable.source = static_cast<VariableComparisonSource>(parameters.at(2));
       if (parameters.at(2) == 1) {
         // Variable Type
-        newCmd.variable.otherId = lcf.mapper()->variableValue(parameters.at(3));
+        newCmd.variable.otherId = m_lcf.mapper()->variableValue(parameters.at(3));
       } else {
         // Constant Type
         newCmd.variable.constant = parameters.at(3);
@@ -1539,7 +1534,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     newCmd.setIndent(indent);
 
     if (parameters.at(0) == 0) {
-      newCmd.event = lcf.mapper()->commonEventValue(parameters.at(1));
+      newCmd.event = m_lcf.mapper()->commonEventValue(parameters.at(1));
 
     } else {
       if (parameters.at(0) == 1) {
@@ -1577,7 +1572,7 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     newCmd.setIndent(indent);
 
     strData += '\n';
-    newCmd.choice = lcf.mapper()->localeValue(strData, -1, -1, -1, -1);
+    newCmd.choice = m_lcf.mapper()->localeValue(strData, -1, -1, -1, -1);
     newCmd.param1 = parameters.at(0);
     return std::make_shared<WhenSelectedCommand>(newCmd);
   }
@@ -1685,7 +1680,7 @@ void LibLCF::convertEvent(Event* event, const lcf::rpg::Event& ev) {
 void LibLCF::convertPage(EventPage* page, const lcf::rpg::EventPage& evPage) {
   // Image
   std::string test = ToString(evPage.character_name);
-  page->image().setCharacterName(lcf.mapper()->characterNameValue(test)); // Temporary for now. Maybe we add mapping? // TODO
+  page->image().setCharacterName(m_lcf.mapper()->characterNameValue(test)); // Temporary for now. Maybe we add mapping? // TODO
   page->image().setDirection(getDirection(evPage.character_direction));
   page->image().setCharacterIndex(evPage.character_index);
 
@@ -1749,15 +1744,15 @@ void LibLCF::convertPage(EventPage* page, const lcf::rpg::EventPage& evPage) {
   if (evPage.condition.flags.switch_a) {
     // Switch 1
     page->conditions().setSwitch1Valid(true);
-    page->conditions().setSwitch1Id(lcf.mapper()->switchValue(evPage.condition.switch_a_id));
+    page->conditions().setSwitch1Id(m_lcf.mapper()->switchValue(evPage.condition.switch_a_id));
   }
   if (evPage.condition.flags.switch_b) {
     page->conditions().setSwitch2Valid(true);
-    page->conditions().setSwitch2Id(lcf.mapper()->switchValue(evPage.condition.switch_b_id));
+    page->conditions().setSwitch2Id(m_lcf.mapper()->switchValue(evPage.condition.switch_b_id));
   }
   if (evPage.condition.flags.variable) {
     page->conditions().setVariableValid(true);
-    page->conditions().setVariableId(lcf.mapper()->variableValue(evPage.condition.variable_id));
+    page->conditions().setVariableId(m_lcf.mapper()->variableValue(evPage.condition.variable_id));
     page->conditions().setVariableValue(evPage.condition.variable_value);
   }
   if (evPage.condition.flags.item) {
@@ -1843,7 +1838,7 @@ void LibLCF::convertCommands(std::vector<std::shared_ptr<IEventCommand>>* r_cmds
 
       auto it = r_cmds->end() - 2;
       std::shared_ptr<ShowTextCommand> textCmd = std::static_pointer_cast<ShowTextCommand>(*it);
-      textCmd->text.back()->text = lcf.mapper()->localeValue(stringBuilder.at(m_stringIndex - 1), m_convertMap, m_convertEventId, m_convertPage + 1, m_commandIndex);
+      textCmd->text.back()->text = m_lcf.mapper()->localeValue(stringBuilder.at(m_stringIndex - 1), m_convertMap, m_convertEventId, m_convertPage + 1, m_commandIndex);
       m_commandIndex++;
     }
     std::string str = ToString(cmd.string);
@@ -2041,13 +2036,13 @@ std::shared_ptr<IEventCommand> LibLCF::convertMovementCommand(lcf::rpg::MoveComm
   if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::switch_on)) {
     MovementSwitchONCommand newCmd;
     newCmd.setIndent(indent);
-    newCmd.id = lcf.mapper()->switchValue(moveCmd.parameter_a);
+    newCmd.id = m_lcf.mapper()->switchValue(moveCmd.parameter_a);
     return std::make_shared<MovementSwitchONCommand>(newCmd);
   }
   if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::switch_off)) {
     MovementSwitchOFFCommand newCmd;
     newCmd.setIndent(indent);
-    newCmd.id = lcf.mapper()->switchValue(moveCmd.parameter_a);
+    newCmd.id = m_lcf.mapper()->switchValue(moveCmd.parameter_a);
     return std::make_shared<MovementSwitchOFFCommand>(newCmd);
   }
   if (moveCmd.command_id == static_cast<int>(lcf::rpg::MoveCommand::Code::change_graphic)) {
@@ -2057,7 +2052,7 @@ std::shared_ptr<IEventCommand> LibLCF::convertMovementCommand(lcf::rpg::MoveComm
       return std::make_shared<MovementChangeImageCommand>(imageCmd);
     }
     std::string charName = ToString(moveCmd.parameter_string);
-    imageCmd.image = lcf.mapper()->characterNameValue(charName);
+    imageCmd.image = m_lcf.mapper()->characterNameValue(charName);
     imageCmd.character = moveCmd.parameter_a - 1;
     return std::make_shared<MovementChangeImageCommand>(imageCmd);
   }
@@ -2065,7 +2060,7 @@ std::shared_ptr<IEventCommand> LibLCF::convertMovementCommand(lcf::rpg::MoveComm
     MovementPlaySECommand playSECmd;
     playSECmd.setIndent(indent);
 
-    playSECmd.se.setName(lcf.mapper()->soundValue(ToString(moveCmd.parameter_string)));
+    playSECmd.se.setName(m_lcf.mapper()->soundValue(ToString(moveCmd.parameter_string)));
     playSECmd.se.setVolume(moveCmd.parameter_a);
     playSECmd.se.setPitch(moveCmd.parameter_b);
     playSECmd.se.setPan(0);

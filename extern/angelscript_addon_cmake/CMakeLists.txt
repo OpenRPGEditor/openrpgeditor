@@ -19,6 +19,8 @@ add_library(angelscript_addons STATIC
         ../angelscript/add_on/scriptgrid/scriptgrid.h
         ../angelscript/add_on/scripthandle/scripthandle.cpp
         ../angelscript/add_on/scripthandle/scripthandle.h
+        ../angelscript/add_on/scripthelper/scripthelper.cpp
+        ../angelscript/add_on/scripthelper/scripthelper.h
         ../angelscript/add_on/scriptmath/scriptmath.h
         ../angelscript/add_on/scriptmath/scriptmath.cpp
         ../angelscript/add_on/scriptmath/scriptmathcomplex.h

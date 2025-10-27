@@ -84,7 +84,7 @@ Application::Application() {
     APP_FATAL("Failed to initialize script manager");
     abort();
   }
-  EditorPluginManager::instance()->initialize();
+  EditorPluginManager::instance().initialize();
 }
 
 Application::~Application() {
@@ -412,7 +412,8 @@ ExitStatus Application::run() {
       m_themeManager.applyMainTheme(m_settings.uiScale);
       m_requestScaleUpdate = false;
     }
-    EditorPluginManager::instance()->initializeAllPlugins();
+    DownloadManager::instance().processDownloads();
+    EditorPluginManager::instance().initializeAllPlugins();
 
     SDL_Event event{};
     SDL_PumpEvents();
@@ -540,7 +541,7 @@ ExitStatus Application::run() {
     }
   }
 
-  EditorPluginManager::instance()->shutdownAllPlugins();
+  EditorPluginManager::instance().shutdownAllPlugins();
   assert(!FileQueue::instance().hasTasks());
   FileQueue::instance().reset();
   return m_exitStatus;
@@ -606,6 +607,7 @@ void Application::cancelShutdown() {
 #include "misc/cpp/imgui_stdlib.h"
 
 void Application::handleCrash(std::string trace) {
+  // TODO: Create a dedicated class for this
   // Shutdown normal ImGui/SDL
   ImGui_ImplSDL3_Shutdown();
   ImGui_ImplSDLRenderer3_Shutdown();

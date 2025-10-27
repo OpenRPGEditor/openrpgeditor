@@ -36,7 +36,6 @@ MainWindow::MainWindow()
 , m_mapEditor(this)
 , m_eventListView(this)
 , m_tilesetPicker(this)
-, m_nwjsVersionManager("https://dl.nwjs.io")
 , m_eventSearcher(this)
 , m_libLCF(this) {
   m_settingsDialog.addTab(new GeneralSettingsTab());
@@ -523,7 +522,17 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
       m_libLCF.draw();
     }
 
+    bool playTestRunning = false;
+    if (m_playTestProcess) {
+      playTestRunning = !m_playTestProcess->exec();
+      if (!playTestRunning) {
+        m_playTestProcess.reset();
+      }
+    }
+    // TODO: Add play test banner
+    ImGui::BeginDisabled(playTestRunning);
     m_mapEditor.draw(closeRequested);
+    ImGui::EndDisabled();
 
     if (m_databaseEditor && !closeRequested) {
       m_databaseEditor->draw();
@@ -549,8 +558,8 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
     ORE_CHECK_DEBUG_END()
 
     if (!closeRequested) {
-      m_nwjsVersionManager.draw();
-      EditorPluginManager::instance()->draw();
+      NWJSVersionManager::instance().draw();
+      EditorPluginManager::instance().draw();
     }
 
     if (FileQueue::instance().hasTasks() && !shuttingDown) {
@@ -566,7 +575,7 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
 
     if (!closeRequested) {
       drawCreateNewProjectPopup();
-      EditorPluginManager::instance()->callDraws();
+      EditorPluginManager::instance().callDraws();
     }
     ImGui::EndDisabled();
 
@@ -932,14 +941,14 @@ void MainWindow::drawMenu() {
         m_databaseEditor->open();
       }
       if (ImGui::MenuItem(trNOOP("NWJS Version Manager"), "F10")) {
-        m_nwjsVersionManager.open();
+        NWJSVersionManager::instance().open();
       }
       if (ImGui::MenuItem(trNOOP("Event Searcher..."), "F11", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
         m_eventSearcher.open();
       }
 #if !ORE_DISABLE_SCRIPTING
       if (ImGui::MenuItem(trNOOP("Editor Plugins..."), "F12")) {
-        EditorPluginManager::instance()->setOpen(true);
+        EditorPluginManager::instance().setOpen(true);
       }
 #endif
       ORE_DISABLE_EXPERIMENTAL_BEGIN();
@@ -955,11 +964,12 @@ void MainWindow::drawMenu() {
       ImGui::EndMenu();
     }
     if (ImGui::BeginMenu(trNOOP("Game"))) {
-      if (ImGui::MenuItem(trNOOP("Play Test"), "Ctrl+R", false, m_databaseEditor != std::nullopt)) {
-        // TODO: Implement
+      if (ImGui::MenuItem(trNOOP("Play Test"), "Ctrl+R", false, DatabaseEditor::instance()->isReady() && !m_playTestProcess)) {
+        m_playTestProcess.emplace(
+            Process(NWJSVersionManager::instance().nwjsPathForCurrentPlatform() / "nw", {"--remote-debugging-port=9222", Database::instance()->basePath.generic_string(), "test"}));
       }
       ImGui::Separator();
-      if (ImGui::MenuItem(trNOOP("Open Folder"), nullptr, false, m_databaseEditor != std::nullopt)) {
+      if (ImGui::MenuItem(trNOOP("Open Folder"), nullptr, false, DatabaseEditor::instance()->isReady())) {
         SDL_OpenURL(std::format("file://{}", m_database->basePath.generic_string()).c_str());
       }
       ImGui::EndMenu();
@@ -1075,7 +1085,7 @@ void MainWindow::handleKeyboardShortcuts() {
   }
   ORE_CHECK_EXPERIMENTAL_BEGIN()
   if (ImGui::IsKeyReleased(ImGuiKey_F10)) {
-    m_nwjsVersionManager.open();
+    NWJSVersionManager::instance().open();
   }
   ORE_CHECK_EXPERIMENTAL_END();
   if (ImGui::IsKeyReleased(ImGuiKey_F11)) {
@@ -1083,7 +1093,7 @@ void MainWindow::handleKeyboardShortcuts() {
   }
 #if !ORE_DISABLE_SCRIPTING
   if (ImGui::IsKeyReleased(ImGuiKey_F12)) {
-    EditorPluginManager::instance()->setOpen();
+    EditorPluginManager::instance().setOpen();
   }
 #endif
 
@@ -1169,7 +1179,7 @@ void MainWindow::onDatabaseModified() {
     App::APP->getWindow()->setTitle(title);
   }
 }
-
+// TODO: Rewrite toolbar plugin interface
 void MainWindow::addToolbarButton(const std::string& id, ToolbarCategory category, asIScriptFunction* func) { m_toolbarButtons[category].emplace_back(id, category, func); }
 
 void MainWindow::loadTransientSettings() {

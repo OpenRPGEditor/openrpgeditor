@@ -13,9 +13,9 @@ static const std::vector<std::filesystem::path> kFileBlacklist = {
     "meta.json",
 };
 
-EditorPluginManager* EditorPluginManager::instance() {
+EditorPluginManager& EditorPluginManager::instance() {
   static EditorPluginManager pluginManager;
-  return &pluginManager;
+  return pluginManager;
 }
 
 EditorPluginManager::EditorPluginManager() {
@@ -31,7 +31,7 @@ EditorPluginManager::EditorPluginManager() {
   // populatePlugins();
 }
 
-static bool PluginLoaded(const std::string& identifier) { return EditorPluginManager::instance()->pluginLoaded(identifier); }
+static bool PluginLoaded(const std::string& identifier) { return EditorPluginManager::instance().pluginLoaded(identifier); }
 
 void EditorPluginManager::draw() {
 #if !ORE_DISABLE_SCRIPTING

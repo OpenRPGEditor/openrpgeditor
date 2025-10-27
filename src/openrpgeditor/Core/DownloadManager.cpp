@@ -12,9 +12,10 @@ int writeCallback(const char* ptr, const size_t size, const size_t numMembers, v
   return static_cast<int>(written);
 }
 
-DownloadManager::DownloadEntry::DownloadEntry(const std::string_view url, const std::string_view destination)
+DownloadManager::DownloadEntry::DownloadEntry(const std::string_view url, const std::string_view destination, const void* owner)
 : m_url(url)
-, m_destinationPath(destination) {
+, m_destinationPath(destination)
+, m_owner(owner) {
   m_destination = fopen(m_destinationPath.data(), "wb");
   m_curlHandle = curl_easy_init();
 
@@ -65,8 +66,8 @@ DownloadManager::~DownloadManager() {
   curl_global_cleanup();
 }
 
-int DownloadManager::addDownload(const std::string_view url, const std::string_view destination) {
-  const auto& handle = m_curlHandles.emplace_back(url, destination);
+int DownloadManager::addDownload(const std::string_view url, const std::string_view destination, const void* owner) {
+  const auto& handle = m_curlHandles.emplace_back(url, destination, owner);
   curl_multi_add_handle(m_multiHandle, handle.handle());
   return static_cast<int>(m_curlHandles.size() - 1);
 }

@@ -69,7 +69,7 @@ void signalHandler(const int signum) {
     // TODO: Add more cleanup logic
     App::APP->serializeSettings();
     MainWindow::instance()->clearToolbarButtons();
-    EditorPluginManager::instance()->shutdownAllPlugins();
+    EditorPluginManager::instance().shutdownAllPlugins();
     App::APP->handleCrash(std::format("Application received signal {}\n{}", kSignals[signum], trace));
   }
 

@@ -11,7 +11,7 @@
 
 class EditorPluginManager {
 public:
-  static EditorPluginManager* instance();
+  static EditorPluginManager& instance();
 
   const std::unordered_map<std::filesystem::path, EditorPlugin::PluginInfo>& plugins() const { return m_plugins; }
 

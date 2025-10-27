@@ -645,8 +645,10 @@ void MapEditor::draw(const bool closeRequested) {
         }
 
         ImGuiWindow* win = ImGui::GetCurrentWindow();
-        handleMouseInput(win);
-        handleKeyboardShortcuts();
+        if (!(ImGui::GetCurrentContext()->CurrentItemFlags & ImGuiItemFlags_Disabled)) {
+          handleMouseInput(win);
+          handleKeyboardShortcuts();
+        }
         const auto mapSize = ImVec2{mapW, mapH};
         ImGui::Dummy(mapSize);
 

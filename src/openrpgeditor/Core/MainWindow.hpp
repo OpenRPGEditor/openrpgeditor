@@ -13,6 +13,7 @@
 #include "Core/UndoStack.hpp"
 #include "EventSearcher.hpp"
 #include "LibLCF.hpp"
+#include "Process.hpp"
 #include "SettingsDialog.hpp"
 
 #include "Core/CommonUI/ObjectPicker.hpp"
@@ -174,7 +175,6 @@ private:
   MapEditor m_mapEditor;
   EventListView m_eventListView;
   TilesetTilePicker m_tilesetPicker;
-  NWJSVersionManager m_nwjsVersionManager;
   EventSearcher m_eventSearcher;
   LibLCF m_libLCF;
   UndoStack m_undoStack;
@@ -208,4 +208,6 @@ private:
   ImGuiID m_leftLower;
   ImGuiID m_middleDock;
   ImGuiID m_rightDock;
+
+  std::optional<Process> m_playTestProcess;
 };

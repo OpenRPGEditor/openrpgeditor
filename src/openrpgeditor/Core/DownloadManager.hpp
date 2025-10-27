@@ -9,9 +9,14 @@
 
 class DownloadManager {
 public:
+  DownloadManager(DownloadManager&) = delete;
+  DownloadManager(DownloadManager&&) = delete;
+  DownloadManager& operator=(DownloadManager&) = delete;
+  DownloadManager& operator=(DownloadManager&&) = delete;
+  ~DownloadManager();
   class DownloadEntry {
   public:
-    DownloadEntry(std::string_view url, std::string_view destination);
+    DownloadEntry(std::string_view url, std::string_view destination, const void* owner);
     ~DownloadEntry();
 
     [[nodiscard]] CURL* handle() const { return m_curlHandle; }
@@ -38,12 +43,10 @@ public:
     curl_off_t m_bytesDownloaded{};
     curl_off_t m_bytesTotal{};
     bool m_completed{false};
+    const void* m_owner;
   };
 
-  DownloadManager();
-  ~DownloadManager();
-
-  int addDownload(std::string_view url, std::string_view destination);
+  int addDownload(std::string_view url, std::string_view destination, const void* owner = nullptr);
 
   void processDownloads();
 
@@ -55,8 +58,24 @@ public:
   }
 
   [[nodiscard]] const std::deque<DownloadEntry>& handles() const { return m_curlHandles; }
+  [[nodiscard]] std::vector<const DownloadEntry*> handlesFor(const void* owner) const {
+    std::vector<const DownloadEntry*> ret;
+    for (const auto& download : m_curlHandles) {
+      if (download.m_owner == owner) {
+        ret.emplace_back(&download);
+      }
+    }
+
+    return ret;
+  }
+
+  static DownloadManager& instance() {
+    static DownloadManager instance;
+    return instance;
+  }
 
 private:
+  DownloadManager();
   CURLM* m_multiHandle;
   std::deque<DownloadEntry> m_curlHandles;
   bool m_transferComplete{false};

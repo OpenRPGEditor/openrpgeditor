@@ -36,17 +36,17 @@ FetchContent_Declare(
 FetchContent_Declare(
         SDL3
         GIT_REPOSITORY "https://github.com/libsdl-org/SDL.git"
-        GIT_TAG release-3.2.22)
+        GIT_TAG release-3.2.24)
 
 FetchContent_Declare(
         SDL3_image
         GIT_REPOSITORY https://github.com/libsdl-org/SDL_image
-        GIT_TAG release-3.2.x)
+        GIT_TAG release-3.2.4)
 
 FetchContent_Declare(
         spdlog
         GIT_REPOSITORY "https://github.com/gabime/spdlog.git"
-        GIT_TAG v1.15.2)
+        GIT_TAG v1.16.0)
 
 FetchContent_Declare(json
         GIT_REPOSITORY "https://github.com/nlohmann/json.git"
@@ -67,7 +67,7 @@ FetchContent_MakeAvailable(
 if (NOT TARGET freetype)
     FetchContent_Declare(freetype2
             GIT_REPOSITORY "https://github.com/freetype/freetype"
-            GIT_TAG VER-2-13-3
+            GIT_TAG VER-2-14-1
     )
     FetchContent_MakeAvailable(
             freetype2
@@ -76,7 +76,7 @@ endif ()
 
 FetchContent_Declare(curl
         GIT_REPOSITORY "https://github.com/curl/curl.git"
-        GIT_TAG curl-8_10_1
+        GIT_TAG curl-8_16_0
 )
 
 FetchContent_Declare(cpuid
@@ -103,7 +103,13 @@ include(FetchContent)
 FetchContent_Declare(
         cpptrace
         GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
-        GIT_TAG        v1.0.4 # <HASH or TAG>
+        GIT_TAG v1.0.4 # <HASH or TAG>
+)
+
+FetchContent_Declare(
+        libarchive
+        GIT_REPOSITORY https://github.com/libarchive/libarchive.git
+        GIT_TAG v3.8.2
 )
 
 # Settings
@@ -147,6 +153,7 @@ FetchContent_MakeAvailable(
         athena
         moloader
         cpptrace
+        libarchive
 )
 
 add_subdirectory(imgui-setup)

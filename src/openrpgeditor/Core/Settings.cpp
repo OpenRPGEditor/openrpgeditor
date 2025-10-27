@@ -57,6 +57,7 @@ bool Settings::loadFromJson(const nlohmann::ordered_json& parser) {
     locale = parser.value("locale", locale);
     uiScale = parser.value("uiScale", uiScale);
     maxMru = parser.value("maxMru", maxMru);
+    selectedNWJSVersion = parser.value("selectedNWJSVersion", selectedNWJSVersion);
     currentNWJSVersion = parser.value("currentNWJSVersion", currentNWJSVersion);
     ranFirstBootWizard = parser.value("ranFirstBootWizard", ranFirstBootWizard);
     enableExperimentalFeatures = parser.value("enableExperimentalFeatures", enableExperimentalFeatures);
@@ -89,6 +90,7 @@ nlohmann::ordered_json Settings::serializeToJson() {
       {"locale", locale},                                         //
       {"uiScale", uiScale},                                       //
       {"maxMru", maxMru},                                         //
+      {"selectedNWJSVersion", selectedNWJSVersion},               //
       {"currentNWJSVersion", currentNWJSVersion},                 //
       {"ranFirstBootWizard", ranFirstBootWizard},                 //
       {"enableExperimentalFeatures", enableExperimentalFeatures}, //

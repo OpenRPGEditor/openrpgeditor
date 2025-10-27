@@ -53,6 +53,7 @@ struct Settings {
   int rpgMakerMZVersion{-1};
   float uiScale{1.0f};
   int maxMru{10};
+  std::string selectedNWJSVersion;
   std::string currentNWJSVersion;
   bool ranFirstBootWizard{false};
 

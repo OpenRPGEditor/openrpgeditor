@@ -530,6 +530,11 @@ add_library(
         Editor/Managers/NWJSVersionManager.hpp
         Editor/Managers/SettingsManager.cpp
         Editor/Managers/SettingsManager.hpp
+        Editor/Managers/ArchiveJob.cpp
+        Editor/Managers/ArchiveJob.hpp
+        Editor/Managers/ArchiveManager.cpp
+        Editor/Managers/ArchiveManager.hpp
+        
         Editor/StopWatch.cpp
         Editor/StopWatch.hpp
         Editor/Process.cpp

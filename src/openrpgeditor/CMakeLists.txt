@@ -528,6 +528,8 @@ add_library(
         Editor/Managers/MapToolsManager.cpp
         Editor/Managers/NWJSVersionManager.cpp
         Editor/Managers/NWJSVersionManager.hpp
+        Editor/Managers/SettingsManager.cpp
+        Editor/Managers/SettingsManager.hpp
         Editor/StopWatch.cpp
         Editor/StopWatch.hpp
         Editor/Process.cpp

@@ -1,0 +1,213 @@
+#pragma once
+
+#include "angelscript.h"
+#include "CommonUI/CreateNewProjectDialog.hpp"
+#include "Editor/AboutDialog.hpp"
+#include "Editor/DatabaseEditor.hpp"
+#include "Editor/EventEditor.hpp"
+#include "Editor/EventListView.hpp"
+#include "Editor/Managers/NWJSVersionManager.hpp"
+#include "Editor/MapEditor.hpp"
+#include "Editor/MapListView.hpp"
+#include "Editor/ResourceManager.hpp"
+#include "Editor/UndoStack.hpp"
+#include "EventSearcher.hpp"
+#include "LibLCF.hpp"
+#include "Process.hpp"
+#include "SettingsDialog.hpp"
+
+#include "Editor/CommonUI/ObjectPicker.hpp"
+#include "Editor/CommonUI/TextEditor.hpp"
+#include "Editor/CommonUI/TilesetTilePicker.hpp"
+
+#include "Database/Database.hpp"
+#include "Database/MapInfos.hpp"
+
+#include <string>
+#include <string_view>
+
+class CreateNewProjectDialog;
+enum class EditMode {
+  Map,
+  Event,
+};
+
+enum class DrawTool {
+  Pencil,
+  Rectangle,
+  Ellipse,
+  Flood_Fill,
+  Shadow_Pen,
+  Eraser,
+};
+
+enum class ToolbarCategory {
+  File,
+  UI,
+  MapOperation,
+};
+
+class asIScriptFunction;
+class MainWindow {
+public:
+  class ToolbarButton {
+  public:
+    ToolbarButton(const std::string& id, const ToolbarCategory category, asIScriptFunction* func);
+    ~ToolbarButton();
+    const std::string& id() const { return m_id; }
+
+    void callOnClicked() const;
+
+  private:
+    std::string m_id;
+    ToolbarCategory m_category;
+    asIScriptFunction* m_func;
+    void* m_callbackObject = nullptr;
+    asITypeInfo* m_callbackObjectType = nullptr;
+  };
+  MainWindow();
+  ~MainWindow() { m_instance = nullptr; }
+
+  bool load(std::string_view filePath, std::string_view basePath);
+  void save();
+  std::tuple<bool, bool, bool> close(bool promptSave = false);
+  void setupDocking();
+
+  [[nodiscard]] bool isLoaded() const { return m_isLoaded; }
+  [[nodiscard]] bool isValid() const { return m_isValid; }
+  [[nodiscard]] const std::string& version() const { return m_database->projectVersion; }
+
+  void draw(bool shuttingDown = false, bool closeRequested = false);
+#if 0
+  void drawTileInfo(MapRenderer::MapLayer& mapLayer, int z);
+#endif
+  void handleOpenFile();
+  void handleCreateNewProject();
+  void handleUndo();
+  void handleRedo();
+
+  EditMode editMode() const { return m_editMode; }
+
+  void enterMapEditMode() {
+    if (m_editMode == EditMode::Map) {
+      return;
+    }
+
+    // TODO: Fully implement
+    m_editMode = EditMode::Map;
+  }
+
+  void enterEventEditMode() {
+    if (m_editMode == EditMode::Event) {
+      return;
+    }
+
+    // TODO: Fully implement
+    m_editMode = EditMode::Event;
+  }
+
+  MapEditor* mapEditor() { return &m_mapEditor; }
+  void setDrawTool(DrawTool tool) { m_drawTool = tool; }
+  DrawTool drawTool() const { return m_drawTool; }
+
+  MapInfo* currentMapInfo() { return m_mapListView.currentMapInfo(); }
+  const MapInfo* currentMapInfo() const { return m_mapListView.currentMapInfo(); }
+
+  void setMap(MapInfo& in);
+
+  Map* currentMap() { return m_mapEditor.map(); }
+
+  const Map* currentMap() const { return m_mapEditor.map(); }
+
+  DatabaseEditor* databaseEditor() { return m_databaseEditor.has_value() ? &m_databaseEditor.value() : nullptr; }
+  const DatabaseEditor* databaseEditor() const { return m_databaseEditor.has_value() ? &m_databaseEditor.value() : nullptr; }
+
+  void addUndo(const std::weak_ptr<IUndoCommand>& cmd) {
+    m_undoStack.push(cmd);
+    /* Clear the redo stack since adding a new undo command invalidates the redo state */
+    m_redoStack.clear();
+  }
+
+  std::vector<std::optional<Event>> events() { return currentMap()->events(); }
+  std::vector<std::optional<Event>> events() const { return currentMap()->events(); }
+
+  Database& database() { return m_database.value(); }
+  const Database& database() const { return m_database.value(); }
+
+  const TilesetTilePicker& tilesetPicker() const { return m_tilesetPicker; }
+
+  void openMapProperties(MapInfo* mapInfo) {
+    m_mapProperties.setMapInfo(mapInfo);
+    m_mapProperties.setOpen(true);
+  }
+
+  void addToolbarButton(const std::string& id, ToolbarCategory category, asIScriptFunction* func);
+  static void RegisterBindings();
+
+  static MainWindow* instance() { return m_instance; }
+
+  void loadTransientSettings();
+
+  bool transientSettingsLoaded() const { return m_transientSettingsLoaded; }
+  bool databaseValid() const { return m_database.has_value(); }
+
+  ImGuiID mapDockID() const { return m_middleDock; }
+
+  void preRender() { m_mapEditor.preRender(); }
+
+  /* TODO: Proper toolbar manager */
+  void clearToolbarButtons() { m_toolbarButtons.clear(); }
+
+private:
+  void onDatabaseReady();
+  void onDatabaseModified();
+
+  void drawMenu();
+  void drawToolbar();
+  void drawQueueStatus(bool shuttingDown);
+  void drawShutdownSplash(bool shuttingDown);
+  void drawCreateNewProjectPopup();
+  void drawTileDebugger();
+  void handleKeyboardShortcuts();
+  SettingsDialog m_settingsDialog;
+  MapListView m_mapListView;
+  MapProperties m_mapProperties;
+  MapEditor m_mapEditor;
+  EventListView m_eventListView;
+  TilesetTilePicker m_tilesetPicker;
+  EventSearcher m_eventSearcher;
+  LibLCF m_libLCF;
+  UndoStack m_undoStack;
+  UndoStack m_redoStack;
+  bool m_isValid = false;
+  bool m_isLoaded = false;
+  bool m_isModified = false;
+  bool m_transientSettingsLoaded = false;
+
+  std::unordered_map<ToolbarCategory, std::vector<ToolbarButton>> m_toolbarButtons;
+  CreateNewProjectDialog m_createNewProject = CreateNewProjectDialog("Create New Project");
+  AboutDialog m_aboutDialog;
+
+  std::optional<Database> m_database;
+
+  std::optional<DatabaseEditor> m_databaseEditor;
+
+  EditMode m_editMode = EditMode::Event;
+  DrawTool m_drawTool = DrawTool::Pencil;
+
+  bool m_showDemoWindow{};
+  bool m_showAboutWindow{};
+  bool m_showTileDebug{false};
+
+  float m_menuBarHeight{};
+  float m_toolbarButtonSize{};
+  float m_toolbarSize = 32;
+  static MainWindow* m_instance;
+  ImGuiID m_mainWindowGroup;
+  ImGuiID m_leftUpper;
+  ImGuiID m_leftLower;
+  ImGuiID m_middleDock;
+  ImGuiID m_rightDock;
+
+  std::optional<Process> m_playTestProcess;
+};

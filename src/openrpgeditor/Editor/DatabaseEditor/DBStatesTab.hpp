@@ -1,0 +1,37 @@
+#pragma once
+#include "Database/States.hpp"
+#include "DBCommonEventsTab.hpp"
+#include "Editor/CommonUI/TraitsEditor.hpp"
+#include "Editor/DatabaseEditor/IDBEditorTab.hpp"
+
+struct DBStatesTab final : IDBCoreEditorTab<DBStatesTab> {
+  void draw() override;
+
+  std::string getName(const int index) const override { return m_states->state(index)->name(); }
+  int getCount() const override { return m_states->count(); }
+
+  [[nodiscard]] std::string tabName() const override { return tr("States"); }
+
+  bool isReady() const override { return !!Database::instance()->states; }
+  bool isInitialized() const override { return m_states; }
+
+  void initialize() override {
+    if (!isReady()) {
+      return;
+    }
+    m_states = &Database::instance()->states.value();
+    m_selectedState = m_states->state(1);
+    if (m_selectedState) {
+      m_traitsEditor.setTraits(&m_selectedState->traits());
+    }
+  }
+
+private:
+  States* m_states{};
+  State* m_selectedState{};
+  int m_editMaxStates{};
+  float m_splitterWidth = 300.f;
+  bool m_changeIntDialogOpen = false;
+  bool m_changeConfirmDialogOpen = false;
+  TraitsEditor m_traitsEditor;
+};

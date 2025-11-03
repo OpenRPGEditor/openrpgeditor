@@ -30,7 +30,7 @@ Window::Window(const Settings& settings) {
     return;
   }
   // We want all textures to wrap
-#ifdef SDL_SetRenderTextureAddressMode
+#if SDL_VERSION_ATLEAST(3, 4, 0)
   SDL_SetRenderTextureAddressMode(m_renderer, SDL_TEXTURE_ADDRESS_WRAP, SDL_TEXTURE_ADDRESS_WRAP);
 #endif
 

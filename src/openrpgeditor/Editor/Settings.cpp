@@ -30,9 +30,9 @@ void from_json(const nlohmann::ordered_json& j, Settings::Plugin& p) {
 }
 
 Settings::Settings() { m_instance = this; }
-bool Settings::load(std::string_view path) {
+bool Settings::load(const std::filesystem::path& path) {
   try {
-    if (std::ifstream f(path.data()); f.is_open()) {
+    if (std::ifstream f(path); f.is_open()) {
       return loadFromJson(nlohmann::ordered_json::parse(f));
     }
   } catch (...) {
@@ -68,8 +68,8 @@ bool Settings::loadFromJson(const nlohmann::ordered_json& parser) {
 
   return false;
 }
-void Settings::serialize(const std::string_view path) {
-  if (std::ofstream f(path.data()); f.is_open()) {
+void Settings::serialize(const std::filesystem::path& path) {
+  if (std::ofstream f(path); f.is_open()) {
     f << serializeToJson().dump(4);
   }
 }

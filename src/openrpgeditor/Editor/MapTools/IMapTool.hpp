@@ -1,4 +1,6 @@
 #pragma once
+#include "Editor/Graphics/Texture.hpp"
+
 #include <optional>
 #include <string_view>
 #include <vector>
@@ -14,18 +16,13 @@ class Map;
 class IMapTool {
 public:
   virtual ~IMapTool() = default;
-
   /**
    *
-   * @param layer
-   * @param cursorPoint
-   * @param mapSize
-   * @param tiles
+   * @param layer Current layer to modify, -1 means all layers
    * @param penData
-   * @return
+   * @return Tiles to modify in map,
    */
-  [[nodiscard]] virtual bool execute(int layer, const Point& cursorPoint, const Size& mapSize, std::vector<std::optional<int>>& tiles, const std::vector<std::array<int, 7>>& penData) const = 0;
-
+  [[nodiscard]] virtual std::vector<int> execute(int layer, const std::vector<std::array<int, 4>>& penData) const = 0;
   /**
    *
    * @return
@@ -43,6 +40,15 @@ public:
    * @return
    */
   [[nodiscard]] virtual std::string name() const = 0;
+
+  /**
+   * Optional icon
+   * @return \sa Texture The icon to display in the tools menu
+   */
+  [[nodiscard]] virtual Texture icon() const { return {}; }
+  virtual std::string fontIcon() const { return {}; }
+
+  virtual void resetDefaults() = 0;
 
   /**
    *
@@ -86,32 +92,26 @@ public:
    * @param height
    */
   void setSize(int width, int height) { setSize({width, height}); }
+
+  virtual void onLeftClickStart() {};
+  virtual void onLeftClickDrag(int deltaX, int deltaY) {}
+  virtual void onLeftClickExit() {}
+
+  virtual void onRightClickStart() {};
+  virtual void onRightClickDrag(int deltaX, int deltaY) {}
+  virtual void onRightClickExit() {}
+
+  void setPalettePenSize(const Size& size) { m_palettePenSize = size; }
+
+protected:
+  Size m_palettePenSize;
 };
 
 template <class ToolClass>
 class ITypedMapTool : public IMapTool {
 public:
-  static constexpr std::string_view ToolIdentifer() { return type_name<ToolClass>(); }
-  [[nodiscard]] constexpr std::string_view identifier() const override { return ToolIdentifer(); }
-};
-
-class PenMapTool final : public ITypedMapTool<PenMapTool> {
-  /**
-   * The Pen map tool is always 1x1 tiles in size, regardless of whether the tiles it edits are AutoTiles or not, so we can hard code it here for convenience
-   */
-  static constexpr Size skPenSize{1, 1};
-
-public:
-  [[nodiscard]] bool execute(int layer, const Point& cursorPoint, const Size& mapSize, std::vector<std::optional<int>>& tiles, const std::vector<std::array<int, 7>>& penData) const override {
-    return true;
-  }
-  [[nodiscard]] int width() const override { return skPenSize.width(); }
-  [[nodiscard]] int height() const override { return skPenSize.height(); }
-  [[nodiscard]] const Size& size() const override { return skPenSize; }
-  void setSize(const Size& size) override {}
-
-  [[nodiscard]] std::string description() const override { return trNOOP("Modifies map tiles on a tile by tile basis, AutoTiles will automatically update their neighboring tiles."); }
-  [[nodiscard]] std::string name() const override { return trNOOP("Pen Tool"); }
+  static constexpr std::string_view ToolIdentifier() { return type_name<ToolClass>(); }
+  [[nodiscard]] constexpr std::string_view identifier() const override { return ToolIdentifier(); }
 };
 
 // class ScriptedMapTool final : IMapTool {

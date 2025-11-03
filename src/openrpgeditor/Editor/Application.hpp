@@ -48,7 +48,7 @@ public:
   [[nodiscard]] ImFont* getMainFont() const { return m_mainFont; }
   [[nodiscard]] ImFont* getMonoFont() const { return m_monoFont; }
 
-  std::string_view userConfigPath() const { return m_userConfigPath; };
+  const std::filesystem::path& userConfigPath() const { return m_userConfigPath; };
 
   void cancelShutdown();
 
@@ -66,7 +66,7 @@ private:
 
   bool m_running{true};
   bool m_minimized{false};
-  std::string m_userConfigPath;
+  std::filesystem::path m_userConfigPath;
   Settings m_settings;
   std::optional<MainWindow> m_mainWindow;
   ImFont* m_mainFont{};

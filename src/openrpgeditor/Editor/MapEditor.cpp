@@ -12,6 +12,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "ImGuiExt/ImGuiUtils.hpp"
+#include "Managers/MapToolsManager.hpp"
 #include "Tilemap/TilemapView.hpp"
 
 #include <clip.h>
@@ -235,6 +236,30 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
 
   if ((ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseDragging(ImGuiMouseButton_Left)) && m_parent->editMode() == EditMode::Map &&
       (ImGui::IsWindowFocused() && ImGui::IsWindowHovered()) && map()) {
+    // TODO: Figure out proper API for this, I'm not entirely convinced this is the best approach
+    // const auto& tool = MapToolsManager::instance().currentTool();
+    // if (tool) {
+    //   tool->setPalettePenSize(m_parent->tilesetPicker().penSize());
+    //   const auto tileData = tool->execute(-1, m_parent->tilesetPicker().penData());
+    //   for (int y = 0; y < tool->height(); y++) {
+    //     for (int x = 0; x < tool->width(); x++) {
+    //       for (int z = 0; z < 6; ++z) {
+    //         const int tileId = tileData[(z * tool->height() + y) * tool->width() + x];
+    //         if (tileId == -1) {
+    //           continue;
+    //         }
+    //         map()->setTileAt(tileId, m_tileCursor.tileX() + x, m_tileCursor.tileY() + y, z);
+    //         m_tilemapView.setDirtyRect(m_tileCursor.tileX() + x, m_tileCursor.tileY() + y, tool->width(), tool->height());
+    //         if (TileHelper::isAutoTile(tileId)) {
+    //           updateAutotilesAroundPoint({m_tileCursor.tileX() + x, m_tileCursor.tileY() + y}, z);
+    //         }
+    //       }
+    //     }
+    //   }
+    //
+    //   updateAllAutotiles();
+    // }
+    
     const auto& penData = m_parent->tilesetPicker().penData();
     int layer = -2;
     if (!penData.empty()) {
@@ -375,24 +400,20 @@ void MapEditor::updateAllAutotiles() {
 }
 
 void MapEditor::updateAutotilesInRect(const Rect& rect, const int layer) {
-  const int minX = rect.x() - 1;
-  const int minY = rect.y() - 1;
-  const int width = (rect.right() + 1) - minX;
-  const int height = (rect.bottom() + 1) - minY;
-  for (int y = 0; y < height; ++y) {
-    for (int x = 0; x < width; ++x) {
+  for (int y = 0; y < rect.height(); ++y) {
+    for (int x = 0; x < rect.width(); ++x) {
       int flags = 0x10 | 0x08 | 0x01;
-      if (x != width) {
+      if (x != rect.width()) {
         flags = (x == 0 ? 0x40 | 0x04 | 0x02 : 0xFF);
       }
 
-      if (y == height) {
+      if (y == rect.height()) {
         flags &= 0x20 | 0x02 | 0x01;
       } else if (y == 0) {
         flags &= 0x80 | 0x08 | 0x04;
       }
 
-      Point p{minX + x, minY + y};
+      Point p{rect.left() + x, rect.top() + y};
       if (!isMapPointValid(p)) {
         break;
       }
@@ -416,7 +437,7 @@ void MapEditor::updateAutotile(const Point& point, const int layer, const int fl
   }
 
   writeMapData(point, layer, tileId);
-  /* TODO: Flags */
+
   if (layer == 0 && (flags & (0x10 | 0x08 | 0x01))) {
     updateShadowData(point);
   }

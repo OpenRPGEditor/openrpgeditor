@@ -35,9 +35,9 @@ struct Settings {
   };
 
   Settings();
-  bool load(std::string_view path);
+  bool load(const std::filesystem::path& path);
   bool loadFromJson(const nlohmann::ordered_json& parser);
-  void serialize(std::string_view path);
+  void serialize(const std::filesystem::path& path);
   nlohmann::ordered_json serializeToJson();
   WindowRect window{};
   std::deque<std::pair<std::string, std::string>> mru;

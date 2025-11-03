@@ -32,6 +32,7 @@ public:
     }
 
     m_currentTool = m_mapTools[identifier];
+    m_currentTool->resetDefaults();
     return true;
   }
 
@@ -41,7 +42,7 @@ public:
   std::vector<std::shared_ptr<IMapTool>> tools() { return m_mapTools | std::views::values | std::ranges::to<std::vector>(); }
 
 protected:
-  MapToolsManager() = default;
+  MapToolsManager();
 
 private:
   std::unordered_map<std::string_view, std::shared_ptr<IMapTool>> m_mapTools;

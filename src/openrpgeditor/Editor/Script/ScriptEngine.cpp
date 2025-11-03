@@ -370,7 +370,7 @@ void ScriptEngine::returnContextToPool(asIScriptContext* ctx) {
 #endif
 }
 
-ScriptEngine* ScriptEngine::instance() {
+ScriptEngine& ScriptEngine::instance() {
   static ScriptEngine instance;
-  return &instance;
+  return instance;
 }

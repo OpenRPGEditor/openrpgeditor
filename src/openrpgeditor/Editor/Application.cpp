@@ -38,7 +38,7 @@
 namespace App {
 constexpr auto SettingsFilename = "config.json"sv;
 Application* APP = nullptr;
-void Application::loadSettings() { m_settings.load(m_userConfigPath + SettingsFilename.data()); }
+void Application::loadSettings() { m_settings.load(m_userConfigPath / SettingsFilename); }
 
 Application::Application() {
   const auto curlocale = std::locale("en_US.UTF-8");
@@ -74,12 +74,12 @@ Application::Application() {
   if (m_settings.locale.empty()) {
     m_settings.locale = curlocale.name();
   }
-  APP_DEBUG("User config path: {}", m_userConfigPath);
-  moloader::load(m_userConfigPath + "/locales/" + m_settings.locale + ".mo");
+  APP_DEBUG("User config path: {}", m_userConfigPath.generic_string());
+  moloader::load(m_userConfigPath / "locales" / (m_settings.locale + ".mo"));
 
   m_window = std::make_unique<Window>(Window::Settings{kApplicationTitle, m_settings.window.w, m_settings.window.h, m_settings.window.x, m_settings.window.y, m_settings.window.maximized});
   APP = this;
-  if (!ScriptEngine::instance()->initialize()) {
+  if (!ScriptEngine::instance().initialize()) {
     APP_FATAL("Failed to initialize script manager");
     abort();
   }
@@ -339,7 +339,7 @@ void Application::serializeSettings() {
     Database::instance()->transient.imguiState = {state, len};
     Database::instance()->serializeSettings();
   }
-  m_settings.serialize(m_userConfigPath + SettingsFilename.data());
+  m_settings.serialize(m_userConfigPath / SettingsFilename.data());
 }
 ExitStatus Application::run() {
   /* Do an initial clear */
@@ -409,7 +409,7 @@ ExitStatus Application::run() {
     if (!NWJSVersionManager::instance().isFullyInitialized()) {
       NWJSVersionManager::instance().initialize();
     }
-    
+
     if (m_requestScaleUpdate) {
       updateFonts();
       m_themeManager.applyMainTheme(m_settings.uiScale);

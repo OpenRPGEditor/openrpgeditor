@@ -123,7 +123,7 @@ bool EditorPluginManager::pluginLoaded(const std::string& identifier) {
 }
 bool EditorPluginManager::initialize() {
 #if !ORE_DISABLE_SCRIPTING
-  int ret = ScriptEngine::instance()->engine()->RegisterGlobalFunction("bool pluginAvailable(const string& in)", asFUNCTION(PluginLoaded), asCALL_CDECL);
+  int ret = ScriptEngine::instance().engine()->RegisterGlobalFunction("bool pluginAvailable(const string& in)", asFUNCTION(PluginLoaded), asCALL_CDECL);
   return ret >= asSUCCESS;
 #else
   return false;

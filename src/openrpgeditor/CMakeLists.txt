@@ -562,6 +562,7 @@ target_link_libraries(
         # CommonUI
         SDL3::SDL3
         SDL3_image::SDL3_image
+        SDL3_mixer::SDL3_mixer
         imgui-setup
         nlohmann_json::nlohmann_json
         librpgm
@@ -600,7 +601,9 @@ endif ()
 
 add_executable(${NAME} WIN32 MACOSX_BUNDLE Editor/Main.cpp Editor/ProjectInfo.cpp
         Editor/ProjectInfo.hpp
-        Editor/MapTools/IMapTool.hpp)
+        Editor/MapTools/IMapTool.hpp
+        Editor/MapTools/PenMapTool.hpp
+        Editor/MapTools/PenMapTool.cpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GCC")
     target_compile_options(${NAME} PRIVATE -Wno-deprecated-enum-enum-conversion)

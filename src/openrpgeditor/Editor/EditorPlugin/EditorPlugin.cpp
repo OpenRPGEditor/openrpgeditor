@@ -16,7 +16,7 @@ bool EditorPlugin::load(const std::filesystem::path& pluginBasedir, const Plugin
   bool saveBinary = false;
   if (info.compiled && exists(pluginBasedir / "bin" / binFilename)) {
     ByteCodeReader reader((pluginBasedir / "bin" / binFilename).generic_string());
-    m_module = ScriptEngine::instance()->createModule(info.identifier, reader);
+    m_module = ScriptEngine::instance().createModule(info.identifier, reader);
   } else {
 #ifndef NDEBUG
     saveBinary = true;
@@ -25,7 +25,7 @@ bool EditorPlugin::load(const std::filesystem::path& pluginBasedir, const Plugin
 #endif
   }
   if (!m_module && exists(pluginBasedir / "src" / scriptFilename)) {
-    m_module = ScriptEngine::instance()->createModule(info.identifier, pluginBasedir / "src" / scriptFilename);
+    m_module = ScriptEngine::instance().createModule(info.identifier, pluginBasedir / "src" / scriptFilename);
     if (saveBinary && m_module) {
       ByteCodeWriter writer((pluginBasedir / "bin" / binFilename).generic_string());
       m_module->SaveByteCode(&writer, true);
@@ -49,9 +49,9 @@ void EditorPlugin::callInitialize() {
   }
   m_module->BindAllImportedFunctions();
   if (!m_initialized) {
-    if (const auto ctx = ScriptEngine::instance()->prepareContextFromPool(m_initializeFunction)) {
+    if (const auto ctx = ScriptEngine::instance().prepareContextFromPool(m_initializeFunction)) {
       ScriptEngine::executeCall(ctx);
-      ScriptEngine::instance()->returnContextToPool(ctx);
+      ScriptEngine::instance().returnContextToPool(ctx);
     }
     m_initialized = true;
   }
@@ -62,9 +62,9 @@ void EditorPlugin::callDraw() const {
   if (!m_drawFunction || !m_initialized) {
     return;
   }
-  if (const auto ctx = ScriptEngine::instance()->prepareContextFromPool(m_drawFunction)) {
+  if (const auto ctx = ScriptEngine::instance().prepareContextFromPool(m_drawFunction)) {
     ScriptEngine::executeCall(ctx);
-    ScriptEngine::instance()->returnContextToPool(ctx);
+    ScriptEngine::instance().returnContextToPool(ctx);
   }
 #endif
 }
@@ -75,9 +75,9 @@ void EditorPlugin::callShutdown() {
   if (!m_shutdownFunction) {
     return;
   }
-  if (const auto ctx = ScriptEngine::instance()->prepareContextFromPool(m_shutdownFunction)) {
+  if (const auto ctx = ScriptEngine::instance().prepareContextFromPool(m_shutdownFunction)) {
     ScriptEngine::executeCall(ctx);
-    ScriptEngine::instance()->returnContextToPool(ctx);
+    ScriptEngine::instance().returnContextToPool(ctx);
   }
 #endif
 }

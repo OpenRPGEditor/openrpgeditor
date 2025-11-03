@@ -22,6 +22,7 @@
 #include "SettingsDialog/UISettingsTab.hpp"
 
 #include "Editor/Window.hpp"
+#include "Managers/MapToolsManager.hpp"
 
 #include <array>
 #include <clip.h>
@@ -53,7 +54,7 @@ MainWindow::ToolbarButton::ToolbarButton(const std::string& id, const ToolbarCat
     m_callbackObject = func->GetDelegateObject();
     m_callbackObjectType = func->GetDelegateObjectType();
     m_func = func->GetDelegateFunction();
-    ScriptEngine::instance()->engine()->AddRefScriptObject(m_callbackObject, m_callbackObjectType);
+    ScriptEngine::instance().engine()->AddRefScriptObject(m_callbackObject, m_callbackObjectType);
     (void)m_func->AddRef();
     (void)func->Release();
   } else {
@@ -64,7 +65,7 @@ MainWindow::ToolbarButton::ToolbarButton(const std::string& id, const ToolbarCat
 MainWindow::ToolbarButton::~ToolbarButton() {
   if (m_func) {
     if (m_callbackObject && m_callbackObjectType) {
-      ScriptEngine::instance()->engine()->ReleaseScriptObject(m_callbackObject, m_callbackObjectType);
+      ScriptEngine::instance().engine()->ReleaseScriptObject(m_callbackObject, m_callbackObjectType);
     }
     (void)m_func->Release();
   }
@@ -75,12 +76,12 @@ void MainWindow::ToolbarButton::callOnClicked() const {
     return;
   }
 
-  if (const auto ctx = ScriptEngine::instance()->prepareContextFromPool(m_func)) {
+  if (const auto ctx = ScriptEngine::instance().prepareContextFromPool(m_func)) {
     if (m_callbackObject != nullptr) {
       ctx->SetObject(m_callbackObject);
     }
     ScriptEngine::executeCall(ctx);
-    ScriptEngine::instance()->returnContextToPool(ctx);
+    ScriptEngine::instance().returnContextToPool(ctx);
   }
 }
 
@@ -912,11 +913,28 @@ void MainWindow::drawMenu() {
       ImGui::EndMenu();
     }
     if (ImGui::BeginMenu(trNOOP("Draw"))) {
-      for (auto v : magic_enum::enum_values<DrawTool>()) {
-        if (ImGui::MenuItem(DecodeEnumName(magic_enum::enum_name(v)).data(), nullptr, drawTool() == v, editMode() == EditMode::Map)) {
-          setDrawTool(v);
+      for (const auto& tool : MapToolsManager::instance().tools()) {
+        if (!tool) {
+          continue;
+        }
+
+        if (const auto icon = tool->icon()) {
+          ImGui::Image(icon, {static_cast<float>(icon.width()), static_cast<float>(icon.height())});
+          ImGui::SameLine();
+        }
+        const auto fontIcon = tool->fontIcon();
+        if (ImGui::MenuItemEx(tool->name().c_str(), fontIcon.empty() ? nullptr : fontIcon.c_str(), nullptr, MapToolsManager::instance().currentTool() == tool, editMode() == EditMode::Map)) {
+          MapToolsManager::instance().setCurrentTool(tool->identifier());
+        }
+        if (!tool->description().empty()) {
+          ImGui::SetItemTooltip("%s", tool->description().c_str());
         }
       }
+      // for (auto v : magic_enum::enum_values<DrawTool>()) {
+      //   if (ImGui::MenuItem(DecodeEnumName(magic_enum::enum_name(v)).data(), nullptr, drawTool() == v, editMode() == EditMode::Map)) {
+      //     setDrawTool(v);
+      //   }
+      // }
       ImGui::EndMenu();
     }
 
@@ -1204,7 +1222,7 @@ void AddCallback(asIScriptFunction* func) {
   //
 }
 void MainWindow::RegisterBindings() {
-  auto engine = ScriptEngine::instance()->engine();
+  auto engine = ScriptEngine::instance().engine();
   engine->RegisterEnum("ToolbarCategory");
 
   int r;

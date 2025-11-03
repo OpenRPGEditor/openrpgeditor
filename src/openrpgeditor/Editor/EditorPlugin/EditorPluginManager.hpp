@@ -15,7 +15,7 @@ public:
 
   const std::unordered_map<std::filesystem::path, EditorPlugin::PluginInfo>& plugins() const { return m_plugins; }
 
-  bool initialize();
+  static bool initialize();
 
   bool pluginLoaded(const std::string& identifier);
   void initializeAllPlugins();

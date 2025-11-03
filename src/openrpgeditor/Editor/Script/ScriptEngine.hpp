@@ -22,7 +22,7 @@ public:
   bool initialize();
 
   asIScriptEngine* engine() const { return m_engine; }
-  static ScriptEngine* instance();
+  static ScriptEngine& instance();
 
   asIScriptModule* createModule(std::string_view name, const std::filesystem::path& scriptPath) const;
   asIScriptModule* createModule(std::string_view name, ByteCodeReader& reader) const;

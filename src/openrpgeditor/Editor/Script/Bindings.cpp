@@ -8,7 +8,7 @@
 void ImGuiBindings();
 
 void RegisterBindings() {
-  auto engine = ScriptEngine::instance()->engine();
+  auto engine = ScriptEngine::instance().engine();
   MainWindow::RegisterBindings();
   ImGuiMathBindings(engine);
   ImGuiCoreOperationBindings(engine);

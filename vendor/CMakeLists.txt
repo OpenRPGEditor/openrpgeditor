@@ -164,6 +164,11 @@ FetchContent_MakeAvailable(
         libarchive
 )
 
+if (CMAKE_CXX_COMPILER_ID STREQUAL "CLANG" OR CMAKE_CXX_COMPILER_ID STREQUAL "GCC")
+    target_compile_options(archive_static PRIVATE -Wno-error)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_compile_options(archive_static PRIVATE /WX-)
+endif ()
 add_subdirectory(imgui-setup)
 
 #target_include_directories(ImGuiFileDialog PRIVATE ${imgui_SOURCE_DIR})

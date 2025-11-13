@@ -46,11 +46,11 @@ FetchContent_Declare(
         GIT_TAG release-3.2.4
 )
 
-FetchContent_Declare(
-        SDL3_mixer
-        GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer
-        GIT_TAG main
-)
+#FetchContent_Declare(
+#        SDL3_mixer
+#        GIT_REPOSITORY https://github.com/libsdl-org/SDL_mixer
+#        GIT_TAG main
+#)
 
 FetchContent_Declare(
         spdlog
@@ -106,9 +106,7 @@ FetchContent_Declare(moloader
         GIT_REPOSITORY "https://github.com/Antidote/moloader.git"
         GIT_TAG main
 )
-include(FetchContent)
 
-include(FetchContent)
 FetchContent_Declare(
         cpptrace
         GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
@@ -129,6 +127,7 @@ set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(BUILD_STATIC_LIBRARIES ON)
 set(BUILD_SHARED_LIBRARIES OFF)
 set(BUILD_CURL_EXE OFF)
+set(CURL_USE_LIBPSL OFF)
 set(DOCTEST_NO_INSTALL ON)
 set(FMT_INSTALL OFF)
 set(FMT_STATIC ON)
@@ -150,7 +149,6 @@ endif ()
 FetchContent_MakeAvailable(
         SDL3
         SDL3_image
-        SDL3_mixer
         spdlog
         json
         magic_enum

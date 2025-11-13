@@ -562,7 +562,6 @@ target_link_libraries(
         # CommonUI
         SDL3::SDL3
         SDL3_image::SDL3_image
-        SDL3_mixer::SDL3_mixer
         imgui-setup
         nlohmann_json::nlohmann_json
         librpgm

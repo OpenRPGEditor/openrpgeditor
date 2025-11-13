@@ -4,6 +4,7 @@
 
 class Weapons final : public IModifiable {
 public:
+  Weapons() { m_weapons.emplace_back(); }
   std::vector<Weapon>& weapons() { return m_weapons; }
   [[nodiscard]] const std::vector<Weapon>& weapons() const { return m_weapons; }
   [[nodiscard]] Weapon* weapon(const int id) {

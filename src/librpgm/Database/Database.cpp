@@ -256,3 +256,25 @@ void Database::serializeProject() {
     }
   }
 }
+
+void Database::createEmptyProject(const std::string_view gameTitle, const std::string_view locale) {
+  gameConstants.emplace();
+  commonEvents.emplace();
+  system.emplace();
+  system->setGameTitle(gameTitle.data());
+  system->setLocale(locale.data());
+  mapInfos.emplace();
+  actors.emplace();
+  classes.emplace();
+  skills.emplace();
+  items.emplace();
+  weapons.emplace();
+  armors.emplace();
+  enemies.emplace();
+  troops.emplace();
+  states.emplace();
+  animations.emplace();
+  tilesets.emplace();
+  plugins.emplace();
+}
+

@@ -164,7 +164,11 @@ FetchContent_MakeAvailable(
         libarchive
 )
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "CLANG" OR CMAKE_CXX_COMPILER_ID STREQUAL "GCC")
+message(${CMAKE_CXX_COMPILER_ID})
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GCC")
+    target_compile_options(archive_static PRIVATE -Wno-error)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "CLANG")
     target_compile_options(archive_static PRIVATE -Wno-error)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(archive_static PRIVATE /WX-)

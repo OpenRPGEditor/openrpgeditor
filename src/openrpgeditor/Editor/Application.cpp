@@ -32,13 +32,19 @@
 #include <SDL3/SDL.h>
 
 #include "Editor/ApplicationTheme.hpp"
+#include "Managers/ArchiveManager.hpp"
+#include "Managers/SettingsManager.hpp"
+
 #include <orei18n.hpp>
 #include <string>
 
 namespace App {
 constexpr auto SettingsFilename = "config.json"sv;
 Application* APP = nullptr;
-void Application::loadSettings() { m_settings.load(m_userConfigPath / SettingsFilename); }
+void Application::loadSettings() {
+  (void)SettingsManager::instance().load(m_userConfigPath / SettingsFilename);
+  m_settings.load(m_userConfigPath / SettingsFilename);
+}
 
 Application::Application() {
   const auto curlocale = std::locale("en_US.UTF-8");
@@ -416,6 +422,7 @@ ExitStatus Application::run() {
       m_requestScaleUpdate = false;
     }
     DownloadManager::instance().processDownloads();
+    ArchiveManager::instance().processJobs();
     EditorPluginManager::instance().initializeAllPlugins();
 
     SDL_Event event{};

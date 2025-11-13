@@ -14,6 +14,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "imgui_stacklayout.h"
+#include "JSONInspector.hpp"
 
 #include "EditorPlugin/EditorPluginManager.hpp"
 #include "LCF_Importer/LCF_Importer.hpp"
@@ -23,6 +24,7 @@
 
 #include "Editor/Window.hpp"
 #include "Managers/MapToolsManager.hpp"
+#include "Managers/SettingsManager.hpp"
 
 #include <array>
 #include <clip.h>
@@ -581,7 +583,6 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
     ImGui::EndDisabled();
 
     drawShutdownSplash(shuttingDown);
-    m_aboutDialog.draw();
   }
   ImGui::End();
 }
@@ -623,10 +624,10 @@ void MainWindow::drawCreateNewProjectPopup() {
           // TODO: Locale
           std::filesystem::path examplePath;
           if (!isMZ) {
-            examplePath = std::filesystem::path(Settings::instance()->rpgMakerMVLocation) / "NewData";
+            examplePath = std::filesystem::path(SettingsManager::instance().getValue<std::string>("rpgMakerMVLocation")) / "NewData";
           } else {
             // This newdata needs to be lowercase when copying an RPG Maker MZ example project
-            examplePath = std::filesystem::path(Settings::instance()->rpgMakerMZLocation) / "newdata";
+            examplePath = std::filesystem::path(SettingsManager::instance().getValue<std::string>("rpgMakerMZLocation")) / "newdata";
           }
           // TODO: MZ corescripts selection
 
@@ -965,9 +966,9 @@ void MainWindow::drawMenu() {
         m_eventSearcher.open();
       }
 #if !ORE_DISABLE_SCRIPTING
-      if (ImGui::MenuItem(trNOOP("Editor Plugins..."), "F12")) {
-        EditorPluginManager::instance().setOpen(true);
-      }
+      // if (ImGui::MenuItem(trNOOP("Editor Plugins..."), "F12")) {
+      //   EditorPluginManager::instance().setOpen(true);
+      // }
 #endif
       ORE_DISABLE_EXPERIMENTAL_BEGIN();
       if (ImGui::MenuItem(trNOOP("LibLCF..."), "", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {

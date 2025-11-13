@@ -68,6 +68,8 @@ struct Database {
     transient.serialize(basePath / ".ore/transient.json");
   }
 
+  void createEmptyProject(std::string_view gameTitle, std::string_view locale);
+
   static std::string framesText(const int frames) { return std::to_string(frames) + " " + (frames == 0 || frames > 1 ? trNOOP("frames") : trNOOP("frame")); }
 
   static std::string secondsText(const int seconds) { return std::to_string(seconds) + " " + (seconds > 1 ? trNOOP("seconds") : trNOOP("second")); }

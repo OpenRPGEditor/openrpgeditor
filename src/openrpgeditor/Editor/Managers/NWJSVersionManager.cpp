@@ -1,11 +1,16 @@
 #include "Editor/Managers/NWJSVersionManager.hpp"
+
+#include "ArchiveManager.hpp"
 #include "Editor/Settings.hpp"
+#include "IconsFontAwesome6.h"
 
 #include "Database/EventCommands/ChangeVictoryME.hpp"
 #include "Editor/CommonUI/GroupBox.hpp"
 #include "Editor/ImGuiExt/ImGuiUtils.hpp"
+#include "Editor/Log.hpp"
 #include "Editor/Process.hpp"
 #include "Editor/ProjectInfo.hpp"
+#include "Editor/StopWatch.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
 
@@ -40,14 +45,10 @@ static const std::vector<NWJSVersionManager::Platform> kPlatforms{
             {
                 "64 Bit",
                 kX64Identifier.data(),
-                true,
-                true,
             },
             {
                 "32 Bit",
                 kIA32Identifier.data(),
-                true,
-                true,
             },
         },
     },
@@ -55,19 +56,15 @@ static const std::vector<NWJSVersionManager::Platform> kPlatforms{
         "macOS",
         kMacOSIdentifier.data(),
         "zip",
-        "nwjs.app/Content/MacOS/nwjs",
+        "nwjs.app/Contents/MacOS/nwjs",
         {
             {
                 "Intel",
                 kX64Identifier.data(),
-                false,
-                true,
             },
             {
                 "ARM",
                 kARM64Identifier.data(),
-                true,
-                true,
             },
         },
     },
@@ -80,14 +77,10 @@ static const std::vector<NWJSVersionManager::Platform> kPlatforms{
             {
                 "64 Bit",
                 kX64Identifier.data(),
-                true,
-                true,
             },
             {
                 "32 Bit",
                 kIA32Identifier.data(),
-                true,
-                true,
             },
         },
     },
@@ -194,6 +187,8 @@ void NWJSVersionManager::initialize() {
   } else if (!m_versions.empty()) {
     m_selectedVersion = -2;
   }
+
+  detectInstalledVersions();
 }
 
 void NWJSVersionManager::draw() {
@@ -201,7 +196,12 @@ void NWJSVersionManager::draw() {
     return;
   }
 
-  initialize();
+  static StopWatch sw;
+  // Detect versions every 5 seconds
+  if (sw.elapsedSeconds() >= 5.f) {
+    sw.reset();
+    detectInstalledVersions();
+  }
   const auto windowMinSize = ImGui::GetDPIScaledSize(640, 480);
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Once, {0.5f, 0.5f});
   ImGui::SetNextWindowSize(windowMinSize, ImGuiCond_Once);
@@ -211,7 +211,7 @@ void NWJSVersionManager::draw() {
       ImGui::TextUnformatted(m_versionDownloadHandle == -1 || DownloadManager::instance().transferComplete(m_versionDownloadHandle) ? trNOOP("Unable to get version list!")
                                                                                                                                     : trNOOP("Retrieving version listing..."));
     } else {
-      GroupBox availableVersionsGroup(trNOOP("Available Versions"), "##nwjs_available_versions_group", {-1, 0});
+      GroupBox availableVersionsGroup(trNOOP("Available Versions"), "##nwjs_available_versions_group", {-1, 0}, nullptr);
       if (availableVersionsGroup.begin()) {
         ImGui::BeginVertical("##nwjs_available_version_main_layout", {-1, 0}, 0);
         {
@@ -248,62 +248,75 @@ void NWJSVersionManager::draw() {
           bool hasPrevious = false;
 
           const auto version = m_selectedVersion > -1 ? m_versions[m_selectedVersion] : m_selectedVersion == -1 ? m_versions[0] : "";
-          if (version.empty()) {
-            return;
-          }
-          for (auto& platform : m_platforms) {
-            if (hasPrevious) {
-              ImGui::SameLine();
-            }
-            GroupBox platformGroup(platform.name, std::format("##nwjs_manager_platform_{}", platform.identifier));
-            if (platformGroup.begin()) {
-              ImGui::BeginVertical(std::format("##nwjs_manager_platform_{}_main_layout", platform.identifier).c_str(), {-1, -1}, 0);
-              {
+          if (!version.empty()) {
+            for (int i = 0; auto& platform : m_platforms) {
+              ++i;
+              if (!(i % 3)) {
+                hasPrevious = false;
+              }
+              if (hasPrevious) {
+                ImGui::SameLine();
+              }
+              GroupBox platformGroup(platform.name, std::format("##nwjs_manager_platform_{}", platform.identifier));
+              if (platformGroup.begin()) {
                 ImGui::BeginHorizontal(std::format("##nwjs_manager_platform_{}_main_layout", platform.identifier).c_str(), {-1, -1}, 0);
                 {
-                  ImGui::Spring(0.33f);
-                  ImGui::BeginVertical("##nwjs_manager_platform_{}_left_layout", {0, -1}, 0);
-                  {
-                    for (auto& arch : platform.architectures) {
-                      ImGui::Checkbox(std::format("{}##{}_{}_enable_runtime", arch.name, platform.identifier, arch.identifier).c_str(), &arch.download);
-                    }
-                  }
-                  ImGui::EndVertical();
-                  ImGui::Spring(0.33f);
-                  ImGui::BeginVertical("##nwjs_manager_platform_{}_middle_layout", {0, -1}, 0);
-                  {
-                    for (auto& arch : platform.architectures) {
-                      ImGui::Checkbox(std::format("SDK##{}_{}_enable_sdk", platform.identifier, arch.identifier).c_str(), &arch.downloadSDK);
-                      ImGui::SetItemTooltip("%s",
-                                            trNOOP("Downloading the SDK enables the remote debugger.\nThis allows Open RPG Editor to inspect the project's current running state.\n(NOT IMPLEMENTED)"));
-                    }
-                  }
-                  ImGui::EndVertical();
-                  ImGui::Spring(0.33f);
-                }
-                ImGui::EndHorizontal();
-                ImGui::BeginHorizontal(std::format("##nwjs_manager_platform_{}_button_layout", platform.identifier).c_str(), {-1, 0}, 0);
-                {
-                  if (const auto ret = ImGui::ButtonGroup(std::format("##nwjs_manager_platform_{}_buttons", platform.identifier).c_str(), {trNOOP("Download"), trNOOP("Extract")}); ret == 0) {
-                    for (const auto& arch : platform.architectures) {
-                      if (!arch.download) {
-                        continue;
+                  for (auto& [name, identifier] : platform.architectures) {
+                    GroupBox archGroup(name, std::format("##nwjs_manager_platform_arch_{}_{}_group", platform.identifier, identifier));
+                    if (archGroup.begin()) {
+                      ImGui::BeginVertical(std::format("##nwjs_manager_platform_arch_{}_{}_group_layout", platform.identifier, identifier).c_str(), {-1, -1}, 0);
+                      {
+                        GroupBox releaseGroup(trNOOP("Release"), "##nwjs_manager_platform_release_group", {0, 0});
+                        if (releaseGroup.begin()) {
+                          ImGui::BeginHorizontal(std::format("##nwjs_manager_platform_{}_{}_layout_release", platform.identifier, identifier).c_str(), {-1, 0}, 0);
+                          {
+                            const bool disableDownload = !platform.availableVersions[version].empty() && platform.availableVersions[version][identifier].deploymentRuntimeDownloaded;
+                            const bool disableExtract = !platform.availableVersions[version].empty() && platform.availableVersions[version][identifier].deploymentRuntimeExtracted;
+                            if (const auto ret = ImGui::ButtonGroup("##nwjs_manager_platform_release_buttons", {trNOOP("Download"), trNOOP("Extract")}, false, {}, {disableDownload, disableExtract});
+                                ret == 0) {
+                              addDownload(version, platform.identifier, identifier, platform.extension, false);
+                              if (m_selectedVersion == -1) {
+                                Settings::instance()->currentNWJSVersion = m_versions[0];
+                              }
+                            } else if (ret == 1) {
+                              ArchiveManager::instance().addJob(archivePathForPlatformAndArch(version, m_configPath / kNWJS_DIR / version, platform.identifier, identifier, platform.extension, false),
+                                                                m_configPath / kNWJS_DIR / version / platform.identifier / identifier / "runtime");
+                            }
+                          }
+                          ImGui::EndHorizontal();
+                        }
+                        releaseGroup.end();
+                        GroupBox devGroup(trNOOP("Development"), "##nwjs_manager_platform_dev_group", {0, 0});
+                        if (devGroup.begin()) {
+                          ImGui::BeginHorizontal(std::format("##nwjs_manager_platform_{}_{}_layout_development", platform.identifier, identifier).c_str(), {-1, 0}, 0);
+                          {
+                            const bool disableDownload = !platform.availableVersions[version].empty() && platform.availableVersions[version][identifier].developmentRuntimeDownloaded;
+                            const bool disableExtract = !platform.availableVersions[version].empty() && platform.availableVersions[version][identifier].developmentRuntimeExtracted;
+                            if (const auto ret = ImGui::ButtonGroup("##nwjs_manager_platform_release_buttons", {trNOOP("Download"), trNOOP("Extract")}, false, {}, {disableDownload, disableExtract});
+                                ret == 0) {
+                              addDownload(version, platform.identifier, identifier, platform.extension, true);
+                              if (m_selectedVersion == -1) {
+                                Settings::instance()->currentNWJSVersion = m_versions[0];
+                              }
+                            } else if (ret == 1) {
+                              ArchiveManager::instance().addJob(archivePathForPlatformAndArch(version, m_configPath / kNWJS_DIR / version, platform.identifier, identifier, platform.extension, true),
+                                                                m_configPath / kNWJS_DIR / version / platform.identifier / identifier / "sdk");
+                            }
+                          }
+                          ImGui::EndHorizontal();
+                        }
+                        devGroup.end();
                       }
-                      addDownload(version, platform.identifier, arch.identifier, platform.extension, false);
-                      if (!arch.downloadSDK) {
-                        continue;
-                      }
-                      addDownload(version, platform.identifier, arch.identifier, platform.extension, true);
+                      ImGui::EndVertical();
                     }
-                  } else if (ret == 1) {
+                    archGroup.end();
                   }
                 }
                 ImGui::EndHorizontal();
               }
-              ImGui::EndVertical();
+              platformGroup.end();
+              hasPrevious = true;
             }
-            platformGroup.end();
-            hasPrevious = true;
           }
         }
         ImGui::EndVertical();
@@ -339,6 +352,10 @@ void NWJSVersionManager::addDownload(const std::string_view version, const std::
   DownloadManager::instance().addDownload(url, destinationPath.generic_string(), this);
 }
 
+std::filesystem::path NWJSVersionManager::archivePathForPlatformAndArch(const std::string& version, const std::filesystem::path& baseDirectory, const std::string& platform, const std::string& arch,
+                                                                        const std::string& extension, const bool sdk) {
+  return baseDirectory / (sdk ? std::format("nwjs-sdk-{}-{}-{}.{}", version, platform, arch, extension) : std::format("nwjs-{}-{}-{}.{}", version, platform, arch, extension));
+}
 void NWJSVersionManager::queueSelectedVersionForExtraction() {
   const auto version = m_selectedVersion > -1 ? m_versions[m_selectedVersion] : m_selectedVersion == -1 ? m_versions[0] : "";
   if (version.empty()) {
@@ -353,8 +370,8 @@ void NWJSVersionManager::queueSelectedVersionForExtraction() {
   for (const auto& platform : m_platforms) {
     for (const auto& arch : platform.architectures) {
       const auto destPath = baseDirectory / platform.identifier;
-      const auto path = baseDirectory / std::format("nwjs-{}-{}-{}.{}", version, platform.identifier, arch.identifier, platform.extension);
-      const auto sdkPath = baseDirectory / std::format("nwjs-sdk-{}-{}-{}.{}", version, platform.identifier, arch.identifier, platform.extension);
+      std::filesystem::path path = archivePathForPlatformAndArch(version, baseDirectory, platform.identifier, arch.identifier, platform.extension, false);
+      const auto sdkPath = archivePathForPlatformAndArch(version, baseDirectory, platform.identifier, arch.identifier, platform.extension, true);
       if (!exists(path)) {
         continue;
       }
@@ -417,4 +434,33 @@ std::pair<const NWJSVersionManager::Platform*, const NWJSVersionManager::Platfor
     }
   }
   return {nullptr, nullptr};
+}
+
+void NWJSVersionManager::detectInstalledVersions() {
+  auto basePath = m_configPath / kNWJS_DIR;
+
+  for (const auto& versionEntry : std::filesystem::directory_iterator(basePath)) {
+    if (!versionEntry.is_directory()) {
+      continue;
+    }
+    std::string version = versionEntry.path().filename().generic_string();
+    if (!version.starts_with('v')) {
+      continue;
+    }
+
+    for (auto& platform : m_platforms) {
+      for (auto& arches = platform.availableVersions[version]; const auto& arch : platform.architectures) {
+        auto& [deploymentRuntimeDownloaded, developmentRuntimeDownloaded, deploymentRuntimeExtracted, developmentRuntimeExtracted] = arches[arch.identifier];
+        deploymentRuntimeDownloaded = exists(archivePathForPlatformAndArch(version, versionEntry.path(), platform.identifier, arch.identifier, platform.extension, false));
+        developmentRuntimeDownloaded = exists(archivePathForPlatformAndArch(version, versionEntry.path(), platform.identifier, arch.identifier, platform.extension, true));
+        const auto runtimePath = versionEntry.path() / platform.identifier / arch.identifier / "runtime" / platform.executablePath;
+        deploymentRuntimeExtracted = exists(runtimePath);
+        const auto sdkPath = versionEntry.path() / platform.identifier / arch.identifier / "sdk" / platform.executablePath;
+        developmentRuntimeExtracted = exists(sdkPath);
+        if (deploymentRuntimeDownloaded || developmentRuntimeDownloaded || deploymentRuntimeExtracted || developmentRuntimeExtracted) {
+          APP_INFO("Detected NWJS version {} for platform {} and arch {}, release {}, dev {}", version, platform.name, arch.identifier, deploymentRuntimeDownloaded, developmentRuntimeDownloaded);
+        }
+      }
+    }
+  }
 }

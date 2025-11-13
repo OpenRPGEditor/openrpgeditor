@@ -14,7 +14,7 @@ int ArchiveManager::addJob(std::filesystem::path archive, std::filesystem::path 
   return static_cast<int>(m_jobs.size() - 1);
 }
 
-bool ArchiveManager::proc() noexcept {
+bool ArchiveManager::processJobs() noexcept {
   bool anyActive = false;
   for (auto& job : m_jobs) {
     if (!job.isDone() && !job.tick()) {

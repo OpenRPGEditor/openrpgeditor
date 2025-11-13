@@ -4,6 +4,7 @@
 
 class CommonEvents final : public IModifiable {
 public:
+  CommonEvents() { m_events.emplace_back(); }
   std::vector<std::optional<CommonEvent>>& events() { return m_events; }
   const std::vector<std::optional<CommonEvent>>& events() const { return m_events; }
 

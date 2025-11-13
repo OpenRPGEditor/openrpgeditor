@@ -4,6 +4,7 @@
 
 class Items final : public IModifiable {
 public:
+  Items() { m_items.emplace_back(); }
   static Items load(std::string_view filename);
   void serialize(std::string_view filename);
 

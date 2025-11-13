@@ -9,6 +9,7 @@
 
 class Actors final : public IModifiable {
 public:
+  Actors() { m_actors.emplace_back(); }
   [[nodiscard]] Actor* actor(const int id) {
     for (auto& actor : m_actors) {
       if (actor.id() == id && actor.isValid()) {

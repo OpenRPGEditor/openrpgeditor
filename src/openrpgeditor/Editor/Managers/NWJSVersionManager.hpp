@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../../../cmake-build-release/_deps/sdl3-src/src/video/khronos/vulkan/vulkan_core.h"
 #include "../Editor/CommonUI/IDialogController.hpp"
 #include "../Editor/Settings.hpp"
 #include "DownloadManager.hpp"
@@ -24,7 +25,6 @@ public:
     return instance;
   }
 
-  // TODO: create proper settings manager and serialize these
   struct Platform {
     std::string name;
     std::string identifier;
@@ -33,26 +33,35 @@ public:
     struct Architecture {
       std::string name;
       std::string identifier;
-      bool download;
-      bool downloadSDK;
     };
     std::vector<Architecture> architectures;
+    struct ArchAvailability {
+      bool deploymentRuntimeDownloaded{false};
+      bool developmentRuntimeDownloaded{false};
+      bool deploymentRuntimeExtracted{false};
+      bool developmentRuntimeExtracted{false};
+    };
+    std::map<std::string, std::unordered_map<std::string, ArchAvailability>> availableVersions;
   };
 
-  std::filesystem::path nwjsPathForCurrentPlatform(bool sdk = true) const;
+  [[nodiscard]] std::filesystem::path nwjsPathForCurrentPlatform(bool sdk = true) const;
   void initialize();
 
-  bool isFullyInitialized() const { return m_selectedVersion != -3; }
+  [[nodiscard]] bool isFullyInitialized() const { return m_selectedVersion != -3; }
 
-  bool nwjsForCurrentPlatformAvailable() const { return exists(nwjsPathForCurrentPlatform()); }
+  [[nodiscard]] bool nwjsForCurrentPlatformAvailable() const { return exists(nwjsPathForCurrentPlatform()); }
 
 private:
-  std::pair<const Platform*, const Platform::Architecture*> platformSettingsForCurrentArchitectureAndOS() const;
+  NWJSVersionManager();
+
+  [[nodiscard]] std::pair<const Platform*, const Platform::Architecture*> platformSettingsForCurrentArchitectureAndOS() const;
   bool getListing();
   void addDownload(std::string_view version, std::string_view platform, std::string_view architecture, std::string_view extension, bool sdk) const;
-  void addDownloads() const;
+  static std::filesystem::path archivePathForPlatformAndArch(const std::string& version, const std::filesystem::path& baseDirectory, const std::string& platform, const std::string& arch,
+                                                      const std::string& extension, bool sdk);
   void queueSelectedVersionForExtraction();
-  NWJSVersionManager();
+  void detectInstalledVersions();
+
   int m_versionDownloadHandle = -1;
   std::vector<std::string> m_versions{};
   std::filesystem::path m_configPath{};
@@ -60,5 +69,4 @@ private:
   bool m_isOpen{false};
 
   std::vector<Platform> m_platforms;
-  std::vector<archive*> m_queuedArchives;
 };

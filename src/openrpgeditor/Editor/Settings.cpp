@@ -74,6 +74,29 @@ void Settings::serialize(const std::filesystem::path& path) {
   }
 }
 
+void from_json(const nlohmann::ordered_json& json, Settings& settings) {
+  settings.window = json.value("window", settings.window);
+  settings.mru = json.value("mru", settings.mru);
+  settings.plugins = json.value("plugins", settings.plugins);
+  settings.lastDirectory = json.value("lastDirectory", settings.lastDirectory);
+  settings.lastProject = json.value("lastProject", settings.lastProject);
+  settings.projectBaseDirectory = json.value("projectBaseDirectory", settings.projectBaseDirectory);
+  settings.lcfProjectDirectory = json.value("lcfProjectDirectory", settings.lcfProjectDirectory);
+  settings.rpgMakerMVLocation = json.value("rpgMakerMVLocation", settings.rpgMakerMVLocation);
+  settings.rpgMakerMZLocation = json.value("rpgMakerMZLocation", settings.rpgMakerMZLocation);
+  settings.rpgMakerMVVersion = json.value("rpgMakerMVVersion", settings.rpgMakerMVVersion);
+  settings.rpgMakerMZVersion = json.value("rpgMakerMZVersion", settings.rpgMakerMZVersion);
+  settings.locale = json.value("locale", settings.locale);
+  settings.uiScale = json.value("uiScale", settings.uiScale);
+  settings.maxMru = json.value("maxMru", settings.maxMru);
+  settings.selectedNWJSVersion = json.value("selectedNWJSVersion", settings.selectedNWJSVersion);
+  settings.currentNWJSVersion = json.value("currentNWJSVersion", settings.currentNWJSVersion);
+  settings.ranFirstBootWizard = json.value("ranFirstBootWizard", settings.ranFirstBootWizard);
+  settings.enableExperimentalFeatures = json.value("enableExperimentalFeatures", settings.enableExperimentalFeatures);
+  settings.enableDebugFeatures = json.value("enableDebugFeatures", settings.enableDebugFeatures);
+  settings.imguiState = json.value("imguiState", settings.imguiState);
+}
+
 nlohmann::ordered_json Settings::serializeToJson() {
   return {
       {"window", window},                                         //
@@ -96,5 +119,30 @@ nlohmann::ordered_json Settings::serializeToJson() {
       {"enableExperimentalFeatures", enableExperimentalFeatures}, //
       {"enableDebugFeatures", enableDebugFeatures},               //
       {"imguiState", imguiState},                                 //
+  };
+}
+
+void to_json(nlohmann::ordered_json& json, const Settings& settings) {
+  json = {
+      {"window", settings.window},                                         //
+      {"mru", settings.mru},                                               //
+      {"plugins", settings.plugins},                                       //
+      {"lastDirectory", settings.lastDirectory},                           //
+      {"lastProject", settings.lastProject},                               //
+      {"projectBaseDirectory", settings.projectBaseDirectory},             //
+      {"lcfProjectDirectory", settings.lcfProjectDirectory},               //
+      {"rpgMakerMVLocation", settings.rpgMakerMVLocation},                 //
+      {"rpgMakerMZLocation", settings.rpgMakerMZLocation},                 //
+      {"rpgMakerMVVersion", settings.rpgMakerMVVersion},                   //
+      {"rpgMakerMZVersion", settings.rpgMakerMZVersion},                   //
+      {"locale", settings.locale},                                         //
+      {"uiScale", settings.uiScale},                                       //
+      {"maxMru", settings.maxMru},                                         //
+      {"selectedNWJSVersion", settings.selectedNWJSVersion},               //
+      {"currentNWJSVersion", settings.currentNWJSVersion},                 //
+      {"ranFirstBootWizard", settings.ranFirstBootWizard},                 //
+      {"enableExperimentalFeatures", settings.enableExperimentalFeatures}, //
+      {"enableDebugFeatures", settings.enableDebugFeatures},               //
+      {"imguiState", settings.imguiState},                                 //
   };
 }

@@ -6,6 +6,7 @@
 
 class States final : public IModifiable {
 public:
+  States() { m_states.emplace_back(); }
   [[nodiscard]] State* state(int id) {
     for (auto& state : m_states) {
       if (state.id() == id && state.isValid()) {

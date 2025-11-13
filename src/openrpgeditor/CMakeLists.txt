@@ -539,6 +539,8 @@ add_library(
         Editor/StopWatch.hpp
         Editor/Process.cpp
         Editor/Process.hpp
+        Editor/JSONInspector.cpp
+        Editor/JSONInspector.hpp
 )
 
 target_include_directories(

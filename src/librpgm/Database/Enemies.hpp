@@ -4,6 +4,7 @@
 
 class Enemies final : public IModifiable {
 public:
+  Enemies() { m_enemies.emplace_back(); }
   [[nodiscard]] Enemy* enemy(const int id) {
     for (auto& enemy : m_enemies) {
       if (enemy.id() == id && enemy.isValid()) {

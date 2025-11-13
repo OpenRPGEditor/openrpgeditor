@@ -6,6 +6,7 @@
 
 class Troops final : public IModifiable {
 public:
+  Troops() { m_troops.emplace_back(); }
   static Troops load(std::string_view filepath);
 
   bool serialize(std::string_view filename);

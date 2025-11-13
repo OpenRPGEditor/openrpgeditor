@@ -14,7 +14,7 @@ public:
 
   int addJob(std::filesystem::path archive, std::filesystem::path dest, ArchiveJob::ProgressCallback callback = defaultCallback);
 
-  bool proc() noexcept;
+  bool processJobs() noexcept;
 
   [[nodiscard]] bool hasJobs() const noexcept { return !m_jobs.empty(); }
   ArchiveJob* getJob(int handle);

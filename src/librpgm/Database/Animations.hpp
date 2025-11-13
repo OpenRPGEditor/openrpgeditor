@@ -5,6 +5,7 @@
 
 class Animations final : public IModifiable {
 public:
+  Animations() { m_animations.emplace_back(); }
   std::vector<Animation>& animations() { return m_animations; }
   const std::vector<Animation>& animations() const { return m_animations; }
 

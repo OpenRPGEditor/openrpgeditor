@@ -4,6 +4,7 @@
 
 class Tilesets final : public IModifiable {
 public:
+  Tilesets() { m_tilesets.emplace_back(); }
   [[nodiscard]] Tileset* tileset(const int id) {
     for (auto& item : m_tilesets) {
       if (item.id() == id && item.isValid()) {

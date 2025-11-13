@@ -5,6 +5,7 @@
 
 class Armors final : public IModifiable {
 public:
+  Armors() { m_armors.emplace_back(); }
   [[nodiscard]] std::vector<Armor>& armors() { return m_armors; }
   [[nodiscard]] const std::vector<Armor>& armors() const { return m_armors; }
 

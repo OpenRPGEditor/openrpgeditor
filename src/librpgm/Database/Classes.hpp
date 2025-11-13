@@ -5,6 +5,7 @@
 #include <vector>
 class Classes final : public IModifiable {
 public:
+  Classes() { m_classes.emplace_back(); }
   [[nodiscard]] Class* classType(const int id) {
     for (auto& cls : m_classes) {
       if (cls.id() == id && cls.isValid()) {

@@ -578,7 +578,7 @@ target_link_libraries(
         lcf
         inih
         magic_enum
-        archive
+        libarchive_static
 )
 target_compile_definitions(orecore PUBLIC GETTEXT_DOMAIN="${GETTEXT_DOMAIN}" GETTEXT_OUTPUT_DIR="${GETTEXT_OUTPUT_DIR}" PUBLIC ORE_DISABLE_SCRIPTING=0)
 

@@ -41,7 +41,7 @@ void Locales::loadMap(const std::filesystem::path& path) {
   m_currentPath = path;
   locales = load(path);
 }
-bool Locales::serialize(const std::filesystem::path& path) {
+bool Locales::serialize(const std::filesystem::path& path) const {
   std::ofstream file(path);
   try {
     if (file.is_open()) {

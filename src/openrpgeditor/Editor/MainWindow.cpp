@@ -1156,7 +1156,7 @@ void MainWindow::setMap(MapInfo& in) {
 
 void MainWindow::onDatabaseReady() {
   MapInfo* info = m_database->mapInfos->map(0);
-  Settings::instance()->lastProject = m_database->projectFilePath;
+  Settings::instance()->lastProject = m_database->projectFilePath.generic_string();
   info->setExpanded(true);
   info->setName(m_database->system->gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system->gameTitle());
   APP_INFO("Loaded project!");
@@ -1169,11 +1169,11 @@ void MainWindow::onDatabaseReady() {
   }
 
   if (const auto fileIt = std::ranges::find_if(Settings::instance()->mru, [this](const auto& t) { return t.first == m_database->projectFilePath; }); fileIt == Settings::instance()->mru.end()) {
-    Settings::instance()->mru.emplace_front(m_database->projectFilePath,
+    Settings::instance()->mru.emplace_front(m_database->projectFilePath.generic_string(),
                                             m_database->system->gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system->gameTitle());
   } else {
     Settings::instance()->mru.erase(fileIt);
-    Settings::instance()->mru.emplace_front(m_database->projectFilePath,
+    Settings::instance()->mru.emplace_front(m_database->projectFilePath.generic_string(),
                                             m_database->system->gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system->gameTitle());
   }
   while (Settings::instance()->mru.size() > Settings::instance()->maxMru) {

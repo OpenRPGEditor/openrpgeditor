@@ -77,7 +77,7 @@ bool SoundPicker::draw() {
     {
       if (ImGui::Button("Play", ImVec2(100, 0))) {
         if (m_selected > 0)
-          playAudio(m_audio.name().c_str());
+          playAudio(m_audio.name());
       }
       if (ImGui::Button("Stop", ImVec2(100, 0))) {
         stopAudio();

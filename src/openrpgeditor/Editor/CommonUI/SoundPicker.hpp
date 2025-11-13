@@ -47,9 +47,9 @@ private:
   std::optional<Directory> m_audioDir;
   std::vector<std::string> m_folders;
 
-  bool playAudio(const char* path) {
+  bool playAudio(const std::string& path) {
     // Load and play music
-    if (!buffer.loadFromFile(Database::instance()->basePath / path / m_audioDir.value().getExt())) {
+    if (!buffer.loadFromFile((Database::instance()->basePath / path ).replace_extension(m_audioDir->getExt()).generic_string())) {
       // error loading file
       return false;
     }

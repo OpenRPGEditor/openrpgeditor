@@ -187,7 +187,7 @@ static const std::string_view test = R"(/*:
 void Plugins::processPluginScripts(const std::filesystem::path& path) {
   Context ctx;
 
-  std::regex kParameterRegex(R"(\*(?:~([a-zA-Z0-9~]+))?:([a-zA-Z_]*)([\s\S]*?)\*/)", std::regex::ECMAScript | std::regex::multiline);
+  std::regex kParameterRegex(R"(\*(?:~([a-zA-Z0-9~]+))?:([a-zA-Z_]*)([\s\S]*?)\*/)", std::regex::ECMAScript);
   const std::string locale = Database::instance()->system->locale();
   std::string t = test.data();
 
@@ -274,8 +274,8 @@ double stringToDoubleNoExcept(const std::string& str) {
 
 void Plugins::processCommentBlock(Context& ctx, const std::string& commentBlock) {
   // TODO: make this more robust, it'll currently crash if the comments are ill-formed
-  std::regex kParameterRegex(R"(@(\w+)([^@]*))", std::regex::ECMAScript | std::regex::multiline);
-  std::regex kNormalizeRegex("[ ]*\\n[ ]*\\*?[ ]?", std::regex::ECMAScript | std::regex::multiline);
+  std::regex kParameterRegex(R"(@(\w+)([^@]*))", std::regex::ECMAScript);
+  std::regex kNormalizeRegex("[ ]*\\n[ ]*\\*?[ ]?", std::regex::ECMAScript);
 
   std::string comment = commentBlock;
   std::string currentParam;

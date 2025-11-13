@@ -1,12 +1,10 @@
-#include "Core/Resources.hpp"
+#include "Editor/Resources.hpp"
 
 #include <SDL3/SDL.h>
 
 #include <filesystem>
 #include <string>
 #include <string_view>
-
-#include "Core/Debug/Instrumentor.hpp"
 
 namespace App {
 

@@ -552,6 +552,7 @@ target_include_directories(
         ${CMAKE_SOURCE_DIR}/extern/inih
         ${CMAKE_SOURCE_DIR}/extern/angelscript/add_on
         "${CMAKE_SOURCE_DIR}/extern/nano-signal-slot"
+        ${libarchive_SOURCE_DIR}/libarchive
 )
 target_compile_features(orecore PRIVATE cxx_std_23)
 target_link_libraries(
@@ -673,5 +674,5 @@ if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
 endif ()
 
 if (WIN32)
-    add_compile_definitions(_CRT_SECURE_NO_WARNINGS=1)
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS=1 NOMINMAX=1)
 endif ()

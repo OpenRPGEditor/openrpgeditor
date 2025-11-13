@@ -9,12 +9,12 @@ public:
 
   std::vector<std::pair<std::string, std::string>> load(const std::filesystem::path& path);
   void loadMap(const std::filesystem::path& path);
-  bool serialize(const std::filesystem::path& path);
+  bool serialize(const std::filesystem::path& path) const;
   void saveCurrentLocale();
 
   std::vector<std::pair<std::string, std::string>> locales;
 
-  std::string m_currentPath;
+  std::filesystem::path m_currentPath;
 };
 void to_json(nlohmann::ordered_json& j, const std::pair<std::string, std::string>& templ);
 void from_json(const nlohmann::ordered_json& j, std::pair<std::string, std::string>& templ);

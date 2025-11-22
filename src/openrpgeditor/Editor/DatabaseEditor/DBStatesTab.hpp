@@ -7,7 +7,7 @@
 struct DBStatesTab final : IDBCoreEditorTab<DBStatesTab> {
   void draw() override;
 
-  std::string getName(const int index) const override { return m_states->state(index)->name(); }
+  std::string objectName(const int index) const override { return m_states->state(index)->name(); }
   int getCount() const override { return m_states->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("States"); }

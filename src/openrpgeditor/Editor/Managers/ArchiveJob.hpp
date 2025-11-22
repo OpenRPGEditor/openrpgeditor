@@ -54,8 +54,8 @@ private:
 
   std::string m_stripRoot;
 
-  // Limit how much data is processed per tick (512 KiB)
-  static constexpr size_t kChunkSize = 512 * 1024;
+  // Limit how much data is processed per tick (8 KiB)
+  static constexpr size_t kChunkSize = 64 * 1024;
 
   // Count number of entries in the archive
   static size_t countEntries(archive* archive, const std::filesystem::path& path) noexcept;

@@ -9,7 +9,7 @@ class DBTilesetsTab final : public IDBCoreEditorTab<DBTilesetsTab> {
 public:
   void draw() override;
 
-  std::string getName(const int index) const override { return m_tilesets->tileset(index)->name(); }
+  std::string objectName(const int index) const override { return m_tilesets->tileset(index)->name(); }
   int getCount() const override { return m_tilesets->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Tilesets"); }

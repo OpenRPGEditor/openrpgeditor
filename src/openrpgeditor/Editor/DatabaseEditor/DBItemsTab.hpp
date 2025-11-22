@@ -12,7 +12,7 @@ class DBItemsTab final : public IDBCoreEditorTab<DBItemsTab> {
 public:
   void draw() override;
 
-  std::string getName(const int index) const override { return m_items->item(index)->name(); }
+  std::string objectName(const int index) const override { return m_items->item(index)->name(); }
   int getCount() const override { return m_items->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Items"); }

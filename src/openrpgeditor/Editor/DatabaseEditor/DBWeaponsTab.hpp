@@ -11,7 +11,7 @@ class Weapons;
 struct DBWeaponsTab final : IDBCoreEditorTab<DBWeaponsTab> {
   void draw() override;
 
-  std::string getName(const int index) const override { return m_weapons->weapon(index)->name(); }
+  std::string objectName(const int index) const override { return m_weapons->weapon(index)->name(); }
 
   int getCount() const override { return m_weapons->count(); }
 

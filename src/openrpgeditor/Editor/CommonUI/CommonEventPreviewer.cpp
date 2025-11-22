@@ -1,4 +1,4 @@
-#include "Editor/CommonUI/Preview.hpp"
+#include "Editor/CommonUI/CommonEventPreviewer.hpp"
 
 #include "Database/Database.hpp"
 #include "Database/EventCommands/Script.hpp"
@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <regex>
 
-Preview::Preview(int commonId)
+CommonEventPreviewer::CommonEventPreviewer(int commonId)
 : IDialogController("Preview") {
   m_interpreter.emplace(Database::instance()->commonEvents->event(commonId)->commands());
   for (const int frameIndex : m_interpreter.value().getKeyFrames()) {
@@ -25,7 +25,7 @@ Preview::Preview(int commonId)
   }
 }
 
-std::tuple<bool, bool> Preview::draw() {
+std::tuple<bool, bool> CommonEventPreviewer::draw() {
   if (!m_isPaused) {
     m_interpreter.value().update();
     m_selectedKeyFrame = m_interpreter->getKeyFrameIndex();

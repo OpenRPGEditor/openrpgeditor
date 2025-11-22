@@ -13,7 +13,7 @@ class Troops;
 struct DBTroopsTab final : IDBCoreEditorTab<DBTroopsTab> {
   void draw() override;
 
-  std::string getName(const int index) const override { return m_troops->troop(index)->name(); }
+  std::string objectName(const int index) const override { return m_troops->troop(index)->name(); }
   int getCount() const override { return m_troops->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Troops"); }

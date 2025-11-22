@@ -488,8 +488,8 @@ add_library(
         Editor/ReferenceSearch.hpp
         Editor/DatabaseEditor/DBMappingsTab.cpp
         Editor/DatabaseEditor/DBMappingsTab.hpp
-        Editor/CommonUI/Preview.cpp
-        Editor/CommonUI/Preview.hpp
+        Editor/CommonUI/CommonEventPreviewer.cpp
+        Editor/CommonUI/CommonEventPreviewer.hpp
         Editor/Interpreter.cpp
         Editor/Interpreter.hpp
         Editor/LibLCF.cpp

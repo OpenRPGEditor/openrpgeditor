@@ -1,14 +1,14 @@
 #pragma once
 #include "Database/CommonEvents.hpp"
+#include "Editor/CommonUI/CommonEventPreviewer.hpp"
 #include "Editor/CommonUI/EventCommandEditor.hpp"
-#include "Editor/CommonUI/Preview.hpp"
 #include "Editor/DatabaseEditor/IDBEditorTab.hpp"
 
 class DBCommonEventsTab final : public IDBCoreEditorTab<DBCommonEventsTab> {
 public:
   void draw() override;
 
-  std::string getName(const int index) const override { return m_events->event(index)->name(); }
+  std::string objectName(const int index) const override { return m_events->event(index)->name(); }
   int getCount() const override { return m_events->count(); }
   int getSelectedIndex() const { return m_selectedCommonEvent ? m_selectedCommonEvent->id() : 0; }
 
@@ -41,7 +41,7 @@ private:
   CommonEvent* m_selectedCommonEvent{};
   EventCommandEditor m_commandEditor;
   std::optional<VariableSwitchPicker> picker;
-  std::optional<Preview> preview;
+  std::optional<CommonEventPreviewer> preview;
 
   int m_editMaxCommonEvents{};
   float m_splitterWidth = 300.f;

@@ -15,7 +15,7 @@ class DBEnemiesTab final : public IDBCoreEditorTab<DBEnemiesTab> {
 public:
   void draw() override;
 
-  std::string getName(const int index) const override { return m_enemies->enemy(index)->name(); }
+  std::string objectName(const int index) const override { return m_enemies->enemy(index)->name(); }
   int getCount() const override { return m_enemies->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Enemies"); }

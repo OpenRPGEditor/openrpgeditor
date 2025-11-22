@@ -9,7 +9,7 @@
 struct DBArmorsTab final : public IDBCoreEditorTab<DBArmorsTab> {
   void draw() override;
 
-  std::string getName(const int index) const override { return m_armors->armor(index)->name(); }
+  std::string objectName(const int index) const override { return m_armors->armor(index)->name(); }
   int getCount() const override { return m_armors->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Armors"); }

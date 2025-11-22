@@ -6,9 +6,9 @@
 
 #include <vector>
 
-class Preview : public IDialogController {
+class CommonEventPreviewer final : public IDialogController {
 public:
-  Preview(int commonId);
+  explicit CommonEventPreviewer(int commonId);
   std::tuple<bool, bool> draw() override;
 
 private:

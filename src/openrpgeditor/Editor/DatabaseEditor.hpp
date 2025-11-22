@@ -20,7 +20,7 @@ public:
     return std::ranges::all_of(m_editorTabs, [](const auto& v) { return v->isReady(); });
   }
 
-  std::string& getFilterString() { return m_searchString; } // TODO: Search by string
+  std::string& filterString() { return m_searchString; } // TODO: Search by string
   bool isFilteredByCategory() const { return m_filterByHeader && m_selectedHeaderIndex != -1; }
 
   bool isOpen() const { return m_isOpen; }
@@ -30,9 +30,7 @@ public:
 
   void addTab(const std::shared_ptr<IDBEditorTab>& tab) { m_editorTabs.emplace_back(tab); }
   void removeTab(IDBEditorTab* tab) {
-    // ReSharper disable once CppTooWideScopeInitStatement
-    const auto it = std::ranges::find_if(m_editorTabs, [&tab](const std::shared_ptr<IDBEditorTab>& other) { return other.get() == tab; });
-    if (it != m_editorTabs.end()) {
+    if (const auto it = std::ranges::find_if(m_editorTabs, [&tab](const std::shared_ptr<IDBEditorTab>& other) { return other.get() == tab; }); it != m_editorTabs.end()) {
       m_editorTabs.erase(it);
     }
   }

@@ -112,73 +112,6 @@ void DatabaseEditor::draw() {
               ORE_DISABLE_EXPERIMENTAL_END();
             }
           }
-
-#if 0
-          if (ImGui::SelectableWithBorder(trNOOP("Actors"), m_currentTab == &m_actors.value())) {
-            m_currentTab = &m_actors.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("Classes"), m_currentTab == &m_classes.value())) {
-            m_currentTab = &m_classes.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("Skills"), m_currentTab == &m_skills.value())) {
-            m_currentTab = &m_skills.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("Items"), m_currentTab == &m_items.value())) {
-            m_currentTab = &m_items.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("Weapons"), m_currentTab == &m_weapons.value())) {
-            m_currentTab = &m_weapons.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("Armors"), m_currentTab == &m_armors.value())) {
-            m_currentTab = &m_armors.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("Enemies"), m_currentTab == &m_enemies.value())) {
-            m_currentTab = &m_enemies.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("Troops"), m_currentTab == &m_troops.value())) {
-            m_currentTab = &m_troops.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("States"), m_currentTab == &m_states.value())) {
-            m_currentTab = &m_states.value();
-          }
-          ORE_DISABLE_EXPERIMENTAL_BEGIN();
-          if (ImGui::SelectableWithBorder(trNOOP("Animations"), m_currentTab == &m_animations.value())) {
-            m_currentTab = &m_animations.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("Tilesets"), m_currentTab == &m_tilesets.value())) {
-            m_currentTab = &m_tilesets.value();
-          }
-          ORE_DISABLE_EXPERIMENTAL_END();
-          if (ImGui::SelectableWithBorder(trNOOP("Common Events"), m_currentTab == &m_commonEvents.value())) {
-            m_currentTab = &m_commonEvents.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("System"), m_currentTab == &m_system.value())) {
-            m_currentTab = &m_system.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("Types"), m_currentTab == &m_types.value())) {
-            m_currentTab = &m_types.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("Terms"), m_currentTab == &m_terms.value())) {
-            m_currentTab = &m_terms.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("Exported Constants"), m_currentTab == &m_gameConstants.value())) {
-            m_currentTab = &m_gameConstants.value();
-          }
-          ORE_DISABLE_EXPERIMENTAL_BEGIN();
-          if (ImGui::SelectableWithBorder(trNOOP("Templates"), m_currentTab == &m_templates.value())) {
-            m_currentTab = &m_templates.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("Data Sorting"), m_currentTab == &m_mappings.value())) {
-            m_currentTab = &m_mappings.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("Documentation"), m_currentTab == &m_docs.value())) {
-            m_currentTab = &m_docs.value();
-          }
-          if (ImGui::SelectableWithBorder(trNOOP("Localization"), m_currentTab == &m_locales.value())) {
-            m_currentTab = &m_locales.value();
-          }
-          ORE_DISABLE_EXPERIMENTAL_END();
-#endif
           ImGui::Spring(0.75f);
         }
         ImGui::EndVertical();
@@ -198,16 +131,16 @@ void DatabaseEditor::drawCategoryHeaders() {
   ImGui::BeginVertical("##database_category_headers", {-1, 0}, 0);
   {
     ImGui::SetNextItemWidth(-1);
-    int index{0};
     if (m_filterByHeader) {
-      if (ImGui::BeginCombo("##orpg_database_editor_header_list", m_selectedHeaderIndex == -1 ? "" : m_currentTab->getName(m_currentTab->getHeader(m_selectedHeaderIndex)).c_str())) {
+      if (ImGui::BeginCombo("##orpg_database_editor_header_list", m_selectedHeaderIndex == -1 ? "" : m_currentTab->objectName(m_currentTab->header(m_selectedHeaderIndex)).c_str())) {
+        int index{0};
         char buf[1024];
-        for (int v : m_currentTab->getHeaders()) {
-          strncpy(buf, m_currentTab->getName(v).c_str(), 1024);
+        for (const int obj : m_currentTab->headers()) {
+          strncpy(buf, m_currentTab->objectName(obj).c_str(), 1024);
           if (ImGui::Selectable(buf, m_selectedHeaderIndex == index)) {
             m_selectedHeaderIndex = index;
-            m_currentTab->setHeaderRange(m_currentTab->getHeader(m_selectedHeaderIndex),
-                                         m_selectedHeaderIndex + 1 >= m_currentTab->getHeaders().size() ? m_currentTab->getCount() + 1 : m_currentTab->getHeader(m_selectedHeaderIndex + 1));
+            m_currentTab->setHeaderRange(m_currentTab->header(m_selectedHeaderIndex),
+                                         m_selectedHeaderIndex + 1 >= m_currentTab->headers().size() ? m_currentTab->getCount() + 1 : m_currentTab->header(m_selectedHeaderIndex + 1));
           }
           index++;
         }
@@ -220,8 +153,8 @@ void DatabaseEditor::drawCategoryHeaders() {
     if (ImGui::Checkbox("By header##orpg_database_editor_filterbyheader_check", &m_filterByHeader)) {
       if (m_filterByHeader) {
         m_selectedHeaderIndex = 0;
-        m_currentTab->setHeaderRange(m_currentTab->getHeader(m_selectedHeaderIndex),
-                                     m_selectedHeaderIndex + 1 >= m_currentTab->getHeaders().size() ? -1 : m_currentTab->getHeader(m_selectedHeaderIndex + 1));
+        m_currentTab->setHeaderRange(m_currentTab->header(m_selectedHeaderIndex),
+                                     m_selectedHeaderIndex + 1 >= m_currentTab->headers().size() ? -1 : m_currentTab->header(m_selectedHeaderIndex + 1));
       } else {
         m_selectedHeaderIndex = -1;
       }

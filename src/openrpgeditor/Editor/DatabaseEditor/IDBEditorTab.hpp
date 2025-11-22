@@ -11,15 +11,15 @@ public:
   explicit IDBEditorTab() = default;
   virtual ~IDBEditorTab() = default;
   virtual void draw() = 0;
-  std::vector<int>& getHeaders() { return m_headers; }
-  [[nodiscard]] int getHeader(const int index) const { return m_headers.at(index); }
+  std::vector<int>& headers() { return m_headers; }
+  [[nodiscard]] int header(const int index) const { return m_headers.at(index); }
   [[nodiscard]] bool hasHeader() const { return !m_headers.empty(); }
   void setHeaderRange(const int start, const int end) {
     m_categoryStart = start;
     m_categoryEnd = end;
   }
 
-  [[nodiscard]] virtual std::string getName(int index) const { return {}; }
+  [[nodiscard]] virtual std::string objectName(int index) const { return {}; }
   [[nodiscard]] virtual int getCount() const { return 0; }
 
   [[nodiscard]] virtual bool isReady() const = 0;

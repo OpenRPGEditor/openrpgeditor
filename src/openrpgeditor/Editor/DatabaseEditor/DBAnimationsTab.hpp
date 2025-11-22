@@ -12,7 +12,7 @@ class DBAnimationsTab final : public IDBCoreEditorTab<DBAnimationsTab> {
 public:
   void draw() override;
 
-  std::string getName(const int index) const override { return m_animations->animation(index)->name(); }
+  std::string objectName(const int index) const override { return m_animations->animation(index)->name(); }
   int getCount() const override { return m_animations->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Animations"); }

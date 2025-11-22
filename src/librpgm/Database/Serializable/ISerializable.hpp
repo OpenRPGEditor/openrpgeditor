@@ -9,7 +9,7 @@ public:
     Read,
     Write,
   };
-  explicit ISerializable(const std::string_view filepath, Operation operation)
+  explicit ISerializable(const std::string_view filepath, const Operation operation)
   : m_filepath(filepath)
   , m_operation(operation) {}
 

@@ -16,7 +16,7 @@ class DBActorsTab final : public IDBCoreEditorTab<DBActorsTab> {
 public:
   void draw() override;
 
-  std::string getName(const int index) const override { return m_actors->actor(index)->name(); }
+  std::string objectName(const int index) const override { return m_actors->actor(index)->name(); }
   int getCount() const override { return m_actors->count(); }
 
   [[nodiscard]] std::string tabName() const override { return tr("Actors"); }

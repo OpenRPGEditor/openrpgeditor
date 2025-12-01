@@ -58,6 +58,17 @@ DatabaseEditor::~DatabaseEditor() {
   }
 }
 
+float DatabaseEditor::widestTabName() const {
+  float width = 0;
+
+  for (const auto& tab : m_editorTabs) {
+    const auto w = ImGui::CalcTextSize(tab->tabName().c_str()).x;
+    width = std::max(w, width);
+  }
+  return std::max(ImGui::CalcTextSize("#").x * 5, width) + ImGui::GetDPIScaledValue(15);
+}
+
+
 void DatabaseEditor::draw() {
   if (isReady() && !onReady.is_empty()) {
     emit_signal(onReady);
@@ -79,9 +90,7 @@ void DatabaseEditor::draw() {
   if (ImGui::Begin(std::format("{}###databaseeditor", trNOOP("Database")).c_str(), &m_isOpen)) {
     ImGui::BeginHorizontal("##database_editor_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
-      // TODO: Calculate necessary width
-      const auto calc = ImGui::CalcTextSize("#").x * 32;
-      ImGui::BeginChild("##orpg_database_editor_tab_buttons", ImVec2{calc + ImGui::GetStyle().ItemSpacing.x, 0}, 0, ImGuiWindowFlags_NoBackground);
+      ImGui::BeginChild("##orpg_database_editor_tab_buttons", ImVec2{widestTabName() + ImGui::GetStyle().ItemSpacing.x, 0}, 0, ImGuiWindowFlags_NoBackground);
       {
         drawCategoryHeaders();
         ImGui::BeginVertical("##database_editor_tab_layout", ImGui::GetContentRegionAvail(), 0);

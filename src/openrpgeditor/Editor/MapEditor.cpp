@@ -24,38 +24,73 @@ static clip::format OREMapEventFormat = -1;
 struct EventMoveUndoCommand : IUndoCommand {
   EventMoveUndoCommand() = delete;
 
-  EventMoveUndoCommand(Event* event, int x, int y)
+  EventMoveUndoCommand(Event* event, const int x, const int y)
   : m_event(event)
   , m_x(x)
   , m_y(y) {}
 
-  int type() const override { return -1; }
+  [[nodiscard]] constexpr std::string_view type() const override { return "Event Move"; }
 
   bool undo() override {
-    // if (m_event) {
-    //   std::swap(m_event->x, m_x);
-    //   std::swap(m_event->y, m_y);
-    //   return true;
-    // }
+    if (m_event) {
+      const int tmpX = m_event->x();
+      m_event->setX(m_x);
+      m_x = tmpX;
+      const int tmpY = m_event->y();
+      m_event->setY(m_y);
+      m_y = tmpY;
+      return true;
+    }
 
     return false;
   }
 
   std::string description() override {
-    return {};
-    // if (!m_event) {
-    //   return "Invalid move command!";
-    // }
-    // if (!m_isRedo) {
-    //   return std::format("Move {} from {},{} to {},{}", m_event->name.empty() ? std::to_string(m_event->id) : m_event->name, m_x, m_y, m_event->x, m_event->y);
-    // }
-    // return std::format("Move {} from {},{} to {},{}", m_event->name.empty() ? std::to_string(m_event->id) : m_event->name, m_event->x, m_event->y, m_x, m_y);
+    if (!m_event) {
+      return trNOOP("Invalid move command!");
+    }
+    if (!m_isRedo) {
+      return trFormat("Move {} from {},{} to {},{}", Database::eventNameAndId(m_event), m_x, m_y, m_event->x(), m_event->y());
+    }
+    return trFormat("Move {} from {},{} to {},{}", Database::eventNameAndId(m_event), m_event->x(), m_event->y(), m_x, m_y);
   }
 
 private:
   Event* m_event = nullptr;
   int m_x = -1;
   int m_y = -1;
+};
+
+struct EventDeleteUndoCommand final : IUndoCommand {
+  explicit EventDeleteUndoCommand(Map* map, const Event* event)
+  : m_map(map)
+  , m_event(event->clone()) {};
+
+  [[nodiscard]] constexpr std::string_view type() const override { return "Event Delete"; }
+
+  bool undo() override {
+    if (!m_map) {
+      return false;
+    }
+
+    if (!m_isRedo) {
+      if (m_map->setEventAtId(m_event.id(), m_event)) {
+        MainWindow::instance()->mapEditor()->setSelectedEvent(m_map->event(m_event.id()));
+      }
+      return true;
+    }
+    m_map->deleteEvent(m_event.id());
+    
+    return false;
+  }
+
+  std::string description() override {
+    return trFormat("Create Event {} at {},{}", Database::eventNameAndId(&m_event), m_event.x(), m_event.y());
+  }
+
+private:
+  Map* m_map = nullptr;
+  Event m_event;
 };
 
 void MapEditor::setMap(MapInfo* info) {
@@ -259,7 +294,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     //
     //   updateAllAutotiles();
     // }
-    
+
     const auto& penData = m_parent->tilesetPicker().penData();
     int layer = -2;
     if (!penData.empty()) {
@@ -324,7 +359,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
      */
     if (m_movingEvent != nullptr && (m_movingEvent->x() != m_movingEventX || m_movingEvent->y() != m_movingEventY)) {
       // TODO: Actually implement undo
-      // m_parent->addUndo(std::make_shared<EventMoveUndoCommand>(m_movingEvent, m_movingEventX, m_movingEventY));
+      m_parent->addUndo(std::make_shared<EventMoveUndoCommand>(m_movingEvent, m_movingEventX, m_movingEventY));
     }
     m_movingEvent = nullptr;
   }
@@ -335,6 +370,7 @@ void MapEditor::handleKeyboardShortcuts() {
   if (ImGui::IsKeyDown(ImGuiKey_Delete) || ImGui::IsKeyDown(ImGuiKey_Backspace)) {
     // TODO: Undo command
     if (ImGui::IsWindowFocused() && selectedEvent()) {
+      m_parent->addUndo(std::make_shared<EventDeleteUndoCommand>(m_mapInfo->map(), m_selectedEvent));
       map()->deleteEvent(selectedEvent()->id());
       setSelectedEvent(nullptr);
     }
@@ -862,3 +898,26 @@ double MapEditor::yWithDirection(const double y, const Direction d) { return y +
 double MapEditor::roundXWithDirection(const double x, const Direction d) { return roundX(x + (d == Direction::Right ? 1 : d == Direction::Left ? -1 : 0)); }
 
 double MapEditor::roundYWithDirection(const double y, const Direction d) { return roundY(y + (d == Direction::Down ? 1 : d == Direction::Up ? -1 : 0)); }
+
+bool MapEditor::checkLayeredTilesFlags(const double x, const double y, const int bit) const {
+  auto flags = m_tilemapView.tilesetFlags();
+  return std::ranges::any_of(m_tilemapView.layeredTiles(x, y), [&bit, &flags](const auto& tileId) {
+    return (flags[tileId].value_or(0) & bit) != 0;
+  });
+}
+
+bool MapEditor::isLadder(const double x, const double y) const {
+  return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x20); 
+}
+
+bool MapEditor::isBush(const double x, const double y) const {
+  return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x40); 
+}
+
+bool MapEditor::isCounter(const double x, const double y) const {
+  return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x80); 
+}
+
+bool MapEditor::isDamageFloor(const double x, const double y) const {
+  return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x100); 
+}

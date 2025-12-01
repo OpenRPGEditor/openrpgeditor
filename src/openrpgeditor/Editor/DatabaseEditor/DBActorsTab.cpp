@@ -10,7 +10,7 @@
 #include "imgui_internal.h"
 
 void DBActorsTab::draw() {
-  if (!m_actors) {
+  if (!isInitialized()) {
     return;
   }
 
@@ -74,11 +74,13 @@ void DBActorsTab::draw() {
         {
           ImGui::BeginGroup();
           {
+            int i = 0;
             for (auto& actor : m_actors->m_actors) {
-              if (actor.id() == 0) {
+              if (i == 0 || actor.id() == 0) {
+                ++i;
                 continue;
               }
-
+              ++i;
               if (ImGui::Selectable(std::format("{}{}", Database::instance()->actorNameAndId(actor.id()), actor.isModified() ? "*" : "").c_str(), &actor == m_selectedActor,
                                     ImGuiSelectableFlags_SelectOnNav)) {
                 if (m_selectedActor != &actor) {

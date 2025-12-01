@@ -277,6 +277,24 @@ struct Database {
     }
     return nameOrId(eventName(id), id, 3);
   }
+
+
+  [[nodiscard]] static std::string eventNameAndId(const Event* event) {
+    if (!event) {
+      return InvalidDataName.data();
+    }
+    return nameAndId(event->name(), event->id(), 3);
+  }
+  
+  [[nodiscard]] std::string eventNameAndId(const int id) const {
+    if (id == -1) {
+      return trNOOP("Player");
+    }
+    if (id == 0) {
+      return trNOOP("This Event");
+    }
+    return nameAndId(eventName(id), id, 3);
+  }
   [[nodiscard]] std::string actorNameOrId(const int id) const { return nameOrId(actorName(id), id); }
   [[nodiscard]] std::string actorNameAndId(const int id) const { return nameAndId(actorName(id), id); }
   [[nodiscard]] std::string classNameOrId(const int id) const { return nameOrId(className(id), id); }

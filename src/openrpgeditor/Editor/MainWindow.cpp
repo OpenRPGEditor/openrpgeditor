@@ -155,7 +155,7 @@ void MainWindow::save() {
 }
 
 std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
-  if (promptSave && m_database && m_database->isModified()) {
+  if (promptSave && m_database && m_databaseEditor->isReady() && m_database->isModified()) {
     ImGui::OpenPopup("###save_changes");
 
     ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing, {.5f, .5f});
@@ -583,6 +583,12 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
     ImGui::EndDisabled();
 
     drawShutdownSplash(shuttingDown);
+
+    // static JSONInspector inspector;
+    // if (inspector.openFile("/home/antidote/Projects/vhmv/VHMV/package.json")) {
+    //   inspector.setOpen();
+    //   inspector.draw();
+    // }
   }
   ImGui::End();
 }

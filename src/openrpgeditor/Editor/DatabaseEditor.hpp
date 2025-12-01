@@ -37,6 +37,7 @@ public:
 
   static DatabaseEditor* instance() { return m_instance; }
 
+  float widestTabName() const;
 private:
   static DatabaseEditor* m_instance;
   std::vector<std::shared_ptr<IDBEditorTab>> m_editorTabs;

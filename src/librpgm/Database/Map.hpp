@@ -237,6 +237,8 @@ public:
 
   void connectAllEvents();
 
+  bool setEventAtId(int id, const Event& event);
+
 private:
   Map(const Map& other, int i)
   : IModifiable(other) {

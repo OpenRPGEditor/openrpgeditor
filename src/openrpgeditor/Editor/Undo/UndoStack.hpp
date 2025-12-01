@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Editor/IUndoCommand.hpp"
+#include "IUndoCommand.hpp"
 
 #include <memory>
 #include <stack>

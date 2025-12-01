@@ -446,8 +446,8 @@ add_library(
         Editor/TroopsEventEditor/TroopsEVPage.hpp
         Editor/Tilemap/ITileView.cpp
         Editor/Tilemap/ITileView.hpp
-        Editor/UndoStack.cpp
-        Editor/UndoStack.hpp
+        Editor/Undo/UndoStack.cpp
+        Editor/Undo/UndoStack.hpp
         Editor/Window.cpp
         Editor/Window.hpp
         Editor/Tilemap/TilePalette.cpp

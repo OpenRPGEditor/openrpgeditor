@@ -1137,11 +1137,22 @@ Event* Map::createEventFromTemplate(const Event& ev) {
   return &*m_events.at(ev.id());
 }
 
-void Map::deleteEvent(int id) {
+void Map::deleteEvent(const int id) {
   if (const auto it = std::ranges::find_if(m_events, [&id](const auto& ev) { return ev && ev->id() == id; }); it != m_events.end()) {
     it->reset();
     m_isDirty = true;
   }
+}
+
+bool Map::setEventAtId(const int id, const Event& event) {
+  // We're only replacing an existing map event
+  if (id < 0 || id >= m_events.size()) {
+    return false;
+  }
+
+  m_events[id] = event.clone();
+  m_events[id]->setModified();
+  return true;
 }
 
 int Map::findOrMakeFreeId() const {

@@ -2,6 +2,7 @@
 
 #include "Database/Event.hpp"
 #include "Editor/Graphics/CharacterSheet.hpp"
+#include "Editor/MapEditor.hpp"
 
 struct MapEditor;
 
@@ -91,12 +92,12 @@ public:
   uint32_t spriteId() const override { return m_spriteId; }
 
   void increaseSteps() {
-    // if (isOnLadder()) {
-    //   setDirection(Direction::Up);
-    // }
+    if (isOnLadder()) {
+      setDirection(Direction::Up);
+    }
 
     resetStopCount();
-    // refreshBushDepth();
+    refreshBushDepth();
   }
 
   void memorizeMoveRoute() {
@@ -158,6 +159,15 @@ protected:
   float animationWait() const;
   float realMoveSpeed() const;
   void resetPattern() { setPattern(1); }
+  void refreshBushDepth() {
+    if (isNormalPriority() && !isObjectCharacter() && isOnBush() && !isJumping()) {
+      if (isMoving()) {
+        m_bushDepth = 12;
+      }
+    } else {
+      m_bushDepth = 0;
+    }
+  }
 
   void updateSelfMove();
   void moveTypeRandom();
@@ -196,6 +206,20 @@ protected:
 
   bool isThrough() const override { return m_through; }
   bool isMapPassable(double x, double y, Direction d) const;
+  bool isOnLadder() const {
+    return m_mapEditor->isLadder(m_x, m_y);
+  }
+  bool isOnBush() const {
+    return m_mapEditor->isBush(m_x, m_y);
+  }
+
+  bool isNormalPriority() const {
+    return m_priorityType == EventPriority::Same_as_characters;
+  }
+
+  bool isObjectCharacter() const {
+    return m_characterSheet.isNoHalfTransparentInBush();
+  }
 
   bool isCollidedWithEvents(double x, double y);
   bool isCollidedWithCharacters(double x, double y);
@@ -286,6 +310,7 @@ private:
 
   int m_jumpPeak = 0;
   int m_jumpCount = 0;
+  int m_bushDepth = 0;
   bool m_prisonMode{false};
 
   float m_lastFrameTime = 0.f;

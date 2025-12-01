@@ -17,6 +17,8 @@ Event::Event(const Event& other)
 , m_oldy(other.m_oldy)
 , m_editor(other.m_editor)
 , m_renderer(other.m_renderer) {
+  other.m_editor.reset();
+  other.m_renderer.reset();
   if (m_editor) {
     m_editor->setEventPtr(this);
   }
@@ -40,7 +42,9 @@ Event& Event::operator=(const Event& other) {
   m_oldx = other.m_oldx;
   m_oldy = other.m_oldy;
   m_editor = other.m_editor;
+  other.m_editor.reset();
   m_renderer = other.m_renderer;
+  other.m_renderer.reset();
   if (m_editor) {
     m_editor->setEventPtr(this);
   }
@@ -66,6 +70,8 @@ Event::Event(Event&& other) noexcept
 , m_oldy(other.m_oldy)
 , m_editor(std::move(other.m_editor))
 , m_renderer(std::move(other.m_renderer)) {
+  other.m_editor.reset();
+  other.m_renderer.reset();
   if (m_editor) {
     m_editor->setEventPtr(this);
   }
@@ -89,7 +95,9 @@ Event& Event::operator=(Event&& other) noexcept {
   m_oldx = other.m_oldx;
   m_oldy = other.m_oldy;
   m_editor = std::move(other.m_editor);
+  other.m_editor.reset();
   m_renderer = std::move(other.m_renderer);
+  other.m_renderer.reset();
   if (m_editor) {
     m_editor->setEventPtr(this);
   }

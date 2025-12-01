@@ -51,8 +51,11 @@ struct MapEditor {
   const Event* selectedEvent() const { return m_selectedEvent; }
 
   void setSelectedEvent(Event* event) {
+    if (m_selectedEvent == event) {
+      return;
+    }
     m_selectedEvent = event;
-    if (event) {
+    if (m_selectedEvent) {
       m_tileCursor.setPosition(event->x(), event->y());
       m_hasScrolled = false;
     }
@@ -121,7 +124,7 @@ struct MapEditor {
 
   double roundYWithDirection(double y, Direction d);
 
-  bool isValid(const double x, const double y) {
+  bool isValid(const double x, const double y) const {
     if (!map()) {
       return false;
     }
@@ -186,6 +189,13 @@ struct MapEditor {
   }
 
   void preRender() { m_tilemapView.render(); }
+
+  bool isLadder(double x, double y) const;
+  bool isBush(double x, double y) const;
+  bool isCounter(double x, double y) const;
+  bool isDamageFloor(double x, double y) const;
+
+  bool checkLayeredTilesFlags(double x, double y, int bit) const;
 
 private:
   void drawParallax(ImGuiWindow* win);

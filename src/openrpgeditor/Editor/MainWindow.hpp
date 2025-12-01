@@ -10,11 +10,11 @@
 #include "Editor/MapEditor.hpp"
 #include "Editor/MapListView.hpp"
 #include "Editor/ResourceManager.hpp"
-#include "Editor/UndoStack.hpp"
 #include "EventSearcher.hpp"
 #include "LibLCF.hpp"
 #include "Process.hpp"
 #include "SettingsDialog.hpp"
+#include "Undo/UndoStack.hpp"
 
 #include "Editor/CommonUI/ObjectPicker.hpp"
 #include "Editor/CommonUI/TextEditor.hpp"

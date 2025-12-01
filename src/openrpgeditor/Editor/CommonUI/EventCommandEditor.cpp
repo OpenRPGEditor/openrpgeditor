@@ -134,7 +134,7 @@ void EventCommandEditor::handleClipboardInteraction() {
       }
     }
   }
-  if (ImGui::IsKeyPressed(ImGuiKey_C) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
+  if (m_selectedCommand != -1 && ImGui::IsKeyPressed(ImGuiKey_C) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
     clip::lock l;
     int start = m_selectedCommand;
     int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd + 1;
@@ -144,7 +144,7 @@ void EventCommandEditor::handleClipboardInteraction() {
     auto v = cmdJson.dump();
     l.set_data(RPGMVEventCommandFormat, v.data(), v.size());
   }
-  if (ImGui::IsKeyPressed(ImGuiKey_X) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
+  if (m_selectedCommand != -1 && ImGui::IsKeyPressed(ImGuiKey_X) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
     if (m_commands->at(m_selectedCommand)->code() != EventCode::Event_Dummy) {
       clip::lock l;
       int start = m_selectedCommand;
@@ -173,11 +173,11 @@ void EventCommandEditor::setupTableHeader() {
 }
 
 void EventCommandEditor::setupTableColors() {
-  // ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.37f, 0.37f, 0.37f, 0.43f));
-  // ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.37f, 0.37f, 0.37f, 0.78f));
-  // ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.37f, 0.37f, 0.37f, 0.68f));
-  // ImGui::PushStyleColor(ImGuiCol_TableRowBg, ImVec4(0.03f, 0.21f, 0.26f, 1.00f));
-  // ImGui::PushStyleColor(ImGuiCol_TableRowBgAlt, ImVec4(0.04f, 0.16f, 0.19f, 1.00f));
+   ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.37f, 0.37f, 0.37f, 0.43f));
+   ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.37f, 0.37f, 0.37f, 0.78f));
+   ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.37f, 0.37f, 0.37f, 0.68f));
+   ImGui::PushStyleColor(ImGuiCol_TableRowBg, ImVec4(0.03f, 0.21f, 0.26f, 1.00f));
+   ImGui::PushStyleColor(ImGuiCol_TableRowBgAlt, ImVec4(0.04f, 0.16f, 0.19f, 1.00f));
 }
 void EventCommandEditor::handleBlockCollapse(int& n) const {
   if (m_commands->at(n)->collapsable()) {
@@ -387,7 +387,7 @@ void EventCommandEditor::draw() {
         }
       }
       ImGui::PopFont();
-      // ImGui::PopStyleColor(5);
+      ImGui::PopStyleColor(5);
 
       if (ImGui::BeginPopupContextWindow()) {
         if (m_selectedCommand != m_hoveringCommand) {

@@ -211,7 +211,7 @@ void NWJSVersionManager::draw() {
       ImGui::TextUnformatted(m_versionDownloadHandle == -1 || DownloadManager::instance().transferComplete(m_versionDownloadHandle) ? trNOOP("Unable to get version list!")
                                                                                                                                     : trNOOP("Retrieving version listing..."));
     } else {
-      GroupBox availableVersionsGroup(trNOOP("Available Versions"), "##nwjs_available_versions_group", {-1, 0}, nullptr);
+      GroupBox availableVersionsGroup(trNOOP("Available Versions"), "##nwjs_available_versions_group", {-1, 0}, nullptr, ImGuiChildFlags_ResizeY, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_HorizontalScrollbar);
       if (availableVersionsGroup.begin()) {
         ImGui::BeginVertical("##nwjs_available_version_main_layout", {-1, 0}, 0);
         {

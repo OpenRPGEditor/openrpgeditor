@@ -30,12 +30,15 @@ bool GroupBox::begin() {
   m_clicked = false;
 
   m_visible = ImGui::BeginChild(id, m_size,
-                                m_childFlags | ImGuiChildFlags_FrameStyle | ImGuiChildFlags_NavFlattened | ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
-                                m_windowFlags);
+                                (m_childFlags & ~(ImGuiChildFlags_ResizeX | ImGuiChildFlags_ResizeY)) | ImGuiChildFlags_FrameStyle | ImGuiChildFlags_NavFlattened | ImGuiChildFlags_AutoResizeX |
+                                    ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
+                                m_windowFlags & ~(ImGuiWindowFlags_AlwaysAutoResize));
   if (m_visible) {
+    ImGui::EndChild();
     auto clip = ImGui::GetCurrentWindow()->ClipRect;
 
-    if (!m_wasHeaderDrawn && !m_title.empty()) {
+    ImVec2 headerSize;
+    if (!m_title.empty()) {
       const auto labelId = ImGui::GetID(std::format("{}_checkbox", m_id).c_str());
       ImGui::SetCursorScreenPos({m_groupStart.x + ImGui::GetStyle().FramePadding.x + ImGui::GetStyle().FrameBorderSize, m_groupStart.y});
       clip.Min.y -= ImGui::GetFrameHeightWithSpacing() / 2;
@@ -51,19 +54,16 @@ bool GroupBox::begin() {
           ImGui::PopStyleVar();
         }
         ImGui::EndChild();
+        headerSize = ImGui::GetItemRectSize();
       }
       ImGui::PopClipRect();
-      m_wasHeaderDrawn = true;
     }
-
-    if (!m_wasHeaderDrawn && !m_title.empty()) {
-      auto size = ImGui::CalcItemSize(ImGui::CalcTextSize(m_title.c_str()), 0, 0);
-      if (m_checked) {
-        ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, ImGui::GetStyle().FramePadding.y * 0.70f);
-        size.x += (ImGui::GetFrameHeightWithSpacing() * 0.65f) * 2;
-        ImGui::PopStyleVar();
-      }
-      ImGui::Dummy({size.x, size.y / 2});
+    ImGui::BeginChild(id, m_size,
+                      (m_childFlags & ~(ImGuiChildFlags_ResizeX | ImGuiChildFlags_ResizeY)) | ImGuiChildFlags_FrameStyle | ImGuiChildFlags_NavFlattened | ImGuiChildFlags_AutoResizeX |
+                          ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
+                      m_windowFlags & ~(ImGuiWindowFlags_AlwaysAutoResize));
+    if (!m_title.empty()) {
+      ImGui::Dummy({headerSize.x, headerSize.y / 2});
     }
     ImGui::BeginDisabled(m_checked && !*m_checked);
   }

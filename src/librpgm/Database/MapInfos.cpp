@@ -62,6 +62,9 @@ void MapInfos::buildTree(const bool reset) {
       continue;
     }
     if (mapInfo->parentId() >= 0 && mapInfo->parentId() < m_mapinfos.size()) {
+      if (!m_mapinfos[mapInfo->parentId()]) {
+        continue;
+      }
       m_mapinfos[mapInfo->parentId()]->m_children.push_back(&mapInfo.value());
     }
   }
@@ -90,9 +93,6 @@ void MapInfos::rebuildOrdering() {
 void MapInfos::loadAllMaps() {
   for (const auto& mapinfo : m_mapinfos) {
     if (mapinfo && mapinfo->id() != 0 && !mapinfo->mapLoaded()) {
-      //      if (auto map = Database::instance()->loadMap(mapinfo->id); map.m_isValid) {
-      //        mapinfo->m_map = std::make_unique<Map>(map);
-      //      }
       FileQueue::instance().enqueue(std::make_shared<MapSerializer>(std::format("data/Map{:03}.json", mapinfo->id()), mapinfo->id()),
                                     [this]<typename T>(T&& handle) { mapLoadCallback(std::forward<T>(handle)); });
     }

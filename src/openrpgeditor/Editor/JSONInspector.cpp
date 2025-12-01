@@ -1,13 +1,12 @@
 #include "Editor/JSONInspector.hpp"
 
-#include "../../../cmake-build-minsizerel/_deps/athena-src/include/athena/Utility.hpp"
-#include "Application.hpp"
 #include "Editor/ImGuiExt/ImGuiUtils.hpp"
 #include "orei18n.hpp"
 
 #include <fstream>
 #include <imgui_internal.h>
 #include <misc/cpp/imgui_stdlib.h>
+#include <athena/Utility.hpp>
 
 void JSONInspector::DrawJsonPrimitive(const std::string& name, nlohmann::ordered_json& element) {
   ImGui::PushID(name.c_str());

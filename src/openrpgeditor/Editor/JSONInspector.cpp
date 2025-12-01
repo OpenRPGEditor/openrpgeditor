@@ -1,6 +1,7 @@
 #include "Editor/JSONInspector.hpp"
 
 #include "Editor/ImGuiExt/ImGuiUtils.hpp"
+#include "Editor/CommonUI/GroupBox.hpp"
 #include "orei18n.hpp"
 
 #include <fstream>

@@ -25,7 +25,7 @@ private:
 class JSONInspector final {
 public:
   bool openFile(const std::filesystem::path& toInspect);
-  bool saveFile(const std::filesystem::path& toSave = {}) const;
+  [[nodiscard]] bool saveFile(const std::filesystem::path& toSave = {}, int indent=4) const;
   void closeFile(bool promptSave);
 
   [[nodiscard]] bool isOpen() const { return m_open; }

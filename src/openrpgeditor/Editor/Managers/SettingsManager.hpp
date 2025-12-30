@@ -37,27 +37,26 @@ public:
     nlohmann::ordered_json* current = &m_settings;
 
     for (size_t i = 0; i < segments.size() - 1; ++i) {
-      const auto& seg = segments[i];
 
-      if (seg.isIndex) {
+      if (const auto& [key, index, isIndex] = segments[i]; isIndex) {
         // Ensure current node is an array
         if (!current->is_array())
           *current = nlohmann::ordered_json::array();
 
         // Extend array manually if index out of bounds
-        while (current->size() <= seg.index)
+        while (current->size() <= index)
           current->push_back(nlohmann::ordered_json::object());
 
-        current = &(*current)[seg.index];
+        current = &(*current)[index];
       } else {
         // Ensure current node is an object
         if (!current->is_object())
           *current = nlohmann::ordered_json::object();
 
-        if (!current->contains(seg.key))
-          (*current)[seg.key] = nlohmann::ordered_json::object();
+        if (!current->contains(key))
+          (*current)[key] = nlohmann::ordered_json::object();
 
-        current = &(*current)[seg.key];
+        current = &(*current)[key];
       }
     }
 
@@ -77,7 +76,7 @@ public:
       target = &(*current)[key];
     }
 
-    nlohmann::ordered_json newJson = nlohmann::ordered_json(newValue);
+    auto newJson = nlohmann::ordered_json(newValue);
     if (!target->is_null() && *target == newJson)
       return; // no change
 
@@ -94,19 +93,19 @@ public:
     nlohmann::ordered_json* current = &m_settings;
 
     // Traverse until final path node
-    for (const auto& seg : segments) {
-      if (seg.isIndex) {
+    for (const auto& [key, index, isIndex] : segments) {
+      if (isIndex) {
         if (!current->is_array())
           *current = nlohmann::ordered_json::array();
-        while (current->size() <= seg.index)
+        while (current->size() <= index)
           current->push_back(nlohmann::ordered_json::object());
-        current = &(*current)[seg.index];
+        current = &(*current)[index];
       } else {
         if (!current->is_object())
           *current = nlohmann::ordered_json::object();
-        if (!current->contains(seg.key))
-          (*current)[seg.key] = nlohmann::ordered_json::array(); // create as array if last
-        current = &(*current)[seg.key];
+        if (!current->contains(key))
+          (*current)[key] = nlohmann::ordered_json::array(); // create as array if last
+        current = &(*current)[key];
       }
     }
 

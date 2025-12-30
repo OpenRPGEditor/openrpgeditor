@@ -315,7 +315,7 @@ std::tuple<bool, bool> JSONInspector::draw() {
               (*m_targetContainer)[m_newKey] = nlohmann::ordered_json::object();
               break;
             case nlohmann::ordered_json::value_t::array:
-              (*m_targetContainer)[m_newKey] = nlohmann::ordered_json::object();
+              (*m_targetContainer)[m_newKey] = nlohmann::ordered_json::array();
               break;
             case nlohmann::ordered_json::value_t::string:
               (*m_targetContainer)[m_newKey] = nlohmann::ordered_json::string_t();
@@ -368,11 +368,11 @@ bool JSONInspector::openFile(const std::filesystem::path& toInspect) {
   } catch (...) { return false; }
 }
 
-bool JSONInspector::saveFile(const std::filesystem::path& toSave) const {
+bool JSONInspector::saveFile(const std::filesystem::path& toSave, const int indent) const {
   std::ofstream file{toSave.empty() ? m_path : toSave};
 
   try {
-    file << m_inspectedJson.dump();
+    file << m_inspectedJson.dump(indent);
     return true;
   } catch (...) { return false; }
 }

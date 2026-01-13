@@ -21,7 +21,7 @@ EVPage::EVPage(EventPage* page)
     strncpy(m_pageNameBuf, m_page->name().data(), 4096);
   }
   if (page->image().tileId() != 0) {
-    m_characterSheet = CharacterSheet("", true, page->image().tileId());
+    m_characterSheet = CharacterSheet({}, page->image().tileId());
   } else if (!page->image().characterName().empty()) {
     m_characterSheet = CharacterSheet(page->image().characterName());
   }
@@ -364,7 +364,7 @@ std::tuple<bool, bool> EVPage::draw(bool canDelete, int index) {
           m_page->image().setCharacterName("");
           m_page->image().setPattern(m_characterPicker.selectedPattern());
           m_page->image().setDirection(m_characterPicker.selectedDirection());
-          m_characterSheet = CharacterSheet(m_characterPicker.selectedTileSheet(), true, m_page->image().tileId());
+          m_characterSheet = CharacterSheet(m_characterPicker.selectedTileSheet(), m_page->image().tileId());
         } else {
           m_page->image().setCharacterIndex(m_characterPicker.character());
           const auto tmpName = m_characterPicker.selectedSheet();

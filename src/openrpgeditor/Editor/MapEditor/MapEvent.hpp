@@ -16,7 +16,7 @@ public:
   void draw(float mapScale, bool isHovered, bool selected, bool halfAlpha, bool updateOnly) override;
   void setupPageSettings() {
     if (page()) {
-      m_characterSheet = CharacterSheet(page()->image().characterName(), page()->image().tileId() > 0, page()->image().tileId());
+      m_characterSheet = CharacterSheet(page()->image().characterName(), page()->image().tileId());
       if (m_originalDirection != page()->image().direction()) {
         m_originalDirection = page()->image().direction();
         m_prelockDirection = Direction::Retain;

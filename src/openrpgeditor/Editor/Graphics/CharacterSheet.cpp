@@ -4,11 +4,11 @@
 
 #include "Database/Database.hpp"
 
-CharacterSheet::CharacterSheet(std::string_view sheetName, bool isTileId, int tileId)
-: m_characterName(sheetName) {
-  if (isTileId && tileId >= 0) {
-    m_isTileId = isTileId;
-    const int setId = 5 + floor(tileId / 256);
+CharacterSheet::CharacterSheet(std::string_view sheetName, const int tileId)
+: m_characterName(sheetName)
+, m_isTileId(tileId > 0) {
+  if (tileId > 0) {
+    const int setId = 5 + static_cast<int>(floorf(static_cast<float>(tileId) / 256));
     const Map* map = nullptr;
     if (Database::instance()->mapInfos->currentMap() && Database::instance()->mapInfos->currentMap()->map()) {
       map = Database::instance()->mapInfos->currentMap()->map();
@@ -21,7 +21,7 @@ CharacterSheet::CharacterSheet(std::string_view sheetName, bool isTileId, int ti
       sheetName = tileset->tilesetName(setId);
     }
     m_sheetTexture = ResourceManager::instance()->loadTilesetImage(sheetName);
-  } else {
+  } else if (!sheetName.empty()) {
     int count = 0;
     for (auto c : sheetName) {
       if (count >= 2) {
@@ -48,14 +48,14 @@ SimpleRect CharacterSheet::getRectForCharacter(int character, int pattern, Direc
   if (!m_sheetTexture) {
     return {};
   }
-  const int CharacterSpriteWidth = characterWidth();
-  const int CharacterSpriteHeight = characterHeight();
-  const int CharacterAtlasWidth = m_isSingleCharacter ? m_sheetTexture.width() : m_sheetTexture.width() / 4;
-  const int CharacterAtlasHeight = m_isSingleCharacter ? m_sheetTexture.height() : m_sheetTexture.height() / 2;
-  const float charX = static_cast<float>((character % (m_sheetTexture.width() / CharacterAtlasWidth)) * CharacterAtlasWidth);
-  const float charY = static_cast<float>((character / (m_sheetTexture.width() / CharacterAtlasWidth)) * CharacterAtlasHeight);
-  const float patternOffset = static_cast<float>(pattern * CharacterSpriteWidth);
-  const float directionOffset = direction != Direction::Retain ? (((static_cast<int>(direction) - 2) / 2) * CharacterSpriteHeight) : 0.f;
+  const auto CharacterSpriteWidth = characterWidth();
+  const auto CharacterSpriteHeight = characterHeight();
+  const auto CharacterAtlasWidth = m_isSingleCharacter ? m_sheetTexture.width() : m_sheetTexture.width() / 4;
+  const auto CharacterAtlasHeight = m_isSingleCharacter ? m_sheetTexture.height() : m_sheetTexture.height() / 2;
+  const auto charX = static_cast<float>((character % (m_sheetTexture.width() / CharacterAtlasWidth)) * CharacterAtlasWidth);
+  const auto charY = static_cast<float>((character / (m_sheetTexture.width() / CharacterAtlasWidth)) * CharacterAtlasHeight);
+  const auto patternOffset = static_cast<float>(pattern * CharacterSpriteWidth);
+  const auto directionOffset = direction != Direction::Retain ? (((static_cast<int>(direction) - 2) / 2) * CharacterSpriteHeight) : 0.f;
 
   return {
       PointF{(charX + patternOffset) / m_sheetTexture.width(), (charY + directionOffset) / m_sheetTexture.height()},
@@ -63,7 +63,7 @@ SimpleRect CharacterSheet::getRectForCharacter(int character, int pattern, Direc
   };
 }
 
-SimpleRect CharacterSheet::getRectForTile(int tileId) {
+SimpleRect CharacterSheet::getRectForTile(const int tileId) const {
   if (!m_sheetTexture) {
     return {};
   }

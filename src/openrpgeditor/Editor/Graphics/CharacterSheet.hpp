@@ -7,7 +7,7 @@
 struct CharacterSheet {
   CharacterSheet() = default;
 
-  explicit CharacterSheet(std::string_view sheetName, bool isTileId = false, int tileId = 0);
+  explicit CharacterSheet(std::string_view sheetName, int tileId = 0);
 
   int characterWidth() const;
 
@@ -23,7 +23,7 @@ struct CharacterSheet {
 
   [[nodiscard]] SimpleRect getRectForCharacter(int character, int pattern = 0, Direction direction = Direction::Down) const;
 
-  [[nodiscard]] SimpleRect getRectForTile(int tileId);
+  [[nodiscard]] SimpleRect getRectForTile(int tileId) const;
 
   explicit operator bool() const { return m_sheetTexture.operator bool(); }
 

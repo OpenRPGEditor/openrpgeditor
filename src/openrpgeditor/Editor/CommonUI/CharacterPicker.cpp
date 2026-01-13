@@ -87,7 +87,7 @@ void CharacterPicker::setTileId(int tileId) {
   std::string tileSheet = m_tileSheets[m_selectedSheet + 9];
   setCursorPos(setCursorByTile(m_tileId));
   m_selectedSheet = m_tileId < 256 ? -4 : m_tileId < 512 ? -3 : m_tileId < 768 ? -2 : -1;
-  m_characterSheet.emplace(tileSheet, true, m_tileId);
+  m_characterSheet.emplace(tileSheet, m_tileId);
   m_characterIndex = 0;
   m_pattern = 0;
   m_direction = Direction::Retain;
@@ -201,7 +201,7 @@ std::tuple<bool, bool> CharacterPicker::draw() {
                   m_selectionWidth = Database::instance()->system->tileSize();
                   m_selectionHeight = Database::instance()->system->tileSize();
                   m_tileId = makeTileId(m_selectedSheet + 4, m_selectionX / m_selectionWidth, m_selectionY / m_selectionHeight);
-                  m_characterSheet.emplace(sheet, true, m_tileId);
+                  m_characterSheet.emplace(sheet, m_tileId);
                   if (m_characterSheet->texture()) {
                     m_checkerboardTexture.setSize(m_characterSheet->texture().width(), m_characterSheet->texture().height());
                   }

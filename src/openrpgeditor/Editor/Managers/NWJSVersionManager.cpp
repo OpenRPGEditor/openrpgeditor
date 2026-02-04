@@ -119,7 +119,7 @@ std::string extractVersionFromHtml(const std::string& html) {
   if (std::smatch matches; std::regex_search(html.begin(), html.end(), matches, pattern)) {
     return matches[1]; // Return the extracted version
   }
-  return ""; // Return an empty string if no match is found
+  return {}; // Return an empty string if no match is found
 }
 
 NWJSVersionManager::NWJSVersionManager()
@@ -438,6 +438,10 @@ std::pair<const NWJSVersionManager::Platform*, const NWJSVersionManager::Platfor
 
 void NWJSVersionManager::detectInstalledVersions() {
   auto basePath = m_configPath / kNWJS_DIR;
+  
+  if (!exists(basePath)) {
+    return;
+  }
 
   for (const auto& versionEntry : std::filesystem::directory_iterator(basePath)) {
     if (!versionEntry.is_directory()) {

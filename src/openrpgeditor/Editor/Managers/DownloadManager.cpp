@@ -1,5 +1,6 @@
 #include "DownloadManager.hpp"
 #include <algorithm>
+#include <filesystem>
 
 int writeCallback(const char* ptr, const size_t size, const size_t numMembers, void* userdata) {
   const auto entry = static_cast<DownloadManager::DownloadEntry*>(userdata);
@@ -9,6 +10,7 @@ int writeCallback(const char* ptr, const size_t size, const size_t numMembers, v
   const auto written = fwrite(ptr, size, numMembers, entry->fileHandle());
   fflush(entry->fileHandle());
   entry->addBytesDownloaded(static_cast<curl_off_t>(written));
+  printf("%zu bytes written of %zu\n", written, size * numMembers);
   return static_cast<int>(written);
 }
 
@@ -16,7 +18,16 @@ DownloadManager::DownloadEntry::DownloadEntry(const std::string_view url, const 
 : m_url(url)
 , m_destinationPath(destination)
 , m_owner(owner) {
+
+  if (const std::filesystem::path path(destination); !exists(path.parent_path())) {
+    std::filesystem::create_directories(path.parent_path());
+  }
+  
   m_destination = fopen(m_destinationPath.data(), "wb");
+  if (!m_destination) {
+    printf("Unable to open destination file \"%s\", for writing", m_destinationPath.data());
+    abort();
+  }
   m_curlHandle = curl_easy_init();
 
   if (m_curlHandle) {

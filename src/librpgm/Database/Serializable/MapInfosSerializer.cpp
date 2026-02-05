@@ -2,10 +2,14 @@
 #include "Database/Serializable/MapSerializer.hpp"
 
 void MapInfosSerializer::serialize(std::ofstream& outFile) const {
-  nlohmann::ordered_json data{nullptr};
+  nlohmann::ordered_json data;
 
-  for (int i = 1; i < m_data.m_mapinfos.size(); ++i) {
-    data.push_back(m_data.m_mapinfos[i]);
+  for (const auto& mapInfo : m_data.mapInfos()) {
+    if (mapInfo && mapInfo->id() == 0) {
+      continue;
+    }
+    
+    data.push_back(mapInfo);
   }
 
   outFile << data.dump(4);

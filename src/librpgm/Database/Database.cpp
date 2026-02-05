@@ -244,6 +244,10 @@ void Database::serializeProject() {
   gameConstants->serialize(basePath / "data/Constants.json");
 
   for (const auto& map : mapInfos->mapInfos()) {
+    if (!map) {
+      continue;
+    }
+
     if (map->mapLoaded() && map->isModified()) {
       FileQueue::instance().enqueue(std::make_shared<MapSerializer>(map->map()->clone(), map->id(), std::format("data/Map{:03}.json", map->id())),
                                     [this](const std::shared_ptr<ISerializable>& serializer) {
@@ -277,4 +281,3 @@ void Database::createEmptyProject(const std::string_view gameTitle, const std::s
   tilesets.emplace();
   plugins.emplace();
 }
-

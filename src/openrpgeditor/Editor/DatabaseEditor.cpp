@@ -140,6 +140,10 @@ void DatabaseEditor::drawCategoryHeaders() {
   ImGui::BeginVertical("##database_category_headers", {-1, 0}, 0);
   {
     ImGui::SetNextItemWidth(-1);
+    if (!m_currentTab->hasHeader()) {
+      m_selectedHeaderIndex = -1;
+    }
+    
     if (m_filterByHeader) {
       if (ImGui::BeginCombo("##orpg_database_editor_header_list", m_selectedHeaderIndex == -1 ? "" : m_currentTab->objectName(m_currentTab->header(m_selectedHeaderIndex)).c_str())) {
         int index{0};

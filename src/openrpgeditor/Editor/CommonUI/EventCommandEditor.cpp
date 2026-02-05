@@ -234,8 +234,8 @@ void EventCommandEditor::draw() {
     if (ImGui::BeginTable("##commonevent_code_contents", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY, ImGui::GetContentRegionAvail())) {
       setupTableColors();
       setupTableHeader();
-      const int totalPadding = std::max(static_cast<int>(std::floor(std::log10(m_commands->size()))), 3);
       if (m_commands) {
+        const int totalPadding = std::max(static_cast<int>(std::floor(std::log10(m_commands->size()))), 3);
         float maxWidth = 0.f;
         // Unfortunately ImGui's table doesn't take into account all items, only the visible ones, we want to take into account all commands so the table doesn't jitter around as the user scrolls
         // vertically, this is a bit expensive, but doesn't seem to greatly impact performance, if there is a better way in the future this should be removed/replaced

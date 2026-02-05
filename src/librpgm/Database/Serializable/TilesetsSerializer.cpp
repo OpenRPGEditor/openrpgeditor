@@ -24,6 +24,7 @@ void TilesetsSerializer::serialize(std::ofstream& os) const {
 void TilesetsSerializer::deserialize(std::ifstream& is) {
   try {
     nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
+    m_data.tilesets().clear();
     m_data.tilesets().reserve(data.size());
 
     int i = 0;

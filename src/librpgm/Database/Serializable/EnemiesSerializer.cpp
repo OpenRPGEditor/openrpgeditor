@@ -25,6 +25,7 @@ void EnemiesSerializer::serialize(std::ofstream& os) const {
 void EnemiesSerializer::deserialize(std::ifstream& is) {
   try {
     nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
+    m_data.enemies().clear();
     m_data.enemies().reserve(data.size());
     m_data.disableSignals();
 

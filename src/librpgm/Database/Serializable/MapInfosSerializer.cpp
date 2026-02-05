@@ -18,6 +18,7 @@ void MapInfosSerializer::serialize(std::ofstream& outFile) const {
 void MapInfosSerializer::deserialize(std::ifstream& inFile) {
   try {
     nlohmann::ordered_json data = nlohmann::ordered_json::parse(inFile);
+    m_data.mapInfos().clear();
     m_data.mapInfos().reserve(data.size());
 
     for (const auto& [_, value] : data.items()) {

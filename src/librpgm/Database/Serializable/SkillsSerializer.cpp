@@ -26,6 +26,7 @@ void SkillsSerializer::serialize(std::ofstream& os) const {
 void SkillsSerializer::deserialize(std::ifstream& is) {
   try {
     nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
+    m_data.skills().clear();
     m_data.skills().reserve(data.size());
 
     int i = 0;

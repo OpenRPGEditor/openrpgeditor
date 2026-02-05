@@ -25,6 +25,7 @@ void TroopsSerializer::serialize(std::ofstream& os) const {
 void TroopsSerializer::deserialize(std::ifstream& is) {
   try {
     nlohmann::ordered_json data = nlohmann::json::parse(is);
+    m_data.troops().clear();
     m_data.troops().reserve(data.size());
 
     int i = 0;

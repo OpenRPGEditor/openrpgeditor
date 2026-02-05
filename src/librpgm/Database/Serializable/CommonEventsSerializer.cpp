@@ -20,6 +20,7 @@ void CommonEventsSerializer::serialize(std::ofstream& os) const {
 void CommonEventsSerializer::deserialize(std::ifstream& is) {
   try {
     nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
+    m_data.events().clear();
     m_data.events().reserve(data.size());
     m_data.disableSignals();
 

@@ -25,6 +25,7 @@ void ArmorsSerializer::serialize(std::ofstream& os) const {
 void ArmorsSerializer::deserialize(std::ifstream& is) {
   try {
     nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
+    m_data.armors().clear();
     m_data.armors().reserve(data.size());
     m_data.disableSignals();
 

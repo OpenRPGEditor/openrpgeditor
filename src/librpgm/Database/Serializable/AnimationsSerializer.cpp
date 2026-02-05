@@ -25,6 +25,7 @@ void AnimationsSerializer::serialize(std::ofstream& os) const {
 void AnimationsSerializer::deserialize(std::ifstream& is) {
   try {
     nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
+    m_data.animations().clear();
     m_data.animations().reserve(data.size());
     m_data.disableSignals();
 

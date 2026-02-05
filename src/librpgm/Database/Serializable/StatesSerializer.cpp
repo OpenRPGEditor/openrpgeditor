@@ -24,6 +24,7 @@ void StatesSerializer::serialize(std::ofstream& os) const {
 void StatesSerializer::deserialize(std::ifstream& is) {
   try {
     nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
+    m_data.states().clear();
     m_data.states().reserve(data.size());
     m_data.disableSignals();
 

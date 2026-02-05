@@ -25,6 +25,7 @@ void ItemsSerializer::serialize(std::ofstream& os) const {
 void ItemsSerializer::deserialize(std::ifstream& is) {
   try {
     nlohmann::ordered_json data = nlohmann::ordered_json::parse(is);
+    m_data.items().clear();
     m_data.items().reserve(data.size());
     m_data.disableSignals();
 

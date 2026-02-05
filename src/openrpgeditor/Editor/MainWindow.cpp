@@ -142,7 +142,13 @@ void MainWindow::save() {
     }
 
     if (!package.empty()) {
-      package["name"] = m_database->system->gameTitle();
+      if (package["name"].empty()) {
+        if (!m_database->system->gameTitle().empty()) {
+          package["name"] = m_database->system->gameTitle();
+        } else {
+          package["name"] = "untitled_game";
+        }
+      }
       if (package.contains("window") && package["window"].is_object()) {
         package["window"]["title"] = m_database->system->gameTitle();
       }

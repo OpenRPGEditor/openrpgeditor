@@ -6,6 +6,7 @@ void MapInfosSerializer::serialize(std::ofstream& outFile) const {
 
   for (const auto& mapInfo : m_data.mapInfos()) {
     if (mapInfo && mapInfo->id() == 0) {
+      data.push_back(nullptr);
       continue;
     }
     

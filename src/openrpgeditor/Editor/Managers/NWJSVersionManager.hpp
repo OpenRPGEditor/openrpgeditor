@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../../../cmake-build-release/_deps/sdl3-src/src/video/khronos/vulkan/vulkan_core.h"
 #include "../Editor/CommonUI/IDialogController.hpp"
 #include "../Editor/Settings.hpp"
 #include "DownloadManager.hpp"
@@ -58,7 +57,7 @@ private:
   bool getListing();
   void addDownload(std::string_view version, std::string_view platform, std::string_view architecture, std::string_view extension, bool sdk) const;
   static std::filesystem::path archivePathForPlatformAndArch(const std::string& version, const std::filesystem::path& baseDirectory, const std::string& platform, const std::string& arch,
-                                                      const std::string& extension, bool sdk);
+                                                             const std::string& extension, bool sdk);
   void queueSelectedVersionForExtraction();
   void detectInstalledVersions();
 

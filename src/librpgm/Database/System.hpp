@@ -58,6 +58,7 @@ public:
   const std::vector<std::string>& armorTypes() const;
   [[nodiscard]] std::string armorType(int id) const;
   void setArmorType(int id, const std::string& value);
+  void resizeArmorTypes(int size);
 
   const std::vector<Motion>& attackMotions() const;
   void setAttackMotions(const std::vector<Motion>& value);
@@ -92,6 +93,7 @@ public:
 
   const std::vector<std::string>& elements() const;
   void setElements(const std::vector<std::string>& value);
+  void resizeElements(int size);
 
   [[nodiscard]] std::string element(int id) const;
   void setElement(int id, const std::string& value);
@@ -101,6 +103,7 @@ public:
 
   [[nodiscard]] std::string equipType(int id) const;
   void setEquipType(int id, const std::string& value);
+  void resizeEquipTypes(int size);
 
   const std::string& gameTitle() const;
   void setGameTitle(const std::string& value);
@@ -158,6 +161,7 @@ public:
 
   [[nodiscard]] std::string skillType(int id) const;
   void setSkillType(int id, const std::string& value);
+  void resizeSkillTypes(int size);
 
   std::vector<Audio>& sounds();
   const std::vector<Audio>& sounds() const;
@@ -227,6 +231,7 @@ public:
 
   [[nodiscard]] std::string weaponType(int id) const;
   void setWeaponType(int id, std::string_view value);
+  void resizeWeaponTypes(int size);
 
   const std::array<int, 3>& windowTone() const;
   void setWindowTone(const std::array<int, 3>& value);

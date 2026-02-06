@@ -9,7 +9,7 @@ void MapInfosSerializer::serialize(std::ofstream& outFile) const {
       data.push_back(nullptr);
       continue;
     }
-    
+
     data.push_back(mapInfo);
   }
 

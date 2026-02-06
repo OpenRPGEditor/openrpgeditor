@@ -139,28 +139,28 @@ void DBTypesTab::draw() {
         m_confirmationClosed = true;
         switch (m_maxEditType) {
         case EditType::Element: {
-          // m_system.elements().resize(m_editMax + 1);
-          // m_selectedElement = m_system.elements().size() - 1;
+          m_system->resizeElements(m_editMax + 1);
+          m_selectedElement = m_system->elements().size() - 1;
           break;
         }
         case EditType::Skill: {
-          // m_system.skillTypes().resize(m_editMax + 1);
-          // m_selectedSkill = m_system.skillTypes().size() - 1;
+          m_system->resizeSkillTypes(m_editMax + 1);
+          m_selectedSkill = m_system->skillTypes().size() - 1;
           break;
         }
         case EditType::Weapon: {
-          // m_system.weaponTypes().resize(m_editMax + 1);
-          // m_selectedWeapon = m_system.weaponTypes().size() - 1;
+          m_system->resizeWeaponTypes(m_editMax + 1);
+          m_selectedWeapon = m_system->weaponTypes().size() - 1;
           break;
         }
         case EditType::Armor: {
-          // m_system.armorTypes().resize(m_editMax + 1);
-          // m_selectedArmor = m_system.armorTypes().size() - 1;
+          m_system->resizeArmorTypes(m_editMax + 1);
+          m_selectedArmor = m_system->armorTypes().size() - 1;
           break;
         }
         case EditType::Equipment: {
-          // m_system.equipTypes().resize(m_editMax + 1);
-          // m_selectedEquipment = (m_system.equipTypes().size() - 1 > 0) ? m_system.equipTypes().size() - 1 : 0;
+          m_system->resizeEquipTypes(m_editMax + 1);
+          m_selectedEquipment = (m_system->equipTypes().size() - 1 > 0) ? m_system->equipTypes().size() - 1 : 0;
           break;
         }
         }

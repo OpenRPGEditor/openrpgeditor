@@ -139,9 +139,25 @@ void DBArmorsTab::draw() {
             ImGui::BeginGroup();
             {
               ImGui::Text("Equipment Type:");
-              // ImGui::SetNextItemWidth(160);
+              ImGui::SetNextItemWidth(170);
               ImGui::PushID("##orpg_database_armors_equipmenttype");
-              // TODO: Equipment Type combobox
+              if (ImGui::BeginCombo("##orpg_database_armors_etype", Database::instance()->system->equipType(m_selectedArmor->etypeId()).c_str())) {
+                int index{0};
+                for (auto v : Database::instance()->system->equipTypes()) {
+                  bool selected = index == m_selectedArmor->etypeId();
+                  if (index == 0) {
+                    if (ImGui::Selectable(std::format("None##_{}", index).c_str(), selected)) {
+                      m_selectedArmor->setEtypeId(index);
+                    }
+                  } else {
+                    if (ImGui::Selectable(Database::instance()->system->equipType(index) == "" ? std::format("#{:02}", index).c_str() : std::format("{}##_{}", v, index).c_str(), selected)) {
+                      m_selectedArmor->setEtypeId(index);
+                    }
+                  }
+                  index++;
+                }
+                ImGui::EndCombo();
+              }
               ImGui::PopID();
             }
             ImGui::EndGroup();

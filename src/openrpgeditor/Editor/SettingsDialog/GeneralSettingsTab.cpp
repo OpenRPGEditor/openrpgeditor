@@ -4,6 +4,7 @@
 #include "Editor/Settings.hpp"
 
 #include "Editor/Application.hpp"
+#include "Editor/Managers/SettingsManager.hpp"
 
 #include <imgui.h>
 #include <SDL3/SDL_dialog.h>
@@ -27,11 +28,17 @@ void GeneralSettingsTab::draw() {
     }
     experimentalFeaturesConfirmation.end();
     const bool confirmed = !!strncasecmp(m_confirmationText, "i know what i'm doing", sizeof(m_confirmationText));
-    ImGui::BeginDisabled(confirmed && !Settings::instance()->enableExperimentalFeatures);
-    ImGui::Checkbox(trNOOP("Experimental"), &Settings::instance()->enableExperimentalFeatures);
+    bool enableExperimentalFeatures = SettingsManager::instance().getValue("enableExperimentalFeatures", false);
+    ImGui::BeginDisabled(confirmed && !enableExperimentalFeatures);
+    if (ImGui::Checkbox(trNOOP("Experimental"), &enableExperimentalFeatures)) {
+      SettingsManager::instance().setValue("enableExperimentalFeatures", enableExperimentalFeatures);
+    }
     ImGui::EndDisabled();
-    ImGui::BeginDisabled(confirmed && !Settings::instance()->enableDebugFeatures);
-    ImGui::Checkbox(trNOOP("Debug"), &Settings::instance()->enableDebugFeatures);
+    bool enableDebugFeatures = SettingsManager::instance().getValue("enableDebugFeatures", false);
+    ImGui::BeginDisabled(confirmed && !enableDebugFeatures);
+    if (ImGui::Checkbox(trNOOP("Debug"), &enableDebugFeatures)) {
+      SettingsManager::instance().setValue("enableDebugFeatures", enableDebugFeatures);
+    }
     ImGui::EndDisabled();
   }
   experimentalFeatures.end();

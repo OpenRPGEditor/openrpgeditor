@@ -174,7 +174,7 @@ void RenderImage::fillRect(const RectF& rect, const Color& color) const {
   auto* renderer = App::APP->getWindow()->getNativeRenderer();
 
   if (SDL_GetRenderTarget(renderer) != m_renderImage[m_workBuffer]) {
-    APP_ERROR("RenderImage::eraseRect() called when on non-matching render target!");
+    APP_ERROR("RenderImage::fillRect() called when on non-matching render target!");
     return;
   }
   setCurrentCompositionMode();

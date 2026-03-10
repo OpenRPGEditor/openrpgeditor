@@ -90,21 +90,22 @@ void TilemapView::render() {
     m_lowerTiles.unlock();
   }
   if (!m_upperTileIds.empty()) {
-    m_upperTiles.lock();
-    // First clear
-    for (const auto& [x, y, _] : m_upperTileIds) {
-      float dx = x;
-      float dy = y;
-      m_renderHelper.clearRect(m_upperTiles, {dx, dy, realTileWidth(), realTileHeight()});
-    }
+    if (m_upperTiles.lock()) {
+      // First clear
+      for (const auto& [x, y, _] : m_upperTileIds) {
+        float dx = x;
+        float dy = y;
+        m_renderHelper.clearRect(m_upperTiles, {dx, dy, realTileWidth(), realTileHeight()});
+      }
 
-    // Now render all the tiles
-    for (const auto& [x, y, id] : m_upperTileIds) {
-      float dx = x;
-      float dy = y;
-      m_renderHelper.drawTile(m_upperTiles, {dx, dy, realTileWidth(), realTileHeight()}, id, m_tilesetTextures, false);
+      // Now render all the tiles
+      for (const auto& [x, y, id] : m_upperTileIds) {
+        float dx = x;
+        float dy = y;
+        m_renderHelper.drawTile(m_upperTiles, {dx, dy, realTileWidth(), realTileHeight()}, id, m_tilesetTextures, false);
+      }
+      m_upperTiles.unlock();
     }
-    m_upperTiles.unlock();
   }
 
   if (m_frameDelay > 0) {

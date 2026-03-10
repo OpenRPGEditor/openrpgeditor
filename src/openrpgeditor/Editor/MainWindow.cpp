@@ -589,6 +589,8 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
     ImGui::EndDisabled();
 
     drawShutdownSplash(shuttingDown);
+    
+    m_aboutDialog.draw();
 
     // static JSONInspector inspector;
     // if (inspector.openFile("/home/antidote/Projects/vhmv/VHMV/package.json")) {

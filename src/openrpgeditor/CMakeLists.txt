@@ -470,6 +470,8 @@ add_library(
         Editor/Script/ByteCodeStream.hpp
         Editor/Script/Bindings.cpp
         Editor/Script/Bindings.hpp
+        Editor/Script/DatabaseEditorBinding.cpp
+        Editor/Script/DatabaseEditorBinding.hpp
         Editor/Tilemap/TilemapView.cpp
         Editor/Tilemap/TilemapView.hpp
         Editor/CommonUI/SoundPicker.cpp

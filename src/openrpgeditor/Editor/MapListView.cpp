@@ -185,14 +185,11 @@ void MapListView::recursiveDrawTree(MapInfo& in) {
 #define PRINT_MAP_ORDERING 0
 #if PRINT_MAP_ORDERING
 static bool orderingPrinted = false;
-void recursivePrintOrdering(const MapInfo& in) {
-  static int indent = 0;
-  std::cout << std::string(indent, '\t') + std::format("id {} name {} order {}", in.id, in.name, in.order) << std::endl;
-  indent++;
+void recursivePrintOrdering(const MapInfo& in, const int indent) {
+  std::cout << std::string(indent, '\t') + std::format("id {} name {} order {}", in.id(), in.name(), in.order()) << std::endl;
   for (auto& mapInfo : in.children()) {
-    recursivePrintOrdering(*mapInfo);
+    recursivePrintOrdering(*mapInfo, indent + 1);
   }
-  indent--;
 }
 #endif
 
@@ -240,7 +237,7 @@ void MapListView::draw() {
 
 #if PRINT_MAP_ORDERING
   if (m_mapInfos && !orderingPrinted) {
-    recursivePrintOrdering(m_mapInfos->root());
+    recursivePrintOrdering(m_mapInfos->root(), 0);
     orderingPrinted = true;
   }
 #endif

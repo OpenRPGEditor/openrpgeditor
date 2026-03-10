@@ -80,13 +80,11 @@ struct EventDeleteUndoCommand final : IUndoCommand {
       return true;
     }
     m_map->deleteEvent(m_event.id());
-    
+
     return false;
   }
 
-  std::string description() override {
-    return trFormat("Create Event {} at {},{}", Database::eventNameAndId(&m_event), m_event.x(), m_event.y());
-  }
+  std::string description() override { return trFormat("Create Event {} at {},{}", Database::eventNameAndId(&m_event), m_event.x(), m_event.y()); }
 
 private:
   Map* m_map = nullptr;
@@ -825,14 +823,16 @@ void MapEditor::draw(const bool closeRequested) {
           win->DrawList->AddImage(m_tilemapView.upperTiles().get(), win->ContentRegionRect.Min + ImVec2{0, 0}, win->ContentRegionRect.Min + size);
         }
 
-        // win->DrawList->AddImage(m_tilemapView.debugTexture().get(), win->ContentRegionRect.Min + ImVec2{0, 0}, win->ContentRegionRect.Min + size);
-
         if (m_prisonMode) {
           // drawGrid(win);
         }
         if (ImGui::IsWindowHovered() || m_parent->editMode() == EditMode::Event) {
           m_tileCursor.draw(win);
         }
+
+        // ORE_CHECK_DEBUG_BEGIN()
+        // win->DrawList->AddImage(m_tilemapView.debugTexture().get(), win->WorkRect.Min + ImVec2{0, 0}, win->WorkRect.Min + size);
+        // ORE_CHECK_DEBUG_END()
 
         // if (m_tileCursor.mode() != MapCursorMode::Keyboard && !m_scaleChanged) {
         //   static float tempX = win->Scroll.x;
@@ -901,23 +901,13 @@ double MapEditor::roundYWithDirection(const double y, const Direction d) { retur
 
 bool MapEditor::checkLayeredTilesFlags(const double x, const double y, const int bit) const {
   auto flags = m_tilemapView.tilesetFlags();
-  return std::ranges::any_of(m_tilemapView.layeredTiles(x, y), [&bit, &flags](const auto& tileId) {
-    return (flags[tileId].value_or(0) & bit) != 0;
-  });
+  return std::ranges::any_of(m_tilemapView.layeredTiles(x, y), [&bit, &flags](const auto& tileId) { return (flags[tileId].value_or(0) & bit) != 0; });
 }
 
-bool MapEditor::isLadder(const double x, const double y) const {
-  return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x20); 
-}
+bool MapEditor::isLadder(const double x, const double y) const { return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x20); }
 
-bool MapEditor::isBush(const double x, const double y) const {
-  return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x40); 
-}
+bool MapEditor::isBush(const double x, const double y) const { return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x40); }
 
-bool MapEditor::isCounter(const double x, const double y) const {
-  return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x80); 
-}
+bool MapEditor::isCounter(const double x, const double y) const { return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x80); }
 
-bool MapEditor::isDamageFloor(const double x, const double y) const {
-  return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x100); 
-}
+bool MapEditor::isDamageFloor(const double x, const double y) const { return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x100); }

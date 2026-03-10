@@ -1,7 +1,9 @@
 #include "Editor/ApplicationTheme.hpp"
 
+#include "Managers/SettingsManager.hpp"
 #include "nlohmann/json.hpp"
 #include "Settings.hpp"
+
 #include <fstream>
 
 void to_json(nlohmann::ordered_json& j, const ImVec2& v) {
@@ -197,7 +199,7 @@ std::shared_ptr<ApplicationTheme> ApplicationTheme::createFromStyle(const std::s
   ApplicationTheme theme;
 
   if (scaled) {
-    style.ScaleAllSizes(1.f / Settings::instance()->uiScale);
+    style.ScaleAllSizes(1.f / SettingsManager::instance().getValue<float>("uiScale", 1.f));
   }
 
   theme.m_isDark = dark;

@@ -40,14 +40,10 @@ private:
 };
 
 static float calculateProgressWidth(const float initialTime, const float currentTime, const float maxWidth) {
-  if (initialTime <= 0.0f)
+  if (initialTime <= 0.0f) {
     return 0.0f;
-
-  float ratio = currentTime / initialTime;
-
-  ratio = std::clamp(ratio, 0.0f, 1.0f);
-
-  return ratio * maxWidth;
+  }
+  return std::clamp(currentTime / initialTime, 0.0f, 1.0f) * maxWidth;
 }
 
 class TimedNotification : public SimpleNotification {

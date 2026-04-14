@@ -536,6 +536,8 @@ add_library(
         Editor/Managers/ArchiveJob.hpp
         Editor/Managers/ArchiveManager.cpp
         Editor/Managers/ArchiveManager.hpp
+        Editor/Managers/NotificationCenter.cpp
+        Editor/Managers/NotificationCenter.hpp
         
         Editor/StopWatch.cpp
         Editor/StopWatch.hpp

@@ -3,6 +3,7 @@
 #include "../Editor/CommonUI/IDialogController.hpp"
 #include "../Editor/Settings.hpp"
 #include "DownloadManager.hpp"
+#include "NotificationCenter.hpp"
 
 #include <string>
 #include <vector>
@@ -68,4 +69,5 @@ private:
   bool m_isOpen{false};
 
   std::vector<Platform> m_platforms;
+  std::vector<MultiProgressNotification<2>> m_extractProgressNotifications;
 };

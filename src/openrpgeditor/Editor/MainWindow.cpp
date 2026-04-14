@@ -5,26 +5,26 @@
 #include "Database/Serializable/FileQueue.hpp"
 #include "Database/Versions.hpp"
 #include "Editor/Application.hpp"
+#include "Editor/EditorPlugin/EditorPluginManager.hpp"
 #include "Editor/ImGuiExt/ImGuiNotify.hpp"
 #include "Editor/ImGuiExt/ImGuiUtils.hpp"
+#include "Editor/JSONInspector.hpp"
+#include "Editor/LCF_Importer/LCF_Importer.hpp"
 #include "Editor/Log.hpp"
+#include "Editor/Managers/MapToolsManager.hpp"
+#include "Editor/Managers/NotificationCenter.hpp"
+#include "Editor/Managers/SettingsManager.hpp"
+#include "Editor/Script/ScriptEngine.hpp"
 #include "Editor/SettingsDialog/GeneralSettingsTab.hpp"
+#include "Editor/SettingsDialog/RPGMakerLocationAndVersionTab.hpp"
+#include "Editor/SettingsDialog/UISettingsTab.hpp"
 #include "Editor/Utils.hpp"
+#include "Editor/Window.hpp"
+
 #include "IconsFontAwesome6.h"
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "imgui_stacklayout.h"
-#include "JSONInspector.hpp"
-
-#include "EditorPlugin/EditorPluginManager.hpp"
-#include "LCF_Importer/LCF_Importer.hpp"
-#include "Script/ScriptEngine.hpp"
-#include "SettingsDialog/RPGMakerLocationAndVersionTab.hpp"
-#include "SettingsDialog/UISettingsTab.hpp"
-
-#include "Editor/Window.hpp"
-#include "Managers/MapToolsManager.hpp"
-#include "Managers/SettingsManager.hpp"
 
 #include <array>
 #include <clip.h>
@@ -589,8 +589,15 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
     ImGui::EndDisabled();
 
     drawShutdownSplash(shuttingDown);
-    
+
     m_aboutDialog.draw();
+
+    static SimpleNotification s("Test", "Sample Notification!");
+    static TimedNotification t("Test", "Timed Notification!", 15);
+    static ProgressNotification p("Test Progress", "Progress notification!", 1);
+    p.addProgress(1);
+
+    NotificationCenter::instance().draw();
 
     // static JSONInspector inspector;
     // if (inspector.openFile("/home/antidote/Projects/vhmv/VHMV/package.json")) {

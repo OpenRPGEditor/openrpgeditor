@@ -212,57 +212,72 @@ void DBClassesTab::draw() {
           {
             ImGui::SeparatorText("Parameter Curves");
             if (ImPlot::BeginPlot("Max HP", ImGui::GetDPIScaledSize(ParameterGraphSize), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoMouseText)) {
-              //ImPlot::SetNextFillStyle(ImVec4{.81f, .5f, .37f, 1.f});
+
+              ImPlotSpec spec;
+              spec.MarkerFillColor = ImVec4{.81f, .5f, .37f, 1.f};
+
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 9999.f, ImPlotCond_Always);
               if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
-              ImPlot::PlotShaded("##MaxHP", m_selectedClass->params()[0].data(), m_selectedClass->params()[0].size());
+              ImPlot::PlotShaded("##MaxHP", m_selectedClass->params()[0].data(), m_selectedClass->params()[0].size(), 0, 1, 0, spec);
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
             if (ImPlot::BeginPlot("Max MP", ImGui::GetDPIScaledSize(ParameterGraphSize), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoMouseText)) {
 
-              //ImPlot::SetNextFillStyle(ImVec4{.31f, .5f, .87f, 1.f});
+              ImPlotSpec spec;
+              spec.MarkerFillColor = ImVec4{.31f, .5f, .87f, 1.f};
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 9999.f, ImPlotCond_Always);
               if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
-              ImPlot::PlotShaded("##MaxMP", m_selectedClass->params()[1].data(), m_selectedClass->params()[1].size());
+              ImPlot::PlotShaded("##MaxMP", m_selectedClass->params()[1].data(), m_selectedClass->params()[1].size(), 0, 1, 0, spec);
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
             if (ImPlot::BeginPlot("Attack", ImGui::GetDPIScaledSize(ParameterGraphSize), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoMouseText)) {
-              //ImPlot::SetNextFillStyle(ImVec4{.75f, .25f, .37f, 1.f});
+
+              ImPlotSpec spec;
+              spec.MarkerFillColor = ImVec4{.75f, .25f, .37f, 1.f};
+
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
               if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
-              ImPlot::PlotShaded("##Attack", m_selectedClass->params()[2].data(), m_selectedClass->params()[2].size());
+              ImPlot::PlotShaded("##Attack", m_selectedClass->params()[2].data(), m_selectedClass->params()[2].size(), 0, 1, 0, spec);
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
             if (ImPlot::BeginPlot("Defense", ImGui::GetDPIScaledSize(ParameterGraphSize), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoMouseText)) {
-              //ImPlot::SetNextFillStyle(ImVec4{.56f, .69f, .37f, 1.f});
+
+              ImPlotSpec spec;
+              spec.MarkerFillColor = ImVec4{.56f, .69f, .37f, 1.f};
+
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
               if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
-              ImPlot::PlotShaded("##Defense", m_selectedClass->params()[3].data(), m_selectedClass->params()[3].size());
+              ImPlot::PlotShaded("##Defense", m_selectedClass->params()[3].data(), m_selectedClass->params()[3].size(), 0, 1, 0, spec);
               ImPlot::EndPlot();
             }
             if (ImPlot::BeginPlot("M.Attack", ImGui::GetDPIScaledSize(ParameterGraphSize), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoMouseText)) {
-              //ImPlot::SetNextFillStyle(ImVec4{.75f, .31f, .69f, 1.f});
+              ImPlotSpec spec;
+              spec.MarkerFillColor = ImVec4{.75f, .31f, .69f, 1.f};
+
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
               if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
-              ImPlot::PlotShaded("##M.Attack", m_selectedClass->params()[4].data(), m_selectedClass->params()[4].size());
+              ImPlot::PlotShaded("##M.Attack", m_selectedClass->params()[4].data(), m_selectedClass->params()[4].size(), 0, 1, 0, spec);
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
             if (ImPlot::BeginPlot("M.Defense", ImGui::GetDPIScaledSize(ParameterGraphSize), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoMouseText)) {
-              //ImPlot::SetNextFillStyle(ImVec4{.25f, .62f, .25f, 1.f});
+
+              ImPlotSpec spec;
+              spec.MarkerFillColor = ImVec4{.25f, .62f, .25f, 1.f};
+
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
@@ -272,22 +287,27 @@ void DBClassesTab::draw() {
             }
             ImGui::SameLine();
             if (ImPlot::BeginPlot("Agility", ImGui::GetDPIScaledSize(ParameterGraphSize), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoMouseText)) {
-              //ImPlot::SetNextFillStyle(ImVec4{.31f, .69f, .87f, 1.f});
+              ImPlotSpec spec;
+              spec.MarkerFillColor = ImVec4{.31f, .69f, .87f, 1.f};
+
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
               if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
-              ImPlot::PlotShaded("##Agility", m_selectedClass->params()[6].data(), m_selectedClass->params()[6].size());
+              ImPlot::PlotShaded("##Agility", m_selectedClass->params()[6].data(), m_selectedClass->params()[6].size(), 0, 1, 0, spec);
               ImPlot::EndPlot();
             }
             ImGui::SameLine();
             if (ImPlot::BeginPlot("Luck", ImGui::GetDPIScaledSize(ParameterGraphSize), ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoMouseText)) {
-              //ImPlot::SetNextFillStyle(ImVec4{.81f, .69f, .25f, 1.f});
+
+              ImPlotSpec spec;
+              spec.MarkerFillColor = ImVec4{.81f, .69f, .25f, 1.f};
+
               ImPlot::SetupAxis(ImAxis_X1, nullptr, ImPlotAxisFlags_NoDecorations | ImPlotAxisFlags_AutoFit);
               ImPlot::SetupAxis(ImAxis_Y1, nullptr, ImPlotAxisFlags_NoDecorations);
               ImPlot::SetupAxesLimits(0.f, 99.f, 0.f, 999.f, ImPlotCond_Always);
               if (ImGui::IsItemClicked() && ImGui::GetMouseClickedCount(ImGuiMouseButton_Left) >= 2) {}
-              ImPlot::PlotShaded("##Luck", m_selectedClass->params()[7].data(), m_selectedClass->params()[7].size());
+              ImPlot::PlotShaded("##Luck", m_selectedClass->params()[7].data(), m_selectedClass->params()[7].size(), 0, 1, 0, spec);
               ImPlot::EndPlot();
             }
           }

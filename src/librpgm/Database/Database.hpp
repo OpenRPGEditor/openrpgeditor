@@ -278,14 +278,13 @@ struct Database {
     return nameOrId(eventName(id), id, 3);
   }
 
-
   [[nodiscard]] static std::string eventNameAndId(const Event* event) {
     if (!event) {
       return InvalidDataName.data();
     }
     return nameAndId(event->name(), event->id(), 3);
   }
-  
+
   [[nodiscard]] std::string eventNameAndId(const int id) const {
     if (id == -1) {
       return trNOOP("Player");
@@ -337,7 +336,7 @@ struct Database {
   [[nodiscard]] std::string equipTypeNameAndId(const int id) const { return nameAndId(equipTypeName(id), id, 2); }
 
   [[nodiscard]] std::pair<Actor*, Class*> featureObjects(const int actorId) const {
-    const auto actor = actors ? nullptr : actors->actor(actorId);
+    const auto actor = actors ? actors->actor(actorId) : nullptr;
     if (!actor || !classes) {
       return {};
     }
@@ -469,7 +468,7 @@ struct Database {
     if (!weapons || !armors) {
       return false;
     }
-    
+
     if (dataId <= 0 || isEquipTypeSealed(actorId, etypeId)) {
       return false;
     }

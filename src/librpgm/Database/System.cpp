@@ -1849,13 +1849,13 @@ rpgmutils::signal<void(System*, const Audio&)>& System::victoryMeModified() {
   return *m_victoryMeModified;
 }
 rpgmutils::signal<void(System*, const std::vector<std::string>&)>& System::weaponTypesModified() {
-  if (m_weaponTypesModified) {
+  if (!m_weaponTypesModified) {
     m_weaponTypesModified.emplace();
   }
   return *m_weaponTypesModified;
 }
 rpgmutils::signal<void(System*, const std::array<int, 3>&)>& System::windowToneModified() {
-  if (m_windowToneModified) {
+  if (!m_windowToneModified) {
     m_windowToneModified.emplace();
   }
   return *m_windowToneModified;

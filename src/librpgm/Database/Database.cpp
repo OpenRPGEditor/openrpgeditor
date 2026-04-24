@@ -157,7 +157,7 @@ void Database::load() {
   // plugins.onModified().connect<&Database::onAnyModifiableModified>(this);
   emit_signal(pluginsLoaded());
   RPGM_INFO("Loading GameConstants");
-  gameConstants = GameConstants::load(basePath / "/data/Constants.json");
+  gameConstants = GameConstants::load(basePath / "data/Constants.json");
   // gameConstants.onModified().connect<&Database::onAnyModifiableModified>(this);
   emit_signal(gameConstantsLoaded());
   RPGM_INFO("Loading Templates");

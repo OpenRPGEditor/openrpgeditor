@@ -208,10 +208,10 @@ void Actor::addEquip(const int equip) {
 }
 
 void Actor::setEquip(const int index, const int equip) {
-  assert(index < m_equips.size());
+  // assert(index < m_equips.size());
   MODIFIABLE_SET_OLD_VALUE(equips);
   if (m_equips.size() <= index) {
-    m_equips.resize(index - m_equips.size());
+    m_equips.resize(m_equips.size() + (index + 1 - m_equips.size()));
   }
   m_equips[index] = equip;
   if (!signalsDisabled()) {

@@ -362,6 +362,9 @@ void DBActorsTab::draw() {
 
       const auto preview = m_chosenDataId == 0 ? "None" : Database::instance()->itemDisplayName(m_chosenEquipId <= 1, m_chosenDataId);
       if (ImGui::BeginCombo("##equip_combo", preview.c_str())) {
+        if (ImGui::Selectable(std::format("{}##_{}", "None", 0).c_str(), m_chosenDataId == 0)) {
+          m_chosenDataId = 0;
+        }
         for (const auto& equip : equipList) {
           if (ImGui::Selectable(std::format("{}##_{}", Database::instance()->itemDisplayName(m_chosenEquipId <= 1, equip), equip).c_str(), m_chosenDataId == equip)) {
             m_chosenDataId = equip;

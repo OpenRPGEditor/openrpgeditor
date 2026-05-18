@@ -145,11 +145,13 @@ void DBArmorsTab::draw() {
                 int index{0};
                 for (auto v : Database::instance()->system->equipTypes()) {
                   bool selected = index == m_selectedArmor->etypeId();
-                  if (index == 0) {
-                    if (ImGui::Selectable(std::format("None##_{}", index).c_str(), selected)) {
-                      m_selectedArmor->setEtypeId(index);
-                    }
-                  } else {
+                  // if (index == 0) {
+                  //   if (ImGui::Selectable(std::format("None##_{}", index).c_str(), selected)) {
+                  //     m_selectedArmor->setEtypeId(index);
+                  //   }
+                  // } else {
+                  // }
+                  if (index > 0) {
                     if (ImGui::Selectable(Database::instance()->system->equipType(index) == "" ? std::format("#{:02}", index).c_str() : std::format("{}##_{}", v, index).c_str(), selected)) {
                       m_selectedArmor->setEtypeId(index);
                     }

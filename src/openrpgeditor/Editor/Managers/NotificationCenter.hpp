@@ -178,9 +178,13 @@ public:
 
   void draw();
 
+  void setOpen(const bool open) { m_isOpen = open; }
+  [[nodiscard]] bool isOpen() const { return m_isOpen; }
+
 private:
   NotificationCenter() = default;
 
   std::deque<INotification*> m_notifications;
   bool m_isOpen = true;
+  bool m_isPinned = false;
 };

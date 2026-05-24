@@ -47,4 +47,5 @@ private:
   float m_splitterWidth = 300.f;
   bool m_changeIntDialogOpen = false;
   bool m_changeConfirmDialogOpen = false;
+  std::string m_lastListFilterKey;
 };

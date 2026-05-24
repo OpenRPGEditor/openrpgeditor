@@ -10,8 +10,31 @@
 
 #include "imgui.h"
 
+#include <algorithm>
+#include <cctype>
+#include <format>
 #include <string>
+#include <vector>
 
+bool containsInsensitive(std::string_view pool, std::string_view search) {
+  if (search.empty()) {
+    return true;
+  }
+
+  return !std::ranges::search(pool, search, [](const char a, const char b) {
+           return std::tolower(static_cast<unsigned char>(a)) == std::tolower(static_cast<unsigned char>(b));
+         }).empty();
+}
+
+bool matchesCommonEventFilter(const CommonEvent& commonEvent, std::string_view searchString) {
+  if (searchString.empty()) {
+    return true;
+  }
+
+  const int id = commonEvent.id();
+  const std::string idText = std::to_string(id);
+  return containsInsensitive(commonEvent.name(), searchString) || containsInsensitive(Database::instance()->commonEventNameAndId(id), searchString) || containsInsensitive(idText, searchString);
+}
 
 void DBCommonEventsTab::draw() {
   if (picker) {
@@ -39,78 +62,79 @@ void DBCommonEventsTab::draw() {
       ImGui::BeginGroup();
       {
         ImGui::SeparatorText("Common Events");
-        ImGui::BeginChild("##orpg_commonevents_editor_commonevent_list", ImVec2{0, ImGui::GetContentRegionMax().y - ((calc.y + ImGui::GetStyle().ItemSpacing.y) * 4)});
+        const float footerHeight = ImGui::GetFrameHeightWithSpacing() + ImGui::GetTextLineHeightWithSpacing() * 2.f;
+        ImGui::BeginChild("##orpg_commonevents_editor_commonevent_list", ImVec2{0.f, -footerHeight});
         {
-          ImGui::BeginGroup();
-          {
-            ImGuiListClipper clipper;
-            int itemCount = m_events->count() + 1;
-            // if (m_parent->isFilteredByCategory()) {
-            //   // if (commonEvent.id() <= m_categoryStart || m_categoryEnd == -1 ? true : commonEvent.id() >= m_categoryEnd) {
-            //   //   continue;
-            //   // }
-            // } else {
-            //   std::string searchString = m_parent->getFilterString();
-            //   if (!searchString.empty()) {
-            //     if (commonEvent.name().contains(searchString)) {
-            //       continue;
-            //     }
-            //   }
-            // }
+          const bool filteredByCategory = DatabaseEditor::instance()->isFilteredByCategory();
+          const std::string& searchString = DatabaseEditor::instance()->filterString();
+          const std::string listFilterKey = filteredByCategory ? std::format("header:{}:{}", m_categoryStart, m_categoryEnd) : std::format("search:{}", searchString);
+          const bool listFilterChanged = listFilterKey != m_lastListFilterKey;
 
-            if (DatabaseEditor::instance()->isFilteredByCategory()) {
-              itemCount = (m_categoryEnd - m_categoryStart);
-            } else {
-              if (m_categoryStart > 0 || m_categoryEnd > 0) {
-                m_categoryEnd = 0;
-                m_categoryStart = 0;
+          std::vector<int> visibleIndices;
+          if (filteredByCategory) {
+            visibleIndices.reserve(m_categoryEnd - m_categoryStart);
+            for (int i = m_categoryStart; i < m_categoryEnd; ++i) {
+              if (i < 1 || i > m_events->count()) {
+                continue;
               }
+              if (!m_events->events()[i]) {
+                continue;
+              }
+              visibleIndices.push_back(i);
             }
-            clipper.Begin(itemCount, 22.f);
-            while (clipper.Step()) {
+          } else {
+            if (m_categoryStart > 0 || m_categoryEnd > 0) {
+              m_categoryEnd = 0;
+              m_categoryStart = 0;
+            }
 
-              for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
-                if (DatabaseEditor::instance()->isFilteredByCategory()) {
-                  if (i + m_categoryStart > m_categoryEnd || i + m_categoryStart > m_events->count()) {
-                    continue;
-                  }
-                }
-                auto& event = m_events->events()[i + m_categoryStart];
-
-                if (!event) {
-                  continue;
-                }
-                CommonEvent& commonEvent = event.value();
-
-                std::string id = "##orpg_commonevent_editor_unnamed_commonevent_" + std::to_string(commonEvent.id());
-                ImGui::PushID(id.c_str());
-
-                bool isFormatted{false};
-                if (hasUnicodeFormatting(commonEvent.name())) {
-                  auto col = ImGui::GetStyleColorVec4(ImGuiCol_Text);
-                  ImGui::PushStyleColor(ImGuiCol_Text, ImColor(1.f - col.x, 1.f - col.y, 1.f - col.z, col.w).Value);
-                  col = ImGui::GetStyleColorVec4(ImGuiCol_Header);
-                  ImGui::PushStyleColor(ImGuiCol_Header, ImColor(1.f - col.x, 1.f - col.y, 1.f - col.z, col.w * .75f).Value);
-                  col = ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered);
-                  ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImColor(1.f - col.x, 1.f - col.y, 1.f - col.z, col.w * .75f).Value);
-                  col = ImGui::GetStyleColorVec4(ImGuiCol_HeaderActive);
-                  ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImColor(1.f - col.x, 1.f - col.y, 1.f - col.z, col.w * .75f).Value);
-                  isFormatted = true;
-                }
-                if (ImGui::Selectable(Database::instance()->commonEventNameAndId(commonEvent.id()).c_str(), &commonEvent == m_selectedCommonEvent || isFormatted) ||
-                    (ImGui::IsItemFocused() && m_selectedCommonEvent != &commonEvent)) {
-                  m_selectedCommonEvent = &commonEvent;
-                  m_commandEditor.setCommands(&m_selectedCommonEvent->commands());
-                }
-                if (isFormatted) {
-                  ImGui::PopStyleColor(4);
-                }
-
-                ImGui::PopID();
+            visibleIndices.reserve(m_events->count());
+            for (int i = 1; i <= m_events->count(); ++i) {
+              const auto& event = m_events->events()[i];
+              if (!event) {
+                continue;
               }
+              if (!matchesCommonEventFilter(event.value(), searchString)) {
+                continue;
+              }
+              visibleIndices.push_back(i);
             }
           }
-          ImGui::EndGroup();
+
+          for (const int index : visibleIndices) {
+            CommonEvent& commonEvent = m_events->events()[index].value();
+
+            std::string id = "##orpg_commonevent_editor_unnamed_commonevent_" + std::to_string(commonEvent.id());
+            ImGui::PushID(id.c_str());
+
+            bool isFormatted{false};
+            if (hasUnicodeFormatting(commonEvent.name())) {
+              auto col = ImGui::GetStyleColorVec4(ImGuiCol_Text);
+              ImGui::PushStyleColor(ImGuiCol_Text, ImColor(1.f - col.x, 1.f - col.y, 1.f - col.z, col.w).Value);
+              col = ImGui::GetStyleColorVec4(ImGuiCol_Header);
+              ImGui::PushStyleColor(ImGuiCol_Header, ImColor(1.f - col.x, 1.f - col.y, 1.f - col.z, col.w * .75f).Value);
+              col = ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered);
+              ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImColor(1.f - col.x, 1.f - col.y, 1.f - col.z, col.w * .75f).Value);
+              col = ImGui::GetStyleColorVec4(ImGuiCol_HeaderActive);
+              ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImColor(1.f - col.x, 1.f - col.y, 1.f - col.z, col.w * .75f).Value);
+              isFormatted = true;
+            }
+            if (ImGui::Selectable(Database::instance()->commonEventNameAndId(commonEvent.id()).c_str(), &commonEvent == m_selectedCommonEvent || isFormatted) ||
+                (ImGui::IsItemFocused() && m_selectedCommonEvent != &commonEvent)) {
+              m_selectedCommonEvent = &commonEvent;
+              m_commandEditor.setCommands(&m_selectedCommonEvent->commands());
+            }
+            if (isFormatted) {
+              ImGui::PopStyleColor(4);
+            }
+
+            ImGui::PopID();
+          }
+
+          if (listFilterChanged) {
+            ImGui::SetScrollY(0.f);
+            m_lastListFilterKey = listFilterKey;
+          }
         }
         ImGui::EndChild();
 

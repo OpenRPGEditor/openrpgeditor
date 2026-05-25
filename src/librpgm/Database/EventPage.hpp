@@ -4,6 +4,7 @@
 #include "Database/Globals.hpp"
 #include "Database/IPageEditor.hpp"
 #include "Database/MovementRoute.hpp"
+#include "TrackedVector.hpp"
 
 #include <string>
 #include <vector>
@@ -204,9 +205,9 @@ public:
   const EventImage& image() const;
   void setImage(const EventImage& image);
 
-  std::vector<std::shared_ptr<IEventCommand>>& list();
-  const std::vector<std::shared_ptr<IEventCommand>>& list() const;
-  void setList(const std::vector<std::shared_ptr<IEventCommand>>& list);
+  TrackedVector<std::shared_ptr<IEventCommand>>& list();
+  const TrackedVector<std::shared_ptr<IEventCommand>>& list() const;
+  void setList(const TrackedVector<std::shared_ptr<IEventCommand>>& list);
 
   MovementRoute& moveRoute();
   const MovementRoute& moveRoute() const;
@@ -246,7 +247,7 @@ public:
   rpgmutils::signal<void(EventPage*, EventCondition)>& conditionsModified();
   rpgmutils::signal<void(EventPage*, bool)>& directionFixModified();
   rpgmutils::signal<void(EventPage*, EventImage)>& imageModified();
-  rpgmutils::signal<void(EventPage*, std::vector<std::shared_ptr<IEventCommand>>)>& listModified();
+  rpgmutils::signal<void(EventPage*, TrackedVector<std::shared_ptr<IEventCommand>>)>& listModified();
   rpgmutils::signal<void(EventPage*, MovementFrequency)>& moveFrequencyModified();
   rpgmutils::signal<void(EventPage*, MovementRoute)>& moveRouteModified();
   rpgmutils::signal<void(EventPage*, MovementSpeed)>& moveSpeedModified();
@@ -312,7 +313,7 @@ private:
   EventCondition m_conditions{};
   bool m_directionFix{};
   EventImage m_image;
-  std::vector<std::shared_ptr<IEventCommand>> m_list;
+  TrackedVector<std::shared_ptr<IEventCommand>> m_list;
   MovementFrequency m_moveFrequency{MovementFrequency::Normal};
   MovementRoute m_moveRoute{};
   MovementSpeed m_moveSpeed{MovementSpeed::x2_Slower};
@@ -328,7 +329,7 @@ private:
   std::optional<EventCondition> m_oldconditions;
   std::optional<bool> m_olddirectionFix;
   std::optional<EventImage> m_oldimage;
-  std::optional<std::vector<std::shared_ptr<IEventCommand>>> m_oldlist;
+  std::optional<TrackedVector<std::shared_ptr<IEventCommand>>> m_oldlist;
   std::optional<MovementFrequency> m_oldmoveFrequency;
   std::optional<MovementRoute> m_oldmoveRoute;
   std::optional<MovementSpeed> m_oldmoveSpeed;
@@ -343,7 +344,7 @@ private:
   std::optional<rpgmutils::signal<void(EventPage*, EventCondition)>> m_conditionsModified;
   std::optional<rpgmutils::signal<void(EventPage*, bool)>> m_directionFixModified;
   std::optional<rpgmutils::signal<void(EventPage*, EventImage)>> m_imageModified;
-  std::optional<rpgmutils::signal<void(EventPage*, std::vector<std::shared_ptr<IEventCommand>>)>> m_listModified;
+  std::optional<rpgmutils::signal<void(EventPage*, TrackedVector<std::shared_ptr<IEventCommand>>)>> m_listModified;
   std::optional<rpgmutils::signal<void(EventPage*, MovementFrequency)>> m_moveFrequencyModified;
   std::optional<rpgmutils::signal<void(EventPage*, MovementRoute)>> m_moveRouteModified;
   std::optional<rpgmutils::signal<void(EventPage*, MovementSpeed)>> m_moveSpeedModified;

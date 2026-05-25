@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Database/EventCommands/IEventCommand.hpp"
+#include "TrackedVector.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -184,9 +185,9 @@ public:
     const Conditions& conditions() const;
     void setConditions(const Conditions& value);
 
-    std::vector<std::shared_ptr<IEventCommand>>& list();
-    const std::vector<std::shared_ptr<IEventCommand>>& list() const;
-    void setList(const std::vector<std::shared_ptr<IEventCommand>>& value);
+    TrackedVector<std::shared_ptr<IEventCommand>>& list();
+    const TrackedVector<std::shared_ptr<IEventCommand>>& list() const;
+    void setList(const TrackedVector<std::shared_ptr<IEventCommand>>& value);
 
     int span() const;
     void setSpan(int value);
@@ -198,26 +199,27 @@ public:
     bool isModified() const override {
       bool modified = IModifiable::isModified();
       modified |= m_conditions.isModified();
+      modified |= m_list.is_dirty();
       modified |= std::ranges::any_of(m_list, [](const std::shared_ptr<IEventCommand>& command) { return command->isModified(); });
       return modified;
     }
     rpgmutils::signal<void(Page*, const Conditions&)>& conditionsModified();
-    rpgmutils::signal<void(Page*, const std::vector<std::shared_ptr<IEventCommand>>&)>& listModified();
+    rpgmutils::signal<void(Page*, const TrackedVector<std::shared_ptr<IEventCommand>>&)>& listModified();
     rpgmutils::signal<void(Page*, int)>& spanModified();
 
-    bool operator==(const Page& other) const { return m_conditions == m_conditions && m_list == other.m_list && m_span == other.m_span; }
+    bool operator==(const Page& other) const { return m_conditions == other.m_conditions && m_list == other.m_list && m_span == other.m_span; }
 
   private:
     Conditions m_conditions;
-    std::vector<std::shared_ptr<IEventCommand>> m_list;
+    TrackedVector<std::shared_ptr<IEventCommand>> m_list;
     int m_span;
 
     std::optional<Conditions> m_oldconditions;
-    std::optional<std::vector<std::shared_ptr<IEventCommand>>> m_oldlist;
+    std::optional<TrackedVector<std::shared_ptr<IEventCommand>>> m_oldlist;
     std::optional<int> m_oldspan;
 
     std::optional<rpgmutils::signal<void(Page*, const Conditions&)>> m_conditionsModified;
-    std::optional<rpgmutils::signal<void(Page*, const std::vector<std::shared_ptr<IEventCommand>>&)>> m_listModified;
+    std::optional<rpgmutils::signal<void(Page*, const TrackedVector<std::shared_ptr<IEventCommand>>&)>> m_listModified;
     std::optional<rpgmutils::signal<void(Page*, int)>> m_spanModified;
   };
 

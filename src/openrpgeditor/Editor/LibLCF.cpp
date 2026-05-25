@@ -1828,7 +1828,7 @@ void LibLCF::processJumpParameters(int32_t code, std::shared_ptr<IEventCommand>&
   jumpCmd->x = 99; // Unrecognized commands
   jumpCmd->y = 99; // Unrecognized commands
 }
-void LibLCF::convertCommands(std::vector<std::shared_ptr<IEventCommand>>* r_cmds, const std::vector<lcf::rpg::EventCommand>& s_cmds) {
+void LibLCF::convertCommands(TrackedVector<std::shared_ptr<IEventCommand>>* r_cmds, const std::vector<lcf::rpg::EventCommand>& s_cmds) {
   m_commandIndex = 1;
   for (auto& cmd : s_cmds) {
     if (m_textParsing && cmd.code != static_cast<int>(lcf::rpg::EventCommand::Code::ShowMessage_2)) {

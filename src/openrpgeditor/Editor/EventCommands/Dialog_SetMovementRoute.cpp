@@ -481,7 +481,7 @@ void Dialog_SetMovementRoute::handleClipboardInteraction() const {
     if (m_route->list().at(end - 1)->code() == EventCode::Event_Dummy) {
       end -= 1; // We don't want to copy or cut a dummy
     }
-    std::vector<std::shared_ptr<IEventCommand>> commands(m_route->list().begin() + start, m_route->list().begin() + end);
+    TrackedVector<std::shared_ptr<IEventCommand>> commands(m_route->list().begin() + start, m_route->list().begin() + end);
     nlohmann::ordered_json cmdJson;
     CommandParser::serialize(cmdJson, commands);
     auto v = cmdJson.dump();
@@ -494,7 +494,7 @@ void Dialog_SetMovementRoute::handleClipboardInteraction() const {
       if (m_route->list().at(end - 1)->code() == EventCode::Event_Dummy) {
         end -= 1; // We don't want to copy or cut a dummy
       }
-      std::vector<std::shared_ptr<IEventCommand>> commands(m_route->list().begin() + start, m_route->list().begin() + end);
+      TrackedVector<std::shared_ptr<IEventCommand>> commands(m_route->list().begin() + start, m_route->list().begin() + end);
       nlohmann::ordered_json cmdJson;
       CommandParser::serialize(cmdJson, commands);
       auto v = cmdJson.dump();

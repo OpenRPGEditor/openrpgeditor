@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Database/EventCommands/IEventCommand.hpp"
+#include "Database/TrackedVector.hpp"
 #include "Editor/Graphics/Image.hpp"
 
 #include <string>
@@ -8,7 +9,7 @@
 
 class Interpreter {
 public:
-  explicit Interpreter(const std::vector<std::shared_ptr<IEventCommand>>& commands);
+  explicit Interpreter(const TrackedVector<std::shared_ptr<IEventCommand>>& commands);
   bool update();
   [[nodiscard]] Image& getImage() { return m_image.value(); }
   [[nodiscard]] bool image() const { return m_image.has_value(); }
@@ -35,7 +36,7 @@ private:
   bool m_isFastForward{false};
   bool m_isSkip{false}; // For branch condition parsing
   std::optional<Image> m_image;
-  std::vector<std::shared_ptr<IEventCommand>> m_commands;
+  const TrackedVector<std::shared_ptr<IEventCommand>>& m_commands;
 
   std::map<int, int> m_variableMap;
   std::map<int, bool> m_switchMap;

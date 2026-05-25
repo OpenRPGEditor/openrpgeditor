@@ -138,7 +138,7 @@ void EventCommandEditor::handleClipboardInteraction() {
     clip::lock l;
     int start = m_selectedCommand;
     int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd + 1;
-    std::vector<std::shared_ptr<IEventCommand>> commands(m_commands->begin() + start, m_commands->begin() + end);
+    TrackedVector<std::shared_ptr<IEventCommand>> commands(m_commands->begin() + start, m_commands->begin() + end);
     nlohmann::ordered_json cmdJson;
     CommandParser::serialize(cmdJson, commands);
     auto v = cmdJson.dump();
@@ -149,7 +149,7 @@ void EventCommandEditor::handleClipboardInteraction() {
       clip::lock l;
       int start = m_selectedCommand;
       int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd + 1;
-      std::vector<std::shared_ptr<IEventCommand>> commands(m_commands->begin() + start, m_commands->begin() + end);
+      TrackedVector<std::shared_ptr<IEventCommand>> commands(m_commands->begin() + start, m_commands->begin() + end);
       nlohmann::ordered_json cmdJson;
       CommandParser::serialize(cmdJson, commands);
       auto v = cmdJson.dump();
@@ -968,7 +968,7 @@ void EventCommandEditor::drawPopup() {
 
                   CommandParser parser;
                   nlohmann::ordered_json cmdJson = nlohmann::ordered_json::parse(templ.commands());
-                  std::vector<std::shared_ptr<IEventCommand>> parsed = parser.parse(cmdJson);
+                  TrackedVector<std::shared_ptr<IEventCommand>> parsed = parser.parse(cmdJson);
                   for (const auto& command : parsed) {
                     if (command) {
                       command->adjustIndent(m_commands->at(m_selectedCommand)->indent().value());

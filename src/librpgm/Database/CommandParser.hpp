@@ -1,12 +1,13 @@
 #pragma once
 #include "Database/EventCommands/IEventCommand.hpp"
+#include "TrackedVector.hpp"
 
 struct CommandParser {
   nlohmann::json parser;
   int index = 0;
 
-  std::vector<std::shared_ptr<IEventCommand>> parse(const nlohmann::ordered_json& data);
-  static void serialize(nlohmann::ordered_json& data, const std::vector<std::shared_ptr<IEventCommand>>& list, bool movementRoute = false, bool oldValues = false);
+  TrackedVector<std::shared_ptr<IEventCommand>> parse(const nlohmann::ordered_json& data);
+  static void serialize(nlohmann::ordered_json& data, const TrackedVector<std::shared_ptr<IEventCommand>>& list, bool movementRoute = false, bool oldValues = false);
 
   EventCode nextEventCommand() {
     if (index + 1 >= parser.size()) {

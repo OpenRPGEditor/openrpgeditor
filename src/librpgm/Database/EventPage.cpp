@@ -771,9 +771,9 @@ void EventPage::setImage(const EventImage& image) {
   setModified();
 }
 
-std::vector<std::shared_ptr<IEventCommand>>& EventPage::list() { return m_list; }
-const std::vector<std::shared_ptr<IEventCommand>>& EventPage::list() const { return m_list; }
-void EventPage::setList(const std::vector<std::shared_ptr<IEventCommand>>& list) {
+TrackedVector<std::shared_ptr<IEventCommand>>& EventPage::list() { return m_list; }
+const TrackedVector<std::shared_ptr<IEventCommand>>& EventPage::list() const { return m_list; }
+void EventPage::setList(const TrackedVector<std::shared_ptr<IEventCommand>>& list) {
   if (list == m_list) {
     return;
   }
@@ -997,7 +997,7 @@ rpgmutils::signal<void(EventPage*, EventImage)>& EventPage::imageModified() {
   }
   return *m_imageModified;
 }
-rpgmutils::signal<void(EventPage*, std::vector<std::shared_ptr<IEventCommand>>)>& EventPage::listModified() {
+rpgmutils::signal<void(EventPage*, TrackedVector<std::shared_ptr<IEventCommand>>)>& EventPage::listModified() {
   if (!m_listModified) {
     m_listModified.emplace();
   }
@@ -1066,7 +1066,7 @@ rpgmutils::signal<void(EventPage*, const std::string&)>& EventPage::nameModified
 }
 
 void EventPage::clear() {
-  std::vector<std::shared_ptr<IEventCommand>> list;
+  TrackedVector<std::shared_ptr<IEventCommand>> list;
   list.emplace_back(new EventDummy())->setIndent(0);
   setList(list);
 }

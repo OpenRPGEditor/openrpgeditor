@@ -178,7 +178,7 @@ struct EventCommandEditor {
   void handleBlockCollapse(int& n) const;
   void draw();
 
-  void setCommands(std::vector<std::shared_ptr<IEventCommand>>* commands) {
+  void setCommands(TrackedVector<std::shared_ptr<IEventCommand>>* commands) {
     m_commands = commands;
     m_selectedCommand = -1;
   }
@@ -204,7 +204,7 @@ private:
   int m_troopId = 0;
 
   std::shared_ptr<IEventDialogController> m_commandDialog;
-  std::vector<std::shared_ptr<IEventCommand>>* m_commands = nullptr;
+  TrackedVector<std::shared_ptr<IEventCommand>>* m_commands = nullptr;
 
   std::shared_ptr<IEventDialogController> CreateCommandDialog(EventCode code, std::shared_ptr<IEventCommand> cmd = nullptr) {
     switch (code) {

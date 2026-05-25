@@ -19,9 +19,9 @@ public:
   [[nodiscard]] int id() const;
   void setId(int id);
 
-  std::vector<std::shared_ptr<IEventCommand>>& commands();
-  const std::vector<std::shared_ptr<IEventCommand>>& commands() const;
-  void setCommands(const std::vector<std::shared_ptr<IEventCommand>>& commands);
+  TrackedVector<std::shared_ptr<IEventCommand>>& commands();
+  const TrackedVector<std::shared_ptr<IEventCommand>>& commands() const;
+  void setCommands(const TrackedVector<std::shared_ptr<IEventCommand>>& commands);
 
   const std::string& name() const;
   void setName(const std::string& name);
@@ -47,7 +47,7 @@ public:
     return IModifiable::isModified() | std::ranges::any_of(m_commands, [](const std::shared_ptr<IEventCommand>& command) { return command->isModified(); });
   }
   rpgmutils::signal<void(CommonEvent*, int)>& idModified();
-  rpgmutils::signal<void(CommonEvent*, const std::vector<std::shared_ptr<IEventCommand>>&)>& commandsModified();
+  rpgmutils::signal<void(CommonEvent*, const TrackedVector<std::shared_ptr<IEventCommand>>&)>& commandsModified();
   rpgmutils::signal<void(CommonEvent*, const std::string&)>& nameModified();
   rpgmutils::signal<void(CommonEvent*, int)>& switchIdModified();
   rpgmutils::signal<void(CommonEvent*, CommonEventTriggerType)>& triggerModified();
@@ -66,19 +66,19 @@ private:
     }
   };
   int m_id{};
-  std::vector<std::shared_ptr<IEventCommand>> m_commands;
+  TrackedVector<std::shared_ptr<IEventCommand>> m_commands;
   std::string m_name{};
   int m_switchId{};
   CommonEventTriggerType m_trigger;
 
   std::optional<int> m_oldid;
-  std::optional<std::vector<std::shared_ptr<IEventCommand>>> m_oldcommands;
+  std::optional<TrackedVector<std::shared_ptr<IEventCommand>>> m_oldcommands;
   std::optional<std::string> m_oldname;
   std::optional<int> m_oldswitchId;
   std::optional<CommonEventTriggerType> m_oldtrigger;
 
   std::optional<rpgmutils::signal<void(CommonEvent*, int)>> m_idModified;
-  std::optional<rpgmutils::signal<void(CommonEvent*, const std::vector<std::shared_ptr<IEventCommand>>&)>> m_commandsModified;
+  std::optional<rpgmutils::signal<void(CommonEvent*, const TrackedVector<std::shared_ptr<IEventCommand>>&)>> m_commandsModified;
   std::optional<rpgmutils::signal<void(CommonEvent*, const std::string&)>> m_nameModified;
   std::optional<rpgmutils::signal<void(CommonEvent*, int)>> m_switchIdModified;
   std::optional<rpgmutils::signal<void(CommonEvent*, CommonEventTriggerType)>> m_triggerModified;

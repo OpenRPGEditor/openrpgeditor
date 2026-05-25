@@ -48,9 +48,9 @@ MovementRoute& MovementRoute::operator=(MovementRoute&& other) noexcept {
   return *this;
 }
 
-std::vector<std::shared_ptr<IEventCommand>>& MovementRoute::list() { return m_list; }
-const std::vector<std::shared_ptr<IEventCommand>>& MovementRoute::list() const { return m_list; }
-void MovementRoute::setList(const std::vector<std::shared_ptr<IEventCommand>>& list) {
+TrackedVector<std::shared_ptr<IEventCommand>>& MovementRoute::list() { return m_list; }
+const TrackedVector<std::shared_ptr<IEventCommand>>& MovementRoute::list() const { return m_list; }
+void MovementRoute::setList(const TrackedVector<std::shared_ptr<IEventCommand>>& list) {
   if (m_list == list) {
     return;
   }
@@ -146,7 +146,7 @@ nlohmann::ordered_json MovementRoute::serializeOldValues() const {
   return json;
 }
 
-rpgmutils::signal<void(MovementRoute*, const std::vector<std::shared_ptr<IEventCommand>>&)>& MovementRoute::listModified() {
+rpgmutils::signal<void(MovementRoute*, const TrackedVector<std::shared_ptr<IEventCommand>>&)>& MovementRoute::listModified() {
   if (!m_listModified) {
     m_listModified.emplace();
   }

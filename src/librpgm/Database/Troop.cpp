@@ -579,9 +579,9 @@ void Troop::Page::setConditions(const Conditions& value) {
   setModified();
 }
 
-std::vector<std::shared_ptr<IEventCommand>>& Troop::Page::list() { return m_list; }
-const std::vector<std::shared_ptr<IEventCommand>>& Troop::Page::list() const { return m_list; }
-void Troop::Page::setList(const std::vector<std::shared_ptr<IEventCommand>>& value) {
+TrackedVector<std::shared_ptr<IEventCommand>>& Troop::Page::list() { return m_list; }
+const TrackedVector<std::shared_ptr<IEventCommand>>& Troop::Page::list() const { return m_list; }
+void Troop::Page::setList(const TrackedVector<std::shared_ptr<IEventCommand>>& value) {
   if (m_list == value) {
     return;
   }
@@ -640,7 +640,7 @@ rpgmutils::signal<void(Troop::Page*, const Troop::Conditions&)>& Troop::Page::co
   }
   return *m_conditionsModified;
 }
-rpgmutils::signal<void(Troop::Page*, const std::vector<std::shared_ptr<IEventCommand>>&)>& Troop::Page::listModified() {
+rpgmutils::signal<void(Troop::Page*, const TrackedVector<std::shared_ptr<IEventCommand>>&)>& Troop::Page::listModified() {
   if (!m_listModified) {
     m_listModified.emplace();
   }

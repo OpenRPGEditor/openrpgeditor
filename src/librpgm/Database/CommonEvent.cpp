@@ -57,9 +57,9 @@ CommonEvent& CommonEvent::operator=(CommonEvent&& other) noexcept {
 [[nodiscard]] int CommonEvent::id() const { return m_id; }
 void CommonEvent::setId(const int id) { m_id = id; }
 
-std::vector<std::shared_ptr<IEventCommand>>& CommonEvent::commands() { return m_commands; }
-const std::vector<std::shared_ptr<IEventCommand>>& CommonEvent::commands() const { return m_commands; }
-void CommonEvent::setCommands(const std::vector<std::shared_ptr<IEventCommand>>& commands) {
+TrackedVector<std::shared_ptr<IEventCommand>>& CommonEvent::commands() { return m_commands; }
+const TrackedVector<std::shared_ptr<IEventCommand>>& CommonEvent::commands() const { return m_commands; }
+void CommonEvent::setCommands(const TrackedVector<std::shared_ptr<IEventCommand>>& commands) {
   if (m_commands == commands) {
     return;
   }
@@ -149,7 +149,7 @@ rpgmutils::signal<void(CommonEvent*, int)>& CommonEvent::idModified() {
   }
   return *m_idModified;
 }
-rpgmutils::signal<void(CommonEvent*, const std::vector<std::shared_ptr<IEventCommand>>&)>& CommonEvent::commandsModified() {
+rpgmutils::signal<void(CommonEvent*, const TrackedVector<std::shared_ptr<IEventCommand>>&)>& CommonEvent::commandsModified() {
   if (!m_commandsModified) {
     m_commandsModified.emplace();
   }

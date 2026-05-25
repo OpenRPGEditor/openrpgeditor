@@ -6,8 +6,8 @@
 
 using json = nlohmann::ordered_json;
 
-std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _json) {
-  std::vector<std::shared_ptr<IEventCommand>> ret;
+TrackedVector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _json) {
+  TrackedVector<std::shared_ptr<IEventCommand>> ret;
   parser = _json;
 
   while (index < parser.size()) {
@@ -556,10 +556,11 @@ std::vector<std::shared_ptr<IEventCommand>> CommandParser::parse(const json& _js
     }
     ++index;
   }
+  ret.clear_dirty();
   return ret;
 }
 
-void CommandParser::serialize(nlohmann::ordered_json& data, const std::vector<std::shared_ptr<IEventCommand>>& list, const bool movementRoute, const bool oldValues) {
+void CommandParser::serialize(nlohmann::ordered_json& data, const TrackedVector<std::shared_ptr<IEventCommand>>& list, const bool movementRoute, const bool oldValues) {
   for (const auto& cmd : list) {
     if (!cmd) {
       continue;

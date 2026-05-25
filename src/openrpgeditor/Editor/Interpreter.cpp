@@ -1,14 +1,15 @@
 #include "Editor/Interpreter.hpp"
 
 #include "Database/EventCommands/ConditionalBranch.hpp"
-//#include "Database/EventCommands/ControlSwitches.hpp"
+// #include "Database/EventCommands/ControlSwitches.hpp"
 #include "Database/EventCommands/Script.hpp"
 #include "Database/EventCommands/ShowPicture.hpp"
 #include "Database/EventCommands/Wait.hpp"
 
 #include <regex>
 
-Interpreter::Interpreter(const std::vector<std::shared_ptr<IEventCommand>>& commands) { m_commands = commands; }
+Interpreter::Interpreter(const TrackedVector<std::shared_ptr<IEventCommand>>& commands)
+: m_commands(commands) {}
 
 bool Interpreter::update() {
   if (m_wait > 0) {

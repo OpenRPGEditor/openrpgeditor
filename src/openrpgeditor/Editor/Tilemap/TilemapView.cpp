@@ -178,9 +178,21 @@ void TilemapView::paintTiles(const int startX, const int startY, const int x, co
   }
 }
 int TilemapView::tileId(const int x, const int y, const int z) const {
+
   if (!m_map) {
     return 0;
   }
+  size_t index = (z * m_map->height() + y) * m_map->width() + x;
+
+  size_t expectedSize = m_map->width() * m_map->height() * z;
+
+  if (x < 0 || x >= m_map->width() || y < 0 || y >= m_map->height()) {
+    RPGM_INFO(std::string("tileId access: x=") + std::to_string(x) + ", y=" + std::to_string(y) + ", z=" + std::to_string(z) + ", width=" + std::to_string(m_map->width()) +
+              ", height=" + std::to_string(m_map->height()) + ", layers=" + std::to_string(z) + ", index=" + std::to_string(index) + ", dataSize=" + std::to_string(m_map->data().size()) +
+              ", expectedSize=" + std::to_string(expectedSize));
+    return 0;
+  }
+
   return m_map->data()[(z * m_map->height() + y) * m_map->width() + x].value_or(0);
 }
 

@@ -815,7 +815,7 @@ static std::string drawSubMenuItems(int currentMenu, const std::vector<std::vect
   return loadFilepath;
 }
 
-static constexpr auto kMaxItemsPerMRUMenu = 5;
+static constexpr auto kMaxItemsPerMRUMenu = 10;
 
 void MainWindow::drawMenu() {
   std::string loadFilepath;

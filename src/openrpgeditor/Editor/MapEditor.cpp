@@ -188,6 +188,22 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
     m_tileCursor.setMouseMode();
   }
 
+  static bool m_isMiddleDragging = false;
+  if (ImGui::IsWindowHovered() && ImGui::IsMouseDragging(ImGuiMouseButton_Middle)) {
+    static SDL_Cursor* nwse = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_CROSSHAIR);
+    if (!m_isMiddleDragging) {
+      SDL_SetCursor(nwse);
+    }
+    // TODO: Add sensitivity control
+    const auto delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Middle) * 0.05f;
+    ImGui::SetScrollX(ImGui::GetScrollX() + delta.x);
+    ImGui::SetScrollY(ImGui::GetScrollY() + delta.y);
+    m_isMiddleDragging = true;
+  } else if (!ImGui::IsMouseDragging(ImGuiMouseButton_Middle) && m_isMiddleDragging) {
+    SDL_SetCursor(SDL_GetDefaultCursor());
+    m_isMiddleDragging = false;
+  }
+
   if (ImGui::IsWindowHovered() && m_parent->editMode() == EditMode::Map) {
     m_tileCursor.update(m_mapScale, map()->width(), map()->height(), Database::instance()->system->tileSize(), win);
   } else if (ImGui::IsWindowHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left) && (m_parent->editMode() == EditMode::Event || m_movingEvent)) {

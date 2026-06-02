@@ -30,6 +30,8 @@ bool Process::exec() {
     // TODO: add output redirection
     SDL_SetPointerProperty(m_optionsHandle, SDL_PROP_PROCESS_CREATE_ARGS_POINTER, m_argumentArray.data());
     m_handle = SDL_CreateProcessWithProperties(m_optionsHandle);
+    // Retrieve finalized properties
+    m_optionsHandle = SDL_GetProcessProperties(m_handle);
   }
   return SDL_WaitProcess(m_handle, false, &m_status);
 }

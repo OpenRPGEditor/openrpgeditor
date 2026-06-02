@@ -12,6 +12,7 @@ public:
   bool exec();
 
   [[nodiscard]] int status() const { return m_status; }
+  [[nodiscard]] int64_t pid() const { return SDL_GetNumberProperty(m_optionsHandle, SDL_PROP_PROCESS_PID_NUMBER, -1); }
 
 private:
   SDL_PropertiesID m_optionsHandle{};

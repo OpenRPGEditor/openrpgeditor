@@ -35,6 +35,7 @@ static constexpr auto kIA32Identifier = "ia32"sv;
 static constexpr auto kX64Identifier = "x64"sv;
 static constexpr auto kARM64Identifier = "arm64"sv;
 
+// TODO: Make this an external file
 static const std::vector<NWJSVersionManager::Platform> kPlatforms{
     {
         "Linux",
@@ -46,10 +47,12 @@ static const std::vector<NWJSVersionManager::Platform> kPlatforms{
                 "64 Bit",
                 kX64Identifier.data(),
             },
+#if 0 // NWJS no longer builds 32bit versions for linux, keeping this here for legacy reasons
             {
                 "32 Bit",
                 kIA32Identifier.data(),
             },
+#endif
         },
     },
     {

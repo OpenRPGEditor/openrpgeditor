@@ -522,7 +522,15 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
                    ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
                        ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground)) {
     setupDocking();
-    ImGui::BeginDisabled(shuttingDown);
+    bool playTestRunning = false;
+    if (m_playTestProcess) {
+      playTestRunning = !m_playTestProcess->exec();
+      if (!playTestRunning) {
+        m_playTestProcess.reset();
+      }
+    }
+
+    ImGui::BeginDisabled(shuttingDown || playTestRunning);
     drawToolbar();
     drawMenu();
     if (!closeRequested) {
@@ -531,17 +539,7 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
       m_libLCF.draw();
     }
 
-    bool playTestRunning = false;
-    if (m_playTestProcess) {
-      playTestRunning = !m_playTestProcess->exec();
-      if (!playTestRunning) {
-        m_playTestProcess.reset();
-      }
-    }
-    // TODO: Add play test banner
-    ImGui::BeginDisabled(playTestRunning);
     m_mapEditor.draw(closeRequested);
-    ImGui::EndDisabled();
 
     if (m_databaseEditor && !closeRequested) {
       m_databaseEditor->draw();
@@ -586,7 +584,21 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
       drawCreateNewProjectPopup();
       EditorPluginManager::instance().callDraws();
     }
+
     ImGui::EndDisabled();
+    if (playTestRunning) {
+      ImGui::GetWindowDrawList()->AddRectFilled({0, 0}, ImGui::GetWindowSize(), IM_COL32(0, 0, 0, 191));
+
+      ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Always, {0.5f, 0.5f});
+      ImGui::Begin(std::format("{}###PlayTest", trNOOP("Game is running...")).c_str(), nullptr,
+                   ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse);
+      {
+        if (ImGui::Button(trFormat("Close Process [{:08}]", m_playTestProcess->pid()).c_str())) {
+          m_playTestProcess.reset();
+        }
+      }
+      ImGui::End();
+    }
 
     drawShutdownSplash(shuttingDown);
 
@@ -1243,16 +1255,27 @@ void AddToolbarButton(asIScriptGeneric* generic) {
 void AddCallback(asIScriptFunction* func) {
   //
 }
+
+template <typename E>
+constexpr void RegisterEnum() {
+  static_assert(std::is_enum_v<E>, "E must be an enum");
+  const auto engine = ScriptEngine::instance().engine();
+
+  const auto enumName = magic_enum::enum_type_name<E>();
+  engine->RegisterEnum(enumName.data());
+
+  for (const auto& v : magic_enum::enum_values<E>()) {
+    int r = engine->RegisterEnumValue(enumName.data(), magic_enum::enum_name(v).data(), static_cast<int>(v));
+    assert(r >= 0);
+  }
+}
+
 void MainWindow::RegisterBindings() {
   auto engine = ScriptEngine::instance().engine();
   engine->RegisterEnum("ToolbarCategory");
+  RegisterEnum<ToolbarCategory>();
 
-  int r;
-  for (const auto& category : magic_enum::enum_values<ToolbarCategory>()) {
-    r = engine->RegisterEnumValue("ToolbarCategory", magic_enum::enum_name(category).data(), static_cast<int>(category));
-    assert(r >= 0);
-  }
-  r = engine->RegisterFuncdef("void ToolBarButtonClicked()");
+  int r = engine->RegisterFuncdef("void ToolBarButtonClicked()");
   assert(r >= 0);
   r = engine->RegisterGlobalFunction("void addToolbarButton(const string& in, ToolbarCategory category, ToolBarButtonClicked @const cb)", asFUNCTION(AddToolbarButton), asCALL_GENERIC);
   assert(r >= 0);

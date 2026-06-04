@@ -16,7 +16,7 @@ public:
     if (index < 0 || index >= m_headers.size()) {
       return -1;
     }
-    
+
     return m_headers.at(index);
   }
   [[nodiscard]] bool hasHeader() const { return !m_headers.empty(); }
@@ -56,10 +56,7 @@ public:
 
   static T* instance() { return m_instance; }
 
-  template <class V = T>
-  static constexpr std::string_view TabID() {
-    return type_name<V>();
-  }
+  static constexpr std::string_view TabID() { return type_name<T>(); }
 
   constexpr std::string_view tabId() const final { return TabID(); }
 

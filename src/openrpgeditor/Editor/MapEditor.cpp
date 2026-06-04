@@ -920,10 +920,10 @@ bool MapEditor::checkLayeredTilesFlags(const double x, const double y, const int
   return std::ranges::any_of(m_tilemapView.layeredTiles(x, y), [&bit, &flags](const auto& tileId) { return (flags[tileId].value_or(0) & bit) != 0; });
 }
 
-bool MapEditor::isLadder(const double x, const double y) const { return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x20); }
+bool MapEditor::isLadder(const double x, const double y) const { return isValid(x, y) && checkLayeredTilesFlags(x, y, static_cast<int>(TileFlags::Ladder)); }
 
-bool MapEditor::isBush(const double x, const double y) const { return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x40); }
+bool MapEditor::isBush(const double x, const double y) const { return isValid(x, y) && checkLayeredTilesFlags(x, y, static_cast<int>(TileFlags::Bush)); }
 
-bool MapEditor::isCounter(const double x, const double y) const { return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x80); }
+bool MapEditor::isCounter(const double x, const double y) const { return isValid(x, y) && checkLayeredTilesFlags(x, y, static_cast<int>(TileFlags::Counter)); }
 
-bool MapEditor::isDamageFloor(const double x, const double y) const { return isValid(x, y) && checkLayeredTilesFlags(x, y, 0x100); }
+bool MapEditor::isDamageFloor(const double x, const double y) const { return isValid(x, y) && checkLayeredTilesFlags(x, y, static_cast<int>(TileFlags::Damage)); }

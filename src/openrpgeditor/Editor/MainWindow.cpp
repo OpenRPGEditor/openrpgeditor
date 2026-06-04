@@ -217,6 +217,8 @@ std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
   /* Default initialize all of these */
   m_databaseEditor.reset();
 
+  m_jsonInspector.closeFile(false);
+  m_jsonInspector.setOpen(false);
   m_mapEditor.setMap(nullptr);
   m_mapListView.reset();
   m_database.reset();
@@ -604,18 +606,8 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
 
     m_aboutDialog.draw();
 
-    static SimpleNotification s("Test", "Sample Notification!");
-    static TimedNotification t("Test", "Timed Notification!", 15);
-    static ProgressNotification p("Test Progress", "Progress notification!", 1);
-    p.addProgress(1);
-
     NotificationCenter::instance().draw();
-
-    // static JSONInspector inspector;
-    // if (inspector.openFile("/home/antidote/Projects/vhmv/VHMV/package.json")) {
-    //   inspector.setOpen();
-    //   inspector.draw();
-    // }
+    m_jsonInspector.draw();
   }
   ImGui::End();
 }
@@ -1003,6 +995,11 @@ void MainWindow::drawMenu() {
       //   EditorPluginManager::instance().setOpen(true);
       // }
 #endif
+      
+      if (ImGui::MenuItem(trNOOP("Edit Package Info"), nullptr, false, m_database != std::nullopt && !m_jsonInspector.isOpen())) {
+        m_jsonInspector.openFile(m_database->basePath / "package.json");
+        m_jsonInspector.setOpen();
+      }
       ORE_DISABLE_EXPERIMENTAL_BEGIN();
       if (ImGui::MenuItem(trNOOP("LibLCF..."), "", false, m_databaseEditor != std::nullopt && m_databaseEditor->isReady())) {
         m_libLCF.open();

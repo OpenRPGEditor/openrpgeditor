@@ -185,6 +185,6 @@ private:
   NotificationCenter() = default;
 
   std::deque<INotification*> m_notifications;
-  bool m_isOpen = true;
+  bool m_isOpen = false;
   bool m_isPinned = false;
 };

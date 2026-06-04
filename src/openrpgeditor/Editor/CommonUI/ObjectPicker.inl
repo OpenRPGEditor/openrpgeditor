@@ -115,7 +115,7 @@ std::tuple<bool, bool> ObjectPicker<T>::draw() {
           }
           /* Name */
           if (ImGui::TableNextColumn()) {
-            ImGui::Text("%s", getName(*value).c_str());
+            ImGui::TextUnformatted(getName(*value).c_str());
           }
           ImGui::PopID();
         }

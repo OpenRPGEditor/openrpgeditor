@@ -25,7 +25,7 @@ public:
   [[nodiscard]] int selection() const { return m_selection; }
 
   static int getId(const T& value) { return value.id(); }
-  static const std::string& getName(const T& value) { return value.name(); }
+  static std::string getName(const T& value) { return value.name(); }
 
   [[nodiscard]] bool isOpen() const { return m_open; }
   [[nodiscard]] bool isConfirmed() const { return m_confirmed; }
@@ -164,11 +164,31 @@ public:
   : ObjectPicker(trNOOP("Common Event Selection"), list, initialSelection) {}
 };
 
+template <>
+inline int ObjectPicker<std::optional<CommonEvent>>::getId(const std::optional<CommonEvent>& value) {
+  return value ? value->id() : 0;
+}
+
+template <>
+inline std::string ObjectPicker<std::optional<CommonEvent>>::getName(const std::optional<CommonEvent>& value) {
+  return value ? value->name() : trNOOP("Invalid Common Event");
+}
+
 class MapInfoPicker final : public ObjectPicker<std::optional<MapInfo>> {
 public:
   MapInfoPicker(std::vector<std::optional<MapInfo>>& list, const int initialSelection)
   : ObjectPicker(trNOOP("Map Selection"), list, initialSelection) {}
 };
+
+template <>
+inline int ObjectPicker<std::optional<MapInfo>>::getId(const std::optional<MapInfo>& value) {
+  return value ? value->id() : 0;
+}
+
+template <>
+inline std::string ObjectPicker<std::optional<MapInfo>>::getName(const std::optional<MapInfo>& value) {
+  return value ? value->name() : trNOOP("Invalid Map");
+}
 
 class TemplatePicker final : public ObjectPicker<Template> {
 public:

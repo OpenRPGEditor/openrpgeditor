@@ -45,15 +45,6 @@
 #include <SDL3/SDL_dialog.h>
 
 #undef PlaySound
-template <>
-inline int ObjectPicker<std::optional<CommonEvent>>::getId(const std::optional<CommonEvent>& value) {
-  return value ? value->id() : 0;
-}
-static const std::string InvalidCommonEvent = "Invalid Common Event";
-template <>
-inline const std::string& ObjectPicker<std::optional<CommonEvent>>::getName(const std::optional<CommonEvent>& value) {
-  return value ? value->name() : InvalidCommonEvent;
-}
 
 void LibLCF::loadLCFProject(const std::filesystem::path& path) {
   m_lcf.setProject(path);

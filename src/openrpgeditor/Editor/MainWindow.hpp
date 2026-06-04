@@ -11,6 +11,7 @@
 #include "Editor/MapListView.hpp"
 #include "Editor/ResourceManager.hpp"
 #include "EventSearcher.hpp"
+#include "JSONInspector.hpp"
 #include "LibLCF.hpp"
 #include "Process.hpp"
 #include "SettingsDialog.hpp"
@@ -187,6 +188,7 @@ private:
   std::unordered_map<ToolbarCategory, std::vector<ToolbarButton>> m_toolbarButtons;
   CreateNewProjectDialog m_createNewProject = CreateNewProjectDialog("Create New Project");
   AboutDialog m_aboutDialog;
+  JSONInspector m_jsonInspector;
 
   std::optional<Database> m_database;
 

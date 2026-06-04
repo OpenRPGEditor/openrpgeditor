@@ -1,27 +1,14 @@
 #pragma once
 #include "Database/GameConstants.hpp"
-#include "DBCommonEventsTab.hpp"
+
+#include "Editor/DatabaseEditor/DBCommonEventsTab.hpp"
 #include "Editor/CommonUI/ObjectPicker.hpp"
 #include "Editor/CommonUI/VariableSwitchPicker.hpp"
 #include "Editor/DatabaseEditor/IDBEditorTab.hpp"
 
 #include <optional>
 
-class Actor;
-class Armor;
-class Class;
-class Skill;
-class Item;
-class Weapon;
-class Enemy;
-class Troop;
-class State;
-class Animation;
-class Tileset;
-class CommonEvent;
-class MapInfo;
-struct GameConstants;
-class DBGameConstantsTab final : public IDBCoreEditorTab<DBGameConstantsTab> {
+class DBGameConstantsTab : public IDBCoreEditorTab<DBGameConstantsTab> {
 public:
   void draw() override;
 

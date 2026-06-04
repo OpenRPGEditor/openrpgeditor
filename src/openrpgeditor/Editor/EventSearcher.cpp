@@ -4,17 +4,6 @@
 #include "Editor/Settings.hpp"
 #include "imgui.h"
 #include "ImGuiExt/ImGuiUtils.hpp"
-template <>
-inline int ObjectPicker<std::optional<CommonEvent>>::getId(const std::optional<CommonEvent>& value) {
-  return value ? value->id() : 0;
-}
-
-static const std::string InvalidCommonEvent = "Invalid Common Event";
-template <>
-inline const std::string& ObjectPicker<std::optional<CommonEvent>>::getName(const std::optional<CommonEvent>& value) {
-  return value ? value->name() : InvalidCommonEvent;
-}
-bool EventSearcher::getListing() { return true; }
 
 void EventSearcher::draw() {
   if (!m_isOpen) {

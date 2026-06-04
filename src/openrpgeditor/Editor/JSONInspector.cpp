@@ -94,7 +94,7 @@ static constexpr std::array kJSONTypes{
 void JSONInspector::DrawJsonContainer(const std::string& name, nlohmann::ordered_json& container) {
   ImGui::PushID(name.c_str());
 
-  if (ImGui::TreeNodeEx("##tree_node", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth, "%s (%s, %zu items)", name.c_str(),
+  if (ImGui::TreeNodeEx("##tree_node", ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanAllColumns, "%s (%s, %zu items)", name.c_str(),
                         container.is_object() ? "object" : "array", container.size())) {
     if (ImGui::BeginTable("##json_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_RowBg)) {
       ImGui::TableSetupColumn("Key", ImGuiTableColumnFlags_WidthFixed);
@@ -273,7 +273,7 @@ std::tuple<bool, bool> JSONInspector::draw() {
   }
 
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Once, {0.5f, 0.5f});
-  if (ImGui::BeginPopupModal(std::format("{}###JSONInspector_AddNewPopup", trNOOP("Add New Value")).c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###JSONInspector_AddNewPopup", trNOOP("Add New Value")).c_str(), nullptr)) {
     m_newKeyInvalid = m_newKey.empty() || m_targetContainer->contains(m_newKey);
     ImGui::BeginVertical("##add_new_main_layout", {-1, 0});
     {

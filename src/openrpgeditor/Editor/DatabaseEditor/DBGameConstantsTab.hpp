@@ -8,7 +8,7 @@
 
 #include <optional>
 
-class DBGameConstantsTab : public IDBCoreEditorTab<DBGameConstantsTab> {
+class DBGameConstantsTab final : public IDBCoreEditorTab<DBGameConstantsTab> {
 public:
   void draw() override;
 

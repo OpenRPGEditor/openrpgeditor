@@ -53,9 +53,9 @@ bool GroupBox::begin() {
           m_clicked = ImGui::SizeableCheckbox(m_title.c_str(), m_checked, ImGui::GetFrameHeight() * 0.65f);
           ImGui::PopStyleVar();
         }
-        ImGui::EndChild();
-        headerSize = ImGui::GetItemRectSize();
       }
+      ImGui::EndChild();
+      headerSize = ImGui::GetItemRectSize();
       ImGui::PopClipRect();
     }
     ImGui::BeginChild(id, m_size,
@@ -76,8 +76,8 @@ void GroupBox::end() {
 
   if (m_visible) {
     ImGui::EndDisabled();
-    ImGui::EndChild();
   }
+  ImGui::EndChild();
   ImGui::EndChild();
   m_beginCalled = false;
 }

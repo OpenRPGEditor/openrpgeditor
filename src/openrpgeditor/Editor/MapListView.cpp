@@ -13,7 +13,7 @@ void MapListView::drawContextMenu(MapInfo& in) {
       m_selectedMapId = in.id();
       m_parent->setMap(in);
     }
-    if (ImGui::BeginMenu("State")) {
+    if (ImGui::BeginMenu("State", in.id() != 0)) {
 
       if (!Database::instance()->config.mapStateList.contains(m_selectedMapId)) {
         Database::instance()->config.mapStateList.insert(std::make_pair(m_selectedMapId, MapStateType::None));
@@ -52,52 +52,53 @@ void MapListView::drawContextMenu(MapInfo& in) {
       }
       ImGui::EndMenu();
     }
-    if (ImGui::MenuItem("Edit...")) {
+    if (ImGui::MenuItem("Edit...", nullptr, false, in.id() != 0)) {
       m_parent->openMapProperties(&in);
     }
     if (ImGui::MenuItem("New...")) {
-      // TODO: Add new map to directory based on current location. Maybe add it as a subdirectory of the current parent?
+      m_newMapDialog.setNewMapId(m_mapInfos->findFirstAvailableId());
+      m_newMapDialog.setOpen(true);
     }
 
-    if (ImGui::Selectable("Load...")) {
+    if (ImGui::MenuItem("Load...", nullptr, false, in.id() != 0)) {
       // TODO: Inserts a map from templates?
     }
 
     ImGui::Separator();
 
-    if (ImGui::MenuItem("Copy")) {
+    if (ImGui::MenuItem("Copy", nullptr, false, in.id() != 0)) {
       // TODO: Map -> Clipboard
     }
 
-    if (ImGui::MenuItem("Paste")) {
+    if (ImGui::MenuItem("Paste", nullptr, false, in.id() != 0)) {
       // TODO: Clipboard -> Map inserted
     }
 
-    if (ImGui::MenuItem("Delete")) {
+    if (ImGui::MenuItem("Delete", nullptr, false, in.id() != 0)) {
       // TODO: Deletes a map
     }
 
     ImGui::Separator();
 
-    if (ImGui::MenuItem("Find...")) {
+    if (ImGui::MenuItem("Find...", nullptr, false, in.id() != 0)) {
       // TODO: Finds a map based on a string input
     }
 
-    if (ImGui::MenuItem("Find Next")) {
+    if (ImGui::MenuItem("Find Next", nullptr, false, in.id() != 0)) {
       // TODO: FInds the next map result based on a string input
     }
 
-    if (ImGui::MenuItem("Find Previous")) {
+    if (ImGui::MenuItem("Find Previous", nullptr, false, in.id() != 0)) {
       // TODO: FInds the previous map result based on a string input
     }
 
     ImGui::Separator();
 
-    if (ImGui::MenuItem("Shift...")) {
+    if (ImGui::MenuItem("Shift...", nullptr, false, in.id() != 0)) {
       // TODO: Moves the map position in directory
     }
 
-    if (ImGui::MenuItem("Generate Dungeon...")) {
+    if (ImGui::MenuItem("Generate Dungeon...", nullptr, false, in.id() != 0)) {
       // ???
     }
     ImGui::EndPopup();
@@ -221,6 +222,7 @@ void MapListView::draw() {
           }
         }
       }
+      m_newMapDialog.draw();
     }
     ImGui::EndChild();
   }

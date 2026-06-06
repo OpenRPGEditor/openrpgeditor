@@ -58,6 +58,8 @@ add_library(
         Editor/CommonUI/ColorTonePicker.hpp
         Editor/CommonUI/CreateNewProjectDialog.cpp
         Editor/CommonUI/CreateNewProjectDialog.hpp
+        Editor/CommonUI/NewMapDialog.cpp
+        Editor/CommonUI/NewMapDialog.hpp
         Editor/CommonUI/EffectsEditor.cpp
         Editor/CommonUI/EffectsEditor.hpp
         Editor/CommonUI/EventCommandEditor.cpp

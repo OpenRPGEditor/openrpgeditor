@@ -58,6 +58,31 @@ public:
   }
 
   void connectSignals();
+  
+    
+  int findFirstAvailableId() const {
+    for (int i = 1; i < m_mapinfos.size(); i++) {
+      if (m_mapinfos[i] == std::nullopt) {
+        return i;
+      }
+    }
+    // If there isn't an unoccupied slot, return the array size
+    return 0;
+  }
+  
+  MapInfo* createMapAt(int id, int parent = -1) {
+    if (id <= 0) {
+      // check if we have an invalid id
+      id = m_mapinfos.size();
+    }
+    
+    if (id >= m_mapinfos.size()) {
+      m_mapinfos.resize(id + 1);
+    }
+    
+    m_mapinfos[id].emplace();
+    return &m_mapinfos[id].value();
+  }
 
 private:
   std::vector<std::optional<MapInfo>> m_mapinfos;

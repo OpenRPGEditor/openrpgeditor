@@ -25,6 +25,8 @@ struct ImagePicker : IDialogController {
   }
   void setImageInfo(std::string_view imageName, std::string_view image2Name = {});
 
+  PickerMode mode() const { return m_pickType; }
+
 private:
   std::optional<Image> m_image;
   std::optional<Image> m_image2;

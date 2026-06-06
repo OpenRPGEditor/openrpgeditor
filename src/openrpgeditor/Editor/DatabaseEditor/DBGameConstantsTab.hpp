@@ -37,6 +37,7 @@ private:
   bool drawSelectable(int id, bool selected);
   static void drawNameAndAliasColumns(const std::string& name, const std::string& alias);
   static bool drawDeleteButton(int id);
+  static bool drawAddButton();
 
   GameConstants* m_constants = nullptr;
   std::optional<VariableSwitchPicker> m_switchVariablePicker;

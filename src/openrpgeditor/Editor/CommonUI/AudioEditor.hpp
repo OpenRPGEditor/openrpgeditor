@@ -18,26 +18,29 @@ struct AudioEditor {
     Vocals,
   };
   AudioEditor() = delete;
-  explicit AudioEditor(const EventCode code, Audio& audio)
-  : m_audio(audio) {
-    if (code == EventCode::Play_SE) {
+  explicit AudioEditor(const AudioType type, Audio& audio)
+  : m_audio(audio)
+  , m_audioType(type) {
+    switch (m_audioType) {
+    case AudioType::SE: {
       m_audioDir.emplace("audio/se", ".ogg", m_audio.name());
-      m_audioType = AudioType::SE;
-    } else if (code == EventCode::Play_BGM || code == EventCode::Change_Battle_BGM || code == EventCode::Change_Vehicle_BGM) {
+    } break;
+    case AudioType::BGM: {
       m_audioDir.emplace("audio/bgm", ".ogg", m_audio.name());
-      m_audioType = AudioType::BGM;
-    } else if (code == EventCode::Change_Defeat_ME || code == EventCode::Change_Victory_ME || code == EventCode::Play_ME) {
+    } break;
+    case AudioType::ME: {
       m_audioDir.emplace("audio/me", ".ogg", m_audio.name());
-      m_audioType = AudioType::ME;
-    } else if (code == EventCode::Play_BGS) {
+    } break;
+    case AudioType::BGS: {
       m_audioDir.emplace("audio/bgs", ".ogg", m_audio.name());
-      m_audioType = AudioType::BGS;
-    } else {
+    } break;
+    default:
       APP_INFO("Audio code not implemented");
+      break;
     }
     m_audios = m_audioDir.value().getDirectoryContents();
     m_folders = m_audioDir.value().getDirectories();
-    std::string audioName = m_audioDir->getFileName(m_audio.name());
+    const std::string audioName = m_audioDir->getFileName(m_audio.name());
     for (int i = 0; i < m_audios.size(); ++i) {
       if (audioName == m_audios[i]) {
         m_selected = i;
@@ -50,6 +53,9 @@ struct AudioEditor {
     m_open = open;
     m_confirmed = false;
   }
+  
+  AudioType type() const { return m_audioType; }
+  Audio& audio() const { return m_audio; }
 
 private:
   bool m_confirmed{false};

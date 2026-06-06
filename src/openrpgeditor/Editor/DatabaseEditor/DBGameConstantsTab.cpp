@@ -1,5 +1,5 @@
-#include "Editor/CommonUI/GroupBox.hpp"
 #include "Editor/DatabaseEditor/DBGameConstantsTab.hpp"
+#include "Editor/CommonUI/GroupBox.hpp"
 #include "IconsFontAwesome6.h"
 
 #include "Editor/ImGuiExt/ImGuiNotify.hpp"
@@ -153,12 +153,11 @@ bool DBGameConstantsTab::drawDeleteButton(int id) {
   if (ImGui::Selectable((std::string(ICON_FA_DELETE_LEFT) + std::format("##delete_btn{}", id)).c_str(), false, ImGuiSelectableFlags_AllowOverlap)) {
     return true;
   }
-  if (ImGui::IsItemHovered()) {
-    ImGui::SetTooltip("Delete constant export");
-  }
+  ImGui::SetItemTooltip("%s", trNOOP("Delete constant export"));
   return false;
 }
 
+bool DBGameConstantsTab::drawAddButton() { return ImGui::Button(trNOOP("Add"), {-1, 0}); }
 void DBGameConstantsTab::draw() {
   GroupBox mainGroup(tr("Exported Constants"), "##constants_tab_group", {-1, -1});
   if (mainGroup.begin()) {
@@ -206,7 +205,7 @@ void DBGameConstantsTab::draw() {
             ImGui::EndTable();
           }
 
-          if (ImGui::Button(trNOOP("Add"))) {
+          if (drawAddButton()) {
             m_switchVariablePicker.emplace(VariableSwitchPicker::Type::Variable, Database::instance()->system->variables(), 1);
             m_switchVariablePicker->setOpen(true);
           }
@@ -254,7 +253,7 @@ void DBGameConstantsTab::draw() {
             }
             ImGui::EndTable();
           }
-          if (ImGui::Button(trNOOP("Add"))) {
+          if (drawAddButton()) {
             m_switchVariablePicker.emplace(VariableSwitchPicker::Type::Switch, Database::instance()->system->switches(), 1);
             m_switchVariablePicker->setOpen(true);
           }
@@ -298,7 +297,7 @@ void DBGameConstantsTab::draw() {
             }
             ImGui::EndTable();
           }
-          if (ImGui::Button(trNOOP("Add"))) {
+          if (drawAddButton()) {
             m_actorsPicker.emplace(Database::instance()->actors->actorList(), m_selection);
             m_actorsPicker->setOpen(true);
           }
@@ -343,7 +342,7 @@ void DBGameConstantsTab::draw() {
             ImGui::EndTable();
           }
 
-          if (ImGui::Button(trNOOP("Add"))) {
+          if (drawAddButton()) {
             m_classesPicker.emplace(Database::instance()->classes->classes(), m_selection);
             m_classesPicker->setOpen(true);
           }
@@ -389,7 +388,7 @@ void DBGameConstantsTab::draw() {
             ImGui::EndTable();
           }
 
-          if (ImGui::Button(trNOOP("Add"))) {
+          if (drawAddButton()) {
             m_skillsPicker.emplace(Database::instance()->skills->skills(), m_selection);
             m_skillsPicker->setOpen(true);
           }
@@ -435,7 +434,7 @@ void DBGameConstantsTab::draw() {
             ImGui::EndTable();
           }
 
-          if (ImGui::Button(trNOOP("Add"))) {
+          if (drawAddButton()) {
             m_itemsPicker.emplace(Database::instance()->items->items(), m_selection);
             m_itemsPicker->setOpen(true);
           }
@@ -481,7 +480,7 @@ void DBGameConstantsTab::draw() {
             ImGui::EndTable();
           }
 
-          if (ImGui::Button(trNOOP("Add"))) {
+          if (drawAddButton()) {
             m_weaponsPicker.emplace(Database::instance()->weapons->weapons(), m_selection);
             m_weaponsPicker->setOpen(true);
           }
@@ -527,7 +526,7 @@ void DBGameConstantsTab::draw() {
             ImGui::EndTable();
           }
 
-          if (ImGui::Button(trNOOP("Add"))) {
+          if (drawAddButton()) {
             m_armorsPicker.emplace(Database::instance()->armors->armors(), m_selection);
             m_armorsPicker->setOpen(true);
           }
@@ -573,7 +572,7 @@ void DBGameConstantsTab::draw() {
             ImGui::EndTable();
           }
 
-          if (ImGui::Button(trNOOP("Add"))) {
+          if (drawAddButton()) {
             m_enemiesPicker.emplace(Database::instance()->enemies->enemies(), m_selection);
             m_enemiesPicker->setOpen(true);
           }
@@ -619,7 +618,7 @@ void DBGameConstantsTab::draw() {
             ImGui::EndTable();
           }
 
-          if (ImGui::Button(trNOOP("Add"))) {
+          if (drawAddButton()) {
             m_troopsPicker.emplace(Database::instance()->troops->troops(), m_selection);
             m_troopsPicker->setOpen(true);
           }
@@ -665,7 +664,7 @@ void DBGameConstantsTab::draw() {
             ImGui::EndTable();
           }
 
-          if (ImGui::Button(trNOOP("Add"))) {
+          if (drawAddButton()) {
             m_statesPicker.emplace(Database::instance()->states->states(), m_selection);
             m_statesPicker->setOpen(true);
           }
@@ -711,7 +710,7 @@ void DBGameConstantsTab::draw() {
             ImGui::EndTable();
           }
 
-          if (ImGui::Button(trNOOP("Add"))) {
+          if (drawAddButton()) {
             m_animationPicker.emplace(Database::instance()->animations->animations(), m_selection);
             m_animationPicker->setOpen(true);
           }
@@ -757,7 +756,7 @@ void DBGameConstantsTab::draw() {
             ImGui::EndTable();
           }
 
-          if (ImGui::Button(trNOOP("Add"))) {
+          if (drawAddButton()) {
             m_tilesetPicker.emplace(Database::instance()->tilesets->tilesets(), m_selection);
             m_tilesetPicker->setOpen(true);
           }
@@ -803,7 +802,7 @@ void DBGameConstantsTab::draw() {
             ImGui::EndTable();
           }
 
-          if (ImGui::Button(trNOOP("Add"))) {
+          if (drawAddButton()) {
             m_commonEventPicker.emplace(Database::instance()->commonEvents->events(), m_selection);
             m_commonEventPicker->setOpen(true);
           }
@@ -849,7 +848,7 @@ void DBGameConstantsTab::draw() {
             ImGui::EndTable();
           }
 
-          if (ImGui::Button(trNOOP("Add"))) {
+          if (drawAddButton()) {
             m_mapsPicker.emplace(Database::instance()->mapInfos->mapInfos(), m_selection);
             m_mapsPicker->setOpen(true);
           }

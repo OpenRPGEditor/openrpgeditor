@@ -15,7 +15,7 @@ struct Dialog_ChangeVehicleBGM : IEventDialogController {
     if (cmd == nullptr) {
       m_command.reset(new ChangeVehicleBGMCommand());
     }
-    m_audioRenderer.emplace(m_command->code(), m_command->bgm);
+    m_audioRenderer.emplace(AudioEditor::AudioType::BGM, m_command->bgm);
   }
   std::tuple<bool, bool> draw() override;
   [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return m_command; }

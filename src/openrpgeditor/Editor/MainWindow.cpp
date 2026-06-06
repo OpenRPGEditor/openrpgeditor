@@ -162,12 +162,14 @@ void MainWindow::save() {
 
 std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
   if (promptSave && m_database && m_databaseEditor->isReady() && m_database->isModified()) {
-    ImGui::OpenPopup("###save_changes");
+    if (!ImGui::IsPopupOpen("###save_changes")) {
+      ImGui::OpenPopup("###save_changes");
+    }
 
     ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing, {.5f, .5f});
     int ret = -1;
     if (ImGui::BeginPopupModal(std::format("{}###save_changes", trNOOP("Save changes?")).c_str(), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove)) {
-      ImGui::BringWindowToDisplayFront(ImGui::GetCurrentWindow());
+      //ImGui::BringWindowToDisplayFront(ImGui::GetCurrentWindow());
       ImGui::BeginVertical("##save_changes_inner", ImGui::GetContentRegionAvail());
       {
         ImGui::TextUnformatted(trFormat("\"{0}\" at \"{1}\"\n"
@@ -995,7 +997,7 @@ void MainWindow::drawMenu() {
       //   EditorPluginManager::instance().setOpen(true);
       // }
 #endif
-      
+
       if (ImGui::MenuItem(trNOOP("Edit Package Info"), nullptr, false, m_database != std::nullopt && !m_jsonInspector.isOpen())) {
         m_jsonInspector.openFile(m_database->basePath / "package.json");
         m_jsonInspector.setOpen();

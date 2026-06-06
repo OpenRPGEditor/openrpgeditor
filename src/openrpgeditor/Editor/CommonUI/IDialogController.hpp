@@ -3,6 +3,8 @@
 #include <string>
 #include <tuple>
 
+#include <Utils/Typename.hpp>
+
 struct IDialogController {
   IDialogController() = delete;
   explicit IDialogController(const std::string_view name)
@@ -21,4 +23,10 @@ protected:
   bool m_confirmed{false};
   bool m_open{false};
   std::string m_name;
+};
+
+template <typename T>
+struct ITypedDialogController : IDialogController {
+  ITypedDialogController()
+  : IDialogController(type_name<T>()) {}
 };

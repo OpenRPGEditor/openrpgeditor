@@ -168,10 +168,10 @@ void MapEditor::handleEventDrag() {
 
     m_movingEvent->setX(m_tileCursor.tileX());
     m_movingEvent->setY(m_tileCursor.tileY());
-    if (it != map()->events().end()) {
-      m_movingEvent->setX(oldX);
-      m_movingEvent->setY(oldY);
-    }
+    // if (it != map()->events().end()) {
+    //   m_movingEvent->setX(oldX);
+    //   m_movingEvent->setY(oldY);
+    // }
   }
 }
 
@@ -223,6 +223,7 @@ void MapEditor::handleMouseInput(ImGuiWindow* win) {
 
   if (m_parent->editMode() == EditMode::Event && m_tileCursor.mode() == MapCursorMode::Keyboard && (ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) &&
       (!m_movingEvent || !m_selectedEvent)) {
+    const auto events = map()->eventsAt(m_tileCursor.tileX(), m_tileCursor.tileY());
     m_selectedEvent = map()->eventAt(m_tileCursor.tileX(), m_tileCursor.tileY());
     if (m_selectedEvent && m_selectedEvent->id() == 0) {
       m_selectedEvent = nullptr;

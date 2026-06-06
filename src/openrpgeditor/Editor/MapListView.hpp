@@ -1,4 +1,5 @@
 #pragma once
+#include "CommonUI/NewMapDialog.hpp"
 
 struct MainWindow;
 struct MapInfos;
@@ -27,6 +28,7 @@ private:
   void recursiveDrawTree(MapInfo& in);
   MainWindow* m_parent = nullptr;
   MapInfos* m_mapInfos = nullptr;
+  NewMapDialog m_newMapDialog;
   int m_selectedMapId = -1;
   bool m_mapTreeStale{false};
   bool m_needsScroll{false};

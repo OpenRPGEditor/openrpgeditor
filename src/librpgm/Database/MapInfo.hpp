@@ -114,6 +114,8 @@ public:
   }
 
   rpgmutils::signal<void(MapInfo*, Map*)>& mapInfoModified();
+  
+  void createMap(int width, int height);
 
 private:
   MapInfo(const MapInfo& other, int)

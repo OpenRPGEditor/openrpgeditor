@@ -68,6 +68,32 @@ void MapInfos::loadAllMaps() {
   }
 }
 
+MapInfo* MapInfos::createMapAt(int id, const int width, const int height, const int parent) {
+  if (id <= 0) {
+    // check if we have an invalid id
+    id = m_mapinfos.size();
+  }
+
+  if (id >= m_mapinfos.size()) {
+    m_mapinfos.resize(id + 1);
+  }
+
+  m_mapinfos[id].emplace();
+  m_mapinfos[id]->setId(id);
+  m_mapinfos[id]->createMap(width, height);
+
+  if (parent != -1) {
+    if (!m_mapinfos[parent]->children().empty()) {
+      m_mapinfos[id]->setOrder(m_mapinfos[parent]->children().back()->order() + 1);
+    }
+    m_mapinfos[id]->setParentId(parent);
+  }
+
+  buildTree(true);
+  rebuildOrdering();
+  return &m_mapinfos[id].value();
+}
+
 static std::mutex MapInfosMutex;
 void MapInfos::mapLoadCallback(const std::shared_ptr<ISerializable>& data) {
   if (const auto mapSerializable = std::dynamic_pointer_cast<MapSerializer>(data)) {

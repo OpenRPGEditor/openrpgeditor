@@ -142,6 +142,11 @@ rpgmutils::signal<void(Map::Encounter*, int)>& Map::Encounter::weightModified() 
   return *m_weightModified;
 }
 
+Map::Map(const int width, const int height) {
+  resize(width, height);
+  m_events.emplace_back(); // empty event
+}
+
 Map::Map(const Map& other)
 : IModifiable(other)
 , m_autoplayBgm(other.m_autoplayBgm)
@@ -941,32 +946,38 @@ rpgmutils::signal<void(Map*, const std::vector<std::optional<Event>>&)>& Map::ev
 }
 
 void Map::resize(const int newWidth, const int newHeight) {
+  // if the map data is empty, we just need to fill the whole thing with zeros
   static constexpr int MaxLayers = 6;
-  std::vector<std::optional<int>> newData;
-  newData.resize(MaxLayers * newWidth * newHeight);
-  std::ranges::fill(newData.begin(), newData.end(), 0);
 
-  for (int y = 0; y < newHeight; ++y) {
-    for (int x = 0; x < newWidth; ++x) {
-      if (x < m_width && y < m_height) {
-        for (int z = 0; z < MaxLayers; ++z) {
-          const int si = (z * m_height + y) * m_width + x;
-          const int di = (z * newHeight + y) * newWidth + x;
-          newData[di] = m_data[si];
+  if (m_data.empty()) {
+    m_data.resize(MaxLayers * newWidth * newHeight);
+    std::ranges::fill(m_data.begin(), m_data.end(), 0);
+  } else {
+    std::vector<std::optional<int>> newData;
+    newData.resize(MaxLayers * newWidth * newHeight);
+    std::ranges::fill(newData.begin(), newData.end(), 0);
+
+    for (int y = 0; y < newHeight; ++y) {
+      for (int x = 0; x < newWidth; ++x) {
+        if (x < m_width && y < m_height) {
+          for (int z = 0; z < MaxLayers; ++z) {
+            const int si = (z * m_height + y) * m_width + x;
+            const int di = (z * newHeight + y) * newWidth + x;
+            newData[di] = m_data[si];
+          }
         }
       }
     }
+
+    std::ranges::for_each(m_events, [&](auto& event) {
+      if (event->x() >= newWidth || event->y() >= newHeight) {
+        event.reset();
+      }
+    });
+    m_data = std::move(newData);
   }
-
-  std::ranges::for_each(m_events, [&](auto& event) {
-    if (event->x() >= newWidth || event->y() >= newHeight) {
-      event.reset();
-    }
-  });
-
   m_width = newWidth;
   m_height = newHeight;
-  m_data = std::move(newData);
 }
 
 [[nodiscard]] std::vector<Event*> Map::getSorted() {

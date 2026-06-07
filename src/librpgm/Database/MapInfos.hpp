@@ -67,22 +67,10 @@ public:
       }
     }
     // If there isn't an unoccupied slot, return the array size
-    return 0;
+    return m_mapinfos.size();
   }
   
-  MapInfo* createMapAt(int id, int parent = -1) {
-    if (id <= 0) {
-      // check if we have an invalid id
-      id = m_mapinfos.size();
-    }
-    
-    if (id >= m_mapinfos.size()) {
-      m_mapinfos.resize(id + 1);
-    }
-    
-    m_mapinfos[id].emplace();
-    return &m_mapinfos[id].value();
-  }
+  MapInfo* createMapAt(int id, const int width, const int height, const int parent);
 
 private:
   std::vector<std::optional<MapInfo>> m_mapinfos;

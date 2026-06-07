@@ -72,6 +72,7 @@ public:
     std::optional<rpgmutils::signal<void(Encounter*, int)>> m_weightModified;
   };
   Map() = default;
+  Map(int width, int height);
   Map(const Map& other);
   Map& operator=(const Map& other);
   Map(Map&& other) noexcept;

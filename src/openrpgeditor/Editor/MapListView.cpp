@@ -222,9 +222,35 @@ void MapListView::draw() {
           }
         }
       }
-      m_newMapDialog.draw();
     }
     ImGui::EndChild();
+
+    if (const auto [closed, confirmed] = m_newMapDialog.draw(); closed) {
+      if (confirmed) {
+        auto* mapInfo = m_mapInfos->createMapAt(m_newMapDialog.newMapId(), m_newMapDialog.width(), m_newMapDialog.height(), m_selectedMapId);
+        mapInfo->setName(m_newMapDialog.mapName());
+        auto* map = mapInfo->map();
+        map->setDisplayName(m_newMapDialog.displayName());
+        map->setTilesetId(m_newMapDialog.tileset());
+        map->setAutoplayBgm(m_newMapDialog.autoplayBgm());
+        map->setBgm(m_newMapDialog.bgm());
+        map->setAutoplayBgs(m_newMapDialog.autoplayBgs());
+        map->setBgs(m_newMapDialog.bgs());
+        map->setSpecifyBattleback(m_newMapDialog.specifyBattleback());
+        map->setBattleback1Name(m_newMapDialog.battleback1());
+        map->setBattleback2Name(m_newMapDialog.battleback2());
+        map->setDisableDashing(m_newMapDialog.disableDashing());
+        map->setParallaxName(m_newMapDialog.parallax());
+        map->setParallaxLoopX(m_newMapDialog.loopHorizontally());
+        map->setParallaxSx(m_newMapDialog.scrollX());
+        map->setParallaxLoopY(m_newMapDialog.loopVertically());
+        map->setParallaxSx(m_newMapDialog.scrollY());
+        map->setParallaxShow(m_newMapDialog.showParallaxInEditor());
+        m_parent->setMap(*mapInfo);
+      }
+
+      m_newMapDialog.accept();
+    }
   }
   ImGui::End();
 

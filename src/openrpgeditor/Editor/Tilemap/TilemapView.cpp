@@ -138,7 +138,7 @@ void TilemapView::paintTiles(const int startX, const int startY, const int x, co
   int tileId2 = tileId(mx, my, 2);
   int tileId3 = tileId(mx, my, 3);
   int shadowBits = tileId(mx, my, 4);
-  int upperTileId1 = tileId(mx, my - 1, 4);
+  int upperTileId1 = tileId(mx, std::max(my - 1, 0), 4);
 
   if (isHigherTile(tileId0)) {
     m_upperTileIds.emplace_back(dx, dy, tileId0);

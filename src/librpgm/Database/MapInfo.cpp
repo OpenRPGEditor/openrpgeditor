@@ -33,6 +33,10 @@ void MapInfo::setName(const std::string& name) {
 
 [[nodiscard]] const Map* MapInfo::map(const bool loadSync) const { return const_cast<MapInfo*>(this)->map(loadSync); }
 
+void MapInfo::createMap(const int width, const int height) {
+  m_map = std::make_unique<Map>(width, height);
+}
+
 rpgmutils::signal<void(MapInfo*, Map*)>& MapInfo::mapInfoModified() {
   if (!m_mapInfoModified) {
     m_mapInfoModified.emplace();

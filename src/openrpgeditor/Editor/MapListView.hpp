@@ -26,6 +26,7 @@ private:
   void recursiveExpandParents(MapInfo& in);
   void drawContextMenu(MapInfo& in);
   void recursiveDrawTree(MapInfo& in);
+  void drawDeleteMessage();
   MainWindow* m_parent = nullptr;
   MapInfos* m_mapInfos = nullptr;
   NewMapDialog m_newMapDialog;
@@ -33,4 +34,5 @@ private:
   bool m_mapTreeStale{false};
   bool m_needsScroll{false};
   bool m_listMode{false};
+  bool m_deleteMapRequested{false};
 };

@@ -70,7 +70,8 @@ public:
     return m_mapinfos.size();
   }
   
-  MapInfo* createMapAt(int id, const int width, const int height, const int parent);
+  MapInfo* createMap(int id, const int width, const int height, const int parent);
+  bool deleteMap(int id);
 
 private:
   std::vector<std::optional<MapInfo>> m_mapinfos;

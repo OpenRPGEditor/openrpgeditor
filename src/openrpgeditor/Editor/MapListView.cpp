@@ -75,7 +75,7 @@ void MapListView::drawContextMenu(MapInfo& in) {
     }
 
     if (ImGui::MenuItem("Delete", nullptr, false, in.id() != 0)) {
-      // TODO: Deletes a map
+      m_deleteMapRequested = true;
     }
 
     ImGui::Separator();
@@ -101,6 +101,45 @@ void MapListView::drawContextMenu(MapInfo& in) {
     if (ImGui::MenuItem("Generate Dungeon...", nullptr, false, in.id() != 0)) {
       // ???
     }
+    ImGui::EndPopup();
+  }
+}
+
+static constexpr auto kDeleteMapId = "###DeleteMap"sv;
+void MapListView::drawDeleteMessage() {
+  if (m_selectedMapId <= 0) {
+    return;
+  }
+
+  if (m_deleteMapRequested) {
+    ImGui::OpenPopup(kDeleteMapId.data());
+  }
+
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing, {0.5f, 0.5f});
+  if (ImGui::BeginPopupModal(std::format("{}{}", trNOOP("Delete Map?"), kDeleteMapId).c_str(), &m_deleteMapRequested, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings)) {
+    ImGui::BeginVertical("##delete_map_main_layout", {-1, -1}, 0.f);
+    {
+      ImGui::TextUnformatted(trFormat("Are you sure you want to delete map {:03}?\nThis operation cannot be undone.", m_selectedMapId).c_str());
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##delete_map_button_layout", {-1, 0}, 0.f);
+      {
+        ImGui::Spring();
+        if (const auto ret = ImGui::ButtonGroup("##delete_map_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+          const MapInfo* info = m_mapInfos->map(m_selectedMapId);
+          const int deleteMap = m_selectedMapId;
+          m_parent->setMap(*m_mapInfos->map(info->parentId()));
+          ImGui::CloseCurrentPopup();
+          m_mapInfos->deleteMap(deleteMap);
+          m_deleteMapRequested = false;
+        } else if (ret == 1) {
+          m_deleteMapRequested = false;
+          ImGui::CloseCurrentPopup();
+        }
+      }
+      ImGui::EndHorizontal();
+    }
+    ImGui::EndVertical();
     ImGui::EndPopup();
   }
 }
@@ -227,7 +266,7 @@ void MapListView::draw() {
 
     if (const auto [closed, confirmed] = m_newMapDialog.draw(); closed) {
       if (confirmed) {
-        auto* mapInfo = m_mapInfos->createMapAt(m_newMapDialog.newMapId(), m_newMapDialog.width(), m_newMapDialog.height(), m_selectedMapId);
+        auto* mapInfo = m_mapInfos->createMap(m_newMapDialog.newMapId(), m_newMapDialog.width(), m_newMapDialog.height(), m_selectedMapId);
         mapInfo->setName(m_newMapDialog.mapName());
         auto* map = mapInfo->map();
         map->setDisplayName(m_newMapDialog.displayName());
@@ -251,6 +290,7 @@ void MapListView::draw() {
 
       m_newMapDialog.accept();
     }
+    drawDeleteMessage();
   }
   ImGui::End();
 

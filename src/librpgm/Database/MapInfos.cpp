@@ -68,7 +68,7 @@ void MapInfos::loadAllMaps() {
   }
 }
 
-MapInfo* MapInfos::createMapAt(int id, const int width, const int height, const int parent) {
+MapInfo* MapInfos::createMap(int id, const int width, const int height, const int parent) {
   if (id <= 0) {
     // check if we have an invalid id
     id = m_mapinfos.size();
@@ -92,6 +92,19 @@ MapInfo* MapInfos::createMapAt(int id, const int width, const int height, const 
   buildTree(true);
   rebuildOrdering();
   return &m_mapinfos[id].value();
+}
+
+bool MapInfos::deleteMap(const int id) {
+  if (id <= 0 || id >= m_mapinfos.size()) {
+    return false;
+  }
+
+  m_mapinfos[id].reset();
+  // TODO: We probably should do this in a better way, for now it's commented to prevent accidental data loss
+  //std::filesystem::remove(Database::instance()->basePath / "data" / std::format("Map{:03}.json", id));
+  buildTree(true);
+  rebuildOrdering();
+  return true;
 }
 
 static std::mutex MapInfosMutex;

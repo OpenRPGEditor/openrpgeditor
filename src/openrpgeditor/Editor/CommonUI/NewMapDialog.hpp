@@ -45,7 +45,7 @@ public:
   void setNewMapId(const int id) {
     m_newMapId = id;
     if (m_newMapId > 0) {
-      m_mapName = std::format("MAP{:04}", m_newMapId);
+      m_mapName = std::format("MAP{:03}", m_newMapId);
       m_displayName.clear();
     }
   }

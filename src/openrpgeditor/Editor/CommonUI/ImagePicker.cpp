@@ -120,12 +120,15 @@ std::tuple<bool, bool> ImagePicker::draw() {
       }
       index++;
     }
+    m_sortRequest = false;
+  }
 
-    index = 0;
+  if (m_sortRequest2) {
+    int index{0};
     m_sortedIndexes2.clear();
     for (auto& str : m_images_2) {
-      if (!m_filter.empty()) {
-        if (ContainsCaseInsensitive(str, m_filter)) {
+      if (!m_filter2.empty()) {
+        if (ContainsCaseInsensitive(str, m_filter2)) {
           m_sortedIndexes2.insert(index);
         }
       } else {
@@ -133,7 +136,7 @@ std::tuple<bool, bool> ImagePicker::draw() {
       }
       index++;
     }
-    m_sortRequest = false;
+    m_sortRequest2 = false;
   }
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -143,30 +146,31 @@ std::tuple<bool, bool> ImagePicker::draw() {
   if (ImGui::BeginPopupModal(std::format("{}###{}", trNOOP("Select an Image"), m_name).c_str(), &m_open, ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::BeginVertical("##image_picker_main_layout", ImGui::GetContentRegionAvail(), 0.f);
     {
-      ImGui::BeginHorizontal("##image_picker_filter_layout", {-1, 0});
-      {
-        ImGui::TextUnformatted(trNOOP("Filter"));
-        const std::string buttonText = trNOOP("Clear");
-        const float buttonWidth = ImGui::CalcItemSize(ImGui::CalcTextSize(buttonText.c_str()), 0, 0).x + ImGui::GetStyle().ItemSpacing.x * 2.f + ImGui::GetStyle().FramePadding.x * 2.f;
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - (buttonWidth + ImGui::GetStyle().ItemSpacing.x));
-        if (ImGui::InputText("##filter_input", &m_filter)) {
-          if (m_filter.empty()) {
-            m_sortedIndexes.clear();
-          } else {
-            m_sortRequest = true;
-          }
-        }
-        if (ImGui::Button(buttonText.c_str(), {-1, 0})) {
-          m_filter.clear();
-          m_sortedIndexes.clear();
-        }
-      }
-      ImGui::EndHorizontal();
+
       ImGui::BeginHorizontal("##image_picker_inner_layout", {-1, 0});
       {
         const ImVec2 listSize{ImGui::GetDPIScaledValue(200), ImGui::GetContentRegionAvail().y - (ImGui::GetFrameHeightWithSpacing() + ImGui::GetDPIScaledValue(1.5f))};
         if (!m_images.empty()) {
           if (ImGui::BeginChild("##image_picker_list_left", listSize, ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX)) {
+            ImGui::BeginHorizontal("##image_picker_filter_layout", {-1, 0});
+            {
+              ImGui::TextUnformatted(trNOOP("Filter"));
+              const std::string buttonText = trNOOP("Clear");
+              const float buttonWidth = ImGui::CalcItemSize(ImGui::CalcTextSize(buttonText.c_str()), 0, 0).x + ImGui::GetStyle().ItemSpacing.x * 2.f + ImGui::GetStyle().FramePadding.x * 2.f;
+              ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - (buttonWidth + ImGui::GetStyle().ItemSpacing.x));
+              if (ImGui::InputText("##filter_input", &m_filter)) {
+                if (m_filter.empty()) {
+                  m_sortedIndexes.clear();
+                } else {
+                  m_sortRequest = true;
+                }
+              }
+              if (ImGui::Button(buttonText.c_str(), {-1, 0})) {
+                m_filter.clear();
+                m_sortedIndexes.clear();
+              }
+            }
+            ImGui::EndHorizontal();
             if (ImGui::BeginTable("##image_picker_list_left_contents", 1,
                                   ImGuiTableFlags_Borders | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY)) {
               ImGui::TableSetupScrollFreeze(1, 0);
@@ -209,7 +213,7 @@ std::tuple<bool, bool> ImagePicker::draw() {
                 m_image.reset();
               }
               for (int i = 0; i < m_images.size(); ++i) {
-                if (m_filter.empty() == false && m_sortedIndexes.contains(i) == false) {
+                if (!m_filter.empty() && !m_sortedIndexes.contains(i)) {
                   continue;
                 }
                 const auto& sheet = m_images[i];
@@ -234,6 +238,25 @@ std::tuple<bool, bool> ImagePicker::draw() {
         }
         if (!m_images_2.empty()) {
           if (ImGui::BeginChild("##image_picker_list_right", listSize, ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX)) {
+            ImGui::BeginHorizontal("##image_picker_filter_layout", {-1, 0});
+            {
+              ImGui::TextUnformatted(trNOOP("Filter"));
+              const std::string buttonText = trNOOP("Clear");
+              const float buttonWidth = ImGui::CalcItemSize(ImGui::CalcTextSize(buttonText.c_str()), 0, 0).x + ImGui::GetStyle().ItemSpacing.x * 2.f + ImGui::GetStyle().FramePadding.x * 2.f;
+              ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - (buttonWidth + ImGui::GetStyle().ItemSpacing.x));
+              if (ImGui::InputText("##filter_input", &m_filter2)) {
+                if (m_filter2.empty()) {
+                  m_sortedIndexes2.clear();
+                } else {
+                  m_sortRequest2 = true;
+                }
+              }
+              if (ImGui::Button(buttonText.c_str(), {-1, 0})) {
+                m_filter2.clear();
+                m_sortedIndexes2.clear();
+              }
+            }
+            ImGui::EndHorizontal();
             if (ImGui::BeginTable("##image_picker_list_right_contents", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY)) {
               ImGui::TableSetupScrollFreeze(1, 0);
               ImGui::TableSetupColumn(trNOOP("File"));
@@ -274,7 +297,7 @@ std::tuple<bool, bool> ImagePicker::draw() {
               }
 
               for (int i = 0; i < m_images_2.size(); ++i) {
-                if (m_filter.empty() == false && m_sortedIndexes2.contains(i) == false) {
+                if (!m_filter2.empty() && !m_sortedIndexes2.contains(i)) {
                   continue;
                 }
                 const auto& sheet = m_images_2[i];

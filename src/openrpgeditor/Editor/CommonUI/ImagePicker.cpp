@@ -326,7 +326,7 @@ std::tuple<bool, bool> ImagePicker::draw() {
             m_image.emplace(m_selectedImage == -1 ? "" : m_images.at(m_selectedImage), m_pickType, false);
           }
           if (!m_image2 && m_selectedImage2 != -1) {
-            m_image2.emplace(m_selectedImage2 == -1 ? "" : m_images.at(m_selectedImage2), m_pickType, true);
+            m_image2.emplace(m_selectedImage2 == -1 ? "" : m_images_2.at(m_selectedImage2), m_pickType, true);
           }
 
           const auto win = ImGui::GetCurrentWindow();

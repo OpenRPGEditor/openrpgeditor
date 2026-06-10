@@ -38,6 +38,8 @@ std::tuple<bool, bool> AudioEditor::draw(const std::string_view title, const std
         }
         ImGui::EndDisabled();
         for (int i = 0; i < m_folders.size(); ++i) {
+          ImGui::TableNextRow();
+          ImGui::TableNextColumn();
           const auto& folderName = std::format("{} {}", ICON_FA_FOLDER_OPEN, m_folders[i]);
           if (ImGui::Selectable(folderName.c_str(), m_selectedFolder == i,
                                 static_cast<int>(ImGuiSelectableFlags_SelectOnNav) | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SelectOnClick)) {
@@ -51,13 +53,15 @@ std::tuple<bool, bool> AudioEditor::draw(const std::string_view title, const std
             m_selectedFolder = -1;
           }
         }
-
+        ImGui::TableNextRow();
+        ImGui::TableNextColumn();
         if (ImGui::SelectableWithBorder(trNOOP("None"), m_selected == 0, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {
           m_selected = 0;
           m_audio.setName("");
         }
 
         for (int n = 0; n < m_audios.size(); n++) {
+          ImGui::TableNextRow();
           ImGui::TableNextColumn();
           const bool isSelected = (m_selected == n + 1);
           if (ImGui::SelectableWithBorder(m_audios.at(n).c_str(), isSelected, ImGuiSelectableFlags_AllowOverlap | ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowDoubleClick)) {

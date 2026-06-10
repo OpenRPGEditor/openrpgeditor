@@ -8,10 +8,11 @@
 #include "Editor/Log.hpp"
 
 #include "Database/Globals.hpp"
+#include <set>
 
 namespace fs = std::filesystem;
 struct Image;
-struct ImagePicker : IDialogController {
+struct ImagePicker : ITypedDialogController<ImagePicker> {
   using PickerMode = Image::Mode;
 
   explicit ImagePicker(PickerMode mode, std::string_view imageName = {}, std::string_view image2Name = {});
@@ -45,6 +46,7 @@ private:
   std::optional<Directory> m_imageDir2;
 
   std::string m_filter;
-  std::map<int, std::string> m_sortedIndexes;
+  std::set<int> m_sortedIndexes;
+  std::set<int> m_sortedIndexes2;
   bool m_sortRequest{false};
 };

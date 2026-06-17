@@ -311,7 +311,7 @@ void ActionTooltip(const char* action, const char* fmt, ...) {
   }
 }
 
-int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const bool isVertical, const std::vector<std::string>& tooltips, const std::vector<bool>& disabled) {
+int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const bool isVertical, const std::vector<std::string>& tooltips, const std::vector<bool>& disabled, const std::vector<bool>& visible) {
   int ret = -1;
 
   if (isVertical) {
@@ -326,15 +326,17 @@ int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const b
   // First get the largest button size
   for (const auto& btn : buttons) {
     const auto sz = CalcTextSize(btn.c_str(), nullptr, true);
-    if (sz.x > size.x || sz.y > size.y) {
-      size = sz;
-    }
+    size.x = std::max(sz.x, size.x);
+    size.y = std::max(sz.y, size.y);
   }
 
   // Make sure the button size can fit the text
   size += style.FramePadding * 2.f;
 
   for (int i = 0; i < buttons.size(); i++) {
+    if (i < visible.size() && !visible[i]) {
+      continue;
+    }
     if (i < disabled.size()) {
       BeginDisabled(disabled[i]);
     }

@@ -395,6 +395,8 @@ void Map::setBattleback2Name(const std::string& value) {
 }
 
 Audio& Map::bgm() { return m_bgm; }
+const Audio& Map::bgm() const { return m_bgm; }
+
 void Map::setBgm(const Audio& bgm) {
   if (bgm == m_bgm) {
     return;
@@ -408,6 +410,8 @@ void Map::setBgm(const Audio& bgm) {
 }
 
 Audio& Map::bgs() { return m_bgs; }
+const Audio& Map::bgs() const { return m_bgs; }
+
 void Map::setBgs(const Audio& bgs) {
   if (bgs == m_bgs) {
     return;
@@ -447,6 +451,8 @@ void Map::setDisplayName(const std::string& value) {
 }
 
 std::vector<Map::Encounter>& Map::encounterList() { return m_encounterList; }
+const std::vector<Map::Encounter>& Map::encounterList() const { return m_encounterList; }
+
 void Map::setEncounterList(const std::vector<Encounter>& value) {
   if (value == m_encounterList) {
     return;
@@ -946,6 +952,11 @@ rpgmutils::signal<void(Map*, const std::vector<std::optional<Event>>&)>& Map::ev
 }
 
 void Map::resize(const int newWidth, const int newHeight) {
+  // If the size doesn't actually change, don't do anything
+  if (m_width == newWidth && m_height == newHeight) {
+    return;
+  }
+
   // if the map data is empty, we just need to fill the whole thing with zeros
   static constexpr int MaxLayers = 6;
 

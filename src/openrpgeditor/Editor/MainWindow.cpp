@@ -257,7 +257,7 @@ void MainWindow::setupDocking() {
     ImGui::DockBuilderDockWindow("###maps", m_leftLower);
     ImGui::DockBuilderDockWindow("###mapeditor", m_middleDock);
     ImGui::DockBuilderDockWindow("###databaseeditor", m_middleDock);
-    ImGui::DockBuilderDockWindow("###mapproperties", m_rightDock);
+    ImGui::DockBuilderDockWindow("###map_properties", m_rightDock);
     ImGui::DockBuilderFinish(m_mainWindowGroup);
   } else {
     ImGui::DockBuilderSetNodeSize(m_leftUpper, {1000, 1000});

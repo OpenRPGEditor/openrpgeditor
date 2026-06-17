@@ -101,9 +101,11 @@ public:
   void setBattleback2Name(const std::string& value);
 
   Audio& bgm();
+  const Audio& bgm() const;
   void setBgm(const Audio& bgm);
 
   Audio& bgs();
+  const Audio& bgs() const;
   void setBgs(const Audio& bgs);
 
   bool disableDashing() const;
@@ -113,6 +115,7 @@ public:
   void setDisplayName(const std::string& value);
 
   std::vector<Encounter>& encounterList();
+  const std::vector<Encounter>& encounterList() const;
   void setEncounterList(const std::vector<Encounter>& value);
 
   Encounter& encounter(int id);

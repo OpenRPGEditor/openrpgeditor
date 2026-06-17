@@ -280,11 +280,11 @@ void MapListView::draw() {
         map->setBattleback2Name(m_newMapDialog.battleback2());
         map->setDisableDashing(m_newMapDialog.disableDashing());
         map->setParallaxName(m_newMapDialog.parallax());
-        map->setParallaxLoopX(m_newMapDialog.loopHorizontally());
-        map->setParallaxSx(m_newMapDialog.scrollX());
-        map->setParallaxLoopY(m_newMapDialog.loopVertically());
-        map->setParallaxSx(m_newMapDialog.scrollY());
-        map->setParallaxShow(m_newMapDialog.showParallaxInEditor());
+        map->setParallaxLoopX(m_newMapDialog.parallaxLoopX());
+        map->setParallaxSx(m_newMapDialog.parallaxSx());
+        map->setParallaxLoopY(m_newMapDialog.parallaxLoopY());
+        map->setParallaxSx(m_newMapDialog.parallaxSy());
+        map->setParallaxShow(m_newMapDialog.parallaxShow());
         m_parent->setMap(*mapInfo);
       }
 

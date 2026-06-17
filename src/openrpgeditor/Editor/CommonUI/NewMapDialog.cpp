@@ -191,25 +191,25 @@ std::tuple<bool, bool> NewMapDialog::draw() {
                   m_imagePicker->setOpen(true);
                 }
                 imageGroup.end();
-                GroupBox loopHorizGroup(trNOOP("Loop Horizontally"), "##loop_horizontally_group", {-1, 0}, &m_loopHorizontally);
+                GroupBox loopHorizGroup(trNOOP("Loop Horizontally"), "##loop_horizontally_group", {-1, 0}, &m_parallaxLoopX);
                 if (loopHorizGroup.begin()) {
                   ImGui::SetNextItemWidth(-1);
-                  if (ImGui::SpinInt("##scroll_x_spin", &m_scrollX, 1, 100, m_loopHorizontally ? nullptr: "")) {
-                    m_scrollX = std::clamp(m_scrollX, -32, 32);
+                  if (ImGui::SpinInt("##scroll_x_spin", &m_parallaxSx, 1, 100, m_parallaxLoopX ? nullptr: "")) {
+                    m_parallaxSx = std::clamp(m_parallaxSx, -32, 32);
                   }
-                  if (m_loopHorizontally) {
+                  if (m_parallaxLoopX) {
                     ImGui::SetItemTooltip("%s", trNOOP("Horizontal scroll speed for parallax background, in tiles"));
                   }
                 }
                 loopHorizGroup.end();
                 
-                GroupBox loopVerGroup(trNOOP("Loop Vertically"), "##loop_vertically_group", {-1, 0}, &m_loopVertically);
+                GroupBox loopVerGroup(trNOOP("Loop Vertically"), "##loop_vertically_group", {-1, 0}, &m_parallaxLoopY);
                 if (loopVerGroup.begin()) {
                   ImGui::SetNextItemWidth(-1);
-                  if (ImGui::SpinInt("##scroll_y_spin", &m_scrollY, 1, 100, m_loopVertically ? nullptr: "")) {
-                    m_scrollY = std::clamp(m_scrollY, -32, 32);
+                  if (ImGui::SpinInt("##scroll_y_spin", &m_parallaxSy, 1, 100, m_parallaxLoopY ? nullptr: "")) {
+                    m_parallaxSy = std::clamp(m_parallaxSy, -32, 32);
                   }
-                  if (m_loopVertically) {
+                  if (m_parallaxLoopY) {
                     ImGui::SetItemTooltip("%s", trNOOP("Vertical scroll speed for parallax background, in tiles"));
                   }
                 }
@@ -218,7 +218,7 @@ std::tuple<bool, bool> NewMapDialog::draw() {
                 ImGui::Spring(0.75f);
                 ImGui::SetNextItemWidth(-1);
                 ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, ImGui::GetStyle().FramePadding.y * 0.70f);
-                ImGui::SizeableCheckbox(trNOOP("Show in the Editor"), &m_showParallaxInEditor, ImGui::GetFrameHeight() * 0.65f);
+                ImGui::SizeableCheckbox(trNOOP("Show in the Editor"), &m_parallaxShow, ImGui::GetFrameHeight() * 0.65f);
                 ImGui::Spring(0.25f);
                 ImGui::PopStyleVar();
               }

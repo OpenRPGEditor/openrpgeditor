@@ -1,5 +1,4 @@
 #pragma once
-#include "Database/MapInfo.hpp"
 #include "Editor/CommonUI/AudioEditor.hpp"
 #include "Editor/CommonUI/IDialogController.hpp"
 #include "Editor/CommonUI/ImagePicker.hpp"
@@ -12,7 +11,7 @@ class NewMapDialog final : public ITypedDialogController<NewMapDialog> {
 public:
   void drawPickers();
   std::tuple<bool, bool> draw() override;
- 
+
   void accept() override {
     ITypedDialogController::accept();
     // Reset to initial state();
@@ -34,14 +33,14 @@ public:
     m_battleBack2.clear();
     m_disableDashing = false;
     m_parallax.clear();
-    m_loopHorizontally = false;
-    m_scrollX = 0;
-    m_loopVertically = false;
-    m_scrollY = 0;
-    m_showParallaxInEditor = true;
+    m_parallaxLoopX = false;
+    m_parallaxSx = 0;
+    m_parallaxLoopY = false;
+    m_parallaxSy = 0;
+    m_parallaxShow = true;
   }
-  
-  int newMapId() const { return m_newMapId; }  
+
+  int newMapId() const { return m_newMapId; }
   void setNewMapId(const int id) {
     m_newMapId = id;
     if (m_newMapId > 0) {
@@ -49,7 +48,7 @@ public:
       m_displayName.clear();
     }
   }
-  
+
   const std::string& mapName() const { return m_mapName; }
   const std::string& displayName() const { return m_displayName; }
   int tileset() const { return m_tileset; }
@@ -66,11 +65,11 @@ public:
   const std::string& battleback2() const { return m_battleBack2; }
   bool disableDashing() const { return m_disableDashing; }
   const std::string& parallax() const { return m_parallax; }
-  bool loopHorizontally() const { return m_loopHorizontally; }
-  int scrollX() const { return m_scrollX; }
-  bool loopVertically() const { return m_loopVertically; }
-  int scrollY() const { return m_scrollY; }
-  bool showParallaxInEditor() const { return m_showParallaxInEditor; }
+  bool parallaxLoopX() const { return m_parallaxLoopX; }
+  int parallaxSx() const { return m_parallaxSx; }
+  bool parallaxLoopY() const { return m_parallaxLoopY; }
+  int parallaxSy() const { return m_parallaxSy; }
+  bool parallaxShow() const { return m_parallaxShow; }
 
 private:
   int m_newMapId = -1;
@@ -91,12 +90,11 @@ private:
   std::string m_battleBack2;
   bool m_disableDashing = false;
   std::string m_parallax;
-  bool m_loopHorizontally = false;
-  int m_scrollX = 0;
-  bool m_loopVertically = false;
-  int m_scrollY = 0;
-  bool m_showParallaxInEditor = true;
-
+  bool m_parallaxLoopX = false;
+  int m_parallaxSx = 0;
+  bool m_parallaxLoopY = false;
+  int m_parallaxSy = 0;
+  bool m_parallaxShow = true;
 
   std::optional<TilesetPicker> m_tilesetPicker;
   std::optional<ImagePicker> m_imagePicker;

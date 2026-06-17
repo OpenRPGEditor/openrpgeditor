@@ -35,7 +35,7 @@ static bool isNestableEnd(const std::shared_ptr<IEventCommand>& selectedCmd) {
          selectedCmd->code() == EventCode::When_Selected || selectedCmd->code() == EventCode::When_Cancel;
 }
 
-static bool conditionalBranchHasElse(const std::vector<std::shared_ptr<IEventCommand>>& commands, const int branchIndex) {
+static bool conditionalBranchHasElse(const TrackedVector<std::shared_ptr<IEventCommand>>& commands, const int branchIndex) {
   const auto& branch = commands.at(branchIndex);
   for (int i = branchIndex + 1; i < commands.size(); ++i) {
     const auto& cmd = commands.at(i);
@@ -49,7 +49,7 @@ static bool conditionalBranchHasElse(const std::vector<std::shared_ptr<IEventCom
   return false;
 }
 
-static int blockStart(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int n) {
+static int blockStart(const TrackedVector<std::shared_ptr<IEventCommand>>& cmds, const int n) {
   const auto& cmd = cmds.at(n);
   if (cmd->hasPartner() && cmd->isParent()) {
     return n;
@@ -80,7 +80,7 @@ static int blockStart(const std::vector<std::shared_ptr<IEventCommand>>& cmds, c
   return -1;
 }
 
-static int blockEnd(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int start) {
+static int blockEnd(const TrackedVector<std::shared_ptr<IEventCommand>>& cmds, const int start) {
   const auto& parent = cmds.at(start);
   if (!parent->hasPartner()) {
     return start;
@@ -111,7 +111,7 @@ static int blockEnd(const std::vector<std::shared_ptr<IEventCommand>>& cmds, con
   return std::clamp(j, 0, static_cast<int>(cmds.size()) - 1);
 }
 
-static int blockParent(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int n, const bool outer) {
+static int blockParent(const TrackedVector<std::shared_ptr<IEventCommand>>& cmds, const int n, const bool outer) {
   if (!cmds.at(n)->indent()) {
     return -1;
   }
@@ -132,7 +132,7 @@ static int blockParent(const std::vector<std::shared_ptr<IEventCommand>>& cmds, 
   return -1;
 }
 
-static bool isOrphaned(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int i, const int selStart) {
+static bool isOrphaned(const TrackedVector<std::shared_ptr<IEventCommand>>& cmds, const int i, const int selStart) {
   const auto& cmd = cmds.at(i);
   if (cmd->hasPartner() && !cmd->isParent()) {
     const int peer = blockParent(cmds, i, false);
@@ -146,7 +146,7 @@ static bool isOrphaned(const std::vector<std::shared_ptr<IEventCommand>>& cmds, 
   return start >= 0 ? start < selStart : i > selStart;
 }
 
-static void eraseSel(std::vector<std::shared_ptr<IEventCommand>>& cmds, const int start, const int endExclusive) {
+static void eraseSel(TrackedVector<std::shared_ptr<IEventCommand>>& cmds, const int start, const int endExclusive) {
   for (int i = endExclusive - 1; i >= start; --i) {
     if (isOrphaned(cmds, i, start)) {
       continue;
@@ -155,8 +155,8 @@ static void eraseSel(std::vector<std::shared_ptr<IEventCommand>>& cmds, const in
   }
 }
 
-static std::vector<std::shared_ptr<IEventCommand>> collectSelection(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int start, const int endExclusive) {
-  std::vector<std::shared_ptr<IEventCommand>> result;
+static TrackedVector<std::shared_ptr<IEventCommand>> collectSelection(const TrackedVector<std::shared_ptr<IEventCommand>>& cmds, const int start, const int endExclusive) {
+  TrackedVector<std::shared_ptr<IEventCommand>> result;
   result.reserve(endExclusive - start);
   for (int i = start; i < endExclusive; ++i) {
     if (isOrphaned(cmds, i, start)) {
@@ -167,7 +167,7 @@ static std::vector<std::shared_ptr<IEventCommand>> collectSelection(const std::v
   return result;
 }
 
-static std::pair<int, int> shiftClickRange(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int n, const int anchorStart, const int anchorEnd) {
+static std::pair<int, int> shiftClickRange(const TrackedVector<std::shared_ptr<IEventCommand>>& cmds, const int n, const int anchorStart, const int anchorEnd) {
   const auto& cmd = cmds.at(n);
   if (cmd->hasPartner() && cmd->isParent()) {
     const int start = blockStart(cmds, n);
@@ -189,7 +189,7 @@ static std::pair<int, int> shiftClickRange(const std::vector<std::shared_ptr<IEv
   return {n, n};
 }
 
-static std::pair<int, int> expandRange(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int anchor, int lo, int hi) {
+static std::pair<int, int> expandRange(const TrackedVector<std::shared_ptr<IEventCommand>>& cmds, const int anchor, int lo, int hi) {
   if (anchor >= 0 && lo == anchor) {
     const auto& a = cmds.at(anchor);
     if (a->hasPartner() && a->isParent()) {
@@ -210,7 +210,7 @@ static std::pair<int, int> expandRange(const std::vector<std::shared_ptr<IEventC
   return {lo, hi};
 }
 
-static bool crossesBranch(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int selectLow, const int selectHi, const int click) {
+static bool crossesBranch(const TrackedVector<std::shared_ptr<IEventCommand>>& cmds, const int selectLow, const int selectHi, const int click) {
   const int lo = std::min({selectLow, selectHi, click});
   const int hi = std::max({selectLow, selectHi, click});
   if (lo == hi) {
@@ -219,8 +219,7 @@ static bool crossesBranch(const std::vector<std::shared_ptr<IEventCommand>>& cmd
 
   for (int i = lo + 1; i < hi; ++i) {
     const auto code = cmds.at(i)->code();
-    if (code != EventCode::Else && code != EventCode::When_Selected && code != EventCode::When_Cancel && code != EventCode::If_Win && code != EventCode::If_Lose &&
-        code != EventCode::If_Escape) {
+    if (code != EventCode::Else && code != EventCode::When_Selected && code != EventCode::When_Cancel && code != EventCode::If_Win && code != EventCode::If_Lose && code != EventCode::If_Escape) {
       continue;
     }
 
@@ -235,8 +234,7 @@ static bool crossesBranch(const std::vector<std::shared_ptr<IEventCommand>>& cmd
   return false;
 }
 
-static std::pair<int, int> resolveShift(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int anchorStart, const int anchorEnd, const int click,
-                                        const int clickLo, const int clickHi) {
+static std::pair<int, int> resolveShift(const TrackedVector<std::shared_ptr<IEventCommand>>& cmds, const int anchorStart, const int anchorEnd, const int click, const int clickLo, const int clickHi) {
   const int selectEnd = anchorEnd == -1 ? anchorStart : anchorEnd;
   const int selectLow = std::min(anchorStart, selectEnd);
   const int selectHi = std::max(anchorStart, selectEnd);
@@ -623,8 +621,7 @@ void EventCommandEditor::draw() {
                   m_selectedCommand = clickStart;
                   m_selectedEnd = clickEnd;
                 } else {
-                  const auto [rangeStart, rangeEnd] =
-                      resolveShift(*m_commands, anchorStart, anchorEnd, n, clickStart, clickEnd);
+                  const auto [rangeStart, rangeEnd] = resolveShift(*m_commands, anchorStart, anchorEnd, n, clickStart, clickEnd);
                   m_selectedCommand = rangeStart;
                   m_selectedEnd = rangeEnd;
                 }

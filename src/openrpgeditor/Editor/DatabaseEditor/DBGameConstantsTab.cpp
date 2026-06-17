@@ -150,7 +150,7 @@ void DBGameConstantsTab::drawNameAndAliasColumns(const std::string& name, const 
 
 bool DBGameConstantsTab::drawDeleteButton(int id) {
   ImGui::TableNextColumn();
-  if (ImGui::Selectable((std::string(ICON_FA_DELETE_LEFT) + std::format("##delete_btn{}", id)).c_str(), false, ImGuiSelectableFlags_AllowOverlap, {ImGui::GetFrameHeight(), ImGui::GetFrameHeight()})) {
+  if (ImGui::Selectable((std::string(ICON_FA_DELETE_LEFT) + std::format("##delete_btn{}", id)).c_str(), false, ImGuiSelectableFlags_AllowOverlap, {ImGui::GetFrameHeight(), 0})) {
     return true;
   }
   ImGui::SetItemTooltip("%s", trNOOP("Delete constant export"));

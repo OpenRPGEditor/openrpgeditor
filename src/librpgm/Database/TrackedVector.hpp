@@ -109,6 +109,11 @@ public:
     m_data.clear();
   }
 
+  void reserve(size_type capacity) {
+    mark_dirty();
+    m_data.reserve(capacity);
+  }
+
   bool operator==(const TrackedVector& rhs) const { return m_data == rhs.m_data; }
   bool operator!=(const TrackedVector& rhs) const { return m_data != rhs.m_data; }
 

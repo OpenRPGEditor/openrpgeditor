@@ -4,6 +4,8 @@
 #include <cctype>
 #include <locale>
 #include <random>
+#include <string>
+#include <vector>
 
 namespace Utils {
 // trim from start (in place)
@@ -38,6 +40,17 @@ inline std::string rtrim_copy(std::string s) {
 inline std::string trim_copy(std::string s) {
   trim(s);
   return s;
+}
+
+inline std::string joinLines(const std::vector<std::string>& lines, char delimiter = '\n') {
+  std::string result;
+  for (size_t i = 0; i < lines.size(); ++i) {
+    if (i > 0) {
+      result += delimiter;
+    }
+    result += lines[i];
+  }
+  return result;
 }
 
 } // namespace Utils

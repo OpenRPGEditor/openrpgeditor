@@ -60,6 +60,7 @@ bool Settings::loadFromJson(const nlohmann::ordered_json& parser) {
     selectedNWJSVersion = parser.value("selectedNWJSVersion", selectedNWJSVersion);
     currentNWJSVersion = parser.value("currentNWJSVersion", currentNWJSVersion);
     ranFirstBootWizard = parser.value("ranFirstBootWizard", ranFirstBootWizard);
+    scriptEditorShowLineNumbers = parser.value("scriptEditorShowLineNumbers", scriptEditorShowLineNumbers);
     enableExperimentalFeatures = parser.value("enableExperimentalFeatures", enableExperimentalFeatures);
     enableDebugFeatures = parser.value("enableDebugFeatures", enableDebugFeatures);
     imguiState = parser.value("imguiState", imguiState);
@@ -92,6 +93,7 @@ void from_json(const nlohmann::ordered_json& json, Settings& settings) {
   settings.selectedNWJSVersion = json.value("selectedNWJSVersion", settings.selectedNWJSVersion);
   settings.currentNWJSVersion = json.value("currentNWJSVersion", settings.currentNWJSVersion);
   settings.ranFirstBootWizard = json.value("ranFirstBootWizard", settings.ranFirstBootWizard);
+  settings.scriptEditorShowLineNumbers = json.value("scriptEditorShowLineNumbers", settings.scriptEditorShowLineNumbers);
   settings.enableExperimentalFeatures = json.value("enableExperimentalFeatures", settings.enableExperimentalFeatures);
   settings.enableDebugFeatures = json.value("enableDebugFeatures", settings.enableDebugFeatures);
   settings.imguiState = json.value("imguiState", settings.imguiState);
@@ -116,6 +118,7 @@ nlohmann::ordered_json Settings::serializeToJson() {
       {"selectedNWJSVersion", selectedNWJSVersion},               //
       {"currentNWJSVersion", currentNWJSVersion},                 //
       {"ranFirstBootWizard", ranFirstBootWizard},                 //
+      {"scriptEditorShowLineNumbers", scriptEditorShowLineNumbers}, //
       {"enableExperimentalFeatures", enableExperimentalFeatures}, //
       {"enableDebugFeatures", enableDebugFeatures},               //
       {"imguiState", imguiState},                                 //
@@ -141,6 +144,7 @@ void to_json(nlohmann::ordered_json& json, const Settings& settings) {
       {"selectedNWJSVersion", settings.selectedNWJSVersion},               //
       {"currentNWJSVersion", settings.currentNWJSVersion},                 //
       {"ranFirstBootWizard", settings.ranFirstBootWizard},                 //
+      {"scriptEditorShowLineNumbers", settings.scriptEditorShowLineNumbers}, //
       {"enableExperimentalFeatures", settings.enableExperimentalFeatures}, //
       {"enableDebugFeatures", settings.enableDebugFeatures},               //
       {"imguiState", settings.imguiState},                                 //

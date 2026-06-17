@@ -8,6 +8,7 @@
 #include <tuple>
 
 std::tuple<bool, bool> Dialog_MovementScript::draw() {
+  TextEditor::DrawPickers();
   if (isOpen()) {
     ImGui::OpenPopup(m_name.c_str());
     // SetOpen(false);
@@ -18,9 +19,7 @@ std::tuple<bool, bool> Dialog_MovementScript::draw() {
   if (ImGui::BeginPopupModal(m_name.c_str(), &m_open)) {
 
     static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
-    ImGui::PushFont(App::APP->getMonoFont());
-    m_textEditor.Render("##no_title", ImVec2{ImGui::GetContentRegionAvail().x - ImGui::GetStyle().FramePadding.x, ImGui::GetContentRegionAvail().y - 32 - ImGui::GetStyle().FramePadding.y});
-    ImGui::PopFont();
+    m_textEditor.DrawPanel("##no_title", false, false, ImGui::GetFrameHeightWithSpacing() + ImGui::GetStyle().ItemSpacing.y);
     if (ImGui::Button("OK")) {
       auto script = m_textEditor.GetText();
       std::vector<std::string> scripts = splitString(script, '\n');

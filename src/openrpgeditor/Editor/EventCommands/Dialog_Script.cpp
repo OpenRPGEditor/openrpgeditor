@@ -1,26 +1,45 @@
 #include "Editor/EventCommands/Dialog_Script.hpp"
-#include "Editor/Application.hpp"
 #include "Editor/ImGuiExt/ImGuiUtils.hpp"
 
+#include <algorithm>
 #include <imgui.h>
 #include <imgui_internal.h>
 
+namespace {
+
+ImVec2 scriptDialogMinSize() { return ImGui::GetDPIScaledSize(880, 400); }
+
+ImVec2 scriptDialogMaxSize() {
+  const auto* viewport = ImGui::GetMainViewport();
+  return {viewport->Size.x * 0.92f, viewport->Size.y * 0.85f};
+}
+
+ImVec2 scriptDialogDefaultSize() {
+  const auto minSize = scriptDialogMinSize();
+  const auto maxSize = scriptDialogMaxSize();
+  const auto* viewport = ImGui::GetMainViewport();
+  ImVec2 size = {viewport->Size.x * 0.65f, viewport->Size.y * 0.55f};
+  size.x = std::clamp(size.x, minSize.x, maxSize.x);
+  size.y = std::clamp(size.y, minSize.y, maxSize.y);
+  return size;
+}
+
+} // namespace
+
 std::tuple<bool, bool> Dialog_Script::draw() {
+  TextEditor::DrawPickers();
   if (isOpen()) {
     ImGui::OpenPopup("###Script");
   }
-  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 40) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 12) + (ImGui::GetStyle().FramePadding.y * 2)};
-  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
-  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f));
+  ImGui::SetNextWindowSize(scriptDialogDefaultSize(), ImGuiCond_FirstUseEver);
+  ImGui::SetNextWindowSizeConstraints(scriptDialogMinSize(), scriptDialogMaxSize());
 
   if (ImGui::BeginPopupModal(std::format("{}###Script", m_name).c_str(), &m_open)) {
     ImGui::BeginVertical("##script_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
-      ImGui::PushFont(App::APP->getMonoFont());
-      m_textEditor.Render("TextEditor", {0, ImGui::GetContentRegionAvail().y - ImGui::GetFrameHeightWithSpacing()}, true);
-      ImGui::PopFont();
-      ImGui::Spring();
+      const float footerHeight = ImGui::GetFrameHeightWithSpacing() + ImGui::GetDPIScaledValue(1.5f) + ImGui::GetStyle().ItemSpacing.y;
+      m_textEditor.DrawPanel("TextEditor", false, true, footerHeight);
       ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
       ImGui::BeginHorizontal("##script_buttons_layout", {-1, 0}, 0);
       {

@@ -56,6 +56,7 @@ struct Settings {
   std::string selectedNWJSVersion;
   std::string currentNWJSVersion;
   bool ranFirstBootWizard{false};
+  bool scriptEditorShowLineNumbers{true};
 
   bool enableExperimentalFeatures{false};
   bool enableDebugFeatures

@@ -13,6 +13,7 @@
 #include "Editor/CommonUI/TextEditor.hpp"
 #include "Editor/CommonUI/VariableSwitchPicker.hpp"
 #include "Editor/EventCommands/IEventDialogController.hpp"
+#include "Editor/Utils.hpp"
 
 struct Dialog_ConditionalBranch : IEventDialogController {
   Dialog_ConditionalBranch() = delete;
@@ -94,7 +95,7 @@ struct Dialog_ConditionalBranch : IEventDialogController {
     } else if (m_command->type == ConditionType::Button) {
       m_buttonSelection = static_cast<int>(m_command->button);
     } else if (m_command->type == ConditionType::Script) {
-      m_script.SetTextLines(splitString(m_command->script, '\n'));
+      m_script.SetText(Utils::joinLines(splitString(m_command->script, '\n')));
     }
     m_conditionType = static_cast<int>(m_command->type);
 
@@ -108,12 +109,14 @@ struct Dialog_ConditionalBranch : IEventDialogController {
       m_selectedTab = 3;
     }
 
+    m_usingScriptLayout = m_conditionType == 12;
+
     // if (command->isPartner(EventCode::Else, command->indent())) {
     //   m_else = true;
     //   m_elseBranch = true;
     // }
 
-    m_script.SetLanguageDefinition(TextEditor::LanguageDefinition::Javascript());
+    m_script.SetupJavascript();
   }
   void drawPickers();
   void drawMiscTab();
@@ -124,6 +127,8 @@ struct Dialog_ConditionalBranch : IEventDialogController {
   std::tuple<bool, bool> draw() override;
 
   std::shared_ptr<IEventCommand> getCommand() override { return m_command; };
+  [[nodiscard]] bool wantsElseBranch() const override { return m_elseBranch; }
+  void setElseBranchEnabled(const bool enabled) override { m_elseBranch = enabled; }
   std::vector<std::shared_ptr<IEventCommand>> getBatchCommands(std::vector<std::shared_ptr<IEventCommand>>& list) override {
     std::vector<std::shared_ptr<IEventCommand>> eventCommands;
     std::shared_ptr<IEventCommand> sharedCommand = getCommand();
@@ -215,4 +220,5 @@ private:
   std::optional<ClassPicker> m_classPicker;
   std::optional<ItemPicker> m_itemPicker;
   bool m_confirmed{false};
+  bool m_usingScriptLayout{false};
 };

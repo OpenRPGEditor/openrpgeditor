@@ -9,6 +9,7 @@
 #include <imgui_internal.h>
 
 std::tuple<bool, bool> Dialog_ControlVariables::draw() {
+  TextEditor::DrawPickers();
   if (isOpen()) {
     ImGui::OpenPopup("###ControlVariables");
   }
@@ -163,18 +164,9 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
             ImGui::EndVertical();
           }
           ImGui::EndHorizontal();
-          ImGui::BeginDisabled(m_operandType != 4);
-          {
-            if (ImGui::BeginChild("##source_text_child", ImGui::GetContentRegionAvail(), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize,
-                                  ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoMove)) {
-              m_script.SetImGuiChildIgnored(true);
-              m_script.SetHandleKeyboardInputs(m_operandType == 4);
-              m_script.SetHandleMouseInputs(m_operandType == 4);
-              m_script.Render("##source_text", {-1, -1});
-            }
-            ImGui::EndChild();
-          }
-          ImGui::EndDisabled();
+          const bool scriptReadOnly = m_operandType != 4;
+          m_script.SetReadOnlyEnabled(scriptReadOnly);
+          m_script.DrawPanel("##source_text", scriptReadOnly);
         }
         ImGui::EndVertical();
       }

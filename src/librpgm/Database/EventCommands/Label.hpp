@@ -18,6 +18,7 @@ struct LabelCommand final : IEventCommand {
 
     return (code == EventCode::Label || code == EventCode::Event_Dummy) && *codeIndent == indent();
   }
+  [[nodiscard]] constexpr bool isParent() const override { return true; }
   [[nodiscard]] constexpr bool collapsable() const override { return true; }
   [[nodiscard]] bool isCollapsed() const override { return m_collapsed; }
   [[nodiscard]] bool isCollapseEnd() const override { return false; }

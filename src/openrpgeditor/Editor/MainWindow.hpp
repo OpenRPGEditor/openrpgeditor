@@ -18,7 +18,6 @@
 #include "Undo/UndoStack.hpp"
 
 #include "Editor/CommonUI/ObjectPicker.hpp"
-#include "Editor/CommonUI/TextEditor.hpp"
 #include "Editor/CommonUI/TilesetTilePicker.hpp"
 
 #include "Database/Database.hpp"

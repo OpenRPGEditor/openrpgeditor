@@ -6,6 +6,7 @@
 #include "Editor/EventCommands/Dialog_GameData.hpp"
 #include "Editor/EventCommands/IEventDialogController.hpp"
 #include "Editor/Log.hpp"
+#include "Editor/Utils.hpp"
 
 struct Dialog_ControlVariables : IEventDialogController {
   Dialog_ControlVariables() = delete;
@@ -37,12 +38,13 @@ struct Dialog_ControlVariables : IEventDialogController {
       m_randMin = m_command->random.min;
       m_randMax = m_command->random.max;
     } else if (m_command->operand == VariableControlOperand::Script) {
-      m_script.SetTextLines(splitString(m_command->script, '\n'));
+      m_script.SetText(Utils::joinLines(splitString(m_command->script, '\n')));
     } else if (m_command->operand == VariableControlOperand::Game_Data) {
       m_gameDataType = static_cast<int>(m_command->gameData.type);
       m_gameDataRawSource = m_command->gameData.rawSource;
       m_gameDataValue = m_command->gameData.value;
     }
+    m_script.SetupJavascript();
   }
   std::tuple<bool, bool> draw() override;
 

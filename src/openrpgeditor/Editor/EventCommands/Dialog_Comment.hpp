@@ -11,7 +11,13 @@ struct Dialog_Comment : IEventDialogController {
     if (cmd == nullptr) {
       m_command.reset(new CommentCommand());
     }
-    m_comment = m_command->text.c_str();
+    m_comment = m_command->text;
+    for (const auto& next : m_command->nextComments) {
+      if (!next) {
+        continue;
+      }
+      m_comment += (m_comment.empty() ? "" : "\n") + next->text;
+    }
   }
   std::tuple<bool, bool> draw() override;
 

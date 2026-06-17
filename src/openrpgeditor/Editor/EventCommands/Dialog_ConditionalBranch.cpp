@@ -1,29 +1,56 @@
 #include "Editor/EventCommands/Dialog_ConditionalBranch.hpp"
 
-#include "Editor/CommonUI/TextEditor.hpp"
 #include "Editor/ImGuiExt/ImGuiUtils.hpp"
 #include "Editor/Log.hpp"
 
 #include "Database/Database.hpp"
 
+#include <algorithm>
 #include "imgui.h"
 #include <imgui_internal.h>
 
 std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
+  TextEditor::DrawPickers();
   if (isOpen()) {
     ImGui::OpenPopup("###ConditionalBranch");
   }
-  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-  const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 58) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 18) + (ImGui::GetStyle().FramePadding.y * 2)};
-  ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
-  ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
+
+  const ImVec2 normalSize{(ImGui::CalcTextSize("#").x * 58) + (ImGui::GetStyle().FramePadding.x * 2),
+                          (ImGui::GetFrameHeightWithSpacing() * 18) + (ImGui::GetStyle().FramePadding.y * 2)};
+  const auto* viewport = ImGui::GetMainViewport();
+  const ImVec2 scriptMinSize{(ImGui::CalcTextSize("#").x * 64) + (ImGui::GetStyle().FramePadding.x * 2),
+                             (ImGui::GetFrameHeightWithSpacing() * 28) + (ImGui::GetStyle().FramePadding.y * 2)};
+  const ImVec2 scriptMaxSize{viewport->Size.x * 0.92f, viewport->Size.y * 0.85f};
+  ImVec2 scriptSize{viewport->Size.x * 0.65f, viewport->Size.y * 0.55f};
+  scriptSize.x = std::clamp(scriptSize.x, scriptMinSize.x, scriptMaxSize.x);
+  scriptSize.y = std::clamp(scriptSize.y, scriptMinSize.y, scriptMaxSize.y);
+
+  const bool scriptLayout = m_conditionType == 12;
+  const ImVec2 windowSize = scriptLayout ? scriptSize : normalSize;
+  if (scriptLayout != m_usingScriptLayout) {
+    m_usingScriptLayout = scriptLayout;
+    ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
+    if (scriptLayout) {
+      m_selectedTab = 3;
+    }
+  }
+
+  ImGui::SetNextWindowPos(viewport->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+  ImGui::SetNextWindowSize(windowSize, ImGuiCond_Appearing);
+  if (scriptLayout) {
+    ImGui::SetNextWindowSizeConstraints(scriptMinSize, scriptMaxSize);
+  } else {
+    ImGui::SetNextWindowSizeConstraints(normalSize, {FLT_MAX, FLT_MAX});
+  }
 
   if (ImGui::BeginPopupModal(std::format("{}###ConditionalBranch", m_name).c_str(), &m_open)) {
     drawPickers();
+    const float footerHeight = ImGui::GetFrameHeightWithSpacing() + ImGui::GetDPIScaledValue(1.5f) + ImGui::GetStyle().ItemSpacing.y;
     ImGui::BeginVertical("##conditional_branch_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
       if (ImGui::BeginTabBar("##conditional_branch_dialog")) {
-        ImGui::BeginVertical("##conditional_branch_main_layout_tabs", {-1, ImGui::GetContentRegionAvail().y * .7f}, 0);
+        const float tabHeight = scriptLayout ? std::max(0.f, ImGui::GetContentRegionAvail().y - footerHeight) : ImGui::GetContentRegionAvail().y * .7f;
+        ImGui::BeginVertical("##conditional_branch_main_layout_tabs", {-1, tabHeight}, 0);
         {
           drawDataTab();
           drawActorTab();
@@ -590,18 +617,11 @@ void Dialog_ConditionalBranch::drawMiscTab() {
         ImGui::EndVertical();
       }
       ImGui::EndHorizontal();
-      ImGui::BeginDisabled(m_conditionType != 12);
-      {
-        if (ImGui::BeginChild("##source_text_child", {-1, ImGui::GetContentRegionAvail().y - ImGui::GetFrameHeightWithSpacing()},
-                              ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoMove)) {
-          m_script.SetImGuiChildIgnored(true);
-          m_script.SetHandleKeyboardInputs(m_conditionType == 12);
-          m_script.SetHandleMouseInputs(m_conditionType == 12);
-          m_script.Render("##source_text", {-1, -1});
-        }
-        ImGui::EndChild();
+      if (m_conditionType == 12) {
+        const float dialogFooterHeight = ImGui::GetFrameHeightWithSpacing() + ImGui::GetDPIScaledValue(1.5f) + ImGui::GetStyle().ItemSpacing.y;
+        m_script.SetReadOnlyEnabled(false);
+        m_script.DrawPanel("##source_text", false, true, dialogFooterHeight);
       }
-      ImGui::EndDisabled();
     }
     ImGui::EndVertical();
     ImGui::EndTabItem();

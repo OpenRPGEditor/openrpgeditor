@@ -73,8 +73,10 @@ add_library(
         Editor/CommonUI/ImagePicker.hpp
         Editor/CommonUI/ObjectPicker.hpp
         Editor/CommonUI/ObjectPicker.inl
-        Editor/CommonUI/TextEditor.cpp
         Editor/CommonUI/TextEditor.hpp
+        Editor/CommonUI/TextEditor.cpp
+        Editor/CommonUI/TextEditorInternal.hpp
+        Editor/CommonUI/TextEditorInternal.cpp
         Editor/CommonUI/TilesetTilePicker.cpp
         Editor/CommonUI/TilesetTilePicker.hpp
         Editor/CommonUI/TraitsEditor.cpp
@@ -572,6 +574,7 @@ target_link_libraries(
         SDL3::SDL3
         SDL3_image::SDL3_image
         imgui-setup
+        imgui-texteditor-setup
         nlohmann_json::nlohmann_json
         librpgm
         freetype

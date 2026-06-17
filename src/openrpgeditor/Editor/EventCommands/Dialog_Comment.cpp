@@ -40,9 +40,9 @@ std::tuple<bool, bool> Dialog_Comment::draw() {
           if (texts.size() > 0) {
             m_command->text = texts.front();
           }
+          m_command->nextComments.clear();
           if (texts.size() > 1) {
-            m_command->nextComments.clear();
-            m_command->nextComments.reserve(texts.size());
+            m_command->nextComments.reserve(texts.size() - 1);
             for (auto str = std::next(texts.begin()); str != texts.end(); ++str) {
               m_command->nextComments.emplace_back(std::make_shared<NextCommentCommand>())->text = *str;
             }

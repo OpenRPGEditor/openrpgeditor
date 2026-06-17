@@ -12,6 +12,7 @@
 #include <list>
 
 #include <Editor/Utils.hpp>
+#include <optional>
 #include <vector>
 
 static clip::format RPGMVEventCommandFormat = -1;
@@ -33,6 +34,283 @@ static bool isNestableEnd(const std::shared_ptr<IEventCommand>& selectedCmd) {
          selectedCmd->code() == EventCode::End_del_ShowChoices || selectedCmd->code() == EventCode::Else || selectedCmd->code() == EventCode::If_Lose || selectedCmd->code() == EventCode::If_Escape ||
          selectedCmd->code() == EventCode::When_Selected || selectedCmd->code() == EventCode::When_Cancel;
 }
+
+static bool conditionalBranchHasElse(const std::vector<std::shared_ptr<IEventCommand>>& commands, const int branchIndex) {
+  const auto& branch = commands.at(branchIndex);
+  for (int i = branchIndex + 1; i < commands.size(); ++i) {
+    const auto& cmd = commands.at(i);
+    if (branch->isTerminatingPartner(cmd->code(), cmd->indent())) {
+      return false;
+    }
+    if (cmd->code() == EventCode::Else && cmd->indent() == branch->indent()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+static int blockStart(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int n) {
+  const auto& cmd = cmds.at(n);
+  if (cmd->hasPartner() && cmd->isParent()) {
+    return n;
+  }
+
+  if (cmd->hasPartner()) {
+    for (int j = n - 1; j >= 0; --j) {
+      if (cmd->isPartner(cmds.at(j)->code(), cmds.at(j)->indent())) {
+        return j;
+      }
+    }
+  }
+
+  if (!cmd->indent()) {
+    return -1;
+  }
+
+  const int indent = *cmd->indent();
+  for (int j = n - 1; j >= 0; --j) {
+    const auto& prev = cmds.at(j);
+    if (!prev->indent() || *prev->indent() >= indent) {
+      continue;
+    }
+    if (prev->hasPartner() && prev->isParent()) {
+      return j;
+    }
+  }
+  return -1;
+}
+
+static int blockEnd(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int start) {
+  const auto& parent = cmds.at(start);
+  if (!parent->hasPartner()) {
+    return start;
+  }
+
+  int j = start + 1;
+  int partnerCount = parent->partnerCount();
+  while (partnerCount > 0) {
+    if (j >= cmds.size() || *cmds.at(j)->indent() < *parent->indent()) {
+      break;
+    }
+
+    while (true) {
+      if (j >= cmds.size() || parent->isPartner(cmds.at(j)->code(), cmds.at(j)->indent())) {
+        partnerCount--;
+        if (parent->isTerminatingPartner(cmds.at(j)->code(), cmds.at(j)->indent())) {
+          return j;
+        }
+        if (partnerCount > 0) {
+          ++j;
+        }
+        break;
+      }
+      ++j;
+    }
+  }
+
+  return std::clamp(j, 0, static_cast<int>(cmds.size()) - 1);
+}
+
+static int blockParent(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int n, const bool outer) {
+  if (!cmds.at(n)->indent()) {
+    return -1;
+  }
+
+  const int indent = *cmds.at(n)->indent();
+  for (int j = n - 1; j >= 0; --j) {
+    const auto& prev = cmds.at(j);
+    if (!prev->indent()) {
+      continue;
+    }
+    if (outer ? *prev->indent() >= indent : *prev->indent() != indent) {
+      continue;
+    }
+    if (prev->hasPartner() && prev->isParent()) {
+      return j;
+    }
+  }
+  return -1;
+}
+
+static bool isOrphaned(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int i, const int selStart) {
+  const auto& cmd = cmds.at(i);
+  if (cmd->hasPartner() && !cmd->isParent()) {
+    const int peer = blockParent(cmds, i, false);
+    return peer >= 0 && peer < selStart;
+  }
+  if (cmd->code() != EventCode::Event_Dummy) {
+    return false;
+  }
+
+  const int start = blockStart(cmds, i);
+  return start >= 0 ? start < selStart : i > selStart;
+}
+
+static void eraseSel(std::vector<std::shared_ptr<IEventCommand>>& cmds, const int start, const int endExclusive) {
+  for (int i = endExclusive - 1; i >= start; --i) {
+    if (isOrphaned(cmds, i, start)) {
+      continue;
+    }
+    cmds.erase(cmds.begin() + i);
+  }
+}
+
+static std::vector<std::shared_ptr<IEventCommand>> collectSelection(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int start, const int endExclusive) {
+  std::vector<std::shared_ptr<IEventCommand>> result;
+  result.reserve(endExclusive - start);
+  for (int i = start; i < endExclusive; ++i) {
+    if (isOrphaned(cmds, i, start)) {
+      continue;
+    }
+    result.push_back(cmds.at(i));
+  }
+  return result;
+}
+
+static std::pair<int, int> shiftClickRange(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int n, const int anchorStart, const int anchorEnd) {
+  const auto& cmd = cmds.at(n);
+  if (cmd->hasPartner() && cmd->isParent()) {
+    const int start = blockStart(cmds, n);
+    return start < 0 ? std::pair{n, n} : std::pair{start, blockEnd(cmds, start)};
+  }
+
+  if (cmd->code() == EventCode::End) {
+    const int peer = blockParent(cmds, n, false);
+    return peer < 0 ? std::pair{n, n} : std::pair{peer, n};
+  }
+
+  if (cmd->code() == EventCode::Event_Dummy && anchorStart >= 0) {
+    const int selStart = anchorEnd >= 0 ? std::min(anchorStart, anchorEnd) : anchorStart;
+    if (isOrphaned(cmds, n, selStart)) {
+      return {selStart, anchorEnd >= 0 ? std::max(anchorStart, anchorEnd) : anchorStart};
+    }
+  }
+
+  return {n, n};
+}
+
+static std::pair<int, int> expandRange(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int anchor, int lo, int hi) {
+  if (anchor >= 0 && lo == anchor) {
+    const auto& a = cmds.at(anchor);
+    if (a->hasPartner() && a->isParent()) {
+      const int end = blockEnd(cmds, anchor);
+      if (hi > anchor && hi < end) {
+        hi = end;
+      }
+    }
+  }
+
+  if (hi >= 0 && hi < static_cast<int>(cmds.size()) && cmds.at(hi)->code() == EventCode::End) {
+    const int peer = blockParent(cmds, hi, false);
+    if (peer >= 0 && lo > peer) {
+      lo = peer;
+    }
+  }
+
+  return {lo, hi};
+}
+
+static bool crossesBranch(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int selectLow, const int selectHi, const int click) {
+  const int lo = std::min({selectLow, selectHi, click});
+  const int hi = std::max({selectLow, selectHi, click});
+  if (lo == hi) {
+    return false;
+  }
+
+  for (int i = lo + 1; i < hi; ++i) {
+    const auto code = cmds.at(i)->code();
+    if (code != EventCode::Else && code != EventCode::When_Selected && code != EventCode::When_Cancel && code != EventCode::If_Win && code != EventCode::If_Lose &&
+        code != EventCode::If_Escape) {
+      continue;
+    }
+
+    const bool selectBefore = selectHi < i;
+    const bool selectAfter = selectLow > i;
+    const bool clickBefore = click < i;
+    const bool clickAfter = click > i;
+    if ((selectBefore && clickAfter) || (selectAfter && clickBefore)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+static std::pair<int, int> resolveShift(const std::vector<std::shared_ptr<IEventCommand>>& cmds, const int anchorStart, const int anchorEnd, const int click,
+                                        const int clickLo, const int clickHi) {
+  const int selectEnd = anchorEnd == -1 ? anchorStart : anchorEnd;
+  const int selectLow = std::min(anchorStart, selectEnd);
+  const int selectHi = std::max(anchorStart, selectEnd);
+
+  if (cmds.at(click)->code() == EventCode::Event_Dummy && isOrphaned(cmds, click, selectLow)) {
+    return {selectLow, selectHi};
+  }
+
+  if (crossesBranch(cmds, selectLow, selectHi, click)) {
+    return {clickLo, clickHi};
+  }
+
+  const auto parentAt = [&](const int i) {
+    const auto& cmd = cmds.at(i);
+    if (cmd->hasPartner() && cmd->isParent()) {
+      return i;
+    }
+    if (cmd->code() == EventCode::End) {
+      return blockParent(cmds, i, false);
+    }
+
+    const int start = blockStart(cmds, i);
+    if (start >= 0 && cmds.at(start)->hasPartner() && cmds.at(start)->isParent()) {
+      return start;
+    }
+    return -1;
+  };
+
+  const int anchorBlock = parentAt(anchorStart);
+  const int clickBlock = parentAt(click);
+  if (anchorBlock >= 0 && clickBlock >= 0 && anchorBlock != clickBlock) {
+    const auto& anchorCmd = cmds.at(anchorBlock);
+    const auto& clickCmd = cmds.at(clickBlock);
+    if (anchorCmd->indent() && clickCmd->indent() && *anchorCmd->indent() == *clickCmd->indent()) {
+      return {std::min(anchorBlock, clickBlock), std::max(blockEnd(cmds, anchorBlock), blockEnd(cmds, clickBlock))};
+    }
+
+    const auto& anchor = cmds.at(anchorStart);
+    const auto& clicked = cmds.at(click);
+    if (anchor->indent() && clicked->indent() && *anchor->indent() == *clicked->indent()) {
+      const int owner = blockParent(cmds, anchorStart, true);
+      if (owner >= 0 && click >= owner && click <= blockEnd(cmds, owner)) {
+        int lo = std::min(selectLow, clickLo);
+        int hi = std::max(selectHi, clickHi);
+        const int indent = *anchor->indent();
+        for (int i = lo; i <= hi && i < static_cast<int>(cmds.size()); ++i) {
+          const auto& cmd = cmds.at(i);
+          if (cmd->hasPartner() && cmd->isParent() && cmd->indent() && *cmd->indent() == indent) {
+            hi = std::max(hi, blockEnd(cmds, i));
+          }
+        }
+        return expandRange(cmds, anchorStart, lo, hi);
+      }
+    }
+
+    return {clickBlock, blockEnd(cmds, clickBlock)};
+  }
+
+  if (cmds.at(click)->code() == EventCode::End) {
+    const int peer = blockParent(cmds, click, false);
+    if (peer >= 0 && (selectLow < peer || selectHi > click)) {
+      return {peer, click};
+    }
+  }
+
+  if (cmds.at(click)->hasPartner() && cmds.at(click)->isParent()) {
+    if (selectLow < clickLo || selectHi > clickHi) {
+      return {clickLo, clickHi};
+    }
+  }
+
+  return expandRange(cmds, anchorStart, std::min(anchorStart, clickLo), std::max(selectEnd, clickHi));
+}
+
 void EventCommandEditor::blockSelect(const int n, const bool isDelete = false) {
   if (m_commands->at(n)->hasPartner()) {
     if (!m_commands->at(n)->reverseSelection()) {
@@ -64,7 +342,7 @@ void EventCommandEditor::blockSelect(const int n, const bool isDelete = false) {
           j++;
         }
       }
-      m_selectedEnd = j;
+      m_selectedEnd = std::clamp(j, 0, static_cast<int>(m_commands->size()) - 1);
     } else {
       m_selectedEnd = n;
       int j = n - 1;
@@ -136,30 +414,34 @@ void EventCommandEditor::handleClipboardInteraction() {
   }
   if (m_selectedCommand != -1 && ImGui::IsKeyPressed(ImGuiKey_C) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
     clip::lock l;
-    int start = m_selectedCommand;
-    int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd + 1;
-    TrackedVector<std::shared_ptr<IEventCommand>> commands(m_commands->begin() + start, m_commands->begin() + end);
+    const int start = m_selectedCommand;
+    const int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd + 1;
+    const auto collected = collectSelection(*m_commands, start, end);
+    TrackedVector<std::shared_ptr<IEventCommand>> commands(collected.begin(), collected.end());
     nlohmann::ordered_json cmdJson;
     CommandParser::serialize(cmdJson, commands);
     auto v = cmdJson.dump();
     l.set_data(RPGMVEventCommandFormat, v.data(), v.size());
   }
   if (m_selectedCommand != -1 && ImGui::IsKeyPressed(ImGuiKey_X) && (ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl))) {
-    if (m_commands->at(m_selectedCommand)->code() != EventCode::Event_Dummy) {
+    const int cutStart = m_selectedCommand;
+    if (m_commands->at(cutStart)->code() != EventCode::Event_Dummy) {
       clip::lock l;
-      int start = m_selectedCommand;
-      int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd + 1;
-      TrackedVector<std::shared_ptr<IEventCommand>> commands(m_commands->begin() + start, m_commands->begin() + end);
+      const int end = m_selectedEnd == -1 ? cutStart + 1 : m_selectedEnd + 1;
+      const auto collected = collectSelection(*m_commands, cutStart, end);
+      TrackedVector<std::shared_ptr<IEventCommand>> commands(collected.begin(), collected.end());
       nlohmann::ordered_json cmdJson;
       CommandParser::serialize(cmdJson, commands);
       auto v = cmdJson.dump();
       l.set_data(RPGMVEventCommandFormat, v.data(), v.size());
-      if (m_commands->at(m_selectedCommand)->isParent()) {
-        blockSelect(m_selectedCommand);
+      if (m_commands->at(cutStart)->isParent() && m_commands->at(cutStart)->code() != EventCode::Label) {
+        m_selectedCommand = cutStart;
+        blockSelect(m_selectedCommand, true);
         m_commands->erase(m_commands->begin() + m_selectedCommand, m_commands->begin() + m_selectedEnd + 1);
         m_selectedEnd = -1;
       } else {
-        m_commands->erase(m_commands->begin() + start, m_commands->begin() + end);
+        eraseSel(*m_commands, cutStart, end);
+        m_selectedEnd = -1;
       }
     }
   }
@@ -173,11 +455,11 @@ void EventCommandEditor::setupTableHeader() {
 }
 
 void EventCommandEditor::setupTableColors() {
-   ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.37f, 0.37f, 0.37f, 0.43f));
-   ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.37f, 0.37f, 0.37f, 0.78f));
-   ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.37f, 0.37f, 0.37f, 0.68f));
-   ImGui::PushStyleColor(ImGuiCol_TableRowBg, ImVec4(0.03f, 0.21f, 0.26f, 1.00f));
-   ImGui::PushStyleColor(ImGuiCol_TableRowBgAlt, ImVec4(0.04f, 0.16f, 0.19f, 1.00f));
+  ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.37f, 0.37f, 0.37f, 0.43f));
+  ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.37f, 0.37f, 0.37f, 0.78f));
+  ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.37f, 0.37f, 0.37f, 0.68f));
+  ImGui::PushStyleColor(ImGuiCol_TableRowBg, ImVec4(0.03f, 0.21f, 0.26f, 1.00f));
+  ImGui::PushStyleColor(ImGuiCol_TableRowBgAlt, ImVec4(0.04f, 0.16f, 0.19f, 1.00f));
 }
 void EventCommandEditor::handleBlockCollapse(int& n) const {
   if (m_commands->at(n)->collapsable()) {
@@ -320,9 +602,7 @@ void EventCommandEditor::draw() {
                     m_commandDialog = CreateCommandDialog(m_commands->at(n)->code(), m_commands->at(n));
                     if (m_commands->at(n)->code() == EventCode::Conditional_Branch) {
                       blockSelect(n, true);
-                      for (int i = n; i < m_selectedEnd; i++) {
-                        if (m_commands->at(n)->isPartner(m_commands->at(i)->code(), m_commands->at(n)->indent())) {}
-                      }
+                      m_commandDialog->setElseBranchEnabled(conditionalBranchHasElse(*m_commands, n));
                     }
                     m_commandDialog->setOpen(true);
                     // ImGui::OpenPopup("###command_picker");
@@ -336,14 +616,17 @@ void EventCommandEditor::draw() {
               if (ImGui::IsKeyDown(ImGuiKey_LeftAlt) || ImGui::IsKeyDown(ImGuiKey_RightAlt) || ImGui::IsKeyDown(ImGuiKey_LeftCtrl) || ImGui::IsKeyDown(ImGuiKey_RightCtrl)) {
                 blockSelect(n);
               } else if (ImGui::IsKeyDown(ImGuiKey_LeftShift) || ImGui::IsKeyDown(ImGuiKey_RightShift)) {
-                if (m_selectedCommand == -1) {
-                  m_selectedCommand = n;
-                }
-
-                if (n < m_selectedEnd) {
-                  m_selectedCommand = n;
+                const int anchorStart = m_selectedCommand;
+                const int anchorEnd = m_selectedEnd;
+                const auto [clickStart, clickEnd] = shiftClickRange(*m_commands, n, anchorStart, anchorEnd);
+                if (anchorStart == -1) {
+                  m_selectedCommand = clickStart;
+                  m_selectedEnd = clickEnd;
                 } else {
-                  m_selectedEnd = n;
+                  const auto [rangeStart, rangeEnd] =
+                      resolveShift(*m_commands, anchorStart, anchorEnd, n, clickStart, clickEnd);
+                  m_selectedCommand = rangeStart;
+                  m_selectedEnd = rangeEnd;
                 }
               } else {
                 m_selectedEnd = -1;
@@ -414,17 +697,17 @@ void EventCommandEditor::draw() {
       ImGui::PopFont();
     }
     if (ImGui::IsKeyPressed((ImGuiKey_Delete)) && ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_NoPopupHierarchy)) {
-      if (m_commands->at(m_selectedCommand)->isParent()) {
+      const int deleteStart = m_selectedCommand;
+
+      if (m_commands->at(deleteStart)->isParent() && m_commands->at(deleteStart)->code() != EventCode::Label) {
+        m_selectedCommand = deleteStart;
         blockSelect(m_selectedCommand, true);
         m_commands->erase(m_commands->begin() + m_selectedCommand, m_commands->begin() + m_selectedEnd + 1);
         m_selectedEnd = -1;
-      } else {
-        if (m_commands->at(m_selectedCommand)->code() != EventCode::Event_Dummy) {
-          int start = m_selectedCommand;
-          int end = m_selectedEnd == -1 ? m_selectedCommand + 1 : m_selectedEnd + 1;
-          m_commands->erase(m_commands->begin() + start, m_commands->begin() + end);
-          m_selectedEnd = -1;
-        }
+      } else if (m_commands->at(deleteStart)->code() != EventCode::Event_Dummy) {
+        const int end = m_selectedEnd == -1 ? deleteStart + 1 : m_selectedEnd + 1;
+        eraseSel(*m_commands, deleteStart, end);
+        m_selectedEnd = -1;
       }
     }
   }
@@ -609,7 +892,8 @@ void EventCommandEditor::drawCommandDialog() {
             }
           }
           if (m_commandDialog->getCommand()->code() == EventCode::Conditional_Branch) {
-            if (!m_commandDialog->isCurrentElseBranch()) {
+            const bool hasElse = conditionalBranchHasElse(*m_commands, m_selectedCommand);
+            if (hasElse != m_commandDialog->wantsElseBranch()) {
               std::vector<std::shared_ptr<IEventCommand>> tempCmds;
 
               for (int i = m_selectedCommand + 1; i < m_commands->size(); i++) {
@@ -625,8 +909,6 @@ void EventCommandEditor::drawCommandDialog() {
               blockSelect(m_selectedCommand, true);
               m_commands->erase(m_commands->begin() + m_selectedCommand, m_commands->begin() + m_selectedEnd + 1);
               m_commands->insert(m_commands->begin() + m_selectedCommand, commandCmds.begin(), commandCmds.end());
-              // Delete branch, store contents, redraw and insert
-              m_commandDialog->setCurrentElseBranch();
               m_selectedEnd = -1;
             }
           }

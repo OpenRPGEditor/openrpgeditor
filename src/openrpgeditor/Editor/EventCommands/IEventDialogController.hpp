@@ -13,8 +13,8 @@ struct IEventDialogController : IDialogController {
   virtual void setParentIndent(int indent) { m_parentIndent.emplace(indent); }
   [[nodiscard]] virtual std::optional<int> getParentIndent() const { return m_parentIndent; }
   virtual std::vector<std::shared_ptr<IEventCommand>> getTemplateCommands(EventCode code, int intParam1 = 0) { return std::vector<std::shared_ptr<IEventCommand>>{}; }
-  virtual bool isCurrentElseBranch() { return false; }
-  virtual void setCurrentElseBranch() {};
+  [[nodiscard]] virtual bool wantsElseBranch() const { return false; }
+  virtual void setElseBranchEnabled(bool enabled) {}
 
 protected:
   std::optional<int> m_parentIndent;

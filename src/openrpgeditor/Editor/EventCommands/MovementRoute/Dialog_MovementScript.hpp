@@ -13,7 +13,10 @@ struct Dialog_MovementScript : IEventDialogController {
       command.reset(new MovementScriptCommand());
     }
     m_Text = command->script;
-    m_textEditor.SetLanguageDefinition(TextEditor::LanguageDefinition::Javascript());
+    if (!m_Text.empty()) {
+      m_textEditor.SetText(m_Text);
+    }
+    m_textEditor.SetupJavascript();
   }
   std::tuple<bool, bool> draw() override;
 

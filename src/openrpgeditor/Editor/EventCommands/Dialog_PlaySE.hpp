@@ -1,15 +1,8 @@
 #pragma once
-#include "Database/Database.hpp"
 #include "Database/EventCommands/PlaySE.hpp"
 #include "Editor/CommonUI/AudioEditor.hpp"
 #include "Editor/CommonUI/Directory.hpp"
 #include "Editor/EventCommands/IEventDialogController.hpp"
-#include "Editor/Log.hpp"
-#include "Editor/ResourceManager.hpp"
-#include "Editor/Settings.hpp"
-#include "Editor/Sound.hpp"
-#include <iostream>
-#include <SFML/Audio.hpp>
 
 namespace fs = std::filesystem;
 struct Dialog_PlaySE : IEventDialogController {

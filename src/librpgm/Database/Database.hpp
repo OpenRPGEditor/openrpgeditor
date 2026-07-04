@@ -20,6 +20,7 @@
 #include "Database/Tilesets.hpp"
 #include "Database/Troops.hpp"
 #include "Database/Weapons.hpp"
+#include "ISettingsManager.hpp"
 #include "Locales.hpp"
 #include "Utils/SignalSlot.hpp"
 
@@ -59,13 +60,12 @@ struct Database {
   std::filesystem::path projectFilePath;
   std::filesystem::path basePath;
   ProjectConfig config;
-  TransientConfig transient;
-
+  
   void serializeProject();
 
   void serializeSettings() {
     config.serialize(basePath / "editor/config.json");
-    transient.serialize(basePath / ".ore/transient.json");
+    (void)TransientSettingsManager::instance().save(basePath / ".ore/transient.json");
   }
 
   void createEmptyProject(std::string_view gameTitle, std::string_view locale);

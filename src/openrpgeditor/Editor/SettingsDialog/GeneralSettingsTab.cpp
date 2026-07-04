@@ -1,7 +1,6 @@
 ﻿#include "Editor/SettingsDialog/GeneralSettingsTab.hpp"
 
 #include "Editor/ImGuiExt/ImGuiUtils.hpp"
-#include "Editor/Settings.hpp"
 
 #include "Editor/Application.hpp"
 #include "Editor/Managers/SettingsManager.hpp"
@@ -45,9 +44,10 @@ void GeneralSettingsTab::draw() {
   GroupBox mruGroupBox(trNOOP("Max Recent Projects"), "##mru_group_box", {-1, 0});
   if (mruGroupBox.begin()) {
     ImGui::SetNextItemWidth(-1);
-    ImGui::SliderInt("##mru_max", &Settings::instance()->maxMru, 1, 20);
+    int maxMru = SettingsManager::instance().getValue("maxMru", 10);
+    ImGui::SliderInt("##mru_max", &maxMru, 1, 20);
     if (ImGui::IsItemDeactivatedAfterEdit()) {
-      Settings::instance()->maxMru = std::clamp(Settings::instance()->maxMru, 1, 20);
+      SettingsManager::instance().setValue("maxMru", std::clamp(maxMru, 1, 20));
       emit_signal(onValueChanged);
     }
   }
@@ -59,26 +59,27 @@ void GeneralSettingsTab::draw() {
     ImGui::BeginHorizontal("##general_settings_project_base_location_layout", {-1, 0}, 0);
     {
       char location[4096];
-      strncpy(location, Settings::instance()->projectBaseDirectory.c_str(), 4096);
+      strncpy(location, SettingsManager::instance().getValue<std::string>("projectBaseDirectory", {}).c_str(), 4096);
       const auto chooseText = trNOOP("Choose...");
       ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.75f);
       ImGui::InputText("##project_location_line_edit", location, sizeof(location), 0.f);
       if (ImGui::IsItemDeactivatedAfterEdit()) {
-        Settings::instance()->projectBaseDirectory = location;
+        SettingsManager::instance().setValue("projectBaseDirectory", location);
         emit_signal(onValueChanged);
       }
       ImGui::SetItemTooltip("%s", trNOOP("Sets the directory where projects are stored"));
       if (ImGui::Button(chooseText, {-1, 0})) {
+        const auto projectBaseDirectory = SettingsManager::instance().getValue<std::string>("projectBaseDirectory", {});
         SDL_ShowOpenFolderDialog(
             [](void* userdata, const char* const* fileList, int filter) {
               if (!fileList || !*fileList || filter >= 1) {
                 return;
               }
               const std::filesystem::path path{fileList[0]};
-              Settings::instance()->projectBaseDirectory = absolute(path).generic_string();
+              SettingsManager::instance().setValue("projectBaseDirectory", absolute(path).generic_string());
               emit_signal(static_cast<ISettingsTab*>(userdata)->onValueChanged);
             },
-            this, App::APP->getWindow()->getNativeWindow(), !Settings::instance()->projectBaseDirectory.empty() ? Settings::instance()->projectBaseDirectory.c_str() : nullptr, false);
+            this, App::APP->getWindow()->getNativeWindow(), !projectBaseDirectory.empty() ? projectBaseDirectory.c_str() : nullptr, false);
       }
       ImGui::SetItemTooltip("%s", trNOOP("Select a directory to store RPG Maker game projects"));
     }

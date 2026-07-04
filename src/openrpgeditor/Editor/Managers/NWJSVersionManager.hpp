@@ -1,8 +1,6 @@
 #pragma once
 
-#include "../Editor/CommonUI/IDialogController.hpp"
-#include "../Editor/Settings.hpp"
-#include "DownloadManager.hpp"
+#include "Editor/Managers/SettingsManager.hpp"
 #include "NotificationCenter.hpp"
 
 #include <string>

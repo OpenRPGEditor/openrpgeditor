@@ -1,8 +1,7 @@
 #include "Editor/ApplicationTheme.hpp"
+#include "Editor/Managers/SettingsManager.hpp"
 
-#include "Managers/SettingsManager.hpp"
-#include "nlohmann/json.hpp"
-#include "Settings.hpp"
+#include <nlohmann/json.hpp>
 
 #include <fstream>
 

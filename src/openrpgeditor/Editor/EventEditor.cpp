@@ -2,9 +2,9 @@
 
 #include "Editor/ImGuiExt/ImGuiNotify.hpp"
 #include "Editor/ImGuiExt/ImGuiUtils.hpp"
+#include "Editor/Managers/SettingsManager.hpp"
 
 #include "Database/Event.hpp"
-#include "Database/EventCommands/EventDummy.hpp"
 #include "Database/EventPage.hpp"
 #include "Database/EventParser.hpp"
 
@@ -14,6 +14,8 @@
 #include "Database/Database.hpp"
 #include "imgui.h"
 #include "imgui_internal.h"
+
+
 #include <clip.h>
 
 static clip::format OREEventPageFormat = -1;

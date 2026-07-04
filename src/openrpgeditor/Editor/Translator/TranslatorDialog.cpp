@@ -87,12 +87,12 @@ std::tuple<bool, bool> TranslatorDialog::draw() {
             documentsComboGroup.end();
           }
           ImGui::EndHorizontal();
-          ImGui::BeginDisabled(!m_currentDocument);
-          {
-            GroupBox translations(trNOOP("Translations"), "##translator_translations_group", {-1, -1}, nullptr, 0, ImGuiWindowFlags_HorizontalScrollbar);
-            if (translations.begin()) {
-              if (ImGui::BeginChild("##translator_translations_table_child", {ImGui::GetContentRegionAvail().x * .5f, ImGui::GetContentRegionAvail().y}, ImGuiChildFlags_ResizeX,
-                                    ImGuiWindowFlags_NoBackground)) {
+          GroupBox translations(trNOOP("Translations"), "##translator_translations_group", {-1, -1}, nullptr, 0, ImGuiWindowFlags_HorizontalScrollbar);
+          if (translations.begin()) {
+            if (ImGui::BeginChild("##translator_translations_table_child", {ImGui::GetContentRegionAvail().x * .5f, ImGui::GetContentRegionAvail().y}, ImGuiChildFlags_ResizeX,
+                                  ImGuiWindowFlags_NoBackground)) {
+              ImGui::BeginDisabled(!m_currentDocument);
+              {
                 if (ImGui::BeginTable("##translations_table", 2, ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable | ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY)) {
                   ImGui::TableSetupColumn(trNOOP("Key"));
                   ImGui::TableSetupColumn(trNOOP("Value"), ImGuiTableColumnFlags_NoResize);
@@ -136,60 +136,60 @@ std::tuple<bool, bool> TranslatorDialog::draw() {
                   ImGui::EndTable();
                 }
               }
-              ImGui::EndChild();
-              ImGui::SameLine();
-              ImGui::AlignTextToFramePadding();
-              const auto revertStr = trNOOP("Revert");
-              const auto buttonWidth = ImGui::CalcItemSize(ImGui::CalcTextSize(revertStr), 0.f, 0.f).x + ImGui::GetStyle().FramePadding.x * 2;
-              if (ImGui::BeginChild("##translator_translations_edit_panel", {-1, 0}, 0, ImGuiWindowFlags_NoBackground)) {
-                ImGui::BeginDisabled(m_currentTranslation == -1);
-                {
-                  GroupBox keyGroup(trNOOP("Key"), "##translator_translation_key_group", {-1, 0});
-                  if (keyGroup.begin()) {
-                    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - buttonWidth);
-                    std::string tmp = m_currentDocument && m_currentTranslation != -1 ? m_currentDocument->key(m_currentTranslation) : "";
-                    ImGui::InputTextMultiline("##translation_key", &tmp);
-                    if (m_currentDocument && m_currentTranslation != -1 && ImGui::IsItemDeactivatedAfterEdit()) {
-                      m_currentDocument->setKey(m_currentTranslation, tmp);
-                    }
-                    ImGui::SameLine();
-                    ImGui::AlignTextToFramePadding();
-                    ImGui::BeginDisabled(!m_currentDocument || !m_currentDocument->keyModified(m_currentTranslation));
-                    {
-                      if (ImGui::Button(revertStr, {buttonWidth, 0})) {
-                        m_currentDocument->revertKey(m_currentTranslation);
-                      }
-                    }
-                    ImGui::EndDisabled();
-                  }
-                  keyGroup.end();
-                  GroupBox valueGroup(trNOOP("Value"), "##translator_translation_value_group", {-1, 0});
-                  if (valueGroup.begin()) {
-                    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - buttonWidth);
-                    std::string tmp = m_currentDocument && m_currentTranslation != -1 ? m_currentDocument->value(m_currentTranslation) : "";
-                    ImGui::InputTextMultiline("##translation_value", &tmp);
-                    if (m_currentDocument && m_currentTranslation != -1 && ImGui::IsItemDeactivatedAfterEdit()) {
-                      m_currentDocument->setValue(m_currentTranslation, tmp);
-                    }
-                    ImGui::SameLine();
-                    ImGui::AlignTextToFramePadding();
-                    ImGui::BeginDisabled(!m_currentDocument || !m_currentDocument->valueModified(m_currentTranslation));
-                    {
-                      if (ImGui::Button(revertStr, {buttonWidth, 0})) {
-                        m_currentDocument->revertValue(m_currentTranslation);
-                      }
-                    }
-                    ImGui::EndDisabled();
-                  }
-                  valueGroup.end();
-                }
-                ImGui::EndDisabled();
-              }
-              ImGui::EndChild();
+              ImGui::EndDisabled();
             }
-            translations.end();
+            ImGui::EndChild();
+            ImGui::SameLine();
+            ImGui::AlignTextToFramePadding();
+            const auto revertStr = trNOOP("Revert");
+            const auto buttonWidth = ImGui::CalcItemSize(ImGui::CalcTextSize(revertStr), 0.f, 0.f).x + (ImGui::GetStyle().FramePadding.x + ImGui::GetStyle().ItemSpacing.x) * 2;
+            if (ImGui::BeginChild("##translator_translations_edit_panel", {-1, 0}, 0, ImGuiWindowFlags_NoBackground)) {
+              ImGui::BeginDisabled(m_currentTranslation == -1);
+              {
+                GroupBox keyGroup(trNOOP("Key"), "##translator_translation_key_group", {-1, 0});
+                if (keyGroup.begin()) {
+                  ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - buttonWidth);
+                  std::string tmp = m_currentDocument && m_currentTranslation != -1 ? m_currentDocument->key(m_currentTranslation) : "";
+                  ImGui::InputTextMultiline("##translation_key", &tmp);
+                  if (m_currentDocument && m_currentTranslation != -1 && ImGui::IsItemDeactivatedAfterEdit()) {
+                    m_currentDocument->setKey(m_currentTranslation, tmp);
+                  }
+                  ImGui::SameLine();
+                  ImGui::AlignTextToFramePadding();
+                  ImGui::BeginDisabled(!m_currentDocument || !m_currentDocument->keyModified(m_currentTranslation));
+                  {
+                    if (ImGui::Button(revertStr, {-1, 0})) {
+                      m_currentDocument->revertKey(m_currentTranslation);
+                    }
+                  }
+                  ImGui::EndDisabled();
+                }
+                keyGroup.end();
+                GroupBox valueGroup(trNOOP("Value"), "##translator_translation_value_group", {-1, 0});
+                if (valueGroup.begin()) {
+                  ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - buttonWidth);
+                  std::string tmp = m_currentDocument && m_currentTranslation != -1 ? m_currentDocument->value(m_currentTranslation) : "";
+                  ImGui::InputTextMultiline("##translation_value", &tmp);
+                  if (m_currentDocument && m_currentTranslation != -1 && ImGui::IsItemDeactivatedAfterEdit()) {
+                    m_currentDocument->setValue(m_currentTranslation, tmp);
+                  }
+                  ImGui::SameLine();
+                  ImGui::AlignTextToFramePadding();
+                  ImGui::BeginDisabled(!m_currentDocument || !m_currentDocument->valueModified(m_currentTranslation));
+                  {
+                    if (ImGui::Button(revertStr, {-1, 0})) {
+                      m_currentDocument->revertValue(m_currentTranslation);
+                    }
+                  }
+                  ImGui::EndDisabled();
+                }
+                valueGroup.end();
+              }
+              ImGui::EndDisabled();
+            }
+            ImGui::EndChild();
           }
-          ImGui::EndDisabled();
+          translations.end();
         }
         ImGui::EndVertical();
       }

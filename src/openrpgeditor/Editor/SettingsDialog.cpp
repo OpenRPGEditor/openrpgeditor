@@ -1,8 +1,8 @@
 ﻿#include "Editor/SettingsDialog.hpp"
 
 #include "Editor/Application.hpp"
-#include "Editor/Settings.hpp"
 #include "ImGuiExt/ImGuiUtils.hpp"
+#include "Managers/SettingsManager.hpp"
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -16,7 +16,7 @@ std::tuple<bool, bool> SettingsDialog::draw() {
 
   if (isOpen()) {
     if (m_tempSettings.empty()) {
-      m_tempSettings = Settings::instance()->serializeToJson();
+      m_tempSettings = SettingsManager::instance().getJson();
     }
     ImGui::OpenPopup(m_dialogId.c_str());
   }
@@ -64,7 +64,7 @@ std::tuple<bool, bool> SettingsDialog::draw() {
           m_confirmed = false;
           m_open = true;
 
-          m_tempSettings = Settings::instance()->serializeToJson();
+          m_tempSettings = SettingsManager::instance().getJson();
           if (m_wasUIRefreshRequested) {
             App::APP->requestScaleUpdate();
             m_wasUIRefreshRequested = false;
@@ -78,7 +78,7 @@ std::tuple<bool, bool> SettingsDialog::draw() {
           m_confirmed = false;
           m_open = false;
           m_hasChangedSettings = false;
-          Settings::instance()->loadFromJson(m_tempSettings);
+          SettingsManager::instance().merge(m_tempSettings);
           m_uiRefreshRequested = true;
           m_tempSettings.clear();
           if (m_wasUIRefreshRequested) {
@@ -95,7 +95,7 @@ std::tuple<bool, bool> SettingsDialog::draw() {
     ImGui::EndPopup();
 
     if (!m_open && !m_closedHere) {
-      Settings::instance()->loadFromJson(m_tempSettings);
+      SettingsManager::instance().merge(m_tempSettings);
       m_tempSettings.clear();
       if (m_wasUIRefreshRequested) {
         App::APP->requestScaleUpdate();

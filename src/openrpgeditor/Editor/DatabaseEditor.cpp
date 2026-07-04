@@ -20,6 +20,7 @@
 #include "Editor/DatabaseEditor/DBTroopsTab.hpp"
 #include "Editor/DatabaseEditor/DBTypesTab.hpp"
 #include "Editor/DatabaseEditor/DBWeaponsTab.hpp"
+#include "Editor/Managers/SettingsManager.hpp"
 
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -67,7 +68,6 @@ float DatabaseEditor::widestTabName() const {
   }
   return std::max(ImGui::CalcTextSize("#").x * 5, width) + ImGui::GetDPIScaledValue(15);
 }
-
 
 void DatabaseEditor::draw() {
   if (isReady() && !onReady.is_empty()) {
@@ -143,7 +143,7 @@ void DatabaseEditor::drawCategoryHeaders() {
     if (!m_currentTab->hasHeader()) {
       m_selectedHeaderIndex = -1;
     }
-    
+
     if (m_filterByHeader) {
       if (ImGui::BeginCombo("##orpg_database_editor_header_list", m_selectedHeaderIndex == -1 ? "" : m_currentTab->objectName(m_currentTab->header(m_selectedHeaderIndex)).c_str())) {
         int index{0};
@@ -166,8 +166,7 @@ void DatabaseEditor::drawCategoryHeaders() {
     if (ImGui::Checkbox("By header##orpg_database_editor_filterbyheader_check", &m_filterByHeader)) {
       if (m_filterByHeader) {
         m_selectedHeaderIndex = 0;
-        m_currentTab->setHeaderRange(m_currentTab->header(m_selectedHeaderIndex),
-                                     m_selectedHeaderIndex + 1 >= m_currentTab->headers().size() ? -1 : m_currentTab->header(m_selectedHeaderIndex + 1));
+        m_currentTab->setHeaderRange(m_currentTab->header(m_selectedHeaderIndex), m_selectedHeaderIndex + 1 >= m_currentTab->headers().size() ? -1 : m_currentTab->header(m_selectedHeaderIndex + 1));
       } else {
         m_selectedHeaderIndex = -1;
       }

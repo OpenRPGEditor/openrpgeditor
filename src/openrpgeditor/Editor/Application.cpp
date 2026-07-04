@@ -6,17 +6,16 @@
 #include "Editor/Log.hpp"
 #include "Editor/Resources.hpp"
 #include "Editor/Script/ScriptEngine.hpp"
-#include "Editor/Settings.hpp"
 #include "Editor/Window.hpp"
 #include "misc/freetype/imgui_freetype.h"
 
 #include "Database/Serializable/FileQueue.hpp"
-#include "FirstBootWizard/ExperimentalWarning.hpp"
-#include "FirstBootWizard/ProjectLocationPage.hpp"
-#include "FirstBootWizard/RPGMakerLocationAndVersionPage.hpp"
-#include "FirstBootWizard/UISettingsPage.hpp"
-#include "FirstBootWizard/WelcomePage.hpp"
-#include "Script/Bindings.hpp"
+#include "Editor/FirstBootWizard/ExperimentalWarning.hpp"
+#include "Editor/FirstBootWizard/ProjectLocationPage.hpp"
+#include "Editor/FirstBootWizard/RPGMakerLocationAndVersionPage.hpp"
+#include "Editor/FirstBootWizard/UISettingsPage.hpp"
+#include "Editor/FirstBootWizard/WelcomePage.hpp"
+#include "Editor/Script/Bindings.hpp"
 #include "Utils/JavaMath.hpp"
 
 #include <backends/imgui_impl_sdl3.h>
@@ -32,19 +31,17 @@
 #include <SDL3/SDL.h>
 
 #include "Editor/ApplicationTheme.hpp"
-#include "Managers/ArchiveManager.hpp"
-#include "Managers/SettingsManager.hpp"
+#include "Editor/Managers/ArchiveManager.hpp"
+#include "Editor/Managers/SettingsManager.hpp"
+#include "Managers/DownloadManager.hpp"
 
 #include <orei18n.hpp>
 #include <string>
 
 namespace App {
-constexpr auto SettingsFilename = "config.json"sv;
+constexpr auto kSettingsFilename = "config.json"sv;
 Application* APP = nullptr;
-void Application::loadSettings() {
-  (void)SettingsManager::instance().load(m_userConfigPath / SettingsFilename);
-  m_settings.load(m_userConfigPath / SettingsFilename);
-}
+void Application::loadSettings() { (void)SettingsManager::instance().load(m_userConfigPath / kSettingsFilename); }
 
 Application::Application() {
   const auto curlocale = std::locale("en_US.UTF-8");
@@ -77,13 +74,13 @@ Application::Application() {
   Math::use2kRandom(true);
 
   loadSettings();
-  if (m_settings.locale.empty()) {
-    m_settings.locale = curlocale.name();
-  }
+  const auto locale = SettingsManager::instance().getValue("locale", curlocale.name());
   APP_DEBUG("User config path: {}", m_userConfigPath.generic_string());
-  moloader::load(m_userConfigPath / "locales" / (m_settings.locale + ".mo"));
+  moloader::load(m_userConfigPath / "locales" / (locale + ".mo"));
 
-  m_window = std::make_unique<Window>(Window::Settings{kApplicationTitle, m_settings.window.w, m_settings.window.h, m_settings.window.x, m_settings.window.y, m_settings.window.maximized});
+  auto settings = SettingsManager::instance().getValue<Window::Settings>("window", {});
+  settings.title = kApplicationTitle;
+  m_window = std::make_unique<Window>(settings);
   APP = this;
   if (!ScriptEngine::instance().initialize()) {
     APP_FATAL("Failed to initialize script manager");
@@ -124,7 +121,7 @@ void Application::updateScale() {
   style.ItemSpacing = ImVec2(4.0f, 3.f);
   style.IndentSpacing = 10.0f;
   style.ScrollbarSize = 12.f;
-  style.ScaleAllSizes(m_settings.uiScale);
+  style.ScaleAllSizes(SettingsManager::instance().getValue("uiScale", 1.f));
   // style.CurveTessellationTol = 0.1f;
   // style.CircleTessellationMaxError = 0.1f;
 }
@@ -291,7 +288,7 @@ void Application::updateFonts() {
   ImGuiIO& io{ImGui::GetIO()};
   // ImGUI font
   const float scale = std::max(SDL_GetWindowPixelDensity(m_window->getNativeWindow()), SDL_GetWindowDisplayScale(m_window->getNativeWindow()));
-  const auto fontSize = 12.f * m_settings.uiScale;
+  const auto fontSize = 12.f * SettingsManager::instance().getValue("uiScale", 1.f);
   const std::string font_path{Resources::font_path("MPLUSRounded1c-Medium.ttf").generic_string()};
   const std::string font_path_sinhala{Resources::font_path("NotoSansSinhala-Medium.ttf").generic_string()};
   const std::string font_path_jetbrains{Resources::font_path("JetBrainsMono-Medium.ttf").generic_string()};
@@ -340,13 +337,14 @@ void Application::serializeSettings() {
   const char* state = ImGui::SaveIniSettingsToMemory(&len);
   if (!Database::instance() || Database::instance()->basePath.empty()) {
 
-    m_settings.imguiState = {state, len};
+    SettingsManager::instance().setValue("imguiState", std::string{state, len});
   } else {
-    Database::instance()->transient.imguiState = {state, len};
+    TransientSettingsManager::instance().setValue("imguiState", std::string{state, len});
     Database::instance()->serializeSettings();
   }
-  m_settings.serialize(m_userConfigPath / SettingsFilename.data());
+  (void)SettingsManager::instance().save(m_userConfigPath / kSettingsFilename.data());
 }
+
 ExitStatus Application::run() {
   /* Do an initial clear */
   SDL_SetRenderDrawColor(m_window->getNativeRenderer(), 28, 38, 43, 255);
@@ -378,7 +376,10 @@ ExitStatus Application::run() {
   ImGui_ImplSDLRenderer3_Init(m_window->getNativeRenderer());
   SDL_GL_SetSwapInterval(0);
 
-  ImGui::LoadIniSettingsFromMemory(m_settings.imguiState.c_str(), m_settings.imguiState.length());
+  const auto imguiState = SettingsManager::instance().getValue<std::string>("imguiState", "");
+  if (!imguiState.empty()) {
+    ImGui::LoadIniSettingsFromMemory(imguiState.c_str(), imguiState.length());
+  }
   updateFonts();
 
   m_running = true;
@@ -387,12 +388,12 @@ ExitStatus Application::run() {
   m_mainWindow.emplace();
   m_themeManager.initialize(std::filesystem::path(m_userConfigPath) / "themes", SDL_GetSystemTheme() == SDL_SYSTEM_THEME_DARK);
   m_themeManager.serializeAllThemes();
-  m_themeManager.applyMainTheme(m_settings.uiScale);
-  bool needsInitialProjectLoad =
-      !Settings::instance()->lastProject.empty() && std::filesystem::is_regular_file(Settings::instance()->lastProject) &&
-      (std::filesystem::path(Settings::instance()->lastProject).extension() == ".rpgproject" || std::filesystem::path(Settings::instance()->lastProject).extension() == ".rmmzproject");
+  m_themeManager.applyMainTheme(SettingsManager::instance().getValue("uiScale", 1.f));
+  const auto lastProject = SettingsManager::instance().getValue<std::string>("lastProject", "");
+  bool needsInitialProjectLoad = !lastProject.empty() && std::filesystem::is_regular_file(lastProject) &&
+                                 (std::filesystem::path(lastProject).extension() == ".rpgproject" || std::filesystem::path(lastProject).extension() == ".rmmzproject");
   // Check if we need to run the FirstBoot wizard
-  if (!Settings::instance()->ranFirstBootWizard) {
+  if (!SettingsManager::instance().getValue("ranFirstBootWizard", false)) {
     m_firstBootWizard.emplace();
     m_firstBootWizard->addPage(std::make_shared<ExperimentalWarning>());
     m_firstBootWizard->addPage(std::make_shared<WelcomePage>());
@@ -418,7 +419,7 @@ ExitStatus Application::run() {
 
     if (m_requestScaleUpdate) {
       updateFonts();
-      m_themeManager.applyMainTheme(m_settings.uiScale);
+      m_themeManager.applyMainTheme(SettingsManager::instance().getValue("uiScale", 1.f));
       m_requestScaleUpdate = false;
     }
     DownloadManager::instance().processDownloads();
@@ -459,7 +460,7 @@ ExitStatus Application::run() {
     saveTime += ImGui::GetIO().DeltaTime;
 
     if (m_firstBootWizard && m_firstBootWizard->draw()) {
-      Settings::instance()->ranFirstBootWizard = true;
+      SettingsManager::instance().setValue("ranFirstBootWizard", true);
       m_firstBootWizard.reset();
     }
 
@@ -472,7 +473,7 @@ ExitStatus Application::run() {
       }
 
       if (needsInitialProjectLoad && m_mainWindow) {
-        m_mainWindow->load(Settings::instance()->lastProject, std::filesystem::path(Settings::instance()->lastProject).remove_filename().generic_string());
+        m_mainWindow->load(lastProject, std::filesystem::path(lastProject).remove_filename().generic_string());
         needsInitialProjectLoad = false;
       }
     }
@@ -524,7 +525,10 @@ ExitStatus Application::run() {
 
     if (resetLayout) {
       ImGui::ClearIniSettings();
-      ImGui::LoadIniSettingsFromMemory(m_settings.imguiState.c_str(), m_settings.imguiState.length());
+      const auto state = SettingsManager::instance().getValue<std::string>("imguiState", {});
+      if (!state.empty()) {
+        ImGui::LoadIniSettingsFromMemory(state.c_str(), state.length());
+      }
       resetLayout = false;
     }
 
@@ -573,16 +577,16 @@ void Application::onEvent(const SDL_WindowEvent& event) {
     return onShown();
   case SDL_EVENT_WINDOW_RESIZED: {
     if (!(SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED)) {
-      Settings::instance()->window.w = event.data1;
-      Settings::instance()->window.h = event.data2;
+      SettingsManager::instance().setValue("window/w", event.data1);
+      SettingsManager::instance().setValue("window/h", event.data2);
     }
-    Settings::instance()->window.maximized = SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED;
+    SettingsManager::instance().setValue<bool>("window/maximized", SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED);
     break;
   }
   case SDL_EVENT_WINDOW_MOVED: {
-    Settings::instance()->window.x = event.data1;
-    Settings::instance()->window.y = event.data2;
-    Settings::instance()->window.maximized = SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED;
+    SettingsManager::instance().setValue("window/x", event.data1);
+    SettingsManager::instance().setValue("window/y", event.data2);
+    SettingsManager::instance().setValue<bool>("window/maximized", SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED);
     break;
   }
   case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
@@ -591,7 +595,7 @@ void Application::onEvent(const SDL_WindowEvent& event) {
     break;
   }
   case SDL_EVENT_WINDOW_MAXIMIZED: {
-    Settings::instance()->window.maximized = SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED;
+    SettingsManager::instance().setValue<bool>("window/maximized", SDL_GetWindowFlags(m_window->getNativeWindow()) & SDL_WINDOW_MAXIMIZED);
     break;
   }
   default:
@@ -635,7 +639,9 @@ void Application::handleCrash(std::string trace) {
 #endif
   // Create a new, minimal SDL/ImGui context for the crash screen
   SDL_Init(SDL_INIT_VIDEO);
-  m_window = std::make_unique<Window>(Window::Settings{kApplicationTitle, m_settings.window.w, m_settings.window.h, m_settings.window.x, m_settings.window.y, m_settings.window.maximized});
+  auto settings = SettingsManager::instance().getValue<Window::Settings>("window", {});
+  settings.title = kApplicationTitle;
+  m_window = std::make_unique<Window>(settings);
 
   ImGui::CreateContext();
 
@@ -651,7 +657,7 @@ void Application::handleCrash(std::string trace) {
 
   ImGui_ImplSDL3_InitForSDLRenderer(m_window->getNativeWindow(), m_window->getNativeRenderer());
   ImGui_ImplSDLRenderer3_Init(m_window->getNativeRenderer());
-  m_themeManager.applyMainTheme(m_settings.uiScale);
+  m_themeManager.applyMainTheme(SettingsManager::instance().getValue<float>("uiScale", 1.f));
   updateFonts();
 
   SDL_ShowWindow(m_window->getNativeWindow());

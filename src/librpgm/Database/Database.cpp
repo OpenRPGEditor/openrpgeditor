@@ -30,7 +30,7 @@ Database::Database(const std::string_view _projectBasePath, const std::string_vi
 
 void Database::load() {
   config.load(basePath / "editor/config.json");
-  transient.load(basePath / ".ore/transient.json");
+  (void)TransientSettingsManager::instance().load(basePath / ".ore/transient.json");
 
   RPGM_INFO("Queue MapInfo definitions for load...");
   FileQueue::instance().enqueue(std::make_shared<MapInfosSerializer>("data/MapInfos.json"), [this](const std::shared_ptr<ISerializable>& serializer) {

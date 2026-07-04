@@ -1,10 +1,25 @@
-#include "Window.hpp"
-
+#include "Editor/Window.hpp"
 #include "Editor/Log.hpp"
+
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_render.h>
+#include <nlohmann/json.hpp>
 
 namespace App {
+
+void to_json(nlohmann::ordered_json& j, const Window::Settings& s) {
+  j = {
+      {"x", s.x}, {"y", s.y}, {"width", s.width}, {"height", s.height}, {"maximized", s.maximized},
+  };
+}
+
+void from_json(const nlohmann::ordered_json& j, Window::Settings& s) {
+  s.x = j.value("x", s.x);
+  s.y = j.value("y", s.y);
+  s.width = j.value("width", s.width);
+  s.height = j.value("height", s.height);
+  s.maximized = j.value("maximized", s.maximized);
+}
 
 Window::Window(const Settings& settings) {
   /* Create the window as hidden so we can secretly configure it */

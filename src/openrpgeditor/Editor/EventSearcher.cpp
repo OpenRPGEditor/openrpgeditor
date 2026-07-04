@@ -1,7 +1,7 @@
 #include "Editor/EventSearcher.hpp"
 #include "Database/EventCommands/MovementRoute/Script.hpp"
 #include "Editor/MainWindow.hpp"
-#include "Editor/Settings.hpp"
+#include "Editor/Managers/SettingsManager.hpp"
 #include "imgui.h"
 #include "ImGuiExt/ImGuiUtils.hpp"
 

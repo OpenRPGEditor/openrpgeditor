@@ -1,12 +1,8 @@
 #pragma once
-#include "Database/Database.hpp"
 #include "Database/EventCommands/PlayMovie.hpp"
 #include "Editor/CommonUI/Directory.hpp"
 #include "Editor/EventCommands/IEventDialogController.hpp"
 #include "Editor/Log.hpp"
-#include "Editor/Settings.hpp"
-
-#include <iostream>
 
 namespace fs = std::filesystem;
 struct Dialog_PlayMovie : IEventDialogController {

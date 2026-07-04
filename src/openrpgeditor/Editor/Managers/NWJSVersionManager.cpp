@@ -1,7 +1,7 @@
 #include "Editor/Managers/NWJSVersionManager.hpp"
 
 #include "ArchiveManager.hpp"
-#include "Editor/Settings.hpp"
+#include "DownloadManager.hpp"
 #include "IconsFontAwesome6.h"
 
 #include "Database/EventCommands/ChangeVictoryME.hpp"
@@ -177,12 +177,12 @@ void NWJSVersionManager::initialize() {
     return;
   }
 
-  if (!Settings::instance()->selectedNWJSVersion.empty()) {
-    if (Settings::instance()->selectedNWJSVersion == "latest") {
+  if (const auto selectedNWJSVersion = SettingsManager::instance().getValue<std::string>("selectedNWJSVersion", {}); !selectedNWJSVersion.empty()) {
+    if (selectedNWJSVersion == "latest") {
       m_selectedVersion = -1;
     } else if (!m_versions.empty()) {
       for (int i = 0; i < m_versions.size(); ++i) {
-        if (m_versions[i] == Settings::instance()->selectedNWJSVersion) {
+        if (m_versions[i] == selectedNWJSVersion) {
           m_selectedVersion = i;
         }
       }
@@ -214,12 +214,14 @@ void NWJSVersionManager::draw() {
       ImGui::TextUnformatted(m_versionDownloadHandle == -1 || DownloadManager::instance().transferComplete(m_versionDownloadHandle) ? trNOOP("Unable to get version list!")
                                                                                                                                     : trNOOP("Retrieving version listing..."));
     } else {
-      GroupBox availableVersionsGroup(trNOOP("Available Versions"), "##nwjs_available_versions_group", {-1, 0}, nullptr, ImGuiChildFlags_ResizeY, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_HorizontalScrollbar);
+      GroupBox availableVersionsGroup(trNOOP("Available Versions"), "##nwjs_available_versions_group", {-1, 0}, nullptr, ImGuiChildFlags_ResizeY,
+                                      ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_HorizontalScrollbar);
       if (availableVersionsGroup.begin()) {
         ImGui::BeginVertical("##nwjs_available_version_main_layout", {-1, 0}, 0);
         {
+          const auto currentNWJSVersion = SettingsManager::instance().getValue<std::string>("currentNWJSVersion", {});
           // TL-NOTE: The second format specifier is update status if the latest version doesn't match the currently set version
-          ImGui::Text(trNOOP("Current Version: %s%s"), Settings::instance()->currentNWJSVersion.c_str(), Settings::instance()->currentNWJSVersion != m_versions[0] ? trNOOP(" Update Available!") : "");
+          ImGui::Text(trNOOP("Current Version: %s%s"), currentNWJSVersion.c_str(), currentNWJSVersion != m_versions[0] ? trNOOP(" Update Available!") : "");
           ImGui::Text(trNOOP("Latest Version: %s"), m_versions[0].c_str());
           GroupBox selectedVersion(trNOOP("Selected Version:"), "##selected_version", {-1, 0});
           if (selectedVersion.begin()) {
@@ -228,17 +230,17 @@ void NWJSVersionManager::draw() {
             if (ImGui::BeginCombo("##NWJSVersion", version.c_str())) {
               if (ImGui::Selectable(trNOOP("None"), m_selectedVersion == -2)) {
                 m_selectedVersion = -2;
-                Settings::instance()->selectedNWJSVersion.clear();
+                SettingsManager::instance().setValue("selectedNWJSVersion", "");
               }
               if (ImGui::Selectable(trNOOP("Latest"), m_selectedVersion == -1)) {
                 m_selectedVersion = -1;
-                Settings::instance()->selectedNWJSVersion = "latest";
+                SettingsManager::instance().setValue("selectedNWJSVersion", "latest");
               }
               int i = 0;
               for (const auto& v : m_versions) {
                 if (ImGui::Selectable(v.c_str(), i == m_selectedVersion)) {
                   m_selectedVersion = i;
-                  Settings::instance()->selectedNWJSVersion = v;
+                  SettingsManager::instance().setValue("selectedNWJSVersion", v);
                 }
                 ++i;
               }
@@ -279,7 +281,7 @@ void NWJSVersionManager::draw() {
                                 ret == 0) {
                               addDownload(version, platform.identifier, identifier, platform.extension, false);
                               if (m_selectedVersion == -1) {
-                                Settings::instance()->currentNWJSVersion = m_versions[0];
+                                SettingsManager::instance().setValue("currentNWJSVersion", m_versions[0]);
                               }
                             } else if (ret == 1) {
                               ArchiveManager::instance().addJob(archivePathForPlatformAndArch(version, m_configPath / kNWJS_DIR / version, platform.identifier, identifier, platform.extension, false),
@@ -299,7 +301,7 @@ void NWJSVersionManager::draw() {
                                 ret == 0) {
                               addDownload(version, platform.identifier, identifier, platform.extension, true);
                               if (m_selectedVersion == -1) {
-                                Settings::instance()->currentNWJSVersion = m_versions[0];
+                                SettingsManager::instance().setValue("currentNWJSVersion", m_versions[0]);
                               }
                             } else if (ret == 1) {
                               ArchiveManager::instance().addJob(archivePathForPlatformAndArch(version, m_configPath / kNWJS_DIR / version, platform.identifier, identifier, platform.extension, true),
@@ -441,7 +443,7 @@ std::pair<const NWJSVersionManager::Platform*, const NWJSVersionManager::Platfor
 
 void NWJSVersionManager::detectInstalledVersions() {
   auto basePath = m_configPath / kNWJS_DIR;
-  
+
   if (!exists(basePath)) {
     return;
   }

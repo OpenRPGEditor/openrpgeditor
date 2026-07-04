@@ -1,7 +1,5 @@
 #include "Editor/MainWindow.hpp"
 
-#include "Settings.hpp"
-
 #include "Database/Serializable/FileQueue.hpp"
 #include "Database/Versions.hpp"
 #include "Editor/Application.hpp"
@@ -25,7 +23,6 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "imgui_stacklayout.h"
-#include "Translator/TranslationDocument.hpp"
 #include "Translator/Translator.hpp"
 
 #include <array>
@@ -92,8 +89,10 @@ void MainWindow::ToolbarButton::callOnClicked() const {
 bool MainWindow::load(std::string_view filePath, std::string_view basePath) {
   if (!std::filesystem::exists(filePath)) {
     ImGui::InsertNotification({ImGuiToastType::Error, trNOOP("Unable to open project:\n%s"), filePath.data()});
-    if (const auto it = std::ranges::find_if(Settings::instance()->mru, [&filePath](const auto& pair) { return pair.first == filePath; }); it != Settings::instance()->mru.end()) {
-      Settings::instance()->mru.erase(it);
+    auto mru = SettingsManager::instance().getValue<std::deque<std::pair<std::string, std::string>>>("mru", {});
+    if (const auto it = std::ranges::find_if(mru, [&filePath](const auto& pair) { return pair.first == filePath; }); it != mru.end()) {
+      mru.erase(it);
+      SettingsManager::instance().setValue("mru", mru);
     }
     return false;
   }
@@ -134,7 +133,7 @@ void MainWindow::save() {
   }
   size_t len = 0;
   const auto state = ImGui::SaveIniSettingsToMemory(&len);
-  m_database->transient.imguiState = std::string(state, len);
+  TransientSettingsManager::instance().setValue("imguiState", std::string(state, len));
   m_database->system->setVersionId(floor(rand() * 100000000));
   m_database->serializeProject();
   if (const auto projectPath = m_database->basePath / "package.json"; exists(projectPath)) {
@@ -635,7 +634,7 @@ void MainWindow::drawCreateNewProjectPopup() {
       const auto gameTitle = m_createNewProject.gameTitle();
       const auto copyExampleProject = m_createNewProject.copyExample();
 
-      const auto projectPath = Settings::instance()->projectBaseDirectory / std::filesystem::path(projectName);
+      const auto projectPath = SettingsManager::instance().getValue<std::string>("projectBaseDirectory") / std::filesystem::path(projectName);
 
       if (create_directories(projectPath)) {
         for (const auto& directory : directoryList) {
@@ -646,9 +645,11 @@ void MainWindow::drawCreateNewProjectPopup() {
         std::ofstream projectFile(projectFilePath);
         std::string version;
         if (isMZ) {
-          version = Settings::instance()->rpgMakerMZVersion != -1 ? KnownRPGMZVersions[Settings::instance()->rpgMakerMZVersion] : KnownRPGMZVersions[KnownRPGMZVersions.size() - 1];
+          const auto v = SettingsManager::instance().getValue("rpgMakerMZVersion", -1);
+          version = v != -1 ? KnownRPGMZVersions[v] : KnownRPGMZVersions[KnownRPGMZVersions.size() - 1];
         } else {
-          version = Settings::instance()->rpgMakerMVVersion != -1 ? KnownRPGMVVersions[Settings::instance()->rpgMakerMVVersion] : KnownRPGMVVersions[KnownRPGMVVersions.size() - 1];
+          const auto v = SettingsManager::instance().getValue("rpgMakerMVVersion", -1);
+          version = v != -1 ? KnownRPGMVVersions[v] : KnownRPGMVVersions[KnownRPGMVVersions.size() - 1];
         }
         projectFile << version << std::endl;
         FileQueue::instance().reset();
@@ -756,7 +757,8 @@ void MainWindow::handleOpenFile() {
       "RPG Maker Projects",
       "rpgproject;rmmzproject",
   };
-  const std::string directory = Settings::instance()->lastDirectory.empty() ? std::filesystem::current_path().generic_string() : Settings::instance()->lastDirectory;
+  const auto lastDir = SettingsManager::instance().getValue<std::string>("lastDirectory");
+  const std::string directory = lastDir.empty() ? std::filesystem::current_path().generic_string() : lastDir;
   SDL_ShowOpenFileDialog(
       [](void* userdata, const char* const* filelist, int filter) {
         if (!filelist || !*filelist || filter >= 1) {
@@ -764,8 +766,8 @@ void MainWindow::handleOpenFile() {
         }
         auto* window = static_cast<MainWindow*>(userdata);
         const std::filesystem::path path{filelist[0]};
-        Settings::instance()->lastDirectory = absolute(path).remove_filename().generic_string();
-        window->load(absolute(path).generic_string(), Settings::instance()->lastDirectory);
+        SettingsManager::instance().setValue("lastDirectory", absolute(path).remove_filename().generic_string());
+        window->load(absolute(path).generic_string(), SettingsManager::instance().getValue<std::string>("lastDirectory"));
       },
       this, App::APP->getWindow()->getNativeWindow(), &filters, 1, directory.c_str(), false);
 }
@@ -847,16 +849,17 @@ void MainWindow::drawMenu() {
       }
       ImGui::Separator();
 
-      if (ImGui::BeginMenuEx(trNOOP("Recent Projects"), "", !Settings::instance()->mru.empty())) {
+      const auto mru = SettingsManager::instance().getValue<std::deque<std::pair<std::string, std::string>>>("mru");
+      if (ImGui::BeginMenuEx(trNOOP("Recent Projects"), "", !mru.empty())) {
         if (ImGui::MenuItemNoCheck(tr("Clear").c_str(), nullptr, ICON_FA_DELETE_LEFT)) {
-          Settings::instance()->mru.clear();
+          SettingsManager::instance().setValue<std::deque<std::pair<std::string, std::string>>>("mru", {});
         }
-        if (!Settings::instance()->mru.empty()) {
+        if (!mru.empty()) {
           ImGui::Separator();
         }
         std::vector<std::vector<std::pair<std::string, std::string>>> menus;
         menus.emplace_back();
-        for (int currentMenu = 0; const auto& s : Settings::instance()->mru) {
+        for (int currentMenu = 0; const auto& s : mru) {
           if (menus[currentMenu].size() >= kMaxItemsPerMRUMenu) {
             menus.emplace_back();
             ++currentMenu;
@@ -1204,7 +1207,7 @@ void MainWindow::setMap(MapInfo& in) {
 void MainWindow::onDatabaseReady() {
   Translator::instance().initialize();
   MapInfo* info = m_database->mapInfos->map(0);
-  Settings::instance()->lastProject = m_database->projectFilePath.generic_string();
+  SettingsManager::instance().setValue("lastProject", m_database->projectFilePath.generic_string());
   info->setExpanded(true);
   info->setName(m_database->system->gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system->gameTitle());
   APP_INFO("Loaded project!");
@@ -1216,21 +1219,23 @@ void MainWindow::onDatabaseReady() {
     setMap(*m);
   }
 
-  if (const auto fileIt = std::ranges::find_if(Settings::instance()->mru, [this](const auto& t) { return t.first == m_database->projectFilePath; }); fileIt == Settings::instance()->mru.end()) {
-    Settings::instance()->mru.emplace_front(m_database->projectFilePath.generic_string(),
-                                            m_database->system->gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system->gameTitle());
+  auto mru = SettingsManager::instance().getValue<std::deque<std::pair<std::string, std::string>>>("mru");
+  if (const auto fileIt = std::ranges::find_if(mru, [this](const auto& t) { return t.first == m_database->projectFilePath; }); fileIt == mru.end()) {
+    mru.emplace_front(m_database->projectFilePath.generic_string(),
+                      m_database->system->gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system->gameTitle());
   } else {
-    Settings::instance()->mru.erase(fileIt);
-    Settings::instance()->mru.emplace_front(m_database->projectFilePath.generic_string(),
-                                            m_database->system->gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system->gameTitle());
+    mru.erase(fileIt);
+    mru.emplace_front(m_database->projectFilePath.generic_string(),
+                      m_database->system->gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().generic_string() : m_database->system->gameTitle());
   }
-  while (Settings::instance()->mru.size() > Settings::instance()->maxMru) {
-    Settings::instance()->mru.pop_back();
+  while (mru.size() > SettingsManager::instance().getValue("maxMru", 10)) {
+    mru.pop_back();
   }
+
+  SettingsManager::instance().setValue("mru", mru);
   m_isLoaded = true;
   /* Disconnect the signal so we don't get spammed */
   m_databaseEditor->onReady.disconnect<&MainWindow::onDatabaseReady>(this);
-  
 
   const auto gameTitle =
       Database::instance()->system->gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().replace_extension().generic_string() : m_database->system->gameTitle();
@@ -1253,9 +1258,10 @@ void MainWindow::loadTransientSettings() {
     return;
   }
   /* Restore the user's stored session */
-  if (!m_database->transient.imguiState.empty()) {
+  const auto state = TransientSettingsManager::instance().getValue<std::string>("imguiState");
+  if (!state.empty()) {
     ImGui::ClearIniSettings();
-    ImGui::LoadIniSettingsFromMemory(m_database->transient.imguiState.c_str(), m_database->transient.imguiState.length());
+    ImGui::LoadIniSettingsFromMemory(state.c_str(), state.length());
   }
   m_transientSettingsLoaded = true;
 }

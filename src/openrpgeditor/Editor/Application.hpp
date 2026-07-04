@@ -67,7 +67,6 @@ private:
   bool m_running{true};
   bool m_minimized{false};
   std::filesystem::path m_userConfigPath;
-  Settings m_settings;
   std::optional<MainWindow> m_mainWindow;
   ImFont* m_mainFont{};
   ImFont* m_monoFont{};

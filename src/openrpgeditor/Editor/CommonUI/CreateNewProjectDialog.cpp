@@ -2,10 +2,9 @@
 
 #include "Editor/Application.hpp"
 #include "Editor/ImGuiExt/ImGuiUtils.hpp"
-#include "Editor/Settings.hpp"
+#include "Editor/Managers/SettingsManager.hpp"
 
 #include <filesystem>
-#include <iostream>
 #include <string_view>
 
 #include <SDL3/SDL_dialog.h>
@@ -14,13 +13,13 @@ using namespace std::string_view_literals;
 
 void CreateNewProjectDialog::setOpen(bool open) {
   IDialogController::setOpen(open);
-
-  if (!Settings::instance()->projectBaseDirectory.empty()) {
+  const auto basePath = SettingsManager::instance().getValue<std::string>("projectBaseDirectory", {});
+  if (!basePath.empty()) {
     int i = 1;
     std::filesystem::path projectPath;
     do {
       ++i;
-      projectPath = std::filesystem::path(Settings::instance()->projectBaseDirectory) / std::filesystem::path(std::format("Project{}", i));
+      projectPath = std::filesystem::path() / std::filesystem::path(std::format("Project{}", i));
     } while (is_directory(projectPath));
     m_gameTitle = m_projectName = std::format("Project{}", i);
   }
@@ -36,16 +35,18 @@ std::tuple<bool, bool> CreateNewProjectDialog::draw() {
   if (ImGui::BeginPopupModal(m_dialogId.c_str(), &m_open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::BeginGroup();
     {
-      if (!Settings::instance()->rpgMakerMVLocation.empty() || !Settings::instance()->rpgMakerMZLocation.empty()) {
+      const auto mvLocation = SettingsManager::instance().getValue<std::string>("rpgMakerMVLocation", {});
+      const auto mzLocation = SettingsManager::instance().getValue<std::string>("rpgMakerMZLocation", {});
+      if (!mvLocation.empty() || !mzLocation.empty()) {
         ImGui::BeginGroup();
         {
-          ImGui::BeginDisabled(Settings::instance()->rpgMakerMZLocation.empty());
+          ImGui::BeginDisabled(mvLocation.empty());
           if (ImGui::RadioButton(trNOOP("RPG Maker MV"), m_projectType == ProjectType::RPGMV)) {
             m_projectType = ProjectType::RPGMV;
           }
           ImGui::EndDisabled();
           ImGui::SameLine();
-          ImGui::BeginDisabled(Settings::instance()->rpgMakerMZLocation.empty());
+          ImGui::BeginDisabled(mzLocation.empty());
           if (ImGui::RadioButton(trNOOP("RPG Maker MZ"), m_projectType == ProjectType::RPGMZ)) {
             m_projectType = ProjectType::RPGMZ;
           }
@@ -68,9 +69,9 @@ std::tuple<bool, bool> CreateNewProjectDialog::draw() {
         ImGui::BeginGroup();
         {
           char location[4096];
-          strncpy(location, Settings::instance()->projectBaseDirectory.c_str(), 4096);
+          strncpy(location, SettingsManager::instance().getValue<std::string>("projectBaseDirectory").c_str(), 4096);
           if (ImGui::LabelOverLineEdit("##project_location_label", "Location:", location, 4096, 0.f, nullptr, ImGuiInputTextFlags_None)) {
-            Settings::instance()->projectBaseDirectory = location;
+            SettingsManager::instance().setValue("projectBaseDirectory", location);
           }
           ImGui::SameLine();
           ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ImGui::GetStyle().FramePadding.y);
@@ -79,15 +80,16 @@ std::tuple<bool, bool> CreateNewProjectDialog::draw() {
             ImGui::NewLine();
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetStyle().FramePadding.y);
             if (ImGui::Button("Choose...")) {
+              const auto basePath = SettingsManager::instance().getValue<std::string>("projectBaseDirectory");
               SDL_ShowOpenFolderDialog(
                   [](void*, const char* const* fileList, int filter) {
                     if (!fileList || !*fileList || filter >= 1) {
                       return;
                     }
                     const std::filesystem::path path{fileList[0]};
-                    Settings::instance()->projectBaseDirectory = absolute(path).generic_string();
+                    SettingsManager::instance().setValue("projectBaseDirectory", absolute(path).generic_string());
                   },
-                  nullptr, App::APP->getWindow()->getNativeWindow(), !Settings::instance()->projectBaseDirectory.empty() ? Settings::instance()->projectBaseDirectory.c_str() : nullptr, false);
+                  nullptr, App::APP->getWindow()->getNativeWindow(), !basePath.empty() ? basePath.c_str() : nullptr, false);
             }
           }
           ImGui::EndGroup();

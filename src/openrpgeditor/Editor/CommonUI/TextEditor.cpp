@@ -6,7 +6,6 @@
 #include "Editor/Application.hpp"
 #include "Editor/CommonUI/VariableSwitchPicker.hpp"
 #include "Editor/ImGuiExt/ImGuiUtils.hpp"
-#include "Editor/Settings.hpp"
 
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -144,9 +143,9 @@ struct ScriptTextEditor::Impl {
 
       ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
 
-      bool showLineNumbers = Settings::instance()->scriptEditorShowLineNumbers;
+      bool showLineNumbers = SettingsManager::instance().getValue("scriptEditor/showLineNumbers", true);
       if (ImGui::Checkbox(trNOOP("Line #"), &showLineNumbers)) {
-        Settings::instance()->scriptEditorShowLineNumbers = showLineNumbers;
+        SettingsManager::instance().setValue("scriptEditor/showLineNumbers", showLineNumbers);
         editor.setShowLineNumbersEnabled(showLineNumbers);
         App::APP->serializeSettings();
       }
@@ -154,14 +153,16 @@ struct ScriptTextEditor::Impl {
     ImGui::EndHorizontal();
   }
 
-  void applyDefaults() { editor.setShowLineNumbersEnabled(Settings::instance()->scriptEditorShowLineNumbers); }
+  void applyDefaults() { editor.setShowLineNumbersEnabled(SettingsManager::instance().getValue("scriptEditor/showLineNumbers", true)); }
 };
 
-ScriptTextEditor::ScriptTextEditor() : m_impl(std::make_unique<Impl>()) {}
+ScriptTextEditor::ScriptTextEditor()
+: m_impl(std::make_unique<Impl>()) {}
 
 ScriptTextEditor::~ScriptTextEditor() = default;
 
-ScriptTextEditor::ScriptTextEditor(ScriptTextEditor&& other) noexcept : m_impl(std::move(other.m_impl)) {}
+ScriptTextEditor::ScriptTextEditor(ScriptTextEditor&& other) noexcept
+: m_impl(std::move(other.m_impl)) {}
 
 ScriptTextEditor& ScriptTextEditor::operator=(ScriptTextEditor&& other) noexcept {
   m_impl = std::move(other.m_impl);

@@ -1,16 +1,10 @@
 #pragma once
 #include "Editor/EventCommands/IEventDialogController.hpp"
 #include "Editor/Log.hpp"
-#include "Editor/ResourceManager.hpp"
-#include "Editor/Settings.hpp"
 
-#include "Database/Database.hpp"
 #include "Database/EventCommands/PlayBGM.hpp"
 #include "Editor/CommonUI/AudioEditor.hpp"
 #include "Editor/CommonUI/Directory.hpp"
-#include "Editor/Sound.hpp"
-
-#include <iostream>
 
 namespace fs = std::filesystem;
 struct Dialog_PlayBGM : IEventDialogController {

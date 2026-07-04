@@ -1,47 +1,49 @@
 #include "Editor/LibLCF.hpp"
-#include "Database/EventCommands/MovementRoute/ChangeImage.hpp"
-#include "Database/EventCommands/MovementRoute/DirectionFixOFF.hpp"
-#include "Database/EventCommands/MovementRoute/DirectionFixON.hpp"
-#include "Database/EventCommands/MovementRoute/Move1StepForward.hpp"
-#include "Database/EventCommands/MovementRoute/MoveAtRandom.hpp"
-#include "Database/EventCommands/MovementRoute/MoveAwayFromPlayer.hpp"
-#include "Database/EventCommands/MovementRoute/MoveDown.hpp"
-#include "Database/EventCommands/MovementRoute/MoveLeft.hpp"
-#include "Database/EventCommands/MovementRoute/MoveLowerLeft.hpp"
-#include "Database/EventCommands/MovementRoute/MoveLowerRight.hpp"
-#include "Database/EventCommands/MovementRoute/MoveRight.hpp"
-#include "Database/EventCommands/MovementRoute/MoveTowardPlayer.hpp"
-#include "Database/EventCommands/MovementRoute/MoveUp.hpp"
-#include "Database/EventCommands/MovementRoute/MoveUpperLeft.hpp"
-#include "Database/EventCommands/MovementRoute/MoveUpperRight.hpp"
-#include "Database/EventCommands/MovementRoute/PlaySE.hpp"
-#include "Database/EventCommands/MovementRoute/Script.hpp"
-#include "Database/EventCommands/MovementRoute/SteppingAnimationOFF.hpp"
-#include "Database/EventCommands/MovementRoute/SteppingAnimationON.hpp"
-#include "Database/EventCommands/MovementRoute/SwitchOFF.hpp"
-#include "Database/EventCommands/MovementRoute/SwitchON.hpp"
-#include "Database/EventCommands/MovementRoute/ThroughOFF.hpp"
-#include "Database/EventCommands/MovementRoute/ThroughON.hpp"
-#include "Database/EventCommands/MovementRoute/Turn180Deg.hpp"
-#include "Database/EventCommands/MovementRoute/Turn90DegLeft.hpp"
-#include "Database/EventCommands/MovementRoute/Turn90DegLeftOrRight.hpp"
-#include "Database/EventCommands/MovementRoute/Turn90DegRight.hpp"
-#include "Database/EventCommands/MovementRoute/TurnAtRandom.hpp"
-#include "Database/EventCommands/MovementRoute/TurnAwayFromPlayer.hpp"
-#include "Database/EventCommands/MovementRoute/TurnDown.hpp"
-#include "Database/EventCommands/MovementRoute/TurnLeft.hpp"
-#include "Database/EventCommands/MovementRoute/TurnRight.hpp"
-#include "Database/EventCommands/MovementRoute/TurnTowardPlayer.hpp"
-#include "Database/EventCommands/MovementRoute/TurnUp.hpp"
-#include "Database/EventCommands/MovementRoute/Wait.hpp"
-#include "DatabaseEditor/DBCommonEventsTab.hpp"
+
 #include "Editor/Application.hpp"
+#include "Editor/DatabaseEditor/DBCommonEventsTab.hpp"
 #include "Editor/MainWindow.hpp"
-#include "Editor/Settings.hpp"
-#include "lcf/reader_util.h"
+#include "Editor/Managers/SettingsManager.hpp"
+
+#include <Database/EventCommands/MovementRoute/ChangeImage.hpp>
+#include <Database/EventCommands/MovementRoute/DirectionFixOFF.hpp>
+#include <Database/EventCommands/MovementRoute/DirectionFixON.hpp>
+#include <Database/EventCommands/MovementRoute/Move1StepForward.hpp>
+#include <Database/EventCommands/MovementRoute/MoveAtRandom.hpp>
+#include <Database/EventCommands/MovementRoute/MoveAwayFromPlayer.hpp>
+#include <Database/EventCommands/MovementRoute/MoveDown.hpp>
+#include <Database/EventCommands/MovementRoute/MoveLeft.hpp>
+#include <Database/EventCommands/MovementRoute/MoveLowerLeft.hpp>
+#include <Database/EventCommands/MovementRoute/MoveLowerRight.hpp>
+#include <Database/EventCommands/MovementRoute/MoveRight.hpp>
+#include <Database/EventCommands/MovementRoute/MoveTowardPlayer.hpp>
+#include <Database/EventCommands/MovementRoute/MoveUp.hpp>
+#include <Database/EventCommands/MovementRoute/MoveUpperLeft.hpp>
+#include <Database/EventCommands/MovementRoute/MoveUpperRight.hpp>
+#include <Database/EventCommands/MovementRoute/PlaySE.hpp>
+#include <Database/EventCommands/MovementRoute/Script.hpp>
+#include <Database/EventCommands/MovementRoute/SteppingAnimationOFF.hpp>
+#include <Database/EventCommands/MovementRoute/SteppingAnimationON.hpp>
+#include <Database/EventCommands/MovementRoute/SwitchOFF.hpp>
+#include <Database/EventCommands/MovementRoute/SwitchON.hpp>
+#include <Database/EventCommands/MovementRoute/ThroughOFF.hpp>
+#include <Database/EventCommands/MovementRoute/ThroughON.hpp>
+#include <Database/EventCommands/MovementRoute/Turn180Deg.hpp>
+#include <Database/EventCommands/MovementRoute/Turn90DegLeft.hpp>
+#include <Database/EventCommands/MovementRoute/Turn90DegLeftOrRight.hpp>
+#include <Database/EventCommands/MovementRoute/Turn90DegRight.hpp>
+#include <Database/EventCommands/MovementRoute/TurnAtRandom.hpp>
+#include <Database/EventCommands/MovementRoute/TurnAwayFromPlayer.hpp>
+#include <Database/EventCommands/MovementRoute/TurnDown.hpp>
+#include <Database/EventCommands/MovementRoute/TurnLeft.hpp>
+#include <Database/EventCommands/MovementRoute/TurnRight.hpp>
+#include <Database/EventCommands/MovementRoute/TurnTowardPlayer.hpp>
+#include <Database/EventCommands/MovementRoute/TurnUp.hpp>
+#include <Database/EventCommands/MovementRoute/Wait.hpp>
 
 #include <clip.h>
 #include <imgui.h>
+#include <lcf/reader_util.h>
 #include <SDL3/SDL_dialog.h>
 
 #undef PlaySound
@@ -53,7 +55,7 @@ void LibLCF::loadLCFProject(const std::filesystem::path& path) {
   m_selectedCommon = -1;
   m_selectedMapIndex = -1;
   m_selectedPage = -1;
-  Settings::instance()->lcfProjectDirectory = absolute(path).generic_string();
+  SettingsManager::instance().setValue("lcfProjectDirectory", absolute(path).generic_string());
 }
 void LibLCF::draw() {
   if (!m_isOpen) {
@@ -101,6 +103,7 @@ void LibLCF::draw() {
     }
   }
   if (ImGui::Begin("LCF")) {
+    const auto lcfProjectDirectory = SettingsManager::instance().getValue<std::string>("lcfProjectDirectory", {});
     if (ImGui::Button("Select an RPG Maker 2000 project...")) {
       SDL_ShowOpenFolderDialog(
           [](void* userdata, const char* const* fileList, int filter) {
@@ -110,7 +113,7 @@ void LibLCF::draw() {
             const std::filesystem::path path{fileList[0]};
             static_cast<LibLCF*>(userdata)->loadLCFProject(path);
           },
-          this, App::APP->getWindow()->getNativeWindow(), !Settings::instance()->lcfProjectDirectory.empty() ? Settings::instance()->lcfProjectDirectory.c_str() : nullptr, false);
+          this, App::APP->getWindow()->getNativeWindow(), !lcfProjectDirectory.empty() ? lcfProjectDirectory.c_str() : nullptr, false);
     }
     ImGui::SameLine();
     if (ImGui::Button("...")) {}
@@ -272,8 +275,8 @@ void LibLCF::draw() {
           }
           ImGui::EndListBox();
         }
-        std::string preview =
-            m_map && m_selectedEvent != -1 ? std::format("{} {}x{}", m_map->events[m_selectedEvent].name.c_str(), m_map->events[m_selectedEvent].x, m_map->events[m_selectedEvent].y) : "No Event Selected";
+        std::string preview = m_map && m_selectedEvent != -1 ? std::format("{} {}x{}", m_map->events[m_selectedEvent].name.c_str(), m_map->events[m_selectedEvent].x, m_map->events[m_selectedEvent].y)
+                                                             : "No Event Selected";
         ImGui::SetNextItemWidth(ImGui::GetContentRegionMax().x / 2);
         if (ImGui::BeginCombo("##map_event_combo", preview.c_str())) {
           if (m_map) {
@@ -418,7 +421,7 @@ void LibLCF::draw() {
               ImGui::PushID(std::format("lcf_switches_data_{}", index).c_str());
               ImGui::PushStyleColor(ImGuiCol_Button, m_lcf.mapper()->switch_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
               if (ImGui::Button(m_lcf.mapper()->switch_mapping[pair.first] == 0 ? "Click here to start mapping!"
-                                                                              : Database::instance()->switchNameAndId(m_lcf.mapper()->switch_mapping[pair.first]).c_str(),
+                                                                                : Database::instance()->switchNameAndId(m_lcf.mapper()->switch_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
                 m_switchIndex = pair.first;
                 m_variableIndex = -1;
@@ -459,7 +462,7 @@ void LibLCF::draw() {
               ImGui::PushID(std::format("lcf_variables_data_{}", index).c_str());
               ImGui::PushStyleColor(ImGuiCol_Button, m_lcf.mapper()->variable_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
               if (ImGui::Button(m_lcf.mapper()->variable_mapping[pair.first] == 0 ? "Click here to start mapping!"
-                                                                                : Database::instance()->variableNameAndId(m_lcf.mapper()->variable_mapping[pair.first]).c_str(),
+                                                                                  : Database::instance()->variableNameAndId(m_lcf.mapper()->variable_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
                 m_switchIndex = -1;
                 m_variableIndex = pair.first;
@@ -499,8 +502,7 @@ void LibLCF::draw() {
               ImGui::TableNextColumn();
               ImGui::PushID(std::format("lcf_common_data_{}", index).c_str());
               ImGui::PushStyleColor(ImGuiCol_Button, m_lcf.mapper()->common_mapping[key] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
-              if (ImGui::Button(m_lcf.mapper()->common_mapping[key] == 0 ? "Click here to start mapping!"
-                                                                              : Database::instance()->commonEventNameAndId(m_lcf.mapper()->common_mapping[key]).c_str(),
+              if (ImGui::Button(m_lcf.mapper()->common_mapping[key] == 0 ? "Click here to start mapping!" : Database::instance()->commonEventNameAndId(m_lcf.mapper()->common_mapping[key]).c_str(),
                                 ImVec2{290, 0})) {
                 m_commonIndex = key;
                 m_commonPicker = CommonEventPicker(Database::instance()->commonEvents->events(), m_lcf.mapper()->common_mapping[key]);
@@ -533,7 +535,8 @@ void LibLCF::draw() {
               ImGui::TableNextColumn();
               ImGui::PushID(std::format("lcf_actor_data_{}", index).c_str());
               ImGui::PushStyleColor(ImGuiCol_Button, m_lcf.mapper()->actor_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
-              if (ImGui::Button(m_lcf.mapper()->actor_mapping[pair.first] == 0 ? "Click here to start mapping!" : Database::instance()->actorNameAndId(m_lcf.mapper()->actor_mapping[pair.first]).c_str(),
+              if (ImGui::Button(m_lcf.mapper()->actor_mapping[pair.first] == 0 ? "Click here to start mapping!"
+                                                                               : Database::instance()->actorNameAndId(m_lcf.mapper()->actor_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
                 m_actorIndex = pair.first;
                 m_actorPicker = ActorPicker(Database::instance()->actors->actorList(), m_lcf.mapper()->actor_mapping[pair.first]);
@@ -566,7 +569,8 @@ void LibLCF::draw() {
               ImGui::TableNextColumn();
               ImGui::PushID(std::format("lcf_state_data_{}", index).c_str());
               ImGui::PushStyleColor(ImGuiCol_Button, m_lcf.mapper()->state_mapping[pair.first] == 0 ? ImGui::GetColorU32(ImGuiCol_ButtonActive) : ImGui::GetColorU32(ImGuiCol_Button));
-              if (ImGui::Button(m_lcf.mapper()->state_mapping[pair.first] == 0 ? "Click here to start mapping!" : Database::instance()->stateNameAndId(m_lcf.mapper()->actor_mapping[pair.first]).c_str(),
+              if (ImGui::Button(m_lcf.mapper()->state_mapping[pair.first] == 0 ? "Click here to start mapping!"
+                                                                               : Database::instance()->stateNameAndId(m_lcf.mapper()->actor_mapping[pair.first]).c_str(),
                                 ImVec2{290, 0})) {
                 m_stateIndex = pair.first;
                 m_statePicker = StatePicker(Database::instance()->states->states(), m_lcf.mapper()->state_mapping[pair.first]);

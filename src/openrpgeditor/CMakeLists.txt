@@ -423,8 +423,6 @@ add_library(
         Editor/ResourceManager.cpp
         Editor/ResourceManager.hpp
         Editor/Resources.hpp
-        Editor/Settings.cpp
-        Editor/Settings.hpp
         Editor/SettingsDialog.cpp
         Editor/SettingsDialog.hpp
         Editor/SettingsDialog/GeneralSettingsTab.cpp

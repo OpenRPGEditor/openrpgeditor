@@ -2,6 +2,7 @@
 
 #include <SDL3/SDL.h>
 
+#include <nlohmann/json_fwd.hpp>
 #include <string>
 
 namespace App {
@@ -33,7 +34,7 @@ public:
     SDL_SetWindowTitle(m_window, title.data());
   }
 
-  std::string_view getTitle() const { return m_title; }
+  [[nodiscard]] std::string_view getTitle() const { return m_title; }
 
   [[nodiscard]] int getWidth() const;
   [[nodiscard]] int getHeight() const;
@@ -49,5 +50,8 @@ private:
   // Cache this so we don't have to query into SDL every time
   std::string m_title;
 };
+
+void to_json(nlohmann::ordered_json& j, const Window::Settings& s);
+void from_json(const nlohmann::ordered_json& j, Window::Settings& s);
 
 } // namespace App

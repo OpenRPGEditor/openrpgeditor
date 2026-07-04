@@ -5,10 +5,8 @@
 #include "Editor/EventCommands/IEventDialogController.hpp"
 #include "Editor/Log.hpp"
 #include "Editor/ResourceManager.hpp"
-#include "Editor/Settings.hpp"
 #include "Editor/Sound.hpp"
 
-#include <iostream>
 #include <SFML/Audio.hpp>
 
 namespace fs = std::filesystem;

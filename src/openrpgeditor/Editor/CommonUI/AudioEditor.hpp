@@ -1,12 +1,9 @@
 #pragma once
 #include "Database/Database.hpp"
-#include "Database/Globals.hpp"
 #include "Editor/CommonUI/Directory.hpp"
 #include "Editor/Log.hpp"
 #include "Editor/ResourceManager.hpp"
-#include "Editor/Settings.hpp"
 #include "Editor/Sound.hpp"
-#include <iostream>
 
 namespace fs = std::filesystem;
 struct AudioEditor {
@@ -19,8 +16,8 @@ struct AudioEditor {
   };
   AudioEditor() = delete;
   explicit AudioEditor(const AudioType type, Audio& audio)
-  : m_audio(audio)
-  , m_audioType(type) {
+  : m_audioType(type)
+  , m_audio(audio) {
     switch (m_audioType) {
     case AudioType::SE: {
       m_audioDir.emplace("audio/se", ".ogg", m_audio.name());

@@ -156,6 +156,8 @@ add_library(
         Database/ProjectConfig.cpp
         Database/ProjectConfig.hpp
         Utils/Typename.hpp
+        Database/ISettingsManager.hpp
+        Database/ISettingsManager.cpp
 )
 
 target_include_directories(

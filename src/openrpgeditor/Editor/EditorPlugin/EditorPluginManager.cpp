@@ -8,6 +8,23 @@
 
 #include <iostream>
 
+struct PluginState {
+  bool enabled{false};
+  bool compiled{false};
+};
+
+void to_json(nlohmann::ordered_json& j, const PluginState& p) {
+  j = {
+      {"enabled", p.enabled},
+      {"compiled", p.compiled},
+  };
+}
+
+void from_json(const nlohmann::ordered_json& j, PluginState& p) {
+  p.enabled = j.value("enabled", p.enabled);
+  p.compiled = j.value("compiled", p.compiled);
+}
+
 static const std::vector<std::filesystem::path> kFileBlacklist = {
     ".gitkeep",
     "meta.json",
@@ -193,12 +210,12 @@ void EditorPluginManager::onDirectoryAdded(const std::filesystem::path& path) {
     if (!m_plugins.contains(plugin.identifier)) {
       m_plugins[path] = plugin;
       m_pluginInfoIdentifierMapping[plugin.identifier] = &m_plugins[path];
-      Settings::instance()->plugins[plugin.identifier].compiled = plugin.compiled;
+      SettingsManager::instance().setValue(std::format("plugins/{}/compiled", plugin.identifier), plugin.compiled);
       APP_INFO("Added plugin: {}", plugin.name);
       APP_INFO("Path: {}", path.string());
       APP_INFO("Meta json: {}", json.dump());
       registerPluginFiles(path, m_plugins[path]);
-      // if (Settings::instance()->plugins[plugin.identifier].enabled)
+      // if (pluginStates[plugin.identifier].enabled)
       {
         m_pluginInstances[path] = EditorPlugin();
         if (!m_pluginInstances[path].load(path, plugin)) {
@@ -238,6 +255,8 @@ void EditorPluginManager::onFileModified(const std::filesystem::path& path) {
       nlohmann::ordered_json json = nlohmann::ordered_json::parse(jsonFile);
       EditorPlugin::PluginInfo plugin;
       json.get_to(plugin);
+
+      auto pluginStates = SettingsManager::instance().getValue<std::map<std::string, PluginState>>("plugins");
       if (m_plugins.contains(path.parent_path())) {
         auto& entry = m_plugins[path.parent_path()];
         const std::string oldIdentifier = entry.identifier;
@@ -246,23 +265,24 @@ void EditorPluginManager::onFileModified(const std::filesystem::path& path) {
           if (!m_pluginInfoIdentifierMapping.contains(plugin.identifier)) {
             m_pluginInfoIdentifierMapping.erase(oldIdentifier);
             m_pluginInfoIdentifierMapping[entry.identifier] = &entry;
-            Settings::instance()->plugins[entry.identifier].compiled = entry.compiled;
-            Settings::instance()->plugins[entry.identifier].enabled = Settings::instance()->plugins[oldIdentifier].enabled;
-            Settings::instance()->plugins.erase(oldIdentifier);
+            pluginStates[plugin.identifier].compiled = plugin.compiled;
+            pluginStates[plugin.identifier].enabled = pluginStates[oldIdentifier].enabled;
+            pluginStates.erase(oldIdentifier);
             APP_INFO("Added plugin changed identifier: {} {} {} -> {}", path.parent_path().generic_string(), plugin.name, oldIdentifier, plugin.identifier);
           } else if (m_pluginInfoIdentifierMapping.contains(plugin.identifier)) {
             entry.identifier = oldIdentifier;
-            Settings::instance()->plugins[entry.identifier].compiled = entry.compiled;
+            pluginStates[entry.identifier].compiled = entry.compiled;
             APP_ERROR("Duplicate plugin meta detected on change! Keeping old identifier");
           }
         } else {
-          Settings::instance()->plugins[entry.identifier].compiled = entry.compiled;
+          pluginStates[entry.identifier].compiled = entry.compiled;
         }
 
         registerPluginFiles(path.parent_path(), entry);
         std::cout << entry.identifier << " modified!" << std::endl;
       }
 
+      SettingsManager::instance().setValue("plugins", pluginStates);
     } catch (const std::exception& e) { APP_ERROR("Could not parse meta.json"); }
   }
 #endif

@@ -227,6 +227,7 @@ std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
   m_mapListView.reset();
   m_database.reset();
   // Unload project translations
+  m_translator.closeAllDocuments(false);
   Translator::instance().clear();
 
   m_isLoaded = false;

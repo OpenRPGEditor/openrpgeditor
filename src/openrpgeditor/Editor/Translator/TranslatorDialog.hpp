@@ -10,5 +10,8 @@ public:
  
   bool closeAllDocuments(bool saveDocuments);
 private:
+  std::string m_currentLocale;
   std::shared_ptr<TranslationDocument> m_currentDocument;
+  std::shared_ptr<TranslationDocument> m_highlightedDocument;
+  size_t m_currentTranslation = -1;
 };

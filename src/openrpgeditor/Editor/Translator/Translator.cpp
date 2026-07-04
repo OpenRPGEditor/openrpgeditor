@@ -5,7 +5,7 @@
 
 #include <regex>
 
-bool glob_match(const std::string_view pattern, const std::string_view str) {
+bool glob_match(const std::string_view str, const std::string_view pattern) {
   std::string regex_str = "^";
   for (const char c : pattern) {
     switch (c) {
@@ -65,7 +65,7 @@ bool glob_match(const std::string_view pattern, const std::string_view str) {
 // Find the first matching glob pattern priority index
 int get_matching_index(const std::string& str, const std::vector<std::string>& globs) {
   for (int i = 0; i < globs.size(); ++i) {
-    if (glob_match(globs[i], str)) {
+    if (glob_match(str, globs[i])) {
       return i;
     }
   }
@@ -123,12 +123,14 @@ bool Translator::initialize() {
   try {
     std::ifstream manifestFile(manifestPath);
     const auto j = nlohmann::ordered_json::parse(manifestFile);
-    const auto manifest = j.get<Manifest>();
-    m_locale = manifest.defaultLocale;
+    const auto [defaultLocale, locales, checkFirst] = j.get<Manifest>();
+    m_locale = defaultLocale;
+    m_localeInfo = locales;
+    m_checkFirst = checkFirst;
     if (m_locale.empty()) {
-      if (!manifest.locales.empty()) {
+      if (!m_localeInfo.empty()) {
         APP_WARN("No default locale defined, using first entry, this may not be intended!");
-        m_locale = (manifest.locales | std::views::keys).front();
+        m_locale = (m_localeInfo | std::views::keys).front();
         APP_WARN("Defaulted to locale \"{}\"", m_locale);
       } else {
         APP_ERROR("No default locale or locale list defined, invalid locales manifest!");
@@ -136,7 +138,7 @@ bool Translator::initialize() {
       }
     }
 
-    for (const auto& [locale, info] : manifest.locales) {
+    for (const auto& [locale, info] : m_localeInfo) {
       const auto localePath = m_localesBasepath / info.directory.value_or(locale);
       if (!is_directory(localePath)) {
         APP_WARN("Locale \"{}\" does not have a valid path defined!", locale);
@@ -147,19 +149,19 @@ bool Translator::initialize() {
           continue;
         }
 
-        const auto& [_, document] = m_documents[locale].emplace_back(info, std::make_shared<TranslationDocument>(std::filesystem::relative(entry.path(), m_localesBasepath)));
-        APP_DEBUG("Added document {} for locale \"{}\"", document->filename(), locale);
-        for (const auto& checkFirst : m_checkFirst) {
-          if (glob_match(document->filename(), checkFirst)) {
+        const auto& document = m_documents[locale].emplace_back(std::make_shared<TranslationDocument>(std::filesystem::relative(entry.path(), m_localesBasepath)));
+        APP_DEBUG("Added document {} for locale \"{}\"", document->filenameNoExtension(), locale);
+        for (const auto& cf : m_checkFirst) {
+          if (glob_match(document->filenameNoExtension(), cf)) {
             m_checkFirstDocuments[locale].emplace_back(document);
             break;
           }
         }
       }
       std::ranges::sort(m_checkFirstDocuments[m_locale], [this](const std::shared_ptr<TranslationDocument>& a, const std::shared_ptr<TranslationDocument>& b) {
-        const auto name_a = a->filename();
+        const auto name_a = a->filenameNoExtension();
         const auto index_a = get_matching_index(name_a, m_checkFirst);
-        const auto name_b = b->filename();
+        const auto name_b = b->filenameNoExtension();
         const auto index_b = get_matching_index(name_b, m_checkFirst);
 
         if (index_a != index_b) {
@@ -183,29 +185,29 @@ void Translator::setLocale(const std::string_view locale) {
   }
 
   // Only allow valid locales
-  if (std::ranges::find(m_locales, locale) == m_locales.end()) {
+  if (m_localeInfo.contains(locale.data())) {
     return;
   }
 
-  for (const auto& document : m_documents[m_locale] | std::views::values) {
+  for (const auto& document : m_documents[m_locale]) {
     document->close(false);
   }
 
   m_locale = locale;
 }
 
-std::vector<std::shared_ptr<TranslationDocument>> Translator::documents(const std::string& locale) {
-  if (locale.empty() && m_documents.contains(m_locale)) {
-    return m_documents[m_locale] | std::views::values | std::ranges::to<std::vector<std::shared_ptr<TranslationDocument>>>();
+const std::vector<std::shared_ptr<TranslationDocument>>& Translator::documentsForLocale(const std::string& locale) const {
+  if (!locale.empty() && m_documents.contains(locale)) {
+    return m_documents.at(locale);
   }
   if (!locale.empty()) {
     return {};
   }
 
-  if (!m_documents.contains(locale)) {
+  if (!m_documents.contains(m_locale)) {
     return {};
   }
-  return m_documents[locale] | std::views::values | std::ranges::to<std::vector<std::shared_ptr<TranslationDocument>>>();
+  return m_documents.at(m_locale);
 }
 
 void Translator::setCurrentMap(const int id) {
@@ -217,12 +219,12 @@ void Translator::setCurrentMap(const int id) {
   const std::string map = std::format("Map{:03}", m_currentMap);
   const std::string mapBugged = std::format("Map{:04}", m_currentMap);
   const auto documents = m_documents[m_locale];
-  const auto it = std::ranges::find_if(documents, [map, mapBugged](const auto& doc) { return doc.second->filename() == map || doc.second->filename() == mapBugged; });
+  const auto it = std::ranges::find_if(documents, [map, mapBugged](const auto& doc) { return doc->filenameNoExtension() == map || doc->filenameNoExtension() == mapBugged; });
   if (it == documents.end()) {
     m_activeMapDocument = nullptr;
     return;
   }
-  m_activeMapDocument = it->second;
+  m_activeMapDocument = *it;
 }
 
 std::string Translator::translate(const std::string_view text) const {
@@ -244,8 +246,13 @@ std::string Translator::translate(const std::string_view text) const {
         document->open();
       } else if (const auto translation = document->translate(key); translation != TranslationDocument::kInvalidTranslation) {
         // found it
-        APP_DEBUG("Translated string\n\"{}\"\nusing \"{}\" (Check First)", key, document->filename());
-        return translation.value();
+        APP_DEBUG("Translated string\n\"{}\"\nusing \"{}\" (Check First)", key, document->filenameNoExtension());
+        auto str = translation.value();
+        if (str.empty()) {
+          APP_WARN("Translated string was empty! Returning key");
+          return key;
+        }
+        return str;
       }
     }
   }
@@ -255,24 +262,51 @@ std::string Translator::translate(const std::string_view text) const {
       m_activeMapDocument->open();
     } else if (const auto translation = m_activeMapDocument->translate(key); translation != TranslationDocument::kInvalidTranslation) {
       // Found it
-      APP_DEBUG("Translated string\n\"{}\"\nusing \"{}\" (Active Map)", key, m_activeMapDocument->filename());
-      return translation.value();
+      APP_DEBUG("Translated string\n\"{}\"\nusing \"{}\" (Active Map)", key, m_activeMapDocument->filenameNoExtension());
+      auto str = translation.value();
+      if (str.empty()) {
+        APP_WARN("Translated string was empty! Returning key");
+        return key;
+      }
+      return str;
     }
   }
 
   // We couldn't find a map specific string, lets check the rest of the active locale
-  for (const auto& document : m_documents.at(m_locale) | std::views::values) {
+  for (const auto& document : m_documents.at(m_locale)) {
     if (!document->isLoaded()) {
       document->open();
     } else if (const auto translation = document->translate(key); translation != TranslationDocument::kInvalidTranslation) {
       // found it
-      APP_DEBUG("Translated string\n\"{}\"\nusing \"{}\" (Fallback)", key, document->filename());
-      return translation.value();
+      APP_DEBUG("Translated string\n\"{}\"\nusing \"{}\" (Fallback)", key, document->filenameNoExtension());
+      auto str = translation.value();
+      if (str.empty()) {
+        APP_WARN("Translated string was empty! Returning key");
+        return key;
+      }
+      return str;
     }
   }
 
   // Nope, return the key unmodified
   return key;
+}
+
+bool Translator::createLocaleDocumentFrom(const std::shared_ptr<TranslationDocument>& sourceDoc, const std::string_view targetLocale) {
+  if (!sourceDoc) {
+    return false;
+  }
+  if (!m_localeInfo.contains(targetLocale.data())) {
+    // Need to call createLocale first!
+    return false;
+  }
+
+  const auto [_, directory] = m_localeInfo[targetLocale.data()];
+  const auto targetLocaleDir = directory.value_or(std::filesystem::path(".") / targetLocale);
+  const auto& destDoc = m_documents[targetLocale.data()].emplace_back(std::make_shared<TranslationDocument>(targetLocaleDir / sourceDoc->filename()));
+
+  destDoc->copyKeys(*sourceDoc);
+  return true;
 }
 
 Translator& Translator::instance() {

@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <filesystem>
 #include <map>
 #include <string>
@@ -32,24 +33,36 @@ public:
         return false;
       }
       if (m_oldKey.empty()) {
-        m_oldKey = key;
+        m_oldKey = m_key;
       }
       m_key = key;
       return true;
     }
+
+    [[nodiscard]] bool keyModified() const { return !m_oldKey.empty(); }
     [[nodiscard]] std::string value() const { return m_value; }
     void setValue(const std::string_view value) {
-      m_value = value;
       if (!m_oldValue) {
-        m_oldValue = value;
+        m_oldValue = m_value;
       }
+      m_value = value;
     }
 
-    void restore() {
+    [[nodiscard]] bool valueModified() const { return m_oldValue.has_value(); }
+
+    void revert() {
+      revertKey();
+      revertValue();
+    }
+
+    void revertKey() {
       if (!m_oldKey.empty()) {
         m_key = m_oldKey;
         m_oldKey.clear();
       }
+    }
+
+    void revertValue() {
       if (m_oldValue) {
         m_value = *m_oldValue;
         m_oldValue.reset();
@@ -58,7 +71,7 @@ public:
 
     bool operator==(const Translation& rhs) const { return m_key == rhs.m_key; }
 
-    bool modified() { return !m_oldKey.empty() || m_oldValue.has_value(); }
+    bool modified() const { return !m_oldKey.empty() || m_oldValue.has_value(); }
 
   private:
     std::string m_key;
@@ -74,7 +87,9 @@ public:
   : m_path(std::move(path)) {}
 
   [[nodiscard]] bool isLoaded() const { return m_isLoaded; }
-  [[nodiscard]] bool isModified() const { return m_translations.is_dirty(); }
+  [[nodiscard]] bool isModified() const {
+    return std::ranges::any_of(m_translations, [](const auto& translation) { return translation.modified(); });
+  }
 
   bool open();
   bool close(bool saveFile);
@@ -102,6 +117,20 @@ public:
     return m_translations[idx].key();
   }
 
+  bool setKey(const size_t idx, const std::string_view key) {
+    if (idx >= m_translations.size()) {
+      return false;
+    }
+    return m_translations[idx].setKey(key);
+  }
+
+  bool keyModified(const size_t idx) const {
+    if (idx >= m_translations.size()) {
+      return false;
+    }
+    return m_translations[idx].keyModified();
+  }
+
   std::string value(const size_t idx) {
     if (idx >= m_translations.size()) {
       return "";
@@ -109,11 +138,25 @@ public:
     return m_translations[idx].value();
   }
 
+  void setValue(const size_t idx, const std::string_view key) {
+    if (idx >= m_translations.size()) {
+      return;
+    }
+    m_translations[idx].setValue(key);
+  }
+
+  bool valueModified(const size_t idx) const {
+    if (idx >= m_translations.size()) {
+      return false;
+    }
+    return m_translations[idx].valueModified();
+  }
+
   [[nodiscard]] size_t translationCount() const { return m_translations.size(); }
 
-  void restore() {
+  void revert() {
     for (auto& translation : m_translations) {
-      translation.restore();
+      translation.revert();
     }
   }
 
@@ -133,7 +176,23 @@ public:
     return *it;
   }
 
-  [[nodiscard]] std::string filename() const { return m_path.filename().replace_extension("").generic_string(); }
+  [[nodiscard]] bool translationModified(const size_t idx) const {
+    if (idx >= m_translations.size()) {
+      return false;
+    }
+
+    return m_translations[idx].modified();
+  }
+
+  void revertTranslation(const size_t idx) { m_translations[idx].revert(); }
+
+  void revertKey(const size_t idx) { m_translations[idx].revertKey(); }
+  void revertValue(const size_t idx) { m_translations[idx].revertValue(); }
+
+  [[nodiscard]] std::string filenameNoExtension() const { return m_path.filename().replace_extension("").generic_string(); }
+  [[nodiscard]] std::string filename() const { return m_path.filename().generic_string(); }
+
+  void copyKeys(const TranslationDocument& doc);
 
   static constexpr Translation kInvalidTranslation;
 

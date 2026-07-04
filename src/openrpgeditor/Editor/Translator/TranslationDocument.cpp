@@ -10,11 +10,11 @@ bool TranslationDocument::open() {
   if (!Database::instance() || !m_canLoad) {
     return false;
   }
-  
+
   if (m_isLoaded) {
     return true;
   }
-  
+
   const std::filesystem::path path = Database::instance()->basePath / "locales" / m_path;
 
   try {
@@ -70,5 +70,11 @@ bool TranslationDocument::save() {
   } catch (const nlohmann::ordered_json::exception& e) {
     APP_ERROR("Unable to save translation {}", e.what());
     return false;
+  }
+}
+
+void TranslationDocument::copyKeys(const TranslationDocument& doc) {
+  for (const auto& translation : doc.translations()) {
+    m_translations.emplace_back(Translation::create(translation.key(), {}));
   }
 }

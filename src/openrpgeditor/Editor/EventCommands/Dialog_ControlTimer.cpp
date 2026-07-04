@@ -16,7 +16,7 @@ std::tuple<bool, bool> Dialog_ControlTimer::draw() {
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-  if (ImGui::BeginPopupModal(std::format("{}###ControlTimer", m_name).c_str(), &m_open, ImGuiWindowFlags_NoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ControlTimer", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoResize)) {
     ImGui::BeginVertical("##control_timer_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
       GroupBox operationGroup(trNOOP("Operation"), "##control_timer_operation_group", {-1, 0});

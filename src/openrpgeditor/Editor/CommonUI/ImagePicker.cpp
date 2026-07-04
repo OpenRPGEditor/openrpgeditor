@@ -104,7 +104,7 @@ void ImagePicker::setImageInfo(const std::string_view imageName, const std::stri
 
 std::tuple<bool, bool> ImagePicker::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(("###" + m_name).c_str());
+    ImGui::OpenPopup(("###" + m_dialogId).c_str());
   }
 
   if (m_sortRequest) {
@@ -143,7 +143,7 @@ std::tuple<bool, bool> ImagePicker::draw() {
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(480, 480), {FLT_MAX, FLT_MAX});
-  if (ImGui::BeginPopupModal(std::format("{}###{}", trNOOP("Select an Image"), m_name).c_str(), &m_open, ImGuiWindowFlags_NoSavedSettings)) {
+  if (ImGui::BeginPopupModal(std::format("{}###{}", trNOOP("Select an Image"), m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::BeginVertical("##image_picker_main_layout", ImGui::GetContentRegionAvail(), 0.f);
     {
 

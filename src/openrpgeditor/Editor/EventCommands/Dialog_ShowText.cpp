@@ -22,7 +22,7 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
   const auto minimumWindowSize = ImVec2{imageSize.x + minimumWidth + (ImGui::GetStyle().FramePadding.x * 2), imageSize.y + (ImGui::GetTextLineHeight() * 9) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSizeConstraints(minimumWindowSize, {FLT_MAX, FLT_MAX});
   ImGui::SetNextWindowSize(minimumWindowSize, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(std::format("{}###ShowText", m_name).c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ShowText", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar)) {
     drawPickers();
     if (!m_faceSheet && !m_faceImage.empty()) {
       m_faceSheet.emplace(m_faceImage);

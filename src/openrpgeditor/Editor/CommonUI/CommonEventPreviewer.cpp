@@ -31,7 +31,7 @@ std::tuple<bool, bool> CommonEventPreviewer::draw() {
     m_selectedKeyFrame = m_interpreter->getKeyFrameIndex();
   }
 
-  const std::string title = std::format("{}##{}", m_name, reinterpret_cast<uintptr_t>(this));
+  const std::string title = std::format("{}##{}", m_dialogId, reinterpret_cast<uintptr_t>(this));
   if (isOpen()) {
     ImGui::OpenPopup(title.c_str());
   }

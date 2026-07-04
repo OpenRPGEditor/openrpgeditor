@@ -15,7 +15,7 @@ std::tuple<bool, bool> Dialog_ChangeBattleBack::draw() {
       ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 5) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
-  if (ImGui::BeginPopupModal(std::format("{}###ChangeBattleback", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ChangeBattleback", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     if (const auto [closed, confirmed] = m_imagePicker->draw(); closed) {
       if (confirmed) {

@@ -16,7 +16,7 @@ std::tuple<bool, bool> Dialog_ScrollMap::draw() {
   const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 60) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 5) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
-  if (ImGui::BeginPopupModal(std::format("{}###ScrollMap", m_name).c_str(), &m_open, ImGuiWindowFlags_NoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ScrollMap", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoResize)) {
     ImGui::BeginVertical("##scroll_map_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
       ImGui::BeginHorizontal("##scroll_map_inner_layout", {-1, 0}, 0);

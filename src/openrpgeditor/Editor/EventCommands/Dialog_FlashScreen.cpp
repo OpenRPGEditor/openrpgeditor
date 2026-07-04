@@ -16,7 +16,7 @@ std::tuple<bool, bool> Dialog_FlashScreen::draw() {
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-  if (ImGui::BeginPopupModal(std::format("{}###TintPicture", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###TintPicture", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginVertical("##flash_screen_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
       GroupBox colorToneGroupBox(trNOOP("Flash Color"), "##flash_screen_color_color_group", {-1, 0});

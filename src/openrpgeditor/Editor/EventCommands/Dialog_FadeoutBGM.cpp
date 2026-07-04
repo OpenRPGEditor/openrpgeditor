@@ -18,7 +18,7 @@ std::tuple<bool, bool> Dialog_FadeoutBGM::draw() {
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-  if (ImGui::BeginPopupModal(std::format("{}###FadeoutBGM", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###FadeoutBGM", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginVertical("##fadeout_bgm_main_layout", ImGui::GetContentRegionAvail());
     {
       GroupBox durationGroup(trNOOP("Duration"), "##fadeout_bgm_duration_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);

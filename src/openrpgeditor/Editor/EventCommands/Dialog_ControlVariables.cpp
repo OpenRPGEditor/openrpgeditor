@@ -18,7 +18,7 @@ std::tuple<bool, bool> Dialog_ControlVariables::draw() {
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-  if (ImGui::BeginPopupModal(std::format("{}###ControlVariables", m_name).c_str(), &m_open)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ControlVariables", m_dialogId).c_str(), &m_open)) {
     drawPickers();
     ImGui::BeginVertical("##control_variables_main_layout", ImGui::GetContentRegionAvail(), 0);
     {

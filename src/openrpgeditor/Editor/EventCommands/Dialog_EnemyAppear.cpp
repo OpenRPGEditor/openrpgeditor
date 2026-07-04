@@ -16,7 +16,7 @@ std::tuple<bool, bool> Dialog_EnemyAppear::draw() {
   const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 32) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 4) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
-  if (ImGui::BeginPopupModal(std::format("{}###EnemyAppear", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###EnemyAppear", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginVertical("##enemy_appear_main_layout");
     {
       GroupBox enemyGroupBox(trNOOP("Enemy"), "##enemy_appear_enemy_group", {-1, 0}, nullptr, ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysAutoResize);

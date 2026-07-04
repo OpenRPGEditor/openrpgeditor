@@ -35,7 +35,7 @@ std::tuple<bool, bool> Dialog_Script::draw() {
   ImGui::SetNextWindowSize(scriptDialogDefaultSize(), ImGuiCond_FirstUseEver);
   ImGui::SetNextWindowSizeConstraints(scriptDialogMinSize(), scriptDialogMaxSize());
 
-  if (ImGui::BeginPopupModal(std::format("{}###Script", m_name).c_str(), &m_open)) {
+  if (ImGui::BeginPopupModal(std::format("{}###Script", m_dialogId).c_str(), &m_open)) {
     ImGui::BeginVertical("##script_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
       const float footerHeight = ImGui::GetFrameHeightWithSpacing() + ImGui::GetDPIScaledValue(1.5f) + ImGui::GetStyle().ItemSpacing.y;

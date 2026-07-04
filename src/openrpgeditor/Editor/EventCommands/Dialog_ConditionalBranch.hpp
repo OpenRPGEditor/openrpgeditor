@@ -85,7 +85,7 @@ struct Dialog_ConditionalBranch : IEventDialogController {
       m_goldOperation = static_cast<int>(m_command->gold.type);
       m_goldSelection = m_command->gold.value;
     } else if (m_command->type == ConditionType::Item) {
-      m_itemSelection = m_command->equip.equipId;
+      m_itemSelection = m_command->item.id;
     } else if (m_command->type == ConditionType::Weapon) {
       m_weaponSelection = m_command->equip.equipId;
       m_weaponInclude = m_command->equip.includeEquipment;

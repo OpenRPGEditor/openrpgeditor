@@ -6,12 +6,12 @@
 
 std::tuple<bool, bool> Dialog_MovementChangeBlendMode::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup(m_dialogId.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{105, 95}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_dialogId.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::SeparatorText("Blend");
     ImGui::PushItemWidth((75));

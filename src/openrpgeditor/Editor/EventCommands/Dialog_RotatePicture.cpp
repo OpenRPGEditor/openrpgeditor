@@ -17,7 +17,7 @@ std::tuple<bool, bool> Dialog_RotatePicture::draw() {
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-  if (ImGui::BeginPopupModal(std::format("{}###RotatePicture", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###RotatePicture", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginVertical("##rotate_picture_main_layout", ImGui::GetContentRegionAvail(), 0.f);
     {
       GroupBox pictureGroup(trNOOP("Picture Number"), "##rotate_picture_picture_number_group", {-1, 0});

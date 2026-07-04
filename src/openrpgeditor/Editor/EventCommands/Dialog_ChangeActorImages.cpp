@@ -22,7 +22,7 @@ std::tuple<bool, bool> Dialog_ChangeActorImages::draw() {
   m_characterButton.setSize(imageSize.x, imageSize.y);
   m_battlerButton.setSize(imageSize.x, imageSize.y);
 
-  if (ImGui::BeginPopupModal(std::format("{}###ChangeActorImages", m_name).c_str(), &m_open, ImGuiWindowFlags_NoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ChangeActorImages", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoResize)) {
     drawPickers();
     if (!m_faceSheet && !m_facePicture.empty() && !m_faceButton.hasCompositeTextures()) {
       m_faceSheet.emplace(m_facePicture);

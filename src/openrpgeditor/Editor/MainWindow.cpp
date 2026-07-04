@@ -25,6 +25,8 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "imgui_stacklayout.h"
+#include "Translator/TranslationDocument.hpp"
+#include "Translator/Translator.hpp"
 
 #include <array>
 #include <clip.h>
@@ -169,7 +171,7 @@ std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
     ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Size / 2, ImGuiCond_Appearing, {.5f, .5f});
     int ret = -1;
     if (ImGui::BeginPopupModal(std::format("{}###save_changes", trNOOP("Save changes?")).c_str(), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove)) {
-      //ImGui::BringWindowToDisplayFront(ImGui::GetCurrentWindow());
+      // ImGui::BringWindowToDisplayFront(ImGui::GetCurrentWindow());
       ImGui::BeginVertical("##save_changes_inner", ImGui::GetContentRegionAvail());
       {
         ImGui::TextUnformatted(trFormat("\"{0}\" at \"{1}\"\n"
@@ -224,6 +226,8 @@ std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
   m_mapEditor.setMap(nullptr);
   m_mapListView.reset();
   m_database.reset();
+  // Unload project translations
+  Translator::instance().clear();
 
   m_isLoaded = false;
   m_transientSettingsLoaded = false;
@@ -541,6 +545,7 @@ void MainWindow::draw(const bool shuttingDown, const bool closeRequested) {
       m_settingsDialog.draw();
       m_eventSearcher.draw();
       m_libLCF.draw();
+      m_translator.draw();
     }
 
     m_mapEditor.draw(closeRequested);
@@ -1007,6 +1012,13 @@ void MainWindow::drawMenu() {
         m_libLCF.open();
       }
       ORE_DISABLE_EXPERIMENTAL_END();
+
+      ORE_DISABLE_EXPERIMENTAL_BEGIN();
+      if (ImGui::MenuItem(trNOOP("Translator"), nullptr, false, DatabaseEditor::instance()->isReady())) {
+        m_translator.setOpen(true);
+      }
+      ORE_DISABLE_EXPERIMENTAL_END();
+
       /* Add tools above this */
       ImGui::Separator();
       if (ImGui::MenuItem(trNOOP("Reset Window Layout"))) {
@@ -1022,6 +1034,7 @@ void MainWindow::drawMenu() {
       if (ImGui::MenuItem(trNOOP("Open Folder"), nullptr, false, DatabaseEditor::instance()->isReady())) {
         SDL_OpenURL(std::format("file://{}", m_database->basePath.generic_string()).c_str());
       }
+
       ImGui::EndMenu();
     }
 
@@ -1188,6 +1201,7 @@ void MainWindow::setMap(MapInfo& in) {
 }
 
 void MainWindow::onDatabaseReady() {
+  Translator::instance().initialize();
   MapInfo* info = m_database->mapInfos->map(0);
   Settings::instance()->lastProject = m_database->projectFilePath.generic_string();
   info->setExpanded(true);
@@ -1215,6 +1229,7 @@ void MainWindow::onDatabaseReady() {
   m_isLoaded = true;
   /* Disconnect the signal so we don't get spammed */
   m_databaseEditor->onReady.disconnect<&MainWindow::onDatabaseReady>(this);
+  
 
   const auto gameTitle =
       Database::instance()->system->gameTitle().empty() ? std::filesystem::path(m_database->projectFilePath).filename().replace_extension().generic_string() : m_database->system->gameTitle();

@@ -80,7 +80,7 @@ void MapProperties::drawPickers() {
   }
 }
 void MapProperties::applyChanges() {
-  m_mapInfo->setName(m_name);
+  m_mapInfo->setName(m_dialogId);
   Map* map = m_mapInfo->map();
   map->setDisplayName(m_displayName);
   map->setNote(m_note);

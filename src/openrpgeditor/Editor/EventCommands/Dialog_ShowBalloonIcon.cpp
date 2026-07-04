@@ -15,7 +15,7 @@ std::tuple<bool, bool> Dialog_ShowBalloonIcon::draw() {
   const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 36) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 7) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
-  if (ImGui::BeginPopupModal(std::format("{}###ShowBalloonIcon", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ShowBalloonIcon", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginVertical("##show_balloon_icon_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
       GroupBox characterGroupBox(trNOOP("Character"), "##show_balloon_icon_character_group_box", {-1, 0});

@@ -1,7 +1,7 @@
 #include "Editor/EventCommands/Dialog_ChangeBattleBGM.hpp"
 
 std::tuple<bool, bool> Dialog_ChangeBattleBGM::draw() {
-  if (const auto [closed, confirmed] = m_audioRenderer.value().draw(m_name, "ChangeBattleBGM"); closed) {
+  if (const auto [closed, confirmed] = m_audioRenderer.value().draw(m_dialogId, "ChangeBattleBGM"); closed) {
     m_confirmed = confirmed;
     setOpen(false);
   }

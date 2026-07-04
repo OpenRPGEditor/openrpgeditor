@@ -1,7 +1,7 @@
 #include "Editor/EventCommands/Dialog_ChangeDefeatME.hpp"
 
 std::tuple<bool, bool> Dialog_ChangeDefeatME::draw() {
-  if (const auto [closed, confirmed] = m_audioRenderer.value().draw(m_name, "ChangeDefeatME"); closed) {
+  if (const auto [closed, confirmed] = m_audioRenderer.value().draw(m_dialogId, "ChangeDefeatME"); closed) {
     m_confirmed = confirmed;
     setOpen(false);
   }

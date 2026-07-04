@@ -34,7 +34,7 @@ std::tuple<bool, bool> Dialog_MovementChangeImage::draw() {
     });
   }
 
-  if (ImGui::BeginPopupModal(std::format("{}###MovementChangeImage", m_name).c_str(), &m_open, ImGuiWindowFlags_NoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###MovementChangeImage", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoResize)) {
     drawPickers();
     ImGui::BeginVertical("##movement_change_image_main_layout", ImGui::GetContentRegionAvail(), 0);
     {

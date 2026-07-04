@@ -1,7 +1,7 @@
 #include "Editor/EventCommands/Dialog_PlayBGS.hpp"
 
 std::tuple<bool, bool> Dialog_PlayBGS::draw() {
-  if (const auto [closed, confirmed] = m_audioRenderer.value().draw(m_name, "PlayBGS"); closed) {
+  if (const auto [closed, confirmed] = m_audioRenderer.value().draw(m_dialogId, "PlayBGS"); closed) {
     m_confirmed = confirmed;
     setOpen(false);
   }

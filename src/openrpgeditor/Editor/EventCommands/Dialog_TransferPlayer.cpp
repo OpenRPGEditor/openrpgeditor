@@ -17,7 +17,7 @@ std::tuple<bool, bool> Dialog_TransferPlayer::draw() {
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-  if (ImGui::BeginPopupModal(std::format("{}###TransferPlayer", m_name).c_str(), &m_open, ImGuiWindowFlags_NoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###TransferPlayer", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoResize)) {
     drawPickers();
     ImGui::BeginVertical("##transfer_player_main_layout", ImGui::GetContentRegionAvail(), 0);
     {

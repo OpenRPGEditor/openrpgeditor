@@ -15,7 +15,7 @@ std::tuple<bool, bool> Dialog_MovementJump::draw() {
   const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 30) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 6) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
-  if (ImGui::BeginPopupModal(std::format("{}###MovementJump", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###MovementJump", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginVertical("##movejump_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
       ImGui::BeginHorizontal("##movement_jump_inner_layout", {-1, 0}, 0);

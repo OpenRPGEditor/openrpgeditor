@@ -18,13 +18,13 @@ std::tuple<bool, bool> SettingsDialog::draw() {
     if (m_tempSettings.empty()) {
       m_tempSettings = Settings::instance()->serializeToJson();
     }
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup(m_dialogId.c_str());
   }
 
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImGui::GetDPIScaledSize(512, 500), ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
+  if (ImGui::BeginPopupModal(m_dialogId.c_str(), &m_open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::BeginVertical("##settings_dialog_main_layout", {-1, -1}, 0);
     {
       if (ImGui::BeginTabBar("##settings_tabbar")) {

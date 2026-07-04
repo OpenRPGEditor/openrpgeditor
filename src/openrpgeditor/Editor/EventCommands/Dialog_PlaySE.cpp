@@ -1,7 +1,7 @@
 #include "Editor/EventCommands/Dialog_PlaySE.hpp"
 
 std::tuple<bool, bool> Dialog_PlaySE::draw() {
-  if (const auto [closed, confirmed] = m_audioRenderer.value().draw(m_name, "PlaySE"); closed) {
+  if (const auto [closed, confirmed] = m_audioRenderer.value().draw(m_dialogId, "PlaySE"); closed) {
     m_confirmed = confirmed;
     setOpen(false);
   }

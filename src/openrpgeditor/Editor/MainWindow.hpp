@@ -22,6 +22,7 @@
 
 #include "Database/Database.hpp"
 #include "Database/MapInfos.hpp"
+#include "Translator/TranslatorDialog.hpp"
 
 #include <string>
 #include <string_view>
@@ -179,6 +180,7 @@ private:
   LibLCF m_libLCF;
   UndoStack m_undoStack;
   UndoStack m_redoStack;
+  TranslatorDialog m_translator;
   bool m_isValid = false;
   bool m_isLoaded = false;
   bool m_isModified = false;

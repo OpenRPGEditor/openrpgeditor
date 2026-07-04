@@ -28,12 +28,12 @@ void CreateNewProjectDialog::setOpen(bool open) {
 
 std::tuple<bool, bool> CreateNewProjectDialog::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup(m_dialogId.c_str());
   }
   const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{894, 768}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
+  if (ImGui::BeginPopupModal(m_dialogId.c_str(), &m_open, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings)) {
     ImGui::BeginGroup();
     {
       if (!Settings::instance()->rpgMakerMVLocation.empty() || !Settings::instance()->rpgMakerMZLocation.empty()) {

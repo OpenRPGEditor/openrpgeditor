@@ -30,7 +30,7 @@ VariableSwitchPicker::VariableSwitchPicker(const std::string_view title, const s
 }
 
 std::tuple<bool, bool> VariableSwitchPicker::draw() {
-  const std::string title = std::format("{}###variable_switch_picker", m_name);
+  const std::string title = std::format("{}###variable_switch_picker", m_dialogId);
   if (isOpen()) {
     ImGui::OpenPopup("###variable_switch_picker");
   }

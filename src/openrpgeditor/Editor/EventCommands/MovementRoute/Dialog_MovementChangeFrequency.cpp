@@ -17,7 +17,7 @@ std::tuple<bool, bool> Dialog_MovementChangeFrequency::draw() {
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-  if (ImGui::BeginPopupModal(std::format("{}###MovementChangeFrequency", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###MovementChangeFrequency", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginVertical("##movement_change_frequency_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
       GroupBox speedGroup(trNOOP("Frequency"), "##movement_change_frequency_speed_group", {-1, 0});

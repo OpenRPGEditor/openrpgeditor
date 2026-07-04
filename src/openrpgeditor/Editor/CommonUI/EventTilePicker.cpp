@@ -33,7 +33,7 @@ std::tuple<bool, bool> EventTilePicker::draw() {
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
 
-  if (ImGui::BeginPopupModal(std::format("{}###EventTilePicker", tr(m_name)).c_str())) {
+  if (ImGui::BeginPopupModal(std::format("{}###EventTilePicker", tr(m_dialogId)).c_str())) {
     ImGui::BeginVertical("##event_tile_picker_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
       ImGui::BeginHorizontal("##event_tile_picker_main_layout", {-1, 0});

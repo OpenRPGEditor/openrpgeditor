@@ -9,14 +9,14 @@
 
 std::tuple<bool, bool> Dialog_ChangeMenuAccess::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup(m_dialogId.c_str());
   }
 
   const auto maxSize =
       ImVec2{ImGui::CalcTextSize("#############################").x + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 5) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(m_dialogId.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
 
     ImGui::BeginVertical("##change_menu_access_vert_layout", ImGui::GetContentRegionAvail());
     {

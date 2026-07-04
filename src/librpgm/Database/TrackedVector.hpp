@@ -114,6 +114,16 @@ public:
     m_data.reserve(capacity);
   }
 
+  void resize(size_type capacity) {
+    mark_dirty();
+    m_data.resize(capacity);
+  }
+
+  void resize(size_type capacity, const value_type& value) {
+    mark_dirty();
+    m_data.resize(capacity, value);
+  }
+
   bool operator==(const TrackedVector& rhs) const { return m_data == rhs.m_data; }
   bool operator!=(const TrackedVector& rhs) const { return m_data != rhs.m_data; }
 

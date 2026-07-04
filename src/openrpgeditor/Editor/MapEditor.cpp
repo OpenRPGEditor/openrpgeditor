@@ -14,6 +14,7 @@
 #include "ImGuiExt/ImGuiUtils.hpp"
 #include "Managers/MapToolsManager.hpp"
 #include "Tilemap/TilemapView.hpp"
+#include "Translator/Translator.hpp"
 
 #include <clip.h>
 
@@ -98,6 +99,9 @@ void MapEditor::setMap(MapInfo* info) {
   m_tilemapView.setMap(nullptr);
   m_mapInfo = info;
   m_parallaxTexture = ParallaxTexture();
+  if (m_mapInfo) {
+    Translator::instance().setCurrentMap(m_mapInfo->id());
+  }
 }
 
 int MapEditor::tileSize() const { return Database::instance()->system->tileSize(); }

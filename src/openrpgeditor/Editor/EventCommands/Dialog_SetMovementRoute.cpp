@@ -55,12 +55,12 @@
 static clip::format OREMovementCommand = -1;
 std::tuple<bool, bool> Dialog_SetMovementRoute::draw() {
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup(m_dialogId.c_str());
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize({ImGui::GetMainViewport()->Size.x / 2, ImGui::GetMainViewport()->Size.y / 2}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar)) {
+  if (ImGui::BeginPopupModal(m_dialogId.c_str(), &m_open, ImGuiWindowFlags_NoScrollbar)) {
     const auto buttonsSize = ImGui::CalcTextSize("OKCANCEL");
     // Character Selection
     ImGui::BeginChild("##movementroute_top_child", {0, ImGui::GetContentRegionAvail().y - (buttonsSize.y + (ImGui::GetStyle().FramePadding.y * 2) + ImGui::GetStyle().ItemSpacing.y)});

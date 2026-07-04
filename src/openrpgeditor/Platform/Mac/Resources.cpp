@@ -17,7 +17,7 @@ std::filesystem::path Resources::resource_path(const std::filesystem::path& file
   return font_path;
 }
 
-std::filesystem::path Resources::font_path(const std::string_view& font_file) { return resource_path("fonts") / font_file; }
-std::filesystem::path Resources::image_path(const std::string_view& image_file) { return resource_path("images") / image_file; }
+std::filesystem::path Resources::font_path(const std::string_view font_file) { return resource_path("fonts") / font_file; }
+std::filesystem::path Resources::image_path(const std::string_view image_file) { return resource_path("images") / image_file; }
 
 } // namespace App

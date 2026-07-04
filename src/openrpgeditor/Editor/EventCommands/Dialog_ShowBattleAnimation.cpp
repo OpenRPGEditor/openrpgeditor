@@ -15,7 +15,7 @@ std::tuple<bool, bool> Dialog_ShowBattleAnimation::draw() {
   const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 36) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 8) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
-  if (ImGui::BeginPopupModal(std::format("{}###ShowBattleAnimation", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ShowBattleAnimation", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     drawPickers();
     ImGui::BeginVertical("##show_battle_animation_main_layout", ImGui::GetContentRegionAvail(), 0);
     {

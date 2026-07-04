@@ -13,27 +13,27 @@ namespace fs = std::filesystem;
 
 void ResourceManager::setBasepath(const std::string_view basepath) {
   m_basePath = basepath;
-  m_dataPath = m_basePath / "data/";
-  m_audioPath = m_basePath / "audio/";
-  m_bgmPath = m_basePath / "audio/bgm/";
-  m_bgsPath = m_basePath / "audio/bgs/";
-  m_sePath = m_basePath / "audio/se/";
-  m_mePath = m_basePath / "audio/me/";
-  m_imgPath = m_basePath / "img/";
-  m_animationsPath = m_basePath / "img/animations/";
-  m_battlebacks1Path = m_basePath / "img/battlebacks1/";
-  m_battlebacks2Path = m_basePath / "img/battlebacks2/";
-  m_charactersPath = m_basePath / "img/characters/";
-  m_enemiesPath = m_basePath / "img/enemies/";
-  m_facesPath = m_basePath / "img/faces/";
-  m_parallaxesPath = m_basePath / "img/parallaxes/";
-  m_picturesPath = m_basePath / "img/pictures/";
-  m_sv_actorsPath = m_basePath / "img/sv_actors/";
-  m_sv_enemiesPath = m_basePath / "img/sv_enemies/";
-  m_systemPath = m_basePath / "img/system/";
-  m_tilesetsPath = m_basePath / "img/tilesets/";
-  m_titles1Path = m_basePath / "img/titles1/";
-  m_titles2Path = m_basePath / "img/titles2/";
+  m_dataPath = m_basePath / "data";
+  m_audioPath = m_basePath / "audio";
+  m_bgmPath = m_audioPath / "bgm";
+  m_bgsPath = m_audioPath / "bgs";
+  m_sePath = m_audioPath / "se";
+  m_mePath = m_audioPath / "me";
+  m_imgPath = m_basePath / "img";
+  m_animationsPath = m_imgPath / "animations";
+  m_battlebacks1Path = m_imgPath / "battlebacks1";
+  m_battlebacks2Path = m_imgPath / "battlebacks2";
+  m_charactersPath = m_imgPath / "characters";
+  m_enemiesPath = m_imgPath / "enemies";
+  m_facesPath = m_imgPath / "faces";
+  m_parallaxesPath = m_imgPath / "parallaxes";
+  m_picturesPath = m_imgPath / "pictures";
+  m_sv_actorsPath = m_imgPath / "sv_actors";
+  m_sv_enemiesPath = m_imgPath / "sv_enemies";
+  m_systemPath = m_imgPath / "system";
+  m_tilesetsPath = m_imgPath / "tilesets";
+  m_titles1Path = m_imgPath / "titles1";
+  m_titles2Path = m_imgPath / "titles2";
 
   for (const auto& texture : m_loadedTextures | std::views::values) {
     SDL_DestroyTexture(static_cast<SDL_Texture*>(texture.m_texture));
@@ -116,29 +116,29 @@ Texture ResourceManager::loadBattlebacks2Image(const std::string_view path) { re
 
 Texture ResourceManager::loadCharacterImage(const std::string_view path) { return loadTexture((m_charactersPath / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadEnemyImage(std::string_view path) { return loadTexture((m_enemiesPath / path).replace_extension(".png")); }
+Texture ResourceManager::loadEnemyImage(const std::string_view path) { return loadTexture((m_enemiesPath / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadFaceImage(std::string_view path) { return loadTexture((m_facesPath / path).replace_extension(".png")); }
+Texture ResourceManager::loadFaceImage(const std::string_view path) { return loadTexture((m_facesPath / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadParallaxImage(std::string_view path) { return loadTexture((m_parallaxesPath / path).replace_extension(".png")); }
+Texture ResourceManager::loadParallaxImage(const std::string_view path) { return loadTexture((m_parallaxesPath / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadPictureImage(std::string_view path) { return loadTexture((m_picturesPath / path).replace_extension(".png")); }
+Texture ResourceManager::loadPictureImage(const std::string_view path) { return loadTexture((m_picturesPath / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadSVActorImage(std::string_view path) { return loadTexture((m_sv_actorsPath / path).replace_extension(".png")); }
-Texture ResourceManager::loadSVEnemyImage(std::string_view path) { return loadTexture((m_sv_enemiesPath / path).replace_extension(".png")); }
-Texture ResourceManager::loadSystemImage(std::string_view path) { return loadTexture((m_systemPath / path).replace_extension(".png")); }
-Texture ResourceManager::loadTilesetImage(std::string_view path) { return loadTexture((m_tilesetsPath / path).replace_extension(".png")); }
+Texture ResourceManager::loadSVActorImage(const std::string_view path) { return loadTexture((m_sv_actorsPath / path).replace_extension(".png")); }
+Texture ResourceManager::loadSVEnemyImage(const std::string_view path) { return loadTexture((m_sv_enemiesPath / path).replace_extension(".png")); }
+Texture ResourceManager::loadSystemImage(const std::string_view path) { return loadTexture((m_systemPath / path).replace_extension(".png")); }
+Texture ResourceManager::loadTilesetImage(const std::string_view path) { return loadTexture((m_tilesetsPath / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadTitle1Image(std::string_view path) { return loadTexture((m_titles1Path / path).replace_extension(".png")); }
+Texture ResourceManager::loadTitle1Image(const std::string_view path) { return loadTexture((m_titles1Path / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadTitle2Image(std::string_view path) { return loadTexture((m_titles2Path / path).replace_extension(".png")); }
+Texture ResourceManager::loadTitle2Image(const std::string_view path) { return loadTexture((m_titles2Path / path).replace_extension(".png")); }
 
-Texture ResourceManager::loadTileMarkers(int width, int height) {
-  fs::path relativePath = std::format("tilemarkers_{}x{}.png", width, height);
+Texture ResourceManager::loadTileMarkers(const int width, const int height) {
+  const fs::path relativePath = std::format("tilemarkers_{}x{}.png", width, height);
   return loadEditorTexture(relativePath.generic_string());
 }
-Texture ResourceManager::loadEditorTexture(std::string_view path) {
-  auto imagePath = App::Resources::image_path(path).generic_string();
+Texture ResourceManager::loadEditorTexture(const std::string_view path) {
+  const auto imagePath = App::Resources::image_path(path).generic_string();
   if (!fs::is_regular_file(imagePath)) {
     return {};
   }

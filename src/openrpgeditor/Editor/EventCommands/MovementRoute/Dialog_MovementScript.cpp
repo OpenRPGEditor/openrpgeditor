@@ -10,13 +10,13 @@
 std::tuple<bool, bool> Dialog_MovementScript::draw() {
   TextEditor::DrawPickers();
   if (isOpen()) {
-    ImGui::OpenPopup(m_name.c_str());
+    ImGui::OpenPopup(m_dialogId.c_str());
     // SetOpen(false);
   }
   ImVec2 center = ImGui::GetMainViewport()->GetCenter();
   ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
   ImGui::SetNextWindowSize(ImVec2{ImGui::GetDPIScaledValue(1400), 600}, ImGuiCond_Appearing);
-  if (ImGui::BeginPopupModal(m_name.c_str(), &m_open)) {
+  if (ImGui::BeginPopupModal(m_dialogId.c_str(), &m_open)) {
 
     static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
     m_textEditor.DrawPanel("##no_title", false, false, ImGui::GetFrameHeightWithSpacing() + ImGui::GetStyle().ItemSpacing.y);

@@ -15,7 +15,7 @@ std::tuple<bool, bool> Dialog_ShowScrollingText::draw() {
   const auto maxSize = ImVec2{ImGui::CalcTextSize("#").x * 64 + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 12) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
-  if (ImGui::BeginPopupModal(std::format("{}###ShowScrollingText", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ShowScrollingText", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginVertical("##show_scrolling_text_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
       GroupBox textGroupBox(trNOOP("Text"), "##text_group", {-1, 0});

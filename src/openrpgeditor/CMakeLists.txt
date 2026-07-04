@@ -542,7 +542,14 @@ add_library(
         Editor/Managers/ArchiveManager.hpp
         Editor/Managers/NotificationCenter.cpp
         Editor/Managers/NotificationCenter.hpp
-        
+
+        Editor/Translator/Translator.cpp
+        Editor/Translator/Translator.hpp
+        Editor/Translator/TranslationDocument.cpp
+        Editor/Translator/TranslationDocument.hpp
+        Editor/Translator/TranslatorDialog.cpp
+        Editor/Translator/TranslatorDialog.hpp
+
         Editor/StopWatch.cpp
         Editor/StopWatch.hpp
         Editor/Process.cpp

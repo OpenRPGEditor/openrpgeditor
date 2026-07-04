@@ -7,8 +7,8 @@
 
 struct IDialogController {
   IDialogController() = delete;
-  explicit IDialogController(const std::string_view name)
-  : m_name(name) {}
+  explicit IDialogController(const std::string_view id)
+  : m_dialogId(id) {}
   virtual ~IDialogController() = default;
   virtual std::tuple<bool, bool> draw() = 0;
   [[nodiscard]] virtual bool isOpen() const { return m_open; }
@@ -22,7 +22,7 @@ struct IDialogController {
 protected:
   bool m_confirmed{false};
   bool m_open{false};
-  std::string m_name;
+  std::string m_dialogId;
 };
 
 template <typename T>

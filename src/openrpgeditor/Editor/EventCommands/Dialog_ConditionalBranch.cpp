@@ -43,7 +43,7 @@ std::tuple<bool, bool> Dialog_ConditionalBranch::draw() {
     ImGui::SetNextWindowSizeConstraints(normalSize, {FLT_MAX, FLT_MAX});
   }
 
-  if (ImGui::BeginPopupModal(std::format("{}###ConditionalBranch", m_name).c_str(), &m_open)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ConditionalBranch", m_dialogId).c_str(), &m_open)) {
     drawPickers();
     const float footerHeight = ImGui::GetFrameHeightWithSpacing() + ImGui::GetDPIScaledValue(1.5f) + ImGui::GetStyle().ItemSpacing.y;
     ImGui::BeginVertical("##conditional_branch_main_layout", ImGui::GetContentRegionAvail(), 0);

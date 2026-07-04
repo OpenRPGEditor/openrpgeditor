@@ -17,7 +17,7 @@ std::tuple<bool, bool> Dialog_ControlSelfSwitch::draw() {
   const auto maxSize = ImVec2{(ImGui::CalcTextSize("#").x * 20) + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetTextLineHeightWithSpacing() * 10) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
-  if (ImGui::BeginPopupModal(std::format("{}###ControlSelfSwitch", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ControlSelfSwitch", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginVertical("##control_self_switch_main_layout", ImGui::GetContentRegionAvail(), 0.f);
     {
       GroupBox selfSwitchGroup(trNOOP("Self Switch"), "##control_self_switch_self_switch_group", {-1, 0});

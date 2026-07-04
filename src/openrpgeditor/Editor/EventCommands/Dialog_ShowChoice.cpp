@@ -16,7 +16,7 @@ std::tuple<bool, bool> Dialog_ShowChoice::draw() {
   const auto maxSize = ImVec2{ImGui::CalcTextSize("#").x * 64 + (ImGui::GetStyle().FramePadding.x * 2), (ImGui::GetFrameHeightWithSpacing() * 12) + (ImGui::GetStyle().FramePadding.y * 2)};
   ImGui::SetNextWindowSize(maxSize, ImGuiCond_Appearing);
   ImGui::SetNextWindowSizeConstraints(maxSize, {FLT_MAX, FLT_MAX});
-  if (ImGui::BeginPopupModal(std::format("{}###ShowChoice", m_name).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+  if (ImGui::BeginPopupModal(std::format("{}###ShowChoice", m_dialogId).c_str(), &m_open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::BeginVertical("##show_choice_main_layout", ImGui::GetContentRegionAvail(), 0);
     {
       GroupBox choicesGroup(trNOOP("Choices"), "##show_choice_inner_layout", {-1, 0});

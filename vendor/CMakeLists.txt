@@ -125,6 +125,20 @@ FetchContent_Declare(
         GIT_TAG v3.8.2
 )
 
+FetchContent_Declare(
+        treesitter
+        GIT_REPOSITORY "https://github.com/tree-sitter/tree-sitter.git"
+        GIT_TAG v0.25.2
+        SOURCE_SUBDIR  "lib" # Tells CMake to look directly inside /lib for CMakeLists.txt
+)
+
+FetchContent_Declare(
+        treesitter_javascript
+        GIT_REPOSITORY "https://github.com/tree-sitter/tree-sitter-javascript.git"
+        GIT_TAG v0.25.0
+        SOURCE_SUBDIR "DISABLE_INTERNAL_BUILD" # Prevents CMake from loading its own CMakeLists.txt
+)
+
 # Settings
 
 # For SDL2 to be able to override options
@@ -169,7 +183,22 @@ FetchContent_MakeAvailable(
         moloader
         cpptrace
         libarchive
+        treesitter
+        treesitter_javascript
 )
+
+add_library(tree-sitter-javascript STATIC
+        ${treesitter_javascript_SOURCE_DIR}/src/parser.c
+        ${treesitter_javascript_SOURCE_DIR}/src/scanner.c
+)
+
+target_include_directories(tree-sitter-javascript
+        PUBLIC
+        ${treesitter_javascript_SOURCE_DIR}/src
+        ${treesitter_SOURCE_DIR}/lib/include
+)
+
+target_link_libraries(tree-sitter-javascript PRIVATE tree-sitter)
 
 message(${CMAKE_CXX_COMPILER_ID})
 

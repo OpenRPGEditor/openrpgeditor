@@ -568,6 +568,8 @@ target_include_directories(
         ${CMAKE_SOURCE_DIR}/extern/angelscript/add_on
         "${CMAKE_SOURCE_DIR}/extern/nano-signal-slot"
         ${libarchive_SOURCE_DIR}/libarchive
+        ${treesitter_SOURCE_DIR}/lib/include
+        ${treesitter_javascript_SOURCE_DIR}/src
 )
 target_compile_features(orecore PRIVATE cxx_std_23)
 target_link_libraries(
@@ -595,6 +597,8 @@ target_link_libraries(
         inih
         magic_enum
         archive_static
+        tree-sitter
+        tree-sitter-javascript
 )
 target_compile_definitions(orecore PUBLIC GETTEXT_DOMAIN="${GETTEXT_DOMAIN}" GETTEXT_OUTPUT_DIR="${GETTEXT_OUTPUT_DIR}" PUBLIC ORE_DISABLE_SCRIPTING=0)
 
@@ -641,7 +645,10 @@ target_include_directories(
         ${CMAKE_SOURCE_DIR}/extern/inih
         ${CMAKE_SOURCE_DIR}/extern/angelscript/angelscript/include
         ${CMAKE_SOURCE_DIR}/extern/angelscript/add_on
-        "${CMAKE_SOURCE_DIR}/extern/nano-signal-slot")
+        "${CMAKE_SOURCE_DIR}/extern/nano-signal-slot"
+        ${treesitter_SOURCE_DIR}/lib/include
+        ${treesitter_javascript_SOURCE_DIR}/src
+)
 
 target_compile_features(${NAME} PRIVATE cxx_std_23)
 target_link_libraries(
@@ -666,6 +673,8 @@ target_link_libraries(
         athena-core
         inih
         cpptrace::cpptrace
+        tree-sitter
+        tree-sitter-javascript
 )
 
 # Needed for shared library builds on windows:  copy cpptrace.dll to the same directory as the

@@ -29,4 +29,8 @@ struct ChangeActorImageCommand final : IEventCommand {
   std::string facePicture;
   int faceIndex;
   std::string battlerPicture;
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {charPicture, facePicture, battlerPicture}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"charPicture", "facePicture", "battlerPicture"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

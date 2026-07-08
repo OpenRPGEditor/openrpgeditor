@@ -121,7 +121,7 @@ struct ConditionalBranchCommand final : IEventCommand {
     return false;
   };
 
-  bool setReference(int targetId, int newId, SearchType searchType) override {
+  bool setReference(const int targetId, const int newId, const SearchType searchType) override {
     if (hasReference(targetId, searchType)) {
 
       if (searchType == SearchType::Variable) {
@@ -248,6 +248,34 @@ struct ConditionalBranchCommand final : IEventCommand {
 
   bool m_collapsed{false};
   int m_troopId{0};
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override {
+    if (type == ConditionType::Script) {
+      return {script};
+    }
+
+    if (type == ConditionType::Actor && (actor.type == ActorConditionType::Name || actor.type == ActorConditionType::In_The_Party)) {
+      return {name};
+    }
+
+    return {};
+  }
+
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override {
+    if (type == ConditionType::Script) {
+      return {"script"};
+    }
+
+    if (type == ConditionType::Actor && (actor.type == ActorConditionType::Name || actor.type == ActorConditionType::In_The_Party)) {
+      return {"name"};
+    }
+
+    return {};
+  }
+  
+  [[nodiscard]] bool hasStringValues() const override {
+    return type == ConditionType::Script || (type == ConditionType::Actor && (actor.type == ActorConditionType::Name || actor.type == ActorConditionType::In_The_Party));
+  }
 };
 
 struct ElseCommand final : IEventCommand {

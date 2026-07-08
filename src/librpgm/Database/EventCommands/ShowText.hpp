@@ -9,7 +9,7 @@ struct NextTextCommand final : IEventCommand {
   ~NextTextCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Next_Text; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<NextTextCommand>(*this); }
+  [[nodiscard]] std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<NextTextCommand>(*this); }
 
   std::string text;
 };
@@ -21,7 +21,7 @@ struct ShowTextCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Text; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
-  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowTextCommand>(*this); }
+  [[nodiscard]] std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowTextCommand>(*this); }
 
   void addText(NextTextCommand* nextText) { text.emplace_back(nextText); }
 
@@ -47,10 +47,9 @@ struct ShowTextCommand final : IEventCommand {
   int faceIndex{0};
   TextBackground background = TextBackground::Window;
   TextWindowPosition position = TextWindowPosition::Bottom;
-  std::string textLine;
   std::vector<std::shared_ptr<NextTextCommand>> text;
 
-  bool hasStringReference(const std::string& str, SearchType type) override {
+  bool hasStringReference(const std::string& str, const SearchType type) override {
     if (type == SearchType::Text) {
       for (auto& cmd : text) {
         if (cmd->text.contains(str)) {
@@ -60,7 +59,7 @@ struct ShowTextCommand final : IEventCommand {
     }
     return false;
   }
-  bool setStringReference(const std::string& replaceStr, const std::string& str, SearchType type) override {
+  bool setStringReference(const std::string& replaceStr, const std::string& str, const SearchType type) override {
     if (type == SearchType::Text) {
       for (auto& cmd : text) {
         if (cmd->text.contains(replaceStr)) {
@@ -73,4 +72,16 @@ struct ShowTextCommand final : IEventCommand {
     }
     return true;
   }
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override {
+    std::string result;
+    for (const auto& cmd : text) {
+      result += (!result.empty() ? "\n" : "") + cmd->text;
+    }
+
+    return {faceImage, result};
+  }
+
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"faceImage", "text"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

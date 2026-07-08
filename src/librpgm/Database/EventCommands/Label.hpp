@@ -35,4 +35,8 @@ struct LabelCommand final : IEventCommand {
   void setReverseSelection(const bool reverseSelection) override { m_reverseSelection = reverseSelection; }
   bool m_reverseSelection = false;
   bool m_collapsed{false};
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {label}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"label"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

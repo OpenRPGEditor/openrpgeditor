@@ -11,5 +11,9 @@ struct PluginCommandMV : IEventCommand {
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<PluginCommandMV>(*this); }
 
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {command}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"command"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
+
   std::string command;
 };

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenRPG Editor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-21 13:12-0700\n"
+"POT-Creation-Date: 2026-07-06 05:21-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,33 +17,768 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: src/librpgm/Database/EventCommands/MovementRoute/PlaySE.cpp:11
+msgid "SE"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/MovementRoute/Wait.cpp:10
+#: src/librpgm/Database/EventCommands/MovePicture.cpp:38
+#: src/librpgm/Database/EventCommands/SetMovementRoute.cpp:50
+#: src/librpgm/Database/EventCommands/SetWeatherEffect.cpp:28
+#: src/librpgm/Database/EventCommands/ShakeScreen.cpp:23
+#: src/librpgm/Database/EventCommands/ShowAnimation.cpp:24
+#: src/librpgm/Database/EventCommands/ShowBalloonIcon.cpp:22
+#: src/librpgm/Database/EventCommands/TintPicture.cpp:31
+#: src/librpgm/Database/EventCommands/TintScreen.cpp:30
+#: src/librpgm/Database/EventCommands/Wait.cpp:13
+#: src/librpgm/Database/EventCommands/FlashScreen.cpp:34
+#: src/librpgm/Database/Globals.hpp:496 src/librpgm/Database/Globals.hpp:575
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:123
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:287
+msgid "Wait"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/BattleProcessing.cpp:27
+#: src/openrpgeditor/Editor/EventCommands/Dialog_BattleProcessing.cpp:46
+msgid "Same as Random Encounter"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/BattleProcessing.cpp:29
+#: src/librpgm/Database/Globals.hpp:597
+msgid "Battle Processing"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeActorImage.cpp:29
+#: src/librpgm/Database/Globals.hpp:611
+msgid "Change Actor Images"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeArmors.cpp:32
+#: src/librpgm/Database/EventCommands/ChangeWeapons.cpp:26
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:293
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:300
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeWeapons.cpp:92
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeArmors.cpp:92
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:571
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:588
+msgid "Include Equipment"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeArmors.cpp:35
+#: src/librpgm/Database/Globals.hpp:547
+msgid "Change Armors"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeBattleBGM.cpp:13
+#: src/librpgm/Database/Globals.hpp:549
+msgid "Change Battle BGM"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeBattleback.cpp:17
+#: src/librpgm/Database/Globals.hpp:594
+msgid "Change Battle Back"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeClass.cpp:21
+#: src/librpgm/Database/Globals.hpp:610
+msgid "Change Class"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeDefeatME.cpp:13
+#: src/librpgm/Database/Globals.hpp:556
+msgid "Change Defeat ME"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeEXP.cpp:29
+#: src/librpgm/Database/EventCommands/ChangeHP.cpp:28
+#: src/librpgm/Database/EventCommands/ChangeLevel.cpp:28
+#: src/librpgm/Database/EventCommands/ChangeMP.cpp:25
+#: src/librpgm/Database/EventCommands/ChangeParameter.cpp:28
+#: src/librpgm/Database/EventCommands/ChangeSkill.cpp:25
+#: src/librpgm/Database/EventCommands/ChangeState.cpp:24
+#: src/librpgm/Database/EventCommands/ChangeTP.cpp:26
+#: src/librpgm/Database/EventCommands/RecoverAll.cpp:16
+#: src/openrpgeditor/Editor/EventCommands/Dialog_RecoverAll.cpp:47
+msgid "Entire Party"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeEXP.cpp:46
+#: src/librpgm/Database/EventCommands/ChangeLevel.cpp:45
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeLevel.cpp:118
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEXP.cpp:122
+msgid "Show Level Up"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeEXP.cpp:49
+#: src/librpgm/Database/Globals.hpp:604
+msgid "Change EXP"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeEncounterDisable.cpp:11
+#: src/librpgm/Database/Globals.hpp:553
+msgid "Change Encounter"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeEnemyHP.cpp:36
+#: src/librpgm/Database/EventCommands/ChangeHP.cpp:45
+msgid "Allow Knockout"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeEnemyHP.cpp:38
+#: src/librpgm/Database/Globals.hpp:616
+msgid "Change Enemy HP"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeEnemyMP.cpp:32
+#: src/librpgm/Database/Globals.hpp:617
+msgid "Change Enemy MP"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeEnemyState.cpp:21
+#: src/librpgm/Database/EventCommands/ShowBattleAnimation.cpp:20
+#: src/librpgm/Database/Database.hpp:238
+msgid "Entire Troop"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeEnemyState.cpp:27
+#: src/librpgm/Database/Globals.hpp:618
+msgid "Change Enemy State"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeEnemyTP.cpp:33
+#: src/librpgm/Database/Globals.hpp:625
+msgid "Change Enemy TP"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeEquipment.cpp:25
+#: src/librpgm/Database/Globals.hpp:188 src/librpgm/Database/Globals.hpp:203
+#: src/librpgm/Database/Globals.hpp:228 src/librpgm/Database/Globals.hpp:249
+#: src/librpgm/Database/Globals.hpp:442 src/librpgm/Database/Globals.hpp:469
+#: src/librpgm/Database/Globals.hpp:684 src/librpgm/Database/Globals.hpp:705
+#: src/librpgm/Database/Globals.hpp:803 src/librpgm/Database/Globals.hpp:826
+#: src/librpgm/Database/Globals.hpp:915 src/librpgm/Database/Database.hpp:87
+#: src/librpgm/Database/Database.hpp:92 src/librpgm/Database/Database.hpp:95
+#: src/librpgm/Database/Database.hpp:108 src/librpgm/Database/Database.hpp:116
+#: src/librpgm/Database/Database.hpp:489
+#: src/openrpgeditor/Editor/CommonUI/ColorFlashPicker.cpp:22
+#: src/openrpgeditor/Editor/CommonUI/ColorTonePicker.cpp:17
+#: src/openrpgeditor/Editor/CommonUI/AudioEditor.cpp:58
+#: src/openrpgeditor/Editor/CommonUI/ImagePicker.cpp:210
+#: src/openrpgeditor/Editor/CommonUI/ImagePicker.cpp:293
+#: src/openrpgeditor/Editor/DatabaseEditor/DBSkillsTab.cpp:452
+#: src/openrpgeditor/Editor/DatabaseEditor/DBSkillsTab.cpp:462
+#: src/openrpgeditor/Editor/EventCommands/Dialog_PlayMovie.cpp:58
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:76
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:228
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:231
+msgid "None"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeEquipment.cpp:26
+#: src/librpgm/Database/Globals.hpp:608
+msgid "Change Equipment"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeFormationAccess.cpp:11
+#: src/librpgm/Database/Globals.hpp:554
+msgid "Change Formation Access"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeGold.cpp:20
+#: src/librpgm/Database/EventCommands/ChangeGold.cpp:23
+#: src/librpgm/Database/Globals.hpp:544
+msgid "Change Gold"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeHP.cpp:47
+#: src/librpgm/Database/Globals.hpp:600
+msgid "Change HP"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeItems.cpp:28
+#: src/librpgm/Database/Globals.hpp:545
+msgid "Change Items"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeLevel.cpp:48
+#: src/librpgm/Database/Globals.hpp:605
+msgid "Change Level"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeMP.cpp:40
+#: src/librpgm/Database/Globals.hpp:601
+msgid "Change MP"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeMapDisplayName.cpp:11
+msgid "Change Map Name Display"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeMenuAccess.cpp:11
+#: src/librpgm/Database/Globals.hpp:552
+msgid "Change Menu Access"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeName.cpp:16
+#: src/librpgm/Database/Globals.hpp:609
+msgid "Change Name"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeNickname.cpp:16
+#: src/librpgm/Database/Globals.hpp:613
+msgid "Change Nickname"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeParallax.cpp:23
+#: src/librpgm/Database/Globals.hpp:595
+msgid "Change Parallax"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeParallax.cpp:28
+#: src/librpgm/Database/Globals.hpp:715
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:194
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeParallax.cpp:53
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:258
+msgid "Loop Horizontally"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeParallax.cpp:34
+#: src/librpgm/Database/Globals.hpp:714
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:206
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeParallax.cpp:76
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:270
+msgid "Loop Vertically"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeParameter.cpp:43
+#: src/librpgm/Database/Globals.hpp:606
+msgid "Change Parameter"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangePartyMember.cpp:22
+msgid "Initialize"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangePartyMember.cpp:24
+#: src/librpgm/Database/Globals.hpp:548
+msgid "Change Party Member"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangePartyMember.cpp:25
+#: src/librpgm/Database/Globals.hpp:413
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyState.cpp:59
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeState.cpp:68
+msgid "Remove"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangePartyMember.cpp:25
+#: src/librpgm/Database/Globals.hpp:332 src/librpgm/Database/Globals.hpp:412
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:160
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyState.cpp:57
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeState.cpp:66
+#: src/openrpgeditor/Editor/JSONInspector.cpp:237
+msgid "Add"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangePlayerFollowers.cpp:11
+#: src/librpgm/Database/Globals.hpp:568
+msgid "Change Player Followers"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeProfile.cpp:19
+#: src/librpgm/Database/Globals.hpp:614
+msgid "Change Profile"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeSaveAccess.cpp:11
+#: src/librpgm/Database/Globals.hpp:551
+msgid "Change Save Access"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeSkill.cpp:28
+#: src/librpgm/Database/Globals.hpp:607
+msgid "Change Skill"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeState.cpp:34
+#: src/librpgm/Database/Globals.hpp:602
+msgid "Change State"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeTP.cpp:41
+#: src/librpgm/Database/Globals.hpp:615
+msgid "Change TP"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeTileset.cpp:13
+#: src/librpgm/Database/Globals.hpp:593
+msgid "Change Tileset"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeTransparency.cpp:11
+#: src/librpgm/Database/Globals.hpp:564
+msgid "Change Transparency"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeVehicleBGM.cpp:17
+#: src/librpgm/Database/Globals.hpp:557
+msgid "Change Vehicle BGM"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeVehicleImage.cpp:19
+#: src/librpgm/Database/Globals.hpp:612
+msgid "Change Vehicle Image"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeVictoryME.cpp:13
+#: src/librpgm/Database/Globals.hpp:550
+msgid "Change Victory ME"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeWeapons.cpp:29
+#: src/librpgm/Database/Globals.hpp:546
+msgid "Change Weapons"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ChangeWindowColor.cpp:20
+#: src/librpgm/Database/Globals.hpp:555
+msgid "Change Window Color"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/Comment.cpp:18
+#: src/librpgm/Database/Globals.hpp:532
+#: src/openrpgeditor/Editor/CommonUI/TextEditor.cpp:122
+msgid "Comment"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/CommonEvent.cpp:14
+#: src/librpgm/Database/Globals.hpp:124 src/librpgm/Database/Globals.hpp:537
+msgid "Common Event"
+msgstr ""
+
+#. TL-NOTE: Equivalence, a == b
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:221
+#, c++-format
+msgid "{0} is {1}"
+msgstr ""
+
+#. TL-NOTE: Equivalence, a == b
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:225
+#, c++-format
+msgid "Self Switch {0} is {1}"
+msgstr ""
+
+#. TL-NOTE: Comparison operator, minutes, seconds
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:239
+#, c++-format
+msgid "Timer {0} {1} min {1} sec"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:245
+#, c++-format
+msgid "Name of {0} is {1}"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:248
+#, c++-format
+msgid "Class of {0} is {1}"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:251
+#, c++-format
+msgid "{0} has learned {1}"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:254
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:257
+#, c++-format
+msgid "{0} has equipped {1}"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:260
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:273
+#, c++-format
+msgid "{0} is affected by {1}"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:263
+#, c++-format
+msgid "{0} is in the party"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:275
+#, c++-format
+msgid "{0} is appeared"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:279
+#, c++-format
+msgid "{0} is facing {1}"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:282
+#, c++-format
+msgid "{0} is driven"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:288
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:291
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:298
+#, c++-format
+msgid "Party has {0}"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:305
+#, c++-format
+msgid "Button [{0}] is pressed down"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ConditionalBranch.cpp:310
+#: src/librpgm/Database/Globals.hpp:276 src/librpgm/Database/Globals.hpp:344
+#: src/librpgm/Database/Globals.hpp:526 src/librpgm/Database/Globals.hpp:630
+#: src/librpgm/Database/Globals.hpp:908
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:177
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:396
+msgid "Script"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ControlSelfSwitch.cpp:15
+#: src/librpgm/Database/Globals.hpp:542
+msgid "Control Self Switch"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ControlSwitches.cpp:20
+#: src/librpgm/Database/EventCommands/ControlSwitches.cpp:24
+#: src/librpgm/Database/Globals.hpp:540
+msgid "Control Switches"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ControlTimer.cpp:29
+#: src/librpgm/Database/Globals.hpp:543
+msgid "Control Timer"
+msgstr ""
+
+#. TL-NOTE: Minutes and Seconds
+#: src/librpgm/Database/EventCommands/ControlTimer.cpp:31
+#, c++-format
+msgid "{} min {} sec"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ControlVariables.cpp:75
+#: src/librpgm/Database/EventCommands/ForceAction.cpp:21
+#: src/librpgm/Database/Globals.hpp:342 src/librpgm/Database/Globals.hpp:754
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlVariables.cpp:102
+msgid "Random"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ControlVariables.cpp:107
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlVariables.cpp:264
+#, c++-format
+msgid "Actor ID of the party member #{0}"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/EnemyAppear.cpp:18
+#: src/librpgm/Database/Globals.hpp:620
+msgid "Enemy Appear"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/EnemyRecoverAll.cpp:17
+#: src/librpgm/Database/Globals.hpp:619
+msgid "Enemy Recover All"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/EnemyTransform.cpp:20
+#: src/librpgm/Database/Globals.hpp:621
+msgid "Enemy Transform"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ErasePicture.cpp:11
+#: src/librpgm/Database/Globals.hpp:580
+msgid "Erase Picture"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/FadeoutBGM.cpp:13
+#: src/librpgm/Database/Globals.hpp:583
+msgid "Fadeout BGM"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/FadeoutBGS.cpp:13
+#: src/librpgm/Database/Globals.hpp:587
+msgid "Fadeout BGS"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ForceAction.cpp:21
+msgid "Last Target"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ForceAction.cpp:21
+msgid "Index"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ForceAction.cpp:24
+#: src/librpgm/Database/EventCommands/ForceAction.cpp:28
+#: src/librpgm/Database/Globals.hpp:623
+msgid "Force Action"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/GetLocationInfo.cpp:29
+#: src/librpgm/Database/EventCommands/GetLocationInfo.cpp:33
+#: src/librpgm/Database/Globals.hpp:596
+msgid "Get Location Info"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/GetOnOffVehicle.cpp:4
+#: src/librpgm/Database/Globals.hpp:563
+msgid "Get on/off Vehicle"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/InputNumber.cpp:17
+#: src/librpgm/Database/Globals.hpp:529
+msgid "Input Number"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/InputNumber.cpp:18
+msgid "digits"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/InputNumber.cpp:18
+msgid "digit"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/JumpToLabel.cpp:11
+msgid "Jump to Label"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/Label.cpp:11
+#: src/librpgm/Database/Globals.hpp:538
+msgid "Label"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/MovePicture.cpp:45
+#: src/librpgm/Database/EventCommands/MovePicture.cpp:49
+#: src/librpgm/Database/Globals.hpp:577
+msgid "Move Picture"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/NameInput.cpp:17
+#: src/librpgm/Database/Globals.hpp:599
+msgid "Name Input Processing"
+msgstr ""
+
+#. TL-NOTE(disambiguation): Characters here refers to letters/symbols, e.g: the letter 'A' is a character
+#: src/librpgm/Database/EventCommands/NameInput.cpp:19
+msgid "characters"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/NameInput.cpp:19
+msgid "character"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/PlayBGM.cpp:13
+#: src/librpgm/Database/Globals.hpp:582
+msgid "Play BGM"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/PlayBGS.cpp:13
+#: src/librpgm/Database/Globals.hpp:586
+msgid "Play BGS"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/PlayME.cpp:13
+#: src/librpgm/Database/Globals.hpp:588
+msgid "Play ME"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/PlayMovie.cpp:13
+#: src/librpgm/Database/Globals.hpp:591
+msgid "Play Movie"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/PlaySE.cpp:13
+#: src/librpgm/Database/Globals.hpp:525 src/librpgm/Database/Globals.hpp:589
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:171
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:392
+msgid "Play SE"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/Plugin.cpp:11
+#: src/librpgm/Database/Globals.hpp:631 src/librpgm/Database/Globals.hpp:632
+msgid "Plugin Command"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/RecoverAll.cpp:17
+#: src/librpgm/Database/Globals.hpp:603
+msgid "Recover All"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ReturnToTitle.cpp:4
+#: src/librpgm/Database/Globals.hpp:629
+msgid "Return To Title Screen"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/RotatePicture.cpp:15
+#: src/librpgm/Database/Globals.hpp:578
+msgid "Rotate Picture"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ScrollMap.cpp:18
+#: src/librpgm/Database/Globals.hpp:561
+msgid "Scroll Map"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ScrollingText.cpp:22
+msgid "Text(S)"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ScrollingText.cpp:24
+#: src/librpgm/Database/Globals.hpp:510
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.cpp:23
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShakeScreen.cpp:33
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowScrollingText.cpp:27
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ScrollMap.cpp:53
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:242
+msgid "Speed"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ScrollingText.cpp:24
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowScrollingText.cpp:39
+msgid "No Fast Forward"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/SelectItem.cpp:17
+#: src/librpgm/Database/Globals.hpp:530
+msgid "Select Item"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/SetMovementRoute.cpp:38
+msgid "Repeat"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/SetMovementRoute.cpp:44
+msgid "Skip"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/SetVehicleLocation.cpp:22
+#: src/librpgm/Database/Globals.hpp:559
+msgid "Set Vehicle Location"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/SetWeatherEffect.cpp:30
+#: src/librpgm/Database/Globals.hpp:581
+msgid "Set Weather Effect"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ShakeScreen.cpp:25
+#: src/librpgm/Database/Globals.hpp:574
+msgid "Shake Screen"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ShopProcessing.cpp:32
+#: src/librpgm/Database/EventCommands/ShopProcessing.cpp:66
+#: src/librpgm/Database/Globals.hpp:598
+msgid "Shop Processing"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ShowAnimation.cpp:27
+#: src/librpgm/Database/Globals.hpp:565
+msgid "Show Animation"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ShowBalloonIcon.cpp:24
+#: src/librpgm/Database/Globals.hpp:566
+msgid "Show Balloon Icon"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ShowBattleAnimation.cpp:19
+#: src/librpgm/Database/Globals.hpp:622
+msgid "Show Battle Animation"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ShowChoice.cpp:51
+#: src/librpgm/Database/Globals.hpp:528
+msgid "Show Choices"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ShowChoice.cpp:66
+msgid "When"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ShowPicture.cpp:33
+#: src/librpgm/Database/Globals.hpp:576
+msgid "Show Picture"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/TintPicture.cpp:33
+#: src/librpgm/Database/Globals.hpp:579
+msgid "Tint Picture"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/TintScreen.cpp:32
+#: src/librpgm/Database/Globals.hpp:572
+msgid "Tint Screen"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/TransferPlayer.cpp:31
+#: src/librpgm/Database/EventCommands/SetEventLocation.cpp:26
+#: src/librpgm/Database/Globals.hpp:389
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TransferPlayer.cpp:87
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetEventLocation.cpp:125
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ScrollMap.cpp:24
+msgid "Direction"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/TransferPlayer.cpp:38
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TransferPlayer.cpp:105
+msgid "Fade"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/TransferPlayer.cpp:48
+#: src/librpgm/Database/EventCommands/TransferPlayer.cpp:52
+#: src/librpgm/Database/Globals.hpp:558
+msgid "Transfer Player"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/SetEventLocation.cpp:24
+#: src/librpgm/Database/Globals.hpp:560
+msgid "Set Event Location"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/SetEventLocation.cpp:33
+msgid "Exchange with"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/FlashScreen.cpp:36
+#: src/librpgm/Database/Globals.hpp:573
+msgid "Flash Screen"
+msgstr ""
+
 #: src/librpgm/Database/Globals.hpp:37 src/librpgm/Database/Globals.hpp:48
 #: src/librpgm/Database/Globals.hpp:363 src/librpgm/Database/Globals.hpp:376
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:61
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:226
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:61
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:226
 msgid "Max HP"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:38 src/librpgm/Database/Globals.hpp:49
 #: src/librpgm/Database/Globals.hpp:364 src/librpgm/Database/Globals.hpp:377
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:64
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:228
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:64
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:228
 msgid "Max MP"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:39 src/librpgm/Database/Globals.hpp:50
 #: src/librpgm/Database/Globals.hpp:365 src/librpgm/Database/Globals.hpp:378
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:67
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:139
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:230
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:253
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:67
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:139
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:230
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:253
 msgid "Attack"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:40 src/librpgm/Database/Globals.hpp:51
 #: src/librpgm/Database/Globals.hpp:366 src/librpgm/Database/Globals.hpp:379
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:70
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:232
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:70
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:232
 msgid "Defense"
 msgstr ""
 
@@ -54,8 +789,8 @@ msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:41 src/librpgm/Database/Globals.hpp:52
 #: src/librpgm/Database/Globals.hpp:367 src/librpgm/Database/Globals.hpp:380
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:73
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:234
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:73
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:234
 msgid "M.Attack"
 msgstr ""
 
@@ -66,22 +801,22 @@ msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:42 src/librpgm/Database/Globals.hpp:53
 #: src/librpgm/Database/Globals.hpp:368 src/librpgm/Database/Globals.hpp:381
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:76
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:236
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:76
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:236
 msgid "M.Defense"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:43 src/librpgm/Database/Globals.hpp:54
 #: src/librpgm/Database/Globals.hpp:369 src/librpgm/Database/Globals.hpp:382
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:79
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:238
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:79
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:238
 msgid "Agility"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:44 src/librpgm/Database/Globals.hpp:55
 #: src/librpgm/Database/Globals.hpp:370 src/librpgm/Database/Globals.hpp:383
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:82
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:240
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:82
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:240
 msgid "Luck"
 msgstr ""
 
@@ -94,7 +829,7 @@ msgid "M Defense"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:59
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:242
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:242
 msgid "Hit Rate"
 msgstr ""
 
@@ -111,17 +846,17 @@ msgid "Critical Evasion"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:63 src/librpgm/Database/Globals.hpp:879
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:513
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:513
 msgid "Magic Evasion"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:64 src/librpgm/Database/Globals.hpp:880
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:518
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:518
 msgid "Magic Reflection"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:65
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:522
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:522
 msgid "Counter Attack"
 msgstr ""
 
@@ -192,13 +927,13 @@ msgid "Auto Battle"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:91
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:142
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:255
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:142
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:255
 msgid "Guard"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:92
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:527
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:527
 msgid "Substitute"
 msgstr ""
 
@@ -290,10 +1025,6 @@ msgstr ""
 msgid "Learn Skill"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:124 src/librpgm/Database/Globals.hpp:537
-msgid "Common Event"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:128
 msgid "Element Rate"
 msgstr ""
@@ -311,6 +1042,7 @@ msgid "State Resist"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:132
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeParameter.cpp:61
 msgid "Parameter"
 msgstr ""
 
@@ -429,18 +1161,220 @@ msgid "Up"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:163 src/librpgm/Database/Globals.hpp:861
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:311
+#: src/openrpgeditor/Editor/CommonUI/VariableSwitchPicker.cpp:128
+#: src/openrpgeditor/Editor/CommonUI/CharacterPicker.cpp:346
+#: src/openrpgeditor/Editor/CommonUI/EventTilePicker.cpp:107
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.inl:130
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:245
+#: src/openrpgeditor/Editor/CommonUI/AudioEditor.cpp:126
+#: src/openrpgeditor/Editor/CommonUI/ImagePicker.cpp:361
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:104
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.cpp:46
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementJump.cpp:44
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementWait.cpp:36
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.cpp:46
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementChangeImage.cpp:61
+#: src/openrpgeditor/Editor/EventCommands/Dialog_BattleProcessing.cpp:57
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyHP.cpp:106
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyMP.cpp:103
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyState.cpp:84
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyTP.cpp:103
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEquipment.cpp:73
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeGold.cpp:82
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeHP.cpp:121
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeItems.cpp:89
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeLevel.cpp:121
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMP.cpp:114
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeName.cpp:50
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeNickname.cpp:54
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeParameter.cpp:134
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangePartyMember.cpp:62
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeSkill.cpp:90
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeState.cpp:90
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTP.cpp:115
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeVehicleImage.cpp:95
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeWeapons.cpp:95
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlSelfSwitch.cpp:59
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlSwitches.cpp:87
+#: src/openrpgeditor/Editor/EventCommands/Dialog_EnemyAppear.cpp:51
+#: src/openrpgeditor/Editor/EventCommands/Dialog_EnemyRecoverAll.cpp:51
+#: src/openrpgeditor/Editor/EventCommands/Dialog_EnemyTransform.cpp:74
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ErasePicture.cpp:36
+#: src/openrpgeditor/Editor/EventCommands/Dialog_FadeoutBGM.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_FadeoutBGS.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_FlashScreen.cpp:53
+#: src/openrpgeditor/Editor/EventCommands/Dialog_GameData.cpp:234
+#: src/openrpgeditor/Editor/EventCommands/Dialog_JumpToLabel.cpp:36
+#: src/openrpgeditor/Editor/EventCommands/Dialog_Label.cpp:36
+#: src/openrpgeditor/Editor/EventCommands/Dialog_NameInputProcessing.cpp:57
+#: src/openrpgeditor/Editor/EventCommands/Dialog_RecoverAll.cpp:76
+#: src/openrpgeditor/Editor/EventCommands/Dialog_RotatePicture.cpp:44
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetVehicleLocation.cpp:113
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShakeScreen.cpp:69
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShopProcessing.cpp:91
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShopProcessing_Goods.cpp:103
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowBattleAnimation.cpp:58
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:196
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TintPicture.cpp:62
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TintScreen.cpp:54
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TransferPlayer.cpp:131
+#: src/openrpgeditor/Editor/EventCommands/Dialog_Wait.cpp:38
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetEventLocation.cpp:151
+#: src/openrpgeditor/Editor/EventCommands/Dialog_PlayMovie.cpp:97
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeArmors.cpp:95
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeClass.cpp:56
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEXP.cpp:125
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeProfile.cpp:45
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEncounter.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeFormationAccess.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMapDisplayName.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMenuAccess.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangePlayerFollowers.cpp:42
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeSaveAccess.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTransparency.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeWindowColor.cpp:26
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlTimer.cpp:56
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeBattleBack.cpp:51
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeParallax.cpp:102
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTileset.cpp:53
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangePluginCommand.cpp:31
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:139
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowScrollingText.cpp:41
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowBalloonIcon.cpp:67
+#: src/openrpgeditor/Editor/EventCommands/Dialog_InputNumber.cpp:46
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SelectItem.cpp:54
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowAnimation.cpp:60
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowText.cpp:118
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:202
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetWeatherEffect.cpp:82
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ScrollMap.cpp:77
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeActorImages.cpp:107
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:408
+#: src/openrpgeditor/Editor/EventCommands/Dialog_Comment.cpp:28
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:728
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlVariables.cpp:179
+#: src/openrpgeditor/Editor/EventCommands/Dialog_Script.cpp:47
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:352
+#: src/openrpgeditor/Editor/MapListView.cpp:128
+#: src/openrpgeditor/Editor/SettingsDialog.cpp:50
+#: src/openrpgeditor/Editor/AboutDialog.cpp:47
+#: src/openrpgeditor/Editor/JSONInspector.cpp:308
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:54
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:61
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:328
 msgid "OK"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:164 src/librpgm/Database/Globals.hpp:862
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:202
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:297
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:483
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:501
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:329
-#: src/openrpgeditor/Core/MainWindow.cpp:407
-#: src/openrpgeditor/Core/MainWindow.cpp:421
+#: src/openrpgeditor/Editor/CommonUI/VariableSwitchPicker.cpp:128
+#: src/openrpgeditor/Editor/CommonUI/CharacterPicker.cpp:347
+#: src/openrpgeditor/Editor/CommonUI/EventTilePicker.cpp:107
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.inl:130
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:245
+#: src/openrpgeditor/Editor/CommonUI/AudioEditor.cpp:126
+#: src/openrpgeditor/Editor/CommonUI/ImagePicker.cpp:361
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1291
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:202
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:297
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:469
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:487
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:104
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementChangeSpeed.cpp:46
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementJump.cpp:44
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementWait.cpp:36
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.cpp:46
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementChangeImage.cpp:61
+#: src/openrpgeditor/Editor/EventCommands/Dialog_BattleProcessing.cpp:57
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyHP.cpp:106
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyMP.cpp:103
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyState.cpp:84
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyTP.cpp:103
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEquipment.cpp:73
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeGold.cpp:82
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeHP.cpp:121
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeItems.cpp:89
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeLevel.cpp:121
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMP.cpp:114
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeName.cpp:50
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeNickname.cpp:54
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeParameter.cpp:134
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangePartyMember.cpp:62
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeSkill.cpp:90
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeState.cpp:90
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTP.cpp:115
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeVehicleImage.cpp:95
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeWeapons.cpp:95
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlSelfSwitch.cpp:59
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlSwitches.cpp:87
+#: src/openrpgeditor/Editor/EventCommands/Dialog_EnemyAppear.cpp:51
+#: src/openrpgeditor/Editor/EventCommands/Dialog_EnemyRecoverAll.cpp:51
+#: src/openrpgeditor/Editor/EventCommands/Dialog_EnemyTransform.cpp:74
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ErasePicture.cpp:36
+#: src/openrpgeditor/Editor/EventCommands/Dialog_FadeoutBGM.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_FadeoutBGS.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_FlashScreen.cpp:53
+#: src/openrpgeditor/Editor/EventCommands/Dialog_GameData.cpp:234
+#: src/openrpgeditor/Editor/EventCommands/Dialog_JumpToLabel.cpp:36
+#: src/openrpgeditor/Editor/EventCommands/Dialog_Label.cpp:36
+#: src/openrpgeditor/Editor/EventCommands/Dialog_NameInputProcessing.cpp:57
+#: src/openrpgeditor/Editor/EventCommands/Dialog_RecoverAll.cpp:76
+#: src/openrpgeditor/Editor/EventCommands/Dialog_RotatePicture.cpp:44
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetVehicleLocation.cpp:113
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShakeScreen.cpp:69
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShopProcessing.cpp:91
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShopProcessing_Goods.cpp:103
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowBattleAnimation.cpp:58
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:196
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TintPicture.cpp:62
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TintScreen.cpp:54
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TransferPlayer.cpp:131
+#: src/openrpgeditor/Editor/EventCommands/Dialog_Wait.cpp:38
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetEventLocation.cpp:151
+#: src/openrpgeditor/Editor/EventCommands/Dialog_PlayMovie.cpp:97
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeArmors.cpp:95
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeClass.cpp:56
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEXP.cpp:125
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeProfile.cpp:45
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEncounter.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeFormationAccess.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMapDisplayName.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMenuAccess.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangePlayerFollowers.cpp:42
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeSaveAccess.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTransparency.cpp:40
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeWindowColor.cpp:26
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlTimer.cpp:56
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeBattleBack.cpp:51
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeParallax.cpp:102
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTileset.cpp:53
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangePluginCommand.cpp:31
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:98
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:139
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowScrollingText.cpp:41
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowBalloonIcon.cpp:67
+#: src/openrpgeditor/Editor/EventCommands/Dialog_InputNumber.cpp:46
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SelectItem.cpp:54
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowAnimation.cpp:60
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowText.cpp:118
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:202
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetWeatherEffect.cpp:82
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ScrollMap.cpp:77
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeActorImages.cpp:107
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:420
+#: src/openrpgeditor/Editor/EventCommands/Dialog_Comment.cpp:28
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:728
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlVariables.cpp:179
+#: src/openrpgeditor/Editor/EventCommands/Dialog_Script.cpp:47
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:352
+#: src/openrpgeditor/Editor/MapListView.cpp:128
+#: src/openrpgeditor/Editor/SettingsDialog.cpp:50
+#: src/openrpgeditor/Editor/JSONInspector.cpp:308
+#: src/openrpgeditor/Editor/MainWindow.cpp:187
+#: src/openrpgeditor/Editor/MainWindow.cpp:468
+#: src/openrpgeditor/Editor/MainWindow.cpp:509
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:43
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:61
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:328
 msgid "Cancel"
 msgstr ""
 
@@ -482,14 +1416,6 @@ msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:184
 msgid "Never"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:188 src/librpgm/Database/Globals.hpp:203
-#: src/librpgm/Database/Globals.hpp:228 src/librpgm/Database/Globals.hpp:249
-#: src/librpgm/Database/Globals.hpp:442 src/librpgm/Database/Globals.hpp:469
-#: src/librpgm/Database/Globals.hpp:684 src/librpgm/Database/Globals.hpp:705
-#: src/librpgm/Database/Globals.hpp:803 src/librpgm/Database/Globals.hpp:826
-msgid "None"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:189
@@ -557,8 +1483,8 @@ msgid "Regular Item"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:210
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:175
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:279
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:175
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:279
 msgid "Key Item"
 msgstr ""
 
@@ -571,11 +1497,17 @@ msgid "Hidden Item B"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:216
+#: src/openrpgeditor/Editor/MainWindow.cpp:187
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:34
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:43
 msgid "No"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:217
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:493
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:479
+#: src/openrpgeditor/Editor/MainWindow.cpp:187
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:34
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:43
 msgid "Yes"
 msgstr ""
 
@@ -589,6 +1521,7 @@ msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:224 src/librpgm/Database/Globals.hpp:230
 #: src/librpgm/Database/Globals.hpp:245
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1133
 msgid "Screen"
 msgstr ""
 
@@ -658,85 +1591,156 @@ msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:264 src/librpgm/Database/Globals.hpp:680
 #: src/librpgm/Database/Globals.hpp:893
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:82
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:86
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:116
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:126
+#: src/openrpgeditor/Editor/CommonUI/TextEditor.cpp:137
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlSwitches.cpp:23
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:77
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:106
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:110
 msgid "Switch"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:265 src/librpgm/Database/Globals.hpp:297
 #: src/librpgm/Database/Globals.hpp:302 src/librpgm/Database/Globals.hpp:341
 #: src/librpgm/Database/Globals.hpp:659 src/librpgm/Database/Globals.hpp:892
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:90
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:138
+#: src/openrpgeditor/Editor/CommonUI/TextEditor.cpp:134
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeGold.cpp:51
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeHP.cpp:33
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeHP.cpp:82
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeItems.cpp:59
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeLevel.cpp:33
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeLevel.cpp:82
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMP.cpp:32
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMP.cpp:81
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeSkill.cpp:33
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeState.cpp:33
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTP.cpp:33
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTP.cpp:82
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeWeapons.cpp:61
+#: src/openrpgeditor/Editor/EventCommands/Dialog_RecoverAll.cpp:34
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeArmors.cpp:61
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEXP.cpp:37
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEXP.cpp:86
+#: src/openrpgeditor/Editor/EventCommands/Dialog_InputNumber.cpp:25
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SelectItem.cpp:24
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:78
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlVariables.cpp:25
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlVariables.cpp:101
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:114
 msgid "Variable"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:266
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:95
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlSelfSwitch.cpp:23
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:83
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:119
 msgid "Self Switch"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:267 src/librpgm/Database/Globals.hpp:400
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:84
 msgid "Timer"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:268 src/librpgm/Database/Globals.hpp:307
 #: src/librpgm/Database/Globals.hpp:351 src/librpgm/Database/Globals.hpp:904
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:103
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1013
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEquipment.cpp:27
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeHP.cpp:26
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeLevel.cpp:26
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMP.cpp:25
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeName.cpp:27
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeNickname.cpp:31
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeParameter.cpp:25
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangePartyMember.cpp:27
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeSkill.cpp:26
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeState.cpp:26
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTP.cpp:26
+#: src/openrpgeditor/Editor/EventCommands/Dialog_GameData.cpp:32
+#: src/openrpgeditor/Editor/EventCommands/Dialog_NameInputProcessing.cpp:35
+#: src/openrpgeditor/Editor/EventCommands/Dialog_RecoverAll.cpp:27
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeClass.cpp:28
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEXP.cpp:30
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeProfile.cpp:25
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeActorImages.cpp:59
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:250
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:256
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:127
 msgid "Actor"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:269 src/librpgm/Database/Globals.hpp:306
 #: src/librpgm/Database/Globals.hpp:352 src/librpgm/Database/Globals.hpp:899
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyHP.cpp:26
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyMP.cpp:26
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyState.cpp:26
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyTP.cpp:26
+#: src/openrpgeditor/Editor/EventCommands/Dialog_EnemyAppear.cpp:22
+#: src/openrpgeditor/Editor/EventCommands/Dialog_EnemyRecoverAll.cpp:22
+#: src/openrpgeditor/Editor/EventCommands/Dialog_EnemyTransform.cpp:33
+#: src/openrpgeditor/Editor/EventCommands/Dialog_GameData.cpp:33
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowBattleAnimation.cpp:22
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:367
 msgid "Enemy"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:270 src/librpgm/Database/Globals.hpp:353
+#: src/openrpgeditor/Editor/EventCommands/Dialog_GameData.cpp:34
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowBalloonIcon.cpp:21
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowAnimation.cpp:24
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeActorImages.cpp:80
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:370
 msgid "Character"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:271 src/librpgm/Database/Globals.hpp:397
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:503
 msgid "Gold"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:272 src/librpgm/Database/Globals.hpp:348
 #: src/librpgm/Database/Globals.hpp:663
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:145
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:257
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:99
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:145
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:257
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeItems.cpp:27
+#: src/openrpgeditor/Editor/EventCommands/Dialog_GameData.cpp:29
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:504
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:123
 msgid "Item"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:273 src/librpgm/Database/Globals.hpp:285
 #: src/librpgm/Database/Globals.hpp:349 src/librpgm/Database/Globals.hpp:664
-#: src/librpgm/Database/Globals.hpp:917
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:169
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:275
+#: src/librpgm/Database/Globals.hpp:923
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:169
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:275
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeWeapons.cpp:28
+#: src/openrpgeditor/Editor/EventCommands/Dialog_GameData.cpp:30
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:278
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:505
 msgid "Weapon"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:274 src/librpgm/Database/Globals.hpp:286
 #: src/librpgm/Database/Globals.hpp:350 src/librpgm/Database/Globals.hpp:665
-#: src/librpgm/Database/Globals.hpp:918
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:172
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:277
+#: src/librpgm/Database/Globals.hpp:924
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:172
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:277
+#: src/openrpgeditor/Editor/EventCommands/Dialog_GameData.cpp:31
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeArmors.cpp:28
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:279
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:507
 msgid "Armor"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:275
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:509
 msgid "Button"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:276 src/librpgm/Database/Globals.hpp:344
-#: src/librpgm/Database/Globals.hpp:526 src/librpgm/Database/Globals.hpp:630
-#: src/librpgm/Database/Globals.hpp:908
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:299
-msgid "Script"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:277
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeVehicleImage.cpp:38
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetVehicleLocation.cpp:24
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:371
 msgid "Vehicle"
 msgstr ""
 
@@ -745,22 +1749,37 @@ msgid "In The Party"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:282
-#: src/openrpgeditor/Core/EditorPlugin/EditorPluginManager.cpp:78
+#: src/openrpgeditor/Editor/CommonUI/VariableSwitchPicker.cpp:61
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.inl:44
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:66
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:122
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeName.cpp:39
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:275
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:130
+#: src/openrpgeditor/Editor/EditorPlugin/EditorPluginManager.cpp:96
+#: src/openrpgeditor/Editor/EventListView.cpp:16
 msgid "Name"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:283 src/librpgm/Database/Globals.hpp:902
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeClass.cpp:39
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:276
 msgid "Class"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:284 src/librpgm/Database/Globals.hpp:905
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:148
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:259
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:148
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:259
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeSkill.cpp:74
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeState.cpp:74
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:277
 msgid "Skill"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:287 src/librpgm/Database/Globals.hpp:292
 #: src/librpgm/Database/Globals.hpp:678 src/librpgm/Database/Globals.hpp:906
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyState.cpp:66
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:280
 msgid "State"
 msgstr ""
 
@@ -770,10 +1789,30 @@ msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:296 src/librpgm/Database/Globals.hpp:340
 #: src/librpgm/Database/Globals.hpp:658
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeGold.cpp:50
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeHP.cpp:81
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeItems.cpp:58
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeLevel.cpp:81
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMP.cpp:80
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTP.cpp:81
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeWeapons.cpp:60
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeArmors.cpp:60
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEXP.cpp:85
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:146
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlVariables.cpp:100
 msgid "Constant"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:301 src/librpgm/Database/Globals.hpp:753
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeHP.cpp:32
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeLevel.cpp:32
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMP.cpp:31
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeSkill.cpp:32
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeState.cpp:32
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTP.cpp:32
+#: src/openrpgeditor/Editor/EventCommands/Dialog_RecoverAll.cpp:33
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEXP.cpp:36
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:147
 msgid "Fixed"
 msgstr ""
 
@@ -810,19 +1849,33 @@ msgid "!="
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:326
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlSelfSwitch.cpp:46
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlSwitches.cpp:74
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEncounter.cpp:29
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeFormationAccess.cpp:29
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMapDisplayName.cpp:28
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMenuAccess.cpp:29
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangePlayerFollowers.cpp:30
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeSaveAccess.cpp:29
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTransparency.cpp:28
 msgid "ON"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:327
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlSelfSwitch.cpp:48
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlSwitches.cpp:76
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEncounter.cpp:28
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeFormationAccess.cpp:28
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMapDisplayName.cpp:29
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMenuAccess.cpp:28
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangePlayerFollowers.cpp:31
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeSaveAccess.cpp:28
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTransparency.cpp:29
 msgid "OFF"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:331
 msgid "Set"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:332 src/librpgm/Database/Globals.hpp:412
-msgid "Add"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:332
@@ -861,49 +1914,49 @@ msgstr ""
 msgid "%="
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:342 src/librpgm/Database/Globals.hpp:754
-msgid "Random"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:343
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlVariables.cpp:103
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlVariables.cpp:157
 msgid "Game Data"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:354
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:363
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:363
+#: src/openrpgeditor/Editor/EventCommands/Dialog_GameData.cpp:35
 msgid "Party"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:355
+#: src/openrpgeditor/Editor/EventCommands/Dialog_GameData.cpp:36
 msgid "Other"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:359
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:96
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:218
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:96
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:218
 msgid "Level"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:360
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:120
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:123
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:222
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:120
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:123
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:222
 msgid "EXP"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:361 src/librpgm/Database/Globals.hpp:374
 #: src/librpgm/Database/Globals.hpp:676
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:102
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:105
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:219
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:102
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:105
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:219
 msgid "HP"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:362 src/librpgm/Database/Globals.hpp:375
 #: src/librpgm/Database/Globals.hpp:677
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:108
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:111
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:220
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:108
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:111
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:220
 msgid "MP"
 msgstr ""
 
@@ -915,10 +1968,6 @@ msgstr ""
 msgid "Map Y"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:389
-msgid "Direction"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:390
 msgid "Screen X"
 msgstr ""
@@ -928,6 +1977,7 @@ msgid "Screen Y"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:395
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TransferPlayer.cpp:47
 msgid "Map ID"
 msgstr ""
 
@@ -960,8 +2010,8 @@ msgid "Escape Count"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:408 src/librpgm/Database/Globals.hpp:868
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:136
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:251
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:136
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:251
 msgid "Escape"
 msgstr ""
 
@@ -970,36 +2020,44 @@ msgstr ""
 msgid "+"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:413
-msgid "Remove"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:413 src/librpgm/Database/Globals.hpp:425
 #: src/librpgm/Database/Globals.hpp:654
 msgid "-"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:417
+#: src/openrpgeditor/Editor/CommonUI/ColorFlashPicker.cpp:54
+#: src/openrpgeditor/Editor/CommonUI/ColorTonePicker.cpp:49
+#: src/openrpgeditor/Editor/CommonUI/GameWindowColorPicker.cpp:18
 msgid "Red"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:418
+#: src/openrpgeditor/Editor/CommonUI/ColorFlashPicker.cpp:72
+#: src/openrpgeditor/Editor/CommonUI/ColorTonePicker.cpp:67
+#: src/openrpgeditor/Editor/CommonUI/GameWindowColorPicker.cpp:34
 msgid "Green"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:419
+#: src/openrpgeditor/Editor/CommonUI/ColorFlashPicker.cpp:89
+#: src/openrpgeditor/Editor/CommonUI/ColorTonePicker.cpp:83
+#: src/openrpgeditor/Editor/CommonUI/GameWindowColorPicker.cpp:52
 msgid "Blue"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:420
+#: src/openrpgeditor/Editor/CommonUI/ColorTonePicker.cpp:100
 msgid "Gray"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:424
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeSkill.cpp:68
 msgid "Learn"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:425
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeSkill.cpp:66
 msgid "Forget"
 msgstr ""
 
@@ -1129,106 +2187,110 @@ msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:476 src/librpgm/Database/Globals.hpp:778
 #: src/librpgm/Database/Globals.hpp:783
+#: src/openrpgeditor/Editor/EventCommands/Dialog_BattleProcessing.cpp:24
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:69
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:55
 msgid "Direct designation"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:477 src/librpgm/Database/Globals.hpp:779
 #: src/librpgm/Database/Globals.hpp:784
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetVehicleLocation.cpp:57
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:96
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TransferPlayer.cpp:39
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetEventLocation.cpp:61
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:82
 msgid "Designation with variables"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:482
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:146
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:243
 msgid "Move Down"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:483
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:149
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:246
 msgid "Move Left"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:484
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:152
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:249
 msgid "Move Right"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:485
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:155
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:252
 msgid "Move Up"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:486
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:158
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:255
 msgid "Move Lower Left"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:487
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:161
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:258
 msgid "Move Lower Right"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:488
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:164
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:261
 msgid "Move Upper Left"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:489
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:167
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:264
 msgid "Move Upper Right"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:490
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:170
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:267
 msgid "Move at Random"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:491
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:173
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:270
 msgid "Move toward Player"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:492
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:176
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:273
 msgid "Move away from Player"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:493
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:179
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:276
 msgid "1 Step Forward"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:494
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:182
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:279
 msgid "1 Step Backward"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:495
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:186
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:117
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:283
 msgid "Jump"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:496 src/librpgm/Database/Globals.hpp:575
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:190
-msgid "Wait"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:497
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:198
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:295
 msgid "Turn Down"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:498
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:201
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:298
 msgid "Turn Left"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:499
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:204
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:301
 msgid "Turn Right"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:500
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:207
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:304
 msgid "Turn Up"
 msgstr ""
 
@@ -1237,7 +2299,7 @@ msgid "Turn 90 Right"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:501
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:210
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:307
 msgid "Turn 90° Right"
 msgstr ""
 
@@ -1246,7 +2308,7 @@ msgid "Turn 90 Left"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:502
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:213
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:310
 msgid "Turn 90° Left"
 msgstr ""
 
@@ -1255,7 +2317,7 @@ msgid "Turn 180"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:503
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:216
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:313
 msgid "Turn 180°"
 msgstr ""
 
@@ -1268,86 +2330,84 @@ msgid "Turn 90° Left or Right"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:505
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:222
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:319
 msgid "Turn at Random"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:506
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:225
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:322
 msgid "Turn toward Player"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:507
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:228
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:325
 msgid "Turn away from Player"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:508
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:232
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:129
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:329
 msgid "Switch ON"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:509
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:236
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:135
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:333
 msgid "Switch OFF"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:510
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:214
-msgid "Speed"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:511
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementChangeFrequency.cpp:23
 msgid "Frequency"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:512
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:252
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:349
 msgid "Walking Animation ON"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:513
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:255
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:352
 msgid "Walking Animation OFF"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:514
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:258
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:355
 msgid "Stepping Animation ON"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:515
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:261
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:358
 msgid "Stepping Animation OFF"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:516
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:264
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:361
 msgid "Direction Fix ON"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:517
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:267
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:364
 msgid "Direction Fix OFF"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:518
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:270
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:367
 msgid "Through ON"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:519
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:273
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:370
 msgid "Through OFF"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:520
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:276
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:373
 msgid "Transparent ON"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:521
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:279
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:376
 msgid "Transparent OFF"
 msgstr ""
 
@@ -1363,33 +2423,12 @@ msgstr ""
 msgid "Change Blend Mode"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:525 src/librpgm/Database/Globals.hpp:589
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:295
-msgid "Play SE"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:527
 msgid "Show Text"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:528
-msgid "Show Choices"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:529
-msgid "Input Number"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:530
-msgid "Select Item"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:531
 msgid "Show Scrolling Text"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:532
-msgid "Comment"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:533
@@ -1408,128 +2447,20 @@ msgstr ""
 msgid "Exit Event Processing"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:538
-msgid "Label"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:539
 msgid "Jump To Label"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:540
-msgid "Control Switches"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:541
 msgid "Control Variables"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:542
-msgid "Control Self Switch"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:543
-msgid "Control Timer"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:544
-msgid "Change Gold"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:545
-msgid "Change Items"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:546
-msgid "Change Weapons"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:547
-msgid "Change Armors"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:548
-msgid "Change Party Member"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:549
-msgid "Change Battle BGM"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:550
-msgid "Change Victory ME"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:551
-msgid "Change Save Access"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:552
-msgid "Change Menu Access"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:553
-msgid "Change Encounter Disable"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:554
-msgid "Change Formation Access"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:555
-msgid "Change Window Color"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:556
-msgid "Change Defeat ME"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:557
-msgid "Change Vechicle BGM"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:558
-msgid "Transfer Player"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:559
-msgid "Set Vehicle Location"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:560
-msgid "Set Event Location"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:561
-msgid "Scroll Map"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:562
 msgid "Set Movement Route"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:563
-msgid "Get On Off Vehicle"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:564
-msgid "Change Transparency"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:565
-msgid "Show Animation"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:566
-msgid "Show Balloon Icon"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:567
 msgid "Erase Event"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:568
-msgid "Change Player Followers"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:569
@@ -1544,212 +2475,25 @@ msgstr ""
 msgid "Fadein Screen"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:572
-msgid "Tint Screen"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:573
-msgid "Flash Screen"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:574
-msgid "Shake Screen"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:576
-msgid "Show Picture"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:577
-msgid "Move Picture"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:578
-msgid "Rotate Picture"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:579
-msgid "Tint Picture"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:580
-msgid "Erase Picture"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:581
-msgid "Set Weather Effect"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:582
-msgid "Play BGM"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:583
-msgid "Fadeout BGM"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:584
 msgid "Save BGM"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:585
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1058
 msgid "Resume BGM"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:586
-msgid "Play BGS"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:587
-msgid "Fadeout BGS"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:588
-msgid "Play ME"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:590
 msgid "Stop SE"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:591
-msgid "Play Movie"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:592
-msgid "Change Map Name Display"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:593
-msgid "Change Tileset"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:594
-msgid "Change Battle Back"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:595
-msgid "Change Parallax"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:596
-msgid "Get Location Info"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:597
-msgid "Battle Processing"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:598
-msgid "Shop Processing"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:599
-msgid "Name Input Processing"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:600
-msgid "Change HP"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:601
-msgid "Change MP"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:602
-msgid "Change State"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:603
-msgid "Recover All"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:604
-msgid "Change EXP"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:605
-msgid "Change Level"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:606
-msgid "Change Parameter"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:607
-msgid "Change Skill"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:608
-msgid "Change Equipment"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:609
-msgid "Change Name"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:610
-msgid "Change Class"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:611
-msgid "Change Actor Images"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:612
-msgid "Change Vehicle Image"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:613
-msgid "Change Nickname"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:614
-msgid "Change Profile"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:615
-msgid "Change TP"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:616
-msgid "Change Enemy HP"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:617
-msgid "Change Enemy MP"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:618
-msgid "Change Enemy State"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:619
-msgid "Enemy Recover All"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:620
-msgid "Enemy Appear"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:621
-msgid "Enemy Transform"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:622
-msgid "Show Battle Animation"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:623
-msgid "Force Action"
+msgid "Change Map Display Name"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:624
 msgid "Abort Battle"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:625
-msgid "Change Enemy TP"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:626
@@ -1762,18 +2506,6 @@ msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:628
 msgid "Game Over"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:629
-msgid "Return To Title Screen"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:631
-msgid "PluginMV Command"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:632
-msgid "PluginMZ Command"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:633
@@ -1838,10 +2570,30 @@ msgid "Next PluginMZ Command"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:653
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyHP.cpp:57
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyMP.cpp:57
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyTP.cpp:57
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeGold.cpp:36
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeHP.cpp:67
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeItems.cpp:43
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeLevel.cpp:67
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMP.cpp:66
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTP.cpp:67
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEXP.cpp:71
 msgid "Increase"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:654
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyHP.cpp:59
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyMP.cpp:59
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyTP.cpp:59
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeGold.cpp:38
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeHP.cpp:69
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeItems.cpp:45
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeLevel.cpp:69
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMP.cpp:68
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTP.cpp:69
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEXP.cpp:73
 msgid "Decrease"
 msgstr ""
 
@@ -1925,16 +2677,6 @@ msgstr ""
 msgid "No Loop"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:714
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:234
-msgid "Loop Vertically"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:715
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:216
-msgid "Loop Horizontally"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:716
 msgid "Loop Both"
 msgstr ""
@@ -1955,12 +2697,12 @@ msgstr ""
 msgid "Top"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:727
-msgid "Bottom"
+#: src/librpgm/Database/Globals.hpp:727 src/librpgm/Database/Globals.hpp:733
+msgid "Middle"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:728 src/librpgm/Database/Globals.hpp:733
-msgid "Middle"
+#: src/librpgm/Database/Globals.hpp:728
+msgid "Bottom"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:738
@@ -2008,7 +2750,6 @@ msgid "Lowest"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:761
-#: src/openrpgeditor/Core/MainWindow.cpp:533
 msgid "Lower"
 msgstr ""
 
@@ -2085,10 +2826,12 @@ msgid "Parallel"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:809
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlTimer.cpp:27
 msgid "Start"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:810
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlTimer.cpp:29
 msgid "Stop"
 msgstr ""
 
@@ -2216,15 +2959,16 @@ msgstr ""
 msgid "Buzzer"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:864 src/librpgm/Database/Globals.hpp:919
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:151
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:178
+#: src/librpgm/Database/Globals.hpp:864 src/librpgm/Database/Globals.hpp:925
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:151
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:178
 msgid "Equip"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:865
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:163
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:269
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:163
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:269
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:176
 msgid "Save"
 msgstr ""
 
@@ -2241,7 +2985,7 @@ msgid "Enemy Attack"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:870
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:475
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:475
 msgid "Enemy Damage"
 msgstr ""
 
@@ -2258,7 +3002,7 @@ msgid "Boss Collapse 2"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:874
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:442
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:442
 msgid "Actor Damage"
 msgstr ""
 
@@ -2275,9 +3019,9 @@ msgid "Miss"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:878
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:88
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:244
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:508
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:88
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:244
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:508
 msgid "Evasion"
 msgstr ""
 
@@ -2286,7 +3030,7 @@ msgid "Shop"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:882
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:426
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:426
 msgid "Use Item"
 msgstr ""
 
@@ -2311,22 +3055,25 @@ msgid "CommonEvent"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:896
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:77
+#: src/openrpgeditor/Editor/DatabaseEditor/DBArmorsTab.hpp:15
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:508
 msgid "Armors"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:897 src/librpgm/Database/Globals.hpp:915
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:173
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:71
+#: src/librpgm/Database/Globals.hpp:897 src/librpgm/Database/Globals.hpp:921
+#: src/openrpgeditor/Editor/DatabaseEditor/DBItemsTab.hpp:18
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:416
 msgid "Items"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:898
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:74
+#: src/openrpgeditor/Editor/DatabaseEditor/DBWeaponsTab.hpp:18
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:462
 msgid "Weapons"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:900
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1052
 msgid "Audio"
 msgstr ""
 
@@ -2338,425 +3085,733 @@ msgstr ""
 msgid "Equipment"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:907 src/librpgm/Database/Globals.hpp:921
+#: src/librpgm/Database/Globals.hpp:907 src/librpgm/Database/Globals.hpp:927
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowBattleAnimation.cpp:44
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowAnimation.cpp:46
 msgid "Animation"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:909
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlSwitches.cpp:30
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlVariables.cpp:32
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:310
 msgid "Range"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:910
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowScrollingText.cpp:21
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowText.cpp:56
 msgid "Text"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:914
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:68
-msgid "Skills"
+#: src/librpgm/Database/Globals.hpp:911
+msgid "ConditionSwitchOFF"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:916
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:86
+msgid "Work in Progress"
+msgstr ""
+
+#: src/librpgm/Database/Globals.hpp:917
+msgid "Low Priority"
+msgstr ""
+
+#: src/librpgm/Database/Globals.hpp:920
+#: src/openrpgeditor/Editor/DatabaseEditor/DBSkillsTab.hpp:19
+msgid "Skills"
+msgstr ""
+
+#: src/librpgm/Database/Globals.hpp:922
+#: src/openrpgeditor/Editor/DatabaseEditor/DBStatesTab.hpp:13
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:646
 msgid "States"
 msgstr ""
 
-#: src/openrpgeditor/Core/CommonUI/ColorTonePicker.cpp:11
-#: src/openrpgeditor/Core/CommonUI/ColorFlashPicker.cpp:16
-msgid "Red:"
+#: src/librpgm/Database/Database.hpp:73
+msgid "frames"
 msgstr ""
 
-#: src/openrpgeditor/Core/CommonUI/ColorTonePicker.cpp:13
-#: src/openrpgeditor/Core/CommonUI/ColorFlashPicker.cpp:18
-msgid "Green:"
+#: src/librpgm/Database/Database.hpp:73
+msgid "frame"
 msgstr ""
 
-#: src/openrpgeditor/Core/CommonUI/ColorTonePicker.cpp:15
-#: src/openrpgeditor/Core/CommonUI/ColorFlashPicker.cpp:20
-msgid "Blue:"
+#: src/librpgm/Database/Database.hpp:75
+#: src/openrpgeditor/Editor/EventCommands/Dialog_FadeoutBGM.cpp:26
+#: src/openrpgeditor/Editor/EventCommands/Dialog_FadeoutBGS.cpp:26
+msgid "seconds"
 msgstr ""
 
-#: src/openrpgeditor/Core/CommonUI/ColorTonePicker.cpp:17
-msgid "Gray:"
+#: src/librpgm/Database/Database.hpp:75
+msgid "second"
 msgstr ""
 
-#: src/openrpgeditor/Core/CommonUI/ColorFlashPicker.cpp:22
-msgid "Intensity:"
+#: src/librpgm/Database/Database.hpp:165
+#: src/openrpgeditor/Editor/DatabaseEditor/DBSkillsTab.cpp:450
+#: src/openrpgeditor/Editor/DatabaseEditor/DBSkillsTab.cpp:458
+msgid "Normal Attack"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:20
-msgid "Full"
+#: src/librpgm/Database/Database.hpp:273 src/librpgm/Database/Database.hpp:290
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:76
+msgid "Player"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:28
-msgid "Abbreviation"
+#: src/librpgm/Database/Database.hpp:276 src/librpgm/Database/Database.hpp:293
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:80
+msgid "This Event"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:85
-msgid "Hit"
+#: src/librpgm/Database/Database.hpp:498
+#, c++-format
+msgid "The number of {}"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:99
-msgid "Lv"
+#: src/librpgm/Database/Database.hpp:499
+#, c++-format
+msgid "{0} of {1}"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:114
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:117
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:221
-msgid "TP"
+#: src/openrpgeditor/Editor/CommonUI/ColorFlashPicker.cpp:17
+#: src/openrpgeditor/Editor/CommonUI/ColorTonePicker.cpp:12
+msgid "Presets"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:133
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:249
-msgid "Fight"
+#: src/openrpgeditor/Editor/CommonUI/ColorFlashPicker.cpp:43
+#: src/openrpgeditor/Editor/CommonUI/ColorTonePicker.cpp:38
+msgid "Save as preset"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:154
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:263
-msgid "Status"
+#: src/openrpgeditor/Editor/CommonUI/ColorFlashPicker.cpp:106
+msgid "Intensity"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:157
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:265
-msgid "Formation"
+#: src/openrpgeditor/Editor/CommonUI/CreateNewProjectDialog.cpp:44
+msgid "RPG Maker MV"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:160
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:267
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:123
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:271
-msgid "Options"
+#: src/openrpgeditor/Editor/CommonUI/CreateNewProjectDialog.cpp:50
+msgid "RPG Maker MZ"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:166
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:271
-msgid "Game End"
+#: src/openrpgeditor/Editor/CommonUI/CreateNewProjectDialog.cpp:101
+msgid ""
+"RPG Maker Locations have not been specified!\n"
+"You need to specify either an RPG Maker MV or MZ directory.\n"
+"You can, optionally, specify both."
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:181
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:283
-msgid "Optimize"
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:96
+msgid "Actor Selection"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:184
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:285
-#: src/openrpgeditor/Core/MainWindow.cpp:609
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:104
+msgid "Class Selection"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:110
+msgid "Skill Selection"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:116
+msgid "Item Selection"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:122
+msgid "Weapon Selection"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:128
+msgid "Armor Selection"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:134
+msgid "Enemy Selection"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:140
+msgid "Troop Selection"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:146
+msgid "State Selection"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:152
+msgid "Animation Selection"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:158
+msgid "Tileset Selection"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:164
+msgid "Common Event Selection"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:174
+msgid "Invalid Common Event"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:180
+msgid "Map Selection"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:190
+msgid "Invalid Map"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.hpp:196
+msgid "Template Selection"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/VariableSwitchPicker.cpp:18
+msgid "Variable Selection"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/VariableSwitchPicker.cpp:18
+msgid "Switch Selection"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/VariableSwitchPicker.cpp:47
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.inl:30
+#: src/openrpgeditor/Editor/CommonUI/ImagePicker.cpp:157
+#: src/openrpgeditor/Editor/CommonUI/ImagePicker.cpp:243
+msgid "Filter"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/VariableSwitchPicker.cpp:48
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.inl:31
+#: src/openrpgeditor/Editor/CommonUI/ImagePicker.cpp:158
+#: src/openrpgeditor/Editor/CommonUI/ImagePicker.cpp:244
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:184
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:285
+#: src/openrpgeditor/Editor/MainWindow.cpp:855
 msgid "Clear"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:187
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:287
-msgid "Buy"
+#: src/openrpgeditor/Editor/CommonUI/VariableSwitchPicker.cpp:60
+#: src/openrpgeditor/Editor/CommonUI/ObjectPicker.inl:43
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:121
+#: src/openrpgeditor/Editor/EventListView.cpp:17
+msgid "ID"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:190
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:289
-msgid "Sell"
+#: src/openrpgeditor/Editor/CommonUI/EventTilePicker.cpp:13
+msgid "Select Location"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:193
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:291
-msgid "New Game"
+#: src/openrpgeditor/Editor/CommonUI/TilesetTilePicker.cpp:42
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTilesetsTab.hpp:15
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:738
+msgid "Tilesets"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:196
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:293
-msgid "Continue"
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:51
+msgid "New Map"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:199
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:295
-msgid "To Title"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:217
-msgid "Basic Statuses"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:225
-msgid "Parameters"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:247
-msgid "Commands"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:261
-msgid "Equip (Pause Screen)"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:301
-msgid "Messages"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:306
-msgid "Always Dash"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:311
-msgid "Command Remember"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:316
-msgid "BGM Volume"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:320
-msgid "BGS Volume"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:325
-msgid "ME Volume"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:330
-msgid "SE Volume"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:335
-msgid "Possession"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:340
-msgid "EXP Total"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:345
-msgid "EXP Next"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:349
-msgid "Save Message"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:354
-msgid "Load Message"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:359
-#: src/openrpgeditor/Core/MainWindow.cpp:594
-msgid "File"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:368
-msgid "Emerge"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:373
-msgid "Preemptive"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:377
-msgid "Surprise"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:382
-msgid "Escape Start"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:387
-msgid "Escape Failure"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:392
-msgid "Victory"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:398
-msgid "Defeat"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:403
-msgid "Obtain EXP"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:407
-msgid "Obtain Gold"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:412
-msgid "Obtain Item"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:417
-msgid "Level Up"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:421
-msgid "Obtain Skill"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:431
-msgid "Critical To Enemy"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:436
-msgid "Critical To Actor"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:447
-msgid "Actor Recovery"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:452
-msgid "Actor Gain"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:456
-msgid "Actor Loss"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:461
-msgid "Actor Drain"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:466
-msgid "Actor No Damage"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:470
-msgid "Actor No Hit"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:480
-msgid "Enemy Recovery"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:485
-msgid "Enemy Gain"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:489
-msgid "Enemy Loss"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:494
-msgid "Enemy Drain"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:499
-msgid "Enemy No Damage"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:503
-msgid "Enemy No Hit"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:532
-msgid "Buff Add"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:536
-msgid "Debuff Add"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:541
-msgid "Buff Remove"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBTermsTab.cpp:546
-msgid "Action Failure"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:53
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:89
-msgid "Animations"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:73
-#, c++-format
-msgid "Max Animations {}"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:74
-msgid "Change Max"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:90
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:41
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:60
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:74
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:124
 msgid "General Settings"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:96
-#: src/openrpgeditor/Core/DatabaseEditor/DBDocTab.cpp:168
-msgid "Name:"
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:72
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:136
+msgid "Display Name"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:105
-msgid "Images:"
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:82
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTileset.cpp:32
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:146
+msgid "Tileset"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:124
-msgid "Play"
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:88
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:139
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:125
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:152
+msgid "Width"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:132
-msgid "Frame:"
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:97
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:147
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:133
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:161
+msgid "Height"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:472
-msgid "Change Max Animations"
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:109
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:173
+msgid "Scroll Type"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:475
-msgid ""
-"Specify an amount to resize the animation list to\n"
-"This cannot be undone!"
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:127
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:191
+msgid "Encounter Steps"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:479
-msgid "Accept"
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:140
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:204
+msgid "Autoplay BGM"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:490
-msgid "Confirm Change"
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:147
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:211
+msgid "Autoplay BGS"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBAnimationsTab.cpp:492
-msgid "Are you sure?"
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:158
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:222
+msgid "Specify Battleback"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBDocTab.cpp:40
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:171
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:235
+msgid "Disable Dashing"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:184
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:248
+msgid "Parallax Background"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:188
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementChangeImage.cpp:41
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeVehicleImage.cpp:75
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:36
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:153
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:380
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:220
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:252
+msgid "Image"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:201
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:265
+msgid "Horizontal scroll speed for parallax background, in tiles"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:213
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:277
+msgid "Vertical scroll speed for parallax background, in tiles"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:221
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:284
+msgid "Show in the Editor"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:229
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:292
+msgid "Note"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/AudioEditor.cpp:25
+#: src/openrpgeditor/Editor/CommonUI/ImagePicker.cpp:177
+#: src/openrpgeditor/Editor/CommonUI/ImagePicker.cpp:262
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:359
+#: src/openrpgeditor/Editor/EventCommands/Dialog_PlayMovie.cpp:28
+#: src/openrpgeditor/Editor/MainWindow.cpp:838
+msgid "File"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/AudioEditor.cpp:101
+msgid "Volume"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/AudioEditor.cpp:107
+msgid "Pitch"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/AudioEditor.cpp:113
+msgid "Pan"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/ImagePicker.cpp:146
+msgid "Select an Image"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:676
+msgid "New..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1073
+msgid "Flow Control"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1106
+msgid "Scene"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1156
+#: src/openrpgeditor/Editor/DatabaseEditor/DBSystemTab.hpp:26
+msgid "System"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1232
+msgid "Command Window"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1241
+msgid "Select a preset to insert into selection..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1265
+msgid "Error loading template: "
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/TextEditor.cpp:86
+#: src/openrpgeditor/Editor/MainWindow.cpp:896
+msgid "Undo"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/TextEditor.cpp:92
+#: src/openrpgeditor/Editor/MainWindow.cpp:903
+msgid "Redo"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/TextEditor.cpp:100
+#: src/openrpgeditor/Editor/MainWindow.cpp:910
+msgid "Cut"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/TextEditor.cpp:105
+#: src/openrpgeditor/Editor/MainWindow.cpp:913
+msgid "Copy"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/TextEditor.cpp:110
+#: src/openrpgeditor/Editor/MainWindow.cpp:916
+msgid "Paste"
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/TextEditor.cpp:117
+msgid "Find..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/TextEditor.cpp:130
+#: src/openrpgeditor/Editor/MapEditor.cpp:737
+msgid "Insert..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/CommonUI/TextEditor.cpp:147
+msgid "Line #"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:20
+msgid "Full"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:28
+msgid "Abbreviation"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:85
+msgid "Hit"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:99
+msgid "Lv"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:114
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:117
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:221
+msgid "TP"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:133
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:249
+msgid "Fight"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:154
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:263
+msgid "Status"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:157
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:265
+msgid "Formation"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:160
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:267
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:220
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:299
+msgid "Options"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:166
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:271
+msgid "Game End"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:181
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:283
+msgid "Optimize"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:187
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:287
+msgid "Buy"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:190
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:289
+msgid "Sell"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:193
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:291
+msgid "New Game"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:196
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:293
+msgid "Continue"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:199
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:295
+msgid "To Title"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:217
+msgid "Basic Statuses"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:225
+msgid "Parameters"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:247
+msgid "Commands"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:261
+msgid "Equip (Pause Screen)"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:301
+msgid "Messages"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:306
+msgid "Always Dash"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:311
+msgid "Command Remember"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:316
+msgid "BGM Volume"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:320
+msgid "BGS Volume"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:325
+msgid "ME Volume"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:330
+msgid "SE Volume"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:335
+msgid "Possession"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:340
+msgid "EXP Total"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:345
+msgid "EXP Next"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:349
+msgid "Save Message"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:354
+msgid "Load Message"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:368
+msgid "Emerge"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:373
+msgid "Preemptive"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:377
+msgid "Surprise"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:382
+msgid "Escape Start"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:387
+msgid "Escape Failure"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:392
+msgid "Victory"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:398
+msgid "Defeat"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:403
+msgid "Obtain EXP"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:407
+msgid "Obtain Gold"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:412
+msgid "Obtain Item"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:417
+msgid "Level Up"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:421
+msgid "Obtain Skill"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:431
+msgid "Critical To Enemy"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:436
+msgid "Critical To Actor"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:447
+msgid "Actor Recovery"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:452
+msgid "Actor Gain"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:456
+msgid "Actor Loss"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:461
+msgid "Actor Drain"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:466
+msgid "Actor No Damage"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:470
+msgid "Actor No Hit"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:480
+msgid "Enemy Recovery"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:485
+msgid "Enemy Gain"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:489
+msgid "Enemy Loss"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:494
+msgid "Enemy Drain"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:499
+msgid "Enemy No Damage"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:503
+msgid "Enemy No Hit"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:532
+msgid "Buff Add"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:536
+msgid "Debuff Add"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:541
+msgid "Buff Remove"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:546
+msgid "Action Failure"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBDocTab.cpp:24
 msgid "New Category"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBDocTab.cpp:41
+#: src/openrpgeditor/Editor/DatabaseEditor/DBDocTab.cpp:25
 msgid "Begin adding text!"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBDocTab.cpp:50
+#: src/openrpgeditor/Editor/DatabaseEditor/DBDocTab.cpp:34
 msgid "Adds a new category."
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBDocTab.cpp:75
+#: src/openrpgeditor/Editor/DatabaseEditor/DBDocTab.cpp:59
 msgid "Removes a category."
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBDocTab.cpp:92
+#: src/openrpgeditor/Editor/DatabaseEditor/DBDocTab.cpp:76
 msgid "Moves the selected category up by one on its index."
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBDocTab.cpp:110
+#: src/openrpgeditor/Editor/DatabaseEditor/DBDocTab.cpp:94
 msgid "Moves the selected category down by one on its index."
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBDocTab.cpp:131
+#: src/openrpgeditor/Editor/DatabaseEditor/DBDocTab.cpp:115
 msgid "No headers available"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBDocTab.cpp:184
-#: src/openrpgeditor/Core/MainWindow.cpp:649
+#: src/openrpgeditor/Editor/DatabaseEditor/DBDocTab.cpp:152
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:80
+msgid "Name:"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBDocTab.cpp:168
+#: src/openrpgeditor/Editor/MainWindow.cpp:895
 msgid "Edit"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBDocTab.cpp:192
+#: src/openrpgeditor/Editor/DatabaseEditor/DBDocTab.cpp:176
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:352
+#: src/openrpgeditor/Editor/SettingsDialog.cpp:50
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:328
 msgid "Apply"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBDocTab.cpp:264
+#: src/openrpgeditor/Editor/DatabaseEditor/DBDocTab.cpp:248
 msgid "\tNo documentation available."
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBDocTab.cpp:463
+#: src/openrpgeditor/Editor/DatabaseEditor/DBDocTab.cpp:447
 msgid ""
 "Headers: \n"
 "##\n"
@@ -2770,19 +3825,174 @@ msgid ""
 "Font Scale: \\f0.5<text>"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBMappingsTab.cpp:423
-#: src/openrpgeditor/Core/DatabaseEditor/DBMappingsTab.cpp:434
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:36
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:692
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.hpp:18
+msgid "Animations"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:57
+#, c++-format
+msgid "Max Animations {}"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:58
+msgid "Change Max"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:89
+msgid "Images:"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:108
+msgid "Play"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:116
+msgid "Frame:"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:458
+msgid "Change Max Animations"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:461
+msgid ""
+"Specify an amount to resize the animation list to\n"
+"This cannot be undone!"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:465
+msgid "Accept"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:476
+msgid "Confirm Change"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:478
+msgid "Are you sure?"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBMappingsTab.cpp:418
+#: src/openrpgeditor/Editor/DatabaseEditor/DBMappingsTab.cpp:429
 #, c++-format
 msgid "Max Switches {}"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBMappingsTab.cpp:613
-#: src/openrpgeditor/Core/DatabaseEditor/DBMappingsTab.cpp:624
+#: src/openrpgeditor/Editor/DatabaseEditor/DBMappingsTab.cpp:608
+#: src/openrpgeditor/Editor/DatabaseEditor/DBMappingsTab.cpp:619
 #, c++-format
 msgid "Max Variables {}"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBMappingsTab.hpp:24
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:76
+msgid "Save pending changes if you are editing text."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:85
+msgid "Sets the speed at which the text displays."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:95
+msgid "Displays the value of a variable."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:105
+msgid "Display the name of the actor by index."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:115
+msgid "Display the name of the party member by index."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:125
+msgid ""
+"Draw the text following in the specified color index. Text color is based "
+"off Window.png system image."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:135
+msgid "Shows the currency unit."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:145
+msgid "Displays an icon by its index."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:155
+msgid "Increase the text by 1 step."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:165
+msgid "Decrease the text by 1 step."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:175
+msgid "Open the gold window."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:185
+msgid "Wait for 1/4 second."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:195
+msgid "Wait for 1 second."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:205
+msgid "Wait for button input."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:215
+msgid "Display remaining text on the same line all at once."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:225
+msgid "Cancels display all effect."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:235
+msgid "Do not wait for input after text display."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:268
+msgid "Navigates to the previous untranslated pair."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:282
+msgid "Navigates to the next untranslated pair."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.cpp:291
+msgid "Shows only untranslated pairs or cancels untranslated navigation."
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBSystemTab.cpp:88
+#: src/openrpgeditor/Editor/DatabaseEditor/DBSystemTab.cpp:101
+msgid "Party Member"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBClassesTab.hpp:22
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:324
+msgid "Classes"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBDocTab.hpp:10
+msgid "Documentation"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBEnemiesTab.hpp:21
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:554
+msgid "Enemies"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.hpp:17
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:120
+msgid "Locales"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBMappingsTab.hpp:14
 msgid ""
 "Reference updating does not support:\n"
 "- Ranges\n"
@@ -2790,519 +4000,1020 @@ msgid ""
 "These must be updated manually."
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:97
-msgid "Save pending changes if you are editing text."
+#: src/openrpgeditor/Editor/DatabaseEditor/DBMappingsTab.hpp:16
+msgid "Data Sorting"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:106
-msgid "Sets the speed at which the text displays."
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.hpp:14
+msgid "Terms"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:116
-msgid "Displays the value of a variable."
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTroopsTab.hpp:19
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:600
+msgid "Troops"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:126
-msgid "Display the name of the actor by index."
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTypesTab.hpp:14
+msgid "Types"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:136
-msgid "Display the name of the party member by index."
+#: src/openrpgeditor/Editor/DatabaseEditor/DBSkillsTab.cpp:447
+msgid "Element:"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:146
+#: src/openrpgeditor/Editor/DatabaseEditor/DBSkillsTab.cpp:481
+msgid "Formula"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBActorsTab.hpp:22
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:280
+msgid "Actors"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBActorsTab.cpp:341
+msgid "Weapon:"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBActorsTab.cpp:341
+msgid "Armor:"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBCommonEventsTab.hpp:15
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:784
+msgid "Common Events"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBTemplatesTab.hpp:19
+msgid "Templates"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.hpp:15
+msgid "Game Constants"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:9
+msgid "Constant Alias"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:84
+#, c-format
+msgid "Name: %s"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:88
+msgid "Alias: Selected alias is invalid!"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:92
+msgid "Alias:"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:123
+msgid "Alias"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:156
+msgid "Delete constant export"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:162
+msgid "Exported Constants"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:168
+msgid "Generate JS file"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:169
+msgid "Generate Now"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:186
+msgid "Variables"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:187
+msgid "When exported to Constants.js all Variables will be prefixed with VAR_"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:236
+msgid "Switches"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:237
+msgid "When exported to Constants.js all Switches will be prefixed with SW_"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:281
+msgid "When exported to Constants.js all Actors will be prefixed with ACT_"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:325
+msgid "When exported to Constants.js all Classes will be prefixed with CLS_"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:371
+msgid "When exported to Constants.js all Skills will be prefixed with SKL_"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:417
+msgid "When exported to Constants.js all Items will be prefixed with ITM_"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:463
+msgid "When exported to Constants.js all Weapons will be prefixed with WPN_"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:509
+msgid "When exported to Constants.js all Armors will be prefixed with ARM_"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:555
+msgid "When exported to Constants.js all Enemies will be prefixed with ENM_"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:601
+msgid "When exported to Constants.js all Troops will be prefixed with TRP_"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:647
+msgid "When exported to Constants.js all States will be prefixed with STA_"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:693
+msgid "When exported to Constants.js all Animations will be prefixed with ANM_"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:739
+msgid "When exported to Constants.js all Tilesets will be prefixed with TLS_"
+msgstr ""
+
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:785
 msgid ""
-"Draw the text following in the specificed color index. Text color is based "
-"off Window.png system image."
+"When exported to Constants.js all Common Events will be prefixed with CMN_"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:156
-msgid "Shows the currency unit."
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:830
+#: src/openrpgeditor/Editor/MapListView.cpp:237
+msgid "Maps"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:166
-msgid "Displays an icon by its index."
+#: src/openrpgeditor/Editor/DatabaseEditor/DBGameConstantsTab.cpp:831
+msgid "When exported to Constants.js all Maps will be prefixed with MAP_"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:176
-msgid "Increase the text by 1 step."
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementJump.cpp:23
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:78
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:105
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:64
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:91
+msgid "X"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:186
-msgid "Decrease the text by 1 step."
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementJump.cpp:29
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:84
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:115
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:70
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:101
+msgid "Y"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:196
-msgid "Open the gold window."
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementWait.cpp:22
+#: src/openrpgeditor/Editor/EventCommands/Dialog_FadeoutBGM.cpp:24
+#: src/openrpgeditor/Editor/EventCommands/Dialog_FadeoutBGS.cpp:24
+#: src/openrpgeditor/Editor/EventCommands/Dialog_FlashScreen.cpp:27
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShakeScreen.cpp:43
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TintPicture.cpp:36
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TintScreen.cpp:28
+#: src/openrpgeditor/Editor/EventCommands/Dialog_Wait.cpp:24
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:176
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetWeatherEffect.cpp:56
+msgid "Duration"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:206
-msgid "Wait for 1/4 second."
+#: src/openrpgeditor/Editor/EventCommands/MovementRoute/Dialog_MovementWait.cpp:25
+#: src/openrpgeditor/Editor/EventCommands/Dialog_Wait.cpp:27
+#, c-format
+msgid "%4d frames (1/60 sec)"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:216
-msgid "Wait for 1 second."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_BattleProcessing.cpp:22
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:308
+msgid "Troop"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:226
-msgid "Wait for button input."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_BattleProcessing.cpp:35
+msgid "Designation with variable"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:236
-msgid "Display remaining text on the same line all at once."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_BattleProcessing.cpp:53
+msgid "Can Escape"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:246
-msgid "Cancels display all effect."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_BattleProcessing.cpp:55
+msgid "Can Lose"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:256
-msgid "Do not wait for input after text display."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyHP.cpp:51
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyMP.cpp:51
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyState.cpp:51
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyTP.cpp:51
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeGold.cpp:31
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeHP.cpp:62
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeItems.cpp:38
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeLevel.cpp:62
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMP.cpp:61
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeParameter.cpp:79
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangePartyMember.cpp:39
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeSkill.cpp:61
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeState.cpp:61
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTP.cpp:62
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeWeapons.cpp:39
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlSelfSwitch.cpp:41
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlSwitches.cpp:69
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeArmors.cpp:39
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEXP.cpp:66
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlTimer.cpp:22
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlVariables.cpp:74
+msgid "Operation"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:289
-msgid "Navigates to the previous untranslated pair."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyHP.cpp:65
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyMP.cpp:65
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEnemyTP.cpp:65
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeGold.cpp:44
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeHP.cpp:75
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeItems.cpp:52
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeLevel.cpp:75
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMP.cpp:74
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeParameter.cpp:94
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTP.cpp:75
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeWeapons.cpp:54
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeArmors.cpp:54
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEXP.cpp:79
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlVariables.cpp:92
+msgid "Operand"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:303
-msgid "Navigates to the next untranslated pair."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEquipment.cpp:37
+msgid "Equipment Type"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor/DBLocaleTab.cpp:312
-msgid "Shows only untranslated pairs or cancels untranslated navigation."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEquipment.cpp:53
+msgid "Equipment Item"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:75
-msgid "Player"
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeNickname.cpp:43
+msgid "Nickname"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:79
-msgid "This Event"
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlSwitches.cpp:29
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlVariables.cpp:31
+msgid "Single"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:102
-msgid "Step"
+#: src/openrpgeditor/Editor/EventCommands/Dialog_EnemyTransform.cpp:58
+msgid "Transform to"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:125
-msgid "Repeat Movements"
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ErasePicture.cpp:23
+#: src/openrpgeditor/Editor/EventCommands/Dialog_RotatePicture.cpp:23
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:24
+msgid "Picture Number"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:129
-msgid "Skip If Cannot Move"
+#: src/openrpgeditor/Editor/EventCommands/Dialog_FlashScreen.cpp:22
+msgid "Flash Color"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:134
+#: src/openrpgeditor/Editor/EventCommands/Dialog_FlashScreen.cpp:32
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShakeScreen.cpp:48
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TintPicture.cpp:41
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TintScreen.cpp:33
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowBalloonIcon.cpp:65
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowAnimation.cpp:58
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:181
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetWeatherEffect.cpp:61
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:231
 msgid "Wait for Completion"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:185
-msgid "Jump..."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_FlashScreen.cpp:38
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShakeScreen.cpp:54
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TintPicture.cpp:47
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TintScreen.cpp:39
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:187
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetWeatherEffect.cpp:67
+#, c-format
+msgid "%d frames (1/60 sec)"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:189
-msgid "Wait..."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_GameData.cpp:51
+#: src/openrpgeditor/Editor/EventCommands/Dialog_GameData.cpp:66
+#: src/openrpgeditor/Editor/EventCommands/Dialog_GameData.cpp:81
+msgid "(Possession Count)"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:219
-msgid "Turn 90° Right or Left"
+#: src/openrpgeditor/Editor/EventCommands/Dialog_GameData.cpp:197
+msgid "(Actor ID)"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:231
-msgid "Switch ON..."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_JumpToLabel.cpp:24
+#: src/openrpgeditor/Editor/EventCommands/Dialog_Label.cpp:24
+msgid "Label Name"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:235
-msgid "Switch OFF..."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_NameInputProcessing.cpp:43
+msgid "Max characters"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:239
-msgid "Change Speed..."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_RotatePicture.cpp:31
+msgid "Rotation"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:240
-msgid "Change Speed"
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetVehicleLocation.cpp:41
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TransferPlayer.cpp:24
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetEventLocation.cpp:45
+msgid "Location"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:243
-msgid "Change Frequency..."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetVehicleLocation.cpp:43
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TransferPlayer.cpp:26
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetEventLocation.cpp:47
+msgid "Direct Designation"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:244
-msgid "Change Frequency"
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShakeScreen.cpp:25
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetWeatherEffect.cpp:44
+msgid "Power"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:282
-msgid "Change Image..."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShopProcessing.cpp:32
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShopProcessing_Goods.cpp:23
+msgid "Merchandise"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:283
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:196
-msgid "Image"
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShopProcessing.cpp:33
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShopProcessing_Goods.cpp:66
+msgid "Price"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:286
-msgid "Change Opacity..."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShopProcessing.cpp:48
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShopProcessing.cpp:73
+msgid "Goods Processing"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:287
-msgid "Opacity"
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShopProcessing.cpp:89
+msgid "Purchase Only"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:290
-msgid "Change Blend Mode..."
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowBattleAnimation.cpp:41
+msgid "Target all enemies in troop?"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:291
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:25
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TintPicture.cpp:23
+msgid "Picture"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:27
+msgid "Number"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:48
+msgid "Position"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:52
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:38
+msgid "Origin"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:137
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:123
+#: src/openrpgeditor/Editor/MainWindow.cpp:979
+msgid "Scale"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:157
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:143
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:165
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:388
 msgid "Blend"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:294
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:159
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:145
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:159
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:384
+msgid "Opacity"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowPicture.cpp:167
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:153
+#: src/openrpgeditor/Editor/MainWindow.cpp:935
+msgid "Mode"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TintPicture.cpp:31
+#: src/openrpgeditor/Editor/EventCommands/Dialog_TintScreen.cpp:23
+msgid "Color Tone"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetEventLocation.cpp:24
+#: src/openrpgeditor/Editor/MainWindow.cpp:372
+#: src/openrpgeditor/Editor/MainWindow.cpp:939
+msgid "Event"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetEventLocation.cpp:97
+msgid "Exchange with another event"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeProfile.cpp:35
+msgid "Profile"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEncounter.cpp:23
+msgid "Encounter"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeFormationAccess.cpp:22
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeTransparency.cpp:22
+msgid "Formation Access"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMapDisplayName.cpp:22
+msgid "Map Name Display"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeMenuAccess.cpp:23
+msgid "Menu Access"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangePlayerFollowers.cpp:24
+msgid "Player Followers"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeSaveAccess.cpp:23
+msgid "Save Access"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlTimer.cpp:36
+msgid "Time"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlTimer.cpp:39
+#, c-format
+msgid "%2d min"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlTimer.cpp:44
+#, c-format
+msgid "%2d sec"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeBattleBack.cpp:30
+msgid "Battle Background"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeParallax.cpp:32
+msgid "Parallax Background Image"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:22
+msgid "Choices"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:39
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowText.cpp:63
+msgid "Background"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:56
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowText.cpp:78
+msgid "Window Position"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:73
+msgid "Default"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:76
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:84
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:103
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:118
+#, c++-format
+msgid "Choice #{}"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:101
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:109
+msgid "Branch"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:102
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowChoice.cpp:113
+msgid "Disallow"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowScrollingText.cpp:41
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowText.cpp:118
+msgid "Preview..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowScrollingText.cpp:41
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowText.cpp:118
+msgid "UNIMPLEMENTED"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowBalloonIcon.cpp:43
+msgid "Balloon Icon"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_InputNumber.cpp:33
+msgid "Digits"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SelectItem.cpp:32
+msgid "Item Type"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowText.cpp:45
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeActorImages.cpp:71
+msgid "Face"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ShowText.cpp:103
+msgid "Batch Entry"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_MovePicture.cpp:34
+msgid "Position And Scale"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetWeatherEffect.cpp:23
+msgid "Weather"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetWeatherEffect.cpp:27
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:239
+#: src/openrpgeditor/Editor/JSONInspector.cpp:294
+msgid "Type"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ScrollMap.cpp:45
+msgid "Distance"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeActorImages.cpp:67
+msgid "Images"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeActorImages.cpp:89
+msgid "[SV] Battler"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:103
+msgid "Step"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:141
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:337
+msgid "Change Speed"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:147
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:341
+msgid "Change Frequency"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:222
+msgid "Repeat Movements"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:226
+msgid "Skip If Cannot Move"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:282
+msgid "Jump..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:286
+msgid "Wait..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:316
+msgid "Turn 90° Right or Left"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:328
+msgid "Switch ON..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:332
+msgid "Switch OFF..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:336
+msgid "Change Speed..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:340
+msgid "Change Frequency..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:379
+msgid "Change Image..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:383
+msgid "Change Opacity..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:387
+msgid "Change Blend Mode..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:391
 msgid "Play SE..."
 msgstr ""
 
-#: src/openrpgeditor/Core/EventCommands/Dialog_SetMovementRoute.cpp:298
+#: src/openrpgeditor/Editor/EventCommands/Dialog_SetMovementRoute.cpp:395
 msgid "Script..."
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:63
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:72
+msgid "Data"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:99
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:188
+msgid "is"
+msgstr ""
+
+#. TL-NOTE: Minutes
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:224
+#, c-format
+msgid "%d min"
+msgstr ""
+
+#. TL-NOTE: Seconds
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:230
+#, c-format
+msgid "%d sec"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:274
+msgid "In the party"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:362
+msgid "Entity"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:422
+msgid "is facing"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:464
+msgid "is driven"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:496
+msgid "Misc"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:510
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ControlVariables.cpp:104
+msgid "Script:"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:611
+msgid "is pressed down"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventCommands/Dialog_ConditionalBranch.cpp:726
+msgid "Create Else Branch"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:85
 msgid "Page Name:"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:64
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:86
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:95
+msgid "Clear Page"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:88
 msgid ""
 "Page names are an Open RPG Editor addition and will not be viewable in RPG "
 "Maker MV/MZ"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:71
-msgid "Clear Page"
-msgstr ""
-
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:78
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:102
 msgid "Conditions"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:183
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:62
-msgid "Actors"
-msgstr ""
-
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:206
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:234
 msgid "Autonomous Movement"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:211
-msgid "Type"
-msgstr ""
-
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:215
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:243
 msgid "Freq"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:233
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:261
 msgid "Route..."
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:273
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:301
 msgid "Walking"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:277
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:305
 msgid "Stepping"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:281
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:309
 msgid "Direction Fix"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:285
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:313
 msgid "Through"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:295
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:323
 msgid "Priority"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor/EVPage.cpp:310
+#: src/openrpgeditor/Editor/EventEditor/EVPage.cpp:338
 msgid "Trigger"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:37
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:113
 msgid "Map Properties"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:44
-#, c++-format
-msgid "Name - ID: {}"
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:304
+msgid "Encounters"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:59
-msgid "Display Name"
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:309
+msgid "Weight"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:69
-msgid "Tileset"
+#: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:329
+msgid "Entire Map"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:84
-msgid "Width"
+#: src/openrpgeditor/Editor/FirstBootWizard/ProjectLocationPage.hpp:7
+msgid "Specify Default Project Location"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:96
-msgid "Height"
+#: src/openrpgeditor/Editor/FirstBootWizard/RPGMakerLocationAndVersionPage.cpp:18
+msgid "RPG Maker MV Location(*)"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:106
-msgid "Scroll Type"
+#: src/openrpgeditor/Editor/FirstBootWizard/RPGMakerLocationAndVersionPage.cpp:27
+#: src/openrpgeditor/Editor/FirstBootWizard/RPGMakerLocationAndVersionPage.cpp:74
+#: src/openrpgeditor/Editor/SettingsDialog/GeneralSettingsTab.cpp:63
+#: src/openrpgeditor/Editor/SettingsDialog/RPGMakerLocationAndVersionTab.cpp:26
+#: src/openrpgeditor/Editor/SettingsDialog/RPGMakerLocationAndVersionTab.cpp:74
+msgid "Choose..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:128
-msgid "Enc. Steps"
+#: src/openrpgeditor/Editor/FirstBootWizard/RPGMakerLocationAndVersionPage.hpp:7
+msgid "Specify RPG Maker MV/MZ Location and Version"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:142
-msgid "Autoplay BGM"
+#: src/openrpgeditor/Editor/FirstBootWizard/UISettingsPage.hpp:7
+msgid "UI Settings"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:160
-msgid "Autoplay BGS"
+#: src/openrpgeditor/Editor/FirstBootWizard/WelcomePage.cpp:9
+msgid ""
+"Welcome Open RPG Editor, the free Open Source drop-in replacement for RPG "
+"Maker MV/MZ."
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:176
-msgid "Battleback"
+#: src/openrpgeditor/Editor/FirstBootWizard/WelcomePage.cpp:10
+msgid "License"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:194
-msgid "Disable Dashing"
+#: src/openrpgeditor/Editor/FirstBootWizard/WelcomePage.hpp:7
+msgid "Welcome to Open RPG Editor"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:206
-msgid "Parallax Background"
+#: src/openrpgeditor/Editor/FirstBootWizard/ExperimentalWarning.cpp:13
+msgid "⚠ EXPERIMENTAL ⚠"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:251
-msgid "Show in Editor"
+#: src/openrpgeditor/Editor/FirstBootWizard/ExperimentalWarning.cpp:20
+msgid ""
+"\n"
+"This version of Open RPG Editor is EXPERIMENTAL and is not recommended for "
+"regular development use.\n"
+"The UI is preliminary and subject to change, and there may be edge cases "
+"that can cause data corruption.\n"
+"Be sure to keep backups of your projects just in case you encounter a bug or "
+"oversight.\n"
+"If you're not comfortable using this software, please close the software and "
+"continue using RPG Maker\n"
+"for the time being.\n"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor/MapProperties.cpp:265
-msgid "Note"
+#: src/openrpgeditor/Editor/FirstBootWizard/ExperimentalWarning.hpp:7
+msgid "Experimental Version!"
 msgstr ""
 
-#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:10
-msgid "General"
-msgstr ""
-
-#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:11
+#: src/openrpgeditor/Editor/SettingsDialog/GeneralSettingsTab.cpp:20
 msgid "Debug & Experimental Features"
 msgstr ""
 
 #. TL-NOTE: "I Know What I'm Doing" should *not* be localized
-#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:13
+#: src/openrpgeditor/Editor/SettingsDialog/GeneralSettingsTab.cpp:23
 msgid "Type \"I Know What I'm Doing\" to enable features."
 msgstr ""
 
-#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:17
+#: src/openrpgeditor/Editor/SettingsDialog/GeneralSettingsTab.cpp:32
 msgid "Experimental"
 msgstr ""
 
-#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:20
+#: src/openrpgeditor/Editor/SettingsDialog/GeneralSettingsTab.cpp:38
 msgid "Debug"
 msgstr ""
 
-#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:23
+#: src/openrpgeditor/Editor/SettingsDialog/GeneralSettingsTab.cpp:44
 msgid "Max Recent Projects"
 msgstr ""
 
-#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:33
+#: src/openrpgeditor/Editor/SettingsDialog/GeneralSettingsTab.cpp:57
 msgid "Project Base Directory Location"
 msgstr ""
 
-#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:33
+#: src/openrpgeditor/Editor/SettingsDialog/GeneralSettingsTab.cpp:70
 msgid "Sets the directory where projects are stored"
 msgstr ""
 
-#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:44
-msgid "Choose..."
-msgstr ""
-
-#: src/openrpgeditor/Core/SettingsDialog/GeneralSettingsTab.cpp:53
+#: src/openrpgeditor/Editor/SettingsDialog/GeneralSettingsTab.cpp:84
 msgid "Select a directory to store RPG Maker game projects"
 msgstr ""
 
-#: src/openrpgeditor/Core/TroopsEventEditor/TroopsEVEditor.cpp:30
-#: src/openrpgeditor/Core/EventEditor.cpp:45
+#: src/openrpgeditor/Editor/SettingsDialog/GeneralSettingsTab.hpp:7
+msgid "General"
+msgstr ""
+
+#: src/openrpgeditor/Editor/SettingsDialog/RPGMakerLocationAndVersionTab.cpp:16
+msgid "RPG Maker MV Location"
+msgstr ""
+
+#: src/openrpgeditor/Editor/SettingsDialog/RPGMakerLocationAndVersionTab.hpp:9
+msgid "RPG Maker Location & Version"
+msgstr ""
+
+#: src/openrpgeditor/Editor/SettingsDialog/UISettingsTab.cpp:9
+msgid "UI Scale"
+msgstr ""
+
+#: src/openrpgeditor/Editor/SettingsDialog/UISettingsTab.hpp:8
+msgid "UI"
+msgstr ""
+
+#: src/openrpgeditor/Editor/TroopsEventEditor/TroopsEVEditor.cpp:35
+#: src/openrpgeditor/Editor/EventEditor.cpp:54
 msgid ""
 "Copy\n"
 "Event Page"
 msgstr ""
 
-#: src/openrpgeditor/Core/TroopsEventEditor/TroopsEVEditor.cpp:32
-#: src/openrpgeditor/Core/EventEditor.cpp:49
+#: src/openrpgeditor/Editor/TroopsEventEditor/TroopsEVEditor.cpp:37
+#: src/openrpgeditor/Editor/EventEditor.cpp:64
 msgid ""
 "Paste\n"
 "Event Page"
 msgstr ""
 
-#: src/openrpgeditor/Core/TroopsEventEditor/TroopsEVEditor.cpp:35
+#: src/openrpgeditor/Editor/TroopsEventEditor/TroopsEVEditor.cpp:40
 msgid ""
 "Delete\n"
 "Event Page"
 msgstr ""
 
-#: src/openrpgeditor/Core/TroopsEventEditor/TroopsEVEditor.cpp:40
+#: src/openrpgeditor/Editor/TroopsEventEditor/TroopsEVEditor.cpp:45
 msgid ""
 "Clear\n"
 "Event Page"
 msgstr ""
 
-#: src/openrpgeditor/Core/EditorPlugin/EditorPluginManager.cpp:43
+#: src/openrpgeditor/Editor/EditorPlugin/EditorPluginManager.cpp:61
 msgid "Plugin Manager"
 msgstr ""
 
-#: src/openrpgeditor/Core/EditorPlugin/EditorPluginManager.cpp:46
+#: src/openrpgeditor/Editor/EditorPlugin/EditorPluginManager.cpp:64
 msgid "Plugins"
 msgstr ""
 
-#: src/openrpgeditor/Core/EditorPlugin/EditorPluginManager.cpp:59
+#: src/openrpgeditor/Editor/EditorPlugin/EditorPluginManager.cpp:77
 msgid "File Listing"
 msgstr ""
 
-#: src/openrpgeditor/Core/EditorPlugin/EditorPluginManager.cpp:72
+#: src/openrpgeditor/Editor/EditorPlugin/EditorPluginManager.cpp:90
 msgid "Information"
 msgstr ""
 
-#: src/openrpgeditor/Core/EditorPlugin/EditorPluginManager.cpp:84
+#: src/openrpgeditor/Editor/EditorPlugin/EditorPluginManager.cpp:102
 msgid "Author"
 msgstr ""
 
-#: src/openrpgeditor/Core/EditorPlugin/EditorPluginManager.cpp:90
+#: src/openrpgeditor/Editor/EditorPlugin/EditorPluginManager.cpp:108
 msgid "Email"
 msgstr ""
 
-#: src/openrpgeditor/Core/EditorPlugin/EditorPluginManager.cpp:95
+#: src/openrpgeditor/Editor/EditorPlugin/EditorPluginManager.cpp:113
 msgid "Date Created"
 msgstr ""
 
-#: src/openrpgeditor/Core/EditorPlugin/EditorPluginManager.cpp:97
+#: src/openrpgeditor/Editor/EditorPlugin/EditorPluginManager.cpp:115
 msgid "Last Modified"
 msgstr ""
 
-#: src/openrpgeditor/Core/EditorPlugin/EditorPluginManager.cpp:100
+#: src/openrpgeditor/Editor/EditorPlugin/EditorPluginManager.cpp:118
 msgid "Description"
 msgstr ""
 
-#: src/openrpgeditor/Core/EditorPlugin/EditorPluginManager.cpp:103
+#: src/openrpgeditor/Editor/EditorPlugin/EditorPluginManager.cpp:121
 msgid "Select a Plugin"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor.cpp:515
-msgid "Map Editor"
+#: src/openrpgeditor/Editor/EventListView.cpp:12
+msgid "Events"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor.cpp:536
-#: src/openrpgeditor/Core/MapEditor.cpp:549
-msgid "Insert template..."
+#: src/openrpgeditor/Editor/EventListView.cpp:18
+msgid "Location (X,Y)"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor.cpp:538
-#: src/openrpgeditor/Core/MapEditor.cpp:556
-msgid "Save as template..."
+#: src/openrpgeditor/Editor/EventListView.cpp:27
+msgid "Player Start"
 msgstr ""
 
-#: src/openrpgeditor/Core/MapEditor.cpp:540
-#: src/openrpgeditor/Core/MapEditor.cpp:551
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:110
-#: src/openrpgeditor/Core/EventEditor.cpp:53
-msgid "Templates"
-msgstr ""
-
-#: src/openrpgeditor/Core/MapEditor.cpp:571
-#: src/openrpgeditor/Core/EventEditor.cpp:84
-msgid "New Event Template"
-msgstr ""
-
-#: src/openrpgeditor/Core/MapEditor.cpp:601
-#: src/openrpgeditor/Core/EventEditor.cpp:90
-msgid "Saved event as template successfully!"
-msgstr ""
-
-#: src/openrpgeditor/Core/MapEditor.cpp:603
-#: src/openrpgeditor/Core/EventEditor.cpp:92
-msgid "Failed to saved event as template!"
-msgstr ""
-
-#: src/openrpgeditor/Core/MapEditor.cpp:734
-msgid "Scale:"
-msgstr ""
-
-#. TL-NOTE: The braces denote the tile ID x and y positions, they get replaced at runtime with those values
-#: src/openrpgeditor/Core/MapEditor.cpp:739
+#: src/openrpgeditor/Editor/EventListView.cpp:27
 #, c++-format
-msgid "Tile {}, ({}, {})"
+msgid "{}##event_{}"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:65
-msgid "Classes"
+#: src/openrpgeditor/Editor/FirstBootWizard.cpp:15
+msgid " - First Boot Wizard"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:80
-msgid "Enemies"
+#: src/openrpgeditor/Editor/FirstBootWizard.cpp:22
+msgid "Back"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:83
-msgid "Troops"
+#: src/openrpgeditor/Editor/FirstBootWizard.cpp:22
+msgid "Next"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:92
-msgid "Tilesets"
+#: src/openrpgeditor/Editor/FirstBootWizard.cpp:22
+msgid "Finish"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:95
-msgid "Common Events"
+#: src/openrpgeditor/Editor/MapListView.cpp:119
+msgid "Delete Map?"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:98
-msgid "System"
+#: src/openrpgeditor/Editor/MapListView.cpp:122
+#, c++-format
+msgid ""
+"Are you sure you want to delete map {:03}?\n"
+"This operation cannot be undone."
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:101
-msgid "Types"
+#: src/openrpgeditor/Editor/MapListView.cpp:238
+msgid "Display as list"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:104
-msgid "Terms"
+#: src/openrpgeditor/Editor/EventEditor.cpp:30
+#, c++-format
+msgid "Event {} - ID {}"
 msgstr ""
 
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:107
-msgid "Exported Constants"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:113
-msgid "Switches & Variables"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:116
-msgid "Documentation"
-msgstr ""
-
-#: src/openrpgeditor/Core/DatabaseEditor.cpp:119
-msgid "Localization"
-msgstr ""
-
-#: src/openrpgeditor/Core/EventEditor.cpp:52
+#: src/openrpgeditor/Editor/EventEditor.cpp:80
 msgid ""
 "Save as\n"
 "Template"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor.cpp:56
+#: src/openrpgeditor/Editor/EventEditor.cpp:85
 msgid ""
 "Insert\n"
 " Locale Keys"
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor.cpp:69
+#: src/openrpgeditor/Editor/EventEditor.cpp:98
 msgid ""
 "Inserts string keys into all ShowText or ShowChoice commands on the page.\n"
 "- Keys must be seperated by line.\n"
@@ -3310,103 +5021,354 @@ msgid ""
 "This feature is temporary until a proper feature is introduced."
 msgstr ""
 
-#: src/openrpgeditor/Core/EventEditor.cpp:184
+#: src/openrpgeditor/Editor/EventEditor.cpp:114
+#: src/openrpgeditor/Editor/MapEditor.cpp:764
+msgid "New Event Template"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventEditor.cpp:120
+#: src/openrpgeditor/Editor/MapEditor.cpp:794
+msgid "Saved event as template successfully!"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventEditor.cpp:122
+#: src/openrpgeditor/Editor/MapEditor.cpp:796
+msgid "Failed to saved event as template!"
+msgstr ""
+
+#: src/openrpgeditor/Editor/EventEditor.cpp:215
 msgid "No text found"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:220
+#: src/openrpgeditor/Editor/DatabaseEditor.cpp:90
+#: src/openrpgeditor/Editor/MainWindow.cpp:996
+msgid "Database"
+msgstr ""
+
+#: src/openrpgeditor/Editor/AboutDialog.cpp:16
+#: src/openrpgeditor/Editor/AboutDialog.cpp:22
+msgid "About Open RPG Editor"
+msgstr ""
+
+#: src/openrpgeditor/Editor/AboutDialog.cpp:28
+msgid ""
+"\n"
+"Open RPG Editor is an open source, drop-in replacement for RPG Maker MV/MZ.\n"
+"A variety of QoL features are provided to help developers more easily "
+"create\n"
+"their games using a familiar engine.\n"
+"\n"
+"\n"
+"  DEVELOPERS:\n"
+"    Phillip \"Antidote\" Stephens - Project creator, lead developer\n"
+"    Nexus                       - Project co-creator, lead developer\n"
+msgstr ""
+
+#: src/openrpgeditor/Editor/AboutDialog.cpp:47
+msgid "About ImGui"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Application.hpp:19
+msgid "Open RPG Editor"
+msgstr ""
+
+#: src/openrpgeditor/Editor/MapEditor.cpp:51
+msgid "Invalid move command!"
+msgstr ""
+
+#: src/openrpgeditor/Editor/MapEditor.cpp:54
+#: src/openrpgeditor/Editor/MapEditor.cpp:56
+#, c++-format
+msgid "Move {} from {},{} to {},{}"
+msgstr ""
+
+#: src/openrpgeditor/Editor/MapEditor.cpp:88
+#, c++-format
+msgid "Create Event {} at {},{}"
+msgstr ""
+
+#: src/openrpgeditor/Editor/MapEditor.cpp:691
+msgid "Map Editor"
+msgstr ""
+
+#: src/openrpgeditor/Editor/MapEditor.cpp:734
+msgid "Change event id..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/MapEditor.cpp:745
+msgid "Save as..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/MapEditor.cpp:882
+msgid "Scale:"
+msgstr ""
+
+#. TL-NOTE: The braces denote the tile ID x and y positions, they get replaced at runtime with those values
+#: src/openrpgeditor/Editor/MapEditor.cpp:888
+#, c++-format
+msgid "Tile {}, ({}, {})"
+msgstr ""
+
+#: src/openrpgeditor/Editor/MapTools/PenMapTool.hpp:14
+msgid ""
+"Modifies map tiles on a tile by tile basis, AutoTiles will automatically "
+"update their neighboring tiles."
+msgstr ""
+
+#: src/openrpgeditor/Editor/MapTools/PenMapTool.hpp:15
+msgid "Pen Tool"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:212
+#: src/openrpgeditor/Editor/MainWindow.cpp:999
+msgid "NWJS Version Manager"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:214
+msgid "Unable to get version list!"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:215
+msgid "Retrieving version listing..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:217
+msgid "Available Versions"
+msgstr ""
+
+#. TL-NOTE: The second format specifier is update status if the latest version doesn't match the currently set version
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:224
+#, c-format
+msgid "Current Version: %s%s"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:224
+msgid " Update Available!"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:225
+#, c-format
+msgid "Latest Version: %s"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:226
+msgid "Selected Version:"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:228
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:235
+msgid "Latest"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:274
+msgid "Release"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:280
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:300
+msgid "Download"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:280
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:300
+msgid "Extract"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Managers/NWJSVersionManager.cpp:294
+msgid "Development"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Managers/NotificationCenter.cpp:25
+#: src/openrpgeditor/Editor/Managers/NotificationCenter.cpp:36
+msgid "Notification Center"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Managers/NotificationCenter.cpp:47
+msgid "Pin the Notification Center to prevent it from closing"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Application.cpp:683
+msgid "Crash Report"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Application.cpp:685
+msgid "Oh no! The application has crashed."
+msgstr ""
+
+#: src/openrpgeditor/Editor/Application.cpp:686
+msgid "The following report has been generated:"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Application.cpp:689
+#: src/openrpgeditor/Editor/Application.cpp:691
+msgid "Close"
+msgstr ""
+
+#: src/openrpgeditor/Editor/JSONInspector.cpp:260
+msgid "JSON Inspector"
+msgstr ""
+
+#: src/openrpgeditor/Editor/JSONInspector.cpp:276
+msgid "Add New Value"
+msgstr ""
+
+#: src/openrpgeditor/Editor/JSONInspector.cpp:280
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:221
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:273
+msgid "Key"
+msgstr ""
+
+#: src/openrpgeditor/Editor/JSONInspector.cpp:290
+msgid "Key is empty!"
+msgstr ""
+
+#: src/openrpgeditor/Editor/JSONInspector.cpp:290
+msgid "Key already exists!"
+msgstr ""
+
+#: src/openrpgeditor/Editor/MainWindow.cpp:91
+#, c-format
+msgid ""
+"Unable to open project:\n"
+"%s"
+msgstr ""
+
+#: src/openrpgeditor/Editor/MainWindow.cpp:172
+msgid "Save changes?"
+msgstr ""
+
+#: src/openrpgeditor/Editor/MainWindow.cpp:178
+msgid "Untitled Project"
+msgstr ""
+
+#: src/openrpgeditor/Editor/MainWindow.cpp:176
+#, c++-format
+msgid ""
+"\"{0}\" at \"{1}\"\n"
+"Has unsaved changes, would you like to save?"
+msgstr ""
+
+#: src/openrpgeditor/Editor/MainWindow.cpp:182
+msgid "Generate `js/Constants.js`"
+msgstr ""
+
+#: src/openrpgeditor/Editor/MainWindow.cpp:183
+msgid ""
+"Generates a Javascript file with constants for any element defined\n"
+"`Database Editor -> Game Constants`\n"
+"This could take a few minutes."
+msgstr ""
+
+#: src/openrpgeditor/Editor/MainWindow.cpp:293
 msgid "New Project"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:220
+#: src/openrpgeditor/Editor/MainWindow.cpp:293
 msgid "Creates a new project. [EXPERIMENTAL]"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:228
+#: src/openrpgeditor/Editor/MainWindow.cpp:301
 msgid "Open Project"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:228
+#: src/openrpgeditor/Editor/MainWindow.cpp:301
 msgid "Opens an existing project."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:237
+#: src/openrpgeditor/Editor/MainWindow.cpp:312
 msgid "Save Project"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:237
+#: src/openrpgeditor/Editor/MainWindow.cpp:312
 msgid "Saves the project. [EXPERIMENTAL]"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:286
-#: src/openrpgeditor/Core/MainWindow.cpp:690
+#: src/openrpgeditor/Editor/MainWindow.cpp:361
+#: src/openrpgeditor/Editor/MainWindow.cpp:936
 msgid "Map"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:286
+#: src/openrpgeditor/Editor/MainWindow.cpp:361
 msgid "Switch to Map Edit mode."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:297
-#: src/openrpgeditor/Core/MainWindow.cpp:693
-msgid "Event"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:297
+#: src/openrpgeditor/Editor/MainWindow.cpp:372
 msgid "Switch to Event Edit mode."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:305
-#: src/openrpgeditor/Core/MainWindow.cpp:697
+#: src/openrpgeditor/Editor/MainWindow.cpp:380
+#: src/openrpgeditor/Editor/MainWindow.cpp:943
 msgid "Game Preview"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:305
+#: src/openrpgeditor/Editor/MainWindow.cpp:380
 msgid "Toggles Game Preview mode."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:341
+#: src/openrpgeditor/Editor/MainWindow.cpp:416
 msgid "Shadow Pen"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:341
+#: src/openrpgeditor/Editor/MainWindow.cpp:416
 msgid "Adds or removes shadows of walls"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:352
+#: src/openrpgeditor/Editor/MainWindow.cpp:427
 msgid "Eraser"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:352
+#: src/openrpgeditor/Editor/MainWindow.cpp:427
 msgid "Erases tiles at a given point"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:402
-msgid "Loading Project...."
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:403
+#: src/openrpgeditor/Editor/MainWindow.cpp:444
 #, c++-format
 msgid "Loading {0} ({1} of {2})...."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:416
-msgid "Saving Project...."
+#: src/openrpgeditor/Editor/MainWindow.cpp:446
+#, c++-format
+msgid "Proccessing {0} ({1} of {2}) for constants...."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:417
+#: src/openrpgeditor/Editor/MainWindow.cpp:448
 #, c++-format
 msgid "Saving {0} ({1} of {2})...."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:508
+#: src/openrpgeditor/Editor/MainWindow.cpp:488
+msgid "##shutdownsplash"
+msgstr ""
+
+#: src/openrpgeditor/Editor/MainWindow.cpp:496
+msgid "Saving and shutting down please wait...."
+msgstr ""
+
+#: src/openrpgeditor/Editor/MainWindow.cpp:583
+msgid "Loading Project...."
+msgstr ""
+
+#: src/openrpgeditor/Editor/MainWindow.cpp:583
+msgid "Saving Project...."
+msgstr ""
+
+#: src/openrpgeditor/Editor/MainWindow.cpp:603
+msgid "Game is running..."
+msgstr ""
+
+#: src/openrpgeditor/Editor/MainWindow.cpp:606
+#, c++-format
+msgid "Close Process [{:08}]"
+msgstr ""
+
+#: src/openrpgeditor/Editor/MainWindow.cpp:711
 #, c++-format
 msgid ""
 "Sheet: {} ({}), ID: {}, x: {}, y: {}, z: {},  width: {}, height: {}, u: {}, "
 "v: {}"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:512
+#: src/openrpgeditor/Editor/MainWindow.cpp:715
 #, c++-format
 msgid ""
 "\n"
@@ -3416,190 +5378,197 @@ msgid ""
 "WallSide: {}, WallTop: {}, FloorTypeAutoTile: {}, WallTypeAutoTile: {}\n"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:531
+#: src/openrpgeditor/Editor/MainWindow.cpp:735
 msgid "Tile Debug"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:539
-msgid "Upper"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:553
-msgid "RPG Maker Projects"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:595
+#: src/openrpgeditor/Editor/MainWindow.cpp:839
 msgid "New Project..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:598
+#: src/openrpgeditor/Editor/MainWindow.cpp:842
 msgid "Open Project..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:601
+#: src/openrpgeditor/Editor/MainWindow.cpp:845
 msgid "Close Project..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:604
+#: src/openrpgeditor/Editor/MainWindow.cpp:848
 msgid "Save Project..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:608
+#: src/openrpgeditor/Editor/MainWindow.cpp:854
 msgid "Recent Projects"
 msgstr ""
 
 #. TL-NOTE: Use ellipses character appropriate for your language
 #. Deployment is referring to preparing a game for distribution to end users, exporting all related assets into an easily distributable form
-#: src/openrpgeditor/Core/MainWindow.cpp:630
+#: src/openrpgeditor/Editor/MainWindow.cpp:876
 msgid "Deployment..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:640
+#: src/openrpgeditor/Editor/MainWindow.cpp:886
 msgid "Exit"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:650
-msgid "Undo"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:657
-msgid "Redo"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:664
-msgid "Cut"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:667
-msgid "Copy"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:670
-msgid "Paste"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:673
+#: src/openrpgeditor/Editor/MainWindow.cpp:919
 msgid "Delete"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:677
+#: src/openrpgeditor/Editor/MainWindow.cpp:923
 msgid "Find"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:680
+#: src/openrpgeditor/Editor/MainWindow.cpp:926
 msgid "Find Next"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:683
+#: src/openrpgeditor/Editor/MainWindow.cpp:929
 msgid "Find Previous"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:689
-msgid "Mode"
 msgstr ""
 
 #. TL-NOTE: Refers to Game Preview mode and is in reference to how events are drawn to the screen.
 #. Displays as a tooltip.
-#: src/openrpgeditor/Core/MainWindow.cpp:703
+#: src/openrpgeditor/Editor/MainWindow.cpp:949
 msgid "Toggles event borders, layer render order, and animations."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:707
+#: src/openrpgeditor/Editor/MainWindow.cpp:953
 msgid "Draw"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:716
-msgid "Scale"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:717
+#: src/openrpgeditor/Editor/MainWindow.cpp:980
 msgid "Zoom In"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:720
+#: src/openrpgeditor/Editor/MainWindow.cpp:983
 msgid "Zoom Out"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:723
+#: src/openrpgeditor/Editor/MainWindow.cpp:986
 msgid "Actual Size"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:729
+#: src/openrpgeditor/Editor/MainWindow.cpp:992
 msgid "Tools"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:730
+#: src/openrpgeditor/Editor/MainWindow.cpp:993
 msgid "Settings"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:733
-msgid "Database"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:736
-msgid "NWJS Version Manager"
-msgstr ""
-
-#: src/openrpgeditor/Core/MainWindow.cpp:739
+#: src/openrpgeditor/Editor/MainWindow.cpp:1002
 msgid "Event Searcher..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:742
-msgid "Editor Plugins..."
+#: src/openrpgeditor/Editor/MainWindow.cpp:1011
+msgid "Edit Package Info"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:745
+#: src/openrpgeditor/Editor/MainWindow.cpp:1016
 msgid "LibLCF..."
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:751
+#: src/openrpgeditor/Editor/MainWindow.cpp:1022
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:110
+msgid "Translator"
+msgstr ""
+
+#: src/openrpgeditor/Editor/MainWindow.cpp:1029
 msgid "Reset Window Layout"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:756
+#: src/openrpgeditor/Editor/MainWindow.cpp:1034
 msgid "Game"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:757
+#: src/openrpgeditor/Editor/MainWindow.cpp:1035
 msgid "Play Test"
 msgstr ""
 
-#: src/openrpgeditor/Core/MainWindow.cpp:761
+#: src/openrpgeditor/Editor/MainWindow.cpp:1040
 msgid "Open Folder"
 msgstr ""
 
-#: src/openrpgeditor/Core/LibLCF.cpp:71
+#: src/openrpgeditor/Editor/MainWindow.cpp:1051
+msgid "About"
+msgstr ""
+
+#: src/openrpgeditor/Editor/LibLCF.cpp:122
 msgid "Right-click to open more actions..."
 msgstr ""
 
-#: src/openrpgeditor/Core/LibLCF.cpp:96
+#: src/openrpgeditor/Editor/LibLCF.cpp:147
 msgid "Converts all map events into the currently selected map."
 msgstr ""
 
-#: src/openrpgeditor/Core/LibLCF.cpp:115
+#: src/openrpgeditor/Editor/LibLCF.cpp:166
 msgid "Converts the selected LCF event into the current map."
 msgstr ""
 
-#: src/openrpgeditor/Core/LibLCF.cpp:135
+#: src/openrpgeditor/Editor/LibLCF.cpp:186
 msgid "Converts the current focused page into the current event."
 msgstr ""
 
-#: src/openrpgeditor/Core/LibLCF.cpp:156 src/openrpgeditor/Core/LibLCF.cpp:180
+#: src/openrpgeditor/Editor/LibLCF.cpp:207
+#: src/openrpgeditor/Editor/LibLCF.cpp:231
 msgid "Converts the commands into the current selected page."
 msgstr ""
 
-#: src/openrpgeditor/Core/LibLCF.cpp:197
+#: src/openrpgeditor/Editor/LibLCF.cpp:248
 msgid "Click to navigate the LCF map list to the current selected map."
 msgstr ""
 
-#: src/openrpgeditor/Core/LibLCF.cpp:204
+#: src/openrpgeditor/Editor/LibLCF.cpp:255
 msgid "Unresolved mappings pending!"
 msgstr ""
 
-#: src/openrpgeditor/Core/LibLCF.cpp:566
+#: src/openrpgeditor/Editor/LibLCF.cpp:686
 msgid "Save mapped data to disk"
 msgstr ""
 
-#: src/openrpgeditor/Core/LibLCF.cpp:574
+#: src/openrpgeditor/Editor/LibLCF.cpp:694
 msgid "Right-click for more options."
+msgstr ""
+
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:125
+msgid " - [Default]"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:134
+msgid "Set as Default"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:141
+msgid "Check First"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:166
+msgid "Remove check first glob?"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:167
+#, c++-format
+msgid ""
+"Are you sure you want to remove the selected check first glob?\n"
+"\"{}\""
+msgstr ""
+
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:186
+msgid "Documents"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:214
+msgid "Translations"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:222
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:292
+msgid "Value"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:268
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:328
+msgid "Revert"
 msgstr ""

@@ -11,12 +11,15 @@ struct PlayBGMCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Play_BGM; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
-  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<PlayBGMCommand>(*this); }
+  [[nodiscard]] std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<PlayBGMCommand>(*this); }
   bool hasStringReference(const std::string& text, SearchType type) override {
     if (type == SearchType::Audio) {
-      return text.contains(audio.name());
+      return text.contains(bgm.name());
     }
     return false;
   };
-  Audio audio;
+  Audio bgm;
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {bgm.name()}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"bgm.name"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

@@ -10,7 +10,7 @@ struct TransferPlayerCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Transfer_Player; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
-  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<TransferPlayerCommand>(*this); }
+  [[nodiscard]] std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<TransferPlayerCommand>(*this); }
 
   TransferMode mode = TransferMode::Direct;
   int mapId = Database::instance() != nullptr && Database::instance()->mapInfos->currentMap() != nullptr ? Database::instance()->mapInfos->currentMap()->id() : 1;

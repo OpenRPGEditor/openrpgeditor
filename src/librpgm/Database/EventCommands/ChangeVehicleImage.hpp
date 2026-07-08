@@ -14,4 +14,8 @@ struct ChangeVehicleImageCommand final : IEventCommand {
   VehicleType vehicle = VehicleType::Boat;
   std::string picture;
   int pictureIndex{0};
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {picture}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"picture"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

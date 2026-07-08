@@ -9,8 +9,8 @@ struct ChangeParameterCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Parameter; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
-  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeParameterCommand>(*this); }
-  bool hasReference(int targetId, SearchType type) override {
+  [[nodiscard]] std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeParameterCommand>(*this); }
+  bool hasReference(const int targetId, const SearchType type) override {
     if (type == SearchType::Variable) {
       return (quantitySource == QuantityChangeSource::Variable && quantity == targetId) || (comparison == ActorComparisonSource::Variable && value == targetId);
     }

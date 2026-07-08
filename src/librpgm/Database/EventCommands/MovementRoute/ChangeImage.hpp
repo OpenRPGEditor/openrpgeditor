@@ -14,4 +14,8 @@ struct MovementChangeImageCommand final : IMovementRouteStep {
 
   std::string image;
   int character{0};
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {image}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"image"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

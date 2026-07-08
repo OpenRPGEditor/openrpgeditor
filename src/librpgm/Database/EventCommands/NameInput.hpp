@@ -9,14 +9,14 @@ struct NameInputCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Name_Input_Processing; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
-  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<NameInputCommand>(*this); }
-  bool hasReference(int targetId, SearchType type) override {
+  [[nodiscard]] std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<NameInputCommand>(*this); }
+  bool hasReference(const int targetId, const SearchType type) override {
     if (type == SearchType::Actor) {
       return targetId == actorId;
     }
     return false;
   };
-  bool setReference(int targetId, int newId, SearchType type) override {
+  bool setReference(const int targetId, const int newId, const SearchType type) override {
     if (hasReference(targetId, type)) {
       actorId = newId;
       return true;

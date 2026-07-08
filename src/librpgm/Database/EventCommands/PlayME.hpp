@@ -12,11 +12,16 @@ struct PlayMECommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<PlayMECommand>(*this); }
+
   bool hasStringReference(const std::string& text, SearchType type) override {
     if (type == SearchType::Audio) {
-      return text.contains(audio.name());
+      return text.contains(me.name());
     }
     return false;
   };
-  Audio audio;
+  Audio me;
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {me.name()}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"me.name"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

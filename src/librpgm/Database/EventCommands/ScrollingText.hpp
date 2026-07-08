@@ -26,4 +26,15 @@ struct ShowScrollTextCommand final : IEventCommand {
   int speed{2};
   bool noFast{false};
   std::vector<std::shared_ptr<NextScrollingTextCommand>> text;
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override {
+    std::string result;
+    for (const auto& nextCmd : text) {
+      result += (!result.empty() ? "\n" : "") + nextCmd->text;
+    }
+
+    return {result};
+  }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"text"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

@@ -36,7 +36,7 @@ struct MovementScriptCommand final : IMovementRouteStep {
   };
 
   bool hasStringReference(const std::string& text, SearchType type) override {
-    if (text == "") {
+    if (text.empty()) {
       return true;
     }
     if (script.contains(text)) {
@@ -44,4 +44,8 @@ struct MovementScriptCommand final : IMovementRouteStep {
     }
     return false;
   }
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {script}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"script"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

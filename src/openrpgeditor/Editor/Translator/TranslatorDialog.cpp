@@ -3,12 +3,80 @@
 #include "Database/Database.hpp"
 #include "Editor/CommonUI/GroupBox.hpp"
 #include "Editor/ImGuiExt/ImGuiUtils.hpp"
+#include "Editor/Translator/TranslationDocument.hpp"
+#include "Editor/Translator/Translator.hpp"
+
+#include "Editor/MainWindow.hpp"
+#include "IconsFontAwesome6.h"
 #include "orei18n.hpp"
-#include "Translator.hpp"
 
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <misc/cpp/imgui_stdlib.h>
+
+std::tuple<bool, bool> ConfirmationDialog::draw() {
+  const std::string id = std::format("###{}", m_dialogId);
+  if (m_open) {
+    ImGui::OpenPopup(id.c_str());
+  }
+
+  ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, {0.5f, 0.5f});
+  if (ImGui::BeginPopupModal(std::format("{}{}", m_title, id).c_str(), &m_open, ImGuiWindowFlags_NoResize)) {
+    ImGui::BeginVertical("##confirmation_dialog_layout", {-1, -1}, 0.f);
+    {
+      ImGui::TextUnformatted(m_message.c_str());
+      ImGui::Spring();
+      ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
+      ImGui::BeginHorizontal("##confirmation_dialog_layout");
+      {
+        ImGui::Spring();
+        switch (m_buttons) {
+        case Buttons::YesNo:
+          if (const auto ret = ImGui::ButtonGroup("##confirmation_dialog_buttons", {trNOOP("Yes"), trNOOP("No")}); ret == 0) {
+            m_result = Result::Confirmed;
+            setOpen(false);
+            m_confirmed = true;
+          } else if (ret == 1) {
+            m_result = Result::Rejected;
+          }
+          break;
+        case Buttons::YesNoCancel:
+          if (const auto ret = ImGui::ButtonGroup("##confirmation_dialog_buttons", {trNOOP("Yes"), trNOOP("No"), trNOOP("Cancel")}); ret == 0) {
+            m_result = Result::Confirmed;
+            setOpen(false);
+            m_confirmed = true;
+          } else if (ret == 1 || ret == 2) {
+            setOpen(false);
+            m_result = ret == 1 ? Result::Rejected : Result::Cancelled;
+            m_confirmed = false;
+          }
+          break;
+        case Buttons::Ok:
+          if (const auto ret = ImGui::ButtonGroup("##confirmation_dialog_buttons", {trNOOP("OK")}); ret == 0) {
+            m_result = Result::Confirmed;
+            setOpen(false);
+            m_confirmed = true;
+          }
+          break;
+        case Buttons::OkCancel:
+          if (const auto ret = ImGui::ButtonGroup("##confirmation_dialog_buttons", {trNOOP("OK"), trNOOP("Cancel")}); ret == 0) {
+            m_result = Result::Confirmed;
+            setOpen(false);
+            m_confirmed = true;
+          } else if (ret == 1) {
+            m_result = Result::Cancelled;
+          }
+          break;
+        }
+      }
+      ImGui::EndHorizontal();
+    }
+    ImGui::EndVertical();
+    ImGui::EndPopup();
+  }
+
+  return {!m_open, m_confirmed};
+}
 
 bool TranslatorDialog::closeAllDocuments(const bool saveDocuments) {
   bool ret = true;
@@ -45,29 +113,93 @@ std::tuple<bool, bool> TranslatorDialog::draw() {
     ImGui::BeginVertical("##translator_main_layout", ImGui::GetContentRegionAvail(), 0.f);
     {
       if (ImGui::BeginChild("##translator_main_child", {-1, ImGui::GetContentRegionAvail().y - (ImGui::GetFrameHeightWithSpacing() + ImGui::GetStyle().ItemSpacing.y)}, 0,
-                            ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NavFlattened)) {
+                            ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NavFlattened | ImGuiWindowFlags_HorizontalScrollbar)) {
         ImGui::BeginVertical("##translator_main_child_layout", ImGui::GetContentRegionAvail(), 0.f);
         {
           ImGui::BeginHorizontal("##translator_translations_locale_and_documents_layout", {-1, 0}, 0.f);
           {
-            GroupBox localesComboGroup(trNOOP("Locales"), "##translator_locales_combo_group", {std::max(ImGui::GetContentRegionAvail().x / 2, ImGui::GetDPIScaledValue(150.f)), 0});
+            GroupBox localesComboGroup(trNOOP("Locales"), "##translator_locales_list_group", {std::max(ImGui::GetContentRegionAvail().x / 3, ImGui::GetDPIScaledValue(150.f)), 0});
             if (localesComboGroup.begin()) {
               if (ImGui::BeginListBox("##translator_locales_list", {-1, 0})) {
-                const auto locales = Translator::instance().locales();
-                for (const auto& locale : locales) {
-                  if (ImGui::Selectable(std::format("{}##{}", Translator::instance().localeDescription(locale), locale).c_str(), m_currentLocale == locale)) {
+                for (const auto locales = Translator::instance().locales(); const auto& locale : locales) {
+                  if (ImGui::Selectable(
+                          std::format("{}{}##{}", Translator::instance().localeDescription(locale), Translator::instance().defaultLocale() == locale ? trNOOP(" - [Default]") : "", locale).c_str(),
+                          m_currentLocale == locale)) {
                     m_currentLocale = locale;
                   }
                 }
                 ImGui::EndListBox();
               }
+              ImGui::BeginDisabled(Translator::instance().defaultLocale() == m_currentLocale);
+              {
+                if (ImGui::Button(trNOOP("Set as Default"), {-1, 0})) {
+                  Translator::instance().setDefaultLocale(m_currentLocale);
+                }
+              }
+              ImGui::EndDisabled();
             }
             localesComboGroup.end();
-            GroupBox documentsComboGroup(trNOOP("Documents"), "##translator_documents_combo_group", {std::max(ImGui::GetContentRegionAvail().x, ImGui::GetDPIScaledValue(150.f)), 0});
+            GroupBox checkFirstGroup(trNOOP("Check First"), "##translator_check_first_list_group", {std::max(ImGui::GetContentRegionAvail().x / 2, ImGui::GetDPIScaledValue(150.f)), 0.f});
+            if (checkFirstGroup.begin()) {
+              ImGui::BeginHorizontal("##translator_check_first_list_group_layout", {-1, -1}, 0.f);
+              {
+                const auto buttonSize = ImGui::CalcItemSize({ImGui::GetFontSize(), ImGui::GetFontSize()}, 0.f, 0.f).x + (ImGui::GetStyle().FramePadding.x + ImGui::GetStyle().ItemSpacing.x) * 2;
+
+                if (ImGui::BeginListBox("##translator_check_first_glob_list", {ImGui::GetContentRegionAvail().x - (buttonSize + ImGui::GetStyle().FramePadding.x), 0})) {
+                  ImGui::EndListBox();
+                }
+                ImGui::BeginVertical("##translator_check_first_list_group_buttons");
+                {
+                  ImGui::TextDisabled("(?)");
+                  ImGui::SetItemTooltip(R"(Check first globs can be used to prioritize files.
+This allows common strings to be quickly resolved automatically.
+You can use typical regex glob syntax:
+* (any text)
+** (subfolders)
+? (one character)
+[a-z] (character range)
+[!abc] (exclude)
+{json,js} (options).
+)");
+                  ImGui::Spring(0.5f);
+                  ImGui::BeginDisabled(m_currentCheckFirst == 0 || m_currentCheckFirst == -1);
+                  {
+                    if (ImGui::Button(ICON_FA_SORT_UP, {buttonSize, buttonSize})) {
+                      m_currentCheckFirst = Translator::instance().moveCheckFirst(m_currentCheckFirst, m_currentCheckFirst - 1);
+                    }
+                  }
+                  ImGui::EndDisabled();
+                  if (ImGui::Button("+", {buttonSize, buttonSize})) {
+                    // m_showAddCheckFirstDialog = true;
+                  }
+                  ImGui::BeginDisabled(m_currentCheckFirst == -1);
+                  {
+                    if (ImGui::Button("-", {buttonSize, buttonSize})) {
+                      m_removeCheckFirstConfirmationDialog.emplace(
+                          trNOOP("Remove check first glob?"),
+                          trFormat("Are you sure you want to remove the selected check first glob?\n\"{}\"", Translator::instance().checkFirst(m_currentCheckFirst)).c_str());
+                    }
+                  }
+                  ImGui::EndDisabled();
+
+                  ImGui::BeginDisabled(m_currentCheckFirst == -1 || m_currentCheckFirst >= Translator::instance().checkFirstCount());
+                  {
+                    if (ImGui::Button(ICON_FA_SORT_DOWN, {buttonSize, buttonSize})) {
+                      m_currentCheckFirst = Translator::instance().moveCheckFirst(m_currentCheckFirst, m_currentCheckFirst + 1);
+                    }
+                  }
+                  ImGui::EndDisabled();
+                  ImGui::Spring(0.5f);
+                }
+                ImGui::EndVertical();
+              }
+              ImGui::EndHorizontal();
+            }
+            checkFirstGroup.end();
+            GroupBox documentsComboGroup(trNOOP("Documents"), "##translator_documents_list_group", {std::max(ImGui::GetContentRegionAvail().x, ImGui::GetDPIScaledValue(150.f)), 0});
             if (documentsComboGroup.begin()) {
               if (ImGui::BeginListBox("##translator_documents_list", {-1, 0})) {
-                const auto& documents = Translator::instance().documentsForLocale(m_currentLocale);
-                for (const auto& document : documents) {
+                for (const auto& documents = Translator::instance().documentsForLocale(m_currentLocale); const auto& document : documents) {
                   if (ImGui::Selectable(std::format("{}{}", document->filenameNoExtension(), document->isModified() ? "*" : "").c_str(), m_currentDocument == document,
                                         ImGuiSelectableFlags_AllowDoubleClick | (m_highlightedDocument == document && m_currentDocument != document ? ImGuiSelectableFlags_Highlight : 0))) {
                     m_highlightedDocument = document;
@@ -77,6 +209,11 @@ std::tuple<bool, bool> TranslatorDialog::draw() {
                       }
                       m_currentDocument = document;
                       m_currentDocument->open();
+
+                      if (!Translator::instance().documentHasStates(m_currentLocale, m_currentDocument->filenameNoExtension()) ||
+                          Translator::instance().documentStateCount(m_currentLocale, m_currentDocument->filenameNoExtension()) != m_currentDocument->translationCount()) {
+                        Translator::instance().initializeDocumentStates(m_currentLocale, m_currentDocument->filenameNoExtension(), m_currentDocument->translationCount());
+                      }
                       m_currentTranslation = -1;
                     }
                   }
@@ -90,7 +227,7 @@ std::tuple<bool, bool> TranslatorDialog::draw() {
           GroupBox translations(trNOOP("Translations"), "##translator_translations_group", {-1, -1}, nullptr, 0, ImGuiWindowFlags_HorizontalScrollbar);
           if (translations.begin()) {
             if (ImGui::BeginChild("##translator_translations_table_child", {ImGui::GetContentRegionAvail().x * .5f, ImGui::GetContentRegionAvail().y}, ImGuiChildFlags_ResizeX,
-                                  ImGuiWindowFlags_NoBackground)) {
+                                  ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar)) {
               ImGui::BeginDisabled(!m_currentDocument);
               {
                 if (ImGui::BeginTable("##translations_table", 2, ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable | ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY)) {
@@ -101,7 +238,7 @@ std::tuple<bool, bool> TranslatorDialog::draw() {
 
                   if (m_currentDocument) {
                     ImGuiListClipper clipper;
-                    clipper.Begin(m_currentDocument->translationCount());
+                    clipper.Begin(static_cast<int>(m_currentDocument->translationCount()));
                     while (clipper.Step()) {
                       for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; ++i) {
                         if (i < 0) {
@@ -118,8 +255,8 @@ std::tuple<bool, bool> TranslatorDialog::draw() {
                         ImGui::TableNextColumn();
                         const auto value = translation.value();
                         const auto firstValueNewlinePos = value.find_first_of('\n');
-                        const auto maxValueLen = std::min<size_t>(128, firstValueNewlinePos);
-                        if (ImGui::Selectable(std::format("{}{}##{}", value.substr(0, maxValueLen), maxValueLen < value.length() ? "..." : "", i).c_str(), m_currentTranslation == i,
+                        if (const auto maxValueLen = std::min<size_t>(128, firstValueNewlinePos);
+                            ImGui::Selectable(std::format("{}{}##{}", value.substr(0, maxValueLen), maxValueLen < value.length() ? "..." : "", i).c_str(), m_currentTranslation == i,
                                               ImGuiSelectableFlags_SpanAllColumns)) {
                           m_currentTranslation = i;
                         }
@@ -146,9 +283,9 @@ std::tuple<bool, bool> TranslatorDialog::draw() {
             if (ImGui::BeginChild("##translator_translations_edit_panel", {-1, 0}, 0, ImGuiWindowFlags_NoBackground)) {
               ImGui::BeginDisabled(m_currentTranslation == -1);
               {
-                GroupBox keyGroup(trNOOP("Key"), "##translator_translation_key_group", {-1, 0});
+                GroupBox keyGroup(trNOOP("Key"), "##translator_translation_key_group", {std::max(ImGui::GetContentRegionAvail().x, ImGui::GetDPIScaledValue(100.f) + buttonWidth), 0});
                 if (keyGroup.begin()) {
-                  ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - buttonWidth);
+                  ImGui::SetNextItemWidth(std::max(ImGui::GetContentRegionAvail().x - buttonWidth, ImGui::GetDPIScaledValue(100) + buttonWidth));
                   std::string tmp = m_currentDocument && m_currentTranslation != -1 ? m_currentDocument->key(m_currentTranslation) : "";
                   ImGui::InputTextMultiline("##translation_key", &tmp);
                   if (m_currentDocument && m_currentTranslation != -1 && ImGui::IsItemDeactivatedAfterEdit()) {
@@ -165,9 +302,9 @@ std::tuple<bool, bool> TranslatorDialog::draw() {
                   ImGui::EndDisabled();
                 }
                 keyGroup.end();
-                GroupBox valueGroup(trNOOP("Value"), "##translator_translation_value_group", {-1, 0});
+                GroupBox valueGroup(trNOOP("Value"), "##translator_translation_value_group", {std::max(ImGui::GetContentRegionAvail().x, ImGui::GetDPIScaledValue(100.f) + buttonWidth), 0});
                 if (valueGroup.begin()) {
-                  ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - buttonWidth);
+                  ImGui::SetNextItemWidth(std::max(ImGui::GetContentRegionAvail().x - buttonWidth, ImGui::GetDPIScaledValue(100) + buttonWidth));
                   std::string tmp = m_currentDocument && m_currentTranslation != -1 ? m_currentDocument->value(m_currentTranslation) : "";
                   ImGui::InputTextMultiline("##translation_value", &tmp);
                   if (m_currentDocument && m_currentTranslation != -1 && ImGui::IsItemDeactivatedAfterEdit()) {
@@ -205,13 +342,13 @@ std::tuple<bool, bool> TranslatorDialog::draw() {
                                                 {false, m_currentDocument && !m_currentDocument->isModified(), isDocked ? m_currentDocument && !m_currentDocument->isModified() : false}, {!isDocked});
             ret == 0) { // OK
           if (m_currentDocument) {
-            m_currentDocument->save();
+            (void)m_currentDocument->save();
           }
           m_open = false;
           m_confirmed = true;
         } else if (ret == 1) { // Apply
           if (m_currentDocument) {
-            m_currentDocument->save();
+            (void)m_currentDocument->save();
           }
         } else if (ret == 2) { // Cancel/Revert
           if (m_currentDocument) {
@@ -230,5 +367,7 @@ std::tuple<bool, bool> TranslatorDialog::draw() {
   }
   ImGui::End();
 
+  // this check is disabled since it's incorrect, the inspector claims that the result will always be false.
+  // ReSharper disable once CppDFAConstantConditions
   return {!m_open, m_confirmed};
 }

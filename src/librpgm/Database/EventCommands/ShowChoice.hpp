@@ -30,11 +30,11 @@ struct ShowChoiceCommand final : IEventCommand {
 
   TextBackground background = TextBackground::Window;
   ChoiceWindowPosition positionType = ChoiceWindowPosition::Right;
-  std::vector<std::string> choices{"Yes", "No"};
+  std::vector<std::string> choices{trNOOP("Yes"), trNOOP("No")};
   int cancelType{1};  // < 0 == disallow/branch
   int defaultType{0}; // -1 is none
 
-  bool hasStringReference(const std::string& str, SearchType type) override {
+  bool hasStringReference(const std::string& str, const SearchType type) override {
     if (type == SearchType::Text) {
       for (auto& cmd : choices) {
         if (cmd.contains(str)) {
@@ -44,7 +44,7 @@ struct ShowChoiceCommand final : IEventCommand {
     }
     return false;
   }
-  bool setStringReference(const std::string& replaceStr, const std::string& str, SearchType type) override {
+  bool setStringReference(const std::string& replaceStr, const std::string& str, const SearchType type) override {
     if (type == SearchType::Text) {
       for (auto& cmd : choices) {
         if (cmd.contains(str)) {
@@ -57,6 +57,18 @@ struct ShowChoiceCommand final : IEventCommand {
     }
     return true;
   }
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return choices; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override {
+    std::vector<std::string> names;
+    for (int i = 0; i < choices.size(); ++i) {
+      names.emplace_back(std::format("choice-{}", i));
+    }
+
+    return names;
+  }
+
+  [[nodiscard]] bool hasStringValues() const override { return !choices.empty(); }
 };
 
 struct WhenSelectedCommand final : IEventCommand {
@@ -66,7 +78,7 @@ struct WhenSelectedCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::When_Selected; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
-  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<WhenSelectedCommand>(*this); }
+  [[nodiscard]] std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<WhenSelectedCommand>(*this); }
 
   [[nodiscard]] constexpr bool collapsable() const override { return true; }
   [[nodiscard]] bool isCollapsed() const override { return m_collapsed; }
@@ -86,7 +98,7 @@ struct WhenSelectedCommand final : IEventCommand {
   bool m_reverseSelection = false;
   bool m_collapsed{false};
 
-  int param1;
+  int param1{};
   std::string choice;
 
   bool hasStringReference(const std::string& str, SearchType type) override {
@@ -101,6 +113,10 @@ struct WhenSelectedCommand final : IEventCommand {
     }
     return true;
   }
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {choice}; }
+
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"choice"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };
 
 struct WhenCancelCommand final : IEventCommand {
@@ -109,7 +125,7 @@ struct WhenCancelCommand final : IEventCommand {
   : IEventCommand(_indent) {}
   ~WhenCancelCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::When_Cancel; }
-  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<WhenCancelCommand>(*this); }
+  [[nodiscard]] std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<WhenCancelCommand>(*this); }
 
   [[nodiscard]] constexpr bool collapsable() const override { return true; }
   [[nodiscard]] bool isCollapsed() const override { return m_collapsed; }
@@ -136,12 +152,5 @@ struct ShowChoicesEndCommand final : IEventCommand {
   : IEventCommand(_indent) {}
   ~ShowChoicesEndCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::End_del_ShowChoices; }
-  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowChoicesEndCommand>(*this); }
-
-  bool hasStringReference(const std::string& str, SearchType type) override {
-    if (type == SearchType::Text) {
-      return true;
-    }
-    return false;
-  }
+  [[nodiscard]] std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowChoicesEndCommand>(*this); }
 };

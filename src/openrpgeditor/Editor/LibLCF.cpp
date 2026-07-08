@@ -1357,10 +1357,10 @@ std::shared_ptr<IEventCommand> LibLCF::createCommand(int32_t code, int32_t inden
     PlayBGMCommand newCmd;
     newCmd.setIndent(indent);
 
-    newCmd.audio.setName(m_lcf.mapper()->soundValue(lcf::ToString(strData)));
-    newCmd.audio.setVolume(parameters.at(0));
-    newCmd.audio.setPitch(parameters.at(1));
-    newCmd.audio.setPan(0);
+    newCmd.bgm.setName(m_lcf.mapper()->soundValue(lcf::ToString(strData)));
+    newCmd.bgm.setVolume(parameters.at(0));
+    newCmd.bgm.setPitch(parameters.at(1));
+    newCmd.bgm.setPan(0);
 
     return std::make_shared<PlayBGMCommand>(newCmd);
   }

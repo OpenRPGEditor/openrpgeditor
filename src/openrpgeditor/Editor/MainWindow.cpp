@@ -227,6 +227,7 @@ std::tuple<bool, bool, bool> MainWindow::close(const bool promptSave) {
   m_database.reset();
   // Unload project translations
   m_translator.closeAllDocuments(false);
+  (void)Translator::instance().save();
   Translator::instance().clear();
 
   m_isLoaded = false;
@@ -1018,7 +1019,7 @@ void MainWindow::drawMenu() {
       ORE_DISABLE_EXPERIMENTAL_END();
 
       ORE_DISABLE_EXPERIMENTAL_BEGIN();
-      if (ImGui::MenuItem(trNOOP("Translator"), nullptr, false, DatabaseEditor::instance()->isReady())) {
+      if (ImGui::MenuItem(trNOOP("Translator"), nullptr, false, DatabaseEditor::instance() && DatabaseEditor::instance()->isReady())) {
         m_translator.setOpen(true);
       }
       ORE_DISABLE_EXPERIMENTAL_END();
@@ -1031,11 +1032,12 @@ void MainWindow::drawMenu() {
       ImGui::EndMenu();
     }
     if (ImGui::BeginMenu(trNOOP("Game"))) {
-      if (ImGui::MenuItem(trNOOP("Play Test"), "Ctrl+R", false, NWJSVersionManager::instance().nwjsForCurrentPlatformAvailable() && DatabaseEditor::instance()->isReady() && !m_playTestProcess)) {
+      if (ImGui::MenuItem(trNOOP("Play Test"), "Ctrl+R", false,
+                          NWJSVersionManager::instance().nwjsForCurrentPlatformAvailable() && DatabaseEditor::instance() && DatabaseEditor::instance()->isReady() && !m_playTestProcess)) {
         m_playTestProcess.emplace(Process(NWJSVersionManager::instance().nwjsPathForCurrentPlatform(), {"--remote-debugging-port=9222", Database::instance()->basePath.generic_string(), "test"}));
       }
       ImGui::Separator();
-      if (ImGui::MenuItem(trNOOP("Open Folder"), nullptr, false, DatabaseEditor::instance()->isReady())) {
+      if (ImGui::MenuItem(trNOOP("Open Folder"), nullptr, false, DatabaseEditor::instance() && DatabaseEditor::instance()->isReady())) {
         SDL_OpenURL(std::format("file://{}", m_database->basePath.generic_string()).c_str());
       }
 

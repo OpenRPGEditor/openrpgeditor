@@ -86,4 +86,20 @@ struct ControlVariables : IEventCommand {
 
   std::string script{};
   int m_troopId{0};
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override {
+    if (operand == VariableControlOperand::Script) {
+      return {script};
+    }
+
+    return {};
+  }
+
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override {
+    if (operand == VariableControlOperand::Script) {
+      return {"script"};
+    }
+    return {};
+  }
+  [[nodiscard]] bool hasStringValues() const override { return operand == VariableControlOperand::Script; }
 };

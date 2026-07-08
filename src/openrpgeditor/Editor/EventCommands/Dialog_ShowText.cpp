@@ -128,7 +128,6 @@ std::tuple<bool, bool> Dialog_ShowText::draw() {
           m_command->faceIndex = m_faceIndex;
           m_command->background = m_background;
           m_command->position = m_position;
-          m_command->textLine = m_textLine;
           ImGui::CloseCurrentPopup();
           setOpen(false);
         } else if (ret == 2) { // Cancel

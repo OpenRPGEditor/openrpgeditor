@@ -3,63 +3,111 @@
 #include "Database/Database.hpp"
 #include "Editor/Log.hpp"
 
+#include <nlohmann/json.hpp>
+
 #include <regex>
 
+#include <iostream>
+#include <regex>
+#include <string>
+#include <string_view>
+
+#include <iostream>
+#include <regex>
+#include <string>
+#include <string_view>
+
 bool glob_match(const std::string_view str, const std::string_view pattern) {
-  std::string regex_str = "^";
-  for (const char c : pattern) {
-    switch (c) {
+  std::string regex_str;
+  regex_str.reserve(pattern.size() * 2);
+
+  regex_str.push_back('^');
+
+  int brace_depth = 0;
+  bool in_brackets = false;
+
+  for (size_t i = 0; i < pattern.size(); ++i) {
+    char ch = pattern[i];
+
+    if (in_brackets) {
+      if (ch == ']') {
+        in_brackets = false;
+      }
+      regex_str.push_back(ch);
+      continue;
+    }
+
+    switch (ch) {
     case '*':
-      regex_str += ".*";
+      if (i + 1 < pattern.size() && pattern[i + 1] == '*') {
+        regex_str.append(".*");
+        ++i;
+      } else {
+        regex_str.append("[^/]*");
+      }
       break;
+
     case '?':
-      regex_str += ".";
+      regex_str.append("[^/]");
       break;
-    case '.':
-      regex_str += "\\.";
-      break;
-    case '\\':
-      regex_str += "\\\\";
-      break;
-    case '^':
-      regex_str += "\\^";
-      break;
-    case '$':
-      regex_str += "\\$";
-      break;
-    case '+':
-      regex_str += "\\+";
-      break;
-    case '|':
-      regex_str += "\\|";
-      break;
-    case '(':
-      regex_str += "\\(";
-      break;
-    case ')':
-      regex_str += "\\)";
-      break;
+
     case '[':
-      regex_str += "\\[";
+      in_brackets = true;
+      regex_str.push_back('[');
+      if (i + 1 < pattern.size() && pattern[i + 1] == '!') {
+        regex_str.push_back('^');
+        ++i;
+      }
       break;
-    case ']':
-      regex_str += "\\]";
-      break;
+
     case '{':
-      regex_str += "\\{";
+      regex_str.push_back('(');
+      ++brace_depth;
       break;
+
+    case ',':
+      // Only treat comma as an OR operator if inside braces AND not inside brackets
+      if (brace_depth > 0) {
+        regex_str.push_back('|');
+      } else {
+        regex_str.push_back(',');
+      }
+      break;
+
     case '}':
-      regex_str += "\\}";
+      if (brace_depth > 0) {
+        regex_str.push_back(')');
+        --brace_depth;
+      } else {
+        regex_str.append("\\}");
+      }
       break;
+
+    // Escape standard regex engine control tokens
+    case '\\':
+    case '.':
+    case '+':
+    case '^':
+    case '$':
+    case '|':
+    case '(':
+    case ')':
+      regex_str.push_back('\\');
+      regex_str.push_back(ch);
+      break;
+
     default:
-      regex_str += c;
+      regex_str.push_back(ch);
       break;
     }
   }
-  regex_str += "$";
 
-  // Compile and match the regex expression
-  return std::regex_match(std::string(str), std::regex(regex_str));
+  regex_str.push_back('$');
+
+  try {
+    const std::regex re(regex_str, std::regex_constants::ECMAScript);
+    return std::regex_match(std::string(str), re);
+  } catch (const std::regex_error&) { return false; }
 }
 
 // Find the first matching glob pattern priority index
@@ -87,6 +135,31 @@ void to_json(nlohmann::ordered_json& j, const Translator::Manifest::Locale& loca
   }
 }
 
+template <typename BasicJsonType>
+void to_json(BasicJsonType& j, const TranslationDocument::State& e) {
+  j = magic_enum::enum_name(e);
+}
+template <typename BasicJsonType>
+void from_json(const BasicJsonType& j, TranslationDocument::State& e) {
+  if (!j.is_string()) {
+#if (defined(__cpp_exceptions) || defined(__EXCEPTIONS) || defined(_CPPUNWIND)) && !defined(JSON_NOEXCEPTION)
+    throw BasicJsonType::type_error::create(302, "type must be string, but is " + std::string(j.type_name()), &j);
+#else
+    abort();
+#endif
+  }
+  auto name = j.template get<std::string_view>();
+  if (auto value = magic_enum::enum_cast<TranslationDocument::State>(name)) {
+    e = *value;
+  } else {
+#if (defined(__cpp_exceptions) || defined(__EXCEPTIONS) || defined(_CPPUNWIND)) && !defined(JSON_NOEXCEPTION)
+    throw BasicJsonType::out_of_range::create(403, "unknown enum value: " + std::string(name), &j);
+#else
+    abort();
+#endif
+  }
+}
+
 void from_json(const nlohmann::ordered_json& j, Translator::Manifest::Locale& locale) {
   // Description is required
   locale.description = j.value("description", locale.description);
@@ -99,12 +172,42 @@ void to_json(nlohmann::ordered_json& j, const Translator::Manifest& manifest) {
       {"locales", manifest.locales},
       {"checkFirst", manifest.checkFirst},
   };
+  if (manifest.states) {
+    j["states"] = manifest.states;
+  }
 }
 
 void from_json(const nlohmann::ordered_json& j, Translator::Manifest& manifest) {
   manifest.defaultLocale = j.value("defaultLocale", manifest.defaultLocale);
   manifest.locales = j.value("locales", manifest.locales);
   manifest.checkFirst = j.value("checkFirst", manifest.checkFirst);
+  manifest.states = j.value<std::optional<Translator::StateMap>>("states", std::nullopt);
+}
+
+bool Translator::save(const bool excludeStates) const {
+  if (!m_initialized) {
+    return true;
+  }
+
+  const auto manifestPath = m_localesBasepath / "locales.json";
+
+  try {
+    nlohmann::ordered_json j;
+    Manifest manifest;
+    manifest.defaultLocale = m_defaultLocale;
+    manifest.locales = m_localeInfo;
+    manifest.checkFirst = m_checkFirst;
+    if (!excludeStates) {
+      manifest.states = m_states;
+    }
+    j = manifest;
+    std::ofstream manifestFile(manifestPath);
+    manifestFile << j.dump(4);
+    return true;
+  } catch (const nlohmann::ordered_json::exception& e) {
+    APP_ERROR("Exception while saving locale \"{}\"", e.what());
+    return false;
+  }
 }
 
 bool Translator::initialize() {
@@ -123,10 +226,12 @@ bool Translator::initialize() {
   try {
     std::ifstream manifestFile(manifestPath);
     const auto j = nlohmann::ordered_json::parse(manifestFile);
-    const auto [defaultLocale, locales, checkFirst] = j.get<Manifest>();
+    const auto [defaultLocale, locales, checkFirst, states] = j.get<Manifest>();
     m_locale = defaultLocale;
+    m_defaultLocale = defaultLocale;
     m_localeInfo = locales;
     m_checkFirst = checkFirst;
+    m_states = states.value_or({});
     if (m_locale.empty()) {
       if (!m_localeInfo.empty()) {
         APP_WARN("No default locale defined, using first entry, this may not be intended!");
@@ -150,18 +255,19 @@ bool Translator::initialize() {
         }
 
         const auto& document = m_documents[locale].emplace_back(std::make_shared<TranslationDocument>(std::filesystem::relative(entry.path(), m_localesBasepath)));
-        APP_DEBUG("Added document {} for locale \"{}\"", document->filenameNoExtension(), locale);
+        APP_DEBUG("Added document {} for locale \"{}\"", document->filepath(), locale);
         for (const auto& cf : m_checkFirst) {
-          if (glob_match(document->filenameNoExtension(), cf)) {
+          if (glob_match(document->filepath(), cf)) {
+            APP_DEBUG("Adding document \"{}\" to priority list using glob \"{}\"", document->filepath(), cf);
             m_checkFirstDocuments[locale].emplace_back(document);
             break;
           }
         }
       }
       std::ranges::sort(m_checkFirstDocuments[m_locale], [this](const std::shared_ptr<TranslationDocument>& a, const std::shared_ptr<TranslationDocument>& b) {
-        const auto name_a = a->filenameNoExtension();
+        const auto name_a = a->filepath();
         const auto index_a = get_matching_index(name_a, m_checkFirst);
-        const auto name_b = b->filenameNoExtension();
+        const auto name_b = b->filepath();
         const auto index_b = get_matching_index(name_b, m_checkFirst);
 
         if (index_a != index_b) {
@@ -303,13 +409,137 @@ bool Translator::createLocaleDocumentFrom(const std::shared_ptr<TranslationDocum
 
   const auto [_, directory] = m_localeInfo[targetLocale.data()];
   const auto targetLocaleDir = directory.value_or(std::filesystem::path(".") / targetLocale);
-  const auto& destDoc = m_documents[targetLocale.data()].emplace_back(std::make_shared<TranslationDocument>(targetLocaleDir / sourceDoc->filename()));
+  const auto& destDoc = m_documents[targetLocale.data()].emplace_back(std::make_shared<TranslationDocument>(targetLocaleDir / sourceDoc->filepath()));
 
   destDoc->copyKeys(*sourceDoc);
   return true;
 }
 
+size_t Translator::nextUntranslated(const std::string_view locale, const std::string_view filename, size_t cur) {
+  const std::string localeStr(locale);
+  const std::string filenameStr(filename);
+
+  if (!m_documents.contains(localeStr) || !m_states[localeStr].contains(filenameStr)) {
+    return -1;
+  }
+
+  const auto& states = m_states[localeStr][filenameStr];
+  if (states.empty()) {
+    return -1;
+  }
+
+  if (cur < 0 || cur >= states.size()) {
+    cur = 0;
+  }
+
+  size_t elements_checked = 0;
+  const size_t size = states.size();
+
+  while (elements_checked < size) {
+    if (states[cur] != TranslationDocument::State::Translated) {
+      return cur; // Found an untranslated item!
+    }
+
+    cur = (cur + 1) % size;
+    elements_checked++;
+  }
+
+  return -1; // Everything is translated
+}
+
+size_t Translator::prevUntranslated(const std::string_view locale, const std::string_view filename, size_t cur) {
+  const std::string localeStr(locale);
+  const std::string filenameStr(filename);
+
+  if (!m_documents.contains(localeStr) || !m_states[localeStr].contains(filenameStr)) {
+    return -1;
+  }
+
+  const auto& states = m_states[localeStr][filenameStr];
+  if (states.empty()) {
+    return -1;
+  }
+
+  if (cur < 0 || cur >= states.size()) {
+    cur = states.size() - 1;
+  }
+
+  size_t elementsChecked = 0;
+  const size_t size = states.size();
+
+  while (elementsChecked < size) {
+    if (states[cur] != TranslationDocument::State::Translated) {
+      return cur; // Found an untranslated item moving backward!
+    }
+
+    cur = (cur - 1 + size) % size;
+    elementsChecked++;
+  }
+
+  return -1; // Everything is translated
+}
+
+bool Translator::documentHasStates(const std::string_view locale, const std::string_view filename) {
+  const std::string localeStr(locale);
+  const std::string filenameStr(filename);
+  if (!m_documents.contains(localeStr) || !m_states[localeStr].contains(filenameStr)) {
+    return false;
+  }
+
+  return m_states[localeStr][filenameStr].empty();
+}
+
+size_t Translator::documentStateCount(const std::string_view locale, const std::string_view filename) {
+  if (!documentHasStates(locale, filename)) {
+    return false;
+  }
+
+  const std::string localeStr(locale);
+  const std::string filenameStr(filename);
+  return m_states[localeStr][filenameStr].size();
+}
+
+void Translator::initializeDocumentStates(std::string_view locale, std::string_view filename, size_t count) {
+  const std::string localeStr(locale);
+  const std::string filenameStr(filename);
+  auto& states = m_states[localeStr][filenameStr];
+  while (states.size() < count) {
+    states.emplace_back(TranslationDocument::State::Unknown);
+  }
+}
+
 Translator& Translator::instance() {
   static Translator _instance;
   return _instance;
+}
+
+std::set<std::string> Translator::gatherStringsForMap(const Map* map, const int mapId) {
+  if (map == nullptr) {
+    return {};
+  }
+
+  // TODO(pstephens): Implement stringValues for all data types and migrate this code to Map,Event,Page etc
+  std::set<std::string> result;
+  const auto& mapEvents = map->events();
+  for (const auto& event : mapEvents) {
+    if (!event || event->id() == 0) {
+      continue;
+    }
+
+    for (int pageIdx = 0; const auto& page : event->pages()) {
+      for (const auto& command : page.list()) {
+        if (!command->hasStringValues()) {
+          continue;
+        }
+        const auto values = command->stringValues();
+        for (const auto& value : values) {
+          result.insert(value);
+          //result.insert(std::format("Map{:03}-{}-{}-{}:\n{}", mapId, event->name(), event->id(), pageIdx, value));
+        }
+      }
+      pageIdx++;
+    }
+  }
+
+  return result;
 }

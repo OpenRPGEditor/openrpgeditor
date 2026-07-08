@@ -18,4 +18,8 @@ struct ChangeVictoryMECommand final : IEventCommand {
     return false;
   };
   Audio me;
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {me.name()}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"me.name"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

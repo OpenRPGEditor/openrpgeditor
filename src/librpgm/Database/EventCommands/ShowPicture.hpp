@@ -9,15 +9,15 @@ struct ShowPictureCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Show_Picture; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
-  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowPictureCommand>(*this); }
-  bool hasReference(int targetId, SearchType type) override {
-    if (type == SearchType::PictureId) {
+  [[nodiscard]] std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ShowPictureCommand>(*this); }
+  bool hasReference(const int targetId, const SearchType st) override {
+    if (st == SearchType::PictureId) {
       return number == targetId;
     }
     return false;
   };
-  bool setReference(int targetId, int newId, SearchType type) override {
-    if (hasReference(targetId, type)) {
+  bool setReference(const int targetId, const int newId, const SearchType st) override {
+    if (hasReference(targetId, st)) {
       number = newId;
       return true;
     }
@@ -33,4 +33,8 @@ struct ShowPictureCommand final : IEventCommand {
   int zoomY{100};
   int opacityValue{255};
   Blend blendMode = Blend::Normal;
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {imageName}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"imageName"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

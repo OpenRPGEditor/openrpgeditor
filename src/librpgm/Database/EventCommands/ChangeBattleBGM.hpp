@@ -19,4 +19,8 @@ struct ChangeBattleBGMCommand final : IEventCommand {
     return false;
   };
   Audio bgm;
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {bgm.name()}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"bgm.name"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

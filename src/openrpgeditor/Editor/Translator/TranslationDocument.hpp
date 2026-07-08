@@ -10,6 +10,13 @@
 
 class TranslationDocument {
 public:
+  enum class State {
+    Unknown,
+    Untranslated,
+    Draft,
+    Translated,
+  };
+
   class Translation {
     Translation(const std::string_view key, const std::string_view value)
     : m_key(key)
@@ -93,7 +100,7 @@ public:
 
   bool open();
   bool close(bool saveFile);
-  bool save();
+  bool save() const;
 
   /**
    *
@@ -160,8 +167,8 @@ public:
     }
   }
 
-  TrackedVector<Translation>& translations() { return m_translations; }
-  const TrackedVector<Translation>& translations() const { return m_translations; }
+  std::vector<Translation>& translations() { return m_translations; }
+  const std::vector<Translation>& translations() const { return m_translations; }
 
   Translation translate(const std::string_view key) {
     if (key.empty()) {
@@ -189,8 +196,9 @@ public:
   void revertKey(const size_t idx) { m_translations[idx].revertKey(); }
   void revertValue(const size_t idx) { m_translations[idx].revertValue(); }
 
-  [[nodiscard]] std::string filenameNoExtension() const { return m_path.filename().replace_extension("").generic_string(); }
+  [[nodiscard]] std::string filepath() const { return m_path.generic_string(); }
   [[nodiscard]] std::string filename() const { return m_path.filename().generic_string(); }
+  [[nodiscard]] std::string filenameNoExtension() const { return m_path.filename().replace_extension("").generic_string(); }
 
   void copyKeys(const TranslationDocument& doc);
 
@@ -200,5 +208,5 @@ private:
   std::filesystem::path m_path;
   bool m_isLoaded{false};
   bool m_canLoad{true};
-  TrackedVector<Translation> m_translations;
+  std::vector<Translation> m_translations;
 };

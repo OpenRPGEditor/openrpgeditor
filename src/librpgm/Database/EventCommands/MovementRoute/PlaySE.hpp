@@ -19,4 +19,8 @@ struct MovementPlaySECommand final : IMovementRouteStep {
     return false;
   };
   Audio se;
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {se.name()}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"se.name"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

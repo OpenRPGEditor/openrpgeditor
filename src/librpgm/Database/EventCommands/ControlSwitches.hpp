@@ -9,8 +9,8 @@ struct ControlSwitches : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Control_Switches; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
-  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ControlSwitches>(*this); }
-  bool hasReference(int targetId, SearchType type) override {
+  [[nodiscard]] std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ControlSwitches>(*this); }
+  bool hasReference(const int targetId, const SearchType type) override {
     if (type == SearchType::Switch) {
       return start == targetId && end == targetId;
     }
@@ -22,7 +22,7 @@ struct ControlSwitches : IEventCommand {
     return false;
   };
 
-  bool setReference(int targetId, int newId, SearchType type) override {
+  bool setReference(const int targetId, const int newId, const SearchType type) override {
     if (hasReference(targetId, type)) {
       if (start == targetId && end == targetId) {
         start = newId;

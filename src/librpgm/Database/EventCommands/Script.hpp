@@ -81,6 +81,18 @@ struct ScriptCommand final : IEventCommand {
     }
     return false;
   }
+  [[nodiscard]] std::vector<std::string> stringValues() const override {
+    std::string result = script;
+    for (const auto& nextCmd : moreScript) {
+      result += (!result.empty() ? "\n" : "") + nextCmd->script;
+    }
+
+    return {result};
+  }
+
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"script"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
+
   std::string script;
   std::vector<std::shared_ptr<NextScriptCommand>> moreScript;
 };

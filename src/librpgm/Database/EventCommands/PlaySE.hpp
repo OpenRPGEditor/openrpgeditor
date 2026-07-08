@@ -13,7 +13,7 @@ struct PlaySECommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<PlaySECommand>(*this); }
-  bool hasStringReference(const std::string& text, SearchType type) override {
+  bool hasStringReference(const std::string& text, const SearchType type) override {
     if (type == SearchType::Audio) {
       if (!text.empty()) {
         if (audio.name().contains(text)) {
@@ -22,6 +22,11 @@ struct PlaySECommand final : IEventCommand {
       }
     }
     return false;
-  };
+  }
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {audio.name()}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"audio.name"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
+
   Audio audio;
 };

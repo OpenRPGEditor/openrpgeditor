@@ -8,7 +8,7 @@ struct ChangeParallaxCommand final : IEventCommand {
   ~ChangeParallaxCommand() override = default;
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Parallax; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
-  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeParallaxCommand>(*this); }
+  [[nodiscard]] std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeParallaxCommand>(*this); }
 
   std::string image;
   bool loopHorizontally{false};
@@ -17,4 +17,7 @@ struct ChangeParallaxCommand final : IEventCommand {
   int scrollY{0};
 
   std::string stringRep(const Database& db, bool colored = true) const override;
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {image}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"image"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

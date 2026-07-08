@@ -9,14 +9,14 @@ struct ChangeProfileCommand final : IEventCommand {
   [[nodiscard]] EventCode code() const override { return EventCode::Change_Profile; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
-  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeProfileCommand>(*this); }
-  bool hasReference(int targetId, SearchType type) override {
+  [[nodiscard]] std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<ChangeProfileCommand>(*this); }
+  bool hasReference(const int targetId, const SearchType type) override {
     if (type == SearchType::Actor) {
       return actor == targetId;
     }
     return false;
   };
-  bool setReference(int targetId, int newId, SearchType type) override {
+  bool setReference(const int targetId, const int newId, const SearchType type) override {
     if (hasReference(targetId, type)) {
       if (type == SearchType::Actor) {
         actor = newId;
@@ -27,4 +27,8 @@ struct ChangeProfileCommand final : IEventCommand {
   }
   int actor = 1;
   std::string profile;
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {profile}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"profile"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

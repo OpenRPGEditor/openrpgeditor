@@ -16,7 +16,7 @@ struct CommentCommand final : IEventCommand {
   CommentCommand() = default;
   explicit CommentCommand(const std::optional<int>& indent, const nlohmann::ordered_json& parameters);
   ~CommentCommand() override = default;
-  std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<CommentCommand>(*this); }
+  [[nodiscard]] std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<CommentCommand>(*this); }
 
   [[nodiscard]] EventCode code() const override { return EventCode::Comment; }
   void serializeParameters(nlohmann::ordered_json& out) const override;
@@ -25,4 +25,16 @@ struct CommentCommand final : IEventCommand {
   std::string text;
   std::vector<std::shared_ptr<NextCommentCommand>> nextComments;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override {
+    std::string result = text;
+    for (const auto& next : nextComments) {
+      result += (!result.empty() ? "\n" : "") + next->text;
+    }
+
+    return {result};
+  }
+
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"text"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

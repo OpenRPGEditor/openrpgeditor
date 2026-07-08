@@ -27,4 +27,8 @@ struct ChangeNameCommand final : IEventCommand {
   }
   int actor = 1;
   std::string name;
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {name}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"name"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

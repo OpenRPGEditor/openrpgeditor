@@ -27,4 +27,8 @@ struct ChangeNicknameCommand final : IEventCommand {
   }
   int actor{1};
   std::string nick;
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {nick}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"nick"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

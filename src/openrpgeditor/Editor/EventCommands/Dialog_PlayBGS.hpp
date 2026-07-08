@@ -13,7 +13,7 @@ struct Dialog_PlayBGS : IEventDialogController {
     if (cmd == nullptr) {
       m_command.reset(new PlayBGSCommand());
     }
-    m_audioRenderer.emplace(AudioEditor::AudioType::BGS, m_command->audio);
+    m_audioRenderer.emplace(AudioEditor::AudioType::BGS, m_command->bgs);
   }
   std::tuple<bool, bool> draw() override;
   [[nodiscard]] std::shared_ptr<IEventCommand> getCommand() override { return m_command; }

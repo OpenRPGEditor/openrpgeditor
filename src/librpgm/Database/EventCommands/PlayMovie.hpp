@@ -10,5 +10,9 @@ struct PlayMovieCommand final : IEventCommand {
   void serializeParameters(nlohmann::ordered_json& out) const override;
   [[nodiscard]] std::string stringRep(const Database& db, bool colored = true) const override;
   std::shared_ptr<IEventCommand> clone() const override { return std::make_shared<PlayMovieCommand>(*this); }
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {name}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"name"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
+
   std::string name;
 };

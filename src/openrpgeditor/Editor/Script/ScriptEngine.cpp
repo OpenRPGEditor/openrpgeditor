@@ -20,6 +20,7 @@
 #include <scriptmath/scriptmath.h>
 #include <scriptmath/scriptmathcomplex.h>
 #include <scriptstdstring/scriptstdstring.h>
+#include <scripthelper/scripthelper.h>
 
 #include <weakref/weakref.h>
 ScriptEngine::~ScriptEngine() {
@@ -29,6 +30,7 @@ ScriptEngine::~ScriptEngine() {
   }
 
   if (m_engine) {
+    WriteConfigToFile(m_engine, "ore_scripting.config");
     m_engine->ShutDownAndRelease();
   }
 #endif

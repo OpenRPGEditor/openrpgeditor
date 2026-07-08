@@ -13,4 +13,8 @@ struct ChangeBattlebackCommand final : IEventCommand {
 
   std::string battleBack1Name;
   std::string battleBack2Name;
+
+  [[nodiscard]] std::vector<std::string> stringValues() const override { return {battleBack1Name, battleBack2Name}; }
+  [[nodiscard]] std::vector<std::string> stringValueNames() const override { return {"battleBack1Name", "battleBack2Name"}; }
+  [[nodiscard]] bool hasStringValues() const override { return true; }
 };

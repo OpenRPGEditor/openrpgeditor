@@ -15,21 +15,15 @@ public:
   IEventCommand() = default;
   explicit IEventCommand(const std::optional<int>& _indent);
 
-  IEventCommand(const IEventCommand& other)
-  : IModifiable(other)
-  , m_indent(other.m_indent) {}
-  IEventCommand& operator=(const IEventCommand& other) {
-    IModifiable::operator=(other);
-    m_indent = other.m_indent;
-    return *this;
-  }
+  IEventCommand(const IEventCommand& other) = default;
+  IEventCommand& operator=(const IEventCommand& other) = default;
   IEventCommand(IEventCommand&& other) noexcept
   : IModifiable(std::move(other))
-  , m_indent(std::move(other.m_indent)) {}
+  , m_indent(other.m_indent) {}
 
   IEventCommand& operator=(IEventCommand&& other) noexcept {
     IModifiable::operator=(std::move(other));
-    m_indent = std::move(other.m_indent);
+    m_indent = other.m_indent;
     return *this;
   }
 
@@ -38,8 +32,19 @@ public:
   virtual void serializeParameters(nlohmann::ordered_json& out) const {}
   virtual void serialize(nlohmann::ordered_json& out, bool doIndent = true, bool doParameters = true, bool oldValues = false) const;
   [[nodiscard]] virtual std::string stringRep(const Database& db, bool colored = true) const;
-  virtual std::string symbol(EventCode code) const;
-  virtual std::string indentText(std::optional<int> indent) const;
+  /**
+   * Returns any plaintext values that are stored in a given command parameters, if the command does not contain strings.
+   *
+   * If a command has text spread across multiple sub-commands, those are considered one string and will be concatenated together.
+   *
+   * Commands with multiple string properties will have their strings ordered by appearance (e.g: {battlebackImage1, battlebackImage2})
+   * @return If the command has any plain text, the plaintext value(s), otherwise an empty vector
+   */
+  [[nodiscard]] virtual std::vector<std::string> stringValues() const { return {}; }
+  [[nodiscard]] virtual bool hasStringValues() const { return false; }
+  [[nodiscard]] virtual std::vector<std::string> stringValueNames() const { return {}; }
+  [[nodiscard]] static std::string symbol(EventCode code);
+  [[nodiscard]] static std::string indentText(const std::optional<int>& indent);
   virtual void adjustIndent(const int offset) {
     if (m_indent) {
       m_indent.value() += offset;
@@ -62,13 +67,13 @@ public:
   [[nodiscard]] virtual bool isTerminatingPartner(EventCode code, const std::optional<int>& codeIndent) const { return false; }
   virtual void setReverseSelection(bool reverseSelection) {}
 
-  std::optional<int> indent() const { return m_indent; }
+  [[nodiscard]] std::optional<int> indent() const { return m_indent; }
   virtual void setIndent(int indent) {
     m_indent = indent;
     setModified();
   }
 
-  virtual std::shared_ptr<IEventCommand> clone() const = 0;
+  [[nodiscard]] virtual std::shared_ptr<IEventCommand> clone() const = 0;
 
 private:
   std::optional<int> m_indent{};

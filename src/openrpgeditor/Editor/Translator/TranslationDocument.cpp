@@ -48,7 +48,7 @@ bool TranslationDocument::close(const bool saveFile) {
   m_isLoaded = false;
   return ret;
 }
-bool TranslationDocument::save() {
+bool TranslationDocument::save() const {
   if (!Database::instance()) {
     return false;
   }

@@ -18,8 +18,9 @@ private:
 
 #ifndef DEBUG
 #define ORE_CHECK_DEBUG_END() }
-#endif
+#else
 #define ORE_CHECK_DEBUG_END()
+#endif
 
 #ifndef DEBUG
 #define ORE_CHECK_EXPERIMENTAL_BEGIN() if (SettingsManager::instance().getValue<bool>("enableExperimentalFeatures", false)) {
@@ -29,8 +30,9 @@ private:
 
 #ifndef DEBUG
 #define ORE_CHECK_EXPERIMENTAL_END() }
-#endif
+#else
 #define ORE_CHECK_EXPERIMENTAL_END()
+#endif
 
 #ifndef DEBUG
 #define ORE_DISABLE_EXPERIMENTAL_BEGIN() ImGui::BeginDisabled(SettingsManager::instance().getValue<bool>("enableExperimentalFeatures", false))

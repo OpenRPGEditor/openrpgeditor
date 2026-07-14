@@ -598,11 +598,14 @@ void EventCommandEditor::draw() {
                   if (m_commands->at(n)->code() != EventCode::Repeat_Above && m_commands->at(n)->code() != EventCode::When_Selected && m_commands->at(n)->code() != EventCode::When_Cancel &&
                       m_commands->at(n)->code() != EventCode::Else && m_commands->at(n)->code() != EventCode::End) {
                     m_commandDialog = CreateCommandDialog(m_commands->at(n)->code(), m_commands->at(n));
-                    if (m_commands->at(n)->code() == EventCode::Conditional_Branch) {
-                      blockSelect(n, true);
-                      m_commandDialog->setElseBranchEnabled(conditionalBranchHasElse(*m_commands, n));
+                    // TODO: We need to properly handle invalid commands, RPG Maker MV/MZ simply shows an "Undefined" listing in such cases
+                    if (m_commandDialog) {
+                      if (m_commands->at(n)->code() == EventCode::Conditional_Branch) {
+                        blockSelect(n, true);
+                        m_commandDialog->setElseBranchEnabled(conditionalBranchHasElse(*m_commands, n));
+                      }
+                      m_commandDialog->setOpen(true);
                     }
-                    m_commandDialog->setOpen(true);
                     // ImGui::OpenPopup("###command_picker");
                   }
                 }

@@ -311,7 +311,8 @@ void ActionTooltip(const char* action, const char* fmt, ...) {
   }
 }
 
-int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const bool isVertical, const std::vector<std::string>& tooltips, const std::vector<bool>& disabled, const std::vector<bool>& visible) {
+int ButtonGroup(const char* id, const std::vector<std::string>& buttons, const bool isVertical, const std::vector<std::string>& tooltips, const std::vector<bool>& disabled,
+                const std::vector<bool>& visible) {
   int ret = -1;
 
   if (isVertical) {
@@ -793,5 +794,14 @@ bool EllipsesButtonEx(const char* label, const ImVec2& size_arg, ImGuiButtonFlag
 }
 
 bool EllipsesButton(const char* label, const ImVec2& size_arg) { return EllipsesButtonEx(label, size_arg, ImGuiButtonFlags_None); }
+
+bool CenteredButtonEx(const char* label, const ImVec2& size_arg, const ImGuiButtonFlags flags) {
+  PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.5f, 0.5f));
+  const auto ret = ButtonEx(label, size_arg, flags);
+  PopStyleVar();
+  return ret;
+}
+
+bool CenteredButton(const char* label, const ImVec2& size_arg) { return CenteredButtonEx(label, size_arg, ImGuiButtonFlags_None); }
 
 } // namespace ImGui

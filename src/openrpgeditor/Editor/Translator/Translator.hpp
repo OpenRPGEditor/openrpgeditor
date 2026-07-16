@@ -115,11 +115,12 @@ public:
   bool createLocaleDocumentFrom(const std::shared_ptr<TranslationDocument>& sourceDoc, const std::string_view targetLocale);
   const std::string& currentLocale() const { return m_locale; }
 
-  size_t nextUntranslated(std::string_view locale, std::string_view filename, size_t cur);
-  size_t prevUntranslated(std::string_view locale, std::string_view filename, size_t cur);
+
 
   bool documentHasStates(std::string_view locale, std::string_view filename);
   size_t documentStateCount(std::string_view locale, std::string_view filename);
+  TranslationDocument::State translationState(std::string_view locale, std::string_view filename, size_t idx);
+  
   void initializeDocumentStates(std::string_view locale, std::string_view filename, size_t count);
 
   static std::set<std::string> gatherStringsForMap(const Map* map, int mapId);

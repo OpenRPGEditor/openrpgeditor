@@ -23,6 +23,39 @@ struct Color {
   void invalidate();
 
   [[nodiscard]] Color toRgb() const;
+  Color toHsv() const;
+  Color toHsl() const;
+  Color toCmyk() const;
+  Color convertTo(Spec spec) const;
+
+  int red() const;
+  void setRed(int red);
+  int green() const;
+  void setGreen(int green);
+  int blue() const;
+  void setBlue(int blue);
+  int alpha() const;
+  void setAlpha(int alpha);
+
+  bool isValid() const { return m_spec != Spec::Invalid; }
+  static constexpr bool isRgbaValid(const int r, const int g, const int b, const int a = 255) {
+    return static_cast<uint32_t>(r) <= 255 && static_cast<uint32_t>(g) <= 255 && static_cast<uint32_t>(b) <= 255 && static_cast<uint32_t>(a) <= 255;
+  }
+
+  Color lighter(int factor = 150) const;
+  Color darker(int factor = 200) const;
+
+  // Returns black or white based on color luma
+  Color textColor() const;
+  uint32_t toImGuiColor() const;
+
+  Color withAlpha(const int alpha) const {
+    Color color = *this;
+    color.setAlpha(alpha);
+    return color;
+  }
+
+  Color multAlpha(const float scale) const { return withAlpha(alpha() * scale); }
 
   static Color fromRgb(int r, int g, int b, int alpha = 255);
   static Color fromHsv(int h, int s, int v, int alpha = 255);
@@ -39,11 +72,6 @@ struct Color {
   static int gray(const int r, const int g, const int b) { return (r * 11 + g * 16 + b * 5) / 32; }
   static int gray(const Rgb rgb) { return gray(red(rgb), green(rgb), blue(rgb)); }
   static bool isGray(const Rgb rgb) { return red(rgb) == green(rgb) && red(rgb) == blue(rgb); }
-
-  bool isValid() const { return m_spec != Spec::Invalid; }
-  static constexpr bool isRgbaValid(const int r, const int g, const int b, const int a = 255) {
-    return static_cast<uint32_t>(r) <= 255 && static_cast<uint32_t>(g) <= 255 && static_cast<uint32_t>(b) <= 255 && static_cast<uint32_t>(a) <= 255;
-  }
 
 private:
   Spec m_spec{};

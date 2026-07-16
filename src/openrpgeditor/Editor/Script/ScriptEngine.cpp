@@ -12,15 +12,16 @@
 
 #include <cassert>
 #include <cstdarg>
+#include <fstream>
 #include <iostream>
 #include <ranges>
 #include <scriptarray/scriptarray.h>
 #include <scripthandle/scripthandle.h>
+#include <scripthelper/scripthelper.h>
 #include <scriptjson/scriptjson.h>
 #include <scriptmath/scriptmath.h>
 #include <scriptmath/scriptmathcomplex.h>
 #include <scriptstdstring/scriptstdstring.h>
-#include <scripthelper/scripthelper.h>
 
 #include <weakref/weakref.h>
 ScriptEngine::~ScriptEngine() {

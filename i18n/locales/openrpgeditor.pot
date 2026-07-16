@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenRPG Editor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-06 05:21-0700\n"
+"POT-Creation-Date: 2026-07-14 14:00-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -703,6 +703,23 @@ msgstr ""
 msgid "When"
 msgstr ""
 
+#: src/librpgm/Database/EventCommands/ShowChoice.hpp:33
+#: src/librpgm/Database/Globals.hpp:217
+#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:479
+#: src/openrpgeditor/Editor/MainWindow.cpp:187
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:35
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:44
+msgid "Yes"
+msgstr ""
+
+#: src/librpgm/Database/EventCommands/ShowChoice.hpp:33
+#: src/librpgm/Database/Globals.hpp:216
+#: src/openrpgeditor/Editor/MainWindow.cpp:187
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:35
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:44
+msgid "No"
+msgstr ""
+
 #: src/librpgm/Database/EventCommands/ShowPicture.cpp:33
 #: src/librpgm/Database/Globals.hpp:576
 msgid "Show Picture"
@@ -1259,9 +1276,9 @@ msgstr ""
 #: src/openrpgeditor/Editor/SettingsDialog.cpp:50
 #: src/openrpgeditor/Editor/AboutDialog.cpp:47
 #: src/openrpgeditor/Editor/JSONInspector.cpp:308
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:54
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:61
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:328
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:55
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:62
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:341
 msgid "OK"
 msgstr ""
 
@@ -1273,7 +1290,7 @@ msgstr ""
 #: src/openrpgeditor/Editor/CommonUI/NewMapDialog.cpp:245
 #: src/openrpgeditor/Editor/CommonUI/AudioEditor.cpp:126
 #: src/openrpgeditor/Editor/CommonUI/ImagePicker.cpp:361
-#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1291
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1296
 #: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:202
 #: src/openrpgeditor/Editor/DatabaseEditor/DBTermsTab.cpp:297
 #: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:469
@@ -1372,9 +1389,9 @@ msgstr ""
 #: src/openrpgeditor/Editor/MainWindow.cpp:187
 #: src/openrpgeditor/Editor/MainWindow.cpp:468
 #: src/openrpgeditor/Editor/MainWindow.cpp:509
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:43
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:61
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:328
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:44
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:62
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:341
 msgid "Cancel"
 msgstr ""
 
@@ -1496,21 +1513,6 @@ msgstr ""
 msgid "Hidden Item B"
 msgstr ""
 
-#: src/librpgm/Database/Globals.hpp:216
-#: src/openrpgeditor/Editor/MainWindow.cpp:187
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:34
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:43
-msgid "No"
-msgstr ""
-
-#: src/librpgm/Database/Globals.hpp:217
-#: src/openrpgeditor/Editor/DatabaseEditor/DBAnimationsTab.cpp:479
-#: src/openrpgeditor/Editor/MainWindow.cpp:187
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:34
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:43
-msgid "Yes"
-msgstr ""
-
 #: src/librpgm/Database/Globals.hpp:222
 msgid "Additive"
 msgstr ""
@@ -1521,7 +1523,7 @@ msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:224 src/librpgm/Database/Globals.hpp:230
 #: src/librpgm/Database/Globals.hpp:245
-#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1133
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1138
 msgid "Screen"
 msgstr ""
 
@@ -1643,7 +1645,7 @@ msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:268 src/librpgm/Database/Globals.hpp:307
 #: src/librpgm/Database/Globals.hpp:351 src/librpgm/Database/Globals.hpp:904
-#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1013
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1018
 #: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeEquipment.cpp:27
 #: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeHP.cpp:26
 #: src/openrpgeditor/Editor/EventCommands/Dialog_ChangeLevel.cpp:26
@@ -2480,7 +2482,7 @@ msgid "Save BGM"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:585
-#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1058
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1063
 msgid "Resume BGM"
 msgstr ""
 
@@ -3073,7 +3075,7 @@ msgid "Weapons"
 msgstr ""
 
 #: src/librpgm/Database/Globals.hpp:900
-#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1052
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1057
 msgid "Audio"
 msgstr ""
 
@@ -3432,32 +3434,32 @@ msgstr ""
 msgid "Select an Image"
 msgstr ""
 
-#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:676
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:679
 msgid "New..."
 msgstr ""
 
-#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1073
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1078
 msgid "Flow Control"
 msgstr ""
 
-#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1106
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1111
 msgid "Scene"
 msgstr ""
 
-#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1156
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1161
 #: src/openrpgeditor/Editor/DatabaseEditor/DBSystemTab.hpp:26
 msgid "System"
 msgstr ""
 
-#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1232
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1237
 msgid "Command Window"
 msgstr ""
 
-#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1241
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1246
 msgid "Select a preset to insert into selection..."
 msgstr ""
 
-#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1265
+#: src/openrpgeditor/Editor/CommonUI/EventCommandEditor.cpp:1270
 msgid "Error loading template: "
 msgstr ""
 
@@ -3803,7 +3805,7 @@ msgstr ""
 #: src/openrpgeditor/Editor/DatabaseEditor/DBDocTab.cpp:176
 #: src/openrpgeditor/Editor/MapEditor/MapProperties.cpp:352
 #: src/openrpgeditor/Editor/SettingsDialog.cpp:50
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:328
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:341
 msgid "Apply"
 msgstr ""
 
@@ -3988,7 +3990,7 @@ msgid "Enemies"
 msgstr ""
 
 #: src/openrpgeditor/Editor/DatabaseEditor/DBLocaleTab.hpp:17
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:120
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:121
 msgid "Locales"
 msgstr ""
 
@@ -5213,8 +5215,8 @@ msgid "Add New Value"
 msgstr ""
 
 #: src/openrpgeditor/Editor/JSONInspector.cpp:280
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:221
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:273
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:234
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:286
 msgid "Key"
 msgstr ""
 
@@ -5471,7 +5473,7 @@ msgid "LibLCF..."
 msgstr ""
 
 #: src/openrpgeditor/Editor/MainWindow.cpp:1022
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:110
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:111
 msgid "Translator"
 msgstr ""
 
@@ -5532,43 +5534,56 @@ msgstr ""
 msgid "Right-click for more options."
 msgstr ""
 
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:125
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:126
 msgid " - [Default]"
 msgstr ""
 
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:134
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:135
 msgid "Set as Default"
 msgstr ""
 
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:141
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:142
 msgid "Check First"
 msgstr ""
 
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:166
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:154
+msgid ""
+"Check first globs can be used to prioritize files.\n"
+"This allows common strings to be quickly resolved automatically.\n"
+"You can use typical regex glob syntax:\n"
+"* (any text)\n"
+"** (subfolders)\n"
+"? (one character)\n"
+"[a-z] (character range)\n"
+"[!abc] (exclude)\n"
+"{json,js} (options).\n"
+msgstr ""
+
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:179
 msgid "Remove check first glob?"
 msgstr ""
 
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:167
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:180
 #, c++-format
 msgid ""
 "Are you sure you want to remove the selected check first glob?\n"
 "\"{}\""
 msgstr ""
 
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:186
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:199
 msgid "Documents"
 msgstr ""
 
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:214
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:227
 msgid "Translations"
 msgstr ""
 
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:222
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:292
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:235
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:305
 msgid "Value"
 msgstr ""
 
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:268
-#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:328
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:281
+#: src/openrpgeditor/Editor/Translator/TranslatorDialog.cpp:341
 msgid "Revert"
 msgstr ""

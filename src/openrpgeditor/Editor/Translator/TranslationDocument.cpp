@@ -1,10 +1,12 @@
 #include "Editor/Translator/TranslationDocument.hpp"
 
 #include "Editor/Log.hpp"
-#include "TranslatorDialog.hpp"
+#include "Editor/Translator/Translator.hpp"
 
 #include <Database/Database.hpp>
 #include <ranges>
+
+const TranslationDocument::Translation TranslationDocument::kInvalidTranslation;
 
 bool TranslationDocument::open() {
   if (!Database::instance() || !m_canLoad) {
@@ -23,9 +25,10 @@ bool TranslationDocument::open() {
       if (Translation translation = Translation::create(entry.key(), entry.value().get<std::string>()); translation != kInvalidTranslation) {
         // Only add translations if they have valid keys
         m_translations.emplace_back(translation);
+        // Retrieve this translation's state, set directly to avoid tripping the modification flag
+        m_translations.back().m_state = Translator::instance().translationState(m_locale, filenameNoExtension(), m_translations.size() - 1);
       }
     }
-
     m_isLoaded = true;
     return true;
   } catch (const nlohmann::ordered_json::exception& e) {
@@ -77,4 +80,56 @@ void TranslationDocument::copyKeys(const TranslationDocument& doc) {
   for (const auto& translation : doc.translations()) {
     m_translations.emplace_back(Translation::create(translation.key(), {}));
   }
+}
+
+size_t TranslationDocument::nextUntranslated(size_t cur) const {
+  if (m_translations.empty()) {
+    return -1;
+  }
+
+  if (cur < 0 || cur >= translationCount()) {
+    cur = 0;
+  } else {
+    ++cur;
+  }
+
+  size_t elementsChecked = 0;
+  const size_t size = translationCount();
+
+  while (elementsChecked < size) {
+    if (m_translations[cur].state() != State::Translated && m_translations[cur].state() != State::Approved) {
+      return cur; // Found an untranslated item!
+    }
+
+    cur = (cur + 1) % size;
+    elementsChecked++;
+  }
+
+  return -1; // Everything is translated
+}
+
+size_t TranslationDocument::prevUntranslated(size_t cur) const {
+  if (m_translations.empty()) {
+    return -1;
+  }
+
+  if (cur < 0 || cur >= translationCount()) {
+    cur = translationCount() - 1;
+  } else {
+    --cur;
+  }
+
+  size_t elementsChecked = 0;
+  const size_t size = translationCount();
+
+  while (elementsChecked < size) {
+    if (m_translations[cur].state() != State::Translated && m_translations[cur].state() != State::Approved) {
+      return cur; // Found an untranslated item moving backward!
+    }
+
+    cur = (cur - 1 + size) % size;
+    elementsChecked++;
+  }
+
+  return -1; // Everything is translated
 }

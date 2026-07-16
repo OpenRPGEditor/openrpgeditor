@@ -17,7 +17,7 @@
 #include <string>
 #include <string_view>
 
-bool glob_match(const std::string_view str, const std::string_view pattern) {
+bool globMatch(const std::string_view str, const std::string_view pattern) {
   std::string regex_str;
   regex_str.reserve(pattern.size() * 2);
 
@@ -111,16 +111,16 @@ bool glob_match(const std::string_view str, const std::string_view pattern) {
 }
 
 // Find the first matching glob pattern priority index
-int get_matching_index(const std::string& str, const std::vector<std::string>& globs) {
+int findMatchingIndex(const std::string& str, const std::vector<std::string>& globs) {
   for (int i = 0; i < globs.size(); ++i) {
-    if (glob_match(str, globs[i])) {
+    if (globMatch(str, globs[i])) {
       return i;
     }
   }
   return globs.size(); // Default fallback position for unmatched entries
 }
 
-bool has_extension_insensitive(const std::filesystem::path& file_path, const std::string_view target_ext) {
+bool hasExtensionInsensitive(const std::filesystem::path& file_path, const std::string_view target_ext) {
   std::string ext = file_path.extension().string();
   if (ext.length() != target_ext.length()) {
     return false;
@@ -197,8 +197,26 @@ bool Translator::save(const bool excludeStates) const {
     manifest.defaultLocale = m_defaultLocale;
     manifest.locales = m_localeInfo;
     manifest.checkFirst = m_checkFirst;
+    // first gather all states from documents
     if (!excludeStates) {
-      manifest.states = m_states;
+      StateMap states;
+      for (const auto& [locale, documents] : m_documents) {
+        auto& docStates = states[locale];
+        for (const auto& document : documents) {
+          if (!document->isLoaded()) {
+            if (m_states.contains(locale) && m_states.at(locale).contains(document->filenameNoExtension())) {
+              docStates[document->filenameNoExtension()] = m_states.at(locale).at(document->filenameNoExtension());
+            }
+          } else {
+            docStates[document->filenameNoExtension()].reserve(document->translationCount());
+            for (int i = 0; i < document->translationCount(); i++) {
+              docStates[document->filenameNoExtension()].emplace_back(document->translationState(i));
+            }
+          }
+        }
+      }
+
+      manifest.states = states;
     }
     j = manifest;
     std::ofstream manifestFile(manifestPath);
@@ -250,14 +268,14 @@ bool Translator::initialize() {
         continue;
       }
       for (const auto& entry : std::filesystem::recursive_directory_iterator(localePath)) {
-        if (!is_regular_file(entry) || !has_extension_insensitive(entry.path(), ".json")) {
+        if (!is_regular_file(entry) || !hasExtensionInsensitive(entry.path(), ".json")) {
           continue;
         }
 
-        const auto& document = m_documents[locale].emplace_back(std::make_shared<TranslationDocument>(std::filesystem::relative(entry.path(), m_localesBasepath)));
+        const auto& document = m_documents[locale].emplace_back(std::make_shared<TranslationDocument>(std::filesystem::relative(entry.path(), m_localesBasepath), locale));
         APP_DEBUG("Added document {} for locale \"{}\"", document->filepath(), locale);
         for (const auto& cf : m_checkFirst) {
-          if (glob_match(document->filepath(), cf)) {
+          if (globMatch(document->filepath(), cf)) {
             APP_DEBUG("Adding document \"{}\" to priority list using glob \"{}\"", document->filepath(), cf);
             m_checkFirstDocuments[locale].emplace_back(document);
             break;
@@ -266,9 +284,9 @@ bool Translator::initialize() {
       }
       std::ranges::sort(m_checkFirstDocuments[m_locale], [this](const std::shared_ptr<TranslationDocument>& a, const std::shared_ptr<TranslationDocument>& b) {
         const auto name_a = a->filepath();
-        const auto index_a = get_matching_index(name_a, m_checkFirst);
+        const auto index_a = findMatchingIndex(name_a, m_checkFirst);
         const auto name_b = b->filepath();
-        const auto index_b = get_matching_index(name_b, m_checkFirst);
+        const auto index_b = findMatchingIndex(name_b, m_checkFirst);
 
         if (index_a != index_b) {
           return index_a < index_b;
@@ -409,74 +427,35 @@ bool Translator::createLocaleDocumentFrom(const std::shared_ptr<TranslationDocum
 
   const auto [_, directory] = m_localeInfo[targetLocale.data()];
   const auto targetLocaleDir = directory.value_or(std::filesystem::path(".") / targetLocale);
-  const auto& destDoc = m_documents[targetLocale.data()].emplace_back(std::make_shared<TranslationDocument>(targetLocaleDir / sourceDoc->filepath()));
+  const auto& destDoc = m_documents[targetLocale.data()].emplace_back(std::make_shared<TranslationDocument>(targetLocaleDir / sourceDoc->filepath(), targetLocale));
 
   destDoc->copyKeys(*sourceDoc);
   return true;
 }
 
-size_t Translator::nextUntranslated(const std::string_view locale, const std::string_view filename, size_t cur) {
+TranslationDocument::State Translator::translationState(std::string_view locale, std::string_view filename, size_t idx) {
+  if (idx == -1) {
+    return TranslationDocument::State::Unknown;
+  }
+
   const std::string localeStr(locale);
   const std::string filenameStr(filename);
-
-  if (!m_documents.contains(localeStr) || !m_states[localeStr].contains(filenameStr)) {
-    return -1;
+  if (!m_documents.contains(localeStr)) {
+    return TranslationDocument::State::Unknown;
   }
 
-  const auto& states = m_states[localeStr][filenameStr];
+  auto& states = m_states[localeStr][filenameStr];
   if (states.empty()) {
-    return -1;
+    return TranslationDocument::State::Unknown;
   }
-
-  if (cur < 0 || cur >= states.size()) {
-    cur = 0;
-  }
-
-  size_t elements_checked = 0;
-  const size_t size = states.size();
-
-  while (elements_checked < size) {
-    if (states[cur] != TranslationDocument::State::Translated) {
-      return cur; // Found an untranslated item!
+  
+  if (idx >= states.size()) {
+    while (idx <= states.size()) {
+      states.emplace_back();
     }
-
-    cur = (cur + 1) % size;
-    elements_checked++;
   }
 
-  return -1; // Everything is translated
-}
-
-size_t Translator::prevUntranslated(const std::string_view locale, const std::string_view filename, size_t cur) {
-  const std::string localeStr(locale);
-  const std::string filenameStr(filename);
-
-  if (!m_documents.contains(localeStr) || !m_states[localeStr].contains(filenameStr)) {
-    return -1;
-  }
-
-  const auto& states = m_states[localeStr][filenameStr];
-  if (states.empty()) {
-    return -1;
-  }
-
-  if (cur < 0 || cur >= states.size()) {
-    cur = states.size() - 1;
-  }
-
-  size_t elementsChecked = 0;
-  const size_t size = states.size();
-
-  while (elementsChecked < size) {
-    if (states[cur] != TranslationDocument::State::Translated) {
-      return cur; // Found an untranslated item moving backward!
-    }
-
-    cur = (cur - 1 + size) % size;
-    elementsChecked++;
-  }
-
-  return -1; // Everything is translated
+  return states[idx];
 }
 
 bool Translator::documentHasStates(const std::string_view locale, const std::string_view filename) {
@@ -534,7 +513,7 @@ std::set<std::string> Translator::gatherStringsForMap(const Map* map, const int 
         const auto values = command->stringValues();
         for (const auto& value : values) {
           result.insert(value);
-          //result.insert(std::format("Map{:03}-{}-{}-{}:\n{}", mapId, event->name(), event->id(), pageIdx, value));
+          // result.insert(std::format("Map{:03}-{}-{}-{}:\n{}", mapId, event->name(), event->id(), pageIdx, value));
         }
       }
       pageIdx++;

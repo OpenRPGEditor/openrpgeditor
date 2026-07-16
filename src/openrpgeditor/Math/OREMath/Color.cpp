@@ -1,13 +1,9 @@
-//
-// Created by antidote on 7/19/24.
-//
-
 #include "OREMath/Color.hpp"
+#include "OREMath/MathGlobals.hpp"
 
-#include "MathGlobals.hpp"
+#include <imgui.h>
 
 #include <limits.h>
-#include <limits>
 
 Color::Color(const Spec spec) {
   switch (spec) {
@@ -225,6 +221,155 @@ Color Color::toRgb() const {
   return color;
 }
 
+#define MAX_3(a, b, c) ((a > b && a > c) ? a : (b > c ? b : c))
+#define MIN_3(a, b, c) ((a < b && a < c) ? a : (b < c ? b : c))
+
+Color Color::toHsv() const {
+  if (!isValid() || m_spec == Spec::Hsv) {
+    return *this;
+  }
+
+  if (m_spec != Spec::Rgb) {
+    return toRgb().toHsv();
+  }
+
+  Color color;
+  color.m_spec = Spec::Hsv;
+  color.m_color.ahsv.alpha = m_color.argb.alpha;
+  color.m_color.ahsv.pad = 0;
+
+  const double r = m_color.argb.red / static_cast<double>(USHRT_MAX);
+  const double g = m_color.argb.green / static_cast<double>(USHRT_MAX);
+  const double b = m_color.argb.blue / static_cast<double>(USHRT_MAX);
+  const double max = MAX_3(r, g, b);
+  const double min = MIN_3(r, g, b);
+  const double delta = max - min;
+  color.m_color.ahsv.value = oRound(max * USHRT_MAX);
+
+  if (fuzzyIsNull(delta)) {
+    // undefined hue
+    color.m_color.ahsv.hue = USHRT_MAX;
+    color.m_color.ahsv.saturation = 0;
+    return color;
+  }
+
+  double hue = 0.f;
+  color.m_color.ahsv.saturation = oRound((delta / max) * USHRT_MAX);
+  if (fuzzyCompare(r, max)) {
+    hue = ((g - b) / delta);
+  } else if (fuzzyCompare(g, max)) {
+    hue = (2.f + (b - r) / delta);
+  } else if (fuzzyCompare(b, max)) {
+    hue = (4.f + (r - g) / delta);
+  } else {
+    // error
+  }
+
+  hue *= 60.0;
+  if (hue < 0.0) {
+    hue += 360.0;
+  }
+
+  color.m_color.ahsv.hue = oRound(hue * 100);
+
+  return color;
+}
+
+Color Color::toHsl() const {
+  if (!isValid() || m_spec == Spec::Hsl) {
+    return *this;
+  }
+
+  if (m_spec != Spec::Rgb) {
+    return toRgb().toHsl();
+  }
+
+  Color color;
+  color.m_spec = Spec::Hsl;
+  color.m_color.ahsl.alpha = m_color.argb.alpha;
+  color.m_color.ahsl.pad = 0;
+
+  const float r = m_color.argb.red / static_cast<float>(USHRT_MAX);
+  const float g = m_color.argb.green / static_cast<float>(USHRT_MAX);
+  const float b = m_color.argb.blue / static_cast<float>(USHRT_MAX);
+  const float max = MAX_3(r, g, b);
+  const float min = MIN_3(r, g, b);
+  const float delta = max - min;
+  const float delta2 = max + min;
+
+  const float lightness = 0.5f * delta2;
+
+  color.m_color.ahsl.lightness = oRound(lightness * USHRT_MAX);
+
+  if (fuzzyIsNull(delta)) {
+    color.m_color.ahsl.hue = 0;
+    color.m_color.ahsl.saturation = 0;
+    return color;
+  }
+
+  float hue = 0.f;
+  if (lightness < 0.5f) {
+    color.m_color.ahsl.saturation = oRound((delta / delta2) * USHRT_MAX);
+  } else {
+    color.m_color.ahsl.saturation = oRound((delta / (2.f - delta2)) * USHRT_MAX);
+  }
+
+  if (fuzzyCompare(r, max)) {
+    hue = ((g - b) / delta);
+  } else if (fuzzyCompare(g, max)) {
+    hue = (2.f + (b - r) / delta);
+  } else if (fuzzyCompare(b, max)) {
+    hue = (4.f + (r - g) / delta);
+  } else {
+    // error
+  }
+
+  hue *= 60.f;
+  if (hue < 0.f) {
+    hue += 360.f;
+  }
+
+  color.m_color.ahsl.hue = oRound(hue * USHRT_MAX);
+
+  return color;
+}
+
+Color Color::toCmyk() const {
+  if (!isValid() || m_spec == Spec::Cmyk) {
+    return *this;
+  }
+
+  if (m_spec != Spec::Rgb) {
+    return toRgb().toCmyk();
+  }
+
+  Color color;
+  color.m_spec = Spec::Cmyk;
+  color.m_color.acmyk.alpha = m_color.argb.alpha;
+
+  const float r = m_color.argb.red / static_cast<float>(USHRT_MAX);
+  const float g = m_color.argb.green / static_cast<float>(USHRT_MAX);
+  const float b = m_color.argb.blue / static_cast<float>(USHRT_MAX);
+  float c = 1.f - r;
+  float m = 1.f - g;
+  float y = 1.f - b;
+
+  const float k = std::min(c, std::min(m, y));
+
+  if (!fuzzyIsNull(k - 1.f)) {
+    c = (c - k) / (1.f - k);
+    m = (m - k) / (1.f - k);
+    y = (y - k) / (1.f - k);
+  }
+
+  color.m_color.acmyk.cyan = oRound(c * USHRT_MAX);
+  color.m_color.acmyk.magenta = oRound(m * USHRT_MAX);
+  color.m_color.acmyk.yellow = oRound(y * USHRT_MAX);
+  color.m_color.acmyk.black = oRound(k * USHRT_MAX);
+
+  return color;
+}
+
 Color Color::fromRgb(const int r, const int g, const int b, int alpha) {
   if (!isRgbaValid(r, g, b, alpha)) {
     return {};
@@ -279,4 +424,136 @@ Color Color::fromCmyk(const int c, const int m, const int y, const int k, const 
   color.m_color.acmyk.yellow = y * 0x101;
   color.m_color.acmyk.black = k * 0x101;
   return color;
+}
+
+Color Color::lighter(const int factor) const {
+  if (factor <= 0) {
+    return *this;
+  }
+
+  if (factor < 100) {
+    return darker(10000 / factor);
+  }
+
+  Color hsv = toHsv();
+
+  int s = hsv.m_color.ahsv.saturation;
+  int v = hsv.m_color.ahsv.value;
+
+  v = (factor * v) / 100;
+
+  if (v > USHRT_MAX) {
+    s -= v - USHRT_MAX;
+    if (s < 0) {
+      s = 0;
+    }
+
+    v = USHRT_MAX;
+  }
+
+  hsv.m_color.ahsv.saturation = s;
+  hsv.m_color.ahsv.value = v;
+
+  return hsv.convertTo(m_spec);
+}
+
+Color Color::darker(const int factor) const {
+  if (factor <= 0) {
+    return *this;
+  }
+
+  if (factor < 100) {
+    return lighter(10000 / factor);
+  }
+
+  Color hsv = toHsv();
+  hsv.m_color.ahsv.value = (hsv.m_color.ahsv.value * 100) / factor;
+
+  return hsv.convertTo(m_spec);
+}
+
+Color Color::convertTo(const Spec spec) const {
+  if (m_spec == spec) {
+    return *this;
+  }
+  switch (spec) {
+  case Spec::Rgb:
+    return toRgb();
+  case Spec::Hsv:
+    return toHsv();
+  case Spec::Hsl:
+    return toHsl();
+  case Spec::Cmyk:
+    return toCmyk();
+  default:
+  }
+
+  return Color();
+}
+
+Color Color::textColor() const {
+  const Color col = toRgb();
+  const float luma = 0.299f * col.red() + 0.587f * col.green() + 0.114f * col.blue();
+
+  return luma >= 128 ? Color(0, 0, 0) : Color(255, 255, 255);
+}
+
+uint32_t Color::toImGuiColor() const {
+  const Color col = toRgb();
+  const auto red = col.red();
+  const auto green = col.green();
+  const auto blue = col.blue();
+  const auto alpha = col.alpha();
+  return IM_COL32(red, green, blue, alpha);
+}
+
+int Color::alpha() const { return m_color.argb.alpha >> 8; }
+void Color::setAlpha(const int alpha) { m_color.argb.alpha = alpha * 0x101; }
+
+int Color::red() const {
+  if (m_spec != Spec::Invalid && m_spec != Spec::Rgb) {
+    return toRgb().red();
+  }
+
+  return m_color.argb.red >> 8;
+}
+
+void Color::setRed(const int red) {
+  if (m_spec != Spec::Rgb) {
+    setRgb(red, green(), blue(), alpha());
+  } else {
+    m_color.argb.red = red * 0x101;
+  }
+}
+
+int Color::green() const {
+  if (m_spec != Spec::Invalid && m_spec != Spec::Rgb) {
+    return toRgb().green();
+  }
+
+  return m_color.argb.green >> 8;
+}
+
+void Color::setGreen(const int green) {
+  if (m_spec != Spec::Rgb) {
+    setRgb(red(), green, blue(), alpha());
+  } else {
+    m_color.argb.blue = green * 0x101;
+  }
+}
+
+int Color::blue() const {
+  if (m_spec != Spec::Invalid && m_spec != Spec::Rgb) {
+    return toRgb().green();
+  }
+
+  return m_color.argb.blue >> 8;
+}
+
+void Color::setBlue(const int blue) {
+  if (m_spec != Spec::Rgb) {
+    setRgb(red(), green(), blue, alpha());
+  } else {
+    m_color.argb.blue = blue * 0x101;
+  }
 }

@@ -1,4 +1,5 @@
 #include "Database/Doc.hpp"
+#include <fstream>
 
 Doc::Doc(const Doc& other)
 : IModifiable(other)

@@ -13,6 +13,16 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <misc/cpp/imgui_stdlib.h>
+#include <OREMath/Color.hpp>
+
+static constexpr int kStateColorAlpha = 255;
+static const std::array<Color, magic_enum::enum_count<TranslationDocument::State>()> kStateColors = {{
+    {255, 255, 0, kStateColorAlpha},   // Unknown
+    {255, 0, 0, kStateColorAlpha},     // Untranslated
+    {127, 127, 127, kStateColorAlpha}, // Draft
+    {144, 238, 144, kStateColorAlpha}, // Translated light green
+    {102, 255, 0, kStateColorAlpha},   // Translated and approved bright green
+}};
 
 std::tuple<bool, bool> ConfirmationDialog::draw() {
   const std::string id = std::format("###{}", m_dialogId);
@@ -95,6 +105,21 @@ bool TranslatorDialog::closeAllDocuments(const bool saveDocuments) {
   return ret;
 }
 
+void escapeNewlines(std::string& str) {
+  size_t pos = 0;
+
+  while ((pos = str.find("\\n", pos)) != std::string::npos) {
+    str.replace(pos, 2, "\\\\n");
+    pos += 4;
+  }
+
+  pos = 0;
+  while ((pos = str.find('\n', pos)) != std::string::npos) {
+    str.replace(pos, 1, "\\n");
+    pos += 2;
+  }
+}
+
 std::tuple<bool, bool> TranslatorDialog::draw() {
   if (!m_open) {
     return {true, m_confirmed};
@@ -107,6 +132,7 @@ std::tuple<bool, bool> TranslatorDialog::draw() {
 
   ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, {0.5f, 0.5f});
   ImGui::SetNextWindowSizeConstraints(ImGui::GetDPIScaledSize(1024, 512), {FLT_MAX, FLT_MAX});
+  const auto buttonSize = ImGui::CalcItemSize({ImGui::GetFontSize(), ImGui::GetFontSize()}, 0.f, 0.f).y + (ImGui::GetStyle().FramePadding.y + ImGui::GetStyle().ItemSpacing.y) * 2;
 
   if (ImGui::Begin(std::format("{}###{}", trNOOP("Translator"), m_dialogId).c_str(), &m_open)) {
     const bool isDocked = ImGui::IsWindowDocked();
@@ -143,15 +169,13 @@ std::tuple<bool, bool> TranslatorDialog::draw() {
             if (checkFirstGroup.begin()) {
               ImGui::BeginHorizontal("##translator_check_first_list_group_layout", {-1, -1}, 0.f);
               {
-                const auto buttonSize = ImGui::CalcItemSize({ImGui::GetFontSize(), ImGui::GetFontSize()}, 0.f, 0.f).x + (ImGui::GetStyle().FramePadding.x + ImGui::GetStyle().ItemSpacing.x) * 2;
-
                 if (ImGui::BeginListBox("##translator_check_first_glob_list", {ImGui::GetContentRegionAvail().x - (buttonSize + ImGui::GetStyle().FramePadding.x), 0})) {
                   ImGui::EndListBox();
                 }
                 ImGui::BeginVertical("##translator_check_first_list_group_buttons");
                 {
                   ImGui::TextDisabled("(?)");
-                  ImGui::SetItemTooltip(R"(Check first globs can be used to prioritize files.
+                  ImGui::SetItemTooltip("%s", trNOOP(R"(Check first globs can be used to prioritize files.
 This allows common strings to be quickly resolved automatically.
 You can use typical regex glob syntax:
 * (any text)
@@ -160,21 +184,21 @@ You can use typical regex glob syntax:
 [a-z] (character range)
 [!abc] (exclude)
 {json,js} (options).
-)");
+)"));
                   ImGui::Spring(0.5f);
                   ImGui::BeginDisabled(m_currentCheckFirst == 0 || m_currentCheckFirst == -1);
                   {
-                    if (ImGui::Button(ICON_FA_SORT_UP, {buttonSize, buttonSize})) {
+                    if (ImGui::CenteredButton(ICON_FA_SORT_UP, {buttonSize, buttonSize})) {
                       m_currentCheckFirst = Translator::instance().moveCheckFirst(m_currentCheckFirst, m_currentCheckFirst - 1);
                     }
                   }
                   ImGui::EndDisabled();
-                  if (ImGui::Button("+", {buttonSize, buttonSize})) {
+                  if (ImGui::CenteredButton("+", {buttonSize, buttonSize})) {
                     // m_showAddCheckFirstDialog = true;
                   }
                   ImGui::BeginDisabled(m_currentCheckFirst == -1);
                   {
-                    if (ImGui::Button("-", {buttonSize, buttonSize})) {
+                    if (ImGui::CenteredButton("-", {buttonSize, buttonSize})) {
                       m_removeCheckFirstConfirmationDialog.emplace(
                           trNOOP("Remove check first glob?"),
                           trFormat("Are you sure you want to remove the selected check first glob?\n\"{}\"", Translator::instance().checkFirst(m_currentCheckFirst)).c_str());
@@ -184,7 +208,7 @@ You can use typical regex glob syntax:
 
                   ImGui::BeginDisabled(m_currentCheckFirst == -1 || m_currentCheckFirst >= Translator::instance().checkFirstCount());
                   {
-                    if (ImGui::Button(ICON_FA_SORT_DOWN, {buttonSize, buttonSize})) {
+                    if (ImGui::CenteredButton(ICON_FA_SORT_DOWN, {buttonSize, buttonSize})) {
                       m_currentCheckFirst = Translator::instance().moveCheckFirst(m_currentCheckFirst, m_currentCheckFirst + 1);
                     }
                   }
@@ -226,13 +250,74 @@ You can use typical regex glob syntax:
           ImGui::EndHorizontal();
           GroupBox translations(trNOOP("Translations"), "##translator_translations_group", {-1, -1}, nullptr, 0, ImGuiWindowFlags_HorizontalScrollbar);
           if (translations.begin()) {
+            ImGui::BeginHorizontal("##translator_translations_toolbar", {ImGui::GetContentRegionAvail().x, 0}, 0.f);
+            {
+              ImGui::BeginDisabled(!m_currentDocument);
+              {
+                ImGui::Spring(0.5f);
+                ImGui::BeginDisabled(m_currentTranslation == -1 || !m_currentDocument || m_currentTranslation == 0);
+                {
+                  if (ImGui::CenteredButton(ICON_FA_BACKWARD_FAST, {buttonSize, buttonSize})) {
+                    m_currentTranslation = 0;
+                  }
+                  ImGui::SetItemTooltip("%s", trNOOP("Go to first string"));
+                }
+                ImGui::EndDisabled();
+                ImGui::BeginDisabled(m_currentTranslation == -1 || !m_currentDocument || m_currentTranslation == 0);
+                {
+                  if (ImGui::CenteredButton(ICON_FA_BACKWARD_STEP, {buttonSize, buttonSize})) {
+                    m_currentTranslation = m_currentDocument->prevUntranslated(m_currentTranslation);
+                  }
+                  ImGui::SetItemTooltip("%s", trNOOP("Find previous untranslated string"));
+                }
+                ImGui::EndDisabled();
+                ImGui::BeginDisabled(m_currentTranslation == -1 || !m_currentDocument || m_currentTranslation == 0);
+                {
+                  if (ImGui::CenteredButton(ICON_FA_BACKWARD, {buttonSize, buttonSize})) {
+                    --m_currentTranslation;
+                  }
+                  ImGui::SetItemTooltip("%s", trNOOP("Previous string"));
+                }
+                ImGui::EndDisabled();
+                ImGui::BeginDisabled(m_currentTranslation == -1 || !m_currentDocument || m_currentTranslation >= m_currentDocument->translationCount() - 1);
+                {
+                  if (ImGui::CenteredButton(ICON_FA_FORWARD, {buttonSize, buttonSize})) {
+                    ++m_currentTranslation;
+                  }
+                  ImGui::SetItemTooltip("%s", trNOOP("Next string"));
+                }
+                ImGui::EndDisabled();
+                ImGui::BeginDisabled(m_currentTranslation == -1 || !m_currentDocument || m_currentTranslation >= m_currentDocument->translationCount() - 1);
+                {
+                  if (ImGui::CenteredButton(ICON_FA_FORWARD_STEP, {buttonSize, buttonSize})) {
+                    m_currentTranslation = m_currentDocument->nextUntranslated(m_currentTranslation);
+                  }
+                  ImGui::SetItemTooltip("%s", trNOOP("Find next untranslated string"));
+                }
+                ImGui::EndDisabled();
+                ImGui::BeginDisabled(m_currentTranslation == -1 || !m_currentDocument || m_currentTranslation >= m_currentDocument->translationCount() - 1);
+                {
+                  if (ImGui::CenteredButton(ICON_FA_FORWARD_FAST, {buttonSize, buttonSize})) {
+                    m_currentTranslation = m_currentDocument->translationCount() - 1;
+                  }
+                  ImGui::SetItemTooltip("%s", trNOOP("Go to last string"));
+                }
+                ImGui::EndDisabled();
+                ImGui::Spring(0.5f);
+              }
+              ImGui::EndDisabled();
+            }
+            ImGui::EndHorizontal();
+            ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, ImGui::GetDPIScaledValue(1.5f));
             if (ImGui::BeginChild("##translator_translations_table_child", {ImGui::GetContentRegionAvail().x * .5f, ImGui::GetContentRegionAvail().y}, ImGuiChildFlags_ResizeX,
                                   ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar)) {
               ImGui::BeginDisabled(!m_currentDocument);
               {
-                if (ImGui::BeginTable("##translations_table", 2, ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable | ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY)) {
+                if (ImGui::BeginTable("##translations_table", 2,
+                                      ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
+                                      ImGui::GetContentRegionAvail())) {
                   ImGui::TableSetupColumn(trNOOP("Key"));
-                  ImGui::TableSetupColumn(trNOOP("Value"), ImGuiTableColumnFlags_NoResize);
+                  ImGui::TableSetupColumn(trNOOP("Value"), ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoResize);
                   ImGui::TableSetupScrollFreeze(2, 1);
                   ImGui::TableHeadersRow();
 
@@ -240,30 +325,29 @@ You can use typical regex glob syntax:
                     ImGuiListClipper clipper;
                     clipper.Begin(static_cast<int>(m_currentDocument->translationCount()));
                     while (clipper.Step()) {
-                      for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; ++i) {
-                        if (i < 0) {
+                      for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++) {
+                        auto* translation = m_currentDocument->translation(i);
+                        if (!translation) {
                           continue;
                         }
 
-                        const auto& translation = m_currentDocument->translations()[i];
                         ImGui::TableNextRow();
                         ImGui::TableNextColumn();
-                        const auto key = translation.key();
-                        const auto firstKeyNewlinePos = key.find_first_of('\n');
-                        const auto maxKeyLen = std::min<size_t>(128, firstKeyNewlinePos);
-                        ImGui::Text("%s%s", key.substr(0, maxKeyLen).c_str(), maxKeyLen < key.length() ? "..." : "");
+                        auto key = translation->key();
+                        escapeNewlines(key);
+                        ImGui::TextUnformatted(key.c_str());
+
                         ImGui::TableNextColumn();
-                        const auto value = translation.value();
-                        const auto firstValueNewlinePos = value.find_first_of('\n');
-                        if (const auto maxValueLen = std::min<size_t>(128, firstValueNewlinePos);
-                            ImGui::Selectable(std::format("{}{}##{}", value.substr(0, maxValueLen), maxValueLen < value.length() ? "..." : "", i).c_str(), m_currentTranslation == i,
-                                              ImGuiSelectableFlags_SpanAllColumns)) {
+                        auto value = translation->value();
+                        escapeNewlines(value);
+
+                        if (ImGui::SelectableWithBorder(std::format("{}##{}", value, i).c_str(), m_currentTranslation == i, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_AllowOverlap)) {
                           m_currentTranslation = i;
                         }
                         if (ImGui::BeginItemTooltip()) {
-                          ImGui::TextUnformatted(key.c_str());
+                          ImGui::TextUnformatted(translation->key().c_str());
                           ImGui::Separator();
-                          ImGui::TextUnformatted(value.c_str());
+                          ImGui::TextUnformatted(translation->value().c_str());
                           ImGui::EndTooltip();
                         }
                       }
@@ -281,8 +365,45 @@ You can use typical regex glob syntax:
             const auto revertStr = trNOOP("Revert");
             const auto buttonWidth = ImGui::CalcItemSize(ImGui::CalcTextSize(revertStr), 0.f, 0.f).x + (ImGui::GetStyle().FramePadding.x + ImGui::GetStyle().ItemSpacing.x) * 2;
             if (ImGui::BeginChild("##translator_translations_edit_panel", {-1, 0}, 0, ImGuiWindowFlags_NoBackground)) {
-              ImGui::BeginDisabled(m_currentTranslation == -1);
+              ImGui::BeginDisabled(!m_currentDocument || m_currentTranslation == -1);
               {
+                GroupBox statusGroup(trNOOP("Status"), "##translator_status_group", {-1, 0});
+                if (statusGroup.begin()) {
+                  const auto state = m_currentDocument ? m_currentDocument->state(m_currentTranslation) : TranslationDocument::State::Unknown;
+                  const std::string preview = m_currentDocument && m_currentTranslation != -1 ? DecodeEnumName(state) : "";
+                  ImGui::SetNextItemWidth(std::max(ImGui::GetContentRegionAvail().x - buttonWidth, ImGui::GetDPIScaledValue(100) + buttonWidth));
+                  const auto oldTextColor = ImGui::GetStyleColorVec4(ImGuiCol_Text);
+                  if (m_currentDocument && m_currentTranslation != -1) {
+                    ImGui::PushStyleColor(ImGuiCol_Text, kStateColors[static_cast<int>(state)].textColor().toImGuiColor());
+                    ImGui::PushStyleColor(ImGuiCol_FrameBg, kStateColors[static_cast<int>(state)].multAlpha(0.5f).toImGuiColor());
+                    ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, kStateColors[static_cast<int>(state)].multAlpha(0.75f).toImGuiColor());
+                    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, kStateColors[static_cast<int>(state)].toImGuiColor());
+                  }
+                  if (ImGui::BeginCombo("##translation_status_combo", preview.c_str(), ImGuiComboFlags_NoArrowButton)) {
+                    ImGui::PushStyleColor(ImGuiCol_Text, oldTextColor);
+                    for (const auto& s : magic_enum::enum_values<TranslationDocument::State>()) {
+                      if (ImGui::Selectable(DecodeEnumName(s).c_str(), s == state)) {
+                        m_currentDocument->setState(m_currentTranslation, s);
+                      }
+
+                      if (s == state) {
+                        ImGui::SetItemDefaultFocus();
+                      }
+                    }
+                    ImGui::PopStyleColor();
+                    ImGui::EndCombo();
+                  }
+                  if (m_currentDocument && m_currentTranslation != -1) {
+                    ImGui::PopStyleColor(4);
+                  }
+                  ImGui::SameLine();
+                  ImGui::BeginDisabled(!m_currentDocument || !m_currentDocument->stateModified(m_currentTranslation));
+                  if (ImGui::Button(trNOOP("Revert"))) {
+                    m_currentDocument->revertState(m_currentTranslation);
+                  }
+                  ImGui::EndDisabled();
+                }
+                statusGroup.end();
                 GroupBox keyGroup(trNOOP("Key"), "##translator_translation_key_group", {std::max(ImGui::GetContentRegionAvail().x, ImGui::GetDPIScaledValue(100.f) + buttonWidth), 0});
                 if (keyGroup.begin()) {
                   ImGui::SetNextItemWidth(std::max(ImGui::GetContentRegionAvail().x - buttonWidth, ImGui::GetDPIScaledValue(100) + buttonWidth));
